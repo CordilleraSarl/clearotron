@@ -14,11 +14,14 @@
 // the provider's four separately-priced token kinds.)
 //
 // ── WHAT A "DISPATCH" IS ──────────────────────────────────────────────────────────────────────────
-// One model invocation: one row in `_driver/<stage>.jsonl` carrying a `model` (gateway.mjs writes one
-// per ATTEMPT, so retries are separate dispatches and retry waste is counted, not averaged away). The
-// direct-API jx lanes bypass the gateway and write `_driver/jx-completions.jsonl` in the same
-// {model, usage} shape; they are dispatches too, under stage `jx-completions`. `run.jsonl` is skipped
-// (run events, not dispatches) — same file selection as tokens.mjs, deliberately.
+// One model invocation: one row in `_driver/<stage>.jsonl` that tokens.mjs's `isAttemptRow` counts as
+// a provider attempt (gateway.mjs writes one per ATTEMPT, so retries are separate dispatches and retry
+// waste is counted, not averaged away). The direct-API jx lanes bypass the gateway and write
+// `_driver/jx-completions.jsonl` in the same {model, usage} shape; they are dispatches too, under stage
+// `jx-completions`. `run.jsonl` is skipped (run events, not dispatches) — same file selection as
+// tokens.mjs, deliberately, and the SAME ROW TEST as tokens.mjs, imported rather than copied: a jx row
+// whose turn ran and named no model carries no `model`, only `modelActual: null`, and a census that still
+// asked for a `model` counted no dispatch and no tokens for a turn the token rollup counted with both.
 //
 // ── ZERO SEMANTICS: THE THING THIS MODULE EXISTS TO GET RIGHT ─────────────────────────────────────
 // tokens.mjs sums `usage` with `u.output || 0`, so a dispatch whose usage is null contributes zero AND
@@ -32,7 +35,7 @@
 //   measured   — the dispatch journalled a usage object (from the provider's own result envelope)
 //   streamed   — usage present but RECONSTRUCTED from the stream (`signals.usageStreamed`), because the
 //                turn died before its result event. A real measurement, a weaker one, counted apart.
-//   unmeasured — the row is a dispatch (it has a model) and carries no usage at all. THE KILLED TURNS.
+//   unmeasured — the row is a dispatch and carries no usage at all. THE KILLED TURNS.
 // `tokensComplete` is false whenever `unmeasured > 0`, at run level and per stage, and
 // `unmeasuredDispatches[]` names which ones so a reader can see what the total is missing.
 //
@@ -92,14 +95,18 @@
 // so a per-record basis is the only honest shape. `tokens.mjs` keys its rollup on the requested alias
 // for the same reason and is likewise untouched.
 //
-// Pure by contract: `runEconomics()` reads the run dir and nothing else — no env, no config, no network,
-// no driver imports. `stampRunEconomics()` is the only part that writes.
+// Pure by contract: `runEconomics()` reads the run dir and nothing else — no env, no config, no network.
+// Its only driver import is the attempt-row test it shares with tokens.mjs; the log and status writers
+// serve `stampRunEconomics()`, the only part that writes.
 
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { runLog, note } from "./log.mjs";
 import { writeRunStatus } from "./progress.mjs";
+// tokens.mjs imports this module too (isCodeSide, stampRunEconomics). The cycle is safe because each side
+// reads the other's bindings only inside functions, never while the module is loading.
+import { isAttemptRow } from "./tokens.mjs";
 
 /**
  * The provider's separately-priced token kinds, in the driver's own `usage` vocabulary (gateway.mjs /
@@ -178,7 +185,13 @@ function billingKeyOf(rec) {
   // is rather than dragged into "unknown" beside genuinely unstamped legacy rows.
   const engine = isCodeSide(rec) ? "code" : String(rec.engine ?? "unknown");
   const authMode = isCodeSide(rec) ? "not-provider-billed" : String(rec.authMode ?? "unknown");
-  const model = String(rec.modelUsed ?? rec.model ?? "unknown");
+  // A TURN THAT NAMED NO MODEL (a jx row with `modelActual: null` and no `model`) is keyed the way the
+  // token rollup keys it (modelKey in tokens.mjs): `<engine>/no-model-reported`, a name that says the
+  // model is missing. Read through the old `?? "unknown"` it landed beside legacy rows nobody stamped,
+  // and its byBilling bucket named a different model from the rollup's byModel for the same turn.
+  const model = rec.modelUsed == null && typeof rec.model !== "string"
+    ? `${typeof rec.engine === "string" && rec.engine ? rec.engine : "unknown"}/no-model-reported`
+    : String(rec.modelUsed ?? rec.model ?? "unknown");
   return { engine, authMode, model, key: `${engine}|${authMode}|${model}` };
 }
 
@@ -469,7 +482,7 @@ export function runEconomics(runDir, { now = null, bytesPerOutputToken = BYTES_P
     let sawDeclaredNoOutput = false;
 
     for (const rec of rows) {
-      if (!rec || typeof rec.model !== "string") continue;   // only dispatch rows carry a model
+      if (!isAttemptRow(rec)) continue;   // only provider attempts are dispatches (tokens.mjs, isAttemptRow)
       const cls = classesOf(rec.usage);
       const streamed = cls != null && rec.signals?.usageStreamed === true;
 
