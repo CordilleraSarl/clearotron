@@ -10,7 +10,7 @@ of its own and calls nothing on your behalf.
 
 | What | Why | Where |
 |---|---|---|
-| A reasoning program | Every stage runs as a headless turn of it | [Claude Code](https://claude.com/claude-code) (`claude`), or the Codex CLI (`codex`). Setup installs it if the machine has none; sign in with the program setup installed (doctor prints its path), or `claude` if the machine has its own |
+| A reasoning program | Every stage runs as a headless turn of it | [Claude Code](https://claude.com/claude-code) (`claude`) or the Codex CLI (`codex`). Setup installs it if the machine has none, and shows you how to sign in |
 | A register | Sets what the search reaches, and what it costs | [Signa](https://signa.so) — one key, self-serve, US + EU + WIPO and eight more offices |
 | Web research | Covers the open web and the marketplaces | [Perplexity](https://www.perplexity.ai) |
 
@@ -20,8 +20,8 @@ reach one office each; Signa is the recommended paid route and the fastest to a 
 
 **macOS, Linux, or native Windows for the demo; WSL2 for a clearance.** `npx clearotron demo` runs
 anywhere Node does, native Windows included. A real clearance does not: the engine spawns each stage
-with POSIX path and process semantics, so on native Windows the run door refuses before it reads
-`PATH`, even with the program installed. On Windows, `wsl --install -d Ubuntu`, then
+with POSIX path and process semantics, so on native Windows a clearance is refused before it
+starts, even with the program installed. On Windows, `wsl --install -d Ubuntu`, then
 `wsl -d Ubuntu`, and work through this page from **inside** that distribution. Name it: plain `wsl`
 can open a minimal image with no apt, no curl and no bash, and everything below assumes Ubuntu. A
 fresh Ubuntu has no Node, and apt's package is below what this needs, so `npx` answers "not found"

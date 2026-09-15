@@ -47,9 +47,9 @@ the queue. The spend happens when someone runs the runner.
 | **Prove the whole engine for $0** | Node 22 | A full pipeline run against the mock engine — recipe in `docs/E2E.md` tier 1. Nothing is billed. |
 | **Run a real clearance** | A signed-in coding CLI, one register credential, `PERPLEXITY_API_KEY` | See `providers/README.md` for which register to pick, then `INSTALL.md`. |
 
-**Platform.** macOS and Linux natively. On native Windows the demo works as it is, and a real clearance does
-not: the engine spawns each stage with POSIX path and process semantics, so the run door refuses there before
-it reads `PATH`. Use WSL2, a devcontainer, or a hosted agent session.
+**Platform.** macOS and Linux natively. On native Windows the demo runs and a real clearance does not: the
+engine spawns each stage with POSIX path and process semantics, so a clearance is refused there before it
+starts. Use WSL2, a devcontainer, or a hosted agent session.
 
 **Running as root** (containers, devcontainers, WSL2-as-root) **is supported and the suite is green there.**
 Thirteen tests inject a permission fault by `chmod`-ing a path unreadable or unwritable, which root walks

@@ -46,7 +46,7 @@ before it saves it. With `~/.local/bin` on your `PATH`, every command below work
 otherwise use the full path `install` prints at the end. **On Windows the demo above runs natively; a
 real clearance needs WSL2.** Native Windows clearances are planned for a later release. Until then the
 engine does not run on native Windows: it spawns each stage with POSIX path and process semantics, so
-the run door refuses a clearance there before it reads `PATH`.
+a clearance started there is refused before it begins.
 
 `npm install -g clearotron` also works where npm's global directory is yours to write. On a Linux Node
 from the distribution or NodeSource that directory is `/usr`, owned by root, and npm refuses with

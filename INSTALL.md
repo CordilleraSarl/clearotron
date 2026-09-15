@@ -47,8 +47,8 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
   install refuses below it before writing anything, and `nvm use` picks the pin up.
 - **macOS, Linux, or native Windows for the demo; WSL2 for a clearance.** `npx clearotron
   demo` runs anywhere Node does, native Windows included. A real clearance does not: the engine spawns
-  each stage with POSIX path and process semantics, so on native Windows the run door refuses before it
-  reads `PATH`, even with the program installed. Native Windows clearances are planned for a later
+  each stage with POSIX path and process semantics, so on native Windows a clearance is refused before it
+  starts, even with the program installed. Native Windows clearances are planned for a later
   release. Until then, on Windows,
   `wsl --install -d Ubuntu`, then `wsl -d Ubuntu`, and work through this page
   from **inside** that distribution. Name it: plain `wsl` can open a minimal image with no apt, no
@@ -95,9 +95,9 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
   | `CLEAROTRON_AI` | Program | Signed-in laptop | A machine you cannot complete a sign-in on |
   |---|---|---|---|
   | `anthropic-agent` (default) | `claude` | run the program setup installed (doctor prints its path), or `claude` if the machine has its own, once — rides your subscription | `claude setup-token` once anywhere you *can* log in, then put it on the server as `CLAUDE_CODE_OAUTH_TOKEN` |
-  | `openai-agent` | `codex` | `login` on the program setup installed (doctor prints its path), or `codex login` if the machine has its own | `codex login --device-auth` — prints a code you complete on another device |
+  | `openai-agent` | `codex` | run the program setup installed with `login` (doctor prints its path), or `codex login` if the machine has its own | `login --device-auth` on the same program — prints a code you complete on another device |
 
-  **The right-hand column is about where you can complete a sign-in, not about whether the box has a
+  **The right-hand column is about where you can complete a sign-in, not about whether the machine has a
   screen.** A server you can reach a browser from takes the left-hand route perfectly well; a laptop
   locked out of the vendor's login page takes the right-hand one. Reading it as "server ⇒ setup-token"
   sends you down the fallback for no reason.
@@ -1388,11 +1388,10 @@ About page, the MCP server's `server_info`, and `npx clearotron start --license`
 **Everything §1 told you to bring is outside it.** Read this before you count the licence as your
 answer on any of them:
 
-- **The reasoning program is third-party software.** Claude Code is proprietary, under Anthropic's
-  terms; the Codex CLI is open source, under the licence OpenAI publishes with it. Every reasoning stage
-  spawns one of them as a child process. Setup installs it when you say yes and you sign in to it, and
-  your use is governed by that vendor's terms. AGPL-3.0 grants you nothing over it, and this repository
-  redistributes no part of it.
+- **The reasoning program is third-party software.** Claude Code is proprietary; the Codex CLI is open
+  source, under the licence OpenAI publishes with it. Every reasoning stage spawns one of them as a child
+  process. Setup installs it only when you say yes; you sign in to it, and your use of it is governed by
+  its vendor's terms. AGPL-3.0 grants you nothing over it, and this repository redistributes no part of it.
 - **Register and research providers are your own agreements.** EUIPO, the USPTO bulk product,
   `PERPLEXITY_API_KEY`, CourtListener, and the subscription registers (Clarivate, Signa, Corsearch)
   each sit on terms you accept directly with that provider. The adapters in `providers/` are ours and
