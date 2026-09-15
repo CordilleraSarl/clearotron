@@ -1008,6 +1008,13 @@ if (!confirm || confirm.fatal) {
   ok(/straight away/.test(confirm.said ?? ''), `the confirmation does not say when: ${JSON.stringify(confirm.said)}`)
   ok(/through their AI/.test(confirm.said ?? ''), `the confirmation does not say the assistant loses it too: ${JSON.stringify(confirm.said)}`)
   ok(/login system/.test(confirm.said ?? ''), `the confirmation does not say what this product cannot do: ${JSON.stringify(confirm.said)}`)
+  // THIS PERSON HOLDS AN ISSUED KEY. The portal can say it wrote the revocation list; it cannot say the
+  // connector loaded one, because that is a different service with a different environment. So the
+  // sentence names where to go and see, rather than promising on a reading of somebody else's setup.
+  ok(/key is withdrawn at the same time/.test(confirm.said ?? ''),
+    `a key holder's removal does not mention the key: ${JSON.stringify(confirm.said)}`)
+  ok(/doctor/.test(confirm.said ?? ''),
+    `it does not say where to see whether the connector picked it up: ${JSON.stringify(confirm.said)}`)
 }
 
 if (!domainRow || domainRow.fatal) {
@@ -1030,6 +1037,8 @@ if (!confirmNoRevoke || confirmNoRevoke.fatal) {
     `it does not say the key keeps working: ${JSON.stringify(confirmNoRevoke.said)}`)
   ok(/straight away/.test(confirmNoRevoke.said ?? ''),
     `it stopped saying what IS immediate: ${JSON.stringify(confirmNoRevoke.said)}`)
+  ok(!/withdrawn at the same time/.test(confirmNoRevoke.said ?? ''),
+    `it says the key is withdrawn on an installation that names no revocation list: ${JSON.stringify(confirmNoRevoke.said)}`)
 }
 if (!peopleLocal || peopleLocal.fatal) {
   fail.push(`people (local sign-in): ${peopleLocal?.fatal ?? 'the driver returned nothing'}`)

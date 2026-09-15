@@ -289,12 +289,15 @@ function Form({ ctx, person, view }: {
                   ) : (
                     <b>loses {loses.join(' and ')} straight away,</b>
                   )}{' '}
-                  {keyStaysLive
-                    ? 'here. Their AI was issued a key this Clearotron cannot withdraw — it was started without a revocation list — so that key keeps working until it expires. clearotron doctor reports it.'
-                    : 'here and through their AI.'}{' '}
-                  {holdsKey && !keyStaysLive
-                    ? 'Their AI\u2019s key is withdrawn at the same time; clearotron doctor says whether the connector has picked it up. '
-                    : ''}
+                  {keyStaysLive ? (
+                    <>here. Their AI was issued a key this Clearotron cannot withdraw — it was started
+                    without a revocation list — so that key keeps working until it expires.{' '}
+                    <b className="mono">clearotron doctor</b> reports it.{' '}</>
+                  ) : <>here and through their AI.{' '}</>}
+                  {holdsKey && !keyStaysLive ? (
+                    <>Their AI&rsquo;s key is withdrawn at the same time;{' '}
+                    <b className="mono">clearotron doctor</b> says whether the connector has picked it up.{' '}</>
+                  ) : null}
                   {whole
                     ? 'To stop them reaching your sign-in page, take them off your login system too.'
                     : 'They keep the access you cannot see.'}
