@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// grants-edit.mjs — the changes a person makes to the grants file: give someone access, and file a new
-// company under its organisation.
+// grants-edit.mjs — the changes a person makes to the grants file: give someone access, take access
+// away, and file a new company under its organisation.
 //
 // PURE. Each function takes the parsed grants object and returns a new one; the caller reads the file,
 // applies the change and writes it atomically. One function per change, shared by every writer — the
@@ -42,6 +42,103 @@ export function withPerson(grants, { email, points = [], switches = {}, setSwitc
     const entry = { run: switches.run === true, manage: switches.manage === true };
     if (switches.everything === true) entry.everything = true;
     g.people = { ...(g.people ?? {}), [e]: entry };
+  }
+  assertGrantsShape(g, "the grants file after this change");
+  return g;
+}
+
+/**
+ * What a person holds now, read straight out of the file: `{ points, switches, listed }`.
+ *
+ * The form that changes somebody has to open filled in, and "filled in" means the file's own answer, not
+ * the page's copy of it. `points` are the same `[{ tenant, account }]` shape `withPerson` takes, so a
+ * caller can diff what it was handed against what is there and hand each half to the right function.
+ *
+ * ADDRESSES ARE MATCHED WITHOUT REGARD TO CASE, in both places a person can appear. Every writer in this
+ * module lowercases on the way in, but the grants file is one an operator edits by hand, and a file
+ * holding `Dana@x.example` under `people` and `dana@x.example` under a tenant is a file this product
+ * loads and serves. A reader that matched exactly would report half of such a person and miss the half
+ * carrying their permissions.
+ */
+export function personPoints(grants, email) {
+  const e = String(email ?? "").trim().toLowerCase();
+  const g = grants ?? {};
+  const points = [];
+  for (const [tenant, t] of Object.entries(g.tenants ?? {})) {
+    const key = Object.keys(t?.users ?? {}).find((k) => String(k).toLowerCase() === e);
+    if (key === undefined) continue;
+    const held = t.users[key];
+    if (held === "*") { points.push({ tenant, account: null }); continue; }
+    for (const account of Array.isArray(held) ? held : []) points.push({ tenant, account });
+  }
+  const entry = Object.entries(g.people ?? {}).find(([k]) => String(k).toLowerCase() === e)?.[1];
+  return {
+    points,
+    switches: { run: entry?.run === true, manage: entry?.manage === true, everything: entry?.everything === true },
+    listed: entry !== undefined,
+  };
+}
+
+/**
+ * Take access away — the other half of `withPerson`, and deliberately its neighbour: one file decides what
+ * a person IS, so the page and `clearotron grant` cannot drift into two answers.
+ *
+ * Two shapes, and the difference is the whole of the safety here.
+ *
+ * `all: true` removes the person from the install: every tenant's guest list AND their entry under
+ * `people`, which is where their permissions and any access to everything live.
+ *
+ * `points` NARROWS instead, and never touches `people`. That restraint is the point: a manager who holds
+ * one organisation can see only that organisation's half of somebody, so a narrowing they order must not
+ * reach an entry they cannot read. It also means a narrowing CANNOT be honest about a person who holds
+ * everything — that access does not live in any tenant, so striking tenant rows would leave them seeing
+ * exactly what they saw before, under a sentence saying otherwise. That case is refused rather than
+ * warned about: a warning printed after the write is read by whoever is already looking.
+ *
+ * A company inside an organisation the person holds WHOLE is refused too. `"*"` means "this organisation,
+ * including companies added later", and the nearest expressible narrowing — today's list of companies,
+ * minus one — is a different grant wearing the same shape. The caller offers the organisation instead.
+ */
+export function withoutPerson(grants, { email, points = [], all = false }) {
+  const e = String(email ?? "").trim().toLowerCase();
+  if (!e) throw new Error("removing access needs an email address");
+  const g = structuredClone(grants ?? { tenants: {} });
+  g.tenants ??= {};
+  const held = personPoints(g, e);
+  if (!all && !points.length) throw new Error("nothing was named to take away");
+  if (!all && held.switches.everything)
+    throw new Error(`${e} has access to everything on this install, which is not held in any organisation`
+      + " — taking away one organisation would change nothing they can see. Remove them from the install instead.");
+
+  const userKeyIn = (t) => Object.keys(t?.users ?? {}).find((k) => String(k).toLowerCase() === e);
+
+  if (all) {
+    for (const t of Object.values(g.tenants)) {
+      const key = userKeyIn(t);
+      // AN EMPTY `users` MAP IS NOT A DELETED TENANT. The organisation still exists and still holds its
+      // companies; it simply has nobody on its guest list.
+      if (key !== undefined) { t.users = { ...t.users }; delete t.users[key]; }
+    }
+    const peopleKey = Object.keys(g.people ?? {}).find((k) => String(k).toLowerCase() === e);
+    if (peopleKey !== undefined) { g.people = { ...g.people }; delete g.people[peopleKey]; }
+    assertGrantsShape(g, "the grants file after this change");
+    return g;
+  }
+
+  for (const { tenant, account = null } of points) {
+    const t = g.tenants[tenant];
+    if (!t) throw new Error(`there is no organisation "${tenant}"`);
+    const key = userKeyIn(t);
+    if (key === undefined) continue;
+    const have = t.users[key];
+    t.users = { ...t.users };
+    if (account == null) { delete t.users[key]; continue; }
+    if (have === "*")
+      throw new Error(`${e} holds the whole of "${tenant}", including companies added to it later,`
+        + ` so "${account}" cannot be taken away on its own. Take away the organisation instead.`);
+    const left = (Array.isArray(have) ? have : []).filter((a) => a !== account);
+    if (left.length) t.users[key] = left;
+    else delete t.users[key];
   }
   assertGrantsShape(g, "the grants file after this change");
   return g;

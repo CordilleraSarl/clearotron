@@ -51,6 +51,8 @@ export type ScreenId =
   | 'people'
   // …and the form it opens. A dot-child of People, and like People it is off the rail.
   | 'people.add'
+  // …and the form that CHANGES one, which is the same form filled in. Off the rail for the same reason.
+  | 'people.modify'
   // company screens — no `brand` parent exists, on purpose (see above)
   | 'brand.profile'
   | 'brand.projects'
@@ -151,6 +153,11 @@ export const NAV: readonly NavEntry[] = [
   // Give someone access — reached from `+ Add a person` on People and from nowhere else, hence `hidden`.
   // The same permission as the page that opens it.
   { id: 'people.add', label: 'Give someone access', path: '/portal/people/add', icon: 'users', needs: 'manage', hidden: true, scope: 'account' },
+  // Change or remove one — reached from a row's Modify on People, and from nowhere else. Which person
+  // rides in `?email=`, the way Projects carries `?project=`: the address is data about the page, not a
+  // place, and putting it in the path would put somebody's email in the browser history of a machine
+  // they do not use. Same permission as the page that opens it, and the server narrows again anyway.
+  { id: 'people.modify', label: 'Modify access', path: '/portal/people/modify', icon: 'users', needs: 'manage', hidden: true, scope: 'account' },
 
   // ── below the switcher: one company at a time ─────────────────────────────────────────────────
   // New clearance leads the group because it is the one ACTION here, and it is company-specific by
@@ -421,3 +428,4 @@ function decode(segment: string): string {
  */
 export const PEOPLE: NavEntry = NAV.find((e) => e.id === 'people') as NavEntry
 export const ADD_PERSON: NavEntry = NAV.find((e) => e.id === 'people.add') as NavEntry
+export const MODIFY_PERSON: NavEntry = NAV.find((e) => e.id === 'people.modify') as NavEntry

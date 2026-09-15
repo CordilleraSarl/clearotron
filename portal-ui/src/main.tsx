@@ -18,6 +18,7 @@ import { Projects } from './screens/Projects.tsx'
 import { GlobalConfig } from './screens/GlobalConfig.tsx'
 import { PeopleAccess } from './screens/PeopleAccess.tsx'
 import { GiveAccess } from './screens/GiveAccess.tsx'
+import { ModifyAccess } from './screens/ModifyAccess.tsx'
 import { About } from './screens/About.tsx'
 import { resultRoute } from './nav/nav.config.ts'
 import type { ScreenId } from './nav/nav.config.ts'
@@ -143,6 +144,11 @@ function screen(id: ScreenId, ctx: ShellContext) {
     // half-filled form must survive somebody touching the switcher beside it.
     case 'people.add':
       return <GiveAccess ctx={ctx} />
+    // Unkeyed on the company for the same reason, and keyed on the ADDRESS inside the screen instead:
+    // opening a second person is a different form with different contents, and React would otherwise
+    // hand them the first person's unsaved ticks.
+    case 'people.modify':
+      return <ModifyAccess ctx={ctx} />
     // Admin settings has no screen of its own; landing on the parent shows its only child. People used
     // to be that first child and moved to the rail, so the parent now falls through to Global config.
     case 'admin':

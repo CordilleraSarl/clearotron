@@ -64,7 +64,7 @@
 import "../shared/env-local.mjs";
 import { readFileSync, existsSync } from "node:fs";
 import { assertGrantsShape } from "../shared/scope.mjs";   // — one shape check, not a second opinion
-import { withPerson, withOrganisation, withCompany } from "../shared/grants-edit.mjs";   // — the People page's own editors
+import { withPerson, withoutPerson, personPoints, withOrganisation, withCompany } from "../shared/grants-edit.mjs";   // — the People page's own editors
 import { basename } from "node:path";
 import { atomicWrite } from "../driver/progress.mjs";
 import { accessView } from "../driver/portal-config-view.mjs";
@@ -287,27 +287,26 @@ if (cmd === "remove") {
   const email = String(argv[1] ?? "").trim().toLowerCase();
   const only = flag("tenant");
   if (!email) usage();
-  let removed = 0;
-  for (const [name, t] of Object.entries(grants.tenants)) {
-    if (only && name !== only) continue;
-    if (t?.users && email in t.users) { delete t.users[email]; removed++; }
-    // AN EMPTY `users` MAP IS NOT A DELETED TENANT, and this writes the former deliberately: the tenant
-    // still exists and still holds its accounts, it simply has nobody on its guest list. Deleting the
-    // tenant here would destroy configuration the operator never asked to remove, and it round-trips —
-    // `remove-tenant` is the other verb, and it is explicit.
-  }
-  // AND THE PERSON'S OWN ENTRY, when they are removed from everywhere. Their permissions and their access
-  // to everything live under `people`, not in any tenant, so a removal that left that entry would leave a
-  // person who sees everything still seeing everything. Removed from one tenant, they may still hold
-  // access elsewhere, and their entry stays.
-  const peopleKey = only ? undefined : Object.keys(grants.people ?? {}).find((k) => k.toLowerCase() === email);
-  if (peopleKey !== undefined) delete grants.people[peopleKey];
-  if (!removed && peopleKey === undefined) die(`${email} is not on the guest list${only ? ` for "${only}"` : ""}. Nothing written.`);
-  atomicWrite(FILE, JSON.stringify(grants, null, 2) + "\n");
-  out(`Removed ${email} from ${removed} tenant(s)${peopleKey !== undefined ? ", and their permissions under people" : ""}. Written to ${basename(FILE)}.`);
-  const kept = Object.entries(grants.people ?? {}).find(([k]) => k.toLowerCase() === email)?.[1];
-  if (kept?.everything === true)
-    out(`${email} still has access to everything through their entry under people. \`grant remove ${email}\` without --tenant takes that away too.`);
+  // THROUGH THE SAME EDITOR THE PORTAL USES. This command used to delete the keys itself, and the two
+  // paths had drifted: `people` was matched without regard to case here and the tenant guest lists were
+  // matched exactly, so a hand-edited file holding `Dana@x` under an organisation kept that row through a
+  // removal that reported success. One function now answers for both faces.
+  const held = personPoints(grants, email);
+  const points = only ? held.points.filter((p) => p.tenant === only) : [];
+  if (!held.listed && !held.points.length)
+    die(`${email} is not on the guest list. Nothing written.`);
+  if (only && !points.length)
+    die(`${email} is not on the guest list for "${only}". Nothing written.`);
+  let after;
+  // A TENANT-SCOPED REMOVAL OF SOMEBODY WHO HOLDS EVERYTHING IS REFUSED, where it used to be done and
+  // then warned about. Access to everything lives under `people` and in no organisation, so striking one
+  // organisation's row changed nothing the person could see — and the sentence saying they had been
+  // removed was printed first, with the correction below it.
+  try { after = withoutPerson(grants, { email, points, all: !only }); }
+  catch (e) { die(`${String(e?.message ?? e)} Nothing written.`); }
+  const orgs = only ? 1 : new Set(held.points.map((p) => p.tenant)).size;
+  atomicWrite(FILE, JSON.stringify(after, null, 2) + "\n");
+  out(`Removed ${email} from ${orgs} tenant(s)${only ? "" : held.listed ? ", and their permissions under people" : ""}. Written to ${basename(FILE)}.`);
   process.exit(0);
 }
 
