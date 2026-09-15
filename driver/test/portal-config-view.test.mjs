@@ -132,7 +132,7 @@ test("an instance with nothing wired up sends ROWS saying so, and they reach the
   // deep comparison rather than a spot check. `program` and `install` are DERIVED from the id at read
   // time and are named separately below: they are not in the capture and never have been, so folding
   // them into the expectation here would quietly turn a round-trip assertion into a shape assertion.
-  const { program, install, ...stored } = v.engine;
+  const { program, install, programSetting, setupRoute, ...stored } = v.engine;
   assert.deepEqual(stored, engine);
   assert.equal(program, "claude", "the derived program name did not reach the view");
   assert.ok(install, "the derived install command did not reach the view");
@@ -475,6 +475,17 @@ test("the engine row carries the program's name and the command that installs it
   // NO PATH. `program` is the bare name a reader types. The resolved path is this machine's layout and
   // this value is rendered in a browser — the snapshot has never carried one and must not start.
   assert.ok(!v.engine.program.includes("/"), "a resolved path reached a value the browser renders");
+});
+
+test("the engine row carries the program's setting and which setup command this install runs, and the billing block untouched", () => {
+  // Setup installs the program now, so the row names setup rather than a hand install, and it has to know
+  // which spelling this reader can type. The same word `/me` sends the search screen, never a path.
+  const billing = { mode: "cloud", apiBilled: true, missing: [], cloud: "foundry", cloudName: "Microsoft Azure" };
+  const v = flagView(poolWithEngine({ id: "anthropic-agent", known: true, binaryPresent: false, billing }), { now: NOW });
+  assert.equal(v.engine.programSetting, ENGINE_BINARIES["anthropic-agent"].env, "the row cannot name the setting that holds the program's path");
+  assert.ok(["packaged", "checkout"].includes(v.engine.setupRoute), `not a route word: ${v.engine.setupRoute}`);
+  assert.ok(!String(v.engine.setupRoute).includes("/"), "a path reached a value the browser renders");
+  assert.deepEqual(v.engine.billing, billing, "the view changed the billing block it was handed");
 });
 
 test("an engine this build does not ship names no program and no command", () => {

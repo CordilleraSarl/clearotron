@@ -42,7 +42,10 @@ import {
   DEFAULT_ENGINE_ID, ENGINE_BINARIES, PROVIDERS, RESEARCH_PROVIDERS, SERP_PROVIDERS,
   missingCredentials, preflightEngineBinary, providerIdFrom,
 } from "./driver.config.mjs";
-import { resolveAuthMode, billingMode } from "./engine/auth.mjs";
+import {
+  resolveAuthMode, billingMode, cloudsSwitchedOn, BILLING_MODES, CLOUD_SWITCH, CLOUD_CREDENTIAL_CHECK,
+} from "./engine/auth.mjs";
+import { billingRefusalWords } from "./run-requirements.mjs";   // — a refusal that quotes the billing word says it by name
 import { CASELAW_BRIDGES } from "./engine/mcp/gather-config.mjs";   // — the list that decides what is spawned
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
@@ -79,17 +82,31 @@ export function engineInventory(env = process.env) {
   const billing = (() => {
     try {
       const a = resolveAuthMode({ engineName: id, env });
-      return { mode: a.mode, apiBilled: a.apiBilled === true, missing: [] };
+      // `cloud` is the resolver's own answer, never re-derived here: the account a run bills is whatever
+      // the run door resolves, and a page that worked it out a second way could name another.
+      const cloud = a.cloud ?? null;
+      return { mode: a.mode, apiBilled: a.apiBilled === true, missing: [], cloud, cloudName: cloudName(cloud) };
     } catch (e) {
       // Recorded AS ITSELF, whichever refusal it was. An API-key mode with no key names the variable to
       // set, reconstructed from the table so it cannot drift from it. Every other refusal (a cloud mode with
       // no cloud switched on or with two, a cloud switch beside a mode it contradicts, a word that is not a
-      // mode) carries its own sentence, which names variables and never a value, and leaves `missing` empty:
-      // the page reads `missing` as "set this key", and a key that is set is not missing.
+      // mode) leaves `missing` empty, because the page reads `missing` as "set this key" and a key that is
+      // set is not missing, and carries a `reason` the page words itself (billingRefusalReason, below).
       const mode = billingMode(env);
       const keyAbsent = Boolean(spec?.apiKeyEnv) && String(env[spec.apiKeyEnv] ?? "") === "";
-      if (mode === "api-key" && keyAbsent) return { mode, apiBilled: false, missing: shown([spec.apiKeyEnv]) };
-      return { mode, apiBilled: false, missing: [], refusal: String(e?.message ?? e) };
+      if (mode === "api-key" && keyAbsent) {
+        return { mode, apiBilled: false, missing: shown([spec.apiKeyEnv]), cloud: null, cloudName: null };
+      }
+      const reason = billingRefusalReason(id, env);
+      return {
+        // A WORD THAT IS NOT A MODE IS NOT RECORDED. It is whatever was typed into the setting that decides
+        // who pays, and a key pasted there by mistake is that word; this inventory is written to a file and
+        // served to a browser. So the mode reads `unknown`, and the refusal says the setting by name.
+        mode: reason.kind === "not-a-mode" ? "unknown" : mode,
+        apiBilled: false, missing: [], cloud: null, cloudName: null,
+        refusal: billingRefusalWords(String(e?.message ?? e)),
+        reason,
+      };
     }
   })();
 
@@ -106,6 +123,66 @@ export function engineInventory(env = process.env) {
   // `claude -p` turn" — which is exactly the back-end detail took off this page. The id travels
   // beside it because it is what an operator types into an environment file.
   return { id, vendor: spec?.vendor ?? null, known: Boolean(spec), billing, binaryPresent };
+}
+
+/**
+ * What a reader calls the account a cloud mode bills: "Google Cloud", "Microsoft Azure", "Amazon Bedrock"
+ * or "Gateway". Null for no cloud.
+ *
+ * ONE TABLE OF CLOUD NAMES, NOT TWO. `CLOUD_CREDENTIAL_CHECK` in engine/auth.mjs already names each cloud
+ * the way a reader knows it, for the advice a refused sign-in prints, and this reads it rather than keeping
+ * a second list that could name a cloud differently on the page. It writes the gateway "the gateway", for
+ * use inside a sentence; a label on a page drops the article and starts with a capital, and that one
+ * adjustment is the whole of what this adds.
+ */
+export function cloudName(cloud) {
+  const who = CLOUD_CREDENTIAL_CHECK[cloud]?.who;
+  if (!who) return null;
+  const bare = who.replace(/^the /, "");
+  return bare.charAt(0).toUpperCase() + bare.slice(1);
+}
+
+/**
+ * WHY A BILLING SETTING REFUSES EVERY SEARCH, as data: which refusal it is and the names involved, so the
+ * config page words it once, in plain English, without reading the resolver's sentence apart.
+ *
+ * `kind` is one of:
+ *   switch-beside-mode  subscription or api-key, and a cloud's switch on beside it (`clouds`)
+ *   two-clouds          cloud, and more than one cloud switched on (`clouds`)
+ *   no-cloud            cloud, and no cloud switched on and no gateway address (`clouds` lists every
+ *                       switch, and `gateway` the gateway's setting, as the choices to make)
+ *   not-a-mode          a word that is not a billing mode (`modes` are the ones this engine takes)
+ *   cloud-on-codex      cloud, on the Codex engine, which a cloud account cannot pay for
+ *   other               a refusal this list does not name; the page says only that searches are refused
+ *
+ * THE SAME PREDICATES AS THE RESOLVER, IN ITS ORDER. `resolveAuthMode` refuses by throwing a sentence and
+ * nothing else, so the kind is read back from the same environment through the same functions it uses
+ * (`billingMode`, `cloudsSwitchedOn`), in the order it checks them. Called only once it has thrown.
+ *
+ * NAMES, NEVER A VALUE. `mode` is sent only when it is one of the three modes; the word in a `not-a-mode`
+ * refusal is whatever was typed, and it is not sent at all.
+ */
+export function billingRefusalReason(id, env = process.env) {
+  const mode = billingMode(env);
+  const setting = "CLEAROTRON_AI_BILLING";
+  const clouds = (ids) => ids.map((c) => ({ name: cloudName(c), setting: CLOUD_SWITCH[c] }));
+  const base = { setting, mode: null, clouds: [], modes: [], gateway: null, engineSetting: null, engineChoice: null };
+  if (id === "openai-agent") {
+    if (mode === "cloud") {
+      return { ...base, kind: "cloud-on-codex", mode, modes: ["subscription", "api-key"], engineSetting: "CLEAROTRON_AI", engineChoice: "anthropic-agent" };
+    }
+    if (mode !== "subscription" && mode !== "api-key") return { ...base, kind: "not-a-mode", modes: ["subscription", "api-key"] };
+  }
+  if (id === "anthropic-agent") {
+    const on = cloudsSwitchedOn(env);
+    if ((mode === "subscription" || mode === "api-key") && on.length) return { ...base, kind: "switch-beside-mode", mode, clouds: clouds(on) };
+    if (mode === "cloud" && on.length > 1) return { ...base, kind: "two-clouds", mode, clouds: clouds(on) };
+    if (mode === "cloud" && !on.length) {
+      return { ...base, kind: "no-cloud", mode, clouds: clouds(Object.keys(CLOUD_SWITCH)), gateway: "ANTHROPIC_BASE_URL" };
+    }
+    if (!BILLING_MODES.includes(mode)) return { ...base, kind: "not-a-mode", modes: [...BILLING_MODES] };
+  }
+  return { ...base, kind: "other", mode: BILLING_MODES.includes(mode) ? mode : null };
 }
 
 /**

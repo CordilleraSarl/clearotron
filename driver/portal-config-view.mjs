@@ -55,6 +55,9 @@ import { engineMode } from "./config-inventory.mjs";   // — the mode is DERIVE
 // what to do about it — and this table is already where the wizard and the run-door preflight read
 // both of those, so naming them here adds no second description of an engine.
 import { ENGINE_BINARIES } from "./driver.config.mjs";
+// WHICH SETUP COMMAND THIS READER CAN TYPE, as a word and never a path: the same answer `/me` sends the
+// search screen, so the two pages name the same command for the same install.
+import { installRoute } from "../shared/invocation.mjs";
 
 /**
  * The flag view.
@@ -87,6 +90,12 @@ function withProgram(engine) {
     // layout and is deliberately kept out of anything a browser renders.
     program: spec?.fallback ?? null,
     install: spec?.install ?? null,
+    // The setting that names the program's full path, which is what an administrator sets when the
+    // services cannot find a program this machine has. A name, never its value.
+    programSetting: spec?.env ?? null,
+    // SETUP INSTALLS THE PROGRAM NOW, so a row saying it cannot be found names setup, the way this reader
+    // can run it: `packaged` or `checkout`.
+    setupRoute: installRoute(),
   };
 }
 
