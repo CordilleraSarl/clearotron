@@ -277,7 +277,7 @@ export function runRequirements(env = {}, { registers = [], engines = {}, defaul
     if (!out.slice(billingRows).some((r) => r.blocking && !r.present)) {
       try { resolveAuthMode({ engineName: engineId, env }); } catch (e) {
         if (e?.billingRefusal)
-          Object.assign(billingRow, { blocking: true, present: false, at: ORDER, why: `set so that the engine refuses every search before spending: ${e.message}` });
+          Object.assign(billingRow, { blocking: true, present: false, at: ORDER, why: `every search is refused before spending, over how this machine is set to pay: ${e.message}` });
       }
     }
   }

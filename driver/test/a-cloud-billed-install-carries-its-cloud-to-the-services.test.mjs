@@ -312,6 +312,19 @@ test("start's guard reads the file its merge leaves, and names every run setting
     const again = after(first(cloud(c)), cloud(c));
     assert.deepEqual([again.differ, missingRequirements(again.reads, T).atOrder.map((r) => r.name)], [[], []], c);
   }
+  // CONTROL: A HEALTHY INSTALL WHOSE SETTINGS LIVE IN THE UNITS' FILE. Start is told to send an operator to that
+  // file, so a start from a shell holding only the pool, the engine and how it pays sees the register key, the
+  // program's path and the research key there alone. None of that is a disagreement, and a switch written `true`
+  // here and `1` there is the same switch.
+  const bare = { CLEAROTRON_REPORTS_DIR: BASE.CLEAROTRON_REPORTS_DIR, CLEAROTRON_AI: BASE.CLEAROTRON_AI };
+  for (const [label, file, config] of [
+    ["subscription", first({ ...BASE, CLEAROTRON_AI_BILLING: "subscription" }), bare],
+    ["Microsoft", first(cloud("foundry")), { ...bare, CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_FOUNDRY: "true" }],
+  ]) {
+    const healthy = after(file, config);
+    assert.equal(healthy.reads[REG.credentials[0]], "fixture-credential", `${label}: the floor: the file holds what the shell does not`);
+    assert.deepEqual(healthy.differ, [], `${label}: a working install is warned about its own settings`);
+  }
   // NAMES ONLY: what start prints is this list, and it carries no value.
   for (const f of [empty, twice, gateway, subscription, rot]) for (const n of f.differ) assert.match(n, /^[A-Z][A-Z0-9_]*$/);
   // AND START PRINTS IT. Read from its source, as the wiring arms in the background-install file read it.

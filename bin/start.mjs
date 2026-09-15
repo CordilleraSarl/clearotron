@@ -85,6 +85,7 @@ import { writeSecretFile } from "../shared/secret-file.mjs";   // one atomic wri
 // tables are handed in rather than imported by it, because the register table lives in a CLI entry and
 // the driver must not point at `bin/`.
 import { runRequiredNames, missingRequirements, CLOUD_ROUTES } from "../driver/run-requirements.mjs";
+import { CLOUD_SWITCH, cloudsSwitchedOn } from "../driver/engine/auth.mjs";   // a switch compared the way the program reads it: on or off
 import { ENGINE_BINARIES, DEFAULT_ENGINE_ID as RUN_DEFAULT_ENGINE, resolveEngineProgram } from "../driver/driver.config.mjs";
 import { unitEnvironment, unitValue } from "../driver/unit-environment.mjs";   // the PATH the worker unit will run with, read the way doctor reads it
 
@@ -204,15 +205,32 @@ export function homeEnvUpdate(homeText, union) {
  * services do, and a start that rewrote it from this command's configuration would undo that edit. What
  * was wrong was the silence. A machine moved from one cloud to another, or holding a rotated key, started
  * again and reported the file complete while the services kept the old account.
- * `differ` names every run setting on which the two disagree (the names both configurations ask for, and
- * the settings that pick a cloud, set on either side), so start can say which. Names only, never a value.
+ * `differ` names the run settings on which the two disagree, so start can say which. Names only, never a
+ * value.
+ *
+ * WHICH DISAGREEMENTS, BY THE KIND OF SETTING, and never by which side holds the value. A healthy install
+ * can keep its register key, its engine's path and its research key in the units' file alone, because
+ * that file is where start tells an operator to change what the services use; this command's shell then
+ * holds none of them, and naming them on every start would warn about a working install. So a setting
+ * counts only when this command holds a value the file contradicts: a rotated key, or a line kept empty.
+ * The billing word and the settings that pick a cloud are the exception, and count in either direction,
+ * because the file holding one this command does not is exactly the machine billing an account nobody
+ * chose any more. They are compared as the program reads them: an unset billing word is the subscription,
+ * and a switch is on or off, so `1` beside `true` is not a difference.
  */
 export function unitsFileAfterStart(homeText, union, { config = {}, tables = {} } = {}) {
   const merged = homeEnvUpdate(homeText, union);
   const reads = parseEnvFile(merged.text);
   const ours = (k) => String(union[k] ?? config[k] ?? "").trim();
+  const theirs = (k) => String(reads[k] ?? "").trim();
+  const words = new Set(Object.values(tables.engines ?? {}).map((e) => e?.authEnv).filter(Boolean));
+  const switches = Object.values(CLOUD_SWITCH);
+  const as = (k, v) => words.has(k) ? (v.toLowerCase() || "subscription")
+    : switches.includes(k) ? cloudsSwitchedOn({ [k]: v }).length > 0 : v;
+  const eitherWay = (k) => words.has(k) || CLOUD_ROUTES.includes(k);
   const names = new Set([...runRequiredNames(config, tables), ...runRequiredNames(reads, tables), ...CLOUD_ROUTES]);
-  const differ = [...names].filter((k) => !LAUNCHER_MINTED.includes(k) && ours(k) !== String(reads[k] ?? "").trim());
+  const differ = [...names].filter((k) => !LAUNCHER_MINTED.includes(k)
+    && (eitherWay(k) ? as(k, ours(k)) !== as(k, theirs(k)) : ours(k) !== "" && ours(k) !== theirs(k)));
   return { merged, reads, differ };
 }
 
