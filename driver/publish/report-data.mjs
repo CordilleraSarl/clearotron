@@ -90,8 +90,8 @@ export function clearanceReportData({
     issued: issued || null,
     // The engine build that produced this report — the join from a flagged finding to a diff.
     engineCommit: engineCommit || null,
-    // The models that served the run, as the engine reported them, in first-use order (tokens.mjs
-    // servedModels). null when nothing was read, never the tier a stage asked for.
+    // The models that served the run, in first-use order, as tokens.mjs servedModels names them for a
+    // client: a deployment's own name never, its tier instead. null when nothing was read.
     servedModels: Array.isArray(servedModels) ? servedModels : null,
     url: url || null,
     auditFile: auditFile || null,

@@ -1544,7 +1544,7 @@ export function renderKnockoutHtml(findings, framework, {
   // renders the same plain "Privileged & Confidential" this template always printed — so the ~15 unit
   // fixtures and both render-check scripts, none of which pass one, are unchanged by its arrival.
   delivery = null,
-  // The models that served the batch, as the engine reported them (tokens.mjs servedModels): the scope
+  // The models that served the batch, as tokens.mjs servedModels names them for a client: the scope
   // section's closing line. Defaults to null, so a fixture or an archived run that passes none renders
   // as it always did.
   servedModels = null,
@@ -1761,8 +1761,8 @@ export function knockoutReportData(findings, framework, { runId, codename, overa
     issued: issued || null,
     url: url || null,
     auditFile: auditFile || null,
-    // The models that served the run, as the engine reported them, in first-use order (tokens.mjs
-    // servedModels). null when nothing was read, never the tier a stage asked for.
+    // The models that served the run, in first-use order, as tokens.mjs servedModels names them for a
+    // client: a deployment's own name never, its tier instead. null when nothing was read.
     servedModels: Array.isArray(servedModels) ? servedModels : null,
     level: {
       searchLevel: identity?.level ?? null,
