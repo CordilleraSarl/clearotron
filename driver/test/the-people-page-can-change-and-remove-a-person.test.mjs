@@ -196,6 +196,33 @@ test("an installation that cannot revoke at all says so rather than implying it 
   assert.match(r.json.keys.note, /cannot revoke/);
 });
 
+test("a whole email domain is a row like any other, through both routes", async () => {
+  // `*@domain` admits everybody with an address there. It is not a person, and the product has always
+  // drawn it in the same list — so the question is whether the two new routes treat it as one, or trip
+  // over a key that is not an address. Driven rather than reasoned about, because the editor matches by
+  // lowercased string and a pattern is a string that looks like one thing and means another.
+  const start = FILE();
+  start.tenants.anthropic.users["*@anthropic.example"] = "*";
+  start.tenants.cordillera.users["*@anthropic.example"] = ["clawdi"];
+  start.people["*@anthropic.example"] = { run: true, manage: false };
+  const { state, post } = on(start);
+  const DOMAIN = "*@anthropic.example";
+
+  const narrowed = await post("change", KRZYS, { email: DOMAIN, permissions: { run: false, manage: false },
+    access: [{ kind: "organisation", key: "anthropic" }] });
+  assert.equal(narrowed.status, 200, JSON.stringify(narrowed.json));
+  assert.deepEqual(pointsFor(state.grants, DOMAIN), ["anthropic/*"], "a domain row could not be narrowed");
+  assert.deepEqual(state.grants.people[DOMAIN], { run: false, manage: false });
+
+  const gone = await post("remove", KRZYS, { email: DOMAIN });
+  assert.equal(gone.status, 200, JSON.stringify(gone.json));
+  assert.equal(gone.json.removed, "install");
+  assert.deepEqual(pointsFor(state.grants, DOMAIN), []);
+  assert.equal(state.grants.people[DOMAIN], undefined);
+  // And nobody else went with them.
+  assert.deepEqual(pointsFor(state.grants, DANA), ["anthropic/*", "cordillera/clawdi"]);
+});
+
 test("somebody who is not on the guest list is a not-found, not an empty success", async () => {
   const { state, post } = on();
   for (const what of ["change", "remove"]) {

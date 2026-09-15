@@ -179,6 +179,10 @@ function Form({ ctx, person, view }: {
   // installation issued can still be called back. Where it cannot, the sentence says so BEFORE the
   // press — a reader finding that out in the answer has already acted on the other sentence.
   const keyStaysLive = (person.keys ?? 0) > 0 && view.keysRevocable !== true
+  // A WHOLE EMAIL DOMAIN IS A ROW LIKE ANY OTHER, and it is changed and removed like one — but the
+  // confirmation must not read as though one person is losing access. `*@example.com` admits everybody
+  // with an address there, and a reader who skims the address sees a person's name shape.
+  const domain = person.email.startsWith('*@') ? person.email.slice(2) : null
 
   return (
     <div className="screen">
@@ -282,6 +286,7 @@ function Form({ ctx, person, view }: {
                   {whole
                     ? 'To stop them reaching your sign-in page, take them off your login system too.'
                     : 'They keep the access you cannot see.'}
+                  {domain ? <> <b>This takes access away from everyone with an address at <span data-anon="mark">{domain}</span>.</b></> : null}
                 </p>
               </div>
               <div style={{ display: 'flex', gap: 8 }}>
@@ -298,7 +303,9 @@ function Form({ ctx, person, view }: {
             <>
               <button type="button" className="pill" style={{ cursor: 'pointer', fontSize: 12 }}
                 disabled={busy} onClick={() => setConfirming(true)}>
-                {whole ? 'Remove from Clearotron' : `Remove from ${[...held.orgs].map(orgName).join(', ') || 'here'}`}
+                {whole
+                  ? domain ? `Remove everyone at ${domain}` : 'Remove from Clearotron'
+                  : `Remove from ${[...held.orgs].map(orgName).join(', ') || 'here'}`}
               </button>
               {whole ? null : (
                 <p style={{ margin: 0, fontSize: 12.5, color: 'var(--text-faint)' }}>They keep the access you cannot see.</p>

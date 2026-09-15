@@ -141,6 +141,10 @@ const HOSTED_PEOPLE = () => ({ note: '', unknownAccounts: [], grantsFile: null, 
   // a considered "view only" for as long as the page has existed. Nothing here would have caught it
   // either, because the fixture had nobody of this shape.
   { email: 'reach@example.test', permissions: { run: false, manage: false }, access: [{ kind: 'company', key: KEY2, name: NAME2, org: 'org-b' }], dangling: [], listed: false, covered: true, keys: 0 },
+  // A WHOLE EMAIL DOMAIN. It is a row like any other and is changed and removed like one, but the
+  // confirmation must not read as though one person is losing access — a reader skimming the address
+  // sees a name shape. Here to drive that sentence rather than to reason about it.
+  { email: '*@example.test', permissions: { run: true, manage: false }, access: [{ kind: 'organisation', key: 'org-a', name: 'Apmxc Group' }], dangling: [], listed: true, covered: true, keys: 0 },
 ] })
 const LOCAL_PEOPLE = { note: '', unknownAccounts: [], grantsFile: null, canAdd: false, localSignIn: true, keysRevocable: false, people: [
   { email: 'lawyer@cordillera.test', permissions: { run: true, manage: true }, access: [{ kind: 'everything' }], dangling: [], listed: true, covered: true, keys: 0 },
@@ -559,6 +563,28 @@ ${HELPERS}
 })()
 `
 
+/** The confirmation for a WHOLE DOMAIN, which is not one person losing access. */
+const DOMAIN_SCRIPT = `
+(async () => {
+${HELPERS}
+  const out = {};
+  try {
+    await goto('/portal/people');
+    await mustSettle(() => document.querySelector('table.data tbody tr td'), 8000, 'People never drew its list');
+    const row = [...document.querySelectorAll('table.data tbody tr')].find((r) => r.innerText.indexOf('*@example.test') >= 0);
+    if (!row) { out.fatal = 'the domain row is not on the page'; return out; }
+    row.querySelector('button.pill').click();
+    await mustSettle(() => /Modify access/.test(txt()), 8000, 'Modify did not open for the domain row');
+    out.removeLabel = (maybeByText('button.pill', /^Remove/) || {}).innerText || null;
+    findByText('button.pill', /^Remove/).click();
+    await mustSettle(() => /Confirm/.test(txt()), 8000, 'Remove did not ask');
+    const loud = [...document.querySelectorAll('.notice:not(.quiet) p')];
+    out.said = loud.length ? loud[loud.length - 1].innerText : null;
+  } catch (e) { out.fatal = String((e && e.message) || e); }
+  return out;
+})()
+`
+
 /** The view-only person: what the rail offers, and whether the two gated pages exist for them at all. */
 const READER_SCRIPT = `
 (async () => {
@@ -799,6 +825,9 @@ if (shotsDir) {
   const data = shot.result?.result?.data ?? shot.result?.data
   if (data) writeFileSync(join(shotsDir, 'people-remove-confirm.png'), Buffer.from(data, 'base64'))
 }
+await reload()
+const domainRow = await value(DOMAIN_SCRIPT)
+
 keysRevocable = false
 await reload()
 const modifyNoRevoke = await value(MODIFY_SCRIPT)
@@ -920,7 +949,7 @@ for (const [who, out] of [['client', asClient], ['multi-account client', asMulti
 if (!people || people.fatal) {
   fail.push(`people: ${people?.fatal ?? 'the driver returned nothing'}`)
 } else {
-  ok(people.rows.length === 4, `People should list the four people it was sent — it drew ${people.rows.length} rows`)
+  ok(people.rows.length === 5, `People should list the five rows it was sent — it drew ${people.rows.length}`)
   ok(people.rows.some((r) => r[1] === 'Runs clearances · Manages' && /Everything/.test(r[2] ?? '')),
     `no row reads both permissions with access to everything: ${JSON.stringify(people.rows)}`)
   ok(people.rows.some((r) => r[1] === 'View reports'), `the view-only person is not described as such: ${JSON.stringify(people.rows)}`)
@@ -973,6 +1002,15 @@ if (!confirm || confirm.fatal) {
   ok(/straight away/.test(confirm.said ?? ''), `the confirmation does not say when: ${JSON.stringify(confirm.said)}`)
   ok(/through their AI/.test(confirm.said ?? ''), `the confirmation does not say the assistant loses it too: ${JSON.stringify(confirm.said)}`)
   ok(/login system/.test(confirm.said ?? ''), `the confirmation does not say what this product cannot do: ${JSON.stringify(confirm.said)}`)
+}
+
+if (!domainRow || domainRow.fatal) {
+  ok(false, `the domain row's confirmation could not be read: ${domainRow?.fatal ?? 'no answer'}`)
+} else {
+  ok(/everyone at example\.test/.test(domainRow.removeLabel ?? ''),
+    `the button for a whole domain reads as one person's removal: ${JSON.stringify(domainRow.removeLabel)}`)
+  ok(/everyone with an address at/.test(domainRow.said ?? ''),
+    `the confirmation does not say a domain takes access from everyone there: ${JSON.stringify(domainRow.said)}`)
 }
 
 // THE OTHER BRANCH OF THAT SENTENCE. The same press, on an installation whose connector was started
