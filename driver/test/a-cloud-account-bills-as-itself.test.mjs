@@ -17,7 +17,9 @@
 //   - providerOf reads the program's own provider word, and names none when the models disagree;
 //   - a real stage turn under cloud stamps the mode, the bill, the cloud and the reported provider on its
 //     row and on the run log, and the CONTROL turn under subscription stamps no cloud;
-//   - the jx runner and its ledger stamp carry the cloud too;
+//   - the native-language runner's own turn carries the cloud, and so does the record those steps write:
+//     driven through the lane's real call (runJxTurn) into the ledger stamp, success and degrade alike, with
+//     a subscription CONTROL that records no cloud;
 //   - the config inventory records each cloud refusal as itself, never as a missing API key;
 //   - the probe refuses a cloud mode with no cloud switched on before it spends a turn.
 //
@@ -41,6 +43,7 @@ const { spawnEnv, providerOf } = await import("../engine/anthropic-agent.mjs");
 const { runStage } = await import("../gateway.mjs");
 const { makeJxTurnRunner } = await import("../engine/jx-turn.mjs");
 const { jxBillingStamp } = await import("../jx-lanes.mjs");
+const { runJxTurn } = await import("../../providers/jx/src/turn-envelope.mjs");
 const { engineInventory } = await import("../config-inventory.mjs");
 const { probeEngineTurn, classifyProbe } = await import("../engine/probe.mjs");
 
@@ -192,7 +195,10 @@ test("the CONTROL: the same turn under subscription stamps no cloud, and a progr
   assert.equal(spine.cloud, null);
 });
 
-test("the jx runner and its ledger stamp carry the cloud as well", async () => {
+test("the native-language runner's own turn carries the cloud, and the stamp reads it from a turn handed to it", async () => {
+  // This holds the runner and the stamp each on their own. It hands the stamp the runner's RAW turn, which
+  // no record is written from, so on its own it cannot see a field dropped between the two; the arm below
+  // drives the call the records are actually written from.
   const run = await makeJxTurnRunner({
     env: { CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_FOUNDRY: "1" },
     runTurn: async () => ({ code: 0, killed: false, json: { status: "ok", result: { payloads: [{ text: "ok" }] } }, usage: null, modelWire: "claude-opus-5" }),
@@ -206,6 +212,45 @@ test("the jx runner and its ledger stamp carry the cloud as well", async () => {
   assert.deepEqual(jxBillingStamp("engine", t), { engine: "anthropic", authMode: "cloud", cloud: "foundry" });
   // CONTROL: a turn no provider served says so, and names no cloud.
   assert.deepEqual(jxBillingStamp("fixture", t), { engine: "not-provider-billed", authMode: "not-provider-billed", cloud: null });
+});
+
+/**
+ * One native-language call the way a lane makes it: the runner bound to `env`, then the lane's own call
+ * (runJxTurn), whose return is what every native-language record is stamped from. `text` is what the
+ * program answered; prose is an unreadable answer, which the lane records as a degrade.
+ */
+async function nativeLanguageCall(env, text) {
+  const run = await makeJxTurnRunner({ env, runTurn: async () => ({
+    code: 0, killed: false, signals: {}, usage: { input: 5, output: 7, cacheRead: 0, cacheWrite: 0, total: 12 },
+    json: { status: "ok", stopReason: "end_turn", result: { payloads: [{ text }] } }, modelWire: "claude-haiku-4-5-20251001" }) });
+  assert.equal(run.error, undefined, run.error);
+  return runJxTurn({
+    body: { messages: [{ content: "List the candidates." }], tools: [{ name: "emit_candidates", input_schema: { type: "object" } }] },
+    turn: run.turn, kind: "jx-completions", started: Date.now(), truncatedCause: "truncated",
+    parse: (envelope) => ({ candidates: envelope?.content?.[0]?.input?.candidates ?? [] }),
+  });
+}
+
+test("a native-language record names the cloud that paid, on an answer and on a degrade", async () => {
+  // Measured before this arm, 2026-09-14: the same run's main steps recorded `cloud: "foundry"` and every
+  // native-language record `cloud: null`, because the lane's call dropped the field the runner handed it.
+  const env = { CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_FOUNDRY: "1" };
+  const answered = await nativeLanguageCall(env, '{"candidates":[]}');
+  assert.equal(answered.ok, true, JSON.stringify(answered));
+  assert.equal(answered.cloud, "foundry", "the lane's call hands on the cloud the runner named");
+  assert.deepEqual(jxBillingStamp("engine", answered), { engine: "anthropic", authMode: "cloud", cloud: "foundry" });
+  const degraded = await nativeLanguageCall(env, "I could not find any.");
+  assert.equal(degraded.ok, false, "prose is not an answer object");
+  assert.deepEqual(jxBillingStamp("engine", degraded), { engine: "anthropic", authMode: "cloud", cloud: "foundry" },
+    "a degrade still spent the cloud's tokens, so its record names the cloud too");
+});
+
+test("the CONTROL: a native-language record under subscription names no cloud", async () => {
+  const r = await nativeLanguageCall({ CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_AI_BILLING: "subscription" }, '{"candidates":[]}');
+  assert.equal(r.ok, true, JSON.stringify(r));
+  assert.ok("cloud" in r, "written unconditionally, so 'no cloud' reads differently from 'not recorded'");
+  assert.equal(r.cloud, null);
+  assert.deepEqual(jxBillingStamp("engine", r), { engine: "anthropic", authMode: "subscription", cloud: null });
 });
 
 test("the config inventory records each cloud refusal as itself, never as a missing API key", () => {
