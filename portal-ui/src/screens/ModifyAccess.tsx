@@ -175,10 +175,19 @@ function Form({ ctx, person, view }: {
   const loses = person.access.length
     ? person.access.map((a) => (a.kind === 'everything' ? 'everything on this Clearotron' : a.name ?? a.key))
     : []
-  // "Straight away, here and through their AI" is only true of the assistant while a key this
-  // installation issued can still be called back. Where it cannot, the sentence says so BEFORE the
-  // press — a reader finding that out in the answer has already acted on the other sentence.
-  const keyStaysLive = (person.keys ?? 0) > 0 && view.keysRevocable !== true
+  // WHAT THIS PAGE CAN VOUCH FOR, AND WHAT IT CANNOT.
+  //
+  // Taking somebody off the access record ends their assistant's session on its next request, because
+  // the connector re-reads that record — so "through their AI" is simply true for the great majority of
+  // people, who hold no issued key at all.
+  //
+  // A key is the part this page cannot promise about. The connector is a separate service with its own
+  // environment, and whether it loaded a revocation list is not a question the portal can answer from
+  // here: it can say whether a list is named FOR ITSELF, and no more. So a key holder gets one extra
+  // sentence either way — naming where to see whether the revocation took, or saying plainly that it
+  // cannot — rather than a promise made on a reading of somebody else's environment.
+  const holdsKey = (person.keys ?? 0) > 0
+  const keyStaysLive = holdsKey && view.keysRevocable !== true
   // A WHOLE EMAIL DOMAIN IS A ROW LIKE ANY OTHER, and it is changed and removed like one — but the
   // confirmation must not read as though one person is losing access. `*@example.com` admits everybody
   // with an address there, and a reader who skims the address sees a person's name shape.
@@ -281,8 +290,11 @@ function Form({ ctx, person, view }: {
                     <b>loses {loses.join(' and ')} straight away,</b>
                   )}{' '}
                   {keyStaysLive
-                    ? 'here. Their AI was issued a key this Clearotron cannot withdraw — the connector was started without a revocation list — so that key keeps working until it expires. clearotron doctor reports it.'
+                    ? 'here. Their AI was issued a key this Clearotron cannot withdraw — it was started without a revocation list — so that key keeps working until it expires. clearotron doctor reports it.'
                     : 'here and through their AI.'}{' '}
+                  {holdsKey && !keyStaysLive
+                    ? 'Their AI\u2019s key is withdrawn at the same time; clearotron doctor says whether the connector has picked it up. '
+                    : ''}
                   {whole
                     ? 'To stop them reaching your sign-in page, take them off your login system too.'
                     : 'They keep the access you cannot see.'}

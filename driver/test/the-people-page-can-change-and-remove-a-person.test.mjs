@@ -18,7 +18,10 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { makePortalService } from "../portal-service.mjs";
+import { mkdtempSync, readFileSync, existsSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { makePortalService, makeConnectorKeyRevoker } from "../portal-service.mjs";
 
 const FILE = () => ({
   tenants: {
@@ -172,6 +175,74 @@ test("a bounded removal takes the organisation and NOT the person — and revoke
   // THE KEY STAYS. Dana is still on this install, and the key is how they reach what is left.
   assert.deepEqual(state.denylist, []);
   assert.equal(r.json.keys.checked, false);
+});
+
+test("THE REAL SEAM writes the revocation list and leaves the record standing", async () => {
+  // The seam the portal is built with, driven against a directory of its own rather than a stand-in.
+  // This is the arm that matters: the protection is a step FILTER and a throwing seam inside that
+  // function, and a test that supplies its own revoker proves nothing about either.
+  const home = mkdtempSync(join(tmpdir(), "revoke-home-"));
+  const list = join(home, "denylist");
+  const revoke = makeConnectorKeyRevoker({ env: { TRADEMARK_MCP_TOKEN_DENYLIST: list }, home });
+  const grants = FILE();
+  const r = await revoke({ email: DANA, grants });
+
+  assert.equal(r.lateArm, false, "the fixture names a list, so this is the armed path — the risky one");
+  assert.equal(r.revoked, 1);
+  assert.deepEqual(r.jtis, ["jti-dana-1"]);
+  assert.equal(existsSync(list), true, "the revocation list was not written");
+  assert.match(readFileSync(list, "utf8"), /jti-dana-1/, "the key id is not on the list");
+  // THE POINT. On a box where the portal names a list and the connector was started without one, this
+  // path reads as armed and a plan carrying its ledger step would strike the record of a key that still
+  // works — the only trace of it, gone.
+  assert.equal(r.recordKept, true, "the answer does not say the record was kept");
+  assert.ok(r.grants.connectKeys["jti-dana-1"], "the seam struck the record of a key it cannot confirm was revoked");
+  assert.ok(grants.connectKeys["jti-dana-1"], "and it mutated the grants it was handed");
+});
+
+test("the real seam says so, and writes nothing, where no revocation list is named", async () => {
+  const home = mkdtempSync(join(tmpdir(), "revoke-home-"));
+  const revoke = makeConnectorKeyRevoker({ env: {}, home });
+  const r = await revoke({ email: DANA, grants: FILE() });
+  assert.equal(r.lateArm, true, "a door with no list named must report that it cannot call the key back");
+  assert.equal(r.revoked, 0);
+  assert.ok(r.grants.connectKeys["jti-dana-1"], "the record of a key that was NOT revoked was struck");
+});
+
+test("a person with no key at all is not a revocation", async () => {
+  const home = mkdtempSync(join(tmpdir(), "revoke-home-"));
+  const revoke = makeConnectorKeyRevoker({ env: { TRADEMARK_MCP_TOKEN_DENYLIST: join(home, "denylist") }, home });
+  const r = await revoke({ email: "nobody@nowhere.example", grants: FILE() });
+  assert.equal(r.revoked, 0);
+  assert.deepEqual(r.jtis, []);
+  assert.ok((r.says ?? []).some((line) => /nothing to revoke/.test(line)), JSON.stringify(r.says));
+});
+
+test("the route keeps the record when its seam does", async () => {
+  // The portal cannot see the connector's environment. `disablePlan` decides `lateArm` from the
+  // environment it is handed, and on a box where the portal names a revocation list and the door was
+  // started without one it reads as armed — so a plan carrying a ledger step would strike the record of
+  // a key that still works, which is the one thing `client-door.mjs` states its ordering rule to
+  // prevent. This drives the real seam, not the arm's stand-in, to prove the ledger step never runs.
+  const { recordedKeysFor } = await import("../../shared/client-door.mjs");
+  const state = { grants: FILE(), struck: 0 };
+  const svc = makePortalService({
+    poolRoot: "/nonexistent", workspaceRoot: "/nonexistent", secret: "s",
+    grants: () => state.grants, writeGrants: async (g) => { state.grants = g; },
+    // The shape the boot seam has: it reports what it revoked and hands the grants back UNCHANGED.
+    revokeConnectorKeys: async ({ email, grants }) => {
+      const jtis = recordedKeysFor(grants, email).map((r) => r.jti);
+      return { grants, revoked: jtis.length, jtis, lateArm: false, recordKept: true };
+    },
+  });
+  const r = await svc.route("POST", "/portal/admin/people/remove", KRZYS, { email: DANA });
+  assert.equal(r.status, 200, JSON.stringify(r.json));
+  assert.equal(r.json.keys.revoked, 1, "the revocation did not happen");
+  assert.equal(r.json.keys.recordKept, true, "the answer does not say the record was kept");
+  assert.ok(state.grants.connectKeys["jti-dana-1"],
+    "the portal struck a key record, and it cannot know whether the list it wrote is the one that door reads");
+  assert.equal(state.grants.people[DANA], undefined, "the access record itself must still be gone");
+  assert.equal(state.struck, 0);
 });
 
 test("a door started with no revocation list says the keys stay live, and strikes no record", async () => {

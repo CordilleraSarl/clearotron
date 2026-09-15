@@ -1082,6 +1082,59 @@ function outcomeRow({ event = "request-refused", method, path, email = null, sta
   return row;
 }
 
+/**
+ * Revoking the connector keys a removed person holds — composed here, exported so it can be driven.
+ *
+ * It is the portal's half of an act `clearotron disconnect` also performs, through the same module, so
+ * one author decides what revoking means. What differs is WHERE each runs, and the difference decides
+ * what each may do: `disconnect` runs on the box beside the door, and this runs in a web request in a
+ * different service with a different environment.
+ */
+export function makeConnectorKeyRevoker({ env = process.env, home = null } = {}) {
+  return async ({ email, grants: g }) => {
+    const { recordedKeysFor, disablePlan, applyDisablePlan, denylistPathFor } = await import("../shared/client-door.mjs");
+    const { homedir } = await import("node:os");
+    const { existsSync, mkdirSync, writeFileSync, appendFileSync } = await import("node:fs");
+    const { join, dirname } = await import("node:path");
+    const base = home ?? homedir();
+    const recorded = recordedKeysFor(g, email);
+    const plan = disablePlan({ env, unitDir: join(base, ".config", "systemd", "user"), exists: existsSync,
+      identity: email, recorded, denylistPath: denylistPathFor(env, base) });
+    if (!plan.possible) return { grants: g, revoked: 0, jtis: [], lateArm: false, says: plan.says };
+    if (plan.lateArm) return { grants: g, revoked: 0, jtis: plan.jtis, lateArm: true, says: plan.says ?? [] };
+    // THE RECORD IS NEVER STRUCK FROM HERE, and the ledger step is dropped rather than no-opped.
+    //
+    // `disablePlan` decides `lateArm` from the environment it is handed, and the environment this
+    // process has is the PORTAL's. The connector is a different unit with its own `EnvironmentFile`, so
+    // a box where the portal names a revocation list and the door was started without one reads as
+    // `lateArm: false` here — and the plan would then write the list AND strike the record, for a key
+    // that still works. A record removed while its key works is the only trace of that key, gone: the
+    // failure `client-door.mjs` states its ordering rule to prevent.
+    //
+    // So this process does the half it can vouch for. Writing the list is safe in both configurations —
+    // it is the right act where the door reads it and a file nobody opens where it does not. Leaving the
+    // record is safe in both too: `connectKeyReport` already judges a record valid, expired or revoked,
+    // so a record of a revoked key is an accurate one, and `clearotron doctor` is where an operator sees
+    // which. `clearotron disconnect` runs on the box, beside the door, and still strikes.
+    //
+    // The seam THROWS rather than doing nothing, so that a future change putting the ledger step back
+    // fails here instead of quietly striking again.
+    const revokeOnly = { ...plan, steps: plan.steps.filter((step) => step.id === "revoke") };
+    applyDisablePlan(revokeOnly, {
+      appendDenylist: (path, jtis) => {
+        mkdirSync(dirname(path), { recursive: true });
+        if (!existsSync(path)) writeFileSync(path, "# Revoked key ids, one jti per line. Read on every key check.\n", { mode: 0o600 });
+        appendFileSync(path, jtis.map((j) => `${j}\n`).join(""));
+      },
+      strikeRecords: () => {
+        throw new Error("the portal must not strike a key record: it cannot see the connector's environment, "
+          + "so it cannot know whether the revocation list it just wrote is the one that door loaded");
+      },
+    });
+    return { grants: g, revoked: plan.jtis.length, jtis: plan.jtis, lateArm: false, recordKept: true };
+  };
+}
+
 export function makePortalService({
   poolRoot, workspaceRoot, recipesDir = undefined, secret,
   grants = null,
@@ -3072,6 +3125,9 @@ async function connectorDoorKind(url) {
           // door loaded a revocation list at start, or it did not and never will for the keys already
           // out. The variable's PRESENCE is the whole question — its value is a path, and this route
           // must not say where.
+          // WHETHER A REVOCATION LIST IS NAMED FOR THIS PROCESS AT ALL — which is not the same question
+          // as whether the connector loaded one, and the page's words are careful about the difference.
+          // The connector is a separate unit with its own environment; this answers only for here.
           const keysRevocable = Boolean(revokeConnectorKeys)
             && String(process.env.TRADEMARK_MCP_TOKEN_DENYLIST ?? "").trim() !== "";
           return { status: 200, json: accessView({ grants: grantsHere, viewer: principal, companies, grantsFile, localSignIn, keysRevocable }) };
@@ -4466,28 +4522,7 @@ const PORT = PORT_CHOICE.port;
   // belongs to an operator at a terminal, not to a web request rewriting the install's environment. So
   // a lateArm plan is NOT applied: nothing is written, and the answer says the keys stay live until they
   // expire. Striking the records instead would delete the only record of a working key.
-  const revokeConnectorKeys = async ({ email, grants: g }) => {
-    const { recordedKeysFor, removeRecordedKeys, disablePlan, applyDisablePlan, denylistPathFor } = await import("../shared/client-door.mjs");
-    const { homedir } = await import("node:os");
-    const { existsSync, mkdirSync, writeFileSync, appendFileSync } = await import("node:fs");
-    const { join, dirname } = await import("node:path");
-    const home = homedir();
-    const recorded = recordedKeysFor(g, email);
-    const plan = disablePlan({ env: process.env, unitDir: join(home, ".config", "systemd", "user"), exists: existsSync,
-      identity: email, recorded, denylistPath: denylistPathFor(process.env, home) });
-    if (!plan.possible) return { grants: g, revoked: 0, jtis: [], lateArm: false, says: plan.says };
-    if (plan.lateArm) return { grants: g, revoked: 0, jtis: plan.jtis, lateArm: true, says: plan.says ?? [] };
-    let next = g;
-    applyDisablePlan(plan, {
-      appendDenylist: (path, jtis) => {
-        mkdirSync(dirname(path), { recursive: true });
-        if (!existsSync(path)) writeFileSync(path, "# Revoked key ids, one jti per line. Read on every key check.\n", { mode: 0o600 });
-        appendFileSync(path, jtis.map((j) => `${j}\n`).join(""));
-      },
-      strikeRecords: (jtis) => { next = removeRecordedKeys(next, jtis); },
-    });
-    return { grants: next, revoked: plan.jtis.length, jtis: plan.jtis, lateArm: false };
-  };
+  const revokeConnectorKeys = makeConnectorKeyRevoker({ env: process.env });
 
   const { config } = await import("./driver.config.mjs");
   const { appendFileSync: append } = await import("node:fs");
