@@ -78,6 +78,8 @@
 // decides for itself which names are its own and a runner that decides separately are two opinions
 // about one list, and they drift in the direction where the second asks for less.
 
+import { BILLING_MODES, CLOUD_SWITCH, resolveAuthMode } from "./engine/auth.mjs";   // — the billing row asks the one resolver which ways an engine can be paid for
+
 /** The pool a report is written into. Named once; the supervisor already writes it. */
 export const POOL_ENV = "CLEAROTRON_REPORTS_DIR";
 /** The register selection, and the engine selection. */
@@ -92,6 +94,26 @@ export const START = "start";
 export const ORDER = "order";
 
 const val = (env, name) => String(env?.[name] ?? "").trim();
+
+// THE WAYS AN ENGINE CAN BE PAID FOR, AS THE BILLING ROW SAYS THEM. The row named all three for every engine,
+// and Codex refuses a cloud account (engine/auth.mjs, resolveAuthMode), so a Codex install was offered a way
+// to pay its run door refuses.
+const PAY_WORDS = Object.freeze({ subscription: "subscription", "api-key": "API key", cloud: "cloud account" });
+
+/**
+ * The billing words `engineId` can be paid by, in BILLING_MODES order: each one asked of the resolver, the
+ * one authority on it, with what that word needs set (the engine's key for `api-key`, a cloud's switch for
+ * `cloud`), so a word the resolver accepts only when its settings are present is not read as refused. An
+ * import of a leaf with no imports of its own, so this module stays pure.
+ */
+export function payWays(engineId, engine = {}) {
+  return BILLING_MODES.filter((mode) => {
+    const env = { [engine.authEnv ?? "CLEAROTRON_AI_BILLING"]: mode,
+      ...(mode === "api-key" && engine.apiKeyEnv ? { [engine.apiKeyEnv]: "set" } : {}),
+      ...(mode === "cloud" ? { [CLOUD_SWITCH.vertex]: "1" } : {}) };
+    try { resolveAuthMode({ engineName: engineId, env }); return true; } catch { return false; }
+  });
+}
 
 /**
  * Every environment name this box's configuration says a clearance needs, with the reason each one is
@@ -142,8 +164,12 @@ export function runRequirements(env = {}, { registers = [], engines = {}, defaul
       try { row.present = Boolean(resolveEngine(engineId, { env })?.resolved); } catch { /* not found is not present */ }
     }
   }
-  if (engine?.authEnv)
-    push(engine.authEnv, false, "how the engine is paid for — subscription, API key or cloud account; unset means the subscription, and the adapter refuses before spending if the key or cloud account it names is absent");
+  if (engine?.authEnv) {
+    const ways = payWays(engineId, engine);
+    const said = ways.map((m) => PAY_WORDS[m]);
+    push(engine.authEnv, false, `how the engine is paid for — ${said.length > 1 ? `${said.slice(0, -1).join(", ")} or ${said.at(-1)}` : said[0]}; `
+      + `unset means the subscription, and the adapter refuses before spending if the ${ways.includes("cloud") ? "key or cloud account" : "key"} it names is absent`);
+  }
 
   push(RESEARCH_ENV, false, "the three clearance searches carry the common-law grid and refuse at preflight without it; a Knockout search still runs and discloses the half it skipped");
 

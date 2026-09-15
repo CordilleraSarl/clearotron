@@ -41,8 +41,9 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { runRequirements, runRequiredNames, missingRequirements, orderTimeRefusal,
+import { runRequirements, runRequiredNames, missingRequirements, orderTimeRefusal, payWays,
   REGISTER_ENV, RESEARCH_ENV, POOL_ENV, START, ORDER } from "../run-requirements.mjs";
+import { resolveAuthMode } from "../engine/auth.mjs";
 // from the module that OWNS the table now, not through the wizard's re-export. The
 // arm should break if the data moves again, and reading it through `bin/` would hide that.
 import { PROVIDERS as REGISTER_TABLE } from "../../shared/register-selection.mjs";
@@ -181,15 +182,31 @@ test("a value that NARROWS the product never refuses a start — a Knockout box 
   assert.match(row.why, /Knockout/, "the reason must say which product still works, or it reads as a dead install");
 });
 
-test("the billing row names every way the engine can be paid for, and never refuses a start", () => {
+test("the billing row names only the ways the configured engine can be paid for, and never refuses a start", () => {
   // `clearotron start` prints this reason beside the setting when it is unset. It said "subscription or
-  // key" after a third mode, a cloud account, was added, and "sign-in" for what a key or a cloud needs.
+  // key" after a third mode, a cloud account, was added, and "sign-in" for what a key or a cloud needs;
+  // then it named the cloud account for every engine, and Codex refuses one at its run door.
+  const row = (engineId) => {
+    const name = ENGINE_BINARIES[engineId].authEnv;
+    const r = runRequirements({ ...SUPERVISOR, CLEAROTRON_AI: engineId, [name]: undefined }, T).find((x) => x.name === name);
+    assert.ok(r, `${engineId}: the requirements carry no ${name} row, so there is nothing to read`);
+    assert.equal(r.blocking, false, `${engineId}: an unset billing mode means the subscription, and must never refuse`);
+    assert.doesNotMatch(r.why, /subscription or key|sign-in/, r.why);
+    return r.why;
+  };
+  assert.equal(row("anthropic-agent"), "how the engine is paid for — subscription, API key or cloud account; unset means "
+    + "the subscription, and the adapter refuses before spending if the key or cloud account it names is absent");
+  assert.equal(row("openai-agent"), "how the engine is paid for — subscription or API key; unset means the subscription, "
+    + "and the adapter refuses before spending if the key it names is absent");
+  // THE WAYS ARE THE RESOLVER'S. Codex refuses a cloud account with its switch on, so it is not a way to pay
+  // Codex; Claude takes all three. The row reads these, rather than a list of its own.
+  assert.throws(() => resolveAuthMode({ engineName: "openai-agent", env: { CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_VERTEX: "1" } }),
+    /runs the Codex engine/);
+  assert.deepEqual(payWays("openai-agent", ENGINE_BINARIES["openai-agent"]), ["subscription", "api-key"]);
+  assert.deepEqual(payWays("anthropic-agent", ENGINE_BINARIES["anthropic-agent"]), ["subscription", "api-key", "cloud"]);
+  // CONTROL: with no engine named, the row is the default engine's.
   const name = ENGINE_BINARIES[DEFAULT_ENGINE_ID].authEnv;
-  const row = runRequirements({ ...SUPERVISOR, [name]: undefined }, T).find((r) => r.name === name);
-  assert.ok(row, `the requirements carry no ${name} row, so there is nothing to read`);
-  assert.equal(row.blocking, false, "an unset billing mode means the subscription, and must never refuse");
-  assert.match(row.why, /^how the engine is paid for — subscription, API key or cloud account; /);
-  assert.doesNotMatch(row.why, /subscription or key|sign-in/, row.why);
+  assert.equal(runRequirements({ ...SUPERVISOR, CLEAROTRON_AI: undefined, [name]: undefined }, T).find((x) => x.name === name).why, row(DEFAULT_ENGINE_ID));
 });
 
 test("the composer and the guard read ONE list, so the guard cannot pass on what the composer forgot", () => {
