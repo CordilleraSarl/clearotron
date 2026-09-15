@@ -7,3 +7,5 @@ New: Setup offers to install the reasoning program your engine uses. Before it a
 New: Setup asks which program does the reasoning, and shows the version it found on this machine or says setup can install it.
 
 New: Claude Code or the Codex CLI already on the machine is still used first. `clearotron update` keeps the installed one current, and `clearotron doctor` says which copy runs and its version.
+
+New: Outside Windows, in demo mode, `clearotron doctor` points to setup to install the reasoning program.
