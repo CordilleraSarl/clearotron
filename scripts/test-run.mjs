@@ -93,6 +93,24 @@ const PREFIX = "ct-testrun-";
 // inside its parent's root, or the parent's cleanup removes a live child's fixtures.
 const REAL_TMP = process.env.CT_TEST_TMP_BASE || tmpdir();
 
+// ── THE MACHINE'S OWN TEMP ROOT, WHICH IS NOT THE SAME QUESTION AS `REAL_TMP` ──────────────────────
+//
+// `REAL_TMP` answers "where does THIS run put its root", and a caller may redirect it — the runner's own
+// tests do, giving each case a sandbox base so they never read or write the real temp directory. That is
+// correct for rooting and wrong for CONTAINMENT: redirecting it also removed the machine's temp
+// directory from the containment list, and a nested run was then refused for being pointed at a sibling
+// temp root that is perfectly contained.
+//
+// IT ONLY EVER WORKED BY WAY OF THE LITERAL `/tmp`. In CI `TMPDIR` is unset, every root is under `/tmp`,
+// and the literal in `PLATFORM_TMP` below covered the sibling. On a box whose temp directory is anywhere
+// else — this one exports `TMPDIR=/mnt/datadisk1/tmp` — nothing in the list covered it, so ten arms that
+// drive the runner recursively failed here and passed in CI on the same commit. The guard was not
+// protecting a differently-rooted box at all; it was refusing it.
+//
+// So this is read ONCE, at the outermost run, before `TMPDIR` is rewritten, and passed down untouched.
+// A caller's sandbox base does not displace it, because it is not answering that caller's question.
+const MACHINE_TMP = String(process.env.CT_TEST_MACHINE_TMP ?? "").trim() || tmpdir();
+
 // A run killed with SIGKILL (or a machine that reboots) never reaches its own cleanup and leaves one
 // directory behind. One per killed run is a tractable number, but it should not accumulate forever, so
 // each run clears the abandoned roots of previous ones. Bounded three ways: the exact prefix we own, an
@@ -372,7 +390,7 @@ const DATA_PLANE_VARS = Object.freeze([
 // or /srv, never a temp filesystem.
 const PLATFORM_TMP = process.platform === "win32" ? [] : ["/tmp"];
 const CONTAINMENT_ROOTS = Object.freeze([...new Set(
-  [REAL_TMP, tmpdir(), ...PLATFORM_TMP].map((p) => resolve(p)),
+  [REAL_TMP, MACHINE_TMP, tmpdir(), ...PLATFORM_TMP].map((p) => resolve(p)),
 )]);
 const isContained = (value) => {
   const p = resolve(value);
@@ -689,6 +707,11 @@ child = spawn(argv[0], argv.slice(1), {
     // the one the top of this file reads before TMPDIR is rewritten, so the chain stays anchored to the
     // real temp directory however deep the nesting goes. A caller's own value wins, as everywhere else.
     CT_TEST_TMP_BASE: String(process.env.CT_TEST_TMP_BASE ?? "").trim() || REAL_TMP,
+    // AND THE MACHINE'S TEMP ROOT, carried down unchanged however deep the nesting goes. Unlike the line
+    // above it this one is NOT a caller's to redirect: a caller redirecting where a run roots itself is
+    // saying nothing about which filesystem locations count as temporary, and conflating the two is what
+    // made a correctly contained sibling read as somebody's live estate.
+    CT_TEST_MACHINE_TMP: MACHINE_TMP,
     TRADEMARK_MCP_AUDIT_LOG: String(process.env.TRADEMARK_MCP_AUDIT_LOG ?? "").trim()
       || join(root, "mcp-access.jsonl"),
     // AND THE PORTAL'S AUDIT LOG, for the same reason and by the same rule as the line above it.
