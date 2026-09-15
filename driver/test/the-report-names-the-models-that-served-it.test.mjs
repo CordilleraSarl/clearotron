@@ -6,7 +6,7 @@
 // every attempt row as `modelActual`, and a published run carries the distinct ids, in first-use order, on
 // meta.json and report-data.json and as one closing line of each report's scope section.
 //
-// What the arms hold:
+// What the tests hold:
 //   - servedModels reads `modelActual`, never the requested tier; first use decides the order across stage
 //     files; the run log and the driver's code-side rows are not turns; the CLI's `<synthetic>` label is
 //     not a model; null means nothing was read and [] means turns ran and named no model;
@@ -245,7 +245,7 @@ test("servedModels: first use decides the order across stage turns and native-la
   assert.deepEqual(servedModels(runDir), ["claude-opus-5", HAIKU, "claude-sonnet-5"]);
 });
 
-// The Claude adapter no longer hands on this label (see the stand-in arms below), but records written
+// The Claude adapter no longer hands on this label (see the stand-in tests below), but records written
 // before it refused the label carry it, and a step handed one by any other route must not list it.
 test("the CONTROL: a bracketed label on a native-language record is not listed as a model", async () => {
   const runDir = join(ROOT, "jx-synthetic");
@@ -326,7 +326,7 @@ for (const [name, title] of Object.entries(UNNAMED)) {
   test(title, async () => {
     const runDir = join(ROOT, `jx-door-${name.replace(/\W+/g, "-")}`);
     const row = await readingThroughTheDoor(runDir, TURNS[name]);
-    assert.equal(row.engine, "anthropic", `the call must have reached the program for this arm to mean anything: ${JSON.stringify(row)}`);
+    assert.equal(row.engine, "anthropic", `the call must have reached the program for this test to mean anything: ${JSON.stringify(row)}`);
     assert.equal("model" in row, false, "no model is named, neither the label nor the session's configured one");
     assert.equal(row.modelActual, null, "the record says a turn ran and named no model");
     assert.deepEqual(servedModels(runDir), [], "a turn ran and named no model, which is not the same as nothing read");
@@ -355,7 +355,7 @@ test("the CONTROLS: a native-language call no provider served is not a turn, so 
 
   const refused = join(ROOT, "jx-door-refused");
   const row = await readingThroughTheDoor(refused, TURNS.served, "no-such-engine");
-  assert.equal(row.engine, "not-provider-billed", `the engine door must refuse for this arm to mean anything: ${JSON.stringify(row)}`);
+  assert.equal(row.engine, "not-provider-billed", `the engine door must refuse for this test to mean anything: ${JSON.stringify(row)}`);
   assert.equal("modelActual" in row, false, "a refused configuration dispatched nothing");
   assert.equal(servedModels(refused), null);
   assert.equal(rollupTokens(refused).total.attempts, 0);
@@ -421,7 +421,7 @@ test("servedModels: a company's deployment name reads as Claude and the tier its
 test("servedModels: a native-language turn served under a deployment name reads as Claude and the tier those steps ask for", async () => {
   const runDir = join(ROOT, "jx-door-deployed");
   const row = await readingThroughTheDoor(runDir, SERVED_BY_DEPLOYMENT);
-  assert.equal(row.engine, "anthropic", `the call must have reached the program for this arm to mean anything: ${JSON.stringify(row)}`);
+  assert.equal(row.engine, "anthropic", `the call must have reached the program for this test to mean anything: ${JSON.stringify(row)}`);
   assert.equal(row.modelActual, DEPLOYED, "the record keeps what the program reported; only what is published is mapped");
   assert.deepEqual(servedModels(runDir), ["Haiku"]);
 });
@@ -443,6 +443,27 @@ test("the CONTROL: a Codex run's ids read as reported", () => {
     stageRow(2, "haiku", "gpt-5.6-sol", "openai-agent"),
   ] });
   assert.deepEqual(servedModels(runDir), ["gpt-5.6-sol"]);
+});
+
+test("servedModels: whose turn it was is read from the vendor of its engine, and an engine nobody places is left off", () => {
+  // Every engine the closed vendor table places under Anthropic maps a deployment name to its tier, and an
+  // engine it does not name is left off rather than printed as reported.
+  const read = (engine, served, tier = "opus") => servedModels(runWith(`vendor-${engine}-${served}`, { "x.jsonl": [stageRow(1, tier, served, engine)] }));
+  assert.deepEqual(read("anthropic-direct", "acme-gold"), ["Opus"], "an Anthropic engine printed a deployment name");
+  assert.deepEqual(read("anthropic-completions", "acme-gold", "sonnet"), ["Sonnet"], "an Anthropic engine printed a deployment name");
+  assert.deepEqual(read("claude-agent-v2", "acme-gold"), [], "an engine no table places printed its id as reported");
+  // CONTROLS: an OpenAI engine's id is its model's own name, and a Claude id is one on any engine.
+  assert.deepEqual(read("openai", "gpt-5.6-luna"), ["gpt-5.6-luna"]);
+  assert.deepEqual(read("claude-agent-v2", "claude-opus-5"), ["claude-opus-5"]);
+});
+
+test("servedModels: a row with no engine stamp is read as Claude's only when its id could be Claude's", () => {
+  const unstamped = (tag, served) => servedModels(runWith(`unstamped-${tag}`, { "x.jsonl": [
+    { ts: at(1), model: "opus", modelActual: served }] }));
+  assert.deepEqual(unstamped("gpt", "gpt-5.6-sol"), ["gpt-5.6-sol"], "another vendor's id was printed as a Claude tier");
+  assert.deepEqual(unstamped("o-series", "o4-mini"), ["o4-mini"], "another vendor's id was printed as a Claude tier");
+  // CONTROL: a deployment name on an unstamped row still reads as the tier, never as the name.
+  assert.deepEqual(unstamped("deployment", "acme-gold"), ["Opus"]);
 });
 
 test("the CONTROL: a deployment whose tier cannot be read is left off the list, never printed", () => {
@@ -473,9 +494,12 @@ const CLAUDE_IDS = ["claude-opus-5", "claude-sonnet-5", "claude-haiku-4-5-202510
   "claude-3-opus-20240229", "claude-3-5-haiku-20241022", "claude-opus-5[1m]"];
 // Names that only begin like one, each with the tier its turn asked for. A `latest` alias is among them:
 // it is a pointer the provider moves, never the name of the model a turn reports.
+// A family with no version names no model: it is what an operator types for a deployment of that tier, so
+// a Sonnet deployment's name on a turn that asked for Haiku reads as Haiku.
 const NOT_CLAUDE_IDS = [["claude-acme-prod", "opus"], ["Claude-Acme-EU", "sonnet"], ["claude-opus-4-1-acmelegal", "opus"],
   ["anthropic.claude-acme-private-v1:0", "haiku"], ["claude-opus-5[acme]", "opus"],
-  ["claude-sonnet-4-5@latest", "sonnet"], ["claude-3-7-sonnet-latest", "sonnet"]];
+  ["claude-sonnet-4-5@latest", "sonnet"], ["claude-3-7-sonnet-latest", "sonnet"],
+  ["claude-opus", "opus"], ["claude-sonnet", "haiku"], ["claude-fable", "sonnet"]];
 // Each table is read whole and compared once, so a failure shows every entry, not only the first.
 const readEach = (tag, pairs) => Object.fromEntries(pairs.map(([id, tier], i) =>
   [id, servedModels(runWith(`${tag}-${i}`, { "x.jsonl": [stageRow(1, tier, id)] }))]));
@@ -542,13 +566,14 @@ for (const product of ["clearance", "knockout"]) {
   });
 
   test(`a ${product} run mixing a Claude id, a deployment name and a native-language step publishes each tier once`, async () => {
+    // The stage's deployment serves Sonnet, so Haiku can come only from the native-language step's record.
     const { meta, data, html } = await publish(`mixed-deployed-${product}`, product, [
       stageRow(1, "opus", "claude-opus-5"),
-      stageRow(2, "haiku", "acme-bronze-1"),
+      stageRow(2, "sonnet", "acme-silver-2"),
     ], (runDir) => readingThroughTheDoor(runDir, SERVED_BY_DEPLOYMENT));
-    assert.deepEqual(meta.servedModels, ["claude-opus-5", "Haiku"], "meta.json");
-    assert.deepEqual(data.servedModels, ["claude-opus-5", "Haiku"], "report-data.json");
-    assert.match(scopeOf(html), /Prepared with Claude: claude-opus-5, Haiku\./, "the scope section's closing line");
+    assert.deepEqual(meta.servedModels, ["claude-opus-5", "Sonnet", "Haiku"], "meta.json");
+    assert.deepEqual(data.servedModels, ["claude-opus-5", "Sonnet", "Haiku"], "report-data.json");
+    assert.match(scopeOf(html), /Prepared with Claude: claude-opus-5, Sonnet, Haiku\./, "the scope section's closing line");
     for (const [where, text] of [["meta.json", JSON.stringify(meta)], ["report-data.json", JSON.stringify(data)], ["the page", html]])
       assert.doesNotMatch(text, COMPANY, `${where} carries no deployment name`);
   });
