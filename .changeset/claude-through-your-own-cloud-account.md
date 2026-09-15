@@ -14,6 +14,8 @@ New: `clearotron start --background` carries the cloud account's settings to the
 
 New: `clearotron doctor` says how the background services pay, and warns when your own configuration sets a different way of paying.
 
+New: Global config's Engine row names the cloud account that pays, and turns red, naming the setting to change, when searches would be refused.
+
 Fixed: An install that pays with an API key and runs as background services now hands the services its key. Before, every search stopped after it was ordered.
 
 Fixed: A subscription install signed in with a long-lived token from `claude setup-token` now hands that token to its background services.

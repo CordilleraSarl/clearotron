@@ -292,11 +292,14 @@ export function engineRow(
     ok: faults.length === 0,
     name: engine.vendor ?? engine.id,
     mono: engine.id,
-    // WHAT PAYS. A cloud account by the name the driver sends for it — "Microsoft Azure", "Gateway" — and
-    // otherwise `apiBilled`, not the mode word: they agree except in one state, set to bill an API key that
-    // is not set, and that is the state worth showing, because the driver refuses a run in it. A cloud
-    // account used to read "API key" here, because it bills per use and nothing named the cloud.
-    state: engine.billing.cloudName ?? (engine.billing.apiBilled ? 'API key' : 'Subscription'),
+    // WHAT PAYS, OR THAT NOTHING WILL. A row whose searches are refused reads "Refused", beside the sentence
+    // saying why: any payer named there would be one that is not paying, and "Subscription" beside "payment
+    // is set to a cloud account" contradicted the sentence next to it. Otherwise a cloud account by the name
+    // the driver sends for it ("Microsoft Azure", "Gateway"), and then `apiBilled`, not the mode word. A
+    // cloud account used to read "API key" here, because it bills per use and nothing named the cloud.
+    state: engine.billing.missing.length || engine.billing.reason
+      ? 'Refused'
+      : engine.billing.cloudName ?? (engine.billing.apiBilled ? 'API key' : 'Subscription'),
     faults,
   }
 }

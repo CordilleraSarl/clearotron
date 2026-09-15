@@ -271,54 +271,54 @@ const CODEX = { ...HERE, CLEAROTRON_AI: 'openai-agent' }
 const BILLING_STATES: readonly { readonly name: string; readonly env: Record<string, string>; readonly state: string; readonly fault: string | null }[] = [
   { name: 'subscription', env: CLAUDE, state: 'Subscription', fault: null },
   { name: 'an API key that is set', env: { ...CLAUDE, CLEAROTRON_AI_BILLING: 'api-key', ANTHROPIC_API_KEY: 'sk-x' }, state: 'API key', fault: null },
-  { name: 'an API key that is not set', env: { ...CLAUDE, CLEAROTRON_AI_BILLING: 'api-key' }, state: 'Subscription',
+  { name: 'an API key that is not set', env: { ...CLAUDE, CLEAROTRON_AI_BILLING: 'api-key' }, state: 'Refused',
     fault: 'Set to bill an API key, and ANTHROPIC_API_KEY is not set — a run is refused rather than billed to the subscription.' },
   { name: 'Google Cloud', env: { ...CLAUDE, CLEAROTRON_AI_BILLING: 'cloud', CLAUDE_CODE_USE_VERTEX: '1' }, state: 'Google Cloud', fault: null },
   { name: 'Microsoft Azure', env: { ...CLAUDE, CLEAROTRON_AI_BILLING: 'cloud', CLAUDE_CODE_USE_FOUNDRY: '1' }, state: 'Microsoft Azure', fault: null },
   { name: 'Amazon Bedrock', env: { ...CLAUDE, CLEAROTRON_AI_BILLING: 'cloud', CLAUDE_CODE_USE_BEDROCK: '1' }, state: 'Amazon Bedrock', fault: null },
   { name: 'a gateway', env: { ...CLAUDE, CLEAROTRON_AI_BILLING: 'cloud', ANTHROPIC_BASE_URL: 'https://gateway.test' }, state: 'Gateway', fault: null },
-  { name: 'a cloud switch beside subscription', env: { ...CLAUDE, CLEAROTRON_AI_BILLING: 'subscription', CLAUDE_CODE_USE_FOUNDRY: '1' }, state: 'Subscription',
+  { name: 'a cloud switch beside subscription', env: { ...CLAUDE, CLEAROTRON_AI_BILLING: 'subscription', CLAUDE_CODE_USE_FOUNDRY: '1' }, state: 'Refused',
     fault: 'Searches will be refused: payment is set to subscription, but the Microsoft Azure switch (CLAUDE_CODE_USE_FOUNDRY) is also on. '
       + 'Turn CLAUDE_CODE_USE_FOUNDRY off to pay by subscription, or set CLEAROTRON_AI_BILLING to cloud to pay through Microsoft Azure.' },
-  { name: 'a cloud switch beside an API key', env: { ...CLAUDE, CLEAROTRON_AI_BILLING: 'api-key', ANTHROPIC_API_KEY: 'sk-x', CLAUDE_CODE_USE_BEDROCK: '1' }, state: 'Subscription',
+  { name: 'a cloud switch beside an API key', env: { ...CLAUDE, CLEAROTRON_AI_BILLING: 'api-key', ANTHROPIC_API_KEY: 'sk-x', CLAUDE_CODE_USE_BEDROCK: '1' }, state: 'Refused',
     fault: 'Searches will be refused: payment is set to an API key, but the Amazon Bedrock switch (CLAUDE_CODE_USE_BEDROCK) is also on. '
       + 'Turn CLAUDE_CODE_USE_BEDROCK off to pay with the API key, or set CLEAROTRON_AI_BILLING to cloud to pay through Amazon Bedrock.' },
   // THE BILLING WORD UNSET, the state measured on Foundry: the subscription is the default, not a line in
   // the settings file, and the sentence must not send a reader looking for one.
-  { name: 'two cloud switches, the billing word unset', env: { ...CLAUDE, CLAUDE_CODE_USE_VERTEX: '1', CLAUDE_CODE_USE_BEDROCK: '1' }, state: 'Subscription',
+  { name: 'two cloud switches, the billing word unset', env: { ...CLAUDE, CLAUDE_CODE_USE_VERTEX: '1', CLAUDE_CODE_USE_BEDROCK: '1' }, state: 'Refused',
     fault: 'Searches will be refused: payment is by subscription, the default while CLEAROTRON_AI_BILLING is not set, but the Google Cloud and Amazon Bedrock switches (CLAUDE_CODE_USE_VERTEX and CLAUDE_CODE_USE_BEDROCK) are also on. '
       + 'Turn them off to pay by subscription, or set CLEAROTRON_AI_BILLING to cloud and leave one on.' },
-  { name: 'one cloud switch, the billing word unset', env: { ...CLAUDE, CLAUDE_CODE_USE_FOUNDRY: '1' }, state: 'Subscription',
+  { name: 'one cloud switch, the billing word unset', env: { ...CLAUDE, CLAUDE_CODE_USE_FOUNDRY: '1' }, state: 'Refused',
     fault: 'Searches will be refused: payment is by subscription, the default while CLEAROTRON_AI_BILLING is not set, but the Microsoft Azure switch (CLAUDE_CODE_USE_FOUNDRY) is also on. '
       + 'Turn CLAUDE_CODE_USE_FOUNDRY off to pay by subscription, or set CLEAROTRON_AI_BILLING to cloud to pay through Microsoft Azure.' },
-  { name: 'a cloud account with two clouds on', env: { ...CLAUDE, CLEAROTRON_AI_BILLING: 'cloud', CLAUDE_CODE_USE_VERTEX: '1', CLAUDE_CODE_USE_FOUNDRY: '1' }, state: 'Subscription',
+  { name: 'a cloud account with two clouds on', env: { ...CLAUDE, CLEAROTRON_AI_BILLING: 'cloud', CLAUDE_CODE_USE_VERTEX: '1', CLAUDE_CODE_USE_FOUNDRY: '1' }, state: 'Refused',
     fault: 'Searches will be refused: payment is set to a cloud account, but two clouds are switched on, Google Cloud (CLAUDE_CODE_USE_VERTEX) and Microsoft Azure (CLAUDE_CODE_USE_FOUNDRY). '
       + 'Turn off all but the one you pay through.' },
-  { name: 'a cloud account with all three clouds on', env: { ...CLAUDE, CLEAROTRON_AI_BILLING: 'cloud', CLAUDE_CODE_USE_VERTEX: '1', CLAUDE_CODE_USE_FOUNDRY: '1', CLAUDE_CODE_USE_BEDROCK: '1' }, state: 'Subscription',
+  { name: 'a cloud account with all three clouds on', env: { ...CLAUDE, CLEAROTRON_AI_BILLING: 'cloud', CLAUDE_CODE_USE_VERTEX: '1', CLAUDE_CODE_USE_FOUNDRY: '1', CLAUDE_CODE_USE_BEDROCK: '1' }, state: 'Refused',
     fault: 'Searches will be refused: payment is set to a cloud account, but three clouds are switched on, Google Cloud (CLAUDE_CODE_USE_VERTEX), Microsoft Azure (CLAUDE_CODE_USE_FOUNDRY) and Amazon Bedrock (CLAUDE_CODE_USE_BEDROCK). '
       + 'Turn off all but the one you pay through.' },
-  { name: 'a cloud account with no cloud chosen', env: { ...CLAUDE, CLEAROTRON_AI_BILLING: 'cloud' }, state: 'Subscription',
+  { name: 'a cloud account with no cloud chosen', env: { ...CLAUDE, CLEAROTRON_AI_BILLING: 'cloud' }, state: 'Refused',
     fault: "Searches will be refused: payment is set to a cloud account, but no cloud is chosen. Turn on your cloud's switch "
       + '(CLAUDE_CODE_USE_VERTEX for Google Cloud, CLAUDE_CODE_USE_FOUNDRY for Microsoft Azure or CLAUDE_CODE_USE_BEDROCK for Amazon Bedrock) '
       + 'with the settings that cloud needs, set ANTHROPIC_BASE_URL for a gateway, or set CLEAROTRON_AI_BILLING to subscription.' },
-  { name: 'a payment word Clearotron does not know', env: { ...CLAUDE, CLEAROTRON_AI_BILLING: 'subscriptoin' }, state: 'Subscription',
+  { name: 'a payment word Clearotron does not know', env: { ...CLAUDE, CLEAROTRON_AI_BILLING: 'subscriptoin' }, state: 'Refused',
     fault: 'Searches will be refused: CLEAROTRON_AI_BILLING is set to a word Clearotron does not know. Set it to subscription, api-key or cloud.' },
   { name: 'Codex on subscription', env: CODEX, state: 'Subscription', fault: null },
   { name: 'Codex on an API key that is set', env: { ...CODEX, CLEAROTRON_AI_BILLING: 'api-key', CODEX_API_KEY: 'k' }, state: 'API key', fault: null },
-  { name: 'Codex on an API key that is not set', env: { ...CODEX, CLEAROTRON_AI_BILLING: 'api-key' }, state: 'Subscription',
+  { name: 'Codex on an API key that is not set', env: { ...CODEX, CLEAROTRON_AI_BILLING: 'api-key' }, state: 'Refused',
     fault: 'Set to bill an API key, and CODEX_API_KEY is not set — a run is refused rather than billed to the subscription.' },
-  { name: 'Codex on a cloud account', env: { ...CODEX, CLEAROTRON_AI_BILLING: 'cloud', CLAUDE_CODE_USE_FOUNDRY: '1' }, state: 'Subscription',
+  { name: 'Codex on a cloud account', env: { ...CODEX, CLEAROTRON_AI_BILLING: 'cloud', CLAUDE_CODE_USE_FOUNDRY: '1' }, state: 'Refused',
     fault: 'Searches will be refused: payment is set to a cloud account, which pays only for Claude, and this machine runs the Codex engine. '
       + 'Set CLEAROTRON_AI_BILLING to subscription or api-key, or set CLEAROTRON_AI to anthropic-agent to pay for Claude through your cloud.' },
   // THE SECOND WAY OUT ONLY WHERE IT LEADS OUT. With no cloud chosen, or two, the Claude engine would refuse
   // too, so the sentence stops at the one change that works.
-  { name: 'Codex on a cloud account with no cloud chosen', env: { ...CODEX, CLEAROTRON_AI_BILLING: 'cloud' }, state: 'Subscription',
+  { name: 'Codex on a cloud account with no cloud chosen', env: { ...CODEX, CLEAROTRON_AI_BILLING: 'cloud' }, state: 'Refused',
     fault: 'Searches will be refused: payment is set to a cloud account, which pays only for Claude, and this machine runs the Codex engine. '
       + 'Set CLEAROTRON_AI_BILLING to subscription or api-key.' },
-  { name: 'Codex on a cloud account with two clouds on', env: { ...CODEX, CLEAROTRON_AI_BILLING: 'cloud', CLAUDE_CODE_USE_VERTEX: '1', CLAUDE_CODE_USE_BEDROCK: '1' }, state: 'Subscription',
+  { name: 'Codex on a cloud account with two clouds on', env: { ...CODEX, CLEAROTRON_AI_BILLING: 'cloud', CLAUDE_CODE_USE_VERTEX: '1', CLAUDE_CODE_USE_BEDROCK: '1' }, state: 'Refused',
     fault: 'Searches will be refused: payment is set to a cloud account, which pays only for Claude, and this machine runs the Codex engine. '
       + 'Set CLEAROTRON_AI_BILLING to subscription or api-key.' },
-  { name: 'Codex on a payment word it does not know', env: { ...CODEX, CLEAROTRON_AI_BILLING: 'subscriptoin' }, state: 'Subscription',
+  { name: 'Codex on a payment word it does not know', env: { ...CODEX, CLEAROTRON_AI_BILLING: 'subscriptoin' }, state: 'Refused',
     fault: 'Searches will be refused: CLEAROTRON_AI_BILLING is set to a word Clearotron does not know. Set it to subscription or api-key.' },
 ]
 
@@ -390,7 +390,9 @@ test('a refusal sentence names no cloud it was not sent, and prints no code for 
   }
 })
 
-test('an older service, which sends no cloud and no reason, draws the row exactly as it was drawn before', async () => {
+// The one change an older service's row does see: a key that is not set reads "Refused", not "Subscription",
+// beside the sentence saying a run is refused rather than billed to the subscription.
+test('an older service, which sends no cloud and no reason, draws the row as before, a missing key reading Refused', async () => {
   const older = (wire: Record<string, any>) => {
     const w = structuredClone(wire)
     for (const k of ['cloud', 'cloudName', 'reason', 'refusal']) delete w['engine']['billing'][k]
@@ -400,7 +402,7 @@ test('an older service, which sends no cloud and no reason, draws the row exactl
   /** The row as it was drawn before the driver sent any of these fields. */
   const before = (billing: { apiBilled: boolean; missing: string[] }, id: string, vendor: string) => ({
     ok: billing.missing.length === 0, name: vendor, mono: id,
-    state: billing.apiBilled ? 'API key' : 'Subscription',
+    state: billing.missing.length ? 'Refused' : billing.apiBilled ? 'API key' : 'Subscription',
     faults: billing.missing.length
       ? [`Set to bill an API key, and ${billing.missing.join(' and ')} is not set — a run is refused rather than billed to the subscription.`]
       : [],
