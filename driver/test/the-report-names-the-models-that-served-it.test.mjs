@@ -29,8 +29,13 @@
 //     reaches the report: a turn under the Claude engine that reports one prints as Claude and the tier the
 //     turn asked for, each tier once, on a stage turn and a native-language turn alike, and in a run that
 //     mixes them with a Claude id. Both real publishers are driven, and the name is absent from meta.json,
-//     report-data.json and the whole page. The CONTROLS: a Codex id prints as reported, and a deployment
-//     whose tier cannot be read is left off rather than printed.
+//     report-data.json and the whole page. The kind of row decides where the request is read, so a
+//     deployment named after its tier still reads as that tier. Only an id shaped like a Claude model id
+//     prints as itself: a name that merely begins `claude-`, or wraps itself in Amazon's form, reads as the
+//     tier. One model in two cases or two clouds' version marks is one entry, and a request in Amazon's
+//     spelling is read as the tier it names. The CONTROLS: a Codex id prints as reported, and a deployment
+//     whose tier cannot be read is left off rather than printed, so a run made only of it reads [] and
+//     publishes no line.
 //
 // SAFETY: driver.config reads env at module load and its pool-root default is the real archive, so the
 // env is pinned before any product module is imported.
@@ -441,10 +446,62 @@ test("the CONTROL: a Codex run's ids read as reported", () => {
 });
 
 test("the CONTROL: a deployment whose tier cannot be read is left off the list, never printed", () => {
-  // `fable` is a tier a stage may ask for that this build's tier reader does not place.
-  const ids = servedModels(runWith("unplaced-tier", { "matter-frame.jsonl": [stageRow(1, "fable", "acme-fable-dep")] }));
-  assert.ok(Array.isArray(ids), "a turn ran, so the list is not null");
-  assert.equal(ids.some((id) => COMPANY.test(id)), false, `the deployment name is never listed: ${JSON.stringify(ids)}`);
+  // `fable` is a tier a stage may ask for that this build's tier reader does not place. There is no tier
+  // word to print and the name must not be printed, so a run made only of such turns lists nothing and
+  // renders no line: stated here so that reading the tier later is a visible change, not a silent one.
+  const ids = servedModels(runWith("unplaced-tier", { "matter-frame.jsonl": [
+    stageRow(1, "fable", "acme-fable-a"), stageRow(2, "fable", "acme-fable-b")] }));
+  assert.deepEqual(ids, [], "a turn ran, so the list is not null, and no deployment name is listed");
+  assert.equal(servedModelsLine(ids), "", "nothing is listed, so no line is rendered");
+});
+
+test("servedModels: a deployment named after its tier reads as the tier its stage row asked for", () => {
+  // The kind of row says where the request is recorded, whatever the two fields hold: a stage row's
+  // `model` is its request even when the served id is spelled the same. Read as a native-language row,
+  // each of these would print as the tier those steps ask for, Haiku.
+  const runDir = runWith("named-after-tier", { "matter-frame.jsonl": [
+    stageRow(1, "opus", "opus"),
+    stageRow(2, "sonnet", "sonnet"),
+  ] });
+  assert.deepEqual(servedModels(runDir), ["Opus", "Sonnet"]);
+});
+
+// Ids that have the shape of a Claude model's name, as the catalog, the tests above and Anthropic's
+// older models spell them, including a context-window mark the program may report beside the model.
+const CLAUDE_IDS = ["claude-opus-5", "claude-sonnet-5", "claude-haiku-4-5-20251001", "claude-opus-4-8",
+  "claude-opus-4-1-20250805", "claude-sonnet-4-20250514", "claude-sonnet-4-5-20250929", "claude-3-5-sonnet-20241022",
+  "claude-3-opus-20240229", "claude-3-5-haiku-20241022", "claude-3-7-sonnet-latest", "claude-opus-5[1m]"];
+// Names that only begin like one, each with the tier its turn asked for.
+const NOT_CLAUDE_IDS = [["claude-acme-prod", "opus"], ["Claude-Acme-EU", "sonnet"], ["claude-opus-4-1-acmelegal", "opus"],
+  ["anthropic.claude-acme-private-v1:0", "haiku"], ["claude-sonnet-4-5@latest", "sonnet"], ["claude-opus-5[acme]", "opus"]];
+
+test("servedModels: an id shaped like a Claude model id prints as itself", () => {
+  CLAUDE_IDS.forEach((id, i) =>
+    assert.deepEqual(servedModels(runWith(`claude-shape-${i}`, { "x.jsonl": [stageRow(1, "sonnet", id)] })), [id], id));
+});
+
+test("servedModels: a name that only begins like a Claude id reads as the tier its turn asked for", () => {
+  NOT_CLAUDE_IDS.forEach(([id, tier], i) => {
+    const ids = servedModels(runWith(`not-claude-${i}`, { "x.jsonl": [stageRow(1, tier, id)] }));
+    assert.deepEqual(ids, [tier[0].toUpperCase() + tier.slice(1)], `${id} is not a Claude model's name`);
+  });
+});
+
+test("servedModels: one model in two cases, or with a cloud's version mark, is one entry", () => {
+  const runDir = runWith("spellings", { "x.jsonl": [
+    stageRow(1, "opus", "US.ANTHROPIC.CLAUDE-OPUS-4-1-20250805-V1:0"),
+    stageRow(2, "opus", "claude-opus-4-1-20250805"),
+    // Google marks the version of an older model before the date; Amazon writes the same mark as -v2:0.
+    stageRow(3, "sonnet", "claude-3-5-sonnet-v2@20241022"),
+    stageRow(4, "sonnet", "anthropic.claude-3-5-sonnet-20241022-v2:0"),
+    stageRow(5, "sonnet", "claude-3-5-sonnet-20241022"),
+  ] });
+  assert.deepEqual(servedModels(runDir), ["claude-opus-4-1-20250805", "claude-3-5-sonnet-20241022"]);
+});
+
+test("servedModels: a request in Amazon's spelling is read as the tier it names", () => {
+  const runDir = runWith("amazon-request", { "x.jsonl": [stageRow(1, "us.anthropic.claude-opus-4-1-20250805-v1:0", "acme-gold")] });
+  assert.deepEqual(servedModels(runDir), ["Opus"]);
 });
 
 test("servedModelsLine: a tier word is Claude's, and says so itself in a list that names another vendor", () => {
@@ -488,6 +545,19 @@ for (const product of ["clearance", "knockout"]) {
     assert.deepEqual(meta.servedModels, ["claude-opus-5", "Haiku"], "meta.json");
     assert.deepEqual(data.servedModels, ["claude-opus-5", "Haiku"], "report-data.json");
     assert.match(scopeOf(html), /Prepared with Claude: claude-opus-5, Haiku\./, "the scope section's closing line");
+    for (const [where, text] of [["meta.json", JSON.stringify(meta)], ["report-data.json", JSON.stringify(data)], ["the page", html]])
+      assert.doesNotMatch(text, COMPANY, `${where} carries no deployment name`);
+  });
+
+  test(`a ${product} run whose deployments are named after a tier, or only begin like a Claude id, publishes the tiers`, async () => {
+    const { meta, data, html } = await publish(`named-like-claude-${product}`, product, [
+      stageRow(1, "opus", "opus"),
+      stageRow(2, "sonnet", "claude-acme-prod-eu"),
+      stageRow(3, "haiku", "anthropic.claude-acme-private-v1:0"),
+    ]);
+    assert.deepEqual(meta.servedModels, ["Opus", "Sonnet", "Haiku"], "meta.json");
+    assert.deepEqual(data.servedModels, ["Opus", "Sonnet", "Haiku"], "report-data.json");
+    assert.match(scopeOf(html), /Prepared with Claude: Opus, Sonnet, Haiku\./, "the scope section's closing line");
     for (const [where, text] of [["meta.json", JSON.stringify(meta)], ["report-data.json", JSON.stringify(data)], ["the page", html]])
       assert.doesNotMatch(text, COMPANY, `${where} carries no deployment name`);
   });

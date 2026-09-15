@@ -1052,7 +1052,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // rather than wire the overlay in: client names saturate privileged report prose — a partial blur is a
   // worse demo than no toggle.
   const reportNav = siteNav(poolRoot, 'report', null, '../', { anon: false });
-  // The models that served this run, as the engine reported them (tokens.mjs servedModels). The closing
+  // The models that served this run, named as a client may read them (tokens.mjs servedModels). The closing
   // line of the report's scope section, the data file and the meta below all take this one read; a read
   // that throws records nothing rather than failing the publish.
   let served = null;
@@ -1157,8 +1157,8 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     issuedAt,
     // WHICH BUILD produced this. null off a git checkout — a provenance stamp never fails a publish.
     engineCommit: engineCommit(),
-    // The models that served the run, as reported (tokens.mjs servedModels). Absent when nothing was
-    // read, so a meta written before the record existed keeps its shape; [] when turns ran and named none.
+    // The models that served the run, named as a client may read them (tokens.mjs servedModels). Absent when
+    // nothing was read, so a meta from before the record keeps its shape; [] when turns ran and named none.
     servedModels: served ?? undefined,
     kind: 'clearance', recordLinks: officeLinks?.tally ?? undefined,   // per office: linked, or cited by number and why; only where the register has no record pages
     searchLevel: searchPolicy?.level ?? undefined,

@@ -196,8 +196,11 @@ export function rollupTokens(runDir) {
  *
  * THREE-VALUED. `null` when there is no attempt row to read (no telemetry directory, or no row in it is
  * a provider turn), so nothing was looked at. `[]` when attempt rows exist and none names a served model
- * (an engine that does not report one, a turn killed before it said, a turn the Claude program answered
- * itself), on a stage turn and a native-language turn alike. An empty list is never a guess.
+ * a client may read (an engine that does not report one, a turn killed before it said, a turn the Claude
+ * program answered itself), on a stage turn and a native-language turn alike. One more case reads `[]`:
+ * a Claude turn served under a deployment name whose requested tier the tier reader cannot place (a
+ * `fable` request, which modelFamily does not read) is left off, because the name must not be printed and
+ * there is no tier word to print instead. An empty list is never a guess.
  *
  * WHAT IS LISTED IS WHAT A CLIENT MAY READ, mapped here and nowhere else (servedName below), so meta.json,
  * report-data.json and the report's closing line carry one list and cannot disagree. Through a cloud, a
@@ -251,12 +254,30 @@ import { JX_TIER } from "./engine/jx-turn.mjs";
 const AMAZON_CLAUDE_ID_RE = /^(?:arn:aws[\w-]*:bedrock:[^/]*\/)?(?:[a-z]{2,6}(?:-[a-z]+)?\.)?anthropic\.(claude-[a-z0-9.-]+?)(?:-v\d+(?::\d+)?)?$/i;
 // GOOGLE'S SPELLING, `claude-opus-4-1@20250805`. It already names the model; it is listed as the dated id
 // `claude-opus-4-1-20250805` because that is the same model's name on Anthropic's own API and on Amazon's,
-// so a model reached through two routes is one entry rather than two spellings of one model.
-const GOOGLE_CLAUDE_ID_RE = /^(claude-[a-z0-9.-]+)@(\d{8})$/i;
+// so a model reached through two routes is one entry rather than two spellings of one model. An older
+// model's Google name carries a version mark before the date (`claude-3-5-sonnet-v2@20241022`), the same
+// mark Amazon writes as `-v2:0`; it is not in the model's own name, so it goes too.
+const GOOGLE_CLAUDE_ID_RE = /^(claude-[a-z0-9.-]+?)(?:-v\d+)?@(\d{8})$/i;
+// THE SHAPE OF A CLAUDE MODEL ID, which is what lets an id be printed as itself. A family and up to two
+// version numbers (`claude-opus-4-1`), or the older order of version before family
+// (`claude-3-5-sonnet`); then an optional date or `-latest`; then an optional context-window mark
+// (`[1m]`), which the program may report beside the model and is kept as reported. Tested lower-cased,
+// after the cloud spellings above are rewritten. A prefix test is not enough: a company may name its own
+// deployment `claude-acme-prod`, or wrap its own name in Amazon's form, and neither is a Claude model.
+const CLAUDE_MODEL_ID_RE = /^claude-(?:(?:opus|sonnet|haiku|fable)(?:-\d{1,2}){0,2}|\d(?:-\d)?-(?:opus|sonnet|haiku))(?:-\d{8}|-latest)?(?:\[\d+[km]\])?$/;
 // The engine names a Claude turn's row carries: the stage rows' engine, and the native-language rows'
-// vendor (jxBillingStamp in jx-lanes.mjs).
+// vendor (jxBillingStamp in jx-lanes.mjs), which is "anthropic" under every way of paying, a cloud included.
 const CLAUDE_ENGINES = new Set(["anthropic-agent", "anthropic"]);
 const CLAUDE_TIERS = new Set(["opus", "sonnet", "haiku"]);
+
+/** A Claude model id in any cloud's spelling, as its own lower-case name, or null when it is not one. */
+function claudeModelId(id) {
+  const raw = String(id ?? "").trim();
+  const amazon = AMAZON_CLAUDE_ID_RE.exec(raw);
+  const google = amazon ? null : GOOGLE_CLAUDE_ID_RE.exec(raw);
+  const named = (amazon ? amazon[1] : google ? `${google[1]}-${google[2]}` : raw).toLowerCase();
+  return CLAUDE_MODEL_ID_RE.test(named) ? named : null;
+}
 
 /**
  * The name a client reads for one served id, or null when it must not be listed.
@@ -269,19 +290,20 @@ const CLAUDE_TIERS = new Set(["opus", "sonnet", "haiku"]);
  * is the model's own name.
  */
 function servedName(rec, id) {
-  const amazon = AMAZON_CLAUDE_ID_RE.exec(id);
-  const google = amazon ? null : GOOGLE_CLAUDE_ID_RE.exec(id);
-  const named = amazon ? amazon[1] : google ? `${google[1]}-${google[2]}` : id;
-  if (/^claude-/i.test(named)) return named;
+  const claude = claudeModelId(id);
+  if (claude) return claude;
   const engine = typeof rec.engine === "string" ? rec.engine : "";
-  if (engine && !CLAUDE_ENGINES.has(engine)) return named;
-  // THE TIER THE TURN ASKED FOR. A stage row's `model` is that request ("opus"). A native-language row's
-  // `model` is its SERVED id, written beside `modelActual` from the same value (jxModelFields), so reading
-  // it as the request would hand back the deployment name; those rows record no request, and every one of
-  // those steps asks for JX_TIER. modelFamily is the one tier reader. A tier it cannot place returns null
-  // and the id is left off: listing nothing is honest, and listing the name is the leak this prevents.
-  const asked = rec.model === rec.modelActual ? JX_TIER : rec.model;
-  const tier = modelFamily(asked);
+  if (engine && !CLAUDE_ENGINES.has(engine)) return id;
+  // THE TIER THE TURN ASKED FOR, told apart by the kind of row, which its engine stamp names. A stage row
+  // (engine "anthropic-agent", or no stamp) records that request as `model` ("opus"), and that holds even
+  // when the served id is spelled the same as the request, as it is for a deployment named after its
+  // tier. A native-language row (engine "anthropic") records its SERVED id as `model`, beside
+  // `modelActual` (jxModelFields), so reading it as the request would hand back the deployment name;
+  // every one of those steps asks for JX_TIER. A request in a cloud's spelling is read as the Claude id it
+  // names first. modelFamily is the one tier reader. A tier it cannot place returns null and the id is
+  // left off: listing nothing is honest, and listing the name is the leak this prevents.
+  const asked = engine === "anthropic" ? JX_TIER : rec.model;
+  const tier = modelFamily(claudeModelId(asked) ?? asked);
   return CLAUDE_TIERS.has(tier) ? tier[0].toUpperCase() + tier.slice(1) : null;
 }
 

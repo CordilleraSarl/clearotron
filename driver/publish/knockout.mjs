@@ -519,7 +519,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   // — resolved once for the whole publish, off the same two sources the clearance
   // publisher uses (frozen sidecar, then roster; either marks, neither un-marks).
   const demoData = resolveDemoData({ runDir, customerKey });
-  // The models that served this batch, as the engine reported them — read once, like the demo answer,
+  // The models that served this batch, named as a client may read them — read once, like the demo answer,
   // because it is a property of the run. A read that throws records nothing rather than failing a publish.
   let served = null;
   try { served = runDir ? servedModels(runDir) : null; } catch { served = null; }
@@ -631,8 +631,8 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
       .filter(Boolean).join(' — '),
     markName: batchMarkName(markNames) ?? undefined,
     engineCommit: engineCommit(),
-    // The models that served the batch, as reported (tokens.mjs servedModels). Absent when nothing was
-    // read, so a meta written before the record existed keeps its shape; [] when turns ran and named none.
+    // The models that served the batch, named as a client may read them (tokens.mjs servedModels). Absent when
+    // nothing was read, so a meta from before the record keeps its shape; [] when turns ran and named none.
     servedModels: served ?? undefined,
     client: null, customerKey: customerKey || 'generic',
     // WHICH ORGANISATION'S GENERIC this batch was filed under, read from the frozen sidecar exactly as
