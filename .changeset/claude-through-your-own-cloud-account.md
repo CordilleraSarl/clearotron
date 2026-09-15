@@ -20,7 +20,7 @@ Fixed: An install that pays with an API key and runs as background services now 
 
 Fixed: A subscription install signed in with a long-lived token from `claude setup-token` now hands that token to its background services.
 
-Fixed: `clearotron doctor` and `clearotron start` now report a billing setting that would stop every search, such as an API key that is not set.
+Fixed: `clearotron start` now reports a billing setting that would stop every search, such as an API key that is not set. `clearotron doctor` also checks the settings the background services read.
 
 For operators: `clearotron start --background` names each setting on which `~/.env` and Clearotron's settings disagree, such as a rotated key, without printing values. It adds only settings `~/.env` lacks and never replaces one, so change a setting in both files.
 
