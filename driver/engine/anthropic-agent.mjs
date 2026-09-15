@@ -567,7 +567,15 @@ export const anthropicAgentEngine = {
       // It never falls back to the requested alias — a record that says "actual: <what we asked for>"
       // when nothing was observed is precisely the absence-read-as-a-pass this issue exists to end. The
       // comparison and the policy live in gateway.mjs; this reports, it does not judge.
-      let wireModelInit = null, wireModelAssistant = null;
+      //
+      // A MESSAGE THE CLI WROTE ITSELF NAMES NO MODEL. The CLI labels such a message `<synthetic>` in the
+      // model field, measured in testing on Azure Foundry (2026-09-14): with the opus pin naming a
+      // deployment that did not exist, the turn exited 1 with the CLI's own error and its assistant event
+      // said `<synthetic>`. No model served that turn, so the label is never taken as a served id, and
+      // `answeredItself` stops init's answer from standing in for one: init says what the session was
+      // configured with, and naming it here would name a model for a turn no model served. A real id on
+      // an earlier assistant event of the same turn still stands, because that model did serve a call.
+      let wireModelInit = null, wireModelAssistant = null, answeredItself = false;
       // READS GAUGE (AD-4, 2026-07-30 addendum): which files this turn actually OPENED, from the stream's
       // completed Read tool_use blocks. The stage prompt OFFERS a set of documents (declared inputs +
       // skill refs); nothing recorded whether the turn could and did read them — and one review
@@ -718,11 +726,14 @@ export const anthropicAgentEngine = {
         else if (ev.type === "rate_limit_event") rateLimitEvent = ev;
         else if (ev.type === "system" && ev.subtype === "init") {
           // MODEL GAUGE — the session's configured model, the earliest wire statement of what will run.
-          if (typeof ev.model === "string" && ev.model) wireModelInit ??= ev.model;
+          if (typeof ev.model === "string" && ev.model && !isCliLabel(ev.model)) wireModelInit ??= ev.model;
         }
         else if (ev.type === "assistant") {
           // MODEL GAUGE — the model that served THIS API call. Authoritative over init (see above).
-          if (typeof ev.message?.model === "string" && ev.message.model) wireModelAssistant = ev.message.model;
+          if (typeof ev.message?.model === "string" && ev.message.model) {
+            if (isCliLabel(ev.message.model)) answeredItself = true;
+            else wireModelAssistant = ev.message.model;
+          }
           // THINKING GAUGE — block presence + signature, never the text (display defaults to "omitted",
           // so an engaged block carries a zero-length `thinking` string). See the declaration above.
           if (!thought && ev.message?.content?.some?.((b) => b?.type === "thinking")) thought = true;
@@ -1092,8 +1103,9 @@ export const anthropicAgentEngine = {
           toolWaitUnmeasurable: [...unmeasurable],
           // MODEL GAUGE: the id the WIRE reported, or null when the stream never said. Assistant
           // message first (what served the call), init second (what the session was configured with).
-          // Never the requested alias — see the declaration above.
-          modelWire: wireModelAssistant ?? wireModelInit ?? null,
+          // Never the requested alias, and never init's answer for a turn only the CLI answered — see the
+          // declaration above.
+          modelWire: wireModelAssistant ?? (answeredItself ? null : wireModelInit),
           // PROVIDER GAUGE: the program's own word for who served the turn, read from the result's per-model
           // usage ("firstParty" on Anthropic's own API and "foundry" on Azure Foundry, measured 2026-09-14),
           // or null when the stream never said or its models disagree. Recorded, never inferred from config.
@@ -1152,4 +1164,12 @@ export function providerOf(resultEvent) {
     if (w) words.add(w);
   }
   return words.size === 1 ? [...words][0] : null;
+}
+
+/**
+ * Whether a model field holds one of the CLI's own bracketed labels, such as `<synthetic>` on a message
+ * it wrote itself, rather than the id of a model. The reports skip the same shape when they name models.
+ */
+function isCliLabel(id) {
+  return /^<.*>$/.test(String(id).trim());
 }
