@@ -74,6 +74,11 @@ const run = (o) => ({
 // Two of the three sit under projects, so "pick up where you left off" has something to draw. The
 // project NAMES are deliberately long: a matter is called "Q3 packaging refresh — EU", not "spring",
 // and a column tuned on a short slug tears the moment a real one arrives.
+// A STOPPED RUN'S DATE IS DERIVED, NEVER A LITERAL. The failures fold is bounded by age
+// (FAILURE_WINDOW_DAYS in portal-ui/src/contract/home.ts), so a fixture frozen to a date would drop out
+// of it on a day nobody chose and red this file for a change nobody made. Today, every day.
+const TODAY = new Date().toISOString().slice(0, 10)
+
 const FINISHED = [
   run({ runId: 'f1', mark: 'VIBRANTE FROSTPLUM', state: 'delivered', band: 'Tier 3 — material', tone: 'high', date: '2026-07-26', projectKey: 'q3-packaging', projectName: 'Q3 packaging refresh — EU' }),
   run({ runId: 'f2', mark: 'VANTOR LABS', state: 'delivered', band: 'Clear to file', tone: 'minimal', date: '2026-07-24' }),
@@ -102,15 +107,32 @@ const STATES = {
     runs: [run({ runId: 'k', mark: 'DRIVERS HAVEN', state: 'running', kind: 'knockout-batch', product: 'knockout-search', step: 'Marketplace sweep', stepN: 3, stepTotal: 5, startedAt: ago(14) }), ...FINISHED],
     expectCards: 1, expectQueue: 0, expectFirstCardPips: 5, expectStops: 1,
   },
-  // A failed card carries NO retry: re-running is command-line only, and a button would be a lie.
+  // A RUN THAT STOPPED IS NOT IN FLIGHT. It leaves the live band for its own fold, which states the
+  // count unopened and holds the card — and the acknowledge on it — one click in. A failed card still
+  // carries NO retry: re-running is command-line only, and a button would be a lie.
   failed: {
-    runs: [run({ runId: 'x', mark: 'HALCYON', state: 'failed', failedStage: 'at register sweeps', reason: 'A register was unreachable. Nothing was delivered.' }), ...FINISHED],
-    expectCards: 1, expectQueue: 0, expectFirstCardPips: 0, expectStops: 0,
+    runs: [run({ runId: 'x', mark: 'HALCYON', state: 'failed', date: TODAY, failedStage: 'at register sweeps', reason: 'A register was unreachable. Nothing was delivered.' }), ...FINISHED],
+    expectCards: 0, expectQueue: 0, expectFirstCardPips: 0, expectStops: 0,
+    expectStopped: 1, expectStoppedText: /1 stopped recently/,
   },
-  // Stopped on purpose — terminal, and never dressed as a failure.
+  // LIVE WORK AND A RECENT FAILURE ON ONE SCREEN — the state the whole change is about, and the one
+  // neither scene above shows. Each of those has an empty band, so they prove the fold exists without
+  // ever showing what it was for: a failure sitting quietly UNDER work that is still running, instead of
+  // above it crowding the band out.
+  bothd: {
+    runs: [
+      run({ runId: 'r', mark: 'CORAL FREEZE', state: 'running', step: 'Register sweeps', stepN: 2, stepTotal: 9, startedAt: ago(41) }),
+      run({ runId: 'x', mark: 'HALCYON', state: 'failed', date: TODAY, failedStage: 'at register sweeps', reason: 'A register was unreachable. Nothing was delivered.' }),
+      ...FINISHED,
+    ],
+    expectCards: 1, expectQueue: 0, expectFirstCardPips: 9, expectStops: 1,
+    expectStopped: 1, expectStoppedText: /1 stopped recently/,
+  },
+  // Stopped on purpose — terminal, and never dressed as a failure. Same fold, same reason.
   stopped: {
-    runs: [run({ runId: 'z', mark: 'GLASSWING', state: 'cancelled' }), ...FINISHED],
-    expectCards: 1, expectQueue: 0, expectFirstCardPips: 0, expectStops: 0,
+    runs: [run({ runId: 'z', mark: 'GLASSWING', state: 'cancelled', date: TODAY }), ...FINISHED],
+    expectCards: 0, expectQueue: 0, expectFirstCardPips: 0, expectStops: 0,
+    expectStopped: 1, expectStoppedText: /1 stopped recently/,
   },
   // THE LABEL MUST WRAP, NEVER CLIP — measured on the LONGEST string the switch can return, which is
   // still a retired one: three of those differ only in their suffix, so an ellipsis makes "registers +
@@ -290,16 +312,27 @@ const PROBE = `(() => {
   const all = (sel) => [...document.querySelectorAll(sel)]
   if (!q('.home2')) return { fatal: 'Home did not render' }
   return {
-    cards: all('.home2-card').length,
+    // THE LIVE BAND'S CARDS, NOT THE PAGE'S. A stopped run draws the same component inside the fold
+    // below, so a page-wide count reads 1 for a band that is correctly empty — and the assertion that
+    // failures LEFT the band would pass or fail on whether the fold happened to be open.
+    cards: all('.home2-card').filter((n) => !n.closest('.home2-stopped')).length,
     queueRows: all('.home2-qrow').length,
     queueCount: (q('.home2-queue-count')?.textContent ?? '').trim(),
     // The ordinals, as drawn. They must read 1..N with no gaps — a gap would mean the screen is
     // showing another tenant's place in the lane.
     ordinals: all('.home2-pos').map((n) => n.textContent.trim()),
     stops: all('.home2-stop').length,
+    // WHAT STOPPED RECENTLY — the count is the part that must be readable without opening anything,
+    // because it is the page's only standing signal that a search died while nobody was looking. The
+    // card count inside it is read after the toggle is pressed, below.
+    stoppedToggle: (q('.home2-stopped-toggle')?.textContent ?? '').trim(),
+    stoppedCards: [...(q('.home2-stopped')?.querySelectorAll('.home2-card') ?? [])].length,
     cancels: all('.home2-cancel').length,
     // FIRST CARD'S PIPS — N comes from the run, never a constant.
-    pips: q('.home2-card') ? [...q('.home2-card').querySelectorAll('.home2-pip')].length : 0,
+    pips: (() => {
+      const first = all('.home2-card').find((n) => !n.closest('.home2-stopped'))
+      return first ? [...first.querySelectorAll('.home2-pip')].length : 0
+    })(),
     // THE DEPTH LABEL MUST NOT BE CLIPPED. A string test cannot see this; only a browser can.
     depthClipped: all('.home2-depth').filter((n) => n.scrollWidth > n.clientWidth + 1).length,
     depthText: (q('.home2-depth')?.textContent ?? '').trim(),
@@ -427,6 +460,41 @@ for (const [name, spec] of Object.entries(STATES)) {
     // for a panel that never mounted, a panel nobody opened, and a panel that opened empty — and only
     // the third is a product defect. The state at the ceiling is printed, so the next reader is told
     // rather than left to re-derive it from three failing assertions.
+    // THE CLOSED FRAME IS TAKEN FIRST, because it is the one a reader meets. Everything below opens the
+    // fold in order to assert what is behind it, and a picture taken after that shows a state nobody
+    // arrives in — which is exactly the view the whole change is about.
+    if (shotDir && spec.expectStopped) {
+      const shut = await cmd('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true })
+      const d = shut.result?.result?.data ?? shut.result?.data
+      if (d) writeFileSync(join(shotDir, `home-${name}-${theme}-closed.png`), Buffer.from(d, 'base64'))
+    }
+
+    // THE FAILURES FOLD, OPENED THE SAME WAY AND FOR THE SAME REASON. `?.click` on a control that has
+    // not mounted is a silent no-op that reads as "the panel opened empty", so poll the toggle and its
+    // own aria-expanded, click only while it is shut, and say WHICH of the two ran out at the ceiling.
+    if (spec.expectStopped) {
+      const deadline = Date.now() + 20000
+      let last = { toggle: 0, expanded: false, cards: 0 }
+      for (;;) {
+        last = await evalIn(`(() => {
+          const t = document.querySelector('.home2-stopped-toggle')
+          return { toggle: document.querySelectorAll('.home2-stopped-toggle').length,
+                   expanded: t?.getAttribute('aria-expanded') === 'true',
+                   cards: document.querySelectorAll('.home2-stopped .home2-card').length }
+        })()`) ?? last
+        if (last.cards >= spec.expectStopped) break
+        if (last.toggle && !last.expanded) await evalIn(`document.querySelector('.home2-stopped-toggle')?.click()`)
+        if (Date.now() >= deadline) {
+          say(false, `${name}/${theme}: the stopped fold never showed ${spec.expectStopped} card(s) in 20s — `
+            + (!last.toggle ? 'the fold never mounted, so the acknowledge on a stopped run is unreachable'
+              : !last.expanded ? 'it mounted but never reported aria-expanded=true, so it stayed shut'
+                : `it WAS open and held ${last.cards} card(s)`))
+          break
+        }
+        await new Promise((r) => setTimeout(r, 100))
+      }
+    }
+
     if (spec.expectQueue) {
       const deadline = Date.now() + 20000
       let last = { bar: 0, expanded: false, rows: 0 }
@@ -475,6 +543,20 @@ for (const [name, spec] of Object.entries(STATES)) {
     // means the SERVICE sent no name — which looks like a design choice rather than a defect, and shipped
     // as one for as long as the browser held its own switch listing only the retired ladder.
     if (spec.expectCards) say(out.depthText.length > 0, `${name}/${theme}: the card names its search ("${out.depthText}")`)
+
+    // THE COUNT IS READABLE WITHOUT OPENING ANYTHING. It is the page's only standing signal that a
+    // search stopped, so an empty band plus a silent fold would be the silence this whole change had to
+    // avoid — and it would look exactly like a clean dashboard.
+    if (spec.expectStopped) {
+      say(spec.expectStoppedText.test(out.stoppedToggle),
+        `${name}/${theme}: the fold states what stopped ("${out.stoppedToggle}")`)
+      say(out.stoppedCards === spec.expectStopped,
+        `${name}/${theme}: ${out.stoppedCards} stopped card(s) behind it (expected ${spec.expectStopped})`)
+      // WHAT THE BAND HOLDS IS `expectCards`, ASSERTED ABOVE, AND NOT ZERO HERE. This said zero, which
+      // was true of both scenes that existed when it was written — each has a stopped run and no live
+      // work — so it read as "failures left the band" while actually asserting "nothing is running".
+      // The scene with both on screen is what told them apart.
+    }
     // AND IT SAYS NO RUNG. "Depth 4" / "Stage 1" are internal; a client screen must never carry either.
     if (spec.expectCards) say(!/\b(Depth|Stage)\s*\d/i.test(out.depthText),
       `${name}/${theme}: the chip carries no depth or stage number ("${out.depthText}")`)

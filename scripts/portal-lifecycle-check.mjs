@@ -146,8 +146,14 @@ const HOSTED_PEOPLE = () => ({ note: '', unknownAccounts: [], grantsFile: null, 
   // sees a name shape. Here to drive that sentence rather than to reason about it.
   { email: '*@example.test', permissions: { run: true, manage: false }, access: [{ kind: 'organisation', key: 'org-a', name: 'Apmxc Group' }], dangling: [], listed: true, covered: true, keys: 0 },
 ] })
+// TWO ROWS, AND THE SECOND ONE IS THE POINT. This served ONE person — the one signed in — whose own row
+// never draws Modify, so every control this install refuses was invisible to the driver and a reader's
+// most ordinary act could not be reproduced. A real local-sign-in install carries the addresses already
+// in its access record: they simply cannot sign in. That is the install the report came from, where
+// Modify was drawn on the other row, pressed, and answered with an internal token.
 const LOCAL_PEOPLE = { note: '', unknownAccounts: [], grantsFile: null, canAdd: false, localSignIn: true, keysRevocable: false, people: [
   { email: 'lawyer@cordillera.test', permissions: { run: true, manage: true }, access: [{ kind: 'everything' }], dangling: [], listed: true, covered: true, keys: 0 },
+  { email: 'newcomer@example.test', permissions: { run: false, manage: false }, access: [{ kind: 'organisation', key: 'demo-org', name: 'Demo Org' }], dangling: [], listed: true, covered: true, keys: 0 },
 ] }
 
 // THE ENGINE'S OWN ROW for a level, not a restatement of it. `available`/`unavailableNote` are the
@@ -489,6 +495,14 @@ ${HELPERS}
     await mustSettle(() => /signs in one person/.test(txt()), 8000, 'the local sign-in notice never appeared');
     out.addDisabled = findByText('button', /Add a person/).disabled;
     out.rows = document.querySelectorAll('table.data tbody tr').length;
+    // MODIFY ON SOMEBODY ELSE'S ROW. The write routes refuse on this install, so the control says so
+    // before it is pressed rather than three screens later. Matched with the :disabled selector rather
+    // than read off the property: an element inside a disabled fieldset reports disabled=false.
+    const other = [...document.querySelectorAll('table.data tbody tr')]
+      .find((r) => r.innerText.indexOf('newcomer@example.test') >= 0);
+    const modifyBtn = other ? other.querySelector('button.pill') : null;
+    out.otherModifyPresent = !!modifyBtn;
+    out.otherModifyDisabled = modifyBtn ? modifyBtn.matches(':disabled') : null;
     const linkSel = 'a[href*="putting-your-own-login-provider-in-front"]';
     const linked = await settle(() => document.querySelector(linkSel), 8000);
     out.linkHref = linked ? document.querySelector(linkSel).href : null;
@@ -843,6 +857,11 @@ keysRevocable = true
 localMode = true
 await reload()
 const peopleLocal = await value(PEOPLE_LOCAL_SCRIPT)
+if (shotsDir) {
+  const shot = await cmd('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true })
+  const data = shot.result?.result?.data ?? shot.result?.data
+  if (data) writeFileSync(join(shotsDir, 'people-local-sign-in.png'), Buffer.from(data, 'base64'))
+}
 localMode = false
 await reload()
 const pathsStaff = await value(PROFILE_PATHS_SCRIPT)
@@ -1044,7 +1063,12 @@ if (!peopleLocal || peopleLocal.fatal) {
   fail.push(`people (local sign-in): ${peopleLocal?.fatal ?? 'the driver returned nothing'}`)
 } else {
   ok(peopleLocal.addDisabled === true, 'Add is offered on an install that signs one person in locally')
-  ok(peopleLocal.rows === 1, `local sign-in should list its one person — it drew ${peopleLocal.rows} rows`)
+  ok(peopleLocal.rows === 2, `local sign-in should list every address in its record — it drew ${peopleLocal.rows} rows`)
+  // PRESENT AND OFF, never absent. A control that vanished leaves a reader hunting for it; one visibly
+  // off, under the notice that explains it, answers the question before it is asked.
+  ok(peopleLocal.otherModifyPresent === true, 'Modify is gone from the other row rather than disabled — a reader will hunt for it')
+  ok(peopleLocal.otherModifyDisabled === true,
+    'Modify is live on an install whose change route refuses: pressing it reaches a form whose Save and Remove both fail')
   ok(peopleLocal.linkHref === `${STUB_SOURCE_REPO}/blob/main/docs/PORTAL.md#putting-your-own-login-provider-in-front`,
     `the local sign-in notice must link to the stated source repository's guide to a login system in front — it links to ${JSON.stringify(peopleLocal.linkHref)}`)
 }
