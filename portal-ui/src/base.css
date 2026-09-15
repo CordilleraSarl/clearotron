@@ -2000,6 +2000,17 @@ input.filter {
    Quiet on purpose. These are runs the reader has already dealt with, and the whole point of the
    feature is that they stop competing with live work for attention — a panel styled like the queue
    would put them back in the fight it just took them out of. */
+/* THE UNKNOWN DOOR — a sentence the reader must not skip, and the alternative under its own heading.
+   Both are quiet relative to the steps themselves: the primary set is still what to try first. */
+.steps-unknown {
+  margin: 0 0 12px; font-size: 12.5px; line-height: 1.5; color: var(--text-muted);
+  border-left: 2px solid var(--border-hairline); padding-left: 10px;
+}
+.steps-alt { margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--border-hairline); }
+.steps-alt-head {
+  margin: 0 0 10px; font-size: 12.5px; font-weight: 600; letter-spacing: .02em; color: var(--text-muted);
+}
+
 .home2-acked { margin-top: 13px; }
 .home2-acked-toggle {
   padding: 0; background: none; border: 0; cursor: pointer; font: inherit; font-size: 12.5px;

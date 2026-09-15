@@ -264,14 +264,24 @@ const panelProbe = (expect) => `(() => {
   const screen = document.querySelector('.screen')
   const panels = [...screen.querySelectorAll('.steps-panel[data-for]')].filter((el) => !el.closest('.ai-probe'))
   const panel = panels[0]
-  const steps = panel ? [...panel.querySelectorAll('ol.steps > li')] : []
+  // THE PRIMARY LIST ONLY. Where the door could not be read the panel holds a second list — the other
+  // way in — so a panel-wide query counts both and the step-count assertion below compares one number
+  // against the other list's total as well. The two are measured apart because they say different
+  // things: the first is what to try, the second is what to fall back to.
+  const alt = panel?.querySelector('.steps-alt')
+  const steps = panel ? [...panel.querySelectorAll('ol.steps > li')].filter((li) => !alt || !alt.contains(li)) : []
+  const altSteps = alt ? [...alt.querySelectorAll('ol.steps > li')] : []
   return {
     panelCount: panels.length,
     panelFor: panel?.getAttribute('data-for') ?? null,
     // textContent, not innerText: the eyebrow is uppercased by CSS, and innerText reports the drawn case.
     head: flat(panel?.querySelector('.eyebrow')?.textContent) + ' ' + flat(panel?.querySelector('.steps-name')?.textContent),
     stepCount: steps.length,
+    altStepCount: altSteps.length,
+    altHeading: flat(panel?.querySelector('.steps-alt-head')?.textContent) || null,
+    unknownDoorNote: flat(panel?.querySelector('.steps-unknown')?.textContent) || null,
     firstStepCopies: !!steps[0]?.querySelector('.codeblock, .secret-btn'),
+    altFirstStepCopies: !!altSteps[0]?.querySelector('.codeblock, .secret-btn'),
     stepsPointingNowhere: steps.map((li) => flat(li.innerText)).filter((l) => /\\b(below|advanced)\\b/i.test(l)),
     stamp: /Checked \\d{4}|These steps name no button/.test(flat(panel?.innerText ?? '')),
     selectedElsewhere: [...screen.querySelectorAll('button.ai-app[aria-pressed="true"]')].filter((b) => b.getAttribute('data-id') !== EXPECT.id).length,
@@ -403,6 +413,23 @@ for (const state of Object.keys(STATES)) {
       ok(s.panelCount === 1 && s.panelFor === o.id, `the panel that opened is "${o.id}"'s, and only it (saw ${s.panelCount}, ${s.panelFor})`)
       ok(s.head === `Steps for ${o.name}`, `the panel is headed "Steps for ${o.name}" (saw "${s.head}")`)
       ok(s.stepCount === o.steps.length && s.firstStepCopies, `all ${o.steps.length} steps render and step 1 is the copy (saw ${s.stepCount}, copy: ${s.firstStepCopies})`)
+      // ── WHERE THE DOOR COULD NOT BE READ, BOTH WAYS ARE ON THE SCREEN ──────────────────────────
+      //
+      // doorKind answers null for "not read" and its contract says the caller offers both. The wire
+      // carried no door and the panel had no branch for one, so a deck whose door is silent drew the
+      // sign-in steps exactly as a deck that had been read — while the step text underneath promised
+      // the reader that both ways were shown. Asserted on the NULL decks and asserted ABSENT on the
+      // others: an alternative beside a door we did read is a set of instructions that cannot work.
+      const wantsBoth = Object.hasOwn(o, 'door') && o.door === null && (o.altSteps?.length ?? 0) > 0
+      if (wantsBoth) {
+        ok(s.altStepCount === o.altSteps.length && s.altFirstStepCopies,
+          `"${o.name}" on a door nobody could read shows all ${o.altSteps.length} of the other way's steps, copy first (saw ${s.altStepCount}, copy: ${s.altFirstStepCopies})`)
+        ok(!!s.unknownDoorNote, `"${o.name}" says the door could not be checked rather than drawing one way as though it had been`)
+        ok(!!s.altHeading, `the second list on "${o.name}" is headed, so a reader can tell which set is which`)
+      } else {
+        ok(s.altStepCount === 0 && !s.unknownDoorNote,
+          `"${o.name}" offers a second way in beside a door that WAS read (saw ${s.altStepCount} extra steps)`)
+      }
       ok(s.stepsPointingNowhere.length === 0, `no step points at a section this page does not have: ${JSON.stringify(s.stepsPointingNowhere)}`)
       ok(!s.stamp, 'no checked or unchecked stamp')
       ok(s.selectedElsewhere === 0, `no other row is still selected (${s.selectedElsewhere})`)

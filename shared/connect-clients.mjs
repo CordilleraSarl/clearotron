@@ -311,14 +311,24 @@ export const offersForWire = (offers) =>
     id: client.id,
     name: client.name,
     ...(client.sub ? { sub: client.sub } : {}),
-    steps: (Array.isArray(steps) ? steps : []).map((s) => ({
-      text: s.text,
-      ...(s.hint ? { hint: s.hint } : {}),
-      ...(s.copy ? { copy: s.copy.kind === "secret"
-        ? { kind: "secret", label: s.copy.label, template: s.copy.template, slot: s.copy.slot }
-        : { kind: "block", text: s.copy.text } } : {}),
-    })),
+    steps: stepsForWire(steps),
     ...rest,
+    // THE ALTERNATIVE TRAVELS, AND SO DOES THE FACT THAT THE DOOR IS UNKNOWN. `...rest` carried neither:
+    // `altSteps` needs the same copy-shape mapping the primary set gets, and `door` was dropped on the
+    // floor, so the page had nothing to branch on and drew one set of steps as though the door had been
+    // read. Both are stated after the spread so a row cannot pass its own raw shape through.
+    ...(Array.isArray(rest.altSteps) ? { altSteps: stepsForWire(rest.altSteps) } : {}),
+    ...(Object.hasOwn(rest, "door") ? { door: rest.door ?? null } : {}),
+  }));
+
+/** One route's steps, in the shape the browser reads. The alternative set gets the same mapping. */
+const stepsForWire = (steps) =>
+  (Array.isArray(steps) ? steps : []).map((s) => ({
+    text: s.text,
+    ...(s.hint ? { hint: s.hint } : {}),
+    ...(s.copy ? { copy: s.copy.kind === "secret"
+      ? { kind: "secret", label: s.copy.label, template: s.copy.template, slot: s.copy.slot }
+      : { kind: "block", text: s.copy.text } } : {}),
   }));
 
 const ALIAS_ROUTE = new Map(CONNECT_CLIENTS.flatMap((c) =>
@@ -395,6 +405,30 @@ export function whatItNeeds(client, have = {}, route = client?.lead) {
   const asked = author.steps({ operator, door: route === "public-http" ? door : null });
   const steps = asked.map((s) => (s.copy ? { ...s, copy: resolve(s.copy) } : { ...s }));
   const resolved = steps.every((s, i) => !asked[i].copy || s.copy);
+
+  // ── WHEN THE DOOR COULD NOT BE READ, BOTH WAYS ARE ACTUALLY SHOWN ────────────────────────────────
+  //
+  // `doorKind` returns null for "not known" and its own contract says the caller offers both rather than
+  // guessing. The steps above already carry the sentence that says so — and it reads "both ways are
+  // shown" while one set was rendered. A page that promises the reader the alternative and then does not
+  // draw it is worse than one that never mentioned it: the reader goes looking for what they were told
+  // is there.
+  //
+  // So the OTHER door's steps are composed here and ride beside them. The sign-in set leads, because
+  // that is what every hosted connector answers and what the hint tells the reader to try first; the key
+  // set is the alternative rather than a second equal choice. Composed by asking the same author with
+  // the other answer, never by a second copy of the steps — one table, one author, as everything else in
+  // this file.
+  const altAsked = route === "public-http" && door === null
+    ? author.steps({ operator, door: "key" })
+    : null;
+  const altSteps = altAsked
+    ? altAsked.map((s) => (s.copy ? { ...s, copy: resolve(s.copy) } : { ...s }))
+    : null;
+  // A step whose copy this deployment cannot produce is not offered at all — the same rule the primary
+  // set follows two lines up. Half an alternative is a reader following steps that stop.
+  const altResolved = !altAsked || altSteps.every((s, i) => !altAsked[i].copy || s.copy);
+  const alt = altResolved && altSteps?.length ? { door: null, altSteps } : { ...(route === "public-http" ? { door } : {}) };
   const evidence = { ...(author.verifiedOn ? { verifiedOn: author.verifiedOn } : {}), ...(author.by ? { by: author.by } : {}) };
 
   if (route === "disk") {
@@ -431,7 +465,7 @@ export function whatItNeeds(client, have = {}, route = client?.lead) {
       fix: "whoever installed it can put it online — it takes about a minute and needs no account",
       operatorFix: "put it online and set CLEAROTRON_CLIENT_MCP_URL to the public URL of this install — INSTALL.md §7 walks the tunnel" };
   }
-  return { client, served: true, route, steps, launch: client.launch ?? null, enables: null, ...evidence,
+  return { client, served: true, route, steps, ...alt, launch: client.launch ?? null, enables: null, ...evidence,
     command: null, stdio: null, address: publicAddress, key: "issued",
     note: "This assistant connects through its maker's service, so it reaches this installation at its web address rather than from your machine." };
 }
