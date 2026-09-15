@@ -15,7 +15,7 @@ import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { ENGINE_BINARIES, MODELS, resolveEngineProgram } from "../driver.config.mjs";
-import { CLOUD_SETTINGS, CLOUD_SWITCH } from "../engine/auth.mjs";
+import { CLOUD_SETTINGS, CLOUD_SWITCH, BILLING_MODES, resolveAuthMode } from "../engine/auth.mjs";
 import { claudeModel } from "../engine/anthropic-agent.mjs";
 import { platformEngineRefusal, installSizeLine, engineOptions } from "../../bin/onboard.mjs";
 
@@ -64,11 +64,51 @@ test("the install pages leave installing the reasoning program to setup", () => 
 test("the root pages give the native-Windows reason the run door gives", () => {
   const said = platformEngineRefusal({ platform: "win32" });
   assert.match(said, /POSIX path and process semantics/, "the run door's reason changed; the pages below must follow it");
-  for (const f of ["README.md", "INSTALL.md", "QUICKSTART.md"]) {
+  // AGENTS.md is read by whoever works on this repository, and it gave its own reason until it was held here.
+  for (const f of ["README.md", "INSTALL.md", "QUICKSTART.md", "AGENTS.md"]) {
     const doc = flat(read(f));
     assert.ok(doc.includes("POSIX path and process semantics"), `${f} does not give the run door's reason`);
     assert.doesNotMatch(doc, /the POSIX way/, `${f} still says the engine finds the program "the POSIX way", which the code no longer says`);
   }
+});
+
+test("the example settings file names every way the reasoning is paid for", () => {
+  // The words a reader knows each billing mode by, keyed by the modes the adapter accepts, so a mode added
+  // there with no words here goes red rather than leaving the sentence below one short again.
+  const words = { subscription: /subscription/, "api-key": /API key/, cloud: /cloud account/ };
+  assert.deepEqual(Object.keys(words).sort(), [...BILLING_MODES].sort(), "the adapter accepts a billing mode this arm has no words for");
+  const example = read(".env.example");
+  const at = example.indexOf("Either way the reasoning");
+  assert.notEqual(at, -1, ".env.example no longer says, beside the engine setting, what pays for the reasoning");
+  const end = example.indexOf("\nCLEAROTRON_AI=", at);
+  assert.ok(end > at, ".env.example's engine setting no longer follows that sentence");
+  const said = flat(example.slice(at, end).replace(/^#\s?/gm, ""));
+  for (const [mode, w] of Object.entries(words))
+    assert.match(said, w, `.env.example's engine block leaves out ${mode} as a way to pay for the reasoning`);
+});
+
+test("the cloud-account section says a gateway alone is accepted, as the billing check does", () => {
+  const claude = (env) => resolveAuthMode({ engineName: "anthropic-agent", env });
+  assert.equal(claude({ CLEAROTRON_AI_BILLING: "cloud", ANTHROPIC_BASE_URL: "https://gateway.example" }).cloud, "gateway",
+    "the billing check no longer accepts a gateway with no cloud switched on; §3b's first paragraph must change with it");
+  assert.throws(() => claude({ CLEAROTRON_AI_BILLING: "cloud" }), /none of/);
+  assert.throws(() => claude({ CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_VERTEX: "1", CLAUDE_CODE_USE_FOUNDRY: "1" }), /more than one cloud/);
+  // The section's first paragraph, the one that says what Clearotron checks.
+  const opening = flat(section(read("INSTALL.md"), "3b.").split("\n\n")[1]);
+  assert.match(opening, /checks that exactly one cloud is switched on, or that a gateway is named \(below\), and refuses to start otherwise/,
+    "§3b says Clearotron refuses unless exactly one cloud is switched on, and the gateway form it describes below has none");
+});
+
+test("the quickstart's install line says what it installs, as the reference's does", () => {
+  const comment = /^\s*npx clearotron install {2}(# .+)$/m.exec(section(read("INSTALL.md"), "1. Prerequisites"));
+  assert.ok(comment, "INSTALL.md §1's install line carries no comment to hold the quickstart to");
+  const block = /\n## Install\n\n```bash\n([\s\S]*?)```/.exec(read("QUICKSTART.md"));
+  assert.ok(block, "QUICKSTART.md has no bash block under ## Install");
+  assert.ok(block[1].split("\n").includes(`clearotron install  ${comment[1]}`),
+    "QUICKSTART.md's install block does not say, as INSTALL.md §1 does, that the install command installs the reasoning program");
+  // Still a block a reader can paste: every line is a command, with at most a comment after it.
+  for (const line of block[1].trim().split("\n"))
+    assert.match(line, /^(?:npm|clearotron) [^#]+?(?: {2}# .+)?$/, `QUICKSTART.md's install block has a line that is not a command: ${line}`);
 });
 
 test("the configuration reference says a tier follows the vendor, as the Claude adapter does", () => {
@@ -165,7 +205,9 @@ test("the cloud-account section asks only for settings setup and doctor carry, a
 test("the release notes promise what setup does", () => {
   const program = flat(read(".changeset/the-reasoning-program-comes-with-the-install.md"));
   assert.doesNotMatch(program, /needs nothing installed first/, "the note promises a machine needs nothing installed; setup offers, and the reader may say no");
-  assert.match(program, /Setup offers to install the reasoning program your engine uses/);
+  // THE APPROVED SENTENCES, WORD FOR WORD. A clause appended to either one is a sentence nobody approved.
+  assert.ok(program.includes("Setup offers to install the reasoning program your engine uses."),
+    "the note no longer carries the approved sentence about setup's install offer as it was approved");
   assert.match(program, /how much space the program takes and how to remove it/);
   // What the note promises is what setup's offer and its engine question say, for every program it installs.
   for (const [id, eng] of Object.entries(ENGINE_BINARIES).filter(([, e]) => e.package)) {

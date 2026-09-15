@@ -518,8 +518,8 @@ staleness thresholds that decide when an index is too old to trust are in
 
 Set `CLEAROTRON_AI_BILLING=cloud` and the lines for your cloud below. The Claude program still has to be
 installed (§1): it is what talks to the cloud. Clearotron checks that exactly one cloud is switched on,
-refuses to start otherwise, and records on every run which cloud account paid for it. Codex does not run
-through a cloud account.
+or that a gateway is named (below), and refuses to start otherwise. Every run records which cloud account
+paid for it. Codex does not run through a cloud account.
 
 Tested on Microsoft Azure. For Google Cloud and Amazon Bedrock these are the Claude program's own
 settings, as its documentation gives them.
