@@ -272,6 +272,16 @@ const GOOGLE_CLAUDE_ID_RE = /^(claude-[a-z0-9.-]+?)(?:-v\d+)?@(\d{8})$/i;
 // provider moves, never the name of the model a turn reports, so it reads as the tier too.
 const CLAUDE_MODEL_ID_RE = /^claude-(?:(?:opus|sonnet|haiku|fable)(?:-\d{1,2}){1,2}|\d(?:-\d)?-(?:opus|sonnet|haiku))(?:-\d{8})?(?:\[\d+[km]\])?$/;
 const CLAUDE_TIERS = new Set(["opus", "sonnet", "haiku", "fable"]);   // fable is reached through the synthesis override
+// A FABLE REQUEST IS READ HERE, NOT BY modelFamily. modelFamily is also the gateway's family comparison on every
+// turn, and it places opus, sonnet and haiku only: an id naming fable stays unknown there, so it can never
+// refuse a turn (driver.config.mjs says why). The report still needs the tier word of a fable turn served under
+// a company's deployment name, so it is read for the report alone, placed where the family reader places the
+// other three: the whole request, or first in it or after a `/`, with or without `claude-`. So `fable` and a
+// request in a pinned id's spelling (`claude-fable-5-1`) both read fable, and `acme-fable` does not. A turn
+// served as a fable id never reaches this: that id is a Claude model's name and prints as itself.
+const FABLE_REQUEST_RE = /(?:^|\/)(?:claude-)?fable(?:[-.]|$)/i;
+const requestedTier = (asked) =>
+  modelFamily(asked) ?? (FABLE_REQUEST_RE.test(String(resolveModel(asked) ?? "")) ? "fable" : null);
 
 /** A Claude model id in any cloud's spelling, as its own lower-case name, or null when it is not one. */
 function claudeModelId(id) {
@@ -314,10 +324,11 @@ function servedName(rec, id) {
   // deployment named after its tier. A native-language row (engine "anthropic") records its SERVED id as `model`, beside
   // `modelActual` (jxModelFields), so reading it as the request would hand back the deployment name;
   // every one of those steps asks for JX_TIER. A request in a cloud's spelling is read as the Claude id it
-  // names first. modelFamily is the one tier reader. A tier it cannot place returns null and the id is
-  // left off: listing nothing is honest, and listing the name is the leak this prevents.
+  // names first. modelFamily reads opus, sonnet and haiku, and requestedTier adds fable, for the report
+  // alone. A tier neither can place returns null and the id is left off: listing nothing is honest, and
+  // listing the name is the leak this prevents.
   const asked = engine === "anthropic" ? JX_TIER : rec.model;
-  const tier = modelFamily(claudeModelId(asked) ?? asked);
+  const tier = requestedTier(claudeModelId(asked) ?? asked);
   return CLAUDE_TIERS.has(tier) ? tier[0].toUpperCase() + tier.slice(1) : null;
 }
 

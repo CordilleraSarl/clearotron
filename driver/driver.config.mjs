@@ -660,17 +660,14 @@ export function resolveModel(model) {
  * never a default. A null on either side makes the comparison UNKNOWN, and an unknown must never be
  * recorded as a match — that is the absence-read-as-a-pass class this whole issue is about.
  */
-// FABLE IS READ AS A FAMILY TOO (2026-09-15). It was left out while nobody had seen what the wire reports for
-// a fable turn, on the rationale that an unprobed id must stay unknown. The report's model line needs the tier
-// of a fable turn served under a company's deployment name, and a fable request served as `claude-fable-5-1`
-// must compare as the same family. The word is placed where the other three are: as the whole id, or first
-// in it or after a `/`, with or without `claude-`. So `fable`, `claude-fable-…` and `anthropic/claude-fable-…`
-// read fable, and so does a deployment name that begins with it (`fable-prod`, `prod/fable`), as `opus-prod`
-// has always read opus. Only a name with the word further in (`acme-fable-a`) still reads null. BOTH WAYS a
-// comparison that was unknown can now be a mismatch and refuse the turn: a fable request served by another
-// tier's id or a name that begins with another tier (`claude-sonnet-5`, `opus-prod`), and another tier's
-// request served by a fable id or a name that begins with the word (`claude-fable-5-1`, `fable-prod`).
-const MODEL_FAMILY_RE = /(?:^|\/)(?:claude-)?(opus|sonnet|haiku|fable)(?:[-.]|$)/i;
+// FABLE IS NOT A FAMILY HERE, ON PURPOSE. Nobody has seen what the wire reports for a fable turn, so an id
+// naming fable stays unknown and its comparison can never manufacture a mismatch. Placing it was tried
+// (2026-09-15) and refused turns that had always run: a fable request served by claude-sonnet-5, by
+// claude-opus-5, by a deployment named after another tier or by a GPT id, an opus request served as
+// claude-fable-5-1, and any tier served under a name beginning with the word. It was taken out again the
+// same day. The report's model line still names Fable: servedModels (tokens.mjs) reads a fable request's tier
+// itself, where only the report sees it, and never through this comparison.
+const MODEL_FAMILY_RE = /(?:^|\/)(?:claude-)?(opus|sonnet|haiku)(?:[-.]|$)/i;
 
 // — THE OPENAI SIDE, added when the codex path could first answer "what ran".
 //

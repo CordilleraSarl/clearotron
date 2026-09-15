@@ -34,7 +34,8 @@
 //     prints as itself: a name that merely begins `claude-`, or wraps itself in Amazon's form, reads as the
 //     tier. One model in two cases or two clouds' version marks is one entry, and a request in Amazon's
 //     spelling is read as the tier it names. Fable is a tier like the other three: a fable turn under a
-//     deployment name prints as Fable, from both publishers. The CONTROLS: a Codex id prints as reported, a
+//     deployment name prints as Fable, from both publishers, read for the report alone because the
+//     gateway's family comparison leaves fable unknown. The CONTROLS: a Codex id prints as reported, a
 //     served fable id prints as itself, and a deployment whose tier cannot be read is left off rather than
 //     printed, so a run made only of it reads [] and publishes no line.
 //
@@ -481,6 +482,18 @@ test("servedModels: a fable turn under a deployment name reads as Claude and Fab
   const own = servedModels(runWith("fable-own-id", { "matter-frame.jsonl": [stageRow(1, "fable", "claude-fable-5-1")] }));
   assert.deepEqual(own, ["claude-fable-5-1"]);
   assert.match(servedModelsLine(own), /Prepared with Claude: claude-fable-5-1\./);
+});
+
+test("servedModels: a fable request is read for the report alone, whatever name served it and however it is spelled", () => {
+  // The gateway's family comparison places none of these and must not: it reads fable as unknown, so a fable
+  // turn is never refused for what served it. The report reads the tier itself: under a name that begins
+  // with the word or with another tier, and for a request in a pinned id's spelling. Each is read on its own
+  // run, so a failure names the case.
+  const asked = Object.fromEntries([["fable-prod", "fable"], ["opus-deployment", "fable"], ["acme-fable-a", "claude-fable-5-1"]]
+    .map(([served, tier], i) => [`${tier} served as ${served}`,
+      servedModels(runWith(`fable-asked-${i}`, { "matter-frame.jsonl": [stageRow(1, tier, served)] }))]));
+  assert.deepEqual(asked, { "fable served as fable-prod": ["Fable"], "fable served as opus-deployment": ["Fable"],
+    "claude-fable-5-1 served as acme-fable-a": ["Fable"] }, "a fable request's tier was not read, or the name was printed");
 });
 
 test("the CONTROL: a deployment whose tier cannot be read is left off the list, never printed", () => {
