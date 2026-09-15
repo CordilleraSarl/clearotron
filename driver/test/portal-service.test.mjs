@@ -1430,16 +1430,19 @@ test("the served report carries no link to another customer, and no dead staff b
   assert.doesNotMatch(r2.html, /\.\.\/customer\//, "a drifted nav still cannot leak a customer link");
 });
 
-test("the Ask-your-AI connector is staff-only — it points at the STAFF MCP host", async () => {
+test("the Ask-your-AI band comes out for EVERY reader, and the staff host never reaches a client", async () => {
   const { prepareReportForEmbed } = await import("../portal-report.mjs");
 
-  // The renderer picks this host by audience on purpose (publish/render.mjs): the internal report
-  // gets the staff surface, the client export gets the hardened client surface and FAILS CLOSED rather
-  // than falling back — because falling back discloses the internal MCP hostname ( finding 4).
-  // Serving report.html to a client hands them the staff host, so the block comes out for clients.
+  // TWO RULES, AND THEY USED TO BE ONE. The band was stripped for clients only, on the ground that it
+  // names the STAFF MCP host and staff may see it. That left staff with two Ask-AI controls on one
+  // screen — this band, carrying the staff address and setup steps, and the shell's own header button —
+  // and the owner ruled on 2026-09-15 that there is one. The renderer stopped drawing the band in that
+  // same change, so what this strip now covers is the ARCHIVE: every report rendered before it is served
+  // from its baked bytes and still carries one.
   //
-  // Production currently points both at the same address, which makes the difference invisible. That is
-  // a deployment accident, not a guarantee — this test encodes the guarantee.
+  // The host redaction stays client-only, and that asymmetry is deliberate. It catches an MCP host
+  // ANYWHERE in the document, not only inside the band, and staff bytes elsewhere in a report are the
+  // designed rendering rather than a leak.
   const doc = `<body><h1 class="mark">NOVAPULSE</h1>`
     + `<details class="askband no-print"><summary>Ask your AI</summary>`
     + `<div class="askai-field"><code class="askai-url">https://mcp.internal.example/mcp?token=abc123</code>`
@@ -1449,14 +1452,21 @@ test("the Ask-your-AI connector is staff-only — it points at the STAFF MCP hos
   const forClient = prepareReportForEmbed(doc, { staff: false });
   assert.doesNotMatch(forClient.html, /mcp\.internal\.example/, "the staff MCP host must not reach a client");
   assert.doesNotMatch(forClient.html, /token=abc123/, "…nor the connector token with it");
+  assert.doesNotMatch(forClient.html, /askband/, "…nor the band itself");
   assert.match(forClient.html, /the analysis/, "the report itself is untouched");
   assert.match(forClient.html, /NOVAPULSE/);
 
   const forStaff = prepareReportForEmbed(doc, { staff: true });
-  assert.match(forStaff.html, /mcp\.internal\.example/, "staff keep their own tool");
+  assert.doesNotMatch(forStaff.html, /askband/,
+    "an archived report still offered staff a second Ask-AI control beside the shell's own");
+  assert.doesNotMatch(forStaff.html, /mcp\.internal\.example/,
+    "and the host went out with the band that carried it");
+  assert.match(forStaff.html, /the analysis/, "the rest of the staff bytes do not move");
+  assert.match(forStaff.html, /NOVAPULSE/);
 
   // The block is nested markup, so a non-greedy match could stop early and leave the host in a sibling
-  // node. Anything that survives is redacted and COUNTED rather than trusted.
+  // node. Anything that survives is redacted and COUNTED rather than trusted — on the client branch,
+  // which is the one where a surviving host is a disclosure.
   const drifted = `<div class="askband-v2">https://mcp.internal.example/mcp</div>`;
   const r = prepareReportForEmbed(drifted, { staff: false });
   assert.doesNotMatch(r.html, /mcp\.internal\.example/, "a drifted block still cannot leak the host");
@@ -2242,6 +2252,86 @@ test("mcp-access: STAFF are handed the local connect route; a CLIENT never is", 
   assert.equal(client.status, 200);
   assert.equal(client.json.stdio, null,
     "a hosted client was offered a command that spawns a server off a disk they do not have");
+});
+
+// ── WHETHER THIS READER HAS CONNECTED AN ASSISTANT ─────────────────────────────────────────────────
+//
+// The Ask-AI button on a report offers a menu to a reader who has connected and a setup panel to one who
+// has not. THE SCOPE IS THE SERVER'S ANSWER AND NEVER THE REQUEST'S — the same rule the remove route
+// keeps — so these drive the route rather than the helper, and seed the connector's log rather than a
+// flag. `TRADEMARK_MCP_AUDIT_LOG` is what both processes read, so setting it here is the real seam and
+// not a test-only one.
+const seedConnectorLog = (lines) => {
+  const dir = mkdtempSync(join(process.env.TMPDIR ?? tmpdir(), "mcp-connected-"));
+  const path = join(dir, "access.jsonl");
+  writeFileSync(path, lines.map((o) => JSON.stringify(o) + "\n").join(""));
+  process.env.TRADEMARK_MCP_AUDIT_LOG = path;
+  return path;
+};
+
+test("mcp-access: a reader whose assistant has called is connected; one whose has not is not", async () => {
+  const { service } = world();
+  const saved = process.env.TRADEMARK_MCP_AUDIT_LOG;
+  process.env.CLEAROTRON_CLIENT_MCP_URL = "https://clients-mcp.test/mcp";
+  seedConnectorLog([{ ts: "2026-09-14T09:00:00Z", email: CLIENT.email, method: "initialize" }]);
+  try {
+    const connected = await service.route("GET", "/portal/api/mcp-access", CLIENT, {}, {});
+    assert.equal(connected.json.aiConnected, true, "the log names this reader and the route said otherwise");
+
+    const not = await service.route("GET", "/portal/api/mcp-access", MULTI_CLIENT, {}, {});
+    assert.equal(not.json.aiConnected, false,
+      "a reader the log does not name was reported as connected — they would get a menu that opens an "
+      + "assistant which cannot see this report");
+  } finally {
+    delete process.env.CLEAROTRON_CLIENT_MCP_URL;
+    if (saved === undefined) delete process.env.TRADEMARK_MCP_AUDIT_LOG; else process.env.TRADEMARK_MCP_AUDIT_LOG = saved;
+  }
+});
+
+test("mcp-access: NO LOG TO READ answers null, not false", async () => {
+  // The third state, and the one worth a route-level arm: an installation whose connector has never run
+  // has not told us this reader never connected — it has told us nothing. Both draw the same panel, and
+  // that is a decision about polarity; the wire still has to carry which fact it is, or the screen would
+  // be asserting a measurement nobody took.
+  const { service } = world();
+  const saved = process.env.TRADEMARK_MCP_AUDIT_LOG;
+  process.env.CLEAROTRON_CLIENT_MCP_URL = "https://clients-mcp.test/mcp";
+  const dir = mkdtempSync(join(process.env.TMPDIR ?? tmpdir(), "mcp-nolog-"));
+  process.env.TRADEMARK_MCP_AUDIT_LOG = join(dir, "never-written.jsonl");
+  try {
+    const r = await service.route("GET", "/portal/api/mcp-access", CLIENT, {}, {});
+    assert.equal(r.status, 200, "an unreadable log must never fail the page");
+    assert.equal(r.json.aiConnected, null, "a could-not-look was reported as a measurement");
+  } finally {
+    delete process.env.CLEAROTRON_CLIENT_MCP_URL;
+    if (saved === undefined) delete process.env.TRADEMARK_MCP_AUDIT_LOG; else process.env.TRADEMARK_MCP_AUDIT_LOG = saved;
+  }
+});
+
+test("mcp-access: THE LOCAL ROUTE'S RECORD ANSWERS ONLY WHERE THERE IS NO HOSTED DOOR", async () => {
+  // A local record names nobody — that transport has no signed-in identity and none is invented. On a
+  // laptop install the reader IS the operator, which is the same split the stdio offer already trusts,
+  // so it answers for the only person who could be asking. On a HOSTED install it answers for nobody,
+  // and reading it as an answer there would mark every client connected the moment one member of staff
+  // ran the server by hand on the box.
+  const { service } = world();
+  const saved = process.env.TRADEMARK_MCP_AUDIT_LOG;
+  const savedUrl = process.env.CLEAROTRON_CLIENT_MCP_URL;
+  seedConnectorLog([{ ts: "2026-09-14T09:00:00Z", email: null, method: "initialize", transport: "stdio" }]);
+  try {
+    delete process.env.CLEAROTRON_CLIENT_MCP_URL;
+    const local = await service.route("GET", "/portal/api/mcp-access", STAFF, {}, {});
+    assert.equal(local.json.aiConnected, true,
+      "a laptop install's only reader was told to go and connect the assistant they are already using");
+
+    process.env.CLEAROTRON_CLIENT_MCP_URL = "https://clients-mcp.test/mcp";
+    const hosted = await service.route("GET", "/portal/api/mcp-access", MULTI_CLIENT, {}, {});
+    assert.equal(hosted.json.aiConnected, false,
+      "one local run on a hosted box marked a client connected who has never connected anything");
+  } finally {
+    if (savedUrl === undefined) delete process.env.CLEAROTRON_CLIENT_MCP_URL; else process.env.CLEAROTRON_CLIENT_MCP_URL = savedUrl;
+    if (saved === undefined) delete process.env.TRADEMARK_MCP_AUDIT_LOG; else process.env.TRADEMARK_MCP_AUDIT_LOG = saved;
+  }
 });
 
 test("mcp-access: a MULTI-account client is not asked to pick one", async () => {

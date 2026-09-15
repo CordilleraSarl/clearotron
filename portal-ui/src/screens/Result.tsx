@@ -22,7 +22,7 @@ import { FIRST_PAINT, frameCommand, readFrameHeight, readFrameScroll, readComman
 import type { FrameCommand } from '../contract/reportFrame.ts'
 import { RiskDot } from '../components/RiskDot.tsx'
 import { Icon } from '../components/Icon.tsx'
-import { askAiOffer } from '../contract/askAi.ts'
+import { askAiOffer, ASSISTANTS, AI_SETUP_PATH } from '../contract/askAi.ts'
 import { useLoad } from '../state/useApi.ts'
 import { resultPath } from '../nav/nav.config.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
@@ -110,33 +110,43 @@ function useReportFrame() {
  * instead of hiding a capability the caller has.
  */
 /**
- * ASK AI — the control the shell strips from every client report and never put back.
+ * ASK AI — one press opens the reader's own assistant with the question typed in.
  *
- * The full clearance report carries an "Ask your AI about this run" band. `prepareReportForEmbed` strips
- * it from every client-facing framed report because the band names the STAFF host — and unlike the
- * report's Export menu, which the shell strips and then reproduces here, nothing reproduced this one.
- * The knockout renderer never had a band at all. So no client, on any run kind, could reach one.
+ * THE DEFECT THE OWNER WATCHED. A lawyer pressed this, read a panel holding two monospace strings with a
+ * Copy link each — a question carrying a full run code, and a connector address — dismissed it, and went
+ * to Claude to type a question by hand. Nothing said which string was needed or where it went. The
+ * address is needed once, when an assistant is first connected, and the Use your own AI page already
+ * hands it out with steps per app; on a report it was shown every time, to everybody.
+ *
+ * THREE STATES, AND THE THIRD IS THE ONE THAT IS EASY TO GET WRONG.
+ *   · Connected  — a menu: Ask Claude, Ask ChatGPT, and a quiet way to connect another.
+ *   · Never connected — a panel: what to do once, and a way past it for anyone the log has not caught up
+ *     with. A reader whose connector state could not be measured lands here too, deliberately: see
+ *     `askAiOffer`. Showing the menu instead would open an assistant that cannot see this report, which
+ *     is the dead end this control exists to end.
+ *   · No connector on this installation — nothing is drawn. A button that can do nothing is not a button,
+ *     and a panel explaining the absence was turned down.
  *
  * DRAWN FOR EVERY RUN KIND, and not gated on the framed document. It sends no bridge command and needs
- * nothing of the report: the question is composed from the run, and the address is the deployment's.
- * That is the difference from Export, which can only offer what the document defines.
+ * nothing of the report: the question is composed from the run. That is the difference from Export,
+ * which can only offer what the document defines.
  *
- * THE ADDRESS IS THE CLIENT DOOR. Re-introducing the staff host through a control the shell draws itself
- * would defeat the strip rather than complete it — so it comes from /portal/api/mcp-access, which
- * reports the client connector or null, and a null renders as an honest sentence rather than a host that
- * will not connect.
+ * NO ADDRESS HERE, IN ANY STATE. The band is stripped from client reports precisely because it names the
+ * staff host; a control the shell draws itself that re-introduced an address would defeat that strip
+ * rather than complete it.
  */
-function AskAiMenu({ runId, mark, ctx }: {
-  readonly runId: string
-  readonly mark: string | null
+function AskAiMenu({ run, ctx }: {
+  readonly run: { readonly markName: string | null; readonly date: string | null; readonly kind: 'clearance' | 'knockout-batch' }
   readonly ctx: ShellContext
 }) {
   const [open, setOpen] = useState(false)
-  const [copied, setCopied] = useState<string | null>(null)
+  // Set by "Already connected? Ask anyway", and only for as long as this menu is mounted. It is an
+  // escape from a measurement that may be behind, not a preference, so nothing is stored.
+  const [askAnyway, setAskAnyway] = useState(false)
   const box = useRef<HTMLDivElement | null>(null)
   const { result } = useLoad(() => api.mcpAccess(), [])
   const access = result?.kind === 'ok' ? result.value : null
-  const offer = askAiOffer(runId, mark, access)
+  const offer = askAiOffer(run, access)
 
   useEffect(() => {
     if (!open) return
@@ -150,34 +160,22 @@ function AskAiMenu({ runId, mark, ctx }: {
     }
   }, [open])
 
-  const copy = (what: string, value: string) => {
-    // navigator.clipboard is absent on an insecure origin and in some embedded views. Failing silently
-    // would leave a button that does nothing, which is the class the bridge's commandFailed reply exists
-    // to end — so the label says what happened either way.
-    void (async () => {
-      try { await navigator.clipboard?.writeText(value); setCopied(what) }
-      catch { setCopied(`${what}-failed`) }
-    })()
+  if (!offer.drawn) return null
+
+  const showMenu = offer.connected || askAnyway
+
+  // A new tab, and the question is typed in rather than sent — the reader still reads it before it goes.
+  const ask = (href: string) => {
+    setOpen(false)
+    window.open(href, '_blank', 'noopener,noreferrer')
   }
 
-  const line = (label: string, value: string, key: string) => (
-    <div style={{ padding: '7px 10px' }}>
-      <div style={{ fontSize: 11, color: 'var(--text-faint)', marginBottom: 3 }}>{label}</div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <span className="mono" style={{ fontSize: 12, color: 'var(--text-strong)', wordBreak: 'break-all', flex: 1 }}>{value}</span>
-        <button type="button" className="link-btn" style={{ fontSize: 12, flex: 'none' }} onClick={() => copy(key, value)}>
-          {copied === key ? 'Copied' : copied === `${key}-failed` ? 'Copy failed' : 'Copy'}
-        </button>
-      </div>
-    </div>
-  )
-
   return (
-    <div ref={box} style={{ position: 'relative' }}>
+    <div ref={box} style={{ position: 'relative' }} data-ask-ai={showMenu ? 'menu' : 'connect'}>
       <button
         type="button"
         className="nav-item"
-        aria-haspopup="menu"
+        aria-haspopup={showMenu ? 'menu' : 'dialog'}
         aria-expanded={open}
         style={{ width: 'auto', margin: 0, padding: '6px 11px', border: '1px solid var(--border-hairline)' }}
         onClick={() => setOpen((v) => !v)}
@@ -185,34 +183,58 @@ function AskAiMenu({ runId, mark, ctx }: {
         <Icon name="sparkles" size={14} />
         <span>Ask AI</span>
       </button>
-      {open ? (
-        <div className="float" role="menu" style={{ position: 'absolute', right: 0, top: 38, width: 320, padding: 6, zIndex: 50 }}>
-          {line('Say this to your assistant', offer.question, 'question')}
-          {offer.address
-            ? line('Connector address', offer.address, 'address')
-            : (
-              /* NOT SET UP HERE — AND THE BAND POINTS RATHER THAN TEACHES.
-                 The finalized design rules that the band "stops teaching setup inline and carries one
-                 line into this page": teaching connection inside a report is the fancy-readme problem in
-                 miniature. So a reader with no address gets the reason and one way forward, and the page
-                 is where the route that works for THEIR deployment is derived — including the local
-                 one-liner, which is 1959's half and belongs there, not repeated here. */
-              <p style={{ margin: 0, padding: '7px 10px', fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.5 }}>
-                {offer.stdio
-                  ? 'This deployment has no published address, but your assistant can connect to it directly. '
-                  : 'No connector is set up on this deployment yet, so there is no address to paste. '}
-                The question above is what to ask once it is connected.
-              </p>
-            )}
+      {open && showMenu ? (
+        <div className="float" role="menu" style={{ position: 'absolute', right: 0, top: 38, width: 236, padding: 6, zIndex: 50 }}>
+          {ASSISTANTS.map((a) => (
+            <button
+              key={a.label}
+              type="button"
+              role="menuitem"
+              className="nav-item"
+              style={{ fontSize: 13, padding: '7px 10px', margin: 0, justifyContent: 'space-between' }}
+              onClick={() => ask(a.href(offer.question))}
+            >
+              <span>{a.label}</span>
+              <Icon name="arrow-right" size={14} />
+            </button>
+          ))}
           <div style={{ height: 1, background: 'var(--border-hairline)', margin: '5px 8px' }} />
           <button
             type="button"
             role="menuitem"
             className="nav-item"
-            style={{ fontSize: 13, padding: '7px 10px' }}
-            onClick={() => { setOpen(false); ctx.go(offer.instructionsPath) }}
+            style={{ fontSize: 13, padding: '7px 10px', margin: 0, justifyContent: 'space-between', color: 'var(--text-muted)' }}
+            onClick={() => { setOpen(false); ctx.go(AI_SETUP_PATH) }}
           >
-            How to connect your assistant
+            <span>Connect another AI</span>
+          </button>
+        </div>
+      ) : null}
+      {open && !showMenu ? (
+        <div
+          className="float"
+          role="dialog"
+          aria-label="Connect your AI first"
+          style={{ position: 'absolute', right: 0, top: 38, width: 276, padding: 12, zIndex: 50, display: 'grid', gap: 9 }}
+        >
+          <div style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--text-strong)' }}>Connect your AI first</div>
+          <p style={{ margin: 0, fontSize: 12.5, color: 'var(--text-muted)', lineHeight: 1.5 }}>
+            Connect Claude or ChatGPT once. After that, this button opens it with a question about this report typed in.
+          </p>
+          <button
+            type="button"
+            className="btn-primary"
+            style={{ fontSize: 13, padding: '6px 11px', justifySelf: 'start', display: 'inline-flex', alignItems: 'center', gap: 6 }}
+            onClick={() => { setOpen(false); ctx.go(AI_SETUP_PATH) }}
+          >
+            Set it up <Icon name="arrow-right" size={14} />
+          </button>
+          {/* THE ESCAPE FROM A MEASUREMENT THAT CAN BE BEHIND. "Connected" is read off the tail of the
+              connector's access log, so a reader who connected long enough ago to have fallen out of
+              that window — or one on an installation whose log could not be read at all — lands here
+              wrongly. One press puts them where they should have been, and costs them nothing. */}
+          <button type="button" className="link-btn" style={{ fontSize: 12.5, justifySelf: 'start' }} onClick={() => setAskAnyway(true)}>
+            Already connected? Ask anyway
           </button>
         </div>
       ) : null}
@@ -561,7 +583,7 @@ export function Result({
         {/* EVERY RUN KIND, and beside Export rather than instead of it: Export
             drives the framed document and can only offer what that document defines; this drives the
             reader's own assistant and needs nothing of the report. */}
-        <AskAiMenu runId={run.runId} mark={run.markName} ctx={ctx} />
+        <AskAiMenu run={run} ctx={ctx} />
         {/* THE COMMAND ROWS ARE GATED ON WHAT THE DOCUMENT SAYS IT HAS, not on the run's kind —
             and the AUDIT DOWNLOAD is gated on neither, because it is a run-level file the
             renderer never had anything to do with. Null controls means the frame has not announced yet

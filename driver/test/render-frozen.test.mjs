@@ -1769,7 +1769,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Advanced again by the break recorded above the FROZEN constant: seven fixed sentences on the
 // clearance page, which is a behaviour change and not licence-only, so both constants move for the same
 // measured reason.
-const FROZEN_BEFORE_SPDX = "8dd38aef74b3e67f0528273cbd135c8321665784d46f6820535016c55d18fc64";
+const FROZEN_BEFORE_SPDX = "fb41ccf65827b2c2026b5fc4267d13fa8da323de1c2395a7d3f04a968a95b2e4";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2044,7 +2044,39 @@ const FROZEN_BEFORE_SPDX = "8dd38aef74b3e67f0528273cbd135c8321665784d46f68205350
 //
 // The renderer's own lines are edited in place and its two new helpers sit at the end of the file, so no
 // line the rest of the tree cites by number moved.
-const FROZEN = "9303411196d233dc66e216474335f041b6084e4af4b30f9936c8bb618a72ae77";
+//
+// ── BREAK: the Ask-AI band comes out of the report ──────────────────────────────────────────────────
+//
+// WHAT WENT. `askAi()`, the "Ask your AI about this run" banner under the verdict; the `mcpUrl`
+// resolution that fed it, including the run-scoped token it minted into the page; the `.askai-copy`
+// click handler in the inline script; and the now-unused `mintToken` import. The renderer no longer
+// composes a question, names a connector, or embeds a credential.
+//
+// WHY, answering this file's own checklist rather than around it:
+//
+//   1. IS IT REACHABLE FROM A REPUBLISH? Yes, and that is the point. `doRepublish()` re-renders archived
+//      runs, so every report re-rendered from here on loses the band — which is what "the band comes out
+//      of the report for everyone" means. A delivered document that is never re-rendered keeps its own
+//      bytes and keeps its band; nothing reaches back and rewrites a file already sent.
+//   2. COULD IT LIVE IN report.css OR brand.mjs? No. It is markup, a click handler and a minted token,
+//      and neither file carries any of the three. Hiding it in CSS would leave the credential in the
+//      document, which is the half of this that is worth doing on its own.
+//   3. THE HASH MOVES HERE, in the commit that ships it, and FROZEN_BEFORE_SPDX advances with it because
+//      this is not licence-only.
+//
+// THE DECISION IS THE OWNER'S, 2026-09-15: the report's band and the shell's header button were two
+// Ask-AI controls on one screen for staff, and he approved the design that leaves one. The report was
+// the wrong one to keep — it teaches connection inside a document, names the staff host, and on every
+// render minted a read-only token into a file that gets forwarded. The control that survives is the
+// portal's, which opens the reader's own assistant and carries no address at all.
+//
+// WHAT STILL STRIPS. `ASKAI_RE` in driver/portal-report.mjs stays and now runs for every reader, not
+// only clients: reports rendered before this commit are served as baked bytes and still carry the band.
+// Deleting the strip would put the staff host back in front of whoever opens an archived run.
+//
+// A LINE-COUNT NOTE: this removes lines from the middle of render.mjs, so citations aimed INTO it below
+// the band move. `scripts/citation-line-check.mjs` is the instrument; it ran clean on this commit.
+const FROZEN = "30d9b4e881b80bba648332ac544a0943a241ea3cb62d0774ed55d77354f28b53";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

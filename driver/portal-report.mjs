@@ -799,14 +799,28 @@ export function prepareReportForEmbed(html, { staff = false, poolRoot = null, fe
   let ratedUnderDropped = 0;
   out = out.replace(RATED_UNDER_RE, () => { ratedUnderDropped += 1; return ""; });
 
-  // Staff keep their own connector block; a client must not see the staff host it points at.
+  // ── THE ASK-AI BAND COMES OUT FOR EVERY READER ──────────────────────────────────────────────────
+  //
+  // It used to come out for clients only, on the ground that the band names the STAFF host and staff may
+  // see it. That left two Ask-AI controls on one staff screen — this band with the staff address and its
+  // setup steps, and the shell's own header button — and the owner ruled on 2026-09-15 that there is one.
+  // The renderer stopped drawing it in that same change.
+  //
+  // SO THIS STRIP IS NOT DEAD CODE, AND THAT IS THE REASON IT RUNS UNCONDITIONALLY. Every report
+  // rendered before that commit is served from its baked bytes and still carries a band naming the staff
+  // host. Removing the strip on the argument that nothing emits one any more would put that host back in
+  // front of whoever opens an archived run, staff and client alike, and the archive is where most of the
+  // reports are.
   let mcpLeaks = 0;
   let internalTailsDropped = 0;
   let reviewerCodesDropped = 0;
+  out = stripBalanced(out, ASKAI_RE, "details", note).html;
   if (!staff) {
-    out = stripBalanced(out, ASKAI_RE, "details", note).html;
     // Assert, do not assume. `.askband` markup is nested, so a non-greedy match could stop early and
     // leave the host behind in a sibling node. Anything surviving is redacted and counted.
+    //
+    // CLIENT-ONLY, and deliberately: this catches an MCP host anywhere in the document, not only inside
+    // the band, and the staff bytes elsewhere in a report are the designed rendering rather than a leak.
     out = out.replace(MCP_HOST_RE, () => {
       mcpLeaks += 1;
       return "";

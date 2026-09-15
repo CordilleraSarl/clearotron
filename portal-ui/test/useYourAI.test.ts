@@ -204,33 +204,18 @@ test('every allowance sentence is still off the page', () => {
   }
 })
 
-test('PARITY: the recipes the delivered report carries are the ones the hand-setup page carries', () => {
-  // The page half of this parity MOVED rather than died. It used to join this screen's per-assistant
-  // steps to `render.mjs`'s askAi band, so a reader who set up from a report and a reader who set up
-  // from the portal followed the same instructions. The ruling took recipes off the page — they are now
-  // reached through its one link — so the join is between the REPORT and the HAND-SETUP DOC.
-  //
-  // Deleting it instead would have been wrong: the report still carries recipes, so a join between two
-  // surfaces that must agree still has two sides. Read off each file's source rather than a shared
-  // helper, because `render.mjs` is byte-frozen at a content hash and exporting from it to import here
-  // would move that hash for a test's convenience.
-  // THE ANCHOR STOPS AT THE LABEL'S FIRST WORDS, not at its closing quote. A later change put a
-  // dated stamp inside that label — `Set up Claude <span…>· ✓ Checked 4 September 2026</span>` — and the
-  // old anchor required the quote immediately after "Claude", so it matched nothing and this arm failed
-  // with "the report no longer carries its own set-up block" on a report that very much did. A slice
-  // that reads -1 or empty is a could-not-look, and the assert below is what turns it into one rather
-  // than letting the parity pass over an empty string.
-  const band = /steps\('Set up Claude[\s\S]*?steps\('Set up ChatGPT'[^\n]*/.exec(read('../../driver/publish/render.mjs'))?.[0] ?? ''
-  assert.ok(band, 'the report no longer carries its own set-up block — if so, this parity is moot and should be deleted')
-  const doc = read('../../mcp-server/CONNECT.md')
-  for (const [who, needle] of [
-    ['Claude', 'Settings → Connectors → **Add custom connector**'],
-    ['ChatGPT', 'Settings → Connectors → Advanced → **Developer mode**'],
-  ] as const) {
-    assert.ok(doc.includes(needle), `the hand-setup page no longer opens ${who}'s recipe the way the report does`)
-    assert.ok(band.includes(needle.replace(/\*\*/g, '')), `the report's ${who} recipe drifted from the hand-setup page`)
-  }
-})
+// THE RECIPE PARITY IS GONE BECAUSE ONE SIDE OF IT IS.
+//
+// It joined this screen's per-assistant steps to the set-up block inside `render.mjs`'s Ask-AI band, so
+// that a reader who set up from a report and a reader who set up from the portal followed the same
+// instructions. The owner's 2026-09-15 ruling took the band out of the report: a report no longer
+// carries a recipe, an address, or a question, and the only route to a connector is this page.
+//
+// Its own comment said what to do here — "the report no longer carries its own set-up block — if so,
+// this parity is moot and should be deleted". Kept instead, it would have anchored on a pattern that
+// matches nothing and failed forever for the wrong reason; loosened to survive, it would have gone green
+// over an empty string. What replaces it is not another parity but the absence the ruling created, held
+// in driver/test/render-frozen.test.mjs by the content hash itself.
 
 test('THE KEY NEVER REACHES STATE, A PROP OR THE DOM — except the one degraded path', () => {
   // Ruling 2026-08-31: "The page never shows a key, in any state", and the reason that shapes the

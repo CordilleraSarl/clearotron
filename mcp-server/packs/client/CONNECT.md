@@ -1,21 +1,25 @@
 # Connect your AI to your clearance report
 
-Your report has an **"Ask your AI"** panel with a personal connector address. It is scoped to this
-one search, read-only, and self-contained — adding it takes a minute.
+Connect once, and the **Ask AI** button on any of your reports opens Claude or ChatGPT with a question
+about that report already typed in.
 
-**Treat the address like the report itself**: it embeds your access credential. Don't forward it
-beyond the people who may read the report. It expires on its own (typically 30 days).
+Your connector address is on the **Use your own AI** page in the portal, not on the report. It is
+read-only and takes a minute to add.
+
+**Treat the address like the report itself**: it carries your access. Don't forward it beyond the
+people who may read the report.
 
 ## Claude — Desktop or claude.ai (recommended)
 
 1. **Settings → Connectors** (paid plan required).
-2. **Add custom connector** → paste the address from your report → **Add**.
-3. Ask: *"Brief me on this clearance search."*
+2. **Add custom connector** → paste the address from the Use your own AI page → **Add**.
+3. Open a report and press **Ask AI → Ask Claude**.
 
 ## ChatGPT — Business / Enterprise / Edu
 
 1. **Settings → Connectors → Advanced → Developer mode** (an admin may need to enable it).
 2. **Add a connector / MCP server** → paste the address.
+3. Open a report and press **Ask AI → Ask ChatGPT**.
 
 ## Command-line / IDE tools (Claude Code, Cursor, …)
 

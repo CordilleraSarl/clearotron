@@ -788,6 +788,16 @@ export type McpAccess = {
    */
   readonly stdio: { readonly command: string; readonly note: string; readonly verify: string } | null
   /**
+   * Whether this reader's assistant has been seen calling a connector on this installation.
+   *
+   * THREE VALUES, AND NOT ONE OF THEM IS OPTIONAL. `null` means the installation could not be asked —
+   * the connector's access log does not exist yet, or could not be read — which is a different fact
+   * from `false`, and a screen that collapsed them would be claiming a measurement nobody took. It is
+   * declared non-optional for the reason an optional field on this type once went undecoded for months
+   * and drew a state nobody had ever seen: an optional property makes a missing decode invisible.
+   */
+  readonly aiConnected: boolean | null
+  /**
    * Every assistant, ALREADY RESOLVED against this deployment.
    *
    * The browser used to hold its own client table and derive offered-versus-withheld from `url`,
@@ -2232,6 +2242,11 @@ export const api = {
       keyUrl: asString(b['keyUrl']),
       email: asString(b['email']),
       enabled: b['enabled'] === true,
+      // TRUE, FALSE AND "COULD NOT BE ASKED" — anything that is not a boolean on the wire is the third
+      // one. An older server that does not send this field reads as null, which draws the connect panel,
+      // which is the state that costs a reader one press rather than an assistant that cannot see the
+      // report.
+      aiConnected: typeof b['aiConnected'] === 'boolean' ? (b['aiConnected'] as boolean) : null,
       // — VALIDATED, not spread. A wire field is untrusted input like any other,
       // and a half-formed object here would render a Copy button over an undefined command.
       stdio: (() => {
