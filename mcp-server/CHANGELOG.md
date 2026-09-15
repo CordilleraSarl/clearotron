@@ -1,5 +1,9 @@
 # trademark-artifacts-mcp
 
+## 0.3.1-beta.4
+
+No changes in this release.
+
 ## 0.3.1-beta.3
 
 ### Patch Changes
