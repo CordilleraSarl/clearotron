@@ -75,7 +75,7 @@ function importsIn(src) {
       // in a console message read as a computed import whose argument is `s`, and the guard reported
       // an unaccounted dynamic import in a file that has none. Two of them, in a private ops script,
       // for however long that message has existed; every overlay run carried them as undeclared reds
-      // and the accused file had nothing to repair (tracker issue 569).
+      // and the accused file had nothing to repair.
       //
       // The comment two lines up already had the reasoning: comment lines are skipped "because they
       // describe imports, not make them". A string literal describes them too, and that thought
@@ -123,7 +123,7 @@ const ACCOUNTED = [
   // a call being ASSEMBLED AS TEXT for a child script, and the extractor could not tell that from a
   // call in this file — so it needed an exemption to stay quiet. It can tell now, the entry accounts
   // for nothing, and the guard refused it on exactly the rule it states: an entry that accounts for
-  // nothing hides the next one. Two more like it were the whole of tracker issue 569.
+  // nothing hides the next one. Two more entries like it were the whole of what that sweep found.
 ];
 
 test("every computed import() in the tracked corpus is a file URL, a portable specifier, or accounted for", (t) => {
