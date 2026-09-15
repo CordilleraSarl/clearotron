@@ -5786,8 +5786,8 @@
       "ext": "ts",
       "perFile": {
         "api.test.ts": {
-          "tests": 44,
-          "asserts": 176,
+          "tests": 45,
+          "asserts": 183,
           "skips": 0,
           "todos": 0
         },
@@ -5919,7 +5919,7 @@
         },
         "home.test.ts": {
           "tests": 56,
-          "asserts": 193,
+          "asserts": 196,
           "skips": 0,
           "todos": 0
         },

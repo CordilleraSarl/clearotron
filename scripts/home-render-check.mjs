@@ -115,6 +115,19 @@ const STATES = {
     expectCards: 0, expectQueue: 0, expectFirstCardPips: 0, expectStops: 0,
     expectStopped: 1, expectStoppedText: /1 stopped recently/,
   },
+  // LIVE WORK AND A RECENT FAILURE ON ONE SCREEN — the state the whole change is about, and the one
+  // neither scene above shows. Each of those has an empty band, so they prove the fold exists without
+  // ever showing what it was for: a failure sitting quietly UNDER work that is still running, instead of
+  // above it crowding the band out.
+  bothd: {
+    runs: [
+      run({ runId: 'r', mark: 'CORAL FREEZE', state: 'running', step: 'Register sweeps', stepN: 2, stepTotal: 9, startedAt: ago(41) }),
+      run({ runId: 'x', mark: 'HALCYON', state: 'failed', date: TODAY, failedStage: 'at register sweeps', reason: 'A register was unreachable. Nothing was delivered.' }),
+      ...FINISHED,
+    ],
+    expectCards: 1, expectQueue: 0, expectFirstCardPips: 9, expectStops: 1,
+    expectStopped: 1, expectStoppedText: /1 stopped recently/,
+  },
   // Stopped on purpose — terminal, and never dressed as a failure. Same fold, same reason.
   stopped: {
     runs: [run({ runId: 'z', mark: 'GLASSWING', state: 'cancelled', date: TODAY }), ...FINISHED],
@@ -539,7 +552,10 @@ for (const [name, spec] of Object.entries(STATES)) {
         `${name}/${theme}: the fold states what stopped ("${out.stoppedToggle}")`)
       say(out.stoppedCards === spec.expectStopped,
         `${name}/${theme}: ${out.stoppedCards} stopped card(s) behind it (expected ${spec.expectStopped})`)
-      say(out.cards === 0, `${name}/${theme}: and the live band is empty (${out.cards} cards)`)
+      // WHAT THE BAND HOLDS IS `expectCards`, ASSERTED ABOVE, AND NOT ZERO HERE. This said zero, which
+      // was true of both scenes that existed when it was written — each has a stopped run and no live
+      // work — so it read as "failures left the band" while actually asserting "nothing is running".
+      // The scene with both on screen is what told them apart.
     }
     // AND IT SAYS NO RUNG. "Depth 4" / "Stage 1" are internal; a client screen must never carry either.
     if (spec.expectCards) say(!/\b(Depth|Stage)\s*\d/i.test(out.depthText),
