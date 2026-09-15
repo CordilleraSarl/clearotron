@@ -441,12 +441,15 @@ export async function probeEngineTurn({
   }
 
   const restore = applyEngineEnv(env);
-  // THE COPY THAT RUNS, resolved the way the adapter resolves it: by the one resolver, inside the environment
-  // the turn runs in. The sign-in advice names it when it is the copy Clearotron installed, which is not on
-  // PATH. A resolver that cannot answer leaves the advice naming the bare word, as it always did.
   let program = null;
-  try { const r = resolveEngineProgram(id); program = r.resolved ? { source: r.source, path: r.resolved } : null; } catch { /* the bare word */ }
   try {
+    // THE COPY THAT RUNS, resolved the way the adapter resolves it: by the one resolver, inside the
+    // environment the turn runs in. The sign-in advice names it when it is the copy Clearotron installed,
+    // which is not on PATH. AFTER applyEngineEnv, NEVER BEFORE: the resolver reads this process's
+    // environment, and the caller's program setting is only there from that line until `restore()`, so above
+    // it this would name whatever copy the shell happened to point at. Inside the try, so the `finally` puts
+    // the environment back whatever it does. A resolver that cannot answer leaves the bare word.
+    try { const r = resolveEngineProgram(id); program = r.resolved ? { source: r.source, path: r.resolved } : null; } catch { /* the bare word */ }
     const tuple = await turn({ message: PROBE_PROMPT, model: PROBE_MODEL, thinking: PROBE_THINKING, timeoutSec, stallSec });
     return classifyProbe({ engine: id, tuple, timeoutSec, auth, program });
   } catch (e) {
