@@ -299,9 +299,9 @@ export const ARM1_EXEMPTIONS = [
  * than silently enjoyed, and so a validator that LATER gains a stage is noticed.
  */
 export const STAGE_UNREACHABLE_VALIDATORS = [
-  { validator: "findings", site: "driver/verify.mjs:1661", reason: "no STAGES entry names it; synthesis validates findings.json through validators.narrative's sibling checks instead" },
-  { validator: "report", site: "driver/verify.mjs:1719", reason: "report.md is ASSEMBLED by the driver (assembleReportMd); the validator survives as a post-assembly structural gate outside the stage table" },
-  { validator: "audit", site: "driver/verify.mjs:1728", reason: "reached only through the MCP server's dynamic validators[key] lookup, which declares it required" },
+  { validator: "findings", site: "driver/verify.mjs:2274", reason: "no STAGES entry names it; synthesis validates findings.json through validators.narrative's sibling checks instead" },
+  { validator: "report", site: "driver/verify.mjs:2332", reason: "report.md is ASSEMBLED by the driver (assembleReportMd); the validator survives as a post-assembly structural gate outside the stage table" },
+  { validator: "audit", site: "driver/verify.mjs:2370", reason: "reached only through the MCP server's dynamic validators[key] lookup, which declares it required" },
   { validator: "clientSummary", site: "driver/verify.mjs:1736", reason: "the client-summary STAGE was deleted 2026-08-01 (no line to cite: the stage is gone); the validator was not" },
 ];
 
