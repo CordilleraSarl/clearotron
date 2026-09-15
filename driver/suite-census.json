@@ -1445,7 +1445,7 @@
         },
         "connect-clients-are-data.test.mjs": {
           "tests": 17,
-          "asserts": 87,
+          "asserts": 91,
           "skips": 0,
           "todos": 0
         },
