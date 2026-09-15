@@ -4029,9 +4029,39 @@ export function makeHttpHandler({ verify, limiter, service, log = () => {}, devI
   // `extra` exists so a response can carry a CSP. Before this the content-type was hardcoded and there
   // was no way to attach one — which is why the portal shipped without a policy rather than with a
   // permissive one.
+  // ── EVERY JSON RESPONSE SAYS HOW IT MAY BE CACHED, because leaving it unsaid is the defect ────────
+  //
+  // This writer used to send `content-type` and `content-length` and nothing else — no `Cache-Control`,
+  // no `Vary`, no validator — so what a browser did with a signed-in response carrying another
+  // company's material was the browser's decision and not ours. With no `Last-Modified` to work from a
+  // heuristic cache may well store nothing; the defect is not a demonstrated leak, it is that the answer
+  // was never stated for a response behind a session.
+  //
+  // THE ARGUMENT WAS ALREADY MADE HERE, FOR ONE ROUTE. `/portal/api/connect-key` has always set
+  // `no-store` because "a credential sitting in a proxy or a disk cache is the 'outlives the moment'
+  // failure ... arriving by a route the page cannot see". An access list is not a credential and has the
+  // same property, so the rule belongs to the class rather than to the one response that carried a
+  // token.
+  //
+  // `Vary: Accept` IS NOT ABOUT PRIVACY. `/portal/admin/*` is one address served two ways: the app
+  // fetches JSON there, and a browser navigation gets the app document instead (portal-static.mjs
+  // decides on `Accept`, above this router). Nothing told a cache those were different responses, so a
+  // stored JSON body could answer a later navigation and render raw data in a window — with this server
+  // never asked, which is why the negotiation above could not save it.
+  //
+  // A ROUTE'S OWN HEADERS STILL WIN. `extra` is spread last, so connect-key keeps its stricter set
+  // (`no-cache, must-revalidate, private` and the HTTP/1.0 `pragma`) rather than being flattened to this
+  // default. The arm below pins that, because a default that quietly relaxed a stricter route would be
+  // this change making things worse while reading as an improvement.
   const send = (res, status, obj, extra = {}) => {
     const b = JSON.stringify(obj);
-    res.writeHead(status, { "content-type": "application/json", "content-length": Buffer.byteLength(b), ...extra });
+    res.writeHead(status, {
+      "content-type": "application/json",
+      "content-length": Buffer.byteLength(b),
+      "cache-control": "no-store",
+      "vary": "accept",
+      ...extra,
+    });
     res.end(b);
   };
   return async function handler(req, res) {
