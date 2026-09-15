@@ -99,6 +99,22 @@ test("the cloud menu marks Amazon Bedrock as not yet tested, and only there", ()
   assert.match(readFileSync(ONBOARD, "utf8"), /await choose\("Which cloud account pays\?", CLOUD_CHOICES,/);
 });
 
+test("setup's skip line for a Foundry deployment name says when skipping works", () => {
+  // With no pin the program asks Foundry for a deployment named after the model. That resolves only where
+  // the reader deployed the model under exactly that name; anywhere else every turn of the tier is refused.
+  // The old line, "the program's own default name is used", was true and read as safe everywhere.
+  const foundry = CLOUD_CHOICES.find((c) => c.id === "foundry");
+  const pins = foundry.asks.filter((a) => /^ANTHROPIC_DEFAULT_[A-Z]+_MODEL$/.test(a.env));
+  assert.equal(pins.length, 3, "the Foundry questions no longer ask three deployment names");
+  for (const a of pins) {
+    assert.equal(a.skippable, true, `${a.env} can no longer be skipped`);
+    assert.equal(a.skipped, "Not set: the program asks for a deployment named after the model, which works only if you deployed it under that name.",
+      `${a.env}: the skip line does not say when skipping works`);
+  }
+  // CONTROL: the key's skip line is about the Azure sign-in and keeps its own words.
+  assert.equal(foundry.asks.find((a) => a.env === "ANTHROPIC_FOUNDRY_API_KEY").skipped, "No key: the Azure sign-in on this machine is used.");
+});
+
 test("setup's proof turn and doctor carry the fable tier's pin, and setup does not ask for it", () => {
   // A stage asks for fable only through the synthesis override, so setup's questions stay at the three
   // deployment names every run reaches. A reader who sets the override writes the fourth pin by hand, and

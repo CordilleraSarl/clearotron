@@ -164,9 +164,15 @@ export const CLOUD_CHOICES = Object.freeze([
     asks: [
       { env: "ANTHROPIC_FOUNDRY_RESOURCE", q: "Foundry resource name:" },
       { env: "ANTHROPIC_FOUNDRY_API_KEY", q: "Its key:", secret: true, skippable: true, skipped: "No key: the Azure sign-in on this machine is used." },
-      { env: "ANTHROPIC_DEFAULT_OPUS_MODEL", q: "Your Opus deployment name:", skippable: true, skipped: "Not set: the program's own default name is used." },
-      { env: "ANTHROPIC_DEFAULT_SONNET_MODEL", q: "Your Sonnet deployment name:", skippable: true, skipped: "Not set: the program's own default name is used." },
-      { env: "ANTHROPIC_DEFAULT_HAIKU_MODEL", q: "Your Haiku deployment name:", skippable: true, skipped: "Not set: the program's own default name is used." },
+      // SKIPPING IS SAFE ONLY UNDER ONE CONDITION, and the line says which. With no pin the program asks
+      // Foundry for a deployment named after the model, which resolves only if the reader deployed it under
+      // exactly that name; otherwise every turn of that tier is refused (the proof turn catches it).
+      { env: "ANTHROPIC_DEFAULT_OPUS_MODEL", q: "Your Opus deployment name:", skippable: true,
+        skipped: "Not set: the program asks for a deployment named after the model, which works only if you deployed it under that name." },
+      { env: "ANTHROPIC_DEFAULT_SONNET_MODEL", q: "Your Sonnet deployment name:", skippable: true,
+        skipped: "Not set: the program asks for a deployment named after the model, which works only if you deployed it under that name." },
+      { env: "ANTHROPIC_DEFAULT_HAIKU_MODEL", q: "Your Haiku deployment name:", skippable: true,
+        skipped: "Not set: the program asks for a deployment named after the model, which works only if you deployed it under that name." },
     ] },
   // AMAZON IS OFFERED AND MARKED, because nobody has run Claude through a Bedrock account with it yet. The
   // mark is on the menu row only: doctor's account wording (`account`) names the account, not our testing.
