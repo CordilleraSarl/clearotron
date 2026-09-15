@@ -1903,7 +1903,7 @@ export const ENGINE_BINARIES = {
     // running the searches", and `label` below is the MECHANISM, which is what took off that page.
     vendor: "Anthropic",
     // `product` is the name a reader knows the program by, beside the vendor in setup's engine question
-    // ("Claude (Anthropic)"). Not `fallback`, which is the command word and lower-case.
+    // ("Claude, by Anthropic"). Not `fallback`, which is the command word and lower-case.
     product: "Claude",
     env: "CLEAROTRON_CLAUDE_PATH", fallback: "claude",
     // The npm package that carries this program, and the oldest version setup installs: "this version or

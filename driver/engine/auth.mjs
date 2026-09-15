@@ -59,7 +59,7 @@ export const CLOUD_SWITCH = Object.freeze({ vertex: "CLAUDE_CODE_USE_VERTEX", fo
 // bills rather than whatever the shell happened to hold.
 //
 // THE FABLE PIN IS ON IT, THOUGH SETUP NEVER ASKS FOR IT. The program reads a pin for every tier it takes as
-// an alias, fable included, and a stage asks for fable only through the synthesis override. On Foundry that
+// an alias, fable included, and no stage asks for fable unless an override names it. On Foundry that
 // alias resolves to nothing unless the pin names a deployment, so a reader who sets the override sets the
 // pin by hand, and doctor, setup's proof turn and a background start must carry it like the other three.
 //

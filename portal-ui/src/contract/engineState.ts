@@ -72,10 +72,10 @@ export type EngineFacts = {
 }
 
 /** The setup wizard as this reader can run it. Both spellings when the service did not say which. */
-const setupCommandWords = (route: EngineFacts['setupRoute']): string =>
-  route === 'packaged' ? '`npx clearotron install`'
-    : route === 'checkout' ? '`npm run setup`'
-      : '`npx clearotron install` (or `npm run setup` from a copy of the source)'
+// ONE COMMAND FOR EVERY READER. This page cannot know how its reader installed, and `npm run setup` exists
+// only in a source checkout, so the row names the command every install can run. The search screen's
+// notice is the one place that picks by route (one-name-per-command.test.mjs names it).
+const SETUP_COMMAND = '`npx clearotron install`'
 
 /** "a", "a and b", "a, b and c". */
 const listed = (xs: readonly string[], and = 'and'): string =>
@@ -182,7 +182,7 @@ export function engineRowFaults(
       ? []
       : engine.program
         ? [`The engine program \`${engine.program}\` cannot be found or run on this machine. `
-           + `Run the setup wizard, ${setupCommandWords(engine.setupRoute)}: it offers to install the program `
+           + `Run the setup wizard, ${SETUP_COMMAND}: it offers to install the program `
            + 'and proves it with one turn. '
            + "Then restart Clearotron's services, which look for the program when they start."]
         : ['The engine program cannot be found or run on this machine.']),

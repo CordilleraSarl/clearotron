@@ -66,9 +66,9 @@ test('one reading, no engine program anywhere: the row is not green and names bo
   assert.ok(row.length > 0, 'the configuration row is green while no engine program can be found')
   const sentence = row.join(' ')
   assert.match(sentence, /\bclaude\b/, 'the row does not name the program the reader has to install')
-  // SETUP INSTALLS THE PROGRAM NOW, so the row names setup, and both of its spellings when the service
-  // did not say which one this install can run.
-  assert.match(sentence, /Run the setup wizard, `npx clearotron install` \(or `npm run setup` from a copy of the source\): it offers to install the program/,
+  // SETUP INSTALLS THE PROGRAM NOW, so the row names setup, by the one command every install can run: this
+  // page cannot know how its reader installed, and `npm run setup` exists only in a source checkout.
+  assert.match(sentence, /Run the setup wizard, `npx clearotron install`: it offers to install the program/,
     'the row does not name the setup command that installs the program')
   assert.doesNotMatch(sentence, /npm install -g|re-reads its PATH|where the service can see it|the CLI\b/,
     'the row still gives the hand install, or the restart for PATH, from before setup installed the program')
@@ -76,10 +76,10 @@ test('one reading, no engine program anywhere: the row is not green and names bo
   // is paid for" is true only on some machines, and it is not this fault.
   assert.doesNotMatch(sentence, /paid for/, 'the missing-program row promises what setup does about payment')
   assert.match(sentence, /restart/i, 'the row does not say a restart is what makes the install visible')
-  for (const [route, command] of [['packaged', '`npx clearotron install`:'], ['checkout', '`npm run setup`:']] as const) {
+  for (const route of ['packaged', 'checkout'] as const) {
     const one = engineRowFaults({ ...reading.engine, setupRoute: route }).join(' ')
-    assert.ok(one.includes(`Run the setup wizard, ${command}`), `${route}: ${one}`)
-    assert.ok(!one.includes('from a copy of the source'), `${route}: both commands named where the route is known`)
+    assert.ok(one.includes('Run the setup wizard, `npx clearotron install`:'), `${route}: ${one}`)
+    assert.ok(!one.includes('npm run setup'), `${route}: a command that exists only in a source checkout, on a page any reader may open`)
   }
 
   assert.equal(notice.state, 'absent', 'the search screen offered the restart remedy to a machine with no program')
@@ -334,7 +334,7 @@ test('from the driver to the row: the state word names what pays, and a refused 
     'Searches will be refused over how this machine is set to pay. Check CLEAROTRON_AI_BILLING and the settings beside it.')
 })
 
-test('from the driver to the row: a missing program names the one setup command this install runs, and a disputed one the setting for its path', async () => {
+test('from the driver to the row: a missing program names the setup command every install can run, and a disputed one the setting for its path', async () => {
   // THE PROGRAM IS NAMED BY A PATH THAT DOES NOT EXIST, so it is missing on any machine: a path setting
   // that is set is not second-guessed by a copy setup installed.
   const nowhere = join(mkdtempSync(join(tmpdir(), 'no-program-')), 'not-here')
@@ -345,10 +345,9 @@ test('from the driver to the row: a missing program names the one setup command 
     assert.equal(wire['engine']['programSetting'], setting, `${id}: the service names another setting`)
     const text = row.faults.join(' ')
     assert.equal(row.ok, false, `${id}: green with no program`)
-    const command = route === 'packaged' ? '`npx clearotron install`' : '`npm run setup`'
-    assert.ok(text.includes(`Run the setup wizard, ${command}:`), `${id}: the row does not name this install's setup command: ${text}`)
-    assert.ok(!text.includes('from a copy of the source'),
-      `${id}: the row names both setup commands although the service said which one this install runs: ${text}`)
+    assert.ok(text.includes('Run the setup wizard, `npx clearotron install`:'), `${id}: the row does not name the setup command: ${text}`)
+    assert.ok(!text.includes('npm run setup'),
+      `${id}: the row names a command that exists only in a source checkout, on a page any reader may open: ${text}`)
 
     // THE PROGRAM FOUND HERE AND NOT BY THE ENGINE: the row names the setting that holds its full path.
     const disputed = await rowFromEnvironment({ ...HERE, CLEAROTRON_AI: id }, { programDisputed: true })

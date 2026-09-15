@@ -160,7 +160,7 @@ export function menuScreen(question, options, def = 0, after = []) {
 export function payQuestion({ engineId, eng, bin }) {
   if (engineId === "anthropic-agent") return { question: CLAUDE_PAY_QUESTION, answers: CLAUDE_PAY_ANSWERS };
   return {
-    question: `How does this box pay for ${engineId}?`,
+    question: `How is ${eng.product ?? engineId} paid for on this machine?`,
     answers: [
       { id: "subscription", label: `Subscription — ${namingProgram(eng.subscriptionHow, eng, bin)}` },
       { id: "api-key", label: `API key — metered per token, from ${eng.apiKeyEnv}` },
@@ -3628,10 +3628,11 @@ try {
                mark: bracketAsciiCells(), columns: process.stdout.columns }));
   say("");
   say(`  ${style.bold("Before you start")} — what this setup can take, so nothing here surprises you:`);
-  // `vendor`, not `label`: the labels are engineer sentences carrying flag names, and a question a
-  // lawyer reads may not (the first rule).
-  say(`    · Which AI runs the searches (${Object.values(ENGINE_BINARIES).map((e) => e.vendor).join(" or ")}),`);
-  say("      and how it bills — the subscription you already sign in with, or an API key.");
+  // `product`, not `label`: the labels are engineer sentences carrying flag names, and a question a
+  // lawyer reads may not (the first rule). The AI by the name the engine question gives it.
+  say(`    · Which AI runs the searches (${Object.values(ENGINE_BINARIES).map((e) => e.product).join(" or ")}),`);
+  say("      and how it is paid for: a subscription you sign in with, an API key, or, for Claude,");
+  say("      your own cloud account.");
   say("    · Your trademark register vendor's credential, if you have one (a register can be chosen later).");
   for (const table of [RESEARCH_PROVIDERS, SERP_PROVIDERS]) {
     for (const a of Object.values(table)) {
@@ -3655,8 +3656,8 @@ try {
   // This step used to resolve `claude` and nothing else, then write CLEAROTRON_AI=anthropic-agent five
   // steps later without ever asking. The driver has shipped a second adapter the whole time.
   say("\n  Engine");
-  say("  The reasoning stages run as headless turns of a coding CLI. The choice is INSTALL-WIDE: one");
-  say("  engine serves every stage of every run on this box, so it is not a per-job setting.");
+  say("  Clearotron runs each step of a search as a short, unattended session of an AI. One AI serves");
+  say("  every search on this computer, so it is not chosen per search.");
   engine: for (;;) {
     // ── THE STATE FIRST, THE QUESTIONS OFF IT ──────────────────────────────
     //
