@@ -2374,11 +2374,16 @@ export async function runCheck() {
     info("the units' environment could not be read, so what a search would be refused for is NOT checked here — a failure to look is not a clean result");
   } else {
     const tables = { registers: PROVIDERS, engines: ENGINE_BINARIES, defaultEngine: DEFAULT_ENGINE_ID, resolveEngine: resolveEngineProgram };
-    // Two passes: which credentials a run needs depends on the register and the engine it names.
+    // UNTIL NOTHING NEW IS NAMED: which names a run needs depends on values read in the pass before. The
+    // register and the engine name their credentials, their program and the billing word; a billing word of
+    // `cloud` names the cloud switches; a switch names that cloud's settings. Two passes stopped before the
+    // billing word was read, so a machine that pays through a cloud account was checked as a subscription
+    // one and its missing switch went unreported. The view only grows and the names are finite, so this ends.
     const view = {};
     const fill = (names) => { for (const n of names) { const e = effectiveForService(n); if (e) view[n] = e.v; } };
     fill([REGISTER_ENV, ENGINE_ENV]);
-    fill(runRequiredNames(view, tables));
+    let before;
+    do { before = Object.keys(view).length; fill(runRequiredNames(view, tables)); } while (Object.keys(view).length > before);
     // AND THE PATH THE SERVICES SEARCH, so the engine's program is looked for where a run looks for it.
     // The view held the settings and no PATH, so a `claude` on the services' PATH, with no path setting and
     // no copy installed by setup, was reported as a search refused while the run found it and ran. On a

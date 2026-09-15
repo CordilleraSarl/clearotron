@@ -78,7 +78,7 @@
 // decides for itself which names are its own and a runner that decides separately are two opinions
 // about one list, and they drift in the direction where the second asks for less.
 
-import { BILLING_MODES, CLOUD_SWITCH, resolveAuthMode } from "./engine/auth.mjs";   // — the billing row asks the one resolver which ways an engine can be paid for
+import { BILLING_MODES, CLOUD_SWITCH, CLOUD_SETTINGS, CLOUD_CREDENTIAL_CHECK, billingMode, cloudsSwitchedOn, resolveAuthMode } from "./engine/auth.mjs";   // — the billing row asks the one resolver which ways an engine can be paid for, and the cloud rows read its own lists
 
 /** The pool a report is written into. Named once; the supervisor already writes it. */
 export const POOL_ENV = "CLEAROTRON_REPORTS_DIR";
@@ -171,6 +171,52 @@ export function runRequirements(env = {}, { registers = [], engines = {}, defaul
     const said = ways.map((m) => PAY_WORDS[m]);
     push(engine.authEnv, false, `how the engine is paid for — ${said.length > 1 ? `${said.slice(0, -1).join(", ")} or ${said.at(-1)}` : said[0]}; `
       + `unset means the subscription, and the adapter refuses before spending if the ${ways.includes("cloud") ? "key or cloud account" : "key"} it names is absent`);
+    // ── A CLOUD ACCOUNT, AND THE SETTINGS THAT REACH IT ──────────────────────────────────────────────
+    //
+    // The billing word travelled and the cloud did not. A machine set up to pay through a cloud account and
+    // started as background services wrote CLEAROTRON_AI_BILLING=cloud into the services' file and none of
+    // the cloud's own settings, so the run door refused every search: "none of CLAUDE_CODE_USE_VERTEX, …
+    // is set". Measured 2026-09-15 on a Microsoft Foundry configuration.
+    //
+    // ONLY WHEN THE WORD IS `cloud` AND THE ENGINE TAKES ONE — the resolver's answer through `payWays`, not
+    // a list of engines here. Under subscription or api-key nothing of a cloud is carried: a switch left on
+    // in a shell and written into the services' file sends Claude to that cloud, and the run door refuses
+    // a switch beside either word. Codex refuses a cloud account outright, so its rows do not change.
+    if (billingMode(env) === "cloud" && ways.includes("cloud")) {
+      const on = cloudsSwitchedOn(env);
+      const payWord = `${engine.authEnv}=cloud`;
+      const refused = "without it the engine refuses every search before spending";
+      // BLOCKING, AT ORDER TIME. Without the switch the run door refuses (engine/auth.mjs), so this is the
+      // same class as the engine and its program: an operator's value, whose absence refuses a run at
+      // intake and never a start.
+      for (const c of on)
+        push(CLOUD_SWITCH[c], true, `sends Claude to ${CLOUD_CREDENTIAL_CHECK[c].who}, the account ${payWord} pays through — ${refused}`);
+      if (!on.length && val(env, "ANTHROPIC_BASE_URL"))
+        push("ANTHROPIC_BASE_URL", true, `the gateway ${payWord} pays through — ${refused}`);
+      if (!on.length && !val(env, "ANTHROPIC_BASE_URL")) {
+        // NOTHING SAYS WHICH CLOUD, and a row has one name. Any one of four settings satisfies it, so the
+        // row is named by all four, in the resolver's own words, and carries them as `anyOf` so a reader
+        // that fills an environment by name (doctor's view of the services) looks for each. A single
+        // representative switch would send a Microsoft machine to set Google's, and doctor, reading only
+        // that one, would report a switch the services hold as missing.
+        const anyOf = [...Object.values(CLOUD_SWITCH), "ANTHROPIC_BASE_URL"];
+        out.push({ name: `${anyOf.slice(0, -1).join(", ")} or ${anyOf.at(-1)}`, anyOf, blocking: true, at: ORDER, present: false,
+          why: `${payWord} pays through a cloud account and nothing names which one — set the switch for yours to 1 `
+            + `(${["vertex", "foundry", "bedrock"].map((c) => CLOUD_CREDENTIAL_CHECK[c].who).join(", ")}), or ANTHROPIC_BASE_URL for a gateway; ${refused}` });
+      }
+      // EVERY OTHER CLOUD SETTING THAT IS SET, CARRIED AND NEVER ASKED FOR. Which of them a cloud needs
+      // depends on how the machine signs in to it — an Azure key or the Azure sign-in, an AWS profile, an
+      // instance role or keys, gcloud or a key file — and the model pins are optional everywhere. The run
+      // door asks for none of them; the cloud refuses a missing one at the first turn. So a row is made
+      // only for a name that is set: present by construction, it can never be reported missing or refuse
+      // anything, and exists so the composer carries it. Names on CLOUD_SETTINGS only — never the rest of
+      // the environment, which would put every secret in a shell into the services' file.
+      const who = on.length === 1 ? CLOUD_CREDENTIAL_CHECK[on[0]].who : !on.length && val(env, "ANTHROPIC_BASE_URL") ? "the gateway" : "the cloud account";
+      const named = new Set(out.map((r) => r.name));
+      for (const k of CLOUD_SETTINGS)
+        if (!named.has(k) && val(env, k))
+          push(k, false, `one of the settings Claude reads to reach and pay ${who}; carried as set, and not asked for, because which ones a cloud needs depends on how this machine signs in to it`);
+    }
   }
 
   push(RESEARCH_ENV, false, "the three clearance searches carry the common-law grid and refuse at preflight without it; a Knockout search still runs and discloses the half it skipped");
@@ -186,7 +232,8 @@ export function runRequirements(env = {}, { registers = [], engines = {}, defaul
  * a box whose operator configured them, which is the same shape of defect one size down.
  */
 export function runRequiredNames(env = {}, tables = {}) {
-  return runRequirements(env, tables).map((r) => r.name);
+  // A row any one of several settings satisfies names them in `anyOf`, and each is a name to carry or read.
+  return runRequirements(env, tables).flatMap((r) => r.anyOf ?? [r.name]);
 }
 
 /**
