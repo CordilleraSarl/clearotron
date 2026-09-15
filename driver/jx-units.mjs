@@ -34,7 +34,7 @@
 import { readFileSync, writeFileSync, renameSync, appendFileSync, mkdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
-import { LANGUAGE_LANES, SERP_LANES, isMirrorHost, canonicalTerm, jxBillingStamp } from "./jx-lanes.mjs";
+import { LANGUAGE_LANES, SERP_LANES, isMirrorHost, canonicalTerm, jxBillingStamp, jxModelFields } from "./jx-lanes.mjs";
 import { jxKey, MAX_LANE_ATTEMPTS } from "./jx.mjs";
 import { abbrev } from "./repair-contract.mjs";
 import { kebab } from "./search-policy.mjs";
@@ -138,10 +138,8 @@ function foldRetryable(ctx, lane) {
 //
 // …and the BILLING PATH rides with them — see jxBillingStamp in jx-lanes.mjs.
 //
-// The `model` on these rows is the id the program reported for the turn (jx-turn.mjs reads it off the
-// wire), not a tier asked for, so each row also carries it as `modelActual`, the name every attempt row
-// uses for a served id. That is what the report's list of models reads; without it, a model that did only
-// this work was left off the report.
+// …and so does what the turn said about the model: the id it reported, or that it ran and named none —
+// see jxModelFields in jx-lanes.mjs.
 function ledgerRow(runDir, row) {
   try { appendFileSync(driverDir(runDir, "jx-completions.jsonl"), JSON.stringify(row) + "\n"); } catch { /* receipts best-effort */ }
 }
@@ -397,7 +395,7 @@ export async function runJxSerpGrid(ctx, job, opts = {}, { runLog = () => {}, no
       ledgerRow(run.runDir, { ts: new Date().toISOString(), lane, mark: markName, unit: "serp-judge", executor: judgeSource,
         ...jxBillingStamp(judgeSource, jr),
         took_ms: jr?.tookMs ?? (Date.now() - started), ok: Boolean(jr?.ok), judged: jr?.ok ? (jr.judgments?.length ?? 0) : 0,
-        ...(jr?.model ? { model: jr.model, modelActual: jr.model } : {}),
+        ...jxModelFields(judgeSource, jr),
         ...(jr?.usage ? { usage: jr.usage } : {}), ...(jr?.ok ? {} : { cause: String(jr?.cause ?? "unknown").slice(0, 300) }) });
       if (!jr?.ok) { judgeDegraded = String(jr?.cause ?? "unknown").slice(0, 200); break; }
       const byId = new Map(jr.judgments.map((j) => [j.id, j]));
@@ -529,7 +527,7 @@ export async function runJxNativeread(ctx, job, opts = {}, { runLog = () => {}, 
     ledgerRow(run.runDir, { ts: new Date().toISOString(), lane, mark: markName, unit: "nativeread", executor: source,
       ...jxBillingStamp(source, r),
       took_ms: r?.tookMs ?? (Date.now() - started), ok: Boolean(r?.ok), items: r?.ok ? (r.items?.length ?? 0) : 0,
-      ...(r?.model ? { model: r.model, modelActual: r.model } : {}),
+      ...jxModelFields(source, r),
       ...(r?.usage ? { usage: r.usage } : {}), ...(r?.ok ? {} : { cause: String(r?.cause ?? "unknown").slice(0, 300) }) });
     if (!r?.ok) {
       degradeUnit(run.runDir, key, st.attempts, r?.cause ?? "unknown");

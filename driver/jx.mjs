@@ -14,7 +14,7 @@
 import { readFileSync, writeFileSync, renameSync, appendFileSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
-import { decideJxLanes, candidateRefusal, canonicalTerm, romanizationSpellings, LANGUAGE_LANES, jxBillingStamp } from "./jx-lanes.mjs";
+import { decideJxLanes, candidateRefusal, canonicalTerm, romanizationSpellings, LANGUAGE_LANES, jxBillingStamp, jxModelFields } from "./jx-lanes.mjs";
 import { cnipaSubgroupsForClasses, cnipaEditionLabel } from "./jx-subclass.mjs";   // — replaces the hand-written seed table
 import { kebab } from "./search-policy.mjs";
 import { JX_PROVIDERS } from "./driver.config.mjs";
@@ -512,11 +512,9 @@ export async function runJxCandidateFold(ctx, job, opts = {}, { runLog = () => {
       const row = { ts: new Date().toISOString(), lane, mark: markName, executor: source, ...jxBillingStamp(source, r),
         took_ms: r?.tookMs ?? (Date.now() - started), ok: Boolean(r?.ok),
         candidates: r?.ok ? (r.candidates?.length ?? 0) : 0,
-        // `model` here is the id the program reported for the turn (jx-turn.mjs reads it off the wire),
-        // not a tier asked for. `modelActual` records it under the name every attempt row uses for a
-        // served id, which is what the report's list of models reads: without it, a model that did only
-        // this work was left off the report. `model` stays as it was, because the token rollup keys on it.
-        ...(r?.model ? { model: r.model, modelActual: r.model } : {}),
+        // the model the turn reported, as `model` and `modelActual`, or `modelActual: null` for a turn
+        // that ran and named none — see jxModelFields.
+        ...jxModelFields(source, r),
         ...(r?.usage ? { usage: r.usage } : {}), ...(r?.ok ? {} : { cause: String(r?.cause ?? "unknown").slice(0, 300) }) };
       try { appendFileSync(ledgerPath, JSON.stringify(row) + "\n"); } catch { /* receipts best-effort */ }
       // Before the degraded-lane `continue` below: a lane that FAILED still ran a turn, and the model

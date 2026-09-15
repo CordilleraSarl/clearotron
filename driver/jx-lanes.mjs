@@ -283,3 +283,22 @@ export const jxBillingStamp = (executorSource, result = null) => {
   if (executorSource !== "engine" || !result?.vendor) return { engine: "not-provider-billed", authMode: "not-provider-billed", cloud: null };
   return { engine: result.vendor, authMode: result.authMode ?? "not-provider-billed", cloud: result.cloud ?? null };   // cloud: which account a cloud mode bills
 };
+
+// ── What a jx ledger row says about the model ─────────────────────────────────────────────────────────
+// The `model` on these rows is the id the program reported for the turn (jx-turn.mjs reads it off the
+// wire), not a tier asked for, so a row that names one also carries it as `modelActual`, the name every
+// attempt row uses for a served id. That is what the report's list of models reads; without it, a model
+// that did only this work was left off the report.
+//
+// A TURN THAT RAN AND NAMED NO MODEL STILL RAN. The Claude program answered it itself, or the stream never
+// said, or the turn was killed first: the program reports no id. Such a row used to carry neither field,
+// and every reader took a row with no `model` for a call that was never made, so the turn's attempt and
+// any tokens it reported fell out of the run's totals, and a run made only of such turns read as one where
+// nothing was looked at. It now records `modelActual: null`, the stage rows' own words for "a turn ran and
+// named no model", and tokens.mjs counts it as an attempt. Only a real dispatch writes it, by the rule
+// jxBillingStamp states: no vendor on the result means no dispatch, so a fixture, an injected executor or
+// a configuration the engine door refused writes neither field.
+export const jxModelFields = (executorSource, result = null) => {
+  if (result?.model) return { model: result.model, modelActual: result.model };
+  return jxBillingStamp(executorSource, result).engine === "not-provider-billed" ? {} : { modelActual: null };
+};

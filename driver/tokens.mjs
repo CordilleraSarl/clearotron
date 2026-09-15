@@ -84,7 +84,25 @@ function modelKey(rec) {
   // them would break byModel summing to total, and an invisible gap is the failure this file already
   // fixed once for byEngine), and the key says what is missing rather than asserting an Anthropic
   // model produced them.
+  //
+  // A TURN THAT NAMED NO MODEL, a native-language row recording `modelActual: null` (see isAttemptRow),
+  // has no id at all. Its tokens still account, under a key that says the model is missing rather than
+  // one built from the absent field. Such a row always carries its vendor's stamp, so it reaches here.
+  if (typeof rec.model !== "string") return `${engine || "unknown"}/no-model-reported`;
   return `${engine}/unstamped:${rec.model}`;
+}
+
+/**
+ * WHETHER A ROW IS A PROVIDER ATTEMPT, the one test rollupTokens and servedModels both apply. A row that
+ * names a model is one: every stage attempt row carries the tier it asked for, and a native-language row
+ * the id its turn reported. So is a native-language row whose turn ran and named no model, which records
+ * `modelActual: null` instead (jxModelFields in jx-lanes.mjs). Without that second half, such a turn's
+ * attempt and the tokens it reported were dropped from every total, and a run made only of such turns
+ * read as one where nothing was looked at. A row with neither field is not a turn: the run log's events,
+ * a tool call, a native-language call no provider served.
+ */
+export function isAttemptRow(rec) {
+  return Boolean(rec) && (typeof rec.model === "string" || rec.modelActual === null);
 }
 
 // usage shape (gateway.mjs): {input,output,cacheRead,cacheWrite}. There is deliberately NO reasoning-token
@@ -128,7 +146,7 @@ export function rollupTokens(runDir) {
       if (!ln.trim()) continue;
       let rec;
       try { rec = JSON.parse(ln); } catch { continue; }
-      if (!rec || typeof rec.model !== "string") continue; // only stage-attempt records carry a model
+      if (!isAttemptRow(rec)) continue; // only provider attempts carry tokens (see isAttemptRow)
       const t = tokensOf(rec.usage);
       const accs = [total, (byStage[stage] ??= emptyAcc()), (byModel[modelKey(rec)] ??= emptyAcc())];
       // Engine and billing mode are split out because a token is not a portable unit of cost: a turn on a
@@ -177,7 +195,8 @@ export function rollupTokens(runDir) {
  *
  * THREE-VALUED. `null` when there is no attempt row to read (no telemetry directory, or no row in it is
  * a provider turn), so nothing was looked at. `[]` when attempt rows exist and none names a served model
- * (an engine that does not report one, a turn killed before it said). An empty list is never a guess.
+ * (an engine that does not report one, a turn killed before it said, a turn the Claude program answered
+ * itself), on a stage turn and a native-language turn alike. An empty list is never a guess.
  */
 export function servedModels(runDir) {
   const dDir = driverDir(runDir);
@@ -195,7 +214,7 @@ export function servedModels(runDir) {
       try { rec = JSON.parse(ln); } catch { continue; }
       // The same test rollupTokens applies for an attempt row, less the driver's own code-side rows:
       // no provider served those, so they cannot stand for "a turn ran and named no model".
-      if (!rec || typeof rec.model !== "string" || isCodeSide(rec)) continue;
+      if (!isAttemptRow(rec) || isCodeSide(rec)) continue;
       attempts += 1;
       const id = typeof rec.modelActual === "string" ? rec.modelActual.trim() : "";
       // `<synthetic>` is the Claude CLI's name for a message it wrote itself, measured in testing on a

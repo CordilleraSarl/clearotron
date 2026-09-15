@@ -17,11 +17,17 @@
 //   - the native-language steps count too. Each step that writes a record (the candidate step, the judge of
 //     web listings, the reading of the register) is run for real and its model is listed; a run mixing them
 //     with stage turns keeps first-use order across both; a run whose only turns were those steps publishes
-//     the line; and a label for a message no model wrote is still not a model.
+//     the line; and a label for a message no model wrote is still not a model;
+//   - a native-language turn that ran and named no model is still a turn. Driven through the real engine
+//     door against a stand-in Claude program (a turn the program answered itself, failed or not, and a
+//     stream that never named a model): the run reads [], never null, its tokens reach the run's rollup,
+//     and a run made only of such a turn publishes [] and no line. The CONTROLS: the same door with a
+//     served turn lists its model, and a call no provider served (an injected step, a configuration the
+//     engine door refused) is still not a turn, so a run made only of it still reads null.
 //
 // SAFETY: driver.config reads env at module load and its pool-root default is the real archive, so the
 // env is pinned before any product module is imported.
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, chmodSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pinEnv, envFrom } from "../../shared/env-aliases.mjs";
@@ -34,7 +40,7 @@ delete process.env.CLEAROTRON_MCP_URL;
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { driverDir } from "../../shared/driver-dir.mjs";
-const { servedModels } = await import("../tokens.mjs");
+const { servedModels, rollupTokens } = await import("../tokens.mjs");
 const { servedModelsLine } = await import("../publish/render.mjs");
 const { publishReport } = await import("../publish/index.mjs");
 const { publishKnockout } = await import("../publish/knockout.mjs");
@@ -227,7 +233,9 @@ test("servedModels: first use decides the order across stage turns and native-la
   assert.deepEqual(servedModels(runDir), ["claude-opus-5", HAIKU, "claude-sonnet-5"]);
 });
 
-test("the CONTROL: a native-language step's label for a message no model wrote is not listed", async () => {
+// The Claude adapter no longer hands on this label (see the stand-in arms below), but records written
+// before it refused the label carry it, and a step handed one by any other route must not list it.
+test("the CONTROL: a bracketed label on a native-language record is not listed as a model", async () => {
   const runDir = join(ROOT, "jx-synthetic");
   await candidateStep(runDir, "<synthetic>");
   assert.deepEqual(servedModels(runDir), [], "a turn ran and named no model");
@@ -239,5 +247,114 @@ for (const product of ["clearance", "knockout"]) {
     assert.deepEqual(meta.servedModels, [HAIKU], "meta.json");
     assert.deepEqual(data.servedModels, [HAIKU], "report-data.json");
     assert.match(scopeOf(html), /Prepared with Claude: claude-haiku-4-5-20251001\./, "the scope section's closing line");
+  });
+}
+
+// ── A native-language turn that ran and named no model ────────────────────────────────────────────────
+// The steps above inject their turn. These go through the engine door a real run uses, against a stand-in
+// for the Claude program that prints the stream it is handed, because the shape that matters is the one
+// the adapter produces: for a turn the program answered itself it reports no model at all (the label is
+// refused), and a row naming no model used to be read as a call never made. A run made only of such a
+// turn then read null, "nothing was looked at", and its tokens were in no total.
+
+const STANDIN = join(ROOT, "standin-claude.mjs");
+writeFileSync(STANDIN, `#!/usr/bin/env node
+if (process.argv.includes("--version")) { process.stdout.write("2.1.270 (Claude Code)\\n"); process.exit(0); }
+if (!process.stdin.isTTY) { process.stdin.resume(); for await (const _ of process.stdin) { /* the prompt */ } }
+for (const ev of JSON.parse(process.env.STANDIN_EVENTS || "[]")) process.stdout.write(JSON.stringify(ev) + "\\n");
+process.exit(Number(process.env.STANDIN_EXIT || 0));
+`);
+chmodSync(STANDIN, 0o755);
+
+const USAGE = { input_tokens: 10, output_tokens: 20, cache_read_input_tokens: 0, cache_creation_input_tokens: 0 };
+const ITEMS = '{"items":[]}';
+const REFUSAL = "API Error: 404 The deployment for this model does not exist.";
+const initEvent = (model) => ({ type: "system", subtype: "init", session_id: "standin", ...(model ? { model } : {}), apiKeySource: "none", tools: [] });
+const said = (model, text) => ({ type: "assistant", session_id: "standin",
+  message: { role: "assistant", ...(model ? { model } : {}), content: [{ type: "text", text }] } });
+const result = (text, isError) => ({ type: "result", subtype: "success", is_error: isError, result: text, session_id: "standin", usage: USAGE });
+const TURNS = {
+  served: { events: [initEvent(HAIKU), said(HAIKU, ITEMS), result(ITEMS, false)], exit: 0 },
+  "answered itself and failed": { events: [initEvent(HAIKU), said("<synthetic>", REFUSAL), result(REFUSAL, true)], exit: 1 },
+  "answered itself and exited 0": { events: [initEvent(HAIKU), said("<synthetic>", ITEMS), result(ITEMS, false)], exit: 0 },
+  "never named a model": { events: [initEvent(null), said(null, ITEMS), result(ITEMS, false)], exit: 0 },
+};
+// Settings that would point the engine door somewhere other than the stand-in, held off for each turn.
+const HELD_OFF = ["CLEAROTRON_JX_FIXTURES", "CLAUDE_CODE_USE_FOUNDRY", "CLAUDE_CODE_USE_VERTEX", "CLAUDE_CODE_USE_BEDROCK",
+  "ANTHROPIC_BASE_URL", "ANTHROPIC_API_KEY"];
+
+/** The reading of the register with no turn injected, so it takes the engine door to the stand-in. */
+async function readingThroughTheDoor(runDir, turn, engine = "anthropic-agent") {
+  const ctx = laterStepCtx(runDir);
+  mkdirSync(join(runDir, "register-units"), { recursive: true });
+  writeFileSync(join(runDir, "register-units", "transliteration-numeric.md"), "| 诺瓦脉冲 | https://reg.example/tm/555 | live |");
+  const env = { CLEAROTRON_AI: engine, CLEAROTRON_AI_BILLING: "subscription",
+    STANDIN_EVENTS: JSON.stringify(turn.events), STANDIN_EXIT: String(turn.exit) };
+  const saved = Object.fromEntries([...Object.keys(env), ...HELD_OFF].map((k) => [k, process.env[k]]));
+  const savedPath = envFrom(process.env, "CLEAROTRON_CLAUDE_PATH");
+  for (const k of HELD_OFF) delete process.env[k];
+  Object.assign(process.env, env);
+  pinEnv(process.env, "CLEAROTRON_CLAUDE_PATH", STANDIN);
+  try { await runJxNativeread(ctx, JOB, {}, {}); }
+  finally {
+    for (const [k, v] of Object.entries(saved)) { if (v == null) delete process.env[k]; else process.env[k] = v; }
+    pinEnv(process.env, "CLEAROTRON_CLAUDE_PATH", savedPath);
+  }
+  const rows = readFileSync(driverDir(runDir, "jx-completions.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l));
+  assert.equal(rows.length, 1, "the step writes one record for its one call");
+  return rows[0];
+}
+
+const UNNAMED = {
+  "answered itself and failed": "a native-language turn the program answered itself, and that failed, is a turn that named no model",
+  "answered itself and exited 0": "a native-language turn the program answered itself, and that closed as a success, is a turn that named no model",
+  "never named a model": "a native-language turn whose stream never named a model is a turn that named no model",
+};
+for (const [name, title] of Object.entries(UNNAMED)) {
+  test(title, async () => {
+    const runDir = join(ROOT, `jx-door-${name.replace(/\W+/g, "-")}`);
+    const row = await readingThroughTheDoor(runDir, TURNS[name]);
+    assert.equal(row.engine, "anthropic", `the call must have reached the program for this arm to mean anything: ${JSON.stringify(row)}`);
+    assert.equal("model" in row, false, "no model is named, neither the label nor the session's configured one");
+    assert.equal(row.modelActual, null, "the record says a turn ran and named no model");
+    assert.deepEqual(servedModels(runDir), [], "a turn ran and named no model, which is not the same as nothing read");
+    const t = rollupTokens(runDir);
+    assert.equal(t.total.attempts, 1, "the turn is counted");
+    assert.equal(t.total.input, 10, "the tokens it reported reach the run's total");
+    assert.equal(t.total.output, 20);
+    assert.equal(t.byStage["jx-completions"]?.attempts, 1);
+    assert.deepEqual(Object.keys(t.byModel), ["anthropic/no-model-reported"], "keyed under a name that says the model is missing");
+  });
+}
+
+test("the CONTROL: a native-language turn the program served, through the same door, lists its model", async () => {
+  const runDir = join(ROOT, "jx-door-served");
+  const row = await readingThroughTheDoor(runDir, TURNS.served);
+  assert.equal(row.modelActual, HAIKU);
+  assert.deepEqual(servedModels(runDir), [HAIKU]);
+  assert.equal(rollupTokens(runDir).total.attempts, 1);
+});
+
+test("the CONTROLS: a native-language call no provider served is not a turn, so a run made only of it reads null", async () => {
+  const injected = join(ROOT, "jx-injected-no-model");
+  await readingStep(injected, undefined);
+  assert.equal(servedModels(injected), null, "an injected step made no provider call");
+  assert.equal(rollupTokens(injected).total.attempts, 0);
+
+  const refused = join(ROOT, "jx-door-refused");
+  const row = await readingThroughTheDoor(refused, TURNS.served, "no-such-engine");
+  assert.equal(row.engine, "not-provider-billed", `the engine door must refuse for this arm to mean anything: ${JSON.stringify(row)}`);
+  assert.equal("modelActual" in row, false, "a refused configuration dispatched nothing");
+  assert.equal(servedModels(refused), null);
+  assert.equal(rollupTokens(refused).total.attempts, 0);
+});
+
+for (const product of ["clearance", "knockout"]) {
+  test(`a ${product} run whose only turn named no model publishes an empty list and no line`, async () => {
+    const { meta, data, html } = await publish(`jx-unnamed-${product}`, product, null,
+      (runDir) => readingThroughTheDoor(runDir, TURNS["answered itself and failed"]));
+    assert.deepEqual(meta.servedModels, [], "meta.json says a turn ran and named no model");
+    assert.deepEqual(data.servedModels, [], "report-data.json");
+    assert.doesNotMatch(scopeOf(html), /Prepared with/, "no model is named, so no line is rendered");
   });
 }
