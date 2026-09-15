@@ -543,6 +543,11 @@ test("the engine question resolves each program the way a run does: setting, the
     // CONTROL: a setting naming nothing is not reported as found, nor as something an install mends.
     const gone = engineMenuState({ env: { PATH: machine, [ENGINE_BINARIES["anthropic-agent"].env]: join(elsewhere, "absent") }, enginesDir: NO_ENGINES });
     assert.equal(labels(gone)[0], "Claude (Anthropic)   not usable: setup says why if you pick it");
+    // A setting naming a bare word that is not on PATH refuses nothing, since there is no file to refuse,
+    // yet it still rules out the copy setup installs, so an install is not its fix either.
+    const bare = engineMenuState({ env: { PATH: machine, [ENGINE_BINARIES["anthropic-agent"].env]: "no-such-claude" }, enginesDir: root });
+    assert.deepEqual(bare["anthropic-agent"].rejected, [], "fixture precondition: nothing was refused, so only the setting decides this row");
+    assert.equal(labels(bare)[0], "Claude (Anthropic)   not usable: setup says why if you pick it");
   } finally {
     for (const d of [machine, elsewhere, silent, root]) rmSync(d, { recursive: true, force: true });
   }
