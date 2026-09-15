@@ -164,16 +164,22 @@ export function classifyProbe({ engine, tuple = null, error = null, timeoutSec =
     ({ ok: false, engine: id, mode, basis, headline, fix, detail: null, ...extra });
 
   // ── a THROW ────────────────────────────────────────────────────────────────────────────────────────
-  // The thrown text is relayed VERBATIM as the fix wherever the thrower already says what to do. Those
-  // messages were written by the module that owns the decision (auth.mjs owns the billing refusal, the
-  // codex adapter owns `codex login`); paraphrasing them here creates a second wording that drifts.
+  // The thrown text is relayed as the fix wherever the thrower already says what to do. Those messages
+  // were written by the module that owns the decision (auth.mjs owns the billing refusal, the codex
+  // adapter owns `codex login`); paraphrasing them here creates a second wording that drifts.
+  //
+  // ONE CHANGE ONLY, AND ONLY TO A SIGN-IN: the program's name. The codex adapter refuses a subscription
+  // with no sign-in by throwing "run `codex login`" before it starts anything, which is the commonest way a
+  // signed-out Codex reaches this line. Relayed as thrown, that told a reader whose only copy is the one
+  // setup installed, which is not on PATH, to run a command their shell does not have. `namingProgram`
+  // rewrites the bare word for that copy and leaves every other copy's text as it was thrown.
   if (error) {
     const msg = String(error?.message ?? error);
     if (error?.billingRefusal === true || /=api-key but/i.test(msg))   // auth.mjs marks every billing refusal
       return v("auth-misconfigured", "config",
         `${id} cannot start: ${/=api-key but/i.test(msg) ? "the billing mode this box declares has no key" : "the billing setting this box declares is refused"}`, msg, { detail: null });
     if (SIGNED_OUT_RE.test(msg))
-      return v("signed-out", "config", `${id} is not signed in`, msg);
+      return v("signed-out", "config", `${id} is not signed in`, ENGINE_BINARIES[id] ? namingProgram(msg, ENGINE_BINARIES[id], program) : msg);
     if (TIER_RE.test(msg))
       return v("tier-unavailable", "config", `${id} cannot reach the model it was asked for`, tierFix(id, msg));
     return v("failed", "throw", `${id} could not run a turn`, msg);
@@ -408,6 +414,12 @@ async function defaultLoadAdapter(engine) {
 /**
  * Run the probe and return a verdict. Never throws for a configuration fault — a caller that wants a
  * refusal calls `preflightEngineTurn`, and a caller that wants to report calls this.
+ *
+ * `program` is the copy the caller has already found and is running (`{ source, path }`), for a caller
+ * that knows more about it than its setting says. Setup pins the program setting to the absolute path of
+ * the copy it proves, so the turn runs exactly that copy; resolved from that setting alone, the copy setup
+ * installed reads as a path the reader set, and the advice then named the bare word that copy does not
+ * answer to. Without it, the probe resolves the copy itself.
  */
 export async function probeEngineTurn({
   env = process.env,
@@ -416,6 +428,7 @@ export async function probeEngineTurn({
   loadAdapter = defaultLoadAdapter,
   timeoutSec = PROBE_TIMEOUT_SEC,
   stallSec = PROBE_STALL_SEC,
+  program: knownProgram = null,
 } = {}) {
   const id = String(env.CLEAROTRON_AI || DEFAULT_ENGINE_ID).trim().toLowerCase();
   if (!ENGINE_BINARIES[id]) {
@@ -449,7 +462,8 @@ export async function probeEngineTurn({
     // environment, and the caller's program setting is only there from that line until `restore()`, so above
     // it this would name whatever copy the shell happened to point at. Inside the try, so the `finally` puts
     // the environment back whatever it does. A resolver that cannot answer leaves the bare word.
-    try { const r = resolveEngineProgram(id); program = r.resolved ? { source: r.source, path: r.resolved } : null; } catch { /* the bare word */ }
+    if (knownProgram?.path) program = { source: knownProgram.source ?? null, path: knownProgram.path };
+    else try { const r = resolveEngineProgram(id); program = r.resolved ? { source: r.source, path: r.resolved } : null; } catch { /* the bare word */ }
     const tuple = await turn({ message: PROBE_PROMPT, model: PROBE_MODEL, thinking: PROBE_THINKING, timeoutSec, stallSec });
     return classifyProbe({ engine: id, tuple, timeoutSec, auth, program });
   } catch (e) {

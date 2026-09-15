@@ -128,6 +128,15 @@ const CLAUDE_PAY_ANSWERS = Object.freeze([
   { id: "api-key", label: "An Anthropic API key: pay per use, paste the key" },
   { id: "cloud", label: "Through your Google, Microsoft or Amazon cloud account: pay per use on that cloud's bill" },
 ]);
+/**
+ * What setup says just before the engine question about the question after it. It named two ways to pay,
+ * a subscription or an API key, beside a pay question that offers Claude a third, a cloud account; so every
+ * answer `payQuestion` offers, for any engine, is named here, and the cloud answer as Claude's alone.
+ */
+export const PAY_PREAMBLE = Object.freeze([
+  "  Choosing a program also chooses how it is paid for: a subscription you sign in with, an API",
+  "  key, or, for Claude, your own cloud account. That question comes right after this one.",
+]);
 /** The pay question setup asks for an engine, and its answers; each answer's id is a billing word. */
 export function payQuestion({ engineId, eng, bin }) {
   if (engineId === "anthropic-agent") return { question: CLAUDE_PAY_QUESTION, answers: CLAUDE_PAY_ANSWERS };
@@ -812,6 +821,18 @@ export function signInHandOff(eng, bin, billing) {
 }
 
 /**
+ * What setup's proof turn is handed: the environment it runs in, with the program setting pinned to the
+ * absolute path of the copy found, so the turn runs exactly that copy; and that copy as setup found it, so
+ * the probe's advice names it as what it is. Pinned by path, the copy setup installed reads to the probe as
+ * a path the reader set, and a failed turn told the reader to run a bare `claude` or `codex login`, which
+ * that copy does not answer to, above lines naming the copy itself.
+ */
+export function proofTurn({ engineId, eng, bin, authEnv = {}, env = process.env }) {
+  return { env: { ...env, CLEAROTRON_AI: engineId, [eng.env]: bin.path, ...authEnv },
+    program: { source: bin.source ?? null, path: bin.path } };
+}
+
+/**
  * What setup writes into an engine's program setting for the copy it just proved: the absolute path of a
  * copy found on PATH or given by path, because a service's PATH is not the shell's, and for the copy
  * Clearotron installed the engine's own fallback word, which means exactly what unset means.
@@ -959,16 +980,30 @@ function foundWords(eng, bin) {
  * npm put on PATH; anything else is asked with `--version`, the same short, time-limited call a run makes
  * to record the tool that served it (driver/engine/cli-version.mjs). That call starts no session and
  * needs no network; one that fails or times out leaves the version null, and the row then says "found
- * on this machine". `readVersion` is injectable so an arm can drive the unreadable branch.
+ * on this machine". `readVersion` is injectable so a test can drive the unreadable branch.
+ *
+ * SHORTER THAN A RUN'S CALL, AND ONLY A VERSION IS SHOWN. The question waits on these calls, one program
+ * after another, before it prints, and a run's five-second limit let two programs that hang hold the
+ * screen for ten; two seconds is a judgement, ample for these programs to print a version and short
+ * enough to wait on. The answers are kept apart from the run's own record of the tool, so a call cut
+ * short here is not what a run reads. And a program that answers in prose, which a run records as said,
+ * put its whole first line in the menu row; the row shows a version only when the answer is shaped like
+ * one, and otherwise says "found on this machine".
  */
-export function engineMenuState({ env = process.env, enginesDir = undefined, readVersion = (p) => probeCliVersion(p).version } = {}) {
+const MENU_VERSION_TIMEOUT_MS = 2000;
+const MENU_VERSIONS = new Map();
+const menuVersion = (p) => probeCliVersion(p, { timeoutMs: MENU_VERSION_TIMEOUT_MS, cache: MENU_VERSIONS }).version;
+export function engineMenuState({ env = process.env, enginesDir = undefined, readVersion = menuVersion } = {}) {
   const out = {};
   for (const [id, e] of Object.entries(ENGINE_BINARIES)) {
     const set = env[e.env];
     const bin = resolveEngineBin(set || e.fallback, { env, engine: id, enginesDir });
     const usable = bin.executable && !bin.relative;
     let version = bin.version;
-    if (usable && !version) { try { version = readVersion(bin.path) ?? null; } catch { version = null; } }
+    if (usable && !version) {
+      try { version = readVersion(bin.path) ?? null; } catch { version = null; }
+      if (!/^\d+\.\d+/.test(String(version ?? ""))) version = null;
+    }
     out[id] = { ...bin, version, explicit: Boolean(set) && set !== e.fallback };
   }
   return out;
@@ -3445,16 +3480,16 @@ try {
     // state itself is deliberately NOT guessed — the proof turn is the only honest answer to it, and
     // a guessed "signed in" that the turn then contradicts costs more than no claim.
     // Resolved once per pass, for these lines and the menu's rows alike, so the two cannot disagree.
-    const found = engineMenuState();
+    // The heading first: finding each program can ask it its version, which takes a moment.
     say("\n  What this box already has:");
+    const found = engineMenuState();
     for (const [id, e] of Object.entries(ENGINE_BINARIES)) {
       const b = found[id];
       const creds = [e.apiKeyEnv, e.headless?.tokenEnv].filter((n) => n && present(process.env[n]));
       const which = b.source === "installed" ? "installed by Clearotron" : b.source === "explicit" ? `set in ${e.env}` : "on PATH";
       say(`    ${e.vendor}: ${b.executable ? `CLI found (${b.path}, ${which}${b.version ? `, ${b.version}` : ""})` : unusableEngineWords(e, b, process.env[e.env])}${creds.length ? ` · ${creds.join(" and ")} already set` : ""}`);
     }
-    say("  Choosing an engine also chooses how it bills — the subscription you sign in with, or an");
-    say("  API key. That question comes right after this one.");
+    for (const line of PAY_PREAMBLE) say(line);
 
     const pick = await choose("Which program does the reasoning?", engineOptions(found), 0);
     if (!pick.id) { sayNoEngine(); break; }
@@ -3641,7 +3676,7 @@ try {
     }
     for (;;) {
       say("  Running one turn…");
-      const v = await probeEngineTurn({ env: { ...process.env, CLEAROTRON_AI: pick.id, [eng.env]: bin.path, ...authEnv } });
+      const v = await probeEngineTurn(proofTurn({ engineId: pick.id, eng, bin, authEnv }));
       if (v.ok) {
         ok(`${pick.id} completed a turn on the ${authPick.id} lane — binary, credential, billing mode and model access all work.`);
         const served = servedLine(v);

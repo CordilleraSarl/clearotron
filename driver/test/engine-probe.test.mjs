@@ -280,6 +280,30 @@ test("the probe finds the copy that runs the way the adapter does, and names the
   }
 });
 
+// The Codex adapter's refusal of a subscription with no sign-in, in the shape it throws before it starts
+// anything. The test below holds the adapter's own source to that shape.
+const CODEX_SIGNED_OUT = "CLEAROTRON_AI_BILLING=subscription but no auth.json at /srv/example/.codex/auth.json — run `codex login` "
+  + "(or set CLEAROTRON_OPENAI_AUTH_FILE — NOT an aliased name, and deliberately left as it is), or use CLEAROTRON_AI_BILLING=api-key + CODEX_API_KEY.";
+
+test("a signed-out Codex refusal the adapter throws names the copy setup installed", async () => {
+  const src = readFileSync(new URL("../engine/openai-agent.mjs", import.meta.url), "utf8");
+  assert.match(src, /no auth\.json at \$\{af\} — run \\`codex login\\`/, "the adapter no longer throws the refusal this test stands in for");
+  const thrown = new Error(CODEX_SIGNED_OUT);
+  const installed = { source: "installed", path: "/opt/engines/node_modules/@openai/codex/bin/codex.js" };
+  const v = classifyProbe({ engine: "openai-agent", error: thrown, program: installed });
+  assert.equal(v.mode, "signed-out");
+  assert.ok(v.fix.includes(`run \`${installed.path} login\``), v.fix);
+  assert.doesNotMatch(v.fix, /run `codex login`/, "the bare word survived for a copy that is not on PATH");
+  // Through the probe, as doctor and the run door reach it: the throw comes from inside the turn.
+  const probed = await probeEngineTurn({ loadAdapter: explode, runTurn: async () => { throw thrown; },
+    env: { CLEAROTRON_AI: "openai-agent" }, program: installed });
+  assert.equal(probed.mode, "signed-out");
+  assert.ok(probed.fix.includes(`run \`${installed.path} login\``), probed.fix);
+  // CONTROL: any other copy, or none resolved, gets the text exactly as thrown.
+  assert.equal(classifyProbe({ engine: "openai-agent", error: thrown, program: { source: "path", path: "/usr/local/bin/codex" } }).fix, CODEX_SIGNED_OUT);
+  assert.equal(classifyProbe({ engine: "openai-agent", error: thrown }).fix, CODEX_SIGNED_OUT);
+});
+
 test("no quota: the reset TIME is the message, and where it came from is on the record", () => {
   const anthropic = classifyProbe({ engine: "anthropic-agent",
     tuple: tupleOf({ code: 1, signals: { rateLimited: true, resetsAt: "2026-08-12T17:00:00.000Z" } }) });

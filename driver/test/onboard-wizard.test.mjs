@@ -22,7 +22,8 @@ import { RESEARCH_PROVIDERS, SERP_PROVIDERS } from "../driver.config.mjs";
 import { resolveEngineBin, readEnvFile, preflightCandidate, PROVIDERS, engineOptions,
   usptoSyncPlan, usptoConsentPrompt, isExplicitYes, backgroundSyncSpec,
   offerUsptoSync, deploymentCurrency, namingProgram, engineProgramSetting, unusableEngineWords,
-  installSizeLine, engineMenuState } from "../../bin/onboard.mjs";
+  installSizeLine, engineMenuState, PAY_PREAMBLE, payQuestion, proofTurn } from "../../bin/onboard.mjs";
+import { probeEngineTurn } from "../engine/probe.mjs";
 import { VERBS } from "../../bin/clearotron.mjs";
 import { USPTO_ARCHIVE_GB, USPTO_INGEST_GB_PER_HOUR, usptoBuildHours } from "../../shared/uspto-index-size.mjs";
 import { config, KNOWN_REGISTER_PROVIDERS, ENGINE_BINARIES, resolveEngineProgram } from "../driver.config.mjs";
@@ -551,6 +552,61 @@ test("the engine question resolves each program the way a run does: setting, the
   } finally {
     for (const d of [machine, elsewhere, silent, root]) rmSync(d, { recursive: true, force: true });
   }
+});
+
+test("the engine question shows a version only when the program answers with one, and waits at most two seconds for it", () => {
+  const sh = (body) => { const d = mkdtempSync(join(tmpdir(), "onboard-menu-version-")); writeFileSync(join(d, "claude"), `#!/bin/sh\n${body}\n`, { mode: 0o755 }); return d; };
+  const prose = sh('echo "Welcome to a wrapper that prints a banner and never names a version"');
+  const hung = sh("exec sleep 30");
+  try {
+    // A program that answers in prose is found, and its prose stays out of the menu row.
+    const worded = engineMenuState({ env: { PATH: prose }, enginesDir: NO_ENGINES });
+    assert.equal(worded["anthropic-agent"].version, null);
+    assert.equal(engineOptions(worded)[0].label, "Claude (Anthropic)   found on this machine");
+    // A program that never answers holds the question for the short limit, not a run's five seconds.
+    const t0 = Date.now();
+    const slow = engineMenuState({ env: { PATH: hung }, enginesDir: NO_ENGINES });
+    const waited = Date.now() - t0;
+    assert.equal(engineOptions(slow)[0].label, "Claude (Anthropic)   found on this machine");
+    assert.ok(waited < 4000, `the question waited ${waited} ms on one program that does not answer`);
+  } finally { for (const d of [prose, hung]) rmSync(d, { recursive: true, force: true }); }
+});
+
+test("the line before the engine question names every way to pay that the question after it offers", () => {
+  const said = PAY_PREAMBLE.join(" ").replace(/\s+/g, " ");
+  const words = { subscription: /\bsubscription\b/, "api-key": /\bAPI key\b/, cloud: /\bcloud account\b/ };
+  const offered = new Map();
+  for (const [id, eng] of Object.entries(ENGINE_BINARIES))
+    for (const a of payQuestion({ engineId: id, eng, bin: null }).answers) offered.set(a.id, [...(offered.get(a.id) ?? []), id]);
+  assert.ok(offered.size > 0, "no engine offers any way to pay, so nothing below was checked");
+  for (const [mode, engines] of offered) {
+    assert.ok(words[mode], `the pay question offers "${mode}", which this test has no words for`);
+    assert.match(said, words[mode], `"${said}" does not name ${mode}`);
+    // A way to pay only some programs offer is said with the program it belongs to.
+    if (engines.length < Object.keys(ENGINE_BINARIES).length)
+      for (const id of engines) assert.match(said, new RegExp(`for ${ENGINE_BINARIES[id].product}\\b`), `"${said}" offers ${mode} to every program`);
+  }
+  // And it is what the wizard says, just before the engine question.
+  const src = readFileSync(join(REPO, "bin", "onboard.mjs"), "utf8");
+  assert.match(src, /for \(const line of PAY_PREAMBLE\) say\(line\);\s*\n\s*const pick = await choose\("Which program does the reasoning\?"/);
+});
+
+test("setup's proof turn pins the path of the copy it proves, and its advice still names the copy setup installed", async () => {
+  const { root, program } = plantInstalledCopy("#!/bin/sh\nexit 0\n", "2.1.270");
+  const eng = ENGINE_BINARIES["anthropic-agent"];
+  const empty = mkdtempSync(join(tmpdir(), "onboard-proof-path-"));
+  try {
+    const bin = resolveEngineBin(eng.fallback, { env: { PATH: empty }, engine: "anthropic-agent", enginesDir: root });
+    assert.equal(bin.source, "installed", "fixture precondition: the copy found is the one setup installed");
+    const args = proofTurn({ engineId: "anthropic-agent", eng, bin, authEnv: { CLEAROTRON_AI_BILLING: "subscription" }, env: { PATH: empty } });
+    assert.equal(args.env[eng.env], program, "the turn runs the copy setup proved, pinned by its path");
+    const refused = { code: 1, killed: false, stdout: "", stderr: "API Error: 401 Unauthorized", signals: {} };
+    const v = await probeEngineTurn({ ...args, runTurn: async () => refused,
+      loadAdapter: () => { throw new Error("no adapter is loaded here; the turn is injected"); } });
+    assert.equal(v.mode, "signed-out");
+    assert.ok(v.fix.includes(`run \`${program}\` once`), v.fix);
+    assert.doesNotMatch(v.fix, /run `claude` once/, "the bare word, which that copy does not answer to");
+  } finally { for (const d of [root, empty]) rmSync(d, { recursive: true, force: true }); }
 });
 
 test("setup no longer assigns an engine behind the reader's back", () => {
