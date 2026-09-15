@@ -660,7 +660,14 @@ export function resolveModel(model) {
  * never a default. A null on either side makes the comparison UNKNOWN, and an unknown must never be
  * recorded as a match — that is the absence-read-as-a-pass class this whole issue is about.
  */
-const MODEL_FAMILY_RE = /(?:^|\/)(?:claude-)?(opus|sonnet|haiku)(?:[-.]|$)/i;
+// FABLE IS READ AS A FAMILY TOO (2026-09-15). It was left out while nobody had seen what the wire reports for
+// a fable turn, on the rationale that an unprobed id must stay unknown. The report's model line needs the tier
+// of a fable turn served under a company's deployment name, and a fable request served as `claude-fable-5-1`
+// must compare as the same family. Only an id this pattern matches moves from null to "fable": `fable`,
+// `claude-fable-…`, `anthropic/claude-fable-…`. A deployment name that merely contains the word
+// (`acme-fable-a`) still reads null, so its comparison stays unknown. A fable request served by another
+// tier's model now compares as a mismatch and is refused, which is the substitution the check exists for.
+const MODEL_FAMILY_RE = /(?:^|\/)(?:claude-)?(opus|sonnet|haiku|fable)(?:[-.]|$)/i;
 
 // — THE OPENAI SIDE, added when the codex path could first answer "what ran".
 //

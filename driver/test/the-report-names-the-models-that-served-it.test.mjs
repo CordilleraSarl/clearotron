@@ -33,9 +33,10 @@
 //     deployment named after its tier still reads as that tier. Only an id shaped like a Claude model id
 //     prints as itself: a name that merely begins `claude-`, or wraps itself in Amazon's form, reads as the
 //     tier. One model in two cases or two clouds' version marks is one entry, and a request in Amazon's
-//     spelling is read as the tier it names. The CONTROLS: a Codex id prints as reported, and a deployment
-//     whose tier cannot be read is left off rather than printed, so a run made only of it reads [] and
-//     publishes no line.
+//     spelling is read as the tier it names. Fable is a tier like the other three: a fable turn under a
+//     deployment name prints as Fable, from both publishers. The CONTROLS: a Codex id prints as reported, a
+//     served fable id prints as itself, and a deployment whose tier cannot be read is left off rather than
+//     printed, so a run made only of it reads [] and publishes no line.
 //
 // SAFETY: driver.config reads env at module load and its pool-root default is the real archive, so the
 // env is pinned before any product module is imported.
@@ -466,12 +467,27 @@ test("servedModels: a row with no engine stamp is read as Claude's only when its
   assert.deepEqual(unstamped("deployment", "acme-gold"), ["Opus"]);
 });
 
-test("the CONTROL: a deployment whose tier cannot be read is left off the list, never printed", () => {
-  // `fable` is a tier a stage may ask for that this build's tier reader does not place. There is no tier
-  // word to print and the name must not be printed, so a run made only of such turns lists nothing and
-  // renders no line: stated here so that reading the tier later is a visible change, not a silent one.
-  const ids = servedModels(runWith("unplaced-tier", { "matter-frame.jsonl": [
+test("servedModels: a fable turn under a deployment name reads as Claude and Fable, the tier it asked for", () => {
+  // Fable is a tier like the other three: a stage reaches it through the synthesis override, and its turn
+  // served under a company's deployment name prints as the tier, never the name. The control that stood
+  // here held that such a run listed nothing, because the tier reader did not place fable; reading it is
+  // the change, made visibly.
+  const ids = servedModels(runWith("fable-deployed", { "matter-frame.jsonl": [
     stageRow(1, "fable", "acme-fable-a"), stageRow(2, "fable", "acme-fable-b")] }));
+  assert.deepEqual(ids, ["Fable"], "a fable turn under a deployment name was left off, or printed as the name");
+  assert.match(servedModelsLine(ids), /Prepared with Claude: Fable\./);
+  assert.match(servedModelsLine(["Fable", "gpt-5.6-sol"]), /Prepared with: Claude Fable, gpt-5\.6-sol\./, "the tier word says its vendor beside another vendor's id");
+  // CONTROL: a served fable id is a Claude model's name and prints as itself, as it did before.
+  const own = servedModels(runWith("fable-own-id", { "matter-frame.jsonl": [stageRow(1, "fable", "claude-fable-5-1")] }));
+  assert.deepEqual(own, ["claude-fable-5-1"]);
+  assert.match(servedModelsLine(own), /Prepared with Claude: claude-fable-5-1\./);
+});
+
+test("the CONTROL: a deployment whose tier cannot be read is left off the list, never printed", () => {
+  // A request for a tier this build does not know gives no tier word to print, and the name must not be
+  // printed, so a run made only of such turns lists nothing and renders no line.
+  const ids = servedModels(runWith("unplaced-tier", { "matter-frame.jsonl": [
+    stageRow(1, "claude-unknown-tier", "acme-unknown-a"), stageRow(2, "claude-unknown-tier", "acme-unknown-b")] }));
   assert.deepEqual(ids, [], "a turn ran, so the list is not null, and no deployment name is listed");
   assert.equal(servedModelsLine(ids), "", "nothing is listed, so no line is rendered");
 });
@@ -589,6 +605,25 @@ for (const product of ["clearance", "knockout"]) {
     assert.match(scopeOf(html), /Prepared with Claude: Opus, Sonnet, Haiku\./, "the scope section's closing line");
     for (const [where, text] of [["meta.json", JSON.stringify(meta)], ["report-data.json", JSON.stringify(data)], ["the page", html]])
       assert.doesNotMatch(text, COMPANY, `${where} carries no deployment name`);
+  });
+
+  test(`a ${product} run whose fable turns are served under a deployment name publishes Claude and Fable, never the name`, async () => {
+    const { meta, data, html } = await publish(`fable-deployed-${product}`, product, [
+      stageRow(1, "fable", "acme-fable-a"),
+      stageRow(2, "fable", "acme-fable-b"),
+    ]);
+    assert.deepEqual(meta.servedModels, ["Fable"], "meta.json");
+    assert.deepEqual(data.servedModels, ["Fable"], "report-data.json");
+    assert.match(scopeOf(html), /Prepared with Claude: Fable\./, "the scope section's closing line");
+    for (const [where, text] of [["meta.json", JSON.stringify(meta)], ["report-data.json", JSON.stringify(data)], ["the page", html]])
+      assert.doesNotMatch(text, COMPANY, `${where} carries no deployment name`);
+  });
+
+  test(`the CONTROL: a ${product} run whose fable turn reports its own Claude id publishes that id`, async () => {
+    const { meta, data, html } = await publish(`fable-own-id-${product}`, product, [stageRow(1, "fable", "claude-fable-5-1")]);
+    assert.deepEqual(meta.servedModels, ["claude-fable-5-1"], "meta.json");
+    assert.deepEqual(data.servedModels, ["claude-fable-5-1"], "report-data.json");
+    assert.match(scopeOf(html), /Prepared with Claude: claude-fable-5-1\./, "the scope section's closing line");
   });
 
   test(`the CONTROL: a ${product} run on Codex publishes its ids as reported`, async () => {

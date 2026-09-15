@@ -198,11 +198,11 @@ export function rollupTokens(runDir) {
  * a provider turn), so nothing was looked at. `[]` when attempt rows exist and none names a served model
  * a client may read (an engine that does not report one, a turn killed before it said, a turn the Claude
  * program answered itself), on a stage turn and a native-language turn alike. One more case reads `[]`:
- * a Claude turn served under a deployment name whose requested tier the tier reader cannot place (a
- * `fable` request, which modelFamily does not read) is left off, because the name must not be printed and
- * there is no tier word to print instead. In a run that mixes such turns with others, the list names only
- * the others. So does a turn stamped by an engine whose vendor the closed table in run-economics.mjs does
- * not name: nobody can say whose model served it. An empty list is never a guess.
+ * a Claude turn served under a deployment name whose requested tier the tier reader cannot place (a request
+ * outside opus, sonnet, haiku and fable) is left off, because the name must not be printed and there is no
+ * tier word to print instead. In a run that mixes such turns with others, the list names only the others.
+ * So does a turn stamped by an engine whose vendor the closed table in run-economics.mjs does not name:
+ * nobody can say whose model served it. An empty list is never a guess.
  *
  * WHAT IS LISTED IS WHAT A CLIENT MAY READ, mapped here and nowhere else (servedName below), so meta.json,
  * report-data.json and the report's closing line carry one list and cannot disagree. Through a cloud, a
@@ -271,7 +271,7 @@ const GOOGLE_CLAUDE_ID_RE = /^(claude-[a-z0-9.-]+?)(?:-v\d+)?@(\d{8})$/i;
 // on a turn that asked for Haiku. A `latest` alias, `-latest` or Google's `@latest`, is a pointer the
 // provider moves, never the name of the model a turn reports, so it reads as the tier too.
 const CLAUDE_MODEL_ID_RE = /^claude-(?:(?:opus|sonnet|haiku|fable)(?:-\d{1,2}){1,2}|\d(?:-\d)?-(?:opus|sonnet|haiku))(?:-\d{8})?(?:\[\d+[km]\])?$/;
-const CLAUDE_TIERS = new Set(["opus", "sonnet", "haiku"]);
+const CLAUDE_TIERS = new Set(["opus", "sonnet", "haiku", "fable"]);   // fable is reached through the synthesis override
 
 /** A Claude model id in any cloud's spelling, as its own lower-case name, or null when it is not one. */
 function claudeModelId(id) {

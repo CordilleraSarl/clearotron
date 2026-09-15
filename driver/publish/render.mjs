@@ -2447,9 +2447,9 @@ function officeLinkNote() {
 // A TIER WORD IS CLAUDE'S. servedModels lists a turn served under a company's own deployment name as the
 // tier it asked for ("Opus"), never the name, so the list may read "claude-opus-5, Haiku". Both are
 // Claude's and the line says so once; in a list that also names another vendor, the word says it itself
-// ("Claude Opus"). The three words are the ones servedModels writes. They are kept here rather than
-// imported, because tokens.mjs loads the driver's settings and this module renders without them.
-const CLAUDE_TIER_WORD_RE = /^(?:Opus|Sonnet|Haiku)$/;
+// ("Claude Opus"). The four words, Fable among them, are the ones servedModels writes. They are kept here
+// rather than imported, because tokens.mjs loads the driver's settings and this module renders without them.
+const CLAUDE_TIER_WORD_RE = /^(?:Opus|Sonnet|Haiku|Fable)$/;
 export function servedModelsLine(ids) {
   const list = (Array.isArray(ids) ? ids : []).map((s) => String(s ?? '').trim()).filter(Boolean);
   if (!list.length) return '';

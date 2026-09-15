@@ -1773,7 +1773,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // served the search, a behaviour change and not licence-only, so both constants move.
 // Advanced again by the break recorded above the FROZEN constant: a tier word on the closing line is
 // Claude's, a behaviour change and not licence-only, so both constants move.
-const FROZEN_BEFORE_SPDX = "2eae03c2dcfcaa75f0064663053e3f59c7c7aebb85ed8d3a50733df291f81d59";
+const FROZEN_BEFORE_SPDX = "839d9f028dca4547cb247308e3cce5acf43831177d6cb0a430d95b3120fb8343";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2084,7 +2084,26 @@ const FROZEN_BEFORE_SPDX = "2eae03c2dcfcaa75f0064663053e3f59c7c7aebb85ed8d3a5073
 //      with it.
 //
 // The edit sits inside the file's last helper, after every line the rest of the tree cites by number.
-const FROZEN = "863e0cc5b6df9cd0340fc5d6efd4f1f203a4db04611fefbf11f50a3d9a56242c";
+//
+// FABLE IS A TIER WORD LIKE THE OTHER THREE (2026-09-15). A stage reaches the fable tier through the synthesis
+// override, and a fable turn served under a company's deployment name was left off the list, because the tier
+// reader placed only opus, sonnet and haiku; the entry above said so. servedModels (tokens.mjs) now lists such a
+// turn as "Fable", so the line's tier-word pattern reads Fable too, or that list would print "Prepared with:"
+// and lose its vendor. The file's own checklist, answered:
+//
+//   1. Is it reachable from a REPUBLISH? YES: a republished run whose fable turns were served under a
+//      deployment name gains "Prepared with Claude: Fable." where it printed no line, or names Fable beside the
+//      other models where it named only those. Every other list renders as before: a list with no Fable in it
+//      takes exactly the old branch. MEASURED: the three committed clearance demos and the knockout demo,
+//      republished through the ordinary publisher before and after this change, gave report.html, meta.json and
+//      report-data.json identical once the issue stamp is removed (twelve files; their record carries no served
+//      model, so the new word cannot reach them).
+//   2. Could it live in report.css or brand.mjs? NO. It decides which words the line prints.
+//   3. The hash moves HERE, in the commit that ships it. NOT licence-only, so FROZEN_BEFORE_SPDX advances
+//      with it.
+//
+// The edit is three lines beside the file's last helper, changed in place, so no line the rest of the tree cites moved.
+const FROZEN = "a9f3d419f25c925cbdf71582de65ae9856b3861734c15d8c089218f9a631680f";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));
