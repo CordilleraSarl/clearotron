@@ -2,4 +2,4 @@
 "clearotron-driver": patch
 ---
 
-New: Each step uses the newest Claude Opus and Sonnet as soon as they ship, and each report names the models that ran.
+New: Claude steps run on the newest Opus and Sonnet as soon as they ship, unless a setting holds a tier at one model.

@@ -2,8 +2,8 @@
 "clearotron-driver": patch
 ---
 
-Fixed: When a cloud account refuses the credentials, `clearotron doctor` and setup name that cloud and the settings to check, not a sign-in. A refused API key is reported as the key.
+New: When a cloud account refuses the credentials, setup, `clearotron doctor` and a starting search name that cloud and the settings to check.
 
-Fixed: After setup installs Claude Code or the Codex CLI, the sign-in advice names that copy, which is not on the PATH.
+Fixed: When an API key is refused, setup, `clearotron doctor` and a starting search name the key to check, rather than asking for a sign-in.
 
-Fixed: In demo mode, `clearotron doctor` points to setup to install the reasoning program, rather than to installing it by hand.
+New: In demo mode, `clearotron doctor` points to setup to install the reasoning program.
