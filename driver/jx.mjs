@@ -512,7 +512,11 @@ export async function runJxCandidateFold(ctx, job, opts = {}, { runLog = () => {
       const row = { ts: new Date().toISOString(), lane, mark: markName, executor: source, ...jxBillingStamp(source, r),
         took_ms: r?.tookMs ?? (Date.now() - started), ok: Boolean(r?.ok),
         candidates: r?.ok ? (r.candidates?.length ?? 0) : 0,
-        ...(r?.model ? { model: r.model } : {}),
+        // `model` here is the id the program reported for the turn (jx-turn.mjs reads it off the wire),
+        // not a tier asked for. `modelActual` records it under the name every attempt row uses for a
+        // served id, which is what the report's list of models reads: without it, a model that did only
+        // this work was left off the report. `model` stays as it was, because the token rollup keys on it.
+        ...(r?.model ? { model: r.model, modelActual: r.model } : {}),
         ...(r?.usage ? { usage: r.usage } : {}), ...(r?.ok ? {} : { cause: String(r?.cause ?? "unknown").slice(0, 300) }) };
       try { appendFileSync(ledgerPath, JSON.stringify(row) + "\n"); } catch { /* receipts best-effort */ }
       // Before the degraded-lane `continue` below: a lane that FAILED still ran a turn, and the model

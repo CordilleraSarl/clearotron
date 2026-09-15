@@ -170,7 +170,8 @@ export function rollupTokens(runDir) {
 
 /**
  * THE MODELS THAT SERVED THIS RUN, as the engine reported them: distinct ids, in the order each first
- * served a turn. Read from every attempt row's `modelActual` (gateway.mjs), the id the wire named. Never
+ * served a turn. Read from every attempt row's `modelActual`, the id the wire named: the stage rows
+ * gateway.mjs writes and the native-language rows jx.mjs and jx-units.mjs write, one list across both. Never
  * the tier a stage asked for: a tier goes to the CLI as the vendor's alias, so the request says nothing
  * about which model ran, and this is the record that does.
  *

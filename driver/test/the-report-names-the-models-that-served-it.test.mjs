@@ -13,7 +13,11 @@
 //   - servedModelsLine names Claude only when every id is a Claude id, treats an id as text, and is empty
 //     for nothing, so a run with no record renders as it was delivered;
 //   - each real publisher, given a run whose attempt rows name served models, writes them to meta.json,
-//     report-data.json and the rendered scope section, and the control run with no rows writes none.
+//     report-data.json and the rendered scope section, and the control run with no rows writes none;
+//   - the native-language steps count too. Each step that writes a record (the candidate step, the judge of
+//     web listings, the reading of the register) is run for real and its model is listed; a run mixing them
+//     with stage turns keeps first-use order across both; a run whose only turns were those steps publishes
+//     the line; and a label for a message no model wrote is still not a model.
 //
 // SAFETY: driver.config reads env at module load and its pool-root default is the real archive, so the
 // env is pinned before any product module is imported.
@@ -34,6 +38,8 @@ const { servedModels } = await import("../tokens.mjs");
 const { servedModelsLine } = await import("../publish/render.mjs");
 const { publishReport } = await import("../publish/index.mjs");
 const { publishKnockout } = await import("../publish/knockout.mjs");
+const { runJxCandidateFold } = await import("../jx.mjs");
+const { runJxSerpGrid, runJxNativeread } = await import("../jx-units.mjs");
 
 const jsonl = (rows) => rows.map((r) => JSON.stringify(r)).join("\n") + "\n";
 function runWith(tag, files) {
@@ -100,7 +106,7 @@ const ROWS = [
   { ts: "2026-09-14T10:02:00.000Z", model: "haiku", modelActual: "claude-haiku-4-5-20251001" },
 ];
 
-async function publish(tag, product, rows) {
+async function publish(tag, product, rows, prepare = null) {
   const runDir = join(ROOT, `pub-${tag}`);
   mkdirSync(driverDir(runDir), { recursive: true });
   writeFileSync(join(runDir, "status.json"), JSON.stringify({ runId: `fixture-${tag}`, markName: "KURENA" }));
@@ -108,6 +114,7 @@ async function publish(tag, product, rows) {
   writeFileSync(join(runDir, "findings.json"), JSON.stringify({ schema_version: 6, findings: [] }));
   writeFileSync(driverDir(runDir, "profile.json"), JSON.stringify({ key: `${tag}-key` }));
   if (rows) writeFileSync(driverDir(runDir, "matter-frame.jsonl"), jsonl(rows));
+  if (prepare) await prepare(runDir);
   const poolRoot = join(ROOT, `pool-${tag}`);
   mkdirSync(poolRoot, { recursive: true });
   const runId = `tmp0775-2026-09-14-${tag}`;
@@ -141,5 +148,96 @@ for (const product of ["clearance", "knockout"]) {
     assert.equal("servedModels" in meta, false, "meta.json keeps its earlier shape when nothing was read");
     assert.equal(data.servedModels, null, "report-data.json says nothing was read");
     assert.doesNotMatch(scopeOf(html), /Prepared with/, "no line is rendered for a run with no record");
+  });
+}
+
+// ── The native-language steps ─────────────────────────────────────────────────────────────────────────
+// Those steps write their own records, `_driver/jx-completions.jsonl`, one row per call. Measured
+// 2026-09-14: a run whose only turns were those steps published no served models and no line, so a model
+// used only there (Haiku reading the Chinese register, say) was left off the report. Each step below is the
+// real one, run with its turn injected, so what is read is the record the step itself writes.
+
+const HAIKU = "claude-haiku-4-5-20251001";
+const CANDIDATE = { term: "诺瓦脉冲", romanization: "NUO WA MAI CHONG", kind: "phonetic", rationale: "sound-alike" };
+const JOB = { markName: "NOVAPULSE", jurisdictions: ["CN"], goods: "game software", classes: [9] };
+const tick = () => new Promise((r) => setTimeout(r, 5));   // so two records never share a millisecond
+
+/** The candidate step, whose turn reports `model`. */
+async function candidateStep(runDir, model) {
+  mkdirSync(driverDir(runDir), { recursive: true });
+  const ctx = {
+    run: { runDir }, paths: { registerPlan: join(mkdtempSync(join(ROOT, "plan-")), "register-plan.json") },
+    job: JOB, profile: {}, searchPolicy: { components: { jxLanes: true } },
+    registerPlan: { schema_version: 1, plan_version: 1, job_key: "t", entries: [
+      { qid: "primary-sweep:exact:novapulse", axis: "primary-sweep", predicate: "exact",
+        term: "NOVAPULSE", nice_classes: ["9"], regions: ["CN"], expected_kind: "enumerate" }] },
+  };
+  const r = await runJxCandidateFold(ctx, JOB, { jxExecutor: async () => ({ ok: true, candidates: [CANDIDATE], tookMs: 5, model }) },
+    { inScopeClasses: ["9"] });
+  assert.equal(r.folded, 1, `the candidate step must run for its record to mean anything: ${JSON.stringify(r)}`);
+}
+
+/** A run that has already folded its candidates, as the two later steps expect to find it. */
+function laterStepCtx(runDir) {
+  mkdirSync(driverDir(runDir), { recursive: true });
+  return { run: { runDir, slug: "novapulse", codename: "served" }, job: JOB,
+    searchPolicy: { components: { jxLanes: true } }, gridVariants: ["NOVAPULSE"],
+    jxLanes: { schema: 1, lanes: { zh: { depth: "candidates", jurisdictions: ["CN"] } },
+      fold: { lanes: { zh: { accepted: [{ qid: "jx-zh-0", ...CANDIDATE }], refused: [], cnipaSubgroups: [{ class: 9, groups: ["0901"] }] } } } } };
+}
+
+/** The judge of web listings, whose turn reports `model`. One marketplace answers, so the judge has work. */
+async function judgeStep(runDir, model) {
+  const ctx = laterStepCtx(runDir);
+  const serpExecutor = async ({ term, platform }) => (platform === "taobao.com"
+    ? { ok: true, hits: [{ title: `${term} 旗舰店`, url: "https://item.taobao.com/item/123", snippet: "listing" }], tookMs: 1 }
+    : { ok: true, hits: [], tookMs: 1 });
+  const jxJudge = async ({ hits }) => ({ ok: true, tookMs: 1, usage: { input: 10, output: 5 }, model,
+    judgments: hits.map((h) => ({ id: h.id, classification: "listing-candidate", note: "a shop page" })) });
+  const r = await runJxSerpGrid(ctx, JOB, { serpExecutor, jxJudge }, {});
+  assert.equal(r.ran, true, `the judge step must run for its record to mean anything: ${r.cause ?? ""}`);
+}
+
+/** The reading of the register, whose turn reports `model`. */
+async function readingStep(runDir, model) {
+  const ctx = laterStepCtx(runDir);
+  mkdirSync(join(runDir, "register-units"), { recursive: true });
+  writeFileSync(join(runDir, "register-units", "transliteration-numeric.md"), "| 诺瓦脉冲 | https://reg.example/tm/555 | live |");
+  const r = await runJxNativeread(ctx, JOB, { nativereadExecutor: async () => ({ ok: true, items: [], tookMs: 1, usage: { input: 10, output: 5 }, model }) }, {});
+  assert.equal(r.ran, true, `the reading step must run for its record to mean anything: ${r.cause ?? ""}`);
+}
+
+test("servedModels: each native-language step's record names the model it reported", async () => {
+  for (const [name, step] of [["candidate", candidateStep], ["judge", judgeStep], ["reading", readingStep]]) {
+    const runDir = join(ROOT, `jx-only-${name}`);
+    await step(runDir, HAIKU);
+    assert.deepEqual(servedModels(runDir), [HAIKU], `a run whose only turn was the ${name} step lists the model that did it`);
+  }
+});
+
+test("servedModels: first use decides the order across stage turns and native-language steps", async () => {
+  const runDir = join(ROOT, "jx-mixed");
+  mkdirSync(driverDir(runDir), { recursive: true });
+  // File names chosen so directory order disagrees with the order the turns ran in.
+  writeFileSync(driverDir(runDir, "z-matter-frame.jsonl"), jsonl([{ ts: new Date().toISOString(), model: "opus", modelActual: "claude-opus-5" }]));
+  await tick();
+  await candidateStep(runDir, HAIKU);
+  await tick();
+  writeFileSync(driverDir(runDir, "a-synthesis.jsonl"), jsonl([{ ts: new Date().toISOString(), model: "sonnet", modelActual: "claude-sonnet-5" }]));
+  assert.deepEqual(servedModels(runDir), ["claude-opus-5", HAIKU, "claude-sonnet-5"]);
+});
+
+test("the CONTROL: a native-language step's label for a message no model wrote is not listed", async () => {
+  const runDir = join(ROOT, "jx-synthetic");
+  await candidateStep(runDir, "<synthetic>");
+  assert.deepEqual(servedModels(runDir), [], "a turn ran and named no model");
+});
+
+for (const product of ["clearance", "knockout"]) {
+  test(`a ${product} run whose only turns were native-language steps publishes the model that did them`, async () => {
+    const { meta, data, html } = await publish(`jx-only-${product}`, product, null, (runDir) => readingStep(runDir, HAIKU));
+    assert.deepEqual(meta.servedModels, [HAIKU], "meta.json");
+    assert.deepEqual(data.servedModels, [HAIKU], "report-data.json");
+    assert.match(scopeOf(html), /Prepared with Claude: claude-haiku-4-5-20251001\./, "the scope section's closing line");
   });
 }
