@@ -480,35 +480,37 @@ test("the engine menu is built from the driver's registry, plus one row that is 
   assert.equal(opts[0].id, "anthropic-agent", "the production default is the Enter answer — setup must not change what a run does by accident");
   const none = opts.filter((o) => o.id === null);
   assert.equal(none.length, 1, "exactly one deliberate 'no engine' row");
-  assert.equal(none[0].label, "none for now", "the row that is not an engine, in the approved words");
+  assert.equal(none[0].label, "None for now", "the row that is not an engine, in the approved words");
   // What still works without an engine is said AFTER that choice, by the one helper every no-engine route
   // uses, rather than in the row.
   const src = readFileSync(ONBOARD, "utf8");
   const helper = src.slice(src.indexOf("const sayNoEngine = () => {"), src.indexOf("const choose = async"));
-  assert.match(helper, /\$\{invoke\("demo"\)\}\\` needs none/,"the no-engine ending no longer says the demo still works");
-  assert.match(src, /if \(!pick\.id\) \{ sayNoEngine\(\); break; \}/, "picking \"none for now\" no longer reaches that ending");
+  assert.match(helper, /info\(NO_AI_CHOSEN\);/, "the no-engine ending is not the one approved line");
+  assert.match(src, /export const NO_AI_CHOSEN = "No AI chosen\. The demo works without one;/, "the no-engine ending no longer says the demo still works");
+  assert.match(src, /if \(!pick\.id\) \{ sayNoEngine\(\); break; \}/, "picking \"None for now\" no longer reaches that ending");
   for (const o of opts.filter((o) => o.id)) {
     const e = ENGINE_BINARIES[o.id];
-    assert.ok(e.product && o.label.startsWith(`${e.product} (${e.vendor})`), `${o.id} is not named by its program and vendor from the registry: ${o.label}`);
+    assert.ok(e.product && o.label.startsWith(`${e.product}, by ${e.vendor}`), `${o.id} is not named by its AI and maker from the registry: ${o.label}`);
   }
 });
 
 // THE ENGINE QUESTION SAYS WHAT SETUP FOUND. Its rows said "uses its `claude` program on this machine"
 // whether or not there was one, so a reader could not tell from the question which answer needed an
-// install. The approved rows, with the version setup read:
+// install. The approved rows, with the version setup read (every case, for both engines, is in
+// setup-asks-which-ai-runs-your-searches.test.mjs):
 test("each row of the engine question says what setup found of that program, in the approved words", () => {
   const opts = engineOptions({
     "anthropic-agent": { executable: true, relative: false, version: "2.1.270", rejected: [] },
     "openai-agent": { executable: false, relative: false, version: null, rejected: [] },
   });
   assert.deepEqual(opts.map((o) => o.label), [
-    "Claude (Anthropic)   found: 2.1.270 on this machine",
-    "Codex (OpenAI)       not installed: setup can install it",
-    "none for now",
+    "Claude, by Anthropic   found on this computer (version 2.1.270)",
+    "Codex, by OpenAI       not on this computer — setup can install it",
+    "None for now",
   ]);
   // A program found whose version could not be read is still found.
   assert.equal(engineOptions({ "anthropic-agent": { executable: true, relative: false, version: null, rejected: [] } })[0].label,
-    "Claude (Anthropic)   found on this machine");
+    "Claude, by Anthropic   found on this computer");
 });
 
 test("the engine question resolves each program the way a run does: setting, then PATH, then the copy setup installed", () => {
@@ -526,29 +528,30 @@ test("the engine question resolves each program the way a run does: setting, the
     const onPath = engineMenuState({ env: { PATH: machine }, enginesDir: NO_ENGINES });
     assert.equal(onPath["anthropic-agent"].path, join(machine, "claude"));
     assert.deepEqual(labels(onPath).slice(0, 2), [
-      "Claude (Anthropic)   found: 2.1.241 on this machine",
-      "Codex (OpenAI)       not installed: setup can install it",
+      "Claude, by Anthropic   found on this computer (version 2.1.241)",
+      "Codex, by OpenAI       not on this computer — setup can install it",
     ]);
     // The explicit setting comes before PATH.
     const set = engineMenuState({ env: { PATH: machine, [ENGINE_BINARIES["anthropic-agent"].env]: named }, enginesDir: NO_ENGINES });
     assert.equal(set["anthropic-agent"].path, named);
-    assert.equal(labels(set)[0], "Claude (Anthropic)   found: 3.0.0 on this machine");
+    assert.equal(labels(set)[0], "Claude, by Anthropic   found on this computer (version 3.0.0)");
     // The copy setup installed is found last, and says its version in its own package.json: the program
     // itself exits 1 on `--version`, so the version can only have come from there.
     const installed = engineMenuState({ env: { PATH: "" }, enginesDir: root });
     assert.equal(installed["anthropic-agent"].source, "installed");
-    assert.equal(labels(installed)[0], "Claude (Anthropic)   found: 2.1.270 on this machine");
+    assert.equal(labels(installed)[0], "Claude, by Anthropic   found on this computer (version 2.1.270)");
     // A program that will not say its version is still found.
     const quiet = engineMenuState({ env: { PATH: silent }, enginesDir: NO_ENGINES });
-    assert.equal(labels(quiet)[0], "Claude (Anthropic)   found on this machine");
-    // CONTROL: a setting naming nothing is not reported as found, nor as something an install mends.
+    assert.equal(labels(quiet)[0], "Claude, by Anthropic   found on this computer");
+    // CONTROL: a setting naming nothing is not reported as found, nor as nothing found that an install mends.
+    const setWrong = "Claude, by Anthropic   problem: this computer is set to use a copy of Claude that isn't there — choose it to see the fix";
     const gone = engineMenuState({ env: { PATH: machine, [ENGINE_BINARIES["anthropic-agent"].env]: join(elsewhere, "absent") }, enginesDir: NO_ENGINES });
-    assert.equal(labels(gone)[0], "Claude (Anthropic)   not usable: setup says why if you pick it");
+    assert.equal(labels(gone)[0], setWrong);
     // A setting naming a bare word that is not on PATH refuses nothing, since there is no file to refuse,
-    // yet it still rules out the copy setup installs, so an install is not its fix either.
+    // yet it still rules out the copy setup installs, so it is the setting's row too.
     const bare = engineMenuState({ env: { PATH: machine, [ENGINE_BINARIES["anthropic-agent"].env]: "no-such-claude" }, enginesDir: root });
     assert.deepEqual(bare["anthropic-agent"].rejected, [], "fixture precondition: nothing was refused, so only the setting decides this row");
-    assert.equal(labels(bare)[0], "Claude (Anthropic)   not usable: setup says why if you pick it");
+    assert.equal(labels(bare)[0], setWrong);
   } finally {
     for (const d of [machine, elsewhere, silent, root]) rmSync(d, { recursive: true, force: true });
   }
@@ -562,17 +565,17 @@ test("the engine question shows a version only when the program answers with one
     // A program that answers in prose is found, and its prose stays out of the menu row.
     const worded = engineMenuState({ env: { PATH: prose }, enginesDir: NO_ENGINES });
     assert.equal(worded["anthropic-agent"].version, null);
-    assert.equal(engineOptions(worded)[0].label, "Claude (Anthropic)   found on this machine");
+    assert.equal(engineOptions(worded)[0].label, "Claude, by Anthropic   found on this computer");
     // A program that never answers holds the question for the short limit, not a run's five seconds.
     const t0 = Date.now();
     const slow = engineMenuState({ env: { PATH: hung }, enginesDir: NO_ENGINES });
     const waited = Date.now() - t0;
-    assert.equal(engineOptions(slow)[0].label, "Claude (Anthropic)   found on this machine");
+    assert.equal(engineOptions(slow)[0].label, "Claude, by Anthropic   found on this computer");
     assert.ok(waited < 4000, `the question waited ${waited} ms on one program that does not answer`);
   } finally { for (const d of [prose, hung]) rmSync(d, { recursive: true, force: true }); }
 });
 
-test("the line before the engine question names every way to pay that the question after it offers", () => {
+test("the line printed with the engine question names every way to pay that the question after it offers", () => {
   const said = PAY_PREAMBLE.join(" ").replace(/\s+/g, " ");
   const words = { subscription: /\bsubscription\b/, "api-key": /\bAPI key\b/, cloud: /\bcloud account\b/ };
   const offered = new Map();
@@ -586,9 +589,9 @@ test("the line before the engine question names every way to pay that the questi
     if (engines.length < Object.keys(ENGINE_BINARIES).length)
       for (const id of engines) assert.match(said, new RegExp(`for ${ENGINE_BINARIES[id].product}\\b`), `"${said}" offers ${mode} to every program`);
   }
-  // And it is what the wizard says, just before the engine question.
+  // And it is what the wizard says, with the engine question, under its rows.
   const src = readFileSync(join(REPO, "bin", "onboard.mjs"), "utf8");
-  assert.match(src, /for \(const line of PAY_PREAMBLE\) say\(line\);\s*\n\s*const pick = await choose\("Which program does the reasoning\?"/);
+  assert.match(src, /const pick = await choose\(ENGINE_QUESTION, engineOptions\(found\), 0, PAY_PREAMBLE\);/);
 });
 
 test("setup's proof turn pins the path of the copy it proves, and its advice still names the copy setup installed", async () => {

@@ -128,15 +128,34 @@ const CLAUDE_PAY_ANSWERS = Object.freeze([
   { id: "api-key", label: "An Anthropic API key: pay per use, paste the key" },
   { id: "cloud", label: "Through your Google, Microsoft or Amazon cloud account: pay per use on that cloud's bill" },
 ]);
+// SETUP'S FIRST QUESTION, IN THE OWNER'S WORDS (2026-09-15). It asked which program does the reasoning,
+// which is how this code thinks of an engine and not how a reader choosing one does.
+export const ENGINE_QUESTION = "Which AI should run your searches?";
 /**
- * What setup says just before the engine question about the question after it. It named two ways to pay,
- * a subscription or an API key, beside a pay question that offers Claude a third, a cloud account; so every
- * answer `payQuestion` offers, for any engine, is named here, and the cloud answer as Claude's alone.
+ * What setup says under the engine question's rows, about the question after it. Every answer
+ * `payQuestion` offers, for any engine, is named here, and the cloud answer as Claude's alone, so on a
+ * machine that has only Codex it still reads true. The chooser prints it after the rows and before the
+ * prompt, so it is the last thing read before answering.
  */
 export const PAY_PREAMBLE = Object.freeze([
-  "  Choosing a program also chooses how it is paid for: a subscription you sign in with, an API",
-  "  key, or, for Claude, your own cloud account. That question comes right after this one.",
+  "  Next, setup asks how you pay for it: a subscription you sign in with, an API key,",
+  "  or, for Claude, your own cloud account.",
 ]);
+/**
+ * What setup says when no engine is chosen, by the menu's last row or by any route out of the engine step
+ * (sayNoEngine): what still works, what does not, and what to do about it, in one sentence.
+ */
+export const NO_AI_CHOSEN = "No AI chosen. The demo works without one; a real search needs one, so run setup again when you're ready.";
+/**
+ * The screen setup's chooser prints for one question: the question, one numbered line per answer with the
+ * default marked, and any lines that belong under the answers (`after`). A function of its arguments alone,
+ * so the screen a reader sees can be asserted whole.
+ */
+export function menuScreen(question, options, def = 0, after = []) {
+  return ["", `  ${question}`,
+    ...options.map((o, i) => `    ${i + 1}) ${o.label}${i === def ? "   (default)" : ""}`),
+    ...(after.length ? ["", ...after] : [])];
+}
 /** The pay question setup asks for an engine, and its answers; each answer's id is a billing word. */
 export function payQuestion({ engineId, eng, bin }) {
   if (engineId === "anthropic-agent") return { question: CLAUDE_PAY_QUESTION, answers: CLAUDE_PAY_ANSWERS };
@@ -1017,34 +1036,83 @@ export function installSizeLine(eng) {
  *
  * The last row is deliberately NOT an engine, and that is what makes the refusal above workable: a
  * reader whose CLI is signed out, or who only wants the demo, has a stated route through setup that does
- * not end in a `.env` naming an engine nobody proved. `id: null` is that row, "none for now"; what still
+ * not end in a `.env` naming an engine nobody proved. `id: null` is that row, "None for now"; what still
  * works without an engine is said after that choice (sayNoEngine), not crammed into the row. Anything
  * asserting this list against the adapter registry must drop it first.
  *
- * EACH ROW SAYS WHAT SETUP FOUND, in the words the owner approved on 2026-09-14: "found: 2.1.270 on this
- * machine", "found on this machine" when the program would not say its version, "not installed: setup can
- * install it". `found` is engineMenuState's answer; without it the rows carry the names alone.
+ * EACH ROW NAMES THE AI AND ITS MAKER AND SAYS WHAT SETUP FOUND, in the words the owner approved on
+ * 2026-09-15 (foundWords). `found` is engineMenuState's answer; without it the rows carry the names alone.
  */
 export function engineOptions(found = {}) {
-  // The PROGRAM and its VENDOR, not `label`: the labels are mechanism sentences (`claude -p`, `codex
-  // exec`) and the menu is the first question a lawyer reads. The mechanism still appears in the
-  // confirmation lines after a choice, where it belongs.
-  const rows = Object.entries(ENGINE_BINARIES).map(([id, s]) => ({ id, name: `${s.product} (${s.vendor})`, state: foundWords(s, found[id]) }));
+  // The AI and its MAKER, not `label`: the labels are mechanism sentences (`claude -p`, `codex exec`) and
+  // the menu is the first question a lawyer reads. The mechanism still appears in the confirmation lines
+  // after a choice, where it belongs.
+  const rows = Object.entries(ENGINE_BINARIES).map(([id, s]) => ({ id, name: `${s.product}, by ${s.vendor}`, state: foundWords(s, found[id]) }));
   const width = Math.max(...rows.map((r) => r.name.length));
   return [
     ...rows.map(({ id, name, state }) => ({ id, label: state ? `${name.padEnd(width)}   ${state}` : name })),
-    { id: null, label: "none for now" },
+    { id: null, label: "None for now" },
   ];
 }
 
-/** What setup found of one engine's program, as its menu row says it; "" when nothing was looked for. */
-function foundWords(eng, bin) {
+// A COPY REFUSED AS THE VENDOR'S PLACEHOLDER, told apart by the resolver's own reason for refusing it
+// (driver.config.mjs engineCandidate). setup-asks-which-ai-runs-your-searches.test.mjs plants a real
+// placeholder and reads the row, so a reworded reason turns that test red instead of this row wrong.
+const isPlaceholder = (x) => /^the placeholder /.test(String(x?.why ?? ""));
+
+/** An engine's program setting when it names a program; "" when it is unset or the default word. */
+function namedSetting(eng, setting) {
+  const set = String(setting ?? "").trim();
+  return set && set !== eng.fallback ? set : "";
+}
+
+/**
+ * Why no copy of an engine's program can run, as one of three kinds, or null when nothing was refused and
+ * no setting names a program. The menu row and the line after a pick both ask this, so they cannot
+ * disagree. THE PLACEHOLDER COMES FIRST, even where a setting names it: that copy is there, so "isn't
+ * there" would be false, and what mends it is a working copy.
+ */
+function programProblem(bin, named) {
+  const placeholder = bin?.rejected?.find(isPlaceholder);
+  if (placeholder) return { kind: "incomplete", path: placeholder.path };
+  if (named || bin?.relative) return { kind: "setting" };
+  if (bin?.rejected?.length) return { kind: "refused", path: bin.rejected[0].path };
+  return null;
+}
+
+/**
+ * What setup found of one engine's program, as its menu row says it; "" when nothing was looked for. A copy
+ * that cannot run is a problem, not an absence, and installing another is not always the fix, so the row
+ * says which problem and that choosing it shows the fix. Setup offers an install only where the engine has
+ * a package to install.
+ */
+export function foundWords(eng, bin) {
   if (!bin) return "";
-  if (bin.executable && !bin.relative) return bin.version ? `found: ${bin.version} on this machine` : "found on this machine";
-  // A copy that was refused, or a setting naming something that cannot run, is not "not installed", and
-  // installing another is not always the fix: the reasons are printed once the engine is picked.
-  if (bin.rejected?.length || bin.relative || bin.explicit) return "not usable: setup says why if you pick it";
-  return eng.package ? "not installed: setup can install it" : "not installed";
+  if (bin.executable && !bin.relative) return bin.version ? `found on this computer (version ${bin.version})` : "found on this computer";
+  const p = programProblem(bin, bin.explicit);
+  if (p?.kind === "incomplete") return `problem: the copy of ${eng.product} here is incomplete and won't run — choose it to see the fix`;
+  if (p?.kind === "setting") return `problem: this computer is set to use a copy of ${eng.product} that isn't there — choose it to see the fix`;
+  if (p?.kind === "refused") return `problem: the copy of ${eng.product} here won't run — choose it to see the fix`;
+  return eng.package ? "not on this computer — setup can install it" : "not on this computer";
+}
+
+/**
+ * What setup says once an engine whose copy cannot run is chosen, in the words approved with its row. The
+ * path in the setting case is the one the setting names, as it names it. A copy refused for another reason,
+ * or nothing found and nothing named, has no approved sentence and keeps unusableEngineWords' clause.
+ * NO SETTING IS NAMED HERE: the one line that names it is ownCopyLine, said if the install is declined.
+ */
+export function cannotRunLine(eng, bin, setting = "") {
+  const set = namedSetting(eng, setting);
+  const p = programProblem(bin, set);
+  if (p?.kind === "incomplete") return `The copy of ${eng.product} at ${p.path} is incomplete: its installation stopped before the program was added. Setup can install a working copy.`;
+  if (p?.kind === "setting") return `This computer is set to use ${eng.product} at ${set}, and nothing there can run. Setup can install ${eng.product} and use that instead.`;
+  return `${unusableEngineWords(eng, bin, setting)}.`;
+}
+
+/** What setup says when its install offer is declined with a setting in force: how to use one's own copy. */
+export function ownCopyLine(eng) {
+  return `To use your own copy of ${eng.product} instead, change ${eng.env} to its full path, or give that path at the next question.`;
 }
 
 /**
@@ -3521,12 +3589,10 @@ const askValue = async (q, { def = "", secret = false, skippable = false, skippe
  * land here, and two copies would drift the moment one of them was reworded.
  */
 const sayNoEngine = () => {
-  info("No engine configured, and nothing engine-related will be written.");
-  info(`\`${invoke("demo")}\` needs none. A real run refuses at its own door until one is set — re-run setup then.`);
+  info(NO_AI_CHOSEN);
 };
-const choose = async (q, options, def = 0) => {
-  say(`\n  ${q}`);
-  options.forEach((o, i) => say(`    ${i + 1}) ${o.label}${i === def ? "   (default)" : ""}`));
+const choose = async (q, options, def = 0, after = []) => {
+  for (const line of menuScreen(q, options, def, after)) say(line);
   for (;;) {
     const a = await askRaw(`  1-${options.length} [${def + 1}] `);
     const n = a === "" ? def + 1 : Number(a);
@@ -3592,22 +3658,15 @@ try {
     //
     // The wizard used to ask which engine and how it bills, and only then discover the box could not
     // complete a sign-in — headless over SSH, the owner's own dead end. What is detectable is said
-    // before anything is asked: the binary, and the credentials already in the environment. Sign-in
-    // state itself is deliberately NOT guessed — the proof turn is the only honest answer to it, and
-    // a guessed "signed in" that the turn then contradicts costs more than no claim.
-    // Resolved once per pass, for these lines and the menu's rows alike, so the two cannot disagree.
-    // The heading first: finding each program can ask it its version, which takes a moment.
-    say("\n  What this box already has:");
+    // before anything is asked, ON THE QUESTION'S OWN ROWS: each says what setup found of that program
+    // (foundWords). A block above the question used to say it a second time, with each program's path,
+    // where it was found and any API key already set; the path is said once a program is chosen, and a
+    // key already set is said at the pay question, where it makes the key the default and is either
+    // adopted or named as unused. Sign-in state itself is deliberately NOT guessed — the proof turn is the
+    // only honest answer to it, and a guessed "signed in" that the turn then contradicts costs more than
+    // no claim. Resolved once per pass, so a reader who mends something and comes back sees it mended.
     const found = engineMenuState();
-    for (const [id, e] of Object.entries(ENGINE_BINARIES)) {
-      const b = found[id];
-      const creds = [e.apiKeyEnv, e.headless?.tokenEnv].filter((n) => n && present(process.env[n]));
-      const which = b.source === "installed" ? "installed by Clearotron" : b.source === "explicit" ? `set in ${e.env}` : "on PATH";
-      say(`    ${e.vendor}: ${b.executable ? `CLI found (${b.path}, ${which}${b.version ? `, ${b.version}` : ""})` : unusableEngineWords(e, b, process.env[e.env])}${creds.length ? ` · ${creds.join(" and ")} already set` : ""}`);
-    }
-    for (const line of PAY_PREAMBLE) say(line);
-
-    const pick = await choose("Which program does the reasoning?", engineOptions(found), 0);
+    const pick = await choose(ENGINE_QUESTION, engineOptions(found), 0, PAY_PREAMBLE);
     if (!pick.id) { sayNoEngine(); break; }
     const eng = ENGINE_BINARIES[pick.id];
 
@@ -3656,7 +3715,7 @@ try {
       // (README §Licence, INSTALL §1), so a reader has to be able to read it before answering. It is an
       // npm install, never the vendor's `curl … | bash`, because a piped remote script cannot be read
       // before it runs, and it is spawned as argv, never through a shell.
-      warn(`${unusableEngineWords(eng, bin, process.env[eng.env])}.`);
+      warn(cannotRunLine(eng, bin, process.env[eng.env]));
       say(`    ${eng.label}`);
       say("");
       say(`    ${eng.vendor}'s CLI is ${eng.licence}. Installing it accepts ${eng.vendor}'s`);
@@ -3678,7 +3737,7 @@ try {
         bin = resolveEngineBin(process.env[eng.env] || eng.fallback, { engine: pick.id });
         if (bin.executable && !bin.relative) ok(`installed: ${bin.path}`);
         else warn(`${unusableEngineWords(eng, bin, process.env[eng.env])}.`);
-      }
+      } else if (namedSetting(eng, process.env[eng.env])) info(ownCopyLine(eng));
     }
     if (!(bin.executable && !bin.relative)) {
       warn(`no usable \`${eng.fallback}\` binary.`);

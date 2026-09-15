@@ -86,7 +86,7 @@ test("nothing in that branch can reach a continue before it has been offered the
 });
 
 test("what 'no engine' means is said in ONE place, so the two routes cannot drift", () => {
-  const line = "No engine configured, and nothing engine-related will be written.";
+  const line = "No AI chosen. The demo works without one; a real search needs one, so run setup again when you're ready.";
   const hits = src.split(line).length - 1;
   assert.equal(hits, 1,
     `the no-engine wording appears ${hits} times; the menu's last row and the loop's escape must both `
@@ -106,7 +106,7 @@ test("the fix did NOT move which engine Enter selects", () => {
   // The other way to end the loop is to default the menu onto the no-engine row. That also moves the
   // default on a box carrying the SECOND binary and not the first — a different vendor, and a proof
   // turn spent on it, chosen by a reader who pressed Enter. Not this defect's to decide.
-  assert.match(src, /choose\("Which program does the reasoning\?", engineOptions\(found\), 0\)/,
+  assert.match(src, /choose\(ENGINE_QUESTION, engineOptions\(found\), 0, PAY_PREAMBLE\)/,
     "the engine menu's default index must stay a literal 0 — `onboard-wizard.test.mjs` fixes row 0 "
     + "as the production engine for the same reason");
 });
