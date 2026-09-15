@@ -2,4 +2,6 @@
 "clearotron-driver": patch
 ---
 
-Fixed: When the background services found the reasoning program at their last start and this machine cannot, `clearotron doctor` no longer tells you to install it where the services can see it. Doctor now says which side could not find the program, and what reaches the services: a restart, the program's full path in the file they read, or setup, which installs the program where none is found.
+Fixed: When this machine cannot find the reasoning program the background services found, `clearotron doctor` says so, instead of advising an install the services can see.
+
+New: When the background services could not find the reasoning program, `clearotron doctor` suggests a restart, then setup or the program's full path in the file the services read.
