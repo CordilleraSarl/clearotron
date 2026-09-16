@@ -114,8 +114,12 @@ const populations = () => {
     try { return DRIVES_A_BROWSER.test(readFileSync(join(ROOT, f), "utf8")); } catch { return false; }
   });
   const union = [...new Set([...pubName.files, ...byProperty])].sort();
+  // WHICH paths were laid, not merely how many. The staleness arm below needs to tell "declared for a
+  // script nobody publishes" from "declared for a script that was deleted", and only the set can.
+  const published = new Set(pubAll.files);
+  const laidPaths = allScripts.filter((f) => !published.has(f));
   return { byName: pubName.files.slice().sort(), byProperty: byProperty.slice().sort(), union,
-    laid: pubName.laid + pubAll.laid };
+    laid: pubName.laid + pubAll.laid, laidPaths: new Set(laidPaths) };
 };
 
 const checkScripts = () => {
@@ -228,8 +232,19 @@ test("no declared exemption has gone stale", (ctx) => {
   if (why) return ctx.skip(why);
   const ci = invoked();
   const present = new Set(scripts);
+  // AN EXEMPTION FOR A LAID SCRIPT IS NOT A STALE ONE. The overlay that lays the withheld corpus also
+  // declares what it laid into this list — it patches `CANNOT_RUN_IN_CI` at lay time so a private script
+  // is accounted for rather than reported as running nowhere. Once the population above is narrowed to
+  // what this checkout PUBLISHES, that declared script is legitimately outside it, and reading its entry
+  // as stale would tell the overlay to delete the very declaration that keeps it honest.
+  //
+  // The distinction is exact and is why `populations()` returns the laid SET rather than a count: an
+  // entry is stale when its script is in neither the published population nor the laid one. A script
+  // genuinely deleted is in neither, and still reds.
+  const laid = populations()?.laidPaths ?? new Set();
   for (const { path, why } of CANNOT_RUN_IN_CI) {
-    assert.ok(present.has(path), `${path} is declared here and no longer exists — delete the entry`);
+    assert.ok(present.has(path) || laid.has(path),
+      `${path} is declared here and is neither published by this checkout nor laid over it — delete the entry`);
     assert.ok(!ci.has(path), `${path} is declared as unable to run in CI and ${CI_PATH} runs it — delete the entry`);
     assert.ok(why.trim().length > 40, `${path}: an exemption without a usable reason is an exemption nobody can retire`);
   }
@@ -394,5 +409,43 @@ test("a tree with no HEAD is a could-not-look, never an empty population", () =>
     const pub = publishedOf(["scripts/whatever-check.mjs"], dir);
     assert.ok(pub.error, "a repository with no commit must report an error, not an empty laid count");
     assert.equal(pub.files, undefined, "and it must not hand back a population it could not compute");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("an exemption for a LAID script is not stale, and one for a deleted script still is", () => {
+  // THE EFFECT THIS ARM EXISTS FOR, AND IT WAS FOUND THE EXPENSIVE WAY. Narrowing the population to what
+  // the checkout publishes made the overlay's OWN declaration read as stale: it patches this exemption
+  // list at lay time so a private script is accounted for rather than reported as running nowhere, and
+  // the first draft of that narrowing told it to delete the declaration that keeps it honest. The public
+  // tree could not show it — nothing is laid here — so only the paired control did.
+  //
+  // The distinction is what is asserted, not the names of today's files: an entry is stale when its
+  // script is in NEITHER the published population NOR the laid one.
+  const dir = mkdtempSync(join(tmpdir(), "browser-check-exempt-"));
+  try {
+    const git = (...a) => execFileSync("git", ["-C", dir, ...a], { encoding: "utf8" });
+    git("init", "-q");
+    git("config", "user.email", "t@example.test");
+    git("config", "user.name", "t");
+    mkdirSync(join(dir, "scripts"), { recursive: true });
+    writeFileSync(join(dir, "scripts", "published-check.mjs"), "// published\n");
+    git("add", "scripts/published-check.mjs");
+    git("commit", "-qm", "published");
+    writeFileSync(join(dir, "scripts", "laid-check.mjs"), "// laid by the overlay\n");
+    git("add", "scripts/laid-check.mjs");
+
+    const tracked = git("ls-files").split("\n").filter(Boolean);
+    const pub = publishedOf(tracked, dir);
+    const present = new Set(pub.files);
+    const laid = new Set(tracked.filter((f) => !present.has(f)));
+
+    const notStale = (path) => present.has(path) || laid.has(path);
+    assert.equal(notStale("scripts/published-check.mjs"), true, "a published script's exemption is live");
+    assert.equal(notStale("scripts/laid-check.mjs"), true,
+      "a LAID script's exemption is live — the overlay declares it on purpose, and calling it stale tells "
+      + "the overlay to delete its own declaration");
+    assert.equal(notStale("scripts/deleted-check.mjs"), false,
+      "a script in neither population is genuinely gone, and its exemption must still red — or this "
+      + "widening has bought the laid case by giving up the property the arm is for");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
