@@ -1769,7 +1769,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Advanced again by the break recorded above the FROZEN constant: seven fixed sentences on the
 // clearance page, which is a behaviour change and not licence-only, so both constants move for the same
 // measured reason.
-const FROZEN_BEFORE_SPDX = "fb41ccf65827b2c2026b5fc4267d13fa8da323de1c2395a7d3f04a968a95b2e4";
+const FROZEN_BEFORE_SPDX = "5180e3921677db228c542c38834759b268b9d847716b92f2cc779664b431eed3";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2076,7 +2076,54 @@ const FROZEN_BEFORE_SPDX = "fb41ccf65827b2c2026b5fc4267d13fa8da323de1c2395a7d3f0
 //
 // A LINE-COUNT NOTE: this removes lines from the middle of render.mjs, so citations aimed INTO it below
 // the band move. `scripts/citation-line-check.mjs` is the instrument; it ran clean on this commit.
-const FROZEN = "30d9b4e881b80bba648332ac544a0943a241ea3cb62d0774ed55d77354f28b53";
+// ── BREAK: an open slice was being suppressed off the page by a row that merely mentioned it ─────────
+//
+// `dedupeFollowUps` collapses a driver-composed "Follow-up / …" row into another row containing every
+// significant word of its directive. Over a short directive that matches rows with nothing to do with the
+// deferred slice, so an open slice the run had deliberately disclosed never reached the page while
+// staying correct in findings.json. Measured on a delivered report: 33 coverage entries, 31 rendered
+// cells. Both missing rows were open park rows, directives of one and two words, and every row containing
+// either was axis-labelled `register` — one open, one coverage-limited, two not-searched.
+//
+// The fix is the identity the old comment said did not exist: an area carrying `<axis> / <what was
+// swept>` is a PLAN-DERIVED UNIT, not the model restating a deferred slice, so it may no longer stand in
+// for one. The model's own free-text row still can, which is the dolphin case this function was built for.
+//
+// ── the checklist, answered ───────────────────────────────────────────────────────────────────────────
+//
+//   1. REACHABLE FROM A REPUBLISH — YES, and here that is the point rather than the risk: a republished
+//      report carrying the defect gains the row it should always have had. Measured, not asserted.
+//      Method: a detached worktree at origin/main supplies the BEFORE renderer with its own
+//      byte-identical siblings — a bare copy cannot be used, its relative imports resolve to the copy's
+//      directory — the same parsed input through both, whole-file bytes, one shape per fresh process.
+//      Each side reproduced three times, identical every run.
+//
+//      Fixture: the clearance report in this file through `parseReport`, no findings, and the coverage
+//      set named per row. Every mark and slice is invented; no client content is in this table.
+//
+//                                                       before          after           delta
+//        A  no coverage at all                          51,344 /  0     51,344 /  0     0
+//        B  all confirmed-clean                         51,206 /  1     51,206 /  1     0
+//        C  open rows, no follow-up                     51,566 /  2     51,566 /  2     0
+//        D  multi-word follow-up, free-text suppressor  51,439 /  1     51,439 /  1     0
+//        E  multi-word follow-up, kept                  51,759 /  2     51,759 /  2     0
+//        F  one-word follow-up, OPEN axis row           51,461 /  1     51,777 /  2     +316, +1 cell
+//        G  two-word follow-up, NOT-SEARCHED axis row   51,441 /  1     51,779 /  2     +338, +1 cell
+//        H  follow-up vs the model's free-text row      51,461 /  1     51,461 /  1     0
+//
+//      SIX OF EIGHT SHAPES ARE BYTE-IDENTICAL, which answers what the checklist is really asking: an
+//      archived report moves only if it carries the defect. D and H are the load-bearing rows — a
+//      free-text row still suppresses, so this is a narrowing and not a deletion. G is here because the
+//      suppressor exempts only `confirmed-clean`, so `not-searched` suppressed too; both erased rows have
+//      ONE cause and one fix closes both, which was worth establishing before paying this hash.
+//
+//   2. COULD IT LIVE IN report.css OR brand.mjs? No. It decides which rows exist, not how they look.
+//      No stylesheet can restore a row the renderer filtered out.
+//
+//   3. WHY IT MUST LAND HERE: the suppression is here. `findings.json` is already correct — the composer
+//      writes each slice exactly once. Only the render drops it.
+
+const FROZEN = "6406616e7217b7a39b746afd6fbba39e221037b26d17fabda77bff5d4a855cf1";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));
