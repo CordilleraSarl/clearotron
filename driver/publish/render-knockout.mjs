@@ -1524,6 +1524,18 @@ function analysisSection(marks, framework, { registerCounts = null, probeRan = f
     // The guard is deliberately TIGHT: a listed filing that is dead or out of the counted classes does
     // not suppress it, because for that mark the sentence is true and the filings section says so.
     const body = [bullets, finds, regBlocks, overflow].filter(Boolean).join('');
+    // A BAND WITH NO LADDER NAMED IS A NUMBER WITH NO SCALE. The framework's name rides the rating card,
+    // and that card is only built for a mark with a structured read — an archived run whose marks carry
+    // bullets and nothing else draws no card, and its band chips were then shown with no statement
+    // anywhere of which ladder they belong to. It was named in the glance panel, which rendered either
+    // way; that line went because the card names it, and this case went with it unnoticed.
+    //
+    // IT SITS OUTSIDE `body`, and that is not tidiness. `body` being empty is what decides whether this
+    // mark says "no adverse signals recorded" — a mark with nothing against it — so anything added to it
+    // silently retires that sentence. Named ONCE: the read above carries it where it drew a card, and
+    // the test for that reads the markup this same function just produced.
+    const frameworkLine = !body.includes('class="gframe"') && framework?.title && String(m.rating ?? '').trim()
+      ? `<div class="gframe">Rated on the ${esc(framework.title)}</div>` : '';
     return `<div class="ko-row">
       <div>
         <p class="ko-name">${esc(m.name)}</p>
@@ -1533,6 +1545,7 @@ function analysisSection(marks, framework, { registerCounts = null, probeRan = f
       </div>
       <div>
         ${body || '<p class="ko-bul">No adverse signals recorded for this name on this screen.</p>'}
+        ${frameworkLine}
         ${m.degraded ? `<p class="ko-degraded">${esc(DEGRADED_NOTE)}</p>` : ''}
         ${reviewerNotesBlock(m)}
         ${/* The 2026-09-16 report redesign — the register line restated the counts table above it */''}
