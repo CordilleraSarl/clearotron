@@ -12918,7 +12918,7 @@ async function pipelineInner(job, opts = {}) {
           for (const c of fresh) clampClauses.push(conditionClauses[conditions.indexOf(c)] ?? c);
           clampReasons.push(...fresh);
           if (verdict === "CLEAR") {
-            runLog(run.runDir, { event: "coverage-floor-clamp", from: "CLEAR", to: "CONDITIONAL", legalActions: conditions.length });
+            runLog(run.runDir, { event: "coverage-floor-clamp", cause: "forward-actions", from: "CLEAR", to: "CONDITIONAL", legalActions: conditions.length });
             note(`deliver-conditional floor: the opinion names ${conditions.length} forward legal action(s) a human must take (${conditions[0].slice(0, 140)}${conditions.length > 1 ? `; +${conditions.length - 1} more` : ""}) — clamping CLEAR→CONDITIONAL (spec 64: the disposition is derived from the findings' named actions).`);
             verdict = "CONDITIONAL";
             writeRunStatus(ctx, { verdict });
@@ -12957,7 +12957,7 @@ async function pipelineInner(job, opts = {}) {
         // The CLAMP is outside that guard on purpose: a re-ask can flip a clamped verdict back to CLEAR,
         // and it must meet this floor again with the reason already recorded.
         if (droppedConditions.length && verdict === "CLEAR") {
-          runLog(run.runDir, { event: "coverage-floor-clamp", from: "CLEAR", to: "CONDITIONAL", actionsDropped: droppedConditions.length });
+          runLog(run.runDir, { event: "coverage-floor-clamp", cause: "dropped-actions", from: "CLEAR", to: "CONDITIONAL", actionsDropped: droppedConditions.length });
           verdict = "CONDITIONAL";
           writeRunStatus(ctx, { verdict });
         }
@@ -13063,7 +13063,26 @@ async function pipelineInner(job, opts = {}) {
           if (regGap.recallRegressions.length) reasons.push(`a prior-confirmed live conflict was neither carried nor justified this run: ${regGap.recallRegressions.slice(0, 3).map(formatRecallRegression).join(", ")}`);
         }
         if (deadlineGap) reasons.push(`a recorded opposition deadline was delivered without its date: ${ctx.deadlineCarryMaterial.map((v) => `${v.mark_text ?? v.uri} (window closes ${v.opposition_end})`).slice(0, 3).join(", ")}`);
-        runLog(run.runDir, { event: "coverage-floor-clamp", from: "CLEAR", to: "CONDITIONAL", coverageInsufficient: coverageInsufficient || undefined, frameGap: frameGap || undefined, frameDeferred: frameDeferrals.length || undefined, screenGate: screenGateGap ? sgUnresolved.length : undefined, seniorRight: seniorGap || undefined, registerGap: registerGap ? { deferred: regGap.deferred.length, taint: regGap.taintAxes.length, recall: regGap.recallRegressions.length } : undefined, deadlineCarry: deadlineGap ? ctx.deadlineCarryMaterial.length : undefined });
+        // ── THE THIRD CLAMP SITE NAMES ITSELF, AND NAMES WHICH OF ITS SEVEN INPUTS FIRED ────────────────
+        //
+        // All three clamp sites emitted this event under one name with the same from/to, distinguishable
+        // only by which optional payload key happened to be present. Two of them fired three milliseconds
+        // apart on a production run — the first without `frameDeferred`, the second with it — which reads
+        // as one decision logged twice. It was two different decisions wearing one name, and the test lane
+        // reasonably discounted one of them. `cause` makes the event self-describing.
+        //
+        // THE EVENT NAME IS DELIBERATELY NOT SPLIT. It is a true statement about the effect — the verdict
+        // was clamped — and something downstream may already count clamps in aggregate. A discriminator is
+        // additive; three names would not be.
+        //
+        // This site is itself seven causes under one name, so it also lists WHICH fired rather than
+        // leaving a reader to key on field presence and guess.
+        const clampInputs = Object.entries({
+          coverageInsufficient, frameGap, frameDeferred: frameDeferrals.length,
+          screenGate: screenGateGap ? sgUnresolved.length : 0, seniorRight: seniorGap,
+          registerGap, deadlineCarry: deadlineGap ? ctx.deadlineCarryMaterial.length : 0,
+        }).filter(([, v]) => Boolean(v)).map(([k]) => k);
+        runLog(run.runDir, { event: "coverage-floor-clamp", cause: "coverage", causes: clampInputs, from: "CLEAR", to: "CONDITIONAL", coverageInsufficient: coverageInsufficient || undefined, frameGap: frameGap || undefined, frameDeferred: frameDeferrals.length || undefined, screenGate: screenGateGap ? sgUnresolved.length : undefined, seniorRight: seniorGap || undefined, registerGap: registerGap ? { deferred: regGap.deferred.length, taint: regGap.taintAxes.length, recall: regGap.recallRegressions.length } : undefined, deadlineCarry: deadlineGap ? ctx.deadlineCarryMaterial.length : undefined });
         note(`deliver-conditional floor: ${reasons.join("; ")} — clamping CLEAR→CONDITIONAL so the delivered status carries the gap (never withheld, never halted).`);
         verdict = "CONDITIONAL";
         // APPEND (dedup by exact text) — the legalActions arm may already have recorded conditions,

@@ -150,9 +150,35 @@ test("spec 64 deadline-carry e2e: a remembered in-window opposition window on a 
   assert.ok(dc && dc.n >= 1, "the deadline-carry event names the carried-without-date row");
   const clamp = events.find((e) => e.event === "coverage-floor-clamp");
   assert.ok(clamp && clamp.deadlineCarry >= 1, "the clamp carries the deadlineCarry arm");
+  // — THE EVENT SAYS WHICH FLOOR EMITTED IT, AND WHICH OF THAT FLOOR'S INPUTS FIRED.
+  // Three sites emit this event with the same from/to, so before `cause` a reader counting "how often
+  // does a disclosed gap clamp a verdict" got a number mixing three unrelated causes.
+  assert.equal(clamp.cause, "coverage",
+    "the coverage floor names itself, rather than being inferred from which optional key is present");
+  assert.ok(Array.isArray(clamp.causes) && clamp.causes.includes("deadlineCarry"),
+    `this floor is seven causes under one name, so it lists the ones that fired: ${JSON.stringify(clamp.causes)}`);
   const verdictDoc = JSON.parse(readFileSync(driverDir(res.runDir, "verdict.json"), "utf8"));
   assert.equal(verdictDoc.kinds.deadlineCarry, true);
   assert.ok(verdictDoc.reasons.some((r) => r.includes(soon)), "the reason names the closing date");
   const integ = JSON.parse(readFileSync(driverDir(res.runDir, "reasoning-integrity.json"), "utf8"));
   assert.ok(integ.tripFlags.some((f) => f.startsWith("deadline-carry:")), "the tripwire flag rides the integrity sidecar");
+});
+
+
+// ── THE THREE CLAMP SITES ARE TELLABLE APART BY `cause` ALONE ───────────────────────────────────
+//
+// Two of them fired three milliseconds apart on a production run and read as one decision logged
+// twice. They were two decisions wearing one name, and the test lane reasonably discounted one.
+// Asserted over the SOURCE because the property is about all three sites while a mock run trips one
+// floor at a time: an arm driving a single run cannot see two causes collide, which is the defect.
+test("tracker 636 every coverage-floor-clamp site carries its own cause, and no two share one", () => {
+  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const sites = [...src.matchAll(/event: "coverage-floor-clamp", cause: "([a-z-]+)"/g)].map((m) => m[1]);
+  assert.equal(sites.length, 3, `all three clamp sites must carry a cause; found ${sites.length}`);
+  assert.equal(new Set(sites).size, 3,
+    `two clamp sites share a cause and are indistinguishable again: ${sites.join(", ")}`);
+  // The event name itself is deliberately NOT split: it is a true statement about the effect, and
+  // something downstream may already count clamps in aggregate. A discriminator is additive.
+  assert.equal((src.match(/event: "coverage-floor-clamp"/g) ?? []).length, 3,
+    "the event keeps one name — three names would break an aggregate counter");
 });
