@@ -1035,6 +1035,18 @@ export type ProviderState = {
    * remedy at all, and says so. Null ⇒ the row's own `missing` list is the whole answer, as before.
    */
   readonly remedy: string | null
+  /**
+   * HOW THE SOURCE IS REACHED, when the server says: `oauth` is a one-time sign-in, `built-in` needs
+   * nothing on this box, `absent` is not part of this build. Null for a source reached with a credential,
+   * and for an older server that does not send it.
+   */
+  readonly enrolment: 'oauth' | 'built-in' | 'absent' | null
+  /**
+   * For a one-time sign-in, what its stored sign-in is: `absent`, `usable`, `unusable` (present and cannot
+   * work) or `unreadable` (it could not be looked at). Null when the row has none. Only the state crosses
+   * the hop; the reason and the file stay with the server.
+   */
+  readonly credential: 'absent' | 'usable' | 'unusable' | 'unreadable' | null
 }
 
 /**
@@ -2482,6 +2494,13 @@ export const api = {
               configured: r['configured'] === true,
               missing: asStrings(r['missing']),
               remedy: asString(r['remedy']),
+              // Closed sets, so a word this build does not know lands as null rather than as a state.
+              enrolment: r['enrolment'] === 'oauth' || r['enrolment'] === 'built-in' || r['enrolment'] === 'absent'
+                ? r['enrolment'] : null,
+              credential: (() => {
+                const s = asRecord(r['credential'])['state']
+                return s === 'absent' || s === 'usable' || s === 'unusable' || s === 'unreadable' ? s : null
+              })(),
             }
           })
         : null,

@@ -31,7 +31,7 @@
 The UI mapping, as the `portal-ui` nav is actually structured: T2 → **`brand.profile`** ("Brand
 profile", everything specific to one brand owner) + **`brand.projects`** + **`brand.searches`**
 ("Custom searches"), plus **`admin.access`** ("People & access") for who may sign in; T3 →
-**read-only** in **`admin.config`** ("Global config"): which engine is running the searches and who is
+**read-only** in **`admin.config`** ("Installation settings"): which engine is running the searches and who is
 billed for them, and every provider a search depends on with a configured-or-missing state — secrets,
 paths and switch names deliberately excluded, visible to staff, changed only on the backend.
 

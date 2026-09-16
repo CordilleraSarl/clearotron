@@ -144,7 +144,7 @@ export const NAV: readonly NavEntry[] = [
   // The engine being model-agnostic and reachable over MCP is a selling point, not a settings detail —
   // and the connector is issued per identity, not per company, so it belongs above the line.
   { id: 'ai', label: 'Use your AI', path: '/portal/ai', icon: 'sparkles', scope: 'account' },
-  // PEOPLE, in the AVATAR MENU above Global config rather than in the rail (2026-09-10). Who reaches this
+  // PEOPLE, in the AVATAR MENU above Installation settings rather than in the rail (2026-09-10). Who reaches this
   // installation is a setting of the installation, not a place anyone works, so it sits with the other
   // settings. `hidden` keeps it routable and off the rail, and avatarMenuFor lists it. It is still not
   // about one company, so its scope stays 'account' and the top bar names the account on it. `needs:
@@ -207,7 +207,7 @@ export const NAV: readonly NavEntry[] = [
   // routing is DERIVED from this array, so removing the entries would not tidy the sidebar, it would
   // turn the avatar menu's links into dead ones.
   //
-  // People is not in this group. It needs Manage, and the avatar menu lists it above Global config by its
+  // People is not in this group. It needs Manage, and the avatar menu lists it above Installation settings by its
   // own id, so its route and its dot-child stay as they were. What remains here is the installation's own
   // settings, which is genuinely rare and genuinely global — and so gated on what the server asks before
   // serving them, seeing everything. Manage acts inside what a person can see, and a manager of one
@@ -220,7 +220,7 @@ export const NAV: readonly NavEntry[] = [
     needs: 'everything',
     hidden: true,
     children: [
-      { id: 'admin.config', label: 'Global config', path: '/portal/admin/config', icon: 'server', needs: 'everything' },
+      { id: 'admin.config', label: 'Installation settings', path: '/portal/admin/config', icon: 'server', needs: 'everything' },
     ],
   },
 
@@ -311,7 +311,7 @@ const flatten = (entries: readonly NavEntry[]): NavEntry[] =>
  * Manage simply has fewer entries, with no literal in the shell to mislead anyone.
  *
  * Preferences, People and the admin screens are all `hidden` in NAV: off the sidebar, still routable,
- * and reached from here. People sits directly above Global config; both are installation settings.
+ * and reached from here. People sits directly above Installation settings; both are the installation's own.
  */
 export function avatarMenuFor(who: Viewer, entries: readonly NavEntry[] = NAV): readonly NavEntry[] {
   const all = flatten(routableFor(who, entries))

@@ -871,6 +871,127 @@ input.filter {
   color: var(--text-muted);
 }
 
+/* Installation settings: a section label, then rows. A provider category is a sub-heading with its sources
+   beneath it, so the category is said once and never repeated on a row. The state column has a floor so
+   every row's state lines up, whatever the name and coverage beside it. */
+.cfg-group {
+  margin-top: 24px;
+}
+
+.page-header + .cfg-group {
+  margin-top: 4px;
+}
+
+.cfg-rows {
+  display: grid;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.cfg-cat {
+  margin-top: 16px;
+}
+
+.cfg-sub {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.cfg-cat-note {
+  max-width: var(--prose-measure);
+  margin: 3px 0 0;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+.cfg-row {
+  padding: 10px 13px;
+  border-radius: 9px;
+  border: 1px solid var(--border-hairline);
+  background: var(--surface-raised);
+}
+
+.cfg-line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cfg-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  color: var(--text-strong);
+}
+
+.cfg-val {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.cfg-state {
+  min-width: 92px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.cfg-state.bad,
+.cfg-note.bad {
+  color: var(--tone-high);
+}
+
+.cfg-state.off {
+  color: var(--text-faint);
+}
+
+/* Indented under the name, past the dot, so a row's second line reads as the row's own. */
+.cfg-note {
+  margin: 6px 0 0 21px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.cfg-act {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 6px 0 0 21px;
+}
+
+.cfg-act .cfg-note {
+  margin: 0;
+}
+
+.cfg-act .pill {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.cfg-act .pill:disabled {
+  cursor: default;
+}
+
+.cfg-dot {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--tone-minimal);
+}
+
+.cfg-dot.bad {
+  background: var(--tone-high);
+}
+
+.cfg-dot.off {
+  background: var(--text-faint);
+}
+
 /* ── mobile ──────────────────────────────────────────────────────────────────────────────────────── */
 
 @media (max-width: 899px) {

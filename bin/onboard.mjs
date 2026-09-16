@@ -2015,7 +2015,7 @@ export async function runCheck() {
   if (!prov) {
     blocking(`no register is selected — CLEAROTRON_DATABASE is not set and there is NO default, so every search refuses until one is`);
     info(`  set it to one of: ${PROVIDERS.map((p) => p.id).join(", ")} — any one of them is enough, and none needs another`);
-    info(`  re-run \`${invoke("install")}\`, or set it on the Global config page`);
+    info(`  re-run \`${invoke("install")}\`, or set it on the Installation settings page`);
   }
   else {
     const spec = PROVIDERS.find((p) => p.id === prov.v);
@@ -3565,7 +3565,7 @@ try {
   //
   // NOTHING DOWNSTREAM NEEDED CHANGING, and that is the owner's point rather than luck: CLEAROTRON_DATABASE
   // is single-valued with no default, a run already refuses by name when it is unset
-  // (driver.config.mjs), and the Global config page already renders "No register is selected."
+  // (driver.config.mjs), and the Installation settings page already says a register is needed.
   // One register per install, any one of them sufficient, none a precondition for another.
   let registerSelected = true;
   // What THIS step collected, so abandoning the selection can take it back. Measured: a register with
@@ -3591,7 +3591,7 @@ try {
     say("");
     info("No register is selected, and nothing register-related will be written.");
     info(`Every search refuses until one is set — \`${invoke("doctor")}\` says so on every run, and the`);
-    info("  Global config page says it too. Re-run setup, or set it there, when you have a credential.");
+    info("  Installation settings page says it too. Re-run setup, or set it there, when you have a credential.");
   }
   for (const k of registerSelected ? (spec.optionalCredentials ?? []) : []) {
     if (present(candidate[k])) { ok(`${k} already adopted from your environment`); continue; }
@@ -4142,7 +4142,7 @@ try {
     say(`    \`${invocationPrefix()}clearotron demo\` and \`${invocationPrefix()}clearotron start\` work now. A real`);
     say("    clearance needs one register — any one is enough, and none requires another:");
     say(`      ${PROVIDERS.map((p) => p.id).join(", ")}`);
-    say(`    Set it by re-running \`${invocationPrefix()}clearotron install\`, or on the Global config page.`);
+    say(`    Set it by re-running \`${invocationPrefix()}clearotron install\`, or on the Installation settings page.`);
     say(`    \`${invocationPrefix()}clearotron doctor\` says which state this install is in, at any time.\n`);
   }
 } catch (e) {

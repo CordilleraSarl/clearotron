@@ -50,7 +50,7 @@ test('THE LINE: every sidebar entry declares which side of the switcher it is on
   assert.deepEqual(g.owner.map((e) => e.id), ['new', 'clearances', 'brand.profile', 'brand.projects', 'brand.searches'], 'one company at a time')
   // WHAT DIFFERS BETWEEN PEOPLE IN THE RAIL IS ONE SWITCH, and it moves one entry: Run is what puts New
   // clearance below the line — absent for a person without it, never present and refusing. Manage moves
-  // nothing here, because People and Global config are in the avatar menu. Nothing else changes shape.
+  // nothing here, because People and Installation settings are in the avatar menu. Nothing else changes shape.
   assert.deepEqual(navGroupsFor(MANAGER).account.map((e) => e.id), g.account.map((e) => e.id), 'a manager has the same rail above the line')
   assert.deepEqual(navGroupsFor(MANAGER).owner.map((e) => e.id), g.owner.map((e) => e.id))
   assert.deepEqual(navGroupsFor(READER).account.map((e) => e.id), ['home', 'ai'])
@@ -120,10 +120,10 @@ test('without Manage there is no admin surface and no People; with it, both are 
   // company switcher, claiming to be account-scoped or owner-scoped when it is neither.
   assert.equal(navFor(MANAGER).some((e) => e.id.startsWith('admin')), false, 'not in the staff sidebar either')
   assert.deepEqual(avatarMenuFor(STAFF).map((e) => e.id), ['preferences', 'people', 'admin.config', 'about'],
-    'People is in the avatar menu, directly above Global config')
-  // A manager of one organisation has People and not Global config: the menu offers what the server serves.
+    'People is in the avatar menu, directly above Installation settings')
+  // A manager of one organisation has People and not Installation settings: the menu offers what the server serves.
   assert.deepEqual(avatarMenuFor(MANAGER).map((e) => e.id), ['preferences', 'people', 'about'],
-    'Global config is offered to a manager the server refuses it to')
+    'Installation settings is offered to a manager the server refuses it to')
   // …and the role gate still lives in the DATA, so a client's menu is simply shorter.
   // About rides here for EVERY role — it is the AGPL §13 source offer, owed to whoever is
   // using the service, so it is the one entry in this menu that is not about administering anything.
