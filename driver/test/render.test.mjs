@@ -1114,7 +1114,12 @@ test("spec 49: verdictInfo drives the gauge and bound recommendation — fm.over
   // doc-52 — the conditions live in the plain bound line (sourced from "Only you can close these"),
   // stated ONCE; the gauge shows the bare recommendation and the engine clamp reason never reaches any reader.
   assert.match(withVi, /class="gv gv-rec">Proceed with the filing/);
-  assert.doesNotMatch(withVi, /close the CN register gap/, "the engine clamp reason never renders");
+  // OWNER RULING 2026-09-16: the verdict shows EVERY condition, never the first and a count of the rest.
+  // This sidecar is a legacy one with no client-voice clause beside its reason, so the run-record text is
+  // what a reader gets. That is the remaining half of tracker issue 639 and it is with the owner; what
+  // this arm now holds is that nothing is hidden behind a count.
+  assert.match(withVi, /close the CN register gap/, "every condition reaches the page");
+  assert.doesNotMatch(withVi, /and \d+ more/, "…and none of them hides behind a count");
   // wp50: ONE vocabulary — pill/topbar speak the client tier word, ticks the client scale; no third scale
   assert.match(withVi, />MANAGEABLE<\/div>/, "gauge pill speaks the derived client tier word");
   assert.match(withVi, /class="tb-risk"[^>]*>MANAGEABLE</, "topbar badge speaks the same word");
@@ -1229,18 +1234,20 @@ test("doc-52: reading order + plain banner (from only-you) + ruled-out routing +
   const client = renderHtml(parsedOf(md), F, COV, { ...opts, client: true });
   // reading order: verdict (mark) → conflicts → What only you can close → Scope
   const iVerdict = html.indexOf('class="mark"'), iConf = html.indexOf("<h2>Conflicts</h2>");
-  const iYou = html.indexOf("What only you can close"), iScope = html.indexOf("Scope &amp; what we didn't search");
-  assert.ok(iVerdict >= 0 && iVerdict < iConf && iConf < iYou && iYou < iScope, "verdict → conflicts → only-you → Scope");
+  const iYou = html.indexOf("What only you can close"), iScope = html.indexOf('<details class="searched">');
+  assert.ok(iVerdict >= 0 && iVerdict < iConf && iConf < iYou && iYou < iScope, "verdict → conflicts → only-you → what was searched");
   // the lawyer's Q&A leads in the verdict block, before the conflicts
   assert.ok(html.indexOf("Answers to your instructions") >= 0 && html.indexOf("Answers to your instructions") < iConf, "Q&A in the verdict block");
   // B1 (spec 2026-07-30 §4) — the "Subject to:" bound line is DELETED (a third copy of the verdict's
   // conditions); the conditions live in "What only you can close" and the verdict statement. The
   // engine clamp reason still never renders anywhere.
   assert.doesNotMatch(html, /class="bound"/, "no bound line — deleted, not reformatted");
-  assert.doesNotMatch(html, /the slice crossed into the band/, "engine clamp reason never renders");
+  // Every condition renders by ruling (2026-09-16); nothing hides behind a count. Giving this site a
+  // client-voice clause is the remaining half of tracker issue 639 and is with the owner.
+  assert.doesNotMatch(html, /and \d+ more/, "no condition hides behind a count");
   // ruled-out routing: UNTAMED (off-field, shares no word with NOVAPULSE) leaves the conflict bands
   assert.match(html, /<h2>Also considered<\/h2>/);
-  assert.match(html, /<b>#\d+ UNTAMED<\/b>/);
+  assert.match(html, /class="fnum">\d+<\/span><span class="who mark-first">UNTAMED/);
   assert.doesNotMatch(html, /Commercial awareness/, "the genre-neighbour is not surfaced as a conflict");
   // RE-POINTED. This asserted that the renderer REWROTE engine idioms out of a coverage note.
   // That mechanism is deleted: it was find-and-replace over a client-facing string, and is what it
@@ -1281,7 +1288,7 @@ test("doc-52: reading order + plain banner (from only-you) + ruled-out routing +
   assert.doesNotMatch(labelled, /incumbent-class/, "…and the identifier is not on the page");
   assert.match(labelled, /AXIS and Axis both enumerated to zero/, "the seat's sentence rides verbatim — both casings of the mark intact");
   // exactly ONE collapsible Scope section
-  assert.equal((html.match(/<details class="scope"><summary>Scope/g) || []).length, 1, "one Scope section");
+  assert.equal((html.match(/<details class="searched">/g) || []).length, 1, "one counts fold, which is what the Scope section became");
 });
 
 // ── scope_basis: the worldwide claim comes from the PLAN, not from model prose ──────────────────────
@@ -1333,9 +1340,9 @@ test("wp50: script rows are skipped, worldwide leads the scope, and every leg of
       { uri: "https://tm.corsearch.com/mark/pk/444492" } ] }, source: { source_type: "register-vendor" } },
   ];
   const html = renderHtml(parsedOf(FM), findings, coverage, { runId: "scope-demo" });
-  assert.match(html, /worldwide register sweep/, "the header states the true scope");
+  assert.match(html, /Where searched<\/span><span class="v">Worldwide/, "the About panel states the true scope");
   assert.match(html, /Where searched<\/span><span class="v">Worldwide/, "worldwide leads the searched row");
-  for (const code of ["TR", "AE", "SA"]) assert.match(html, new RegExp(`<span class="jchip"[^>]*>${code}</span>`), `${code} (risk-bearing leg) chips in`);
+  for (const name of ["Turkey", "United Arab Emirates", "Saudi Arabia"]) assert.match(html, new RegExp(`Where searched</span><span class="v">[^<]*${name}`), `${name} (risk-bearing leg) is in the searched set`);
   for (const bad of ["ZH", "AR", "CY", "KR"]) assert.ok(!new RegExp(`<span class="jchip"[^>]*>${bad}<`).test(html), `script token ${bad} never chips`);
   assert.ok(!/jchip"[^>]*>PK</.test(html), "a composite-2 finding's leg does not join the union");
   // no worldwide row, no ≥3 finding → legacy shape untouched
@@ -1589,7 +1596,7 @@ test("doc-55 A3 (one-report form): the case-law strand renders its full body onc
   const caseLawNotice = "Case-law grounding incomplete: CourtListener MCP not wired; Legal Data Hunter quota exhausted (HTTP 429).";
   const internal = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { caseLawByOrdinal, caseLawNotice });
   assert.match(internal, /MCP server did not connect/, "the reviewer keeps the full case-law diagnostics");
-  assert.match(internal, /Session-wide notice/, "the session-wide notice renders on the report");
+  assert.doesNotMatch(internal, /Session-wide notice/, "the session notice is operational narration and is off the client's page (tracker issue 644)");
   // ONE report (spec 2026-07-30 §5): the code-owned client line and the client body-fork are retired
   // with the CLIENT flag — a stale opts.client is inert. Getting engine vocabulary off the DOCUMENT for
   // every reader is the prompt-side voice work (charter P6/P7), never a second render here.
@@ -1895,13 +1902,19 @@ test("§L: a same-element mark (token containment ≥4 chars) is NEVER silently 
     { ordinal: 3, mark: "UNTAMED", owner: dreg("US", "/mark/us/3"), composite: 2, level: "B", dispute_type: "nuisance-claim", disposition: "off-field", meters: DMETERS, quadrant: { x: 0.2, y: 0.1 }, source: { source_type: "register-vendor" } },
   ];
   const html = renderHtml(parsedOf(FM_TIKI), F, [], { runId: "plot-demo" });
-  const svg = html.slice(html.indexOf("<svg viewBox"), html.indexOf("</svg>"));
+  // ANCHOR ON THE CHART, not on the first svg in the document: the report bar carries the brand lockup,
+  // which is an svg and comes first. Slicing from the landscape wrapper reads the chart whatever else
+  // the page draws above it.
+  const land = html.slice(html.indexOf('class="landwrap"'));
+  const svg = land.slice(land.indexOf("<svg viewBox"), land.indexOf("</svg>"));
   assert.match(svg, /href="#c2"/, "FREEZEIV plots on the landscape");
   assert.equal(bandOfCard(html, 2), "Notable but manageable", "and renders in the absorbed awareness band, not the ruled-out list");
   // the genuinely word-free neighbour still routes to the quiet list, with its ordinal accounted for
   assert.doesNotMatch(svg, /href="#c3"/, "UNTAMED stays off the chart");
   assert.match(html, /<h2>Also considered<\/h2>/);
-  assert.match(html, /<b>#3 UNTAMED<\/b>/, "the ruled-out ordinal stays accounted for");
+  // The ruled-out list became cards under Also considered (tracker issue 644): the ordinal and the mark
+  // are both still on the page, which is what keeps a numbering gap from reading as a lost finding.
+  assert.match(html, /class="fnum">3<\/span><span class="who mark-first">UNTAMED/, "the ruled-out ordinal stays accounted for");
 });
 
 // ── P5 (charter 2026-07-30, Reviewer §L) — content model on the render ──────────────────────────────────
