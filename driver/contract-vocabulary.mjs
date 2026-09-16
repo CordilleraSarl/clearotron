@@ -21,7 +21,7 @@
 //   D4 verify.mjs:1603  parseCoverageLedgerJson, same shape
 //   D5 verify.mjs:1504  fail(`${unaccounted[0].token}:…`)    — token minted in a DATA ROW
 //   D6 verify.mjs:1567  fail(`${violations[0].token}…`)      — validatePlanFeasibility in register-plan.mjs
-//   D7 verify.mjs:1558  fail(`${v2[0].token}${detail}…`)     — register-plan.mjs:2018 disclosureTextByAxis
+//   D7 verify.mjs:1558  fail(`${v2[0].token}${detail}…`)     — register-plan.mjs:2253 disclosureTextByAxis
 //   D8 verify.mjs:1692  fail(caseLawLedgerFail(…))           — token built in case-law-ledger.mjs:204
 //
 // A partition built on the 60 tokens a regex CAN see would run green while blind to the rest, which is
@@ -102,6 +102,36 @@ export const VOCABULARY = [
   { token: "finding", stages: ["synthesis"], site: "driver/verify.mjs:704", family: "driver/findings-model.mjs (token-first throws; `finding_*` and `findings_*`)", dynamic: "D2" },
 
   // ── register-digest ────────────────────────────────────────────────────────────────────────────────
+  // The per-record accounting family, raised at the EXIT as well as at the call. The call-time refusal
+  // is scoped to the batch it judges, which is what lets a dense band be recorded at all; the exit gate
+  // is where that is paid for, because once any batch is accepted a document exists and half a band is
+  // the same SHAPE as a whole one. All three are armed by the era stamp, so an archived run raises none.
+  { token: "registerdigest_unaccounted_records", stages: ["register-digest"], site: "driver/verify.mjs, and driver/register-digest-record.mjs at the call" },
+  { token: "registerdigest_accounting_unreadable", stages: ["register-digest"], site: "driver/verify.mjs — driver-written, not a model defect" },
+  { token: "registerdigest_model_missing", stages: ["register-digest"], site: "driver/verify.mjs — driver-written, not a model defect" },
+  // ── THE TYPED TRANSPORT'S OWN FAMILY (conversion 11) ──────────────────────────────────────────────
+  //
+  // These are raised by `register-digest-record.mjs` at the ACCEPTANCE BOUNDARY, not by verify.mjs, and
+  // they became visible to this census only when verify.mjs began reaching into that module for the
+  // digest's exit gate. They existed and were emitted for months before that; nothing was wrong with
+  // them, and nothing here changes behaviour. What changes is that the census can now see the family,
+  // which is the point of listing the module: a family the tripwire cannot read can grow a member no
+  // row covers, and nobody finds out.
+  { token: "registerdigest_uri_missing", stages: ["register-digest"], site: "driver/register-digest-record.mjs — every row joins to a band record by its uri" },
+  { token: "registerdigest_uri_unknown", stages: ["register-digest"], site: "driver/register-digest-record.mjs — a uri this run's band does not carry" },
+  { token: "registerdigest_flag_reason_missing", stages: ["register-digest"], site: "driver/register-digest-record.mjs — the judgment the row exists to carry" },
+  { token: "registerdigest_verify_invalid", stages: ["register-digest"], site: "driver/register-digest-record.mjs — one bare token of yes/no" },
+  { token: "registerdigest_drop_reason_missing", stages: ["register-digest"], site: "driver/register-digest-record.mjs — a drop with no stated reason is a silent recall loss" },
+  { token: "registerdigest_drop_ground_invalid", stages: ["register-digest"], site: "driver/register-digest-record.mjs — the closed ground token" },
+  { token: "registerdigest_drop_ground_contradicted", stages: ["register-digest"], site: "driver/register-digest-record.mjs — the ground contradicts this run's own screen verdict" },
+  { token: "registerdigest_instructed_incomplete", stages: ["register-digest"], site: "driver/register-digest-record.mjs — every instructed check carries ask AND answer" },
+  { token: "registerdigest_adjudication_invalid", stages: ["register-digest"], site: "driver/register-digest-record.mjs — one bare token of ADOPTED/OVERRODE" },
+  { token: "registerdigest_adjudication_incomplete", stages: ["register-digest"], site: "driver/register-digest-record.mjs — an override quotes the reason it contradicts" },
+  { token: "registerdigest_nothing_judged", stages: ["register-digest"], site: "driver/register-digest-record.mjs — a digest that ends no record has not read the band" },
+  // The batching members, added with the batched accounting itself.
+  { token: "registerdigest_batch_unknown", stages: ["register-digest"], site: "driver/register-digest-record.mjs — a batch number this run's split does not hold" },
+  { token: "registerdigest_double_counted", stages: ["register-digest"], site: "driver/register-digest-record.mjs — a record ended under one batch cannot be ended under another" },
+  { token: "registerdigest_model_write_failed", stages: ["register-digest"], site: "driver/register-digest-record.mjs — driver-written: the accumulator was lost mid-batch" },
   { token: "coverage_form_damaged", stages: ["register-digest"], site: "driver/verify.mjs" },
   { token: "coverage_form_engine_vocabulary", stages: ["register-digest"], site: "driver/verify.mjs" },
   { token: "coverage_form_axis_invalid", stages: ["register-digest"], site: "driver/verify.mjs" },
@@ -109,10 +139,10 @@ export const VOCABULARY = [
   { token: "coverage_form_missing", stages: ["register-digest"], site: "driver/verify.mjs" },
   { token: "coverage_form_empty", stages: ["register-digest"], site: "driver/verify.mjs" },
   { token: "coverage_status_offenum", stages: ["register-digest"], site: "driver/verify.mjs:2050" },
-  { token: "coverage_deferred_unaccounted", stages: ["register-digest"], site: "driver/verify.mjs:1504 coverageFormFail", family: "driver/register-plan.mjs:1642 PROVIDER_HARD_ERROR_PREFIX — token on a data row", dynamic: "D5" },
-  { token: "coverage_clean_unexecuted", stages: ["register-digest"], site: "driver/verify.mjs, the matterContext validator", family: "driver/register-plan.mjs:1417 validatePlanFeasibility", dynamic: "D6" },
-  { token: "coverage_clean_skipped", stages: ["register-digest"], site: "driver/verify.mjs, the matterContext validator", family: "driver/register-plan.mjs:1766 searchedJurisdictionsFromPlan", dynamic: "D6" },
-  { token: "coverage_clean_unverified_incomplete", stages: ["register-digest"], site: "driver/verify.mjs, the matterContext validator", family: "driver/register-plan.mjs:2018 disclosureTextByAxis", dynamic: "D7" },
+  { token: "coverage_deferred_unaccounted", stages: ["register-digest"], site: "driver/verify.mjs:1504 coverageFormFail", family: "driver/register-plan.mjs:1930 PROVIDER_HARD_ERROR_PREFIX — token on a data row", dynamic: "D5" },
+  { token: "coverage_clean_unexecuted", stages: ["register-digest"], site: "driver/verify.mjs, the matterContext validator", family: "driver/register-plan.mjs:1664 validatePlanFeasibility", dynamic: "D6" },
+  { token: "coverage_clean_skipped", stages: ["register-digest"], site: "driver/verify.mjs, the matterContext validator", family: "driver/register-plan.mjs:2025 searchedJurisdictionsFromPlan", dynamic: "D6" },
+  { token: "coverage_clean_unverified_incomplete", stages: ["register-digest"], site: "driver/verify.mjs, the matterContext validator", family: "driver/register-plan.mjs:2253 disclosureTextByAxis", dynamic: "D7" },
   { token: "coverage_clean_tainted", stages: ["register-digest"], site: "driver/verify.mjs" },
   { token: "coverage_ledger_", stages: ["register-digest"], site: "driver/verify.mjs:1603", family: "driver/coverage-ledger.mjs (parseCoverageLedgerJson token-first throws)", dynamic: "D4" },
   { token: "coverage_key_unknown", stages: ["register-digest"], site: "driver/verify.mjs:1603", family: "driver/coverage-ledger.mjs", dynamic: "D4" },
@@ -525,6 +555,10 @@ export const COVERED_SOURCES = [
   "report-overview-record.mjs",
   // Conversion 5 — the fan-out transport; it mints its own family including the bound-index refusals.
   "report-card-record.mjs",
+  // Conversion 11 — verify.mjs now reaches `digestAccountingGap`, the digest's exit gate, so the
+  // tripwire must read this module's token literals too. Without it the accounting family could grow a
+  // member that no vocabulary row covers and nothing would notice, which is this list's whole subject.
+  "register-digest-record.mjs",
 ];
 
 /**

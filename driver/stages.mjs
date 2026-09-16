@@ -2482,8 +2482,12 @@ export const STAGES = {
         class: "judgment", tokens: ["too_short", "missing"],
         why: "'The only relevance judge' — the funnel pre-gated nothing (prelim-register SKILL.md, `## Coverage = the band blocks`). #850 keeps findings prose / relevance gate / opposition / Option-D / position rows as J.",
       },
+      "every record the run carried into this stage ends somewhere — a findings row, a Negative-results drop, or a Disagreement resolution": {
+        class: "judgment", tokens: ["registerdigest_unaccounted_records", "registerdigest_nothing_judged", "registerdigest_accounting_unreadable", "registerdigest_model_missing", "registerdigest_batch_unknown", "registerdigest_double_counted", "registerdigest_model_write_failed"],
+        why: "A record that simply goes unmentioned is a silent recall loss — the one failure this stage's output exists to prevent, and the one no reader of the document can see, because a band judged in part looks exactly like a band judged in full. Armed by an era stamp, so archived runs replay to the verdicts they always had. It is checked at the CALL, scoped to the batch that call was handed, and again at the EXIT over the union: the call-time scope is what lets a dense band be recorded at all, and the exit is where that concession is paid for. Four of these are driver-written and say so — a run stamped for accounting whose own facts or stored model are missing is this driver's bug, not a model defect, and telling a seat to re-state cannot fix it.",
+      },
       "the Sheet-1 findings row's identifier cells — URI, Mark, Owner, Country, Classes, Status, Filed, Expiry": {
-        class: "mechanical:tool-written", tokens: ["registerdigest_uri_missing", "registerdigest_uri_unknown"],
+        class: "mechanical:tool-written", tokens: ["registerdigest_uri_missing", "registerdigest_uri_unknown", "registerdigest_flag_reason_missing", "registerdigest_verify_invalid"],
         why: "CONVERTED (conversion 11): the seat sends the position's `uri` and the driver renders every cell from the band record it names — record_id, mark_text, classes, status, owner_name, owner_country, application_date, registration_date, expiry_date. The join is now the check: a uri no band record carries is refused AT THE CALL, where restating it costs nothing, instead of producing a plausible row of retyped cells that fails downstream or nowhere. The DECISION that a position earns a row stays judgment (element above); the cells were never anything but transcription.",
       },
       "the full clickable record URL, composed from providers/<name>.md 'Record base host' plus the record `uri`": {
@@ -2495,7 +2499,7 @@ export const STAGES = {
         why: "CONVERTED (conversion 11): the driver stamps the provider and its environment word into the rendered document from the run config it already holds, and the tool takes no field for either. 'Exactly one register per run' (prelim-register SKILL.md, `## Provider`) and digest.md's `## Provider` note conceded 'the tag is constant across the findings file' — a constant the seat was retyping onto every record.",
       },
       "Negative-results drop rows — the Notes cell carrying URI, screen_verdict, class and status": {
-        class: "mechanical:tool-written", tokens: ["registerdigest_uri_unknown", "registerdigest_drop_reason_missing"],
+        class: "mechanical:tool-written", tokens: ["registerdigest_uri_unknown", "registerdigest_drop_reason_missing", "registerdigest_drop_ground_invalid", "registerdigest_drop_ground_contradicted"],
         why: "CONVERTED (conversion 11): the seat sends the dropped record's `uri` and its one-line reason; the driver renders the Notes cell's four provenance fields from the band record. This is the element the conversion most clearly repays — the acceptance gate used to parse those fields back out to check the model's retyping against material the driver already held, which is a guard comparing a value with a copy of itself. The DROP DECISION and its why stay judgment (the findings-prose element), and a drop with no stated reason is refused: a batch-dropped candidate with no row is a silent recall loss.",
       },
       "## Summary counts — total queries executed (search + detail-fetch), enumerated records across N axes, crowd-descriptor count, candidates past the gate, surfaced count, open-verification-flag count": {
@@ -2507,7 +2511,7 @@ export const STAGES = {
         why: "CONVERTED (conversion 11): the driver renders the Audit trail table from the same artifacts as the Summary counts, plus `_query` which digest.md:388 says 'the driver stamps at merge' — carrying that forward was transcription of a driver stamp. The judgment half — flagging a unit that shortcut its axis — stays in the findings-prose element.",
       },
       "INSTRUCTED CHECKS — the answer to each requester ask the register owns": {
-        class: "judgment", tokens: [],
+        class: "judgment", tokens: ["registerdigest_instructed_incomplete"],
         why: "Answering a lawyer's question from the frozen band, including the honest 'the frozen material cannot answer this' that becomes an open coverage row. No artifact holds it. (No token here: intake_ask_unanswered lives on validators.narrative, not registerFindings.)",
       },
       "the record ids read while answering each instructed check": {
@@ -2515,7 +2519,7 @@ export const STAGES = {
         why: "CONVERTED (conversion 11): the driver renders the ids beneath each instructed check from its own reading audit, and the tool takes {ask, answer} only. Every band_shape / band_lookup / band_record call lands in reading-log.jsonl with its args (the pattern #850 names as already existing for the band tools), so the driver held this list the whole time the seat was being asked to reproduce it.",
       },
       "adopt-or-override each placement by engaging its reason, and the `### Disagreement resolutions` rows (one per surfaced disagreement and per borderline:true, each ADOPTED/OVERRODE in writing)": {
-        class: "judgment", tokens: [],
+        class: "judgment", tokens: ["registerdigest_adjudication_invalid", "registerdigest_adjudication_incomplete"],
         why: "Answering the promotion question the other way, in writing, against a reason another stage authored. #850 keeps it J. The row's SUBJECT is handed over as data (the driver appends the PLACEMENT RULINGS TAIL block, pipeline.mjs:3584), so nothing here is a fetch. [citation unverified]",
       },
       // ── REWRITTEN, NEVER DELETED (the ruling) — AND THE ROW THAT COST THIS CONVERSION A DESIGN ──
