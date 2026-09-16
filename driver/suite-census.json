@@ -1912,8 +1912,8 @@
           "todos": 0
         },
         "doctor-reads-the-units-not-the-shell.test.mjs": {
-          "tests": 37,
-          "asserts": 111,
+          "tests": 40,
+          "asserts": 115,
           "skips": 1,
           "todos": 0
         },
@@ -5721,8 +5721,8 @@
           "todos": 0
         },
         "http-handler.test.mjs": {
-          "tests": 14,
-          "asserts": 26,
+          "tests": 17,
+          "asserts": 40,
           "skips": 0,
           "todos": 0
         },
@@ -5859,8 +5859,8 @@
           "todos": 0
         },
         "the-portal-can-tell-who-has-connected-an-assistant.test.mjs": {
-          "tests": 10,
-          "asserts": 28,
+          "tests": 12,
+          "asserts": 33,
           "skips": 0,
           "todos": 0
         },

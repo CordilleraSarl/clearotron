@@ -331,6 +331,7 @@ terminal and is rewritten on every start.
 ~/trademark/config/profiles                   the company profiles
 ~/trademark/grants.json                       who may use this install
 ~/trademark/portal-audit.log                  what the portal was asked to do
+~/trademark/telemetry/trademark-mcp-access.jsonl   what a connected assistant asked for, and what it was told
 ~/trademark/portal-local-credential.json      the sign-in this install minted for you
 ```
 

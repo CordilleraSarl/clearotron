@@ -512,10 +512,18 @@ test("the demo posture reaches the portal and changes nothing about either door"
   // WIDENED AGAIN BY THE DEMO'S OWN STORE, closed list kept: each key is named in DEMO_STORE with the
   // value it must hold. They reach every door because every door reads the roster, and a door left on an
   // inherited store serves the reader's real install inside the demo — 0.3.0-beta.1's defect.
+  //
+  // WIDENED AGAIN BY THE CONNECTOR DOORS' ACCESS LOG, closed list kept. It is the odd one here because it
+  // holds a PATH rather than "": the three above are unset-to-fall-back, and unset is exactly what sends
+  // this one to the real install — its default is computed from the home directory, not from anything a
+  // demo controls. So a demo left to fall back wrote its access lines into the install beside it, and the
+  // loop below is what says a live install must still not be pinned: with no override the writer keeps an
+  // older log where one already exists, and pinning the name would split a compliance trail in two.
   const DEMO_STORE = {
     CLEAROTRON_CUSTOMERS_DIR: paths.profiles, CLEAROTRON_INSTRUCTIONS_DIR: "",
     PROFILE_REPO_ROOT: paths.configStore,
     PROFILE_AUDIT: "", RECIPE_AUDIT: "", CLEAROTRON_FEEDBACK_DIR: "",
+    TRADEMARK_MCP_AUDIT_LOG: paths.accessLog,
   };
   // THE SAVED-SEARCHES STORE IS NOT THE DEMO'S: every install hands it to every door, so it is the same in
   // both postures and is held here rather than in DEMO_STORE. Listed there, a name gated on the demo again

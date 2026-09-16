@@ -189,3 +189,31 @@ test("appendAudit writes no transport unless one is given, so the existing log s
   assert.ok(!("transport" in rec), "an HTTP record carries no transport key");
   assert.equal(rec.tool, "get_run", "and everything it did carry still travels");
 });
+
+test("appendAudit writes no door unless one is given, so the existing log shape does not move", () => {
+  // THE SAME RULE AS `transport`, ASSERTED SEPARATELY. Two HTTP doors write to this one file, and the
+  // staff door names no door because it has no second surface to be told apart from. A record that
+  // answered "which door" with a default would make every historical line read as if it had been asked.
+  const dir = scratch();
+  const path = join(dir, "no-door.jsonl");
+  appendAudit({ email: "reader@example.test", body: { method: "tools/call", params: { name: "list_runs" } }, status: 200, path });
+  const rec = JSON.parse(readFileSync(path, "utf8").trim());
+  assert.ok(!("door" in rec), `a record given no door carries no door key: ${JSON.stringify(rec)}`);
+});
+
+test("a door NAMES A SURFACE and not a route, so the local-route reader is unmoved by it", () => {
+  // `readConnections` tests `transport` for exactly one value to mean the local route. A client-door
+  // record is an HTTP record that happens to name its surface, and it must not start reading as local —
+  // which is what folding "which door" into "which route" would have done.
+  const dir = scratch();
+  const path = join(dir, "client-door.jsonl");
+  appendAudit({ email: "client@example.test", body: { method: "tools/call", params: { name: "list_runs" } }, status: 200, door: "client", path });
+
+  const rec = JSON.parse(readFileSync(path, "utf8").trim());
+  assert.equal(rec.door, "client", "the door is on the line");
+  assert.ok(!("transport" in rec), "naming a door must not invent a transport");
+
+  const seen = readConnections({ paths: [path] });
+  assert.equal(seen.local, false, "a client-door record read as the LOCAL route");
+  assert.ok(seen.emails.has("client@example.test"), "and it is still a reader who connected");
+});
