@@ -154,6 +154,14 @@ function ratingExtras(fm, findings, coverage, fourAnswers, opts, bandWord) {
       const a = fa[key];
       if (!a || typeof a.read !== 'string' || !a.read.trim()) return '';
       const read = inline(a.read.trim()).trim();
+      // AN INTERNAL ANSWER DRAWS NO ROW. This block used to mark a wholly-internal read with `int-note`
+      // and render it; the class went with the redesign's removal of internal material from the page,
+      // and the row went on rendering — so staff-only prose reached a client's report with nothing
+      // marking it at all, which is worse than either state before it. Every other internal line in this
+      // file is DROPPED rather than marked (the legal and practical reads, the obstacle notes just
+      // below), and this now matches them. A row with no answer left is furniture: the defect the
+      // marking was introduced for was a label with its text cut away, and no row leaves no label.
+      if (isInternalLabelled(read)) return '';
       if (!read) return '';
       const tok = String(a.token ?? '').toLowerCase();
       let tone = 'mid';

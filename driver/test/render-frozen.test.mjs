@@ -1769,7 +1769,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Advanced again by the break recorded above the FROZEN constant: seven fixed sentences on the
 // clearance page, which is a behaviour change and not licence-only, so both constants move for the same
 // measured reason.
-const FROZEN_BEFORE_SPDX = "c32c534dd2f29c35f3ee5154a775d8a026b7ab21f978ccd0a7bcb8921b706d3e";
+const FROZEN_BEFORE_SPDX = "54db7aee5527887272751814e157f466be0e9fae5d8f47ad90ce290656c857ca";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2164,12 +2164,19 @@ const FROZEN_BEFORE_SPDX = "c32c534dd2f29c35f3ee5154a775d8a026b7ab21f978ccd0a7bc
 // A LINE-COUNT NOTE: this adds and removes lines throughout render.mjs, so citations aimed into it move.
 // `scripts/citation-line-check.mjs` is the instrument, and it ran clean on this branch.
 //
-// THE HASH IN THIS ENTRY WAS PAID TWICE, and the second time was not a second break. The first payment
+// A THIRD PAYMENT, AND THIS ONE IS A DEFECT FIX INSIDE THE SAME BREAK. A wholly-internal answer row was
+// marked `int-note` and rendered; the class went with this break's removal of internal material, and the
+// row went on rendering unmarked — staff prose on a client's report with nothing marking it, which is
+// worse than either state before it. It is dropped now, like every other internal line in this file. The
+// private control caught it; nothing in the public suite could, because on screen an unmarked row looks
+// like an ordinary one.
+//
+// THE HASH IN THIS ENTRY WAS PAID TWICE BEFORE THAT, and the second time was not a second break. The first payment
 // stood over a file that still carried its decision numbers in comments; taking those out — the tree
 // carries the reason for a decision and not its address — moved the bytes again with no behaviour
 // between the two. One entry, because a reader asking what changed gets the same answer either way.
 
-const FROZEN = "001dac29cd1e70275ed21f3d173498aa82f8ca939b512660fb403b05624f58f4";
+const FROZEN = "4c9a9ace10f7145b95dc5ee3fa27c7b19c70dda7573ba19810b072a0a0a73469";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));
