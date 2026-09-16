@@ -2481,16 +2481,17 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
     // grouping keys on. The gate is fail-CLOSED — an absent or unreadable version is legacy.
     const negatives = NEGATIVES_GROUPED ? reasonedNegativeGroups([...band2r, ...band3r]) : null;
     if (negatives) {
-      // ZERO IS NOT ABSENCE. A group is built from its members, so an empty heading cannot be produced;
-      // and a run that grouped and found none SAYS so, rather than leaving the reader to guess whether
-      // there were no negatives or the grouping never ran.
-      const body = negatives.total
-        ? reasonedNegatives(negatives.groups, cardFor, recordsByUri)
-        : `<p class="fold-lead"><b>No reasoned negatives.</b> Every retrieved close match on this run is an on-field conflict above — nothing was cleared into this section.</p>`;
+      // THE SECTION APPEARS ONLY WHEN IT HOLDS SOMETHING (owner, 2026-09-16). The reasoning it replaces
+      // was "zero is not absence": a run that grouped and found none should SAY so rather than leave the
+      // reader guessing. That is right for a working record and wrong for a client's page, where a
+      // heading followed by a sentence explaining that there is nothing under it is the "nothing here"
+      // line the owner ruled out. Whether the grouping ran is answered by the counts, not by a paragraph.
       const notes = contextNotes.length ? `\n  <p class="fold-lead"><b>Famous-mark neighbours.</b> Diligence — no register record; not scored, does not affect the risk read.</p>
   ${contextNotesList(contextNotes)}` : '';
-      tail += `\n\n  <div class="sec"><h2>Notable but manageable</h2></div>
-  ${body}${notes}`;
+      if (negatives.total || notes) {
+        tail += `\n\n  <div class="sec"><h2>Notable but manageable</h2></div>
+  ${negatives.total ? reasonedNegatives(negatives.groups, cardFor, recordsByUri) : ''}${notes}`;
+      }
     } else if (band2r.length || band3r.length || contextNotes.length) {
       const parts = [];
       if (band2r.length) parts.push(secondaryRegions(band2r, cardFor, recordsByUri));
@@ -2620,8 +2621,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
         // describing its own status inaccurately to the person paying for it. Raised in review because
         // the first version of this comment argued only the band note and left the reader to infer that
         // the status line had gone along for the ride.
-        ? `Risk bands: <span class="mono">${esc(FRAMEWORK.bands.map(b => b.label).join(' / '))}</span>. Purple notes are for the reviewing lawyer and are removed on export.`
-        : 'Risk bands: <span class="mono">LOW / MANAGEABLE / MEDIUM / HIGH / VERY HIGH</span>. Purple notes are for the reviewing lawyer and are removed on export.'}<br>Matter ${esc(fm.matter || '')}${fm.run ? ` · ${esc(fm.run)}` : ''}.${fm.rated_under ? `<br>Rated under: <span class="mono">${esc(fm.rated_under)}</span>.` : ''}${fm.run_under_project ? `<br>Run under project: <span class="mono">${esc(fm.run_under_project)}</span>.` : ''}</span>
+        ? '' : ''}<br>Matter ${esc(fm.matter || '')}${fm.run ? ` · ${esc(fm.run)}` : ''}.${fm.rated_under ? `<br>Rated under: <span class="mono">${esc(fm.rated_under)}</span>.` : ''}${fm.run_under_project ? `<br>Run under project: <span class="mono">${esc(fm.run_under_project)}</span>.` : ''}</span>
     ${logoLockup({ mark: 16 })}
   </footer>
 </div>

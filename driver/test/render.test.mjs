@@ -85,7 +85,10 @@ test("a genuinely-open floor still surfaces plainly in the report Coverage secti
     ...COVERAGE,
   ];
   const html = renderHtml(parsedOf(REPORT), FINDINGS, OPEN_COVERAGE, { runId: "noref-open" });
-  assert.match(html, /What we covered/);
+  // The heading moved with the layout (tracker issue 644): the scope fold and its "What we covered"
+  // grid of every row are gone, and what is LEFT OPEN renders with the counts instead. The disclosure
+  // this arm exists for is the line below, not the heading above it.
+  assert.match(html, /Left open/);
   assert.match(html, /VIBRA \(the shorter root of VIBRANTE\)/, "the meaningful open floor is disclosed to the reader");
   assert.doesNotMatch(html, /primary-sweep|saturation-probe|transliteration-numeric|incumbent-class/, "the reader disclosure is plain — no internal axis codenames");
 });
@@ -130,7 +133,7 @@ test("B1: the enforcer meter states its basis (inferred), never presented as fac
 
 test("classification: composite ≥3 is on-field (02); a common-law secondary renders in its OWN section (spec-48 A5)", () => {
   const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, {});
-  assert.match(html, /On-field conflicts/);
+  assert.match(html, /<h2>Conflicts<\/h2>/);
   // the only secondary finding here is common-law → it renders in the Common-law section, and the
   // register-region "Secondary & watch" section (which would be empty) is omitted.
   assert.match(html, /Common-law &amp; marketplace/);
@@ -472,7 +475,7 @@ test("theme gating: one report, EXPLICIT theming only (no OS media query + pre-p
 test("no findings.json (legacy / model miss) → renders without crashing, no findings sections", () => {
   const html = renderHtml(parsedOf(REPORT), [], [], {});
   assert.match(html, /THIS IS MY MATCHDAY/);
-  assert.doesNotMatch(html, /On-field conflicts/);             // no findings → section omitted, no crash
+  assert.doesNotMatch(html, /<h2>Conflicts<\/h2>/);             // no findings → section omitted, no crash
 });
 
 // ---- A1/A3 fix: context_notes block + quarantine banner ------------------------------------------
@@ -615,7 +618,7 @@ test("§2.6/2.8: hero is split — conclusion card carries the verdict, scope ca
 
 test("§2.9: the issued timestamp renders verbatim from opts (deterministic), omitted when absent", () => {
   const withIssued = renderHtml(parsedOf(FM), REGION_FINDINGS, REGION_COVERAGE, { issued: "2026-06-16 · 14:32 CEST" });
-  assert.match(withIssued, /Issued 2026-06-16 · 14:32 CEST/);
+  assert.match(withIssued, /Issued on 2026-06-16 · 14:32 CEST/);
   assert.match(withIssued, /class="mono tb-issued"/);
   const without = renderHtml(parsedOf(FM), REGION_FINDINGS, REGION_COVERAGE, {});
   assert.doesNotMatch(without, /class="mono tb-issued"/);                  // no issued field when not passed (the .tb-issued CSS rule still lives in <style>)
@@ -678,7 +681,7 @@ test("CHANGE 2: disposition bands — adversarial leads band 1; a Composite-3 co
   // spec 2026-07-30 §3 — 03 Notable but manageable ABSORBS 04 Commercial awareness: the off-field
   // band renders under the SAME heading, demoted to a fold-lead ("we looked, it is not a problem" is
   // one section, not two). The heading count drops; the cards and their words are unchanged.
-  assert.match(html, /<h2>On-field conflicts<\/h2>/);
+  assert.match(html, /<h2>Conflicts<\/h2>/);
   assert.match(html, /<h2>Notable but manageable<\/h2>/);
   assert.doesNotMatch(html, /<h2>Commercial awareness<\/h2>/, "the absorbed heading is gone");
   assert.match(html, /<p class="fold-lead"><b>Same name, a different commercial field\.<\/b>/, "the band-3 lead-in survives as a fold-lead");
@@ -724,7 +727,7 @@ test("CHANGE 2 back-compat: NO finding carries disposition → legacy composite 
 test("CHANGE 2 back-compat: the EXISTING composite-only fixtures render byte-identically (no disposition anywhere)", () => {
   // REGION_FINDINGS carries no disposition → must use the legacy split + headings unchanged.
   const html = renderHtml(parsedOf(FM), REGION_FINDINGS, REGION_COVERAGE, {});
-  assert.match(html, /On-field conflicts/);
+  assert.match(html, /<h2>Conflicts<\/h2>/);
   assert.match(html, /Secondary &amp; watch/);
   assert.doesNotMatch(html, /Notable but manageable/);
   assert.doesNotMatch(html, /Commercial awareness/);
@@ -1253,7 +1256,7 @@ test("doc-52: reading order + plain banner (from only-you) + ruled-out routing +
   assert.doesNotMatch(html, /class="bound"/, "no bound line — deleted, not reformatted");
   assert.doesNotMatch(html, /the slice crossed into the band/, "engine clamp reason never renders");
   // ruled-out routing: UNTAMED (off-field, shares no word with NOVAPULSE) leaves the conflict bands
-  assert.match(html, /Also considered — ruled out/);
+  assert.match(html, /<h2>Also considered<\/h2>/);
   assert.match(html, /<b>#\d+ UNTAMED<\/b>/);
   assert.doesNotMatch(html, /Commercial awareness/, "the genre-neighbour is not surfaced as a conflict");
   // RE-POINTED. This asserted that the renderer REWROTE engine idioms out of a coverage note.
@@ -1974,7 +1977,7 @@ test("§L: a same-element mark (token containment ≥4 chars) is NEVER silently 
   assert.equal(bandOfCard(html, 2), "Notable but manageable", "and renders in the absorbed awareness band, not the ruled-out list");
   // the genuinely word-free neighbour still routes to the quiet list, with its ordinal accounted for
   assert.doesNotMatch(svg, /href="#c3"/, "UNTAMED stays off the chart");
-  assert.match(html, /Also considered — ruled out/);
+  assert.match(html, /<h2>Also considered<\/h2>/);
   assert.match(html, /<b>#3 UNTAMED<\/b>/, "the ruled-out ordinal stays accounted for");
 });
 
