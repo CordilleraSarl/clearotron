@@ -204,6 +204,25 @@ const ORGANISATION_COMPANY_EXCEPTIONS: readonly { readonly file: string; readonl
     why: 'an account with a service that puts the installation online — a sign-up, not an organisation or a company',
   },
   {
+    file: 'contract/profileFields.ts',
+    text: 'Law firm options',
+    why: 'the specified label of the fold that holds the lawyer-only fields — the vocabulary issue names '
+      + 'this exact string as what holds them, so the word is the point rather than a slip; a law firm here '
+      + 'is a kind of customer this product serves, not the word for an organisation or a company',
+  },
+  {
+    file: 'contract/profileFields.ts',
+    text: 'a matter is read against',
+    why: 'a matter is the clearance being worked on, not an organisation or a company — the same sense as '
+      + 'the rating card heading "How matters are rated" below',
+  },
+  {
+    file: 'screens/Profile.tsx',
+    text: 'lessons from past matters',
+    why: 'past matters are past clearances, not organisations or companies — the same sense again, and the '
+      + 'sentence is about what earlier work taught, not about whose work it was',
+  },
+  {
     file: 'screens/NewCompany.tsx',
     text: 'How matters are rated',
     why: 'the specified heading of the rating card; a matter is a clearance, not an organisation or a company',
