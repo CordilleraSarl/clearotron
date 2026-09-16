@@ -574,6 +574,16 @@ export function mintSupplementalQid({ prefix, term, used }) {
  *                  behaviour, byte-identical (no entry gains a key, no jurisdiction is translated).
  */
 /**
+ * The receipt that ARMS the house-element exclusion, and the only thing that may.
+ *
+ * A SEPARATE FILE FROM THE FRAME'S PROPOSAL, deliberately, and for the reason the digest's accounting
+ * stamp is separate from its facts: the proposal is what a model said, the receipt is what the register
+ * answered, and a reader who cannot tell those apart cannot tell a judgement from evidence. Absent means
+ * the question was never asked, which is the same as unverified and excludes nothing.
+ */
+export const HOUSE_ELEMENT_RECEIPT = "house-element.json";
+
+/**
  * Verify that the client actually owns the proposed house element, on the register, by owner.
  *
  * IT SITS BESIDE THE TRANSFORM IT GATES, for the reason `accountingArmed` sits beside the refusal it

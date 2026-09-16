@@ -96,8 +96,10 @@ import { publishReport, composeEmailHtml, deliverySubject } from "./publish/inde
 import { parseCaseLawProfiles, joinCaseLawProfiles } from "./publish/parse.mjs";
 import { buildAuditMd, parseSpineFindingBlocks } from "./publish/audit-from-spine.mjs";
 import { deriveRegisterPresence } from "./publish/register-presence.mjs";   // — the audit stores every live in-scope record
-import { lastAcceptedMatterFrame, frameIdentifiedClasses } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed; and the classes it judged necessary beyond the instructed ones, which the plan compile unions in
-import { romanizedTermsFromPlan, mintSupplementalQid } from "./register-plan.mjs";   // — the stamp the late lanes never met
+import { lastAcceptedMatterFrame, frameIdentifiedClasses, frameHouseElementCandidate } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed; and the classes it judged necessary beyond the instructed ones, which the plan compile unions in
+import { romanizedTermsFromPlan, mintSupplementalQid } from "./register-plan.mjs";
+import { excludeHouseElement, verifyHouseElementOwnership, resolveRegions as resolvePlanRegions, HOUSE_ELEMENT_RECEIPT } from "./register-plan.mjs";   // 647 — the client's own element leaves the conflict analysis only on a verified receipt
+import { resolveRecordExecutor } from "./register-records.mjs";   // — the stamp the late lanes never met
 import { slimLine, crowdLine } from "./hit-list.mjs";   // — the list the run works from; crowds ride it as a sibling array
 import { mintCrossCheckDoubts, mintContradictionDoubts, stitchDoubts, applyClosure } from "./doubt-ledger.mjs";   // doubt-stitch + doubt-closure (2026-07-22)
 // Conversion 6: the two line-form parsers are no longer on the live path — the seat sends typed
@@ -2225,6 +2227,69 @@ function logFullyDeferredAxes(plan, P, source) {
 // `frozenOnly` (item): read the FROZEN plan or nothing. reconstructCtx is an introspection path —
 // it must never compile and freeze a plan into an existing run as a side effect of being asked what the
 // run already holds. (attachProfile / attachFramework take the same posture via `write:false`.)
+/**
+ * Ask the register whether the client owns the element the frame proposed, and record the answer.
+ *
+ * ASYNC AND SEPARATE FROM THE COMPILE, which is why it is its own step rather than a branch inside
+ * `attachRegisterPlan`: that function is synchronous and is called on the resume path too. The shape is
+ * the digest's — an async driver step writes a receipt, a synchronous consumer reads it — and it buys
+ * the property that matters here: the compile cannot accidentally exclude anything by reaching for a
+ * promise it does not await.
+ *
+ * NOT A REGISTERED CONTEXT DERIVATION, and the reason is worth stating because the obvious reading is
+ * that it should be. `stage-context.mjs` declares the derivations a sandbox can REPLAY, and its runners
+ * are synchronous. This one asks a live register a question; there is no offline re-derivation of that,
+ * and declaring it would promise the `--experiment` rig something no runner can deliver — which the
+ * guard catches by name, loudly, as it should. A sandbox instead inherits the receipt with the rest of
+ * `_driver/`, and a sandbox that has none excludes nothing, which is the same answer every other
+ * unverified run gets.
+ *
+ * NEVER-KILL. Every failure writes an unverified receipt and the run plans exactly as it does today.
+ * The element being searched in full is the safe direction and the status quo; the only thing that can
+ * narrow a client's search is a register answer naming their own live registration.
+ */
+async function verifyAndRecordHouseElement(ctx, opts = {}) {
+  const P = ctx.paths;
+  try {
+    const proposed = frameHouseElementCandidate(P.runDir);
+    if (!proposed) return;   // the ordinary case: the frame proposed nothing and there is no question
+
+    const classes = [...new Set([...inScopeClassList(ctx.job, ctx.profile).map(String), ...frameIdentifiedClasses(P.runDir)])];
+    // THE CLIENT'S OWN NAMES. The profile's trading names are the curated list; the matter's customer is
+    // the free-text one. Both, because a profile may be absent on a one-off matter and a customer string
+    // may be a person where the filings are held by a company.
+    const owners = [...new Set([...(ctx.profile?.selfExclusionOwners ?? []), ctx.job?.customer].map((o) => String(o ?? "").trim()).filter(Boolean))];
+    const caps = registerCapabilities();
+    const { regions } = resolvePlanRegions(registerJurisdictions(ctx.job, ctx.profile), caps);
+    const rec = resolveRecordExecutor({
+      lister: opts?.recordLister ?? null, adapter: activeProvider(),
+      agentId: ctx.agentId ?? null, sessionKey: `prelim-${ctx.run.slug}-${ctx.run.codename}`,
+      recordLog: runRecordLogPath(P.runDir),
+      fixtureDir: ctx.job?.registerFixtures?.records ?? null,
+    });
+    // AN EXACT-NAME LISTING OF THE ELEMENT, filtered to the client's own live in-class registrations by
+    // the verifier. The owner join is done on REAL RECORDS the register returned, which is what
+    // "verified by owner, not asserted" means — there is no owner-predicate listing on this interface
+    // and inventing one would be a second way to ask the same question.
+    const lookup = typeof rec.list !== "function" ? null : async ({ element, classes: cls }) => {
+      const r = await rec.list(element, { classes: cls, regions, limit: 50 });
+      if (!r || r.ok === false) return { ok: false, reason: String(r?.reason ?? "the register listing did not answer") };
+      return { ok: true, records: Array.isArray(r.records) ? r.records : [] };
+    };
+
+    const receipt = await verifyHouseElementOwnership({ element: proposed.element, classes, owners, lookup });
+    receipt.remainder = proposed.remainder;   // carried so the compile needs only this one file
+    ensureDriverDir(P.runDir);
+    atomicWrite(driverDir(P.runDir, HOUSE_ELEMENT_RECEIPT), JSON.stringify(receipt, null, 2) + "\n");
+    runLog(P.runDir, { event: "house-element-ownership", verified: receipt.verified, reason: receipt.reason,
+      records: receipt.records.length, owners: owners.length, executor: rec.source });
+    if (!receipt.verified) note(`house element: ${proposed.element} stays in the search — ${receipt.reason}`);
+  } catch (e) {
+    // A THROW HERE MUST NOT COST A REPORT. No receipt means no exclusion, which is today's plan.
+    runLog(P.runDir, { event: "house-element-ownership-failed", reason: String(e?.message ?? e).slice(0, 160) });
+  }
+}
+
 function attachRegisterPlan(ctx, { frozenOnly = false } = {}) {
   const P = ctx.paths;
   if (frozenOnly) {
@@ -2248,7 +2313,30 @@ function attachRegisterPlan(ctx, { frozenOnly = false } = {}) {
   ctx.registerPlan = null;
   let compiled;
   try {
-    const manifest = parseVariantManifestModel(readFileSync(P.variantManifestModel, "utf8"));
+    let manifest = parseVariantManifestModel(readFileSync(P.variantManifestModel, "utf8"));
+    // ── 647 — THE CLIENT'S OWN ELEMENT LEAVES THE CONFLICT ANALYSIS, ON EVIDENCE OR NOT AT ALL ─────
+    //
+    // The receipt is the ONLY thing that arms this. An absent, unreadable or unverified receipt plans
+    // exactly as this compile did before the rule existed, which is the element searched in full — the
+    // safe direction, and the one a client is never harmed by.
+    let houseConfirmation = null;
+    let houseReceipt = null;
+    try { houseReceipt = JSON.parse(readFileSync(driverDir(P.runDir, HOUSE_ELEMENT_RECEIPT), "utf8")); }
+    catch { houseReceipt = null; }
+    if (houseReceipt?.verified === true) {
+      const r = excludeHouseElement(manifest, { element: houseReceipt.element, remainder: houseReceipt.remainder });
+      if (r.refused) {
+        // VERIFIED OWNERSHIP AND STILL NOT APPLIED. The receipt answers who owns the element; the
+        // transform answers whether this manifest's mark can survive the cut. Both must hold.
+        runLog(P.runDir, { event: "house-element-not-applied", reason: r.refused, element: houseReceipt.element });
+      } else {
+        manifest = r.manifest;
+        houseConfirmation = r.confirmation;
+        runLog(P.runDir, { event: "house-element-excluded", element: houseReceipt.element,
+          remainder: houseReceipt.remainder, dominant_element: manifest.dominant_element,
+          evidence: (houseReceipt.records ?? []).length });
+      }
+    }
     let form = null;
     try { form = JSON.parse(readFileSync(P.formNeighbourhood, "utf8")); } catch { /* form band optional */ }
     compiled = compileRegisterPlan({
@@ -2275,6 +2363,19 @@ function attachRegisterPlan(ctx, { frozenOnly = false } = {}) {
       // rides the plan as a disclosed deferral, never as a silently narrower search.
       unavailableOffices: registerUnavailableOffices(),
     });
+    // REQUIREMENT 3 — the element is still checked ONCE, as a confirmation of the client's own live
+    // registrations rather than as a conflict sweep, so the exclusion is evidenced on the report by a
+    // query that ran. Appended after the compile because it is not derived from the manifest: it is the
+    // one question about the element the plan still owes.
+    if (houseConfirmation && compiled?.entries) {
+      const used = new Set(compiled.entries.map((e) => e.qid));
+      compiled.entries.push({
+        ...houseConfirmation,
+        qid: mintSupplementalQid({ prefix: "house", term: houseConfirmation.term, used }),
+        nice_classes: compiled.nice_classes ?? [],
+        regions: compiled.regions ?? [],
+      });
+    }
   } catch (e) {
     // NEVER-KILL at mint time: no/malformed sibling or a class-less matter degrades to the legacy
     // path with a logged reason — the plan improves the run, it never turns delivery off.
@@ -8814,6 +8915,7 @@ async function pipelineInner(job, opts = {}) {
     must(await stage("prelim-variants", ctx), "prelim-variants");
     deriveScopeLedgerJson(ctx);   // frame-omission design: code-derive scope-ledger.json from the validated prose (never-kill)
     deriveFormNeighbourhood(ctx); // mechanical FORM band: code-derive form-neighbourhood.json from the manifest's distinctive element(s) — the model-free form floor the register funnel searches (never-kill)
+    await verifyAndRecordHouseElement(ctx, opts);   // 647: ask the register who owns the frame's proposed house element, BEFORE the plan is compiled from it
     attachRegisterPlan(ctx);      // WS2 (B3): compile/freeze/reuse the deterministic register plan (flag-gated; frozen plan wins on resume; never-kill on mint)
 
     // spec 64 (B2) — proactive recall probes: prior-confirmed conflicts for THIS mark (the workspace
