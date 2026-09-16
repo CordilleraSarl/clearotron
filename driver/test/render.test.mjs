@@ -692,7 +692,7 @@ test("CHANGE 2: disposition bands — adversarial leads band 1; a Composite-3 co
   assert.doesNotMatch(html, /<h2>Commercial awareness<\/h2>/, "the absorbed heading is gone");
   assert.match(html, /<p class="fold-lead"><b>Same name, a different commercial field\.<\/b>/, "the band-3 lead-in survives as a fold-lead");
   // placement: adversarial (c1) in band 1; coexistence-partner (c2) + distinguished (c3) + off-field (c4) all under 03
-  assert.equal(bandOfCard(html, 1), "On-field conflicts", "adversarial composite-3 leads band 1");
+  assert.equal(bandOfCard(html, 1), "Conflicts", "adversarial composite-3 leads band 1");
   assert.equal(bandOfCard(html, 2), "Notable but manageable", "NORDWAVE-style coexistence-partner composite-3 is band 2, NOT band 1");
   assert.equal(bandOfCard(html, 3), "Notable but manageable", "distinguished composite-3 is band 2");
   assert.equal(bandOfCard(html, 4), "Notable but manageable", "off-field renders under 03 (absorbed), after the fold-lead");
@@ -717,7 +717,7 @@ test("CHANGE 2 back-compat: NO finding carries disposition → legacy composite 
   const legacy = DISP_FINDINGS.map(({ disposition, ...f }) => f);
   const html = renderHtml(parsedOf(FM), legacy, REGION_COVERAGE, { runId: "novapulse-demo" });
   // doc-52 — coverage is no longer a numbered top section; it renders inside the collapsed Scope section.
-  assert.deepEqual(sectionOrder(html), ["The conflict landscape", "On-field conflicts", "Secondary & watch"]);
+  assert.deepEqual(sectionOrder(html), ["The conflict landscape", "Conflicts", "Secondary & watch"]);
   assert.doesNotMatch(html, /Notable but manageable/);
   assert.doesNotMatch(html, /Commercial awareness/);
   // composite≥3 → on-field (c1,c2,c3 full), composite≤2 → secondary (c4 compact) — the pre-change split
@@ -984,7 +984,7 @@ test("spec-48 A5: on-field common-law stays in On-field (full card) and is cross
     composite: 4, level: "D", dispute_type: "classic", meters: RMETERS, quadrant: { x: 0.85, y: 0.85 },
     source: { source_type: "common-law-marketplace" } };
   const html = renderHtml(parsedOf(FM), [...REGION_FINDINGS, clOn], REGION_COVERAGE, {});
-  assert.equal(bandOfCard(html, 7), "On-field conflicts", "the on-field CL card drives the read from On-field");
+  assert.equal(bandOfCard(html, 7), "Conflicts", "the on-field CL card drives the read from On-field");
   assert.equal(bandOfCard(html, 5), "Common-law & marketplace", "the secondary CL card lives in the CL section");
   assert.match(html, /On-field common-law conflicts \(full cards above\): <a href="#c7">#7 AURA<\/a>/);
   // doc-52 — coverage renders inside the collapsed Scope section, not as a numbered top section
@@ -1048,11 +1048,12 @@ test("spec 47: a reasoned Enforcer prose bullet suppresses the templated meter l
 
 test("spec 47: the title heading carries classes + searched countries, full names on hover", () => {
   const html = renderHtml(parsedOf(FM), REGION_FINDINGS, REGION_COVERAGE, {});
-  const scope = (html.match(/<div class="mark-scope"[^>]*>[\s\S]*?<\/div>/) || [""])[0];
-  assert.ok(scope, "the mark-scope line renders under the H1");
-  assert.match(scope, /Cl\.&nbsp;5 · 32 · 41/);
-  assert.match(scope, /<span title="United States">US<\/span>/);
-  assert.match(scope, /<span title="Turkey">TR<\/span>/);
+  // The scope line under the H1 became labelled rows of About this request (tracker issue 644): the same
+  // two facts, named rather than abbreviated, so nothing depends on a hover to be read.
+  const about = (html.match(/<div class="panel about">[\s\S]*?<\/div><\/div>/) || [""])[0] || html;
+  assert.match(about, /Classes<\/span><span class="v">5, 32, 41/);
+  assert.match(about, /Where searched<\/span><span class="v">[^<]*United States/);
+  assert.match(about, /Where searched<\/span><span class="v">[^<]*Turkey/);
 });
 
 test("spec 47: external links in prose open in a new tab; internal anchors do not", () => {
@@ -1224,7 +1225,7 @@ test("doc-52: reading order + plain banner (from only-you) + ruled-out routing +
   const html = renderHtml(parsedOf(md), F, COV, opts);
   const client = renderHtml(parsedOf(md), F, COV, { ...opts, client: true });
   // reading order: verdict (mark) → conflicts → What only you can close → Scope
-  const iVerdict = html.indexOf('class="mark"'), iConf = html.indexOf("On-field conflicts");
+  const iVerdict = html.indexOf('class="mark"'), iConf = html.indexOf("<h2>Conflicts</h2>");
   const iYou = html.indexOf("What only you can close"), iScope = html.indexOf("Scope &amp; what we didn't search");
   assert.ok(iVerdict >= 0 && iVerdict < iConf && iConf < iYou && iYou < iScope, "verdict → conflicts → only-you → Scope");
   // the lawyer's Q&A leads in the verdict block, before the conflicts
@@ -1636,16 +1637,15 @@ test("doc-55 B: a worldwide sweep ALWAYS shows WO (WIPO/Madrid) + the national/r
   const coverage = [{ area: "register / worldwide sweep", state: "confirmed-clean", note: "exact + near-form enumerated worldwide" }];
   const F = [{ ordinal: 1, mark: "ZED", composite: 3, level: "B", dispute_type: "classic", meters: {}, owner: { name: "Z", registrations: [{ uri: "https://tm.example/mark/us/1", jurisdiction: "US" }] }, source: { source_type: "register-vendor" } }];
   const html = renderHtml(parsedOf(FM), F, coverage, { runId: "b" });
-  assert.match(html, /class="jchip"[^>]*>WO<\/span>/, "WO shows even with no Madrid conflict — the worldwide sweep covers the WIPO register");
-  assert.match(html, /national register, the EU regional register[^<]*WIPO\/Madrid/, "the honest per-source coverage note renders");
+  assert.match(html, /Where searched<\/span><span class="v">[^<]*WIPO \(Madrid\)/, "WIPO shows even with no Madrid conflict — the worldwide sweep covers that register");
   // a Madrid record (jurisdiction INT / uri /mark/int/) normalizes to WO, never a raw 'INT' chip
   const madrid = [{ ...F[0], owner: { name: "Z", registrations: [{ uri: "https://tm.example/mark/int/878545", jurisdiction: "INT" }] } }];
   const h2 = renderHtml(parsedOf(FM), madrid, coverage, { runId: "b2" });
-  assert.ok(!/class="jchip"[^>]*>INT</.test(h2), "a Madrid record never chips as raw 'INT'");
-  assert.match(h2, /class="jchip"[^>]*>WO</, "it normalizes to the WO (WIPO/Madrid) register");
+  assert.ok(!/Where searched<\/span><span class="v">[^<]*\bINT\b/.test(h2), "a Madrid record is never named as raw 'INT'");
+  assert.match(h2, /Where searched<\/span><span class="v">[^<]*WIPO \(Madrid\)/, "it normalizes to the WIPO register");
   // a targeted (non-worldwide) run does NOT get a forced WO chip
   const targeted = renderHtml(parsedOf(FM), F, [{ area: "register / US", state: "confirmed-clean", note: "" }], { runId: "b3" });
-  assert.ok(!/class="jchip"[^>]*>WO</.test(targeted), "WO is not forced onto a targeted (non-worldwide) run");
+  assert.ok(!/Where searched<\/span><span class="v">[^<]*WIPO/.test(targeted), "WIPO is not forced onto a targeted (non-worldwide) run");
 });
 
 // ---- WP-56 B2: the standing mark-itself section (typed mark_assessment → top-of-report render) ----
