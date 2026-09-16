@@ -730,11 +730,15 @@ function findingBlock(v, framework, markIndex) {
             <div class="cardhead">
               <span class="fnum">${esc(v.ref)}</span><span class="who">${esc(v.name ?? 'Unnamed finding')}</span>${
     v.band ? `<span class="ko-findband" style="background:var(${stop})">${esc(v.band)}</span>` : ''}${sourceChips(v)}
+              <button class="ask-fi no-print">\u2726 Ask AI about this finding</button>
             </div>
             ${meta ? `<p class="ko-findmeta">${meta}</p>` : ''}
             ${v.lead ? `<p class="ko-findnet">${inlineMd(v.lead)}</p>` : ''}
-            ${whyBandFold(v.detail ? `<p class="ko-findbasis">${inlineMd(v.detail)}</p>` : '')}
-            ${ev ? `<p class="ko-findev">Evidence: ${ev}</p>` : ''}
+            ${/* tracker issue 645 — head, meta and the one-line read stay visible; the rest folds, as on
+                 a clearance card, so a screen of many names reads as a screen. */''}
+            ${(v.detail || ev) ? `<details class="drill"><summary>Full detail</summary><div class="drillbody">${
+      whyBandFold(v.detail ? `<p class="ko-findbasis">${inlineMd(v.detail)}</p>` : '')}${
+      ev ? `<p class="ko-findev">Evidence: ${ev}</p>` : ''}</div></details>` : ''}
           </div>
         </div>
       </div>`;
@@ -1190,12 +1194,18 @@ function registerFindingBlock(v, markIndex, reads = null, framework = null, owne
             <div class="cardhead">
               <span class="fnum">${esc(v.ref)}</span><span class="who">${esc(r.mark ?? 'Unnamed filing')}</span>${
     band ? `<span class="ko-findband" style="background:var(${stop})">${esc(band)}</span>` : ''}<span class="src reg">Register</span>
+              <button class="ask-fi no-print">\u2726 Ask AI about this finding</button>
             </div>
             <p class="ko-findmeta">${meta}</p>
             <p class="ko-findnet">${esc(v.statement)}</p>
+            ${/* tracker issue 645 — the head, the meta line and the one-line read stay visible; the rest
+                 sits behind a fold, as it does on a clearance card, so a screen of many names reads as a
+                 screen rather than as a wall. */''}
+            <details class="drill"><summary>Full detail</summary><div class="drillbody">
             ${basisLine(band, read)}
             ${useCheck ? `<p class="ko-findev">${esc(USE_CHECK_LABEL)} ${isHttpUrl(useCheckSource) ? linkOrText(useCheckSource) : esc(useCheckSource)}</p>` : ''}
             <p class="ko-findev">Register record: ${receipt}</p>
+            </div></details>
           </div>
         </div>
       </div>`;
@@ -1354,6 +1364,28 @@ const SCOPE_BLOCK_TEXT = 'What this is. A fast screen for obvious blockers to us
 // The stopword set and the idempotent stem travel with it; the reference text below stays here, because
 // it is this page's own words and nothing else's.
 
+// ── THE RATING CARD, ONE DESIGN WITH THE CLEARANCE REPORT (tracker issue 645) ──────────────────────
+// The company's own ladder drawn as the coloured scale with the band lit, the basis sentence, the
+// engine's own "why" bullets under a heading that names the band, and the framework named once. The
+// ticks clamp at the ends so the first and last words do not hang off the bar. Nothing is composed:
+// the bullets and the basis are the engine's, and the band words are the framework's own.
+function koScale(framework, band) {
+  const ladder = (Array.isArray(framework?.bands) ? framework.bands : []).map((b) => String(b?.label ?? '').trim()).filter(Boolean).reverse();
+  if (!ladder.length) return '';
+  const n = ladder.length;
+  const idx = Math.max(0, ladder.findIndex((b) => b.toLowerCase() === String(band ?? '').trim().toLowerCase()));
+  const pct = (k) => (n > 1 ? (k / (n - 1)) * 100 : 50);
+  const TONE = ['var(--clear)', 'var(--low)', 'var(--med)', 'var(--high)', 'var(--severe)'];
+  const tone = (k) => TONE[Math.round((k / Math.max(1, n - 1)) * (TONE.length - 1))];
+  const shift = (k) => (k === 0 ? '0' : k === n - 1 ? '-100%' : '-50%');
+  return `<div class="kscale"><div class="kbar" style="background:linear-gradient(90deg,${
+    ladder.map((b, k) => `${tone(k)} ${pct(k)}%`).join(',')})"><div class="kmarker" style="left:${pct(idx)}%;transform:translateX(${
+    idx === 0 ? '-12px' : idx === n - 1 ? 'calc(-100% + 12px)' : '-50%'})"><div class="kpill" style="background:${tone(idx)}">${
+    esc(ladder[idx] || band || '')}</div><div class="kneedle" style="background:${tone(idx)}"></div></div></div><div class="kticks">${
+    ladder.map((b, k) => `<span class="${k === idx ? 'on' : ''}" style="left:${pct(k)}%;transform:translateX(${shift(k)})${
+      k === idx ? `;color:${tone(k)}` : ''}">${esc(b)}</span>`).join('')}</div></div>`;
+}
+
 function readBlock(m, framework) {
   const factors = (m.factors ?? []).filter((s) => typeof s === 'string' && s.trim());
   const counter = (m.counterFactors ?? []).filter((s) => typeof s === 'string' && s.trim());
@@ -1362,10 +1394,16 @@ function readBlock(m, framework) {
   if (!structured) return bullets ? `<ul class="ko-bul">${bullets}</ul>` : '';
   const assessment = String(m.assessment ?? '').trim();
   const band = String(m.rating ?? '').trim();
-  return [
+  const card = [
+    `<div class="label">Overall risk</div>`,
+    koScale(framework, band),
     m.basis ? `<p class="ko-basisline">${inlineMd(m.basis)}</p>` : '',
-    factors.length ? `<div class="ko-why-band">${band ? `<span class="ko-lbl2">Why ${esc(band)}</span>` : ''}<ul class="ko-bul">${
+    factors.length ? `<div class="gwhy">${band ? `<div class="label">Why ${esc(band)}</div>` : ''}<ul class="ko-bul">${
       factors.map((f) => `<li>${inlineMd(f)}</li>`).join('')}</ul></div>` : '',
+    framework?.title ? `<div class="gframe">Rated on the ${esc(framework.title)}</div>` : '',
+  ].filter(Boolean).join('');
+  return [
+    card ? `<div class="panel gauge ko-gauge">${card}</div>` : '',
     counter.length ? `<div class="ko-counter"><span class="ko-lbl2">${esc(counterLabel(framework, band))}</span><ul class="ko-bul">${
       counter.map((f) => `<li>${inlineMd(f)}</li>`).join('')}</ul></div>` : '',
     m.mitigation ? `<div class="ko-mitig"><span class="ko-lbl2">What would change this</span><p>${inlineMd(m.mitigation)}</p></div>` : '',
