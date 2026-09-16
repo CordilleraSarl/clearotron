@@ -53,6 +53,7 @@ import { demoBannerHtml } from './render.mjs';   // — the SAME banner the clea
 // fail-open; re-deriving either in a renderer would be this file starting a second status vocabulary,
 // which is the thing providers/_shared/screen.mjs exists to prevent.
 import { makeClassifyStatus, isAllClass } from '../../providers/_shared/screen.mjs';
+import { saysSomethingNew } from '../../shared/says-something-new.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
@@ -1336,32 +1337,11 @@ const SCOPE_BLOCK_TEXT = 'What this is. A fast screen for obvious blockers to us
   + 'goes on to clearance. Every conflict above links to the material we found. The audit workbook holds '
   + 'every search run, every empty result and the working notes. Register data.';
 
-/** Words that carry no claim, so their presence or absence says nothing about what a sentence asserts. */
-const STOPWORDS = new Set(['a', 'an', 'and', 'are', 'as', 'at', 'be', 'been', 'but', 'by', 'can', 'do',
-  'does', 'each', 'for', 'from', 'has', 'have', 'here', 'in', 'is', 'it', 'its', 'no', 'not', 'of', 'on',
-  'or', 'that', 'the', 'their', 'them', 'there', 'these', 'they', 'this', 'to', 'up', 'was', 'we', 'were',
-  'what', 'when', 'which', 'will', 'with', 'you', 'your']);
-
-const contentWords = (s) => String(s ?? '').toLowerCase().replace(/[^a-z0-9\s-]/g, ' ')
-  .split(/\s+/).filter((w) => w.length > 2 && !STOPWORDS.has(w));
-
-/**
- * Does this line assert anything the reference text does not already assert?
- *
- * TRUE unless every content word in the line is already in the reference. An empty line has nothing to
- * say and returns false; a line with one unfamiliar word is kept. Singular/plural is folded so that
- * "conclusion" does not read as new beside "conclusions".
- */
-function saysSomethingNew(line, reference) {
-  // The stem must be IDEMPOTENT on the singular, or the fold does nothing: an earlier form stripped
-  // "es" and turned "gives" into "giv" while leaving "give" alone, so the two never matched and every
-  // caveat looked new. Strip one trailing "s" and nothing else.
-  const stem = (w) => w.replace(/ies$/, 'y').replace(/s$/, '');
-  const known = new Set(contentWords(reference).map(stem));
-  const words = contentWords(line);
-  if (!words.length) return false;
-  return words.some((w) => !known.has(stem(w)));
-}
+// THE CAVEAT FILTER IS SHARED, NOT LOCAL. `saysSomethingNew` was defined here and is now in
+// `shared/says-something-new.mjs`, because the writing-standard check asks the identical question of a
+// page's lede against its title. Two definitions of one rule is one definition and one imitation of it.
+// The stopword set and the idempotent stem travel with it; the reference text below stays here, because
+// it is this page's own words and nothing else's.
 
 function readBlock(m, framework) {
   const factors = (m.factors ?? []).filter((s) => typeof s === 'string' && s.trim());

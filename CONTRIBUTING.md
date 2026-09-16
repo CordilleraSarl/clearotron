@@ -93,7 +93,7 @@ served to the model at run time — `synthesis-rules.md` is a 16,000-word progra
 brevity, tone or tidiness changes what a clearance concludes. Nothing in this section, and nothing in
 any writing pass over the documentation, applies to them.
 
-## The three rules that fail CI
+## The four rules that fail CI
 
 **1. Build `portal-ui/dist` before you push.** The bundle is not committed; it is gitignored, and
 CI runs `npm run build:ui` from source. So there is nothing to add — run it locally when you touch
@@ -129,6 +129,35 @@ The reviewer is the check. Say what you checked in the PR rather than citing a p
 
 **3. Types are enforced, and `vite build` does not typecheck.** `npm run typecheck -w portal-ui`
 runs as its own CI step. Run it before you push.
+
+**4. Every sentence a customer reads is written against the standard, and five classes of it are
+checked.** The standard is [`docs/writing-standard.md`](docs/writing-standard.md); the prose rules
+under it are [`docs/writing-rules.md`](docs/writing-rules.md), and they apply first. Together they
+bind report HTML, portal screens, the README and the docs.
+
+`node scripts/writing-standard-check.mjs` refuses what your change ADDS to one of those surfaces:
+an engineering identifier in text a client reads, a reviewer-only marker in rendered output, a known
+caveat sentence, a screen that writes its own page heading instead of using `PageHeader`, and a lede
+whose words are all already in its title. It names the class and prints the line. It never rewrites —
+a rewritten sentence is a sentence nobody reviewed.
+
+It refuses what you add, not what is already here. The standing population is counted per file and
+per class in `driver/test/fixtures/writing-standard-backlog.json`, and the floor beside it refuses
+any file that grows, so the number can only fall. If you repair one, re-mint the floor with
+`node scripts/mint-writing-standard-backlog.mjs --apply` so it drops with the tree.
+
+### The review step, for what no check can judge
+
+Tone is not one of the five classes and no word list will ever catch it. A sentence can carry no
+identifier, no caveat and no banned word and still be the thing the standard exists to stop: a
+heading that restates its section, a paragraph explaining what the reader can already see, a sentence
+that only works if you know how the engine is built.
+
+So: **a pull request that changes text a customer reads is reviewed against the rendered page or
+report, not against the diff.** One reviewer reads it as someone who has never seen this product and
+asks one question of every new sentence — *what would a reader with zero context think this means?*
+If the answer needs the codebase, the sentence is cut or rewritten. One reviewer, one question,
+recorded in the pull request.
 
 ### If your change touches a Markdown file, two more will catch you
 
