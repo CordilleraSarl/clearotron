@@ -576,7 +576,35 @@ export function toSignaParams(p = {}) {
   const mode = String(p.match_mode ?? "").trim();
   if (mode === "exact" || mode === "phonetic" || mode === "prefix") out.strategies = [mode];
   else if (mode === "starts_with" || mode === "ends_with" || mode === "contains") out.match = mode;
-  else if (!mode && !p.match && !(Array.isArray(p.strategies) && p.strategies.length)) {
+  // ── `default` IS THE COUNT LANE'S WORD FOR THE SAME UNANCHORED QUERY THE PLAN LANE CALLS `{}` ────
+  //
+  // THE DEFECT. The count lane hands `match_mode: "default"` straight through — that is the word
+  // `COUNT_PREDICATES` gives the CONTAINING predicate, the one whose figure a client reads under
+  // "Filings containing the name". `default` matched none of the branches here, so neither request
+  // shape was selected, and `buildSearchRequest`'s else branch sent `strategies: ["exact"]`. The
+  // containing column therefore printed an exact count, on the axis that most signals how crowded a
+  // field is, and a client was told the field was less busy than it is in a number the report states
+  // as fact. Nothing failed and nothing was logged: a narrower query answers perfectly well, it just
+  // answers a different question.
+  //
+  // The branch below already does exactly this for the plan lane, which reaches here with NO mode at
+  // all. The two lanes mean the same thing by different words; they now take the same shape.
+  else if (mode === "default") {
+    if (typeof out.query === "string" && !out.query.includes("*")) out.match = "contains";
+  }
+  // ── AN UNRECOGNISED MODE REFUSES; IT DOES NOT QUIETLY BECOME A NARROWER SEARCH ──────────────────
+  //
+  // THE CLASS, and it has now bitten twice. This function's own header records `starts_with` falling
+  // through to a plain exact search — "a NARROWER query than the plan asked for, answering as though it
+  // were the one requested" — and `default` has just done the same on a client-facing figure. Both were
+  // fixed by adding the missing word. Adding words one defect at a time leaves the next unmapped mode
+  // to do it a third time, silently, in whichever direction happens to be wrong.
+  //
+  // So a mode this provider cannot express is now NAMED rather than approximated. The caller turns it
+  // into a refused cell, and a refused cell is a disclosed gap a reader can see; a wrong number is not
+  // visible at all. This can only fire where a number would otherwise have been silently wrong.
+  else if (mode) out.unsupported_match_mode = mode;
+  if (!mode && !p.match && !(Array.isArray(p.strategies) && p.strategies.length)) {
     // ── THE `default` PREDICATE, WHICH JUST MADE EXECUTABLE ────────────────────────────────
     // `planPredicateParams` returns {} for the plan's `default` predicate — no match_mode at all —
     // and this branch is the only thing standing between that and `strategies: ["exact"]`. With
