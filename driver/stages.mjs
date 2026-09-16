@@ -1260,7 +1260,7 @@ export const STAGES = {
       },
       "scope_jurisdictions / excluded_jurisdictions / scope_basis — typed fields the driver renders": {
         class: "mechanical:code-rendered", tokens: ["frame_scope_missing"],
-        why: "CLASS ALIGNED WITH `## Instructed scope` in this same stage — #850 rules that row \"Code stamps the section from _driver/instructed-scope.json\", and the instructed jurisdictions are in that same file. Not pre-bound: no form carries them. On the instructed branch the driver already holds the list and hands it over; the model retypes it into a shape the driver dictates. verify.mjs:1172 string-compares it back — `add(\"jurisdictions\", scope.jurisdictions)` — failing frame_scope_missing:jurisdictions, so this half IS policed, unlike the campaign-shape twin above. [citation unverified]",
+        why: "CLASS ALIGNED WITH `## Instructed scope` in this same stage — #850 rules that row \"Code stamps the section from _driver/instructed-scope.json\", and the instructed jurisdictions are in that same file. Not pre-bound: no form carries them. On the instructed branch the driver already holds the list and hands it over; the model retypes it into a shape the driver dictates. verify.mjs checkFindingsSibling string-compares it back — `add(\"jurisdictions\", scope.jurisdictions)` — failing frame_scope_missing:jurisdictions, so this half IS policed, unlike the campaign-shape twin above. [citation unverified]",
       },
       "Scope reasoning — search-wide/cite-narrow, the in-scope-by-reach routes, and the reopen trigger behind each exclusion": {
         class: "judgment", tokens: [],
@@ -3520,7 +3520,7 @@ export const STAGES = {
       },
       "the `[on: N, M]` flag ordinals — which findings each flag names": {
         class: "mechanical:code-extracted", tokens: [],
-        why: "#850: selection against the finding index the driver already holds; targetsOf's normalised prose join is the fallback that already fails (6 of 9 flags resolved to nothing on a delivered run). NO TOKEN: parseOn exists at verify.mjs:584 and validators.seniorEyeReview never calls it — the skill file itself says \"either every flag has one or none of them do any work\", and nothing checks which state a review is in [citation unverified]",
+        why: "#850: selection against the finding index the driver already holds; targetsOf's normalised prose join is the fallback that already fails (6 of 9 flags resolved to nothing on a delivered run). NO TOKEN: parseOn exists at verify.mjs commonLawHalfEvidence and validators.seniorEyeReview never calls it — the skill file itself says \"either every flag has one or none of them do any work\", and nothing checks which state a review is in [citation unverified]",
       },
       "the section titled exactly \"PLAN-EXECUTION CHECK\"": {
         class: "mechanical:code-rendered", tokens: ["plan_audit_missing"],
