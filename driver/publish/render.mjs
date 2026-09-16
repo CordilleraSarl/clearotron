@@ -1661,6 +1661,8 @@ const COV_STATE = {
  * carries EVERY significant word of the directive it names — a near-match keeps both.
  */
 const FOLLOW_UP_PREFIX = 'Follow-up / ';
+// `<axis> / <what was swept>` — the shape unitLabel composes for a plan-derived coverage unit.
+const AXIS_LABELLED = /\s\/\s/;
 const COV_STOPWORDS = new Set(['the', 'a', 'an', 'as', 'for', 'of', 'in', 'on', 'and', 'or', 'to', 'is',
   'was', 'it', 'its', 'this', 'that', 'with', 'by', 'at', 'be', 'been', 'run', 'search', 'searched']);
 const covWords = (t) => new Set(String(t || '').toLowerCase().match(/[a-z0-9]+/g)?.filter((w) => !COV_STOPWORDS.has(w)) ?? []);
@@ -1689,13 +1691,31 @@ function dedupeFollowUps(coverage) {
     // it. That is exactly the failure this function's header calls the one worth avoiding, and the
     // header was right while the code was not.
     //
-    // WHAT THIS STILL CANNOT DO, said rather than implied: it is word containment, so two genuinely
-    // different OPEN searches sharing every word of a short directive would still collapse to one. The
-    // discriminator a reader would want is which search a row names, and the rows carry no identity to
-    // join on — that is why the issue's own wording is "name the same search" rather than a rule. The
-    // narrowing here is the strongest one the data supports, and it errs toward keeping both.
+    // THE LIMITATION ABOVE STOPPED BEING HYPOTHETICAL, so it is a rule now rather than a paragraph.
+    //
+    // It read: "it is word containment, so two genuinely different OPEN searches sharing every word of a
+    // short directive would still collapse to one." Measured on a delivered report — 33 coverage entries,
+    // 31 rendered cells. Two open park rows with one- and two-word directives were erased by unrelated
+    // rows that merely mentioned those words. The client read a coverage section that never named two
+    // slices the run had deliberately disclosed, which is the failure this header calls the one worth
+    // avoiding, reached by the route the header predicted.
+    //
+    // THE DISCRIMINATOR IS THE AXIS LABEL, and it is the identity the paragraph above said was missing.
+    // A row whose area carries one — `<axis> / <what was swept>`, the shape `unitLabel` composes — is a
+    // PLAN-DERIVED COVERAGE UNIT. It is not the model restating a deferred slice; it is a different unit
+    // that happens to contain the same word. Only the model's own free-text row can BE a restatement,
+    // and that is exactly the dolphin row this function was built for: "the English word DOLPHIN as a
+    // dedicated exact search", no axis, no separator. So an axis-labelled row may no longer stand in for
+    // a composed follow-up, however many words it shares.
+    //
+    // EVIDENCE, STATED ONE-SIDED BECAUSE IT IS. Every row containing either erased directive was
+    // axis-labelled `register`, so the measured run supports the half that stops suppression. It cannot
+    // support the other half: that run has no open row WITHOUT an axis label, so nothing in it exercises
+    // "a free-text row still suppresses". The witness for that half is the dolphin incident alone, which
+    // is a real delivered page but a single one — and the arm below is what keeps it honest.
     return !written.some((w) => {
       if (COV_STATE[w?.state]?.cls === 'ok') return false;   // a searched-and-clean row reports the opposite
+      if (AXIS_LABELLED.test(String(w?.area || ''))) return false;   // a plan unit is not a restatement
       const theirs = covWords(w.area);
       return [...directive].every((word) => theirs.has(word));
     });
