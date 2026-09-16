@@ -53,13 +53,12 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
         : []                                     // failed — Field falls back to showing the value as text
 
   // THE TEMPLATE LISTING, for one row: Permitted searches names templates the way Search templates does,
-  // and this is the read that page draws its rows from. Asked only of a company whose profile HAS the
-  // row — most have none, and for them it would be a request that adds nothing to the page.
-  const permits = Array.isArray(loaded?.readOnly['allowedRecipes'])
-  const { result: templatesResult } = useLoad(
-    () => (permits ? api.savedSearches(account) : Promise.resolve({ kind: 'ok' as const, value: [] })),
-    [account, permits],
-  )
+  // and this is the read that page draws its rows from. Asked on every load, keyed on the company alone.
+  // Asked only once the loaded profile showed the row, the question changed part-way through the load,
+  // and its stale answer stayed off the screen only because the page draws nothing until the draft is
+  // seeded — in the same effect pass that clears that answer. One request on a one-shot load is cheaper
+  // than depending on that.
+  const { result: templatesResult } = useLoad(() => api.savedSearches(account), [account])
   // Nothing is said about a row until both reads have answered, so it never flashes a count of searches
   // it has not had the chance to name.
   const permitted = loaded == null || templatesResult == null || searchesResult == null
