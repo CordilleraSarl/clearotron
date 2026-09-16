@@ -188,8 +188,10 @@ function ratingExtras(fm, findings, coverage, fourAnswers, opts, bandWord) {
     else if (cd === 'not-checked') parts.push('court decisions could not be checked');
     if (parts.length) out.push(`<div class="grow gconf"><span class="gk">Search coverage</span><span class="gv">${parts.map(esc).join(' \u00b7 ')}</span></div>`);
   }
-  const fw = FRAMEWORK ? FRAMEWORK.title : (fm.rated_under || '');
-  if (fw) out.push(`<div class="gframe">Rated on the ${esc(fw)}</div>`);
+  // ONE NAME FOR ONE FRAMEWORK. A manifest run already prints it in the card's own heading, beside the
+  // ladder whose words it governs; adding a second line here named it twice on the same card. The line
+  // is for the run that records a framework by name without carrying its manifest.
+  if (!FRAMEWORK && fm.rated_under) out.push(`<div class="gframe">Rated on the ${esc(fm.rated_under)}</div>`);
   return out.join('');
 }
 

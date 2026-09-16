@@ -1142,7 +1142,7 @@ test("spec 49 (H10): the hero names the highest-exposure jurisdiction(s), derive
   // REGION_FINDINGS: max composite 4 = the EU finding
   assert.match(html, /Highest exposure<\/span>/);
   assert.match(html, /Highest exposure<\/span><span class="gv">European Union/, "the rating card names it in full");
-  assert.match(html, /from the highest-rated finding/);
+  assert.match(html, /Highest exposure<\/span><span class="gv">/, "the rating card carries it; the explanatory suffix is off the page");
   // no rated findings ⇒ the row is suppressed
   const none = renderHtml(parsedOf(FM), [], [], {});
   assert.doesNotMatch(none, /Highest exposure/);
@@ -1942,7 +1942,7 @@ test("P5: the four-answers panel renders in the hero from opts.fourAnswers; abse
   const html = renderHtml(parsedOf(REPORT), P5_BANDED, COVERAGE, { runId: "noref-demo", fourAnswers });
   assert.match(html, /class="gwhy"/, "the four answers are the rating card's Why <band> now");
   assert.match(html, /Third-party rights/);
-  assert.match(html, /fa-token">Strong<\/span> — Strong senior rights block the core class\./);
+  assert.match(html, /fa-token tone-[a-z]+">Strong<\/span> — Strong senior rights block the core class\./, "the judgment word carries its own colour now");
   assert.match(html, /Likelihood of objection/);
   assert.match(html, /fa-ords"><a href="#c1">#1<\/a>/);
   assert.match(html, /Class 41\.<\/b> the office holds the element descriptive for these services/);
@@ -2134,9 +2134,9 @@ test("on a v6 record the reasoned negatives group by their shared ground, one li
   assert.ok(!/rn-mark">MATCHDAY</.test(html.split("Notable but manageable")[1] ?? ""), "band-1 conflicts never enter the negatives section");
 });
 
-test("zero reasoned negatives SAYS so — an empty heading with nothing under it never renders", () => {
+test("zero reasoned negatives renders NOTHING — no heading, no sentence explaining the emptiness", () => {
   const html = renderHtml(parsedOf(REPORT), [P5_BANDED[0]], COVERAGE, { runId: "noref-demo", findingsSchemaVersion: 6 });
-  assert.match(html, /<b>No reasoned negatives\.<\/b> Every retrieved close match on this run is an on-field conflict/);
+  assert.doesNotMatch(html, /Notable but manageable/, "a heading with nothing under it does not render at all (owner, 2026-09-16)");
   assert.ok(!/class="rn-mark"/.test(html), "no member rows under a zero grouping");
   // and the distinguishing signal: a v5 record renders no such claim either way, because it never grouped
   const legacy = renderHtml(parsedOf(REPORT), [P5_BANDED[0]], COVERAGE, { runId: "noref-demo" });
