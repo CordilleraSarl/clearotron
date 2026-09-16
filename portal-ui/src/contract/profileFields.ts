@@ -16,6 +16,7 @@
 //   defect; the additive-only helper below is the fix expressed as code rather than as care.
 
 import { isTerritoryEntry } from './composerProduct.ts'
+import type { Product } from './api.ts'
 
 /** Fields the UI must never send. The server strips them too — this is the near wall, not the only one. */
 export const CODE_OWNED = ['frameworkPath', 'workedExamplesPath', 'allowedRecipes', 'jxPolicy', 'runCaps'] as const
@@ -71,18 +72,53 @@ export function visibleReadOnlyFields(
 export type FieldKind = 'text' | 'prose' | 'lines' | 'numbers' | 'choice' | 'boolean'
 
 /**
- * Visual grouping. Not a data distinction — every field in both groups is written the same way — but
+ * Visual grouping. Not a data distinction — every field in every group is written the same way — but
  * this page is a flat list about to grow past the length where a flat list is readable.
  *
  * "Set by Cordillera" is deliberately NOT a group here: it is the read-only block, which is a different
  * kind of thing (rendered as text, never sent) and lives in its own component.
  */
-export const FIELD_GROUPS = [
-  { id: 'identity', label: 'Identity' },
-  { id: 'defaults', label: 'Search defaults' },
-] as const
+export type FieldGroup = 'identity' | 'defaults' | 'firm'
 
-export type FieldGroup = (typeof FIELD_GROUPS)[number]['id']
+export type FieldGroupSpec = {
+  readonly id: FieldGroup
+  readonly label: string
+  /**
+   * EVERY FIELD IN THE GROUP MAY BE LEFT EMPTY, so the heading carries "Optional" once and its fields
+   * carry nothing. Tagging each of seven defaults would be seven copies of one fact.
+   */
+  readonly optional?: boolean
+  /**
+   * Drawn closed, as a fold whose note names the fields inside it. For settings most companies never
+   * change: open, they would sit between a reader and the fields they came to edit.
+   */
+  readonly fold?: boolean
+}
+
+export const FIELD_GROUPS: readonly FieldGroupSpec[] = [
+  { id: 'identity', label: 'Identity' },
+  { id: 'defaults', label: 'Search defaults', optional: true },
+  { id: 'firm', label: 'Law firm options', fold: true },
+]
+
+/**
+ * What a field's label carries: "Required", "Optional", or nothing.
+ *
+ * THE DISTINCTION IS THE PRODUCT'S, and this makes it visible where it applies. Creating a company
+ * refuses without a legal name and resolves a default for everything else, so the name is Required and
+ * every other field in its group is Optional. A group that is optional as a whole carries the tag on its
+ * heading instead (see `groupTag`), and a fold carries none: its name already says these are options.
+ */
+export function fieldTag(spec: FieldSpec): 'Required' | 'Optional' | null {
+  const group = FIELD_GROUPS.find((g) => g.id === spec.group)
+  if (!group || group.optional || group.fold) return null
+  return spec.required ? 'Required' : 'Optional'
+}
+
+/** What a group's heading carries. The mirror of `fieldTag`: the tag sits on the heading or on the fields, never both. */
+export function groupTag(group: FieldGroupSpec): 'Optional' | null {
+  return group.optional && !group.fold ? 'Optional' : null
+}
 
 export type FieldSpec = {
   readonly key: string
@@ -90,6 +126,8 @@ export type FieldSpec = {
   readonly kind: FieldKind
   readonly group: FieldGroup
   readonly hint?: string
+  /** A company cannot be made without it. The label says so; see `fieldTag`. */
+  readonly required?: boolean
   /** Fixed options for a `choice` field. Omitted when the options are loaded at render time. */
   readonly choices?: readonly { readonly value: string; readonly label: string }[]
   /**
@@ -234,7 +272,7 @@ export const CLEARED_LABEL = 'Generic default'
 
 export const PROFILE_FIELDS: readonly FieldSpec[] = [
   // ── who the company is ──
-  { key: 'name', label: 'Legal name', kind: 'text', group: 'identity',
+  { key: 'name', label: 'Legal name', kind: 'text', group: 'identity', required: true,
     hint: 'Used so a search does not report the company against its own marks. Should be the registered owner name.' },
   { key: 'matchDomains', label: 'Domains', kind: 'lines', group: 'identity',
     commaSeparated: true,
@@ -259,11 +297,14 @@ export const PROFILE_FIELDS: readonly FieldSpec[] = [
   // this. No idea what this means." The old hint opened with "Nice classes", which is the jargon rather
   // than the explanation — it told someone who already knew what the field was that it was that field.
   // The example is the load-bearing part: two familiar numbers say more about what a class IS than a
-  // definition does, and the range and the paste rules still follow for the reader who wanted those.
+  // definition does, and the range still follows for the reader who wanted it.
+  //
+  // THE PASTE RULE LEFT WITH THE BOX. "Commas, spaces or new lines all work" described a text box of
+  // numbers; the profile and create forms now add a class through a search box, one number or word at a
+  // time, and a hint promising what the control in front of the reader cannot do is a false promise.
   { key: 'defaultClasses', label: 'Default classes', kind: 'numbers', group: 'defaults', picker: 'classes',
     hint: 'The numbered categories a trademark is registered in — 9 is software, 25 is clothing, 41 is training. '
-      + 'These are the Nice classes, 1 to 45. Leave this empty and each search states its own. '
-      + 'Commas, spaces or new lines all work.' },
+      + 'These are the Nice classes, 1 to 45. Leave this empty and each search states its own.' },
   { key: 'defaultJurisdictions', label: 'Default jurisdictions', kind: 'lines', group: 'defaults', commaSeparated: true,
     picker: 'territories',
     // STRICT, BY RULING. This was assistive — it flagged and stored — on the reasoning that the
@@ -337,8 +378,9 @@ export const PROFILE_FIELDS: readonly FieldSpec[] = [
     clearWith: '', customerOnly: true,
     // "Availability is confirmed when a run starts, not here" survives a cut to a third of the length,
     // because it is the only load-bearing clause: this page cannot check whether a depth is switched on,
-    // and without saying so a lawyer reads a saved default as a guarantee.
-    hint: 'The depth used when a request does not ask for one. Whether it is available is settled when the run starts, not here.' },
+    // and without saying so a lawyer reads a saved default as a guarantee. What the setting is FOR leads,
+    // and that clause follows it.
+    hint: 'Used when a request does not name one. Whether it is available is settled when the run starts, not here.' },
   // Both delivery sub-keys are customerOnly for a reason that is NOT the defaultProduct reason, so
   // it is spelled out separately below rather than folded into that paragraph.
   // `delivery.email` IS NOT RENDERED, and its absence is the same ruling as `template` below rather than
@@ -365,7 +407,9 @@ export const PROFILE_FIELDS: readonly FieldSpec[] = [
   // / "No marking" on 2026-08-28. The cleared option carries its own words via
   // `clearedLabel` rather than the shared generic one, which is what stops a sweep of that shared label
   // renaming a legal marking by accident.
-  { key: 'delivery.privileged', label: 'Privileged & Confidential header', kind: 'boolean', group: 'defaults', path: ['delivery', 'privileged'],
+  // Its own group, drawn as the "Law firm options" fold: how a report is MARKED is not a search default,
+  // and most companies never change it.
+  { key: 'delivery.privileged', label: 'Privileged & Confidential header', kind: 'boolean', group: 'firm', path: ['delivery', 'privileged'],
     // The owner's two words, ruled 2026-08-28. They are a PAIR and read as one:
     // the cleared option names the marking the report carries, this one names its removal. Neither
     // needs the other to be understood, which "The house default" against "No" did.
@@ -429,6 +473,24 @@ export const projectFields = (): readonly FieldSpec[] =>
  */
 export const choiceLabel = (spec: FieldSpec, value: string): string | null =>
   spec.choices?.find((c) => c.value === value)?.label ?? null
+
+/**
+ * The Default search depth menu, from the registry the server sends: each search named ONCE.
+ *
+ * It read "Global preliminary search · Global preliminary search". The option was composed as the
+ * product's name, a middot, then its stage label, on the reasoning that this is the one control where a
+ * reader picks a position on a ladder — and the registry's stage label IS the product's name now, so
+ * every option printed one name twice. The ladder is the menu's order, which the registry already sets.
+ *
+ * A search that cannot run yet is still offered, and still says so: a default is settled when a run
+ * starts, and hiding the option would leave a company's real default unexplained.
+ */
+export function depthChoices(products: readonly Product[]): readonly { readonly value: string; readonly label: string }[] {
+  return products.map((l) => {
+    const name = l.name || l.stageLabel
+    return { value: l.key, label: l.available ? name : `${name} — not available yet` }
+  })
+}
 
 // ── parsing and formatting ──────────────────────────────────────────────────────────────────────────
 

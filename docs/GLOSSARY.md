@@ -2,8 +2,8 @@
 
 Words this codebase uses in a particular way. They are here because they are already in the tree —
 in file names, comments and test titles — and a contributor meeting one should not have to reverse
-it out of the code. Product vocabulary a client would meet is in [`../README.md`](../README.md); the
-tenant, account and project model is in [`../INSTALL.md`](../INSTALL.md) under "The four things, and
+it out of the code. Product vocabulary a user meets is in [`../README.md`](../README.md); the
+organisation, company and project model is in [`../INSTALL.md`](../INSTALL.md) under "The four things, and
 what contains what".
 
 Nothing here is a rule. Each line says what the word points at, and names the file that owns it.

@@ -78,10 +78,19 @@ test("the publisher writes the slug it computed — it was being thrown away one
 });
 
 test("the clearances row opens a run that has reports, however many", () => {
-  const t = src("portal-ui/src/screens/Clearances.tsx");
-  assert.match(t, /const openable = Boolean\(read\.report\) \|\| read\.reports\.length > 0/,
+  // THE RULE HAS ONE HOME, and both row shapes use it. It moved out of the screen when a name row began
+  // carrying its own Open beside the search rows' — two copies of the expression would be two answers to
+  // "can this be opened", and the first to drift would list a batch as unopenable on one row and not the
+  // other.
+  const rule = src("portal-ui/src/contract/nameRow.ts");
+  assert.match(rule, /return Boolean\(read\.report\) \|\| read\.reports\.length > 0/,
     "`read.report` is the RUN-LEVEL link and is null for a batch by design — gating the row on it alone "
     + "made every batch unopenable");
+  const t = src("portal-ui/src/screens/Clearances.tsx");
+  assert.match(t, /const openable = hasReport\(read\)/, "the search row asks the shared rule");
+  assert.doesNotMatch(t, /Boolean\(read\.report\)/, "and the screen keeps no second copy of it");
+  const actions = src("portal-ui/src/contract/nameRow.ts");
+  assert.match(actions, /open: hasReport\(report\)/, "the name row's Open asks the same rule");
 });
 
 test("the SERVED BUNDLE carries the fix — portal-ui/dist is what the browser gets", (ctx) => {

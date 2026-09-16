@@ -103,6 +103,8 @@ const STATES = {
       ...FINISHED,
     ],
     expectCards: 2, expectQueue: 3, expectFirstCardPips: 9, expectStops: 2,
+    // The design's stop dialog is drawn over this card: CORAL FREEZE, on Register sweeps.
+    stopDialog: 'CORAL FREEZE',
   },
   one: {
     runs: [run({ runId: 'a', mark: 'CORAL FREEZE', state: 'running', step: 'Common-law grid', stepN: 4, stepTotal: 9, startedAt: ago(38) }), ...FINISHED],
@@ -217,10 +219,14 @@ let current = 'busy'
 /** Requests deliberately left unanswered, so they can be cut loose before the next state runs. */
 const held = new Set()
 
+/** Every stop the page sends. Selecting an option in the stop dialog must add nothing here. */
+const stopRequests = []
+
 const server = createServer((req, res) => {
   const path = new URL(req.url, 'http://localhost').pathname
   const json = (o) => { res.writeHead(200, { 'content-type': 'application/json' }); res.end(JSON.stringify(o)) }
   const s = STATES[current]
+  if (/^\/portal\/api\/run\/[^/]+\/stop$/.test(path)) stopRequests.push(path)
   if (path === '/portal/api/me') {
     const accounts = s.accounts ?? ['coastline']
     // THE ORGANISATION the corner names is the one the server resolves — exactly one here, so it is named.
@@ -668,6 +674,77 @@ for (const [name, spec] of Object.entries(STATES)) {
       const shot = await cmd('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true })
       const data = shot.result?.result?.data ?? shot.result?.data
       if (data) writeFileSync(join(shotDir, `home-${name}-${theme}.png`), Buffer.from(data, 'base64'))
+    }
+
+    // ── THE STOP DIALOG, EACH OPTION SELECTED ─────────────────────────────────────────────────────────
+    //
+    // Opened from the running card the way a reader opens it. The safe option is selected first; picking
+    // the other changes the primary button's words to name it; and choosing stops NOTHING — only the button
+    // does. Asserted on every run, pictured when --shot-dir is given.
+    if (spec.stopDialog) {
+      // The dialog is a fixed overlay, so it is pictured in a viewport as tall as the page: a beyond-viewport
+      // capture would paint it over the top 900px only.
+      const tallShot = async (file) => {
+        const h = await evalIn('Math.max(document.documentElement.scrollHeight, document.body.scrollHeight)') ?? 900
+        await cmd('Emulation.setDeviceMetricsOverride', { width: 1280, height: Math.max(900, h), deviceScaleFactor: 1, mobile: false })
+        await new Promise((r) => setTimeout(r, 400))
+        const shot = await cmd('Page.captureScreenshot', { format: 'png' })
+        await cmd('Emulation.clearDeviceMetricsOverride', {})
+        const data = shot.result?.result?.data ?? shot.result?.data
+        if (data) writeFileSync(join(shotDir, file), Buffer.from(data, 'base64'))
+      }
+      const sentBefore = stopRequests.length
+      const read = `(() => { const d = document.querySelector('.modal-scrim'); if (!d || !d.querySelector('.stop-choice')) return null;
+        return { primary: (d.querySelector('.modal-foot .btn-primary') || {}).textContent?.trim() ?? null,
+                 buttons: [...d.querySelectorAll('.modal-foot button')].map((b) => b.textContent.trim()),
+                 checked: [...d.querySelectorAll('.stop-choice input[type=radio]')].map((r) => r.checked),
+                 selected: [...d.querySelectorAll('.stop-choice-opt')].map((o) => o.classList.contains('selected')),
+                 text: d.innerText.replace(/\\s+/g, ' ') } })()`
+      const opened = await evalIn(`(async () => {
+        const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
+        const card = [...document.querySelectorAll('.home2-card')].find((c) => c.innerText.includes(${JSON.stringify(spec.stopDialog)}))
+        const stop = card && [...card.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Stop')
+        if (!stop) return { error: 'the running card has no Stop' }
+        stop.click()
+        for (let i = 0; i < 80 && !document.querySelector('.stop-choice'); i++) await sleep(60)
+        await sleep(150)
+        return ${read} ?? { error: 'Stop opened no dialog' }
+      })()`)
+      say(opened && !opened.error, `${name}/${theme}: the stop dialog opened from the card (${opened?.error ?? 'ok'})`)
+      if (opened && !opened.error) {
+        say(opened.primary === 'Stop after this step' && opened.checked[0] === true && opened.selected[0] === true,
+          `${name}/${theme}: the dialog opens on "Stop after this step", and its button says so — read ${JSON.stringify(opened.primary)} ${JSON.stringify(opened.checked)}`)
+        say(JSON.stringify(opened.buttons) === JSON.stringify(['Stop after this step', 'Leave it running']),
+          `${name}/${theme}: the primary button and "Leave it running" sit side by side, primary first — read ${JSON.stringify(opened.buttons)}`)
+        say(/A stopped search cannot be restarted and produces no report\. It stays in Clearances, marked stopped\. Its finished steps stay readable through Ask AI\./.test(opened.text),
+          `${name}/${theme}: the stop dialog states the facts of a stop`)
+        say(/Register sweeps finishes first, so its work is kept\. There is no reliable completion estimate for this step\./.test(opened.text)
+          && /Register sweeps is cut off and its work is lost\. Everything recorded before it is kept\./.test(opened.text),
+          `${name}/${theme}: both options name the step in progress`)
+        say(!/allowance/i.test(opened.text), `${name}/${theme}: the stop dialog says nothing about the allowance`)
+        if (shotDir) await tallShot(`home-stop-dialog-after-step-${theme}.png`)
+        const now = await evalIn(`(async () => {
+          const opt = document.querySelectorAll('.stop-choice-opt')[1]
+          if (!opt) return null
+          opt.click()
+          await new Promise((r) => setTimeout(r, 200))
+          return ${read}
+        })()`)
+        say(now?.primary === 'Stop now' && now?.checked[1] === true && now?.selected[1] === true,
+          `${name}/${theme}: selecting "Stop now" moves the selection and the button's words with it — read ${JSON.stringify(now?.primary)} ${JSON.stringify(now?.checked)}`)
+        say(stopRequests.length === sentBefore,
+          `${name}/${theme}: choosing an option sends no stop — only the button stops the search (sent ${stopRequests.length - sentBefore})`)
+        if (shotDir) await tallShot(`home-stop-dialog-now-${theme}.png`)
+        const closed = await evalIn(`(async () => {
+          const leave = [...document.querySelectorAll('.modal-foot button')].find((b) => b.textContent.trim() === 'Leave it running')
+          if (!leave) return false
+          leave.click()
+          for (let i = 0; i < 40 && document.querySelector('.stop-choice'); i++) await new Promise((r) => setTimeout(r, 60))
+          return !document.querySelector('.stop-choice')
+        })()`)
+        say(closed === true && stopRequests.length === sentBefore,
+          `${name}/${theme}: "Leave it running" closes the dialog and stops nothing`)
+      }
     }
   }
 }

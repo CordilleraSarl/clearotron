@@ -27,7 +27,7 @@ import { readiness } from '../src/contract/composerProduct.ts'
 /** Every condition, with an input that turns it on. The names are the ones the screen uses. */
 const CONDITIONS = {
   nameStops: { nameStops: ['“AQUAPLUS for energy…” is 210 characters. A mark name may be at most 80.'] },
-  gaps: { gaps: ['Add the brand name you want cleared, in Names above.'] },
+  gaps: { gaps: ['Add the name you want cleared, in Names above.'] },
   stops: { stops: ['A Full country search reads one country. Name it in Where.'] },
   budget: { budget: { allowed: 1, over: 3 } },
   exhausted: { exhausted: true },

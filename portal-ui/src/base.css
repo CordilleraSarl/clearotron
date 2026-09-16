@@ -172,6 +172,36 @@ html.anon-on [data-anon='mark']:not(.anon-clear) {
   border-bottom: 1px solid var(--border-hairline);
 }
 
+/* The breadcrumb above it: one step back as a quiet button, then where the reader is. Compound selectors
+   throughout this block, because the button and row rules they adjust are declared later in the file. */
+.report-crumbs { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.btn-ghost.report-back { padding: 4px 9px; border-color: var(--border-hairline); }
+.report-crumb { font-size: 12.5px; color: var(--text-muted); }
+
+/* THE HEADER'S TWO ACTIONS, Ask AI then Export, as secondary buttons with a hairline edge. */
+.btn-ghost.report-action,
+.btn-ghost.ask-ai-btn { border-color: var(--border-hairline); }
+
+/* ── ASK AI ──────────────────────────────────────────────────────────────────────────────────────────
+   The panel hangs under its button with the right edges aligned, wherever the button sits — the report's
+   header, or a row where a bordered primary action beside it wants the quieter button. */
+.ask-ai { position: relative; }
+.btn-ghost.ask-ai-btn.is-quiet { border-color: transparent; color: var(--text-muted); }
+.btn-ghost.ask-ai-btn.is-quiet:hover { border-color: var(--border-hairline); color: var(--text-strong); }
+.ask-ai-float { position: absolute; right: 0; top: calc(100% + 6px); z-index: 50; }
+.ask-ai-panel { width: 360px; max-width: calc(100vw - 32px); padding: 12px; display: grid; gap: 10px; text-align: left; }
+.ask-ai-head { font-size: 12.5px; line-height: 1.45; color: var(--text-muted); }
+.ask-ai-when { white-space: nowrap; }
+.ask-ai-choices { display: grid; gap: 1px; }
+.nav-item.ask-ai-choice {
+  gap: 10px; align-items: flex-start; margin: 0; padding: 7px 9px;
+  font-size: 13px; line-height: 1.45; white-space: normal; color: var(--text-body);
+}
+.nav-item.ask-ai-choice[aria-checked='true'] { background: var(--accent-wash); color: var(--text-strong); font-weight: 700; }
+.ask-ai-choice .radio { margin-top: 2px; }
+.btn-primary.ask-ai-go { justify-self: start; padding: 8px 14px; font-size: 13px; }
+.ask-ai-note { margin: 0; font-size: 12px; line-height: 1.5; color: var(--text-muted); }
+
 /* ── sidebar ─────────────────────────────────────────────────────────────────────────────────────── */
 
 .sidebar {
@@ -320,6 +350,23 @@ html.anon-on [data-anon='mark']:not(.anon-clear) {
   color: var(--text-strong);
 }
 
+/* The avatar: the signed-in person's initials, and the door to the screens that belong to them. Drawn
+   active on those screens, because the rail cannot highlight a screen it does not carry. After the hover
+   rule and one class stronger, so hovering the round button does not repaint it as a square one's. */
+.icon-btn.avatar {
+  border-radius: 50%;
+  background: var(--surface-float);
+  border: 1px solid var(--border-hairline);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.icon-btn.avatar[aria-current='true'] {
+  background: var(--accent-wash);
+  border-color: var(--accent);
+  color: var(--text-accent);
+}
+
 .float {
   background: var(--surface-float);
   border: 1px solid var(--border-strong);
@@ -439,42 +486,19 @@ table.data.fixed td {
 /* An expanded read: quiet enough to read as subordinate to the row it belongs to. The indent is on the
    cells, not here, because it is structural — see ReadRow. */
 table.data tr.read-row > td {
-  background: var(--surface-sunken);
+  background-color: var(--surface-sunken);
 }
 
-/* the whole read row opens its report.
-   The affordance is on the thing you can click, across the WHOLE row, which is the point: the only way
-   in used to be a text button at the far right edge, furthest from the run title the reader has just
-   read, on a row with `cursor: auto` and no hover state at all. People concluded there was no report.
-   A read with no report gets none of this — not the pointer, not the hover, not the focus ring. A dead
-   target is worse than no target. */
+/* A search with a report can still be opened with a click anywhere on its row — the mouse's convenience.
+   The named, focusable control is its Open button in the actions column; the row takes no focus of its
+   own, so a keyboard meets one target per search rather than two.
+   A search with no report gets none of this — not the pointer, not the hover. A dead target is worse
+   than no target. */
 table.data tr.read-row.openable > td {
   cursor: pointer;
 }
 table.data tr.read-row.openable:hover > td {
-  background: var(--surface-raised);
-}
-/* focus-visible, not focus: a keyboard user must see where they are, a mouse user must not get a ring
-   they did not ask for. The outline is on the ROW, so it reads as one target rather than six cells. */
-table.data tr.read-row.openable:focus {
-  outline: none;
-}
-table.data tr.read-row.openable:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: -2px;
-}
-/* The cue that the row leads somewhere. It brightens with the row rather than being a control of its
-   own — clicking it is clicking the row, because it is not clickable separately. */
-.read-go {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 12.5px;
-  color: var(--text-faint);
-}
-table.data tr.read-row.openable:hover .read-go,
-table.data tr.read-row.openable:focus-visible .read-go {
-  color: var(--accent);
+  background-color: var(--surface-raised);
 }
 
 table.data tr.row {
@@ -524,8 +548,14 @@ button.twisty:focus-visible {
   white-space: nowrap;
 }
 
-table.data tr.row:hover td {
-  background: var(--surface-sunken);
+table.data tr.row:not(.inert):hover td {
+  background-color: var(--surface-sunken);
+}
+
+/* A name with one search and no report — running for the first time — has nothing to open and nothing to
+   expand, so its row does not pretend to be a control. */
+table.data tr.row.inert {
+  cursor: default;
 }
 
 /* A SECTION HEADER, not a decorative divider.
@@ -535,7 +565,9 @@ table.data tr.row:hover td {
    Body-text size, medium weight, full-strength ink, sentence case rather than letterspaced caps — and a
    hairline rule spanning the table beneath it, so containment is visible without reading anything. */
 table.data tr.group-head td {
-  padding: 22px 12px 7px;
+  padding: 10px 12px;
+  background: var(--surface-sunken);
+  border-top: 1px solid var(--border-strong);
   border-bottom: 1px solid var(--border-strong);
 }
 
@@ -553,10 +585,177 @@ table.data tr.group-head .owner-count {
   color: var(--text-muted);
 }
 
-/* Child rows sit one step in from their owner, so the containment reads structurally rather than by
-   proximity alone. On the first cell only — indenting every cell would move the columns. */
-table.data tr.group-head ~ tr.row > td:first-child {
-  padding-left: 22px;
+/* NESTING IS DRAWN, not only indented. The company heading is a filled band; a name inside a group carries
+   one vertical rule in its first cell, and a search under a name one rule per level above it. Drawn as
+   background images so a rule costs no width and cannot move a column, and so it survives the row's own
+   background colour. */
+table.data td.nest-1,
+table.data td.nest-2 {
+  background-repeat: no-repeat;
+}
+table.data td.nest-1 {
+  background-image: linear-gradient(var(--border-strong), var(--border-strong));
+  background-size: 1px 100%;
+  background-position: 7px 0;
+}
+table.data td.nest-2 {
+  background-image: linear-gradient(var(--border-strong), var(--border-strong)), linear-gradient(var(--border-strong), var(--border-strong));
+  background-size: 1px 100%, 1px 100%;
+  background-position: 7px 0, 17px 0;
+}
+
+/* "Group ·" before a group's name: what kind of row this is, quieter than the name it introduces. */
+.row-kind {
+  margin-right: 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ── the Clearances actions column ──────────────────────────────────────────────────────────────────
+   Open, Ask AI and the row menu in fixed tracks, so every Open on the page shares one x and one width.
+   Narrow, Ask AI sits under Open; with room, beside it — the table's wrapper is the container measured,
+   so a collapsed rail widens it exactly as a wider window does. */
+.names-wrap {
+  container-type: inline-size;
+  /* VISIBLE, not the wrapper's usual `auto`. This table cannot overflow — its columns are shares of its
+     own width — so the scroll container bought nothing here, and it clipped on both axes: an Ask AI
+     panel opened from a row near the bottom of the list was cut off at the table's edge. */
+  overflow: visible;
+}
+/* Eight pixels either side instead of twelve, on every column but the two narrow ones at the left: the
+   actions column takes a quarter of the table, and the text columns keep their words on one line by
+   giving up padding rather than width. The date and the actions give up a little more. */
+.names-wrap table.data.fixed th:nth-child(n + 3),
+.names-wrap table.data.fixed td:nth-child(n + 3) {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+.names-wrap table.data.fixed td.col-date,
+.names-wrap table.data.fixed td.col-actions {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+/* A status that does not fit wraps between its halves — "Queued ·" over "1 search" — rather than running
+   under the Risk column: `.status` is nowrap everywhere else, which is right for a word and wrong for a
+   phrase in a column of fixed width. The dot stays level with the first line. */
+.names-wrap table.data.fixed td .status {
+  white-space: normal;
+  align-items: flex-start;
+}
+.names-wrap table.data.fixed td .status .dot {
+  margin-top: 0.42em;
+}
+.status-count {
+  white-space: nowrap;
+}
+/* A date is one word to a reader. A line may break before it, never at its hyphens: "2026-09-" over "02"
+   read as a different date on the line below. */
+.names-wrap table.data.fixed td .sub.report-line {
+  overflow-wrap: normal;
+}
+.names-wrap .nowrap-date {
+  white-space: nowrap;
+}
+.row-actions {
+  /* WIDE ENOUGH FOR THE LONGEST LABEL ON A FONT THIS BOX DOES NOT HAVE. The track is fixed so every
+     Open shares one width — "the track decides, not the text" — which means the number has to clear
+     the longest label, "Open latest report", everywhere. At 11em it cleared it on a developer machine
+     and clipped on the CI runner, whose default font is wider: the browser check went green locally
+     and red in CI on the same commit. 13.5em is the local measurement plus about a fifth, which is
+     more than the spread between the font stacks the two see. */
+  --row-open-w: 13.5em;
+  --row-ask-w: 6.5em;
+  display: grid;
+  grid-template-columns: var(--row-open-w) auto;
+  grid-template-areas: 'open more' 'ask more';
+  justify-content: start;
+  align-items: start;
+  gap: 6px;
+  font-size: 12.5px;
+}
+.row-actions-open { grid-area: open; }
+/* Ask AI in a row: the header's button, compacted to the height of Open beside it and kept on one line —
+   in its own track it wrapped to "Ask" over "AI" with its icon stranded beside them. */
+.row-actions .btn-ghost.ask-ai-btn {
+  padding: 5px 8px;
+  gap: 5px;
+  white-space: nowrap;
+}
+.row-actions-ask { grid-area: ask; }
+.row-actions-more { grid-area: more; }
+.row-actions-open:empty,
+.row-actions-ask:empty {
+  display: none;
+}
+@container (min-width: 1000px) {
+  .row-actions {
+    grid-template-columns: var(--row-open-w) var(--row-ask-w) auto;
+    grid-template-areas: 'open ask more';
+  }
+  .row-actions-open:empty,
+  .row-actions-ask:empty {
+    display: block;
+  }
+}
+/* The bordered Open. One width, whatever its label says: the track decides, not the text. */
+button.row-open {
+  width: 100%;
+  padding: 5px 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: 7px;
+  background: var(--surface-raised);
+  color: var(--text-strong);
+  font: inherit;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+button.row-open:hover {
+  border-color: var(--text-muted);
+}
+button.row-open:focus-visible,
+button.row-menu-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.row-menu {
+  position: relative;
+}
+button.row-menu-btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}
+button.row-menu-btn:hover,
+button.row-menu-btn[aria-expanded='true'] {
+  background: var(--surface-sunken);
+  color: var(--text-strong);
+}
+/* To the LEFT of the button, level with it. Every row menu holds one act, and a list of one fits beside
+   its button inside its own row — so opening it covers the row it acts on, never the rows beneath, and
+   it cannot be the thing that runs off the bottom of the page. */
+.row-menu-list {
+  position: absolute;
+  right: 100%;
+  top: -4px;
+  margin-right: 4px;
+  min-width: 132px;
+  padding: 4px;
+  z-index: 50;
+}
+button.row-menu-item {
+  font-size: 13px;
+  padding: 6px 10px;
+  margin: 0;
+  white-space: nowrap;
 }
 
 .pager {
@@ -609,6 +808,21 @@ table.data tr.group-head ~ tr.row > td:first-child {
   color: var(--text-muted);
 }
 
+/* The larger pill, for a control that is a card's closing action rather than a label — and an anchor
+   drawn as one, which is what opening a document in a new tab is. */
+.pill-lg {
+  padding: 5px 13px;
+  font-size: 12px;
+}
+a.pill {
+  text-decoration: none;
+  cursor: pointer;
+}
+a.pill:hover {
+  color: var(--text-strong);
+  border-color: var(--border-strong);
+}
+
 /* ── status + risk ───────────────────────────────────────────────────────────────────────────────── */
 
 .dot {
@@ -625,7 +839,7 @@ table.data tr.group-head ~ tr.row > td:first-child {
 }
 
 .dot.running {
-  background: var(--accent);
+  background: var(--text-muted);
   animation: cordPulse 1.4s ease-in-out infinite;
 }
 
@@ -780,6 +994,270 @@ input.filter {
   background: var(--surface-raised);
 }
 
+/* ── Preferences, Installation settings and About ─────────────────────────────────────────────────
+   The three pages the avatar menu leads to. Each is a stack of raised cards or rows on the page ground,
+   drawn from these few rules so the three read as one family. */
+
+.pref-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pref-card,
+.about-card {
+  padding: 18px 20px;
+  border-radius: 12px;
+  border: 1px solid var(--border-hairline);
+  background: var(--surface-raised);
+}
+
+.pref-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-strong);
+  margin: 0 0 14px;
+}
+
+.pref-dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 18px;
+  font-size: 14px;
+}
+
+.pref-dl dt {
+  color: var(--text-muted);
+}
+
+.pref-dl dd {
+  margin: 0;
+  min-width: 0;
+  color: var(--text-strong);
+}
+
+.pref-address {
+  word-break: break-all;
+}
+
+.pref-none {
+  color: var(--text-muted);
+}
+
+.pref-line {
+  margin: 14px 0 0;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* A link inside a sentence: accent ink and a quiet rule under it, so it reads as a link without shouting. */
+.pref-link,
+.about-link {
+  color: var(--text-accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent-quiet);
+}
+
+.pref-foot {
+  margin-top: 12px;
+}
+
+/* A pill that is the card's own action is a size up from a pill that labels a row. */
+.pref-foot .pill,
+.about-docs .pill {
+  padding: 5px 13px;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.pref-themes {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pref-blur {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* THE TOP BAR'S EYE, GIVEN AN EDGE. On the top bar it sits in a row of buttons like it; alone in a card, a
+   borderless glyph beside a sentence reads as a bullet. So here it carries the hairline edge the design
+   draws round this control, and keeps the top bar's pressed state. */
+.pref-blur .icon-btn {
+  flex: none;
+  border-color: var(--border-hairline);
+}
+
+.pref-blur-line {
+  font-size: 13.5px;
+  color: var(--text-muted);
+}
+
+/* About: the source offer as one list of facts, the label column fixed so the values line up. */
+.about-dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 132px 1fr;
+  gap: 10px 18px;
+  align-items: baseline;
+  font-size: 14px;
+}
+
+.about-dl dt {
+  color: var(--text-muted);
+}
+
+.about-dl dd {
+  margin: 0;
+  min-width: 0;
+  color: var(--text-strong);
+  overflow-wrap: anywhere;
+}
+
+.about-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.about-row .pill {
+  text-decoration: none;
+}
+
+.about-docs {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-hairline);
+}
+
+/* Installation settings: a section label, then rows. A provider category is a sub-heading with its sources
+   beneath it, so the category is said once and never repeated on a row. The state column has a floor so
+   every row's state lines up, whatever the name and coverage beside it. */
+.cfg-group {
+  margin-top: 24px;
+}
+
+.page-header + .cfg-group {
+  margin-top: 4px;
+}
+
+.cfg-rows {
+  display: grid;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.cfg-cat {
+  margin-top: 16px;
+}
+
+.cfg-sub {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.cfg-cat-note {
+  max-width: var(--prose-measure);
+  margin: 3px 0 0;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+.cfg-row {
+  padding: 10px 13px;
+  border-radius: 9px;
+  border: 1px solid var(--border-hairline);
+  background: var(--surface-raised);
+}
+
+.cfg-line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cfg-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  color: var(--text-strong);
+}
+
+.cfg-val {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.cfg-state {
+  min-width: 92px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.cfg-state.bad,
+.cfg-note.bad {
+  color: var(--tone-high);
+}
+
+.cfg-state.off {
+  color: var(--text-faint);
+}
+
+/* Indented under the name, past the dot, so a row's second line reads as the row's own. */
+.cfg-note {
+  margin: 6px 0 0 21px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.cfg-act {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 6px 0 0 21px;
+}
+
+.cfg-act .cfg-note {
+  margin: 0;
+}
+
+.cfg-act .pill {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.cfg-act .pill:disabled {
+  cursor: default;
+}
+
+.cfg-dot {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--tone-minimal);
+}
+
+.cfg-dot.bad {
+  background: var(--tone-high);
+}
+
+.cfg-dot.off {
+  background: var(--text-faint);
+}
+
 /* ── mobile ──────────────────────────────────────────────────────────────────────────────────────── */
 
 @media (max-width: 899px) {
@@ -864,15 +1342,6 @@ input.filter {
   flex-wrap: wrap;
   gap: 6px;
   margin: 6px 0 4px;
-}
-
-.fw-bmh {
-  font-size: 10.5px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-accent);
-  font-weight: 700;
-  margin: 16px 0 6px;
 }
 
 /* THE rule that makes this read as a rated ladder instead of a bullet list: a fixed pill column and a
@@ -981,6 +1450,243 @@ input.filter {
     gap: 2px;
     padding: 6px 0;
   }
+}
+
+/* ── Company settings: Profile, Projects, Search templates, New company ─────────────────────────────
+   Each page is a stack of cards. The framework card leads Profile; Identity, Search defaults, the law
+   firm fold and the background follow it, and New company draws the same cards in the same order. */
+
+.card-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.card-stack > .notice {
+  margin: 0;
+}
+/* The fieldset that decides whether Profile can be changed is a stack in its own right, and a
+   fieldset's own border, padding and minimum width are browser furniture nobody asked for. */
+fieldset.profile-cards {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+
+/* THE FOLD. A closed row whose chevron sits at its right edge and turns down when open — the shape every
+   openable row on these pages takes, centre-aligned so the title, its note and the chevron share a line. */
+.fold-summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  list-style: none;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 13.5px;
+  color: var(--text-strong);
+}
+.fold-summary::-webkit-details-marker {
+  display: none;
+}
+.fold-note {
+  font-weight: 400;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+.fold-chev {
+  margin-left: auto;
+  color: var(--text-faint);
+  transition: transform 0.15s var(--ease-out);
+}
+details[open] > .fold-summary .fold-chev {
+  transform: rotate(90deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .fold-chev {
+    transition: none;
+  }
+}
+.fold-body {
+  margin-top: 10px;
+}
+/* A fold inside a card: a hairline above it, so it reads as a row of the card rather than as a field. */
+.fw-fold {
+  margin-top: 16px;
+  border-top: 1px solid var(--border-hairline);
+  padding-top: 12px;
+}
+/* A fold that IS a card: the whole card is the row until it opens. */
+.fold-card > .fold-summary {
+  font-size: 14px;
+}
+
+/* The configuration rows under the framework, in view whether the band detail is open or not. */
+.fw-rows {
+  margin-top: 16px;
+  border-top: 1px solid var(--border-hairline);
+  padding-top: 12px;
+}
+.fw-row {
+  display: flex;
+  gap: 14px;
+  padding: 5px 0;
+  font-size: 13px;
+  align-items: baseline;
+}
+.fw-row-label {
+  color: var(--text-muted);
+  min-width: 150px;
+}
+.fw-row-value {
+  color: var(--text-strong);
+  word-break: break-word;
+}
+.fw-foot {
+  margin-top: 14px;
+}
+
+/* One profile field: its label, its tag, its hint line, then the control. */
+.profile-field {
+  display: block;
+  margin-top: 18px;
+}
+.eyebrow + .profile-field,
+.eyebrow + div > .profile-field:first-child {
+  margin-top: 12px;
+}
+.profile-field-label {
+  display: block;
+  font-weight: 700;
+  color: var(--text-strong);
+  font-size: 14px;
+}
+.profile-field-hint {
+  display: block;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin: 2px 0 7px;
+}
+.profile-field-gap {
+  display: block;
+  height: 7px;
+}
+
+/* REQUIRED AND OPTIONAL. Filled for the one a form cannot do without, quiet for the rest, so the eye finds
+   the required field without reading every tag. Sized against the label it follows, and lowered a pixel
+   so an uppercase tag sits on the label's line rather than above it. */
+.field-tag {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 6px;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.5;
+  text-transform: uppercase;
+  vertical-align: 1px;
+  color: var(--text-faint);
+  background: var(--surface-sunken);
+}
+.field-tag-required {
+  color: var(--text-on-accent);
+  background: var(--accent);
+}
+
+/* The class search: the chosen classes as chips, then the box that finds one. */
+.chip-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.class-picker > .chip-row {
+  margin-top: 2px;
+}
+.class-picker-box {
+  position: relative;
+}
+
+/* The New company rating card's one row: the framework a company starts on, and the way to its own. */
+.rating-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+}
+.rating-row-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+/* The page's one action row: the button, and the line that says what state it is in. */
+.row-foot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+.row-foot-note {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* A project row: the whole left side opens it; its menu and chevron sit at the right. */
+.row-card {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border-hairline);
+  background: var(--surface-raised);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.row-card-open {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+.row-card-name {
+  font-weight: 700;
+  color: var(--text-strong);
+}
+.row-chev {
+  display: inline-flex;
+  flex: none;
+  color: var(--text-faint);
+}
+
+/* A row's "More actions" menu, under its button and aligned to its right edge. */
+.actions-menu {
+  position: relative;
+  flex: none;
+}
+.actions-menu-button {
+  width: 28px;
+  height: 28px;
+}
+.actions-menu-list {
+  position: absolute;
+  right: 0;
+  top: 32px;
+  z-index: 30;
+  min-width: 150px;
+  padding: 6px;
+}
+.actions-menu-list .nav-item {
+  font-size: 13px;
+  padding: 7px 10px;
+  margin: 0;
+  white-space: nowrap;
 }
 
 /* ── the New clearance composer ──────────────────────────────────────────────────────────────────────
@@ -1145,20 +1851,7 @@ input.filter {
   text-decoration: underline;
 }
 
-/* The two ways in. */
-.entry-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-top: 24px;
-}
-
-@media (max-width: 640px) {
-  .entry-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
+/* A card to choose by: the rows of the company picker. */
 .entry-card {
   text-align: left;
   padding: 18px;
@@ -1228,35 +1921,8 @@ input.filter {
   color: var(--text-muted);
 }
 
-.segmented-entry {
-  display: inline-flex;
-  gap: 2px;
-  padding: 3px;
-  background: var(--surface-sunken);
-  border-radius: 9px;
-  border: 1px solid var(--border-hairline);
-  margin-top: 18px;
-}
-
-.segmented-entry button {
-  padding: 6px 14px;
-  border: none;
-  border-radius: 6px;
-  font-family: var(--font-body);
-  font-size: 12.5px;
-  font-weight: 600;
-  cursor: pointer;
-  background: transparent;
-  color: var(--text-muted);
-}
-
-.segmented-entry button[aria-pressed='true'] {
-  background: var(--surface-raised);
-  color: var(--text-strong);
-}
-
-/* The column the wizard's steps live in. 720px, the design's measure for a form — NOT the footer's,
-   which spans the screen. */
+/* The column the form lives in. 720px, the design's measure for a form — NOT the footer's, which spans
+   the screen. */
 /* ── §B — THE MEASURE MOVES OFF THE COLUMN AND ONTO ITS BLOCKS ────────────────────────────────────
    The owner: the New clearance page "is bound to an artificially narrow width; the table side-scrolls
    or wraps and looks worse than its content deserves. The top panel already fits the screen width."
@@ -1285,26 +1951,10 @@ input.filter {
   max-width: none;
 }
 
-/* ── §B — "what this search includes", in or out at a glance ─────────────────────────────────────────
-   The list read as three sentences of equal weight, and whether an axis ran at all was buried in the
-   clause after the dash. The tick and the cross carry the answer; the colour is a reinforcement, never
-   the only signal, because a marker distinguishable by hue alone is not a marker for every reader. */
-.carries {
-  margin: 8px 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.carries li {
-  display: flex;
-  gap: 9px;
-  align-items: baseline;
-  font-size: 12.5px;
-  line-height: 1.55;
-  color: var(--text-muted);
-  padding: 2px 0;
-}
-
+/* ── §B — what a search carries, in or out at a glance ───────────────────────────────────────────────
+   A list of three sentences of equal weight buried whether an axis ran at all in the clause after the
+   dash. The tick and the cross carry the answer, on every search's row; the colour is a reinforcement,
+   never the only signal, because a marker distinguishable by hue alone is not a marker for every reader. */
 .carries-mark {
   flex: none;
   width: 15px;
@@ -1460,50 +2110,6 @@ input.filter {
   height: 7px;
   border-radius: 50%;
   background: var(--accent);
-}
-
-/* The saved-search book SCROLLS rather than growing the page. A customer with forty of them should not
-   push the levers below the fold. */
-.saved-list {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  max-height: 224px;
-  overflow-y: auto;
-}
-
-.saved-row {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  padding: 11px 14px;
-  border-radius: 9px;
-  border: 1px solid var(--border-hairline);
-  background: var(--surface-raised);
-  cursor: pointer;
-}
-
-.saved-row:hover {
-  border-color: var(--accent-ink);
-}
-
-.saved-row-on {
-  border-color: var(--accent);
-  background: var(--accent-wash);
-}
-
-.saved-retire {
-  flex: none;
-  display: inline-flex;
-  background: none;
-  border: none;
-  color: var(--text-faint);
-  cursor: pointer;
-  padding: 4px;
-}
-
-.saved-retire:hover {
-  color: var(--text-accent);
 }
 
 .lever {
@@ -1750,6 +2356,13 @@ input.filter {
   border-color: var(--text-strong);
 }
 
+/* The page header's buttons: the same two kinds, sized to sit beside a title. */
+.btn-sm {
+  padding: 8px 14px;
+  font-size: 13px;
+  border-radius: 8px;
+}
+
 /* ── the confirm dialog ─────────────────────────────────────────────────────────────────────────────
    The mandatory step. Nothing is spent until Start is pressed, and Back returns to a fully preserved
    form — so the scrim closes it rather than trapping anyone. */
@@ -1795,7 +2408,10 @@ input.filter {
 }
 
 .stop-choice-opt {
-  display: block;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 10px;
+  align-items: baseline;
   width: 100%;
   text-align: left;
   padding: 13px 15px;
@@ -1810,7 +2426,15 @@ input.filter {
   border-color: var(--accent-ink);
 }
 
+/* The radio is the row's own control, drawn in the accent so the selected option reads at a glance. */
+.stop-choice-opt input {
+  grid-row: 1 / span 2;
+  margin: 2px 0 0;
+  accent-color: var(--accent);
+}
+
 .stop-choice-opt b {
+  grid-column: 2;
   display: block;
   font-size: 14px;
   color: var(--text-strong);
@@ -1818,6 +2442,7 @@ input.filter {
 }
 
 .stop-choice-opt span {
+  grid-column: 2;
   display: block;
   font-size: 12.5px;
   line-height: 1.5;
@@ -1826,6 +2451,12 @@ input.filter {
 
 .stop-choice-now {
   border-color: var(--tone-medium);
+}
+
+/* THE SELECTED OPTION IS THE ONE THE BUTTON NAMES, so it carries the same accent the button does. */
+.stop-choice-opt.selected {
+  border-color: var(--accent);
+  background: var(--accent-wash);
 }
 
 .modal-rule {
@@ -1885,6 +2516,78 @@ input.filter {
    a number on its own line. */
 .home2-band-count { font-size: 11.5px; color: var(--text-faint); white-space: nowrap; }
 .home2-band-rule { height: 1px; background: var(--border-hairline); }
+
+/* THE ALLOWANCE LINE. Quiet by construction — no band, no heading, no colour — because it states a fact
+   about the account rather than a fault with the form. It appears only at five searches or fewer. */
+.nc-allowance { margin: -6px 0 18px; font-size: 13px; color: var(--text-muted); }
+
+/* ── New clearance: one form, top to bottom ──────────────────────────────────────────────────────────
+   Quiet additions to the kit the form already used. The recommendation tag is the one accent on a row
+   that is not selected, because it is the one thing on it the reader did not choose. */
+.nc-company { max-width: 340px; }
+.nc-company-name { font-size: 15px; font-weight: 600; color: var(--text-strong); }
+.nc-project { max-width: 340px; flex: 1; }
+.nc-describe-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 7px; }
+.nc-optional { font-size: 11.5px; color: var(--text-faint); }
+.nc-which-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.nc-templates { display: inline-flex; align-items: flex-end; gap: 8px; }
+.nc-templates label { display: block; }
+.nc-templates select { min-width: 190px; }
+.nc-template-line { margin: 0 0 10px; font-size: 12.5px; line-height: 1.6; color: var(--text-muted); }
+
+/* A small action beside the thing it acts on — Manage, Manage projects, Clear template, Show all. */
+.chip-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border-hairline);
+  background: var(--surface-sunken);
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.chip-btn:hover { border-color: var(--accent-ink); color: var(--text-accent); }
+
+/* The search row as a card holding its pick button and, when selected, its own option. */
+.pick-row-stack { flex-direction: column; align-items: stretch; gap: 10px; }
+.pick-row-hit {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.pick-row-hit:disabled { cursor: default; }
+.pick-row-inside { margin-left: 27px; }
+.pick-tag {
+  padding: 1px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--accent-ink);
+  background: var(--accent-wash);
+  color: var(--text-accent);
+  font-size: 10.5px;
+  font-weight: 700;
+}
+.pick-row-reason { display: block; margin-top: 3px; font-size: 12px; color: var(--text-body); }
+.pick-chips { display: flex; flex-wrap: wrap; gap: 3px 16px; margin-top: 6px; font-size: 12px; color: var(--text-muted); }
+.pick-chips > span { display: inline-flex; align-items: baseline; gap: 6px; }
 
 /* A RUNNING RUN AS A ROW. The queue's grid, with the two columns a running row has and a waiting one
    does not. Declared as a modifier rather than a new grid so the narrow-screen rule that hides columns
@@ -2037,6 +2740,20 @@ input.filter {
 .steps-alt-head {
   margin: 0 0 10px; font-size: 12.5px; font-weight: 600; letter-spacing: .02em; color: var(--text-muted);
 }
+
+/* THE FOLDS: the key door beside a sign-in door, and "Setup steps" once connected. Both open only when the
+   reader opens them; the summary is the heading, with a chevron that turns when open. */
+.steps-alt-fold > summary,
+.steps-fold > summary { display: flex; align-items: center; gap: 10px; list-style: none; cursor: pointer; }
+.steps-alt-fold > summary::-webkit-details-marker,
+.steps-fold > summary::-webkit-details-marker { display: none; }
+.steps-alt-fold > summary .steps-alt-head,
+.steps-fold > summary .steps-alt-head { margin: 0; }
+.fold-chev { margin-left: auto; flex: none; color: var(--text-faint); transition: transform 0.15s var(--ease-out); }
+.steps-alt-fold[open] > summary .fold-chev,
+.steps-fold[open] > summary > .fold-chev { transform: rotate(90deg); }
+.steps-alt-fold > ol.steps { margin-top: 14px; }
+.steps-fold-body { margin-top: 14px; }
 
 .home2-acked { margin-top: 13px; }
 .home2-acked-toggle {
@@ -2222,7 +2939,24 @@ input.filter {
 
 .ai-connect { margin-top: 34px; }
 
-.ai-screen .ai-connect-head { margin: 0 0 12px; }
+.ai-screen .ai-connect-head { margin: 0; }
+
+/* "Connect it" and, beside it, whether this reader's assistant has been seen calling. */
+.ai-connect-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.conn-state {
+  display: inline-flex; align-items: center; gap: 7px; padding: 3px 11px 3px 9px;
+  border: 1px solid var(--border-hairline); border-radius: 999px; background: var(--surface-raised);
+  font-size: 12.5px; color: var(--text-muted);
+}
+.conn-dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--text-faint); }
+.conn-dot-on { background: var(--tone-minimal); }
+
+/* "Optional", quietly, at the end of the standfirst — never the word the page opens with. */
+.lede-opt {
+  display: inline-block; margin-left: 6px; padding: 2px 7px; vertical-align: 2px; border-radius: 5px;
+  background: var(--surface-sunken); font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--text-faint);
+}
 
 /* ── THE WHERE-CHOICE ─────────────────────────────────────────────────────────────────────────────
    ONE control, the same size before and after a pick. Selection is shown the way every other choice in
@@ -2287,6 +3021,13 @@ input.filter {
    A MINIMUM HEIGHT WHETHER OR NOT ANYTHING IS IN IT, and the page raises it to the tallest panel this
    card can show — so neither picking an app nor pressing Copy moves anything around it. */
 .ai-slot { position: relative; min-height: 180px; }
+
+/* A closed fold reserves nothing: the reserved height is for steps that are drawn. */
+.ai-slot.is-folded { min-height: 0; }
+
+/* The way back to the report the reader came from, above the steps. */
+.back-to-report { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
+.back-to-report-line { font-size: 13.5px; color: var(--text-muted); }
 
 /* The hidden copy of every panel the slot's height is taken from. Laid out at the slot's own width, never
    seen, never reached by a pointer or a keyboard. */
@@ -2404,6 +3145,9 @@ ol.steps > li::before {
 
 .secret-btn { margin-top: 8px; }
 
+/* A folded list's buttons are quiet: the steps above the fold are the way in. */
+.ai-screen .btn-sm { padding: 6px 11px; font-size: 12.5px; }
+
 /* THE PRESSED CONTROL IS THE CONFIRMATION: solid accent on the button pressed, never a muted caption. */
 .is-copied,
 .is-copied:hover,
@@ -2448,8 +3192,31 @@ ol.steps > li::before {
 
 .ai-help p { margin: 6px 0 0; color: var(--text-muted); font-size: 13.5px; line-height: 1.55; }
 
+.ai-help-guide { font-size: 12px; text-decoration: none; cursor: pointer; }
 
-/* ── Give someone access: the points on the tree a new person can be given ─────────────────────────────
+
+/* ── People: what the Permissions column's words mean, under the column ─────────────────────────────────
+   A two-column key, term beside meaning, so each word lines up with the sentence it stands for. */
+.perm-key {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 3px 14px;
+  margin: 14px 0 0;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+.perm-key dt {
+  color: var(--text-strong);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.perm-key dd {
+  margin: 0;
+}
+
+/* ── Give access: the points on the tree a new person can be given ───────────────────────────────────────
    One row per point. A BUTTON, because choosing a point is an action and a keyboard has to reach it; the
    resets below are what make a button read as a row. `.sub` indents a company under the organisation
    it sits in. A row covered by a wider choice above it — everything, or its whole organisation — is

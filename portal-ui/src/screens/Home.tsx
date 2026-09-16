@@ -654,6 +654,17 @@ function StopChoice({ name, step, stoppable, onImmediate, onBoundary, onCancel }
   readonly onBoundary: () => void
   readonly onCancel: () => void
 }) {
+  // ── A ROW SELECTS; ONLY THE BUTTON STOPS ──────────────────────────────────────────────────────
+  //
+  // Each option used to BE the button: one click on "Stop now" cut a step off and lost its work. On a
+  // control that cannot be undone, the reading and the committing were the same gesture, and a reader
+  // who clicked a row to find out what it meant had already chosen. Now the rows are a choice and the
+  // button is the act, and the button says which act — so nobody presses "Stop" not knowing which stop.
+  //
+  // THE SAFER OPTION IS PRESELECTED. Stopping after the step keeps that step's work; the reader has to
+  // move off it deliberately to lose anything.
+  const [mode, setMode] = useState<'boundary' | 'immediate'>('boundary')
+
   // Escape closes it, like every other modal here — and it resolves to LEAVING THE RUN ALONE, which is
   // the safe outcome for a dismissal on a control that cannot be undone.
   useEffect(() => {
@@ -661,6 +672,9 @@ function StopChoice({ name, step, stoppable, onImmediate, onBoundary, onCancel }
     window.addEventListener('keydown', on)
     return () => window.removeEventListener('keydown', on)
   }, [onCancel])
+
+  const stepName = step ?? 'The step in flight'
+  const label = mode === 'boundary' ? 'Stop after this step' : 'Stop now'
 
   return (
     <div className="modal-scrim" onClick={onCancel} role="dialog" aria-modal="true" aria-label="Stop this clearance">
@@ -671,37 +685,45 @@ function StopChoice({ name, step, stoppable, onImmediate, onBoundary, onCancel }
           <h2 style={{ margin: '7px 0 3px', fontSize: 19, fontWeight: 700, color: 'var(--text-strong)' }} data-anon="mark">{name}</h2>
           {/* THE PROMISE IS WITHDRAWN WHEN IT CANNOT BE KEPT. A run that has committed to publishing is
               past its last stoppable point, and this line used to tell the reader the opposite -- a
-              report was published a hundred seconds after somebody was told nothing would be. Offering
-              a mode whose stated outcome the run cannot produce is worse than saying so, because the
-              person stops watching. */}
+              report was published a hundred seconds after somebody was told nothing would be. The
+              product's own sentence below says "produces no report", which is true only while the run
+              CAN still be stopped; past that point it would be the same false promise again. So the
+              branch stays, and the new wording lives on the side of it where it is true. */}
           <p style={{ margin: 0, fontSize: 12.5, color: 'var(--text-muted)' }}>
             {stoppable
-              ? <>Either way it cannot be undone, nothing is delivered, and what has already been spent is
-                spent.</>
+              ? <>A stopped search cannot be restarted and produces no report. It stays in Clearances,
+                marked stopped. Its finished steps stay readable through Ask AI.</>
               : <>This run is already writing its report, so stopping it may not prevent delivery. What
                 has been spent is spent, and it cannot be undone either way.</>}
           </p>
         </div>
 
-        <div className="stop-choice">
-          <button type="button" className="stop-choice-opt" onClick={onBoundary}>
-            <b>Stop at the next step</b>
-            <span>
-              {step ? <>Lets “{step}” finish first, so its work is kept.</> : <>Lets the step in flight finish first, so its work is kept.</>}
-              {' '}That step has no deadline — it ends when it ends, and it can be tens of minutes.
-            </span>
-          </button>
-          <button type="button" className="stop-choice-opt stop-choice-now" onClick={onImmediate}>
+        <div className="stop-choice" role="radiogroup" aria-label="How to stop it">
+          <label className={`stop-choice-opt${mode === 'boundary' ? ' selected' : ''}`}>
+            <input type="radio" name="stop-mode" checked={mode === 'boundary'} onChange={() => setMode('boundary')} />
+            <b>Stop after this step</b>
+            <span>{stepName} finishes first, so its work is kept. There is no reliable completion estimate for this step.</span>
+          </label>
+          <label className={`stop-choice-opt stop-choice-now${mode === 'immediate' ? ' selected' : ''}`}>
+            <input type="radio" name="stop-mode" checked={mode === 'immediate'} onChange={() => setMode('immediate')} />
+            {/* THE SPECIFIED TWO SENTENCES, VERBATIM, AND ONE MORE THAT A STANDING RULE REQUIRES. A control
+                on an irreversible act must not state an outcome the mechanism cannot guarantee — and an
+                immediate stop CAN fail to take: a step that will not accept it ends at the next step
+                instead. "Is cut off" alone would promise the one thing that is not certain. The third
+                sentence is the fallback, so the reader is offered the mode without being sold a result.
+                (Above the label, not between it and its text: an arm reads the two as adjacent.) */}
             <b>Stop now</b>
-            <span>
-              Sends a stop to {step ? <>“{step}”</> : <>the step in flight</>} rather than waiting for
-              it. If it takes the stop the run is over in seconds; if it will not, the run stops at the
-              next step instead. That step&rsquo;s work is lost; everything recorded before it is kept.
-            </span>
-          </button>
+            <span>{stepName} is cut off and its work is lost. Everything recorded before it is kept. If it will
+              not take the stop, the run stops at the next step instead.</span>
+          </label>
         </div>
 
         <div className="modal-foot">
+          {/* THE BUTTON NAMES THE ACT IT PERFORMS. Its words follow the selected row, so a reader never
+              presses a generic "Stop" without knowing which of the two they chose. */}
+          <button type="button" className="btn-primary" onClick={mode === 'boundary' ? onBoundary : onImmediate}>
+            {label}
+          </button>
           <button type="button" className="btn-ghost" onClick={onCancel}>Leave it running</button>
         </div>
       </div>

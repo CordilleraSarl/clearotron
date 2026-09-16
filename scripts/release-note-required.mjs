@@ -153,8 +153,22 @@ const shipped = (paths, files) => paths.filter((p) => !NEVER_A_NOTE.some((re) =>
 export function commitVerdicts({ commits = [], files = [], atHead = null } = {}) {
   // `added` and `atHead` are what the command reads from git; a caller that passes neither keeps the older
   // reading of every changed path, which is what a pure table of paths means.
-  const present = atHead ? new Set(atHead) : null;
-  const notesOf = (c) => (c.added ?? c.paths).filter((p) => isNotePath(p) && (!present || present.has(p)));
+  // MATCHED ON THE NAME, NOT THE PATH, BECAUSE A PRE-RELEASE MOVES A NOTE IT CONSUMES.
+  //
+  // changesets in pre mode does not delete the note it publishes: it MOVES it from
+  // `.changeset/<name>.md` into `.changeset/pre/<name>.md`, and re-applies every one of them when the
+  // pre range is exited. The note still exists and still reaches the releases page — twice, once in the
+  // pre-release and once in the stable cut it rolls into.
+  //
+  // Asking whether the ADDED PATH still exists therefore loses every note written before the last
+  // pre-release cut, and the commit that wrote one is reported as owing a note it did write. The
+  // failure arrives the moment a branch merges a main that has had a beta cut on it, which is now the
+  // ordinary case rather than an edge one.
+  const presentNames = atHead
+    ? new Set(atHead.filter(isNotePath).map((p) => p.split("/").pop()))
+    : null;
+  const notesOf = (c) => (c.added ?? c.paths)
+    .filter((p) => isNotePath(p) && (!presentNames || presentNames.has(p.split("/").pop())));
   const notes = [...new Set(commits.flatMap(notesOf))];
   const noteNames = new Set(notes.map((p) => p.split("/").pop()));
   const visible = [...new Set(commits.flatMap((c) => shipped(c.paths, files)))];

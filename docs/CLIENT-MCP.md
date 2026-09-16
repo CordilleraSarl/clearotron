@@ -5,44 +5,44 @@ definitions.*
 
 > **Just want to connect your own app to your own runs?** You do not need any of this — spawn the stdio
 > server from your clone. [`mcp-server/CONNECT.md`](../mcp-server/CONNECT.md) is four lines of
-> copy-paste. This document is for publishing a connector your *customers* sign in to.
+> copy-paste. This document is for publishing a connector that each *company's* people sign in to.
 
-What a customer reaches once you have, what they cannot, and how to turn it on. For the staff/ops MCP
+What they reach once you have, what they cannot, and how to turn it on. For the staff/ops MCP
 faces see `docs/architecture/09-security-and-data.md`.
 
 ## The three faces, in one table
 
 One codebase (`mcp-server/server.mjs`), three processes. The separation is per-process **configuration**,
-never a runtime branch — "a client cannot reach staff read-all" is a fact about which binary is listening,
-not about a flag being right.
+never a runtime branch — "a company's person cannot reach staff read-all" is a fact about which binary is
+listening, not about a flag being right.
 
 | Face | Where it listens | Who | Reach |
 |---|---|---|---|
-| **Staff** | your staff hostname → `TRADEMARK_MCP_HTTP_PORT` (default 18790) | firm staff (staff CF Access AUD) | every read tool, all runs |
-| **Client** | your client hostname → `CLIENT_MCP_HTTP_PORT` (default 18811) | customers (client CF Access AUD) | see below |
+| **Staff** | your staff hostname → `TRADEMARK_MCP_HTTP_PORT` (default 18790) | your staff (staff CF Access AUD) | every read tool, all runs |
+| **Client** | your client hostname → `CLIENT_MCP_HTTP_PORT` (default 18811) | the people of each company (client CF Access AUD) | see below |
 | **Ops** | loopback only, on its own port, **no hostname** | the portal's trigger lane | reads + write verbs |
-| **API key** | a hostname with no Access app in front → its own `CLIENT_MCP_HTTP_PORT` | a client agent that cannot sign in | same as Client |
+| **API key** | a hostname with no Access app in front → its own `CLIENT_MCP_HTTP_PORT` | a company's agent that cannot sign in | same as Client |
 
 Every port above is the code default and each face is a separate process, so on one machine give
-each its own. The ops face is never on the internet. If you are looking for "the customer one", it
-is the Client face. The API-key door is that same client face reached with a credential instead of a
+each its own. The ops face is never on the internet. If you are looking for the face a company's people
+use, it is the Client face. The API-key door is that same client face reached with a credential instead of a
 browser login — see "The API-key door" below.
 
-## The two client principals
+## The two principals outside your staff
 
 **`user` — a run-bound report link.** A read-only token pinned to one run, no enumeration. The scope
 is served as it always was; what changed with the move to a single report document is how anyone
 comes by one. The token is minted into THE report's "Ask your AI" block against the STAFF connector
 (`CLEAROTRON_MCP_URL`, `render.mjs`), and `portal-report.mjs` strips that whole block for every non-staff
-reader at serve time — so **no client-facing surface hands one out any more**. A signed-in client
-reaches the connector as `account` instead, at an address the portal serves live from
+reader at serve time — so **no surface a non-staff reader sees hands one out any more**. A signed-in
+person reaches the connector as `account` instead, at an address the portal serves live from
 `/portal/api/mcp-access` (`CLEAROTRON_CLIENT_MCP_URL`, no baked credential). A run-bound link for a
 recipient who has no login is now a deliberate act:
 `node mcp-server/mint-token.mjs --scope user --run <runId>`.
 
-**`account` — a signed-in client.** A CF-verified client identity with **no token**, resolved to the
-accounts their email is granted (`CLEAROTRON_ACCESS_FILE` — the same guest list the portal's client door uses).
-Enrolment is therefore the portal's: no second credential to mint, rotate or revoke, and revoking portal
+**`account` — a signed-in person.** A CF-verified identity from outside your staff with **no token**,
+resolved to the companies their email is granted (`CLEAROTRON_ACCESS_FILE` — the same guest list the portal
+uses). Enrolment is therefore the portal's: no second credential to mint, rotate or revoke, and revoking portal
 access revokes this with it. **Off unless `CLIENT_MCP_ACCOUNT_ACCESS=1`.**
 
 **Who turns that on. The installer, since 2026-09-03** — ruling, settled
@@ -53,9 +53,9 @@ come from one authority, `enablePlan` in `shared/client-door.mjs`, which is also
 
 **This supersedes the 2026-08-31 ruling** *"On demand is fine"*, under which nothing at install and no
 rebuild's enable list could start this unit, because starting it WAS the consent that opened
-client-account access. The owner changed the posture knowingly: **the per-account key is the gate, not
-whether a process runs.** A door with no key issued refuses everything, which is the same protection by
-a mechanism that does not depend on a reader finding a verb.
+access for each company's people. The owner changed the posture knowingly: **the per-person key is the
+gate, not whether a process runs.** A door with no key issued refuses everything, which is the same
+protection by a mechanism that does not depend on a reader finding a verb.
 
 **`npx clearotron disconnect` therefore revokes a person, not a service** (Q3). It writes the caller's key
 ids to the denylist and strikes them from the record; it does not stop the unit and does not touch
@@ -63,58 +63,58 @@ ids to the denylist and strikes them from the record; it does not stop the unit 
 `npx clearotron disconnect --everyone`, which states how many keys and how many people that is before
 acting — and does not stop the service either.
 
-An `account` principal reaches **eighteen** tools, for its own accounts only — everything carrying
+An `account` principal reaches **eighteen** tools, for its own companies only — everything carrying
 `accountSafe: true` in `TOOL_SCOPES` (`shared/scope.mjs`), and nothing else:
 
 | Layer | Tools |
 |---|---|
-| the report | `brief`, `read_artifact` (the report; `clientSummary` is retired from client reach and stays an ops-only internal source), `list_findings` (curated cards) |
+| the report | `brief`, `read_artifact` (the report; `clientSummary` is retired from this face and stays an ops-only internal source), `list_findings` (curated cards) |
 | the evidence behind it | `list_evidence`, `list_searches`, `get_search_coverage` |
 | the audit chain | `read_artifact` over `audit`, `narrative`, `registerFindings`, `commonLaw`, `caseLaw`, `matterContext` and `registerUnit:<axis>`; `list_findings` on the raw `kind` path; `get_finding`, `get_run`, `trace`, `decision_timeline` |
 | the run lifecycle | `list_runs`, `describe_options`, `plan_run`, `start_run`, `stop_run` |
 | what-if | `what_if_plan` (free), `what_if_run` (queues a sandbox job), `what_if_result` (collects it) |
 
-The evidence layer exists because a client lawyer defending a filing decision needs the records
+The evidence layer exists because a lawyer defending a filing decision needs the records
 under the report, not just its prose. It projects named structured fields and enums derived from
 them — `mcp-server/lib/evidence.mjs` states that there is no code path forwarding free prose, and
 that is the one declared exception to the scrub.
 
-**The audit chain is open by ruling, 2026-08-27** ("I don't see why we don't open it or just
-give it to clients. Ignore the call spend."). The same lawyer who needs the records also has to be
-able to show *how* the answer was reached, so the decision chain is client product now. Unlike the
+**The audit chain is open by ruling, 2026-08-27**, with the call spend set aside. The same lawyer who
+needs the records also has to be able to show *how* the answer was reached, so the decision chain is
+part of what this face serves now. Unlike the
 evidence layer this one does forward prose — a chain of reasoning is prose — so it is bounded a
 different way: `mcp-server/lib/audit-view.mjs` names the structural fields that travel and puts the
-surviving prose through the report's own client-safety passes, never a second copy of them.
+surviving prose through the report's own scrub passes, never a second copy of them.
 
 Three things stayed behind, and each has a reason rather than a habit:
 
 - **Cost.** `get_telemetry` and `get_provider_usage` exist to report model identity and billed
   counts. Every other decision-chain read is model-free by construction — `events.mjs`, `trace.mjs`
-  and `getStages` each say so on their own surface — so sealing exactly these two costs a client
+  and `getStages` each say so on their own surface — so sealing exactly these two costs the reader
   nothing of the chain.
 - **The engine's judgment of its own output.** `skepticFlags` and `seniorEyeReview` are the reviewers
   writing about our draft, the same class as the `withdrawn_reason` ruling. The verdict they
   produced travels; the critique does not.
 - **The unruled reads.** `get_coverage`, `search`, `search_runs`, `diff_artifact`, `run_changes`,
   `list_profiles`, delivery/outbox, `feed_context` and what-if. Nobody has decided what these should
-  show a client, and an undecided tool is denied — `get_search_coverage` is deliberately not
+  show a company's people, and an undecided tool is denied — `get_search_coverage` is deliberately not
   `get_coverage`, the latter being the engineering artifact-validity view.
 
 **What-if is a QUEUED JOB on this surface, and that is what keeps the door honest.** The remote faces
 never spawn the engine — `http-server.mjs` states it as a configuration fact and `lib/whatif.mjs`'s lazy
-import of `driver/pipeline.mjs` is what holds it — so a client's `what_if_run` does not execute. It
+import of `driver/pipeline.mjs` is what holds it — so a `what_if_run` on this face does not execute. It
 validates, enqueues into `<runDir>/_experiments/_queue/`, and returns an `experimentId`;
 `driver/whatif-worker.mjs`, drained by the runner in an OS service process, is what spawns the sandbox.
-The client collects the diff with `what_if_result`. The original run is never modified — the experiment
+The caller collects the diff with `what_if_result`. The original run is never modified — the experiment
 writes only under `_experiments/`.
 
 Four things about it are worth knowing before you offer it:
 
-- **The confirmation-token handshake stays, and a client must ALSO name the run.** A token is plain
-  base64url JSON that nothing signs, so a token-only call would slip past the account gate, which keys on
+- **The confirmation-token handshake stays, and the caller must ALSO name the run.** A token is plain
+  base64url JSON that nothing signs, so a token-only call would slip past the grant check, which keys on
   `runId`. Naming the run puts the grant check in the path; `whatIfEnqueue` then proves the token names
   the same run, so neither half can be satisfied alone.
-- **A client cannot choose the model.** The tier is cost and method both, and it is the one argument on
+- **The caller cannot choose the model.** The tier is cost and method both, and it is the one argument on
   the one tool that spends. Express the change with `instructions`.
 - **Nothing bounds the spend, by ruling.** `start_run` is stamped `clientPrincipal: true` at the
   chokepoint so `runCaps.dailyRuns` bites it; a what-if job carries no such stamp, because the owner
@@ -125,15 +125,15 @@ Four things about it are worth knowing before you offer it:
 - **It starts on the timer, not instantly.** The systemd `.path` unit watches the clearance queue dirs,
   not run dirs, so a queued what-if is picked up on the runner's 90s tick.
 
-**A forwardable report link did not move.** `USER_ARTIFACTS` gated `read_artifact` for both client
-kinds, so the account layer was given its own set (`ACCOUNT_ARTIFACTS`) rather than the shared one
+**A forwardable report link did not move.** `USER_ARTIFACTS` gated `read_artifact` for both principal
+kinds, so the `account` layer was given its own set (`ACCOUNT_ARTIFACTS`) rather than the shared one
 being widened: a run-bound `user` token rides inside a delivered PDF and can be forwarded to anyone,
-and the ruling was about clients the firm enrolled.
+and the ruling was about people the operator enrolled.
 
-## What a client sees of a report
+## What a company's people see of a report
 
-The client cut, which is **what THE report already shows them — no more, and no less**:
-`report.html` as served to a client through the portal's `readReport()`
+The cut, which is **what THE report already shows them — no more, and no less**:
+`report.html` as served to a non-staff reader through the portal's `readReport()`
 preparation (`mcp-server/lib/scrub.mjs` states the rule; `driver/portal-report.mjs` is the serve-time
 counterpart).
 
@@ -142,23 +142,23 @@ hash, and the `tier`/`label` card shorthand the report footer says is "removed o
 
 **Kept, deliberately:** the Methodology section and the register/common-law provider names. Both are in the
 delivered report already (`render.mjs` renders Methodology via `plainScopeNote`; provider names are named
-for provenance honesty). A scrubber stricter than the report would delete content the client was already
+for provenance honesty). A scrubber stricter than the report would delete content the reader was already
 sent and make the connector a different product from the PDF in their inbox. **If you want less exposed,
 change the report render or the serve-time preparation (`portal-report.mjs`) — it flows here for free.
 Never add an MCP-only rule.**
 
-## The daily allowance — read this before enabling a demo tenant
+## The daily allowance — read this before enabling a demo company
 
-A client starting a run over MCP spends real money. The control is `runCaps.dailyRuns` on the customer
+Someone starting a run over this face spends real money. The control is `runCaps.dailyRuns` on the company
 profile, enforced at the runner's admission gate (so it covers every door) plus a portal pre-check.
 
 It only bites jobs stamped `clientPrincipal: true`, and **that stamp is positive-only — absence means
-uncapped**. `authorize()` forces it for an `account` principal, so a client cannot omit it or pass `false`.
-Staff runs deliberately never consume a client's allowance.
+uncapped**. `authorize()` forces it for an `account` principal, so a caller cannot omit it or pass `false`.
+Staff runs deliberately never consume a company's allowance.
 
-**For a demo or pitch account, set `dailyRuns` low (1–2) and `maxQueued: 1`.** Without `dailyRuns` the
-account is uncapped by day and can exhaust the weekly engine capacity in a sitting. Prefer a synthetic
-account for demos so the data is disposable too.
+**For a demo or pitch company, set `dailyRuns` low (1–2) and `maxQueued: 1`.** Without `dailyRuns` the
+company is uncapped by day and can exhaust the weekly engine capacity in a sitting. Prefer a synthetic
+company for demos so the data is disposable too.
 
 ## The API-key door — for agents that cannot sign in
 
@@ -173,12 +173,12 @@ node mcp-server/mint-token.mjs --scope account --sub lawyer@acme.example [--acco
 ```
 
 **The key proves WHO; the grants file still decides WHAT.** `--sub` names an identity that must appear in
-`CLEAROTRON_ACCESS_FILE`, and the accounts are resolved from that file **on every request** — never baked into
+`CLEAROTRON_ACCESS_FILE`, and the companies are resolved from that file **on every request** — never baked into
 the token. `--accounts` is a CAP (an intersection on top of the grant) and can only narrow it. So there are
 two independent revocation levers: **delete the grants row** (instant, needs no re-minting) or **denylist
 the `jti`** (`TRADEMARK_MCP_TOKEN_DENYLIST`).
 
-It resolves to the **same `account` principal** as a signed-in client, so the tool set, `authorize()`, the
+It resolves to the **same `account` principal** as a signed-in person, so the tool set, `authorize()`, the
 scrub and `runCaps` above all apply unchanged — there is no second policy to keep in step.
 
 **It is a separate process, not a flag on the client door** (`CLIENT_MCP_TOKEN_ONLY=1`, its own
@@ -196,7 +196,7 @@ A key may be presented as `Authorization: Bearer <key>`, a bare `Authorization: 
 say in which, and `?token=` is the fallback that needs no header at all. On the CF-fronted doors
 `Authorization` is deliberately **not** read as a trademark key: there it belongs to the proxy/agent.
 
-**Give a key a real account with real `runCaps`, never `generic`** — `generic` is cap-exempt, so a
+**Give a key a real company with real `runCaps`, never `generic`** — `generic` is cap-exempt, so a
 long-lived credential pointed at it can spend without limit.
 
 ### Standing it up
@@ -209,7 +209,7 @@ long-lived credential pointed at it can spend without limit.
    `CLIENT_MCP_ACCOUNT_ACCESS=1` + `CLEAROTRON_ACCESS_FILE`, and drop the CF AUD lines (unused here).
 3. Verify before exposing: `curl 127.0.0.1:<port>/healthz`; the boot log says `API-KEY door — no auth
    proxy in front`; an MCP `initialize` **without** a key is a 401.
-4. Mint a key, hand it over with the address. `tools/list` must be exactly the eleven account tools
+4. Mint a key, hand it over with the address. `tools/list` must be exactly the eleven `account` tools
    above — anything more means the door resolved a wider principal than `account`.
 
 ## Turning it on
@@ -227,19 +227,19 @@ template, and a placeholder that looks configured is worse than unset.**
    and `client ACCOUNT access ON`. Starting with the flag set and no grants file is a **FATAL**
    refusal, by design.
 4. At your edge: confirm the client hostname resolves to that port and that the **client** Access app
-   fronts it — not the staff one. Enrol the client emails on that app's policy.
+   fronts it — not the staff one. Enrol the addresses of each company's people on that app's policy.
 5. `CLEAROTRON_CLIENT_MCP_URL` must be set for the portal process too, or `/portal/api/mcp-access` answers
    `{url:null}` and the Use-your-AI screen correctly shows its empty state.
 
 The client connector address is served **live**: `/portal/api/mcp-access` reads `CLEAROTRON_CLIENT_MCP_URL`
-at request time, so a change reaches every client screen on the next load — no re-render involved. The
+at request time, so a change reaches every screen that shows it on the next load — no re-render involved. The
 render no longer reads this variable at all: the block baked into
 `report.html` is the STAFF connector (`CLEAROTRON_MCP_URL`), and it is stripped for non-staff readers at
 serve time.
 
-## What briefs the client's assistant
+## What briefs a company's assistant
 
-`skills/clearotron-client/SKILL.md`, served as the MCP `instructions` field on initialize — clients surface
+`skills/clearotron-client/SKILL.md`, served as the MCP `instructions` field on initialize — MCP clients surface
 it to their model on connect. It sets voice (plain language, no codes), the tool ladder, the verdict
 vocabulary, evidence drill-through, and the three "never"s.
 

@@ -27,7 +27,8 @@
 //
 // ── THE LAYOUT ──────────────────────────────────────────────────────────────────────────────────────
 //
-// Context card, entry modes, names, start point, levers, where, then the pinned footer.
+// One form, top to bottom: the company, Describe it, Names to clear, Where, Goods or services, Context,
+// the company card, Which search with its two folds, then the pinned footer. No fork and no steps.
 //
 // THE FOOTER IS A CHILD OF `.screen`, NOT of the 720px column, and its negative margins bleed it to the
 // full content width (`.composer-footer` in base.css). Sticky is defeated by any ancestor whose overflow
@@ -56,16 +57,18 @@ import { engineNotice } from '../contract/engineState.ts'
 import { parseNames, parseList } from '../contract/compose.ts'
 import type { Draft as Pick, EffortInput } from '../contract/composerProduct.ts'
 import {
-  EMPTY_DRAFT, blockers, effortUnits, costBand, turnaround, checksSummary, runsNote, machineryFor,
+  EMPTY_DRAFT, blockers, runCount, turnaround, turnaroundInWords, checksSummary, runsNote, machineryFor,
   territoryMatches, addTerritory, removeTerritory, reachesTerritory, vocabularyFor, offerableFor,
   inherited, composeSaved, draftFromSaved, nameBudget, missingPieces, readiness,
   chooseProduct, geographyFor, geographyNote, nativeLanguageControl, toggleNativeLanguage,
+  recommendSearch, templateLine, territoryCode, joinAnd, nativeLanguageLine, firstAndMore,
 } from '../contract/composerProduct.ts'
 import { productMatrix, LEGEND } from '../contract/productMatrix.ts'
 import { classLabel, classMatches, isClassNumber } from '../contract/niceClasses.ts'
 import { sortOwners } from '../contract/ownerNames.ts'
+import { sortSavedSearches, displayLabel } from '../contract/savedSearches.ts'
 import type { BriefRead, ReadTarget } from '../contract/composeRead.ts'
-import { resolveRead, applyRead, appliedNotes } from '../contract/composeRead.ts'
+import { resolveRead, applyRead, appliedNotes, defaultNotes, unsureNotes } from '../contract/composeRead.ts'
 import { Icon } from '../components/Icon.tsx'
 import { useLoad } from '../state/useApi.ts'
 import { useUnsaved, unsavedChanges } from '../state/useUnsaved.ts'
@@ -75,22 +78,21 @@ import { takeCreated, createdStrip } from '../contract/companyCreated.ts'
 import type { CreatedCompany } from '../contract/api.ts'
 import { seesEverything } from '../shell/permissions.ts'
 import { PageHeader } from '../components/PageHeader.tsx'
-
-/** Which way in. `null` until one is chosen — the two-card fork the design opens on. */
-type Entry = null | 'describe' | 'manual'
+import { allowanceLine, searchesLeft } from '../contract/allowance.ts'
 
 /**
  * What a read did, in three separable parts, because they are three different kinds of claim.
  *
- * `applied` is derived from the diff — a fact about the screen. `doubts` is the model's own commentary
- * and is labelled as such. `dropped` is what this composer could not place, which is OUR limitation
- * and is owned rather than hidden: a territory silently discarded is a territory the user believes
- * they are paying to search.
+ * `read` is derived from the diff — a fact about the screen, what the read PUT on the form. `defaults`
+ * is what the search will use that the text did not say: the company's own classes. `unsure` is the
+ * model's own commentary, labelled as such, and what this composer could not place — OUR limitation,
+ * owned rather than hidden: a territory silently discarded is a territory the user believes they are
+ * paying to search.
  */
 type Receipt = {
-  readonly applied: readonly string[]
-  readonly doubts: readonly string[]
-  readonly dropped: readonly string[]
+  readonly read: readonly string[]
+  readonly defaults: readonly string[]
+  readonly unsure: readonly string[]
 }
 
 /**
@@ -182,8 +184,13 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   const profile: ProfileConfig | null = profileRes?.kind === 'ok' ? profileRes.value : null
   const usage: Usage | null = usageRes?.kind === 'ok' ? usageRes.value : null
 
-  const [entry, setEntry] = useState<Entry>(null)
   const [draft, setDraft] = useState<Draft>(EMPTY)
+  /**
+   * Whether the reader has chosen a search themselves — a row, a template, the name wall's way through,
+   * or a brief that asked for one. Until they have, the search that fits what they entered is selected
+   * for them; once they have, nothing moves it but them.
+   */
+  const [pickedByHand, setPickedByHand] = useState(false)
   const [territoryQuery, setTerritoryQuery] = useState('')
   const [classQuery, setClassQuery] = useState('')
   const [showAllShops, setShowAllShops] = useState(false)
@@ -217,6 +224,17 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
    * both halves of what they reported.
    */
   const [savedDraft, setSavedDraft] = useState<string | null>(null)
+
+  // WHERE A SAVE LEAVES FOR, AND IT LEAVES AFTER THE RENDER THAT MAKES THIS PAGE CLEAN. The unsaved guard
+  // reads its flag through a ref written during render and asks at the moment of navigation, so a `go`
+  // straight after `setSavedDraft` asked it before React had re-rendered: saving an edited template was
+  // answered with "Leave this page? You have changes here that have not been saved" about the save that
+  // had just landed. The create-company form learned the same thing, the same way.
+  const [leaveTo, setLeaveTo] = useState<string | null>(null)
+  useEffect(() => {
+    if (leaveTo) ctx.go(leaveTo)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [leaveTo])
 
   // A composed-but-unsent clearance is unsaved work like any form's, and this is the screen where losing
   // it costs the most — it can be twenty names, a goods description and a set of levers. EMPTY is the
@@ -289,7 +307,6 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
       classes: classes.length ? classes : null,
       platforms: platforms.join(', '),
     }))
-    setEntry('manual')
     setSaveOpen(true)
     setSaveName(typeof editing.recipe['label'] === 'string' ? editing.recipe['label'] : '')
     setSaveText(typeof editing.recipe['notes'] === 'string' ? editing.recipe['notes'] : '')
@@ -345,7 +362,13 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   const marketplacesApply = activePipeline !== 'knockout'
   // Which geography control this product gets, and what it says at that control. Both come off the
   // OFFERING rather than being decided here, so the screen cannot offer a shape the wall refuses.
-  const geoNote = geographyNote(activeLevel)
+  // WHICH SEARCH THE WHERE PANEL FITS ITSELF TO. A search the reader chose — a row, a brief that asked for
+  // one, a template, the record being edited — shapes the picker. One the form PRESELECTED does not: it
+  // follows the places, so it must not narrow them. A preselected one-country search would replace the
+  // first country with the second, and the recommendation could then never reach the search that reads
+  // both — the reader would be steered by their own first keystroke.
+  const whereLevel = pickedByHand || draft.savedSearch || editingSlug ? activeLevel : null
+  const geoNote = geographyNote(whereLevel)
   const nativeControl = nativeLanguageControl(activeLevel)
   const machinery = machineryFor(draft.pick, activeLevel)
   // THE WAY THROUGH THE NAME WALL, found in the offering rather than named here: whichever product reads
@@ -362,8 +385,8 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
     classes: classes.length,
     // The account's shops PLUS any typed for this search. Without the second half, promoting the add
     // control above would have made it a control that changes the search and reports nothing: extras go
-    // on the wire (`bodyFor`), the engine runs a grid column for each, and checksPerName / effortUnits /
-    // costBand / the footer would all have sat still while it did.
+    // on the wire (`bodyFor`), the engine runs a grid column for each, and checksPerName / runCount /
+    // the footer would all have sat still while it did.
     platforms: marketplacesApply ? own.platforms.length + parseList(draft.platforms).length : 0,
     density: own.density,
   }
@@ -399,6 +422,24 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   }
   const setPick = (next: Pick) => edit({ pick: next })
 
+  // ── THE SEARCH THAT FITS WHAT WAS ENTERED ─────────────────────────────────────────────────────────
+  //
+  // The rows tag it, and until the reader chooses a search themselves it is the one selected. Nothing is
+  // selected on an untouched form — `recommendSearch` answers null until a name or a place is entered —
+  // and nothing moves a search the reader picked, a template, or a record being edited.
+  const recommendation = useMemo(
+    () => recommendSearch(levels, names.length, draft.pick.territories),
+    [levels, names.length, draft.pick.territories],
+  )
+  useEffect(() => {
+    if (pickedByHand || draft.savedSearch || editingSlug || !recommendation) return
+    if (draft.pick.product === recommendation.product.key) return
+    // Through `chooseProduct`, like every other product change, so nothing is left set-but-hidden. It
+    // cannot take a place away here: the recommendation is read off these same places.
+    edit({ pick: chooseProduct(draft.pick, recommendation.product) })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [recommendation?.product.key, pickedByHand, draft.savedSearch, editingSlug])
+
   // ── reading a brief ───────────────────────────────────────────────────────────────────────────────
   //
   // The receipt lives beside the button rather than replacing the brief: the paragraph the user pasted
@@ -419,6 +460,8 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
       return
     }
     const { read, dropped, worldwide } = resolveRead(r.value)
+    // A brief that ASKS for a search has chosen one, exactly as pressing its row would.
+    if (read.product != null) setPickedByHand(true)
     // The diff is taken against the draft as it stands NOW, inside the setter, so a read that lands
     // after the user has carried on typing applies to what is on screen rather than to a stale copy.
     writeDraft((d) => {
@@ -426,8 +469,20 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
       // The owner's own classes travel with it: a ghost list materialises FROM them, never from empty.
       // `worldwide` is the one instruction allowed to remove chips — a brief that says everywhere over
       // a draft naming France. It is stated in the receipt; see applyRead for why it is the exception.
-      const after = applyRead(before, read, own.classes, { worldwide })
-      setReceipt({ applied: appliedNotes(before, after, own.classes, levels), doubts: read.notes, dropped })
+      let after = applyRead(before, read, own.classes, { worldwide })
+      // A BRIEF THAT NAMES NO SEARCH gets the one that fits what it filled in — the same one the rows
+      // tag — applied in this same write, so the receipt's Search line says which, and why. Never over
+      // a search the reader chose, and never over a template, which carries its own.
+      const fits = recommendSearch(levels, parseNames(after.names).length, after.draft.territories)
+      if (read.product == null && !pickedByHand && !d.savedSearch && fits) {
+        after = { ...after, draft: chooseProduct(after.draft, fits.product) }
+      }
+      const reason = fits && after.draft.product === fits.product.key ? fits.reason : null
+      setReceipt({
+        read: appliedNotes(before, after, own.classes, levels, reason),
+        defaults: defaultNotes(read, after, own.classes),
+        unsure: unsureNotes(read.notes, dropped),
+      })
       // NAMED, not spread wholesale. `ReadTarget` calls the product-and-geography half `draft` and this
       // component calls it `pick`, so `{ ...d, ...after }` quietly wrote a `draft` key nobody reads and
       // left `pick` exactly as it was — a brief that said "everywhere" cleared nothing, silently, which
@@ -606,7 +661,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
     // blockers() so the button is not even rendered in that state — this is the wall behind it, and it
     // says the same thing the blocker says rather than saving a different search than the one on screen.
     if (!record) {
-      setSaveNote('Pick one of the four searches above first — there is nothing to save yet.')
+      setSaveNote('Pick one of the four searches first — there is nothing to save yet.')
       return
     }
     setBusy(true)
@@ -638,9 +693,9 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
       setSavedDraft(JSON.stringify({
         ...EMPTY, pick: draft.pick, classes: draft.classes, platforms: draft.platforms,
       }))
-      // An EDIT came from Custom searches and belongs back there — the list is where the result of the
-      // change is visible. A create stays put: the levers on screen are the search being started.
-      if (editingSlug) { ctx.go('/portal/brand/searches'); return }
+      // An EDIT came from Search templates and belongs back there — the list is where the result of the
+      // change is visible. A create stays put: the form on screen is the search being started.
+      if (editingSlug) { setLeaveTo('/portal/brand/searches'); return }
       setSaveOpen(false)
       setSaveName('')
       setSaveText('')
@@ -648,7 +703,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
       const uncommitted = notCommitted(r)
       setSaveNote(uncommitted
         ? `Saved as “${label}”. ${uncommitted}`
-        : `Saved as “${label}” — it is in your custom searches.`)
+        : `Saved as “${label}” — it is in your search templates.`)
       // ── SAID WHERE THE READER IS LOOKING, AT THE MOMENT IT HAPPENS ──────────────────────────────
       //
       // `saveNote` alone was not a confirmation. It renders in the footer's far LEFT column, under the
@@ -658,9 +713,9 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
       // stays where it is for the record; this puts the answer beside the control that was pressed.
       setSaveDone(label)
     } else if (r.kind === 'conflict') {
-      setSaveNote('Someone else changed this custom search while you were editing. Reload and re-apply.')
+      setSaveNote('Someone else changed this template while you were editing. Reload and re-apply.')
     } else {
-      setSaveNote('That could not be saved. Try a different name, or check it on Custom searches.')
+      setSaveNote('That could not be saved. Try a different name, or check it on Search templates.')
     }
   }
 
@@ -668,7 +723,9 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
     return (
       <Submitted
         go={ctx.go}
-        onAnother={() => { setSubmitted(null); writeDraft(EMPTY); setEntry(null) }}
+        onAnother={() => { setSubmitted(null); writeDraft(EMPTY); setPickedByHand(false); setReceipt(null) }}
+        name={names[0] ?? ''}
+        duration={turnaroundInWords(turnaround(effort))}
       />
     )
   }
@@ -718,7 +775,10 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   // somebody to delete their own work — see NameWall. ONE predicate, shared with blockers(); the
   // component needs the numbers to offer that way out, which is why it returns them.
   const budget = nameBudget(activeLevel, names.length)
-  const exhausted = usage?.capped === true && usage.dailyRuns != null && usage.today >= usage.dailyRuns
+  // ONE DEFINITION OF "SPENT", shared with the line that warns before it. `searchesLeft` answers null
+  // for an uncapped account and for an unreadable usage file, and null is not zero — so neither is
+  // refused here, which is the behaviour this screen already had and the one that matters.
+  const exhausted = searchesLeft(usage) === 0
   // classes OR goods, which is what the schema accepts. Requiring both would refuse requests the engine
   // runs — and with the owner's own classes on screen in the card, demanding they be retyped is worse.
   // THE SENTENCES ARE THE PREDICATE. This used to be a bare boolean with no render site anywhere on the
@@ -739,8 +799,12 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   // States", "Full clearance". The registry has the word: it is the product's own name, the same string
   // the delivered report prints at the top.
   const startedFrom = draft.savedSearch
-    ? (savedRow?.label ?? 'a custom search')
+    ? (savedRow ? displayLabel(savedRow) : 'a search template')
     : (activeLevel?.name ?? 'no search picked yet')
+  // WHETHER THE NATIVE-LANGUAGE INVESTIGATION RUNS, as the review states it: automatic where the search
+  // includes it, and otherwise what was chosen — on the form, or in the template, which carries its own.
+  const nativeOn = activeLevel?.nativeLanguage === 'automatic'
+    || (nativeControl === 'toggle' && (draft.savedSearch ? savedRow?.nativeLanguage === true : draft.pick.nativeLanguage))
 
   return (
     <div className="screen">
@@ -750,18 +814,25 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
           IT SITS ABOVE THE HEADER rather than between two of them: the eyebrow that used to open this
           screen said "New clearance" over a heading saying "New clearance". */}
       <CreatedStrip />
-      <PageHeader title={editingSlug ? 'Edit a custom search' : 'New clearance'} />
+      <PageHeader title={editingSlug ? 'Edit a search template' : 'New clearance'} />
+      {/* ONE QUIET LINE, and only when the number is close enough to change what a reader does. No
+          band, no heading and no colour: this is a fact about the account, not a warning about the
+          form. It is silent above five left, which is the state most readers are in most of the time.
+          The same sentence, from the same composer, is on Clearances. */}
+      {allowanceLine(usage ?? null, ctx.me.brand)
+        ? <p className="nc-allowance">{allowanceLine(usage ?? null, ctx.me.brand)}</p>
+        : null}
 
-      {/* Editing a saved search happens ON this screen, because a saved search is these levers with a
-          name on it. The heading changes and this line says what the levers below are — without it the
-          user would be looking at a New clearance form mysteriously pre-filled with someone's set-up. */}
+      {/* Editing a template happens ON this screen, because a template is these choices with a name on
+          it. The heading changes and this line says what the form below is — without it the user would
+          be looking at a New clearance form mysteriously pre-filled with someone's set-up. */}
       {editingSlug ? (
         editingRes && editingRes.kind !== 'ok' ? (
           <div className="notice" style={{ borderColor: 'var(--tone-high)' }}>
-            <b>That custom search could not be opened</b>
+            <b>That search template could not be opened</b>
             <p style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>
               Nothing has been changed.{' '}
-              <button type="button" className="link-btn" onClick={() => ctx.go('/portal/brand/searches')}>Back to Custom searches</button>
+              <button type="button" className="link-btn" onClick={() => ctx.go('/portal/brand/searches')}>Back to Search templates</button>
             </p>
           </div>
         ) : editing && !editingPick ? (
@@ -769,836 +840,718 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
           // approximates, because the nearest thing it CAN say is a different search from the one the
           // client bought. Saying so beats opening a form that would rewrite it on the next Save.
           <div className="notice" style={{ borderColor: 'var(--tone-medium)' }}>
-            <b>This custom search cannot be edited here</b>
+            <b>This search template cannot be edited here</b>
             <p style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>
               It was built on a search this screen has no setting for, so opening it would change what it
               does. It still runs exactly as it is. Ask {operatorName(ctx.me.brand)} to change it, or build a new one here.{' '}
-              <button type="button" className="link-btn" onClick={() => ctx.go('/portal/brand/searches')}>Back to Custom searches</button>
+              <button type="button" className="link-btn" onClick={() => ctx.go('/portal/brand/searches')}>Back to Search templates</button>
             </p>
           </div>
         ) : (
           <div className="notice quiet">
             <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: 13 }}>
-              Change the levers below, then <b>Save changes</b> in the footer. Nothing runs, and the
+              Change the form below, then <b>Save changes</b> in the footer. Nothing runs, and the
               searches already run under this one are unaffected — a finished report carries its own set-up.
             </p>
           </div>
         )
       ) : null}
 
-      <Allowance usage={usage} />
+      {/* ── ONE FORM, TOP TO BOTTOM ──────────────────────────────────────────────────────────────────
+          No fork, no wizard and no steps. The screen used to open on two cards — "Describe it" and "Set it
+          up myself" — and hid the form behind whichever was pressed, with a toggle to switch between two
+          halves of one form. Describing it is now the form's first, optional section.
 
-      {/* ── context: who this is for, and what they already carry ── */}
-      <div className="ctx-card">
-        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'flex-start' }}>
-          <div style={{ minWidth: 190, flex: 1 }}>
-            <div className="field-label">Company</div>
-            {ctx.me.accounts.length > 1 ? (
-              // The same value the sidebar switcher sets — the shell's own filter, mirrored where the
-              // decision is being made. It is NEVER a request field: the server stamps identity from the
-              // verified sign-in, and a body that named an owner would be a tenancy hole.
-              <select
-                value={account ?? ''}
-                onChange={(e) => ctx.setOwner(e.target.value || null)}
-                className="ctx-select"
-                aria-label="Company"
-                data-anon="mark"
-              >
-                <option value="">Choose a company…</option>
-                {/* Value stays the KEY — it is what every request is keyed by. Only the label is named.
-                    Sorted by the LABEL, and through the same helper the rail's switcher uses: these are
-                    two views of one control, and a client meeting the same list in two orders on one
-                    screen has to work out whether they are the same list. */}
-                {sortOwners(Object.fromEntries(ctx.me.accounts.map((a) => [a, ctx.ownerName(a)])), ctx.me.accounts)
-                  .map((o) => <option key={o.key} value={o.key}>{o.name}</option>)}
-              </select>
-            ) : (
-              <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-strong)', padding: '9px 0' }} data-anon="mark">
-                {ownerLabel}
+          THE ORDER IS WHAT A READER KNOWS FIRST: who it is for, what it is, where, for what goods, and
+          anything else worth knowing — then what the company already carries, and only then which of
+          the four searches, because that choice is read off everything above it. */}
+      <div className="composer-col">
+        {/* ── the company ── */}
+        <div>
+          <div className="field-label">Company</div>
+          {ctx.me.accounts.length > 1 ? (
+            // The same value the sidebar switcher sets — the shell's own filter, mirrored where the
+            // decision is being made. It is NEVER a request field: the server stamps identity from the
+            // verified sign-in, and a body that named an owner would be a tenancy hole.
+            <select
+              value={account ?? ''}
+              onChange={(e) => ctx.setOwner(e.target.value || null)}
+              className="ctx-select nc-company"
+              aria-label="Company"
+              data-anon="mark"
+            >
+              <option value="">Choose a company…</option>
+              {/* Value stays the KEY — it is what every request is keyed by. Only the label is named.
+                  Sorted by the LABEL, and through the same helper the rail's switcher uses: these are
+                  two views of one control, and a client meeting the same list in two orders on one
+                  screen has to work out whether they are the same list. */}
+              {sortOwners(Object.fromEntries(ctx.me.accounts.map((a) => [a, ctx.ownerName(a)])), ctx.me.accounts)
+                .map((o) => <option key={o.key} value={o.key}>{o.name}</option>)}
+            </select>
+          ) : (
+            <div className="nc-company-name" data-anon="mark">{ownerLabel}</div>
+          )}
+        </div>
+
+        <DescribeIt
+          value={draft.brief}
+          onChange={(brief) => edit({ brief })}
+          can={readCan}
+          reading={reading}
+          error={readErr}
+          receipt={receipt}
+          onRead={() => { void doRead() }}
+        />
+
+        {/* ── names to clear ── */}
+        <div>
+          <div className="section-title">Names to clear</div>
+          <p className="section-hint">One per line</p>
+          <textarea
+            value={draft.names}
+            onChange={(e) => edit({ names: e.target.value })}
+            placeholder="Example: AQUAPLUS"
+            aria-label="Names to clear"
+            data-anon="mark"
+            className="names-box"
+          />
+          {budget ? (
+            <NameWall
+              count={names.length}
+              allowed={budget.allowed}
+              first={names[0] ?? ''}
+              canScreen={!draft.savedSearch && knockout != null}
+              screenName={knockout?.name ?? 'Knockout search'}
+              onScreenAll={() => { if (knockout) { setPickedByHand(true); edit({ pick: chooseProduct(draft.pick, knockout) }) } }}
+            />
+          ) : names.length > 1 ? (
+            <div style={{ fontSize: 12.5, color: 'var(--text-muted)', marginTop: 7 }}>{names.length} names, one search.</div>
+          ) : null}
+        </div>
+
+        {/* ── WHERE — a different control per product, and each says at the control what it takes ── */}
+        <div>
+          <div className="section-title">Where</div>
+          {/* THE PRODUCT'S OWN SENTENCE, at the control, always. Not a tooltip and not a refusal
+              after the fact: the requester reads what this search accepts while they are choosing
+              where it points. */}
+          {geoNote ? <p className="section-hint">{geoNote}</p> : null}
+
+          {whereLevel?.geography === 'worldwide, and nothing else' ? (
+            // NO PICKER AT ALL, and that is the design. Worldwide is not a choice on this search —
+            // it IS this search — so a territory field here would be a control whose every use is
+            // refused. The chip states the fact; the sentence above says why there is nothing to set.
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, margin: '9px 0 0' }}>
+              <span className="chip">Worldwide</span>
+            </div>
+          ) : (
+            <>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, margin: '9px 0 12px' }}>
+                {/* "WORLDWIDE" WAS ONLY TRUE FOR AN ACCOUNT WITH NO TERRITORIES OF ITS OWN. An empty
+                    list used to mean "unset", and the engine's ladder resolved unset to the brand
+                    owner's defaultJurisdictions — seven of them, for one demo account — so this chip
+                    promised a worldwide clearance and the run searched seven countries. The request
+                    now STATES its mode (`geographyFor`), so the two can no longer be confused; what
+                    the screen still owes the reader is the account's own list, tagged with where it
+                    came from, exactly as Classes does below. */}
+                {draft.pick.territories.length === 0 ? (
+                  own.territories.length ? (
+                    <>
+                      {own.territories.map((t) => (
+                        <span key={t} className="chip" data-anon="mark">{t}</span>
+                      ))}
+                      <span style={{ fontSize: 11, color: 'var(--text-faint)', alignSelf: 'center' }}>
+                        {own.territoriesFrom}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="chip">Worldwide</span>
+                  )
+                ) : draft.pick.territories.map((t) => (
+                  /* — a chosen territory the register cannot reach keeps its
+                     chip and says so. It is ordered, and disclosed as deferred coverage rather than
+                     searched; removing it from the list would be the silent narrowing this issue is
+                     about, one step later. */
+                  <span key={t} className={reachesTerritory(t, registerTerritories) ? 'chip chip-own' : 'chip chip-own chip-deferred'}
+                    title={reachesTerritory(t, registerTerritories) ? undefined : 'The register wired to this deployment does not reach this territory — it is disclosed in the report as deferred coverage rather than searched.'}>
+                    {t}{reachesTerritory(t, registerTerritories) ? '' : ' · register deferred'}
+                    <button
+                      type="button"
+                      aria-label={`Remove ${t}`}
+                      className="chip-x"
+                      onClick={() => setPick(removeTerritory(draft.pick, t))}
+                    >
+                      <Icon name="x" size={13} />
+                    </button>
+                  </span>
+                ))}
               </div>
-            )}
-          </div>
-          <div style={{ minWidth: 190, flex: 1 }}>
-            <div className="field-label">Project</div>
+              {/* The LABEL follows the product: a Full country search offers no regions, so inviting
+                  one would be inviting a refusal. */}
+              <div className="field-label">
+                {whereLevel?.geography === 'exactly one country' ? 'Add a country' : 'Add a country or region'}
+              </div>
+              <div className="fld-medium" style={{ position: 'relative' }}>
+                <input
+                  value={territoryQuery}
+                  onChange={(e) => setTerritoryQuery(e.target.value)}
+                  autoComplete="off"
+                  aria-label="Add a territory"
+                  className="ctx-input"
+                />
+                {territoryMatches(territoryQuery, draft.pick.territories, whereLevel, 8, registerTerritories).length ? (
+                  <div className="typeahead">
+                    {territoryMatches(territoryQuery, draft.pick.territories, whereLevel, 8, registerTerritories).map((t) => (
+                      <button
+                        key={t}
+                        type="button"
+                        onClick={() => { setPick(addTerritory(draft.pick, t, whereLevel, registerTerritories)); setTerritoryQuery('') }}
+                      >
+                        {t}
+                        {/* — SHOWN AND SELECTABLE, with the reason at the
+                            control. It used to be absent, which teaches a reader nothing: they
+                            cannot tell an unsupported territory from one they mistyped. */}
+                        {reachesTerritory(t, registerTerritories) ? null : (
+                          <span className="typeahead-note">register deferred</span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+              {/* ── — STATED ONCE, ON THE SCREEN THAT CHOOSES AGAINST IT ──
+                  "A reader choosing territories is choosing against a coverage map they cannot
+                  currently see." This is that map, in one line and in the reader's own vocabulary.
+                  Rendered only where there is something to say: a register that declares no
+                  restriction, or a server that has not told us, has no coverage map to state, and a
+                  line saying so would be noise on every deployment. It names no vendor — one
+                  register, never a baked-in provider name — because what a reader can act on is the
+                  reach, not the brand. */}
+              {Array.isArray(registerTerritories) ? (
+                // BOTH FIGURES ARE SCOPED TO THE PRODUCT, which is what `registerTerritories.length`
+                // alone would get wrong: a Full country search can name no regions, so a region the
+                // register covers is not one of "the territories you can name here".
+                <p className="section-hint" style={{ marginTop: 10 }}>
+                  The trademark register wired to this deployment reaches{' '}
+                  {vocabularyFor(whereLevel, registerTerritories).length} of the{' '}
+                  {offerableFor(whereLevel).length} territories you can name here:{' '}
+                  {vocabularyFor(whereLevel, registerTerritories).join(', ')}. Anywhere else can
+                  still be ordered — it is disclosed in the report as deferred coverage rather than
+                  searched at the register.
+                </p>
+              ) : null}
+              {/* ONE COUNTRY REPLACES, it does not stack — so the note says what just happened rather
+                  than leaving the reader to notice a chip disappear. */}
+              {whereLevel?.geography === 'exactly one country' && draft.pick.territories.length === 1 ? (
+                <div className="callout-accent">
+                  {draft.pick.territories[0]} — naming another country replaces it, because this search
+                  reads one at a time.
+                </div>
+              ) : null}
+            </>
+          )}
+        </div>
+
+        {/* ── goods or services ── */}
+        <div>
+          <div className="section-title">Goods or services</div>
+          {/* EITHER THIS OR THE CLASSES, and the helper says which one is used when this is left empty.
+              The request takes classes or a description (`missingPieces`), and the classes it names are
+              the company's own, on the card below. */}
+          <p className="section-hint">
+            Optional. Say what the name is for, to focus the search. Without it, the classes below are used.
+          </p>
+          <textarea
+            value={draft.goods}
+            onChange={(e) => edit({ goods: e.target.value })}
+            rows={3}
+            aria-label="Goods or services"
+            placeholder="Example: energy drinks; dietary supplements"
+            className="ctx-input"
+            style={{ resize: 'vertical', lineHeight: 1.5 }}
+          />
+        </div>
+
+        {/* ── §B — CONTEXT, ALWAYS OPEN ────────────────────────────────────────────────────────────────
+            The owner: "not hidden under a collapse thing — it's important." It sat third inside a
+            collapsible headed "References and dates", so the one field that changes how a hit is
+            WEIGHED was behind a click, under a heading that does not describe it, below two fields
+            about paperwork. It sits directly under Goods or services — the field it qualifies — in the
+            open, as its own section like every other thing that matters on this form. What is left in
+            the collapsible is exactly what its summary already claims: a reference and a date. */}
+        <div>
+          <div className="section-title">Context (optional)</div>
+          <textarea
+            value={draft.instructions}
+            onChange={(e) => edit({ instructions: e.target.value })}
+            rows={3}
+            aria-label="Context (optional)"
+            // THE PLACEHOLDER IS A WORKED EXAMPLE, labelled as one. The old placeholder was a
+            // well-formed sentence and taught nothing about what KIND of thing belongs here — a
+            // reader who has nothing that reads like it writes nothing at all. Naming the shapes
+            // (a launch page, a post) is what tells them they have something to paste.
+            placeholder={'Example: we already own the mark in the US and this is about the EU launch. '
+              + 'Our launch page is https://example.com/press/aquaplus-launch, and there is a LinkedIn '
+              + 'post announcing it from 3 June.'}
+            className="ctx-input"
+            style={{ resize: 'vertical', lineHeight: 1.5 }}
+          />
+          {/* The connector is a second way this field gets filled, and nothing on the screen said so.
+              A search started by an agent through the connector can cite what the agent can already
+              read, so a reader working that way does not have to paste any of it by hand. */}
+          <p className="section-hint" style={{ margin: '7px 0 0' }}>
+            A search started by an agent through the connector can reference emails or documents it
+            can already read, so there is nothing to paste in that case.
+          </p>
+        </div>
+
+        {/* ── the company card: what this company already carries ── */}
+        <div className="ctx-card">
+          <div className="field-label">Project</div>
+          <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
             {projects.length ? (
-              <select value={draft.project} onChange={(e) => edit({ project: e.target.value })} className="ctx-select" aria-label="Project">
+              <select value={draft.project} onChange={(e) => edit({ project: e.target.value })} className="ctx-select nc-project" aria-label="Project">
                 <option value="">No project</option>
                 {projects.map((p) => <option key={p.key} value={p.key}>{p.name || p.key}</option>)}
               </select>
             ) : (
               <div style={{ fontSize: 14, color: 'var(--text-faint)', padding: '9px 0' }}>No project · none configured</div>
             )}
+            <button type="button" className="chip-btn" onClick={() => ctx.go('/portal/brand/projects')}>Manage projects</button>
           </div>
-        </div>
 
-        <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--border-hairline)', display: 'flex', gap: 26, flexWrap: 'wrap' }}>
-          {/* Classes, resolved and tagged. Selecting a project narrows them on purpose; the tag is what
-              makes that explicit rather than surprising. */}
-          <div style={{ minWidth: 230, flex: 1 }}>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 8 }}>
-              <span className="field-label" style={{ marginBottom: 0 }}>Classes</span>
-              <span style={{ fontSize: 11, color: 'var(--text-faint)' }}>
-                {draft.classes ? 'set for this search' : own.classes.length ? own.classesFrom : ''}
-              </span>
-            </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 9 }}>
-              {!classes.length ? (
-                /* AN EMPTY LIST IS NOT "NO CLASSES", AND SAYING SO WOULD BE THE LIE.
-                   The composer sends no `classes` key when the list is empty, and the scope resolver's
-                   nonEmpty() collapses undefined, null and [] into one branch — so it hands back the
-                   company's FULL inherited list. "None set" described the form, not the search that
-                   would run. Clearing every class is simply not expressible on this wire; rather than
-                   pretend otherwise, the screen now says what will actually happen. */
-                <span style={{ fontSize: 12.5, color: 'var(--tone-medium)' }}>
-                  {own.classes.length
-                    ? `Cleared — this will search ${own.classesFrom || "the company's classes"} again (${own.classes.join(', ')}). Add one to narrow it.`
-                    : 'None set — add one, or describe the goods below.'}
+          <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--border-hairline)', display: 'flex', gap: 26, flexWrap: 'wrap' }}>
+            {/* Classes, resolved and tagged. Selecting a project narrows them on purpose; the tag is what
+                makes that explicit rather than surprising. */}
+            <div style={{ minWidth: 230, flex: 1 }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 8 }}>
+                <span className="field-label" style={{ marginBottom: 0 }}>Classes</span>
+                <span style={{ fontSize: 11, color: 'var(--text-faint)' }}>
+                  {draft.classes ? 'set for this search' : own.classes.length ? own.classesFrom : ''}
                 </span>
-              ) : classes.map((c) => (
-                /* REMOVAL PROMOTES, EXACTLY AS ADDITION ALREADY DID.
-                   The × used to render only once `draft.classes` was non-null, so while inheriting, every
-                   chip was inert — no affordance anywhere said a class could be dropped. The capability
-                   was already there and already correct on the wire: a narrower non-empty list wins at the
-                   scope resolver. The only way to reach it was to add a class you did not want (which
-                   promotes the inherited list into an explicit one), delete it, and then delete the ones
-                   you meant to. Nobody who had not read the source could find that.
-                   `classes` is already `draft.classes ?? own.classes`, so filtering it promotes and
-                   removes in one step — the same move the typeahead makes on the first addition. */
-                <span key={c} className={draft.classes ? 'chip chip-own' : 'chip'}>
-                  {classLabel(c)}
-                  <button
-                    type="button"
-                    aria-label={`Remove class ${c}`}
-                    className="chip-x"
-                    onClick={() => edit({ classes: classes.filter((x) => x !== c) })}
-                  >
-                    <Icon name="x" size={13} />
-                  </button>
-                </span>
-              ))}
-            </div>
-            <div className="fld-medium" style={{ position: 'relative' }}>
-              <input
-                value={classQuery}
-                onChange={(e) => setClassQuery(e.target.value)}
-                placeholder="Add a class…"
-                autoComplete="off"
-                aria-label="Add a Nice class"
-                className="ctx-input"
-              />
-              {classMatches(classQuery, classes).length ? (
-                <div className="typeahead">
-                  {classMatches(classQuery, classes).map((c) => (
-                    <button
-                      key={c}
-                      type="button"
-                      onClick={() => {
-                        // The first addition PROMOTES what was inherited into an explicit list, so the
-                        // owner's own classes are kept rather than replaced by the one just chosen.
-                        edit({ classes: [...classes, c].filter(isClassNumber).sort((a, b) => a - b) })
-                        setClassQuery('')
-                      }}
-                    >
-                      {classLabel(c)}
-                    </button>
-                  ))}
-                </div>
-              ) : null}
-            </div>
-            {draft.classes ? (
-              <button type="button" className="link-btn" style={{ marginTop: 7 }} onClick={() => edit({ classes: null })}>
-                Use the company’s classes instead
-              </button>
-            ) : null}
-          </div>
-
-          {/* Marketplaces: a FLOOR. A project unions more in and can never remove one, so these are shown
-              and never offered as removable — a chip with an × on it would be a control the engine undoes. */}
-          <div style={{ minWidth: 230, flex: 1 }}>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 8 }}>
-              <span className="field-label" style={{ marginBottom: 0 }}>Marketplaces</span>
-              <span style={{ fontSize: 11, color: 'var(--text-faint)' }}>{own.platforms.length} on file</span>
-            </div>
-            {marketplacesApply ? (
-              own.platforms.length ? (
-                <>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                    {(showAllShops ? own.platforms : own.platforms.slice(0, 6)).map((p) => (
-                      <span key={p} className="chip chip-mono" data-anon="mark">{p}</span>
-                    ))}
-                    {own.platforms.length > 6 ? (
-                      <button type="button" className="chip chip-more" onClick={() => setShowAllShops((v) => !v)}>
-                        {showAllShops ? 'Show less' : `Show all ${own.platforms.length}`}
-                      </button>
-                    ) : null}
-                  </div>
-                  {/* 12.5px and --text-muted, the treatment the Classes column's own explanatory line
-                      gets 16px to the left — the same weight, because it answers the same question a
-                      reader asks of both. (The footnote treatment it replaced put the answer to "why can
-                      I not remove these" at 11px beside class chips that all carry an ×.) */}
-                  <p style={{ margin: '9px 0 0', fontSize: 12.5, color: 'var(--text-muted)', lineHeight: 1.5 }}>
-                    Every marketplace listed here is a forced deep dive inherited from the company and
-                    then the project. By default common law sweeps everything it can find on the open web,
-                    but this ensures particular focus to important markets.
-                  </p>
-                  <div style={{ marginTop: 10 }}>
-                    <div className="field-label">Add more for this search</div>
-                    <input
-                      value={draft.platforms}
-                      onChange={(e) => edit({ platforms: e.target.value })}
-                      placeholder="gnc.com, iherb.com"
-                      aria-label="Extra marketplaces for this search"
-                      className="ctx-input"
-                    />
-                    <p style={{ margin: '6px 0 0', fontSize: 11.5, color: 'var(--text-faint)', lineHeight: 1.45 }}>
-                      To edit the default list see{' '}
-                      <button type="button" className="link-btn" onClick={() => ctx.go('/portal/brand/profile')}>
-                        Profile
-                      </button>
-                      .
-                    </p>
-                  </div>
-                </>
-              ) : (
-                <p style={{ margin: 0, fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.5 }}>
-                  None on file — the open web is searched regardless. Add shops on Profile, or name
-                  extra ones for this search below.
-                </p>
-              )
-            ) : (
-              <p style={{ margin: 0, fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.5 }}>
-                {activePipeline === 'knockout'
-                  ? 'A knockout search sweeps these shops and the open web as one broad question per name. '
-                    + 'The structured grid — every shop checked term by term, with a coverage ledger — runs '
-                    + 'on a clearance.'
-                  : 'These shops are swept on every search we run.'}
-              </p>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* ── the two ways in ── */}
-      {entry === null ? (
-        <>
-          <div className="entry-grid">
-            <button type="button" className="entry-card" onClick={() => setEntry('describe')}>
-              <span className="entry-title"><Icon name="sparkles" size={17} />Describe it</span>
-              <span className="entry-body">
-                Type it, or paste the email you were sent — it is read for you and this form fills in.
-                Every field stays editable.
-              </span>
-            </button>
-            <button type="button" className="entry-card" onClick={() => setEntry('manual')}>
-              <span className="entry-title"><Icon name="sliders" size={17} />Set it up myself</span>
-              <span className="entry-body">Choose the names, where to look, and how deep.</span>
-            </button>
-          </div>
-          {/* TWO GROUPS, TWO HEADINGS. These were one list under one heading that said "four" while
-              rendering the four products AND however many searches this account had saved, so the
-              heading's own count was wrong for anybody who had saved one. The only thing separating the
-              two kinds was the dashed border on `.start-pill-saved` — a convention nobody has been told,
-              which is to say no distinction at all to the person reading it.
-
-              The heading is what carries the meaning now; the dash stays as reinforcement. The saved
-              group is behind a length check for the same reason the composer's own list below is: an
-              account with nothing saved must see the four products and no empty heading under them. */}
-          <div style={{ marginTop: 18 }}>
-            <div className="field-label">Or start from one of the four searches</div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-              {levels.map((t) => (
-                <button
-                  key={t.key}
-                  type="button"
-                  className="start-pill"
-                  onClick={() => { edit({ pick: chooseProduct(draft.pick, t), savedSearch: '' }); setEntry('manual') }}
-                >
-                  {t.name}
-                </button>
-              ))}
-            </div>
-            {savedSearches.length ? (
-              <>
-                {/* Not "your saved searches": a staff member reads this screen over a client's account,
-                    and the possessive would name the wrong owner. The composer's own group avoids it for
-                    the same reason. */}
-                <div className="field-label" style={{ margin: '16px 0 6px' }}>
-                  Custom searches{' '}
-                  <span style={{ textTransform: 'none', letterSpacing: 0, fontWeight: 500 }}>· start from one you built</span>
-                </div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                  {savedSearches.map((r) => (
-                    <button
-                      key={r.slug}
-                      type="button"
-                      className="start-pill start-pill-saved"
-                      data-anon="mark"
-                      onClick={() => { edit({ savedSearch: r.slug }); setEntry('manual') }}
-                    >
-                      {r.label}
-                    </button>
-                  ))}
-                </div>
-              </>
-            ) : null}
-          </div>
-        </>
-      ) : (
-        <>
-          <div className="segmented-entry" role="group" aria-label="How to set this up">
-            <button type="button" aria-pressed={entry === 'describe'} onClick={() => setEntry('describe')}>Describe it</button>
-            <button type="button" aria-pressed={entry === 'manual'} onClick={() => setEntry('manual')}>Set it up myself</button>
-          </div>
-
-          <div className="composer-col">
-            {entry === 'describe' ? (
-              <DescribeIt
-                value={draft.brief}
-                onChange={(brief) => edit({ brief })}
-                can={readCan}
-                reading={reading}
-                error={readErr}
-                receipt={receipt}
-                onRead={() => { void doRead() }}
-              />
-            ) : null}
-
-            {/* ── names ── */}
-            <div>
-              <div className="section-title">Names</div>
-              <p className="section-hint">
-                {activeLevel && activeLevel.maxNames > 1
-                  ? `One per line — a ${activeLevel.name} reads up to ${activeLevel.maxNames}.`
-                  : 'One name — a clearance reads one at a time.'}
-              </p>
-              <textarea
-                value={draft.names}
-                onChange={(e) => edit({ names: e.target.value })}
-                placeholder="AQUAPLUS"
-                aria-label="Names"
-                data-anon="mark"
-                className="names-box"
-              />
-              {budget ? (
-                <NameWall
-                  count={names.length}
-                  allowed={budget.allowed}
-                  first={names[0] ?? ''}
-                  canScreen={!draft.savedSearch && knockout != null}
-                  screenName={knockout?.name ?? 'Knockout search'}
-                  onScreenAll={() => { if (knockout) edit({ pick: chooseProduct(draft.pick, knockout) }) }}
-                />
-              ) : names.length > 1 ? (
-                <div style={{ fontSize: 12.5, color: 'var(--text-muted)', marginTop: 7 }}>{names.length} names, one search.</div>
-              ) : null}
-            </div>
-
-            {/* ── WHICH SEARCH ── */}
-            <div>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: 9, marginBottom: 4 }}>
-                <span className="section-title" style={{ marginBottom: 0 }}>Which search</span>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {levels.map((t) => (
-                  <PickRow
-                    key={t.key}
-                    selected={!draft.savedSearch && draft.pick.product === t.key}
-                    // NOT DISABLED, and the reason is AT the row. A product this deployment cannot run
-                    // still gets a row with its own sentence beside it: a control that vanishes leaves a
-                    // client with no way to know the search exists, and a greyed one with no reason
-                    // invites a click that answers nothing.
-                    unavailableNote={t.available ? null : (t.unavailableNote ?? 'Not available just now.')}
-                    // — orderable, WITH the limit stated at the point of choosing.
-                    coverageNote={t.available ? t.coverageNote : null}
-                    capabilityNote={t.available ? t.capabilityNote : null}
-                    onPick={() => edit({ pick: chooseProduct(draft.pick, t), savedSearch: '' })}
-                    title={t.name}
-                    // BOTH FIGURES ARE THE SERVER'S. A hand-typed "up to 20 names" beside a wall that
-                    // refuses at eight is what this row used to carry.
-                    tagline={`${t.geography} · up to ${t.maxNames} name${t.maxNames === 1 ? '' : 's'}${t.baseTurnaround ? ` · from ${t.baseTurnaround}` : ''}`}
-                    description={[
-                      // — THE COUNTS ARE PART OF WHAT A KNOCKOUT IS, so the card says so. This row
-                      // read "No register search", which was true of a tier the offering retired and
-                      // false of the one it sells: every Knockout takes register filing counts. A client
-                      // choosing between the four searches was being told this one does not touch a
-                      // register, and then receiving a report whose second section is register figures.
-                      t.pipeline === 'knockout'
-                        ? 'Marketplace and common-law screen across many names at once, plus register filing counts for every name — identical, containing and close variations of it — scoped to the classes you name.'
-                        : 'Trademark registers and the live marketplace, one name.',
-                      t.caseLaw ? 'Reasoned against the case law and oppositions of that country.' : '',
-                      t.nativeLanguage === 'automatic' ? 'The native language of that country is searched automatically.' : '',
-                      t.nativeLanguage === 'offered' ? 'The native-language investigation is optional here.' : '',
-                    ].filter(Boolean).join(' ')}
-                  />
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 9 }}>
+                {!classes.length ? (
+                  /* AN EMPTY LIST IS NOT "NO CLASSES", AND SAYING SO WOULD BE THE LIE.
+                     The composer sends no `classes` key when the list is empty, and the scope resolver's
+                     nonEmpty() collapses undefined, null and [] into one branch — so it hands back the
+                     company's FULL inherited list. "None set" described the form, not the search that
+                     would run. Clearing every class is simply not expressible on this wire; rather than
+                     pretend otherwise, the screen now says what will actually happen. */
+                  <span style={{ fontSize: 12.5, color: 'var(--tone-medium)' }}>
+                    {own.classes.length
+                      ? `Cleared — this will search ${own.classesFrom || "the company's classes"} again (${own.classes.join(', ')}). Add one to narrow it.`
+                      : 'None set — add one, or describe the goods above.'}
+                  </span>
+                ) : classes.map((c) => (
+                  /* REMOVAL PROMOTES, EXACTLY AS ADDITION ALREADY DID.
+                     The × used to render only once `draft.classes` was non-null, so while inheriting, every
+                     chip was inert — no affordance anywhere said a class could be dropped. The capability
+                     was already there and already correct on the wire: a narrower non-empty list wins at the
+                     scope resolver. The only way to reach it was to add a class you did not want (which
+                     promotes the inherited list into an explicit one), delete it, and then delete the ones
+                     you meant to. Nobody who had not read the source could find that.
+                     `classes` is already `draft.classes ?? own.classes`, so filtering it promotes and
+                     removes in one step — the same move the typeahead makes on the first addition. */
+                  <span key={c} className={draft.classes ? 'chip chip-own' : 'chip'}>
+                    {classLabel(c)}
+                    <button
+                      type="button"
+                      aria-label={`Remove class ${c}`}
+                      className="chip-x"
+                      onClick={() => edit({ classes: classes.filter((x) => x !== c) })}
+                    >
+                      <Icon name="x" size={13} />
+                    </button>
+                  </span>
                 ))}
               </div>
-
-              {savedSearches.length ? (
-                <>
-                  <div className="field-label" style={{ margin: '16px 0 8px' }}>
-                    Custom searches{' '}
-                    <span style={{ textTransform: 'none', letterSpacing: 0, fontWeight: 500 }}>· reuse one you built</span>
-                  </div>
-                  <div className="saved-list">
-                    {savedSearches.map((r) => (
-                      <div
-                        key={r.slug}
-                        className={draft.savedSearch === r.slug ? 'saved-row saved-row-on' : 'saved-row'}
-                        onClick={() => edit({ savedSearch: r.slug })}
-                        role="button"
-                        tabIndex={0}
-                        aria-pressed={draft.savedSearch === r.slug}
-                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); edit({ savedSearch: r.slug }) } }}
+              <div className="field-label">Add a class</div>
+              <div style={{ position: 'relative' }}>
+                <input
+                  value={classQuery}
+                  onChange={(e) => setClassQuery(e.target.value)}
+                  autoComplete="off"
+                  aria-label="Add a Nice class"
+                  className="ctx-input"
+                />
+                {classMatches(classQuery, classes).length ? (
+                  <div className="typeahead">
+                    {classMatches(classQuery, classes).map((c) => (
+                      <button
+                        key={c}
+                        type="button"
+                        onClick={() => {
+                          // The first addition PROMOTES what was inherited into an explicit list, so the
+                          // owner's own classes are kept rather than replaced by the one just chosen.
+                          edit({ classes: [...classes, c].filter(isClassNumber).sort((a, b) => a - b) })
+                          setClassQuery('')
+                        }}
                       >
-                        <span className={draft.savedSearch === r.slug ? 'radio radio-on' : 'radio'} aria-hidden />
-                        <span style={{ flex: 1, minWidth: 0 }}>
-                          <span style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--text-strong)' }} data-anon="mark">{r.label}</span>
-                          <span style={{ fontSize: 11.5, color: 'var(--text-faint)', marginLeft: 8 }}>
-                            {/* A picker, not a comparison: the row already leads with the client's own
-                                label in strong text, so this faint second line says WHAT it is rather
-                                than where it sits on our ladder. */}
-                            {(() => { const l = levels.find((x) => x.key === r.base); return l ? (l.name || l.stageLabel) : 'no longer available' })()}
-                          </span>
-                        </span>
-                        {/* RETIRE, not delete. A saved search that produced a report is part of that
-                            report's record — the engine has no delete door, and inventing one here would
-                            promise something the server refuses. Retiring lives on Custom searches, which
-                            is where the list of them is; this is a shortcut to it, not a second control.
-                            It pointed at /portal/settings/searches, which has not been a route since the
-                            brand screens moved to the top level — so the one control on this screen that
-                            claimed to manage a saved search landed on "That page does not exist". */}
-                        <button
-                          type="button"
-                          title="Retire this custom search"
-                          aria-label={`Retire ${r.label}`}
-                          className="saved-retire"
-                          onClick={(e) => { e.stopPropagation(); ctx.go('/portal/brand/searches') }}
-                        >
-                          <Icon name="trash" size={15} />
-                        </button>
-                      </div>
+                        {classLabel(c)}
+                      </button>
                     ))}
                   </div>
-                </>
+                ) : null}
+              </div>
+              {draft.classes ? (
+                <button type="button" className="link-btn" style={{ marginTop: 7 }} onClick={() => edit({ classes: null })}>
+                  Use the company’s classes instead
+                </button>
               ) : null}
             </div>
 
-            {/* ── the levers ── */}
-            {draft.savedSearch ? (
-              <div className="notice" style={{ margin: 0 }}>
-                <b>This custom search carries its own set-up</b>
-                {/* IT DECIDES THE DEPTH, NOT THE SCOPE. This said "and where it points", which is what
-                    the record LOOKS like — a saved search stores a scope — but the saved territories do
-                    not steer the run: the engine scopes off the request and the account's own defaults
-                    (driver/jx-lanes.mjs). So the sentence invited an empty Where and then the one-country
-                    blocker sent the user looking for a control the notice had told them not to touch. */}
-                <p style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>
-                  It decides how deep the search goes. Where, below, is still yours to set — the custom
-                  search does not fix it.{' '}
-                  <button type="button" className="link-btn" onClick={() => edit({ savedSearch: '' })}>
-                    Set the levers myself instead
-                  </button>
-                </p>
+            {/* Marketplaces: a FLOOR. A project unions more in and can never remove one, so these are shown
+                and never offered as removable — a chip with an × on it would be a control the engine undoes. */}
+            <div style={{ minWidth: 230, flex: 1 }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 8 }}>
+                <span className="field-label" style={{ marginBottom: 0 }}>Marketplaces</span>
+                <span style={{ fontSize: 11, color: 'var(--text-faint)' }}>{own.platforms.length} on file</span>
               </div>
-            ) : (
-              <>
-              <div>
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: 9, marginBottom: 3 }}>
-                  <span className="section-title" style={{ marginBottom: 0 }}>What this search includes</span>
-                </div>
-                {/* WHAT IT CARRIES, stated. Not controls: these are facts about the search that was
-                    picked, and a switch beside a fact is an invitation to change something that is not
-                    a setting. Case law in particular used to be a lever on every clearance; it is what
-                    a Full country search IS. */}
-                {/* ── §B — IN OR OUT, VISUALLY ────────────────────────────
-                    The owner: "replace with obvious tick/cross markers so in-or-out is visual." The list
-                    read as three sentences of equal weight, and whether an axis ran at all was buried in
-                    the clause after the dash — on the one screen where a reader is deciding what they
-                    are buying.
-                    THE GLYPH IS DERIVED FROM THE SAME FIELD THE SENTENCE IS, never set beside it: a tick
-                    over "not part of this search" is a worse defect than no tick at all. The word rides
-                    for a reader who cannot see the glyph. */}
-                <ul className="carries">
-                  {/* "not searched; filing counts only" LED WITH THE ABSENCE and then contradicted it in
-                      the same clause. What a Knockout buys at the register is a COUNT — three of them per
-                      name, in the classes named — and what it does not buy is the reading of the filings
-                      behind them. Say the thing that was bought first. */}
-                  {[
-                    { in: true, text: `Trademark registers — ${activePipeline === 'knockout' ? 'filing counts per name (identical · containing · close variations), scoped to your classes; the filings themselves are not analysed' : 'searched, across your classes'}` },
-                    { in: true, text: `Marketplace & common-law use — ${activePipeline === 'knockout' ? 'one broad sweep per name' : 'the full grid, every shop term by term'}` },
-                    { in: Boolean(activeLevel?.caseLaw), text: `Case law and oppositions — ${activeLevel?.caseLaw ? 'part of this search' : 'not part of this search'}` },
-                  ].map((row) => (
-                    <Carries key={row.text} included={row.in} label={row.text}>{row.text}</Carries>
-                  ))}
-                </ul>
+              {marketplacesApply ? (
+                own.platforms.length ? (
+                  <>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                      {(showAllShops ? own.platforms : own.platforms.slice(0, 6)).map((p) => (
+                        <span key={p} className="chip chip-mono" data-anon="mark">{p}</span>
+                      ))}
+                      {own.platforms.length > 6 ? (
+                        <button type="button" className="chip chip-more" onClick={() => setShowAllShops((v) => !v)}>
+                          {showAllShops ? 'Show less' : `Show all ${own.platforms.length}`}
+                        </button>
+                      ) : null}
+                    </div>
+                    {/* 12.5px and --text-muted, the treatment the Classes column's own explanatory line
+                        gets 16px to the left — the same weight, because it answers the same question a
+                        reader asks of both. (The footnote treatment it replaced put the answer to "why can
+                        I not remove these" at 11px beside class chips that all carry an ×.) */}
+                    <p style={{ margin: '9px 0 0', fontSize: 12.5, color: 'var(--text-muted)', lineHeight: 1.5 }}>
+                      Every marketplace listed here is a forced deep dive inherited from the company and
+                      then the project. By default common law sweeps everything it can find on the open web,
+                      but this ensures particular focus to important markets.
+                    </p>
+                    <div style={{ marginTop: 10 }}>
+                      <div className="field-label">Add more for this search</div>
+                      <input
+                        value={draft.platforms}
+                        onChange={(e) => edit({ platforms: e.target.value })}
+                        placeholder="gnc.com, iherb.com"
+                        aria-label="Extra marketplaces for this search"
+                        className="ctx-input"
+                      />
+                      <p style={{ margin: '6px 0 0', fontSize: 11.5, color: 'var(--text-faint)', lineHeight: 1.45 }}>
+                        To edit the default list see{' '}
+                        <button type="button" className="link-btn" onClick={() => ctx.go('/portal/brand/profile')}>
+                          Profile
+                        </button>
+                        .
+                      </p>
+                    </div>
+                  </>
+                ) : (
+                  <p style={{ margin: 0, fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.5 }}>
+                    None on file — the open web is searched regardless. Add shops on Profile, or name
+                    extra ones for this search below.
+                  </p>
+                )
+              ) : (
+                <p style={{ margin: 0, fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.5 }}>
+                  {activePipeline === 'knockout'
+                    ? 'A knockout search sweeps these shops and the open web as one broad question per name. '
+                      + 'The structured grid — every shop checked term by term, with a coverage ledger — runs '
+                      + 'on a clearance.'
+                    : 'These shops are swept on every search we run.'}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
 
-                {/* THE ONE TOGGLE IN THE OFFERING, and it is drawn only where it is a choice. On a Full
-                    country search it is automatic and the screen SAYS so rather than showing a switch
-                    that cannot move; on the other two it is not sold, so there is nothing here at all —
-                    never a greyed control, which invites a click and answers nothing. */}
-                {nativeControl === 'toggle' ? (
-                  <div className="sunken-block" style={{ marginTop: 12 }}>
+        {/* ── WHICH SEARCH ── */}
+        <div>
+          <div className="nc-which-head">
+            <span className="section-title" style={{ marginBottom: 0 }}>Which search</span>
+            {/* TEMPLATES ARE THEIR OWN CONTROL, never rows among the four. They were once a second list
+                under the products, and before that pills in one row with them under a heading that
+                counted four — so the heading was wrong for every company that had saved anything, and
+                the one thing telling the two kinds apart was a dashed border. A dropdown with its own
+                label cannot be mistaken for one of the searches it applies to. Drawn only for a company
+                that has one: an empty dropdown is a control with nothing to choose. */}
+            {savedSearches.length ? (
+              <span className="nc-templates">
+                <label>
+                  <span className="field-label">Search templates</span>
+                  <select
+                    value={draft.savedSearch}
+                    onChange={(e) => { setPickedByHand(true); edit({ savedSearch: e.target.value }) }}
+                    className="ctx-select"
+                    aria-label="Search templates"
+                    data-anon="mark"
+                  >
+                    <option value="">None</option>
+                    {sortSavedSearches(savedSearches).map((r) => (
+                      <option key={r.slug} value={r.slug}>{displayLabel(r)}</option>
+                    ))}
+                  </select>
+                </label>
+                {/* RETIRE, not delete, and it lives with the list. A template that produced a report is
+                    part of that report's record — the engine has no delete door — so this is the way to
+                    the page that retires and brings back, not a second control for it. */}
+                <button type="button" className="chip-btn" onClick={() => ctx.go('/portal/brand/searches')}>Manage</button>
+              </span>
+            ) : null}
+          </div>
+
+          {/* A TEMPLATE DECIDES THE SEARCH AND ITS DEPTH, NOT THE SCOPE. An earlier notice said it
+              decided "where it points", which is what the record LOOKS like — a template stores a scope —
+              but the saved territories do not steer the run: the engine scopes off the request and the
+              company's own defaults (driver/jx-lanes.mjs). So that sentence invited an empty Where, and
+              then the one-country blocker sent the reader looking for a control the notice had told them
+              not to touch. `templateLine` says what stays theirs, true for the search it sets. */}
+          {draft.savedSearch ? (
+            <p className="nc-template-line">
+              {templateLine(savedRow ? displayLabel(savedRow) : 'This template', activeLevel)}{' '}
+              <button type="button" className="chip-btn" onClick={() => edit({ savedSearch: '' })}>Clear template</button>
+            </p>
+          ) : null}
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {levels.map((t) => (
+              <PickRow
+                key={t.key}
+                // The TEMPLATE's search is the selected row while one is applied, because that is the
+                // search that will run — a picker showing nothing selected over a template that sets one
+                // would be two answers to "which search is this".
+                selected={activeBase === t.key}
+                // NOT DISABLED, and the reason is AT the row. A product this deployment cannot run
+                // still gets a row with its own sentence beside it: a control that vanishes leaves a
+                // client with no way to know the search exists, and a greyed one with no reason
+                // invites a click that answers nothing.
+                unavailableNote={t.available ? null : (t.unavailableNote ?? 'Not available just now.')}
+                // — orderable, WITH the limit stated at the point of choosing.
+                coverageNote={t.available ? t.coverageNote : null}
+                capabilityNote={t.available ? t.capabilityNote : null}
+                onPick={() => { setPickedByHand(true); edit({ pick: chooseProduct(draft.pick, t), savedSearch: '' }) }}
+                title={t.name}
+                // BOTH FIGURES ARE THE SERVER'S. A hand-typed "up to 20 names" beside a wall that
+                // refuses at eight is what this row used to carry.
+                tagline={`${t.geography} · up to ${t.maxNames} name${t.maxNames === 1 ? '' : 's'}${t.baseTurnaround ? ` · from ${turnaroundInWords(t.baseTurnaround)}` : ''}`}
+                recommended={recommendation?.product.key === t.key ? recommendation.reason : null}
+                description={
+                  // — THE COUNTS ARE PART OF WHAT A KNOCKOUT IS, so the row says so first. It read "No
+                  // register search", which was true of a tier the offering retired and false of the one
+                  // it sells: every Knockout takes register filing counts. A client choosing between the
+                  // four was told this one does not touch a register, and then received a report whose
+                  // second section is register figures.
+                  t.pipeline === 'knockout'
+                    ? 'Quick register count for identical, containing and close variants, plus a marketplace and common-law screen, across many names.'
+                    : t.caseLaw
+                      ? 'Trademark registers, the live marketplace, and that country’s case law and oppositions.'
+                      : `Trademark registers and the live marketplace, one name.${t.nativeLanguage === 'offered' ? ' Native-language search optional.' : ''}`
+                }
+                // WHAT IT CARRIES, stated as facts about the search, never as switches: a switch beside a
+                // fact is an invitation to change something that is not a setting. Case law in
+                // particular used to be a lever on every clearance; it is what a Full country search IS.
+                // THE MARK AND THE WORDS COME OFF ONE FIELD, so a tick can never sit over a search that
+                // does not carry the thing it ticks.
+                chips={[
+                  { in: t.pipeline !== 'knockout' || t.components.includes('registerProbe'), text: t.pipeline === 'knockout' ? 'Registers, quick count' : 'Registers, full search' },
+                  { in: true, text: 'Marketplaces' },
+                  { in: Boolean(t.caseLaw), text: 'Case law' },
+                ]}
+              >
+                {/* THE ONE TOGGLE IN THE OFFERING, inside the search it belongs to, and drawn only where it
+                    is a choice. On a Full country search it is automatic and the row SAYS so rather than
+                    showing a switch that cannot move; on the other two it is not sold, so there is nothing
+                    here at all — never a greyed control, which invites a click and answers nothing. A
+                    template carries its own, so nothing is drawn under one. */}
+                {activeBase === t.key && !draft.savedSearch ? (
+                  nativeControl === 'toggle' ? (
                     <Lever
                       label="Native-language investigation"
-                      hint="Native marketplaces and native registers in the language of the countries you named. A clearance already searches the mark transliterated into the scripts its territories register marks in — this is the deeper read."
+                      hint="Native registers and marketplaces in the languages of the countries you named"
                       on={draft.pick.nativeLanguage}
                       onToggle={() => setPick(toggleNativeLanguage(draft.pick, activeLevel))}
                     />
-                  </div>
-                ) : nativeControl === 'automatic' ? (
-                  <p className="section-hint" style={{ marginTop: 10 }}>
-                    The native language of that country is searched automatically — it is part of this
-                    search, not something to switch on.
-                  </p>
-                ) : null}
-
-                {/* THE FOUR SIDE BY SIDE. The delta view that used to sit here priced a LEVER MOVE, and
-                    there are no levers: what a client asks now is "am I buying the right one of the
-                    four", which is a comparison, which is a table. Every cell is read off the same
-                    fetched payload the picker above is built from, so neither can drift from what the
-                    engine will actually run. */}
-              </div>
-              {/* ── — THE OPT-OUT HAS TO BE A CHILD OF THE THING THAT CAPS IT ──
-                  The owner has ruled this width three times, and the reason it survived two fixes is
-                  that the second one was inert. `.composer-wide` was written to let this block take the
-                  screen's measure, and it was applied to a GRANDCHILD of `.composer-col`. The cap is
-                  `.composer-col > *`, which matches direct children only — so the block's own parent was
-                  still 720px, and `max-width: none` cannot make a box wider than the one it lives in.
-                  Measured before this change, at a 1280px window: wrapper 718px against a 760px table,
-                  42px of overflow, FOUR of the five columns visible and the fifth reachable only by
-                  side-scrolling, with 248px of the column's width unused beside it. Exactly the failing
-                  signature he named — wraps AND side-scrolls.
-
-                  So it is a sibling now rather than a descendant, and the fragment above exists for
-                  that and nothing else. The rule it opts out of is unchanged: 720px is the right measure
-                  for a COLUMN OF FIELDS, and a five-column comparison is not a form line. `.table-wrap`
-                  keeps its scroll for a genuinely narrow viewport, where there is no room to give. */}
-              {levels.length ? (
-                /* No margin of its own any more. As a child of the wrapper it needed one; as a direct
-                   child of `.composer-col` it inherits the column's 26px flex gap, and keeping the 14
-                   on top put it 40px from the list it belongs to — further than two SECTIONS sit
-                   apart, which reads as detached rather than as part of what is above it. */
-                <div className="composer-wide">
-                  <Details summary="Detailed search comparison table for information">
-                    <ProductMatrix products={levels} currentKey={activeBase} />
-                  </Details>
-                </div>
-              ) : null}
-              </>
-            )}
-
-            {/* ── WHERE — a different control per product, and each says at the control what it takes ── */}
-            <div>
-              <div className="section-title">Where</div>
-              {/* THE PRODUCT'S OWN SENTENCE, at the control, always. Not a tooltip and not a refusal
-                  after the fact: the requester reads what this search accepts while they are choosing
-                  where it points. */}
-              {geoNote ? <p className="section-hint">{geoNote}</p> : null}
-
-              {activeLevel?.geography === 'worldwide, and nothing else' ? (
-                // NO PICKER AT ALL, and that is the design. Worldwide is not a choice on this search —
-                // it IS this search — so a territory field here would be a control whose every use is
-                // refused. The chip states the fact; the sentence above says why there is nothing to set.
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, margin: '9px 0 0' }}>
-                  <span className="chip">Worldwide</span>
-                </div>
-              ) : (
-                <>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, margin: '9px 0 10px' }}>
-                    {/* "WORLDWIDE" WAS ONLY TRUE FOR AN ACCOUNT WITH NO TERRITORIES OF ITS OWN. An empty
-                        list used to mean "unset", and the engine's ladder resolved unset to the brand
-                        owner's defaultJurisdictions — seven of them, for one demo account — so this chip
-                        promised a worldwide clearance and the run searched seven countries. The request
-                        now STATES its mode (`geographyFor`), so the two can no longer be confused; what
-                        the screen still owes the reader is the account's own list, tagged with where it
-                        came from, exactly as Classes does above. */}
-                    {draft.pick.territories.length === 0 ? (
-                      own.territories.length ? (
-                        <>
-                          {own.territories.map((t) => (
-                            <span key={t} className="chip" data-anon="mark">{t}</span>
-                          ))}
-                          <span style={{ fontSize: 11, color: 'var(--text-faint)', alignSelf: 'center' }}>
-                            {own.territoriesFrom}
-                          </span>
-                        </>
-                      ) : (
-                        <span className="chip">Worldwide</span>
-                      )
-                    ) : draft.pick.territories.map((t) => (
-                      /* — a chosen territory the register cannot reach keeps its
-                         chip and says so. It is ordered, and disclosed as deferred coverage rather than
-                         searched; removing it from the list would be the silent narrowing this issue is
-                         about, one step later. */
-                      <span key={t} className={reachesTerritory(t, registerTerritories) ? 'chip chip-own' : 'chip chip-own chip-deferred'}
-                        title={reachesTerritory(t, registerTerritories) ? undefined : 'The register wired to this deployment does not reach this territory — it is disclosed in the report as deferred coverage rather than searched.'}>
-                        {t}{reachesTerritory(t, registerTerritories) ? '' : ' · register deferred'}
-                        <button
-                          type="button"
-                          aria-label={`Remove ${t}`}
-                          className="chip-x"
-                          onClick={() => setPick(removeTerritory(draft.pick, t))}
-                        >
-                          <Icon name="x" size={13} />
-                        </button>
-                      </span>
-                    ))}
-                  </div>
-                  <div className="fld-medium" style={{ position: 'relative' }}>
-                    <input
-                      value={territoryQuery}
-                      onChange={(e) => setTerritoryQuery(e.target.value)}
-                      // The PLACEHOLDER follows the product too: a Full country search offers no regions,
-                      // so inviting one would be inviting a refusal.
-                      placeholder={activeLevel?.geography === 'exactly one country' ? 'Type a country…' : 'Type a country or region…'}
-                      autoComplete="off"
-                      aria-label="Add a territory"
-                      className="ctx-input"
-                      disabled={!activeLevel}
-                    />
-                    {territoryMatches(territoryQuery, draft.pick.territories, activeLevel, 8, registerTerritories).length ? (
-                      <div className="typeahead">
-                        {territoryMatches(territoryQuery, draft.pick.territories, activeLevel, 8, registerTerritories).map((t) => (
-                          <button
-                            key={t}
-                            type="button"
-                            onClick={() => { setPick(addTerritory(draft.pick, t, activeLevel, registerTerritories)); setTerritoryQuery('') }}
-                          >
-                            {t}
-                            {/* — SHOWN AND SELECTABLE, with the reason at the
-                                control. It used to be absent, which teaches a reader nothing: they
-                                cannot tell an unsupported territory from one they mistyped. */}
-                            {reachesTerritory(t, registerTerritories) ? null : (
-                              <span className="typeahead-note">register deferred</span>
-                            )}
-                          </button>
-                        ))}
-                      </div>
-                    ) : null}
-                  </div>
-                  {/* ── — STATED ONCE, ON THE SCREEN THAT CHOOSES AGAINST IT ──
-                      "A reader choosing territories is choosing against a coverage map they cannot
-                      currently see." This is that map, in one line and in the reader's own vocabulary.
-                      Rendered only where there is something to say: a register that declares no
-                      restriction, or a server that has not told us, has no coverage map to state, and a
-                      line saying so would be noise on every deployment. It names no vendor — one
-                      register, never a baked-in provider name — because what a reader can act on is the
-                      reach, not the brand. */}
-                  {Array.isArray(registerTerritories) ? (
-                    // BOTH FIGURES ARE SCOPED TO THE PRODUCT, which is what `registerTerritories.length`
-                    // alone would get wrong: a Full country search can name no regions, so a region the
-                    // register covers is not one of "the territories you can name here".
-                    <p className="section-hint" style={{ marginTop: 10 }}>
-                      The trademark register wired to this deployment reaches{' '}
-                      {vocabularyFor(activeLevel, registerTerritories).length} of the{' '}
-                      {offerableFor(activeLevel).length} territories you can name here:{' '}
-                      {vocabularyFor(activeLevel, registerTerritories).join(', ')}. Anywhere else can
-                      still be ordered — it is disclosed in the report as deferred coverage rather than
-                      searched at the register.
+                  ) : nativeControl === 'automatic' ? (
+                    <p className="section-hint" style={{ margin: 0 }}>
+                      The native language of that country is searched automatically — it is part of this
+                      search, not something to switch on.
                     </p>
-                  ) : null}
-                  {/* ONE COUNTRY REPLACES, it does not stack — so the note says what just happened rather
-                      than leaving the reader to notice a chip disappear. */}
-                  {activeLevel?.geography === 'exactly one country' && draft.pick.territories.length === 1 ? (
-                    <div className="callout-accent">
-                      {draft.pick.territories[0]} — naming another country replaces it, because this search
-                      reads one at a time.
-                    </div>
-                  ) : null}
-                </>
-              )}
-            </div>
-
-            {/* ── goods ── */}
-            <div>
-              <div className="section-title">Goods or services description (optional)</div>
-              <textarea
-                value={draft.goods}
-                onChange={(e) => edit({ goods: e.target.value })}
-                rows={3}
-                aria-label="Goods or services"
-                placeholder="Downloadable software for fleet logistics; software as a service."
-                className="ctx-input"
-                style={{ resize: 'vertical', lineHeight: 1.5 }}
-              />
-            </div>
-
-            {/* ── §B — CONTEXT MOVES UP, AND IS ALWAYS OPEN ────────────────
-                The owner: "not hidden under a collapse thing — it's important." It sat third inside a
-                collapsible headed "References and dates", so the one field that changes how a hit is
-                WEIGHED was behind a click, under a heading that does not describe it, below two fields
-                about paperwork. It now sits directly under Goods or services — the field it qualifies —
-                in the open, as its own section like every other thing that matters on this form.
-                What is left in the collapsible is exactly what its summary already claims: a reference
-                and a date. */}
-            <div>
-              <div className="section-title">Any context that might be relevant (optional).</div>
-              <textarea
-                value={draft.instructions}
-                onChange={(e) => edit({ instructions: e.target.value })}
-                rows={3}
-                aria-label="Any context that might be relevant"
-                // THE PLACEHOLDER IS A WORKED EXAMPLE, labelled as one. The old placeholder was a
-                // well-formed sentence and taught nothing about what KIND of thing belongs here — a
-                // reader who has nothing that reads like it writes nothing at all. Naming the shapes
-                // (a launch page, a post) is what tells them they have something to paste.
-                placeholder={'Example: we already own the mark in the US and this is about the EU launch. '
-                  + 'Our launch page is https://example.com/press/aquaplus-launch, and there is a LinkedIn '
-                  + 'post announcing it from 3 June.'}
-                className="ctx-input"
-                style={{ resize: 'vertical', lineHeight: 1.5 }}
-              />
-              {/* The connector is a second way this field gets filled, and nothing on the screen said so.
-                  A search started by an agent through the connector can cite what the agent can already
-                  read, so a reader working that way does not have to paste any of it by hand. */}
-              <p className="section-hint" style={{ margin: '7px 0 0' }}>
-                A search started by an agent through the connector can reference emails or documents it
-                can already read, so there is nothing to paste in that case.
-              </p>
-            </div>
-
-            {/* The marketplaces field MOVED OUT of here, up beside the chips it adds to. It sat in a
-                collapsible with three unrelated fields, so the one control that answers "how do I add a
-                shop" was two clicks from the list of shops. The context field moved out too (§B of
-                ) and is above. What is left is a reference and a date, which is what
-                this collapsible's summary says it holds. */}
-            <Details summary="References and dates (optional)">
-              <Field label="Your reference" hint="Appears in report and file name">
-                <input value={draft.ref} onChange={(e) => edit({ ref: e.target.value })} placeholder="TMP1234" className="ctx-input" />
-              </Field>
-              <Field label="Deadline" hint="Date may have a bearing on report synthesis">
-                <input
-                  type="date"
-                  value={draft.deadline}
-                  onChange={(e) => edit({ deadline: e.target.value })}
-                  className="ctx-input fld-narrow"
-                />
-              </Field>
-            </Details>
-
-            {/* Everything standing in the way, each as its own fixable sentence. A disabled button with no
-                reason is exactly what this screen was rebuilt to stop doing.
-
-                `gaps` JOINS THE LIST. It was the one term in `ready` with no sentence anywhere, and the
-                two headings are different claims on purpose: a form nobody has finished filling in is
-                not the same thing as a search that is set up wrongly, and telling someone their work is
-                "not runnable" when all they have done so far is type a name reads as a fault. */}
-            {gaps.length ? (
-              <div className="notice" style={{ borderColor: 'var(--tone-medium)', margin: 0 }}>
-                <b>{gaps.length === 1 ? 'One thing left to fill in' : 'A couple of things left to fill in'}</b>
-                <ul style={{ margin: '8px 0 0', paddingLeft: 18, color: 'var(--text-muted)' }}>
-                  {gaps.map((g, i) => <li key={`g${i}`} style={{ marginBottom: 3 }}>{g}</li>)}
-                </ul>
-              </div>
-            ) : null}
-
-            {stops.length || nameStops.length ? (
-              <div className="notice" style={{ borderColor: 'var(--tone-medium)', margin: 0 }}>
-                <b>Not runnable as set</b>
-                <ul style={{ margin: '8px 0 0', paddingLeft: 18, color: 'var(--text-muted)' }}>
-                  {/* The mark-name sentences lead: a name that cannot run makes every other stop below
-                      it moot, and it is the one the reader can fix in the field just above. */}
-                  {nameStops.map((s, i) => <li key={`n${i}`} style={{ marginBottom: 3 }}>{s}</li>)}
-                  {stops.map((s, i) => <li key={i} style={{ marginBottom: 3 }}>{s}</li>)}
-                </ul>
-              </div>
-            ) : null}
-
-            {problem ? (
-              <div className="notice" style={{ borderColor: 'var(--tone-high)', margin: 0 }}>
-                <b>{problem.title}</b>
-                <ul style={{ margin: '8px 0 0', paddingLeft: 18, color: 'var(--text-muted)' }}>
-                  {problem.lines.map((l, i) => <li key={i} style={{ marginBottom: 3 }}>{l}</li>)}
-                </ul>
-              </div>
-            ) : null}
+                  ) : null
+                ) : null}
+              </PickRow>
+            ))}
           </div>
+        </div>
 
-          {/* units/cost/duration below are the BROWSER's figures while composing — they have to be
-              instant as the levers move, and this step makes no server call by design. Once a plan
-              exists the SERVER's replace them in place: same footer, same layout, different source.
-              They agree by construction (effortModelParity.test.ts pins the weights) except where a
-              lever does not survive the wire — the script-lane count, which the server resolves from
-              the jurisdictions and the composer can only guess at. That case is exactly why the server
-              is preferred here rather than leaving a guess on screen beside the Start button.
+        {/* THE FOUR SIDE BY SIDE. A client choosing between them is asking "am I buying the right one",
+            which is a comparison, which is a table. Every cell is read off the same fetched payload the
+            rows above are built from, so neither can drift from what the engine will actually run. */}
+        {/* ── — THE OPT-OUT HAS TO BE A CHILD OF THE THING THAT CAPS IT ──
+            The owner has ruled this width three times, and the reason it survived two fixes is that the
+            second one was inert. `.composer-wide` was written to let this block take the screen's
+            measure, and it was applied to a GRANDCHILD of `.composer-col`. The cap is
+            `.composer-col > *`, which matches direct children only — so the block's own parent was
+            still 720px, and `max-width: none` cannot make a box wider than the one it lives in.
+            Measured at a 1280px window: wrapper 718px against a 760px table, 42px of overflow, FOUR of
+            the five columns visible and the fifth reachable only by side-scrolling. So it is a direct
+            child. The rule it opts out of is unchanged: 720px is the right measure for a COLUMN OF
+            FIELDS, and a five-column comparison is not a form line. `.table-wrap` keeps its scroll for
+            a genuinely narrow viewport, where there is no room to give. */}
+        {levels.length ? (
+          <div className="composer-wide">
+            <Details summary="Detailed search comparison table">
+              <ProductMatrix products={levels} currentKey={activeBase} />
+            </Details>
+          </div>
+        ) : null}
 
-              `tier` — ONE NAME, AND IT IS THE PRODUCT'S. The footer used to call a composed search
-              "Full clearance" (a label the composer invented, because the registry had no word for it)
-              and a saved one "Stage 1". Both now read the name the delivered report prints at the top. */}
-          <Footer
-            startedFrom={startedFrom}
-            tier={activeLevel?.name || activeLevel?.stageLabel || (draft.savedSearch ? 'Custom search' : 'No search picked')}
-            detail={[
-              names.length ? `${names.length} name${names.length === 1 ? '' : 's'}` : 'no names yet',
-              // Same correction as the Where chips: unset resolves to the account's territories, not to
-              // the world. The footer is the running total someone watches while composing, so it is the
-              // last place that should disagree with what will actually run.
-              draft.pick.territories.length
-                ? draft.pick.territories.join(', ')
-                : own.territories.length
-                  ? own.territories.join(', ')
-                  : 'worldwide',
-              checksSummary(effort),
-            ].join(' · ')}
-            units={plan?.effort?.units ?? effortUnits(effort)}
-            cost={plan?.effort?.costBand ?? costBand(effort)}
-            duration={plan?.effort?.turnaround || turnaround(effort)}
-            runs={runsNote(effort)}
-            ready={ready}
-            busy={busy}
-            // — DEMO ONLY, never unknown. `engineMode` is null when no configuration snapshot has
-            // been written; that is "cannot answer", and answering it as demo would take the button away
-            // from a working install because a file is missing.
-            demoMode={ctx.me.engineMode === 'demo'}
-            setupRoute={ctx.me.setupRoute}
-            programDisputed={ctx.me.engineProgramDisputed}
-            // ONE CLICK TO THE PAGE THAT EXPLAINS IT, and only for a reader who can open it. Global
-            // config is served only to someone who sees everything, so this asks the fact the avatar
-            // menu asks: Manage alone would link a manager of one organisation to a dead end.
-            // Null is the honest shape for "there is nowhere to send this reader", not a dead button.
-            onSettings={seesEverything(ctx.me) ? () => ctx.go('/portal/admin/config') : null}
-            saveOpen={saveOpen}
-            saveName={saveName}
-            saveText={saveText}
-            saveNote={saveNote}
-            saveDone={saveDone}
-            editing={editingSlug != null}
-            canSave={!draft.savedSearch && !stops.length}
-            // THE FIRST REASON, AT THE BUTTON. The full list is a notice further up the page, and the
-            // footer is sticky — so on a long form the greyed button and its explanation are routinely
-            // not on screen together. One sentence rather than the list: the reader fixes them one at a
-            // time anyway, and a paragraph in a footer bar is not read. Ordered the way the notices are.
-            blockedBy={blockedBy}
-            onSaveOpen={() => { setSaveOpen(true); setSaveName(activeLevel ? `${activeLevel.name}` : 'Custom search') }}
-            onSaveName={setSaveName}
-            onSaveText={setSaveText}
-            // An edit's save panel is the reason the screen is open, so cancelling it goes back to the
-            // list rather than leaving the levers of someone else's saved search sitting on a form with
-            // no way to tell what they belong to.
-            onSaveCancel={() => {
-              if (editingSlug) { ctx.go('/portal/brand/searches'); return }
-              setSaveOpen(false); setSaveNote(null)
-            }}
-            onSave={doSave}
-            onReview={doPlan}
-            onSeeSaved={() => ctx.go('/portal/brand/searches')}
-          />
-
-          {plan ? (
-            <ReviewDialog
-              plan={plan}
-              busy={busy}
-              owner={ownerLabel}
-              project={projectLabel}
-              names={names}
-              onStart={doRun}
-              onBack={() => { setPlan(null); setRunFailure(null) }}
-              failure={runFailure}
-              onReview={() => { setPlan(null); setRunFailure(null); void doPlan() }}
+        {/* The marketplaces field MOVED OUT of here, up beside the chips it adds to, and the context field
+            is its own section above. What is left is a reference and a date, which is what this
+            collapsible's summary says it holds. */}
+        <Details summary="References and dates (optional)">
+          <Field label="Your reference" hint="Appears in report and file name">
+            <input value={draft.ref} onChange={(e) => edit({ ref: e.target.value })} placeholder="TMP1234" className="ctx-input" />
+          </Field>
+          <Field label="Deadline" hint="Date may have a bearing on report synthesis">
+            <input
+              type="date"
+              value={draft.deadline}
+              onChange={(e) => edit({ deadline: e.target.value })}
+              className="ctx-input fld-narrow"
             />
-          ) : null}
-        </>
-      )}
+          </Field>
+        </Details>
+
+        {/* Everything standing in the way, each as its own fixable sentence. A disabled button with no
+            reason is exactly what this screen was rebuilt to stop doing.
+
+            `gaps` JOINS THE LIST. It was the one term in `ready` with no sentence anywhere, and the
+            two headings are different claims on purpose: a form nobody has finished filling in is
+            not the same thing as a search that is set up wrongly, and telling someone their work is
+            "not runnable" when all they have done so far is type a name reads as a fault. */}
+        {gaps.length ? (
+          <div className="notice" style={{ borderColor: 'var(--tone-medium)', margin: 0 }}>
+            <b>{gaps.length === 1 ? 'One thing left to fill in' : 'A couple of things left to fill in'}</b>
+            <ul style={{ margin: '8px 0 0', paddingLeft: 18, color: 'var(--text-muted)' }}>
+              {gaps.map((g, i) => <li key={`g${i}`} style={{ marginBottom: 3 }}>{g}</li>)}
+            </ul>
+          </div>
+        ) : null}
+
+        {stops.length || nameStops.length ? (
+          <div className="notice" style={{ borderColor: 'var(--tone-medium)', margin: 0 }}>
+            <b>Not runnable as set</b>
+            <ul style={{ margin: '8px 0 0', paddingLeft: 18, color: 'var(--text-muted)' }}>
+              {/* The mark-name sentences lead: a name that cannot run makes every other stop below
+                  it moot, and it is the one the reader can fix in the field just above. */}
+              {nameStops.map((s, i) => <li key={`n${i}`} style={{ marginBottom: 3 }}>{s}</li>)}
+              {stops.map((s, i) => <li key={i} style={{ marginBottom: 3 }}>{s}</li>)}
+            </ul>
+          </div>
+        ) : null}
+
+        {problem ? (
+          <div className="notice" style={{ borderColor: 'var(--tone-high)', margin: 0 }}>
+            <b>{problem.title}</b>
+            <ul style={{ margin: '8px 0 0', paddingLeft: 18, color: 'var(--text-muted)' }}>
+              {problem.lines.map((l, i) => <li key={i} style={{ marginBottom: 3 }}>{l}</li>)}
+            </ul>
+          </div>
+        ) : null}
+      </div>
+
+      {/* The footer's figures are the BROWSER's while composing — they have to be instant as the form
+          moves, and this step makes no server call by design. Once a plan exists the SERVER's replace
+          them in place: same footer, same layout, different source. They agree by construction
+          (effortModelParity.test.ts pins the weights) except where a choice does not survive the wire —
+          the script-lane count, which the server resolves from the jurisdictions and the composer can only
+          guess at. That case is exactly why the server is preferred here rather than leaving a guess on
+          screen beside the button.
+
+          `tier` — ONE NAME, AND IT IS THE PRODUCT'S. The footer used to call a composed search
+          "Full clearance" (a label the composer invented, because the registry had no word for it)
+          and a saved one "Stage 1". Both now read the name the delivered report prints at the top. */}
+      <Footer
+        startedFrom={startedFrom}
+        tier={activeLevel?.name || activeLevel?.stageLabel || (draft.savedSearch ? 'Search template' : 'No search picked')}
+        detail={[
+          names.length ? `${names.length} name${names.length === 1 ? '' : 's'}` : 'no names yet',
+          // Same correction as the Where chips: unset resolves to the account's territories, not to
+          // the world. The footer is the running total someone watches while composing, so it is the
+          // last place that should disagree with what will actually run. CODES here and only here: a
+          // bar one line tall has no room for place names, and every other surface spells them out.
+          draft.pick.territories.length
+            ? draft.pick.territories.map(territoryCode).join(', ')
+            : own.territories.length
+              ? own.territories.map(territoryCode).join(', ')
+              : 'worldwide',
+          // Checks PER NAME, said once there is a name and a search to count them for.
+          names.length && activeLevel ? checksSummary(effort) : '',
+        ].filter(Boolean).join(' · ')}
+        uses={runCount(effort)}
+        // NOT SET until a search is picked: the quote is keyed on the pipeline, and a figure for a
+        // search nobody has chosen is a figure for the wrong one half the time.
+        duration={activeLevel ? turnaroundInWords(plan?.effort?.turnaround || turnaround(effort)) : 'Not set'}
+        runs={runsNote(effort)}
+        ready={ready}
+        busy={busy}
+        // — DEMO ONLY, never unknown. `engineMode` is null when no configuration snapshot has
+        // been written; that is "cannot answer", and answering it as demo would take the button away
+        // from a working install because a file is missing.
+        demoMode={ctx.me.engineMode === 'demo'}
+        setupRoute={ctx.me.setupRoute}
+        programDisputed={ctx.me.engineProgramDisputed}
+        // ONE CLICK TO THE PAGE THAT EXPLAINS IT, and only for a reader who can open it. Global
+        // config is served only to someone who sees everything, so this asks the fact the avatar
+        // menu asks: Manage alone would link a manager of one organisation to a dead end.
+        // Null is the honest shape for "there is nowhere to send this reader", not a dead button.
+        onSettings={seesEverything(ctx.me) ? () => ctx.go('/portal/admin/config') : null}
+        saveOpen={saveOpen}
+        saveName={saveName}
+        saveText={saveText}
+        saveNote={saveNote}
+        saveDone={saveDone}
+        editing={editingSlug != null}
+        canSave={!draft.savedSearch && !stops.length}
+        // THE FIRST REASON, AT THE BUTTON. The full list is a notice further up the page, and the
+        // footer is sticky — so on a long form the greyed button and its explanation are routinely
+        // not on screen together. One sentence rather than the list: the reader fixes them one at a
+        // time anyway, and a paragraph in a footer bar is not read. Ordered the way the notices are.
+        blockedBy={blockedBy}
+        onSaveOpen={() => { setSaveOpen(true); setSaveName(activeLevel ? `${activeLevel.name}` : 'Search template') }}
+        onSaveName={setSaveName}
+        onSaveText={setSaveText}
+        // An edit's save panel is the reason the screen is open, so cancelling it goes back to the
+        // list rather than leaving someone else's template sitting on a form with no way to tell what
+        // it belongs to.
+        onSaveCancel={() => {
+          if (editingSlug) { ctx.go('/portal/brand/searches'); return }
+          setSaveOpen(false); setSaveNote(null)
+        }}
+        onSave={doSave}
+        onReview={doPlan}
+        onSeeSaved={() => ctx.go('/portal/brand/searches')}
+      />
+
+      {plan ? (
+        <ReviewDialog
+          uses={runCount(effort)}
+          left={searchesLeft(usage)}
+          plan={plan}
+          busy={busy}
+          owner={ownerLabel}
+          project={projectLabel}
+          names={names}
+          goods={draft.goods.trim()}
+          nativeOn={nativeOn}
+          onStart={doRun}
+          onBack={() => { setPlan(null); setRunFailure(null) }}
+          failure={runFailure}
+          onReview={() => { setPlan(null); setRunFailure(null); void doPlan() }}
+        />
+      ) : null}
     </div>
   )
 }
@@ -1633,16 +1586,19 @@ function DescribeIt({ value, onChange, can, reading, error, receipt, onRead }: {
   const tooLong = value.length > can.maxBrief
   return (
     <div style={{ paddingBottom: 22, borderBottom: '1px solid var(--border-hairline)' }}>
-      <p style={{ margin: '0 0 8px', fontSize: 12.5, color: 'var(--text-muted)' }}>
-        A sentence is enough, or paste the whole thread.
-      </p>
+      {/* THE EXAMPLE IS INSIDE THE BOX, and nothing above it restates what the box is for: the heading
+          names the section and the placeholder shows the kind of thing that goes in it. */}
+      <div className="nc-describe-head">
+        <span className="section-title" style={{ marginBottom: 0 }}>Describe it</span>
+        <span className="nc-optional">optional</span>
+      </div>
       <textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        rows={4}
+        rows={3}
         aria-label="Describe the search"
         data-anon="mark"
-        placeholder="Need a quick check on AQUAPLUS for energy drinks in the US before Friday — just the obvious blockers."
+        placeholder="Example: AQUAPLUS for an energy drink in the EU and Switzerland, launch in November"
         className="ctx-input"
         style={{ resize: 'vertical', lineHeight: 1.5 }}
       />
@@ -1667,28 +1623,30 @@ function DescribeIt({ value, onChange, can, reading, error, receipt, onRead }: {
 
       {error ? <p className="callout-accent" style={{ marginTop: 12 }}>{error}</p> : null}
 
+      {/* THREE GROUPS, AND THE PANEL LISTS RATHER THAN EXPLAINS: what the read put on the form, what the
+          search will use that the text did not say, and what it could not settle. */}
       {receipt ? (
         <div className="read-receipt" style={{ marginTop: 12 }}>
-          {receipt.applied.length > 0 ? (
+          {receipt.read.length > 0 ? (
             <>
               <div className="read-receipt-head">What I read</div>
-              <ul>{receipt.applied.map((n) => <li key={n}>{n}</li>)}</ul>
+              <ul>{receipt.read.map((n) => <li key={n}>{n}</li>)}</ul>
             </>
           ) : (
             // A read that changed nothing says so. The alternative — an empty box under a pressed
             // button — reads as a failure the user cannot see or retry deliberately.
             <div className="read-receipt-head">Nothing in that I could turn into a search — set it up below.</div>
           )}
-          {receipt.doubts.length > 0 ? (
+          {receipt.defaults.length > 0 ? (
             <>
-              <div className="read-receipt-head" style={{ marginTop: 10 }}>Not sure about</div>
-              <ul>{receipt.doubts.map((n) => <li key={n}>{n}</li>)}</ul>
+              <div className="read-receipt-head" style={{ marginTop: 10 }}>Taken from company defaults</div>
+              <ul>{receipt.defaults.map((n) => <li key={n}>{n}</li>)}</ul>
             </>
           ) : null}
-          {receipt.dropped.length > 0 ? (
+          {receipt.unsure.length > 0 ? (
             <>
-              <div className="read-receipt-head" style={{ marginTop: 10 }}>Left out — not a territory this search offers</div>
-              <ul>{receipt.dropped.map((n) => <li key={n}>{n}</li>)}</ul>
+              <div className="read-receipt-head" style={{ marginTop: 10 }}>Not sure about</div>
+              <ul>{receipt.unsure.map((n) => <li key={n}>{n}</li>)}</ul>
             </>
           ) : null}
         </div>
@@ -1739,14 +1697,15 @@ function NameWall({
  * The running total, pinned across the bottom of the screen.
  *
  * The point of the rebuild: what you are buying is on screen the whole time you are choosing it, rather
- * than revealed once at the review step. Cost is five dots and NEVER a currency figure — there is no
- * price model, and inventing one on a client's screen would be a quote.
+ * than revealed once at the review step. It is two plain figures — how many of the day's searches this
+ * spends, and how long it takes. There is still NO currency figure anywhere and there cannot be: there
+ * is no price model, and inventing one on a client's screen would be a quote.
  *
  * "Starting from" leads, because a prefilled template that is invisible is the same as no template: the
  * user cannot tell what they picked, which is the gap this line closes.
  */
 function Footer({
-  startedFrom, tier, detail, units, cost, duration, runs, ready, busy, demoMode, setupRoute,
+  startedFrom, tier, detail, uses, duration, runs, ready, busy, demoMode, setupRoute,
   programDisputed, onSettings,
   saveOpen, saveName, saveText, saveNote, saveDone, editing, canSave, blockedBy,
   onSaveOpen, onSaveName, onSaveText, onSaveCancel, onSave, onReview, onSeeSaved,
@@ -1754,8 +1713,8 @@ function Footer({
   readonly startedFrom: string
   readonly tier: string
   readonly detail: string
-  readonly units: number
-  readonly cost: number
+  /** How many of the day's searches this request spends. The allowance counts searches; no unit exists. */
+  readonly uses: number
   readonly duration: string
   readonly runs: string
   readonly ready: boolean
@@ -1826,50 +1785,50 @@ function Footer({
         {saveNote ? <div style={{ fontSize: 12, color: 'var(--text-accent)', marginTop: 3 }}>{saveNote}</div> : null}
       </div>
 
+      {/* ── TWO PLAIN FIGURES, AND THE TWO PICTURES ARE GONE ────────────────────────────────────────
+          The Effort bars answered a question nobody asked — ten notches of a number with no unit, next
+          to five dots of a "cost" that was never a price and could not become one. What a reader is
+          deciding is how many of today's searches this spends and how long it takes, and both of those
+          are figures the product already knows.
+
+          THE WORD IS "SEARCHES", EVERYWHERE. The allowance counts searches per day per company; no
+          unit exists in the engine, and the bars were the last screen that implied one. */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 18, flexWrap: 'wrap' }}>
-        <div style={{ minWidth: 104 }}>
-          <div style={{ display: 'flex', gap: 2, marginBottom: 4 }} aria-hidden>
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
-              <span key={i} className={i <= units ? 'bar bar-on' : 'bar'} />
-            ))}
+        <div>
+          <div style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--text-strong)' }}>
+            {uses} search{uses === 1 ? '' : 'es'}
           </div>
-          <div className="footer-eyebrow">Effort {units}/10</div>
+          <div className="footer-eyebrow">uses</div>
         </div>
         <div>
           <div style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--text-strong)' }}>{duration}</div>
           <div className="footer-eyebrow">turnaround</div>
         </div>
-        <div>
-          <div style={{ display: 'inline-flex', gap: 3 }} aria-hidden>
-            {[1, 2, 3, 4, 5].map((i) => <span key={i} className={i <= cost ? 'dot dot-on' : 'dot'} />)}
-          </div>
-          <div className="footer-eyebrow" style={{ marginTop: 3 }}>cost</div>
-        </div>
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 9, flex: 'none', flexWrap: 'wrap' }}>
         {canSave && !saveOpen ? (
-          <button type="button" className="btn-ghost" onClick={onSaveOpen}>Save as search</button>
+          <button type="button" className="btn-ghost" onClick={onSaveOpen}>Save as template</button>
         ) : null}
         {canSave && saveOpen ? (
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7 }}>
             <input
               value={saveName}
               onChange={(e) => onSaveName(e.target.value)}
-              placeholder="Name this search"
-              aria-label="Name this search"
+              placeholder="Name this template"
+              aria-label="Name this template"
               className="ctx-input"
               data-anon="mark"
               style={{ width: 160, fontSize: 12.5, padding: '8px 10px' }}
             />
-            {/* The note the retired editor carried. Kept because a saved search outlives whoever set it
-                up, and "why is this one different" is the question its next user arrives with. It is
-                never read by the engine — it is a message to a colleague. */}
+            {/* The note the retired editor carried. Kept because a template outlives whoever set it up,
+                and "why is this one different" is the question its next user arrives with. It is never
+                read by the engine — it is a message to a colleague. */}
             <input
               value={saveText}
               onChange={(e) => onSaveText(e.target.value)}
               placeholder="Note (optional)"
-              aria-label="Note about this custom search"
+              aria-label="Note about this template"
               className="ctx-input"
               // A note about a saved search names the work it is for — "SEAHORSE relaunch team" is as
               // disclosing as the mark itself, so it blurs with everything else on a shared screen.
@@ -1930,15 +1889,16 @@ function Footer({
           })()
         ) : (
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-            {/* THE VERB. This said "Review clearance", which is what the button does and not what the
-                reader came here to do — it reads as looking at a clearance that already exists, and an
-                outside user with a fully configured install read the whole screen, found no action that
-                promised to run anything, and stopped. The step behind it is unchanged and deliberately
-                so: the confirmation carries the coverage, the effort and the legal caveat, and those
-                are read before anything is spent. The line beside the button says so, which is the
-                honest way to put a verb on a door that opens onto one more step. */}
+            {/* THE VERB NAMES THE STEP IT OPENS, AND THE LINE BESIDE IT SAYS WHAT COMES AFTER. This said
+                "Review clearance", which read as looking at a clearance that already exists: an outside
+                user with a fully configured install found no action that promised to run anything, and
+                stopped. It became "Start a search", a verb for the reader's purpose on a door that
+                opens onto one more step. The design ruling of 2026-09-16 names that step — "Review
+                search" — and what fixes the old failure is kept: it says SEARCH, not a clearance that
+                might already exist, it is the primary button, and the sentence beside it says the
+                coverage and the cost come before anything runs. */}
             <button type="button" className="btn-primary" disabled={!ready || busy} onClick={onReview}>
-              {busy ? 'Checking…' : 'Start a search'}
+              {busy ? 'Checking…' : 'Review search'}
               <Icon name="arrow-right" size={14} />
             </button>
             <span className="footer-hint">
@@ -2001,39 +1961,52 @@ function Lever({
   )
 }
 
-/** A template row: radio dot, name, mono tagline, one line of what it buys. */
 /**
- * ── §B — one line of "what this search includes", marked ────────────────────
+ * ── §B — one thing a search carries, marked in or out ────────────────────────
  *
- * The tick and the cross come from ONE boolean, so a row cannot carry a marker that disagrees with its
- * own sentence. The glyph is decorative and the WORD is what a screen reader gets — "Included" /
+ * The tick and the cross come from ONE boolean, so a chip cannot carry a marker that disagrees with its
+ * own words. The glyph is decorative and the WORD is what a screen reader gets — "Included" /
  * "Not included" — because a bare ✓ read aloud is a check mark, not an answer.
+ *
+ * A span, not a list item: it sits inside the row's button, and a button holds phrasing content only.
  */
 function Carries({ included, label, children }: {
   readonly included: boolean
-  /** The row's own words, so the accessible name states the claim rather than reading a check mark. */
+  /** The chip's own words, so the accessible name states the claim rather than reading a check mark. */
   readonly label: string
   readonly children: ReactNode
 }) {
   return (
-    // The claim in words on the ROW, the glyph hidden — the same convention the comparison table below
+    // The claim in words on the CHIP, the glyph hidden — the same convention the comparison table below
     // uses for its markers, rather than a visually-hidden span this stylesheet does not have.
-    <li className={included ? 'carries-in' : 'carries-out'} aria-label={`${included ? 'Included' : 'Not included'}: ${label}`}>
+    <span className={included ? 'carries-in' : 'carries-out'} aria-label={`${included ? 'Included' : 'Not included'}: ${label}`}>
       <span className="carries-mark" aria-hidden>{included ? '✓' : '✕'}</span>
       <span aria-hidden>{children}</span>
-    </li>
+    </span>
   )
 }
 
+/**
+ * One of the four searches: radio, name, what it accepts, why it fits, what it carries.
+ *
+ * THE CARD IS A DIV AND THE PICK IS ITS BUTTON, because the selected search holds a control of its own —
+ * the native-language option — and a button cannot hold a button. `children` render under the button,
+ * inside the card, so the option reads as part of the search it belongs to.
+ */
 function PickRow({
-  selected, onPick, title, tagline, description, unavailableNote = null, coverageNote = null,
-  capabilityNote = null,
+  selected, onPick, title, tagline, description, chips, recommended = null, children = null,
+  unavailableNote = null, coverageNote = null, capabilityNote = null,
 }: {
   readonly selected: boolean
   readonly onPick: () => void
   readonly title: string
   readonly tagline: string
   readonly description: string
+  /** What the search carries, each marked in or out off the product row's own fields. */
+  readonly chips: readonly { readonly in: boolean; readonly text: string }[]
+  /** Why this is the search that fits what was entered, or null when it is not that search. */
+  readonly recommended?: string | null
+  readonly children?: ReactNode
   /**
    * Why this one cannot be picked here, IN the row.
    *
@@ -2057,46 +2030,53 @@ function PickRow({
 }) {
   const off = unavailableNote != null
   return (
-    <button
-      type="button"
-      onClick={off ? undefined : onPick}
-      disabled={off}
-      aria-pressed={selected}
-      aria-describedby={undefined}
-      className={`pick-row${selected ? ' pick-row-on' : ''}${off ? ' pick-row-off' : ''}`}
-    >
-      <span className={selected ? 'radio radio-on' : 'radio'} style={{ marginTop: 2 }} aria-hidden />
-      <span style={{ minWidth: 0 }}>
-        <span style={{ display: 'flex', alignItems: 'baseline', gap: 9, flexWrap: 'wrap' }}>
-          <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-strong)' }}>{title}</span>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, letterSpacing: '.03em', color: 'var(--accent-quiet)' }}>{tagline}</span>
-        </span>
-        <span style={{ display: 'block', fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.5, marginTop: 2 }}>{description}</span>
-        {/* ── — THE REASON HAS TO WIN, because the control it explains is dead ──
-            This rendered at fontSize 12 in `--text-faint`, the faintest token in the palette, under a
-            description already set in `--text-muted`, on a row that is itself disabled. The owner looked
-            straight at it and reported no message at all: "it doesnt appear disabled, no message etc".
-            A reason nobody can read is the state the rule was written to prevent, so this is now the
-            most legible thing in the row — the strong ink, the row's own weight, and its own band. */}
-        {off ? (
-          <span className="pick-row-why">
-            <b>Not available here</b> — {unavailableNote}
+    <div className={`pick-row pick-row-stack${selected ? ' pick-row-on' : ''}${off ? ' pick-row-off' : ''}`}>
+      <button
+        type="button"
+        onClick={off ? undefined : onPick}
+        disabled={off}
+        aria-pressed={selected}
+        className="pick-row-hit"
+      >
+        <span className={selected ? 'radio radio-on' : 'radio'} style={{ marginTop: 2 }} aria-hidden />
+        <span style={{ minWidth: 0 }}>
+          <span style={{ display: 'flex', alignItems: 'baseline', gap: 9, flexWrap: 'wrap' }}>
+            <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-strong)' }}>{title}</span>
+            {recommended ? <span className="pick-tag">Recommended for what you entered</span> : null}
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, letterSpacing: '.03em', color: 'var(--accent-quiet)' }}>{tagline}</span>
           </span>
-        ) : null}
-        {/* The coverage disclosure sits on a LIVE row and is deliberately quieter than the refusal above
-            — it qualifies a choice rather than blocking one — but it is still normal reading contrast,
-            never the faint token. */}
-        {!off && coverageNote ? (
-          <span className="pick-row-coverage">{coverageNote}</span>
-        ) : null}
-        {/* — the lane this search declares it needs, and this box does not have.
-            Louder than the coverage note: coverage narrows what a report covers, this removes a whole
-            section of the reasoning a reader is buying. */}
-        {!off && capabilityNote ? (
-          <span className="pick-row-capability">{capabilityNote}</span>
-        ) : null}
-      </span>
-    </button>
+          {recommended ? <span className="pick-row-reason">{recommended}</span> : null}
+          <span style={{ display: 'block', fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.5, marginTop: 2 }}>{description}</span>
+          <span className="pick-chips">
+            {chips.map((c) => <Carries key={c.text} included={c.in} label={c.text}>{c.text}</Carries>)}
+          </span>
+          {/* ── — THE REASON HAS TO WIN, because the control it explains is dead ──
+              This rendered at fontSize 12 in `--text-faint`, the faintest token in the palette, under a
+              description already set in `--text-muted`, on a row that is itself disabled. The owner looked
+              straight at it and reported no message at all: "it doesnt appear disabled, no message etc".
+              A reason nobody can read is the state the rule was written to prevent, so this is now the
+              most legible thing in the row — the strong ink, the row's own weight, and its own band. */}
+          {off ? (
+            <span className="pick-row-why">
+              <b>Not available here</b> — {unavailableNote}
+            </span>
+          ) : null}
+          {/* The coverage disclosure sits on a LIVE row and is deliberately quieter than the refusal above
+              — it qualifies a choice rather than blocking one — but it is still normal reading contrast,
+              never the faint token. */}
+          {!off && coverageNote ? (
+            <span className="pick-row-coverage">{coverageNote}</span>
+          ) : null}
+          {/* — the lane this search declares it needs, and this box does not have.
+              Louder than the coverage note: coverage narrows what a report covers, this removes a whole
+              section of the reasoning a reader is buying. */}
+          {!off && capabilityNote ? (
+            <span className="pick-row-capability">{capabilityNote}</span>
+          ) : null}
+        </span>
+      </button>
+      {children ? <div className="pick-row-inside">{children}</div> : null}
+    </div>
   )
 }
 
@@ -2105,22 +2085,30 @@ function PickRow({
  *
  * Everything priced here comes from the SERVER's reading of the request, not from the draft — the point
  * of the step is to show what the request really is, and echoing the form back would show only what the
- * user already believes. The depth especially: the server resolves the customer's own default when none
- * was named, and that answer can differ from the levers that were set.
+ * user already believes. The scope especially: the server resolves the company's own defaults when none
+ * were named, and that answer can differ from what the form showed.
  *
  * The scope rows exist for the same reason. A form with a territory box and a summary that never
  * mentions territories asks someone to confirm a search whose most expensive dimension is invisible.
- * Each row states WHERE the value came from, because "the territories you named" and "your account's
- * usual territories" look identical once resolved.
+ * Where and Classes state WHERE the value came from, because "the territories you named" and "your
+ * company's usual territories" look identical once resolved.
  */
 function ReviewDialog({
-  plan, busy, owner, project, names, onStart, onBack, failure, onReview,
+  plan, busy, owner, project, names, goods, nativeOn, onStart, onBack, failure, onReview, uses, left,
 }: {
   readonly plan: Plan
   readonly busy: boolean
+  /** How many of the day's searches this request spends. */
+  readonly uses: number
+  /** How many are left before it, or null when the account is uncapped or the usage could not be read. */
+  readonly left: number | null
   readonly owner: string
   readonly project: string | null
   readonly names: readonly string[]
+  /** The goods and services description as it was typed, or empty. */
+  readonly goods: string
+  /** Whether the native-language investigation runs on this search. */
+  readonly nativeOn: boolean
   readonly onStart: () => void
   readonly onBack: () => void
   readonly failure: { readonly title: string; readonly lines: readonly string[] } | null
@@ -2132,8 +2120,11 @@ function ReviewDialog({
     window.addEventListener('keydown', on)
     return () => window.removeEventListener('keydown', on)
   }, [onBack])
+  const [allShops, setAllShops] = useState(false)
 
   const scope = plan.scope
+  const places = scope ? scope.jurisdictions : []
+  const mark = names.join(', ') || String(plan.marks)
 
   return (
     <div className="modal-scrim" onClick={onBack} role="dialog" aria-modal="true" aria-label="Review before you start">
@@ -2141,82 +2132,87 @@ function ReviewDialog({
         <div className="modal-head">
           <span className="modal-rule" aria-hidden />
           <span className="eyebrow" style={{ color: 'var(--accent-quiet)' }}>Review before you start</span>
-          {/* THE NAME LEADS, and this is the site that most needed it: the last thing read before money
-              is spent used to be the bare string "Stage 1". That names our own pricing ladder, and it
-              collides with the Stage 1 / Stage 2 vocabulary the legal reasoning already uses for
-              something else entirely. The stage still rides beside it (the numbering is honest about
-              how much work a report represents), just never alone.
-              `|| stageLabel` so an older server degrades to the old headline rather than a blank one. */}
-          <h2 style={{ margin: '7px 0 3px', fontSize: 21, fontWeight: 700, letterSpacing: '-.02em', color: 'var(--text-strong)' }}>
-            {plan.name || plan.stageLabel}
+          {/* THE MARK LEADS: it is what the reader is about to clear, and the one fact they would notice
+              was wrong at a glance. The search is named in its own row below — by NAME, never by the
+              rung on a pricing ladder, which is what "Stage 1" at the top of this dialog used to be. */}
+          <h2 style={{ margin: '7px 0 0', fontSize: 21, fontWeight: 700, letterSpacing: '-.02em', color: 'var(--text-strong)' }} data-anon="mark">
+            {mark}
           </h2>
-          {plan.stageLabel && plan.stageLabel !== (plan.name || plan.stageLabel) ? (
-            <div style={{ fontSize: 12.5, color: 'var(--text-faint)', marginBottom: 3 }}>{plan.stageLabel}</div>
-          ) : null}
-          <p style={{ margin: 0, fontSize: 12.5, color: 'var(--text-muted)' }}>
-            Search configuration
-          </p>
         </div>
 
         <div style={{ padding: '6px 24px' }}>
           <Row label="Company"><span data-anon="mark">{owner}</span></Row>
-          <Row label="Project">{project ?? 'No project'}</Row>
-          <Row label="Names"><span data-anon="mark">{names.join(', ') || String(plan.marks)}</span></Row>
-          {scope && scope.jurisdictions.length ? (
-            <Row label="Where">{scope.jurisdictions.join(', ')} <Muted>— from {scope.jurisdictionsFrom}</Muted></Row>
+          {/* Drawn only when one is chosen: a project narrows the classes and adds marketplaces, so it is
+              part of what runs, and "No project" is not. */}
+          {project ? <Row label="Project">{project}</Row> : null}
+          <Row label="Names"><span data-anon="mark">{mark}</span></Row>
+          {/* `|| stageLabel` so an older server degrades to its old headline rather than a blank row. The
+              rung rides beside the name only where it differs from it. */}
+          <Row label="Search">
+            {plan.name || plan.stageLabel}
+            {plan.stageLabel && plan.stageLabel !== (plan.name || plan.stageLabel) ? <Muted> · {plan.stageLabel}</Muted> : null}
+          </Row>
+          {places.length ? (
+            <Row label="Where">{places.join(', ')} <Muted>— from {scope?.jurisdictionsFrom}</Muted></Row>
           ) : <Row label="Where">Worldwide</Row>}
-          {/* ── — THE COVERAGE LIMIT, WHERE THE TICKET IS SPENT ──────────────
-              The ruling states the limit "at the point of choosing"; this is the other point, and it is
-              the one that matters most. A worldwide search is orderable on a partial register now, so
-              "you are buying a worldwide search that will not reach most of the world" belongs in front
-              of the reader here rather than in the report they read afterwards. Directly under Where,
-              because it qualifies that row and nothing else. */}
-          {plan.coverage ? (
-            <Row label="Register reach">
-              {plan.coverage.reached.length} of {plan.coverage.reached.length + plan.coverage.missing.length}{' '}
-              territories: {plan.coverage.reached.join(', ')}.{' '}
-              <Muted>The rest are disclosed in the report as deferred coverage rather than searched at the register.</Muted>
-            </Row>
-          ) : null}
+          {/* ── REGISTERS TO SEARCH — what the search WILL ask, never what it found ─────────────────
+              Not "searched in full": the search has not run. And the coverage limit belongs here, where
+              the ticket is spent. A worldwide search is orderable on a partial register, so "you are
+              buying a search the wired register will not fully reach" is said in front of the reader
+              rather than in the report they read afterwards. */}
+          <Row label="Registers to search">
+            {plan.coverage ? (
+              <>
+                {plan.coverage.reached.length ? joinAnd(plan.coverage.reached) : 'None'}
+                {plan.coverage.missing.length ? (
+                  <Muted>
+                    . {joinAnd(plan.coverage.missing)} {plan.coverage.missing.length === 1 ? 'is' : 'are'} not
+                    reached by the register wired here, and will be disclosed in the report as deferred
+                    coverage rather than searched.
+                  </Muted>
+                ) : null}
+              </>
+            ) : places.length ? joinAnd(places) : 'Worldwide'}
+          </Row>
           {scope && scope.classes.length ? (
-            <Row label="Classes">{scope.classes.join(', ')} <Muted>— from {scope.classesFrom}</Muted></Row>
+            <Row label="Classes">{scope.classes.map(classLabel).join(', ')} <Muted>— from {scope.classesFrom}</Muted></Row>
           ) : null}
+          <Row label="Goods or services">{goods ? <span data-anon="mark">{goods}</span> : <Muted>None — the classes are used</Muted>}</Row>
           {scope && scope.platforms.length ? (
             <Row label="Marketplaces">
-              {scope.platforms.length} shop{scope.platforms.length === 1 ? '' : 's'}
+              <span data-anon="mark">{allShops ? scope.platforms.join(', ') : firstAndMore(scope.platforms)}</span>
+              {scope.platforms.length > 3 ? (
+                <>
+                  {' '}
+                  <button type="button" className="chip-btn" onClick={() => setAllShops((v) => !v)}>
+                    {allShops ? 'Show less' : `Show all ${scope.platforms.length}`}
+                  </button>
+                </>
+              ) : null}
               {scope.platformsAdded.length ? <Muted> ({scope.platformsAdded.join(', ')} added for this search)</Muted> : null}
             </Row>
           ) : null}
+          {/* COVERAGE AND ON OR OFF, and nothing else: the time and the count live in their own rows. */}
+          <Row label="Native language">{nativeLanguageLine(nativeOn, places)}</Row>
           {/* The SERVER's figure when it has one, the level's coarse hint otherwise. Same row, and the
-              composer's own footer bar is unchanged: that one has to be instant while the levers move,
-              and it is computed from the same weights (effortModelParity.test.ts pins them). This is the
-              step where a resolved answer exists — the server knows which script lanes the jurisdictions
-              actually buy, which the wire does not carry — so this is where it should be read from. */}
+              composer's own footer bar is unchanged: that one has to be instant while the form moves,
+              and it is computed from the same table (effortModelParity.test.ts pins it). Spelled as a
+              reader says it — "1.5 to 2.5 hours" — through the one door every quote on this screen
+              passes. */}
           {plan.effort?.turnaround || plan.turnaround
-            ? <Row label="Turnaround">{plan.effort?.turnaround || plan.turnaround}</Row>
+            ? <Row label="Turnaround">{turnaroundInWords(plan.effort?.turnaround || plan.turnaround || '')}</Row>
             : null}
-          {/* EFFORT, where the stage number used to be the only answer to "how much am I buying".
-              `plan.effort` has been on the wire all along and this step rendered only its turnaround —
-              so the one figure that says how big a search is sat unread at the moment of deciding. Same
-              bars and dots as the composer footer, on purpose: it is the same quantity, and a second
-              visual language for it would invite the reader to work out whether it is the same one. */}
-          {plan.effort ? (
-            <Row label="Effort">
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-                <span style={{ display: 'inline-flex', gap: 2 }} aria-hidden>
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
-                    <span key={i} className={i <= plan.effort!.units ? 'bar bar-on' : 'bar'} />
-                  ))}
-                </span>
-                <Muted>{plan.effort.units}/10 for this company</Muted>
-                <span style={{ display: 'inline-flex', gap: 3 }} aria-hidden>
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <span key={i} className={i <= plan.effort!.costBand ? 'dot dot-on' : 'dot'} />
-                  ))}
-                </span>
-                <Muted>cost</Muted>
-              </span>
-            </Row>
+          {/* USES AND LEFT TODAY, where the Effort bars and the Cost dots used to be. Ten notches of a
+              number with no unit, beside five dots of a "cost" that was never a price, answered a
+              question nobody had. What a reader is deciding at this moment is how many of today's
+              searches this spends and how many that leaves — both of which the product already counts,
+              in the one word it uses everywhere: searches.
+
+              LEFT TODAY SAYS BOTH NUMBERS. "9 left" makes a reader do the subtraction the screen
+              already did; the count now and the count after this one is the fact they are weighing. */}
+          <Row label="Uses">{uses} search{uses === 1 ? '' : 'es'}</Row>
+          {left != null ? (
+            <Row label="Left today">{left} now, {Math.max(0, left - uses)} after this search</Row>
           ) : null}
 
           {plan.warnings.length ? (
@@ -2248,16 +2244,16 @@ function ReviewDialog({
         </div>
 
         <div className="modal-foot">
+          <button type="button" className="btn-ghost" onClick={onBack}>Back</button>
           {failure ? (
             // The ticket is spent or stale either way, so there is nothing here that could retry. Review
             // again re-plans against what is on the form — honest about being a fresh start, not a retry.
             <button type="button" className="btn-primary" onClick={onReview}>Review again</button>
           ) : (
             <button type="button" className="btn-primary" disabled={busy} onClick={onStart}>
-              {busy ? 'Starting…' : 'Start clearance'}
+              {busy ? 'Starting…' : 'Start search'}
             </button>
           )}
-          <button type="button" className="btn-ghost" onClick={onBack}>Back to edit</button>
           {/* NO COUNTDOWN. The confirmation ticket still expires after ten minutes server-side, and is
               still one-shot and still bound to this exact request — none of that changed. What is gone
               is the stopwatch: it put a clock on a person reading a legal summary, which is the one
@@ -2282,30 +2278,6 @@ function Row({ label, children }: { readonly label: string; readonly children: R
 const Muted = ({ children }: { readonly children: React.ReactNode }) => (
   <span style={{ color: 'var(--text-muted)' }}>{children}</span>
 )
-
-/**
- * The daily allowance, stated quietly.
- *
- * Only for principals it BINDS. A person with access to everything is uncapped, and telling them "2 of 3
- * used" would be both wrong and alarming. A null cap means the server could not tell us the limit — that renders as
- * nothing at all rather than as zero or as unlimited, because inventing either would be a claim about
- * someone's contract.
- */
-function Allowance({ usage }: { readonly usage: Usage | null }) {
-  if (!usage || !usage.capped || usage.dailyRuns == null) return null
-  const left = Math.max(0, usage.dailyRuns - usage.today)
-  const none = left === 0
-  return (
-    <div className="notice" style={{ marginTop: 0, ...(none ? { borderColor: 'var(--tone-high)' } : {}) }}>
-      <b>{none ? 'No searches left today' : `${usage.today} of ${usage.dailyRuns} searches used today`}</b>
-      <p style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>
-        {none
-          ? 'The allowance resets at midnight UTC. Your account contact can run one for you in the meantime.'
-          : `${left} left. The allowance resets at midnight UTC.`}
-      </p>
-    </div>
-  )
-}
 
 /**
  * What each depth includes, side by side.
@@ -2487,15 +2459,25 @@ function OptionsUnavailable({
  * that a search is running — the engine can still refuse it, and when it does the Clearances list is
  * where that shows up. Promising more than was promised is how a failed run becomes a support ticket.
  */
-function Submitted({ go, onAnother }: { readonly go: (p: string) => void; readonly onAnother: () => void }) {
+function Submitted({ go, onAnother, name, duration }: {
+  readonly go: (p: string) => void
+  readonly onAnother: () => void
+  /** The name that was queued, as the reader typed it. */
+  readonly name: string
+  /** The quote for its pipeline, as the footer showed it at the moment of starting. */
+  readonly duration: string
+}) {
   return (
     <div className="screen">
-      <PageHeader title="Clearance started" />
+      {/* "QUEUED", NOT "STARTED". It has not started: it is waiting for a slot, and a title saying
+          otherwise is the first thing a reader would have to un-learn when the Home band shows it
+          under "queued". The sentence says the two facts the product has — that it is waiting, and how
+          long it takes once it runs — and promises nothing it cannot keep. In particular it does not
+          say anyone will be told when it finishes: nothing in the portal or the contract sends that. */}
+      <PageHeader title="Clearance queued" />
       <div className="notice prose">
-        <b>It is in the queue</b>
-        <p style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>
-          It will appear in Clearances, and the entry there tracks it the whole way — including if it
-          stops early.
+        <p style={{ margin: 0, color: 'var(--text-muted)' }}>
+          <span data-anon="mark">{name}</span> is waiting for a slot. It runs {duration} once it starts.
         </p>
         <div style={{ marginTop: 14, display: 'flex', gap: 10 }}>
           <button type="button" className="btn-primary" onClick={() => go('/portal/clearances')}>View in Clearances</button>

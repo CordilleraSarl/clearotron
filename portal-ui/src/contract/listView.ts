@@ -71,3 +71,41 @@ export function ambiguousTitles(runs: readonly Listable[]): ReadonlySet<string> 
  * inline `.toLowerCase()` repeated at each call site.
  */
 export const normaliseTitle = (title: string): string => title.trim().toLowerCase()
+
+/** One column of the Clearances table: what it holds, and its share of the table's width. */
+export type Column = { readonly key: 'twisty' | 'pick' | 'name' | 'company' | 'status' | 'risk' | 'updated' | 'actions'; readonly share: number }
+
+/**
+ * The Clearances table's columns, in order, as percentages that sum to 100 in every mode.
+ *
+ * ALL PERCENTAGES. Two px columns among five percentages once made the table resolve WIDER than its
+ * wrapper and overflow by 21px at a 1100px viewport, where the content column is only 767px because the
+ * shell's rail takes the rest. Percentages of the table cannot add up to more than the table.
+ *
+ * THE ACTIONS COLUMN IS SIZED FOR ITS BUTTONS, and the rest give way to it. Open has to sit in one column
+ * at one width on every row, which a column narrower than "Open latest report" cannot hold — so that
+ * column is fixed first and the Name and Status columns, which wrap gracefully, absorb the difference.
+ * `scripts/clearances-render-check.mjs` measures the result in a real browser at the widths it drives.
+ */
+export function clearancesColumns(mode: { readonly pick: boolean; readonly owner: boolean }): readonly Column[] {
+  const cols: Column[] = [{ key: 'twisty', share: 4 }]
+  if (mode.pick) cols.push({ key: 'pick', share: 4 })
+  cols.push({ key: 'name', share: 0 })
+  if (mode.owner) cols.push({ key: 'company', share: 11 })
+  cols.push(
+    // Status holds "Queued · 1 search" on one line at the narrowest width the check drives; ungrouped,
+    // the company column takes its width and the phrase wraps between its two halves instead.
+    { key: 'status', share: mode.owner ? 16 : 19 },
+    // "Manageable" and its dot, which never wrap.
+    { key: 'risk', share: mode.owner ? 14 : 15 },
+    // A ten-character date in a monospace face, on one line.
+    { key: 'updated', share: 12 },
+    // "Open latest report", Ask AI beside it when there is room, and — for someone who may curate — the
+    // "···" menu.
+    { key: 'actions', share: mode.pick ? 25 : 22 },
+  )
+  // The Name column takes what is left, so the shares cannot drift away from 100 when one of the others
+  // is retuned.
+  const rest = 100 - cols.reduce((n, c) => n + c.share, 0)
+  return cols.map((c) => (c.key === 'name' ? { key: 'name', share: rest } : c))
+}

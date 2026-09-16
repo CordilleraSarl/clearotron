@@ -18,6 +18,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import { connectionPill, continueOffer, foldsSteps, watchForConnected } from '../src/contract/connectYourAi.ts'
 
 const read = (rel: string) => readFileSync(fileURLToPath(new URL(rel, import.meta.url)), 'utf8')
 const SCREEN = read('../src/screens/UseYourAI.tsx')
@@ -63,17 +64,21 @@ test('NOTHING TECHNICAL REACHES THE READER — the six words that may not appear
   // "address" 47 times and "key" 31. A reader connecting their own assistant is not choosing a
   // transport or a scope, and every one of those words asked them to understand something the product
   // should be deciding for them.
-  // ONE EXEMPTION, BY VALUE. The owner dictated the help link's text — it names the document by what a
-  // person searching for it would type — and it is the only string on the page allowed the words. It is
-  // removed as that exact constant, so a second string carrying them is still caught.
-  // Its address is the same exemption in the other slot: an href held in a constant, which no reader
-  // reads as text (`href=` itself is already stripped above; the constant it points at is not).
-  const LINK = 'GitHub MCP Connector Documentation'
+  // NO EXEMPTION FOR THE HELP LINK ANY MORE. Its text used to be "GitHub MCP Connector Documentation",
+  // allowed the words by its exact value; the design replaced it with a "Setup guide" button, which needs
+  // none. The one exemption left is the guide's address, an href held in a constant that no reader reads
+  // as text (`href=` itself is already stripped above; the constant it points at is not).
   const URL_ = 'https://github.com/CordilleraSarl/clearotron/blob/main/mcp-server/CONNECT.md'
-  assert.ok(SCREEN.includes(`const HELP_LINK_TEXT = '${LINK}'`), 'the help link text moved — the exemption below is now exempting nothing')
-  assert.ok(SCREEN.includes(`const HELP_URL = '${URL_}'`), 'the help address moved — the exemption below is now exempting nothing')
-  const text = readerText(SCREEN).split('\n').filter((l) => l !== LINK && l !== URL_).join('\n')
-  assert.ok(text.includes('Use your own AI'), 'the extractor found no page text — it is asserting nothing')
+  assert.ok(SCREEN.includes(`const HELP_URL = '${URL_}'`), 'the guide\'s address moved — the exemption below is now exempting nothing')
+  const text = readerText(SCREEN).split('\n').filter((l) => l !== URL_).join('\n')
+  // THE FLOOR IS THE PAGE'S OWN TITLE, whatever it is called: without it every absence below is an absence
+  // over text the extractor never saw.
+  assert.ok(text.includes('Connect your AI'), 'the extractor found no page text — it is asserting nothing')
+  // AND THE STANDFIRST, SEPARATELY. The lede became a JSX fragment (`lede={<>…</>}`) so it can carry the
+  // Optional tag, and the `lede="…"` rule above no longer reaches it; it is read today only as a text node
+  // inside the fragment. The title is still a quoted attribute, so the floor above would stay green if the
+  // lede slipped into a form this extractor cannot read, and every word of it would go unchecked.
+  assert.ok(text.includes('Run and interrogate clearances'), 'the extractor no longer sees the standfirst — its words go unchecked')
   for (const word of ['MCP', 'connector', 'token', 'scope', 'address', 'key']) {
     const hits = text.split('\n').filter((l) => new RegExp(`\\b${word}\\b`, 'i').test(l))
     assert.deepEqual(hits, [], `the reader can see the word "${word}"`)
@@ -177,8 +182,11 @@ test('THE SLOT IS AS TALL AS ITS TALLEST PANEL — measured from a hidden copy o
   // be stacked in one cell, or it is as tall as all of them together and pads the page below.
   const c = code(SCREEN)
   assert.match(c, /className="ai-probe"[^>]*ref=\{probe\}/, 'the hidden copy the slot is measured from is gone')
-  assert.match(c, /here\.map\(\(o\) => <StepsPanel key=\{o\.id\} offer=\{o\} measuring \/>\)/,
+  // Every panel, with whatever the page adds under the steps — a line the copy left out is height the slot
+  // did not reserve.
+  assert.match(c, /here\.map\(\(o\) => <StepsPanel key=\{o\.id\} offer=\{o\}(?: watch=\{watch\})? measuring \/>\)/,
     'the hidden copy does not draw EVERY panel on this card, so the tallest may be missing from it')
+  assert.match(c, /offer=\{chosen\}[\s\S]{0,120}watch=\{watch\}/, 'the line under the last step is drawn but not measured, or measured but not drawn')
   assert.match(c, /Math\.max\(0, \.\.\.\[\.\.\.el\.children\]/, 'the slot is not sized to the tallest panel')
   const css = readFileSync(new URL('../src/base.css', import.meta.url), 'utf8')
   const probe = css.slice(css.indexOf('.ai-probe {'), css.indexOf('}', css.indexOf('.ai-probe > *')))
@@ -286,3 +294,94 @@ test('the copy helper reports a REFUSAL, so a blocked clipboard is not read as s
 // agent". With no composed sentence left there is nothing for a row to override, so `pasteAs` is gone
 // from the table and the wire. What that arm also held — no identity in the screen — is held by
 // "THE PAGE DERIVES NOTHING" above and by driver/test/connect-clients-are-data.test.mjs.
+
+// ── WHAT THE PAGE SAYS ABOUT THE CONNECTION ─────────────────────────────────────────────────────────
+//
+// `aiConnected` is three-valued, and null means the connector's access log could not be read. Every
+// sentence the page can say about the connection is decided in `contract/connectYourAi.ts`, so these arms
+// hand the decisions the values the wire can carry rather than reading the page for a branch.
+
+test('WITH aiConnected NULL, NO PILL RENDERS AND THE PAGE SAYS NOTHING ABOUT THE CONNECTION', () => {
+  // A page that drew "Not connected yet" from null would tell the reader something the product does not
+  // know — and so would a line promising the page will say Connected, a fold assuming it, or a way back
+  // offered on the strength of it. Undefined is a server too old to send the field, which is the same fact.
+  for (const unknown of [null, undefined]) {
+    assert.equal(connectionPill(unknown), null, `${unknown}: a pill`)
+    assert.equal(watchForConnected(unknown), null, `${unknown}: a line about watching for Connected`)
+    assert.equal(foldsSteps(unknown), false, `${unknown}: the steps fold away as though connected`)
+    assert.equal(continueOffer({ aiConnected: unknown, fromReport: true, remembered: { runId: 'r', markSlug: null, mark: 'VENQORI' } }), null,
+      `${unknown}: a way back offered as though connected`)
+  }
+  // AND THE PAGE HAS NO OTHER WAY TO SAY IT. The words live in the contract, so the only route to the
+  // screen is through the decisions above.
+  const c = code(SCREEN)
+  assert.doesNotMatch(c, /Not connected yet|'Connected'|>Connected</, 'the page spells a connection state itself')
+  assert.match(c, /const pill = connectionPill\(connected\)/)
+  assert.match(c, /\{pill \? \(/, 'the pill is drawn whether or not there is one to draw')
+  assert.match(c, /const watch = watchForConnected\(connected\)/)
+  assert.match(c, /const back = continueOffer\(\{ aiConnected: connected, fromReport, remembered \}\)/)
+  assert.match(c, /const connected = access\?\.aiConnected \?\? null/)
+})
+
+test('the two states the log CAN answer: the pill, the line under the last step, the fold', () => {
+  assert.deepEqual(connectionPill(true), { label: 'Connected', on: true })
+  assert.deepEqual(connectionPill(false), { label: 'Not connected yet', on: false })
+  // THE LINE UNDER STEP FIVE ONLY WHILE NOT CONNECTED — once connected the pill is already saying it.
+  assert.equal(watchForConnected(false), 'This page says **Connected** once your assistant calls Clearotron.')
+  assert.equal(watchForConnected(true), null)
+  // ONCE CONNECTED THE STEPS FOLD AWAY, and only then.
+  assert.equal(foldsSteps(true), true)
+  assert.equal(foldsSteps(false), false)
+  const c = code(SCREEN)
+  assert.match(c, /<summary>\s*<span className="steps-alt-head">Setup steps<\/span>/, 'the connected fold is not titled Setup steps')
+  // NEITHER FOLD STARTS OPEN. A fold the page opens on its own is the wall of steps it replaced.
+  assert.doesNotMatch(c, /<details[^>]*\bopen\b/, 'a fold is drawn open')
+  assert.match(c, /offer\.door === 'sign-in' && offer\.keySteps\?\.length/, 'the key door\'s fold is not drawn beside a sign-in door')
+})
+
+test('"CONTINUE WITH …" ONLY FOR A READER WHO CAME FROM A REPORT, IS CONNECTED, AND WHOSE BROWSER REMEMBERS WHICH', () => {
+  const remembered = { runId: 'run-1', markSlug: null, mark: 'VENQORI' }
+  assert.deepEqual(continueOffer({ aiConnected: true, fromReport: true, remembered }), { label: 'Continue with VENQORI', report: remembered })
+  // From the rail there is nothing to go back to; not yet connected, the steps are the point; nothing
+  // remembered — storage refused, or a different browser — there is no report to name.
+  assert.equal(continueOffer({ aiConnected: true, fromReport: false, remembered }), null, 'offered from the rail')
+  assert.equal(continueOffer({ aiConnected: false, fromReport: true, remembered }), null, 'offered before connecting')
+  assert.equal(continueOffer({ aiConnected: true, fromReport: true, remembered: null }), null, 'offered with nothing remembered')
+  // A report remembered without a mark still has a way back, named plainly.
+  assert.equal(continueOffer({ aiConnected: true, fromReport: true, remembered: { ...remembered, mark: null } })?.label, 'Continue with the report')
+  // IT GOES BACK TO THAT REPORT WITH ASK AI OPEN — the one signal the report screen reads.
+  const c = code(SCREEN)
+  assert.match(c, /ctx\.go\(withAskOpen\(resultPath\(back\.report\.runId, back\.report\.markSlug\)\)\)/,
+    'Continue does not return to the remembered report with the panel asked open')
+  assert.match(SCREEN, /Back to the report you were reading\./)
+  // Both facts read once, on arrival: a reload keeps the marker because it lives in the address.
+  assert.match(c, /useState\(\(\) => reachedFromReport\(window\.location\.search\)\)/)
+  assert.match(c, /useState\(\(\) => rememberedReport\(\)\)/)
+})
+
+test('THE HEADLINE LEADS WITH THE BENEFIT, and "Optional" is a quiet tag at its end', () => {
+  const prose = SCREEN.replace(/\s+/g, ' ')
+  assert.match(prose, /title="Connect your AI"/)
+  assert.match(prose, /lede=\{<>Run and interrogate clearances from the assistant you already use\. <span className="lede-opt">Optional<\/span><\/>\}/,
+    'the standfirst is not the benefit followed by the Optional tag')
+  assert.doesNotMatch(prose, /by voice|by email/, 'the clause about voice and email is back')
+  // WHAT YOU CAN DO: four lines, and none of them a claim about an assistant's inner thinking.
+  const lines = [...SCREEN.slice(SCREEN.indexOf('const WHAT_YOU_CAN_DO'), SCREEN.indexOf(']', SCREEN.indexOf('const WHAT_YOU_CAN_DO')))
+    .matchAll(/'([^']+)'/g)].map((m) => m[1])
+  assert.deepEqual(lines, [
+    'Start a clearance and triage what comes back',
+    'Watch it run, and add context while it is still early',
+    'Examine the reasoning and evidence',
+    'Ask what-if: why a finding was rated as it was, what changes if the goods narrow',
+  ])
+  assert.doesNotMatch(readerText(SCREEN), /thinking/i)
+})
+
+test('IF IT DOESN\'T CONNECT: the reader gives their AI the setup guide, which opens at its public home', () => {
+  const c = code(SCREEN)
+  assert.match(SCREEN, /<p>Give your AI the setup guide<\/p>/)
+  assert.match(c, /<a className="pill ai-help-guide" href=\{HELP_URL\} target="_blank" rel="noreferrer">Setup guide<\/a>/,
+    'the Setup guide button does not open the guide in a new tab')
+  assert.match(SCREEN, /<strong>If it doesn&rsquo;t connect<\/strong>/)
+})
+

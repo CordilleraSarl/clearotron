@@ -98,6 +98,38 @@ test("eyebrow-heading fires on a screen that writes its own heading, and on an e
     "an eyebrow twelve lines above a heading is a section label, not a double header");
 });
 
+  test("a heading that is the page's SUBJECT is not the page naming itself, and a literal one still is", () => {
+    // The carve-out this file's prose always claimed and its code did not make. A page's NAME is a
+    // literal a reader could find in the rail; a page's SUBJECT is what this run is about, and it
+    // arrives interpolated. The report screen's only heading is the run's mark, and requiring it to go
+    // through the shared component would have restructured a locked screen to satisfy a rule that
+    // already said it did not apply to it.
+    const subject = '<div className="screen report"><h1 style={{ fontSize: 19 }} data-anon="mark">{heading}</h1></div>';
+    assert.equal(writesItsOwnHeader(subject), null, "a heading that is only its subject named the page");
+    assert.ok(!ids(fileOffences(SCREEN, subject)).includes("eyebrow-heading"));
+
+    // THE HALF THAT MATTERS: the narrowing must not let a real page name through. A literal heading
+    // with no shared component is what the class exists for, and it still fires.
+    const literal = '<div className="screen"><h1>About</h1></div>';
+    assert.equal(writesItsOwnHeader(literal), "writes a heading and never the shared component");
+    assert.ok(ids(fileOffences(SCREEN, literal)).includes("eyebrow-heading"));
+
+    // A heading that mixes a literal with its subject is still naming the page.
+    assert.equal(writesItsOwnHeader('<div className="screen"><h1>Report for {mark}</h1></div>'),
+      "writes a heading and never the shared component");
+
+    // UNKNOWN FIRES. An `<h1` the reader cannot close is not proof of a subject heading, and a
+    // narrowing that cannot see its subject must refuse rather than go quiet on the one file it
+    // cannot parse.
+    assert.equal(writesItsOwnHeader('<div className="screen"><h1 data-x="y">'),
+      "writes a heading and never the shared component");
+
+    // …and the second branch is untouched: an own heading BEFORE the shared component still fires,
+    // subject or not.
+    assert.equal(writesItsOwnHeader('<div className="screen"><h1>{mark}</h1><PageHeader title="X" /></div>'),
+      "opens with a heading of its own, before the shared component");
+  });
+
 test("restating-lede fires when the lede's content words are all in the title", () => {
   const restates = '<PageHeader title="Company settings" lede="Settings for the company." />';
   assert.equal(restatingLede(restates).length, 1);

@@ -56,15 +56,20 @@ test('the control is ON the read row, and the read row is what renders it', () =
 })
 
 test('the nested control stops the row it sits inside — both handlers, not just the click', () => {
-  // THE ONE THAT WOULD SURVIVE REVIEW. The read row is a `role="link"` carrying an onClick AND an
-  // onKeyDown that opens the report on Enter or Space. A Retire that stops only the pointer works when
-  // you click it and, for a keyboard user, retires the read and then navigates away from the screen
-  // that would have shown it worked — an intermittent bug that looks like the save failing.
+  // THE ONE THAT WOULD SURVIVE REVIEW. The row a Retire sits in opens a report on a click, so a Retire
+  // that stops only the pointer works when you click it and, for a keyboard user, retires the read and
+  // then navigates away from the screen that would have shown it worked — an intermittent bug that looks
+  // like the save failing.
+  // Retire lives in the row's "···" menu now, and the stop is made ONCE, on the menu's wrapper, for the
+  // button and every item inside it — so what is pinned is that the per-read Retire goes through that
+  // menu, and that the menu stops both.
   const readRow = body.slice(body.indexOf('function ReadRow('))
-  const btn = readRow.slice(readRow.indexOf('onRetire ? ('))
-  const decl = btn.slice(0, btn.indexOf('</button>'))
-  assert.match(decl, /onClick=\{\(e\) => \{\s*\n\s*e\.stopPropagation\(\)/, 'the click does not reach the row')
-  assert.match(decl, /onKeyDown=\{\(e\) => e\.stopPropagation\(\)\}/, 'and neither does Enter or Space')
+  const retire = readRow.slice(readRow.indexOf('onRetire ? ('), readRow.indexOf('onRetire(read)'))
+  assert.match(retire, /<RowMenu/, 'the per-read Retire is inside the row menu')
+  const menu = body.slice(body.indexOf('function RowMenu('), body.indexOf('function MenuItem('))
+  const wrapper = menu.slice(menu.indexOf('className="row-menu"'), menu.indexOf('<button'))
+  assert.match(wrapper, /onClick=\{\(e\) => \{\s*\n\s*e\.stopPropagation\(\)/, 'the click does not reach the row')
+  assert.match(wrapper, /onKeyDown=\{\(e\) => \{\s*\n\s*e\.stopPropagation\(\)/, 'and neither does Enter or Space')
 })
 
 test('the two retires do not both read "Retire" on a threaded name', () => {

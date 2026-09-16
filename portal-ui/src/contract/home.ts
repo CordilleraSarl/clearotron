@@ -650,7 +650,7 @@ export function cardReason(r: Run, now = Date.now(), compact = false): string | 
  */
 export function limitLine(used: number | null, limit: number | null): string {
   if (limit == null) return used == null ? 'Daily allowance unavailable' : `${used} run${used === 1 ? '' : 's'} today`
-  if (limit === 0) return 'No daily cap on this account'
+  if (limit === 0) return 'No daily cap on this company'
   return `${used ?? 0} of ${limit} run${limit === 1 ? '' : 's'} used today · resets midnight UTC`
 }
 

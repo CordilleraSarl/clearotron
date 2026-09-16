@@ -358,3 +358,63 @@ test('a band the ladder does not know sorts LAST rather than first — an unknow
   })])
   assert.deepEqual(batch[0]!.rowBands, ['Medium', 'Not on this ladder'])
 })
+
+// ── the latest report, and what is under way ───────────────────────────────────────────────────────────
+
+test('a name carries its LATEST REPORT beside its newest read — two fields, because they can differ', () => {
+  const marks = marksOf([
+    run({ runId: 'waiting', date: '2026-09-16', issuedAt: '2026-09-16T08:00:00Z', state: 'queued', band: null, tone: null }),
+    run({ runId: 'done', date: '2026-09-02', issuedAt: '2026-09-02T08:00:00Z', band: 'Medium', tone: 'medium' }),
+  ])
+  const m = marks[0]!
+  assert.equal(m.current.runId, 'waiting', 'where the name stands now')
+  assert.equal(m.latestReport?.runId, 'done', 'the assessment the reader already holds')
+  assert.equal(m.reportBand, 'Medium')
+  assert.deepEqual(m.reportBands, ['Medium'])
+  assert.equal(m.queued, 1)
+  assert.equal(m.running, 0)
+  assert.equal(m.date, '2026-09-16', 'Updated is the most recent activity: the day the waiting search was started')
+})
+
+test('running and paused both count as started; a name with no delivered read has no latest report', () => {
+  const m = marksOf([
+    run({ runId: 'p', issuedAt: '2026-09-16T09:00:00Z', state: 'paused', band: null, tone: null }),
+    run({ runId: 'r', issuedAt: '2026-09-16T08:00:00Z', state: 'running', band: null, tone: null }),
+  ])[0]!
+  assert.equal(m.running, 2)
+  assert.equal(m.queued, 0)
+  assert.equal(m.latestReport, null)
+  assert.equal(m.reportBand, null)
+  assert.deepEqual(m.reportBands, [])
+})
+
+test('IMPROVED SINCE is measured against the latest report, so a queued re-read does not hide it', () => {
+  // The band on screen while the re-read waits is the latest report's. The marker qualifies that band,
+  // so it has to survive the wait rather than vanish because the newest read has no band yet.
+  const m = marksOf([
+    run({ runId: 'waiting', issuedAt: '2026-09-16T08:00:00Z', state: 'queued', band: null, tone: null }),
+    run({ runId: 'better', issuedAt: '2026-09-02T08:00:00Z', band: 'Manageable', tone: 'low' }),
+    run({ runId: 'worse', issuedAt: '2026-08-21T08:00:00Z', band: 'High', tone: 'high' }),
+  ])[0]!
+  assert.equal(m.improvedFrom, 'High')
+})
+
+test('a family counts what is under way across its names, and rolls up each name\'s latest report', () => {
+  const rows = rowsOf(
+    marksOf(
+      [
+        run({ runId: 'plus-q', markName: 'AquaPlus', issuedAt: '2026-09-16T08:00:00Z', state: 'queued', band: null, tone: null }),
+        run({ runId: 'plus-1', markName: 'AquaPlus', issuedAt: '2026-09-02T08:00:00Z', band: 'High', tone: 'high' }),
+        run({ runId: 'max-r', markName: 'AquaMax', issuedAt: '2026-09-15T08:00:00Z', state: 'running', band: null, tone: null }),
+        run({ runId: 'max-1', markName: 'AquaMax', issuedAt: '2026-08-02T08:00:00Z', band: 'Medium', tone: 'medium' }),
+      ],
+      { of: { 'plus-q': 'f', 'plus-1': 'f', 'max-r': 'f', 'max-1': 'f' }, names: { f: 'Aqua line' } },
+    ),
+    { of: { 'plus-q': 'f', 'plus-1': 'f', 'max-r': 'f', 'max-1': 'f' }, names: { f: 'Aqua line' } },
+  )
+  const fam = rows[0]
+  assert.ok(fam && fam.kind === 'family')
+  assert.equal(fam.queued, 1)
+  assert.equal(fam.running, 1)
+  assert.equal(fam.band, 'High', 'both names are mid re-read; their latest reports are High and Medium, so the group says High')
+})

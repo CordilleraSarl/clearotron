@@ -25,7 +25,7 @@ the vendor flags approximate is UNKNOWN, never a number.
 
 | Doc | What it answers |
 |---|---|
-| [`configuration.md`](configuration.md) | Registers, risk frameworks, client profiles — the practice-level settings |
+| [`configuration.md`](configuration.md) | Registers, risk frameworks, company profiles — the settings that make an installation its own |
 | [`architecture/04-configuration-reference.md`](architecture/04-configuration-reference.md) | Every environment variable, with ownership tiers |
 | [`architecture/05-customer-profiles.md`](architecture/05-customer-profiles.md) | Profile internals and the onboarding runbook |
 
@@ -36,7 +36,7 @@ the vendor flags approximate is UNKNOWN, never a number.
 | [`INTAKE.md`](INTAKE.md) | How a job reaches the runner — the headless queue contract |
 | [`DELIVERY.md`](DELIVERY.md) | What the engine emits when a run finishes, and who sends it |
 | [`PORTAL.md`](PORTAL.md) | The portal: what it serves, and who sees what |
-| [`CLIENT-MCP.md`](CLIENT-MCP.md) | Publishing a connector your customers sign in to, and how their access is scoped. To connect *your own* app to *your own* runs, use [`../mcp-server/CONNECT.md`](../mcp-server/CONNECT.md) instead |
+| [`CLIENT-MCP.md`](CLIENT-MCP.md) | Publishing a connector that each company's people sign in to, and how their access is scoped. To connect *your own* app to *your own* runs, use [`../mcp-server/CONNECT.md`](../mcp-server/CONNECT.md) instead |
 | [`E2E.md`](E2E.md) | Proving a deployment works end to end |
 | [`GLOSSARY.md`](GLOSSARY.md) | The words this codebase uses in a particular way — one line each, for a contributor meeting them for the first time |
 | [`SECURITY.md`](SECURITY.md) | The security envelope — what protects what, and where it is enforced in code. To report a vulnerability, use [`../SECURITY.md`](../SECURITY.md) |
@@ -47,13 +47,13 @@ tokens is [`architecture/06-operations-runbook.md`](architecture/06-operations-r
 what you set at install time, including the four variables that keep two instances on one machine
 apart, is [`../INSTALL.md`](../INSTALL.md) §8.
 [`../examples/grants.example.json`](../examples/grants.example.json) is a runnable guest list over the
-demo clients.
+demo companies.
 
 ## Architecture
 
 [`architecture/`](architecture/) is the reference pack: product overview, run lifecycle, the
 configuration reference, the
-[config-governance inventory](architecture/05-config-governance.md), customer profiles, quality and
+[config-governance inventory](architecture/05-config-governance.md), company profiles, quality and
 audit, security and data, and the
 [development guide](architecture/08-development-guide.md) — which is where to look before adding a
 stage, an engine adapter, or a register provider.
@@ -64,8 +64,8 @@ mechanically; it is a convention held by review.
 
 ## What this repo contains, and what it does not
 
-**No client data.** No client names, no marks under clearance, no matter numbers, no run identifiers.
-A guard sweeps every tracked file for client identity,
+**No data from a real clearance.** No names of the companies it cleared for, no marks under clearance, no
+matter numbers, no run identifiers. A guard sweeps every tracked file for a real company's identity,
 and a second sweeps for operator identity and for any
 citation of a path withheld at the public cut — that second one reads a list of withheld paths
 carrying a reason per entry, and fails a citation of one that is not declared. Both are tests in the contributor
@@ -77,10 +77,10 @@ The other half is structural: it fails on any undeclared identity inside a matte
 which is the half that catches something new. Without the private table the guard runs on synthetic
 sentinels: the machinery is exercised and there is nothing real to find.
 
-**Demo clients are synthetic.** The published package carries a Generic default (`generic`) and one
-demo brand owner. The repository holds three further invented accounts — gaming, functional drinks and
-animal health — which exercise the per-client machinery and the test suite and are never published.
-Real client bundles load at runtime from a private store (`CLEAROTRON_CUSTOMERS_DIR`) and are never
+**Demo companies are synthetic.** The published package carries a Generic default (`generic`) and one
+demo company. The repository holds three further invented companies — gaming, functional drinks and
+animal health — which exercise the per-company machinery and the test suite and are never published.
+Real company bundles load at runtime from a private store (`CLEAROTRON_CUSTOMERS_DIR`) and are never
 committed here.
 
 **Real third-party names are deliberate.** Registers, marketplaces, regulators, research providers and

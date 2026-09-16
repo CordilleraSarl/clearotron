@@ -429,11 +429,42 @@ export function eyebrowOverHeading(src) {
  * heading it wrote itself — a heading inside a page, for an empty state or a run's own mark, is sized for
  * where it sits and is not the page naming itself.
  */
+const H1_BLOCK = /<h1\b[^>]*>([\s\S]*?)<\/h1>/g
+
+/**
+ * Is this heading the page's SUBJECT rather than its name?
+ *
+ * The carve-out this file's prose has always claimed and its code did not make: "a heading inside a page,
+ * for an empty state or a run's own mark, is sized for where it sits and is not the page naming itself."
+ * A page's NAME is a literal a reader could find in the rail — About, Profile, Give access. A page's
+ * SUBJECT is whatever this run is about, and it arrives interpolated.
+ *
+ * So strip the JSX expressions and the tags, and ask whether any words are left. Nothing left means the
+ * heading was entirely its subject.
+ */
+const isSubjectHeading = (inner) => {
+  const bare = String(inner)
+    .replace(/\{(?:[^{}]|\{[^{}]*\})*\}/g, '')   // JSX expressions, one level of nesting
+    .replace(/<[^>]*>/g, '')                      // nested tags
+  return !/[A-Za-z]{2}/.test(bare)
+}
+
 export function writesItsOwnHeader(src) {
-  const header = String(src).indexOf('<PageHeader')
-  const h1 = String(src).indexOf('<h1')
+  const text = String(src)
+  const header = text.indexOf('<PageHeader')
+  const h1 = text.indexOf('<h1')
   if (header < 0 && h1 < 0) return null
-  if (header < 0) return 'writes a heading and never the shared component'
+  if (header < 0) {
+    // A screen whose only headings are its subject names nothing, so there is nothing for the shared
+    // component to carry. UNKNOWN FIRES: if no `<h1>…</h1>` block can be read at all while the tag is
+    // present — an unclosed tag, a generated one — the class stands. A narrowing that cannot see its
+    // subject must refuse, or it goes quiet on exactly the file it cannot parse.
+    const blocks = [...text.matchAll(H1_BLOCK)]
+    if (!blocks.length) return 'writes a heading and never the shared component'
+    return blocks.every((m) => isSubjectHeading(m[1]))
+      ? null
+      : 'writes a heading and never the shared component'
+  }
   if (h1 >= 0 && h1 < header) return 'opens with a heading of its own, before the shared component'
   return null
 }

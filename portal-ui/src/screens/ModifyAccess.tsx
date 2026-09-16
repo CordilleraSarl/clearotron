@@ -29,7 +29,7 @@ import type { AccessView, Permissions, Person, Result } from '../contract/api.ts
 import { useLoad } from '../state/useApi.ts'
 import { useUnsaved } from '../state/useUnsaved.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
-import { accessSentence, permissionsPhrase } from '../shell/accessWords.ts'
+import { accessSentence, permissionsPhrase, PERMISSION_LINE, BOTH_OFF_LINE, REACH_LINE } from '../shell/accessWords.ts'
 import { isGenericKey } from '../contract/genericKey.ts'
 import { PEOPLE } from '../nav/nav.config.ts'
 import { PageHeader } from '../components/PageHeader.tsx'
@@ -214,28 +214,28 @@ function Form({ ctx, person, view }: {
 
         <div className="field-label">Permissions</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 6 }}>
-          <Lever on={permissions.run} title="Run clearances" line="Start and stop clearances on the companies they can see."
+          <Lever on={permissions.run} title="Run clearances" line={PERMISSION_LINE.run}
             disabled={!whole || busy} onToggle={() => setPermissions((p) => ({ ...p, run: !p.run }))} />
-          <Lever on={permissions.manage} title="Manage" line="Add companies, add people and change settings for the companies they can see."
+          <Lever on={permissions.manage} title="Manage" line={PERMISSION_LINE.manage}
             disabled={!whole || busy} onToggle={() => setPermissions((p) => ({ ...p, manage: !p.manage }))} />
         </div>
         <p style={{ margin: '0 0 22px', fontSize: 12.5, color: 'var(--text-faint)' }}>
           {whole
-            ? 'Everyone can view reports for the companies they can see. Leave both off for a view-only person.'
+            ? BOTH_OFF_LINE
             : "They have access you can't see, so only someone who can see all of it can change their permissions."}
         </p>
 
         <div className="field-label">Access to</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 8 }}>
           {holdsEverything ? (
-            <AttachRow on name="Everything on this Clearotron" line="all organisations and companies, including ones added later"
+            <AttachRow on name="Everything on this Clearotron" line={REACH_LINE.everything}
               disabled onToggle={() => { /* not this page's to take away — removal is */ }} />
           ) : null}
           {tree.map((t) => (
             <div key={t.org.key} style={{ display: 'contents' }}>
               {t.whole ? (
                 <AttachRow on={chosen.orgs.has(t.org.key)} name={t.org.name}
-                  line="every company in it, including ones added later" disabled={busy}
+                  line={REACH_LINE.organisation} disabled={busy}
                   onToggle={() => setChosen((c) => ({ ...c, orgs: toggle(c.orgs, t.org.key) }))} />
               ) : null}
               {t.companies.map((k) => (
@@ -247,8 +247,9 @@ function Form({ ctx, person, view }: {
           ))}
         </div>
         <p style={{ margin: '0 0 22px', fontSize: 12.5, color: 'var(--text-faint)' }}>
-          Untick a row to take that access away.
-          {whole ? '' : " You are seeing the part of their access you can reach; the rest is not shown and is not changed."}
+          {whole
+            ? 'Untick a row to take that access away'
+            : 'Untick a row to take that access away. You are seeing the part of their access you can reach; the rest is not shown and is not changed.'}
         </p>
 
         <div className="notice quiet" style={{ marginBottom: 18 }}>

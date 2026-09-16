@@ -79,6 +79,24 @@ export type MarkGroup = {
   /** What the Status cell shows: the latest read's state. */
   readonly state: Run['state']
   readonly familyId: string | null
+  /**
+   * The newest read that DELIVERED — the report the row's Risk cell and its Open button speak for. Null
+   * when no read of this name has delivered.
+   *
+   * NOT `current`, and the difference is the whole field. While a re-read waits or runs it is the newest
+   * read, so `band` is null (see above) — and a row that went blank every time someone re-ran a name
+   * would hide the assessment the reader already holds. So the row shows the last completed report,
+   * NAMED as such with its date beside it, and `current` keeps speaking for where the name stands now.
+   */
+  readonly latestReport: Run | null
+  /** The bands `latestReport` contains, worst first — `rowBands`, taken from the report the row shows. */
+  readonly reportBands: readonly string[]
+  /** `latestReport`'s own band, or null. What the Risk sort and a family's roll-up read. */
+  readonly reportBand: string | null
+  /** Searches of this name waiting for a slot. */
+  readonly queued: number
+  /** Searches of this name started and not finished — running, or paused by a provider limit. */
+  readonly running: number
 }
 
 /** Several marks a person has grouped by hand. */
@@ -104,9 +122,30 @@ export type FamilyGroup = {
   readonly issuedAt: string | null
   /** In flight while ANY mark under it is: a family is finished only once all of it is. */
   readonly state: Run['state']
+  /** Searches waiting for a slot across every name in it. */
+  readonly queued: number
+  /** Searches started and not finished across every name in it. */
+  readonly running: number
 }
 
 export type Row = FamilyGroup | MarkGroup
+
+/**
+ * How many NAMES a row holds: one for a name, its members for a family.
+ *
+ * THE ONE COUNT behind every "N names" on Clearances — the total over the table and each company
+ * heading. Both used to count ROWS, so a company holding one family of two names and one other name
+ * read "2 in this view" over three names. Counted here, once, the table total is the sum of the
+ * headings by construction.
+ */
+export function namesIn(row: Row): number {
+  return row.kind === 'family' ? row.marks.length : 1
+}
+
+/** The names across a set of rows. */
+export function nameCount(rows: readonly Row[]): number {
+  return rows.reduce((n, row) => n + namesIn(row), 0)
+}
 
 /** What the family sidecar says, once it reaches the browser: run id → family, and family id → name. */
 export type Families = {
@@ -154,6 +193,8 @@ export function marksOf(runs: readonly Run[], families: Families = NO_FAMILIES):
   for (const [id, bucket] of byKey) {
     const reads = [...bucket].sort(newestFirst)
     const current = reads[0]!
+    // Newest first already, so the first delivered read is the latest report.
+    const latestReport = reads.find((r) => r.state === 'delivered') ?? null
     // The row's own bands, worst first. A single mark has exactly one; a batch has what its names came
     // back with. Reported, never computed — see bandsPresent.
     const rowBands = bandsPresent(
@@ -161,15 +202,19 @@ export function marksOf(runs: readonly Run[], families: Families = NO_FAMILIES):
       current.marks.length ? current.marks.map((m) => m.band) : [current.band],
     )
     // IMPROVED SINCE. A marker for the one case a latest-read rule would otherwise hide: an earlier read
-    // came back WORSE than the current one, so the row is telling the truth about now while a reader who
+    // came back WORSE than the latest report, so the row is telling the truth about now while a reader who
     // remembers the old answer would think the page had lost it. Only when they disagree, which is what
     // keeps it rare enough to notice — the issue rejects a marker that renders on every row.
-    const worstEarlier = reads.slice(1).reduce<string | null>(
+    // AGAINST THE LATEST REPORT, not the newest read: the band the row shows is that report's, so a re-read
+    // waiting in the queue — which has no band — must not make the marker vanish while the band it
+    // qualifies stays on screen. With nothing under way the two are the same read.
+    const reference = latestReport ?? current
+    const worstEarlier = reads.slice(reads.indexOf(reference) + 1).reduce<string | null>(
       (w, r) => (r.band && (w === null || bandRank(current.bands, r.band) < bandRank(current.bands, w)) ? r.band : w),
       null,
     )
     const improvedFrom =
-      worstEarlier && current.band && bandRank(current.bands, worstEarlier) < bandRank(current.bands, current.band)
+      worstEarlier && reference.band && bandRank(current.bands, worstEarlier) < bandRank(current.bands, reference.band)
         ? worstEarlier
         : null
     out.push({
@@ -193,6 +238,13 @@ export function marksOf(runs: readonly Run[], families: Families = NO_FAMILIES):
       // A family is asserted per RUN, so a mark belongs to whichever family any of its reads names.
       // Newest wins, which is what re-filing a mark looks like from the outside.
       familyId: reads.map((r) => families.of[r.runId]).find((f) => typeof f === 'string') ?? null,
+      latestReport,
+      reportBands: latestReport
+        ? bandsPresent(latestReport.bands, latestReport.marks.length ? latestReport.marks.map((m) => m.band) : [latestReport.band])
+        : [],
+      reportBand: latestReport?.band ?? null,
+      queued: reads.filter((r) => r.state === 'queued').length,
+      running: reads.filter((r) => r.state === 'running' || r.state === 'paused').length,
     })
   }
   return out
@@ -234,6 +286,8 @@ export function rowsOf(marks: readonly MarkGroup[], families: Families = NO_FAMI
         date: null,
         issuedAt: null,
         state: 'delivered',
+        queued: 0,
+        running: 0,
       })
     } else {
       const fam = rows[seen] as FamilyGroup
@@ -251,7 +305,12 @@ function rolledUp(fam: FamilyGroup): FamilyGroup {
   // invents one. Taking it from the first member that has one is safe because a family is one account,
   // and an account is one framework.
   const ladder: readonly Band[] = fam.marks.find((m) => m.current.bands.length)?.current.bands ?? []
-  const labels = fam.marks.map((m) => m.band)
+  // EACH NAME'S LATEST REPORT, which is what the row says it rolls up: "Highest risk across the latest
+  // report for each name". Rolling up `band` instead would drop a name from the answer for as long as
+  // a re-read of it waits in the queue — the family would under-report exactly while someone is working
+  // on it. The rule is unchanged (worst wins, unrated never does); only the band each name offers is
+  // the one its own row now shows.
+  const labels = fam.marks.map((m) => m.reportBand)
   const band = ladder.length ? worstBand(ladder, labels) : null
   return {
     ...fam,
@@ -265,6 +324,8 @@ function rolledUp(fam: FamilyGroup): FamilyGroup {
     // Finished only when all of it is. A family reported as delivered while one of its names is still
     // running invites someone to read a conclusion that is still being written.
     state: fam.marks.find((m) => m.state !== 'delivered')?.state ?? 'delivered',
+    queued: fam.marks.reduce((n, m) => n + m.queued, 0),
+    running: fam.marks.reduce((n, m) => n + m.running, 0),
   }
 }
 

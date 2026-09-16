@@ -3,7 +3,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // Does the portal call a company by name, and can a person manage their own searches and projects?
 //
-//   node scripts/portal-lifecycle-check.mjs [--keep] [--shot <path>]
+//   node scripts/portal-lifecycle-check.mjs [--keep] [--shot <path>] [--shot-dir <dir>]
 //
 // ── why this exists ──────────────────────────────────────────────────────────────────────────────────
 //
@@ -15,7 +15,7 @@
 //
 // So this serves the REAL built bundle to a REAL browser, twice — once as staff, once as a client — and
 // reads what is actually on screen. Then it drives the two lifecycles that had no controls at all:
-// retiring a custom search and bringing it back, and creating a project.
+// retiring a search template and bringing it back, and creating a project.
 //
 // It is deliberately a sibling of composer-render-check.mjs rather than an extension of it: that one
 // exercises the one screen that spends money, and it should not grow a second job.
@@ -42,6 +42,11 @@ const shotAt = process.argv.includes('--shot') ? process.argv[process.argv.index
 // confirmation it asks before it acts. One `--shot` path cannot carry both, and the second is the one
 // worth looking at — a reader who only ever sees the pre-confirm pill has not seen what they agree to.
 const shotsDir = process.argv.includes('--shots') ? process.argv[process.argv.indexOf('--shots') + 1] : null
+// ONE PICTURE PER STATE the design draws, in light and dark, at the page's full height: People, Give
+// access and Modify access, and the Company settings pages. A directory too; the three --shots pictures
+// stay what they were. This is EVIDENCE for a person to read against the design, not the test — the
+// assertions on those states run with or without it.
+const shotDir = process.argv.includes('--shot-dir') ? process.argv[process.argv.indexOf('--shot-dir') + 1] : null
 
 if (!existsSync(join(DIST, 'index.html'))) {
   console.error(`no build at ${DIST} — run: npm run build:ui`)
@@ -96,11 +101,19 @@ const ME = () => {
   }
   if (role === 'owner') {
     // ONE COMPANY, BOTH SWITCHES — the person the lifecycle pass is about. Creating and archiving a project
-    // is Manage and a custom search's writes are Run, so the pass that drives both needs both; a person
+    // is Manage and a search template's writes are Run, so the pass that drives both needs both; a person
     // with Run alone is shown no project controls at all, which the view-only pass asserts.
     return { permissions: { run: true, manage: true }, email: 'gundy@apmxc.test', accounts: [KEY], accountNames: { [KEY]: NAME },
       access: [{ kind: 'company', key: KEY, name: NAME, org: 'org-a' }],
       organisations: [{ key: 'org-a', name: 'Apmxc Group' }], accountOrgs: { [KEY]: 'org-a' } }
+  }
+  if (role === 'settings') {
+    // THE COMPANY SETTINGS PASS: one company, both switches, and the organisation held whole — which is
+    // what New company needs before Create can be pressed. Holding the organisation adds its Generic to
+    // the switcher, so the pass picks the company there, as a person would.
+    return { permissions: { run: true, manage: true }, email: 'gundy@apmxc.test', accounts: [KEY], accountNames: { [KEY]: NAME },
+      access: [{ kind: 'organisation', key: 'org-a', name: 'Apmxc Group' }],
+      organisations: [{ key: 'org-a', name: 'Apmxc Group' }], accountOrgs: { [KEY]: 'org-a' }, genericOrgs: ['org-a'] }
   }
   if (role === 'reader') {
     // BOTH SWITCHES OFF: the view-only person. They read every report for the company they were given,
@@ -136,11 +149,12 @@ const HOSTED_PEOPLE = () => ({ note: '', unknownAccounts: [], grantsFile: null, 
     access: [{ kind: 'organisation', key: 'org-a', name: 'Apmxc Group' }, { kind: 'company', key: KEY2, name: NAME2, org: 'org-b' }] },
   { email: 'viewer@example.test', permissions: { run: false, manage: false }, access: [{ kind: 'company', key: KEY, name: NAME, org: 'org-a' }], dangling: [], listed: true, covered: true, keys: 0 },
   // A FOURTH PERSON, AND THE ONLY REASON FOR THEM IS `listed: false`. They appear in a company's access
-  // list and have no permissions entry at all, which is a different fact from having permissions set to
-  // none — the server has always said which, and the decoder dropped the field, so this row rendered as
-  // a considered "view only" for as long as the page has existed. Nothing here would have caught it
-  // either, because the fixture had nobody of this shape.
+  // list and have no permissions entry at all. The row reads what that gives them — "View reports", in
+  // the view-only row's muted colour — and never a phrase about how the record was written.
   { email: 'reach@example.test', permissions: { run: false, manage: false }, access: [{ kind: 'company', key: KEY2, name: NAME2, org: 'org-b' }], dangling: [], listed: false, covered: true, keys: 0 },
+  // ONE COMPANY OF AN ORGANISATION, AND RUN. The grant whose summary has to say the half a reader most
+  // often gets wrong: nothing else in that organisation is visible to them.
+  { email: 'brand@example.test', permissions: { run: true, manage: false }, access: [{ kind: 'company', key: KEY, name: NAME, org: 'org-a' }], dangling: [], listed: true, covered: true, keys: 0 },
   // A WHOLE EMAIL DOMAIN. It is a row like any other and is changed and removed like one, but the
   // confirmation must not read as though one person is losing access — a reader skimming the address
   // sees a name shape. Here to drive that sentence rather than to reason about it.
@@ -155,6 +169,16 @@ const LOCAL_PEOPLE = { note: '', unknownAccounts: [], grantsFile: null, canAdd: 
   { email: 'lawyer@cordillera.test', permissions: { run: true, manage: true }, access: [{ kind: 'everything' }], dangling: [], listed: true, covered: true, keys: 0 },
   { email: 'newcomer@example.test', permissions: { run: false, manage: false }, access: [{ kind: 'organisation', key: 'demo-org', name: 'Demo Org' }], dangling: [], listed: true, covered: true, keys: 0 },
 ] }
+
+// What the activity log answers People with: no log kept, a log with nobody in it, or one with two people.
+// Flipped per pass, because the panel's empty state and its populated rows are both accepted states.
+let activity = 'unavailable'
+const OBSERVED = () => activity === 'empty' ? { available: true, truncated: false, people: [], note: null }
+  : activity === 'some' ? { available: true, truncated: false, note: null, people: [
+    { email: 'owner@example.test', events: { plan: 3, trigger: 2 }, accounts: [KEY], firstSeen: '2026-09-10T09:00:00.000Z', lastSeen: '2026-09-15T09:00:00.000Z', count: 5 },
+    { email: 'brand@example.test', events: { 'saved-search-save': 1 }, accounts: [KEY, KEY2], firstSeen: '2026-09-12T09:00:00.000Z', lastSeen: '2026-09-12T09:00:00.000Z', count: 1 },
+  ] }
+  : { available: false, truncated: false, people: [], note: 'No activity log is kept here.' }
 
 // THE ENGINE'S OWN ROW for a level, not a restatement of it. `available`/`unavailableNote` are the
 // only additions — deployment state resolved per request, which productRows knows nothing about. This
@@ -188,6 +212,32 @@ const PROJECTS = [
   { key: 'eu-launch', name: 'EU launch', archived: false },
   { key: 'old-engagement', name: 'Old engagement', archived: true },
 ]
+
+// The framework the profile stub serves: four bands, what each means in rungs, and the two lines on what
+// it rates and speaks as — the parts Profile folds, so a fold with nothing in it cannot pass.
+const FRAMEWORK = {
+  custom: true, hasWorkedExamples: true,
+  manifest: {
+    title: 'Vantor Labs clearance framework', entity_label: 'Vantor',
+    bands: [{ label: 'Blocking', tone: 'severe' }, { label: 'Material', tone: 'high' },
+      { label: 'Manageable', tone: 'medium' }, { label: 'Clear to file', tone: 'minimal' }],
+    structure: { kind: 'bands', axes: ['likelihood of confusion', 'commercial exposure'] },
+  },
+  bandMeanings: [
+    { band: 'Blocking', meaning: 'A live right covers the goods.', rungs: [
+      { label: 'Legal position', text: 'A live registration covers the goods in a launch market.' },
+      { label: 'Consequence', text: 'Do not file. The name needs replacing.' }] },
+    { band: 'Material', meaning: 'A narrower prior right exists.', rungs: [
+      { label: 'Legal position', text: 'A prior right would survive an opposition, but is narrower than the goods.' },
+      { label: 'Consequence', text: 'File with a narrowed specification.' }] },
+    { band: 'Manageable', meaning: 'Crowded, nothing squarely over the goods.', rungs: [
+      { label: 'Legal position', text: 'The register is crowded, and nothing sits squarely over the goods.' },
+      { label: 'Consequence', text: 'File as drafted.' }] },
+    { band: 'Clear to file', meaning: 'Nothing reads onto the name.', rungs: [
+      { label: 'Legal position', text: 'Nothing on the register in the named classes reads onto the name.' },
+      { label: 'Consequence', text: 'File.' }] },
+  ],
+}
 
 const posted = []
 const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.json': 'application/json' }
@@ -241,8 +291,13 @@ const server = createServer((req, res) => {
     })
   }
   if (p === '/portal/api/config/searches') {
-    return json(res, { recipes: Object.entries(RECIPES).map(([slug, r]) => ({
-      slug, label: r.label, base: r.base, archived: Boolean(r.archived), version: r.version ?? null, updatedAt: null })) })
+    const listing = { recipes: Object.entries(RECIPES).map(([slug, r]) => ({
+      slug, label: r.label, base: r.base, archived: Boolean(r.archived), version: r.version ?? null, updatedAt: null })) }
+    // LATE ON PURPOSE in the Company settings pass. Profile's Permitted searches row names templates from
+    // this listing, and a listing that always beat the profile would leave no moment in which the row
+    // could say something other than the names.
+    if (role === 'settings') { setTimeout(() => json(res, listing), 500); return }
+    return json(res, listing)
   }
   const one = /^\/portal\/api\/config\/searches\/([^/]+)$/.exec(p)
   if (one) {
@@ -261,8 +316,16 @@ const server = createServer((req, res) => {
       contextPack: '', inherited: {}, effective: {}, origins: {}, derived: null })
   }
   if (p === '/portal/api/config/profile') {
-    return json(res, { account: KEY, profile: { platforms: ['gnc.com'], defaultClasses: [9], marketplaceDensity: 'Low' },
-      readOnly: { frameworkPath: PLANTED_PATH }, contextPack: '', framework: null, derived: null })
+    // A COMPANY WITH ITS OWN FRAMEWORK, so Profile draws everything it can: the framework in force, its
+    // bands, the detail behind its fold, the rows under it and the variant calculation. `allowedRecipes`
+    // names two of the company's templates by SLUG — the row must print their names, never these keys.
+    return json(res, { account: KEY,
+      profile: { name: 'Vantor Labs Ltd', matchDomains: ['vantor.example'], industry: 'developer tools',
+        platforms: ['gnc.com'], defaultClasses: [9, 42], marketplaceDensity: 'Low', defaultProduct: 'global-preliminary-search' },
+      readOnly: { frameworkPath: PLANTED_PATH, allowedRecipes: ['launch-screen', 'old-thing'],
+        jxPolicy: { escalationPolicy: 'conservative' }, runCaps: { dailyRuns: 3, maxQueued: 4 } },
+      contextPack: '## Standing concerns\n\nA competitor files close to every launch.', framework: FRAMEWORK,
+      derived: { batchSize: 14, minCellsPerVariant: 6 } })
   }
   if (p === '/portal/api/usage') {
     return json(res, { account: KEY, today: 0, thisMonth: 0, queued: 0, dailyRuns: 3, monthlyRuns: null, maxQueued: null, capped: role !== 'staff' })
@@ -288,7 +351,7 @@ const server = createServer((req, res) => {
     if (role !== 'staff') { res.writeHead(404); res.end('{}'); return }
     return json(res, localMode ? LOCAL_PEOPLE : HOSTED_PEOPLE())
   }
-  if (p === '/portal/admin/observed') return json(res, { available: false, truncated: false, people: [], note: 'No activity log is kept here.' })
+  if (p === '/portal/admin/observed') return json(res, OBSERVED())
   if (p === '/portal/api/mcp-access') return json(res, { url: null, keyUrl: null, email: null, enabled: false })
   if (p === '/portal/api/about') return json(res, { name: 'Clearotron', version: null, commit: null, sourceRepo: STUB_SOURCE_REPO, sourceUrl: STUB_SOURCE_REPO, license: null, copyright: '' })
 
@@ -331,7 +394,7 @@ const HELPERS = `
   };
   const allByText = (sel, re) => [...document.querySelectorAll(sel)].filter((e) => re.test(e.innerText || ''));
   // Navigate the way the shell does — pushState plus a popstate, which is what its usePath listens for.
-  // Retried once: a screen that navigates itself on save (the composer returns to Custom searches) can
+  // Retried once: a screen that navigates itself on save (the composer returns to Search templates) can
   // land its own go() a beat after this one and put the old screen back.
   const goto = async (path) => {
     for (let i = 0; i < 3; i++) {
@@ -402,7 +465,7 @@ ${HELPERS}
   out.railNav = rail ? [...rail.querySelectorAll('.nav-item')].map((b) => b.innerText.trim()).filter(Boolean) : [];
   out.genericLabels = railSelect ? [...railSelect.options].filter((o) => /Generic/.test(o.textContent)).map((o) => o.textContent.trim()) : [];
   // The avatar menu, opened, read and closed again. People lives there for a person with Manage, directly
-  // above Global config, and in the rail for nobody.
+  // above Installation settings, and in the rail for nobody.
   const avatar = document.querySelector('button[aria-label="Settings and about"]');
   if (avatar) { avatar.click(); await settle(() => !!document.querySelector('[role="menu"]')); }
   out.avatarMenu = [...document.querySelectorAll('[role="menu"] [role="menuitem"]')].map((b) => b.innerText.trim()).filter(Boolean);
@@ -440,8 +503,13 @@ ${HELPERS}
   // card the composer draws for every identity, which is what the next line reads.
   await mustSettle(() => Boolean(document.querySelector('.ctx-card')), 8000,
     'the composer never painted its context card');
-  const card = document.querySelector('.ctx-card');
-  out.composerCard = card ? card.innerText.replace(/\\s+/g, ' ').trim() : null;
+  // THE COMPANY IS THE FORM'S FIRST FIELD, above Describe it — it moved out of the card, which now holds
+  // what the company carries. Read where it is drawn: the picker's chosen option for a reader with
+  // several companies, the plain name for a reader with one.
+  const company = document.querySelector('.nc-company-name') || document.querySelector('select.nc-company');
+  out.composerCompany = company
+    ? (company.tagName === 'SELECT' ? (company.selectedOptions[0] || {}).textContent || '' : company.innerText).replace(/\\s+/g, ' ').trim()
+    : null;
 
   // THE PROPERTY: no screen prints the slug where the name belongs. Checked over the whole document,
   // because the slug appearing anywhere visible is the failure — it has no business on a client screen.
@@ -452,31 +520,122 @@ ${HELPERS}
 `
 
 /**
- * People and the form it opens, as the whole-install pass sees them on a hosted install. The form is left
- * clean — the address cleared and the choice unticked — so the unsaved-changes prompt cannot stall the
- * navigation that follows.
+ * What the People scripts read on each of the three screens: the top bar, the activity panel, and the
+ * sentence under the access form. Their own helpers, beside the scripts that use them.
+ */
+const PEOPLE_HELPERS = `
+  // The title slot, and whether the avatar draws active — null when it does not.
+  const bar = () => {
+    const avatar = document.querySelector('button[aria-label="Settings and about"]');
+    return {
+      title: ((document.querySelector('.topbar h1') || {}).innerText || '').trim(),
+      avatarCurrent: avatar ? avatar.getAttribute('aria-current') : 'no avatar on the bar',
+    };
+  };
+  const texts = (sel) => [...document.querySelectorAll(sel)].map((e) => e.innerText.replace(/\\s+/g, ' ').trim());
+  const sentence = () => (document.querySelector('.notice.quiet p') || {}).innerText || null;
+  // The panel under the list: its heading, then one quiet line or one card per person.
+  const activityPanel = () => {
+    const head = [...document.querySelectorAll('.screen div')]
+      .find((d) => d.children.length === 0 && d.innerText.trim() === 'Recent activity');
+    const panel = head ? head.parentElement : null;
+    if (!panel) return null;
+    return {
+      text: panel.innerText.replace(/\\s+/g, ' ').trim(),
+      // One address per card: the marked span that is not a company pill.
+      cards: panel.querySelectorAll('span[data-anon="mark"]:not(.pill)').length,
+      pills: [...panel.querySelectorAll('.pill')].map((e) => e.innerText.trim()),
+    };
+  };
+  // A lever's state, and pressing it until it matches.
+  const lever = (re) => findByText('button.lever', re);
+  const setLevers = async (run, manage) => {
+    if ((lever(/^Run clearances/).getAttribute('aria-pressed') === 'true') !== run) lever(/^Run clearances/).click();
+    if ((lever(/^Manage/).getAttribute('aria-pressed') === 'true') !== manage) lever(/^Manage/).click();
+    await sleep(200);
+  };
+`
+
+/**
+ * People and the form it opens, as the whole-install pass sees them on a hosted install, with the top bar
+ * over both and a rail screen as its control. The form is left clean — the address cleared and the choice
+ * unticked — so the unsaved-changes prompt cannot stall the navigation that follows.
  */
 const PEOPLE_SCRIPT = `
 (async () => {
 ${HELPERS}
+${PEOPLE_HELPERS}
   const out = {};
   try {
+    // THE CONTROL. The rail highlights Clearances, so the bar keeps the scope rule and the avatar is plain.
+    await goto('/portal/clearances');
+    await mustSettle(() => /Clearances/.test(txt()), 8000, 'Clearances never painted');
+    out.railBar = bar();
+    // THE SAME RULE ON THE MENU'S OTHER SCREENS, read against the menu's own labels, so an entry renamed in
+    // the navigation needs no edit here.
+    const avatarButton = document.querySelector('button[aria-label="Settings and about"]');
+    avatarButton.click();
+    await mustSettle(() => document.querySelector('[role="menu"]'), 4000, 'the avatar menu did not open');
+    out.menuLabels = texts('[role="menu"] button[role="menuitem"]');
+    avatarButton.click();
+    out.menuBars = {};
+    for (const path of ['/portal/preferences', '/portal/admin/config', '/portal/about']) {
+      await goto(path);
+      await sleep(400);
+      out.menuBars[path] = bar();
+    }
+
     await goto('/portal/people');
     await mustSettle(() => document.querySelector('table.data tbody tr td'), 8000, 'People never drew its list');
+    await mustSettle(() => activityPanel(), 8000, 'People never drew Recent activity');
+    out.peopleBar = bar();
     out.rows = [...document.querySelectorAll('table.data tbody tr')]
       .map((r) => [...r.querySelectorAll('td')].map((c) => c.innerText.replace(/\\s+/g, ' ').trim()));
+    // The colour each row's permissions are drawn in, keyed by address, so "the same muted colour as the
+    // other view-only rows" is measured rather than assumed.
+    out.permColour = Object.fromEntries([...document.querySelectorAll('table.data tbody tr')].map((r) => {
+      const cells = r.querySelectorAll('td');
+      const address = cells[0] ? (cells[0].querySelector('span') || cells[0]).innerText.trim() : '';
+      return [address, cells[1] ? getComputedStyle(cells[1]).color : null];
+    }));
+    out.key = [...document.querySelectorAll('dl.perm-key dt')]
+      .map((dt) => dt.innerText.trim() + ' — ' + ((dt.nextElementSibling || {}).innerText || '').trim());
+    out.lede = (document.querySelector('.page-header .page-lede') || {}).innerText || null;
+    out.retired = /reach only|no permissions/i.test(txt());
+    out.activity = activityPanel();
     out.addDisabled = findByText('button', /Add a person/).disabled;
     out.localNotice = /signs in one person/.test(txt());
+
     findByText('button', /Add a person/).click();
-    await mustSettle(() => /Give someone access to Clearotron/.test(txt()), 8000, 'Add a person did not open the form');
+    await mustSettle(() => ((document.querySelector('.page-title') || {}).innerText || '').trim() === 'Give access', 8000,
+      'Add a person did not open Give access');
+    await mustSettle(() => document.querySelectorAll('button.attach-row').length > 0, 8000, 'Give access never drew its access tree');
     out.path = location.pathname;
+    out.addBar = bar();
+    out.addLede = (document.querySelector('.page-lede') || {}).innerText || null;
+    out.levers = texts('button.lever');
+    out.paragraphs = texts('.screen p');
+    out.tree = [...document.querySelectorAll('button.attach-row')]
+      .map((b) => [(b.children[1] || {}).innerText || '', (b.querySelector('.sub-t') || {}).innerText || '']);
+    // Before anything is chosen: the instruction, whichever levers are on.
+    out.prompt = sentence();
     const email = document.querySelector('#give-access-email');
     set(email, 'dana@birch.example');
     await sleep(150);
     findByText('button.attach-row', /Apmxc Group/).click();
     await sleep(250);
-    out.sentence = (document.querySelector('.notice.quiet p') || {}).innerText || null;
-    out.saveEnabled = !findByText('button', /^Save$/).disabled;
+    // THE SENTENCE FOLLOWS THE LEVERS, read at all four settings and left where the form opened.
+    out.sentences = {};
+    for (const [name, run, manage] of [['bothOff', false, false], ['runOnly', true, false], ['manageOnly', false, true], ['bothOn', true, true]]) {
+      await setLevers(run, manage);
+      out.sentences[name] = sentence();
+    }
+    await setLevers(true, false);
+    out.sentence = sentence();
+    out.giveEnabled = !findByText('button', /^Give access$/).disabled;
+    out.actions = texts('.screen button.btn-primary, .screen button.btn-ghost');
+    // It grants, and sends nothing: no sentence on the form may promise an invitation or a mail.
+    out.promisesMail = /invit|send (them )?an? e-?mail|will (be )?e-?mail|e-?mailed/i.test(txt());
     findByText('button.attach-row', /Apmxc Group/).click();
     set(email, '');
     await sleep(200);
@@ -525,6 +684,7 @@ ${HELPERS}
 const MODIFY_SCRIPT = `
 (async () => {
 ${HELPERS}
+${PEOPLE_HELPERS}
   const out = {};
   try {
     await goto('/portal/people');
@@ -542,6 +702,10 @@ ${HELPERS}
     await mustSettle(() => /Modify access/.test(txt()), 8000, 'Modify did not open the form');
     out.path = location.pathname + location.search;
     out.email = (document.querySelector('.page-lede') || {}).innerText || null;
+    out.bar = bar();
+    out.levers = texts('button.lever');
+    out.paragraphs = texts('.screen p');
+    out.actions = texts('.screen button.btn-primary, .screen button.btn-ghost, .screen button.pill');
     out.ticked = [...document.querySelectorAll('button.attach-row')]
       .filter((b) => b.className.indexOf(' on') >= 0).map((b) => b.innerText.replace(/\\s+/g, ' ').trim());
     out.saveDisabledBefore = findByText('button', /Save changes/).disabled;
@@ -599,6 +763,41 @@ ${HELPERS}
 })()
 `
 
+/**
+ * Modify, opened on somebody given ONE company of an organisation and nothing changed — the summary the
+ * page opens with has to say what they will NOT see as plainly as what they will.
+ */
+const MODIFY_PART_SCRIPT = `
+(async () => {
+${HELPERS}
+${PEOPLE_HELPERS}
+  const out = {};
+  try {
+    await goto('/portal/people/modify?email=' + encodeURIComponent('brand@example.test'));
+    await mustSettle(() => /Modify access/.test(txt()) && sentence(), 8000, 'Modify never opened on a part-organisation grant');
+    out.bar = bar();
+    out.ticked = [...document.querySelectorAll('button.attach-row.on')].map((b) => (b.children[1] || {}).innerText || '');
+    out.sentence = sentence();
+  } catch (e) { out.fatal = String((e && e.message) || e); }
+  return out;
+})()
+`
+
+/** Recent activity with people in it: who, which companies by name, and no empty-state line beside them. */
+const ACTIVITY_SCRIPT = `
+(async () => {
+${HELPERS}
+${PEOPLE_HELPERS}
+  const out = {};
+  try {
+    await goto('/portal/people');
+    await mustSettle(() => { const a = activityPanel(); return a && a.cards > 0; }, 8000, 'Recent activity never listed anyone');
+    out.activity = activityPanel();
+  } catch (e) { out.fatal = String((e && e.message) || e); }
+  return out;
+})()
+`
+
 /** The view-only person: what the rail offers, and whether the two gated pages exist for them at all. */
 const READER_SCRIPT = `
 (async () => {
@@ -619,7 +818,10 @@ ${HELPERS}
     await goto('/portal/brand/projects');
     await mustSettle(() => /EU launch/.test(txt()), 8000, 'Projects never listed its projects for a view-only person');
     out.newProjectOffered = Boolean(maybeByText('button', /^New project$/));
-    out.archiveOffered = Boolean(maybeByText('button', /^(Archive|Bring back)$/));
+    // Archive and Bring back live in each row's menu, so the menu's own button is what must be absent — a
+    // search for the words alone passes for a manager too, whose menus are closed.
+    out.archiveOffered = Boolean(maybeByText('button', /^(Archive|Bring back)$/))
+      || Boolean(document.querySelector('button[aria-label="More actions"]'));
   } catch (e) { out.fatal = String((e && e.message) || e); }
   return out;
 })()
@@ -636,7 +838,7 @@ ${HELPERS}
   const out = {};
   try {
     await goto('/portal/brand/profile');
-    const drawn = () => /These settings scope every clearance/.test(txt());
+    const drawn = () => Boolean(document.querySelector('.fw-sectionh'));
     const card = () => [...document.querySelectorAll('button.entry-card')].find((b) => b.innerText.includes(${JSON.stringify(NAME)}));
     await mustSettle(() => drawn() || card(), 8000, 'Profile drew neither the profile nor the company panel');
     if (!drawn()) { card().click(); await mustSettle(drawn, 8000, 'picking the company did not open its profile'); }
@@ -646,46 +848,77 @@ ${HELPERS}
 })()
 `
 
+/**
+ * A row's "More actions" menu, driven: Retire, Bring back and Archive live there rather than on the row.
+ *
+ * Rows are read from the screen body only — the rail lists "Projects" and "Search templates" too, and a
+ * search over the whole document finds those first.
+ */
+const ROW_MENU_HELPERS = `
+  const rowOf = (label) => [...document.querySelectorAll('.main table.data tbody tr, .main .row-card')]
+    .find((r) => r.innerText.includes(label));
+  // Open a row's menu and read what it offers. Closed again unless the caller is about to pick from it.
+  const menuOf = async (label, keepOpen) => {
+    const row = rowOf(label);
+    if (!row) throw new Error('no row reads ' + label);
+    const button = row.querySelector('button[aria-label="More actions"]');
+    if (!button) return [];
+    button.click();
+    await mustSettle(() => row.querySelector('[role="menu"]'), 3000, 'the menu on the ' + label + ' row never opened');
+    const items = [...row.querySelectorAll('[role="menuitem"]')].map((i) => i.innerText.trim());
+    if (!keepOpen) { button.click(); await sleep(80); }
+    return items;
+  };
+  const pick = async (label, item) => {
+    await menuOf(label, true);
+    const it = [...rowOf(label).querySelectorAll('[role="menuitem"]')].find((i) => i.innerText.trim() === item);
+    if (!it) throw new Error('the ' + label + ' row offers no ' + item);
+    it.click();
+    await sleep(200);
+  };
+`
+
 /** Pass two (client only): the two lifecycles that had no controls. */
 const LIFECYCLE_SCRIPT = `
 (async () => {
 ${HELPERS}
+${ROW_MENU_HELPERS}
   const out = { steps: [] };
   try {
 
-  // ── custom searches: list, retire, bring back ──
+  // ── search templates: list, retire, bring back ──
   await goto('/portal/brand/searches');
-  if (!await settle(() => /Custom searches/.test(txt()))) return { fatal: 'Custom searches never painted', body: txt().slice(0, 600) };
+  if (!await settle(() => document.querySelector('.main table.data tbody tr'))) return { fatal: 'Search templates never drew its rows', body: txt().slice(0, 600) };
   out.listsRetired = /Retired/.test(txt());          // drawn from the CONFIG list, not the composer menu
   out.noEditorFields = !/How deep should it search/.test(txt());
-  out.retireButtons = allByText('button', /^Retire$/).length;
-  out.bringBackButtons = allByText('button', /^Bring back$/).length;
   out.editButtons = allByText('button', /^Edit$/).length;
+  // Each row's menu offers the one of the two its row can take.
+  out.retireInMenu = (await menuOf('Launch screen')).includes('Retire');
+  out.bringBackInMenu = (await menuOf('Old thing')).includes('Bring back');
   out.steps.push('list painted');
 
-  findByText('button', /^Retire$/).click();
-  await sleep(200);
+  await pick('Launch screen', 'Retire');
   out.confirmShown = /Confirm — retire/.test(txt());
   findByText('button', /Confirm — retire/).click();
-  await mustSettle(() => allByText('button', /^Bring back$/).length === 2, 6000, 'the retired search never offered Bring back');
-  out.retiredThenListed = allByText('button', /^Bring back$/).length === 2;
+  await mustSettle(() => rowOf('Launch screen') && /Retired/.test(rowOf('Launch screen').innerText), 6000, 'the retired search was not kept on the list, marked Retired');
+  out.retiredThenListed = (await menuOf('Launch screen')).includes('Bring back');
   out.steps.push('retired');
 
   // ...and back, which is the half that did not exist at all before.
-  findByText('button', /^Bring back$/).click();
-  await mustSettle(() => allByText('button', /^Retire$/).length === 1, 6000, 'the restored search never became retirable again');
-  out.broughtBack = allByText('button', /^Retire$/).length === 1;
+  await pick('Launch screen', 'Bring back');
+  await mustSettle(() => rowOf('Launch screen') && !/Retired/.test(rowOf('Launch screen').innerText), 6000, 'the restored search is still marked Retired');
+  out.broughtBack = (await menuOf('Launch screen')).includes('Retire');
   out.steps.push('brought back');
 
   // ── the composer, opened OVER a saved search ──
   await goto('/portal/new?search=launch-screen');
-  if (!await settle(() => /Edit a custom search/.test(txt()), 8000)) {
+  if (!await settle(() => /Edit a search template/.test(txt()), 8000)) {
     return { ...out, fatal: 'the composer did not open in edit mode', body: txt().slice(0, 700) };
   }
-  out.editHeading = /Edit a custom search/.test(txt());
-  const nameInput = [...document.querySelectorAll('input')].find((i) => i.getAttribute('aria-label') === 'Name this search');
+  out.editHeading = /Edit a search template/.test(txt());
+  const nameInput = [...document.querySelectorAll('input')].find((i) => i.getAttribute('aria-label') === 'Name this template');
   out.savePrefilled = nameInput ? nameInput.value : null;
-  const noteInput = [...document.querySelectorAll('input')].find((i) => i.getAttribute('aria-label') === 'Note about this custom search');
+  const noteInput = [...document.querySelectorAll('input')].find((i) => i.getAttribute('aria-label') === 'Note about this template');
   out.notePrefilled = noteInput ? noteInput.value : null;
   // The stored scope came back as a draft: one territory, one class.
   out.territoryHydrated = /United States/.test(txt());
@@ -694,8 +927,11 @@ ${HELPERS}
   const saveBtn = maybeByText('button', /Save changes/);
   out.saveChangesLabel = Boolean(saveBtn);
   if (saveBtn) saveBtn.click();
-  await mustSettle(() => /Custom searches/.test(txt()), 8000, 'the custom search list never returned after saving');
-  out.returnedToList = /Custom searches/.test(txt());
+  // The ADDRESS and the rows, not the words: the composer's own template menu is labelled "Search
+  // templates", so a text wait passed before anything had returned anywhere.
+  await mustSettle(() => location.pathname === '/portal/brand/searches' && document.querySelector('.main table.data tbody tr'), 8000,
+    'the template list never returned after saving');
+  out.returnedToList = location.pathname === '/portal/brand/searches';
   out.steps.push('saved');
 
   // ── projects: create ──
@@ -705,8 +941,8 @@ ${HELPERS}
   out.projectCreateOffered = /New project/.test(txt());
   out.archivedProjectListed = /Old engagement/.test(txt());
   out.archivedProjectBadged = /Archived/.test(txt());
-  out.bringBackOnProject = allByText('button', /^Bring back$/).length >= 1;
-  out.projectArchiveOnRow = allByText('button', /^Archive$/).length >= 1;
+  out.bringBackOnProject = (await menuOf('Old engagement')).includes('Bring back');
+  out.projectArchiveOnRow = (await menuOf('EU launch')).includes('Archive');
   findByText('button', /New project/).click();
   // "Project name" since the copy pass that shortened the label from "What is this
   // project called?". A driver that opens the real screen is the one thing that notices a rename like
@@ -724,8 +960,9 @@ ${HELPERS}
   out.landedInEditor = /Anything left blank is inherited/.test(txt());
   out.steps.push('project created');
 
-  // Back out the way a person would — the breadcrumb, not the address bar.
-  findByText('button', /^Projects$/).click();
+  // Back out the way a person would — the breadcrumb, not the address bar, and not the rail's own
+  // Projects item, which comes first in the document now that Company settings opens into its pages.
+  [...document.querySelectorAll('.main button')].find((b) => b.innerText.trim() === 'Projects').click();
   await mustSettle(() => /New project/.test(txt()), 8000, 'the New project screen never reopened');
   out.projectListed = /Second engagement/.test(txt());
 
@@ -745,6 +982,206 @@ ${HELPERS}
   }
 })()
 `
+
+/**
+ * Pass three: Company settings and New company, state by state, as the design draws them.
+ *
+ * Each state is a script that reaches it and READS it — what the rail lights, what each header offers,
+ * whether a fold is open, which tags sit on which labels, what Create says. The verdict asserts those
+ * readings; with --shot-dir each state is also captured in both themes, for a person to hold against the
+ * design. Run as one company holding both switches and its organisation, so every control is offered.
+ */
+const SETTINGS_HELPERS = `
+  // What the rail lights, and which of Company settings' pages it lists — from the rail alone.
+  const rail = () => {
+    const sidebar = document.querySelector('.sidebar');
+    const parent = sidebar && [...sidebar.querySelectorAll('button.nav-item')].find((b) => b.innerText.trim() === 'Company settings');
+    const sub = parent && parent.parentElement.querySelector('.nav-sub');
+    return {
+      parent: Boolean(parent), parentActive: Boolean(parent && parent.classList.contains('active')),
+      children: sub ? [...sub.querySelectorAll('button.nav-item')].map((b) => ({ label: b.innerText.trim(), active: b.classList.contains('active') })) : [],
+    };
+  };
+  const header = () => [...document.querySelectorAll('.main .page-header-actions button')]
+    .map((b) => ({ text: b.innerText.trim(), primary: b.classList.contains('btn-primary'), secondary: b.classList.contains('btn-ghost'), disabled: b.disabled }));
+  // A field's label WITHOUT its tag, and the tag's own words. textContent, not innerText: the tag is drawn
+  // uppercase, and the words are what the design specifies.
+  const fields = () => [...document.querySelectorAll('.main .profile-field')].map((f) => {
+    const label = f.querySelector('.profile-field-label');
+    const tag = label && label.querySelector('.field-tag');
+    return { label: label ? label.firstChild.textContent.trim() : null, tag: tag ? tag.textContent : null,
+      hint: (f.querySelector('.profile-field-hint') || {}).textContent || null };
+  });
+  const cards = () => [...document.querySelectorAll('.main .ctx-card')].map((c) => {
+    const eyebrow = c.querySelector(':scope > .eyebrow');
+    const tag = eyebrow && eyebrow.querySelector('.field-tag');
+    const fold = c.tagName === 'DETAILS' ? c.querySelector(':scope > summary') : null;
+    return { title: eyebrow ? eyebrow.firstChild.textContent.trim() : fold ? fold.querySelector('.fold-title').textContent : null,
+      tag: tag ? tag.textContent : null, fold: Boolean(fold), note: fold ? (fold.querySelector('.fold-note') || {}).textContent || null : null,
+      open: c.tagName === 'DETAILS' ? c.open : null };
+  });
+  const folds = () => [...document.querySelectorAll('.main details')].map((d) => ({
+    title: (d.querySelector(':scope > summary .fold-title') || {}).textContent || null, open: d.open,
+    // The chevron's place: at the row's right edge, which is what "at the right edge" can be measured as.
+    chevronAtRight: (() => { const s = d.querySelector(':scope > summary'); const c = s && s.querySelector('.fold-chev');
+      return Boolean(s && c) && Math.abs(s.getBoundingClientRect().right - c.getBoundingClientRect().right) <= 24; })(),
+  }));
+  // checkVisibility, not a box count: Chrome keeps layout boxes for a closed fold's content and simply does
+  // not paint them, so getClientRects reads a folded row as on screen.
+  const visible = (el) => Boolean(el) && el.checkVisibility();
+  const openFold = async (title) => {
+    const d = [...document.querySelectorAll('.main details')].find((x) => (x.querySelector(':scope > summary .fold-title') || {}).textContent === title);
+    if (!d) throw new Error('no fold titled ' + title);
+    if (!d.open) d.querySelector(':scope > summary').click();
+    await mustSettle(() => d.open, 2000, 'a fold did not open: ' + title);
+    await sleep(150);
+  };
+  const fieldControl = (label) => {
+    const f = [...document.querySelectorAll('.main .profile-field')].find((x) => {
+      const l = x.querySelector('.profile-field-label'); return l && l.firstChild.textContent.trim() === label; });
+    return f ? f.querySelector('input, textarea, select') : null;
+  };
+`
+
+const SETTINGS_STATES = [
+  { name: 'profile-folds-closed', script: `
+    // EVERY WORDING THE PERMITTED SEARCHES ROW TAKES ON THE WAY IN, not only the last. A row that read
+    // "2 searches not on Search templates" until the listing answered would still settle on the names,
+    // and a wait for any words at all is satisfied by the wrong ones. The stub answers that listing late
+    // in this pass, so the window is there to be seen.
+    const permittedRow = () => [...document.querySelectorAll('.fw-row')].find((r) => r.querySelector('.fw-row-label').textContent === 'Permitted searches');
+    const permittedSeen = [];
+    const watch = new MutationObserver(() => {
+      const r = permittedRow(); const v = r ? r.querySelector('.fw-row-value').textContent.trim() : '';
+      if (v && permittedSeen[permittedSeen.length - 1] !== v) permittedSeen.push(v);
+    });
+    watch.observe(document.body, { subtree: true, childList: true, characterData: true });
+    await goto('/portal/brand/profile');
+    // One company among two in the switcher (its organisation's Generic is the other), so pick it.
+    const sw = document.querySelector('select[aria-label="Company"]');
+    if (sw && sw.value !== '${KEY}') { set(sw, '${KEY}'); await sleep(600); }
+    await mustSettle(() => document.querySelector('.fw-sectionh') && document.querySelector('.fw-row'), 8000, 'Profile never drew its framework card');
+    await mustSettle(() => permittedRow() && permittedRow().querySelector('.fw-row-value').textContent.trim() !== '', 8000, 'Permitted searches never named its templates');
+    await sleep(300);
+    watch.disconnect();
+    window.scrollTo(0, 0);
+    const depth = fieldControl('Default search depth');
+    return { path: location.pathname, rail: rail(), header: header(), fields: fields(), cards: cards(), folds: folds(),
+      title: (document.querySelector('.main .page-title') || {}).textContent,
+      rows: [...document.querySelectorAll('.fw-row')].map((r) => [r.querySelector('.fw-row-label').textContent, r.querySelector('.fw-row-value').textContent]),
+      bandRowsVisible: [...document.querySelectorAll('.fw-bmrow')].filter(visible).length,
+      ratedOnVisible: /Rated on:/.test(txt()), entityVisible: /Entity in prose:/.test(txt()),
+      coverageVisible: /Calculated from the marketplaces and density above/.test(txt()),
+      ladder: [...document.querySelectorAll('.fw-ladder .pill')].map((p) => p.textContent),
+      guide: (() => { const a = [...document.querySelectorAll('.main a')].find((x) => x.textContent === 'Use your own risk framework');
+        return a ? { pill: a.classList.contains('pill'), newTab: a.target === '_blank' } : null; })(),
+      depthOptions: depth && depth.tagName === 'SELECT' ? [...depth.options].map((o) => o.textContent) : null,
+      depthSelected: depth && depth.tagName === 'SELECT' ? depth.selectedOptions[0].textContent : null,
+      classAdd: Boolean([...document.querySelectorAll('.main .profile-field-label')].find((l) => l.textContent === 'Add a class')),
+      classChips: [...document.querySelectorAll('.main .class-picker .chip')].map((c) => c.textContent.trim()),
+      save: (() => { const b = [...document.querySelectorAll('.main .row-foot button')][0];
+        return b ? { text: b.textContent, disabled: b.disabled, primary: b.classList.contains('btn-primary') } : null; })(),
+      saveNote: (document.querySelector('.main .row-foot-note') || {}).textContent || null,
+      checkButton: Boolean([...document.querySelectorAll('.main button')].find((b) => b.textContent.trim() === 'Check')),
+      characters: /\\d+ \\/ 8,000 characters/.test(txt()), permittedSeen };
+  ` },
+  { name: 'profile-folds-open', script: `
+    await openFold('What the bands mean');
+    await openFold('Search details');
+    return { folds: folds(), bandRowsVisible: [...document.querySelectorAll('.fw-bmrow')].filter(visible).length,
+      ratedOnVisible: /Rated on:/.test(txt()), entityVisible: /Entity in prose:/.test(txt()),
+      coverage: ([...document.querySelectorAll('.main details p')].find((p) => /Calculated from/.test(p.textContent)) || {}).textContent || null,
+      rowsStillVisible: [...document.querySelectorAll('.fw-row')].filter(visible).length };
+  ` },
+  { name: 'profile-unsaved', script: `
+    // A CLASS ADDED THE WAY A PERSON ADDS ONE: a word typed into the search box, and the match picked from
+    // what it offers. The box replaced a grid of numbers, and only a pick shows it still writes the field.
+    const box = document.querySelector('.main .class-picker-box input');
+    if (!box) throw new Error('the class search box is not on screen');
+    box.focus();
+    set(box, 'cloth');
+    const matches = () => [...document.querySelectorAll('.main .class-picker-box .typeahead button')];
+    await mustSettle(() => matches().some((b) => b.textContent.startsWith('25 · ')), 3000, 'typing "cloth" did not offer class 25');
+    const offered = matches().map((b) => b.textContent);
+    matches().find((b) => b.textContent.startsWith('25 · ')).click();
+    await mustSettle(() => [...document.querySelectorAll('.main .class-picker .chip')].some((c) => c.textContent.trim().startsWith('25 · ')), 3000, 'picking class 25 added no chip');
+    window.scrollTo(0, 0);
+    const save = [...document.querySelectorAll('.main .row-foot button')][0];
+    return { offered, box: box.value, classChips: [...document.querySelectorAll('.main .class-picker .chip')].map((c) => c.textContent.trim()),
+      save: save ? { text: save.textContent, disabled: save.disabled } : null,
+      saveNote: (document.querySelector('.main .row-foot-note') || {}).textContent || null };
+  ` },
+  { name: 'profile-saved', shot: false, script: `
+    const note = () => (document.querySelector('.main .row-foot-note') || {}).textContent || null;
+    // The page's own outcome notices, under the form — not the framework card's, which are notices too.
+    const notices = () => [...document.querySelectorAll('.main .measure > .notice > b')].map((b) => b.textContent);
+    try {
+      [...document.querySelectorAll('.main .row-foot button')][0].click();
+      await mustSettle(() => notices().includes('Saved'), 8000, 'one press of Save never said Saved');
+      // THE STUB ANSWERS A SAVE AND KEEPS NOTHING, so the reload after it serves the profile as it was: class
+      // 25 leaves the chips and the note goes back to "No changes". That is the stub, not the screen — what
+      // the press sent is read off the wire in the verdict.
+      await mustSettle(() => note() === 'No changes', 8000, 'the form did not settle after saving');
+      return { notices: notices(), saveNote: note() };
+    } finally {
+      // A save that did not land leaves the form dirty, and a dirty form asks before the next state may leave
+      // it, in a dialog this driver cannot answer. The class comes back out, so a failure here reads as one.
+      const x = document.querySelector('.main .class-picker button[aria-label="Remove class 25"]');
+      if (note() === 'Unsaved changes' && x) { x.click(); await sleep(200); }
+    }
+  ` },
+  { name: 'search-templates', script: `
+    await goto('/portal/brand/searches');
+    await mustSettle(() => document.querySelector('.main table.data tbody tr'), 8000, 'Search templates never drew its rows');
+    window.scrollTo(0, 0);
+    return { path: location.pathname, rail: rail(), header: header(),
+      columns: [...document.querySelectorAll('.main table.data thead th')].map((t) => t.textContent),
+      names: [...document.querySelectorAll('.main table.data tbody tr td:first-child b')].map((b) => b.textContent),
+      buildsOn: [...document.querySelectorAll('.main table.data tbody tr td:nth-child(2)')].map((t) => t.innerText.trim()),
+      edits: [...document.querySelectorAll('.main table.data tbody button')].filter((b) => b.textContent === 'Edit').length,
+      menus: document.querySelectorAll('.main table.data tbody button[aria-label="More actions"]').length,
+      rowButtons: [...document.querySelectorAll('.main table.data tbody button')].map((b) => b.textContent.trim()).filter(Boolean) };
+  ` },
+  { name: 'search-templates-menu', script: `
+    const row = [...document.querySelectorAll('.main table.data tbody tr')].find((r) => r.innerText.includes('Launch screen'));
+    row.querySelector('button[aria-label="More actions"]').click();
+    await mustSettle(() => row.querySelector('[role="menu"]'), 3000, 'the row menu never opened');
+    return { items: [...row.querySelectorAll('[role="menuitem"]')].map((i) => i.textContent) };
+  ` },
+  { name: 'projects', script: `
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    await goto('/portal/brand/projects');
+    await mustSettle(() => document.querySelector('.main .row-card'), 8000, 'Projects never drew its rows');
+    window.scrollTo(0, 0);
+    return { path: location.pathname, rail: rail(), header: header(),
+      rows: [...document.querySelectorAll('.main .row-card')].map((r) => r.querySelector('.row-card-name').textContent),
+      menus: document.querySelectorAll('.main .row-card button[aria-label="More actions"]').length,
+      rowButtons: [...document.querySelectorAll('.main .row-card button')].map((b) => b.textContent.trim()).filter(Boolean) };
+  ` },
+  { name: 'new-company-empty', script: `
+    await goto('/portal/brand/new');
+    await mustSettle(() => [...document.querySelectorAll('.main .row-foot button')].some((b) => b.textContent === 'Create'), 8000, 'New company never drew Create');
+    window.scrollTo(0, 0);
+    const create = [...document.querySelectorAll('.main .row-foot button')].find((b) => b.textContent === 'Create');
+    return { path: location.pathname, rail: rail(), header: header(), fields: fields(), cards: cards(),
+      title: (document.querySelector('.main .page-title') || {}).textContent,
+      lede: Boolean(document.querySelector('.main .page-lede')),
+      create: { disabled: create.disabled, primary: create.classList.contains('btn-primary') },
+      unmet: (document.querySelector('.main .row-foot-note') || {}).textContent || null,
+      changeKey: /Change it|Change the key/.test(txt()),
+      checkButton: Boolean([...document.querySelectorAll('.main button')].find((b) => b.textContent.trim() === 'Check')),
+      rating: (document.querySelector('.main .rating-row') || {}).innerText || null,
+      topbar: (document.querySelector('.topbar h1') || {}).textContent };
+  ` },
+  { name: 'new-company-named', script: `
+    set(fieldControl('Legal name'), 'Aurora Botanicals');
+    await mustSettle(() => [...document.querySelectorAll('.main .row-foot button')].some((b) => b.textContent === 'Create' && !b.disabled), 3000, 'Create stayed disabled with a name');
+    window.scrollTo(0, 0);
+    const create = [...document.querySelectorAll('.main .row-foot button')].find((b) => b.textContent === 'Create');
+    return { create: { disabled: create.disabled }, unmet: (document.querySelector('.main .row-foot-note') || {}).textContent || null,
+      tradingNames: (fieldControl('Own trading names') || {}).value || null };
+  ` },
+]
 
 // ── chrome ──────────────────────────────────────────────────────────────────────────────────────────
 
@@ -820,6 +1257,8 @@ const asClient = await value(NAMES_SCRIPT)
 role = 'staff'
 await reload()
 const asStaff = await value(NAMES_SCRIPT)
+// A log with nobody in it, so the panel's empty state is the one People is read with.
+activity = 'empty'
 const people = await value(PEOPLE_SCRIPT)
 // BEFORE the local-sign-in pass, deliberately. That pass serves a guest list of ONE — the person signed
 // in — so the row this drives would not be on the page at all, and the failure reads as "Modify is
@@ -854,6 +1293,83 @@ const modifyNoRevoke = await value(MODIFY_SCRIPT)
 const confirmNoRevoke = modifyNoRevoke && !modifyNoRevoke.fatal ? await value(CONFIRM_SCRIPT) : { fatal: 'the form never opened' }
 keysRevocable = true
 
+await reload()
+const modifyPart = await value(MODIFY_PART_SCRIPT)
+activity = 'some'
+await reload()
+const activitySome = await value(ACTIVITY_SCRIPT)
+
+// ── evidence: People, Give access and Modify access, one picture per accepted state ────────────────────
+//
+// Only with --shot-dir. Each state is reached from a fresh load, the way a reader reaches it, and drawn in
+// both themes. What holds is asserted in the verdict below; these are for a person to look at, and a step
+// that cannot reach its state writes no picture and fails the check rather than drawing the wrong screen.
+//
+// FULL HEIGHT, by growing the viewport to the page rather than capturing beyond it: a beyond-viewport
+// capture paints the sticky top bar where the 900px viewport left it, over the middle of a tall page.
+const peopleShot = async (file) => {
+  const h = (await value('Math.max(document.documentElement.scrollHeight, document.body.scrollHeight)')) ?? 900
+  await cmd('Emulation.setDeviceMetricsOverride', { width: 1280, height: Math.max(900, h), deviceScaleFactor: 1, mobile: false })
+  await new Promise((r) => setTimeout(r, 400))
+  const shot = await cmd('Page.captureScreenshot', { format: 'png' })
+  await cmd('Emulation.clearDeviceMetricsOverride', {})
+  const data = shot.result?.result?.data ?? shot.result?.data
+  if (!data) throw new Error(`no screenshot came back for ${file}`)
+  writeFileSync(join(shotDir, file), Buffer.from(data, 'base64'))
+}
+const openGive = `
+  await goto('/portal/people/add');
+  await mustSettle(() => document.querySelectorAll('button.attach-row').length > 0, 8000, 'Give access never drew its access tree');
+  set(document.querySelector('#give-access-email'), 'dana@birch.example');
+  await sleep(150);
+  findByText('button.attach-row', /Apmxc Group/).click();
+  await sleep(250);
+`
+const PEOPLE_EVIDENCE = [
+  { name: 'people-view-reports-and-empty-activity', activity: 'empty', setup: `
+    await goto('/portal/people');
+    await mustSettle(() => /Nothing planned, started or saved here yet\\./.test(txt()), 8000, 'the empty activity panel never drew');` },
+  { name: 'people-recent-activity', activity: 'some', setup: `
+    await goto('/portal/people');
+    await mustSettle(() => { const a = activityPanel(); return a && a.cards > 0; }, 8000, 'Recent activity never listed anyone');` },
+  { name: 'give-access-nothing-chosen', activity: 'empty', setup: `
+    await goto('/portal/people/add');
+    await mustSettle(() => /through their AI\\./.test(sentence() || ''), 8000, 'Give access never drew its instruction');` },
+  { name: 'give-access-both-levers-off', activity: 'empty', setup: `${openGive}
+    await setLevers(false, false);
+    await mustSettle(() => /can read every report there/.test(sentence() || ''), 4000, 'the sentence did not follow both levers off');` },
+  { name: 'give-access-run-on', activity: 'empty', setup: `${openGive}
+    await setLevers(true, false);
+    await mustSettle(() => /can run clearances there\\./.test(sentence() || ''), 4000, 'the sentence did not follow Run clearances on');` },
+  { name: 'give-access-both-levers-on', activity: 'empty', setup: `${openGive}
+    await setLevers(true, true);
+    await mustSettle(() => /can run clearances and add companies and people there\\./.test(sentence() || ''), 4000, 'the sentence did not follow both levers on');` },
+  { name: 'modify-access-part-organisation', activity: 'empty', setup: `
+    await goto('/portal/people/modify?email=' + encodeURIComponent('brand@example.test'));
+    await mustSettle(() => /will not see any other Apmxc Group clearances/.test(sentence() || ''), 8000, 'Modify never drew the part-organisation summary');` },
+]
+const peopleEvidence = []
+if (shotDir) {
+  for (const st of PEOPLE_EVIDENCE) {
+    activity = st.activity
+    await reload()
+    const got = (await value(`(async () => {
+${HELPERS}
+${PEOPLE_HELPERS}
+      try { ${st.setup} window.scrollTo(0, 0); await sleep(300); return { ok: true }; }
+      catch (e) { return { ok: false, error: String((e && e.message) || e), body: txt().slice(0, 400) }; }
+    })()`)) ?? { ok: false, error: 'the page returned nothing' }
+    peopleEvidence.push({ state: st.name, ...got })
+    if (!got.ok) continue
+    await peopleShot(`${st.name}-light.png`)
+    await evalIn(`document.documentElement.setAttribute('data-theme', 'dark'); 'dark'`)
+    await new Promise((r) => setTimeout(r, 300))
+    await peopleShot(`${st.name}-dark.png`)
+    await evalIn(`document.documentElement.removeAttribute('data-theme'); 'light'`)
+  }
+}
+activity = 'unavailable'
+
 localMode = true
 await reload()
 const peopleLocal = await value(PEOPLE_LOCAL_SCRIPT)
@@ -879,6 +1395,37 @@ await reload()
 const pathsOwner = await value(PROFILE_PATHS_SCRIPT)
 await reload()
 const life = await value(LIFECYCLE_SCRIPT)
+
+// ── Company settings, state by state ───────────────────────────────────────────────────────────────
+//
+// A FULL-HEIGHT VIEWPORT for each capture, not a beyond-viewport one: the rail is sticky, and a
+// beyond-viewport capture paints sticky and fixed elements where the 900px viewport put them.
+const capture = async (path) => {
+  const h = (await evalIn('Math.max(document.documentElement.scrollHeight, document.body.scrollHeight)')).result?.result?.value ?? 900
+  await cmd('Emulation.setDeviceMetricsOverride', { width: 1280, height: Math.max(900, h), deviceScaleFactor: 1, mobile: false })
+  await new Promise((r) => setTimeout(r, 400))
+  const shot = await cmd('Page.captureScreenshot', { format: 'png' })
+  await cmd('Emulation.clearDeviceMetricsOverride', {})
+  const data = shot.result?.result?.data ?? shot.result?.data
+  if (!data) throw new Error(`no screenshot came back for ${path}`)
+  writeFileSync(path, Buffer.from(data, 'base64'))
+}
+role = 'settings'
+await reload()
+const settings = {}
+const settingsPostedFrom = posted.length
+for (const st of SETTINGS_STATES) {
+  const got = await value(`(async () => { ${HELPERS} ${SETTINGS_HELPERS} try { ${st.script} } catch (e) { return { fatal: String((e && e.message) || e), body: txt().slice(0, 600) }; } })()`)
+  settings[st.name] = got ?? { fatal: 'the state returned nothing' }
+  if (!shotDir || !got || got.fatal || st.shot === false) continue
+  await capture(join(shotDir, `company-settings-${st.name}-light.png`))
+  await evalIn(`document.documentElement.setAttribute('data-theme','dark'); 'ok'`)
+  await new Promise((r) => setTimeout(r, 300))
+  await capture(join(shotDir, `company-settings-${st.name}-dark.png`))
+  await evalIn(`document.documentElement.removeAttribute('data-theme'); 'ok'`)
+}
+// The typed name makes the create form dirty, and a dirty form asks before anything leaves it.
+await value(`(async () => { ${HELPERS} ${SETTINGS_HELPERS} const n = fieldControl('Legal name'); if (n) set(n, ''); await sleep(100); return true })()`)
 
 if (shotAt) {
   await evalIn(`(async () => { history.pushState({}, '', '/portal/brand/searches'); window.dispatchEvent(new PopStateEvent('popstate')); await new Promise(r => setTimeout(r, 700)); })()`)
@@ -917,7 +1464,7 @@ for (const [who, out] of [['client', asClient], ['staff', asStaff], ['multi-acco
     `${who}: the identity corner names the company — read ${JSON.stringify(out.accountCorner)}`)
   ok((out.clearancesHeading ?? '').includes(NAME),
     `${who}: the Clearances header does not name the company being looked at — read ${JSON.stringify(out.clearancesHeading)}`)
-  ok(out.composerCard?.includes(NAME), `${who}: the New clearance context card does not name the company — read ${JSON.stringify(out.composerCard)}`)
+  ok(out.composerCompany?.includes(NAME), `${who}: the New clearance form does not name the company — read ${JSON.stringify(out.composerCompany)}`)
   ok(out.nameOnScreen, `${who}: the company's name is nowhere on the composer`)
   ok(!out.slugOnScreen, `${who}: the account KEY "${KEY}" is printed on screen where the name belongs`)
 }
@@ -945,7 +1492,7 @@ if (asMulti && !asMulti.fatal) {
 // ── the access model's screens ──────────────────────────────────────────────────────────────────────
 // Two organisations visible: the switcher heads its rows by organisation, one Generic under each, and the
 // top bar names none of them. One organisation visible: no heading, and the bar names it. People is in
-// the avatar menu for Manage, directly above Global config, and in the rail for nobody; New clearance is
+// the avatar menu for Manage, directly above Installation settings, and in the rail for nobody; New clearance is
 // in the rail for Run and nowhere else. Each Generic in the switcher carries its Default tag as words.
 if (asStaff && !asStaff.fatal) {
   ok(JSON.stringify(asStaff.railGroups) === JSON.stringify(['Apmxc Group', 'Foxglade Group']),
@@ -959,8 +1506,9 @@ if (asStaff && !asStaff.fatal) {
     `a company other than Generic carries the Default tag: ${JSON.stringify(asStaff.railOwner)}`)
   ok(!asStaff.railNav.includes('People'), `People is back in the rail: ${JSON.stringify(asStaff.railNav)}`)
   const peopleAt = asStaff.avatarMenu.indexOf('People')
-  ok(peopleAt >= 0 && asStaff.avatarMenu[peopleAt + 1] === 'Global config',
-    `People should sit directly above Global config in the avatar menu of a person with Manage: ${JSON.stringify(asStaff.avatarMenu)}`)
+  // The installation's own settings follow People, under the page's name.
+  ok(peopleAt >= 0 && asStaff.avatarMenu[peopleAt + 1] === 'Installation settings',
+    `People should sit directly above Installation settings in the avatar menu of a person with Manage: ${JSON.stringify(asStaff.avatarMenu)}`)
 }
 for (const [who, out] of [['client', asClient], ['multi-account client', asMulti]]) {
   if (!out || out.fatal) continue
@@ -971,27 +1519,103 @@ for (const [who, out] of [['client', asClient], ['multi-account client', asMulti
   ok(!out.avatarMenu.includes('People'), `${who}: People is in the avatar menu for a person without Manage: ${JSON.stringify(out.avatarMenu)}`)
   ok(out.railNav.includes('New clearance'), `${who}: New clearance is missing for a person who may run clearances`)
 }
+// The words both access forms print under their levers and beside their access tree.
+const LEVER_LINES = [
+  'Run clearances Start and stop clearances on the companies they can see',
+  'Manage Add companies, add people and change settings for the companies they can see',
+]
+const BOTH_OFF = 'Leave both off for View reports — every report for the companies they can see.'
+// A screen the avatar menu leads to names itself in the top bar and draws the avatar active.
+const namesItself = (b, title) => b && b.title === title && b.avatarCurrent === 'true'
 if (!people || people.fatal) {
   fail.push(`people: ${people?.fatal ?? 'the driver returned nothing'}`)
 } else {
-  ok(people.rows.length === 5, `People should list the five rows it was sent — it drew ${people.rows.length}`)
+  // THE TOP BAR. A rail screen keeps the scope rule and a plain avatar; People and its form name themselves.
+  ok(people.railBar && people.railBar.avatarCurrent === null && !['Clearances', 'People', 'Give access', 'Modify access'].includes(people.railBar.title),
+    `a rail screen should keep its scope title and a plain avatar: ${JSON.stringify(people.railBar)}`)
+  ok(namesItself(people.peopleBar, 'People'), `People should name itself in the top bar with the avatar active: ${JSON.stringify(people.peopleBar)}`)
+  for (const [path, b] of Object.entries(people.menuBars ?? {})) {
+    ok(b && b.avatarCurrent === 'true' && (people.menuLabels ?? []).includes(b.title),
+      `${path} should be named in the top bar by its avatar-menu label, with the avatar active: ${JSON.stringify(b)} against ${JSON.stringify(people.menuLabels)}`)
+  }
+  ok(Object.keys(people.menuBars ?? {}).length === 3, `the avatar menu's other screens were not all read: ${JSON.stringify(people.menuBars)}`)
+  ok(namesItself(people.addBar, 'Give access'), `Give access should name itself in the top bar with the avatar active: ${JSON.stringify(people.addBar)}`)
+
+  ok(people.rows.length === 6, `People should list the six rows it was sent — it drew ${people.rows.length}`)
   ok(people.rows.some((r) => r[1] === 'Runs clearances · Manages' && /Everything/.test(r[2] ?? '')),
     `no row reads both permissions with access to everything: ${JSON.stringify(people.rows)}`)
   ok(people.rows.some((r) => r[1] === 'View reports'), `the view-only person is not described as such: ${JSON.stringify(people.rows)}`)
-  // THE OTHER SHAPE, SAID APART. Somebody who exists only in a company's access list has no permissions
-  // entry to read, and calling that "View reports" says the file does not say: that somebody decided
-  // this person may only view. The page has drawn the distinction since it was written; the field it
-  // keys on was being dropped between the server and the screen, so it had never once appeared.
-  ok(people.rows.some((r) => /Reach only/.test(r[1] ?? '')),
-    `a person listed only in a company's access list is still described as view-only: ${JSON.stringify(people.rows)}`)
+  // THE OUTCOME, NOT THE RECORD'S SHAPE. Somebody on a company's access list with nothing set for them
+  // can view what they reach, and reads exactly as the view-only person does — words and colour.
+  const reach = people.rows.find((r) => (r[0] ?? '').startsWith('reach@example.test'))
+  ok(reach && reach[1] === 'View reports', `a listed address with nothing granted should read "View reports": ${JSON.stringify(reach)}`)
+  ok(people.permColour['reach@example.test'] && people.permColour['reach@example.test'] === people.permColour['viewer@example.test']
+    && people.permColour['reach@example.test'] !== people.permColour['brand@example.test'],
+    `a listed address with nothing granted is not drawn in the view-only rows' muted colour: ${JSON.stringify(people.permColour)}`)
+  ok(people.retired === false, 'People says "Reach only" or "No permissions"')
+  ok(JSON.stringify(people.key) === JSON.stringify([
+    'Runs clearances — Start and stop clearances on the companies they can see.',
+    'Manages — Add companies, add people and change settings for the companies they can see.',
+    'View reports — Everyone can view reports for the companies they can see.',
+  ]), `the key under the Permissions column should give each word its sentence: ${JSON.stringify(people.key)}`)
+  ok(people.lede === null, `People carries a line above the list: ${JSON.stringify(people.lede)}`)
+  ok(people.activity && people.activity.text === 'Recent activity Nothing planned, started or saved here yet.',
+    `an empty activity log should read as Recent activity with nothing planned, started or saved: ${JSON.stringify(people.activity)}`)
+  ok(!/still has access|window/.test(people.activity?.text ?? ''), `the activity panel names a window or its old disclaimer: ${JSON.stringify(people.activity)}`)
   ok(!people.rows.some((r) => /staff|client/i.test(r.join(' '))), `a role word is back on People: ${JSON.stringify(people.rows)}`)
   ok(people.addDisabled === false && !people.localNotice, 'a hosted install offers Add, with no local sign-in notice')
   ok(people.path === '/portal/people/add', `Add a person opened ${people.path}`)
-  ok(/will see everything under Apmxc Group, and can run clearances there/.test(people.sentence ?? ''),
-    `the form does not say what the new person will see: ${JSON.stringify(people.sentence)}`)
-  ok(/cannot add companies or people/.test(people.sentence ?? ''), `the form does not say what they cannot do: ${JSON.stringify(people.sentence)}`)
-  ok(people.saveEnabled === true, 'Save is off with an address and a choice made')
+
+  // GIVE ACCESS: the route stated, the levers and the tree in the product's words, and a sentence that
+  // follows every lever setting.
+  ok(people.addLede === 'They must also have access through your organisation’s sign-in service.',
+    `Give access should state the sign-in route and nothing else above the form: ${JSON.stringify(people.addLede)}`)
+  ok(JSON.stringify(people.levers) === JSON.stringify(LEVER_LINES), `the levers on Give access read ${JSON.stringify(people.levers)}`)
+  ok(people.paragraphs.includes(BOTH_OFF), `Give access does not say what both levers off gives: ${JSON.stringify(people.paragraphs)}`)
+  ok(people.paragraphs.includes('You can only give access to what you have access to yourself'),
+    `Give access does not say it offers only what the giver holds: ${JSON.stringify(people.paragraphs)}`)
+  const tree = people.tree ?? []
+  ok(JSON.stringify(tree[0]) === JSON.stringify(['Everything on this Clearotron', 'every organisation and company, including ones added later']),
+    `the root row does not say it reaches what is added later: ${JSON.stringify(tree[0])}`)
+  ok(tree.some((r) => r[0] === 'Apmxc Group' && r[1] === 'every company in it, including ones added later'),
+    `an organisation row does not say it reaches companies added later: ${JSON.stringify(tree)}`)
+  ok(tree.some((r) => r[0] === NAME && r[1] === 'company'), `a company row is not marked as one: ${JSON.stringify(tree)}`)
+  ok(people.prompt === 'Choose what this person can see. It is what they see here and through their AI.',
+    `before anything is chosen, the form should say the choice covers their AI too: ${JSON.stringify(people.prompt)}`)
+  const said = people.sentences ?? {}
+  ok(said.bothOff === 'dana@birch.example will see everything under Apmxc Group, and can read every report there. They cannot start clearances or add companies or people.',
+    `both levers off: ${JSON.stringify(said.bothOff)}`)
+  ok(said.runOnly === 'dana@birch.example will see everything under Apmxc Group, and can run clearances there. They cannot add companies or people.',
+    `Run clearances on: ${JSON.stringify(said.runOnly)}`)
+  ok(said.manageOnly === 'dana@birch.example will see everything under Apmxc Group, and can add companies and people there. They cannot start clearances.',
+    `Manage on: ${JSON.stringify(said.manageOnly)}`)
+  ok(said.bothOn === 'dana@birch.example will see everything under Apmxc Group, and can run clearances and add companies and people there.',
+    `both levers on: ${JSON.stringify(said.bothOn)}`)
+  ok(people.giveEnabled === true, 'Give access is off with an address and a choice made')
+  ok(JSON.stringify(people.actions) === JSON.stringify(['Give access', 'Cancel']), `the form's actions read ${JSON.stringify(people.actions)}`)
+  ok(people.promisesMail === false, 'Give access promises an invitation or a mail it does not send')
 }
+if (!modifyPart || modifyPart.fatal) {
+  fail.push(`modify (part of an organisation): ${modifyPart?.fatal ?? 'the driver returned nothing'}`)
+} else {
+  ok(namesItself(modifyPart.bar, 'Modify access'), `Modify access should name itself in the top bar with the avatar active: ${JSON.stringify(modifyPart.bar)}`)
+  ok(JSON.stringify(modifyPart.ticked) === JSON.stringify([NAME]), `the form did not open on the one company held: ${JSON.stringify(modifyPart.ticked)}`)
+  // THE WHOLE SUMMARY, including the half that says what they will not see.
+  ok(modifyPart.sentence === `brand@example.test will see everything under ${NAME}, and can run clearances there. They will not see any other Apmxc Group clearances, and cannot add companies or people.`,
+    `a part-organisation grant's summary reads ${JSON.stringify(modifyPart.sentence)}`)
+}
+if (!activitySome || activitySome.fatal) {
+  fail.push(`recent activity: ${activitySome?.fatal ?? 'the driver returned nothing'}`)
+} else {
+  const a = activitySome.activity ?? { text: '', cards: 0, pills: [] }
+  ok(a.cards === 2 && /owner@example\.test/.test(a.text) && /brand@example\.test/.test(a.text), `Recent activity should list the two people in the log: ${JSON.stringify(a)}`)
+  ok(!/Nothing planned, started or saved/.test(a.text), `Recent activity shows its empty state beside people: ${JSON.stringify(a)}`)
+  ok(/^Recent activity Identities that have planned, started or saved something here, most recent first\. /.test(a.text),
+    `Recent activity does not say what its rows are: ${JSON.stringify(a.text)}`)
+  ok(a.pills.includes(NAME) && a.pills.includes(NAME2) && !a.pills.includes(KEY) && !a.pills.includes(KEY2),
+    `Recent activity should name each company, never print its key: ${JSON.stringify(a.pills)}`)
+}
+for (const e of peopleEvidence) ok(e.ok, `evidence ${e.state} could not be reached: ${e.error} — ${JSON.stringify(e.body ?? '')}`)
 
 // ── MODIFY AND REMOVE ───────────────────────────────────────────────────────────────────────────────
 if (!modify || modify.fatal) {
@@ -1004,6 +1628,14 @@ if (!modify || modify.fatal) {
   ok((modify.path ?? '').startsWith('/portal/people/modify?email='),
     `Modify opened ${modify.path} rather than the form, carrying which person in the query`)
   ok(/owner@example\.test/.test(modify.email ?? ''), `the form does not name whose access it is: ${JSON.stringify(modify.email)}`)
+  ok(namesItself(modify.bar, 'Modify access'), `Modify access should name itself in the top bar with the avatar active: ${JSON.stringify(modify.bar)}`)
+  ok(JSON.stringify(modify.levers) === JSON.stringify(LEVER_LINES), `the levers on Modify access read ${JSON.stringify(modify.levers)}`)
+  ok((modify.paragraphs ?? []).includes(BOTH_OFF), `Modify access does not say what both levers off gives: ${JSON.stringify(modify.paragraphs)}`)
+  ok((modify.paragraphs ?? []).includes('Untick a row to take that access away'),
+    `Modify access does not say unticking takes access away: ${JSON.stringify(modify.paragraphs)}`)
+  for (const action of ['Save changes', 'Cancel', 'Remove from Clearotron']) {
+    ok((modify.actions ?? []).includes(action), `Modify access has no "${action}": ${JSON.stringify(modify.actions)}`)
+  }
   // FILLED IN. The whole design decision is that this is the Add form showing what the person HOLDS, so
   // a form that opened blank would look almost right and be the one thing it must not be.
   ok((modify.ticked ?? []).some((t) => /Apmxc Group/.test(t)) && (modify.ticked ?? []).some((t) => /Foxglade Interactive/.test(t)),
@@ -1092,31 +1724,161 @@ for (const [who, out, shown] of [['staff', pathsStaff, true], ['owner', pathsOwn
 if (!life || life.fatal) {
   fail.push(`lifecycle: ${life?.fatal ?? 'the driver returned nothing'}`)
 } else {
-  ok(life.listsRetired, 'Custom searches does not list a retired search — it is drawn from the wrong list, and retiring is one-way again')
+  ok(life.listsRetired, 'Search templates does not list a retired template — it is drawn from the wrong list, and retiring is one-way again')
   ok(life.noEditorFields, 'the standalone saved-search editor is back on this screen')
-  ok(life.retireButtons >= 1, 'no Retire control on a saved-search row')
-  ok(life.bringBackButtons >= 1, 'no Bring back control on a retired row')
+  ok(life.retireInMenu, 'the menu on a live template row offers no Retire')
+  ok(life.bringBackInMenu, 'the menu on a retired template row offers no Bring back')
   ok(life.editButtons >= 1, 'no Edit control — there is no way into the composer from the list')
   ok(life.confirmShown, 'Retire fired without a confirm step')
-  ok(life.retiredThenListed, 'a retired search left the list instead of being greyed and kept')
+  ok(life.retiredThenListed, 'a retired search left the list, or its menu does not offer to bring it back')
   ok(life.broughtBack, 'a retired search could not be brought back')
-  ok(life.editHeading, 'the composer did not say it was editing a custom search')
+  ok(life.editHeading, 'the composer did not say it was editing a search template')
   ok(life.savePrefilled === 'Launch screen', `the save name did not prefill with the label — read ${JSON.stringify(life.savePrefilled)}`)
   ok(life.notePrefilled === 'For the EU launch team.', `the note did not survive into the editor — read ${JSON.stringify(life.notePrefilled)}`)
   ok(life.territoryHydrated, 'the saved scope did not come back as levers — United States is not on screen')
   ok(life.saveChangesLabel, 'the footer offered Save rather than Save changes while editing')
-  ok(life.returnedToList, 'saving an edit did not return to Custom searches')
+  ok(life.returnedToList, 'saving an edit did not return to Search templates')
   ok(life.projectCreateOffered, 'Projects offers no way to create one')
   ok(life.archivedProjectListed, 'an archived project is not listed — hiding it is what made archiving one-way')
   ok(life.archivedProjectBadged, 'an archived project is listed without being marked as archived')
-  ok(life.bringBackOnProject, 'an archived project has no Bring back control')
+  ok(life.bringBackOnProject, 'the menu on an archived project offers no Bring back')
   ok(life.composerProjectOptions?.includes('EU launch'), `the composer does not offer the live project: ${JSON.stringify(life.composerProjectOptions)}`)
   ok(!life.composerProjectOptions?.includes('Old engagement'),
     'the composer offers an ARCHIVED project — archiving means the engagement is over, and the engine refuses the run at admission')
-  ok(life.projectArchiveOnRow, 'Projects offers no Archive on the row')
+  ok(life.projectArchiveOnRow, 'the menu on a live project offers no Archive')
   ok(life.keyDerived === 'second-engagement', `the project key did not follow the name — read ${JSON.stringify(life.keyDerived)}`)
   ok(life.landedInEditor, 'creating a project did not open it — its settings are the next thing anyone wants')
   ok(life.projectListed, 'the created project is not in the list')
+}
+
+// ── Company settings and New company ───────────────────────────────────────────────────────────────
+for (const [name, out] of Object.entries(settings)) if (!out || out.fatal) fail.push(`company settings (${name}): ${out?.fatal ?? 'nothing came back'}`)
+const said = (name) => (settings[name] && !settings[name].fatal ? settings[name] : null)
+const railSays = (who, out, page) => {
+  ok(out.rail.parent && out.rail.parentActive, `${who}: Company settings is not lit in the rail — ${JSON.stringify(out.rail)}`)
+  ok(JSON.stringify(out.rail.children.map((c) => c.label)) === JSON.stringify(['Profile', 'Projects', 'Search templates']),
+    `${who}: Company settings does not open into Profile, Projects and Search templates — ${JSON.stringify(out.rail.children)}`)
+  ok(JSON.stringify(out.rail.children.filter((c) => c.active).map((c) => c.label)) === JSON.stringify([page]),
+    `${who}: the rail lights ${JSON.stringify(out.rail.children.filter((c) => c.active))} rather than ${page}`)
+}
+const headerSays = (who, out, primary) => {
+  const newCompany = out.header.find((b) => b.text === '+ New company')
+  ok(newCompany && newCompany.secondary && !newCompany.primary, `${who}: + New company is not a secondary button in the header — ${JSON.stringify(out.header)}`)
+  if (primary) {
+    const own = out.header.find((b) => b.text === primary)
+    ok(own && own.primary, `${who}: ${primary} is not the header's primary button — ${JSON.stringify(out.header)}`)
+    ok(out.header.map((b) => b.text).indexOf(primary) === out.header.length - 1, `${who}: ${primary} does not close the row — ${JSON.stringify(out.header)}`)
+  }
+}
+const closed = said('profile-folds-closed')
+if (closed) {
+  railSays('Profile', closed, 'Profile')
+  headerSays('Profile', closed, null)
+  const fold = (t) => closed.folds.find((f) => f.title === t)
+  ok(fold('What the bands mean') && !fold('What the bands mean').open, `Profile: "What the bands mean" is not a closed fold — ${JSON.stringify(closed.folds)}`)
+  ok(fold('Search details') && !fold('Search details').open, `Profile: "Search details" is not a closed fold — ${JSON.stringify(closed.folds)}`)
+  ok(closed.folds.every((f) => f.chevronAtRight), `Profile: a fold's chevron is not at its row's right edge — ${JSON.stringify(closed.folds)}`)
+  ok(closed.bandRowsVisible === 0 && !closed.ratedOnVisible && !closed.entityVisible && !closed.coverageVisible,
+    'Profile: the band detail, the rating lines or the variant calculation are in view while their folds are closed')
+  ok(JSON.stringify(closed.ladder) === JSON.stringify(['Blocking', 'Material', 'Manageable', 'Clear to file']), `Profile: the bands are not in view — ${JSON.stringify(closed.ladder)}`)
+  const row = (label) => (closed.rows.find(([l]) => l === label) ?? [])[1]
+  ok(row('Worked examples') === 'Used when rating this company', `Profile: Worked examples reads ${JSON.stringify(row('Worked examples'))}`)
+  ok(row('Permitted searches') === 'Launch screen, Old thing', `Profile: Permitted searches reads ${JSON.stringify(row('Permitted searches'))}`)
+  ok(!/launch-screen|old-thing/.test(row('Permitted searches') ?? ''), 'Profile: a template slug reached the Permitted searches row')
+  ok(JSON.stringify(closed.permittedSeen) === JSON.stringify(['Launch screen, Old thing']),
+    `Profile: on the way in, Permitted searches read ${JSON.stringify(closed.permittedSeen)} rather than only the names`)
+  for (const label of ['Jurisdiction policy', 'Run limits']) ok(closed.rows.some(([l]) => l === label), `Profile: the ${label} row is not in view`)
+  ok(closed.guide && closed.guide.pill && closed.guide.newTab, `Profile: "Use your own risk framework" is not one control opening a new tab — ${JSON.stringify(closed.guide)}`)
+  const tag = (label) => closed.fields.find((f) => f.label === label)?.tag ?? null
+  ok(tag('Legal name') === 'Required', `Profile: Legal name is tagged ${JSON.stringify(tag('Legal name'))}`)
+  ok(tag('Domains') === 'Optional' && tag('Own trading names') === 'Optional', 'Profile: Domains and Own trading names are not tagged Optional')
+  const card = (title) => closed.cards.find((c) => c.title === title)
+  ok(card('Search defaults')?.tag === 'Optional', `Profile: Search defaults is not tagged Optional — ${JSON.stringify(closed.cards)}`)
+  ok(['Industry', 'Default classes', 'Default jurisdictions', 'Marketplaces', 'Risk appetite', 'Default search depth'].every((l) => tag(l) === null),
+    'Profile: a Search defaults field repeats the Optional its card carries')
+  ok(card('Background & standing concerns')?.tag === 'Optional', 'Profile: Background & standing concerns is not tagged Optional')
+  ok(card('Law firm options')?.fold && card('Law firm options')?.note === 'Privileged & Confidential header' && card('Law firm options')?.open === false,
+    `Profile: Law firm options is not a closed fold noting its one field — ${JSON.stringify(card('Law firm options'))}`)
+  ok(closed.depthSelected === 'Global preliminary search', `Profile: Default search depth shows ${JSON.stringify(closed.depthSelected)}`)
+  ok((closed.depthOptions ?? []).every((o) => !o.includes('·')), `Profile: a depth option names its search twice — ${JSON.stringify(closed.depthOptions)}`)
+  ok(closed.fields.find((f) => f.label === 'Default search depth')?.hint?.startsWith('Used when a request does not name one'), 'Profile: the depth hint is not the designed one')
+  ok(closed.classAdd && closed.fields.find((f) => f.label === 'Add a class')?.hint === 'Type a number or a word, for example 25 or clothing',
+    'Profile: the class search box is missing, or its hint is not the designed one')
+  ok(JSON.stringify(closed.classChips) === JSON.stringify(['9 · Electrical & software', '42 · Science & technology']), `Profile: the classes are not chips naming each class — ${JSON.stringify(closed.classChips)}`)
+  ok(closed.save && closed.save.text === 'Save' && closed.save.disabled && closed.save.primary && closed.saveNote === 'No changes',
+    `Profile: Save is not a disabled primary button beside "No changes" — ${JSON.stringify([closed.save, closed.saveNote])}`)
+  ok(!closed.checkButton, 'Profile: a Check button is back')
+  ok(closed.characters, 'Profile: the background has no character count')
+}
+const open = said('profile-folds-open')
+if (open) {
+  ok(open.folds.filter((f) => ['What the bands mean', 'Search details'].includes(f.title)).every((f) => f.open), `Profile: a fold did not open — ${JSON.stringify(open.folds)}`)
+  ok(open.bandRowsVisible === 4 && open.ratedOnVisible && open.entityVisible, 'Profile: the open fold does not show every band, "Rated on:" and "Entity in prose:"')
+  ok(open.coverage?.replace(/\s+/g, ' ').trim() === 'Calculated from the marketplaces and density above: about 14 search variants per pass across 6 sources.',
+    `Profile: the variant calculation reads ${JSON.stringify(open.coverage)}`)
+  ok(open.rowsStillVisible >= 3, 'Profile: the configuration rows left the view when the fold opened')
+}
+const unsaved = said('profile-unsaved')
+if (unsaved) {
+  const chips = [...unsaved.classChips].sort()
+  ok(unsaved.box === '' && JSON.stringify(chips) === JSON.stringify(['25 · Clothing', '42 · Science & technology', '9 · Electrical & software']),
+    `Profile: picking 25 from the class search did not add it beside the two classes and empty the box — ${JSON.stringify(unsaved)}`)
+  ok(unsaved.save && unsaved.save.text === 'Save' && !unsaved.save.disabled && unsaved.saveNote === 'Unsaved changes',
+    `Profile: with a class added, Save is not ready beside "Unsaved changes" — ${JSON.stringify([unsaved.save, unsaved.saveNote])}`)
+}
+const pressed = said('profile-saved')
+if (pressed) {
+  ok(JSON.stringify(pressed.notices) === JSON.stringify(['Saved']), `Profile: one press of Save ended in ${JSON.stringify(pressed.notices)}`)
+  // ONE PRESS, TWO REQUESTS, IN THIS ORDER: the dry run, then the write of the very body it passed.
+  const sent = posted.slice(settingsPostedFrom).filter((p) => p.path.startsWith('/portal/api/config/profile/'))
+  ok(JSON.stringify(sent.map((p) => p.path)) === JSON.stringify(['/portal/api/config/profile/validate', '/portal/api/config/profile/save']),
+    `Profile: one press of Save sent ${JSON.stringify(sent.map((p) => p.path))} rather than the check and then the write`)
+  ok(sent.length === 2 && JSON.stringify(sent[0].body) === JSON.stringify(sent[1].body), 'Profile: the write did not send the body the check passed')
+  const classes = (sent[1]?.body?.profile?.defaultClasses ?? []).map(Number).sort((a, b) => a - b)
+  ok(JSON.stringify(classes) === JSON.stringify([9, 25, 42]), `Profile: the save sent classes ${JSON.stringify(classes)} rather than the picked one beside the two it had`)
+}
+const templates = said('search-templates')
+if (templates) {
+  railSays('Search templates', templates, 'Search templates')
+  headerSays('Search templates', templates, 'New template')
+  ok(JSON.stringify(templates.columns.slice(0, 3)) === JSON.stringify(['Search template', 'Builds on', 'Version']), `Search templates: the columns read ${JSON.stringify(templates.columns)}`)
+  // THE SAME NAMES ON BOTH PAGES: what Profile's row says is what this page lists for the same company.
+  if (closed) {
+    const permitted = (closed.rows.find(([l]) => l === 'Permitted searches') ?? [])[1] ?? ''
+    ok(permitted.split(', ').every((n) => templates.names.includes(n)), `Profile names ${JSON.stringify(permitted)}; Search templates lists ${JSON.stringify(templates.names)}`)
+  }
+  ok(templates.buildsOn.every((b) => !b.includes('\n')), `Search templates: Builds on carries a second line — ${JSON.stringify(templates.buildsOn)}`)
+  ok(templates.buildsOn.includes('Full country search'), `Search templates: Builds on does not name the product — ${JSON.stringify(templates.buildsOn)}`)
+  ok(templates.menus === templates.names.length, 'Search templates: a row has no More actions menu')
+  ok(!templates.rowButtons.some((b) => /^(Retire|Bring back)$/.test(b)), `Search templates: Retire or Bring back is on the row, not in its menu — ${JSON.stringify(templates.rowButtons)}`)
+}
+const menu = said('search-templates-menu')
+if (menu) ok(JSON.stringify(menu.items) === JSON.stringify(['Retire']), `Search templates: a live row's menu offers ${JSON.stringify(menu.items)}`)
+const projects = said('projects')
+if (projects) {
+  railSays('Projects', projects, 'Projects')
+  headerSays('Projects', projects, 'New project')
+  ok(projects.menus === projects.rows.length, 'Projects: a row has no More actions menu')
+  ok(!projects.rowButtons.some((b) => /^(Archive|Bring back)$/.test(b)), `Projects: Archive or Bring back is on the row, not in its menu — ${JSON.stringify(projects.rowButtons)}`)
+}
+const blank = said('new-company-empty')
+if (blank) {
+  ok(blank.title === 'New company' && !blank.lede, 'New company: the page is not titled New company alone')
+  ok(!blank.rail.parentActive && blank.rail.children.length === 0, `New company: the rail lights Company settings over a page that is not one of its settings — ${JSON.stringify(blank.rail)}`)
+  ok(blank.topbar === '', `New company: the top bar names a company over the page for making one — ${JSON.stringify(blank.topbar)}`)
+  ok(JSON.stringify(blank.cards.map((c) => [c.title, c.tag])) === JSON.stringify([['Identity', null], ['Search defaults', 'Optional'], ['How matters are rated', 'Optional']]),
+    `New company: the cards are not Profile's three, tagged as Profile's are — ${JSON.stringify(blank.cards)}`)
+  const tag = (label) => blank.fields.find((f) => f.label === label)?.tag ?? null
+  ok(tag('Legal name') === 'Required' && tag('Domains') === 'Optional' && tag('Own trading names') === 'Optional', 'New company: the Identity fields are not tagged as on Profile')
+  ok(blank.fields.find((f) => f.label === 'Add a class')?.hint === 'Type a number or a word, for example 25 or clothing', 'New company: the class picker is not the search box')
+  ok(blank.create.disabled && blank.create.primary && blank.unmet === 'Needs a name', `New company: with no name, Create reads ${JSON.stringify([blank.create, blank.unmet])}`)
+  ok(!blank.changeKey && !blank.checkButton, 'New company: "Change the key" or "Check" appears')
+  ok(/General risk framework/.test(blank.rating ?? '') && /Use your own/.test(blank.rating ?? ''), `New company: the rating card reads ${JSON.stringify(blank.rating)}`)
+}
+const named = said('new-company-named')
+if (named) {
+  ok(!named.create.disabled && named.unmet === null, `New company: with a name, Create reads ${JSON.stringify(named)}`)
+  ok(named.tradingNames === 'Aurora Botanicals', `New company: Own trading names does not follow the name — ${JSON.stringify(named.tradingNames)}`)
 }
 
 // ── what reached the wire ───────────────────────────────────────────────────────────────────────────
@@ -1149,7 +1911,7 @@ ok(created != null, 'the new project never reached the server')
 ok(created == null || created.body.profile?.name === undefined,
   'a project must NEVER carry `name` — that is the customer identity the self-exclusion check anchors on')
 
-console.log(JSON.stringify({ asClient, asStaff, asMulti, asReader, people, peopleLocal, pathsStaff, pathsOwner, life, posted: posted.map((p) => p.path) }, null, 2))
+console.log(JSON.stringify({ asClient, asStaff, asMulti, asReader, people, peopleLocal, pathsStaff, pathsOwner, life, settings, posted: posted.map((p) => p.path) }, null, 2))
 if (fail.length) {
   console.error(`\n${fail.length} problem(s):`)
   for (const f of fail) console.error(` ✗ ${f}`)
