@@ -17,7 +17,7 @@ import { useCallback, useEffect, useState } from 'react'
 import type { ReactElement } from 'react'
 import type { Me, Organisation } from '../contract/api.ts'
 import { api, onSessionEnded } from '../contract/api.ts'
-import { navGroupsFor, avatarMenuFor, scopeOf, screenForPath, HOME, type NavEntry, type ScreenId } from '../nav/nav.config.ts'
+import { navGroupsFor, avatarMenuFor, avatarEntryOf, scopeOf, screenForPath, HOME, type NavEntry, type ScreenId } from '../nav/nav.config.ts'
 import { Icon } from '../components/Icon.tsx'
 import { Logo, WORDMARK } from '../components/Logo.tsx'
 import { useLoad } from '../state/useApi.ts'
@@ -399,6 +399,9 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   const me: Me = meResult.value
   const groups = navGroupsFor(me)
   const entry = screenForPath(path, me) ?? (path === '/portal' || path === '/portal/' ? HOME : null)
+  // Whether the screen is one the avatar menu leads to, which the rail cannot highlight. The top bar then
+  // says where you are: the title slot names the screen and the avatar draws active (avatarEntryOf).
+  const personal = entry !== null && avatarEntryOf(entry.id, me) !== null
 
   // ONE name map, from both sources, resolved once. A client's own grants carry names on `me`; staff
   // reach every customer and take theirs from the roster. Neither source is per-screen, so neither is
@@ -607,9 +610,14 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
               the COMPANY for a client holding one grant — so the bar named a company over Home, which
               spans all of them. With that slot now carrying the ORGANISATION for everyone, repeating it
               here would print one name twice on one bar, which is how a label stops being read.
-              Screens keep their own heading in the body, so nothing is lost to a screen reader. */}
-          <h1 data-anon="mark">
-            {!entry ? 'Not found' : scopeOf(entry.id) === 'owner' ? ownerName(ownerInView) : ''}
+              Screens keep their own heading in the body, so nothing is lost to a screen reader.
+              EXCEPT WHERE THE RAIL HIGHLIGHTS NOTHING. A screen the avatar menu leads to — People and
+              the two forms it opens, Preferences, the installation's settings, About — is not in the
+              rail, so the one thing that said where you were was missing. There the slot names the
+              screen, in its entry's own label, and the avatar below draws active. Only a company name
+              is marked for the blur; a screen's name is not a name anyone needs hidden. */}
+          <h1 data-anon={personal ? undefined : 'mark'}>
+            {!entry ? 'Not found' : personal ? entry.label : scopeOf(entry.id) === 'owner' ? ownerName(ownerInView) : ''}
           </h1>
 
           <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 4, position: 'relative' }}>
@@ -662,11 +670,12 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
             </button>
             <button
               type="button"
-              className="icon-btn"
+              className="icon-btn avatar"
               aria-haspopup="menu"
               aria-expanded={avatarOpen}
               aria-label="Settings and about"
-              style={{ borderRadius: '50%', background: 'var(--surface-float)', border: '1px solid var(--border-hairline)', fontSize: 11, fontWeight: 700 }}
+              // ACTIVE ON THE SCREENS IT LEADS TO, the way a rail item is on its own: `personal` above.
+              aria-current={personal ? 'true' : undefined}
               onClick={() => setAvatarOpen((o) => !o)}
             >
               {initials(me.email)}

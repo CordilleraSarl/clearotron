@@ -147,12 +147,13 @@ export const NAV: readonly NavEntry[] = [
   // PEOPLE, in the AVATAR MENU above Global config rather than in the rail (2026-09-10). Who reaches this
   // installation is a setting of the installation, not a place anyone works, so it sits with the other
   // settings. `hidden` keeps it routable and off the rail, and avatarMenuFor lists it. It is still not
-  // about one company, so its scope stays 'account' and the top bar names the account on it. `needs:
-  // 'manage'` is the whole gate, and the page itself lists only people whose access falls inside the viewer's own.
+  // about one company, so its scope stays 'account'; the top bar names the screen on it, as it does on
+  // every screen the avatar menu reaches (avatarEntryOf). `needs: 'manage'` is the whole gate, and the
+  // page itself lists only people whose access falls inside the viewer's own.
   { id: 'people', label: 'People', path: '/portal/people', icon: 'users', needs: 'manage', hidden: true, scope: 'account' },
-  // Give someone access — reached from `+ Add a person` on People and from nowhere else, hence `hidden`.
-  // The same permission as the page that opens it.
-  { id: 'people.add', label: 'Give someone access', path: '/portal/people/add', icon: 'users', needs: 'manage', hidden: true, scope: 'account' },
+  // Give access — reached from `+ Add a person` on People and from nowhere else, hence `hidden`. The same
+  // permission as the page that opens it. The label is the screen's own title, which the top bar prints.
+  { id: 'people.add', label: 'Give access', path: '/portal/people/add', icon: 'users', needs: 'manage', hidden: true, scope: 'account' },
   // Change or remove one — reached from a row's Modify on People, and from nowhere else. Which person
   // rides in `?email=`, the way Projects carries `?project=`: the address is data about the page, not a
   // place, and putting it in the path would put somebody's email in the browser history of a machine
@@ -324,6 +325,22 @@ export function avatarMenuFor(who: Viewer, entries: readonly NavEntry[] = NAV): 
   // in the work lane, which is not what it is for.
   return [pick('preferences'), pick('people'), pick('admin.config'), pick('about')]
     .filter((e): e is NavEntry => !!e)
+}
+
+/**
+ * The avatar-menu entry a screen is reached through — the entry itself, or the one its id is a dot-child
+ * of — or null for a screen the avatar menu does not lead to.
+ *
+ * THE RAIL CANNOT HIGHLIGHT A SCREEN IT DOES NOT CARRY, and every screen the avatar menu leads to is one of
+ * those. So where this answers, the top bar says where you are instead: its title slot names the screen and
+ * the avatar draws active. Asked of the menu itself and of the rail's own dot-prefix rule, never of a list
+ * of ids or titles — a screen added to the menu, or a form opened from one, is covered by being there, and
+ * a renamed entry is named by its new label. The children count: Give access and Modify access are
+ * `people.add` and `people.modify`, reached through People.
+ */
+export function avatarEntryOf(id: string | null, who: Viewer, entries: readonly NavEntry[] = NAV): NavEntry | null {
+  if (!id) return null
+  return avatarMenuFor(who, entries).find((e) => id === e.id || id.startsWith(e.id + '.')) ?? null
 }
 
 /**
