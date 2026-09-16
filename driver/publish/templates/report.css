@@ -481,3 +481,4 @@
   .openrows,.provwrap{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
   .openrows .rk,.provwrap .rk{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-bottom:6px}
   .provnote{margin:0;font-size:12.5px;line-height:1.5;color:var(--slate)}
+  .topbar .tb-lockup{margin-right:10px;flex:0 0 auto}

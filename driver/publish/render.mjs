@@ -2536,6 +2536,9 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
 <style>${cssInline}${darkCss}${PRINT_LIGHT}</style>${chromeLinkTag}</head><body class="has-glow">
 <div class="rep-stickyhead no-print">
 <div class="topbar no-print">
+  ${/* ONE BAR (tracker issue 644). The site bar is not rendered on a report, so the brand belongs here:
+       a reader met two stacked headers, and the lower one carried the only brand. */''}
+  ${logoLockup({ mark: 16, cls: 'tb-lockup' })}
   ${opts.homeHref ? `<a class="homebtn tb-back no-print" href="${escAttr(opts.homeHref)}" title="All reports"><span aria-hidden="true">←</span> <span class="tb-back-lbl">All reports</span></a>` : ''}
   <span class="sp"></span>
   <span class="tb-risk" style="background:var(${STOP_VAR[i]})">${riskLabel}</span>
