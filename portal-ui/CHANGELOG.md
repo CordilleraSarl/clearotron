@@ -1,5 +1,17 @@
 # portal-ui
 
+## 0.3.1-beta.4
+
+### Patch Changes
+
+- 0566e1f: Fixed: Changing or removing a person now explains why it cannot be done on a Clearotron that signs in one person. It used to show an internal code.
+  
+  Fixed: Modify and Remove are switched off on that kind of install, the way Add already was, with the reason beside them.
+- f193d6a: Fixed: When Clearotron cannot check how your assistant will be let in, Use your own AI now shows both ways and says so. It used to show one.
+- 0566e1f: Fixed: Searches that stopped no longer sit in Home's In flight band. They have their own list below it, with a count you can see without opening it.
+  
+  Fixed: That list clears itself after a week, whether or not anyone pressed Acknowledge. Signing in for the first time no longer means meeting every search that has ever failed.
+
 ## 0.3.1-beta.3
 
 ### Patch Changes
