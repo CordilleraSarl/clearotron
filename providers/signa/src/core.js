@@ -793,9 +793,9 @@ export async function doCountHits(apiKey, base, params, tctx, { mock = false } =
   const parsed = JSON.parse(r.text);
   // ── this is a COUNT now, and it was a presence probe ──────────────────────────────────
   // `include_total` returns the corpus total on the same call, so the smallest request the API will
-  // take — limit 1 — carries the whole answer: probed, `limit:1` returned total 685, identical to the
-  // paged query's. Stage 0.5 (driver/register-count.mjs) refused to run on this provider at all; it
-  // now gets the number it exists to ask for.
+  // take — limit 1 — carries the whole answer: the total it reports is the one the paged query reports.
+  // Stage 0.5 (driver/register-count.mjs) refused to run on this provider at all; it now gets the
+  // number it exists to ask for.
   //
   // THE ZERO RULE IS UNCHANGED AND IS THE REASON THIS IS SAFE. `total_hits` is null unless the vendor
   // counted exactly — an approximation and a non-answer both report unknown. So the only 0 this can

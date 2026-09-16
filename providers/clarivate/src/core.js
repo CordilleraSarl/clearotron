@@ -220,8 +220,8 @@ export function assertSingleMarkShape(rawTerm) {
   }
   return tokens;
 }
-// Read as OPERATORS wherever they stand alone in a value string, case-insensitively ("monster adj
-// energy" = 67), with an optional proximity digit (ADJ2 = 72).
+// Read as OPERATORS wherever they stand alone in a value string, case-insensitively, with an
+// optional proximity digit.
 const RESERVED_TOKEN_RE = /^(?:AND|OR|NOT|ADJ|NEAR)\d*$/i;
 const PUNCT_ONLY_RE = /^[^\p{L}\p{N}]+$/u;
 
@@ -229,22 +229,18 @@ const PUNCT_ONLY_RE = /^[^\p{L}\p{N}]+$/u;
  * An operator word inside a phrase is DROPPED, and the gap it leaves is spanned by widening that one
  * adjacency to `ADJ<n+1>`.
  *
- * The obvious move — make the word lexically stop being an operator with an interior `?` — is WRONG,
- * and measurably so. Registers write these marks with an ampersand, not the word:
- *
- *   *BLACK ADJ A?D ADJ DECKER*   0      ← what the `?` escape asks for, and nothing is named that
- *   *BLACK ADJ DECKER*          55      ← BLACK & DECKER
- *   *BLACK ADJ2 DECKER*         55      ← identical: the connector is not indexed, so spanning costs nothing
- *   *BEN ADJ A?D ADJ JERRYS*     0   vs  *BEN ADJ JERRYS*  25
+ * The obvious move — make the word lexically stop being an operator with an interior `?` — is WRONG.
+ * Registers write these marks with an ampersand and not the word, so the escaped form names NOTHING,
+ * while the plain adjacency finds the mark and the widened adjacency finds exactly the same set.
  *
  * A zero over a mark that exists is the failure this whole contract is built to prevent, so the escape
  * is gone. Dropping + `ADJ2` is right whether or not the index holds the word: if it is a stopword the
- * neighbours are already adjacent (55 == 55 above), and if some register does index it the widened
- * adjacency still reaches across. It is a superset of the literal phrase — safe in the direction a
- * clearance sweep needs, which fails by MISSING a mark and never by surfacing an extra one.
+ * neighbours are already adjacent — plain and widened return the same set — and if some register does
+ * index it the widened adjacency still reaches across. It is a superset of the literal phrase — safe in
+ * the direction a clearance sweep needs, which fails by MISSING a mark and never by surfacing an extra one.
  *
- * `ADJ<n>` is real and probed: MONSTER ADJ ENERGY = 67, MONSTER ADJ2 ENERGY = 72, SALT ADJ PEPPER = 27
- * vs SALT ADJ2 PEPPER = 52 — so the widening is genuinely a widening, not a no-op we cannot see.
+ * `ADJ<n>` is real: the widened form returns strictly more than the tighter one, so the widening is
+ * genuinely a widening and not a no-op we cannot see.
  */
 export function isReservedToken(tok) {
   return RESERVED_TOKEN_RE.test(tok);
