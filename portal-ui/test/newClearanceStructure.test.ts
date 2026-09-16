@@ -43,23 +43,46 @@ test('the selector carries no depth icons, and the tick/cross list still answers
   assert.doesNotMatch(flat(src), /depthRungs/, 'the rung derivation is back; it had one caller and this was it')
   assert.doesNotMatch(CSS, /\.depth-bar\b/, 'the depth-bar styles are back')
 
-  // ── AND THE CONFIRMATION'S EFFORT BARS SURVIVED, which nothing above asserts ────────────────────
+  // ── AND THE CONFIRMATION STILL SAYS HOW MUCH YOU ARE BUYING ────────────────────────────────────
   //
-  // 2144 removed ONE of two renders and kept the other: "in the summary things rescale and work great.
-  // in product selector … we can remove these next to the product description". Every assertion above is
-  // a DELETION check, so a change that took both would pass all of them — and the summary's bars are the
-  // half the owner explicitly praised. A deletion guard without a survival guard cannot tell "the right
-  // one went" from "both went".
-  assert.match(flat(src), /<Row label="Effort">/, 'the confirmation lost its effort line')
-  // COUNTED, not merely present. There are TWO ten-segment renders — the composer footer and the
-  // confirmation's Effort line — and both are the "summary" the ruling keeps. A `match` for the array
-  // passes while one of the two is changed, which is what a plant on the first occurrence proved: the
-  // regex found the survivor and reported green. So this counts them.
+  // THE SURVIVAL HALF OF THIS GUARD IS THE POINT AND IT STAYS. Every assertion above is a DELETION
+  // check, so a change that took both renders would pass all of them; this is what tells "the right one
+  // went" from "both went", and removing it rather than re-aiming it would leave the deletions
+  // unguarded.
+  //
+  // WHAT IT PROTECTS HAS BEEN RE-READ IN THE PRODUCT'S OWN UNIT. It used to assert the summary's effort
+  // bars, kept when the picker's were removed — "in the summary things rescale and work great. in
+  // product selector … we can remove these next to the product description". The later design ruling
+  // takes the bars and the cost dots off every screen: the bars were a number with no unit and the dots
+  // a "cost" that was never a price. The question the summary must still answer is the same one, and
+  // the product counts it exactly — searches per day, per company.
+  //
+  // So: the confirmation must still state the size of what is being bought, and it must do it in
+  // searches. A change that takes THAT away reds here, which is what the survival guard was for.
+  assert.match(flat(src), /<Row label="Uses">/, 'the confirmation no longer says what the search spends')
+  assert.match(flat(src), /<Row label="Left today">/, 'the confirmation no longer says what it leaves')
+  assert.doesNotMatch(flat(src), /<Row label="Effort">/, 'the effort meter is back on the confirmation')
+  // COUNTED, AND THE COUNT IS NOW ZERO. This asserted exactly TWO ten-segment renders — the composer
+  // footer and the confirmation — because a bare `match` passes while one of the two is changed, which
+  // a plant on the first occurrence proved: the regex found the survivor and reported green. The
+  // counting is the right instrument and it is kept pointed the other way.
+  //
+  // Both renders are gone under the later ruling, and ZERO is asserted rather than the assertion being
+  // dropped: a deleted count cannot tell "removed on purpose" from "removed by accident, on a screen
+  // nobody opened".
   const tens = flat(src).match(/\[1, 2, 3, 4, 5, 6, 7, 8, 9, 10\]\.map/g) ?? []
-  assert.equal(tens.length, 2,
-    `expected both ten-segment effort renders (composer footer + confirmation) and found ${tens.length} — 2144 keeps them exactly as built and deletes only the selector's per-product icons`)
-  assert.match(flat(code(SRC)), /className=\{i <= plan\.effort!\.units \? 'bar bar-on' : 'bar'\}/,
-    "the SUMMARY's effort bars went with the selector's icons — the owner ruled those stay")
+  assert.equal(tens.length, 0,
+    `${tens.length} ten-segment effort render(s) are back — the bars carried a number with no unit and the allowance counts searches`)
+  const dots = flat(src).match(/\[1, 2, 3, 4, 5\]\.map/g) ?? []
+  assert.equal(dots.length, 0,
+    `${dots.length} five-dot cost band(s) are back — there is no price model, and a dot scale on a client's screen reads as one`)
+  // THE BAR CLASS ITSELF, asserted gone from the code rather than only from the prose — the count above
+  // reads the ten-element array, and a render rebuilt with a loop of a different shape would slip past
+  // it while drawing the same picture.
+  assert.doesNotMatch(flat(code(SRC)), /'bar bar-on'/,
+    "an effort bar is back on this screen — the later ruling takes the bars and the dots off every screen")
+  assert.doesNotMatch(flat(code(SRC)), /'dot dot-on'/,
+    "a cost dot is back on this screen — there is no price model to draw")
 
   // The tick/cross list. The glyph and the sentence come off ONE boolean — see screenCopy.test.ts for
   // the case-law half, which is the row that actually varies.
@@ -74,8 +97,13 @@ test('the selector carries no depth icons, and the tick/cross list still answers
 
 test('§B the context field is out of the collapsible, above it, and shows an example', () => {
   const src = code(SRC)
-  const goods = src.indexOf('Goods or services description (optional)')
-  const context = src.indexOf('Any context that might be relevant (optional).')
+  // THE SECTION TITLES ARE THE ANCHORS, read off the rendered title element so a label renamed again
+  // breaks the arm loudly rather than matching a comment. They were "Goods or services description
+  // (optional)" and "Any context that might be relevant (optional)." until the one-form design named
+  // them "Goods or services" and "Context (optional)".
+  const title = (t: string) => src.indexOf(`<div className="section-title">${t}</div>`)
+  const goods = title('Goods or services')
+  const context = title('Context (optional)')
   const details = src.indexOf('<Details summary="References and dates (optional)">')
   assert.ok(goods > 0 && context > 0 && details > 0, 'one of the three anchors has been renamed — the arm has broken, not the tree')
   assert.ok(goods < context, 'the context field is no longer directly below goods or services')
@@ -84,7 +112,7 @@ test('§B the context field is out of the collapsible, above it, and shows an ex
   // ALWAYS OPEN. The field must not be inside any <Details> on this screen: "not hidden under a
   // collapse thing — it's important."
   const detailsBlock = src.slice(details)
-  assert.ok(!detailsBlock.includes('Any context that might be relevant'),
+  assert.ok(!detailsBlock.includes('Context (optional)'),
     'the context field is back under a collapse')
 
   // AN EXPLICIT EXAMPLE, labelled as one, naming concrete shapes — a launch page and a post — so a
@@ -119,7 +147,7 @@ test('§B the comparison table takes the screen measure, without widening the fo
   // against a real browser. What is left here is what this file genuinely knows: the rules exist and
   // say what they must. The markup shape is deliberately NOT asserted; pinning it is what produced
   // confidence about a screen nobody had measured.
-  assert.match(flat(src), /<div className="composer-wide">\s*<Details summary="Detailed search comparison table for information">/,
+  assert.match(flat(src), /<div className="composer-wide">\s*<Details summary="Detailed search comparison table">/,
     'the comparison block is not the thing carrying the width opt-out')
   assert.match(CSS, /\.composer-wide\s*\{[^}]*max-width:\s*none/,
     'the escape does not lift the cap, so the class does nothing')
@@ -175,7 +203,14 @@ test('the primary action on the search screen is a verb that promises a search',
   // the screen that started anything, and the reader who needed it did not recognise it as one.
   assert.doesNotMatch(flat(src), /'Review clearance'/,
     'the primary action went back to a label that does not say a search will run')
-  assert.match(flat(src), /'Start a search'/, 'the search screen has no action labelled with a verb')
+  // ── RE-AIMED, NOT RELAXED (design ruling, 2026-09-16) ─────────────────────────────────────────────
+  // This required 'Start a search', the fix for the defect above. The one-form design names the step
+  // the button opens — 'Review search' — so the literal moves, and the three things that fixed the
+  // original failure are what this arm now holds: the label says SEARCH rather than naming a clearance
+  // that might already exist, it is the footer's primary button, and the line beside it says the
+  // coverage and the cost come before anything runs. A label that dropped any of those reds here.
+  assert.match(flat(src), /'Review search'/, 'the search screen has no action that names a search')
+  assert.doesNotMatch(flat(src), /'Start a search'/, 'two labels for one button — the old one survived somewhere')
   // AND IT IS THE PRIMARY ONE, not a link somewhere. The complaint was that the only thing offered was
   // the ghost-styled Save button.
   assert.match(flat(src), /className="btn-primary" disabled=\{!ready \|\| busy\} onClick=\{onReview\}/,
@@ -184,7 +219,8 @@ test('the primary action on the search screen is a verb that promises a search',
   // caveat, which are read before anything is spent. So the button must say that is what comes next.
   assert.match(flat(src), /before anything runs/,
     'nothing tells the reader the button opens a confirmation rather than spending immediately')
-  assert.match(flat(src), /'Start clearance'/, 'the confirmation lost the button that actually starts')
+  assert.match(flat(src), /'Start search'/, 'the confirmation lost the button that actually starts')
+  assert.doesNotMatch(flat(src), /'Start clearance'/, 'the confirmation carries its old label as well as its new one')
 })
 
 test('a greyed primary action always has its reason on screen, and at the control', () => {

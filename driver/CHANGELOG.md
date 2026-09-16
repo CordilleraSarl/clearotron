@@ -1,5 +1,51 @@
 # clearotron-driver
 
+## 0.3.2-beta.3
+
+### Patch Changes
+
+- cc56786: New: an installation can name its administrator contact, a mail or web address, and Preferences links "Clearotron administrator" to it.
+  
+  New: Preferences carries the top bar's blur button, and the blur now stays as you left it in this browser, reloads included.
+  
+  New: Global config is now Installation settings, with one sign-in row, the engine's own web search under Engine, and providers grouped by category.
+  
+  New: a provider needing action says what it needs in a few words and links its setup guide, instead of naming settings and files.
+  
+  New: About lists its facts in one card, and its source link reads as the repository's name, with the build just above.
+  
+  New: the sign-in page leads with one line, "This Clearotron signs in one person: you.", and keeps the reset and sign-on steps under Administrator help.
+- cc56786: New: a report's header labels both of its dates, searched and issued, with Ask AI and Export beside them as two buttons.
+  
+  New: Ask AI on a report offers four questions, and opens Claude with the one you pick typed in, ready for you to send.
+  
+  New: Use your AI is now Connect your AI, and shows whether your assistant is connected, folding the setup steps away once it is.
+  
+  New: after Set it up on a report's Ask AI, Connect your AI offers a button back to that report once your assistant connects.
+  
+  Fixed: Claude's steps no longer tell you to ignore an authentication warning, and copy the address and the key with separate buttons.
+  
+  New: where your installation offers another way to connect, Connect your AI keeps those steps in a closed fold under the sign-in steps.
+
+## 0.3.2-beta.2
+
+### Patch Changes
+
+- 8642064: Fixed: On one register the "Filings containing the name" figure counted only identical filings. A report could therefore show a field as far less crowded than it really is. That column now asks the register the question its label promises. Where a register cannot answer a given kind of search, the figure is reported as unavailable rather than filled in from a narrower one.
+
+## 0.3.2-beta.1
+
+### Patch Changes
+
+- 2a81abc: New: A report can now show how much was searched to reach its answer. It records the names read and cleared, the records read in each country, and the checks made. Countries where nothing was found are included.
+- 2a81abc: Fixed: The conditions listed on a report are now written in plain legal English, matching the summary line above them. One condition could previously appear as an internal engine note with counts and identifiers in it.
+
+## 0.3.2-beta.0
+
+### Patch Changes
+
+- 7cc0d29: Fixed: A report now lists every part of the search that was left open. One with a short name could be hidden by another line that happened to mention the same word. The overall result was never affected, only the list of what remained open.
+
 ## 0.3.1
 
 ### Patch Changes

@@ -822,8 +822,10 @@ test("THE REFUSAL SAYS WHICH FAULT IT IS, because the two need opposite remedies
     assert.match(reason, /connotation_query_unrecorded/);
     assert.match(reason, /\[unmatched; nearest recorded:/,
       "a query recorded under different wording was not identified as unmatched, so the seat is told to re-run a search that already ran");
-    assert.match(reason, /\[absent from the ledger\]/,
-      "a query recorded nowhere was not identified as absent");
+    assert.match(reason, /\[no recorded query resembles this one\]/,
+      "a query nothing recorded resembles was not identified as such. The label deliberately does NOT "
+      + "say the search never ran: the gate cannot know that, and asserting it sent a seat to re-run a "
+      + "search it had already recorded under different wording");
     // AND THE NEAREST IS NAMED, which is what lets a reorder be diagnosed in one attempt rather than four.
     assert.match(reason, /nearest recorded: meaning of novapulse/,
       "the refusal does not show what WAS recorded, so the difference cannot be seen without opening the ledger");

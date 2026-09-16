@@ -241,7 +241,14 @@ export function readTime(run: Pick<Run, 'issuedAt'>): string {
  * recorded. Never a recipe label: that is a different vocabulary.
  */
 export function readLabel(run: Run): string {
-  const head = run.productName || run.stageLabel
-  if (head && run.date) return `${head} · ${run.date}`
-  return head ?? run.date ?? run.runId.slice(0, 12)
+  const { head, date } = readLabelParts(run)
+  return head && date ? `${head} · ${date}` : head ?? date ?? run.runId.slice(0, 12)
+}
+
+/**
+ * `readLabel` in its two parts, for a screen that has to keep the date whole on a narrow line. One
+ * derivation: `readLabel` is these joined, so the parts cannot come to say something the label does not.
+ */
+export function readLabelParts(run: Run): { readonly head: string | null; readonly date: string | null } {
+  return { head: run.productName || run.stageLabel || null, date: run.date || null }
 }

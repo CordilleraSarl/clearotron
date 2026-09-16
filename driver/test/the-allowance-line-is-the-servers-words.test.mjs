@@ -1,0 +1,69 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
+//
+// ONE SENTENCE, TWO AUTHORS, AND THIS IS WHAT HOLDS THEM TOGETHER.
+//
+// When the daily allowance is spent, the engine refuses a start with a sentence composed from the limit
+// and the operator's name. The browser never receives that string — the usage read carries counts and
+// nothing else — so the screen composes it again from the same two facts. That is a second author for
+// one sentence, which is the arrangement this codebase keeps finding out about the hard way: two
+// definitions of one rule is one definition and one imitation, and the imitation is whichever the
+// reader did not run.
+//
+// It cannot be repaired by deleting one of them. The server must refuse in words even when no browser is
+// involved, and the screen must warn before the refusal, when there is still something a reader can do.
+// So both stay and this arm reads BOTH FILES and fails when they drift.
+//
+// WHAT IS COMPARED IS THE SHAPE WITH ITS VALUES REMOVED, not the finished string: one side has a real
+// limit and a real brand, the other has template holes, and comparing the rendered text would need this
+// file to know today's numbers. The skeleton is what a reader actually meets.
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+const read = (p) => readFileSync(join(ROOT, p), "utf8");
+
+/** A template's holes removed, so two spellings of one sentence can be compared as one. */
+const skeleton = (s) => String(s)
+  .replace(/\$\{[^}]*\}/g, "\0")        // a template hole, whatever it interpolates
+  .replace(/\s+/g, " ")
+  .trim();
+
+test("THE SCREEN'S EXHAUSTED SENTENCE IS THE SERVER'S, word for word", () => {
+  const server = read("driver/portal-service.mjs");
+  const client = read("portal-ui/src/contract/allowance.ts");
+
+  // ── THE FLOOR, FIRST ──
+  //
+  // Everything below is a comparison between two extracted strings, and an extraction that found
+  // nothing would compare "" with "" and pass. Both sites are named and both must be present.
+  const serverLine = /You have used all [^`]*?for you\./.exec(server);
+  assert.ok(serverLine, "the engine no longer refuses a spent allowance in words — this arm is reading nothing");
+
+  const clientLine = /`You have used all [\s\S]*?for you\.`/.exec(client);
+  assert.ok(clientLine, "the screen no longer composes the exhausted sentence — this arm is reading nothing");
+
+  // The client's is written across two concatenated template literals, so the joining quotes and the
+  // `+` between them come out before the shapes are compared.
+  const clientText = clientLine[0].replace(/`\s*\+\s*`/g, "").replace(/^`|`$/g, "");
+
+  assert.equal(skeleton(clientText), skeleton(serverLine[0]),
+    "the screen and the engine now say different things about a spent allowance — change both, or neither");
+});
+
+test("THE SENTENCE NAMES THE CAP AND THE OPERATOR, and both sides fill them from data", () => {
+  // WITHOUT THIS, THE ARM ABOVE PASSES ON TWO IDENTICAL HARDCODED SENTENCES. The skeleton comparison
+  // removes every hole — so two copies that had stopped interpolating anything would match perfectly,
+  // and a reader would meet a literal brand name and a literal cap on both surfaces.
+  const server = /You have used all [^`]*?for you\./.exec(read("driver/portal-service.mjs"))[0];
+  const client = /`You have used all [\s\S]*?for you\.`/.exec(read("portal-ui/src/contract/allowance.ts"))[0];
+
+  for (const [name, text] of [["the engine", server], ["the screen", client]]) {
+    const holes = text.match(/\$\{[^}]*\}/g) ?? [];
+    assert.equal(holes.length, 2,
+      `${name} fills ${holes.length} value(s) into the exhausted sentence, not two — the cap and the operator`);
+  }
+});

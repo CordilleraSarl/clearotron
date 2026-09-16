@@ -9,7 +9,9 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 
-import { resolveRead, resolveTerritory, applyRead, appliedNotes, EMPTY_READ, type ReadTarget } from '../src/contract/composeRead.ts'
+import {
+  resolveRead, resolveTerritory, applyRead, appliedNotes, defaultNotes, unsureNotes, EMPTY_READ, type ReadTarget,
+} from '../src/contract/composeRead.ts'
 import { EMPTY_DRAFT } from '../src/contract/composerProduct.ts'
 
 const EMPTY_TARGET: ReadTarget = {
@@ -100,7 +102,7 @@ test('applyRead: materialising a ghost starts from the OWNER’S classes, never 
 
 test('appliedNotes: a class the owner already carried is not reported as something the brief added', () => {
   const after = applyRead(EMPTY_TARGET, read({ classes: [32, 9] }), [5, 32])
-  assert.deepEqual(appliedNotes(EMPTY_TARGET, after, [5, 32]), ['Class 9 · Electrical & software'],
+  assert.deepEqual(appliedNotes(EMPTY_TARGET, after, [5, 32]), ['Classes: 9 · Electrical & software'],
     'a receipt for work that did not happen is worse than no receipt')
 })
 
@@ -152,8 +154,8 @@ test('appliedNotes: the clear is a RECEIPT LINE — a scope that changed silentl
   const withFrance: ReadTarget = { ...EMPTY_TARGET, draft: { ...EMPTY_DRAFT, territories: ['France'] } }
   const after = applyRead(withFrance, read({ names: ['LUMEN'] }), [], { worldwide: true })
   assert.deepEqual(appliedNotes(withFrance, after), [
-    'LUMEN — the mark',
-    'Worldwide — the named territories were cleared',
+    'Name: LUMEN',
+    'Where: worldwide — the named territories were cleared',
   ])
 })
 
@@ -183,38 +185,76 @@ test('appliedNotes: every line is a fact about the screen, derived from the diff
   const before = EMPTY_TARGET
   const after = applyRead(before, read({
     names: ['AQUAPLUS'], classes: [32], goods: 'energy drinks', territories: ['United States'],
-    product: 'knockout-search', deadline: '2026-07-24',
+    product: 'knockout-search', ref: 'M-4471', deadline: '2026-07-24',
   }))
   const notes = appliedNotes(before, after, [], MENU)
+  // ONE SHAPE PER LINE — the form's own name for the field, a colon, what was put there — and in the
+  // order the form reads top to bottom, so the receipt and the page it describes run the same way.
   assert.deepEqual(notes, [
-    'AQUAPLUS — the mark',
-    'Class 32 · Non-alcoholic drinks',
-    'Goods — energy drinks',
-    'United States',
-    'Knockout search',
-    'Deadline 2026-07-24',
+    'Name: AQUAPLUS',
+    'Where: United States',
+    'Goods: energy drinks',
+    'Classes: 32 · Non-alcoholic drinks',
+    'Search: Knockout search',
+    'Your reference: M-4471',
+    'Deadline: 2026-07-24',
   ])
+})
+
+test('appliedNotes: the Search line says WHY only when it is given a reason, and never invents one', () => {
+  const moved = applyRead(EMPTY_TARGET, read({ territories: ['European Union', 'Switzerland'], product: 'full-country-search' }))
+  assert.deepEqual(appliedNotes(EMPTY_TARGET, moved, [], MENU, 'because you named a region and a country'),
+    ['Where: European Union, Switzerland', 'Search: Full country search, because you named a region and a country'])
+  assert.deepEqual(appliedNotes(EMPTY_TARGET, moved, [], MENU),
+    ['Where: European Union, Switzerland', 'Search: Full country search'],
+    'a search the brief asked for by name carries no reason the form did not give')
+})
+
+test('defaultNotes: the company classes the text did not name are listed apart from what the read put there', () => {
+  // THE BOARD'S CASE: a brief naming no class, over a company carrying two. Nothing was added, so the
+  // receipt says nothing about classes — and the search still covers both, which is what this says.
+  const silent = applyRead(EMPTY_TARGET, read({ names: ['AQUAPLUS'] }), [5, 32])
+  assert.deepEqual(defaultNotes(read({ names: ['AQUAPLUS'] }), silent, [5, 32]),
+    ['Classes: 5 · Pharmaceuticals, 32 · Non-alcoholic drinks, not in your text'])
+  // A class the text DID name is the read's, not a default.
+  const named = read({ classes: [32] })
+  assert.deepEqual(defaultNotes(named, applyRead(EMPTY_TARGET, named, [5, 32]), [5, 32]),
+    ['Classes: 5 · Pharmaceuticals, not in your text'])
+  // A company with no classes of its own has no defaults to report.
+  assert.deepEqual(defaultNotes(read({}), applyRead(EMPTY_TARGET, read({}), []), []), [])
+  // A list the reader already cleared of a class is not reported as carrying it.
+  const cleared: ReadTarget = { ...EMPTY_TARGET, classes: [32] }
+  assert.deepEqual(defaultNotes(read({}), applyRead(cleared, read({}), [5, 32]), [5, 32]),
+    ['Classes: 32 · Non-alcoholic drinks, not in your text'])
+})
+
+test('unsureNotes: the model\'s doubts, then every place that could not be placed — none swallowed', () => {
+  assert.deepEqual(unsureNotes(['Deadline: November, no date given'], ['Bavaria']), [
+    'Deadline: November, no date given',
+    'Where: Bavaria, not a territory this search offers',
+  ])
+  assert.deepEqual(unsureNotes([], []), [])
 })
 
 test('appliedNotes: the product line appears only when the product MOVED, and is NAMED BY THE OFFERING', () => {
   const before = EMPTY_TARGET
   const same = applyRead(before, read({ names: ['X'] }))
-  assert.deepEqual(appliedNotes(before, same, [], MENU), ['X — the mark'],
+  assert.deepEqual(appliedNotes(before, same, [], MENU), ['Name: X'],
     'a product line beside an unchanged choice is noise')
   const moved = applyRead(before, read({ product: 'full-country-search' }))
-  assert.deepEqual(appliedNotes(before, moved, [], MENU), ['Full country search'],
+  assert.deepEqual(appliedNotes(before, moved, [], MENU), ['Search: Full country search'],
     'the OFFERING supplies the words — a second description here is a second thing that can drift')
   // A key this bundle has not been told about degrades to the key rather than to an invented sentence:
   // an older server naming a product the browser does not carry must not be described from thin air.
   const unknown = applyRead(before, read({ product: 'something-else' }))
-  assert.deepEqual(appliedNotes(before, unknown, [], MENU), ['something-else'])
+  assert.deepEqual(appliedNotes(before, unknown, [], MENU), ['Search: something-else'])
 })
 
 test('appliedNotes: nothing applied ⇒ no lines (the screen says so in its own words)', () => {
   assert.deepEqual(appliedNotes(EMPTY_TARGET, applyRead(EMPTY_TARGET, EMPTY_READ)), [])
 })
 
-test('appliedNotes: several names are counted and listed', () => {
+test('appliedNotes: several names are listed, every one, under the plural', () => {
   const after = applyRead(EMPTY_TARGET, read({ names: ['LUMEN', 'LUMENA'] }))
-  assert.deepEqual(appliedNotes(EMPTY_TARGET, after), ['2 names — LUMEN, LUMENA'])
+  assert.deepEqual(appliedNotes(EMPTY_TARGET, after), ['Names: LUMEN, LUMENA'])
 })

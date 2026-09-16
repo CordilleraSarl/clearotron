@@ -2,9 +2,10 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // Making a company — the page an outside user looked for, did not find, and worked around with an LLM.
 //
-// ONE PAGE, NOT A DIALOGUE, and only the name is required. Everything else has a default, and the screen
-// says on itself what that default is; a person setting up their own company should be able to type a
-// name and be searching, while a firm onboarding a client can fill in the rest in the same place.
+// ONE PAGE, NOT A DIALOGUE, and only the name is required. Everything else has a default, and the form
+// says which is which on the fields themselves — Required on the name, Optional on the rest — so a person
+// setting up their own company can type a name and be searching, while someone setting up a company for
+// somebody else can fill in the rest in the same place.
 //
 // IT RENDERS THE PROFILE EDITOR'S OWN FIELD SPECS. Same labels, same order, same parsing, same notices,
 // through the same `Field` — so what you fill in here and what you change afterwards cannot describe the
@@ -18,9 +19,9 @@ import { useEffect, useMemo, useState } from 'react'
 import { api, isOk } from '../contract/api.ts'
 import { FrameworkGuideLink } from '../components/FrameworkGuideLink.tsx'
 import type { CreatedCompany, Result } from '../contract/api.ts'
-import { PROFILE_FIELDS, FIELD_GROUPS, boxValue, typeField, parseLines } from '../contract/profileFields.ts'
+import { PROFILE_FIELDS, FIELD_GROUPS, boxValue, typeField, parseLines, groupTag } from '../contract/profileFields.ts'
 import type { FieldSpec, FormEdit } from '../contract/profileFields.ts'
-import { Field } from '../components/ProfileField.tsx'
+import { Field, FieldTag } from '../components/ProfileField.tsx'
 import { useUnsaved } from '../state/useUnsaved.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
 import { companyKeyFrom } from '../contract/companyKey.ts'
@@ -51,10 +52,11 @@ const specs = (): readonly FieldSpec[] => PROFILE_FIELDS.filter((f) => CREATE_FI
 
 export function NewCompany({ ctx }: { readonly ctx: ShellContext }) {
   const [state, setState] = useState<FormEdit>({ draft: {}, edits: {} })
-  const [keyEdited, setKeyEdited] = useState<string | null>(null)
+  // A key typed by hand — asked for only when the name yields none. See KeyBox.
+  const [keyTyped, setKeyTyped] = useState<string | null>(null)
   // Whether anybody has touched the trading-names box. Until they have, it FOLLOWS the name — and after
-  // they have, it stops, the same rule the key follows. A box that kept re-deriving would overwrite what
-  // somebody had just typed into it on the next keystroke in the name field.
+  // they have, it stops. A box that kept re-deriving would overwrite what somebody had just typed into it
+  // on the next keystroke in the name field.
   const [namesTouched, setNamesTouched] = useState(false)
   const [busy, setBusy] = useState(false)
   // Where a company can be created: the organisations this person holds whole. One is the answer; several
@@ -65,20 +67,16 @@ export function NewCompany({ ctx }: { readonly ctx: ShellContext }) {
   const [result, setResult] = useState<Result<CreatedCompany> | null>(null)
 
   const typedName = String(state.edits['name'] ?? '').trim()
-  // The key follows the name until somebody says otherwise, and then it stops following — a key that
-  // kept re-deriving would silently overwrite what they had just typed on their next keystroke in the
-  // name box.
+  // THE KEY FOLLOWS THE NAME, and the form no longer offers to change it. It was shown under the name
+  // with a link to edit it, which put a filename in front of every person making a company for the sake
+  // of the few who care. The server derives the same key from the same rule. The one name it cannot
+  // serve is a name that yields no key at all — letters outside the key alphabet, or punctuation alone —
+  // and only then is a key asked for, because otherwise nothing could be created.
   const derivedKey = useMemo(() => companyKeyFrom(typedName), [typedName])
-  const key = keyEdited ?? derivedKey
+  const key = derivedKey || (keyTyped ?? '')
 
   const dirty = Boolean(typedName) || Object.keys(state.edits).length > 0
   useUnsaved(dirty && !result)
-
-  // The house default, said as a fact rather than copied into the form. Pre-filling the marketplace box
-  // with the general list and posting it back would turn a DEFAULT into a snapshot: the company would
-  // hold its own copy of whatever the house list was on the day it was made, and would not follow it
-  // afterwards. The engine resolves the default at write time and the receipt names what it resolved.
-  const houseMarketplaces = ctx.factsFor('generic')?.platformCount ?? null
 
   // Anything a STRICT field would refuse, found before the post rather than after it. The server refuses
   // the same values on the same path, so this is not the only thing standing between a person and a bad
@@ -93,9 +91,9 @@ export function NewCompany({ ctx }: { readonly ctx: ShellContext }) {
   // Create states its unmet condition BESIDE the button, never after it. A button that looks available
   // and then refuses is the shape this whole family is removing.
   const unmet = !typedName
-    ? 'Needs a name.'
+    ? 'Needs a name'
     : !key
-      ? 'Needs a key — type one below.'
+      ? 'Needs a key — type one under the name.'
       : !orgChosen
         // WITH NO ORGANISATION FILED, a choice cannot fix it, so the screen says what can: the command
         // `clearotron start` names for the same state, in the form the server says this reader can type.
@@ -112,7 +110,7 @@ export function NewCompany({ ctx }: { readonly ctx: ShellContext }) {
     // Only what was actually filled in, plus the key when it was chosen rather than derived — the
     // server derives the same key from the same rule when none is sent.
     const body: Record<string, unknown> = { ...state.draft }
-    if (keyEdited) body['key'] = keyEdited
+    if (!derivedKey && keyTyped) body['key'] = keyTyped
     // THE ORGANISATION IT BELONGS TO. A company sits in exactly one, and the server needs to be told which
     // when the person creating it holds more than one. Sent whenever there is an answer, so the request
     // says what the screen showed.
@@ -161,15 +159,14 @@ export function NewCompany({ ctx }: { readonly ctx: ShellContext }) {
   return (
     <div className="screen">
       <div className="measure">
-        <PageHeader
-          title="New company"
-          lede="The business whose names you are checking. Only the name is needed; everything else has a default you can change later."
-        />
+        {/* No lede. "Only the name is needed" is what the Required and Optional tags now say, on the fields
+            they are about. */}
+        <PageHeader title="New company" />
 
         {/* Asked only of a person who holds more than one organisation whole — the only case with a
             choice to make. Everyone else creates the company in the one organisation they hold. */}
         {orgsHeld.length > 1 ? (
-          <div style={{ marginBottom: 8 }}>
+          <div style={{ marginBottom: 14 }}>
             <label className="field-label" htmlFor="new-company-organisation">Organisation</label>
             <select
               id="new-company-organisation"
@@ -214,56 +211,57 @@ export function NewCompany({ ctx }: { readonly ctx: ShellContext }) {
           </div>
         ) : null}
 
-        {FIELD_GROUPS.map((group) => {
-          const rows = specs().filter((f) => f.group === group.id)
-          if (!rows.length) return null
-          return (
-            <section key={group.id} style={{ marginTop: 26 }}>
-              <h2 style={{ fontSize: 15, margin: 0, color: 'var(--text-strong)' }}>{group.label}</h2>
-              {rows.map((spec) => (
-                <div key={spec.key}>
-                  <Field
-                    spec={spec}
-                    // The company's own name IS a trading name, and the reasoning reads that set as the
-                    // company's own rights — so a company created without one is checked against itself
-                    // and can come back as a conflict with its own mark. It follows the name rather than
-                    // being posted invisibly, so somebody can see it and add the brands it trades under.
-                    value={spec.key === 'selfExclusionOwners' && !namesTouched
-                      ? typedName
-                      : boxValue(state, spec)}
-                    choices={null}
-                    onChange={(v) => {
-                      if (spec.key === 'selfExclusionOwners') setNamesTouched(true)
-                      setState((st) => typeField(st, spec, v))
-                    }}
-                  />
-                  {spec.key === 'name' ? <KeyLine value={key} onChange={setKeyEdited} /> : null}
-                  {spec.key === 'platforms' && !boxValue(state, spec).trim() ? (
-                    <p style={{ fontSize: 12.5, color: 'var(--text-muted)', marginTop: 5 }}>
-                      {houseMarketplaces === null
-                        ? 'Left empty, this company searches the same marketplaces as the general default.'
-                        : `Left empty, this company searches the same ${houseMarketplaces} marketplaces as the general default.`}
-                    </p>
-                  ) : null}
+        {/* THE SAME CARDS AS PROFILE, in the same order, with the same tags: what is filled in here and what
+            is changed there afterwards read as one form. */}
+        <div className="card-stack">
+          {FIELD_GROUPS.map((group) => {
+            const rows = specs().filter((f) => f.group === group.id)
+            if (!rows.length) return null
+            return (
+              <section key={group.id} className="ctx-card">
+                <div className="eyebrow">
+                  {group.label}
+                  <FieldTag tag={groupTag(group)} />
                 </div>
-              ))}
-            </section>
-          )
-        })}
+                {rows.map((spec) => (
+                  <div key={spec.key}>
+                    <Field
+                      spec={spec}
+                      // The company's own name IS a trading name, and the reasoning reads that set as the
+                      // company's own rights — so a company created without one is checked against itself
+                      // and can come back as a conflict with its own mark. It follows the name rather than
+                      // being posted invisibly, so somebody can see it and add the brands it trades under.
+                      value={spec.key === 'selfExclusionOwners' && !namesTouched
+                        ? typedName
+                        : boxValue(state, spec)}
+                      choices={null}
+                      onChange={(v) => {
+                        if (spec.key === 'selfExclusionOwners') setNamesTouched(true)
+                        setState((st) => typeField(st, spec, v))
+                      }}
+                    />
+                    {spec.key === 'name' && typedName && !derivedKey ? (
+                      <KeyBox value={keyTyped ?? ''} onChange={setKeyTyped} />
+                    ) : null}
+                  </div>
+                ))}
+              </section>
+            )
+          })}
 
-        <Rating />
+          <Rating />
+        </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 14, margin: '28px 0 40px' }}>
+        <div className="row-foot" style={{ margin: '22px 0 40px' }}>
           <button
             type="button"
-            className="start-pill"
+            className="btn-primary"
             disabled={Boolean(unmet) || busy}
             onClick={() => void create()}
-            style={{ flex: 'none' }}
           >
             {busy ? 'Creating…' : 'Create'}
           </button>
-          {unmet ? <span style={{ color: 'var(--text-muted)', fontSize: 13.5 }}>{unmet}</span> : null}
+          {unmet ? <span className="row-foot-note">{unmet}</span> : null}
         </div>
       </div>
     </div>
@@ -271,75 +269,50 @@ export function NewCompany({ ctx }: { readonly ctx: ShellContext }) {
 }
 
 /**
- * The key, under the name that made it.
+ * The key, asked for — only when the name yields none.
  *
- * Shown rather than hidden because it becomes a filename and the value every search files against —
- * wrong once is wrong for good — and changeable before Create and never after, which is why it is worth
- * a person's attention now and not later.
+ * It becomes a filename and the value every search files against, and it cannot be changed once the
+ * company exists, so the one time a person has to choose it they are told both.
  */
-function KeyLine({ value, onChange }: { readonly value: string; readonly onChange: (v: string) => void }) {
-  const [open, setOpen] = useState(false)
-  if (open) {
-    return (
-      <div style={{ marginTop: 6 }}>
-        <input
-          value={value}
-          onChange={(e) => onChange(e.target.value.toLowerCase())}
-          aria-label="Company key"
-          style={{
-            width: '100%', padding: '7px 10px', borderRadius: 8, fontSize: 13,
-            border: '1px solid var(--border-hairline)', background: 'var(--surface-raised)',
-            color: 'var(--text-strong)', fontFamily: 'inherit',
-          }}
-        />
-        <p style={{ fontSize: 12.5, color: 'var(--text-muted)', marginTop: 4 }}>
-          Lowercase letters, digits and hyphens. This cannot be changed once the company exists.
-        </p>
-      </div>
-    )
-  }
+function KeyBox({ value, onChange }: { readonly value: string; readonly onChange: (v: string) => void }) {
   return (
-    <p style={{ fontSize: 12.5, color: 'var(--text-muted)', marginTop: 6 }}>
-      {value ? <>Filed as <code>{value}</code>. </> : <>No key can be made from that name yet. </>}
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        style={{
-          background: 'none', border: 'none', padding: 0, font: 'inherit',
-          color: 'var(--text-accent)', cursor: 'pointer', textDecoration: 'underline',
-        }}
-      >
-        Change it
-      </button>
-    </p>
+    <label className="profile-field">
+      <span className="profile-field-label">Key</span>
+      <span className="profile-field-hint">
+        No key can be made from that name. Lowercase letters, digits and hyphens; it cannot be changed once
+        the company exists.
+      </span>
+      <input
+        value={value}
+        onChange={(e) => onChange(e.target.value.toLowerCase())}
+        className="ctx-input"
+        style={{ fontFamily: 'var(--font-mono)' }}
+      />
+    </label>
   )
 }
 
 /**
- * The rating row — read-only, and the one route from the browser to writing your own rubric.
+ * The rating card — read-only, and the one route from the browser to writing your own rubric.
  *
  * IT IS A REQUIREMENT, NOT DECORATION. Nothing else in the product tells a person their own risk
- * framework is possible, so without this line the capability exists and is undiscoverable. It names the
- * framework in force and carries one link, in the same words as the profile screen.
+ * framework is possible, so without this card the capability exists and is undiscoverable. It names the
+ * framework a new company starts on and carries the one control, the same component as the profile.
  *
  * No chooser. A framework decides how every matter for this company is rated, forever, and a dropdown on
- * a create form is not where that is decided — the create path resolves the house default and the strip
- * afterwards says so.
+ * a create form is not where that is decided — the create path resolves the general default and the strip
+ * afterwards says which framework the company was given.
  */
 export function Rating() {
   return (
-    <section style={{ marginTop: 26 }}>
-      <h2 style={{ fontSize: 15, margin: '0 0 8px', color: 'var(--text-strong)' }}>How matters are rated</h2>
-      <div className="empty" style={{ textAlign: 'left' }}>
-        <p style={{ margin: 0, color: 'var(--text-strong)' }}>The general risk framework.</p>
-        <p style={{ margin: '4px 0 0', color: 'var(--text-muted)', fontSize: 13 }}>
-          Every company starts here, and the receipt says which framework it was given. You can write
-          your own rubric and point a company at it.
-        </p>
-        {/* One definition, shared with the profile screen: new tab, the anchor for the part about
-            writing a framework, and a sentence naming the file when the repository cannot be resolved
-            rather than nothing at all. */}
-        <FrameworkGuideLink />
+    <section className="ctx-card">
+      <div className="eyebrow">
+        How matters are rated
+        <FieldTag tag="Optional" />
+      </div>
+      <div className="rating-row">
+        <span className="rating-row-name">General risk framework</span>
+        <FrameworkGuideLink label="Use your own" pill />
       </div>
     </section>
   )

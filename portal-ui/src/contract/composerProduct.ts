@@ -86,6 +86,42 @@ export function tierOf(name: string): Tier | null {
 }
 
 /**
+ * The engine's code for each place the picker offers — a MIRROR of `territoryKey` in
+ * driver/territory-tiers.mjs, which this bundle cannot import. `territoryCodes.test.ts` asks the engine
+ * for every entry and fails on the first that differs, so the two cannot drift.
+ *
+ * Only where space is short: the sticky bar's summary line reads "EU, CH". Everywhere a place is READ —
+ * a chip, a review row, a sentence — it is named.
+ */
+export const TERRITORY_CODES: Readonly<Record<string, string>> = Object.freeze({
+  'European Union': 'EU', 'Benelux': 'BX', 'African Regional (ARIPO)': 'AP',
+  'United States': 'US', 'United Kingdom': 'GB', 'Ireland': 'IE', 'France': 'FR', 'Germany': 'DE',
+  'Spain': 'ES', 'Italy': 'IT', 'Netherlands': 'NL', 'Switzerland': 'CH', 'Austria': 'AT', 'Sweden': 'SE',
+  'Norway': 'NO', 'Poland': 'PL', 'Bulgaria': 'BG', 'Greece': 'GR', 'Turkey': 'TR', 'Canada': 'CA',
+  'Mexico': 'MX', 'Brazil': 'BR', 'Argentina': 'AR', 'China': 'CN', 'Hong Kong': 'HK', 'Taiwan': 'TW',
+  'Macau': 'MO', 'Japan': 'JP', 'South Korea': 'KR', 'Singapore': 'SG', 'India': 'IN', 'Thailand': 'TH',
+  'Australia': 'AU', 'New Zealand': 'NZ', 'United Arab Emirates': 'AE', 'Saudi Arabia': 'SA',
+  'South Africa': 'ZA',
+})
+
+/** A place's short code, or the place itself when this vocabulary has none — never a blank. */
+export const territoryCode = (name: string): string => TERRITORY_CODES[name] ?? name
+
+/** The places that read with "the" in a sentence: "for the European Union and Switzerland". */
+const WITH_ARTICLE: ReadonlySet<string> = new Set([
+  'European Union', 'Benelux', 'United States', 'United Kingdom', 'Netherlands', 'United Arab Emirates',
+])
+
+/** A place as a sentence carries it. */
+export const placeInProse = (name: string): string => (WITH_ARTICLE.has(name) ? `the ${name}` : name)
+
+/** "A", "A and B", "A, B and C". */
+export function joinAnd(items: readonly string[]): string {
+  if (items.length < 2) return items[0] ?? ''
+  return `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`
+}
+
+/**
  * ── — WHAT THE PRODUCT ACCEPTS, before the register is consulted ────────────
  *
  * A Full country search reads exactly one COUNTRY, so its picker offers countries and no regions. That
@@ -98,7 +134,13 @@ export function tierOf(name: string): Tier | null {
  * a reader cannot tell an unsupported territory from one they failed to find.
  */
 export function offerableFor(product: Product | null): readonly string[] {
-  if (!product) return []
+  // NO PRODUCT YET OFFERS THE WHOLE VOCABULARY. This returned nothing, which was right while a search
+  // was picked before anything else: the picker sat below the four searches and had no product to fit.
+  // The form now asks where BEFORE which search, because the search it recommends is read off the
+  // places named — so an empty answer here would leave the one field that decides the recommendation
+  // unable to take a place. Nothing becomes set-but-hidden: picking a search still drops what it cannot
+  // hold (`chooseProduct`), and a one-country search still offers countries only.
+  if (!product) return [...REGIONS, ...COUNTRIES]
   return product.geography === 'exactly one country' ? COUNTRIES : [...REGIONS, ...COUNTRIES]
 }
 
@@ -126,7 +168,6 @@ export function reachesTerritory(name: string, covered?: readonly string[] | nul
 export function vocabularyFor(
   product: Product | null, covered?: readonly string[] | null,
 ): readonly string[] {
-  if (!product) return []
   // — AND what the wired register can actually reach. Same argument as the product rule above, one
   // level down.
   //
@@ -299,6 +340,93 @@ export function geographyNote(product: Product | null): string | null {
   }
 }
 
+// ── which search fits what was entered ──────────────────────────────────────────────────────────────
+
+export type Recommendation = {
+  /** The search that fits, off the offering the server sent. */
+  readonly product: Product
+  /** Why, as the row prints it: "because you named a region and a country". */
+  readonly reason: string
+}
+
+/**
+ * The search that fits what the form has been given, or null while it has been given nothing.
+ *
+ * THE TERRITORY HALF IS THE ENGINE'S RULE, NOT A SECOND ONE. `productFor` in driver/products.mjs already
+ * decides it: no place is the worldwide search, one country is the one-country search, anything else is
+ * the multi-country one. This bundle cannot import it, so it is restated here and
+ * `recommendSearch.test.ts` drives both over the same lists — a form that recommended one search while
+ * the engine resolved the same places to another would be recommending a refusal.
+ *
+ * MORE THAN ONE NAME is the half the engine does not decide, because it takes the pipeline as given: a
+ * clearance reads one name, so several names fit the search that reads the most of them — the same one
+ * the name wall already offers as the way through.
+ *
+ * NULL UNTIL A PLACE, OR MORE THAN ONE NAME, IS ENTERED. "For what you entered" is a claim about input, and
+ * the input that decides between the clearances is the places: a single name says nothing about which of
+ * them fits. A lone name therefore recommends nothing — and it must not, because the search it would
+ * recommend is the worldwide one, and selecting that removes the Where picker from the form the reader
+ * is still filling in, one field above the place they were about to name.
+ *
+ * @param products the offering, as the server sent it
+ * @param names how many names are on the form
+ * @param territories the places named, in the composer's own vocabulary
+ */
+export function recommendSearch(
+  products: readonly Product[], names: number, territories: readonly string[],
+): Recommendation | null {
+  if (territories.length === 0 && names <= 1) return null
+  const live = products.filter((p) => p.available)
+  if (names > 1) {
+    const widest = live.filter((p) => p.maxNames > 1).sort((a, b) => b.maxNames - a.maxNames)[0]
+    return widest ? { product: widest, reason: `because you entered ${names} names` } : null
+  }
+  const regions = territories.filter((t) => tierOf(t) === 'region').length
+  const countries = territories.filter((t) => tierOf(t) === 'country').length
+  const geography = territories.length === 1 && countries === 1 ? 'exactly one country' : 'a region, or two or more countries'
+  const product = live.find((p) => p.pipeline !== 'knockout' && p.geography === geography)
+  if (!product) return null
+  const some = (n: number, one: string, many: string) => (n === 1 ? `a ${one}` : `${n} ${many}`)
+  const named = [
+    regions ? some(regions, 'region', 'regions') : '',
+    countries ? some(countries, 'country', 'countries') : '',
+  ].filter(Boolean)
+  return { product, reason: `because you named ${named.join(' and ')}` }
+}
+
+/**
+ * The line under "Which search" while a template is applied: what it set, and what it did not.
+ *
+ * TRUE FOR THE SEARCH IT SETS. A template decides the search and its depth, never the places — the
+ * engine scopes off the request and the company's own defaults — so Where stays the reader's on every
+ * search that has a Where to set. On the worldwide search there is none, and the line does not offer it.
+ */
+export function templateLine(label: string, product: Product | null): string {
+  const yours = product?.geography === 'worldwide, and nothing else'
+    ? 'Names, goods and classes'
+    : 'Names, territories, goods and classes'
+  return `${label} sets the search and how deep it goes. ${yours} are still yours to set.`
+}
+
+/**
+ * The review's Native language row: coverage and on or off, and nothing else — no duration, no count.
+ *
+ * Names the places, because the composer does not know which languages each one carries; the engine
+ * resolves the lanes from the territories after the plan.
+ */
+export function nativeLanguageLine(on: boolean, places: readonly string[]): string {
+  if (!on) return 'Off'
+  return places.length
+    ? `On · native-language registers and marketplaces for ${joinAnd(places.map(placeInProse))}`
+    : 'On'
+}
+
+/** "amazon.com, ebay.com, zalando.com and 10 more", or the whole list when it is that short. */
+export function firstAndMore(items: readonly string[], shown = 3): string {
+  if (items.length <= shown) return joinAnd(items)
+  return `${items.slice(0, shown).join(', ')} and ${items.length - shown} more`
+}
+
 // ── everything standing between this draft and a run ────────────────────────────────────────────────
 
 /**
@@ -349,7 +477,7 @@ export function missingPieces(
 ): readonly string[] {
   const out: string[] = []
   if (!names.length) {
-    out.push('Add the brand name you want cleared, in Names above.')
+    out.push('Add the name you want cleared, in Names above.')
     // ONE AT A TIME, most structural first. With no name at all, telling someone their goods are also
     // missing is two chores where the first one may fill in the second — the brief reader takes a
     // sentence and fills both.
@@ -777,7 +905,10 @@ export const TURNAROUND_QUOTE = {
   knockout: { lowHours: 5 / 60, highHours: 10 / 60 },
 } as const
 
-export const quoteBoundsFor = (m: Machinery): { lowHours: number; highHours: number } =>
+// THE PARAMETER IS THE ONE FIELD THIS READS, not the whole of Machinery. Home asks the same question of
+// a RUN, which is not a draft and has no levers — and widening here is what keeps that a second CALLER
+// rather than a second copy of the table. Every existing caller passes a Machinery and still satisfies it.
+export const quoteBoundsFor = (m: Pick<Machinery, 'pipeline'>): { lowHours: number; highHours: number } =>
   m.pipeline === 'knockout' ? TURNAROUND_QUOTE.knockout : TURNAROUND_QUOTE.clearance
 
 /** The ruled range, and nothing is done to it. Mirrors the server; the parity test pins both. */
@@ -800,6 +931,17 @@ export function turnaround(i: EffortInput): string {
   if (lowHours === highHours) return `~${fmtHours(highHours)} ${highHours === 1 ? 'hour' : 'hours'}`
   return `${fmtHours(lowHours)}–${fmtHours(highHours)} hours`
 }
+
+/**
+ * A quoted range as a reader says it: "1.5–2.5 hours" becomes "1.5 to 2.5 hours".
+ *
+ * THE QUOTE KEEPS ITS DASH. `turnaround` above and the engine's twin compose the same string and three
+ * tests pin it, so the spelling is changed where it is SHOWN, not where it is made — and the server's own
+ * copies (a product row's `baseTurnaround`, a plan's quote) pass through the same door, so the screen
+ * never shows one figure two ways. Lossless: the numbers and the unit are untouched, and a string with no
+ * range in it comes back as it went in.
+ */
+export const turnaroundInWords = (quote: string): string => quote.replace(/(\d)\s*[–-]\s*(\d)/g, '$1 to $2')
 
 /** What the footer says a search costs per name. A knockout is one broad sweep, not a grid. */
 export function checksSummary(i: EffortInput): string {

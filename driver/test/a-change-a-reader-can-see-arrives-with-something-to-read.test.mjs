@@ -330,3 +330,42 @@ test("`none.` is followed by its reason, not by the full stop", () => {
   assert.equal(NO_NOTE.exec("Release-note: none — the docs only.")?.groups.reason, "the docs only.");
   assert.equal(NO_NOTE.exec("Release-note: none.")?.groups.reason, undefined, "a full stop alone is still a bare none");
 });
+
+test("a note a PRE-RELEASE has consumed still answers for the commit that wrote it", () => {
+  // changesets in pre mode does not delete the note it publishes. It MOVES it, from
+  // `.changeset/<name>.md` into `.changeset/pre/<name>.md`, and re-applies every one of them when the
+  // pre range is exited — so the note reaches a reader twice, once in the pre-release and once in the
+  // stable cut it rolls into.
+  //
+  // THE SHAPE HAS TO BE THE REAL ONE, and the first version of this arm was not. The move happens on
+  // MAIN, before the range: a branch writes the note, main cuts a beta and consumes it, the branch
+  // merges main and the merge resolves the note to main's consumed copy. So the range ADDS the note at
+  // its normal path, the head carries it only under `pre/`, and nothing in the range adds the `pre/`
+  // copy. Putting the move inside the range instead lets the old code pass for an unrelated reason —
+  // the commit doing the moving counts as adding a note — and the arm certifies nothing. Measured: the
+  // first version passed with the fix reverted.
+  const NOTE = ".changeset/this-change.md";
+  const CONSUMED = ".changeset/pre/this-change.md";
+  const cut = repoWithCommits([
+    { changes: { [CONSUMED]: NOTE_BODY("this change.") }, message: "A beta cut consumed this note" },
+    { changes: { [NOTE]: NOTE_BODY("this change."), "bin/thing.mjs": "export const a = 1;\n" }, message: "A change a reader sees" },
+    { changes: { [NOTE]: null }, message: "Merge main, resolving the note to the consumed copy" },
+  ]);
+  try {
+    const r = run(cut, cut.shas[0]);
+    assert.equal(r.code, 0, `a note a pre-release consumed no longer answered for its commit:\n${r.said}`);
+  } finally { cut.clean(); }
+
+  // THE CONTROL, and it is the half that matters: matching on the NAME must not turn "the note is
+  // gone" into "the note is somewhere". Nothing of that name anywhere under .changeset/ is still
+  // refused, or this fix would green-light every range that removes its own note.
+  const deleted = repoWithCommits([
+    { changes: { "seed2.txt": "x\n" }, message: "Nothing to do with notes" },
+    { changes: { [NOTE]: NOTE_BODY("this change."), "bin/thing.mjs": "export const a = 1;\n" }, message: "A change a reader sees" },
+    { changes: { [NOTE]: null }, message: "Remove the note outright" },
+  ]);
+  try {
+    const r = run(deleted, deleted.shas[0]);
+    assert.equal(r.code, 1, `a note deleted outright answered for its commit:\n${r.said}`);
+  } finally { deleted.clean(); }
+});

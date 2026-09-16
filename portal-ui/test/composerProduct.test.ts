@@ -52,7 +52,12 @@ test('a Full country search is offered NO regions — the control fits the produ
   assert.ok(!vocabularyFor(FULL).includes('European Union'))
   assert.ok(vocabularyFor(FULL).includes('France'))
   assert.ok(vocabularyFor(MULTI).includes('European Union'))
-  assert.deepEqual(vocabularyFor(null), [], 'no product picked ⇒ nothing to point anywhere')
+  // NO PRODUCT PICKED OFFERS EVERY PLACE — reversed on purpose. This asserted an empty vocabulary, which
+  // was right while a search was chosen before anything else. The form now asks Where BEFORE Which
+  // search, and the search it recommends is read off the places named there, so an empty vocabulary
+  // would leave the one field that decides the recommendation unable to take a place. The product,
+  // once picked, still narrows: the two assertions above and below are unchanged.
+  assert.deepEqual([...vocabularyFor(null)], [...REGIONS, ...COUNTRIES], 'no product picked ⇒ every place the picker knows')
   assert.deepEqual([...territoryMatches('euro', [], FULL)], [], 'and the typeahead does not offer one either')
   assert.deepEqual([...territoryMatches('euro', [], MULTI)], ['European Union'])
 })

@@ -30,6 +30,9 @@ import { tmpdir } from 'node:os'
 // Hardcoding the string here would let the fixture and the wire drift, which is the defect the comment
 // on `product` below already records once.
 import { reportIdentityFor } from '../driver/search-policy.mjs'
+// The quote bounds, from the engine's own effort model — so the past-the-bound state below is derived
+// from the table it is testing against rather than from a number typed beside it.
+import { TURNAROUND_QUOTE } from '../driver/effort-model.mjs'
 import { browserRun } from "../shared/browser-temp-root.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url))
@@ -67,6 +70,9 @@ const run = (o) => ({
   reason: o.reason ?? null, failedStage: o.failedStage ?? null,
   pausedKind: o.pausedKind ?? null, resetsAt: o.resetsAt ?? null, startedAt: o.startedAt ?? null,
   queuePos: o.queuePos ?? null,
+  // A STOP IN FLIGHT. `stopRequestedAt` beside a non-terminal state is the screen's "Stopping…";
+  // `stoppable` is whether a stop can still prevent delivery, and the card draws the control from it.
+  stopRequestedAt: o.stopRequestedAt ?? null, stoppable: o.stoppable ?? true,
 })
 
 // Three frameworks, three different ladders and three sets of words — the chip must take an arbitrary
@@ -97,15 +103,22 @@ const STATES = {
       ...FINISHED,
     ],
     expectCards: 2, expectQueue: 3, expectFirstCardPips: 9, expectStops: 2,
+    // The design's stop dialog is drawn over this card: CORAL FREEZE, on Register sweeps.
+    stopDialog: 'CORAL FREEZE',
   },
   one: {
     runs: [run({ runId: 'a', mark: 'CORAL FREEZE', state: 'running', step: 'Common-law grid', stepN: 4, stepTotal: 9, startedAt: ago(38) }), ...FINISHED],
     expectCards: 1, expectQueue: 0, expectFirstCardPips: 9, expectStops: 1,
+    expectExpect: '· usually 1.5 to 2.5 h',
   },
   // A knockout has FIVE steps, or six with the register probe. The pip row follows the RUN.
   knockout: {
     runs: [run({ runId: 'k', mark: 'DRIVERS HAVEN', state: 'running', kind: 'knockout-batch', product: 'knockout-search', step: 'Marketplace sweep', stepN: 3, stepTotal: 5, startedAt: ago(14) }), ...FINISHED],
     expectCards: 1, expectQueue: 0, expectFirstCardPips: 5, expectStops: 1,
+    // PAST ITS OWN BOUND, AND THAT IS THE POINT. A knockout quotes 5 to 10 MINUTES, so a run 14 minutes
+    // in is late by its own table while the same elapsed time is early for a clearance. One quote per
+    // pipeline, read from the run rather than from the screen.
+    expectExpect: '· taking longer than usual',
   },
   // A RUN THAT STOPPED IS NOT IN FLIGHT. It leaves the live band for its own fold, which states the
   // count unopened and holds the card — and the acknowledge on it — one click in. A failed card still
@@ -149,6 +162,23 @@ const STATES = {
     cap: 3,
     expectCards: 1, expectQueue: 0, expectFirstCardPips: 9, expectStops: 1, expectCapNote: /Three runs at once/,
   },
+  // PAST THE UPPER BOUND. The quote for a clearance is 1.5 to 2.5 hours, so a run started three hours
+  // ago is past it and the card must REPLACE the quote with "taking longer than usual" rather than
+  // revise it. Started from the table's own bound rather than a literal, so a ruling that moves the
+  // quote moves this state with it instead of silently making it an ordinary card.
+  slow: {
+    runs: [run({ runId: 's', mark: 'CORAL FREEZE', state: 'running', step: 'Register sweeps', stepN: 6, stepTotal: 9, startedAt: ago(Math.ceil(TURNAROUND_QUOTE.clearance.highHours * 60) + 11) }), ...FINISHED],
+    expectCards: 1, expectQueue: 0, expectFirstCardPips: 9, expectStops: 1,
+    expectExpect: '· taking longer than usual',
+  },
+  // A STOP TAKING EFFECT. Not terminal — the run is still running and the step in flight is finishing —
+  // so the card keeps its place in the band and loses its Stop, because there is nothing left to press.
+  stopping: {
+    runs: [run({ runId: 'sp', mark: 'GLASSWING', state: 'running', step: 'Register sweeps', stepN: 3, stepTotal: 9, startedAt: ago(22), stopRequestedAt: new Date(now - 30_000).toISOString() }), ...FINISHED],
+    expectCards: 1, expectQueue: 0, expectFirstCardPips: 9, expectStops: 0,
+    expectExpect: '',
+    expectStopNote: 'Stopping — letting Register sweeps finish. No report will be produced. Completed work stays readable through Ask AI.',
+  },
   quiet: { runs: FINISHED, expectCards: 0, expectQueue: 0, expectFirstCardPips: 0, expectStops: 0 },
   new: { runs: [], expectCards: 0, expectQueue: 0, expectFirstCardPips: 0, expectStops: 0, expectFirstRun: true },
   // A MULTI-BRAND ACCOUNT. Home spans every owner it holds — this is the state the previous attempt
@@ -189,10 +219,14 @@ let current = 'busy'
 /** Requests deliberately left unanswered, so they can be cut loose before the next state runs. */
 const held = new Set()
 
+/** Every stop the page sends. Selecting an option in the stop dialog must add nothing here. */
+const stopRequests = []
+
 const server = createServer((req, res) => {
   const path = new URL(req.url, 'http://localhost').pathname
   const json = (o) => { res.writeHead(200, { 'content-type': 'application/json' }); res.end(JSON.stringify(o)) }
   const s = STATES[current]
+  if (/^\/portal\/api\/run\/[^/]+\/stop$/.test(path)) stopRequests.push(path)
   if (path === '/portal/api/me') {
     const accounts = s.accounts ?? ['coastline']
     // THE ORGANISATION the corner names is the one the server resolves — exactly one here, so it is named.
@@ -348,6 +382,12 @@ const PROBE = `(() => {
     capNote: (q('.home2-band-note')?.textContent ?? '').trim(),
     firstRun: !!q('.home2-firstrun'),
     notice: (q('.home2-notice')?.textContent ?? '').trim(),
+    // WHAT THIS CHANGE ADDED, read off the rendered page rather than the source. The quote beside the
+    // elapsed time, and the sentence a stopping card carries — both are strings a reader sees, so a
+    // source assertion would prove the template obeys and not that anyone asks it to.
+    expect: (q('.home2-expect')?.textContent ?? '').trim(),
+    band: (q('.home2-band-count')?.textContent ?? '').trim(),
+    stopNote: (q('.home2-stop-note')?.textContent ?? '').replace(/\\s+/g, ' ').trim(),
     title: (q('.topbar h1')?.textContent ?? '').trim(),
     accountLabelled: all('.topbar .eyebrow').some((n) => n.textContent.trim() === 'Organisation'),
     // The VALUE beside the label, so the arm below can say what the corner names rather than only that
@@ -563,6 +603,22 @@ for (const [name, spec] of Object.entries(STATES)) {
     // THE ONE A STRING TEST CANNOT SEE.
     say(out.depthClipped === 0, `${name}/${theme}: no depth label is clipped (${out.depthClipped} clipped)`)
     say(out.sidewaysOverflow === 0, `${name}/${theme}: no sideways scroll (${out.sidewaysOverflow}px)`)
+
+    // ── THE QUOTE, AND THE FACT THAT IT IS NEVER A COUNTDOWN ────────────────────────────────────
+    //
+    // Asserted on every state, not only the ones that declare a quote: the second half of this is that
+    // NO card anywhere predicts what is left, and a rule like that is only worth having if it is read
+    // over the whole population rather than where somebody remembered to look.
+    if (spec.expectExpect !== undefined) {
+      say(out.expect === spec.expectExpect,
+        `${name}/${theme}: the card's expectation reads "${out.expect}" (expected "${spec.expectExpect}")`)
+    }
+    say(!/\b(left|remaining|to go|eta)\b/i.test(out.expect),
+      `${name}/${theme}: no card predicts time remaining ("${out.expect}")`)
+    if (spec.expectStopNote) {
+      say(out.stopNote === spec.expectStopNote,
+        `${name}/${theme}: the stopping line reads "${out.stopNote}"`)
+    }
     say(out.untaggedMarks === 0, `${name}/${theme}: every mark and owner is blurrable (${out.untaggedMarks} untagged)`)
     if (out.newOnBandRow !== null) {
       say(out.newOnBandRow === true, `${name}/${theme}: New clearance stays on the section-header row`)
@@ -618,6 +674,77 @@ for (const [name, spec] of Object.entries(STATES)) {
       const shot = await cmd('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true })
       const data = shot.result?.result?.data ?? shot.result?.data
       if (data) writeFileSync(join(shotDir, `home-${name}-${theme}.png`), Buffer.from(data, 'base64'))
+    }
+
+    // ── THE STOP DIALOG, EACH OPTION SELECTED ─────────────────────────────────────────────────────────
+    //
+    // Opened from the running card the way a reader opens it. The safe option is selected first; picking
+    // the other changes the primary button's words to name it; and choosing stops NOTHING — only the button
+    // does. Asserted on every run, pictured when --shot-dir is given.
+    if (spec.stopDialog) {
+      // The dialog is a fixed overlay, so it is pictured in a viewport as tall as the page: a beyond-viewport
+      // capture would paint it over the top 900px only.
+      const tallShot = async (file) => {
+        const h = await evalIn('Math.max(document.documentElement.scrollHeight, document.body.scrollHeight)') ?? 900
+        await cmd('Emulation.setDeviceMetricsOverride', { width: 1280, height: Math.max(900, h), deviceScaleFactor: 1, mobile: false })
+        await new Promise((r) => setTimeout(r, 400))
+        const shot = await cmd('Page.captureScreenshot', { format: 'png' })
+        await cmd('Emulation.clearDeviceMetricsOverride', {})
+        const data = shot.result?.result?.data ?? shot.result?.data
+        if (data) writeFileSync(join(shotDir, file), Buffer.from(data, 'base64'))
+      }
+      const sentBefore = stopRequests.length
+      const read = `(() => { const d = document.querySelector('.modal-scrim'); if (!d || !d.querySelector('.stop-choice')) return null;
+        return { primary: (d.querySelector('.modal-foot .btn-primary') || {}).textContent?.trim() ?? null,
+                 buttons: [...d.querySelectorAll('.modal-foot button')].map((b) => b.textContent.trim()),
+                 checked: [...d.querySelectorAll('.stop-choice input[type=radio]')].map((r) => r.checked),
+                 selected: [...d.querySelectorAll('.stop-choice-opt')].map((o) => o.classList.contains('selected')),
+                 text: d.innerText.replace(/\\s+/g, ' ') } })()`
+      const opened = await evalIn(`(async () => {
+        const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
+        const card = [...document.querySelectorAll('.home2-card')].find((c) => c.innerText.includes(${JSON.stringify(spec.stopDialog)}))
+        const stop = card && [...card.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Stop')
+        if (!stop) return { error: 'the running card has no Stop' }
+        stop.click()
+        for (let i = 0; i < 80 && !document.querySelector('.stop-choice'); i++) await sleep(60)
+        await sleep(150)
+        return ${read} ?? { error: 'Stop opened no dialog' }
+      })()`)
+      say(opened && !opened.error, `${name}/${theme}: the stop dialog opened from the card (${opened?.error ?? 'ok'})`)
+      if (opened && !opened.error) {
+        say(opened.primary === 'Stop after this step' && opened.checked[0] === true && opened.selected[0] === true,
+          `${name}/${theme}: the dialog opens on "Stop after this step", and its button says so — read ${JSON.stringify(opened.primary)} ${JSON.stringify(opened.checked)}`)
+        say(JSON.stringify(opened.buttons) === JSON.stringify(['Stop after this step', 'Leave it running']),
+          `${name}/${theme}: the primary button and "Leave it running" sit side by side, primary first — read ${JSON.stringify(opened.buttons)}`)
+        say(/A stopped search cannot be restarted and produces no report\. It stays in Clearances, marked stopped\. Its finished steps stay readable through Ask AI\./.test(opened.text),
+          `${name}/${theme}: the stop dialog states the facts of a stop`)
+        say(/Register sweeps finishes first, so its work is kept\. There is no reliable completion estimate for this step\./.test(opened.text)
+          && /Register sweeps is cut off and its work is lost\. Everything recorded before it is kept\./.test(opened.text),
+          `${name}/${theme}: both options name the step in progress`)
+        say(!/allowance/i.test(opened.text), `${name}/${theme}: the stop dialog says nothing about the allowance`)
+        if (shotDir) await tallShot(`home-stop-dialog-after-step-${theme}.png`)
+        const now = await evalIn(`(async () => {
+          const opt = document.querySelectorAll('.stop-choice-opt')[1]
+          if (!opt) return null
+          opt.click()
+          await new Promise((r) => setTimeout(r, 200))
+          return ${read}
+        })()`)
+        say(now?.primary === 'Stop now' && now?.checked[1] === true && now?.selected[1] === true,
+          `${name}/${theme}: selecting "Stop now" moves the selection and the button's words with it — read ${JSON.stringify(now?.primary)} ${JSON.stringify(now?.checked)}`)
+        say(stopRequests.length === sentBefore,
+          `${name}/${theme}: choosing an option sends no stop — only the button stops the search (sent ${stopRequests.length - sentBefore})`)
+        if (shotDir) await tallShot(`home-stop-dialog-now-${theme}.png`)
+        const closed = await evalIn(`(async () => {
+          const leave = [...document.querySelectorAll('.modal-foot button')].find((b) => b.textContent.trim() === 'Leave it running')
+          if (!leave) return false
+          leave.click()
+          for (let i = 0; i < 40 && document.querySelector('.stop-choice'); i++) await new Promise((r) => setTimeout(r, 60))
+          return !document.querySelector('.stop-choice')
+        })()`)
+        say(closed === true && stopRequests.length === sentBefore,
+          `${name}/${theme}: "Leave it running" closes the dialog and stops nothing`)
+      }
     }
   }
 }

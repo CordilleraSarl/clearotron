@@ -1,9 +1,9 @@
 # Configuration
 
-*How to configure risk frameworks, registers and markets for your own practice.*
+*How to configure risk frameworks, registers and markets for your own use.*
 
-This is the practice-level guide: which register you search, how risk gets rated, and what the engine
-knows about each client. Environment variables and install-time setup are
+This is the guide to the settings an installation makes its own: which register you search, how risk
+gets rated, and what the engine knows about each company. Environment variables and install-time setup are
 [`../INSTALL.md`](../INSTALL.md); the exhaustive variable table is
 [`architecture/04-configuration-reference.md`](architecture/04-configuration-reference.md).
 
@@ -84,7 +84,7 @@ route, and usually the cheaper one.
 
 ## 2. The risk framework
 
-**The framework in force rates the matter.** A run rates under the client's own framework if one is
+**The framework in force rates the clearance.** A run rates under the company's own framework if one is
 on file, otherwise the Generic default. There is nothing in between and no blending.
 
 A framework is two files that travel together:
@@ -98,8 +98,8 @@ The Generic default ships at
 [`driver/skills/prelim-search/risk-framework.md`](../driver/skills/prelim-search/risk-framework.md)
 with bands Very High · High · Moderate · Manageable.
 
-**Replace it with your firm's own.** Write your rubric as prose, add a manifest naming your bands,
-and point a customer profile at it with `frameworkPath`. Validators, the renderer, the archive index
+**Replace it with your own.** Write your rubric as prose, add a manifest naming your bands,
+and point a company profile at it with `frameworkPath`. Validators, the renderer, the archive index
 and the config UI all read your band vocabulary from the manifest, so your words appear everywhere
 the engine names a risk.
 
@@ -132,7 +132,7 @@ That shape is not decoration. The profile screen extracts what the bands mean fr
 bullets, and **it is all or nothing**: one band without a heading, or one heading with no bold-led
 bullet, and the box explaining your bands silently does not render at all — while the title and the
 coloured pills still do, so the page looks finished. Frameworks in this repository have shipped in
-exactly that state, which is why there is now a command that tells you before a client sees it.
+exactly that state, which is why there is now a command that tells you before a reader does.
 
 **2. Write the manifest**, beside the deck and named after it: `your-framework.md` needs
 `your-framework.manifest.json`. The path is derived, never configured, so the two cannot drift apart.
@@ -160,14 +160,14 @@ than ignored. `schema_version` is `1`. `framework_key` is lowercase letters, dig
 names a risk. A band label may contain letters, spaces, slashes and hyphens, and **no digits** — a band
 called "Level 3" invites arithmetic where judgement is wanted. `tone` is one of `severe`, `high`,
 `medium`, `low`, `minimal`, and it chooses a colour, nothing else. `entity_label` is how your deck names
-the client side in prose. If your deck is a matrix rather than a ladder, say
+the company in prose. If your deck is a matrix rather than a ladder, say
 `"structure": { "kind": "matrix" }` — the matrix itself lives in the deck prose, never here.
 
 **The manifest carries vocabulary and order only.** No threshold, no mapping table, no decision rule.
 Those belong in the deck, where they are read as reasoning rather than applied as arithmetic.
 
-**3. Put both files in your own store** and point a profile at the deck with `frameworkPath`. Client
-rubrics deliberately do not live inside a checkout of this product.
+**3. Put both files in your own store** and point a profile at the deck with `frameworkPath`. A
+company's rubric deliberately does not live inside a checkout of this product.
 
 **4. Check it before it is in force**, with the pre-flight. It opens both files exactly as a run would,
 prints what they declare, and where the deck and the manifest disagree it names the band and says what
@@ -207,7 +207,7 @@ It exits 0 when the two agree and 1 when they do not, so it can gate a deploymen
 brandowner add --dry-run` prints the same report for the framework it would set.
 
 **It also tells you which file answered.** Resolution looks in your store first and falls back to this
-repository, and the repository ships decks under names a customer may well have chosen too. A deck that
+repository, and the repository ships decks under names you may well have chosen too. A deck that
 went missing from your store is therefore replaced by ours rather than reported absent — same band
 words, different rubric, nothing raised anywhere. When that happens the report says so, above the
 verdict, and the profile screen writes a line to the log.
@@ -231,10 +231,10 @@ look exactly like right ones.** Have it read by whoever would sign the advice, b
 
 ---
 
-## 3. Client profiles
+## 3. Company profiles
 
-One JSON file per client under [`driver/profiles/`](../driver/profiles/). Two are published as working
-examples: `generic` (the Generic default) and the demo brand owner. Three further synthetic profiles —
+One JSON file per company under [`driver/profiles/`](../driver/profiles/). Two are published as working
+examples: `generic` (the Generic default) and the demo company. Three further synthetic profiles —
 gaming, functional drinks and animal health — exist in the repository for the test suite and are left
 out of the package.
 
@@ -248,8 +248,8 @@ frozen into the run's own sidecar, so editing a profile mid-run cannot change a 
 |---|---|
 | `name`, `matchDomains[]` | Identity and resolution. Overlapping domains across files is a load-time error. |
 | `platforms[]` | The store domains the common-law sweep covers. The general-web cell is implicit — never list it. |
-| `defaultClasses[]`, `defaultJurisdictions[]` | What the matter assumes when a request names neither. |
-| `selfExclusionOwners[]` | The client's own and affiliate names, so their own rights are not reported as conflicts against them. |
+| `defaultClasses[]`, `defaultJurisdictions[]` | What a clearance assumes when a request names neither. |
+| `selfExclusionOwners[]` | The company's own and affiliate names, so its own rights are not reported as conflicts against it. |
 | `industry` | Sector context that sharpens which adjacencies matter. Context, never a rule that decides. |
 | `riskAppetite` | A prose posture that flavours emphasis and recommended follow-up. |
 | `marketplaceDensity` | `sparse` (default) or `dense` — the per-profile sweep budget. Dense fits long retail listings; gaming stores stay sparse. |
@@ -287,6 +287,6 @@ in [`PORTAL.md`](PORTAL.md).
 | Profile internals and the onboarding runbook | [`architecture/05-customer-profiles.md`](architecture/05-customer-profiles.md) |
 | What each product searches | [`../driver/products.mjs`](../driver/products.mjs) — the declaration the engine reads |
 
-**Client profiles and frameworks are not application config.** Keep them in your own private store
+**Company profiles and frameworks are not application config.** Keep them in your own private store
 and point the engine at it with `CLEAROTRON_CUSTOMERS_DIR` — the bundled profiles are demo data, and a
-real client's rubric does not belong in a checkout of this repo.
+real company's rubric does not belong in a checkout of this repo.

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// — MAKING A COMPANY IS REACHABLE ONCE ONE IS SELECTED.
+// — MAKING A COMPANY IS REACHABLE ONCE ONE IS SELECTED, from every Company settings page.
 //
 // Found by the owner on the test box. `+ New company` lived on the pick panel and nowhere else, and
 // choosing a company is precisely what hides that panel — so the person doing the work had no route to a
@@ -20,32 +20,45 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import { prose } from './support/prose.ts'
 
 const read = (p: string) => readFileSync(fileURLToPath(new URL(p, import.meta.url)), 'utf8')
-const PROFILE = read('../src/screens/Profile.tsx')
 const PICKER = read('../src/shell/CompanyPicker.tsx')
+const BUTTON = read('../src/shell/NewCompanyButton.tsx')
+// ALL THREE COMPANY SETTINGS PAGES, not Profile alone. The route was put on Profile because it is where
+// somebody already is; the design puts it on Projects and Search templates too, and a page that lost it
+// would be a selected company hiding the route again, one page over.
+const PAGES = [['Profile', read('../src/screens/Profile.tsx')], ['Projects', read('../src/screens/Projects.tsx')],
+  ['SavedSearches', read('../src/screens/SavedSearches.tsx')]] as const
 
-test('the Company profile screen offers a route to making a company', () => {
-  assert.match(PROFILE, /\+ New company/,
-    'the profile screen offers no way to make a company, so a selected company again hides the only route')
-  assert.match(PROFILE, /ctx\.go\(NEW_COMPANY_PATH\)/,
+test('every Company settings page offers a route to making a company', () => {
+  for (const [name, src] of PAGES) {
+    assert.match(src, /<NewCompanyButton ctx=\{ctx\} \/>/,
+      `${name} offers no way to make a company, so a selected company again hides the only route`)
+    assert.match(src, /import \{ NewCompanyButton \} from '\.\.\/shell\/NewCompanyButton\.tsx'/,
+      `${name} draws its own copy of the control instead of the shared one`)
+  }
+  assert.match(BUTTON, /\+ New company/, 'the shared control no longer says what it does')
+  assert.match(BUTTON, /ctx\.go\(NEW_COMPANY_PATH\)/,
     'the control does not go to the shared path constant — a second spelling of the destination is a second thing to keep in step')
 })
 
 test('it is gated by the same predicate as the pick panel, not a second one', () => {
   // THE HAZARD IS DRIFT, not absence. Two controls that create the same thing behind two different role
   // tests is how one of them ends up offered to somebody the other refuses.
-  assert.match(PROFILE, /canManage\(ctx\.me\)/,
-    'the profile control is not Manage-gated — it may be offered to somebody who cannot create')
+  assert.match(BUTTON, /if \(!canManage\(ctx\.me\)\) return null/,
+    'the shared control is not Manage-gated — it may be offered to somebody who cannot create')
   assert.match(PICKER, /canManage\(ctx\.me\)/,
     'the pick panel stopped using canManage, so the two controls now answer to different rules')
 
   // Both import the gate rather than re-deriving it. A role comparison written out here would pass this
   // file and diverge the day the access model converts the field.
-  assert.match(PROFILE, /import \{ canManage \} from '\.\.\/shell\/permissions\.ts'/,
-    'the profile screen derives its own permission instead of importing the one definition')
-  assert.doesNotMatch(PROFILE, /me\.role === 'staff' \?[^\n]*New company/,
-    'the control is gated on a role string rather than on the permission — that is the check the access model converts')
+  assert.match(BUTTON, /import \{ canManage \} from '\.\/permissions\.ts'/,
+    'the shared control derives its own permission instead of importing the one definition')
+  // Read off the prose: the pages' comments name the control while explaining where it sits.
+  for (const [name, src] of PAGES) {
+    assert.doesNotMatch(prose(src), /\+ New company/, `${name} writes a second + New company of its own beside the shared one`)
+  }
 })
 
 test('the destination is declared once and shared', () => {

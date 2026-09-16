@@ -9,7 +9,7 @@
 
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { ambiguousTitles, normaliseTitle, pageWindow } from '../src/contract/listView.ts'
+import { ambiguousTitles, clearancesColumns, normaliseTitle, pageWindow } from '../src/contract/listView.ts'
 
 const rows = (n: number) => Array.from({ length: n }, (_, i) => i)
 
@@ -103,4 +103,30 @@ test('normaliseTitle is the one comparison key', () => {
 
 test('an empty list has no ambiguity', () => {
   assert.equal(ambiguousTitles([]).size, 0)
+})
+
+// ── the Clearances columns ─────────────────────────────────────────────────────────────────────────────
+
+test('the column shares sum to 100 in EVERY mode — a table wider than its wrapper scrolls', () => {
+  // The four modes are the two switches the screen has: a reader who may curate gets the checkbox column,
+  // and turning grouping off adds the company column. Each is a different set of shares.
+  for (const pick of [true, false]) {
+    for (const owner of [true, false]) {
+      const cols = clearancesColumns({ pick, owner })
+      const sum = cols.reduce((n, c) => n + c.share, 0)
+      assert.equal(sum, 100, `pick=${pick} owner=${owner}: shares sum to ${sum}`)
+      assert.ok(cols.every((c) => c.share > 0), `pick=${pick} owner=${owner}: a column was squeezed to nothing: ${JSON.stringify(cols)}`)
+      assert.deepEqual(cols.map((c) => c.key), [
+        'twisty', ...(pick ? ['pick'] : []), 'name', ...(owner ? ['company'] : []), 'status', 'risk', 'updated', 'actions',
+      ], 'the order is the header\'s order, with the actions column last')
+    }
+  }
+})
+
+test('the actions column is wide enough for "Open latest report" in every mode, and wider with the row menu', () => {
+  // A share, not pixels — the browser check measures the pixels. What is held here is the ordering: the
+  // curator's column carries one more control than the reader's, so it must not be the narrower one.
+  const share = (pick: boolean) => clearancesColumns({ pick, owner: false }).find((c) => c.key === 'actions')!.share
+  assert.ok(share(true) > share(false))
+  assert.ok(share(false) >= 20, `the reader's actions column is ${share(false)}%`)
 })

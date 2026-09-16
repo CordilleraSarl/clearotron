@@ -1,22 +1,22 @@
-# 05 — Customer Profiles
+# 05 — Company Profiles
 
 > Part of the architecture pack (`docs/architecture/`). The driver's module tree and the headless
 > integrator contract are in [`driver/README.md`](../../driver/README.md).
-> This chapter describes the profile *mechanism*. Real customer bundles load from an external store
-> via `CLEAROTRON_CUSTOMERS_DIR` and no customer is named here; the package ships `generic` and the demo
-> brand owner, and the repository holds three further synthetic profiles for the test suite — see
+> This chapter describes the profile *mechanism*. Real company bundles load from an external store
+> via `CLEAROTRON_CUSTOMERS_DIR` and no real company is named here; the package ships `generic` and the
+> demo company, and the repository holds three further synthetic profiles for the test suite — see
 > [`driver/profiles/`](../../driver/profiles/).
 
-One engine, never forked — three layers. The reasoning core is shared by every client; the client
+One engine, never forked — three layers. The reasoning core is shared by every company; the company's
 context sharpens judgment without ever overriding it; the delivery layer shapes presentation only.
-The profile system is where that principle is *enforced*, not just stated: every per-client knob is
+The profile system is where that principle is *enforced*, not just stated: every per-company knob is
 either consumed by named code or rejected at load, and configuration that attempts to move a legal
 rating is refused by pattern guards and by stage-level firewalls.
 
 ## The bundle
 
-A customer = one git-owned JSON file `profiles/<key>.json`, plus optionally: a prose context pack
-(`<key>.context.md`), a per-customer rating framework pair in `skills/prelim-search/`
+A company = one git-owned JSON file `profiles/<key>.json`, plus optionally: a prose context pack
+(`<key>.context.md`), a per-company rating framework pair in `skills/prelim-search/`
 (`risk-framework-<key>.md` + its `.manifest.json`, plus worked examples), and per-engagement
 project overlays under `profiles/projects/<key>/`.
 
@@ -27,25 +27,25 @@ that reads it in `FIELD_CONSUMERS`, and CI asserts the manifest and the key list
 | Key | Layer | What it drives |
 |---|---|---|
 | `name` (required) | identity | Anchor for the self-exclusion gate (`applicantMatchesProfile` — word-boundary containment, so "Company" matches "Company Corporation" but not "Companyish Ltd") |
-| `matchDomains[]` | identity | Forwarder-domain fallback resolution; cross-file overlap is a load error (directory order must never decide a customer) |
+| `matchDomains[]` | identity | Forwarder-domain fallback resolution; cross-file overlap is a load error (directory order must never decide a company) |
 | `platforms[]` (required) | structural | The store domains the marketplace grid sweeps, verbatim — dictated into the worker spec and enforced by the receipts join. Bare domains only, no `"web"` (the general-web cell is implicit), no duplicates: a one-character slip bricks every run under the profile, so load guards are strict |
 | `defaultClasses[]` / `defaultJurisdictions[]` | structural | Matter-frame defaults when the request names none |
-| `selfExclusionOwners[]` | structural | Never flag the client against itself — seeded only when the job's applicant *is* the profile customer |
+| `selfExclusionOwners[]` | structural | Never flag the company against itself — seeded only when the job's applicant *is* the profile's company |
 | `marketplaceDensity` | structural | `sparse` (default) or `dense` — selects the grid cell budget (98 vs 16 cells/call, both calibrated from real truncation incidents) |
 | `industry` | context | Sector context in the matter frame — context, never a rule |
 | `riskAppetite` | context | Prose posture only; reaches **curation stages only**, never synthesis |
 | `delivery` | delivery | `{email: "summary", privileged: bool, style: prose, template: closed-enum}` — presentation only. `email` is inert as of 2026-07-28 (every run gets a cover note); `"table"` is accepted-but-retired so stored profiles keep loading |
-| `frameworkPath` | rating authority | The customer's own risk framework deck; absent ⇒ the Generic default rates the matter ("nothing in between") |
-| `workedExamplesPath` | context | Per-customer synthesis depth target |
+| `frameworkPath` | rating authority | The company's own risk framework deck; absent ⇒ the Generic default rates the matter ("nothing in between") |
+| `workedExamplesPath` | context | Per-company synthesis depth target |
 | `defaultProduct` | entitlement | Which search runs when a request names none (`search-policy.mjs`). May be unset — a clearance that names no product is then named by its own resolved territories |
-| `allowedRecipes[]` | entitlement | The closed menu of searches this account may trigger; absent ⇒ everything allowed. Non-empty when present |
+| `allowedRecipes[]` | entitlement | The closed menu of searches this company may trigger; absent ⇒ everything allowed. Non-empty when present |
 | `jxPolicy` | entitlement | The native-language deepening posture (declared lanes, escalation, provider stance) — policy, never capability. Frozen into the run sidecar so a resume keeps it |
-| `runCaps` | admission | Per-account admission caps `{maxQueued?, dailyRuns?, monthlyRuns?}`, integers 1–10000, at least one set. Enforced at the runner's claim chokepoint for **both** intake doors (email and portal) — the run-slot cap does not bound a client that can trigger its own searches. **Two behaviours it is worth knowing before you rely on a cap** — see below |
+| `runCaps` | admission | Per-company admission caps `{maxQueued?, dailyRuns?, monthlyRuns?}`, integers 1–10000, at least one set. Enforced at the runner's claim chokepoint for **both** intake doors (email and portal) — the run-slot cap does not bound people who can trigger their own searches. **Two behaviours it is worth knowing before you rely on a cap** — see below |
 
 **Two `runCaps` behaviours to know before relying on a cap** (`checkRunCaps`, `driver/runner.mjs`):
 **a cap written onto `generic` does nothing** — it is exempt by design, so a long-lived credential
-pointed there spends without limit; and a client run with no `dailyRuns` gets
-`DEFAULT_CLIENT_DAILY_RUNS`, not unlimited.
+pointed there spends without limit; and a run a company's own people start with no
+`dailyRuns` gets `DEFAULT_CLIENT_DAILY_RUNS`, not unlimited.
 
 **Derived, never stored** (storing either is its own louder load error): the grid floor
 `minCellsPerVariant = platforms.length + 1` and `batchSize = gridCellBudget / floor`.
@@ -56,7 +56,7 @@ never sees it): curated background facts, standing concerns, prior-matter learni
 conditionals are rejected at load; the fix is to rephrase the rule as a concern or question. It
 feeds `report-overview` as context that "NEVER changes a band" and never reaches synthesis.
 
-**The framework layer** (`framework.mjs`) is where per-client rating vocabulary lives. The
+**The framework layer** (`framework.mjs`) is where per-company rating vocabulary lives. The
 framework itself is a prose deck the model reasons *with*; the code-side manifest
 (`<framework>.manifest.json`) carries **vocabulary and order only** — 2–8 ordered bands, each
 `{label, tone}`, no digits in labels ("a numbered band is a score in disguise"), and structurally
@@ -64,8 +64,8 @@ framework itself is a prose deck the model reasons *with*; the code-side manifes
 CI-linted, every profile's framework selection must resolve to a manifest, and bands-shaped decks
 are checked to carry no legacy scoring machinery (`test/framework-lint.test.mjs`).
 
-> **Per-customer decks legitimately diverge, and no test forbids it.** There is no
-> "doctrine-lockstep" check keeping rating tables byte-identical across customer frameworks: the
+> **Per-company decks legitimately diverge, and no test forbids it.** There is no
+> "doctrine-lockstep" check keeping rating tables byte-identical across company frameworks: the
 > framework in force is what *rates* the matter, so divergence is the point. The integrity guarantee
 > is elsewhere — closed manifests (vocabulary only), the anti-rule guards below, and the
 > framework-lint suite (`test/framework-lint.test.mjs`). Code comments in `stages.mjs` still
@@ -76,19 +76,19 @@ split 8/8 and every future field must choose a side (`PROJECT_KEYS ∪ CUSTOMER_
 KNOWN_PROFILE_KEYS`, asserted by test). **Overlayable (8):** platforms, defaultClasses,
 defaultJurisdictions, marketplaceDensity, delivery, riskAppetite, industry, defaultProduct — a
 distinct engagement legitimately runs a different product and different marketplaces.
-**Customer-only (8):** name, matchDomains, selfExclusionOwners, frameworkPath, workedExamplesPath,
-allowedRecipes, jxPolicy, runCaps — identity, rating authority and entitlement stay whole-customer,
-and a project that could widen its own caps would hollow out the customer's. Effective resolution
-merges project → customer → generic with a per-field `origins` map frozen into the run.
+**Company-only (8):** name, matchDomains, selfExclusionOwners, frameworkPath, workedExamplesPath,
+allowedRecipes, jxPolicy, runCaps — identity, rating authority and entitlement stay whole-company,
+and a project that could widen its own caps would hollow out the company's. Effective resolution
+merges project → company → generic with a per-field `origins` map frozen into the run.
 
 ## Resolution and the frozen sidecar
 
 ```mermaid
 flowchart TD
     J["job arrives (queue file)"] --> PK{"job.profileKey<br/>names a roster key?"}
-    PK -- yes --> P1["that customer wins<br/>(intake AI resolved it)"]
+    PK -- yes --> P1["that company wins<br/>(intake AI resolved it)"]
     PK -- no --> FD{"forwarderDomain matches<br/>a profile's matchDomains?"}
-    FD -- yes --> P2["domain-matched customer"]
+    FD -- yes --> P2["domain-matched company"]
     FD -- no --> P3["generic (required fallback)"]
     P1 --> PROJ{"job.projectKey?"}
     P2 --> PROJ
@@ -110,10 +110,10 @@ Three rules make this trustworthy:
   profiles/ edit mid-run can never change a live run's floor or platforms; resume/experiment
   and every validator read the same immutable file; a corrupt sidecar crashes loudly. `profileSha`
   (canonical-JSON sha256) makes "which profile/framework rated this run" verifiable by recompute.
-  A mid-run late-bind of the customer re-classifies findings only — it never re-resolves the
+  A mid-run late-bind of the company re-classifies findings only — it never re-resolves the
   profile.
-- **An unbound run can never be presented customer-framed.** No key + no domain ⇒ generic ⇒ neutral
-  delivery (no client table, no privileged header) — pinned by test.
+- **An unbound run can never be presented as any company's.** No key + no domain ⇒ generic ⇒ neutral
+  delivery (no review table, no privileged header) — pinned by test.
 
 ## The guardrails
 
@@ -124,7 +124,7 @@ Three rules make this trustworthy:
 | **Anti-threshold guard** | `riskAppetite` (and context pack, and delivery style) reject numeric/threshold/rule shapes at load — percentages, comparison operators, "threshold", level/composite cutoffs, imperative ratings | `profiles.mjs` |
 | **The D1 firewall** | Stage messages decide which stage *sees* what: synthesis gets framework + worked examples and **no** appetite/pack/style; the three curation stages get them labelled "emphasis only / NEVER changes a band" | `stages.mjs` |
 | **Framework manifest constraints** | Vocabulary + order only; no digit labels; closed keys; 2–8 bands; deck⇄manifest lint | `framework.mjs`, `test/framework-lint.test.mjs` |
-| **Freeze completeness** | A configured field must be carried by `freezeProfile` or it is silently never applied — the exact 2026-06-19 bug (frameworkPath dropped from the freeze quietly rated two customers under the Generic default); regression-pinned | `pipeline.mjs`, `test/framework-freeze.test.mjs` |
+| **Freeze completeness** | A configured field must be carried by `freezeProfile` or it is silently never applied — the exact 2026-06-19 bug (frameworkPath dropped from the freeze quietly rated two companies under the Generic default); regression-pinned | `pipeline.mjs`, `test/framework-freeze.test.mjs` |
 
 Honest boundary: the regex guards are conservative-reject and *necessary, not sufficient* — a
 pure-prose rule can pass them; the evaluation layer (reference library / review) is the catch for
@@ -137,7 +137,7 @@ A small loopback HTTP service (`profile-service.mjs`, systemd user unit, `PROFIL
 which carries the deployment's own directories and is therefore part of a deployment rather than of
 this source tree.
 
-- **Endpoints**: roster list, per-customer view (config + derived values + framework box), validate
+- **Endpoints**: roster list, per-company view (config + derived values + framework box), validate
   (server-side dry run), save (validated **auto-commit** — creates or updates the JSON + context
   pack and commits authored as the signed-in identity), health (unauthenticated liveness), plus the
   project endpoints.
@@ -150,13 +150,13 @@ this source tree.
   (a body-supplied author is ignored); every write re-runs the *same* load-time validators the
   driver uses, so the UI can never persist a profile the driver would reject; and
   `frameworkPath`/`workedExamplesPath` are **code-owned** — the on-disk value always wins because a
-  2026-07-04 UI save once silently stripped both fields and flipped two customers to the Generic default
+  2026-07-04 UI save once silently stripped both fields and flipped two companies to the Generic default
   framework (`preserveCodeOwned`, `profile-service.mjs`).
 - **Governance posture**: UI saves are validated auto-commits with no PR gate. Recovery is
   `git revert` plus the audit log (`profiles/_audit.log`, git-tracked). In-flight runs are
   unaffected (sidecar freeze); changes ship to the next run.
 
-## Onboarding a new client — the runbook
+## Onboarding a new company — the runbook
 
 **Path A — git PR** (the bespoke-engagement default):
 
@@ -173,7 +173,7 @@ this source tree.
    report reads right.
 5. Merge + deploy.
 
-**Path B — the config UI**: sign in through CF Access → "+ New customer" → fill the form →
+**Path B — the config UI**: sign in through CF Access → "+ New company" → fill the form →
 "Check first" (dry-run validate) → "Save" (validated auto-commit + audit line).
 
 **Either path, afterwards:**
@@ -181,9 +181,9 @@ this source tree.
 - **Routing**: intake stamps `job.profileKey` (the primary selector); optionally add
   `matchDomains` for forwarder-based fallback. A profile with empty `matchDomains` is reachable by
   profileKey only.
-- **Per-customer framework** (optional; git-only, legal-team work — the UI cannot set it): add the
+- **Per-company framework** (optional; git-only, legal-team work — the UI cannot set it): add the
   deck + manifest + worked examples under `skills/prelim-search/`, set the two paths in the profile
-  JSON via git. Until then the customer rates under the Generic default.
+  JSON via git. Until then the company rates under the Generic default.
 - **Per-engagement overlay** (optional): `profiles/projects/<key>/<slug>.json` with the 8
   overlayable keys; intake stamps `job.projectKey` to select it.
 

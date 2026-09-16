@@ -58,8 +58,13 @@ test('a one-country product still refuses a region, even when the register cover
   assert.deepEqual([...vocabularyFor(FULL, ['European Union', 'United States'])], ['United States'])
 })
 
-test('no product picked ⇒ nothing to point anywhere, whatever the register covers', () => {
-  assert.deepEqual([...vocabularyFor(null, ['European Union'])], [])
+test('no product picked ⇒ the register still narrows what it REACHES, over every place the picker knows', () => {
+  // Reversed with the form order: Where is asked before Which search, so with no search picked the
+  // vocabulary is every place (composerProduct.test.ts holds that half). What this file owns is the
+  // coverage half, and it composes the same way it does under a product — only the array narrows.
+  assert.deepEqual([...vocabularyFor(null, ['European Union'])], ['European Union'])
+  assert.equal(vocabularyFor(null, null).length, vocabularyFor(null).length,
+    'a register declaring no restriction reaches everything, product or no product')
 })
 
 // ── — THE TWO CALL SITES THAT USED TO NARROW, AND NO LONGER MAY ─────────────
@@ -150,12 +155,14 @@ test('NewClearance threads coverage into BOTH the suggestion list and the add pa
   // neither the suggestion list nor the chips is the same silence with the argument still passed.
   assert.match(src, /reachesTerritory\(t, registerTerritories\)/,
     'the screen threads coverage and then says nothing about it — which is the defect, not the fix')
-  assert.match(src, /reaches\{' '\}\n\s*\{vocabularyFor\(activeLevel, registerTerritories\)\.length\}/,
+  // WHERE'S OWN LEVEL: the search the reader chose, or none while the form's preselection is following
+  // the places (NewClearance's `whereLevel`) — the same product the picker and the add path are fitted to.
+  assert.match(src, /reaches\{' '\}\n\s*\{vocabularyFor\(whereLevel, registerTerritories\)\.length\}/,
     'the screen never states, once, what this deployment\'s register reaches')
   // BOTH FIGURES SCOPED TO THE PRODUCT. `registerTerritories.length` is the covered set whole, and a
   // Full country search can name no regions — so a region the register covers is not one of "the
   // territories you can name here", and the sentence would overstate the reach on that product.
-  assert.match(src, /\{offerableFor\(activeLevel\)\.length\} territories you can name here/,
+  assert.match(src, /\{offerableFor\(whereLevel\)\.length\} territories you can name here/,
     'the denominator is not the vocabulary this product actually offers')
 })
 

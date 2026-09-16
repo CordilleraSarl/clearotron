@@ -112,8 +112,8 @@
           "todos": 0
         },
         "a-change-a-reader-can-see-arrives-with-something-to-read.test.mjs": {
-          "tests": 19,
-          "asserts": 45,
+          "tests": 20,
+          "asserts": 47,
           "skips": 1,
           "todos": 0
         },
@@ -138,6 +138,12 @@
         "a-clean-install-offers-generic-alone.test.mjs": {
           "tests": 9,
           "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-client-condition-never-carries-an-engine-token.test.mjs": {
+          "tests": 6,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },
@@ -172,8 +178,8 @@
           "todos": 0
         },
         "a-connect-line-says-where-it-runs.test.mjs": {
-          "tests": 7,
-          "asserts": 25,
+          "tests": 8,
+          "asserts": 28,
           "skips": 0,
           "todos": 0
         },
@@ -648,6 +654,12 @@
         "a-refusal-names-what-resolves-it.test.mjs": {
           "tests": 7,
           "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-refusal-with-no-near-neighbour-does-not-claim-the-search-never-ran.test.mjs": {
+          "tests": 4,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -1456,8 +1468,8 @@
           "todos": 0
         },
         "connect-clients-are-data.test.mjs": {
-          "tests": 17,
-          "asserts": 91,
+          "tests": 21,
+          "asserts": 115,
           "skips": 0,
           "todos": 0
         },
@@ -1637,7 +1649,7 @@
         },
         "coverage-is-disclosed-never-refused.test.mjs": {
           "tests": 10,
-          "asserts": 38,
+          "asserts": 40,
           "skips": 0,
           "todos": 0
         },
@@ -3119,7 +3131,7 @@
         },
         "portal-batch-report-link.test.mjs": {
           "tests": 7,
-          "asserts": 18,
+          "asserts": 21,
           "skips": 1,
           "todos": 0
         },
@@ -3682,8 +3694,8 @@
           "todos": 0
         },
         "release-pipeline.test.mjs": {
-          "tests": 93,
-          "asserts": 356,
+          "tests": 99,
+          "asserts": 376,
           "skips": 0,
           "todos": 0
         },
@@ -4485,9 +4497,21 @@
           "skips": 0,
           "todos": 0
         },
+        "the-administrator-contact-is-a-link-or-nothing.test.mjs": {
+          "tests": 5,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
         "the-advice-fits-the-machine-it-is-printed-on.test.mjs": {
           "tests": 14,
           "asserts": 43,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-allowance-line-is-the-servers-words.test.mjs": {
+          "tests": 2,
+          "asserts": 4,
           "skips": 0,
           "todos": 0
         },
@@ -4639,6 +4663,12 @@
           "tests": 5,
           "asserts": 19,
           "skips": 0,
+          "todos": 0
+        },
+        "the-docs-say-organisation-and-company.test.mjs": {
+          "tests": 6,
+          "asserts": 18,
+          "skips": 3,
           "todos": 0
         },
         "the-door-answers-the-address-it-advertises.test.mjs": {
@@ -4995,6 +5025,12 @@
           "skips": 1,
           "todos": 0
         },
+        "the-report-can-say-how-much-was-read.test.mjs": {
+          "tests": 8,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
         "the-report-carries-what-the-assessment-wrote.test.mjs": {
           "tests": 10,
           "asserts": 41,
@@ -5070,6 +5106,12 @@
         "the-settings-surface-reads-the-customer-store.test.mjs": {
           "tests": 10,
           "asserts": 43,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-sign-in-door-folds-its-administrator-help.test.mjs": {
+          "tests": 5,
+          "asserts": 21,
           "skips": 0,
           "todos": 0
         },
@@ -5152,8 +5194,8 @@
           "todos": 0
         },
         "the-writing-standard-check-refuses-five-classes.test.mjs": {
-          "tests": 14,
-          "asserts": 53,
+          "tests": 15,
+          "asserts": 60,
           "skips": 0,
           "todos": 0
         },
@@ -5839,21 +5881,27 @@
     "portal-ui": {
       "ext": "ts",
       "perFile": {
+        "about.test.ts": {
+          "tests": 3,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "api.test.ts": {
-          "tests": 45,
-          "asserts": 183,
+          "tests": 46,
+          "asserts": 187,
           "skips": 0,
           "todos": 0
         },
         "askAi.test.ts": {
-          "tests": 11,
-          "asserts": 34,
+          "tests": 21,
+          "asserts": 97,
           "skips": 0,
           "todos": 0
         },
         "checkAndSaveCannotDisagree.test.ts": {
-          "tests": 2,
-          "asserts": 6,
+          "tests": 5,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
@@ -5888,14 +5936,20 @@
           "todos": 0
         },
         "composeRead.test.ts": {
-          "tests": 22,
-          "asserts": 46,
+          "tests": 25,
+          "asserts": 54,
           "skips": 0,
           "todos": 0
         },
         "composerProduct.test.ts": {
           "tests": 30,
           "asserts": 113,
+          "skips": 0,
+          "todos": 0
+        },
+        "composerWords.test.ts": {
+          "tests": 5,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -5960,20 +6014,20 @@
           "todos": 0
         },
         "grouping.test.ts": {
-          "tests": 23,
-          "asserts": 53,
+          "tests": 27,
+          "asserts": 70,
           "skips": 0,
           "todos": 0
         },
         "guard.test.ts": {
-          "tests": 15,
-          "asserts": 43,
+          "tests": 16,
+          "asserts": 47,
           "skips": 0,
           "todos": 0
         },
         "home.test.ts": {
           "tests": 56,
-          "asserts": 196,
+          "asserts": 199,
           "skips": 0,
           "todos": 0
         },
@@ -6001,9 +6055,15 @@
           "skips": 0,
           "todos": 0
         },
+        "installationSettings.test.ts": {
+          "tests": 13,
+          "asserts": 39,
+          "skips": 0,
+          "todos": 0
+        },
         "listView.test.ts": {
-          "tests": 11,
-          "asserts": 27,
+          "tests": 13,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         },
@@ -6015,25 +6075,31 @@
         },
         "measure.test.ts": {
           "tests": 25,
-          "asserts": 85,
+          "asserts": 93,
+          "skips": 0,
+          "todos": 0
+        },
+        "nameRow.test.ts": {
+          "tests": 12,
+          "asserts": 59,
           "skips": 0,
           "todos": 0
         },
         "nav.test.ts": {
-          "tests": 13,
-          "asserts": 67,
+          "tests": 15,
+          "asserts": 91,
           "skips": 0,
           "todos": 0
         },
         "newClearanceStructure.test.ts": {
           "tests": 8,
-          "asserts": 57,
+          "asserts": 63,
           "skips": 0,
           "todos": 0
         },
         "newCompanyReachableFromProfile.test.ts": {
           "tests": 5,
-          "asserts": 13,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -6069,12 +6135,18 @@
         },
         "perRunRetire.test.ts": {
           "tests": 9,
-          "asserts": 14,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
         "permissions.test.ts": {
-          "tests": 5,
+          "tests": 7,
+          "asserts": 41,
+          "skips": 0,
+          "todos": 0
+        },
+        "preferences.test.ts": {
+          "tests": 8,
           "asserts": 25,
           "skips": 0,
           "todos": 0
@@ -6086,8 +6158,8 @@
           "todos": 0
         },
         "profileFields.test.ts": {
-          "tests": 49,
-          "asserts": 145,
+          "tests": 54,
+          "asserts": 173,
           "skips": 0,
           "todos": 0
         },
@@ -6109,9 +6181,15 @@
           "skips": 0,
           "todos": 0
         },
+        "recommendSearch.test.ts": {
+          "tests": 6,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "registerCoverage.test.ts": {
           "tests": 12,
-          "asserts": 35,
+          "asserts": 36,
           "skips": 0,
           "todos": 0
         },
@@ -6128,20 +6206,20 @@
           "todos": 0
         },
         "savedSearches.test.ts": {
-          "tests": 14,
-          "asserts": 29,
+          "tests": 18,
+          "asserts": 39,
           "skips": 0,
           "todos": 0
         },
         "screenCopy.test.ts": {
-          "tests": 56,
-          "asserts": 186,
+          "tests": 63,
+          "asserts": 239,
           "skips": 0,
           "todos": 0
         },
         "shell.test.ts": {
-          "tests": 8,
-          "asserts": 27,
+          "tests": 10,
+          "asserts": 36,
           "skips": 0,
           "todos": 0
         },
@@ -6158,14 +6236,20 @@
           "todos": 0
         },
         "terminology.test.ts": {
-          "tests": 4,
-          "asserts": 5,
+          "tests": 6,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
         "territoryCodeParity.test.ts": {
           "tests": 4,
           "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "territoryCodes.test.ts": {
+          "tests": 2,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },
@@ -6182,8 +6266,8 @@
           "todos": 0
         },
         "useYourAI.test.ts": {
-          "tests": 12,
-          "asserts": 38,
+          "tests": 17,
+          "asserts": 75,
           "skips": 0,
           "todos": 0
         },
@@ -6356,6 +6440,12 @@
         "providers/perplexity/test/source-is-text.test.mjs": {
           "tests": 4,
           "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/signa/test/match-mode-is-not-approximated.test.mjs": {
+          "tests": 4,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },

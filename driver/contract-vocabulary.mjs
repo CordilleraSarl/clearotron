@@ -16,9 +16,9 @@
 // extractor never sees:
 //
 //   D1 verify.mjs:940   fail(`connotation_${reason}:…`)      — reason iterates the table at line 894
-//   D2 verify.mjs:704   fail(String(e.message))              — parseFindingsJson throws token-first
-//   D3 verify.mjs:1165   checkJson: fail(String(e.message))   — FIVE parsers reach this one site
-//   D4 verify.mjs:1603  parseCoverageLedgerJson, same shape
+//   D2 verify.mjs   fail(String(e.message))              — parseFindingsJson throws token-first
+//   D3 verify.mjs:1184   checkJson: fail(String(e.message))   — FIVE parsers reach this one site
+//   D4 verify.mjs  parseCoverageLedgerJson, same shape
 //   D5 verify.mjs:1504  fail(`${unaccounted[0].token}:…`)    — token minted in a DATA ROW
 //   D6 verify.mjs:1567  fail(`${violations[0].token}…`)      — validatePlanFeasibility in register-plan.mjs
 //   D7 verify.mjs:1558  fail(`${v2[0].token}${detail}…`)     — register-plan.mjs:2253 disclosureTextByAxis
@@ -99,7 +99,7 @@ export const VOCABULARY = [
   { token: "ratified_form_unread", stages: ["synthesis"], site: "driver/verify.mjs" },
   { token: "coverage_recommendation", stages: ["synthesis"], site: "driver/verify.mjs" },
   { token: "coverage_gap_unexplained", stages: ["synthesis"], site: "driver/verify.mjs" },
-  { token: "finding", stages: ["synthesis"], site: "driver/verify.mjs:704", family: "driver/findings-model.mjs (token-first throws; `finding_*` and `findings_*`)", dynamic: "D2" },
+  { token: "finding", stages: ["synthesis"], site: "driver/verify.mjs", family: "driver/findings-model.mjs (token-first throws; `finding_*` and `findings_*`)", dynamic: "D2" },
 
   // ── register-digest ────────────────────────────────────────────────────────────────────────────────
   // The per-record accounting family, raised at the EXIT as well as at the call. The call-time refusal
@@ -139,16 +139,16 @@ export const VOCABULARY = [
   { token: "coverage_form_missing", stages: ["register-digest"], site: "driver/verify.mjs" },
   { token: "coverage_form_empty", stages: ["register-digest"], site: "driver/verify.mjs" },
   { token: "coverage_status_offenum", stages: ["register-digest"], site: "driver/verify.mjs:2050" },
-  { token: "coverage_deferred_unaccounted", stages: ["register-digest"], site: "driver/verify.mjs:1504 coverageFormFail", family: "driver/register-plan.mjs:1930 PROVIDER_HARD_ERROR_PREFIX — token on a data row", dynamic: "D5" },
-  { token: "coverage_clean_unexecuted", stages: ["register-digest"], site: "driver/verify.mjs, the matterContext validator", family: "driver/register-plan.mjs:1664 validatePlanFeasibility", dynamic: "D6" },
-  { token: "coverage_clean_skipped", stages: ["register-digest"], site: "driver/verify.mjs, the matterContext validator", family: "driver/register-plan.mjs:2025 searchedJurisdictionsFromPlan", dynamic: "D6" },
-  { token: "coverage_clean_unverified_incomplete", stages: ["register-digest"], site: "driver/verify.mjs, the matterContext validator", family: "driver/register-plan.mjs:2253 disclosureTextByAxis", dynamic: "D7" },
+  { token: "coverage_deferred_unaccounted", stages: ["register-digest"], site: "driver/verify.mjs:1510 coverageFormFail", family: "driver/register-plan.mjs:1642 PROVIDER_HARD_ERROR_PREFIX — token on a data row", dynamic: "D5" },
+  { token: "coverage_clean_unexecuted", stages: ["register-digest"], site: "driver/verify.mjs, the matterContext validator", family: "driver/register-plan.mjs:1417 validatePlanFeasibility", dynamic: "D6" },
+  { token: "coverage_clean_skipped", stages: ["register-digest"], site: "driver/verify.mjs, the matterContext validator", family: "driver/register-plan.mjs:1766 searchedJurisdictionsFromPlan", dynamic: "D6" },
+  { token: "coverage_clean_unverified_incomplete", stages: ["register-digest"], site: "driver/verify.mjs, the matterContext validator", family: "driver/register-plan.mjs:2018 disclosureTextByAxis", dynamic: "D7" },
   { token: "coverage_clean_tainted", stages: ["register-digest"], site: "driver/verify.mjs" },
-  { token: "coverage_ledger_", stages: ["register-digest"], site: "driver/verify.mjs:1603", family: "driver/coverage-ledger.mjs (parseCoverageLedgerJson token-first throws)", dynamic: "D4" },
-  { token: "coverage_key_unknown", stages: ["register-digest"], site: "driver/verify.mjs:1603", family: "driver/coverage-ledger.mjs", dynamic: "D4" },
-  { token: "coverage_axis_", stages: ["register-digest"], site: "driver/verify.mjs:1603", family: "driver/coverage-ledger.mjs", dynamic: "D4" },
-  { token: "coverage_status_invalid", stages: ["register-digest"], site: "driver/verify.mjs:1603", family: "driver/coverage-ledger.mjs", dynamic: "D4" },
-  { token: "coverage_classes_invalid", stages: ["register-digest"], site: "driver/verify.mjs:1603", family: "driver/coverage-ledger.mjs", dynamic: "D4" },
+  { token: "coverage_ledger_", stages: ["register-digest"], site: "driver/verify.mjs", family: "driver/coverage-ledger.mjs (parseCoverageLedgerJson token-first throws)", dynamic: "D4" },
+  { token: "coverage_key_unknown", stages: ["register-digest"], site: "driver/verify.mjs", family: "driver/coverage-ledger.mjs", dynamic: "D4" },
+  { token: "coverage_axis_", stages: ["register-digest"], site: "driver/verify.mjs", family: "driver/coverage-ledger.mjs", dynamic: "D4" },
+  { token: "coverage_status_invalid", stages: ["register-digest"], site: "driver/verify.mjs", family: "driver/coverage-ledger.mjs", dynamic: "D4" },
+  { token: "coverage_classes_invalid", stages: ["register-digest"], site: "driver/verify.mjs", family: "driver/coverage-ledger.mjs", dynamic: "D4" },
   { token: "plan_execution_unreadable", stages: ["register-digest", "narrative-refutation"], site: "driver/verify.mjs:1496, 1712" },
 
   // ── matter-frame / prelim-variants / blind-frame / frame-diff ──────────────────────────────────────
@@ -160,7 +160,7 @@ export const VOCABULARY = [
   { token: "variantmodel_term_markup", stages: ["prelim-variants"], site: "driver/verify.mjs" },
   { token: "variantmodel_missing", stages: ["prelim-variants"], site: "driver/verify.mjs:1153, 1212" },
   // Recovered during E2 authoring, absent from the draft census: variant-manifest.json is strict-parsed
-  // through checkSiblingJson (verify.mjs:1178) → checkJson (:742), so the WHOLE variantmodel_* family
+  // through checkSiblingJson (verify.mjs:1197) → checkJson (:742), so the WHOLE variantmodel_* family
   // reaches prelim-variants, not just the four literal tokens above.
   // CONVERSION 3 widened this family's SOURCE without widening its prefix. `acceptPrelimVariants` raises
   // `variantmodel_scope_layer_invalid`, `_scope_status_invalid`, `_scope_item_missing` and `_scope_pipe`
@@ -349,7 +349,8 @@ export const STAGE_UNREACHABLE_VALIDATORS = [
  *
  * The drift is CLUSTERED, not random: 34, 35, 36, 52 recur. That is one insertion above a block moving
  * every citation below it, all at once, silently, in a PR that was about something else entirely. A
- * reader following `coverage_ledger_ → verify.mjs:1603` lands on a comment 219 lines from the dispatcher.
+ * reader following `coverage_ledger_ → verify.mjs` to line 1603 landed on a comment 219 lines from the
+ * dispatcher. (That number is the 2026 measurement's own datum, not a pointer into today's file.)
  *
  * `symbol:` names a thing instead — a function, a constant, an exported name. It survives every move.
  * `site:` stays as the hint it always was, and `contract-audit.test.mjs` asserts that any `symbol:` a row
@@ -449,9 +450,9 @@ export const INNER_CODES = Object.freeze([
   // CONNOTATION_FORM_REASONS at connotation-search.mjs:1731 is `CONNOTATION_REASONS` minus
   // `no_recorded_queries`, and the `connotation_` family row (dynamic D1) is declared against exactly
   // that list. The four call codes are folded by a template — `connotation_${callFail.reason}` at
-  // verify.mjs:1013 — so they are namespaced by construction rather than one branch at a time.
+  // verify.mjs — so they are namespaced by construction rather than one branch at a time.
   { code: "call_never_made", mints: ["driver/connotation-search.mjs:2007"], rollsUpTo: ["connotation_call_never_made"],
-    why: "CALL_AUDIT_ROWS. The typed transport's four call states, handed in by disposition-call-audit.mjs and namespaced at verify.mjs:1013." },
+    why: "CALL_AUDIT_ROWS. The typed transport's four call states, handed in by disposition-call-audit.mjs and namespaced at verify.mjs." },
   { code: "call_truncated", mints: ["driver/connotation-search.mjs:2008"], rollsUpTo: ["connotation_call_truncated"],
     why: "As call_never_made — same table, same projection." },
   { code: "call_schema_violation", mints: ["driver/connotation-search.mjs:2009"], rollsUpTo: ["connotation_call_schema_violation"],

@@ -13,6 +13,7 @@ import type { RunState } from '../contract/api.ts'
 import { readableFailure } from '../contract/failure.ts'
 import type { Tone } from '../contract/tone.ts'
 import { toneColor } from '../contract/tone.ts'
+import { STOPPED_LINE } from '../contract/nameRow.ts'
 
 export function RiskDot({ tone, label }: { readonly tone: Tone | null; readonly label: string | null }) {
   if (!label) return <span style={{ color: 'var(--text-faint)' }}>—</span>
@@ -59,6 +60,7 @@ export function StatusCell({
   resetsAt = null,
   stopRequestedAt = null,
   detailed = false,
+  count = null,
 }: {
   readonly state: RunState
   readonly step: string | null
@@ -76,6 +78,11 @@ export function StatusCell({
    * stops, which is what "the failure description appears once per row, not twice" means.
    */
   readonly detailed?: boolean
+  /**
+   * How many searches are under way, when the row also shows a completed report: "Queued · 1 search".
+   * It tells the search in flight apart from the assessment one cell over. Absent, the word stands alone.
+   */
+  readonly count?: string | null
 }) {
   // ── Stopping… — before the state checks, because it overlays a run that still truthfully says
   // "running" or "paused". The owner pressed Stop, saw the row unchanged, and
@@ -99,15 +106,19 @@ export function StatusCell({
   if (state === 'delivered') {
     return (
       <span className="status">
-        <span className="dot" style={{ background: 'var(--accent)' }} />
+        <span className="dot" style={{ background: 'var(--text-muted)' }} />
         Finished
       </span>
     )
   }
 
   // Stopped on purpose. It sits between Finished and Not finished and is neither: a muted dot rather
-  // than the failure tone, and no reason line — there is no fault to report, and asking someone to read
-  // an explanation of their own decision is noise. The word is the whole message.
+  // than the failure tone, and no reason — there is no fault to report. The line beneath says what the
+  // stop leaves: no report, and the finished steps still readable. "Nothing was delivered" was true and
+  // left the reader holding only the loss.
+  //
+  // EVERY DOT IN THIS CELL IS NEUTRAL. The status is carried by its words and the dot's shape — a disc,
+  // a ring for queued, a pulse for running — and colour on this list belongs to the Risk column beside it.
   if (state === 'cancelled') {
     return (
       <span>
@@ -115,7 +126,7 @@ export function StatusCell({
           <span className="dot" style={{ background: 'var(--text-faint)' }} />
           Stopped
         </span>
-        <span className="sub">Stopped before it finished. Nothing was delivered.</span>
+        <span className="sub">{STOPPED_LINE}</span>
       </span>
     )
   }
@@ -134,7 +145,7 @@ export function StatusCell({
     return (
       <span>
         <span className="status failed">
-          <span className="dot" style={{ background: 'var(--tone-high)' }} />
+          <span className="dot" style={{ background: 'var(--text-muted)' }} />
           {f.headline}
         </span>
         {f.detail ? <span className="sub">{f.detail}</span> : null}
@@ -177,7 +188,9 @@ export function StatusCell({
     <span>
       <span className="status">
         <span className={`dot ${state}`} />
-        {label}
+        {/* ONE flex item, not three: `.status` is a flex row, and a word, a separator and a count as
+            separate items would each wrap on their own — the separator stranded on a line of its own. */}
+        {count ? <span>{label} · <span className="status-count">{count}</span></span> : label}
       </span>
       {detail ? <span className="sub">{detail}</span> : null}
     </span>

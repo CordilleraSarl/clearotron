@@ -106,3 +106,44 @@ export function orderClausesForLede(clauses, reasons, guardSet) {
   const ordered = [...aligned.filter((x) => !guardSet?.has?.(x.c)), ...aligned.filter((x) => guardSet?.has?.(x.c))];
   return { clauses: ordered.map((x) => x.c), reasons: ordered.map((x) => x.r) };
 }
+
+/**
+ * THE CLIENT'S CONDITION LIST, from a verdict sidecar. PURE.
+ *
+ * TWO TEXTS, NEVER ONE — stated at the top of this module, and until now honoured at only one of the
+ * two ends. Every clamp site composes a run-record `reason` (token, counts, record ids) and a reader
+ * `clause` (the same fact in a lawyer's nouns), and `terminalClampDecision` refuses a clause that
+ * carries an engine identifier. The sidecar then persisted `reasons` alone and threw the clauses away,
+ * so every client surface had only the run-record text to render. A delivered report's conditions
+ * opened with `floor_duty_undischarged:4 of 430 floor row(s)…` while the SAME run's risk statement, one
+ * line above, read the clean clause: `riskStatement` already prefers `clauses`, so the page contradicted
+ * its own headline. This function is the other end of that rule.
+ *
+ * THE CLAUSE WINS WHERE THERE IS ONE, and the fallback is not politeness. Three machinery sites push
+ * the reason AS the clause ("machinery reasons ARE factual open-states"), so for those entries the two
+ * texts are one string and this returns it unchanged — correctly, because no second text exists to
+ * prefer. A legacy sidecar written before this change carries no `clauses` key at all and falls back
+ * entirely, which is what keeps archived runs republishable.
+ *
+ * ALIGNMENT IS BY INDEX AND THE REASONS ARE THE COUNT AUTHORITY. `orderClausesForLede` pairs the two
+ * arrays and reorders them together; a BLOCKING verdict then appends its grounds to the reasons alone,
+ * so `clauses` is legitimately SHORTER. Mapping over reasons and reaching for `clauses[i]` is what
+ * makes that safe — never `clauses.map`, which would silently drop the appended grounds.
+ *
+ * BREAK MATRIX:
+ *   · a clause replaces its token-bearing reason   → break: return reasons unchanged, arm 1 red
+ *   · a clean reason with no clause survives       → break: return "" for a missing clause, arm 2 red
+ *   · a legacy sidecar still yields its conditions  → break: require the clauses key, arm 3 red
+ *   · clauses shorter than reasons loses nothing    → break: map over clauses, arm 4 red
+ *
+ * @param {{reasons?: string[], clauses?: string[]}} sidecar  the parsed `_driver/verdict.json`
+ * @returns {string[]} one condition per reason, in the sidecar's own order
+ */
+export function clientConditions({ reasons, clauses } = {}) {
+  const rs = Array.isArray(reasons) ? reasons : [];
+  const cs = Array.isArray(clauses) ? clauses : [];
+  return rs.map((r, i) => {
+    const clause = typeof cs[i] === "string" ? cs[i].trim() : "";
+    return clause || String(r ?? "").trim();
+  }).filter(Boolean);
+}

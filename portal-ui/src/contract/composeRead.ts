@@ -206,40 +206,72 @@ export function applyRead(
  *
  * Computed from before and after, so every line is a fact about the screen the reader is looking at.
  * Ordered the way the eye travels down the form, not the way the object is keyed.
+ *
+ * ONE SHAPE PER LINE: the field's name, a colon, what was put there — "Name: AQUAPLUS", "Where:
+ * European Union, Switzerland". The panel lists; it does not explain itself. The field names are the
+ * form's own ("Deadline", not "Needed by"), because a receipt that calls a field something the form
+ * does not is one screen with two names for it.
+ *
+ * @param searchReason why the search on the Search line was chosen, when it is the one the form
+ *                     recommends for what was entered — "because you named a region and a country"
  */
-export function appliedNotes(before: ReadTarget, after: ReadTarget, inheritedClasses: readonly number[] = [], products: readonly Product[] = []): readonly string[] {
+export function appliedNotes(
+  before: ReadTarget, after: ReadTarget, inheritedClasses: readonly number[] = [],
+  products: readonly Product[] = [], searchReason: string | null = null,
+): readonly string[] {
   const out: string[] = []
   if (after.names !== before.names) {
     const list = after.names.split('\n').map((s) => s.trim()).filter(Boolean)
-    out.push(list.length === 1 ? `${list[0]} — the mark` : `${list.length} names — ${list.join(', ')}`)
+    out.push(list.length === 1 ? `Name: ${list[0]}` : `Names: ${list.join(', ')}`)
   }
-  // Against the EFFECTIVE before, not the raw one. A class the owner already carries was on screen as
-  // a chip before the read and is on screen after it — reporting it as something the brief added would
-  // be a receipt for work that did not happen.
-  const beforeClasses = before.classes ?? inheritedClasses
-  const addedClasses = (after.classes ?? []).filter((c) => !beforeClasses.includes(c))
-  if (addedClasses.length > 0) out.push(`Class${addedClasses.length > 1 ? 'es' : ''} ${addedClasses.map(classLabel).join(', ')}`)
-  if (after.goods !== before.goods) out.push(`Goods — ${after.goods}`)
   const addedT = after.draft.territories.filter((t) => !before.draft.territories.includes(t))
-  if (addedT.length > 0) out.push(addedT.join(', '))
+  if (addedT.length > 0) out.push(`Where: ${addedT.join(', ')}`)
   // The one line that reports a REMOVAL, and it is derived from the diff like every other one — never
   // from the flag that caused it. `applyRead` clears territories in exactly one place, so this state
   // cannot arise any other way, and reading it off the screen keeps the receipt a fact about the form
   // rather than a claim about what the model said.
   else if (before.draft.territories.length > 0 && after.draft.territories.length === 0)
-    out.push('Worldwide — the named territories were cleared')
+    out.push('Where: worldwide — the named territories were cleared')
+  if (after.goods !== before.goods) out.push(`Goods: ${after.goods}`)
+  // Against the EFFECTIVE before, not the raw one. A class the owner already carries was on screen as
+  // a chip before the read and is on screen after it — reporting it as something the brief added would
+  // be a receipt for work that did not happen.
+  const beforeClasses = before.classes ?? inheritedClasses
+  const addedClasses = (after.classes ?? []).filter((c) => !beforeClasses.includes(c))
+  if (addedClasses.length > 0) out.push(`Classes: ${addedClasses.map(classLabel).join(', ')}`)
   // The product only gets a line when it MOVED, and it is NAMED BY THE OFFERING rather than described
   // here: a second set of words for the same four things is a second set of words that can drift. The
   // key is the fallback only for a product this bundle has not been told about, which is a state an
   // older server can produce and a made-up description would hide.
-  if (after.draft.product !== before.draft.product && after.draft.product)
-    out.push(products.find((p) => p.key === after.draft.product)?.name ?? after.draft.product)
-  if (after.ref !== before.ref) out.push(`Your reference — ${after.ref}`)
-  // "DEADLINE", NOT "NEEDED BY" (owner,). His prose review renamed the field on the
-  // form above; this receipt line is a different code path and his review did not reach it, so for one
-  // release the screen called one field two names. He was asked and ruled: the receipt follows the
-  // field. His form is the label and the date with nothing between them — no em dash, unlike the
-  // reference line beside it, whose wording he did not change.
-  if (after.deadline !== before.deadline) out.push(`Deadline ${after.deadline}`)
+  if (after.draft.product !== before.draft.product && after.draft.product) {
+    const name = products.find((p) => p.key === after.draft.product)?.name ?? after.draft.product
+    out.push(`Search: ${name}${searchReason ? `, ${searchReason}` : ''}`)
+  }
+  if (after.ref !== before.ref) out.push(`Your reference: ${after.ref}`)
+  if (after.deadline !== before.deadline) out.push(`Deadline: ${after.deadline}`)
   return out
+}
+
+/**
+ * What the search will use that the brief did not say: the company's own classes it carries anyway.
+ *
+ * Its own group, because it is a different claim from the receipt above. Those lines are what the read
+ * PUT on the form; these are what was already there and will be searched regardless — a reader who
+ * wrote "energy drinks" should not have to notice two class chips they never mentioned to learn that
+ * the search covers pharmaceuticals too.
+ */
+export function defaultNotes(read: BriefRead, after: ReadTarget, inheritedClasses: readonly number[] = []): readonly string[] {
+  const unnamed = (after.classes ?? inheritedClasses)
+    .filter((c) => inheritedClasses.includes(c) && !read.classes.includes(c))
+  return unnamed.length ? [`Classes: ${unnamed.map(classLabel).join(', ')}, not in your text`] : []
+}
+
+/**
+ * What the read could not settle: the model's own doubts, and the places this composer could not place.
+ *
+ * A dropped place is listed rather than swallowed — a territory silently discarded is a territory the
+ * reader believes they are paying to search.
+ */
+export function unsureNotes(doubts: readonly string[], dropped: readonly string[]): readonly string[] {
+  return [...doubts, ...dropped.map((d) => `Where: ${d}, not a territory this search offers`)]
 }

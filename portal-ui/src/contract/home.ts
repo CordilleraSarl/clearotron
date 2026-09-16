@@ -14,6 +14,10 @@ import type { Families, Row } from './grouping.ts'
 import { NO_FAMILIES, marksOf, rowsOf } from './grouping.ts'
 import { newestFirst, displayName } from './reads.ts'
 import { readableFailure } from './failure.ts'
+// The quote bounds, through the portal's mirror of the engine's effort model. Imported rather than
+// restated: `effortModelParity.test.ts` pins that mirror to `driver/effort-model.mjs`, and a second copy
+// of the numbers here would be outside the pin — right on the day it was typed, silently wrong after.
+import { quoteBoundsFor } from './composerProduct.ts'
 import { runKey } from './genericKey.ts'
 
 /**
@@ -517,6 +521,58 @@ export function pips(stepN: number | null, stepTotal: number | null): { total: n
  * honestly — a job waiting for a slot was claimed out of the queue immediately and had no run dir yet,
  * so it appeared in neither list. Now what is waiting stays `queued` and stays visible.
  */
+/**
+ * What is in flight, as a breakdown rather than a total: "2 running · 1 paused · 2 queued".
+ *
+ * A PART IS OMITTED WHEN ITS NUMBER IS ZERO, in this order, so the line never reads "2 running · 0
+ * paused · 0 queued" — three facts where one was wanted. With nothing in flight it returns "0", which is
+ * the count the band draws beside its idle sentence.
+ *
+ * COUNTED BY EXCLUSION FOR RUNNING, deliberately, and it matches `inFlight`'s own rule: `asRunState`
+ * maps every state it does not recognise to `running`, so an unknown state is shown rather than hidden.
+ * An allowlist here would invert that the first time the engine gains a park state — and invert it
+ * silently, by quietly dropping those runs out of the total a reader uses to decide whether to wait.
+ */
+export function inFlightBreakdown(rows: InFlight): string {
+  let running = 0
+  let paused = 0
+  let queued = 0
+  for (const r of rows) {
+    if (r.state === 'queued') queued++
+    else if (r.state === 'paused') paused++
+    else running++
+  }
+  const parts: string[] = []
+  if (running) parts.push(`${running} running`)
+  if (paused) parts.push(`${paused} paused`)
+  if (queued) parts.push(`${queued} queued`)
+  return parts.length ? parts.join(' · ') : '0'
+}
+
+/**
+ * The quote for this run's own pipeline, as an expectation beside its elapsed time, or null.
+ *
+ * A LOOKUP AGAINST THE TABLE, NOT AN ESTIMATE. The bounds are `TURNAROUND_QUOTE` in the engine's effort
+ * model, mirrored for the portal in `./composerProduct.ts` and pinned to it by a parity arm. Nothing
+ * here computes from levers, and nothing predicts what is left: past the upper bound the quote is
+ * REPLACED by "taking longer than usual" rather than counted down, because a countdown against a wall
+ * the engine does not have is a promise the product cannot keep.
+ *
+ * NULL FOR A RUN THAT IS NOT RUNNING. A queued run has not started, and a paused one is waiting on a
+ * provider rather than working — quoting either would time something that is not happening.
+ */
+export function expectation(r: Run, now = Date.now()): string | null {
+  if (r.state !== 'running' || !r.startedAt) return null
+  const bounds = quoteBoundsFor({ pipeline: r.kind === 'knockout-batch' ? 'knockout' : 'clearance' })
+  const t = Date.parse(r.startedAt)
+  if (Number.isNaN(t)) return null
+  const hours = (now - t) / 3_600_000
+  if (hours > bounds.highHours) return 'taking longer than usual'
+  return bounds.highHours < 1
+    ? `usually ${Math.round(bounds.lowHours * 60)} to ${Math.round(bounds.highHours * 60)} min`
+    : `usually ${bounds.lowHours} to ${bounds.highHours} h`
+}
+
 export const active = (rows: InFlight): readonly Run[] => rows.filter((r) => r.state !== 'queued')
 export const waiting = (rows: InFlight): readonly Run[] =>
   rows.filter((r) => r.state === 'queued').slice().sort((a, b) => (a.queuePos ?? 1e9) - (b.queuePos ?? 1e9))
@@ -557,7 +613,7 @@ export function runProductLabel(productName: string | null, markCount = 0): stri
  * resumes on the next runner pass, and there is nothing for the reader to do. All say "Paused" and
  * differ only here, which is deliberate: a new kind of pause drops in without inventing a new state.
  */
-export function cardReason(r: Run, now = Date.now()): string | null {
+export function cardReason(r: Run, now = Date.now(), compact = false): string | null {
   // — THE ONE BRANCH THAT HANDED THE ENGINE'S STRING TO A READER. Every other branch here is a
   // written sentence; this one returned `r.reason` and fell back to a good sentence only when the engine
   // had said nothing. So the better the engine's diagnostics got, the worse this card read — a user was
@@ -570,7 +626,13 @@ export function cardReason(r: Run, now = Date.now()): string | null {
   if (r.state === 'paused') {
     if (r.pausedKind === 'rate-limit' && r.resetsAt) {
       const t = Date.parse(r.resetsAt)
-      if (!Number.isNaN(t)) return `Provider cap — resumes ${new Date(t).toISOString().slice(11, 16)} UTC`
+      // THE TIME IS THE PROVIDER'S OWN RESET, which is the only clock available: nothing here knows when
+      // the work will finish, only when the provider will accept it again. `compact` drops the last
+      // clause for the row on a crowded screen, where the reassurance costs a line it does not have.
+      if (!Number.isNaN(t)) {
+        const at = `Paused by the AI provider's limit. Resumes on its own at ${new Date(t).toISOString().slice(11, 16)} UTC`
+        return compact ? `${at}.` : `${at} — nothing to do.`
+      }
     }
     if (r.pausedKind === 'recovering') return 'Retrying after a problem'
     if (r.pausedKind === 'operator') return 'Paused by a system restart — resumes on its own'
@@ -588,7 +650,7 @@ export function cardReason(r: Run, now = Date.now()): string | null {
  */
 export function limitLine(used: number | null, limit: number | null): string {
   if (limit == null) return used == null ? 'Daily allowance unavailable' : `${used} run${used === 1 ? '' : 's'} today`
-  if (limit === 0) return 'No daily cap on this account'
+  if (limit === 0) return 'No daily cap on this company'
   return `${used ?? 0} of ${limit} run${limit === 1 ? '' : 's'} used today · resets midnight UTC`
 }
 

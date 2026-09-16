@@ -9,24 +9,52 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync, readdirSync } from 'node:fs'
 import { prose } from './support/prose.ts'
+import { scopeOf, screenForPath } from '../src/nav/nav.config.ts'
 
 const shell = readFileSync(new URL('../src/shell/AppShell.tsx', import.meta.url), 'utf8')
 /** The markup with commentary stripped, so a comment explaining a rule cannot satisfy the rule. */
 const body = prose(shell)
 
-test('THE TOP-BAR TITLE NAMES THE SCOPE YOU ARE IN, not the screen', () => {
-  // The screen name earned nothing up there — the sidebar already highlights the active item.
+test('THE TOP-BAR TITLE NAMES THE SCOPE YOU ARE IN on a rail screen, and the SCREEN where the rail highlights nothing', () => {
+  // On a rail screen the screen name earns nothing up there — the rail already highlights the item.
   //
-  // It says the COMPANY on a company-scoped screen and NOTHING on an account-scoped one. That it varies
-  // is the point rather than an inconsistency: Home spans everything the identity holds, so naming one
-  // company over it would assert a filter that is not being applied. Read off the screen's own `scope`
-  // — the same field that decides which side of the switcher it sits on — so the two cannot disagree.
+  // So there it says the COMPANY on a company-scoped screen and NOTHING on an account-scoped one. That it
+  // varies is the point rather than an inconsistency: Home spans everything the identity holds, so naming
+  // one company over it would assert a filter that is not being applied. Read off the screen's own
+  // `scope` — the same field that decides which side of the switcher it sits on — so the two cannot
+  // disagree. The empty half used to be `accountName`, the COMPANY for a client holding one grant; with
+  // that slot carrying the organisation for everyone, repeating it here would print one name twice.
   //
-  // THE EMPTY HALF USED TO BE `accountName`, which was the COMPANY for a client holding one grant. With
-  // that slot now carrying the organisation for everyone, repeating it here would print one name twice
-  // on one bar, which is how a label stops being read.
-  assert.match(body, /scopeOf\(entry\.id\) === 'owner' \? ownerName\(ownerInView\) : ''/)
-  assert.doesNotMatch(body, /<h1>\{entry\?\.label/, 'the screen label no longer heads the page')
+  // THE SCREEN NAME COMES BACK WHERE THE RAIL CANNOT HIGHLIGHT. A screen the avatar menu leads to — People
+  // and its two forms, Preferences, the installation's settings, About — is in no rail, so nothing said
+  // where you were. There the slot names the screen and the avatar draws active. The rule is ASKED OF THE
+  // NAV DATA and printed from the entry's own label, never a list of titles written into the shell: a
+  // screen renamed in nav.config is named by its new label, and one added to the menu is covered by being
+  // there. Which screens those are is driven in nav.test.ts.
+  const derivation = /const personal = (.*)/.exec(body)?.[1] ?? ''
+  assert.match(derivation, /avatarEntryOf\(entry\.id, me\)/, 'which screens name themselves is asked of the nav data')
+  assert.match(body, /personal \? entry\.label : scopeOf\(entry\.id\) === 'owner' \? ownerName\(ownerInView\) : ''/,
+    'the screen label where the avatar menu leads, and the scope rule everywhere else')
+  const bar = body.slice(body.indexOf('<header className="topbar">'), body.indexOf('</header>'))
+  assert.ok(bar.length > 200, 'the top bar was found')
+  for (const title of ['People', 'Give access', 'Modify access', 'Your preferences', 'Preferences', 'Installation settings', 'Global config', 'About']) {
+    assert.ok(!bar.includes(`'${title}'`) && !bar.includes(`"${title}"`) && !bar.includes(`>${title}<`),
+      `the top bar writes out "${title}" — a title list goes stale the day an entry is renamed`)
+  }
+  // The avatar draws active on exactly those screens, from the same answer.
+  assert.match(bar, /aria-current=\{personal \? 'true' : undefined\}/, 'the avatar is current where the title names the screen')
+  // Only a company name is marked for the screen-share blur; a screen's own name has nothing to hide.
+  assert.match(bar, /<h1 data-anon=\{personal \? undefined : 'mark'\}>/)
+})
+
+test('A REPORT IS NOT COMPANY-SCOPED, so the top bar names no company over one', () => {
+  // The report names its own company in its header row, one line under the bar. A company in the bar as
+  // well is the same name twice — and the wrong one whenever the switcher points elsewhere, because a
+  // report is identified by its run, never by the company selected in a menu. Held by the route's scope
+  // rather than by the absence of a field, which a screen added under `owner` would quietly change.
+  const report = screenForPath('/portal/result/some-run', { permissions: { run: true, manage: false } })
+  assert.equal(report?.id, 'result', 'the report route moved — this arm is about nothing')
+  assert.notEqual(scopeOf(report?.id ?? null), 'owner', 'the top bar would name a company over a report')
 })
 
 test('THE ORGANISATION SURVIVES, LABELLED, in the identity corner', () => {
@@ -139,4 +167,16 @@ test('no screen fetches the company roster for itself', () => {
     assert.doesNotMatch(readFileSync(new URL(f, dir), 'utf8'), /api\.roster\(/,
       `${f} resolves companies through the shell context, never by fetching the roster again`)
   }
+})
+
+test('THE BLUR COVERS EVERY COMPANY NAME THE SHELL DRAWS — the rail switcher and the company chips too', () => {
+  // Preferences promises that the blur "covers every mark and company on screen". The rail's switcher and
+  // the chips above a list both print company names on every screen they sit on, and neither was marked:
+  // a screen share with the blur on read the company in view off the rail. The browser check measures the
+  // whole page with the blur on; this pins the two places the shell draws a name without a screen's help.
+  const switcher = body.slice(body.indexOf('<select'), body.indexOf('</select>'))
+  assert.ok(switcher.includes('aria-label="Company"'), 'premise: this is the company switcher')
+  assert.match(switcher, /data-anon="mark"/, 'the switcher, which shows the company in view, is blurred with the rest')
+  const chips = prose(readFileSync(new URL('../src/shell/CompanyChips.tsx', import.meta.url), 'utf8'))
+  assert.match(chips, /<span data-anon="mark">\{ctx\.ownerName\(r\.key\)\}<\/span>/, 'each chip\'s company name is marked for the blur')
 })

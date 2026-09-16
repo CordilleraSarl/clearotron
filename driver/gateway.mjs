@@ -2598,29 +2598,45 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     const dropped = (lastFail.match(/connotation_query_unrecorded:(.+)$/s) || [])[1] || "";
     // ── TWO FAULTS, TWO REMEDIES, and sending the wrong one is what made this permanent ────────────
     //
-    // The gate marks each dropped query `[absent from the ledger]` or `[unmatched; nearest recorded: …]`.
-    // Absent means the search did not run and must. Unmatched means it DID run and the ledger's spelling
-    // differs beyond punctuation — re-running it changes nothing, and telling a seat to re-run is how a
-    // stage fails four times with the same string. Where both appear, both sentences are sent.
+    // The gate marks each dropped query `[unmatched; nearest recorded: …]` or `[no recorded query
+    // resembles this one]`, and the difference is what the gate can SEE, not what happened.
+    //
+    // UNMATCHED is knowable: something close is recorded, so the search ran and the wording differs.
+    // Re-running changes nothing, and telling a seat to re-run is how a stage fails four times with the
+    // same string.
+    //
+    // NO RESEMBLANCE IS NOT KNOWABLE, and this hint used to pretend otherwise. It said the query was
+    // missing and to go and run it — but a query recorded under a translation, a transliteration or the
+    // seat's own rewording resembles nothing and has already run, and that seat was then sent round the
+    // same loop the unmatched branch exists to break. The gate cannot tell the two apart; no threshold
+    // can, and a threshold that could would be one that hides a query nobody ran.
+    //
+    // So this branch stops asserting and hands over both repairs. Both are cheap, a seat can tell which
+    // applies by looking at its own ledger, and neither wastes an attempt: if the search did run, fix
+    // the row's wording; if it did not, run it and append the row. Where both labels appear, both
+    // sentences are sent, as before.
     const anyUnmatched = /\[unmatched; nearest recorded:/.test(dropped);
-    const anyAbsent = /\[absent from the ledger\]/.test(dropped);
-    hint = anyUnmatched && !anyAbsent
+    const anyUnresembled = /\[no recorded query resembles this one\]/.test(dropped);
+    hint = anyUnmatched && !anyUnresembled
       ? `these dictated meaning queries ARE recorded in ${gridLedgerName} extras.pr_risk[] under a ` +
         `different wording, which is why the driver cannot match them: ${dropped}. Do NOT re-run them — ` +
         `the search already ran and its results are already in the ledger. EDIT each row's \`query\` ` +
         `field to the query text EXACTLY as the task message dictates it, character for character, and ` +
         `leave its results untouched. The driver matches your rows to its list by that text`
-      : `every dictated meaning query owes a row, including the ones that find nothing — these are ` +
-      `missing from ${gridLedgerName} extras.pr_risk[]: ${dropped}. A query that returned NO results is ` +
-      `not an excuse to omit it: record it with an empty results array, which is the receipt that the ` +
-      `search RAN and came back clean. That is the whole point of the sweep — on an "offensive meaning" ` +
-      `query the empty answer IS the good news, and a missing row is indistinguishable from a search ` +
-      `nobody performed. Re-run ONLY the listed queries, append a row per query to extras.pr_risk[] ` +
-      `whether or not it has hits, and leave every row already recorded exactly as it is. Record each ` +
-      `query's text EXACTLY as the task message dictates it — the driver matches your rows to its list by ` +
-      `the query text, so a reworded or re-punctuated query reads as one you never ran. Where a query is ` +
-      `marked \`[unmatched; nearest recorded: …]\` it is already in the ledger under that wording: edit ` +
-      `that row's \`query\` to the dictated text rather than running the search again`;
+      : `the driver cannot match these dictated meaning queries to any row in ${gridLedgerName} ` +
+      `extras.pr_risk[]: ${dropped}. That means one of two things and the driver cannot tell which, so ` +
+      `check your own ledger and do whichever applies — both are cheap. IF THE SEARCH ALREADY RAN and ` +
+      `you recorded it under different wording — a translation, a reordering, your own phrasing — do ` +
+      `NOT run it again. EDIT that row's \`query\` field to the query text EXACTLY as the task message ` +
+      `dictates it, character for character, and leave its results untouched. IF IT NEVER RAN, run it ` +
+      `now and append a row to extras.pr_risk[]. A query that returned NO results still owes its row: ` +
+      `record it with an empty results array, which is the receipt that the search RAN and came back ` +
+      `clean. On an "offensive meaning" query the empty answer IS the good news, and a missing row is ` +
+      `indistinguishable from a search nobody performed. Either way, record each query's text EXACTLY ` +
+      `as the task message dictates it — the driver matches your rows to its list by that text, so a ` +
+      `reworded query reads as one you never ran. Touch ONLY the listed queries and leave every other ` +
+      `recorded row exactly as it is. Where a query is marked \`[unmatched; nearest recorded: …]\` the ` +
+      `driver has already found its row for you: edit that row's \`query\` and do not search again`;
   } else if (/connotation_search_missing/.test(lastFail)) {
     // — was "your PR / reputational section claims a clean meaning … but the ledger recorded ZERO
     // searches", which under the `ensure` prefix instructed the model to make the unbacked claim.

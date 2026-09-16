@@ -127,14 +127,14 @@ export function saveFailureText<T>(r: Result<T>, fallback = 'That change could n
     case 'notFound': return 'That run is no longer here — someone may have changed it. Reload the page.'
     case 'rateLimited': return 'Too many requests just now. Wait a moment and try again.'
     case 'tooLarge': return 'That request was too large for the server to accept.'
-    case 'noAccess': return 'You are signed in, but this account has not been granted access to that.'
+    case 'noAccess': return 'You are signed in, but this address has not been granted access to that.'
     // Deliberately says the deployment, not the reader. Nothing they can do to their own account fixes it.
     case 'surfaceUnavailable': return 'The settings surface is not configured on this deployment, so nothing could be read or saved. This is a server setting, not your access — an administrator needs to fix it.'
     // Same shape as the line above and for the same reason: the deployment, not the reader. `detail`
     // names the setting and arrives only for staff, so it is appended when it is there rather than
     // assumed — a client sees a true sentence with nothing missing from it.
     case 'featureOff': return `That is switched off on this installation, so it cannot be read or saved. This is a server setting, not your access.${r.detail ? ` ${r.detail}` : ''}`
-    case 'pickAccount': return 'That identity has more than one account — choose one and try again.'
+    case 'pickAccount': return 'That identity holds more than one company — choose one and try again.'
     //. Says what happened and what fixes it, and does NOT say the change failed:
     // it never reached the server, so nothing was half-done and re-doing it after signing in is safe.
     case 'signedOut': return 'Your session has ended, so nothing was changed. Sign in again and repeat that — it is safe to.'
@@ -351,6 +351,15 @@ export type Me = {
    * wrong operator name is a false statement about who holds the data.
    */
   readonly brand: string
+  /**
+   * WHERE THIS PERSON ASKS FOR A CHANGE TO THEIR SIGN-IN — the installation's administrator contact, as an
+   * href (`mailto:` or http(s)), or null when the installation names none.
+   *
+   * Read by the server where the brand is read and sent beside it. Null is the default and a real
+   * answer: Preferences then prints "Clearotron administrator" as plain words rather than a link that
+   * goes nowhere. The decoder admits only those three schemes, so nothing else reaches an `href`.
+   */
+  readonly administratorContact: string | null
 }
 
 /**
@@ -822,7 +831,8 @@ export type McpAccess = {
  * that substitution — the string itself is composed server-side, by the one author of every command.
  */
 export type ConnectCopy =
-  | { readonly kind: 'block'; readonly text: string }
+  /** `label` present ⇒ one bare value, handed over by a button carrying that label and never drawn as text. */
+  | { readonly kind: 'block'; readonly text: string; readonly label?: string }
   | { readonly kind: 'secret'; readonly label: string; readonly template: string; readonly slot: string }
 
 /**
@@ -869,6 +879,13 @@ export type ConnectOffer = {
    * instructions that cannot work for them.
    */
   readonly altSteps?: readonly ConnectStep[]
+  /**
+   * THE KEY DOOR'S STEPS, present only beside a sign-in door on a deployment that runs a key door of its
+   * own — a separate host, for assistants that cannot follow a browser sign-in. The page folds them away
+   * under the sign-in steps. Never present without that door: the sign-in host refuses a key, so key
+   * steps pointed at it could not work.
+   */
+  readonly keySteps?: readonly ConnectStep[]
   /**
    * A page a press can open so the reader lands in their assistant with the connector in front of them.
    *  settled 8. Null for every vendor today — the mechanism is built and the
@@ -1026,6 +1043,18 @@ export type ProviderState = {
    * remedy at all, and says so. Null ⇒ the row's own `missing` list is the whole answer, as before.
    */
   readonly remedy: string | null
+  /**
+   * HOW THE SOURCE IS REACHED, when the server says: `oauth` is a one-time sign-in, `built-in` needs
+   * nothing on this box, `absent` is not part of this build. Null for a source reached with a credential,
+   * and for an older server that does not send it.
+   */
+  readonly enrolment: 'oauth' | 'built-in' | 'absent' | null
+  /**
+   * For a one-time sign-in, what its stored sign-in is: `absent`, `usable`, `unusable` (present and cannot
+   * work) or `unreadable` (it could not be looked at). Null when the row has none. Only the state crosses
+   * the hop; the reason and the file stay with the server.
+   */
+  readonly credential: 'absent' | 'usable' | 'unusable' | 'unreadable' | null
 }
 
 /**
@@ -1758,7 +1787,9 @@ const decodeSteps = (raw: unknown): ConnectStep[] =>
     let copy: ConnectCopy | undefined
     if (c) {
       const kind = asString(c['kind'])
-      if (kind === 'block' && asString(c['text'])) copy = { kind, text: asString(c['text']) as string }
+      if (kind === 'block' && asString(c['text'])) {
+        copy = { kind, text: asString(c['text']) as string, ...(asString(c['label']) ? { label: asString(c['label']) as string } : {}) }
+      }
       else if (kind === 'secret' && asString(c['label']) && asString(c['template']) && asString(c['slot'])
         && (asString(c['template']) as string).includes(asString(c['slot']) as string)) {
         copy = { kind, label: asString(c['label']) as string, template: asString(c['template']) as string, slot: asString(c['slot']) as string }
@@ -1777,12 +1808,11 @@ function decodePerson(r: Record<string, unknown>): Person {
     access: decodeAccess(r),
     dangling: asArray(r['dangling']).filter((s): s is string => typeof s === 'string'),
     // THESE ARE OPTIONAL ON THE TYPE, WHICH IS WHY ONE OF THEM WAS MISSING HERE FOR MONTHS.
-    // The server has always sent `listed`, the People page has always read it as `listed === false`, and
+    // The server has always sent `listed`, the People page once branched on `listed === false`, and
     // this function returned an object literal that never mentioned it — so it was `undefined` on every
-    // row, the comparison was never true, and the "Reach only — no permissions set" line the server goes
-    // to the trouble of distinguishing has never once been drawn. Nothing failed: an optional field
-    // makes a missing decode invisible to the compiler and identical, on screen, to a server that did
-    // not send it. `decodePersonCarriesEveryField` is the arm.
+    // row, the comparison was never true, and the line the page drew for that shape never once reached
+    // a screen. Nothing failed: an optional field makes a missing decode invisible to the compiler and
+    // identical, on screen, to a server that did not send it. `decodePersonCarriesEveryField` is the arm.
     //
     // The defaults are not one default. A payload that omits `listed` is an older server whose people
     // all had entries; a payload that omits `covered` is one that cannot tell us whether we are looking
@@ -1852,6 +1882,12 @@ export const api = {
       // screen names both routes instead.
       setupRoute: b['setupRoute'] === 'packaged' ? 'packaged' : b['setupRoute'] === 'checkout' ? 'checkout' : null,
       brand: typeof b['brand'] === 'string' ? b['brand'] : '',
+      // A LINK OR NULL, and only a mail or web address is a link. The server already refuses anything
+      // else; this is the second check at the one place a value becomes an `href`.
+      administratorContact: typeof b['administratorContact'] === 'string'
+        && /^(mailto:[^\s]+@|https?:\/\/[^\s])/i.test(b['administratorContact'])
+        ? b['administratorContact']
+        : null,
       // — a control the deployment cannot serve says so instead of always failing.
       // Absent field (an older portal-service) ⇒ available: the button behaves exactly as before.
       stopControl: (() => {
@@ -2350,6 +2386,11 @@ export const api = {
           ...(!(r['door'] === 'sign-in' || r['door'] === 'key') && Object.hasOwn(r, 'altSteps')
             ? (() => { const a = decodeSteps(r['altSteps']); return a.length ? { altSteps: a } : {} })()
             : {}),
+          // THE FOLDED KEY STEPS, beside a sign-in door only. The server sends them only where a key door
+          // of its own exists; any other door carrying them is a wire this page does not trust.
+          ...(r['door'] === 'sign-in' && Object.hasOwn(r, 'keySteps')
+            ? (() => { const k = decodeSteps(r['keySteps']); return k.length ? { keySteps: k } : {} })()
+            : {}),
           // Only an https page survives. A wire value of any other shape is dropped rather than opened:
           // this is the one field on this screen that navigates a reader somewhere.
           launch: (() => {
@@ -2467,6 +2508,13 @@ export const api = {
               configured: r['configured'] === true,
               missing: asStrings(r['missing']),
               remedy: asString(r['remedy']),
+              // Closed sets, so a word this build does not know lands as null rather than as a state.
+              enrolment: r['enrolment'] === 'oauth' || r['enrolment'] === 'built-in' || r['enrolment'] === 'absent'
+                ? r['enrolment'] : null,
+              credential: (() => {
+                const s = asRecord(r['credential'])['state']
+                return s === 'absent' || s === 'usable' || s === 'unusable' || s === 'unreadable' ? s : null
+              })(),
             }
           })
         : null,
@@ -2509,7 +2557,7 @@ export const api = {
     })),
 
   /**
-   * Give someone access. Manage only; it writes the same grants file the command line writes.
+   * Give access. Manage only; it writes the same grants file the command line writes, and sends nothing.
    *
    * `access` names points inside the adder's own — a point outside it answers 404, the same as one that
    * does not exist. The switches belong to the PERSON: when the address already holds access somewhere
