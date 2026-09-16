@@ -1014,10 +1014,9 @@ function courtDecisionsSection(opts) {
 // disclosure the whole can't-close-then-disclose doctrine rests on, and it was measured reaching a
 // client short by two rows only hours before this redesign (tracker issue 637). It renders here, in the
 // reader's own words, with the counts — never the query text, the refusals or the provider faults.
-function whatWasSearchedSection(opts, coverage = []) {
+function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri = new Map()) {
   const sd = opts && opts.searchDepth;
   const open = (Array.isArray(coverage) ? coverage : []).filter((c) => COV_STATE[c?.state]?.cls !== 'ok');
-  if ((!sd || !sd.counts) && !open.length) return '';
   const c = (sd && sd.counts) || {}, rows = [];
   const byC = c.recordsByCountry || {};
   const per = Object.entries(byC).sort((a, b) => b[1] - a[1]).map(([k, n]) => `${regionName(k) || k} ${n.toLocaleString('en-GB')}`).join(' \u00b7 ');
@@ -1030,9 +1029,19 @@ function whatWasSearchedSection(opts, coverage = []) {
   const cd = { 'found': 'found', 'none-found': 'none found', 'not-checked': 'could not be checked', 'not-in-scope': 'not part of this search' }[c.courtDecisions];
   if (cd) rows.push(['Court decisions', cd]);
   const openHtml = open.length ? `<div class="openrows"><div class="rk">Left open</div>${coverageGrid(open)}</div>` : '';
-  if (!rows.length && !openHtml) return '';
+  // THE LEGEND FOR WHAT IS ON THE CARDS, kept when the scope fold went. It is not the engine narrating
+  // its own searching — it is what a linked registration number opens, why the rest are cited by number,
+  // and what a register-index entry means. A reader cannot read a card without it.
+  const hasRecordSet = recordsByUri && recordsByUri.size > 0;
+  const hasCards = Array.isArray(findings) && findings.length > 0;
+  const hasIndexEntry = (Array.isArray(findings) ? findings : []).some((f) => (f?.owner?.registrations ?? []).some((r) => r?.uri
+    && (hasRecordSet || !(r.status || r.filed || r.expiry || (r.classes && r.classes.length)))));
+  const prov = (hasRecordSet || hasCards)
+    ? `<div class="provwrap"><div class="rk">Record provenance</div><p class="provnote">${hasRecordSet ? 'Registration numbers on the cards were read from the register records. ' : ''}${officeLinkNote()}${hasIndexEntry ? 'A registration shown as a register-index entry was seen in the register index; its full record was not pulled. ' : ''}\u201cInferred\u201d beside an owner\u2019s likelihood to object means we judged it from what the owner sells and holds; we had no enforcement history to read.</p></div>`
+    : '';
+  if (!rows.length && !openHtml && !prov) return '';
   return `<details class="searched"><summary><span class="gname">What was searched</span><span class="gcount">Counts for this search</span></summary><div class="gbody">${
-    rows.map(([k, v]) => `<div class="row"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`).join('')}${openHtml}</div></details>`;
+    rows.map(([k, v]) => `<div class="row"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`).join('')}${openHtml}${prov}</div></details>`;
 }
 
 function alsoConsideredSection(ruledOut, recordsByUri = new Map(), opts = {}) {
@@ -2595,7 +2604,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   <!-- tracker issue 644 — WHAT WAS SEARCHED. The scope fold and the checks-we-ran narrative are gone
        (owner, 2026-09-16: no coverage narrative on the page). What is left is counts, folded closed:
        completed work appears as numbers and cleared names, never as the engine's account of itself. -->
-  ${whatWasSearchedSection(opts, coverage)}
+  ${whatWasSearchedSection(opts, coverage, findings, recordsByUri)}
 
   <footer>
     <span>${productName ? `${esc(productName)}. ` : ''}${FRAMEWORK
