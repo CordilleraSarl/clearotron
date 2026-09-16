@@ -143,7 +143,7 @@ export const NAV: readonly NavEntry[] = [
   { id: 'home', label: 'Home', path: '/portal/home', icon: 'panel-left', scope: 'account' },
   // The engine being model-agnostic and reachable over MCP is a selling point, not a settings detail —
   // and the connector is issued per identity, not per company, so it belongs above the line.
-  { id: 'ai', label: 'Use your AI', path: '/portal/ai', icon: 'sparkles', scope: 'account' },
+  { id: 'ai', label: 'Connect your AI', path: '/portal/ai', icon: 'sparkles', scope: 'account' },
   // PEOPLE, in the AVATAR MENU above Global config rather than in the rail (2026-09-10). Who reaches this
   // installation is a setting of the installation, not a place anyone works, so it sits with the other
   // settings. `hidden` keeps it routable and off the rail, and avatarMenuFor lists it. It is still not

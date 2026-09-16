@@ -62,7 +62,7 @@ The strongest evidence for a canonical term is what a user clicks to reach the t
 carries thirteen labels, and they are treated here as settled by the product:
 
 ```
-Home · Use your AI · People · New clearance · Clearances · Clearance · About
+Home · Connect your AI · People · New clearance · Clearances · Clearance · About
 Profile · Projects · Search templates
 Admin settings · Global config · Your preferences
 ```

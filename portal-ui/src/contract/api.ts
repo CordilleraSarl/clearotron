@@ -822,7 +822,8 @@ export type McpAccess = {
  * that substitution — the string itself is composed server-side, by the one author of every command.
  */
 export type ConnectCopy =
-  | { readonly kind: 'block'; readonly text: string }
+  /** `label` present ⇒ one bare value, handed over by a button carrying that label and never drawn as text. */
+  | { readonly kind: 'block'; readonly text: string; readonly label?: string }
   | { readonly kind: 'secret'; readonly label: string; readonly template: string; readonly slot: string }
 
 /**
@@ -869,6 +870,13 @@ export type ConnectOffer = {
    * instructions that cannot work for them.
    */
   readonly altSteps?: readonly ConnectStep[]
+  /**
+   * THE KEY DOOR'S STEPS, present only beside a sign-in door on a deployment that runs a key door of its
+   * own — a separate host, for assistants that cannot follow a browser sign-in. The page folds them away
+   * under the sign-in steps. Never present without that door: the sign-in host refuses a key, so key
+   * steps pointed at it could not work.
+   */
+  readonly keySteps?: readonly ConnectStep[]
   /**
    * A page a press can open so the reader lands in their assistant with the connector in front of them.
    *  settled 8. Null for every vendor today — the mechanism is built and the
@@ -1758,7 +1766,9 @@ const decodeSteps = (raw: unknown): ConnectStep[] =>
     let copy: ConnectCopy | undefined
     if (c) {
       const kind = asString(c['kind'])
-      if (kind === 'block' && asString(c['text'])) copy = { kind, text: asString(c['text']) as string }
+      if (kind === 'block' && asString(c['text'])) {
+        copy = { kind, text: asString(c['text']) as string, ...(asString(c['label']) ? { label: asString(c['label']) as string } : {}) }
+      }
       else if (kind === 'secret' && asString(c['label']) && asString(c['template']) && asString(c['slot'])
         && (asString(c['template']) as string).includes(asString(c['slot']) as string)) {
         copy = { kind, label: asString(c['label']) as string, template: asString(c['template']) as string, slot: asString(c['slot']) as string }
@@ -2349,6 +2359,11 @@ export const api = {
             : Object.hasOwn(r, 'door') ? { door: null } : {}),
           ...(!(r['door'] === 'sign-in' || r['door'] === 'key') && Object.hasOwn(r, 'altSteps')
             ? (() => { const a = decodeSteps(r['altSteps']); return a.length ? { altSteps: a } : {} })()
+            : {}),
+          // THE FOLDED KEY STEPS, beside a sign-in door only. The server sends them only where a key door
+          // of its own exists; any other door carrying them is a wire this page does not trust.
+          ...(r['door'] === 'sign-in' && Object.hasOwn(r, 'keySteps')
+            ? (() => { const k = decodeSteps(r['keySteps']); return k.length ? { keySteps: k } : {} })()
             : {}),
           // Only an https page survives. A wire value of any other shape is dropped rather than opened:
           // this is the one field on this screen that navigates a reader somewhere.

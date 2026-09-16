@@ -2058,6 +2058,20 @@ input.filter {
   margin: 0 0 10px; font-size: 12.5px; font-weight: 600; letter-spacing: .02em; color: var(--text-muted);
 }
 
+/* THE FOLDS: the key door beside a sign-in door, and "Setup steps" once connected. Both open only when the
+   reader opens them; the summary is the heading, with a chevron that turns when open. */
+.steps-alt-fold > summary,
+.steps-fold > summary { display: flex; align-items: center; gap: 10px; list-style: none; cursor: pointer; }
+.steps-alt-fold > summary::-webkit-details-marker,
+.steps-fold > summary::-webkit-details-marker { display: none; }
+.steps-alt-fold > summary .steps-alt-head,
+.steps-fold > summary .steps-alt-head { margin: 0; }
+.fold-chev { margin-left: auto; flex: none; color: var(--text-faint); transition: transform 0.15s var(--ease-out); }
+.steps-alt-fold[open] > summary .fold-chev,
+.steps-fold[open] > summary > .fold-chev { transform: rotate(90deg); }
+.steps-alt-fold > ol.steps { margin-top: 14px; }
+.steps-fold-body { margin-top: 14px; }
+
 .home2-acked { margin-top: 13px; }
 .home2-acked-toggle {
   padding: 0; background: none; border: 0; cursor: pointer; font: inherit; font-size: 12.5px;
@@ -2242,7 +2256,24 @@ input.filter {
 
 .ai-connect { margin-top: 34px; }
 
-.ai-screen .ai-connect-head { margin: 0 0 12px; }
+.ai-screen .ai-connect-head { margin: 0; }
+
+/* "Connect it" and, beside it, whether this reader's assistant has been seen calling. */
+.ai-connect-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.conn-state {
+  display: inline-flex; align-items: center; gap: 7px; padding: 3px 11px 3px 9px;
+  border: 1px solid var(--border-hairline); border-radius: 999px; background: var(--surface-raised);
+  font-size: 12.5px; color: var(--text-muted);
+}
+.conn-dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--text-faint); }
+.conn-dot-on { background: var(--tone-minimal); }
+
+/* "Optional", quietly, at the end of the standfirst — never the word the page opens with. */
+.lede-opt {
+  display: inline-block; margin-left: 6px; padding: 2px 7px; vertical-align: 2px; border-radius: 5px;
+  background: var(--surface-sunken); font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--text-faint);
+}
 
 /* ── THE WHERE-CHOICE ─────────────────────────────────────────────────────────────────────────────
    ONE control, the same size before and after a pick. Selection is shown the way every other choice in
@@ -2307,6 +2338,13 @@ input.filter {
    A MINIMUM HEIGHT WHETHER OR NOT ANYTHING IS IN IT, and the page raises it to the tallest panel this
    card can show — so neither picking an app nor pressing Copy moves anything around it. */
 .ai-slot { position: relative; min-height: 180px; }
+
+/* A closed fold reserves nothing: the reserved height is for steps that are drawn. */
+.ai-slot.is-folded { min-height: 0; }
+
+/* The way back to the report the reader came from, above the steps. */
+.back-to-report { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
+.back-to-report-line { font-size: 13.5px; color: var(--text-muted); }
 
 /* The hidden copy of every panel the slot's height is taken from. Laid out at the slot's own width, never
    seen, never reached by a pointer or a keyboard. */
@@ -2424,6 +2462,9 @@ ol.steps > li::before {
 
 .secret-btn { margin-top: 8px; }
 
+/* A folded list's buttons are quiet: the steps above the fold are the way in. */
+.ai-screen .btn-sm { padding: 6px 11px; font-size: 12.5px; }
+
 /* THE PRESSED CONTROL IS THE CONFIRMATION: solid accent on the button pressed, never a muted caption. */
 .is-copied,
 .is-copied:hover,
@@ -2467,6 +2508,8 @@ ol.steps > li::before {
 .ai-help { margin-top: 30px; max-width: 860px; }
 
 .ai-help p { margin: 6px 0 0; color: var(--text-muted); font-size: 13.5px; line-height: 1.55; }
+
+.ai-help-guide { font-size: 12px; text-decoration: none; cursor: pointer; }
 
 
 /* ── Give someone access: the points on the tree a new person can be given ─────────────────────────────
