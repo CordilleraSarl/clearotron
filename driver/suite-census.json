@@ -2847,6 +2847,12 @@
           "skips": 0,
           "todos": 0
         },
+        "no-two-dictated-queries-fold-to-one-key.test.mjs": {
+          "tests": 5,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "no-vendor-provenance-in-the-public-cut.test.mjs": {
           "tests": 4,
           "asserts": 11,

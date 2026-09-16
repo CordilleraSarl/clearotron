@@ -745,20 +745,31 @@ const OWN_NUMBER = /^\s*(?:at\s+\d|:\d)/;
 // and tag the 12. It widens a parser every INNER_CODES row depends on, to buy a weaker guarantee than
 // the one already in place — the audit verifies the NUMBER, which is what a symbol only approximates.
 //
-// THE COST, stated rather than discovered: a genuinely bare citation newly added anywhere in that file
-// now escapes the ratchet. Only the `mints` entries are covered by the audit. Citations in that file's
-// prose and `site:` fields are NOT, and belong written without a line number — two were repaired that
-// way in the same change rather than carried in under this exemption.
+// SO THE EXEMPTION IS SCOPED TO THE LINES THE AUDIT ACTUALLY COVERS, not to the file. Measured on this
+// tree: `contract-vocabulary.mjs` carries 117 numbered citations, 21 of them inside `mints` arrays and 96
+// outside. A file-wide entry would have taken the ratchet off all 117 to protect 21 — and the 96 are
+// precisely the prose and `site:` citations nothing else checks. Every `mints` array is written on one
+// line, so a `when` pattern matching that line is exact rather than approximate.
+//
+// An entry is either a bare path (the whole file, for the two cases where the whole file earns it) or
+// `{ file, when }`, where `when` must match the LINE the citation sits on. A `when` that stops matching
+// re-arms the ratchet over those lines, which is the failure direction worth having.
 export const RATCHET_EXEMPT = [
   "driver/test/a-new-citation-carries-something-that-can-be-checked.test.mjs",
   "driver/contract-e3-backlog.mjs",
-  "driver/contract-vocabulary.mjs",
+  // The `mints` lines only: `contract-audit.test.mjs` verifies each of those numbers against the line
+  // that writes the code. Everything else in this file stays under the ratchet.
+  { file: "driver/contract-vocabulary.mjs", when: /mints:\s*\[/ },
 ];
+
+/** Whether a citation on `text` in `file` is exempt from the ratchet. PURE. */
+export const ratchetExempt = (file, text) => RATCHET_EXEMPT.some((e) =>
+  (typeof e === "string" ? e === file : e.file === file && e.when.test(String(text ?? ""))));
 
 export function newBareCitations(addedLines) {
   const out = [];
   for (const { file, line, text } of addedLines ?? []) {
-    if (RATCHET_EXEMPT.includes(file)) continue;
+    if (ratchetExempt(file, text)) continue;
     for (const m of String(text ?? "").matchAll(CITE_RE)) {
       // The same discriminator the corpus scan uses: a second `:number` closing a paren is a V8 stack
       // frame, not a citation. Reading them as citations would refuse a fixture that captured a trace.

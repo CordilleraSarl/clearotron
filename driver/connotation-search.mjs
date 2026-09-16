@@ -45,7 +45,10 @@ export function pickConnotationTerms(terms, maxTerms = 6) {
   for (const t of (terms ?? [])) {
     const v = String(t ?? "").trim();
     if (!v) continue;
-    const k = v.toLowerCase();
+    // KEYED THE SAME WAY THE GATES COMPARE. A producer that folds less than its consumer dictates two
+    // terms the gate can only see as one, and a seat recording either satisfies it for both — the gate
+    // then passes a query that never ran, which is the fault it exists to catch, inverted.
+    const k = queryKey(v);
     if (seen.has(k)) continue;
     seen.add(k);
     picked.push(v);
@@ -83,7 +86,7 @@ const NON_LATIN_LETTER_RE = /(?![\p{Script=Latin}])\p{L}/u;
  * Returns ["<form> <shape>", …] like buildConnotationQueries. PURE.
  */
 export function buildTranslitConnotationQueries(modelVariants, { shapes = CONNOTATION_SHAPES_TRANSLIT, maxTerms = 8, coreTerms = [] } = {}) {
-  const seen = new Set((coreTerms ?? []).map((t) => String(t ?? "").trim().toLowerCase()).filter(Boolean));
+  const seen = new Set((coreTerms ?? []).map((t) => queryKey(t)).filter(Boolean));
   const picked = [];
   for (const v of (modelVariants ?? [])) {
     const value = String(v?.value ?? "").trim();
@@ -93,7 +96,7 @@ export function buildTranslitConnotationQueries(modelVariants, { shapes = CONNOT
     for (const form of value.split(" / ")) {
       const f = form.trim();
       if (!f) continue;
-      const k = f.toLowerCase();
+      const k = queryKey(f);
       if (seen.has(k)) continue;
       seen.add(k);
       picked.push(f);
@@ -177,7 +180,7 @@ export function meaningAnglesFromMatterContext(md, { alreadyQueried = [], maxAng
   if (!m) return [];
   const value = m[1].trim();
   if (/^none\b/i.test(value)) return [];
-  const seen = new Set((alreadyQueried ?? []).map((q) => String(q ?? "").trim().toLowerCase()).filter(Boolean));
+  const seen = new Set((alreadyQueried ?? []).map((q) => queryKey(q)).filter(Boolean));
   const picked = [];
   for (const part of value.split(";")) {
     const q = sanitizeMeaningAngle(part);
@@ -186,7 +189,7 @@ export function meaningAnglesFromMatterContext(md, { alreadyQueried = [], maxAng
     // keeps it, and a lone `"` dictated as a query is a search nobody asked for that no receipt can ever
     // match — the failure this change exists to stop. Dropped explicitly rather than as a side effect.
     if (!q || !/[\p{L}\p{N}]/u.test(q) || q.length > maxLen) continue;
-    const k = q.toLowerCase();
+    const k = queryKey(q);
     if (seen.has(k)) continue;
     seen.add(k);
     picked.push(q);
@@ -244,6 +247,13 @@ const SECTION_RE = /reputational|connotation/i;
  * space to a space, runs of whitespace to one, and case. Deliberately NOT accents or punctuation in
  * general — two queries differing by a letter are two queries, and a key that folded them would hide the
  * skipped-query fault this gate exists to catch.
+ *
+ * ONE HALF OF THAT SENTENCE NEEDS SAYING OUT LOUD, because omitting it cost a fail-open. NFKC folds the
+ * two ENCODINGS of one accented letter — composed U+00E9 and decomposed e + U+0301 — while leaving the
+ * accented letter distinct from its unaccented form. Mixed-source transliterations are exactly where
+ * both encodings arrive, so two producer rows that look different fold to one key here. EVERY producer
+ * that dedups a dictated list must therefore key on THIS function: a producer folding less than the gate
+ * dictates queries the gate cannot tell apart, and the gate then passes on a seat recording one of them.
  */
 export const queryKey = (s) => String(s ?? "")
   // NFKC FIRST, and it does the largest share of the work: it folds the compatibility forms a provider
