@@ -315,7 +315,9 @@ test('the ONE toggle in the offering is drawn only where it is a choice', () => 
   // nothing at all where it is not sold — never a greyed switch, which invites a click and answers
   // nothing. And only the first sends anything.
   const prose = flat(body(NEW_CLEARANCE))
-  assert.match(prose, /\{nativeControl === 'toggle' \? \(/)
+  // Nested now: the three treatments are drawn inside the selected search's row (asserted below), so
+  // the branch opens inside that condition rather than at the top of a JSX expression.
+  assert.match(prose, /nativeControl === 'toggle' \? \(/)
   assert.match(prose, /label="Native-language investigation"/)
   assert.match(prose, /: nativeControl === 'automatic' \? \(/)
   assert.match(prose, /searched automatically — it is part of this search, not something to switch on/)
