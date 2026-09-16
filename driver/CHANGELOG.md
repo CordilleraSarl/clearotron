@@ -1,5 +1,14 @@
 # clearotron-driver
 
+## 0.3.2-beta.4
+
+### Patch Changes
+
+- 3f4367e: Fixed: A multi-country search no longer refuses to start on a form that is already showing the territories it will search. When you have not chosen territories yourself, the form shows your company's own and the search uses those.
+  
+  Fixed: A new clearance form now opens with one line saying what to do. It no longer shows two warning panels about work you have not started.
+- 3f4367e: Fixed: On a phone, the list of clearances can now be scrolled sideways to read its columns. Before, the risk word was printed on top of the date and names broke in the middle of a word.
+
 ## 0.3.2-beta.3
 
 ### Patch Changes
