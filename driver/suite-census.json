@@ -2872,8 +2872,8 @@
           "todos": 0
         },
         "no-vendor-provenance-in-the-public-cut.test.mjs": {
-          "tests": 4,
-          "asserts": 11,
+          "tests": 7,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
@@ -5942,8 +5942,8 @@
           "todos": 0
         },
         "composerProduct.test.ts": {
-          "tests": 30,
-          "asserts": 113,
+          "tests": 32,
+          "asserts": 124,
           "skips": 0,
           "todos": 0
         },
@@ -6213,7 +6213,7 @@
         },
         "screenCopy.test.ts": {
           "tests": 63,
-          "asserts": 239,
+          "asserts": 240,
           "skips": 0,
           "todos": 0
         },
