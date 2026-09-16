@@ -1116,33 +1116,42 @@ function ownerCheckFor(ownerChecks, recordId) {
  * They keep the purple convention here exactly as they wear it under the cards, which is also what keeps
  * them off the export: the strip is one rule on .internal and it reaches both places.
  */
-function aboutRequestBlock(scope, requestNotes) {
+function aboutRequestBlock(scope, requestNotes, depthNote = '', productContext = '', searched = '') {
   const goods = String(scope?.goods ?? '').trim();
   const classes = (Array.isArray(scope?.classes) ? scope.classes : []).filter((c) => c || c === 0);
   const jx = (Array.isArray(scope?.jurisdictions) ? scope.jurisdictions : []).map((t) => territoryName(t)).filter(Boolean);
-  const asked = [
-    classes.length ? `Class${classes.length === 1 ? '' : 'es'} ${classes.join(', ')}` : '',
-    goods,
-  ].filter(Boolean).join(' — ');
-  const where = jx.length ? `Searched in ${listWords(jx)}.` : '';
-  const flags = (requestNotes ?? []).filter(Boolean);
-  if (!asked && !where && !flags.length) return '';
-  return `<div class="ko-req">
-      <span class="ko-lbl2">About this request</span>
-      ${asked ? `<p>${esc(asked)}</p>` : ''}
-      ${where ? `<p>${esc(where)}</p>` : ''}
-      ${flags.length ? `<div class="internal ko-reqflag">${
-        flags.map((n) => `<p class="ko-bul">${inlineMd(n)}</p>`).join('')}</div>` : ''}
+  const asked = goods;
+  const classLine = classes.length ? classes.join(', ') : '';
+  const where = jx.length ? listWords(jx) : '';
+  // The type of search is the bolded head of the depth note; the rest of that sentence is the product's
+  // covers line, which the owner ruled off the page.
+  const note = String(depthNote ?? '').trim();
+  const cut = note.lastIndexOf(' \u2014 ');
+  const stage = cut > 0 ? note.slice(0, cut).trim() : note;
+  const context = String(productContext ?? '').trim();
+  if (!asked && !where && !classLine && !stage && !context) return '';
+  // ONE PANEL, THE SAME ON BOTH REPORTS (tracker issue 645). The rows carry what was asked for; the
+  // counts row says what was counted and hides the territory list behind a fold rather than running a
+  // line of country codes through the middle of the panel.
+  const row = (k, v, extra = '') => v ? `<div class="row"><span class="k">${esc(k)}</span><span class="v">${esc(v)}${extra}</span></div>` : '';
+  return `<div class="panel about">
+      <div class="label">About this request</div>
+      ${row('Type of search', stage)}
+      ${row('Instructed use', asked)}
+      ${row('Classes', classLine)}
+      ${row('Where searched', where)}
+      ${row('Context', context)}
+      ${row('Searched on', searched)}
+      ${/* item 18 — a note for the reviewing lawyer does not reach the delivered page */''}
     </div>`;
 }
 
 function reviewerNotesBlock(m) {
   const notes = splitKnockoutNotes(m).name;
   if (!notes.length) return '';
-  return `<div class="internal">
-            <span class="tag">For the reviewing lawyer</span>
-            ${notes.map((n) => `<p class="ko-bul">${inlineMd(n)}</p>`).join('')}
-          </div>`;
+  // Item 18 (owner, 2026-09-16): the reviewing lawyer's notes stay in the working record, the audit
+  // workbook and the assistant. They were styled as a visible block on the page a client opens.
+  return '';
 }
 
 function registerFindingBlock(v, markIndex, reads = null, framework = null, ownerChecks = []) {
@@ -1579,7 +1588,7 @@ export function renderKnockoutHtml(findings, framework, {
   // They are about the asking, not about a name, so a batch repeating them per mark would be the same
   // sentence three times. reviewerNotesBlock renders the rest, under that mark's own cards.
   const requestNotes = marks.flatMap((m) => splitKnockoutNotes(m).request);
-  const aboutRequest = aboutRequestBlock(instructedScope, requestNotes);
+  const aboutRequest = aboutRequestBlock(instructedScope, requestNotes, depthNote, productContext, issued);
   const provider = hasCounts ? (registerCounts.providerLabel ?? registerCounts.provider ?? 'the register') : null;
   // The filings appendix renders only when the run produced a listing artifact — never on its absence,
   // and never as an empty table. A knockout with no sidecar publishes exactly the counts-only document.
@@ -1652,9 +1661,7 @@ window.addEventListener('beforeprint',o);})();</script>
   <header class="hero">
     ${demoBannerHtml(demoData === true)}
     ${confLineHtml(delivery, productName)}
-    ${depthStrip(depthNote)}
     <h1 class="mark">${esc(title)}</h1>
-    ${productContext ? `<p class="ko-classes" style="font-size:13.5px;margin:0 0 16px">${inlineMd(productContext)}</p>` : ''}
     ${aboutRequest}
     ${summary ? `<div class="sub">${mdParagraphs(summary)}</div>` : ''}
   </header>
