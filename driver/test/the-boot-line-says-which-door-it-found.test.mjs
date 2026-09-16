@@ -105,10 +105,19 @@ test("the sentences the doors actually send are still the ones the verdict recog
   // the old form could not have caught the first draft of the key-presented sentence, which contained
   // the words "access key" and therefore classified as a key door, and would have had the portal
   // announce that the network door takes the key it actually refuses.
-  const keySites = handler.match(/send\(res,\s*401,\s*\{\s*error:\s*"[^"]+"/g) ?? [];
+  //
+  // MATCHED BY SHAPE, NOT BY THE HELPER'S NAME. This read `send(res, 401, …)` until the handler began
+  // auditing its refusals and those two sites became `refuse(res, 401, …)`. The property had not moved
+  // — the two sentences were untouched and still classify differently — but the spelling had, so the
+  // arm fired for the rename rather than for the defect, and the obvious repair is the one that quietly
+  // re-points it at whatever the new spelling happens to be. Any call taking `(res, 401, { error: … })`
+  // is this shape whatever it is called, and the floor below is what makes the widening safe: if a
+  // future refactor puts these sentences somewhere this cannot see, the count goes to zero and says so
+  // rather than passing over an empty population.
+  const keySites = handler.match(/\w+\(res,\s*401,\s*\{\s*error:\s*"[^"]+"/g) ?? [];
   assert.equal(keySites.length, 2,
     `the handler has ${keySites.length} refusal sentences; this arm knows two and would measure the wrong one`);
-  const sentences = [...handler.matchAll(/send\(res,\s*401,\s*\{\s*error:\s*"([^"]+)"/g)].map((m) => m[1]);
+  const sentences = [...handler.matchAll(/\w+\(res,\s*401,\s*\{\s*error:\s*"([^"]+)"/g)].map((m) => m[1]);
   const byVerdict = new Map(sentences.map((t) => [doorCredential({ body: t }), t]));
   assert.equal(byVerdict.size, 2,
     `both of the handler's refusals classify the same way (${[...byVerdict.keys()]}), so a caller cannot tell the doors apart: ${JSON.stringify(sentences)}`);
@@ -133,7 +142,8 @@ test("the sentences the doors actually send are still the ones the verdict recog
   // ANCHORED ON THE LITERAL-FIRST FORM, which is the population the classifier reads and the one this
   // arm is about. The file sends 401 from five places; the other three compose their body from a value
   // rather than opening with a quoted sentence, and a pattern loose enough to take them read five.
-  const refusalExprs = [...handler.matchAll(/send\(res,\s*401,\s*\{\s*error:\s*("[\s\S]*?)\}\s*\)/g)].map((m) => m[1]);
+  // Matched by shape rather than by the sending helper's name, for the reason given above the count.
+  const refusalExprs = [...handler.matchAll(/\w+\(res,\s*401,\s*\{\s*error:\s*("[\s\S]*?)\}\s*\)/g)].map((m) => m[1]);
   assert.equal(refusalExprs.length, 2, `expected two composed refusals opening with a sentence, read ${refusalExprs.length}`);
 
   const SECRET = "/run/clearotron/engine.sock";
