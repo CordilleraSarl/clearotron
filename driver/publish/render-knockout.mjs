@@ -1120,7 +1120,7 @@ function ownerCheckFor(ownerChecks, recordId) {
  * They keep the purple convention here exactly as they wear it under the cards, which is also what keeps
  * them off the export: the strip is one rule on .internal and it reaches both places.
  */
-function aboutRequestBlock(scope, requestNotes, depthNote = '', productContext = '', searched = '') {
+function aboutRequestBlock(scope, requestNotes, depthNote = '', productContext = '', searched = '', registerCounts = null) {
   const goods = String(scope?.goods ?? '').trim();
   const classes = (Array.isArray(scope?.classes) ? scope.classes : []).filter((c) => c || c === 0);
   const jx = (Array.isArray(scope?.jurisdictions) ? scope.jurisdictions : []).map((t) => territoryName(t)).filter(Boolean);
@@ -1133,7 +1133,17 @@ function aboutRequestBlock(scope, requestNotes, depthNote = '', productContext =
   const cut = note.lastIndexOf(' \u2014 ');
   const stage = cut > 0 ? note.slice(0, cut).trim() : note;
   const context = String(productContext ?? '').trim();
-  if (!asked && !where && !classLine && !stage && !context) return '';
+  // REGISTERS COUNTED IS A ROW, AND THE TERRITORY LIST HIDES BEHIND IT (tracker issue 645). A line of
+  // country names running through the middle of the panel is the thing a reader skips; the count and
+  // its source are what they read, and the list is one click away when they want it.
+  const regions = (registerCounts?.scope?.regions ?? []).filter(Boolean);
+  const provider = registerCounts?.providerLabel ?? registerCounts?.provider ?? '';
+  const named = regions.map(territoryName).filter(Boolean);
+  const counted = regions.length
+    ? `${regions.length} ${regions.length === 1 ? 'territory' : 'territories'}${provider ? `, on ${provider}` : ''}`
+    : (registerCounts ? `Counted worldwide${provider ? `, on ${provider}` : ''}` : '');
+  const territories = named.length ? listWords(named) : '';
+  if (!asked && !where && !classLine && !stage && !context && !counted) return '';
   // ONE PANEL, THE SAME ON BOTH REPORTS (tracker issue 645). The rows carry what was asked for; the
   // counts row says what was counted and hides the territory list behind a fold rather than running a
   // line of country codes through the middle of the panel.
@@ -1145,6 +1155,7 @@ function aboutRequestBlock(scope, requestNotes, depthNote = '', productContext =
       ${row('Classes', classLine)}
       ${row('Where searched', where)}
       ${row('Context', context)}
+      ${row('Registers counted', counted, territories ? `<details class="terr"><summary>View territories</summary><p>${esc(territories)}</p></details>` : '')}
       ${row('Searched on', searched)}
       ${/* item 18 — a note for the reviewing lawyer does not reach the delivered page */''}
     </div>`;
@@ -1386,13 +1397,40 @@ function koScale(framework, band) {
       k === idx ? `;color:${tone(k)}` : ''}">${esc(b)}</span>`).join('')}</div></div>`;
 }
 
+// WHAT HAPPENS NEXT, AS ITS OWN SECTION (tracker issue 645). The engine already writes this paragraph,
+// under a heading part-way down the long assessment, where it sat behind a closed fold at the bottom of
+// the screen. It is the one paragraph a reader acts on, so it closes the page under its own heading.
+//
+// It MOVES, it is not copied: `splitOutcome` returns the assessment without it, and the fold renders
+// that remainder, so the words appear once. When no assessment names the heading the section does not
+// render and the assessment is shown whole. A screen covering several names carries one section holding
+// every name's paragraph, each under its own name; a single name takes no label.
+const OUTCOME_HEADING_RE = /^#{1,6}\s*(?:what to do with it|what happens next|next steps?|recommendation)\s*$/i;
+export function splitOutcome(assessment) {
+  const lines = String(assessment ?? '').split('\n');
+  const i = lines.findIndex((l) => OUTCOME_HEADING_RE.test(l.trim()));
+  if (i < 0) return { body: String(assessment ?? '').trim(), outcome: '' };
+  let end = lines.length;
+  for (let j = i + 1; j < lines.length; j += 1) {
+    if (/^#{1,6}\s/.test(lines[j].trim())) { end = j; break; }
+  }
+  const outcome = lines.slice(i + 1, end).join('\n').trim();
+  if (!outcome) return { body: String(assessment ?? '').trim(), outcome: '' };
+  return { body: [...lines.slice(0, i), ...lines.slice(end)].join('\n').trim(), outcome };
+}
+function markOutcomes(marks) {
+  return (marks ?? [])
+    .map((m) => ({ name: String(m?.mark ?? m?.name ?? '').trim(), text: splitOutcome(m?.assessment).outcome }))
+    .filter((o) => o.text);
+}
+
 function readBlock(m, framework) {
   const factors = (m.factors ?? []).filter((s) => typeof s === 'string' && s.trim());
   const counter = (m.counterFactors ?? []).filter((s) => typeof s === 'string' && s.trim());
   const structured = Boolean(m.basis || factors.length || counter.length || m.mitigation);
   const bullets = (m.bullets ?? []).map((b) => `<li>${inlineMd(b)}</li>`).join('');
   if (!structured) return bullets ? `<ul class="ko-bul">${bullets}</ul>` : '';
-  const assessment = String(m.assessment ?? '').trim();
+  const assessment = splitOutcome(m.assessment).body;
   const band = String(m.rating ?? '').trim();
   const card = [
     `<div class="label">Overall risk</div>`,
@@ -1626,7 +1664,7 @@ export function renderKnockoutHtml(findings, framework, {
   // They are about the asking, not about a name, so a batch repeating them per mark would be the same
   // sentence three times. reviewerNotesBlock renders the rest, under that mark's own cards.
   const requestNotes = marks.flatMap((m) => splitKnockoutNotes(m).request);
-  const aboutRequest = aboutRequestBlock(instructedScope, requestNotes, depthNote, productContext, issued);
+  const aboutRequest = aboutRequestBlock(instructedScope, requestNotes, depthNote, productContext, issued, registerCounts);
   const provider = hasCounts ? (registerCounts.providerLabel ?? registerCounts.provider ?? 'the register') : null;
   // The filings appendix renders only when the run produced a listing artifact — never on its absence,
   // and never as an empty table. A knockout with no sidecar publishes exactly the counts-only document.
@@ -1707,6 +1745,15 @@ window.addEventListener('beforeprint',o);})();</script>
   ${glance}
   ${onFieldSec}
   ${filingsSec}
+
+  ${(() => {
+    const outs = markOutcomes(marks);
+    if (!outs.length) return '';
+    const label = outs.length > 1;
+    const body = outs.map((o) => (label && o.name ? `<h3>${esc(o.name)}</h3>` : '') + mdParagraphs(o.text)).join('');
+    return `<div class="sec" id="next"><h2>What happens next</h2></div>
+  <div class="panel actions"><div class="actgrp act-you">${body}</div></div>`;
+  })()}
 
   ${/* tracker issue 645 — the scope section and its fold are off the page: what a screen is and
        what it did not search is the narration the owner ruled out. */''}
