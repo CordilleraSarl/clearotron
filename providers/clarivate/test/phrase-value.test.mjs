@@ -9,12 +9,9 @@
 // than a count. On a delivered matter every attempt at that search was refused, the refusal was
 // retried as though it were an outage, and a family of pending third-party filings went unseen.
 //
-// The probes below are the provider's own answers, taken with count calls on the test install:
-//
-//     *PLAN ADJ B*   500          *PLAN ADJ B    200, 36 records
-//     *LEVEL ADJ 2*  500          *LEVEL ADJ 2   200, 14 records
-//     *ROB ADJ A*    500          *ROB ADJ A     200,  3 records
-//     *A ADJ MOB*    500          A ADJ MOB*     200, 33 records  ← the leading rule, already in place
+// The provider refuses the wrapped form and answers the unwrapped one, at both ends of the phrase; the
+// same is already true of the leading rule this mirrors. The round that established that, and the figures
+// it returned, are on the tracker rather than here — this file publishes.
 //
 // ASSERTED AS EXACT STRINGS, not as "contains no trailing star". The value is the query; a test that
 // checked a property of it would pass on a string that searches something else.

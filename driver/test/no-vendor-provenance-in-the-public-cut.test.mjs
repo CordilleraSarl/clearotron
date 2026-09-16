@@ -108,13 +108,51 @@ const PROVENANCE = [
   { name: "a measured hit count beside the method", re: /\b(?:probed|re-probed)\b[\s,:]{0,3}[^\n]{0,12}?\b\d{2,}\b/i },
 ];
 
+// ── A PROBE ROUND IS ONE RECORD WRITTEN ACROSS SEVERAL LINES, AND EVERY RULE ABOVE READS ONE LINE ──
+//
+// The shape that got past them: a sentence saying the vendor was probed, and beneath it a table pairing
+// query shapes with that vendor's statuses and its measured counts. The sentence carries no figure and no
+// row carries a method word, so every line is innocent read alone and the file scanned clean for as long
+// as it stood. This is how anybody writes a probe round down, so it recurs rather than being an incident.
+//
+// BOTH HALVES MUST BE IN A COMMENT, and that constraint is the whole difference between this rule and an
+// unrunnable one. Measured over the scanned population: with it, five sites match and all five are real
+// probe rounds; without it, four more match and all four are functional test code — a variable named
+// `probed` beside a fixture's `total: 900`, a sentence about probing beside a fixture's page size. Figures
+// belong in code. A method word in a comment with figures under it does not.
+const METHOD_WORD = /\b(?:probed|re-probed|probe[-\s]verified|the\s+probes)\b/i;
+const WINDOW = 4;
+const isCommentLine = (line, isMarkdown) => isMarkdown || /^\s*(?:\/\/|\/?\*)/.test(line);
+// A table ROW rather than a sentence that mentions a figure: two or more numbers, one of them at least
+// two digits. One number in a line of prose is a capability statement, which is what we ask authors for.
+const isTableRow = (line) => {
+  const nums = line.match(/(?:^|[^\w.])\d+(?:,\d{3})*(?![\w.])/g) ?? [];
+  return nums.length >= 2 && nums.some((n) => /\d\d/.test(n));
+};
+
+export function probeTables(text, { isMarkdown = false } = {}) {
+  const lines = String(text).split("\n");
+  const out = [];
+  for (let i = 0; i < lines.length; i++) {
+    if (!METHOD_WORD.test(lines[i]) || !isCommentLine(lines[i], isMarkdown)) continue;
+    for (let j = i + 1; j <= Math.min(i + WINDOW, lines.length - 1); j++) {
+      if (isCommentLine(lines[j], isMarkdown) && isTableRow(lines[j])) { out.push({ method: i + 1, row: j + 1 }); break; }
+    }
+  }
+  return out;
+}
+
 const findings = () => {
   const out = [];
   for (const rel of SCANNED.flatMap(filesUnder)) {
-    const lines = readFileSync(join(ROOT, rel), "utf8").split("\n");
+    const text = readFileSync(join(ROOT, rel), "utf8");
+    const lines = text.split("\n");
     lines.forEach((line, i) => {
       for (const p of PROVENANCE) if (p.re.test(line)) out.push(`${rel}:${i + 1} — ${p.name} — ${line.trim().slice(0, 110)}`);
     });
+    for (const t of probeTables(text, { isMarkdown: rel.endsWith(".md") }))
+      out.push(`${rel}:${t.method} — a probe round with its figures in a table under it — see line ${t.row}: `
+        + lines[t.row - 1].trim().slice(0, 90));
   }
   return out;
 };
@@ -190,6 +228,40 @@ test("a paid vendor's `test/` tree is in the scanned population, because it publ
   // THE FLOOR ON THE POPULATION. With no vendor test tree in the checkout every iteration above is
   // skipped and the arm passes having read nothing — the shape this whole file exists to refuse.
   assert.ok(proved, "no paid vendor `test/` tree holds a scannable file, so this arm proved nothing");
+});
+
+test("a probe round written as a table is caught, though every line of it reads clean alone", () => {
+  // THE SPECIMEN IS THE REAL ONE — the shape this rule was written for, kept here rather than described.
+  // Each line goes through the per-line rules FIRST: if any of them fires, this arm would pass for a
+  // reason that has nothing to do with the table, and the gap it names would still be open.
+  const specimen = [
+    "  // leading rule above exists for. Probed on the test install, count calls only:",
+    "  //   *PLAN ADJ B*   500      *PLAN ADJ B    200, 36 records",
+    "  //   *LEVEL ADJ 2*  500      *LEVEL ADJ 2   200, 14 records",
+  ];
+  for (const line of specimen)
+    assert.deepEqual(PROVENANCE.filter((r) => r.re.test(line)).map((r) => r.name), [],
+      `a per-line rule already catches this, so the table rule is not what is being tested: ${line.trim().slice(0, 48)}`);
+  assert.deepEqual(probeTables(specimen.join("\n")), [{ method: 1, row: 2 }],
+    "the method word and the row beneath it are one record and must be reported as one");
+
+  // The gap is the DISTANCE, so drive the other side of it: past the window the two are not one record.
+  const spread = [specimen[0], "  //", "  //", "  //", "  //", specimen[1]];
+  assert.deepEqual(probeTables(spread.join("\n")), [],
+    "a method word must not reach a figure five lines away, or every comment near a number is a finding");
+});
+
+test("functional probe vocabulary beside CODE figures is not a probe table — the rule stays runnable", () => {
+  // THE CONTROL, and it is the half that decides whether this rule survives contact with the tree. Both
+  // specimens are real lines from the scanned population that a comment-blind version of this rule flags.
+  for (const innocent of [
+    ["        probed.push({ owners: p.owners, classes: p.nice_classes ?? [] });",
+     "        if ((p.nice_classes ?? []).length !== 1) return { ok: true, total: 900 };"],
+    ["  // The control: a genuinely empty term still earns verified-zero, because it was genuinely probed.",
+     "  installCorsearch((u) => (nameClausesOf(u) > 1 ? page(9999, 0, \"stack\") : page(0, 0)));"],
+  ])
+    assert.deepEqual(probeTables(innocent.join("\n")), [],
+      `functional code read as a probe round: ${innocent[0].trim().slice(0, 52)}`);
 });
 
 test("the scan REFUSES a corpus it cannot reach, rather than reporting it clean", () => {
