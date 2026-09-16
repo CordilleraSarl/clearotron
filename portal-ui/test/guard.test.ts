@@ -153,6 +153,22 @@ test('the composer stands down once the run is submitted', () => {
     'the composer stopped telling the guard whether the run has been sent')
 })
 
+test('a save that returns to the list leaves after the render that marks the form clean', () => {
+  // SAVING AN EDITED TEMPLATE ASKED "LEAVE THIS PAGE?" about the save that had just landed. The guard reads
+  // its flag through a ref written during render, and the composer called `go` in the same handler that
+  // recorded the saved baseline — before any render had happened. So the leaving is requested there and
+  // performed by an effect, after the render. Read as text, because the runner cannot mount the screen;
+  // the browser drive (portal-lifecycle-check.mjs) is what presses Save changes and waits for the list.
+  const composer = src('screens/NewClearance.tsx')
+  const saved = composer.indexOf('setSavedDraft(JSON.stringify(')
+  const leaving = composer.indexOf("if (editingSlug) {", saved)
+  assert.ok(saved > 0 && leaving > saved, 'the edit branch after a save was not found')
+  const branch = composer.slice(leaving, composer.indexOf('}', leaving))
+  assert.doesNotMatch(branch, /ctx\.go\(/, 'the save navigates in the handler again, before the render that marks the form clean')
+  assert.match(branch, /setLeaveTo\('\/portal\/brand\/searches'\)/, 'the save no longer returns an edit to Search templates')
+  assert.match(composer, /useEffect\(\(\) => \{\s*if \(leaveTo\) ctx\.go\(leaveTo\)/, 'nothing performs the navigation once the form is clean')
+})
+
 test('a fresh composer has nothing to lose, and a saved one has nothing to lose either', () => {
   // ── THE DEFECT THIS PREDICATE WAS EXTRACTED TO FIX ─────────────────────────────────────────────
   //

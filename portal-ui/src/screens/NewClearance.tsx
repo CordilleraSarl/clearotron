@@ -225,6 +225,17 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
    */
   const [savedDraft, setSavedDraft] = useState<string | null>(null)
 
+  // WHERE A SAVE LEAVES FOR, AND IT LEAVES AFTER THE RENDER THAT MAKES THIS PAGE CLEAN. The unsaved guard
+  // reads its flag through a ref written during render and asks at the moment of navigation, so a `go`
+  // straight after `setSavedDraft` asked it before React had re-rendered: saving an edited template was
+  // answered with "Leave this page? You have changes here that have not been saved" about the save that
+  // had just landed. The create-company form learned the same thing, the same way.
+  const [leaveTo, setLeaveTo] = useState<string | null>(null)
+  useEffect(() => {
+    if (leaveTo) ctx.go(leaveTo)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [leaveTo])
+
   // A composed-but-unsent clearance is unsaved work like any form's, and this is the screen where losing
   // it costs the most — it can be twenty names, a goods description and a set of levers. EMPTY is the
   // baseline a fresh composer has, `savedDraft` the one it earns; once submitted there is nothing left
@@ -684,7 +695,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
       }))
       // An EDIT came from Search templates and belongs back there — the list is where the result of the
       // change is visible. A create stays put: the form on screen is the search being started.
-      if (editingSlug) { ctx.go('/portal/brand/searches'); return }
+      if (editingSlug) { setLeaveTo('/portal/brand/searches'); return }
       setSaveOpen(false)
       setSaveName('')
       setSaveText('')

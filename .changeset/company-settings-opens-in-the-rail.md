@@ -21,3 +21,5 @@ New: New company uses the same cards and tags as Profile, and asks for a key onl
 Fixed: Permitted searches on Profile names each search template the way Search templates does, instead of printing its key.
 
 Fixed: Default search depth and the Builds on column name each search once instead of twice.
+
+Fixed: saving changes to a search template returns to Search templates without warning that the changes were not saved.
