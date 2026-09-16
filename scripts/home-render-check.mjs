@@ -717,11 +717,11 @@ for (const [name, spec] of Object.entries(STATES)) {
         say(JSON.stringify(opened.buttons) === JSON.stringify(['Stop after this step', 'Leave it running']),
           `${name}/${theme}: the primary button and "Leave it running" sit side by side, primary first — read ${JSON.stringify(opened.buttons)}`)
         say(/A stopped search cannot be restarted and produces no report\. It stays in Clearances, marked stopped\. Its finished steps stay readable through Ask AI\./.test(opened.text),
-          `${name}/${theme}: the dialog does not state the facts of a stop`)
+          `${name}/${theme}: the stop dialog states the facts of a stop`)
         say(/Register sweeps finishes first, so its work is kept\. There is no reliable completion estimate for this step\./.test(opened.text)
           && /Register sweeps is cut off and its work is lost\. Everything recorded before it is kept\./.test(opened.text),
-          `${name}/${theme}: the two options do not name the step in progress`)
-        say(!/allowance/i.test(opened.text), `${name}/${theme}: the stop dialog mentions the allowance`)
+          `${name}/${theme}: both options name the step in progress`)
+        say(!/allowance/i.test(opened.text), `${name}/${theme}: the stop dialog says nothing about the allowance`)
         if (shotDir) await tallShot(`home-stop-dialog-after-step-${theme}.png`)
         const now = await evalIn(`(async () => {
           const opt = document.querySelectorAll('.stop-choice-opt')[1]
@@ -731,9 +731,9 @@ for (const [name, spec] of Object.entries(STATES)) {
           return ${read}
         })()`)
         say(now?.primary === 'Stop now' && now?.checked[1] === true && now?.selected[1] === true,
-          `${name}/${theme}: selecting "Stop now" did not move the selection and the button's words with it — read ${JSON.stringify(now?.primary)} ${JSON.stringify(now?.checked)}`)
+          `${name}/${theme}: selecting "Stop now" moves the selection and the button's words with it — read ${JSON.stringify(now?.primary)} ${JSON.stringify(now?.checked)}`)
         say(stopRequests.length === sentBefore,
-          `${name}/${theme}: choosing an option SENT a stop (${stopRequests.length - sentBefore}) — only the button may stop the search`)
+          `${name}/${theme}: choosing an option sends no stop — only the button stops the search (sent ${stopRequests.length - sentBefore})`)
         if (shotDir) await tallShot(`home-stop-dialog-now-${theme}.png`)
         const closed = await evalIn(`(async () => {
           const leave = [...document.querySelectorAll('.modal-foot button')].find((b) => b.textContent.trim() === 'Leave it running')
@@ -743,7 +743,7 @@ for (const [name, spec] of Object.entries(STATES)) {
           return !document.querySelector('.stop-choice')
         })()`)
         say(closed === true && stopRequests.length === sentBefore,
-          `${name}/${theme}: "Leave it running" did not close the dialog without stopping anything`)
+          `${name}/${theme}: "Leave it running" closes the dialog and stops nothing`)
       }
     }
   }
