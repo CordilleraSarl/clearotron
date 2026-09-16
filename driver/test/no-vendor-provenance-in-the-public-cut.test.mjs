@@ -24,10 +24,14 @@
 // match the shapes that record an INVESTIGATION — a date, a hit count, or the words that name the method.
 //
 // SCOPED TO THE PAID VENDORS. EUIPO and USPTO are free public offices whose material carries no
-// third-party risk, and their notes hold capability facts worth keeping ( says so itself). The
-// three `providers/{clarivate,corsearch,signa}/test/` trees are WITHHELD from the public cut and are
-// where probe evidence legitimately lives — they are not scanned, by construction, because this is a
-// check about what publishes.
+// third-party risk, and their notes hold capability facts worth keeping.
+//
+// EVERY FILE UNDER A PAID VENDOR'S DIRECTORY IS SCANNED, ITS `test/` TREE INCLUDED. An earlier version
+// exempted `providers/{clarivate,corsearch,signa}/test/` on the stated ground that those trees are
+// withheld from the public cut. That ground was true when it was written and is false now: the trees are
+// tracked in the public repository, where anyone reads them without cloning. The package `files` list
+// does exclude `**/test/`, so nothing from them reaches the registry — but that shuts one of the two
+// doors and this check is named for the other one. The exemption is gone.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync, existsSync, statSync, mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
@@ -37,20 +41,23 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
-// The files that PUBLISH and name a paid vendor. `providers/_shared/` is here deliberately: it is not
-// withheld, it names vendors, and it carried two probe dates that its own file list did not mention.
+// The files that PUBLISH and name a paid vendor — each vendor's WHOLE directory, not its `src` alone.
+// `providers/_shared/` is here deliberately: it is not withheld, it names vendors, and it carried two
+// probe dates that its own file list did not mention.
+//
+// NAMING THE DIRECTORY RATHER THAN ITS PARTS IS THE POINT. While this list held `<vendor>/src` plus one
+// hand-added README, two of the three vendor READMEs were in no entry and a `test/` tree that had since
+// appeared in the public repository was read by nothing. Neither gap announced itself, because a list
+// that does not mention a file reports no absence for it. A directory covers what is added under it.
 const SCANNED = [
-  "providers/clarivate/src",
-  "providers/corsearch/src",
-  "providers/signa/src",
+  "providers/clarivate",
+  "providers/corsearch",
+  "providers/signa",
   "providers/_shared",
   "driver/skills/prelim-register/providers/clarivate.md",
   "driver/skills/prelim-register/providers/corsearch.md",
   "driver/skills/prelim-register/providers/signa.md",
-  "providers/corsearch/README.md",
 ];
-
-const WITHHELD_TEST_TREES = /providers\/(clarivate|corsearch|signa)\/test\//;
 
 /**
  * The corpus, and it REFUSES rather than narrows.
@@ -80,7 +87,6 @@ function filesUnder(rel, { top = true, base = ROOT } = {}) {
   const out = [];
   for (const e of entries) {
     const child = `${rel}/${e.name}`;
-    if (WITHHELD_TEST_TREES.test(`${child}/`)) continue;
     if (e.isDirectory()) out.push(...filesUnder(child, { top: false, base }));
     else if (/\.(js|mjs|md)$/.test(e.name)) out.push(child);
   }
@@ -158,8 +164,32 @@ test("no file in the public cut records HOW a paid vendor's behaviour was discov
   assert.deepEqual(found, [],
     "vendor provenance is back in the published tree. State the capability, not how it was learned: "
     + "\"the result ceiling is 5,000 and paging does not fail loud\", never the probe round that "
-    + "established it. Evidence belongs with the fixtures under the provider's own `test/` tree, which "
-    + "does not publish — see providers/README.md.\n  " + found.join("\n  "));
+    + "established it. A provider's own `test/` tree is not the place for it either: that tree is in "
+    + "the public repository too. Keep the evidence on the tracker issue that measured it.\n  "
+    + found.join("\n  "));
+});
+
+test("a paid vendor's `test/` tree is in the scanned population, because it publishes too", () => {
+  // THE PROPERTY, NOT THE PATHS. The two files that exist today are not named here: this asks the tree
+  // which vendor test directories hold something scannable, then requires the scan to have read all of
+  // it. A file renamed, or a fourth paid vendor added, keeps this arm honest where a literal list would
+  // go quietly out of date — which is exactly what the exemption it replaced had already done.
+  const scanned = SCANNED.flatMap(filesUnder);
+  let proved = 0;
+  for (const v of ["clarivate", "corsearch", "signa"]) {
+    const rel = `providers/${v}/test`;
+    if (!existsSync(join(ROOT, rel))) continue;
+    let expected;
+    // A tree holding nothing this scan reads is not this arm's finding; the floor below catches the
+    // case where that is true of every one of them.
+    try { expected = filesUnder(rel); } catch { continue; }
+    assert.deepEqual(scanned.filter((f) => f.startsWith(`${rel}/`)).sort(), expected.sort(),
+      `${rel}/ is in the public repository and the scan did not read all of it`);
+    proved += expected.length;
+  }
+  // THE FLOOR ON THE POPULATION. With no vendor test tree in the checkout every iteration above is
+  // skipped and the arm passes having read nothing — the shape this whole file exists to refuse.
+  assert.ok(proved, "no paid vendor `test/` tree holds a scannable file, so this arm proved nothing");
 });
 
 test("the scan REFUSES a corpus it cannot reach, rather than reporting it clean", () => {
