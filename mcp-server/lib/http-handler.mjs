@@ -306,8 +306,27 @@ export function makeHttpHandler({ verify, limiter, opsLimiter = null, sessions, 
         if (opsLimiter && entry.kind === "ops" && !opsLimiter.take(`ops:${entry.sub ?? "unnamed"}`))
           return refuse(res, 429, { error: "ops principal rate limit exceeded — retry shortly" }, { email: user.email, sub: entry.sub ?? null, body });
         // Audit AFTER scope resolution so the line names the PRINCIPAL (token sub), not just the
-        // transport identity — still strictly before any tool dispatch. Best-effort, never blocks.
-        try { appendAudit({ email: user.email, sub: entry.sub ?? null, body, door }); } catch { /* best-effort */ }
+        // transport identity. Best-effort, never blocks.
+        //
+        // ── ONE LINE, WRITTEN WHEN THE OUTCOME IS KNOWN ────────────────────────────────────────────
+        //
+        // This used to be written here, before dispatch, and therefore with `status: null` — a record
+        // that a call was made and no record of what happened to it. On a deployed log every one of the
+        // five thousand most recent lines carries a null status, so "did this key read that report" was
+        // answerable only as "it asked".
+        //
+        // THE TRADE MADE, SAID PLAINLY: writing before dispatch survives a crash mid-call, and writing
+        // on `finish` does not. One line carrying the outcome is what a reader needs and what this was
+        // asked for, and a crash that loses the line also loses the response, so the caller is not left
+        // believing a lost call succeeded. The refusals above are recorded at their own sites and do not
+        // depend on this hook at all, which is the case a review actually asks about.
+        //
+        // `finish` fires once the response is fully sent, which is when `res.statusCode` is the answer
+        // the caller got rather than the default it started as.
+        res.once("finish", () => {
+          try { appendAudit({ email: user.email, sub: entry.sub ?? null, body, status: res.statusCode, door }); }
+          catch { /* best-effort */ }
+        });
         const answered = entry.transport.handleRequest(req, res, body);
         if (stampScope) { try { await answered; } finally { stampScope(); } }
         return answered;

@@ -8,6 +8,7 @@ import { test, before } from "node:test";
 import { readFileSync } from "node:fs";
 import assert from "node:assert/strict";
 import { makeHttpHandler } from "../lib/http-handler.mjs";
+import { DEFAULT_AUDIT_PATH } from "../lib/audit.mjs";
 import { makeAccessVerifier } from "../lib/cf-access.mjs";
 import { RateLimiter } from "../lib/ratelimit.mjs";
 import { generateKeyPair, exportJWK, SignJWT, createLocalJWKSet } from "jose";
@@ -42,8 +43,20 @@ function mockReqInit(headers = {}) {
   return { method: "POST", url: "/mcp", headers, async *[Symbol.asyncIterator]() { yield raw; } };
 }
 
+// THE DOUBLE EMITS `finish`, BECAUSE THE HANDLER LISTENS FOR IT. The audit line carrying a call's
+// OUTCOME is written on `finish`, which is the first moment `statusCode` is the answer the caller got.
+// This double was a plain object with no `once`, so composing that hook threw and no call reached the
+// transport at all — loudly, which is the good case. The repair that suggests itself is to guard the
+// hook with `typeof res.once === "function"`; that would have made production audit and every test
+// silently not, and nothing would have said so. A double that cannot do what the real object does is
+// the thing to fix.
 function mockRes() {
-  return { statusCode: null, body: null, headersSent: false, writeHead(s) { this.statusCode = s; this.headersSent = true; }, end(b) { this.body = b; } };
+  return {
+    statusCode: null, body: null, headersSent: false, _finish: [],
+    once(ev, fn) { if (ev === "finish") this._finish.push(fn); return this; },
+    writeHead(s) { this.statusCode = s; this.headersSent = true; },
+    end(b) { this.body = b; for (const fn of this._finish.splice(0)) fn(); },
+  };
 }
 function mockReq(method, path, headers = {}) {
   return { method, url: path, headers, async *[Symbol.asyncIterator]() { /* empty body */ } };
@@ -223,4 +236,70 @@ test("§E client surface: firm CF identity + no token → 403 (never internal on
   await mk({ verify: mkVerify(), clientSurface: true, sessions, createSession: noSession })(mockReqInit({ "cf-access-jwt-assertion": await mint("a@example.com") }), res);
   assert.equal(res.statusCode, 403, "client surface admits ONLY a run-bound token; no token ⇒ refused");
   assert.equal(sessions.size, 0);
+});
+
+
+// ── WHAT THE ACCESS LOG SAYS ABOUT A CALL ─────────────────────────────────────────────────────────
+//
+// Read from the path the writer resolved at ITS import, never recomputed here: recomputing that branch
+// in the reader is the defect this log already carries a long comment about, one file over.
+const auditLines = () => {
+  let text = "";
+  try { text = readFileSync(DEFAULT_AUDIT_PATH, "utf8"); } catch { return []; }
+  return text.split("\n").filter((l) => l.trim()).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
+};
+
+test("a call that got through is recorded WITH ITS OUTCOME, and names the door it came in by", async () => {
+  const before = auditLines().length;
+  // A transport that actually ENDS the response, because `finish` is what carries the outcome. The
+  // doubles above return without ending, which is why they record nothing — that is the honest result
+  // for a call that never produced an answer, not a gap this arm should paper over.
+  const transport = { handleRequest: async (_req, res) => { res.writeHead(200); res.end("{}"); } };
+  const sessions = new Map([["sid", { transport, email: "a@example.com", sub: null, kind: "internal", lastSeen: Date.now() }]]);
+  const h = mk({ verify: mkVerify(), sessions, clientSurface: true });
+  const req = { method: "POST", url: "/mcp", headers: { "cf-access-jwt-assertion": await mint("a@example.com"), "mcp-session-id": "sid" },
+    async *[Symbol.asyncIterator]() { yield Buffer.from(JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/call", params: { name: "list_runs" } })); } };
+  await h(req, mockRes());
+
+  const added = auditLines().slice(before);
+  assert.equal(added.length, 1, `one line for one call, got ${added.length}`);
+  const [rec] = added;
+  assert.equal(rec.status, 200, `the outcome is on the line, not null: ${JSON.stringify(rec)}`);
+  assert.equal(rec.tool, "list_runs", "the tool is named");
+  assert.equal(rec.door, "client", "the door is named");
+  assert.equal(rec.email, "a@example.com", "the caller is named");
+});
+
+test("a call that was TURNED AWAY is recorded too, which is the gap an absent line used to hide", async () => {
+  const before = auditLines().length;
+  const h = mk({ verify: mkVerify(), sessions: new Map(), clientSurface: true });
+  // A POST carrying a session id nothing knows: refused at 404, and it must not vanish.
+  const req = { method: "POST", url: "/mcp", headers: { "cf-access-jwt-assertion": await mint("a@example.com"), "mcp-session-id": "gone" },
+    async *[Symbol.asyncIterator]() { yield Buffer.from(JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/call", params: { name: "list_runs" } })); } };
+  const res = mockRes();
+  await h(req, res);
+  assert.equal(res.statusCode, 404, "the caller still gets the refusal it got before");
+
+  const added = auditLines().slice(before);
+  assert.ok(added.length >= 1, "a refused call left no record at all — the defect this arm is for");
+  const rec = added[added.length - 1];
+  assert.equal(rec.status, "refused", `a turned-away call reads as refused: ${JSON.stringify(rec)}`);
+  assert.equal(rec.door, "client", "and still names its door");
+});
+
+test("a refusal BEFORE any identity is established names nobody, rather than inventing one", async () => {
+  const before = auditLines().length;
+  // tokenOnly with no key presented: refused at 401, before verification. The handler starts with a
+  // placeholder identity in scope, and writing THAT would name a caller who does not exist.
+  const h = mk({ verify: null, tokenOnly: true, sessions: new Map(), clientSurface: true });
+  const res = mockRes();
+  await h(mockReq("POST", "/mcp", {}), res);
+  assert.equal(res.statusCode, 401, "still refused");
+
+  const added = auditLines().slice(before);
+  assert.ok(added.length >= 1, "an unauthenticated refusal left no record");
+  const rec = added[added.length - 1];
+  assert.equal(rec.status, "refused", "it is a refusal");
+  assert.equal(rec.email, null, `it must name NOBODY, not the handler's placeholder: ${JSON.stringify(rec)}`);
+  assert.equal(rec.sub, null, "and no principal either");
 });
