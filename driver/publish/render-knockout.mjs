@@ -1397,30 +1397,36 @@ function koScale(framework, band) {
       k === idx ? `;color:${tone(k)}` : ''}">${esc(b)}</span>`).join('')}</div></div>`;
 }
 
-// WHAT HAPPENS NEXT, AS ITS OWN SECTION (tracker issue 645). The engine already writes this paragraph,
-// under a heading part-way down the long assessment, where it sat behind a closed fold at the bottom of
-// the screen. It is the one paragraph a reader acts on, so it closes the page under its own heading.
+// WHAT HAPPENS NEXT, AS ITS OWN SECTION (tracker issue 645). The engine writes this paragraph part-way
+// down each mark's long assessment, under a heading of its own, where it rendered only inside a fold
+// that opens at the bottom of the screen. It is the one paragraph a reader acts on, so it closes the
+// page under its own heading.
 //
 // It MOVES, it is not copied: `splitOutcome` returns the assessment without it, and the fold renders
-// that remainder, so the words appear once. When no assessment names the heading the section does not
-// render and the assessment is shown whole. A screen covering several names carries one section holding
-// every name's paragraph, each under its own name; a single name takes no label.
-const OUTCOME_HEADING_RE = /^#{1,6}\s*(?:what to do with it|what happens next|next steps?|recommendation)\s*$/i;
+// that remainder, so the words appear once.
+//
+// THE HEADING IS THE MODEL'S OWN, so this hoists only the LAST block of the assessment. The assessing
+// skill fixes no heading vocabulary — it asks for sub-headers "where the content divides" and for the
+// read to close on what to do with the name, and the wording is written fresh each run. Matching a list
+// of phrases anywhere in the document would let a mark whose read happens to argue under "Recommendation"
+// in the MIDDLE have that middle lifted to the bottom, handing the client the engine's argument in an
+// order the engine did not write, with nothing going red. A trailing block is the one position where a
+// move cannot reorder what is left. So the phrase list only decides whether the last block is the
+// outcome; anything earlier stays where it was written, and the page renders the assessment whole.
+const OUTCOME_HEADING_RE = /^#{1,6}\s*(?:what to do with it|what happens next|next steps?|recommendations?)\b\s*$/i;
 export function splitOutcome(assessment) {
-  const lines = String(assessment ?? '').split('\n');
-  const i = lines.findIndex((l) => OUTCOME_HEADING_RE.test(l.trim()));
-  if (i < 0) return { body: String(assessment ?? '').trim(), outcome: '' };
-  let end = lines.length;
-  for (let j = i + 1; j < lines.length; j += 1) {
-    if (/^#{1,6}\s/.test(lines[j].trim())) { end = j; break; }
-  }
-  const outcome = lines.slice(i + 1, end).join('\n').trim();
-  if (!outcome) return { body: String(assessment ?? '').trim(), outcome: '' };
-  return { body: [...lines.slice(0, i), ...lines.slice(end)].join('\n').trim(), outcome };
+  const whole = String(assessment ?? '').trim();
+  const lines = whole.split('\n');
+  const heads = lines.map((l, i) => [l.trim(), i]).filter(([l]) => /^#{1,6}\s/.test(l));
+  const last = heads[heads.length - 1];
+  if (!last || !OUTCOME_HEADING_RE.test(last[0])) return { body: whole, outcome: '' };
+  const outcome = lines.slice(last[1] + 1).join('\n').trim();
+  if (!outcome) return { body: whole, outcome: '' };
+  return { body: lines.slice(0, last[1]).join('\n').trim(), outcome };
 }
 function markOutcomes(marks) {
   return (marks ?? [])
-    .map((m) => ({ name: String(m?.mark ?? m?.name ?? '').trim(), text: splitOutcome(m?.assessment).outcome }))
+    .map((m) => ({ name: String(m?.name ?? '').trim(), text: splitOutcome(m?.assessment).outcome }))
     .filter((o) => o.text);
 }
 
