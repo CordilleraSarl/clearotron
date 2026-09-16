@@ -638,7 +638,7 @@ export const E3_BACKLOG = [
     where: "driver/stages.mjs:3470",
     surface: "stage-message",
     evidence: "EVERY \"Grounded profile\" section MUST start its body with the line \"- ord: <N>\" naming which finding it grounds (use the ordinal from this list; a profile that grounds no listed finding omits the line)",
-    reparsedBy: "driver/publish/parse.mjs:339 parseCaseLawProfiles (\"the optional '- ord: <N>' first body line … gives an EXACT join\"); driver/findings-model.mjs:273 /^-\\s*ord:\\s*(\\d+)\\s*$/m; driver/publish/index.mjs:776",
+    reparsedBy: "driver/publish/parse.mjs:339 parseCaseLawProfiles (\"the optional '- ord: <N>' first body line … gives an EXACT join\"); driver/findings-model.mjs:273 /^-\\s*ord:\\s*(\\d+)\\s*$/m; driver/publish/index.mjs:778 runOrigins",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   {
