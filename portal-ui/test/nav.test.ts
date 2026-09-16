@@ -5,7 +5,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { navFor, navGroupsFor, avatarMenuFor, screenForPath, NAV, HOME, type NavEntry, type Viewer } from '../src/nav/nav.config.ts'
+import { navFor, navGroupsFor, avatarMenuFor, screenForPath, scopeOf, NAV, HOME, type NavEntry, type Viewer } from '../src/nav/nav.config.ts'
 
 // Three people, and together they cover both switches: the manager, the person who runs clearances, and
 // the view-only person. A reader used to be one of two role words; now a reader is what they may do.
@@ -34,7 +34,13 @@ test('a screen reached from a row still resolves, even though the sidebar never 
   //
   // CLEARANCES SITS BELOW THE LINE. It always filtered its rows by the switcher's value; it merely sat
   // above the line while doing so, which is the disagreement this order corrects.
-  assert.deepEqual(ids, ['home', 'ai', 'new', 'clearances', 'brand.profile', 'brand.projects', 'brand.searches'])
+  //
+  // COMPANY SETTINGS IS ONE ITEM, and the company's three pages are its children in their reading order:
+  // one place with three pages, not three places.
+  assert.deepEqual(ids, ['home', 'ai', 'new', 'clearances', 'brand'])
+  const settings = navFor(RUNNER).find((e) => e.id === 'brand')
+  assert.equal(settings?.label, 'Company settings')
+  assert.deepEqual(settings?.children?.map((c) => c.label), ['Profile', 'Projects', 'Search templates'])
 })
 
 test('THE LINE: every sidebar entry declares which side of the switcher it is on', () => {
@@ -47,14 +53,21 @@ test('THE LINE: every sidebar entry declares which side of the switcher it is on
   }
   const g = navGroupsFor(RUNNER)
   assert.deepEqual(g.account.map((e) => e.id), ['home', 'ai'], 'reviewed across everything')
-  assert.deepEqual(g.owner.map((e) => e.id), ['new', 'clearances', 'brand.profile', 'brand.projects', 'brand.searches'], 'one company at a time')
+  assert.deepEqual(g.owner.map((e) => e.id), ['new', 'clearances', 'brand'], 'one company at a time')
+  // A CHILD IS WHAT YOU STAND ON, and the top bar names the scope of the screen you are on — so each
+  // company page declares the side it sits on too, rather than leaning on its parent's.
+  for (const c of g.owner.find((e) => e.id === 'brand')?.children ?? []) {
+    assert.equal(c.scope, 'owner', `${c.id} would put the account's name in the top bar over one company's page`)
+  }
+  assert.equal(scopeOf('brand.profile'), 'owner')
+  assert.equal(scopeOf('new-company'), 'account', 'making a company names no company in the top bar')
   // WHAT DIFFERS BETWEEN PEOPLE IN THE RAIL IS ONE SWITCH, and it moves one entry: Run is what puts New
   // clearance below the line — absent for a person without it, never present and refusing. Manage moves
   // nothing here, because People and Global config are in the avatar menu. Nothing else changes shape.
   assert.deepEqual(navGroupsFor(MANAGER).account.map((e) => e.id), g.account.map((e) => e.id), 'a manager has the same rail above the line')
   assert.deepEqual(navGroupsFor(MANAGER).owner.map((e) => e.id), g.owner.map((e) => e.id))
   assert.deepEqual(navGroupsFor(READER).account.map((e) => e.id), ['home', 'ai'])
-  assert.deepEqual(navGroupsFor(READER).owner.map((e) => e.id), ['clearances', 'brand.profile', 'brand.projects', 'brand.searches'],
+  assert.deepEqual(navGroupsFor(READER).owner.map((e) => e.id), ['clearances', 'brand'],
     'no New clearance for a person who cannot start one')
 })
 
@@ -130,19 +143,41 @@ test('without Manage there is no admin surface and no People; with it, both are 
   assert.deepEqual(avatarMenuFor(RUNNER).map((e) => e.id), ['preferences', 'about'])
 })
 
-test('standing on Brand profile highlights nothing else', () => {
-  // The bug this rename exists to prevent: `settings.profile` under a `settings` parent meant the
-  // dot-prefix active rule lit up Settings whenever you were on Profile. The expression below is
-  // AppShell's, copied verbatim so it cannot drift away from what the sidebar actually does.
+test('standing on a company page lights Company settings and that page, and nothing else', () => {
+  // REVERSED ON PURPOSE. This arm used to refuse any `brand` parent, because `settings.profile` under a
+  // `settings` parent lit Settings — a page of its own — whenever you were on Profile. Company settings
+  // is not a page: its three pages are its children, and lighting it while one of them is open is the
+  // truth the rail is meant to show, as `admin` does for Global config. What still must not happen is a
+  // top-level item claiming a page that is not its own, so that is what is asserted, both ways.
+  //
+  // Both expressions are AppShell's, copied verbatim so they cannot drift from what the sidebar does: the
+  // parent's dot-prefix rule, and a child lighting only on its own id.
   const active = (id: string, current: string) => current === id || current.startsWith(id + '.')
   for (const current of ['brand.profile', 'brand.projects', 'brand.searches']) {
     const lit = navFor(MANAGER).filter((e) => active(e.id, current)).map((e) => e.id)
-    assert.deepEqual(lit, [current], `${current} must highlight only itself`)
+    assert.deepEqual(lit, ['brand'], `${current} must light Company settings and no other rail item`)
+    const children = navFor(MANAGER).find((e) => e.id === 'brand')?.children ?? []
+    assert.deepEqual(children.filter((c) => current === c.id).map((c) => c.id), [current], `${current} lights only its own page`)
   }
-  // …and the structural reason it holds: nothing is named `brand`, so nothing is a prefix of them.
-  const walk = (es: readonly { id: string; children?: readonly never[] }[]): string[] =>
-    es.flatMap((e) => [e.id, ...(e.children ? walk(e.children) : [])])
-  assert.equal(walk(NAV as never).includes('brand'), false, 'a `brand` parent would re-introduce the false highlight')
+  // MAKING A COMPANY IS NOT ONE OF A COMPANY'S SETTINGS. Its id sits outside the prefix, so the rail
+  // lights nothing over it — which is the old bug's shape, and the reason the id is not `brand.new`.
+  const flat = (es: readonly NavEntry[]): NavEntry[] => es.flatMap((e) => [e, ...(e.children ? flat(e.children) : [])])
+  const create = flat(NAV).find((e) => e.path === '/portal/brand/new')
+  assert.ok(create, 'the create screen is not in the navigation data, so this arm would assert nothing')
+  assert.deepEqual(navFor(MANAGER).filter((e) => active(e.id, create.id)).map((e) => e.id), [],
+    `standing on ${create.id} lights ${JSON.stringify(navFor(MANAGER).filter((e) => active(e.id, create.id)).map((e) => e.id))}`)
+})
+
+test('Company settings has no page of its own, and lands on its first page', () => {
+  // The parent must resolve, or pressing it in the rail meets "That page does not exist". It resolves to
+  // itself, and the router forwards it to Profile — pinned on the router's own line, because a parent
+  // rendering Profile in place would leave the rail lighting no page at all.
+  assert.equal(screenForPath('/portal/brand', RUNNER)?.id, 'brand')
+  const main = readFileSync(new URL('../src/main.tsx', import.meta.url), 'utf8')
+  assert.match(main, /case 'brand':\s*\n\s*ctx\.go\('\/portal\/brand\/profile', \{ replace: true \}\)/,
+    'the Company settings address does not forward to Profile with a replace')
+  assert.equal(screenForPath('/portal/brand/new', MANAGER)?.id, 'new-company')
+  assert.equal(screenForPath('/portal/brand/new', RUNNER), null, 'making a company still needs Manage')
 })
 
 test('preferences stays routable for everyone while leaving the sidebar', () => {
@@ -196,6 +231,8 @@ test('the old settings paths do not resolve, so they land on not-found rather th
 
 test('longest match wins, so a sub-screen does not resolve to its parent', () => {
   assert.equal(screenForPath('/portal/brand/profile', RUNNER)?.id, 'brand.profile')
+  assert.equal(screenForPath('/portal/brand/searches', RUNNER)?.id, 'brand.searches')
+  assert.equal(screenForPath('/portal/brand', RUNNER)?.id, 'brand')
   assert.equal(screenForPath('/portal/admin/config', STAFF)?.id, 'admin.config')
   assert.equal(screenForPath('/portal/admin', STAFF)?.id, 'admin')
   assert.equal(screenForPath('/portal/admin/', STAFF)?.id, 'admin')

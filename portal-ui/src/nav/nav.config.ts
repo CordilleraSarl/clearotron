@@ -32,12 +32,15 @@ export type Viewer = { readonly permissions: Permissions; readonly allAccounts?:
  *
  * The old scheme filed the company screens under `settings.*` alongside `settings` itself, so
  * standing on `settings.profile` highlighted the Settings parent — a top-level item claiming to be the
- * page you are on when it is not. The three brand screens are therefore `brand.*` and DELIBERATELY have
- * NO `brand` parent entry: nothing can be a dot-prefix of them, so nothing can falsely highlight. If a
- * `brand` parent is ever added, that guarantee is gone and the bug returns — a test pins this.
+ * page you are on when it is not. The fault was a parent that was a PAGE of its own with other pages
+ * filed under it.
  *
- * `admin.*` keeps its dots because there IS an `admin` parent, and highlighting it while on one of its
- * children is exactly right.
+ * `brand` is a parent of the other kind: Company settings, a group whose pages are exactly its three
+ * children and which has no page of its own (its address lands on Profile). Lighting it while on one of
+ * them is true, the way `admin` lights for Global config. What must stay outside the prefix is anything
+ * that is NOT one of the company's settings — which is why making a company is `new-company` and not
+ * `brand.new`: under the prefix, Company settings would claim a page about a different company. A test
+ * pins both halves.
  */
 export type ScreenId =
   | 'home'
@@ -53,11 +56,13 @@ export type ScreenId =
   | 'people.add'
   // …and the form that CHANGES one, which is the same form filled in. Off the rail for the same reason.
   | 'people.modify'
-  // company screens — no `brand` parent exists, on purpose (see above)
+  // Company settings, and the three pages it opens into (see above)
+  | 'brand'
   | 'brand.profile'
   | 'brand.projects'
   | 'brand.searches'
-  | 'brand.new'
+  // making a company — deliberately outside the `brand.` prefix (see above)
+  | 'new-company'
   // administration — dot-scoped under a real parent that SHOULD highlight for them
   | 'admin'
   | 'admin.config'
@@ -183,16 +188,30 @@ export const NAV: readonly NavEntry[] = [
   // from this array, so an entry removed to tidy the sidebar turns the menu link into a dead one.
   { id: 'about', label: 'About', path: '/portal/about', icon: 'info', hidden: true },
 
-  // The company's own configuration. Flat by design: there is no `brand` parent entry, so none of these
-  // can be falsely highlighted by a dot-prefix match. The ids and routes keep the `brand` spelling —
-  // the rename here is to what a reader sees, and a route is neither read nor renamed.
-  { id: 'brand.profile', label: 'Profile', path: '/portal/brand/profile', icon: 'user', scope: 'owner' },
-  { id: 'brand.projects', label: 'Projects', path: '/portal/brand/projects', icon: 'folder', scope: 'owner' },
-  { id: 'brand.searches', label: 'Search templates', path: '/portal/brand/searches', icon: 'bookmark', scope: 'owner' },
-  // Creating a company. `hidden`, because it is reached from `+ New company` on the pick panel and from
-  // nowhere else — routing is DERIVED from this array, so the entry is what makes that button work, not
-  // what puts it in the rail. A visible entry would also red the two sidebar assertions, and the repair
-  // for those is not to edit them.
+  // COMPANY SETTINGS, ONE RAIL ITEM THAT OPENS INTO THE COMPANY'S THREE PAGES. Three top-level items of
+  // equal weight read as three places to work; they are one place with three pages, and the rail says so
+  // by revealing them under their parent while one of them is open. The parent has no page of its own:
+  // its address lands on Profile. Each child repeats `scope`, because the top bar reads the scope of the
+  // screen you are on, and a child is what you are on. The ids and routes keep the `brand` spelling —
+  // the rename is to what a reader sees, and a route is neither read nor renamed.
+  {
+    id: 'brand',
+    label: 'Company settings',
+    path: '/portal/brand',
+    icon: 'settings',
+    scope: 'owner',
+    children: [
+      { id: 'brand.profile', label: 'Profile', path: '/portal/brand/profile', icon: 'user', scope: 'owner' },
+      { id: 'brand.projects', label: 'Projects', path: '/portal/brand/projects', icon: 'folder', scope: 'owner' },
+      { id: 'brand.searches', label: 'Search templates', path: '/portal/brand/searches', icon: 'bookmark', scope: 'owner' },
+    ],
+  },
+  // Creating a company. `hidden`, because it is reached from `+ New company` on the Company settings
+  // pages, the pick panel and the switcher — routing is DERIVED from this array, so the entry is what
+  // makes those buttons work, not what puts it in the rail.
+  //
+  // NOT `brand.new`: under that prefix the Company settings item would light up over a page for making a
+  // different company (see the ScreenId note above).
   //
   // NO `scope`. An 'owner'-scoped id prints the SELECTED company's name in the top bar, which over a
   // page for making a different one is the conflation this whole family exists to remove. Scope-less
@@ -200,7 +219,7 @@ export const NAV: readonly NavEntry[] = [
   //
   // `needs` rather than a check in the markup, per this file's opening rule. It is the same permission
   // as the control that opens it — the people who may manage.
-  { id: 'brand.new', label: 'New company', path: '/portal/brand/new', icon: 'plus-circle', needs: 'manage', hidden: true },
+  { id: 'new-company', label: 'New company', path: '/portal/brand/new', icon: 'plus-circle', needs: 'manage', hidden: true },
 
   // Administration, reached from the AVATAR MENU rather than the sidebar — it is rare, it is not part of
   // the work lane, and it belongs to the person rather than to either scope. `hidden`, not deleted:
