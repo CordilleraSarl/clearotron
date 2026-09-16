@@ -85,7 +85,7 @@ properties below, each of which was learned the expensive way:
    them; silent auto-promotion twice resurrected intentionally deleted files. A skill relocated into
    the driver tree is relocation, not drift.
 4. **Driver block** — install dependencies, copy the seven unit files + `daemon-reload`,
-   install/enable/restart the sibling services (profile-service, client access/MCP), and
+   install/enable/restart the sibling services (`profile-service`, `client-access`, `client-mcp`), and
    **pre-create the queue dirs and the outbox**: an inotify `.path` watch on a directory that does
    not exist never fires.
 5. **Restart the gateway last**, with no live run and the triggers stopped, then re-enable the four
@@ -260,37 +260,37 @@ pre-change telemetry directory), because the resolver reads the file that is the
 ## Access control and instance isolation
 
 Three capabilities you meet once the engine produces reports other people want to see. Each is off,
-or single-tenant, until you configure it.
+or shared by everyone, until you configure it.
 
-### Tenant grants — who may see which runs
+### Organisation grants — who may see which runs
 
-`CLEAROTRON_ACCESS_FILE` names one JSON file: the guest list. It maps **tenants** (an organisation) to the
-**accounts** they may see, and users within a tenant to a subset of it. An account key is a
-`profileKey` — the customer bundle a run froze at start (§4) — so a grant is expressed in the same
+`CLEAROTRON_ACCESS_FILE` names one JSON file: the guest list. It maps **organisations** (`tenants`) to the
+**companies** (`accounts`) they may see, and people within an organisation to a subset of it. A company
+key is a `profileKey` — the company bundle a run froze at start (§4) — so a grant is expressed in the same
 vocabulary as the runs it filters.
 
 **Unset means enforcement is off for the MCP faces** — whoever gets through your door sees every run.
 **It is not a valid state for the portal, which refuses to start without a guest list**; the access
-model is stated once, in [docs/SECURITY.md](../SECURITY.md). Setting the variable turns account scoping
+model is stated once, in [docs/SECURITY.md](../SECURITY.md). Setting the variable turns company scoping
 on for **every face at once** — the portal, the MCP read face, the client face, and ops tokens. There is
 no half-enforced state and no per-surface switch to forget.
 
-Resolution: the signed-in email is matched against each tenant's `users` map, by exact address or by
-a `*@domain` wildcard; a user value of `"*"` means the tenant's whole grant; an address appearing in
-several tenants gets the union. An authenticated address matching nothing is granted nothing — it
-signs in and sees an empty world. That is deliberate. Signing in is not being enrolled.
+Resolution: the signed-in email is matched against each organisation's `users` map, by exact address or
+by a `*@domain` wildcard; a user value of `"*"` means the organisation's whole grant; an address
+appearing in several organisations gets the union. An authenticated address matching nothing is granted
+nothing — it signs in and sees an empty world. That is deliberate. Signing in is not being enrolled.
 
 **A file that is set but unreadable throws rather than failing open.** A missing path, malformed JSON,
 or a file with no `tenants` object stops the process and names the reason. Keep that in mind when you
 move the file: a guest list you configured and then broke must never resolve to "admit everybody".
 
-`examples/grants.example.json` is a working file over the synthetic demo customers this repo ships.
+`examples/grants.example.json` is a working file over the synthetic demo companies this repo ships.
 Copy it, point `CLEAROTRON_ACCESS_FILE` at your copy, sign in as one of its addresses, and you see
-exactly that tenant's accounts. Then delete it and write your own — it names nobody real, which also
+exactly that organisation's companies. Then delete it and write your own — it names nobody real, which also
 means it grants nothing you have.
 
 `npx clearotron start` (§6) writes an empty roster (`{"tenants": {}}`) into its state directory: your own staff
-address is admitted, no client is enrolled, and enforcement is already on.
+address is admitted, nobody else is enrolled, and enforcement is already on.
 
 ### Ops tokens — a credential for the verbs that spend
 
@@ -308,8 +308,8 @@ node mcp-server/mint-token.mjs --scope ops --sub <principal-name> \
   tokens are then distinguishable in the log; one shared token makes them permanently indistinguishable.
 - `--verbs` is a least-privilege allowlist of write tools. A connector minted without `stop_run`
   cannot call it — the check sits at the one chokepoint every tool call passes, not in each tool.
-- `--accounts` caps the token to a set of account keys, so a trial integration can start demo
-  searches and never a real customer's.
+- `--accounts` caps the token to a set of company keys, so a trial integration can start demo
+  searches and never a real company's.
 - The token is printed once and stored nowhere. Losing it means minting another.
 
 **Revoking one.** Every mint prints a `jti`. Write that line into the file named by
@@ -338,11 +338,11 @@ That makes the environment the whole isolation boundary, so set it to make a tes
 | Axis | Variables | Why it is structural |
 |---|---|---|
 | Data plane | `CLEAROTRON_REPORTS_DIR`, `CLEAROTRON_WORK_DIR`, `CLEAROTRON_QUEUE_DIR`, `CLEAROTRON_OUTBOX_DIR` | separate directories mean a test run cannot publish into the live archive even by mistake |
-| Customer configs | `CLEAROTRON_CUSTOMERS_DIR`, `CLEAROTRON_INSTRUCTIONS_DIR` **unset** on the test instance | it then resolves the repo's synthetic demo customers and cannot read a real bundle |
+| Company configs | `CLEAROTRON_CUSTOMERS_DIR`, `CLEAROTRON_INSTRUCTIONS_DIR` **unset** on the test instance | it then resolves the repo's synthetic demo companies and cannot read a real bundle |
 | Engine | the running engine's binary variable (`CLEAROTRON_CLAUDE_PATH` / `CLEAROTRON_CODEX_PATH`) pointed at `driver/test/mock-claude.mjs` | the mock engine needs no provider credentials, so a test instance can hold none — the strongest form of "spends nothing" |
 | Ports | give the test instance its own for the portal, MCP face and profile service | a default that collides with a live service turns a dry run into a probe of the live one, and it looks like it worked |
 | Auth | `TRADEMARK_MCP_AUTH_DISABLED=1` with `TRADEMARK_MCP_DEV=1` is **loopback-only, enforced in code** | the switch cannot be used to open a remote face |
 
-The strongest isolation is still two instances with their own pool and their own config store. Tenant
-grants above are for the case where one instance must be shared safely — demos, trials, per-user
-scoping inside one firm — not a substitute for this.
+The strongest isolation is still two instances with their own pool and their own config store. Organisation
+grants above are for the case where one instance must be shared safely — demos, trials, per-person
+scoping inside one organisation — not a substitute for this.

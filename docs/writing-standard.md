@@ -1,6 +1,6 @@
 # Writing standard
 
-Every surface a customer reads: report HTML, portal screens, README, docs. Two parts.
+Every surface a user reads: report HTML, portal screens, README, docs. Two parts.
 
 ## Part one: how to write
 
@@ -37,7 +37,7 @@ Say what the search did and what happens next. Never define the product by negat
 - Before: "What it is not. A clearance search. We drew no register conclusions and give no filing advice."
 - After: "A name that passes here goes on to clearance."
 
-## No engineering word in anything a client reads
+## No engineering word in anything a user reads
 
 Error codes, connector names, routing tables and internal identifiers are not the reader's vocabulary.
 State the limit and its consequence.
@@ -71,7 +71,7 @@ answers questions about any of them. The page carries the finding.
 
 ## A fault is fixed, or shown to the person who can act on it
 
-A customer cannot repair a missing coverage record. Narrating the failure to them turns our defect into
+A reader cannot repair a missing coverage record. Narrating the failure to them turns our defect into
 their problem.
 
 - Before: "No coverage record was produced for this run. This section normally lists what each search

@@ -152,9 +152,9 @@ cap. An integrator that only runs during the day leaves a failure unreported unt
 nothing in the product can compensate for that: the product composes the notice and records that it is
 owed, and sending is yours.
 
-**Two things that make that list incomplete, both silent.** A token scoped to named accounts sees only
-those accounts' runs, so a run for an account the token does not carry is invisible rather than absent —
-mint the integrator's token to cover every account it delivers for, and re-mint it when one is added.
+**Two things that make that list incomplete, both silent.** A token scoped to named companies sees only
+those companies' runs, so a run for a company the token does not carry is invisible rather than absent —
+mint the integrator's token to cover every company it delivers for, and re-mint it when one is added.
 And a `limit` you pass yourself is obeyed as given: for this query, do not pass one.
 
 The filesystem loop below remains equivalent for integrators that do have data-plane access.
@@ -194,29 +194,29 @@ double-sends (`.sent` guards it).
 
 ## One report per run
 
-A run publishes ONE report document per mark, on every lane. There is no internal variant and no client
-variant, and nothing writes `report.client.html` — internal working material (staff notes, the
+A run publishes ONE report document per mark, on every lane. There is no internal variant and no second
+one for outside readers, and nothing writes `report.client.html` — internal working material (staff notes, the
 model's register estimate) is not stripped from the report, it is not in the report: it lives in the
 audit workbook. Two renderings of one run is how the wrong link gets sent.
 
 Beside it the run publishes `report-data.json` (`schema: "report-data/1"`): the run as data — level
 identity, bands, per-mark points, evidence links, register counts. That is the input a bespoke,
-forwardable client email is drafted from. The engine composes exactly one email shape, a cover note
-pointing at the report; per-customer formatting is not a config knob.
+forwardable email is drafted from. The engine composes exactly one email shape, a cover note
+pointing at the report; per-company formatting is not a config knob.
 
 The second document was a real hazard while it existed: any surface that opened a report **by file
-path** bypassed the serve-time preparation, so a client-facing path pointed at the wrong file served
+path** bypassed the serve-time preparation, so a non-staff path pointed at the wrong file served
 the internal report. Two properties close that, and both are load-bearing for anyone building a
-client-facing surface on this engine:
+surface for non-staff readers on this engine:
 
-- **Publish writes one file.** No lane produces `report.client.html`, and the per-customer index
+- **Publish writes one file.** No lane produces `report.client.html`, and the per-company index
   (`customer/<key>/index.html`) links `report.html` (`publish/index.mjs`) with no split language.
 - **One preparation chokepoint.** What a non-staff reader receives is prepared by the portal's
   `readReport()` (`driver/portal-report.mjs`, `staff:false`), which removes the reader-visible
   deltas — `[internal]` review tails, the internal band/reviewer shorthand, the staff Ask-your-AI
   connector — in one place, rather than at render time into a second document.
 
-**A client-facing surface must read through `readReport()`, never open a report by path.** That is
+**A surface for non-staff readers must read through `readReport()`, never open a report by path.** That is
 the whole guarantee: the preparation is on the read, so a surface that skips it serves unprepared
 bytes. Pool directories from before the change may still hold a `report.client.html`; nothing reads
 those files, and `publish/pool-admin.mjs` deliberately leaves them alone rather than retrofitting
@@ -256,9 +256,10 @@ There is no preflight that fails a run before anything touches the pool, and no 
   `deliveryFlagLines`): one plain sentence per failing check, with a count. The checks' own `detail`
   never leaves the internal lane — it quotes fetch causes, register URIs, model field names and
   instructions to whoever re-runs the job. **The cover note carries no machine-check block**, on
-  either lane: `emailBodyHtml` is sent verbatim to `forwarderEmail`, which on a client-started run is
-  the client's own address, and a failing internal check does not change what was searched, so that
-  reader cannot act on it. One enumeration surface, and it is the one the reviewer already opens.
+  either lane: `emailBodyHtml` is sent verbatim to `forwarderEmail`, which on a run started by someone outside
+  the operator's staff is that person's own address, and a failing internal check does not change what
+  was searched, so that reader cannot act on it. One enumeration surface, and it is the one the reviewer
+  already opens.
 
 ### The knockout lane runs a SUBSET of the predelivery lint
 
@@ -275,7 +276,7 @@ the store-rendered end-state: `publishKnockout` renders from validated `knockout
 `validateMergedFindings` plus the per-chunk validators are its own lint — schema, ladder vocabulary,
 plan-parity, degraded-parity, tone, quantitative claims, URL receipts. Most clearance checks then
 read surfaces this lane does not produce: no register record store (it counts hits, it does not
-retrieve records), no actions register, no verdict sidecar, no client summary, no card assembly, no
+retrieve records), no actions register, no verdict sidecar, no `clientSummary`, no card assembly, no
 reviewer correction cycle, no intake-ask register.
 
 So the checks that run are exactly those whose whole input is model-authored text —

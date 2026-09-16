@@ -10,10 +10,11 @@
   <a href=".nvmrc"><img src="https://img.shields.io/badge/node-%E2%89%A5%2022.13-250902?style=flat-square" alt="Node 22.13+"></a>
 </p>
 
-Give it a mark, its classes and a territory. Clearotron searches the trademark registers and the open
-web for conflicts, reasons about the risk the way a clearance lawyer would, and publishes a written
-report with a machine-readable audit trail behind every finding. It runs headless on your own machine:
-no gateway, no platform, and nothing about your matters reaches us.
+Before your company commits to a name, find out what stands in its way. Give Clearotron the name, the
+classes you trade in and the territories you sell into: it searches the trademark registers and the
+open web for conflicts, reasons about the risk the way a clearance lawyer would, and publishes a
+written report with a machine-readable audit trail behind every finding. It runs headless on your own
+machine: no gateway, no platform, and nothing about the names you are clearing reaches us.
 
 [Quickstart](QUICKSTART.md) · [Install & operate](INSTALL.md) · [Docs](docs/README.md) · [Security](docs/SECURITY.md) · [Contributing](CONTRIBUTING.md) · [Licence](#licence)
 
@@ -27,7 +28,7 @@ npx clearotron demo
 
 That fetches the published package — it will ask once before downloading — then replays finished
 clearances into a local portal and prints the portal's address and the passphrase to sign in with. Open
-the address in your browser. No account, no credentials, no network calls to us.
+the address in your browser. No sign-up, no credentials, no network calls to us.
 
 The demo runs for as long as that window stays open, and removes everything it made when you close it —
 nothing of it is left on the machine, and running it again later starts clean. If you want to keep the
@@ -82,8 +83,8 @@ Then start the product and open the portal address it prints:
 clearotron start
 ```
 
-That is the portal a brand owner uses. Ordering a clearance is the same screen — describe it in a
-sentence, or set the classes, marketplaces and search depth yourself:
+That is the portal everyone at your company uses. Ordering a clearance is the same screen — describe it
+in a sentence, or set the classes, marketplaces and search depth yourself:
 
 ![The new-clearance screen — classes, marketplaces and the four search depths](docs/assets/portal-new-clearance.png)
 
@@ -115,12 +116,16 @@ clearotron run --job my-job.json
   **HTTP** face whose read tools serve a signed-in identity while its write verbs — `start_run`
   among them, which spends — need an ops token. [Connect it](mcp-server/CONNECT.md).
 - **The engine is not coupled to a vendor.** [`driver/register-plan.mjs`](driver/register-plan.mjs) — which decides what gets searched — takes a capabilities object as a parameter and imports no provider at all. An unknown register id throws rather than falling back.
+- **A law firm runs one installation for every company it acts for.** Each company is set up once, with
+  its own classes, marketplaces and risk framework, and each person sees only the companies they are
+  given. [Adding a company](docs/ONBOARDING.md) · [A connector for those companies' people](docs/CLIENT-MCP.md).
 
 ## Security
 
-Reports carry client matter. Treat the pool, the archive and the delivery packets as you would a case file.
+Reports describe names your company has not announced yet. Treat the pool, the archive and the delivery
+packets as you would any unreleased plan — and, at a law firm, as you would a case file.
 
-**The authors of this software receive nothing** — no marks, no client context, no results, no usage
+**The authors of this software receive nothing** — no marks, no company context, no results, no usage
 reports, no crash reports. There is no telemetry in this tree and no endpoint we control: every
 destination is a register, a reasoning provider or a search provider you configured with your own
 credential.
@@ -139,7 +144,7 @@ credential.
 | Check it works before spending anything | [docs/E2E.md](docs/E2E.md) |
 | Understand the architecture | [docs/architecture/](docs/architecture/) · [decisions](docs/decisions/) |
 | Run it under your own name, or fork it | [docs/branding.md](docs/branding.md) · [TRADEMARKS.md](TRADEMARKS.md) |
-| Write a sentence a customer will read | [docs/writing-standard.md](docs/writing-standard.md) · [docs/writing-rules.md](docs/writing-rules.md) |
+| Write a sentence a user will read | [docs/writing-standard.md](docs/writing-standard.md) · [docs/writing-rules.md](docs/writing-rules.md) |
 
 ## Development
 
