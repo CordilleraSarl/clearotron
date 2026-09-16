@@ -589,7 +589,9 @@ test('what the bands mean is a closed fold, titled in the strong text colour, an
   const fn = frameworkBlock()
   const fold = fn.slice(fn.indexOf('<details'), fn.indexOf('</details>'))
   assert.ok(fold.length > 0, 'the band detail is not inside a fold')
-  assert.doesNotMatch(fn.slice(fn.indexOf('<details'), fn.indexOf('<details') + 30), /\bopen\b/, 'the fold is drawn open')
+  const tag = fn.slice(fn.indexOf('<details'), fn.indexOf('>', fn.indexOf('<details')) + 1)
+  assert.match(tag, /^<details className="fw-fold"/, `the fold's opening tag was not read: ${tag}`)
+  assert.doesNotMatch(tag, /\bopen\b/, 'the fold is drawn open')
   assert.match(fold, /<span className="fold-title">What the bands mean<\/span>/, 'the fold is not titled "What the bands mean"')
   for (const [what, re] of [['the band rows', /className="fw-bmrow"/], ['Rated on', /Rated on:/], ['Entity in prose', /Entity in prose:/]] as const) {
     assert.match(fold, re, `${what} is not behind the fold`)
