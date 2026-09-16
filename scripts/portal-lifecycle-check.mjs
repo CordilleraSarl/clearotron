@@ -15,7 +15,7 @@
 //
 // So this serves the REAL built bundle to a REAL browser, twice — once as staff, once as a client — and
 // reads what is actually on screen. Then it drives the two lifecycles that had no controls at all:
-// retiring a custom search and bringing it back, and creating a project.
+// retiring a search template and bringing it back, and creating a project.
 //
 // It is deliberately a sibling of composer-render-check.mjs rather than an extension of it: that one
 // exercises the one screen that spends money, and it should not grow a second job.
@@ -96,7 +96,7 @@ const ME = () => {
   }
   if (role === 'owner') {
     // ONE COMPANY, BOTH SWITCHES — the person the lifecycle pass is about. Creating and archiving a project
-    // is Manage and a custom search's writes are Run, so the pass that drives both needs both; a person
+    // is Manage and a search template's writes are Run, so the pass that drives both needs both; a person
     // with Run alone is shown no project controls at all, which the view-only pass asserts.
     return { permissions: { run: true, manage: true }, email: 'gundy@apmxc.test', accounts: [KEY], accountNames: { [KEY]: NAME },
       access: [{ kind: 'company', key: KEY, name: NAME, org: 'org-a' }],
@@ -331,7 +331,7 @@ const HELPERS = `
   };
   const allByText = (sel, re) => [...document.querySelectorAll(sel)].filter((e) => re.test(e.innerText || ''));
   // Navigate the way the shell does — pushState plus a popstate, which is what its usePath listens for.
-  // Retried once: a screen that navigates itself on save (the composer returns to Custom searches) can
+  // Retried once: a screen that navigates itself on save (the composer returns to Search templates) can
   // land its own go() a beat after this one and put the old screen back.
   const goto = async (path) => {
     for (let i = 0; i < 3; i++) {
@@ -440,8 +440,13 @@ ${HELPERS}
   // card the composer draws for every identity, which is what the next line reads.
   await mustSettle(() => Boolean(document.querySelector('.ctx-card')), 8000,
     'the composer never painted its context card');
-  const card = document.querySelector('.ctx-card');
-  out.composerCard = card ? card.innerText.replace(/\\s+/g, ' ').trim() : null;
+  // THE COMPANY IS THE FORM'S FIRST FIELD, above Describe it — it moved out of the card, which now holds
+  // what the company carries. Read where it is drawn: the picker's chosen option for a reader with
+  // several companies, the plain name for a reader with one.
+  const company = document.querySelector('.nc-company-name') || document.querySelector('select.nc-company');
+  out.composerCompany = company
+    ? (company.tagName === 'SELECT' ? (company.selectedOptions[0] || {}).textContent || '' : company.innerText).replace(/\\s+/g, ' ').trim()
+    : null;
 
   // THE PROPERTY: no screen prints the slug where the name belongs. Checked over the whole document,
   // because the slug appearing anywhere visible is the failure — it has no business on a client screen.
@@ -653,9 +658,9 @@ ${HELPERS}
   const out = { steps: [] };
   try {
 
-  // ── custom searches: list, retire, bring back ──
+  // ── search templates: list, retire, bring back ──
   await goto('/portal/brand/searches');
-  if (!await settle(() => /Custom searches/.test(txt()))) return { fatal: 'Custom searches never painted', body: txt().slice(0, 600) };
+  if (!await settle(() => /Search templates/.test(txt()))) return { fatal: 'Search templates never painted', body: txt().slice(0, 600) };
   out.listsRetired = /Retired/.test(txt());          // drawn from the CONFIG list, not the composer menu
   out.noEditorFields = !/How deep should it search/.test(txt());
   out.retireButtons = allByText('button', /^Retire$/).length;
@@ -679,13 +684,13 @@ ${HELPERS}
 
   // ── the composer, opened OVER a saved search ──
   await goto('/portal/new?search=launch-screen');
-  if (!await settle(() => /Edit a custom search/.test(txt()), 8000)) {
+  if (!await settle(() => /Edit a search template/.test(txt()), 8000)) {
     return { ...out, fatal: 'the composer did not open in edit mode', body: txt().slice(0, 700) };
   }
-  out.editHeading = /Edit a custom search/.test(txt());
-  const nameInput = [...document.querySelectorAll('input')].find((i) => i.getAttribute('aria-label') === 'Name this search');
+  out.editHeading = /Edit a search template/.test(txt());
+  const nameInput = [...document.querySelectorAll('input')].find((i) => i.getAttribute('aria-label') === 'Name this template');
   out.savePrefilled = nameInput ? nameInput.value : null;
-  const noteInput = [...document.querySelectorAll('input')].find((i) => i.getAttribute('aria-label') === 'Note about this custom search');
+  const noteInput = [...document.querySelectorAll('input')].find((i) => i.getAttribute('aria-label') === 'Note about this template');
   out.notePrefilled = noteInput ? noteInput.value : null;
   // The stored scope came back as a draft: one territory, one class.
   out.territoryHydrated = /United States/.test(txt());
@@ -694,8 +699,8 @@ ${HELPERS}
   const saveBtn = maybeByText('button', /Save changes/);
   out.saveChangesLabel = Boolean(saveBtn);
   if (saveBtn) saveBtn.click();
-  await mustSettle(() => /Custom searches/.test(txt()), 8000, 'the custom search list never returned after saving');
-  out.returnedToList = /Custom searches/.test(txt());
+  await mustSettle(() => /Search templates/.test(txt()), 8000, 'the template list never returned after saving');
+  out.returnedToList = /Search templates/.test(txt());
   out.steps.push('saved');
 
   // ── projects: create ──
@@ -917,7 +922,7 @@ for (const [who, out] of [['client', asClient], ['staff', asStaff], ['multi-acco
     `${who}: the identity corner names the company — read ${JSON.stringify(out.accountCorner)}`)
   ok((out.clearancesHeading ?? '').includes(NAME),
     `${who}: the Clearances header does not name the company being looked at — read ${JSON.stringify(out.clearancesHeading)}`)
-  ok(out.composerCard?.includes(NAME), `${who}: the New clearance context card does not name the company — read ${JSON.stringify(out.composerCard)}`)
+  ok(out.composerCompany?.includes(NAME), `${who}: the New clearance form does not name the company — read ${JSON.stringify(out.composerCompany)}`)
   ok(out.nameOnScreen, `${who}: the company's name is nowhere on the composer`)
   ok(!out.slugOnScreen, `${who}: the account KEY "${KEY}" is printed on screen where the name belongs`)
 }
@@ -1092,7 +1097,7 @@ for (const [who, out, shown] of [['staff', pathsStaff, true], ['owner', pathsOwn
 if (!life || life.fatal) {
   fail.push(`lifecycle: ${life?.fatal ?? 'the driver returned nothing'}`)
 } else {
-  ok(life.listsRetired, 'Custom searches does not list a retired search — it is drawn from the wrong list, and retiring is one-way again')
+  ok(life.listsRetired, 'Search templates does not list a retired template — it is drawn from the wrong list, and retiring is one-way again')
   ok(life.noEditorFields, 'the standalone saved-search editor is back on this screen')
   ok(life.retireButtons >= 1, 'no Retire control on a saved-search row')
   ok(life.bringBackButtons >= 1, 'no Bring back control on a retired row')
@@ -1100,12 +1105,12 @@ if (!life || life.fatal) {
   ok(life.confirmShown, 'Retire fired without a confirm step')
   ok(life.retiredThenListed, 'a retired search left the list instead of being greyed and kept')
   ok(life.broughtBack, 'a retired search could not be brought back')
-  ok(life.editHeading, 'the composer did not say it was editing a custom search')
+  ok(life.editHeading, 'the composer did not say it was editing a search template')
   ok(life.savePrefilled === 'Launch screen', `the save name did not prefill with the label — read ${JSON.stringify(life.savePrefilled)}`)
   ok(life.notePrefilled === 'For the EU launch team.', `the note did not survive into the editor — read ${JSON.stringify(life.notePrefilled)}`)
   ok(life.territoryHydrated, 'the saved scope did not come back as levers — United States is not on screen')
   ok(life.saveChangesLabel, 'the footer offered Save rather than Save changes while editing')
-  ok(life.returnedToList, 'saving an edit did not return to Custom searches')
+  ok(life.returnedToList, 'saving an edit did not return to Search templates')
   ok(life.projectCreateOffered, 'Projects offers no way to create one')
   ok(life.archivedProjectListed, 'an archived project is not listed — hiding it is what made archiving one-way')
   ok(life.archivedProjectBadged, 'an archived project is listed without being marked as archived')
