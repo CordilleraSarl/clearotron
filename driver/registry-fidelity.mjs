@@ -478,6 +478,34 @@ export const REC = {
   // designated countries; never imply "international = global". Corsearch bodies carry the
   // per-designated-country statuses as `onomaticsJurisdictionsStatuses` (array of strings or of
   // {jurisdiction,status} objects — fail-open on either shape; null when the record lacks it).
+  // tracker issue 644 — the goods the mark is REGISTERED for, in the register's own words. A finding
+  // argues about goods, and until now the only goods on the page were the class numbers; the record
+  // carried the wording all along. NOTHING IS TRANSLATED HERE. Where a record holds an English entry
+  // the display picks it (the register wrote it); where it holds only the local language, the local
+  // language is what "as registered" means, and a translation composed at render time would be this
+  // renderer asserting the scope of somebody's right in words no register ever granted.
+  goods: (r) => {
+    const gs = Array.isArray(r.goodsServices) ? r.goodsServices : [];
+    const rows = gs.map((g) => ({
+      classes: (Array.isArray(g?.classes) ? g.classes : []).map(Number).filter((x) => !Number.isNaN(x)),
+      language: String(g?.language ?? "").trim().toLowerCase(),
+      description: String(g?.description ?? "").trim(),
+    })).filter((g) => g.description);
+    if (!rows.length) return null;
+    const en = rows.filter((g) => g.language === "en" || g.language === "eng");
+    return (en.length ? en : rows).map((g) => ({ classes: g.classes, description: g.description }));
+  },
+  // The three dates a reader acts on, as the record holds them and never re-derived. `filingYear` and
+  // `regYear` above answer a different question — the one-line summary — and a year cannot say whether
+  // a registration lapses this month.
+  dates: (r) => {
+    const out = [];
+    const add = (label, v) => { const s = String(v ?? "").trim(); if (/^\d{4}-\d{2}-\d{2}/.test(s)) out.push([label, s.slice(0, 10)]); };
+    add("filed", r.applicationDate);
+    add("registered", r.registrationDate);
+    add("expires", r.expiryDate ?? r.renewalDate);
+    return out.length ? out : null;
+  },
   designations: (r) => {
     const j = r.onomaticsJurisdictionsStatuses ?? r.jurisdictions ?? null;
     if (!Array.isArray(j) || !j.length) return null;

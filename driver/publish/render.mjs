@@ -85,6 +85,12 @@ let NEGATIVES_GROUPED = false;
 // present the report speaks ITS band words: chips/one-liners read f.band, the gauge ticks show its
 // ladder, the footer names it. Absent ⇒ every legacy (composite) surface renders byte-identically.
 let FRAMEWORK = null;
+// tracker issue 644 — the depth rule, as one flag. The same sections render at every depth; what grows
+// is what a finding's Full detail fold carries, and the goods as registered and the record's dates are
+// the two blocks the design gives the full country alone. Module-level for the same reason FRAMEWORK is:
+// fullDetail is reached through four call sites and threading a flag through all of them to reach one
+// `if` is how the other three drift out of step.
+let FULL_COUNTRY = false;
 const GAUGE_STOP_BY_TONE = { minimal: 1, low: 1, medium: 2, high: 3, severe: 4 };
 // Severity rank for sorting/worst-of: band index in the manifest (0 = most severe); legacy composite
 // negated so higher composite = lower rank. Unrated items sink to the bottom.
@@ -529,7 +535,9 @@ function meter(name, entry) {
     return { label: 'Use', cls, cap, ev: USE_EVIDENCE_LABEL[e._status] || '' };
   }
   const cls = tok === 'high' ? 'l3' : tok === 'medium' ? 'l2' : tok === 'low' ? 'l1' : '';
-  const label = name === 'mark_similarity' ? 'Similarity' : name === 'goods_proximity' ? 'Goods proximity' : 'Enforcer';
+  // tracker issue 644 — "Enforcer" was a noun for the owner; the meter measures what the owner is
+  // likely to DO, which is what a reader is deciding about. The token under it is unchanged.
+  const label = name === 'mark_similarity' ? 'Similarity' : name === 'goods_proximity' ? 'Goods proximity' : 'Likely to enforce';
   // With a joined status the status REPLACES the raw basis word on the enforcer — "verified" with no
   // receipt behind it is exactly the self-attestation A4 exists to demote.
   return { label, cls, cap: humanize(tok), ev: st || (name === 'enforcer' ? basis : '') };
@@ -1510,7 +1518,17 @@ function fullDetail(f, card, recordsByUri = new Map()) {
       // "file exists on disk" inference. Absent receipt (archived runs) renders nothing.
       const receiptTail = rec._receipt?.fetched_at
         ? ` · <i class="receipt">verified — ${esc(PROVIDER_LABEL || 'register')} record fetched ${esc(String(rec._receipt.fetched_at).slice(0, 10))}</i>` : '';
-      return `<li><b>${officeRecordCell(r.uri, regUri, RECORD_CITATION ? NO_LINK_NOTE[RECORD_CITATION] : null)}</b>${cls ? ` · Cl.${esc(cls)}` : ''}${status ? ` · ${esc(status)}` : ''}${tail ? ` (${esc(tail)})` : ''}${jur ? ` · ${esc(jur)}${sys ? ` <i class="jsys">(${sys})</i>` : ''}` : ''}${desigHtml}${prio}${receiptTail}</li>`;
+      // AS REGISTERED, AND THE DATES — the full country's two extra blocks (tracker issue 644). Both come
+      // off the fetched record and neither is composed: the goods are the register's own wording in the
+      // language it granted them in, and the dates are its own, to the day. The one-line summary above
+      // carries YEARS, which cannot say whether a registration lapses this month.
+      const goods = FULL_COUNTRY ? REC.goods(rec) : null;
+      const recDates = FULL_COUNTRY ? REC.dates(rec) : null;
+      const goodsHtml = !goods ? '' : `<div class="row"><span class="k">As registered</span><span class="v">${
+        goods.map((g) => `${g.classes.length ? `${esc(g.classes.length === 1 ? 'Class' : 'Classes')} ${esc(g.classes.join(', '))}: ` : ''}${esc(g.description)}`).join('<br>')}</span></div>`;
+      const datesHtml = !recDates ? '' : `<div class="row"><span class="k">Dates</span><span class="v">${
+        esc(recDates.map(([k, v]) => `${k} ${v}`).join(' \u00b7 '))}</span></div>`;
+      return `<li><b>${officeRecordCell(r.uri, regUri, RECORD_CITATION ? NO_LINK_NOTE[RECORD_CITATION] : null)}</b>${cls ? ` · Cl.${esc(cls)}` : ''}${status ? ` · ${esc(status)}` : ''}${tail ? ` (${esc(tail)})` : ''}${jur ? ` · ${esc(jur)}${sys ? ` <i class="jsys">(${sys})</i>` : ''}` : ''}${desigHtml}${prio}${receiptTail}${goodsHtml || datesHtml ? `<div class="record">${goodsHtml}${datesHtml}</div>` : ''}</li>`;
     }
     // (2)+(3): a cited record with NO fetched body. NEVER-INVENT when the run has a record set (this URI was
     // not fetched ⇒ the model's fields are unconfirmed); also when there are no findings.json facts to show.
@@ -1549,8 +1567,8 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   const enfSrc = enf && String(enf.source ?? '').trim();
   const enfBasis = enf
     ? (enfVerified
-        ? `<li><b>Enforcer.</b> ${esc(humanize(enf.token))} appetite — <b>verified</b> (${enfSrc ? `source: ${esc(enfSrc.slice(0, 60))}` : 'enforcement record on file'}).</li>`
-        : `<li><b>Enforcer.</b> ${esc(humanize(enf.token))} appetite <i>inferred</i> — reputation/profile signal.</li>`)
+        ? `<li><b>Likely to enforce.</b> ${esc(humanize(enf.token))} appetite — <b>verified</b> (${enfSrc ? `source: ${esc(enfSrc.slice(0, 60))}` : 'enforcement record on file'}).</li>`
+        : `<li><b>Likely to enforce.</b> ${esc(humanize(enf.token))} appetite <i>inferred</i> — reputation/profile signal.</li>`)
     : '';
   // Instance #5 — the use-check / own-rights cite is rendered FROM the JSON (no prose-regex), so it can never
   // diverge from the structured field. The source string may hold ONE URL, SEVERAL (comma/space-separated —
@@ -1681,7 +1699,7 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   const proseHasRead = READ_LEAD_RE.test(proseFull || '');
   const positions = `${proseHasRead ? '' : lpSplit(f)}${manageableLine(f)}`;
   const body = `${positions}${regs || seniorLine || fetchFailLine || enfLine || enfTelemetry || useChk || ownR || impactLine ? `<ul>${fetchFailLine}${seniorLine}${regs}${enfLine}${enfTelemetry}${useChk}${ownR}${impactLine}</ul>` : ''}${proseFullShown ? renderProse(proseFullShown) : ''}${caseLawStrand}${prov}`;
-  return `<details class="drill"><summary>Full detail &amp; provenance</summary><div class="drillbody">${body}</div></details>`;
+  return `<details class="drill"><summary>Full detail</summary><div class="drillbody">${body}</div></details>`;
 }
 
 // The contentious MARK + the classes it matched in, as a header chip next to the holder — so a card shows
@@ -2190,7 +2208,7 @@ function heroCaptionHtml(text) {
   // `sub-lead` marks the FOLDED first sentence so the stylesheet can tighten its bottom margin without a
   // positional selector: `.sub:first-of-type` would have caught an UNFOLDED one-sentence caption too and
   // changed the spacing of every archived report that has no fold.
-  return `<p class="sub sub-lead">${inline(first)}</p><details class="sub-more"><summary>More</summary><p class="sub">${inline(rest)}</p></details>`;
+  return `<p class="sub sub-lead">${inline(first)}</p><details class="sub-more"><summary>Show the chart and rights-holders</summary><p class="sub">${inline(rest)}</p></details>`;
 }
 
 // The hero's confidentiality line: the delivery posture and the PRODUCT, joined, and nothing else.
@@ -2262,6 +2280,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   AS_OF = opts.asOf ?? null;   // C2
   VERDICT_INFO = (opts.verdictInfo && opts.verdictInfo.tier != null) ? opts.verdictInfo : null;   // T2 — only an enriched sidecar is an authority
   FRAMEWORK = opts.framework ?? null;   // doc 50 — the frozen manifest; null on archived/legacy runs
+  FULL_COUNTRY = isFullCountry(opts);   // tracker issue 644 — the depth rule for the Full detail fold
   SEARCHED_JUR = Array.isArray(opts.searchedJurisdictions) && opts.searchedJurisdictions.length ? opts.searchedJurisdictions : null;   // T6 (D4)
   SCOPE_WORLDWIDE = opts.scopeBasis === 'worldwide' ? true : null;   // the plan's scope_basis; null ⇒ fall back to the ledger-prose sniff
   CASE_LAW_BY_ORD = opts.caseLawByOrdinal instanceof Map ? opts.caseLawByOrdinal : new Map();   // T7 (E5)

@@ -354,6 +354,63 @@ test("Map A: a fetched record in recordsByUri OVERRIDES the finding's fields (tr
   assert.doesNotMatch(html, /filed 2008/);              // the finding's transposable field is gone
 });
 
+// ── the depth rule for the Full detail fold: the goods as registered, and the record's dates ─────────
+//
+// The design's depth rule is that the same sections render at every depth and what GROWS is what a
+// finding's fold carries. These two blocks are the full country's alone, and both come off the fetched
+// record: the goods in the register's own words, and the dates to the day where the summary line above
+// carries only years.
+
+const GOODS_REC = {
+  _uri: "https://tm.example/jp/6231111",
+  applicationNumber: "2019046708", registrationNumber: "6231111",
+  applicationDate: "2019-04-02", registrationDate: "2020-03-02", expiryDate: "2030-03-02",
+  statusText: "Registered", jurisdiction: "JP", classList: ["9"],
+  goodsServices: [{ classes: [9], language: null, description: "再充電可能な電池，タコグラフ，ビデオカメラ" }],
+};
+const GOODS_F = () => [{ ...FINDINGS[0], owner: { name: "Yiwu Tengding", country: "JP", registrations: [
+  { uri: "https://tm.example/jp/6231111", classes: ["9"], jurisdiction: "JP" }] } }];
+const FULL_COUNTRY_OPTS = { depthNote: "Full country search — Japan" };
+
+test("depth: a full country's fold carries the goods as registered and the record's own dates", () => {
+  const html = renderHtml(parsedOf(REPORT), GOODS_F(), COVERAGE,
+    { recordsByUri: new Map([[GOODS_REC._uri, GOODS_REC]]), ...FULL_COUNTRY_OPTS });
+  assert.match(html, /<span class="k">As registered<\/span><span class="v">Class 9: 再充電可能な電池，タコグラフ，ビデオカメラ<\/span>/,
+    "the register's own wording, in the language it granted the right in");
+  assert.match(html, /<span class="k">Dates<\/span><span class="v">filed 2019-04-02 · registered 2020-03-02 · expires 2030-03-02<\/span>/,
+    "to the day — the summary line above carries years, which cannot say whether a right lapses this month");
+});
+
+test("depth: the two blocks are the full country's alone", () => {
+  for (const note of ["Global preliminary search — worldwide", "Multi-country focus search — Japan and Korea", ""]) {
+    const html = renderHtml(parsedOf(REPORT), GOODS_F(), COVERAGE,
+      { recordsByUri: new Map([[GOODS_REC._uri, GOODS_REC]]), depthNote: note });
+    assert.doesNotMatch(html, /As registered/, `goods on: ${note || "a run with no depth note"}`);
+    assert.doesNotMatch(html, /class="k">Dates</, `dates on: ${note || "a run with no depth note"}`);
+    // …and the summary line the shallower products DO carry is untouched by their absence.
+    assert.match(html, /filed 2019, registered 2020/, "the one-line summary still reads as it did");
+  }
+});
+
+test("depth: an English entry is preferred where the register wrote one, and nothing is ever translated", () => {
+  const bilingual = { ...GOODS_REC, goodsServices: [
+    { classes: [9], language: null, description: "再充電可能な電池" },
+    { classes: [9], language: "en", description: "Rechargeable batteries" },
+  ] };
+  const html = renderHtml(parsedOf(REPORT), GOODS_F(), COVERAGE,
+    { recordsByUri: new Map([[bilingual._uri, bilingual]]), ...FULL_COUNTRY_OPTS });
+  assert.match(html, /Class 9: Rechargeable batteries/, "the register's own English is the one shown");
+  assert.doesNotMatch(html, /再充電可能な電池/, "and it replaces the local entry rather than doubling it");
+});
+
+test("depth clause F: a record with no goods and no dates grows no empty block", () => {
+  const bare = { ...GOODS_REC };
+  delete bare.goodsServices; delete bare.applicationDate; delete bare.registrationDate; delete bare.expiryDate;
+  const html = renderHtml(parsedOf(REPORT), GOODS_F(), COVERAGE,
+    { recordsByUri: new Map([[bare._uri, bare]]), ...FULL_COUNTRY_OPTS });
+  assert.doesNotMatch(html, /class="record"/, "an archived record missing both fields draws no labelled shell");
+});
+
 // ── WP-receipts W2: the provable "verified" label + provider record links ─────────────────────────────
 test("W2: a record artifact carrying _receipt renders the verified-fetched line; absent receipt renders none (byte-stable)", () => {
   const rec = {
@@ -1046,7 +1103,9 @@ test("spec 47: a reasoned Enforcer prose bullet suppresses the templated meter l
   assert.doesNotMatch(card1, /appetite <i>inferred<\/i>/, "the templated meter line never doubles a reasoned prose bullet");
   // card 2 has no prose enforcer bullet — the templated meter line still renders (inferred, honest)
   const card2 = html.slice(html.indexOf('id="c2"'));
-  assert.match(card2, /<b>Enforcer\.<\/b> Low appetite <i>inferred<\/i>/);
+  // "Enforcer" was a noun for the owner; the meter measures what the owner is likely to DO
+  // (tracker issue 644). The token under the label is untouched, and so is the suppression above.
+  assert.match(card2, /<b>Likely to enforce\.<\/b> Low appetite <i>inferred<\/i>/);
 });
 
 test("spec 47: the title heading carries classes + searched countries, full names on hover", () => {
@@ -2109,7 +2168,7 @@ test("a blank or whitespace-only net falls through the fallback chain exactly as
 // down here, in that order — the argument first, the evidence under it.
 test("the positions render below the fold, complete, and lead the drawer", () => {
   const html = renderHtml(parsedOf(REPORT), P5_BANDED, COVERAGE, { runId: "noref-demo" });
-  const drawer = html.slice(html.indexOf('<summary>Full detail &amp; provenance</summary>'));
+  const drawer = html.slice(html.indexOf('<summary>Full detail</summary>'));
   assert.match(drawer, /<div class="drillbody"><div class="lp-split"><p class="lp"><b>Legal risk\.<\/b> Near-identical mark over identical class-41 services — a high legal read\.<\/p>/,
     "the legal read opens the drawer, whole");
   assert.match(drawer, /<b>Practical position\.<\/b> Owner actively enforces; two oppositions in the last three years\./);

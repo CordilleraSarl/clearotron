@@ -412,6 +412,16 @@
   .panel.about{margin:10px 0 18px;padding:12px 18px;max-width:900px}
   .panel.about .label{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:6px}
   .panel.about .row{display:grid;grid-template-columns:170px 1fr;gap:12px;padding:5px 0;border-top:1px solid var(--line);font-size:13.5px;line-height:1.5}
+  /* The goods as registered and the record's own dates, inside a finding's Full detail fold on a full
+     country search (tracker issue 644). Ported from the design with its fixed greys replaced by tokens.
+     `word-break` is load-bearing and not cosmetic: the goods are the register's own wording, which on a
+     Japanese or Korean record is one unbroken run of characters with no spaces to wrap at, and without
+     it that row sets the width of the whole fold. */
+  .record{margin:6px 0 2px}
+  .record .row{display:grid;grid-template-columns:150px 1fr;gap:12px;padding:4px 0;border-top:1px solid var(--line);font-size:13px;line-height:1.5}
+  .record .k{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);padding-top:3px}
+  .record .v{overflow-wrap:anywhere;word-break:break-word}
+  @media(max-width:700px){.record .row{grid-template-columns:1fr;gap:2px}}
   .panel.about .row:first-of-type{border-top:0}
   .panel.about .k{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);padding-top:3px}
   .panel.about .v{color:var(--ink)}
