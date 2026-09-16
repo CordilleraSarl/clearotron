@@ -286,21 +286,16 @@ export function compilePhraseValue(term, { pre = "", post = "", dropReserved = f
 
   // A LEADING `*` on a ONE-CHARACTER first token is a sub-query over most of the register, and inside an
   // ADJ chain the provider gives up on it: HTTP 500 "Near/Adj queries with sub queries that can return a
-  // huge amount…". Probed — one character breaks, two do not:
-  //   *I ADJ CANT ADJ BELIEVE*  500      *IT ADJ STARTS ADJ WITH*  103
-  //   *A ADJ BAR*               500      *AN ADJ APPLE*             55
-  // So the leading wrap is dropped for that one case, and ONLY that case. It costs a little recall at
-  // the leading token boundary (AN ADJ APPLE* = 31 vs *AN ADJ APPLE* = 55), which is why it is not done
-  // generally — but the alternative here is not a narrower search, it is no search at all.
+  // huge amount…". The refusal is specific to a first token of ONE character; two characters are answered.
+  // So the leading wrap is dropped for that one case, and ONLY that case. It costs a little recall at the
+  // leading token boundary, which is why it is not done generally — but the alternative here is not a
+  // narrower search, it is no search at all.
   const leadWrap = (kept.length > 1 && kept[0].length === 1) ? "" : pre;
   // AND THE SAME AT THE OTHER END, which was never added and cost a family search on a live matter. A
   // root whose LAST word is one character — a sequel number, an article, an initial — compiled to
   // `*PLAN ADJ B*`, and the trailing `B*` is the same sub-query over most of the register that the
-  // leading rule above exists for. Probed on the test install, count calls only:
-  //   *PLAN ADJ B*   500      *PLAN ADJ B    200, 36 records
-  //   *LEVEL ADJ 2*  500      *LEVEL ADJ 2   200, 14 records
-  //   *ROB ADJ A*    500      *ROB ADJ A     200,  3 records
-  // A delivered run planned a family search on such a root, every attempt was refused, the refusal was
+  // leading rule above exists for: the provider refuses that shape and answers the same query with the
+  // trailing star removed. A delivered run planned a family search on such a root, every attempt was refused, the refusal was
   // retried as if transient and the slice was filed as a provider gap — so a family of pending filings
   // for a third-party title went unseen and the matter was rated on what was left.
   const last = kept.length - 1;
@@ -517,8 +512,8 @@ export function hasAnyElement(p) {
 
 /**
  * Join terms into ONE value string with the EXPLICIT " OR " operator (a bare space is an implicit AND,
- * not an OR). ADJ binds tighter than OR, so phrase operands need no parentheses — probed:
- * `*MOUNTAIN ADJ DEW* OR *MONSTER ADJ ENERGY*` = 157 = 90 + 67, identical with parens.
+ * not an OR). ADJ binds tighter than OR, so phrase operands need no parentheses: an OR of two phrases
+ * returns the union of the two, and parentheses around them change nothing.
  * The width bound is the parser's document-nesting cap; the enumerate
  * kernel chunks wide `names` stacks at capabilities.kernel.namesChunkDefault (= maxOrWidth) before they
  * ever reach here, so hitting this throw means a caller bypassed the kernel.

@@ -106,8 +106,8 @@ export function romanizationRefusal(value) {
 }
 
 /** The two spellings a register may hold for one romanisation — syllable-separated as the record
- *  writes it, and run together as a searcher would type it. Probed: identical counts on CN/TW/GR/KR/TH,
- *  but EG differs (7 vs 10), so BOTH are emitted and OR-joined rather than picking one. */
+ *  writes it, and run together as a searcher would type it. On most scripts a register holds the two
+ *  spellings alike, but not on all of them — so BOTH are emitted and OR-joined rather than picking one. */
 export function romanizationSpellings(value) {
   const spaced = String(value ?? "").normalize("NFC").trim().replace(/\s+/g, " ");
   if (!spaced) return [];

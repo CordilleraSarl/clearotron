@@ -11,11 +11,10 @@
 //
 // NO VENDOR MEASUREMENTS AND NO MARK LIVE HERE, and the omission is deliberate rather than an oversight
 // for someone to helpfully repair. The counts that proved this, the date they were taken and the name
-// they were taken on are on the tracker, which is private. `no-vendor-provenance-in-the-public-cut`
-// exempts this directory on the ground that it is withheld from the cut — but `package.json`'s `files`
-// list publishes `providers/` whole, so a measured hit count written here would ship in the tarball
-// through a door that guard does not watch. The exemption was true of a tree with no such directory in
-// it; this is the first one, so it is worth saying plainly.
+// they were taken on are on the tracker, which is private. This directory is in the public repository,
+// so `no-vendor-provenance-in-the-public-cut` scans it like any other file that publishes — it used to
+// exempt the provider test trees on the ground that they were withheld, which stopped being true the
+// day this directory was created.
 //
 // THE MARK BELOW IS INVENTED for the same reason. Nothing here depends on which string is used: these
 // arms are about the SHAPE of the request built, and that is the same whatever the term.

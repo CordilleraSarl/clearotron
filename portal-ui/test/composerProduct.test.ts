@@ -16,7 +16,7 @@ import assert from 'node:assert/strict'
 import {
   EMPTY_DRAFT, REGIONS, COUNTRIES, tierOf, vocabularyFor, territoryMatches, addTerritory,
   removeTerritory, geographyFor, geographyNote, nativeLanguageControl, toggleNativeLanguage,
-  chooseProduct, blockers, nameBudget, machineryFor, composeSaved, draftFromSaved, inherited,
+  chooseProduct, blockers, nameBudget, machineryFor, composeSaved, draftFromSaved, inherited, readiness,
   missingPieces,
   MAX_TERRITORIES, checksSummary, runsNote, turnaround, effortUnits,
   isTerritoryEntry, isKnownTerritory, ALL_TERRITORIES } from '../src/contract/composerProduct.ts'
@@ -129,12 +129,73 @@ test('switching product DROPS what the new one cannot hold — never leaves it s
   assert.equal(chooseProduct(chooseProduct(rich, GLOBAL), MULTI).nativeLanguage, false)
 })
 
+test('the arrival state is one sentence and no panel, because every term is true at once', () => {
+  // On a form nobody has touched there is no name, no classes and no search. The chain is a PRIORITY
+  // order, so it answered with whichever term came first — the missing name — and the screen stacked
+  // the others as panels above it. Three statements about work the reader had not begun.
+  const arriving = {
+    gaps: ['Add the name you want cleared, in Names above.'],
+    stops: ['Pick a search above. The four differ in where they look and how deep they read.'],
+    nameStops: [], budget: null, exhausted: false, hasProduct: false,
+  }
+  assert.deepEqual(readiness({ ...arriving, untouched: true }),
+    { ready: false, blockedBy: 'Add a name and pick a search.' })
+
+  // AND IT IS NOT READY, which is the half a shortcut would lose: the button stays disabled with a
+  // reason, rather than the screen going quiet because it has nothing stacked to say.
+  assert.equal(readiness({ ...arriving, untouched: true }).ready, false)
+
+  // THE FIRST EDIT RESTORES EVERY SENTENCE. Same input, touched: the chain answers as it always did.
+  assert.equal(readiness({ ...arriving, untouched: false }).blockedBy, arriving.gaps[0])
+  assert.equal(readiness(arriving).blockedBy, arriving.gaps[0], 'and the flag is optional')
+})
+
 // ── blockers: the mirror of the engine's own rules ───────────────────────────────────────────────────
 
 test('nothing picked is its own blocker, and it names the choice rather than a missing field', () => {
   const out = blockers(draft(), null, 1)
   assert.equal(out.length, 1)
   assert.match(out[0]!, /Pick a search above/)
+})
+
+test('an unset Where is the account\'s own territories, and the stop counts what will be searched', () => {
+  // THE DEFECT THIS DRIVES: the screen draws the account's chips when the draft is empty, because the
+  // request omits `jurisdictions` and the engine's ladder resolves that to exactly those. The stop
+  // counted the DRAFT, so a Multi-country focus search refused to start and told the reader to name
+  // territories directly beneath the four it had just drawn, while the footer summarised the same run
+  // as having them. Both halves were individually right and the reader could not see which was which.
+  const OWN = ['United States', 'United Kingdom', 'European Union', 'Canada']
+  assert.deepEqual([...blockers(draft({ product: MULTI.key }), MULTI, 1, OWN)], [],
+    'the run will search the four territories the panel is showing, so there is nothing to stop')
+
+  // AN ACCOUNT WITH NONE OF ITS OWN resolves to worldwide, the panel draws a Worldwide chip, and the
+  // stop must still fire. This is the half a fix reading "never stop on an empty draft" would lose.
+  assert.match(blockers(draft({ product: MULTI.key }), MULTI, 1, [])[0]!,
+    /reads a region, or two or more countries/)
+
+  // THE OVERRIDE WINS AND IS NOT MERGED WITH WHAT IS INHERITED. One named country is one country even
+  // beside four inherited ones, or a reader could never narrow to a shape the product refuses.
+  assert.match(blockers(draft({ product: MULTI.key, territories: ['France'] }), MULTI, 1, OWN)[0]!,
+    /pick a Full country search to read France/)
+
+  // AND THE SHAPE RULES READ THE RESOLVED LIST TOO, not just the emptiness test: a one-country search
+  // over four inherited territories cannot run, and it says which of them is the region.
+  assert.match(blockers(draft({ product: FULL.key }), FULL, 1, OWN)[0]!, /European Union is a region/)
+
+  // A PRODUCT THAT READS NO TERRITORIES DOES NOT RESOLVE THEM AT ALL, and this is the sharp edge of the
+  // change. Found in review rather than here: passing the inherited list unconditionally made the
+  // worldwide-only branch fire for every account that has defaults, telling the reader to remove
+  // territories from a screen drawing one Worldwide chip and offering no control that removes anything —
+  // this same defect with its sides swapped, and harder, because there at least the four were on screen.
+  assert.deepEqual([...blockers(draft({ product: GLOBAL.key }), GLOBAL, 1, OWN)], [],
+    'a worldwide-only search does not read the account territories, so it cannot be stopped by them')
+  // And that branch still does its job for the draft it was kept for: a brief read can put territories
+  // on the form, and then there IS something the reader can remove.
+  assert.match(blockers(draft({ product: GLOBAL.key, territories: ['France'] }), GLOBAL, 1, OWN)[0]!,
+    /is worldwide and is not narrowed/)
+
+  // THE DEFAULT IS THE OLD READING, so a caller that passes no inherited list is unchanged.
+  assert.match(blockers(draft({ product: MULTI.key }), MULTI, 1)[0]!, /reads a region, or two or more countries/)
 })
 
 test('each product refuses exactly the geography the offering says it refuses', () => {

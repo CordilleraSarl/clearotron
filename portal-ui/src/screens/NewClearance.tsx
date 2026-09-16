@@ -749,7 +749,9 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   // The gates read the request that will be SENT. With a saved search chosen the picker is behind a
   // notice and the recipe decides the product, so both gates measure `activeLevel` — the product that
   // will actually run — rather than the one the picker is holding.
-  const stops = blockers(draft.pick, activeLevel, names.length)
+  // `own.territories` is the SAME list the Where panel draws when the draft is empty, so the stop and
+  // the chips cannot disagree about what this run will search.
+  const stops = blockers(draft.pick, activeLevel, names.length, own.territories)
   // ── — A MARK IS A SHORT STRING, SAID BEFORE THE ORDER IS PRICED ──────────
   //
   // The owner typed a product description into this field. It was accepted, priced, confirmed, run, and
@@ -791,8 +793,11 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   // in contract/composerProduct.ts, so `ready === (blockedBy === null)` holds by construction rather
   // than by two chains in two files staying in step. Adding a condition without its sentence is no
   // longer a thing this screen can do.
+  // NOTHING TOUCHED YET. Compared the same way `composerDirty` compares, and without its saved and
+  // submitted terms: this asks only whether the form still looks as it arrived.
+  const untouched = JSON.stringify(draft) === JSON.stringify(EMPTY)
   const { ready, blockedBy } = readiness({
-    gaps, stops, nameStops, budget, exhausted, hasProduct: activeLevel != null,
+    gaps, stops, nameStops, budget, exhausted, hasProduct: activeLevel != null, untouched,
   })
   // WHAT THE FOOTER CALLS THIS SEARCH, and there is only one answer now. It used to be `tierLabel`,
   // which invented seven strings for distinctions "the registry has no word for" — "Deep dive — United
@@ -1431,7 +1436,11 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
             two headings are different claims on purpose: a form nobody has finished filling in is
             not the same thing as a search that is set up wrongly, and telling someone their work is
             "not runnable" when all they have done so far is type a name reads as a fault. */}
-        {gaps.length ? (
+        {/* NOT BEFORE THE READER HAS TOUCHED ANYTHING. Both panels are about a form being filled in, and
+            on arrival both are true of every field at once — so the screen opened with two warning
+            blocks and a footer repeating one of them, about work nobody had started. The footer says
+            the one thing there is to say until then, and every panel returns on the first edit. */}
+        {!untouched && gaps.length ? (
           <div className="notice" style={{ borderColor: 'var(--tone-medium)', margin: 0 }}>
             <b>{gaps.length === 1 ? 'One thing left to fill in' : 'A couple of things left to fill in'}</b>
             <ul style={{ margin: '8px 0 0', paddingLeft: 18, color: 'var(--text-muted)' }}>
@@ -1440,7 +1449,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
           </div>
         ) : null}
 
-        {stops.length || nameStops.length ? (
+        {!untouched && (stops.length || nameStops.length) ? (
           <div className="notice" style={{ borderColor: 'var(--tone-medium)', margin: 0 }}>
             <b>Not runnable as set</b>
             <ul style={{ margin: '8px 0 0', paddingLeft: 18, color: 'var(--text-muted)' }}>

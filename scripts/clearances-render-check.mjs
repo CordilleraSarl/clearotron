@@ -643,8 +643,20 @@ console.log(`measured at ${WIDTH}px — ${short.openedRows} rows opened, ${short
 console.log(`table ${short.tableWidth}px in a ${short.tableWidth - (short.overflowBy ?? 0)}px wrapper — overflow ${short.overflowBy}px (min-width ${short.tableMinWidth})`)
 console.log(`column share: ${Object.entries(short.share).map(([k, v]) => `${k} ${v}%`).join(' · ')}`)
 
+// THE EXPECTATIONS INVERT BELOW THE STYLESHEET'S PHONE BREAKPOINT, and this number is that number.
+// Above it a fixed table divides the container and must not overflow its wrapper. Below it there is
+// nothing left to divide: the shares become slivers, the risk word prints through the date and marks
+// break mid-word, so the stylesheet lets the table become content-sized and be scrolled instead. Asked
+// at 400px, the desktop expectations below want a layout no seven-column table can have — so asking
+// them there is how a check reports a screen as broken and a design as impossible in the same breath.
+const NARROW = 560
+const narrow = WIDTH <= NARROW
+
 // — the grid is declared, and the reads are in it.
-ok(short.tableLayout === 'fixed', `the table is not fixed-layout (got ${short.tableLayout}) — its columns are still decided by their content`)
+ok(short.tableLayout === (narrow ? 'auto' : 'fixed'),
+  narrow
+    ? `at ${WIDTH}px the table is still fixed-layout — its columns are slivers, not something a reader can scroll`
+    : `the table is not fixed-layout (got ${short.tableLayout}) — its columns are still decided by their content`)
 ok(short.readRows > 0, 'no expanded read rows were found — the rows did not open, or a read is still a spanning panel')
 for (const [i, r] of short.reads.entries()) {
   ok(r.cols === short.headText.length,
@@ -713,8 +725,10 @@ for (const n of short.nameLines ?? []) {
   if (/\+\d+ more$/.test(n.text) || n.text.length > 34) continue
   ok(n.lines === 1, `the Name cell wraps at ${WIDTH}px for a single mark of ordinary length: ${JSON.stringify(n.text)} took ${n.lines} lines`)
 }
-ok(short.overflowsX === false,
-  `the table overflows its wrapper at ${WIDTH}px by ${short.overflowBy}px — table ${short.tableWidth}px, min-width ${short.tableMinWidth}, columns ${JSON.stringify(short.share)}`)
+ok(short.overflowsX === narrow,
+  narrow
+    ? `at ${WIDTH}px the table fits its wrapper — it collapsed into slivers instead of staying legible and being scrolled`
+    : `the table overflows its wrapper at ${WIDTH}px by ${short.overflowBy}px — table ${short.tableWidth}px, min-width ${short.tableMinWidth}, columns ${JSON.stringify(short.share)}`)
 ok(short.docOverflowsX === false, `the page itself scrolls horizontally at ${WIDTH}px`)
 
 // ── what each row says and offers ───────────────────────────────────────────────────────────────────

@@ -24,10 +24,14 @@
 // match the shapes that record an INVESTIGATION — a date, a hit count, or the words that name the method.
 //
 // SCOPED TO THE PAID VENDORS. EUIPO and USPTO are free public offices whose material carries no
-// third-party risk, and their notes hold capability facts worth keeping ( says so itself). The
-// three `providers/{clarivate,corsearch,signa}/test/` trees are WITHHELD from the public cut and are
-// where probe evidence legitimately lives — they are not scanned, by construction, because this is a
-// check about what publishes.
+// third-party risk, and their notes hold capability facts worth keeping.
+//
+// EVERY FILE UNDER A PAID VENDOR'S DIRECTORY IS SCANNED, ITS `test/` TREE INCLUDED. An earlier version
+// exempted `providers/{clarivate,corsearch,signa}/test/` on the stated ground that those trees are
+// withheld from the public cut. That ground was true when it was written and is false now: the trees are
+// tracked in the public repository, where anyone reads them without cloning. The package `files` list
+// does exclude `**/test/`, so nothing from them reaches the registry — but that shuts one of the two
+// doors and this check is named for the other one. The exemption is gone.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync, existsSync, statSync, mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
@@ -37,20 +41,23 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
-// The files that PUBLISH and name a paid vendor. `providers/_shared/` is here deliberately: it is not
-// withheld, it names vendors, and it carried two probe dates that its own file list did not mention.
+// The files that PUBLISH and name a paid vendor — each vendor's WHOLE directory, not its `src` alone.
+// `providers/_shared/` is here deliberately: it is not withheld, it names vendors, and it carried two
+// probe dates that its own file list did not mention.
+//
+// NAMING THE DIRECTORY RATHER THAN ITS PARTS IS THE POINT. While this list held `<vendor>/src` plus one
+// hand-added README, two of the three vendor READMEs were in no entry and a `test/` tree that had since
+// appeared in the public repository was read by nothing. Neither gap announced itself, because a list
+// that does not mention a file reports no absence for it. A directory covers what is added under it.
 const SCANNED = [
-  "providers/clarivate/src",
-  "providers/corsearch/src",
-  "providers/signa/src",
+  "providers/clarivate",
+  "providers/corsearch",
+  "providers/signa",
   "providers/_shared",
   "driver/skills/prelim-register/providers/clarivate.md",
   "driver/skills/prelim-register/providers/corsearch.md",
   "driver/skills/prelim-register/providers/signa.md",
-  "providers/corsearch/README.md",
 ];
-
-const WITHHELD_TEST_TREES = /providers\/(clarivate|corsearch|signa)\/test\//;
 
 /**
  * The corpus, and it REFUSES rather than narrows.
@@ -80,7 +87,6 @@ function filesUnder(rel, { top = true, base = ROOT } = {}) {
   const out = [];
   for (const e of entries) {
     const child = `${rel}/${e.name}`;
-    if (WITHHELD_TEST_TREES.test(`${child}/`)) continue;
     if (e.isDirectory()) out.push(...filesUnder(child, { top: false, base }));
     else if (/\.(js|mjs|md)$/.test(e.name)) out.push(child);
   }
@@ -102,13 +108,51 @@ const PROVENANCE = [
   { name: "a measured hit count beside the method", re: /\b(?:probed|re-probed)\b[\s,:]{0,3}[^\n]{0,12}?\b\d{2,}\b/i },
 ];
 
+// ── A PROBE ROUND IS ONE RECORD WRITTEN ACROSS SEVERAL LINES, AND EVERY RULE ABOVE READS ONE LINE ──
+//
+// The shape that got past them: a sentence saying the vendor was probed, and beneath it a table pairing
+// query shapes with that vendor's statuses and its measured counts. The sentence carries no figure and no
+// row carries a method word, so every line is innocent read alone and the file scanned clean for as long
+// as it stood. This is how anybody writes a probe round down, so it recurs rather than being an incident.
+//
+// BOTH HALVES MUST BE IN A COMMENT, and that constraint is the whole difference between this rule and an
+// unrunnable one. Measured over the scanned population: with it, five sites match and all five are real
+// probe rounds; without it, four more match and all four are functional test code — a variable named
+// `probed` beside a fixture's `total: 900`, a sentence about probing beside a fixture's page size. Figures
+// belong in code. A method word in a comment with figures under it does not.
+const METHOD_WORD = /\b(?:probed|re-probed|probe[-\s]verified|the\s+probes)\b/i;
+const WINDOW = 4;
+const isCommentLine = (line, isMarkdown) => isMarkdown || /^\s*(?:\/\/|\/?\*)/.test(line);
+// A table ROW rather than a sentence that mentions a figure: two or more numbers, one of them at least
+// two digits. One number in a line of prose is a capability statement, which is what we ask authors for.
+const isTableRow = (line) => {
+  const nums = line.match(/(?:^|[^\w.])\d+(?:,\d{3})*(?![\w.])/g) ?? [];
+  return nums.length >= 2 && nums.some((n) => /\d\d/.test(n));
+};
+
+export function probeTables(text, { isMarkdown = false } = {}) {
+  const lines = String(text).split("\n");
+  const out = [];
+  for (let i = 0; i < lines.length; i++) {
+    if (!METHOD_WORD.test(lines[i]) || !isCommentLine(lines[i], isMarkdown)) continue;
+    for (let j = i + 1; j <= Math.min(i + WINDOW, lines.length - 1); j++) {
+      if (isCommentLine(lines[j], isMarkdown) && isTableRow(lines[j])) { out.push({ method: i + 1, row: j + 1 }); break; }
+    }
+  }
+  return out;
+}
+
 const findings = () => {
   const out = [];
   for (const rel of SCANNED.flatMap(filesUnder)) {
-    const lines = readFileSync(join(ROOT, rel), "utf8").split("\n");
+    const text = readFileSync(join(ROOT, rel), "utf8");
+    const lines = text.split("\n");
     lines.forEach((line, i) => {
       for (const p of PROVENANCE) if (p.re.test(line)) out.push(`${rel}:${i + 1} — ${p.name} — ${line.trim().slice(0, 110)}`);
     });
+    for (const t of probeTables(text, { isMarkdown: rel.endsWith(".md") }))
+      out.push(`${rel}:${t.method} — a probe round with its figures in a table under it — see line ${t.row}: `
+        + lines[t.row - 1].trim().slice(0, 90));
   }
   return out;
 };
@@ -158,8 +202,66 @@ test("no file in the public cut records HOW a paid vendor's behaviour was discov
   assert.deepEqual(found, [],
     "vendor provenance is back in the published tree. State the capability, not how it was learned: "
     + "\"the result ceiling is 5,000 and paging does not fail loud\", never the probe round that "
-    + "established it. Evidence belongs with the fixtures under the provider's own `test/` tree, which "
-    + "does not publish — see providers/README.md.\n  " + found.join("\n  "));
+    + "established it. A provider's own `test/` tree is not the place for it either: that tree is in "
+    + "the public repository too. Keep the evidence on the tracker issue that measured it.\n  "
+    + found.join("\n  "));
+});
+
+test("a paid vendor's `test/` tree is in the scanned population, because it publishes too", () => {
+  // THE PROPERTY, NOT THE PATHS. The two files that exist today are not named here: this asks the tree
+  // which vendor test directories hold something scannable, then requires the scan to have read all of
+  // it. A file renamed, or a fourth paid vendor added, keeps this arm honest where a literal list would
+  // go quietly out of date — which is exactly what the exemption it replaced had already done.
+  const scanned = SCANNED.flatMap(filesUnder);
+  let proved = 0;
+  for (const v of ["clarivate", "corsearch", "signa"]) {
+    const rel = `providers/${v}/test`;
+    if (!existsSync(join(ROOT, rel))) continue;
+    let expected;
+    // A tree holding nothing this scan reads is not this arm's finding; the floor below catches the
+    // case where that is true of every one of them.
+    try { expected = filesUnder(rel); } catch { continue; }
+    assert.deepEqual(scanned.filter((f) => f.startsWith(`${rel}/`)).sort(), expected.sort(),
+      `${rel}/ is in the public repository and the scan did not read all of it`);
+    proved += expected.length;
+  }
+  // THE FLOOR ON THE POPULATION. With no vendor test tree in the checkout every iteration above is
+  // skipped and the arm passes having read nothing — the shape this whole file exists to refuse.
+  assert.ok(proved, "no paid vendor `test/` tree holds a scannable file, so this arm proved nothing");
+});
+
+test("a probe round written as a table is caught, though every line of it reads clean alone", () => {
+  // THE SPECIMEN IS THE REAL ONE — the shape this rule was written for, kept here rather than described.
+  // Each line goes through the per-line rules FIRST: if any of them fires, this arm would pass for a
+  // reason that has nothing to do with the table, and the gap it names would still be open.
+  const specimen = [
+    "  // leading rule above exists for. Probed on the test install, count calls only:",
+    "  //   *PLAN ADJ B*   500      *PLAN ADJ B    200, 36 records",
+    "  //   *LEVEL ADJ 2*  500      *LEVEL ADJ 2   200, 14 records",
+  ];
+  for (const line of specimen)
+    assert.deepEqual(PROVENANCE.filter((r) => r.re.test(line)).map((r) => r.name), [],
+      `a per-line rule already catches this, so the table rule is not what is being tested: ${line.trim().slice(0, 48)}`);
+  assert.deepEqual(probeTables(specimen.join("\n")), [{ method: 1, row: 2 }],
+    "the method word and the row beneath it are one record and must be reported as one");
+
+  // The gap is the DISTANCE, so drive the other side of it: past the window the two are not one record.
+  const spread = [specimen[0], "  //", "  //", "  //", "  //", specimen[1]];
+  assert.deepEqual(probeTables(spread.join("\n")), [],
+    "a method word must not reach a figure five lines away, or every comment near a number is a finding");
+});
+
+test("functional probe vocabulary beside CODE figures is not a probe table — the rule stays runnable", () => {
+  // THE CONTROL, and it is the half that decides whether this rule survives contact with the tree. Both
+  // specimens are real lines from the scanned population that a comment-blind version of this rule flags.
+  for (const innocent of [
+    ["        probed.push({ owners: p.owners, classes: p.nice_classes ?? [] });",
+     "        if ((p.nice_classes ?? []).length !== 1) return { ok: true, total: 900 };"],
+    ["  // The control: a genuinely empty term still earns verified-zero, because it was genuinely probed.",
+     "  installCorsearch((u) => (nameClausesOf(u) > 1 ? page(9999, 0, \"stack\") : page(0, 0)));"],
+  ])
+    assert.deepEqual(probeTables(innocent.join("\n")), [],
+      `functional code read as a probe round: ${innocent[0].trim().slice(0, 52)}`);
 });
 
 test("the scan REFUSES a corpus it cannot reach, rather than reporting it clean", () => {

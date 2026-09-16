@@ -341,6 +341,12 @@ function topLevelKeys(text, code, open) {
 // — the committed artifact is byte-identical across it.
 export const DEPLOYMENT_NAMES = new Set([
   "CF_ACCESS_TEAM",
+  // The administrator contact for this install — the address Preferences points a signed-in person at to
+  // have their access, permissions or companies changed. An identity and an address, which the rule above
+  // DEPLOY_RE calls never a knob, and its catalogue row declares `deployment`. No shape here matches the
+  // spelling, so unlisted it falls through to `tuning`, the bucket step 3 deletes from — where nothing
+  // records a set-site for it and nothing would object to its removal.
+  "CLEAROTRON_ADMINISTRATOR_CONTACT",
   // — `CLEAROTRON_DEMO`, which is `PORTAL_DEMO` renamed. It is listed here for
   // the exact reason this list exists: the old name was `deployment` because of its `PORTAL_` prefix and
   // by nothing else, so moving it to the house prefix dropped it through to `tuning` — the bucket step 3

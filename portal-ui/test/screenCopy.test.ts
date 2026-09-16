@@ -379,8 +379,16 @@ test('the gates read the request that will be SENT, not the levers behind the no
   // …and the NAME COUNT is one of those gates now. It used to be a local `overBudget` beside this call,
   // so "may this run?" was answered in two places and levelDelta reproduced it in a third. One
   // predicate (nameBudget), read by blockers here and by the NameWall that offers the way out.
-  assert.match(prose, /blockers\(draft\.pick, activeLevel, names\.length\)/,
+  // The three arguments that carry the property are pinned; a FOURTH is tolerated, because pinning the
+  // whole call meant this fired for "the spelling moved" when the stop learned to read the inherited
+  // territories, and the cheap repair for that reading is to delete the property and go green.
+  assert.match(prose, /blockers\(draft\.pick, activeLevel, names\.length[,)]/,
     'measured against the product that will RUN — a saved search carries its own')
+  // AND AGAINST THE LIST THE WHERE PANEL DRAWS. An unset list is not "nowhere": it resolves to the
+  // account's own territories, which is what the panel shows and what the run searches. The behaviour
+  // is driven in composerProduct.test.ts; this is the wiring, so the screen cannot pass a second list.
+  assert.match(prose, /blockers\(draft\.pick, activeLevel, names\.length, own\.territories\)/,
+    'the stop reads the same list the Where panel draws, or the two disagree about what will be searched')
   assert.match(prose, /nameBudget\(activeLevel, names\.length\)/, 'the wall reads the same predicate the gate does')
   assert.doesNotMatch(prose, /names\.length > activeLevel\.maxNames/, 'no second answer to the budget question')
 })
