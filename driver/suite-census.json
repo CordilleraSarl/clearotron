@@ -1246,8 +1246,8 @@
           "todos": 0
         },
         "browser-check-membership.test.mjs": {
-          "tests": 8,
-          "asserts": 17,
+          "tests": 10,
+          "asserts": 23,
           "skips": 8,
           "todos": 0
         },
