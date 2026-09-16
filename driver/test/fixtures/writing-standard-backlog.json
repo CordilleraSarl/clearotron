@@ -1,0 +1,40 @@
+{
+  "classes": [
+    "engineering-identifier",
+    "internal-marker",
+    "known-caveat",
+    "eyebrow-heading",
+    "restating-lede"
+  ],
+  "total": 13,
+  "files": {
+    "driver/publish/pool-admin.mjs": [
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/publish/render-knockout.mjs": [
+      0,
+      2,
+      6,
+      0,
+      0
+    ],
+    "driver/publish/render.mjs": [
+      0,
+      0,
+      3,
+      0,
+      0
+    ],
+    "portal-ui/src/screens/Result.tsx": [
+      0,
+      0,
+      0,
+      1,
+      0
+    ]
+  }
+}

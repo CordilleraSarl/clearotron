@@ -842,6 +842,29 @@ jobs:
       - name: This pipeline publishes only the way it was authorised to
         run: node scripts/release-publish-guard.mjs
 
+      # ── APPROVE THE VERSION PULL REQUEST'S PARKED RUN, SO THE WAIT BELOW HAS SOMETHING TO WAIT FOR ──
+      #
+      # The version pull request is authored by this repository's own Actions bot, and a run triggered by
+      # a bot-authored pull request arrives `action_required`. Until a person approves it the pull
+      # request's checks never complete, auto-merge never fires, and the wait below expires having
+      # watched a merge that could not happen.
+      #
+      # IT CANNOT FAIL THE CUT. No token, no parked run, an API that refuses — each is reported and exits
+      # 0, because the outcome without this step is exactly the outcome with it failing: a person clicks.
+      # A step that could turn a green cut red to save a click would be the worse trade.
+      #
+      # THE TOKEN IS NOT `GITHUB_TOKEN`, which cannot approve a workflow run — GitHub blocks
+      # self-approval deliberately. `ACTIONS_APPROVE_TOKEN` is a fine-grained token scoped to this one
+      # repository with Actions read and write and nothing else. Note what that permission really
+      # carries: besides approving runs it can create workflow_dispatch events — and this workflow has
+      # that trigger, so the token can reach a publish by the same door a person uses — cancel any run,
+      # and delete run logs. It cannot push code, merge, or authenticate to the registry. Absent, this
+      # step says so and the cut proceeds as before.
+      - name: Approve the version pull request's own parked run
+        env:
+          ACTIONS_APPROVE_TOKEN: ${{ secrets.ACTIONS_APPROVE_TOKEN }}
+        run: node scripts/release-approve-parked.mjs
+
       # GIVING UP IS THE ORDINARY OUTCOME, NOT A FAULT — checks that fail, a pull request somebody
       # dismisses, a re-cut mid-flight. The cron floor stays underneath, so a quiet give-up loses
       # nothing; reporting it as a failure would train every reader to ignore this job.

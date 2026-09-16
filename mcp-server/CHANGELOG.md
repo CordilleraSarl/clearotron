@@ -1,5 +1,20 @@
 # trademark-artifacts-mcp
 
+## 0.3.1
+
+### Patch Changes
+
+- f96c089: Fixed: A clearance for a new client can be ordered through an assistant connector without setting up a company first.
+- 56a760f: Fixed: Removing somebody's access now ends their assistant's connection on its next request. Until now an assistant that had already connected kept the access it started with for up to half an hour.
+- c05e0a7: Fixed: Ask your assistant for a client's recent searches by the client's name and it finds them. Every search in the list now says which client it was for, and which project. A search whose own record cannot be read says so, instead of appearing to belong to nobody.
+- d9798db: Fixed: A clearance that stops now always records that its notice is still owed, so a failure cannot be passed over as already handled.
+- 240673c: Fixed: Sending an access key to the engine's network address now gets a refusal that says so. It reports that the address takes an identity from the sign-in proxy and never a key.
+  
+  Fixed: That refusal also names the local door where a key is accepted. Before, it reported only a missing sign-in assertion, which sent operators to the wrong configuration.
+  
+  For operators: A program on the same machine can now reach the engine's local key door without setting a host name for it. The local door no longer applies a browser protection that only a network address needs.
+- f96c089: New: The free preview of a search lists, for each territory ordered, which registers legally bind it.
+
 ## 0.3.1-beta.4
 
 No changes in this release.
