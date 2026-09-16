@@ -15,9 +15,9 @@
 // several times that, because EIGHT sites build the token dynamically and hand back a string the
 // extractor never sees:
 //
-//   D1 verify.mjs:898   fail(`connotation_${reason}:…`)      — reason iterates the table at line 894
+//   D1 verify.mjs:940   fail(`connotation_${reason}:…`)      — reason iterates the table at line 894
 //   D2 verify.mjs:704   fail(String(e.message))              — parseFindingsJson throws token-first
-//   D3 verify.mjs:1123   checkJson: fail(String(e.message))   — FIVE parsers reach this one site
+//   D3 verify.mjs:1165   checkJson: fail(String(e.message))   — FIVE parsers reach this one site
 //   D4 verify.mjs:1603  parseCoverageLedgerJson, same shape
 //   D5 verify.mjs:1504  fail(`${unaccounted[0].token}:…`)    — token minted in a DATA ROW
 //   D6 verify.mjs:1567  fail(`${violations[0].token}…`)      — validatePlanFeasibility in register-plan.mjs
@@ -130,7 +130,7 @@ export const VOCABULARY = [
   { token: "variantmodel_term_markup", stages: ["prelim-variants"], site: "driver/verify.mjs" },
   { token: "variantmodel_missing", stages: ["prelim-variants"], site: "driver/verify.mjs:1153, 1212" },
   // Recovered during E2 authoring, absent from the draft census: variant-manifest.json is strict-parsed
-  // through checkSiblingJson (verify.mjs:1136) → checkJson (:742), so the WHOLE variantmodel_* family
+  // through checkSiblingJson (verify.mjs:1178) → checkJson (:742), so the WHOLE variantmodel_* family
   // reaches prelim-variants, not just the four literal tokens above.
   // CONVERSION 3 widened this family's SOURCE without widening its prefix. `acceptPrelimVariants` raises
   // `variantmodel_scope_layer_invalid`, `_scope_status_invalid`, `_scope_item_missing` and `_scope_pipe`
@@ -143,7 +143,7 @@ export const VOCABULARY = [
   // `{ok: false, reason}` instead — measured, all four extract ZERO tokens. So this row is authored, not
   // extracted, and nothing re-derives it if the module grows a member. Filed as.
   { token: "variantmodel_", stages: ["prelim-variants"], site: "driver/verify.mjs:1153 → 742 (JSON family); driver/prelim-variants-record.mjs acceptPrelimVariants (scope-ledger transport family)", family: "driver/variant-manifest-model.mjs (token-first throws) + driver/prelim-variants-record.mjs", dynamic: "D3" },
-  { token: "blindframe_", stages: ["blind-frame"], site: "driver/verify.mjs:1221 → 742", family: "driver/blind-frame-model.mjs", dynamic: "D3" },
+  { token: "blindframe_", stages: ["blind-frame"], site: "driver/verify.mjs blindFrame → checkJson", family: "driver/blind-frame-model.mjs", dynamic: "D3" },
   // — THE SKEPTIC TRANSPORT FAMILY, WHICH HAD NO ROW AT ALL. Nine tokens minted by acceptSkeptic
   // and not one of them was covered here: the conversion that moved them to the acceptance boundary moved
   // them out of a census that could not read that boundary, so nothing went red. Two of the nine are
@@ -416,33 +416,33 @@ export const TRIPWIRE_OUT_OF_SCOPE = [
 export const INNER_CODES = Object.freeze([
   // ── connotation-search.mjs — namespaced one-for-one by verify.mjs ────────────────────────────────
   //
-  // `CONNOTATION_FORM_REASONS` (connotation-search.mjs:1599) is `CONNOTATION_REASONS` minus
+  // CONNOTATION_FORM_REASONS at connotation-search.mjs:1731 is `CONNOTATION_REASONS` minus
   // `no_recorded_queries`, and the `connotation_` family row (dynamic D1) is declared against exactly
   // that list. The four call codes are folded by a template — `connotation_${callFail.reason}` at
   // verify.mjs:1013 — so they are namespaced by construction rather than one branch at a time.
-  { code: "call_never_made", mints: ["driver/connotation-search.mjs:1956"], rollsUpTo: ["connotation_call_never_made"],
+  { code: "call_never_made", mints: ["driver/connotation-search.mjs:2007"], rollsUpTo: ["connotation_call_never_made"],
     why: "CALL_AUDIT_ROWS. The typed transport's four call states, handed in by disposition-call-audit.mjs and namespaced at verify.mjs:1013." },
-  { code: "call_truncated", mints: ["driver/connotation-search.mjs:1957"], rollsUpTo: ["connotation_call_truncated"],
+  { code: "call_truncated", mints: ["driver/connotation-search.mjs:2008"], rollsUpTo: ["connotation_call_truncated"],
     why: "As call_never_made — same table, same projection." },
-  { code: "call_schema_violation", mints: ["driver/connotation-search.mjs:1958"], rollsUpTo: ["connotation_call_schema_violation"],
+  { code: "call_schema_violation", mints: ["driver/connotation-search.mjs:2009"], rollsUpTo: ["connotation_call_schema_violation"],
     why: "As call_never_made — same table, same projection." },
-  { code: "call_partial", mints: ["driver/connotation-search.mjs:1959"], rollsUpTo: ["connotation_call_partial"],
+  { code: "call_partial", mints: ["driver/connotation-search.mjs:2010"], rollsUpTo: ["connotation_call_partial"],
     why: "As call_never_made — same table, same projection. This is the pair #1211 cites as its worked example: the composite is covered, the bare form reaches no stage." },
-  { code: "quote_unbound", mints: ["driver/connotation-search.mjs:2090"], rollsUpTo: ["connotation_quote_unbound"],
-    why: "The ruled-but-unbound row. Projected at verify.mjs:1057, and reported only once nothing is unruled." },
-  { code: "token_absent", mints: ["driver/connotation-search.mjs:2117"], rollsUpTo: ["connotation_token_absent"],
+  { code: "quote_unbound", mints: ["driver/connotation-search.mjs:2141"], rollsUpTo: ["connotation_quote_unbound"],
+    why: "The ruled-but-unbound row. Projected at verify.mjs:1099, and reported only once nothing is unruled." },
+  { code: "token_absent", mints: ["driver/connotation-search.mjs:2168"], rollsUpTo: ["connotation_token_absent"],
     why: "#592 split this out of no_ruling. Row-level only — repairs.mjs:352 says so in as many words: `never a top-level token`." },
-  { code: "cite_absent", mints: ["driver/connotation-search.mjs:2126"], rollsUpTo: ["connotation_cite_absent"],
+  { code: "cite_absent", mints: ["driver/connotation-search.mjs:2177"], rollsUpTo: ["connotation_cite_absent"],
     why: "#592, as token_absent. repairs.mjs:353: `row-level only — never a top-level token`." },
-  { code: "no_ruling", mints: ["driver/connotation-search.mjs:2133"], rollsUpTo: ["connotation_no_ruling"],
+  { code: "no_ruling", mints: ["driver/connotation-search.mjs:2184"], rollsUpTo: ["connotation_no_ruling"],
     why: "The residual the other two split off from, and it has representatives — see the mint site. Declared as a corrective token at repairs.mjs:308 and in stages.mjs's E1 rows, always namespaced." },
   // THE ONE THAT IS RENAMED, NOT NAMESPACED — and it is the reason this table stores the composite as
   // data rather than deriving it. Every derivation anyone would write is `connotation_` + the code, and
   // for this row that produces `connotation_no_recorded_queries`, which nothing mints and nothing covers.
   // verify.mjs:912-913 states the ruling: a sweep that did not RUN is a canonical-only decision with its
   // own token and its own remedy, so the projector at verify.mjs:909 deliberately does not handle it.
-  { code: "no_recorded_queries", mints: ["driver/connotation-search.mjs:1974"], rollsUpTo: ["connotation_search_missing"],
-    why: "RENAMED, not namespaced: verify.mjs:398 emits `connotation_search_missing`. It is excluded from CONNOTATION_FORM_REASONS at connotation-search.mjs:1680 for exactly this reason." },
+  { code: "no_recorded_queries", mints: ["driver/connotation-search.mjs:2025"], rollsUpTo: ["connotation_search_missing"],
+    why: "RENAMED, not namespaced: verify.mjs emits `connotation_search_missing`. It is excluded from CONNOTATION_FORM_REASONS at connotation-search.mjs:1731 for exactly this reason." },
 
   // ── case-law-ledger.mjs — ONE token, the codes as census payload ─────────────────────────────────
   //
@@ -472,8 +472,8 @@ export const INNER_CODES = Object.freeze([
 
   // ── coverage-form.mjs ─────────────────────────────────────────────────────────────────────────────
   //
-  // ONE CODE, TWO TOKENS, and the split is by `cause` rather than by code: verify.mjs:1169 peels the
-  // `axis_invalid` cause into its own family before verify.mjs:1236 counts the rest. A ruling naming only
+  // ONE CODE, TWO TOKENS, and the split is by `cause` rather than by code: verify.mjs peels the
+  // `axis_invalid` cause into its own family before counting the rest. A ruling naming only
   // `coverage_no_status` would be true of most `no_status` records and false of the ones that matter most.
   { code: "no_status", mints: ["driver/coverage-form.mjs:836"], rollsUpTo: ["coverage_no_status", "coverage_form_axis_invalid"],
     why: "Two composites, split on the record's `cause`: verify.mjs:1172 for cause `axis_invalid`, verify.mjs:1263 for the rest. NOT cited at coverage-form.mjs:810 — that is the JSDoc @returns annotation, not the mint." },
@@ -488,7 +488,7 @@ export const INNER_CODES = Object.freeze([
   // the census output would have been half a ruling. verify.mjs:1075 already states the rule this row
   // records: `coverage_form_damaged`, never a bare `form_damaged`.
   { code: "form_damaged",
-    mints: ["driver/connotation-search.mjs:1979", "driver/connotation-search.mjs:2055", "driver/coverage-form.mjs:818"],
+    mints: ["driver/connotation-search.mjs:2030", "driver/connotation-search.mjs:2106", "driver/coverage-form.mjs:818"],
     rollsUpTo: ["connotation_form_damaged", "coverage_form_damaged"],
     why: "Minted in two lanes and namespaced per lane: verify.mjs:1019 for the meaning sweep, verify.mjs:1119 for the register digest. The namespacing is what keeps them apart — see verify.mjs:1075." },
 ]);

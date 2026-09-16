@@ -14,7 +14,7 @@ import { findReceiptViolations, findGridLedgerViolations, findPlatformIdentityVi
 // Conversion 2 — the discriminator the two rulings above key on. PURE-ish: one existsSync-shaped read.
 import { matterFrameWasRecorded, frameRatifiedForms } from "./matter-frame-record.mjs";
 import { findConnotationViolations, parsePrRiskResults, MEANING_ANGLES_RE,
-  parseDispositionForm, CONNOTATION_UNRULED_REASONS } from "./connotation-search.mjs";
+  parseDispositionForm, CONNOTATION_UNRULED_REASONS, queryKey } from "./connotation-search.mjs";
 import { formSidecarName, formSidecarPath } from "./disposition-union.mjs";
 // B — the transport's own four failure states. The audit reads the run's records; this file locates them.
 import { auditDispositionCalls, CALL_FAILURE_REASONS } from "./disposition-call-audit.mjs";
@@ -354,12 +354,54 @@ function commonLawMeaningSeat(p, c) {
   try { ledgerRaw = readFileSync(join(dirname(p), `common-law-grid.half-${MEANING_SEAT}.json`), "utf8"); } catch { /* missing → fail-closed below */ }
   if (ledgerRaw == null) return fail(`grid_ledger_missing:common-law-grid.half-${MEANING_SEAT}.json absent while _driver/grid-spec.half-${MEANING_SEAT}.json dictates the meaning sweep`);
   const dictated = Array.isArray(spec?.connotation?.queries) ? spec.connotation.queries : [];
-  let recordedQ;
-  try { recordedQ = new Set(parsePrRiskResults(ledgerRaw).map((e) => String(e?.query ?? "").trim())); }
+  // COMPARED ON A KEY, NOT ON THE RAW TEXT — `queryKey` in connotation-search.mjs, beside the parser,
+  // so there is one author of what "the same query" means. The dictated spelling is the driver's; the
+  // recorded one comes back through a provider that returns typographic punctuation. Measured on a
+  // production clearance, 2026-09-16: one query of sixty-one differed by a single right single quotation
+  // mark where the driver wrote an apostrophe, and the grid had run and recorded every one of them.
+  //
+  // THE ORIGINAL TEXT IS WHAT THE REFUSAL QUOTES, below. Somebody chasing a query that really is missing
+  // needs the spelling the driver asked for, not a flattened key.
+  let recordedRaw;
+  try { recordedRaw = parsePrRiskResults(ledgerRaw).map((e) => String(e?.query ?? "")); }
   catch (e) { return fail(`grid_ledger_unparseable:${String(e.message).slice(0, 80)}`); }
-  const dropped = dictated.filter((q) => !recordedQ.has(String(q).trim()));
-  if (dropped.length)
-    return fail(`connotation_query_unrecorded:${dropped.slice(0, 3).map((q) => abbrev(q, 40)).join(",")}${dropped.length > 3 ? ` (+${dropped.length - 3} more)` : ""}`);
+  const recordedQ = new Set(recordedRaw.map(queryKey));
+  const dropped = dictated.filter((q) => !recordedQ.has(queryKey(q)));
+  if (dropped.length) {
+    // ── THE REFUSAL SAYS WHICH OF TWO FAULTS THIS IS, because they need opposite remedies ──────────
+    //
+    // ABSENT: no recorded query resembles it, so the search was not run and the seat must run it.
+    // UNMATCHED: something close IS recorded, so the search ran and the two spellings disagree beyond
+    // what the key folds — a re-ordering, a translation, a truncation, a query the provider chose for
+    // itself. Telling the seat to "re-run the missing query" in that case asks for the one thing that
+    // cannot help, and that is what turned one attempt into four on a production clearance.
+    //
+    // NO THRESHOLD DECIDES ANYTHING (owner's ruling). The nearest recorded query is shown so a person or
+    // a seat can SEE the difference in one attempt; it never makes the gate pass. A similarity score
+    // that could pass this gate would be a score that can hide a skipped query, which is what the gate
+    // is for.
+    const nearest = (q) => {
+      const words = new Set(queryKey(q).split(" ").filter(Boolean));
+      if (!words.size) return null;
+      let best = null, bestScore = 0;
+      for (const r of recordedRaw) {
+        const rw = queryKey(r).split(" ").filter(Boolean);
+        if (!rw.length) continue;
+        const shared = rw.filter((w) => words.has(w)).length / Math.max(words.size, rw.length);
+        if (shared > bestScore) { bestScore = shared; best = r; }
+      }
+      // A single shared word is a coincidence in a sweep about one mark, where the mark's own name is in
+      // every query. Below half the words in common, say nothing rather than point at a red herring.
+      return bestScore >= 0.5 ? best : null;
+    };
+    const parts = dropped.slice(0, 3).map((q) => {
+      const n = nearest(q);
+      return n
+        ? `${abbrev(q, 40)} [unmatched; nearest recorded: ${abbrev(n, 40)}]`
+        : `${abbrev(q, 40)} [absent from the ledger]`;
+    });
+    return fail(`connotation_query_unrecorded:${parts.join(",")}${dropped.length > 3 ? ` (+${dropped.length - 3} more)` : ""}`);
+  }
   if (spec?.connotation?.disposition_required === true) {
     const recorded = parsePrRiskResults(ledgerRaw);
     const form = dispositionForm(dirname(p), spec?.connotation?.dispositions_path);

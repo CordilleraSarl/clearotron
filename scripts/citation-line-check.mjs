@@ -729,15 +729,47 @@ const OWN_NUMBER = /^\s*(?:at\s+\d|:\d)/;
 // So the file is exempt from the weaker check and stays under the stronger one. Anything NOT covered by
 // an evidence guard does not belong on this list — the exemption is earned by being checked better, not
 // by being inconvenient.
+//
+// `contract-vocabulary.mjs` is the same conflict one file over, and it arrives by the same route. Each
+// INNER_CODES row carries a `mints` array naming the line that WRITES its code, and
+// `contract-audit.test.mjs` re-reads every one of them on every run: it checks the cited line still
+// mints that code, and when it does not it prints where the code is NOW and refuses. That arm's own
+// message says "Do not delete the citation: it is what makes the ruling checkable rather than merely
+// written down" — so the ratchet's remedy, dropping the number, is the one repair that file forbids.
+//
+// Measured on the change that added this: a 41-line insertion into `connotation-search.mjs` moved 12
+// mint sites, the audit demanded all 12 be repointed, and the ratchet then read all 12 as newly added
+// bare citations. Under both rules at once the only permitted change is no change at all.
+//
+// The alternative considered and rejected: teach the audit's `m.split(":")` to accept `file:line symbol`
+// and tag the 12. It widens a parser every INNER_CODES row depends on, to buy a weaker guarantee than
+// the one already in place — the audit verifies the NUMBER, which is what a symbol only approximates.
+//
+// SO THE EXEMPTION IS SCOPED TO THE LINES THE AUDIT ACTUALLY COVERS, not to the file. Measured on this
+// tree: `contract-vocabulary.mjs` carries 117 numbered citations, 21 of them inside `mints` arrays and 96
+// outside. A file-wide entry would have taken the ratchet off all 117 to protect 21 — and the 96 are
+// precisely the prose and `site:` citations nothing else checks. Every `mints` array is written on one
+// line, so a `when` pattern matching that line is exact rather than approximate.
+//
+// An entry is either a bare path (the whole file, for the two cases where the whole file earns it) or
+// `{ file, when }`, where `when` must match the LINE the citation sits on. A `when` that stops matching
+// re-arms the ratchet over those lines, which is the failure direction worth having.
 export const RATCHET_EXEMPT = [
   "driver/test/a-new-citation-carries-something-that-can-be-checked.test.mjs",
   "driver/contract-e3-backlog.mjs",
+  // The `mints` lines only: `contract-audit.test.mjs` verifies each of those numbers against the line
+  // that writes the code. Everything else in this file stays under the ratchet.
+  { file: "driver/contract-vocabulary.mjs", when: /mints:\s*\[/ },
 ];
+
+/** Whether a citation on `text` in `file` is exempt from the ratchet. PURE. */
+export const ratchetExempt = (file, text) => RATCHET_EXEMPT.some((e) =>
+  (typeof e === "string" ? e === file : e.file === file && e.when.test(String(text ?? ""))));
 
 export function newBareCitations(addedLines) {
   const out = [];
   for (const { file, line, text } of addedLines ?? []) {
-    if (RATCHET_EXEMPT.includes(file)) continue;
+    if (ratchetExempt(file, text)) continue;
     for (const m of String(text ?? "").matchAll(CITE_RE)) {
       // The same discriminator the corpus scan uses: a second `:number` closing a paren is a V8 stack
       // frame, not a citation. Reading them as citations would refuse a fixture that captured a trace.
