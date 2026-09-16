@@ -97,6 +97,35 @@ export const BRAND = {
 export const ORGANISATION_NAME = process.env.CLEAROTRON_ORGANISATION_NAME?.trim() || null;
 
 /**
+ * Where a signed-in person asks for a change to their own sign-in: an `href`, or NULL when the
+ * installation names nobody.
+ *
+ * Preferences tells a person to contact their Clearotron administrator to change the address, the
+ * permissions or the companies on their sign-in. With a contact set those words are a link to it; unset,
+ * they are plain text. Unset is the default, and no contact is invented.
+ *
+ * A LINK OR NOTHING. The value ends up in an `href` in a browser, so it is accepted only as a mail address
+ * (with or without `mailto:`) or an http(s) address, and is returned as the `href` itself. Anything else —
+ * a name, a telephone number, a `javascript:` address — reads as unset, because words that open something
+ * other than what they say are worse than words that open nothing.
+ */
+const MAIL_ADDRESS = /^[^\s@<>()"',;:\\]+@[^\s@<>()"',;:\\]+\.[^\s@<>()"',;:\\]+$/;
+export function administratorContact(raw) {
+  const value = String(raw ?? "").trim();
+  if (!value) return null;
+  const mail = /^mailto:/i.test(value) ? value.slice("mailto:".length) : value;
+  if (MAIL_ADDRESS.test(mail)) return `mailto:${mail}`;
+  if (!/^https?:\/\//i.test(value)) return null;
+  try {
+    const url = new URL(value);
+    return (url.protocol === "https:" || url.protocol === "http:") && url.hostname ? url.href : null;
+  } catch {
+    return null;
+  }
+}
+export const ADMINISTRATOR_CONTACT = administratorContact(process.env.CLEAROTRON_ADMINISTRATOR_CONTACT);
+
+/**
  * THE CONFIDENTIALITY POSTURE ON A DELIVERED DOCUMENT — one rule, both report templates.
  *
  * It lives here because the alternative is what the issue is about. render.mjs printed the extended

@@ -416,7 +416,7 @@ ${HELPERS}
   out.railNav = rail ? [...rail.querySelectorAll('.nav-item')].map((b) => b.innerText.trim()).filter(Boolean) : [];
   out.genericLabels = railSelect ? [...railSelect.options].filter((o) => /Generic/.test(o.textContent)).map((o) => o.textContent.trim()) : [];
   // The avatar menu, opened, read and closed again. People lives there for a person with Manage, directly
-  // above Global config, and in the rail for nobody.
+  // above Installation settings, and in the rail for nobody.
   const avatar = document.querySelector('button[aria-label="Settings and about"]');
   if (avatar) { avatar.click(); await settle(() => !!document.querySelector('[role="menu"]')); }
   out.avatarMenu = [...document.querySelectorAll('[role="menu"] [role="menuitem"]')].map((b) => b.innerText.trim()).filter(Boolean);
@@ -1174,7 +1174,7 @@ if (asMulti && !asMulti.fatal) {
 // ── the access model's screens ──────────────────────────────────────────────────────────────────────
 // Two organisations visible: the switcher heads its rows by organisation, one Generic under each, and the
 // top bar names none of them. One organisation visible: no heading, and the bar names it. People is in
-// the avatar menu for Manage, directly above Global config, and in the rail for nobody; New clearance is
+// the avatar menu for Manage, directly above Installation settings, and in the rail for nobody; New clearance is
 // in the rail for Run and nowhere else. Each Generic in the switcher carries its Default tag as words.
 if (asStaff && !asStaff.fatal) {
   ok(JSON.stringify(asStaff.railGroups) === JSON.stringify(['Apmxc Group', 'Foxglade Group']),
@@ -1188,8 +1188,9 @@ if (asStaff && !asStaff.fatal) {
     `a company other than Generic carries the Default tag: ${JSON.stringify(asStaff.railOwner)}`)
   ok(!asStaff.railNav.includes('People'), `People is back in the rail: ${JSON.stringify(asStaff.railNav)}`)
   const peopleAt = asStaff.avatarMenu.indexOf('People')
-  ok(peopleAt >= 0 && asStaff.avatarMenu[peopleAt + 1] === 'Global config',
-    `People should sit directly above Global config in the avatar menu of a person with Manage: ${JSON.stringify(asStaff.avatarMenu)}`)
+  // The installation's own settings follow People, under the page's name.
+  ok(peopleAt >= 0 && asStaff.avatarMenu[peopleAt + 1] === 'Installation settings',
+    `People should sit directly above Installation settings in the avatar menu of a person with Manage: ${JSON.stringify(asStaff.avatarMenu)}`)
 }
 for (const [who, out] of [['client', asClient], ['multi-account client', asMulti]]) {
   if (!out || out.fatal) continue

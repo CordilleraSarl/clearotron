@@ -142,7 +142,7 @@ import { orderedQueueFiles, reorderQueue } from "./queue-order.mjs";   // the SA
 import { drainingState } from "./worker-heartbeat.mjs";   // / — is anything draining this install
 import { batchMarkName } from "./mark-name.mjs";
 import { DEFAULT_CLIENT_DAILY_RUNS, accountUsage } from "./usage-ledger.mjs";
-import { productIdentity } from "../shared/product-identity.mjs";   // AGPL §13 — one answer, three surfaces
+import { productIdentity, SOURCE_REPO } from "../shared/product-identity.mjs";   // AGPL §13 — one answer, three surfaces
 import { engineCommit } from "./engine-build.mjs";                  // — the SAME stamp pool meta records
 // — siblings, on their own line: the guard pins the line above and its subject is the JOIN
 // (this endpoint and pool meta stamp the same function), not the import list. Kept separate so that
@@ -155,7 +155,7 @@ import { readReport, reportsOf, resolveReportFile, batchSummaryOf } from "./port
 import { readArchivedSet, updateArchived } from "./publish/archive-tags.mjs";
 import { readAcks, setAck, withAcks, ACKNOWLEDGEABLE } from "./portal-acks.mjs";
 import { MAX_BRIEF, makeReadBudget } from "./compose-read.mjs";
-import { BRAND, ORGANISATION_NAME, PALETTE, FONT_LINK, FAVICON_LINK, bracketMark, DOOR_ROOT, DOOR_ROOT_DARK, DOOR_THEME_INIT } from "../shared/brand.mjs";
+import { BRAND, ORGANISATION_NAME, ADMINISTRATOR_CONTACT, PALETTE, FONT_LINK, FAVICON_LINK, bracketMark, DOOR_ROOT, DOOR_ROOT_DARK, DOOR_THEME_INIT } from "../shared/brand.mjs";
 import { envFrom, pinEnv } from "../shared/env-aliases.mjs";   // — a refusal names the name in force
 import { accessAudience, audienceLabel } from "../shared/access-audience.mjs";   // — F54; jose-free on purpose
 import { resolveNumericSetting } from "./numeric-setting.mjs";   // — the same table the engine enforces, without the throw a rendering surface must not take
@@ -1590,6 +1590,9 @@ export function makePortalService({
         return { status: 200, json: { email: principal.email, ...principalView(principal, grantsHere, accountNames),
           accounts: principal.accounts, accountNames, accountFacts,
           concurrentRuns: concurrentRunsCap(), brand: ORGANISATION_NAME, engineMode: meEngineMode,
+          // WHERE A PERSON ASKS FOR A CHANGE TO THEIR SIGN-IN, beside the brand and read where it is read:
+          // an href Preferences links "Clearotron administrator" to, or null, and then the words are plain.
+          administratorContact: ADMINISTRATOR_CONTACT,
           // WHETHER THE PROGRAM IS ON THIS BOX WHILE THE ENGINE CANNOT SEE IT — true, false, or null
           // for "this could not be checked". The screen above renders one of three remedies from it,
           // and they are different remedies: install the CLI, restart the service that cannot see it,
@@ -3848,6 +3851,17 @@ const escHtml = (t) => String(t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<"
 //
 // The dark ground moved with that change: the block this page used to carry had guessed #17150f/#ece5d8,
 // and brand pack §01 fixes dark at #0f0e0c near-black + #f0e8d8 parchment. The pack wins.
+// ── THE PLAIN LINE LEADS; THE ADMINISTRATOR'S TWO LINES STEP BACK INTO A FOLD ────────────────────────
+//
+// A person arriving here needs the field, the button, and one fact: this install signs in one person.
+// The reset command and the way to add people are an administrator's business, so they sit in a closed
+// "Administrator help" fold, word for word as they were, with the same link People gives to putting a
+// login system in front. A `<details>` needs no script, which this door must render without.
+//
+// The reset command can be long — a pinned version, a base directory — so it wraps inside the card at the
+// card's own width rather than pushing past its edge.
+export const LOGIN_IN_FRONT_DOC = `${SOURCE_REPO}/blob/main/docs/PORTAL.md#putting-your-own-login-provider-in-front`;
+
 export function loginPage({ email, error = null, signedIn = false, discarded = false, resetCommand = null }) {
   const reset = resetCommand || `${bareInvocation("passphrase")} --reset`;
   const title = signedIn ? "Signed in" : "Sign in";
@@ -3883,7 +3897,16 @@ ${DOOR_THEME_INIT}
          border:1px solid var(--err-line); color:var(--err-ink); font-size:14px; }
   .hint { margin-top:18px; font-size:13px; }
   code { font-family:var(--mono); font-size:12.5px; background:var(--code-bg);
-         padding:1px 5px; border-radius:4px; }
+         padding:1px 5px; border-radius:4px; overflow-wrap:anywhere; }
+  .lead { margin:18px 0 0; padding-top:14px; border-top:1px solid var(--line); font-size:13.5px; color:var(--ink); }
+  .lead b { font-weight:600; }
+  .fold { margin-top:10px; }
+  .fold > summary { display:inline-flex; align-items:center; gap:6px; list-style:none; cursor:pointer;
+                    font-size:13px; color:var(--link); }
+  .fold > summary::-webkit-details-marker { display:none; }
+  .fold .chev { flex:none; color:var(--muted); }
+  .fold[open] > summary .chev { transform:rotate(90deg); }
+  .fold .hint { margin:14px 0 0; }
   ${DOOR_ROOT_DARK}
 </style></head><body><div class="card">
 ${lockup}
@@ -3900,8 +3923,12 @@ ${error ? `<p class="err">${escHtml(error)}</p>` : ""}
   <input id="passphrase" name="passphrase" type="password" autocomplete="new-password" autofocus>
   <button type="submit">Sign in</button>
 </form>
+<p class="lead"><b>This ${escHtml(BRAND.name)} signs in one person: you.</b></p>
+<details class="fold"><summary><span>Administrator help</span><svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6"/></svg></summary>
 <p class="hint">Lost the passphrase? Run <code>${escHtml(reset)}</code> on the machine
-running this portal. It mints a new one and prints it once.</p>`}
+running this portal. It mints a new one and prints it once.</p>
+<p class="hint">To add people, put it behind a login system such as your company single sign-on. <a href="${escHtml(LOGIN_IN_FRONT_DOC)}" target="_blank" rel="noreferrer">How to set that up</a></p>
+</details>`}
 </div></body></html>`;
 }
 // THE FIELD DOES NOT INVITE THE BROWSER'S SAVED PASSWORDS. Every local install and demo answers on

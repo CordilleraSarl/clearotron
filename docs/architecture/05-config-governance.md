@@ -31,7 +31,7 @@
 The UI mapping, as the `portal-ui` nav is actually structured: T2 → **`brand.profile`** ("Brand
 profile", everything specific to one brand owner) + **`brand.projects`** + **`brand.searches`**
 ("Custom searches"), plus **`admin.access`** ("People & access") for who may sign in; T3 →
-**read-only** in **`admin.config`** ("Global config"): which engine is running the searches and who is
+**read-only** in **`admin.config`** ("Installation settings"): which engine is running the searches and who is
 billed for them, and every provider a search depends on with a configured-or-missing state — secrets,
 paths and switch names deliberately excluded, visible to staff, changed only on the backend.
 
@@ -154,6 +154,7 @@ structural, or dev seam); [dev] = dev/test seam, never set in prod.
 | `CLEAROTRON_ACCESS_DOMAIN` | omit note | Identity domain in the delivery email access note |
 | `CLEAROTRON_BOX` | none — required (unset or unrecognised ⇒ the unit-inventory line fails and names this variable) | Which deployment this is (`prod` \| `test`), for `scripts/live-surface-check.mjs`'s unit inventory. Self-declared, never inferred from the account name. Without a recognised value, the half that looks for a unit declared here and not running cannot run, because a guess would report every other deployment's units missing; so the line fails instead of passing with that half unrun |
 | `CLEAROTRON_BRAND_NAME` / `CLEAROTRON_BRAND_TAGLINE` / `CLEAROTRON_BRAND_PRODUCT` | reference-tenant literals in `shared/brand.mjs` | Tenant brand seam (single-sourced) |
+| `CLEAROTRON_ADMINISTRATOR_CONTACT` | unset ⇒ plain text, no link | The administrator contact Preferences links "Clearotron administrator" to — a mail or http(s) address, read in `shared/brand.mjs`; any other value reads as unset |
 
 ### 5.2 Engine & models — T3
 

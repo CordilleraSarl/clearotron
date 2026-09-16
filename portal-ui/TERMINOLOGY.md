@@ -64,7 +64,7 @@ carries thirteen labels, and they are treated here as settled by the product:
 ```
 Home · Use your AI · People · New clearance · Clearances · Clearance · About
 Profile · Projects · Search templates
-Admin settings · Global config · Your preferences
+Admin settings · Installation settings · Your preferences
 ```
 
 ---

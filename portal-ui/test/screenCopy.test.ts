@@ -75,21 +75,30 @@ test('THE BLUR CLAIM IS BACKED BY THE MARKUP THAT IMPLEMENTS IT', () => {
     /<div data-anon="mark"[^>]*>\s*$/m,
     'the report frame container is tagged — without this the blur stops at the frame edge',
   )
-  assert.match(body(PREFERENCES), /and the report itself/, 'and the screen promises exactly that coverage')
+  // The promise, in the words the screen now uses. Whitespace is folded because JSX wraps a sentence
+  // across source lines and a reader sees one line.
+  assert.match(body(PREFERENCES).replace(/\s+/g, ' '), /and an open report whole/,
+    'and the screen promises exactly that coverage')
 })
 
 test('Preferences warns that a report blurs WHOLE, which is not what a reader would guess', () => {
-  const prose = body(PREFERENCES)
+  const prose = body(PREFERENCES).replace(/\s+/g, ' ')
 
   // A report cannot be blurred name-by-name: null origin, no per-name markup, nothing this page can
   // tag. It goes grey entirely. Someone expecting only the names to soften will read a working control
   // as a broken one and switch it off — at which point the feature has failed in the exact situation it
   // exists for. So the surprising part is stated, not buried.
-  assert.match(prose, /blurs completely|blurs all of it/i, 'the whole-document behaviour is disclosed')
-  assert.match(prose, /deliberate/i, 'and named as a choice, so it does not read as a fault')
+  assert.match(prose, /an open report whole/, 'the whole-document behaviour is disclosed')
+
+  // THE "IT IS DELIBERATE" SENTENCE IS GONE ON PURPOSE. The card now says what the control covers in one
+  // sentence — "every mark and company on screen, and an open report whole" — and the paragraph and
+  // notice that framed the whole-report blur as a choice were condensed away with the rest of the page's
+  // explanation. Asserting the framing would hold the screen to a paragraph the design removed; what
+  // still has to be true is that a whole-report blur is said in advance, which the arm above holds.
+  assert.doesNotMatch(prose, /An open report blurs completely/, 'the removed notice has come back beside the sentence that replaced it')
 
   // What is covered is still claimed plainly, because it is true and it is why the feature exists.
-  assert.match(prose, /blurs every brand name, mark and company/, 'the promise is still made')
+  assert.match(prose, /It covers every mark and company on screen/, 'the promise is still made')
 })
 
 test('Preferences keeps the report boundary factual rather than apologetic', () => {

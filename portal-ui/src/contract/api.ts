@@ -351,6 +351,15 @@ export type Me = {
    * wrong operator name is a false statement about who holds the data.
    */
   readonly brand: string
+  /**
+   * WHERE THIS PERSON ASKS FOR A CHANGE TO THEIR SIGN-IN — the installation's administrator contact, as an
+   * href (`mailto:` or http(s)), or null when the installation names none.
+   *
+   * Read by the server where the brand is read and sent beside it. Null is the default and a real
+   * answer: Preferences then prints "Clearotron administrator" as plain words rather than a link that
+   * goes nowhere. The decoder admits only those three schemes, so nothing else reaches an `href`.
+   */
+  readonly administratorContact: string | null
 }
 
 /**
@@ -1026,6 +1035,18 @@ export type ProviderState = {
    * remedy at all, and says so. Null ⇒ the row's own `missing` list is the whole answer, as before.
    */
   readonly remedy: string | null
+  /**
+   * HOW THE SOURCE IS REACHED, when the server says: `oauth` is a one-time sign-in, `built-in` needs
+   * nothing on this box, `absent` is not part of this build. Null for a source reached with a credential,
+   * and for an older server that does not send it.
+   */
+  readonly enrolment: 'oauth' | 'built-in' | 'absent' | null
+  /**
+   * For a one-time sign-in, what its stored sign-in is: `absent`, `usable`, `unusable` (present and cannot
+   * work) or `unreadable` (it could not be looked at). Null when the row has none. Only the state crosses
+   * the hop; the reason and the file stay with the server.
+   */
+  readonly credential: 'absent' | 'usable' | 'unusable' | 'unreadable' | null
 }
 
 /**
@@ -1851,6 +1872,12 @@ export const api = {
       // screen names both routes instead.
       setupRoute: b['setupRoute'] === 'packaged' ? 'packaged' : b['setupRoute'] === 'checkout' ? 'checkout' : null,
       brand: typeof b['brand'] === 'string' ? b['brand'] : '',
+      // A LINK OR NULL, and only a mail or web address is a link. The server already refuses anything
+      // else; this is the second check at the one place a value becomes an `href`.
+      administratorContact: typeof b['administratorContact'] === 'string'
+        && /^(mailto:[^\s]+@|https?:\/\/[^\s])/i.test(b['administratorContact'])
+        ? b['administratorContact']
+        : null,
       // — a control the deployment cannot serve says so instead of always failing.
       // Absent field (an older portal-service) ⇒ available: the button behaves exactly as before.
       stopControl: (() => {
@@ -2466,6 +2493,13 @@ export const api = {
               configured: r['configured'] === true,
               missing: asStrings(r['missing']),
               remedy: asString(r['remedy']),
+              // Closed sets, so a word this build does not know lands as null rather than as a state.
+              enrolment: r['enrolment'] === 'oauth' || r['enrolment'] === 'built-in' || r['enrolment'] === 'absent'
+                ? r['enrolment'] : null,
+              credential: (() => {
+                const s = asRecord(r['credential'])['state']
+                return s === 'absent' || s === 'usable' || s === 'unusable' || s === 'unreadable' ? s : null
+              })(),
             }
           })
         : null,
