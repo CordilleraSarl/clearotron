@@ -70,8 +70,8 @@
           "todos": 0
         },
         "a-budget-is-recorded-beside-the-band-it-ran-against.test.mjs": {
-          "tests": 9,
-          "asserts": 30,
+          "tests": 12,
+          "asserts": 42,
           "skips": 0,
           "todos": 0
         },

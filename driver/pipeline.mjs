@@ -31,7 +31,7 @@ import { buildRunContext, deriveSlug, kebab } from "./phase0.mjs";
 import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveTier, lines, AGENT_WHATSAPP, whatsappRouting,
   chainEntries, stageOrdinal, stageInputs, stageOutputs, dependencyOrder, REGISTER_AXES, REGISTER_ENUMERATE_TOOL,
   buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenFollowup,
-  buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, proseRungDirective, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage } from "./band-size.mjs";
+  buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, proseRungDirective, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal } from "./band-size.mjs";
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE } from "./report-overview-record.mjs";
 import { dispatchRows, clearedSignatures } from "./seat-attempts.mjs";
 import { CONTEXT_DERIVATIONS, DISPATCH_EXTRAS, INLINE_CONTEXT, sandboxManifest, sandboxGaps, derivationsFor } from "./stage-context.mjs";   // — what a stage is actually handed
@@ -4497,6 +4497,25 @@ async function stageOnce(name, ctx, opts = {}) {
   // Evaluated on `effThinking`, not `thinking`: the anthropic gate above nulls the tier for a
   // cross-provider model, and a guard that reads the nulled value would go blind on the same overrides.
   assertEffectiveTier(label, { model, thinking: effThinking });
+  // ── THE TIME LIMIT IS DERIVED FROM THE BAND THIS DISPATCH IS HANDED ─────────────────────────────
+  //
+  // `def.timeoutSec` was a constant chosen once against a band nobody recorded beside it, and on a
+  // dense matter the two band-reading stages died AT their walls having written nothing. The base is
+  // still the stage's own number; what the band decides is how far above it this dispatch may go. A
+  // band at or under the reference returns the base untouched, so nothing already verified moves.
+  const dispatchBand = bandSizeForStage(name, P);
+  const derivedLimit = derivedLimitSec(def.timeoutSec, dispatchBand);
+  // REFUSED BEFORE A SEAT IS DISPATCHED, not after the wall. A limit past the ceiling is a prediction
+  // that this stage will be killed; starting it spends the whole prediction to arrive where the refusal
+  // already is, and the refusal NAMES the band size, which is the finding a killed attempt never gives.
+  if (limitExceedsCeiling(derivedLimit.sec)) {
+    const reason = ceilingRefusal(name, derivedLimit);
+    runLog(P.runDir, { event: "stage-input-over-ceiling", stage: name,
+      inputBytes: derivedLimit.inputBytes, derivedLimitSec: derivedLimit.sec });
+    throw new StageFailure(name, reason, undefined, { failClass: "deterministic" });
+  }
+  runLog(P.runDir, { event: "stage-limit-derived", stage: name, base: def.timeoutSec,
+    inputBytes: derivedLimit.inputBytes, derivedLimitSec: derivedLimit.sec, basis: derivedLimit.basis });
   const r = await runStage(label, {
     agent: execAgent,
     message,
@@ -4505,11 +4524,12 @@ async function stageOnce(name, ctx, opts = {}) {
     // opts.sessionKey lets a followup RESUME the exact key a prior run won on (winning-key hardening); else
     // the canonical base key. (A followup with a stale base key would resume a failed attempt — see runStage.)
     sessionKey: opts.sessionKey ?? `prelim-${ctx.run.slug}-${ctx.run.codename}-${name}${keyAxis}`,
-    timeoutSec: def.timeoutSec,
+    timeoutSec: derivedLimit.sec ?? def.timeoutSec,
+    derivedLimit,               // recorded on every attempt row: the size it was derived from, and the number
     stallSec: def.stallSec,     // per-stage stall override (heavy stages); undefined → global CLEAROTRON_STALL_MS
     expectFile: out,
     validate: def.validate,
-    runDir: P.runDir, bandSize: bandSizeForStage(name, P),
+    runDir: P.runDir, bandSize: dispatchBand,
     // ── — THE PRESENTING SIDE, RECOMPOSED PER ATTEMPT ────────────────────────────────────────
     //
     // A stage that declares `refreshCtx` is saying its dispatch text depends on state the run CHANGES

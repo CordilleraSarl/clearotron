@@ -816,7 +816,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     followup = false,   // #5b: this run is a warm-resume / followup (escalation, envelope close, frame-reopen
                         // sweep) — a hard-wall timeout breaks after ONE attempt (a 1.5× extension can't fit
                         // an already-over-budget resume; the caller records the coverage-limited deferral).
-    excludeTools, bandSize,   // copper-lattice re-route: tool names dropped from this stage's allowedTools
+    excludeTools, bandSize, derivedLimit = null,   // copper-lattice re-route: tool names dropped from this stage's allowedTools
   } = opts;
   if (!message) throw new Error(`runStage(${name}): message is required`);
   if (!sessionKey) throw new Error(`runStage(${name}): sessionKey is required`);
@@ -1742,6 +1742,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         // null (not 0, and not absent) on an engine that cannot report them, so "this adapter does not
         // measure" stays visibly different from "this turn called no tools" — see toolGauge.
         ...toolGauge(turn), band: bandSize ?? undefined,
+        inputBytes: derivedLimit?.inputBytes ?? undefined, derivedLimitSec: derivedLimit?.sec ?? undefined,
         // AD-4 emitted-vs-landed, UNCONDITIONAL (was success-only, which made a failed attempt's mid-write
         // artifact invisible): `output` = what LANDED on disk after this attempt (null when the stage has no
         // expected file); `wrote` = whether THIS attempt emitted it (see the computation above the runDir
@@ -1805,6 +1806,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
           wall, outputTokens: usage?.output ?? null, tokensPerSec: tokensPerSec(usage, wall),
           // — the spine carries them too, or a round has to join two files to ask why a stage was slow.
           ...toolGauge(turn), band: bandSize ?? undefined,
+        inputBytes: derivedLimit?.inputBytes ?? undefined, derivedLimitSec: derivedLimit?.sec ?? undefined,
           formRepairs: formRepairsThisAttempt || undefined,   //, see the stage row above
         });
       } catch { /* telemetry best-effort — never fail a turn over a journal line */ }
