@@ -1,5 +1,24 @@
 # portal-ui
 
+## 0.3.1
+
+### Patch Changes
+
+- 0566e1f: Fixed: Changing or removing a person now explains why it cannot be done on a Clearotron that signs in one person. It used to show an internal code.
+  
+  Fixed: Modify and Remove are switched off on that kind of install, the way Add already was, with the reason beside them.
+- f193d6a: Fixed: When Clearotron cannot check how your assistant will be let in, Use your own AI now shows both ways and says so. It used to show one.
+- 240673c: Fixed: The home page now says what it is for. With nothing running it tells you how to start a clearance, rather than showing an empty list. It ends with the last few finished clearances and a line to all of them.
+- f1c5925: Fixed: Every page in the portal now has one heading instead of two saying nearly the same thing. The home page is called Home, and the All Clearances and New clearance buttons sit together at the top of it.
+- 240673c: Fixed: The archive of finished clearances is called All Clearances everywhere, and the route to it from the home page is a button you can see.
+- 56a760f: New: The People page can now change what somebody may do and see, and take their access away. Modify on a row opens the same form used to add them, filled in. Unticking a row removes that access. Remove sits below Save and asks once before it acts. Your own row has neither, so nobody can lock themselves out.
+  
+  Fixed: Somebody listed only in a company's access list, with no permissions of their own, is now shown as that. They used to read as a view-only person, which is a different thing.
+- 0566e1f: Fixed: Searches that stopped no longer sit in Home's In flight band. They have their own list below it, with a count you can see without opening it.
+  
+  Fixed: That list clears itself after a week, whether or not anyone pressed Acknowledge. Signing in for the first time no longer means meeting every search that has ever failed.
+- f96c089: Fixed: When two attempts at one search both await dismissal, the dashboard shows which is which instead of two identical cards.
+
 ## 0.3.1-beta.4
 
 ### Patch Changes
