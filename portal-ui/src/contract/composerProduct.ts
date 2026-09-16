@@ -777,7 +777,10 @@ export const TURNAROUND_QUOTE = {
   knockout: { lowHours: 5 / 60, highHours: 10 / 60 },
 } as const
 
-export const quoteBoundsFor = (m: Machinery): { lowHours: number; highHours: number } =>
+// THE PARAMETER IS THE ONE FIELD THIS READS, not the whole of Machinery. Home asks the same question of
+// a RUN, which is not a draft and has no levers — and widening here is what keeps that a second CALLER
+// rather than a second copy of the table. Every existing caller passes a Machinery and still satisfies it.
+export const quoteBoundsFor = (m: Pick<Machinery, 'pipeline'>): { lowHours: number; highHours: number } =>
   m.pipeline === 'knockout' ? TURNAROUND_QUOTE.knockout : TURNAROUND_QUOTE.clearance
 
 /** The ruled range, and nothing is done to it. Mirrors the server; the parity test pins both. */

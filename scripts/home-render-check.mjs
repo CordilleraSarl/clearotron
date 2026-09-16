@@ -30,6 +30,9 @@ import { tmpdir } from 'node:os'
 // Hardcoding the string here would let the fixture and the wire drift, which is the defect the comment
 // on `product` below already records once.
 import { reportIdentityFor } from '../driver/search-policy.mjs'
+// The quote bounds, from the engine's own effort model — so the past-the-bound state below is derived
+// from the table it is testing against rather than from a number typed beside it.
+import { TURNAROUND_QUOTE } from '../driver/effort-model.mjs'
 import { browserRun } from "../shared/browser-temp-root.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url))
@@ -67,6 +70,9 @@ const run = (o) => ({
   reason: o.reason ?? null, failedStage: o.failedStage ?? null,
   pausedKind: o.pausedKind ?? null, resetsAt: o.resetsAt ?? null, startedAt: o.startedAt ?? null,
   queuePos: o.queuePos ?? null,
+  // A STOP IN FLIGHT. `stopRequestedAt` beside a non-terminal state is the screen's "Stopping…";
+  // `stoppable` is whether a stop can still prevent delivery, and the card draws the control from it.
+  stopRequestedAt: o.stopRequestedAt ?? null, stoppable: o.stoppable ?? true,
 })
 
 // Three frameworks, three different ladders and three sets of words — the chip must take an arbitrary
@@ -101,11 +107,16 @@ const STATES = {
   one: {
     runs: [run({ runId: 'a', mark: 'CORAL FREEZE', state: 'running', step: 'Common-law grid', stepN: 4, stepTotal: 9, startedAt: ago(38) }), ...FINISHED],
     expectCards: 1, expectQueue: 0, expectFirstCardPips: 9, expectStops: 1,
+    expectExpect: '· usually 1.5 to 2.5 h',
   },
   // A knockout has FIVE steps, or six with the register probe. The pip row follows the RUN.
   knockout: {
     runs: [run({ runId: 'k', mark: 'DRIVERS HAVEN', state: 'running', kind: 'knockout-batch', product: 'knockout-search', step: 'Marketplace sweep', stepN: 3, stepTotal: 5, startedAt: ago(14) }), ...FINISHED],
     expectCards: 1, expectQueue: 0, expectFirstCardPips: 5, expectStops: 1,
+    // PAST ITS OWN BOUND, AND THAT IS THE POINT. A knockout quotes 5 to 10 MINUTES, so a run 14 minutes
+    // in is late by its own table while the same elapsed time is early for a clearance. One quote per
+    // pipeline, read from the run rather than from the screen.
+    expectExpect: '· taking longer than usual',
   },
   // A RUN THAT STOPPED IS NOT IN FLIGHT. It leaves the live band for its own fold, which states the
   // count unopened and holds the card — and the acknowledge on it — one click in. A failed card still
@@ -148,6 +159,23 @@ const STATES = {
     runs: [run({ runId: 'a', mark: 'CORAL FREEZE', state: 'running', step: 'Register sweeps', stepN: 2, stepTotal: 9, startedAt: ago(96) }), ...FINISHED],
     cap: 3,
     expectCards: 1, expectQueue: 0, expectFirstCardPips: 9, expectStops: 1, expectCapNote: /Three runs at once/,
+  },
+  // PAST THE UPPER BOUND. The quote for a clearance is 1.5 to 2.5 hours, so a run started three hours
+  // ago is past it and the card must REPLACE the quote with "taking longer than usual" rather than
+  // revise it. Started from the table's own bound rather than a literal, so a ruling that moves the
+  // quote moves this state with it instead of silently making it an ordinary card.
+  slow: {
+    runs: [run({ runId: 's', mark: 'CORAL FREEZE', state: 'running', step: 'Register sweeps', stepN: 6, stepTotal: 9, startedAt: ago(Math.ceil(TURNAROUND_QUOTE.clearance.highHours * 60) + 11) }), ...FINISHED],
+    expectCards: 1, expectQueue: 0, expectFirstCardPips: 9, expectStops: 1,
+    expectExpect: '· taking longer than usual',
+  },
+  // A STOP TAKING EFFECT. Not terminal — the run is still running and the step in flight is finishing —
+  // so the card keeps its place in the band and loses its Stop, because there is nothing left to press.
+  stopping: {
+    runs: [run({ runId: 'sp', mark: 'GLASSWING', state: 'running', step: 'Register sweeps', stepN: 3, stepTotal: 9, startedAt: ago(22), stopRequestedAt: new Date(now - 30_000).toISOString() }), ...FINISHED],
+    expectCards: 1, expectQueue: 0, expectFirstCardPips: 9, expectStops: 0,
+    expectExpect: '',
+    expectStopNote: 'Stopping — letting Register sweeps finish. No report will be produced. Completed work stays readable through Ask AI.',
   },
   quiet: { runs: FINISHED, expectCards: 0, expectQueue: 0, expectFirstCardPips: 0, expectStops: 0 },
   new: { runs: [], expectCards: 0, expectQueue: 0, expectFirstCardPips: 0, expectStops: 0, expectFirstRun: true },
@@ -348,6 +376,12 @@ const PROBE = `(() => {
     capNote: (q('.home2-band-note')?.textContent ?? '').trim(),
     firstRun: !!q('.home2-firstrun'),
     notice: (q('.home2-notice')?.textContent ?? '').trim(),
+    // WHAT THIS CHANGE ADDED, read off the rendered page rather than the source. The quote beside the
+    // elapsed time, and the sentence a stopping card carries — both are strings a reader sees, so a
+    // source assertion would prove the template obeys and not that anyone asks it to.
+    expect: (q('.home2-expect')?.textContent ?? '').trim(),
+    band: (q('.home2-band-count')?.textContent ?? '').trim(),
+    stopNote: (q('.home2-stop-note')?.textContent ?? '').replace(/\\s+/g, ' ').trim(),
     title: (q('.topbar h1')?.textContent ?? '').trim(),
     accountLabelled: all('.topbar .eyebrow').some((n) => n.textContent.trim() === 'Organisation'),
     // The VALUE beside the label, so the arm below can say what the corner names rather than only that
@@ -563,6 +597,22 @@ for (const [name, spec] of Object.entries(STATES)) {
     // THE ONE A STRING TEST CANNOT SEE.
     say(out.depthClipped === 0, `${name}/${theme}: no depth label is clipped (${out.depthClipped} clipped)`)
     say(out.sidewaysOverflow === 0, `${name}/${theme}: no sideways scroll (${out.sidewaysOverflow}px)`)
+
+    // ── THE QUOTE, AND THE FACT THAT IT IS NEVER A COUNTDOWN ────────────────────────────────────
+    //
+    // Asserted on every state, not only the ones that declare a quote: the second half of this is that
+    // NO card anywhere predicts what is left, and a rule like that is only worth having if it is read
+    // over the whole population rather than where somebody remembered to look.
+    if (spec.expectExpect !== undefined) {
+      say(out.expect === spec.expectExpect,
+        `${name}/${theme}: the card's expectation reads "${out.expect}" (expected "${spec.expectExpect}")`)
+    }
+    say(!/\b(left|remaining|to go|eta)\b/i.test(out.expect),
+      `${name}/${theme}: no card predicts time remaining ("${out.expect}")`)
+    if (spec.expectStopNote) {
+      say(out.stopNote === spec.expectStopNote,
+        `${name}/${theme}: the stopping line reads "${out.stopNote}"`)
+    }
     say(out.untaggedMarks === 0, `${name}/${theme}: every mark and owner is blurrable (${out.untaggedMarks} untagged)`)
     if (out.newOnBandRow !== null) {
       say(out.newOnBandRow === true, `${name}/${theme}: New clearance stays on the section-header row`)

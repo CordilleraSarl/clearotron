@@ -1649,7 +1649,7 @@
         },
         "coverage-is-disclosed-never-refused.test.mjs": {
           "tests": 10,
-          "asserts": 38,
+          "asserts": 40,
           "skips": 0,
           "todos": 0
         },
@@ -5991,7 +5991,7 @@
         },
         "home.test.ts": {
           "tests": 56,
-          "asserts": 196,
+          "asserts": 197,
           "skips": 0,
           "todos": 0
         },
