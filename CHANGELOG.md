@@ -4,6 +4,19 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.3.2-beta.1
+
+### New
+
+- A report can now show how much was searched to reach its answer. It records the names read and cleared, the records read in each country, and the checks made. Countries where nothing was found are included.
+- Home's in-flight band breaks the count down into running, paused and queued instead of one total.
+- a running card carries the standing quote for its search — "usually 1.5 to 2.5 h" — and says "taking longer than usual" past it.
+
+### Fixed
+
+- The conditions listed on a report are now written in plain legal English, matching the summary line above them. One condition could previously appear as an internal engine note with counts and identifiers in it.
+- a stopping card now says finished work stays readable, instead of only what was lost.
+
 ## 0.3.2-beta.0
 
 ### Fixed
