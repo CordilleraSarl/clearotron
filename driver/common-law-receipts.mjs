@@ -21,7 +21,17 @@ import { driverDir } from "../shared/driver-dir.mjs";   // — one definition of
 
 export const MIN_CELLS_PER_VARIANT = 7;
 
-const norm = (s) => (s || "").trim().replace(/^["'`]+|["'`]+$/g, "").toLowerCase();
+// THE GRID CELL KEY, and it is the same class as the connotation join: one side is a term and platform
+// WE dictated, the other is what a provider echoed into the ledger. It already stripped wrapping quotes
+// and lowercased; it did not fold a CURLY quote, an em dash, a non-breaking space or a compatibility
+// form, so the failure that stopped a production clearance on 2026-09-16 was available here too — one
+// gate over, with the same shape and no arm on it.
+//
+// It composes `queryKey`, which is the one author of what "the same text" means across a provider
+// boundary, and keeps its own wrapping-quote strip because a term arrives quoted here and does not there.
+import { queryKey } from "./connotation-search.mjs";
+
+const norm = (s) => queryKey(String(s || "").trim().replace(/^["'`\u2018\u2019\u201c\u201d]+|["'`\u2018\u2019\u201c\u201d]+$/g, ""));
 
 // A table data row's cells, or null if the line isn't one.
 function rowCells(ln) {

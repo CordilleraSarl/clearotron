@@ -1390,8 +1390,8 @@
           "todos": 0
         },
         "common-law-receipts.test.mjs": {
-          "tests": 36,
-          "asserts": 129,
+          "tests": 40,
+          "asserts": 141,
           "skips": 0,
           "todos": 0
         },
@@ -1517,7 +1517,7 @@
         },
         "contract-audit.test.mjs": {
           "tests": 54,
-          "asserts": 167,
+          "asserts": 168,
           "skips": 0,
           "todos": 0
         },

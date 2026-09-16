@@ -2099,7 +2099,7 @@ export const STAGES = {
       },
       "enumerated block records carried verbatim — record_id, mark_text, classes, status, owner_name, owner_country, application_date, registration_date, expiry_date, jurisdictions, screen_verdict": {
         class: "mechanical:tool-written", tokens: ["named_band_collapsed"],
-        why: "register_enumerate already returns each record batch-screened; carrying it is transcription. `named_band_collapsed` (verify.mjs:1283, findCollapsedBands) is exactly the recall loss that transcription produces — a slice claiming total_hits with zero records reaching the band. [citation unverified]",
+        why: "register_enumerate already returns each record batch-screened; carrying it is transcription. `named_band_collapsed` (verify.mjs:1325, findCollapsedBands) is exactly the recall loss that transcription produces — a slice claiming total_hits with zero records reaching the band. [citation unverified]",
       },
       "per-axis prose digest — the SHORT AUDIT NOTE at register-units/<axis>.md": {
         class: "judgment", tokens: ["too_short"],

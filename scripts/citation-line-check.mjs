@@ -729,9 +729,30 @@ const OWN_NUMBER = /^\s*(?:at\s+\d|:\d)/;
 // So the file is exempt from the weaker check and stays under the stronger one. Anything NOT covered by
 // an evidence guard does not belong on this list — the exemption is earned by being checked better, not
 // by being inconvenient.
+//
+// `contract-vocabulary.mjs` is the same conflict one file over, and it arrives by the same route. Each
+// INNER_CODES row carries a `mints` array naming the line that WRITES its code, and
+// `contract-audit.test.mjs` re-reads every one of them on every run: it checks the cited line still
+// mints that code, and when it does not it prints where the code is NOW and refuses. That arm's own
+// message says "Do not delete the citation: it is what makes the ruling checkable rather than merely
+// written down" — so the ratchet's remedy, dropping the number, is the one repair that file forbids.
+//
+// Measured on the change that added this: a 41-line insertion into `connotation-search.mjs` moved 12
+// mint sites, the audit demanded all 12 be repointed, and the ratchet then read all 12 as newly added
+// bare citations. Under both rules at once the only permitted change is no change at all.
+//
+// The alternative considered and rejected: teach the audit's `m.split(":")` to accept `file:line symbol`
+// and tag the 12. It widens a parser every INNER_CODES row depends on, to buy a weaker guarantee than
+// the one already in place — the audit verifies the NUMBER, which is what a symbol only approximates.
+//
+// THE COST, stated rather than discovered: a genuinely bare citation newly added anywhere in that file
+// now escapes the ratchet. Only the `mints` entries are covered by the audit. Citations in that file's
+// prose and `site:` fields are NOT, and belong written without a line number — two were repaired that
+// way in the same change rather than carried in under this exemption.
 export const RATCHET_EXEMPT = [
   "driver/test/a-new-citation-carries-something-that-can-be-checked.test.mjs",
   "driver/contract-e3-backlog.mjs",
+  "driver/contract-vocabulary.mjs",
 ];
 
 export function newBareCitations(addedLines) {

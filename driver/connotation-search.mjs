@@ -225,6 +225,47 @@ const SECTION_RE = /reputational|connotation/i;
  * in common-law-receipts.mjs (parsePrRiskQueries); this entries parser lives here so the P2-A-owned file is
  * untouched. Never throws; an unparseable ledger reads as no recorded entries. PURE.
  */
+/**
+ * The key two spellings of one meaning query are compared on. ONE AUTHOR, here, beside the parser that
+ * reads the ledger — the gate in verify.mjs imports it rather than carrying a second copy.
+ *
+ * WHY THE RAW STRINGS CANNOT BE COMPARED. The dictated queries are written by the driver; the recorded
+ * ones come back through a provider, which returns the text it echoes with typographic punctuation. On a
+ * production clearance, 2026-09-16, exactly one of sixty-one queries differed — a single character, a
+ * right single quotation mark where the driver wrote an apostrophe, at the same length. The grid had run
+ * every query and recorded every one. The join said a query was unrecorded, the stage failed four times
+ * byte-identically, and the clearance stopped.
+ *
+ * THE ORIGINAL TEXT IS NOT TOUCHED. This is a comparison key and nothing else: the ledger keeps what the
+ * provider returned and the refusal quotes what the driver dictated, because a reader chasing a genuinely
+ * missing query needs the spelling that was asked for, not a flattened one.
+ *
+ * WHAT IS FOLDED, and nothing beyond it: the four curly quotes to their straight forms, a non-breaking
+ * space to a space, runs of whitespace to one, and case. Deliberately NOT accents or punctuation in
+ * general — two queries differing by a letter are two queries, and a key that folded them would hide the
+ * skipped-query fault this gate exists to catch.
+ */
+export const queryKey = (s) => String(s ?? "")
+  // NFKC FIRST, and it does the largest share of the work: it folds the compatibility forms a provider
+  // can return for characters we wrote plainly — full-width Latin, ligatures, the non-breaking space in
+  // some sources, composed accents to a single canonical form. Doing it first also means the explicit
+  // folds below only have to name what Unicode does NOT unify, which is the punctuation classes.
+  .normalize("NFKC")
+  .replace(/[\u2018\u2019\u201a\u201b\u2032\u00b4\u0060]/g, "'")   // single quotes, primes, backtick
+  .replace(/[\u201c\u201d\u201e\u201f\u2033\u00ab\u00bb]/g, '"')   // double quotes and guillemets
+  .replace(/[\u2010-\u2015\u2212\u2043]/g, "-")                       // every dash and minus form
+  .replace(/\u2026/g, "...")                                           // an ellipsis is three dots
+  .replace(/[\u200b\u200c\u200d\u2060\ufeff]/g, "")                  // zero-width: invisible, never meaning
+  .replace(/[\u00a0\u2000-\u200a\u202f\u205f\u3000]/g, " ")         // every space form NFKC left alone
+  .replace(/\s+/g, " ")
+  .trim()
+  // TRAILING PUNCTUATION ONLY, never leading and never internal. A provider commonly returns a question
+  // it was handed with a full stop or question mark appended; it does not commonly remove one from the
+  // front, and stripping internal punctuation would fold two genuinely different queries together.
+  .replace(/[.,;:!?]+$/, "")
+  .trim()
+  .toLowerCase();
+
 export function parsePrRiskResults(ledgerRaw) {
   let parsed;
   try { parsed = JSON.parse(ledgerRaw); } catch { return []; }

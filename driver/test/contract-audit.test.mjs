@@ -381,8 +381,10 @@ test("every citation lands on the line that MINTS the code, not near it", () => 
   const mintsCode = (line, code) => new RegExp(`reason:\\s*["\`]${code}["\`]`).test(line);
   const COMMENT = /^\s*(?:\/\/|\*|\/\*)/;
   const stale = [];
+  let checked = 0;
   for (const row of INNER_CODES) {
     for (const m of row.mints) {
+      checked++;
       const [file, n] = m.split(":");
       const rel = file.replace(/^driver\//, "");
       const lines = readFileSync(join(DRIVER, rel), "utf8").split("\n");
@@ -397,6 +399,13 @@ test("every citation lands on the line that MINTS the code, not near it", () => 
     "an INNER_CODES citation no longer lands on the line that writes its code — something above it moved. "
     + "Each entry above names where that code is NOW; copy those into `mints` in contract-vocabulary.mjs. "
     + "Do not delete the citation: it is what makes the ruling checkable rather than merely written down");
+  // THIS LOOP IS WHY `contract-vocabulary.mjs` IS EXEMPT FROM THE CITATION RATCHET. The exemption's whole
+  // premise is that something stronger checks these numbers on every run — and an empty loop is green.
+  // If INNER_CODES empties, or its rows stop carrying `mints`, the ratchet is off on a file nothing
+  // checks and the two guards fail open together, silently. Floor the population it is exempted for.
+  assert.ok(checked >= 15,
+    `only ${checked} mint citations were checked, so this arm no longer earns contract-vocabulary.mjs its `
+    + "RATCHET_EXEMPT entry in scripts/citation-line-check.mjs. Restore the rows, or take the file off that list");
   // The check must be able to fire, or a green here says only that the loop ran.
   const line = readFileSync(join(DRIVER, "case-law-ledger.mjs"), "utf8").split("\n")[0];
   assert.ok(!line.includes('"no_queries"'), "the control line unexpectedly mints — this arm proves nothing");

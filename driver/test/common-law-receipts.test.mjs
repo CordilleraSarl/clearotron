@@ -655,3 +655,177 @@ test("a Variants section with NO rows is not a failure — the narrow condition 
   // Error direction: a false parse-failure kills a run that had nothing to sweep. This must stay null.
   assert.equal(variantsParseFailure(["### Variants", "", "None generated for this matter.", ""].join("\n")), null);
 });
+
+// ── A QUERY RECORDED IN A DIFFERENT SPELLING IS A RECORDED QUERY ───────────────────────────────────
+//
+// WHAT THIS IS FOR, and it is not hypothetical. A production clearance stopped on 2026-09-16 because one
+// dictated meaning query of sixty-one came back through the provider carrying a right single quotation
+// mark where the driver had written an apostrophe. Same length, one character. The grid had run every
+// query and the ledger had recorded every one — and the gate, which joined the two lists by exact string
+// equality, reported a query as unrecorded. The stage failed four times byte-identically, because the
+// corrective hint asked the seat to re-run a query that had already run.
+//
+// THE FIX IS A COMPARISON KEY, AND THE DANGER IS THAT A KEY HIDES THE FAULT THE GATE EXISTS FOR. So both
+// arms are here together: a spelling difference must MATCH, and a genuinely absent query must still FAIL.
+// One without the other is either the defect or a gate that passes everything.
+test("a dictated query recorded with a typographic apostrophe is not reported unrecorded", async () => {
+  const { validators } = await import("../verify.mjs");
+  const dir = mkdtempSync(join(tmpdir(), "clhalf-quote-"));
+  try {
+    const H = MEANING_SEAT;
+    // A dictated query carrying a straight apostrophe, as the driver writes them.
+    mkdirSync(driverDir(dir), { recursive: true });
+    const spec = { ...FULL_SPEC, connotation: { queries: ["what's the mark's street meaning", "mark slang"] } };
+    const halves = splitGridSpec(spec, { dispositionsPaths: Object.fromEntries(GRID_SEATS.map((h) => [h, join(dir, `d-${h}.json`)])) });
+    const half = halves[H];
+    writeFileSync(driverDir(dir, `grid-spec.half-${H}.json`), JSON.stringify(half));
+
+    // The ledger records it the way a provider echoes it back: U+2019 for the apostrophe, and a
+    // non-breaking space where a plain one was dictated. Everything else identical.
+    const asProviderReturnsIt = (q) => q.replace(/'/g, "’").replace(/ /g, " ");
+    const ledger = JSON.stringify({
+      cells: cellsFor(half.terms),
+      extras: { pr_risk: half.connotation.queries.map((q) => ({ query: asProviderReturnsIt(q), results: [] })) },
+      gaps: [],
+    });
+    writeFileSync(join(dir, `common-law-grid.half-${H}.json`), ledger);
+    // A FLOOR: the fixture must actually differ, or this arm passes on two identical strings.
+    assert.notEqual(asProviderReturnsIt(half.connotation.queries[0]), half.connotation.queries[0],
+      "the fixture's recorded spelling is identical to the dictated one, so nothing is being tested");
+
+    const p = join(dir, `common-law-findings.half-${H}.md`);
+    const doc = [
+      `# Common-law findings — meaning sweep (seat ${H})`, "",
+      "## Findings — Mark: X", "| a | b |", "",
+      "### PR / reputational risk", "(None identified — affirmative sweep) — reads clean.",
+      "**Connotation-search source:** perplexity_research (dictated sweep)", "",
+      "### Audit trail", "| 1 | meaning | queries | ok |", "",
+    ].join("\n") + "x".repeat(200);
+
+    const v = validators.commonLawHalf(p, doc);
+    assert.ok(!/connotation_query_unrecorded/.test(String(v.reason ?? "")),
+      `a query recorded in the provider's own punctuation was reported unrecorded: ${v.reason}`);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("a query the ledger genuinely does not carry STILL fails, so the key did not blunt the gate", async () => {
+  const { validators } = await import("../verify.mjs");
+  const dir = mkdtempSync(join(tmpdir(), "clhalf-absent-"));
+  try {
+    const H = MEANING_SEAT;
+    mkdirSync(driverDir(dir), { recursive: true });
+    const spec = { ...FULL_SPEC, connotation: { queries: ["alpha street meaning", "beta street meaning"] } };
+    const halves = splitGridSpec(spec, { dispositionsPaths: Object.fromEntries(GRID_SEATS.map((h) => [h, join(dir, `d-${h}.json`)])) });
+    const half = halves[H];
+    writeFileSync(driverDir(dir, `grid-spec.half-${H}.json`), JSON.stringify(half));
+
+    // The second query is recorded NOWHERE — the fault this gate exists to catch. The first is recorded
+    // in the provider's punctuation, so the arm also shows the two cases can be told apart in one ledger.
+    writeFileSync(join(dir, `common-law-grid.half-${H}.json`), JSON.stringify({
+      cells: cellsFor(half.terms),
+      extras: { pr_risk: [{ query: half.connotation.queries[0].replace(/ /g, " "), results: [] }] },
+      gaps: [],
+    }));
+
+    const p = join(dir, `common-law-findings.half-${H}.md`);
+    const doc = [
+      `# Common-law findings — meaning sweep (seat ${H})`, "",
+      "## Findings — Mark: X", "| a | b |", "",
+      "### PR / reputational risk", "(None identified — affirmative sweep) — reads clean.",
+      "**Connotation-search source:** perplexity_research (dictated sweep)", "",
+      "### Audit trail", "| 1 | meaning | queries | ok |", "",
+    ].join("\n") + "x".repeat(200);
+
+    const v = validators.commonLawHalf(p, doc);
+    assert.equal(v.ok, false, "a dictated query recorded nowhere was accepted — the key has blunted the gate");
+    assert.match(String(v.reason), /connotation_query_unrecorded/);
+    // AND THE REFUSAL QUOTES THE DICTATED SPELLING, not the key: somebody chasing a missing query needs
+    // the text that was asked for.
+    assert.match(String(v.reason), /beta street meaning/,
+      "the refusal names a flattened key rather than the query the driver dictated");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+// ── THE FOLDING TABLE: one row per class of difference a provider can introduce ─────────────────────
+//
+// `queryKey` is the comparison key for any join between text WE dictated and text a provider ECHOED
+// back. Each row below is a class measured or expected on returned text, and the table is the thing that
+// says which classes are in scope — the boundary is as much the point as the coverage.
+test("queryKey folds what a provider re-punctuates, and nothing more", async () => {
+  const { queryKey } = await import("../connotation-search.mjs");
+  const folds = [
+    ["a curly apostrophe for a straight one — the production fault", "it\u2019s meaning", "it's meaning"],
+    ["a right single quote used as a prime", "5\u2032 mark", "5' mark"],
+    ["curly double quotes", "\u201cmark\u201d slang", '"mark" slang'],
+    ["guillemets", "\u00abmark\u00bb slang", '"mark" slang'],
+    ["an em dash for a hyphen", "mark \u2014 slang", "mark - slang"],
+    ["a minus sign for a hyphen", "mark \u2212 slang", "mark - slang"],
+    ["an ellipsis for three dots", "mark meaning\u2026", "mark meaning..."],
+    ["a non-breaking space", "mark\u00a0slang", "mark slang"],
+    ["a narrow no-break space", "mark\u202fslang", "mark slang"],
+    ["a zero-width space, which is invisible and never meaning", "mark\u200bslang", "markslang"],
+    ["a byte-order mark carried into the text", "\ufeffmark slang", "mark slang"],
+    ["full-width Latin, which NFKC unifies", "\uff2d\uff41rk slang", "Mark slang"],
+    ["a trailing question mark the provider added", "what does mark mean?", "what does mark mean"],
+    ["a trailing full stop", "mark slang.", "mark slang"],
+    ["collapsed runs of whitespace", "mark   slang", "mark slang"],
+    ["case", "Mark SLANG", "mark slang"],
+  ];
+  assert.ok(folds.length >= 12, "the table has shrunk below the classes this key claims to cover");
+  for (const [why, a, b] of folds) {
+    assert.equal(queryKey(a), queryKey(b), `queryKey no longer folds ${why}`);
+  }
+
+  // ── AND WHAT IT MUST NOT FOLD. A key that folded these would hide the fault the gate exists for: a
+  // query the seat never ran. Each of these is a DIFFERENT question about the mark.
+  const keepsApart = [
+    ["different words", "mark slang meaning", "mark gang meaning"],
+    ["a negation", "is mark offensive", "is mark not offensive"],
+    ["word order — NOT covered, and stated so on purpose", "slang mark", "mark slang"],
+    ["an expansion — NOT covered", "mark and co meaning", "mark & co meaning"],
+    ["internal punctuation, which is meaning", "mark, slang", "mark slang"],
+  ];
+  for (const [why, a, b] of keepsApart) {
+    assert.notEqual(queryKey(a), queryKey(b), `queryKey now folds ${why} — a skipped query could hide behind it`);
+  }
+});
+
+test("THE REFUSAL SAYS WHICH FAULT IT IS, because the two need opposite remedies", async () => {
+  const { validators } = await import("../verify.mjs");
+  const dir = mkdtempSync(join(tmpdir(), "clhalf-twocause-"));
+  try {
+    mkdirSync(driverDir(dir), { recursive: true });
+    const H = MEANING_SEAT;
+    // One query recorded with its words re-ordered — the key does not fold that, deliberately — and one
+    // recorded nowhere at all. Both drop; they are different faults and a seat told to "re-run" the
+    // first would re-run a search that already happened, which is what made a production stage fail four
+    // times with the same string.
+    const spec = { ...FULL_SPEC, connotation: { queries: ["novapulse street slang meaning", "novapulse gang meaning"] } };
+    const halves = splitGridSpec(spec, { dispositionsPaths: Object.fromEntries(GRID_SEATS.map((h) => [h, join(dir, `d-${h}.json`)])) });
+    const half = halves[H];
+    writeFileSync(driverDir(dir, `grid-spec.half-${H}.json`), JSON.stringify(half));
+    writeFileSync(join(dir, `common-law-grid.half-${H}.json`), JSON.stringify({
+      cells: cellsFor(half.terms),
+      extras: { pr_risk: [{ query: "meaning of novapulse street slang", results: [] }] },
+      gaps: [],
+    }));
+    const p2 = join(dir, `common-law-findings.half-${H}.md`);
+    const doc = [
+      `# Common-law findings — meaning sweep (seat ${H})`, "",
+      "## Findings — Mark: X", "| a | b |", "",
+      "### PR / reputational risk", "(None identified — affirmative sweep) — reads clean.",
+      "**Connotation-search source:** perplexity_research (dictated sweep)", "",
+      "### Audit trail", "| 1 | meaning | queries | ok |", "",
+    ].join("\n") + "x".repeat(200);
+
+    const reason = String(validators.commonLawHalf(p2, doc).reason ?? "");
+    assert.match(reason, /connotation_query_unrecorded/);
+    assert.match(reason, /\[unmatched; nearest recorded:/,
+      "a query recorded under different wording was not identified as unmatched, so the seat is told to re-run a search that already ran");
+    assert.match(reason, /\[absent from the ledger\]/,
+      "a query recorded nowhere was not identified as absent");
+    // AND THE NEAREST IS NAMED, which is what lets a reorder be diagnosed in one attempt rather than four.
+    assert.match(reason, /nearest recorded: meaning of novapulse/,
+      "the refusal does not show what WAS recorded, so the difference cannot be seen without opening the ledger");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
