@@ -2497,6 +2497,9 @@ async function connectorDoorKind(url) {
           // surface serves a loopback address to anybody, and the door's running-or-not stopped being
           // a question the moment it auto-started with the product.
           publicAddress: url,
+          // THE KEY DOOR'S OWN HOST, when one is deployed. Beside a sign-in door its steps ride along for
+          // the page to fold away; they are never resolved against `url`, which refuses a key.
+          keyAddress: keyUrl,
           operator: principal.email ?? null,
           // WHAT THE DOOR ANSWERS, read from the door rather than assumed by the row. The steps used to
           // be fixed: Claude's said to paste a key and set authentication to None, which is right for a
