@@ -657,7 +657,13 @@ table.data td.nest-2 {
   white-space: nowrap;
 }
 .row-actions {
-  --row-open-w: 11em;
+  /* WIDE ENOUGH FOR THE LONGEST LABEL ON A FONT THIS BOX DOES NOT HAVE. The track is fixed so every
+     Open shares one width — "the track decides, not the text" — which means the number has to clear
+     the longest label, "Open latest report", everywhere. At 11em it cleared it on a developer machine
+     and clipped on the CI runner, whose default font is wider: the browser check went green locally
+     and red in CI on the same commit. 13.5em is the local measurement plus about a fifth, which is
+     more than the spread between the font stacks the two see. */
+  --row-open-w: 13.5em;
   --row-ask-w: 6.5em;
   display: grid;
   grid-template-columns: var(--row-open-w) auto;
