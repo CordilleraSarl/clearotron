@@ -398,30 +398,34 @@ test("doc-31 owner binding: no record owner → falls back to the model's findin
   assert.match(html, /Matchday, Inc\./);                        // model owner stands when the record has none
 });
 
-test("report floating nav: rendered whenever opts.nav is passed — serve-time nav stripping is portal-report's job", () => {
+test("ONE header bar: an injected site nav is not rendered on a report, whatever is passed", () => {
+  // THE PROPERTY INVERTED WITH THE DESIGN (tracker issue 644). A reader met two stacked headers and the
+  // lower one carried the only brand. The report renders its own bar and nothing else, so a caller that
+  // still passes a nav — the pool index does — gets a report with one header rather than two.
   const NAV = '<nav class="sitenav"><div class="navinner"><a href="../index.html">Archive</a></nav>';
   const internal = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-demo", nav: NAV });
-  assert.match(internal, /class="sitenav"/);
-  assert.match(internal, /href="\.\.\/index.html"/);
-  // one sticky header: nav + topbar wrap in .rep-stickyhead; the nav is static inside it (doesn't fight the topbar)
-  assert.match(internal, /class="rep-stickyhead/);
-  assert.match(internal, /\.rep-stickyhead \.sitenav\{position:static/);
-  // ONE report: opts.client is inert — the nav rides the document; portal-report/readReport strips it
-  // (it lists every customer key) before any embedded reader sees it.
+  assert.doesNotMatch(internal, /class="sitenav"/, "the site bar is the second header the design removed");
+  assert.doesNotMatch(internal, /href="\.\.\/index.html"/, "nothing of the injected nav survives");
+  assert.match(internal, /class="rep-stickyhead/, "the report's own bar still sticks");
+  // ONE report: opts.client is inert, and passing a nav must not fork the render either.
   const stale = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { client: true, runId: "noref-demo", nav: NAV });
   assert.equal(stale, internal, "opts.client no longer forks the render");
+  const navless = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-demo" });
+  assert.equal(navless, internal, "passing a nav changes nothing — it is simply not rendered");
 });
 
-test("logo de-dup: the topbar NEVER carries a lockup — the brand arrives via the injected nav and the footer", () => {
+test("the brand is in the report's own bar, once, and once more in the footer", () => {
+  // ALSO INVERTED. The topbar carried no lockup because the injected site bar already branded the
+  // header; with that bar gone the report had no brand in its header at all. One in the bar, one in the
+  // footer, and never two in the same header — which is the de-duplication this arm was always about.
   const NAV = '<nav class="sitenav"><div class="navinner"><span class="lockup">NAVLOCK</span><a href="../index.html">Archive</a></div></nav>';
   const tbOf = (h) => h.slice(h.indexOf('class="topbar'), h.indexOf('class="tb-menu"'));
   const internal = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-demo", nav: NAV });
-  assert.doesNotMatch(tbOf(internal), /class="lockup"/, "topbar carries no SECOND lockup — the nav already brands the header");
-  assert.match(internal, /class="lockup">NAVLOCK/, "…the single header brand lockup is the nav's");
-  // ONE report: the old client-only topbar lockup went with the CLIENT flag — a navless render brands
-  // via the footer lockup alone.
+  assert.match(tbOf(internal), /class="[^"]*lockup/, "the report's bar carries the brand");
+  assert.doesNotMatch(internal, /NAVLOCK/, "the injected bar's lockup is not rendered — that is the second one");
+  assert.equal((tbOf(internal).match(/class="[^"]*lockup/g) || []).length, 1, "one lockup in the header, never two");
   const navless = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-demo" });
-  assert.doesNotMatch(tbOf(navless), /class="lockup"/, "no audience-forked topbar lockup remains");
+  assert.match(tbOf(navless), /class="[^"]*lockup/, "a navless render brands its own bar too");
   assert.match(navless, /<footer>[\s\S]*class="lockup"/, "the footer lockup still brands the document");
 });
 
@@ -610,10 +614,8 @@ test("§2.6/2.8: hero is split — conclusion card carries the verdict, scope ca
   assert.match(html, /class="gk">Recommendation<\/span>/);
   // doc-35: the "Open conditions: N to close" self-audit KPI was removed from the conclusion card
   assert.doesNotMatch(html, /class="gk">Open conditions<\/span>/);
-  assert.match(html, /class="jchips"/);                                    // jurisdiction chips in the scope card
-  assert.match(html, /<span class="jchip" title="United States">US<\/span>/);            // hover carries the full country name
-  assert.match(html, /<span class="jchip lim" title="Turkey — coverage-limited">TR\*<\/span>/);   // coverage-limited office dashed + * + named
-  assert.match(html, /coverage-limited \(see/);                            // the limited-office note
+  assert.match(whereRow(html), /United States/, "the country is named in full where a client reads it");
+  assert.match(whereRow(html), /Turkey \(coverage-limited\)/, "a coverage-limited office still says so");
 });
 
 test("§2.9: the issued timestamp renders verbatim from opts (deterministic), omitted when absent", () => {
@@ -1135,15 +1137,19 @@ test("spec 49: verdictInfo drives the gauge and bound recommendation — fm.over
   assert.match(noVi, />Severe</, "legacy tick vocabulary preserved without a sidecar");
 });
 
+  // WHERE SEARCHED MOVED FROM CHIPS TO A LABELLED ROW (tracker issue 644). The derivation is untouched —
+  // the same jurisdictionCodes decides the set, the order and which office was coverage-limited — so the
+  // property these arms hold is the same one, read where a client now reads it.
+  const whereRow = (h) => (h.match(/Where searched<\/span><span class="v">([^<]*)/) || [])[1] || "";
 // ── T6 (D4 + H10): honest searched scope + the worst-exposure jurisdiction ──────────────────────
 test("spec 49 (D4): the machine-derived searched set drives the header; a code-LIST coverage row also parses (copper-spire's shape)", () => {
   // machine set (register-plan regions via publish) wins
   const withSet = renderHtml(parsedOf(FM), REGION_FINDINGS, [], { searchedJurisdictions: ["US", "EU", "UK", "CN", "JP", "NZ", "PH", "IN", "RU", "ID", "ZA", "TR"] });
-  for (const code of ["US", "CN", "NZ", "PH", "ZA", "TR"]) assert.match(withSet, new RegExp(`<span class="jchip" title="[^"]*">${code}</span>`), `${code} chips in`);
+  for (const name of ["United States", "China", "New Zealand", "Philippines", "South Africa", "Turkey"]) assert.match(whereRow(withSet), new RegExp(name), `${name} in the searched set`);
   // copper-spire's single row carrying a code LIST — the old single-code regex matched nothing → "CN/EU"
   const listCoverage = [{ area: "register / material jurisdictions US·EU·UK·CN·JP·NZ", state: "confirmed-clean", note: "" }];
   const legacy = renderHtml(parsedOf(FM), REGION_FINDINGS, listCoverage, {});
-  for (const code of ["US", "EU", "UK", "CN", "JP", "NZ"]) assert.match(legacy, new RegExp(`>${code}\\*?</span>`), `${code} extracted from the list row`);
+  for (const name of ["United States", "European Union", "United Kingdom", "China", "Japan", "New Zealand"]) assert.match(whereRow(legacy), new RegExp(name), `${name} extracted from the list row`);
 });
 
 test("spec 49 (H10): the hero names the highest-exposure jurisdiction(s), derived from the highest-rated finding(s)", () => {
@@ -1311,20 +1317,18 @@ test("scope_basis: a worldwide plan reads as worldwide even when no ledger row s
   // Deliberately prose-free: no row mentions worldwide, so only scope_basis can carry the claim.
   const coverage = [{ area: "register / citation-core exact", state: "confirmed-clean", note: "enumerated to has_more:false" }];
   const html = renderHtml(parsedOf(FM), [], coverage, { runId: "ww-plan", scopeBasis: "worldwide" });
-  assert.match(html, /class="jchip ww"[^>]*>worldwide</, "the plan's own answer drives the chip");
-  assert.match(html, /worldwide register sweep/, "and the scope line");
-  assert.match(html, /register sweep ran worldwide/, "and the plain-language disclosure");
-  assert.match(html, /class="jchip"[^>]*>WO<\/span>/, "doc-55 B: WO is always shown on a worldwide sweep");
+  assert.match(whereRow(html), /^Worldwide/, "the plan's own answer leads the row");
+  assert.match(whereRow(html), /WIPO \(Madrid\)/, "doc-55 B: the international register is always in scope on a worldwide sweep");
 
   // Same inputs without the plan flag: unchanged from before — archived runs keep the prose fallback.
   const legacy = renderHtml(parsedOf(FM), [], coverage, { runId: "ww-plan" });
-  assert.ok(!/jchip ww/.test(legacy), "no plan flag and no prose ⇒ no worldwide claim");
+  assert.ok(!/^Worldwide/.test(whereRow(legacy)), "no plan flag and no prose ⇒ no worldwide claim");
 });
 
 test("scope_basis: prose still wins on archived runs that have no plan flag", () => {
   const coverage = [{ area: "register / worldwide sweep", state: "confirmed-clean", note: "enumerated worldwide" }];
   const html = renderHtml(parsedOf(FM), [], coverage, { runId: "ww-prose", scopeBasis: null });
-  assert.match(html, /class="jchip ww"[^>]*>worldwide</, "the pre-existing sniff is untouched");
+  assert.match(whereRow(html), /^Worldwide/, "the pre-existing sniff is untouched");
 });
 
 test("scope_basis: a worldwide sweep never chips its office list", () => {

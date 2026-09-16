@@ -750,8 +750,16 @@ function headScope(fm, coverage = [], findings = []) {
 // They are one labelled panel now, directly under the name, on every report type (tracker issue 644).
 // Every row is a fact the run already carries: nothing here is composed.
 function aboutPanel(fm, coverage = [], findings = [], opts = {}) {
-  const { order: codes, worldwide } = jurisdictionCodes(fm, coverage, findings);
-  const where = codes.map((c) => regionName(c) || c).filter(Boolean).join(', ');
+  const { order: codes, meta, worldwide } = jurisdictionCodes(fm, coverage, findings);
+  // A JURISDICTION SEARCHED WITH LIMITED COVERAGE SAYS SO HERE. The chips this row replaces carried that
+  // on the office's own chip; a plain list of country names would read as "all of these were searched"
+  // and quietly drop the one thing in the row a reader could act on. The worldwide sweep also always
+  // covers the international register, which is why WO joins the list on a worldwide run.
+  const shown = (worldwide && !codes.includes('WO')) ? [...codes, 'WO'] : codes;
+  const where = shown.map((c) => {
+    const name = regionName(c) || c;
+    return meta.get(c)?.limited ? `${name} (coverage-limited)` : name;
+  }).filter(Boolean).join(', ');
   // The type of search is the bolded head of the depth note the driver already composes; the rest of
   // that sentence is the product's covers line, which the owner ruled off the page.
   const note = String(opts.depthNote ?? '').trim();
