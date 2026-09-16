@@ -390,17 +390,23 @@ export const leadRouteFor = (id) => {
  *
  * IT USED TO SEND THE READER AWAY, and for a person whose product runs in WSL the assistant on Windows
  * is the normal one — so "an assistant on Windows cannot start it from there" left them with no working
- * row at all. The row now starts the server INSIDE the distribution through `wsl.exe`, so the sentence
- * says what the command does rather than where the reader may not be: paste it where the assistant
- * lives, on either side, and it crosses the boundary for them.
+ * row at all. The row starts the server INSIDE the distribution through `wsl.exe`, which is what an
+ * assistant on the Windows side needs.
  *
- * The Windows-side caveat stays as the second half, because a row that a host rewrites, or an assistant
- * that resolves `wsl.exe` differently, still fails on the same boundary — and then the terminal inside
- * the distribution is the answer.
+ * AND IT SAYS SO, because the sentence that replaced it promised more than the command can do. It read
+ * "paste it where your assistant lives, on Windows or in the WSL terminal, whichever it is" — an
+ * invitation to paste it inside WSL, where it does not work. Somebody took the invitation from Claude
+ * Code inside a distribution and got CONNECTION_CLOSED (measured 2026-09-16 on 0.3.2-beta.1).
+ *
+ * There is exactly ONE launcher per host shape today, and under WSL it is the Windows-side one, so this
+ * step names the side it is for rather than offering both. Building the second launcher — the plain
+ * `node` line for an assistant running inside the distribution — is its own piece of work; until it
+ * exists, saying which side this one is for is the whole of what can honestly be said.
  */
-export const WSL_STEP = "This install runs inside WSL, and the command below starts the server in there for you — "
-  + "paste it where your assistant lives, on Windows or in the WSL terminal, whichever it is. "
-  + "If your assistant rewrites the command or cannot find wsl.exe, run it from the WSL terminal instead.";
+export const WSL_STEP = "This install runs inside WSL, and the command below starts the server in there for you. "
+  + "It is for an assistant running on the Windows side — Claude Desktop, or Claude Code in PowerShell. "
+  + "An assistant running inside this WSL terminal cannot use it: start the server from the WSL terminal "
+  + "yourself instead.";
 
 export function whatItNeeds(client, have = {}, route = client?.lead) {
   if (!client) return null;
