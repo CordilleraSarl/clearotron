@@ -388,7 +388,7 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
         <div className="notice">
           <h1 style={{ fontSize: 19, margin: '0 0 8px' }}>No clearances are available to you</h1>
           <p style={{ margin: 0, color: 'var(--text-muted)' }}>
-            You are signed in, but this address has not been enrolled for any account yet. Enrolment can
+            You are signed in, but this address has not been enrolled for any company yet. Enrolment can
             be arranged — it is two-sided, so it needs doing in two places.
           </p>
         </div>

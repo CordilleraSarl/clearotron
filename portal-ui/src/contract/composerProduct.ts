@@ -477,7 +477,7 @@ export function missingPieces(
 ): readonly string[] {
   const out: string[] = []
   if (!names.length) {
-    out.push('Add the brand name you want cleared, in Names above.')
+    out.push('Add the name you want cleared, in Names above.')
     // ONE AT A TIME, most structural first. With no name at all, telling someone their goods are also
     // missing is two chores where the first one may fill in the second — the brief reader takes a
     // sentence and fills both.
