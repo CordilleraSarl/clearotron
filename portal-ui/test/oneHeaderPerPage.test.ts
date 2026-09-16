@@ -17,6 +17,12 @@ import { readFileSync, readdirSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { join } from 'node:path'
 import { prose } from './support/prose.ts'
+// ONE DEFINITION OF EACH PREDICATE. The writing-standard check refuses this same class in a diff, and a
+// second copy of "an eyebrow above a heading" or "this screen writes its own header" would be one
+// definition and one imitation of it — the imitation being whichever the reader did not run. The
+// predicates live with the class table; the population floors below stay here, because they are this
+// suite's business rather than the class's.
+import { drawsScreen, eyebrowOverHeading, writesItsOwnHeader } from '../../shared/writing-standard-classes.mjs'
 
 const SRC = fileURLToPath(new URL('../src/', import.meta.url))
 const walk = (dir: string): string[] =>
@@ -33,7 +39,7 @@ const read = (f: string) => readFileSync(f, 'utf8')
 // `screen` root, wherever its file lives, and the frame is the one file that also draws the top bar.
 // Read off the prose so a comment mentioning either cannot enrol or excuse a file.
 const draws = (f: string, what: RegExp) => what.test(prose(read(f)))
-const SCREENS = FILES.filter((f) => draws(f, /className="screen/) && !draws(f, /className="topbar/))
+const SCREENS = FILES.filter((f) => drawsScreen(prose(read(f))))
 
 test('the population is the whole tree, and it is plausibly large', () => {
   // A FLOOR FIRST. Everything below is an absence, and an absence over an empty list reads exactly like
@@ -57,12 +63,7 @@ test('NO SCREEN OPENS WITH AN EYEBROW OVER A HEADING — that pair is the double
   // would have called that screen clean while a reader saw the same two lines stacked.
   const offenders: string[] = []
   for (const f of FILES) {
-    const lines = read(f).split('\n')
-    let eyebrow = -99
-    lines.forEach((l, i) => {
-      if (/className="eyebrow"/.test(l)) eyebrow = i
-      if (/<h1\b/.test(l) && i - eyebrow <= 8) offenders.push(`${rel(f)}:${i + 1} (eyebrow at ${eyebrow + 1})`)
-    })
+    for (const e of eyebrowOverHeading(read(f))) offenders.push(`${rel(f)}:${e.line} (eyebrow at ${e.eyebrow})`)
   }
   assert.deepEqual(offenders, [], 'a screen carries an eyebrow above a heading again')
 })
@@ -94,12 +95,8 @@ test('EVERY ROUTED SCREEN OPENS WITH THE SHARED COMPONENT — the property, not 
   // that draws the frame every screen renders inside.
   const offenders: string[] = []
   for (const f of SCREENS) {
-    const src = read(f)
-    const header = src.indexOf('<PageHeader')
-    const h1 = src.indexOf('<h1')
-    if (header < 0 && h1 < 0) continue                  // a file that draws no heading at all
-    if (header < 0) { offenders.push(`${rel(f)} writes a heading and never the shared component`); continue }
-    if (h1 >= 0 && h1 < header) offenders.push(`${rel(f)} opens with a heading of its own, before the shared component`)
+    const own = writesItsOwnHeader(read(f))
+    if (own) offenders.push(`${rel(f)} ${own}`)
   }
   // ONE SCREEN IS OUT, AND NOT BY NAME. The result screen's only heading is the mark a run was ordered
   // for — a value out of the run, marked for the screen-share blur — rather than the page's own name,

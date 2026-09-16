@@ -1,0 +1,14 @@
+{
+  "note": "The caveat sentences the writing standard forbids, held as data rather than in shared/writing-standard-classes.mjs. A class list that reprints its own specimens counts itself, and that module is read by the census that counts them. Matching is case-insensitive and whitespace-flattened, over a file's joined printed text, so a sentence built by string concatenation across source lines is still one sentence. Keep each entry long enough to be unambiguous: a fragment short enough to occur in ordinary prose will match ordinary prose.",
+  "sentences": [
+    "What it is not. A clearance search.",
+    "We drew no register conclusions and give no filing advice.",
+    "A name that passes here is not clear",
+    "A count is not a conflict",
+    "No coverage record was produced for this run.",
+    "This section normally lists what each search covered",
+    "Ask us before relying on it",
+    "the Japan adapter was unavailable this session",
+    "Source routing attempted"
+  ]
+}
