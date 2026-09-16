@@ -29,8 +29,10 @@ const API = read('../src/contract/api.ts')
 test('the dialog branches on stoppable, and says something different on each side', () => {
   assert.match(HOME, /stoppable\s*\?/, 'the stop dialog no longer branches — one sentence is being shown in both states')
 
-  // The promise, on the side that can keep it.
-  assert.match(HOME, /nothing is delivered/,
+  // The promise, on the side that can keep it. THE FACT IS UNCHANGED AND THE WORDS ARE THE SPECIFIED
+  // ONES: "nothing is delivered" became "produces no report". What this holds is that the promise is
+  // made only where the run can still keep it — the branch above — not any one spelling of it.
+  assert.match(HOME, /produces no report/,
     'the dialog stopped promising that nothing is delivered, on the side where that is true and worth saying')
 
   // The withdrawal, on the side that cannot. Pinned by its claim rather than its wording: it must not

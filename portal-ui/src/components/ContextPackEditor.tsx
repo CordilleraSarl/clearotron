@@ -12,24 +12,30 @@
 // the same warning, so a second hand-rolled copy would be two places to fix the character budget and two
 // chances to describe the same thing differently to the same person on adjacent screens.
 
+import { FieldTag } from './ProfileField.tsx'
+
 const CHAR_MAX = 8000
 
 export { CHAR_MAX as CONTEXT_PACK_MAX }
 
 export function ContextPackEditor({
-  value, onChange, title, hint, rows = 8,
+  value, onChange, title, hint, rows = 8, tag = null, card = false,
 }: {
   readonly value: string
   readonly onChange: (v: string) => void
   readonly title: string
   readonly hint: string
   readonly rows?: number
+  /** Beside the title, as the profile's fields carry theirs. */
+  readonly tag?: 'Required' | 'Optional' | null
+  /** Drawn as its own card, where the page is a stack of them. */
+  readonly card?: boolean
 }) {
   const over = value.length > CHAR_MAX
   return (
-    <div style={{ marginTop: 26 }}>
-      <div className="eyebrow">{title}</div>
-      <label style={{ display: 'block', marginTop: 14 }}>
+    <div className={card ? 'ctx-card' : undefined} style={card ? undefined : { marginTop: 26 }}>
+      <div className="eyebrow">{title}<FieldTag tag={tag} /></div>
+      <label style={{ display: 'block', marginTop: card ? 10 : 14 }}>
         <div style={{ fontSize: 12.5, color: 'var(--text-muted)', margin: '2px 0 7px' }}>{hint}</div>
         <textarea
           value={value}

@@ -241,9 +241,22 @@ export const REMOTE_SHAPES = Object.freeze({
     render: ({ address }) => `${address}\n${KEY_SLOT}`,
   },
   // A host that signs its reader in through the browser needs the address and nothing else.
+  //
+  // BARE: ONE VALUE, HANDED OVER BY ITS BUTTON ALONE. The reader pastes it and never reads it back, so a
+  // surface draws "Copy address" and not the text — a block above the button is a second thing to look
+  // at for the same press. Only a shape whose whole text is one value may say so; a command or a
+  // settings block is read before it is pasted, and stays a block.
   "address": {
-    label: null,
+    label: "Copy address",
+    bare: true,
     render: ({ address }) => address,
+  },
+  // THE KEY ALONE, for steps that take the address and the key as two presses: the address where the
+  // reader pastes it, the key at the header it goes in. One press handing over both is a credential
+  // minted before the step that uses it, and a reader then pasting two lines into a box that takes one.
+  "key": {
+    label: "Copy key",
+    render: () => KEY_SLOT,
   },
   // THE SAME TWO HOSTS WITH NO KEY IN THEM, for a door that signs its reader in. A door behind an
   // identity provider never honours a key, so a command carrying a header is a command that cannot
@@ -290,7 +303,8 @@ export function remoteConnectFor(shape, { address = null } = {}) {
   if (!spec || !address) return null;
   const text = spec.render({ address });
   const secret = text.includes(KEY_SLOT);
-  return { shape, secret, label: secret ? spec.label : null, text, name: STDIO_SERVER_NAME };
+  // A LABEL ON A BLOCK MEANS THE BUTTON IS ALL A SURFACE DRAWS, so only a bare shape carries one out.
+  return { shape, secret, label: secret || spec.bare ? spec.label : null, text, name: STDIO_SERVER_NAME };
 }
 
 /**

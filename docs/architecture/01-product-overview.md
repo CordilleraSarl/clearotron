@@ -11,7 +11,8 @@ never as the orchestrator.
 ## What it does
 
 **Who this is for.** Anyone who needs to know whether a name is free to use and is willing to run the
-search themselves: a lawyer, a brand team, or an individual clearing their own mark. You need three
+search themselves: a company clearing its own names, a lawyer clearing them for the companies they act
+for, or an individual clearing their own mark. You need three
 self-serve accounts: a reasoning CLI, a register, and web research.
 
 **What you get.** Four searches at different depths. A knockout screens up to eight names in minutes.
@@ -40,7 +41,7 @@ Every completed matter is a self-contained run directory plus a published delive
 
 | Artifact | What it is | Consumer |
 |---|---|---|
-| **Clearance report** (HTML) | The deliverable: verdict, four reads, rated findings, coverage statement, actions. Client-formatted via the profile layer. | The client, via the vetting lawyer |
+| **Clearance report** (HTML) | The deliverable: verdict, four reads, rated findings, coverage statement, actions. Formatted for the company via the profile layer. | The company, via the vetting lawyer |
 | **Audit workbook** (Excel) | Every finding — including deliberately excluded noise — with its written reasoning and source record. Built by pure code from the findings spine. | The vetting lawyer; diligence |
 | **Receipts** | Pre-delivery lint, coverage ledger (prose + machine JSON), reasoning-integrity receipt, provider-usage ledger, token rollup. | Operators; auditors |
 | **Decision trace** | Append-only event stream of every stage, retry, gate action, escalation, and delivery step (`_driver/run.jsonl`). | Operators; auditors |
@@ -59,11 +60,11 @@ flowchart LR
     C --> D["Challenge<br/>the draft"]
     D --> E["Deliver the<br/>decision"]
 
-    A -.- a2["Email in; matter, client,<br/>scope, deadline resolved"]
+    A -.- a2["Email in; matter, company,<br/>scope, deadline resolved"]
     B -.- b2["Registers + live marketplace,<br/>worldwide; depth follows risk"]
     C -.- c2["Legal / commercial / risk / impact —<br/>separated to the last page"]
     D -.- d2["Independent review +<br/>blind re-derivation"]
-    E -.- e2["Client's framework and format;<br/>lawyer vets, then it moves"]
+    E -.- e2["The company's framework and format;<br/>lawyer vets, then it moves"]
 
     classDef phase fill:#1a3a5c,stroke:#4a90d9,color:#fff
     classDef note fill:none,stroke:none,color:#888,font-size:12px
@@ -79,17 +80,17 @@ The full stage-by-stage mechanics — fan-out, barriers, gates, escalation and r
 Risk is never one blended number. Every matter carries four separated reads, kept apart from the
 first reasoning stage to the final page of the report:
 
-- **Legal read** — would a claim succeed? Client-independent: the same conflict gets the same
-  legal read for every client.
+- **Legal read** — would a claim succeed? Company-independent: the same conflict gets the same
+  legal read for every company.
 - **Commercial read** — would this opponent actually fight, and what kind of fight: a classic
   infringement battle, a negotiation, a paper conflict with a dormant registration, or nuisance?
 - **Risk read** — how likely the conflict becomes a real problem, all told.
-- **Impact read** — what a fight would mean for *this* client, industry, and launch. The one read
-  where the client's world properly enters the analysis.
+- **Impact read** — what a fight would mean for *this* company, industry, and launch. The one read
+  where the company's world properly enters the analysis.
 
 The separation is engineered, not stylistic: the profile layer can shape emphasis, vocabulary, and
 format, but configuration that attempts to move a legal rating is rejected by the system itself
-(the anti-threshold guard — see [05 — Customer profiles](05-customer-profiles.md)).
+(the anti-threshold guard — see [05 — Company profiles](05-customer-profiles.md)).
 
 ## The disciplines that make it a product
 
@@ -99,7 +100,7 @@ mechanism in the code, not a policy statement — the pointers go to the chapter
 | Discipline | Mechanism | Documented in |
 |---|---|---|
 | Judgment encoded, not rules | Doctrine as prose methodology (skills) reasoned by the judgment tier; hard ceilings in a locked rating framework | [08](08-development-guide.md), [05](05-customer-profiles.md) |
-| Clients drive the deliverable, never the analysis | Profile layer with closed key enum + anti-threshold guards + stage-level firewall; framework manifests carry vocabulary only, never rules (CI-linted) | [05](05-customer-profiles.md) |
+| Companies drive the deliverable, never the analysis | Profile layer with closed key enum + anti-threshold guards + stage-level firewall; framework manifests carry vocabulary only, never rules (CI-linted) | [05](05-customer-profiles.md) |
 | Four reads, never one number | Findings model carries the reads separately; report templates render them separately | [07](07-quality-and-audit.md) |
 | It knows what to leave out | Below-threshold exclusions keep their written reasoning in the audit workbook | [07](07-quality-and-audit.md) |
 | Crowding must be earned | A crowded-field mitigation requires the counted, filtered field on the record | [07](07-quality-and-audit.md) |
@@ -111,7 +112,7 @@ mechanism in the code, not a policy statement — the pointers go to the chapter
 Beneath all nine sit two engineering properties: **judgment on rails** (the deterministic pipeline,
 [02](02-architecture.md)) and **a memory that keeps it honest** (the reference library and replay
 harness every change to the system's thinking is re-tested against — a discipline someone runs by hand,
-not a mechanism: the replay corpus is real client matter on the machine that holds it, invoked from the
+not a mechanism: the replay corpus is real clearance data on the machine that holds it, invoked from the
 command line, the reference library is a paid A/B, and neither is in `npm test` or in CI,
 [07 §7](07-quality-and-audit.md#7--the-memory-that-keeps-it-honest)).
 
@@ -120,9 +121,9 @@ command line, the reference library is a paid A/B, and neither is in `npm test` 
 - The driver runs as systemd `--user` units of one service account (no root units), entirely
   outside any agent sandbox. Where an integrator agent platform is deployed beside it (the
   reference integration), those agents have `exec` denied and can only write queue files.
-- Per-customer behaviour is configuration, never a fork: every deployment runs the same engine and
-  customers differ only in their profile bundles ([05](05-customer-profiles.md)). Client identities
-  are not named here.
+- Per-company behaviour is configuration, never a fork: every deployment runs the same engine and
+  companies differ only in their profile bundles ([05](05-customer-profiles.md)). No real company is
+  named here.
 - Wall-clock per matter is on the order of several hours — an operational measurement, not a specification:
   deliberate sequencing and provider pacing, with model compute a fraction of it. Stage timeout
   budgets in [04](04-configuration-reference.md) bound the components.
@@ -154,8 +155,8 @@ Terms used throughout this pack and the code. The code's names win over prose de
 | **Sentinel** | An on-disk marker file that makes an action idempotent (e.g. `.published`, `.sent`). |
 | **Sidecar** | A small metadata file next to a primary artifact (e.g. claimer pid next to a claimed job). |
 | **Slug / codename** | Run-directory naming: deterministic slug plus a generated `adjective-noun` codename. |
-| **Profile bundle** | A customer's git-owned configuration: structural config, context pack, delivery style, framework. |
-| **Context pack** | The client-knowledge layer fed to reasoning as context — sharpens judgment, never overrides it. |
+| **Profile bundle** | A company's git-owned configuration: structural config, context pack, delivery style, framework. |
+| **Context pack** | What the engine knows about the company, fed to reasoning as context — sharpens judgment, never overrides it. |
 | **Doctrine** | The encoded legal method: the skills prose, rating framework, and worked examples. |
 | **Reference library** | Lawyer-blessed verdicts on real matters; every change to the thinking is re-tested against it. |
 | **Replay harness** | The $0 pure-file re-run over archived runs; catches structural regressions, not reasoning drift. |

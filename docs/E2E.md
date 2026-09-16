@@ -89,15 +89,15 @@ frozen demo profile, and the file to open to prove which profile resolved).
 
 ### Tier 1b — the UI PORTAL (browse the dev instance; develop UI features against it)
 
-The pool already contains the whole UI (archive index, per-run report + client report + audit
-workbook, per-customer pages); production serves it with a real web server behind the auth proxy.
+The pool already contains the whole UI (archive index, per-run report + audit workbook, per-company
+pages); production serves it with a real web server behind the auth proxy.
 The dev stand-in is `driver/dev-portal.mjs` — zero-dep, **loopback-only** (refuses anything else):
 
 ```bash
 CLEAROTRON_REPORTS_DIR=$HOME/trademark-dev/pool node driver/dev-portal.mjs   # http://127.0.0.1:18899/
 ```
 
-- `/` → the archive index · `/<run>/report.html` → the report · `/customer/<key>/` → customer pages
+- `/` → the archive index · `/<run>/report.html` → the report · `/customer/<key>/` → company pages
 - `/profiles.html` + `/profiles/*` → the profile editor UI + a reverse-proxy to the profile-service
   (run that in ITS dev mode: `PROFILE_AUTH_DISABLED=1 PROFILE_DEV=1 PROFILE_PORT=<dev port>`)
 - the MCP HTTP face runs separately in its own dev mode (`TRADEMARK_MCP_DEV=1
@@ -115,7 +115,7 @@ so a dev instance beside a live one must be given its own (`PORTAL_PORT`, `PROFI
 silently — each is a proxy to a port, and the port is all it knows. `/recipes/*` is the worse half:
 its save endpoint writes and git-commits into whichever recipe store it reached.
 
-A pass here looks like: index, run report, the demo customer page and the profile-editor UI all
+A pass here looks like: index, run report, the demo company's page and the profile-editor UI all
 render against the Tier-1 pool; the `/profiles/*` proxy round-trips; traversal and non-loopback binds
 are refused (unit-tested).
 
@@ -147,8 +147,8 @@ correct.
 ## Tier 3 — the paid cutover run (once, ~$40)
 
 Same loop as Tier 2 with the real engine (`CLEAROTRON_CLAUDE_PATH=claude`) + real provider credentials +
-a real matter. Validates model/vendor OUTPUT QUALITY, not machinery (Tiers 0–2 already proved that).
-Run it once, at cutover — it bills a real matter against real vendor credentials, so it is not a
+a real request. Validates model/vendor OUTPUT QUALITY, not machinery (Tiers 0–2 already proved that).
+Run it once, at cutover — it bills a real clearance against real vendor credentials, so it is not a
 loop you repeat to debug something Tier 1 could have shown you.
 
 ## Engine selection is process-wide — what that rules out
@@ -159,7 +159,7 @@ stage of every job in that activation**. There is no per-stage override and no p
 
 Two round shapes this rules out, worth knowing before a plan assumes them:
 
-- **A same-instance parallel A/B is not available.** Comparing codex against anthropic on one matter
+- **A same-instance parallel A/B is not available.** Comparing codex against anthropic on one request
   means flipping `CLEAROTRON_AI` and running the arms **sequentially**, or standing up a second instance
   with its own env, pool and ports. Two engines cannot run concurrently under one driver.
 - **Reviewer family diversity is not available** by routing one stage elsewhere. Sending the refutation
@@ -195,7 +195,7 @@ model-attributable — on 2026-08-15. Each failure was cheap; the sequence was n
 
 **Ask whether the artifacts already separate the variables, before spending a run.** That question was
 finally answered with no new run at all: within the runs already in hand, two axes were clean 9/9 while
-a third faulted 9/9 — same model, same matter, same date, same provider. A within-run comparison
+a third faulted 9/9 — same model, same mark, same date, same provider. A within-run comparison
 attributes by construction. Three runs were spent discovering that.
 
 **Read the instrument's own vitals before you read its result.** One of the three failures was a spawn

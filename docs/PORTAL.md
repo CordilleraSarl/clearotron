@@ -1,6 +1,6 @@
 # The portal
 
-*One address and one login, for staff and clients alike.*
+*One address and one login, whoever is signing in.*
 
 **Two ways to prove who you are, and one place that decides what you see.** Hosted,
 `PORTAL_AUTH_MODE=auth-proxy` means any login system in front that authenticates in the browser and
@@ -53,9 +53,9 @@ burned it.
   sign-in form, not a screen in `portal-ui`. The names are reserved on every deployment, so behind CF
   Access they 404 rather than rendering the app shell. A signed-out browser is redirected here; a
   signed-out API caller gets the same 401 the edge produces for a missing JWT.
-- `GET /portal/api/searches?account=` — registry levels + the account's saved recipes.
+- `GET /portal/api/searches?account=` — registry levels + the company's saved recipes.
 - `POST /portal/api/run/plan` — the **confirmation gate**: validation, the registry-derived
-  stage label (never a client's recipe label), mark count, turnaround hint, the standing caveat, and
+  stage label (never a company's recipe label), mark count, turnaround hint, the standing caveat, and
   a 10-minute HMAC `confirmationToken` bound to the fields of the server-stamped job that fix scope,
   cost and identity (`jobHashOf`: marks, markName, classes, goods, product/recipeKey), the confirming
   identity, and a ONE-SHOT jti. Jurisdictions are deliberately OUTSIDE the hash, so the plan step can
@@ -63,7 +63,7 @@ burned it.
   spends here.
 - `POST /portal/api/run` — re-runs the plan gates, verifies the token (a mutated request, another
   sign-in's token, or a replay all 409) then triggers via **real MCP JSON-RPC over the ops face's
-  `/mcp`** (`driver/portal-mcp-client.mjs`: initialize → tools/call with the accounts-scoped
+  `/mcp`** (`driver/portal-mcp-client.mjs`: initialize → tools/call with the company-scoped
   `PORTAL_OPS_TOKEN`; wire shape test-pinned against the face's own handler) — the portal's blast
   radius is that token's grant, enqueue-only, and scoped tokens must name `profileKey` explicitly.
   Job identity (profileKey, forwarder, forwarderEmail) is SERVER-stamped from the verified principal;
@@ -73,20 +73,21 @@ burned it.
   and copied into `meta.json` by the clearance publisher.
 - `GET /portal/api/runs?account=` — delivered pool rows (released reports linked; held runs listed
   unlinked) + live workspace rows.
-- `GET /portal/report/<runId>/` — the CLIENT export, ownership-checked; foreign/held/missing = 404.
-- `GET /portal/admin/*` — staff-only (clients get 404).
+- `GET /portal/report/<runId>/` — the report as the people it belongs to see it, ownership-checked;
+  foreign/held/missing = 404.
+- `GET /portal/admin/*` — staff-only (everyone else gets 404).
 
-Every plan/trigger is audited to `PORTAL_AUDIT` (JSONL, verified email + account + selector).
+Every plan/trigger is audited to `PORTAL_AUDIT` (JSONL, verified email + company + selector).
 
-## Per-account admission caps (`runCaps`)
+## Per-company admission caps (`runCaps`)
 
-Customer-profile key (visible, git-tracked — never a hidden env var). The closed key set is
+Company-profile key (visible, git-tracked — never a hidden env var). The closed key set is
 `{maxQueued?, dailyRuns?, monthlyRuns?}`, at least one required when the block is present
 (`driver/profiles.mjs`) — for example
 `"runCaps": { "maxQueued": 3, "monthlyRuns": 40 }` — enforced at the runner's `claimAndPrep`
 chokepoint for EVERY door (email, CLI, MCP, portal). Over-cap **clarifies** (requester notified,
 re-sendable), never drops. Monthly counting rides the matter ledger (now stamped with `profileKey` +
-`enqueuedBy`); queued counting scans the queue manifests' tags. Customer-only (a project cannot
+`enqueuedBy`); queued counting scans the queue manifests' tags. Company-only (a project cannot
 widen caps). `runCaps` is one of the `CODE_OWNED_FIELDS` (`driver/profile-service.mjs`): the profile
 editor has no form field for it and preserves whatever is on file across a save, so it is edited in
 the profile JSON and never lost by a form that does not mention it.
@@ -136,7 +137,7 @@ clear. Put a TLS-terminating proxy in front if it has to be reachable.
 
 Grants fixture: `{"tenants":{"demo":{"accounts":["foxglade"],"users":{"cli@celta.example":["foxglade"]}}}}`.
 
-The trigger lane needs the MCP HTTP face and an accounts-scoped ops token; without both, the run step
+The trigger lane needs the MCP HTTP face and a company-scoped ops token; without both, the run step
 reports the trigger lane unwired and the plan step still works. **The face no longer has to be run in
 its dev bypass to provide that**:`TRADEMARK_MCP_AUTH_MODE=token` runs it with a mandatory scoped
 access key and no auth proxy — loopback only, and refused outright alongside
@@ -174,7 +175,7 @@ the model.
 **The procedure:**
 
 1. Put the proxy in front of the portal's port and make it require sign-in. The portal must not be
-   reachable except through it — an origin a client can reach directly is an origin with no door.
+   reachable except through it — an origin anyone can reach directly is an origin with no door.
 2. Set `PORTAL_AUTH_MODE=auth-proxy` and the four values above in `.env`.
 3. `npx clearotron doctor` — the **Portal door** section reports which door is configured and which of
    the four values are present, by name. It never prints their values.
@@ -200,13 +201,14 @@ no proxy in front is the one shape to avoid: `doctor` reports the fronted door w
 absent, and the portal refuses to start without an issuer. If you want the passphrase door, say
 `PORTAL_AUTH_MODE=local`.
 
-## How a run gets its account
+## How a run gets its company
 
 `runAccountKey` (`mcp-server/lib/runs.mjs`) reads the run's own frozen profile sidecar
 (`_driver/profile.json`) and takes `profileKey`, falling back to `key`. That key is what grants
-scoping filters on, so a run whose sidecar carries neither is untagged and reaches no client surface.
+scoping filters on, so a run whose sidecar carries neither is untagged, and only a person with access to
+everything sees it.
 
-The write side is gated the same way. An accounts-scoped token can only dequeue jobs inside its
-grant — `stop_run` checks the account on the queue form as well as on a live run — and every
+The write side is gated the same way. A company-scoped token can only dequeue jobs inside its
+grant — `stop_run` checks the company on the queue form as well as on a live run — and every
 `start_run` stamps the verified token `sub` into the job as `enqueuedBy`, ignoring any value the
 body supplied.

@@ -12,7 +12,7 @@ that" question, or when you are changing something and need to know what depends
 | [`03-run-lifecycle.md`](03-run-lifecycle.md) | One run from intake to delivered packet — every stage, gate and resume point |
 | [`04-configuration-reference.md`](04-configuration-reference.md) | Every environment variable, what reads it, and what unset means |
 | [`05-config-governance.md`](05-config-governance.md) | The rules configuration obeys: who may add a name, and the drift classes |
-| [`05-customer-profiles.md`](05-customer-profiles.md) | The per-customer profile: what it carries and how a run resolves one |
+| [`05-customer-profiles.md`](05-customer-profiles.md) | The per-company profile: what it carries and how a run resolves one |
 | [`06-operations-runbook.md`](06-operations-runbook.md) | Running a deployment — the units, the triggers, and what to do when one wedges |
 | [`07-quality-and-audit.md`](07-quality-and-audit.md) | How the engine proves what it claims: the ledger, the witness, the refutation gate |
 | [`08-development-guide.md`](08-development-guide.md) | Working in the code — the test tiers, the seams, the conventions |

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Global config — what this deployment searches with, and what it cannot search with. Staff only, read-only.
+// Installation settings — what this deployment searches with, and what it cannot search with. Read by
+// someone who sees the whole installation, and read-only.
 //
 // It answers three questions without anyone opening a terminal: how people sign in, which engine is
 // running the searches and who is billed for them, and which providers are wired up. That also makes it
@@ -12,43 +13,55 @@
 // owner's 2026-09-05 ruling that is this deployment READ LIVE — the page shows current configuration,
 // always, and what the last run recorded is a secondary row whose job is to name any field it disagrees
 // with. (It reads live because the portal shares the engine's environment: one configuration per server
-// box, ruling 2026-08-26. It did not always, and the prose here said so for longer than it was
-// true.) And every "I cannot tell" is said in words rather than rendered as an empty list — see the
-// notices below, which are the whole design.
+// box, ruling 2026-08-26.) And every "I cannot tell" is said in words rather than rendered as an empty
+// list — see the notices below, which are the whole design.
 //
-// THE SOURCES ARE VISIBLY SEPARATE, which is why Sign-in sits ABOVE the rest rather than among it: it is
-// the portal's own door, and the rows below it describe the engine's configuration. The page names which
-// reading it is showing rather than leaving a reader to assume — `source: "live"` is the answer and
-// `"capture"` says so out loud, because presenting an old reading as current fact without naming it is
-// precisely the defect the 2026-09-05 ruling was made about.
+// THREE SECTIONS, AND SIGN-IN LEADS. Sign-in is the portal's own door, and the rows below it describe the
+// engine's configuration; the page names which reading it is showing rather than leaving a reader to
+// assume, because presenting an old reading as current fact is the defect the 2026-09-05 ruling was about.
+// Under Engine sits the engine's own web search, a capability of the engine rather than a provider. Under
+// Providers each category is a heading with its sources beneath it, so no row repeats its category.
 //
-// ── WHAT THIS PAGE DELIBERATELY DOES NOT SHOW ───────────────────────────────────────────────
+// ── WHAT THIS PAGE DELIBERATELY DOES NOT SHOW ───────────────────────────────────────────────────────
 //
-// It used to list internal switch names with on / switched off / never set, in three sections, and
-// explain each section at length. Every one of those switches is now deleted ( item 8), but the
-// listing was the wrong shape before it was empty: a person opens this page to ask what the instance is
-// running, and a register of machinery answered a question nobody had. The snapshot still CARRIES the
-// flag fields and must keep doing so — `flagsDeclared` and `postureDelta` are what make the next flag
-// declare itself — so this is a change to what is rendered, not to what is recorded.
+// Administrator detail. A row needing action says what it needs in a few words and offers the setup
+// guide; the variable names, credential paths and README steps an administrator fixes it with live in that
+// guide and in the doctor's output, never on this page, which is read in screen shares. Every row's words
+// are decided in contract/installationSettings.ts, which copies no server remedy onto the page.
+//
+// It also used to list internal switch names with on / switched off / never set. Every one of those
+// switches is now deleted, and the listing was the wrong shape before it was empty. The snapshot still
+// CARRIES the flag fields — `flagsDeclared` and `postureDelta` are what make the next flag declare itself —
+// so this is a change to what is rendered, not to what is recorded.
 //
 // Read-only on purpose. Flipping a switch from a browser would be a production change with no review
 // and no record; these move in configuration management, where they are seen.
 
-import type { CSSProperties } from 'react'
-import { api } from '../contract/api.ts'
+import type { CSSProperties, ReactNode } from 'react'
+import { api, isOk } from '../contract/api.ts'
 import { engineRow } from '../contract/engineState.ts'
-import type { AuthState, EngineState, FlagView, ProviderState } from '../contract/api.ts'
+import type { EngineState, FlagView } from '../contract/api.ts'
+import {
+  engineCapabilityRows, providerCategories, setupGuideUrl, signInRow, type SetupGuide,
+} from '../contract/installationSettings.ts'
 import { Icon } from '../components/Icon.tsx'
+import { PageHeader } from '../components/PageHeader.tsx'
 import { useLoad } from '../state/useApi.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
+
+const TITLE = 'Installation settings'
 
 export function GlobalConfig({ ctx }: { readonly ctx: ShellContext }) {
   void ctx
   const { result } = useLoad(() => api.adminConfig(), [])
+  // The repository the server names, for the setup guides. Never a literal: this portal may be a fork.
+  const { result: about } = useLoad(() => api.about(), [])
+  const repo = about && isOk(about) && about.value.sourceRepo ? about.value.sourceRepo : null
 
   if (result && result.kind !== 'ok') {
     return (
       <div className="screen">
+        <PageHeader title={TITLE} />
         <div className="empty">
           <Icon name="alert" size={20} />
           <p>This page is not available.</p>
@@ -56,12 +69,13 @@ export function GlobalConfig({ ctx }: { readonly ctx: ShellContext }) {
       </div>
     )
   }
-  if (!result) return <div className="screen" />
+  if (!result) return <div className="screen"><PageHeader title={TITLE} /></div>
   const v: FlagView = result.value
 
   if (!v.available) {
     return (
       <div className="screen">
+        <PageHeader title={TITLE} />
         <div className="measure" style={{ '--screen-measure': '720px' } as CSSProperties}>
           <div className="notice">
             <b>Configuration cannot be read from here</b>
@@ -75,30 +89,33 @@ export function GlobalConfig({ ctx }: { readonly ctx: ShellContext }) {
   return (
     <div className="screen">
       <div className="measure">
-        {/* SIGN-IN COMES FIRST, AND ABOVE THE NOTICE, and both of those are the same decision.
-            This is the only row here the PORTAL answers for; everything under the notice is the
-            engine's answer, read from a snapshot. Placing it below would put it under a sentence
-            saying "written by the search engine itself", which would be false about it — on the one
-            page whose whole value is that it is believed. So the notice now scopes what FOLLOWS it,
-            and this group sits outside that claim.. */}
+        <PageHeader title={TITLE} />
+
+        {/* SIGN-IN COMES FIRST, and it is the only row here the PORTAL answers for; everything under it
+            is the engine's answer. One row, with the mode and the issuer as its quiet second line. */}
         <Group title="Sign-in">
-          {v.auth ? <Auth auth={v.auth} /> : <NotServed />}
+          <div className="cfg-rows">
+            {v.auth ? <Row {...signInRow(v.auth)} repo={repo} /> : <NotServed />}
+          </div>
         </Group>
 
         <Group title="Engine">
-          {v.engine ? (
-            <Engine
-              engine={v.engine}
-              /* THE ROW ANSWERS THE READER'S QUESTION, NOT ITS OWN. This row reports the LIVE posture,
-                 and the screen that decides whether a search can start reads the capture instead — so a
-                 box where those disagree about the engine program drew a green row here while New
-                 clearance replaced its start button with "no search engine is attached". Green on the
-                 page an operator checks first is what made that contradiction cost a user. */
-              programDisputed={(v.lastRun?.disagrees ?? []).some((d) => d.what === 'engine program')}
-            />
-          ) : (
-            <NotRecorded what="which engine is running" source={v.source} />
-          )}
+          <div className="cfg-rows">
+            {v.engine ? (
+              <Engine
+                engine={v.engine}
+                /* THE ROW ANSWERS THE READER'S QUESTION, NOT ITS OWN. This row reports the LIVE posture,
+                   and the screen that decides whether a search can start reads the capture instead — so a
+                   box where those disagree about the engine program drew a green row here while New
+                   clearance replaced its start button with "no search engine is attached". Green on the
+                   page an operator checks first is what made that contradiction cost a user. */
+                programDisputed={(v.lastRun?.disagrees ?? []).some((d) => d.what === 'engine program')}
+              />
+            ) : (
+              <NotRecorded what="which engine is running" source={v.source} />
+            )}
+            {engineCapabilityRows(v.providers ?? []).map((r) => <Row key={r.name} {...r} repo={repo} />)}
+          </div>
         </Group>
 
         <Group title="Providers">
@@ -115,7 +132,15 @@ export function GlobalConfig({ ctx }: { readonly ctx: ShellContext }) {
               page as suspect and check the engine&rsquo;s last drain.
             </div>
           ) : (
-            v.providers.map((p) => <Provider key={`${p.key}:${p.provider ?? 'none'}`} p={p} />)
+            providerCategories(v.providers).map((c) => (
+              <div className="cfg-cat" key={c.key}>
+                <div className="cfg-sub">{c.label}</div>
+                {c.note ? <p className="cfg-cat-note">{c.note}</p> : null}
+                <div className="cfg-rows">
+                  {c.rows.map((r, i) => <Row key={`${r.name}:${i}`} {...r} repo={repo} />)}
+                </div>
+              </div>
+            ))
           )}
         </Group>
 
@@ -206,45 +231,6 @@ const NotServed = () => (
   </div>
 )
 
-function Auth({ auth }: { readonly auth: AuthState }) {
-  // THE MODE AND THE ISSUER, AND NOTHING ELSE. Not the audience, not the secret, not the token header,
-  // and not local mode's single address — this page is read over shoulders and in screen shares, and
-  // none of those tell a staff member anything they opened it to learn.
-  const fronted = auth.shape === 'fronted'
-  const name = fronted
-    ? 'A login provider in front'
-    : auth.shape === 'local'
-      ? 'Local sign-in, one address, loopback only'
-      : 'Not a sign-in method this service has'
-
-  const faults = [
-    ...(auth.missing.length ? [`Set ${auth.missing.join(' and ')}.`] : []),
-    // Unreachable from a running portal — portal-service.mjs refuses to start on a mode it does not
-    // have — so if a reader ever sees this, the page is being served by something that is not that
-    // service, and saying so is more use than a blank row.
-    ...(auth.shape === 'unrecognised'
-      ? ['This service refuses to start in this mode, so this page should not be reachable. Treat it as suspect.']
-      : []),
-  ]
-
-  return (
-    <>
-      <Row
-        ok={faults.length === 0}
-        name={name}
-        mono={auth.mode}
-        // "Default" is a fact worth one word: nobody typed this, and an operator who believes they
-        // chose it will not go looking for the variable that would change it.
-        state={auth.declared === null ? 'Default' : 'Configured'}
-        faults={faults}
-      />
-      {fronted && auth.issuer ? (
-        <Row ok name="Issuer" mono={auth.issuer} state="Configured" faults={[]} />
-      ) : null}
-    </>
-  )
-}
-
 // THE ROW IS THE SHARED DECISION'S OUTPUT, SPREAD — no second expression for anything it carries.
 //
 // This used to assemble the row here: a fault list built in place, and `ok={faults.length === 0}` beside
@@ -259,88 +245,71 @@ function Engine({ engine, programDisputed = false }: { readonly engine: EngineSt
   return <Row {...engineRow(engine, { programDisputed })} />
 }
 
-function Provider({ p }: { readonly p: ProviderState }) {
-  // A provider with no credential is a ROW SAYING SO, never an omitted row: a page listing two
-  // providers is indistinguishable from a page listing a complete set of two.
-  // — THE ROW'S OWN REMEDY WINS. "Set X and Y" is the right sentence for a
-  // credential and the wrong one for a capability enrolled by a one-time OAuth sign-in, or for one this
-  // build does not ship at all: both have an empty `missing` list, and the composed sentence would read
-  // "Set ." A row that says what to do is the whole point of this page.
-  const faults = p.remedy
-    ? [p.remedy]
-    : p.configured
-      ? []
-      : p.provider === null
-        ? [`No register is selected. Set ${p.missing.join(' and ')}.`]
-        : !p.known
-          ? [`This build does not ship a provider called ${p.provider}.`]
-          : [`Set ${p.missing.join(' and ')}.`]
-
-  return (
-    <Row
-      ok={p.configured}
-      name={p.label}
-      mono={p.providerLabel ?? p.provider ?? null}
-      // "Missing" is a claim about a credential nobody set. A capability this build does not ship is not
-      // missing from the install, and a lane the engine decides per session is not configured HERE.
-      state={p.configured ? 'Configured' : !p.known ? 'Not in this build' : p.missing.length ? 'Missing' : 'Not set up'}
-      faults={faults}
-    />
-  )
-}
-
+/**
+ * One row: a dot, the name, what it covers, and a state; beneath them the quiet lines and, where the row
+ * needs action, what it needs and the setup guide. Every value arrives decided — this draws, and chooses
+ * nothing but the colour its `ok` and `off` already name.
+ */
 function Row({
-  ok, name, mono, state, faults,
+  ok, off = false, name, mono, state, faults, note = null, detail = null, guide = null, repo = null,
 }: {
   readonly ok: boolean
+  readonly off?: boolean
   readonly name: string
   readonly mono: string | null
   readonly state: string
   readonly faults: readonly string[]
+  readonly note?: string | null
+  readonly detail?: string | null
+  readonly guide?: SetupGuide | null
+  readonly repo?: string | null
 }) {
+  const tone = ok ? '' : off ? ' off' : ' bad'
   return (
-    <div
-      style={{
-        padding: '10px 13px',
-        borderRadius: 9,
-        border: '1px solid var(--border-hairline)',
-        background: 'var(--surface-raised)',
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        <Dot ok={ok} />
-        <span style={{ flex: 1, color: 'var(--text-strong)', fontSize: 13 }}>{name}</span>
-        {mono ? (
-          <span style={{ fontSize: 12.5, color: 'var(--text-muted)' }}>{mono}</span>
-        ) : null}
-        <span style={{ fontSize: 12.5, color: ok ? 'var(--text-muted)' : 'var(--tone-high)', minWidth: 86, textAlign: 'right' }}>
-          {state}
-        </span>
+    <div className="cfg-row">
+      <div className="cfg-line">
+        <span className={`cfg-dot${tone}`} />
+        <span className="cfg-name">{name}</span>
+        {mono ? <span className="cfg-val">{mono}</span> : null}
+        <span className={`cfg-state${tone}`}>{state}</span>
       </div>
-      {faults.map((f) => (
-        <p key={f} style={{ margin: '6px 0 0 21px', fontSize: 12.5, color: 'var(--tone-high)' }}>{f}</p>
-      ))}
+      {detail ? <p className="cfg-note mono">{detail}</p> : null}
+      {note ? <p className="cfg-note">{note}</p> : null}
+      {faults.map((f, i) =>
+        guide && i === faults.length - 1 ? (
+          <div className="cfg-act" key={f}>
+            <p className="cfg-note bad">{f}</p>
+            <GuideButton guide={guide} repo={repo} />
+          </div>
+        ) : (
+          <p className="cfg-note bad" key={f}>{f}</p>
+        ),
+      )}
     </div>
   )
 }
 
-function Group({ title, children }: { readonly title: string; readonly children: React.ReactNode }) {
+/**
+ * The setup guide, opened beside the page. Until the server has named its repository there is no address to
+ * open, so the button is drawn and inert rather than pointing at somebody else's copy of the product.
+ */
+function GuideButton({ guide, repo }: { readonly guide: SetupGuide; readonly repo: string | null }) {
+  return repo ? (
+    <a className="pill" href={setupGuideUrl(repo, guide)} target="_blank" rel="noreferrer">
+      Setup guide
+    </a>
+  ) : (
+    <button type="button" className="pill" disabled>
+      Setup guide
+    </button>
+  )
+}
+
+function Group({ title, children }: { readonly title: string; readonly children: ReactNode }) {
   return (
-    <div style={{ marginTop: 22 }}>
-      <div style={{ fontWeight: 700, color: 'var(--text-strong)', fontSize: 15, marginBottom: 8 }}>{title}</div>
-      <div style={{ display: 'grid', gap: 6 }}>{children}</div>
+    <div className="cfg-group">
+      <div className="eyebrow">{title}</div>
+      {children}
     </div>
   )
 }
-
-// `--tone-minimal` and `--tone-high`, not `--tone-clear` / `--tone-med`: those two were used here and on
-// three other screens and are defined in NO stylesheet, so the dot and the stale notice both rendered
-// with no colour at all — the one notice on this page whose job is to be noticed. An undefined custom
-// property fails at no build step and in no type, which is why it survived. The other three screens are
-// outside this issue.
-const Dot = ({ ok }: { readonly ok: boolean }) => (
-  <span
-    className="dot"
-    style={{ background: ok ? 'var(--tone-minimal)' : 'var(--tone-high)', width: 9, height: 9, flex: 'none' }}
-  />
-)

@@ -10,9 +10,9 @@ here corresponds to shipped behavior; when hardening changes, change this file i
 | Surface | Trust | Guard |
 |---|---|---|
 | stdio MCP (`mcp-server/server.mjs`) | local/full ("ops") | OS user boundary — run it AS the operator account; it is the only surface on which `what_if_run` EXECUTES (`visibleTools` keeps what-if out of the HTTP listing for ops, but the CallTool chokepoint gates on `authorize()` alone, which admits it for any ops token not `--verbs`-scoped) |
-| Client MCP (`mcp-server/http-server-client.mjs`) | signed-in client / account key | a client account's `what_if_run` ENQUEUES rather than executes (ruling 2026-08-27) — it never imports the engine, and `driver/whatif-worker.mjs` spawns the sandbox from an OS service process. A confirmation token is unsigned, so the call must ALSO name its `runId`: the account gate keys on it, and `whatIfEnqueue` refuses a token naming a different run. The `model` argument is refused to a client. |
+| Client MCP (`mcp-server/http-server-client.mjs`) | a company's signed-in person / their access key | `what_if_run` from an `account` principal ENQUEUES rather than executes (ruling 2026-08-27) — it never imports the engine, and `driver/whatif-worker.mjs` spawns the sandbox from an OS service process. A confirmation token is unsigned, so the call must ALSO name its `runId`: the grant check keys on it, and `whatIfEnqueue` refuses a token naming a different run. The `model` argument is refused on this face. |
 | HTTP MCP (`mcp-server/http-server.mjs`) | authenticated remote | auth-BEFORE-data; fail-closed construction; inner scoped tokens |
-| Report "Ask your AI" links | external report recipients | run-bound `user` tokens minted at publish; client layer only |
+| Report "Ask your AI" links | external report recipients | run-bound `user` tokens minted at publish; the plain-language report tools (`clientSafe`) only |
 | Dev portal (`driver/dev-portal.mjs`) | dev only | loopback-only (throws on any other host); never production serving |
 
 ## Authentication (the outer gate — both faces)
@@ -77,17 +77,17 @@ with access to everything.
 
 ## Authorization (the inner gate — both faces; `shared/scope.mjs`, enforced at ONE chokepoint)
 
-- Four principal kinds: **ops** (write verbs; automation/operator), **user** (read-only, pinned to
-  exactly ONE run — report recipients), **account** (a signed-in client across the accounts their
-  identity is granted: the client layer, the evidence layer — `list_evidence` / `list_searches` /
+- Four principal kinds: **`ops`** (write verbs; automation/operator), **`user`** (read-only, pinned to
+  exactly ONE run — report recipients), **`account`** (a signed-in person across the companies their
+  identity is granted: the plain-language report tools, the evidence layer — `list_evidence` / `list_searches` /
   `get_search_coverage` — the AUDIT CHAIN (ruling 2026-08-27: `read_artifact` over the chain
   artifacts named in `ACCOUNT_ARTIFACTS`, `list_findings` on the raw `kind` path, `get_finding`,
   `get_run`, `trace`, `decision_timeline`), WHAT-IF as a queued sandbox job (`what_if_plan`,
   `what_if_run`, `what_if_result`), and the run lifecycle on their own runs, and nothing else. All of it accountSafe and deliberately NOT clientSafe, because a report link is forwardable
-  and an account is an enrolled identity), **internal** (authenticated staff, read-all, no writes).
-- **What an account still cannot read, and why each one**: `get_telemetry` / `get_provider_usage`
-  (model identity and billed counts — the firm's cost structure, and the only two tools that carry
-  either, so sealing them costs the client nothing of the chain); the `skepticFlags` /
+  and an `account` principal is an enrolled identity), **`internal`** (authenticated staff, read-all, no writes).
+- **What an `account` principal still cannot read, and why each one**: `get_telemetry` / `get_provider_usage`
+  (model identity and billed counts — the operator's cost structure, and the only two tools that carry
+  either, so sealing them costs the reader nothing of the chain); the `skepticFlags` /
   `seniorEyeReview` artifacts (the reviewers' judgment of the engine's OWN output — the verdict they
   produced travels, the critique does not); `status.json` / `run.jsonl` (JSON that the markdown
   scrub would pass through untouched, carrying the run codename, the agent id, absolute paths and
@@ -102,15 +102,15 @@ with access to everything.
   omitted runId pinned), reach any write/spend tool, or read internal artifacts — `read_artifact`
   is name-gated to the report alone (`USER_ARTIFACTS`), and `list_findings` to the curated
   report-card groups, so the raw audit trail stays sealed. **The 2026-08-27 audit-chain ruling did
-  not move this line.** `USER_ARTIFACTS` gated `read_artifact` for both client kinds, so the account
+  not move this line.** `USER_ARTIFACTS` gated `read_artifact` for both non-staff kinds, so the `account`
   layer was given its own `ACCOUNT_ARTIFACTS` rather than the shared set being widened: a user token
-  rides inside a delivered PDF and can be forwarded to anyone, and the ruling was about clients the
-  firm enrolled. Both sets are gated at the read_artifact tool AND at the Resources surface
+  rides inside a delivered PDF and can be forwarded to anyone, and the ruling was about people the
+  operator enrolled. Both sets are gated at the read_artifact tool AND at the Resources surface
   (`resources/list` / `resources/read`), kind for kind — two doors to the same bytes, one rule.
 - **Ops tokens are least-privilege**: an optional `verbs[]` allowlist restricts write tools per
   principal (an intake connector physically cannot `stop_run`). `what_if_*` is filtered out of the
   HTTP tool LISTING for every OPS scope (`visibleTools`, keyed on `local` — the `local` test governs
-  the ops branch only, and a client account returns above it). That is hygiene, not a wall:
+  the ops branch only, and an `account` principal returns above it). That is hygiene, not a wall:
   `authorize()` never sees `local` and treats what-if as an ordinary ops write verb, so an ops token
   minted without `--verbs` can still call it over HTTP — which is why every HTTP ops token should be
   minted verb-scoped.
@@ -124,7 +124,7 @@ what the mechanism guarantees.*
   principal in every audit line; the `jti` printed at mint time is the revocation handle). Two
   automatic minters sit beside it on the same `mintToken`: the clearance publisher mints the report
   link's run-bound `user` token at publish, and `npx clearotron start` mints the portal's verb-scoped,
-  account-capped ops token in memory at every start. Neither prints, and neither is written down.
+  company-capped ops token in memory at every start. Neither prints, and neither is written down.
 - **Revocation**: denylist file checked on every verification; missing file = nothing revoked (the
   denylist can never take all auth down). **Rotation**: two-secret window, flag-day-free.
 - **Rate limits**: per-identity bucket on every request plus a separate lower per-principal bucket
@@ -138,9 +138,9 @@ principal) and before dispatch; it is best-effort and never blocks a request.
 
 ## Data plane
 
-- **No client data in this repository — structural, not procedural.** Real customer bundles live in
-  an external store (`CLEAROTRON_CUSTOMERS_DIR`/`CLEAROTRON_INSTRUCTIONS_DIR`); the repo ships synthetic demo
-  customers only. Run data lives in operator-owned directories outside git (`CLEAROTRON_REPORTS_DIR`,
+- **No real company's data in this repository — structural, not procedural.** Real company bundles live
+  in an external store (`CLEAROTRON_CUSTOMERS_DIR`/`CLEAROTRON_INSTRUCTIONS_DIR`); the repo ships synthetic demo
+  companies only. Run data lives in operator-owned directories outside git (`CLEAROTRON_REPORTS_DIR`,
   workspace root, outbox), backed up by the operator, never committed.
 - Secrets enter only via environment (`.env` on the host); the repo carries `.env*.example` files
   with placeholders. CI runs a secret scan (gitleaks) on every push.
@@ -166,12 +166,12 @@ no messages and holds no channel credentials.
 
 ## Prompt-injection posture
 
-- Client-facing tool outputs carry context-phrased guidance (not imperatives) so MCP metadata
-  scrubbers pass them through, and the client pack tells the assistant to relay the report's own
+- Tool outputs a company's assistant receives carry context-phrased guidance (not imperatives) so MCP
+  metadata scrubbers pass them through, and that assistant's pack tells it to relay the report's own
   wording and never to invent a finding, level, jurisdiction or source
   (`skills/clearotron-client/SKILL.md`). What no pack yet says is that report content is DATA rather
   than instructions: nothing in the prompt payload answers an instruction embedded in a report, so on
-  the client side that output note is the whole of this control today.
+  that side the output note is the whole of this control today.
 - The courier contract is **verbatim relay** — an integrator agent following the ops pack never
   executes instructions found inside packets, it transports them.
 

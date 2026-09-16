@@ -26,8 +26,11 @@ import { Icon } from '../components/Icon.tsx'
 import { useLoad } from '../state/useApi.ts'
 import { useUnsaved } from '../state/useUnsaved.ts'
 import { ContextPackEditor } from '../components/ContextPackEditor.tsx'
+import { PageHeader } from '../components/PageHeader.tsx'
+import { RowMenu } from '../components/RowMenu.tsx'
 import type { ShellContext } from '../shell/AppShell.tsx'
 import { CompanyGate } from '../shell/CompanyPicker.tsx'
+import { NewCompanyButton } from '../shell/NewCompanyButton.tsx'
 import { canManage } from '../shell/permissions.ts'
 
 export function Projects({ ctx }: { readonly ctx: ShellContext }) {
@@ -67,7 +70,7 @@ export function Projects({ ctx }: { readonly ctx: ShellContext }) {
               deployment had not been pointed at its own store. Three answers, not two. */}
           <p>
             {result.kind === 'surfaceUnavailable'
-              ? 'The settings surface is not configured on this deployment. This is a server setting, not your access — an administrator needs to point it at the customer store.'
+              ? 'The settings surface is not configured on this deployment. This is a server setting, not your access — an administrator needs to point it at the company store.'
               : result.kind === 'notFound'
                 ? 'Projects are not available to you.'
                 : 'Projects could not be loaded just now.'}
@@ -125,25 +128,28 @@ export function Projects({ ctx }: { readonly ctx: ShellContext }) {
   return (
     <div className="screen">
       <div className="measure">
-        <div className="notice quiet" style={{ marginBottom: 18 }}>
-          <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: 13 }}>
-            A project runs a distinct engagement with its own defaults — different marketplaces, classes
-            or depth — while keeping the company&rsquo;s identity and rating. Anything a project does
-            not set is inherited.
-          </p>
-        </div>
+        {/* THE PAGE'S OWN ACTION IS THE PRIMARY BUTTON, in the header where a page's controls are. It sat in
+            a pill row floating at the right above the list, weighted like everything else on the page;
+            `+ New company` beside it is secondary, because making a company is not what this page is for.
+            The header renders over the empty list too, so a first project is made from the same place as
+            every later one. */}
+        <PageHeader
+          title="Projects"
+          actions={
+            <>
+              <NewCompanyButton ctx={ctx} />
+              {mayChange ? (
+                <button type="button" className="btn-primary btn-sm" onClick={() => setCreating(true)}>
+                  New project
+                </button>
+              ) : null}
+            </>
+          }
+        />
 
         {rowProblem ? (
           <div className="notice" style={{ borderColor: 'var(--tone-high)', marginBottom: 18 }}>
             <b>{rowProblem}</b>
-          </div>
-        ) : null}
-
-        {mayChange ? (
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 10 }}>
-            <button type="button" className="pill" style={{ cursor: 'pointer' }} onClick={() => setCreating(true)}>
-              New project
-            </button>
           </div>
         ) : null}
 
@@ -157,48 +163,29 @@ export function Projects({ ctx }: { readonly ctx: ShellContext }) {
               Add one when an engagement needs its own marketplaces, classes or depth. Archive it when it
               ends — the reports it produced stay exactly as issued.
             </p>
-            {mayChange ? (
-              <div style={{ marginTop: 12 }}>
-                <button type="button" className="pill" style={{ cursor: 'pointer' }} onClick={() => setCreating(true)}>
-                  New project
-                </button>
-              </div>
-            ) : null}
           </div>
         ) : (
           <div style={{ display: 'grid', gap: 8 }}>
             {projects.map((p) => (
               <div
                 key={p.key}
-                style={{
-                  padding: '12px 14px',
-                  borderRadius: 10,
-                  border: '1px solid var(--border-hairline)',
-                  background: 'var(--surface-raised)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 12,
-                  // An archived project is SHOWN, greyed and badged — not hidden. It stays openable so
-                  // its settings can be read and so it can be brought back; hiding it is what would make
-                  // archiving a one-way door for whoever archived it.
-                  opacity: p.archived ? 0.55 : 1,
-                }}
+                className="row-card"
+                // An archived project is SHOWN, greyed and badged — not hidden. It stays openable so its
+                // settings can be read and so it can be brought back; hiding it is what would make
+                // archiving a one-way door for whoever archived it.
+                style={{ opacity: p.archived ? 0.55 : 1 }}
               >
-                <button
-                  type="button"
-                  onClick={() => setOpen(p.key)}
-                  style={{
-                    flex: 1, textAlign: 'left', background: 'none', border: 0, padding: 0,
-                    cursor: 'pointer', font: 'inherit', color: 'inherit', minWidth: 0,
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-                    <span style={{ fontWeight: 700, color: 'var(--text-strong)' }} data-anon="mark">{p.name || p.key}</span>
+                <button type="button" className="row-card-open" onClick={() => setOpen(p.key)}>
+                  <span style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                    <span className="row-card-name" data-anon="mark">{p.name || p.key}</span>
                     {p.archived ? <span className="pill" style={{ fontSize: 10.5, padding: '1px 7px' }}>Archived</span> : null}
-                  </div>
-                  <div className="mono" style={{ fontSize: 12, color: 'var(--text-muted)' }}>{p.key}</div>
+                  </span>
+                  <span className="mono" style={{ display: 'block', fontSize: 12, color: 'var(--text-muted)' }}>{p.key}</span>
                 </button>
 
+                {/* ARCHIVE AND BRING BACK ARE IN THE ROW'S MENU, not on the row: they are rare, reversible,
+                    and not what anyone opens this list to do. Archiving still asks once more, on the row,
+                    in words that say what it does; bringing back is immediate, because it undoes nothing. */}
                 {!mayChange ? null : confirming === p.key ? (
                   <>
                     <button
@@ -214,18 +201,16 @@ export function Projects({ ctx }: { readonly ctx: ShellContext }) {
                       Cancel
                     </button>
                   </>
+                ) : rowBusy === p.key ? (
+                  <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Working…</span>
                 ) : (
-                  <button
-                    type="button"
-                    className="pill"
-                    style={{ cursor: 'pointer', fontSize: 12 }}
-                    disabled={rowBusy === p.key}
-                    onClick={() => (p.archived ? void setArchived(p.key, false) : setConfirming(p.key))}
-                  >
-                    {rowBusy === p.key ? 'Working…' : p.archived ? 'Bring back' : 'Archive'}
-                  </button>
+                  <RowMenu
+                    actions={[p.archived
+                      ? { label: 'Bring back', onSelect: () => void setArchived(p.key, false) }
+                      : { label: 'Archive', onSelect: () => setConfirming(p.key) }]}
+                  />
                 )}
-                <Icon name="chevron" size={16} />
+                <span className="row-chev" aria-hidden="true"><Icon name="chevron" size={16} /></span>
               </div>
             ))}
           </div>

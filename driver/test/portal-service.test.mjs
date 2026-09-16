@@ -1866,7 +1866,7 @@ test("the staff config and access surfaces are STAFF-ONLY, and a client gets a p
   }
 });
 
-test("the avatar menu offers Global config to exactly the people the server serves it to", async () => {
+test("the avatar menu offers Installation settings to exactly the people the server serves it to", async () => {
   // ONE RULE ON BOTH SIDES. The menu decided on Manage and the server on seeing everything, so a manager
   // of one organisation was offered an entry that opened on "This page is not available." This renders
   // the menu the page renders, from the /me the page reads, against the route the entry opens: for a
@@ -1886,7 +1886,7 @@ test("the avatar menu offers Global config to exactly the people the server serv
     const status = (await svc.route("GET", "/portal/admin/config", principal, {}, { account: "aurora" })).status;
     served[who] = status === 200;
     const offered = avatarMenuFor(viewer).some((e) => e.id === "admin.config");
-    assert.equal(offered, served[who], `${who}: the menu ${offered ? "offers" : "hides"} Global config, and the server answers ${status}`);
+    assert.equal(offered, served[who], `${who}: the menu ${offered ? "offers" : "hides"} Installation settings, and the server answers ${status}`);
     assert.equal(screenForPath("/portal/admin/config", viewer)?.id === "admin.config", served[who], `${who}: routing agrees with the server`);
     // The loads Clearances and People make in the background ask the same fact, so none of them 404s.
     for (const p of ["/portal/admin/families", "/portal/admin/observed", "/portal/admin/retired"]) {

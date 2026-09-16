@@ -12,10 +12,19 @@
 // The project overlay still has its own copy. It renders a DIFFERENT field set with an inherited-value
 // state this one has no notion of, so folding it in is its own change rather than a rider on this one.
 import type React from 'react'
-import { CLEARED_LABEL, choiceLabel, fieldNotices } from '../contract/profileFields.ts'
+import { CLEARED_LABEL, choiceLabel, fieldNotices, fieldTag } from '../contract/profileFields.ts'
 import type { FieldSpec } from '../contract/profileFields.ts'
 import { FieldNotices } from './FieldNotices.tsx'
 import { FieldPicker } from './FieldPicker.tsx'
+
+/**
+ * "Required" or "Optional" beside a label, or nothing. Filled for the one kind a form cannot do without,
+ * quiet for the other, so the eye finds the required field without reading every tag.
+ */
+export function FieldTag({ tag }: { readonly tag: 'Required' | 'Optional' | null }) {
+  if (!tag) return null
+  return <span className={tag === 'Required' ? 'field-tag field-tag-required' : 'field-tag'}>{tag}</span>
+}
 
 export function Field({
   spec,
@@ -32,15 +41,20 @@ export function Field({
   const picker = spec.kind === 'choice' || spec.kind === 'boolean'
   // A paragraph gets a taller box than a list does. Both are textareas; only `lines` parses to an array.
   const multi = spec.kind === 'lines' || spec.kind === 'prose'
+  // CLASSES ARE ADDED THROUGH THE SEARCH BOX AND SHOWN AS CHIPS, with no text box of numbers beside them.
+  // The field is then NOT a <label>: a label forwards a press on its own text to the first control inside
+  // it, and with no box that control is the first chip's remove button — so reading the field's name with
+  // the mouse would have deleted a class.
+  const classes = spec.picker === 'classes'
+  const Wrapper = classes ? 'div' : 'label'
   return (
-    <label style={{ display: 'block', marginTop: 18 }}>
-      <div style={{ fontWeight: 700, color: 'var(--text-strong)', fontSize: 14 }}>{spec.label}</div>
-      {spec.hint ? (
-        <div style={{ fontSize: 12.5, color: 'var(--text-muted)', margin: '2px 0 7px' }}>{spec.hint}</div>
-      ) : (
-        <div style={{ height: 7 }} />
-      )}
-      {picker && choices?.length ? (
+    <Wrapper className="profile-field">
+      <span className="profile-field-label">
+        {spec.label}
+        <FieldTag tag={fieldTag(spec)} />
+      </span>
+      {spec.hint ? <span className="profile-field-hint">{spec.hint}</span> : <span className="profile-field-gap" />}
+      {classes ? null : picker && choices?.length ? (
         <select value={value} onChange={(e) => onChange(e.target.value)} style={inputStyle}>
           {/* The cleared state is a real, choosable option, not the absence of a choice. Picking it
               sends "" — which the server reads as "unset this back to the Generic default" — rather than
@@ -77,7 +91,7 @@ export function Field({
       {/* The picker edits the same raw text the box does, so there is one write path and the notices
           above keep describing exactly what is in the box. */}
       <FieldPicker spec={spec} value={value} onChange={onChange} />
-    </label>
+    </Wrapper>
   )
 }
 

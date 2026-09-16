@@ -17,11 +17,12 @@ import { useCallback, useEffect, useState } from 'react'
 import type { ReactElement } from 'react'
 import type { Me, Organisation } from '../contract/api.ts'
 import { api, onSessionEnded } from '../contract/api.ts'
-import { navGroupsFor, avatarMenuFor, scopeOf, screenForPath, HOME, type NavEntry, type ScreenId } from '../nav/nav.config.ts'
+import { navGroupsFor, avatarMenuFor, avatarEntryOf, scopeOf, screenForPath, HOME, type NavEntry, type ScreenId } from '../nav/nav.config.ts'
 import { Icon } from '../components/Icon.tsx'
 import { Logo, WORDMARK } from '../components/Logo.tsx'
 import { useLoad } from '../state/useApi.ts'
 import { confirmDiscard, attachBeforeUnload } from '../state/guard.ts'
+import { readBlurChoice, writeBlurChoice } from '../state/blurChoice.ts'
 import { ALL_OWNERS, ownerNameMap, ownerNameFrom } from '../contract/ownerNames.ts'
 import { switcherKeys, switcherLabel, pickerGroups, type CompanyGroup, type CompanyRow } from './companyRows.ts'
 import { permissionsPhrase } from './accessWords.ts'
@@ -250,6 +251,15 @@ export type ShellContext = {
    * answering a question about the shell, which a screen cannot answer and must not guess.
    */
   readonly sidebarCollapsed: boolean
+  /**
+   * The screen-share blur, and the one way to change it.
+   *
+   * Preferences draws the same eye button the top bar carries, and both are bound to THIS state. A second
+   * copy — the class on the document, or the value read back from storage — would let the two buttons
+   * disagree, and the next press of either would then be a click that appears to do nothing.
+   */
+  readonly blurNames: boolean
+  readonly setBlurNames: (on: boolean) => void
 }
 
 /**
@@ -283,7 +293,9 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   const [theme, toggleTheme] = useTheme()
   const [collapsed, setCollapsed] = useState(false)
   const [drawer, setDrawer] = useState(false)
-  const [anon, setAnon] = useState(false)
+  // RESTORED, NOT A CONSTANT: a reload during a screen share must not bring the names back. Remembered in
+  // this browser only (state/blurChoice.ts), and a browser that refuses storage simply starts it off.
+  const [anon, setAnon] = useState(() => readBlurChoice(() => localStorage))
   const [avatarOpen, setAvatarOpen] = useState(false)
   const [owner, setOwner] = useState<string | null>(null)
 
@@ -345,8 +357,12 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
     [readsRoster],
   )
 
+  // Applied before any name can be drawn: the first render is the empty frame that waits for /me, so a
+  // restored blur is on the document before the names arrive. Mirrored into storage from the one state,
+  // whichever button changed it.
   useEffect(() => {
     document.documentElement.classList.toggle('anon-on', anon)
+    writeBlurChoice(() => localStorage, anon)
   }, [anon])
 
   // Navigating closes the drawer; leaving it open over the new screen reads as a stuck menu.
@@ -388,7 +404,7 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
         <div className="notice">
           <h1 style={{ fontSize: 19, margin: '0 0 8px' }}>No clearances are available to you</h1>
           <p style={{ margin: 0, color: 'var(--text-muted)' }}>
-            You are signed in, but this address has not been enrolled for any account yet. Enrolment can
+            You are signed in, but this address has not been enrolled for any company yet. Enrolment can
             be arranged — it is two-sided, so it needs doing in two places.
           </p>
         </div>
@@ -399,6 +415,9 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   const me: Me = meResult.value
   const groups = navGroupsFor(me)
   const entry = screenForPath(path, me) ?? (path === '/portal' || path === '/portal/' ? HOME : null)
+  // Whether the screen is one the avatar menu leads to, which the rail cannot highlight. The top bar then
+  // says where you are: the title slot names the screen and the avatar draws active (avatarEntryOf).
+  const personal = entry !== null && avatarEntryOf(entry.id, me) !== null
 
   // ONE name map, from both sources, resolved once. A client's own grants carry names on `me`; staff
   // reach every customer and take theirs from the roster. Neither source is per-screen, so neither is
@@ -465,7 +484,8 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
 
   const body = entry
     ? render(entry.id, { me, owner: ownerInView, setOwner: setOwnerGuarded, refreshCompanies,
-        ownerName, ownerKeys, orgOf, organisations, factsFor, go, visit, sidebarCollapsed: collapsed })
+        ownerName, ownerKeys, orgOf, organisations, factsFor, go, visit, sidebarCollapsed: collapsed,
+        blurNames: anon, setBlurNames: setAnon })
     : // An unknown path and a staff-only path a client typed both land here, indistinguishably.
       <div className="screen">
         <div className="empty">
@@ -607,9 +627,14 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
               the COMPANY for a client holding one grant — so the bar named a company over Home, which
               spans all of them. With that slot now carrying the ORGANISATION for everyone, repeating it
               here would print one name twice on one bar, which is how a label stops being read.
-              Screens keep their own heading in the body, so nothing is lost to a screen reader. */}
-          <h1 data-anon="mark">
-            {!entry ? 'Not found' : scopeOf(entry.id) === 'owner' ? ownerName(ownerInView) : ''}
+              Screens keep their own heading in the body, so nothing is lost to a screen reader.
+              EXCEPT WHERE THE RAIL HIGHLIGHTS NOTHING. A screen the avatar menu leads to — People and
+              the two forms it opens, Preferences, the installation's settings, About — is not in the
+              rail, so the one thing that said where you were was missing. There the slot names the
+              screen, in its entry's own label, and the avatar below draws active. Only a company name
+              is marked for the blur; a screen's name is not a name anyone needs hidden. */}
+          <h1 data-anon={personal ? undefined : 'mark'}>
+            {!entry ? 'Not found' : personal ? entry.label : scopeOf(entry.id) === 'owner' ? ownerName(ownerInView) : ''}
           </h1>
 
           <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 4, position: 'relative' }}>
@@ -662,11 +687,12 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
             </button>
             <button
               type="button"
-              className="icon-btn"
+              className="icon-btn avatar"
               aria-haspopup="menu"
               aria-expanded={avatarOpen}
               aria-label="Settings and about"
-              style={{ borderRadius: '50%', background: 'var(--surface-float)', border: '1px solid var(--border-hairline)', fontSize: 11, fontWeight: 700 }}
+              // ACTIVE ON THE SCREENS IT LEADS TO, the way a rail item is on its own: `personal` above.
+              aria-current={personal ? 'true' : undefined}
               onClick={() => setAvatarOpen((o) => !o)}
             >
               {initials(me.email)}
@@ -771,6 +797,9 @@ function BrandOwnerSwitcher({
       // create screen, and an unsaved edit is asked about there.
       onChange={(e) => (e.target.value === NEW_COMPANY_OPTION ? onAdd?.() : onChange(e.target.value || null))}
       aria-label="Company"
+      // BLURRED WITH THE REST. It shows the company in view on every screen, so a screen share with the
+      // blur on read every name off the list except the one in the rail.
+      data-anon="mark"
       style={{
         width: '100%',
         marginTop: 4,

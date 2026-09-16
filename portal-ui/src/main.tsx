@@ -121,6 +121,12 @@ function screen(id: ScreenId, ctx: ShellContext) {
         <Result key={`${runId}/${markSlug ?? ''}#${ctx.visit}`} ctx={ctx} runId={runId} markSlug={markSlug} />
       )
     }
+    // Company settings has no page of its own; its address lands on its first page. A REPLACE, like the
+    // bare result route above, so Back does not return to an address that only ever forwards — and a
+    // redirect rather than rendering Profile here, so the rail lights the page that is actually open.
+    case 'brand':
+      ctx.go('/portal/brand/profile', { replace: true })
+      return <div className="screen" />
     case 'brand.profile':
       return <Profile key={ownerKey(ctx)} ctx={ctx} />
     case 'brand.projects':
@@ -130,7 +136,7 @@ function screen(id: ScreenId, ctx: ShellContext) {
     // NOT keyed on the company in view. There is no company yet, and keying on whatever the switcher
     // happens to hold would throw the half-typed form away the moment somebody changed it — the switcher
     // is still on screen while this page is open. `about` and `preferences` are the unkeyed precedents.
-    case 'brand.new':
+    case 'new-company':
       return <NewCompany ctx={ctx} />
     case 'preferences':
       return <Preferences ctx={ctx} />

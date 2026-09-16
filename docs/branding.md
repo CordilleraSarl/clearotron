@@ -4,8 +4,8 @@ Operational guidance, not policy. What you may call your deployment is
 [TRADEMARKS.md](../TRADEMARKS.md); this page is how you change what the software prints.
 
 **Delivering a report that carries somebody else's brand is the failure this page exists to prevent.**
-A clearance report is read by a lawyer and forwarded to a client. If it arrives under a name that is not
-yours, you have built the exact problem the software exists to detect.
+A clearance report is read by the people deciding on a name and forwarded to whoever else must agree. If
+it arrives under a name that is not yours, you have built the exact problem the software exists to detect.
 
 ## What to do instead
 
@@ -19,7 +19,7 @@ install needs no change — but the names below are the ones to write:
 | `CLEAROTRON_BRAND_TAGLINE` | *(empty — no strapline is rendered)* | Report and portal chrome |
 | `CLEAROTRON_BRAND_PRODUCT` | `Trademark clearance` | Artifact naming and connector instructions |
 
-**The defaults name the product, not a firm.** A deployment that sets nothing produces neutrally
+**The defaults name the product, not an organisation.** A deployment that sets nothing produces neutrally
 branded output. That is deliberate: the alternative is what this page warns against, with one
 organisation's name as the path of least resistance. Setting `CLEAROTRON_BRAND_NAME` to your own
 organisation is still the step to take before you deliver anything to anyone.
@@ -29,6 +29,11 @@ renders as **absent** — no element, no stray separator — rather than as a bl
 
 They are read once, at import (`shared/brand.mjs`), so they are deployment-static: set them in the
 environment file and restart.
+
+`CLEAROTRON_ADMINISTRATOR_CONTACT` is read in the same place and the same way, but it is not a name: it
+is a mail or web address for the person who looks after sign-ins. Preferences tells a signed-in person to
+contact their Clearotron administrator to change their sign-in, and links those words to this contact.
+Unset, the words are plain text.
 
 **Three things that seam does not cover**, stated because finding them at deploy time is worse:
 

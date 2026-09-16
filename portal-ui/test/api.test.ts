@@ -488,6 +488,28 @@ test('setupRoute decodes to one of the two routes, and EVERYTHING else is null',
   }
 })
 
+test('the administrator contact decodes to a mail or web href, and everything else is null', async () => {
+  // Preferences puts this value in an `href`. The server admits only a mail or web address; this is the
+  // second check, at the hop, so a value from an older or a misbehaving server cannot become a link that
+  // runs something.
+  const me = (wire: unknown) => withFetch(
+    200, { role: 'client', email: 'a@b.example', accounts: ['aurora'], administratorContact: wire }, () => api.me())
+
+  for (const good of ['mailto:it@northwind.example', 'https://help.northwind.example/access', 'http://intranet.example/it']) {
+    const r = await me(good)
+    assert.ok(isOk(r))
+    if (isOk(r)) assert.equal(r.value.administratorContact, good)
+  }
+  for (const wire of [undefined, null, '', 'it@northwind.example', 'javascript:alert(1)', 'mailto:', 'https://', 42, {}]) {
+    const r = await me(wire)
+    assert.ok(isOk(r))
+    if (isOk(r)) {
+      assert.equal(r.value.administratorContact, null,
+        `administratorContact ${JSON.stringify(wire)} decoded to something a screen would put in an href`)
+    }
+  }
+})
+
 // ── — AN UNBUILT SURFACE IS NOT AN ACCESS REFUSAL ─────────────────────────────────
 //
 // The config routes answered 404 when the surface failed to construct, so the screens rendered

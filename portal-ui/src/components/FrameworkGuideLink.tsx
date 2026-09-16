@@ -23,7 +23,16 @@ import { api, isOk } from '../contract/api.ts'
 import { GUIDE_PATH, GUIDE_ANCHOR } from '../contract/frameworkGuide.ts'
 
 
-export function FrameworkGuideLink({ label = 'Use your own risk framework' }: { readonly label?: string }) {
+// DRAWN AS A BUTTON where a page offers it as a control rather than as a line of reading: the Profile
+// framework card and the create form's rating card both end on it, and a text link at the foot of a card
+// reads as a footnote. It stays an anchor either way, because what it does is open a document.
+export function FrameworkGuideLink({
+  label = 'Use your own risk framework',
+  pill = false,
+}: {
+  readonly label?: string
+  readonly pill?: boolean
+}) {
   const [repo, setRepo] = useState<string | null>(null)
   useEffect(() => {
     let live = true
@@ -43,7 +52,8 @@ export function FrameworkGuideLink({ label = 'Use your own risk framework' }: { 
       href={`${repo}/blob/main/${GUIDE_PATH}#${GUIDE_ANCHOR}`}
       target="_blank"
       rel="noreferrer"
-      style={{ fontSize: 13 }}
+      className={pill ? 'pill pill-lg' : undefined}
+      style={pill ? undefined : { fontSize: 13 }}
     >
       {label}
     </a>

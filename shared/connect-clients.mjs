@@ -81,6 +81,17 @@ const KEY_HINT = "The key is made for you when you press, and is not shown again
 const CHECK_HINT = `To check: \`claude mcp list\` shows \`${STDIO_SERVER_NAME} ✓ Connected\`.`;
 const BRIEF = "ask it to brief you on your clearances.";
 
+// THE SIGN-IN, NAMING THE ACCOUNT TO USE — one spelling for every row whose door signs its reader in. The
+// address is emphasised because it is what the reader picks in the browser's sign-in window, the way a
+// control's name is what they look for in a dialog. With no address known it names the kind of account.
+const signInAs = (operator) =>
+  `Sign in when the browser opens — use ${operator ? `**${operator}**` : "your work email"}.`;
+
+// THE LAST STEP IS A QUESTION THAT PROVES THE CONNECTION. It reaches the connector's run-listing tool, so a
+// reply listing clearances is the connection working, seen from the reader's own assistant.
+const TRY_IT = "Try it: in your assistant, ask **“Show my recent Clearotron clearances.”** "
+  + "A reply listing them confirms the connection.";
+
 // ── WHICH DOOR THIS DEPLOYMENT HAS, AND WHY EVERY HOSTED ROW ASKS ───────────────────────────────────
 //
 // The hosted steps were fixed text. Claude's said: paste the address and a freshly minted key, set
@@ -97,19 +108,21 @@ const BRIEF = "ask it to brief you on your clearances.";
 // challenge the portal already probes for `doctor` and the reachability check, and handed to every row:
 //
 //   "sign-in"  the door answers a Bearer/OAuth challenge — address only, sign in when the browser opens
-//   "key"      the door takes an access key — the key steps, unchanged
+//   "key"      the door takes an access key — the key steps
 //   null       it could not be read, and the page says so and shows both rather than guessing
 //
 // NEITHER ROUTE IS DELETED. A bare self-hosted install with no provider in front is the key door, and it
-// is the only route that works there.
+// is the only route that works there. A hosted deployment may run a key door too, as a separate host
+// (`keyAddress`), for assistants that cannot follow a browser sign-in: see `keySteps` below.
 export const DOOR_KINDS = Object.freeze(["sign-in", "key"]);
-const SIGNIN_HINT = "No key: this connector signs you in through your browser, and the sign-in is the "
-  + "authentication your assistant is asking about.";
-// THE UNKNOWN DOOR IS THE PAGE'S SENTENCE NOW, NOT A STEP HINT. This hint said "both ways are shown"
-// while one set was drawn — a promise the page could not keep — and it said it in the words that screen
-// is not allowed to show a reader. The panel states it once, above both lists, and the lists make it
-// true. A hint under step one repeating it would be the same sentence twice, the second time in
-// vocabulary the reader did not ask for.
+// NO HINT UNDER THE SIGN-IN DOOR'S FIRST STEP. There was one — "No key: this connector signs you in
+// through your browser, and the sign-in is the authentication your assistant is asking about." — and the
+// approved design (2026-09-16) removes it rather than rewording it: the sign-in step says the same thing
+// where the reader does it, and a sentence under step one said it twice.
+//
+// THE UNKNOWN DOOR IS THE PAGE'S SENTENCE, NOT A STEP HINT. A hint once said "both ways are shown" while
+// one set was drawn — a promise the page could not keep — in the words that screen is not allowed to show
+// a reader. The panel states it once, above both lists, and the lists make it true.
 
 /**
  * Every app we can speak to, and the steps for each route. Adding one is a row.
@@ -143,28 +156,31 @@ export const CONNECT_CLIENTS = Object.freeze([
       },
       "public-http": {
         // DRIVEN, NOT RECALLED: the owner connected on 2026-09-04 by pasting the address, setting
-        // Authentication to None, and adding an `Authorization: Bearer <key>` request header. The warning
-        // travels with the steps and is not optional — Claude probes, infers sign-in, and shows an
-        // authentication warning even when None is right; a reader who is not told to ignore it will
-        // assume they have done it wrong.
+        // Authentication to None, and adding an `Authorization: Bearer <key>` request header.
         verifiedOn: "2026-09-04", by: "owner",
         steps: ({ door, operator }) => (door === "key" ? [
-          // THE KEY DOOR, UNCHANGED. Driven by the owner on 2026-09-04 against a door that took a key:
-          // the warning travels with these steps and is not optional, because Claude probes, infers a
-          // sign-in and warns even where None is right.
-          { text: "Copy your address and key.", copy: "address-and-key", hint: KEY_HINT },
+          // THE KEY DOOR, the driven steps with the address and the key as two presses, each at the step
+          // that uses it — so the key is minted when the reader reaches the header it goes in.
+          //
+          // NO STEP MENTIONS AN AUTHENTICATION WARNING. The last step used to add "If Claude shows an
+          // authentication warning, ignore it." Nothing here records that warning's text, so the step
+          // told a reader to ignore a message it could not quote, and on a door behind an identity
+          // provider that warning IS the sign-in. The approved design (2026-09-16) drops the sentence
+          // rather than rewording it.
+          { text: "Copy the address.", copy: "address" },
           { text: "In Claude, open **Settings → Connectors → Add custom connector**." },
-          { text: "Paste the address — the first line." },
+          { text: "Paste the address." },
           { text: "Set **Authentication** to **None**." },
-          { text: "Add a request header: **Authorization** = `Bearer`, then the key — the second line." },
-          { text: "Press **Add**. If Claude shows an authentication warning, ignore it." },
+          { text: "Add a request header: **Authorization** = `Bearer`, then the key.", copy: "key", hint: KEY_HINT },
+          { text: "Press **Add**." },
         ] : [
-          // THE SIGN-IN DOOR. No key is minted and no header is set: the warning the old steps told the
-          // reader to ignore IS the sign-in, and following it is the whole of the connection.
-          { text: "Copy the address.", copy: "address", hint: door === null ? undefined : SIGNIN_HINT },
+          // THE SIGN-IN DOOR. No key is minted and no header is set: the sign-in in step four is the whole
+          // of the authentication, and step five is how the reader sees it worked.
+          { text: "Copy the address.", copy: "address" },
           { text: "In Claude, open **Settings → Connectors → Add custom connector**." },
           { text: "Paste the address and press **Add**." },
-          { text: `Sign in when the browser opens — use ${operator ?? "your work email"}.` },
+          { text: signInAs(operator) },
+          { text: TRY_IT },
         ]),
       },
     },
@@ -187,7 +203,7 @@ export const CONNECT_CLIENTS = Object.freeze([
           { text: `Start Claude Code and ${BRIEF}`, hint: CHECK_HINT },
         ] : [
           // The command carries no header, because a door that signs its reader in never honours one.
-          { text: "Copy this command.", copy: "claude-cli-http-signin", hint: door === null ? undefined : SIGNIN_HINT },
+          { text: "Copy this command.", copy: "claude-cli-http-signin" },
           { text: "Paste it into a terminal and press Enter." },
           { text: "Sign in when the browser opens." },
           { text: `Start Claude Code and ${BRIEF}`, hint: CHECK_HINT },
@@ -226,7 +242,7 @@ export const CONNECT_CLIENTS = Object.freeze([
           { text: "In ChatGPT on the web, turn on **Settings → Security and login → Developer mode**.",
             hint: "Needs a Plus, Pro, Business, Enterprise or Edu plan. On a company plan, your admin may have to allow it." },
           { text: "Add a custom connector and paste the address." },
-          { text: `Sign in when the browser opens — use ${operator ?? "your work email"}.` },
+          { text: signInAs(operator) },
         ]),
       },
     },
@@ -254,7 +270,7 @@ export const CONNECT_CLIENTS = Object.freeze([
             hint: "Codex reads the key from there, so it never sits in the settings file." },
           { text: `Restart Codex and ${BRIEF}` },
         ] : [
-          { text: "Copy this.", copy: "codex-toml-http-signin", hint: door === null ? undefined : SIGNIN_HINT },
+          { text: "Copy this.", copy: "codex-toml-http-signin" },
           { text: "Open `~/.codex/config.toml` and paste it at the end." },
           // ITS OWN STEP, not a hint on the one before it. The sign-in IS the connection here, and a
           // reader skimming numbered steps does not read the small print under one of them.
@@ -268,7 +284,7 @@ export const CONNECT_CLIENTS = Object.freeze([
     // ANYTHING ELSE. We do not know what the app is, so the steps name what any of them takes. The sub
     // line names two it covers, because a reader scanning for their app's name should find somewhere to
     // land; Perplexity had a row of its own with steps nobody had driven, and is folded in here.
-    id: "other", name: "Another agent", sub: "Perplexity, OpenClaw and others", lead: "disk",
+    id: "other", name: "Another AI app", sub: "Perplexity, OpenClaw and others", lead: "disk",
     aliases: { perplexity: "public-http" },
     routes: {
       disk: {
@@ -284,7 +300,7 @@ export const CONNECT_CLIENTS = Object.freeze([
           { text: "Paste the address and the key wherever your app adds a custom MCP server.",
             hint: "It may call them “server URL” and “bearer token”." },
         ] : [
-          { text: "Copy the address.", copy: "address", hint: door === null ? undefined : SIGNIN_HINT },
+          { text: "Copy the address.", copy: "address" },
           { text: "Paste it wherever your app adds a custom MCP server, and sign in when the browser opens.",
             hint: "It may call the address the “server URL”. There is no token to give it." },
         ]),
@@ -320,17 +336,21 @@ export const offersForWire = (offers) =>
     // floor, so the page had nothing to branch on and drew one set of steps as though the door had been
     // read. Both are stated after the spread so a row cannot pass its own raw shape through.
     ...(Array.isArray(rest.altSteps) ? { altSteps: stepsForWire(rest.altSteps) } : {}),
+    ...(Array.isArray(rest.keySteps) ? { keySteps: stepsForWire(rest.keySteps) } : {}),
     ...(Object.hasOwn(rest, "door") ? { door: rest.door ?? null } : {}),
   }));
 
-/** One route's steps, in the shape the browser reads. The alternative set gets the same mapping. */
+/**
+ * One route's steps, in the shape the browser reads. The alternative sets get the same mapping.
+ * A block's `label` rides only on a bare value, and it says the button is all the page draws.
+ */
 const stepsForWire = (steps) =>
   (Array.isArray(steps) ? steps : []).map((s) => ({
     text: s.text,
     ...(s.hint ? { hint: s.hint } : {}),
     ...(s.copy ? { copy: s.copy.kind === "secret"
       ? { kind: "secret", label: s.copy.label, template: s.copy.template, slot: s.copy.slot }
-      : { kind: "block", text: s.copy.text } } : {}),
+      : { kind: "block", text: s.copy.text, ...(s.copy.label ? { label: s.copy.label } : {}) } } : {}),
   }));
 
 const ALIAS_ROUTE = new Map(CONNECT_CLIENTS.flatMap((c) =>
@@ -362,7 +382,7 @@ export const leadRouteFor = (id) => {
  * `served: false` always carries `reason` and `fix`. An absence with no reason reads as breakage.
  *
  * @param {object} client a row of CONNECT_CLIENTS
- * @param {{ stdioRoutes?: object, publicAddress?: string|null, operator?: string|null }} have
+ * @param {{ stdioRoutes?: object, publicAddress?: string|null, keyAddress?: string|null, operator?: string|null, door?: "sign-in"|"key"|null }} have
  * @param {"disk"|"public-http"} [route] defaults to the row's `lead`
  */
 /**
@@ -370,37 +390,49 @@ export const leadRouteFor = (id) => {
  *
  * IT USED TO SEND THE READER AWAY, and for a person whose product runs in WSL the assistant on Windows
  * is the normal one — so "an assistant on Windows cannot start it from there" left them with no working
- * row at all. The row now starts the server INSIDE the distribution through `wsl.exe`, so the sentence
- * says what the command does rather than where the reader may not be: paste it where the assistant
- * lives, on either side, and it crosses the boundary for them.
+ * row at all. The row starts the server INSIDE the distribution through `wsl.exe`, which is what an
+ * assistant on the Windows side needs.
  *
- * The Windows-side caveat stays as the second half, because a row that a host rewrites, or an assistant
- * that resolves `wsl.exe` differently, still fails on the same boundary — and then the terminal inside
- * the distribution is the answer.
+ * AND IT SAYS SO, because the sentence that replaced it promised more than the command can do. It read
+ * "paste it where your assistant lives, on Windows or in the WSL terminal, whichever it is" — an
+ * invitation to paste it inside WSL, where it does not work. Somebody took the invitation from Claude
+ * Code inside a distribution and got CONNECTION_CLOSED (measured 2026-09-16 on 0.3.2-beta.1).
+ *
+ * There is exactly ONE launcher per host shape today, and under WSL it is the Windows-side one, so this
+ * step names the side it is for rather than offering both. Building the second launcher — the plain
+ * `node` line for an assistant running inside the distribution — is its own piece of work; until it
+ * exists, saying which side this one is for is the whole of what can honestly be said.
  */
-export const WSL_STEP = "This install runs inside WSL, and the command below starts the server in there for you — "
-  + "paste it where your assistant lives, on Windows or in the WSL terminal, whichever it is. "
-  + "If your assistant rewrites the command or cannot find wsl.exe, run it from the WSL terminal instead.";
+export const WSL_STEP = "This install runs inside WSL, and the command below starts the server in there for you. "
+  + "It is for an assistant running on the Windows side — Claude Desktop, or Claude Code in PowerShell. "
+  + "An assistant running inside this WSL terminal cannot use it: start the server from the WSL terminal "
+  + "yourself instead.";
 
 export function whatItNeeds(client, have = {}, route = client?.lead) {
   if (!client) return null;
   const author = client.routes?.[route];
   if (!author) return null;
-  const { stdioRoutes = {}, publicAddress = null, operator = null, door = null } = have;
+  const { stdioRoutes = {}, publicAddress = null, keyAddress = null, operator = null, door = null } = have;
 
   // EACH COPY RESOLVES TO ITS OWN SHAPE, never to another's. Handing a Codex user `claude mcp add` is a
   // command their machine does not have, delivered with confidence — so a shape this deployment cannot
   // produce is an unserved route, not a fallback to one it can.
-  const resolve = route === "disk"
+  //
+  // AND AT THE ADDRESS OF THE DOOR THE STEPS ARE FOR. The key door beside a sign-in door is its own host,
+  // so its steps resolve there and never at the host that refuses a key.
+  const resolveAt = (address) => route === "disk"
     ? (shape) => {
         const r = Object.hasOwn(stdioRoutes, shape ?? "") ? stdioRoutes[shape] : null;
         return r ? { kind: "block", text: r.text, stdio: r } : null;
       }
     : (shape) => {
-        const r = remoteConnectFor(shape, { address: publicAddress });
+        const r = remoteConnectFor(shape, { address });
         if (!r) return null;
-        return r.secret ? { kind: "secret", label: r.label, template: r.text, slot: KEY_SLOT } : { kind: "block", text: r.text };
+        return r.secret
+          ? { kind: "secret", label: r.label, template: r.text, slot: KEY_SLOT }
+          : { kind: "block", text: r.text, ...(r.label ? { label: r.label } : {}) };
       };
+  const resolve = resolveAt(publicAddress);
 
   // WHAT THE DOOR ANSWERS, handed to every row rather than decided per row: one reading, so two apps
   // on one page cannot describe one deployment two ways — which is the defect this carries.
@@ -431,7 +463,27 @@ export function whatItNeeds(client, have = {}, route = client?.lead) {
   // set follows two lines up. Half an alternative is a reader following steps that stop.
   const altResolved = !altAsked || altSteps.every((s, i) => !altAsked[i].copy || s.copy);
   const alt = altResolved && altSteps?.length ? { door: null, altSteps } : { ...(route === "public-http" ? { door } : {}) };
-  const evidence = { ...(author.verifiedOn ? { verifiedOn: author.verifiedOn } : {}), ...(author.by ? { by: author.by } : {}) };
+
+  // ── A SIGN-IN DOOR WITH A KEY DOOR BESIDE IT: THE KEY STEPS RIDE ALONG, FOR A FOLD ───────────────
+  //
+  // Some assistants cannot follow a browser sign-in — a fixed "API key" box, a headless agent — and a
+  // hosted deployment can run a second door for them, on its own host, that takes a key. The page offers
+  // those steps closed, under a heading, beneath the sign-in steps.
+  //
+  // ONLY WHERE THAT DOOR EXISTS. The sign-in door never honours a key, so key steps pointed at it are
+  // instructions that cannot work and a credential minted for nothing — the defect reading `door` ended.
+  // No key door, no fold. Composed the way the unknown door's alternative is — the same author asked for
+  // the other answer — and resolved at the key door's address. `door` stays "sign-in", because it was
+  // read, and `altSteps` keeps meaning "we could not tell".
+  const keyAsked = route === "public-http" && door === "sign-in" && keyAddress
+    ? author.steps({ operator, door: "key" })
+    : null;
+  const keySteps = keyAsked
+    ? keyAsked.map((s) => (s.copy ? { ...s, copy: resolveAt(keyAddress)(s.copy) } : { ...s }))
+    : null;
+  const keyResolved = !keyAsked || keySteps.every((s, i) => !keyAsked[i].copy || s.copy);
+  const folded = keyResolved && keySteps?.length ? { keySteps } : {};
+  const evidence ={ ...(author.verifiedOn ? { verifiedOn: author.verifiedOn } : {}), ...(author.by ? { by: author.by } : {}) };
 
   if (route === "disk") {
     if (!resolved) {
@@ -467,7 +519,7 @@ export function whatItNeeds(client, have = {}, route = client?.lead) {
       fix: "whoever installed it can put it online — it takes about a minute and needs no account",
       operatorFix: "put it online and set CLEAROTRON_CLIENT_MCP_URL to the public URL of this install — INSTALL.md §7 walks the tunnel" };
   }
-  return { client, served: true, route, steps, ...alt, launch: client.launch ?? null, enables: null, ...evidence,
+  return { client, served: true, route, steps, ...alt, ...folded, launch: client.launch ?? null, enables: null, ...evidence,
     command: null, stdio: null, address: publicAddress, key: "issued",
     note: "This assistant connects through its maker's service, so it reaches this installation at its web address rather than from your machine." };
 }

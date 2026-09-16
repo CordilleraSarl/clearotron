@@ -25,14 +25,14 @@ these.
    and it is architectural, not a tuning knob.
 4. **Fail loud, fail closed, repair first.** Every failure has a class in a closed taxonomy with
    distinct handling; bounded repairs (warm patches, code re-dispatch, quarantines) run before any
-   retry burns a fresh session; gates that protect the client (client gate, coverage terminals)
+   retry burns a fresh session; gates that protect the reader (client gate, coverage terminals)
    fail closed; and a run that dies tells the operator on the same guaranteed lane as delivery.
 5. **The quality floor never falls back.** Only transient-infrastructure failures may retry or
    fall over; a content or coverage defect never gets handed to a weaker model or waved through.
 6. **Configuration is layered and frozen per run.** Environment variables tune mechanics; profile
-   bundles carry per-customer knowledge; both are resolved once at run start and frozen into the
+   bundles carry per-company knowledge; both are resolved once at run start and frozen into the
    run dir. A run's behaviour is fully explained by its own directory.
-7. **Tokens, not dollars.** The driver accounts model usage in tokens only. Cost arithmetic is the
+7. **Tokens, not dollars.** The driver counts model usage in tokens only. Cost arithmetic is the
    provider's business; the driver's job is attribution.
 
 ## The two substrates
@@ -56,7 +56,7 @@ flowchart TB
         GWM["gateway.mjs — runStage()<br/>retry ladder · file-truth gate · fail taxonomy"]
         ENG["engine seam (CLEAROTRON_AI)<br/>anthropic-agent (default) | openai-agent"]
         SKL["skills/ — stage methodology (doctrine)"]
-        PROF["profiles/ — per-customer bundles"]
+        PROF["profiles/ — per-company bundles"]
         PUB["publish/ — report · audit workbook · pool"]
         RUN --> PIPE --> GWM --> ENG
         STG --> GWM
@@ -276,7 +276,7 @@ All paths relative to [`driver/`](../../driver/). The load-bearing seven are mar
 | `phase0.mjs` | Pure run identity: slug, codename, dates, run/archive dirs. |
 | `enqueue-schema.mjs` | Job-file shape, `validateJob` classification (reject/clarify/run). |
 | `slot-lock.mjs` | Cross-process counting locks (run slots, turn/ping lanes). |
-| `profiles.mjs` · `profiles/` · `framework.mjs` | Per-customer layer: bundle resolution, freeze, rating framework. [05](05-customer-profiles.md). |
+| `profiles.mjs` · `profiles/` · `framework.mjs` | Per-company layer: bundle resolution, freeze, rating framework. [05](05-customer-profiles.md). |
 | `coverage-ledger.mjs` | Coverage-ledger contract: strict JSON mirror, prose parser, axes decisions. |
 | `findings-model.mjs` | The findings spine: structure, validation, consolidation. |
 | `registry-fidelity.mjs` | Record grounding: citation closure, identifier auto-correction from records. |
@@ -306,5 +306,5 @@ For a buyer: these are the exact surfaces to re-point, and nothing else.
 | **Out** | Published report (templated HTML) + Excel audit workbook + receipts in the pool | [07](07-quality-and-audit.md) |
 | **Out** | Delivery packet (`_driver/delivery.json`: composed email HTML, chat text, URL, verdict) + outbox wake marker | [03 §4](03-run-lifecycle.md) |
 | **Out** | Failure packet on the same lane (`_driver/failure.json`) | [03 §5](03-run-lifecycle.md) |
-| **Sideways** | Artifacts MCP read layer (runs, findings, traces, briefs; scoped client tokens) — effectively the product API | [07](07-quality-and-audit.md), [09](09-security-and-data.md) |
+| **Sideways** | Artifacts MCP read layer (runs, findings, traces, briefs; scoped `user` and `account` tokens) — effectively the product API | [07](07-quality-and-audit.md), [09](09-security-and-data.md) |
 | **Providers** | Model engine seam (`engine/CONTRACT.md`) · register-provider seam (`activeProvider()`) | above; [08](08-development-guide.md) |
