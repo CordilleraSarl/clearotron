@@ -2669,7 +2669,7 @@
         },
         "knockout-structured-read.test.mjs": {
           "tests": 11,
-          "asserts": 53,
+          "asserts": 55,
           "skips": 0,
           "todos": 0
         },
@@ -3718,8 +3718,8 @@
           "todos": 0
         },
         "render.test.mjs": {
-          "tests": 154,
-          "asserts": 632,
+          "tests": 144,
+          "asserts": 572,
           "skips": 0,
           "todos": 0
         },
@@ -3802,8 +3802,8 @@
           "todos": 0
         },
         "report-record-link-host.test.mjs": {
-          "tests": 3,
-          "asserts": 27,
+          "tests": 4,
+          "asserts": 28,
           "skips": 0,
           "todos": 0
         },
@@ -4822,8 +4822,8 @@
           "todos": 0
         },
         "the-knockout-page-leads-with-the-read.test.mjs": {
-          "tests": 28,
-          "asserts": 69,
+          "tests": 30,
+          "asserts": 81,
           "skips": 0,
           "todos": 0
         },
@@ -5033,7 +5033,7 @@
         },
         "the-report-carries-what-the-assessment-wrote.test.mjs": {
           "tests": 10,
-          "asserts": 41,
+          "asserts": 39,
           "skips": 0,
           "todos": 0
         },
@@ -5195,7 +5195,7 @@
         },
         "the-writing-standard-check-refuses-five-classes.test.mjs": {
           "tests": 15,
-          "asserts": 60,
+          "asserts": 61,
           "skips": 0,
           "todos": 0
         },
