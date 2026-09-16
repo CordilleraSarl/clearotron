@@ -10,7 +10,7 @@ import { readFileSync, existsSync, mkdirSync, writeFileSync, renameSync, copyFil
 import { createHash } from "node:crypto";
 import { join, dirname, basename, resolve } from "node:path";   // resolve: the resume line must work from any cwd
 import { driverDir, driverRel, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
-import { terminalClampDecision, orderClausesForLede } from "./terminal-clamp.mjs";   // — deliver and clamp, never withhold
+import { terminalClampDecision, orderClausesForLede, clientConditions } from "./terminal-clamp.mjs";   // — deliver and clamp, never withhold
 import { recordSpan } from "./attributed-span.mjs";   // — driver work the decomposition can attribute
 import { fileURLToPath } from "node:url";
 import { runStage, correctionHint, gridLedgerNameFor, draftCarryEligible, toolWrittenArtifact, selectEngine } from "./gateway.mjs";
@@ -13006,7 +13006,7 @@ async function pipelineInner(job, opts = {}) {
       const statement = riskStatement({ tier: derived.tier, verdict, reasons: reasonsOut, clauses: orderedClauses,
         basis: isRegisterOnly(ctx.searchPolicy) ? "register-only" : null });
       const tmp = driverDir(run.runDir, "verdict.json.tmp");
-      writeFileSync(tmp, JSON.stringify({ ts: new Date().toISOString(), verdict, reasons: reasonsOut, kinds: kindsOut,
+      writeFileSync(tmp, JSON.stringify({ ts: new Date().toISOString(), verdict, reasons: reasonsOut, clauses: orderedClauses, kinds: kindsOut,
         tier: derived.tier, badge: derived.badge, gaugeIndex: derived.gaugeIndex, maxComposite: derived.maxComposite,
         band: derived.band ?? null, statement, stance: verdictStance(verdict) }, null, 2));
       renameSync(tmp, driverDir(run.runDir, "verdict.json"));
@@ -14859,7 +14859,7 @@ async function pipelineInner(job, opts = {}) {
     let emailVerdictOpts = { productName: emailProductName ?? undefined };
     // SPREAD, never reassign: this used to replace the whole object, which would now drop productName
     // above on every run that has a verdict sidecar — i.e. on every healthy run, and on no test.
-    try { const v = JSON.parse(readFileSync(driverDir(run.runDir, "verdict.json"), "utf8")); emailVerdictOpts = { ...emailVerdictOpts, verdict: v.verdict, conditions: v.reasons, tier: v.tier, statement: v.statement ?? null }; } catch { /* legacy path — no row */ }
+    try { const v = JSON.parse(readFileSync(driverDir(run.runDir, "verdict.json"), "utf8")); emailVerdictOpts = { ...emailVerdictOpts, verdict: v.verdict, conditions: clientConditions(v), tier: v.tier, statement: v.statement ?? null }; } catch { /* legacy path — no row */ }
     // wp50 — thread the findings too: the table overlay's rating cells are code-bound to the canonical
     // ratings (joinFindingToBlock), never the summary's own words.
     try { emailVerdictOpts.findings = parseFindingsJsonLenient(readFileSync(P.findings, "utf8"))?.findings ?? undefined; } catch { /* no findings — table falls back to the summary words */ }

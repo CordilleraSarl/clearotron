@@ -120,6 +120,7 @@ const publishSource = () => {
 const POOL_SIDE = {
   "meta.json": "written into the pool run dir, and read back only to preserve the first issuedAt",
   "report-data.json": "the PR-9 client-cut projection this function writes",
+  "search-depth.json": "how much was read to reach the answer — the counts, tokens and cleared-name facts this function derives and writes",
 };
 
 const scanUndeclared = (body, tables) => {
