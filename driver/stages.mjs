@@ -1920,7 +1920,7 @@ export const STAGES = {
       },
       "Findings section prose (both branches — on seat m, every loaded reading as its own finding with its receipt)": {
         class: "judgment", tokens: ["missing", "too_short", "declared_unavailable"],
-        why: "#850 rules the prose J. The findings-heading arm differs per seat: verify.mjs:447 for a/b, verify.mjs:252 for m (which also accepts meaning/connotation). [citation unverified]",
+        why: "#850 rules the prose J. The findings-heading arm differs per seat: verify.mjs:473 for a/b, verify.mjs:252 for m (which also accepts meaning/connotation). [citation unverified]",
       },
       "Negative-results matrix — one receipt-carrying row per (variant x platform) cell (seats a/b only)": {
         class: "judgment", tokens: ["missing"],
@@ -2071,7 +2071,7 @@ export const STAGES = {
     contractElements: {
       "execute the frozen plan — ONE register_execute_plan call with {plan_path, axis, output_path}": {
         class: "mechanical:tool-written", tokens: ["named_band_missing", "tool_timeout"],
-        why: "All three args are driver values interpolated into the message; the tool writes every band block. #850 calls this already right. Note #793: `named_band_missing` and `tool_timeout` are one evidence state with two causes, and registerPlanCallKilled (verify.mjs:1265) separates them from the call log, not from the model. [citation unverified]",
+        why: "All three args are driver values interpolated into the message; the tool writes every band block. #850 calls this already right. Note #793: `named_band_missing` and `tool_timeout` are one evidence state with two causes, and registerPlanCallKilled (verify.mjs:1291) separates them from the call log, not from the model. [citation unverified]",
       },
       "the dictated entry list — qid, predicate, terms, owner, nice_classes, regions, when-guard, expected_kind, covered_by": {
         class: "mechanical:pre-bound", tokens: [],
@@ -2123,7 +2123,7 @@ export const STAGES = {
       },
       "layer-execution declaration — whether the prose says the register layer / provider tools were not executed or not bound": {
         class: "mechanical:code-extracted", tokens: ["declared_not_executed"],
-        why: "_driver/plan-execution.json and the tool-call log already hold whether the call ran — registerPlanCallKilled (verify.mjs:1265) reads exactly that to settle the same question one arm below. This arm still decides it from the model's sentence. [citation unverified]",
+        why: "_driver/plan-execution.json and the tool-call log already hold whether the call ran — registerPlanCallKilled (verify.mjs:1291) reads exactly that to settle the same question one arm below. This arm still decides it from the model's sentence. [citation unverified]",
       },
       "`CROSS-CHECK REQUIRED: <what> — <why>` — the check that is needed and why": {
         class: "judgment", tokens: [],
