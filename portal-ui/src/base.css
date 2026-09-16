@@ -1886,6 +1886,10 @@ input.filter {
 .home2-band-count { font-size: 11.5px; color: var(--text-faint); white-space: nowrap; }
 .home2-band-rule { height: 1px; background: var(--border-hairline); }
 
+/* THE ALLOWANCE LINE. Quiet by construction — no band, no heading, no colour — because it states a fact
+   about the account rather than a fault with the form. It appears only at five searches or fewer. */
+.nc-allowance { margin: -6px 0 18px; font-size: 13px; color: var(--text-muted); }
+
 /* A RUNNING RUN AS A ROW. The queue's grid, with the two columns a running row has and a waiting one
    does not. Declared as a modifier rather than a new grid so the narrow-screen rule that hides columns
    keeps one definition for both. */

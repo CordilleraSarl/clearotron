@@ -38,6 +38,7 @@ import { CompanyChips } from '../shell/CompanyChips.tsx'
 import { canManage, canRun } from '../shell/permissions.ts'
 import { runKey } from '../contract/genericKey.ts'
 import { PageHeader } from '../components/PageHeader.tsx'
+import { allowanceLine } from '../contract/allowance.ts'
 
 // criterion 5 — 'failed' is a tab, not a member of the other three. The owner's ruling was
 // "Failed runs on clearance screen - no", and a tab is how a screen says no to something without
@@ -490,7 +491,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
         title="Clearances"
         lede={<>
           {ownerFilter ? <><span data-anon="mark">{ctx.ownerName(ownerFilter)}</span> · </> : null}
-          <AllowanceLine account={account} />
+          <AllowanceLine account={account} brand={ctx.me.brand} />
         </>}
       />
 
@@ -1441,7 +1442,7 @@ function FirstRun({ onNew }: { readonly onNew: (() => void) | null }) {
  * Its own fetch rather than a field on the runs call: the number is per-ACCOUNT and cheap, and folding it
  * into the run list would couple a counter to a poll that runs every few seconds.
  */
-function AllowanceLine({ account }: { readonly account: string | null }) {
+function AllowanceLine({ account, brand }: { readonly account: string | null; readonly brand: string }) {
   // '*' is the staff "all companies" view. An allowance is per-account, so there is no answer to give
   // — and asking would 400 on every load of the page staff use most. Skipped rather than swallowed.
   const { result } = useLoad(
@@ -1449,14 +1450,11 @@ function AllowanceLine({ account }: { readonly account: string | null }) {
     [account],
   )
   if (result?.kind !== 'ok') return null
-  const u = result.value
-  if (!u.capped || u.dailyRuns == null) return null
-  const left = Math.max(0, u.dailyRuns - u.today)
-  return (
-    <span style={{ display: 'block', marginTop: 6, fontSize: 13 }}>
-      {left === 0
-        ? 'You have used all of today’s searches — the allowance resets at midnight UTC.'
-        : `${u.today} of ${u.dailyRuns} searches used today.`}
-    </span>
-  )
+  // COMPOSED IN ONE PLACE FOR BOTH SCREENS. This wrote its own sentence and New clearance wrote
+  // another, so one reader could meet "3 of 20 searches used today" here and a different count of the
+  // same fact one click away — and neither said what to do about it. The line, its threshold and its
+  // exhausted wording now live in `contract/allowance.ts`.
+  const line = allowanceLine(result.value, brand)
+  if (!line) return null
+  return <span style={{ display: 'block', marginTop: 6, fontSize: 13 }}>{line}</span>
 }

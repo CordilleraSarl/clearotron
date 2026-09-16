@@ -43,23 +43,46 @@ test('the selector carries no depth icons, and the tick/cross list still answers
   assert.doesNotMatch(flat(src), /depthRungs/, 'the rung derivation is back; it had one caller and this was it')
   assert.doesNotMatch(CSS, /\.depth-bar\b/, 'the depth-bar styles are back')
 
-  // ── AND THE CONFIRMATION'S EFFORT BARS SURVIVED, which nothing above asserts ────────────────────
+  // ── AND THE CONFIRMATION STILL SAYS HOW MUCH YOU ARE BUYING ────────────────────────────────────
   //
-  // 2144 removed ONE of two renders and kept the other: "in the summary things rescale and work great.
-  // in product selector … we can remove these next to the product description". Every assertion above is
-  // a DELETION check, so a change that took both would pass all of them — and the summary's bars are the
-  // half the owner explicitly praised. A deletion guard without a survival guard cannot tell "the right
-  // one went" from "both went".
-  assert.match(flat(src), /<Row label="Effort">/, 'the confirmation lost its effort line')
-  // COUNTED, not merely present. There are TWO ten-segment renders — the composer footer and the
-  // confirmation's Effort line — and both are the "summary" the ruling keeps. A `match` for the array
-  // passes while one of the two is changed, which is what a plant on the first occurrence proved: the
-  // regex found the survivor and reported green. So this counts them.
+  // THE SURVIVAL HALF OF THIS GUARD IS THE POINT AND IT STAYS. Every assertion above is a DELETION
+  // check, so a change that took both renders would pass all of them; this is what tells "the right one
+  // went" from "both went", and removing it rather than re-aiming it would leave the deletions
+  // unguarded.
+  //
+  // WHAT IT PROTECTS HAS BEEN RE-READ IN THE PRODUCT'S OWN UNIT. It used to assert the summary's effort
+  // bars, kept when the picker's were removed — "in the summary things rescale and work great. in
+  // product selector … we can remove these next to the product description". The later design ruling
+  // takes the bars and the cost dots off every screen: the bars were a number with no unit and the dots
+  // a "cost" that was never a price. The question the summary must still answer is the same one, and
+  // the product counts it exactly — searches per day, per company.
+  //
+  // So: the confirmation must still state the size of what is being bought, and it must do it in
+  // searches. A change that takes THAT away reds here, which is what the survival guard was for.
+  assert.match(flat(src), /<Row label="Uses">/, 'the confirmation no longer says what the search spends')
+  assert.match(flat(src), /<Row label="Left today">/, 'the confirmation no longer says what it leaves')
+  assert.doesNotMatch(flat(src), /<Row label="Effort">/, 'the effort meter is back on the confirmation')
+  // COUNTED, AND THE COUNT IS NOW ZERO. This asserted exactly TWO ten-segment renders — the composer
+  // footer and the confirmation — because a bare `match` passes while one of the two is changed, which
+  // a plant on the first occurrence proved: the regex found the survivor and reported green. The
+  // counting is the right instrument and it is kept pointed the other way.
+  //
+  // Both renders are gone under the later ruling, and ZERO is asserted rather than the assertion being
+  // dropped: a deleted count cannot tell "removed on purpose" from "removed by accident, on a screen
+  // nobody opened".
   const tens = flat(src).match(/\[1, 2, 3, 4, 5, 6, 7, 8, 9, 10\]\.map/g) ?? []
-  assert.equal(tens.length, 2,
-    `expected both ten-segment effort renders (composer footer + confirmation) and found ${tens.length} — 2144 keeps them exactly as built and deletes only the selector's per-product icons`)
-  assert.match(flat(code(SRC)), /className=\{i <= plan\.effort!\.units \? 'bar bar-on' : 'bar'\}/,
-    "the SUMMARY's effort bars went with the selector's icons — the owner ruled those stay")
+  assert.equal(tens.length, 0,
+    `${tens.length} ten-segment effort render(s) are back — the bars carried a number with no unit and the allowance counts searches`)
+  const dots = flat(src).match(/\[1, 2, 3, 4, 5\]\.map/g) ?? []
+  assert.equal(dots.length, 0,
+    `${dots.length} five-dot cost band(s) are back — there is no price model, and a dot scale on a client's screen reads as one`)
+  // THE BAR CLASS ITSELF, asserted gone from the code rather than only from the prose — the count above
+  // reads the ten-element array, and a render rebuilt with a loop of a different shape would slip past
+  // it while drawing the same picture.
+  assert.doesNotMatch(flat(code(SRC)), /'bar bar-on'/,
+    "an effort bar is back on this screen — the later ruling takes the bars and the dots off every screen")
+  assert.doesNotMatch(flat(code(SRC)), /'dot dot-on'/,
+    "a cost dot is back on this screen — there is no price model to draw")
 
   // The tick/cross list. The glyph and the sentence come off ONE boolean — see screenCopy.test.ts for
   // the case-law half, which is the row that actually varies.

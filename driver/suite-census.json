@@ -6021,7 +6021,7 @@
         },
         "newClearanceStructure.test.ts": {
           "tests": 8,
-          "asserts": 57,
+          "asserts": 61,
           "skips": 0,
           "todos": 0
         },
@@ -6129,7 +6129,7 @@
         },
         "screenCopy.test.ts": {
           "tests": 56,
-          "asserts": 186,
+          "asserts": 190,
           "skips": 0,
           "todos": 0
         },

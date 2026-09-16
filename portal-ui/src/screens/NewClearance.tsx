@@ -56,7 +56,7 @@ import { engineNotice } from '../contract/engineState.ts'
 import { parseNames, parseList } from '../contract/compose.ts'
 import type { Draft as Pick, EffortInput } from '../contract/composerProduct.ts'
 import {
-  EMPTY_DRAFT, blockers, effortUnits, costBand, turnaround, checksSummary, runsNote, machineryFor,
+  EMPTY_DRAFT, blockers, runCount, turnaround, checksSummary, runsNote, machineryFor,
   territoryMatches, addTerritory, removeTerritory, reachesTerritory, vocabularyFor, offerableFor,
   inherited, composeSaved, draftFromSaved, nameBudget, missingPieces, readiness,
   chooseProduct, geographyFor, geographyNote, nativeLanguageControl, toggleNativeLanguage,
@@ -75,6 +75,7 @@ import { takeCreated, createdStrip } from '../contract/companyCreated.ts'
 import type { CreatedCompany } from '../contract/api.ts'
 import { seesEverything } from '../shell/permissions.ts'
 import { PageHeader } from '../components/PageHeader.tsx'
+import { allowanceLine, searchesLeft } from '../contract/allowance.ts'
 
 /** Which way in. `null` until one is chosen — the two-card fork the design opens on. */
 type Entry = null | 'describe' | 'manual'
@@ -362,8 +363,8 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
     classes: classes.length,
     // The account's shops PLUS any typed for this search. Without the second half, promoting the add
     // control above would have made it a control that changes the search and reports nothing: extras go
-    // on the wire (`bodyFor`), the engine runs a grid column for each, and checksPerName / effortUnits /
-    // costBand / the footer would all have sat still while it did.
+    // on the wire (`bodyFor`), the engine runs a grid column for each, and checksPerName / runCount /
+    // the footer would all have sat still while it did.
     platforms: marketplacesApply ? own.platforms.length + parseList(draft.platforms).length : 0,
     density: own.density,
   }
@@ -718,7 +719,10 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   // somebody to delete their own work — see NameWall. ONE predicate, shared with blockers(); the
   // component needs the numbers to offer that way out, which is why it returns them.
   const budget = nameBudget(activeLevel, names.length)
-  const exhausted = usage?.capped === true && usage.dailyRuns != null && usage.today >= usage.dailyRuns
+  // ONE DEFINITION OF "SPENT", shared with the line that warns before it. `searchesLeft` answers null
+  // for an uncapped account and for an unreadable usage file, and null is not zero — so neither is
+  // refused here, which is the behaviour this screen already had and the one that matters.
+  const exhausted = searchesLeft(usage) === 0
   // classes OR goods, which is what the schema accepts. Requiring both would refuse requests the engine
   // runs — and with the owner's own classes on screen in the card, demanding they be retyped is worse.
   // THE SENTENCES ARE THE PREDICATE. This used to be a bare boolean with no render site anywhere on the
@@ -751,6 +755,13 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
           screen said "New clearance" over a heading saying "New clearance". */}
       <CreatedStrip />
       <PageHeader title={editingSlug ? 'Edit a custom search' : 'New clearance'} />
+      {/* ONE QUIET LINE, and only when the number is close enough to change what a reader does. No
+          band, no heading and no colour: this is a fact about the account, not a warning about the
+          form. It is silent above five left, which is the state most readers are in most of the time.
+          The same sentence, from the same composer, is on Clearances. */}
+      {allowanceLine(usage ?? null, ctx.me.brand)
+        ? <p className="nc-allowance">{allowanceLine(usage ?? null, ctx.me.brand)}</p>
+        : null}
 
       {/* Editing a saved search happens ON this screen, because a saved search is these levers with a
           name on it. The heading changes and this line says what the levers below are — without it the
@@ -786,7 +797,6 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
         )
       ) : null}
 
-      <Allowance usage={usage} />
 
       {/* ── context: who this is for, and what they already carry ── */}
       <div className="ctx-card">
@@ -1540,8 +1550,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
                   : 'worldwide',
               checksSummary(effort),
             ].join(' · ')}
-            units={plan?.effort?.units ?? effortUnits(effort)}
-            cost={plan?.effort?.costBand ?? costBand(effort)}
+            uses={runCount(effort)}
             duration={plan?.effort?.turnaround || turnaround(effort)}
             runs={runsNote(effort)}
             ready={ready}
@@ -1586,6 +1595,8 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
 
           {plan ? (
             <ReviewDialog
+              uses={runCount(effort)}
+              left={searchesLeft(usage)}
               plan={plan}
               busy={busy}
               owner={ownerLabel}
@@ -1739,14 +1750,15 @@ function NameWall({
  * The running total, pinned across the bottom of the screen.
  *
  * The point of the rebuild: what you are buying is on screen the whole time you are choosing it, rather
- * than revealed once at the review step. Cost is five dots and NEVER a currency figure — there is no
- * price model, and inventing one on a client's screen would be a quote.
+ * than revealed once at the review step. It is two plain figures — how many of the day's searches this
+ * spends, and how long it takes. There is still NO currency figure anywhere and there cannot be: there
+ * is no price model, and inventing one on a client's screen would be a quote.
  *
  * "Starting from" leads, because a prefilled template that is invisible is the same as no template: the
  * user cannot tell what they picked, which is the gap this line closes.
  */
 function Footer({
-  startedFrom, tier, detail, units, cost, duration, runs, ready, busy, demoMode, setupRoute,
+  startedFrom, tier, detail, uses, duration, runs, ready, busy, demoMode, setupRoute,
   programDisputed, onSettings,
   saveOpen, saveName, saveText, saveNote, saveDone, editing, canSave, blockedBy,
   onSaveOpen, onSaveName, onSaveText, onSaveCancel, onSave, onReview, onSeeSaved,
@@ -1754,8 +1766,8 @@ function Footer({
   readonly startedFrom: string
   readonly tier: string
   readonly detail: string
-  readonly units: number
-  readonly cost: number
+  /** How many of the day's searches this request spends. The allowance counts searches; no unit exists. */
+  readonly uses: number
   readonly duration: string
   readonly runs: string
   readonly ready: boolean
@@ -1826,24 +1838,24 @@ function Footer({
         {saveNote ? <div style={{ fontSize: 12, color: 'var(--text-accent)', marginTop: 3 }}>{saveNote}</div> : null}
       </div>
 
+      {/* ── TWO PLAIN FIGURES, AND THE TWO PICTURES ARE GONE ────────────────────────────────────────
+          The Effort bars answered a question nobody asked — ten notches of a number with no unit, next
+          to five dots of a "cost" that was never a price and could not become one. What a reader is
+          deciding is how many of today's searches this spends and how long it takes, and both of those
+          are figures the product already knows.
+
+          THE WORD IS "SEARCHES", EVERYWHERE. The allowance counts searches per day per company; no
+          unit exists in the engine, and the bars were the last screen that implied one. */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 18, flexWrap: 'wrap' }}>
-        <div style={{ minWidth: 104 }}>
-          <div style={{ display: 'flex', gap: 2, marginBottom: 4 }} aria-hidden>
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
-              <span key={i} className={i <= units ? 'bar bar-on' : 'bar'} />
-            ))}
+        <div>
+          <div style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--text-strong)' }}>
+            {uses} search{uses === 1 ? '' : 'es'}
           </div>
-          <div className="footer-eyebrow">Effort {units}/10</div>
+          <div className="footer-eyebrow">uses</div>
         </div>
         <div>
           <div style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--text-strong)' }}>{duration}</div>
           <div className="footer-eyebrow">turnaround</div>
-        </div>
-        <div>
-          <div style={{ display: 'inline-flex', gap: 3 }} aria-hidden>
-            {[1, 2, 3, 4, 5].map((i) => <span key={i} className={i <= cost ? 'dot dot-on' : 'dot'} />)}
-          </div>
-          <div className="footer-eyebrow" style={{ marginTop: 3 }}>cost</div>
         </div>
       </div>
 
@@ -2114,10 +2126,14 @@ function PickRow({
  * usual territories" look identical once resolved.
  */
 function ReviewDialog({
-  plan, busy, owner, project, names, onStart, onBack, failure, onReview,
+  plan, busy, owner, project, names, onStart, onBack, failure, onReview, uses, left,
 }: {
   readonly plan: Plan
   readonly busy: boolean
+  /** How many of the day's searches this request spends. */
+  readonly uses: number
+  /** How many are left before it, or null when the account is uncapped or the usage could not be read. */
+  readonly left: number | null
   readonly owner: string
   readonly project: string | null
   readonly names: readonly string[]
@@ -2195,28 +2211,17 @@ function ReviewDialog({
           {plan.effort?.turnaround || plan.turnaround
             ? <Row label="Turnaround">{plan.effort?.turnaround || plan.turnaround}</Row>
             : null}
-          {/* EFFORT, where the stage number used to be the only answer to "how much am I buying".
-              `plan.effort` has been on the wire all along and this step rendered only its turnaround —
-              so the one figure that says how big a search is sat unread at the moment of deciding. Same
-              bars and dots as the composer footer, on purpose: it is the same quantity, and a second
-              visual language for it would invite the reader to work out whether it is the same one. */}
-          {plan.effort ? (
-            <Row label="Effort">
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-                <span style={{ display: 'inline-flex', gap: 2 }} aria-hidden>
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
-                    <span key={i} className={i <= plan.effort!.units ? 'bar bar-on' : 'bar'} />
-                  ))}
-                </span>
-                <Muted>{plan.effort.units}/10 for this company</Muted>
-                <span style={{ display: 'inline-flex', gap: 3 }} aria-hidden>
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <span key={i} className={i <= plan.effort!.costBand ? 'dot dot-on' : 'dot'} />
-                  ))}
-                </span>
-                <Muted>cost</Muted>
-              </span>
-            </Row>
+          {/* USES AND LEFT TODAY, where the Effort bars and the Cost dots used to be. Ten notches of a
+              number with no unit, beside five dots of a "cost" that was never a price, answered a
+              question nobody had. What a reader is deciding at this moment is how many of today's
+              searches this spends and how many that leaves — both of which the product already counts,
+              in the one word it uses everywhere: searches.
+
+              LEFT TODAY SAYS BOTH NUMBERS. "9 left" makes a reader do the subtraction the screen
+              already did; the count now and the count after this one is the fact they are weighing. */}
+          <Row label="Uses">{uses} search{uses === 1 ? '' : 'es'}</Row>
+          {left != null ? (
+            <Row label="Left today">{left} now, {Math.max(0, left - uses)} after this search</Row>
           ) : null}
 
           {plan.warnings.length ? (
@@ -2282,30 +2287,6 @@ function Row({ label, children }: { readonly label: string; readonly children: R
 const Muted = ({ children }: { readonly children: React.ReactNode }) => (
   <span style={{ color: 'var(--text-muted)' }}>{children}</span>
 )
-
-/**
- * The daily allowance, stated quietly.
- *
- * Only for principals it BINDS. A person with access to everything is uncapped, and telling them "2 of 3
- * used" would be both wrong and alarming. A null cap means the server could not tell us the limit — that renders as
- * nothing at all rather than as zero or as unlimited, because inventing either would be a claim about
- * someone's contract.
- */
-function Allowance({ usage }: { readonly usage: Usage | null }) {
-  if (!usage || !usage.capped || usage.dailyRuns == null) return null
-  const left = Math.max(0, usage.dailyRuns - usage.today)
-  const none = left === 0
-  return (
-    <div className="notice" style={{ marginTop: 0, ...(none ? { borderColor: 'var(--tone-high)' } : {}) }}>
-      <b>{none ? 'No searches left today' : `${usage.today} of ${usage.dailyRuns} searches used today`}</b>
-      <p style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>
-        {none
-          ? 'The allowance resets at midnight UTC. Your account contact can run one for you in the meantime.'
-          : `${left} left. The allowance resets at midnight UTC.`}
-      </p>
-    </div>
-  )
-}
 
 /**
  * What each depth includes, side by side.

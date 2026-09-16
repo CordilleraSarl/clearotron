@@ -681,13 +681,28 @@ test('the review modal leads with the product NAME, not a stage number', () => {
   assert.match(prose, /\{plan\.stageLabel\}/, 'the rung still rides beside it — the numbering is not retired')
 })
 
-test('the review modal shows the effort meter, where the stage number used to be the only scale', () => {
-  // `plan.effort` was already on the wire and this step rendered only its turnaround, so the one figure
-  // that says how big a search is sat unread at the moment of deciding.
+test('THE REVIEW MODAL SAYS WHAT THIS SPENDS AND WHAT IT LEAVES — in searches, the only unit there is', () => {
+  // THE PROPERTY IS UNCHANGED; WHAT ANSWERS IT IS NOT. This asserted a ten-bar effort meter and a
+  // five-dot cost band, because before them this step rendered only a turnaround and the one figure
+  // saying how big a search is sat unread at the moment of deciding. The figure was the right idea in
+  // the wrong currency: the bars carried a number with no unit, and the dots a "cost" that was never a
+  // price and could not become one without quoting somebody.
+  //
+  // What a reader is deciding here is how many of today's searches this spends and how many that
+  // leaves, and the product counts exactly that — per day, per company. So the rule is now read in the
+  // product's own unit, and the two pictures are asserted GONE rather than merely unmentioned.
   const prose = flat(body(NEW_CLEARANCE))
-  assert.match(prose, /<Row label="Effort">/)
-  assert.match(prose, /plan\.effort!\.units/, 'the same 10-bar meter the composer footer draws')
-  assert.match(prose, /plan\.effort!\.costBand/, 'and the same 5-dot cost band')
+  assert.match(prose, /<Row label="Uses">/, 'the review step no longer says what the search spends')
+  assert.match(prose, /<Row label="Left today">/, 'the review step no longer says what it leaves')
+  assert.match(prose, /after this search/, 'Left today states the count now and the count after, not one of them')
+
+  // AND THE TWO PICTURES ARE GONE FROM THE WHOLE SCREEN, not only from this dialog — the composer's
+  // sticky bar drew the same pair, and a rule satisfied in one of two places is the drift this file
+  // exists to stop.
+  assert.doesNotMatch(prose, /<Row label="Effort">/, 'the effort meter is back on the review step')
+  assert.doesNotMatch(prose, /effort!?\.units/, 'the ten-bar meter is back')
+  assert.doesNotMatch(prose, /effort!?\.costBand/, 'the five-dot cost band is back')
+  assert.doesNotMatch(prose, /\bunits?\b/i, 'the screen names a unit again — the allowance counts searches')
 })
 
 test('the matrix header leads with the product’s NAME', () => {
