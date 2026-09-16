@@ -527,7 +527,10 @@ test('THE TAIL IS RECENT WORK AND THEN THE COUNT — not an archive with one row
   // which page it is, the empty band says what to do, and the tail is a few rows ending in how many
   // there are in total.
   assert.match(home, /recentlyFinished\(runs, undefined, 3\)/, 'the tail is back to a single row, or uncapped')
-  assert.match(home, /See all \{total\} finished/, 'the count of everything finished is not offered')
+  // THE COUNT, not the word after it. The tail's way out names how many there are in total — that is
+  // the property; "finished" was a fourth word for a screen the rail already names, and the line sits
+  // under a heading that says "Recently finished" two rows above it.
+  assert.match(home, /See all \{total\}/, 'the count of everything finished is not offered')
   assert.match(home, /finished\(runs\)\.length/, 'the total is derived somewhere other than the contract')
   assert.match(home, /Recently finished/)
   assert.doesNotMatch(home, /Last finished/, 'the old single-row heading is still on the page')

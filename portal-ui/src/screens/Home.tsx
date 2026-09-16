@@ -79,6 +79,9 @@ function lastFinishedOf(row: Row): Finished | null {
   return { name: row.name, band: row.band, tone: row.tone, account: row.account, date: row.date, runId: newest.current.runId }
 }
 
+/** Where a band stops being cards and becomes rows. A reading, not a ruling — see the call site. */
+const COMPACT_FROM = 5
+
 export function Home({ ctx }: { readonly ctx: ShellContext }) {
   // ONE REQUEST, WHOEVER IS ASKING. Staff get every account, a client gets its own, and the request is
   // identical — so this screen never branches on role, and cannot grow a staff layout by accident.
@@ -199,10 +202,15 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
         </p>
       ) : null}
 
+      {/* CARDS UNTIL THE BAND IS TOO LONG TO READ AS CARDS, THEN ROWS. The specification draws two
+          boards — two runs as cards, six as rows — and names no number in between; four is where this
+          switches, and that is a reading rather than a ruling, called out here so it can be corrected
+          cheaply. Both shapes are the same component, so the Stop and its dialog cannot differ. */}
       {cards.length ? (
-        <div className="home2-cards">
+        <div className={COMPACT_FROM <= cards.length ? 'home2-runrows' : 'home2-cards'}>
           {cards.map((r) => (
-            <Card key={r.runId} run={r} ctx={ctx} onChanged={reload} stamp={stamps.get(r.runId) ?? null} />
+            <Card key={r.runId} run={r} ctx={ctx} onChanged={reload} stamp={stamps.get(r.runId) ?? null}
+              compact={COMPACT_FROM <= cards.length} />
           ))}
         </div>
       ) : null}
@@ -319,12 +327,23 @@ function Card({
   ctx,
   onChanged,
   stamp,
+  compact = false,
 }: {
   readonly run: Run
   readonly ctx: ShellContext
   readonly onChanged: () => void
   /** Which read this is — null when nothing on the band could be confused with it. See readStamps. */
   readonly stamp: string | null
+  /**
+   * Draw as a ROW rather than a card, for a band with too many to read as cards.
+   *
+   * ONE COMPONENT, TWO LAYOUTS, AND THAT IS THE WHOLE REASON THIS IS A PROP. A separate row component
+   * would need its own Stop — and `home2-stop` is counted in a real browser by the render check as "a
+   * Stop that can act", with an exact number. Two implementations of that control is how the count
+   * stops meaning anything. The state, the handlers and the dialog below are shared; only the markup
+   * branches.
+   */
+  readonly compact?: boolean
 }) {
   const [busy, setBusy] = useState(false)
   const [failed, setFailed] = useState<string | null>(null)
@@ -406,6 +425,65 @@ function Card({
     onChanged()
   }, [run, onChanged])
 
+  // THE STOP AND ITS QUESTION, ONCE. Both layouts render this same fragment: `home2-stop` is counted in
+  // a real browser as "a Stop that can act", with an exact number, and a second implementation of the
+  // control is how that count quietly stops meaning anything.
+  const stopControl = (<>
+    {canStop && !stopping && canRun(ctx.me) ? (
+      ctx.me.stopControl.available ? (
+        <button type="button" className="home2-stop" onClick={() => setAsking(true)} disabled={busy}>
+          {busy ? 'Stopping…' : 'Stop'}
+        </button>
+      ) : (
+        /* — a button that always fails must not render as available. The
+           deployment said at boot its token cannot stop; the control says so here, where the
+           press would have happened, instead of failing identically forever. Staff read the
+           posture reason; a client reads who to ask. */
+        /* Its OWN class, deliberately (the Acknowledge lesson one arm up): home2-stop is counted
+           by the browser check as "a Stop that can act", and this control exists precisely
+           because this one cannot. */
+        <button type="button" className="home2-stop-unavailable" disabled
+          title={ctx.me.stopControl.reason ?? 'Stopping is not available on this deployment right now — the operator has been told at boot.'}>
+          Stop unavailable
+        </button>
+      )
+    ) : null}
+    {/* — the question, at the press. */}
+    {asking ? (
+      <StopChoice
+        name={displayName(run)}
+        step={run.step}
+        stoppable={run.stoppable}
+        onImmediate={() => void stop(true)}
+        onBoundary={() => void stop(false)}
+        onCancel={() => setAsking(false)}
+      />
+    ) : null}
+  </>)
+
+  // ── THE COMPACT ROW ─────────────────────────────────────────────────────────────────────────────
+  //
+  // The same grid the queue rows use, so the columns and the narrow-screen rule stay one definition;
+  // `home2-runrow` adds only what a running row has that a waiting one does not. The reason is asked
+  // for COMPACT, which drops the paused sentence's closing reassurance — a row has no width for it —
+  // while keeping the fact a reader needs, which is when the provider resumes.
+  if (compact) {
+    return (
+      <div className="home2-qrow home2-runrow">
+        <StateChip state={run.state} stopping={stopping} />
+        <span className="home2-qmark" data-anon="mark">{displayName(run)}</span>
+        <span className="home2-qowner" data-anon="mark">{ctx.ownerName(runKey(run))}</span>
+        <span className="home2-qdepth">{runProductLabel(run.productName, run.marks.length)}</span>
+        {run.step ? <span className="home2-qstep">{run.step}</span> : null}
+        <span className="home2-qreason">
+          {failed ?? cardReason(run, Date.now(), true)}
+          {expect ? <span className="home2-expect">{` · ${expect}`}</span> : null}
+        </span>
+        {stopControl}
+      </div>
+    )
+  }
+
   return (
     <div className={`home2-card${run.state === 'failed' ? ' failed' : ''}`}>
       <span className={`home2-card-rule ${run.state}`} />
@@ -463,36 +541,7 @@ function Card({
           ) : null}
           {/* Stopping is part of Run clearances. A person without it has no Stop here — not a Stop that
               refuses them, which is the one control this card must never offer. */}
-          {canStop && !stopping && canRun(ctx.me) ? (
-            ctx.me.stopControl.available ? (
-              <button type="button" className="home2-stop" onClick={() => setAsking(true)} disabled={busy}>
-                {busy ? 'Stopping…' : 'Stop'}
-              </button>
-            ) : (
-              /* — a button that always fails must not render as available. The
-                 deployment said at boot its token cannot stop; the control says so here, where the
-                 press would have happened, instead of failing identically forever. Staff read the
-                 posture reason; a client reads who to ask. */
-              /* Its OWN class, deliberately (the Acknowledge lesson one arm up): home2-stop is counted
-                 by the browser check as "a Stop that can act", and this control exists precisely
-                 because this one cannot. */
-              <button type="button" className="home2-stop-unavailable" disabled
-                title={ctx.me.stopControl.reason ?? 'Stopping is not available on this deployment right now — the operator has been told at boot.'}>
-                Stop unavailable
-              </button>
-            )
-          ) : null}
-          {/* — the question, at the press. */}
-          {asking ? (
-            <StopChoice
-              name={displayName(run)}
-              step={run.step}
-              stoppable={run.stoppable}
-              onImmediate={() => void stop(true)}
-              onBoundary={() => void stop(false)}
-              onCancel={() => setAsking(false)}
-            />
-          ) : null}
+          {stopControl}
           {/* — THE WAY OUT. "Home — what is in flight, what is waiting, and the way out of both."
               A failed run is neither, and it had no way out, so the band filled with dead runs and
               stopped showing the live ones.
@@ -842,7 +891,7 @@ function RecentlyFinished({
       {/* A LINE, NOT A SECOND BUTTON. The one button belongs at the top beside New clearance; this says
           how much more there is, which is the question a tail leaves a reader with. */}
       <button type="button" className="home2-see-all" onClick={() => ctx.go('/portal/clearances')}>
-        See all {total} finished
+        See all {total}
       </button>
     </>
   )
