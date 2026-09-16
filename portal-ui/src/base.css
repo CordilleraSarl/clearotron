@@ -439,42 +439,19 @@ table.data.fixed td {
 /* An expanded read: quiet enough to read as subordinate to the row it belongs to. The indent is on the
    cells, not here, because it is structural — see ReadRow. */
 table.data tr.read-row > td {
-  background: var(--surface-sunken);
+  background-color: var(--surface-sunken);
 }
 
-/* the whole read row opens its report.
-   The affordance is on the thing you can click, across the WHOLE row, which is the point: the only way
-   in used to be a text button at the far right edge, furthest from the run title the reader has just
-   read, on a row with `cursor: auto` and no hover state at all. People concluded there was no report.
-   A read with no report gets none of this — not the pointer, not the hover, not the focus ring. A dead
-   target is worse than no target. */
+/* A search with a report can still be opened with a click anywhere on its row — the mouse's convenience.
+   The named, focusable control is its Open button in the actions column; the row takes no focus of its
+   own, so a keyboard meets one target per search rather than two.
+   A search with no report gets none of this — not the pointer, not the hover. A dead target is worse
+   than no target. */
 table.data tr.read-row.openable > td {
   cursor: pointer;
 }
 table.data tr.read-row.openable:hover > td {
-  background: var(--surface-raised);
-}
-/* focus-visible, not focus: a keyboard user must see where they are, a mouse user must not get a ring
-   they did not ask for. The outline is on the ROW, so it reads as one target rather than six cells. */
-table.data tr.read-row.openable:focus {
-  outline: none;
-}
-table.data tr.read-row.openable:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: -2px;
-}
-/* The cue that the row leads somewhere. It brightens with the row rather than being a control of its
-   own — clicking it is clicking the row, because it is not clickable separately. */
-.read-go {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 12.5px;
-  color: var(--text-faint);
-}
-table.data tr.read-row.openable:hover .read-go,
-table.data tr.read-row.openable:focus-visible .read-go {
-  color: var(--accent);
+  background-color: var(--surface-raised);
 }
 
 table.data tr.row {
@@ -524,8 +501,14 @@ button.twisty:focus-visible {
   white-space: nowrap;
 }
 
-table.data tr.row:hover td {
-  background: var(--surface-sunken);
+table.data tr.row:not(.inert):hover td {
+  background-color: var(--surface-sunken);
+}
+
+/* A name with one search and no report — running for the first time — has nothing to open and nothing to
+   expand, so its row does not pretend to be a control. */
+table.data tr.row.inert {
+  cursor: default;
 }
 
 /* A SECTION HEADER, not a decorative divider.
@@ -535,7 +518,9 @@ table.data tr.row:hover td {
    Body-text size, medium weight, full-strength ink, sentence case rather than letterspaced caps — and a
    hairline rule spanning the table beneath it, so containment is visible without reading anything. */
 table.data tr.group-head td {
-  padding: 22px 12px 7px;
+  padding: 10px 12px;
+  background: var(--surface-sunken);
+  border-top: 1px solid var(--border-strong);
   border-bottom: 1px solid var(--border-strong);
 }
 
@@ -553,10 +538,156 @@ table.data tr.group-head .owner-count {
   color: var(--text-muted);
 }
 
-/* Child rows sit one step in from their owner, so the containment reads structurally rather than by
-   proximity alone. On the first cell only — indenting every cell would move the columns. */
-table.data tr.group-head ~ tr.row > td:first-child {
-  padding-left: 22px;
+/* NESTING IS DRAWN, not only indented. The company heading is a filled band; a name inside a group carries
+   one vertical rule in its first cell, and a search under a name one rule per level above it. Drawn as
+   background images so a rule costs no width and cannot move a column, and so it survives the row's own
+   background colour. */
+table.data td.nest-1,
+table.data td.nest-2 {
+  background-repeat: no-repeat;
+}
+table.data td.nest-1 {
+  background-image: linear-gradient(var(--border-strong), var(--border-strong));
+  background-size: 1px 100%;
+  background-position: 7px 0;
+}
+table.data td.nest-2 {
+  background-image: linear-gradient(var(--border-strong), var(--border-strong)), linear-gradient(var(--border-strong), var(--border-strong));
+  background-size: 1px 100%, 1px 100%;
+  background-position: 7px 0, 17px 0;
+}
+
+/* "Group ·" before a group's name: what kind of row this is, quieter than the name it introduces. */
+.row-kind {
+  margin-right: 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ── the Clearances actions column ──────────────────────────────────────────────────────────────────
+   Open, Ask AI and the row menu in fixed tracks, so every Open on the page shares one x and one width.
+   Narrow, Ask AI sits under Open; with room, beside it — the table's wrapper is the container measured,
+   so a collapsed rail widens it exactly as a wider window does. */
+.names-wrap {
+  container-type: inline-size;
+}
+/* Eight pixels either side instead of twelve, on every column but the two narrow ones at the left: the
+   actions column takes a quarter of the table, and the text columns keep their words on one line by
+   giving up padding rather than width. The date and the actions give up a little more. */
+.names-wrap table.data.fixed th:nth-child(n + 3),
+.names-wrap table.data.fixed td:nth-child(n + 3) {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+.names-wrap table.data.fixed td.col-date,
+.names-wrap table.data.fixed td.col-actions {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+/* A status that does not fit wraps between its halves — "Queued ·" over "1 search" — rather than running
+   under the Risk column: `.status` is nowrap everywhere else, which is right for a word and wrong for a
+   phrase in a column of fixed width. The dot stays level with the first line. */
+.names-wrap table.data.fixed td .status {
+  white-space: normal;
+  align-items: flex-start;
+}
+.names-wrap table.data.fixed td .status .dot {
+  margin-top: 0.42em;
+}
+.status-count {
+  white-space: nowrap;
+}
+/* "latest report · 2026-09-02" breaks at its spaces, never inside the date. */
+.names-wrap table.data.fixed td .sub.report-line {
+  overflow-wrap: normal;
+}
+.row-actions {
+  --row-open-w: 11em;
+  --row-ask-w: 6.5em;
+  display: grid;
+  grid-template-columns: var(--row-open-w) auto;
+  grid-template-areas: 'open more' 'ask more';
+  justify-content: start;
+  align-items: start;
+  gap: 6px;
+  font-size: 12.5px;
+}
+.row-actions-open { grid-area: open; }
+.row-actions-ask { grid-area: ask; }
+.row-actions-more { grid-area: more; }
+.row-actions-open:empty,
+.row-actions-ask:empty {
+  display: none;
+}
+@container (min-width: 1000px) {
+  .row-actions {
+    grid-template-columns: var(--row-open-w) var(--row-ask-w) auto;
+    grid-template-areas: 'open ask more';
+  }
+  .row-actions-open:empty,
+  .row-actions-ask:empty {
+    display: block;
+  }
+}
+/* The bordered Open. One width, whatever its label says: the track decides, not the text. */
+button.row-open {
+  width: 100%;
+  padding: 5px 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: 7px;
+  background: var(--surface-raised);
+  color: var(--text-strong);
+  font: inherit;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+button.row-open:hover {
+  border-color: var(--text-muted);
+}
+button.row-open:focus-visible,
+button.row-menu-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.row-menu {
+  position: relative;
+}
+button.row-menu-btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}
+button.row-menu-btn:hover,
+button.row-menu-btn[aria-expanded='true'] {
+  background: var(--surface-sunken);
+  color: var(--text-strong);
+}
+/* To the LEFT of the button, level with it. The table's wrapper scrolls on the x axis, which makes it
+   clip on the y axis too, so a menu dropping below the last row would be cut off; every row menu holds
+   one act, and a list of one fits beside its button inside the row. */
+.row-menu-list {
+  position: absolute;
+  right: 100%;
+  top: -4px;
+  margin-right: 4px;
+  min-width: 132px;
+  padding: 4px;
+  z-index: 50;
+}
+button.row-menu-item {
+  font-size: 13px;
+  padding: 6px 10px;
+  margin: 0;
+  white-space: nowrap;
 }
 
 .pager {
@@ -625,7 +756,7 @@ table.data tr.group-head ~ tr.row > td:first-child {
 }
 
 .dot.running {
-  background: var(--accent);
+  background: var(--text-muted);
   animation: cordPulse 1.4s ease-in-out infinite;
 }
 

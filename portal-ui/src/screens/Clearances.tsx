@@ -22,14 +22,26 @@
 //   3. FAILED RUNS ARE VISIBLE, with the reason. A run that silently disappears from the list is worse
 //      than one that says it stopped: the user goes on believing it is still going.
 
-import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import type { Run } from '../contract/api.ts'
 import { api, saveFailureText } from '../contract/api.ts'
 import { bandRank } from '../contract/tone.ts'
 import { displayName, inSentence, newestFirst, readLabel, readTime } from '../contract/reads.ts'
-import { marksOf, rowsOf, NO_FAMILIES } from '../contract/grouping.ts'
+import { marksOf, nameCount, rowsOf, NO_FAMILIES } from '../contract/grouping.ts'
 import type { Families, MarkGroup, Row } from '../contract/grouping.ts'
-import { pageWindow } from '../contract/listView.ts'
+import { clearancesColumns, pageWindow } from '../contract/listView.ts'
+import {
+  GROUP_RISK_LINE,
+  groupStatus,
+  hasReport,
+  nameActions,
+  namesLabel,
+  reportLine,
+  searchesLabel,
+  shownBand,
+  shownReport,
+  statusCount,
+} from '../contract/nameRow.ts'
 import { RiskDot, StatusCell } from '../components/RiskDot.tsx'
 import { Icon } from '../components/Icon.tsx'
 import { useLoad, usePoll } from '../state/useApi.ts'
@@ -296,7 +308,9 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
         case 'risk':
           // Ranked against each row's own ladder, so two customers' vocabularies interleave correctly
           // instead of sorting alphabetically against each other.
-          return dir * (bandRank(a.bands, a.band) - bandRank(b.bands, b.band))
+          // By the band each row SHOWS: a name with a re-read under way shows its latest report's band,
+          // and a sort that ordered it as unrated would put it where its own Risk cell says it is not.
+          return dir * (bandRank(a.bands, shownBand(a)) - bandRank(b.bands, shownBand(b)))
         case 'date':
         default:
           // Same defect as the home card's, same fix: `date` is day precision, so every pair of
@@ -461,6 +475,11 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
       return next
     })
 
+  // ASK AI, beside Open on a name with a report, and alone on a stopped one. The screen draws it rather
+  // than each row, because whether this reader's assistant is connected is ONE answer for the whole
+  // table: asked once here, not once per row.
+  const askAi = (_name: string, _read: Run): ReactNode => null
+
   const sortBtn = (key: SortKey, label: string) => (
     <button
       type="button"
@@ -490,7 +509,10 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
       <PageHeader
         title="Clearances"
         lede={<>
-          {ownerFilter ? <><span data-anon="mark">{ctx.ownerName(ownerFilter)}</span> · </> : null}
+          {/* No separator after the company: the allowance line is a block of its own beneath it, and
+              renders nothing at all above five searches left — a trailing "·" would then point at
+              nothing on most visits. */}
+          {ownerFilter ? <span data-anon="mark">{ctx.ownerName(ownerFilter)}</span> : null}
           <AllowanceLine account={account} brand={ctx.me.brand} />
         </>}
       />
@@ -551,8 +573,10 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
             Group by company
           </label>
         ) : null}
+        {/* NAMES, NOT ROWS. A group is one row holding several names, so a count of rows disagreed with
+            the company headings below it the moment a family existed. Both count through `nameCount`. */}
         <span className="mono" style={{ marginLeft: 'auto', color: 'var(--text-muted)', fontSize: 13 }}>
-          {rows.length} {rows.length === 1 ? 'name' : 'names'}
+          {namesLabel(nameCount(rows))}
         </span>
         <input
           className="filter"
@@ -638,7 +662,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
         </div>
       ) : null}
 
-      <div className="table-wrap">
+      <div className="table-wrap names-wrap">
         {/* THE GRID IS DECLARED, NOT EMERGENT.
             The table had no `table-layout` and no column widths at all, so every column was sized by
             whatever text happened to be in it — which is why expanding a row could re-flow the parent
@@ -651,22 +675,15 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
             The columns were roughly INVERSE to how much they matter: Status held 47% because it was sized
             for the raw engine string  removed, while the mark wrapped to three lines and a
             ten-character date wrapped to two beside ~300px of empty space.
-            Name is now the widest column, which is what the page is about. Status is sized for the words
-            it actually holds — "Finished", "In progress", "Not finished" — and a long stopped-during
-            phrase wraps, which is the right failure for the rare row rather than the common one.
-            ALL PERCENTAGES, summing to 100. Two px columns among five percentages made the table
-            resolve WIDER than its wrapper and overflow by 21px at a 1100px viewport — where the content
-            column is only 767px, because the shell's rail takes the rest. The client view omits Pick and
-            sums to 95%; the remainder is distributed, which is fine and cannot overflow. */}
+            Name is the widest of the text columns, which is what the page is about, and the actions
+            column is sized for its buttons so Open lines up down the page. The shares, and the reason
+            they are all percentages, live in `clearancesColumns` (contract/listView.ts), where a test
+            holds them to 100 in every mode. */}
         <table className="data fixed">
           <colgroup>
-            <col style={{ width: '5%' }} />
-            {canGroup ? <col style={{ width: '5%' }} /> : null}
-            <col style={{ width: showOwnerColumn ? '26%' : '35%' }} />
-            {showOwnerColumn ? <col style={{ width: '16%' }} /> : null}
-            <col style={{ width: showOwnerColumn ? '18%' : '25%' }} />
-            <col style={{ width: '15%' }} />
-            <col style={{ width: '15%' }} />
+            {clearancesColumns({ pick: canGroup, owner: showOwnerColumn }).map((c) => (
+              <col key={c.key} style={{ width: `${c.share}%` }} />
+            ))}
           </colgroup>
           <thead>
             <tr>
@@ -690,6 +707,9 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
               <th>{sortBtn('state', 'Status')}</th>
               <th>{sortBtn('risk', 'Risk')}</th>
               <th>{sortBtn('date', 'Updated')}</th>
+              {/* The actions column carries buttons whose own labels say what they do, so its header is
+                  for screen readers only — the same reason the checkbox column has none. */}
+              <th aria-label="Actions" />
             </tr>
           </thead>
           <tbody>
@@ -698,7 +718,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
                 an empty view is where it was when you arrived at it. */}
             {!visible.length ? (
               <tr>
-                <td colSpan={(canGroup ? 6 : 5) + (showOwnerColumn ? 1 : 0)} style={{ padding: '22px 12px', color: 'var(--text-muted)' }}>
+                <td colSpan={(canGroup ? 7 : 6) + (showOwnerColumn ? 1 : 0)} style={{ padding: '22px 12px', color: 'var(--text-muted)' }}>
                   No clearances match this view. Pick another company above, or widen the status filter.
                 </td>
               </tr>
@@ -721,12 +741,12 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
                     // lowest-contrast, most letterspaced type on the page, which read as a rule between
                     // rows rather than as "everything below this belongs to Foxglade Interactive".
                     <tr className="group-head">
-                      <td colSpan={(canGroup ? 6 : 5) + (showOwnerColumn ? 1 : 0)}>
+                      <td colSpan={(canGroup ? 7 : 6) + (showOwnerColumn ? 1 : 0)}>
                         <span className="owner-name" data-anon="mark">
                           {ctx.ownerName(runKey(r))}
                         </span>
                         <span className="owner-count">
-                          {rows.filter((x) => runKey(x) === runKey(r)).length} in this view
+                          {namesLabel(nameCount(rows.filter((x) => runKey(x) === runKey(r))))}
                         </span>
                       </td>
                     </tr>
@@ -745,6 +765,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
                       onUngroup={canGroup ? ungroupFamily : undefined}
                       onRetire={canGroup ? retireMark : undefined}
                       onRetireRun={canGroup ? retireRun : undefined}
+                      askAi={askAi}
                     />
                   ) : (
                     <MarkRow
@@ -759,6 +780,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
                       onPick={() => pick(r.id)}
                       onRetire={canGroup ? retireMark : undefined}
                       onRetireRun={canGroup ? retireRun : undefined}
+                      askAi={askAi}
                     />
                   )}
                 </Fragment>
@@ -904,6 +926,118 @@ function Twisty({ open, label, onToggle }: { readonly open: boolean; readonly la
   )
 }
 
+/** Ask AI for one read, drawn by the screen — which holds the one answer about this reader's assistant. */
+type AskAiSlot = (name: string, read: Run) => ReactNode
+
+/**
+ * The row's overflow menu, "···" — where the curation acts live: retire, and ungroup.
+ *
+ * THEY MOVED HERE FROM THE NAME CELL. Retire and Ungroup were underlined links beside the name, in the
+ * line a reader scans for the name, on every row. In the menu they are one press further away and
+ * exactly as available — and the menu is drawn only for someone who may curate, so nobody else meets a
+ * control that would only refuse them.
+ *
+ * BOTH HANDLERS ARE STOPPED, ONCE, HERE. The menu sits inside a row that opens a report or its thread on
+ * a click, and a press inside it that reached the row would retire a read and then navigate away from
+ * the screen that would have shown it worked — for a keyboard user, every time. Stopping the click and
+ * the keydown on the wrapper covers the button and every item in the list, rather than asking each item
+ * to remember.
+ */
+function RowMenu({ label, children }: { readonly label: string; readonly children: ReactNode }) {
+  const [open, setOpen] = useState(false)
+  const box = useRef<HTMLDivElement | null>(null)
+  useEffect(() => {
+    if (!open) return
+    const onDown = (e: MouseEvent) => {
+      if (!box.current?.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('mousedown', onDown)
+    return () => document.removeEventListener('mousedown', onDown)
+  }, [open])
+  return (
+    <div
+      ref={box}
+      className="row-menu"
+      onClick={(e) => {
+        e.stopPropagation()
+      }}
+      onKeyDown={(e) => {
+        e.stopPropagation()
+        // Escape is read here rather than on the document: the stop above is what keeps it from getting there.
+        if (e.key === 'Escape') setOpen(false)
+      }}
+    >
+      <button
+        type="button"
+        className="row-menu-btn"
+        aria-label={label}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+      >
+        <span aria-hidden="true">···</span>
+      </button>
+      {open ? (
+        <div className="float row-menu-list" role="menu" onClick={() => setOpen(false)}>
+          {children}
+        </div>
+      ) : null}
+    </div>
+  )
+}
+
+function MenuItem({ onSelect, title, children }: {
+  readonly onSelect: () => void
+  readonly title?: string
+  readonly children: ReactNode
+}) {
+  return (
+    <button type="button" role="menuitem" className="nav-item row-menu-item" title={title} onClick={onSelect}>
+      {children}
+    </button>
+  )
+}
+
+/**
+ * The actions column: Open, Ask AI and the row menu, each in its own track.
+ *
+ * ONE COLUMN, ONE WIDTH. Every Open on the page — "Open", "Open latest report", a search row's "Open" —
+ * sits in the same track at the same width, so the eye runs straight down them. A row with no Open keeps
+ * its track empty rather than letting Ask AI slide left into it, which is what makes Ask AI line up too.
+ * The browser check measures both, at the widest and the narrowest width it drives.
+ */
+function RowActions({ open, ask, menu }: {
+  readonly open: { readonly label: string; readonly go: () => void } | null
+  readonly ask: ReactNode
+  readonly menu: ReactNode
+}) {
+  return (
+    <div className="row-actions">
+      <span className="row-actions-open">
+        {open ? (
+          // THE LABEL IS THE NAME. No aria-label: a screen reader and a sighted reader are offered the
+          // same words, which is what lets someone say "press Open latest report" to either of them.
+          <button
+            type="button"
+            className="row-open"
+            onClick={(e) => {
+              e.stopPropagation()
+              open.go()
+            }}
+          >
+            {open.label}
+          </button>
+        ) : null}
+      </span>
+      {/* Ask AI opens its own panel, so nothing pressed inside it may reach the row either. */}
+      <span className="row-actions-ask" onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
+        {ask}
+      </span>
+      <span className="row-actions-more">{menu}</span>
+    </div>
+  )
+}
+
 function FamilyRows({
   family,
   isOpen,
@@ -917,6 +1051,7 @@ function FamilyRows({
   onUngroup,
   onRetire,
   onRetireRun,
+  askAi,
 }: {
   readonly family: Extract<Row, { kind: 'family' }>
   readonly isOpen: (id: string) => boolean
@@ -938,10 +1073,15 @@ function FamilyRows({
   /** — and the per-READ retire reaches inside a family for the same reason: a family is a
       grouping of rows, not a different kind of thing. Passed straight through to each MarkRow. */
   readonly onRetireRun?: ((run: Run) => void) | undefined
+  readonly askAi: AskAiSlot
 }) {
   const open = isOpen(family.id)
+  // A GROUP FOLLOWS ITS MEMBERS. When any name in it has a search under way the status says how many,
+  // rather than rolling the members' states into one word that hides which of them is moving.
+  const busy = groupStatus(family)
   return (
     <>
+      {/* The group expands and opens nothing: a family is several names, with no single report. */}
       <tr className="row" onClick={() => onToggle(family.id)}>
         <td>
           <Twisty open={open} onToggle={() => onToggle(family.id)} label={`${open ? 'Collapse' : 'Expand'} ${family.name}`} />
@@ -950,38 +1090,17 @@ function FamilyRows({
             them out of it, which is the only move left at this level. */}
         {picking ? <td /> : null}
         <td>
+          <span className="row-kind">Group ·</span>
           <b data-anon="mark" style={{ color: 'var(--text-strong)' }}>
             {family.name}
           </b>
           <span className="pill" style={{ marginLeft: 8 }}>
-            {family.marks.length} {family.marks.length === 1 ? 'name' : 'names'}
+            {namesLabel(family.marks.length)}
           </span>
-          {/* The worst band is stated in words as well as shown, because "worst" is the one thing about a
-              family row that is not obvious from looking at it. */}
-          {family.band ? <span className="sub">worst of {family.marks.length}: {family.band}</span> : null}
-          {/* — UNGROUP LIVES WHERE THE FAMILY IS. The capability was complete and wired, and the
-              owner asked whether runs could be ungrouped at all: the multi-select button renders only
-              once you have ticked a run that is already in a family, and nothing says so. "Group as a
-              family" is always visible, so the screen read as a one-way operation.
-
-              The enforcement is untouched — that button still appears only when the selection can act.
-              What is added is the invitation, on the row a person looking to break up a family actually
-              looks at. It ungroups the WHOLE family, which is what the header is about; taking one name
-              out stays the multi-select move. stopPropagation because the row itself toggles open. */}
-          {onUngroup ? (
-            <button
-              type="button"
-              className="linkish"
-              style={{ marginLeft: 10, font: 'inherit', fontSize: 12, background: 'none', border: 'none', padding: 0, color: 'var(--text-muted)', cursor: 'pointer', textDecoration: 'underline' }}
-              title={`Ungroup ${family.name} — the ${family.marks.length} ${family.marks.length === 1 ? 'name' : 'names'} stay, the family goes`}
-              onClick={(e) => {
-                e.stopPropagation()
-                onUngroup(family)
-              }}
-            >
-              Ungroup
-            </button>
-          ) : null}
+          {/* What the Risk cell rolls up, said once under the name — "worst" is the one thing about a
+              group row that is not obvious from looking at it, and "worst of 2" said it without saying
+              worst of WHAT. */}
+          <span className="sub">{GROUP_RISK_LINE}</span>
         </td>
         {/* found this: the family row still carried the Stages cell after deleted that column,
             so it had one cell MORE than the table had columns. The browser check never saw it — the
@@ -993,11 +1112,39 @@ function FamilyRows({
           </td>
         ) : null}
         <td>
-          <StatusCell state={family.state} step={null} stepN={null} stepTotal={null} reason={null} failedStage={null} />
+          {busy ? (
+            <span className="status">
+              <span className={`dot ${busy.state}`} />
+              <span className="status-count">{busy.text}</span>
+            </span>
+          ) : (
+            <StatusCell state={family.state} step={null} stepN={null} stepTotal={null} reason={null} failedStage={null} />
+          )}
         </td>
         <td>{family.band ? <RiskDot tone={family.tone} label={family.band} /> : <span style={{ color: 'var(--text-faint)' }}>—</span>}</td>
-        <td className="mono" style={{ color: 'var(--text-muted)', fontSize: 13 }}>
+        <td className="mono col-date" style={{ color: 'var(--text-muted)', fontSize: 13 }}>
           {family.date ?? ''}
+        </td>
+        <td className="col-actions">
+          {/* — UNGROUP LIVES WHERE THE FAMILY IS. The owner asked whether runs could be ungrouped at
+              all: the multi-select button renders only once you have ticked a run that is already in a
+              family, and nothing said so. The invitation is on the row a person looking to break up a
+              family actually looks at, in its menu, and it ungroups the WHOLE family — which is what the
+              row is about. Taking one name out stays the multi-select move. */}
+          <RowActions
+            open={null}
+            ask={null}
+            menu={onUngroup ? (
+              <RowMenu label={`More actions for ${family.name}`}>
+                <MenuItem
+                  title={`Ungroup ${family.name} — the ${namesLabel(family.marks.length)} stay, the family goes`}
+                  onSelect={() => onUngroup(family)}
+                >
+                  Ungroup
+                </MenuItem>
+              </RowMenu>
+            ) : null}
+          />
         </td>
       </tr>
       {open
@@ -1016,6 +1163,7 @@ function FamilyRows({
               onPick={() => onPick(m.id)}
               onRetire={onRetire}
               onRetireRun={onRetireRun}
+              askAi={askAi}
             />
           ))
         : null}
@@ -1036,12 +1184,13 @@ function MarkRow({
   onPick,
   onRetire,
   onRetireRun,
+  askAi,
 }: {
   readonly mark: MarkGroup
   readonly open: boolean
   readonly onToggle: () => void
   readonly go: (p: string) => void
-  /** True when the row sits under a family, which is the only thing that indents it. */
+  /** True when the row sits under a family, which is the only thing that nests it. */
   readonly indent?: boolean
   readonly picking?: boolean
   /** — ungrouped, the company moves from the section header into a column on every row. */
@@ -1056,21 +1205,33 @@ function MarkRow({
       site rather than a second one, so the two curation acts cannot come to differ about who may
       curate. Absent ⇒ no control, exactly as  requires of its group-level sibling. */
   readonly onRetireRun?: ((run: Run) => void) | undefined
+  readonly askAi: AskAiSlot
 }) {
   const run = mark.current
   const threaded = mark.reads.length > 1
+  // ONE REPORT, FOUR USES: the bands in the Risk cell, the date under them, what Open opens and what Ask
+  // AI asks about all come from `nameRow.ts`, so the four cannot come to describe different searches.
+  const report = shownReport(mark)
+  const secondLine = reportLine(mark)
+  const actions = nameActions(mark)
+  const target = actions.open
+  const openReport = target ? () => go(`/portal/result/${encodeURIComponent(target.read.runId)}`) : null
+  // THE EXPAND CONTROL IS ONLY WHERE THERE IS SOMETHING TO EXPAND. A name with one search has no thread,
+  // so its row opens its report rather than unfolding a list of one; a name with neither a thread nor a
+  // report does nothing on a click, and does not look as if it would.
+  const onRow = threaded ? onToggle : openReport
 
   return (
     <>
-      <tr className="row" onClick={onToggle}>
-        <td style={indent ? { paddingLeft: 26 } : undefined}>
+      <tr className={onRow ? 'row' : 'row inert'} onClick={onRow ?? undefined}>
+        <td className={indent ? 'nest-1' : undefined}>
           {/* Named from mark.name — the SAME source the checkbox beside it uses, so the two cannot
               drift.  changed what that name is and  changed the checkbox's wording; a name
               composed independently here would already be a third convention. */}
-          <Twisty open={open} onToggle={onToggle} label={`${open ? 'Collapse' : 'Expand'} ${mark.name}`} />
+          {threaded ? <Twisty open={open} onToggle={onToggle} label={`${open ? 'Collapse' : 'Expand'} ${mark.name}`} /> : null}
         </td>
         {picking ? (
-          // stopPropagation, or ticking a box would also expand the row underneath the cursor.
+          // stopPropagation, or ticking a box would also open the row underneath the cursor.
           <td onClick={(e) => e.stopPropagation()}>
             <input
               type="checkbox"
@@ -1088,45 +1249,17 @@ function MarkRow({
           {/* deleted `GROUP · N`. On a one-mark batch it announced a group of one, which is not a
               group and tells a reader nothing either way; on a larger batch it restated a count the
               Name cell now carries in words —  made that cell read "VENZY +2 more". */}
-          {/* Only when there IS a thread. A "1 read" badge on every single-read name is noise on every
-              row, and noise on every row is how the row that needed a badge stops being seen. */}
-          {threaded ? <span className="pill" style={{ marginLeft: 8 }}>{mark.reads.length} reads</span> : null}
-          {/* IMPROVED SINCE. Outside the Risk cell on purpose — that cell reports what this read
-              found, and a second value in it would be the blend this issue is removing. It renders only
+          {/* Only when there IS a thread. A "1 search" badge on every single-search name is noise on
+              every row, and noise on every row is how the row that needed a badge stops being seen. */}
+          {threaded ? <span className="pill" style={{ marginLeft: 8 }}>{searchesLabel(mark.reads.length)}</span> : null}
+          {/* IMPROVED SINCE. Outside the Risk cell on purpose — that cell reports what the report found,
+              and a second value in it would be the blend this issue is removing. It renders only
               when an earlier read was WORSE than the latest, which is rare: a marker on every row is one
               nobody sees. */}
-          {mark.improvedFrom ? (
-            <span className="pill" style={{ marginLeft: 8 }} title={`An earlier read of this name came back ${mark.improvedFrom}. The row shows where it stands now.`}>
+          {mark.improvedFrom && report ? (
+            <span className="pill" style={{ marginLeft: 8 }} title={`An earlier search of this name came back ${mark.improvedFrom}. The row shows where it stands now.`}>
               was {mark.improvedFrom}
             </span>
-          ) : null}
-          {/* — RETIRE, ON THE ROW. The owner asked for "a way to remove, hide or archive a
-              clearance from the Clearances page" and there was none: the sidecar, its reader and its
-              semantics were all live, and the only writer was a CLI on the pool host.
-              Same treatment as 's Ungroup one row-shape up, deliberately — this screen now has two
-              row-level curation acts and they should not look like two different kinds of thing.
-              stopPropagation because the row itself toggles open. */}
-          {onRetire ? (
-            <button
-              type="button"
-              className="linkish"
-              style={{ marginLeft: 10, font: 'inherit', fontSize: 12, background: 'none', border: 'none', padding: 0, color: 'var(--text-muted)', cursor: 'pointer', textDecoration: 'underline' }}
-              title={threaded
-                ? `Retire all ${mark.reads.length} reads of ${mark.name} — the whole name comes off this list for everyone; the reports and their links stay, and "Show retired" brings it back. To retire ONE read, open the row and use the Retire on that read.`
-                : `Retire ${mark.name} — it comes off this list for everyone; the reports and their links stay, and "Show retired" brings it back`}
-              onClick={(e) => {
-                e.stopPropagation()
-                onRetire(mark)
-              }}
-            >
-              {/* — THE LABEL SAYS HOW MANY, once there is more than one. Two controls reading
-                  "Retire" on adjacent rows, one taking the whole name and one taking a single read, is
-                  the ambiguity this issue opened with ("i can only retire ALL runs under that grouped
-                  name") restated as a UI rather than removed. An unthreaded name has exactly one read,
-                  so "all 1 reads" would be pedantry and the per-read control is suppressed there — one
-                  action, one place to click. */}
-              {threaded ? `Retire all ${mark.reads.length}` : 'Retire'}
-            </button>
           ) : null}
           {/* deleted the company chip.
               It only ever rendered when grouping was ON (grouped AND the name ambiguous), which is
@@ -1154,36 +1287,60 @@ function MarkRow({
             pausedKind={run.pausedKind}
             resetsAt={run.resetsAt}
             stopRequestedAt={run.stopRequestedAt}
+            count={statusCount(mark)}
           />
         </td>
         <td>
-          {/* THE BANDS PRESENT, WORST FIRST — not a computed summary.
-              This used to show `worstBand(...)` for a batch, a synthesised value that needed the words
-              "worst:" beside it to explain what it was, and which disagreed with data two lines below on
-              the same row. The cell now REPORTS what the row contains, so a reader can reconstruct the
-              row's contents from it. One mark has one band, which is what it already showed.
-              Risk only once the latest read has finished: an in-flight re-read has no band, and an
-              em-dash says so rather than borrowing the band of the read it is replacing. */}
-          {run.state === 'delivered' && mark.rowBands.length ? (
+          {/* THE BANDS PRESENT, WORST FIRST — not a computed summary. The cell REPORTS what the report
+              contains, so a reader can reconstruct it from the cell. One mark has one band.
+              AND WHICH REPORT, WHEN IT IS NOT THE NEWEST SEARCH. While a re-read waits or runs, the bands
+              are the latest report's and the quiet line beneath dates it, so the search under way and the
+              assessment already held are told apart rather than blended. With nothing under way and no
+              report — running for the first time, or stopped — an em dash says so. */}
+          {report && mark.reportBands.length ? (
             <span style={{ display: 'inline-flex', gap: 8, flexWrap: 'wrap' }}>
-              {mark.rowBands.map((label) => (
-                <RiskDot key={label} tone={run.bands.find((b) => b.label === label)?.tone ?? null} label={label} />
+              {mark.reportBands.map((label) => (
+                <RiskDot key={label} tone={report.bands.find((b) => b.label === label)?.tone ?? null} label={label} />
               ))}
             </span>
           ) : (
             <span style={{ color: 'var(--text-faint)' }}>—</span>
           )}
+          {secondLine ? <span className="sub report-line">{secondLine}</span> : null}
         </td>
-        <td className="mono" style={{ color: 'var(--text-muted)', fontSize: 13 }}>
+        <td className="mono col-date" style={{ color: 'var(--text-muted)', fontSize: 13 }}>
           {mark.date ?? ''}
+        </td>
+        <td className="col-actions">
+          <RowActions
+            open={target && openReport ? { label: target.label, go: openReport } : null}
+            ask={actions.askAbout ? askAi(mark.name, actions.askAbout) : null}
+            menu={onRetire ? (
+              <RowMenu label={`More actions for ${mark.name}`}>
+                {/* — RETIRE, IN THE ROW'S MENU. The owner asked for "a way to remove, hide or archive a
+                    clearance from the Clearances page"; the sidecar, its reader and its semantics were
+                    all live, and the only writer was a CLI on the pool host. */}
+                <MenuItem
+                  title={threaded
+                    ? `Retire all ${mark.reads.length} searches of ${mark.name} — the whole name comes off this list for everyone; the reports and their links stay, and "Show retired" brings it back. To retire ONE search, open the row and use that search's menu.`
+                    : `Retire ${mark.name} — it comes off this list for everyone; the reports and their links stay, and "Show retired" brings it back`}
+                  onSelect={() => onRetire(mark)}
+                >
+                  {/* — THE LABEL SAYS HOW MANY, once there is more than one. Two controls reading
+                      "Retire", one taking the whole name and one taking a single search, is the
+                      ambiguity this issue opened with ("i can only retire ALL runs under that grouped
+                      name") restated as a UI rather than removed. */}
+                  {threaded ? `Retire all ${mark.reads.length}` : 'Retire'}
+                </MenuItem>
+              </RowMenu>
+            ) : null}
+          />
         </td>
       </tr>
 
-      {/* THE THREAD. Every read of this name, newest first — which is what the page has always said
-          this panel would show. Each read is now a REAL ROW in the parent's grid: it was a
-          single <td colSpan> holding its own flex layout, so where its values landed was decided by the
-          length of the text beside them rather than by a column, and any alignment it showed was
-          coincidental. */}
+      {/* THE THREAD. Every search of this name, newest first. Each is a REAL ROW in the parent's grid:
+          it was a single <td colSpan> holding its own flex layout, so where its values landed was decided
+          by the length of the text beside them rather than by a column. */}
       {open ? mark.reads.map((r) => (
         <ReadRow
           key={r.runId}
@@ -1192,7 +1349,7 @@ function MarkRow({
           picking={picking}
           indent={indent}
           showOwner={showOwner}
-          current={r.runId === mark.current.runId}
+          latest={r.runId === mark.latestReport?.runId}
           sameDayAsAnother={mark.reads.some((o) => o.runId !== r.runId && o.date === r.date)}
           {...(threaded ? { onRetire: onRetireRun } : {})}
         />
@@ -1200,13 +1357,10 @@ function MarkRow({
 
       {open && run.marks.length > 1 ? (
         <tr>
-          <td colSpan={(picking ? 6 : 5) + (showOwner ? 1 : 0)} style={{ background: 'var(--surface-sunken)' }}>
+          <td colSpan={(picking ? 7 : 6) + (showOwner ? 1 : 0)} style={{ background: 'var(--surface-sunken)' }}>
 
             {/* A batch's per-name answers: one read's contents, not a thread, so this one stays a
-                spanning cell — the names are not reads and do not belong in the read grid.
-                dropped the "Names in the latest read" heading with the convention it belonged to:
-                the Name column now holds the first mark and says how many more, so this is simply the
-                rest of them, and a batch of one has nothing left to add. */}
+                spanning cell — the names are not searches and do not belong in the search grid. */}
             <div style={{ display: 'grid', gap: 8, paddingLeft: indent ? 26 : 0 }}>
               {run.marks.map((m) => (
                 <div key={m.name} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -1225,16 +1379,14 @@ function MarkRow({
 }
 
 /**
- * One read in the thread — a REAL ROW in the parent table's grid.
+ * One search in the thread — a REAL ROW in the parent table's grid.
  *
  * It used to be a <div> inside a spanning cell, laid out with its own flex row. That is the mechanism
  * behind "the column alignment is a mess": nothing in it participated in the column grid, so where a
- * value landed was decided by the length of the text beside it. Lengthening a run title moved every
- * value to its right, and the parent's own columns re-flowed when a row opened.
+ * value landed was decided by the length of the text beside it.
  *
- * Now each value sits in the cell of the column it belongs to — Status under Status, Risk under Risk,
- * date under Updated — so the alignment is structural rather than coincidental, and a longer title moves
- * nothing but itself.
+ * Now each value sits in the cell of the column it belongs to — Status under Status, Risk under Risk —
+ * so the alignment is structural rather than coincidental, and a longer title moves nothing but itself.
  */
 function ReadRow({
   read,
@@ -1242,7 +1394,7 @@ function ReadRow({
   picking,
   indent,
   showOwner = false,
-  current = false,
+  latest = false,
   sameDayAsAnother = false,
   onRetire,
 }: {
@@ -1250,106 +1402,55 @@ function ReadRow({
   readonly go: (p: string) => void
   readonly picking: boolean
   readonly indent?: boolean
-  /** — a spacer under the company column, so a read row still matches the grid when shown. */
+  /** — a spacer under the company column, so a search row still matches the grid when shown. */
   readonly showOwner?: boolean
-  /** The read the parent row speaks for. Marked, so the latest-read rule has a visible ordering key. */
-  readonly current?: boolean
-  /** Another read of this name finished on the same day — the case a date alone cannot separate. */
+  /** The newest search that delivered — the report the name row above speaks for, so it is badged. */
+  readonly latest?: boolean
+  /** Another search of this name finished on the same day — the case a date alone cannot separate. */
   readonly sameDayAsAnother?: boolean
-  /** — retire THIS read. Absent ⇒ no control ('s rule, inherited from the parent's gate). */
+  /** — retire THIS search. Absent ⇒ no control ('s rule, inherited from the parent's gate). */
   readonly onRetire?: ((run: Run) => void) | undefined
 }) {
-  // THE WHOLE ROW OPENS THE REPORT.
+  // THE OPEN BUTTON IS THE CONTROL. The row used to be the control — a `role="link"` with a faint "Open ›"
+  // cue — because the only way in had been a text button at the far right edge that nobody found. A
+  // bordered Open in its own column is found; so it is the one named, focusable target, and the row keeps
+  // only the mouse's convenience of a click anywhere on it. One tab stop per search, not two.
   //
-  // The only way in was an "Open the report" text button at the far right edge — the furthest point from
-  // the run title the reader has just read — on a <tr> with `cursor: auto` and no hover state. People
-  // read the title, find nothing to click, and conclude there is no report.
-  //
-  // A read with NO report gets NO affordance at all: not a pointer, not a hover, not a tab stop. A dead
-  // target is worse than no target, which is why this is a branch rather than a disabled state.
-  // — A BATCH HAS REPORTS, JUST NOT ONE OF THEM. `read.report` is the RUN-LEVEL link and the
-  // service sets it null for a multi-mark batch on purpose: there is no run-level document, and
-  // serving mark one of eight as "the report" is the defect removed. But this row used that
-  // null as "has no report at all", so every knockout batch listed as unopenable — and printed the
-  // fallback below, which told the customer their delivered report was with us for a final read.
-  // The Result screen has rendered a batch's per-mark list since. The row just never let
-  // anyone reach it.
-  const openable = Boolean(read.report) || read.reports.length > 0
+  // A search with NO report gets NO affordance at all: no button, no pointer, no hover. A dead target is
+  // worse than no target, which is why this is a branch rather than a disabled state. — A BATCH HAS
+  // REPORTS, JUST NOT ONE OF THEM: see `hasReport`.
+  const openable = hasReport(read)
   const open = () => go(`/portal/result/${encodeURIComponent(read.runId)}`)
 
   return (
-    <tr
-      className={openable ? 'read-row openable' : 'read-row'}
-      {...(openable
-        ? {
-            // A row is not a button, so it has to be told how to behave like one: reachable by Tab,
-            // activated by Enter or Space, and named for what it opens rather than "row".
-            role: 'link' as const,
-            tabIndex: 0,
-            'aria-label': `Open the report for ${readLabel(read)}`,
-            onClick: open,
-            onKeyDown: (e: React.KeyboardEvent) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                // Space scrolls the page by default, which on a list of rows is the wrong thing entirely.
-                e.preventDefault()
-                open()
-              }
-            },
-          }
-        : {})}
-    >
-      {/* The twisty column carries the nesting: one step in from the parent, so containment is visible
-          without reading anything. */}
-      <td style={{ paddingLeft: indent ? 38 : 26 }} />
+    <tr className={openable ? 'read-row openable' : 'read-row'} {...(openable ? { onClick: open } : {})}>
+      {/* The first column carries the nesting: a rule per level, so containment is visible without
+          reading anything. */}
+      <td className={indent ? 'nest-2' : 'nest-1'} />
       {picking ? <td /> : null}
       <td>
         <span className="mono" style={{ fontSize: 12.5, color: 'var(--text-muted)' }}>
           {readLabel(read)}
-          {/* THE ORDERING KEY, SHOWN. A date alone cannot separate two reads of the same day —
-              which is exactly the House-default row, where two runs 2m08s apart rendered
-              byte-identically. The time appears only when it is needed to tell them apart, so the common
-              row does not carry a number nobody reads. UTC, and it says so. */}
+          {/* THE ORDERING KEY, SHOWN. A date alone cannot separate two searches of the same day. The time
+              appears only when it is needed to tell them apart. UTC, and it says so. */}
           {sameDayAsAnother && readTime(read) ? <span style={{ marginLeft: 6 }}>{readTime(read)} UTC</span> : null}
         </span>
-        {/* WHICH ONE IS THE CURRENT READ. A latest-read rule with no visible ordering key moves the
-            confusion rather than removing it — the issue says point 3 is not separable from points 1
-            and 2, and this is that. */}
-        {current ? <span className="pill" style={{ marginLeft: 8 }}>current</span> : null}
-        {/* — RETIRE, ON THE READ. Same cell, same styling and same shape as the mark-level Retire
-            one row up, because 's comment asks for exactly that: this screen has row-level curation
-            acts and they should not look like two different kinds of thing. What differs is the WORD it
-            acts on, and the confirm says which.
-
-            BOTH HANDLERS ARE STOPPED, not just the click. The row is a `role="link"` with an onClick AND
-            an onKeyDown that opens the report on Enter or Space — so a button inside it that stops only
-            the pointer would retire the read and then navigate away from the screen that would have
-            shown it worked, and a keyboard user would get that every time. This is the one place on the
-            screen where a nested control sits inside an activatable row. */}
-        {onRetire ? (
-          <button
-            type="button"
-            className="linkish"
-            style={{ marginLeft: 10, font: 'inherit', fontSize: 12, background: 'none', border: 'none', padding: 0, color: 'var(--text-muted)', cursor: 'pointer', textDecoration: 'underline' }}
-            title={`Retire this read — ${readLabel(read)}. Only this read comes off the list; the other reads of this name stay, the report link keeps working, and "Show retired" brings it back`}
-            onClick={(e) => {
-              e.stopPropagation()
-              onRetire(read)
-            }}
-            onKeyDown={(e) => e.stopPropagation()}
-          >
-            Retire
-          </button>
+        {/* WHICH ONE IS THE LATEST REPORT. The name row's Risk cell speaks for one search in this list;
+            the badge says which, so the rule has a visible key. */}
+        {latest ? <span className="pill" style={{ marginLeft: 8 }}>Latest report</span> : null}
+        {/* — WHAT THIS SAYS IS NOW WHAT IS TRUE. It used to claim the run was still with a reviewer
+            ahead of release — a step nobody performs — on a run that had in fact been delivered. The
+            state is: delivered, and this view has no file to link. */}
+        {!openable && read.state === 'delivered' ? (
+          <span className="sub">Delivered — no report file found for this run.</span>
         ) : null}
       </td>
-      {/* — a read belongs to the same owner as its parent row, so the cell is a spacer rather than
-          a repetition. It exists because the grid must still line up: a read row one cell short of its
-          columns is the  fault back again, in a mode that did not exist when  landed. */}
+      {/* — a search belongs to the same owner as its parent row, so the cell is a spacer rather than
+          a repetition. It exists because the grid must still line up. */}
       {showOwner ? <td /> : null}
       <td>
-        {/* THE ONE PLACE the engine's own words are reachable. The parent row states the
-            status; here, where the reader is looking at this specific run, a Details disclosure holds
-            the raw value — so a lawyer can act on the status and an engineer still gets the detail in
-            one click, once per row rather than twice. */}
+        {/* THE ONE PLACE the engine's own words are reachable. The parent row states the status; here,
+            where the reader is looking at this specific search, a Details disclosure holds the raw value. */}
         <StatusCell
           state={read.state}
           step={read.step}
@@ -1364,24 +1465,27 @@ function ReadRow({
       <td>
         {read.state === 'delivered' && read.band ? <RiskDot tone={read.tone} label={read.band} /> : <span style={{ color: 'var(--text-faint)' }}>—</span>}
       </td>
-      <td className="mono" style={{ color: 'var(--text-muted)', fontSize: 13 }}>
-        {openable ? (
-          // Not a button any more: the row IS the control, and a button inside a clickable row is two
-          // targets for one action. What is left is a cue that the row leads somewhere — the affordance
-          // is on the thing you can click, which is the fix the issue asks for.
-          <span className="read-go" aria-hidden="true">
-            Open<Icon name="chevron" size={14} />
-          </span>
-        ) : read.state === 'delivered' ? (
-          // — WHAT THIS SAYS IS NOW WHAT IS TRUE. It used to claim the run was still with a reviewer
-          // ahead of release — a step nobody performs — on a run that had
-          // in fact been delivered. It could not be right in either branch: if the report was there it
-          // was a lie about a file the customer could have been reading, and if it was genuinely absent
-          // it was a lie about the reason. The state is: delivered, and this view has no file to link.
-          <span className="sub" style={{ margin: 0 }}>
-            Delivered — no report file found for this run.
-          </span>
-        ) : null}
+      {/* A search's date is in its own label, "Product · date", so this cell stays empty rather than
+          saying it twice on one line. */}
+      <td className="col-date" />
+      <td className="col-actions">
+        <RowActions
+          open={openable ? { label: 'Open', go: open } : null}
+          ask={null}
+          menu={onRetire ? (
+            <RowMenu label={`More actions for ${readLabel(read)}`}>
+              {/* — RETIRE, ON THE SEARCH. Same menu, same shape as the name row's, because this screen
+                  has row-level curation acts and they should not look like two different kinds of
+                  thing. What differs is the thing it acts on, and the confirm says which. */}
+              <MenuItem
+                title={`Retire this search — ${readLabel(read)}. Only this search comes off the list; the other searches of this name stay, the report link keeps working, and "Show retired" brings it back`}
+                onSelect={() => onRetire(read)}
+              >
+                Retire
+              </MenuItem>
+            </RowMenu>
+          ) : null}
+        />
       </td>
     </tr>
   )
