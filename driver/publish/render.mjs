@@ -2451,9 +2451,10 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   const clNotice = (clNoticeText && CASE_LAW_BY_ORD.size)
     ? `<div class="panel" style="padding:12px 16px;margin:0 0 12px"><p style="margin:0 0 4px;font-weight:700;font-size:13px">Session-wide notice</p><div style="font-size:13px">${renderProse(clNoticeText)}</div></div>`
     : '';
-  const CL_SEC = (n) => `<div class="sec" id="common-law"><h2>Common-law &amp; marketplace</h2></div>
-  ${clNotice}${clBody}`;
-  const hasCL = Boolean(clBody || clNotice);
+  // tracker issue 644 — the section heading and the session-wide notice are off the page: the heading
+  // named a layer rather than a thing a reader looks for, and the notice was operational narration. The
+  // CARDS are not: a rated common-law finding is a finding, and it renders in place with the others.
+  const hasCL = Boolean(clBody);
   let findingsSections, covNum;
   if (!DISPOSITION_MODE) {
     findingsSections = `${onField.length ? `<div class="sec"><h2>The conflict landscape</h2></div>
@@ -2465,7 +2466,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   ${secReg.length ? `<div class="sec"><h2>Secondary &amp; watch</h2></div>
   ${secondaryRegions(secReg, cardFor, recordsByUri)}` : ''}${hasCL ? `
 
-  ` : ''}`;
+  ${clBody}` : ''}`;
     covNum = hasCL ? '05' : '04';
   } else {
     let secNum = 0;
@@ -2510,7 +2511,9 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
       tail += `\n\n  <div class="sec"><h2>Notable but manageable</h2></div>
   ${parts.join('\n  ')}`;
     }
-    // the common-law section is Also considered's now (tracker issue 644)
+    // tracker issue 644 — the section heading and its routing notice go; the CARDS stay, or a
+    // finding the run rated would appear on no page at all.
+    if (hasCL) tail += `\n\n  ${clBody}`;
     findingsSections = landscape + tail;
     covNum = num();
   }
