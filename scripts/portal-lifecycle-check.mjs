@@ -278,8 +278,13 @@ const server = createServer((req, res) => {
     })
   }
   if (p === '/portal/api/config/searches') {
-    return json(res, { recipes: Object.entries(RECIPES).map(([slug, r]) => ({
-      slug, label: r.label, base: r.base, archived: Boolean(r.archived), version: r.version ?? null, updatedAt: null })) })
+    const listing = { recipes: Object.entries(RECIPES).map(([slug, r]) => ({
+      slug, label: r.label, base: r.base, archived: Boolean(r.archived), version: r.version ?? null, updatedAt: null })) }
+    // LATE ON PURPOSE in the Company settings pass. Profile's Permitted searches row names templates from
+    // this listing, and a listing that always beat the profile would leave no moment in which the row
+    // could say something other than the names.
+    if (role === 'settings') { setTimeout(() => json(res, listing), 500); return }
+    return json(res, listing)
   }
   const one = /^\/portal\/api\/config\/searches\/([^/]+)$/.exec(p)
   if (one) {
@@ -896,13 +901,25 @@ const SETTINGS_HELPERS = `
 
 const SETTINGS_STATES = [
   { name: 'profile-folds-closed', script: `
+    // EVERY WORDING THE PERMITTED SEARCHES ROW TAKES ON THE WAY IN, not only the last. A row that read
+    // "2 searches not on Search templates" until the listing answered would still settle on the names,
+    // and a wait for any words at all is satisfied by the wrong ones. The stub answers that listing late
+    // in this pass, so the window is there to be seen.
+    const permittedRow = () => [...document.querySelectorAll('.fw-row')].find((r) => r.querySelector('.fw-row-label').textContent === 'Permitted searches');
+    const permittedSeen = [];
+    const watch = new MutationObserver(() => {
+      const r = permittedRow(); const v = r ? r.querySelector('.fw-row-value').textContent.trim() : '';
+      if (v && permittedSeen[permittedSeen.length - 1] !== v) permittedSeen.push(v);
+    });
+    watch.observe(document.body, { subtree: true, childList: true, characterData: true });
     await goto('/portal/brand/profile');
     // One company among two in the switcher (its organisation's Generic is the other), so pick it.
     const sw = document.querySelector('select[aria-label="Company"]');
     if (sw && sw.value !== '${KEY}') { set(sw, '${KEY}'); await sleep(600); }
     await mustSettle(() => document.querySelector('.fw-sectionh') && document.querySelector('.fw-row'), 8000, 'Profile never drew its framework card');
-    await mustSettle(() => [...document.querySelectorAll('.fw-row')].some((r) => r.querySelector('.fw-row-label').textContent === 'Permitted searches'
-      && r.querySelector('.fw-row-value').textContent.trim() !== ''), 8000, 'Permitted searches never named its templates');
+    await mustSettle(() => permittedRow() && permittedRow().querySelector('.fw-row-value').textContent.trim() !== '', 8000, 'Permitted searches never named its templates');
+    await sleep(300);
+    watch.disconnect();
     window.scrollTo(0, 0);
     const depth = fieldControl('Default search depth');
     return { path: location.pathname, rail: rail(), header: header(), fields: fields(), cards: cards(), folds: folds(),
@@ -922,7 +939,7 @@ const SETTINGS_STATES = [
         return b ? { text: b.textContent, disabled: b.disabled, primary: b.classList.contains('btn-primary') } : null; })(),
       saveNote: (document.querySelector('.main .row-foot-note') || {}).textContent || null,
       checkButton: Boolean([...document.querySelectorAll('.main button')].find((b) => b.textContent.trim() === 'Check')),
-      characters: /\\d+ \\/ 8,000 characters/.test(txt()) };
+      characters: /\\d+ \\/ 8,000 characters/.test(txt()), permittedSeen };
   ` },
   { name: 'profile-folds-open', script: `
     await openFold('What the bands mean');
@@ -931,6 +948,43 @@ const SETTINGS_STATES = [
       ratedOnVisible: /Rated on:/.test(txt()), entityVisible: /Entity in prose:/.test(txt()),
       coverage: ([...document.querySelectorAll('.main details p')].find((p) => /Calculated from/.test(p.textContent)) || {}).textContent || null,
       rowsStillVisible: [...document.querySelectorAll('.fw-row')].filter(visible).length };
+  ` },
+  { name: 'profile-unsaved', script: `
+    // A CLASS ADDED THE WAY A PERSON ADDS ONE: a word typed into the search box, and the match picked from
+    // what it offers. The box replaced a grid of numbers, and only a pick shows it still writes the field.
+    const box = document.querySelector('.main .class-picker-box input');
+    if (!box) throw new Error('the class search box is not on screen');
+    box.focus();
+    set(box, 'cloth');
+    const matches = () => [...document.querySelectorAll('.main .class-picker-box .typeahead button')];
+    await mustSettle(() => matches().some((b) => b.textContent.startsWith('25 · ')), 3000, 'typing "cloth" did not offer class 25');
+    const offered = matches().map((b) => b.textContent);
+    matches().find((b) => b.textContent.startsWith('25 · ')).click();
+    await mustSettle(() => [...document.querySelectorAll('.main .class-picker .chip')].some((c) => c.textContent.trim().startsWith('25 · ')), 3000, 'picking class 25 added no chip');
+    window.scrollTo(0, 0);
+    const save = [...document.querySelectorAll('.main .row-foot button')][0];
+    return { offered, box: box.value, classChips: [...document.querySelectorAll('.main .class-picker .chip')].map((c) => c.textContent.trim()),
+      save: save ? { text: save.textContent, disabled: save.disabled } : null,
+      saveNote: (document.querySelector('.main .row-foot-note') || {}).textContent || null };
+  ` },
+  { name: 'profile-saved', shot: false, script: `
+    const note = () => (document.querySelector('.main .row-foot-note') || {}).textContent || null;
+    // The page's own outcome notices, under the form — not the framework card's, which are notices too.
+    const notices = () => [...document.querySelectorAll('.main .measure > .notice > b')].map((b) => b.textContent);
+    try {
+      [...document.querySelectorAll('.main .row-foot button')][0].click();
+      await mustSettle(() => notices().includes('Saved'), 8000, 'one press of Save never said Saved');
+      // THE STUB ANSWERS A SAVE AND KEEPS NOTHING, so the reload after it serves the profile as it was: class
+      // 25 leaves the chips and the note goes back to "No changes". That is the stub, not the screen — what
+      // the press sent is read off the wire in the verdict.
+      await mustSettle(() => note() === 'No changes', 8000, 'the form did not settle after saving');
+      return { notices: notices(), saveNote: note() };
+    } finally {
+      // A save that did not land leaves the form dirty, and a dirty form asks before the next state may leave
+      // it, in a dialog this driver cannot answer. The class comes back out, so a failure here reads as one.
+      const x = document.querySelector('.main .class-picker button[aria-label="Remove class 25"]');
+      if (note() === 'Unsaved changes' && x) { x.click(); await sleep(200); }
+    }
   ` },
   { name: 'search-templates', script: `
     await goto('/portal/brand/searches');
@@ -1136,10 +1190,11 @@ const capture = async (path) => {
 role = 'settings'
 await reload()
 const settings = {}
+const settingsPostedFrom = posted.length
 for (const st of SETTINGS_STATES) {
   const got = await value(`(async () => { ${HELPERS} ${SETTINGS_HELPERS} try { ${st.script} } catch (e) { return { fatal: String((e && e.message) || e), body: txt().slice(0, 600) }; } })()`)
   settings[st.name] = got ?? { fatal: 'the state returned nothing' }
-  if (!shotDir || !got || got.fatal) continue
+  if (!shotDir || !got || got.fatal || st.shot === false) continue
   await capture(join(shotDir, `company-settings-${st.name}-light.png`))
   await evalIn(`document.documentElement.setAttribute('data-theme','dark'); 'ok'`)
   await new Promise((r) => setTimeout(r, 300))
@@ -1422,6 +1477,8 @@ if (closed) {
   ok(row('Worked examples') === 'Used when rating this company', `Profile: Worked examples reads ${JSON.stringify(row('Worked examples'))}`)
   ok(row('Permitted searches') === 'Launch screen, Old thing', `Profile: Permitted searches reads ${JSON.stringify(row('Permitted searches'))}`)
   ok(!/launch-screen|old-thing/.test(row('Permitted searches') ?? ''), 'Profile: a template slug reached the Permitted searches row')
+  ok(JSON.stringify(closed.permittedSeen) === JSON.stringify(['Launch screen, Old thing']),
+    `Profile: on the way in, Permitted searches read ${JSON.stringify(closed.permittedSeen)} rather than only the names`)
   for (const label of ['Jurisdiction policy', 'Run limits']) ok(closed.rows.some(([l]) => l === label), `Profile: the ${label} row is not in view`)
   ok(closed.guide && closed.guide.pill && closed.guide.newTab, `Profile: "Use your own risk framework" is not one control opening a new tab — ${JSON.stringify(closed.guide)}`)
   const tag = (label) => closed.fields.find((f) => f.label === label)?.tag ?? null
@@ -1452,6 +1509,25 @@ if (open) {
   ok(open.coverage?.replace(/\s+/g, ' ').trim() === 'Calculated from the marketplaces and density above: about 14 search variants per pass across 6 sources.',
     `Profile: the variant calculation reads ${JSON.stringify(open.coverage)}`)
   ok(open.rowsStillVisible >= 3, 'Profile: the configuration rows left the view when the fold opened')
+}
+const unsaved = said('profile-unsaved')
+if (unsaved) {
+  const chips = [...unsaved.classChips].sort()
+  ok(unsaved.box === '' && JSON.stringify(chips) === JSON.stringify(['25 · Clothing', '42 · Science & technology', '9 · Electrical & software']),
+    `Profile: picking 25 from the class search did not add it beside the two classes and empty the box — ${JSON.stringify(unsaved)}`)
+  ok(unsaved.save && unsaved.save.text === 'Save' && !unsaved.save.disabled && unsaved.saveNote === 'Unsaved changes',
+    `Profile: with a class added, Save is not ready beside "Unsaved changes" — ${JSON.stringify([unsaved.save, unsaved.saveNote])}`)
+}
+const pressed = said('profile-saved')
+if (pressed) {
+  ok(JSON.stringify(pressed.notices) === JSON.stringify(['Saved']), `Profile: one press of Save ended in ${JSON.stringify(pressed.notices)}`)
+  // ONE PRESS, TWO REQUESTS, IN THIS ORDER: the dry run, then the write of the very body it passed.
+  const sent = posted.slice(settingsPostedFrom).filter((p) => p.path.startsWith('/portal/api/config/profile/'))
+  ok(JSON.stringify(sent.map((p) => p.path)) === JSON.stringify(['/portal/api/config/profile/validate', '/portal/api/config/profile/save']),
+    `Profile: one press of Save sent ${JSON.stringify(sent.map((p) => p.path))} rather than the check and then the write`)
+  ok(sent.length === 2 && JSON.stringify(sent[0].body) === JSON.stringify(sent[1].body), 'Profile: the write did not send the body the check passed')
+  const classes = (sent[1]?.body?.profile?.defaultClasses ?? []).map(Number).sort((a, b) => a - b)
+  ok(JSON.stringify(classes) === JSON.stringify([9, 25, 42]), `Profile: the save sent classes ${JSON.stringify(classes)} rather than the picked one beside the two it had`)
 }
 const templates = said('search-templates')
 if (templates) {
