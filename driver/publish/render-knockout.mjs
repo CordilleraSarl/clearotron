@@ -311,7 +311,7 @@ function glanceSection(marks, framework, registerCounts) {
   // No framework ⇒ NOTHING. A run this render was given no manifest for gets no attribution invented for
   // it, and the chips still carry their own words.
   const legend = framework?.title
-    ? `<div class="ko-legend">Rated under <span class="mono">${esc(framework.title)}</span></div>`
+    ? '' /* tracker issue 645 — the framework is named once, on the rating card */
     : '';
   return `<div class="panel ko-glance">${legend}${rows}</div>`;
 }
@@ -1325,7 +1325,9 @@ function counterLabel(framework, band) {
   const ladder = Array.isArray(framework?.bands) ? framework.bands : [];
   const i = ladder.findIndex((b) => String(b?.label ?? '').trim().toLowerCase() === String(band ?? '').trim().toLowerCase());
   const up = i > 0 ? String(ladder[i - 1]?.label ?? '').trim() : '';
-  return up ? `Why not ${up}` : 'What keeps it here';
+  // tracker issue 645 — the heading names what is under it rather than a band the reader was not
+  // shown. The engine's bullets are unchanged; only the label is.
+  return 'Remaining uncertainties';
 }
 
 const ASSESSMENT_FOLD_LABEL = 'Read the full assessment';
@@ -1357,7 +1359,7 @@ function readBlock(m, framework) {
       factors.map((f) => `<li>${inlineMd(f)}</li>`).join('')}</ul></div>` : '',
     counter.length ? `<div class="ko-counter"><span class="ko-lbl2">${esc(counterLabel(framework, band))}</span><ul class="ko-bul">${
       counter.map((f) => `<li>${inlineMd(f)}</li>`).join('')}</ul></div>` : '',
-    m.mitigation ? `<div class="ko-mitig"><span class="ko-lbl2">What would lower the risk</span><p>${inlineMd(m.mitigation)}</p></div>` : '',
+    m.mitigation ? `<div class="ko-mitig"><span class="ko-lbl2">What would change this</span><p>${inlineMd(m.mitigation)}</p></div>` : '',
     // ── THE ASSESSMENT REPLACES THE "FULL NARRATIVE" FOLD ────────────────────────────────────────────
     //
     // The model writes both. `bullets` (five) say in other words what `factors` (four) already say
@@ -1418,7 +1420,7 @@ function analysisSection(marks, framework, { registerCounts = null, probeRan = f
         ${body || '<p class="ko-bul">No adverse signals recorded for this name on this screen.</p>'}
         ${m.degraded ? `<p class="ko-degraded">${esc(DEGRADED_NOTE)}</p>` : ''}
         ${reviewerNotesBlock(m)}
-        <p class="ko-reg">${esc(registerLine(m, registerCounts, probeRan, registerRecords, reg.cards))}</p>
+        ${/* tracker issue 645 — the register line restated the counts table above it */''}
       </div>
     </div>`;
   }).join('');
@@ -1594,11 +1596,11 @@ export function renderKnockoutHtml(findings, framework, {
     n + registerCardsOnPage(registerCardViews(m, framework, registerRecords).cards, m, framework).length, 0);
   const hasRecords = Boolean(registerRecords && (registerRecords.marks?.length || registerRecords.unavailable));
   const filings = hasRecords ? filingsSection(marks, registerRecords) : '';
-  const onFieldSec = `<div class="sec"><span class="num">${num()}</span><h2>On-field conflicts</h2><span class="note">${hasCounts ? `register hit-counts (${esc(provider)}) and the read, per name` : 'what we found, per name'}</span></div>
+  const onFieldSec = `<div class="sec" id="findings"><h2>Conflicts</h2></div>
 ${counts}
 ${analysis}`;
   const filingsSec = filings
-    ? `<div class="sec"><span class="num">${num()}</span><h2>The filings behind the counts</h2><span class="note">the name itself and its close variations — the ${APPENDIX_ROWS} most material per name, full list in the workbook</span></div>
+    ? `<div class="sec" id="filings"><h2>Also considered</h2></div>
 ${filings}`
     : '';
 
@@ -1623,7 +1625,8 @@ ${filings}`
   ${logoLockup({ mark: 20, tag: '' })}<span class="sp"></span>
   <span class="tb-risk" style="background:var(${overallStop})">${esc(overall ?? '—')}</span>
   <span class="mono tb-matter" style="font-size:11px;color:var(--faint)">${esc(matter || runId || '')}</span>
-  ${issued ? `<span class="mono tb-issued"><span aria-hidden="true">🗓 </span>Issued ${esc(issued)}</span>` : ''}
+  ${issued ? `<span class="mono tb-issued"><span aria-hidden="true">🗓 </span>Issued on ${esc(issued)}</span>` : ''}
+  <button type="button" class="tbbtn tb-ask no-print">\u2726 <span class="tb-lbl">Ask AI</span></button>
 </div>
 </div>
 <div class="fab-stack">${themeButton()}</div>
@@ -1660,53 +1663,11 @@ window.addEventListener('beforeprint',o);})();</script>
   ${onFieldSec}
   ${filingsSec}
 
-  <div class="sec"><span class="num">${num()}</span><h2>Scope &amp; what we didn't search</h2><span class="note">what this screen is</span></div>
-  <!-- COLLAPSED, like the clearance report's. Both documents already inline the
-       same report.css, and details.scope is its vocabulary — this section was the one place the two
-       lanes presented the same thing differently, with the knockout's open panel pushing the filings
-       table and the footer down the page on every read. What is inside is unchanged; a reader who
-       wants it opens it, exactly as they do on the bigger report.
-       NO BACKTICKS IN THIS COMMENT: it sits inside a template literal and one ends it, failing at
-       IMPORT time on a token nobody wrote. Second time in this file today. -->
-  <details class="scope"><summary>Scope &amp; what we didn't search</summary>
-  <div class="panel drillbody">
-    ${(() => {
-      // FROM THE POLICY WHERE THERE IS ONE. The fallback is not a tidy default: an
-      // archived run froze no policy, and re-rendering it must not invent a scope claim about a run
-      // nobody can now ask. It keeps the sentence it was delivered with.
-      // ── THE SCOPE BLOCK, WHOLE ────────────────────────────────────────────────────────────────────
-      //
-      // The composed lines said one thing five times in 362 words: "not a clearance" three times,
-      // "proceeds to clearance" twice, and the count-basis sentence a second time after the counts table
-      // had already carried it. This is the owner's replacement text, and its two halves are the two
-      // questions a reader of a screen actually has.
-      //
-      // "Every conflict above links to the material we found" STAYS CONDITIONAL and that is not a
-      // stylistic carry-over: said unconditionally it is an absence claim wider than what was examined,
-      // which this file refuses elsewhere in the same words. It prints only when every rendered conflict
-      // cites something.
-      const linked = citedFindings && !uncitedFindings
-        ? ' Every conflict above links to the material we found.'
-        : '';
-      const source = registerCounts
-        ? ` Register data: ${registerCounts.providerLabel ?? registerCounts.provider ?? 'the register'}.`
-        : '';
-      return `<p class="ko-scope"><b>What this is.</b> A fast screen for obvious blockers to using each `
-        + `name, from marketplace and web use plus a count of register filings.</p>`
-        + `<p class="ko-scope"><b>What it is not.</b> A clearance search. We drew no register conclusions `
-        + `and give no filing advice. A name that passes here is not clear; it goes on to clearance.</p>`
-        + `<p class="ko-scope">${linked.trim()}${linked ? ' ' : ''}The audit workbook holds every search run, `
-        + `every empty result and the working notes.${source}</p>`;
-    })()}
-    ${newCaveats.length ? `<p class="ko-scope" style="border-top:1px solid var(--line)">${CAVEAT_LEAD}<br>${newCaveats.map((c) => inlineMd(c)).join('<br>')}</p>` : ''}
-    ${auditFile ? `<p class="ko-scope" style="border-top:1px solid var(--line)"><a href="${escAttr(auditFile)}">Download the audit workbook (Excel)</a> — every search run, every negative result, and the working notes behind these ratings.${
-    citedFindings ? ` The reference beside each common-law conflict above (for example <span class="mono">${esc(firstRef(marks, framework))}</span>) is its row on the workbook's Findings sheet.${
-      registerCardCount ? ` A <span class="mono">REG</span> reference is a register filing rather than a common-law conflict — it has no Findings row, and its receipt is the register record the card links.` : ''}` : ''}</p>` : ''}
-  </div>
-  </details>
+  ${/* tracker issue 645 — the scope section and its fold are off the page: what a screen is and
+       what it did not search is the narration the owner ruled out. */''}
 
   <footer>
-    <span>${productName ? `${esc(productName)}. ` : ''}${framework?.title ? ` Rated under <span class="mono">${esc(framework.title)}</span>.` : ''}<br>Matter ${esc(matter || runId || '')}.${issued ? ` Issued ${esc(issued)}.` : ''}</span>
+    <span>${productName ? `${esc(productName)}. ` : ''}<br>Matter ${esc(matter || runId || '')}.${issued ? ` Issued ${esc(issued)}.` : ''}</span>
     ${logoLockup({ mark: 16 })}
   </footer>
 </div>

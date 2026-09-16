@@ -1,5 +1,5 @@
 {
-  "ts": "2026-09-04T21:48:51.264Z",
+  "ts": "2026-09-16T16:46:05.788Z",
   "lane": "knockout",
   "checks": [
     {
@@ -43,9 +43,33 @@
       "surface": "findings",
       "pass": true,
       "detail": ""
+    },
+    {
+      "id": "reviewer-note-subject",
+      "family": "voice",
+      "surface": "findings",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "plain-language-vocabulary",
+      "family": "voice",
+      "surface": "findings",
+      "pass": false,
+      "detail": "the lawyer's vocabulary on lines a reader meets before opening anything — rewrite the sentence in the words the reader already owns, do not swap the word: the batch summary: \"belt-and-braces\" → \"extra\"; the batch summary: \"chunk\" (an engine word — cut it)"
+    },
+    {
+      "id": "plain-language-sentence-length",
+      "family": "voice",
+      "surface": "findings",
+      "pass": false,
+      "detail": "a default-visible sentence carrying more than one idea (over 25 words) — split it, conclusion first: the batch summary: 28 words; the batch summary: 28 words; the batch summary: 27 words; the batch summary: 39 words; the batch summary: 26 words; +4 more"
     }
   ],
-  "failures": [],
+  "failures": [
+    "plain-language-vocabulary",
+    "plain-language-sentence-length"
+  ],
   "notApplicable": [
     {
       "id": "names-cell-populated",
