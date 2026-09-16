@@ -157,3 +157,15 @@ test('no screen fetches the company roster for itself', () => {
       `${f} resolves companies through the shell context, never by fetching the roster again`)
   }
 })
+
+test('THE BLUR COVERS EVERY COMPANY NAME THE SHELL DRAWS — the rail switcher and the company chips too', () => {
+  // Preferences promises that the blur "covers every mark and company on screen". The rail's switcher and
+  // the chips above a list both print company names on every screen they sit on, and neither was marked:
+  // a screen share with the blur on read the company in view off the rail. The browser check measures the
+  // whole page with the blur on; this pins the two places the shell draws a name without a screen's help.
+  const switcher = body.slice(body.indexOf('<select'), body.indexOf('</select>'))
+  assert.ok(switcher.includes('aria-label="Company"'), 'premise: this is the company switcher')
+  assert.match(switcher, /data-anon="mark"/, 'the switcher, which shows the company in view, is blurred with the rest')
+  const chips = prose(readFileSync(new URL('../src/shell/CompanyChips.tsx', import.meta.url), 'utf8'))
+  assert.match(chips, /<span data-anon="mark">\{ctx\.ownerName\(r\.key\)\}<\/span>/, 'each chip\'s company name is marked for the blur')
+})

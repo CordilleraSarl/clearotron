@@ -797,6 +797,9 @@ function BrandOwnerSwitcher({
       // create screen, and an unsaved edit is asked about there.
       onChange={(e) => (e.target.value === NEW_COMPANY_OPTION ? onAdd?.() : onChange(e.target.value || null))}
       aria-label="Company"
+      // BLURRED WITH THE REST. It shows the company in view on every screen, so a screen share with the
+      // blur on read every name off the list except the one in the rail.
+      data-anon="mark"
       style={{
         width: '100%',
         marginTop: 4,

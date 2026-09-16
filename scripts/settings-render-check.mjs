@@ -280,6 +280,21 @@ const preferencesProbe = `(() => {
     topEye: topEye ? { pressed: topEye.getAttribute('aria-pressed'), cls: topEye.className, icon: topEye.innerHTML === eye?.innerHTML } : null,
     blurredDocument: document.documentElement.classList.contains('anon-on'),
     addressFilter: address ? getComputedStyle(address).filter : null,
+    // EVERY PLACE THE COMPANY'S NAME IS DRAWN, anywhere on the page — the rail and the top bar as well as
+    // the screen — that nothing marks for the blur. "It covers every mark and company on screen" is a
+    // promise about the whole page, and the rail's switcher once broke it with nothing measuring it.
+    unmarkedCompany: (() => {
+      const out = []
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT)
+      for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+        if (!n.textContent.includes('Northwind Foods')) continue
+        const el = n.parentElement
+        if (!el || el.closest('[data-anon="mark"]')) continue
+        out.push((el.tagName || '?').toLowerCase() + (el.className ? '.' + String(el.className).split(' ')[0] : ''))
+      }
+      return out
+    })(),
+    companyDrawn: document.body.innerText.includes('Northwind Foods') || [...document.querySelectorAll('option')].some((o) => o.textContent.includes('Northwind Foods')),
     stored,
     notKept: /not kept|starts switched off|until you reload|every time you open|These two settings stay/i.test(screen.innerText),
     theme: document.documentElement.getAttribute('data-theme'),
@@ -456,6 +471,8 @@ for (const theme of ['light', 'dark']) {
     ok(on.blurredDocument && on.eye?.pressed === 'true' && on.topEye?.pressed === 'true' && /blur/.test(on.addressFilter ?? ''),
       `pressing the card's eye blurs the page and presses both buttons (saw ${JSON.stringify({ blurred: on.blurredDocument, card: on.eye?.pressed, top: on.topEye?.pressed, filter: on.addressFilter })})`)
     ok(on.stored === 'on', `the choice is kept in this browser (saw ${JSON.stringify(on.stored)})`)
+    ok(on.companyDrawn && on.unmarkedCompany.length === 0,
+      `with the blur on, the company's name is drawn unmarked for the blur at: ${JSON.stringify(on.unmarkedCompany)} (drawn at all: ${on.companyDrawn})`)
     await capture(`blur-on-${theme}`)
     if (await reload("document.querySelector('.pref-blur button')", 'Preferences drew again after the reload')) {
       await sleep(300)
