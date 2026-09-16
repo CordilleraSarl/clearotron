@@ -869,9 +869,11 @@ test("Full detail: a registration URI links from the run's ALLOW-LIST, never fro
 test("the card header shows the contentious MARK + the classes it matched in (not only the holder)", () => {
   const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, {});
   // FINDINGS[0]: holder "Matchday, Inc." owns the mark MATCHDAY in class 41 — the card shows BOTH, prominently
-  assert.match(html, /class="who">Matchday, Inc\.<\/span>/, "the holder is still shown");
-  assert.match(html, /class="cm-mark">MATCHDAY<\/span>/, "the contentious mark is shown next to the holder");
-  assert.match(html, /class="ccl">Cl\.&nbsp;41<\/span>/, "the matched class is shown");
+  // MARK FIRST, THEN WHERE AND WHICH CLASS, THEN THE HOLDER ON THE LINE BELOW (tracker issue 644). All
+  // three facts are still on the card; the order is the one a reader asks them in.
+  assert.match(html, /class="who mark-first">MATCHDAY/, "the contentious mark leads the card");
+  assert.match(html, /class="where">— [^<]*Class 41/, "the matched class rides the same line");
+  assert.match(html, /class="owner-line"><span class="ok">Owner<\/span> Matchday, Inc\./, "the holder is still shown, on its own line");
 });
 
 // ---- A1: a review-killed (withdrawn) finding renders NOWHERE; internal bar notes the kill ----

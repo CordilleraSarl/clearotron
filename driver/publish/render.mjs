@@ -156,9 +156,17 @@ function ratingExtras(fm, findings, coverage, fourAnswers, opts, bandWord) {
       const ords = (Array.isArray(a.ordinals) && a.ordinals.length)
         ? ` <span class="fa-ords">${a.ordinals.map((n) => `<a href="#c${n}">#${n}</a>`).join(' ')}</span>` : '';
       const basis = a.basis ? inline(String(a.basis).trim()).trim() : '';
+      // THE PER-CLASS OBSTACLES RIDE WITH THE ANSWER THEY QUALIFY. An answer that reads "registrable with
+      // conditions" and does not say in which classes leaves the reader with the conclusion and none of
+      // the thing they act on. Internal-labelled rows drop, like every other internal line.
+      const obsRows = (key === 'registrability' && Array.isArray(a.obstacles) ? a.obstacles : [])
+        .map((o) => ({ cls: esc(String(o?.class ?? '')), note: inline(String(o?.note ?? '').trim()).trim() }))
+        .filter((o) => o.note && !isInternalLabelled(o.note));
+      const obstacles = obsRows.length
+        ? `<ul class="fa-obstacles">${obsRows.map((o) => `<li><b>Class ${o.cls}.</b> ${o.note}</li>`).join('')}</ul>` : '';
       return `<div class="fa-row"><span class="fa-k">${label}</span><span class="fa-v">${
         a.token ? `<span class="fa-token tone-${tone}">${esc(humanize(a.token))}</span> — ` : ''}${read}${ords}${
-        basis ? `<div class="fa-based"><span class="fa-bk">Based on</span> ${basis}</div>` : ''}</span></div>`;
+        basis ? `<div class="fa-based"><span class="fa-bk">Based on</span> ${basis}</div>` : ''}${obstacles}</span></div>`;
     }).filter(Boolean);
     if (rows.length) out.push(`<div class="gwhy"><div class="label">Why ${esc(bandWord || '')}</div>${rows.join('')}</div>`);
   }
