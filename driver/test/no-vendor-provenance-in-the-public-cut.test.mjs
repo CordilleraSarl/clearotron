@@ -142,6 +142,35 @@ export function probeTables(text, { isMarkdown = false } = {}) {
   return out;
 }
 
+// ── AND A ROUND IS ALSO WRITTEN AS ONE ORDINARY SENTENCE, WHICH FALLS BETWEEN BOTH RULES ABOVE ──
+//
+// The table rule looks BELOW the method word, and `a measured hit count beside the method` allows twelve
+// characters after it. An author who writes the finding as English — the method word, a few words, then
+// the vendor's figures, all on one line — is outside both. Measured over the scanned population the day
+// the table rule landed: two such records were in the tree, both in provider source that ships, and this
+// whole file was green over them.
+//
+// THE TWELVE-CHARACTER GAP WAS STANDING IN FOR DIRECTION. A record reads forward — the vendor was probed,
+// AND THE ANSWER WAS N — so the figure follows the method word, and a figure standing BEFORE it belongs
+// to another clause. Requiring direction rather than proximity flags both real records and nothing else:
+// over the whole scanned population 2 matched and both are real, against 15 other comment lines carrying
+// a method word that stay clean. The one line a proximity-free rule would otherwise catch — an HTTP
+// status early in the sentence — is not matched, because the only figure FOLLOWING its method word is a
+// single digit, below the two-figure floor.
+//
+// The COMMENT constraint is the one that makes the table rule runnable and it does the same work here:
+// figures belong in code, so a method word in a comment with a measured figure after it is a record.
+const FIGURE_AFTER_METHOD = /\b(?:probed|re-probed)\b[^\n]*?(?:^|[^\w.])\d{2,}(?![\w.])/i;
+
+export function probeSentences(text, { isMarkdown = false } = {}) {
+  const lines = String(text).split("\n");
+  const out = [];
+  lines.forEach((line, i) => {
+    if (isCommentLine(line, isMarkdown) && FIGURE_AFTER_METHOD.test(line)) out.push({ line: i + 1 });
+  });
+  return out;
+}
+
 const findings = () => {
   const out = [];
   for (const rel of SCANNED.flatMap(filesUnder)) {
@@ -153,6 +182,9 @@ const findings = () => {
     for (const t of probeTables(text, { isMarkdown: rel.endsWith(".md") }))
       out.push(`${rel}:${t.method} — a probe round with its figures in a table under it — see line ${t.row}: `
         + lines[t.row - 1].trim().slice(0, 90));
+    for (const s of probeSentences(text, { isMarkdown: rel.endsWith(".md") }))
+      out.push(`${rel}:${s.line} — a probe round written as one sentence, its figures after the method word — `
+        + lines[s.line - 1].trim().slice(0, 90));
   }
   return out;
 };
@@ -263,6 +295,40 @@ test("functional probe vocabulary beside CODE figures is not a probe table — t
     assert.deepEqual(probeTables(innocent.join("\n")), [],
       `functional code read as a probe round: ${innocent[0].trim().slice(0, 52)}`);
 });
+
+test("a probe round written as one ordinary sentence is caught, and the rules above do not catch it", () => {
+  // THE SPECIMENS ARE THE REAL ONES — both were in provider source that SHIPS on the day the table rule
+  // landed, with this whole file green over them. Kept here rather than described, so the rule is driven
+  // against what it was written for.
+  const specimens = [
+    " * `ADJ<n>` is real and probed: MONSTER ADJ ENERGY = 67, MONSTER ADJ2 ENERGY = 72, SALT ADJ PEPPER = 27",
+    "  // take — limit 1 — carries the whole answer: probed, `limit:1` returned total 685, identical to the",
+  ];
+  for (const line of specimens) {
+    // FIRST through the per-line rules: if one of them fired, this arm could pass for a reason that has
+    // nothing to do with the sentence shape, which is how a new rule gets credit for an old rule's work.
+    assert.deepEqual(PROVENANCE.filter((r) => r.re.test(line)).map((r) => r.name), [],
+      `a per-line rule already catches this — the sentence rule is not what is being tested: ${line.trim()}`);
+    assert.equal(probeSentences(line).length, 1, `the sentence rule missed a real record: ${line.trim()}`);
+  }
+
+  // THE ONE FALSE POSITIVE IN THE TREE, AS A CASE RATHER THAN AS LUCK. Its two-digit figure is an HTTP
+  // status in the first clause and the only figure AFTER its method word is a single digit, so direction
+  // is what keeps it clean. If this ever starts matching, direction has been lost and the rule is a
+  // nuisance again.
+  const innocent = "  // back 200 + envelope. Before the fix each term was probed as 0 and dispositioned verified-zero —";
+  assert.equal(probeSentences(innocent).length, 0, "the sentence rule flags a figure standing before the method word");
+
+  // AND THE COMMENT CONSTRAINT, driven rather than asserted about: the same words in CODE are a variable
+  // and a fixture, not a record. Figures belong in code.
+  assert.equal(probeSentences("  const probed = rows.filter((r) => r.total === 685);").length, 0,
+    "the sentence rule reads code as a record");
+
+  // A method word with its figure BEFORE it, and a method word with no figure at all, are both clean.
+  assert.equal(probeSentences("  // 685 rows came back before anything was probed").length, 0, "direction is not being read");
+  assert.equal(probeSentences("  // nobody has probed this register at all").length, 0, "a method word alone is not a record");
+});
+
 
 test("the scan REFUSES a corpus it cannot reach, rather than reporting it clean", () => {
   // The failure mode of every absence check, and the one the discovered-set census caught here in
