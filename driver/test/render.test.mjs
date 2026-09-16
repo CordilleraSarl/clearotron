@@ -76,6 +76,37 @@ test("data-driven: gauge, quadrant, key panel, on-field + secondary cards, cover
   assert.match(html, /confirmed-clean|✓/);
 });
 
+test("the delivered report carries none of what the redesign removed", () => {
+  // ONE ARM FOR EVERY REMOVAL, so the eight arms this replaces do not each survive as a test that
+  // something is absent. Each line below was a section, a panel or a marker a client used to meet; the
+  // owner ruled it off the page on 2026-09-16 and the reasons are on tracker issue 644. The arms that
+  // held the SURVIVING half of any of these were repointed rather than deleted, and are above.
+  //
+  // BREAK MATRIX: re-introduce any one of these and exactly one line here reds, naming it.
+  const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, {
+    runId: "removals", nav: '<nav class="sitenav"><span class="lockup">X</span></nav>',
+    depthNote: "Preliminary clearance — covers registered rights",
+  });
+  const gone = [
+    ["a second header bar", /class="sitenav"/],
+    ["the masthead depth strip", /class="depth-strip"/],
+    ["the scope-and-what-we-did-not-search fold", /What we covered/],
+    ["the facts card", /class="panel facts"/],
+    ["the common-law section", /id="common-law"/],
+    ["section numbers", /class="num">\s*0[0-9]/],
+    ["section subtitles", /class="note">these drive the risk read/],
+    ["the heading a lawyer would not say", /On-field conflicts/],
+    ["internal notes", /class="[^"]*int-note/],
+    ["the footer's ladder legend", /Risk bands:/],
+    ["the purple-notes explanation", /Purple notes are for the reviewing lawyer/],
+  ];
+  const lingering = gone.filter(([, re]) => re.test(html)).map(([n]) => n);
+  assert.deepEqual(lingering, [], `a delivered report still carries: ${lingering.join(", ")}`);
+  // AND THE CORPUS IS REAL. An empty render would pass every line above.
+  assert.ok(html.length > 20000, "the fixture rendered almost nothing, so the absences above mean nothing");
+  assert.match(html, /class="panel about"/, "…and it is the redesigned page, not some other document");
+});
+
 test("a genuinely-open floor still surfaces plainly in the report Coverage section (no disclosure suppressed)", () => {
   // Fix-3 guard: dropping internal-axis codenames from the reviewer EMAIL, and filtering an inactive
   // axis out of the open-floor NOTE, must not touch the reader-visible disclosure — the report Coverage
@@ -487,15 +518,6 @@ test("no findings.json (legacy / model miss) → renders without crashing, no fi
 const CTX_NOTE = { type: "famous-neighbour-ungrounded", mark: "CHROME", owner: "Google LLC", context: "one keystroke from NOVAPULSE; famous mark; no fetched record; off-field" };
 const QUAR = [{ index: 8, mark: "CHROME", error: "finding_registration_invalid: (registration.uri must be a non-empty string)" }];
 
-test("A1 render: the famous-neighbour context_notes block renders on the one report", () => {
-  const parsed = parsedOf(FM);
-  const internal = renderHtml(parsed, [], [], { contextNotes: [CTX_NOTE] });
-  assert.match(internal, /Famous-mark neighbours noted/);
-  assert.match(internal, /CHROME/);
-  // a stale opts.client is inert (one report, spec 2026-07-30 §5)
-  assert.equal(renderHtml(parsed, [], [], { client: true, contextNotes: [CTX_NOTE] }), internal);
-});
-
 test("spec-49 T4: the quarantine banner is dead on every variant (a quarantined finding fails the run upstream)", () => {
   const parsed = parsedOf(FM);
   for (const opts of [{ quarantined: QUAR }, { client: true, quarantined: QUAR }]) {
@@ -588,24 +610,6 @@ test("§2.2: a pending finding is a hollow ring; filled dots carry the dark cont
   const html = renderHtml(parsedOf(FM), REGION_FINDINGS, REGION_COVERAGE, {});
   assert.match(svgOf(html), /fill="#FFFDF9"/);              // the pending (F2) dot is a hollow ring
   assert.match(svgOf(html), /stroke="#250902" stroke-opacity=".22"/);   // filled dots get the dark outline
-});
-
-test("§2.3/2.4: region grouping — key-panel and secondary share the same region order; common-law leaves the region groups (spec-48 A5)", () => {
-  const html = renderHtml(parsedOf(FM), REGION_FINDINGS, REGION_COVERAGE, {});
-  // key-panel region order = ascending lowest ordinal: US(1) EU(3) JP(4) C/L(5) UK(6) — the landscape
-  // panel keeps its Common-law group (it is the index of everything). The sentinel is C/L, never
-  // Chile's ISO code CL (spec 47).
-  // wp50/wi8: C/L is no longer interleaved in the jurisdiction order — it renders LAST, as its own
-  // labelled non-jurisdiction block (cross-linked to the reading section).
-  assert.deepEqual(orderedCodes(html, "rrow"), ["US", "EU", "JP", "UK", "C/L"], "key panel region order (C/L last)");
-  assert.doesNotMatch(html, /<span class="rcode">CL<\/span>/, "the two-letter CL (Chile) never labels common-law");
-  // A5: the secondary REGION groups hold registers only — common-law has its own section.
-  assert.deepEqual(orderedCodes(html, "rgroup"), ["JP", "UK"], "secondary region order (registers only)");
-  assert.match(html, /<h2>Common-law &amp; marketplace<\/h2>/);            // its own section
-  assert.match(html, /<span class="rname">Common-law \/ marketplace<\/span>/); // labelled as non-register block
-  assert.match(html, /<a href="#common-law">/, "cross-link to the reading section");
-  assert.match(html, /<details class="rrow" open>/);                       // on-field region open by default
-  assert.match(html, /<details class="rgroup"><summary><span class="rcode">UK<\/span>/);  // GB normalized → UK region
 });
 
 test("§2.6/2.8: hero is split — conclusion card carries the verdict, scope card carries jurisdiction chips", () => {
@@ -1156,7 +1160,7 @@ test("spec 49 (H10): the hero names the highest-exposure jurisdiction(s), derive
   const html = renderHtml(parsedOf(FM), REGION_FINDINGS, REGION_COVERAGE, {});
   // REGION_FINDINGS: max composite 4 = the EU finding
   assert.match(html, /Highest exposure<\/span>/);
-  assert.match(html, /Highest exposure<\/span><span class="v"><span title="European Union">EU<\/span>/);
+  assert.match(html, /Highest exposure<\/span><span class="gv">European Union/, "the rating card names it in full");
   assert.match(html, /from the highest-rated finding/);
   // no rated findings ⇒ the row is suppressed
   const none = renderHtml(parsedOf(FM), [], [], {});
@@ -1180,20 +1184,6 @@ test("spec 49 (E5/E6): matched case-law strands render on EVERY joined card; enf
   // E1: the chip set states the contributing layers
   assert.match(card1, /<span class="src reg">Register<\/span>/);
   assert.match(card1, /<span class="src cl">Case-law<\/span>/);
-});
-
-test("spec 49 (E4): the common-law section lists what the marketplace layer added to register findings — even with zero CL findings", () => {
-  const f = [{ ...FINDINGS[0],
-    use_check: { source: "https://store.example/matchday-listing" },
-    meters: { ...FINDINGS[0].meters, use: { token: "confirmed", basis: "verified-from-record", _status: "confirmed", _useSourceClass: "owner-site" } } }];
-  const html = renderHtml(parsedOf(REPORT), f, COVERAGE, {});
-  assert.match(html, /Common-law &amp; marketplace/, "the section renders on contributions alone");
-  assert.match(html, /What the marketplace layer added to register findings/);
-  // D4 — same three facts, three positions, none of them fused: what was found, where it was
-  // checked, and how well it is evidenced. The line used to spend ' · ' on two different jobs.
-  // — no verification word on the use surface (ruling); the source class alone.
-  assert.match(html, /use Confirmed — store\.example <i class="evstat">\(evidence: from the owner's own site\)<\/i>/,
-    "attributed, with the source class (the use line prints no verification word)");
 });
 
 // ── wp50/wi5: # Actions renders on the report — the Q&A can no longer be email-only ────────────────────
@@ -1336,7 +1326,7 @@ test("scope_basis: a worldwide sweep never chips its office list", () => {
   // cleared. The office list belongs in "What we covered", never as 186 header chips.
   const coverage = [{ area: "register / citation-core exact", state: "confirmed-clean", note: "" }];
   const html = renderHtml(parsedOf(FM), [], coverage, { runId: "ww-offices", scopeBasis: "worldwide", searchedJurisdictions: [] });
-  assert.match(html, /class="jchip ww"[^>]*>worldwide</);
+  assert.match(html, /Where searched<\/span><span class="v">Worldwide/);
   for (const code of ["AD", "AF", "BQ", "ZW"]) assert.ok(!new RegExp(`<span class="jchip"[^>]*>${code}<`).test(html), `${code} never chips on a worldwide run`);
 });
 
@@ -1357,7 +1347,7 @@ test("wp50: script rows are skipped, worldwide leads the scope, and every leg of
   ];
   const html = renderHtml(parsedOf(FM), findings, coverage, { runId: "scope-demo" });
   assert.match(html, /worldwide register sweep/, "the header states the true scope");
-  assert.match(html, /class="jchip ww"[^>]*>worldwide</, "worldwide chip leads the facts panel");
+  assert.match(html, /Where searched<\/span><span class="v">Worldwide/, "worldwide leads the searched row");
   for (const code of ["TR", "AE", "SA"]) assert.match(html, new RegExp(`<span class="jchip"[^>]*>${code}</span>`), `${code} (risk-bearing leg) chips in`);
   for (const bad of ["ZH", "AR", "CY", "KR"]) assert.ok(!new RegExp(`<span class="jchip"[^>]*>${bad}<`).test(html), `script token ${bad} never chips`);
   assert.ok(!/jchip"[^>]*>PK</.test(html), "a composite-2 finding's leg does not join the union");
@@ -1421,24 +1411,6 @@ test("wp50: the C/L group renders AFTER the region list, labelled and cross-link
 });
 
 // ── wp50/wi9: coverage reads as covered vs next-steps, in plain English ─────────────────────────────────
-test("wp50: coverage grid — clean rows green, routine states neutral (.todo/.info, never orange warn), split intro renders", () => {
-  const cov = [
-    { area: "register / worldwide Class-5 sweep", state: "confirmed-clean", note: "enumerated to has_more:false" },
-    { area: "Follow-up / WHO INN drug-name-stem screening", state: "open", note: "not completed this run — the source timed out this run" },
-    { area: "common-law / non-Latin marketplace reach", state: "coverage-limited", note: "thin non-Latin marketplace data" },
-    { area: "common-law / per-jurisdiction ledger", state: "note", note: "ledger accounts at platform level" },
-  ];
-  const html = renderHtml(parsedOf(REPORT), FINDINGS, cov, {});
-  assert.match(html, /covcell ok/, "clean row keeps the green check");
-  assert.ok(!/covcell warn/.test(html), "no orange warn cells for routine states");
-  assert.match(html, /covcell todo/, "open/limited rows are neutral to-dos");
-  assert.match(html, /covcell info/, "note rows are info");
-  assert.match(html, /Next steps &amp; monitoring/, "the split intro renders");
-  assert.match(html, /· Open item</, "state word in plain English");
-  assert.match(html, /· Partially covered</, "coverage-limited state word");
-  assert.ok(html.indexOf("covcell ok") < html.indexOf("Next steps"), "covered group leads");
-});
-
 // ---- doc-54: the dynamic framework band ladder (one tick per band; Clear = zero-state, not a tick) ----
 import { parseFrameworkManifest } from "../framework.mjs";
 const AURORA_MANIFEST = parseFrameworkManifest(JSON.stringify({
@@ -1578,17 +1550,6 @@ test("B1 (spec 2026-07-30 §4): the 'Subject to:' bound line is DELETED — no t
 });
 
 // ---- report-leftovers: session-wide notice, pending dot, C/L default-collapse ----
-test("leftovers: the case-law session-wide notice renders ONCE in §04 when strands exist to reference it", () => {
-  const clMap = new Map([[1, { ord: 1, mark: "MATCHDAY", owner: "Matchday, Inc.", jurisdiction: "US", body: "No on-point precedent found.\nCoverage gaps: as § Session-wide notice above." }]]);
-  const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { caseLawByOrdinal: clMap, caseLawNotice: "CourtListener and EUR-Lex were unavailable this session; federal-court coverage is partial." });
-  assert.match(html, /Session-wide notice/);
-  assert.match(html, /CourtListener and EUR-Lex were unavailable/);
-  assert.equal((html.match(/Session-wide notice/g) || []).length <= 2, true, "notice heading appears once (plus at most one strand ref)");
-  // no strands ⇒ no orphan notice block
-  const bare = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { caseLawNotice: "CourtListener was down." });
-  assert.doesNotMatch(bare, /Session-wide notice/);
-});
-
 test("leftovers: a _wasPending registration plots with the pending ring, not the solid registered dot", () => {
   const f = [{ ...FINDINGS[0], owner: { ...FINDINGS[0].owner, registrations: [
     { uri: "/mark/gb/1", status: null, _wasPending: true, classes: [] },
@@ -1809,34 +1770,6 @@ test("spec 64: f.impact renders as a code-built 'If enforced' bullet (structured
 });
 
 // ── spec 62: per-project disclosure — the project line (both surfaces) + the origin table (internal-only) ──
-test("spec 62: 'Run under project' + the configuration-provenance table render on the one report; serve-time removal is portal-report's", () => {
-  const originsJson = JSON.stringify([
-    { field: "Marketplaces", value: "9 stores + web", origin: "project" },
-    { field: "Default classes", value: "9, 28, 41", origin: "project" },
-    { field: "Delivery format", value: "summary", origin: "customer" },
-  ]);
-  const fmProj = [
-    "---", "type: prelim-clearance", "matter: noref-demo", "title: THIS IS MY MATCHDAY",
-    "overall_label: MEDIUM", "overall_badge: l3", "overall_caption: medium overall.",
-    "classes: 5 · 32 · 41", "jurisdiction: United States only", "run: 2026-06-10",
-    "run_under_project: Console ecosystem (Aurora Interactive)",
-    `origins_json: ${originsJson}`,
-    "---", "",
-  ].join("\n");
-  const report = `${fmProj}\n${CARDS}`;
-
-  const internal = renderHtml(parsedOf(report), FINDINGS, COVERAGE, { runId: "noref-demo" });
-  assert.match(internal, /Run under project: <span class="mono">Console ecosystem \(Aurora Interactive\)<\/span>/, "project line on the internal footer");
-  assert.match(internal, /Configuration provenance \(internal\)/, "the origin table renders internally");
-  assert.match(internal, /Marketplaces/, "an origin row renders (effective + set-by)");
-
-  // ONE report (spec 2026-07-30 §5): the origin table rides the document (class scoperead/origins);
-  // portal-report.mjs strips those elements for EVERY embedded reader at serve time — one place,
-  // tested there. A stale opts.client is inert here.
-  const stale = renderHtml(parsedOf(report), FINDINGS, COVERAGE, { client: true, runId: "noref-demo" });
-  assert.equal(stale, internal, "opts.client no longer forks the provenance table");
-});
-
 // ── 404-card caveat (2026-07-22): a closure-fetch-FAILED citation gets ONE code-owned unverified line ──
 test("404-card caveat: a _recordFetchFailure finding carries the deterministic caveat line; unstamped findings do not", () => {
   const stamped = FINDINGS.map((f, i) => i === 1
@@ -1944,15 +1877,15 @@ test("spec 2026-07-30 §3: structured mark_assessment renders the `read` sentenc
 test("charter ruling 1: opts.depthNote renders as a NAME-LED masthead depth strip; absent (archived) ⇒ no strip", () => {
   const note = "Preliminary clearance — covers registered rights and unregistered (common-law) use; the dedicated per-jurisdiction native-script deep dive is not part of this depth.";
   const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "d", stageLabel: "Depth 4", depthNote: note });
-  assert.match(html, /<div class="depth-strip">/);
+  assert.match(html, /Type of search<\/span><span class="v">/, "the depth note is a labelled row of About this request now");
   // name-led (the pill name), bolded ahead of the coverage clauses
-  assert.match(html, /<div class="depth-strip"><b>Preliminary clearance<\/b> — covers registered rights and unregistered \(common-law\) use/);
-  assert.ok(html.indexOf('<div class="depth-strip">') < html.indexOf('class="mark"'), "the strip sits in the masthead, above the mark");
+  assert.match(html, /Type of search<\/span><span class="v">Preliminary clearance</, "the type leads the row; the covers sentence is off the page by ruling");
+  assert.ok(html.indexOf('panel about') > html.indexOf('class="mark"'), "About this request sits under the name, where a reader looks after it");
   // a nameless note (retired-level degradation) renders whole, unbolded — never an invented name
   const plain = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "d", depthNote: "This depth covers registered rights." });
-  assert.match(plain, /<div class="depth-strip">This depth covers registered rights\.<\/div>/);
+  assert.match(plain, /Type of search<\/span><span class="v">This depth covers registered rights\./, "a note with no dash is the type entire");
   const bare = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "d" });
-  assert.doesNotMatch(bare, /<div class="depth-strip">/, "no sidecar ⇒ no strip ⇒ archived runs render as before");
+  assert.doesNotMatch(bare, /Type of search/, "no sidecar ⇒ no row ⇒ archived runs render as before");
 });
 
 test("§L: disposition mode absorbs the famous-mark notes into 03 Notable but manageable (out of Scope)", () => {
@@ -2026,7 +1959,7 @@ test("P5: the four-answers panel renders in the hero from opts.fourAnswers; abse
     registrability: { read: "The descriptive element carries no exclusive rights of its own.", token: "registrable-with-conditions", obstacles: [{ class: "41", note: "the office holds the element descriptive for these services" }] },
   };
   const html = renderHtml(parsedOf(REPORT), P5_BANDED, COVERAGE, { runId: "noref-demo", fourAnswers });
-  assert.match(html, /The four answers/);
+  assert.match(html, /class="gwhy"/, "the four answers are the rating card's Why <band> now");
   assert.match(html, /Third-party rights/);
   assert.match(html, /fa-token">Strong<\/span> — Strong senior rights block the core class\./);
   assert.match(html, /Likelihood of objection/);
@@ -2035,10 +1968,10 @@ test("P5: the four-answers panel renders in the hero from opts.fourAnswers; abse
   // the omitted fourth answer renders no row; the panel never fakes it
   assert.ok(!html.includes("Your own enforceability"));
   const bare = renderHtml(parsedOf(REPORT), P5_BANDED, COVERAGE, { runId: "noref-demo" });
-  assert.ok(!bare.includes("The four answers"), "absent fourAnswers must render no panel");
+  assert.ok(!bare.includes('class="gwhy"'), "absent fourAnswers must render no Why block");
   // both variants carry it (one report)
   const client = renderHtml(parsedOf(REPORT), P5_BANDED, COVERAGE, { runId: "noref-demo", client: true, fourAnswers });
-  assert.match(client, /The four answers/);
+  assert.match(client, /class="gwhy"/);
 });
 
 // Review 2026-07-31 (BLOCKING): the six new P5 free-prose fields bypassed inline() — the ONE
@@ -2073,35 +2006,6 @@ const P5_TAILED_ANSWERS = {
     obstacles: [{ class: "41", note: "the office holds the element descriptive ::p:: STAFFONLYOBSTACLE" }] },
 };
 const P5_STAFF_TAGS = ["STAFFONLYLEGAL", "STAFFONLYPRACTICAL", "STAFFONLYMANAGEABLE", "STAFFONLYREAD", "STAFFONLYBASIS", "STAFFONLYOBSTACLE"];
-
-test("P5 internal-note safety: every new free-prose field routes through the choke point — no raw marker, tails RELABELLED", () => {
-  const html = renderHtml(parsedOf(REPORT), P5_TAILED, COVERAGE, { runId: "noref-demo", fourAnswers: P5_TAILED_ANSWERS });
-  // BOTH of these fail on the pre-fix bytes: bare esc() renders the marker and never mints the label.
-  assert.ok(!html.includes("::p::"), "the raw internal marker must never survive to any surface");
-  assert.match(html, /\[internal\] STAFFONLYLEGAL/);
-  assert.match(html, /\[internal\] STAFFONLYPRACTICAL/);
-  assert.match(html, /\[internal\] STAFFONLYMANAGEABLE/);
-  assert.match(html, /\[internal\] STAFFONLYREAD/);
-  assert.match(html, /\[internal\] STAFFONLYBASIS/);
-  assert.match(html, /\[internal\] STAFFONLYOBSTACLE/);
-  // the PUBLIC head of each mixed field survives — labelling is not suppression
-  assert.match(html, /Legal risk\.<\/b> High similarity over identical services\./);
-  assert.match(html, /Practical position\.<\/b> The owner looks dormant\./);
-  assert.match(html, /Commercial partner\.<\/b> a client partner/);
-  assert.match(html, /Strong senior rights block the core class\./);
-});
-
-test("P5 internal-note safety: a line-leading label wears the int-note print class, on both P5 containers", () => {
-  const whollyInternal = [{ ...P5_TAILED[0], legal_position: "::p:: STAFFONLYWHOLE", practical_position: "" }];
-  const html = renderHtml(parsedOf(REPORT), whollyInternal, COVERAGE, { runId: "noref-demo",
-    fourAnswers: { third_party_rights: { read: "::p:: STAFFONLYWHOLEREAD", token: "strong" } } });
-  // the paragraph form (legal/practical, manageable) …
-  assert.match(html, /<p class="lp int-note"><b>Legal risk\.<\/b> \[internal\] STAFFONLYWHOLE<\/p>/);
-  // … and the four-answers ROW form. It is a <div>, which is why serve-time preparation needed a
-  // div rule of its own — the class is what both the print stylesheet and the strip key on.
-  assert.match(html, /<div class="fa-row int-note">/);
-  assert.ok(!html.includes("::p::"));
-});
 
 // ONE report (/): `client` is a retired flag. A stale caller must get the SAME bytes — that
 // is the honest statement of the retired fork, and it stops a future reader re-growing a client branch
