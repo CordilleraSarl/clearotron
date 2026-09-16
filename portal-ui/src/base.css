@@ -1878,8 +1878,20 @@ input.filter {
   color: var(--text-strong); white-space: nowrap;
 }
 .home2-band-label.faint { color: var(--text-faint); }
-.home2-band-count { font-size: 11.5px; color: var(--text-faint); }
+/* THE SAME SIZE AND COLOUR AS THE CAPACITY LINE OPPOSITE, because the two are one sentence read across
+   the band: what is happening on the left, how much can happen at once on the right. It carried `mono`
+   while it was a single total, which read as a machine's counter rather than as a statement. `nowrap`
+   because it is now a breakdown — "2 running · 1 paused · 2 queued" — and breaking it mid-clause puts
+   a number on its own line. */
+.home2-band-count { font-size: 11.5px; color: var(--text-faint); white-space: nowrap; }
 .home2-band-rule { height: 1px; background: var(--border-hairline); }
+
+/* A RUNNING RUN AS A ROW. The queue's grid, with the two columns a running row has and a waiting one
+   does not. Declared as a modifier rather than a new grid so the narrow-screen rule that hides columns
+   keeps one definition for both. */
+.home2-runrows { display: flex; flex-direction: column; gap: 1px; margin-bottom: 18px; }
+.home2-runrow .home2-qstep { font-size: 11.5px; color: var(--text-muted); white-space: nowrap; }
+.home2-runrow .home2-qreason { font-size: 11.5px; color: var(--text-muted); white-space: nowrap; }
 .home2-band-note {
   font-size: 11.5px; color: var(--text-faint); text-align: right;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -1963,6 +1975,10 @@ input.filter {
   display: flex; align-items: center; gap: 10px;
 }
 .home2-reason { flex: 1; min-width: 0; font-size: 12.5px; color: var(--text-muted); }
+/* QUIETER THAN THE ELAPSED TIME IT FOLLOWS. The elapsed line is this run's own fact; the quote beside it
+   is the standing one for its pipeline, and a reader who wants to know how long this has been going
+   should meet that first. Same line, one step back in the hierarchy. */
+.home2-expect { font-size: 12.5px; color: var(--text-faint); white-space: nowrap; }
 .home2-reason.paused { color: var(--tone-medium); }
 .home2-reason.failed { color: var(--tone-high); }
 .home2-stop, .home2-cancel, .home2-ack {
