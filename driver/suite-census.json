@@ -5900,14 +5900,20 @@
           "todos": 0
         },
         "composeRead.test.ts": {
-          "tests": 22,
-          "asserts": 46,
+          "tests": 25,
+          "asserts": 54,
           "skips": 0,
           "todos": 0
         },
         "composerProduct.test.ts": {
           "tests": 30,
           "asserts": 113,
+          "skips": 0,
+          "todos": 0
+        },
+        "composerWords.test.ts": {
+          "tests": 5,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -6039,7 +6045,7 @@
         },
         "newClearanceStructure.test.ts": {
           "tests": 8,
-          "asserts": 61,
+          "asserts": 63,
           "skips": 0,
           "todos": 0
         },
@@ -6121,9 +6127,15 @@
           "skips": 0,
           "todos": 0
         },
+        "recommendSearch.test.ts": {
+          "tests": 6,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "registerCoverage.test.ts": {
           "tests": 12,
-          "asserts": 35,
+          "asserts": 36,
           "skips": 0,
           "todos": 0
         },
@@ -6147,7 +6159,7 @@
         },
         "screenCopy.test.ts": {
           "tests": 56,
-          "asserts": 190,
+          "asserts": 196,
           "skips": 0,
           "todos": 0
         },
@@ -6171,13 +6183,19 @@
         },
         "terminology.test.ts": {
           "tests": 4,
-          "asserts": 5,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },
         "territoryCodeParity.test.ts": {
           "tests": 4,
           "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "territoryCodes.test.ts": {
+          "tests": 2,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },
