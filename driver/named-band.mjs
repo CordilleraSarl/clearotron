@@ -29,6 +29,23 @@ import { abbrev } from "./repair-contract.mjs";
 
 export const BAND_STATES = ["enumerated", "incomplete"];
 
+// ── WHAT ONE QUERY MAY PUT INTO THE BAND ─────────────────────────────────────────────────────────
+//
+// THE DEFECT (production run, 2026-09-16). A 2,146-record band, of which 1,154 — 54% — were reachable
+// from two queries and nothing else. Both were machine-built forms of an ordinary short word, so they
+// matched every mark containing that word across four registers. Measured on the preserved band: the
+// three biggest queries returned 589, 583 and 271 records; the fourth returned 185. A ceiling at 200
+// therefore bites exactly those three and leaves the rest of that plan untouched, which is why it is
+// the number rather than a rounder one.
+//
+// AN OVER-CAP QUERY IS NOT TRUNCATED, IT IS RECLASSIFIED. The band already has a word for "this query
+// matched more than we carried": `incomplete`, which produces a crowd descriptor carrying the full
+// count. So the excess is DISCLOSED with its number rather than dropped — judgment reads the crowd and
+// can say the ground was too broad to enumerate, which is a true statement about the search. Silently
+// keeping the first two hundred would be the one outcome worse than the flood: a narrower band that
+// reads as complete.
+export const BAND_QUERY_CAP = 200;
+
 /**
  * Parse + lightly validate the named-band artifact. Returns { enumerated:[…records], crowds:[…descriptors] }.
  * Throws `named_band_*` tokens (token FIRST) so the stage validator + corrective-retry can key on the defect,
@@ -95,7 +112,22 @@ export function parseNamedBand(raw) {
       // at band-shape.mjs's `record_id` filter — the same loss, one step further from anything that
       // could name it.
       const recs = Array.isArray(b.records) ? b.records : [];
-      for (const r of recs) { if (r && typeof r === "object" && !Array.isArray(r)) enumerated.push({ ...r, ...prov }); }
+      const kept = [];
+      for (const r of recs) { if (r && typeof r === "object" && !Array.isArray(r)) kept.push({ ...r, ...prov }); }
+      if (kept.length > BAND_QUERY_CAP) {
+        // The count the provider reported is the truth about the ground; `kept.length` is only what this
+        // block carried. Prefer the reported total and fall back to what we hold, so the descriptor never
+        // claims a smaller crowd than it can prove.
+        const total = countOrNull(b.total_hits) ?? kept.length;
+        for (const r of kept.slice(0, BAND_QUERY_CAP)) enumerated.push(r);
+        crowds.push({
+          query, total_hits: total, fetched: BAND_QUERY_CAP, sample: [],
+          reason: `one query returned ${kept.length} record(s), over the ${BAND_QUERY_CAP}-record ceiling any single query may add to this band; the first ${BAND_QUERY_CAP} are carried and the rest are disclosed here as a crowd rather than enumerated`,
+          ...(typeof b.qid === "string" && b.qid ? { qid: b.qid } : {}),
+        });
+      } else {
+        for (const r of kept) enumerated.push(r);
+      }
     } else {
       // count-first rescue (2026-07-10, copper-lattice): a crowd descriptor may carry per-term truth —
       // `term_counts` (each term's tool-derived count + disposition) and the fully-enumerated tractable
