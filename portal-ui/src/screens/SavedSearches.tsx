@@ -43,8 +43,10 @@ import { draftFromSaved } from '../contract/composerProduct.ts'
 import { useLoad } from '../state/useApi.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
 import { CompanyGate } from '../shell/CompanyPicker.tsx'
+import { NewCompanyButton } from '../shell/NewCompanyButton.tsx'
 import { canRun } from '../shell/permissions.ts'
 import { PageHeader } from '../components/PageHeader.tsx'
+import { RowMenu } from '../components/RowMenu.tsx'
 
 export function SavedSearches({ ctx }: { readonly ctx: ShellContext }) {
   // Who this is FOR — resolved exactly as the composer resolves it. A staff member acting for a client
@@ -82,7 +84,7 @@ export function SavedSearches({ ctx }: { readonly ctx: ShellContext }) {
   if (result.kind === 'featureOff') {
     return (
       <div className="screen">
-        <Heading />
+        <Heading ctx={ctx} onNew={null} />
         <div className="notice">
           <b>Search templates are switched off on this installation</b>
           <p style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>
@@ -106,7 +108,7 @@ export function SavedSearches({ ctx }: { readonly ctx: ShellContext }) {
   if (result.kind !== 'ok') {
     return (
       <div className="screen">
-        <Heading />
+        <Heading ctx={ctx} onNew={null} />
         <div className="notice">
           <b>{result.kind === 'rateLimited' ? 'Too many requests just now' : 'Search templates could not be loaded'}</b>
           <p style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>
@@ -169,16 +171,11 @@ export function SavedSearches({ ctx }: { readonly ctx: ShellContext }) {
   // open the composer is absent rather than leading to a page that does not exist for them.
   const startNew = canRun(ctx.me) ? () => ctx.go('/portal/new') : null
 
-  if (!rows.length) return <Empty onNew={startNew} />
+  if (!rows.length) return <Empty ctx={ctx} onNew={startNew} />
 
   return (
     <div className="screen">
-      <Heading />
-      <p className="prose" style={{ margin: 0, color: 'var(--text-muted)' }}>
-        A search template is a named set-up — which search, and how deep it goes — so a search you run
-        often is run the same way every time. They are built on New clearance: set the search up there, and
-        press <b>Save as template</b>.
-      </p>
+      <Heading ctx={ctx} onNew={startNew} />
 
       {unusable ? (
         <div className="notice" style={{ borderLeftColor: 'var(--tone-medium)' }}>
@@ -200,19 +197,11 @@ export function SavedSearches({ ctx }: { readonly ctx: ShellContext }) {
         </div>
       ) : null}
 
-      {startNew ? (
-        <div style={{ marginTop: 16, display: 'flex', justifyContent: 'flex-end' }}>
-          <button type="button" className="pill" style={{ cursor: 'pointer' }} onClick={startNew}>
-            New template
-          </button>
-        </div>
-      ) : null}
-
       <div className="table-wrap" style={{ marginTop: 10 }}>
         <table className="data">
           <thead>
             <tr>
-              <th>Template</th>
+              <th>Search template</th>
               <th>Builds on</th>
               <th style={{ width: 90 }}>Version</th>
               <th style={{ width: 210 }} />
@@ -286,7 +275,7 @@ function SavedRow({
         {version ?? <span style={{ color: 'var(--text-faint)' }}>—</span>}
       </td>
       <td>
-        <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
           {confirming ? (
             <>
               {/* Two presses, and the second one names what it does. This is a confirm rather than a
@@ -311,10 +300,15 @@ function SavedRow({
                   Edit
                 </button>
               ) : null}
+              {/* RETIRE AND BRING BACK ARE IN THE ROW'S MENU. Edit is what a person comes to this list to
+                  do; retiring is rare and reversible, and a button for it on every row stood level with
+                  Edit. The menu holds whichever of the two the row can take. */}
               {onRetire ? (
-                <button type="button" className="pill" style={{ cursor: 'pointer', fontSize: 12 }} disabled={busy} onClick={onRetire}>
-                  {busy ? 'Working…' : recipe.archived ? 'Bring back' : 'Retire'}
-                </button>
+                busy ? (
+                  <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Working…</span>
+                ) : (
+                  <RowMenu actions={[{ label: recipe.archived ? 'Bring back' : 'Retire', onSelect: onRetire }]} />
+                )
               ) : null}
             </>
           )}
@@ -339,44 +333,34 @@ function BuildsOn({ status }: { readonly status: SavedSearchStatus }) {
     // shape of "stored config outlived the level it named".
     return <span style={{ color: 'var(--text-muted)' }}>No longer available</span>
   }
+  // THE PRODUCT, NAMED ONCE. Its stage label sat on a second line under the name, and the registry's
+  // stage label IS the product's name now, so every row said one thing twice. Nothing replaces that line:
+  // the listing carries no scope, and a second line invented from nothing would be worse than none. An
+  // unavailable product keeps the server's own note under it — that is a different fact.
   if (status.kind === 'unavailable') {
     return (
       <span>
         <span style={{ color: 'var(--text-strong)' }}>{status.name}</span>
-        <span style={{ display: 'block', fontSize: 12, color: 'var(--text-faint)' }}>{status.stageLabel}</span>
         <span style={{ display: 'block', fontSize: 12.5, color: 'var(--text-muted)' }}>{status.note}</span>
       </span>
     )
   }
-  // The NAME leads and the stage sits under it. This table compares the products a client has
-  // configured, so the ladder position earns its place here — it is the only thing that orders them.
-  return (
-    <span>
-      <span style={{ color: 'var(--text-strong)' }}>{status.name}</span>
-      <span style={{ display: 'block', fontSize: 12, color: 'var(--text-faint)' }}>{status.stageLabel}</span>
-    </span>
-  )
+  return <span style={{ color: 'var(--text-strong)' }}>{status.name}</span>
 }
 
-function Empty({ onNew }: { readonly onNew: (() => void) | null }) {
+function Empty({ ctx, onNew }: { readonly ctx: ShellContext; readonly onNew: (() => void) | null }) {
   return (
     <div className="screen">
-      <Heading />
+      {/* New template is in the header here too, so the empty list offers no second button for it. */}
+      <Heading ctx={ctx} onNew={onNew} />
       <div className="notice">
         <b>No search templates yet</b>
         {onNew ? (
-          <>
-            <p className="prose" style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>
-              A search template is a named set-up — which search, and how deep it goes. Build one on New
-              clearance: set the search up, see what it costs, then press <b>Save as template</b>. It becomes a
-              single choice the next time, instead of a form to fill in the same way every time.
-            </p>
-            <div style={{ marginTop: 14 }}>
-              <button type="button" className="pill" style={{ cursor: 'pointer' }} onClick={onNew}>
-                Build one on New clearance
-              </button>
-            </div>
-          </>
+          <p className="prose" style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>
+            A search template is a named set-up — which search, and how deep it goes. Build one on New
+            clearance: set the search up, see what it costs, then press <b>Save as template</b>. It becomes a
+            single choice the next time, instead of a form to fill in the same way every time.
+          </p>
         ) : (
           <p className="prose" style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>
             A search template is a named set-up — which search, and how deep it goes. None has been saved
@@ -392,11 +376,28 @@ function PickCompany({ ctx }: { readonly ctx: ShellContext }) {
   return <CompanyGate ctx={ctx} heading="Search templates" line="Pick a company to see its search templates." />
 }
 
-/** The screen's own title. The company is named in the rail, and once is enough. */
-function Heading() {
+/**
+ * The screen's own title, and its controls. The company is named in the rail, and once is enough.
+ *
+ * NEW TEMPLATE IS THE PAGE'S PRIMARY BUTTON, in the header; it sat in a pill row floating at the right
+ * above the table. `+ New company` is beside it and secondary. `onNew` is null for a person who may not
+ * start clearances — templates are built on New clearance, which does not exist for them — and on the
+ * states where there is no list to add to.
+ */
+function Heading({ ctx, onNew }: { readonly ctx: ShellContext; readonly onNew: (() => void) | null }) {
   return (
-    <>
-      <PageHeader title="Search templates" />
-    </>
+    <PageHeader
+      title="Search templates"
+      actions={
+        <>
+          <NewCompanyButton ctx={ctx} />
+          {onNew ? (
+            <button type="button" className="btn-primary btn-sm" onClick={onNew}>
+              New template
+            </button>
+          ) : null}
+        </>
+      }
+    />
   )
 }

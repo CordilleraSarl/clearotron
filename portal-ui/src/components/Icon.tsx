@@ -37,6 +37,9 @@ const PATHS: Record<string, string> = {
   // The six-dot drag handle. Drawn as strokes rather than filled circles so it inherits the same
   // stroke treatment as every other icon here and does not read as a different weight beside them.
   'grip-vertical': 'M9 5h.01M15 5h.01M9 12h.01M15 12h.01M9 19h.01M15 19h.01',
+  // Three dots in a row, for a row's "More actions" menu. Drawn as small circles rather than zero-length
+  // strokes, so they read as dots at the shared stroke width instead of as specks.
+  more: 'M6 12a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM13 12a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM20 12a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z',
   'arrow-right': 'M5 12h14M13 6l6 6-6 6',
   'arrow-left': 'M19 12H5M11 18l-6-6 6-6',
   trash: 'M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6',

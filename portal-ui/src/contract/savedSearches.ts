@@ -114,6 +114,46 @@ export function versionLabel(recipe: SavedSearch): string | null {
  * The slug breaks ties. Labels are free text and carry no uniqueness constraint (the slug is the key), so
  * two saved searches really can share one, and without a tiebreak the list would shuffle between renders.
  */
+/**
+ * The "Permitted searches" row on Profile, in the names people read on Search templates.
+ *
+ * The row is the company's closed menu of searches, stored as KEYS — a product's key, a template's slug,
+ * or `company/slug` — and it printed them as stored: `launch-screen, eu-shelf-refresh`, words that
+ * appear nowhere else a reader goes. Each entry is resolved through reads the screens already make: the
+ * template listing that Search templates draws its rows from, and the product registry behind the depth
+ * menu. A template is named by `displayLabel`, so the two pages cannot call one template two things.
+ *
+ * AN ENTRY NOTHING NAMES IS COUNTED, NEVER PRINTED. It may be a template made after the profile, or
+ * another company's, and its key is exactly what `displayLabel` refuses to put in front of a reader.
+ * `templates` is null when the listing could not be read, and the count then says that rather than
+ * claiming the templates are missing from a list nobody saw.
+ */
+export function permittedSearchesLine(
+  entries: unknown,
+  company: string,
+  templates: readonly SavedSearchListing[] | null,
+  products: readonly Product[],
+): string {
+  const keys = Array.isArray(entries) ? entries.map((e) => String(e).trim().toLowerCase()).filter(Boolean) : []
+  if (!keys.length) return '—'
+  const names: string[] = []
+  let unnamed = 0
+  for (const key of keys) {
+    const at = key.indexOf('/')
+    // A `company/slug` entry names a template of THAT company, and only this company's are listed here.
+    const slug = at < 0 ? key : key.slice(0, at) === company.toLowerCase() ? key.slice(at + 1) : null
+    const product = at < 0 ? products.find((p) => p.key === key) : undefined
+    const template = slug === null ? undefined : templates?.find((t) => t.slug === slug)
+    const name = product ? product.name || product.stageLabel : template ? displayLabel(template) : null
+    if (name === null) unnamed++
+    else if (!names.includes(name)) names.push(name)
+  }
+  if (!unnamed) return names.join(', ')
+  const count = `${unnamed} ${unnamed === 1 ? 'search' : 'searches'}`
+  const rest = templates === null ? `${count} that could not be named just now` : `${count} not on Search templates`
+  return names.length ? `${names.join(', ')}, and ${rest}` : rest
+}
+
 // Generic over the row, because the screen lists the CONFIG shape (which carries `archived` and
 // `updatedAt`) while the composer's depth menu sends the thin one. Pinning the parameter to `SavedSearch`
 // sorted the richer rows and handed back the poorer type, silently dropping the retired flag the list is

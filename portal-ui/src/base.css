@@ -609,6 +609,21 @@ table.data tr.group-head ~ tr.row > td:first-child {
   color: var(--text-muted);
 }
 
+/* The larger pill, for a control that is a card's closing action rather than a label — and an anchor
+   drawn as one, which is what opening a document in a new tab is. */
+.pill-lg {
+  padding: 5px 13px;
+  font-size: 12px;
+}
+a.pill {
+  text-decoration: none;
+  cursor: pointer;
+}
+a.pill:hover {
+  color: var(--text-strong);
+  border-color: var(--border-strong);
+}
+
 /* ── status + risk ───────────────────────────────────────────────────────────────────────────────── */
 
 .dot {
@@ -866,15 +881,6 @@ input.filter {
   margin: 6px 0 4px;
 }
 
-.fw-bmh {
-  font-size: 10.5px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-accent);
-  font-weight: 700;
-  margin: 16px 0 6px;
-}
-
 /* THE rule that makes this read as a rated ladder instead of a bullet list: a fixed pill column and a
    text column, so every meaning starts at the same left edge no matter how wide its band label is.
    A flex row here lets each pill size itself and leaves the prose ragged — that is what the first
@@ -981,6 +987,243 @@ input.filter {
     gap: 2px;
     padding: 6px 0;
   }
+}
+
+/* ── Company settings: Profile, Projects, Search templates, New company ─────────────────────────────
+   Each page is a stack of cards. The framework card leads Profile; Identity, Search defaults, the law
+   firm fold and the background follow it, and New company draws the same cards in the same order. */
+
+.card-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.card-stack > .notice {
+  margin: 0;
+}
+/* The fieldset that decides whether Profile can be changed is a stack in its own right, and a
+   fieldset's own border, padding and minimum width are browser furniture nobody asked for. */
+fieldset.profile-cards {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+
+/* THE FOLD. A closed row whose chevron sits at its right edge and turns down when open — the shape every
+   openable row on these pages takes, centre-aligned so the title, its note and the chevron share a line. */
+.fold-summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  list-style: none;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 13.5px;
+  color: var(--text-strong);
+}
+.fold-summary::-webkit-details-marker {
+  display: none;
+}
+.fold-note {
+  font-weight: 400;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+.fold-chev {
+  margin-left: auto;
+  color: var(--text-faint);
+  transition: transform 0.15s var(--ease-out);
+}
+details[open] > .fold-summary .fold-chev {
+  transform: rotate(90deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .fold-chev {
+    transition: none;
+  }
+}
+.fold-body {
+  margin-top: 10px;
+}
+/* A fold inside a card: a hairline above it, so it reads as a row of the card rather than as a field. */
+.fw-fold {
+  margin-top: 16px;
+  border-top: 1px solid var(--border-hairline);
+  padding-top: 12px;
+}
+/* A fold that IS a card: the whole card is the row until it opens. */
+.fold-card > .fold-summary {
+  font-size: 14px;
+}
+
+/* The configuration rows under the framework, in view whether the band detail is open or not. */
+.fw-rows {
+  margin-top: 16px;
+  border-top: 1px solid var(--border-hairline);
+  padding-top: 12px;
+}
+.fw-row {
+  display: flex;
+  gap: 14px;
+  padding: 5px 0;
+  font-size: 13px;
+  align-items: baseline;
+}
+.fw-row-label {
+  color: var(--text-muted);
+  min-width: 150px;
+}
+.fw-row-value {
+  color: var(--text-strong);
+  word-break: break-word;
+}
+.fw-foot {
+  margin-top: 14px;
+}
+
+/* One profile field: its label, its tag, its hint line, then the control. */
+.profile-field {
+  display: block;
+  margin-top: 18px;
+}
+.eyebrow + .profile-field,
+.eyebrow + div > .profile-field:first-child {
+  margin-top: 12px;
+}
+.profile-field-label {
+  display: block;
+  font-weight: 700;
+  color: var(--text-strong);
+  font-size: 14px;
+}
+.profile-field-hint {
+  display: block;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin: 2px 0 7px;
+}
+.profile-field-gap {
+  display: block;
+  height: 7px;
+}
+
+/* REQUIRED AND OPTIONAL. Filled for the one a form cannot do without, quiet for the rest, so the eye finds
+   the required field without reading every tag. Sized against the label it follows, and lowered a pixel
+   so an uppercase tag sits on the label's line rather than above it. */
+.field-tag {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 6px;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.5;
+  text-transform: uppercase;
+  vertical-align: 1px;
+  color: var(--text-faint);
+  background: var(--surface-sunken);
+}
+.field-tag-required {
+  color: var(--text-on-accent);
+  background: var(--accent);
+}
+
+/* The class search: the chosen classes as chips, then the box that finds one. */
+.chip-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.class-picker > .chip-row {
+  margin-top: 2px;
+}
+.class-picker-box {
+  position: relative;
+}
+
+/* The New company rating card's one row: the framework a company starts on, and the way to its own. */
+.rating-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+}
+.rating-row-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+/* The page's one action row: the button, and the line that says what state it is in. */
+.row-foot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+.row-foot-note {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* A project row: the whole left side opens it; its menu and chevron sit at the right. */
+.row-card {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border-hairline);
+  background: var(--surface-raised);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.row-card-open {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+.row-card-name {
+  font-weight: 700;
+  color: var(--text-strong);
+}
+.row-chev {
+  display: inline-flex;
+  flex: none;
+  color: var(--text-faint);
+}
+
+/* A row's "More actions" menu, under its button and aligned to its right edge. */
+.row-menu {
+  position: relative;
+  flex: none;
+}
+.row-menu-button {
+  width: 28px;
+  height: 28px;
+}
+.row-menu-list {
+  position: absolute;
+  right: 0;
+  top: 32px;
+  z-index: 30;
+  min-width: 150px;
+  padding: 6px;
+}
+.row-menu-list .nav-item {
+  font-size: 13px;
+  padding: 7px 10px;
+  margin: 0;
+  white-space: nowrap;
 }
 
 /* ── the New clearance composer ──────────────────────────────────────────────────────────────────────
@@ -1648,6 +1891,13 @@ input.filter {
 
 .btn-ghost:hover {
   border-color: var(--text-strong);
+}
+
+/* The page header's buttons: the same two kinds, sized to sit beside a title. */
+.btn-sm {
+  padding: 8px 14px;
+  font-size: 13px;
+  border-radius: 8px;
 }
 
 /* ── the confirm dialog ─────────────────────────────────────────────────────────────────────────────

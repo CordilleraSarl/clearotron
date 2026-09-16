@@ -57,7 +57,9 @@ test('both screens use the one component rather than writing the link out', () =
   const NEW = read('../src/screens/NewCompany.tsx')
   const PROFILE = read('../src/screens/Profile.tsx')
   for (const [name, src] of [['NewCompany', NEW], ['Profile', PROFILE]] as const) {
-    assert.match(src, /<FrameworkGuideLink \/>/, `${name} does not use the shared guide link`)
+    // With or without props: New company's card words it "Use your own", and both draw it as a button.
+    // What is pinned is that the component is used, not how it is dressed.
+    assert.match(src, /<FrameworkGuideLink\b[^>]*\/>/, `${name} does not use the shared guide link`)
     assert.doesNotMatch(src, /blob\/main\/docs\/configuration\.md/,
       `${name} spells the guide URL itself again — two spellings drift, and one of them loses the anchor`)
   }

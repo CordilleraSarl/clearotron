@@ -9,7 +9,7 @@
 
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { statusFor, isUsable, displayLabel, versionLabel, sortSavedSearches } from '../src/contract/savedSearches.ts'
+import { statusFor, isUsable, displayLabel, versionLabel, sortSavedSearches, permittedSearchesLine } from '../src/contract/savedSearches.ts'
 import type { SavedSearch } from '../src/contract/savedSearches.ts'
 import type { Product } from '../src/contract/api.ts'
 
@@ -149,4 +149,48 @@ test('an older server that sends no name degrades to the label, never to a blank
   // is worse than an out-of-date one.
   const s = statusFor(saved({ base: 'clearotron' }), [lvl('clearotron', { name: '', stage: '' })])
   assert.equal(s.kind === 'ready' && s.name, 'clearotron')
+})
+
+// ── Permitted searches, on Profile ──────────────────────────────────────────────────────────────────
+
+const LISTING = [
+  saved({ slug: 'launch-screen', label: 'Launch screen' }),
+  saved({ slug: 'eu-shelf-refresh', label: 'EU shelf refresh' }),
+  saved({ slug: 'unnamed-one', label: '   ' }),
+]
+const REGISTRY = [lvl('global-preliminary-search', { name: 'Global preliminary search' })]
+
+test('PERMITTED SEARCHES reads in the names Search templates prints, in the order they are stored', () => {
+  // The row printed the stored keys — "launch-screen, eu-shelf-refresh" — which a reader meets nowhere
+  // else. Resolved through the same listing Search templates draws, it says what that page says.
+  assert.equal(permittedSearchesLine(['launch-screen', 'eu-shelf-refresh'], 'northwind', LISTING, REGISTRY),
+    'Launch screen, EU shelf refresh')
+  // A product key is named by the registry, and a company-qualified key by its own company's template.
+  assert.equal(permittedSearchesLine(['global-preliminary-search', 'northwind/eu-shelf-refresh'], 'northwind', LISTING, REGISTRY),
+    'Global preliminary search, EU shelf refresh')
+  // One template reached two ways is one name, not two.
+  assert.equal(permittedSearchesLine(['launch-screen', 'northwind/launch-screen'], 'northwind', LISTING, REGISTRY), 'Launch screen')
+  // A blank label reads as the listing's placeholder, never as its slug — the same rule the list keeps.
+  assert.equal(permittedSearchesLine(['unnamed-one'], 'northwind', LISTING, REGISTRY), 'Untitled template')
+})
+
+test('an entry nothing names is COUNTED, and its key is never printed', () => {
+  // Made after the profile, or another company's: either way the key is the thing that must not reach a
+  // reader. Another company's slug must not borrow this company's template of the same name, either.
+  const line = permittedSearchesLine(['launch-screen', 'not-made-yet', 'othercorp/launch-screen'], 'northwind', LISTING, REGISTRY)
+  assert.equal(line, 'Launch screen, and 2 searches not on Search templates')
+  for (const key of ['not-made-yet', 'othercorp', 'launch-screen']) assert.ok(!line.includes(key), `the key ${key} reached the row`)
+  assert.equal(permittedSearchesLine(['not-made-yet'], 'northwind', LISTING, REGISTRY), '1 search not on Search templates')
+})
+
+test('a listing that could not be read is not reported as templates that do not exist', () => {
+  // THE CONTROL for the count above: null means nobody saw the list, and "not on Search templates" would
+  // be a claim about a page the screen never read. Product keys still resolve from the registry.
+  assert.equal(permittedSearchesLine(['global-preliminary-search', 'launch-screen'], 'northwind', null, REGISTRY),
+    'Global preliminary search, and 1 search that could not be named just now')
+})
+
+test('no permitted searches on file reads as a dash, not as an empty row', () => {
+  assert.equal(permittedSearchesLine(undefined, 'northwind', LISTING, REGISTRY), '—')
+  assert.equal(permittedSearchesLine([], 'northwind', LISTING, REGISTRY), '—')
 })
