@@ -1,5 +1,9 @@
 # portal-ui
 
+## 0.3.2-beta.5
+
+No changes in this release.
+
 ## 0.3.2-beta.4
 
 No changes in this release.
