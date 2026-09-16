@@ -1,5 +1,12 @@
 # clearotron-driver
 
+## 0.3.2-beta.1
+
+### Patch Changes
+
+- 2a81abc: New: A report can now show how much was searched to reach its answer. It records the names read and cleared, the records read in each country, and the checks made. Countries where nothing was found are included.
+- 2a81abc: Fixed: The conditions listed on a report are now written in plain legal English, matching the summary line above them. One condition could previously appear as an internal engine note with counts and identifiers in it.
+
 ## 0.3.2-beta.0
 
 ### Patch Changes
