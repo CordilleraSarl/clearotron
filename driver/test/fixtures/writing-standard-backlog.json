@@ -6,7 +6,7 @@
     "eyebrow-heading",
     "restating-lede"
   ],
-  "total": 13,
+  "total": 12,
   "files": {
     "driver/publish/pool-admin.mjs": [
       1,
@@ -27,13 +27,6 @@
       0,
       3,
       0,
-      0
-    ],
-    "portal-ui/src/screens/Result.tsx": [
-      0,
-      0,
-      0,
-      1,
       0
     ]
   }
