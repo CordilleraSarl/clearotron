@@ -869,6 +869,14 @@ input.filter {
   gap: 12px;
 }
 
+/* THE TOP BAR'S EYE, GIVEN AN EDGE. On the top bar it sits in a row of buttons like it; alone in a card, a
+   borderless glyph beside a sentence reads as a bullet. So here it carries the hairline edge the design
+   draws round this control, and keeps the top bar's pressed state. */
+.pref-blur .icon-btn {
+  flex: none;
+  border-color: var(--border-hairline);
+}
+
 .pref-blur-line {
   font-size: 13.5px;
   color: var(--text-muted);
