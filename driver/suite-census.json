@@ -455,7 +455,7 @@
         },
         "a-mid-run-mint-cannot-lose-a-mark.test.mjs": {
           "tests": 10,
-          "asserts": 18,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
@@ -2746,8 +2746,8 @@
           "todos": 0
         },
         "matter-frame-record.test.mjs": {
-          "tests": 20,
-          "asserts": 71,
+          "tests": 24,
+          "asserts": 81,
           "skips": 0,
           "todos": 0
         },
@@ -2800,8 +2800,8 @@
           "todos": 0
         },
         "named-band.test.mjs": {
-          "tests": 19,
-          "asserts": 67,
+          "tests": 22,
+          "asserts": 78,
           "skips": 0,
           "todos": 0
         },
@@ -3088,8 +3088,8 @@
           "todos": 0
         },
         "plan-qid-is-an-identity.test.mjs": {
-          "tests": 10,
-          "asserts": 30,
+          "tests": 20,
+          "asserts": 73,
           "skips": 0,
           "todos": 0
         },
@@ -3598,8 +3598,8 @@
           "todos": 0
         },
         "register-digest-record.test.mjs": {
-          "tests": 32,
-          "asserts": 114,
+          "tests": 38,
+          "asserts": 147,
           "skips": 0,
           "todos": 0
         },
