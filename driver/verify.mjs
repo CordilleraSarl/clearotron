@@ -368,13 +368,20 @@ function commonLawMeaningSeat(p, c) {
   const recordedQ = new Set(recordedRaw.map(queryKey));
   const dropped = dictated.filter((q) => !recordedQ.has(queryKey(q)));
   if (dropped.length) {
-    // ── THE REFUSAL SAYS WHICH OF TWO FAULTS THIS IS, because they need opposite remedies ──────────
+    // ── THE REFUSAL SAYS WHAT IT CAN SEE, AND STOPS SHORT OF WHAT IT CANNOT ───────────────────────
     //
-    // ABSENT: no recorded query resembles it, so the search was not run and the seat must run it.
     // UNMATCHED: something close IS recorded, so the search ran and the two spellings disagree beyond
     // what the key folds — a re-ordering, a translation, a truncation, a query the provider chose for
     // itself. Telling the seat to "re-run the missing query" in that case asks for the one thing that
     // cannot help, and that is what turned one attempt into four on a production clearance.
+    //
+    // NO RESEMBLANCE: nothing recorded looks like it. This used to be reported as ABSENT — "the search
+    // was not run and the seat must run it" — and that is a claim the gate has no way to make. A query
+    // recorded under a translation, a transliteration, or the seat's own rewording resembles nothing and
+    // is not absent; the seat was then told to re-run a search that had already happened, which is the
+    // same loop, one wording-distance further out. The two states are genuinely indistinguishable from
+    // here and always will be: there is no identity to join on, which is why this comparison exists at
+    // all. So the label names the observation and the remedy carries BOTH repairs, cheap either way.
     //
     // NO THRESHOLD DECIDES ANYTHING (owner's ruling). The nearest recorded query is shown so a person or
     // a seat can SEE the difference in one attempt; it never makes the gate pass. A similarity score
@@ -394,11 +401,23 @@ function commonLawMeaningSeat(p, c) {
       // every query. Below half the words in common, say nothing rather than point at a red herring.
       return bestScore >= 0.5 ? best : null;
     };
+    // THE SECOND LABEL SAYS WHAT THIS GATE KNOWS, WHICH IS LESS THAN IT USED TO CLAIM.
+    //
+    // It read `[absent from the ledger]`, and that is an assertion the gate cannot make. No near
+    // neighbour means no RECORDED query resembles this one — not that the search never ran. A query that
+    // ran and was recorded under a translation, a transliteration, a re-ordering, or the seat's own
+    // rewording clears no overlap threshold, and was then told to re-run a search that had already
+    // happened. That is the loop this whole gate was filed to break, narrowed but not closed: it needs a
+    // large wording difference now rather than a single apostrophe, and it is still reachable.
+    //
+    // The gate cannot tell the two apart and is not being asked to. There is no identity to join on —
+    // that is the entire reason the dictated-versus-recorded comparison exists. So the label states the
+    // observation, the remedy carries both cases, and no threshold decides which one a seat is told.
     const parts = dropped.slice(0, 3).map((q) => {
       const n = nearest(q);
       return n
         ? `${abbrev(q, 40)} [unmatched; nearest recorded: ${abbrev(n, 40)}]`
-        : `${abbrev(q, 40)} [absent from the ledger]`;
+        : `${abbrev(q, 40)} [no recorded query resembles this one]`;
     });
     return fail(`connotation_query_unrecorded:${parts.join(",")}${dropped.length > 3 ? ` (+${dropped.length - 3} more)` : ""}`);
   }

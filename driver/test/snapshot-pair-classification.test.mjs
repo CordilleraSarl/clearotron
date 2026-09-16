@@ -45,7 +45,7 @@
 //                               flag/data pair exists at either site.
 //
 //  DISAGREE (1) — the two ends read different snapshots and nothing converges:
-//   · verify.mjs:1146           `activeAxes` is basename-derived from a directory listing, so a stray
+//   · verify.mjs           `activeAxes` is basename-derived from a directory listing, so a stray
 //                               `.md` in register-units mints a DRIVER axis row the seat cannot repair
 //                               and the union regenerates every pass. The ladder runs out. verify.mjs
 //                               recorded this itself and asked for "its own token naming the driver" if
