@@ -75,9 +75,12 @@ test("THE BACKLOG IS A FLOOR — no file may carry more of any class than it did
     + "`node scripts/mint-writing-standard-backlog.mjs --apply` if the number went DOWN");
 });
 
-test("A REPAIR IS RECORDED, not absorbed — the fixture must be re-minted when the count falls", () => {
+test("A REPAIR IS RECORDED, not absorbed — the fixture must be re-minted when the count falls", (ctx) => {
   const now = live();
-  if (now === null || now.error) return;                      // covered by the arm above
+  // A BARE `return` HERE WOULD REPORT THIS ARM CLEAN HAVING MEASURED NOTHING — node:test counts it as a
+  // pass. Where the bail means "I could not look", it has to say so.
+  if (now === null) { ctx.skip(skipReason(GUARD)); return; }
+  if (now.error) { ctx.skip(now.error); return; }
   const fell = [];
   for (const [path, floor] of Object.entries(TABLE.files)) {
     const counts = now.files[path] ?? CLASSES.map(() => 0);
