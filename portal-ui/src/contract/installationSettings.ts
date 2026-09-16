@@ -76,6 +76,17 @@ export const CASE_LAW_GAP =
   'Until these are set up, a Full country search still runs and its report discloses the case-law gap instead of reporting no adverse case law.'
 
 /**
+ * Which reports say a source this build does not ship is missing. The note names the reports that
+ * disclose the gap, so it is a fact about the source rather than its kind: the Boards of Appeal are read
+ * for EU filings, and the server's own remedy for that row says a report covering the EU discloses them.
+ * A source added to that list later gets the general sentence until its own is written here.
+ */
+const ABSENT_NOTES: Readonly<Record<string, string>> = {
+  'euipo-boards-of-appeal': 'Reports covering the EU say so',
+}
+export const ABSENT_NOTE = 'Reports that need it say so'
+
+/**
  * The sign-in row: one row, the mode and the issuer beneath it.
  *
  * THE MODE AND THE ISSUER, AND NOTHING ELSE. Not the audience, not a secret, not the token header, and not
@@ -159,7 +170,7 @@ export function providerRow(p: ProviderState): SettingsRow {
   }
   // A source this build does not ship, and nobody can switch on. Faint, because there is nothing to fix.
   if (p.enrolment === 'absent') {
-    return row({ ok: false, off: true, name, mono: covers, state: 'Not in this build', note: 'Reports that need it say so' })
+    return row({ ok: false, off: true, name, mono: covers, state: 'Not in this build', note: ABSENT_NOTES[p.provider ?? ''] ?? ABSENT_NOTE })
   }
   // A register nobody has chosen yet: the thing to do is choose one, not find a key.
   if (p.key === 'register' && p.provider === null) {

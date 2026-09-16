@@ -18,7 +18,7 @@ import { join } from 'node:path'
 import { api, isOk, type ProviderState, type Result } from '../src/contract/api.ts'
 import { engineRow, engineRowFaults } from '../src/contract/engineState.ts'
 import {
-  CASE_LAW_GAP, KEY_NEEDED, SETUP_GUIDES, SIGN_IN_NEEDED, engineCapabilityRows, providerCategories, providerRow,
+  ABSENT_NOTE, CASE_LAW_GAP, KEY_NEEDED, SETUP_GUIDES, SIGN_IN_NEEDED, engineCapabilityRows, providerCategories, providerRow,
   setupGuideUrl, signInRow, splitSourceLabel, type SettingsRow,
 } from '../src/contract/installationSettings.ts'
 import { engineInventory, providerInventory } from '../../driver/config-inventory.mjs'
@@ -164,6 +164,10 @@ test('each row carries a name, what it covers and a state; a row needing action 
     ['EU judgments', 'Configured', 'Read by the engine itself', []])
   const boa = at('EUIPO Boards of Appeal')
   assert.deepEqual([boa?.state, boa?.off, boa?.guide], ['Not in this build', true, null], 'a source nobody can switch on offers a guide or reads as a fault')
+  assert.equal(boa?.note, 'Reports covering the EU say so', 'the Boards of Appeal row no longer says which reports disclose the gap')
+  // Another source this build does not ship cannot claim the EU's reports: it gets the general sentence.
+  const other = providerRow({ ...(view.providers ?? []).find((p) => p.enrolment === 'absent')!, provider: 'some-other-source', providerLabel: 'Some other source' })
+  assert.deepEqual([other.state, other.note], ['Not in this build', ABSENT_NOTE])
 })
 
 test('what an unset case-law source costs is said once, under the category, and only while one is unset', async () => {
