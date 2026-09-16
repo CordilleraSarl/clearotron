@@ -75,8 +75,8 @@ test('the map has settled rows, and the guard actually read them', () => {
   assert.ok(RETIRED.length > 0,
     'no retired term parsed out of TERMINOLOGY.md — either the map lost its SETTLED section or the '
     + 'table shape changed and this guard is now enforcing nothing while reporting green')
-  assert.ok(RETIRED.includes('Saved search'),
-    `the Custom search row is the one settled ruling; parsed instead: ${JSON.stringify(RETIRED)}`)
+  assert.ok(RETIRED.includes('Saved search') && RETIRED.includes('Custom search'),
+    `the Search template row retires both earlier names; parsed instead: ${JSON.stringify(RETIRED)}`)
 })
 
 test('every retired spelling carries a space, which is what makes the wide corpus safe', () => {
@@ -122,8 +122,17 @@ test('no retired term appears in a user-visible string', () => {
 test('a canonical term that nothing uses is dead weight, and the map must not carry one', () => {
   // The mirror of the arm above. A row retiring a word nobody says, in favour of a word nobody says,
   // passes forever and teaches the next reader that the vocabulary is settled when it is not.
+  //
+  // READ OFF THE MAP, like the retired column. This named "Custom search" literally, so the day the map
+  // moved to a new canonical term it went on asserting the OLD one — a guard pinned to the word it was
+  // written for, rather than to the table it exists to enforce.
+  const settled = MAP.split(/^## /m).find((s) => s.startsWith('SETTLED')) ?? ''
+  const canonical = [...settled.matchAll(/\|\s*\*\*Canonical\*\*\s*\|\s*\*\*([^*]+)\*\*/g)].map((m) => m[1].trim())
+  assert.ok(canonical.length > 0, 'no canonical term parsed out of TERMINOLOGY.md — this arm would assert nothing')
   const corpus = FILES.flatMap((f) => uiStrings(f)).join('\n')
-  assert.match(corpus, /Custom search/,
-    'TERMINOLOGY.md declares "Custom search" canonical, and no user-visible string uses it — so either '
-    + 'the ruling never landed in the UI, or the extractor stopped seeing it')
+  for (const term of canonical) {
+    assert.match(corpus, new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'),
+      `TERMINOLOGY.md declares "${term}" canonical, and no user-visible string uses it — so either `
+      + 'the ruling never landed in the UI, or the extractor stopped seeing it')
+  }
 })

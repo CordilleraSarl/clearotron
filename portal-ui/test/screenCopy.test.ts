@@ -226,7 +226,7 @@ test('the comparison is offered, inside the collapsible this screen already has'
   // Picking one of four needs comparing four. The delta view that used to sit here priced a LEVER MOVE
   // and there are no levers; what a client asks is "am I buying the right one", which is a table.
   const prose = flat(body(NEW_CLEARANCE))
-  assert.match(prose, /<Details summary="Detailed search comparison table for information">/)
+  assert.match(prose, /<Details summary="Detailed search comparison table">/)
   assert.match(prose, /<ProductMatrix products=\{levels\} currentKey=\{activeBase\} \/>/,
     'fed the fetched payload, and told which one is picked')
   assert.doesNotMatch(prose, /DeltaView|levelDelta/, 'the lever-move pricer is deleted, not left unrendered')
@@ -293,12 +293,17 @@ test('there is no case-law control at all, because case law is not a setting', (
   // press, and the request cannot carry a flag the engine now refuses outright.
   const prose = flat(body(NEW_CLEARANCE))
   assert.doesNotMatch(prose, /<Lever label="Case law"/, 'no control')
-  assert.match(prose, /Case law and oppositions — \$\{activeLevel\?\.caseLaw \? 'part of this search'/,
-    'stated from the product row, so it can never disagree with what runs')
-  // §B — and the MARKER comes off the same field as the sentence. A tick over
-  // "not part of this search" is a worse defect than no tick at all, so the boolean is the one input.
-  assert.match(prose, /in: Boolean\(activeLevel\?\.caseLaw\)/,
-    'the tick/cross is set beside the sentence rather than derived from the same field')
+  // STATED ON EVERY SEARCH'S ROW, off that row's own field. It was one sentence under the picked search
+  // — "Case law and oppositions — part of this search" — and the one-form design puts what each search
+  // carries on its own row, as a marked chip, so a reader compares the four without picking each in
+  // turn. The property is unchanged: the claim comes from the product the server sent, never a lever.
+  assert.match(prose, /\{ in: Boolean\(t\.caseLaw\), text: 'Case law' \}/,
+    'the case-law chip is not derived from the row\'s own product field')
+  // §B — and the MARKER comes off the same field as the words. A tick over a search that does not
+  // carry the reading is a worse defect than no tick at all, so the boolean is the one input: Carries
+  // draws the glyph and the accessible claim from `included`, and nothing else sets either.
+  assert.match(prose, /included=\{c\.in\} label=\{c\.text\}>\{c\.text\}<\/Carries>/,
+    'the chip\'s mark and its words are set from different inputs')
   const start = NEW_CLEARANCE.indexOf('const bodyFor')
   const end = NEW_CLEARANCE.indexOf('const explain', start)
   assert.ok(start > 0 && end > start, 'bodyFor is bounded by the explain helper that follows it')
@@ -314,6 +319,10 @@ test('the ONE toggle in the offering is drawn only where it is a choice', () => 
   assert.match(prose, /label="Native-language investigation"/)
   assert.match(prose, /: nativeControl === 'automatic' \? \(/)
   assert.match(prose, /searched automatically — it is part of this search, not something to switch on/)
+  // …and INSIDE the search it belongs to: drawn under the selected row only, never under a template,
+  // which carries its own and whose flag the request does not send.
+  assert.match(prose, /\{activeBase === t\.key && !draft\.savedSearch \? \( nativeControl === 'toggle' \? \(/,
+    'the native-language option is drawn outside the selected search, or under a template')
   const start = NEW_CLEARANCE.indexOf('const bodyFor')
   const end = NEW_CLEARANCE.indexOf('const explain', start)
   assert.match(flat(NEW_CLEARANCE.slice(start, end)),
@@ -328,15 +337,30 @@ test('the wire STATES its geography mode — everywhere and silence are differen
     'without it, a screen promising worldwide runs the account’s own territories and nothing disagrees')
 })
 
-test('the saved-search notice does not claim to fix the scope, because it does not', () => {
-  // A recipe stores a scope, so the notice said it decided "where it points" — but the saved
+test('the template line does not claim to fix the scope, because it does not', async () => {
+  // A recipe stores a scope, so a notice once said it decided "where it points" — but the saved
   // territories do not steer the run (driver/jx-lanes.mjs scopes off the request and the account's own
   // defaults). The sentence invited an empty Where and then the one-country blocker sent the user
   // looking for a control the notice had told them not to touch.
+  //
+  // DRIVEN, NOT MATCHED. The line is composed per search now — the design's own sentence for a worldwide
+  // template names no places, because there is no Where to set on that search — so the property is
+  // asserted over what `templateLine` returns for each geography rather than over a literal.
+  const { templateLine } = await import('../src/contract/composerProduct.ts')
+  const { PRODUCTS } = await import('./products.fixture.ts')
   const prose = flat(body(NEW_CLEARANCE))
-  assert.match(prose, /This custom search carries its own set-up/)
-  assert.doesNotMatch(prose, /how deep the search goes and where it points/, 'the claim is gone')
-  assert.match(prose, /Where, below, is still yours to set — the custom search does not fix it/)
+  assert.match(prose, /templateLine\(savedRow \? displayLabel\(savedRow\) : 'This template', activeLevel\)/,
+    'the screen composes its own template line instead of asking the one composer')
+  for (const p of PRODUCTS) {
+    const line = templateLine('Launch screen', p)
+    assert.doesNotMatch(line, /where it points|and where/i, `${p.name}: the template claims the scope`)
+    assert.match(line, /^Launch screen sets the search and how deep it goes\. /, `${p.name}: the line does not say what the template set`)
+    if (p.geography === 'worldwide, and nothing else')
+      assert.equal(line, 'Launch screen sets the search and how deep it goes. Names, goods and classes are still yours to set.',
+        'the worldwide template line is the design\'s sentence, character for character')
+    else
+      assert.match(line, /territories/, `${p.name}: a search with a Where to set does not say the places are still the reader's`)
+  }
 })
 
 test('the gates read the request that will be SENT, not the levers behind the notice', () => {
@@ -638,8 +662,11 @@ test('Custom searches sends people to the composer and never grows a second edit
   // The screen used to carry its own depth picker and scope fields — a duplicate of New clearance that
   // stopped receiving the design work New clearance got, which is how "Create one" came to open a page
   // that looked a year older than the rest of the product. One place builds a search.
-  assert.match(body(SAVED_SEARCHES), /go\('\/portal\/new'\)/, 'New custom search goes to the composer')
-  assert.match(body(SAVED_SEARCHES), /Save as search/, 'and says where the Save control is when you get there')
+  assert.match(body(SAVED_SEARCHES), /go\('\/portal\/new'\)/, 'New template goes to the composer')
+  // The page names the composer's control by the composer's own label, so the two cannot drift apart.
+  const saveLabel = NEW_CLEARANCE.match(/>(Save as [a-z]+)<\/button>/)?.[1]
+  assert.ok(saveLabel, 'the composer has no Save as … button for this page to point at')
+  assert.ok(body(SAVED_SEARCHES).includes(saveLabel!), `the page says where the Save control is, and calls it something other than "${saveLabel}"`)
   for (const gone of ['How deep should it search?', 'Where should it search?', 'Which classes?', 'localProblems', 'toRecipe']) {
     assert.equal(body(SAVED_SEARCHES).includes(gone), false, `the editor's ${gone} must not come back here`)
   }
@@ -671,14 +698,19 @@ test('no screen prints an account key where a company belongs', () => {
 
 // ── the interface leads with the NAME ────────────────────────────────────────────────────────────────
 
-test('the review modal leads with the product NAME, not a stage number', () => {
+test('the review modal names the product by NAME, not a stage number', () => {
   // THE site this rule exists for: the last thing read before money is spent used to be the bare
   // string "Depth 4", which names our own pricing ladder — and collides with the Depth 4 / Stage 2
   // vocabulary the legal reasoning already uses for something else entirely.
+  //
+  // The one-form design moves the product into its own row and puts the MARK under the title, so the
+  // literal moved and the rule did not: wherever the dialog names the search, it is the name, degrading
+  // to the label for an older server, with the rung beside it only where it differs.
   const prose = flat(body(NEW_CLEARANCE))
-  assert.match(prose, /<h2[^>]*>\s*\{plan\.name \|\| plan\.stageLabel\}/,
-    'the headline is the name, degrading to the label for an older server')
+  assert.match(prose, /<Row label="Search"> \{plan\.name \|\| plan\.stageLabel\}/,
+    'the Search row is not the name, degrading to the label for an older server')
   assert.match(prose, /\{plan\.stageLabel\}/, 'the rung still rides beside it — the numbering is not retired')
+  assert.doesNotMatch(prose, /<h2[^>]*>\s*\{plan\.stageLabel\}/, 'a rung is the headline again')
 })
 
 test('THE REVIEW MODAL SAYS WHAT THIS SPENDS AND WHAT IT LEAVES — in searches, the only unit there is', () => {
@@ -779,42 +811,31 @@ test('extra marketplaces are counted into the effort input, not just sent on the
   assert.match(prose, /platforms: marketplacesApply \? own\.platforms\.length \+ parseList\(draft\.platforms\)\.length : 0/)
 })
 
-// ── the two ways in: which pills are the offering and which are the account's own ────────────────
+// ── templates and the four searches: never one list ─────────────────────────────────────────────────
 
-test("a saved search on the entry fork sits under its OWN heading, not under the products'", () => {
-  // THE DEFECT. The four products and the account's saved searches rendered as one flat row of pills
-  // under one heading — "Or start from one of the four searches" — so the heading's own count was wrong
-  // for every account that had saved anything, and a customer could not tell which pills were the
-  // offering. The one thing separating them was a dashed border, and a border style is not a label: it
-  // carries no meaning to somebody who has not been told the convention.
-  //
-  // WHAT THIS PROVES AND WHAT IT DOES NOT, per this file's header: it proves the heading string is in
-  // the source and that the saved pills sit behind a length branch. It does not prove either reaches
-  // the browser — `composer-render-check.mjs` is what draws this screen for real, and its
-  // `startPills >= 3` is a floor over `.start-pill` that a regrouping like this one leaves intact.
+test("a company's templates sit in their own control, never among the four searches", () => {
+  // THE DEFECT, twice over. The four products and the account's saved searches once rendered as one flat
+  // row of pills under one heading — "Or start from one of the four searches" — so the heading's own
+  // count was wrong for every account that had saved anything, and the only thing separating them was a
+  // dashed border, which carries no meaning to somebody who has not been told the convention. The fix
+  // then was a heading of its own. The one-form design goes further: templates are a labelled dropdown
+  // beside "Which search", and the four are radio rows below it, so the two cannot be read as one list.
   const prose = flat(body(NEW_CLEARANCE))
+  assert.match(prose, /<span className="field-label">Search templates<\/span>/,
+    'the templates have no label of their own')
+  assert.match(prose, /aria-label="Search templates"/, 'the template control has no accessible name')
+  // THE ROWS ARE THE OFFERING AND ONLY THE OFFERING: built from `levels`, never from the templates.
+  assert.equal(PRODUCT_IDS.length, 4, 'the design draws four rows — if the offering stops being four, the layout is wrong again')
+  assert.match(prose, /\{levels\.map\(\(t\) => \( <PickRow/, 'the rows are not built from the offering')
+  assert.doesNotMatch(prose, /savedSearches\.map\(\(r\) => \( <PickRow/, 'a template is drawn as one of the searches')
+  assert.doesNotMatch(prose, /start-pill/, 'the pill row that mixed the two is back')
 
-  // "Custom searches", not "Saved searches" — the terminology map settles that noun on the product's
-  // own navigation label, and this heading landed carrying the retired one. The criterion states
-  // is "a tag, a label, or its own group under its own heading", which is noun-agnostic.
-  assert.match(prose, /Custom searches\{' '\}[\s\S]*?· start from one you built/,
-    'the saved group has a heading of its own — the acceptance criterion is a LABEL, not a border style')
-
-  // The products heading keeps its count, and it is now true of the group it labels: PRODUCT_IDS is the
-  // offering, and only those pills sit under it. Imported rather than hand-typed so a fifth product
-  // fails this arm instead of quietly making the heading lie again.
-  assert.equal(PRODUCT_IDS.length, 4,
-    'the entry-fork heading says "four" — if the offering stops being four, that heading is wrong again')
-  assert.match(prose, /Or start from one of the four searches/)
-
-  // NO EMPTY GROUP. An account with nothing saved must see the four products and no orphan heading
-  // under them. The branch opens before the saved pills are mapped; that ordering is the checkable part.
+  // NO EMPTY CONTROL. A company with nothing saved gets no dropdown and no orphan label: the branch opens
+  // before the label is drawn. That ordering is the checkable part.
   const guard = prose.indexOf('savedSearches.length ?')
-  const savedPill = prose.indexOf('start-pill start-pill-saved')
-  assert.ok(guard !== -1, 'the saved group is behind a length check')
-  assert.ok(savedPill !== -1, 'and there are still saved pills for it to guard')
-  assert.ok(guard < savedPill,
-    'the length branch opens BEFORE the saved pills — an account with none of them gets no heading')
+  const label = prose.indexOf('<span className="field-label">Search templates</span>')
+  assert.ok(guard !== -1 && label !== -1 && guard < label,
+    'the template control is drawn for a company that has no templates')
 })
 
 // ── — A DEMO ORDER LANDS ON A REPORT, and the SERVER says so ────────────────

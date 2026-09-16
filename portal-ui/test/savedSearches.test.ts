@@ -89,8 +89,8 @@ test('a blank label falls back to a placeholder, never to the stored slug', () =
   // The slug is the key half of `account/slug`. Substituting it for a missing label is how a key ends up
   // in front of a client through the back door.
   assert.equal(displayLabel(saved({ label: 'Launch check' })), 'Launch check')
-  assert.equal(displayLabel(saved({ label: '   ' })), 'Untitled custom search')
-  assert.equal(displayLabel(saved({ label: '', slug: 'launch-check' })), 'Untitled custom search')
+  assert.equal(displayLabel(saved({ label: '   ' })), 'Untitled template')
+  assert.equal(displayLabel(saved({ label: '', slug: 'launch-check' })), 'Untitled template')
 })
 
 test('a version is shown only when one was actually assigned — no defaulting to v1', () => {

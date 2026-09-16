@@ -188,7 +188,7 @@ export const NAV: readonly NavEntry[] = [
   // the rename here is to what a reader sees, and a route is neither read nor renamed.
   { id: 'brand.profile', label: 'Profile', path: '/portal/brand/profile', icon: 'user', scope: 'owner' },
   { id: 'brand.projects', label: 'Projects', path: '/portal/brand/projects', icon: 'folder', scope: 'owner' },
-  { id: 'brand.searches', label: 'Custom searches', path: '/portal/brand/searches', icon: 'bookmark', scope: 'owner' },
+  { id: 'brand.searches', label: 'Search templates', path: '/portal/brand/searches', icon: 'bookmark', scope: 'owner' },
   // Creating a company. `hidden`, because it is reached from `+ New company` on the pick panel and from
   // nowhere else — routing is DERIVED from this array, so the entry is what makes that button work, not
   // what puts it in the rail. A visible entry would also red the two sidebar assertions, and the repair

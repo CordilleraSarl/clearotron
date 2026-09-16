@@ -86,7 +86,7 @@ export function isUsable(status: SavedSearchStatus): boolean {
  */
 export function displayLabel(recipe: SavedSearch): string {
   const label = recipe.label.trim()
-  return label || 'Untitled custom search'
+  return label || 'Untitled template'
 }
 
 /**

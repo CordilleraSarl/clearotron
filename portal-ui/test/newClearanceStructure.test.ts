@@ -97,8 +97,13 @@ test('the selector carries no depth icons, and the tick/cross list still answers
 
 test('§B the context field is out of the collapsible, above it, and shows an example', () => {
   const src = code(SRC)
-  const goods = src.indexOf('Goods or services description (optional)')
-  const context = src.indexOf('Any context that might be relevant (optional).')
+  // THE SECTION TITLES ARE THE ANCHORS, read off the rendered title element so a label renamed again
+  // breaks the arm loudly rather than matching a comment. They were "Goods or services description
+  // (optional)" and "Any context that might be relevant (optional)." until the one-form design named
+  // them "Goods or services" and "Context (optional)".
+  const title = (t: string) => src.indexOf(`<div className="section-title">${t}</div>`)
+  const goods = title('Goods or services')
+  const context = title('Context (optional)')
   const details = src.indexOf('<Details summary="References and dates (optional)">')
   assert.ok(goods > 0 && context > 0 && details > 0, 'one of the three anchors has been renamed — the arm has broken, not the tree')
   assert.ok(goods < context, 'the context field is no longer directly below goods or services')
@@ -107,7 +112,7 @@ test('§B the context field is out of the collapsible, above it, and shows an ex
   // ALWAYS OPEN. The field must not be inside any <Details> on this screen: "not hidden under a
   // collapse thing — it's important."
   const detailsBlock = src.slice(details)
-  assert.ok(!detailsBlock.includes('Any context that might be relevant'),
+  assert.ok(!detailsBlock.includes('Context (optional)'),
     'the context field is back under a collapse')
 
   // AN EXPLICIT EXAMPLE, labelled as one, naming concrete shapes — a launch page and a post — so a
@@ -142,7 +147,7 @@ test('§B the comparison table takes the screen measure, without widening the fo
   // against a real browser. What is left here is what this file genuinely knows: the rules exist and
   // say what they must. The markup shape is deliberately NOT asserted; pinning it is what produced
   // confidence about a screen nobody had measured.
-  assert.match(flat(src), /<div className="composer-wide">\s*<Details summary="Detailed search comparison table for information">/,
+  assert.match(flat(src), /<div className="composer-wide">\s*<Details summary="Detailed search comparison table">/,
     'the comparison block is not the thing carrying the width opt-out')
   assert.match(CSS, /\.composer-wide\s*\{[^}]*max-width:\s*none/,
     'the escape does not lift the cap, so the class does nothing')
@@ -198,7 +203,14 @@ test('the primary action on the search screen is a verb that promises a search',
   // the screen that started anything, and the reader who needed it did not recognise it as one.
   assert.doesNotMatch(flat(src), /'Review clearance'/,
     'the primary action went back to a label that does not say a search will run')
-  assert.match(flat(src), /'Start a search'/, 'the search screen has no action labelled with a verb')
+  // ── RE-AIMED, NOT RELAXED (design ruling, 2026-09-16) ─────────────────────────────────────────────
+  // This required 'Start a search', the fix for the defect above. The one-form design names the step
+  // the button opens — 'Review search' — so the literal moves, and the three things that fixed the
+  // original failure are what this arm now holds: the label says SEARCH rather than naming a clearance
+  // that might already exist, it is the footer's primary button, and the line beside it says the
+  // coverage and the cost come before anything runs. A label that dropped any of those reds here.
+  assert.match(flat(src), /'Review search'/, 'the search screen has no action that names a search')
+  assert.doesNotMatch(flat(src), /'Start a search'/, 'two labels for one button — the old one survived somewhere')
   // AND IT IS THE PRIMARY ONE, not a link somewhere. The complaint was that the only thing offered was
   // the ghost-styled Save button.
   assert.match(flat(src), /className="btn-primary" disabled=\{!ready \|\| busy\} onClick=\{onReview\}/,
@@ -207,7 +219,8 @@ test('the primary action on the search screen is a verb that promises a search',
   // caveat, which are read before anything is spent. So the button must say that is what comes next.
   assert.match(flat(src), /before anything runs/,
     'nothing tells the reader the button opens a confirmation rather than spending immediately')
-  assert.match(flat(src), /'Start clearance'/, 'the confirmation lost the button that actually starts')
+  assert.match(flat(src), /'Start search'/, 'the confirmation lost the button that actually starts')
+  assert.doesNotMatch(flat(src), /'Start clearance'/, 'the confirmation carries its old label as well as its new one')
 })
 
 test('a greyed primary action always has its reason on screen, and at the control', () => {

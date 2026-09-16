@@ -63,7 +63,7 @@ carries thirteen labels, and they are treated here as settled by the product:
 
 ```
 Home · Use your AI · People · New clearance · Clearances · Clearance · About
-Profile · Projects · Custom searches
+Profile · Projects · Search templates
 Admin settings · Global config · Your preferences
 ```
 
@@ -71,17 +71,35 @@ Admin settings · Global config · Your preferences
 
 ## SETTLED — enforced by the guard
 
-### Custom search
+### Search template
 
-The saved set-up of levers that a brand owner builds and re-runs.
+The saved set-up — which search, and how deep it goes — that a company builds once and re-runs.
 
 | | |
 |---|---|
-| **Canonical** | **Custom search** / Custom searches |
-| **Retired** | Saved search |
+| **Canonical** | **Search template** / Search templates |
+| **Retired** | Saved search / Custom search |
 
-**Why this way round, and it is not a preference.** The product already answers this everywhere a user
-navigates or acts:
+**Ruled by the design of 2026-09-16**, and it supersedes the measured answer below rather than
+contradicting it. The rebuilt New clearance screen names the thing where a reader meets it — a
+*Search templates* dropdown with *Manage*, *Save as template* in the sticky bar, *Clear template* under
+the search list — and the Company settings screens name the page *Search templates* with *New template*
+as its action. One design, one noun, on every surface a reader crosses between the two.
+
+**It moved everywhere at once, because half a rename is two words.** The composer is where a template is
+applied and saved, and the page its *Manage* opens is where it is listed and retired. Renaming the
+composer and leaving the rail, the page title and its empty state for later would have shipped a screen
+that says *Search templates* and a page, one click away, that says *Custom searches* — the exact state
+this map exists to end. So the navigation label, the page, the composer and the three browser checks
+that assert on this copy changed together, and *Custom search* joined *Saved search* in the Retired column,
+where the guard enforces it.
+
+**What came before, and why it is kept.** *Custom search* was the canonical term by measurement, not by
+ruling: the product's own navigation already said it. The measurement is recorded because the method
+still holds — count what a reader is shown, and trust the direct search over the extractor where they
+differ.
+
+**Why it was Custom search then.** The product already answered it everywhere a user navigated or acted:
 
 ```
 nav/nav.config.ts        label: 'Custom searches'      <- the navigation item
@@ -126,7 +144,7 @@ its own group under its own heading"* — noun-agnostic — so this changes the 
 
 ### Company
 
-The business whose names are being checked. Every clearance, report, project and custom search belongs
+The business whose names are being checked. Every clearance, report, project and search template belongs
 to exactly one.
 
 | | |
@@ -135,7 +153,7 @@ to exactly one.
 | **Retired** | Brand owner / the client / this client / a client's |
 
 **Ruled by the owner, 2026-09-09**, against mockups he approved — not measured into existence like the
-Custom search row above. The evidence that made it a ruling rather than a preference: an outside user met
+Custom search row once was. The evidence that made it a ruling rather than a preference: an outside user met
 *brand owner*, did not know whether it meant him, and configured the product by hand instead. The term
 means nothing outside trademark practice, and it is the first noun a stranger meets.
 
@@ -147,7 +165,7 @@ a row here would be a rule with nothing to catch.
 Both words are on screen at once, which is exactly how a sweep gets one of them wrong. *Company* is what
 you are looking at; *Organisation* is who you are.
 
-**The code keeps its own names**, on the same rule the Custom search row states: `account`, `accounts`,
+**The code keeps its own names**, on the same rule the Search template row states: `account`, `accounts`,
 `?account=`, the `brand.*` screen ids and routes, the CSS classes
 `owner-name` and `owner-count`, the `cordillera-clearances-group-by-owner` storage key, and
 `demo-brand-owner` in the package manifest are untouched. 167 of the 428 raw `account` hits sit in

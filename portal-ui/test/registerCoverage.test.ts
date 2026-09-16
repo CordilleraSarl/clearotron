@@ -58,8 +58,13 @@ test('a one-country product still refuses a region, even when the register cover
   assert.deepEqual([...vocabularyFor(FULL, ['European Union', 'United States'])], ['United States'])
 })
 
-test('no product picked ⇒ nothing to point anywhere, whatever the register covers', () => {
-  assert.deepEqual([...vocabularyFor(null, ['European Union'])], [])
+test('no product picked ⇒ the register still narrows what it REACHES, over every place the picker knows', () => {
+  // Reversed with the form order: Where is asked before Which search, so with no search picked the
+  // vocabulary is every place (composerProduct.test.ts holds that half). What this file owns is the
+  // coverage half, and it composes the same way it does under a product — only the array narrows.
+  assert.deepEqual([...vocabularyFor(null, ['European Union'])], ['European Union'])
+  assert.equal(vocabularyFor(null, null).length, vocabularyFor(null).length,
+    'a register declaring no restriction reaches everything, product or no product')
 })
 
 // ── — THE TWO CALL SITES THAT USED TO NARROW, AND NO LONGER MAY ─────────────

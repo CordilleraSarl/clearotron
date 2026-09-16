@@ -126,10 +126,12 @@ test('the hint the owner named by hand is short, and keeps the clause that matte
 // happened: a label is renamed, the old word leaves the screen entirely, and the receipt keeps it.
 test('every field the brief-read receipt names is a field the composer still calls that', () => {
   const receipt = body(read('../src/contract/composeRead.ts'))
-  // The label is what precedes the first interpolation in each receipt line — `Deadline ${after.deadline}`
-  // gives "Deadline", `Your reference — ${after.ref}` gives "Your reference" once the seam is trimmed.
+  // The label is what precedes the first interpolation in each receipt line — `Deadline: ${after.deadline}`
+  // gives "Deadline", `Your reference: ${after.ref}` gives "Your reference" once the seam is trimmed. The
+  // seam is a colon now; the older dash and dot seams stay in the pattern, because a line written in one
+  // of them is still a label this arm has to read.
   const labels = [...receipt.matchAll(/out\.push\(`([^`$]+)\$\{/g)]
-    .map((m) => m[1].replace(/[—·-]\s*$/, '').trim())
+    .map((m) => m[1].replace(/[—·:-]\s*$/, '').trim())
     .filter(Boolean)
 
   // AN EMPTY DERIVATION IS NOT A PASS. If the receipt is ever rewritten in a shape this pattern cannot
