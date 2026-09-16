@@ -684,7 +684,7 @@ export const E3_BACKLOG = [
     // because an un-anchorable row lands in the NOT-CHECKED slice, and that is coverage lost rather than
     // a pass.
     evidence: "is ONE of coverage-disposition | fact | rating | narrative — pick the one your own legal read says the correction IS: coverage-disposition (a coverage row / disposition placement is wrong or dishonest)",
-    reparsedBy: "driver/verify.mjs:803 CORRECTION_KIND_RE = /\\[kind:\\s*([a-z][a-z-]*)\\s*\\]/i → parseCorrectionKinds (verify.mjs:1026), consumed in pipelineInner() in pipeline.mjs for the run.jsonl `correction-kinds` histogram, which since #1558 also carries `kindChannelOk` — the counts are DERIVED from the parsed rows, and that key states whether the reviewer's kind channel produced anything at all rather than leaving a reader to infer it by comparing untyped against total. Telemetry only today",
+    reparsedBy: "driver/verify.mjs:804 CORRECTION_KIND_RE = /\\[kind:\\s*([a-z][a-z-]*)\\s*\\]/i → parseCorrectionKinds (verify.mjs:1026), consumed in pipelineInner() in pipeline.mjs for the run.jsonl `correction-kinds` histogram, which since #1558 also carries `kindChannelOk` — the counts are DERIVED from the parsed rows, and that key states whether the reviewer's kind channel produced anything at all rather than leaving a reader to infer it by comparing untyped against total. Telemetry only today",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   {
