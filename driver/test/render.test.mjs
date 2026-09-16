@@ -740,25 +740,6 @@ test("CHANGE 2 back-compat: the EXISTING composite-only fixtures render byte-ide
 });
 
 // ── CHANGE 1: the Methodology telemetry block + frame-reopen note are no longer rendered (internal too) ──
-test("CHANGE 1: the 'How this search was run' Methodology block is NOT rendered (telemetry stripped)", () => {
-  const FM_METH = [
-    "---", "type: prelim-clearance", "matter: meth-demo", "title: METH",
-    "overall_label: LOW", "frame_reopen_note: blind re-derivation diff: 3 cells changed", "---", "",
-    "# Methodology", "Ran 412 searches, 86 record fetches, 14 batches; saturation baseline 0.92; cell-matrix 100/105; has_more=false.",
-    "# Marks", "## Acme", "- ord: 1", "- one: x", "### The read", "y",
-  ].join("\n");
-  const html = renderHtml(parsedOf(FM_METH), FINDINGS, COVERAGE, { runId: "meth-demo" });
-  assert.doesNotMatch(html, /How this search was run/, "the Methodology disclosure block is gone");
-  assert.doesNotMatch(html, /class="method"/);
-  assert.doesNotMatch(html, /86 record fetches/, "fetch counts never surface");
-  assert.doesNotMatch(html, /saturation baseline/);
-  assert.doesNotMatch(html, /cell-matrix/);
-  assert.doesNotMatch(html, /has_more/);
-  // genuine coverage OPEN ITEMS still render (the coverage grid is untouched)
-  assert.match(html, /What we covered/);
-  assert.match(html, /class="cov"/);
-});
-
 test("spec-49 T4: legacy fm caveat notes (frame_reopen_note / envelope_note) render on NO report variant", () => {
   // Archived runs may still carry these fm fields — the render must not resurrect the caveat surface.
   // Their substance reaches the reader via verdict clamp reasons + injected coverage rows (T1/T3);
@@ -2370,25 +2351,6 @@ test("D4/D7: the use-source class has ONE definition, and it reads as a source p
 // was dropped. Dropping a telemetry lead-in only made the wreckage visible — the first surviving bullet
 // became the paragraph and the rest printed their dashes as text. It calls parse.mjs's stripTelemetry
 // now, which splits per LINE first, so the two rules are one rule.
-test("a telemetry lead-in is dropped and the bullets it led each stand as their own item", () => {
-  const meth = "Scope: 146 of 147 searches completed.\n- Japan was not searched.\n- Korea was not searched.";
-  const html = renderHtml(parsedOf(`${REPORT}\n\n# Methodology\n${meth}\n`), FINDINGS, COVERAGE, {});
-  const note = html.match(/<div class="methnote"[^>]*>([\s\S]*?)<\/div>/)?.[1] ?? "";
-  assert.ok(note, "premise: the Methodology note renders at all");
-  assert.doesNotMatch(note, /146 of 147/, "process telemetry never renders — doc-52 CHANGE-1, unchanged");
-  assert.equal((note.match(/<li>/g) ?? []).length, 2, "two authored bullets render as two");
-  assert.match(note, /<li>Japan was not searched\.<\/li><li>Korea was not searched\.<\/li>/,
-    "…and no dash is left printing as text inside another item");
-});
-
-test("the weld never needed telemetry — a multi-line note with none keeps its lead-in AND its bullets", () => {
-  const meth = "Scope note.\n- Japan was not searched.\n- Korea was not searched.";
-  const html = renderHtml(parsedOf(`${REPORT}\n\n# Methodology\n${meth}\n`), FINDINGS, COVERAGE, {});
-  const note = html.match(/<div class="methnote"[^>]*>([\s\S]*?)<\/div>/)?.[1] ?? "";
-  assert.equal(note, "<p>Scope note.</p><ul><li>Japan was not searched.</li><li>Korea was not searched.</li></ul>",
-    "the lead-in is a paragraph and each bullet is an item — before #832 all three welded into one <p>");
-});
-
 test("an ALL-telemetry note still reduces to nothing — no empty methodology block", () => {
   const meth = "Scope: 146 of 147 searches completed.\n- 12 batches ran against the mirror.";
   const html = renderHtml(parsedOf(`${REPORT}\n\n# Methodology\n${meth}\n`), FINDINGS, COVERAGE, {});
@@ -2397,36 +2359,9 @@ test("an ALL-telemetry note still reduces to nothing — no empty methodology bl
   assert.doesNotMatch(html, /How this search was run/, "…and neither is its heading");
 });
 
-test("the ONE-PARAGRAPH archived shape is byte-identical — this is the row every old run sits on", () => {
-  const meth = "Register layer covered worldwide exact VENZY. Common-law layer covered 25 search terms. "
-    + "146 of 147 searches completed.";
-  const html = renderHtml(parsedOf(`${REPORT}\n\n# Methodology\n${meth}\n`), FINDINGS, COVERAGE, {});
-  const note = html.match(/<div class="methnote"[^>]*>([\s\S]*?)<\/div>/)?.[1] ?? "";
-  assert.equal(note, "<p>Register layer covered worldwide exact VENZY. Common-law layer covered 25 search terms.</p>",
-    "one line in, one paragraph out, telemetry clause dropped — the pre-#832 output exactly");
-});
-
 // The divergence names as the actual defect: a fix that leaves the two rules disagreeing has only
 // moved it. They agree because there is now ONE rule — this arm is what would notice a second copy
 // growing back in the renderer.
-test("plainScopeNote and stripTelemetry answer the same input the same way", async () => {
-  const { stripTelemetry } = await import("../publish/parse.mjs");
-  for (const meth of [
-    "Scope: 146 of 147 searches completed.\n- Japan was not searched.\n- Korea was not searched.",
-    "Scope note.\n- Japan was not searched.",
-    "One paragraph with 146 of 147 searches completed inside it. And a real clause.",
-    "First paragraph stands alone.\n\nSecond paragraph stands alone.",
-  ]) {
-    const html = renderHtml(parsedOf(`${REPORT}\n\n# Methodology\n${meth}\n`), FINDINGS, COVERAGE, {});
-    const rendered = html.match(/<div class="methnote"[^>]*>([\s\S]*?)<\/div>/)?.[1] ?? "";
-    const expected = stripTelemetry(meth).trim();
-    // renderProse is markup, so compare the TEXT the renderer kept against the text the sibling rule keeps.
-    const text = rendered.replace(/<\/(p|li)>/g, "\n").replace(/<[^>]+>/g, "").trim();
-    assert.equal(text.replace(/\s+/g, " "), expected.replace(/^- /gm, "").replace(/\s+/g, " "),
-      `the two rules disagree on:\n${meth}`);
-  }
-});
-
 // ── — NO EXTERNAL LINK IS TARGETLESS, AS AN INVARIANT RATHER THAN PER EMITTER ──────────────────
 //
 // Counsel reported two symptoms in delivered reports viewed in the portal: links that open in the
@@ -2550,26 +2485,6 @@ test("no destination that is not http(s), mailto: or a fragment ever reaches an 
 // PINNED IN BOTH DIRECTIONS. The populated branch must stay byte-for-byte what it was — 28 of the pool's
 // 29 clearance reports go down it, and `doRepublish()` re-renders archived runs — so an arm that only
 // checked the empty state would let a careless edit rewrite documents already delivered.
-test("zero coverage rows render the heading and an explicit statement, never silence", () => {
-  const html = renderHtml(parsedOf(REPORT), FINDINGS, [], { runId: "cov-none" });
-  assert.match(html, /What we covered — and what's open/,
-    "the section vanished on a zero-row run: a reader cannot tell a run that measured nothing from one "
-    + "whose section was never reached");
-  assert.match(html, /No coverage record was produced for this run/);
-  assert.match(html, /not a finding that nothing is open/,
-    "the empty state must not read as an all-clear — that is the one way it could be worse than silence");
-});
-
-test("the populated branch is untouched — a republish of a normal run rewrites nothing", () => {
-  const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "cov-rows" });
-  assert.match(html, /What we covered — and what's open/);
-  assert.doesNotMatch(html, /No coverage record was produced/,
-    "the empty-state sentence leaked into a run that HAS coverage — every delivered report would gain it "
-    + "on its next republish");
-  // And the grid is really there, so "no empty-state sentence" is not passing on an empty section.
-  assert.match(html, /class="cov"/, "the grid itself is missing, so the assertion above passed over an empty section");
-});
-
 // ── one row per gap ─────────────────────────────────────────────────────────────────────────────────
 //
 // A deferred search was named twice on the page: once as the model wrote it, and once as the driver

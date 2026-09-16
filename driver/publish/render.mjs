@@ -1114,82 +1114,17 @@ function ruledOutSection(ruledOut, recordsByUri = new Map()) {
 // Calling it makes the two rules agree BY CONSTRUCTION rather than by inspection, which is what the
 // issue asks for: a divergence that is merely absent grows back. renderProse then sees the lines the
 // author wrote, so `- ` bullets are <li> again and a telemetry-only note still reduces to ''.
-function plainScopeNote(text) {
-  const t = String(text || '').trim();
-  if (!t) return '';
-  return stripTelemetry(t).trim();   // trim: an all-telemetry note leaves only newlines, and '' is falsy
-}
-function scopeSection(ranBucket, coverage, coverageJudgment, methodologyText, contextNotes, fm = {}, hasRecordSet = false, hasCards = false, hasIndexEntry = false) {
-  const parts = [];
-  // B3 (spec 2026-07-30 §4) — record provenance, stated ONCE, here, instead of a hedge stamped on
-  // every card. This is the single home of what "fetched", "register-index entry" and "inferred"
-  // mean on the cards above. Presentation, not a gate.
-  //
-  // It renders whenever those labels CAN render, which is not the same thing as hasRecordSet. B3 first
-  // gated it on the record set alone, and that inverted the fix on the one branch it most needed to
-  // cover: with no record set the cards still emit "(register-index entry)" (the second disjunct of the
-  // registration render) and "inferred — reputation/profile signal" (the enforcer basis line, ungated),
-  // but the paragraph explaining both was suppressed — and the per-leg wording that used to explain
-  // itself ("full record not pulled this run") had just been removed as the duplicate it was. The
-  // predicate here is deliberately "are there cards at all" rather than a copy of the two label
-  // conditions: a copy is a thing that drifts, and over-including costs one explanatory paragraph in a
-  // collapsed section while under-including costs a reader an unexplained label. The fetched-records
-  // sentence stays conditional on hasRecordSet, so a run WITH a record set is byte-identical to B3.
-  // THREE SENTENCES EXPLAINING ONE WORD, and the middle one printed on every report whether or not the
-  // page had a register-index entry on it — a definition of a label the reader could not see. It renders
-  // now only where such an entry does, and the remaining two say what "inferred" means in the words a
-  // reader would use for it rather than in the renderer's.
-  if (hasRecordSet || hasCards) parts.push(`<p class="scoperead" style="margin:0 0 4px;font-weight:600">Record provenance</p><p class="provnote" style="margin:0 0 6px;font-size:13px">${hasRecordSet ? 'Registration numbers on the cards were read from the register records. ' : ''}${officeLinkNote()}${hasIndexEntry ? 'A registration shown as a register-index entry was seen in the register index; its full record was not pulled. ' : ''}“Inferred” beside an owner’s likelihood to object means we judged it from what the owner sells and holds; we had no enforcement history to read.</p>`);
-  // — this is the one part of §4 that does NOT fold. Same markup, same heading, same marker; it is
-  // emitted beside the <details> instead of inside it, wrapped in the panel the only-you section already
-  // uses so it reads as a region of the page rather than a stray heading.
-  const ran = ranBucket && ranBucket.body
-    ? `<div class="panel actions scope-ran"><div class="actgrp act-ran"><h4 style="margin:0 0 4px"><span class="actic">✓</span> ${inline(ranBucket.label)}</h4>${renderProse(ranBucket.body)}</div></div>`
-    : '';
-  // — THE HEADING ALWAYS RENDERS. `if (coverage.length)` dropped the whole section on a zero-row
-  // run: no heading, no marker, nothing. A reader who has seen this section on another report cannot
-  // tell a run that measured nothing from one whose section was simply not reached, and the surface with
-  // the least context lost the most. MEASURED over the pool: 29 clearance reports, 28 carry it, and on
-  // the one that does not (`global-preliminary-search`, delivered, verdict Medium, 81,823 bytes) the
-  // internal `Coverage read` line was gone too — so there was no fallback in practice either.
-  //
-  // WHAT THIS COSTS A REPUBLISH, checked before writing it: `doRepublish()` re-renders an archived run,
-  // so a change here reaches documents already delivered. This one is a NO-OP for 28 of the 29 — the
-  // populated branch is byte-identical — and on the 29th it adds a disclosure that should always have
-  // been there. `rerender-all` is an explicit operator command, not something that runs on its own.
-  //
-  // Owner ruling 2026-08-24, which discharged the standing "only with a legitimate renderer change"
-  // condition: build it. The freeze hash moves in this commit, as the freeze's own header
-  // requires.
-  parts.push(coverage.length
-    ? `<p class="scoperead" style="margin:10px 0 4px;font-weight:600">What we covered — and what's open</p>${coverageGrid(coverage)}`
-    : `<p class="scoperead" style="margin:10px 0 4px;font-weight:600">What we covered — and what's open</p>`
-      + `<p class="covnone" style="margin:0 0 6px;font-size:13px">No coverage record was produced for this run. `
-      + `This section normally lists what each search covered and what is still open; its absence here is a gap `
-      + `in the record, not a finding that nothing is open. Ask us before relying on it.</p>`);
-  // THE INTERNAL COVERAGE READ IS NOT RENDERED. It concatenated the engine's own search-unit names into
-  // about a thousand characters of prose — and on the measured run it ended mid-word, because it is a
-  // machine's working note and nothing was reading it as a sentence. Every fact in it is already in the
-  // coverage cells directly above, in plain words. It stays in the run's artifacts and in the workbook,
-  // where the reader is someone who wants it.
-  const meth = plainScopeNote(methodologyText);
-  if (meth) parts.push(`<p class="scoperead" style="margin:10px 0 4px;font-weight:600">How this search was run</p><div class="methnote" style="font-size:13px">${renderProse(meth)}</div>`);
-  const cn = contextNotesBlock(contextNotes);
-  if (cn) parts.push(cn);
-  // spec 62 — CONFIGURATION PROVENANCE (INTERNAL only): when the run is under a project, show which layer
-  // (project / customer / house) set each operational knob. Provenance, not process-exhaust — never on export.
-  if (fm.origins_json) {
-    let rows = [];
-    try { rows = JSON.parse(fm.origins_json); } catch { rows = []; }
-    if (Array.isArray(rows) && rows.length) {
-      const body = rows.map((r) => `<tr><td style="padding:1px 12px 1px 0">${esc(r.field)}</td><td style="padding:1px 12px 1px 0">${esc(r.value)}</td><td class="mono" style="padding:1px 0">${esc(r.origin)}</td></tr>`).join('');
-      parts.push(`<p class="scoperead" style="margin:10px 0 4px;font-weight:600">Configuration provenance (internal)${fm.run_under_project ? ` — run under project ${esc(fm.run_under_project)}` : ''}</p>`
-        + `<table class="origins" style="font-size:13px;border-collapse:collapse"><thead><tr><th style="text-align:left;padding-right:12px">Setting</th><th style="text-align:left;padding-right:12px">Effective</th><th style="text-align:left">Set by</th></tr></thead><tbody>${body}</tbody></table>`);
-    }
-  }
-  if (!parts.length) return ran;
-  return `${ran}<details class="scope"><summary>Scope &amp; what we didn't search</summary><div class="drillbody">${parts.join('\n  ')}</div></details>`;
-}
+// tracker issue 644 — scopeSection and plainScopeNote are DELETED, not merely unreferenced.
+//
+// They rendered the scope fold: the checks-we-ran narrative, the Methodology note, the full coverage
+// grid and the provenance paragraph. The owner ruled the narrative off the client's page on
+// 2026-09-16, and what a reader still needs from that fold moved with it by hand — the rows a run
+// LEFT OPEN and the record provenance legend both render with the counts now, and each has its own arm.
+//
+// Left here as dead code they would have read as a surface the client still meets. The rule they
+// carried about telemetry prose — a lead-in is a paragraph and each bullet an item, welded into one
+// before it was fixed — lives on in stripTelemetry in parse.mjs, which is where the rule belongs and
+// where its own arms still drive it.
 
 // Quadrant: x = goods proximity (0 distant → 1 identical), y = mark similarity (0 distinct → 1 identical).
 // SVG plot box is x∈[70,530], y∈[372,30] (y inverted: identical at top). Marker colour by classification.
