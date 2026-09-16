@@ -719,12 +719,12 @@ function StopChoice({ name, step, stoppable, onImmediate, onBoundary, onCancel }
         </div>
 
         <div className="modal-foot">
-          <button type="button" className="btn-ghost" onClick={onCancel}>Leave it running</button>
           {/* THE BUTTON NAMES THE ACT IT PERFORMS. Its words follow the selected row, so a reader never
               presses a generic "Stop" without knowing which of the two they chose. */}
           <button type="button" className="btn-primary" onClick={mode === 'boundary' ? onBoundary : onImmediate}>
             {label}
           </button>
+          <button type="button" className="btn-ghost" onClick={onCancel}>Leave it running</button>
         </div>
       </div>
     </div>

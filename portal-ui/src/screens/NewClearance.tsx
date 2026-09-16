@@ -351,7 +351,13 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   const marketplacesApply = activePipeline !== 'knockout'
   // Which geography control this product gets, and what it says at that control. Both come off the
   // OFFERING rather than being decided here, so the screen cannot offer a shape the wall refuses.
-  const geoNote = geographyNote(activeLevel)
+  // WHICH SEARCH THE WHERE PANEL FITS ITSELF TO. A search the reader chose — a row, a brief that asked for
+  // one, a template, the record being edited — shapes the picker. One the form PRESELECTED does not: it
+  // follows the places, so it must not narrow them. A preselected one-country search would replace the
+  // first country with the second, and the recommendation could then never reach the search that reads
+  // both — the reader would be steered by their own first keystroke.
+  const whereLevel = pickedByHand || draft.savedSearch || editingSlug ? activeLevel : null
+  const geoNote = geographyNote(whereLevel)
   const nativeControl = nativeLanguageControl(activeLevel)
   const machinery = machineryFor(draft.pick, activeLevel)
   // THE WAY THROUGH THE NAME WALL, found in the offering rather than named here: whichever product reads
@@ -920,7 +926,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
               where it points. */}
           {geoNote ? <p className="section-hint">{geoNote}</p> : null}
 
-          {activeLevel?.geography === 'worldwide, and nothing else' ? (
+          {whereLevel?.geography === 'worldwide, and nothing else' ? (
             // NO PICKER AT ALL, and that is the design. Worldwide is not a choice on this search —
             // it IS this search — so a territory field here would be a control whose every use is
             // refused. The chip states the fact; the sentence above says why there is nothing to set.
@@ -972,7 +978,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
               {/* The LABEL follows the product: a Full country search offers no regions, so inviting
                   one would be inviting a refusal. */}
               <div className="field-label">
-                {activeLevel?.geography === 'exactly one country' ? 'Add a country' : 'Add a country or region'}
+                {whereLevel?.geography === 'exactly one country' ? 'Add a country' : 'Add a country or region'}
               </div>
               <div className="fld-medium" style={{ position: 'relative' }}>
                 <input
@@ -982,13 +988,13 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
                   aria-label="Add a territory"
                   className="ctx-input"
                 />
-                {territoryMatches(territoryQuery, draft.pick.territories, activeLevel, 8, registerTerritories).length ? (
+                {territoryMatches(territoryQuery, draft.pick.territories, whereLevel, 8, registerTerritories).length ? (
                   <div className="typeahead">
-                    {territoryMatches(territoryQuery, draft.pick.territories, activeLevel, 8, registerTerritories).map((t) => (
+                    {territoryMatches(territoryQuery, draft.pick.territories, whereLevel, 8, registerTerritories).map((t) => (
                       <button
                         key={t}
                         type="button"
-                        onClick={() => { setPick(addTerritory(draft.pick, t, activeLevel, registerTerritories)); setTerritoryQuery('') }}
+                        onClick={() => { setPick(addTerritory(draft.pick, t, whereLevel, registerTerritories)); setTerritoryQuery('') }}
                       >
                         {t}
                         {/* — SHOWN AND SELECTABLE, with the reason at the
@@ -1016,16 +1022,16 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
                 // register covers is not one of "the territories you can name here".
                 <p className="section-hint" style={{ marginTop: 10 }}>
                   The trademark register wired to this deployment reaches{' '}
-                  {vocabularyFor(activeLevel, registerTerritories).length} of the{' '}
-                  {offerableFor(activeLevel).length} territories you can name here:{' '}
-                  {vocabularyFor(activeLevel, registerTerritories).join(', ')}. Anywhere else can
+                  {vocabularyFor(whereLevel, registerTerritories).length} of the{' '}
+                  {offerableFor(whereLevel).length} territories you can name here:{' '}
+                  {vocabularyFor(whereLevel, registerTerritories).join(', ')}. Anywhere else can
                   still be ordered — it is disclosed in the report as deferred coverage rather than
                   searched at the register.
                 </p>
               ) : null}
               {/* ONE COUNTRY REPLACES, it does not stack — so the note says what just happened rather
                   than leaving the reader to notice a chip disappear. */}
-              {activeLevel?.geography === 'exactly one country' && draft.pick.territories.length === 1 ? (
+              {whereLevel?.geography === 'exactly one country' && draft.pick.territories.length === 1 ? (
                 <div className="callout-accent">
                   {draft.pick.territories[0]} — naming another country replaces it, because this search
                   reads one at a time.

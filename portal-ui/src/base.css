@@ -1695,7 +1695,10 @@ input.filter {
 }
 
 .stop-choice-opt {
-  display: block;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 10px;
+  align-items: baseline;
   width: 100%;
   text-align: left;
   padding: 13px 15px;
@@ -1710,7 +1713,15 @@ input.filter {
   border-color: var(--accent-ink);
 }
 
+/* The radio is the row's own control, drawn in the accent so the selected option reads at a glance. */
+.stop-choice-opt input {
+  grid-row: 1 / span 2;
+  margin: 2px 0 0;
+  accent-color: var(--accent);
+}
+
 .stop-choice-opt b {
+  grid-column: 2;
   display: block;
   font-size: 14px;
   color: var(--text-strong);
@@ -1718,6 +1729,7 @@ input.filter {
 }
 
 .stop-choice-opt span {
+  grid-column: 2;
   display: block;
   font-size: 12.5px;
   line-height: 1.5;
@@ -1726,6 +1738,12 @@ input.filter {
 
 .stop-choice-now {
   border-color: var(--tone-medium);
+}
+
+/* THE SELECTED OPTION IS THE ONE THE BUTTON NAMES, so it carries the same accent the button does. */
+.stop-choice-opt.selected {
+  border-color: var(--accent);
+  background: var(--accent-wash);
 }
 
 .modal-rule {

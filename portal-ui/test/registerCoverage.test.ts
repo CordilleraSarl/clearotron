@@ -155,12 +155,14 @@ test('NewClearance threads coverage into BOTH the suggestion list and the add pa
   // neither the suggestion list nor the chips is the same silence with the argument still passed.
   assert.match(src, /reachesTerritory\(t, registerTerritories\)/,
     'the screen threads coverage and then says nothing about it — which is the defect, not the fix')
-  assert.match(src, /reaches\{' '\}\n\s*\{vocabularyFor\(activeLevel, registerTerritories\)\.length\}/,
+  // WHERE'S OWN LEVEL: the search the reader chose, or none while the form's preselection is following
+  // the places (NewClearance's `whereLevel`) — the same product the picker and the add path are fitted to.
+  assert.match(src, /reaches\{' '\}\n\s*\{vocabularyFor\(whereLevel, registerTerritories\)\.length\}/,
     'the screen never states, once, what this deployment\'s register reaches')
   // BOTH FIGURES SCOPED TO THE PRODUCT. `registerTerritories.length` is the covered set whole, and a
   // Full country search can name no regions — so a region the register covers is not one of "the
   // territories you can name here", and the sentence would overstate the reach on that product.
-  assert.match(src, /\{offerableFor\(activeLevel\)\.length\} territories you can name here/,
+  assert.match(src, /\{offerableFor\(whereLevel\)\.length\} territories you can name here/,
     'the denominator is not the vocabulary this product actually offers')
 })
 

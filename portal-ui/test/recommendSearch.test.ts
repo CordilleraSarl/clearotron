@@ -16,11 +16,10 @@ test('the fixture is the engine\'s offering, so the parity below is measured aga
   assertMatchesRegistry()
 })
 
-test('THE PLACES HALF IS THE ENGINE\'S RULE — every shape of territory list resolves to the same search', () => {
+test('THE PLACES HALF IS THE ENGINE\'S RULE — every shape of named places resolves to the same search', () => {
   // The population is built to cover every branch of the rule, and it is COUNTED before it is trusted:
   // a list that silently came out empty would make every assertion below a pass over nothing.
   const lists: string[][] = [
-    [],
     ...COUNTRIES.slice(0, 5).map((c) => [c]),
     ...REGIONS.map((r) => [r]),
     ['France', 'Germany'],
@@ -29,7 +28,7 @@ test('THE PLACES HALF IS THE ENGINE\'S RULE — every shape of territory list re
     ['United States', 'China', 'Japan'],
     ['Benelux', 'France', 'Germany', 'Italy'],
   ]
-  assert.ok(lists.length >= 12, `the parity population is too thin to mean anything: ${lists.length}`)
+  assert.ok(lists.length >= 11, `the parity population is too thin to mean anything: ${lists.length}`)
   const tried = new Set<string>()
   for (const territories of lists) {
     const engine = productFor({ pipeline: 'clearance', territories })
@@ -37,16 +36,19 @@ test('THE PLACES HALF IS THE ENGINE\'S RULE — every shape of territory list re
     assert.equal(browser, engine, `${JSON.stringify(territories)}: the form recommends ${browser}, the engine resolves ${engine}`)
     tried.add(String(engine))
   }
-  // …and the population reached all three clearance outcomes, so no branch went unmeasured.
-  assert.deepEqual([...tried].sort(), ['full-country-search', 'global-preliminary-search', 'multi-country-focus-search'])
+  // …and the population reached both outcomes a named place can have, so no branch went unmeasured.
+  assert.deepEqual([...tried].sort(), ['full-country-search', 'multi-country-focus-search'])
 })
 
-test('an untouched form recommends nothing, so nothing is preselected', () => {
+test('nothing is recommended until a place, or more than one name, is entered', () => {
   assert.equal(recommendSearch(PRODUCTS, 0, []), null,
     '"for what you entered" is a claim about input, and an empty form has none')
-  // A name alone IS input: it fits the worldwide search, which is what the engine resolves no places to.
-  assert.equal(recommendSearch(PRODUCTS, 1, [])?.product.key, 'global-preliminary-search')
-  // A place alone is input too.
+  // A LONE NAME DECIDES NOTHING, and recommending anyway does harm. The search the engine resolves no
+  // places to is the worldwide one, and selecting it takes the Where picker off the form — one field
+  // above the place the reader, having typed a name, was about to name. Measured in a browser: the
+  // evidence pass typed a name, then could not add a country.
+  assert.equal(recommendSearch(PRODUCTS, 1, []), null, 'a single name recommends the search that hides Where')
+  // A place alone is input.
   assert.equal(recommendSearch(PRODUCTS, 0, ['France'])?.product.key, 'full-country-search')
 })
 
@@ -63,7 +65,6 @@ test('the reason is the design\'s sentence, and it counts what was named', () =>
   assert.equal(reason(['France', 'Germany']), 'because you named 2 countries')
   assert.equal(reason(['European Union']), 'because you named a region')
   assert.equal(reason(['European Union', 'Benelux', 'France']), 'because you named 2 regions and a country')
-  assert.equal(reason([]), 'because you named no country or region')
 })
 
 test('a search this deployment cannot run is never recommended', () => {

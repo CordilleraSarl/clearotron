@@ -362,8 +362,11 @@ export type Recommendation = {
  * clearance reads one name, so several names fit the search that reads the most of them — the same one
  * the name wall already offers as the way through.
  *
- * NULL UNTIL SOMETHING IS ENTERED. The empty form recommends nothing and selects nothing: "for what you
- * entered" is a claim about input, and an untouched form has none.
+ * NULL UNTIL A PLACE, OR MORE THAN ONE NAME, IS ENTERED. "For what you entered" is a claim about input, and
+ * the input that decides between the clearances is the places: a single name says nothing about which of
+ * them fits. A lone name therefore recommends nothing — and it must not, because the search it would
+ * recommend is the worldwide one, and selecting that removes the Where picker from the form the reader
+ * is still filling in, one field above the place they were about to name.
  *
  * @param products the offering, as the server sent it
  * @param names how many names are on the form
@@ -372,7 +375,7 @@ export type Recommendation = {
 export function recommendSearch(
   products: readonly Product[], names: number, territories: readonly string[],
 ): Recommendation | null {
-  if (names === 0 && territories.length === 0) return null
+  if (territories.length === 0 && names <= 1) return null
   const live = products.filter((p) => p.available)
   if (names > 1) {
     const widest = live.filter((p) => p.maxNames > 1).sort((a, b) => b.maxNames - a.maxNames)[0]
@@ -380,9 +383,7 @@ export function recommendSearch(
   }
   const regions = territories.filter((t) => tierOf(t) === 'region').length
   const countries = territories.filter((t) => tierOf(t) === 'country').length
-  const geography = territories.length === 0
-    ? 'worldwide, and nothing else'
-    : territories.length === 1 && countries === 1 ? 'exactly one country' : 'a region, or two or more countries'
+  const geography = territories.length === 1 && countries === 1 ? 'exactly one country' : 'a region, or two or more countries'
   const product = live.find((p) => p.pipeline !== 'knockout' && p.geography === geography)
   if (!product) return null
   const some = (n: number, one: string, many: string) => (n === 1 ? `a ${one}` : `${n} ${many}`)
@@ -390,10 +391,7 @@ export function recommendSearch(
     regions ? some(regions, 'region', 'regions') : '',
     countries ? some(countries, 'country', 'countries') : '',
   ].filter(Boolean)
-  return {
-    product,
-    reason: named.length ? `because you named ${named.join(' and ')}` : 'because you named no country or region',
-  }
+  return { product, reason: `because you named ${named.join(' and ')}` }
 }
 
 /**

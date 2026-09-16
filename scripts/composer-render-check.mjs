@@ -35,6 +35,9 @@ const HERE = dirname(fileURLToPath(import.meta.url))
 const DIST = join(HERE, '..', 'portal-ui', 'dist')
 const keep = process.argv.includes('--keep')
 const shotAt = process.argv.includes('--shot') ? process.argv[process.argv.indexOf('--shot') + 1] : null
+// EVIDENCE for a person to read against the design: each state the design draws, in both themes. Not a
+// test — the assertions above are the test; these are the pictures a reviewer compares with the boards.
+const shotDir = process.argv.includes('--shot-dir') ? process.argv[process.argv.indexOf('--shot-dir') + 1] : null
 
 if (!existsSync(join(DIST, 'index.html'))) {
   console.error(`no build at ${DIST} — run: npm run build:ui`)
@@ -142,6 +145,16 @@ const server = createServer((req, res) => {
       // varies on the brief rather than on a counter so the second read is a read, not a fixture swap.
       const worldwideAsk = /worldwide/i.test(String(body?.brief ?? ''))
       res.writeHead(200, { 'content-type': 'application/json' })
+      // THE DESIGN'S OWN BRIEF, for the evidence phase: a region and a country, goods, and a launch month
+      // with no date — so the read names no search and the form's recommendation picks it, which is the
+      // state the design draws.
+      if (/EU and Switzerland/.test(String(body?.brief ?? ''))) {
+        res.end(JSON.stringify({ read: {
+          names: ['AQUAPLUS'], classes: [], goods: 'energy drinks', territories: ['European Union', 'Switzerland'],
+          worldwide: false, product: null, ref: '', deadline: '', notes: ['Deadline: November, no date given'],
+        } }))
+        return
+      }
       res.end(JSON.stringify({
         read: {
           names: ['AQUAPLUS'], classes: [32], goods: 'energy drinks and sports hydration powders',
@@ -350,6 +363,31 @@ const SCRIPT = `
     await sleep(160);
   };
   out.whereTakesAPlaceFirst = Boolean(whereBox()) && !whereBox().disabled;
+  const namesBox = () => document.querySelector('textarea[aria-label="Names to clear"]');
+
+  // THE ORDER A READER TYPES IN: a name, then the places. A lone name must select nothing — the search it
+  // would fit is the worldwide one, which takes the picker away one field above — and a PRESELECTED
+  // one-country search must not replace the first country with the second, or the recommendation could
+  // never reach the search that reads both. Found by the evidence pass, which typed a name and then could
+  // not add a place.
+  set(namesBox(), 'AQUAPLUS');
+  await sleep(200);
+  out.loneNameSelectsNothing = !document.querySelector('.pick-row-on') && Boolean(whereBox());
+  await addPlace('fran', 'France');
+  await mustSettle(() => /Full country search/.test((document.querySelector('.pick-row-on') || {}).innerText || ''), 4000,
+    'one country did not preselect the Full country search');
+  await addPlace('germ', 'Germany');
+  await mustSettle(() => /Multi-country focus search/.test((document.querySelector('.pick-row-on') || {}).innerText || ''), 4000,
+    'a second country did not move the preselection to the Multi-country focus search — the first was replaced');
+  out.secondCountryStacks = Boolean(document.querySelector('button[aria-label="Remove France"]'))
+    && Boolean(document.querySelector('button[aria-label="Remove Germany"]'));
+  document.querySelector('button[aria-label="Remove France"]').click();
+  await sleep(140);
+  document.querySelector('button[aria-label="Remove Germany"]').click();
+  await sleep(160);
+  set(namesBox(), '');
+  await sleep(160);
+
   await addPlace('euro', 'European Union');
   await addPlace('switz', 'Switzerland');
   await mustSettle(() => Boolean(document.querySelector('.pick-row-on')), 4000,
@@ -392,7 +430,6 @@ const SCRIPT = `
   // The brief is NOT consumed: a filler that eats its own input leaves nothing to correct from if it
   // read badly. (It does NOT travel with the request — bodyFor has never sent it.)
   out.briefSurvives = /AQUAPLUS/.test(briefBox.value);
-  const namesBox = () => document.querySelector('textarea[aria-label="Names to clear"]');
   out.namesFilled = namesBox() ? namesBox().value.trim() === 'AQUAPLUS' : false;
   out.readClassChips = [...document.querySelectorAll('.ctx-card .chip')].map((c) => c.innerText.trim());
   out.deadlineFilled = [...document.querySelectorAll('input[type="date"]')].some((i) => i.value === '2026-07-24');
@@ -956,6 +993,109 @@ for (const st of NOTICE_STATES) {
   notices.push({ state: st.name, expect: st, got: read })
 }
 
+// ── phase three: the evidence, one picture per state the design draws ───────────────────────────────
+//
+// Only with --shot-dir. Each state is reached from a fresh load, the way a reader reaches it, and drawn
+// in both themes. The allowance states move only /usage; the rest run on a company with plenty left.
+const EVIDENCE_HELPERS = `
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const txt = () => document.body.innerText;
+  const settle = async (pred, ms) => { const t0 = Date.now(); while (Date.now() - t0 < ms) { if (pred()) return true; await sleep(60); } return false; };
+  const must = async (pred, ms, what) => { if (!await settle(pred, ms)) throw new Error(what); };
+  const byText = (sel, re) => { const el = [...document.querySelectorAll(sel)].find((e) => re.test(e.innerText || '')); if (!el) throw new Error('no ' + sel + ' matching ' + re); return el; };
+  const set = (el, v) => {
+    const proto = el.tagName === 'TEXTAREA' ? HTMLTextAreaElement : el.tagName === 'SELECT' ? HTMLSelectElement : HTMLInputElement;
+    Object.getOwnPropertyDescriptor(proto.prototype, 'value').set.call(el, v);
+    el.dispatchEvent(new Event(el.tagName === 'SELECT' ? 'change' : 'input', { bubbles: true }));
+  };
+  const ready = () => must(() => document.querySelectorAll('.pick-row').length >= 4, 8000, 'the form never painted');
+  const brief = () => document.querySelector('textarea[aria-label="Describe the search"]');
+  const names = () => document.querySelector('textarea[aria-label="Names to clear"]');
+  const addPlace = async (typed, name) => {
+    set(document.querySelector('input[aria-label="Add a territory"]'), typed);
+    await sleep(200);
+    const opt = [...document.querySelectorAll('.typeahead button')].find((b) => b.firstChild && b.firstChild.textContent.trim() === name);
+    if (!opt) throw new Error('the typeahead did not offer ' + name);
+    opt.click();
+    await sleep(160);
+  };
+  const described = async (native) => {
+    set(brief(), 'AQUAPLUS for an energy drink in the EU and Switzerland, launch in November');
+    await sleep(120);
+    byText('button', /Fill it in for me/).click();
+    await must(() => /what i read/i.test(txt()), 5000, 'the read never came back');
+    await must(() => Boolean(document.querySelector('.pick-row-on')), 3000, 'the read selected no search');
+    await sleep(200);
+    if (native) { byText('button', /Native-language investigation/).click(); await sleep(200); }
+  };
+  const reviewed = async () => {
+    byText('button', /Review search/).click();
+    await must(() => /review before you start/i.test(txt()), 5000, 'the review never opened');
+    await sleep(250);
+  };
+`
+const PLENTY = { today: 11, dailyRuns: 20 }
+const EVIDENCE = [
+  { name: 'allowance-plenty', usage: { today: 8, dailyRuns: 20 }, setup: 'await ready();' },
+  { name: 'allowance-few', usage: { today: 17, dailyRuns: 20 }, setup: 'await ready();' },
+  { name: 'allowance-none', usage: { today: 20, dailyRuns: 20 },
+    setup: `await ready(); set(names(), 'AQUAPLUS'); await sleep(100); await addPlace('euro', 'European Union'); await addPlace('switz', 'Switzerland');
+            await must(() => Boolean(document.querySelector('.pick-row-on')), 3000, 'nothing was preselected');
+            if (!byText('button', /Review search/).disabled) throw new Error('the start is not refused with no searches left');` },
+  { name: 'filled', usage: PLENTY, setup: 'await ready(); await described(true);' },
+  { name: 'template', usage: PLENTY,
+    setup: `await ready(); set(document.querySelector('select[aria-label="Search templates"]'), 'launch-screen');
+            await must(() => /sets the search and how deep it goes/.test(txt()), 4000, 'the template line never appeared');` },
+  { name: 'review-native-on', usage: PLENTY, setup: 'await ready(); await described(true); await reviewed();' },
+  { name: 'review-native-off', usage: PLENTY, setup: 'await ready(); await described(false); await reviewed();' },
+  { name: 'queued', usage: PLENTY,
+    setup: `await ready(); await described(true); await reviewed(); byText('button', /^Start search$/).click();
+            await must(() => /Clearance queued/.test(txt()), 5000, 'the queued screen never appeared');` },
+]
+
+const cdp = (method, params = {}) => new Promise((r) => {
+  const i = ++id
+  pending.set(i, r)
+  ws.send(JSON.stringify({ id: i, sessionId, method, params }))
+})
+// A FULL-HEIGHT VIEWPORT, not a beyond-viewport capture. The form's footer is sticky and the review is a
+// fixed overlay, and a beyond-viewport capture paints both where the 900px viewport put them — over the
+// middle of the page. Growing the viewport to the page's height puts the footer at the page's end and lets
+// the overlay cover the page, which is what a reader scrolling it sees.
+const capture = async (path) => {
+  const h = (await evalIn('Math.max(document.documentElement.scrollHeight, document.body.scrollHeight)')).result?.result?.value ?? 900
+  await cdp('Emulation.setDeviceMetricsOverride', { width: 1280, height: Math.max(900, h), deviceScaleFactor: 1, mobile: false })
+  await new Promise((r) => setTimeout(r, 400))
+  const shot = await cdp('Page.captureScreenshot', { format: 'png' })
+  await cdp('Emulation.clearDeviceMetricsOverride', {})
+  const data = shot.result?.result?.data ?? shot.result?.data
+  if (!data) throw new Error(`no screenshot came back for ${path}`)
+  writeFileSync(path, Buffer.from(data, 'base64'))
+}
+
+// The main pass's own posts end here. The evidence below posts plans of its own, and the verdict on what
+// the main pass put on the wire must not read one of those as the last plan it made.
+const mainPassPosts = posted.length
+const evidence = []
+if (shotDir) {
+  // A named company and a named operator, so each line reads the way a reader meets it.
+  meEngine = { brand: 'Tolliver & Quillon', accountNames: { coastline: 'Coastline Drinks' } }
+  for (const st of EVIDENCE) {
+    usageNow = { ...usageNow, ...st.usage }
+    await evalIn(`document.documentElement.removeAttribute('data-theme'); location.href = ${JSON.stringify(`http://127.0.0.1:${port}/portal/new`)}; 'go'`)
+    await new Promise((r) => setTimeout(r, 1200))
+    const got = (await evalIn(`(async () => { ${EVIDENCE_HELPERS} try { ${st.setup} window.scrollTo(0, 0); return { ok: true }; } catch (e) { return { ok: false, error: String(e && e.message || e), body: txt().slice(0, 600) }; } })()`)).result?.result?.value ?? { ok: false, error: 'evaluate returned nothing' }
+    evidence.push({ state: st.name, ...got })
+    if (!got.ok) continue
+    await capture(join(shotDir, `new-clearance-${st.name}-light.png`))
+    await evalIn(`document.documentElement.setAttribute('data-theme','dark'); 'ok'`)
+    await new Promise((r) => setTimeout(r, 400))
+    await capture(join(shotDir, `new-clearance-${st.name}-dark.png`))
+    await evalIn(`document.documentElement.removeAttribute('data-theme'); 'ok'`)
+  }
+  meEngine = {}
+}
+
 // A picture of the state the driver left it in. Not a test — evidence a human can look at, which is the
 // one thing a measurement cannot be.
 if (shotAt) {
@@ -994,7 +1134,7 @@ if (!keep) { try { rmSync(userDir, { recursive: true, force: true, maxRetries: 5
 
 // ── verdict ─────────────────────────────────────────────────────────────────────────────────────────
 
-const planPosts = posted.filter((p) => p.path === '/portal/api/run/plan')
+const planPosts = posted.slice(0, mainPassPosts).filter((p) => p.path === '/portal/api/run/plan')
 const planBody = planPosts[0]?.body ?? null
 // The first pass plans TWICE (the refusal drill presses Review again, which mints a fresh token), so
 // this is counted from the END: the counts pass ends with exactly one plan post, and it is the last one
@@ -1028,6 +1168,8 @@ ok(out.startingFrom, 'the footer never says what it started from — the "cannot
 
 // ── THE SEARCH FOLLOWS WHAT WAS ENTERED ─────────────────────────────────────────────────────────────
 ok(out.whereTakesAPlaceFirst, 'Where cannot take a place before a search is picked — the recommendation is read off the places, so this blocks it')
+ok(out.loneNameSelectsNothing, 'a name typed before any place selected a search, or took the Where picker away')
+ok(out.secondCountryStacks, 'a second country replaced the first under a PRESELECTED one-country search — the recommendation could never reach the multi-country search')
 ok(out.preselectedMulti, `a region and a country did not preselect the Multi-country focus search: ${JSON.stringify(out.preselected)}`)
 ok(out.recommendedTag, 'the preselected search does not carry "Recommended for what you entered"')
 ok(out.recommendedReason, 'the recommended search does not say why — "because you named a region and a country"')
@@ -1247,6 +1389,8 @@ for (const n of notices) {
     `${n.state}: the link to the configuration page is ${n.expect.link ? 'missing' : 'offered to a reader who cannot open that page'} `
     + `(buttons: ${JSON.stringify(got.buttons)})`)
 }
+
+for (const e of evidence) ok(e.ok, `evidence state ${e.state} could not be reached: ${e.error} — on screen: ${JSON.stringify((e.body || '').slice(0, 300))}`)
 
 console.log(JSON.stringify({ ...out, planBody, countsBody }, null, 2))
 if (shotAt) writeFileSync(shotAt + '.json', JSON.stringify({ ...out, planBody, countsBody }, null, 2))
