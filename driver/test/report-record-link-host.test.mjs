@@ -204,7 +204,7 @@ const anchorsOf = (html) => [...html.matchAll(/<a\b[^>]*\shref="([^"]*)"[^>]*>/g
 // THE PROSE CITATION MOVED SECTIONS, AND WHY THAT IS NOT THE GUARD GOING SOFT. It was written under
 // `# Methodology`, and the report no longer draws that section: what a run could not reach is stated as
 // the counts and the left-open rows of "What was searched", which say it per item and in more detail
-// than the paragraph did (tracker issue 644, and the design's "counts only" rule for that section).
+// than the paragraph did (the 2026-09-16 report redesign, and the design's "counts only" rule for that section).
 // `# Summary` is a prose section the design keeps, its markdown goes through the same inline renderer,
 // and the invariant these arms hold — an evidence URL the synthesis wrote in prose reaches the reader
 // exactly as found — is the same one either way. The arm below pins the section's absence, so the move

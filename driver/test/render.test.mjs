@@ -79,7 +79,7 @@ test("data-driven: gauge, quadrant, key panel, on-field + secondary cards, cover
 test("the delivered report carries none of what the redesign removed", () => {
   // ONE ARM FOR EVERY REMOVAL, so the eight arms this replaces do not each survive as a test that
   // something is absent. Each line below was a section, a panel or a marker a client used to meet; the
-  // owner ruled it off the page on 2026-09-16 and the reasons are on tracker issue 644. The arms that
+  // owner ruled it off the page on 2026-09-16 and the reasons are on the 2026-09-16 report redesign. The arms that
   // held the SURVIVING half of any of these were repointed rather than deleted, and are above.
   //
   // BREAK MATRIX: re-introduce any one of these and exactly one line here reds, naming it.
@@ -116,7 +116,7 @@ test("a genuinely-open floor still surfaces plainly in the report Coverage secti
     ...COVERAGE,
   ];
   const html = renderHtml(parsedOf(REPORT), FINDINGS, OPEN_COVERAGE, { runId: "noref-open" });
-  // The heading moved with the layout (tracker issue 644): the scope fold and its "What we covered"
+  // The heading moved with the layout (the 2026-09-16 report redesign): the scope fold and its "What we covered"
   // grid of every row are gone, and what is LEFT OPEN renders with the counts instead. The disclosure
   // this arm exists for is the line below, not the heading above it.
   assert.match(html, /Left open/);
@@ -487,7 +487,7 @@ test("doc-31 owner binding: no record owner → falls back to the model's findin
 });
 
 test("ONE header bar: an injected site nav is not rendered on a report, whatever is passed", () => {
-  // THE PROPERTY INVERTED WITH THE DESIGN (tracker issue 644). A reader met two stacked headers and the
+  // THE PROPERTY INVERTED WITH THE DESIGN (the 2026-09-16 report redesign). A reader met two stacked headers and the
   // lower one carried the only brand. The report renders its own bar and nothing else, so a caller that
   // still passes a nav — the pool index does — gets a report with one header rather than two.
   const NAV = '<nav class="sitenav"><div class="navinner"><a href="../index.html">Archive</a></nav>';
@@ -782,7 +782,7 @@ test("CHANGE 2 back-compat: NO finding carries disposition → legacy composite 
   assert.match(html, /<div class="card" id="c2"/);
   assert.match(html, /<div class="card" id="c3"/);
   assert.match(html, /<div class="card compact" id="c4"/);
-  // tracker issue 644 — the Scope fold is gone. What a run LEFT OPEN renders in the counts fold, which
+  // The 2026-09-16 report redesign — the Scope fold is gone. What a run LEFT OPEN renders in the counts fold, which
   // is the half of that section a client needed; the rest was the engine's account of its own searching.
   assert.match(html, /<details class="searched">/);
 });
@@ -926,7 +926,7 @@ test("Full detail: a registration URI links from the run's ALLOW-LIST, never fro
 test("the card header shows the contentious MARK + the classes it matched in (not only the holder)", () => {
   const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, {});
   // FINDINGS[0]: holder "Matchday, Inc." owns the mark MATCHDAY in class 41 — the card shows BOTH, prominently
-  // MARK FIRST, THEN WHERE AND WHICH CLASS, THEN THE HOLDER ON THE LINE BELOW (tracker issue 644). All
+  // MARK FIRST, THEN WHERE AND WHICH CLASS, THEN THE HOLDER ON THE LINE BELOW (the 2026-09-16 report redesign). All
   // three facts are still on the card; the order is the one a reader asks them in.
   assert.match(html, /class="who mark-first">MATCHDAY/, "the contentious mark leads the card");
   assert.match(html, /class="where">— [^<]*Class 41/, "the matched class rides the same line");
@@ -1042,7 +1042,7 @@ test("spec-48 A5: on-field common-law stays in On-field (full card) and is cross
     source: { source_type: "common-law-marketplace" } };
   const html = renderHtml(parsedOf(FM), [...REGION_FINDINGS, clOn], REGION_COVERAGE, {});
   assert.equal(bandOfCard(html, 7), "Conflicts", "the on-field CL card drives the read from On-field");
-  // tracker issue 644 — the section heading is gone and the cards render with the other findings, so a
+  // The 2026-09-16 report redesign — the section heading is gone and the cards render with the other findings, so a
   // secondary common-law card sits under the last heading above it rather than under one of its own.
   // What this arm holds is that the card is ON the page and cross-linked, which is what went missing
   // when the heading was first removed.
@@ -1055,7 +1055,7 @@ test("spec-48 A5: disposition mode — common-law leaves the bands for its own s
     composite: 2, level: "B", dispute_type: "nuisance-claim", disposition: "off-field",
     meters: DMETERS, quadrant: { x: 0.15, y: 0.15 }, source: { source_type: "common-law-marketplace" } };
   const html = renderHtml(parsedOf(FM_NOVAPULSE), [...DISP_FINDINGS, clOff], [], { runId: "novapulse-demo" });
-  // tracker issue 644 — same as above: the cards outlive their heading. An off-field common-law card
+  // The 2026-09-16 report redesign — same as above: the cards outlive their heading. An off-field common-law card
   // still renders and still does not join the register bands, which is the distinction this arm is for.
   assert.match(html, / id="c5"/, "the off-field common-law card still renders");
   assert.notEqual(bandOfCard(html, 5), "Notable but manageable", "…and it is not absorbed into the register band");
@@ -1104,13 +1104,13 @@ test("spec 47: a reasoned Enforcer prose bullet suppresses the templated meter l
   // card 2 has no prose enforcer bullet — the templated meter line still renders (inferred, honest)
   const card2 = html.slice(html.indexOf('id="c2"'));
   // "Enforcer" was a noun for the owner; the meter measures what the owner is likely to DO
-  // (tracker issue 644). The token under the label is untouched, and so is the suppression above.
+  // (the 2026-09-16 report redesign). The token under the label is untouched, and so is the suppression above.
   assert.match(card2, /<b>Likely to enforce\.<\/b> Low appetite <i>inferred<\/i>/);
 });
 
 test("spec 47: the title heading carries classes + searched countries, full names on hover", () => {
   const html = renderHtml(parsedOf(FM), REGION_FINDINGS, REGION_COVERAGE, {});
-  // The scope line under the H1 became labelled rows of About this request (tracker issue 644): the same
+  // The scope line under the H1 became labelled rows of About this request (the 2026-09-16 report redesign): the same
   // two facts, named rather than abbreviated, so nothing depends on a hover to be read.
   const about = (html.match(/<div class="panel about">[\s\S]*?<\/div><\/div>/) || [""])[0] || html;
   assert.match(about, /Classes<\/span><span class="v">5 · 32 · 41/);
@@ -1175,7 +1175,7 @@ test("spec 49: verdictInfo drives the gauge and bound recommendation — fm.over
   assert.match(withVi, /class="gv gv-rec">Proceed with the filing/);
   // OWNER RULING 2026-09-16: the verdict shows EVERY condition, never the first and a count of the rest.
   // This sidecar is a legacy one with no client-voice clause beside its reason, so the run-record text is
-  // what a reader gets. That is the remaining half of tracker issue 639 and it is with the owner; what
+  // what a reader gets. That is the remaining half of the 2026-09-16 report redesign and it is with the owner; what
   // this arm now holds is that nothing is hidden behind a count.
   assert.match(withVi, /close the CN register gap/, "every condition reaches the page");
   assert.doesNotMatch(withVi, /and \d+ more/, "…and none of them hides behind a count");
@@ -1192,7 +1192,7 @@ test("spec 49: verdictInfo drives the gauge and bound recommendation — fm.over
   assert.match(noVi, />Severe</, "legacy tick vocabulary preserved without a sidecar");
 });
 
-  // WHERE SEARCHED MOVED FROM CHIPS TO A LABELLED ROW (tracker issue 644). The derivation is untouched —
+  // WHERE SEARCHED MOVED FROM CHIPS TO A LABELLED ROW (the 2026-09-16 report redesign). The derivation is untouched —
   // the same jurisdictionCodes decides the set, the order and which office was coverage-limited — so the
   // property these arms hold is the same one, read where a client now reads it.
   const whereRow = (h) => (h.match(/Where searched<\/span><span class="v">([^<]*)/) || [])[1] || "";
@@ -1302,7 +1302,7 @@ test("doc-52: reading order + plain banner (from only-you) + ruled-out routing +
   // engine clamp reason still never renders anywhere.
   assert.doesNotMatch(html, /class="bound"/, "no bound line — deleted, not reformatted");
   // Every condition renders by ruling (2026-09-16); nothing hides behind a count. Giving this site a
-  // client-voice clause is the remaining half of tracker issue 639 and is with the owner.
+  // client-voice clause is the remaining half of the 2026-09-16 report redesign and is with the owner.
   assert.doesNotMatch(html, /and \d+ more/, "no condition hides behind a count");
   // ruled-out routing: UNTAMED (off-field, shares no word with NOVAPULSE) leaves the conflict bands
   assert.match(html, /<h2>Also considered<\/h2>/);
@@ -1655,7 +1655,7 @@ test("doc-55 A3 (one-report form): the case-law strand renders its full body onc
   const caseLawNotice = "Case-law grounding incomplete: CourtListener MCP not wired; Legal Data Hunter quota exhausted (HTTP 429).";
   const internal = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { caseLawByOrdinal, caseLawNotice });
   assert.match(internal, /MCP server did not connect/, "the reviewer keeps the full case-law diagnostics");
-  assert.doesNotMatch(internal, /Session-wide notice/, "the session notice is operational narration and is off the client's page (tracker issue 644)");
+  assert.doesNotMatch(internal, /Session-wide notice/, "the session notice is operational narration and is off the client's page (the 2026-09-16 report redesign)");
   // ONE report (spec 2026-07-30 §5): the code-owned client line and the client body-fork are retired
   // with the CLIENT flag — a stale opts.client is inert. Getting engine vocabulary off the DOCUMENT for
   // every reader is the prompt-side voice work (charter P6/P7), never a second render here.
@@ -1971,7 +1971,7 @@ test("§L: a same-element mark (token containment ≥4 chars) is NEVER silently 
   // the genuinely word-free neighbour still routes to the quiet list, with its ordinal accounted for
   assert.doesNotMatch(svg, /href="#c3"/, "UNTAMED stays off the chart");
   assert.match(html, /<h2>Also considered<\/h2>/);
-  // The ruled-out list became cards under Also considered (tracker issue 644): the ordinal and the mark
+  // The ruled-out list became cards under Also considered (the 2026-09-16 report redesign): the ordinal and the mark
   // are both still on the page, which is what keeps a numbering gap from reading as a lost finding.
   assert.match(html, /class="fnum">3<\/span><span class="who mark-first">UNTAMED/, "the ruled-out ordinal stays accounted for");
 });

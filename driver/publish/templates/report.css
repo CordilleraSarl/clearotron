@@ -405,7 +405,7 @@
   .panel.actions.scope-ran h4{margin:0 0 6px;font-size:14px;letter-spacing:-.01em;
     display:flex;align-items:center;gap:9px}
 
-  /* ── tracker issue 644 — the approved report presentation ─────────────────────────────────────────
+  /* ── The 2026-09-16 report redesign — the approved report presentation ─────────────────────────────────────────
      Ported from the design's own stylesheet, with its literal colours mapped onto this sheet's tokens
      so the page follows the theme rather than carrying a second palette. Layout only: every string on
      the page is the delivered file's own, a label from the specification, or a count. */
@@ -413,7 +413,7 @@
   .panel.about .label{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:6px}
   .panel.about .row{display:grid;grid-template-columns:170px 1fr;gap:12px;padding:5px 0;border-top:1px solid var(--line);font-size:13.5px;line-height:1.5}
   /* The goods as registered and the record's own dates, inside a finding's Full detail fold on a full
-     country search (tracker issue 644). Ported from the design with its fixed greys replaced by tokens.
+     country search (the 2026-09-16 report redesign). Ported from the design with its fixed greys replaced by tokens.
      `word-break` is load-bearing and not cosmetic: the goods are the register's own wording, which on a
      Japanese or Korean record is one unbroken run of characters with no spaces to wrap at, and without
      it that row sets the width of the whole fold. */

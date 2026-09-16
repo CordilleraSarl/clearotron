@@ -2123,7 +2123,7 @@ const FROZEN_BEFORE_SPDX = "3c942dc1f191548472d45543d4ead36d9d40c853d02f1af687bc
 //   3. WHY IT MUST LAND HERE: the suppression is here. `findings.json` is already correct — the composer
 //      writes each slice exactly once. Only the render drops it.
 
-// ── BREAK: the report a client opens, redrawn (tracker issue 644) ────────────────────────────────────
+// ── BREAK: the report a client opens, redrawn (the 2026-09-16 report redesign) ────────────────────────────────────
 //
 // The largest break this file has recorded, and one break rather than a dozen because every edit in it
 // serves one design and a reader meets them as one page. The complaint behind it was length and order:

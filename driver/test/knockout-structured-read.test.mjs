@@ -158,7 +158,7 @@ test("the read renders as STRUCTURE — chip, basis, tight bullets, and the two 
   // holds what?". These name the rung the mark is on and the rung above it, off this fixture's own
   // ladder (Blocking > Medium > Manageable > Low), so the label answers the question by itself.
   assert.match(html, /Why Manageable/, "the factors are labelled with the band the mark actually has");
-  // THE COMPARATIVE LABEL IS GONE (tracker issue 645). "Why not Medium" asked the reader to hold a
+  // THE COMPARATIVE LABEL IS GONE (the 2026-09-16 report redesign). "Why not Medium" asked the reader to hold a
   // ladder the page had not given them, and at the top rung it had no band to name and asked a
   // different question instead. The heading names what is under it, at every rung.
   assert.match(html, /Remaining uncertainties/, "the counter-factors are labelled by what they are");
@@ -166,7 +166,7 @@ test("the read renders as STRUCTURE — chip, basis, tight bullets, and the two 
   assert.doesNotMatch(html, /What holds it there|What would move it/, "and so is the muted pair before it");
   assert.match(html, /class="ko-lbl2"/, "at body size and body colour, not the 9.5px grey style");
   assert.match(html, /class="ko-mitig"/, "mitigation is visually distinct");
-  assert.match(html, /What would change this/, "under the label tracker issue 645 gives it");
+  assert.match(html, /What would change this/, "under the label the 2026-09-16 redesign gives it");
   // Every factor is its own <li> — the wall is gone because the emission changed, not because a
   // renderer split a paragraph on full stops.
   for (const f of markRow().factors) assert.ok(html.includes(f), `factor on the page: ${f.slice(0, 30)}`);
@@ -212,7 +212,7 @@ test("the register line comes from the SIDECAR, and says a different thing in ea
   });
   // 1 — counted. The code-owned line, scope first, identical to the glance line's wording.
   // THE SENTENCE UNDER THE CARDS IS GONE; THE FOUR STATES ARE NOT. It restated, in prose, what the
-  // table above it had already said, which is what tracker issue 645 took off the page. Each state is
+  // table above it had already said, which is what the 2026-09-16 redesign took off the page. Each state is
   // still told — this arm follows each one to where it is now told, because three of the four are a
   // register that could NOT be counted, and an absence that reaches the reader nowhere is the failure
   // that matters here.

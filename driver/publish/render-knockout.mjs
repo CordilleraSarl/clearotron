@@ -266,7 +266,7 @@ const KO_CSS = `
   .ko-scroll{overflow-x:auto}
   @media(max-width:700px){.ko-row{grid-template-columns:1fr;gap:10px}}
 
-  /* The band ladder, the territories fold and the run's own caveats (tracker issue 645). Ported from
+  /* The band ladder, the territories fold and the run's own caveats (the 2026-09-16 report redesign). Ported from
      the design's stylesheet with its fixed colours replaced by this page's tokens, so the ladder reads
      in both themes: the tick row was #a89a8a on white and the fold's summary and prose a brown pair,
      all three of which go invisible on the dark ground this report also renders on. */
@@ -333,7 +333,7 @@ function glanceSection(marks, framework, registerCounts) {
   // No framework ⇒ NOTHING. A run this render was given no manifest for gets no attribution invented for
   // it, and the chips still carry their own words.
   const legend = framework?.title
-    ? '' /* tracker issue 645 — the framework is named once, on the rating card */
+    ? '' /* The 2026-09-16 report redesign — the framework is named once, on the rating card */
     : '';
   return `<div class="panel ko-glance">${legend}${rows}</div>`;
 }
@@ -756,7 +756,7 @@ function findingBlock(v, framework, markIndex) {
             </div>
             ${meta ? `<p class="ko-findmeta">${meta}</p>` : ''}
             ${v.lead ? `<p class="ko-findnet">${inlineMd(v.lead)}</p>` : ''}
-            ${/* tracker issue 645 — head, meta and the one-line read stay visible; the rest folds, as on
+            ${/* The 2026-09-16 report redesign — head, meta and the one-line read stay visible; the rest folds, as on
                  a clearance card, so a screen of many names reads as a screen. */''}
             ${(v.detail || ev) ? `<details class="drill"><summary>Full detail</summary><div class="drillbody">${
       whyBandFold(v.detail ? `<p class="ko-findbasis">${inlineMd(v.detail)}</p>` : '')}${
@@ -1155,7 +1155,7 @@ function aboutRequestBlock(scope, requestNotes, depthNote = '', productContext =
   const cut = note.lastIndexOf(' \u2014 ');
   const stage = cut > 0 ? note.slice(0, cut).trim() : note;
   const context = String(productContext ?? '').trim();
-  // REGISTERS COUNTED IS A ROW, AND THE TERRITORY LIST HIDES BEHIND IT (tracker issue 645). A line of
+  // REGISTERS COUNTED IS A ROW, AND THE TERRITORY LIST HIDES BEHIND IT (the 2026-09-16 report redesign). A line of
   // country names running through the middle of the panel is the thing a reader skips; the count and
   // its source are what they read, and the list is one click away when they want it.
   const regions = (registerCounts?.scope?.regions ?? []).filter(Boolean);
@@ -1166,7 +1166,7 @@ function aboutRequestBlock(scope, requestNotes, depthNote = '', productContext =
     : (registerCounts ? `Counted worldwide${provider ? `, on ${provider}` : ''}` : '');
   const territories = named.length ? listWords(named) : '';
   if (!asked && !where && !classLine && !stage && !context && !counted) return '';
-  // ONE PANEL, THE SAME ON BOTH REPORTS (tracker issue 645). The rows carry what was asked for; the
+  // ONE PANEL, THE SAME ON BOTH REPORTS (the 2026-09-16 report redesign). The rows carry what was asked for; the
   // counts row says what was counted and hides the territory list behind a fold rather than running a
   // line of country codes through the middle of the panel.
   const row = (k, v, extra = '') => v ? `<div class="row"><span class="k">${esc(k)}</span><span class="v">${esc(v)}${extra}</span></div>` : '';
@@ -1231,7 +1231,7 @@ function registerFindingBlock(v, markIndex, reads = null, framework = null, owne
             </div>
             <p class="ko-findmeta">${meta}</p>
             <p class="ko-findnet">${esc(v.statement)}</p>
-            ${/* tracker issue 645 — the head, the meta line and the one-line read stay visible; the rest
+            ${/* The 2026-09-16 report redesign — the head, the meta line and the one-line read stay visible; the rest
                  sits behind a fold, as it does on a clearance card, so a screen of many names reads as a
                  screen rather than as a wall. */''}
             <details class="drill"><summary>Full detail</summary><div class="drillbody">
@@ -1371,9 +1371,9 @@ function coverageClause(mark, registerCounts, probeRan) {
  * The counter-factor label was "Why not <the rung above>", read off the run's own ladder. It asked the
  * reader to hold a ladder the page had not given them; at the top rung there was no higher band to name,
  * so it asked a different question there; and a band the build could not find on the ladder fell to that
- * same special case. tracker issue 645 names what is under the heading instead, at every rung.
+ * same special case. the 2026-09-16 report redesign names what is under the heading instead, at every rung.
  */
-// tracker issue 645 — the heading names what is UNDER it rather than a band the reader was not shown.
+// The 2026-09-16 report redesign — the heading names what is UNDER it rather than a band the reader was not shown.
 // It read "Why not <the rung above>", which asked the reader to hold a ladder they had not been given
 // and, at the top rung, had no band to name and asked a different question instead. The engine's
 // bullets are unchanged; only the label is, and it no longer varies with the band.
@@ -1394,7 +1394,7 @@ const SCOPE_BLOCK_TEXT = 'What this is. A fast screen for obvious blockers to us
 // The stopword set and the idempotent stem travel with it; the reference text below stays here, because
 // it is this page's own words and nothing else's.
 
-// ── THE RATING CARD, ONE DESIGN WITH THE CLEARANCE REPORT (tracker issue 645) ──────────────────────
+// ── THE RATING CARD, ONE DESIGN WITH THE CLEARANCE REPORT (the 2026-09-16 report redesign) ──────────────────────
 // The company's own ladder drawn as the coloured scale with the band lit, the basis sentence, the
 // engine's own "why" bullets under a heading that names the band, and the framework named once. The
 // ticks clamp at the ends so the first and last words do not hang off the bar. Nothing is composed:
@@ -1416,7 +1416,7 @@ function koScale(framework, band) {
       k === idx ? `;color:${tone(k)}` : ''}">${esc(b)}</span>`).join('')}</div></div>`;
 }
 
-// WHAT HAPPENS NEXT, AS ITS OWN SECTION (tracker issue 645). The engine writes this paragraph part-way
+// WHAT HAPPENS NEXT, AS ITS OWN SECTION (the 2026-09-16 report redesign). The engine writes this paragraph part-way
 // down each mark's long assessment, under a heading of its own, where it rendered only inside a fold
 // that opens at the bottom of the screen. It is the one paragraph a reader acts on, so it closes the
 // page under its own heading.
@@ -1530,7 +1530,7 @@ function analysisSection(marks, framework, { registerCounts = null, probeRan = f
         ${body || '<p class="ko-bul">No adverse signals recorded for this name on this screen.</p>'}
         ${m.degraded ? `<p class="ko-degraded">${esc(DEGRADED_NOTE)}</p>` : ''}
         ${reviewerNotesBlock(m)}
-        ${/* tracker issue 645 — the register line restated the counts table above it */''}
+        ${/* The 2026-09-16 report redesign — the register line restated the counts table above it */''}
       </div>
     </div>`;
   }).join('');
@@ -1780,7 +1780,7 @@ window.addEventListener('beforeprint',o);})();</script>
   <div class="panel actions"><div class="actgrp act-you">${body}</div></div>`;
   })()}
 
-  ${/* tracker issue 645 — the scope section and its fold are off the page: what a screen is and
+  ${/* The 2026-09-16 report redesign — the scope section and its fold are off the page: what a screen is and
        what it did not search is the narration the owner ruled out. */''}
 
   ${/* THE MODEL'S CAVEATS OUTLIVE THE BLOCK THEY SAT UNDER. They were rendered after the scope

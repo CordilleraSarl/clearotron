@@ -404,7 +404,7 @@ test("D: a registration does not say 'registration (registered)'", () => {
 
 // ── E — the scope block ──────────────────────────────────────────────────────────────────────────────
 
-// The scope block is off the page (tracker issue 645): the fixed paragraph saying what a screen is and
+// The scope block is off the page (the 2026-09-16 report redesign): the fixed paragraph saying what a screen is and
 // is not, and with it the "every conflict above links to the material we found" line. Both were the
 // narration the redesign was ordered to cut. ONE ARM HOLDS THE GROUND the deleted arms held, because a
 // block removed with nothing asserting its absence comes back on the next edit near it and nothing reds.

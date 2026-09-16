@@ -478,7 +478,7 @@ export const REC = {
   // designated countries; never imply "international = global". Corsearch bodies carry the
   // per-designated-country statuses as `onomaticsJurisdictionsStatuses` (array of strings or of
   // {jurisdiction,status} objects — fail-open on either shape; null when the record lacks it).
-  // tracker issue 644 — the goods the mark is REGISTERED for, in the register's own words. A finding
+  // The 2026-09-16 report redesign — the goods the mark is REGISTERED for, in the register's own words. A finding
   // argues about goods, and until now the only goods on the page were the class numbers; the record
   // carried the wording all along. NOTHING IS TRANSLATED HERE. Where a record holds an English entry
   // the display picks it (the register wrote it); where it holds only the local language, the local

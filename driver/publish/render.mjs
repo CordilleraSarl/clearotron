@@ -85,7 +85,7 @@ let NEGATIVES_GROUPED = false;
 // present the report speaks ITS band words: chips/one-liners read f.band, the gauge ticks show its
 // ladder, the footer names it. Absent ⇒ every legacy (composite) surface renders byte-identically.
 let FRAMEWORK = null;
-// tracker issue 644 — the depth rule, as one flag. The same sections render at every depth; what grows
+// The 2026-09-16 report redesign — the depth rule, as one flag. The same sections render at every depth; what grows
 // is what a finding's Full detail fold carries, and the goods as registered and the record's dates are
 // the two blocks the design gives the full country alone. Module-level for the same reason FRAMEWORK is:
 // fullDetail is reached through four call sites and threading a flag through all of them to reach one
@@ -139,7 +139,7 @@ function frameworkTickIndex(findings) {
   return null;
 }
 // ── THE RATING CARD'S BODY ─────────────────────────────────────────────────────────────────────────
-// One card across every report type (tracker issue 644): the band on the company's own ladder, the
+// One card across every report type (the 2026-09-16 report redesign): the band on the company's own ladder, the
 // verdict with EVERY condition, "Why <band>" as the four answers with the basis each rests on, the
 // highest exposure, and what was searched to get there. Nothing here is composed — the conditions are
 // the sidecar's own client-voice clauses, the answers are the engine's, and the coverage line is counts.
@@ -535,7 +535,7 @@ function meter(name, entry) {
     return { label: 'Use', cls, cap, ev: USE_EVIDENCE_LABEL[e._status] || '' };
   }
   const cls = tok === 'high' ? 'l3' : tok === 'medium' ? 'l2' : tok === 'low' ? 'l1' : '';
-  // tracker issue 644 — "Enforcer" was a noun for the owner; the meter measures what the owner is
+  // The 2026-09-16 report redesign — "Enforcer" was a noun for the owner; the meter measures what the owner is
   // likely to DO, which is what a reader is deciding about. The token under it is unchanged.
   const label = name === 'mark_similarity' ? 'Similarity' : name === 'goods_proximity' ? 'Goods proximity' : 'Likely to enforce';
   // With a joined status the status REPLACES the raw basis word on the enforcer — "verified" with no
@@ -765,7 +765,7 @@ function headScope(fm, coverage = [], findings = []) {
 
 // ── ABOUT THIS REQUEST ─────────────────────────────────────────────────────────────────────────────
 // The scope line, the facts card and the covers sentence were three places saying what was asked for.
-// They are one labelled panel now, directly under the name, on every report type (tracker issue 644).
+// They are one labelled panel now, directly under the name, on every report type (the 2026-09-16 report redesign).
 // Every row is a fact the run already carries: nothing here is composed.
 function aboutPanel(fm, coverage = [], findings = [], opts = {}) {
   const { order: codes, meta, worldwide } = jurisdictionCodes(fm, coverage, findings);
@@ -932,7 +932,7 @@ export function actYouConditions(youBucket) {
 // (e.g. a same-theme game under a different name). They render in a quiet, collapsed "also considered —
 // ruled out" list (owner · mark · why), never as conflict cards and never plotted in the landscape.
 // ── ALSO CONSIDERED ────────────────────────────────────────────────────────────────────────────────
-// The depth section (tracker issue 644). A deeper search reads more and finds no more, and until now the
+// The depth section (the 2026-09-16 report redesign). A deeper search reads more and finds no more, and until now the
 // page could not say so: the names read and cleared existed only in the workbook. Three parts, in order —
 // the names this run rated and ruled out, the register near-names it cleared, and the web and marketplace
 // names it wrote up. Everything is folded and capped: nothing on this page is an uncapped list, and the
@@ -974,8 +974,8 @@ function webNamesHtml(searchDepth) {
 }
 
 // ── WHERE IT STANDS, COURT DECISIONS, WHAT WAS SEARCHED ────────────────────────────────────────────
-// The three sections that let a deeper search show its depth (tracker issue 644). All three read the
-// search-depth record (tracker issue 638) and the findings; none composes a sentence. Where the record
+// The three sections that let a deeper search show its depth (the 2026-09-16 report redesign). All three read the
+// search-depth record (the 2026-09-16 report redesign) and the findings; none composes a sentence. Where the record
 // is absent — an archived run published before it existed — each returns '' rather than drawing a zero.
 const searchStage = (opts) => {
   const note = String(opts && opts.depthNote || '').trim();
@@ -1038,7 +1038,7 @@ function courtDecisionsSection(opts) {
 // scope fold and the checks-we-ran narrative go, because narrating faults and refusals at a client is
 // what the owner ruled out. A slice the run deliberately LEFT OPEN is not narration: it is the
 // disclosure the whole can't-close-then-disclose doctrine rests on, and it was measured reaching a
-// client short by two rows only hours before this redesign (tracker issue 637). It renders here, in the
+// client short by two rows only hours before this redesign (the 2026-09-16 report redesign). It renders here, in the
 // reader's own words, with the counts — never the query text, the refusals or the provider faults.
 function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri = new Map()) {
   const sd = opts && opts.searchDepth;
@@ -1132,7 +1132,7 @@ function ruledOutSection(ruledOut, recordsByUri = new Map()) {
 // Calling it makes the two rules agree BY CONSTRUCTION rather than by inspection, which is what the
 // issue asks for: a divergence that is merely absent grows back. renderProse then sees the lines the
 // author wrote, so `- ` bullets are <li> again and a telemetry-only note still reduces to ''.
-// tracker issue 644 — scopeSection and plainScopeNote are DELETED, not merely unreferenced.
+// The 2026-09-16 report redesign — scopeSection and plainScopeNote are DELETED, not merely unreferenced.
 //
 // They rendered the scope fold: the checks-we-ran narrative, the Methodology note, the full coverage
 // grid and the provenance paragraph. The owner ruled the narrative off the client's page on
@@ -1518,7 +1518,7 @@ function fullDetail(f, card, recordsByUri = new Map()) {
       // "file exists on disk" inference. Absent receipt (archived runs) renders nothing.
       const receiptTail = rec._receipt?.fetched_at
         ? ` · <i class="receipt">verified — ${esc(PROVIDER_LABEL || 'register')} record fetched ${esc(String(rec._receipt.fetched_at).slice(0, 10))}</i>` : '';
-      // AS REGISTERED, AND THE DATES — the full country's two extra blocks (tracker issue 644). Both come
+      // AS REGISTERED, AND THE DATES — the full country's two extra blocks (the 2026-09-16 report redesign). Both come
       // off the fetched record and neither is composed: the goods are the register's own wording in the
       // language it granted them in, and the dates are its own, to the day. The one-line summary above
       // carries YEARS, which cannot say whether a registration lapses this month.
@@ -2280,7 +2280,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   AS_OF = opts.asOf ?? null;   // C2
   VERDICT_INFO = (opts.verdictInfo && opts.verdictInfo.tier != null) ? opts.verdictInfo : null;   // T2 — only an enriched sidecar is an authority
   FRAMEWORK = opts.framework ?? null;   // doc 50 — the frozen manifest; null on archived/legacy runs
-  FULL_COUNTRY = isFullCountry(opts);   // tracker issue 644 — the depth rule for the Full detail fold
+  FULL_COUNTRY = isFullCountry(opts);   // The 2026-09-16 report redesign — the depth rule for the Full detail fold
   SEARCHED_JUR = Array.isArray(opts.searchedJurisdictions) && opts.searchedJurisdictions.length ? opts.searchedJurisdictions : null;   // T6 (D4)
   SCOPE_WORLDWIDE = opts.scopeBasis === 'worldwide' ? true : null;   // the plan's scope_basis; null ⇒ fall back to the ledger-prose sniff
   CASE_LAW_BY_ORD = opts.caseLawByOrdinal instanceof Map ? opts.caseLawByOrdinal : new Map();   // T7 (E5)
@@ -2415,7 +2415,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   const clNotice = (clNoticeText && CASE_LAW_BY_ORD.size)
     ? `<div class="panel" style="padding:12px 16px;margin:0 0 12px"><p style="margin:0 0 4px;font-weight:700;font-size:13px">Session-wide notice</p><div style="font-size:13px">${renderProse(clNoticeText)}</div></div>`
     : '';
-  // tracker issue 644 — the section heading and the session-wide notice are off the page: the heading
+  // The 2026-09-16 report redesign — the section heading and the session-wide notice are off the page: the heading
   // named a layer rather than a thing a reader looks for, and the notice was operational narration. The
   // CARDS are not: a rated common-law finding is a finding, and it renders in place with the others.
   const hasCL = Boolean(clBody);
@@ -2479,7 +2479,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
       tail += `\n\n  <div class="sec"><h2>Notable but manageable</h2></div>
   ${parts.join('\n  ')}`;
     }
-    // tracker issue 644 — the section heading and its routing notice go; the CARDS stay, or a
+    // The 2026-09-16 report redesign — the section heading and its routing notice go; the CARDS stay, or a
     // finding the run rated would appear on no page at all.
 
     findingsSections = landscape + tail;
@@ -2515,7 +2515,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
 <style>${cssInline}${darkCss}${PRINT_LIGHT}</style>${chromeLinkTag}</head><body class="has-glow">
 <div class="rep-stickyhead no-print">
 <div class="topbar no-print">
-  ${/* ONE BAR (tracker issue 644). The site bar is not rendered on a report, so the brand belongs here:
+  ${/* ONE BAR (the 2026-09-16 report redesign). The site bar is not rendered on a report, so the brand belongs here:
        a reader met two stacked headers, and the lower one carried the only brand. */''}
   ${logoLockup({ mark: 16, cls: 'tb-lockup' })}
   ${opts.homeHref ? `<a class="homebtn tb-back no-print" href="${escAttr(opts.homeHref)}" title="All reports"><span aria-hidden="true">←</span> <span class="tb-back-lbl">All reports</span></a>` : ''}
@@ -2584,7 +2584,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
     // and this replace is inert on it.
     .replace(/\[Before you can rely\]\s*/gi, '<span class="src cl" style="margin-right:6px">Before you can rely</span> ')}</div></div>` : ''}
 
-  <!-- tracker issue 644 — WHAT WAS SEARCHED. The scope fold and the checks-we-ran narrative are gone
+  <!-- The 2026-09-16 report redesign — WHAT WAS SEARCHED. The scope fold and the checks-we-ran narrative are gone
        (owner, 2026-09-16: no coverage narrative on the page). What is left is counts, folded closed:
        completed work appears as numbers and cleared names, never as the engine's account of itself. -->
   ${whatWasSearchedSection(opts, coverage, findings, recordsByUri)}

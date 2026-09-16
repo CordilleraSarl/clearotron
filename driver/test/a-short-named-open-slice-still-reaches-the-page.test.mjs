@@ -36,7 +36,7 @@ const cells = (coverage) =>
   (renderHtml(parsed(), [], coverage, { runId: "shortslice" }).match(/class="covcell/g) || []).length;
 
 // WHAT THE PAGE DRAWS CHANGED UNDER THIS ARM, AND THE PROPERTY DID NOT. The report used to carry a grid
-// of every coverage row, clean and open alike; the redesign (tracker issue 644) shows completed work as
+// of every coverage row, clean and open alike; the redesign (the 2026-09-16 report redesign) shows completed work as
 // counts and draws only what was LEFT OPEN, because a client reading a list of searches that succeeded
 // is reading the engine's account of itself. So the expected cell count is the OPEN population, not the
 // whole ledger. The thing these arms exist for is untouched: a disclosed open slice must still reach the
