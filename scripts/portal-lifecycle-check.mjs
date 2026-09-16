@@ -896,13 +896,24 @@ const SETTINGS_HELPERS = `
 
 const SETTINGS_STATES = [
   { name: 'profile-folds-closed', script: `
+    // EVERY WORDING THE PERMITTED SEARCHES ROW TAKES ON THE WAY IN, not only the last. A row that says
+    // "2 searches not on Search templates" for one render and then the names settles on the right words,
+    // and a wait for any words at all is satisfied by the wrong ones.
+    const permittedRow = () => [...document.querySelectorAll('.fw-row')].find((r) => r.querySelector('.fw-row-label').textContent === 'Permitted searches');
+    const permittedSeen = [];
+    const watch = new MutationObserver(() => {
+      const r = permittedRow(); const v = r ? r.querySelector('.fw-row-value').textContent.trim() : '';
+      if (v && permittedSeen[permittedSeen.length - 1] !== v) permittedSeen.push(v);
+    });
+    watch.observe(document.body, { subtree: true, childList: true, characterData: true });
     await goto('/portal/brand/profile');
     // One company among two in the switcher (its organisation's Generic is the other), so pick it.
     const sw = document.querySelector('select[aria-label="Company"]');
     if (sw && sw.value !== '${KEY}') { set(sw, '${KEY}'); await sleep(600); }
     await mustSettle(() => document.querySelector('.fw-sectionh') && document.querySelector('.fw-row'), 8000, 'Profile never drew its framework card');
-    await mustSettle(() => [...document.querySelectorAll('.fw-row')].some((r) => r.querySelector('.fw-row-label').textContent === 'Permitted searches'
-      && r.querySelector('.fw-row-value').textContent.trim() !== ''), 8000, 'Permitted searches never named its templates');
+    await mustSettle(() => permittedRow() && permittedRow().querySelector('.fw-row-value').textContent.trim() !== '', 8000, 'Permitted searches never named its templates');
+    await sleep(300);
+    watch.disconnect();
     window.scrollTo(0, 0);
     const depth = fieldControl('Default search depth');
     return { path: location.pathname, rail: rail(), header: header(), fields: fields(), cards: cards(), folds: folds(),
@@ -922,7 +933,7 @@ const SETTINGS_STATES = [
         return b ? { text: b.textContent, disabled: b.disabled, primary: b.classList.contains('btn-primary') } : null; })(),
       saveNote: (document.querySelector('.main .row-foot-note') || {}).textContent || null,
       checkButton: Boolean([...document.querySelectorAll('.main button')].find((b) => b.textContent.trim() === 'Check')),
-      characters: /\\d+ \\/ 8,000 characters/.test(txt()) };
+      characters: /\\d+ \\/ 8,000 characters/.test(txt()), permittedSeen };
   ` },
   { name: 'profile-folds-open', script: `
     await openFold('What the bands mean');
@@ -1422,6 +1433,8 @@ if (closed) {
   ok(row('Worked examples') === 'Used when rating this company', `Profile: Worked examples reads ${JSON.stringify(row('Worked examples'))}`)
   ok(row('Permitted searches') === 'Launch screen, Old thing', `Profile: Permitted searches reads ${JSON.stringify(row('Permitted searches'))}`)
   ok(!/launch-screen|old-thing/.test(row('Permitted searches') ?? ''), 'Profile: a template slug reached the Permitted searches row')
+  ok(JSON.stringify(closed.permittedSeen) === JSON.stringify(['Launch screen, Old thing']),
+    `Profile: on the way in, Permitted searches read ${JSON.stringify(closed.permittedSeen)} rather than only the names`)
   for (const label of ['Jurisdiction policy', 'Run limits']) ok(closed.rows.some(([l]) => l === label), `Profile: the ${label} row is not in view`)
   ok(closed.guide && closed.guide.pill && closed.guide.newTab, `Profile: "Use your own risk framework" is not one control opening a new tab — ${JSON.stringify(closed.guide)}`)
   const tag = (label) => closed.fields.find((f) => f.label === label)?.tag ?? null
