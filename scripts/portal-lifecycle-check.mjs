@@ -889,7 +889,7 @@ const SETTINGS_HELPERS = `
     const d = [...document.querySelectorAll('.main details')].find((x) => (x.querySelector(':scope > summary .fold-title') || {}).textContent === title);
     if (!d) throw new Error('no fold titled ' + title);
     if (!d.open) d.querySelector(':scope > summary').click();
-    await mustSettle(() => d.open, 2000, 'the ' + title + ' fold did not open');
+    await mustSettle(() => d.open, 2000, 'a fold did not open: ' + title);
     await sleep(150);
   };
   const fieldControl = (label) => {
