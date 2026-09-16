@@ -141,6 +141,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-client-condition-never-carries-an-engine-token.test.mjs": {
+          "tests": 6,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "a-codex-login-survives-its-own-refresh.test.mjs": {
           "tests": 4,
           "asserts": 18,
@@ -1643,7 +1649,7 @@
         },
         "coverage-is-disclosed-never-refused.test.mjs": {
           "tests": 10,
-          "asserts": 38,
+          "asserts": 40,
           "skips": 0,
           "todos": 0
         },
@@ -5001,6 +5007,12 @@
           "skips": 1,
           "todos": 0
         },
+        "the-report-can-say-how-much-was-read.test.mjs": {
+          "tests": 8,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
         "the-report-carries-what-the-assessment-wrote.test.mjs": {
           "tests": 10,
           "asserts": 41,
@@ -5979,7 +5991,7 @@
         },
         "home.test.ts": {
           "tests": 56,
-          "asserts": 196,
+          "asserts": 197,
           "skips": 0,
           "todos": 0
         },

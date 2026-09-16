@@ -219,6 +219,24 @@ test("D7 — the turnaround is a flat ruled range and does not move with territo
   const block = ui.slice(ui.indexOf("export const TURNAROUND_QUOTE"), ui.indexOf("export const quoteBoundsFor"));
   assert.match(block, /clearance:\s*\{\s*lowHours:\s*1\.5,\s*highHours:\s*2\.5\s*\}/,
     "the browser quotes a different clearance range from the server");
-  assert.match(ui, /quoteBoundsFor = \(m: Machinery\)[\s\S]{0,120}pipeline === 'knockout'/,
+  // ── PINNED TO THE PROPERTY, NOT TO THE PARAMETER'S SPELLING ────────────────────────────────────
+  //
+  // This matched the literal `(m: Machinery)`. The property it was protecting is that the browser's
+  // bounds are keyed on the PIPELINE and on nothing else, so a territory count cannot reach them — and
+  // the literal held that only while the parameter kept one spelling. It has since been narrowed to
+  // `Pick<Machinery, 'pipeline'>`, which makes the property STRONGER: the parameter can no longer see a
+  // territory at all, because the type does not carry one. Re-pinned rather than widened, because the
+  // obvious repair here — dropping the assertion because the spelling moved — deletes the rule and
+  // turns the light green.
+  const sig = ui.slice(ui.indexOf("export const quoteBoundsFor"));
+  const decl = sig.slice(0, sig.indexOf("\n\n"));
+  assert.match(decl, /pipeline === 'knockout'/,
     "the browser's bounds are keyed on something other than the pipeline — territories can reach them again");
+  assert.ok(!/territor/i.test(decl),
+    "a territory is reachable from the browser's bounds again");
+  // AND THE PARAMETER STILL ADMITS NO MORE THAN THE PIPELINE. Written as an alternation of the two
+  // spellings that satisfy the rule, so a widening BACK to something that carries territories reds here
+  // rather than passing because the body happens still to read `pipeline`.
+  assert.match(decl, /quoteBoundsFor = \(m: (?:Machinery|Pick<Machinery, 'pipeline'>)\)/,
+    "the browser's bounds take a parameter that was not reviewed against this rule");
 });

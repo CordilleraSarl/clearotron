@@ -425,12 +425,21 @@ test('Home uses tokens, never a literal colour', () => {
   assert.match(home, /toneColor\(/, 'tones resolve through the token helper that already flips')
 })
 
+/** The rail's own word for the clearances screen. One spelling, read where it is defined. */
+const railLabel = (): string => {
+  const m = /label: '([^']+)', path: '\/portal\/clearances'/.exec(NAV_CONFIG)
+  assert.ok(m, 'the rail no longer names the clearances screen — these arms are reading nothing')
+  return m[1]!
+}
+
 test('HOME DOES NOT RE-LIST THE ARCHIVE — it links to the screen that owns it', () => {
   // The first cut of this page WAS a finished-runs list, which is what Clearances is for and does
   // properly, with families and threads. Two screens showing the same work in two shapes is a second
   // answer, not a summary. The tail is short, capped in the contract, and ends in a way out.
   assert.match(home, /recentlyFinished\(/, 'the tail comes from the grouping contract, not from a slice of runs')
-  assert.match(home, /All Clearances/)
+  // THE RAIL'S WORD, not a copy of it — the same rule the one-spelling arm below states. Two literals
+  // here were the fourth and fifth copy of a label that has now been renamed once.
+  assert.match(home, new RegExp(railLabel()))
   assert.doesNotMatch(home, /\.filter\(\(r\) => r\.state === 'delivered'\)/,
     'Home does not re-derive "finished" — that lives in one tested place')
 })
@@ -459,7 +468,7 @@ test('the finished line leads into Clearances, and Home lists nothing else', () 
   // "Home shows what is happening; the menu gives you the depth" — a summary with no way out is only
   // the first half, and a second, worse archive on the landing screen teaches people not to go to the
   // real one.
-  assert.match(home, /All Clearances/)
+  assert.match(home, new RegExp(railLabel()))
   assert.match(home, /\/portal\/clearances/)
 })
 
@@ -476,7 +485,7 @@ test('ONE BUTTON INTO THE ARCHIVE, ONE SPELLING — the rail, Home and the scree
   const rail = /label: '([^']+)', path: '\/portal\/clearances'/.exec(NAV_CONFIG)
   assert.ok(rail, 'the rail no longer names the clearances screen — this arm is reading nothing')
   const label = rail[1]
-  assert.equal(label, 'All Clearances', 'the rail item is the one spelling everything else follows')
+  assert.equal(label, 'Clearances', 'the rail item is the one spelling everything else follows')
 
   // ONE button, and it says the rail's word. Counted on the prose rather than the file, because the
   // note explaining why the button is there says the label too, and counting that is how this arm read
@@ -518,7 +527,10 @@ test('THE TAIL IS RECENT WORK AND THEN THE COUNT — not an archive with one row
   // which page it is, the empty band says what to do, and the tail is a few rows ending in how many
   // there are in total.
   assert.match(home, /recentlyFinished\(runs, undefined, 3\)/, 'the tail is back to a single row, or uncapped')
-  assert.match(home, /See all \{total\} finished/, 'the count of everything finished is not offered')
+  // THE COUNT, not the word after it. The tail's way out names how many there are in total — that is
+  // the property; "finished" was a fourth word for a screen the rail already names, and the line sits
+  // under a heading that says "Recently finished" two rows above it.
+  assert.match(home, /See all \{total\}/, 'the count of everything finished is not offered')
   assert.match(home, /finished\(runs\)\.length/, 'the total is derived somewhere other than the contract')
   assert.match(home, /Recently finished/)
   assert.doesNotMatch(home, /Last finished/, 'the old single-row heading is still on the page')

@@ -487,7 +487,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
           THE OLD SUBTITLE IS STILL GONE. "Every name in clearance and where it stands" restated the
           heading for a reader who had already read it. The allowance was the load-bearing part. */}
       <PageHeader
-        title="All Clearances"
+        title="Clearances"
         lede={<>
           {ownerFilter ? <><span data-anon="mark">{ctx.ownerName(ownerFilter)}</span> · </> : null}
           <AllowanceLine account={account} />
