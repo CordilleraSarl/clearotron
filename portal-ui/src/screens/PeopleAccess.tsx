@@ -175,7 +175,7 @@ export function PeopleAccess({ ctx }: { readonly ctx: ShellContext }) {
           </p>
         ) : null}
 
-        <Observed result={observed} />
+        <Observed result={observed} ownerName={ctx.ownerName} />
       </div>
     </div>
   )
@@ -191,7 +191,11 @@ export function PeopleAccess({ ctx }: { readonly ctx: ShellContext }) {
  * WINDOW: the log is read from its tail by size, so the span it covers is not a length of time, and any
  * number of days printed here would be invented.
  */
-function Observed({ result }: { readonly result: ReturnType<typeof useLoad<ObservedView>>['result'] }) {
+function Observed({ result, ownerName }: {
+  readonly result: ReturnType<typeof useLoad<ObservedView>>['result']
+  /** The shell's one name resolver. The log records a company by its key, and a reader knows it by name. */
+  readonly ownerName: ShellContext['ownerName']
+}) {
   if (!result) return null
   // A failed FETCH is silent here. The panel is an extra; a red box reporting that an optional feed is
   // missing would be louder than the thing it is reporting.
@@ -227,7 +231,7 @@ function Observed({ result }: { readonly result: ReturnType<typeof useLoad<Obser
                   {p.email}
                 </span>
                 {p.accounts.map((a) => (
-                  <span key={a} className="pill" style={{ fontSize: 10.5, padding: '1px 7px' }} data-anon="mark">{a}</span>
+                  <span key={a} className="pill" style={{ fontSize: 10.5, padding: '1px 7px' }} data-anon="mark">{ownerName(a)}</span>
                 ))}
               </div>
               <div style={{ fontSize: 12.5, color: 'var(--text-muted)', marginTop: 4 }}>

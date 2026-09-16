@@ -460,6 +460,18 @@ test('the activity panel is Recent activity: its empty state says what it counts
   assert.ok(prose.includes('!v.available'), 'and the unavailable branch exists rather than being dead-coded away')
 })
 
+test('Recent activity names each company, never the key the log records it by', () => {
+  // The audit log files a company under its key, and the panel printed that key in the pill beside each
+  // person — the one place on People a reader met `vantor` where "Vantor Labs" belongs. The shell holds
+  // the one resolver every other screen uses; the panel asks it.
+  const prose = body(PEOPLE_ACCESS)
+  const panel = prose.slice(prose.indexOf('function Observed('), prose.indexOf('function Row('))
+  assert.ok(panel.length > 200, 'the panel was found')
+  assert.match(panel, /p\.accounts\.map\(\(a\) => \([\s\S]*?\{ownerName\(a\)\}/, 'each company pill prints the name')
+  assert.doesNotMatch(panel, />\{a\}</, 'and never the raw key')
+  assert.match(prose, /<Observed result=\{observed\} ownerName=\{ctx\.ownerName\} \/>/, 'the resolver is the shell\'s own')
+})
+
 // ── the brand profile, after the rebuild dropped most of it ─────────────────────────────────────────
 //
 // The React rebuild condensed the brand-profile page down to its editable fields plus a single row

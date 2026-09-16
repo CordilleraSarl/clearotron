@@ -11,3 +11,5 @@ New: before anything is chosen, Give access says the choice is also what the per
 New: People, its two forms and the other pages in the avatar menu name themselves in the top bar, with the avatar highlighted.
 
 Fixed: People's activity panel no longer reads as a list of who has access; it is called Recent activity and says what it counts.
+
+Fixed: Recent activity on People names each company instead of printing its internal key.
