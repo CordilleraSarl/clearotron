@@ -265,6 +265,28 @@ const KO_CSS = `
   /* A wide counts table must scroll inside its own panel, never push the page sideways. */
   .ko-scroll{overflow-x:auto}
   @media(max-width:700px){.ko-row{grid-template-columns:1fr;gap:10px}}
+
+  /* The band ladder, the territories fold and the run's own caveats (tracker issue 645). Ported from
+     the design's stylesheet with its fixed colours replaced by this page's tokens, so the ladder reads
+     in both themes: the tick row was #a89a8a on white and the fold's summary and prose a brown pair,
+     all three of which go invisible on the dark ground this report also renders on. */
+  .kscale{position:relative;margin:10px 8px 34px}
+  .kbar{position:relative;height:8px;border-radius:4px}
+  .kmarker{position:absolute;top:-30px;text-align:center}
+  .kpill{display:inline-block;padding:5px 12px;border-radius:999px;color:#fff;
+    font:700 13px/1 'Satoshi','Helvetica Neue',Arial,sans-serif;white-space:nowrap}
+  .kneedle{width:3px;height:14px;margin:4px auto 0;border-radius:2px}
+  .kticks{position:relative;height:16px;margin-top:8px}
+  .kticks span{position:absolute;transform:translateX(-50%);color:var(--faint);white-space:nowrap;
+    font:700 10.5px/1 'Satoshi','Helvetica Neue',Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase}
+  .kticks span.on{font-weight:800}
+  .terr{margin-top:4px}
+  .terr summary{cursor:pointer;color:var(--rose,var(--faint));font-size:12px;font-weight:600;list-style:none}
+  .terr summary::-webkit-details-marker{display:none}
+  .terr p{margin:4px 0 0;font-size:12px;line-height:1.6;color:var(--slate)}
+  .ko-caveats{padding:16px 24px;margin:14px 0 8px}
+  .ko-caveats p{margin:0 0 7px;font-size:12px;line-height:1.6;color:var(--faint)}
+  .ko-caveats p:last-child{margin-bottom:0}
 `;
 
 const REPORT_BASE = REPORT_ROOT + '\n' + readFileSync(join(HERE, 'templates', 'report.css'), 'utf8');
@@ -1763,6 +1785,19 @@ window.addEventListener('beforeprint',o);})();</script>
 
   ${/* tracker issue 645 — the scope section and its fold are off the page: what a screen is and
        what it did not search is the narration the owner ruled out. */''}
+
+  ${/* THE MODEL'S CAVEATS OUTLIVE THE BLOCK THEY SAT UNDER. They were rendered after the scope
+       section, and taking that section off the page left them computed and drawn nowhere — on the
+       committed demo run, two caveats a client used to receive, one of them the only sentence on the
+       page saying nothing above is a finding of availability. What the owner ruled out is the fixed
+       boilerplate, not what the engine wrote for this run, so they close the page instead.
+
+       THE SUBSET FILTER STAYS, and so does the text it measures against. A caveat is dropped only
+       when every content word in it is already said elsewhere on the page, which is what the About
+       panel and the tier line now carry; a caveat making any new claim brings a new word with it and
+       is kept. Both of the demo run's survive. */''}
+  ${newCaveats.length ? `<div class="panel ko-caveats">${
+    newCaveats.map((c) => `<p>${inlineMd(c)}</p>`).join('')}</div>` : ''}
 
   <footer>
     <span>${productName ? `${esc(productName)}. ` : ''}<br>Matter ${esc(matter || runId || '')}.${issued ? ` Issued ${esc(issued)}.` : ''}</span>
