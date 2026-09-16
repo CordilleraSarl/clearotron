@@ -357,3 +357,79 @@ test("the three conditions are checked on ONE record, never assembled across sev
   assert.equal(r.verified, false);
   assert.match(r.reason, /no_live_owned_registration/);
 });
+
+
+// ── AN ORDINARY WORD IS NOT A SPELLING OF THE MARK ──────────────────────────────────────────────
+const { isFormCrowd, formCrowdCeiling, FORM_CROWD_FLOOR } = await import("../register-plan.mjs");
+
+test("the crowd ceiling takes the LARGER of the mark's own footprint and the absolute floor", () => {
+  // The conservative direction, and it is deliberate. Dropping a spelling narrows a client's search, so
+  // a mark with three filings must not turn every four-hit mutation into a crowd.
+  assert.equal(formCrowdCeiling(3), FORM_CROWD_FLOOR, "a tiny mark does not lower the bar");
+  assert.equal(formCrowdCeiling(9000), 9000, "a famous mark raises it");
+  assert.equal(formCrowdCeiling(null), FORM_CROWD_FLOOR, "no count for the mark ⇒ the floor alone");
+
+  assert.equal(isFormCrowd(FORM_CROWD_FLOOR + 1, null), true);
+  assert.equal(isFormCrowd(FORM_CROWD_FLOOR, null), false, "AT the ceiling is not over it");
+  assert.equal(isFormCrowd(500, 9000), false, "500 hits against a mark with 9,000 is not a crowd");
+  // AN UNANSWERED PROBE NEVER DROPS A TERM. This is the fail-open leg: a provider that cannot count,
+  // an outage, a throw — every one of them arrives here as a non-number and must keep the spelling.
+  for (const v of [null, undefined, NaN, "200"]) assert.equal(isFormCrowd(v, null), false, `${String(v)} must not drop a term`);
+});
+
+test("a crowded spelling is dropped from the sweep and DISCLOSED as its own row", () => {
+  const model = { ...HOUSE_MODEL, mark: "NOVAPULSE", dominant_element: "NOVAPULSE", elements: [{ value: "NOVAPULSE", kind: "distinctive" }],
+    variants: [{ value: "NOVAPULSE", category: "exact-phrase", rationale: "the mark" }] };
+  const form = { elements: [{ element: "NOVAPULSE", band: { exactQueries: ["NOVAPULSE", "NOVAPULS", "BOX"], wildcardPatterns: [] } }] };
+  const plan = (crowds) => compileRegisterPlan({
+    manifest: parseVariantManifestModel(JSON.stringify(model)),
+    job: { jobKey: "TMP9999-np", classes: ["9"], jurisdictions: ["EU"] },
+    form, formCrowds: crowds, skillVersion: "prelim-register@spec48" });
+
+  const before = plan([]);
+  const termsIn = (p) => p.entries.flatMap((e) => [e.term, ...(e.terms ?? [])]).filter(Boolean).map(String);
+  assert.ok(termsIn(before).includes("BOX"),
+    "precondition: the form floor DOES sweep the ordinary word today — without this the arm below "
+    + "would pass against a compile that never swept it");
+
+  const after = plan([{ term: "BOX", count: 4000, ceiling: 200 }]);
+  // A DISCLOSED ROW IS MARKED `unsupported`, NOT `error` — the field the plan's own gap lane uses. An
+  // arm filtering on the wrong field reads every disclosed row as a live query, which is how this one
+  // first failed against code that was already correct.
+  const swept = after.entries.filter((e) => !e.unsupported).flatMap((e) => [e.term, ...(e.terms ?? [])]).filter(Boolean).map(String);
+  assert.equal(swept.includes("BOX"), false, "the ordinary word is not ENUMERATED");
+  assert.equal(after.entries.filter((e) => [e.term, ...(e.terms ?? [])].map(String).includes("BOX")).length, 1,
+    "…and it appears exactly once — as the disclosed row, never also inside a live OR-list");
+  assert.ok(termsIn(after).includes("NOVAPULS"), "…while the rare mutation beside it is kept");
+
+  // DISCLOSED, NOT VANISHED. A term silently absent from an OR-list cannot be told apart from one
+  // nobody thought of, and the plan is the record of what was considered.
+  const row = after.entries.find((e) => String(e.term) === "BOX");
+  assert.ok(row, "the crowded spelling still has a row in the plan");
+  assert.ok(JSON.stringify(row).includes("form_term_crowded"), "and the row carries why it was not run");
+  assert.ok(JSON.stringify(row).includes("4000"), "…with the count that decided it");
+});
+
+test("an excluded house element's form band is UNREACHABLE, not merely un-asked-for", () => {
+  // THE SEAM. `bandFor` falls back to elements[0] when it cannot find the element it was asked for. The
+  // exclusion moves `dominant_element` to the remainder's word, which the form document — derived from
+  // the original manifest — may carry no band for. Without the removal the lookup misses, the fallback
+  // hands back the house element's band, and its one-letter mutation floor compiles anyway: the plan
+  // reads as excluded and sweeps the very element being excluded.
+  const form = { elements: [
+    { element: "NOVAPULSE", band: { exactQueries: ["NOVAPULS", "NOVAPULSA"], wildcardPatterns: [] } },
+  ] };
+  const excluded = excludeHouseElement(HOUSE_MODEL, HOUSE).manifest;
+  const job = { jobKey: "TMP9999-np", classes: ["9"], jurisdictions: ["EU"] };
+  const withFix = compileRegisterPlan({ manifest: parseVariantManifestModel(JSON.stringify(excluded)),
+    job, form, houseElement: "NOVAPULSE", skillVersion: "prelim-register@spec48" });
+  const withoutFix = compileRegisterPlan({ manifest: parseVariantManifestModel(JSON.stringify(excluded)),
+    job, form, houseElement: null, skillVersion: "prelim-register@spec48" });
+
+  const terms = (p) => p.entries.flatMap((e) => [e.term, ...(e.terms ?? [])]).filter(Boolean).map(String);
+  assert.ok(terms(withoutFix).includes("NOVAPULS"),
+    "precondition: WITHOUT the removal the fallback does compile the house element's mutation floor — "
+    + "this is the defect, asserted so the fix cannot be mistaken for a no-op");
+  assert.equal(terms(withFix).includes("NOVAPULS"), false, "with it, that floor is unreachable");
+  assert.ok(withFix.entries.length >= 1, "and the plan is still a plan");
+});

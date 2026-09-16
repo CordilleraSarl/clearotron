@@ -581,6 +581,39 @@ export function mintSupplementalQid({ prefix, term, used }) {
  * answered, and a reader who cannot tell those apart cannot tell a judgement from evidence. Absent means
  * the question was never asked, which is the same as unverified and excludes nothing.
  */
+/**
+ * The measured form-term crowds for this run, and the ceiling they were judged against.
+ *
+ * An absent file means nothing was probed, which is every run before this shipped and every run whose
+ * provider cannot count — and it drops nothing. The direction matters: dropping a spelling NARROWS a
+ * client's search, so silence must mean "search it", never "skip it".
+ */
+export const FORM_CROWDS_RECEIPT = "form-crowds.json";
+
+/**
+ * A form term is a crowd when its own count exceeds BOTH the mark's own footprint and an absolute
+ * floor. PURE.
+ *
+ * TWO CONDITIONS, AND THE `max` IS THE CONSERVATIVE ONE. The requirement reads "exceeds the mark's own
+ * exact-query count, or a fixed ceiling". Taking the LARGER of the two is deliberate: on a mark with a
+ * tiny footprint — three filings — every mutation returning four would otherwise be called a crowd and
+ * dropped, and dropping a spelling is the direction that loses rights. A term has to be bigger than the
+ * mark AND bigger in absolute terms before it is refused a query.
+ *
+ * The floor is the band's own per-query ceiling by construction rather than by coincidence: a term that
+ * would breach it is a term whose records would be capped and crowded on arrival anyway, so probing it
+ * and not fetching it costs one count and saves the fetch.
+ */
+export const FORM_CROWD_FLOOR = 200;
+export const formCrowdCeiling = (markExactCount) =>
+  Math.max(Number.isFinite(markExactCount) && markExactCount > 0 ? markExactCount : 0, FORM_CROWD_FLOOR);
+
+/** Is this probed term a crowd, against the mark's own count? PURE. */
+export function isFormCrowd(count, markExactCount) {
+  if (!Number.isFinite(count)) return false;   // an unanswered probe never drops a term
+  return count > formCrowdCeiling(markExactCount);
+}
+
 export const HOUSE_ELEMENT_RECEIPT = "house-element.json";
 
 /**
@@ -743,7 +776,24 @@ export function excludeHouseElement(manifest, house) {
   return { manifest: next, confirmation, refused: null };
 }
 
-export function compileRegisterPlan({ manifest, job, form = null, skillVersion = "", capabilities = null, unavailableOffices = [] }) {
+export function compileRegisterPlan({ manifest, job, form = null, skillVersion = "", capabilities = null, unavailableOffices = [], formCrowds = [], houseElement = null }) {
+  // ── AN EXCLUDED ELEMENT'S FORM BAND MUST BE UNREACHABLE, NOT MERELY UNASKED-FOR ─────────────────
+  //
+  // THE DEFECT THIS CLOSES, found by following the seam rather than by a failing arm. `bandFor` falls
+  // back to `elements[0]` when it cannot find the element it was asked for. The house-element exclusion
+  // changes `dominant_element` to the remainder's dominant word — a word the form neighbourhood, derived
+  // earlier from the original manifest, may carry no band for. The lookup would then MISS and the
+  // fallback would hand back the first element's band, which is the house element's: the exclusion would
+  // appear to work, `dominant_element` would read correctly on the plan, and the one-letter mutation
+  // floor of the very element being excluded would compile anyway. Silently, and it is the whole flood.
+  //
+  // So the element is removed from the form document here, where every `bandFor` call in this compile
+  // reads it. Unreachable beats un-asked-for: a fallback cannot select what is not there.
+  if (houseElement && form?.elements) {
+    const lcHouse = String(houseElement).trim().toLowerCase();
+    const kept = form.elements.filter((e) => String(e?.element ?? "").trim().toLowerCase() !== lcHouse);
+    form = { ...form, elements: kept };
+  }
   const classes = (job?.classes ?? []).map(String).filter(Boolean);
   if (!classes.length) throw new Error("register_plan_classes_missing: a plan is always class-scoped — compile with the matter's in-scope Nice classes");
   const caps = capabilities ?? null;
@@ -1054,7 +1104,27 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
     // script-form read (entryIsNonLatinScript: EVERY term non-Latin) classifies each correctly.
     // Stored plans are reused byte-identical (resolvePlanAgainstStore) exactly as with the width
     // split above; only fresh compiles partition.
-    const formTerms = [...formBand.exactQueries];
+    // ── AN ORDINARY WORD IS DROPPED BEFORE IT IS EVER FETCHED, AND SAYS SO ────────────────────────
+    //
+    // The form floor is every one-letter mutation of the distinctive element. When that element is a
+    // short word the mutations ARE ordinary words — box, bate, bit — and each one matches every mark
+    // containing it across every register in scope. On 2026-09-16 two such queries put 1,154 records
+    // into a 2,146-record band. The counts that decide this are measured before the plan compiles and
+    // arrive as `formCrowds`; an empty list is every run that has not probed, and it changes nothing.
+    //
+    // DROPPED FROM THE QUERY, DISCLOSED AS A ROW. The term does not simply vanish: it compiles as its
+    // own entry carrying the gap, so the plan records that this spelling was considered, measured and
+    // judged too crowded to enumerate. A term silently absent from an OR-list is indistinguishable
+    // from one nobody thought of.
+    const crowdedForm = new Map((Array.isArray(formCrowds) ? formCrowds : [])
+      .map((c) => [String(c?.term ?? "").toLowerCase(), c]).filter(([t]) => t));
+    const formTerms = [...formBand.exactQueries].filter((t) => !crowdedForm.has(String(t).toLowerCase()));
+    for (const t of formBand.exactQueries) {
+      const c = crowdedForm.get(String(t).toLowerCase());
+      if (!c) continue;
+      push({ axis: "primary-sweep", predicate: "exact", term: t, expected_kind: "enumerate", provenance: "floor",
+        qidSuffix: "+form", dropIssue: `form_term_crowded: this spelling is an ordinary word — a count probe returned ${c.count} record(s) against a ceiling of ${c.ceiling}, so enumerating it would fill the band with marks that merely contain the word` });
+    }
     const latinFormTerms = formTerms.filter((t) => !isNonLatinTerm(t));
     const nativeFormTerms = formTerms.filter((t) => isNonLatinTerm(t));
     for (let i = 0; i < latinFormTerms.length; i += maxOrWidth)
