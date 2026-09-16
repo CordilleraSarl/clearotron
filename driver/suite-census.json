@@ -5859,8 +5859,8 @@
           "todos": 0
         },
         "the-portal-can-tell-who-has-connected-an-assistant.test.mjs": {
-          "tests": 10,
-          "asserts": 28,
+          "tests": 12,
+          "asserts": 33,
           "skips": 0,
           "todos": 0
         },
