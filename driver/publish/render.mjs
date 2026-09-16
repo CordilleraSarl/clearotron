@@ -2423,7 +2423,11 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   <div class="sec"><h2>Conflicts</h2></div>
   ${onField.map(f => findingCard(f, cardFor(f), recordsByUri)).join('\n  ')}`
       : '';
-    let tail = '';
+    // THE COMMON-LAW CARDS GO WITH THE CONFLICTS, NOT UNDER THE NEXT HEADING. Appended at the end they
+    // landed beneath "Notable but manageable", which says something about a finding that is not true of
+    // them: an off-field common-law card is not an absorbed register negative. With the section heading
+    // gone they carry no heading of their own, so placement is the only thing that attributes them.
+    let tail = hasCL ? `\n\n  ${clBody}` : '';
     const band2r = band2.filter(f => !isCL(f)), band3r = band3.filter(f => !isCL(f));
     // spec 2026-07-30 §3 — ONE "we looked and cleared it" section: 03 Notable but manageable ABSORBS
     // 04 Commercial awareness (band 3) and the famous-mark diligence notes. Both keep their words as
@@ -2458,7 +2462,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
     }
     // tracker issue 644 — the section heading and its routing notice go; the CARDS stay, or a
     // finding the run rated would appear on no page at all.
-    if (hasCL) tail += `\n\n  ${clBody}`;
+
     findingsSections = landscape + tail;
     covNum = num();
   }

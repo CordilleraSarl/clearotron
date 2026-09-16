@@ -725,9 +725,9 @@ test("CHANGE 2 back-compat: NO finding carries disposition → legacy composite 
   assert.match(html, /<div class="card" id="c2"/);
   assert.match(html, /<div class="card" id="c3"/);
   assert.match(html, /<div class="card compact" id="c4"/);
-  // doc-52 — coverage moved into the collapsed Scope section, under its own subheading
-  assert.match(html, /<details class="scope"><summary>Scope/);
-  assert.match(html, /What we covered — and what's open/);
+  // tracker issue 644 — the Scope fold is gone. What a run LEFT OPEN renders in the counts fold, which
+  // is the half of that section a client needed; the rest was the engine's account of its own searching.
+  assert.match(html, /<details class="searched">/);
 });
 
 test("CHANGE 2 back-compat: the EXISTING composite-only fixtures render byte-identically (no disposition anywhere)", () => {
@@ -985,10 +985,12 @@ test("spec-48 A5: on-field common-law stays in On-field (full card) and is cross
     source: { source_type: "common-law-marketplace" } };
   const html = renderHtml(parsedOf(FM), [...REGION_FINDINGS, clOn], REGION_COVERAGE, {});
   assert.equal(bandOfCard(html, 7), "Conflicts", "the on-field CL card drives the read from On-field");
-  assert.equal(bandOfCard(html, 5), "Common-law & marketplace", "the secondary CL card lives in the CL section");
+  // tracker issue 644 — the section heading is gone and the cards render with the other findings, so a
+  // secondary common-law card sits under the last heading above it rather than under one of its own.
+  // What this arm holds is that the card is ON the page and cross-linked, which is what went missing
+  // when the heading was first removed.
+  assert.match(html, / id="c5"/, "the secondary common-law card still renders");
   assert.match(html, /On-field common-law conflicts \(full cards above\): <a href="#c7">#7 AURA<\/a>/);
-  // doc-52 — coverage renders inside the collapsed Scope section, not as a numbered top section
-  assert.match(html, /<details class="scope"><summary>Scope[\s\S]*What we covered — and what's open/);
 });
 
 test("spec-48 A5: disposition mode — common-law leaves the bands for its own section, numbered sequentially", () => {
@@ -996,10 +998,11 @@ test("spec-48 A5: disposition mode — common-law leaves the bands for its own s
     composite: 2, level: "B", dispute_type: "nuisance-claim", disposition: "off-field",
     meters: DMETERS, quadrant: { x: 0.15, y: 0.15 }, source: { source_type: "common-law-marketplace" } };
   const html = renderHtml(parsedOf(FM_NOVAPULSE), [...DISP_FINDINGS, clOff], [], { runId: "novapulse-demo" });
-  assert.equal(bandOfCard(html, 5), "Common-law & marketplace", "the CL off-field card is in the CL section, not band 3");
-  assert.equal(bandOfCard(html, 4), "Notable but manageable", "register off-field stays in the absorbed 03 band");
-  const order = sectionOrder(html);
-  assert.deepEqual(order.slice(-1), ["Common-law & marketplace"], "CL section renders after the bands (no coverage in this fixture)");
+  // tracker issue 644 — same as above: the cards outlive their heading. An off-field common-law card
+  // still renders and still does not join the register bands, which is the distinction this arm is for.
+  assert.match(html, / id="c5"/, "the off-field common-law card still renders");
+  assert.notEqual(bandOfCard(html, 5), "Notable but manageable", "…and it is not absorbed into the register band");
+  assert.equal(bandOfCard(html, 4), "Notable but manageable", "register off-field stays in the absorbed band");
 });
 
 // ---- C1/C2: jurisdiction-system labels + the Paris-priority window flag ----
@@ -1051,7 +1054,7 @@ test("spec 47: the title heading carries classes + searched countries, full name
   // The scope line under the H1 became labelled rows of About this request (tracker issue 644): the same
   // two facts, named rather than abbreviated, so nothing depends on a hover to be read.
   const about = (html.match(/<div class="panel about">[\s\S]*?<\/div><\/div>/) || [""])[0] || html;
-  assert.match(about, /Classes<\/span><span class="v">5, 32, 41/);
+  assert.match(about, /Classes<\/span><span class="v">5 · 32 · 41/);
   assert.match(about, /Where searched<\/span><span class="v">[^<]*United States/);
   assert.match(about, /Where searched<\/span><span class="v">[^<]*Turkey/);
 });
