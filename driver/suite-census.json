@@ -141,6 +141,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-client-condition-never-carries-an-engine-token.test.mjs": {
+          "tests": 6,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "a-codex-login-survives-its-own-refresh.test.mjs": {
           "tests": 4,
           "asserts": 18,
