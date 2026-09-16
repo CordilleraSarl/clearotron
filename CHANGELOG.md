@@ -4,6 +4,14 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.3.2-beta.4
+
+### Fixed
+
+- A multi-country search no longer refuses to start on a form that is already showing the territories it will search. When you have not chosen territories yourself, the form shows your company's own and the search uses those.
+- A new clearance form now opens with one line saying what to do. It no longer shows two warning panels about work you have not started.
+- On a phone, the list of clearances can now be scrolled sideways to read its columns. Before, the risk word was printed on top of the date and names broke in the middle of a word.
+
 ## 0.3.2-beta.3
 
 ### New
