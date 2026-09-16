@@ -296,6 +296,29 @@ jobs:
       # computed another beta and the channel check refused it. Its beta direction fails SILENTLY, which
       # is the half worth naming: after a stable there is no `pre.json` at all, so a beta dispatch would
       # compute a stable version and publish it to `latest` from a button marked beta.
+      # ── A STABLE CUT REACHES THE VERSION SCRIPT EVEN WHEN EVERY NOTE IS ALREADY CONSUMED ───────────
+      #
+      # The action below decides whether to run `version-script` by counting the release notes it can
+      # see, once, before it touches the working tree. A pre-release consumes a note by MOVING it into
+      # `.changeset/pre/`, and the action does not count what is under there while the flag says `pre`.
+      # So the ordinary state after cutting a beta — no notes at the top level, the whole release under
+      # `pre/` — is a state in which the action skips the version script, emits no pull request number,
+      # and the stable cut below refuses with "Nothing to cut" while the tree holds a full release.
+      #
+      # THIS IS NOT THE MODE TRANSITION, which cannot live here and does not. The action rebuilds the
+      # working tree before it runs anything, so nothing written at this point survives to be counted by
+      # `changeset version`; that is why the transition sits inside the version script and stays there.
+      # What this step changes is only what the action COUNTS. The write it makes is discarded by the
+      # action's own `git reset --hard`, and the version script then performs the real transition in the
+      # rebuilt tree, exactly as it does today.
+      #
+      # It is silent on a beta, on a tree that is not in pre-release mode, on a tree whose notes are still
+      # at the top level, and on a tree with no notes at all — so a cut with genuinely nothing to cut
+      # still refuses below. It reports what it saw either way, because a step that says nothing when it
+      # does nothing cannot be told from a step that did not run.
+      - name: A stable cut counts the notes the pre-releases have already consumed
+        run: node scripts/release-pre-gate.mjs --cut=${{ inputs.cut }}
+
       - name: Open or update the standing version pull request
         id: changesets
         # PINNED TO A COMMIT, because `v1` and `v2` are BRANCHES here, not tags — there is no tag `v1`
