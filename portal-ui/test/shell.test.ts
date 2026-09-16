@@ -9,6 +9,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync, readdirSync } from 'node:fs'
 import { prose } from './support/prose.ts'
+import { scopeOf, screenForPath } from '../src/nav/nav.config.ts'
 
 const shell = readFileSync(new URL('../src/shell/AppShell.tsx', import.meta.url), 'utf8')
 /** The markup with commentary stripped, so a comment explaining a rule cannot satisfy the rule. */
@@ -27,6 +28,16 @@ test('THE TOP-BAR TITLE NAMES THE SCOPE YOU ARE IN, not the screen', () => {
   // on one bar, which is how a label stops being read.
   assert.match(body, /scopeOf\(entry\.id\) === 'owner' \? ownerName\(ownerInView\) : ''/)
   assert.doesNotMatch(body, /<h1>\{entry\?\.label/, 'the screen label no longer heads the page')
+})
+
+test('A REPORT IS NOT COMPANY-SCOPED, so the top bar names no company over one', () => {
+  // The report names its own company in its header row, one line under the bar. A company in the bar as
+  // well is the same name twice — and the wrong one whenever the switcher points elsewhere, because a
+  // report is identified by its run, never by the company selected in a menu. Held by the route's scope
+  // rather than by the absence of a field, which a screen added under `owner` would quietly change.
+  const report = screenForPath('/portal/result/some-run', { permissions: { run: true, manage: false } })
+  assert.equal(report?.id, 'result', 'the report route moved — this arm is about nothing')
+  assert.notEqual(scopeOf(report?.id ?? null), 'owner', 'the top bar would name a company over a report')
 })
 
 test('THE ORGANISATION SURVIVES, LABELLED, in the identity corner', () => {

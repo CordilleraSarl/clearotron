@@ -172,6 +172,36 @@ html.anon-on [data-anon='mark']:not(.anon-clear) {
   border-bottom: 1px solid var(--border-hairline);
 }
 
+/* The breadcrumb above it: one step back as a quiet button, then where the reader is. Compound selectors
+   throughout this block, because the button and row rules they adjust are declared later in the file. */
+.report-crumbs { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.btn-ghost.report-back { padding: 4px 9px; border-color: var(--border-hairline); }
+.report-crumb { font-size: 12.5px; color: var(--text-muted); }
+
+/* THE HEADER'S TWO ACTIONS, Ask AI then Export, as secondary buttons with a hairline edge. */
+.btn-ghost.report-action,
+.btn-ghost.ask-ai-btn { border-color: var(--border-hairline); }
+
+/* ── ASK AI ──────────────────────────────────────────────────────────────────────────────────────────
+   The panel hangs under its button with the right edges aligned, wherever the button sits — the report's
+   header, or a row where a bordered primary action beside it wants the quieter button. */
+.ask-ai { position: relative; }
+.btn-ghost.ask-ai-btn.is-quiet { border-color: transparent; color: var(--text-muted); }
+.btn-ghost.ask-ai-btn.is-quiet:hover { border-color: var(--border-hairline); color: var(--text-strong); }
+.ask-ai-float { position: absolute; right: 0; top: calc(100% + 6px); z-index: 50; }
+.ask-ai-panel { width: 360px; max-width: calc(100vw - 32px); padding: 12px; display: grid; gap: 10px; text-align: left; }
+.ask-ai-head { font-size: 12.5px; line-height: 1.45; color: var(--text-muted); }
+.ask-ai-when { white-space: nowrap; }
+.ask-ai-choices { display: grid; gap: 1px; }
+.nav-item.ask-ai-choice {
+  gap: 10px; align-items: flex-start; margin: 0; padding: 7px 9px;
+  font-size: 13px; line-height: 1.45; white-space: normal; color: var(--text-body);
+}
+.nav-item.ask-ai-choice[aria-checked='true'] { background: var(--accent-wash); color: var(--text-strong); font-weight: 700; }
+.ask-ai-choice .radio { margin-top: 2px; }
+.btn-primary.ask-ai-go { justify-self: start; padding: 8px 14px; font-size: 13px; }
+.ask-ai-note { margin: 0; font-size: 12px; line-height: 1.5; color: var(--text-muted); }
+
 /* ── sidebar ─────────────────────────────────────────────────────────────────────────────────────── */
 
 .sidebar {
