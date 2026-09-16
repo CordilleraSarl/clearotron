@@ -155,7 +155,7 @@ import { readReport, reportsOf, resolveReportFile, batchSummaryOf } from "./port
 import { readArchivedSet, updateArchived } from "./publish/archive-tags.mjs";
 import { readAcks, setAck, withAcks, ACKNOWLEDGEABLE } from "./portal-acks.mjs";
 import { MAX_BRIEF, makeReadBudget } from "./compose-read.mjs";
-import { BRAND, ORGANISATION_NAME, PALETTE, FONT_LINK, FAVICON_LINK, bracketMark, DOOR_ROOT, DOOR_ROOT_DARK, DOOR_THEME_INIT } from "../shared/brand.mjs";
+import { BRAND, ORGANISATION_NAME, ADMINISTRATOR_CONTACT, PALETTE, FONT_LINK, FAVICON_LINK, bracketMark, DOOR_ROOT, DOOR_ROOT_DARK, DOOR_THEME_INIT } from "../shared/brand.mjs";
 import { envFrom, pinEnv } from "../shared/env-aliases.mjs";   // — a refusal names the name in force
 import { accessAudience, audienceLabel } from "../shared/access-audience.mjs";   // — F54; jose-free on purpose
 import { resolveNumericSetting } from "./numeric-setting.mjs";   // — the same table the engine enforces, without the throw a rendering surface must not take
@@ -1590,6 +1590,9 @@ export function makePortalService({
         return { status: 200, json: { email: principal.email, ...principalView(principal, grantsHere, accountNames),
           accounts: principal.accounts, accountNames, accountFacts,
           concurrentRuns: concurrentRunsCap(), brand: ORGANISATION_NAME, engineMode: meEngineMode,
+          // WHERE A PERSON ASKS FOR A CHANGE TO THEIR SIGN-IN, beside the brand and read where it is read:
+          // an href Preferences links "Clearotron administrator" to, or null, and then the words are plain.
+          administratorContact: ADMINISTRATOR_CONTACT,
           // WHETHER THE PROGRAM IS ON THIS BOX WHILE THE ENGINE CANNOT SEE IT — true, false, or null
           // for "this could not be checked". The screen above renders one of three remedies from it,
           // and they are different remedies: install the CLI, restart the service that cannot see it,

@@ -351,6 +351,15 @@ export type Me = {
    * wrong operator name is a false statement about who holds the data.
    */
   readonly brand: string
+  /**
+   * WHERE THIS PERSON ASKS FOR A CHANGE TO THEIR SIGN-IN — the installation's administrator contact, as an
+   * href (`mailto:` or http(s)), or null when the installation names none.
+   *
+   * Read by the server where the brand is read and sent beside it. Null is the default and a real
+   * answer: Preferences then prints "Clearotron administrator" as plain words rather than a link that
+   * goes nowhere. The decoder admits only those three schemes, so nothing else reaches an `href`.
+   */
+  readonly administratorContact: string | null
 }
 
 /**
@@ -1852,6 +1861,12 @@ export const api = {
       // screen names both routes instead.
       setupRoute: b['setupRoute'] === 'packaged' ? 'packaged' : b['setupRoute'] === 'checkout' ? 'checkout' : null,
       brand: typeof b['brand'] === 'string' ? b['brand'] : '',
+      // A LINK OR NULL, and only a mail or web address is a link. The server already refuses anything
+      // else; this is the second check at the one place a value becomes an `href`.
+      administratorContact: typeof b['administratorContact'] === 'string'
+        && /^(mailto:[^\s]+@|https?:\/\/[^\s])/i.test(b['administratorContact'])
+        ? b['administratorContact']
+        : null,
       // — a control the deployment cannot serve says so instead of always failing.
       // Absent field (an older portal-service) ⇒ available: the button behaves exactly as before.
       stopControl: (() => {
