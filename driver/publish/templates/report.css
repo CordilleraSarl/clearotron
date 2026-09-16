@@ -313,8 +313,13 @@
        rows (.rrow), secondary groups (.rgroup), the scope section title (details.scope) — print as static
        headers; the old blanket details>summary hide deleted every region/group header and the scope title
        from the exported PDF.
-       EVERY <details> THE RENDERERS EMIT MUST BE IN ONE LIST OR THE OTHER, and render-css.test.mjs walks
-       a rendered page to say so. `details.sub-more` (#470) was in NEITHER, so the exported PDF — the
+       EVERY <details> THE RENDERERS EMIT MUST BE IN ONE LIST OR THE OTHER. The instrument that says so
+       is a browser under print media, and it is NOT in this repository: `render-css.test.mjs`, named
+       here until 2026-09-16, exists in no tree. Nothing in the public suite can see this — the frozen
+       hash pins the renderer's bytes and the render arms grep its HTML, and on screen a mis-ruled
+       disclosure is correct. It is the private print control that walks a rendered page on both lanes
+       and refuses a disclosure ruled by neither mechanism, and it runs by hand. Two folds have now
+       shipped mis-ruled and been caught there rather than in CI. `details.sub-more` (#470) was in NEITHER, so the exported PDF — the
        client-facing legal document — printed an inert "MORE" label and a right-pointing COLLAPSED marker
        in the hero, directly above text that was already fully expanded. Measured in Chrome: the caption's
        own content was carried correctly and only the control leaked, which is why the commit that added
@@ -327,7 +332,14 @@
        and internal notes (.int-note, hidden above) are the only two things print ever drops. */
     details>*:not(summary){display:block!important}
     details>summary{list-style:none;cursor:default}
-    .rrow>summary::before,.rgroup>summary::before,details.scope>summary::before{content:""!important}
+    /* `details.searched` is a SECTION TITLE, so it keeps its summary in print like the region rows and
+       the secondary groups — a printed report that drops "What was searched" loses the heading over the
+       counts, not just a control. What it must not print is the ▸/▾ toggle, which on paper is a
+       right-pointing arrow over content that is already fully expanded. Found by the print check, which
+       walks a rendered page and refuses any disclosure that is in neither list; the public suite does
+       not run it, so the commit that added this fold could ship the half it did not think about. */
+    .rrow>summary::before,.rgroup>summary::before,details.scope>summary::before,
+    details.searched>summary::before{content:""!important}
     details{border-top:1px solid var(--line)}
     /* …AND THE HERO'S FOLD IS NOT A SECTION. The rule above separates the disclosures that ARE sections
        of the document; `details.sub-more` is one paragraph of the verdict caption folded away from
