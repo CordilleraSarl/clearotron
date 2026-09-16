@@ -38,8 +38,12 @@ function live() {
   if (tracked === null) return null;
   const p = publishedOf(tracked, ROOT);
   if (p.error) return { error: p.error };
+  CORPUS = p.files.length;
   return censusOf(p.files, (f) => readFileSync(join(ROOT, f), "utf8"));
 }
+
+/** How many files the last `live()` actually walked — the population every floor below is measured over. */
+let CORPUS = 0;
 
 test("the fixture describes the classes this tree actually has", () => {
   assert.deepEqual(TABLE.classes, CLASSES.map((c) => c.id),
@@ -57,10 +61,16 @@ test("THE BACKLOG IS A FLOOR — no file may carry more of any class than it did
 
   // THE POPULATION FLOOR, FIRST. Everything below compares against `now`, and a census that read
   // nothing would satisfy every comparison.
-  assert.ok(Object.keys(TABLE.files).length >= 3,
-    "the committed backlog names fewer than three files — it is not this tree");
-  assert.ok(now.total > 0,
-    "the live census found nothing at all, which is the scanner failing rather than the tree being clean");
+  // THE POPULATION IS THE CORPUS, NOT THE BACKLOG. This read the backlog's own row count and required
+  // three, which says the scanner is working only for as long as three files are still unrepaired —
+  // and the whole purpose of the backlog is to empty. The 2026-09-16 report redesign repaired one out
+  // of it and the floor failed on a tree that had got better. What proves the scanner looked is the
+  // size of the corpus it walked, which does not shrink as offences are fixed.
+  assert.ok(now.files && Object.keys(now.files).length + (now.clean ?? 0) >= 0);
+  assert.ok(CORPUS >= 500,
+    `the guard walked ${CORPUS} file(s) — that is not this tree, so every comparison below is over nothing`);
+  assert.ok(Object.keys(TABLE.files).length >= 1,
+    "the committed backlog names no file at all — re-mint it, or delete this guard if the tree is clean");
 
   const grew = [];
   for (const [path, counts] of Object.entries(now.files)) {

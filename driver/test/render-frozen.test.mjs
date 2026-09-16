@@ -1769,7 +1769,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Advanced again by the break recorded above the FROZEN constant: seven fixed sentences on the
 // clearance page, which is a behaviour change and not licence-only, so both constants move for the same
 // measured reason.
-const FROZEN_BEFORE_SPDX = "3c942dc1f191548472d45543d4ead36d9d40c853d02f1af687bc4fa4f4f74dc9";
+const FROZEN_BEFORE_SPDX = "c32c534dd2f29c35f3ee5154a775d8a026b7ab21f978ccd0a7bcb8921b706d3e";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2163,8 +2163,13 @@ const FROZEN_BEFORE_SPDX = "3c942dc1f191548472d45543d4ead36d9d40c853d02f1af687bc
 //
 // A LINE-COUNT NOTE: this adds and removes lines throughout render.mjs, so citations aimed into it move.
 // `scripts/citation-line-check.mjs` is the instrument, and it ran clean on this branch.
+//
+// THE HASH IN THIS ENTRY WAS PAID TWICE, and the second time was not a second break. The first payment
+// stood over a file that still carried its decision numbers in comments; taking those out — the tree
+// carries the reason for a decision and not its address — moved the bytes again with no behaviour
+// between the two. One entry, because a reader asking what changed gets the same answer either way.
 
-const FROZEN = "b262ce2b0a8ff5b92aed5bb547c751848ea916fbe3e61e6ea38a5e7a2e568337";
+const FROZEN = "001dac29cd1e70275ed21f3d173498aa82f8ca939b512660fb403b05624f58f4";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

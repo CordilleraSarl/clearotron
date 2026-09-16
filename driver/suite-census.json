@@ -5189,7 +5189,7 @@
         },
         "the-writing-standard-backlog-is-a-floor.test.mjs": {
           "tests": 3,
-          "asserts": 8,
+          "asserts": 9,
           "skips": 2,
           "todos": 0
         },
