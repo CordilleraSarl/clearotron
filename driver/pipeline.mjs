@@ -45,7 +45,8 @@ import { readRegisterTaint, readActiveTaintAxes } from "./register-taint.mjs";
 import { parseNamedBand, mergeNamedBands, findCollapsedBands, quarantineUnknownStates, taintQuarantineCleanBlocks, bandRecords } from "./named-band.mjs";
 import { recordOriginsFor } from "./record-origins.mjs";
 import { REGISTER_PROVIDER } from "./driver.config.mjs";
-import { FACTS_FILE as DIGEST_FACTS_FILE, ACCOUNTING_STAMP as DIGEST_ACCOUNTING_STAMP, recordedFindingUris } from "./register-digest-record.mjs";   // conversion 11 — the render's facts sidecar and the accounting era stamp
+import { FACTS_FILE as DIGEST_FACTS_FILE, ACCOUNTING_STAMP as DIGEST_ACCOUNTING_STAMP, recordedFindingUris,
+  digestAccountingGap, digestBatchBrief, batchesOf } from "./register-digest-record.mjs";   // conversion 11 — the render's facts sidecar and the accounting era stamp
 import { buildBandShape, dominantElementComposites, deriveRegisterPositions, floorTierByMark, floorMarkKey } from "./band-shape.mjs";   // PR-8 — the deterministic reading layer; P2-A — candidates + positions
 import { deriveOwnerScreen, ownerScreenNegative } from "./owner-screen.mjs";   // P2-B — the owner×element screen's own receipt
 import { reconcileRecall, parseFindingsEndings, parseCrowdRulings, readOkRecordUris,
@@ -3781,6 +3782,27 @@ export function digestDispatchExtra(ctx, { trigger = "fresh", willRun = true, ex
       }
     }
   } catch (e) { note(`coverage-form brief skipped (non-fatal — the form is in _driver/ and the validator refuses an unsettled row): ${String(e.message).slice(0, 80)}`); }
+  // — THE BATCH BLOCK: how the driver split this run's band, and which batches are still outstanding.
+  //
+  // The seat is told the split HERE rather than in the stage's dictation because the numbers are the
+  // run's, not the contract's: a band of 40 records is one batch and a band of 1,161 is twelve, and on a
+  // resume the outstanding set is what the killed attempt did not reach. The dictation says the rule;
+  // this says the arithmetic.
+  //
+  // BEST-EFFORT, AND SAFE BY CONSTRUCTION rather than by argument — the coverage brief's precedent above,
+  // for its reason. Nothing here enforces anything: a call naming a batch is judged against the driver's
+  // own split whether or not this block composed, the tool's refusal re-states what is outstanding, and
+  // the stage's exit gate refuses a document that ends fewer records than the run carried in. A brief
+  // that fails to compose costs a corrective round; it cannot cost a record.
+  try {
+    const gap = digestAccountingGap(P.runDir);
+    const block = digestBatchBrief(gap);
+    if (block) {
+      out = out ? `${out}\n\n${block}` : block;
+      runLog(P.runDir, { event: "digest-batch-brief", trigger, owed: gap.owed.length,
+        batches: batchesOf(gap.owed).length, unaccounted: gap.unaccounted.length });
+    }
+  } catch (e) { note(`digest batch brief skipped (non-fatal — the tool judges every batch against the driver's own split regardless): ${String(e.message).slice(0, 80)}`); }
   // AD-2 A9 (E2E-R2) + the P5 review (2026-07-31): a corrective/repair pass is told NOT to re-read the
   // whole placement file — the per-candidate tiers are in placements.json — but the RULINGS TAIL (band
   // reconciliation, disagreements, coverage rulings, open questions) lives ONLY in the md. Leaving it to

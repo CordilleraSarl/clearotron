@@ -3598,8 +3598,8 @@
           "todos": 0
         },
         "register-digest-record.test.mjs": {
-          "tests": 38,
-          "asserts": 147,
+          "tests": 40,
+          "asserts": 152,
           "skips": 0,
           "todos": 0
         },
