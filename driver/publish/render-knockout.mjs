@@ -1364,23 +1364,20 @@ function coverageClause(mark, registerCounts, probeRan) {
  * the first one and asked "what holds what?" — so the fix is not a synonym in the same style, it is a
  * label that carries the band's own word and answers the question by itself.
  *
- *   factors        → "Why High"              (the mark's own band)
- *   counterFactors → "Why not Very High"     (the rung ABOVE it on the run's own ladder)
- *   mitigation     → "What would lower the risk"
+ *   factors        → "Why High"                 (the mark's own band, on the rating card)
+ *   counterFactors → "Remaining uncertainties"
+ *   mitigation     → "What would change this"
  *
- * The ladder runs worst-first, so the rung above is the PREVIOUS entry. At the top rung there is no
- * higher band to name and the honest label is "What keeps it here" — the same question, asked where the
- * comparative form has no answer. A band this build cannot find on the ladder gets that label too,
- * rather than a comparative naming a rung that may not exist.
+ * The counter-factor label was "Why not <the rung above>", read off the run's own ladder. It asked the
+ * reader to hold a ladder the page had not given them; at the top rung there was no higher band to name,
+ * so it asked a different question there; and a band the build could not find on the ladder fell to that
+ * same special case. tracker issue 645 names what is under the heading instead, at every rung.
  */
-function counterLabel(framework, band) {
-  const ladder = Array.isArray(framework?.bands) ? framework.bands : [];
-  const i = ladder.findIndex((b) => String(b?.label ?? '').trim().toLowerCase() === String(band ?? '').trim().toLowerCase());
-  const up = i > 0 ? String(ladder[i - 1]?.label ?? '').trim() : '';
-  // tracker issue 645 — the heading names what is under it rather than a band the reader was not
-  // shown. The engine's bullets are unchanged; only the label is.
-  return 'Remaining uncertainties';
-}
+// tracker issue 645 — the heading names what is UNDER it rather than a band the reader was not shown.
+// It read "Why not <the rung above>", which asked the reader to hold a ladder they had not been given
+// and, at the top rung, had no band to name and asked a different question instead. The engine's
+// bullets are unchanged; only the label is, and it no longer varies with the band.
+const COUNTER_LABEL = 'Remaining uncertainties';
 
 const ASSESSMENT_FOLD_LABEL = 'Read the full assessment';
 
@@ -1470,7 +1467,7 @@ function readBlock(m, framework) {
   ].filter(Boolean).join('');
   return [
     card ? `<div class="panel gauge ko-gauge">${card}</div>` : '',
-    counter.length ? `<div class="ko-counter"><span class="ko-lbl2">${esc(counterLabel(framework, band))}</span><ul class="ko-bul">${
+    counter.length ? `<div class="ko-counter"><span class="ko-lbl2">${esc(COUNTER_LABEL)}</span><ul class="ko-bul">${
       counter.map((f) => `<li>${inlineMd(f)}</li>`).join('')}</ul></div>` : '',
     m.mitigation ? `<div class="ko-mitig"><span class="ko-lbl2">What would change this</span><p>${inlineMd(m.mitigation)}</p></div>` : '',
     // ── THE ASSESSMENT REPLACES THE "FULL NARRATIVE" FOLD ────────────────────────────────────────────

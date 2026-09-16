@@ -158,11 +158,15 @@ test("the read renders as STRUCTURE — chip, basis, tight bullets, and the two 
   // holds what?". These name the rung the mark is on and the rung above it, off this fixture's own
   // ladder (Blocking > Medium > Manageable > Low), so the label answers the question by itself.
   assert.match(html, /Why Manageable/, "the factors are labelled with the band the mark actually has");
-  assert.match(html, /Why not Medium/, "and the counter-factors with the rung above it on THIS ladder");
-  assert.doesNotMatch(html, /What holds it there|What would move it/, "the muted pair is retired");
+  // THE COMPARATIVE LABEL IS GONE (tracker issue 645). "Why not Medium" asked the reader to hold a
+  // ladder the page had not given them, and at the top rung it had no band to name and asked a
+  // different question instead. The heading names what is under it, at every rung.
+  assert.match(html, /Remaining uncertainties/, "the counter-factors are labelled by what they are");
+  assert.doesNotMatch(html, /Why not /, "the comparative pair is retired");
+  assert.doesNotMatch(html, /What holds it there|What would move it/, "and so is the muted pair before it");
   assert.match(html, /class="ko-lbl2"/, "at body size and body colour, not the 9.5px grey style");
   assert.match(html, /class="ko-mitig"/, "mitigation is visually distinct");
-  assert.match(html, /What would lower the risk/);
+  assert.match(html, /What would change this/, "under the label tracker issue 645 gives it");
   // Every factor is its own <li> — the wall is gone because the emission changed, not because a
   // renderer split a paragraph on full stops.
   for (const f of markRow().factors) assert.ok(html.includes(f), `factor on the page: ${f.slice(0, 30)}`);
@@ -170,11 +174,17 @@ test("the read renders as STRUCTURE — chip, basis, tight bullets, and the two 
   assert.match(html, /Classes 8/, "…with the classes beside it");
 });
 
-test("at the TOP rung there is no higher band to name, so the label stops being comparative", () => {
-  const html = RENDER([markRow({ rating: "Blocking" })]);
-  assert.match(html, /Why Blocking/, "the factors still carry the mark's own band");
-  assert.match(html, /What keeps it here/, "and the counter-factors ask the same question without a rung to name");
-  assert.doesNotMatch(html, /Why not /, "a comparative here would name a band this ladder does not have");
+test("the counter-factor label is the same at every rung, top included", () => {
+  // This arm drove the special case the comparative label needed: at the top there was no rung above,
+  // so it changed its wording. One label needs no special case — which is the point of it — so what is
+  // driven now is that the top rung reads exactly like any other.
+  const top = RENDER([markRow({ rating: "Blocking" })]);
+  const mid = RENDER([markRow()]);
+  assert.match(top, /Why Blocking/, "the factors still carry the mark's own band");
+  for (const html of [top, mid]) {
+    assert.match(html, /Remaining uncertainties/);
+    assert.doesNotMatch(html, /Why not |What keeps it here/, "no rung has a label of its own");
+  }
 });
 
 test("NOTHING IS DISCARDED — prose bullets survive under the full narrative", () => {
@@ -201,22 +211,27 @@ test("the register line comes from the SIDECAR, and says a different thing in ea
     marks: [{ name: "IRONWHISK", classes: [8], classScope: "mark", counts: over }],
   });
   // 1 — counted. The code-owned line, scope first, identical to the glance line's wording.
+  // THE SENTENCE UNDER THE CARDS IS GONE; THE FOUR STATES ARE NOT. It restated, in prose, what the
+  // table above it had already said, which is what tracker issue 645 took off the page. Each state is
+  // still told — this arm follows each one to where it is now told, because three of the four are a
+  // register that could NOT be counted, and an absence that reaches the reader nowhere is the failure
+  // that matters here.
   const counted = RENDER([markRow()], { registerCounts: counts({ identical: { total: 3 }, containing: { total: 41 }, close: { total: 5 } }), probeRan: true });
-  assert.match(counted, /class="ko-reg"/);
-  // COVERAGE, not a third printing of the figures: they are already in the glance line and in the counts
-  // table above this section, and a card that repeats them is a card a reader skips.
-  assert.match(counted, /hit-counts were taken for this name in class 8 — the figures are in the counts table above/);
-  const cards = counted.slice(counted.indexOf("On-field conflicts"));
+  assert.doesNotMatch(counted, /class="ko-reg"/, "the restating line is off the page");
+  assert.match(counted, /<td[^>]*>3<\/td>/, "the figures are in the table, stated once");
+  const cards = counted.slice(counted.indexOf("<h2>Conflicts</h2>"));
   assert.equal((cards.match(/3 identical, 41 containing/g) ?? []).length, 0,
     "the numbers are stated once, where they belong");
 
-  // 2 — the probe ran and every figure failed. A gap in this run, named as one.
+  // 2 — the probe ran and every figure failed. Told in the cells themselves, each carrying its reason.
   const failed = RENDER([markRow()], { registerCounts: counts({ identical: { total: null, unavailable: "HTTP 502" } }), probeRan: true });
-  assert.match(failed, /no count could be taken for this name/);
+  assert.match(failed, /class="na" title="HTTP 502">not available</,
+    "a figure that failed says so where the number would have been, with the reason it failed");
 
   // 3 — the product includes counts and the lane produced no sidecar at all.
   const none = RENDER([markRow()], { registerCounts: null, probeRan: true });
-  assert.match(none, /hit-counts are part of this search and none could be taken/);
+  assert.match(none, /hit-counts are part of this search, and none could be taken on this run/);
+  assert.match(none, /a gap in this run, not a limit of the product/, "and says which of the two it is");
 
   // 4 — a replay of a product that never bought the probe.
   const tier = RENDER([markRow()], { registerCounts: null, probeRan: false });
