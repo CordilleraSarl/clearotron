@@ -139,6 +139,7 @@ credential.
 | Check it works before spending anything | [docs/E2E.md](docs/E2E.md) |
 | Understand the architecture | [docs/architecture/](docs/architecture/) · [decisions](docs/decisions/) |
 | Run it under your own name, or fork it | [docs/branding.md](docs/branding.md) · [TRADEMARKS.md](TRADEMARKS.md) |
+| Write a sentence a customer will read | [docs/writing-standard.md](docs/writing-standard.md) · [docs/writing-rules.md](docs/writing-rules.md) |
 
 ## Development
 

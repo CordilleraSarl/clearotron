@@ -119,7 +119,16 @@ export function printedText(line) {
       const q = ch
       i++
       while (i < s.length && s[i] !== q) {
-        if (s[i] === '\\') { i += 2; continue }
+        // AN ESCAPED CHARACTER IS EMITTED, NOT SKIPPED. Skipping it drops the character the reader
+        // sees: `store\'s` became "store s", which breaks a caveat match on any sentence with an
+        // apostrophe — silently, and in the direction that loses hits. A real escape sequence becomes
+        // whitespace, which is what it prints as.
+        if (s[i] === '\\') {
+          const e = s[i + 1]
+          out += (e === 'n' || e === 't' || e === 'r') ? ' ' : (e ?? '')
+          i += 2
+          continue
+        }
         out += s[i]
         i++
       }
