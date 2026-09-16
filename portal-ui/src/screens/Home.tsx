@@ -22,6 +22,13 @@
 // There is no ETA and no percent-complete anywhere on this page: nothing in the system measures or
 // predicts run duration, and the stepper is deliberately lossy. The one real clock is a provider cap's
 // own reset time, which is why it is the only thing here that ever states a time.
+//
+// A QUOTE IS NOT AN ETA, and the line between them is the whole of that rule rather than an exception
+// to it. A running card carries the standing quote for its own pipeline — "usually 1.5 to 2.5 h" — which
+// is a LOOKUP against the effort model's frozen table and says the same thing on the first minute as on
+// the last. Nothing is computed from the run, nothing counts down, and past the upper bound the quote is
+// replaced by "taking longer than usual" rather than revised: a revised figure is a prediction, and the
+// engine has nothing to predict from.
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { CompanyChips } from '../shell/CompanyChips.tsx'
@@ -32,7 +39,7 @@ import { api, saveFailureText } from '../contract/api.ts'
 import { displayName } from '../contract/reads.ts'
 import { toneColor } from '../contract/tone.ts'
 import {
-  recentlyFinished, finished, inFlight, recentFailures, acknowledged, active, waiting, runProductLabel, cardReason, limitLine, moveBefore, pips, slotNote, runsFor, readStamps,
+  recentlyFinished, finished, inFlight, recentFailures, acknowledged, active, waiting, runProductLabel, cardReason, limitLine, moveBefore, pips, slotNote, runsFor, readStamps, inFlightBreakdown, expectation,
 } from '../contract/home.ts'
 import { Icon } from '../components/Icon.tsx'
 import { PageHeader } from '../components/PageHeader.tsx'
@@ -158,7 +165,7 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
         actions={<>
           <button type="button" className="btn-ghost home2-all" onClick={() => ctx.go('/portal/clearances')}>
             <Icon name="layers" />
-            <span>All Clearances</span>
+            <span>Clearances</span>
           </button>
           {/* THE GATE AND THE NAVIGATION ON ONE LINE, which is what nav.test.ts reads: a literal to a
               screen that needs Run must sit behind `canRun` where a reviewer can see the pair. Spread
@@ -166,9 +173,12 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
           {canRun(ctx.me) ? <NewClearanceButton onNew={() => ctx.go('/portal/new')} /> : null}
         </>}
       />
+      {/* A BREAKDOWN, NOT A TOTAL. "3" tells a reader how much is on the screen; "2 running · 1 paused"
+          tells them whether to wait. The idle sentence keeps the plain "0" beside it, because there is
+          nothing to break down and a reader counting nothing does not need it spelled three ways. */}
       <InFlightBand
-        count={cards.length + queue.length}
-        note={cards.length + queue.length === 0
+        breakdown={inFlightBreakdown(rows)}
+        note={rows.length === 0
           ? `Nothing running right now.${canRun(ctx.me) ? ' Start one with New clearance.' : ''}`
           : slotNote(null, ctx.me.concurrentRuns)}
       />
@@ -282,10 +292,10 @@ function NewClearanceButton({ onNew }: { readonly onNew: () => void }) {
 }
 
 function InFlightBand({
-  count,
+  breakdown,
   note,
 }: {
-  readonly count: number
+  readonly breakdown: string
   readonly note: string | null
 }) {
   // A STATUS LINE, AND NOTHING ELSE ON IT. This carried both of the page's buttons, one of them the
@@ -295,7 +305,9 @@ function InFlightBand({
   return (
     <div className="home2-band">
       <span className="home2-band-label">In flight</span>
-      <span className="home2-band-count mono">{count}</span>
+      {/* NOT MONO. A mono total read as a machine's counter; this is a sentence about what is happening,
+          sized and coloured like the capacity line it sits opposite. */}
+      <span className="home2-band-count">{breakdown}</span>
       <span className="home2-band-rule" />
       <span className="home2-band-note">{note}</span>
     </div>
@@ -318,9 +330,14 @@ function Card({
   const [failed, setFailed] = useState<string | null>(null)
   // ── — THE CHOICE IS ASKED AT THE PRESS ──────────────────────────────────
   //
-  // `asking` opens the question; `took` is what the server said actually happened, which is not always
-  // what was asked. Both are per-card state and neither survives a reload — see the stopping line below
-  // for why that is correct rather than a gap.
+  // `asking` opens the question. It is per-card state and does not survive a reload, which is correct
+  // rather than a gap: the stopping line below is drawn from the RUN, not from whether this reader was
+  // the one who pressed.
+  //
+  // `took` is what the server said actually HAPPENED, which is not always what was asked: an immediate
+  // stop that finds no turn to end is a boundary stop, and only the driver knows which it was. The
+  // product's own sentence below is the boundary wording, so rendering it over an immediate stop would
+  // state the wrong one — which is why the server's answer still wins where there is one.
   const [asking, setAsking] = useState(false)
   const [took, setTook] = useState<StopOutcome | null>(null)
   const p = pips(run.stepN, run.stepTotal)
@@ -331,6 +348,9 @@ function Card({
   // because that is true; stopping is the pair (stopRequestedAt, non-terminal). The button goes with
   // it: a second press achieves nothing and should not be offered.
   const stopping = Boolean(run.stopRequestedAt) && canStop
+  // NOT WHILE STOPPING. A run whose stop is taking effect is not going to take "usually 1.5 to 2.5 h";
+  // it is going to end. The quote beside that sentence would read as a wait the reader still owes.
+  const expect = stopping ? null : expectation(run)
   // — terminal and NOT delivered. A delivered run never reaches this band; a paused or recovering
   // one is a run someone still needs to see, and the issue says so in as many words.
   const canAck = run.state === 'failed' || run.state === 'cancelled'
@@ -380,9 +400,7 @@ function Card({
       // what was wrong with the request, a 404 saying the run had gone, a gone session.
       setFailed(saveFailureText(r, 'It could not be stopped just now. Nothing has changed.'))
     } else {
-      // — WHAT HAPPENED, not what was asked. An immediate stop that found no
-      // turn to end IS a boundary stop and the driver says so; showing "stopping now" over it would be
-      // the same silence this issue was opened about, moved one layer along.
+      // — WHAT HAPPENED, not what was asked.
       setTook(r.value)
     }
     onChanged()
@@ -426,6 +444,11 @@ function Card({
 
         <div className="home2-card-foot">
           <span className={`home2-reason ${run.state}`}>{failed ?? reason}</span>
+          {/* THE QUOTE FOR THIS PIPELINE, after the elapsed time and quieter than it. A lookup against
+              the effort model's frozen table — never computed from this run, and never counted down.
+              Absent on a paused card, whose elapsed line is not measuring work, and on a queued one,
+              which has not started. Past the upper bound the quote is REPLACED, not revised. */}
+          {expect ? <span className="home2-expect">{` · ${expect}`}</span> : null}
           {/* — the engine's own words, for an engineer, behind a disclosure. The card states the
               one fact a reader can act on; this is where the validator reason and the query list live
               now that they are no longer in the sentence. Absent ⇒ no disclosure at all, so a failure
@@ -505,12 +528,20 @@ function Card({
                 answer in hand. `took` is per-card state and does not survive a reload; a run still
                 stopping when a reader comes back has not gone terminal in seconds, whichever mode was
                 pressed. */}
+            {/* THE SERVER'S ANSWER WINS WHERE THERE IS ONE, because only it can tell an immediate stop
+                from a boundary stop, and the sentence below is the boundary wording. `took` is per-card
+                state and does not survive a reload — correct rather than a gap: a run still stopping
+                when a reader comes back has not gone terminal in seconds.
+
+                THE FALLBACK NO LONGER SAYS "NOTHING WILL BE DELIVERED". That is true and it is the
+                wrong thing to leave a reader holding: the finished steps ARE readable through Ask AI,
+                and naming only what was lost invites the support question the sentence could have
+                answered. */}
             {took?.note
               ? took.note
               : (<>
-                  Stopping — {run.step ? `letting “${run.step}” finish` : 'letting the step in flight finish'}.
-                  A reasoning step can take tens of minutes and has no deadline. Nothing further will
-                  start, and nothing will be delivered.
+                  Stopping — letting {run.step ? `${run.step}` : 'the step in flight'} finish. No report
+                  will be produced. Completed work stays readable through Ask AI.
                 </>)}
           </div>
         ) : null}
