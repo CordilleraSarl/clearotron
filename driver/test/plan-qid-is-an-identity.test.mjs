@@ -201,3 +201,101 @@ test("a LATIN term's qid is byte-unchanged — the fix must move nothing that al
   assert.match(everlite.qid, /:everlite(\+|$|#)/, "a Latin term's identity moved — it is the fold, and the fold was already self-describing");
   for (const e of plan.entries) assert.doesNotMatch(e.qid, /q-[0-9a-f]{8}/, "the fingerprint fallback fired on a plan with no non-Latin term");
 });
+
+
+// ── THE CLIENT'S OWN HOUSE ELEMENT IS NOT A CONFLICT AXIS ────────────────────────────────────────
+//
+// 2026-09-16: the mark was the client's own house mark plus a tagline, `dominant_element` was the house
+// element, and the machine-built mutation forms were therefore built from it. Two such queries put
+// 1,154 of a 2,146-record band on the table, reachable from nothing else. The reviewing lawyer searched
+// the whole phrase, the shorter phrase and the last word.
+const { excludeHouseElement } = await import("../register-plan.mjs");
+
+const HOUSE_MODEL = {
+  schema_version: 1,
+  mark: "NOVAPULSE SOUND OF TOMORROW",
+  dominant_element: "NOVAPULSE",
+  elements: [{ value: "NOVAPULSE", kind: "distinctive" }, { value: "TOMORROW", kind: "distinctive" }],
+  variants: [
+    { value: "NOVAPULS", category: "visual", rationale: "one-letter mutation of the house element" },
+    { value: "NOVAPULSE SOUND OF TOMORROW", category: "exact-phrase", rationale: "the whole phrase" },
+    { value: "SOUND OF TOMORROW", category: "exact-phrase", rationale: "the remainder" },
+  ],
+  incumbent_classes: ["9"],
+};
+const HOUSE = { element: "NOVAPULSE", remainder: "SOUND OF TOMORROW" };
+
+test("the house element stops being an axis, and the lawyer's three shapes all survive", () => {
+  const r = excludeHouseElement(HOUSE_MODEL, HOUSE);
+  assert.equal(r.refused, null);
+
+  // 1. THE WHOLE PHRASE IS UNTOUCHED. The lawyer keeps it — what stops is treating the element as an
+  // axis, not searching the mark the client actually applied for.
+  assert.equal(r.manifest.mark, "NOVAPULSE SOUND OF TOMORROW");
+  // 2. the shorter phrase is searchable on its own
+  assert.ok(r.manifest.variants.some((v) => v.value === "SOUND OF TOMORROW"));
+  // 3. the dominant word is the remainder's, never the house element's — this is the field the
+  // mutation forms are built from, and it is the whole reason the band flooded
+  assert.equal(r.manifest.dominant_element, "TOMORROW");
+
+  assert.equal(r.manifest.variants.some((v) => v.value === "NOVAPULS"), false,
+    "a one-letter mutation OF THE HOUSE ELEMENT names no word of the remainder and goes");
+  assert.equal(r.manifest.elements.some((e) => e.value === "NOVAPULSE"), false);
+  assert.deepEqual(r.manifest.incumbent_classes, ["9"], "the incumbent classes are not this rule's business");
+});
+
+test("REQUIREMENT 3 — the element is still confirmed once, as the client's own, by a query that runs", () => {
+  const r = excludeHouseElement(HOUSE_MODEL, HOUSE);
+  assert.equal(r.confirmation.term, "NOVAPULSE");
+  assert.equal(r.confirmation.predicate, "owner",
+    "an OWNER-scoped confirmation, not a conflict sweep — the exclusion is evidenced on the report by a "
+    + "call that was made, never by a sentence saying one would have been");
+  assert.equal(r.confirmation.house_element_confirmation, true);
+});
+
+test("THE FLOOR — an element that leaves nothing to search excludes NOTHING, and says which", () => {
+  // The direction that reaches a client. Ownership can verify perfectly here; what is wrong is that the
+  // whole mark was named. No downstream count catches it: "queries on the house element: 0" is true of a
+  // plan holding no queries at all.
+  for (const [h, why] of [
+    // The whole mark named as the element leaves no remainder at all.
+    [{ element: "NOVAPULSE SOUND OF TOMORROW", remainder: "" }, "house_element_incomplete"],
+    [{ element: "NOVAPULSE", remainder: "   " }, "house_element_incomplete"],
+    [{ element: "", remainder: "SOUND OF TOMORROW" }, "house_element_incomplete"],
+    // THE JOIN THE FRAME CANNOT MAKE: a receipt describing a different mark than the one being planned.
+    // Applying it would cut the dominant element down to a word that is not in this mark at all.
+    [{ element: "NOVAPULSE", remainder: "SONG OF YESTERDAY" }, "house_element_remainder_not_in_mark"],
+    [{ element: "QUANTAFLUX", remainder: "SOUND OF TOMORROW" }, "house_element_not_in_mark"],
+  ]) {
+    const r = excludeHouseElement(HOUSE_MODEL, h);
+    assert.equal(r.refused, why);
+    assert.equal(r.confirmation, null, "a refused exclusion confirms nothing either");
+    // BYTE-IDENTICAL, not merely "still has queries". A transform that half-applied and then reported a
+    // refusal would pass a looser assertion while having already dropped the mutation forms.
+    assert.equal(JSON.stringify(r.manifest), JSON.stringify(HOUSE_MODEL),
+      "the manifest comes back exactly as it went in — the run plans as if no receipt existed");
+  }
+});
+
+test("the compiled plan loses the house element's own sweep and keeps the whole phrase", () => {
+  const plan = (m) => compileRegisterPlan({ manifest: parseVariantManifestModel(JSON.stringify(m)),
+    job: { jobKey: "TMP9999-novapulse", classes: ["9"], jurisdictions: ["EU"] },
+    skillVersion: "prelim-register@spec48" });
+  const before = plan(HOUSE_MODEL);
+  const after = plan(excludeHouseElement(HOUSE_MODEL, HOUSE).manifest);
+
+  const termsOf = (p) => p.entries.flatMap((e) => [e.term, ...(e.terms ?? [])]).filter(Boolean).map(String);
+  const beforeTerms = termsOf(before), afterTerms = termsOf(after);
+
+  // A FLOOR ON THE POPULATION BEFORE ANY CLAIM ABOUT WHAT IT OMITS. "No query on the house element" is
+  // satisfied by a plan with no queries, which is the failure this whole rule could produce.
+  assert.ok(after.entries.length >= 3, `the plan must still be a plan: ${after.entries.length} entries`);
+  assert.ok(afterTerms.includes("NOVAPULSE SOUND OF TOMORROW"), "the whole phrase is still searched");
+  assert.ok(afterTerms.includes("SOUND OF TOMORROW"), "and so is the shorter phrase");
+
+  assert.ok(beforeTerms.includes("NOVAPULSE"),
+    "precondition: today's plan DOES sweep the house element on its own — without this the arm below "
+    + "would pass against a compile that never swept it");
+  assert.equal(afterTerms.includes("NOVAPULSE"), false,
+    "…and after the exclusion it is not swept as a term of its own");
+});
