@@ -70,6 +70,9 @@ const adminConfig = {
 const about = productIdentity()
 
 const state = { contact: CONTACT, reset: null }
+// THE PAGE'S OWN LOADS, COUNTED. A screen that asks the server twice paints exactly like one that asks once,
+// and each request spends the person's rate budget, so the only instrument that sees a double load is a count.
+const loads = []
 
 const server = createServer((req, res) => {
   const path = new URL(req.url, 'http://localhost').pathname
@@ -77,6 +80,7 @@ const server = createServer((req, res) => {
   // THE ADMIN ADDRESSES ARE BOTH A SCREEN AND ITS DATA, decided by what the caller asked for — the rule
   // driver/portal-static.mjs applies: the app's own fetches ask for JSON, a browser navigation for HTML.
   const wantsPage = String(req.headers.accept ?? '').includes('text/html')
+  if (!wantsPage && (path === '/portal/admin/config' || path === '/portal/api/about')) loads.push(path)
   if (path === '/portal/api/me') {
     return json({ permissions: { run: true, manage: true }, email: EMAIL, accounts: '*',
       access: [{ kind: 'everything' }], organisations: [{ key: 'northwind', name: 'Northwind Group' }],
@@ -352,6 +356,7 @@ for (const theme of ['light', 'dark']) {
 
   // ── Installation settings
   console.log('\nInstallation settings:')
+  loads.length = 0
   if (await open('/portal/admin/config', "document.querySelectorAll('.cfg-row').length >= 10", 'Installation settings drew its rows')) {
     await setTheme(theme)
     const s = (await evalIn(settingsProbe)) ?? {}
@@ -390,11 +395,19 @@ for (const theme of ['light', 'dark']) {
     const caseLaw = s.categories.find((c) => c.label === 'Case law and oppositions')
     ok(caseLaw?.note === SPEC.caseLawGap, `what an unset case-law source costs is said under the category (saw ${JSON.stringify(caseLaw?.note)})`)
     ok(!s.categories.flatMap((c) => c.rows).some((r) => r.notes.some((n) => /case-law gap/.test(n))), 'and not again on a row')
+    const boa = rows['EUIPO Boards of Appeal']
+    ok(boa?.state === 'Not in this build' && same(boa?.notes, ['Reports covering the EU say so']) && boa?.guide === null,
+      `a source this build does not ship says which reports disclose it, and offers no guide (saw ${JSON.stringify(boa)})`)
     ok(s.leaks.length === 0, `no variable name, credential path or README reference anywhere on the page (saw ${JSON.stringify(s.leaks)})`)
     const menu = (await evalIn(menuProbe)) ?? {}
     ok(Array.isArray(menu) && menu.includes('Installation settings') && !menu.includes('Global config'),
       `the avatar menu names the page "Installation settings" (saw ${JSON.stringify(menu)})`)
     await capture(`installation-settings-${theme}`)
+    // Counted after the Setup guide links were read, which needs the second load to have answered.
+    await sleep(500)
+    const asked = (route) => loads.filter((l) => l === route).length
+    ok(asked('/portal/admin/config') === 1 && asked('/portal/api/about') === 1,
+      `one visit asks for the settings once and for the source address once (saw ${JSON.stringify(loads)})`)
   }
 
   // ── Preferences, contact set and unset
