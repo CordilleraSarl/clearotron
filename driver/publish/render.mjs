@@ -1008,10 +1008,17 @@ function courtDecisionsSection(opts) {
 
 // Counts only, folded closed. A count of records read is engine activity rather than something a reader
 // acts on (owner, 2026-09-16), so it lives here and not beside the outcome per country.
-function whatWasSearchedSection(opts) {
+// THE OPEN ROWS STAY ON THE PAGE, and that is deliberate rather than a leftover of the old fold. The
+// scope fold and the checks-we-ran narrative go, because narrating faults and refusals at a client is
+// what the owner ruled out. A slice the run deliberately LEFT OPEN is not narration: it is the
+// disclosure the whole can't-close-then-disclose doctrine rests on, and it was measured reaching a
+// client short by two rows only hours before this redesign (tracker issue 637). It renders here, in the
+// reader's own words, with the counts — never the query text, the refusals or the provider faults.
+function whatWasSearchedSection(opts, coverage = []) {
   const sd = opts && opts.searchDepth;
-  if (!sd || !sd.counts) return '';
-  const c = sd.counts, rows = [];
+  const open = (Array.isArray(coverage) ? coverage : []).filter((c) => COV_STATE[c?.state]?.cls !== 'ok');
+  if ((!sd || !sd.counts) && !open.length) return '';
+  const c = (sd && sd.counts) || {}, rows = [];
   const byC = c.recordsByCountry || {};
   const per = Object.entries(byC).sort((a, b) => b[1] - a[1]).map(([k, n]) => `${regionName(k) || k} ${n.toLocaleString('en-GB')}`).join(' \u00b7 ');
   if (per) rows.push(['Register records read', per]);
@@ -1022,9 +1029,10 @@ function whatWasSearchedSection(opts) {
   rows.push(['Local-script spellings', c.localScriptSearched ? 'searched' : 'not searched']);
   const cd = { 'found': 'found', 'none-found': 'none found', 'not-checked': 'could not be checked', 'not-in-scope': 'not part of this search' }[c.courtDecisions];
   if (cd) rows.push(['Court decisions', cd]);
-  if (!rows.length) return '';
+  const openHtml = open.length ? `<div class="openrows"><div class="rk">Left open</div>${coverageGrid(open)}</div>` : '';
+  if (!rows.length && !openHtml) return '';
   return `<details class="searched"><summary><span class="gname">What was searched</span><span class="gcount">Counts for this search</span></summary><div class="gbody">${
-    rows.map(([k, v]) => `<div class="row"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`).join('')}</div></details>`;
+    rows.map(([k, v]) => `<div class="row"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`).join('')}${openHtml}</div></details>`;
 }
 
 function alsoConsideredSection(ruledOut, recordsByUri = new Map(), opts = {}) {
@@ -2587,7 +2595,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   <!-- tracker issue 644 — WHAT WAS SEARCHED. The scope fold and the checks-we-ran narrative are gone
        (owner, 2026-09-16: no coverage narrative on the page). What is left is counts, folded closed:
        completed work appears as numbers and cleared names, never as the engine's account of itself. -->
-  ${whatWasSearchedSection(opts)}
+  ${whatWasSearchedSection(opts, coverage)}
 
   <footer>
     <span>${productName ? `${esc(productName)}. ` : ''}${FRAMEWORK
