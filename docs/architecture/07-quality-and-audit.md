@@ -26,7 +26,7 @@ flowchart LR
     G["GROUNDED<br/>records behind every fact"] --> C["CHALLENGED<br/>skeptic + blind pass +<br/>independent reviewer"]
     C --> K["COMPLETED<br/>coverage honesty,<br/>clamps, no dangling caveats"]
     K --> F["IN FRONT<br/>lawyer vets the<br/>defended draft"]
-    F -.-> I["INTERROGABLE<br/>read-only audit API,<br/>per-run client tokens"]
+    F -.-> I["INTERROGABLE<br/>read-only audit API,<br/>per-run report-link tokens"]
 ```
 
 ## 1 — Grounded: record fidelity (`registry-fidelity.mjs`, `findings-model.mjs`)
@@ -162,15 +162,15 @@ one. Calls are metered per run (billing-grade ledger), never hard-capped.
 ## 4 — The pre-delivery lint (`predelivery-lint.mjs`)
 
 Pure code over the assembled deliverable surfaces before anything outward-facing. On a live run
-those are the report and the composed email: there is no second client-facing artifact, and the
-lint's client-summary arms are kept only so the archived corpus still replays.
+those are the report and the composed email: there is no second artifact for outside readers, and
+the lint's arms for the retired `clientSummary` are kept only so the archived corpus still replays.
 
 Thirty-three check families (`runLint` fans out to that many `*Checks` groups; the coarser `family`
 label stamped on each emitted check collapses them to 14): template integrity, orphan-reference
 precision, machine-work reachability ("Only you can close these" must contain only things genuinely
-client-side), counting consistency across surfaces and against the findings set, the registry
+left to the company), counting consistency across surfaces and against the findings set, the registry
 family (§1), finding-provenance cross-contamination, correction consistency (a review-withdrawn
-finding can never resurrect on any surface), client-tier and overall-tier joins, verdict/actions
+finding can never resurrect on any surface), the `client-tier-match` and overall-tier joins, verdict/actions
 coherence, intake-ask completion, WIPO designation language, self-comparison.
 
 Repair economics are engineered: failing checks on a drafting surface get one bounded warm redo
@@ -186,8 +186,8 @@ pass over inherited artifacts is visible as such.
 | Severity | Trigger |
 |---|---|
 | **Fails the run** | Zero readable coverage-ledger rows (the coverage-honesty floor cannot run, so no verdict can ship); core findings artifact unparseable after corrective retries; the fatal stages/gates in [03](03-run-lifecycle.md). Two things a reader expects here are **not**: an unresolved screen-gate repairs or discloses and never blocks (a per-mark coverage row + the CONDITIONAL clamp, disclosed in `_driver/screen-gate-unresolved.json` — owner decision 2026-07-22, never a dead run over a provider 404), and the client gate blocks nothing (next row) |
-| **Recorded by the client gate, blocks nothing** (the gate's preflight was removed with the readiness state it chose — `pipeline.mjs`) | `evaluateClientGate` still runs its machine checks inside `publishReport` — registry arithmetic, record fidelity, correction consistency, unparseable/quarantined findings, stale corrections, failed escalations (`publish/index.mjs`, fail-closed: an evaluation error also closes). Its result lands on the audit workbook, `meta.json` and the machine-qc-failed telemetry event. **It decides nothing about who may read**, and there is no client export to withhold — a defect that changes the LEGAL ANSWER is the verdict clamp's job and rides the report as a CONDITIONAL/BLOCKING verdict, never as a warning about the document |
-| **Flags, never blocks** | Everything else — recorded in the `_driver` receipt sinks and surfaced on the audit workbook / quality pages; **the rendered report carries no caveat banner** (the report a lawyer signs is clean; the receipts are the QC surface). Lint flags also never ride `report.md` front-matter (that file is copied verbatim to the client-reachable pool; a front-matter flag was a latent client leak) |
+| **Recorded by the client gate, blocks nothing** (the gate's preflight was removed with the readiness state it chose — `pipeline.mjs`) | `evaluateClientGate` still runs its machine checks inside `publishReport` — registry arithmetic, record fidelity, correction consistency, unparseable/quarantined findings, stale corrections, failed escalations (`publish/index.mjs`, fail-closed: an evaluation error also closes). Its result lands on the audit workbook, `meta.json` and the machine-qc-failed telemetry event. **It decides nothing about who may read**, and there is no separate export to withhold — a defect that changes the LEGAL ANSWER is the verdict clamp's job and rides the report as a CONDITIONAL/BLOCKING verdict, never as a warning about the document |
+| **Flags, never blocks** | Everything else — recorded in the `_driver` receipt sinks and surfaced on the audit workbook / quality pages; **the rendered report carries no caveat banner** (the report a lawyer signs is clean; the receipts are the QC surface). Lint flags also never ride `report.md` front-matter (that file is copied verbatim to the pool outside readers reach; a front-matter flag was a latent leak to them) |
 
 ## 5 — Observability that refuses to be a gate
 
@@ -221,7 +221,7 @@ verdict, clamp, delivery event), per-attempt telemetry (`_driver/<stage>.jsonl` 
 class, kill signals, token usage), the fetched records themselves (`_records/`, receipts indexed in
 `_driver/receipts.json`), and the receipt set ([03 §7](03-run-lifecycle.md#7--run-directory-anatomy)
 maps all of it). The provider-usage ledger tallies billable register calls per run (billing-grade:
-counts, retries, errors, cache hits, duplicate-fetch splits), and the token rollup accounts every
+counts, retries, errors, cache hits, duplicate-fetch splits), and the token rollup counts every
 attempt including retry waste — tokens only, no currency, by directive.
 
 ## 7 — The memory that keeps it honest
@@ -230,12 +230,12 @@ Three layers, from cheapest to most authoritative:
 
 1. **The $0 replay harness** (`replay-archive.mjs`): re-runs every validator and the lint over the
    archived corpus and diffs against a snapshot; any verdict-string flip fails (exit 2). Nothing in
-   `.github/workflows/` runs it, and a hosted runner could not: the corpus is real client matter that
+   `.github/workflows/` runs it, and a hosted runner could not: the corpus is real clearance data that
    stays on the machine holding it, and the snapshot lives outside the git tree. So the gate is a
    hand-run convention — `--update` on main, diff on the candidate, every flip an intended fix.
    Catches structural/validator regressions; cannot see reasoning drift.
 2. **Gate metrics on holdout runs** (`gate-metrics.mjs`): deferral rendering, skeptic consumption,
-   scored-finding grounding, client-tier match, lint first-pass tax — a fix is accepted only if the
+   scored-finding grounding, `clientTierMatch`, lint first-pass tax — a fix is accepted only if the
    metrics move on runs it never cited.
 3. **The reference library**: lawyer-blessed verdicts on real matters, re-run in a **paid A/B**
    for any grade-moving change, read against the system's measured run-to-run wobble (the
@@ -261,7 +261,7 @@ write nothing and 7 that do:
   `get_provider_usage` (recomputed live from the billing ledger, with drift detection),
   `get_coverage`, `search`, `decision_timeline`, `run_changes` (stable-cursor change feed),
   `diff_artifact` (with diff-ref whitelisting that closes cross-run path escapes), and
-  `get_delivery_packet` (the run's send payload; never exposed to client tokens).
+  `get_delivery_packet` (the run's send payload; never exposed to `user` or `account` tokens).
 - **Read, cross-run** — `list_runs`, `search_runs`, `list_profiles`, `list_outbox_events`, plus the
   two free pre-order reads `describe_options` and `plan_run`, which resolve what a search *would* do
   without reserving, spending or queueing anything.
@@ -269,22 +269,22 @@ write nothing and 7 that do:
   `what_if_run` → one sandboxed stage; `what_if_result` → collect a queued one) — **executing** is
   local stdio only, never remote, for any principal. The confirmation token is a deliberate-action
   handshake, not a crypto boundary; the security boundary is ops scope + local-only execution.
-  Since the owner's 2026-08-27 ruling a client ACCOUNT reaches all three, and `what_if_run` on that
+  Since the owner's 2026-08-27 ruling an `account` principal reaches all three, and `what_if_run` on that
   path ENQUEUES into `<runDir>/_experiments/_queue/` rather than shelling — `driver/whatif-worker.mjs`,
-  drained by the runner, is what spawns the sandbox. Because the token is unsigned, a client call must
-  also name its `runId` so the account gate fires, and the enqueue refuses a token naming another run.
+  drained by the runner, is what spawns the sandbox. Because the token is unsigned, a call on that path must
+  also name its `runId` so the grant check fires, and the enqueue refuses a token naming another run.
 - **5 ops write verbs** (`start_run` — validated atomic enqueue; `stop_run` — real cancel before
   claim, best-effort sentinel after; `feed_context`; and the integrator write-backs `ack_event` and
   `mark_sent`, which refuses to settle a send without a messageId or an explicit attestation) — ops
   scope only, never on the public connector.
 
 One run = one self-auditing directory; the read layer adds no state of its own — it projects the
-run dir and the ledgers. The auth model (four principal kinds; run-bound client tokens reaching
+run dir and the ledgers. The auth model (four principal kinds; run-bound `user` tokens reaching
 exactly `brief`, `read_artifact` gated to the report, and `list_findings` gated to the curated card
 groups) is documented in [09 — Security and data](09-security-and-data.md).
 
-**A signed-in client account reads the audit chain** (ruling 2026-08-27). The audit trail is
-what makes a clearance defensible, and the person who has to defend the filing is the client's
+**A signed-in `account` principal reads the audit chain** (ruling 2026-08-27). The audit trail is
+what makes a clearance defensible, and the person who has to defend the filing is the company's
 lawyer — so `audit`, `narrative`, the record artifacts and a register axis are readable through
 `read_artifact`, the raw `list_findings` path returns the AT#/F#/NR# records, and `get_run`, `trace`
 and `decision_timeline` walk the decision chain. What stays internal is not the chain but the cost

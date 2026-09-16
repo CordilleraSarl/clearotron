@@ -14,7 +14,7 @@ them, by inheritance, never by file-copy into configs.**
 flowchart TB
     subgraph INET["Internet"]
         U["Staff (browser)"]
-        CLI["Client AI agents<br/>(interrogation)"]
+        CLI["Company AI agents<br/>(interrogation)"]
         EXT["Model provider · registries ·<br/>research/case-law APIs"]
     end
     subgraph EDGE["Auth proxy + tunnel<br/>(this deployment: Cloudflare)"]
@@ -67,35 +67,35 @@ are no root units; everything is `systemd --user`.
   codebase: trusted local **stdio** (full tool set — trust boundary is the right to exec the
   binary), a **staff HTTP** face (loopback :18790 behind Tunnel + Access), and a **client HTTP**
   face (loopback :18811) that is a *separate process* with a *different Access audience* — "a
-  client can never reach internal read-all" is a configuration fact, not a runtime branch (startup
+  company's person can never reach internal read-all" is a configuration fact, not a runtime branch (startup
   refuses if the two AUDs are equal). Auth is two-layered and fail-closed:
   - **Outer**: the CF Access JWT is re-verified at origin on every request — RS256 pinned, issuer
     + audience checked, expiry required, email claim must be a real string (array-claim smuggling
     rejected), domain matched exactly on the final `@` (subdomain look-alikes rejected).
   - **Inner**: HMAC-signed scope tokens (`v1.<payload>.<sig>`, timing-safe compare, fail-closed
     without the secret, default TTL 30 days). Four principal kinds, resolved by `visibleTools()` and
-    `authorize()` in `shared/scope.mjs`: **ops** (stdio, or ops token
-    over staff HTTP — reads + ops verbs; what-if only when local), **internal** (verified
-    firm-domain staff — all 23 non-write tools, no writes), **user** (run-bound token minted into the
+    `authorize()` in `shared/scope.mjs`: **`ops`** (stdio, or ops token
+    over staff HTTP — reads + ops verbs; what-if only when local), **`internal`** (verified
+    staff at your own domain — all 23 non-write tools, no writes), **`user`** (run-bound token minted into the
     report's "Ask your AI" link — exactly `brief` + `read_artifact` gated to the report (there is
     one report, and the link block is staff-only at serve time) + `list_findings`
     gated to curated groups, pinned to one run; filter args that could reach internal methodology
-    are stripped), and **account** (a signed-in customer on the client face — their granted
-    accounts' runs, reached either by the CF sign-in with no token, or by a per-person API key,
-    `scope: account`, whose accounts are re-read from the grants file on every request rather than
+    are stripped), and **`account`** (a signed-in person on the client face — the runs of the
+    companies they are granted, reached either by the CF sign-in with no token, or by a per-person API
+    key, `scope: account`, whose companies are re-read from the grants file on every request rather than
     baked into it. Wider *reach* than a report link and, since the owner's 2026-08-27 ruling, more
     *depth* too: the audit chain — the audit trail, the reasoning narrative, the record artifacts, a
     register axis, and the `get_run` / `trace` / `decision_timeline` decision walk. Model identity
     and billed counts stay sealed (`get_telemetry`, `get_provider_usage`), as does the reviewers'
     critique of the engine's own output; the chain's prose goes through the report's own
-    client-safety passes in `mcp-server/lib/audit-view.mjs`, and the artifact set is its own
+    scrub passes in `mcp-server/lib/audit-view.mjs`, and the artifact set is its own
     `ACCOUNT_ARTIFACTS` so that widening it never widens the forwardable report link. The same ruling
     opened WHAT-IF, and on this face it queues rather than shells: `what_if_run` writes a job into the
     run's own `_experiments/_queue/` and `driver/whatif-worker.mjs` spawns the sandbox from a service
-    process, so no remote face executes the engine. The confirmation token is unsigned, so a client
-    call must also name its `runId` — the account gate keys on that, and the enqueue refuses a token
+    process, so no remote face executes the engine. The confirmation token is unsigned, so a call on
+    this face must also name its `runId` — the grant check keys on that, and the enqueue refuses a token
     naming a different run).
-    Scope resolution is positive: no token and not firm
+    Scope resolution is positive: no token and not
     staff ⇒ 403 — the old silent default-to-internal was a real bug, now regression-pinned.
     The API-key door is a fourth process (loopback :18812) with **no Access in front** — the trade is
     explicit: a mandatory key replaces the browser sign-in, and the mode refuses to start if anything
@@ -120,12 +120,12 @@ from the repository root; the rest are relative to `driver/`.
 
 | Destination | What is sent | Code |
 |---|---|---|
-| **The reasoning provider** — `api.anthropic.com` through the Claude CLI, or OpenAI through the Codex CLI | The whole matter: the mark and its variants, the Nice classes, the goods and services wording, the jurisdictions, the requester and forwarding fields of the job file, the customer profile and risk framework the stage reads, the register records already fetched, and every prior stage's artifact | `engine/anthropic-agent.mjs` spawns `claude`; `engine/openai-agent.mjs` spawns `codex`. **The CLI opens the connection — no driver code calls the provider.** Subscription mode deletes `ANTHROPIC_API_KEY` from the child environment (`anthropic-agent.mjs`) |
+| **The reasoning provider** — `api.anthropic.com` through the Claude CLI, or OpenAI through the Codex CLI | The whole matter: the mark and its variants, the Nice classes, the goods and services wording, the jurisdictions, the requester and forwarding fields of the job file, the company profile and risk framework the stage reads, the register records already fetched, and every prior stage's artifact | `engine/anthropic-agent.mjs` spawns `claude`; `engine/openai-agent.mjs` spawns `codex`. **The CLI opens the connection — no driver code calls the provider.** Subscription mode deletes `ANTHROPIC_API_KEY` from the child environment (`anthropic-agent.mjs`) |
 | **`api.perplexity.ai/v1/agent`** | The mark and its variants, the goods wording, and the marketplace, dictionary, and meaning probes. The driver writes the grid spec and dictates every cell; the model does not compose the sweep | `providers/perplexity/src/core.js`. On a clearance the `common-law`, `common-law-half`, and `synthesis` stages hold it through `engine/mcp/perplexity-server.mjs` (`engine/mcp/gather-config.mjs`); on a knockout the code-side sweep calls the adapter directly (`pipeline-knockout.mjs`), and with no `PERPLEXITY_API_KEY` that call is never made — the screen skips the sweep and discloses it, so nothing on this row leaves the box |
 
 **The one register you configure.** The `register-unit` stages send the mark string, its generated
 variants, the Nice classes, office filters, and record ids for fetches. They do not send the requester,
-the client name, the goods description, or any profile material.
+the company's name, the goods description, or any profile material.
 
 | `CLEAROTRON_DATABASE` | Host | Code |
 |---|---|---|
@@ -189,32 +189,32 @@ stylesheets above.
   non-secret attribution values (session key for usage attribution, agent id) ride the config.
 - **Register credentials are preflighted** at run start and resume — a missing credential fails
   fast before any model spend, never mid-run or at delivery.
-- **Git-side hygiene**: profiles and their audit log are tracked (client-identifying — see below);
+- **Git-side hygiene**: profiles and their audit log are tracked (they identify real companies — see below);
   the replay snapshot deliberately lives *outside* the git tree because it holds mark names; and
-  the driver's `.gitignore` blocks run-directory shapes so a stray run dir (client matter data) can
+  the driver's `.gitignore` blocks run-directory shapes so a stray run dir (real clearance data) can
   never be swept into a backup commit.
 
 ## Data classes and where they live
 
 | Class | Locations | Notes |
 |---|---|---|
-| **Client matter data** | queue files + prose sidecars; run dirs; archive tree; publish pool; outbox packets | The crown jewels. Runs are per-agent-workspace; the pool is the only web-reachable copy (Access-gated, group-readable 0640) |
+| **Clearance data** | queue files + prose sidecars; run dirs; archive tree; publish pool; outbox packets | The crown jewels. Runs are per-agent-workspace; the pool is the only web-reachable copy (Access-gated, group-readable 0640) |
 | **Registry records** | `_records/`, telemetry ledgers | Licensed provider data — contract terms govern retention/transfer at handover |
-| **Doctrine** | `skills/`, framework decks, worked examples | The asset; transfers under the definitive agreement. Worked examples derive from real matters — treat as client-adjacent |
-| **Customer profiles** | `profiles/*.json`, context packs, `_audit.log` | Client-identifying by design (names, own brands, competitor lists) — the reason this *pack* names no clients |
-| **Reference library / calibration corpus** | outside the repo | Built on real client matters — **confidential client material, not freely transferable IP**; transfer needs a client-consent/sanitization plan |
+| **Doctrine** | `skills/`, framework decks, worked examples | The asset; transfers under the definitive agreement. Worked examples derive from real matters — treat them as close to real company data |
+| **Company profiles** | `profiles/*.json`, context packs, `_audit.log` | They identify real companies by design (names, own trading names, competitor lists) — the reason this *pack* names none |
+| **Reference library / calibration corpus** | outside the repo | Built on real clearances — **confidential company material, not freely transferable IP**; transfer needs a consent and sanitization plan agreed with those companies |
 | **Telemetry** | `~/trademark/telemetry/*.jsonl` (a box upgraded across the move keeps the pre-change telemetry directory — resolved by existence, oldest first),`_driver/*.jsonl` | Billing-grade provider usage + attempt telemetry; append-only; no automated retention |
 
-**Posture commitments** (engineering-true, restated from the outward materials): no client data
-trains any model; each client's context is isolated in its profile bundle and frozen per run;
-privileged-and-confidential handling is a per-client delivery flag; and there is no separate
-client-facing export to keep in step — one report, with what a non-staff reader
-receives prepared at a single serve-time chokepoint (`driver/portal-report.mjs`) and the MCP client
-cut composed from the same driver transforms rather than restating them
+**Posture commitments** (engineering-true, restated from the outward materials): no company's data
+trains any model; each company's context is isolated in its profile bundle and frozen per run;
+privileged-and-confidential handling is a per-company delivery flag; and there is no separate
+export for outside readers to keep in step — one report, with what a non-staff reader
+receives prepared at a single serve-time chokepoint (`driver/portal-report.mjs`) and the client
+face's cut composed from the same driver transforms rather than restating them
 ([07 §4](07-quality-and-audit.md#4--the-pre-delivery-lint-predelivery-lintmjs)).
 
 **Retention** is currently append-forever everywhere (runs, archive, pool, ledgers). That is a
-deliberate audit-trail choice, but it means data-subject or client-offboarding requests are manual
+deliberate audit-trail choice, but it means data-subject or company-offboarding requests are manual
 today — flag for the buyer's compliance review.
 
 ## Supply chain and dependency posture

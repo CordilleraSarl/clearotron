@@ -85,7 +85,7 @@ intake AI, and classifies rather than just rejecting:
 | `run` | Good to go | warnings may note proceed-with-default choices |
 
 Warnings never block: a missing TMP reference produces a `noref` slug instead of a silent reject;
-an unknown customer proceeds on the generic profile with a late-bind watch (§4).
+an unknown company proceeds on the generic profile with a late-bind watch (§4).
 
 **Matter-level dedup** (`runner.mjs`). Queue-file dedup is per *message*; a "please
 proceed" reply in an already-handled thread arrives under a new message-id. The driver therefore
@@ -94,7 +94,7 @@ job within the window (a fixed 24 hours) that matches a prior entry by
 exact signature (`forwarder|mark|classes|customer|ref`, plus a `|level:<product>` dimension on any
 non-baseline product) or by same conversation-thread with agreeing mark *and* agreeing product. The
 product dimension is why a knockout→clearance escalation of one matter — same forwarder, mark,
-classes, customer and ref — is never parked as a duplicate; that escalation is the offering's
+classes, company and ref — is never parked as a duplicate; that escalation is the offering's
 headline flow. Three distinct marks forwarded in one thread all run; a forced re-run is
 `dupOverride: true` in the job. Failed runs drop their ledger entry so a genuine re-send is never
 blocked.
@@ -284,7 +284,7 @@ Reading order for the phases, with what code decides at each:
     **verdict sidecar** (`_driver/verdict.json`) then becomes the single verdict authority for
     everything downstream; failing to write it is fatal.
 14. **Delivery phase** — report overview (fatal), per-finding report cards (fan-out, individually
-    non-fatal, assembled by code with a code-built "Only you can close these" section), client
+    non-fatal, assembled by code with a code-built "Only you can close these" section), the
     audit workbook from the findings spine (code, count-guarded, non-fatal), then the pre-delivery
     lint block: registry-record closure (every cited register URI owes a fetched record — absentees
     are code-fetched), lint checks, registry identifier auto-correction *from the record*, one warm
@@ -302,10 +302,10 @@ coverage terminal, the core-artifact gate, and the client gate. *Note-and-contin
 and enrichment (blind-frame, frame-diff/reopen, skeptic, case-law, per-card renders, audit build,
 closure passes, receipts, rollups, notify). An outage in a checker never destroys completed gather work.
 
-**One report, no client fork.** There is no separate client-facing summary artifact and no stage
-that writes one: a live run produces one report, and what a non-staff reader receives is prepared at
+**One report, no second version.** There is no separate summary artifact for outside readers and no
+stage that writes one: a live run produces one report, and what a non-staff reader receives is prepared at
 serve time from it. The lint checks and validators that used to cover a second surface are kept so
-archived runs still replay unchanged, but a live run passes them nothing. The report a client reads
+archived runs still replay unchanged, but a live run passes them nothing. The report a company's people read
 is guarded by the code-built verdict-bound row, the pre-delivery lint, and the client gate.
 
 ## 4 — Delivery handoff
@@ -322,7 +322,7 @@ any notify, and both halves are idempotent.
   50-minute rescan is the backstop. A lost wake can delay a send; it can never lose or double-send
   one — the deliverer re-derives everything from the packet and the sentinels.
 
-**Late-bind** deserves a note: a job forwarded for an unknown customer runs on the generic profile
+**Late-bind** deserves a note: a job forwarded for an unknown company runs on the generic profile
 with four code checkpoints (`pre-matter-frame`, `pre-digest`, `pre-synthesis`, `pre-delivery`)
 polling for a `customer-bind.json` dropped by the operator; each checkpoint applies the strongest
 still-safe action its phase allows (`lateBindAction`: fold the job, ride the digest message,

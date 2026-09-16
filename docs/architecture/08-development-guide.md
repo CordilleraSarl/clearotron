@@ -68,7 +68,7 @@ These are the things a well-meaning refactor breaks. Each is enforced somewhere;
    (+ `stallSec` **strictly less than** the timeout for any stage whose first action can stream
    nothing — a long tool call looks like a stall), `out(paths)` (absolute path via `paths()`),
    `validate`, and the `message(ctx)` with its `reads([...])` (the *live* skill reads —
-   `skillReads:` is declarative metadata only; do not "reconcile" them, per-customer framework
+   `skillReads:` is declarative metadata only; do not "reconcile" them, per-company framework
    selection depends on the difference).
 2. **Write its validator** in `verify.mjs` — lenient enough never to false-fail a valid leaf,
    strict on truncation/emptiness/wrong-stage output. If it needs run context, read the frozen
@@ -225,8 +225,8 @@ Four realities to respect:
 - **The `||=` env guards leak**: a shell exporting a real register credential or
   `CLEAROTRON_PLAN_DISPATCH=on` is *not* overridden by the harness — run the suite in a clean env.
   (CI is safe.)
-- **A skipped guard is not a passed guard.** Several checks enumerate every tracked file (no client
-  identifier, no operator identity, no citation of a path the public tree will not carry, every env
+- **A skipped guard is not a passed guard.** Several checks enumerate every tracked file (no real
+  company's identifier, no operator identity, no citation of a path the public tree will not carry, every env
   var written down) and can only do that off a git checkout; off a source zip they skip by name.
   CI asserts both that no guard printed `[repo-guard] SKIPPED` *and* that at least one printed
   `[repo-guard] ok` — the second half matters, because "no SKIPPED line" also passes on an empty log.

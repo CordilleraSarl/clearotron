@@ -22,15 +22,15 @@
 
 | Tier | Who changes it | Through what | Examples |
 |---|---|---|---|
-| **T1 — Client** | The client (self-service) | Agent conversation → job spec; client portal | mark, classes, deadline, own profile fields, flags |
-| **T2 — Staff/ops UI** | Firm staff | the portal's brand screens, profile-service | customer profiles, project overlays, saved searches, run curation |
+| **T1 — Company** | A company's own people (self-service) | Agent conversation → job spec; the portal | mark, classes, deadline, own profile fields, flags |
+| **T2 — Staff/ops UI** | The operator's staff | the portal's company settings screens, profile-service | company profiles, project overlays, saved searches, run curation |
 | **T3 — Operator env** | Ops, on the box | the EnvironmentFile + restart/next-activation | hostnames, models, caps, timeouts, feature gates |
 | **T4 — Backend-only** | Ops, deliberately | env secrets, unit files, code defaults | credentials, token secrets, data-plane paths, dev seams |
-| **T5 — Edge auth** | Ops, in the edge console | the auth proxy's own console, off-box (reference: a Cloudflare Zero-Trust tenant) | ingress routes, access apps + policies |
+| **T5 — Edge auth** | Ops, in the edge console | the auth proxy's own console, off-box (reference: Cloudflare Zero Trust) | ingress routes, access apps + policies |
 
-The UI mapping, as the `portal-ui` nav is actually structured: T2 → **`brand.profile`** ("Brand
-profile", everything specific to one brand owner) + **`brand.projects`** + **`brand.searches`**
-("Custom searches"), plus **`admin.access`** ("People & access") for who may sign in; T3 →
+The UI mapping, as the `portal-ui` nav is actually structured: T2 → **`brand.profile`** ("Profile",
+everything specific to one company) + **`brand.projects`** + **`brand.searches`**
+("Search templates"), plus **`admin.access`** ("People & access") for who may sign in; T3 →
 **read-only** in **`admin.config`** ("Global config"): which engine is running the searches and who is
 billed for them, and every provider a search depends on with a configured-or-missing state — secrets,
 paths and switch names deliberately excluded, visible to staff, changed only on the backend.
@@ -55,8 +55,8 @@ recorded.
 |---|---|---|---|
 | 1 | The EnvironmentFile (`%h/.env`) | secrets + T3 operator env for the generic units | ops, by hand. **Keep it dedicated to this product where possible** — sharing one env file with another stack couples rotation and backup blast-radius across products |
 | 2 | systemd user units (`driver/systemd/`, `mcp-server/remote/`) | ports, CF Access mirrors, paths. Two kinds — **generic** (defer to the EnvironmentFile; safe to sync verbatim) vs **template** (placeholders in-repo, real identity-edge values in the live copies; merge by hand after a diff — banner-marked). Copying a template over a live unit replaces working auth with placeholders that *look* configured, which is why the two kinds are distinguished at all | this repo's deploy |
-| 3 | The config store (separate git repo) | customer profiles, project overlays, frameworks/skills | profile-service + client portal git auto-commit; frameworks by git edit (deliberate) |
-| 4 | Client allowlist file (`CLIENT_ACCESS_MAP` JSON) | client per-email → customer grants | git + PR (today it lives in the integrator's repo — a candidate to move into the config store so the product owns all its config) |
+| 3 | The config store (separate git repo) | company profiles, project overlays, frameworks/skills | profile-service + portal git auto-commit; frameworks by git edit (deliberate) |
+| 4 | The allowlist file (`CLIENT_ACCESS_MAP` JSON) | per-email → company grants | git + PR (today it lives in the integrator's repo — a candidate to move into the config store so the product owns all its config) |
 | 5 | Web-server / edge routing (reverse-proxy block or tunnel ingress; this deployment: Caddy + Cloudflare) | which hostname reaches which loopback port; the pool's file-server root | ops |
 | 6 | Data roots (`CLEAROTRON_REPORTS_DIR`, shares) | published reports, quality flags | services |
 | 7 | **Edge console** (off-box; reference: Cloudflare) | ingress routes + access apps and who they admit | ops — **not recoverable from the box**; keep an exported note of apps/AUDs in the deployment's ops repo |
@@ -75,7 +75,7 @@ fills the same three roles, and the product requires none of them by name.
    `MCP_ALLOWED_EMAIL_DOMAINS` appear in unit files as **mirrors of the dashboard**, not a second
    setup. They must match the edge; rotation touches both. The CF-gated loopback services
    deliberately do NOT load the shared EnvironmentFile so one app's AUD can't shadow another's
-   (client-access/client-mcp refuse to start if client AUD == staff AUD).
+   (`client-access`/`client-mcp` refuse to start if the client AUD == the staff AUD).
 3. **Rendered links (T3, env):** `CLEAROTRON_REPORTS_URL`, `CLEAROTRON_MCP_URL`, `CLEAROTRON_CLIENT_MCP_URL`,
    `CLEAROTRON_ACCESS_DOMAIN` are neither of the above — they are what gets *printed into reports and
    emails*. Wrong values render dead links; unset values are omitted.
@@ -88,18 +88,18 @@ product doc.
 
 | Surface | Tier | Managed via | Storage | State today |
 |---|---|---|---|---|
-| **Job spec** (per matter): id, forwarder(+email/domain), markName/marks[], classes\|goods/use, ref, profileKey, projectKey, searchLevel/recipeKey, deliveryRoute, customer(+Unknown), deliverableSpec, commercialFlexibility, priorUse, dupOverride, deadline, brief | T1 | agent conversation → `start_run` MCP verb (ops token) → queue; validated by `enqueue-schema.mjs` | queue → run dir | LIVE (conversational; portal `run/plan`+`run` API exists) |
-| **Customer profile** (17 keys — identity/rating/provenance: name, matchDomains, selfExclusionOwners, frameworkPath, workedExamplesPath, allowedRecipes, jxPolicy, runCaps, demoData (`true` marks the record as demo data; a real clearance is refused at the runner's admission wall); overlayable: platforms, defaultClasses, defaultJurisdictions, marketplaceDensity, delivery, riskAppetite, industry, defaultProduct) | T2 (staff) + T1 (client edits own via portal §C) | profile-service UI (staff, `/profiles/*`); client-access UI (own profile) | config store, git auto-commit | LIVE. Merge law: project **replaces** every overlayable key except `platforms`, which **unions** (client floor never subtractable) |
-| **Project overlays** (8 overlayable keys) | T2 | profile-service UI | config store `profiles/projects/<cust>/` | LIVE. The project form deliberately withholds `defaultProduct` and both `delivery` sub-keys — for the first the sparse save path has no `""` ⇒ clear branch, so the control could only ever be turned on; for the second the engine replaces `delivery` wholesale, so a partial overlay would silently drop the customer's other sub-keys. Both are customer-level controls until the server side changes |
+| **Job spec** (per matter): id, forwarder(+email/domain), markName/marks[], classes\|goods/use, ref, profileKey, projectKey, searchLevel/recipeKey, deliveryRoute, `customer`(+Unknown), deliverableSpec, commercialFlexibility, priorUse, dupOverride, deadline, brief | T1 | agent conversation → `start_run` MCP verb (ops token) → queue; validated by `enqueue-schema.mjs` | queue → run dir | LIVE (conversational; portal `run/plan`+`run` API exists) |
+| **Company profile** (17 keys — identity/rating/provenance: name, matchDomains, selfExclusionOwners, frameworkPath, workedExamplesPath, allowedRecipes, jxPolicy, runCaps, demoData (`true` marks the record as demo data; a real clearance is refused at the runner's admission wall); overlayable: platforms, defaultClasses, defaultJurisdictions, marketplaceDensity, delivery, riskAppetite, industry, defaultProduct) | T2 (staff) + T1 (a company's people edit its own via portal §C) | profile-service UI (staff, `/profiles/*`); the portal (own profile) | config store, git auto-commit | LIVE. Merge law: project **replaces** every overlayable key except `platforms`, which **unions** (the company's floor is never subtractable) |
+| **Project overlays** (8 overlayable keys) | T2 | profile-service UI | config store `profiles/projects/<cust>/` | LIVE. The project form deliberately withholds `defaultProduct` and both `delivery` sub-keys — for the first the sparse save path has no `""` ⇒ clear branch, so the control could only ever be turned on; for the second the engine replaces `delivery` wholesale, so a partial overlay would silently drop the company's other sub-keys. Both are company-level controls until the server side changes |
 | **Frameworks / skills** (risk-framework-<key>.md + .manifest.json, worked examples, SKILL.md) | T2 (senior-lawyer content) | git edits in the config store (deliberate — the prose deck is the rating authority) | config store `skills/prelim-search/` | LIVE via git; no UI by design |
 | **Recipes / saved searches** (base level + component toggles + emailTable/defaultDeadlineDays/standingInstructions) | T2 | recipe-service UI | `<recipesDir>/<cust>/<slug>.json`, git | **DARK** — code complete, no unit deployed. A saved search is honoured wherever it resolves (the `CLEAROTRON_RECIPES_MODE` door was retired 2026-07-27) |
 | **Run curation** (archive folds, republish, index regen) | T2 | `pool-admin.mjs` CLI only | pool `archive-tags.json` | LIVE, CLI-only |
-| **Client allowlist** (`{version, grants:[{email, customer}]}`) | T2 | git + PR on the `CLIENT_ACCESS_MAP` file | see §2 row 4 | LIVE, file-only; surfaced read-only at `admin.access` |
-| **Ops tokens** (scope ops/user, verbs, accounts, TTL) | T4 | `mint-token.mjs` CLI; jti denylist file | operator-held tokens | LIVE, CLI |
+| **Allowlist** (`{version, grants:[{email, customer}]}`) | T2 | git + PR on the `CLIENT_ACCESS_MAP` file | see §2 row 4 | LIVE, file-only; surfaced read-only at `admin.access` |
+| **Ops tokens** (scope ops/user, verbs, companies, TTL) | T4 | `mint-token.mjs` CLI; jti denylist file | operator-held tokens | LIVE, CLI |
 
 ## 4b. The install surface names ()
 
-The variables a **customer or installer** ever types carry the product’s own prefix. They are listed
+The variables a **user or installer** ever types carry the product’s own prefix. They are listed
 by name in §5 below and in the upgrade table in INSTALL.md.
 `CLEAROTRON` is the internal codename of the first product this engine shipped and means nothing to a reader
 who has not read the code. Vendor credentials keep the vendor’s name (`SIGNA_API_KEY`,
@@ -152,8 +152,8 @@ structural, or dev seam); [dev] = dev/test seam, never set in prod.
 | `CLEAROTRON_MCP_URL` | fail-closed omit | Staff "Ask your AI" connector base |
 | `CLEAROTRON_CLIENT_MCP_URL` | fail-closed omit | Client connector base |
 | `CLEAROTRON_ACCESS_DOMAIN` | omit note | Identity domain in the delivery email access note |
-| `CLEAROTRON_BOX` | none — required (unset or unrecognised ⇒ the unit-inventory line fails and names this variable) | Which deployment this is (`prod` \| `test`), for `scripts/live-surface-check.mjs`'s unit inventory. Self-declared, never inferred from the account name. Without a recognised value, the half that looks for a unit declared here and not running cannot run, because a guess would report every other deployment's units missing; so the line fails instead of passing with that half unrun |
-| `CLEAROTRON_BRAND_NAME` / `CLEAROTRON_BRAND_TAGLINE` / `CLEAROTRON_BRAND_PRODUCT` | reference-tenant literals in `shared/brand.mjs` | Tenant brand seam (single-sourced) |
+| `CLEAROTRON_BOX` | none — required (unset or unrecognised ⇒ the unit-inventory line fails and names this variable) | Which deployment this is (`prod` \| `test`), for `scripts/live-surface-check.mjs`'s unit inventory. Self-declared, never inferred from the login name. Without a recognised value, the half that looks for a unit declared here and not running cannot run, because a guess would report every other deployment's units missing; so the line fails instead of passing with that half unrun |
+| `CLEAROTRON_BRAND_NAME` / `CLEAROTRON_BRAND_TAGLINE` / `CLEAROTRON_BRAND_PRODUCT` | reference-deployment literals in `shared/brand.mjs` | Installation brand seam (single-sourced) |
 
 ### 5.2 Engine & models — T3
 
@@ -230,7 +230,7 @@ Per-lane `CLEAROTRON_NATIVE_LANGUAGE_<XX>` — `zh`, `ja` and `ko` all work (`LA
 `driver/jx-lanes.mjs`); default on, set `0` to kill one lane — plus `CLEAROTRON_JX_SERP_DEADLINE_MS`.
 `CLEAROTRON_JX_SERP_GRID`, `CLEAROTRON_JX_NATIVEREAD` and `CLEAROTRON_JX_CONSUME` were **deleted by item 8**
 under ADR-0002: each was off here and on in production, so the shipped default described a
-configuration nobody ran. The slices now run on conditions a client can already see.
+configuration nobody ran. The slices now run on conditions a requester can already see.
 
 `CLEAROTRON_KNOCKOUT_MODE`, `CLEAROTRON_JX_LANES` and `CLEAROTRON_RECIPES_MODE` were **RETIRED 2026-07-27** and
 have no reader. Depth availability is decided by `BUILT` (`driver/search-policy.mjs`) and the wired
@@ -260,13 +260,13 @@ bodies to one file and restores the unbounded growth the move removed),
 `PROFILE_REPO_ROOT`, `RECIPE_REPO_ROOT`, `CLEAROTRON_OAUTH_BRIDGE` (module-relative),
 `OAUTH_BRIDGE_CREDS_DIR`, `OAUTH_BRIDGE_CLIENT_NAME`.
 
-`PROFILE_DIR` **left this list.** The customer store is named once, by
+`PROFILE_DIR` **left this list.** The company store is named once, by
 `CLEAROTRON_CUSTOMERS_DIR`, and resolved through `shared/customer-store.mjs` for the settings
 surface and the runs alike. It is not accepted as a fallback: a box setting only the retired name
 would otherwise pull the settings surface onto a second store, which is the split that issue
 closed. It still appears in `env-set-in-production.txt` because production is measured, not
 edited — that box runs pre-rebuild code and genuinely still sets it.
-| `CLEAROTRON_JX_SUBCLASS_DB` | unset ⇒ the similar-group lookup REFUSES by name | Path to `similar-groups.db`, built by `node providers/jx-subclass/load-public.mjs` from the committed `public/` tables. Not committed (the office sources permit redistributing the data, not their prose), so a deployment builds it. Unset or missing is a refusal, never an empty answer: `node:sqlite` creates an empty file on open and every lookup over it would read as "no similar groups" — a false clear in the offices a Western client can least check |
+| `CLEAROTRON_JX_SUBCLASS_DB` | unset ⇒ the similar-group lookup REFUSES by name | Path to `similar-groups.db`, built by `node providers/jx-subclass/load-public.mjs` from the committed `public/` tables. Not committed (the office sources permit redistributing the data, not their prose), so a deployment builds it. Unset or missing is a refusal, never an empty answer: `node:sqlite` creates an empty file on open and every lookup over it would read as "no similar groups" — a false clear in the offices a Western company can least check |
 
 ### 5.7 Delivery & comms — T3/T4
 
@@ -300,10 +300,10 @@ set), `TRADEMARK_MCP_TOKEN_SECRET` (+`TRADEMARK_MCP_TOKEN_SECRET_PREVIOUS` rotat
 only**; the portal refuses to start without it — see [docs/SECURITY.md](../SECURITY.md)).
 
 **Scrub guard (test-time only — never read on a run path, and outside the five tiers above).**
-`CLEAROTRON_IDENTIFIER_BLOCKLIST` points at `identifier-blocklist.json` in the customer-config store: the
-retired customer/mark roster the scrub guard matches on, kept out of the product repo because the list
-of names *is* what the guard protects. Unset is a SUPPORTED mode, not a degraded one — the guard runs
-on synthetic sentinels built into the guard, which is how the public repository runs
+`CLEAROTRON_IDENTIFIER_BLOCKLIST` points at `identifier-blocklist.json` in the config store: the
+retired roster of real companies and marks the scrub guard matches on, kept out of the product repo
+because the list of names *is* what the guard protects. Unset is a SUPPORTED mode, not a degraded one —
+the guard runs on synthetic sentinels built into the guard, which is how the public repository runs
 it. Set-but-unreadable, malformed, or below the size floor **throws**: a truncated table reads as a
 smaller blocklist, and a smaller blocklist reads as a cleaner repo. **Whether the real table is required
 is the CALLER's declaration, never the environment's**: `publication-scan.mjs` asks for it in its own
@@ -386,7 +386,7 @@ to be written out.
 | recipe service | `RECIPE_OIDC_ISSUER` | `RECIPE_JWKS_URL` | `RECIPE_EMAIL_CLAIM` | `RECIPE_AUTH_HEADER` |
 | client MCP origin | `CLIENT_MCP_OIDC_ISSUER` | `CLIENT_MCP_JWKS_URL` | `CLIENT_MCP_EMAIL_CLAIM` | `CLIENT_MCP_AUTH_HEADER` |
 
-Each is T4, each is optional, and each unset falls back exactly as the two older sets do — the client
+Each is T4, each is optional, and each unset falls back exactly as the two older sets do — the client MCP
 row to the staff face's matching value first (`TRADEMARK_MCP_OIDC_ISSUER`, `TRADEMARK_MCP_JWKS_URL`,
 `TRADEMARK_MCP_EMAIL_CLAIM`, `TRADEMARK_MCP_AUTH_HEADER`), then to the shapes derived from
 `CF_ACCESS_TEAM` for whichever JWT-fronting proxy the deployment runs.
@@ -419,7 +419,7 @@ replayed as the other. First start in local mode mints a passphrase and prints i
 byte-for-byte the behaviour that shipped before the name existed, dev bypass included; `token` requires
 a valid HMAC-signed scoped access key on **every** request and runs no auth proxy at all. An
 unrecognised value is fatal. `token` is the far end of the local install's Start button — the portal
-holds a verb-scoped, account-capped ops key and this door demands it — and it is **not** a bypass:
+holds a verb-scoped, company-capped ops key and this door demands it — and it is **not** a bypass:
 `lib/http-handler.mjs` refuses outright to build it alongside `TRADEMARK_MCP_AUTH_DISABLED`, because a
 synthetic identity would answer before the mandatory key ever ran. The mode is loopback-only (an ops key
 travels in a header or the query string), requires `TRADEMARK_MCP_ALLOWED_HOSTS` exactly as the
@@ -515,8 +515,8 @@ change. The product's known mirror classes:
 
 | Value class | Copies (by design) | Break mode if they diverge |
 |---|---|---|
-| CF Access team / AUD / domain gates | edge (dashboard) + each fronted unit's inline env | staff or client lockout, service by service |
-| `TRADEMARK_MCP_TOKEN_SECRET` | EnvironmentFile + any integrator-hosted artifacts-MCP env block | run-bound client tokens fail verification |
+| CF Access team / AUD / domain gates | edge (dashboard) + each fronted unit's inline env | staff or company lockout, service by service |
+| `TRADEMARK_MCP_TOKEN_SECRET` | EnvironmentFile + any integrator-hosted artifacts-MCP env block | run-bound `user` tokens fail verification |
 | Register-provider credentials | EnvironmentFile + integrator plugin config (when both consume the provider) | one consumer silently unauthenticated |
 | Profiles/skills store paths | EnvironmentFile + service unit files (+ integrator MCP env) | roster-mismatch class (the PR #14 incident) |
 | Pool root | code default + units + web-server file root (+ integrator MCP env) | reports publish where nothing serves |
