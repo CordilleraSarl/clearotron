@@ -42,6 +42,9 @@ const shotAt = process.argv.includes('--shot') ? process.argv[process.argv.index
 // confirmation it asks before it acts. One `--shot` path cannot carry both, and the second is the one
 // worth looking at — a reader who only ever sees the pre-confirm pill has not seen what they agree to.
 const shotsDir = process.argv.includes('--shots') ? process.argv[process.argv.indexOf('--shots') + 1] : null
+// ONE PICTURE PER STATE People, Give access and Modify access are accepted on, in light and dark, at the
+// page's full height. A directory too; the three --shots pictures stay what they were.
+const shotDir = process.argv.includes('--shot-dir') ? process.argv[process.argv.indexOf('--shot-dir') + 1] : null
 
 if (!existsSync(join(DIST, 'index.html'))) {
   console.error(`no build at ${DIST} — run: npm run build:ui`)
@@ -136,11 +139,12 @@ const HOSTED_PEOPLE = () => ({ note: '', unknownAccounts: [], grantsFile: null, 
     access: [{ kind: 'organisation', key: 'org-a', name: 'Apmxc Group' }, { kind: 'company', key: KEY2, name: NAME2, org: 'org-b' }] },
   { email: 'viewer@example.test', permissions: { run: false, manage: false }, access: [{ kind: 'company', key: KEY, name: NAME, org: 'org-a' }], dangling: [], listed: true, covered: true, keys: 0 },
   // A FOURTH PERSON, AND THE ONLY REASON FOR THEM IS `listed: false`. They appear in a company's access
-  // list and have no permissions entry at all, which is a different fact from having permissions set to
-  // none — the server has always said which, and the decoder dropped the field, so this row rendered as
-  // a considered "view only" for as long as the page has existed. Nothing here would have caught it
-  // either, because the fixture had nobody of this shape.
+  // list and have no permissions entry at all. The row reads what that gives them — "View reports", in
+  // the view-only row's muted colour — and never a phrase about how the record was written.
   { email: 'reach@example.test', permissions: { run: false, manage: false }, access: [{ kind: 'company', key: KEY2, name: NAME2, org: 'org-b' }], dangling: [], listed: false, covered: true, keys: 0 },
+  // ONE COMPANY OF AN ORGANISATION, AND RUN. The grant whose summary has to say the half a reader most
+  // often gets wrong: nothing else in that organisation is visible to them.
+  { email: 'brand@example.test', permissions: { run: true, manage: false }, access: [{ kind: 'company', key: KEY, name: NAME, org: 'org-a' }], dangling: [], listed: true, covered: true, keys: 0 },
   // A WHOLE EMAIL DOMAIN. It is a row like any other and is changed and removed like one, but the
   // confirmation must not read as though one person is losing access — a reader skimming the address
   // sees a name shape. Here to drive that sentence rather than to reason about it.
@@ -155,6 +159,16 @@ const LOCAL_PEOPLE = { note: '', unknownAccounts: [], grantsFile: null, canAdd: 
   { email: 'lawyer@cordillera.test', permissions: { run: true, manage: true }, access: [{ kind: 'everything' }], dangling: [], listed: true, covered: true, keys: 0 },
   { email: 'newcomer@example.test', permissions: { run: false, manage: false }, access: [{ kind: 'organisation', key: 'demo-org', name: 'Demo Org' }], dangling: [], listed: true, covered: true, keys: 0 },
 ] }
+
+// What the activity log answers People with: no log kept, a log with nobody in it, or one with two people.
+// Flipped per pass, because the panel's empty state and its populated rows are both accepted states.
+let activity = 'unavailable'
+const OBSERVED = () => activity === 'empty' ? { available: true, truncated: false, people: [], note: null }
+  : activity === 'some' ? { available: true, truncated: false, note: null, people: [
+    { email: 'owner@example.test', events: { plan: 3, trigger: 2 }, accounts: [KEY], firstSeen: '2026-09-10T09:00:00.000Z', lastSeen: '2026-09-15T09:00:00.000Z', count: 5 },
+    { email: 'brand@example.test', events: { 'saved-search-save': 1 }, accounts: [KEY, KEY2], firstSeen: '2026-09-12T09:00:00.000Z', lastSeen: '2026-09-12T09:00:00.000Z', count: 1 },
+  ] }
+  : { available: false, truncated: false, people: [], note: 'No activity log is kept here.' }
 
 // THE ENGINE'S OWN ROW for a level, not a restatement of it. `available`/`unavailableNote` are the
 // only additions — deployment state resolved per request, which productRows knows nothing about. This
@@ -288,7 +302,7 @@ const server = createServer((req, res) => {
     if (role !== 'staff') { res.writeHead(404); res.end('{}'); return }
     return json(res, localMode ? LOCAL_PEOPLE : HOSTED_PEOPLE())
   }
-  if (p === '/portal/admin/observed') return json(res, { available: false, truncated: false, people: [], note: 'No activity log is kept here.' })
+  if (p === '/portal/admin/observed') return json(res, OBSERVED())
   if (p === '/portal/api/mcp-access') return json(res, { url: null, keyUrl: null, email: null, enabled: false })
   if (p === '/portal/api/about') return json(res, { name: 'Clearotron', version: null, commit: null, sourceRepo: STUB_SOURCE_REPO, sourceUrl: STUB_SOURCE_REPO, license: null, copyright: '' })
 
@@ -457,31 +471,122 @@ ${HELPERS}
 `
 
 /**
- * People and the form it opens, as the whole-install pass sees them on a hosted install. The form is left
- * clean — the address cleared and the choice unticked — so the unsaved-changes prompt cannot stall the
- * navigation that follows.
+ * What the People scripts read on each of the three screens: the top bar, the activity panel, and the
+ * sentence under the access form. Their own helpers, beside the scripts that use them.
+ */
+const PEOPLE_HELPERS = `
+  // The title slot, and whether the avatar draws active — null when it does not.
+  const bar = () => {
+    const avatar = document.querySelector('button[aria-label="Settings and about"]');
+    return {
+      title: ((document.querySelector('.topbar h1') || {}).innerText || '').trim(),
+      avatarCurrent: avatar ? avatar.getAttribute('aria-current') : 'no avatar on the bar',
+    };
+  };
+  const texts = (sel) => [...document.querySelectorAll(sel)].map((e) => e.innerText.replace(/\\s+/g, ' ').trim());
+  const sentence = () => (document.querySelector('.notice.quiet p') || {}).innerText || null;
+  // The panel under the list: its heading, then one quiet line or one card per person.
+  const activityPanel = () => {
+    const head = [...document.querySelectorAll('.screen div')]
+      .find((d) => d.children.length === 0 && d.innerText.trim() === 'Recent activity');
+    const panel = head ? head.parentElement : null;
+    if (!panel) return null;
+    return {
+      text: panel.innerText.replace(/\\s+/g, ' ').trim(),
+      // One address per card: the marked span that is not a company pill.
+      cards: panel.querySelectorAll('span[data-anon="mark"]:not(.pill)').length,
+      pills: [...panel.querySelectorAll('.pill')].map((e) => e.innerText.trim()),
+    };
+  };
+  // A lever's state, and pressing it until it matches.
+  const lever = (re) => findByText('button.lever', re);
+  const setLevers = async (run, manage) => {
+    if ((lever(/^Run clearances/).getAttribute('aria-pressed') === 'true') !== run) lever(/^Run clearances/).click();
+    if ((lever(/^Manage/).getAttribute('aria-pressed') === 'true') !== manage) lever(/^Manage/).click();
+    await sleep(200);
+  };
+`
+
+/**
+ * People and the form it opens, as the whole-install pass sees them on a hosted install, with the top bar
+ * over both and a rail screen as its control. The form is left clean — the address cleared and the choice
+ * unticked — so the unsaved-changes prompt cannot stall the navigation that follows.
  */
 const PEOPLE_SCRIPT = `
 (async () => {
 ${HELPERS}
+${PEOPLE_HELPERS}
   const out = {};
   try {
+    // THE CONTROL. The rail highlights Clearances, so the bar keeps the scope rule and the avatar is plain.
+    await goto('/portal/clearances');
+    await mustSettle(() => /Clearances/.test(txt()), 8000, 'Clearances never painted');
+    out.railBar = bar();
+    // THE SAME RULE ON THE MENU'S OTHER SCREENS, read against the menu's own labels, so an entry renamed in
+    // the navigation needs no edit here.
+    const avatarButton = document.querySelector('button[aria-label="Settings and about"]');
+    avatarButton.click();
+    await mustSettle(() => document.querySelector('[role="menu"]'), 4000, 'the avatar menu did not open');
+    out.menuLabels = texts('[role="menu"] button[role="menuitem"]');
+    avatarButton.click();
+    out.menuBars = {};
+    for (const path of ['/portal/preferences', '/portal/admin/config', '/portal/about']) {
+      await goto(path);
+      await sleep(400);
+      out.menuBars[path] = bar();
+    }
+
     await goto('/portal/people');
     await mustSettle(() => document.querySelector('table.data tbody tr td'), 8000, 'People never drew its list');
+    await mustSettle(() => activityPanel(), 8000, 'People never drew Recent activity');
+    out.peopleBar = bar();
     out.rows = [...document.querySelectorAll('table.data tbody tr')]
       .map((r) => [...r.querySelectorAll('td')].map((c) => c.innerText.replace(/\\s+/g, ' ').trim()));
+    // The colour each row's permissions are drawn in, keyed by address, so "the same muted colour as the
+    // other view-only rows" is measured rather than assumed.
+    out.permColour = Object.fromEntries([...document.querySelectorAll('table.data tbody tr')].map((r) => {
+      const cells = r.querySelectorAll('td');
+      const address = cells[0] ? (cells[0].querySelector('span') || cells[0]).innerText.trim() : '';
+      return [address, cells[1] ? getComputedStyle(cells[1]).color : null];
+    }));
+    out.key = [...document.querySelectorAll('dl.perm-key dt')]
+      .map((dt) => dt.innerText.trim() + ' — ' + ((dt.nextElementSibling || {}).innerText || '').trim());
+    out.lede = (document.querySelector('.page-header .page-lede') || {}).innerText || null;
+    out.retired = /reach only|no permissions/i.test(txt());
+    out.activity = activityPanel();
     out.addDisabled = findByText('button', /Add a person/).disabled;
     out.localNotice = /signs in one person/.test(txt());
+
     findByText('button', /Add a person/).click();
-    await mustSettle(() => /Give someone access to Clearotron/.test(txt()), 8000, 'Add a person did not open the form');
+    await mustSettle(() => ((document.querySelector('.page-title') || {}).innerText || '').trim() === 'Give access', 8000,
+      'Add a person did not open Give access');
+    await mustSettle(() => document.querySelectorAll('button.attach-row').length > 0, 8000, 'Give access never drew its access tree');
     out.path = location.pathname;
+    out.addBar = bar();
+    out.addLede = (document.querySelector('.page-lede') || {}).innerText || null;
+    out.levers = texts('button.lever');
+    out.paragraphs = texts('.screen p');
+    out.tree = [...document.querySelectorAll('button.attach-row')]
+      .map((b) => [(b.children[1] || {}).innerText || '', (b.querySelector('.sub-t') || {}).innerText || '']);
+    // Before anything is chosen: the instruction, whichever levers are on.
+    out.prompt = sentence();
     const email = document.querySelector('#give-access-email');
     set(email, 'dana@birch.example');
     await sleep(150);
     findByText('button.attach-row', /Apmxc Group/).click();
     await sleep(250);
-    out.sentence = (document.querySelector('.notice.quiet p') || {}).innerText || null;
-    out.saveEnabled = !findByText('button', /^Save$/).disabled;
+    // THE SENTENCE FOLLOWS THE LEVERS, read at all four settings and left where the form opened.
+    out.sentences = {};
+    for (const [name, run, manage] of [['bothOff', false, false], ['runOnly', true, false], ['manageOnly', false, true], ['bothOn', true, true]]) {
+      await setLevers(run, manage);
+      out.sentences[name] = sentence();
+    }
+    await setLevers(true, false);
+    out.sentence = sentence();
+    out.giveEnabled = !findByText('button', /^Give access$/).disabled;
+    out.actions = texts('.screen button.btn-primary, .screen button.btn-ghost');
+    // It grants, and sends nothing: no sentence on the form may promise an invitation or a mail.
+    out.promisesMail = /invit|send (them )?an? e-?mail|will (be )?e-?mail|e-?mailed/i.test(txt());
     findByText('button.attach-row', /Apmxc Group/).click();
     set(email, '');
     await sleep(200);
@@ -530,6 +635,7 @@ ${HELPERS}
 const MODIFY_SCRIPT = `
 (async () => {
 ${HELPERS}
+${PEOPLE_HELPERS}
   const out = {};
   try {
     await goto('/portal/people');
@@ -547,6 +653,10 @@ ${HELPERS}
     await mustSettle(() => /Modify access/.test(txt()), 8000, 'Modify did not open the form');
     out.path = location.pathname + location.search;
     out.email = (document.querySelector('.page-lede') || {}).innerText || null;
+    out.bar = bar();
+    out.levers = texts('button.lever');
+    out.paragraphs = texts('.screen p');
+    out.actions = texts('.screen button.btn-primary, .screen button.btn-ghost, .screen button.pill');
     out.ticked = [...document.querySelectorAll('button.attach-row')]
       .filter((b) => b.className.indexOf(' on') >= 0).map((b) => b.innerText.replace(/\\s+/g, ' ').trim());
     out.saveDisabledBefore = findByText('button', /Save changes/).disabled;
@@ -599,6 +709,41 @@ ${HELPERS}
     await mustSettle(() => /Confirm/.test(txt()), 8000, 'Remove did not ask');
     const loud = [...document.querySelectorAll('.notice:not(.quiet) p')];
     out.said = loud.length ? loud[loud.length - 1].innerText : null;
+  } catch (e) { out.fatal = String((e && e.message) || e); }
+  return out;
+})()
+`
+
+/**
+ * Modify, opened on somebody given ONE company of an organisation and nothing changed — the summary the
+ * page opens with has to say what they will NOT see as plainly as what they will.
+ */
+const MODIFY_PART_SCRIPT = `
+(async () => {
+${HELPERS}
+${PEOPLE_HELPERS}
+  const out = {};
+  try {
+    await goto('/portal/people/modify?email=' + encodeURIComponent('brand@example.test'));
+    await mustSettle(() => /Modify access/.test(txt()) && sentence(), 8000, 'Modify never opened on a part-organisation grant');
+    out.bar = bar();
+    out.ticked = [...document.querySelectorAll('button.attach-row.on')].map((b) => (b.children[1] || {}).innerText || '');
+    out.sentence = sentence();
+  } catch (e) { out.fatal = String((e && e.message) || e); }
+  return out;
+})()
+`
+
+/** Recent activity with people in it: who, which companies by name, and no empty-state line beside them. */
+const ACTIVITY_SCRIPT = `
+(async () => {
+${HELPERS}
+${PEOPLE_HELPERS}
+  const out = {};
+  try {
+    await goto('/portal/people');
+    await mustSettle(() => { const a = activityPanel(); return a && a.cards > 0; }, 8000, 'Recent activity never listed anyone');
+    out.activity = activityPanel();
   } catch (e) { out.fatal = String((e && e.message) || e); }
   return out;
 })()
@@ -825,6 +970,8 @@ const asClient = await value(NAMES_SCRIPT)
 role = 'staff'
 await reload()
 const asStaff = await value(NAMES_SCRIPT)
+// A log with nobody in it, so the panel's empty state is the one People is read with.
+activity = 'empty'
 const people = await value(PEOPLE_SCRIPT)
 // BEFORE the local-sign-in pass, deliberately. That pass serves a guest list of ONE — the person signed
 // in — so the row this drives would not be on the page at all, and the failure reads as "Modify is
@@ -858,6 +1005,83 @@ await reload()
 const modifyNoRevoke = await value(MODIFY_SCRIPT)
 const confirmNoRevoke = modifyNoRevoke && !modifyNoRevoke.fatal ? await value(CONFIRM_SCRIPT) : { fatal: 'the form never opened' }
 keysRevocable = true
+
+await reload()
+const modifyPart = await value(MODIFY_PART_SCRIPT)
+activity = 'some'
+await reload()
+const activitySome = await value(ACTIVITY_SCRIPT)
+
+// ── evidence: People, Give access and Modify access, one picture per accepted state ────────────────────
+//
+// Only with --shot-dir. Each state is reached from a fresh load, the way a reader reaches it, and drawn in
+// both themes. What holds is asserted in the verdict below; these are for a person to look at, and a step
+// that cannot reach its state writes no picture and fails the check rather than drawing the wrong screen.
+//
+// FULL HEIGHT, by growing the viewport to the page rather than capturing beyond it: a beyond-viewport
+// capture paints the sticky top bar where the 900px viewport left it, over the middle of a tall page.
+const peopleShot = async (file) => {
+  const h = (await value('Math.max(document.documentElement.scrollHeight, document.body.scrollHeight)')) ?? 900
+  await cmd('Emulation.setDeviceMetricsOverride', { width: 1280, height: Math.max(900, h), deviceScaleFactor: 1, mobile: false })
+  await new Promise((r) => setTimeout(r, 400))
+  const shot = await cmd('Page.captureScreenshot', { format: 'png' })
+  await cmd('Emulation.clearDeviceMetricsOverride', {})
+  const data = shot.result?.result?.data ?? shot.result?.data
+  if (!data) throw new Error(`no screenshot came back for ${file}`)
+  writeFileSync(join(shotDir, file), Buffer.from(data, 'base64'))
+}
+const openGive = `
+  await goto('/portal/people/add');
+  await mustSettle(() => document.querySelectorAll('button.attach-row').length > 0, 8000, 'Give access never drew its access tree');
+  set(document.querySelector('#give-access-email'), 'dana@birch.example');
+  await sleep(150);
+  findByText('button.attach-row', /Apmxc Group/).click();
+  await sleep(250);
+`
+const PEOPLE_EVIDENCE = [
+  { name: 'people-view-reports-and-empty-activity', activity: 'empty', setup: `
+    await goto('/portal/people');
+    await mustSettle(() => /Nothing planned, started or saved here yet\\./.test(txt()), 8000, 'the empty activity panel never drew');` },
+  { name: 'people-recent-activity', activity: 'some', setup: `
+    await goto('/portal/people');
+    await mustSettle(() => { const a = activityPanel(); return a && a.cards > 0; }, 8000, 'Recent activity never listed anyone');` },
+  { name: 'give-access-nothing-chosen', activity: 'empty', setup: `
+    await goto('/portal/people/add');
+    await mustSettle(() => /through their AI\\./.test(sentence() || ''), 8000, 'Give access never drew its instruction');` },
+  { name: 'give-access-both-levers-off', activity: 'empty', setup: `${openGive}
+    await setLevers(false, false);
+    await mustSettle(() => /can read every report there/.test(sentence() || ''), 4000, 'the sentence did not follow both levers off');` },
+  { name: 'give-access-run-on', activity: 'empty', setup: `${openGive}
+    await setLevers(true, false);
+    await mustSettle(() => /can run clearances there\\./.test(sentence() || ''), 4000, 'the sentence did not follow Run clearances on');` },
+  { name: 'give-access-both-levers-on', activity: 'empty', setup: `${openGive}
+    await setLevers(true, true);
+    await mustSettle(() => /can run clearances and add companies and people there\\./.test(sentence() || ''), 4000, 'the sentence did not follow both levers on');` },
+  { name: 'modify-access-part-organisation', activity: 'empty', setup: `
+    await goto('/portal/people/modify?email=' + encodeURIComponent('brand@example.test'));
+    await mustSettle(() => /will not see any other Apmxc Group clearances/.test(sentence() || ''), 8000, 'Modify never drew the part-organisation summary');` },
+]
+const peopleEvidence = []
+if (shotDir) {
+  for (const st of PEOPLE_EVIDENCE) {
+    activity = st.activity
+    await reload()
+    const got = (await value(`(async () => {
+${HELPERS}
+${PEOPLE_HELPERS}
+      try { ${st.setup} window.scrollTo(0, 0); await sleep(300); return { ok: true }; }
+      catch (e) { return { ok: false, error: String((e && e.message) || e), body: txt().slice(0, 400) }; }
+    })()`)) ?? { ok: false, error: 'the page returned nothing' }
+    peopleEvidence.push({ state: st.name, ...got })
+    if (!got.ok) continue
+    await peopleShot(`${st.name}-light.png`)
+    await evalIn(`document.documentElement.setAttribute('data-theme', 'dark'); 'dark'`)
+    await new Promise((r) => setTimeout(r, 300))
+    await peopleShot(`${st.name}-dark.png`)
+    await evalIn(`document.documentElement.removeAttribute('data-theme'); 'light'`)
+  }
+}
+activity = 'unavailable'
 
 localMode = true
 await reload()
@@ -976,27 +1200,103 @@ for (const [who, out] of [['client', asClient], ['multi-account client', asMulti
   ok(!out.avatarMenu.includes('People'), `${who}: People is in the avatar menu for a person without Manage: ${JSON.stringify(out.avatarMenu)}`)
   ok(out.railNav.includes('New clearance'), `${who}: New clearance is missing for a person who may run clearances`)
 }
+// The words both access forms print under their levers and beside their access tree.
+const LEVER_LINES = [
+  'Run clearances Start and stop clearances on the companies they can see',
+  'Manage Add companies, add people and change settings for the companies they can see',
+]
+const BOTH_OFF = 'Leave both off for View reports — every report for the companies they can see.'
+// A screen the avatar menu leads to names itself in the top bar and draws the avatar active.
+const namesItself = (b, title) => b && b.title === title && b.avatarCurrent === 'true'
 if (!people || people.fatal) {
   fail.push(`people: ${people?.fatal ?? 'the driver returned nothing'}`)
 } else {
-  ok(people.rows.length === 5, `People should list the five rows it was sent — it drew ${people.rows.length}`)
+  // THE TOP BAR. A rail screen keeps the scope rule and a plain avatar; People and its form name themselves.
+  ok(people.railBar && people.railBar.avatarCurrent === null && !['Clearances', 'People', 'Give access', 'Modify access'].includes(people.railBar.title),
+    `a rail screen should keep its scope title and a plain avatar: ${JSON.stringify(people.railBar)}`)
+  ok(namesItself(people.peopleBar, 'People'), `People should name itself in the top bar with the avatar active: ${JSON.stringify(people.peopleBar)}`)
+  for (const [path, b] of Object.entries(people.menuBars ?? {})) {
+    ok(b && b.avatarCurrent === 'true' && (people.menuLabels ?? []).includes(b.title),
+      `${path} should be named in the top bar by its avatar-menu label, with the avatar active: ${JSON.stringify(b)} against ${JSON.stringify(people.menuLabels)}`)
+  }
+  ok(Object.keys(people.menuBars ?? {}).length === 3, `the avatar menu's other screens were not all read: ${JSON.stringify(people.menuBars)}`)
+  ok(namesItself(people.addBar, 'Give access'), `Give access should name itself in the top bar with the avatar active: ${JSON.stringify(people.addBar)}`)
+
+  ok(people.rows.length === 6, `People should list the six rows it was sent — it drew ${people.rows.length}`)
   ok(people.rows.some((r) => r[1] === 'Runs clearances · Manages' && /Everything/.test(r[2] ?? '')),
     `no row reads both permissions with access to everything: ${JSON.stringify(people.rows)}`)
   ok(people.rows.some((r) => r[1] === 'View reports'), `the view-only person is not described as such: ${JSON.stringify(people.rows)}`)
-  // THE OTHER SHAPE, SAID APART. Somebody who exists only in a company's access list has no permissions
-  // entry to read, and calling that "View reports" says the file does not say: that somebody decided
-  // this person may only view. The page has drawn the distinction since it was written; the field it
-  // keys on was being dropped between the server and the screen, so it had never once appeared.
-  ok(people.rows.some((r) => /Reach only/.test(r[1] ?? '')),
-    `a person listed only in a company's access list is still described as view-only: ${JSON.stringify(people.rows)}`)
+  // THE OUTCOME, NOT THE RECORD'S SHAPE. Somebody on a company's access list with nothing set for them
+  // can view what they reach, and reads exactly as the view-only person does — words and colour.
+  const reach = people.rows.find((r) => (r[0] ?? '').startsWith('reach@example.test'))
+  ok(reach && reach[1] === 'View reports', `a listed address with nothing granted should read "View reports": ${JSON.stringify(reach)}`)
+  ok(people.permColour['reach@example.test'] && people.permColour['reach@example.test'] === people.permColour['viewer@example.test']
+    && people.permColour['reach@example.test'] !== people.permColour['brand@example.test'],
+    `a listed address with nothing granted is not drawn in the view-only rows' muted colour: ${JSON.stringify(people.permColour)}`)
+  ok(people.retired === false, 'People says "Reach only" or "No permissions"')
+  ok(JSON.stringify(people.key) === JSON.stringify([
+    'Runs clearances — Start and stop clearances on the companies they can see.',
+    'Manages — Add companies, add people and change settings for the companies they can see.',
+    'View reports — Everyone can view reports for the companies they can see.',
+  ]), `the key under the Permissions column should give each word its sentence: ${JSON.stringify(people.key)}`)
+  ok(people.lede === null, `People carries a line above the list: ${JSON.stringify(people.lede)}`)
+  ok(people.activity && people.activity.text === 'Recent activity Nothing planned, started or saved here yet.',
+    `an empty activity log should read as Recent activity with nothing planned, started or saved: ${JSON.stringify(people.activity)}`)
+  ok(!/still has access|window/.test(people.activity?.text ?? ''), `the activity panel names a window or its old disclaimer: ${JSON.stringify(people.activity)}`)
   ok(!people.rows.some((r) => /staff|client/i.test(r.join(' '))), `a role word is back on People: ${JSON.stringify(people.rows)}`)
   ok(people.addDisabled === false && !people.localNotice, 'a hosted install offers Add, with no local sign-in notice')
   ok(people.path === '/portal/people/add', `Add a person opened ${people.path}`)
-  ok(/will see everything under Apmxc Group, and can run clearances there/.test(people.sentence ?? ''),
-    `the form does not say what the new person will see: ${JSON.stringify(people.sentence)}`)
-  ok(/cannot add companies or people/.test(people.sentence ?? ''), `the form does not say what they cannot do: ${JSON.stringify(people.sentence)}`)
-  ok(people.saveEnabled === true, 'Save is off with an address and a choice made')
+
+  // GIVE ACCESS: the route stated, the levers and the tree in the product's words, and a sentence that
+  // follows every lever setting.
+  ok(people.addLede === 'They must also have access through your organisation’s sign-in service.',
+    `Give access should state the sign-in route and nothing else above the form: ${JSON.stringify(people.addLede)}`)
+  ok(JSON.stringify(people.levers) === JSON.stringify(LEVER_LINES), `the levers on Give access read ${JSON.stringify(people.levers)}`)
+  ok(people.paragraphs.includes(BOTH_OFF), `Give access does not say what both levers off gives: ${JSON.stringify(people.paragraphs)}`)
+  ok(people.paragraphs.includes('You can only give access to what you have access to yourself'),
+    `Give access does not say it offers only what the giver holds: ${JSON.stringify(people.paragraphs)}`)
+  const tree = people.tree ?? []
+  ok(JSON.stringify(tree[0]) === JSON.stringify(['Everything on this Clearotron', 'every organisation and company, including ones added later']),
+    `the root row does not say it reaches what is added later: ${JSON.stringify(tree[0])}`)
+  ok(tree.some((r) => r[0] === 'Apmxc Group' && r[1] === 'every company in it, including ones added later'),
+    `an organisation row does not say it reaches companies added later: ${JSON.stringify(tree)}`)
+  ok(tree.some((r) => r[0] === NAME && r[1] === 'company'), `a company row is not marked as one: ${JSON.stringify(tree)}`)
+  ok(people.prompt === 'Choose what this person can see. It is what they see here and through their AI.',
+    `before anything is chosen, the form should say the choice covers their AI too: ${JSON.stringify(people.prompt)}`)
+  const said = people.sentences ?? {}
+  ok(said.bothOff === 'dana@birch.example will see everything under Apmxc Group, and can read every report there. They cannot start clearances or add companies or people.',
+    `both levers off: ${JSON.stringify(said.bothOff)}`)
+  ok(said.runOnly === 'dana@birch.example will see everything under Apmxc Group, and can run clearances there. They cannot add companies or people.',
+    `Run clearances on: ${JSON.stringify(said.runOnly)}`)
+  ok(said.manageOnly === 'dana@birch.example will see everything under Apmxc Group, and can add companies and people there. They cannot start clearances.',
+    `Manage on: ${JSON.stringify(said.manageOnly)}`)
+  ok(said.bothOn === 'dana@birch.example will see everything under Apmxc Group, and can run clearances and add companies and people there.',
+    `both levers on: ${JSON.stringify(said.bothOn)}`)
+  ok(people.giveEnabled === true, 'Give access is off with an address and a choice made')
+  ok(JSON.stringify(people.actions) === JSON.stringify(['Give access', 'Cancel']), `the form's actions read ${JSON.stringify(people.actions)}`)
+  ok(people.promisesMail === false, 'Give access promises an invitation or a mail it does not send')
 }
+if (!modifyPart || modifyPart.fatal) {
+  fail.push(`modify (part of an organisation): ${modifyPart?.fatal ?? 'the driver returned nothing'}`)
+} else {
+  ok(namesItself(modifyPart.bar, 'Modify access'), `Modify access should name itself in the top bar with the avatar active: ${JSON.stringify(modifyPart.bar)}`)
+  ok(JSON.stringify(modifyPart.ticked) === JSON.stringify([NAME]), `the form did not open on the one company held: ${JSON.stringify(modifyPart.ticked)}`)
+  // THE WHOLE SUMMARY, including the half that says what they will not see.
+  ok(modifyPart.sentence === `brand@example.test will see everything under ${NAME}, and can run clearances there. They will not see any other Apmxc Group clearances, and cannot add companies or people.`,
+    `a part-organisation grant's summary reads ${JSON.stringify(modifyPart.sentence)}`)
+}
+if (!activitySome || activitySome.fatal) {
+  fail.push(`recent activity: ${activitySome?.fatal ?? 'the driver returned nothing'}`)
+} else {
+  const a = activitySome.activity ?? { text: '', cards: 0, pills: [] }
+  ok(a.cards === 2 && /owner@example\.test/.test(a.text) && /brand@example\.test/.test(a.text), `Recent activity should list the two people in the log: ${JSON.stringify(a)}`)
+  ok(!/Nothing planned, started or saved/.test(a.text), `Recent activity shows its empty state beside people: ${JSON.stringify(a)}`)
+  ok(/^Recent activity Identities that have planned, started or saved something here, most recent first\. /.test(a.text),
+    `Recent activity does not say what its rows are: ${JSON.stringify(a.text)}`)
+  ok(a.pills.includes(NAME) && a.pills.includes(NAME2) && !a.pills.includes(KEY) && !a.pills.includes(KEY2),
+    `Recent activity should name each company, never print its key: ${JSON.stringify(a.pills)}`)
+}
+for (const e of peopleEvidence) ok(e.ok, `evidence ${e.state} could not be reached: ${e.error} — ${JSON.stringify(e.body ?? '')}`)
 
 // ── MODIFY AND REMOVE ───────────────────────────────────────────────────────────────────────────────
 if (!modify || modify.fatal) {
@@ -1009,6 +1309,14 @@ if (!modify || modify.fatal) {
   ok((modify.path ?? '').startsWith('/portal/people/modify?email='),
     `Modify opened ${modify.path} rather than the form, carrying which person in the query`)
   ok(/owner@example\.test/.test(modify.email ?? ''), `the form does not name whose access it is: ${JSON.stringify(modify.email)}`)
+  ok(namesItself(modify.bar, 'Modify access'), `Modify access should name itself in the top bar with the avatar active: ${JSON.stringify(modify.bar)}`)
+  ok(JSON.stringify(modify.levers) === JSON.stringify(LEVER_LINES), `the levers on Modify access read ${JSON.stringify(modify.levers)}`)
+  ok((modify.paragraphs ?? []).includes(BOTH_OFF), `Modify access does not say what both levers off gives: ${JSON.stringify(modify.paragraphs)}`)
+  ok((modify.paragraphs ?? []).includes('Untick a row to take that access away'),
+    `Modify access does not say unticking takes access away: ${JSON.stringify(modify.paragraphs)}`)
+  for (const action of ['Save changes', 'Cancel', 'Remove from Clearotron']) {
+    ok((modify.actions ?? []).includes(action), `Modify access has no "${action}": ${JSON.stringify(modify.actions)}`)
+  }
   // FILLED IN. The whole design decision is that this is the Add form showing what the person HOLDS, so
   // a form that opened blank would look almost right and be the one thing it must not be.
   ok((modify.ticked ?? []).some((t) => /Apmxc Group/.test(t)) && (modify.ticked ?? []).some((t) => /Foxglade Interactive/.test(t)),
