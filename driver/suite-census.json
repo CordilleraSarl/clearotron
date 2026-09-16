@@ -4491,6 +4491,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-allowance-line-is-the-servers-words.test.mjs": {
+          "tests": 2,
+          "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
         "the-attempt-record-carries-tool-time.test.mjs": {
           "tests": 13,
           "asserts": 47,
@@ -5973,7 +5979,7 @@
         },
         "home.test.ts": {
           "tests": 56,
-          "asserts": 197,
+          "asserts": 199,
           "skips": 0,
           "todos": 0
         },

@@ -670,6 +670,8 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
       <Submitted
         go={ctx.go}
         onAnother={() => { setSubmitted(null); writeDraft(EMPTY); setEntry(null) }}
+        name={names[0] ?? ''}
+        duration={plan?.effort?.turnaround || turnaround(effort)}
       />
     )
   }
@@ -2468,15 +2470,25 @@ function OptionsUnavailable({
  * that a search is running — the engine can still refuse it, and when it does the Clearances list is
  * where that shows up. Promising more than was promised is how a failed run becomes a support ticket.
  */
-function Submitted({ go, onAnother }: { readonly go: (p: string) => void; readonly onAnother: () => void }) {
+function Submitted({ go, onAnother, name, duration }: {
+  readonly go: (p: string) => void
+  readonly onAnother: () => void
+  /** The name that was queued, as the reader typed it. */
+  readonly name: string
+  /** The quote for its pipeline, as the footer showed it at the moment of starting. */
+  readonly duration: string
+}) {
   return (
     <div className="screen">
-      <PageHeader title="Clearance started" />
+      {/* "QUEUED", NOT "STARTED". It has not started: it is waiting for a slot, and a title saying
+          otherwise is the first thing a reader would have to un-learn when the Home band shows it
+          under "queued". The sentence says the two facts the product has — that it is waiting, and how
+          long it takes once it runs — and promises nothing it cannot keep. In particular it does not
+          say anyone will be told when it finishes: nothing in the portal or the contract sends that. */}
+      <PageHeader title="Clearance queued" />
       <div className="notice prose">
-        <b>It is in the queue</b>
-        <p style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>
-          It will appear in Clearances, and the entry there tracks it the whole way — including if it
-          stops early.
+        <p style={{ margin: 0, color: 'var(--text-muted)' }}>
+          <span data-anon="mark">{name}</span> is waiting for a slot. It runs {duration} once it starts.
         </p>
         <div style={{ marginTop: 14, display: 'flex', gap: 10 }}>
           <button type="button" className="btn-primary" onClick={() => go('/portal/clearances')}>View in Clearances</button>
