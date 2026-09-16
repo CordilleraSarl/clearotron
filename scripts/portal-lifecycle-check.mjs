@@ -943,6 +943,43 @@ const SETTINGS_STATES = [
       coverage: ([...document.querySelectorAll('.main details p')].find((p) => /Calculated from/.test(p.textContent)) || {}).textContent || null,
       rowsStillVisible: [...document.querySelectorAll('.fw-row')].filter(visible).length };
   ` },
+  { name: 'profile-unsaved', script: `
+    // A CLASS ADDED THE WAY A PERSON ADDS ONE: a word typed into the search box, and the match picked from
+    // what it offers. The box replaced a grid of numbers, and only a pick shows it still writes the field.
+    const box = document.querySelector('.main .class-picker-box input');
+    if (!box) throw new Error('the class search box is not on screen');
+    box.focus();
+    set(box, 'cloth');
+    const matches = () => [...document.querySelectorAll('.main .class-picker-box .typeahead button')];
+    await mustSettle(() => matches().some((b) => b.textContent.startsWith('25 · ')), 3000, 'typing "cloth" did not offer class 25');
+    const offered = matches().map((b) => b.textContent);
+    matches().find((b) => b.textContent.startsWith('25 · ')).click();
+    await mustSettle(() => [...document.querySelectorAll('.main .class-picker .chip')].some((c) => c.textContent.trim().startsWith('25 · ')), 3000, 'picking class 25 added no chip');
+    window.scrollTo(0, 0);
+    const save = [...document.querySelectorAll('.main .row-foot button')][0];
+    return { offered, box: box.value, classChips: [...document.querySelectorAll('.main .class-picker .chip')].map((c) => c.textContent.trim()),
+      save: save ? { text: save.textContent, disabled: save.disabled } : null,
+      saveNote: (document.querySelector('.main .row-foot-note') || {}).textContent || null };
+  ` },
+  { name: 'profile-saved', shot: false, script: `
+    const note = () => (document.querySelector('.main .row-foot-note') || {}).textContent || null;
+    // The page's own outcome notices, under the form — not the framework card's, which are notices too.
+    const notices = () => [...document.querySelectorAll('.main .measure > .notice > b')].map((b) => b.textContent);
+    try {
+      [...document.querySelectorAll('.main .row-foot button')][0].click();
+      await mustSettle(() => notices().includes('Saved'), 8000, 'one press of Save never said Saved');
+      // THE STUB ANSWERS A SAVE AND KEEPS NOTHING, so the reload after it serves the profile as it was: class
+      // 25 leaves the chips and the note goes back to "No changes". That is the stub, not the screen — what
+      // the press sent is read off the wire in the verdict.
+      await mustSettle(() => note() === 'No changes', 8000, 'the form did not settle after saving');
+      return { notices: notices(), saveNote: note() };
+    } finally {
+      // A save that did not land leaves the form dirty, and a dirty form asks before the next state may leave
+      // it, in a dialog this driver cannot answer. The class comes back out, so a failure here reads as one.
+      const x = document.querySelector('.main .class-picker button[aria-label="Remove class 25"]');
+      if (note() === 'Unsaved changes' && x) { x.click(); await sleep(200); }
+    }
+  ` },
   { name: 'search-templates', script: `
     await goto('/portal/brand/searches');
     await mustSettle(() => document.querySelector('.main table.data tbody tr'), 8000, 'Search templates never drew its rows');
@@ -1147,10 +1184,11 @@ const capture = async (path) => {
 role = 'settings'
 await reload()
 const settings = {}
+const settingsPostedFrom = posted.length
 for (const st of SETTINGS_STATES) {
   const got = await value(`(async () => { ${HELPERS} ${SETTINGS_HELPERS} try { ${st.script} } catch (e) { return { fatal: String((e && e.message) || e), body: txt().slice(0, 600) }; } })()`)
   settings[st.name] = got ?? { fatal: 'the state returned nothing' }
-  if (!shotDir || !got || got.fatal) continue
+  if (!shotDir || !got || got.fatal || st.shot === false) continue
   await capture(join(shotDir, `company-settings-${st.name}-light.png`))
   await evalIn(`document.documentElement.setAttribute('data-theme','dark'); 'ok'`)
   await new Promise((r) => setTimeout(r, 300))
@@ -1465,6 +1503,25 @@ if (open) {
   ok(open.coverage?.replace(/\s+/g, ' ').trim() === 'Calculated from the marketplaces and density above: about 14 search variants per pass across 6 sources.',
     `Profile: the variant calculation reads ${JSON.stringify(open.coverage)}`)
   ok(open.rowsStillVisible >= 3, 'Profile: the configuration rows left the view when the fold opened')
+}
+const unsaved = said('profile-unsaved')
+if (unsaved) {
+  const chips = [...unsaved.classChips].sort()
+  ok(unsaved.box === '' && JSON.stringify(chips) === JSON.stringify(['25 · Clothing', '42 · Science & technology', '9 · Electrical & software']),
+    `Profile: picking 25 from the class search did not add it beside the two classes and empty the box — ${JSON.stringify(unsaved)}`)
+  ok(unsaved.save && unsaved.save.text === 'Save' && !unsaved.save.disabled && unsaved.saveNote === 'Unsaved changes',
+    `Profile: with a class added, Save is not ready beside "Unsaved changes" — ${JSON.stringify([unsaved.save, unsaved.saveNote])}`)
+}
+const pressed = said('profile-saved')
+if (pressed) {
+  ok(JSON.stringify(pressed.notices) === JSON.stringify(['Saved']), `Profile: one press of Save ended in ${JSON.stringify(pressed.notices)}`)
+  // ONE PRESS, TWO REQUESTS, IN THIS ORDER: the dry run, then the write of the very body it passed.
+  const sent = posted.slice(settingsPostedFrom).filter((p) => p.path.startsWith('/portal/api/config/profile/'))
+  ok(JSON.stringify(sent.map((p) => p.path)) === JSON.stringify(['/portal/api/config/profile/validate', '/portal/api/config/profile/save']),
+    `Profile: one press of Save sent ${JSON.stringify(sent.map((p) => p.path))} rather than the check and then the write`)
+  ok(sent.length === 2 && JSON.stringify(sent[0].body) === JSON.stringify(sent[1].body), 'Profile: the write did not send the body the check passed')
+  const classes = (sent[1]?.body?.profile?.defaultClasses ?? []).map(Number).sort((a, b) => a - b)
+  ok(JSON.stringify(classes) === JSON.stringify([9, 25, 42]), `Profile: the save sent classes ${JSON.stringify(classes)} rather than the picked one beside the two it had`)
 }
 const templates = said('search-templates')
 if (templates) {
