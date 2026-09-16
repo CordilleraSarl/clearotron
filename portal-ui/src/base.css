@@ -790,7 +790,8 @@ input.filter {
   gap: 14px;
 }
 
-.pref-card {
+.pref-card,
+.about-card {
   padding: 18px 20px;
   border-radius: 12px;
   border: 1px solid var(--border-hairline);
@@ -837,7 +838,8 @@ input.filter {
 }
 
 /* A link inside a sentence: accent ink and a quiet rule under it, so it reads as a link without shouting. */
-.pref-link {
+.pref-link,
+.about-link {
   color: var(--text-accent);
   text-decoration: none;
   border-bottom: 1px solid var(--accent-quiet);
@@ -848,7 +850,8 @@ input.filter {
 }
 
 /* A pill that is the card's own action is a size up from a pill that labels a row. */
-.pref-foot .pill {
+.pref-foot .pill,
+.about-docs .pill {
   padding: 5px 13px;
   font-size: 12px;
   text-decoration: none;
@@ -869,6 +872,47 @@ input.filter {
 .pref-blur-line {
   font-size: 13.5px;
   color: var(--text-muted);
+}
+
+/* About: the source offer as one list of facts, the label column fixed so the values line up. */
+.about-dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 132px 1fr;
+  gap: 10px 18px;
+  align-items: baseline;
+  font-size: 14px;
+}
+
+.about-dl dt {
+  color: var(--text-muted);
+}
+
+.about-dl dd {
+  margin: 0;
+  min-width: 0;
+  color: var(--text-strong);
+  overflow-wrap: anywhere;
+}
+
+.about-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.about-row .pill {
+  text-decoration: none;
+}
+
+.about-docs {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-hairline);
 }
 
 /* Installation settings: a section label, then rows. A provider category is a sub-heading with its sources

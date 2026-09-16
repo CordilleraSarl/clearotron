@@ -14,6 +14,11 @@
 // than it appears to. The failure this avoids is the one nobody ever notices: an offer that resolves,
 // looks right, and points at code the user is not running.
 //
+// THE LINK READS AS THE REPOSITORY, AND THE BUILD STAYS ONE ROW ABOVE IT. The Source row used to print
+// the whole commit-pinned address, ninety characters wrapped over two lines. It now reads as the
+// repository's name, and still goes to the address pinned to this build; the identifier it is pinned to
+// is the Build row directly above, in mono, because the offer is to the source of THIS build.
+//
 // EVERYTHING HERE COMES FROM THE SERVER. The bundle cannot know its own commit — portal-ui/dist is
 // committed to git and CI fails when dist and source disagree, so a hash injected at build time is not
 // known until after the commit that would carry it, and dist could never match its source again.
@@ -27,6 +32,7 @@ import { api } from '../contract/api.ts'
 import type { About as AboutInfo } from '../contract/api.ts'
 import { isOk } from '../contract/api.ts'
 import { PageHeader } from '../components/PageHeader.tsx'
+import { repositoryName } from '../contract/repositoryName.ts'
 
 const LICENCE_URL = 'https://www.gnu.org/licenses/agpl-3.0.html'
 
@@ -64,83 +70,92 @@ export function About() {
 
   return (
     <section className="screen">
-      <PageHeader title={`About ${info.name}`} />
+      <div className="measure">
+        <PageHeader title="About" />
 
-      <dl>
-        <dt>Product</dt>
-        <dd>{info.name}{info.version ? ` ${info.version}` : ''}</dd>
+        <div className="about-card">
+          <dl className="about-dl">
+            <dt>Product</dt>
+            <dd>{info.name}</dd>
 
-        <dt>Build</dt>
-        <dd>
-          {shortSha
-            ? <code title={info.commit ?? undefined}>{shortSha}</code>
-            : <span>not reported by this deployment</span>}
-        </dd>
+            <dt>Version</dt>
+            <dd>{info.version ?? 'not reported by this deployment'}</dd>
 
-        <dt>Source</dt>
-        <dd>
-          <a href={info.sourceUrl} rel="noreferrer">{info.sourceUrl}</a>
-          {!info.commit && (
-            <>
-              {' '}
-              <strong>
-                This links to the repository, not to the exact build you are using — this deployment
-                could not report its commit.
-              </strong>
-            </>
-          )}
-        </dd>
+            <dt>Build</dt>
+            <dd>
+              {shortSha
+                ? <span className="mono" title={info.commit ?? undefined}>{shortSha}</span>
+                : <span>not reported by this deployment</span>}
+            </dd>
 
-        <dt>Licence</dt>
-        <dd>
-          {info.license ?? 'not reported'}
-          {' — '}
-          <a href={LICENCE_URL} rel="noreferrer">full text</a>
-        </dd>
+            <dt>Source</dt>
+            <dd>
+              <a className="about-link" href={info.sourceUrl} rel="noreferrer">
+                {repositoryName(info.sourceRepo)} ↗
+              </a>
+              {!info.commit && (
+                <>
+                  {' '}
+                  <strong>
+                    This links to the repository, not to the exact build you are using — this deployment
+                    could not report its commit.
+                  </strong>
+                </>
+              )}
+            </dd>
 
-        <dt>Copyright</dt>
-        <dd>{info.copyright}</dd>
-      </dl>
+            <dt>Licence</dt>
+            <dd>
+              <span className="about-row">
+                <span>{info.license ?? 'not reported'}</span>
+                <a className="pill" href={LICENCE_URL} rel="noreferrer">Full text</a>
+              </span>
+            </dd>
 
-      {/* THE REPO'S OWN DOCUMENTS, LINKED. Each points at the file in the source
-          repository the same way the trademark link below already does, rather than at prose describing
-          it. SECURITY.md and CODE_OF_CONDUCT.md are included because both are present at the repo root
-          and are standard for a public repository — say so if either should come out.
-          `sourceRepo`, not `sourceUrl`: the second is commit-pinned where the deployment could report
-          one, and a document link pinned to a build would rot the moment that build is superseded,
-          while these files are meant to be read as they stand today. */}
-      <p>
-        <a href={`${info.sourceRepo}/blob/main/LICENSE`} rel="noreferrer">Licence</a>{' · '}
-        <a href={`${info.sourceRepo}/blob/main/NOTICES.md`} rel="noreferrer">Notices</a>{' · '}
-        <a href={`${info.sourceRepo}/blob/main/TRADEMARKS.md`} rel="noreferrer">Trademarks policy</a>{' · '}
-        <a href={`${info.sourceRepo}/blob/main/CONTRIBUTING.md`} rel="noreferrer">Contributing</a>{' · '}
-        <a href={`${info.sourceRepo}/blob/main/SECURITY.md`} rel="noreferrer">Security</a>{' · '}
-        <a href={`${info.sourceRepo}/blob/main/CODE_OF_CONDUCT.md`} rel="noreferrer">Code of conduct</a>{' · '}
-        <a href={info.sourceRepo} rel="noreferrer">View on GitHub</a>{' · '}
-        <a href="https://clearotron.ai" rel="noreferrer">clearotron.ai</a>
-      </p>
+            {/* The row names it, so the value does not say "Copyright" a second time. */}
+            <dt>Copyright</dt>
+            <dd>{info.copyright.replace(/^Copyright\s+/i, '')}</dd>
 
-      {/* The mark is NOT licensed with the code, and this is the surface where someone reads the
-          licence and reasonably assumes otherwise. §7(e) of the AGPL expressly permits declining to
-          grant trademark rights, and TRADEMARKS.md is where that declination is written down. */}
-      <p>
-        <strong>{info.name}</strong> and the mountain mark are trade marks of Cordillera Sàrl. The
-        licence above covers the software; it does not grant any right in the name or the mark. See{' '}
-        <a href={`${info.sourceRepo}/blob/main/TRADEMARKS.md`} rel="noreferrer">TRADEMARKS.md</a>.
-      </p>
+            {/* BRING YOUR OWN ACCESS, said plainly and once. The operational fact leads and the licence
+                clause follows it. Aligned with the README (the reasoning stages ride whatever access you
+                already have; the paid registers are your own agreements) and promises nothing the README
+                does not. */}
+            <dt>Model access</dt>
+            <dd>
+              This runs on your own model access — a subscription or your own API key — and the paid registers
+              on your own agreements with those providers. The reasoning stages are a proprietary third-party
+              CLI that you install and license under that vendor&rsquo;s own terms; this licence grants nothing
+              over any of them.
+            </dd>
 
-      {/* BRING YOUR OWN ACCESS, said plainly and once. The paragraph this replaces
-          said the same thing in licence terms — "grants nothing over any of them" — which answers a
-          lawyer's question and leaves an operator's unanswered. The operational fact leads now and the
-          licence clause follows it, rather than a second paragraph repeating the first in other words.
-          Aligned with the README (the reasoning stages ride whatever access you already have; the paid
-          registers are your own agreements) and promises nothing the README does not. */}
-      <p>
-        This runs on your own model access — a subscription or your own API key — and the paid registers
-        on your own agreements with those providers. The reasoning stages are a proprietary third-party
-        CLI that you install and license under that vendor&rsquo;s own terms; this licence grants nothing
-        over any of them.
-      </p>
+            {/* The mark is NOT licensed with the code, and this is the surface where someone reads the
+                licence and reasonably assumes otherwise. §7(e) of the AGPL expressly permits declining to
+                grant trademark rights, and TRADEMARKS.md is where that declination is written down. */}
+            <dt>Trade marks</dt>
+            <dd>
+              <strong>{info.name}</strong> and the mountain mark are trade marks of Cordillera Sàrl. The
+              licence above covers the software; it does not grant any right in the name or the mark. See{' '}
+              <a className="about-link" href={`${info.sourceRepo}/blob/main/TRADEMARKS.md`} rel="noreferrer">TRADEMARKS.md</a>.
+            </dd>
+          </dl>
+
+          {/* THE REPO'S OWN DOCUMENTS, LINKED. Each points at the file in the source repository rather
+              than at prose describing it. SECURITY.md and CODE_OF_CONDUCT.md are included because both
+              are present at the repo root and are standard for a public repository.
+              `sourceRepo`, not `sourceUrl`: the second is commit-pinned where the deployment could report
+              one, and a document link pinned to a build would rot the moment that build is superseded,
+              while these files are meant to be read as they stand today. */}
+          <div className="about-docs">
+            <a className="pill" href={`${info.sourceRepo}/blob/main/NOTICES.md`} rel="noreferrer">Notices</a>
+            <a className="pill" href={`${info.sourceRepo}/blob/main/TRADEMARKS.md`} rel="noreferrer">Trademarks</a>
+            <a className="pill" href={`${info.sourceRepo}/blob/main/CONTRIBUTING.md`} rel="noreferrer">Contributing</a>
+            <a className="pill" href={`${info.sourceRepo}/blob/main/SECURITY.md`} rel="noreferrer">Security</a>
+            <a className="pill" href={`${info.sourceRepo}/blob/main/CODE_OF_CONDUCT.md`} rel="noreferrer">Code of conduct</a>
+            <a className="pill" href={info.sourceRepo} rel="noreferrer">GitHub</a>
+            <a className="pill" href="https://clearotron.ai" rel="noreferrer">clearotron.ai</a>
+          </div>
+        </div>
+      </div>
     </section>
   )
 }
