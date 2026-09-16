@@ -4593,6 +4593,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-cut-approves-its-own-parked-run.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "the-demo-account-shows-a-configured-customer.test.mjs": {
           "tests": 4,
           "asserts": 24,
