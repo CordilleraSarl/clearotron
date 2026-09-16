@@ -8,6 +8,7 @@
 
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import { marksOf, rowsOf, nameCount } from '../src/contract/grouping.ts'
 import type { FamilyGroup, MarkGroup } from '../src/contract/grouping.ts'
 import type { Run } from '../src/contract/api.ts'
@@ -223,4 +224,38 @@ test('the counts are NAMES: a group of two is two, and the total is the sum of w
 
 test('the stopped line is the specification\'s sentence', () => {
   assert.equal(STOPPED_LINE, 'No report will be produced. Completed work stays readable through Ask AI.')
+})
+
+// ── Ask AI from a name is Ask AI from its report ────────────────────────────────────────────────────────
+
+
+test('ASK AI FROM A NAME asks what the report asks: one control, handed the same facts about the run', () => {
+  // The question is composed inside the control from mark, date and kind, and its heading from the
+  // product label. So the two surfaces agree exactly when they render the same control and hand it the
+  // same four facts about the run each speaks for — the report's `run`, the row's `read`, which
+  // `nameActions` makes the report Open opens. Read off both files, because neither `.tsx` can be mounted
+  // here; the browser check drives the typed-in question on the list.
+  const src = (f: string) => readFileSync(new URL(`../src/screens/${f}`, import.meta.url), 'utf8')
+  const propsOf = (file: string, subject: string): Record<string, string> => {
+    const text = src(file)
+    const at = text.indexOf('<AskAi')
+    assert.ok(at > 0, `${file} renders the AskAi control`)
+    const tag = text.slice(at, text.indexOf('/>', at))
+    const props: Record<string, string> = {}
+    for (const m of tag.matchAll(/(\w+)=\{([^}]*(?:\([^)]*\))?[^}]*)\}/g)) props[m[1]!] = m[2]!.replaceAll(subject, 'RUN').trim()
+    return props
+  }
+  const report = propsOf('Result.tsx', 'run.')
+  const list = propsOf('Clearances.tsx', 'read.')
+  for (const fact of ['markName', 'date', 'kind']) {
+    assert.ok(report[fact], `premise: the report hands AskAi its ${fact}`)
+    assert.equal(list[fact], report[fact], `the list hands AskAi a different ${fact} than the report does`)
+  }
+  // The heading's product label: the report composes it once into `product`; the list calls the same
+  // function on the same two fields.
+  assert.match(src('Result.tsx'), /const product = runProductLabel\(run\.productName, run\.marks\.length\)/)
+  assert.equal(report['productName'], 'product')
+  assert.equal(list['productName'], 'runProductLabel(RUNproductName, RUNmarks.length)')
+  // …and each row's read is the one nameActions chose, never a read the row picked for itself.
+  assert.match(src('Clearances.tsx'), /ask=\{actions\.askAbout \? askAi\(mark\.name, actions\.askAbout\) : null\}/)
 })
