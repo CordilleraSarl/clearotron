@@ -5,7 +5,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { navFor, navGroupsFor, avatarMenuFor, screenForPath, NAV, HOME, type NavEntry, type Viewer } from '../src/nav/nav.config.ts'
+import { navFor, navGroupsFor, avatarMenuFor, avatarEntryOf, screenForPath, NAV, HOME, type NavEntry, type Viewer } from '../src/nav/nav.config.ts'
 
 // Three people, and together they cover both switches: the manager, the person who runs clearances, and
 // the view-only person. A reader used to be one of two role words; now a reader is what they may do.
@@ -128,6 +128,47 @@ test('without Manage there is no admin surface and no People; with it, both are 
   // About rides here for EVERY role — it is the AGPL §13 source offer, owed to whoever is
   // using the service, so it is the one entry in this menu that is not about administering anything.
   assert.deepEqual(avatarMenuFor(RUNNER).map((e) => e.id), ['preferences', 'about'])
+})
+
+test('THE SCREENS THE AVATAR MENU LEADS TO name themselves in the top bar, and no rail screen does', () => {
+  // The rail cannot highlight a screen it does not carry, so on those screens the top bar says where you
+  // are: AppShell names the screen and draws the avatar active wherever avatarEntryOf answers. Driven here
+  // over the real NAV; the shell's use of the answer is pinned in shell.test.ts.
+  const flat = (es: readonly NavEntry[]): NavEntry[] => es.flatMap((e) => [e, ...(e.children ? flat(e.children) : [])])
+
+  // Every entry in the menu leads to itself, whatever the menu holds, for every kind of reader.
+  for (const who of [STAFF, MANAGER, RUNNER, READER]) {
+    const menu = avatarMenuFor(who)
+    assert.ok(menu.length >= 2, 'the menu was read')
+    for (const e of menu) assert.equal(avatarEntryOf(e.id, who)?.id, e.id, `${e.id} is reached from the avatar menu`)
+  }
+  // The forms People opens are reached THROUGH it, by the rail's own dot-prefix rule, and each carries the
+  // label the title slot prints.
+  for (const [path, title] of [['/portal/people', 'People'], ['/portal/people/add', 'Give access'], ['/portal/people/modify', 'Modify access']] as const) {
+    const screen = screenForPath(path, MANAGER)
+    assert.equal(screen?.label, title, `${path} is labelled for its title`)
+    assert.equal(avatarEntryOf(screen?.id ?? null, MANAGER)?.id, 'people', `${title} is reached through People`)
+  }
+  // DISJOINT FROM THE RAIL. A screen the rail carries is highlighted there and keeps the scope rule;
+  // naming it in the bar as well would say one thing twice.
+  const railIds = flat(navFor(STAFF)).map((e) => e.id)
+  assert.ok(railIds.length >= 4, 'the rail was read')
+  for (const id of railIds) assert.equal(avatarEntryOf(id, STAFF), null, `${id} is a rail screen`)
+  // Nor a hidden screen that belongs to a row or a control rather than to the person: a report, and the
+  // New company form opened from the switcher.
+  for (const id of ['result', 'brand.new']) assert.equal(avatarEntryOf(id, STAFF), null, `${id} is not reached from the avatar`)
+  // A reader whose menu does not hold People is never told they are on it.
+  assert.equal(avatarEntryOf('people.add', RUNNER), null)
+  assert.equal(avatarEntryOf(null, STAFF), null)
+
+  // DERIVED, NOT LISTED: a form opened from an avatar-menu screen is covered by where it sits and named by
+  // its own label, with no second edit anywhere.
+  const fixture = [
+    ...NAV,
+    { id: 'about.licence', label: 'Licence', path: '/portal/about/licence', icon: 'info', hidden: true },
+  ] as unknown as readonly NavEntry[]
+  assert.equal(avatarEntryOf('about.licence', READER, fixture)?.id, 'about')
+  assert.equal(screenForPath('/portal/about/licence', READER, fixture)?.label, 'Licence')
 })
 
 test('standing on Brand profile highlights nothing else', () => {

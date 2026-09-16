@@ -14,19 +14,36 @@ const shell = readFileSync(new URL('../src/shell/AppShell.tsx', import.meta.url)
 /** The markup with commentary stripped, so a comment explaining a rule cannot satisfy the rule. */
 const body = prose(shell)
 
-test('THE TOP-BAR TITLE NAMES THE SCOPE YOU ARE IN, not the screen', () => {
-  // The screen name earned nothing up there — the sidebar already highlights the active item.
+test('THE TOP-BAR TITLE NAMES THE SCOPE YOU ARE IN on a rail screen, and the SCREEN where the rail highlights nothing', () => {
+  // On a rail screen the screen name earns nothing up there — the rail already highlights the item.
   //
-  // It says the COMPANY on a company-scoped screen and NOTHING on an account-scoped one. That it varies
-  // is the point rather than an inconsistency: Home spans everything the identity holds, so naming one
-  // company over it would assert a filter that is not being applied. Read off the screen's own `scope`
-  // — the same field that decides which side of the switcher it sits on — so the two cannot disagree.
+  // So there it says the COMPANY on a company-scoped screen and NOTHING on an account-scoped one. That it
+  // varies is the point rather than an inconsistency: Home spans everything the identity holds, so naming
+  // one company over it would assert a filter that is not being applied. Read off the screen's own
+  // `scope` — the same field that decides which side of the switcher it sits on — so the two cannot
+  // disagree. The empty half used to be `accountName`, the COMPANY for a client holding one grant; with
+  // that slot carrying the organisation for everyone, repeating it here would print one name twice.
   //
-  // THE EMPTY HALF USED TO BE `accountName`, which was the COMPANY for a client holding one grant. With
-  // that slot now carrying the organisation for everyone, repeating it here would print one name twice
-  // on one bar, which is how a label stops being read.
-  assert.match(body, /scopeOf\(entry\.id\) === 'owner' \? ownerName\(ownerInView\) : ''/)
-  assert.doesNotMatch(body, /<h1>\{entry\?\.label/, 'the screen label no longer heads the page')
+  // THE SCREEN NAME COMES BACK WHERE THE RAIL CANNOT HIGHLIGHT. A screen the avatar menu leads to — People
+  // and its two forms, Preferences, the installation's settings, About — is in no rail, so nothing said
+  // where you were. There the slot names the screen and the avatar draws active. The rule is ASKED OF THE
+  // NAV DATA and printed from the entry's own label, never a list of titles written into the shell: a
+  // screen renamed in nav.config is named by its new label, and one added to the menu is covered by being
+  // there. Which screens those are is driven in nav.test.ts.
+  const derivation = /const personal = (.*)/.exec(body)?.[1] ?? ''
+  assert.match(derivation, /avatarEntryOf\(entry\.id, me\)/, 'which screens name themselves is asked of the nav data')
+  assert.match(body, /personal \? entry\.label : scopeOf\(entry\.id\) === 'owner' \? ownerName\(ownerInView\) : ''/,
+    'the screen label where the avatar menu leads, and the scope rule everywhere else')
+  const bar = body.slice(body.indexOf('<header className="topbar">'), body.indexOf('</header>'))
+  assert.ok(bar.length > 200, 'the top bar was found')
+  for (const title of ['People', 'Give access', 'Modify access', 'Your preferences', 'Preferences', 'Installation settings', 'Global config', 'About']) {
+    assert.ok(!bar.includes(`'${title}'`) && !bar.includes(`"${title}"`) && !bar.includes(`>${title}<`),
+      `the top bar writes out "${title}" — a title list goes stale the day an entry is renamed`)
+  }
+  // The avatar draws active on exactly those screens, from the same answer.
+  assert.match(bar, /aria-current=\{personal \? 'true' : undefined\}/, 'the avatar is current where the title names the screen')
+  // Only a company name is marked for the screen-share blur; a screen's own name has nothing to hide.
+  assert.match(bar, /<h1 data-anon=\{personal \? undefined : 'mark'\}>/)
 })
 
 test('THE ORGANISATION SURVIVES, LABELLED, in the identity corner', () => {

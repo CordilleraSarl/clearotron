@@ -320,6 +320,23 @@ html.anon-on [data-anon='mark']:not(.anon-clear) {
   color: var(--text-strong);
 }
 
+/* The avatar: the signed-in person's initials, and the door to the screens that belong to them. Drawn
+   active on those screens, because the rail cannot highlight a screen it does not carry. After the hover
+   rule and one class stronger, so hovering the round button does not repaint it as a square one's. */
+.icon-btn.avatar {
+  border-radius: 50%;
+  background: var(--surface-float);
+  border: 1px solid var(--border-hairline);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.icon-btn.avatar[aria-current='true'] {
+  background: var(--accent-wash);
+  border-color: var(--accent);
+  color: var(--text-accent);
+}
+
 .float {
   background: var(--surface-float);
   border: 1px solid var(--border-strong);
@@ -2574,7 +2591,28 @@ ol.steps > li::before {
 .ai-help p { margin: 6px 0 0; color: var(--text-muted); font-size: 13.5px; line-height: 1.55; }
 
 
-/* ── Give someone access: the points on the tree a new person can be given ─────────────────────────────
+/* ── People: what the Permissions column's words mean, under the column ─────────────────────────────────
+   A two-column key, term beside meaning, so each word lines up with the sentence it stands for. */
+.perm-key {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 3px 14px;
+  margin: 14px 0 0;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+.perm-key dt {
+  color: var(--text-strong);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.perm-key dd {
+  margin: 0;
+}
+
+/* ── Give access: the points on the tree a new person can be given ───────────────────────────────────────
    One row per point. A BUTTON, because choosing a point is an action and a keyboard has to reach it; the
    resets below are what make a button read as a row. `.sub` indents a company under the organisation
    it sits in. A row covered by a wider choice above it — everything, or its whole organisation — is
