@@ -657,6 +657,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-refusal-with-no-near-neighbour-does-not-claim-the-search-never-ran.test.mjs": {
+          "tests": 4,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "a-refused-mcp-call-is-not-a-call-nobody-made.test.mjs": {
           "tests": 7,
           "asserts": 19,
@@ -768,6 +774,12 @@
         "a-shipped-framework-states-provenance-a-customer-can-read.test.mjs": {
           "tests": 2,
           "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-short-named-open-slice-still-reaches-the-page.test.mjs": {
+          "tests": 5,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },
