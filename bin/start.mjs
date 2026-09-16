@@ -449,6 +449,10 @@ export function installPaths(base) {
     locks: join(base, "locks"),
     grants: join(base, "grants.json"),
     audit: join(base, "portal-audit.log"),
+    // The connector doors' access log — the record of what a client key did, which is what answers a
+    // client or a review afterwards. NAMED IN THE LAYOUT rather than built at the call site, for the
+    // reason the store below gives: a demo's isolation must be a property of where things live.
+    accessLog: join(base, "telemetry", "trademark-mcp-access.jsonl"),
     // The saved-search store is a git repository because recipe-service commits every save through
     // `git add` + `git commit` — that is the product's config-store model, not something invented here.
     // It is its own directory, NOT `base`, so the commit path never sees the pool, the queue or the
@@ -680,6 +684,16 @@ export function childEnv({ ports, paths, user, portalSecret, tokenSecret, opsTok
       "PROFILE_AUDIT": "",
       "RECIPE_AUDIT": "",
       "CLEAROTRON_FEEDBACK_DIR": "",
+      // AN EXPLICIT PATH, NOT "" LIKE THE TWO ABOVE. Empty is unset, and unset is what sends this one to
+      // the REAL install's home: its default is computed from `homedir()`, not from any directory a demo
+      // controls. So a demo left to fall back writes its access lines into the install beside it, and the
+      // demo stops being one directory a reader can delete. Measured as exactly that: a demo run left
+      // `telemetry/trademark-mcp-access.jsonl` in the install it booted next to.
+      //
+      // ONLY IN A DEMO. A real install must NOT have this pinned: with no override the writer keeps an
+      // older log where one already exists, so that moving the default does not split a compliance trail
+      // in two. Pinning the name here would override that and do the splitting.
+      "TRADEMARK_MCP_AUDIT_LOG": paths.accessLog,
     } : {}),
   });
   return {
