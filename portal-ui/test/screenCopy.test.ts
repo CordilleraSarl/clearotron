@@ -453,7 +453,9 @@ test('the activity panel is Recent activity: its empty state says what it counts
   assert.doesNotMatch(prose, /Seen recently/, 'the heading that read as a roster is gone')
   assert.doesNotMatch(prose, /still has access/, 'and so is the disclaimer it needed')
   // The empty panel still explains itself: it says what the panel counts rather than only that it is empty.
+  // With people in it, the same three verbs head the rows, so neither state leaves a reader guessing.
   assert.match(prose, />Nothing planned, started or saved here yet\.</, 'the empty state names what is counted')
+  assert.match(prose, /have planned, started or saved something here, most recent first\./, 'and so does the populated panel')
   // NO WINDOW. The log is read from its tail by size, so no length of time is true of it — a number of
   // days on this panel would be invented.
   assert.doesNotMatch(prose, /\b\d+\s+days?\b|window shown|in the last/i, 'no span of time is named')

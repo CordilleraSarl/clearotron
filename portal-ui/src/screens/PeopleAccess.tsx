@@ -187,9 +187,9 @@ export function PeopleAccess({ ctx }: { readonly ctx: ShellContext }) {
  * The list above shows the people the access record names. This is what puts a colleague's name on the
  * screen, and it reads the audit log rather than any access record, most recent first.
  *
- * THE EMPTY STATE SAYS WHAT THE PANEL COUNTS, so an empty panel still explains itself. And it NAMES NO
- * WINDOW: the log is read from its tail by size, so the span it covers is not a length of time, and any
- * number of days printed here would be invented.
+ * WHAT THE PANEL COUNTS IS SAID IN BOTH STATES: in one line when it is empty, so an empty panel still
+ * explains itself, and above the rows when it is not. And it NAMES NO WINDOW: the log is read from its
+ * tail by size, so the span it covers is not a length of time, and any number of days would be invented.
  */
 function Observed({ result, ownerName }: {
   readonly result: ReturnType<typeof useLoad<ObservedView>>['result']
@@ -214,8 +214,11 @@ function Observed({ result, ownerName }: {
       ) : v.people.length === 0 ? (
         <p style={quiet}>Nothing planned, started or saved here yet.</p>
       ) : (
-        <div style={{ display: 'grid', gap: 6, marginTop: 8 }}>
-          {v.truncated ? <p style={quiet}>Only the most recent activity is read.</p> : null}
+        <div style={{ display: 'grid', gap: 6 }}>
+          <p style={{ ...quiet, marginBottom: 4 }}>
+            Identities that have planned, started or saved something here, most recent first.
+            {v.truncated ? ' Only the most recent activity is read.' : ''}
+          </p>
           {v.people.map((p) => (
             <div
               key={p.email}
