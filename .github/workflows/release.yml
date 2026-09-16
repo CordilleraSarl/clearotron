@@ -855,8 +855,11 @@ jobs:
       #
       # THE TOKEN IS NOT `GITHUB_TOKEN`, which cannot approve a workflow run — GitHub blocks
       # self-approval deliberately. `ACTIONS_APPROVE_TOKEN` is a fine-grained token scoped to this one
-      # repository with Actions write and nothing else, and the whole of what it can do is start a run a
-      # person would otherwise start by hand. Absent, this step says so and the cut proceeds as before.
+      # repository with Actions read and write and nothing else. Note what that permission really
+      # carries: besides approving runs it can create workflow_dispatch events — and this workflow has
+      # that trigger, so the token can reach a publish by the same door a person uses — cancel any run,
+      # and delete run logs. It cannot push code, merge, or authenticate to the registry. Absent, this
+      # step says so and the cut proceeds as before.
       - name: Approve the version pull request's own parked run
         env:
           ACTIONS_APPROVE_TOKEN: ${{ secrets.ACTIONS_APPROVE_TOKEN }}

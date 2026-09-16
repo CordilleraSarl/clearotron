@@ -16,7 +16,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { join, dirname } from "node:path";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -47,13 +47,53 @@ test("IT CANNOT FAIL THE CUT — no token is an ordinary outcome, not a refusal"
   // because a reader looking for an explicit status check would otherwise think one was missing.
 });
 
-test("IT APPROVES ONLY THE CURRENT HEAD, because a stale approval cancels the live run", () => {
+test("IT APPROVES ONLY THE CURRENT HEAD — driven, not matched", async () => {
   // CI's concurrency is workflow plus ref with cancel-in-progress on non-main refs, so approving a run
-  // parked on an earlier head starts it and cancels the one testing the head that matters.
-  assert.match(SRC, /head_sha=\$\{head\}/, "the run list is not filtered by the branch's head");
-  assert.match(SRC, /r\.head_sha !== head/, "there is no per-row re-check of the head before approving");
-  assert.match(SRC, /LEFT ALONE/, "a run on another head is not named as left alone");
-  // AND THE EVENT, because the dispatched CI run on the same head never enters the pull request's
-  // rollup — approving that one does nothing while reading as success.
-  assert.match(SRC, /r\.event === "pull_request"/, "it does not distinguish the pull_request run from the dispatched one");
+  // parked on an earlier head starts it and CANCELS the one testing the head that matters.
+  //
+  // DRIVEN AGAINST A TABLE rather than matched against source text. The earlier version of this arm
+  // asserted the string `r.head_sha !== head` was present, which pinned a check the API already
+  // guarantees, stayed green with the real defect (a stale `head`) present, and would have reddened on
+  // a rename that changed nothing. The decision is pure — given a head and a list of runs, which ids
+  // get approved — so drive that.
+  const { runsToApprove } = await import(pathToFileURL(SCRIPT).href);
+  const HEAD = "a".repeat(40), OLD = "b".repeat(40);
+  const run = (id, over = {}) => ({ id, event: "pull_request", conclusion: "action_required", head_sha: HEAD, ...over });
+
+  const table = [
+    ["the parked run on the current head is approved", [run(1)], [1]],
+    ["a run parked on an EARLIER head is not", [run(2, { head_sha: OLD })], []],
+    ["the dispatched run on the same head is not — it never enters the rollup",
+      [run(3, { event: "workflow_dispatch" })], []],
+    ["a pull_request run that is not parked is not", [run(4, { conclusion: "success" })], []],
+    ["a run still in flight (no conclusion) is not", [run(5, { conclusion: null })], []],
+    ["the current head is picked out of a mixed list",
+      [run(6, { head_sha: OLD }), run(7), run(8, { event: "push" })], [7]],
+    ["nothing at all is an empty set, not a throw", [], []],
+    ["a malformed row does not take the pass down with it", [null, undefined, {}, run(9)], [9]],
+  ];
+  for (const [what, runs, want] of table) {
+    assert.deepEqual(runsToApprove(runs, HEAD), want, what);
+  }
+
+  // THE PLANT: move the head and the chosen set must empty. A decision that ignored the head entirely
+  // would pass every row above and fail here.
+  assert.deepEqual(runsToApprove([run(1), run(2)], OLD), [],
+    "moving the head left runs selected — the head is not actually deciding anything");
+});
+
+test("THE HEAD IS RE-READ IMMEDIATELY BEFORE THE APPROVAL, because that is the interval that can go stale", () => {
+  // The version step force-pushes the version branch whenever it runs. A push landing between the run
+  // list and the POST leaves this approving the run on the SUPERSEDED head — which is the act that
+  // cancels the live cut. No row ever disagrees with the head it was queried by; the head is what moves.
+  //
+  // This one stays a source read because the alternative is a fake HTTP layer for one ordering
+  // property, and says so rather than pretending it drives anything.
+  const loop = SRC.slice(SRC.indexOf("for (const id of ids)"));
+  assert.match(loop, /await branchHead\(\)/,
+    "the head is not re-read inside the approval loop — a force-push between the list and the POST would go unnoticed");
+  assert.ok(loop.indexOf("await branchHead()") < loop.indexOf("/approve"),
+    "the head is re-read AFTER the approve call, which is too late to prevent anything");
+  assert.match(loop, /return 0;/,
+    "a moved head does not abort the pass — if the branch moved, every id in the list is stale, not just this one");
 });
