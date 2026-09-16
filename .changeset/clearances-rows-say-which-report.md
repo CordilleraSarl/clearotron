@@ -2,7 +2,7 @@
 "portal-ui": patch
 ---
 
-New: every name on Clearances has an Open button in one column, and a name re-read while a search waits still shows its latest report's risk, dated.
+New: every name on Clearances has an Open button in one column, and a name re-read while a search waits still shows its latest report's risk.
 
 New: groups on Clearances say how many of their names' searches are queued, and retire and ungroup sit in each row's menu.
 
