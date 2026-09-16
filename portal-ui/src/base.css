@@ -570,6 +570,10 @@ table.data td.nest-2 {
    so a collapsed rail widens it exactly as a wider window does. */
 .names-wrap {
   container-type: inline-size;
+  /* VISIBLE, not the wrapper's usual `auto`. This table cannot overflow — its columns are shares of its
+     own width — so the scroll container bought nothing here, and it clipped on both axes: an Ask AI
+     panel opened from a row near the bottom of the list was cut off at the table's edge. */
+  overflow: visible;
 }
 /* Eight pixels either side instead of twelve, on every column but the two narrow ones at the left: the
    actions column takes a quarter of the table, and the text columns keep their words on one line by
@@ -671,9 +675,9 @@ button.row-menu-btn[aria-expanded='true'] {
   background: var(--surface-sunken);
   color: var(--text-strong);
 }
-/* To the LEFT of the button, level with it. The table's wrapper scrolls on the x axis, which makes it
-   clip on the y axis too, so a menu dropping below the last row would be cut off; every row menu holds
-   one act, and a list of one fits beside its button inside the row. */
+/* To the LEFT of the button, level with it. Every row menu holds one act, and a list of one fits beside
+   its button inside its own row — so opening it covers the row it acts on, never the rows beneath, and
+   it cannot be the thing that runs off the bottom of the page. */
 .row-menu-list {
   position: absolute;
   right: 100%;
