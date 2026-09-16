@@ -648,9 +648,13 @@ table.data td.nest-2 {
 .status-count {
   white-space: nowrap;
 }
-/* "latest report · 2026-09-02" breaks at its spaces, never inside the date. */
+/* A date is one word to a reader. A line may break before it, never at its hyphens: "2026-09-" over "02"
+   read as a different date on the line below. */
 .names-wrap table.data.fixed td .sub.report-line {
   overflow-wrap: normal;
+}
+.names-wrap .nowrap-date {
+  white-space: nowrap;
 }
 .row-actions {
   --row-open-w: 11em;
@@ -664,6 +668,13 @@ table.data td.nest-2 {
   font-size: 12.5px;
 }
 .row-actions-open { grid-area: open; }
+/* Ask AI in a row: the header's button, compacted to the height of Open beside it and kept on one line —
+   in its own track it wrapped to "Ask" over "AI" with its icon stranded beside them. */
+.row-actions .btn-ghost.ask-ai-btn {
+  padding: 5px 8px;
+  gap: 5px;
+  white-space: nowrap;
+}
 .row-actions-ask { grid-area: ask; }
 .row-actions-more { grid-area: more; }
 .row-actions-open:empty,

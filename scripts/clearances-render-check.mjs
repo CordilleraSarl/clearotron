@@ -180,7 +180,9 @@ const server = createServer((req, res) => {
   if (p === '/portal/api/usage') return json(res, usageNow)
   if (p === '/portal/api/runs') return json(res, { runs: RUNS() })
   if (p === '/portal/api/searches') return json(res, { account: KEY, products: PRODUCTS, recipes: [], read: { available: false, maxBrief: 0, note: null } })
-  if (p === '/portal/api/mcp-access') return json(res, { url: null, keyUrl: null, email: null, enabled: false })
+  // A CONNECTED READER, so Ask AI draws on the rows that carry it and opens its question panel. The one
+  // request the whole table makes for it is counted by revisit-render-check.
+  if (p === '/portal/api/mcp-access') return json(res, { url: 'https://connector.example.test/mcp', keyUrl: null, email: 'manager@example-firm.com', enabled: true, stdio: null, aiConnected: true, offers: [] })
   const base = p.split('?')[0]
   const file = base === '/' || (base.startsWith('/portal') && !base.includes('.')) ? '/index.html' : base.replace(/^\/portal/, '')
   const full = join(DIST, file)
@@ -271,10 +273,12 @@ const MEASURE = `(async () => {
   // Read from the FIRST cell's own span (Clearances.tsx renders the label there); the row's whole
   // textContent would sweep up the status and risk cells and make any assertion about the label
   // satisfiable by something else on the row.
+  // The label's own text, less the time a same-day pair adds after it. The date sits in a span of its own
+  // so it never breaks at a hyphen, which is why this reads the whole label rather than its first node.
   const readLabels = [...document.querySelectorAll('tr.read-row')]
     .map(tr => tr.querySelector('td span.mono'))
     .filter(Boolean)
-    .map(el => (el.firstChild && el.firstChild.textContent ? el.firstChild.textContent : el.textContent || '').trim())
+    .map(el => (el.textContent || '').replace(/\\s+/g, ' ').replace(/ \\d{2}:\\d{2} UTC$/, '').trim())
     .filter(Boolean);
 
   // ── the rows, as a reader meets them ──────────────────────────────────────────────────────────────
@@ -296,7 +300,7 @@ const MEASURE = `(async () => {
     const label = nameCell ? nameCell.querySelector('span.mono') : null;
     return {
       kind: tr.classList.contains('read-row') ? 'search' : (nameCell && nameCell.querySelector('.row-kind') ? 'group' : 'name'),
-      name: b ? txt(b) : (label && label.firstChild ? (label.firstChild.textContent || '').trim() : ''),
+      name: b ? txt(b) : txt(label).replace(/ \\d{2}:\\d{2} UTC$/, ''),
       nameCell: txt(nameCell),
       cells: cells.length,
       twisty: Boolean(tr.querySelector('button.twisty')),
@@ -306,6 +310,7 @@ const MEASURE = `(async () => {
       updated: txt(cells[updatedIdx]),
       open: open ? { text: txt(open), aria: open.getAttribute('aria-label'), left: Math.round(open.getBoundingClientRect().left), width: Math.round(open.getBoundingClientRect().width), clipped: open.scrollWidth > open.clientWidth + 1 } : null,
       menu: Boolean(actions && actions.querySelector('button.row-menu-btn')),
+      ask: (() => { const b = actions ? actions.querySelector('.ask-ai button.ask-ai-btn') : null; return b ? { text: txt(b), aria: b.getAttribute('aria-label'), left: Math.round(b.getBoundingClientRect().left) } : null; })(),
       rules: (getComputedStyle(cells[0]).backgroundImage.match(/linear-gradient/g) || []).length,
       inert: tr.classList.contains('inert'),
     };
@@ -460,6 +465,36 @@ const MENUS = `(async () => {
   return { plus, group, search, groupClick, inertClick: { stayed: location.pathname === before, found: Boolean(tide) } };
 })()`
 const menus = await value(MENUS)
+
+// ASK AI FROM A NAME, driven: the panel names the report, the second question is chosen, and the link the
+// assistant opens carries that question typed in. window.open is caught rather than followed.
+const ASK = `(async () => {
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+  const txt = (el) => (el ? (el.textContent || '').replace(/\\s+/g, ' ').trim() : '');
+  const opened = [];
+  window.open = (u) => { opened.push(String(u)); return null; };
+  const rowOf = (name) => [...document.querySelectorAll('table.data tbody tr.row')].find(tr => txt(tr.querySelector('b')) === name);
+  const drive = async (name) => {
+    const tr = rowOf(name);
+    const btn = tr && tr.querySelector('.ask-ai button.ask-ai-btn');
+    if (!btn) return { fatal: 'no Ask AI on ' + name };
+    const before = location.pathname;
+    btn.click(); await sleep(250);
+    const panel = tr.querySelector('.ask-ai-panel');
+    const head = txt(panel && panel.querySelector('.ask-ai-head'));
+    const choices = panel ? [...panel.querySelectorAll('[role=radio], .ask-ai-choice')].map(txt) : [];
+    const second = panel ? [...panel.querySelectorAll('[role=radio], .ask-ai-choice')][1] : null;
+    if (second) { second.click(); await sleep(150); }
+    const go = panel ? [...panel.querySelectorAll('button')].find(b => /^Open in /.test(txt(b))) : null;
+    const goText = txt(go);
+    if (go) { go.click(); await sleep(200); }
+    const url = opened[opened.length - 1] || null;
+    let q = null; try { q = url ? new URL(url).searchParams.get('q') : null; } catch { q = null; }
+    return { head, choices, goText, q, stayed: location.pathname === before };
+  };
+  return { max: await drive('AQUAMAX'), coral: await drive('CORAL FREEZE') };
+})()`
+const asked = await value(ASK)
 
 // A name with ONE search opens its report from the row. Last, because it leaves the page.
 const ROW_OPENS = `(async () => {
@@ -750,6 +785,33 @@ if (plus && group && aster && coral && tide && max) {
   ok(tide.status.startsWith('Running') && tide.status.includes('Register sweeps'), `TIDEGLASS reads "${tide.status}"`)
   ok(tide.risk === '—' && !tide.open && tide.inert, `TIDEGLASS reads risk "${tide.risk}", open ${JSON.stringify(tide.open)}, inert ${tide.inert}`)
   ok(aster.status === 'Finished' && aster.open?.text === 'Open', `ASTERION reads "${aster.status}" with ${JSON.stringify(aster.open)}`)
+}
+
+// ASK AI: beside Open on a name with a report, alone on a stopped name, and nowhere else.
+if (plus && group && aster && coral && tide && max) {
+  for (const r of [plus, aster, max, venzy]) ok(r?.ask?.text === 'Ask AI' && r.ask.aria === null, `${r?.name} has no Ask AI named by its own words: ${JSON.stringify(r?.ask)}`)
+  ok(coral.ask?.text === 'Ask AI' && !coral.open, `a stopped name carries Ask AI and no Open: ${JSON.stringify({ ask: coral.ask, open: coral.open })}`)
+  ok(!tide.ask && !tide.open, `a running name with no report carries neither button: ${JSON.stringify({ ask: tide.ask, open: tide.open })}`)
+  ok(!group.ask, 'a group carries Ask AI — a group is several names with no single report')
+  ok(L.filter((r) => r.kind === 'search').every((r) => !r.ask), 'a search row carries Ask AI')
+}
+const askColumn = (m, width) => {
+  const lefts = [...new Set((m?.listed ?? []).filter((r) => r.ask).map((r) => r.ask.left))]
+  ok(lefts.length > 0 && Math.max(...lefts) - Math.min(...lefts) <= 1, `at ${width}px the Ask AI buttons start at ${lefts.join(', ')} — not one column`)
+}
+askColumn(short, WIDTH)
+askColumn(wide, WIDE)
+if (!asked || asked.fatal || asked.max?.fatal || asked.coral?.fatal) {
+  fail.push(`driving Ask AI from a row: ${asked?.fatal ?? asked?.max?.fatal ?? asked?.coral?.fatal ?? 'no result'}`)
+} else {
+  console.log(`Ask AI from AQUAMAX: "${asked.max.head}" → ${JSON.stringify(asked.max.q)}; from CORAL FREEZE → ${JSON.stringify(asked.coral.q)}`)
+  // The panel names the report the row's Open opens, and the question typed in names it too.
+  ok(asked.max.head === `AQUAMAX · ${PRODUCT_NAME['full-country-search']} · searched 2026-08-28`, `AQUAMAX's panel heads "${asked.max.head}"`)
+  ok(asked.max.choices.length === 4 && asked.max.goText.startsWith('Open in '), `AQUAMAX's panel: ${JSON.stringify(asked.max)}`)
+  ok(/^Explain the main risks in the AQUAMAX clearance from 28 August\.$/.test(asked.max.q ?? ''), `the second question from AQUAMAX types in "${asked.max.q}"`)
+  ok(asked.max.stayed && asked.coral.stayed, 'pressing Ask AI on a row went somewhere — it opens a panel, not the row')
+  ok((asked.coral.head ?? '').startsWith('CORAL FREEZE · ') && (asked.coral.q ?? '').includes('CORAL FREEZE clearance from 16 September'),
+    `a stopped name asks about the search that stopped: ${JSON.stringify(asked.coral)}`)
 }
 
 // Every Open in one column, at one width, named by its own words — at both widths.

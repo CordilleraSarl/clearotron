@@ -63,9 +63,15 @@ export function shownReport(mark: MarkGroup): Run | null {
  * the line would be noise on every row.
  */
 export function reportLine(mark: MarkGroup): string | null {
+  const parts = reportLineParts(mark)
+  return parts ? (parts.date ? `${parts.label} · ${parts.date}` : parts.label) : null
+}
+
+/** `reportLine` in its two parts, so a screen can keep the date whole on a narrow line. */
+export function reportLineParts(mark: MarkGroup): { readonly label: 'latest report'; readonly date: string | null } | null {
   const report = shownReport(mark)
   if (!report || inProgress(mark) === 0) return null
-  return report.date ? `latest report · ${report.date}` : 'latest report'
+  return { label: 'latest report', date: report.date }
 }
 
 /**

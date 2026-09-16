@@ -26,7 +26,7 @@ import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from '
 import type { Run } from '../contract/api.ts'
 import { api, saveFailureText } from '../contract/api.ts'
 import { bandRank } from '../contract/tone.ts'
-import { displayName, inSentence, newestFirst, readLabel, readTime } from '../contract/reads.ts'
+import { displayName, inSentence, newestFirst, readLabel, readLabelParts, readTime } from '../contract/reads.ts'
 import { marksOf, nameCount, rowsOf, NO_FAMILIES } from '../contract/grouping.ts'
 import type { Families, MarkGroup, Row } from '../contract/grouping.ts'
 import { clearancesColumns, pageWindow } from '../contract/listView.ts'
@@ -36,7 +36,7 @@ import {
   hasReport,
   nameActions,
   namesLabel,
-  reportLine,
+  reportLineParts,
   searchesLabel,
   shownBand,
   shownReport,
@@ -51,6 +51,8 @@ import { canManage, canRun } from '../shell/permissions.ts'
 import { runKey } from '../contract/genericKey.ts'
 import { PageHeader } from '../components/PageHeader.tsx'
 import { allowanceLine } from '../contract/allowance.ts'
+import { runProductLabel } from '../contract/home.ts'
+import { AskAi } from '../components/AskAi.tsx'
 
 // criterion 5 — 'failed' is a tab, not a member of the other three. The owner's ruling was
 // "Failed runs on clearance screen - no", and a tab is how a screen says no to something without
@@ -178,6 +180,11 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   // name now arrives on the row itself as `productName`, resolved by the same registry the report's
   // masthead prints from, so there is nothing left to join and nothing left to fetch.
   const families: Families = famResult?.kind === 'ok' ? famResult.value : NO_FAMILIES
+
+  // WHETHER THIS READER'S ASSISTANT IS CONNECTED — one answer for the whole table, asked once per visit.
+  // Every Ask AI on the list is drawn from it; a control that asked for itself would ask fifty times.
+  const { result: aiResult } = useLoad(() => api.mcpAccess(), [])
+  const aiAccess = aiResult?.kind === 'ok' ? aiResult.value : null
 
   // Which marks are ticked for grouping. Cleared whenever the grouping changes, so the checkboxes never
   // outlive the rows they referred to.
@@ -475,10 +482,22 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
       return next
     })
 
-  // ASK AI, beside Open on a name with a report, and alone on a stopped one. The screen draws it rather
-  // than each row, because whether this reader's assistant is connected is ONE answer for the whole
-  // table: asked once here, not once per row.
-  const askAi = (_name: string, _read: Run): ReactNode => null
+  // ASK AI, beside Open on a name with a report, and alone on a stopped one. THE SAME CONTROL THE REPORT
+  // CARRIES, given the same four facts the report gives it — the run's mark, date, kind and product label —
+  // so a question asked from a name is the question asked from that name's report, word for word. Which
+  // read it is about is `nameActions`' answer, the same read Open opens.
+  const askAi = (_name: string, read: Run): ReactNode => (
+    <AskAi
+      runId={read.runId}
+      markName={read.markName}
+      date={read.date}
+      kind={read.kind}
+      productName={runProductLabel(read.productName, read.marks.length)}
+      access={aiAccess}
+      go={ctx.go}
+      quiet
+    />
+  )
 
   const sortBtn = (key: SortKey, label: string) => (
     <button
@@ -1029,8 +1048,9 @@ function RowActions({ open, ask, menu }: {
           </button>
         ) : null}
       </span>
-      {/* Ask AI opens its own panel, so nothing pressed inside it may reach the row either. */}
-      <span className="row-actions-ask" onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
+      {/* Ask AI opens its own panel, so no click inside it may reach the row. Keys are left alone: the
+          row answers none, and the panel closes on an Escape it hears on the document. */}
+      <span className="row-actions-ask" onClick={(e) => e.stopPropagation()}>
         {ask}
       </span>
       <span className="row-actions-more">{menu}</span>
@@ -1212,7 +1232,7 @@ function MarkRow({
   // ONE REPORT, FOUR USES: the bands in the Risk cell, the date under them, what Open opens and what Ask
   // AI asks about all come from `nameRow.ts`, so the four cannot come to describe different searches.
   const report = shownReport(mark)
-  const secondLine = reportLine(mark)
+  const secondLine = reportLineParts(mark)
   const actions = nameActions(mark)
   const target = actions.open
   const openReport = target ? () => go(`/portal/result/${encodeURIComponent(target.read.runId)}`) : null
@@ -1306,7 +1326,12 @@ function MarkRow({
           ) : (
             <span style={{ color: 'var(--text-faint)' }}>—</span>
           )}
-          {secondLine ? <span className="sub report-line">{secondLine}</span> : null}
+          {secondLine ? (
+            <span className="sub report-line">
+              {secondLine.label}
+              {secondLine.date ? <> · <span className="nowrap-date">{secondLine.date}</span></> : null}
+            </span>
+          ) : null}
         </td>
         <td className="mono col-date" style={{ color: 'var(--text-muted)', fontSize: 13 }}>
           {mark.date ?? ''}
@@ -1421,6 +1446,7 @@ function ReadRow({
   // REPORTS, JUST NOT ONE OF THEM: see `hasReport`.
   const openable = hasReport(read)
   const open = () => go(`/portal/result/${encodeURIComponent(read.runId)}`)
+  const label = readLabelParts(read)
 
   return (
     <tr className={openable ? 'read-row openable' : 'read-row'} {...(openable ? { onClick: open } : {})}>
@@ -1430,7 +1456,7 @@ function ReadRow({
       {picking ? <td /> : null}
       <td>
         <span className="mono" style={{ fontSize: 12.5, color: 'var(--text-muted)' }}>
-          {readLabel(read)}
+          {label.head && label.date ? <>{label.head} · <span className="nowrap-date">{label.date}</span></> : readLabel(read)}
           {/* THE ORDERING KEY, SHOWN. A date alone cannot separate two searches of the same day. The time
               appears only when it is needed to tell them apart. UTC, and it says so. */}
           {sameDayAsAnother && readTime(read) ? <span style={{ marginLeft: 6 }}>{readTime(read)} UTC</span> : null}
