@@ -470,7 +470,7 @@ export const INNER_CODES = Object.freeze([
   // data rather than deriving it. Every derivation anyone would write is `connotation_` + the code, and
   // for this row that produces `connotation_no_recorded_queries`, which nothing mints and nothing covers.
   // verify.mjs:912-913 states the ruling: a sweep that did not RUN is a canonical-only decision with its
-  // own token and its own remedy, so the projector at verify.mjs:909 deliberately does not handle it.
+  // own token and its own remedy, so the projector at verify.mjs:910 deliberately does not handle it.
   { code: "no_recorded_queries", mints: ["driver/connotation-search.mjs:2025"], rollsUpTo: ["connotation_search_missing"],
     why: "RENAMED, not namespaced: verify.mjs emits `connotation_search_missing`. It is excluded from CONNOTATION_FORM_REASONS at connotation-search.mjs:1731 for exactly this reason." },
 

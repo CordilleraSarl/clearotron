@@ -57,13 +57,14 @@ test("the retired level is refused at policy mint — never run as the clearance
   // this and hand back a plain clearance, because the job asked for a narrower product and would have
   // been billed for a wider one.
   //
-  // ASSERTED THROUGH `recipeKey`, and that is a REPORTED GAP rather than a preference. The fail-open arm
-  // is guarded by `prelimOnly` (driver/pipeline.mjs:1061), which reads `job.searchLevel` — a field this
-  // build renamed to `job.product`. That read is stale, so on THIS path a job naming a retired PRODUCT
-  // now falls open instead of throwing. pipeline.mjs belongs to another in-flight build and is not this
-  // one's to edit; the one-word fix is named in the commit body. The queue doors are unaffected — the
-  // runner refuses a retired product before dispatch (runner.search-policy-gate.test.mjs) — so the gap
-  // is the direct-dispatch path only.
+  // ASSERTED THROUGH `recipeKey`. This paragraph used to report a live GAP: the fail-open arm was
+  // guarded by a selector reading `job.searchLevel`, a field the build had renamed, so on this path a
+  // job naming a retired product fell open instead of throwing — and the note said the fix belonged to
+  // another in-flight build. Both the selector and `job.searchLevel` are gone; the selectors now read
+  // `job.product`, and the rejection below is the evidence that this path throws rather than falling
+  // open. The line number that stood here pointed at deleted code and is not replaced by another
+  // number: a citation with no symbol to anchor it goes stale silently, which is how this one survived
+  // long enough to describe a gap that had already been closed.
   await assert.rejects(
     () => runPipeline({ MOCK_VERDICT: "CLEAR" }, { recipeKey: "ghost-recipe" }),
     (e) => {
