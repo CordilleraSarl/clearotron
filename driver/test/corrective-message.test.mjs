@@ -320,9 +320,23 @@ test("the 60-of-61 state gets a hint at all — the state that produced four ide
   // And it must say the thing the seat could not otherwise know: an empty answer is still a receipt.
   assert.match(m, /empty results array/, "the hint must name the SHAPE that records a fruitless query");
   assert.match(m, /the search RAN/, "…and say what that shape means, or it reads as a formatting rule");
-  assert.match(m, /Re-run ONLY the listed queries/,
+  // THE TWO PHRASES BELOW MOVED, AND THE PROPERTIES DID NOT. Both were reworded when the hint stopped
+  // asserting that an unmatched query had never run:
+  //
+  //   "Re-run ONLY the listed queries"  ->  "Touch ONLY the listed queries"
+  //   "leave every row already recorded exactly as it is"  ->  "leave every other recorded row …"
+  //
+  // The first had to move because re-running is no longer the only remedy offered — where a query is
+  // already recorded under other wording the seat is told to EDIT it, and an instruction to re-run only
+  // the listed queries reads as an order to run the very search the same hint has just forbidden.
+  // The second had to move for the same reason: "leave every row already recorded exactly as it is"
+  // contradicted the edit instruction outright, because the row being edited IS already recorded.
+  //
+  // What is asserted is unchanged — the work is bounded to the listed queries, and the rows that are
+  // already right are protected.
+  assert.match(m, /Touch ONLY the listed queries/,
     "…and bound the work, or a seat re-runs a 61-query sweep to add one row");
-  assert.match(m, /leave every row already recorded exactly as it is/,
+  assert.match(m, /leave every other recorded row exactly as it is/,
     "…and protect the 60 that are already right");
 });
 
