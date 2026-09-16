@@ -408,6 +408,29 @@ test('People prints what a person may do, never a role noun', () => {
   assert.doesNotMatch(prose, /\.tenant\b|all of this tenant/, 'and "tenant" is a file word, never a screen word')
 })
 
+test('People prints the OUTCOME for every row, and says under the column what each word means', () => {
+  // An address on an organisation's access list with nothing set for it holds both switches off, which
+  // gives what it gives anyone: they view what they reach. The row used to branch on how the record was
+  // written and print a phrase for that instead, so the reader was told the file's shape and left to
+  // work out the person. One cell, one phrase, for every row — muted when it is the view-only one.
+  const prose = body(PEOPLE_ACCESS)
+  const row = prose.slice(prose.indexOf('function Row('))
+  assert.ok(row.length > 200, 'the Row component was found')
+  const cell = /<td style=\{\{ color: viewOnly \? 'var\(--text-muted\)' : 'var\(--text-strong\)' \}\}>([\s\S]*?)<\/td>/.exec(row)
+  assert.ok(cell, 'the Permissions cell is drawn muted for the view-only person and strong otherwise')
+  assert.equal(cell[1]!.trim(), '{permissionsPhrase(person.permissions)}', 'and it prints the shared phrase, with no other branch')
+  assert.match(row, /const viewOnly = !person\.permissions\.run && !person\.permissions\.manage/, 'view-only is both switches off')
+  assert.doesNotMatch(prose, /\.listed\b/, 'no row is described by the shape of the record it came from')
+
+  // THE KEY, under the table and above the activity panel: every word the column prints, beside what it
+  // means. Its words are driven in permissions.test.ts; here, that the page draws them where they belong.
+  const table = prose.indexOf('</table>')
+  const key = prose.indexOf('<dl className="perm-key">')
+  const panel = prose.indexOf('<Observed ')
+  assert.ok(table > 0 && key > table && panel > key, 'the key sits under the table and above Recent activity')
+  assert.match(prose.slice(key, panel), /PERMISSIONS_KEY\.map\(/, 'drawn from the one list of words and meanings')
+})
+
 test('an install that signs in one person says so, disables Add, and names the way out', () => {
   // Local sign-in holds one address and one passphrase and cannot hold a second person. A control that
   // only fails is worse than none, and a vanished control sends a reader looking — so Add stays, visibly
@@ -420,11 +443,20 @@ test('an install that signs in one person says so, disables Add, and names the w
   assert.doesNotMatch(prose, /not currently configurable via the UI/, 'the old read-only sentence is gone with the read-only page')
 })
 
-test('the activity panel says absence is not evidence of missing access', () => {
-  // The failure this guards is someone reading a short "Seen recently" list as an access roster and
-  // concluding a colleague has been locked out.
+test('the activity panel is Recent activity: its empty state says what it counts, and it names no window', () => {
+  // REVERSED, and on purpose. This used to require the line "Somebody absent from this list still has
+  // access", because a panel headed "Seen recently" read as a roster of who may sign in, and a short one
+  // as a colleague locked out. Headed "Recent activity", it says what it is, so the correction goes with
+  // the heading it corrected.
   const prose = body(PEOPLE_ACCESS)
-  assert.match(prose, /still has access/, 'the disclaimer is present in the rendered copy')
+  assert.match(prose, />\s*Recent activity\s*</, 'the panel is headed for what it shows')
+  assert.doesNotMatch(prose, /Seen recently/, 'the heading that read as a roster is gone')
+  assert.doesNotMatch(prose, /still has access/, 'and so is the disclaimer it needed')
+  // The empty panel still explains itself: it says what the panel counts rather than only that it is empty.
+  assert.match(prose, />Nothing planned, started or saved here yet\.</, 'the empty state names what is counted')
+  // NO WINDOW. The log is read from its tail by size, so no length of time is true of it — a number of
+  // days on this panel would be invented.
+  assert.doesNotMatch(prose, /\b\d+\s+days?\b|window shown|in the last/i, 'no span of time is named')
   assert.ok(prose.includes('!v.available'), 'and the unavailable branch exists rather than being dead-coded away')
 })
 

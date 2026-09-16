@@ -23,6 +23,45 @@ export function permissionsPhrase(p: Permissions): string {
 }
 
 /**
+ * What each permission lets a person do, one line each — under the two levers on Give access and Modify
+ * access, and, as whole sentences, in the key under People's Permissions column.
+ *
+ * ONE AUTHOR FOR "WHAT DOES MANAGE COVER". The answer is the companies the person can already see, never
+ * a company list of its own (permissions.ts), and a key under the list worded apart from the line under
+ * the switch would be two answers to that one question.
+ */
+export const PERMISSION_LINE = {
+  run: 'Start and stop clearances on the companies they can see',
+  manage: 'Add companies, add people and change settings for the companies they can see',
+} as const
+
+/**
+ * The key under People's Permissions column: each word the column prints, and what it means.
+ *
+ * The terms ARE `permissionsPhrase`, asked for one switch at a time, so the key can only explain a word
+ * the column can print. Viewing is not a permission — everyone with access reads the reports inside it —
+ * which is why its line says "Everyone".
+ */
+export const PERMISSIONS_KEY: readonly { readonly term: string; readonly means: string }[] = [
+  { term: permissionsPhrase({ run: true, manage: false }), means: `${PERMISSION_LINE.run}.` },
+  { term: permissionsPhrase({ run: false, manage: true }), means: `${PERMISSION_LINE.manage}.` },
+  { term: permissionsPhrase({ run: false, manage: false }), means: 'Everyone can view reports for the companies they can see.' },
+]
+
+/** Beneath the levers: what both off gives, in the word People's list prints for it. */
+export const BOTH_OFF_LINE = 'Leave both off for View reports — every report for the companies they can see.'
+
+/**
+ * What ticking a point on the access tree reaches, now and later. Access to a point is inherited by
+ * everything below it, including what is added after the grant — the one thing a reader is most likely to
+ * ask about a grant and least likely to find out by trying.
+ */
+export const REACH_LINE = {
+  everything: 'every organisation and company, including ones added later',
+  organisation: 'every company in it, including ones added later',
+} as const
+
+/**
  * The chips under "Access to", in the order a reader should meet them: the root first, then
  * organisations, then single companies. A company given on its own is the narrowest grant and reads
  * last, beside the organisations it sits outside of.
@@ -69,7 +108,9 @@ export function accessSentence(input: {
     : input.organisations.length || input.companies.length
       ? `everything ${joinWords([...input.organisations, ...input.companies.map((c) => c.name)].map((p) => `under ${p}`))}`
       : null
-  if (!places) return `Choose what ${typed || 'this person'} can see.`
+  // Before anything is chosen, the instruction — and the one fact about the choice a reader cannot see
+  // from this page: it is also what their AI assistant reaches, because the connector reads the same record.
+  if (!places) return `Choose what ${typed || 'this person'} can see. It is what they see here and through their AI.`
 
   // The organisations only PART of which was given: the person sees the chosen companies there and none
   // of the organisation's other clearances, which is the one thing a reader is most likely to assume wrong.

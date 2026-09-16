@@ -1777,12 +1777,11 @@ function decodePerson(r: Record<string, unknown>): Person {
     access: decodeAccess(r),
     dangling: asArray(r['dangling']).filter((s): s is string => typeof s === 'string'),
     // THESE ARE OPTIONAL ON THE TYPE, WHICH IS WHY ONE OF THEM WAS MISSING HERE FOR MONTHS.
-    // The server has always sent `listed`, the People page has always read it as `listed === false`, and
+    // The server has always sent `listed`, the People page once branched on `listed === false`, and
     // this function returned an object literal that never mentioned it — so it was `undefined` on every
-    // row, the comparison was never true, and the "Reach only — no permissions set" line the server goes
-    // to the trouble of distinguishing has never once been drawn. Nothing failed: an optional field
-    // makes a missing decode invisible to the compiler and identical, on screen, to a server that did
-    // not send it. `decodePersonCarriesEveryField` is the arm.
+    // row, the comparison was never true, and the line the page drew for that shape never once reached
+    // a screen. Nothing failed: an optional field makes a missing decode invisible to the compiler and
+    // identical, on screen, to a server that did not send it. `decodePersonCarriesEveryField` is the arm.
     //
     // The defaults are not one default. A payload that omits `listed` is an older server whose people
     // all had entries; a payload that omits `covered` is one that cannot tell us whether we are looking
@@ -2509,7 +2508,7 @@ export const api = {
     })),
 
   /**
-   * Give someone access. Manage only; it writes the same grants file the command line writes.
+   * Give access. Manage only; it writes the same grants file the command line writes, and sends nothing.
    *
    * `access` names points inside the adder's own — a point outside it answers 404, the same as one that
    * does not exist. The switches belong to the PERSON: when the address already holds access somewhere

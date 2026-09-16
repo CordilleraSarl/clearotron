@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Give someone access to Clearotron — the form People opens.
+// Give access — the form People opens.
 //
-// Three questions: who, what they may do, and what they can see. Saving is all it takes. Clearotron issues
-// no passwords and no browser tokens: the login system in front of the install proves the address, and
-// this decides what that address can see. It writes the same grants file the command line writes.
+// Three questions: who, what they may do, and what they can see. Pressing Give access is all it takes, and
+// the button is named for what it does: it writes the same grants file the command line writes, and sends
+// nothing — no password, no invitation, no mail. Clearotron issues no passwords and no browser tokens: the
+// organisation's sign-in service in front of the install proves the address, which is why the one line
+// under the title says a person needs access there too.
 //
 // THE ACCESS LIST OFFERS ONLY WHAT THE ADDER CAN SEE, because a point outside it is one the server refuses:
 // someone managing one organisation cannot give anybody another. An organisation is offered whole only to
@@ -20,7 +22,7 @@ import type { Permissions, Person, Result } from '../contract/api.ts'
 import { useLoad } from '../state/useApi.ts'
 import { useUnsaved } from '../state/useUnsaved.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
-import { accessSentence, permissionsPhrase } from '../shell/accessWords.ts'
+import { accessSentence, permissionsPhrase, PERMISSION_LINE, BOTH_OFF_LINE, REACH_LINE } from '../shell/accessWords.ts'
 import { isGenericKey } from '../contract/genericKey.ts'
 import { PEOPLE } from '../nav/nav.config.ts'
 import { loginInFrontDoc, useSourceRepo } from './PeopleAccess.tsx'
@@ -64,7 +66,7 @@ export function GiveAccess({ ctx }: { readonly ctx: ShellContext }) {
     return (
       <div className="screen">
         <div className="measure" style={{ '--screen-measure': '640px' } as CSSProperties}>
-          <PageHeader title="Give someone access to Clearotron" />
+          <PageHeader title="Give access" />
           <div className="notice quiet">
             <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-muted)' }}>
               <b style={{ color: 'var(--text-strong)' }}>This Clearotron signs in one person: you.</b> To add
@@ -144,11 +146,12 @@ export function GiveAccess({ ctx }: { readonly ctx: ShellContext }) {
   return (
     <div className="screen">
       <div className="measure" style={{ '--screen-measure': '640px' } as CSSProperties}>
-        {/* "People" over the sentence naming the action was the section above the page, not a second
-            header. The rail already says which section this is. */}
+        {/* THE LEDE IS THE ROUTE, NOT THE PURPOSE. What the screen is for is its title and its fields; what
+            a reader cannot see from here is the other half of getting someone in, which this page does
+            not hold. */}
         <PageHeader
-          title="Give someone access to Clearotron"
-          lede="Enter their email, choose what they can see and do, then save. They sign in the same way you do."
+          title="Give access"
+          lede="They must also have access through your organisation’s sign-in service."
         />
 
         <label className="field-label" htmlFor="give-access-email">Email</label>
@@ -166,26 +169,24 @@ export function GiveAccess({ ctx }: { readonly ctx: ShellContext }) {
 
         <div className="field-label">Permissions</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 6 }}>
-          <Lever on={permissions.run} title="Run clearances" line="Start and stop clearances on the companies they can see."
+          <Lever on={permissions.run} title="Run clearances" line={PERMISSION_LINE.run}
             disabled={saved} onToggle={() => setPermissions((p) => ({ ...p, run: !p.run }))} />
-          <Lever on={permissions.manage} title="Manage" line="Add companies, add people and change settings for the companies they can see."
+          <Lever on={permissions.manage} title="Manage" line={PERMISSION_LINE.manage}
             disabled={saved} onToggle={() => setPermissions((p) => ({ ...p, manage: !p.manage }))} />
         </div>
-        <p style={{ margin: '0 0 22px', fontSize: 12.5, color: 'var(--text-faint)' }}>
-          Everyone can view reports for the companies they can see. Leave both off for a view-only person.
-        </p>
+        <p style={{ margin: '0 0 22px', fontSize: 12.5, color: 'var(--text-faint)' }}>{BOTH_OFF_LINE}</p>
 
         <div className="field-label">Access to</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 8 }}>
           {holdsEverything ? (
-            <AttachRow on={chosen.everything} name="Everything on this Clearotron" line="all organisations and companies, including ones added later"
+            <AttachRow on={chosen.everything} name="Everything on this Clearotron" line={REACH_LINE.everything}
               disabled={saved} onToggle={() => setChosen((c) => ({ ...c, everything: !c.everything }))} />
           ) : null}
           {tree.map((t) => (
             <div key={t.org.key} style={{ display: 'contents' }}>
               {t.whole ? (
                 <AttachRow on={chosen.everything || chosen.orgs.has(t.org.key)} implied={chosen.everything} name={t.org.name}
-                  line="every company in it, including ones added later" disabled={saved}
+                  line={REACH_LINE.organisation} disabled={saved}
                   onToggle={() => setChosen((c) => ({ ...c, orgs: toggle(c.orgs, t.org.key) }))} />
               ) : null}
               {t.companies.map((k) => (
@@ -197,7 +198,7 @@ export function GiveAccess({ ctx }: { readonly ctx: ShellContext }) {
           ))}
         </div>
         <p style={{ margin: '0 0 22px', fontSize: 12.5, color: 'var(--text-faint)' }}>
-          You can only give access to what you have access to yourself.
+          You can only give access to what you have access to yourself
         </p>
 
         <div className="notice quiet" style={{ marginBottom: 18 }}>
@@ -226,7 +227,7 @@ export function GiveAccess({ ctx }: { readonly ctx: ShellContext }) {
           ) : (
             <>
               <button type="button" className="btn-primary" disabled={!canSave} onClick={() => void save()}>
-                {busy ? 'Saving…' : 'Save'}
+                {busy ? 'Giving access…' : 'Give access'}
               </button>
               <button type="button" className="btn-ghost" onClick={() => ctx.go(PEOPLE.path)}>Cancel</button>
             </>
