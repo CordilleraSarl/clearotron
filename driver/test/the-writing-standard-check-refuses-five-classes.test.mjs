@@ -257,10 +257,19 @@ test("THE CENSUS READS A PLAUSIBLY LARGE TREE, so every absence above is over a 
   assert.ok(CAVEATS.length >= 5, `only ${CAVEATS.length} caveat sentence(s) — the fixture did not load`);
   assert.ok(drawsScreen('<div className="screen">x</div>'), "the screen derivation stopped recognising a screen");
 
+  // DERIVED, NOT A NUMBER SOMEBODY CHOSE. This floor was 5, calibrated on a renderer that carried the
+  // scope block; the 2026-09-16 redesign took that block off the page and the count fell to 4, which is
+  // the floor failing on a correct tree. A fixed number over a file that legitimately changes tells you
+  // only when it last changed. What the floor is really asserting is that the scanner READS — so it
+  // asks the file how many caveat sentences it actually contains and requires the scanner to find at
+  // least that many. A scanner reading nothing still fails; a renderer that loses a caveat does not.
+  const expected = CAVEATS.filter((c) => renderer.includes(c)).length;
+  assert.ok(expected > 0, "no caveat sentence is in the renderer at all — the fixture and the tree have parted");
   const live = fileOffences(RENDERER, renderer);
-  assert.ok(live.length >= 5,
-    `the knockout renderer yields ${live.length} hits — it carries the scope block and the marker, so this is the scanner failing, not the tree being clean`);
+  assert.ok(live.length >= expected,
+    `the knockout renderer yields ${live.length} hits over ${expected} caveat sentence(s) that are IN the file — `
+    + `this is the scanner failing, not the tree being clean`);
 
   const c = censusOf([RENDERER], (p) => read(p));
-  assert.ok(c.total >= 5, "the census disagrees with the direct read of the same file");
+  assert.equal(c.total, live.length, "the census disagrees with the direct read of the same file");
 });

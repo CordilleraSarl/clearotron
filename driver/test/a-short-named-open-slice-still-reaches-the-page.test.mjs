@@ -35,6 +35,15 @@ function parsed() {
 const cells = (coverage) =>
   (renderHtml(parsed(), [], coverage, { runId: "shortslice" }).match(/class="covcell/g) || []).length;
 
+// WHAT THE PAGE DRAWS CHANGED UNDER THIS ARM, AND THE PROPERTY DID NOT. The report used to carry a grid
+// of every coverage row, clean and open alike; the redesign (the 2026-09-16 report redesign) shows completed work as
+// counts and draws only what was LEFT OPEN, because a client reading a list of searches that succeeded
+// is reading the engine's account of itself. So the expected cell count is the OPEN population, not the
+// whole ledger. The thing these arms exist for is untouched: a disclosed open slice must still reach the
+// page, and a row that merely mentions its word must not erase it.
+const CLEAN = new Set(["confirmed-clean", "searched-clean", "clean"]);
+const openOnly = (coverage) => coverage.filter((c) => !CLEAN.has(c.state));
+
 // Invented ground throughout. No client content reaches a fixture.
 const park = (directive) => ({
   area: `Follow-up / ${directive}`,
@@ -49,7 +58,7 @@ test("an axis-labelled row does not erase the open slice it merely mentions", ()
     { area: "register / eu filings for the house mark", state: "open", note: "the eu register sweep is still open" },
     { area: "register / us", state: "confirmed-clean", note: "clean" },
   ];
-  assert.equal(cells(coverage), coverage.length,
+  assert.equal(cells(coverage), openOnly(coverage).length,
     "a disclosed open slice is in the record and not on the page — the client cannot see which ground was left open");
 });
 
@@ -62,7 +71,7 @@ test("a not-searched axis row does not erase it either", () => {
     { area: "register / toy packaging classes", state: "not-searched", note: "not run this run" },
     { area: "register / toy packaging adjacents", state: "not-searched", note: "not run this run" },
   ];
-  assert.equal(cells(coverage), coverage.length, "a not-searched unit stood in for a slice that was never searched at all");
+  assert.equal(cells(coverage), openOnly(coverage).length, "a not-searched unit stood in for a slice that was never searched at all");
 });
 
 test("every entry reaches the page across a spread of short directives", () => {
@@ -72,7 +81,7 @@ test("every entry reaches the page across a spread of short directives", () => {
     { area: "register / us", state: "confirmed-clean", note: "clean" },
   ];
   assert.ok(coverage.length >= 5, "the fixture is too small for the count below to mean anything");
-  assert.equal(cells(coverage), coverage.length, `${coverage.length} entries in, ${cells(coverage)} cells out`);
+  assert.equal(cells(coverage), openOnly(coverage).length, `${openOnly(coverage).length} open entries in, ${cells(coverage)} cells out`);
 });
 
 test("the model's own restatement still suppresses the driver's row", () => {
@@ -85,7 +94,7 @@ test("the model's own restatement still suppresses the driver's row", () => {
     { area: "the English word DOLPHIN as a dedicated exact search", state: "open", note: "planned and not reached" },
     { area: "register / us", state: "confirmed-clean", note: "clean" },
   ];
-  assert.equal(cells(coverage), coverage.length - 1,
+  assert.equal(cells(coverage), openOnly(coverage).length - 1,
     "the model's free-text row and the driver's composed row name the same search and both drew — the "
     + "discriminator no longer suppresses anything");
 });
@@ -95,6 +104,6 @@ test("a completed search still never stands in for an uncompleted one", () => {
     park("dolphin"),
     { area: "the English word DOLPHIN as a dedicated exact search", state: "confirmed-clean", note: "ran and was clean" },
   ];
-  assert.equal(cells(coverage), coverage.length,
+  assert.equal(cells(coverage), openOnly(coverage).length,
     "a searched-and-clean row suppressed an open slice that never ran — those report opposite things");
 });

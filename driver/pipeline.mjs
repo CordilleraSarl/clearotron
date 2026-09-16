@@ -6437,8 +6437,10 @@ function injectFrontMatter(path, fields, runDir = null) {
 // spec 62 — the per-field CONFIGURATION PROVENANCE rows for a project run: for each PROJECT_KEY, its effective
 // value (compact) and where it came from (project | customer | house). Read off the frozen sidecar `pr` (both
 // origins and the effective values live there), serialised to a single-line JSON string for the report
-// front-matter, and rendered INTERNAL-ONLY in the scope fold (never on the client export — provenance, not
-// process-exhaust). Absent origins ⇒ [] ⇒ nothing injected (no-project runs are untouched).
+// front-matter. It was rendered internal-only in the scope fold; the 2026-09-16 redesign takes that fold
+// off the page, and this row set went with it — it was the one block in there labelled internal, which is
+// the class that ruling removed. IT IS STILL RECORDED, here and in the workbook, which is where a reader
+// who wants to know which layer set a knob now finds out. Absent origins ⇒ [] ⇒ nothing injected.
 function originRowsForReport(pr) {
   if (!pr?.origins) return [];
   const short = (s, n = 48) => { const t = String(s ?? "").trim(); return t.length > n ? `${t.slice(0, n - 1)}…` : t; };
