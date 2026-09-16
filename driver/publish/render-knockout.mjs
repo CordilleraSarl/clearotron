@@ -437,7 +437,7 @@ function territoriesLine(registerCounts) {
 const COUNTS_READER_LINE = 'Counts include live, pending and dead filings. '
   + 'A count is not a conflict; the cards above say which filings matter.';
 
-function countsSection(marks, registerCounts) {
+function countsSection(marks, registerCounts, positions = '') {
   // ── THE DEFINITION MOVES INTO THE COLUMN HEADER ──────────────────────────────────────────────────
   //
   // The 70-word count-basis paragraph existed because three one-word headers — Identical, Containing,
@@ -490,7 +490,8 @@ function countsSection(marks, registerCounts) {
   // thing in three words each.
   return `<div class="panel">
   <div class="ko-counts ko-scroll"><table><thead><tr><th>Name</th>${head}</tr></thead><tbody>${rows}</tbody></table></div>
-  <p class="ko-basis">${esc(COUNTS_READER_LINE)}<br>${esc(territoriesLine(registerCounts))}</p>
+  <p class="ko-basis">${esc(COUNTS_READER_LINE)}<br>${esc(territoriesLine(registerCounts))}${
+    positions ? `<br>${esc(positions)}` : ''}</p>
 </div>`;
 }
 
@@ -1294,7 +1295,11 @@ function registerLine(mark, registerCounts, probeRan, registerRecords = null, ca
  *                               This is the "none exists" arm, and it is only reachable when every
  *                               search actually answered.
  */
-function registerPositionClause(mark, registerCounts, registerRecords, cards = []) {
+// `where` names where the cards this clause points at actually sit relative to it. It said "above"
+// unconditionally, which was true while the clause was drawn under the cards. It is drawn under the
+// COUNTS now — the numbers it qualifies — and the cards are below it, so a fixed word would send a
+// reader the wrong way up the page. The caller knows the order; this function does not guess it.
+function registerPositionClause(mark, registerCounts, registerRecords, cards = [], where = 'above') {
   if (!registerRecords) {
     return registerCounts ? 'The filings behind those counts were not listed on this run.' : '';
   }
@@ -1307,11 +1312,11 @@ function registerPositionClause(mark, registerCounts, registerRecords, cards = [
   if (cards.length) {
     const classes = [...new Set(cards.flatMap((c) => (c.record.classes ?? []).map(Number).filter(Number.isFinite)))]
       .sort((a, b) => a - b);
-    const where = classes.length ? ` in class${classes.length === 1 ? '' : 'es'} ${classes.join(', ')}` : '';
+    const classWhere = classes.length ? ` in class${classes.length === 1 ? '' : 'es'} ${classes.join(', ')}` : '';
     const one = cards.length === 1;
     const refs = cards.map((c) => c.ref).join(', ');
     return `${one ? 'A filing' : `${cards.length} filings`} of this name or a close variation of it `
-      + `stand${one ? 's' : ''} on ${provider}${where} — ${refs} above.`;
+      + `stand${one ? 's' : ''} on ${provider}${classWhere} — ${refs} ${where}.`;
   }
   const records = entry.records ?? [];
   if (!records.length) {
@@ -1595,6 +1600,10 @@ function depthStrip(note) {
 // complete renderer-owned paragraphs (methodLine above, the audit-workbook sentence below). This is the
 // lead-in they had and it did not: it is renderer-owned, so it is there whatever the model wrote, and it
 // says what the lines under it are. It is not a filter and it rewrites no caveat.
+// IT CAME BACK WITH THE BLOCK (2026-09-16). The caveats were rendered nowhere for a while after the
+// section above them was removed, and the first restoration drew them as bare paragraphs — dropping this
+// sentence, which is the whole of what the ruling asked for. One paragraph, the lead-in first, the
+// caveats verbatim after it; only where it sits on the page has changed.
 const CAVEAT_LEAD = 'This screen also carries the following limits:';
 
 
@@ -1669,9 +1678,29 @@ export function renderKnockoutHtml(findings, framework, {
   // nothing. It renders in the place the numbers would have occupied, at the top of the section that
   // owns them, because that is where a reader looks for them and fails to find them.
   const tierLine = tierAbsenceLine(registerCounts, probeRan);
+  // WHERE THE NAME STANDS, WHICH THE NUMBERS DO NOT SAY. A table of counts answers how many filings were
+  // seen; the question a reader holds is whether anything STANDS on the register for this name, and two
+  // of that question's six states are absences — nothing was listed, and the listing could not be made
+  // at all. The clause said it from the line under the conflict cards, and that line was removed for
+  // restating the counts table. Only its COVERAGE half restated the table; the position half is a
+  // separate answer, and losing it left an absence as a silence over a table of numbers, which is the
+  // one thing the comment over it says must never happen.
+  //
+  // IT RIDES BOTH BRANCHES. Attaching it to the counts table alone would have dropped it on every run
+  // that has records and no counts — a product tier that lists filings without counting them — and that
+  // is the same silent loss again, one branch further down. The refs come from the same view function
+  // the cards are drawn from: a second derivation here would be a second answer to which filings were
+  // promoted, and the clause would name refs no card carries.
+  const cardsByMark = new Map(marks.map((m) => [m?.name, registerCardViews(m, framework, registerRecords).cards]));
+  const positions = marks.map((m) => {
+    const clause = registerPositionClause(m, registerCounts, registerRecords, cardsByMark.get(m?.name) ?? [], 'below');
+    if (!clause) return '';
+    return marks.length > 1 && m?.name ? `${m.name}: ${clause}` : clause;
+  }).filter(Boolean).join(' ');
   const counts = hasCounts
-    ? countsSection(marks, registerCounts)
-    : `<div class="panel"><p class="ko-tier">${esc(tierLine)}</p></div>`;
+    ? countsSection(marks, registerCounts, positions)
+    : `<div class="panel"><p class="ko-tier">${esc(tierLine)}</p>${
+        positions ? `<p class="ko-basis">${esc(positions)}</p>` : ''}</div>`;
   // ── A CAVEAT THAT SAYS NOTHING THE SCOPE BLOCK HAS NOT SAID IS NOT RENDERED ────────────────────────
   //
   // The four model-written caveats on the measured run overlap the fixed text completely — 331 item 9,
@@ -1793,8 +1822,8 @@ window.addEventListener('beforeprint',o);})();</script>
        when every content word in it is already said elsewhere on the page, which is what the About
        panel and the tier line now carry; a caveat making any new claim brings a new word with it and
        is kept. Both of the demo run's survive. */''}
-  ${newCaveats.length ? `<div class="panel ko-caveats">${
-    newCaveats.map((c) => `<p>${inlineMd(c)}</p>`).join('')}</div>` : ''}
+  ${newCaveats.length ? `<div class="panel ko-caveats"><p class="ko-scope">${CAVEAT_LEAD}<br>${
+    newCaveats.map((c) => inlineMd(c)).join('<br>')}</p></div>` : ''}
 
   <footer>
     <span>${productName ? `${esc(productName)}. ` : ''}<br>Matter ${esc(matter || runId || '')}.${issued ? ` Issued ${esc(issued)}.` : ''}</span>
