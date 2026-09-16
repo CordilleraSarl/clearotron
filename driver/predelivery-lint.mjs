@@ -32,6 +32,7 @@ import { writeUpViolations, writeUpMessage } from "./narrative-write-ups.mjs";  
 import { findRegistryArithmeticIssues, findRegistryViolations, splitBlocks } from "./registry-fidelity.mjs";
 import { CLIENT_TIER_BY_COMPOSITE, joinFindingToBlock, parseBlockOrd, worstLiveBand, NO_RATED_CONFLICTS, deriveActionConditions, isUnconditionalProceed, verdictStance, joinAskToAnswer, projectAssessmentField, POSITION_REQUIRED_DISPOSITIONS, OFF_FIELD_GROUNDS, FINDINGS_SCHEMA_VERSION, netChainMarkers, STATEMENT_CLAUSE_MAX } from "./findings-model.mjs";
 import { normalizeBand } from "./framework.mjs";
+import { clientConditions, ENGINE_TOKEN_RE } from "./terminal-clamp.mjs";   // the reader's clause per condition, and the token shape it may never carry
 import { knockoutNoteView, REQUEST_NOTE_WORDS, REQUEST_SUBJECT_WORDS } from "./findings-model.mjs";   // one reader for where a note prints
 import { isEngineAppendedCaveat } from "./verify-knockout.mjs";   // ONE derivation for "the engine appended this caveat, not a seat"
 
@@ -1961,6 +1962,26 @@ export function verdictActionsCoherenceChecks({ actionsRegister, findings, verdi
 // the conditional FORM riskStatement composes ("<Tier> — conditional on: <facts>"), never a wording
 // regex. Legacy sidecars (no stance) get the tier + unconditional-proceed checks only — judged
 // against the wording THEIR era composed (the retired-phrase exemption below), never the new form.
+// ── THE CONDITIONS A CLIENT READS SPEAK A LAWYER'S NOUNS ────────────────────────────────────────────
+// The sidecar carries two texts per condition — a run-record `reason` that may name tokens, counts and
+// record ids, and the reader's `clause`. `clientConditions` is the one reader of that pair, so this
+// check asks the question over what a surface actually renders rather than over either array.
+//
+// IT FIRES ON A LEGACY SIDECAR, DELIBERATELY. A run recorded before clauses were persisted has none, so
+// every condition falls back to its run-record reason and a token-bearing one flags here. That is the
+// honest reading: the delivered page for that run does carry the token, and re-generating the run is
+// what clears it. A flag, never a withholding — the report ships and the operator sees where the gap is.
+export function clientConditionVoiceChecks({ verdictDoc }) {
+  if (!verdictDoc) return [];
+  const carrying = clientConditions(verdictDoc)
+    .map((c) => ({ c, m: String(c).match(ENGINE_TOKEN_RE) }))
+    .filter((x) => x.m);
+  return [check("client-condition-voice", "verdict", "report", carrying.length === 0,
+    carrying.length
+      ? `${carrying.length} delivered condition${carrying.length === 1 ? "" : "s"} carr${carrying.length === 1 ? "ies" : "y"} an engine identifier, so the client's "conditional on:" list reads the run record rather than the reader's sentence: ${carrying.slice(0, 3).map((x) => `"${x.m[0]}"`).join(", ")}${carrying.length > 3 ? ` (+${carrying.length - 3} more)` : ""}. The clause exists at the clamp site; persist it and this list takes it. A sidecar written before clauses were persisted flags until the run is re-generated.`
+      : "")];
+}
+
 export function statementCoherenceChecks({ verdictDoc }) {
   if (!verdictDoc?.statement) return [];
   const st = String(verdictDoc.statement), tier = String(verdictDoc.tier ?? "");
@@ -2292,7 +2313,8 @@ export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, 
   if (findings && clientSummaryMd) checks.push(...clientTierChecks({ clientSummaryMd, findings, manifest }));   // A2 (doc 50: band words via the frozen manifest)
   if (verdictDoc?.tier && reportMd) checks.push(...overallTierChecks({ reportMd, verdictDoc }));         // wp50/wi2
   checks.push(...verdictActionsCoherenceChecks({ actionsRegister, findings, verdictDoc }));              // spec 64
-  checks.push(...statementCoherenceChecks({ verdictDoc }));                                              // spec 64
+  checks.push(...statementCoherenceChecks({ verdictDoc }));
+  checks.push(...clientConditionVoiceChecks({ verdictDoc }));                                         // — the reader's clause, not the run record                                              // spec 64
   checks.push(...conditionalTextCoherenceChecks({ reportMd, clientSummaryMd, verdictDoc }));             // qw/verdict-text-coherence — CONDITIONAL badge vs clean-outcome prose
   checks.push(...prescriptionProseChecks({ reportMd, clientSummaryMd, findings, fourAnswers }));         // PR-3 report voice — facts that condition, never advice; flag-only (P5: the findings-derived prose is a delivered surface too)
   checks.push(...onlyYouRegisterChecks({ actionsRegister, findings, reportMd }));                        // spec 64
