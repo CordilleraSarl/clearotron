@@ -611,6 +611,32 @@ export function findDroppedConnotationQueries(spec, mergedGrid) {
  * Deliberately NOT counted as searched: laundering an honest error into a clean receipt would be a worse
  * defect than the one being fixed.
  */
+/**
+ * Of a caller's OWN list of missing queries, which ones did the plugin honestly report as having thrown?
+ *
+ * The sibling below derives its missing list itself, from the full spec. This one is handed one, because
+ * the meaning-seat gate computes a different list: it joins per half on `queryKey` where this module
+ * joins the merged grid on `norm`. Two callers, two populations, ONE author of what a gap row means —
+ * which is the point of the split. Reuse the key, not the question.
+ *
+ * Returns the CALLER'S query verbatim, never the gap row's term, so the caller can index what comes back
+ * against the list it passed in. A gap term that matched is by definition the same query under `norm`,
+ * and handing back the other spelling would make the caller join twice on two keys to use the answer.
+ */
+export function erroredConnotationQueriesAmong(missingQueries, mergedGrid) {
+  const gaps = (Array.isArray(mergedGrid?.gaps) ? mergedGrid.gaps : [])
+    .filter((g) => g && String(g.platform ?? "").toLowerCase() === "connotation");
+  if (!gaps.length) return [];
+  const out = [];
+  for (const m of missingQueries ?? []) {
+    const k = norm(String(m ?? ""));
+    if (!k) continue;
+    const hit = gaps.find((g) => norm(String(g.term ?? "").trim()) === k);
+    if (hit) out.push({ query: m, error: String(hit.error ?? "unspecified") });
+  }
+  return out;
+}
+
 export function findErroredConnotationQueries(spec, mergedGrid) {
   const missing = new Set(findDroppedConnotationQueries(spec, mergedGrid).map(norm));
   if (!missing.size) return [];
