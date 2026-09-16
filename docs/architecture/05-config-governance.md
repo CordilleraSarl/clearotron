@@ -495,7 +495,15 @@ origin; all portal config lives server-side in portal-service.
 
 These are read by the release workflow and by nothing a deployment runs. They are listed here because a
 name absent from this register is a name nobody can look up, not because an operator has any reason to set
-one — and setting either on a box does nothing at all.
+one — and setting any of them on a box does nothing at all.
+
+`ACTIONS_APPROVE_TOKEN` (unset) — a GitHub token with Actions read and write, used to approve the
+version pull request's parked CI run so that a cut does not wait for someone to click. That run is
+authored by the repository's own Actions bot and GitHub parks bot-authored runs; the built-in token
+cannot release one, because self-approval is blocked deliberately. Unset is the ordinary case: the
+script names the absent token and exits successfully, and the run waits for a person as before.
+Actions write is wider than approving — it also dispatches workflows, cancels any run in the
+repository and deletes run logs — so it is worth rotating on the same schedule as a deploy key.
 
 `CLEAROTRON_CUT_REF` (default `HEAD`) — which ref the cut decision reads the version from. The jobs that
 ask about `main` set it to `origin/main` explicitly, because their checkout is pinned to the run's own ref
