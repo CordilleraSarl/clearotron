@@ -30,6 +30,11 @@ renders as **absent** — no element, no stray separator — rather than as a bl
 They are read once, at import (`shared/brand.mjs`), so they are deployment-static: set them in the
 environment file and restart.
 
+`CLEAROTRON_ADMINISTRATOR_CONTACT` is read in the same place and the same way, but it is not a name: it
+is a mail or web address for the person who looks after sign-ins. Preferences tells a signed-in person to
+contact their Clearotron administrator to change their sign-in, and links those words to this contact.
+Unset, the words are plain text.
+
 **Three things that seam does not cover**, stated because finding them at deploy time is worse:
 
 - **The palette is not env-overridable.** Brand colours are defined in code beside those variables.
