@@ -174,20 +174,35 @@ you are looking at; *Organisation* is who you are.
 ---
 ---
 
-## OPEN — measured, NOT ruled
+### Organisation · Company
 
-'s rules say *"when the existing copy is ambiguous… flag it for product or legal review. Do not
-resolve the ambiguity by guessing."* These are flagged, not resolved. The guard does not enforce them.
+The two words, and the only two. **Organisation** is who owns the installation or the account;
+**Company** is whose names are cleared. Neither does the other's work.
 
-### Account · Client · Customer · Tenant — four words left, and only one has been ruled on
+| | |
+|---|---|
+| **Canonical** | **Organisation** (who owns the installation) / **Company** (whose names are cleared) |
+| **Retired** | account · customer · client · tenant · brand · firm · matter, for either of those two things |
 
-*Brand owner* left this table on 2026-09-09; it is settled above and the guard enforces it. What it
-leaves behind is the half the ruling deliberately did not touch, re-measured here rather than carried
-over — the old figures in this row were stale, and both strings it quoted as evidence are gone from the
-tree.
+**Ruled by the design of 2026-09-16, and enforced.** `portal-ui/test/terminology.test.ts` reads every
+string a reader can meet — JSX text and the literals that read as prose — and fails on any of the seven
+retired words. The sweep covers `portal-ui/src/**`, the documentation and the README.
 
-Counts are over the extractor's corpus, taken 2026-09-09, with a direct source search where the
-extractor is known to drop a string:
+**A retired word that means something else is listed, not reworded.** The guard carries an exception
+list, each entry naming its file, a fragment of the string and the reason. *A matter* is the clearance
+being worked on, which is why the rating card heading "How matters are rated" stays; *Law firm options*
+is the specified label of the fold holding the lawyer-only fields, where a law firm is a kind of
+customer this product serves rather than the word for a company. Matching is on the fragment, never on a
+line number, so an edit above an exception cannot silently move it onto a different string.
+
+**What is enforced is what a reader meets, not what the wire carries.** Internal identifiers, field
+names, environment names and test fixtures keep their spellings — the guard scans comment-stripped
+source for rendered strings, and that separation is what lets a single word like `tenant` survive in the
+grants file while never reaching a screen.
+
+**The measurement that preceded the ruling** is kept below rather than deleted, because the method still
+holds: count what a reader is shown, and trust a direct source search over the extractor where the two
+disagree. Taken 2026-09-09, before the sweep.
 
 | term | count | what it appears to mean |
 |---|---|---|
@@ -198,30 +213,10 @@ extractor is known to drop a string:
 | **Tenant** | 0 visible | gone from copy with the People page, which prints *Organisation*; it survives in the grants file, on the wire and on the command line |
 | **Organisation** | 1 | the top-bar label, ruled |
 
-**Why three of these are still open, and why *Client* no longer is.** The earlier reasoning here was
-that all four are the access model's own vocabulary and that model was parked pending a decision on one
-privilege model. **That decision has been taken** — an owner design session replaced the two role words
-with access points and two permissions — so the reason for parking *Client* has gone with it.
+## OPEN — measured, NOT ruled
 
-What was ruled is the NOUN a reader meets: the party a firm acts for is the **company**, and the phrases
-that called it a client are retired above and enforced. The access-role identifier that stood beside
-it is gone too: the portal decides nothing by a role word, and the wire carries two permissions.
-
-*Account*, *Customer* and *Tenant* stay open for the reason below: they are single words and live
-identifiers, and the ruling that replaces them is a change to the wire rather than to copy.
-
-**Why *Account* is not in the Retired column, stated rather than left for the next reader to rediscover.**
-The guard scans comment-stripped source, and that is only safe while every retired spelling contains a
-space, because identifiers do not. *Account*, *Client*, *Customer* and *Tenant* are all single words and
-all live identifiers — `me.accounts`, `?account=`, `person.tenant`. Retiring them here would flag
-several hundred identifiers, and narrowing the guard to the extractor's corpus to compensate would trade
-a real safety net for one that states its own inadequacy at the top of `uiStrings.ts`.
-
-So the instrument is chosen per row rather than per table. Multi-word spellings are enforced by the guard
-over the wide corpus. The one visible *Account* that was actually wrong — the top-bar label over a slot
-that rendered the organisation for staff and the company for a client — was fixed under the same ruling
-and is pinned by a named assertion in `test/shell.test.ts`, which exercises the derivation rather than
-scanning for a word. A single-word retirement needs that kind of arm, not a row here.
+'s rules say *"when the existing copy is ambiguous… flag it for product or legal review. Do not
+resolve the ambiguity by guessing."* These are flagged, not resolved. The guard does not enforce them.
 
 ### Clearance · Search — 48 and 58, both load-bearing
 
