@@ -141,6 +141,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-client-condition-never-carries-an-engine-token.test.mjs": {
+          "tests": 6,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "a-codex-login-survives-its-own-refresh.test.mjs": {
           "tests": 4,
           "asserts": 18,
@@ -3125,7 +3131,7 @@
         },
         "portal-batch-report-link.test.mjs": {
           "tests": 7,
-          "asserts": 18,
+          "asserts": 21,
           "skips": 1,
           "todos": 0
         },
@@ -5007,6 +5013,12 @@
           "skips": 1,
           "todos": 0
         },
+        "the-report-can-say-how-much-was-read.test.mjs": {
+          "tests": 8,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
         "the-report-carries-what-the-assessment-wrote.test.mjs": {
           "tests": 10,
           "asserts": 41,
@@ -5978,8 +5990,8 @@
           "todos": 0
         },
         "grouping.test.ts": {
-          "tests": 23,
-          "asserts": 53,
+          "tests": 27,
+          "asserts": 70,
           "skips": 0,
           "todos": 0
         },
@@ -6020,8 +6032,8 @@
           "todos": 0
         },
         "listView.test.ts": {
-          "tests": 11,
-          "asserts": 27,
+          "tests": 13,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         },
@@ -6033,7 +6045,13 @@
         },
         "measure.test.ts": {
           "tests": 25,
-          "asserts": 85,
+          "asserts": 93,
+          "skips": 0,
+          "todos": 0
+        },
+        "nameRow.test.ts": {
+          "tests": 11,
+          "asserts": 52,
           "skips": 0,
           "todos": 0
         },
@@ -6087,7 +6105,7 @@
         },
         "perRunRetire.test.ts": {
           "tests": 9,
-          "asserts": 14,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
