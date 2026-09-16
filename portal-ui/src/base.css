@@ -483,6 +483,26 @@ table.data.fixed td {
   overflow-wrap: anywhere;
 }
 
+/* BELOW PHONE WIDTH A FIXED TABLE HAS NOTHING LEFT TO DIVIDE, so it stops dividing and scrolls instead.
+   Fixed layout shares the container out as percentages, which is what lets this table fit any desktop
+   width without a scrollbar. On a phone the shares become slivers: measured at 400px, the Risk word
+   printed through the Updated date, ordinary marks broke mid-word, and the count pills rendered as
+   circles with their text outside them. The page itself then scrolled sideways, because the row's own
+   controls are wider than the column they were given.
+   Under this breakpoint the table becomes an ordinary content-sized one — which is what `table.data`
+   already is, floor included, so no width is invented here — and its wrapper, which has always had
+   `overflow-x: auto`, does the scrolling. A table a reader drags sideways is readable; one printed
+   through itself is not.
+   THE FLOOR IS RESTORED ONLY HERE, and that is the whole point. `table.data.fixed` sets `min-width: 0`
+   above, because a floor on a nearly-wide-enough container is what puts a 19px scrollbar on a
+   client-facing page for no reason. That argument is about desktop widths and it still holds there. */
+@media (max-width: 560px) {
+  table.data.fixed {
+    table-layout: auto;
+    min-width: 860px;
+  }
+}
+
 /* An expanded read: quiet enough to read as subordinate to the row it belongs to. The indent is on the
    cells, not here, because it is structural — see ReadRow. */
 table.data tr.read-row > td {

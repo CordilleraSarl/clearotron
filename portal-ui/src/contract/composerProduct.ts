@@ -502,7 +502,9 @@ export function missingPieces(
  * in one module, and this exists so a requester meets the rule while composing rather than at the button
  * that spends. Where the two could ever disagree, the server decides.
  */
-export function blockers(d: Draft, product: Product | null, names = 0): readonly string[] {
+export function blockers(
+  d: Draft, product: Product | null, names = 0, inheritedTerritories: readonly string[] = [],
+): readonly string[] {
   const out: string[] = []
   if (!product) {
     out.push('Pick a search above. The four differ in where they look and how deep they read.')
@@ -514,7 +516,27 @@ export function blockers(d: Draft, product: Product | null, names = 0): readonly
       ? `A ${product.name} reads one name at a time, and you have ${budget.allowed + budget.over}.`
       : `A ${product.name} reads ${budget.allowed} names at a time, and you have ${budget.allowed + budget.over}.`)
   }
-  const named = d.territories
+  // THE STOP COUNTS WHAT THE RUN WILL SEARCH, NOT WHAT THE FORM HOLDS. An unset list is not "nowhere":
+  // the request omits `jurisdictions` and the engine's ladder resolves that to the account's own
+  // territories, which is why the screen draws those chips tagged with where they came from. Counting
+  // the draft told a reader to name territories directly underneath the four it had just shown them,
+  // and the footer summarised the same run as having them. Resolve here the way the screen does — the
+  // override if one was set, else what is inherited — so the stop fires when the run really has nowhere
+  // to look and not when the reader simply has not overridden anything.
+  //
+  // An account with no territories of its own resolves to worldwide, the chip says so, and `inherited`
+  // is empty — so the stop still fires for a product that cannot be worldwide, which is correct.
+  //
+  // BUT ONLY WHERE THE PRODUCT READS TERRITORIES AT ALL. A search that is worldwide and nothing else
+  // drops them — `applyProduct` clears the draft's list for it, and the panel offers no picker, just a
+  // single Worldwide chip — so the account's own list is NOT what that run searches. Resolving it there
+  // told every account with defaults to "remove the territories" from a screen that shows none and
+  // offers no control that removes anything: this defect with its sides swapped, and worse, because at
+  // least the four it named were on screen before. For that product the draft alone is the question,
+  // which is exactly what its branch below exists for — a draft can arrive from the brief reader
+  // carrying territories the product cannot use.
+  const resolves = product.geography !== 'worldwide, and nothing else'
+  const named = resolves && !d.territories.length ? inheritedTerritories : d.territories
   const countries = named.filter((t) => tierOf(t) === 'country')
   const regions = named.filter((t) => tierOf(t) === 'region')
   switch (product.geography) {
@@ -590,8 +612,16 @@ export function readiness(i: {
   readonly budget: { readonly allowed: number; readonly over: number } | null
   readonly exhausted: boolean
   readonly hasProduct: boolean
+  /** True while the form is exactly as it arrived — nothing typed, nothing picked. */
+  readonly untouched?: boolean
 }): Readiness {
   const NOTHING_PICKED = 'Pick one of the searches above to begin.'
+  // THE ARRIVAL STATE IS ONE SENTENCE, BECAUSE EVERY TERM BELOW IS TRUE AT ONCE. On a form nobody has
+  // touched there is no name, no classes and no search, and the chain is a PRIORITY order — so it
+  // answered with whichever term came first and the screen stacked the rest as warning panels above it.
+  // A reader who has done nothing is not behind on three things; they have not started. This is the
+  // board's own line, and the board carries no panel beside it.
+  if (i.untouched) return { ready: false, blockedBy: 'Add a name and pick a search.' }
   const chain: readonly (readonly [boolean, string])[] = [
     [i.nameStops.length > 0, i.nameStops[0] ?? ''],
     [i.gaps.length > 0, i.gaps[0] ?? ''],
