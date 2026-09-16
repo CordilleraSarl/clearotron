@@ -299,3 +299,61 @@ test("the compiled plan loses the house element's own sweep and keeps the whole 
   assert.equal(afterTerms.includes("NOVAPULSE"), false,
     "…and after the exclusion it is not swept as a term of its own");
 });
+
+
+// ── OWNERSHIP IS VERIFIED, NEVER ACCEPTED ───────────────────────────────────────────────────────
+const { verifyHouseElementOwnership } = await import("../register-plan.mjs");
+
+const OWNERS = ["Novapulse Audio GmbH"];
+const CLASSES = ["9", "41"];
+const REC = { record_id: "/mark/eu/1", owner_name: "Novapulse Audio GmbH", status: "Registered", classes: ["9"] };
+const verify = (over = {}) => verifyHouseElementOwnership({
+  element: "NOVAPULSE", classes: CLASSES, owners: OWNERS,
+  lookup: async () => ({ ok: true, records: [REC] }), now: () => "T", ...over });
+
+test("ownership verifies only on a live, client-owned registration in an instructed class", async () => {
+  const r = await verify();
+  assert.equal(r.verified, true);
+  assert.equal(r.records.length, 1, "the evidence rides the receipt — the report states the exclusion on it");
+  assert.equal(r.records[0].record_id, "/mark/eu/1");
+});
+
+test("EVERY way of not knowing lands on not-verified, and says which way it was", async () => {
+  // The fail-closed leg, driven one path at a time. Each of these is a way an element could stop being
+  // searched on something other than evidence, and not one of them may exclude anything.
+  const cases = [
+    [{ owners: [] }, /client_owner_unknown/],
+    [{ classes: [] }, /instructed_classes_absent/],
+    [{ lookup: undefined }, /lookup_unavailable/],
+    [{ lookup: async () => ({ ok: false, reason: "provider 503" }) }, /lookup_did_not_answer/],
+    [{ lookup: async () => { throw new Error("socket hang up"); } }, /lookup_threw/],
+    [{ element: "" }, /house_element_absent/],
+    [{ lookup: async () => ({ ok: true, records: [] }) }, /no_live_owned_registration/],
+    // dead, right owner, right class
+    [{ lookup: async () => ({ ok: true, records: [{ ...REC, status: "Expired" }] }) }, /no_live_owned_registration/],
+    // live, right owner, WRONG class
+    [{ lookup: async () => ({ ok: true, records: [{ ...REC, classes: ["25"] }] }) }, /no_live_owned_registration/],
+    // live, right class, SOMEONE ELSE
+    [{ lookup: async () => ({ ok: true, records: [{ ...REC, owner_name: "Quantaflux Holdings" }] }) }, /no_live_owned_registration/],
+  ];
+  for (const [over, re] of cases) {
+    const r = await verify(over);
+    assert.equal(r.verified, false, `must not verify: ${JSON.stringify(Object.keys(over))}`);
+    assert.match(r.reason, re);
+    assert.deepEqual(r.records, [], "an unverified receipt carries no evidence either");
+  }
+});
+
+test("the three conditions are checked on ONE record, never assembled across several", async () => {
+  // THE DEFECT A SEPARATE-COUNTS IMPLEMENTATION WOULD HAVE. None of these three is the client's live
+  // in-class registration, but between them every condition is satisfied once — so a check that asked
+  // "is any record live?", "is any in class?", "is any ours?" would verify an ownership nobody holds,
+  // and an element would stop being searched on the strength of three unrelated rows.
+  const r = await verify({ lookup: async () => ({ ok: true, records: [
+    { ...REC, status: "Expired" },                                  // ours, in class, DEAD
+    { ...REC, classes: ["25"] },                                    // ours, live, WRONG class
+    { ...REC, owner_name: "Quantaflux Holdings" },                   // live, in class, NOT ours
+  ] }) });
+  assert.equal(r.verified, false);
+  assert.match(r.reason, /no_live_owned_registration/);
+});

@@ -574,6 +574,78 @@ export function mintSupplementalQid({ prefix, term, used }) {
  *                  behaviour, byte-identical (no entry gains a key, no jurisdiction is translated).
  */
 /**
+ * Verify that the client actually owns the proposed house element, on the register, by owner.
+ *
+ * IT SITS BESIDE THE TRANSFORM IT GATES, for the reason `accountingArmed` sits beside the refusal it
+ * arms: the gate and the thing gated go stale together or not at all, and a reader meeting one finds the
+ * other. Nothing else may arm this exclusion.
+ *
+ * FAIL-CLOSED ON EVERY PATH, and that is the whole design. The frame PROPOSED this element from its
+ * reading of the matter; acting on the proposal alone would drop an element from a client's search on a
+ * model's assertion, and an element nobody swept is a clean report over unswept ground — the one defect
+ * that reaches a client as a confident wrong answer rather than as a visible failure. So every way of
+ * not knowing lands in the same place: not verified, no exclusion, the element searched in full, and a
+ * reason on the receipt saying which way it was. An outage, an unknown client name, a lookup that threw,
+ * a dead registration, a registration in some other class — none of them excludes anything.
+ *
+ * `lookup` is injected, exactly as `runOwnerChecks` takes its `exec` and `countRegisterHits` its
+ * `counter`: the fixture path that makes this product testable at no cost covers this call too, and a
+ * test never reaches a provider. NEVER THROWS and never rejects.
+ *
+ * @param owners  the client's own names — the profile's trading names and the matter's customer. Empty
+ *                is a real answer and it means NOT VERIFIED: with no name to match an owner against,
+ *                "the client owns it" cannot be established by anything this function can see.
+ * @returns the receipt, always. `verified: true` is the only value that may arm an exclusion.
+ */
+export async function verifyHouseElementOwnership({
+  element, classes = [], owners = [], lookup, now = () => new Date().toISOString(),
+}) {
+  const el = String(element ?? "").trim();
+  const wanted = (Array.isArray(classes) ? classes : []).map(String).map((c) => c.trim()).filter(Boolean);
+  const names = (Array.isArray(owners) ? owners : []).map((o) => String(o ?? "").trim()).filter(Boolean);
+  const receipt = (verified, reason, records = []) =>
+    ({ verified, element: el, owners_checked: names, classes: wanted, records, reason, ts: now() });
+
+  if (!el) return receipt(false, "house_element_absent: nothing was proposed");
+  if (!names.length)
+    return receipt(false, "client_owner_unknown: this run holds no trading name for the client, so an owner on the register cannot be matched to it");
+  if (!wanted.length)
+    return receipt(false, "instructed_classes_absent: ownership is only decisive in the classes the matter is instructed in");
+  if (typeof lookup !== "function")
+    return receipt(false, "lookup_unavailable: no register lookup was wired, so ownership was never asked");
+
+  let rows = [];
+  try {
+    const r = await lookup({ element: el, owners: names, classes: wanted });
+    if (!r?.ok) return receipt(false, `lookup_did_not_answer: ${String(r?.reason ?? "no reason given").slice(0, 200)}`);
+    rows = Array.isArray(r.records) ? r.records : [];
+  } catch (e) {
+    return receipt(false, `lookup_threw: ${String(e?.message ?? e).slice(0, 200)}`);
+  }
+
+  // A MATCH IS ALL THREE AT ONCE — the client's own name, alive, in an instructed class. Checking them
+  // separately would let a dead registration in class 9 and a live one in class 25 held by someone else
+  // combine into an ownership nobody has.
+  const norm = (v) => String(v ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  const ours = names.map(norm).filter(Boolean);
+  const live = (st) => { const t = norm(st); return Boolean(t) && !/(dead|expired|cancell?ed|withdrawn|refused|lapsed|abandoned)/.test(t); };
+  const matched = rows.filter((r) => {
+    const owner = norm(r?.owner_name);
+    if (!owner || !ours.some((o) => owner === o || owner.includes(o) || o.includes(owner))) return false;
+    if (!live(r?.status)) return false;
+    const rc = (Array.isArray(r?.classes) ? r.classes : []).map(String).map((c) => c.trim());
+    return rc.some((c) => wanted.includes(c));
+  });
+
+  if (!matched.length)
+    return receipt(false, `no_live_owned_registration: ${rows.length} record(s) came back and none is a live registration held by this client in an instructed class`, []);
+  // The records are the EVIDENCE the report states the exclusion on, so they ride the receipt.
+  return receipt(true, `verified: ${matched.length} live registration(s) held by this client in an instructed class`,
+    matched.map((r) => ({ record_id: String(r?.record_id ?? r?.uri ?? ""), owner_name: String(r?.owner_name ?? ""),
+      status: String(r?.status ?? ""), classes: (Array.isArray(r?.classes) ? r.classes : []).map(String) })));
+}
+
+/**
  * The manifest with the client's own house element taken out of the conflict analysis. PURE.
  *
  * THE DEFECT (production run, 2026-09-16). The mark was the client's own famous house mark followed by
