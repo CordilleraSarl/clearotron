@@ -780,6 +780,97 @@ input.filter {
   background: var(--surface-raised);
 }
 
+/* ── Preferences, Installation settings and About ─────────────────────────────────────────────────
+   The three pages the avatar menu leads to. Each is a stack of raised cards or rows on the page ground,
+   drawn from these few rules so the three read as one family. */
+
+.pref-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pref-card {
+  padding: 18px 20px;
+  border-radius: 12px;
+  border: 1px solid var(--border-hairline);
+  background: var(--surface-raised);
+}
+
+.pref-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-strong);
+  margin: 0 0 14px;
+}
+
+.pref-dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 18px;
+  font-size: 14px;
+}
+
+.pref-dl dt {
+  color: var(--text-muted);
+}
+
+.pref-dl dd {
+  margin: 0;
+  min-width: 0;
+  color: var(--text-strong);
+}
+
+.pref-address {
+  word-break: break-all;
+}
+
+.pref-none {
+  color: var(--text-muted);
+}
+
+.pref-line {
+  margin: 14px 0 0;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* A link inside a sentence: accent ink and a quiet rule under it, so it reads as a link without shouting. */
+.pref-link {
+  color: var(--text-accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent-quiet);
+}
+
+.pref-foot {
+  margin-top: 12px;
+}
+
+/* A pill that is the card's own action is a size up from a pill that labels a row. */
+.pref-foot .pill {
+  padding: 5px 13px;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.pref-themes {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pref-blur {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pref-blur-line {
+  font-size: 13.5px;
+  color: var(--text-muted);
+}
+
 /* ── mobile ──────────────────────────────────────────────────────────────────────────────────────── */
 
 @media (max-width: 899px) {

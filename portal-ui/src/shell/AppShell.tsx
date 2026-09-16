@@ -22,6 +22,7 @@ import { Icon } from '../components/Icon.tsx'
 import { Logo, WORDMARK } from '../components/Logo.tsx'
 import { useLoad } from '../state/useApi.ts'
 import { confirmDiscard, attachBeforeUnload } from '../state/guard.ts'
+import { readBlurChoice, writeBlurChoice } from '../state/blurChoice.ts'
 import { ALL_OWNERS, ownerNameMap, ownerNameFrom } from '../contract/ownerNames.ts'
 import { switcherKeys, switcherLabel, pickerGroups, type CompanyGroup, type CompanyRow } from './companyRows.ts'
 import { permissionsPhrase } from './accessWords.ts'
@@ -250,6 +251,15 @@ export type ShellContext = {
    * answering a question about the shell, which a screen cannot answer and must not guess.
    */
   readonly sidebarCollapsed: boolean
+  /**
+   * The screen-share blur, and the one way to change it.
+   *
+   * Preferences draws the same eye button the top bar carries, and both are bound to THIS state. A second
+   * copy — the class on the document, or the value read back from storage — would let the two buttons
+   * disagree, and the next press of either would then be a click that appears to do nothing.
+   */
+  readonly blurNames: boolean
+  readonly setBlurNames: (on: boolean) => void
 }
 
 /**
@@ -283,7 +293,9 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   const [theme, toggleTheme] = useTheme()
   const [collapsed, setCollapsed] = useState(false)
   const [drawer, setDrawer] = useState(false)
-  const [anon, setAnon] = useState(false)
+  // RESTORED, NOT A CONSTANT: a reload during a screen share must not bring the names back. Remembered in
+  // this browser only (state/blurChoice.ts), and a browser that refuses storage simply starts it off.
+  const [anon, setAnon] = useState(() => readBlurChoice(() => localStorage))
   const [avatarOpen, setAvatarOpen] = useState(false)
   const [owner, setOwner] = useState<string | null>(null)
 
@@ -345,8 +357,12 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
     [readsRoster],
   )
 
+  // Applied before any name can be drawn: the first render is the empty frame that waits for /me, so a
+  // restored blur is on the document before the names arrive. Mirrored into storage from the one state,
+  // whichever button changed it.
   useEffect(() => {
     document.documentElement.classList.toggle('anon-on', anon)
+    writeBlurChoice(() => localStorage, anon)
   }, [anon])
 
   // Navigating closes the drawer; leaving it open over the new screen reads as a stuck menu.
@@ -465,7 +481,8 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
 
   const body = entry
     ? render(entry.id, { me, owner: ownerInView, setOwner: setOwnerGuarded, refreshCompanies,
-        ownerName, ownerKeys, orgOf, organisations, factsFor, go, visit, sidebarCollapsed: collapsed })
+        ownerName, ownerKeys, orgOf, organisations, factsFor, go, visit, sidebarCollapsed: collapsed,
+        blurNames: anon, setBlurNames: setAnon })
     : // An unknown path and a staff-only path a client typed both land here, indistinguishably.
       <div className="screen">
         <div className="empty">
