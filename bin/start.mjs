@@ -113,6 +113,7 @@ export async function runTables() {
 import { spawn, spawnSync, execFileSync } from "node:child_process";
 import { storeInRepo, storeOutsideRepoMessage, storeCommitRefusal } from "../shared/store-in-repo.mjs";   //
 import { stdioConnectOffer } from "../shared/stdio-connect.mjs";
+import { wslTarget } from "../shared/wsl.mjs";   // — and which distribution a row should start the server in
 import { ensureDemoProgram } from "../shared/permanent-install.mjs";   // — a demo from npx keeps its own copy
 import { mergeEnvFile } from "../shared/env-file-merge.mjs";
 import { mcpOriginFor } from "../shared/lane-address.mjs";   // — one author for the origin
@@ -2522,11 +2523,24 @@ if (isMain) {
   // THE WORKSPACE AND POOL THE SERVICES WERE HANDED, not this process's environment: a demo reads no env
   // file, so its own line named no workspace and the connector fell back to the real install's.
   // A demo run from npx names its own copy of the program, which a cache clean does not remove.
-  const connect = stdioConnectOffer({ workDir: paths.workspace, reportsDir: paths.pool, ...(demoProgramRoot ? { installRoot: demoProgramRoot } : {}) });
-  say("  Connect your assistant to this install — one line, no address and no sign-in:");
+  // AND WHICH SIDE OF A WSL INSTALL THE READER IS ON, because this is where he read the line from. An
+  // install inside WSL can be reached from Windows and from inside the distribution, by two different
+  // commands; printing one of them unheaded is how a reader pastes the wrong one. The target is read
+  // here and passed, because this module is pure by design and reads no environment of its own.
+  const connect = stdioConnectOffer({ workDir: paths.workspace, reportsDir: paths.pool, wsl: wslTarget(), ...(demoProgramRoot ? { installRoot: demoProgramRoot } : {}) });
+  // "one line" IS DELETED RATHER THAN MADE CONDITIONAL. Under WSL two lines are printed, one per side,
+  // and the count was never the point of the sentence — what it promises is no address and no sign-in,
+  // which is true on both sides and on every other install.
+  say("  Connect your assistant to this install — no address and no sign-in:");
   say("");
-  say(`    ${connect.command}`);
-  say("");
+  // THE HEADINGS COME WITH THE PAIR, from the composer. Nothing is written here: the page prints these
+  // same two words above these same two commands, and a second author is how the two surfaces drift.
+  if (connect.variants) {
+    for (const v of connect.variants) { say(`    ${v.heading}`); say(`      ${v.text}`); say(""); }
+  } else {
+    say(`    ${connect.command}`);
+    say("");
+  }
   say(`  Check it:  ${connect.verify}`);
   say("");
   // ── WHERE TO TYPE THE THINGS JUST PRINTED ( — F31) ───────────────────────

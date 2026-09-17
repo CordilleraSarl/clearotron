@@ -196,8 +196,8 @@
           "todos": 0
         },
         "a-connect-line-says-where-it-runs.test.mjs": {
-          "tests": 8,
-          "asserts": 28,
+          "tests": 11,
+          "asserts": 48,
           "skips": 0,
           "todos": 0
         },
@@ -1109,7 +1109,7 @@
         },
         "an-install-from-npx-moves-out-of-the-cache.test.mjs": {
           "tests": 13,
-          "asserts": 78,
+          "asserts": 79,
           "skips": 7,
           "todos": 0
         },

@@ -398,15 +398,40 @@ export const leadRouteFor = (id) => {
  * invitation to paste it inside WSL, where it does not work. Somebody took the invitation from Claude
  * Code inside a distribution and got CONNECTION_CLOSED (measured 2026-09-16 on 0.3.2-beta.1).
  *
- * There is exactly ONE launcher per host shape today, and under WSL it is the Windows-side one, so this
- * step names the side it is for rather than offering both. Building the second launcher — the plain
- * `node` line for an assistant running inside the distribution — is its own piece of work; until it
- * exists, saying which side this one is for is the whole of what can honestly be said.
+ * AND NOW IT SAYS ONLY THAT THE INSTALL IS IN WSL, because the rows below it say the rest.
+ *
+ * While there was one launcher, this step carried which side it was for and that the other side could
+ * not use it. Both sides are now offered, each headed with the side it is for, and those two sentences
+ * turned false where they stand: the reader is told an assistant inside the distribution cannot connect,
+ * directly above the row that connects it. What is left is the clause that is still true and still
+ * needed — the rows name Linux paths and the reader has to know why. The rest is DELETED rather than
+ * reworded, because the headings already say it and nothing here is ours to write.
  */
-export const WSL_STEP = "This install runs inside WSL, and the command below starts the server in there for you. "
-  + "It is for an assistant running on the Windows side — Claude Desktop, or Claude Code in PowerShell. "
-  + "An assistant running inside this WSL terminal cannot use it: start the server from the WSL terminal "
-  + "yourself instead.";
+export const WSL_STEP = "This install runs inside WSL.";
+
+/**
+ * ONE ROW PER SIDE, where a launcher has two.
+ *
+ * `stdioConnectFor` answers a WSL install with both launchers under `variants`, headed in the product's
+ * own words. Each becomes a row of its own here, carrying its side's heading as the row's line and its
+ * side's command as the row's copy — so the reader sees which command is theirs before they press it,
+ * and does not paste the Windows one into a terminal already inside the distribution.
+ *
+ * The heading takes the row's line rather than a slot of its own: every surface that draws a step draws
+ * that line already — the page above the copy block, the terminal beside the number — so both sides get
+ * the headings from one author and neither needs new markup to show them.
+ *
+ * Anywhere else this is the identity. One launcher stays one row, with the line its author wrote.
+ */
+const splitSides = (step) => {
+  const variants = step.copy?.stdio?.variants;
+  if (!variants) return [step];
+  return variants.map((v) => ({
+    ...step,
+    text: v.heading,
+    copy: { ...step.copy, text: v.text, stdio: { ...step.copy.stdio, text: v.text, variants: null } },
+  }));
+};
 
 export function whatItNeeds(client, have = {}, route = client?.lead) {
   if (!client) return null;
@@ -494,10 +519,13 @@ export function whatItNeeds(client, have = {}, route = client?.lead) {
     // ON WSL, "THIS COMPUTER" IS THE LINUX INSIDE WINDOWS. The line names WSL paths, so it runs in the WSL
     // terminal where Clearotron is installed. Pasted into PowerShell it fails, and an assistant running on
     // Windows itself could not start a program at a Linux path anyway.
-    if (have.wsl) steps.unshift({ text: WSL_STEP });
-    const first = steps.find((s) => s.copy)?.copy;
+    // AND A LAUNCHER WITH TWO SIDES BECOMES TWO ROWS, under the step that says this install is in WSL.
+    const rows = steps.flatMap(splitSides);
+    if (have.wsl) rows.unshift({ text: WSL_STEP });
+    // The Windows-side row leads, so `command` and `stdio` answer what they have always answered.
+    const first = rows.find((s) => s.copy)?.copy;
     // `command` and `stdio` ride for the terminal, which prints a disk offer's copy by its shape.
-    return { client, served: true, route, steps, launch: client.launch ?? null, enables: null, ...evidence,
+    return { client, served: true, route, steps: rows, launch: client.launch ?? null, enables: null, ...evidence,
       command: first?.text ?? null, stdio: first?.stdio ?? null, address: null, key: null,
       note: "Nothing to sign up for and nothing to open up — this assistant runs the software itself, from the copy already on this machine." };
   }
