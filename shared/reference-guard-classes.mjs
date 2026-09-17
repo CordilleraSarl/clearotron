@@ -378,6 +378,40 @@ export function censusOf(files, read) {
  * @param {string} root
  * @returns {{files: string[], laid: number} | {error: string}}
  */
+/**
+ * A reader that answers with what HEAD PUBLISHES at a path, not with whatever is sitting there.
+ *
+ * `publishedOf` asks whether a PATH is in HEAD and never whose bytes are at it. A laid file at a NEW path
+ * is correctly excluded; a laid file that SHADOWS a published path passes that filter, and the census then
+ * measures the private file as though the public tree carried it. Measured on the beta-8 overlay:
+ * `corpus/scripts/report-print-check.mjs` lays over `scripts/report-print-check.mjs`, the private copy
+ * carries two bare references in its comments and the published file carries none, and the residue census
+ * reported `0 → 2` against the public tree. Three of that run's nine reds were this one cause.
+ *
+ * The same hole swallows an ordinary uncommitted edit: mint a backlog with unsaved work in the tree and it
+ * records what you have not published yet. The path filter cannot see either, because both are a question
+ * about bytes.
+ *
+ * ONLY THE FILES THAT DIFFER ARE FETCHED FROM HEAD. Asking git for every file's blob would spawn a process
+ * per file over the whole corpus; asking which paths differ costs one call, and for the rest the bytes on
+ * disk ARE the published bytes. So the common case stays a plain read and correctness does not depend on
+ * how fast it is.
+ *
+ * A file that differs and cannot be read out of HEAD is not silently read from disk: that is the permissive
+ * answer and the one that reinstates the defect. It throws, and `censusOf` skips a file it cannot read —
+ * which undercounts rather than miscounts, and undercounting a floor is the safe direction.
+ */
+export function publishedReader(root, read) {
+  let differs = new Set();
+  try {
+    differs = new Set(execFileSync("git", ["-C", root, "diff", "--name-only", "HEAD"],
+      { encoding: "utf8", maxBuffer: 1 << 28 }).split("\n").map((s) => s.trim()).filter(Boolean));
+  } catch { differs = new Set(); }
+  return (f) => (differs.has(f)
+    ? execFileSync("git", ["-C", root, "show", `HEAD:${f}`], { encoding: "utf8", maxBuffer: 1 << 28 })
+    : read(f));
+}
+
 export function publishedOf(trackedList, root) {
   let head;
   try {
