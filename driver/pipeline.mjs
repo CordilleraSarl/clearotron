@@ -10,7 +10,7 @@ import { readFileSync, existsSync, mkdirSync, writeFileSync, renameSync, copyFil
 import { createHash } from "node:crypto";
 import { join, dirname, basename, resolve } from "node:path";   // resolve: the resume line must work from any cwd
 import { driverDir, driverRel, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
-import { terminalClampDecision, orderClausesForLede, clientConditions } from "./terminal-clamp.mjs";   // — deliver and clamp, never withhold
+import { terminalClampDecision, orderClausesForLede, clientConditions, clauseForDefect } from "./terminal-clamp.mjs";   // — deliver and clamp, never withhold
 import { recordSpan } from "./attributed-span.mjs";   // — driver work the decomposition can attribute
 import { fileURLToPath } from "node:url";
 import { runStage, correctionHint, gridLedgerNameFor, draftCarryEligible, toolWrittenArtifact, selectEngine } from "./gateway.mjs";
@@ -12872,7 +12872,11 @@ async function pipelineInner(job, opts = {}) {
           reason: `synthesis_unaccounted_delivered:${duty.unaccounted.length} of ${duty.totals.owed} record(s) reached the findings surface and the delivered document accounts for none of them — neither a finding that names them nor a declination with a ground: ${sample}${duty.unaccounted.length > 4 ? " …" : ""}. The report ships with this named rather than being withheld; these records are open points a reader must weigh.`,
           // — the READER's sentence: what is open, in a lawyer's nouns. Counts survive;
           // the token, the record ids and the engine's nouns stay in `reason` and the run record.
-          clause: `${duty.unaccounted.length} of the ${duty.totals.owed} register records this search surfaced are neither addressed as findings nor expressly set aside in this report — they remain open points a reader must weigh`,
+          // COMPOSED BY THE AUTHORITY, NOT SPELLED HERE. The same sentence has to be reachable from a
+          // run that stored no clause, where these two objects are long gone and only the reason's own
+          // counts survive; `terminal-clamp.mjs` composes it from the counts either way, so the fresh
+          // run and the republished archive cannot drift apart.
+          clause: clauseForDefect("synthesis_unaccounted_delivered", duty.unaccounted.length, duty.totals.owed),
         });
       }
     }
@@ -12898,7 +12902,9 @@ async function pipelineInner(job, opts = {}) {
           // — the READER's sentence. "Floor row" is an engine noun; what the fact IS for a
           // lawyer: live registrations identical or near-identical to the mark that the report does not
           // individually address. Counts survive; token, ids and engine nouns stay in `reason`.
-          clause: `${block.undischarged} of the ${block.floors} live registrations identical or near-identical to the mark are not individually addressed in this report — each remains an open point a reader must weigh`,
+          // Composed by the authority in `terminal-clamp.mjs` for the reason the sibling site above
+          // gives: a republished pre-split run has to reach the same sentence from the counts alone.
+          clause: clauseForDefect("floor_duty_undischarged", block.undischarged, block.floors),
         });
       }
     }
@@ -13070,21 +13076,29 @@ async function pipelineInner(job, opts = {}) {
       // could-not-examine record, and an unfinished register slice — CONDITIONAL carries
       // lawyer-judged/disclosed residue only.
       if (coverageInsufficient || frameResidual || screenGateGap || seniorGap || registerGap || deadlineGap) {
+        // THESE SENTENCES REACH A CLIENT AND THEY ARE NOT OURS TO WRITE (owner, 2026-09-17). One of
+        // them — the screen-gate line, which says a mark "could not be record_fetched" — carries an
+        // engine identifier into the list a client reads as the conditions on their result, by a route
+        // `terminalClampDecision` guards and this one does not. A reader's sentence for it was written
+        // here and refused: the objection was the class, not the wording. It is on the owner's design
+        // table as audit item 25, and until he rules, this stays exactly as it was rather than carrying
+        // a caveat a developer composed.
         const reasons = [];
-        if (coverageInsufficient) reasons.push(`the lawyer judged a material slice not fully cleared: ${coverageJudgment.reason || "register coverage gap"}`);
-        if (frameGap) reasons.push("the blind frame-diff flagged a dominant-element omission the reopen pass did not close");
-        else if (frameDeferrals.length) reasons.push(`follow-ups left open this run: ${frameDeferrals.map((d) => plainDirective(d.directive)).slice(0, 3).join(", ")}`);
-        if (screenGateGap) reasons.push(`${sgUnresolved.length} in-scope mark(s) dropped on goods could not be record_fetched (unverified): ${sgUnresolved.map((g) => g.mark).join(", ")}`);
-        if (seniorGap) reasons.push(`the oldest registration in a verdict-driving family could not be retrieved (policy: clamp): ${(ctx.seniorRights?.rows ?? []).filter((r) => r.applicable && !r.verified).map((r) => r.mark).join(", ")}`);
+        const machinery = (reason) => reasons.push(reason);
+        if (coverageInsufficient) machinery(`the lawyer judged a material slice not fully cleared: ${coverageJudgment.reason || "register coverage gap"}`);
+        if (frameGap) machinery("the blind frame-diff flagged a dominant-element omission the reopen pass did not close");
+        else if (frameDeferrals.length) machinery(`follow-ups left open this run: ${frameDeferrals.map((d) => plainDirective(d.directive)).slice(0, 3).join(", ")}`);
+        if (screenGateGap) machinery(`${sgUnresolved.length} in-scope mark(s) dropped on goods could not be record_fetched (unverified): ${sgUnresolved.map((g) => g.mark).join(", ")}`);
+        if (seniorGap) machinery(`the oldest registration in a verdict-driving family could not be retrieved (policy: clamp): ${(ctx.seniorRights?.rows ?? []).filter((r) => r.applicable && !r.verified).map((r) => r.mark).join(", ")}`);
         if (registerGap) {
-          if (regGap.deferred.length) reasons.push(`register coverage deferred on ${[...new Set(regGap.deferred.map((g) => g.axis))].join(", ")} — the search did not finish and must be re-run before this can be relied on`);
-          if (regGap.taintAxes.length) reasons.push(`the ${regGap.taintAxes.join(", ")} register pass was cut down at the timeout wall and its self-reported coverage is unverified`);
+          if (regGap.deferred.length) machinery(`register coverage deferred on ${[...new Set(regGap.deferred.map((g) => g.axis))].join(", ")} — the search did not finish and must be re-run before this can be relied on`);
+          if (regGap.taintAxes.length) machinery(`the ${regGap.taintAxes.join(", ")} register pass was cut down at the timeout wall and its self-reported coverage is unverified`);
           // Named regressions (2026-07-22): `<MARK> (<owner> — <canonical uri>)` — a bare mark name
           // shipped "ION, ION, ION" (three indistinguishable strings); the identity is front-loaded
           // because the delivered statement truncates from the tail.
-          if (regGap.recallRegressions.length) reasons.push(`a prior-confirmed live conflict was neither carried nor justified this run: ${regGap.recallRegressions.slice(0, 3).map(formatRecallRegression).join(", ")}`);
+          if (regGap.recallRegressions.length) machinery(`a prior-confirmed live conflict was neither carried nor justified this run: ${regGap.recallRegressions.slice(0, 3).map(formatRecallRegression).join(", ")}`);
         }
-        if (deadlineGap) reasons.push(`a recorded opposition deadline was delivered without its date: ${ctx.deadlineCarryMaterial.map((v) => `${v.mark_text ?? v.uri} (window closes ${v.opposition_end})`).slice(0, 3).join(", ")}`);
+        if (deadlineGap) machinery(`a recorded opposition deadline was delivered without its date: ${ctx.deadlineCarryMaterial.map((v) => `${v.mark_text ?? v.uri} (window closes ${v.opposition_end})`).slice(0, 3).join(", ")}`);
         runLog(run.runDir, { event: "coverage-floor-clamp", from: "CLEAR", to: "CONDITIONAL", coverageInsufficient: coverageInsufficient || undefined, frameGap: frameGap || undefined, frameDeferred: frameDeferrals.length || undefined, screenGate: screenGateGap ? sgUnresolved.length : undefined, seniorRight: seniorGap || undefined, registerGap: registerGap ? { deferred: regGap.deferred.length, taint: regGap.taintAxes.length, recall: regGap.recallRegressions.length } : undefined, deadlineCarry: deadlineGap ? ctx.deadlineCarryMaterial.length : undefined });
         note(`deliver-conditional floor: ${reasons.join("; ")} — clamping CLEAR→CONDITIONAL so the delivered status carries the gap (never withheld, never halted).`);
         verdict = "CONDITIONAL";
