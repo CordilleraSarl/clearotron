@@ -1180,8 +1180,8 @@
           "todos": 0
         },
         "audit-workbook-commonlaw-unlogged.test.mjs": {
-          "tests": 9,
-          "asserts": 37,
+          "tests": 10,
+          "asserts": 51,
           "skips": 0,
           "todos": 0
         },
@@ -3418,8 +3418,8 @@
           "todos": 0
         },
         "publish-input-coverage.test.mjs": {
-          "tests": 6,
-          "asserts": 34,
+          "tests": 7,
+          "asserts": 37,
           "skips": 0,
           "todos": 0
         },
@@ -3784,8 +3784,8 @@
           "todos": 0
         },
         "render.test.mjs": {
-          "tests": 153,
-          "asserts": 615,
+          "tests": 155,
+          "asserts": 637,
           "skips": 0,
           "todos": 0
         },
@@ -5110,8 +5110,8 @@
           "todos": 0
         },
         "the-report-can-say-how-much-was-read.test.mjs": {
-          "tests": 15,
-          "asserts": 43,
+          "tests": 22,
+          "asserts": 59,
           "skips": 0,
           "todos": 0
         },

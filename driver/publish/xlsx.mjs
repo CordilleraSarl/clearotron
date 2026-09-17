@@ -629,8 +629,15 @@ export async function buildAudit(contract, auditParsed, outPath, mark = '', fm =
   // THE ROW IS AN ORDINARY COVERAGE ROW, built by the same function as every other, so it carries the
   // same four columns and takes the same State colour. It is not a second shape and not a new sheet.
   // The words in it are the run record's own: nothing here composes prose.
+  //
+  // AND THE PROBES THE RUN DECIDED ON AND DID NOT MAKE, on the same footing. The recall net's owner
+  // budget drops its excess with the party and the probe id recorded; until this row the excess reached
+  // no reader, so a search that decided on nineteen ownership checks and made five read as one that
+  // made the checks it wanted. Same builder, same four columns, same State colour: this is not a second
+  // shape and not a new sheet, and the words are the run receipt's own.
   addSheet(wb, 'Coverage & gaps', COVERAGE_COLS,
-    [...coverageRows(coverage), ...coverageRows(contract?.droppedConditions || [])], (row, _d, kept) => {
+    [...coverageRows(coverage), ...coverageRows(contract?.droppedConditions || []),
+     ...coverageRows(contract?.undispatchedProbes || [])], (row, _d, kept) => {
     if (!kept.has('State')) return;
     const st = row.getCell('State'); const f = STATE_FILL[String(st.value).trim()];
     if (f) { st.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF' + f } }; st.font = { bold: true }; }
