@@ -1514,6 +1514,47 @@ test("doc-54: composite-tier sidecar on a framework run maps tone-nearest, never
   assert.match(ticks, /<span class="on"[^>]*>Medium<\/span>/, "tone 2 → the Medium band tick");
 });
 
+// ── THE VERDICT CARRIES EVERY CONDITION, NOT THE FIRST AND A COUNT (owner ruling, 2026-09-16) ──────
+// The composed statement ends "(and N more)" because it is ALSO a one-line surface — the email lede, the
+// registry row — where a list cannot go. On the page there is room for all of them, and a condition a
+// client is told exists but is not told is one they cannot act on.
+//
+// BREAK MATRIX:
+//   · render the statement verbatim              → the truncation reaches the page, arm 1 red
+//   · re-compose the lede instead of taking it   → the tier wording stops being the engine's, arm 2 red
+//   · keep the separate labelled Conditions row  → the page states them twice, arm 3 red
+//   · fall back to the reason when a clause exists → an engine identifier reaches a client, arm 4 red
+test("the verdict lists every condition under its own lede, and no count stands in for the rest", () => {
+  const vi = {
+    tier: "Moderate", verdict: "CONDITIONAL", badge: "l3", gaugeIndex: 2,
+    statement: "Moderate — conditional on: Clear the Japanese registration before filing class 9 (and 2 more).",
+    // A real sidecar carries BOTH: the run-record reason with its token, and the client-voice clause
+    // beside it at the same index. The page must take the clause.
+    reasons: [
+      "floor_duty_undischarged:1 of 3 floor row(s) — the duty is uncapped",
+      "synthesis_unaccounted_delivered:2 of 9 record(s) reached the findings surface",
+      "coverage_deferred:1 — primary sweep",
+    ],
+    clauses: [
+      "Clear the Japanese registration before filing class 9 in Japan.",
+      "Take a Korean attorney view on whether the marks are confusingly similar.",
+      "Check the owner own filings through its corporate records.",
+    ],
+  };
+  const html = renderHtml(parsedOf(REPORT), [], [], { framework: AURORA_MANIFEST, verdictInfo: vi });
+  const row = html.match(/<span class="gk">Verdict<\/span><span class="gv gv-rec">([\s\S]*?)<\/span>/)[1];
+
+  assert.match(row, /^Moderate — conditional on:<ul class="gconds">/,
+    "the lede is the statement's own and the list follows it inside the verdict");
+  for (const c of vi.clauses) assert.ok(row.includes(c), `every condition reaches the page: ${c}`);
+  assert.equal((row.match(/<li>/g) || []).length, vi.clauses.length, "one item per condition, none dropped");
+  assert.doesNotMatch(row, /and \d+ more/, "nothing hides behind a count");
+  assert.doesNotMatch(html, /<span class="gk">Conditions<\/span>/,
+    "the conditions have ONE home; the separate labelled row is gone");
+  assert.doesNotMatch(html, /floor_duty_undischarged|synthesis_unaccounted_delivered|coverage_deferred/,
+    "the run-record reason and its engine identifier stay off a client's page where a clause exists");
+});
+
 // ── the framework is named beside the words it owns ───────────────────────────────────────────
 // The ticks under the scale spell a vocabulary — "Manageable", "Moderate" — that means nothing without
 // the framework in force, and the ONLY place naming it was the footer, several screens down a document

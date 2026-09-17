@@ -143,11 +143,19 @@ function frameworkTickIndex(findings) {
 // verdict with EVERY condition, "Why <band>" as the four answers with the basis each rests on, the
 // highest exposure, and what was searched to get there. Nothing here is composed — the conditions are
 // the sidecar's own client-voice clauses, the answers are the engine's, and the coverage line is counts.
-function ratingExtras(fm, findings, coverage, fourAnswers, opts, bandWord) {
+function ratingExtras(fm, findings, coverage, fourAnswers, opts, bandWord, conditionsInVerdict = false) {
   const out = [];
-  const conds = clientConditions(VERDICT_INFO || {});
-  if (conds.length) out.push(`<div class="gconds-wrap"><span class="gk">Conditions</span><ul class="gconds">${
-    conds.map((c) => `<li>${esc(c)}</li>`).join('')}</ul></div>`);
+  // THE CONDITIONS HAVE ONE HOME PER PATH, AND IT IS NEVER NONE. Where the verdict row could take
+  // them — a sidecar whose composed statement carries the "conditional on:" lede — they render there,
+  // inside the verdict, which is where the mock puts them and where they read as the terms the verdict
+  // is conditional on rather than a list beside it. Where it could not, this row renders exactly as it
+  // did: the legacy gauge has no lede to hang them from, and dropping the row there would hide every
+  // condition on precisely the archived runs that cannot be re-rendered with better text.
+  if (!conditionsInVerdict) {
+    const conds = clientConditions(VERDICT_INFO || {});
+    if (conds.length) out.push(`<div class="gconds-wrap"><span class="gk">Conditions</span><ul class="gconds">${
+      conds.map((c) => `<li>${esc(c)}</li>`).join('')}</ul></div>`);
+  }
   const fa = fourAnswers && typeof fourAnswers === 'object' ? fourAnswers : null;
   if (fa) {
     const rows = FOUR_ANSWER_LABELS.map(([key, label], i) => {
@@ -240,8 +248,27 @@ function frameworkGauge(fm, findings, coverage = [], fourAnswers = null, opts = 
       ? (bindRecommendation(fm.recommendation, VERDICT_INFO.verdict, []) || VERDICT_INFO.tier || '')
       : (fm.recommendation || fm.overall_label || '');
   const recLabel = VERDICT_INFO?.statement ? 'Verdict' : 'Recommendation';
+  // THE VERDICT CARRIES EVERY CONDITION, NOT THE FIRST AND A COUNT. The composed statement ends
+  // "(and N more)" because it is also a ONE-LINE surface — the email lede, the registry row — where a
+  // list cannot go. On the page there is room for all of them, and a condition a client is told exists
+  // but is not told is one they cannot act on. The lede is taken from the statement's OWN prefix rather
+  // than re-composed, so the tier wording stays the engine's and only the truncated tail is replaced;
+  // the clauses are the sidecar's client-voice ones, the same list the separate row used to carry.
+  // The legacy `gauge()` below keeps the composed line as it stands: an archived run with no framework
+  // sidecar renders byte-identically, which is the contract stated there.
+  // THE LIST RENDERS ON BOTH PATHS. A sidecar with a composed statement gets the lede and its
+  // conditions; a LEGACY one — reasons, no statement, no client-voice clause — has no lede to match, and
+  // dropping the list there would hide every condition on exactly the archived runs that cannot be
+  // re-rendered with better text. Those still render under the bound recommendation, which is where
+  // they were before this row moved.
+  const verdictConds = clientConditions(VERDICT_INFO || {});
+  const ledeMatch = typeof rec === 'string' ? rec.match(/^(.*?conditional on:)/i) : null;
+  const conditionsInVerdict = Boolean(ledeMatch && verdictConds.length);
+  const recHtml = conditionsInVerdict
+    ? `${esc(ledeMatch[1])}<ul class="gconds">${verdictConds.map((c) => `<li>${esc(c)}</li>`).join('')}</ul>`
+    : esc(rec);
   const conc = [
-    rec && `<div class="grow"><span class="gk">${recLabel}</span><span class="gv gv-rec">${esc(rec)}</span></div>`,
+    rec && `<div class="grow"><span class="gk">${recLabel}</span><span class="gv gv-rec">${recHtml}</span></div>`,
   ].filter(Boolean).join('');
   // — THE FRAMEWORK IS NAMED WHERE ITS WORDS ARE READ, not only in the footer. `.ticks` below spells
   // a vocabulary ("Manageable", "Moderate") that is meaningless without the framework in force, and the
@@ -255,7 +282,7 @@ function frameworkGauge(fm, findings, coverage = [], fourAnswers = null, opts = 
     <div class="scale" style="background:${grad}">${marker}</div>
     <div class="ticks">${ticks}</div>
     <div class="gconc">${conc}</div>
-    ${ratingExtras(fm, findings, coverage, fourAnswers, opts, label)}
+    ${ratingExtras(fm, findings, coverage, fourAnswers, opts, label, conditionsInVerdict)}
   </div>`;
 }
 

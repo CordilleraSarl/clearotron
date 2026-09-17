@@ -1769,7 +1769,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Advanced again by the break recorded above the FROZEN constant: seven fixed sentences on the
 // clearance page, which is a behaviour change and not licence-only, so both constants move for the same
 // measured reason.
-const FROZEN_BEFORE_SPDX = "54db7aee5527887272751814e157f466be0e9fae5d8f47ad90ce290656c857ca";
+const FROZEN_BEFORE_SPDX = "82ab4c23d1ed4e0a318f8d1fb76209059ed672e9df9418e588e80ddb1ac67c9f";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2176,7 +2176,24 @@ const FROZEN_BEFORE_SPDX = "54db7aee5527887272751814e157f466be0e9fae5d8f47ad90ce
 // carries the reason for a decision and not its address — moved the bytes again with no behaviour
 // between the two. One entry, because a reader asking what changed gets the same answer either way.
 
-const FROZEN = "4c9a9ace10f7145b95dc5ee3fa27c7b19c70dda7573ba19810b072a0a0a73469";
+// NEXT BREAK (2026-09-17): THE VERDICT CARRIES EVERY CONDITION, on the owner's ruling of 2026-09-16.
+//
+// Answering the checklist at the top of this file honestly, one line each.
+//
+// Reachable from a republish? YES, and here that is the repair rather than the cost. The conditions were
+// already on the page — in a separate labelled row beside the verdict — so a re-rendered archived run
+// gains no fact it did not carry and loses none. What goes is the "(and N more)" truncation in the
+// verdict sentence; what moves is where the list sits, into the verdict itself, which is where the
+// redesign's mock puts it and where it reads as the terms the verdict is conditional on rather than a
+// list standing next to it. A sidecar with no composed statement to take a lede from — every legacy
+// archive, and every run predating the reason/clause split — renders exactly as it did, separate row
+// included. That path was checked because removing the row without it drops every condition on
+// precisely the runs that cannot be re-rendered with better text, which an existing arm caught.
+//
+// Could it live in report.css or brand.mjs? NO. It decides what TEXT reaches a client's page and how
+// much of it, not how that text looks.
+
+const FROZEN = "b2691b254381bdb642f0e5db650d25f183b9389fe58da66831718acb5af41855";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));
