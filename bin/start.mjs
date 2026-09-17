@@ -2528,7 +2528,10 @@ if (isMain) {
   // commands; printing one of them unheaded is how a reader pastes the wrong one. The target is read
   // here and passed, because this module is pure by design and reads no environment of its own.
   const connect = stdioConnectOffer({ workDir: paths.workspace, reportsDir: paths.pool, wsl: wslTarget(), ...(demoProgramRoot ? { installRoot: demoProgramRoot } : {}) });
-  say("  Connect your assistant to this install — one line, no address and no sign-in:");
+  // "one line" IS DELETED RATHER THAN MADE CONDITIONAL. Under WSL two lines are printed, one per side,
+  // and the count was never the point of the sentence — what it promises is no address and no sign-in,
+  // which is true on both sides and on every other install.
+  say("  Connect your assistant to this install — no address and no sign-in:");
   say("");
   // THE HEADINGS COME WITH THE PAIR, from the composer. Nothing is written here: the page prints these
   // same two words above these same two commands, and a second author is how the two surfaces drift.

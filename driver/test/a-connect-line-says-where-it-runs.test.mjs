@@ -101,25 +101,30 @@ test("the distribution is named when we know it, and left to the default when we
   assert.doesNotMatch(unnamed, /-d\b/, "it invented a distribution name");
 });
 
-test("the WSL step says WHICH SIDE its command is for, and invites no paste inside the distribution", () => {
-  // The sentence this replaces read "paste it where your assistant lives, on Windows or in the WSL
-  // terminal, whichever it is" — and the command cannot keep that promise. Under WSL there is exactly
-  // one launcher per host shape, the Windows-side `wsl.exe` one; an assistant inside the distribution
-  // cannot use it. Somebody took the invitation from Claude Code inside WSL and got CONNECTION_CLOSED
-  // (measured 2026-09-16 on 0.3.2-beta.1).
+test("the WSL step says the install is in WSL and nothing the rows now say — and still invites no bad paste", () => {
+  // THREE SPELLINGS THIS STEP HAS HAD, and each was true only while the rows underneath it were what
+  // they were. It read "paste it where your assistant lives, on Windows or in the WSL terminal,
+  // whichever it is" — an invitation to paste it inside the distribution, where it did not work, and
+  // somebody took it and got CONNECTION_CLOSED (measured 2026-09-16 on 0.3.2-beta.1). It then named the
+  // Windows side and said an assistant inside WSL could not use the command and should start the server
+  // itself — true of one launcher, false the moment the second row existed, and drawn directly above it.
   //
-  // PINNED TO THE PROPERTY, NOT THE SPELLING: the step must name the side it is for. A rewrite that
-  // says it some other way passes; one that stops saying it at all does not.
-  assert.match(WSL_STEP, /\bWindows\b/, "the step no longer says which side the command is for");
+  // What is left is the clause that survives both: the rows name Linux paths, and the reader is told why.
+  assert.match(WSL_STEP, /\bWSL\b/, "the step no longer says the install is inside WSL, which is why the rows name Linux paths");
 
-  // …and it must not tell the reader the one command works on both sides. This is the specific claim
-  // that sent a reader into CONNECTION_CLOSED, so it is worth refusing by name rather than trusting
-  // the positive arm above to catch a reworded version of it.
+  // THE ORIGINAL DEFECT STAYS REFUSED. This is the claim that sent a reader into a closed connection,
+  // and it is refused by name rather than trusted to the arm above.
   assert.doesNotMatch(WSL_STEP, /whichever it is/i, "the step invites a paste on either side again");
   assert.ok(!/on Windows or in the WSL terminal/i.test(WSL_STEP),
     "the step offers both sides for a command that works on one");
-});
 
+  // AND SO DOES THE ONE THAT REPLACED IT. An assistant inside the distribution has a row of its own now;
+  // a step telling it to start the server itself contradicts the row two lines below it.
+  assert.doesNotMatch(WSL_STEP, /cannot use it|yourself instead/i,
+    "the step still refuses an assistant the page now serves");
+  // Nor does it speak of ONE command while two are offered.
+  assert.doesNotMatch(WSL_STEP, /the command below/i, "the step names a single command where the page draws two");
+});
 // ── AND UNDER WSL IT IS TWO LINES, EACH HEADED WITH THE SIDE IT IS FOR ───────────────────────────
 //
 // The Windows-side row is a real fix and half an answer: an assistant running INSIDE the distribution —
