@@ -515,7 +515,12 @@ export function classify({ catalogue, sources, setup = setupNames(), readSites =
   };
 
   const cls = (name) => OVERRIDES[name] ?? (setup.has(name) ? "setup"
-    : VENDOR_RE.test(name) ? "vendor-credential"
+    // `credential`, the word the declared vocabulary uses, NOT a second word for the same thing. This
+    // computed `vendor-credential` while no row could declare it, which is the same gap that left the
+    // install wizard's names undeclarable — one side of the contract saying a word the other side has
+    // no way to say. The rule settled with that one holds here: the classifier and the vocabulary say
+    // the SAME word, and a disagreement is fixed rather than frozen as an exception.
+    : VENDOR_RE.test(name) ? "credential"
     // The listed audience is consulted BEFORE the shapes, so a renamed name keeps the class a human gave
     // it rather than the one its new spelling happens to match.
     : deploymentNames.has(name) ? "deployment"
@@ -691,7 +696,7 @@ function build() {
     _what: "#1838 step 1 — every catalogued variable classified, and for every TUNING name the environments that have ever set it.",
     _how: "Regenerate with: node scripts/env-classify.mjs --check   (the production half is read from docs/architecture/env-set-in-production.txt, which needs `--gather-prod` on the production box to refresh).",
     _values: "NO VALUE from any environment is read into this artifact. Names only.",
-    _counts: { rows: rows.length, setup: by("setup"), deployment: by("deployment"), vendorCredential: by("vendor-credential"), tuning: by("tuning") },
+    _counts: { rows: rows.length, setup: by("setup"), deployment: by("deployment"), credential: by("credential"), tuning: by("tuning") },
     _stepThreePopulation: {
       _what: "What step 3 may act on: a numeric default, and no environment anywhere sets it.",
       _warning: "A candidate list, not a licence. Each still needs its read site read and its guard checked before deletion.",

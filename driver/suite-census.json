@@ -490,8 +490,8 @@
           "todos": 0
         },
         "a-name-held-in-a-table-is-a-read.test.mjs": {
-          "tests": 7,
-          "asserts": 18,
+          "tests": 8,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },

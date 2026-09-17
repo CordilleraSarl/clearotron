@@ -116,3 +116,42 @@ test("the two engine program paths declare the class they compute", () => {
   assert.equal(declared.get("CLEAROTRON_WORK_DIR"), undefined,
     "a declaration reached a row it was not written for — the marker's run is not ended where it should be");
 });
+
+// ── AND NO CLASS THE CLASSIFIER CAN PRODUCE IS ONE A ROW CANNOT DECLARE ──────────────────────────────
+//
+// The general form of the two arms above, and the reason this one exists rather than a third pair for
+// the next word. Two of these gaps were live at once: `setup`, which the install wizard's names
+// computed, and `credential`, which provider credentials computed under the spelling
+// `vendor-credential` while the vocabulary only ever offered `credential`. Both were invisible in the
+// same way — a class is computed into an artifact nobody reads line by line, and the declaration that
+// disagrees with it is a comment in a different file.
+//
+// Driven through the real classifier over a catalogue built to reach every branch of it, rather than
+// over the live catalogue: the live one is a population that happens to contain what it contains, and
+// an arm that reads it would go quiet for any class that momentarily has no members.
+test("every class the classifier can compute is a class the vocabulary can declare", () => {
+  const specimens = {
+    "CLEAROTRON_CLAUDE_PATH": "the install wizard's population",
+    "SERPAPI_KEY": "a vendor credential, by the vendor prefix",
+    "CLEAROTRON_WORK_DIR": "a place input and output live",
+    "CLEAROTRON_STAGE_TIMEOUT_MS": "the residual — how hard a run tries",
+  };
+  const catalogue = Object.keys(specimens);
+  const { rows } = classify({ catalogue, sources: {}, setup: new Set(["CLEAROTRON_CLAUDE_PATH"]),
+    readSites: () => null, declared: new Map() });
+
+  // A FLOOR ON THE POPULATION, not a better matcher. Without it a classifier that answered one word to
+  // everything would satisfy every assertion below while measuring nothing.
+  const produced = [...new Set(rows.map((r) => r.class))].sort();
+  assert.ok(produced.length >= 3,
+    `the classifier answered ${produced.length} distinct class(es) over four specimens chosen to reach `
+    + `four branches (${produced.join(", ")}) — it has stopped discriminating, and the check below `
+    + "would pass over a population of one");
+
+  for (const cls of produced) {
+    assert.ok(Object.prototype.hasOwnProperty.call(EFFECT_CLASSES, cls),
+      `the classifier computes "${cls}" and no catalogue row can declare it: the declared vocabulary is `
+      + `${Object.keys(EFFECT_CLASSES).join(", ")}. Either the word joins the vocabulary or the classifier `
+      + "computes the word already in it — what it may not do is compute a class nobody can say.");
+  }
+});
