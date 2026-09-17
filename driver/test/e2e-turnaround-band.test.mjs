@@ -54,7 +54,12 @@ test("the band axis IS policy.pipeline — the table has a row for every pipelin
 });
 
 test("an unknown band is null, never zero and never a default — 0 is a benchmark every run exceeds", () => {
-  for (const bad of ["full-depth", "clearance", "clearance-jx", "", null, undefined, 5, {}]) {
+  // PLAUSIBLE AND WRONG IS THE POINT. These read like pipeline names and are not any of BAND_IDS, which
+  // is what makes the arm mean something: a lookup that fell through to a default would resolve them.
+  // They were "prelim" and "prelim-jx" until the identifier was renamed, and the rename turned the first
+  // into `clearance` — a REAL band id — which made this arm assert that a live row resolves to null. It
+  // failed loudly, which is the only reason the substitution did not quietly empty it.
+  for (const bad of ["full-depth", "half-depth", "clearance-jx", "", null, undefined, 5, {}]) {
     assert.equal(bandForPipeline(bad), null, `${JSON.stringify(bad)} must not resolve to a band`);
     assert.equal(benchmarkMinutes(bad), null, `${JSON.stringify(bad)} must have no benchmark`);
     assert.equal(benchmarkSource(bad), null);
