@@ -5145,6 +5145,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-residue-census-measures-what-is-published.test.mjs": {
+          "tests": 4,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "the-retired-azure-settings-are-read-by-nothing.test.mjs": {
           "tests": 3,
           "asserts": 14,
