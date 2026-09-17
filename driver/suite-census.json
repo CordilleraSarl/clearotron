@@ -191,7 +191,7 @@
         },
         "a-connect-line-says-where-it-runs.test.mjs": {
           "tests": 11,
-          "asserts": 47,
+          "asserts": 48,
           "skips": 0,
           "todos": 0
         },

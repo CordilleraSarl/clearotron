@@ -189,6 +189,11 @@ test("the page and the terminal take the two headings from ONE author, and neith
   const start = read("bin/start.mjs");
   assert.match(start, /stdioConnectOffer\(\{[^;]*wsl: wslTarget\(\)/, "the terminal asks for a connect line without saying which side it is on");
   assert.match(start, /connect\.variants[\s\S]{0,400}?v\.heading[\s\S]{0,120}?v\.text/, "the terminal no longer prints both sides under their headings");
+  // ONE CALL SITE, WHICH IS WHAT MAKES ONE DRIVE COVER TWO VERBS. `clearotron demo` and `clearotron
+  // start` print this block from the same place; a second composer call is how one of them keeps
+  // printing the old single line while the other is driven green.
+  assert.equal(start.match(/stdioConnectOffer\(/g).length, 1,
+    "start.mjs composes the connect line in more than one place, so demo and start can print different lines");
 
   // ONE AUTHOR. The words live in `shared/stdio-connect.mjs` and nowhere else; a surface that spells
   // them itself is a surface that keeps its old wording when the ruling changes.

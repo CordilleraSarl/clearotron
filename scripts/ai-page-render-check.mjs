@@ -803,6 +803,10 @@ console.log('\nthe two sides of a WSL install:')
     }))
   })()`)
   out['wsl rows'] = rows
+  // THE STEP ABOVE THEM SAYS THE INSTALL IS IN WSL, AND NOTHING THE ROWS NOW SAY. It used to tell an
+  // assistant inside the distribution that it could not connect, which the row below it now answers.
+  ok(rows[0]?.text === 'This install runs inside WSL.',
+    `the step above the rows reads as the design words it (saw ${JSON.stringify(rows[0]?.text ?? null)})`)
   const headed = rows.filter((r) => r.command)
   ok(headed.length === 2, `both sides are drawn, not one (saw ${headed.length})`)
   ok(headed[0]?.text === 'From Windows' && headed[1]?.text === 'Inside WSL',
