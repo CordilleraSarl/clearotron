@@ -2,4 +2,4 @@
 "clearotron-driver": patch
 ---
 
-Fixed: Reports written before this summer now state their conditions in plain words when reopened.
+Fixed: A report made before this summer, reopened today, states its conditions in the same words as a new one.
