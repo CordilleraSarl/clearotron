@@ -637,7 +637,13 @@ export function gridLedger(msg, dir = null) {
   // stays results:[] byte-identical, so the disposition arm is vacuous across every pre-existing scenario
   // (the review-flagged blind spot: no test ever drove an ARMED with-results disposition through the split).
   const specQueries = gridSpecFromMsg(msg)?.connotation?.queries ?? [];
-  return JSON.stringify({ cells, extras: { pr_risk: specQueries.map((q) => ({ query: q, results: prResultsArmedFor(q) })) }, gaps });
+  // MOCK_CL_MISSING_QUERIES omits the LAST n dictated queries from the receipts, with both halves
+  // otherwise completing normally — the "fifty-nine of sixty" shape. It is deliberately not a gap and
+  // not a thrown error: the queries simply are not there, which is the state a delivered clearance met
+  // and the one no knob could previously reproduce.
+  const omit = Math.max(0, Number(process.env.MOCK_CL_MISSING_QUERIES || 0));
+  const recorded = omit ? specQueries.slice(0, Math.max(0, specQueries.length - omit)) : specQueries;
+  return JSON.stringify({ cells, extras: { pr_risk: recorded.map((q) => ({ query: q, results: prResultsArmedFor(q) })) }, gaps });
 }
 
 // Fix-1: the plugin-written SUPPLEMENTARY ledger for a driver-dictated supp spec — exactly its
