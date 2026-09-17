@@ -59,6 +59,16 @@ let SEARCHED_JUR = null;
 let SCOPE_WORLDWIDE = null;
 // T7 — the two deterministic evidence joins (set per render from opts):
 let CASE_LAW_BY_ORD = new Map();   // E5: ordinal → grounded case-law profile
+// Whether the case-law pass found anything: 'found' | 'none-found' | 'not-checked' | null.
+// The CARD strand is suppressed on the two states that mean there is no precedent to cite, because the
+// profile body is then the engine's account of WHY — adapter names, session error codes, which sources
+// were out of scope — a true sentence about the machinery and not the client's answer, and the Court
+// decisions section states that outcome in the reader's own words already.
+//
+// NULL IS NOT ONE OF THEM. A report with no court state carries no Court decisions section either (it
+// is full-country only), so suppressing there would take case-law off the page with nothing left
+// saying so. Absence of a state is not a statement that nothing was found.
+let COURT_DECISIONS = null;
 let ENFORCER_SIGNALS = new Map();  // E6: registration uri (lowercase) → {aggression, oppositions, owner}
 // WP-receipts W2 — per-render provider record-link origin + label, resolved by publish from the run's
 // OWN _driver/receipts.json provider (never the currently-configured provider — a re-published archive
@@ -1659,7 +1669,11 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   // preparation is portal-report.mjs's job, never a second render fork here.
   const clHead = clProfile ? `<b>Case-law${clProfile.jurisdiction ? ` (${esc(clProfile.jurisdiction)})` : ''}.</b>` : '';
   const clBody = !clProfile ? '' : renderProse(clProfile.body);   // one report: the full body (renderProse handles ::p:: internal lines)
-  const caseLawStrand = clProfile
+  // Only a pass that FOUND precedent puts a strand on the card. Where none was found, or the research
+  // could not be completed, the body is the engine's account of the attempt and the Court decisions
+  // section says the outcome plainly on its own; repeating it here said it twice, the second time in
+  // the machinery's voice on the card a client reads most closely.
+  const caseLawStrand = clProfile && COURT_DECISIONS !== 'not-checked' && COURT_DECISIONS !== 'none-found'
     ? `<div class="clstrand" style="margin:10px 0 0;padding-top:8px;border-top:1px dashed var(--line,#ddd)">${clHead}${clBody}</div>`
     : '';
   const link = f.source?.resolved_link;
@@ -2324,6 +2338,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   SEARCHED_JUR = Array.isArray(opts.searchedJurisdictions) && opts.searchedJurisdictions.length ? opts.searchedJurisdictions : null;   // T6 (D4)
   SCOPE_WORLDWIDE = opts.scopeBasis === 'worldwide' ? true : null;   // the plan's scope_basis; null ⇒ fall back to the ledger-prose sniff
   CASE_LAW_BY_ORD = opts.caseLawByOrdinal instanceof Map ? opts.caseLawByOrdinal : new Map();   // T7 (E5)
+  COURT_DECISIONS = opts.searchDepth?.counts?.courtDecisions ?? null;   // gates the card's case-law strand
   ENFORCER_SIGNALS = new Map((Array.isArray(opts.enforcerSignals) ? opts.enforcerSignals : []).map((e) => [String(e.uri ?? '').toLowerCase(), e]));   // T7 (E6)
   RECORD_ORIGIN = opts.recordOrigin ?? null;       // WP-receipts W2
   // — `null` and `` mean DIFFERENT things and the render must not collapse them. `` is an

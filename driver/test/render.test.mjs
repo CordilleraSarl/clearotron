@@ -1731,6 +1731,48 @@ test("doc-55 A3 (one-report form): a precedent-FOUND strand renders citations an
   assert.equal(stale, internal, "opts.client no longer forks the strand");
 });
 
+// ── A CARD CARRIES CASE-LAW ONLY WHEN THERE IS CASE-LAW TO CARRY ──────────────────────────────────
+// Where the pass found no precedent — or could not run at all — the profile body is the engine's
+// account of the ATTEMPT: the adapter it could not reach, the session error code, which sources were
+// out of scope for the jurisdiction. Every sentence of that is true and none of it is the client's
+// answer, and the Court decisions section states the outcome plainly on its own. It was being said
+// twice, the second time in the machinery's voice on the card a reader studies most closely.
+//
+// BREAK MATRIX:
+//   · render the strand regardless of state   → the adapter narrative returns to the card, arm 1 red
+//   · suppress it on a FOUND pass             → real precedent leaves the card, arm 2 red
+//   · suppress it when there is NO state      → case-law goes from reports that carry no Court
+//                                               decisions section to say so instead, arm 3 red
+test("a card carries the case-law strand only where a pass found precedent to cite", () => {
+  const unreachable = new Map([
+    [1, { ord: 1, mark: "MATCHDAY", owner: "Matchday, Inc.", jurisdiction: "JP", none: true, coverageLimited: true,
+          body: "**No on-point precedent found** — source unreachable, no document fetched. Sources searched: none reachable (CONNECTION_CLOSED)." }],
+  ]);
+  const depth = (state) => ({ counts: { courtDecisions: state, recordsByCountry: { JP: 12 } } });
+
+  const notChecked = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { caseLawByOrdinal: unreachable, searchDepth: depth("not-checked") });
+  assert.doesNotMatch(notChecked, /clstrand/, "no strand on the card when the research could not be completed");
+  assert.doesNotMatch(notChecked, /CONNECTION_CLOSED/, "and the session error code reaches no client card");
+
+  const noneFound = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { caseLawByOrdinal: unreachable, searchDepth: depth("none-found") });
+  assert.doesNotMatch(noneFound, /clstrand/, "nor when the pass ran and found nothing");
+
+  // FOUND keeps the strand: that is the case the section's own line points at ("cited against the
+  // findings above"), so the citations have to be there to be pointed at.
+  const found = new Map([
+    [1, { ord: 1, mark: "MATCHDAY", owner: "Matchday, Inc.", jurisdiction: "US", none: false, coverageLimited: false,
+          body: "**On-point authorities:**\n- *WARDOGS* - EUIPO BoA - 2021 - holding: composites compared as wholes." }],
+  ]);
+  const hit = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { caseLawByOrdinal: found, searchDepth: depth("found") });
+  assert.match(hit, /clstrand/, "a pass that found precedent still renders its strand");
+  assert.match(hit, /WARDOGS/, "and the citation itself reaches the card");
+
+  // NO state at all is not a statement that nothing was found. Those reports carry no Court decisions
+  // section either, so suppressing here would take case-law off the page with nothing left saying so.
+  const stateless = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { caseLawByOrdinal: found });
+  assert.match(stateless, /clstrand/, "absence of a court state changes nothing");
+});
+
 test("doc-55 A3 (safety): legitimate client legal prose that merely mentions 'MCP' or 'not wired' is PRESERVED, never stripped", () => {
   // the strip must never silently delete real legal content on an unseen mark — a conflict/owner named
   // "MCP" (a common 3-letter mark) or class-9 goods described as "wireless, not wired" must survive.

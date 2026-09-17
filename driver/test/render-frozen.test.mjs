@@ -1769,7 +1769,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Advanced again by the break recorded above the FROZEN constant: seven fixed sentences on the
 // clearance page, which is a behaviour change and not licence-only, so both constants move for the same
 // measured reason.
-const FROZEN_BEFORE_SPDX = "60b95560db0746b18902d58e4e56a257f9ec28b6551beb79ec0af3fd93ee9456";
+const FROZEN_BEFORE_SPDX = "6c1178abcec3f6cd481d39440e636e7bdb8a2034822cd7c24c90941c1de7d39a";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2205,7 +2205,19 @@ const FROZEN_BEFORE_SPDX = "60b95560db0746b18902d58e4e56a257f9ec28b6551beb79ec0a
 // Could it live in report.css? No — hiding it in the stylesheet leaves it in the delivered bytes and in
 // the printed page, which is where it was read.
 
-const FROZEN = "f598c5e08aeac728ecc4f14df16e29f39c01243156025c477e20d92f9669f0b1";
+// AND AGAIN (2026-09-17): A CARD CARRIES CASE-LAW ONLY WHERE A PASS FOUND PRECEDENT.
+//
+// Reachable from a republish? Yes, and on an archived run whose case-law pass failed it removes the
+// engine's account of that failure — the adapter it could not reach, the session error code, the
+// sources out of scope — from the client's card. The OUTCOME is not removed: the Court decisions
+// section states it in the reader's own words, and did already, so the page said it twice. A run whose
+// pass found precedent keeps its strand and its citations, and a report carrying no court state at all
+// is untouched, because those carry no Court decisions section to say it instead.
+//
+// Could it live in report.css? No — hiding the strand leaves the adapter narrative in the delivered
+// bytes and in the printed page.
+
+const FROZEN = "ee2a5674e94409351cf245df986c7d9a8d46dcd9256d561821f4d948b56aad9b";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));
