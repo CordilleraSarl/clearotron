@@ -29,8 +29,8 @@ export type Tone = (typeof TONES)[number]
  * ORDER MATTERS AND IT IS COUNTERINTUITIVE: **index 0 is the MOST SEVERE band.**
  *
  * The manifests read `[Very High, High, Medium, Manageable, Low]`, and the engine states it in two
- * places — `render.mjs:114` ("manifest is most-severe-first → reverse for left→right") and `:96`
- * ("manifest index (0 = worst)"). The gauge reverses the array precisely because the display order and
+ * places — render.mjs `frameworkGauge` ("manifest is most-severe-first → reverse for
+ * left→right") and `frameworkTickIndex` ("manifest index (0 = worst)"). The gauge reverses the array precisely because the display order and
  * the storage order are opposites.
  *
  * Reading it the other way round is not a cosmetic error. It makes `worstBand` return the SAFEST band
@@ -97,7 +97,7 @@ export function bandRank(bands: readonly Band[], label: string | null): number {
  * Where a band sits on its gauge, as a percentage from the left.
  *
  * The gauge runs least severe on the left to most severe on the right, which is the REVERSE of the
- * manifest's storage order — the frozen renderer does the same reversal at `render.mjs:114`, and this
+ * manifest's storage order — the frozen renderer does the same reversal in render.mjs `frameworkGauge`, and this
  * has to agree with it or the native report and a legacy report of the same run would place the marker
  * on opposite sides.
  *

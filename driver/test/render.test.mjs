@@ -679,10 +679,20 @@ test("§2.6/2.8: hero is split — conclusion card carries the verdict, scope ca
   assert.match(whereRow(html), /Turkey \(coverage-limited\)/, "a coverage-limited office still says so");
 });
 
-test("§2.9: the issued timestamp renders verbatim from opts (deterministic), omitted when absent", () => {
+test("§2.9: the issued DATE comes from opts and never from a clock, and is omitted when absent", () => {
+  // This arm read the value back verbatim, time and zone included. The value is still the caller's
+  // and is still never computed here — that is the property the arm was written for and it is
+  // unchanged — but what REACHES the page is the date. "Issued on 2026-09-17 · 08:36 GMT+2" told a
+  // reader the minute the file was written and the zone of the machine that wrote it; neither is
+  // something they can use, and on work spanning days the minute implies a precision it does not have.
   const withIssued = renderHtml(parsedOf(FM), REGION_FINDINGS, REGION_COVERAGE, { issued: "2026-06-16 · 14:32 CEST" });
-  assert.match(withIssued, /Issued on 2026-06-16 · 14:32 CEST/);
+  assert.match(withIssued, /Issued on 2026-06-16/, "the date the caller passed");
+  assert.doesNotMatch(withIssued, /14:32|CEST/, "not the minute, and not the machine's zone");
   assert.match(withIssued, /class="mono tb-issued"/);
+  // A stamp in some other shape is not this publisher's to assume, so it falls through whole rather
+  // than being cut at whatever character happens to sit where a separator would be.
+  const odd = renderHtml(parsedOf(FM), REGION_FINDINGS, REGION_COVERAGE, { issued: "Q2 · 2026" });
+  assert.match(odd, /Issued on Q2 · 2026/, "an unrecognised stamp survives whole");
   const without = renderHtml(parsedOf(FM), REGION_FINDINGS, REGION_COVERAGE, {});
   assert.doesNotMatch(without, /class="mono tb-issued"/);                  // no issued field when not passed (the .tb-issued CSS rule still lives in <style>)
   assert.doesNotMatch(without, />Issued /);
@@ -1514,6 +1524,47 @@ test("doc-54: composite-tier sidecar on a framework run maps tone-nearest, never
   assert.match(ticks, /<span class="on"[^>]*>Medium<\/span>/, "tone 2 → the Medium band tick");
 });
 
+// ── THE VERDICT CARRIES EVERY CONDITION, NOT THE FIRST AND A COUNT (owner ruling, 2026-09-16) ──────
+// The composed statement ends "(and N more)" because it is ALSO a one-line surface — the email lede, the
+// registry row — where a list cannot go. On the page there is room for all of them, and a condition a
+// client is told exists but is not told is one they cannot act on.
+//
+// BREAK MATRIX:
+//   · render the statement verbatim              → the truncation reaches the page, arm 1 red
+//   · re-compose the lede instead of taking it   → the tier wording stops being the engine's, arm 2 red
+//   · keep the separate labelled Conditions row  → the page states them twice, arm 3 red
+//   · fall back to the reason when a clause exists → an engine identifier reaches a client, arm 4 red
+test("the verdict lists every condition under its own lede, and no count stands in for the rest", () => {
+  const vi = {
+    tier: "Moderate", verdict: "CONDITIONAL", badge: "l3", gaugeIndex: 2,
+    statement: "Moderate — conditional on: Clear the Japanese registration before filing class 9 (and 2 more).",
+    // A real sidecar carries BOTH: the run-record reason with its token, and the client-voice clause
+    // beside it at the same index. The page must take the clause.
+    reasons: [
+      "floor_duty_undischarged:1 of 3 floor row(s) — the duty is uncapped",
+      "synthesis_unaccounted_delivered:2 of 9 record(s) reached the findings surface",
+      "coverage_deferred:1 — primary sweep",
+    ],
+    clauses: [
+      "Clear the Japanese registration before filing class 9 in Japan.",
+      "Take a Korean attorney view on whether the marks are confusingly similar.",
+      "Check the owner own filings through its corporate records.",
+    ],
+  };
+  const html = renderHtml(parsedOf(REPORT), [], [], { framework: AURORA_MANIFEST, verdictInfo: vi });
+  const row = html.match(/<span class="gk">Verdict<\/span><span class="gv gv-rec">([\s\S]*?)<\/span>/)[1];
+
+  assert.match(row, /^Moderate — conditional on:<ul class="gconds">/,
+    "the lede is the statement's own and the list follows it inside the verdict");
+  for (const c of vi.clauses) assert.ok(row.includes(c), `every condition reaches the page: ${c}`);
+  assert.equal((row.match(/<li>/g) || []).length, vi.clauses.length, "one item per condition, none dropped");
+  assert.doesNotMatch(row, /and \d+ more/, "nothing hides behind a count");
+  assert.doesNotMatch(html, /<span class="gk">Conditions<\/span>/,
+    "the conditions have ONE home; the separate labelled row is gone");
+  assert.doesNotMatch(html, /floor_duty_undischarged|synthesis_unaccounted_delivered|coverage_deferred/,
+    "the run-record reason and its engine identifier stay off a client's page where a clause exists");
+});
+
 // ── the framework is named beside the words it owns ───────────────────────────────────────────
 // The ticks under the scale spell a vocabulary — "Manageable", "Moderate" — that means nothing without
 // the framework in force, and the ONLY place naming it was the footer, several screens down a document
@@ -1587,6 +1638,138 @@ test("doc-54: one footer — the full provenance line rides the document; serve-
   assert.match(internal, /Rated under: <span class="mono">Aurora Interactive \(aurora\)/, "the footer keeps the full provenance line");
   const stale = renderHtml(parsedOf(fmLeak), BAND_FINDINGS, [], { client: true, framework: AURORA_MANIFEST, verdictInfo: vi });
   assert.equal(stale, internal, "opts.client no longer forks the footer");
+});
+
+// ── ALSO CONSIDERED: THE ENGINE'S OWN REASON, AND A REGISTER ROW IN THE READER'S CASE ────────────
+//
+// Every ruled-out card printed the same fixed line — "a different name in a related field" — whatever
+// the run had concluded about that name. The finding's own one-line reason, `net`, was rendered
+// NOWHERE: not on the face, not in the fold, not anywhere on the page. So a client read one generic
+// sentence about every name we set aside while the specific reason we set THAT one aside was thrown
+// away at render time. The fold keeps the longer legal and practical argument.
+//
+// BREAK MATRIX:
+//   · fall back to the fixed line while `net` exists → the specific reason is discarded again, arm 1 red
+//   · drop the fixed line entirely                   → a finding carrying neither renders no reason, arm 2 red
+//   · print "Class" or shout the register's status   → arm 3 red
+test("a ruled-out card leads with the finding's own reason, and keeps the fixed line only as a last resort", () => {
+  const withNet = [{ ...BAND_FINDINGS[0], ordinal: 9, ruled_out: true, mark: "QORE",
+    net: "NXP's registrations cover microprocessors and do not reach a water-quality app.",
+    legal_position: "The specification is semiconductors.", practical_position: "NXP is a large proprietor." }];
+  const html = renderHtml(parsedOf(REPORT), withNet, [], {});
+  assert.match(html, /do not reach a water-quality app/, "the finding's own reason reaches the card");
+  assert.doesNotMatch(html, /a different name in a related field/, "the fixed line does not stand in for it");
+  assert.match(html, /The specification is semiconductors/, "the longer argument stays in the fold");
+
+  // A finding carrying neither still states something rather than nothing.
+  const bare = [{ ...BAND_FINDINGS[0], ordinal: 9, ruled_out: true, mark: "QORE", net: "", legal_position: "" }];
+  assert.match(renderHtml(parsedOf(REPORT), bare, [], {}), /a different name in a related field/,
+    "the fixed line is the last resort, not a dead branch");
+});
+
+test("a cleared register row reads 'Cl.' and the register's status in lower case", () => {
+  const depth = { cleared: { register: [
+    { mark: "VENTURI", owner: "VENTURI WIRELESS INC.", country: "JP", classes: "9", status: "CANCELLED", group: "dead-filing" },
+  ] } };
+  const html = renderHtml(parsedOf(REPORT), [], [], { searchDepth: depth });
+  assert.match(html, /Cl\. 9/, "'Cl.' is the abbreviation a lawyer writes");
+  assert.doesNotMatch(html, /Class 9/, "…and 'Class' is not");
+  assert.match(html, /cancelled/, "the register's status is stated in the reader's case");
+  assert.doesNotMatch(html, /CANCELLED/, "not shouted back as the register hands it over");
+  assert.match(html, /VENTURI WIRELESS INC\./, "the owner renders when the record carries one");
+});
+
+// ── "WHERE IT STANDS" NAMES A COUNTRY, NOT A SECOND CODE ─────────────────────────────────────────
+//
+// The register writes the EUIPO and ISO spellings, EM and GB, and the section maps those to the codes
+// a reader knows, EU and UK. The NAME beside them was resolved from the RAW code, which has an entry
+// under neither spelling, so it fell back to the code itself: "EU EM" and "UK GB" — a country column
+// printing a second code, beside the rows where the register happened to write a code we already knew.
+//
+// BREAK MATRIX:
+//   · resolve the name from the raw code    → the aliased rows read as two codes, arm 1 red
+//   · resolve ONLY from the aliased key     → a code the alias does not cover loses its name, arm 2 red
+test("the by-country rows name the country, including where the register writes another code for it", () => {
+  const depth = { counts: { recordsByCountry: { EM: 3, GB: 2, JP: 1 }, courtDecisions: "not-in-scope" } };
+  const html = renderHtml(parsedOf(REPORT), [], [], { searchDepth: depth });
+
+  const rows = [...html.matchAll(/<span class="rcode">([^<]*)<\/span><span class="wname">([^<]*)<\/span>/g)]
+    .map((m) => [m[1], m[2]]);
+  const chips = [...html.matchAll(/<span class="wchip" title="([^"]*)">/g)].map((m) => m[1]);
+  const named = new Map([...rows, ...chips.map((t) => [t, t])]);
+
+  // However the three land between rated rows and clean chips, none of them may read as a bare code.
+  assert.ok(html.includes("European Union"), "EM is named as the European Union");
+  assert.ok(html.includes("United Kingdom"), "GB is named as the United Kingdom");
+  assert.ok(html.includes("Japan"), "and a code needing no alias is unaffected");
+  assert.doesNotMatch(html, /<span class="wname">EM<\/span>|<span class="wname">GB<\/span>/,
+    "no country column prints a second code");
+  assert.ok(named.size >= 0);   // the maps above are read for the failure message, not asserted on
+});
+
+// ── THE FOOTER IS ONE CLIENT LINE, AND THE REVIEWER'S PROVENANCE STILL RIDES UNDER IT ────────────
+//
+// It ran to four lines. The product name repeats the identity line; "Run under project" is the
+// engine's phrase for the folder a job was filed in and NOTHING strips it, so it reached a client
+// exactly as written. Both go. The dates were unlabelled — a bare date beside a matter identifier,
+// meaning nothing in particular — and are now named for what they are.
+//
+// "Rated under" STAYS, and this arm is here because deleting it is the obvious-looking move. The
+// document carries the reviewer's provenance and portal-report removes that one line at serve time
+// for every embedded reader. Taking it out here would strip the reviewer's copy to save the portal a
+// job it already does — and the LAST assertion is the one that matters: the markup has to keep the
+// shape that strip matches, or the line stops being removable and starts reaching clients.
+test("the footer is one client line with its dates named, and the reviewer's provenance survives in a strippable shape", () => {
+  const fmRun = REPORT.replace("run: 2026-06-10", "run: 2026-06-10 · Corsearch register + common-law grid")
+    // BOTH optional lines are set, and run_under_project is here because without it the assertion
+    // below passes vacuously: the fixture never carried the field, so "is it absent from the output"
+    // was true whatever the renderer did with it. Driven that way and it proved nothing.
+    .replace("---\n\n#", "rated_under: Aurora Interactive (aurora) · custom framework · profile 890f610e\nrun_under_project: Japan and Korea app launch (Demo Brand Owner)\n---\n\n#");
+  const html = renderHtml(parsedOf(fmRun), BAND_FINDINGS, [], { issued: "2026-06-16 · 14:32 CEST" });
+  const foot = (html.match(/<footer[^>]*>([\s\S]*?)<\/footer>/) || [])[1] ?? "";
+
+  assert.match(foot, /searched on 2026-06-10/, "the run date is named as the date searched");
+  assert.match(foot, /issued on 2026-06-16/, "and the issue date as the date issued");
+  assert.doesNotMatch(foot, /14:32|CEST/, "the publish minute reaches no surface");
+  assert.match(foot, /Corsearch register \+ common-law grid/, "the provider survives the split");
+  // BOTH provenance lines stay ON THE DOCUMENT and are removed at serve time. That is the shape the
+  // page already used for "Rated under", and "Run under project" was the same class of line sitting
+  // beside it with no strip — so it reached every embedded reader while its neighbour did not.
+  assert.match(foot, /<br\s*\/?>Rated under:\s*<span class="mono">[^<]*<\/span>\./,
+    "the reviewer's provenance is on the document, in the shape the strip removes");
+  assert.match(foot, /<br\s*\/?>Run under project:\s*<span class="mono">[^<]*<\/span>\./,
+    "and the project line beside it, in the same shape");
+});
+
+// The strip itself, driven rather than described: an embedded reader gets the client line and neither
+// provenance line. Asserting their ABSENCE from the rendered document would have been the wrong place
+// and would have deleted what review needs.
+test("an embedded reader gets the client footer line and neither provenance line", async () => {
+  const { prepareReportForEmbed } = await import("../portal-report.mjs");
+  const fmRun = REPORT.replace("run: 2026-06-10", "run: 2026-06-10 · Corsearch register + common-law grid")
+    .replace("---\n\n#", "rated_under: Aurora Interactive (aurora) · custom framework · profile 890f610e\nrun_under_project: Japan and Korea app launch (Demo Brand Owner)\n---\n\n#");
+  const html = renderHtml(parsedOf(fmRun), BAND_FINDINGS, [], { issued: "2026-06-16 · 14:32 CEST" });
+  const embedded = prepareReportForEmbed(html, {}).html ?? prepareReportForEmbed(html, {});
+  const served = typeof embedded === "string" ? embedded : String(embedded);
+
+  assert.match(served, /searched on 2026-06-10/, "the client line survives");
+  assert.doesNotMatch(served, /Rated under:/, "the framework provenance is removed for the reader");
+  assert.doesNotMatch(served, /Run under project:/, "and so is the project line");
+  // The project's NAME is NOT swept: it is a client-facing fact in its own right, stated as the
+  // Project row of "About this request", and the mock carries it there. What goes is the internal
+  // framing — "Run under project", which is the engine describing which folder it filed a job in.
+  // The first version of this arm asserted the name was gone too, and was wrong about the page.
+  assert.match(served, /Japan and Korea app launch/,
+    "the project's own name stays where a client reads it, in About this request");
+});
+
+test("clause: a run string with no date in it is printed whole rather than taken apart", () => {
+  // The split is on the DATE by pattern. An archived run whose `run` was written in another shape is
+  // not this renderer's to guess at, so it is printed unlabelled rather than cut at a separator.
+  const odd = REPORT.replace("run: 2026-06-10", "run: Corsearch register only");
+  const foot = (renderHtml(parsedOf(odd), BAND_FINDINGS, [], {}).match(/<footer[^>]*>([\s\S]*?)<\/footer>/) || [])[1] ?? "";
+  assert.match(foot, /Corsearch register only/, "the run string survives whole");
+  assert.doesNotMatch(foot, /searched on/, "and nothing is labelled a date that was not one");
 });
 
 test("B1 (spec 2026-07-30 §4): the 'Subject to:' bound line is DELETED — no third copy of the conditions on the hero", () => {
@@ -1688,6 +1871,48 @@ test("doc-55 A3 (one-report form): a precedent-FOUND strand renders citations an
   assert.match(internal, /MCP server did not connect/, "the reviewer keeps the full coverage detail");
   const stale = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { client: true, caseLawByOrdinal });
   assert.equal(stale, internal, "opts.client no longer forks the strand");
+});
+
+// ── A CARD CARRIES CASE-LAW ONLY WHEN THERE IS CASE-LAW TO CARRY ──────────────────────────────────
+// Where the pass found no precedent — or could not run at all — the profile body is the engine's
+// account of the ATTEMPT: the adapter it could not reach, the session error code, which sources were
+// out of scope for the jurisdiction. Every sentence of that is true and none of it is the client's
+// answer, and the Court decisions section states the outcome plainly on its own. It was being said
+// twice, the second time in the machinery's voice on the card a reader studies most closely.
+//
+// BREAK MATRIX:
+//   · render the strand regardless of state   → the adapter narrative returns to the card, arm 1 red
+//   · suppress it on a FOUND pass             → real precedent leaves the card, arm 2 red
+//   · suppress it when there is NO state      → case-law goes from reports that carry no Court
+//                                               decisions section to say so instead, arm 3 red
+test("a card carries the case-law strand only where a pass found precedent to cite", () => {
+  const unreachable = new Map([
+    [1, { ord: 1, mark: "MATCHDAY", owner: "Matchday, Inc.", jurisdiction: "JP", none: true, coverageLimited: true,
+          body: "**No on-point precedent found** — source unreachable, no document fetched. Sources searched: none reachable (CONNECTION_CLOSED)." }],
+  ]);
+  const depth = (state) => ({ counts: { courtDecisions: state, recordsByCountry: { JP: 12 } } });
+
+  const notChecked = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { caseLawByOrdinal: unreachable, searchDepth: depth("not-checked") });
+  assert.doesNotMatch(notChecked, /clstrand/, "no strand on the card when the research could not be completed");
+  assert.doesNotMatch(notChecked, /CONNECTION_CLOSED/, "and the session error code reaches no client card");
+
+  const noneFound = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { caseLawByOrdinal: unreachable, searchDepth: depth("none-found") });
+  assert.doesNotMatch(noneFound, /clstrand/, "nor when the pass ran and found nothing");
+
+  // FOUND keeps the strand: that is the case the section's own line points at ("cited against the
+  // findings above"), so the citations have to be there to be pointed at.
+  const found = new Map([
+    [1, { ord: 1, mark: "MATCHDAY", owner: "Matchday, Inc.", jurisdiction: "US", none: false, coverageLimited: false,
+          body: "**On-point authorities:**\n- *WARDOGS* - EUIPO BoA - 2021 - holding: composites compared as wholes." }],
+  ]);
+  const hit = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { caseLawByOrdinal: found, searchDepth: depth("found") });
+  assert.match(hit, /clstrand/, "a pass that found precedent still renders its strand");
+  assert.match(hit, /WARDOGS/, "and the citation itself reaches the card");
+
+  // NO state at all is not a statement that nothing was found. Those reports carry no Court decisions
+  // section either, so suppressing here would take case-law off the page with nothing left saying so.
+  const stateless = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { caseLawByOrdinal: found });
+  assert.match(stateless, /clstrand/, "absence of a court state changes nothing");
 });
 
 test("doc-55 A3 (safety): legitimate client legal prose that merely mentions 'MCP' or 'not wired' is PRESERVED, never stripped", () => {
@@ -2353,6 +2578,12 @@ test("D5: the INTERNAL legacy Level/Composite chip is untouched — this is the 
 const NO_RESULT = "perplexity_research — no result";
 
 test("D7: the sentinel renders as client words on the finding card, and the tool name is nowhere", () => {
+  // THE MECHANISM. The sentinel is not a URL, so `new URL(...)` threw and the catch printed
+  // `host.slice(0, 40)`. The sentinel is 31 characters, so what a client read was the tool name WHOLE.
+  // (That premise came from a second arm, which drove the same property through the contribution list
+  // under the cards. The list restated the card's use line and has gone; the card is now the ONLY
+  // print site, so one arm holds this and there is nothing left for a second to read.)
+  assert.equal(NO_RESULT.length, 31, "premise: the slice truncated nothing — the leak was the full name");
   const f = [{ ...FINDINGS[0], use_check: { source: NO_RESULT } }];
   const html = renderHtml(parsedOf(REPORT), f, COVERAGE, {});
   assert.match(html, /<b>Use checked\.<\/b> Nothing found in the marketplaces searched\./);
@@ -2362,17 +2593,6 @@ test("D7: the sentinel renders as client words on the finding card, and the tool
     "an evidence tag was hung off an empty result");
   assert.doesNotMatch(html, /perplexity_research/, "the raw tool name reached a client's page");
   assert.doesNotMatch(html, /perplexity/i, "…in any casing");
-});
-
-test("D7: the common-law contribution list maps it too — where `new URL` used to throw", () => {
-  // THE MECHANISM. The sentinel is not a URL, so `new URL(...)` threw and the catch printed
-  // `host.slice(0, 40)`. The sentinel is 31 characters, so what a client read was the tool name WHOLE.
-  assert.equal(NO_RESULT.length, 31, "premise: the slice truncated nothing — the leak was the full name");
-  const f = [{ ...FINDINGS[0], use_check: { source: NO_RESULT } }];
-  const html = renderHtml(parsedOf(REPORT), f, COVERAGE, {});
-  assert.match(html, /What the marketplace layer added to register findings/, "premise: the list renders at all");
-  assert.match(html, /#1 MATCHDAY<\/a> — use Confirmed — marketplace search — no result found/);
-  assert.doesNotMatch(html, /perplexity_research/);
 });
 
 test("the sentinel matches on NORMALISED punctuation — the seat's hyphen renders as client words", () => {
@@ -2395,7 +2615,6 @@ test("D7: a real source URL is NOT touched — the map is one equality, never a 
   const f = [{ ...FINDINGS[0], use_check: { source: "https://shop.example.com/matchday-gear" } }];
   const html = renderHtml(parsedOf(REPORT), f, COVERAGE, {});
   assert.match(html, /href="https:\/\/shop\.example\.com\/matchday-gear"/, "the cite still links the real source");
-  assert.match(html, /— use Confirmed — shop\.example\.com/, "the contribution list still names the host");
   assert.doesNotMatch(html, /no result found/, "nothing was substituted into a source that had one");
 });
 
@@ -2403,16 +2622,22 @@ test("D4/D7: the use-source class has ONE definition, and it reads as a source p
   // It was declared twice with two different strings for the same closed member: fullDetail said
   // "register mirror — not evidence of use", the contribution list said "register mirror — not use
   // evidence". One vocabulary, two spellings, one page.
+  //
+  // The contribution list has since gone — it restated the card's own use line — so there is one
+  // print site left. The property is unchanged and worth keeping: the closed member has ONE spelling,
+  // and the arm still fails if a second one is introduced anywhere on the page.
   const f = [{ ...FINDINGS[0], use_check: { source: "https://shop.example.com/x" },
     meters: { ...FINDINGS[0].meters,
       use: { token: "confirmed", basis: "verified-from-record", _status: "confirmed", _useSourceClass: "register-mirror" } } }];
   const html = renderHtml(parsedOf(REPORT), f, COVERAGE, {});
   const phrase = "from a register mirror, which is not evidence of use";
-  assert.equal((html.match(new RegExp(phrase, "g")) ?? []).length, 2, "both print sites, one wording");
+  // ONE print site now. The second was the contribution list, which restated the card's use line and
+  // is gone; the property this arm holds — one wording for one closed member — is what mattered, and a
+  // count of two would now be the page saying it twice again.
+  assert.equal((html.match(new RegExp(phrase, "g")) ?? []).length, 1, "the one print site, one wording");
   assert.doesNotMatch(html, /not use evidence/, "the second spelling is gone");
   // — the use line prints no verification word; the source phrase stands alone.
   assert.match(html, new RegExp(`Evidence: ${phrase}`), "the cite labels the source class");
-  assert.match(html, new RegExp(`\\(evidence: ${phrase}\\)`), "…and so does the contribution line");
   assert.doesNotMatch(html, /Evidence: verified, from|Evidence: not yet verified, from/, "no verification word rides the use line");
 });
 

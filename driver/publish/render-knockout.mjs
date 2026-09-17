@@ -1668,6 +1668,11 @@ export function renderKnockoutHtml(findings, framework, {
   const marks = findings?.marks ?? [];
   const title = batchTitle(marks);
   const productName = identity?.identity ?? null;
+  // A DATE, NOT A TIMESTAMP. `issued` is composed as `<date> · <time>` at publish, and the time is the
+  // minute the file was written — it tells a reader nothing and implies a precision the work does not
+  // have. Every mock issues the date alone. Taken by pattern rather than by splitting on the
+  // separator, so a format that changes falls through whole instead of being cut in the wrong place.
+  const issuedDate = (String(issued ?? '').match(/^\d{4}-\d{2}-\d{2}/) || [])[0] ?? issued;
   const overallStop = bandStop(framework, overall);
   const summary = findings?.batch?.executiveSummary ?? '';
   const caveats = findings?.batch?.standardCaveats ?? [];
@@ -1776,9 +1781,44 @@ ${filings}`
   ${homeHref ? `<a class="homebtn tb-back no-print" href="${escAttr(homeHref)}" title="All reports"><span aria-hidden="true">←</span> <span class="tb-back-lbl">All reports</span></a>` : ''}
   ${logoLockup({ mark: 20, tag: '' })}<span class="sp"></span>
   <span class="tb-risk" style="background:var(${overallStop})">${esc(overall ?? '—')}</span>
-  <span class="mono tb-matter" style="font-size:11px;color:var(--faint)">${esc(matter || runId || '')}</span>
-  ${issued ? `<span class="mono tb-issued"><span aria-hidden="true">🗓 </span>Issued on ${esc(issued)}</span>` : ''}
-  <button type="button" class="tbbtn tb-ask no-print">\u2726 <span class="tb-lbl">Ask AI</span></button>
+  ${/* THE IDENTITY LINE NAMES THE MARK AND THE SEARCH, NOT THE RUN. It printed `matter || runId`,
+       and the caller passes the runId AS the matter, so what a client read was the engine's own run
+       identifier — on a real run a temporary-directory name carrying a capture suffix. It is ours, it
+       means nothing to them, and it is the one string on the page that could not be shown to anyone.
+       The mock reads mark then search type, and both are already in hand here.
+       There is NO fall back to the identifier: with no product name the mark stands alone, and with
+       neither the line does not render. A run whose registry identity is missing is exactly the case
+       that used to print the raw name, so falling back would keep the defect for the runs that have
+       it. */''}
+  ${title || productName ? `<span class="mono tb-matter" style="font-size:11px;color:var(--faint)">${
+    [title, productName].filter(Boolean).map(esc).join(' / ')}</span>` : ''}
+  ${issuedDate ? `<span class="mono tb-issued"><span aria-hidden="true">🗓 </span>Issued on ${esc(issuedDate)}</span>` : ''}
+  ${/* THE EXPORT CONTROL, which this template had never emitted. The approved header carries it and the
+       clearance report has it; the knockout offered a reader who opens the file no route to a PDF at
+       all, while its own stylesheet still described the utility buttons as "used by the topbar Export
+       popover" — the styling for a control that was not there.
+       NO TICK WORDING AND NO SELECT-ALL. The clearance's entry reads "Export PDF (ticked findings)"
+       and its popover offers Select all / Select none, because its exportPDF filters to the ticked
+       ones. This template has no pickbox anywhere, so `pickAll` is deliberately not defined here and a
+       tick verb would name a control that cannot exist. What prints is the whole document.
+       EVERY WORD IN IT IS ALREADY THE PRODUCT'S. The board draws the Export button and its caret and
+       stops there — it does not draw what the menu contains — so the entries are the clearance
+       report's own, verbatim, minus the tick wording that names a control this template does not have.
+       The heading this first carried ("Export") was written here and is gone: a word on a page a
+       client reads is the owner's to choose, and the board does not ask for one.
+       THE MARKUP IS THE CLEARANCE'S, RE-EMITTED RATHER THAN SHARED, and that is a debt this change
+       takes on knowingly: `render.mjs` is frozen at a content hash, and extracting its top bar is its
+       own change with its own byte-comparison against a real archived run. Filed as a follow-up. The
+       class names are the shared vocabulary this file already emits, so report.css styles both. */''}
+  <div class="tb-menu">
+    <button type="button" class="tbbtn tb-ask no-print">\u2726 <span class="tb-lbl">Ask AI</span></button>
+    <button type="button" class="tbbtn primary tb-exp-toggle" aria-haspopup="true" aria-expanded="false">\u2b07 <span class="tb-lbl">Export</span> \u25be</button>
+    <div class="tb-pop tb-exp-pop" hidden>
+      <button class="util primary" onclick="exportPDF()">\u2b07 Export PDF</button>
+      <div class="tb-sep"></div>
+      <div class="tb-row"><button class="util" onclick="openAll(true)">Expand all</button><button class="util" onclick="openAll(false)">Collapse all</button></div>
+    </div>
+  </div>
 </div>
 </div>
 <div class="fab-stack">${themeButton()}</div>
@@ -1799,7 +1839,11 @@ function openAll(v){document.querySelectorAll('details.ko-full').forEach(functio
 function exportPDF(){window.print();}
 (function(){var o=function(){openAll(true);};
 if(window.matchMedia){var m=window.matchMedia('print');if(m.addEventListener)m.addEventListener('change',function(e){if(e.matches)o();});}
-window.addEventListener('beforeprint',o);})();</script>
+window.addEventListener('beforeprint',o);})();
+/* The popover opens on its own button, closes on a click outside it and on Escape. Same two listeners
+   the clearance template carries, for the same markup; they move together when the top bar is shared. */
+document.addEventListener('click',function(e){var t=e.target.closest('.tb-exp-toggle'),pop=document.querySelector('.tb-exp-pop');if(t){if(pop){pop.hidden=!pop.hidden;t.setAttribute('aria-expanded',String(!pop.hidden));}return;}if(pop&&!pop.hidden&&!e.target.closest('.tb-exp-pop')){pop.hidden=true;var b=document.querySelector('.tb-exp-toggle');if(b)b.setAttribute('aria-expanded','false');}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){var pop=document.querySelector('.tb-exp-pop');if(pop&&!pop.hidden){pop.hidden=true;var b=document.querySelector('.tb-exp-toggle');if(b)b.setAttribute('aria-expanded','false');}}});</script>
 <div class="wrap">
   <header class="hero">
     ${demoBannerHtml(demoData === true)}
@@ -1839,7 +1883,14 @@ window.addEventListener('beforeprint',o);})();</script>
     newCaveats.map((c) => inlineMd(c)).join('<br>')}</p></div>` : ''}
 
   <footer>
-    <span>${productName ? `${esc(productName)}. ` : ''}<br>Matter ${esc(matter || runId || '')}.${issued ? ` Issued ${esc(issued)}.` : ''}</span>
+    ${/* THE FOOTER NAMES THE SAME THREE THINGS THE HEADER DOES. It read "<product>. / Matter
+         <runId>. Issued <date · time>." — the identifier again, under a label that calls it the
+         client's matter when it is the engine's run directory, and the publish clock again. The mock
+         reads mark · search · issued on date. Built from the same parts as the identity line so the
+         two cannot drift, and with the same rule: no part of it falls back to the identifier. */''}
+    <span>${[title, productName].filter(Boolean).map(esc).join(' \u00b7 ')}${
+      issuedDate ? `${title || productName ? ' \u00b7 ' : ''}issued on ${esc(issuedDate)}` : ''}${
+      title || productName || issuedDate ? '.' : ''}</span>
     ${logoLockup({ mark: 16 })}
   </footer>
 </div>
