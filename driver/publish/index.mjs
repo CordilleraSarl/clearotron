@@ -846,7 +846,12 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // adding this store to it would change the meta of every archived run on re-render for a store that
   // feeds a workbook row and not the gate -- the same reason the other presentation-only stores are
   // not on it either.
-  const recallStore = readStore(runDir, '_driver/register-recall.json');
+  // `runDir ?? dirname(reportMd)`, the same base its neighbours take and not a defensive flourish:
+  // publishReport's `runDir` is OPTIONAL, and a bare `readStore(runDir, …)` throws TypeError on an
+  // undefined base rather than reporting an absent store. Caught in CI by the graceful-stop runner arm,
+  // which publishes without one: the throw left publishReport at `published → null` and the runner
+  // exited 1. Reading from the report's own directory is also the right answer for a republish.
+  const recallStore = readStore(runDir ?? dirname(reportMd), '_driver/register-recall.json');
   const undispatchedProbes = (recallStore.value?.overflow ?? [])
     .filter((o) => o && (o.term || o.qid))
     .map((o) => ({
