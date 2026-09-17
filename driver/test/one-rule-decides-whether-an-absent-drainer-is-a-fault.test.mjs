@@ -147,7 +147,14 @@ test("an absent STAMP is a failure under EVERY posture — no box's resting stat
   for (const [kind, posture] of postures) {
     const v = drainerVerdict({ stamp: null, headCommit: "abc", isAlive: () => true, processes: [], posture });
     assert.equal(v.state, "fail", `no stamp read as ${v.state} under a ${kind} posture — a scheduled box that has drained once has a stamp from that tick`);
-    assert.match(v.message, /This is a failure to look, never a pass\./);
+    // THE RULE IS UNCHANGED AND THE SENTENCE IS NOT. This used to require "This is a failure to look,
+    // never a pass" — in a message that also asserted nothing was executing runs on the box, which is a
+    // finding. One of the two had to go, and the finding is the true one here: the process table was
+    // read and it was empty. The could-not-look case is the one where the table itself is unreadable,
+    // and it is a separate branch with a separate verdict now.
+    assert.match(v.message, /nothing is executing runs on this box/,
+      "a posture does not change WHAT was found, only how it is described");
+    assert.ok(v.blocked !== true, "…and a table that answered is not a could-not-look under any posture");
     assert.match(v.message, new RegExp(`Drain posture ${kind}:`), `the ${kind} branch did not say which posture it read`);
   }
 });

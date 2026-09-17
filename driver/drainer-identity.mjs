@@ -105,14 +105,40 @@ export function drainerVerdict({ stamp, headCommit, isAlive, processes, ppidOf =
   const nameThem = (ps) => ps.map((p) => `pid ${p.pid}`).join(", ");
 
   if (!stamp) {
-    // COULD NOT LOOK, AND THAT IS A FAILURE. The deploy must not report a build live having never
-    // established what the executing process holds — "no stamp" is the exact state the incident's
-    // orphaned drainer was in, so treating it as a skip would pass the very box this arm exists for.
-    const extra = seen === null ? "and the process table could not be read either"
-      : seen.length ? `while ${seen.length} drainer-shaped process(es) ARE running (${nameThem(seen)}) — unstamped, so what build they hold is unknown`
-      : "and no drainer-shaped process is running, so nothing is executing runs on this box";
-    return { state: "fail", message: `no drainer identity stamp at ${STAMP_BASENAME}: the build held by the process that `
-      + `executes runs was NOT established, ${extra}. This is a failure to look, never a pass.${postureNote}` };
+    // THREE SITUATIONS LIVED IN ONE FAIL, AND ONE OF THEM IS NOT A FINDING.
+    //
+    // All three begin the same way — no stamp, so what the executing process holds was never
+    // established. What separates them is the PROCESS TABLE, and the old message ran the answers
+    // together: it asserted "nothing is executing runs on this box", a finding, and closed with "This is
+    // a failure to look, never a pass", which is the opposite claim. A reader could act on either.
+    //
+    // The module's ruling about postures says what each exit's posture IS. It does not license reporting
+    // two different facts through one verdict, and a deployment check is exactly where that is
+    // expensive: redeploying fixes an idle box and does nothing at all for an unreadable process table.
+    //
+    // — NOTHING WAS ESTABLISHED IN EITHER DIRECTION. No stamp and no process table: this arm did not
+    // find an idle box, it failed to look at one. Skipped and marked, never passed — the caller counts
+    // it toward a different exit code, and the box could be perfectly healthy or completely wedged.
+    if (seen === null) {
+      return { state: "skip", blocked: true,
+        message: `no drainer identity stamp at ${STAMP_BASENAME} AND the process table could not be read: what the `
+          + "process that executes runs holds was not established, and neither was whether one is running at all. "
+          + `This is a failure to look — redeploying would change nothing, because nothing was compared.${postureNote}` };
+    }
+    // — THE INCIDENT'S OWN SHAPE. Drainer-shaped processes are running and none of them stamped
+    // anything, so what build they hold is unknown. This is the state the orphaned drainer was in and
+    // the reason this arm exists; it is a finding and stays one.
+    if (seen.length) {
+      return { state: "fail", message: `no drainer identity stamp at ${STAMP_BASENAME} while ${seen.length} `
+        + `drainer-shaped process(es) ARE running (${nameThem(seen)}) — unstamped, so what build they hold is `
+        + `unknown. The process table was read; this is what it said.${postureNote}` };
+    }
+    // — A FINDING, and the plainest one here. The process table WAS read and holds no drainer, so
+    // nothing is executing runs on this box. Saying "failure to look" about a table that answered was
+    // the contradiction at the centre of this.
+    return { state: "fail", message: `no drainer identity stamp at ${STAMP_BASENAME} and no drainer-shaped process `
+      + "is running, so nothing is executing runs on this box. The process table was read, and this is what "
+      + `it said.${postureNote}` };
   }
 
   const pid = Number(stamp.pid) || 0;
