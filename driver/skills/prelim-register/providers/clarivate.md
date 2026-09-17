@@ -54,24 +54,27 @@ claimed. Booleans, parentheses and wildcards are parsed **inside `searchFields[]
 `contains` is accepted as an alias of `default` and produces the identical query. There is no separate
 "contains mode" to reach for any more.
 
-**Booleans are explicit and native.** `OR` is exact — a two-name stack answers the sum of its legs, with
-no double counting. `AND` works. `NOT` subtracts exactly the same way. Parentheses group. Regex is not
-supported despite what the field description hints: a regex value matches nothing rather than erroring.
+**Booleans are explicit and native**, and they are evaluated as real set operations rather than as text.
+An `OR` stack answers the union of its legs — on two names that share no marks that is the two totals
+added, and on names that overlap it is less, because nothing is counted twice. `AND` and `NOT` compose the
+same way. Parentheses group. Regex is not supported despite what the field description hints: a regex
+value matches nothing rather than erroring.
 
 **Multi-word terms work — pass them normally.** A bare space is an implicit *AND*, and it is order-blind,
 so the tool compiles your phrase to the **ADJ** adjacency operator instead — an ordered phrase match,
-which answers nothing when the words are reversed. You write the term the way a
+which matches only the order you write it in. You write the term the way a
 lawyer would say it; the tool does the translation. This applies to `default`/`contains`/`wildcard`/
 `starts_with`/`ends_with`/`phonetic` alike.
 
 Two things to know when you read the results:
 
 - **A multi-word `starts_with`/`ends_with` is not anchored.** No string anchor exists on this provider
-  (`BEGINS_WITH` on a two-word value answers wider than the phrase operator does), so it runs as a
-  phrase-*contains* — a superset of what you asked. Extra hits, never fewer. Screen them as usual.
+  (`BEGINS_WITH` on a multi-word value degrades to a per-token AND, which is a superset of the ordered
+  phrase), so it runs as a phrase-*contains* — a superset of what you asked. Extra hits, never fewer.
+  Screen them as usual.
 - **`exact` is still the tightest read** — `EXACT_WORD_MARK_SPECIFICATION` is an ordered whole-string
-  match: the words in the order written, and nothing for the same words reversed. Use it when you want
-  the mark itself, not the neighbourhood.
+  match — the whole string as written, so the same words in another order are a different string. Use it
+  when you want the mark itself, not the neighbourhood.
 
 **A term you pass is never silently re-parsed.** Parentheses, or (outside `wildcard`) a stray `*`/`?`,
 are **REJECTED** with a plain-English error and the slice defers — there is no escape syntax for those.
@@ -112,8 +115,8 @@ becomes a `deferred` coverage row — it is never quietly dropped from the filte
 
 ### Owner search — resolve first, and never emit CONTAINS
 
-`APPLICANT_NAME` supports `EQUALS`, `BEGINS_WITH`, wildcards (a trailing `*` with EQUALS answers exactly
-what BEGINS_WITH answers), and `OR`. **`CONTAINS` is a hard HTTP 400** —
+`APPLICANT_NAME` supports `EQUALS`, `BEGINS_WITH`, wildcards (a trailing `*` with EQUALS is equivalent to
+`BEGINS_WITH`), and `OR`. **`CONTAINS` is a hard HTTP 400** —
 *"Operator CONTAINS is not supported for search field APPLICANT_NAME"* — and is never emitted anywhere.
 
 This provider has something Corsearch does not: **`POST /resolution/company`** returns confidence-scored
@@ -125,8 +128,8 @@ a narrower one. The result carries an `owner_resolution` note; cite it when the 
 ## Completeness, crowds and the ceiling
 
 `/search` has **no pagination** and needs none: it returns one guid for every hit the count reports, at
-any size below the ceiling. Past the ceiling it **fails loud** with a `tooManyResults` HTTP 400 that names
-the ceiling and the number of results the search reached.
+any size below the ceiling. **The ceiling is 30 000**, and past it the search **fails loud** with a
+`tooManyResults` HTTP 400 naming that maximum and how many results the search reached.
 
 `register_enumerate` therefore probes `POST /count` first. `/count` is cheap, takes the same body, works
 at **any** magnitude, and returns a `counts` object keyed by office code in one call.
@@ -210,10 +213,10 @@ silently omit the dimension.
   would read as clean), so send the romanised form and say in the report that the register was
   searched by transliteration. Two rules that come with it:
   - use **contains, not `exact`** — the office writes its own spacing and trailing tokens, so
-    `exact` on a transliteration is a silent zero where the same term under contains answers;
-  - the romanisation is **broader than the characters, not narrower** — one romanisation returns
-    several distinct character sets that share its pronunciation, which is the shape most Chinese
-    squatting takes.
+    `exact` on a transliteration can be a silent zero where the same term under contains answers;
+  - the romanisation is **broader than the characters, not narrower** — the search key is the
+    romanisation, so it returns every character set filed under that pronunciation and not only the one
+    you meant, which is the shape most Chinese squatting takes.
 
 Each of these, when it blocks a dictated slice, is a **`deferred` coverage row** — escalate and disclose.
 Never substitute a weaker query under the same heading.

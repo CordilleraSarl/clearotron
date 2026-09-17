@@ -22,21 +22,26 @@ Auth: `CORSEARCH_SESSION_KEY` environment variable, supplied from the deployment
 
 Corsearch's supremesearch API uses single-character prefixes on field names. All field values must be **backtick-quoted** (the plugin handles this).
 
-| Match mode | API prefix | Semantics | Breadth |
+| Match mode | API prefix | Semantics | Budget as |
 |---|---|---|---|
-| `default` | (none) | Exact-token, case-insensitive — catches tokenisation splits and case variations | wide |
-| `exact` | `=` | Strictest — full-string match | narrowest of the single-term modes |
-| `phrase` | `"` | Ordered phrase match | between `exact` and `default` |
-| `starts_with` | `^` | Prefix | narrower than `phrase` |
-| `ends_with` | `$` | Suffix | a little wider than `starts_with` |
-| `phonetic` | `*` (or `P`) | Server-side phoneme match; extend with `phonetic_variants[]` | narrower than either anchor; the variant list widens it slightly |
-| `fuzzy` | `~` | Approximate (diacritics, transliterations) | **widest by an order of magnitude** — a band, not a read |
+| `default` | (none) | Exact-token, case-insensitive — catches tokenisation splits and case variations | a read |
+| `exact` | `=` | Strictest — full-string match | a read |
+| `phrase` | `"` | Ordered phrase match | a read |
+| `starts_with` | `^` | Prefix | a read |
+| `ends_with` | `$` | Suffix | a read |
+| `phonetic` | `*` (or `P`) | Server-side phoneme match; extend with `phonetic_variants[]` | a read |
+| `fuzzy` | `~` | Approximate (diacritics, transliterations) | **a crowd** |
 | `not` | `!` (or `-`) | Complement; useful in compound queries | — |
-| `must` | `&` | Force AND within same-field stacking | narrowest of all: the intersection |
+| `must` | `&` | Force AND within same-field stacking | a read |
 
-Breadth is the ordering one mark answers across the modes, not a promise about yours: `must` ⊂ `exact` ⊂
-`phonetic` ⊂ `starts_with` ⊂ `ends_with` ⊂ `phrase` ⊂ `default` ⊂ `fuzzy`. Budget a `fuzzy` band as a
-crowd unless you have narrowed it another way.
+Two facts about size, and no more than two, because a mode's breadth is a fact about the mark you send and
+not about the mode: **`fuzzy` answers an order of magnitude wider than anything else here** — budget it as
+a crowd unless you have narrowed it another way — and **`must` and `exact` are the two narrowest**, which
+is what to reach for when a band has to be read rather than screened.
+
+No mode's results contain another's. A prefix and a suffix each hold marks the other does not, a
+sound-alike need not begin with your letters, and an intersection is not a subset of either half — so
+running the wider one does not cover the narrower one, and a leg you drop is a leg nobody searched.
 
 **Critical:** No explicit `AND` / `OR` keywords — those return HTTP 400. Composition is space-separated. Repeated fields = implicit OR. Use `must` prefix for AND within same field. Repeated `nice-class:` fields are therefore an implicit-OR union — `nice_classes:[9,28,41,42]` correctly scopes to *any of* those classes.
 
@@ -154,7 +159,7 @@ Capture VERBATIM in the register findings file's "Opposition history" section. D
 
 Corsearch supports phoneme expansion via `register_expand_phoneme`. Returns `{ base, aiVariants[] }`. Use the variants as `phonetic_variants[]` in `register_search` with `match_mode: "phonetic"`.
 
-Declared languages: `en_US`, `de_DE`, `fr_FR` — each returns a few dozen variants per word, French somewhat more. Other languages (`it_IT`, `es_ES`) are supported by the API but UNDECLARED here — treat them as a stated unknown, not as unavailable.
+Declared languages: `en_US`, `de_DE`, `fr_FR` — each returns a few dozen variants for a typical word. Other languages (`it_IT`, `es_ES`) are supported by the API but UNDECLARED here — treat them as a stated unknown, not as unavailable.
 
 **Usage pattern:** for multi-language jurisdictions, call expand-phoneme once per relevant language, concatenate `aiVariants[]`, pass to a single search call. Don't run multiple separate phonetic searches — costs more, returns largely overlapping results.
 
