@@ -150,16 +150,21 @@ test("A LOOK THAT THROWS DOES NOT BREAK THE WAIT — noticing the merge is this 
   const { awaitCut } = await import("../../scripts/release-await-cut.mjs");
   let reads = 0;
   let clock = 0;
+  let looks = 0;
   const r = await awaitCut({
     refresh: async () => {},
     read: () => (++reads >= 2 ? { cut: true, version: "0.3.2-beta.9" } : { cut: false, version: null }),
-    tend: async () => { throw new Error("the approval API refused"); },
+    tend: async () => { looks += 1; throw new Error("the approval API refused"); },
     sleep: async () => { clock += 1000; },
     waitMs: 60_000, stepMs: 1000, now: () => clock,
   });
   assert.equal(r.cut, true,
     "a failing approval took the wait down with it — a convenience that can fail a release is not one");
   assert.equal(r.gaveUp, false);
+  // AND IT WAS ACTUALLY THROWN AT. Without this the arm passes when NO look is taken at all — measured:
+  // with the per-pass call removed it stayed green while the two arms above went red. An arm that holds
+  // for the absence of the thing it names is not testing the thing it names.
+  assert.equal(looks, 2, "the throwing look was never called, so this arm proved nothing");
 });
 
 test("the wait reads the same token the step does, and calls the same script", () => {
