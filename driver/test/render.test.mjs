@@ -1640,6 +1640,45 @@ test("doc-54: one footer — the full provenance line rides the document; serve-
   assert.equal(stale, internal, "opts.client no longer forks the footer");
 });
 
+// ── ALSO CONSIDERED: THE ENGINE'S OWN REASON, AND A REGISTER ROW IN THE READER'S CASE ────────────
+//
+// Every ruled-out card printed the same fixed line — "a different name in a related field" — whatever
+// the run had concluded about that name. The finding's own one-line reason, `net`, was rendered
+// NOWHERE: not on the face, not in the fold, not anywhere on the page. So a client read one generic
+// sentence about every name we set aside while the specific reason we set THAT one aside was thrown
+// away at render time. The fold keeps the longer legal and practical argument.
+//
+// BREAK MATRIX:
+//   · fall back to the fixed line while `net` exists → the specific reason is discarded again, arm 1 red
+//   · drop the fixed line entirely                   → a finding carrying neither renders no reason, arm 2 red
+//   · print "Class" or shout the register's status   → arm 3 red
+test("a ruled-out card leads with the finding's own reason, and keeps the fixed line only as a last resort", () => {
+  const withNet = [{ ...BAND_FINDINGS[0], ordinal: 9, ruled_out: true, mark: "QORE",
+    net: "NXP's registrations cover microprocessors and do not reach a water-quality app.",
+    legal_position: "The specification is semiconductors.", practical_position: "NXP is a large proprietor." }];
+  const html = renderHtml(parsedOf(REPORT), withNet, [], {});
+  assert.match(html, /do not reach a water-quality app/, "the finding's own reason reaches the card");
+  assert.doesNotMatch(html, /a different name in a related field/, "the fixed line does not stand in for it");
+  assert.match(html, /The specification is semiconductors/, "the longer argument stays in the fold");
+
+  // A finding carrying neither still states something rather than nothing.
+  const bare = [{ ...BAND_FINDINGS[0], ordinal: 9, ruled_out: true, mark: "QORE", net: "", legal_position: "" }];
+  assert.match(renderHtml(parsedOf(REPORT), bare, [], {}), /a different name in a related field/,
+    "the fixed line is the last resort, not a dead branch");
+});
+
+test("a cleared register row reads 'Cl.' and the register's status in lower case", () => {
+  const depth = { cleared: { register: [
+    { mark: "VENTURI", owner: "VENTURI WIRELESS INC.", country: "JP", classes: "9", status: "CANCELLED", group: "dead-filing" },
+  ] } };
+  const html = renderHtml(parsedOf(REPORT), [], [], { searchDepth: depth });
+  assert.match(html, /Cl\. 9/, "'Cl.' is the abbreviation a lawyer writes");
+  assert.doesNotMatch(html, /Class 9/, "…and 'Class' is not");
+  assert.match(html, /cancelled/, "the register's status is stated in the reader's case");
+  assert.doesNotMatch(html, /CANCELLED/, "not shouted back as the register hands it over");
+  assert.match(html, /VENTURI WIRELESS INC\./, "the owner renders when the record carries one");
+});
+
 // ── "WHERE IT STANDS" NAMES A COUNTRY, NOT A SECOND CODE ─────────────────────────────────────────
 //
 // The register writes the EUIPO and ISO spellings, EM and GB, and the section maps those to the codes

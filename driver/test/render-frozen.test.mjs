@@ -1770,7 +1770,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Advanced again by the break recorded above the FROZEN constant: seven fixed sentences on the
 // clearance page, which is a behaviour change and not licence-only, so both constants move for the same
 // measured reason.
-const FROZEN_BEFORE_SPDX = "b70888f791e1d716b3c0880f8d6b765fed125172d40e6721529156e4587d7332";
+const FROZEN_BEFORE_SPDX = "0cd9ad0032cfa520d74c243180bd62190a9f5fba7d86670942c1702e0451c4f7";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2277,7 +2277,22 @@ const FROZEN_BEFORE_SPDX = "b70888f791e1d716b3c0880f8d6b765fed125172d40e67215291
 //
 // Could it live in report.css? No — the wrong string is in the markup, not its styling.
 
-const FROZEN = "7e0200043a31806c5a42461d99102e8fad8191d47835e6d194f6c349f51fdb68";
+// AND AGAIN (2026-09-17): ALSO CONSIDERED — THE ENGINE'S OWN REASON, AND A ROW IN THE READER'S CASE.
+//
+// Reachable from a republish? Yes, and it is a repair on every archived run with a ruled-out card. The
+// face printed one fixed line, "a different name in a related field", on every such card whatever the
+// run concluded — while the finding's OWN one-line reason was rendered nowhere on the page at all.
+// The fixed line stays as the last resort for a finding carrying neither reason.
+//
+// The cleared register rows read "Cl." rather than "Class", and state the register's status in the
+// reader's case rather than shouting it back as the register hands it over. Only the case changes; the
+// word is the register's own.
+//
+// Could it live in report.css? The case could — `text-transform` would do it — and it should not: the
+// delivered bytes and the plain-text reads would still carry the shout, and the abbreviation is a word
+// change, not a style.
+
+const FROZEN = "a28eb5518378443b26d8e22715f9731eb74df5ef7d4a3446cb013fdcad4c718f";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

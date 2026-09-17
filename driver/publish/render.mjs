@@ -999,8 +999,13 @@ function clearedGroupsHtml(searchDepth, auditFile) {
     const items = reg.filter((c) => c.group === g);
     if (!items.length) return '';
     const shown = items.slice(0, NAMES_CAP);
+    // "Cl." and a lower-case status, which is how the mock reads and how a lawyer writes it. The
+    // register hands the status back in capitals — REGISTERED, CANCELLED — and shouting a neutral
+    // fact at a reader is the register's habit, not ours. Only the case changes; the word is the
+    // register's own and is not translated.
     const rows = shown.map((c) => `<div class="crow"><span class="cm-mark">${esc(c.mark || c.term || '')}</span><span class="cwho">${
-      esc([c.owner, regionName(c.country) || c.country, c.classes ? `Class ${c.classes}` : '', c.status].filter(Boolean).join(' \u00b7 '))}</span></div>`).join('');
+      esc([c.owner, regionName(c.country) || c.country, c.classes ? `Cl. ${c.classes}` : '',
+           c.status ? String(c.status).toLowerCase() : ''].filter(Boolean).join(' \u00b7 '))}</span></div>`).join('');
     return `<details class="cgroup"><summary><span class="gname">${esc(CLEARED_GROUP_LABEL[g] || g)}</span><span class="gcount">${
       items.length.toLocaleString('en-GB')} ${items.length === 1 ? 'name' : 'names'}</span></summary><div class="gbody">${rows}${
       items.length > shown.length ? link(items.length) : ''}</div></details>`;
@@ -1125,7 +1130,16 @@ function alsoConsideredSection(ruledOut, recordsByUri = new Map(), opts = {}) {
   const sd = opts.searchDepth || null;
   const ruledCards = ruledOut.map((f) => {
     const who = recordOwner(f, recordsByUri) || f.owner?.name || '';
-    const why = f.ruled_out_reason ? esc(f.ruled_out_reason) : 'a different name in a related field — not a conflict with your mark';
+    // THE ENGINE'S OWN SENTENCE LEADS THE CARD. The face printed a fixed line — "a different name in
+    // a related field" — on every ruled-out card, whatever the run had actually concluded. `net` is the
+    // finding's own one-line reason, written for a reader, and it was rendered NOWHERE: not on the
+    // face, not in the fold, not anywhere on the page. So a client read the same generic sentence
+    // about every name we set aside, while the specific reason we set THAT one aside was discarded at
+    // render time. The fold keeps the legal and practical positions, which are the longer argument.
+    // The fixed line stays as the last resort, for a finding that carries neither.
+    const why = f.ruled_out_reason ? esc(f.ruled_out_reason)
+      : f.net ? esc(String(f.net))
+      : 'a different name in a related field — not a conflict with your mark';
     const legal = f.legal_position ? esc(String(f.legal_position)) : '';
     const practical = f.practical_position ? esc(String(f.practical_position)) : '';
     const fold = (legal || practical)
