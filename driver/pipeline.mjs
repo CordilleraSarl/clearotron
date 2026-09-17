@@ -201,6 +201,39 @@ async function defaultRecordFetcher(uri, ctx) {
   return activeProvider().recordFetch(uri, ctx);
 }
 
+/**
+ * THE ENGINE RE-ISSUES A DICTATED MEANING SEARCH ITSELF, without asking the assessing model to redo the
+ * sweep — the same shape as `defaultRecordFetcher` above, which fetches a register record in code when
+ * one was dropped unexamined rather than sending the model back for it.
+ *
+ * "Through the same tool" is literal and costs no new machinery: the research provider's grid functions
+ * are a plain module with no listener, so the component the model calls and this one call the SAME
+ * functions on the same provider. There is no second implementation to drift.
+ *
+ * NARROW BY CONSTRUCTION. The spec handed over carries only the queries that are missing, so this buys
+ * those cells rather than re-running a sweep that already cost real money and real minutes.
+ *
+ * It DECIDES nothing. The caller re-merges and the gate judges, so a re-issue that comes back empty is
+ * simply a re-merge that still fails, and is disclosed as such rather than counted as searched.
+ */
+async function defaultConnotationReissuer(queries, { spec, modelOverride = null } = {}) {
+  const apiKey = process.env.PERPLEXITY_API_KEY || "";
+  if (!apiKey) return { ok: false, cause: "no research credential in the driver environment", rows: [] };
+  const core = await import("../providers/perplexity/src/core.js");
+  const narrow = { ...spec, connotation: { ...(spec.connotation ?? {}), queries: queries.slice() } };
+  try {
+    const task = core.buildGridProgramTask(narrow);
+    const data = await core.callAgentAPI(apiKey,
+      core.buildRequestBody({ task, preset: "pro-search", modelOverride, enableSandbox: true }));
+    const cap = core.captureGridFromResponse(data, narrow);
+    if (!cap?.ok) return { ok: false, cause: String(cap?.error ?? "capture failed").slice(0, 160), rows: [] };
+    const rows = parsePrRiskResults(cap.ledgerJson).filter((r) => queries.includes(r.query));
+    return { ok: true, rows, requested: queries.length };
+  } catch (e) {
+    return { ok: false, cause: String(e?.message ?? e).slice(0, 160), rows: [] };
+  }
+}
+
 // The ACTIVE provider's capability contract and the offices this DEPLOYMENT cannot reach both moved to
 // register-unreachable.mjs, unchanged, because Depth 2's count and record lanes need the same
 // two answers and a second binding of the member→variable lookup is how two lanes come to disagree
@@ -9170,6 +9203,64 @@ async function pipelineInner(job, opts = {}) {
         runLog(run.runDir, { event: "common-law-half-quarantined", half: h, fail: String(clHalves[h].fail).slice(0, 140) });
       }
     }
+    // The engine's own re-issue, spent at most once per run — the bound spans BOTH the half-stage
+    // hook below and the merge gate's disclosure, so a run never buys the same search twice.
+    let clConnotationReissueSpent = false;
+    // ── THE MEANING HALF FELL SHORT BY A SEARCH OR TWO: RE-ISSUE, THEN DELIVER ───────────────────
+    //
+    // This is where the clearance actually died. The half's own validator refuses when a dictated
+    // meaning search is missing from its receipts, and every attempt refused identically — eight of
+    // them — so the run was thrown away with fifty-nine of sixty searches done and recorded.
+    //
+    // Quarantine above cannot help here: that is for a half that failed wholesale on transient
+    // infrastructure, where re-running the half converges. This half SUCCEEDED at almost everything.
+    // So the engine re-issues the missing searches itself, through the same provider, and re-judges the
+    // half on its own artifact. If they landed, the half is simply valid and nothing is disclosed.
+    //
+    // If they did not, the half is accepted WITH THE SHORTFALL RECORDED — an honest gap per unfinished
+    // search, carrying its term, which the merge gate then discloses and the coverage row reads. That is
+    // the owner's ruling of 2026-09-17 and it is not the false-clean the gates guard: false-clean is
+    // silence, and this says on the client's own page which search did not complete.
+    if (clSplit && !clHalves[MEANING_SEAT].ok && /connotation_query_unrecorded/.test(String(clHalves[MEANING_SEAT].fail ?? ""))) {
+      const h = MEANING_SEAT;
+      let short = [];
+      try {
+        const spec = JSON.parse(readFileSync(P.gridSpecHalf(h), "utf8"));
+        const halfLedger = JSON.parse(readFileSync(P.commonLawGridHalf(h), "utf8"));
+        short = findDroppedConnotationQueries(spec, halfLedger);
+        if (short.length) {
+          runLog(run.runDir, { event: "connotation-reissue", half: h, count: short.length });
+          note(`the meaning half recorded all but ${short.length} of its dictated searches — the engine re-issues `
+            + `${short.length === 1 ? "it" : "them"} itself rather than asking for the sweep again`);
+          clConnotationReissueSpent = true;
+          const reissuer = opts.connotationReissuer ?? defaultConnotationReissuer;
+          const r = await reissuer(short, { spec });
+          runLog(run.runDir, { event: "connotation-reissue-result", ok: !!r?.ok,
+            recovered: Array.isArray(r?.rows) ? r.rows.length : 0,
+            cause: r?.ok ? null : String(r?.cause ?? "").slice(0, 160) });
+          const rows = (r?.ok && Array.isArray(r.rows)) ? r.rows : [];
+          halfLedger.extras = halfLedger.extras ?? {};
+          halfLedger.extras.pr_risk = [...(Array.isArray(halfLedger.extras.pr_risk) ? halfLedger.extras.pr_risk : []), ...rows];
+          const stillShort = findDroppedConnotationQueries(spec, halfLedger);
+          if (stillShort.length) {
+            halfLedger.gaps = Array.isArray(halfLedger.gaps) ? halfLedger.gaps : [];
+            for (const q of stillShort)
+              halfLedger.gaps.push({ term: q, platform: "connotation",
+                error: "the search did not complete after a re-ask and a re-issue by the engine" });
+            runLog(run.runDir, { event: "connotation-unfinished-disclosed", count: stillShort.length, half: h });
+            note(`${stillShort.length} dictated meaning quer${stillShort.length === 1 ? "y" : "ies"} did not complete — `
+              + "recorded as honest gaps and DISCLOSED on the coverage row; the run delivers the rest");
+          }
+          atomicWrite(P.commonLawGridHalf(h), JSON.stringify(halfLedger, null, 2) + "\n");
+          // The half is accepted on its re-judged artifact. Same shape as quarantine above: the stage is
+          // not re-run and the model is not asked again.
+          clHalves[h].ok = true;
+          gatherResults[clHalves[h].i] = { ...gatherResults[clHalves[h].i], ok: true, fail: null, clHalfShortfall: stillShort.length };
+        }
+      } catch (err) {
+        runLog(run.runDir, { event: "connotation-reissue-failed", error: String(err?.message ?? err).slice(0, 160) });
+      }
+    }
     gather.forEach((g, i) => must(gatherResults[i], g.name + (g.axis ? `:${g.axis}` : "")));
     // winning session key per axis → a later escalation resumes the EXACT key the unit succeeded on.
     // (register units only — a common-law half's axis is its half id, tracked in clHalves, never here.)
@@ -9184,7 +9275,7 @@ async function pipelineInner(job, opts = {}) {
     // synthesis, replay) reads exactly the artifacts a single-member run would have written. Re-run after
     // every routed half followup (closure / frame-reopen) — the half files stay the source of truth and
     // the canonical pair is always derived, which also makes the merge resume-idempotent.
-    const mergeCommonLawArtifacts = !clSplit ? null : () => {
+    const mergeCommonLawArtifacts = !clSplit ? null : ({ discloseUnfinished = false } = {}) => {
       // Each half's coverage truth = its plugin-written main ledger FOLDED with any plugin-written
       // supplementary sibling(s) the closure lane produced. Returns the batches as an ARRAY (mergeGrids'
       // batchesOf flattens it, cells union across all of them); a missing/corrupt main leaves its cells to
@@ -9355,6 +9446,40 @@ async function pipelineInner(job, opts = {}) {
       // behaviour was zero retries after full spend, with a re-run that failed identically; the new
       // behaviour is one retry, then the same honest death.
       const dropped = findDroppedConnotationQueries(fullSpec, mergedGrid);
+      if (dropped.length && discloseUnfinished) {
+        // ── THE LAST STEP OF THE OWNER'S RULING: a run that completed 59 of 60 dictated searches
+        // DELIVERS, and says on the client's own page that it was partial and for which term.
+        //
+        // This is NOT the false-clean the note below guards against, and the difference is the whole
+        // reason it is allowed here. False-clean is SILENCE — a hole counted as searched, nobody able to
+        // see what was not done. This records each unfinished query as an honest gap carrying its own
+        // term, which is the vocabulary the note above says dictated queries did not have, and that gap
+        // is what the coverage row reads. A reader is told the investigation was partial and which term
+        // did not complete.
+        //
+        // It is reached ONLY after the bounded attempts are spent: the model's single routed remedy and
+        // the engine's own re-issue of the search. On the first pass this branch does not exist — the
+        // gate throws exactly as before and the park loop gets its retries. Disclosure is the last
+        // resort, never the first answer.
+        const errored = findErroredConnotationQueries(fullSpec, mergedGrid);
+        const explained = new Set(errored.map((e) => e.query));
+        const gaps = Array.isArray(mergedGrid.gaps) ? mergedGrid.gaps : (mergedGrid.gaps = []);
+        for (const q of dropped) {
+          if (explained.has(q)) continue;          // the provider already said why; its row stands
+          gaps.push({ term: q, platform: "connotation",
+            error: "the search did not complete after a re-ask and a re-issue by the engine" });
+        }
+        // THE CANONICAL LEDGER IS WRITTEN ABOVE, BEFORE THIS GATE RUNS, so mutating the merged object
+        // here reaches nothing: the report reads the file. Re-write it with the gaps in place, or the
+        // disclosure exists only in memory and the coverage row has nothing to read — which is the
+        // silent half of the very defect this branch exists to prevent.
+        atomicWrite(P.commonLawGrid, JSON.stringify(mergedGrid, null, 2) + "\n");
+        runLog(run.runDir, { event: "connotation-unfinished-disclosed", count: dropped.length,
+          explained: errored.length, terms: dropped.length });
+        note(`${dropped.length} dictated meaning quer${dropped.length === 1 ? "y" : "ies"} did not complete after `
+          + "the bounded attempts — recorded as honest gaps and DISCLOSED on the coverage row; the run delivers");
+        return { mergedGrid, fullSpec, connotationUnfinished: dropped.slice() };
+      }
       if (dropped.length) {
         const errored = findErroredConnotationQueries(fullSpec, mergedGrid);
         const allExplained = errored.length === dropped.length;
@@ -9385,6 +9510,54 @@ async function pipelineInner(job, opts = {}) {
     // retrying a defect buys nothing; this is one dictated repair, not a retry). Quarantined-half shapes
     // keep their transient park path untouched (the remedy never runs for them).
     let clConnotationRemedySpent = false;
+    /**
+     * THE ENGINE'S OWN ATTEMPT, THEN DELIVERY WITH THE GAP DISCLOSED.
+     *
+     * Reached only after the model has had its single routed repair turn. The engine re-issues the
+     * missing searches itself through the same provider, appends whatever comes back to the half's own
+     * ledger, and re-merges. If the searches are there now, the run is simply clean and nothing is
+     * disclosed. If they are still missing, the run DELIVERS and the coverage row says the investigation
+     * was partial and which term did not complete.
+     *
+     * A clearance that completed 59 of 60 dictated searches used to throw the whole report away. The
+     * failure it is replacing is not a quality gate doing its job: the work was done, one search of
+     * sixty did not land, and the client lost everything including the 59.
+     */
+    const reissueThenDisclose = async (e) => {
+      if (!clConnotationReissueSpent) {
+        clConnotationReissueSpent = true;
+        let missing = [];
+        try {
+          const spec = JSON.parse(readFileSync(P.gridSpecHalf(MEANING_SEAT), "utf8"));
+          const merged = JSON.parse(readFileSync(P.commonLawGrid, "utf8"));
+          missing = findDroppedConnotationQueries(spec, merged);
+          if (missing.length) {
+            runLog(run.runDir, { event: "connotation-reissue", count: missing.length });
+            note(`${missing.length} dictated meaning quer${missing.length === 1 ? "y" : "ies"} missing after the `
+              + "model's one repair turn — the engine re-issues them itself through the same tool");
+            const reissuer = opts.connotationReissuer ?? defaultConnotationReissuer;
+            const r = await reissuer(missing, { spec });
+            runLog(run.runDir, { event: "connotation-reissue-result", ok: !!r?.ok,
+              recovered: Array.isArray(r?.rows) ? r.rows.length : 0,
+              cause: r?.ok ? null : String(r?.cause ?? "").slice(0, 160) });
+            if (r?.ok && r.rows?.length) {
+              // Append into the half's OWN ledger, so the ordinary re-merge picks them up and nothing
+              // downstream needs to know this call happened.
+              const half = JSON.parse(readFileSync(P.commonLawGridHalf(MEANING_SEAT), "utf8"));
+              half.extras = half.extras ?? {};
+              half.extras.pr_risk = [...(Array.isArray(half.extras.pr_risk) ? half.extras.pr_risk : []), ...r.rows];
+              atomicWrite(P.commonLawGridHalf(MEANING_SEAT), JSON.stringify(half, null, 2) + "\n");
+            }
+          }
+        } catch (err) {
+          // Never fatal: a re-issue that cannot even be attempted leaves the run exactly where it was,
+          // and the disclosure below is what the ruling actually guarantees.
+          runLog(run.runDir, { event: "connotation-reissue-failed", error: String(err?.message ?? err).slice(0, 160) });
+        }
+        try { return mergeCommonLawArtifacts(); } catch { /* still short — disclose below */ }
+      }
+      return mergeCommonLawArtifacts({ discloseUnfinished: true });
+    };
     const mergeWithConnotationRemedy = !clSplit ? null : async () => {
       try { return mergeCommonLawArtifacts(); }
       catch (e) {
@@ -9408,7 +9581,21 @@ async function pipelineInner(job, opts = {}) {
         // the token inline must keep opening this channel.
         const tok = connotationRemedyToken(e);
         const anyQuarantined = GRID_SEATS.some((h) => clHalves[h].quarantined);
-        if (!tok || anyQuarantined || clConnotationRemedySpent) throw e;
+        // A quarantined half keeps its transient park path: that half is re-run whole and the re-merge
+        // converges, so there is nothing here to disclose yet.
+        // THE DROPPED-QUERY FAILURE CARRIES NO FORM TOKEN, and matching on the form tokens alone is why
+        // this channel never opened for it: `connotationRemedyToken` reads the connotation FORM
+        // vocabulary, and "merged half-grids dropped N dictated connotation queries" is not in it. The
+        // run therefore died at the merge with the recovery path sitting unused beside it.
+        const droppedQueries = /dropped \d+ dictated connotation quer/i.test(String(e?.message ?? ""));
+        if (anyQuarantined) throw e;
+        if (droppedQueries) return await reissueThenDisclose(e);
+        if (!tok) throw e;
+        // ── ONE RE-ASK OF THE MODEL, THEN THE ENGINE TAKES OVER ──────────────────────────────────
+        // The loop stops being a loop. The model gets exactly one routed repair turn; after that the
+        // engine re-issues the search itself and, failing that, the run delivers with the gap disclosed.
+        // Before this, a second arrival here re-threw and the clearance died after a full paid gather.
+        if (clConnotationRemedySpent) return await reissueThenDisclose(e);
         clConnotationRemedySpent = true;
         runLog(run.runDir, { event: "connotation-remedy", detail: tok.slice(0, 200) });
         // — WHICH HALVES OWE ROWS, READ FROM THE FORM. This used to re-derive the violation set here,
@@ -9442,7 +9629,8 @@ async function pipelineInner(job, opts = {}) {
           const r = await stage("common-law-half", { ...ctx, axis: h }, { force: true, followup, sessionKey: clHalves[h].sessionKey, trigger: "connotation-remedy" });
           if (!r.ok) note(`connotation remedy (half ${h}) failed mechanically (${r.fail}) — the re-merge below decides`);
         });
-        return mergeCommonLawArtifacts();
+        try { return mergeCommonLawArtifacts(); }
+        catch (e2) { return await reissueThenDisclose(e2); }
       }
     };
     if (clSplit) await mergeWithConnotationRemedy();

@@ -13,7 +13,8 @@ import { driverDir } from "../shared/driver-dir.mjs";   //
 import { findReceiptViolations, findGridLedgerViolations, findPlatformIdentityViolations, parsePrRiskQueries, MEANING_SEAT, erroredConnotationQueriesAmong } from "./common-law-receipts.mjs";
 // Conversion 2 — the discriminator the two rulings above key on. PURE-ish: one existsSync-shaped read.
 import { matterFrameWasRecorded, frameRatifiedForms } from "./matter-frame-record.mjs";
-import { findConnotationViolations, parsePrRiskResults, MEANING_ANGLES_RE,
+import { findConnotationViolations, parsePrRiskResults, prRiskPopulation,
+  CONNOTATION_UNMATCHED_MARK, CONNOTATION_NO_RESEMBLANCE_MARK, MEANING_ANGLES_RE,
   parseDispositionForm, CONNOTATION_UNRULED_REASONS, queryKey } from "./connotation-search.mjs";
 import { formSidecarName, formSidecarPath } from "./disposition-union.mjs";
 // B — the transport's own four failure states. The audit reads the run's records; this file locates them.
@@ -365,6 +366,13 @@ function commonLawMeaningSeat(p, c) {
   let recordedRaw;
   try { recordedRaw = parsePrRiskResults(ledgerRaw).map((e) => String(e?.query ?? "")); }
   catch (e) { return fail(`grid_ledger_unparseable:${String(e.message).slice(0, 80)}`); }
+  // THE REFUSAL NAMES THE FILE IT JOINED AGAINST, because "recorded" is not one question in a run.
+  // A run answers "what did this half record" in four places that each mean something different — this
+  // results ledger, its gap rows, the obligations sidecar, and the final-state receipts audit — and a
+  // sentence that says only "recorded" invites a reader to answer from whichever they happen to open.
+  // Two readers did exactly that on one clearance and reached three different wrong mechanisms, each
+  // from a true measurement of a real record.
+  const LEDGER = `common-law-grid.half-${MEANING_SEAT}.json`;
   const recordedQ = new Set(recordedRaw.map(queryKey));
   const dropped = dictated.filter((q) => !recordedQ.has(queryKey(q)));
   if (dropped.length) {
@@ -435,17 +443,27 @@ function commonLawMeaningSeat(p, c) {
       .flatMap((b) => (Array.isArray(b?.gaps) ? b.gaps : []));
     const reportedError = new Map(
       erroredConnotationQueriesAmong(dropped, { gaps: gapRows }).map((e) => [e.query, e.error]));
+    // AND IT SAYS WHEN THE READER REDUCED WHAT IT READ. `parsePrRiskResults` folds rows onto the raw
+    // query text, so its output is smaller than the ledger whenever a query was recorded twice. Every
+    // count taken during one evening's diagnosis was post-fold and nobody had named the raw population,
+    // which made "the seat wrote 59 rows" and "59 survived the fold" the same number and different
+    // facts: one query recorded twice while another was skipped reads exactly like one simply skipped.
+    const pop = prRiskPopulation(ledgerRaw);
+    const foldNote = pop.repeated > 0
+      ? ` (${LEDGER} carries ${pop.rows} row(s) that fold to ${pop.distinct} distinct query(ies): `
+        + `${pop.repeated} repeat a query already counted, so a repeat here may stand where a dictated query is missing)`
+      : "";
     const parts = dropped.slice(0, 3).map((q) => {
       const reported = reportedError.get(q);
       // Named separately because the remedy is different: the search was attempted and the provider
       // declined it, so re-running it unchanged is the one repair that cannot work.
-      if (reported) return `${abbrev(q, 40)} [the provider REPORTED an error on this query: ${abbrev(reported, 60)}]`;
+      if (reported) return `${abbrev(q, 40)} [not recorded in ${LEDGER} because the provider REPORTED an error on it: ${abbrev(reported, 60)}]`;
       const n = nearest(q);
       return n
-        ? `${abbrev(q, 40)} [unmatched; nearest recorded: ${abbrev(n, 40)}]`
-        : `${abbrev(q, 40)} [no recorded query resembles this one]`;
+        ? `${abbrev(q, 40)} ${CONNOTATION_UNMATCHED_MARK} ${abbrev(n, 40)}] in ${LEDGER} — that is evidence a query LIKE it was recorded there, not that these two are the same query`
+        : `${abbrev(q, 40)} ${CONNOTATION_NO_RESEMBLANCE_MARK} in ${LEDGER}, which is the only file this gate joins against`;
     });
-    return fail(`connotation_query_unrecorded:${parts.join(",")}${dropped.length > 3 ? ` (+${dropped.length - 3} more)` : ""}`);
+    return fail(`connotation_query_unrecorded:${parts.join(",")}${dropped.length > 3 ? ` (+${dropped.length - 3} more)` : ""}${foldNote}`);
   }
   if (spec?.connotation?.disposition_required === true) {
     const recorded = parsePrRiskResults(ledgerRaw);

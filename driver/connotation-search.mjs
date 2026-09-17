@@ -276,6 +276,51 @@ export const queryKey = (s) => String(s ?? "")
   .trim()
   .toLowerCase();
 
+/**
+ * The POPULATION behind `parsePrRiskResults`, because that reader reduces its input and nothing at a
+ * call site said so.
+ *
+ * `parsePrRiskResults` folds rows into a map keyed on the raw query text, so two rows carrying the same
+ * query become one and its output is smaller than the ledger it read. Every count taken during one
+ * evening's diagnosis was post-fold, by two people, and neither had named the raw population — so "the
+ * seat wrote 59 rows" and "59 rows survived the fold" were indistinguishable, and they are different
+ * facts with different causes. A seat that recorded one query twice and skipped another looks identical
+ * to a seat that simply skipped one, from the folded count alone.
+ *
+ * Returns both counts so a caller can say which it means. `rows` is what the ledger carries; `distinct`
+ * is what the fold leaves; the difference is rows that repeat a query already counted.
+ */
+/**
+ * THE TWO LABELS THE MEANING GATE PUTS ON A QUERY IT COULD NOT JOIN, and they are a CONTRACT rather
+ * than prose: `gateway.mjs` reads them back to choose which repair a seat is offered, and the two
+ * repairs are opposite. Re-wording either one in the validator, with the reader matching on its own
+ * copy of the old text, silently collapses that choice — the hint keeps being sent and stops being
+ * the right one. Both sides now build and detect from here, so a wording change is one edit.
+ *
+ * Anything a gate wants to ADD — which file it searched, what a neighbour is evidence of — goes
+ * OUTSIDE these markers, so the sentence can grow without moving the contract.
+ */
+export const CONNOTATION_UNMATCHED_MARK = "[unmatched; nearest recorded:";
+export const CONNOTATION_NO_RESEMBLANCE_MARK = "[no recorded query resembles this one]";
+
+export function prRiskPopulation(ledgerRaw) {
+  let parsed;
+  try { parsed = JSON.parse(ledgerRaw); } catch { return { rows: 0, distinct: 0, repeated: 0 }; }
+  const batches = Array.isArray(parsed) ? parsed : [parsed];
+  let rows = 0;
+  const seen = new Set();
+  for (const b of batches) {
+    const pr = b?.extras?.pr_risk;
+    if (!Array.isArray(pr)) continue;
+    for (const e of pr) {
+      if (!e || typeof e.query !== "string" || !e.query.trim()) continue;
+      rows += 1;
+      seen.add(e.query.trim());
+    }
+  }
+  return { rows, distinct: seen.size, repeated: rows - seen.size };
+}
+
 export function parsePrRiskResults(ledgerRaw) {
   let parsed;
   try { parsed = JSON.parse(ledgerRaw); } catch { return []; }

@@ -651,6 +651,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-refusal-names-the-collection-it-searched.test.mjs": {
+          "tests": 5,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "a-refusal-names-the-file-when-the-command-it-offers-cannot-be-run.test.mjs": {
           "tests": 8,
           "asserts": 16,
@@ -677,7 +683,7 @@
         },
         "a-refused-query-says-whether-the-provider-declined-it.test.mjs": {
           "tests": 3,
-          "asserts": 11,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -3076,8 +3082,8 @@
           "todos": 0
         },
         "pipeline.mock.test.mjs": {
-          "tests": 94,
-          "asserts": 795,
+          "tests": 97,
+          "asserts": 806,
           "skips": 0,
           "todos": 0
         },
