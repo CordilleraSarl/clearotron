@@ -1098,6 +1098,21 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // pattern — a run with no grid or no case-law layer still gets its register counts, and the absent
   // ones report themselves as zero or `not-in-scope` rather than as a gap nobody can see.
   let searchDepth = null;
+  // HOW DEEP THE LOCAL-LANGUAGE INVESTIGATION WENT, and it is derived by the one author of that
+  // question rather than re-read here. The import is LAZY and gated on the run's own sidecar existing,
+  // which keeps the property the pipeline's own fold keeps: a plain clearance never loads the jx
+  // machinery at all. No sidecar means the component never ran, which the fold reports as not-in-scope.
+  let laneDepthVerdicts = null;
+  try {
+    const jxSidecar = driverDir(runDir ?? dirname(reportMd), 'jx-lanes.json');
+    if (existsSync(jxSidecar)) {
+      const sidecar = JSON.parse(readFileSync(jxSidecar, 'utf8'));
+      const { deriveJxSliceStatement, deriveLaneDepthVerdicts } = await import('../jx.mjs');
+      let units = null;
+      try { units = JSON.parse(readFileSync(driverDir(runDir ?? dirname(reportMd), 'jx/units.json'), 'utf8')); } catch { /* the statement handles an absent units file */ }
+      laneDepthVerdicts = deriveLaneDepthVerdicts({ sidecar, slices: deriveJxSliceStatement({ sidecar, units }) });
+    }
+  } catch { /* an unreadable sidecar reports as not-in-scope rather than failing a publish */ }
   try {
     const runBase = runDir ?? dirname(reportMd);
     const recDir = join(runBase, '_records');
@@ -1110,6 +1125,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
       commonLawGrid: rdJson(join(runBase, 'common-law-grid.json')),
       caseLawText: rdText(join(dirname(reportMd), 'case-law-findings.md')),
       registerPlan: rdJson(driverDir(runBase, 'register-plan.json')),
+      laneDepthVerdicts,
     });
     writeRO('search-depth.json', JSON.stringify(searchDepth, null, 2));
   } catch { /* the depth record is additive — a publish never fails for want of it */ }

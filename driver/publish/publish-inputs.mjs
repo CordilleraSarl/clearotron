@@ -61,6 +61,12 @@ export const PUBLISH_INPUTS = {
   "_driver/register-plan.json": "optional",
   // The instructed scope, read only as the register plan's fallback for the searched-jurisdiction set.
   "_driver/instructed-scope.json": "optional",
+  // The frozen local-language lane decision, and the units the fold wrote. Read to derive how deep that
+  // investigation went against what the matter configured — through the engine's own asked-versus-ran
+  // reader, not by re-deciding it here. Optional and genuinely so: a plain clearance never runs the
+  // component and carries neither file, which is the state that folds to not-in-scope.
+  "_driver/jx-lanes.json": "optional",
+  "_driver/jx/units.json": "optional",
   // T7 (E5) — the grounded case-law profiles. A run with no case-law layer legitimately has none.
   "case-law-findings.md": "optional",
   // T7 (E6) — Corsearch enforcement telemetry; presentation-only, absent ⇒ no lines.

@@ -148,6 +148,45 @@ export function courtDecisionsState(caseLawText) {
   return "found";
 }
 
+/**
+ * HOW DEEP THE LOCAL-LANGUAGE INVESTIGATION ACTUALLY WENT, against what the matter configured. PURE.
+ *
+ * The engine can run this investigation shallower than the account asked for, and until now it said so
+ * in exactly one place: a sentence a model wrote in the Methodology paragraph. The redesigned report
+ * replaces that paragraph with counts and named rows, so a run that went shallow said so on no page at
+ * all. This is the field behind that row.
+ *
+ * DERIVED FROM THE RUN'S OWN RECORD, NEVER FROM PROSE, and not derived here either: the caller hands in
+ * what `deriveLaneDepthVerdicts` produced, which is the one author of asked-versus-ran and reads the
+ * frozen lane sidecar against the slices that executed. A second opinion computed in the publish path
+ * would be a second answer to a question the engine has already answered.
+ *
+ * THE FOUR STATES, and the order they are decided in matters:
+ *   not-in-scope  no lane was asked for anything — a plain clearance, or every lane switched off
+ *   not-run       lanes were asked and none of them ran
+ *   ran-shallow   a lane fell short of its ask, or was asked and did not run while another did
+ *   ran           every lane that was asked ran at the depth it was asked for
+ *
+ * `ran: null` IS NOT `candidates`. A lane whose slices settle to nothing readable cannot say what it
+ * delivered, and the jx verdicts are careful to report that as unestablished rather than as the lesser
+ * depth. Folding it to `ran` here would put that claim back on a client's page, so it counts as short.
+ *
+ * @param {object|null} verdicts  per-lane `{asked, ran, shortfall}` from deriveLaneDepthVerdicts
+ */
+export function localLanguageDepth(verdicts) {
+  if (!verdicts || typeof verdicts !== "object") return { state: "not-in-scope", lanes: {} };
+  const lanes = {};
+  for (const [lane, v] of Object.entries(verdicts)) {
+    lanes[lane] = { configured: v?.asked ?? null, achieved: v?.ran ?? null };
+  }
+  const asked = Object.entries(verdicts).filter(([, v]) => v?.asked && v.asked !== "off");
+  if (!asked.length) return { state: "not-in-scope", lanes };
+  const ran = asked.filter(([, v]) => v?.ran);
+  if (!ran.length) return { state: "not-run", lanes };
+  const short = asked.some(([, v]) => v?.shortfall === true || !v?.ran);
+  return { state: short ? "ran-shallow" : "ran", lanes };
+}
+
 /** Was the name searched in a non-Latin script? Read off the plan's own terms, never asserted. PURE. */
 export function localScriptSearched(registerPlan) {
   const entries = Array.isArray(registerPlan?.entries) ? registerPlan.entries : [];
@@ -159,7 +198,7 @@ export function localScriptSearched(registerPlan) {
  *
  * @returns {{schemaVersion: number, cleared: object, counts: object}}
  */
-export function searchDepthRecord({ auditMd = "", recordIndex = {}, recordFileNames = [], commonLawGrid = null, caseLawText = "", registerPlan = null } = {}) {
+export function searchDepthRecord({ auditMd = "", recordIndex = {}, recordFileNames = [], commonLawGrid = null, caseLawText = "", registerPlan = null, laneDepthVerdicts = null } = {}) {
   const cleared = clearedNames(auditMd, recordIndex);
   const groups = {};
   for (const key of CLEARED_GROUPS) groups[key] = 0;
@@ -173,6 +212,10 @@ export function searchDepthRecord({ auditMd = "", recordIndex = {}, recordFileNa
       sweep: sweepCounts(commonLawGrid, auditMd),
       localScriptSearched: localScriptSearched(registerPlan),
       courtDecisions: courtDecisionsState(caseLawText),
+      // `localScriptSearched` above answers whether the spellings were searched; this answers how deep
+      // the investigation went against what was configured. Two different facts, and the row the report
+      // reserves is for the second.
+      localLanguage: localLanguageDepth(laneDepthVerdicts),
     },
   };
 }
