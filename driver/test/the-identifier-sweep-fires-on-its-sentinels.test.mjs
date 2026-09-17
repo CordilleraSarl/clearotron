@@ -13,7 +13,7 @@ import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { scanCorpus, firesOn } from "../../shared/identifier-scan.mjs";
-import { SENTINELS, SUFFIXABLE } from "../../shared/identifier-sentinels.mjs";
+import { SENTINELS, SUFFIXABLE, SENTINEL_MODE_MARKER } from "../../shared/identifier-sentinels.mjs";
 import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
 
 const GUARD = "identifier sweep (synthetic sentinels)";
@@ -56,6 +56,12 @@ const DECLARES_THEM = [
 test("the tracked tree names no sentinel", (ctx) => {
   const files = trackedFiles(GUARD, { root: ROOT });
   if (files === null) return ctx.skip(skipReason(GUARD));
+  // WHICH TABLE THIS RAN AGAINST, printed only once the corpus is actually in hand. The affirmative
+  // `[repo-guard] ok` above says a guard looked; this says which roster it looked WITH, and the two are
+  // different claims — a sweep armed with nothing reports the same zero as one armed with everything.
+  // The workflow requires this line across the shard logs, so the arm being deleted or quietly skipped
+  // reds rather than passing in silence.
+  console.log(SENTINEL_MODE_MARKER);
   // A FLOOR ON THE CORPUS. Zero files swept is the shape in which this arm passes over a tree it never
   // opened, and it reports exactly the same green as a clean one.
   assert.ok(files.length > 100, `only ${files.length} tracked file(s) swept — the corpus is broken, not the tree`);
@@ -100,4 +106,29 @@ test("the sentinel table is not empty, and every row is a pair", () => {
     assert.equal(row.length, 2, `a sentinel row is [name, twin]; got ${JSON.stringify(row)}`);
     assert.ok(row[0].trim() && row[1].trim(), `a sentinel row carries an empty half: ${JSON.stringify(row)}`);
   }
+});
+
+// ── AND THE WORKFLOW REQUIRES THE LINE, or none of the above is load-bearing ─────────────────────────
+//
+// The arm above prints which roster it swept with. That is worth nothing on its own: a marker nobody
+// reads can stop being printed — because the arm was deleted, renamed out of the collection glob, or
+// quietly skipped — and every run stays green. It is the same argument the workflow already accepts for
+// the two `[repo-guard]` markers it does read, and this one had been stated and never read.
+//
+// Asserted here rather than only in the private tier's own arm, because that tier runs under the overlay
+// and this runs on every push. A demand that is only checked where somebody remembers to check it is the
+// shape this whole file exists to argue against.
+test("the workflow demands the mode line, so the sweep cannot stop running unnoticed", () => {
+  const ci = readFileSync(join(ROOT, ".github", "workflows", "ci.yml"), "utf8");
+  assert.ok(ci.includes(SENTINEL_MODE_MARKER),
+    `.github/workflows/ci.yml does not require "${SENTINEL_MODE_MARKER}". Without that step the arm above `
+    + "can stop running and nothing reds — the affirmative marker is only worth what reads it.");
+  // AND IT MUST BE REQUIRED, not merely mentioned. A marker named in a comment satisfies a substring
+  // test while asserting nothing, which is this defect with an extra step.
+  // The quiet flag is bundled with the others (`grep -rqF`), so this matches a q ANYWHERE in the flag
+  // cluster rather than a literal `-q`. Written the narrow way first, it failed against a workflow that
+  // was correct — a matcher too tight to recognise the thing it guards is a red nobody can act on.
+  const demanded = ci.split("\n").some((l) => /grep\s+-[a-zA-Z]*q/.test(l) && l.includes(SENTINEL_MODE_MARKER));
+  assert.ok(demanded,
+    "the mode line appears in the workflow but nothing requires it — a mention is not an assertion");
 });
