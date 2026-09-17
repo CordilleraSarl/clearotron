@@ -39,7 +39,7 @@ import { CENSUS_WORKSPACES, CENSUS_ROOT_SCRIPTS, countTestSites, collectionFromM
 // THE MEASUREMENT SIDE of the root-script check: the census states the globs it expects and this
 // supplies what the corpus actually resolves to, so the two can disagree.
 import { providerTestFiles } from "./test-full.mjs";
-import { withheldEntryFor, announceWithheldMode } from "../shared/withheld-paths-access.mjs";   // — withheld is a stated absence, not a loss.: the record does not ship, and without it every absence is a loss
+import { withheldEntryFor, announceWithheldMode, CUT_RECORD_PRESENT } from "../shared/withheld-paths-access.mjs";   // — withheld is a stated absence, not a loss.: the record does not ship, and without it every absence is a loss
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — realpath both sides, or a symlinked invocation exits 0 silently
 import { publishedOf } from "../shared/reference-guard-classes.mjs";
 
@@ -74,6 +74,47 @@ const README = [
 ];
 
 /**
+ * WHAT A LAID PATH MEANS DEPENDS ON THE TREE, and this census used to answer the same way for both.
+ *
+ * It printed that some tracked paths were not in HEAD and not counted, and then reported the population
+ * as "unchanged" — a summary of a population it had just said it did not read. Measured twice on
+ * 2026-09-17, from opposite directions: mid-merge it dropped every path arriving from the other parent,
+ * and with an ordinary new test file staged it dropped that, because `git add` puts a file in the index
+ * and only a commit puts it in HEAD. Both printed the note; both reported unchanged; one shipped a census
+ * six tests and twenty-three assertions short and was caught by `--check` afterwards rather than here.
+ *
+ * THE DISCRIMINATOR ALREADY EXISTS and is the cut record. Under the private overlay a laid path is the
+ * withheld corpus staged over a clone — expected, and excluding it is the whole reason HEAD is consulted
+ * rather than the index. With no cut record nothing is withheld from this tree, so a tracked path missing
+ * from HEAD is not a withheld file: it is work the author has staged and is about to leave out of the
+ * stamp. That is the strict mode this repository already declares for every other absence.
+ *
+ * So it refuses there, and names the paths. It does NOT refuse under the overlay, because that would break
+ * the case HEAD-filtering was introduced for — and a guard that fires on the legitimate use is one
+ * somebody switches off.
+ *
+ * Pure, and takes the cut-record flag rather than reading it, so both branches can be driven. The flag is
+ * fixed when its module is imported and a test cannot flip it without writing into the tree.
+ */
+export function laidPathVerdict({ laid = 0, laidPaths = [], cutRecordPresent = false } = {}) {
+  if (!laid) return { refuse: false, message: null };
+  if (cutRecordPresent) {
+    return { refuse: false,
+      message: `mint-suite-census: ${laid} tracked path(s) are not in HEAD — laid over this checkout, not published in it, and not counted` };
+  }
+  const named = laidPaths.slice(0, 20).map((f) => `    ${f}`).join("\n");
+  const more = laidPaths.length > 20 ? `\n    … and ${laidPaths.length - 20} more` : "";
+  return { refuse: true,
+    message: `mint-suite-census: ${laid} tracked path(s) are in the index and NOT in HEAD, and this tree carries no\n`
+      + "  cut record — so nothing here is withheld and these are not laid-over files. They are staged work,\n"
+      + "  and a census minted now would be stamped over a population it did not read:\n"
+      + `${named}${more}\n`
+      + "  Commit them first, then mint. `git add` puts a file in the index; only a commit puts it in HEAD,\n"
+      + "  and this reads HEAD so the private overlay's withheld corpus is not counted as an addition.\n"
+      + "  Mid-merge this is the same fault wearing different clothes: commit the merge, then mint." };
+}
+
+/**
  * The tracked files matching `globs` that HEAD actually carries.
  *
  * `git ls-files` reads the INDEX. The private control stages a withheld corpus over a clone without
@@ -103,7 +144,9 @@ function publishedFiles(root, globs) {
   if (!all.length) return [];
   const p = publishedOf(all, root);
   if (p.error) { console.error(`mint-suite-census: ${p.error}`); process.exit(2); }
-  if (p.laid) console.log(`mint-suite-census: ${p.laid} tracked path(s) are not in HEAD — laid over this checkout, not published in it, and not counted`);
+  const verdict = laidPathVerdict({ laid: p.laid, laidPaths: p.laidPaths ?? [], cutRecordPresent: CUT_RECORD_PRESENT });
+  if (verdict.refuse) { console.error(verdict.message); process.exit(2); }
+  if (verdict.message) console.log(verdict.message);
   return p.files.slice().sort();
 }
 
