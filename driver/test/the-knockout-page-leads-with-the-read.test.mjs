@@ -85,6 +85,74 @@ const RENDER = (marks, over = {}) => renderKnockoutHtml(
   { runId: "r", overall: "Medium", identity: { identity: "Knockout search" }, ...over },
 );
 
+// ── THE IDENTITY LINE NAMES THE MARK AND THE SEARCH, NEVER THE RUN ───────────────────────────────
+//
+// It printed `matter || runId`, and the publisher passes the runId AS the matter, so a client read the
+// engine's run identifier: on a real run a temporary-directory name carrying a capture suffix. It is
+// ours, it means nothing to them, and it is the one string on that page that could not be shown to
+// anyone at all. The mock reads mark then search type.
+//
+// Clause F, and it is the whole reason this has two halves: a run with no registry identity is exactly
+// the run that used to print the raw name, so a fallback to the identifier would keep the defect for
+// precisely the documents that have it. With no product name the mark stands alone; with neither, the
+// line does not render.
+const RUNID = "tmpdemo2014knockoutsearch-ironwhisk-2026-09-02-sample-capture";
+const identityLine = (html) => (html.match(/<span class="mono tb-matter"[^>]*>([\s\S]*?)<\/span>/) || [])[1] ?? null;
+
+test("the identity line names the mark and the search, and no run identifier reaches it", () => {
+  const html = RENDER([MARK()], { runId: RUNID, matter: RUNID });
+  const line = identityLine(html);
+  assert.ok(line, "the identity line renders");
+  assert.match(line, /IRONWHISK/, "the mark is named");
+  assert.match(line, /Knockout search/, "and the search type beside it");
+  assert.doesNotMatch(html, /tmpdemo|sample-capture/, "no run identifier anywhere on the page");
+});
+
+test("clause F: with no registry identity the mark stands alone — never the run identifier", () => {
+  const html = RENDER([MARK()], { runId: RUNID, matter: RUNID, identity: null });
+  const line = identityLine(html);
+  assert.ok(line, "an archived run still gets an identity line");
+  assert.match(line, /IRONWHISK/, "the mark stands alone");
+  assert.doesNotMatch(line, /Knockout search/, "nothing is invented for a run that carries no identity");
+  assert.doesNotMatch(html, /tmpdemo|sample-capture/,
+    "the run that has no identity is the one that used to print the raw name — it must not fall back to it");
+});
+
+// ── THE FOOTER SAYS THE SAME THREE THINGS, AND ISSUES A DATE ─────────────────────────────────────
+//
+// It read "<product>. / Matter <runId>. Issued <date · time>." — the run identifier a second time,
+// under a label calling it the client's matter when it is the engine's own run directory, and the
+// publish clock. Built from the same parts as the identity line now, so the two cannot drift apart.
+//
+// The TIME is dropped on both. `issued` is composed at publish as date-then-time, and that time is the
+// minute the file was written: it tells a reader nothing, and on a screen whose work spans hours it
+// implies a precision the work does not have.
+const footerOf = (html) => (html.match(/<footer[^>]*>([\s\S]*?)<\/footer>/) || [])[1] ?? "";
+
+test("the footer names mark, search and an issue DATE — no identifier, no clock", () => {
+  const html = RENDER([MARK()], { runId: RUNID, matter: RUNID, issued: "2026-09-15 · 08:36" });
+  const foot = footerOf(html);
+  assert.match(foot, /IRONWHISK/, "the mark");
+  assert.match(foot, /Knockout search/, "the search");
+  assert.match(foot, /issued on 2026-09-15/, "the date it was issued");
+  assert.doesNotMatch(foot, /08:36/, "not the minute the file was written");
+  assert.doesNotMatch(foot, /Matter/, "nothing calls the run directory the client's matter");
+  assert.doesNotMatch(html, /tmpdemo|sample-capture/, "and the identifier is nowhere on the page");
+});
+
+test("the header issues the same date, and neither surface carries the clock", () => {
+  const html = RENDER([MARK()], { runId: RUNID, matter: RUNID, issued: "2026-09-15 · 08:36" });
+  assert.match(html, /Issued on 2026-09-15/, "the header issues a date");
+  assert.doesNotMatch(html, /08:36/, "the publish clock reaches neither surface");
+});
+
+test("clause F: an issued value in an unexpected shape falls through whole rather than being cut", () => {
+  // The date is taken by pattern, not by splitting on the separator. An archived run whose `issued`
+  // was written in some other shape must not be truncated at whatever character happens to be there.
+  const html = RENDER([MARK()], { runId: RUNID, matter: RUNID, issued: "15 September 2026" });
+  assert.match(footerOf(html), /issued on 15 September 2026/, "an unrecognised shape survives intact");
+});
+
 // ── A.1 — what was asked, and any flag on the asking, at the top ─────────────────────────────────────
 
 const SCOPE = {

@@ -1668,6 +1668,11 @@ export function renderKnockoutHtml(findings, framework, {
   const marks = findings?.marks ?? [];
   const title = batchTitle(marks);
   const productName = identity?.identity ?? null;
+  // A DATE, NOT A TIMESTAMP. `issued` is composed as `<date> · <time>` at publish, and the time is the
+  // minute the file was written — it tells a reader nothing and implies a precision the work does not
+  // have. Every mock issues the date alone. Taken by pattern rather than by splitting on the
+  // separator, so a format that changes falls through whole instead of being cut in the wrong place.
+  const issuedDate = (String(issued ?? '').match(/^\d{4}-\d{2}-\d{2}/) || [])[0] ?? issued;
   const overallStop = bandStop(framework, overall);
   const summary = findings?.batch?.executiveSummary ?? '';
   const caveats = findings?.batch?.standardCaveats ?? [];
@@ -1776,8 +1781,18 @@ ${filings}`
   ${homeHref ? `<a class="homebtn tb-back no-print" href="${escAttr(homeHref)}" title="All reports"><span aria-hidden="true">←</span> <span class="tb-back-lbl">All reports</span></a>` : ''}
   ${logoLockup({ mark: 20, tag: '' })}<span class="sp"></span>
   <span class="tb-risk" style="background:var(${overallStop})">${esc(overall ?? '—')}</span>
-  <span class="mono tb-matter" style="font-size:11px;color:var(--faint)">${esc(matter || runId || '')}</span>
-  ${issued ? `<span class="mono tb-issued"><span aria-hidden="true">🗓 </span>Issued on ${esc(issued)}</span>` : ''}
+  ${/* THE IDENTITY LINE NAMES THE MARK AND THE SEARCH, NOT THE RUN. It printed `matter || runId`,
+       and the caller passes the runId AS the matter, so what a client read was the engine's own run
+       identifier — on a real run a temporary-directory name carrying a capture suffix. It is ours, it
+       means nothing to them, and it is the one string on the page that could not be shown to anyone.
+       The mock reads mark then search type, and both are already in hand here.
+       There is NO fall back to the identifier: with no product name the mark stands alone, and with
+       neither the line does not render. A run whose registry identity is missing is exactly the case
+       that used to print the raw name, so falling back would keep the defect for the runs that have
+       it. */''}
+  ${title || productName ? `<span class="mono tb-matter" style="font-size:11px;color:var(--faint)">${
+    [title, productName].filter(Boolean).map(esc).join(' / ')}</span>` : ''}
+  ${issuedDate ? `<span class="mono tb-issued"><span aria-hidden="true">🗓 </span>Issued on ${esc(issuedDate)}</span>` : ''}
   <button type="button" class="tbbtn tb-ask no-print">\u2726 <span class="tb-lbl">Ask AI</span></button>
 </div>
 </div>
@@ -1839,7 +1854,14 @@ window.addEventListener('beforeprint',o);})();</script>
     newCaveats.map((c) => inlineMd(c)).join('<br>')}</p></div>` : ''}
 
   <footer>
-    <span>${productName ? `${esc(productName)}. ` : ''}<br>Matter ${esc(matter || runId || '')}.${issued ? ` Issued ${esc(issued)}.` : ''}</span>
+    ${/* THE FOOTER NAMES THE SAME THREE THINGS THE HEADER DOES. It read "<product>. / Matter
+         <runId>. Issued <date · time>." — the identifier again, under a label that calls it the
+         client's matter when it is the engine's run directory, and the publish clock again. The mock
+         reads mark · search · issued on date. Built from the same parts as the identity line so the
+         two cannot drift, and with the same rule: no part of it falls back to the identifier. */''}
+    <span>${[title, productName].filter(Boolean).map(esc).join(' \u00b7 ')}${
+      issuedDate ? `${title || productName ? ' \u00b7 ' : ''}issued on ${esc(issuedDate)}` : ''}${
+      title || productName || issuedDate ? '.' : ''}</span>
     ${logoLockup({ mark: 16 })}
   </footer>
 </div>
