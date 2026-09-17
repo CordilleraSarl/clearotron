@@ -161,11 +161,17 @@ test("clause F: an issued value in an unexpected shape falls through whole rathe
   assert.match(footerOf(plain), /issued on 15 September 2026/, "…and a shape with no separator too");
 });
 
-test("clause F: with no mark title either, the line is the search alone — still never the identifier", () => {
-  // The fallback this guards cannot fire while a mark is present, so an arm that only renders a
-  // normal report proves nothing: `title || matter || runId` returns the title every time. The case
-  // that separates them is a document with NO title, which is the batch shape that used to reach the
-  // identifier first.
+test("clause F: a batch with no marks still names no run directory", () => {
+  // WHAT THIS DOES AND DOES NOT HOLD, because the first version of this comment was wrong. A title
+  // is ALWAYS truthy here — `batchTitle` returns the mark's name, or "<n> names", and for an empty
+  // batch that is the string "0 names". So there is no input under which a `title || runId` fallback
+  // could reach the identifier, and no arm can separate that fallback from its absence. It is
+  // unreachable rather than guarded, and writing an arm that claims to guard it would be a false
+  // reassurance to whoever changes this next.
+  //
+  // What this arm does hold is the degenerate batch: a document with nothing to name still prints no
+  // run directory anywhere. The regression it actually catches is the real one — restoring the old
+  // `matter || runId` line — and that was driven, not assumed.
   const html = RENDER([], { runId: RUNID, matter: RUNID });
   assert.doesNotMatch(html, /tmpdemo|sample-capture/,
     "with nothing else to name, the page still does not fall back to the run directory");

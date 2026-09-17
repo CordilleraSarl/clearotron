@@ -4846,8 +4846,8 @@
           "todos": 0
         },
         "the-knockout-page-leads-with-the-read.test.mjs": {
-          "tests": 35,
-          "asserts": 98,
+          "tests": 36,
+          "asserts": 102,
           "skips": 0,
           "todos": 0
         },
