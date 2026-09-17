@@ -692,3 +692,51 @@ test("'not available' still means no figure at all, and a floor is never read as
   assert.doesNotMatch(countLine(floored), /(^|[^n])10,000 containing/,
     "rendered as a bare count, a floor would read as an exact total — the more-than is the whole point");
 });
+
+// ── A TABLE THAT CONTINUES OFF ITS RIGHT EDGE SHOWS A SCROLLBAR ───────────────────────────────────
+//
+// The counts table scrolls inside its own panel so it never pushes the page sideways, and a panel that
+// scrolls and says nothing leaves a reader who never drags it believing they have seen every column.
+// Ruled 2026-09-17: a scrollbar, always visible, and no text.
+//
+// THE ARM PINS THE ONE THING A MEASUREMENT FOUND AND A READER WOULD NOT. Setting the standard
+// `scrollbar-width` beside the `::-webkit-scrollbar` pseudo-elements makes the engine take the standard
+// path and ignore them, and on the engine that publishes these reports the standard path draws an overlay
+// bar with NO layout height. Measured on a delivered report at 390px, reading the height the bar takes
+// out of the panel: both together 0px, pseudo-elements alone 9px, standard alone 0px. So the two
+// instructions must not meet, and that is invisible in the stylesheet — it reads like belt and braces.
+//
+// BREAK MATRIX:
+//   · the pseudo-elements are there           → break: drop them, arm 1 red
+//   · the bar has a height to be seen by      → break: height:0, arm 2 red
+//   · the standard property is NOT beside them → break: add scrollbar-width to .ko-scroll, arm 3 red
+//   · …but IS there for engines without them  → break: drop the @supports block, arm 4 red
+//   · the thumb is a token, not a fixed colour → break: hard-code it, arm 5 red
+test("the counts panel's scrollbar is drawn, and the two scrollbar instructions never meet", () => {
+  const fw = { bands: [{ label: "High", tone: "high" }] };
+  const html = renderKnockoutHtml([{ name: "AURELIA", band: "High", registerEstimate: "x", purpleNotes: [], findings: [] }],
+    fw, { runId: "r", overall: "High", identity: { banner: "Depth 2 — Knockout review" } });
+
+  const rule = (sel) => (html.match(new RegExp(`${sel.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\$&")}\\s*\\{([^}]*)\\}`)) || [])[1] ?? null;
+
+  const bar = rule(".ko-scroll::-webkit-scrollbar");
+  assert.ok(bar, "the panel draws no scrollbar rule at all");
+  assert.match(bar, /height:\s*[1-9]/, "the scrollbar has no height, so there is nothing for a reader to see");
+  assert.match(bar, /-webkit-appearance:\s*none/,
+    "without this the platform draws an overlay bar that appears only once a scroll is under way");
+  assert.match(rule(".ko-scroll::-webkit-scrollbar-thumb") ?? "", /var\(--/,
+    "the thumb carries a fixed colour, which reads on one ground and vanishes on the other");
+
+  // THE TWO INSTRUCTIONS MUST NOT MEET — the whole point of the arm.
+  const own = rule(".ko-scroll");
+  assert.ok(own, ".ko-scroll has no rule of its own");
+  assert.doesNotMatch(own, /scrollbar-width|scrollbar-color/,
+    "the standard property sits beside the pseudo-elements, which makes the engine ignore them and draw nothing");
+
+  // …AND THE ENGINES WITHOUT THE PSEUDO-ELEMENTS STILL GET ONE. Dropping this is the repair that looks
+  // like a simplification and silently leaves Firefox with a bar it had before and no colour.
+  assert.match(html, /@supports not selector\(::-webkit-scrollbar\)/,
+    "nothing carries the standard instruction to the engines that take it");
+  assert.match(html.slice(html.indexOf("@supports not selector(::-webkit-scrollbar)")).slice(0, 200), /scrollbar-width/,
+    "the support block does not carry the standard property it exists for");
+});

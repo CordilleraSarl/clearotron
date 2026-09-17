@@ -264,7 +264,29 @@ const KO_CSS = `
   .ko-scope{font-size:13.5px;color:var(--slate);line-height:1.65;margin:0;padding:18px 24px}
   .ko-scope b{color:var(--ink)}
   /* A wide counts table must scroll inside its own panel, never push the page sideways. */
+  /* AND IT SHOWS THAT IT SCROLLS. A panel that continues off its right edge and says nothing leaves a
+     reader who never drags it believing they have seen the whole table; the columns past the edge are
+     reachable and invisible at the same time. Ruled 2026-09-17: a scrollbar, always visible, and no text.
+     The -webkit-appearance:none is the part that does the work — without it the platform draws an OVERLAY
+     scrollbar that appears only once a scroll is already under way, which is the state this rule ends.
+     scrollbar-width and scrollbar-color are the same instruction for the engines that take the standard
+     properties. (NO BACKTICK IN THIS COMMENT: it sits inside the stylesheet's own template literal, and
+     one closes it. That is written above the export menu block too, and I still did it — so it is here
+     as well, beside the second rule anyone adds.) The colours are tokens, not fixed values, for the reason the ladder below this block
+     records: a fixed colour here reads on one ground and goes invisible on the other. */
   .ko-scroll{overflow-x:auto}
+  .ko-scroll::-webkit-scrollbar{height:9px;-webkit-appearance:none}
+  .ko-scroll::-webkit-scrollbar-track{background:transparent}
+  .ko-scroll::-webkit-scrollbar-thumb{background:var(--faint);border-radius:5px}
+  /* THE TWO INSTRUCTIONS CANNOT SIT TOGETHER, and this was measured rather than reasoned. Setting the
+     standard scrollbar-width alongside the pseudo-elements makes the engine take the standard path and
+     ignore them, and on this one the standard path draws an overlay bar with no layout height at all.
+     Driven three ways on a delivered report at 390px, reading the height the bar takes out of the panel:
+     both together 0px, the pseudo-elements alone 9px, the standard properties alone 0px. So the standard
+     ones go behind a support query that the engines carrying the pseudo-elements never enter, which
+     leaves each engine exactly one instruction. */
+  @supports not selector(::-webkit-scrollbar){
+    .ko-scroll{scrollbar-width:thin;scrollbar-color:var(--faint) transparent}}
   /* A finding's bullets carry bare source URLs, and a URL offers a line no place to break. On a phone
      that unbreakable run becomes the minimum width of the grid item, so the single column floors at
      443px inside a 360px viewport and the whole page scrolls sideways -- 135px of it, measured
