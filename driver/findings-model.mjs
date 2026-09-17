@@ -1732,7 +1732,7 @@ function validateNet(f, ord, mode) {
 // This file's header says `findings_` = a top-level shape defect, `finding_` = a specific finding/field,
 // and by that rule this token would be `finding_net_chained` alongside finding_net_missing /
 // finding_net_invalid / finding_net_prescriptive. It is `findings_net_chained` instead, because the
-// convention is about ROUTING and routing disagrees. pipeline.mjs:4945 reads:
+// convention is about ROUTING and routing disagrees. pipeline.mjs reads:
 //
 //     const eligible = /^invalid_file:/.test(fail) && /:finding_[a-z]/.test(fail) && !/:findings_/.test(fail);
 //
