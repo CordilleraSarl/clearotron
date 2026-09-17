@@ -68,7 +68,7 @@ export function turnText(tuple) {
  * Read one normalized tuple into the shape the jx lanes consume. PURE, so every branch is assertable
  * from a literal rather than from a spawned CLI.
  */
-export function readJxTuple(tuple, { vendor, authMode, engine }) {
+export function readJxTuple(tuple, { vendor, authMode, cloud = null, engine }) {
   // CANONICAL Usage, whole (engine/CONTRACT.md §2: {input, output, cacheRead, cacheWrite, total}). The old
   // Messages-API rows carried input/output only because that is all the API returned; keeping only those
   // two now would drop cache and total tokens from the rollup on the very lanes this change puts on the
@@ -82,7 +82,7 @@ export function readJxTuple(tuple, { vendor, authMode, engine }) {
   // the receipt names who did the native-language work, and an alias does not name anyone. Both adapters
   // populate it (anthropic-agent from the assistant/init events, openai-agent from `ev.model`).
   const model = tuple?.modelWire ?? null;
-  const base = { model, vendor, authMode, usage, engine };
+  const base = { model, vendor, authMode, cloud, usage, engine };
   // WHETHER TRUNCATION IS OBSERVABLE IS A FACT ABOUT THE ADAPTER, NOT ABOUT THIS TURN. It is keyed on the
   // engine deliberately: `anthropic-agent` writes `stopReason: r?.stop_reason` unconditionally, so the
   // KEY is present on every one of its turns whether or not the wire said anything — testing for the key
@@ -108,7 +108,7 @@ export function readJxTuple(tuple, { vendor, authMode, engine }) {
 /**
  * A `turn` runner for the jx lanes, bound to the run's engine and billing mode.
  *
- * Returns `{ turn, vendor, authMode, engine }`, or `{ error }` when the configuration refuses — the
+ * Returns `{ turn, vendor, authMode, cloud, engine }`, or `{ error }` when the configuration refuses — the
  * caller degrades the lane with that cause rather than this throwing into a pipeline stage.
  */
 export async function makeJxTurnRunner({
@@ -149,16 +149,17 @@ export async function makeJxTurnRunner({
 
   const vendor = auth.provider;
   const authMode = auth.mode;
+  const cloud = auth.cloud ?? null;   // which cloud account bills, under the cloud mode; null otherwise
   return {
-    vendor, authMode, engine: id,
+    vendor, authMode, cloud, engine: id,
     async turn({ prompt }) {
       let tuple;
       try { tuple = await runTurn({ message: prompt, model, thinking, timeoutSec, stallSec }); }
       catch (e) {
         return { ok: false, cause: `the engine turn threw: ${String(e?.message ?? e).slice(0, 200)}`,
-          model: null, vendor, authMode, engine: id, usage: { input: 0, output: 0 }, truncationObservable: false };
+          model: null, vendor, authMode, cloud, engine: id, usage: { input: 0, output: 0 }, truncationObservable: false };
       }
-      return readJxTuple(tuple, { vendor, authMode, engine: id });
+      return readJxTuple(tuple, { vendor, authMode, cloud, engine: id });
     },
   };
 }

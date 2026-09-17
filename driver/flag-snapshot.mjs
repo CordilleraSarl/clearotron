@@ -341,9 +341,9 @@ export function postureDisagreement(snapshot, live) {
   // the better answer for a reader: "found" against "not found" says it without a legend.
   const found = (v) => (v === true ? "found" : v === false ? "not found" : null);
   differ("engine program", found(snapshot.engine?.binaryPresent), found(live.engine?.binaryPresent),
-    "whether a NEW search can start — the engine that last ran and this deployment do not agree that the "
-    + "engine program can be found, so one screen offers a search the other refuses. Restart the engine "
-    + "service so it re-reads its PATH, or install the CLI where the service can see it");
+    "whether a NEW search can start — the services, when they last started, and this deployment do not agree "
+    + "that the engine program can be found, so one screen offers a search the other refuses. Restart the "
+    + "services so they look again; if they still disagree, `clearotron doctor` says which side to fix and how");
 
   // Flags: compare only names BOTH sides declare, for the same reason `differ` skips absent values —
   // a build that adds a flag must not read as every older capture disagreeing with it.

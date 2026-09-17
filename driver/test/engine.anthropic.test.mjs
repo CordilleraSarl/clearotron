@@ -87,13 +87,16 @@ const specimen = (r) =>
   + ` killed=${r?.killed} signals=${JSON.stringify(r?.signals ?? {})}]`;
 
 test("tier/alias → claude model alias; a model claude cannot run REFUSES (#238 corruption 3)", () => {
-  assert.equal(claudeModel("opus"), "claude-opus-5");  // pinned to Opus 5 (2026-07-27), not the bare drifting alias
-  assert.equal(claudeModel("sonnet"), "claude-sonnet-5");  // pinned, not the bare drifting alias
+  // Every tier goes as the vendor's alias: the newest model of the family, and the one a cloud resolves
+  // through ANTHROPIC_DEFAULT_*_MODEL. An exact id here was a silent downgrade the day a new model shipped.
+  assert.equal(claudeModel("opus"), "opus");
+  assert.equal(claudeModel("sonnet"), "sonnet");
   assert.equal(claudeModel("haiku"), "haiku");
   assert.equal(claudeModel("fable"), "fable");  // registered for the synthesis A/B test (CLEAROTRON_SYNTHESIS_MODEL)
   assert.equal(claudeModel("anthropic/claude-opus-5"), "claude-opus-5");  // full catalog id
   assert.equal(claudeModel("anthropic/claude-sonnet-5"), "claude-sonnet-5");  // full catalog id
   assert.equal(claudeModel("claude-haiku-4-5-20251001"), "haiku");   // a dated bare id is a NAMING form, not a substitution
+  assert.equal(claudeModel("claude-sonnet-5"), "sonnet");   // and so is an undated one: a caller naming it keeps following the family
   assert.equal(claudeModel(undefined), undefined);
   // THE CORRUPTION. These four returned an anthropic model and the telemetry logged the alias asked for,
   // so `--model gemini` ran sonnet and every attribution downstream named gemini. They refuse now.
@@ -148,7 +151,7 @@ test("buildClaudeArgs: print + stream-json + model/effort/permission, and the op
   assert.equal(a[0], "-p"); assert.equal(input, "hi"); assert.ok(!a.includes("hi"), "the prompt is not in argv");
   assert.ok(a.includes("--output-format") && a[a.indexOf("--output-format") + 1] === "stream-json");
   assert.ok(a.includes("--verbose") && a.includes("--include-partial-messages"));
-  assert.equal(a[a.indexOf("--model") + 1], "claude-opus-5");  // opus tier pinned to Opus 5 (2026-07-27)
+  assert.equal(a[a.indexOf("--model") + 1], "opus");  // the opus tier goes on the wire as the vendor's alias
   assert.equal(a[a.indexOf("--effort") + 1], "high");
   assert.equal(a[a.indexOf("--permission-mode") + 1], "acceptEdits");
   assert.ok(!a.includes("--resume"));

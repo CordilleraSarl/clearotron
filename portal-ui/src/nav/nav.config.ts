@@ -125,6 +125,19 @@ export type NavEntry = {
    * many companies they hold, and quantity is a rendering decision, never a layout.
    */
   readonly scope?: 'account' | 'owner'
+  /**
+   * WHICH SIDE OF THE SWITCHER this item is drawn on, when that is not what its scope says.
+   *
+   * These were one field and they are two questions. `scope` answers what the top bar NAMES — the
+   * account, or the selected company — and it is a fact about the screen. Which side of the line an
+   * item sits on is a layout decision, and for one item the two answers differ: Connect your AI is
+   * issued per identity, so the top bar must name the account, and the owner placed it last in the
+   * rail (2026-09-17). Changing its scope to move it would have made the top bar print a company's
+   * name over a page that has nothing to do with that company.
+   *
+   * Unset means the scope decides, which is what every other item wants and what this always did.
+   */
+  readonly rail?: 'above' | 'below'
 }
 
 // ARRAY ORDER IS SIDEBAR ORDER — AppShell maps this straight into the nav list.
@@ -146,9 +159,6 @@ export const NAV: readonly NavEntry[] = [
   // Home leads: it is where the portal opens and it answers "what is happening with my work" before
   // anything is clicked. It spans everything and stays above the line.
   { id: 'home', label: 'Home', path: '/portal/home', icon: 'panel-left', scope: 'account' },
-  // The engine being model-agnostic and reachable over MCP is a selling point, not a settings detail —
-  // and the connector is issued per identity, not per company, so it belongs above the line.
-  { id: 'ai', label: 'Connect your AI', path: '/portal/ai', icon: 'sparkles', scope: 'account' },
   // PEOPLE, in the AVATAR MENU above Installation settings rather than in the rail (2026-09-10). Who reaches this
   // installation is a setting of the installation, not a place anyone works, so it sits with the other
   // settings. `hidden` keeps it routable and off the rail, and avatarMenuFor lists it. It is still not
@@ -207,6 +217,17 @@ export const NAV: readonly NavEntry[] = [
       { id: 'brand.searches', label: 'Search templates', path: '/portal/brand/searches', icon: 'bookmark', scope: 'owner' },
     ],
   },
+  // LAST IN THE RAIL, BELOW THE SWITCHER, and its scope stays 'account' — the two are different
+  // questions and this is the item that proves it (owner's ruling, 2026-09-17). The connector is issued
+  // per identity, so the top bar must name the account rather than whichever company is selected;
+  // moving it by changing its scope would have printed a company's name over a page that has nothing to
+  // do with that company. `rail` moves it and leaves the naming alone.
+  //
+  // THE LINE ITSELF DID NOT MOVE, and that was the ruling's other half. Every approved board draws the
+  // switcher after Clearances, which would have put New clearance and Clearances above it; "All
+  // companies" shows every clearance and choosing one filters that list, so Clearances belongs under
+  // the control that filters it. The board is stale on that point and the rail is not.
+  { id: 'ai', label: 'Connect your AI', path: '/portal/ai', icon: 'sparkles', scope: 'account', rail: 'below' },
   // Creating a company. `hidden`, because it is reached from `+ New company` on the Company settings
   // pages, the pick panel and the switcher — routing is DERIVED from this array, so the entry is what
   // makes those buttons work, not what puts it in the rail.
@@ -281,14 +302,18 @@ export function navFor(who: Viewer, entries: readonly NavEntry[] = NAV): readonl
  * default is "the switcher does not reach this", because a screen wrongly claimed by the switcher
  * silently narrows what someone sees, while one wrongly left out merely ignores it.
  */
+/** Which side of the company switcher an entry is drawn on: its own answer, or the one its scope implies. */
+const railSideOf = (e: NavEntry): 'above' | 'below' =>
+  e.rail ?? ((e.scope ?? 'account') === 'account' ? 'above' : 'below')
+
 export function navGroupsFor(who: Viewer, entries: readonly NavEntry[] = NAV): {
   readonly account: readonly NavEntry[]
   readonly owner: readonly NavEntry[]
 } {
   const visibleEntries = navFor(who, entries)
   return {
-    account: visibleEntries.filter((e) => (e.scope ?? 'account') === 'account'),
-    owner: visibleEntries.filter((e) => e.scope === 'owner'),
+    account: visibleEntries.filter((e) => railSideOf(e) === 'above'),
+    owner: visibleEntries.filter((e) => railSideOf(e) === 'below'),
   }
 }
 

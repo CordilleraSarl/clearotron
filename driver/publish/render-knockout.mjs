@@ -47,7 +47,7 @@ import { COUNT_BASIS, COUNT_PREDICATES, countsForMark, countLine, variantFormsLi
 import { RECORD_BASIS, recordsForMark, recordsLine } from '../register-records.mjs';
 import { officeLinkSentences } from './office-record-links.mjs';
 import { knockoutFindingViews, splitKnockoutNotes } from '../findings-model.mjs';
-import { demoBannerHtml } from './render.mjs';
+import { demoBannerHtml, servedModelsLine } from './render.mjs';   // — the SAME banner the clearance template renders, not a second wording
 import { EXPORT_TOGGLE, exportPopover, EXPORT_MENU_JS } from './report-topbar.mjs';   // — the export menu's shell and behaviour, shared with the clearance template   // — the SAME banner the clearance template renders, not a second wording
 // — the two facts the register card is allowed to read off a raw record, and NEITHER is minted
 // here. `makeClassifyStatus` and `isAllClass` are the screening lane's own, already shipped, already
@@ -1659,6 +1659,10 @@ export function renderKnockoutHtml(findings, framework, {
   // renders the same plain "Privileged & Confidential" this template always printed — so the ~15 unit
   // fixtures and both render-check scripts, none of which pass one, are unchanged by its arrival.
   delivery = null,
+  // The models that served the batch, as tokens.mjs servedModels names them for a client: the scope
+  // section's closing line. Defaults to null, so a fixture or an archived run that passes none renders
+  // as it always did.
+  servedModels = null,
   // — IS THIS AN INVENTED MARK? This template had no demo handling of any kind, so
   // every demo knockout shipped looking real: an invented mark, a real register basis, a real-looking
   // risk assessment, a published URL, and nothing saying the matter is fiction. The clearance template
@@ -1888,6 +1892,10 @@ ${EXPORT_MENU_JS}</script>
          client's matter when it is the engine's run directory, and the publish clock again. The mock
          reads mark · search · issued on date. Built from the same parts as the identity line so the
          two cannot drift, and with the same rule: no part of it falls back to the identifier. */''}
+    <!-- WHICH MODELS SERVED THIS RUN — the same line, from the same function, as the clearance
+         report's footer. It used to ride the end of the scope block, which the 2026-09-16 redesign took
+         off this page; the line is provenance rather than the narration that was ruled out, so it moved
+         here. Owner ruling, 2026-09-17. Adjacent on purpose, as on the clearance side. -->${servedModelsLine(servedModels)}
     <span>${[title, productName].filter(Boolean).map(esc).join(' \u00b7 ')}${
       issuedDate ? `${title || productName ? ' \u00b7 ' : ''}issued on ${esc(issuedDate)}` : ''}${
       title || productName || issuedDate ? '.' : ''}</span>
@@ -1910,7 +1918,7 @@ ${EXPORT_MENU_JS}</script>
  * where the working notes live, and a data file that quietly re-admitted them would reopen exactly the
  * leak this series closed.
  */
-export function knockoutReportData(findings, framework, { runId, codename, overall, issued, identity, registerCounts, registerRecords = null, ownerChecks = [], url, auditFile, customerKey, matter }) {
+export function knockoutReportData(findings, framework, { runId, codename, overall, issued, identity, registerCounts, registerRecords = null, ownerChecks = [], url, auditFile, customerKey, matter, servedModels = null }) {
   const marks = findings?.marks ?? [];
   return {
     schema: 'report-data/1',
@@ -1921,6 +1929,9 @@ export function knockoutReportData(findings, framework, { runId, codename, overa
     issued: issued || null,
     url: url || null,
     auditFile: auditFile || null,
+    // The models that served the run, in first-use order, as tokens.mjs servedModels names them for a
+    // client: a deployment's own name never, its tier instead. null when nothing was read.
+    servedModels: Array.isArray(servedModels) ? servedModels : null,
     level: {
       searchLevel: identity?.level ?? null,
       stageLabel: identity?.stageLabel ?? null,

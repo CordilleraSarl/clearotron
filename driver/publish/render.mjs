@@ -2674,6 +2674,14 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
          split on the DATE by pattern — the same way `dateOf` does it one file over — and the remainder
          is the provider. A run string with no date in it is not this renderer's to take apart, so it
          is printed whole and unlabelled rather than guessed at. */''}
+    <!-- WHICH MODELS SERVED THIS RUN. It used to close the scope fold, and the 2026-09-16 redesign
+         deleted that fold — so the line was re-homed rather than dropped with its container, which
+         would have removed a statement of provenance from the client's page as a side effect of a
+         merge. Owner ruling, 2026-09-17: it belongs in the footer, beside the matter and the framework.
+         It renders as '' on a run that recorded no models, so an archived run republishes exactly as
+         delivered, and the call sits ADJACENT so the whitespace around it belongs to the line and goes
+         with it — the freeze tool sets this paragraph aside by a pattern that takes the space before
+         it. -->${servedModelsLine(opts.servedModels)}
     <span>${(() => {
       const runStr = String(fm.run ?? '').trim();
       const searchedOn = (runStr.match(/\d{4}-\d{2}-\d{2}/) || [])[0] ?? null;
@@ -2739,4 +2747,25 @@ function officeLinkNote() {
   const linked = [...RECORD_LINKS.values()].some((l) => l?.href);
   return (linked ? 'A registration number shown as a link opens the office’s own page for that record. ' : '')
     + officeReasonSentences(RECORD_LINKS).map((s) => `${esc(s)} `).join('');
+}
+
+// THE MODELS THAT SERVED THIS SEARCH, as one closing line of the scope section (2026-09-14). The ids are
+// the ones the engine reported for its turns (tokens.mjs servedModels), never the tier a stage asked
+// for in place of a model the engine named: every tier goes to the program as the vendor's alias, and an
+// alias names no model. Both report
+// kinds call this, so they say it in the same words. '' when the run recorded none, so a run published
+// before the record existed renders exactly as it was delivered.
+//
+// A TIER WORD IS CLAUDE'S. servedModels lists a turn served under a company's own deployment name as the
+// tier it asked for ("Opus"), never the name, so the list may read "claude-opus-5, Haiku". Both are
+// Claude's and the line says so once; in a list that also names another vendor, the word says it itself
+// ("Claude Opus"). The four words, Fable among them, are the ones servedModels writes. They are kept here
+// rather than imported, because tokens.mjs loads the driver's settings and this module renders without them.
+const CLAUDE_TIER_WORD_RE = /^(?:Opus|Sonnet|Haiku|Fable)$/;
+export function servedModelsLine(ids) {
+  const list = (Array.isArray(ids) ? ids : []).map((s) => String(s ?? '').trim()).filter(Boolean);
+  if (!list.length) return '';
+  const claude = list.every((id) => /^claude-/i.test(id) || CLAUDE_TIER_WORD_RE.test(id));
+  const shown = claude ? list : list.map((id) => (CLAUDE_TIER_WORD_RE.test(id) ? `Claude ${id}` : id));
+  return `<p class="servedby" style="margin:10px 0 0;font-size:13px">Prepared with${claude ? ' Claude' : ''}: ${shown.map(esc).join(', ')}.</p>`;
 }

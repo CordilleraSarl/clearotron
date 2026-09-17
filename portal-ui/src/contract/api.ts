@@ -24,6 +24,7 @@ import { asTone } from './tone.ts'
 import type { BriefRead } from './composeRead.ts'
 import type { CompanyFacts } from './companyFacts.ts'
 import { wireAccount } from './genericKey.ts'
+import type { BillingRefusal } from './engineState.ts'
 
 export type Result<T> =
   | { kind: 'ok'; value: T }
@@ -1003,6 +1004,15 @@ export type EngineState = {
     readonly mode: string
     readonly apiBilled: boolean
     readonly missing: readonly string[]
+    /** The cloud that pays — vertex, foundry, bedrock or gateway. Null ⇒ none, or an older service. */
+    readonly cloud: string | null
+    /** That cloud's name as a reader knows it, sent by the driver ("Microsoft Azure", "Gateway"). */
+    readonly cloudName: string | null
+    /**
+     * Why every search is refused over how this machine is set to pay, as data — never the resolver's
+     * sentence. Null ⇒ nothing is refused, or an older service that does not say.
+     */
+    readonly reason: BillingRefusal | null
   }
   /** Whether the binary every stage spawns can actually be found and executed. */
   readonly binaryPresent: boolean
@@ -1015,6 +1025,10 @@ export type EngineState = {
   readonly program: string | null
   /** The command that installs that program, same source and same null rule as `program`. */
   readonly install: string | null
+  /** The setting that names the program's full path, by name. Null ⇒ unknown engine or older service. */
+  readonly programSetting: string | null
+  /** Which setup command this install can run — the word `/me` sends. Null ⇒ an older service. */
+  readonly setupRoute: 'packaged' | 'checkout' | null
 }
 
 /**
@@ -2497,6 +2511,37 @@ export const api = {
                 mode: asString(bill['mode']) ?? 'unknown',
                 apiBilled: bill['apiBilled'] === true,
                 missing: asStrings(bill['missing']),
+                // An older service sends none of these three, and each arrives null: the state word and
+                // the row's sentences are then exactly what they were before the driver sent them.
+                cloud: asString(bill['cloud']),
+                cloudName: asString(bill['cloudName']),
+                // THE REASON, NEVER THE REFUSAL'S SENTENCE. The driver classifies a refusal once and sends
+                // its kind and the names in it; the row words it in engineState.ts. `kind` survives as any
+                // string, so a refusal this build cannot name still turns the row red — and so does a reason
+                // of a shape it cannot read (a string, a list), which decodes as a refusal of no known kind
+                // rather than as no refusal at all. Only an absent reason is a green one.
+                reason: bill['reason'] != null
+                  ? (() => {
+                      const raw = bill['reason']
+                      const r = typeof raw === 'object' && !Array.isArray(raw) ? asRecord(raw) : {}
+                      return {
+                        kind: asString(r['kind']) ?? 'unclassified',
+                        mode: asString(r['mode']),
+                        defaulted: r['defaulted'] === true,
+                        setting: asString(r['setting']) ?? '',
+                        clouds: asArray(r['clouds']).flatMap((c) => {
+                          const x = asRecord(c)
+                          const name = asString(x['name'])
+                          const setting = asString(x['setting'])
+                          return name && setting ? [{ name, setting }] : []
+                        }),
+                        modes: asStrings(r['modes']),
+                        gateway: asString(r['gateway']),
+                        engineSetting: asString(r['engineSetting']),
+                        engineChoice: asString(r['engineChoice']),
+                      }
+                    })()
+                  : null,
               },
               binaryPresent: e['binaryPresent'] === true,
               // Words, not booleans, and `asString` answers null for anything that is not a string —
@@ -2504,6 +2549,8 @@ export const api = {
               // arrive null, which the row already has a sentence for.
               program: asString(e['program']),
               install: asString(e['install']),
+              programSetting: asString(e['programSetting']),
+              setupRoute: e['setupRoute'] === 'packaged' ? 'packaged' : e['setupRoute'] === 'checkout' ? 'checkout' : null,
             }
           })()
         : null,

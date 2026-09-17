@@ -132,7 +132,7 @@ test("an instance with nothing wired up sends ROWS saying so, and they reach the
   // deep comparison rather than a spot check. `program` and `install` are DERIVED from the id at read
   // time and are named separately below: they are not in the capture and never have been, so folding
   // them into the expectation here would quietly turn a round-trip assertion into a shape assertion.
-  const { program, install, ...stored } = v.engine;
+  const { program, install, programSetting, setupRoute, ...stored } = v.engine;
   assert.deepEqual(stored, engine);
   assert.equal(program, "claude", "the derived program name did not reach the view");
   assert.ok(install, "the derived install command did not reach the view");
@@ -475,6 +475,44 @@ test("the engine row carries the program's name and the command that installs it
   // NO PATH. `program` is the bare name a reader types. The resolved path is this machine's layout and
   // this value is rendered in a browser — the snapshot has never carried one and must not start.
   assert.ok(!v.engine.program.includes("/"), "a resolved path reached a value the browser renders");
+});
+
+test("the engine row carries the program's setting and which setup command this install runs, and the billing block untouched", () => {
+  // Setup installs the program now, so the row names setup rather than a hand install, and it has to know
+  // which spelling this reader can type. The same word `/me` sends the search screen, never a path.
+  const billing = { mode: "cloud", apiBilled: true, missing: [], cloud: "foundry", cloudName: "Microsoft Azure" };
+  const v = flagView(poolWithEngine({ id: "anthropic-agent", known: true, binaryPresent: false, billing }), { now: NOW });
+  assert.equal(v.engine.programSetting, ENGINE_BINARIES["anthropic-agent"].env, "the row cannot name the setting that holds the program's path");
+  assert.ok(["packaged", "checkout"].includes(v.engine.setupRoute), `not a route word: ${v.engine.setupRoute}`);
+  assert.ok(!String(v.engine.setupRoute).includes("/"), "a path reached a value the browser renders");
+  assert.deepEqual(v.engine.billing, billing, "the view changed the billing block it was handed");
+});
+
+test("a capture that recorded a billing word which is not a mode shows it as unknown, in the comparison and in its place", () => {
+  // A capture written before the inventory stopped recording such a word holds it twice, as the mode and
+  // inside the refusal's sentence, and the word can be a key pasted into the wrong setting. The page must
+  // reach neither copy: not in the last-run comparison, and not in a capture shown for want of a live one.
+  const typed = "zz-typed-into-the-billing-word-zz";
+  const engine = { id: "anthropic-agent", vendor: "Anthropic", known: true, binaryPresent: true,
+    billing: { mode: typed, apiBilled: false, missing: [], refusal: `CLEAROTRON_AI_BILLING=${typed} is not a billing mode — refusing to guess` } };
+  const root = poolWithEngine(engine);
+  const live = buildFlagSnapshot(ENGINE_ENV, { capturedAt: AT, engine: { ...engine,
+    billing: { mode: "unknown", apiBilled: false, missing: [], refusal: "CLEAROTRON_AI_BILLING is set to a word that is not a billing mode" } } });
+
+  const withLive = flagView(root, { live, now: NOW });
+  assert.ok(!JSON.stringify(withLive).includes(typed), `the typed word reached the page: ${JSON.stringify(withLive.lastRun)}`);
+  assert.deepEqual(withLive.lastRun.disagrees.filter((d) => d.what === "billing mode"), [], "an unknown word and unknown were drawn as a disagreement");
+
+  const alone = flagView(root, { now: NOW });
+  assert.equal(alone.source, "capture");
+  assert.equal(alone.engine.billing.mode, "unknown");
+  assert.ok(!JSON.stringify(alone).includes(typed), `the typed word reached the page: ${JSON.stringify(alone.engine)}`);
+
+  // CONTROL: a capture on a real mode keeps its word and its refusal, and still disagrees with a live one.
+  const cloud = { ...engine, billing: { mode: "cloud", apiBilled: false, missing: [], refusal: "CLEAROTRON_AI_BILLING=cloud but none of them is set" } };
+  const kept = flagView(poolWithEngine(cloud), { live, now: NOW });
+  assert.deepEqual(kept.lastRun.disagrees.filter((d) => d.what === "billing mode").map((d) => [d.capture, d.live]), [["cloud", "unknown"]]);
+  assert.deepEqual(flagView(poolWithEngine(cloud), { now: NOW }).engine.billing, cloud.billing, "a capture on a real mode was changed");
 });
 
 test("an engine this build does not ship names no program and no command", () => {

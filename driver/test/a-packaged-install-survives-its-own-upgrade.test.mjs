@@ -26,6 +26,7 @@ import { ENV_LOCAL_LOCATION, envLocalPath, loadEnvLocal } from "../../shared/env
 import { DATA_DIRS, configurationLostToUpgrade } from "../../bin/onboard.mjs";
 import { hermeticInstallRoot } from "./hermetic-install-root.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
+import { NO_INSTALLED_ENGINES } from "./drive-env.mjs";   // this doctor's env is composed from nothing
 
 // npm's global layout, POSIX: the package under <prefix>/lib/node_modules and the executable npm links
 // for it at <prefix>/bin. The shape is the reporter's, measured on their box; the PREFIX below is not
@@ -261,7 +262,7 @@ function doctor(root, home) {
   try {
     const out = execFileSync(process.execPath, [join(root, "bin", "onboard.mjs"), "--check"], {
       encoding: "utf8", stdio: ["ignore", "pipe", "pipe"],
-      env: { HOME: home, PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1" },
+      env: { HOME: home, PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", ...NO_INSTALLED_ENGINES },
     });
     return { code: 0, out };
   } catch (e) { return { code: e.status ?? -1, out: `${e.stdout ?? ""}${e.stderr ?? ""}` }; }

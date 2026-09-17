@@ -774,15 +774,15 @@ async function backstopFailureNotice({ res, job, agentId, base, codename, studio
 // starts, so nothing is spent and nothing is promised.
 
 let __runTables = null;
-async function runTables() {
+export async function runTables() {   // exported for the requirement-check wiring test
   // AT CALL TIME, never a static import. `driver/run-requirements.mjs`'s header states the reason and it
   // is load-bearing: the register SELECTION table lives in `bin/onboard.mjs`, a CLI entry point, and a
   // static import from `driver/` would point the driver at `bin/` — the cycle that makes `clearotron
   // doctor` exit 13 after printing most of a report.
   if (!__runTables) {
     const { PROVIDERS } = await import("../bin/onboard.mjs");
-    const { ENGINE_BINARIES, DEFAULT_ENGINE_ID } = await import("./driver.config.mjs");
-    __runTables = { registers: PROVIDERS, engines: ENGINE_BINARIES, defaultEngine: DEFAULT_ENGINE_ID };
+    const { ENGINE_BINARIES, DEFAULT_ENGINE_ID, resolveEngineProgram } = await import("./driver.config.mjs");
+    __runTables = { registers: PROVIDERS, engines: ENGINE_BINARIES, defaultEngine: DEFAULT_ENGINE_ID, resolveEngine: resolveEngineProgram };
   }
   return __runTables;
 }

@@ -26,6 +26,7 @@ import { fileURLToPath } from "node:url";
 import { invocationForm, invocationPrefix, invoke } from "../../shared/invocation.mjs";
 import { INSTALL_DIR, inspectShim, installShim, shimBody, shimPath } from "../../shared/verb-shim.mjs";
 import { signInResetCommand } from "../portal-local-auth.mjs";
+import { NO_INSTALLED_ENGINES } from "./drive-env.mjs";   // this doctor's env is composed from nothing
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, "..", "..");
@@ -339,7 +340,7 @@ function doctorAdvice(env) {
   try {
     out = execFileSync(process.execPath, [ONBOARD, "--check"], {
       encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], cwd: tmp("cwd"),
-      env: { PATH: `${NODE_DIR}:/usr/bin:/bin`, CLEAROTRON_NO_ENV_FILE: "1", ...env },
+      env: { PATH: `${NODE_DIR}:/usr/bin:/bin`, CLEAROTRON_NO_ENV_FILE: "1", ...NO_INSTALLED_ENGINES, ...env },
     });
   } catch (e) {
     out = `${e.stdout ?? ""}${e.stderr ?? ""}`;
