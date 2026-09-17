@@ -4720,8 +4720,8 @@
           "todos": 0
         },
         "the-cut-approves-its-own-parked-run.test.mjs": {
-          "tests": 4,
-          "asserts": 10,
+          "tests": 8,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },

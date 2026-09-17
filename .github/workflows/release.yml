@@ -928,6 +928,13 @@ jobs:
           # existed to do did not happen, and the script fails rather than reporting success.
           CLEAROTRON_CUT_REQUESTED: ${{ github.event_name == 'workflow_dispatch' && inputs.cut != 'rehearse' && 'true' || 'false' }}
           CLEAROTRON_CUT_PR: ${{ needs.version.outputs.pr_number }}
+          # THE SAME TOKEN THE STEP ABOVE READS, because this loop takes the same look on every pass.
+          # The step above approves the head the version pull request had when this job started; if main
+          # moves during the wait, the pull request is refreshed onto a new head, that head parks a run
+          # of its own, and the approval already spent was spent on a head that no longer exists.
+          # Measured on the 0.3.2-beta.8 cut: two heads, one approval, cleared by hand. Absent, the loop
+          # says so once per pass and the wait ends exactly as it did before.
+          ACTIONS_APPROVE_TOKEN: ${{ secrets.ACTIONS_APPROVE_TOKEN }}
         run: node scripts/release-await-cut.mjs
 
   publish:

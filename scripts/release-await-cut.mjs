@@ -48,6 +48,7 @@
 // one question is how a pipeline comes to publish something nobody merged.
 import { appendFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
+import { approvePass } from "./release-approve-parked.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 import { cutDecision, versionAtHead, tagsHere } from "./release-cut-decision.mjs";
 
@@ -117,10 +118,23 @@ export const STEP_MS = 30 * 1000;
  *
  * Returns `{ cut, version, waitedMs, gaveUp }`. `gaveUp` is not a failure — see the header.
  */
-export async function awaitCut({ refresh, read, sleep, waitMs = WAIT_MS, stepMs = STEP_MS, now = () => 0 } = {}) {
+export async function awaitCut({ refresh, read, sleep, tend = null, waitMs = WAIT_MS, stepMs = STEP_MS, now = () => 0 } = {}) {
   const started = now();
   let waitedMs = 0;
   for (;;) {
+    // ── THE SECOND LOOK, EVERY PASS ────────────────────────────────────────────────────────────────
+    //
+    // `tend` is the parked-run approval, and it is here rather than once before the loop because the
+    // version branch is force-pushed whenever the version step runs. If main moves while this waits,
+    // the version pull request is refreshed onto a new head, that head parks a run of its own, and the
+    // approval already spent was spent on a head that no longer exists.
+    //
+    // IT CANNOT BREAK THE WAIT. A tend that throws is reported and the pass continues: this loop's job
+    // is to notice a merge, and it must keep doing that whether or not a convenience beside it worked.
+    if (tend) {
+      try { await tend(); }
+      catch (e) { console.log(`release-await-cut: the parked-run look failed (${String(e?.message ?? e).slice(0, 120)}) — the wait continues.`); }
+    }
     await refresh();
     const d = read();
     // ASKED BEFORE THE FIRST SLEEP, so a merge that landed while CI was finishing costs no wait at all —
@@ -268,6 +282,8 @@ function main() {
     // answer this pipeline cannot afford, so it is refreshed on every pass rather than once at checkout.
     refresh: async () => { git(["fetch", "--no-tags", "--prune", "origin", "+refs/heads/main:refs/remotes/origin/main"]); git(["fetch", "--tags", "--force", "origin"]); },
     read: () => readMain(),
+    // THE SAME SCRIPT THE STEP ABOVE RUNS, not a second implementation of the same decision.
+    tend: () => approvePass(),
     sleep: (ms) => new Promise((r) => setTimeout(r, ms)),
     now: () => Date.now() - started,
   }).catch((e) => {

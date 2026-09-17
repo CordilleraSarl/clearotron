@@ -99,7 +99,25 @@ async function branchHead() {
   return (await br.json())?.commit?.sha ?? null;
 }
 
-async function main() {
+/**
+ * ONE PASS: read the version branch's head, and approve any run parked on exactly that head.
+ *
+ * EXPORTED BECAUSE ONCE IS NOT ENOUGH. The step that calls this runs before a wait that then lasts
+ * minutes, and the version branch is force-pushed whenever the version step runs — so main moving
+ * during the wait leaves a fresh parked run on a fresh head with nobody left to approve it. Measured on
+ * the 0.3.2-beta.8 cut: two heads, one approval, cleared by hand. `awaitCut` calls this once per poll
+ * so the second head gets the same look the first did.
+ *
+ * IT NEVER THROWS AND NEVER RETURNS NON-ZERO. A pass that cannot look says so and reports nothing
+ * approved; the cut's own wait ends the way it always did. Approving is a convenience, and a
+ * convenience that can fail a release is not one.
+ */
+export async function approvePass() {
+  try { return await onePass(); }
+  catch (e) { say(`could not run (${e?.message ?? e}) — nothing approved.`); return 0; }
+}
+
+async function onePass() {
   // THE ABSENT SECRET IS THE ORDINARY CASE UNTIL THE TOKEN IS MINTED, and it must read as ordinary.
   if (!TOKEN) {
     say("no ACTIONS_APPROVE_TOKEN — nothing approved; the version run waits for a person, as before.");
@@ -148,4 +166,4 @@ async function main() {
 // RUN WHEN INVOKED, whatever the file is called. The old guard compared argv[1] to this file's NAME, so
 // a rename made the step print nothing and exit 0 — a script that never ran, wearing the face of a
 // successful no-op. Comparing the resolved URLs asks the real question instead.
-if (import.meta.url === pathToFileURL(argv[1] ?? "").href) main().then((c) => exit(c)).catch((e) => { say(`could not run (${e?.message ?? e}) — nothing approved.`); exit(0); });
+if (import.meta.url === pathToFileURL(argv[1] ?? "").href) approvePass().then((c) => exit(c));
