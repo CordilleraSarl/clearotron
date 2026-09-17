@@ -357,3 +357,35 @@ test("the three conditions are checked on ONE record, never assembled across sev
   assert.equal(r.verified, false);
   assert.match(r.reason, /no_live_owned_registration/);
 });
+
+test("an excluded house element's form band is UNREACHABLE, not merely un-asked-for", () => {
+  // THE SEAM. `bandFor` falls back to elements[0] when it cannot find the element it was asked for. The
+  // exclusion moves `dominant_element` to the remainder's word, which the form document — derived from
+  // the original manifest — may carry no band for. Without the removal the lookup misses, the fallback
+  // hands back the house element's band, and its one-letter mutation floor compiles anyway: the plan
+  // reads as excluded and sweeps the very element being excluded.
+  const form = { elements: [
+    { element: "NOVAPULSE", band: { exactQueries: ["NOVAPULS", "NOVAPULSA"], wildcardPatterns: [] } },
+  ] };
+  const excluded = excludeHouseElement(HOUSE_MODEL, HOUSE).manifest;
+  const job = { jobKey: "TMP9999-np", classes: ["9"], jurisdictions: ["EU"] };
+  const withFix = compileRegisterPlan({ manifest: parseVariantManifestModel(JSON.stringify(excluded)),
+    job, form, houseElement: "NOVAPULSE", skillVersion: "clearance-register@spec48" });
+  const withoutFix = compileRegisterPlan({ manifest: parseVariantManifestModel(JSON.stringify(excluded)),
+    job, form, houseElement: null, skillVersion: "clearance-register@spec48" });
+
+  const terms = (p) => p.entries.flatMap((e) => [e.term, ...(e.terms ?? [])]).filter(Boolean).map(String);
+  assert.ok(terms(withoutFix).includes("NOVAPULS"),
+    "precondition: WITHOUT the removal the fallback does compile the house element's mutation floor — "
+    + "this is the defect, asserted so the fix cannot be mistaken for a no-op");
+  assert.equal(terms(withFix).includes("NOVAPULS"), false, "with it, that floor is unreachable");
+  assert.ok(withFix.entries.length >= 1, "and the plan is still a plan");
+
+  // AND IT ONLY EVER SUBTRACTS. The count per run is the owner's to rule on, so the direction is held
+  // here rather than left to the prose: removing an element from the document the lookup reads can drop
+  // terms and can never add one. A change that swept something new would pass every assertion above.
+  assert.ok(terms(withFix).length < terms(withoutFix).length,
+    "the fix must reduce the compiled terms — that is the whole of its effect on what a run spends");
+  assert.equal(terms(withFix).filter((t) => !terms(withoutFix).includes(t)).length, 0,
+    "no term is swept that was not swept before: this may subtract queries and must never add one");
+});

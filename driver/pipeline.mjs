@@ -2386,6 +2386,11 @@ function attachRegisterPlan(ctx, { frozenOnly = false } = {}) {
       // count probe and the whole plan joined MISSING at fan-in (review finding 11).
       job: { jobKey: ctx.run.slug, classes: [...new Set([...inScopeClassList(ctx.job, ctx.profile).map(String), ...frameIdentifiedClasses(P.runDir)])], jurisdictions: registerJurisdictions(ctx.job, ctx.profile) },
       form, skillVersion: "clearance-register@spec48",
+      // — WHICH ELEMENT THE EXCLUSION TOOK OUT, so the compile can make its form band unreachable
+      // rather than merely unasked-for. Null unless the ownership receipt verified, which is the same
+      // condition the exclusion itself runs under: an unverified receipt excludes nothing, and it must
+      // not remove a band either.
+      houseElement: houseConfirmation ? houseReceipt?.element : null,
       // phase 3 — the plan is compiled AGAINST THE ACTIVE PROVIDER's declared capabilities, so the
       // frozen artifact is executable by construction: the OR-stack split uses that provider's width,
       // jurisdictions are translated into its office vocabulary (EU→EM on Compumark), and a predicate
