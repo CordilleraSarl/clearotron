@@ -13,7 +13,7 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { compareVersions } from "../../scripts/deprecate-below.mjs";
+import { compareVersions, confirmWrites, CONFIRM_BUDGET_MS } from "../../scripts/deprecate-below.mjs";
 
 const below = (v, stable) => compareVersions(v, stable) < 0;
 
@@ -55,4 +55,41 @@ test("versions with different core numbers compare on the core, not on their tex
   assert.equal(below("0.9.9", "0.10.0"), true, "9 against 10 as text reads the wrong way round");
   assert.equal(below("1.0.0", "0.10.0"), false);
   assert.equal(compareVersions("0.3.0", "0.3.0"), 0);
+});
+
+
+// ── A WRITE THE REGISTRY HAS TAKEN BUT IS NOT SERVING YET IS NOT A FAILED WRITE ──────────────────────
+//
+// `npm deprecate` returns when the registry accepts the write, not when every reader can see it.
+// Reading back one line later asks a question it has not finished answering: on 2026-09-17 that
+// reported ELEVEN successful deprecations as failures, and the messages were all in place minutes
+// later. The job's red was not evidence; the outside read was.
+
+test("a message that appears on a later pass is confirmed, not failed", async () => {
+  const seen = new Map([["0.1.0", 0], ["0.1.1", 2]]);   // how many reads before each starts serving
+  const read = (v) => { const left = seen.get(v); seen.set(v, left - 1); return left <= 0 ? "superseded" : null; };
+  const r = await confirmWrites({ versions: ["0.1.0", "0.1.1"], read, sleep: async () => {},
+    now: (() => { let t = 0; return () => (t += 1000); })() });
+  assert.deepEqual(r.confirmed.sort(), ["0.1.0", "0.1.1"], "both were accepted and both eventually served");
+  assert.deepEqual(r.unconfirmed, []);
+});
+
+test("a message that never appears is reported unconfirmed, and is kept apart from a failed write", async () => {
+  const r = await confirmWrites({ versions: ["0.2.0"], read: () => null, sleep: async () => {},
+    now: (() => { let t = 0; return () => (t += 30_000); })(), budgetMs: 60_000 });
+  assert.deepEqual(r.confirmed, []);
+  assert.deepEqual(r.unconfirmed, ["0.2.0"], "unserved is its own answer — the write itself exited 0");
+});
+
+test("a read that throws is asked again rather than judged", async () => {
+  let n = 0;
+  const read = () => { n += 1; if (n < 3) throw new Error("registry said no"); return "superseded"; };
+  const r = await confirmWrites({ versions: ["0.3.0"], read, sleep: async () => {},
+    now: (() => { let t = 0; return () => (t += 1000); })() });
+  assert.deepEqual(r.confirmed, ["0.3.0"], "a read that failed is not a version that carries no message");
+});
+
+test("the budget is bounded, so a registry that never catches up cannot hang the job", async () => {
+  assert.ok(CONFIRM_BUDGET_MS > 0 && CONFIRM_BUDGET_MS <= 300_000,
+    `the confirm budget must be bounded and modest; it is ${CONFIRM_BUDGET_MS}ms`);
 });

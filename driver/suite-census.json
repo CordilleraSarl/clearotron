@@ -1816,8 +1816,8 @@
           "todos": 0
         },
         "deprecating-below-a-stable-touches-nothing-above-it.test.mjs": {
-          "tests": 4,
-          "asserts": 18,
+          "tests": 8,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },

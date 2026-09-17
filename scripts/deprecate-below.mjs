@@ -78,6 +78,43 @@ function published() {
   return Array.isArray(versions) ? versions : [versions];
 }
 
+/** How long to keep asking the registry to show a write it has already accepted. */
+export const CONFIRM_BUDGET_MS = 90_000;
+const CONFIRM_STEP_MS = 3_000;
+
+/**
+ * Confirm writes the registry has ACCEPTED but may not be serving yet.
+ *
+ * WHY THIS IS A SECOND PASS AND NOT A READ AFTER EACH WRITE. `npm deprecate` returns when the registry
+ * has taken the write, not when every reader can see it. Reading back one line later asks a question
+ * the registry has not finished answering, and on 2026-09-17 that reported ELEVEN successful
+ * deprecations as failures — run 35219705516, where the messages were all in place minutes later and
+ * the job had already exited 1. The outside read was the truth and the job's red was not evidence.
+ *
+ * SO THE WRITES GO FIRST AND THE READING COMES AFTER, which also collapses a per-version read into one
+ * pass over what is left. Anything still unseen is asked for again until the budget runs out.
+ *
+ * A WRITE THAT WAS ACCEPTED AND IS NOT YET VISIBLE IS NOT A FAILED WRITE, and the caller is told so in
+ * those words rather than having the two folded together. `npm deprecate` exiting 0 is what says the
+ * write happened; this pass says whether the registry is serving it yet.
+ */
+export async function confirmWrites({ versions, read, sleep, now = () => Date.now(),
+                                      budgetMs = CONFIRM_BUDGET_MS, stepMs = CONFIRM_STEP_MS }) {
+  const pending = new Set(versions);
+  const confirmed = [];
+  const started = now();
+  while (pending.size) {
+    for (const v of [...pending]) {
+      let msg = null;
+      try { msg = read(v); } catch { msg = null; }   // a read that threw is asked again, not judged
+      if (msg) { confirmed.push(v); pending.delete(v); }
+    }
+    if (!pending.size || now() - started >= budgetMs) break;
+    await sleep(stepMs);
+  }
+  return { confirmed, unconfirmed: [...pending], waitedMs: now() - started };
+}
+
 /** One version's deprecation message, read by its own exact spec. Null when it carries none. */
 function deprecationOf(version) {
   // `--json` on a field that is absent prints nothing at all, which JSON.parse refuses. An empty read is
@@ -89,7 +126,7 @@ function deprecationOf(version) {
   return typeof v === "string" && v.trim() ? v : null;
 }
 
-function main() {
+async function main() {
   const argv = process.argv.slice(2);
   const at = (flag) => { const i = argv.indexOf(flag); return i >= 0 ? argv[i + 1] : null; };
   const DRY = argv.includes("--dry-run");
@@ -115,6 +152,7 @@ function main() {
   console.log(`deprecate-below: ${all.length} published version(s); ${candidates.length} below ${below}.`);
 
   let done = 0, skipped = 0, failed = 0;
+  const wrote = [];
   for (const v of candidates) {
     let existing;
     try { existing = deprecationOf(v); }
@@ -132,15 +170,35 @@ function main() {
       failed += 1;
       continue;
     }
-    // READ BACK, PER VERSION, and report what the registry says rather than that the command exited 0.
-    let now = null;
-    try { now = deprecationOf(v); } catch { now = null; }
-    if (now) { console.log(`  ${v}: deprecated — registry reads back "${now.slice(0, 60)}"`); done += 1; }
-    else { console.error(`  ${v}: deprecate reported success and the registry reads back NOTHING.`); failed += 1; }
+    // ACCEPTED. Whether the registry is SERVING it yet is asked once, after every write, below.
+    console.log(`  ${v}: deprecate accepted`);
+    wrote.push(v);
   }
 
-  console.log(`deprecate-below: ${done} deprecated, ${skipped} already carried a message, ${failed} failed.`);
+  // ── NOW ASK WHETHER THE REGISTRY IS SERVING THEM ────────────────────────────────────────────────
+  let confirmed = [], unconfirmed = [], waitedMs = 0;
+  if (wrote.length && !DRY) {
+    ({ confirmed, unconfirmed, waitedMs } = await confirmWrites({
+      versions: wrote,
+      read: (v) => deprecationOf(v),
+      sleep: (ms) => new Promise((r) => setTimeout(r, ms)),
+    }));
+    done += confirmed.length;
+    for (const v of confirmed) console.log(`  ${v}: serving the message`);
+    for (const v of unconfirmed) {
+      console.error(`  ${v}: WRITE ACCEPTED, not yet served after ${Math.round(waitedMs / 1000)}s — `
+        + "the registry took it and is not showing it yet. Read the version from outside before treating "
+        + "this as undone; re-running is safe and will report it as already deprecated.");
+    }
+  } else if (DRY) {
+    done += wrote.length;
+  }
+
+  console.log(`deprecate-below: ${done} deprecated, ${skipped} already carried a message, `
+    + `${unconfirmed.length} accepted but not yet served, ${failed} failed.`);
+  // ONLY A FAILED WRITE IS A FAILURE. A write the registry accepted and has not caught up on is not a
+  // release gone wrong, and exiting 1 for it is what turned eleven successful deprecations into a red.
   return failed ? 1 : 0;
 }
 
-if (process.argv[1] && process.argv[1].endsWith("deprecate-below.mjs")) process.exit(main());
+if (process.argv[1] && process.argv[1].endsWith("deprecate-below.mjs")) process.exit(await main());
