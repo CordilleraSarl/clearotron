@@ -911,6 +911,13 @@ jobs:
           # A rehearsal has nothing coming, so it reads once and reports. Set ONLY here — a real run
           # takes the file's own `WAIT_MS`.
           CLEAROTRON_RELEASE_WAIT_MS: ${{ github.event_name == 'workflow_dispatch' && inputs.cut == 'rehearse' && '0' || '' }}
+          # WHETHER THIS RUN ASKED FOR A CUT, and which pull request it armed. A push and the schedule
+          # ask main a question and the cron floor sits under either answer, so giving up is ordinary
+          # and stays quiet. A dispatch is a request THIS run tried to satisfy: it opened the version
+          # pull request and told it to merge. The budget expiring then means the one thing the run
+          # existed to do did not happen, and the script fails rather than reporting success.
+          CLEAROTRON_CUT_REQUESTED: ${{ github.event_name == 'workflow_dispatch' && inputs.cut != 'rehearse' && 'true' || 'false' }}
+          CLEAROTRON_CUT_PR: ${{ needs.version.outputs.pr_number }}
         run: node scripts/release-await-cut.mjs
 
   publish:

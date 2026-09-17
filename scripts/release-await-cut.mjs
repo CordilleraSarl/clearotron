@@ -136,6 +136,65 @@ export async function awaitCut({ refresh, read, sleep, waitMs = WAIT_MS, stepMs 
 const git = (args) => execFileSync("git", args, { encoding: "utf8" });
 
 /**
+ * Was a cut ASKED FOR by this run, and which pull request is it waiting on.
+ *
+ * A push and the schedule set nothing in motion — they ask main a question and the cron floor sits
+ * underneath either answer. A dispatch is different: the same run opened the version pull request and
+ * told it to merge itself, so the wait expiring means the thing this run was for did not happen.
+ */
+export function cutRequest(env = process.env) {
+  const asked = String(env.CLEAROTRON_CUT_REQUESTED ?? "").trim() === "true";
+  const pr = String(env.CLEAROTRON_CUT_PR ?? "").trim();
+  return { asked, pr: /^[0-9]+$/.test(pr) ? Number(pr) : null };
+}
+
+/**
+ * What to say when the budget expires, and whether it is a failure. PURE.
+ *
+ * THE DISTINCTION THIS EXISTS FOR. Three ways to publish nothing look identical from outside:
+ * nothing was set in motion, this run set something in motion and it did not land, and the loop could
+ * not look at all. The third is exit 2 and is decided before this is reached. The first two are what
+ * this separates, and until it did, a dispatched cut that released nothing reported success — measured
+ * twice on 2026-09-17, on runs 35202212206 and 35260883981.
+ *
+ * NAMING WHICH IS HALF THE POINT. A red that says only "did not merge" sends the next reader to the
+ * same log this was written from. The reason is read off the pull request rather than guessed.
+ */
+export function expiryVerdict({ cut, requested, pr = null }) {
+  if (cut) return { red: false, reason: null };
+  if (!requested) return { red: false, reason: null };
+  if (!pr) return { red: true, reason: "a cut was dispatched, and no version pull request was found to wait on" };
+  if (pr.merged) return { red: true, reason: "the version pull request merged, yet main carries no untagged version — the publish this run was for has gone missing" };
+  const bad = (pr.checks ?? []).filter((c) => ["failure", "timed_out", "cancelled", "action_required"].includes(c.conclusion));
+  if (bad.length) {
+    const named = bad.map((c) => `${c.context} (${c.conclusion})`).join(", ");
+    return { red: true, reason: `the version pull request did not merge: ${named}` };
+  }
+  if (!(pr.checks ?? []).some((c) => c.conclusion)) {
+    return { red: true, reason: "the version pull request did not merge: no check on it had concluded when the budget expired — it is most likely waiting for approval before its run will start" };
+  }
+  if (pr.mergeable === false) return { red: true, reason: "the version pull request did not merge: it is not mergeable" };
+  return { red: true, reason: "the version pull request did not merge, and nothing on it says why — read it by hand" };
+}
+
+/** The version pull request's state and its checks' conclusions. Injected so an arm can drive it. */
+export async function readVersionPr(number, { run = ((args) => execFileSync("gh", args, { encoding: "utf8" })) } = {}) {
+  if (!number) return null;
+  try {
+    const j = JSON.parse(run(["pr", "view", String(number), "--repo", "CordilleraSarl/clearotron",
+      "--json", "merged,mergeable,statusCheckRollup"]));
+    return {
+      merged: Boolean(j.merged),
+      mergeable: j.mergeable === "MERGEABLE" ? true : j.mergeable === "CONFLICTING" ? false : null,
+      checks: (j.statusCheckRollup ?? []).map((c) => ({
+        context: String(c.name ?? c.context ?? "a check"),
+        conclusion: String(c.conclusion ?? "").toLowerCase() || null,
+      })),
+    };
+  } catch { return null; }   // unreadable is not a finding about the pull request; the caller says so
+}
+
+/**
  * One read of `main`: the version it carries, whether that version is tagged, and WHICH COMMIT said so.
  *
  * THE COMMIT IS READ IN THE SAME PASS AS THE VERSION, and that is the whole point of this function
@@ -239,6 +298,21 @@ function main() {
     // `sha` IS WRITTEN ON BOTH ANSWERS, not only on a cut. It records which commit this loop's verdict is
     // about, so a run that published nothing can still be read back against the tree it looked at.
     if (out) appendFileSync(out, `cut=${r.cut ? "true" : "false"}\nversion=${r.version}\nsha=${r.sha ?? ""}\nlooked=true\n`);
+    return r;
+  }).then(async (r) => {
+    // ── A DISPATCHED CUT THAT PUBLISHED NOTHING IS A FAILED RUN ─────────────────────────────────────
+    //
+    // Everything above stays exit 0, and on a push or the schedule that is right: nothing was asked
+    // for, and the cron floor sits underneath. A dispatch is a request, and THIS run is what tries to
+    // satisfy it — it opened the version pull request and armed it. So the budget expiring means the
+    // one thing the run existed to do did not happen, and reporting success for that is how a release
+    // goes missing with every light green.
+    if (!r) return;                                   // could-not-look already exited 2 above
+    const { asked, pr } = cutRequest();
+    const v = expiryVerdict({ cut: r.cut, requested: asked, pr: asked && !r.cut ? await readVersionPr(pr) : null });
+    if (!v.red) return;
+    console.error(`::error::release-await-cut: this run dispatched a cut and released nothing. ${v.reason}`);
+    process.exitCode = 1;
   });
 }
 

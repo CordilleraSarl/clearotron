@@ -28,6 +28,7 @@ import { cutDecision, versionAtHead } from "../../scripts/release-cut-decision.m
 import { checksVerdict, waitForChecks, RUNNING, NOTHING_STARTED, WAITING_FOR_A_PERSON, exitCodeFor, CHECKS_WINDOW_MS, CHECKS_JOB_MARGIN_MS } from "../../scripts/release-version-pr-checks.mjs";
 import { refusals as completenessRefusals } from "../../scripts/release-completeness-check.mjs";
 import { notesFor } from "../../scripts/release-notes-for.mjs";
+import { expiryVerdict, cutRequest } from "../../scripts/release-await-cut.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 import { assembleRoot, writeRootChangelog, group, modeTransition, splitCut, CUT_FLAG } from "../../scripts/release-version.mjs";
 import { unreachableBareSites, sentenceFor } from "../../shared/root-doc-commands.mjs";
@@ -2532,4 +2533,72 @@ test("a credential held at job level, where every step would get it, is refused"
   assert.notEqual(jobLevel, wf, "the plant did not apply, so this arm is measuring nothing");
   assert.ok(publishRefusals({ workflow: jobLevel, rootPkg: rootPkg() }).length,
     "a job-level credential gives every step in the job the token, including the guard");
+});
+
+
+// ── A DISPATCHED CUT THAT PUBLISHED NOTHING MUST NOT REPORT SUCCESS ──────────────────────────────────
+//
+// Measured twice on 2026-09-17: runs 35202212206 and 35260883981 both ended `completed`/`success` and
+// released nothing — no tag, publish skipped, the version pull request still open. The run's conclusion
+// answered "did this run finish", which is not the question anybody reads it for.
+//
+// THE QUIET PATH IS LOAD-BEARING AND IS ARMED SEPARATELY. On a push and on the schedule nothing was set
+// in motion and the cron floor sits underneath, so giving up is the ordinary outcome. Making the loud
+// case loud is easy; the way to get it wrong is to lose the quiet one, so each is driven on its own.
+
+test("a dispatched cut whose version pull request failed a check ends the run red, and names the check", () => {
+  const v = expiryVerdict({ cut: false, requested: true, pr: { merged: false, mergeable: true, checks: [
+    { context: "The offline suites (2)", conclusion: "failure" },
+    { context: "The pattern guards", conclusion: "success" },
+  ] } });
+  assert.equal(v.red, true, "a cut was asked for, this run armed the pull request, and nothing published");
+  assert.match(v.reason, /The offline suites \(2\)/, "a red that does not name the check sends the reader to the same log this came from");
+  assert.match(v.reason, /failure/);
+});
+
+test("a version pull request whose checks never started is named as that, not as a failure", () => {
+  // The state a parked run leaves: the pull request stands, auto-merge waits, and no check has a
+  // conclusion because none ever began. Reporting "a check failed" here would be a wrong answer.
+  const v = expiryVerdict({ cut: false, requested: true, pr: { merged: false, mergeable: null, checks: [
+    { context: "The offline suites (1)", conclusion: null },
+    { context: "The pattern guards", conclusion: null },
+  ] } });
+  assert.equal(v.red, true);
+  assert.match(v.reason, /had concluded|approval/, `it must say nothing concluded rather than blame a check: ${v.reason}`);
+  assert.doesNotMatch(v.reason, /failure/);
+});
+
+test("a version pull request that cannot merge is named as that", () => {
+  const v = expiryVerdict({ cut: false, requested: true, pr: { merged: false, mergeable: false, checks: [
+    { context: "The pattern guards", conclusion: "success" },
+  ] } });
+  assert.equal(v.red, true);
+  assert.match(v.reason, /not mergeable/);
+});
+
+test("a dispatch with no version pull request at all is red, and says so", () => {
+  const v = expiryVerdict({ cut: false, requested: true, pr: null });
+  assert.equal(v.red, true);
+  assert.match(v.reason, /no version pull request/);
+});
+
+test("a push, the schedule and a rehearsal all keep the quiet exit — one arm each", () => {
+  for (const what of ["a push", "the schedule", "a rehearsal"]) {
+    const v = expiryVerdict({ cut: false, requested: false, pr: null });
+    assert.equal(v.red, false, `${what} set nothing in motion; the cron floor is underneath and giving up is ordinary`);
+    assert.equal(v.reason, null);
+  }
+});
+
+test("a cut that DID publish is quiet even though it was asked for", () => {
+  const v = expiryVerdict({ cut: true, requested: true, pr: null });
+  assert.equal(v.red, false);
+});
+
+test("the request is read off the environment, and a missing pull request number is not a number", () => {
+  assert.deepEqual(cutRequest({ CLEAROTRON_CUT_REQUESTED: "true", CLEAROTRON_CUT_PR: "345" }), { asked: true, pr: 345 });
+  assert.deepEqual(cutRequest({ CLEAROTRON_CUT_REQUESTED: "false", CLEAROTRON_CUT_PR: "345" }), { asked: false, pr: 345 });
+  assert.deepEqual(cutRequest({}), { asked: false, pr: null });
+  // An empty output from a job that did not run must not become pull request 0.
+  assert.deepEqual(cutRequest({ CLEAROTRON_CUT_REQUESTED: "true", CLEAROTRON_CUT_PR: "" }), { asked: true, pr: null });
 });
