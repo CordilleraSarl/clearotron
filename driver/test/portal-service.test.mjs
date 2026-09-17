@@ -207,6 +207,7 @@ function world(opts = {}) {
     // snapshot on disk. `in opts` rather than a truthy test: `undefined` and `null` are two of the
     // three answers this field has, and a truthy guard would collapse both into "use the default".
     ...("readTerritories" in opts ? { readTerritories: opts.readTerritories } : {}),
+    ...("readRegisterLabel" in opts ? { readRegisterLabel: opts.readRegisterLabel } : {}),
     ...(opts.upstream ? { upstream: opts.upstream } : {}),
     ...(opts.composeRead ? { composeRead: opts.composeRead } : {}),
     ...(opts.readBudget ? { readBudget: opts.readBudget } : {}),
@@ -3253,4 +3254,24 @@ test("the searches payload carries the register's reach as THREE answers, never 
     .route("GET", "/portal/api/searches", CLIENT, {}, {});
   assert.equal("territories" in silent.json, false,
     "a snapshot that does not say must OMIT the field — null would claim no restriction exists");
+});
+
+// THE REGISTER'S NAME RIDES THE SAME PAYLOAD, because the screen has to say what a territory is not
+// available WITH. Without it the marking can only say a territory is unreachable, and the door refuses
+// the same request in a sentence that names the register — one fact, two wordings, which is the thing
+// the disclosure was supposed to stop.
+test("the searches payload names the wired register, and omits the name rather than inventing one", async () => {
+  const named = await world({ readRegisterLabel: () => "Signa" }).service
+    .route("GET", "/portal/api/searches", CLIENT, {}, {});
+  assert.equal(named.json.registerLabel, "Signa",
+    "the screen cannot name the register in its marking unless the server sends the name");
+
+  // A snapshot written before the label shipped carries none. The key must be ABSENT, so the screen
+  // marks the territory without naming a register — the same thing the door's own sentence does.
+  for (const nothing of [null, undefined, ""]) {
+    const silent = await world({ readRegisterLabel: () => nothing }).service
+      .route("GET", "/portal/api/searches", CLIENT, {}, {});
+    assert.equal("registerLabel" in silent.json, false,
+      `a label of ${JSON.stringify(nothing)} must be omitted, never sent as an empty name`);
+  }
 });

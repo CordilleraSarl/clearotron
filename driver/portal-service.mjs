@@ -130,7 +130,7 @@ import { productRows, productRow, baseTurnaroundFor } from "./product-rows.mjs";
 import { resolveForDoor, gateResolvedRequest } from "./door-gates.mjs";
 import { resolveEffectiveScope } from "./effective-scope.mjs";
 import { quoteForJob } from "./run-quote.mjs";
-import { readFlagSnapshot, builtFor, registerCanCountFor, registerTerritoriesFor, caseLawReadyFor } from "./flag-snapshot.mjs";
+import { readFlagSnapshot, builtFor, registerCanCountFor, registerTerritoriesFor, registerLabelFor, caseLawReadyFor } from "./flag-snapshot.mjs";
 import { isDemo, demoPostureLine } from "./demo-posture.mjs";   
 import { triggerCapGap, triggerCapWarning } from "./trigger-cap.mjs";   // F51 — one answer, three surfaces
 import { makeUpstream } from "./portal-upstream.mjs";
@@ -1230,6 +1230,10 @@ export function makePortalService({
   // THREE answers survive the read: null (unrestricted), an array, or undefined (the snapshot does not
   // say — fail open). registerTerritoriesFor is what keeps them apart.
   readTerritories = () => registerTerritoriesFor(readFlagSnapshot(poolRoot)),
+  // What to CALL the wired register on screen. Beside `readTerritories` and injected for the same
+  // reason: the covered set says a territory cannot be searched, and this says by what — the screen
+  // cannot name the register from the key without printing an engine identifier at a client.
+  readRegisterLabel = () => registerLabelFor(readFlagSnapshot(poolRoot)),
   // — whether this deployment has a case-law source enrolled at all. Same
   // injection and same snapshot as the two above, and the same tri-state: null is "the snapshot does not
   // say", which must not render as a warning on a working box.
@@ -1280,6 +1284,7 @@ export function makePortalService({
     const built = readBuilt();
     const canCount = readCanCount();
     const territories = readTerritories();
+    const registerLabel = readRegisterLabel();
     const caseLawReady = readCaseLaw();
     return {
       // Every product is LISTED whatever its state. A product that vanishes when unavailable leaves a
@@ -1335,6 +1340,16 @@ export function makePortalService({
       // not told me", which fails open. A `covered ?? []` anywhere on this path offers zero territories
       // on a production box.
       ...(territories === undefined ? {} : { territories }),
+      // THE REGISTER'S NAME, sent whenever there is one. The covered set alone lets the screen mark a
+      // territory as unreachable; it cannot say by WHAT, and the sentence the door refuses with names
+      // the register ("China is not available with Signa, the register configured here"). A screen that
+      // marked a chip without naming the register would be a second, vaguer wording for one fact.
+      //
+      // OMITTED, never nulled, exactly as `territories` above: absent means this deployment did not say,
+      // and the screen must then mark the territory without naming a register rather than invent one.
+      // It is the register's own display label, never the provider key — the key is an engine
+      // identifier and has no place on a client's screen.
+      ...(registerLabel ? { registerLabel } : {}),
       // `base` and `nativeLanguage` ride the LIST row, not just the record: the composer has to say what
       // geography a saved search accepts while the row is being clicked, and fetching the record per
       // selection would put that answer one round trip behind the Review button. Only `true` travels for
