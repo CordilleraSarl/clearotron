@@ -15835,6 +15835,43 @@ function resolveRun(job, opts) {
 
 // Rebuild the ctx a single stage needs WITHOUT re-running upstream: axes from the persisted manifest, verdict
 // from status.json, publishedUrl from .published. (Mirrors what pipeline() accumulates mid-run.)
+/**
+ * THE JOB A RUN RAN, READ BACK OUT OF THE RUN'S OWN STATUS. PURE.
+ *
+ * `--resume` needs a job file, and the job file is gone by the time a resume is needed: the queue entry
+ * that carried it is consumed when the run starts, and nothing copies it into the run directory. So the
+ * one command that repairs a failed run names a path the box does not have, and the person who finds out
+ * is the person trying to repair it.
+ *
+ * This is not a guess at the job. `seedRunStatus` writes these fields FROM the job the engine ran, so
+ * reading them back is the engine's own record, not a reconstruction of intent. What it cannot carry is
+ * scope, and it does not have to: `reconstructCtx` reads profile and framework from the run's frozen
+ * sidecars with `write: false`, so the run's own configuration governs and the job supplies identity.
+ *
+ * THE CALLER MUST CHECK THE SLUG, and `resumeJobRefusal` below is that check. A rebuilt job that derives
+ * the run's own slug has reproduced the run's identity — `deriveSlug` reads `ref` and `markName` and
+ * nothing else — and one that derives a different slug is a job for a different matter.
+ */
+export function jobFromStatus(status) {   // @internal
+  const s = status ?? {};
+  if (!s.id && !s.ref && !s.markName) return null;   // not a status this can rebuild from
+  return {
+    id: s.id ?? null, ref: s.ref ?? null, markName: s.markName ?? null,
+    classes: Array.isArray(s.classes) ? s.classes : null,
+    forwarder: s.forwarder ?? null,
+  };
+}
+
+/** Why a rebuilt job may not stand in for the run's own, or null when it may. PURE. */
+export function resumeJobRefusal(job, slug) {   // @internal
+  if (!job) return "this run's status.json carries no id, reference or mark name, so the job it ran cannot be read back from it";
+  const derived = deriveSlug(job);
+  if (derived !== slug)
+    return `the job rebuilt from this run's status.json derives ${derived}, and the run directory is ${slug} — `
+      + "they are different matters, so the rebuild is refused rather than resumed into the wrong run";
+  return null;
+}
+
 export function reconstructCtx(job, opts) {   // @internal
   const run = resolveRun(job, opts);
   const P = paths(run.runDir);
@@ -16476,8 +16513,13 @@ export function retiredEnvWarnings(env = process.env) {
 // ABSOLUTE PATHS on purpose: this line is read hours later, possibly from a different directory, and a
 // relative path that silently resolves somewhere else would be a worse answer than no line at all.
 export function resumeCommand({ script, jobPath, codename, agent = null }) {   // @internal
-  if (!script || !jobPath || !codename) return null;
-  return `node ${script} --job ${jobPath}${agent ? ` --agent ${agent}` : ""} --resume ${codename}`;
+  // THE IDENTITY IS THE CODENAME, NOT THE JOB PATH, and requiring both is what made this print nothing
+  // on the failures that most needed it. A resume rebuilds the job from the run's own status when no
+  // `--job` is given, so a command without one is valid — and it is the only valid one by the time a
+  // failure has made a resume necessary, because the queue entry carrying the job is long consumed.
+  // Requiring a path here meant every such failure was told "nothing to resume", which was false.
+  if (!script || !codename) return null;
+  return `node ${script}${jobPath ? ` --job ${jobPath}` : ""}${agent ? ` --agent ${agent}` : ""} --resume ${codename}`;
 }
 
 // The stderr lines a non-clean exit owes its reader, as an array (empty = say nothing further).
@@ -16598,8 +16640,47 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   // mistake a first-time reader is likeliest to make. Kept guarded here through the rebase — the
   // pool check above is a separate refusal and must not swallow this one.
   let job;
-  try { job = JSON.parse(readFileSync(a.job, "utf8")); }
-  catch (e) { console.error(`error: cannot read job file ${a.job} — ${e.message}`); process.exit(2); }
+  if (!a.job && a.codename) {
+    // ── RESUMING A RUN WHOSE JOB FILE THE BOX NO LONGER HAS ───────────────────────────────────────
+    //
+    // The queue entry carrying the job is consumed when the run starts, so by the time a failure makes
+    // a resume necessary the input needed to perform it is already gone — and the exit advice printed
+    // on that failure composes a command naming a path that is not there. Rebuilt from the run's own
+    // status.json, which the engine wrote FROM the job it ran, and refused unless the rebuild derives
+    // this run's own slug.
+    //
+    // The scan is what makes it possible at all: finding a run by codename needs its slug, and the
+    // slug comes from the job, which is the thing being rebuilt. So the studio root's matters are
+    // scanned for the one holding a run dir with this codename. `findRunDirFor` decides what counts as
+    // that leaf, imported rather than re-spelled here — a second private copy of the leaf rule is how
+    // a reclaim and a resume come to disagree about which directory is the run. The import is lazy
+    // because runner.mjs imports THIS module; at this point both are loaded and nothing cycles.
+    const { findRunDirFor } = await import("./runner.mjs");
+    const studioRoot = a.agent ? config.studioRootForAgent(a.agent) : config.studioRoot;
+    const archiveRoot = a.agent ? config.archiveRootForAgent(a.agent) : config.archiveRoot;
+    let found = null;
+    try {
+      for (const slug of readdirSync(studioRoot)) {
+        const hit = findRunDirFor({ codename: a.codename, slug, studioRoot, archiveRoot });
+        if (hit) { found = { ...hit, slug }; break; }
+      }
+    } catch (e) { console.error(`error: cannot read the studio root ${studioRoot} — ${e.message}`); process.exit(2); }
+    if (!found) {
+      console.error(`error: no run directory for --resume ${a.codename} under ${studioRoot}`);
+      console.error("       pass --job <file.json> if the run lives somewhere this cannot see.");
+      process.exit(2);
+    }
+    let status = null;
+    try { status = JSON.parse(readFileSync(join(found.dir, "status.json"), "utf8")); }
+    catch (e) { console.error(`error: cannot read ${join(found.dir, "status.json")} — ${e.message}`); process.exit(2); }
+    job = jobFromStatus(status);
+    const refusal = resumeJobRefusal(job, found.slug);
+    if (refusal) { console.error(`error: ${refusal}`); process.exit(2); }
+    console.error(`[pipeline] --job not given; rebuilt the job for ${a.codename} from ${join(found.dir, "status.json")} (slug ${found.slug} confirmed)`);
+  } else {
+    try { job = JSON.parse(readFileSync(a.job, "utf8")); }
+    catch (e) { console.error(`error: cannot read job file ${a.job} — ${e.message}`); process.exit(2); }
+  }
   // Manual runs: if --agent is given, root the run-dir in that agent's workspace too (mirrors the runner).
   const base = a.agent
     ? { agent: a.agent, studioRoot: config.studioRootForAgent(a.agent), archiveRoot: config.archiveRootForAgent(a.agent) }
@@ -16611,7 +16692,10 @@ if (isEntrypoint(import.meta.url)) void (async () => {
     ? { ...base, codename: a.codename, experiment: a.experiment, model: a.model, instructions: a.instructions, axis: a.axis, label: a.label, dispatchTrigger: a.dispatchTrigger }
     : { ...base, codename: a.codename, fromStage: a.fromStage };
   const script = resolve(fileURLToPath(import.meta.url));
-  const advise = (o) => { for (const line of resumeAdvice({ script, jobPath: resolve(a.job), agent: a.agent ?? null, experiment: Boolean(a.experiment), ...o })) console.error(line); };
+  // `jobPath` is null on a rebuilt resume, so the advice composes a command that does not name a file
+  // the box does not have — which is the whole defect this path exists to close, and printing it again
+  // in the exit advice would reintroduce it one layer along.
+  const advise = (o) => { for (const line of resumeAdvice({ script, jobPath: a.job ? resolve(a.job) : null, agent: a.agent ?? null, experiment: Boolean(a.experiment), ...o })) console.error(line); };
 
   // ── the laptop case: a closed lid, a shutdown, a ^C ────────────────────────────────────────────────
   // Until now this CLI had NO signal handler: node's default die-now killed the process mid-stage, the run
