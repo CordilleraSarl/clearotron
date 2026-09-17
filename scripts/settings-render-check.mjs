@@ -89,6 +89,20 @@ const server = createServer((req, res) => {
   if (path === '/portal/admin/config' && !wantsPage) return json(adminConfig)
   if (path === '/portal/api/about') return json(about)
   if (path === '/portal/admin/roster' && !wantsPage) return json({ customers: [{ key: 'northwind', name: 'Northwind Foods' }] })
+  // THE PEOPLE SCREEN'S OWN DATA. Rows with real-length values on purpose: the defect this screen was
+  // filed for is a second column cut off at a phone's right edge, and a table of empty rows cannot show
+  // it. The permission phrases are the product's own words, the longest of them included.
+  if (path === '/portal/admin/access' && !wantsPage) {
+    return json({
+      note: '',
+      unknownAccounts: [],
+      people: [
+        { email: 'rosa.venn@northwind.example', permissions: { run: true, manage: true }, accounts: '*', listed: true },
+        { email: 'imani.oduya@northwind.example', permissions: { run: true, manage: false }, accounts: ['northwind'], listed: true },
+        { email: 'peter.halvorsen@northwind.example', permissions: { run: false, manage: false }, accounts: ['northwind'], listed: true },
+      ],
+    })
+  }
   if (path === '/portal/login') {
     res.writeHead(200, { 'content-type': 'text/html' })
     return res.end(loginPage({ email: EMAIL, resetCommand: state.reset }))
@@ -176,11 +190,16 @@ async function setTheme(theme) {
 
 // A FULL-HEIGHT VIEWPORT, not a beyond-viewport capture: a beyond-viewport capture paints the sticky rail
 // and top bar where the 900px viewport put them.
-async function capture(name) {
+async function capture(name, width = 1280) {
   if (!shotDir) return
   await evalIn('window.scrollTo(0, 0)')
+  // THE WIDTH IS APPLIED BEFORE THE HEIGHT IS MEASURED. A narrow viewport reflows the page taller, and
+  // measuring first captures a page cut off at the fold — which is how a phone-width check ends up
+  // producing a picture that looks fine and shows half the screen.
+  await cmd('Emulation.setDeviceMetricsOverride', { width, height: 900, deviceScaleFactor: 1, mobile: width < 700 })
+  await sleep(250)
   const h = await evalIn('Math.max(document.documentElement.scrollHeight, document.body.scrollHeight)') ?? 900
-  await cmd('Emulation.setDeviceMetricsOverride', { width: 1280, height: Math.max(900, h), deviceScaleFactor: 1, mobile: false })
+  await cmd('Emulation.setDeviceMetricsOverride', { width, height: Math.max(900, h), deviceScaleFactor: 1, mobile: width < 700 })
   await sleep(400)
   const shot = await cmd('Page.captureScreenshot', { format: 'png' })
   await cmd('Emulation.clearDeviceMetricsOverride', {})
@@ -542,6 +561,60 @@ for (const theme of ['light', 'dark']) {
     await capture(`${label}-open-${theme}`)
   }
   state.reset = null
+}
+
+// ── People, at a desktop width and a phone's ────────────────────────────────────────────────────────
+//
+// THE SCREEN NOTHING COULD DRAW. It was reported as clipping its Permissions column at 400px "with no
+// horizontal scroll offered", and the reading could not be settled from the source: the table sits in a
+// wrapper set to scroll and carries a 760px floor, and both were already true at the sha the report was
+// measured against. So either the scrollbar is an overlay one — real, invisible, and invisible in a
+// capture — or something else clipped it and has since changed. No check reached this screen, so nobody
+// could look. This is the looking.
+//
+// The rows carry real-length values deliberately. A table of empty rows cannot show a column being cut.
+console.log('\nPeople, at 1280 and at 400:')
+if (await open('/portal/people', "document.querySelector('table.data tbody tr')", 'People drew its table')) {
+  const peopleProbe = `(() => {
+    const wrap = document.querySelector('.table-wrap');
+    const table = document.querySelector('table.data');
+    const head = [...document.querySelectorAll('table.data thead th')].map((th) => th.innerText.trim());
+    const perm = [...document.querySelectorAll('table.data tbody tr')].map((tr) => tr.children[1]?.innerText.trim() ?? '');
+    return {
+      rows: document.querySelectorAll('table.data tbody tr').length,
+      head, perm,
+      // Does the wrapper actually have somewhere to scroll TO, and does it allow it?
+      scrollable: wrap ? wrap.scrollWidth > wrap.clientWidth + 1 : null,
+      overflowX: wrap ? getComputedStyle(wrap).overflowX : null,
+      wrapW: wrap ? Math.round(wrap.clientWidth) : null,
+      tableW: table ? Math.round(table.scrollWidth) : null,
+      // The page itself must NOT scroll sideways — that is the failure the clearances fix was about.
+      pageScrollsSideways: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+    };
+  })()`
+
+  for (const [label, width] of [['desktop', 1280], ['phone', 400]]) {
+    await cmd('Emulation.setDeviceMetricsOverride', { width, height: 900, deviceScaleFactor: 1, mobile: width < 700 })
+    await sleep(350)
+    const p = (await evalIn(peopleProbe)) ?? {}
+    ok(p.rows === 3, `${label}: the three people are drawn (saw ${p.rows})`)
+    // The heading is upper-cased by CSS, so innerText returns it that way — compare the word, not the casing.
+    ok(p.head?.[1]?.toLowerCase() === 'permissions', `${label}: the second column is still the permissions one (saw ${JSON.stringify(p.head)})`)
+    ok(p.perm?.every((t) => t.length > 0), `${label}: every row states an access (saw ${JSON.stringify(p.perm)})`)
+    // THE PROPERTY, not the pixel. A column wider than its wrapper is fine as long as the wrapper
+    // scrolls; it is a defect only when the overflow has nowhere to go, or when the PAGE takes it.
+    ok(p.overflowX === 'auto' || p.overflowX === 'scroll',
+      `${label}: the table's wrapper can scroll sideways (overflow-x: ${p.overflowX})`)
+    ok(p.pageScrollsSideways === false,
+      `${label}: the page itself does not scroll sideways — the table's overflow stays in the table`)
+    console.log(`    ${label}: wrapper ${p.wrapW}px, table ${p.tableW}px, wrapper scrollable: ${p.scrollable}`)
+    await cmd('Emulation.clearDeviceMetricsOverride', {})
+    for (const theme of ['light', 'dark']) {
+      await setTheme(theme)
+      await capture(`people-${label}-${theme}`, width)
+    }
+    await setTheme('light')
+  }
 }
 
 // ── a browser whose storage refuses ──────────────────────────────────────────────────────────────────

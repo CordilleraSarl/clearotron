@@ -25,7 +25,8 @@ import { fileURLToPath } from 'node:url';
 // its own split, which is how the two rules diverged. It calls stripTelemetry now, so the renderer holds
 // no copy of the RULE either, only a call to it.
 import { parseReport, stripInternal, stripTelemetry } from './parse.mjs';
-import { clientConditions } from '../terminal-clamp.mjs';   // the reader's clause per condition, shared with the cover note
+import { clientConditions } from '../terminal-clamp.mjs';
+import { EXPORT_TOGGLE, exportPopover, EXPORT_MENU_JS } from './report-topbar.mjs';   // the export menu's shell and behaviour, shared with the knockout template   // the reader's clause per condition, shared with the cover note
 import { COMMON_LAW, normRegion, regionName, REGION_NAMES } from './regions.mjs';
 import { parseFindingsJson, bindRecommendation, sentenceCaseLead, CLIENT_TIER_BY_COMPOSITE, bandOf, compareBlockingPower, inDispositionMode, reasonedNegativeGroups } from '../findings-model.mjs';
 import { REC, inPriorityWindow, ownerDisplayName } from '../registry-fidelity.mjs';
@@ -2108,8 +2109,7 @@ window.addEventListener('hashchange',_cardHashGo);
 window.addEventListener('load',_cardHashGo);
 window.addEventListener('beforeprint',function(){document.querySelectorAll('details').forEach(function(d){d.dataset.o=d.open?'1':'';d.open=true;});});
 window.addEventListener('afterprint',function(){document.querySelectorAll('details').forEach(function(d){d.open=d.dataset.o==='1';});_hidden.forEach(function(c){c.classList.remove('print-hidden');});_hidden=[];});
-document.addEventListener('click',function(e){var t=e.target.closest('.tb-exp-toggle'),pop=document.querySelector('.tb-exp-pop');if(t){if(pop){pop.hidden=!pop.hidden;t.setAttribute('aria-expanded',String(!pop.hidden));}return;}if(pop&&!pop.hidden&&!e.target.closest('.tb-exp-pop')){pop.hidden=true;var b=document.querySelector('.tb-exp-toggle');if(b)b.setAttribute('aria-expanded','false');}});
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){var pop=document.querySelector('.tb-exp-pop');if(pop&&!pop.hidden){pop.hidden=true;var b=document.querySelector('.tb-exp-toggle');if(b)b.setAttribute('aria-expanded','false');}}});`;
+${EXPORT_MENU_JS}`;
 
 // Render a parsed report + findings.json to a full self-contained HTML string.
 // A1 — famous-neighbour context notes: knowledge-cited references kept for diligence (digest.md's "never
@@ -2592,8 +2592,8 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   })()}
   <button type="button" class="tbbtn tb-ask no-print">✦ <span class="tb-lbl">Ask AI</span></button>
   <div class="tb-menu">
-    <button type="button" class="tbbtn primary tb-exp-toggle" aria-haspopup="true" aria-expanded="false">⬇ <span class="tb-lbl">Export</span> ▾</button>
-    <div class="tb-pop tb-exp-pop" hidden>
+    ${EXPORT_TOGGLE}
+    ${exportPopover(`
       <div class="tb-pop-title">Export &amp; audit</div>
       <button class="util primary" onclick="exportPDF()">⬇ Export PDF (ticked findings)</button>
       ${excelBtn2}
@@ -2601,7 +2601,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
       <div class="tb-row"><button class="util" onclick="pickAll(true)">Select all</button><button class="util" onclick="pickAll(false)">Select none</button></div>
       <div class="tb-row"><button class="util" onclick="openAll(true)">Expand all</button><button class="util" onclick="openAll(false)">Collapse all</button></div>
       <p class="tb-hint">Tick a finding to keep it in the exported PDF; untick to drop it. Internal (review-only) notes are removed on export.</p>
-    </div>
+    `)}
   </div>
 </div>
 </div>

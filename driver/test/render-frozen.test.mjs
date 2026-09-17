@@ -1782,7 +1782,9 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Advanced again when those four breaks met in one file; see the merge entry above the FROZEN constant.
 // Advanced again by the 2026-09-17 merge recorded above the FROZEN constant: the redesign and this
 // branch in one file, and the provenance line re-homed to the footer. Not licence-only, so this moves too.
-const FROZEN_BEFORE_SPDX = "7df70706946c5e8b2097a9d08f2e68178e1dcfe210f04e547a81ac7e88aa9fa8";
+// Advanced again by the break recorded above the FROZEN constant: the export menu moved out to its own
+// module. Not licence-only, so this constant moves with it.
+const FROZEN_BEFORE_SPDX = "c405ed306e3b6d92811a91c36fc13bb01b745c8d6a2c73b17e329f538286d57d";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2376,7 +2378,28 @@ const FROZEN_BEFORE_SPDX = "7df70706946c5e8b2097a9d08f2e68178e1dcfe210f04e547a81
 // place to drop one. The beta recomposed what the footer says; this branch put the line naming the
 // models that served the run into it. Neither replaces the other, so the footer carries both and the
 // hash below is of that combined file.
-const FROZEN = "06999f9f3c7bd246df0f412a9d21e297ff53231d1398c33fc2060e6589fc7934";
+// AND AGAIN (2026-09-17): THE EXPORT MENU IS ONE CONTROL, EMITTED ONCE.
+//
+// Reachable from a republish? Yes — and the answer is that it changes nothing there, which was checked
+// rather than claimed. The knockout template had gained the same export menu, re-emitted, because this
+// file is frozen and lifting the control out was its own change. This is that change: the toggle, the
+// popover shell and the two listeners that open and close it now come from
+// `driver/publish/report-topbar.mjs`, and both templates import them. The ENTRIES stay each template's
+// own — the clearance filters its export to ticked findings and says so; the knockout has no tick boxes
+// and must not offer to tick.
+//
+// PURE CODE MOTION, BYTE-COMPARED ON REAL RUNS, which is what this file's checklist asks for and what the
+// third break here established as the way to answer it. All four demo runs were published through the
+// real publisher from the tree before and the tree after, and every delivered document is identical byte
+// for byte; the knockout's only difference was the publish clock it stamps into "Searched on", which is
+// its own open defect and not this change. Both serve-time passes were driven too, client and internal,
+// through `prepareReportForEmbed`: eight comparisons, eight identical.
+//
+// Could it live in report.css or brand.mjs? No — the popover's behaviour is two event listeners and its
+// shell is markup. `brand.mjs` carries chrome that every surface shares; this control belongs to the two
+// report templates and nothing else.
+
+const FROZEN = "2ad495b7be6e42fb95fbd2456896e20150deddd383797fcc8e5af39b647b7725";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

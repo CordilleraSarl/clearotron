@@ -210,3 +210,63 @@ test("a findings set with no links at all drops the Link column without throwing
 });
 
 test("cleanup", async () => { for (const p of [JX, LOGGED, REGONLY, LINKLESS]) await unlink(p).catch(() => {}); });
+
+// ── A CONDITION THAT REACHED NO PAGE IS A ROW ON THE GAPS SHEET ─────────────────────────────────────
+//
+// A report republished from a run recorded before conditions carried two texts can hold one whose
+// reader-facing sentence was never stored and cannot be composed. It is dropped rather than printed in
+// the engine's own words, and a drop nobody records is the disclosure closing quietly. Ruled
+// 2026-09-17: one row here, one line in the run record, no new wording, delivery never fails for it.
+//
+// BREAK MATRIX:
+//   · the drop reaches the gaps sheet        → break: pass it nowhere, arm 1 red
+//   · as an ORDINARY row, four columns       → break: give it a shape of its own, arm 2 red
+//   · in the run record's own words          → break: compose a sentence for it, arm 3 red
+//   · a run with none grows no row           → break: emit a header for nothing, arm 4 red
+//   · and the real coverage rows survive     → break: replace them instead of appending, arm 5 red
+test("a condition that reached no client surface is an ordinary row on the gaps sheet", async () => {
+  const DROPPED = out("dropped");
+  const reason = "records_unscreened:12 of 88 rows — the band gave the seat nothing to name";
+  const c = contract();
+  const before = (c.coverage || []).length;
+
+  await buildAudit({ ...c, droppedConditions: [{ area: "Conditions", state: "open", note: reason }] },
+    JX_AUDIT, DROPPED, fm.title, fm);
+  const wb = new ExcelJS.Workbook();
+  await wb.xlsx.readFile(DROPPED);
+  const ws = wb.getWorksheet("Coverage & gaps");
+
+  // THE SAME FOUR COLUMNS as every other row on this sheet — not a shape of its own and not a new sheet.
+  assert.deepEqual(headers(ws), ["Area", "State", "What was done", "What's left"],
+    "the gaps sheet grew a column for this");
+  const rows = [];
+  ws.eachRow((r, n) => { if (n > 1) rows.push([1, 2, 3, 4].map((i) => cellText(r, i))); });
+  const row = rows.find((r) => r[0] === "Conditions");
+  assert.ok(row, "the dropped condition reaches no row at all");
+  assert.equal(row[1], "Open", "the row does not carry the sheet's own state word");
+
+  // THE RUN RECORD'S OWN WORDS, split by the same function that splits every other note on this sheet.
+  // Nothing on this path composes prose, so the identifier and its counts are what the row carries.
+  assert.ok(`${row[2]} ${row[3]}`.includes("records_unscreened:12"),
+    "the row does not say which condition it was");
+  assert.ok(`${row[2]} ${row[3]}`.includes("the band gave the seat nothing to name"),
+    "the row does not carry what the run record said about it");
+
+  // THE REAL COVERAGE ROWS ARE STILL THERE. Appended, not substituted — a sheet that answered only about
+  // the drop would satisfy every assertion above and would be the defect.
+  assert.equal(rows.length, before + 1, `${before} coverage row(s) in, ${rows.length - 1} out beside the drop`);
+
+  // AND A RUN WITH NOTHING DROPPED GROWS NOTHING. An empty list must not add a row, or every report in
+  // the product would carry a line about work that was never left undone.
+  const CLEAN = out("nodrop");
+  await buildAudit(contract(), JX_AUDIT, CLEAN, fm.title, fm);
+  const wb2 = new ExcelJS.Workbook();
+  await wb2.xlsx.readFile(CLEAN);
+  const clean = [];
+  wb2.getWorksheet("Coverage & gaps").eachRow((r, n) => { if (n > 1) clean.push(cellText(r, 1)); });
+  assert.ok(!clean.includes("Conditions"), "a run that dropped nothing grew a row saying it did");
+  assert.equal(clean.length, before, "the ordinary rows moved too");
+
+  await unlink(DROPPED).catch(() => {});
+  await unlink(CLEAN).catch(() => {});
+});

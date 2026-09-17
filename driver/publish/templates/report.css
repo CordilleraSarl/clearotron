@@ -246,6 +246,12 @@
        nothing moves; the gutter, the gaps and one dead margin come in. The margin is dead here by the
        line above — it separated the wordmark from a tagline that is no longer displayed. */
     .topbar{gap:4px;padding-left:12px;padding-right:12px}}
+  /* AND ON A SMALL PHONE, ONE THING GOES. Closing 375px and below is not a spacing problem — the row's
+     own items are wider than the screen — so something has to go, and which one is a decision about what
+     a reader keeps rather than a number to tune. Ruled: the back arrow. The product's name and the risk
+     label stay, because they say where the reader is and what the answer was; the arrow is a route back
+     to a list, and a reader on a phone has the browser's own. (owner, 2026-09-17) */
+  @media(max-width:375px){.topbar .tb-back{display:none}}
 
   /* hero: conclusion card (dial + verdict) + scope card jurisdiction chips */
   .heroGrid .gauge{display:flex;flex-direction:column;justify-content:flex-start}

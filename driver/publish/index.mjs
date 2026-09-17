@@ -22,6 +22,8 @@ import { rollupTokens, servedModels } from '../tokens.mjs';
 import { reportIdentityFor, productCoverageNote, isRegisterOnly } from '../search-policy.mjs';
 import { readRecordArtifacts, bindFindingsToRecords, joinEvidenceStatus } from '../registry-fidelity.mjs';
 import { deliveryFlagLines } from '../predelivery-lint.mjs';
+import { unrenderableConditions } from '../terminal-clamp.mjs';   // — the conditions that reach no client surface
+import { runLog } from '../log.mjs';   // — one line in the run record when one does
 import { PROVIDERS, config } from '../driver.config.mjs';
 import { declaredRecordOrigins } from '../record-origins.mjs';
 import { NEUTRAL_DELIVERY, loadProfiles } from '../profiles.mjs';
@@ -791,6 +793,30 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // the narrative, never in a status line). Best-effort; legacy runs have no sidecar.
   let verdictInfo = null;
   try { verdictInfo = JSON.parse(readFileSync(driverDir(runDir, 'verdict.json'), 'utf8')); } catch { /* legacy */ }
+  // ── THE CONDITIONS THAT REACH NO PAGE, RECORDED RATHER THAN LOST ────────────────────────────────
+  //
+  // A condition whose reader-facing sentence was never stored and cannot be composed from the run
+  // record's own counts is dropped instead of printed in the engine's words. That is right for the
+  // reader and it is a silent loss for everyone else, so the drop reports itself twice: an ordinary
+  // row on the workbook's gaps sheet, and one line in the run record here.
+  //
+  // THE WORDS ARE THE RUN RECORD'S OWN. The reason is what the clamp site wrote; the state word and the
+  // column headings are the gaps sheet's. Nothing on this path composes a sentence.
+  //
+  // A FRESH RUN NEVER REACHES THIS. Every clamp site stores its clause, so the list is empty and the
+  // sheet grows no row and the log gains no line. It bites on a republished archive, which is exactly
+  // where the operator has no other way to learn the page is short of a point.
+  const droppedConditions = unrenderableConditions(verdictInfo || {}).map((reason) => ({
+    area: 'Conditions', state: 'open', note: reason,
+  }));
+  // Best-effort, in the house pattern: a publish never fails for want of a log line, and a republish
+  // from a directory this process cannot write is still a publish.
+  if (droppedConditions.length && runDir) {
+    try {
+      runLog(runDir, { event: 'client-condition-dropped', n: droppedConditions.length,
+        reasons: droppedConditions.map((c) => c.note) });
+    } catch { /* the workbook row is the record that matters; this line is the second copy */ }
+  }
   // doc 50 — the run's FROZEN framework manifest (band vocabulary). Present on band-doctrine runs;
   // absent on every archived run (they render byte-identically on the legacy paths).
   let framework = null;
@@ -902,7 +928,14 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   const reviewReceipts = {
     // `family` rides along for deliveryFlagLines' fallback: a check whose id is not in the projection
     // table still projects to its family's sentence rather than to anything the engine wrote.
-    lint: (lintSink?.checks ?? []).filter(c => !c.pass).map(c => ({ id: c.id ?? '', family: c.family ?? '', detail: c.detail ?? '' })),
+    // ONE CHECK IS DELIBERATELY NOT PROJECTED. `client-condition-dropped` has no sentence of its own
+    // in the projection table, so it fell through to its family's — "the delivered outcome and the
+    // report's own text do not agree" — which describes a contradiction. This is an omission: the
+    // outcome and the text agree perfectly and both are short of a point. It says what happened on the
+    // gaps sheet and in the run record now, in the run record's own words, so the borrowed sentence
+    // comes off rather than being replaced by a better one (ruled 2026-09-17).
+    lint: (lintSink?.checks ?? []).filter(c => !c.pass && c.id !== 'client-condition-dropped')
+      .map(c => ({ id: c.id ?? '', family: c.family ?? '', detail: c.detail ?? '' })),
     engagement: integritySink?.engagement ?? null,
     registryCorrections: Array.isArray(integritySink?.registryCorrections)
       ? integritySink.registryCorrections.filter((c) => c && c.from != null && c.to != null) : [],
@@ -1032,7 +1065,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
       // the same rule (the workbook's own BANNED gate had already started firing on the raw detail —
       // advisory, so CI stayed green). reviewReceipts.lint keeps its raw detail for the internal
       // readers above (fetchState reads registry-record-coverage's URIs out of it).
-      counts = await buildAudit({ findings, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
+      counts = await buildAudit({ droppedConditions, findings, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
       grpRead(join(poolRunDir, auditFile), 0o640);
       if (counts?.gateViolations?.length) console.warn(`[audit-workbook] advisory: ${counts.gateViolations.join(' | ')}`);
     } catch (e) {
