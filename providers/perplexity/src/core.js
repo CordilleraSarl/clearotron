@@ -523,9 +523,9 @@ export function reconcileGridLedger(stdoutStr, spec) {
  *
  * Why identity and not a count: the sandbox program TRANSCRIBES the dictated queries into its own source,
  * and a mutated string is a DIFFERENT SEARCH. The count stays right while the dictated query never ran, so
- * every count-based check upstream and downstream reads clean. Observed: the dictated
- * `提基斯拉什 offensive meaning` came back as `提基斯ラッシュ offensive meaning` — the katakana of the
- * sibling Japanese row fused into the Chinese transliteration. 27 dictated, 27 recorded, one never searched.
+ * every count-based check upstream and downstream reads clean. The substitution this catches fuses one
+ * row's script into another row's transliteration: the two strings differ, the dictated and recorded
+ * counts still match exactly, and one dictated query is never searched by anybody.
  *
  * A query that THREW and said so is not this defect — it owns a gap row (`<query> | connotation | <error>`,
  * or the reconciled object form) and the driver's merge gate weighs it separately. Only a silent

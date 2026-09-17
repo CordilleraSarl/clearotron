@@ -40,14 +40,36 @@ export function summarize(body) {
   return out;
 }
 
-export function appendAudit({ email, sub, body, status, transport, path = DEFAULT_AUDIT_PATH }) {
+/**
+ * The value written when a caller names no door. A door-less line USED TO BE POSSIBLE and one writer
+ * produced them: the key door built its handler without saying which surface it was, so every line it
+ * wrote omitted the field while the lines either side of it carried it. Absence then read as the staff
+ * surface, because that was the only other thing it could have been, so the trail quietly attributed a
+ * client's calls to staff. The field is now always written and an unnamed door is loud rather than
+ * missing — a reader can search for this value, which is not true of a key that is not there.
+ */
+export const UNNAMED_DOOR = "unnamed";
+
+export function appendAudit({ email, sub, body, status, transport, door, path = DEFAULT_AUDIT_PATH }) {
   // `sub` = the inner-token PRINCIPAL (ops-token issuance, INSTALL.md §8) — distinguishes
   // two automations sharing a transport identity. null for internal/user sessions without a sub claim.
   //
   // `transport` is written only where it changes an answer: "stdio" marks a call that arrived over the
   // local route, which has no signed-in identity to record and therefore no email. Omitted on the HTTP
   // doors, whose records are identified by the email they already carry.
-  const line = JSON.stringify({ ts: new Date().toISOString(), email: email ?? null, sub: sub ?? null, ...summarize(body), status: status ?? null, ...(transport ? { transport } : {}) }) + "\n";
+  //
+  // `door` NAMES WHICH SURFACE TOOK THE CALL, and it is a separate field from `transport` on purpose.
+  // `transport` answers "how did this arrive" and the reader tests it for exactly one value, `"stdio"`,
+  // to mean the local route. Two HTTP doors write to this one file — the staff surface and the client
+  // surface a customer's own assistant connects through — and "which door" is a different question from
+  // "which route". Folding the second into the first would make a client-key call read as a new kind of
+  // transport, and any reader that tested `transport` for the local route would keep working while
+  // meaning something it was never asked.
+  //
+  // WRITTEN ONLY WHEN GIVEN, the same rule as `transport` and for the same reason: the existing log
+  // shape must not move for records that have no answer to this. A door that does not name itself is a
+  // record with no `door` key, not a record claiming to be from nowhere.
+  const line = JSON.stringify({ ts: new Date().toISOString(), email: email ?? null, sub: sub ?? null, ...summarize(body), status: status ?? null, ...(transport ? { transport } : {}), door: door || UNNAMED_DOOR }) + "\n";
   try { mkdirSync(dirname(path), { recursive: true }); appendFileSync(path, line); } catch { /* best-effort */ }
 }
 

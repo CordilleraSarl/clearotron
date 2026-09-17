@@ -25,6 +25,7 @@ import { fileURLToPath } from 'node:url';
 // its own split, which is how the two rules diverged. It calls stripTelemetry now, so the renderer holds
 // no copy of the RULE either, only a call to it.
 import { parseReport, stripInternal, stripTelemetry } from './parse.mjs';
+import { clientConditions } from '../terminal-clamp.mjs';   // the reader's clause per condition, shared with the cover note
 import { COMMON_LAW, normRegion, regionName, REGION_NAMES } from './regions.mjs';
 import { parseFindingsJson, bindRecommendation, sentenceCaseLead, CLIENT_TIER_BY_COMPOSITE, bandOf, compareBlockingPower, inDispositionMode, reasonedNegativeGroups } from '../findings-model.mjs';
 import { REC, inPriorityWindow, ownerDisplayName } from '../registry-fidelity.mjs';
@@ -84,6 +85,12 @@ let NEGATIVES_GROUPED = false;
 // present the report speaks ITS band words: chips/one-liners read f.band, the gauge ticks show its
 // ladder, the footer names it. Absent ⇒ every legacy (composite) surface renders byte-identically.
 let FRAMEWORK = null;
+// The 2026-09-16 report redesign — the depth rule, as one flag. The same sections render at every depth; what grows
+// is what a finding's Full detail fold carries, and the goods as registered and the record's dates are
+// the two blocks the design gives the full country alone. Module-level for the same reason FRAMEWORK is:
+// fullDetail is reached through four call sites and threading a flag through all of them to reach one
+// `if` is how the other three drift out of step.
+let FULL_COUNTRY = false;
 const GAUGE_STOP_BY_TONE = { minimal: 1, low: 1, medium: 2, high: 3, severe: 4 };
 // Severity rank for sorting/worst-of: band index in the manifest (0 = most severe); legacy composite
 // negated so higher composite = lower rank. Unrated items sink to the bottom.
@@ -131,7 +138,86 @@ function frameworkTickIndex(findings) {
   }
   return null;
 }
-function frameworkGauge(fm, findings) {
+// ── THE RATING CARD'S BODY ─────────────────────────────────────────────────────────────────────────
+// One card across every report type (the 2026-09-16 report redesign): the band on the company's own ladder, the
+// verdict with EVERY condition, "Why <band>" as the four answers with the basis each rests on, the
+// highest exposure, and what was searched to get there. Nothing here is composed — the conditions are
+// the sidecar's own client-voice clauses, the answers are the engine's, and the coverage line is counts.
+function ratingExtras(fm, findings, coverage, fourAnswers, opts, bandWord) {
+  const out = [];
+  const conds = clientConditions(VERDICT_INFO || {});
+  if (conds.length) out.push(`<div class="gconds-wrap"><span class="gk">Conditions</span><ul class="gconds">${
+    conds.map((c) => `<li>${esc(c)}</li>`).join('')}</ul></div>`);
+  const fa = fourAnswers && typeof fourAnswers === 'object' ? fourAnswers : null;
+  if (fa) {
+    const rows = FOUR_ANSWER_LABELS.map(([key, label], i) => {
+      const a = fa[key];
+      if (!a || typeof a.read !== 'string' || !a.read.trim()) return '';
+      const read = inline(a.read.trim()).trim();
+      // AN INTERNAL ANSWER DRAWS NO ROW. This block used to mark a wholly-internal read with `int-note`
+      // and render it; the class went with the redesign's removal of internal material from the page,
+      // and the row went on rendering — so staff-only prose reached a client's report with nothing
+      // marking it at all, which is worse than either state before it. Every other internal line in this
+      // file is DROPPED rather than marked (the legal and practical reads, the obstacle notes just
+      // below), and this now matches them. A row with no answer left is furniture: the defect the
+      // marking was introduced for was a label with its text cut away, and no row leaves no label.
+      if (isInternalLabelled(read)) return '';
+      if (!read) return '';
+      const tok = String(a.token ?? '').toLowerCase();
+      let tone = 'mid';
+      if (i < 2) tone = /weak|unlikely|none|low/.test(tok) ? 'good' : /strong|likely|high/.test(tok) ? 'bad' : 'mid';
+      else tone = /^(registrable|strong|clear)$/.test(tok) ? 'good' : /condition|moderate|medium|qualified|narrow/.test(tok) ? 'mid' : /not|weak|unlikely|blocked|obstructed/.test(tok) ? 'bad' : 'mid';
+      const ords = (Array.isArray(a.ordinals) && a.ordinals.length)
+        ? ` <span class="fa-ords">${a.ordinals.map((n) => `<a href="#c${n}">#${n}</a>`).join(' ')}</span>` : '';
+      const basis = a.basis ? inline(String(a.basis).trim()).trim() : '';
+      // THE PER-CLASS OBSTACLES RIDE WITH THE ANSWER THEY QUALIFY. An answer that reads "registrable with
+      // conditions" and does not say in which classes leaves the reader with the conclusion and none of
+      // the thing they act on. Internal-labelled rows drop, like every other internal line.
+      const obsRows = (key === 'registrability' && Array.isArray(a.obstacles) ? a.obstacles : [])
+        .map((o) => ({ cls: esc(String(o?.class ?? '')), note: inline(String(o?.note ?? '').trim()).trim() }))
+        .filter((o) => o.note && !isInternalLabelled(o.note));
+      const obstacles = obsRows.length
+        ? `<ul class="fa-obstacles">${obsRows.map((o) => `<li><b>Class ${o.cls}.</b> ${o.note}</li>`).join('')}</ul>` : '';
+      return `<div class="fa-row"><span class="fa-k">${label}</span><span class="fa-v">${
+        a.token ? `<span class="fa-token tone-${tone}">${esc(humanize(a.token))}</span> — ` : ''}${read}${ords}${
+        basis ? `<div class="fa-based"><span class="fa-bk">Based on</span> ${basis}</div>` : ''}${obstacles}</span></div>`;
+    }).filter(Boolean);
+    if (rows.length) out.push(`<div class="gwhy"><div class="label">Why ${esc(bandWord || '')}</div>${rows.join('')}</div>`);
+  }
+  const bestRank = findings.reduce((m, f) => Math.min(m, severityRank(f)), Number.MAX_SAFE_INTEGER);
+  const worstSet = bestRank === Number.MAX_SAFE_INTEGER ? [] : findings.filter((f) => severityRank(f) === bestRank);
+  const worst = worstSet.length
+    ? [...new Set(worstSet.map((f) => regionCode(f)))].map((c) => c === COMMON_LAW ? 'Common-law use' : esc(regionName(c) || c))
+    : [];
+  if (worst.length) out.push(`<div class="grow gexp"><span class="gk">Highest exposure</span><span class="gv">${worst.join(' \u00b7 ')}</span></div>`);
+  const sd = opts && opts.searchDepth;
+  if (sd && sd.counts) {
+    const parts = [];
+    const byC = sd.counts.recordsByCountry || {};
+    const real = Object.entries(byC).filter(([c]) => c !== 'WO');
+    const intl = byC.WO || 0;
+    const records = real.reduce((s, [, n]) => s + n, 0);
+    if (records) parts.push(real.length === 1 ? `${records.toLocaleString('en-GB')} records read in ${regionName(real[0][0]) || real[0][0]}` : `${records.toLocaleString('en-GB')} records read across ${real.length} countries`);
+    if (intl) parts.push(`${intl.toLocaleString('en-GB')} international registrations read`);
+    const cleared = ((sd.cleared && sd.cleared.register) || []).length;
+    if (cleared) parts.push(`${cleared.toLocaleString('en-GB')} near-names cleared`);
+    const rated = findings.filter((f) => f && f.band).length;
+    parts.push(`${rated} ${rated === 1 ? 'conflict' : 'conflicts'}`);
+    if (sd.counts.localScriptSearched) parts.push('the name searched in local script');
+    const cd = sd.counts.courtDecisions;
+    if (cd === 'found') parts.push('court decisions checked');
+    else if (cd === 'none-found') parts.push('court decisions checked, none touch the name');
+    else if (cd === 'not-checked') parts.push('court decisions could not be checked');
+    if (parts.length) out.push(`<div class="grow gconf"><span class="gk">Search coverage</span><span class="gv">${parts.map(esc).join(' \u00b7 ')}</span></div>`);
+  }
+  // ONE NAME FOR ONE FRAMEWORK. A manifest run already prints it in the card's own heading, beside the
+  // ladder whose words it governs; adding a second line here named it twice on the same card. The line
+  // is for the run that records a framework by name without carrying its manifest.
+  if (!FRAMEWORK && fm.rated_under) out.push(`<div class="gframe">Rated on the ${esc(fm.rated_under)}</div>`);
+  return out.join('');
+}
+
+function frameworkGauge(fm, findings, coverage = [], fourAnswers = null, opts = {}) {
   const ladder = [...FRAMEWORK.bands].reverse();        // manifest is most-severe-first → reverse for left→right
   const n = ladder.length;
   const pct = (k) => `${(((k + 0.5) / n) * 100).toFixed(1)}%`;   // center of flex tick cell k — marker and ticks agree by construction
@@ -169,6 +255,7 @@ function frameworkGauge(fm, findings) {
     <div class="scale" style="background:${grad}">${marker}</div>
     <div class="ticks">${ticks}</div>
     <div class="gconc">${conc}</div>
+    ${ratingExtras(fm, findings, coverage, fourAnswers, opts, label)}
   </div>`;
 }
 
@@ -241,16 +328,27 @@ function inline(s) {
 // internal legal_position/practical_position/manageable.reason/obstacle note prints into the PDF
 // while the same bytes in prose do not.
 const isInternalLabelled = (s) => /^\s*\[internal\]/i.test(String(s ?? ''));
-const intNoteCls = (s) => isInternalLabelled(s) ? ' class="int-note"' : '';
 
 // Markdown prose (paragraphs + `- ` lists) → HTML. Internal notes are handled by the stripInternal
 // choke point (whole-internal bullets disappear on the client export; labelled internally).
 function renderProse(text) {
   const lines = stripInternal(text || '', { client: false }).split('\n');
   let html = '', list = [], para = [];
-  const intCls = intNoteCls;
-  const flushList = () => { if (list.length) { html += '<ul>' + list.map(li => `<li${intCls(li)}>${inline(li)}</li>`).join('') + '</ul>'; list = []; } };
-  const flushPara = () => { if (para.length) { const txt = para.join(' '); html += `<p${intCls(txt)}>${inline(txt)}</p>`; para = []; } };
+  // Item 18 (owner, 2026-09-16): a line the engine labels internal does not reach the delivered page.
+  // It was classed and hidden in print only, so every client reading in the portal saw it. It stays in
+  // the findings record, the audit workbook and the assistant, which is where the audit belongs.
+  const flushList = () => {
+    if (!list.length) return;
+    const kept = list.filter((li) => !isInternalLabelled(li));
+    if (kept.length) html += '<ul>' + kept.map((li) => `<li>${inline(li)}</li>`).join('') + '</ul>';
+    list = [];
+  };
+  const flushPara = () => {
+    if (!para.length) return;
+    const txt = para.join(' ');
+    if (!isInternalLabelled(txt)) html += `<p>${inline(txt)}</p>`;
+    para = [];
+  };
   for (const raw of lines) {
     const line = raw.trim();
     if (!line) { flushPara(); flushList(); continue; }
@@ -445,7 +543,9 @@ function meter(name, entry) {
     return { label: 'Use', cls, cap, ev: USE_EVIDENCE_LABEL[e._status] || '' };
   }
   const cls = tok === 'high' ? 'l3' : tok === 'medium' ? 'l2' : tok === 'low' ? 'l1' : '';
-  const label = name === 'mark_similarity' ? 'Similarity' : name === 'goods_proximity' ? 'Goods proximity' : 'Enforcer';
+  // The 2026-09-16 report redesign — "Enforcer" was a noun for the owner; the meter measures what the owner is
+  // likely to DO, which is what a reader is deciding about. The token under it is unchanged.
+  const label = name === 'mark_similarity' ? 'Similarity' : name === 'goods_proximity' ? 'Goods proximity' : 'Likely to enforce';
   // With a joined status the status REPLACES the raw basis word on the enforcer — "verified" with no
   // receipt behind it is exactly the self-attestation A4 exists to demote.
   return { label, cls, cap: humanize(tok), ev: st || (name === 'enforcer' ? basis : '') };
@@ -478,10 +578,10 @@ const cardBlock = (card, re) => (card?.blocks || []).filter(b => re.test(b.label
 // Conclusion card (left of the hero): the overall-risk dial + ticks, then the verdict beneath it —
 // Recommendation + Open conditions (moved here from the old facts card; the summary paragraph now lives once
 // under the headline, so the gauge's old caption <p> is dropped — §2.6 de-duplication).
-function gauge(fm, findings, coverage = []) {
+function gauge(fm, findings, coverage = [], fourAnswers = null, opts = {}) {
   // doc-54 — framework runs get the manifest's own dynamic ladder; the legacy body below is untouched
   // so archived / sidecar-less runs render byte-identically.
-  if (FRAMEWORK) return frameworkGauge(fm, findings);
+  if (FRAMEWORK) return frameworkGauge(fm, findings, coverage, fourAnswers, opts);
   const i = overallIndex(fm, findings);
   // wp50: with a verdict sidecar the pill speaks the client tier word (VERY HIGH, never SEVERE) —
   // the derived tier when present, else the positional word; legacy (no sidecar) is byte-identical.
@@ -513,6 +613,7 @@ function gauge(fm, findings, coverage = []) {
     <div class="scale"><div class="marker" style="left:${STOP_LEFT[i]}"><div class="pill" style="background:var(${STOP_VAR[i]})">${label}</div><div class="needle" style="background:var(${STOP_VAR[i]})"></div></div></div>
     <div class="ticks">${ticks}</div>
     <div class="gconc">${conc}</div>
+    ${ratingExtras(fm, findings, coverage, fourAnswers, opts, label)}
   </div>`;
 }
 
@@ -670,6 +771,40 @@ function headScope(fm, coverage = [], findings = []) {
   return `<div class="mark-scope" style="${style}">${parts.filter(Boolean).join(' · ')}</div>`;
 }
 
+// ── ABOUT THIS REQUEST ─────────────────────────────────────────────────────────────────────────────
+// The scope line, the facts card and the covers sentence were three places saying what was asked for.
+// They are one labelled panel now, directly under the name, on every report type (the 2026-09-16 report redesign).
+// Every row is a fact the run already carries: nothing here is composed.
+function aboutPanel(fm, coverage = [], findings = [], opts = {}) {
+  const { order: codes, meta, worldwide } = jurisdictionCodes(fm, coverage, findings);
+  // A JURISDICTION SEARCHED WITH LIMITED COVERAGE SAYS SO HERE. The chips this row replaces carried that
+  // on the office's own chip; a plain list of country names would read as "all of these were searched"
+  // and quietly drop the one thing in the row a reader could act on. The worldwide sweep also always
+  // covers the international register, which is why WO joins the list on a worldwide run.
+  const shown = (worldwide && !codes.includes('WO')) ? [...codes, 'WO'] : codes;
+  const where = shown.map((c) => {
+    const name = regionName(c) || c;
+    return meta.get(c)?.limited ? `${name} (coverage-limited)` : name;
+  }).filter(Boolean).join(', ');
+  // The type of search is the bolded head of the depth note the driver already composes; the rest of
+  // that sentence is the product's covers line, which the owner ruled off the page.
+  const note = String(opts.depthNote ?? '').trim();
+  const cut = note.lastIndexOf(' — ');
+  const stage = cut > 0 ? note.slice(0, cut).trim() : note;
+  const rows = [
+    ['Type of search', stage],
+    ['Instructed use', fm.use || ''],
+    ['Classes', fm.classes || ''],
+    ['Where searched', worldwide ? (where ? `Worldwide, focus on ${where}` : 'Worldwide') : where],
+    ['Project', fm.run_under_project || ''],
+    ['Searched on', fm.searched || fm.run || ''],
+  ].filter(([, v]) => String(v || '').trim());
+  if (!rows.length) return '';
+  return `<div class="panel about"><div class="label">About this request</div>${
+    rows.map(([k, v]) => `<div class="row"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`).join('')
+  }</div>`;
+}
+
 function doFirst(secs) {
   const t = secs['Do this first'] || secs['Do This First'] || '';
   if (!t.trim()) return '';
@@ -804,6 +939,165 @@ export function actYouConditions(youBucket) {
 // doc-52 routing — concept/genre neighbours that share no word or sound with the mark are NOT conflicts
 // (e.g. a same-theme game under a different name). They render in a quiet, collapsed "also considered —
 // ruled out" list (owner · mark · why), never as conflict cards and never plotted in the landscape.
+// ── ALSO CONSIDERED ────────────────────────────────────────────────────────────────────────────────
+// The depth section (the 2026-09-16 report redesign). A deeper search reads more and finds no more, and until now the
+// page could not say so: the names read and cleared existed only in the workbook. Three parts, in order —
+// the names this run rated and ruled out, the register near-names it cleared, and the web and marketplace
+// names it wrote up. Everything is folded and capped: nothing on this page is an uncapped list, and the
+// workbook is where the full one lives (owner, 2026-09-16).
+//
+// TWO GROUPS, AND THAT IS THE MEASUREMENT RATHER THAN A SIMPLIFICATION. The group key comes from the
+// register providers' closed screening vocabulary, and across 480 cleared names in three runs the value
+// meaning "different goods" appeared zero times, because such records are dropped by the batch screen
+// before they ever become a cleared near-name. Grouping on the engine's reasoning paragraph instead would
+// produce four groups and assert a reason the record does not support. Owner ruling, 2026-09-16.
+const CLEARED_GROUP_LABEL = { 'dead-filing': 'Dead filings', 'different-goods': 'Different goods', 'other': 'Read and cleared' };
+const CLEARED_GROUP_ORDER = ['different-goods', 'dead-filing', 'other'];
+const NAMES_CAP = 8;
+
+function clearedGroupsHtml(searchDepth, auditFile) {
+  const reg = (searchDepth && searchDepth.cleared && searchDepth.cleared.register) || [];
+  if (!reg.length) return '';
+  const link = (n) => auditFile ? `<div class="cmore"><a class="wb" href="${escAttr(auditFile)}">All ${n.toLocaleString('en-GB')} in the audit workbook</a></div>` : '';
+  return CLEARED_GROUP_ORDER.map((g) => {
+    const items = reg.filter((c) => c.group === g);
+    if (!items.length) return '';
+    const shown = items.slice(0, NAMES_CAP);
+    const rows = shown.map((c) => `<div class="crow"><span class="cm-mark">${esc(c.mark || c.term || '')}</span><span class="cwho">${
+      esc([c.owner, regionName(c.country) || c.country, c.classes ? `Class ${c.classes}` : '', c.status].filter(Boolean).join(' \u00b7 '))}</span></div>`).join('');
+    return `<details class="cgroup"><summary><span class="gname">${esc(CLEARED_GROUP_LABEL[g] || g)}</span><span class="gcount">${
+      items.length.toLocaleString('en-GB')} ${items.length === 1 ? 'name' : 'names'}</span></summary><div class="gbody">${rows}${
+      items.length > shown.length ? link(items.length) : ''}</div></details>`;
+  }).join('');
+}
+
+function webNamesHtml(searchDepth) {
+  const web = (searchDepth && searchDepth.cleared && searchDepth.cleared.web) || [];
+  if (!web.length) return '';
+  const shown = web.slice(0, NAMES_CAP);
+  const rows = shown.map((w) => `<div class="crow"><span class="cm-mark">${esc(w.title || '')}</span>${
+    w.url ? `<a class="curl" href="${escAttr(w.url)}">${esc(String(w.url).replace(/^https?:\/\//, '').replace(/\/$/, ''))}</a>` : '<span class="cwho"></span>'}</div>`).join('');
+  return `<details class="cgroup"><summary><span class="gname">Web and marketplace names</span><span class="gcount">${
+    web.length.toLocaleString('en-GB')} ${web.length === 1 ? 'name' : 'names'}</span></summary><div class="gbody">${rows}</div></details>`;
+}
+
+// ── WHERE IT STANDS, COURT DECISIONS, WHAT WAS SEARCHED ────────────────────────────────────────────
+// The three sections that let a deeper search show its depth (the 2026-09-16 report redesign). All three read the
+// search-depth record (the 2026-09-16 report redesign) and the findings; none composes a sentence. Where the record
+// is absent — an archived run published before it existed — each returns '' rather than drawing a zero.
+const searchStage = (opts) => {
+  const note = String(opts && opts.depthNote || '').trim();
+  const cut = note.lastIndexOf(' \u2014 ');
+  return (cut > 0 ? note.slice(0, cut) : note).trim();
+};
+const isFullCountry = (opts) => /full country/i.test(searchStage(opts));
+
+// Every country the run READ, with its outcome: the band where a finding sits there, and the clean ones
+// named. A list built from the findings alone would name only countries with a conflict, which is the
+// gap this closes — the reader cannot otherwise see that the rest came back clean.
+function whereItStandsSection(findings, opts) {
+  const sd = opts && opts.searchDepth;
+  if (!sd || !sd.counts || isFullCountry(opts)) return '';
+  const byC = sd.counts.recordsByCountry || {};
+  const codes = Object.keys(byC).filter((c) => c !== 'WO');
+  if (!codes.length) return '';
+  const bandBy = new Map();
+  for (const f of findings) {
+    const c = regionCode(f);
+    if (!c || c === COMMON_LAW || !f.band) continue;
+    if (!bandBy.has(c)) bandBy.set(c, f.band);
+  }
+  const alias = { EM: 'EU', GB: 'UK' };
+  const withF = [], clean = [];
+  for (const c of codes) {
+    const key = alias[c] || c;
+    (bandBy.has(c) || bandBy.has(key) ? withF : clean).push({ code: key, name: regionName(c) || c, band: bandBy.get(c) || bandBy.get(key) });
+  }
+  if (!withF.length && !clean.length) return '';
+  const rows = withF.map((c) => `<div class="wrow"><span class="rcode">${esc(c.code)}</span><span class="wname">${esc(c.name)}</span><span class="kc">${esc(c.band)}</span></div>`).join('');
+  const cleanHtml = clean.length
+    ? `<div class="wclean"><span class="wk">Nothing found</span>${clean.map((c) => `<span class="wchip" title="${escAttr(c.name)}">${esc(clean.length > 12 ? c.code : c.name)}</span>`).join('')}</div>`
+    : '';
+  return `<div class="sec" id="countries"><h2>Where it stands</h2></div>
+  <div class="panel where">${rows}${cleanHtml}</div>`;
+}
+
+// One short section on a full country search, and four states kept apart: none found is a RESULT and
+// could not be checked is a GAP. Collapsing them would let an unreachable source read as a clean negative.
+function courtDecisionsSection(opts) {
+  const sd = opts && opts.searchDepth;
+  if (!sd || !sd.counts || !isFullCountry(opts)) return '';
+  const state = sd.counts.courtDecisions;
+  const byC = sd.counts.recordsByCountry || {};
+  const first = Object.keys(byC).filter((c) => c !== 'WO')[0];
+  const where = first ? (regionName(first) || first) : '';
+  let line = '';
+  if (state === 'not-checked') line = `Case-law research could not be completed for ${where}.`;
+  else if (state === 'none-found') line = `Court decisions: none found for ${where}.`;
+  else if (state === 'found') line = `Court decisions were searched for ${where} and are cited against the findings above.`;
+  if (!line) return '';
+  return `<div class="sec" id="court"><h2>Court decisions</h2></div>
+  <div class="panel courtp"><p>${esc(line)}</p></div>`;
+}
+
+// Counts only, folded closed. A count of records read is engine activity rather than something a reader
+// acts on (owner, 2026-09-16), so it lives here and not beside the outcome per country.
+// THE OPEN ROWS STAY ON THE PAGE, and that is deliberate rather than a leftover of the old fold. The
+// scope fold and the checks-we-ran narrative go, because narrating faults and refusals at a client is
+// what the owner ruled out. A slice the run deliberately LEFT OPEN is not narration: it is the
+// disclosure the whole can't-close-then-disclose doctrine rests on, and it was measured reaching a
+// client short by two rows only hours before this redesign (the 2026-09-16 report redesign). It renders here, in the
+// reader's own words, with the counts — never the query text, the refusals or the provider faults.
+function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri = new Map()) {
+  const sd = opts && opts.searchDepth;
+  const open = (Array.isArray(coverage) ? coverage : []).filter((c) => COV_STATE[c?.state]?.cls !== 'ok');
+  const c = (sd && sd.counts) || {}, rows = [];
+  const byC = c.recordsByCountry || {};
+  const per = Object.entries(byC).sort((a, b) => b[1] - a[1]).map(([k, n]) => `${regionName(k) || k} ${n.toLocaleString('en-GB')}`).join(' \u00b7 ');
+  if (per) rows.push(['Register records read', per]);
+  const sw = c.sweep || {};
+  if (sw.spellings) rows.push(['Spellings searched', String(sw.spellings)]);
+  if (sw.checks) rows.push(['Marketplace and web', `${sw.checks.toLocaleString('en-GB')} checks across ${sw.platforms} platforms`]);
+  if (sw.reputation) rows.push(['Reputation and meaning', `${sw.reputation.toLocaleString('en-GB')} checks`]);
+  rows.push(['Local-script spellings', c.localScriptSearched ? 'searched' : 'not searched']);
+  const cd = { 'found': 'found', 'none-found': 'none found', 'not-checked': 'could not be checked', 'not-in-scope': 'not part of this search' }[c.courtDecisions];
+  if (cd) rows.push(['Court decisions', cd]);
+  const openHtml = open.length ? `<div class="openrows"><div class="rk">Left open</div>${coverageGrid(open)}</div>` : '';
+  // THE LEGEND FOR WHAT IS ON THE CARDS, kept when the scope fold went. It is not the engine narrating
+  // its own searching — it is what a linked registration number opens, why the rest are cited by number,
+  // and what a register-index entry means. A reader cannot read a card without it.
+  const hasRecordSet = recordsByUri && recordsByUri.size > 0;
+  const hasCards = Array.isArray(findings) && findings.length > 0;
+  const hasIndexEntry = (Array.isArray(findings) ? findings : []).some((f) => (f?.owner?.registrations ?? []).some((r) => r?.uri
+    && (hasRecordSet || !(r.status || r.filed || r.expiry || (r.classes && r.classes.length)))));
+  const prov = (hasRecordSet || hasCards)
+    ? `<div class="provwrap"><div class="rk">Record provenance</div><p class="provnote">${hasRecordSet ? 'Registration numbers on the cards were read from the register records. ' : ''}${officeLinkNote()}${hasIndexEntry ? 'A registration shown as a register-index entry was seen in the register index; its full record was not pulled. ' : ''}\u201cInferred\u201d beside an owner\u2019s likelihood to object means we judged it from what the owner sells and holds; we had no enforcement history to read.</p></div>`
+    : '';
+  if (!rows.length && !openHtml && !prov) return '';
+  return `<details class="searched"><summary><span class="gname">What was searched</span><span class="gcount">Counts for this search</span></summary><div class="gbody">${
+    rows.map(([k, v]) => `<div class="row"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`).join('')}${openHtml}${prov}</div></details>`;
+}
+
+function alsoConsideredSection(ruledOut, recordsByUri = new Map(), opts = {}) {
+  const sd = opts.searchDepth || null;
+  const ruledCards = ruledOut.map((f) => {
+    const who = recordOwner(f, recordsByUri) || f.owner?.name || '';
+    const why = f.ruled_out_reason ? esc(f.ruled_out_reason) : 'a different name in a related field — not a conflict with your mark';
+    const legal = f.legal_position ? esc(String(f.legal_position)) : '';
+    const practical = f.practical_position ? esc(String(f.practical_position)) : '';
+    const fold = (legal || practical)
+      ? `<details class="roff"><summary>Why it was ruled out</summary>${legal ? `<p><b>Legal position.</b> ${legal}</p>` : ''}${practical ? `<p><b>Practical position.</b> ${practical}</p>` : ''}</details>` : '';
+    return `<div class="card ruled"><div class="top"><div class="rail"></div><div class="body"><div class="cardhead">${
+      f.ordinal != null ? `<span class="fnum">${esc(String(f.ordinal))}</span>` : ''}<span class="who mark-first">${esc(f.mark || '')}</span>${
+      who ? `<span class="cwho">${esc(who)}</span>` : ''}<span class="tier ruled">Ruled out</span><button class="ask-fi no-print">\u2726 Ask AI about this finding</button></div><div class="oneline">${why}</div>${fold}</div></div></div>`;
+  }).join('');
+  const groups = clearedGroupsHtml(sd, opts.auditFile);
+  const web = webNamesHtml(sd);
+  if (!ruledCards && !groups && !web) return '';
+  return `<div class="sec" id="also-considered"><h2>Also considered</h2></div>
+  <div class="panel alsocons">${ruledCards ? `<div class="ruled-cards">${ruledCards}</div>` : ''}${groups || web ? `<div class="cgroups">${groups}${web}</div>` : ''}</div>`;
+}
+
 function ruledOutSection(ruledOut, recordsByUri = new Map()) {
   if (!ruledOut.length) return '';
   const rows = ruledOut.map(f => {
@@ -846,82 +1140,17 @@ function ruledOutSection(ruledOut, recordsByUri = new Map()) {
 // Calling it makes the two rules agree BY CONSTRUCTION rather than by inspection, which is what the
 // issue asks for: a divergence that is merely absent grows back. renderProse then sees the lines the
 // author wrote, so `- ` bullets are <li> again and a telemetry-only note still reduces to ''.
-function plainScopeNote(text) {
-  const t = String(text || '').trim();
-  if (!t) return '';
-  return stripTelemetry(t).trim();   // trim: an all-telemetry note leaves only newlines, and '' is falsy
-}
-function scopeSection(ranBucket, coverage, coverageJudgment, methodologyText, contextNotes, fm = {}, hasRecordSet = false, hasCards = false, hasIndexEntry = false, servedModels = null) {
-  const parts = [];
-  // B3 (spec 2026-07-30 §4) — record provenance, stated ONCE, here, instead of a hedge stamped on
-  // every card. This is the single home of what "fetched", "register-index entry" and "inferred"
-  // mean on the cards above. Presentation, not a gate.
-  //
-  // It renders whenever those labels CAN render, which is not the same thing as hasRecordSet. B3 first
-  // gated it on the record set alone, and that inverted the fix on the one branch it most needed to
-  // cover: with no record set the cards still emit "(register-index entry)" (the second disjunct of the
-  // registration render) and "inferred — reputation/profile signal" (the enforcer basis line, ungated),
-  // but the paragraph explaining both was suppressed — and the per-leg wording that used to explain
-  // itself ("full record not pulled this run") had just been removed as the duplicate it was. The
-  // predicate here is deliberately "are there cards at all" rather than a copy of the two label
-  // conditions: a copy is a thing that drifts, and over-including costs one explanatory paragraph in a
-  // collapsed section while under-including costs a reader an unexplained label. The fetched-records
-  // sentence stays conditional on hasRecordSet, so a run WITH a record set is byte-identical to B3.
-  // THREE SENTENCES EXPLAINING ONE WORD, and the middle one printed on every report whether or not the
-  // page had a register-index entry on it — a definition of a label the reader could not see. It renders
-  // now only where such an entry does, and the remaining two say what "inferred" means in the words a
-  // reader would use for it rather than in the renderer's.
-  if (hasRecordSet || hasCards) parts.push(`<p class="scoperead" style="margin:0 0 4px;font-weight:600">Record provenance</p><p class="provnote" style="margin:0 0 6px;font-size:13px">${hasRecordSet ? 'Registration numbers on the cards were read from the register records. ' : ''}${officeLinkNote()}${hasIndexEntry ? 'A registration shown as a register-index entry was seen in the register index; its full record was not pulled. ' : ''}“Inferred” beside an owner’s likelihood to object means we judged it from what the owner sells and holds; we had no enforcement history to read.</p>`);
-  // — this is the one part of §4 that does NOT fold. Same markup, same heading, same marker; it is
-  // emitted beside the <details> instead of inside it, wrapped in the panel the only-you section already
-  // uses so it reads as a region of the page rather than a stray heading.
-  const ran = ranBucket && ranBucket.body
-    ? `<div class="panel actions scope-ran"><div class="actgrp act-ran"><h4 style="margin:0 0 4px"><span class="actic">✓</span> ${inline(ranBucket.label)}</h4>${renderProse(ranBucket.body)}</div></div>`
-    : '';
-  // — THE HEADING ALWAYS RENDERS. `if (coverage.length)` dropped the whole section on a zero-row
-  // run: no heading, no marker, nothing. A reader who has seen this section on another report cannot
-  // tell a run that measured nothing from one whose section was simply not reached, and the surface with
-  // the least context lost the most. MEASURED over the pool: 29 clearance reports, 28 carry it, and on
-  // the one that does not (`global-preliminary-search`, delivered, verdict Medium, 81,823 bytes) the
-  // internal `Coverage read` line was gone too — so there was no fallback in practice either.
-  //
-  // WHAT THIS COSTS A REPUBLISH, checked before writing it: `doRepublish()` re-renders an archived run,
-  // so a change here reaches documents already delivered. This one is a NO-OP for 28 of the 29 — the
-  // populated branch is byte-identical — and on the 29th it adds a disclosure that should always have
-  // been there. `rerender-all` is an explicit operator command, not something that runs on its own.
-  //
-  // Owner ruling 2026-08-24, which discharged the standing "only with a legitimate renderer change"
-  // condition: build it. The freeze hash moves in this commit, as the freeze's own header
-  // requires.
-  parts.push(coverage.length
-    ? `<p class="scoperead" style="margin:10px 0 4px;font-weight:600">What we covered — and what's open</p>${coverageGrid(coverage)}`
-    : `<p class="scoperead" style="margin:10px 0 4px;font-weight:600">What we covered — and what's open</p>`
-      + `<p class="covnone" style="margin:0 0 6px;font-size:13px">No coverage record was produced for this run. `
-      + `This section normally lists what each search covered and what is still open; its absence here is a gap `
-      + `in the record, not a finding that nothing is open. Ask us before relying on it.</p>`);
-  // THE INTERNAL COVERAGE READ IS NOT RENDERED. It concatenated the engine's own search-unit names into
-  // about a thousand characters of prose — and on the measured run it ended mid-word, because it is a
-  // machine's working note and nothing was reading it as a sentence. Every fact in it is already in the
-  // coverage cells directly above, in plain words. It stays in the run's artifacts and in the workbook,
-  // where the reader is someone who wants it.
-  const meth = plainScopeNote(methodologyText);
-  if (meth) parts.push(`<p class="scoperead" style="margin:10px 0 4px;font-weight:600">How this search was run</p><div class="methnote" style="font-size:13px">${renderProse(meth)}</div>`);
-  const cn = contextNotesBlock(contextNotes);
-  for (const p of [cn, servedModelsLine(servedModels)]) if (p) parts.push(p);   // context notes, then the closing line naming the models that served
-  // spec 62 — CONFIGURATION PROVENANCE (INTERNAL only): when the run is under a project, show which layer
-  // (project / customer / house) set each operational knob. Provenance, not process-exhaust — never on export.
-  if (fm.origins_json) {
-    let rows = [];
-    try { rows = JSON.parse(fm.origins_json); } catch { rows = []; }
-    if (Array.isArray(rows) && rows.length) {
-      const body = rows.map((r) => `<tr><td style="padding:1px 12px 1px 0">${esc(r.field)}</td><td style="padding:1px 12px 1px 0">${esc(r.value)}</td><td class="mono" style="padding:1px 0">${esc(r.origin)}</td></tr>`).join('');
-      parts.push(`<p class="scoperead" style="margin:10px 0 4px;font-weight:600">Configuration provenance (internal)${fm.run_under_project ? ` — run under project ${esc(fm.run_under_project)}` : ''}</p>`
-        + `<table class="origins" style="font-size:13px;border-collapse:collapse"><thead><tr><th style="text-align:left;padding-right:12px">Setting</th><th style="text-align:left;padding-right:12px">Effective</th><th style="text-align:left">Set by</th></tr></thead><tbody>${body}</tbody></table>`);
-    }
-  }
-  if (!parts.length) return ran;
-  return `${ran}<details class="scope"><summary>Scope &amp; what we didn't search</summary><div class="drillbody">${parts.join('\n  ')}</div></details>`;
-}
+// The 2026-09-16 report redesign — scopeSection and plainScopeNote are DELETED, not merely unreferenced.
+//
+// They rendered the scope fold: the checks-we-ran narrative, the Methodology note, the full coverage
+// grid and the provenance paragraph. The owner ruled the narrative off the client's page on
+// 2026-09-16, and what a reader still needs from that fold moved with it by hand — the rows a run
+// LEFT OPEN and the record provenance legend both render with the counts now, and each has its own arm.
+//
+// Left here as dead code they would have read as a surface the client still meets. The rule they
+// carried about telemetry prose — a lead-in is a paragraph and each bullet an item, welded into one
+// before it was fixed — lives on in stripTelemetry in parse.mjs, which is where the rule belongs and
+// where its own arms still drive it.
 
 // Quadrant: x = goods proximity (0 distant → 1 identical), y = mark similarity (0 distinct → 1 identical).
 // SVG plot box is x∈[70,530], y∈[372,30] (y inverted: identical at top). Marker colour by classification.
@@ -1297,7 +1526,17 @@ function fullDetail(f, card, recordsByUri = new Map()) {
       // "file exists on disk" inference. Absent receipt (archived runs) renders nothing.
       const receiptTail = rec._receipt?.fetched_at
         ? ` · <i class="receipt">verified — ${esc(PROVIDER_LABEL || 'register')} record fetched ${esc(String(rec._receipt.fetched_at).slice(0, 10))}</i>` : '';
-      return `<li><b>${officeRecordCell(r.uri, regUri, RECORD_CITATION ? NO_LINK_NOTE[RECORD_CITATION] : null)}</b>${cls ? ` · Cl.${esc(cls)}` : ''}${status ? ` · ${esc(status)}` : ''}${tail ? ` (${esc(tail)})` : ''}${jur ? ` · ${esc(jur)}${sys ? ` <i class="jsys">(${sys})</i>` : ''}` : ''}${desigHtml}${prio}${receiptTail}</li>`;
+      // AS REGISTERED, AND THE DATES — the full country's two extra blocks (the 2026-09-16 report redesign). Both come
+      // off the fetched record and neither is composed: the goods are the register's own wording in the
+      // language it granted them in, and the dates are its own, to the day. The one-line summary above
+      // carries YEARS, which cannot say whether a registration lapses this month.
+      const goods = FULL_COUNTRY ? REC.goods(rec) : null;
+      const recDates = FULL_COUNTRY ? REC.dates(rec) : null;
+      const goodsHtml = !goods ? '' : `<div class="row"><span class="k">As registered</span><span class="v">${
+        goods.map((g) => `${g.classes.length ? `${esc(g.classes.length === 1 ? 'Class' : 'Classes')} ${esc(g.classes.join(', '))}: ` : ''}${esc(g.description)}`).join('<br>')}</span></div>`;
+      const datesHtml = !recDates ? '' : `<div class="row"><span class="k">Dates</span><span class="v">${
+        esc(recDates.map(([k, v]) => `${k} ${v}`).join(' \u00b7 '))}</span></div>`;
+      return `<li><b>${officeRecordCell(r.uri, regUri, RECORD_CITATION ? NO_LINK_NOTE[RECORD_CITATION] : null)}</b>${cls ? ` · Cl.${esc(cls)}` : ''}${status ? ` · ${esc(status)}` : ''}${tail ? ` (${esc(tail)})` : ''}${jur ? ` · ${esc(jur)}${sys ? ` <i class="jsys">(${sys})</i>` : ''}` : ''}${desigHtml}${prio}${receiptTail}${goodsHtml || datesHtml ? `<div class="record">${goodsHtml}${datesHtml}</div>` : ''}</li>`;
     }
     // (2)+(3): a cited record with NO fetched body. NEVER-INVENT when the run has a record set (this URI was
     // not fetched ⇒ the model's fields are unconfirmed); also when there are no findings.json facts to show.
@@ -1336,8 +1575,8 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   const enfSrc = enf && String(enf.source ?? '').trim();
   const enfBasis = enf
     ? (enfVerified
-        ? `<li><b>Enforcer.</b> ${esc(humanize(enf.token))} appetite — <b>verified</b> (${enfSrc ? `source: ${esc(enfSrc.slice(0, 60))}` : 'enforcement record on file'}).</li>`
-        : `<li><b>Enforcer.</b> ${esc(humanize(enf.token))} appetite <i>inferred</i> — reputation/profile signal.</li>`)
+        ? `<li><b>Likely to enforce.</b> ${esc(humanize(enf.token))} appetite — <b>verified</b> (${enfSrc ? `source: ${esc(enfSrc.slice(0, 60))}` : 'enforcement record on file'}).</li>`
+        : `<li><b>Likely to enforce.</b> ${esc(humanize(enf.token))} appetite <i>inferred</i> — reputation/profile signal.</li>`)
     : '';
   // Instance #5 — the use-check / own-rights cite is rendered FROM the JSON (no prose-regex), so it can never
   // diverge from the structured field. The source string may hold ONE URL, SEVERAL (comma/space-separated —
@@ -1468,12 +1707,26 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   const proseHasRead = READ_LEAD_RE.test(proseFull || '');
   const positions = `${proseHasRead ? '' : lpSplit(f)}${manageableLine(f)}`;
   const body = `${positions}${regs || seniorLine || fetchFailLine || enfLine || enfTelemetry || useChk || ownR || impactLine ? `<ul>${fetchFailLine}${seniorLine}${regs}${enfLine}${enfTelemetry}${useChk}${ownR}${impactLine}</ul>` : ''}${proseFullShown ? renderProse(proseFullShown) : ''}${caseLawStrand}${prov}`;
-  return `<details class="drill"><summary>Full detail &amp; provenance</summary><div class="drillbody">${body}</div></details>`;
+  return `<details class="drill"><summary>Full detail</summary><div class="drillbody">${body}</div></details>`;
 }
 
 // The contentious MARK + the classes it matched in, as a header chip next to the holder — so a card shows
 // WHICH mark/class the conflict is, not only who owns it (mirrors the rights-holder panel). Empty only when
 // the holder IS the mark (owner unknown) AND no classes are known.
+// The card head leads with the MARK and its country and class, and the owner sits on the line below
+// (owner + outside reviewer, 2026-09-16). Emphasis only: nothing is removed, the same facts are read in
+// the order a reader asks for them — which name, where, whose.
+function cardTitleParts(f, who) {
+  const classes = [...new Set((f.owner?.registrations || []).flatMap((r) => Array.isArray(r.classes) ? r.classes : []))]
+    .map(Number).filter((x) => !Number.isNaN(x)).sort((a, b) => a - b).join('/');
+  const code = regionCode(f);
+  const where = code && code !== COMMON_LAW ? (regionName(code) || code) : '';
+  const tail = [where, classes ? `Class ${classes}` : ''].filter(Boolean).join(' \u00b7 ');
+  const title = `<span class="who mark-first">${esc(f.mark || who || '')}${tail ? ` <span class="where">\u2014 ${esc(tail)}</span>` : ''}</span>`;
+  const ownerLine = who ? `<div class="owner-line"><span class="ok">Owner</span> ${esc(who)}</div>` : '';
+  return { title, ownerLine };
+}
+
 function markClassChip(f, who) {
   const nrm = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
   const classes = [...new Set((f.owner?.registrations || []).flatMap((r) => Array.isArray(r.classes) ? r.classes : []))]
@@ -1534,7 +1787,10 @@ function oneFallback(f, who) {
 // free string on this page goes through inline() — the ONE choke point (stripInternal →
 // esc → link/markdown safety). A field that was ENTIRELY internal therefore renders as '' on the
 // client and disappears with its label, exactly as a wholly-internal bullet does in renderProse.
-const lpPara = (label, html) => `<p class="lp${isInternalLabelled(html) ? ' int-note' : ''}"><b>${label}</b> ${html}</p>`;
+// Item 18 (owner, 2026-09-16): a line the engine labels internal does not reach the delivered page at
+// all. It stays in the findings record, the audit workbook and the assistant, which is where the
+// audit was always meant to live. Marking it and hiding it in print left it on screen for a client.
+const lpPara = (label, html) => isInternalLabelled(html) ? '' : `<p class="lp"><b>${label}</b> ${html}</p>`;
 function lpSplit(f) {
   const legal = inline(String(f.legal_position ?? '').trim()).trim();
   const practical = inline(String(f.practical_position ?? '').trim()).trim();
@@ -1598,9 +1854,11 @@ function findingCard(f, card, recordsByUri = new Map()) {
       <div class="body">
         <div class="cardhead">
           <label class="pick no-print"><input type="checkbox" class="pickbox" checked></label>
-          <span class="fnum">${f.ordinal}</span><span class="who">${esc(who)}</span>${markChip}${evidenceChips(f)}
+          <span class="fnum">${f.ordinal}</span>${cardTitleParts(f, who).title}${evidenceChips(f)}
           <span class="tier ${tierCls}">${riskChip(f)}</span>
+          <button class="ask-fi no-print">\u2726 Ask AI about this finding</button>
         </div>
+        ${cardTitleParts(f, who).ownerLine}
         <div class="oneline">${inline(sentenceCaseLead(one))}</div>
         ${meters(f)}
       </div>
@@ -1624,7 +1882,7 @@ function compactCard(f, card, recordsByUri = new Map()) {
   const markChip = markClassChip(f, who);
   return `<div class="card compact" id="c${f.ordinal}">
     <div class="top"><div class="rail low"></div><div class="body">
-      <div class="cardhead"><label class="pick no-print"><input type="checkbox" class="pickbox" checked></label><span class="fnum">${f.ordinal}</span><span class="who">${esc(who)}</span>${markChip}${evidenceChips(f)}<span class="tier low">${riskChip(f)}</span></div>
+      <div class="cardhead"><label class="pick no-print"><input type="checkbox" class="pickbox" checked></label><span class="fnum">${f.ordinal}</span>${cardTitleParts(f, who).title}${evidenceChips(f)}<span class="tier low">${riskChip(f)}</span><button class="ask-fi no-print">\u2726 Ask AI about this finding</button></div>${cardTitleParts(f, who).ownerLine}
       <div class="oneline">${inline(sentenceCaseLead(one))}</div>
     </div></div>
     ${fullDetail(f, card, recordsByUri)}
@@ -1661,6 +1919,8 @@ const COV_STATE = {
  * carries EVERY significant word of the directive it names — a near-match keeps both.
  */
 const FOLLOW_UP_PREFIX = 'Follow-up / ';
+// `<axis> / <what was swept>` — the shape unitLabel composes for a plan-derived coverage unit.
+const AXIS_LABELLED = /\s\/\s/;
 const COV_STOPWORDS = new Set(['the', 'a', 'an', 'as', 'for', 'of', 'in', 'on', 'and', 'or', 'to', 'is',
   'was', 'it', 'its', 'this', 'that', 'with', 'by', 'at', 'be', 'been', 'run', 'search', 'searched']);
 const covWords = (t) => new Set(String(t || '').toLowerCase().match(/[a-z0-9]+/g)?.filter((w) => !COV_STOPWORDS.has(w)) ?? []);
@@ -1689,13 +1949,31 @@ function dedupeFollowUps(coverage) {
     // it. That is exactly the failure this function's header calls the one worth avoiding, and the
     // header was right while the code was not.
     //
-    // WHAT THIS STILL CANNOT DO, said rather than implied: it is word containment, so two genuinely
-    // different OPEN searches sharing every word of a short directive would still collapse to one. The
-    // discriminator a reader would want is which search a row names, and the rows carry no identity to
-    // join on — that is why the issue's own wording is "name the same search" rather than a rule. The
-    // narrowing here is the strongest one the data supports, and it errs toward keeping both.
+    // THE LIMITATION ABOVE STOPPED BEING HYPOTHETICAL, so it is a rule now rather than a paragraph.
+    //
+    // It read: "it is word containment, so two genuinely different OPEN searches sharing every word of a
+    // short directive would still collapse to one." Measured on a delivered report — 33 coverage entries,
+    // 31 rendered cells. Two open park rows with one- and two-word directives were erased by unrelated
+    // rows that merely mentioned those words. The client read a coverage section that never named two
+    // slices the run had deliberately disclosed, which is the failure this header calls the one worth
+    // avoiding, reached by the route the header predicted.
+    //
+    // THE DISCRIMINATOR IS THE AXIS LABEL, and it is the identity the paragraph above said was missing.
+    // A row whose area carries one — `<axis> / <what was swept>`, the shape `unitLabel` composes — is a
+    // PLAN-DERIVED COVERAGE UNIT. It is not the model restating a deferred slice; it is a different unit
+    // that happens to contain the same word. Only the model's own free-text row can BE a restatement,
+    // and that is exactly the dolphin row this function was built for: "the English word DOLPHIN as a
+    // dedicated exact search", no axis, no separator. So an axis-labelled row may no longer stand in for
+    // a composed follow-up, however many words it shares.
+    //
+    // EVIDENCE, STATED ONE-SIDED BECAUSE IT IS. Every row containing either erased directive was
+    // axis-labelled `register`, so the measured run supports the half that stops suppression. It cannot
+    // support the other half: that run has no open row WITHOUT an axis label, so nothing in it exercises
+    // "a free-text row still suppresses". The witness for that half is the dolphin incident alone, which
+    // is a real delivered page but a single one — and the arm below is what keeps it honest.
     return !written.some((w) => {
       if (COV_STATE[w?.state]?.cls === 'ok') return false;   // a searched-and-clean row reports the opposite
+      if (AXIS_LABELLED.test(String(w?.area || ''))) return false;   // a plan unit is not a restatement
       const theirs = covWords(w.area);
       return [...directive].every((word) => theirs.has(word));
     });
@@ -1802,7 +2080,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){var pop=doc
 function markAssessmentBlock(ma) {
   if (ma == null) return '';
   const structured = typeof ma.distinctiveness === 'object' || typeof ma.connotation === 'object';
-  const SEC = `<div class="sec"><span class="num">✦</span><h2>The mark itself</h2><span class="note">how strong the name is on its own</span></div>`;
+  const SEC = `<div class="sec"><h2>The mark itself</h2></div>`;
   if (!structured) {
     const dist = String(ma?.distinctiveness ?? '').trim(), conn = String(ma?.connotation ?? '').trim();
     if (!dist && !conn) return '';
@@ -1859,26 +2137,6 @@ const FOUR_ANSWER_LABELS = [
 // The tokens and the class numbers are closed/typed values — esc() is right for those. A read that was
 // ENTIRELY a ::p:: staff aside leaves nothing to say, so its row (and a wholly-internal obstacle row)
 // disappears on the client rather than rendering an empty answer.
-function fourAnswersPanel(fa) {
-  if (!fa || typeof fa !== 'object') return '';
-  const rows = FOUR_ANSWER_LABELS.map(([key, label]) => {
-    const a = fa[key];
-    if (!a || typeof a.read !== 'string' || !a.read.trim()) return '';
-    const read = inline(a.read.trim()).trim();
-    if (!read) return '';
-    const ords = (Array.isArray(a.ordinals) && a.ordinals.length)
-      ? ` <span class="fa-ords">${a.ordinals.map((n) => `<a href="#c${n}">#${n}</a>`).join(' ')}</span>` : '';
-    const basis = a.basis ? inline(String(a.basis).trim()).trim() : '';
-    const obsRows = (key === 'registrability' && Array.isArray(a.obstacles) ? a.obstacles : [])
-      .map((r) => ({ cls: esc(String(r?.class ?? '')), note: inline(String(r?.note ?? '').trim()).trim() }))
-      .filter((r) => r.note);
-    const obstacles = obsRows.length
-      ? `<ul class="fa-obstacles">${obsRows.map((r) => `<li${intNoteCls(r.note)}><b>Class ${r.cls}.</b> ${r.note}</li>`).join('')}</ul>` : '';
-    return `<div class="fa-row${isInternalLabelled(read) ? ' int-note' : ''}"><span class="fa-k">${label}</span><span class="fa-v">${a.token ? `<span class="fa-token">${esc(humanize(a.token))}</span> — ` : ''}${read}${ords}${basis ? ` <i class="fa-basis">(${basis})</i>` : ''}${obstacles}</span></div>`;
-  }).filter(Boolean);
-  if (!rows.length) return '';
-  return `<div class="panel fourans"><div class="label">The four answers</div>${rows.join('')}</div>`;
-}
 
 function contextNotesList(notes = []) {
   const items = notes.map(n => {
@@ -1892,7 +2150,7 @@ function contextNotesList(notes = []) {
 // the findings-section assembly below.
 function contextNotesBlock(notes = []) {
   if (!notes.length) return '';
-  return `<div class="sec"><span class="num">✦</span><h2>Famous-mark neighbours noted</h2><span class="note">diligence — no register record; not scored, does not affect the risk read</span></div>
+  return `<div class="sec"><h2>Famous-mark neighbours noted</h2></div>
   ${contextNotesList(notes)}`;
 }
 
@@ -1958,7 +2216,7 @@ function heroCaptionHtml(text) {
   // `sub-lead` marks the FOLDED first sentence so the stylesheet can tighten its bottom margin without a
   // positional selector: `.sub:first-of-type` would have caught an UNFOLDED one-sentence caption too and
   // changed the spacing of every archived report that has no fold.
-  return `<p class="sub sub-lead">${inline(first)}</p><details class="sub-more"><summary>More</summary><p class="sub">${inline(rest)}</p></details>`;
+  return `<p class="sub sub-lead">${inline(first)}</p><details class="sub-more"><summary>Show the chart and rights-holders</summary><p class="sub">${inline(rest)}</p></details>`;
 }
 
 // The hero's confidentiality line: the delivery posture and the PRODUCT, joined, and nothing else.
@@ -2030,6 +2288,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   AS_OF = opts.asOf ?? null;   // C2
   VERDICT_INFO = (opts.verdictInfo && opts.verdictInfo.tier != null) ? opts.verdictInfo : null;   // T2 — only an enriched sidecar is an authority
   FRAMEWORK = opts.framework ?? null;   // doc 50 — the frozen manifest; null on archived/legacy runs
+  FULL_COUNTRY = isFullCountry(opts);   // The 2026-09-16 report redesign — the depth rule for the Full detail fold
   SEARCHED_JUR = Array.isArray(opts.searchedJurisdictions) && opts.searchedJurisdictions.length ? opts.searchedJurisdictions : null;   // T6 (D4)
   SCOPE_WORLDWIDE = opts.scopeBasis === 'worldwide' ? true : null;   // the plan's scope_basis; null ⇒ fall back to the ledger-prose sniff
   CASE_LAW_BY_ORD = opts.caseLawByOrdinal instanceof Map ? opts.caseLawByOrdinal : new Map();   // T7 (E5)
@@ -2164,33 +2423,38 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   const clNotice = (clNoticeText && CASE_LAW_BY_ORD.size)
     ? `<div class="panel" style="padding:12px 16px;margin:0 0 12px"><p style="margin:0 0 4px;font-weight:700;font-size:13px">Session-wide notice</p><div style="font-size:13px">${renderProse(clNoticeText)}</div></div>`
     : '';
-  const CL_SEC = (n) => `<div class="sec" id="common-law"><span class="num">${n}</span><h2>Common-law &amp; marketplace</h2><span class="note">who is using similar names, registered or not</span></div>
-  ${clNotice}${clBody}`;
-  const hasCL = Boolean(clBody || clNotice);
+  // The 2026-09-16 report redesign — the section heading and the session-wide notice are off the page: the heading
+  // named a layer rather than a thing a reader looks for, and the notice was operational narration. The
+  // CARDS are not: a rated common-law finding is a finding, and it renders in place with the others.
+  const hasCL = Boolean(clBody);
   let findingsSections, covNum;
   if (!DISPOSITION_MODE) {
-    findingsSections = `${onField.length ? `<div class="sec"><span class="num">01</span><h2>The conflict landscape</h2><span class="note">tap any point to jump to its finding</span></div>
+    findingsSections = `${onField.length ? `<div class="sec"><h2>The conflict landscape</h2></div>
   <div class="landwrap">${quadrant(sorted)}${keyPanel(sorted, recordsByUri)}</div>
 
-  <div class="sec"><span class="num">02</span><h2>On-field conflicts</h2><span class="note">these drive the risk read</span></div>
+  <div class="sec"><h2>Conflicts</h2></div>
   ${onField.map(f => findingCard(f, cardFor(f), recordsByUri)).join('\n  ')}` : ''}
 
-  ${secReg.length ? `<div class="sec"><span class="num">03</span><h2>Secondary &amp; watch</h2><span class="note">listed for completeness</span></div>
+  ${secReg.length ? `<div class="sec"><h2>Secondary &amp; watch</h2></div>
   ${secondaryRegions(secReg, cardFor, recordsByUri)}` : ''}${hasCL ? `
 
-  ${CL_SEC('04')}` : ''}`;
+  ${clBody}` : ''}`;
     covNum = hasCL ? '05' : '04';
   } else {
     let secNum = 0;
     const num = () => String(++secNum).padStart(2, '0');
     const landscape = onField.length
-      ? `<div class="sec"><span class="num">${num()}</span><h2>The conflict landscape</h2><span class="note">tap any point to jump to its finding</span></div>
+      ? `<div class="sec"><h2>The conflict landscape</h2></div>
   <div class="landwrap">${quadrant(sorted)}${keyPanel(sorted, recordsByUri)}</div>
 
-  <div class="sec"><span class="num">${num()}</span><h2>On-field conflicts</h2><span class="note">these drive the risk read</span></div>
+  <div class="sec"><h2>Conflicts</h2></div>
   ${onField.map(f => findingCard(f, cardFor(f), recordsByUri)).join('\n  ')}`
       : '';
-    let tail = '';
+    // THE COMMON-LAW CARDS GO WITH THE CONFLICTS, NOT UNDER THE NEXT HEADING. Appended at the end they
+    // landed beneath "Notable but manageable", which says something about a finding that is not true of
+    // them: an off-field common-law card is not an absorbed register negative. With the section heading
+    // gone they carry no heading of their own, so placement is the only thing that attributes them.
+    let tail = hasCL ? `\n\n  ${clBody}` : '';
     const band2r = band2.filter(f => !isCL(f)), band3r = band3.filter(f => !isCL(f));
     // spec 2026-07-30 §3 — ONE "we looked and cleared it" section: 03 Notable but manageable ABSORBS
     // 04 Commercial awareness (band 3) and the famous-mark diligence notes. Both keep their words as
@@ -2202,16 +2466,17 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
     // grouping keys on. The gate is fail-CLOSED — an absent or unreadable version is legacy.
     const negatives = NEGATIVES_GROUPED ? reasonedNegativeGroups([...band2r, ...band3r]) : null;
     if (negatives) {
-      // ZERO IS NOT ABSENCE. A group is built from its members, so an empty heading cannot be produced;
-      // and a run that grouped and found none SAYS so, rather than leaving the reader to guess whether
-      // there were no negatives or the grouping never ran.
-      const body = negatives.total
-        ? reasonedNegatives(negatives.groups, cardFor, recordsByUri)
-        : `<p class="fold-lead"><b>No reasoned negatives.</b> Every retrieved close match on this run is an on-field conflict above — nothing was cleared into this section.</p>`;
+      // THE SECTION APPEARS ONLY WHEN IT HOLDS SOMETHING (owner, 2026-09-16). The reasoning it replaces
+      // was "zero is not absence": a run that grouped and found none should SAY so rather than leave the
+      // reader guessing. That is right for a working record and wrong for a client's page, where a
+      // heading followed by a sentence explaining that there is nothing under it is the "nothing here"
+      // line the owner ruled out. Whether the grouping ran is answered by the counts, not by a paragraph.
       const notes = contextNotes.length ? `\n  <p class="fold-lead"><b>Famous-mark neighbours.</b> Diligence — no register record; not scored, does not affect the risk read.</p>
   ${contextNotesList(contextNotes)}` : '';
-      tail += `\n\n  <div class="sec"><span class="num">${num()}</span><h2>Notable but manageable</h2><span class="note">documented coexistence or clear distinction on the record</span></div>
-  ${body}${notes}`;
+      if (negatives.total || notes) {
+        tail += `\n\n  <div class="sec"><h2>Notable but manageable</h2></div>
+  ${negatives.total ? reasonedNegatives(negatives.groups, cardFor, recordsByUri) : ''}${notes}`;
+      }
     } else if (band2r.length || band3r.length || contextNotes.length) {
       const parts = [];
       if (band2r.length) parts.push(secondaryRegions(band2r, cardFor, recordsByUri));
@@ -2219,10 +2484,12 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   ${secondaryRegions(band3r, cardFor, recordsByUri)}`);
       if (contextNotes.length) parts.push(`<p class="fold-lead"><b>Famous-mark neighbours.</b> Diligence — no register record; not scored, does not affect the risk read.</p>
   ${contextNotesList(contextNotes)}`);
-      tail += `\n\n  <div class="sec"><span class="num">${num()}</span><h2>Notable but manageable</h2><span class="note">documented coexistence or clear distinction on the record</span></div>
+      tail += `\n\n  <div class="sec"><h2>Notable but manageable</h2></div>
   ${parts.join('\n  ')}`;
     }
-    if (hasCL) tail += `\n\n  ${CL_SEC(num())}`;
+    // The 2026-09-16 report redesign — the section heading and its routing notice go; the CARDS stay, or a
+    // finding the run rated would appear on no page at all.
+
     findingsSections = landscape + tail;
     covNum = num();
   }
@@ -2255,13 +2522,16 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
 <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500;600&display=swap" rel="stylesheet">${FAVICON_LINK}${themeInitScript}
 <style>${cssInline}${darkCss}${PRINT_LIGHT}</style>${chromeLinkTag}</head><body class="has-glow">
 <div class="rep-stickyhead no-print">
-${opts.nav || ''}
 <div class="topbar no-print">
+  ${/* ONE BAR (the 2026-09-16 report redesign). The site bar is not rendered on a report, so the brand belongs here:
+       a reader met two stacked headers, and the lower one carried the only brand. */''}
+  ${logoLockup({ mark: 16, cls: 'tb-lockup' })}
   ${opts.homeHref ? `<a class="homebtn tb-back no-print" href="${escAttr(opts.homeHref)}" title="All reports"><span aria-hidden="true">←</span> <span class="tb-back-lbl">All reports</span></a>` : ''}
   <span class="sp"></span>
   <span class="tb-risk" style="background:var(${STOP_VAR[i]})">${riskLabel}</span>
   <span class="mono tb-matter" style="font-size:11px;color:var(--faint)">${esc(fm.matter || opts.runId || '')}${fm.title ? ' / ' + esc(fm.title) : ''}</span>
-  ${opts.issued ? `<span class="mono tb-issued"><span aria-hidden="true">🗓 </span>Issued ${esc(opts.issued)}</span>` : ''}
+  ${opts.issued ? `<span class="mono tb-issued"><span aria-hidden="true">🗓 </span>Issued on ${esc(opts.issued)}</span>` : ''}
+  <button type="button" class="tbbtn tb-ask no-print">✦ <span class="tb-lbl">Ask AI</span></button>
   <div class="tb-menu">
     <button type="button" class="tbbtn primary tb-exp-toggle" aria-haspopup="true" aria-expanded="false">⬇ <span class="tb-lbl">Export</span> ▾</button>
     <div class="tb-pop tb-exp-pop" hidden>
@@ -2283,11 +2553,10 @@ ${opts.nav || ''}
   <header class="hero">
     ${demoBannerHtml(opts.demoData === true)}
     ${confLineHtml(opts.delivery, productName)}
-    ${depthStripHtml(opts.depthNote)}
     <h1 class="mark">${esc(fm.title || '')}</h1>
-    ${headScope(fm, coverage, findings)}
+    ${aboutPanel(fm, coverage, findings, opts)}
     ${heroCaptionHtml(secs['Summary'] ? secs['Summary'].trim() : (fm.overall_caption || ''))}
-    <div class="heroGrid">${gauge(fm, findings, coverage)}${facts(fm, findings, coverage)}</div>${fourAnswersPanel(fourAnswers)}
+    <div class="heroGrid">${gauge(fm, findings, coverage, fourAnswers, opts)}</div>
     ${doFirst(secs)}
     ${actionGroup(buckets.ans, 'ans')}
   </header>
@@ -2300,10 +2569,14 @@ ${opts.nav || ''}
   <!-- doc-52 §2 THE CONFLICTS — findings ordered by who can block first; each expands to full detail. -->
   ${findingsSections}
 
-  ${ruledOutSection(ruledOut, recordsByUri)}
+  ${whereItStandsSection(findings, opts)}
+
+  ${courtDecisionsSection(opts)}
+
+  ${alsoConsideredSection(ruledOut, recordsByUri, opts)}
 
   <!-- doc-52 §3 WHAT ONLY YOU CAN CLOSE — forward decisions, plain English, after the findings. -->
-  ${buckets.you ? `<div class="sec" id="only-you"><span class="num">✔</span><h2>What only you can close</h2><span class="note">decisions that need you</span></div>
+  ${buckets.you ? `<div class="sec" id="only-you"><h2>What only you can close</h2></div>
   <div class="panel actions"><div class="actgrp act-you">${renderProse(buckets.you.body)
     .replace(/\[Time-critical\]\s*/gi, '<span class="src cl" style="margin-right:6px">Time-critical</span> ')
     .replace(/\[Open question\]\s*/gi, '<span class="src" style="margin-right:6px">Open question</span> ')
@@ -2319,15 +2592,18 @@ ${opts.nav || ''}
     // and this replace is inert on it.
     .replace(/\[Before you can rely\]\s*/gi, '<span class="src cl" style="margin-right:6px">Before you can rely</span> ')}</div></div>` : ''}
 
-  <!-- doc-52 §4 SCOPE & WHAT WE DIDN'T SEARCH — one collapsible section, last; replaces "Checks we ran"
-       + "Methodology" + the coverage grid. Nothing here leads. -->
-  ${scopeSection(buckets.ran, coverage, opts.coverageJudgment, secs['Methodology'], DISPOSITION_MODE ? [] : contextNotes, fm, recordsByUri.size > 0, findings.length > 0,
-    // WHETHER A REGISTER-INDEX ENTRY IS ACTUALLY ON THIS PAGE, mirroring the registration render's own
-    // second disjunct rather than restating it loosely: a cited registration with no fetched body, which
-    // is the state that draws the "(register-index entry)" label. The provenance paragraph explains that
-    // label, so it renders where the label can and stays off every page where it cannot.
-    findings.some((f) => (f?.owner?.registrations ?? []).some((r) => r?.uri
-      && (recordsByUri.size > 0 || !(r.status || r.filed || r.expiry || (r.classes && r.classes.length))))), opts.servedModels)}
+  <!-- The 2026-09-16 report redesign — WHAT WAS SEARCHED. The scope fold and the checks-we-ran narrative are gone
+       (owner, 2026-09-16: no coverage narrative on the page). What is left is counts, folded closed:
+       completed work appears as numbers and cleared names, never as the engine's account of itself. -->
+  ${whatWasSearchedSection(opts, coverage, findings, recordsByUri)}
+
+  <!-- WHICH MODELS SERVED THIS RUN. It used to close the scope fold, and the 2026-09-16 redesign deleted
+       that fold — so the line was re-homed here rather than dropped with its container, which would have
+       removed a statement of provenance from the client's page without anyone ruling that it should go.
+       It sits with the other provenance lines, immediately above the matter and the framework in the
+       footer, and renders as '' on a run that recorded no models, so an archived run republishes exactly
+       as it was delivered. -->
+  ${servedModelsLine(opts.servedModels)}
 
   <footer>
     <span>${productName ? `${esc(productName)}. ` : ''}${FRAMEWORK
@@ -2343,8 +2619,7 @@ ${opts.nav || ''}
         // describing its own status inaccurately to the person paying for it. Raised in review because
         // the first version of this comment argued only the band note and left the reader to infer that
         // the status line had gone along for the ride.
-        ? `Risk bands: <span class="mono">${esc(FRAMEWORK.bands.map(b => b.label).join(' / '))}</span>. Purple notes are for the reviewing lawyer and are removed on export.`
-        : 'Risk bands: <span class="mono">LOW / MANAGEABLE / MEDIUM / HIGH / VERY HIGH</span>. Purple notes are for the reviewing lawyer and are removed on export.'}<br>Matter ${esc(fm.matter || '')}${fm.run ? ` · ${esc(fm.run)}` : ''}.${fm.rated_under ? `<br>Rated under: <span class="mono">${esc(fm.rated_under)}</span>.` : ''}${fm.run_under_project ? `<br>Run under project: <span class="mono">${esc(fm.run_under_project)}</span>.` : ''}</span>
+        ? '' : ''}<br>Matter ${esc(fm.matter || '')}${fm.run ? ` · ${esc(fm.run)}` : ''}.${fm.rated_under ? `<br>Rated under: <span class="mono">${esc(fm.rated_under)}</span>.` : ''}${fm.run_under_project ? `<br>Run under project: <span class="mono">${esc(fm.run_under_project)}</span>.` : ''}</span>
     ${logoLockup({ mark: 16 })}
   </footer>
 </div>

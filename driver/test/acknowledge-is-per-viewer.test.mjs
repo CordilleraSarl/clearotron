@@ -153,9 +153,18 @@ test("arm 6 — the count is reachable and one click undoes it", async () => {
   const home = live("portal-ui/src/screens/Home.tsx");
   assert.match(home, /\{acked\.length\} acknowledged/, "the number is on screen");
   assert.match(home, /Bring back/, "…and each one has its way back beside it");
-  const contract = live("portal-ui/src/contract/home.ts");
-  assert.match(contract, /r\.state !== 'delivered' && !r\.acked/, "inFlight drops them");
-  assert.match(contract, /r\.state !== 'delivered' && r\.acked/, "…and `acknowledged` is its exact complement");
+  // THE NEW SECTION HAS THE SAME OBLIGATION: a count on screen, and a way in. A stopped run is no
+  // longer in the live band, so if this fold were unreachable the acknowledge control would be too —
+  // a complete capability with no way to press it, which every other arm here would still pass.
+  assert.match(home, /\{stopped\.length\} stopped recently/, "what stopped is a number on screen, unopened");
+  assert.match(home, /aria-expanded=\{showStopped\}/, "…and the fold that opens it is a real control");
+  // THE PARTITION ITSELF IS ASSERTED WHERE THE FUNCTIONS CAN BE CALLED, in portal-ui/test/home.test.ts
+  // ("`acknowledged` is the exact complement of the failures list"). Two `assert.match` lines used to
+  // pin it here by matching the contract's SOURCE TEXT. That held the property only while the spelling
+  // did: when the failures moved out of the live band into their own list, the right repair was to
+  // re-pin the text — which would have kept the light green while proving nothing, and fired again on
+  // the next rename. This file cannot import a .ts contract, so the property lives in the suite that
+  // can drive it and this one keeps what it can actually observe: the copy on the screen.
 });
 
 test("arm 7 — the file is named by hash; an address is never a path component", async () => {

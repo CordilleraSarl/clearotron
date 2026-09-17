@@ -16,6 +16,7 @@ import { buildAudit } from './xlsx.mjs';
 import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, joinFindingToBlock, CLIENT_TIER_BY_COMPOSITE, projectCoverageJudgment } from '../findings-model.mjs';
 import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs';   // — and why an absence did not close
 import { clearanceReportData } from './report-data.mjs';
+import { searchDepthRecord } from './search-depth.mjs';   // how much was read to reach the answer, as counts and tokens
 import { parseFrameworkManifest } from '../framework.mjs';
 import { rollupTokens, servedModels } from '../tokens.mjs';
 import { reportIdentityFor, productCoverageNote, isRegisterOnly } from '../search-policy.mjs';
@@ -1058,7 +1059,29 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   let served = null;
   try { served = runDir ? servedModels(runDir) : null; } catch { served = null; }
   // `demoData` is resolved above the report.md write — one answer, every surface.
-  writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, servedModels: served, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', nav: reportNav, chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, recordLinks: officeLinks?.byUri ?? null, providerLabel, seniorRights, findingsSchemaVersion }));
+  // ── HOW MUCH WAS READ TO REACH THE ANSWER ──────────────────────────────────────────────────────
+  // Derived here rather than in a stage so a REPUBLISH of an archived run picks the fields up with no
+  // re-run: every source below is something the run already wrote. Best-effort per source, in the house
+  // pattern — a run with no grid or no case-law layer still gets its register counts, and the absent
+  // ones report themselves as zero or `not-in-scope` rather than as a gap nobody can see.
+  let searchDepth = null;
+  try {
+    const runBase = runDir ?? dirname(reportMd);
+    const recDir = join(runBase, '_records');
+    const rdText = (p2) => { try { return readFileSync(p2, 'utf8'); } catch { return ''; } };
+    const rdJson = (p2) => { try { return JSON.parse(readFileSync(p2, 'utf8')); } catch { return null; } };
+    searchDepth = searchDepthRecord({
+      auditMd: (auditMd && existsSync(auditMd)) ? rdText(auditMd) : '',
+      recordIndex: recordsByUri ?? {},
+      recordFileNames: existsSync(recDir) ? readdirSync(recDir) : [],
+      commonLawGrid: rdJson(join(runBase, 'common-law-grid.json')),
+      caseLawText: rdText(join(dirname(reportMd), 'case-law-findings.md')),
+      registerPlan: rdJson(driverDir(runBase, 'register-plan.json')),
+    });
+    writeRO('search-depth.json', JSON.stringify(searchDepth, null, 2));
+  } catch { /* the depth record is additive — a publish never fails for want of it */ }
+
+  writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, servedModels: served, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', nav: reportNav, chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, recordLinks: officeLinks?.byUri ?? null, providerLabel, seniorRights, findingsSchemaVersion, searchDepth }));
   // ONE report (spec 2026-07-30 §5): report.client.html is no longer written. The knockout lane's own
   // collapse note is the precedent: "two renderings of one run is how the wrong link gets sent". The
   // client host serves the same report.html through the portal's readReport() (cleaning built in) — its

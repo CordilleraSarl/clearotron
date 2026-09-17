@@ -7,12 +7,14 @@
 
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import {
   PROFILE_FIELDS, PROJECT_EDITABLE, projectFields, CODE_OWNED, FIELD_GROUPS, choiceLabel,
   parseLines, parseNumbers, toInput, applyField, mergePlatforms, revokedPlatforms, stripCodeOwned,
   PATH_FIELDS, visibleReadOnlyFields, fieldInput, isSet, rootKey,
-  fieldNotices, rejectedNumbers, chosenEntries, toggleEntry, CLEARED_LABEL,
+  fieldNotices, rejectedNumbers, chosenEntries, toggleEntry, CLEARED_LABEL, fieldTag, groupTag, depthChoices,
 } from '../src/contract/profileFields.ts'
+import type { Product } from '../src/contract/api.ts'
 
 const spec = (key: string) => {
   const f = PROFILE_FIELDS.find((x) => x.key === key)
@@ -279,6 +281,71 @@ test('every field belongs to a declared group, so none can vanish from a grouped
   }
 })
 
+// ── required and optional ───────────────────────────────────────────────────────────────────────────
+
+test('REQUIRED AND OPTIONAL: the name is required, and every other field says optional exactly once', () => {
+  // The distinction is the product's — creating a company refuses without a legal name and defaults
+  // everything else — and the forms now say so. The rule is ONE TAG PER FACT: a field carries its own, or
+  // its group carries one for all of them, never both, and a fold of options carries none.
+  assert.equal(fieldTag(spec('name')), 'Required')
+  assert.equal(fieldTag(spec('matchDomains')), 'Optional')
+  assert.equal(fieldTag(spec('selfExclusionOwners')), 'Optional')
+  const group = (id: string) => FIELD_GROUPS.find((g) => g.id === id)!
+  assert.equal(groupTag(group('identity')), null, 'Identity holds a required field, so its heading cannot say Optional')
+  assert.equal(groupTag(group('defaults')), 'Optional', 'Search defaults says Optional once, on its heading')
+  for (const f of PROFILE_FIELDS.filter((x) => x.group === 'defaults'))
+    assert.equal(fieldTag(f), null, `${f.key} repeats the Optional its group already carries`)
+  assert.equal(groupTag(group('firm')), null, 'the law firm fold is tagged')
+  assert.equal(fieldTag(spec('delivery.privileged')), null, 'the field inside the law firm fold is tagged')
+  // The whole population, so a new field or group cannot arrive tagged twice or not at all.
+  for (const f of PROFILE_FIELDS) {
+    const g = group(f.group)
+    assert.ok(!(groupTag(g) && fieldTag(f)), `${f.key} and its group both carry a tag`)
+    assert.ok(groupTag(g) || fieldTag(f) || g.fold, `${f.key} says neither Required nor Optional, and its group does not either`)
+  }
+  // And only one field is required, because only one is required by the create route.
+  assert.deepEqual(PROFILE_FIELDS.filter((f) => fieldTag(f) === 'Required').map((f) => f.key), ['name'])
+})
+
+test('the law firm options fold holds its one field, and names it on the closed row', () => {
+  // Its closed row's note is the field's own label. It used to promise a "reference format" that no field
+  // anywhere carries; a note derived from what the fold holds cannot promise anything else.
+  const firm = FIELD_GROUPS.find((g) => g.id === 'firm')
+  assert.equal(firm?.label, 'Law firm options')
+  assert.equal(firm?.fold, true)
+  const held = PROFILE_FIELDS.filter((f) => f.group === 'firm').map((f) => f.label)
+  assert.deepEqual(held, ['Privileged & Confidential header'])
+})
+
+// ── the depth menu ──────────────────────────────────────────────────────────────────────────────────
+
+const product = (key: string, name: string, over: Partial<Product> = {}): Product =>
+  ({ key, name, stageLabel: name, available: true, unavailableNote: null, ...over }) as Product
+
+test('DEFAULT SEARCH DEPTH NAMES EACH SEARCH ONCE — the registry\'s stage label is its name', () => {
+  // The option read "Global preliminary search · Global preliminary search": name, middot, stage label,
+  // and the registry's stage label IS the product's name. Driven over the registry's own shape, where the
+  // two are equal, because that is the case the page is in.
+  const choices = depthChoices([product('knockout-search', 'Knockout search'), product('global-preliminary-search', 'Global preliminary search')])
+  assert.deepEqual(choices, [
+    { value: 'knockout-search', label: 'Knockout search' },
+    { value: 'global-preliminary-search', label: 'Global preliminary search' },
+  ])
+  for (const c of choices) assert.doesNotMatch(c.label, /·/, `"${c.label}" is still composed of two names`)
+  // A search that cannot run yet is still offered and says so; an older server's nameless row falls back
+  // to its stage label rather than to nothing, and never to the key.
+  const off = depthChoices([product('full-country-search', 'Full country search', { available: false })])
+  assert.equal(off[0]?.label, 'Full country search — not available yet')
+  const nameless = depthChoices([product('multi-country-focus-search', '', { stageLabel: 'Multi-country focus search' })])
+  assert.equal(nameless[0]?.label, 'Multi-country focus search')
+})
+
+test('the depth hint says what the setting is for, in the design\'s words, and keeps the availability clause', () => {
+  const hint = spec('defaultProduct').hint ?? ''
+  assert.ok(hint.startsWith('Used when a request does not name one'), `the hint does not open with the designed words: ${hint}`)
+  assert.match(hint, /settled when the run starts/, 'the one load-bearing clause was cut')
+})
+
 test('EVERY path field is covered, not just the two known today', () => {
   // The guard that survives the next engine change: any code-owned field whose name ends in Path must
   // be on the redaction list. A sixth field called `overridesPath` would otherwise ship to clients.
@@ -459,6 +526,26 @@ test('the JURISDICTIONS picker is assistive — an unknown territory survives it
   assert.deepEqual(chosenEntries(jx, withUnknown), ['France', 'Ruritania'], 'and it is shown as chosen')
   assert.deepEqual(applyField({}, jx, withUnknown)['defaultJurisdictions'], ['France', 'Ruritania'],
     'and it reaches the draft — the box is still free text')
+})
+
+test('the CLASSES picker is a search box, and no class field is a label that forwards presses', () => {
+  // THE SAME SEARCH BOX AS NEW CLEARANCE: chosen classes as chips that say what each class is, and a box
+  // that finds one by number or by word. Read off the component, because the runner cannot mount it; the
+  // matcher and the labels it uses are driven in niceClasses.test.ts.
+  const picker = readFileSync(new URL('../src/components/FieldPicker.tsx', import.meta.url), 'utf8')
+  const classes = picker.slice(picker.indexOf("spec.picker === 'classes'"), picker.indexOf('// Assistive'))
+  assert.ok(classes.length > 0, 'the classes branch was not found')
+  assert.match(classes, />Add a class</)
+  assert.match(classes, />Type a number or a word, for example 25 or clothing</)
+  assert.match(classes, /classMatches\(query, numbers\)/, 'the box does not search the classification')
+  assert.match(classes, /classLabel\(n\)/, 'a chip or a match shows a bare number instead of what the class is')
+  assert.doesNotMatch(picker, /length: 45/, 'the grid of 45 bare numbers is back')
+  // With no box of numbers, a <label> around the field would forward a press on its own name to the first
+  // control inside it — the first chip's remove button. The field is a plain block for classes.
+  const field = readFileSync(new URL('../src/components/ProfileField.tsx', import.meta.url), 'utf8')
+  assert.match(field, /const Wrapper = classes \? 'div' : 'label'/, 'a classes field is wrapped in a label again')
+  // The hint no longer promises a box it does not have.
+  assert.doesNotMatch(spec('defaultClasses').hint ?? '', /Commas, spaces or new lines/, 'the hint still describes a text box of numbers')
 })
 
 test('the CLASSES picker is exclusive, and that asymmetry is declared not accidental', () => {

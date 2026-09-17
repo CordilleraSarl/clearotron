@@ -4,7 +4,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import {
-  inFlight, acknowledged, finished, recentlyFinished, recentProjects, ownerSummaries, ownerNote,
+  inFlight, recentFailures, acknowledged, FAILURE_WINDOW_DAYS, finished, recentlyFinished, recentProjects, ownerSummaries, ownerNote,
   sentence, openingLine, count, slotNote, elapsed, pips, projectNote,
   active, waiting, runProductLabel, cardReason, limitLine, moveBefore, readStamps,
 } from '../src/contract/home.ts'
@@ -20,40 +20,129 @@ const run = (over: Partial<Run>): Run => ({
   pausedKind: null, resetsAt: null, startedAt: null, queuePos: null, acked: false, ...over,
 })
 
-test('the in-flight band keeps failures and puts them first', () => {
-  // A run that stopped is the one thing on this page that needs a decision. Sorting it below live work,
-  // or filtering it out with the delivered rows, is how a failure becomes a silence.
+const DAY = 24 * 60 * 60 * 1000
+const NOW = Date.parse('2026-09-15T12:00:00Z')
+/** A run that stopped `daysAgo` days ago, with a stamp precise enough for the window to judge. */
+const stoppedRun = (over: Partial<Run> & { daysAgo?: number }): Run => {
+  const { daysAgo = 0, ...rest } = over
+  const at = new Date(NOW - daysAgo * DAY)
+  return run({ state: 'failed', issuedAt: at.toISOString(), date: at.toISOString().slice(0, 10), ...rest })
+}
+
+test('the in-flight band is what is happening, and a stopped run is not in it', () => {
+  // A failure used to sit here, on the reasoning that a failure which vanishes is a silence. The danger
+  // was real and the place was wrong: it made this screen correct only after every individual reader had
+  // dismissed it by hand, so every colleague and every new client met the same wall.
   const rows = inFlight([
     run({ runId: 'a', state: 'queued' }),
     run({ runId: 'b', state: 'delivered' }),
     run({ runId: 'c', state: 'failed' }),
     run({ runId: 'd', state: 'running' }),
     run({ runId: 'e', state: 'paused' }),
+    run({ runId: 'f', state: 'cancelled' }),
   ])
-  assert.deepEqual(rows.map((r) => r.runId), ['c', 'd', 'e', 'a'])
+  assert.deepEqual(rows.map((r) => r.runId), ['d', 'e', 'a'])
   assert.ok(!rows.some((r) => r.state === 'delivered'), 'delivered is not in flight')
+  assert.ok(!rows.some((r) => r.state === 'failed' || r.state === 'cancelled'), 'and neither is stopped')
 })
 
-test('an acknowledged run leaves the band, and `acknowledged` is the exact complement', () => {
-  // The band filled with dead runs and stopped showing live work, which is the one thing it is for. The
-  // two functions must partition the not-delivered rows between them: anything that vanishes from one
-  // has to appear in the other, or "acknowledged" is just "forgotten" with a nicer word on it.
+test('an unrecognised state stays in the band — exclusion, never an allowlist', () => {
+  // `asRunState` maps a state it does not know to `running` ON PURPOSE, so an unknown state is shown
+  // rather than hidden. If this function listed the live states instead of excluding the finished ones,
+  // that decision would be inverted here — silently — the first time the engine gained a park state.
+  const odd = run({ runId: 'x', state: 'hibernating' as Run['state'] })
+  assert.deepEqual(inFlight([odd]).map((r) => r.runId), ['x'])
+  assert.deepEqual(recentFailures([odd], { now: NOW }).map((r) => r.runId), [], 'and it is not a failure either')
+})
+
+test('a stopped run with no readable stamp is SHOWN, not dropped', () => {
+  // THE DIRECTION THAT MATTERS. Filtering on a date means a run whose stamp will not parse compares
+  // false against every bound, so a naive window drops it out of the failures list AND out of the band
+  // — off the dashboard altogether, which is the one outcome worse than the wall. When we cannot tell
+  // how old it is, the reader sees it.
+  const nostamp = run({ runId: 'n', state: 'failed', issuedAt: null, date: null })
+  const garbage = run({ runId: 'g', state: 'failed', issuedAt: 'not-a-date', date: 'also-not' })
+  const ids = recentFailures([nostamp, garbage], { now: NOW }).map((r) => r.runId)
+  assert.deepEqual(new Set(ids), new Set(['n', 'g']), 'both survive the window')
+
+  // AND THEY SORT TO THE FRONT, which is the other half of the same rule. Keeping a run because we
+  // cannot tell how old it is, and then sorting it below everything we can date, buries it exactly where
+  // a reader stops looking — kept by one rule and hidden by the other.
+  const mixed = recentFailures([stoppedRun({ runId: 'dated', daysAgo: 1 }), nostamp], { now: NOW })
+  assert.deepEqual(mixed.map((r) => r.runId), ['n', 'dated'], 'an undateable failure is shown FIRST, not last')
+})
+
+test('the failures list is bounded by age, acknowledged or not', () => {
+  // The age limit is what stops this becoming the wall it replaced. A dismissal is per reader, so
+  // nothing a previous reader did helps the next one; without a cut, a person signing in for the first
+  // time meets every failure the deployment has ever had — which is what happened on production.
   const rows = [
-    run({ runId: 'a', state: 'failed', acked: true }),
-    run({ runId: 'b', state: 'failed' }),
-    run({ runId: 'c', state: 'running' }),
-    run({ runId: 'd', state: 'cancelled', acked: true }),
-    run({ runId: 'e', state: 'delivered', acked: true }),
+    stoppedRun({ runId: 'fresh', daysAgo: 0 }),
+    stoppedRun({ runId: 'edge', daysAgo: FAILURE_WINDOW_DAYS - 1 }),
+    stoppedRun({ runId: 'stale', daysAgo: FAILURE_WINDOW_DAYS + 1 }),
+    stoppedRun({ runId: 'ancient', daysAgo: 120, acked: true }),
   ]
-  assert.deepEqual(inFlight(rows).map((r) => r.runId), ['b', 'c'], 'the band keeps the live work and the unseen failure')
-  assert.deepEqual(acknowledged(rows).map((r) => r.runId), ['a', 'd'], 'and the count holds exactly what left it')
-  const band = new Set(inFlight(rows).map((r) => r.runId))
-  const put = new Set(acknowledged(rows).map((r) => r.runId))
-  const notDelivered = rows.filter((r) => r.state !== 'delivered').map((r) => r.runId)
-  assert.equal(band.size + put.size, notDelivered.length, 'every not-delivered run is in exactly one of them')
-  assert.ok(notDelivered.every((id) => band.has(id) !== put.has(id)), 'and never in both')
-  // A DELIVERED run is not "acknowledged" — it never reached the band, so it has nothing to leave.
-  assert.ok(!acknowledged(rows).some((r) => r.state === 'delivered'))
+  assert.deepEqual(recentFailures(rows, { now: NOW }).map((r) => r.runId), ['fresh', 'edge'])
+  assert.deepEqual(acknowledged(rows, { now: NOW }).map((r) => r.runId), [], 'an old dismissal does not inflate the count for ever')
+  // A FLOOR ON THE POPULATION: the window must not be so narrow that it matches nothing, which reads
+  // exactly like a working filter with nothing to show.
+  assert.ok(recentFailures(rows, { now: NOW }).length >= 2, 'the window admits the recent ones at all')
+})
+
+test('the sentence names a fresh failure even when nothing is running', () => {
+  // THE SILENCE THE OLD BAND WAS CARRYING FAILURES TO PREVENT. Nothing live and a failure ten minutes
+  // old must not read "Nothing running." — that is a page telling a person everything is fine while
+  // their search is dead. It is the reason `sentence` takes both populations and neither is optional.
+  const stopped = [stoppedRun({ runId: 'dead', daysAgo: 0 })]
+  assert.equal(sentence([], stopped), 'One search stopped.')
+  assert.equal(sentence([], []), 'Nothing running.', 'and a genuinely quiet page still says so')
+  assert.equal(openingLine([], stopped, true), 'One search stopped.')
+  assert.equal(openingLine([], [], false), 'Nothing has run yet.')
+})
+
+test('the staff sentence counts live work from the band, not by subtraction', () => {
+  // `rows.length - failed` was correct only while failures were inside the band. Now that they never
+  // are, subtracting them undercounts live work by exactly the number of unrelated failures on the page.
+  const live = [run({ runId: 'a', state: 'running' }), run({ runId: 'b', state: 'running' })]
+  const stopped = [stoppedRun({ runId: 'c' }), stoppedRun({ runId: 'd' })]
+  assert.equal(sentence(live, stopped, { owners: 3 }), 'Two stopped · two in flight, three companies.')
+  assert.equal(sentence([], stopped, { owners: 3 }), 'Two stopped, nothing running.')
+})
+
+test('`acknowledged` is the exact complement of the failures list', () => {
+  // The two must partition ONE population — stopped runs inside the window — so that anything which
+  // leaves the list appears in the count. Otherwise "acknowledged" is just "forgotten" with a nicer
+  // word on it. This is the property the old assertion pinned by matching the contract's source text;
+  // it is asserted here by driving the functions, so it fires on a broken partition rather than on a
+  // rename.
+  const rows = [
+    stoppedRun({ runId: 'a', acked: true }),
+    stoppedRun({ runId: 'b' }),
+    run({ runId: 'c', state: 'running' }),
+    stoppedRun({ runId: 'd', state: 'cancelled', acked: true }),
+    run({ runId: 'e', state: 'delivered', acked: true }),
+    stoppedRun({ runId: 'stale', daysAgo: FAILURE_WINDOW_DAYS + 3 }),
+  ]
+  const shown = new Set(recentFailures(rows, { now: NOW }).map((r) => r.runId))
+  const put = new Set(acknowledged(rows, { now: NOW }).map((r) => r.runId))
+  assert.deepEqual(shown, new Set(['b']), 'the list holds what has not been put down')
+  assert.deepEqual(put, new Set(['a', 'd']), 'and the count holds exactly what left it')
+  // THE CHECK WINDOWS THE SAME WAY THE FUNCTIONS DO. Both filter by age; a sum taken over every
+  // terminal row instead agrees with them on any fixture that happens to sit inside the window, and
+  // fails with the wrong sentence on one that does not — a check reporting honestly about a population
+  // one step smaller than the thing it checks. The stale row below is here so that this is demonstrated
+  // rather than asserted: it is terminal, it is outside the window, and it belongs to neither list.
+  const inWindow = (r: Run) => Date.parse(String(r.issuedAt ?? r.date)) >= NOW - FAILURE_WINDOW_DAYS * DAY
+  const terminal = rows.filter((r) => r.state === 'failed' || r.state === 'cancelled')
+  const windowed = terminal.filter(inWindow).map((r) => r.runId)
+  assert.ok(terminal.length > windowed.length, 'the fixture holds a stale row, so the windowing is exercised rather than assumed')
+  assert.ok(windowed.length >= 3, 'the population is not empty — a partition over nothing proves nothing')
+  assert.equal(shown.size + put.size, windowed.length, 'every stopped run inside the window is in exactly one of them')
+  assert.ok(windowed.every((id) => shown.has(id) !== put.has(id)), 'and never in both')
+  assert.ok(!shown.has('stale') && !put.has('stale'), 'and one outside it is in neither')
+  // Neither list is about live or delivered work.
+  assert.ok(!shown.has('c') && !put.has('c'), 'a running run is in neither')
+  assert.ok(!shown.has('e') && !put.has('e'), 'and neither is a delivered one')
 })
 
 test('a cancelled run reaches a CARD, which is where the acknowledge lives', () => {
@@ -62,8 +151,10 @@ test('a cancelled run reaches a CARD, which is where the acknowledge lives', () 
   // above lists four states without `cancelled`. If `active()` were an allowlist rather than "not
   // queued", half the feature would be unreachable and every other test here would still pass. That is
   // exactly: a complete capability with no way in.
-  const rows = inFlight([run({ runId: 'a', state: 'cancelled' }), run({ runId: 'b', state: 'queued' })])
-  assert.deepEqual(active(rows).map((r) => r.runId), ['a'], 'a cancelled run is a card, not a queue row')
+  const stopped = recentFailures([stoppedRun({ runId: 'a', state: 'cancelled' })], { now: NOW })
+  assert.deepEqual(stopped.map((r) => r.runId), ['a'], 'a cancelled run reaches the failures list')
+  const rows = inFlight([run({ runId: 'b', state: 'queued' }), run({ runId: 'c', state: 'paused' })])
+  assert.deepEqual(active(rows).map((r) => r.runId), ['c'], 'and the band still splits cards from the queue')
   assert.deepEqual(waiting(rows).map((r) => r.runId), ['b'])
 })
 
@@ -182,25 +273,29 @@ test('COMPANIES COME FROM THE ROSTER, not from the runs', () => {
 test('THE SENTENCE CANNOT CONTRADICT THE CARDS — it is computed from the same rows', () => {
   // The largest text on the page and the first thing read. Written by hand it would drift from the cards
   // the first time a state was added; derived, it cannot.
-  assert.equal(sentence(inFlight([])), 'Nothing running.')
-  assert.equal(sentence(inFlight([run({ state: 'running' })])), 'One running.')
+  assert.equal(sentence(inFlight([]), []), 'Nothing running.')
+  assert.equal(sentence(inFlight([run({ state: 'running' })]), []), 'One running.')
   assert.equal(
     sentence(inFlight([
       run({ runId: '1', state: 'running' }),
       run({ runId: '2', state: 'paused' }),
       run({ runId: '3', state: 'queued' }),
       run({ runId: '4', state: 'queued' }),
-    ])),
+    ]), []),
     'One running, one paused, two waiting.',
   )
 })
 
 test('a failure leads the sentence, and keeps the rest of the picture beside it', () => {
+  // The two populations are separate now, so the sentence is where they meet — and a failure still
+  // leads, because it is the only clause that needs a decision from the reader.
+  const rows = [stoppedRun({ runId: '1' }), run({ runId: '2', state: 'running' })]
   assert.equal(
-    sentence(inFlight([run({ runId: '1', state: 'failed' }), run({ runId: '2', state: 'running' })])),
+    sentence(inFlight(rows), recentFailures(rows, { now: NOW })),
     'One search stopped · one running.',
   )
-  assert.equal(sentence(inFlight([run({ state: 'failed' })])), 'One search stopped.')
+  const only = [stoppedRun({})]
+  assert.equal(sentence(inFlight(only), recentFailures(only, { now: NOW })), 'One search stopped.')
 })
 
 test('the staff sentence NEVER says "no in flight"', () => {
@@ -208,11 +303,11 @@ test('the staff sentence NEVER says "no in flight"', () => {
   // number nobody can act on and then says nothing is happening. `count(0)` is the word "no", so the
   // multi-owner branch composed it happily. (The 32 were dead letters and are gone at the source; this
   // pins the sentence so the construction cannot come back with any data.)
-  const stopped = inFlight([
-    run({ runId: '1', account: 'zephyr', state: 'failed' }),
-    run({ runId: '2', account: 'aurora', state: 'failed' }),
-  ])
-  const line = sentence(stopped, { owners: 5 })
+  const stopped = recentFailures([
+    stoppedRun({ runId: '1', account: 'zephyr' }),
+    stoppedRun({ runId: '2', account: 'aurora' }),
+  ], { now: NOW })
+  const line = sentence([], stopped, { owners: 5 })
   assert.doesNotMatch(line, /no in flight/)
   assert.equal(line, 'Two stopped, nothing running.')
 })
@@ -223,22 +318,22 @@ test('the staff view counts companies, not names', () => {
     run({ runId: '2', account: 'aurora', state: 'running' }),
     run({ runId: '3', account: 'aurora', state: 'queued' }),
   ])
-  assert.equal(sentence(rows, { owners: 3 }), 'Three in flight, three companies.')
+  assert.equal(sentence(rows, [], { owners: 3 }), 'Three in flight, three companies.')
 })
 
 test('a brand-new account and a quiet one say different things', () => {
   // "Nothing has run yet" is an invitation; "Nothing running" is reassurance. Collapsing them would
   // greet a new client with a status report about work they have never commissioned.
-  assert.equal(openingLine(inFlight([]), false), 'Nothing has run yet.')
-  assert.equal(openingLine(inFlight([]), true), 'Nothing running.')
+  assert.equal(openingLine(inFlight([]), [], false), 'Nothing has run yet.')
+  assert.equal(openingLine(inFlight([]), [], true), 'Nothing running.')
 })
 
 test('AND "WE HAVE NOT BEEN TOLD" IS A THIRD THING, not the empty one', () => {
   // A client holding several companies cannot ask for all of them — the server answers 404 to anyone
   // but staff — so until they pick, there are no runs and both sentences above are lies. A firm with a
   // decade of history opened the page and read "Nothing has run yet."
-  assert.equal(openingLine(inFlight([]), false, false), 'Pick a company to see its work.')
-  assert.equal(openingLine(inFlight([]), true, true), 'Nothing running.', 'and a known-quiet account still reads as quiet')
+  assert.equal(openingLine(inFlight([]), [], false, false), 'Pick a company to see its work.')
+  assert.equal(openingLine(inFlight([]), [], true, true), 'Nothing running.', 'and a known-quiet account still reads as quiet')
 })
 
 test('counts spell out to seven, then go numeric', () => {
@@ -330,12 +425,21 @@ test('Home uses tokens, never a literal colour', () => {
   assert.match(home, /toneColor\(/, 'tones resolve through the token helper that already flips')
 })
 
+/** The rail's own word for the clearances screen. One spelling, read where it is defined. */
+const railLabel = (): string => {
+  const m = /label: '([^']+)', path: '\/portal\/clearances'/.exec(NAV_CONFIG)
+  assert.ok(m, 'the rail no longer names the clearances screen — these arms are reading nothing')
+  return m[1]!
+}
+
 test('HOME DOES NOT RE-LIST THE ARCHIVE — it links to the screen that owns it', () => {
   // The first cut of this page WAS a finished-runs list, which is what Clearances is for and does
   // properly, with families and threads. Two screens showing the same work in two shapes is a second
   // answer, not a summary. The tail is short, capped in the contract, and ends in a way out.
   assert.match(home, /recentlyFinished\(/, 'the tail comes from the grouping contract, not from a slice of runs')
-  assert.match(home, /All Clearances/)
+  // THE RAIL'S WORD, not a copy of it — the same rule the one-spelling arm below states. Two literals
+  // here were the fourth and fifth copy of a label that has now been renamed once.
+  assert.match(home, new RegExp(railLabel()))
   assert.doesNotMatch(home, /\.filter\(\(r\) => r\.state === 'delivered'\)/,
     'Home does not re-derive "finished" — that lives in one tested place')
 })
@@ -364,7 +468,7 @@ test('the finished line leads into Clearances, and Home lists nothing else', () 
   // "Home shows what is happening; the menu gives you the depth" — a summary with no way out is only
   // the first half, and a second, worse archive on the landing screen teaches people not to go to the
   // real one.
-  assert.match(home, /All Clearances/)
+  assert.match(home, new RegExp(railLabel()))
   assert.match(home, /\/portal\/clearances/)
 })
 
@@ -381,12 +485,16 @@ test('ONE BUTTON INTO THE ARCHIVE, ONE SPELLING — the rail, Home and the scree
   const rail = /label: '([^']+)', path: '\/portal\/clearances'/.exec(NAV_CONFIG)
   assert.ok(rail, 'the rail no longer names the clearances screen — this arm is reading nothing')
   const label = rail[1]
-  assert.equal(label, 'All Clearances', 'the rail item is the one spelling everything else follows')
+  assert.equal(label, 'Clearances', 'the rail item is the one spelling everything else follows')
 
   // ONE button, and it says the rail's word. Counted on the prose rather than the file, because the
   // note explaining why the button is there says the label too, and counting that is how this arm read
   // as green on the day the second button went away.
-  assert.equal((home.match(new RegExp(label, 'g')) ?? []).length, 1, 'Home names the archive more than once')
+  // COUNTED AS A LABEL, NOT AS A WORD. This counted every occurrence of the archive's name, which held
+  // "one button" only while no sentence on the page mentioned the place. The stop dialog now tells a
+  // reader a stopped search "stays in Clearances" — the archive as a place, not a way in — and a word
+  // count cannot tell the two apart. What must be single is the thing a reader presses.
+  assert.equal((home.match(new RegExp(`>${label}<`, 'g')) ?? []).length, 1, 'Home offers the archive as a control more than once')
   assert.equal((home.match(/className="btn-ghost home2-all"/g) ?? []).length, 1,
     'the archive button has a twin again — one primary and one secondary per page, not two of one')
   // AND IT IS ON THE HEADER ROW, beside New clearance, not inside the in-flight band. The band is a
@@ -423,7 +531,10 @@ test('THE TAIL IS RECENT WORK AND THEN THE COUNT — not an archive with one row
   // which page it is, the empty band says what to do, and the tail is a few rows ending in how many
   // there are in total.
   assert.match(home, /recentlyFinished\(runs, undefined, 3\)/, 'the tail is back to a single row, or uncapped')
-  assert.match(home, /See all \{total\} finished/, 'the count of everything finished is not offered')
+  // THE COUNT, not the word after it. The tail's way out names how many there are in total — that is
+  // the property; "finished" was a fourth word for a screen the rail already names, and the line sits
+  // under a heading that says "Recently finished" two rows above it.
+  assert.match(home, /See all \{total\}/, 'the count of everything finished is not offered')
   assert.match(home, /finished\(runs\)\.length/, 'the total is derived somewhere other than the contract')
   assert.match(home, /Recently finished/)
   assert.doesNotMatch(home, /Last finished/, 'the old single-row heading is still on the page')
@@ -661,15 +772,24 @@ test('Stop asks the question rather than stating the answer, and names what each
   // is that it is unbounded, which is what makes the first option make sense.
   const dialog = home.slice(home.indexOf('function StopChoice('), home.indexOf('function StateChip('))
   assert.ok(dialog.length > 800, 'the dialog slice is empty — the arm has broken, not the tree')
-  assert.match(dialog, /Stop at the next step/)
+  assert.match(dialog, /Stop after this step/)
   assert.match(dialog, /Stop now/)
-  assert.match(dialog, /no deadline/, 'the boundary option does not say the wait is unbounded, which is the whole reason the other one exists')
+  // THE BOUNDARY OPTION STILL SAYS ITS WAIT IS UNBOUNDED — the whole reason the other option exists.
+  // "No deadline" became "no reliable completion estimate"; the property is that it does not pretend
+  // to know when the step ends.
+  assert.match(dialog, /no reliable completion estimate/, 'the boundary option no longer says its wait cannot be estimated')
   assert.match(dialog, /work is lost/, 'the immediate option does not name what it costs')
   assert.match(dialog, /recorded before it is kept/, 'the immediate option does not say what survives')
   assert.match(dialog, /Leave it running/, 'there is no way out of the dialog that changes nothing')
   // Both reach the API, and only one of them asks for the immediate stop.
   assert.match(home, /onImmediate=\{\(\) => void stop\(true\)\}/)
   assert.match(home, /onBoundary=\{\(\) => void stop\(false\)\}/)
+  // A ROW SELECTS AND ONLY THE BUTTON ACTS. On a control that cannot be undone, reading an option and
+  // committing to it used to be one click. The rows are radios now, and the one button that stops
+  // names the act it performs.
+  assert.match(dialog, /type="radio"/, 'the options are buttons again — reading one commits to it')
+  assert.match(dialog, /onClick=\{mode === 'boundary' \? onBoundary : onImmediate\}/,
+    'the stop is not performed by the one button that names the selected act')
 
   // ── `home2-stop` IS NOT USED INSIDE THE DIALOG ────────────────────────────────────────────────────
   //

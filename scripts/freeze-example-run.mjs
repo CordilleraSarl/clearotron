@@ -29,11 +29,11 @@
 //   _driver/run.jsonl        the event log
 //   _driver/stage-inputs/    what each stage was handed
 //   _history/                pre-reopen snapshots
-// Dropping the telemetry drops `meta.tokens` (driver/publish/index.mjs:971 — the only consumer of
+// Dropping the telemetry drops `meta.tokens` (driver/publish/index.mjs rollupTokens — the only consumer of
 // rollupTokens), and with it the record of which models served the run (servedModels in
 // driver/tokens.mjs): `servedModels` on meta.json and report-data.json, and the one line that closes the
-// report's scope section. Those are the differences step 5 is told to expect, and it says so out loud
-// rather than normalising them away in silence.
+// report's footer. Those are the differences step 5 is told to expect, and it says so out loud rather
+// than normalising them away in silence.
 //
 // WHAT THIS SCRIPT DOES NOT DO
 // It does not decide the sample is publishable. It greps for the shapes that must never leave the VM
@@ -57,26 +57,26 @@ const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 // Every entry cites the read that puts it here. `required` means publish cannot render without it.
 const FROZEN_FILES = [
   // publish/index.mjs — parseReport(reportMd), the one mandatory input
-  { path: "report.md", required: true, why: "publish/index.mjs:649 parseReport" },
-  { path: "audit.md", why: "publish/index.mjs:835 audit workbook source" },
-  { path: "findings.json", why: "publish/index.mjs:555 the per-finding machine contract" },
-  { path: "status.json", why: "publish/index.mjs:730,905 machine ledger note + markName" },
-  { path: "case-law-findings.md", why: "publish/index.mjs:660 case-law section" },
-  { path: "common-law-grid.json", why: "publish/index.mjs:788 common-law coverage" },
+  { path: "report.md", required: true, why: "publish/index.mjs:650 parseReport" },
+  { path: "audit.md", why: "publish/index.mjs:1022 auditMd, the audit workbook source" },
+  { path: "findings.json", why: "publish/index.mjs:715 readStore, the per-finding machine contract" },
+  { path: "status.json", why: "publish/index.mjs:913 machineLedgerNote + markName" },
+  { path: "case-law-findings.md", why: "publish/index.mjs:849 clPath, the case-law section" },
+  { path: "common-law-grid.json", why: "publish/index.mjs:973 commonLawJoinedTerms, common-law coverage" },
   // publish/index.mjs — the _driver sidecars it reads by name
-  { path: "_driver/receipts.json", why: "publish/index.mjs:592" },
-  { path: "_driver/senior-rights.json", why: "publish/index.mjs:599" },
-  { path: "_driver/verdict.json", why: "publish/index.mjs:604" },
-  { path: "_driver/framework.json", why: "publish/index.mjs:608 the bands the run was rated under" },
-  { path: "_driver/register-plan.json", why: "publish/index.mjs:634" },
-  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:641 fallback for register-plan" },
-  { path: "_driver/enforcer-signals.json", why: "publish/index.mjs:672" },
-  { path: "_driver/predelivery-lint.json", why: "publish/index.mjs:699,713" },
-  { path: "_driver/escalation-state.json", why: "publish/index.mjs:714" },
-  { path: "_driver/reasoning-integrity.json", why: "publish/index.mjs:715" },
-  { path: "_driver/corrections-state.json", why: "publish/index.mjs:716" },
-  { path: "_driver/search-policy.json", why: "publish/index.mjs:768,806 level + stage label" },
-  { path: "_driver/profile.json", why: "publish/index.mjs:920 + report-registry.mjs:42 customer key" },
+  { path: "_driver/receipts.json", why: "publish/index.mjs:761 fetchReceipts" },
+  { path: "_driver/senior-rights.json", why: "publish/index.mjs:787 seniorRights" },
+  { path: "_driver/verdict.json", why: "publish/index.mjs:792 verdictInfo" },
+  { path: "_driver/framework.json", why: "publish/index.mjs, the frozen band vocabulary the run was rated under" },
+  { path: "_driver/register-plan.json", why: "publish/index.mjs:820 scopeBasis" },
+  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:821 searchedJurisdictions, the fallback for register-plan" },
+  { path: "_driver/enforcer-signals.json", why: "publish/index.mjs:861 esPath" },
+  { path: "_driver/predelivery-lint.json", why: "publish/index.mjs:170 lintSink" },
+  { path: "_driver/escalation-state.json", why: "publish/index.mjs:171 escSink" },
+  { path: "_driver/reasoning-integrity.json", why: "publish/index.mjs:898 integritySink" },
+  { path: "_driver/corrections-state.json", why: "publish/index.mjs:172 correctionsSink" },
+  { path: "_driver/search-policy.json", why: "publish/index.mjs:955 searchPolicy, level + stage label" },
+  { path: "_driver/profile.json", why: "publish/index.mjs reads the frozen profile; report-registry.mjs:42 republishRun, customer key" },
 ];
 
 // ── THE KNOCKOUT LANE IS A DIFFERENT WORKSPACE, AND report.md IS NOT IN IT ─
@@ -93,22 +93,22 @@ const KNOCKOUT_FILES = [
   { path: "knockout-assessment.md", why: "the merged prose the lane writes (gateway.mjs:184)" },
   { path: "knockout-frame.md", why: "the batch scope note (gateway.mjs:65)" },
   { path: "email-body.md", why: "the delivery prose the lane writes beside the assessment" },
-  { path: "status.json", why: "publish/index.mjs:730,905 machine ledger note + markName" },
-  { path: "audit.md", why: "publish/index.mjs:835 audit workbook source" },
+  { path: "status.json", why: "publish/index.mjs:913 machineLedgerNote + markName" },
+  { path: "audit.md", why: "publish/index.mjs:1022 auditMd, the audit workbook source" },
   // The _driver sidecars publishKnockout reads by name. framework.json is REQUIRED and says so at its
   // call site: a knockout re-rendered under today's bands would silently restate its verdict.
   { path: "_driver/framework.json", required: true, why: "report-registry.mjs:68 the bands it was rated under" },
   { path: "_driver/search-policy.json", why: "report-registry.mjs:71 level + stage label" },
   { path: "_driver/profile.json", why: "report-registry.mjs:72 customer key and the delivery overlay" },
-  { path: "_driver/verdict.json", why: "publish/index.mjs:604" },
-  { path: "_driver/receipts.json", why: "publish/index.mjs:592" },
+  { path: "_driver/verdict.json", why: "publish/index.mjs:792 verdictInfo" },
+  { path: "_driver/receipts.json", why: "publish/index.mjs:761 fetchReceipts" },
   // THE COUNT SIDECARS, AND THE PROOF IS WHAT FOUND THEM. Without register-counts.json the republished
   // meta carries `registerCounts: undefined` where the source carried the provider, the taken-at stamp
   // and the per-mark counts — so the workbook's Register column and every counted figure in the
   // knockout report render empty (publish/knockout.mjs:140-155). Named by stages-knockout.mjs:32,41.
   { path: "_driver/register-counts.json", why: "publish/knockout.mjs:140-155 counted figures + the Register column" },
   { path: "_driver/register-records.json", why: "stages-knockout.mjs:41 the terms behind the close-variation axis" },
-  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:641 fallback for register-plan" },
+  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:821 searchedJurisdictions, the fallback for register-plan" },
 ];
 
 /** The allowlist for a template. One place, so a new template cannot half-exist. */
@@ -163,8 +163,8 @@ const SCRUB = [
 // what varies and why, and step 5 prints them — a normalisation nobody can see is a normalisation that
 // hides the next real difference.
 const VOLATILE = [
-  { id: "issued", re: /\d{4}-\d{2}-\d{2} · \d{2}:\d{2} [A-Z]{2,5}/g, sub: "<issued>", why: "publish/index.mjs:520 generation stamp, firm locale" },
-  { id: "iso-timestamp", re: /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z/g, sub: "<ts>", why: "publish/index.mjs:665 asOf / :1067 issuedAt" },
+  { id: "issued", re: /\d{4}-\d{2}-\d{2} · \d{2}:\d{2} [A-Z]{2,5}/g, sub: "<issued>", why: "publish/index.mjs, the generation stamp in the firm locale" },
+  { id: "iso-timestamp", re: /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z/g, sub: "<ts>", why: "publish/index.mjs:666 asOf" },
 ];
 
 // ── REWRITES — what is CHANGED on the way out, as opposed to what is refused ───────────────────────

@@ -128,6 +128,24 @@ on:
           - rehearse
           - beta
           - stable
+      # ── DEPRECATING OLD VERSIONS IS A DISPATCH INPUT BECAUSE NOBODY CAN DO IT ANYWHERE ELSE ────────
+      #
+      # The publish credential is minted per run from this workflow's OIDC token and stored nowhere, so
+      # `npm whoami` is 401 on every box by design. That design is right and the consequence is that a
+      # deprecation has no path at all unless this file opens one.
+      #
+      # IT IS A SEPARATE INPUT FROM `cut`, not a fourth option on it. A cut publishes a new version and a
+      # deprecation warns old ones; they are different acts on different days, and folding the second
+      # into the first would mean no way to run either alone. Left blank, nothing about a cut changes.
+      #
+      # THE VALUE IS THE STABLE READERS SHOULD MOVE TO, and everything strictly below it is warned. The
+      # script refuses a version that is not published, because pointing readers at a version that does
+      # not exist is worse than leaving them unwarned.
+      deprecate-below:
+        description: 'Deprecate every published version below this one (e.g. 0.3.1). Leave blank to do nothing.'
+        type: string
+        required: false
+        default: ''
 
 concurrency:
   group: release-${{ github.ref }}
@@ -232,6 +250,20 @@ jobs:
       - name: Every release note is written for the person who reads it
         run: node scripts/release-notes-lint.mjs
 
+      # ALSO BEFORE THE VERSION STEP, and for a different failure. The step above judges what a note SAYS;
+      # this one judges whether the same note is about to be counted twice. A pre-release consumes a note by
+      # moving it into `.changeset/pre/`, and a branch carrying its own copy of work main already has can
+      # put that filename back at the top level. `changeset version` would then consume the top-level copy
+      # again and republish its sentence on the releases page, which is the surface a stranger reads to
+      # decide whether to upgrade. Ten notes reached exactly that state on one head in September 2026 and
+      # nothing failed.
+      #
+      # The offline suite carries the same comparison, so an ordinary pull request meets it long before
+      # here. This is the half a skipped or stale check cannot get past: it runs inside the cut, against the
+      # tree the cut is about to version.
+      - name: No release note is counted twice
+        run: node scripts/release-duplicate-notes.mjs
+
       # `version:` is our wrapper, and it is not optional: `changeset version` moves the four WORKSPACE
       # packages and leaves the root package — `clearotron`, the one thing a user installs — where it
       # was. The wrapper carries the number to the root, assembles the one changelog a reader opens, and
@@ -278,6 +310,29 @@ jobs:
       # computed another beta and the channel check refused it. Its beta direction fails SILENTLY, which
       # is the half worth naming: after a stable there is no `pre.json` at all, so a beta dispatch would
       # compute a stable version and publish it to `latest` from a button marked beta.
+      # ── A STABLE CUT REACHES THE VERSION SCRIPT EVEN WHEN EVERY NOTE IS ALREADY CONSUMED ───────────
+      #
+      # The action below decides whether to run `version-script` by counting the release notes it can
+      # see, once, before it touches the working tree. A pre-release consumes a note by MOVING it into
+      # `.changeset/pre/`, and the action does not count what is under there while the flag says `pre`.
+      # So the ordinary state after cutting a beta — no notes at the top level, the whole release under
+      # `pre/` — is a state in which the action skips the version script, emits no pull request number,
+      # and the stable cut below refuses with "Nothing to cut" while the tree holds a full release.
+      #
+      # THIS IS NOT THE MODE TRANSITION, which cannot live here and does not. The action rebuilds the
+      # working tree before it runs anything, so nothing written at this point survives to be counted by
+      # `changeset version`; that is why the transition sits inside the version script and stays there.
+      # What this step changes is only what the action COUNTS. The write it makes is discarded by the
+      # action's own `git reset --hard`, and the version script then performs the real transition in the
+      # rebuilt tree, exactly as it does today.
+      #
+      # It is silent on a beta, on a tree that is not in pre-release mode, on a tree whose notes are still
+      # at the top level, and on a tree with no notes at all — so a cut with genuinely nothing to cut
+      # still refuses below. It reports what it saw either way, because a step that says nothing when it
+      # does nothing cannot be told from a step that did not run.
+      - name: A stable cut counts the notes the pre-releases have already consumed
+        run: node scripts/release-pre-gate.mjs --cut=${{ inputs.cut }}
+
       - name: Open or update the standing version pull request
         id: changesets
         # PINNED TO A COMMIT, because `v1` and `v2` are BRANCHES here, not tags — there is no tag `v1`
@@ -823,6 +878,29 @@ jobs:
 
       - name: This pipeline publishes only the way it was authorised to
         run: node scripts/release-publish-guard.mjs
+
+      # ── APPROVE THE VERSION PULL REQUEST'S PARKED RUN, SO THE WAIT BELOW HAS SOMETHING TO WAIT FOR ──
+      #
+      # The version pull request is authored by this repository's own Actions bot, and a run triggered by
+      # a bot-authored pull request arrives `action_required`. Until a person approves it the pull
+      # request's checks never complete, auto-merge never fires, and the wait below expires having
+      # watched a merge that could not happen.
+      #
+      # IT CANNOT FAIL THE CUT. No token, no parked run, an API that refuses — each is reported and exits
+      # 0, because the outcome without this step is exactly the outcome with it failing: a person clicks.
+      # A step that could turn a green cut red to save a click would be the worse trade.
+      #
+      # THE TOKEN IS NOT `GITHUB_TOKEN`, which cannot approve a workflow run — GitHub blocks
+      # self-approval deliberately. `ACTIONS_APPROVE_TOKEN` is a fine-grained token scoped to this one
+      # repository with Actions read and write and nothing else. Note what that permission really
+      # carries: besides approving runs it can create workflow_dispatch events — and this workflow has
+      # that trigger, so the token can reach a publish by the same door a person uses — cancel any run,
+      # and delete run logs. It cannot push code, merge, or authenticate to the registry. Absent, this
+      # step says so and the cut proceeds as before.
+      - name: Approve the version pull request's own parked run
+        env:
+          ACTIONS_APPROVE_TOKEN: ${{ secrets.ACTIONS_APPROVE_TOKEN }}
+        run: node scripts/release-approve-parked.mjs
 
       # GIVING UP IS THE ORDINARY OUTCOME, NOT A FAULT — checks that fail, a pull request somebody
       # dismisses, a re-cut mid-flight. The cron floor stays underneath, so a quiet give-up loses
@@ -1548,3 +1626,58 @@ jobs:
           else
             gh release create "v$VERSION" --target "$TARGET" --title "v$VERSION" --generate-notes
           fi
+
+  # ── THE DEPRECATION SWEEP ─────────────────────────────────────────────────────────────────────────
+  #
+  # ITS OWN JOB, GATED ON ITS OWN INPUT, sharing nothing with the cut. It needs no version, no tag and no
+  # artefact — only the registry and a credential — so making it depend on the cut jobs would mean a
+  # deprecation could not run on a day nothing is being released, which is most days.
+  #
+  # THE SAME CREDENTIAL PATH AS THE PUBLISH: `id-token: write` and the `npm` environment, so npm mints a
+  # short-lived credential from this run's OIDC token. Whether that credential is permitted to deprecate
+  # as well as publish is the one thing this cannot be sure of until it runs — the token is scoped by
+  # npm, not by us, and it cannot be rehearsed from a box where `npm whoami` is 401 by design. The script
+  # reports each version's registry read-back rather than the command's exit code, so a credential that
+  # publishes but cannot deprecate shows up as "reported success and the registry reads back NOTHING"
+  # against a named version rather than as a green run.
+  #
+  # NO RANGE REACHES npm. `npm deprecate pkg "<1.0.0"` is one command that can warn every version a
+  # project ever shipped, and the undo is one command per version; the script enumerates, compares and
+  # deprecates one at a time instead.
+  deprecate:
+    name: Deprecate published versions below a stable
+    if: github.event_name == 'workflow_dispatch' && inputs.deprecate-below != ''
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      id-token: write     # the OIDC token npm exchanges for a short-lived credential
+    steps:
+      - uses: actions/checkout@v7
+      # `registry-url:` HERE AND NOWHERE ELSE IN THIS FILE, and the comment it replaces said the opposite
+      # for a good reason that has since been ruled on. It writes the .npmrc that authenticates with
+      # NODE_AUTH_TOKEN, and trusted publishing needs no registry configured at all — so anywhere else its
+      # presence still means somebody is wiring a token, and the guard below still refuses it there.
+      #
+      # WHY THIS JOB IS DIFFERENT. `npm deprecate` is a registry WRITE, and the short-lived credential the
+      # OIDC exchange mints for a trusted publish cannot make it: eleven deprecations attempted that way
+      # came back 404 while reads through the same credential succeeded. Owner ruling 2026-09-17 — this one
+      # job reads a granular token with write on this package alone, and publishing stays credential-less.
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - run: npm ci
+      # EVERY JOB IN THIS FILE RUNS IT, and an arm counts the jobs so a new one cannot quietly skip it.
+      # That arm caught this job on its first draft — which is the guard working, since a job that can
+      # reach the registry with a credential is exactly what it exists to hold.
+      - name: This pipeline publishes only the way it was authorised to
+        run: node scripts/release-publish-guard.mjs
+      # A DEPRECATION IS NOT HELD TO `main` the way a publish is. It changes no code and stamps no
+      # version; it puts a message on versions that are already out, and the message names a stable that
+      # must already be published or the script refuses. There is nothing a branch could poison.
+      - name: Deprecate everything below the named stable
+        run: node scripts/deprecate-below.mjs --below "${{ inputs.deprecate-below }}"
+        # ON THE STEP, NEVER ON THE JOB. A job-level `env:` hands the token to every step in the job,
+        # including the guard above whose whole purpose is to find one. The guard refuses that spelling.
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_DEPRECATE_TOKEN }}

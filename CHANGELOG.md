@@ -4,6 +4,209 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.3.2-beta.7
+
+### Fixed
+
+- A clearance that completed all but one or two of its local-language searches now delivers the report. Before, a single search that did not complete threw the whole clearance away, including the fifty-nine that had run. The report says which term's search was short.
+- The exported PDF no longer prints a collapsed arrow above sections that are already fully open.
+
+## 0.3.2-beta.6
+
+### New
+
+- The report a client opens has been redrawn. It opens with what was asked, then the rating with its reasons, then the conflicts. What a search is and is not is no longer narrated at length.
+- A finding's full detail shows the goods as the register recorded them, and the record's own dates. This is on a full country search.
+- A knockout report closes with what happens next. The paragraph moves out of the long read rather than being repeated.
+
+## 0.3.2-beta.5
+
+### For operators
+
+- The connector access log now records what happened to each call, and records calls that were refused as well as calls that got through. A line also names which door took the call, so a client key and a staff session can be told apart. Before, a call was recorded only as having been made, and a refused one left no line at all. `doctor` now names where that log is being written. It reads that from the service's own settings, not from the shell you are typing in.
+
+## 0.3.2-beta.4
+
+### Fixed
+
+- A multi-country search no longer refuses to start on a form that is already showing the territories it will search. When you have not chosen territories yourself, the form shows your company's own and the search uses those.
+- A new clearance form now opens with one line saying what to do. It no longer shows two warning panels about work you have not started.
+- On a phone, the list of clearances can now be scrolled sideways to read its columns. Before, the risk word was printed on top of the date and names broke in the middle of a word.
+
+## 0.3.2-beta.3
+
+### New
+
+- an installation can name its administrator contact, a mail or web address, and Preferences links "Clearotron administrator" to it.
+- Preferences carries the top bar's blur button, and the blur now stays as you left it in this browser, reloads included.
+- Global config is now Installation settings, with one sign-in row, the engine's own web search under Engine, and providers grouped by category.
+- a provider needing action says what it needs in a few words and links its setup guide, instead of naming settings and files.
+- About lists its facts in one card, and its source link reads as the repository's name, with the build just above.
+- the sign-in page leads with one line, "This Clearotron signs in one person: you.", and keeps the reset and sign-on steps under Administrator help.
+- a report's header labels both of its dates, searched and issued, with Ask AI and Export beside them as two buttons.
+- Ask AI on a report offers four questions, and opens Claude with the one you pick typed in, ready for you to send.
+- Use your AI is now Connect your AI, and shows whether your assistant is connected, folding the setup steps away once it is.
+- after Set it up on a report's Ask AI, Connect your AI offers a button back to that report once your assistant connects.
+- where your installation offers another way to connect, Connect your AI keeps those steps in a closed fold under the sign-in steps.
+- every name on Clearances has an Open button in one column, and a name re-read while a search waits still shows its latest report's risk.
+- groups on Clearances say how many of their names' searches are queued, and retire and ungroup sit in each row's menu.
+- Company settings opens in the rail into Profile, Projects and Search templates.
+- Projects and Search templates lead with New project and New template, and all three Company settings pages offer + New company.
+- Profile folds what each risk band means and the search variant calculation, keeping the framework, its bands and its settings in view.
+- Profile and New company mark the legal name Required and every other field Optional.
+- Save on Profile checks the settings and saves them in one press, with no separate Check.
+- default classes on Profile and New company are added by typing a number or a word, and are shown by name.
+- archiving a project, and retiring or bringing back a search template, are in each row's menu.
+- New company uses the same cards and tags as Profile, and asks for a key only when the name cannot make one.
+- New clearance is one form, top to bottom, and selects the search that fits the places and names entered, saying why.
+- the review before a search starts lists the registers to search, the goods, native-language coverage, the turnaround and the searches left today.
+- stopping a clearance offers "Stop after this step" or "Stop now", and the button names the one chosen.
+- saved set-ups are called search templates, and New clearance applies one from a dropdown and says what it sets.
+- New clearance and Clearances show one allowance line, in the same words, once five or fewer searches are left.
+- People explains each permission word under the list, and an address listed with nothing set reads "View reports", which is what it can do.
+- adding a person says they also need access through the organisation's sign-in service, and the button that grants it reads Give access.
+- before anything is chosen, Give access says the choice is also what the person's AI assistant can see.
+- People, its two forms and the other pages in the avatar menu name themselves in the top bar, with the avatar highlighted.
+
+### Fixed
+
+- Claude's steps no longer tell you to ignore an authentication warning, and copy the address and the key with separate buttons.
+- the counts on Clearances count names, so the total over the table matches the company headings.
+- a stopped clearance says no report will be produced and that its completed work stays readable through Ask AI.
+- Permitted searches on Profile names each search template the way Search templates does, instead of printing its key.
+- Default search depth and the Builds on column name each search once instead of twice.
+- saving changes to a search template returns to Search templates without warning that the changes were not saved.
+- a clearance just ordered is shown as queued and waiting for a slot, instead of as started.
+- the composer and the review step say what a search spends in searches, replacing an effort meter that carried no unit.
+- People's activity panel no longer reads as a list of who has access; it is called Recent activity and says what it counts.
+- Recent activity on People names each company instead of printing its internal key.
+- The documentation says organisation for who owns an installation and company for whose names are cleared, never client, customer or tenant.
+- The README now opens with a company clearing its own names, and describes the law-firm setup after it.
+- Every screen says organisation for who owns the installation and company for whose names are cleared. The same thing is no longer called an account on one screen, a client on the next and a brand on a third.
+- On WSL, the "on this computer" connect line now says its command is for an assistant on the Windows side. It no longer invites a paste inside the WSL terminal, where it cannot work.
+
+## 0.3.2-beta.2
+
+### Fixed
+
+- On one register the "Filings containing the name" figure counted only identical filings. A report could therefore show a field as far less crowded than it really is. That column now asks the register the question its label promises. Where a register cannot answer a given kind of search, the figure is reported as unavailable rather than filled in from a narrower one.
+
+## 0.3.2-beta.1
+
+### New
+
+- A report can now show how much was searched to reach its answer. It records the names read and cleared, the records read in each country, and the checks made. Countries where nothing was found are included.
+- Home's in-flight band breaks the count down into running, paused and queued instead of one total.
+- a running card carries the standing quote for its search — "usually 1.5 to 2.5 h" — and says "taking longer than usual" past it.
+
+### Fixed
+
+- The conditions listed on a report are now written in plain legal English, matching the summary line above them. One condition could previously appear as an internal engine note with counts and identifiers in it.
+- a stopping card now says finished work stays readable, instead of only what was lost.
+
+## 0.3.2-beta.0
+
+### Fixed
+
+- A report now lists every part of the search that was left open. One with a short name could be hidden by another line that happened to mention the same word. The overall result was never affected, only the list of what remained open.
+
+## 0.3.1
+
+### New
+
+- Ask AI on a report now opens Claude or ChatGPT with a question about that report already typed in. One press, in a new tab, and nothing is sent until you send it.
+- The button used to hand over a connector address and a question carrying the run's internal code, with no indication of which one you needed. The address belongs on the Use your own AI page, where you set the connector up once. It is no longer shown on reports at all.
+- If you have not connected an assistant yet, the button explains that in a line and offers to take you there.
+- Access can now be narrowed and taken away, not only added to. Somebody who manages one organisation removes that organisation alone. Somebody who can see all of a person removes their access to the installation, and withdraws the keys their AI assistant was using.
+- The free preview of a search lists, for each territory ordered, which registers legally bind it.
+- The People page can now change what somebody may do and see, and take their access away. Modify on a row opens the same form used to add them, filled in. Unticking a row removes that access. Remove sits below Save and asks once before it acts. Your own row has neither, so nobody can lock themselves out.
+
+### Fixed
+
+- A chat notice now carries the channel to send it on, so an assistant with several chat channels no longer drops it silently.
+- A correction to a coverage note or an action is now applied, or the run records why it was not.
+- Naming a country in words rather than by code now works for every country, including Belgium and Luxembourg. Before, some were carried as unrecognised.
+- A demo sample that cannot be read is named in the demo's output, and the other demos still publish.
+- A family search on a name whose first or last word is a single letter or digit now runs. Before, one register refused it and the search was reported as an outage.
+- A conflict whose owner could not be identified is no longer given a risk rating. It is carried as an open item naming who must be identified.
+- A name in a knockout batch is no longer rated above every conflict found against it. Its rating now follows from the conflicts on its own page.
+- Before, a rule forced any name made of everyday words off the lowest band, whatever the search found. That rule is gone for every client.
+- Running the test suite from inside another test run no longer lets the outer run delete the inner run's temporary files.
+- A clearance for a new client can be ordered through an assistant connector without setting up a company first.
+- In the staff editor, a refused territory in a project now highlights the field it is about, as it already did when editing a customer. Before, the message appeared but no field was marked.
+- A sign-in refusal now always says which instance answered — by organisation, by sign-in service, or by the address it runs on.
+- The published list of settings this build reads no longer keeps a name after the code stops reading it. The list was derived from a scan that included the list itself, so a retired name kept itself alive.
+- A clearance that stops is recorded as owing a notice even when the folder its notice is queued in cannot be written to.
+- A clearance that stops now always records that its notice is still owed, so a failure cannot be passed over as already handled.
+- A search step that streams at a crawl is now stopped early and retried, instead of running to its time limit and losing the work.
+- Giving somebody access to everything on the installation now works from the access form. It used to refuse. The message it refused with said you can only give access to what you hold yourself, which was not true of the person seeing it.
+- A mark whose main element contains no vowel — a consonant-only initialism, for example — can now be cleared. Before, the search plan refused to compile and the whole clearance ended without delivering anything.
+- Check now reports the same problems Save would refuse, so a company setting can no longer pass the check and then fail to save.
+- Use your AI now gives the steps your connector actually takes — sign-in where it signs you in, a key only where a key works.
+- `doctor` now names the deployment it is checking, and refuses a name that is missing or not recognised. Before, a deployment that was misnamed — or not named at all — passed the check in silence.
+- Setup and the framed first-run box now say what to do when the page that opens belongs to another program.
+- The port that advice suggests is never the port already in use.
+- The portal now tells your browser not to store the data its screens read. Those responses carry people's names, company access and run lists, and nothing previously said how long a browser could keep them.
+- On older Windows-Subsystem installations the engine now identifies the platform by its interop registration rather than by the kernel version string.
+- On WSL, the "on this computer" rows now start the server inside WSL for you, so an assistant running on Windows can use them.
+- `clearotron grant remove --tenant` now refuses when the person has access to everything on the installation. It used to remove the organisation and then warn that nothing they could see had changed.
+- Removing somebody whose address is spelled with different capitalisation in different parts of the access file now removes all of them. Half of the entry used to survive, and the command reported success.
+- A removal now says plainly when the connector cannot be told about it yet, instead of implying the assistant lost access too.
+- Somebody you add on the People page can sign in straight away. Before, they were refused until the service restarted with a changed setting.
+- The demo now removes everything it created when its window closes, and says so. Pass `--keep` to leave the folder and its reports.
+- Trying the demo a second time on a machine that has run it before now works. Before, it refused its own folder and suggested dropping a flag that had not been given.
+- The demo opens ports of its own rather than the ones an installation uses, so the page it points you at is the demo's.
+- A search now covers every spelling and sound-alike of the name in each category of goods or services the engine judges relevant.
+- Before, the added categories were searched for the name exactly and nothing else. The matter frame records each one with the reason it was added.
+- An off-register search now also covers the channels the matter itself names, not only the account's usual marketplaces.
+- A channel no pass ran is now recorded as open rather than described in a note.
+- A finding reads what the platform's own record says before calling an owner unidentified.
+- The run purge no longer deletes a clearance whose report or failure notice has not been sent yet.
+- Those runs are marked in the table the purge prints, and removing one now takes a flag that says so.
+- Saving a territory the engine cannot search now says so, instead of suggesting the kind of entry that was just refused.
+- Where a search covers two ratified forms of a name, the report now reasons each form and says which conflicts differ between them.
+- Before, both forms were searched but one combined read came back. When the forms read alike the report now says so, rather than leaving it unsaid.
+- Removing somebody's access now ends their assistant's connection on its next request. Until now an assistant that had already connected kept the access it started with for up to half an hour.
+- Ask your assistant for a client's recent searches by the client's name and it finds them. Every search in the list now says which client it was for, and which project. A search whose own record cannot be read says so, instead of appearing to belong to nobody.
+- Sending an access key to the engine's network address now gets a refusal that says so. It reports that the address takes an identity from the sign-in proxy and never a key.
+- That refusal also names the local door where a key is accepted. Before, it reported only a missing sign-in assertion, which sent operators to the wrong configuration.
+- Changing or removing a person now explains why it cannot be done on a Clearotron that signs in one person. It used to show an internal code.
+- Modify and Remove are switched off on that kind of install, the way Add already was, with the reason beside them.
+- When Clearotron cannot check how your assistant will be let in, Use your own AI now shows both ways and says so. It used to show one.
+- The home page now says what it is for. With nothing running it tells you how to start a clearance, rather than showing an empty list. It ends with the last few finished clearances and a line to all of them.
+- Every page in the portal now has one heading instead of two saying nearly the same thing. The home page is called Home, and the All Clearances and New clearance buttons sit together at the top of it.
+- The archive of finished clearances is called All Clearances everywhere, and the route to it from the home page is a button you can see.
+- Somebody listed only in a company's access list, with no permissions of their own, is now shown as that. They used to read as a view-only person, which is a different thing.
+- Searches that stopped no longer sit in Home's In flight band. They have their own list below it, with a count you can see without opening it.
+- That list clears itself after a week, whether or not anyone pressed Acknowledge. Signing in for the first time no longer means meeting every search that has ever failed.
+- When two attempts at one search both await dismissal, the dashboard shows which is which instead of two identical cards.
+
+### For operators
+
+- An assistant asking which searches still owe someone a notice now gets all of them, not just the fifty most recent. Asking for recent searches is unchanged.
+- the report's own "Ask your AI" band is gone, so there is one Ask AI control rather than two. Reports rendered before this upgrade keep the band in their own file, and it is hidden when the portal serves them.
+- every JSON response from the portal now sends `Cache-Control: no-store` and `Vary: Accept`. A route that sets a stricter policy of its own keeps it.
+- The repository's own comment-to-code references are now checked for having moved, not only for existing.
+- The portal's start-up check now says when its engine address is behind a sign-in it cannot pass, instead of reporting that address as reachable.
+- The portal can now call the engine over a local socket instead of a network port, by naming it as its engine address. The deployment check reports that address as wired and says which socket it is.
+- Every applied purge leaves a record of what it removed, when, and whether any of it was still owed.
+- A program on the same machine can now reach the engine's local key door without setting a host name for it. The local door no longer applies a browser protection that only a network address needs.
+
+## 0.3.1-beta.4
+
+### Fixed
+
+- The portal now tells your browser not to store the data its screens read. Those responses carry people's names, company access and run lists, and nothing previously said how long a browser could keep them.
+- Changing or removing a person now explains why it cannot be done on a Clearotron that signs in one person. It used to show an internal code.
+- Modify and Remove are switched off on that kind of install, the way Add already was, with the reason beside them.
+- When Clearotron cannot check how your assistant will be let in, Use your own AI now shows both ways and says so. It used to show one.
+- Searches that stopped no longer sit in Home's In flight band. They have their own list below it, with a count you can see without opening it.
+- That list clears itself after a week, whether or not anyone pressed Acknowledge. Signing in for the first time no longer means meeting every search that has ever failed.
+
+### For operators
+
+- every JSON response from the portal now sends `Cache-Control: no-store` and `Vary: Accept`. A route that sets a stricter policy of its own keeps it.
+
 ## 0.3.1-beta.3
 
 ### New

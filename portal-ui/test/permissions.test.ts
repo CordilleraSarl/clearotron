@@ -4,9 +4,11 @@
 
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
+import { readFileSync, readdirSync, statSync } from 'node:fs'
+import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { canManage, canRun } from '../src/shell/permissions.ts'
-import { permissionsPhrase, accessChips, accessSentence } from '../src/shell/accessWords.ts'
+import { permissionsPhrase, accessChips, accessSentence, PERMISSION_LINE, PERMISSIONS_KEY, BOTH_OFF_LINE, REACH_LINE } from '../src/shell/accessWords.ts'
 import type { Permissions } from '../src/contract/api.ts'
 import { prose } from './support/prose.ts'
 
@@ -97,10 +99,16 @@ test('THE SENTENCE says what the new person will and will not see, before anythi
     accessSentence({ who: 'a@b.test', permissions: { run: false, manage: false }, everything: false, organisations: ['Birch & Co'], companies: [] }),
     'a@b.test will see everything under Birch & Co, and can read every report there. They cannot start clearances or add companies or people.',
     'the view-only person is told what they CAN do first')
+  // Nothing chosen: an instruction, not a claim — and the one fact about the choice this page cannot
+  // show, that it is also what the person's AI assistant reaches.
   assert.equal(
     accessSentence({ who: ' ', permissions: run, everything: false, organisations: [], companies: [] }),
-    'Choose what this person can see.',
+    'Choose what this person can see. It is what they see here and through their AI.',
     'nothing chosen and no address yet: an instruction, not a claim')
+  assert.equal(
+    accessSentence({ who: 'dana@birch.example', permissions: run, everything: false, organisations: [], companies: [] }),
+    'Choose what dana@birch.example can see. It is what they see here and through their AI.',
+    'the instruction names the address once one is typed, and still says what the choice covers')
   assert.match(accessSentence({ who: '', permissions: run, everything: true, organisations: [], companies: [] }),
     /^This person will see everything/, 'the stand-in subject is capitalised where it opens the sentence')
   // A company picked inside an organisation that is ALSO picked whole is not a partial organisation.
@@ -114,5 +122,57 @@ test('THE SENTENCE says what the new person will and will not see, before anythi
       const s = accessSentence({ who, permissions, everything: false, organisations: [], companies: [{ name: 'Harbour Ltd', organisation: 'Alder Group' }] })
       assert.doesNotMatch(s, /\b(she|he|her|his|him|hers)\b/i, s)
     }
+  }
+})
+
+test('THE KEY under People explains exactly the words its column prints, in the lines the levers print', () => {
+  // The key's terms are the column's own words, asked one switch at a time — so a key cannot explain a
+  // word the column never prints, or miss one it does.
+  assert.deepEqual(PERMISSIONS_KEY.map((k) => k.term),
+    [permissionsPhrase({ run: true, manage: false }), permissionsPhrase({ run: false, manage: true }), permissionsPhrase({ run: false, manage: false })])
+  assert.deepEqual(PERMISSIONS_KEY.map((k) => `${k.term} — ${k.means}`), [
+    'Runs clearances — Start and stop clearances on the companies they can see.',
+    'Manages — Add companies, add people and change settings for the companies they can see.',
+    'View reports — Everyone can view reports for the companies they can see.',
+  ])
+  // ONE AUTHOR for what a permission covers. The line under a lever is the key's sentence, and both say
+  // the companies the person can see — never a company list of Manage's own.
+  assert.equal(PERMISSION_LINE.run, 'Start and stop clearances on the companies they can see')
+  assert.equal(PERMISSION_LINE.manage, 'Add companies, add people and change settings for the companies they can see')
+  assert.equal(PERMISSIONS_KEY[0]?.means, `${PERMISSION_LINE.run}.`)
+  assert.equal(PERMISSIONS_KEY[1]?.means, `${PERMISSION_LINE.manage}.`)
+  for (const k of PERMISSIONS_KEY) assert.match(k.means, / the companies they can see\.$/, `${k.term} is scoped to what the person can see`)
+
+  // Both levers off is named by the word the list prints for it.
+  assert.equal(BOTH_OFF_LINE, 'Leave both off for View reports — every report for the companies they can see.')
+  assert.ok(BOTH_OFF_LINE.includes(permissionsPhrase({ run: false, manage: false })), 'the both-off line names the list\'s word')
+  // Access to a point reaches what is added under it later, and the tree says so.
+  assert.equal(REACH_LINE.everything, 'every organisation and company, including ones added later')
+  assert.equal(REACH_LINE.organisation, 'every company in it, including ones added later')
+})
+
+test('THE RETIRED ACCESS PHRASES appear nowhere in the portal source', () => {
+  // A listed address with nothing granted reads "View reports" — what the person can do. Neither the
+  // phrase that named the shape of the record instead, "Reach only", nor "No permissions" may come back:
+  // not on a screen, not in a tooltip, not in a comment quoting one. Case-insensitive, because a sentence
+  // can start either way.
+  const root = fileURLToPath(new URL('../src/', import.meta.url))
+  const files: string[] = []
+  const walk = (dir: string): void => {
+    for (const name of readdirSync(dir)) {
+      const full = join(dir, name)
+      if (statSync(full).isDirectory()) walk(full)
+      else files.push(full)
+    }
+  }
+  walk(root)
+  // FLOOR AND CONTROL. A walk that found nothing, or read nothing, would pass in silence: the tree has
+  // dozens of files, and the both-off word itself must be found where it is written.
+  assert.ok(files.length >= 40, `expected the portal source to be walked, found ${files.length} files`)
+  const texts = files.map((f) => [f, readFileSync(f, 'utf8')] as const)
+  assert.ok(texts.some(([f, t]) => f.endsWith('accessWords.ts') && t.includes("'View reports'")), 'the walk reads file contents')
+  for (const [f, t] of texts) {
+    assert.doesNotMatch(t, /reach\s+only/i, `${f.slice(root.length)} says "Reach only"`)
+    assert.doesNotMatch(t, /no\s+permissions/i, `${f.slice(root.length)} says "No permissions"`)
   }
 })

@@ -45,7 +45,10 @@ export function pickConnotationTerms(terms, maxTerms = 6) {
   for (const t of (terms ?? [])) {
     const v = String(t ?? "").trim();
     if (!v) continue;
-    const k = v.toLowerCase();
+    // KEYED THE SAME WAY THE GATES COMPARE. A producer that folds less than its consumer dictates two
+    // terms the gate can only see as one, and a seat recording either satisfies it for both — the gate
+    // then passes a query that never ran, which is the fault it exists to catch, inverted.
+    const k = queryKey(v);
     if (seen.has(k)) continue;
     seen.add(k);
     picked.push(v);
@@ -83,7 +86,7 @@ const NON_LATIN_LETTER_RE = /(?![\p{Script=Latin}])\p{L}/u;
  * Returns ["<form> <shape>", …] like buildConnotationQueries. PURE.
  */
 export function buildTranslitConnotationQueries(modelVariants, { shapes = CONNOTATION_SHAPES_TRANSLIT, maxTerms = 8, coreTerms = [] } = {}) {
-  const seen = new Set((coreTerms ?? []).map((t) => String(t ?? "").trim().toLowerCase()).filter(Boolean));
+  const seen = new Set((coreTerms ?? []).map((t) => queryKey(t)).filter(Boolean));
   const picked = [];
   for (const v of (modelVariants ?? [])) {
     const value = String(v?.value ?? "").trim();
@@ -93,7 +96,7 @@ export function buildTranslitConnotationQueries(modelVariants, { shapes = CONNOT
     for (const form of value.split(" / ")) {
       const f = form.trim();
       if (!f) continue;
-      const k = f.toLowerCase();
+      const k = queryKey(f);
       if (seen.has(k)) continue;
       seen.add(k);
       picked.push(f);
@@ -177,7 +180,7 @@ export function meaningAnglesFromMatterContext(md, { alreadyQueried = [], maxAng
   if (!m) return [];
   const value = m[1].trim();
   if (/^none\b/i.test(value)) return [];
-  const seen = new Set((alreadyQueried ?? []).map((q) => String(q ?? "").trim().toLowerCase()).filter(Boolean));
+  const seen = new Set((alreadyQueried ?? []).map((q) => queryKey(q)).filter(Boolean));
   const picked = [];
   for (const part of value.split(";")) {
     const q = sanitizeMeaningAngle(part);
@@ -186,7 +189,7 @@ export function meaningAnglesFromMatterContext(md, { alreadyQueried = [], maxAng
     // keeps it, and a lone `"` dictated as a query is a search nobody asked for that no receipt can ever
     // match — the failure this change exists to stop. Dropped explicitly rather than as a side effect.
     if (!q || !/[\p{L}\p{N}]/u.test(q) || q.length > maxLen) continue;
-    const k = q.toLowerCase();
+    const k = queryKey(q);
     if (seen.has(k)) continue;
     seen.add(k);
     picked.push(q);
@@ -225,6 +228,99 @@ const SECTION_RE = /reputational|connotation/i;
  * in common-law-receipts.mjs (parsePrRiskQueries); this entries parser lives here so the P2-A-owned file is
  * untouched. Never throws; an unparseable ledger reads as no recorded entries. PURE.
  */
+/**
+ * The key two spellings of one meaning query are compared on. ONE AUTHOR, here, beside the parser that
+ * reads the ledger — the gate in verify.mjs imports it rather than carrying a second copy.
+ *
+ * WHY THE RAW STRINGS CANNOT BE COMPARED. The dictated queries are written by the driver; the recorded
+ * ones come back through a provider, which returns the text it echoes with typographic punctuation. On a
+ * production clearance, 2026-09-16, exactly one of sixty-one queries differed — a single character, a
+ * right single quotation mark where the driver wrote an apostrophe, at the same length. The grid had run
+ * every query and recorded every one. The join said a query was unrecorded, the stage failed four times
+ * byte-identically, and the clearance stopped.
+ *
+ * THE ORIGINAL TEXT IS NOT TOUCHED. This is a comparison key and nothing else: the ledger keeps what the
+ * provider returned and the refusal quotes what the driver dictated, because a reader chasing a genuinely
+ * missing query needs the spelling that was asked for, not a flattened one.
+ *
+ * WHAT IS FOLDED, and nothing beyond it: the four curly quotes to their straight forms, a non-breaking
+ * space to a space, runs of whitespace to one, and case. Deliberately NOT accents or punctuation in
+ * general — two queries differing by a letter are two queries, and a key that folded them would hide the
+ * skipped-query fault this gate exists to catch.
+ *
+ * ONE HALF OF THAT SENTENCE NEEDS SAYING OUT LOUD, because omitting it cost a fail-open. NFKC folds the
+ * two ENCODINGS of one accented letter — composed U+00E9 and decomposed e + U+0301 — while leaving the
+ * accented letter distinct from its unaccented form. Mixed-source transliterations are exactly where
+ * both encodings arrive, so two producer rows that look different fold to one key here. EVERY producer
+ * that dedups a dictated list must therefore key on THIS function: a producer folding less than the gate
+ * dictates queries the gate cannot tell apart, and the gate then passes on a seat recording one of them.
+ */
+export const queryKey = (s) => String(s ?? "")
+  // NFKC FIRST, and it does the largest share of the work: it folds the compatibility forms a provider
+  // can return for characters we wrote plainly — full-width Latin, ligatures, the non-breaking space in
+  // some sources, composed accents to a single canonical form. Doing it first also means the explicit
+  // folds below only have to name what Unicode does NOT unify, which is the punctuation classes.
+  .normalize("NFKC")
+  .replace(/[\u2018\u2019\u201a\u201b\u2032\u00b4\u0060]/g, "'")   // single quotes, primes, backtick
+  .replace(/[\u201c\u201d\u201e\u201f\u2033\u00ab\u00bb]/g, '"')   // double quotes and guillemets
+  .replace(/[\u2010-\u2015\u2212\u2043]/g, "-")                       // every dash and minus form
+  .replace(/\u2026/g, "...")                                           // an ellipsis is three dots
+  .replace(/[\u200b\u200c\u200d\u2060\ufeff]/g, "")                  // zero-width: invisible, never meaning
+  .replace(/[\u00a0\u2000-\u200a\u202f\u205f\u3000]/g, " ")         // every space form NFKC left alone
+  .replace(/\s+/g, " ")
+  .trim()
+  // TRAILING PUNCTUATION ONLY, never leading and never internal. A provider commonly returns a question
+  // it was handed with a full stop or question mark appended; it does not commonly remove one from the
+  // front, and stripping internal punctuation would fold two genuinely different queries together.
+  .replace(/[.,;:!?]+$/, "")
+  .trim()
+  .toLowerCase();
+
+/**
+ * The POPULATION behind `parsePrRiskResults`, because that reader reduces its input and nothing at a
+ * call site said so.
+ *
+ * `parsePrRiskResults` folds rows into a map keyed on the raw query text, so two rows carrying the same
+ * query become one and its output is smaller than the ledger it read. Every count taken during one
+ * evening's diagnosis was post-fold, by two people, and neither had named the raw population — so "the
+ * seat wrote 59 rows" and "59 rows survived the fold" were indistinguishable, and they are different
+ * facts with different causes. A seat that recorded one query twice and skipped another looks identical
+ * to a seat that simply skipped one, from the folded count alone.
+ *
+ * Returns both counts so a caller can say which it means. `rows` is what the ledger carries; `distinct`
+ * is what the fold leaves; the difference is rows that repeat a query already counted.
+ */
+/**
+ * THE TWO LABELS THE MEANING GATE PUTS ON A QUERY IT COULD NOT JOIN, and they are a CONTRACT rather
+ * than prose: `gateway.mjs` reads them back to choose which repair a seat is offered, and the two
+ * repairs are opposite. Re-wording either one in the validator, with the reader matching on its own
+ * copy of the old text, silently collapses that choice — the hint keeps being sent and stops being
+ * the right one. Both sides now build and detect from here, so a wording change is one edit.
+ *
+ * Anything a gate wants to ADD — which file it searched, what a neighbour is evidence of — goes
+ * OUTSIDE these markers, so the sentence can grow without moving the contract.
+ */
+export const CONNOTATION_UNMATCHED_MARK = "[unmatched; nearest recorded:";
+export const CONNOTATION_NO_RESEMBLANCE_MARK = "[no recorded query resembles this one]";
+
+export function prRiskPopulation(ledgerRaw) {
+  let parsed;
+  try { parsed = JSON.parse(ledgerRaw); } catch { return { rows: 0, distinct: 0, repeated: 0 }; }
+  const batches = Array.isArray(parsed) ? parsed : [parsed];
+  let rows = 0;
+  const seen = new Set();
+  for (const b of batches) {
+    const pr = b?.extras?.pr_risk;
+    if (!Array.isArray(pr)) continue;
+    for (const e of pr) {
+      if (!e || typeof e.query !== "string" || !e.query.trim()) continue;
+      rows += 1;
+      seen.add(e.query.trim());
+    }
+  }
+  return { rows, distinct: seen.size, repeated: rows - seen.size };
+}
+
 export function parsePrRiskResults(ledgerRaw) {
   let parsed;
   try { parsed = JSON.parse(ledgerRaw); } catch { return []; }

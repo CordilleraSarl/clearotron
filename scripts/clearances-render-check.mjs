@@ -3,7 +3,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // Do the columns on /portal/clearances hold together, in a real browser, at a real width?
 //
-//   node scripts/clearances-render-check.mjs [--keep] [--shot <path>] [--width 1100]
+//   node scripts/clearances-render-check.mjs [--keep] [--shot <path>] [--width 1100] [--shot-dir <dir>]
 //
 // ── why this exists ──────────────────────────────────────────────────────────────────────────────────
 //
@@ -38,6 +38,12 @@ const DIST = join(HERE, '..', 'portal-ui', 'dist')
 const keep = process.argv.includes('--keep')
 const shotAt = process.argv.includes('--shot') ? process.argv[process.argv.indexOf('--shot') + 1] : null
 const WIDTH = process.argv.includes('--width') ? Number(process.argv[process.argv.indexOf('--width') + 1]) : 1100
+// THE WIDE PASS. Open has to sit in one column at one width at the narrowest width this check holds the
+// table whole (WIDTH, where the content column is 767px) AND at a wide desktop, where the actions column
+// lays its buttons out side by side instead of stacked. Both are measured, because a rule that holds at
+// one of them says nothing about the other.
+const WIDE = 1440
+const shotDir = process.argv.includes('--shot-dir') ? process.argv[process.argv.indexOf('--shot-dir') + 1] : null
 
 if (!existsSync(join(DIST, 'index.html'))) {
   console.error(`no build at ${DIST} — run: npm run build:ui`)
@@ -94,11 +100,24 @@ const run = (over) => {
 
 let longTitle = false
 
+// THE ROW STATES the list has to tell apart, each built the way the service sends it:
+//   • a finished name with one search                          ASTERION
+//   • a name with a search waiting, above two finished ones    AQUAPLUS — its latest report is Medium,
+//     the knockout before it was Severe, so the row also carries "was Severe"
+//   • a group of two names, one of them waiting                "Aqua line" — AQUAPLUS and AQUAMAX
+//   • a stopped name                                           CORAL FREEZE
+//   • a running name, on its fourth step of nine               TIDEGLASS
+// The group's band is the one that proves the roll-up reads each name's LATEST REPORT: AQUAMAX is
+// Manageable and AQUAPLUS's newest search has no band at all, so a group rolling up the newest search
+// of each name would say Manageable. It must say Medium.
+const FAMILY_ID = 'fam-aqua'
+const FAMILY_NAME = 'Aqua line'
+
 const RUNS = () => [
   // The pair. Two reads of one mark, different depths, and — when `longTitle` is on — a title that grows.
   run({ runId: 'tmpa-drift-1', markName: longTitle ? LONG_TITLE_MARK : 'VENZY', title: 'VENZY', date: '2026-08-02', band: 'Manageable', stageLabel: 'Depth 4', product: 'global-preliminary-search' }),
   run({ runId: 'tmpa-drift-2', markName: longTitle ? LONG_TITLE_MARK : 'VENZY', title: 'VENZY', date: '2026-08-01', band: 'Medium', tone: 'medium', stageLabel: 'Depth 1', product: 'knockout-search' }),
-  // Not finished. Its Status is the case is about.
+  // Not finished. Its Status is the case is about — and a failed name now lives under the Failed tab.
   run({
     runId: 'tmpb-stopped', markName: 'VIBRANTE FROSTPLUM', title: 'VIBRANTE FROSTPLUM', date: '2026-08-02',
     state: 'failed', band: null, tone: null, report: null,
@@ -113,7 +132,22 @@ const RUNS = () => [
     stageLabel: 'Depth 1', product: 'knockout-search', date: '2026-08-02',
     marks: [{ name: 'E2E DUPLICATE PROBE', band: 'Manageable', tone: 'low' }, { name: 'E2E FALLBACK PROBE', band: 'Medium', tone: 'medium' }],
   }),
+  // AQUAPLUS: a search waiting for a slot, above two finished ones. `issuedAt` is what orders a thread,
+  // and a queued run's is the moment it was queued — which is why the name's Updated date is today's.
+  run({ runId: 'aq-plus-3', markName: 'AQUAPLUS', title: 'AQUAPLUS', date: '2026-09-16', issuedAt: '2026-09-16T08:00:00Z', state: 'queued', band: null, tone: null, report: null, product: 'multi-country-focus-search', stageLabel: 'Depth 3' }),
+  run({ runId: 'aq-plus-2', markName: 'AQUAPLUS', title: 'AQUAPLUS', date: '2026-09-02', issuedAt: '2026-09-02T15:00:00Z', band: 'Medium', tone: 'medium', product: 'global-preliminary-search' }),
+  run({ runId: 'aq-plus-1', markName: 'AQUAPLUS', title: 'AQUAPLUS', date: '2026-08-21', issuedAt: '2026-08-21T10:00:00Z', band: 'Severe', tone: 'severe', product: 'knockout-search', stageLabel: 'Depth 1' }),
+  run({ runId: 'aq-max-1', markName: 'AQUAMAX', title: 'AQUAMAX', date: '2026-08-28', issuedAt: '2026-08-28T09:00:00Z', band: 'Manageable', tone: 'low', product: 'full-country-search' }),
+  // Stopped on purpose, with nothing delivered.
+  run({ runId: 'coral-1', markName: 'CORAL FREEZE', title: 'CORAL FREEZE', date: '2026-09-16', issuedAt: '2026-09-16T07:00:00Z', state: 'cancelled', band: null, tone: null, report: null }),
+  // Running, and never finished before.
+  run({ runId: 'tide-1', account: KEY2, markName: 'TIDEGLASS', title: 'TIDEGLASS', date: '2026-09-16', issuedAt: '2026-09-16T09:00:00Z', state: 'running', band: null, tone: null, report: null, step: 'Register sweeps', stepN: 4, stepTotal: 9 }),
 ]
+const FAMILIES = { of: { 'aq-plus-1': FAMILY_ID, 'aq-plus-2': FAMILY_ID, 'aq-plus-3': FAMILY_ID, 'aq-max-1': FAMILY_ID }, names: { [FAMILY_ID]: FAMILY_NAME } }
+
+// What /usage answers. Plenty for the measured passes, so the allowance line stays off them; the
+// evidence moves it through its three states.
+let usageNow = { account: KEY, today: 2, thisMonth: 9, queued: 0, dailyRuns: 20, monthlyRuns: null, maxQueued: null, capped: true }
 
 // ── the /portal/api/searches stub ───────────────────────────────────────────────────────────────────
 //
@@ -140,12 +174,15 @@ const json = (res, body) => { res.writeHead(200, { 'content-type': 'application/
 
 const server = createServer((req, res) => {
   const p = new URL(req.url, 'http://localhost').pathname
-  if (p === '/portal/api/me') return json(res, { email: 'manager@example-firm.com', permissions: { run: true, manage: true }, access: [{ kind: 'everything' }], accounts: '*', accountNames: {}, allowance: null })
+  if (p === '/portal/api/me') return json(res, { email: 'manager@example-firm.com', permissions: { run: true, manage: true }, access: [{ kind: 'everything' }], accounts: '*', accountNames: {}, allowance: null, brand: 'Northwind Group' })
   if (p === '/portal/admin/roster') return json(res, { customers: [{ key: KEY, name: NAME }, { key: KEY2, name: NAME2 }] })
-  if (p === '/portal/admin/families') return json(res, { of: {}, names: {} })
+  if (p === '/portal/admin/families') return json(res, FAMILIES)
+  if (p === '/portal/api/usage') return json(res, usageNow)
   if (p === '/portal/api/runs') return json(res, { runs: RUNS() })
   if (p === '/portal/api/searches') return json(res, { account: KEY, products: PRODUCTS, recipes: [], read: { available: false, maxBrief: 0, note: null } })
-  if (p === '/portal/api/mcp-access') return json(res, { url: null, keyUrl: null, email: null, enabled: false })
+  // A CONNECTED READER, so Ask AI draws on the rows that carry it and opens its question panel. The one
+  // request the whole table makes for it is counted by revisit-render-check.
+  if (p === '/portal/api/mcp-access') return json(res, { url: 'https://connector.example.test/mcp', keyUrl: null, email: 'manager@example-firm.com', enabled: true, stdio: null, aiConnected: true, offers: [] })
   const base = p.split('?')[0]
   const file = base === '/' || (base.startsWith('/portal') && !base.includes('.')) ? '/index.html' : base.replace(/^\/portal/, '')
   const full = join(DIST, file)
@@ -163,10 +200,17 @@ const origin = `http://127.0.0.1:${server.address().port}`
 // test cannot tell apart.
 
 const MEASURE = `(async () => {
-  // Open every row: the alignment question only exists once a read is showing.
-  const rows = [...document.querySelectorAll('table.data tr.row')];
-  for (const r of rows) { r.click(); await new Promise(r2 => setTimeout(r2, 60)); }
-  await new Promise(r => setTimeout(r, 350));
+  // Open everything that opens: the alignment question only exists once a read is showing. THROUGH THE
+  // TWISTIES, not the rows. A name with one search opens its REPORT on a row click, so clicking every row
+  // would navigate away mid-measurement; the twisty is the control that expands, and a group's members
+  // bring their own twisties once it is open, hence the passes.
+  for (let pass = 0; pass < 3; pass++) {
+    const shut = [...document.querySelectorAll('table.data button.twisty[aria-expanded="false"]')];
+    if (!shut.length) break;
+    for (const b of shut) { b.click(); await new Promise(r2 => setTimeout(r2, 60)); }
+    await new Promise(r => setTimeout(r, 250));
+  }
+  const rows = [...document.querySelectorAll('table.data button.twisty')];
 
   const table = document.querySelector('table.data');
   if (!table) return { fatal: 'no table on the page' };
@@ -183,13 +227,19 @@ const MEASURE = `(async () => {
 
   // The Updated cell: how many lines does its text actually occupy? lineHeight vs rendered height is
   // the only honest way to ask — a wrapped date and a one-line date are the same string.
-  const updatedIdx = headText.findIndex(t => /^UPDATED$/i.test(t));
+  // A PREFIX, not the whole text: the sort button carries its arrow and a screen-reader phrase, so the
+  // header's text is "Updated↓, sorted descending" and an exact match found no column at all — which
+  // made every date assertion below a pass over nothing.
+  const updatedIdx = headText.findIndex(t => /^UPDATED/i.test(t));
   const dateCells = [...table.querySelectorAll('tbody tr.row')].map(tr => tr.children[updatedIdx]).filter(Boolean);
-  const dateLines = dateCells.map(td => {
-    const cs = getComputedStyle(td);
-    const lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.4;
-    const inner = td.getBoundingClientRect().height - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
-    return Math.max(1, Math.round(inner / lh));
+  // THE TEXT'S OWN LINES, not the cell's height: a row is as tall as its tallest cell, and with a status
+  // line beneath or two buttons stacked in the actions column a one-line date sits in a three-line cell.
+  // A Range over the cell's contents reports one client rect per rendered line of the text itself.
+  const dateLines = dateCells.filter(td => (td.textContent || '').trim()).map(td => {
+    const range = document.createRange();
+    range.selectNodeContents(td);
+    const tops = new Set([...range.getClientRects()].map(r => Math.round(r.top)));
+    return Math.max(1, tops.size);
   });
 
   // Does the NAME wrap? Same method as the date: rendered height against line height. The Name cell is
@@ -223,13 +273,65 @@ const MEASURE = `(async () => {
   // Read from the FIRST cell's own span (Clearances.tsx renders the label there); the row's whole
   // textContent would sweep up the status and risk cells and make any assertion about the label
   // satisfiable by something else on the row.
+  // The label's own text, less the time a same-day pair adds after it. The date sits in a span of its own
+  // so it never breaks at a hyphen, which is why this reads the whole label rather than its first node.
   const readLabels = [...document.querySelectorAll('tr.read-row')]
     .map(tr => tr.querySelector('td span.mono'))
     .filter(Boolean)
-    .map(el => (el.firstChild && el.firstChild.textContent ? el.firstChild.textContent : el.textContent || '').trim())
+    .map(el => (el.textContent || '').replace(/\\s+/g, ' ').replace(/ \\d{2}:\\d{2} UTC$/, '').trim())
     .filter(Boolean);
 
+  // ── the rows, as a reader meets them ──────────────────────────────────────────────────────────────
+  const txt = (el) => (el ? (el.textContent || '').replace(/\\s+/g, ' ').trim() : '');
+  const statusIdx = headText.findIndex(t => /^STATUS/i.test(t));
+  const riskIdx = headText.findIndex(t => /^RISK/i.test(t));
+  const actionsIdx = head.findIndex(h => h.getAttribute('aria-label') === 'Actions');
+  // The two neutral inks, resolved by the page itself rather than typed here.
+  const ink = (v) => { const e = document.createElement('span'); e.style.color = 'var(' + v + ')'; document.body.appendChild(e); const c = getComputedStyle(e).color; e.remove(); return c; };
+  const neutral = [ink('--text-muted'), ink('--text-faint')];
+  const rowInfo = (tr) => {
+    const cells = [...tr.children];
+    const nameCell = cells[nameIdx];
+    const actions = actionsIdx >= 0 ? cells[actionsIdx] : null;
+    const open = actions ? actions.querySelector('button.row-open') : null;
+    const dot = cells[statusIdx] ? cells[statusIdx].querySelector('.dot') : null;
+    const dcs = dot ? getComputedStyle(dot) : null;
+    const b = nameCell ? nameCell.querySelector('b') : null;
+    const label = nameCell ? nameCell.querySelector('span.mono') : null;
+    return {
+      kind: tr.classList.contains('read-row') ? 'search' : (nameCell && nameCell.querySelector('.row-kind') ? 'group' : 'name'),
+      name: b ? txt(b) : txt(label).replace(/ \\d{2}:\\d{2} UTC$/, ''),
+      nameCell: txt(nameCell),
+      cells: cells.length,
+      twisty: Boolean(tr.querySelector('button.twisty')),
+      status: txt(cells[statusIdx]),
+      dot: dot ? { cls: dot.className, ink: dcs.backgroundColor !== 'rgba(0, 0, 0, 0)' ? dcs.backgroundColor : dcs.borderTopColor } : null,
+      risk: txt(cells[riskIdx]),
+      updated: txt(cells[updatedIdx]),
+      open: open ? { text: txt(open), aria: open.getAttribute('aria-label'), left: Math.round(open.getBoundingClientRect().left), width: Math.round(open.getBoundingClientRect().width), clipped: open.scrollWidth > open.clientWidth + 1 } : null,
+      menu: Boolean(actions && actions.querySelector('button.row-menu-btn')),
+      ask: (() => { const b = actions ? actions.querySelector('.ask-ai button.ask-ai-btn') : null; return b ? { text: txt(b), aria: b.getAttribute('aria-label'), left: Math.round(b.getBoundingClientRect().left) } : null; })(),
+      rules: (getComputedStyle(cells[0]).backgroundImage.match(/linear-gradient/g) || []).length,
+      inert: tr.classList.contains('inert'),
+    };
+  };
+  const body = [...table.querySelectorAll('tbody tr')];
+  const listed = body.filter(tr => tr.matches('tr.row, tr.read-row')).map(rowInfo);
+  // THE COUNTS, as printed: the total over the table and each company heading, with the names that are
+  // actually under each heading counted off the rows — a top-level name is one, a group is its members.
+  const namesTotal = [...document.querySelectorAll('.controls span.mono')].map(txt).find(t => /^\\d+ names?$/.test(t)) || null;
+  const headings = [];
+  for (const tr of body) {
+    if (tr.matches('tr.group-head')) { headings.push({ name: txt(tr.querySelector('.owner-name')), printed: txt(tr.querySelector('.owner-count')), band: getComputedStyle(tr.querySelector('td')).backgroundColor, counted: 0 }); continue; }
+    const h = headings[headings.length - 1];
+    if (!h || !tr.matches('tr.row')) continue;
+    const info = rowInfo(tr);
+    if (info.kind === 'group') { const m = info.nameCell.match(/(\\d+) names?/); h.counted += m ? Number(m[1]) : 0; }
+    else if (info.rules === 0) h.counted += 1;
+  }
+
   return {
+    listed, namesTotal, headings, neutral, updatedIdx,
     headText, headLeft, reads, dateLines, nameLines, share, readLabels,
     openedRows: rows.length,
     readRows: reads.length,
@@ -333,9 +435,95 @@ await new Promise((r) => setTimeout(r, 1500))
 await reload()
 const short = await value(MEASURE)
 
+// — THE ROW MENU AND THE ROW'S OWN CLICK, driven rather than read. Opened, read and closed with Escape on
+// each row shape; then a click on a group row, which folds and goes nowhere, and one on a running name,
+// which has nothing to open or expand.
+const MENUS = `(async () => {
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+  const txt = (el) => (el ? (el.textContent || '').replace(/\\s+/g, ' ').trim() : '');
+  const rowOf = (name) => [...document.querySelectorAll('table.data tbody tr.row')].find(tr => txt(tr.querySelector('b')) === name);
+  const menu = async (tr) => {
+    const btn = tr && tr.querySelector('button.row-menu-btn');
+    if (!btn) return null;
+    btn.click(); await sleep(200);
+    const items = [...tr.querySelectorAll('[role=menu] [role=menuitem]')].map(txt);
+    const expanded = btn.getAttribute('aria-expanded');
+    btn.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await sleep(200);
+    return { items, expanded, closed: !tr.querySelector('[role=menu]'), label: btn.getAttribute('aria-label'), path: location.pathname };
+  };
+  const plus = await menu(rowOf('AQUAPLUS'));
+  const group = await menu(rowOf(${JSON.stringify(FAMILY_NAME)}));
+  const search = await menu([...document.querySelectorAll('table.data tr.read-row')].find(tr => tr.querySelector('button.row-menu-btn')));
+  const g = rowOf(${JSON.stringify(FAMILY_NAME)});
+  const before = location.pathname;
+  const was = g ? g.querySelector('button.twisty').getAttribute('aria-expanded') : null;
+  if (g) { g.children[2].click(); await sleep(300); }
+  const groupClick = { stayed: location.pathname === before, toggled: g ? g.querySelector('button.twisty').getAttribute('aria-expanded') !== was : false };
+  if (g) { g.children[2].click(); await sleep(300); }
+  const tide = rowOf('TIDEGLASS');
+  if (tide) { tide.children[2].click(); await sleep(300); }
+  return { plus, group, search, groupClick, inertClick: { stayed: location.pathname === before, found: Boolean(tide) } };
+})()`
+const menus = await value(MENUS)
+
+// ASK AI FROM A NAME, driven: the panel names the report, the second question is chosen, and the link the
+// assistant opens carries that question typed in. window.open is caught rather than followed.
+const ASK = `(async () => {
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+  const txt = (el) => (el ? (el.textContent || '').replace(/\\s+/g, ' ').trim() : '');
+  const opened = [];
+  window.open = (u) => { opened.push(String(u)); return null; };
+  const rowOf = (name) => [...document.querySelectorAll('table.data tbody tr.row')].find(tr => txt(tr.querySelector('b')) === name);
+  const drive = async (name) => {
+    const tr = rowOf(name);
+    const btn = tr && tr.querySelector('.ask-ai button.ask-ai-btn');
+    if (!btn) return { fatal: 'no Ask AI on ' + name };
+    const before = location.pathname;
+    btn.click(); await sleep(250);
+    const panel = tr.querySelector('.ask-ai-panel');
+    const head = txt(panel && panel.querySelector('.ask-ai-head'));
+    const choices = panel ? [...panel.querySelectorAll('[role=radio], .ask-ai-choice')].map(txt) : [];
+    const second = panel ? [...panel.querySelectorAll('[role=radio], .ask-ai-choice')][1] : null;
+    if (second) { second.click(); await sleep(150); }
+    const go = panel ? [...panel.querySelectorAll('button')].find(b => /^Open in /.test(txt(b))) : null;
+    const goText = txt(go);
+    if (go) { go.click(); await sleep(200); }
+    const url = opened[opened.length - 1] || null;
+    let q = null; try { q = url ? new URL(url).searchParams.get('q') : null; } catch { q = null; }
+    return { head, choices, goText, q, stayed: location.pathname === before };
+  };
+  return { max: await drive('AQUAMAX'), coral: await drive('CORAL FREEZE') };
+})()`
+const asked = await value(ASK)
+
+// A name with ONE search opens its report from the row. Last, because it leaves the page.
+const ROW_OPENS = `(async () => {
+  const tr = [...document.querySelectorAll('table.data tbody tr.row')].find(t => ((t.querySelector('b') || {}).textContent || '').trim() === 'ASTERION');
+  if (!tr) return { fatal: 'no ASTERION row' };
+  tr.children[2].click();
+  await new Promise(r => setTimeout(r, 500));
+  return { path: location.pathname };
+})()`
+const rowOpens = await value(ROW_OPENS)
+await reload()
+
+// — THE WIDE PASS: the same page at a desktop width, where Ask AI sits beside Open instead of under it.
+await cmd('Emulation.setDeviceMetricsOverride', { width: WIDE, height: 1000, deviceScaleFactor: 1, mobile: false })
+await reload()
+const wide = await value(MEASURE)
+await cmd('Emulation.clearDeviceMetricsOverride', {})
+await reload()
+
 // — the grouping toggle, both ways. Grouped, the owner is a section header; ungrouped, it is a
 // column on every row. The information has to survive the toggle, and the sort has to go global.
 const TOGGLE = `(async () => {
+  // Opened first, through the twisties: the read-row half of this pass is about rows that are showing.
+  for (let pass = 0; pass < 3; pass++) {
+    const shut = [...document.querySelectorAll('table.data button.twisty[aria-expanded="false"]')];
+    if (!shut.length) break;
+    for (const b of shut) { b.click(); await new Promise(r2 => setTimeout(r2, 60)); }
+    await new Promise(r => setTimeout(r, 250));
+  }
   const box = [...document.querySelectorAll('label.group-toggle input[type=checkbox]')][0];
   if (!box) return { fatal: 'no grouping toggle on the page — is there more than one company in view?' };
   const before = {
@@ -378,6 +566,57 @@ if (shotAt) {
   if (data) writeFileSync(shotAt, Buffer.from(data, 'base64'))
 }
 
+// ── evidence ────────────────────────────────────────────────────────────────────────────────────────
+//
+// Not a test: pictures a reader can hold against the board. Full height at a fixed width, captured with
+// the viewport grown to the page — a beyond-viewport capture draws fixed and sticky layers in the wrong
+// place. The rows in both themes with the group and its waiting name open; the allowance line in its three
+// states, on one company so the line has an account to speak for.
+const evidence = []
+if (shotDir) {
+  longTitle = false
+  const capture = async (file, width) => {
+    const h = (await value('Math.max(document.documentElement.scrollHeight, document.body.scrollHeight)')) ?? 900
+    await cmd('Emulation.setDeviceMetricsOverride', { width, height: Math.max(900, h), deviceScaleFactor: 1, mobile: false })
+    await new Promise((r) => setTimeout(r, 400))
+    const shot = await cmd('Page.captureScreenshot', { format: 'png' })
+    const data = shot.result?.result?.data ?? shot.result?.data
+    if (!data) throw new Error(`no screenshot came back for ${file}`)
+    writeFileSync(join(shotDir, file), Buffer.from(data, 'base64'))
+    evidence.push(file)
+  }
+  const both = async (name, width) => {
+    await capture(`${name}-light.png`, width)
+    await value(`document.documentElement.setAttribute('data-theme', 'dark'); 'ok'`)
+    await new Promise((r) => setTimeout(r, 300))
+    await capture(`${name}-dark.png`, width)
+    await value(`document.documentElement.removeAttribute('data-theme'); 'ok'`)
+  }
+  const EXPAND = (names) => `(async () => {
+    for (const name of ${JSON.stringify(names)}) {
+      const tr = [...document.querySelectorAll('table.data tbody tr.row')].find(t => ((t.querySelector('b') || {}).textContent || '').trim() === name);
+      const tw = tr && tr.querySelector('button.twisty[aria-expanded="false"]');
+      if (tw) { tw.click(); await new Promise(r => setTimeout(r, 250)); }
+    }
+    return true;
+  })()`
+  for (const width of [WIDE, WIDTH]) {
+    await cmd('Emulation.setDeviceMetricsOverride', { width, height: 1000, deviceScaleFactor: 1, mobile: false })
+    await reload()
+    await value(EXPAND([FAMILY_NAME, 'AQUAPLUS']))
+    await both(`clearances-rows-${width}`, width)
+  }
+  for (const [name, usage] of [['plenty', { today: 8 }], ['few', { today: 17 }], ['none', { today: 20 }]]) {
+    usageNow = { ...usageNow, ...usage }
+    await cmd('Emulation.setDeviceMetricsOverride', { width: WIDE, height: 1000, deviceScaleFactor: 1, mobile: false })
+    await navigateOrRefuse(cmd, `${origin}/portal/clearances?owner=${KEY}`, { what: 'clearances-render-check evidence' })
+    await new Promise((r) => setTimeout(r, 1800))
+    evidence.push({ allowance: name, line: await value(`(document.querySelector('.screen header, .screen') ? [...document.querySelectorAll('.screen span')].map(e => (e.textContent || '').trim()).find(t => /searches? left today|used all/.test(t)) || null : null)`) })
+    await both(`clearances-allowance-${name}`, WIDE)
+  }
+  await cmd('Emulation.clearDeviceMetricsOverride', {})
+}
+
 // — SIGNAL THE GROUP, NOT THE PROCESS. `chrome.kill` reaches only the process spawned here;
 // its renderer and GPU children survive and keep writing the profile directory, so the rmSync below
 // races them. Here that loss is SILENT — the rmSync is wrapped — which is why this file never failed
@@ -404,8 +643,20 @@ console.log(`measured at ${WIDTH}px — ${short.openedRows} rows opened, ${short
 console.log(`table ${short.tableWidth}px in a ${short.tableWidth - (short.overflowBy ?? 0)}px wrapper — overflow ${short.overflowBy}px (min-width ${short.tableMinWidth})`)
 console.log(`column share: ${Object.entries(short.share).map(([k, v]) => `${k} ${v}%`).join(' · ')}`)
 
+// THE EXPECTATIONS INVERT BELOW THE STYLESHEET'S PHONE BREAKPOINT, and this number is that number.
+// Above it a fixed table divides the container and must not overflow its wrapper. Below it there is
+// nothing left to divide: the shares become slivers, the risk word prints through the date and marks
+// break mid-word, so the stylesheet lets the table become content-sized and be scrolled instead. Asked
+// at 400px, the desktop expectations below want a layout no seven-column table can have — so asking
+// them there is how a check reports a screen as broken and a design as impossible in the same breath.
+const NARROW = 560
+const narrow = WIDTH <= NARROW
+
 // — the grid is declared, and the reads are in it.
-ok(short.tableLayout === 'fixed', `the table is not fixed-layout (got ${short.tableLayout}) — its columns are still decided by their content`)
+ok(short.tableLayout === (narrow ? 'auto' : 'fixed'),
+  narrow
+    ? `at ${WIDTH}px the table is still fixed-layout — its columns are slivers, not something a reader can scroll`
+    : `the table is not fixed-layout (got ${short.tableLayout}) — its columns are still decided by their content`)
 ok(short.readRows > 0, 'no expanded read rows were found — the rows did not open, or a read is still a spanning panel')
 for (const [i, r] of short.reads.entries()) {
   ok(r.cols === short.headText.length,
@@ -474,9 +725,151 @@ for (const n of short.nameLines ?? []) {
   if (/\+\d+ more$/.test(n.text) || n.text.length > 34) continue
   ok(n.lines === 1, `the Name cell wraps at ${WIDTH}px for a single mark of ordinary length: ${JSON.stringify(n.text)} took ${n.lines} lines`)
 }
-ok(short.overflowsX === false,
-  `the table overflows its wrapper at ${WIDTH}px by ${short.overflowBy}px — table ${short.tableWidth}px, min-width ${short.tableMinWidth}, columns ${JSON.stringify(short.share)}`)
+ok(short.overflowsX === narrow,
+  narrow
+    ? `at ${WIDTH}px the table fits its wrapper — it collapsed into slivers instead of staying legible and being scrolled`
+    : `the table overflows its wrapper at ${WIDTH}px by ${short.overflowBy}px — table ${short.tableWidth}px, min-width ${short.tableMinWidth}, columns ${JSON.stringify(short.share)}`)
 ok(short.docOverflowsX === false, `the page itself scrolls horizontally at ${WIDTH}px`)
+
+// ── what each row says and offers ───────────────────────────────────────────────────────────────────
+//
+// The five row states, read off the page. Every string compared here is the one the specification
+// names; where the screen composes a string from data (a product name, a date), the expectation is
+// composed from the same data rather than typed.
+const STOPPED_LINE = 'No report will be produced. Completed work stays readable through Ask AI.'
+const GROUP_LINE = 'Highest risk across the latest report for each name.'
+ok(short.updatedIdx >= 0, `no Updated column was found in the header (${short.headText.join(' · ')}) — every date assertion would be a pass over nothing`)
+ok(short.dateLines.length > 0, 'no date cells were measured')
+const L = short.listed ?? []
+const named = (name, kind) => L.find((r) => r.name === name && r.kind === kind)
+const plus = named('AQUAPLUS', 'name')
+const group = named(FAMILY_NAME, 'group')
+const max = named('AQUAMAX', 'name')
+const coral = named('CORAL FREEZE', 'name')
+const tide = named('TIDEGLASS', 'name')
+const aster = named('ASTERION', 'name')
+const venzy = named('VENZY', 'name')
+for (const [label, r] of Object.entries({ AQUAPLUS: plus, [FAMILY_NAME]: group, AQUAMAX: max, 'CORAL FREEZE': coral, TIDEGLASS: tide, ASTERION: aster, VENZY: venzy })) {
+  ok(Boolean(r), `no row for ${label} — the list did not render a state this check exists to read`)
+}
+const searchRow = (key, date) => L.find((r) => r.kind === 'search' && r.name === `${PRODUCT_NAME[key]} · ${date}`)
+const queuedSearch = searchRow('multi-country-focus-search', '2026-09-16')
+const latestSearch = searchRow('global-preliminary-search', '2026-09-02')
+const olderSearch = searchRow('knockout-search', '2026-08-21')
+ok(Boolean(queuedSearch && latestSearch && olderSearch), `the three searches under AQUAPLUS are not all listed: ${L.filter((r) => r.kind === 'search').map((r) => r.name).join(' | ')}`)
+
+// Columns: every row carries exactly the header's cells, so nothing lands under the wrong column.
+// The sort button's text carries its arrow and a screen-reader phrase; the column's name is what precedes them.
+const headNames = short.headText.filter(Boolean).map((t) => t.replace(/[↑↓]?,\s*(not sorted|sorted ascending|sorted descending)$/, '').trim())
+ok(JSON.stringify(headNames) === JSON.stringify(['Name', 'Status', 'Risk', 'Updated']), `the named columns are ${JSON.stringify(headNames)}`)
+for (const r of L) ok(r.cells === short.headText.length, `${r.kind} row "${r.name}" has ${r.cells} cells against ${short.headText.length} columns`)
+
+// The expand control only where a name has earlier searches, and on a group.
+if (plus && group && aster && coral && tide && max) {
+  ok(plus.twisty && group.twisty && venzy?.twisty, 'a threaded name or a group lost its expand control')
+  ok(!aster.twisty && !coral.twisty && !tide.twisty && !max.twisty, 'a name with one search still draws an expand control')
+
+  // A name with a search waiting: status, ring, the latest report's band with its date, today's date.
+  ok(plus.status === 'Queued · 1 search', `AQUAPLUS reads "${plus.status}", not "Queued · 1 search"`)
+  ok(/\bqueued\b/.test(plus.dot?.cls ?? ''), `AQUAPLUS's status dot is not the queued ring: ${plus.dot?.cls}`)
+  ok(plus.risk.startsWith('Medium') && plus.risk.endsWith('latest report · 2026-09-02'), `AQUAPLUS's risk cell reads "${plus.risk}"`)
+  ok(plus.updated === '2026-09-16', `AQUAPLUS's Updated reads "${plus.updated}" — a name whose newest search is queued shows the day it was queued`)
+  ok(plus.nameCell.includes('3 searches') && plus.nameCell.includes('was Severe'), `AQUAPLUS's name cell reads "${plus.nameCell}"`)
+  ok(plus.open?.text === 'Open latest report', `AQUAPLUS's button reads "${plus.open?.text}"`)
+
+  // The searches under it.
+  if (queuedSearch && latestSearch && olderSearch) {
+    ok(queuedSearch.status === 'Queued' && queuedSearch.risk === '—' && !queuedSearch.open && queuedSearch.menu,
+      `the queued search reads status "${queuedSearch.status}", risk "${queuedSearch.risk}", open ${JSON.stringify(queuedSearch.open)}, menu ${queuedSearch.menu}`)
+    ok(latestSearch.nameCell.includes('Latest report') && latestSearch.open?.text === 'Open', `the newest finished search reads "${latestSearch.nameCell}" with ${JSON.stringify(latestSearch.open)}`)
+    ok(!olderSearch.nameCell.includes('Latest report') && olderSearch.open?.text === 'Open', `the older search reads "${olderSearch.nameCell}"`)
+    ok(queuedSearch.rules === 2, `a search under a grouped name draws ${queuedSearch.rules} rule(s), not two`)
+  }
+
+  // The group: its members' waiting search, the line under its name, the band itself.
+  ok(group.status === '1 search queued' && /\bqueued\b/.test(group.dot?.cls ?? ''), `the group reads "${group.status}" (${group.dot?.cls})`)
+  ok(group.nameCell.includes(`Group ·`) && group.nameCell.includes('2 names') && group.nameCell.endsWith(GROUP_LINE), `the group's name cell reads "${group.nameCell}"`)
+  ok(group.risk === 'Medium', `the group's risk reads "${group.risk}" — AQUAPLUS's latest report is Medium and AQUAMAX is Manageable, so the highest is Medium`)
+  ok(!group.open, 'the group carries an Open — a group is several names with no single report')
+  ok(max.rules === 1, `a name inside a group draws ${max.rules} rule(s), not one`)
+
+  // Stopped, running, finished.
+  ok(coral.status === `Stopped${STOPPED_LINE}` || coral.status === `Stopped ${STOPPED_LINE}`, `CORAL FREEZE reads "${coral.status}"`)
+  ok(coral.risk === '—' && !coral.open, `CORAL FREEZE reads risk "${coral.risk}" with ${JSON.stringify(coral.open)}`)
+  ok(tide.status.startsWith('Running') && tide.status.includes('Register sweeps'), `TIDEGLASS reads "${tide.status}"`)
+  ok(tide.risk === '—' && !tide.open && tide.inert, `TIDEGLASS reads risk "${tide.risk}", open ${JSON.stringify(tide.open)}, inert ${tide.inert}`)
+  ok(aster.status === 'Finished' && aster.open?.text === 'Open', `ASTERION reads "${aster.status}" with ${JSON.stringify(aster.open)}`)
+}
+
+// ASK AI: beside Open on a name with a report, alone on a stopped name, and nowhere else.
+if (plus && group && aster && coral && tide && max) {
+  for (const r of [plus, aster, max, venzy]) ok(r?.ask?.text === 'Ask AI' && r.ask.aria === null, `${r?.name} has no Ask AI named by its own words: ${JSON.stringify(r?.ask)}`)
+  ok(coral.ask?.text === 'Ask AI' && !coral.open, `a stopped name carries Ask AI and no Open: ${JSON.stringify({ ask: coral.ask, open: coral.open })}`)
+  ok(!tide.ask && !tide.open, `a running name with no report carries neither button: ${JSON.stringify({ ask: tide.ask, open: tide.open })}`)
+  ok(!group.ask, 'a group carries Ask AI — a group is several names with no single report')
+  ok(L.filter((r) => r.kind === 'search').every((r) => !r.ask), 'a search row carries Ask AI')
+}
+const askColumn = (m, width) => {
+  const lefts = [...new Set((m?.listed ?? []).filter((r) => r.ask).map((r) => r.ask.left))]
+  ok(lefts.length > 0 && Math.max(...lefts) - Math.min(...lefts) <= 1, `at ${width}px the Ask AI buttons start at ${lefts.join(', ')} — not one column`)
+}
+askColumn(short, WIDTH)
+askColumn(wide, WIDE)
+if (!asked || asked.fatal || asked.max?.fatal || asked.coral?.fatal) {
+  fail.push(`driving Ask AI from a row: ${asked?.fatal ?? asked?.max?.fatal ?? asked?.coral?.fatal ?? 'no result'}`)
+} else {
+  console.log(`Ask AI from AQUAMAX: "${asked.max.head}" → ${JSON.stringify(asked.max.q)}; from CORAL FREEZE → ${JSON.stringify(asked.coral.q)}`)
+  // The panel names the report the row's Open opens, and the question typed in names it too.
+  ok(asked.max.head === `AQUAMAX · ${PRODUCT_NAME['full-country-search']} · searched 2026-08-28`, `AQUAMAX's panel heads "${asked.max.head}"`)
+  ok(asked.max.choices.length === 4 && asked.max.goText.startsWith('Open in '), `AQUAMAX's panel: ${JSON.stringify(asked.max)}`)
+  ok(/^Explain the main risks in the AQUAMAX clearance from 28 August\.$/.test(asked.max.q ?? ''), `the second question from AQUAMAX types in "${asked.max.q}"`)
+  ok(asked.max.stayed && asked.coral.stayed, 'pressing Ask AI on a row went somewhere — it opens a panel, not the row')
+  ok((asked.coral.head ?? '').startsWith('CORAL FREEZE · ') && (asked.coral.q ?? '').includes('CORAL FREEZE clearance from 16 September'),
+    `a stopped name asks about the search that stopped: ${JSON.stringify(asked.coral)}`)
+}
+
+// Every Open in one column, at one width, named by its own words — at both widths.
+const openColumn = (m, width) => {
+  const opens = (m?.listed ?? []).filter((r) => r.open)
+  ok(opens.length >= 6, `only ${opens.length} Open buttons at ${width}px`)
+  const lefts = [...new Set(opens.map((r) => r.open.left))]
+  const widths = [...new Set(opens.map((r) => r.open.width))]
+  ok(Math.max(...lefts) - Math.min(...lefts) <= 1, `at ${width}px the Open buttons start at ${lefts.join(', ')} — not one column`)
+  ok(Math.max(...widths) - Math.min(...widths) <= 1, `at ${width}px the Open buttons are ${widths.join(', ')}px wide — not one width`)
+  ok(opens.every((r) => r.open.aria === null), 'an Open button carries an aria-label, so its accessible name is not its visible label')
+  ok(opens.every((r) => !r.open.clipped), `at ${width}px an Open label is cut off: ${opens.filter((r) => r.open.clipped).map((r) => r.open.text).join(', ')}`)
+  console.log(`Open column at ${width}px: x ${lefts.join('/')}, width ${widths.join('/')}px, ${opens.length} buttons`)
+}
+openColumn(short, WIDTH)
+openColumn(wide, WIDE)
+
+// The counts on one screen agree: the total is the sum of the headings, each heading its names.
+ok(short.headings.length === 2, `expected two company headings, got ${short.headings.length}`)
+for (const h of short.headings) {
+  ok(h.printed === `${h.counted} ${h.counted === 1 ? 'name' : 'names'}`, `the ${h.name} heading says "${h.printed}" over ${h.counted} names`)
+  ok(h.band !== 'rgba(0, 0, 0, 0)', `the ${h.name} heading has no filled band`)
+}
+const summed = short.headings.reduce((n, h) => n + h.counted, 0)
+ok(short.namesTotal === `${summed} names`, `the table says "${short.namesTotal}" over headings holding ${summed} names`)
+
+// Neutral status dots throughout.
+for (const r of L.filter((x) => x.dot)) {
+  ok(short.neutral.includes(r.dot.ink), `the status dot on "${r.name}" is ${r.dot.ink}, not one of the neutral inks ${short.neutral.join(' / ')}`)
+}
+
+// The menu holds retire and ungroup, opens, closes on Escape, and goes nowhere.
+if (!menus || menus.fatal) {
+  fail.push(`the row menus: ${menus?.fatal ?? 'no result'}`)
+} else {
+  ok(JSON.stringify(menus.plus?.items) === JSON.stringify(['Retire all 3']) && menus.plus.expanded === 'true' && menus.plus.closed, `AQUAPLUS's menu: ${JSON.stringify(menus.plus)}`)
+  ok(JSON.stringify(menus.group?.items) === JSON.stringify(['Ungroup']) && menus.group.closed, `the group's menu: ${JSON.stringify(menus.group)}`)
+  ok(JSON.stringify(menus.search?.items) === JSON.stringify(['Retire']) && menus.search.closed, `a search row's menu: ${JSON.stringify(menus.search)}`)
+  ok(menus.groupClick.stayed && menus.groupClick.toggled, `a click on the group row: ${JSON.stringify(menus.groupClick)} — it must fold or unfold and go nowhere`)
+  ok(menus.inertClick.found && menus.inertClick.stayed, `a click on a running name with no report went somewhere: ${JSON.stringify(menus.inertClick)}`)
+}
+ok(rowOpens?.path === '/portal/result/tmpd-other', `a click on a name with one search went to ${rowOpens?.path ?? rowOpens?.fatal} — it opens that search's report`)
+
+if (shotDir) console.log(`evidence: ${JSON.stringify(evidence)}`)
 
 if (fail.length) {
   console.error(`\nclearances-render-check FAILED (${fail.length}):`)

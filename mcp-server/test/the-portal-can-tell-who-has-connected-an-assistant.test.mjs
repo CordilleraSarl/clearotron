@@ -19,7 +19,7 @@ import assert from "node:assert/strict";
 import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, rmSync, chmodSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { appendAudit, readConnections, auditPaths, LEGACY_AUDIT_PATH } from "../lib/audit.mjs";
+import { appendAudit, readConnections, auditPaths, LEGACY_AUDIT_PATH, UNNAMED_DOOR } from "../lib/audit.mjs";
 
 const scratch = () => mkdtempSync(join(process.env.TMPDIR ?? tmpdir(), "connected-"));
 const line = (o) => JSON.stringify(o) + "\n";
@@ -188,4 +188,47 @@ test("appendAudit writes no transport unless one is given, so the existing log s
   const rec = JSON.parse(readFileSync(path, "utf8").trim());
   assert.ok(!("transport" in rec), "an HTTP record carries no transport key");
   assert.equal(rec.tool, "get_run", "and everything it did carry still travels");
+});
+
+test("appendAudit ALWAYS writes a door, because an absent one was being read as the staff surface", () => {
+  // THIS ARM SAID THE OPPOSITE YESTERDAY, AND THE REASON IT GAVE IS THE REASON IT IS WRONG. It asserted
+  // that a record given no door carried no door key, so the log's shape would not move for a reader, on
+  // the grounds that "the staff door names no door because it has no second surface to be told apart
+  // from."
+  //
+  // There was a third surface. The key door — a client presenting an access key at the local socket — was
+  // built without naming itself, so every line it wrote had the field absent, and absence was then read as
+  // the staff door because that was the only other thing it could be. Measured on a live instance: six
+  // lines, five naming a door, one not, and the reader who found it took it for a staff call. In the one
+  // record kept to tell a client key from a staff session, a client's calls were being attributed to staff
+  // by elimination.
+  //
+  // So absence is not an encoding any more. Unlike `transport`, which answers a question with exactly one
+  // interesting value, `door` is a closed set and every line answers it. A caller that names none writes a
+  // value a reader can search for, which is the thing a missing key can never be.
+  const dir = scratch();
+  const path = join(dir, "no-door.jsonl");
+  appendAudit({ email: "reader@example.test", body: { method: "tools/call", params: { name: "list_runs" } }, status: 200, path });
+  const rec = JSON.parse(readFileSync(path, "utf8").trim());
+  assert.ok("door" in rec, `every record answers which door took the call: ${JSON.stringify(rec)}`);
+  assert.equal(rec.door, UNNAMED_DOOR,
+    "and a caller that named none is loud about it rather than silently reading as whichever surface is left");
+  assert.equal(rec.tool, "list_runs", "everything the record already carried still travels");
+});
+
+test("a door NAMES A SURFACE and not a route, so the local-route reader is unmoved by it", () => {
+  // `readConnections` tests `transport` for exactly one value to mean the local route. A client-door
+  // record is an HTTP record that happens to name its surface, and it must not start reading as local —
+  // which is what folding "which door" into "which route" would have done.
+  const dir = scratch();
+  const path = join(dir, "client-door.jsonl");
+  appendAudit({ email: "client@example.test", body: { method: "tools/call", params: { name: "list_runs" } }, status: 200, door: "client", path });
+
+  const rec = JSON.parse(readFileSync(path, "utf8").trim());
+  assert.equal(rec.door, "client", "the door is on the line");
+  assert.ok(!("transport" in rec), "naming a door must not invent a transport");
+
+  const seen = readConnections({ paths: [path] });
+  assert.equal(seen.local, false, "a client-door record read as the LOCAL route");
+  assert.ok(seen.emails.has("client@example.test"), "and it is still a reader who connected");
 });

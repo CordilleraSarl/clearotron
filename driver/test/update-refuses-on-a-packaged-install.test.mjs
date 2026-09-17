@@ -20,6 +20,7 @@ import { isGitCheckout, enginesToRefresh } from "../../bin/update.mjs";
 import { ENGINE_BINARIES } from "../driver.config.mjs";
 import { mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { packagedBuild } from "../../bin/onboard.mjs";
+import { headCommit, buildInfo } from "../../scripts/write-build-info.mjs";
 import { main as writeBuildInfoMain } from "../../scripts/write-build-info.mjs";
 
 /**
@@ -197,4 +198,38 @@ test("the install ASKS about the report URL by name, and says what empty costs",
     "empty must be a legitimate answer, and `skippable` is what makes it one — not a phrase in a comment");
   assert.match(call, /left unset — runs will deliver, and their notifications will carry no link/,
     "and the consequence of empty must be said out loud, or the silence is the same silence as before");
+});
+
+// ── AND THE CHECKOUT ROUTE RE-STAMPS THE FILE `prepack` WOULD HAVE WRITTEN ─────────────────────────
+//
+// `build-info.json` names the commit an archive was packed from. It is written by `prepack` — which the
+// checkout route never runs — and it is untracked, so a pull cannot bring it forward either. A checkout
+// that was ever packed by hand keeps whatever that pack left, and the file ages while the tree moves.
+// Measured on the test box 2026-09-16: it named a commit five days and two minor versions behind the
+// tree it sat in, with nothing on it to say so.
+//
+// The product is not fooled — `engineCommit` takes git first and never lets a packed stamp override a
+// live checkout — so this is about the person who reads that file on the box to confirm a deploy.
+test("`update` re-stamps build-info.json on the route that has no prepack", () => {
+  const src = readFileSync(join(ROOT, "bin", "update.mjs"), "utf8");
+  // THE WIRING, held at one call site. An arm that only drove the stamper would prove the stamper works
+  // and say nothing about whether anything asks it to, which is the state this issue was.
+  const calls = src.split("scripts/write-build-info.mjs").length - 1;
+  assert.equal(calls, 1,
+    "the checkout route stamps build-info exactly once — none means the file goes on ageing, and more "
+    + "than one means two places decide what it says");
+  // And it is on the checkout branch, after the code has actually moved: stamping a commit the tree is
+  // not on would replace a stale answer with a confident wrong one.
+  const at = src.indexOf("scripts/write-build-info.mjs");
+  assert.ok(at > src.indexOf('runInCheckout("git", ["pull", "--ff-only"])'),
+    "the stamp must come after the pull, or it names the commit the tree was on before the update");
+});
+
+test("the stamper names the commit of the tree it is run in, and refuses when it cannot", () => {
+  assert.match(headCommit(ROOT) ?? "", /^[0-9a-f]{40}$/, "in a checkout it reads a real commit");
+  assert.equal(headCommit(mkdtempSync(join(tmpdir(), "no-git-"))), null,
+    "outside one it answers null rather than guessing — the pack that cannot name its commit stops");
+  const written = JSON.parse(buildInfo("a".repeat(40), "9.9.9"));
+  assert.deepEqual(written, { commit: "a".repeat(40), version: "9.9.9" },
+    "and the file carries the commit and the version, and no clock — two packs of one tree must not differ");
 });

@@ -19,9 +19,10 @@ import { readFileSync, mkdtempSync, mkdirSync, writeFileSync, rmSync, existsSync
 import { execFileSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { findings, BANNED_WORDS } from "../../scripts/changelog-plain-language.mjs";
-import { refusals as publishRefusals, WORKFLOW, CREDENTIAL_TOKENS, REPOSITORY, publishingJobs } from "../../scripts/release-publish-guard.mjs";
+import { refusals as publishRefusals, WORKFLOW, CREDENTIAL_TOKENS, REPOSITORY, publishingJobs, jobBlocks,
+  CREDENTIALLED_JOB, PERMITTED_CREDENTIAL_LINE, PERMITTED_REGISTRY_LINE } from "../../scripts/release-publish-guard.mjs";
 import { distTag, isPrerelease, preModeFrom, STABLE, UNNAMED_PRERELEASE } from "../../scripts/release-dist-tag.mjs";
 import { cutDecision, versionAtHead } from "../../scripts/release-cut-decision.mjs";
 import { checksVerdict, waitForChecks, RUNNING, NOTHING_STARTED, WAITING_FOR_A_PERSON, exitCodeFor, CHECKS_WINDOW_MS, CHECKS_JOB_MARGIN_MS } from "../../scripts/release-version-pr-checks.mjs";
@@ -887,8 +888,13 @@ test("tracker 97 a version that merged itself still publishes, because that merg
   // SIX NOW. `awaited` and `publish-awaited` joined on 2026-09-06: a push routinely publishes a version
   // already stranded AND cuts a new one, and publishing only the older one is what left a version
   // stranded after every merge.
-  assert.deepEqual(jobs, ["version", "stranded", "pending", "awaited", "publish", "publish-awaited"],
-    "the release workflow's jobs are not the six this file is written about");
+  // SEVEN NOW. `deprecate` joined on 2026-09-15 and is unlike the other six: it takes part in no cut,
+  // needs no version, tag or artefact, and is gated on its own dispatch input rather than on the cut.
+  // It is here because the publish credential exists only inside this workflow, so a deprecation has no
+  // path anywhere else — and it is in THIS list because a job that can reach the registry is exactly
+  // what this arm exists to make somebody declare.
+  assert.deepEqual(jobs, ["version", "stranded", "pending", "awaited", "publish", "publish-awaited", "deprecate"],
+    "the release workflow's jobs are not the seven this file is written about");
 
   // IT DECIDES WITH THE SAME FUNCTION THE PUSH PATH USES. Two answers to one question is how a pipeline
   // publishes on one path what it refuses on the other.
@@ -1408,7 +1414,11 @@ test("the two publish jobs carry the same steps, so they cannot drift apart", ()
   // The cost of duplication is drift, and this is what pays it: the same steps, in the same order.
   const names = (block) => [...block.matchAll(/^      - name: (.+)$/gm)].map((m) => m[1].trim());
   const first = names(jobText("publish"));
-  const second = names(RELEASE_YML.slice(RELEASE_YML.indexOf("\n  publish-awaited:")));
+  // `jobText`, NOT a slice to the end of the file. This read everything from `publish-awaited:` onwards,
+  // which was the same text until a job was added after it — and then that job's steps counted as this
+  // one's. A slice whose end is "the rest of the file" is a slice that silently grows; the helper above
+  // ends at the next job, which is what "this job's steps" means.
+  const second = names(jobText("publish-awaited"));
   assert.ok(first.length >= 10, `only ${first.length} steps found in the first publish — this arm could not look`);
 
   // EVERY STEP OF THE FIRST APPEARS IN THE SECOND, IN ORDER. A subsequence rather than equality, because
@@ -2315,4 +2325,211 @@ test("the refusal asks the VERSION, not the arrangement that produced it", () =>
   const nothingToCut = version.indexOf("- name: A cut needs something to cut");
   assert.ok(nothingToCut >= 0 && nothingToCut < at,
     "the version check runs before the nothing-to-cut refusal, so it would judge the version already on main");
+});
+
+// ── THE STABLE CUT THAT COULD NOT BE ASKED FOR ───────────────────────────────────────────────────────
+//
+// A stable cut was refused whenever the last beta had consumed the final pending note. The refusal came
+// from `changesets/action`, which counts the notes it can see ONCE at the top of the run and skips the
+// version script when it counts none — and a pre-release consumes a note by moving it into
+// `.changeset/pre/`, which it does not count while the flag says `pre`. That is the ordinary state after
+// a beta, not an edge, so the stable line was blocked by construction.
+//
+// THESE ARMS DRIVE THE REAL READER. The gate is `readChangesetState` in the action, which is three lines
+// over `@changesets/pre` and `@changesets/read`; the action cannot be imported from here, so its function
+// is reproduced below VERBATIM and run against the packages the changesets CLI itself ships with. An arm
+// that only asserted our own decision function would pass while the thing it is about had changed.
+//
+// EVERY CASE IS PLANTED. The first assertion in each is that the gate is CLOSED before the fix touches
+// the tree — an arm that cannot reproduce the defect cannot tell a working fix from a missing one.
+import { preGateDecision, countNotes } from "../../scripts/release-pre-gate.mjs";
+import { createRequire } from "node:module";
+
+/**
+ * `changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51`, `src/readChangesetState.ts`, reproduced.
+ *
+ * The readers come from the CLI's own dependency tree rather than from the top of `node_modules`, so this
+ * reads the versions `@changesets/cli` declares — the only changesets package this repository depends on
+ * by name.
+ */
+async function actionGate(cwd) {
+  const req = createRequire(createRequire(import.meta.url).resolve("@changesets/cli/package.json"));
+  // A FILE URL, NOT THE RAW PATH `resolve` HANDS BACK, and written out at each call rather than behind a
+  // helper. `import()` of an absolute path is not portable — it fails on Windows — and the tracked corpus
+  // is held to that by an arm of its own, which reads the argument at the import site. A helper that
+  // returns a perfectly good URL is invisible to it, and rightly: what it can see is what it can hold.
+  const { readPreState } = await import(pathToFileURL(req.resolve("@changesets/pre")).href);
+  const { readChangesets } = await import(pathToFileURL(req.resolve("@changesets/read")).href);
+  const preState = await readPreState(cwd);
+  let changesets = await readChangesets(cwd);
+  if (preState !== undefined && preState.mode === "pre") {
+    changesets = changesets.filter((changeset) => !changeset.id.startsWith("pre/"));
+  }
+  // index.ts: `hasChangesets` decides the switch, and `hasNonEmptyChangesets` decides whether a pull
+  // request is opened at all. Both have to be true or no `pr-number` is emitted and the cut refuses.
+  return {
+    hasChangesets: changesets.length !== 0,
+    hasNonEmptyChangesets: changesets.some((c) => c.releases.length > 0),
+    ids: changesets.map((c) => c.id),
+  };
+}
+
+/** A tree in the state a beta leaves behind: nothing pending, the whole release waiting under `pre/`. */
+function treeAfterABeta({ preNotes = 1, topLevelNotes = 0 } = {}) {
+  const dir = mkdtempSync(join(tmpdir(), "release-640-"));
+  mkdirSync(join(dir, ".changeset", "pre"), { recursive: true });
+  writeFileSync(join(dir, ".changeset", "pre.json"), JSON.stringify({ mode: "pre", tag: "beta" }, null, 2));
+  // The top-level README is not a note, and an arm that counted it would never see the empty state.
+  writeFileSync(join(dir, ".changeset", "README.md"), "# Changesets\n");
+  const note = (n) => `---\n"clearotron-driver": patch\n---\n\nNote ${n}, which a reader can act on.\n`;
+  for (let i = 0; i < preNotes; i++) writeFileSync(join(dir, ".changeset", "pre", `consumed-${i}.md`), note(i));
+  for (let i = 0; i < topLevelNotes; i++) writeFileSync(join(dir, ".changeset", `pending-${i}.md`), note(`p${i}`));
+  return dir;
+}
+
+// `--root` RATHER THAN `cwd`, and that is not a style choice: the script resolves the repository from
+// its own location, so a run with `cwd` set to a temporary tree would read and WRITE the real checkout's
+// `.changeset/pre.json` while every assertion below passed.
+const runPreGate = (dir, cut) =>
+  execFileSync(process.execPath, [join(ROOT, "scripts/release-pre-gate.mjs"), `--cut=${cut}`, `--root=${dir}`],
+    { encoding: "utf8" });
+
+test("tracker 640 a stable cut reaches the version script when every note sits under .changeset/pre/", async () => {
+  const dir = treeAfterABeta();
+  try {
+    // THE PLANT: the defect, reproduced. Without this the arm below cannot fail for the right reason.
+    const before = await actionGate(dir);
+    assert.equal(before.hasChangesets, false,
+      "the tree this arm builds is not the state the defect is about — the action can already see a note, "
+      + "so nothing below proves anything");
+    assert.deepEqual(before.ids, [], "a note was counted in a tree that should read as empty to the action");
+
+    const said = runPreGate(dir, "stable");
+    assert.match(said, /Writing mode=exit/, "the step did not act on the one state it exists for");
+
+    const after = await actionGate(dir);
+    assert.equal(after.hasChangesets, true,
+      "the action still counts nothing, so it would skip the version script and the stable cut would "
+      + "refuse with `Nothing to cut` against a tree holding a whole release");
+    assert.equal(after.hasNonEmptyChangesets, true,
+      "the action counts the note but reads it as empty, so it takes the `All changesets are empty. "
+      + "Not creating PR` path and emits no pull request number either way");
+    assert.deepEqual(after.ids, ["pre/consumed-0"], "the note the stable carries is not the one counted");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("tracker 640 a beta cut on that same tree still refuses, and the refusal is not collateral damage", async () => {
+  const dir = treeAfterABeta();
+  try {
+    const said = runPreGate(dir, "beta");
+    assert.match(said, /leaving the flag alone/, "a beta cut touched the pre-release flag");
+    const gate = await actionGate(dir);
+    assert.equal(gate.hasChangesets, false,
+      "a beta dispatch with no pending notes now opens a version pull request; that refusal is correct "
+      + "behaviour and 640 required it to survive the fix");
+    assert.equal(JSON.parse(readFileSync(join(dir, ".changeset", "pre.json"), "utf8")).mode, "pre",
+      "the flag moved on a beta cut, which would make the next cut compute the wrong channel");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("tracker 640 a stable cut with nothing anywhere still refuses", async () => {
+  const dir = treeAfterABeta({ preNotes: 0 });
+  try {
+    const said = runPreGate(dir, "stable");
+    assert.match(said, /leaving the flag alone/,
+      "the flag was moved for a tree with no notes at all, which turns a true `Nothing to cut` into an "
+      + "empty version pull request");
+    assert.equal((await actionGate(dir)).hasChangesets, false, "a tree with no notes counted one");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("tracker 640 a stable cut whose notes are still pending is left alone", async () => {
+  const dir = treeAfterABeta({ preNotes: 1, topLevelNotes: 2 });
+  try {
+    // The action can already see these, and moving the flag here would drop the `(beta)` suffix from a
+    // pull request title for a cut that never needed help.
+    assert.equal((await actionGate(dir)).hasChangesets, true, "the plant is wrong: the action cannot see the pending notes");
+    assert.match(runPreGate(dir, "stable"), /leaving the flag alone/, "the flag moved for a cut the action already reads correctly");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("tracker 640 the decision is null for every state but the one the action cannot see", () => {
+  const state = (over) => ({ cut: "stable", mode: "pre", topLevelNotes: 0, preNotes: 1, ...over });
+  assert.deepEqual(preGateDecision(state()), { mode: "exit" }, "the one state this exists for returns no write");
+  for (const [why, over] of [
+    ["a beta", { cut: "beta" }],
+    ["a rehearsal", { cut: "rehearse" }],
+    ["an ordinary push, which carries no channel", { cut: "" }],
+    ["a tree that never entered pre-release mode", { mode: "none" }],
+    ["a tree that has already left it", { mode: "exit" }],
+    ["notes the action can already see", { topLevelNotes: 2 }],
+    ["no notes anywhere", { preNotes: 0 }],
+  ]) assert.equal(preGateDecision(state(over)), null, `the flag would be written for ${why}`);
+  // The README is not a note. An arm that let it count would read every empty tree as populated.
+  const dir = treeAfterABeta({ preNotes: 0 });
+  try { assert.equal(countNotes(join(dir, ".changeset")), 0, "`.changeset/README.md` was counted as a release note"); }
+  finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("tracker 640 the step runs before the action that reads what it writes", () => {
+  const executable = executableText(read(WORKFLOW));
+  const gate = executable.indexOf("scripts/release-pre-gate.mjs");
+  const action = executable.indexOf("uses: changesets/action@");
+  assert.ok(gate > -1, "the step that lets a stable cut reach the version script is gone from the workflow");
+  assert.ok(action > -1, "the changesets action is gone from the workflow");
+  assert.ok(gate < action,
+    "the step runs AFTER the action that reads what it writes, so it cannot change what the action counts "
+    + "and the stable cut is blocked again — with the step present and green");
+  assert.match(executable, /release-pre-gate\.mjs --cut=\$\{\{ inputs\.cut \}\}/,
+    "the step does not receive the channel, so it cannot tell a stable cut from a beta");
+});
+
+// ── ONE JOB MAY HOLD A CREDENTIAL, AND THE EXEMPTION IS HELD TO ITS OWN TERMS ──────────────────────
+//
+// Owner ruling 2026-09-17: deprecating a published version is a registry WRITE the OIDC exchange cannot
+// make, so the `deprecate` job reads a granular token. Publishing stays credential-less. An exemption
+// nobody checks is a hole, and these are the ways this one could quietly become general.
+//
+// THE FIRST DRAFT OF THAT EXEMPTION WAS A HOLE, which is why these arms are here rather than a comment.
+// Exempting the whole job read as equivalent to exempting its two permitted lines. It was not: `deprecate`
+// is the LAST job in the file, its block runs to end-of-file, and the plants the arm above appends at the
+// end landed inside it. Four credential spellings went from refused to accepted in a single edit.
+test("the credential exemption is two exact lines in one job, not a region of the file", () => {
+  const wf = read(WORKFLOW);
+  const pkg = rootPkg();
+  assert.deepEqual(publishRefusals({ workflow: wf, rootPkg: pkg }), [],
+    "the workflow as shipped must satisfy its own guard, credential and all");
+
+  // The permitted lines are where the ruling put them, and the job is still not a publishing job.
+  const block = jobBlocks(wf.split("\n").filter((l) => !/^\s*#/.test(l)).join("\n")).get(CREDENTIALLED_JOB);
+  assert.ok(block, `the ${CREDENTIALLED_JOB} job must exist for this exemption to mean anything`);
+  assert.ok(block.includes(PERMITTED_CREDENTIAL_LINE), "the credential is read from the secret the ruling named");
+  assert.ok(block.includes(PERMITTED_REGISTRY_LINE), "and the registry it authenticates against is configured there");
+  assert.ok(!/\bnpm\s+publish\b/.test(block), "the job holding a credential must never be a job that publishes");
+
+  const plants = [
+    ["a SECOND copy of the permitted credential line", `          ${PERMITTED_CREDENTIAL_LINE}\n`],
+    ["a SECOND copy of the permitted registry line", `          ${PERMITTED_REGISTRY_LINE}\n`],
+    ["the same key taken from a different secret", "          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}\n"],
+    ["another credential spelling entirely", "          NPM_CONFIG_TOKEN: xxx\n"],
+    ["an auth token written straight into .npmrc", "      - run: echo '//registry.npmjs.org/:_authToken=x' > .npmrc\n"],
+  ];
+  for (const [what, line] of plants) {
+    // Appended at the END OF FILE on purpose: that is inside the last job's block, which is exactly where
+    // the first draft of this exemption stopped looking.
+    assert.ok(publishRefusals({ workflow: wf + "\n" + line, rootPkg: pkg }).length,
+      `the guard accepted a workflow carrying ${what} — the exemption has widened past the two lines it is`);
+  }
+});
+
+test("a credential held at job level, where every step would get it, is refused", () => {
+  const wf = read(WORKFLOW);
+  // The guard above runs as a STEP of the credentialled job. A job-level env block would hand it the very
+  // token it exists to find, so the spelling matters and not only the secret's name.
+  const jobLevel = wf.replace(
+    /(\n  deprecate:\n)/,
+    `$1    env:\n      ${PERMITTED_CREDENTIAL_LINE}\n`);
+  assert.notEqual(jobLevel, wf, "the plant did not apply, so this arm is measuring nothing");
+  assert.ok(publishRefusals({ workflow: jobLevel, rootPkg: rootPkg() }).length,
+    "a job-level credential gives every step in the job the token, including the guard");
 });

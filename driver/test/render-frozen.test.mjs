@@ -1649,7 +1649,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //   1. REACHABLE from a republish, and NOT inert — which is the point. A republished archived run on a
 //      provider that publishes no record page LOSES links it used to render. Those links were wrong:
 //      every one pointed at a host the provider does not publish (measured on this tree before the fix
-//      existed — 28 absolute anchors on one clarivate run, publish/index.mjs:754). The acceptance
+//      existed — 28 absolute anchors on one clarivate run, publish/index.mjs:756 recordsByUri). The acceptance
 //      criterion is that a republish introduces no link it did not have; removing false ones is the
 //      requirement, not a side effect. A run on corsearch, EUIPO or USPTO republishes byte-identically.
 //   2. It could NOT live elsewhere. The hrefs are CONSTRUCTED here, from `registrations[].uri` paths, at
@@ -1778,7 +1778,9 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Advanced again by the break recorded above the FROZEN constant: the Ask-AI band comes out of the
 // report, a behaviour change and not licence-only, so both constants move.
 // Advanced again when those four breaks met in one file; see the merge entry above the FROZEN constant.
-const FROZEN_BEFORE_SPDX = "b14e471f8f8e60ada80d5ca659f7afdbe6fad7eb0699baf67ee70b7fe953fb03";
+// Advanced again by the 2026-09-17 merge recorded above the FROZEN constant: the redesign and this
+// branch in one file, and the provenance line re-homed to the footer. Not licence-only, so this moves too.
+const FROZEN_BEFORE_SPDX = "cc25c49b98937097950a05596cd76459f1179b70aa1b38542ba3d51d0661c341";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2140,15 +2142,118 @@ const FROZEN_BEFORE_SPDX = "b14e471f8f8e60ada80d5ca659f7afdbe6fad7eb0699baf67ee7
 //
 // A LINE-COUNT NOTE: this removes lines from the middle of render.mjs, so citations aimed INTO it below
 // the band move. `scripts/citation-line-check.mjs` is the instrument; it ran clean on this commit.
+// ── BREAK: an open slice was being suppressed off the page by a row that merely mentioned it ─────────
 //
-// MERGED (2026-09-15): the Ask-AI break above and this branch's three breaks before it, in one file. They
-// edit different parts of render.mjs and git combined them with no conflict in the file itself, so every
-// entry above stands as written. The hash below is of the combined file, and it was taken only after this
-// measurement: the three committed clearance demos and the knockout demo, republished through the ordinary
-// publisher with main's renderer and with the combined one, gave report.html files that differ only in the
-// issue stamp, meta.json files that differ only in the engine commit, and report-data.json files that
-// differ in those two and gain `"servedModels": null`. Nothing else moved.
-const FROZEN = "3b4d39c310ed2569ae20ac3a8d97bc509ec368104a050d858220b343a57a00d2";
+// `dedupeFollowUps` collapses a driver-composed "Follow-up / …" row into another row containing every
+// significant word of its directive. Over a short directive that matches rows with nothing to do with the
+// deferred slice, so an open slice the run had deliberately disclosed never reached the page while
+// staying correct in findings.json. Measured on a delivered report: 33 coverage entries, 31 rendered
+// cells. Both missing rows were open park rows, directives of one and two words, and every row containing
+// either was axis-labelled `register` — one open, one coverage-limited, two not-searched.
+//
+// The fix is the identity the old comment said did not exist: an area carrying `<axis> / <what was
+// swept>` is a PLAN-DERIVED UNIT, not the model restating a deferred slice, so it may no longer stand in
+// for one. The model's own free-text row still can, which is the dolphin case this function was built for.
+//
+// ── the checklist, answered ───────────────────────────────────────────────────────────────────────────
+//
+//   1. REACHABLE FROM A REPUBLISH — YES, and here that is the point rather than the risk: a republished
+//      report carrying the defect gains the row it should always have had. Measured, not asserted.
+//      Method: a detached worktree at origin/main supplies the BEFORE renderer with its own
+//      byte-identical siblings — a bare copy cannot be used, its relative imports resolve to the copy's
+//      directory — the same parsed input through both, whole-file bytes, one shape per fresh process.
+//      Each side reproduced three times, identical every run.
+//
+//      Fixture: the clearance report in this file through `parseReport`, no findings, and the coverage
+//      set named per row. Every mark and slice is invented; no client content is in this table.
+//
+//                                                       before          after           delta
+//        A  no coverage at all                          51,344 /  0     51,344 /  0     0
+//        B  all confirmed-clean                         51,206 /  1     51,206 /  1     0
+//        C  open rows, no follow-up                     51,566 /  2     51,566 /  2     0
+//        D  multi-word follow-up, free-text suppressor  51,439 /  1     51,439 /  1     0
+//        E  multi-word follow-up, kept                  51,759 /  2     51,759 /  2     0
+//        F  one-word follow-up, OPEN axis row           51,461 /  1     51,777 /  2     +316, +1 cell
+//        G  two-word follow-up, NOT-SEARCHED axis row   51,441 /  1     51,779 /  2     +338, +1 cell
+//        H  follow-up vs the model's free-text row      51,461 /  1     51,461 /  1     0
+//
+//      SIX OF EIGHT SHAPES ARE BYTE-IDENTICAL, which answers what the checklist is really asking: an
+//      archived report moves only if it carries the defect. D and H are the load-bearing rows — a
+//      free-text row still suppresses, so this is a narrowing and not a deletion. G is here because the
+//      suppressor exempts only `confirmed-clean`, so `not-searched` suppressed too; both erased rows have
+//      ONE cause and one fix closes both, which was worth establishing before paying this hash.
+//
+//   2. COULD IT LIVE IN report.css OR brand.mjs? No. It decides which rows exist, not how they look.
+//      No stylesheet can restore a row the renderer filtered out.
+//
+//   3. WHY IT MUST LAND HERE: the suppression is here. `findings.json` is already correct — the composer
+//      writes each slice exactly once. Only the render drops it.
+
+// ── BREAK: the report a client opens, redrawn (the 2026-09-16 report redesign) ────────────────────────────────────
+//
+// The largest break this file has recorded, and one break rather than a dozen because every edit in it
+// serves one design and a reader meets them as one page. The complaint behind it was length and order:
+// a reader met the name, the band and the classes three times before a sentence of reading, then the
+// narration about what a screen is and is not, and only under all of that the answer.
+//
+// WHAT CHANGED, in the order a reader now meets it: the scope fold and its fixed paragraphs are off the
+// page, replaced by an About this request panel of labelled rows; the rating card carries the company's
+// own ladder with the band lit, the reasons under it, and the framework named once; three sections say
+// how far the search reached — where it stands by country, court decisions, and what was searched as
+// counts; the cleared names are grouped with the reason each was ruled out; and each finding's Full
+// detail fold carries the goods as registered and the record's own dates on a full country search.
+// Three labels take the design's wording: "Likely to enforce", "Full detail", and a summary fold that
+// says what opening it gives.
+//
+// WHAT WAS CARRIED OUT OF THE DELETED FOLD BY HAND, each with its own arm, because a fold removed with
+// its contents assumed is how a disclosure leaves a client's page silently: the rows a run LEFT OPEN,
+// the record provenance legend, and the coverage-limited jurisdiction marker. The Methodology note did
+// NOT come with them — what a run could not reach is stated by the left-open rows and the counts, per
+// item and in more detail than the paragraph managed, and report-record-link-host.test.mjs pins that
+// section's absence so the decision is recorded rather than inferred.
+//
+// ── the checklist, answered ───────────────────────────────────────────────────────────────────────────
+//
+//   1. REACHABLE FROM A REPUBLISH — YES, and every part of it. A republished archived run is redrawn to
+//      this design. That is the point of the break rather than its risk: the same findings, the same
+//      bands, the same words, in the order the owner ruled for. Nothing reaches back and rewrites a file
+//      already sent, and no judgment moves — this renderer reads bands and never derives one.
+//      EVERY NEW SECTION FAILS SOFT ON AN ARCHIVED RUN. Where it stands, court decisions and what was
+//      searched all read the search-depth record, which runs published before it do not carry; each
+//      returns '' rather than drawing a zero, and each has its own absent-field arm.
+//   2. COULD IT LIVE IN report.css OR brand.mjs? No. It decides which sections exist, what each one
+//      says and in what order — no stylesheet moves a section or writes a row. The parts that ARE
+//      styling went to report.css and are not in this hash.
+//   3. WHY IT MUST LAND HERE: the sections are assembled here. The engine's own output is unchanged by
+//      this break; what a reader is given of it is not.
+//
+// A LINE-COUNT NOTE: this adds and removes lines throughout render.mjs, so citations aimed into it move.
+// `scripts/citation-line-check.mjs` is the instrument, and it ran clean on this branch.
+//
+// A THIRD PAYMENT, AND THIS ONE IS A DEFECT FIX INSIDE THE SAME BREAK. A wholly-internal answer row was
+// marked `int-note` and rendered; the class went with this break's removal of internal material, and the
+// row went on rendering unmarked — staff prose on a client's report with nothing marking it, which is
+// worse than either state before it. It is dropped now, like every other internal line in this file. The
+// private control caught it; nothing in the public suite could, because on screen an unmarked row looks
+// like an ordinary one.
+//
+// THE HASH IN THIS ENTRY WAS PAID TWICE BEFORE THAT, and the second time was not a second break. The first payment
+// stood over a file that still carried its decision numbers in comments; taking those out — the tree
+// carries the reason for a decision and not its address — moved the bytes again with no behaviour
+// between the two. One entry, because a reader asking what changed gets the same answer either way.
+
+//
+// MERGED (2026-09-17): the report redesign on main and the engine-install branch met in this file. The
+// ledger above is both lineages, kept whole — main's breaks and this branch's four — because each entry
+// records a decision somebody took and a merge is not a place to drop one.
+//
+// The renderer they produce is neither side's. Main deleted the scope fold, and the closing line naming
+// the models that served the search was rendered inside it; taking main's side alone would have removed a
+// statement of provenance from the client's page as a side effect of a merge, which nobody ruled. The line
+// is re-homed to the footer, beside the matter and the framework, and renders '' on a run that recorded no
+// models — so an archived run republishes exactly as it was delivered. The hash below is of that combined
+// file.
+const FROZEN = "edc0ecf6360d03e094ef472bd31ab3c13711694cc92c49231afd377b73751bde";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

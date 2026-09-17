@@ -22,6 +22,13 @@
 // There is no ETA and no percent-complete anywhere on this page: nothing in the system measures or
 // predicts run duration, and the stepper is deliberately lossy. The one real clock is a provider cap's
 // own reset time, which is why it is the only thing here that ever states a time.
+//
+// A QUOTE IS NOT AN ETA, and the line between them is the whole of that rule rather than an exception
+// to it. A running card carries the standing quote for its own pipeline — "usually 1.5 to 2.5 h" — which
+// is a LOOKUP against the effort model's frozen table and says the same thing on the first minute as on
+// the last. Nothing is computed from the run, nothing counts down, and past the upper bound the quote is
+// replaced by "taking longer than usual" rather than revised: a revised figure is a prediction, and the
+// engine has nothing to predict from.
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { CompanyChips } from '../shell/CompanyChips.tsx'
@@ -32,7 +39,7 @@ import { api, saveFailureText } from '../contract/api.ts'
 import { displayName } from '../contract/reads.ts'
 import { toneColor } from '../contract/tone.ts'
 import {
-  recentlyFinished, finished, inFlight, acknowledged, active, waiting, runProductLabel, cardReason, limitLine, moveBefore, pips, slotNote, runsFor, readStamps,
+  recentlyFinished, finished, inFlight, recentFailures, acknowledged, active, waiting, runProductLabel, cardReason, limitLine, moveBefore, pips, slotNote, runsFor, readStamps, inFlightBreakdown, expectation,
 } from '../contract/home.ts'
 import { Icon } from '../components/Icon.tsx'
 import { PageHeader } from '../components/PageHeader.tsx'
@@ -72,6 +79,9 @@ function lastFinishedOf(row: Row): Finished | null {
   return { name: row.name, band: row.band, tone: row.tone, account: row.account, date: row.date, runId: newest.current.runId }
 }
 
+/** Where a band stops being cards and becomes rows. A reading, not a ruling — see the call site. */
+const COMPACT_FROM = 5
+
 export function Home({ ctx }: { readonly ctx: ShellContext }) {
   // ONE REQUEST, WHOEVER IS ASKING. Staff get every account, a client gets its own, and the request is
   // identical — so this screen never branches on role, and cannot grow a staff layout by accident.
@@ -104,6 +114,12 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
   const allRuns: readonly Run[] = result?.kind === 'ok' ? result.value : []
   const runs = useMemo(() => runsFor(allRuns, ctx.owner), [allRuns, ctx.owner])
   const rows = useMemo(() => inFlight(runs), [runs])
+  // — the runs that stopped recently and this reader has not put down. THEIR OWN SECTION, not the
+  // live band: a failure from three days ago is not in flight, and while it sat in the band the screen
+  // was only correct once every individual reader had dismissed it by hand. Bounded by age, so the list
+  // cannot become the wall it replaced.
+  const stopped = useMemo(() => recentFailures(runs), [runs])
+  const [showStopped, setShowStopped] = useState(false)
   // — what this reader has put down. A COUNT, not a silent disappearance: acknowledging must not
   // be the same act as forgetting, so the number is on screen and one click opens the list.
   const acked = useMemo(() => acknowledged(runs), [runs])
@@ -115,6 +131,7 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
   // what one component was handed. The acknowledged list is its own population for the same reason: it
   // is opened on its own and its rows are compared with each other.
   const stamps = useMemo(() => readStamps(rows), [rows])
+  const stoppedStamps = useMemo(() => readStamps(stopped), [stopped])
   const ackedStamps = useMemo(() => readStamps(acked), [acked])
   // Routed through grouping.ts — the SAME function Clearances renders — so the two screens cannot
   // disagree about what finished most recently or what it came back as.
@@ -151,7 +168,7 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
         actions={<>
           <button type="button" className="btn-ghost home2-all" onClick={() => ctx.go('/portal/clearances')}>
             <Icon name="layers" />
-            <span>All Clearances</span>
+            <span>Clearances</span>
           </button>
           {/* THE GATE AND THE NAVIGATION ON ONE LINE, which is what nav.test.ts reads: a literal to a
               screen that needs Run must sit behind `canRun` where a reviewer can see the pair. Spread
@@ -159,9 +176,12 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
           {canRun(ctx.me) ? <NewClearanceButton onNew={() => ctx.go('/portal/new')} /> : null}
         </>}
       />
+      {/* A BREAKDOWN, NOT A TOTAL. "3" tells a reader how much is on the screen; "2 running · 1 paused"
+          tells them whether to wait. The idle sentence keeps the plain "0" beside it, because there is
+          nothing to break down and a reader counting nothing does not need it spelled three ways. */}
       <InFlightBand
-        count={cards.length + queue.length}
-        note={cards.length + queue.length === 0
+        breakdown={inFlightBreakdown(rows)}
+        note={rows.length === 0
           ? `Nothing running right now.${canRun(ctx.me) ? ' Start one with New clearance.' : ''}`
           : slotNote(null, ctx.me.concurrentRuns)}
       />
@@ -182,15 +202,48 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
         </p>
       ) : null}
 
+      {/* CARDS UNTIL THE BAND IS TOO LONG TO READ AS CARDS, THEN ROWS. The specification draws two
+          boards — two runs as cards, six as rows — and names no number in between; four is where this
+          switches, and that is a reading rather than a ruling, called out here so it can be corrected
+          cheaply. Both shapes are the same component, so the Stop and its dialog cannot differ. */}
       {cards.length ? (
-        <div className="home2-cards">
+        <div className={COMPACT_FROM <= cards.length ? 'home2-runrows' : 'home2-cards'}>
           {cards.map((r) => (
-            <Card key={r.runId} run={r} ctx={ctx} onChanged={reload} stamp={stamps.get(r.runId) ?? null} />
+            <Card key={r.runId} run={r} ctx={ctx} onChanged={reload} stamp={stamps.get(r.runId) ?? null}
+              compact={COMPACT_FROM <= cards.length} />
           ))}
         </div>
       ) : null}
 
       {queue.length ? <Queue rows={queue} ctx={ctx} onChanged={reload} stamps={stamps} /> : null}
+
+      {/* WHAT STOPPED RECENTLY — a count that is always on screen, over a list that is not.
+          The count is the part that must never be silent: it is what tells a reader a search failed
+          while they were away, and it is there whether or not anybody has opened the list. The rows
+          are folded because they are history and the live work above them is not — and because the
+          band being full of them is the defect this section exists to undo. Rendered as CARDS, the
+          same component the band uses, so Acknowledge stays exactly where a reader who opens the list
+          already expects it. A run older than the window is in neither list and is read in Clearances,
+          where nothing ages out. */}
+      {stopped.length ? (
+        <div className="home2-stopped">
+          <button
+            type="button"
+            className="home2-stopped-toggle"
+            aria-expanded={showStopped}
+            onClick={() => setShowStopped((v) => !v)}
+          >
+            {stopped.length} stopped recently{showStopped ? '' : ' — show'}
+          </button>
+          {showStopped ? (
+            <div className="home2-cards">
+              {stopped.map((r) => (
+                <Card key={r.runId} run={r} ctx={ctx} onChanged={reload} stamp={stoppedStamps.get(r.runId) ?? null} />
+              ))}
+            </div>
+          ) : null}
+        </div>
+      ) : null}
 
       {/* — ACKNOWLEDGED, BEHIND A COUNT. The run is unchanged and still in Clearances with its
           status intact; this is one reader's dashboard, and the way back is here rather than somewhere
@@ -224,7 +277,7 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
 
       {recent.length ? <RecentlyFinished rows={recent} total={finishedCount} ctx={ctx} /> : null}
 
-      {answer === 'ok' && !cards.length && !queue.length && !recent.length ? (
+      {answer === 'ok' && !cards.length && !queue.length && !recent.length && !stopped.length && !acked.length ? (
         <FirstRun onNew={canRun(ctx.me) ? () => ctx.go('/portal/new') : null} />
       ) : null}
 
@@ -247,10 +300,10 @@ function NewClearanceButton({ onNew }: { readonly onNew: () => void }) {
 }
 
 function InFlightBand({
-  count,
+  breakdown,
   note,
 }: {
-  readonly count: number
+  readonly breakdown: string
   readonly note: string | null
 }) {
   // A STATUS LINE, AND NOTHING ELSE ON IT. This carried both of the page's buttons, one of them the
@@ -260,7 +313,9 @@ function InFlightBand({
   return (
     <div className="home2-band">
       <span className="home2-band-label">In flight</span>
-      <span className="home2-band-count mono">{count}</span>
+      {/* NOT MONO. A mono total read as a machine's counter; this is a sentence about what is happening,
+          sized and coloured like the capacity line it sits opposite. */}
+      <span className="home2-band-count">{breakdown}</span>
       <span className="home2-band-rule" />
       <span className="home2-band-note">{note}</span>
     </div>
@@ -272,20 +327,36 @@ function Card({
   ctx,
   onChanged,
   stamp,
+  compact = false,
 }: {
   readonly run: Run
   readonly ctx: ShellContext
   readonly onChanged: () => void
   /** Which read this is — null when nothing on the band could be confused with it. See readStamps. */
   readonly stamp: string | null
+  /**
+   * Draw as a ROW rather than a card, for a band with too many to read as cards.
+   *
+   * ONE COMPONENT, TWO LAYOUTS, AND THAT IS THE WHOLE REASON THIS IS A PROP. A separate row component
+   * would need its own Stop — and `home2-stop` is counted in a real browser by the render check as "a
+   * Stop that can act", with an exact number. Two implementations of that control is how the count
+   * stops meaning anything. The state, the handlers and the dialog below are shared; only the markup
+   * branches.
+   */
+  readonly compact?: boolean
 }) {
   const [busy, setBusy] = useState(false)
   const [failed, setFailed] = useState<string | null>(null)
   // ── — THE CHOICE IS ASKED AT THE PRESS ──────────────────────────────────
   //
-  // `asking` opens the question; `took` is what the server said actually happened, which is not always
-  // what was asked. Both are per-card state and neither survives a reload — see the stopping line below
-  // for why that is correct rather than a gap.
+  // `asking` opens the question. It is per-card state and does not survive a reload, which is correct
+  // rather than a gap: the stopping line below is drawn from the RUN, not from whether this reader was
+  // the one who pressed.
+  //
+  // `took` is what the server said actually HAPPENED, which is not always what was asked: an immediate
+  // stop that finds no turn to end is a boundary stop, and only the driver knows which it was. The
+  // product's own sentence below is the boundary wording, so rendering it over an immediate stop would
+  // state the wrong one — which is why the server's answer still wins where there is one.
   const [asking, setAsking] = useState(false)
   const [took, setTook] = useState<StopOutcome | null>(null)
   const p = pips(run.stepN, run.stepTotal)
@@ -296,6 +367,9 @@ function Card({
   // because that is true; stopping is the pair (stopRequestedAt, non-terminal). The button goes with
   // it: a second press achieves nothing and should not be offered.
   const stopping = Boolean(run.stopRequestedAt) && canStop
+  // NOT WHILE STOPPING. A run whose stop is taking effect is not going to take "usually 1.5 to 2.5 h";
+  // it is going to end. The quote beside that sentence would read as a wait the reader still owes.
+  const expect = stopping ? null : expectation(run)
   // — terminal and NOT delivered. A delivered run never reaches this band; a paused or recovering
   // one is a run someone still needs to see, and the issue says so in as many words.
   const canAck = run.state === 'failed' || run.state === 'cancelled'
@@ -345,13 +419,70 @@ function Card({
       // what was wrong with the request, a 404 saying the run had gone, a gone session.
       setFailed(saveFailureText(r, 'It could not be stopped just now. Nothing has changed.'))
     } else {
-      // — WHAT HAPPENED, not what was asked. An immediate stop that found no
-      // turn to end IS a boundary stop and the driver says so; showing "stopping now" over it would be
-      // the same silence this issue was opened about, moved one layer along.
+      // — WHAT HAPPENED, not what was asked.
       setTook(r.value)
     }
     onChanged()
   }, [run, onChanged])
+
+  // THE STOP AND ITS QUESTION, ONCE. Both layouts render this same fragment: `home2-stop` is counted in
+  // a real browser as "a Stop that can act", with an exact number, and a second implementation of the
+  // control is how that count quietly stops meaning anything.
+  const stopControl = (<>
+    {canStop && !stopping && canRun(ctx.me) ? (
+      ctx.me.stopControl.available ? (
+        <button type="button" className="home2-stop" onClick={() => setAsking(true)} disabled={busy}>
+          {busy ? 'Stopping…' : 'Stop'}
+        </button>
+      ) : (
+        /* — a button that always fails must not render as available. The
+           deployment said at boot its token cannot stop; the control says so here, where the
+           press would have happened, instead of failing identically forever. Staff read the
+           posture reason; a client reads who to ask. */
+        /* Its OWN class, deliberately (the Acknowledge lesson one arm up): home2-stop is counted
+           by the browser check as "a Stop that can act", and this control exists precisely
+           because this one cannot. */
+        <button type="button" className="home2-stop-unavailable" disabled
+          title={ctx.me.stopControl.reason ?? 'Stopping is not available on this deployment right now — the operator has been told at boot.'}>
+          Stop unavailable
+        </button>
+      )
+    ) : null}
+    {/* — the question, at the press. */}
+    {asking ? (
+      <StopChoice
+        name={displayName(run)}
+        step={run.step}
+        stoppable={run.stoppable}
+        onImmediate={() => void stop(true)}
+        onBoundary={() => void stop(false)}
+        onCancel={() => setAsking(false)}
+      />
+    ) : null}
+  </>)
+
+  // ── THE COMPACT ROW ─────────────────────────────────────────────────────────────────────────────
+  //
+  // The same grid the queue rows use, so the columns and the narrow-screen rule stay one definition;
+  // `home2-runrow` adds only what a running row has that a waiting one does not. The reason is asked
+  // for COMPACT, which drops the paused sentence's closing reassurance — a row has no width for it —
+  // while keeping the fact a reader needs, which is when the provider resumes.
+  if (compact) {
+    return (
+      <div className="home2-qrow home2-runrow">
+        <StateChip state={run.state} stopping={stopping} />
+        <span className="home2-qmark" data-anon="mark">{displayName(run)}</span>
+        <span className="home2-qowner" data-anon="mark">{ctx.ownerName(runKey(run))}</span>
+        <span className="home2-qdepth">{runProductLabel(run.productName, run.marks.length)}</span>
+        {run.step ? <span className="home2-qstep">{run.step}</span> : null}
+        <span className="home2-qreason">
+          {failed ?? cardReason(run, Date.now(), true)}
+          {expect ? <span className="home2-expect">{` · ${expect}`}</span> : null}
+        </span>
+        {stopControl}
+      </div>
+    )
+  }
 
   return (
     <div className={`home2-card${run.state === 'failed' ? ' failed' : ''}`}>
@@ -391,6 +522,11 @@ function Card({
 
         <div className="home2-card-foot">
           <span className={`home2-reason ${run.state}`}>{failed ?? reason}</span>
+          {/* THE QUOTE FOR THIS PIPELINE, after the elapsed time and quieter than it. A lookup against
+              the effort model's frozen table — never computed from this run, and never counted down.
+              Absent on a paused card, whose elapsed line is not measuring work, and on a queued one,
+              which has not started. Past the upper bound the quote is REPLACED, not revised. */}
+          {expect ? <span className="home2-expect">{` · ${expect}`}</span> : null}
           {/* — the engine's own words, for an engineer, behind a disclosure. The card states the
               one fact a reader can act on; this is where the validator reason and the query list live
               now that they are no longer in the sentence. Absent ⇒ no disclosure at all, so a failure
@@ -405,36 +541,7 @@ function Card({
           ) : null}
           {/* Stopping is part of Run clearances. A person without it has no Stop here — not a Stop that
               refuses them, which is the one control this card must never offer. */}
-          {canStop && !stopping && canRun(ctx.me) ? (
-            ctx.me.stopControl.available ? (
-              <button type="button" className="home2-stop" onClick={() => setAsking(true)} disabled={busy}>
-                {busy ? 'Stopping…' : 'Stop'}
-              </button>
-            ) : (
-              /* — a button that always fails must not render as available. The
-                 deployment said at boot its token cannot stop; the control says so here, where the
-                 press would have happened, instead of failing identically forever. Staff read the
-                 posture reason; a client reads who to ask. */
-              /* Its OWN class, deliberately (the Acknowledge lesson one arm up): home2-stop is counted
-                 by the browser check as "a Stop that can act", and this control exists precisely
-                 because this one cannot. */
-              <button type="button" className="home2-stop-unavailable" disabled
-                title={ctx.me.stopControl.reason ?? 'Stopping is not available on this deployment right now — the operator has been told at boot.'}>
-                Stop unavailable
-              </button>
-            )
-          ) : null}
-          {/* — the question, at the press. */}
-          {asking ? (
-            <StopChoice
-              name={displayName(run)}
-              step={run.step}
-              stoppable={run.stoppable}
-              onImmediate={() => void stop(true)}
-              onBoundary={() => void stop(false)}
-              onCancel={() => setAsking(false)}
-            />
-          ) : null}
+          {stopControl}
           {/* — THE WAY OUT. "Home — what is in flight, what is waiting, and the way out of both."
               A failed run is neither, and it had no way out, so the band filled with dead runs and
               stopped showing the live ones.
@@ -470,12 +577,20 @@ function Card({
                 answer in hand. `took` is per-card state and does not survive a reload; a run still
                 stopping when a reader comes back has not gone terminal in seconds, whichever mode was
                 pressed. */}
+            {/* THE SERVER'S ANSWER WINS WHERE THERE IS ONE, because only it can tell an immediate stop
+                from a boundary stop, and the sentence below is the boundary wording. `took` is per-card
+                state and does not survive a reload — correct rather than a gap: a run still stopping
+                when a reader comes back has not gone terminal in seconds.
+
+                THE FALLBACK NO LONGER SAYS "NOTHING WILL BE DELIVERED". That is true and it is the
+                wrong thing to leave a reader holding: the finished steps ARE readable through Ask AI,
+                and naming only what was lost invites the support question the sentence could have
+                answered. */}
             {took?.note
               ? took.note
               : (<>
-                  Stopping — {run.step ? `letting “${run.step}” finish` : 'letting the step in flight finish'}.
-                  A reasoning step can take tens of minutes and has no deadline. Nothing further will
-                  start, and nothing will be delivered.
+                  Stopping — letting {run.step ? `${run.step}` : 'the step in flight'} finish. No report
+                  will be produced. Completed work stays readable through Ask AI.
                 </>)}
           </div>
         ) : null}
@@ -539,6 +654,17 @@ function StopChoice({ name, step, stoppable, onImmediate, onBoundary, onCancel }
   readonly onBoundary: () => void
   readonly onCancel: () => void
 }) {
+  // ── A ROW SELECTS; ONLY THE BUTTON STOPS ──────────────────────────────────────────────────────
+  //
+  // Each option used to BE the button: one click on "Stop now" cut a step off and lost its work. On a
+  // control that cannot be undone, the reading and the committing were the same gesture, and a reader
+  // who clicked a row to find out what it meant had already chosen. Now the rows are a choice and the
+  // button is the act, and the button says which act — so nobody presses "Stop" not knowing which stop.
+  //
+  // THE SAFER OPTION IS PRESELECTED. Stopping after the step keeps that step's work; the reader has to
+  // move off it deliberately to lose anything.
+  const [mode, setMode] = useState<'boundary' | 'immediate'>('boundary')
+
   // Escape closes it, like every other modal here — and it resolves to LEAVING THE RUN ALONE, which is
   // the safe outcome for a dismissal on a control that cannot be undone.
   useEffect(() => {
@@ -546,6 +672,9 @@ function StopChoice({ name, step, stoppable, onImmediate, onBoundary, onCancel }
     window.addEventListener('keydown', on)
     return () => window.removeEventListener('keydown', on)
   }, [onCancel])
+
+  const stepName = step ?? 'The step in flight'
+  const label = mode === 'boundary' ? 'Stop after this step' : 'Stop now'
 
   return (
     <div className="modal-scrim" onClick={onCancel} role="dialog" aria-modal="true" aria-label="Stop this clearance">
@@ -556,37 +685,45 @@ function StopChoice({ name, step, stoppable, onImmediate, onBoundary, onCancel }
           <h2 style={{ margin: '7px 0 3px', fontSize: 19, fontWeight: 700, color: 'var(--text-strong)' }} data-anon="mark">{name}</h2>
           {/* THE PROMISE IS WITHDRAWN WHEN IT CANNOT BE KEPT. A run that has committed to publishing is
               past its last stoppable point, and this line used to tell the reader the opposite -- a
-              report was published a hundred seconds after somebody was told nothing would be. Offering
-              a mode whose stated outcome the run cannot produce is worse than saying so, because the
-              person stops watching. */}
+              report was published a hundred seconds after somebody was told nothing would be. The
+              product's own sentence below says "produces no report", which is true only while the run
+              CAN still be stopped; past that point it would be the same false promise again. So the
+              branch stays, and the new wording lives on the side of it where it is true. */}
           <p style={{ margin: 0, fontSize: 12.5, color: 'var(--text-muted)' }}>
             {stoppable
-              ? <>Either way it cannot be undone, nothing is delivered, and what has already been spent is
-                spent.</>
+              ? <>A stopped search cannot be restarted and produces no report. It stays in Clearances,
+                marked stopped. Its finished steps stay readable through Ask AI.</>
               : <>This run is already writing its report, so stopping it may not prevent delivery. What
                 has been spent is spent, and it cannot be undone either way.</>}
           </p>
         </div>
 
-        <div className="stop-choice">
-          <button type="button" className="stop-choice-opt" onClick={onBoundary}>
-            <b>Stop at the next step</b>
-            <span>
-              {step ? <>Lets “{step}” finish first, so its work is kept.</> : <>Lets the step in flight finish first, so its work is kept.</>}
-              {' '}That step has no deadline — it ends when it ends, and it can be tens of minutes.
-            </span>
-          </button>
-          <button type="button" className="stop-choice-opt stop-choice-now" onClick={onImmediate}>
+        <div className="stop-choice" role="radiogroup" aria-label="How to stop it">
+          <label className={`stop-choice-opt${mode === 'boundary' ? ' selected' : ''}`}>
+            <input type="radio" name="stop-mode" checked={mode === 'boundary'} onChange={() => setMode('boundary')} />
+            <b>Stop after this step</b>
+            <span>{stepName} finishes first, so its work is kept. There is no reliable completion estimate for this step.</span>
+          </label>
+          <label className={`stop-choice-opt stop-choice-now${mode === 'immediate' ? ' selected' : ''}`}>
+            <input type="radio" name="stop-mode" checked={mode === 'immediate'} onChange={() => setMode('immediate')} />
+            {/* THE SPECIFIED TWO SENTENCES, VERBATIM, AND ONE MORE THAT A STANDING RULE REQUIRES. A control
+                on an irreversible act must not state an outcome the mechanism cannot guarantee — and an
+                immediate stop CAN fail to take: a step that will not accept it ends at the next step
+                instead. "Is cut off" alone would promise the one thing that is not certain. The third
+                sentence is the fallback, so the reader is offered the mode without being sold a result.
+                (Above the label, not between it and its text: an arm reads the two as adjacent.) */}
             <b>Stop now</b>
-            <span>
-              Sends a stop to {step ? <>“{step}”</> : <>the step in flight</>} rather than waiting for
-              it. If it takes the stop the run is over in seconds; if it will not, the run stops at the
-              next step instead. That step&rsquo;s work is lost; everything recorded before it is kept.
-            </span>
-          </button>
+            <span>{stepName} is cut off and its work is lost. Everything recorded before it is kept. If it will
+              not take the stop, the run stops at the next step instead.</span>
+          </label>
         </div>
 
         <div className="modal-foot">
+          {/* THE BUTTON NAMES THE ACT IT PERFORMS. Its words follow the selected row, so a reader never
+              presses a generic "Stop" without knowing which of the two they chose. */}
+          <button type="button" className="btn-primary" onClick={mode === 'boundary' ? onBoundary : onImmediate}>
+            {label}
+          </button>
           <button type="button" className="btn-ghost" onClick={onCancel}>Leave it running</button>
         </div>
       </div>
@@ -776,7 +913,7 @@ function RecentlyFinished({
       {/* A LINE, NOT A SECOND BUTTON. The one button belongs at the top beside New clearance; this says
           how much more there is, which is the question a tail leaves a reader with. */}
       <button type="button" className="home2-see-all" onClick={() => ctx.go('/portal/clearances')}>
-        See all {total} finished
+        See all {total}
       </button>
     </>
   )

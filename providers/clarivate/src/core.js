@@ -220,8 +220,8 @@ export function assertSingleMarkShape(rawTerm) {
   }
   return tokens;
 }
-// Read as OPERATORS wherever they stand alone in a value string, case-insensitively ("monster adj
-// energy" = 67), with an optional proximity digit (ADJ2 = 72).
+// Read as OPERATORS wherever they stand alone in a value string, case-insensitively, with an
+// optional proximity digit.
 const RESERVED_TOKEN_RE = /^(?:AND|OR|NOT|ADJ|NEAR)\d*$/i;
 const PUNCT_ONLY_RE = /^[^\p{L}\p{N}]+$/u;
 
@@ -229,22 +229,18 @@ const PUNCT_ONLY_RE = /^[^\p{L}\p{N}]+$/u;
  * An operator word inside a phrase is DROPPED, and the gap it leaves is spanned by widening that one
  * adjacency to `ADJ<n+1>`.
  *
- * The obvious move — make the word lexically stop being an operator with an interior `?` — is WRONG,
- * and measurably so. Registers write these marks with an ampersand, not the word:
- *
- *   *BLACK ADJ A?D ADJ DECKER*   0      ← what the `?` escape asks for, and nothing is named that
- *   *BLACK ADJ DECKER*          55      ← BLACK & DECKER
- *   *BLACK ADJ2 DECKER*         55      ← identical: the connector is not indexed, so spanning costs nothing
- *   *BEN ADJ A?D ADJ JERRYS*     0   vs  *BEN ADJ JERRYS*  25
+ * The obvious move — make the word lexically stop being an operator with an interior `?` — is WRONG.
+ * Registers write these marks with an ampersand and not the word, so the escaped form names NOTHING,
+ * while the plain adjacency finds the mark and the widened adjacency finds exactly the same set.
  *
  * A zero over a mark that exists is the failure this whole contract is built to prevent, so the escape
  * is gone. Dropping + `ADJ2` is right whether or not the index holds the word: if it is a stopword the
- * neighbours are already adjacent (55 == 55 above), and if some register does index it the widened
- * adjacency still reaches across. It is a superset of the literal phrase — safe in the direction a
- * clearance sweep needs, which fails by MISSING a mark and never by surfacing an extra one.
+ * neighbours are already adjacent — plain and widened return the same set — and if some register does
+ * index it the widened adjacency still reaches across. It is a superset of the literal phrase — safe in
+ * the direction a clearance sweep needs, which fails by MISSING a mark and never by surfacing an extra one.
  *
- * `ADJ<n>` is real and probed: MONSTER ADJ ENERGY = 67, MONSTER ADJ2 ENERGY = 72, SALT ADJ PEPPER = 27
- * vs SALT ADJ2 PEPPER = 52 — so the widening is genuinely a widening, not a no-op we cannot see.
+ * `ADJ<n>` is real: the widened form returns strictly more than the tighter one, so the widening is
+ * genuinely a widening and not a no-op we cannot see.
  */
 export function isReservedToken(tok) {
   return RESERVED_TOKEN_RE.test(tok);
@@ -286,21 +282,16 @@ export function compilePhraseValue(term, { pre = "", post = "", dropReserved = f
 
   // A LEADING `*` on a ONE-CHARACTER first token is a sub-query over most of the register, and inside an
   // ADJ chain the provider gives up on it: HTTP 500 "Near/Adj queries with sub queries that can return a
-  // huge amount…". Probed — one character breaks, two do not:
-  //   *I ADJ CANT ADJ BELIEVE*  500      *IT ADJ STARTS ADJ WITH*  103
-  //   *A ADJ BAR*               500      *AN ADJ APPLE*             55
-  // So the leading wrap is dropped for that one case, and ONLY that case. It costs a little recall at
-  // the leading token boundary (AN ADJ APPLE* = 31 vs *AN ADJ APPLE* = 55), which is why it is not done
-  // generally — but the alternative here is not a narrower search, it is no search at all.
+  // huge amount…". The refusal is specific to a first token of ONE character; two characters are answered.
+  // So the leading wrap is dropped for that one case, and ONLY that case. It costs a little recall at the
+  // leading token boundary, which is why it is not done generally — but the alternative here is not a
+  // narrower search, it is no search at all.
   const leadWrap = (kept.length > 1 && kept[0].length === 1) ? "" : pre;
   // AND THE SAME AT THE OTHER END, which was never added and cost a family search on a live matter. A
   // root whose LAST word is one character — a sequel number, an article, an initial — compiled to
   // `*PLAN ADJ B*`, and the trailing `B*` is the same sub-query over most of the register that the
-  // leading rule above exists for. Probed on the test install, count calls only:
-  //   *PLAN ADJ B*   500      *PLAN ADJ B    200, 36 records
-  //   *LEVEL ADJ 2*  500      *LEVEL ADJ 2   200, 14 records
-  //   *ROB ADJ A*    500      *ROB ADJ A     200,  3 records
-  // A delivered run planned a family search on such a root, every attempt was refused, the refusal was
+  // leading rule above exists for: the provider refuses that shape and answers the same query with the
+  // trailing star removed. A delivered run planned a family search on such a root, every attempt was refused, the refusal was
   // retried as if transient and the slice was filed as a provider gap — so a family of pending filings
   // for a third-party title went unseen and the matter was rated on what was left.
   const last = kept.length - 1;
@@ -517,8 +508,8 @@ export function hasAnyElement(p) {
 
 /**
  * Join terms into ONE value string with the EXPLICIT " OR " operator (a bare space is an implicit AND,
- * not an OR). ADJ binds tighter than OR, so phrase operands need no parentheses — probed:
- * `*MOUNTAIN ADJ DEW* OR *MONSTER ADJ ENERGY*` = 157 = 90 + 67, identical with parens.
+ * not an OR). ADJ binds tighter than OR, so phrase operands need no parentheses: an OR of two phrases
+ * returns the union of the two, and parentheses around them change nothing.
  * The width bound is the parser's document-nesting cap; the enumerate
  * kernel chunks wide `names` stacks at capabilities.kernel.namesChunkDefault (= maxOrWidth) before they
  * ever reach here, so hitting this throw means a caller bypassed the kernel.
@@ -1220,7 +1211,7 @@ export async function doBatchScreen(apiKey, base, params, tctx) {
         // judgment was shown a native-script mark beside its own romanised query with no reading on
         // either and concluded they were different marks. A delivered report told a client a
         // jurisdiction had not been searched in its own script while the run held both the query and
-        // this value. On the measured round 558 of 1,937 records had one to carry.
+        // this value. A large share of records carry one, so a dropped reading is not a rare edge.
         //
         // Null where the office records none, which is most Latin-script filings: this says what the
         // register says, and inventing a romanisation here would be this row certifying a reading

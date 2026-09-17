@@ -37,7 +37,7 @@ export type Result<T> =
   /** 422 with NO classify — mark-batch names collide after kebab-casing. */
   | { kind: 'collision'; errors: string[] }
   /** 409 from the confirmation gate. `message` is one of seven strings; render it as-is. */
-  | { kind: 'gate'; message: string }
+  | { kind: 'gate'; message: string; detail?: RefusalDetail }
   /** 409 from recipe-service via the proxy — an optimistic-concurrency version conflict on save. */
   | { kind: 'conflict'; message: string }
   /**
@@ -128,14 +128,14 @@ export function saveFailureText<T>(r: Result<T>, fallback = 'That change could n
     case 'notFound': return 'That run is no longer here — someone may have changed it. Reload the page.'
     case 'rateLimited': return 'Too many requests just now. Wait a moment and try again.'
     case 'tooLarge': return 'That request was too large for the server to accept.'
-    case 'noAccess': return 'You are signed in, but this account has not been granted access to that.'
+    case 'noAccess': return 'You are signed in, but this address has not been granted access to that.'
     // Deliberately says the deployment, not the reader. Nothing they can do to their own account fixes it.
     case 'surfaceUnavailable': return 'The settings surface is not configured on this deployment, so nothing could be read or saved. This is a server setting, not your access — an administrator needs to fix it.'
     // Same shape as the line above and for the same reason: the deployment, not the reader. `detail`
     // names the setting and arrives only for staff, so it is appended when it is there rather than
     // assumed — a client sees a true sentence with nothing missing from it.
     case 'featureOff': return `That is switched off on this installation, so it cannot be read or saved. This is a server setting, not your access.${r.detail ? ` ${r.detail}` : ''}`
-    case 'pickAccount': return 'That identity has more than one account — choose one and try again.'
+    case 'pickAccount': return 'That identity holds more than one company — choose one and try again.'
     //. Says what happened and what fixes it, and does NOT say the change failed:
     // it never reached the server, so nothing was half-done and re-doing it after signing in is safe.
     case 'signedOut': return 'Your session has ended, so nothing was changed. Sign in again and repeat that — it is safe to.'
@@ -352,6 +352,15 @@ export type Me = {
    * wrong operator name is a false statement about who holds the data.
    */
   readonly brand: string
+  /**
+   * WHERE THIS PERSON ASKS FOR A CHANGE TO THEIR SIGN-IN — the installation's administrator contact, as an
+   * href (`mailto:` or http(s)), or null when the installation names none.
+   *
+   * Read by the server where the brand is read and sent beside it. Null is the default and a real
+   * answer: Preferences then prints "Clearotron administrator" as plain words rather than a link that
+   * goes nowhere. The decoder admits only those three schemes, so nothing else reaches an `href`.
+   */
+  readonly administratorContact: string | null
 }
 
 /**
@@ -823,7 +832,8 @@ export type McpAccess = {
  * that substitution — the string itself is composed server-side, by the one author of every command.
  */
 export type ConnectCopy =
-  | { readonly kind: 'block'; readonly text: string }
+  /** `label` present ⇒ one bare value, handed over by a button carrying that label and never drawn as text. */
+  | { readonly kind: 'block'; readonly text: string; readonly label?: string }
   | { readonly kind: 'secret'; readonly label: string; readonly template: string; readonly slot: string }
 
 /**
@@ -857,6 +867,26 @@ export type ConnectOffer = {
    * the copy that names an address must name the one this deployment resolved.
    */
   readonly steps: readonly ConnectStep[]
+  /**
+   * WHAT THE CONNECTOR ASKS FOR — "sign-in", "key", or null for "could not be read". Present only on the
+   * web route, where it decides the steps. The reading is the server's: the page renders what it is
+   * given and never probes a door itself.
+   */
+  readonly door?: 'sign-in' | 'key' | null
+  /**
+   * THE OTHER DOOR'S STEPS, present only when `door` is null. The steps above then carry a sentence
+   * saying both ways are shown, and this is the other way — so the sentence is true. Absent whenever the
+   * door was read: offering an alternative to a reader whose door is known is a second set of
+   * instructions that cannot work for them.
+   */
+  readonly altSteps?: readonly ConnectStep[]
+  /**
+   * THE KEY DOOR'S STEPS, present only beside a sign-in door on a deployment that runs a key door of its
+   * own — a separate host, for assistants that cannot follow a browser sign-in. The page folds them away
+   * under the sign-in steps. Never present without that door: the sign-in host refuses a key, so key
+   * steps pointed at it could not work.
+   */
+  readonly keySteps?: readonly ConnectStep[]
   /**
    * A page a press can open so the reader lands in their assistant with the connector in front of them.
    *  settled 8. Null for every vendor today — the mechanism is built and the
@@ -1027,6 +1057,18 @@ export type ProviderState = {
    * remedy at all, and says so. Null ⇒ the row's own `missing` list is the whole answer, as before.
    */
   readonly remedy: string | null
+  /**
+   * HOW THE SOURCE IS REACHED, when the server says: `oauth` is a one-time sign-in, `built-in` needs
+   * nothing on this box, `absent` is not part of this build. Null for a source reached with a credential,
+   * and for an older server that does not send it.
+   */
+  readonly enrolment: 'oauth' | 'built-in' | 'absent' | null
+  /**
+   * For a one-time sign-in, what its stored sign-in is: `absent`, `usable`, `unusable` (present and cannot
+   * work) or `unreadable` (it could not be looked at). Null when the row has none. Only the state crosses
+   * the hop; the reason and the file stay with the server.
+   */
+  readonly credential: 'absent' | 'usable' | 'unusable' | 'unreadable' | null
 }
 
 /**
@@ -1489,6 +1531,20 @@ function decodeStatus<T>(status: number, body: Record<string, unknown>): Result<
       // completed." The server had written three sentences explaining exactly where they were and what
       // to pick instead, and the screen threw them away. `errorsOf` is the reader every other branch
       // here already uses; its own fallback is the last resort rather than the first.
+      // ── A REFUSAL THAT CARRIES A CODE NEVER RENDERS THE CODE ──────────────────────────────────
+      //
+      // The People write routes answer `409 {"error":"local_sign_in"}` — correct refusals on an install
+      // that signs one person in. `errorsOf` falls back to `error`, nothing below matched "version" or
+      // "conflict", and the token became the page copy: a reader pressing Save was shown the word
+      // `local_sign_in` between the sentence describing their change and the button.
+      //
+      // THE FIX IS A FIELD, NOT A BETTER PATTERN. `error` on this server carries a SENTENCE on most
+      // routes and a token on a few — both shapes are live in portal-service.mjs, counted — so no amount
+      // of looking at it can tell a reader's sentence from an internal name, and a second prose match
+      // would fail the same way on the next refusal that is about neither. A `code` field is decidable.
+      // The message beside it is deliberately general: a screen that knows the code composes its own
+      // sentence, and a screen that does not must never fall back to the code.
+      if (refused) return { kind: 'gate', message: 'That could not be done. Nothing was changed.', detail: refused }
       const msg = errorsOf(body)[0] ?? 'This action could not be completed.'
       return /version|conflict/i.test(msg) && !/confirmation|plan again|re-confirm/i.test(msg)
         ? { kind: 'conflict', message: msg }
@@ -1726,6 +1782,36 @@ export function decodeAccess(b: Record<string, unknown>): readonly AccessPoint[]
 }
 
 /** One person as the server sends them — the switches and the points decoded by the rules `me` uses. */
+/**
+ * One route's steps, validated field by field. A malformed step is dropped rather than rendered — a step
+ * reading "[object Object]" is worse than one fewer — and a malformed COPY drops the whole step, since a
+ * step whose one job is to hand something over is a false instruction without it.
+ *
+ * SHARED BY BOTH SETS. The alternative steps an unknown door carries are the same shape and must not get
+ * a second, looser reader: the half of this page a reader falls back to is the half least likely to have
+ * been looked at.
+ */
+const decodeSteps = (raw: unknown): ConnectStep[] =>
+  asArray(raw).flatMap((x): ConnectStep[] => {
+    const s = asRecord(x)
+    const text = asString(s['text'])
+    if (!text) return []
+    const hint = asString(s['hint'])
+    const c = s['copy'] == null ? null : asRecord(s['copy'])
+    let copy: ConnectCopy | undefined
+    if (c) {
+      const kind = asString(c['kind'])
+      if (kind === 'block' && asString(c['text'])) {
+        copy = { kind, text: asString(c['text']) as string, ...(asString(c['label']) ? { label: asString(c['label']) as string } : {}) }
+      }
+      else if (kind === 'secret' && asString(c['label']) && asString(c['template']) && asString(c['slot'])
+        && (asString(c['template']) as string).includes(asString(c['slot']) as string)) {
+        copy = { kind, label: asString(c['label']) as string, template: asString(c['template']) as string, slot: asString(c['slot']) as string }
+      } else return []
+    }
+    return [{ text, ...(hint ? { hint } : {}), ...(copy ? { copy } : {}) }]
+  })
+
 function decodePerson(r: Record<string, unknown>): Person {
   return {
     email: asString(r['email']) ?? '',
@@ -1736,12 +1822,11 @@ function decodePerson(r: Record<string, unknown>): Person {
     access: decodeAccess(r),
     dangling: asArray(r['dangling']).filter((s): s is string => typeof s === 'string'),
     // THESE ARE OPTIONAL ON THE TYPE, WHICH IS WHY ONE OF THEM WAS MISSING HERE FOR MONTHS.
-    // The server has always sent `listed`, the People page has always read it as `listed === false`, and
+    // The server has always sent `listed`, the People page once branched on `listed === false`, and
     // this function returned an object literal that never mentioned it — so it was `undefined` on every
-    // row, the comparison was never true, and the "Reach only — no permissions set" line the server goes
-    // to the trouble of distinguishing has never once been drawn. Nothing failed: an optional field
-    // makes a missing decode invisible to the compiler and identical, on screen, to a server that did
-    // not send it. `decodePersonCarriesEveryField` is the arm.
+    // row, the comparison was never true, and the line the page drew for that shape never once reached
+    // a screen. Nothing failed: an optional field makes a missing decode invisible to the compiler and
+    // identical, on screen, to a server that did not send it. `decodePersonCarriesEveryField` is the arm.
     //
     // The defaults are not one default. A payload that omits `listed` is an older server whose people
     // all had entries; a payload that omits `covered` is one that cannot tell us whether we are looking
@@ -1811,6 +1896,12 @@ export const api = {
       // screen names both routes instead.
       setupRoute: b['setupRoute'] === 'packaged' ? 'packaged' : b['setupRoute'] === 'checkout' ? 'checkout' : null,
       brand: typeof b['brand'] === 'string' ? b['brand'] : '',
+      // A LINK OR NULL, and only a mail or web address is a link. The server already refuses anything
+      // else; this is the second check at the one place a value becomes an `href`.
+      administratorContact: typeof b['administratorContact'] === 'string'
+        && /^(mailto:[^\s]+@|https?:\/\/[^\s])/i.test(b['administratorContact'])
+        ? b['administratorContact']
+        : null,
       // — a control the deployment cannot serve says so instead of always failing.
       // Absent field (an older portal-service) ⇒ available: the button behaves exactly as before.
       stopControl: (() => {
@@ -2297,23 +2388,23 @@ export const api = {
           // than rendered, because a step that reads "[object Object]" is worse than one fewer step — and
           // a malformed COPY drops the whole step, since a step whose one job is to hand something over
           // is a false instruction without it.
-          steps: asArray(r['steps']).flatMap((x): ConnectStep[] => {
-            const s = asRecord(x)
-            const text = asString(s['text'])
-            if (!text) return []
-            const hint = asString(s['hint'])
-            const c = s['copy'] == null ? null : asRecord(s['copy'])
-            let copy: ConnectCopy | undefined
-            if (c) {
-              const kind = asString(c['kind'])
-              if (kind === 'block' && asString(c['text'])) copy = { kind, text: asString(c['text']) as string }
-              else if (kind === 'secret' && asString(c['label']) && asString(c['template']) && asString(c['slot'])
-                && (asString(c['template']) as string).includes(asString(c['slot']) as string)) {
-                copy = { kind, label: asString(c['label']) as string, template: asString(c['template']) as string, slot: asString(c['slot']) as string }
-              } else return []
-            }
-            return [{ text, ...(hint ? { hint } : {}), ...(copy ? { copy } : {}) }]
-          }),
+          steps: decodeSteps(r['steps']),
+          // THE DOOR AND THE ALTERNATIVE, THROUGH THE SAME VALIDATION. `door` is a closed set, so an
+          // unrecognised value decodes as null — "could not be read" — which is the reading that shows
+          // the reader both ways rather than one that might be wrong. `altSteps` is dropped unless the
+          // door is unknown: an alternative offered beside a door we DID read is a set of instructions
+          // that cannot work, presented as though it might.
+          ...(r['door'] === 'sign-in' || r['door'] === 'key'
+            ? { door: r['door'] as 'sign-in' | 'key' }
+            : Object.hasOwn(r, 'door') ? { door: null } : {}),
+          ...(!(r['door'] === 'sign-in' || r['door'] === 'key') && Object.hasOwn(r, 'altSteps')
+            ? (() => { const a = decodeSteps(r['altSteps']); return a.length ? { altSteps: a } : {} })()
+            : {}),
+          // THE FOLDED KEY STEPS, beside a sign-in door only. The server sends them only where a key door
+          // of its own exists; any other door carrying them is a wire this page does not trust.
+          ...(r['door'] === 'sign-in' && Object.hasOwn(r, 'keySteps')
+            ? (() => { const k = decodeSteps(r['keySteps']); return k.length ? { keySteps: k } : {} })()
+            : {}),
           // Only an https page survives. A wire value of any other shape is dropped rather than opened:
           // this is the one field on this screen that navigates a reader somewhere.
           launch: (() => {
@@ -2464,6 +2555,13 @@ export const api = {
               configured: r['configured'] === true,
               missing: asStrings(r['missing']),
               remedy: asString(r['remedy']),
+              // Closed sets, so a word this build does not know lands as null rather than as a state.
+              enrolment: r['enrolment'] === 'oauth' || r['enrolment'] === 'built-in' || r['enrolment'] === 'absent'
+                ? r['enrolment'] : null,
+              credential: (() => {
+                const s = asRecord(r['credential'])['state']
+                return s === 'absent' || s === 'usable' || s === 'unusable' || s === 'unreadable' ? s : null
+              })(),
             }
           })
         : null,
@@ -2506,7 +2604,7 @@ export const api = {
     })),
 
   /**
-   * Give someone access. Manage only; it writes the same grants file the command line writes.
+   * Give access. Manage only; it writes the same grants file the command line writes, and sends nothing.
    *
    * `access` names points inside the adder's own — a point outside it answers 404, the same as one that
    * does not exist. The switches belong to the PERSON: when the address already holds access somewhere

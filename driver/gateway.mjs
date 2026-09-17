@@ -255,7 +255,8 @@ import { undispatchableFiringDirectives } from "./frame-diff-model.mjs";
 import { witnessStageMethodology, describeMethodologyDrift } from "./methodology-witness.mjs";
 // — the meaning-sweep form and its accumulator. Both PURE and acyclic: connotation-search.mjs
 // imports nothing, disposition-union.mjs imports only it, and neither reaches back here.
-import { parsePrRiskResults, connotationObligations, parseDispositionForm, rulingsProse, CONNOTATION_FORM_TOKEN_SRC, CONNOTATION_FORM_TOKEN_RE } from "./connotation-search.mjs";
+import { parsePrRiskResults, connotationObligations, parseDispositionForm, rulingsProse, CONNOTATION_FORM_TOKEN_SRC,
+  CONNOTATION_UNMATCHED_MARK, CONNOTATION_NO_RESEMBLANCE_MARK, CONNOTATION_FORM_TOKEN_RE } from "./connotation-search.mjs";
 import { unionDispositionForm, formSidecarPath } from "./disposition-union.mjs";
 import { unionCoverageForm } from "./coverage-union.mjs";
 import { coverageFormStamp, readCoverageForm, readCoverageFormInput, writeCoverageForm } from "./coverage-form-io.mjs";
@@ -2575,6 +2576,15 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     // — THE TOKEN THAT HAD NO HINT, and the absence is what made the failure
     // permanent rather than merely wrong.
     //
+    // AND IT IS ONLY REACHABLE NOW WHEN A QUERY IS GENUINELY ABSENT. It used to be reachable when the
+    // query was recorded in a different spelling, and then this hint asked for the one thing that could
+    // not help: re-running a query that had already run and been recorded. Measured on a production
+    // clearance, 2026-09-16 — one query of sixty-one carried a typographic apostrophe where the driver
+    // wrote a straight one, the stage failed four times byte-identically, and the clearance stopped. The
+    // join compares on `queryKey` now, so a re-run is the right remedy again; the closing sentence below
+    // asks for the dictated spelling, which is what stops the ledger drifting from the list a second
+    // time.
+    //
     // Measured on the owner's own demo clearance: 61 dictated meaning queries, 60 recorded, ONE dropped
     // — the single query in the whole sweep that found nothing. Four attempts, the same refusal string
     // byte for byte, because a retry with no guidance can only repeat itself.
@@ -2589,13 +2599,49 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     // gate cannot tell "ran, found nothing" from "never ran", and it is not being asked to. What
     // changes is that the seat is now told how to say the first one.
     const dropped = (lastFail.match(/connotation_query_unrecorded:(.+)$/s) || [])[1] || "";
-    hint = `every dictated meaning query owes a row, including the ones that find nothing — these are ` +
-      `missing from ${gridLedgerName} extras.pr_risk[]: ${dropped}. A query that returned NO results is ` +
-      `not an excuse to omit it: record it with an empty results array, which is the receipt that the ` +
-      `search RAN and came back clean. That is the whole point of the sweep — on an "offensive meaning" ` +
-      `query the empty answer IS the good news, and a missing row is indistinguishable from a search ` +
-      `nobody performed. Re-run ONLY the listed queries, append a row per query to extras.pr_risk[] ` +
-      `whether or not it has hits, and leave every row already recorded exactly as it is`;
+    // ── TWO FAULTS, TWO REMEDIES, and sending the wrong one is what made this permanent ────────────
+    //
+    // The gate marks each dropped query `[unmatched; nearest recorded: …]` or `[no recorded query
+    // resembles this one]`, and the difference is what the gate can SEE, not what happened.
+    //
+    // UNMATCHED is knowable: something close is recorded, so the search ran and the wording differs.
+    // Re-running changes nothing, and telling a seat to re-run is how a stage fails four times with the
+    // same string.
+    //
+    // NO RESEMBLANCE IS NOT KNOWABLE, and this hint used to pretend otherwise. It said the query was
+    // missing and to go and run it — but a query recorded under a translation, a transliteration or the
+    // seat's own rewording resembles nothing and has already run, and that seat was then sent round the
+    // same loop the unmatched branch exists to break. The gate cannot tell the two apart; no threshold
+    // can, and a threshold that could would be one that hides a query nobody ran.
+    //
+    // So this branch stops asserting and hands over both repairs. Both are cheap, a seat can tell which
+    // applies by looking at its own ledger, and neither wastes an attempt: if the search did run, fix
+    // the row's wording; if it did not, run it and append the row. Where both labels appear, both
+    // sentences are sent, as before.
+    // Detected from the validator's own constants, never a copy of its prose: these two choose between
+    // opposite repairs, and a re-worded label with a stale matcher here keeps sending the wrong one.
+    const anyUnmatched = String(dropped).includes(CONNOTATION_UNMATCHED_MARK);
+    const anyUnresembled = String(dropped).includes(CONNOTATION_NO_RESEMBLANCE_MARK);
+    hint = anyUnmatched && !anyUnresembled
+      ? `these dictated meaning queries ARE recorded in ${gridLedgerName} extras.pr_risk[] under a ` +
+        `different wording, which is why the driver cannot match them: ${dropped}. Do NOT re-run them — ` +
+        `the search already ran and its results are already in the ledger. EDIT each row's \`query\` ` +
+        `field to the query text EXACTLY as the task message dictates it, character for character, and ` +
+        `leave its results untouched. The driver matches your rows to its list by that text`
+      : `the driver cannot match these dictated meaning queries to any row in ${gridLedgerName} ` +
+      `extras.pr_risk[]: ${dropped}. That means one of two things and the driver cannot tell which, so ` +
+      `check your own ledger and do whichever applies — both are cheap. IF THE SEARCH ALREADY RAN and ` +
+      `you recorded it under different wording — a translation, a reordering, your own phrasing — do ` +
+      `NOT run it again. EDIT that row's \`query\` field to the query text EXACTLY as the task message ` +
+      `dictates it, character for character, and leave its results untouched. IF IT NEVER RAN, run it ` +
+      `now and append a row to extras.pr_risk[]. A query that returned NO results still owes its row: ` +
+      `record it with an empty results array, which is the receipt that the search RAN and came back ` +
+      `clean. On an "offensive meaning" query the empty answer IS the good news, and a missing row is ` +
+      `indistinguishable from a search nobody performed. Either way, record each query's text EXACTLY ` +
+      `as the task message dictates it — the driver matches your rows to its list by that text, so a ` +
+      `reworded query reads as one you never ran. Touch ONLY the listed queries and leave every other ` +
+      `recorded row exactly as it is. Where a query is marked \`[unmatched; nearest recorded: …]\` the ` +
+      `driver has already found its row for you: edit that row's \`query\` and do not search again`;
   } else if (/connotation_search_missing/.test(lastFail)) {
     // — was "your PR / reputational section claims a clean meaning … but the ledger recorded ZERO
     // searches", which under the `ensure` prefix instructed the model to make the unbacked claim.

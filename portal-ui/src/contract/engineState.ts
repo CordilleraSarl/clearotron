@@ -160,8 +160,10 @@ export function engineRowFaults(
   const reason = engine.billing.reason ?? null
   return [
     ...(engine.known ? [] : [`This build does not ship an engine called ${engine.id}.`]),
+    // WITHOUT THE VARIABLE'S NAME. This row is on Installation settings, which is read in screen shares by
+    // people who cannot act on one; the setup guide and the doctor name it.
     ...(engine.billing.missing.length
-      ? [`Set to bill an API key, and ${engine.billing.missing.join(' and ')} is not set — a run is refused rather than billed to the subscription.`]
+      ? ['Set to bill an API key, and no key is set — a run is refused rather than billed to the subscription.']
       : []),
     // ONE BILLING SENTENCE, NEVER TWO. The driver sends a missing key and a reason apart (a key that is
     // missing is named first, as the run door names it), and the `!missing.length` here holds that on the

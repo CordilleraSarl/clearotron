@@ -103,35 +103,48 @@ test('fixed layout means a cell must WRAP rather than overflow its column', () =
   assert.match(BASE, /table\.data\.fixed td\s*\{[^}]*overflow-wrap:\s*anywhere/)
 })
 
-// ──: the row is the control ────────────────────────────────────────────────────────────────────
+// ──: the Open button is the control ─────────────────────────────────────────────────────────────
+//
+// REVERSED, on purpose. The row used to be the control — a `role="link"` carrying a faint "Open ›" cue —
+// because the only way in had been a text button at the far right edge that nobody found. The design
+// that followed puts a BORDERED Open in an actions column of its own, on every name and every search,
+// lined up down the page: found, so it is now the one named, focusable target. What these arms still
+// hold is the property the old ones were protecting — one control per action, reachable and named by a
+// keyboard — with the target moved from the row to the button.
 
-test('an openable read row is reachable, activatable and named; the button inside it is gone', () => {
-  assert.match(CLEARANCES, /const openable = Boolean\(read\.report\)/)
-  assert.match(CLEARANCES, /role: 'link' as const/)
-  assert.match(CLEARANCES, /tabIndex: 0/, 'reachable by keyboard — a row is not focusable on its own')
-  assert.match(CLEARANCES, /e\.key === 'Enter' \|\| e\.key === ' '/, 'activates on Enter or Space')
-  assert.match(CLEARANCES, /'aria-label': `Open the report for \$\{readLabel\(read\)\}`/,
-    'named for what it opens, not "row"')
-  // Two targets for one action is what a button inside a clickable row would be.
+test('an openable search has ONE named, focusable control: its Open button', () => {
   const readRow = CLEARANCES.slice(CLEARANCES.indexOf('function ReadRow'))
-  assert.doesNotMatch(readRow, /Open the report\s*\n\s*<Icon/, 'the text button inside the row is gone')
+  assert.match(readRow, /const openable = hasReport\(read\)/, 'openability is the shared rule, which counts a batch\'s per-name reports')
+  assert.match(readRow, /open=\{openable \? \{ label: 'Open', go: open \} : null\}/, 'the search row offers Open exactly when it has a report')
+  // One tab stop per search. A focusable row wrapping a focusable button is two targets for one action,
+  // which is the thing the old arm refused in the other direction.
+  assert.doesNotMatch(readRow, /role: 'link' as const/, 'the row is not a link any more — the button is')
+  assert.doesNotMatch(readRow, /tabIndex: 0/, 'and the row takes no focus of its own')
+  // Named by its own words: no aria-label on the button, so what a screen reader announces is what the
+  // eye reads.
+  const actions = CLEARANCES.slice(CLEARANCES.indexOf('function RowActions'), CLEARANCES.indexOf('function FamilyRows'))
+  const button = actions.slice(actions.indexOf('className="row-open"') - 60, actions.indexOf('</button>'))
+  assert.match(button, /<button\s+type="button"\s+className="row-open"/, 'Open is a real <button>')
+  assert.match(button, /\{open\.label\}/, 'labelled by the words it shows')
+  assert.doesNotMatch(button, /aria-label/, 'and never renamed for assistive technology alone')
 })
 
 test('a read with NO report gets no affordance at all — a dead target is worse than no target', () => {
   // The Zephyr case: not finished, so there is nothing to open. It must not look clickable, must not
-  // take a tab stop, and must not hover.
-  assert.match(CLEARANCES, /\{\.\.\.\(openable\s*\n?\s*\? \{/, 'every interactive attribute is behind the same guard')
-  for (const rule of [/tr\.read-row\.openable > td \{\s*cursor: pointer/, /tr\.read-row\.openable:hover > td/, /tr\.read-row\.openable:focus-visible/]) {
+  // hover, and must carry no Open.
+  assert.match(CLEARANCES, /\{\.\.\.\(openable\s*\n?\s*\? \{/, 'the row\'s click is behind the same guard as its button')
+  for (const rule of [/tr\.read-row\.openable > td \{\s*cursor: pointer/, /tr\.read-row\.openable:hover > td/]) {
     assert.match(BASE, rule, `the affordance is scoped to .openable: ${rule}`)
   }
   assert.doesNotMatch(BASE, /tr\.read-row > td \{[^}]*cursor: pointer/, 'and never applies to every read row')
 })
 
-test('the focus ring is focus-VISIBLE and sits on the row, not on a cell', () => {
-  // A keyboard user must see where they are; a mouse user must not get a ring they did not ask for.
-  // And an outline per cell would read as six targets rather than one.
-  assert.match(BASE, /tr\.read-row\.openable:focus \{\s*outline: none/)
-  assert.match(BASE, /tr\.read-row\.openable:focus-visible \{\s*outline: 2px solid var\(--accent\)/)
+test('the focus ring is focus-VISIBLE and sits on the control that takes focus', () => {
+  // A keyboard user must see where they are; a mouse user must not get a ring they did not ask for. The
+  // row no longer takes focus (see above), so the ring moved with the target — onto the Open button and
+  // the row menu — and a rule styling a focused ROW would be a rule for a state that cannot happen.
+  assert.match(BASE, /button\.row-open:focus-visible,\s*button\.row-menu-btn:focus-visible \{\s*outline: 2px solid var\(--accent\)/)
+  assert.doesNotMatch(BASE, /tr\.read-row\.openable:focus-visible/, 'no ring for a row that cannot be focused')
 })
 
 // ──: the grouping reads as grouping ────────────────────────────────────────────────────────────
@@ -149,11 +162,19 @@ test('the company heading is a SECTION HEADER, not the smallest type on the page
   assert.match(BASE, /tr\.group-head \.owner-name \{[^}]*text-transform: none/, 'sentence case, not letterspaced caps')
 })
 
-test('a rule spans the table under the heading and its child rows are indented', () => {
-  // Containment visible without reading. The indent is on the FIRST cell only — indenting every cell
-  // would move the columns and just fixed.
+test('the heading is a filled band, and nesting is DRAWN in the first cell only', () => {
+  // Containment visible without reading. It used to be an indent; the design draws it instead — a filled
+  // band for the company, one vertical rule for a name inside a group, one more for a search under it.
+  // Still on the FIRST cell only: anything that widened or padded every cell would move the columns.
+  assert.match(BASE, /tr\.group-head td \{[^}]*background: var\(--surface-sunken\)/, 'the company heading carries a filled band')
   assert.match(BASE, /tr\.group-head td \{[^}]*border-bottom: 1px solid var\(--border-strong\)/)
-  assert.match(BASE, /tr\.group-head ~ tr\.row > td:first-child \{\s*padding-left: 22px/)
+  assert.match(BASE, /td\.nest-1 \{[^}]*background-image: linear-gradient/, 'one rule for one level')
+  assert.match(BASE, /td\.nest-2 \{[^}]*background-image: linear-gradient\([^)]*\)[^;]*\), linear-gradient/, 'two for two')
+  // The rules are background images, so the row's own background must be set as a COLOUR: the shorthand
+  // would reset the image and erase the rule on exactly the rows that need it.
+  assert.doesNotMatch(BASE, /tr\.read-row > td \{\s*background:/, 'a read row\'s shorthand background would erase its rules')
+  assert.match(CLEARANCES, /<td className=\{indent \? 'nest-2' : 'nest-1'\} \/>/, 'a search row draws one rule per level above it')
+  assert.match(CLEARANCES, /<td className=\{indent \? 'nest-1' : undefined\}>/, 'a name inside a group draws one')
 })
 
 test('GROUP · N and the company chip are GONE — removal, not restyling', () => {
@@ -178,7 +199,12 @@ test('PICK is gone and NOT renamed — a checkbox column does not need a header'
 })
 
 test('ONE WORD for the feature — family, everywhere, with no second term in the flow', () => {
-  const bar = CLEARANCES.slice(CLEARANCES.indexOf('className="selection-bar"'), CLEARANCES.indexOf('<div className="table-wrap">'))
+  // Anchored on the wrapper's class PREFIX: the table's wrapper carries a second class now, and an anchor
+  // that found nothing made this slice run to the end of the file.
+  const start = CLEARANCES.indexOf('className="selection-bar"')
+  const end = CLEARANCES.indexOf('<div className="table-wrap')
+  assert.ok(start > 0 && end > start, 'premise: the selection bar sits before the table')
+  const bar = CLEARANCES.slice(start, end)
   assert.match(bar, /names' : 'name'\} selected|\{picked\.size === 1 \? 'name' : 'names'\} selected/)
   assert.match(bar, /Group as a family/)
   assert.match(bar, /Remove from family/)
@@ -196,7 +222,8 @@ test('the bar OVERLAYS — ticking a box must not move the table under the curso
   // table down. The issue also rejects reserving space with a permanent empty band, which is the other
   // way to stop the jump and leaves a hole on every visit.
   assert.match(CLEARANCES, /className="selection-bar"/)
-  assert.doesNotMatch(CLEARANCES.slice(0, CLEARANCES.indexOf('<div className="table-wrap">')), /className="notice" style=\{\{ display: 'flex'/)
+  assert.ok(CLEARANCES.indexOf('<div className="table-wrap') > 0, 'premise: the table wrapper is where this arm thinks it is')
+  assert.doesNotMatch(CLEARANCES.slice(0, CLEARANCES.indexOf('<div className="table-wrap')), /className="notice" style=\{\{ display: 'flex'/)
   assert.match(BASE, /\.selection-bar \{[^}]*position: fixed/)
   assert.match(BASE, /\.selection-bar \{[^}]*bottom: 20px/)
 })

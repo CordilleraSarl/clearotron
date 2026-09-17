@@ -32,6 +32,7 @@
 // testable offline and a republished archived run reproduces its file deterministically.
 import { stripInternal, dropLabelledInternals, stripEngineInternals } from './parse.mjs';
 import { DISPOSITION_GROUP, deriveActionConditions, projectAssessmentField } from '../findings-model.mjs';
+import { clientConditions } from '../terminal-clamp.mjs';   // the reader's clause per condition — one definition, shared with the email
 
 // The client scrub choke point: the three existing rules, in the order the client HTML applies them.
 // Structural values (uris, enum tokens, dates, numbers) do not route through here — they carry no prose.
@@ -104,7 +105,7 @@ export function clearanceReportData({
       badge: verdictInfo.badge ?? null,
       band: verdictInfo.band ?? null,
       statement: clientText(verdictInfo.statement),
-      conditions: (Array.isArray(verdictInfo.reasons) ? verdictInfo.reasons : []).map(clientText).filter(Boolean),
+      conditions: clientConditions(verdictInfo).map(clientText).filter(Boolean),
     } : null,
     caption: clientText(caption),
     jurisdiction: clientText(jurisdiction),

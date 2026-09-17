@@ -2434,7 +2434,7 @@ export async function runCheck() {
   if (!prov) {
     blocking(`no register is selected — CLEAROTRON_DATABASE is not set and there is NO default, so every search refuses until one is`);
     info(`  set it to one of: ${PROVIDERS.map((p) => p.id).join(", ")} — any one of them is enough, and none needs another`);
-    info(`  re-run \`${invoke("install")}\`, or set it on the Global config page`);
+    info(`  re-run \`${invoke("install")}\`, or set it on the Installation settings page`);
   }
   else {
     const spec = PROVIDERS.find((p) => p.id === prov.v);
@@ -3137,6 +3137,71 @@ export async function runCheck() {
         + `Run \`${invoke("start")}\` — it creates the list.`);
     }
   }
+  // ── IS THIS DOOR'S ACCESS LOG BEING WRITTEN, AND WHERE? ───────────────────────────────────────────
+  //
+  // A client's assistant can list runs, read reports and pull artifacts through this door. The record of
+  // what a key did is the only way to answer a client, a lawyer or an incident review afterwards, and a
+  // log nobody can find is a log nobody checks.
+  //
+  // THE OVERRIDE IS READ FROM THE UNIT, NOT FROM THIS PROCESS. `TRADEMARK_MCP_AUDIT_LOG` decides where
+  // the writer appends, and the writer is the service — so this command's own environment is not the
+  // answer and using it would produce a confident report about a file the door never touches. Where the
+  // two disagree, that disagreement is the finding and is said out loud rather than resolved silently.
+  //
+  // WITH NO OVERRIDE THERE ARE TWO CANDIDATES, and which one the writer picked depends on what existed
+  // when IT started — a legacy path is kept if it is already there, so that a compliance trail is not
+  // split in two by a moved default. `auditPaths()` is the module's own reader for exactly this and is
+  // called rather than re-derived; re-deriving that branch here is the defect its source warns about.
+  try {
+    const { auditPaths: auditCandidates } = await import(pathToFileURL(join(REPO, "mcp-server", "lib", "audit.mjs")).href);
+    const seen = hosted ? unitValue(unitEnv, "TRADEMARK_MCP_AUDIT_LOG") : { state: "unset", value: null };
+    if (seen.state === "unknown") {
+      info(couldNotDetermine("TRADEMARK_MCP_AUDIT_LOG", unitEnv) + " The access log's location cannot be named.");
+    } else {
+      const mine = String(process.env.TRADEMARK_MCP_AUDIT_LOG ?? "").trim();
+      if (seen.state === "unset" && mine) {
+        warn(`this shell sets TRADEMARK_MCP_AUDIT_LOG and the units do not, so the door is NOT writing where `
+          + `this command would look. The door's log is at its default; ${mine} is this shell's answer only.`);
+      }
+      const paths = seen.state === "set" ? [seen.value] : auditCandidates();
+      let wrote = null;
+      for (const p of paths) {
+        try { const s = statSync(p); if (s.size > 0) { wrote = p; break; } } catch { /* not this one */ }
+      }
+      if (wrote) {
+        ok(`the client door's access log is being written: ${wrote}`);
+      } else {
+        // NOT-YET-WRITTEN IS NOT UNWRITABLE. A door nobody has called through has no log, and saying it
+        // is broken would be the same lie as calling an unreachable unit inactive.
+        //
+        // NAME THE ONE THE WRITER WOULD PICK, WHICH IS NOT SIMPLY THE FIRST. With no override there are
+        // two candidates and the older is kept only when it is ALREADY THERE, so that a compliance trail
+        // is not split by a moved default. Naming the older one unconditionally would print the
+        // integrator platform's folder at setup on installs that have no such file — a folder this engine
+        // does not require and whose mention was deliberately removed from this command. Where it does
+        // exist it IS the log and is named, because that is then the true answer.
+        const existing = paths.find((c) => { try { statSync(c); return true; } catch { return false; } });
+        const willUse = existing ?? paths[paths.length - 1];
+        const dir = dirname(willUse);
+        let writable = null;
+        try { accessSync(dir, constants.W_OK); writable = true; } catch (e) { writable = e?.code === "ENOENT" ? null : false; }
+        if (writable === false) {
+          blocking(`the client door's access log cannot be written: ${dir} is not writable by this user. `
+            + "Every call through this door would go unrecorded, and an absent record reads as nothing happened.");
+        } else if (writable === null) {
+          info(`no access log yet at ${willUse} and its directory does not exist — the door creates it on the `
+            + "first call. Nothing has come through it, or nothing has since the path last changed.");
+        } else {
+          info(`no access log yet at ${willUse}, and its directory is writable — nothing has come through `
+            + "this door yet. The first call creates it.");
+        }
+      }
+    }
+  } catch (e) {
+    info(`could not check the client door's access log (${e?.code ?? e?.message ?? e}) — this is a report `
+      + "that this command could not look, not that the log is missing.");
+  }
+
   try {
     const { clientDoorState: doorState, describeDoorState, connectKeyReport, CLIENT_DOOR_UNIT: doorUnit } = await import(pathToFileURL(join(REPO, "shared", "client-door.mjs")).href);
     const { loadGrants: readGrantsFile, isRevoked: revokedCheck } = await import(pathToFileURL(join(REPO, "shared", "scope.mjs")).href);
@@ -3986,7 +4051,7 @@ try {
   //
   // NOTHING DOWNSTREAM NEEDED CHANGING, and that is the owner's point rather than luck: CLEAROTRON_DATABASE
   // is single-valued with no default, a run already refuses by name when it is unset
-  // (driver.config.mjs), and the Global config page already renders "No register is selected."
+  // (driver.config.mjs), and the Installation settings page already says a register is needed.
   // One register per install, any one of them sufficient, none a precondition for another.
   let registerSelected = true;
   // What THIS step collected, so abandoning the selection can take it back. Measured: a register with
@@ -4012,7 +4077,7 @@ try {
     say("");
     info("No register is selected, and nothing register-related will be written.");
     info(`Every search refuses until one is set — \`${invoke("doctor")}\` says so on every run, and the`);
-    info("  Global config page says it too. Re-run setup, or set it there, when you have a credential.");
+    info("  Installation settings page says it too. Re-run setup, or set it there, when you have a credential.");
   }
   for (const k of registerSelected ? (spec.optionalCredentials ?? []) : []) {
     if (present(candidate[k])) { ok(`${k} already adopted from your environment`); continue; }
@@ -4563,7 +4628,7 @@ try {
     say(`    \`${invocationPrefix()}clearotron demo\` and \`${invocationPrefix()}clearotron start\` work now. A real`);
     say("    clearance needs one register — any one is enough, and none requires another:");
     say(`      ${PROVIDERS.map((p) => p.id).join(", ")}`);
-    say(`    Set it by re-running \`${invocationPrefix()}clearotron install\`, or on the Global config page.`);
+    say(`    Set it by re-running \`${invocationPrefix()}clearotron install\`, or on the Installation settings page.`);
     say(`    \`${invocationPrefix()}clearotron doctor\` says which state this install is in, at any time.\n`);
   }
 } catch (e) {

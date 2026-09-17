@@ -142,7 +142,7 @@ import { orderedQueueFiles, reorderQueue } from "./queue-order.mjs";   // the SA
 import { drainingState } from "./worker-heartbeat.mjs";   // / — is anything draining this install
 import { batchMarkName } from "./mark-name.mjs";
 import { DEFAULT_CLIENT_DAILY_RUNS, accountUsage } from "./usage-ledger.mjs";
-import { productIdentity } from "../shared/product-identity.mjs";   // AGPL §13 — one answer, three surfaces
+import { productIdentity, SOURCE_REPO } from "../shared/product-identity.mjs";   // AGPL §13 — one answer, three surfaces
 import { engineCommit } from "./engine-build.mjs";                  // — the SAME stamp pool meta records
 // — siblings, on their own line: the guard pins the line above and its subject is the JOIN
 // (this endpoint and pool meta stamp the same function), not the import list. Kept separate so that
@@ -155,7 +155,7 @@ import { readReport, reportsOf, resolveReportFile, batchSummaryOf } from "./port
 import { readArchivedSet, updateArchived } from "./publish/archive-tags.mjs";
 import { readAcks, setAck, withAcks, ACKNOWLEDGEABLE } from "./portal-acks.mjs";
 import { MAX_BRIEF, makeReadBudget } from "./compose-read.mjs";
-import { BRAND, ORGANISATION_NAME, PALETTE, FONT_LINK, FAVICON_LINK, bracketMark, DOOR_ROOT, DOOR_ROOT_DARK, DOOR_THEME_INIT } from "../shared/brand.mjs";
+import { BRAND, ORGANISATION_NAME, ADMINISTRATOR_CONTACT, PALETTE, FONT_LINK, FAVICON_LINK, bracketMark, DOOR_ROOT, DOOR_ROOT_DARK, DOOR_THEME_INIT } from "../shared/brand.mjs";
 import { envFrom, pinEnv } from "../shared/env-aliases.mjs";   // — a refusal names the name in force
 import { accessAudience, audienceLabel } from "../shared/access-audience.mjs";   // — F54; jose-free on purpose
 import { resolveNumericSetting } from "./numeric-setting.mjs";   // — the same table the engine enforces, without the throw a rendering surface must not take
@@ -1590,6 +1590,9 @@ export function makePortalService({
         return { status: 200, json: { email: principal.email, ...principalView(principal, grantsHere, accountNames),
           accounts: principal.accounts, accountNames, accountFacts,
           concurrentRuns: concurrentRunsCap(), brand: ORGANISATION_NAME, engineMode: meEngineMode,
+          // WHERE A PERSON ASKS FOR A CHANGE TO THEIR SIGN-IN, beside the brand and read where it is read:
+          // an href Preferences links "Clearotron administrator" to, or null, and then the words are plain.
+          administratorContact: ADMINISTRATOR_CONTACT,
           // WHETHER THE PROGRAM IS ON THIS BOX WHILE THE ENGINE CANNOT SEE IT — true, false, or null
           // for "this could not be checked". The screen above renders one of three remedies from it,
           // and they are different remedies: install the CLI, restart the service that cannot see it,
@@ -2494,6 +2497,9 @@ async function connectorDoorKind(url) {
           // surface serves a loopback address to anybody, and the door's running-or-not stopped being
           // a question the moment it auto-started with the product.
           publicAddress: url,
+          // THE KEY DOOR'S OWN HOST, when one is deployed. Beside a sign-in door its steps ride along for
+          // the page to fold away; they are never resolved against `url`, which refuses a key.
+          keyAddress: keyUrl,
           operator: principal.email ?? null,
           // WHAT THE DOOR ANSWERS, read from the door rather than assumed by the row. The steps used to
           // be fixed: Claude's said to paste a key and set authentication to None, which is right for a
@@ -3198,7 +3204,10 @@ async function connectorDoorKind(url) {
         // as they were, and the answer says which happened. Nobody sets their own switches, and nobody
         // gives Run without holding it.
         if (parts[2] === "people" && parts.length === 3 && method === "POST") {
-          if (localSignIn) return { status: 409, json: { error: "local_sign_in" } };
+          // CODE AS ITS OWN FIELD. `error` carries a sentence on most routes here and a token on a few, so
+          // a client cannot tell the two apart by looking at it — and the one that reached the page as page
+          // copy was a token. A code the client reads as a FIELD is decidable; prose never is.
+          if (localSignIn) return { status: 409, json: { error: "local_sign_in", code: "local_sign_in" } };
           if (!writeGrants) return { status: 503, json: { error: "cannot_write_grants" } };
           const email = String(body?.email ?? "").trim().toLowerCase();
           if (!email || email.indexOf("@") <= 0 || email.indexOf("@") !== email.lastIndexOf("@"))
@@ -3257,7 +3266,10 @@ async function connectorDoorKind(url) {
         // refuses the whole act, because a manager who can take their own Manage away can lock the
         // install's last manager out of it with one press, and the way back is a text editor on the box.
         if (parts[2] === "people" && parts[3] === "change" && parts.length === 4 && method === "POST") {
-          if (localSignIn) return { status: 409, json: { error: "local_sign_in" } };
+          // CODE AS ITS OWN FIELD. `error` carries a sentence on most routes here and a token on a few, so
+          // a client cannot tell the two apart by looking at it — and the one that reached the page as page
+          // copy was a token. A code the client reads as a FIELD is decidable; prose never is.
+          if (localSignIn) return { status: 409, json: { error: "local_sign_in", code: "local_sign_in" } };
           if (!writeGrants) return { status: 503, json: { error: "cannot_write_grants" } };
           const email = String(body?.email ?? "").trim().toLowerCase();
           if (email === principal.email) return { status: 400, json: { error: "You cannot change your own access. Somebody else who manages this install can." } };
@@ -3322,7 +3334,10 @@ async function connectorDoorKind(url) {
         // — it reads the same `covered` the view computes — but the request carries no scope to get
         // wrong, so a stale page cannot ask for more than the person pressing it can see.
         if (parts[2] === "people" && parts[3] === "remove" && parts.length === 4 && method === "POST") {
-          if (localSignIn) return { status: 409, json: { error: "local_sign_in" } };
+          // CODE AS ITS OWN FIELD. `error` carries a sentence on most routes here and a token on a few, so
+          // a client cannot tell the two apart by looking at it — and the one that reached the page as page
+          // copy was a token. A code the client reads as a FIELD is decidable; prose never is.
+          if (localSignIn) return { status: 409, json: { error: "local_sign_in", code: "local_sign_in" } };
           if (!writeGrants) return { status: 503, json: { error: "cannot_write_grants" } };
           const email = String(body?.email ?? "").trim().toLowerCase();
           if (email === principal.email) return { status: 400, json: { error: "You cannot remove your own access. Somebody else who manages this install can." } };
@@ -3839,6 +3854,17 @@ const escHtml = (t) => String(t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<"
 //
 // The dark ground moved with that change: the block this page used to carry had guessed #17150f/#ece5d8,
 // and brand pack §01 fixes dark at #0f0e0c near-black + #f0e8d8 parchment. The pack wins.
+// ── THE PLAIN LINE LEADS; THE ADMINISTRATOR'S TWO LINES STEP BACK INTO A FOLD ────────────────────────
+//
+// A person arriving here needs the field, the button, and one fact: this install signs in one person.
+// The reset command and the way to add people are an administrator's business, so they sit in a closed
+// "Administrator help" fold, word for word as they were, with the same link People gives to putting a
+// login system in front. A `<details>` needs no script, which this door must render without.
+//
+// The reset command can be long — a pinned version, a base directory — so it wraps inside the card at the
+// card's own width rather than pushing past its edge.
+export const LOGIN_IN_FRONT_DOC = `${SOURCE_REPO}/blob/main/docs/PORTAL.md#putting-your-own-login-provider-in-front`;
+
 export function loginPage({ email, error = null, signedIn = false, discarded = false, resetCommand = null }) {
   const reset = resetCommand || `${bareInvocation("passphrase")} --reset`;
   const title = signedIn ? "Signed in" : "Sign in";
@@ -3874,7 +3900,16 @@ ${DOOR_THEME_INIT}
          border:1px solid var(--err-line); color:var(--err-ink); font-size:14px; }
   .hint { margin-top:18px; font-size:13px; }
   code { font-family:var(--mono); font-size:12.5px; background:var(--code-bg);
-         padding:1px 5px; border-radius:4px; }
+         padding:1px 5px; border-radius:4px; overflow-wrap:anywhere; }
+  .lead { margin:18px 0 0; padding-top:14px; border-top:1px solid var(--line); font-size:13.5px; color:var(--ink); }
+  .lead b { font-weight:600; }
+  .fold { margin-top:10px; }
+  .fold > summary { display:inline-flex; align-items:center; gap:6px; list-style:none; cursor:pointer;
+                    font-size:13px; color:var(--link); }
+  .fold > summary::-webkit-details-marker { display:none; }
+  .fold .chev { flex:none; color:var(--muted); }
+  .fold[open] > summary .chev { transform:rotate(90deg); }
+  .fold .hint { margin:14px 0 0; }
   ${DOOR_ROOT_DARK}
 </style></head><body><div class="card">
 ${lockup}
@@ -3891,8 +3926,12 @@ ${error ? `<p class="err">${escHtml(error)}</p>` : ""}
   <input id="passphrase" name="passphrase" type="password" autocomplete="new-password" autofocus>
   <button type="submit">Sign in</button>
 </form>
+<p class="lead"><b>This ${escHtml(BRAND.name)} signs in one person: you.</b></p>
+<details class="fold"><summary><span>Administrator help</span><svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6"/></svg></summary>
 <p class="hint">Lost the passphrase? Run <code>${escHtml(reset)}</code> on the machine
-running this portal. It mints a new one and prints it once.</p>`}
+running this portal. It mints a new one and prints it once.</p>
+<p class="hint">To add people, put it behind a login system such as your company single sign-on. <a href="${escHtml(LOGIN_IN_FRONT_DOC)}" target="_blank" rel="noreferrer">How to set that up</a></p>
+</details>`}
 </div></body></html>`;
 }
 // THE FIELD DOES NOT INVITE THE BROWSER'S SAVED PASSWORDS. Every local install and demo answers on
@@ -4029,9 +4068,39 @@ export function makeHttpHandler({ verify, limiter, service, log = () => {}, devI
   // `extra` exists so a response can carry a CSP. Before this the content-type was hardcoded and there
   // was no way to attach one — which is why the portal shipped without a policy rather than with a
   // permissive one.
+  // ── EVERY JSON RESPONSE SAYS HOW IT MAY BE CACHED, because leaving it unsaid is the defect ────────
+  //
+  // This writer used to send `content-type` and `content-length` and nothing else — no `Cache-Control`,
+  // no `Vary`, no validator — so what a browser did with a signed-in response carrying another
+  // company's material was the browser's decision and not ours. With no `Last-Modified` to work from a
+  // heuristic cache may well store nothing; the defect is not a demonstrated leak, it is that the answer
+  // was never stated for a response behind a session.
+  //
+  // THE ARGUMENT WAS ALREADY MADE HERE, FOR ONE ROUTE. `/portal/api/connect-key` has always set
+  // `no-store` because "a credential sitting in a proxy or a disk cache is the 'outlives the moment'
+  // failure ... arriving by a route the page cannot see". An access list is not a credential and has the
+  // same property, so the rule belongs to the class rather than to the one response that carried a
+  // token.
+  //
+  // `Vary: Accept` IS NOT ABOUT PRIVACY. `/portal/admin/*` is one address served two ways: the app
+  // fetches JSON there, and a browser navigation gets the app document instead (portal-static.mjs
+  // decides on `Accept`, above this router). Nothing told a cache those were different responses, so a
+  // stored JSON body could answer a later navigation and render raw data in a window — with this server
+  // never asked, which is why the negotiation above could not save it.
+  //
+  // A ROUTE'S OWN HEADERS STILL WIN. `extra` is spread last, so connect-key keeps its stricter set
+  // (`no-cache, must-revalidate, private` and the HTTP/1.0 `pragma`) rather than being flattened to this
+  // default. The arm below pins that, because a default that quietly relaxed a stricter route would be
+  // this change making things worse while reading as an improvement.
   const send = (res, status, obj, extra = {}) => {
     const b = JSON.stringify(obj);
-    res.writeHead(status, { "content-type": "application/json", "content-length": Buffer.byteLength(b), ...extra });
+    res.writeHead(status, {
+      "content-type": "application/json",
+      "content-length": Buffer.byteLength(b),
+      "cache-control": "no-store",
+      "vary": "accept",
+      ...extra,
+    });
     res.end(b);
   };
   return async function handler(req, res) {

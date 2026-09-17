@@ -12,17 +12,18 @@
 // organisation's people and nothing of what they hold elsewhere.
 //
 // Adding a person is entering their address and choosing what they may see and do. Clearotron issues no
-// passwords: the login system in front of the install proves the address. So a person also has to be
-// admitted THERE — this page sees only the half that lives here, and says so rather than implying it
-// holds the whole picture.
+// passwords: the organisation's sign-in service in front of the install proves the address. So a person
+// also has to be admitted THERE — this page sees only the half that lives here, and the form that adds
+// them says so rather than implying it holds the whole picture.
 
+import { Fragment } from 'react'
 import type { CSSProperties } from 'react'
 import { api, isOk } from '../contract/api.ts'
 import type { ObservedView, Person } from '../contract/api.ts'
 import { Icon } from '../components/Icon.tsx'
 import { useLoad } from '../state/useApi.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
-import { permissionsPhrase, accessChips } from '../shell/accessWords.ts'
+import { permissionsPhrase, accessChips, PERMISSIONS_KEY } from '../shell/accessWords.ts'
 import { ADD_PERSON, MODIFY_PERSON } from '../nav/nav.config.ts'
 import { PageHeader } from '../components/PageHeader.tsx'
 
@@ -73,16 +74,13 @@ export function PeopleAccess({ ctx }: { readonly ctx: ShellContext }) {
   // question nobody asked.
   const broken = v.people.filter((p) => p.dangling.length > 0)
 
-  // "at <organisation>" for a person who can see exactly one — the same rule the top bar keys on — and
-  // "here" otherwise, because a person who sees several organisations is not inside any one of them.
-  const where = ctx.organisations.length === 1 ? `at ${ctx.organisations[0]?.name ?? ''}` : 'here'
-
   return (
     <div className="screen">
       <div className="measure" style={{ '--screen-measure': '900px' } as CSSProperties}>
+        {/* NO LEDE. The columns and the key under them say who can do what; a sentence above the list
+            announcing that it will was the page describing itself. */}
         <PageHeader
           title="People"
-          lede={<>Who can use Clearotron <span data-anon="mark">{where}</span>, what they can do, and which companies they can see.</>}
           // DISABLED, NOT HIDDEN, where the install cannot hold a second person — and the notice below
           // says why. A button that vanished would leave a reader looking for it; one that is visibly
           // off, beside the sentence explaining it, answers the question before it is asked.
@@ -150,12 +148,24 @@ export function PeopleAccess({ ctx }: { readonly ctx: ShellContext }) {
               ) : (
                 v.people.map((p) => (
                   <Row key={p.email} person={p} you={p.email.toLowerCase() === ctx.me.email.toLowerCase()}
+                    canModify={!v.localSignIn}
                     onModify={() => ctx.go(`${MODIFY_PERSON.path}?email=${encodeURIComponent(p.email)}`)} />
                 ))
               )}
             </tbody>
           </table>
         </div>
+
+        {/* WHAT THE COLUMN'S WORDS MEAN, under the column that prints them — said once for the page rather
+            than once per row, and scoped the way the permissions are: to the companies a person can see. */}
+        <dl className="perm-key">
+          {PERMISSIONS_KEY.map((k) => (
+            <Fragment key={k.term}>
+              <dt>{k.term}</dt>
+              <dd>{k.means}</dd>
+            </Fragment>
+          ))}
+        </dl>
 
         {v.grantsFile ? (
           <p style={{ color: 'var(--text-muted)', fontSize: 12.5, marginTop: 14 }}>
@@ -165,44 +175,50 @@ export function PeopleAccess({ ctx }: { readonly ctx: ShellContext }) {
           </p>
         ) : null}
 
-        <Observed result={observed} />
+        <Observed result={observed} ownerName={ctx.ownerName} />
       </div>
     </div>
   )
 }
 
 /**
- * Seen recently.
+ * Recent activity.
  *
- * The list above can only ever show CLIENTS. This is what puts a colleague's name on the screen, and
- * it reads the audit log rather than any access record — so the copy has to be plain that absence
- * means "has not done anything lately", never "has no access".
+ * The list above shows the people the access record names. This is what puts a colleague's name on the
+ * screen, and it reads the audit log rather than any access record, most recent first.
+ *
+ * WHAT THE PANEL COUNTS IS SAID IN BOTH STATES: in one line when it is empty, so an empty panel still
+ * explains itself, and above the rows when it is not. And it NAMES NO WINDOW: the log is read from its
+ * tail by size, so the span it covers is not a length of time, and any number of days would be invented.
  */
-function Observed({ result }: { readonly result: ReturnType<typeof useLoad<ObservedView>>['result'] }) {
+function Observed({ result, ownerName }: {
+  readonly result: ReturnType<typeof useLoad<ObservedView>>['result']
+  /** The shell's one name resolver. The log records a company by its key, and a reader knows it by name. */
+  readonly ownerName: ShellContext['ownerName']
+}) {
   if (!result) return null
   // A failed FETCH is silent here. The panel is an extra; a red box reporting that an optional feed is
   // missing would be louder than the thing it is reporting.
   if (result.kind !== 'ok') return null
   const v = result.value
+  const quiet: CSSProperties = { margin: 0, color: 'var(--text-muted)', fontSize: 12.5 }
 
   return (
     <div style={{ marginTop: 26 }}>
       <div style={{ fontWeight: 700, color: 'var(--text-strong)', fontSize: 15, marginBottom: 4 }}>
-        Seen recently
+        Recent activity
       </div>
-      <p style={{ margin: '0 0 10px', color: 'var(--text-muted)', fontSize: 12.5 }}>
-        Identities that have planned, started or saved something here, most recent first.
-        {v.truncated ? ' Only the most recent activity is read.' : ''}{' '}
-        Somebody absent from this list still has access — they have simply not done anything in the
-        window shown.
-      </p>
 
       {!v.available ? (
-        <p style={{ color: 'var(--text-muted)', fontSize: 12.5 }}>{v.note}</p>
+        <p style={quiet}>{v.note}</p>
       ) : v.people.length === 0 ? (
-        <p style={{ color: 'var(--text-muted)', fontSize: 12.5 }}>Nothing recorded yet.</p>
+        <p style={quiet}>Nothing planned, started or saved here yet.</p>
       ) : (
         <div style={{ display: 'grid', gap: 6 }}>
+          <p style={{ ...quiet, marginBottom: 4 }}>
+            Identities that have planned, started or saved something here, most recent first.
+            {v.truncated ? ' Only the most recent activity is read.' : ''}
+          </p>
           {v.people.map((p) => (
             <div
               key={p.email}
@@ -218,7 +234,7 @@ function Observed({ result }: { readonly result: ReturnType<typeof useLoad<Obser
                   {p.email}
                 </span>
                 {p.accounts.map((a) => (
-                  <span key={a} className="pill" style={{ fontSize: 10.5, padding: '1px 7px' }} data-anon="mark">{a}</span>
+                  <span key={a} className="pill" style={{ fontSize: 10.5, padding: '1px 7px' }} data-anon="mark">{ownerName(a)}</span>
                 ))}
               </div>
               <div style={{ fontSize: 12.5, color: 'var(--text-muted)', marginTop: 4 }}>
@@ -242,9 +258,11 @@ function Observed({ result }: { readonly result: ReturnType<typeof useLoad<Obser
  * the way back is a text editor on the box. It also means the last person who can manage everything
  * cannot be removed by accident, which is the rule falling out rather than a second rule.
  */
-function Row({ person, you, onModify }: {
+function Row({ person, you, canModify, onModify }: {
   readonly person: Person
   readonly you: boolean
+  /** False where the install signs one person in: the write routes refuse, and the notice above says why. */
+  readonly canModify: boolean
   readonly onModify: () => void
 }) {
   const chips = accessChips(person.access)
@@ -257,13 +275,12 @@ function Row({ person, you, onModify }: {
         </span>
         {you ? <span className="pill" style={{ fontSize: 10.5, padding: '1px 7px', marginLeft: 7 }}>You</span> : null}
       </td>
-      {/* TWO SHAPES, SAID APART. A row that exists only in an organisation's user list has no
-          permissions entry to read, and drawing it as "View reports" said something the file does not:
-          that somebody decided this person may only view. It says what it is instead. */}
+      {/* THE OUTCOME, ONE WORD FOR IT. An address on an organisation's access list with nothing set for
+          it holds both switches off, and what that gives is what it gives anyone: they view what they
+          reach. The row used to name the shape of the file instead, which told the reader how the record
+          was written and left them to work out what the person could do. */}
       <td style={{ color: viewOnly ? 'var(--text-muted)' : 'var(--text-strong)' }}>
-        {person.listed === false
-          ? <span title="This address appears in an organisation's access list. Nothing sets what they may do, so they can view what they reach.">Reach only — no permissions set</span>
-          : permissionsPhrase(person.permissions)}
+        {permissionsPhrase(person.permissions)}
       </td>
       <td>
         {chips.length ? (
@@ -279,8 +296,13 @@ function Row({ person, you, onModify }: {
         )}
       </td>
       <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
+        {/* DISABLED, NOT HIDDEN — the same choice the Add button makes eight lines up, and for the same
+            reason: the notice above already explains it, and a control that vanished would leave a
+            reader hunting for it. Pressing it on such an install reached a page whose Save and Remove
+            both refused, so the answer was three screens away from the question. */}
         {you ? null : (
-          <button type="button" className="pill" style={{ cursor: 'pointer', fontSize: 12 }} onClick={onModify}>
+          <button type="button" className="pill" disabled={!canModify}
+            style={{ cursor: canModify ? 'pointer' : 'default', fontSize: 12 }} onClick={onModify}>
             Modify
           </button>
         )}

@@ -4,11 +4,11 @@
 //
 // The page is deliberately small, and most of the thinking in it is about what NOT to put here.
 //
-// IDENTITY IS READ-ONLY. Who you are signed in as, and whether that identity is operator staff or a
-// client, are answers from the server. There is no edit control because there is nothing here that could
-// honour one: the session is Cloudflare Access's, not the portal's, which is also why the way out is
-// Access's logout endpoint rather than a button this app could implement. AppShell's account menu already
-// links there; this page uses the same destination rather than inventing a second sign-out path.
+// IDENTITY IS READ-ONLY. Who you are signed in as, and what that sign-in may do, are answers from the
+// server. There is no edit control because there is nothing here that could honour one. What the page
+// can do is name the route to someone who can: the installation's administrator contact, when the
+// installation names one, is a link; when it names none the words stay plain rather than pointing nowhere.
+// The way out is the portal's own sign-out route, the same one AppShell's account menu links to.
 //
 // THEME HAS EXACTLY ONE SOURCE OF TRUTH, and it is not React. It is the `data-theme` attribute on the
 // document element, mirrored into localStorage under 'cordillera-theme' so the pre-paint script in
@@ -20,41 +20,24 @@
 // hits the top-bar control while this page is open, and the visible symptom of that is a click that
 // appears to do nothing.
 //
-// THE SCREEN-SHARE BLUR IS EXPLAINED, NOT DUPLICATED. It already has a control — the eye button in the
-// top bar — and it is held in AppShell's own state, which is what drives the `anon-on` class. A second
-// control here could set that class directly, but AppShell's state would not know it had changed, so the
-// next press of the top-bar button would toggle its state from off to on and re-apply a class that was
-// already applied: a dead click, and the user would reasonably conclude the feature is broken. One
-// control and an explanation beats two controls that disagree.
+// THE SCREEN-SHARE BLUR IS THE OTHER WAY ROUND, and for that same reason. Its control is one relative
+// toggle, the eye button, and this page shows the same button the top bar carries. So both are bound to
+// ONE state, AppShell's, handed to screens on the shell context: a second copy here would disagree with
+// the top bar's after one press of either, and the next press would be the dead click described above.
+// AppShell remembers the choice in this browser (state/blurChoice.ts).
 //
-// WHAT THE BLUR COVERS IS A SMALLER SET THAN THIS PAGE USED TO CLAIM, and the correction is the reason
-// this section is worded the way it is. The whole mechanism is one CSS rule in base.css —
-// `html.anon-on [data-anon='mark']` — so it reaches exactly those elements that THIS app renders and
-// tags. That is the lists, this page, and the mark and company printed above a report (Result.tsx
-// tags `run.title` and `run.account`). It is not the report itself. The report is an iframe sandboxed
-// deliberately WITHOUT allow-same-origin, which gives the embedded document a null origin: no rule in
-// this document's stylesheet applies inside it, and no script here could reach in to add one. Nor does
-// the document arrive pre-tagged — the report renderer (driver/portal-report.mjs) emits no `data-anon`
-// anywhere, so there would be nothing for such a rule to match even if it could cross.
-//
-// The previous copy said the blur covered "a report", and that is the worst shape a false claim can
-// take on this particular page: it is read once, believed, and then relied on by someone putting a
-// client's marks on a projector. base.css's own comment makes the same mistake ("one keystroke blurs
-// the portal and an embedded report identically") — it is describing shared/anon-overlay.mjs, which
-// masks the INTERNAL archive and profile pages, not a portal report.
-//
-// That was fixed rather than documented. Result.tsx now tags the frame's CONTAINER, and a CSS filter on
-// an ancestor rasterises the frame along with it, so the blur does reach the report after all. The
-// trade is that the WHOLE document blurs rather than the names inside it — the report has no per-name
-// markup and the null origin means none can be added — and for a screen-share that is the safer
-// direction. The copy below says exactly that, because a reader who expects only names to blur and
-// sees the page go grey would otherwise think it had broken.
+// WHAT THE BLUR COVERS is one CSS rule in base.css, `html.anon-on [data-anon='mark']`, so it reaches the
+// elements this app renders and tags: the lists, this page, and the mark and company printed above a
+// report. A report is an iframe with a null origin, where no rule of this document applies and no
+// per-name markup exists, so Result.tsx tags the frame's CONTAINER and the whole report blurs instead.
+// The sentence on the page says exactly that — every mark and company on screen, and an open report
+// whole — because a reader who expects only names to blur and sees a report go grey would otherwise read
+// a working control as a broken one.
 
 import type { CSSProperties } from 'react'
 import { useState } from 'react'
 import { Icon } from '../components/Icon.tsx'
 import type { ShellContext } from '../shell/AppShell.tsx'
-import { operatorName } from '../contract/api.ts'
 import { permissionsPhrase, accessChips } from '../shell/accessWords.ts'
 import { PageHeader } from '../components/PageHeader.tsx'
 
@@ -79,122 +62,94 @@ export function Preferences({ ctx }: { readonly ctx: ShellContext }) {
     setThemeState(next)
   }
 
+  // An href the server and the decoder have both limited to a mail or web address, or null.
+  const contact = ctx.me.administratorContact
+  const administrator = contact ? (
+    <a
+      className="pref-link"
+      href={contact}
+      // A web address opens beside the portal; a mail address hands over to the mail program and needs no tab.
+      {...(/^https?:/i.test(contact) ? { target: '_blank', rel: 'noreferrer' } : {})}
+    >
+      Clearotron administrator
+    </a>
+  ) : (
+    'Clearotron administrator'
+  )
+
   return (
     <div className="screen">
       {/* "Settings" over "Your preferences" was the same page named twice. The rail says Your
           preferences, so that is the one that stays. */}
-      <PageHeader
-        title="Your preferences"
-        lede="Who you are signed in as, and how the portal looks on this computer."
-      />
+      <PageHeader title="Your preferences" />
 
-      <div className="measure" style={{ '--screen-measure': '720px' } as CSSProperties}>
-        <Section title="Your sign-in" hint={`Held by ${operatorName(ctx.me.brand)}. Nothing here can be changed from this page.`}>
-          <dl style={{ margin: 0, display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '8px 18px', fontSize: 14 }}>
-            <dt style={{ color: 'var(--text-muted)' }}>Address</dt>
-            <dd style={{ margin: 0, color: 'var(--text-strong)', wordBreak: 'break-all' }} data-anon="mark">
+      <div className="measure pref-cards" style={{ '--screen-measure': '720px' } as CSSProperties}>
+        <Section title="Your sign-in">
+          <dl className="pref-dl">
+            <dt>Address</dt>
+            <dd className="pref-address" data-anon="mark">
               {ctx.me.email || '—'}
             </dd>
             {/* What this person may DO, in the words People prints. No role noun: there is none. */}
-            <dt style={{ color: 'var(--text-muted)' }}>Permissions</dt>
-            <dd style={{ margin: 0, color: 'var(--text-strong)' }}>{permissionsPhrase(ctx.me.permissions)}</dd>
+            <dt>Permissions</dt>
+            <dd>{permissionsPhrase(ctx.me.permissions)}</dd>
             {/*
               The points on the tree this person was given, named — the same chips People draws. A
               person given the whole install holds one point, "Everything", which is a stated fact
               rather than a list invented from a wildcard. Empty means the server recorded nothing,
               and it says that rather than rendering a blank.
             */}
-            <dt style={{ color: 'var(--text-muted)' }}>Access to</dt>
-            <dd style={{ margin: 0, color: 'var(--text-strong)' }}>
+            <dt>Access to</dt>
+            <dd>
               {ctx.me.access.length ? (
                 <span data-anon="mark">{accessChips(ctx.me.access).map((c) => c.label).join(', ')}</span>
               ) : (
-                <span style={{ color: 'var(--text-muted)' }}>None recorded against this address.</span>
+                <span className="pref-none">None recorded against this address.</span>
               )}
             </dd>
           </dl>
 
-          <p style={{ margin: '14px 0 0', fontSize: 13, color: 'var(--text-muted)' }}>
-            To change the address, the role or the companies on it, ask {operatorName(ctx.me.brand)} —
-            enrolment is done for you, not from this page.
+          <p className="pref-line">
+            To change the address, the permissions or the companies on it, contact your {administrator}.
           </p>
           {/* — F47. The portal resolves sign-out per auth mode; linking to
               Cloudflare's endpoint directly returned raw JSON on every local-sign-in install. */}
-          <a className="pill" href="/portal/sign-out" style={{ display: 'inline-block', marginTop: 12, textDecoration: 'none' }}>
-            Log out
-          </a>
+          <div className="pref-foot">
+            <a className="pill" href="/portal/sign-out">
+              Log out
+            </a>
+          </div>
         </Section>
 
-        <Section title="Appearance" hint="Applies straight away, and is remembered in this browser.">
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+        <Section title="Appearance">
+          <div className="pref-themes">
             <ThemeOption label="Light" value="light" current={theme} onPick={applyTheme} />
             <ThemeOption label="Dark" value="dark" current={theme} onPick={applyTheme} />
           </div>
-          <p style={{ margin: '12px 0 0', fontSize: 13, color: 'var(--text-muted)' }}>
-            The same choice is on the top bar, under the circle icon — this page and that button set one
-            and the same setting.
-          </p>
+          <p className="pref-line">Also on the top bar, under the circle icon</p>
         </Section>
 
-        <Section title="Blurring names while you share a screen" hint="There is one control for this, and it is on the top bar.">
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <span
-              className="pill"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '4px 11px' }}
+        <Section title="Blur names while sharing a screen">
+          <div className="pref-blur">
+            {/* THE TOP BAR'S OWN BUTTON, drawn again: the same class, label and icon, and its pressed state
+                read from the one state the top bar reads. No label and no badge — the control is a
+                symbol, here as there. */}
+            <button
+              type="button"
+              className="icon-btn"
+              aria-pressed={ctx.blurNames}
+              aria-label="Blur names for screen sharing"
+              title="Blur names for screen sharing"
+              onClick={() => ctx.setBlurNames(!ctx.blurNames)}
             >
-              <Icon name="eye" size={15} />
-              Top bar
-            </span>
-            <span style={{ fontSize: 13.5, color: 'var(--text-muted)' }}>
-              The eye button, to the left of your initials.
+              <Icon name={ctx.blurNames ? 'eye-off' : 'eye'} />
+            </button>
+            <span className="pref-blur-line">
+              On the top bar. It covers every mark and company on screen, and an open report whole. It stays
+              as you left it on this computer.
             </span>
           </div>
-          <p style={{ margin: '12px 0 0', color: 'var(--text-muted)', fontSize: 13.5 }}>
-            Pressing it blurs every brand name, mark and company the portal puts on screen — in the
-            lists, on this page, in the heading above a report, and the report itself — so you can put the
-            portal on a call or a projector without showing whose names are in clearance. Nothing is
-            hidden from you: the text
-            is still there and still selectable by the page, it is only blurred on screen. Press the button
-            again to bring the names back.
-          </p>
-
-          {/*
-            Said plainly because the behaviour is not what a reader would guess. A report cannot be
-            blurred name-by-name — it is a separate document with a null origin, so nothing in this page
-            can tag the names inside it — and the whole document blurs instead. Someone who expected
-            only the names to go soft, and sees the entire report go grey, needs to have been told, or
-            they will read a working control as a broken one and turn it off.
-          */}
-          <div className="notice" style={{ marginTop: 14, borderLeftColor: 'var(--tone-medium)' }}>
-            <b style={{ color: 'var(--text-strong)' }}>An open report blurs completely</b>
-            <p style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>
-              A report is a separate document held inside the page, and it can only be covered whole. With
-              a report open, the button blurs all of it rather than just the names in it. That is deliberate
-              — it is the safer way round for a screen you are sharing.
-            </p>
-          </div>
-
-          <p style={{ margin: '10px 0 0', color: 'var(--text-muted)', fontSize: 13.5 }}>
-            It starts switched off every time you open the portal, so reloading the page brings the names
-            back whether you meant it to or not. Turn it on again before you share.
-          </p>
         </Section>
-
-        {/*
-          The honesty note. Both settings on this page are held by the browser, and neither is sent to
-          Cordillera — so neither one travels. Someone who sets dark mode on their laptop and then opens
-          the portal on a phone will find it light, and the only thing worse than that happening is it
-          happening to someone who was told these preferences "follow you".
-        */}
-        <div className="notice quiet" style={{ marginTop: 26 }}>
-          <b style={{ color: 'var(--text-strong)' }}>These two settings stay on this computer</b>
-          <p style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>
-            {operatorName(ctx.me.brand, { lead: true })} does not store them against your account. The appearance choice is kept by this
-            browser, so it holds for this computer and this browser only — sign in somewhere else, or use a
-            different browser here, and you will get the light theme again until you set it. The screen-share
-            blur is not kept at all: it lasts until you reload or close the page.
-          </p>
-        </div>
       </div>
     </div>
   )
@@ -244,27 +199,10 @@ function ThemeOption({
   )
 }
 
-function Section({
-  title,
-  hint,
-  children,
-}: {
-  readonly title: string
-  readonly hint?: string
-  readonly children: React.ReactNode
-}) {
+function Section({ title, children }: { readonly title: string; readonly children: React.ReactNode }) {
   return (
-    <section
-      style={{
-        marginTop: 22,
-        padding: '18px 20px',
-        borderRadius: 12,
-        border: '1px solid var(--border-hairline)',
-        background: 'var(--surface-raised)',
-      }}
-    >
-      <h2 style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-strong)', margin: 0 }}>{title}</h2>
-      {hint ? <p style={{ margin: '2px 0 14px', fontSize: 13, color: 'var(--text-muted)' }}>{hint}</p> : <div style={{ height: 14 }} />}
+    <section className="pref-card">
+      <h2 className="pref-title">{title}</h2>
       {children}
     </section>
   )

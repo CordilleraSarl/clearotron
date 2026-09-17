@@ -21,7 +21,17 @@ import { driverDir } from "../shared/driver-dir.mjs";   // — one definition of
 
 export const MIN_CELLS_PER_VARIANT = 7;
 
-const norm = (s) => (s || "").trim().replace(/^["'`]+|["'`]+$/g, "").toLowerCase();
+// THE GRID CELL KEY, and it is the same class as the connotation join: one side is a term and platform
+// WE dictated, the other is what a provider echoed into the ledger. It already stripped wrapping quotes
+// and lowercased; it did not fold a CURLY quote, an em dash, a non-breaking space or a compatibility
+// form, so the failure that stopped a production clearance on 2026-09-16 was available here too — one
+// gate over, with the same shape and no arm on it.
+//
+// It composes `queryKey`, which is the one author of what "the same text" means across a provider
+// boundary, and keeps its own wrapping-quote strip because a term arrives quoted here and does not there.
+import { queryKey } from "./connotation-search.mjs";
+
+const norm = (s) => queryKey(String(s || "").trim().replace(/^["'`\u2018\u2019\u201c\u201d]+|["'`\u2018\u2019\u201c\u201d]+$/g, ""));
 
 // A table data row's cells, or null if the line isn't one.
 function rowCells(ln) {
@@ -601,6 +611,32 @@ export function findDroppedConnotationQueries(spec, mergedGrid) {
  * Deliberately NOT counted as searched: laundering an honest error into a clean receipt would be a worse
  * defect than the one being fixed.
  */
+/**
+ * Of a caller's OWN list of missing queries, which ones did the plugin honestly report as having thrown?
+ *
+ * The sibling below derives its missing list itself, from the full spec. This one is handed one, because
+ * the meaning-seat gate computes a different list: it joins per half on `queryKey` where this module
+ * joins the merged grid on `norm`. Two callers, two populations, ONE author of what a gap row means —
+ * which is the point of the split. Reuse the key, not the question.
+ *
+ * Returns the CALLER'S query verbatim, never the gap row's term, so the caller can index what comes back
+ * against the list it passed in. A gap term that matched is by definition the same query under `norm`,
+ * and handing back the other spelling would make the caller join twice on two keys to use the answer.
+ */
+export function erroredConnotationQueriesAmong(missingQueries, mergedGrid) {
+  const gaps = (Array.isArray(mergedGrid?.gaps) ? mergedGrid.gaps : [])
+    .filter((g) => g && String(g.platform ?? "").toLowerCase() === "connotation");
+  if (!gaps.length) return [];
+  const out = [];
+  for (const m of missingQueries ?? []) {
+    const k = norm(String(m ?? ""));
+    if (!k) continue;
+    const hit = gaps.find((g) => norm(String(g.term ?? "").trim()) === k);
+    if (hit) out.push({ query: m, error: String(hit.error ?? "unspecified") });
+  }
+  return out;
+}
+
 export function findErroredConnotationQueries(spec, mergedGrid) {
   const missing = new Set(findDroppedConnotationQueries(spec, mergedGrid).map(norm));
   if (!missing.size) return [];

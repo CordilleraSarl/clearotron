@@ -50,7 +50,8 @@ export function CompanyChips({
         // Named through the shell rather than off the row: chips have no organisation headings, so one
         // organisation's Generic has to say which organisation it is — which only the shell's name does.
         <button key={r.key} type="button" aria-pressed={ctx.owner === r.key} onClick={() => ctx.setOwner(r.key)}>
-          {ctx.ownerName(r.key)}
+          {/* The name, not the chip: the blur covers the company and leaves the control readable as one. */}
+          <span data-anon="mark">{ctx.ownerName(r.key)}</span>
         </button>
       ))}
     </div>

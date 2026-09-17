@@ -75,21 +75,30 @@ test('THE BLUR CLAIM IS BACKED BY THE MARKUP THAT IMPLEMENTS IT', () => {
     /<div data-anon="mark"[^>]*>\s*$/m,
     'the report frame container is tagged — without this the blur stops at the frame edge',
   )
-  assert.match(body(PREFERENCES), /and the report itself/, 'and the screen promises exactly that coverage')
+  // The promise, in the words the screen now uses. Whitespace is folded because JSX wraps a sentence
+  // across source lines and a reader sees one line.
+  assert.match(body(PREFERENCES).replace(/\s+/g, ' '), /and an open report whole/,
+    'and the screen promises exactly that coverage')
 })
 
 test('Preferences warns that a report blurs WHOLE, which is not what a reader would guess', () => {
-  const prose = body(PREFERENCES)
+  const prose = body(PREFERENCES).replace(/\s+/g, ' ')
 
   // A report cannot be blurred name-by-name: null origin, no per-name markup, nothing this page can
   // tag. It goes grey entirely. Someone expecting only the names to soften will read a working control
   // as a broken one and switch it off — at which point the feature has failed in the exact situation it
   // exists for. So the surprising part is stated, not buried.
-  assert.match(prose, /blurs completely|blurs all of it/i, 'the whole-document behaviour is disclosed')
-  assert.match(prose, /deliberate/i, 'and named as a choice, so it does not read as a fault')
+  assert.match(prose, /an open report whole/, 'the whole-document behaviour is disclosed')
+
+  // THE "IT IS DELIBERATE" SENTENCE IS GONE ON PURPOSE. The card now says what the control covers in one
+  // sentence — "every mark and company on screen, and an open report whole" — and the paragraph and
+  // notice that framed the whole-report blur as a choice were condensed away with the rest of the page's
+  // explanation. Asserting the framing would hold the screen to a paragraph the design removed; what
+  // still has to be true is that a whole-report blur is said in advance, which the arm above holds.
+  assert.doesNotMatch(prose, /An open report blurs completely/, 'the removed notice has come back beside the sentence that replaced it')
 
   // What is covered is still claimed plainly, because it is true and it is why the feature exists.
-  assert.match(prose, /blurs every brand name, mark and company/, 'the promise is still made')
+  assert.match(prose, /It covers every mark and company on screen/, 'the promise is still made')
 })
 
 test('Preferences keeps the report boundary factual rather than apologetic', () => {
@@ -226,7 +235,7 @@ test('the comparison is offered, inside the collapsible this screen already has'
   // Picking one of four needs comparing four. The delta view that used to sit here priced a LEVER MOVE
   // and there are no levers; what a client asks is "am I buying the right one", which is a table.
   const prose = flat(body(NEW_CLEARANCE))
-  assert.match(prose, /<Details summary="Detailed search comparison table for information">/)
+  assert.match(prose, /<Details summary="Detailed search comparison table">/)
   assert.match(prose, /<ProductMatrix products=\{levels\} currentKey=\{activeBase\} \/>/,
     'fed the fetched payload, and told which one is picked')
   assert.doesNotMatch(prose, /DeltaView|levelDelta/, 'the lever-move pricer is deleted, not left unrendered')
@@ -293,12 +302,17 @@ test('there is no case-law control at all, because case law is not a setting', (
   // press, and the request cannot carry a flag the engine now refuses outright.
   const prose = flat(body(NEW_CLEARANCE))
   assert.doesNotMatch(prose, /<Lever label="Case law"/, 'no control')
-  assert.match(prose, /Case law and oppositions — \$\{activeLevel\?\.caseLaw \? 'part of this search'/,
-    'stated from the product row, so it can never disagree with what runs')
-  // §B — and the MARKER comes off the same field as the sentence. A tick over
-  // "not part of this search" is a worse defect than no tick at all, so the boolean is the one input.
-  assert.match(prose, /in: Boolean\(activeLevel\?\.caseLaw\)/,
-    'the tick/cross is set beside the sentence rather than derived from the same field')
+  // STATED ON EVERY SEARCH'S ROW, off that row's own field. It was one sentence under the picked search
+  // — "Case law and oppositions — part of this search" — and the one-form design puts what each search
+  // carries on its own row, as a marked chip, so a reader compares the four without picking each in
+  // turn. The property is unchanged: the claim comes from the product the server sent, never a lever.
+  assert.match(prose, /\{ in: Boolean\(t\.caseLaw\), text: 'Case law' \}/,
+    'the case-law chip is not derived from the row\'s own product field')
+  // §B — and the MARKER comes off the same field as the words. A tick over a search that does not
+  // carry the reading is a worse defect than no tick at all, so the boolean is the one input: Carries
+  // draws the glyph and the accessible claim from `included`, and nothing else sets either.
+  assert.match(prose, /included=\{c\.in\} label=\{c\.text\}>\{c\.text\}<\/Carries>/,
+    'the chip\'s mark and its words are set from different inputs')
   const start = NEW_CLEARANCE.indexOf('const bodyFor')
   const end = NEW_CLEARANCE.indexOf('const explain', start)
   assert.ok(start > 0 && end > start, 'bodyFor is bounded by the explain helper that follows it')
@@ -310,10 +324,16 @@ test('the ONE toggle in the offering is drawn only where it is a choice', () => 
   // nothing at all where it is not sold — never a greyed switch, which invites a click and answers
   // nothing. And only the first sends anything.
   const prose = flat(body(NEW_CLEARANCE))
-  assert.match(prose, /\{nativeControl === 'toggle' \? \(/)
+  // Nested now: the three treatments are drawn inside the selected search's row (asserted below), so
+  // the branch opens inside that condition rather than at the top of a JSX expression.
+  assert.match(prose, /nativeControl === 'toggle' \? \(/)
   assert.match(prose, /label="Native-language investigation"/)
   assert.match(prose, /: nativeControl === 'automatic' \? \(/)
   assert.match(prose, /searched automatically — it is part of this search, not something to switch on/)
+  // …and INSIDE the search it belongs to: drawn under the selected row only, never under a template,
+  // which carries its own and whose flag the request does not send.
+  assert.match(prose, /\{activeBase === t\.key && !draft\.savedSearch \? \( nativeControl === 'toggle' \? \(/,
+    'the native-language option is drawn outside the selected search, or under a template')
   const start = NEW_CLEARANCE.indexOf('const bodyFor')
   const end = NEW_CLEARANCE.indexOf('const explain', start)
   assert.match(flat(NEW_CLEARANCE.slice(start, end)),
@@ -328,15 +348,30 @@ test('the wire STATES its geography mode — everywhere and silence are differen
     'without it, a screen promising worldwide runs the account’s own territories and nothing disagrees')
 })
 
-test('the saved-search notice does not claim to fix the scope, because it does not', () => {
-  // A recipe stores a scope, so the notice said it decided "where it points" — but the saved
+test('the template line does not claim to fix the scope, because it does not', async () => {
+  // A recipe stores a scope, so a notice once said it decided "where it points" — but the saved
   // territories do not steer the run (driver/jx-lanes.mjs scopes off the request and the account's own
   // defaults). The sentence invited an empty Where and then the one-country blocker sent the user
   // looking for a control the notice had told them not to touch.
+  //
+  // DRIVEN, NOT MATCHED. The line is composed per search now — the design's own sentence for a worldwide
+  // template names no places, because there is no Where to set on that search — so the property is
+  // asserted over what `templateLine` returns for each geography rather than over a literal.
+  const { templateLine } = await import('../src/contract/composerProduct.ts')
+  const { PRODUCTS } = await import('./products.fixture.ts')
   const prose = flat(body(NEW_CLEARANCE))
-  assert.match(prose, /This custom search carries its own set-up/)
-  assert.doesNotMatch(prose, /how deep the search goes and where it points/, 'the claim is gone')
-  assert.match(prose, /Where, below, is still yours to set — the custom search does not fix it/)
+  assert.match(prose, /templateLine\(savedRow \? displayLabel\(savedRow\) : 'This template', activeLevel\)/,
+    'the screen composes its own template line instead of asking the one composer')
+  for (const p of PRODUCTS) {
+    const line = templateLine('Launch screen', p)
+    assert.doesNotMatch(line, /where it points|and where/i, `${p.name}: the template claims the scope`)
+    assert.match(line, /^Launch screen sets the search and how deep it goes\. /, `${p.name}: the line does not say what the template set`)
+    if (p.geography === 'worldwide, and nothing else')
+      assert.equal(line, 'Launch screen sets the search and how deep it goes. Names, goods and classes are still yours to set.',
+        'the worldwide template line is the design\'s sentence, character for character')
+    else
+      assert.match(line, /territories/, `${p.name}: a search with a Where to set does not say the places are still the reader's`)
+  }
 })
 
 test('the gates read the request that will be SENT, not the levers behind the notice', () => {
@@ -344,8 +379,16 @@ test('the gates read the request that will be SENT, not the levers behind the no
   // …and the NAME COUNT is one of those gates now. It used to be a local `overBudget` beside this call,
   // so "may this run?" was answered in two places and levelDelta reproduced it in a third. One
   // predicate (nameBudget), read by blockers here and by the NameWall that offers the way out.
-  assert.match(prose, /blockers\(draft\.pick, activeLevel, names\.length\)/,
+  // The three arguments that carry the property are pinned; a FOURTH is tolerated, because pinning the
+  // whole call meant this fired for "the spelling moved" when the stop learned to read the inherited
+  // territories, and the cheap repair for that reading is to delete the property and go green.
+  assert.match(prose, /blockers\(draft\.pick, activeLevel, names\.length[,)]/,
     'measured against the product that will RUN — a saved search carries its own')
+  // AND AGAINST THE LIST THE WHERE PANEL DRAWS. An unset list is not "nowhere": it resolves to the
+  // account's own territories, which is what the panel shows and what the run searches. The behaviour
+  // is driven in composerProduct.test.ts; this is the wiring, so the screen cannot pass a second list.
+  assert.match(prose, /blockers\(draft\.pick, activeLevel, names\.length, own\.territories\)/,
+    'the stop reads the same list the Where panel draws, or the two disagree about what will be searched')
   assert.match(prose, /nameBudget\(activeLevel, names\.length\)/, 'the wall reads the same predicate the gate does')
   assert.doesNotMatch(prose, /names\.length > activeLevel\.maxNames/, 'no second answer to the budget question')
 })
@@ -382,6 +425,29 @@ test('People prints what a person may do, never a role noun', () => {
   assert.doesNotMatch(prose, /\.tenant\b|all of this tenant/, 'and "tenant" is a file word, never a screen word')
 })
 
+test('People prints the OUTCOME for every row, and says under the column what each word means', () => {
+  // An address on an organisation's access list with nothing set for it holds both switches off, which
+  // gives what it gives anyone: they view what they reach. The row used to branch on how the record was
+  // written and print a phrase for that instead, so the reader was told the file's shape and left to
+  // work out the person. One cell, one phrase, for every row — muted when it is the view-only one.
+  const prose = body(PEOPLE_ACCESS)
+  const row = prose.slice(prose.indexOf('function Row('))
+  assert.ok(row.length > 200, 'the Row component was found')
+  const cell = /<td style=\{\{ color: viewOnly \? 'var\(--text-muted\)' : 'var\(--text-strong\)' \}\}>([\s\S]*?)<\/td>/.exec(row)
+  assert.ok(cell, 'the Permissions cell is drawn muted for the view-only person and strong otherwise')
+  assert.equal(cell[1]!.trim(), '{permissionsPhrase(person.permissions)}', 'and it prints the shared phrase, with no other branch')
+  assert.match(row, /const viewOnly = !person\.permissions\.run && !person\.permissions\.manage/, 'view-only is both switches off')
+  assert.doesNotMatch(prose, /\.listed\b/, 'no row is described by the shape of the record it came from')
+
+  // THE KEY, under the table and above the activity panel: every word the column prints, beside what it
+  // means. Its words are driven in permissions.test.ts; here, that the page draws them where they belong.
+  const table = prose.indexOf('</table>')
+  const key = prose.indexOf('<dl className="perm-key">')
+  const panel = prose.indexOf('<Observed ')
+  assert.ok(table > 0 && key > table && panel > key, 'the key sits under the table and above Recent activity')
+  assert.match(prose.slice(key, panel), /PERMISSIONS_KEY\.map\(/, 'drawn from the one list of words and meanings')
+})
+
 test('an install that signs in one person says so, disables Add, and names the way out', () => {
   // Local sign-in holds one address and one passphrase and cannot hold a second person. A control that
   // only fails is worse than none, and a vanished control sends a reader looking — so Add stays, visibly
@@ -394,12 +460,35 @@ test('an install that signs in one person says so, disables Add, and names the w
   assert.doesNotMatch(prose, /not currently configurable via the UI/, 'the old read-only sentence is gone with the read-only page')
 })
 
-test('the activity panel says absence is not evidence of missing access', () => {
-  // The failure this guards is someone reading a short "Seen recently" list as an access roster and
-  // concluding a colleague has been locked out.
+test('the activity panel is Recent activity: its empty state says what it counts, and it names no window', () => {
+  // REVERSED, and on purpose. This used to require the line "Somebody absent from this list still has
+  // access", because a panel headed "Seen recently" read as a roster of who may sign in, and a short one
+  // as a colleague locked out. Headed "Recent activity", it says what it is, so the correction goes with
+  // the heading it corrected.
   const prose = body(PEOPLE_ACCESS)
-  assert.match(prose, /still has access/, 'the disclaimer is present in the rendered copy')
+  assert.match(prose, />\s*Recent activity\s*</, 'the panel is headed for what it shows')
+  assert.doesNotMatch(prose, /Seen recently/, 'the heading that read as a roster is gone')
+  assert.doesNotMatch(prose, /still has access/, 'and so is the disclaimer it needed')
+  // The empty panel still explains itself: it says what the panel counts rather than only that it is empty.
+  // With people in it, the same three verbs head the rows, so neither state leaves a reader guessing.
+  assert.match(prose, />Nothing planned, started or saved here yet\.</, 'the empty state names what is counted')
+  assert.match(prose, /have planned, started or saved something here, most recent first\./, 'and so does the populated panel')
+  // NO WINDOW. The log is read from its tail by size, so no length of time is true of it — a number of
+  // days on this panel would be invented.
+  assert.doesNotMatch(prose, /\b\d+\s+days?\b|window shown|in the last/i, 'no span of time is named')
   assert.ok(prose.includes('!v.available'), 'and the unavailable branch exists rather than being dead-coded away')
+})
+
+test('Recent activity names each company, never the key the log records it by', () => {
+  // The audit log files a company under its key, and the panel printed that key in the pill beside each
+  // person — the one place on People a reader met `vantor` where "Vantor Labs" belongs. The shell holds
+  // the one resolver every other screen uses; the panel asks it.
+  const prose = body(PEOPLE_ACCESS)
+  const panel = prose.slice(prose.indexOf('function Observed('), prose.indexOf('function Row('))
+  assert.ok(panel.length > 200, 'the panel was found')
+  assert.match(panel, /p\.accounts\.map\(\(a\) => \([\s\S]*?\{ownerName\(a\)\}/, 'each company pill prints the name')
+  assert.doesNotMatch(panel, />\{a\}</, 'and never the raw key')
+  assert.match(prose, /<Observed result=\{observed\} ownerName=\{ctx\.ownerName\} \/>/, 'the resolver is the shell\'s own')
 })
 
 // ── the brand profile, after the rebuild dropped most of it ─────────────────────────────────────────
@@ -546,15 +635,37 @@ test('the band meanings are an ALIGNED GRID, never a flex row', () => {
 test('the framework headers carry the accent, not the faint eyebrow', () => {
   const fn = frameworkBlock()
   assert.match(fn, /className="fw-sectionh"/, 'the block header is a section header')
-  assert.match(fn, /className="fw-bmh"/, '"What the bands mean" has its own header')
-  // The framework decides how every matter for this account is rated. Styling it as 9.5px --text-faint
+  // The framework decides how every matter for this company is rated. Styling it as 9.5px --text-faint
   // is what made it read as a footnote.
   assert.doesNotMatch(fn, /className="eyebrow"/, 'the faint eyebrow is not used inside this block')
-  for (const cls of ['.fw-sectionh {', '.fw-bmh {']) {
-    const rule = BASE_CSS.slice(BASE_CSS.indexOf(cls))
-    assert.match(rule.slice(0, 260), /color:\s*var\(--text-accent\)/, `${cls} is accent-coloured`)
-    assert.match(rule.slice(0, 260), /text-transform:\s*uppercase/, `${cls} is uppercase`)
+  const rule = BASE_CSS.slice(BASE_CSS.indexOf('.fw-sectionh {'))
+  assert.match(rule.slice(0, 260), /color:\s*var\(--text-accent\)/, '.fw-sectionh is accent-coloured')
+  assert.match(rule.slice(0, 260), /text-transform:\s*uppercase/, '.fw-sectionh is uppercase')
+})
+
+test('what the bands mean is a closed fold, titled in the strong text colour, and the rows stay in view', () => {
+  // "What the bands mean" USED TO BE A SECOND ACCENT HEADER over an open table, and that table pushed every
+  // field a person comes to change most of a screen down. The design folds it: the framework in force, its
+  // bands and the configuration rows stay in view, and the band-by-band detail and the two rating lines
+  // sit behind a closed fold whose title is the old header's words. The accent stays on the block's own
+  // header; the fold's title is bold strong text, never the faint eyebrow that made this read as a footnote.
+  const fn = frameworkBlock()
+  const fold = fn.slice(fn.indexOf('<details'), fn.indexOf('</details>'))
+  assert.ok(fold.length > 0, 'the band detail is not inside a fold')
+  const tag = fn.slice(fn.indexOf('<details'), fn.indexOf('>', fn.indexOf('<details')) + 1)
+  assert.match(tag, /^<details className="fw-fold"/, `the fold's opening tag was not read: ${tag}`)
+  assert.doesNotMatch(tag, /\bopen\b/, 'the fold is drawn open')
+  assert.match(fold, /<span className="fold-title">What the bands mean<\/span>/, 'the fold is not titled "What the bands mean"')
+  for (const [what, re] of [['the band rows', /className="fw-bmrow"/], ['Rated on', /Rated on:/], ['Entity in prose', /Entity in prose:/]] as const) {
+    assert.match(fold, re, `${what} is not behind the fold`)
   }
+  // …and what must NOT be folded away: the configuration rows and the guide sit after the fold closes.
+  const after = fn.slice(fn.indexOf('</details>'))
+  assert.match(after, /label="Worked examples" value="Used when rating this company"/, 'the rows are not in view below the fold')
+  assert.match(after, /<FrameworkGuideLink\b/, 'the guide is not in view below the fold')
+  const title = BASE_CSS.slice(BASE_CSS.indexOf('.fold-summary {'), BASE_CSS.indexOf('.fold-summary::-webkit-details-marker'))
+  assert.match(title, /color:\s*var\(--text-strong\)/, 'the fold title is not strong text')
+  assert.match(title, /font-weight:\s*700/, 'the fold title is not bold')
 })
 
 test('which framework is in force is BOXED, not run into the prose', () => {
@@ -615,14 +726,17 @@ test('Projects no longer says Cordillera sets them up, because the screen now do
   // the same sentence sends them away from the button they are looking at.
   assert.doesNotMatch(body(PROJECTS), /Cordillera sets projects up/i)
   assert.match(body(PROJECTS), /New project/, 'the create control is on the screen')
-  // Bounded by the row list that follows the empty branch. NOT by the first `projects.map(` in the
-  // file — that one is the `taken={…}` prop above, so slicing to it yields an empty string and the
-  // assertion below passes on nothing at all.
+  // AND ON THE EMPTY STATE, where a first project is actually made. The control used to be written twice —
+  // once above the list, once inside the empty branch — and is now the page's primary button in the
+  // header, which renders above BOTH branches. So what is asserted is where the header sits: before the
+  // branch that chooses between the empty state and the list, and holding the control. Bounded by the
+  // empty-state sentence, NOT by the first `projects.map(` in the file — that one is the `taken={…}` prop.
+  const headerAt = PROJECTS.indexOf('<PageHeader')
+  const branchAt = PROJECTS.indexOf('projects.length === 0 ?', headerAt)
   const emptyAt = PROJECTS.indexOf('No projects for this company')
-  const listAt = PROJECTS.indexOf('{projects.map(', emptyAt)
-  assert.ok(emptyAt > 0 && listAt > emptyAt, 'the empty branch is bounded by the row list that follows it')
-  const empty = PROJECTS.slice(emptyAt, listAt)
-  assert.match(empty, /New project/, 'and on the empty state, not only above a list that is not there')
+  assert.ok(headerAt > 0 && branchAt > headerAt && emptyAt > branchAt,
+    'the page header no longer sits above the branch that draws the empty state')
+  assert.match(PROJECTS.slice(headerAt, branchAt), />\s*New project\s*</, 'the header does not carry New project')
 })
 
 test('archiving is not described as one-way, now that the row it hides comes back', () => {
@@ -634,12 +748,68 @@ test('archiving is not described as one-way, now that the row it hides comes bac
   assert.match(body(PROJECTS), /Bring back/, 'the control that makes it reversible is on the row')
 })
 
+// ── Company settings: each page leads with its own action ───────────────────────────────────────────
+
+test('Projects and Search templates lead with their own action, as the primary button in the header', () => {
+  // Both actions sat in a pill row floating at the right above the list, weighted like everything else.
+  // Each is now the page's primary button in its header, with + New company beside it as the secondary.
+  for (const [name, src, action] of [['Projects', PROJECTS, 'New project'], ['SavedSearches', SAVED_SEARCHES, 'New template']] as const) {
+    const text = body(src)
+    const at = text.indexOf('<PageHeader')
+    // `[\\s\\S]{0,80}?` rather than `[^>]*`: the button's own onClick carries an arrow, and its `>` would end the tag.
+    const button = new RegExp(`<button type="button" className="btn-primary btn-sm"[\\s\\S]{0,80}?>\\s*${action}\\s*</button>`).exec(text.slice(at))
+    assert.ok(at > 0 && button, `${name}: ${action} is not a primary button in the page header`)
+    const actions = text.slice(at, at + button.index)
+    assert.match(actions, /<NewCompanyButton ctx=\{ctx\} \/>/, `${name}: + New company is not beside it, before it`)
+    assert.doesNotMatch(text, new RegExp(`className="pill"[^>]*>\\s*${action}\\s*<`), `${name}: ${action} is drawn as a pill again`)
+  }
+})
+
+test('archiving a project and retiring a template are in the row\'s menu, not on the row', () => {
+  // Rare, reversible, and not what anyone opens these lists to do. What is pinned is where the words are
+  // drawn: as the labels of a RowMenu's actions, and never as a button of their own.
+  assert.match(body(PROJECTS), /<RowMenu[\s\S]{0,200}label: 'Bring back'[\s\S]{0,120}label: 'Archive'/, 'Projects does not put Archive and Bring back in the row menu')
+  assert.match(body(SAVED_SEARCHES), /<RowMenu actions=\{\[\{ label: recipe\.archived \? 'Bring back' : 'Retire'/, 'Search templates does not put Retire and Bring back in the row menu')
+  for (const [name, src] of [['Projects', PROJECTS], ['SavedSearches', SAVED_SEARCHES]] as const) {
+    assert.doesNotMatch(body(src), />\s*\{?[^<>{}]*'(Archive|Retire)'[^<>{}]*\}?\s*<\/button>/, `${name} draws Archive or Retire as a button on the row again`)
+  }
+})
+
+test('Builds on names the product once, and nothing is invented under it', () => {
+  // The row printed the product's name and then its stage label beneath it — and the registry's stage
+  // label IS the product's name, so every row said one thing twice. The listing carries no scope, so the
+  // second line is not replaced with anything.
+  const buildsOn = body(SAVED_SEARCHES).slice(body(SAVED_SEARCHES).indexOf('function BuildsOn'), body(SAVED_SEARCHES).indexOf('function Empty'))
+  assert.ok(buildsOn.length > 0, 'BuildsOn was not found')
+  assert.doesNotMatch(buildsOn, /stageLabel/, 'Builds on prints the stage label again under the name')
+  assert.match(buildsOn, /status\.name/, 'Builds on no longer names the product')
+})
+
+test('New company: the same cards as Profile, Create says what it needs, and no key or Check control', () => {
+  const src = body(read('../src/screens/NewCompany.tsx'))
+  // The key follows the name and is asked for only when the name yields none; "Change it" is gone, and
+  // there was never a Check on this form to keep.
+  assert.doesNotMatch(src, /Change it|Change the key/, 'the form offers to change the key again')
+  assert.doesNotMatch(src, />\s*Check\s*</, 'a Check control is on the create form')
+  assert.match(src, /\? 'Needs a name'/, 'Create no longer says what it is waiting for when the name is empty')
+  assert.match(src, /disabled=\{Boolean\(unmet\) \|\| busy\}/, 'Create is not disabled while a condition is unmet')
+  // The three cards, in Profile's order: the two field groups the form draws, then How matters are rated.
+  assert.match(src, /className="ctx-card"[\s\S]*group\.label[\s\S]*<Rating \/>/, 'the field cards and the rating card are not drawn in order')
+  const rating = src.slice(src.indexOf('export function Rating'))
+  assert.match(rating, /How matters are rated\s*<FieldTag tag="Optional" \/>/, 'the rating card does not say it is optional')
+  assert.match(rating, />General risk framework</)
+  assert.match(rating, /<FrameworkGuideLink label="Use your own" pill \/>/)
+})
+
 test('Custom searches sends people to the composer and never grows a second editor', () => {
   // The screen used to carry its own depth picker and scope fields — a duplicate of New clearance that
   // stopped receiving the design work New clearance got, which is how "Create one" came to open a page
   // that looked a year older than the rest of the product. One place builds a search.
-  assert.match(body(SAVED_SEARCHES), /go\('\/portal\/new'\)/, 'New custom search goes to the composer')
-  assert.match(body(SAVED_SEARCHES), /Save as search/, 'and says where the Save control is when you get there')
+  assert.match(body(SAVED_SEARCHES), /go\('\/portal\/new'\)/, 'New template goes to the composer')
+  // The page names the composer's control by the composer's own label, so the two cannot drift apart.
+  const saveLabel = NEW_CLEARANCE.match(/>(Save as [a-z]+)<\/button>/)?.[1]
+  assert.ok(saveLabel, 'the composer has no Save as … button for this page to point at')
+  assert.ok(body(SAVED_SEARCHES).includes(saveLabel!), `the page says where the Save control is, and calls it something other than "${saveLabel}"`)
   for (const gone of ['How deep should it search?', 'Where should it search?', 'Which classes?', 'localProblems', 'toRecipe']) {
     assert.equal(body(SAVED_SEARCHES).includes(gone), false, `the editor's ${gone} must not come back here`)
   }
@@ -671,23 +841,43 @@ test('no screen prints an account key where a company belongs', () => {
 
 // ── the interface leads with the NAME ────────────────────────────────────────────────────────────────
 
-test('the review modal leads with the product NAME, not a stage number', () => {
+test('the review modal names the product by NAME, not a stage number', () => {
   // THE site this rule exists for: the last thing read before money is spent used to be the bare
   // string "Depth 4", which names our own pricing ladder — and collides with the Depth 4 / Stage 2
   // vocabulary the legal reasoning already uses for something else entirely.
+  //
+  // The one-form design moves the product into its own row and puts the MARK under the title, so the
+  // literal moved and the rule did not: wherever the dialog names the search, it is the name, degrading
+  // to the label for an older server, with the rung beside it only where it differs.
   const prose = flat(body(NEW_CLEARANCE))
-  assert.match(prose, /<h2[^>]*>\s*\{plan\.name \|\| plan\.stageLabel\}/,
-    'the headline is the name, degrading to the label for an older server')
+  assert.match(prose, /<Row label="Search"> \{plan\.name \|\| plan\.stageLabel\}/,
+    'the Search row is not the name, degrading to the label for an older server')
   assert.match(prose, /\{plan\.stageLabel\}/, 'the rung still rides beside it — the numbering is not retired')
+  assert.doesNotMatch(prose, /<h2[^>]*>\s*\{plan\.stageLabel\}/, 'a rung is the headline again')
 })
 
-test('the review modal shows the effort meter, where the stage number used to be the only scale', () => {
-  // `plan.effort` was already on the wire and this step rendered only its turnaround, so the one figure
-  // that says how big a search is sat unread at the moment of deciding.
+test('THE REVIEW MODAL SAYS WHAT THIS SPENDS AND WHAT IT LEAVES — in searches, the only unit there is', () => {
+  // THE PROPERTY IS UNCHANGED; WHAT ANSWERS IT IS NOT. This asserted a ten-bar effort meter and a
+  // five-dot cost band, because before them this step rendered only a turnaround and the one figure
+  // saying how big a search is sat unread at the moment of deciding. The figure was the right idea in
+  // the wrong currency: the bars carried a number with no unit, and the dots a "cost" that was never a
+  // price and could not become one without quoting somebody.
+  //
+  // What a reader is deciding here is how many of today's searches this spends and how many that
+  // leaves, and the product counts exactly that — per day, per company. So the rule is now read in the
+  // product's own unit, and the two pictures are asserted GONE rather than merely unmentioned.
   const prose = flat(body(NEW_CLEARANCE))
-  assert.match(prose, /<Row label="Effort">/)
-  assert.match(prose, /plan\.effort!\.units/, 'the same 10-bar meter the composer footer draws')
-  assert.match(prose, /plan\.effort!\.costBand/, 'and the same 5-dot cost band')
+  assert.match(prose, /<Row label="Uses">/, 'the review step no longer says what the search spends')
+  assert.match(prose, /<Row label="Left today">/, 'the review step no longer says what it leaves')
+  assert.match(prose, /after this search/, 'Left today states the count now and the count after, not one of them')
+
+  // AND THE TWO PICTURES ARE GONE FROM THE WHOLE SCREEN, not only from this dialog — the composer's
+  // sticky bar drew the same pair, and a rule satisfied in one of two places is the drift this file
+  // exists to stop.
+  assert.doesNotMatch(prose, /<Row label="Effort">/, 'the effort meter is back on the review step')
+  assert.doesNotMatch(prose, /effort!?\.units/, 'the ten-bar meter is back')
+  assert.doesNotMatch(prose, /effort!?\.costBand/, 'the five-dot cost band is back')
+  assert.doesNotMatch(prose, /\bunits?\b/i, 'the screen names a unit again — the allowance counts searches')
 })
 
 test('the matrix header leads with the product’s NAME', () => {
@@ -764,42 +954,31 @@ test('extra marketplaces are counted into the effort input, not just sent on the
   assert.match(prose, /platforms: marketplacesApply \? own\.platforms\.length \+ parseList\(draft\.platforms\)\.length : 0/)
 })
 
-// ── the two ways in: which pills are the offering and which are the account's own ────────────────
+// ── templates and the four searches: never one list ─────────────────────────────────────────────────
 
-test("a saved search on the entry fork sits under its OWN heading, not under the products'", () => {
-  // THE DEFECT. The four products and the account's saved searches rendered as one flat row of pills
-  // under one heading — "Or start from one of the four searches" — so the heading's own count was wrong
-  // for every account that had saved anything, and a customer could not tell which pills were the
-  // offering. The one thing separating them was a dashed border, and a border style is not a label: it
-  // carries no meaning to somebody who has not been told the convention.
-  //
-  // WHAT THIS PROVES AND WHAT IT DOES NOT, per this file's header: it proves the heading string is in
-  // the source and that the saved pills sit behind a length branch. It does not prove either reaches
-  // the browser — `composer-render-check.mjs` is what draws this screen for real, and its
-  // `startPills >= 3` is a floor over `.start-pill` that a regrouping like this one leaves intact.
+test("a company's templates sit in their own control, never among the four searches", () => {
+  // THE DEFECT, twice over. The four products and the account's saved searches once rendered as one flat
+  // row of pills under one heading — "Or start from one of the four searches" — so the heading's own
+  // count was wrong for every account that had saved anything, and the only thing separating them was a
+  // dashed border, which carries no meaning to somebody who has not been told the convention. The fix
+  // then was a heading of its own. The one-form design goes further: templates are a labelled dropdown
+  // beside "Which search", and the four are radio rows below it, so the two cannot be read as one list.
   const prose = flat(body(NEW_CLEARANCE))
+  assert.match(prose, /<span className="field-label">Search templates<\/span>/,
+    'the templates have no label of their own')
+  assert.match(prose, /aria-label="Search templates"/, 'the template control has no accessible name')
+  // THE ROWS ARE THE OFFERING AND ONLY THE OFFERING: built from `levels`, never from the templates.
+  assert.equal(PRODUCT_IDS.length, 4, 'the design draws four rows — if the offering stops being four, the layout is wrong again')
+  assert.match(prose, /\{levels\.map\(\(t\) => \( <PickRow/, 'the rows are not built from the offering')
+  assert.doesNotMatch(prose, /savedSearches\.map\(\(r\) => \( <PickRow/, 'a template is drawn as one of the searches')
+  assert.doesNotMatch(prose, /start-pill/, 'the pill row that mixed the two is back')
 
-  // "Custom searches", not "Saved searches" — the terminology map settles that noun on the product's
-  // own navigation label, and this heading landed carrying the retired one. The criterion states
-  // is "a tag, a label, or its own group under its own heading", which is noun-agnostic.
-  assert.match(prose, /Custom searches\{' '\}[\s\S]*?· start from one you built/,
-    'the saved group has a heading of its own — the acceptance criterion is a LABEL, not a border style')
-
-  // The products heading keeps its count, and it is now true of the group it labels: PRODUCT_IDS is the
-  // offering, and only those pills sit under it. Imported rather than hand-typed so a fifth product
-  // fails this arm instead of quietly making the heading lie again.
-  assert.equal(PRODUCT_IDS.length, 4,
-    'the entry-fork heading says "four" — if the offering stops being four, that heading is wrong again')
-  assert.match(prose, /Or start from one of the four searches/)
-
-  // NO EMPTY GROUP. An account with nothing saved must see the four products and no orphan heading
-  // under them. The branch opens before the saved pills are mapped; that ordering is the checkable part.
+  // NO EMPTY CONTROL. A company with nothing saved gets no dropdown and no orphan label: the branch opens
+  // before the label is drawn. That ordering is the checkable part.
   const guard = prose.indexOf('savedSearches.length ?')
-  const savedPill = prose.indexOf('start-pill start-pill-saved')
-  assert.ok(guard !== -1, 'the saved group is behind a length check')
-  assert.ok(savedPill !== -1, 'and there are still saved pills for it to guard')
-  assert.ok(guard < savedPill,
-    'the length branch opens BEFORE the saved pills — an account with none of them gets no heading')
+  const label = prose.indexOf('<span className="field-label">Search templates</span>')
+  assert.ok(guard !== -1 && label !== -1 && guard < label,
+    'the template control is drawn for a company that has no templates')
 })
 
 // ── — A DEMO ORDER LANDS ON A REPORT, and the SERVER says so ────────────────
@@ -872,22 +1051,23 @@ test('…and the screen now does the picking itself rather than pointing at a co
   assert.equal(rows.filter((r) => r.key === GENERIC_KEY).length, 1, 'offered once, inside the organisation it belongs to')
 })
 
-test('the disabled Save names its blocking condition LOUDER than its harmless ones', () => {
-  // The reason was already on screen when this user gave up on it — muted, twelve point, in the same
-  // treatment as "No changes." Only one of the three states stops the reader, so only that one carries
-  // weight and colour now. Making all three loud would be the same as making none of them loud.
+test('Save is one press, and nothing beside it is a blocking condition', () => {
+  // REVERSED ON PURPOSE. This arm used to pin the loud line beside a disabled Save — "Press Check before
+  // saving" — because an outside user met a Save that would not respond, with the reason in the same quiet
+  // treatment as "No changes". The design removes the state instead of shouting about it: the dry run now
+  // runs inside the Save press (contract/checkThenSave.ts, driven in checkAndSaveCannotDisagree.test.ts),
+  // so a dirty form is never blocked and there is no condition left to make loud.
   //
-  // Asserted as three properties of the file rather than as a window around a phrase. The first draft
-  // of this arm sliced around "No changes." and read the copy of that phrase sitting in the comment
-  // beside the code — `body()` strips `//` lines and leaves JSX `{/* ... */}` blocks, so prose in this
-  // package is searchable text. An anchor that can match prose is not an anchor.
+  // Asserted as properties of the file's prose, so a note in a comment cannot satisfy or trip it.
   const src = body(PROFILE)
-  assert.match(src, /dirty && !checked\s*\?/, 'the blocking state is not branched on separately from the other two')
-  assert.match(src, /Press Check before saving/, 'the blocking line does not name the control to press')
-  assert.match(src, /tone-medium/, 'nothing on this screen is drawn in the attention treatment')
-  // …and the harmless states keep the quiet one, because three loud lines are no louder than none.
-  assert.match(src, /fontSize: 12\.5, color: 'var\(--text-muted\)'/,
-    'the non-blocking states lost their muted treatment, which is what made the blocking one stand out')
+  assert.doesNotMatch(src, />\s*Check\s*</, 'a separate Check button is back beside Save')
+  assert.doesNotMatch(src, /Press Check/, 'the line still tells the reader to press a control that is gone')
+  assert.match(src, /disabled=\{busy \|\| !dirty\}/, 'Save is disabled by something other than "nothing to save" or "saving"')
+  assert.match(src, /\{dirty \? 'Unsaved changes' : 'No changes'\}/, 'the line beside Save does not say which of its two states the form is in')
+  // The action row alone: the band palette elsewhere in the file legitimately names the medium tone.
+  const row = src.slice(src.indexOf('className="row-foot"'), src.indexOf('No changes'))
+  assert.ok(row.length > 0, 'the action row was not found, so the treatment check would read nothing')
+  assert.doesNotMatch(row, /tone-/, 'a state beside Save is drawn in an attention treatment again, with nothing to attend to')
 })
 
 test('the risk bands say whose scale they are', () => {

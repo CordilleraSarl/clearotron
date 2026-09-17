@@ -143,37 +143,175 @@ test("a sign-in door gets no key, no header and no ignore-the-warning — on eve
     assert.doesNotMatch(text, /ignore it|ignore the/i, `${o.client.id} tells the reader to ignore the sign-in challenge`);
     assert.doesNotMatch(text, /Authentication\*\* to \*\*None/i, `${o.client.id} turns authentication off on a door that requires it`);
     assert.match(text, /sign in|Sign in/, `${o.client.id} never tells the reader how they are let in`);
+    // STEP ONE CARRIES NO HINT. It used to say the sign-in was the authentication the assistant asks about,
+    // and the design removed it: the sign-in step says so where the reader does it, and a sentence under
+    // step one said it twice.
+    assert.equal(o.steps[0].hint, undefined, `${o.client.id}'s first step repeats the sign-in under itself`);
   }
+});
+
+test("Claude on a sign-in door: the address, the dialog, the reader's own account, and a question that proves it", () => {
+  // The approved design's five steps, character for character, because the page draws them verbatim and
+  // acceptance reads them off the screen. The account is the signed-in person's, emphasised; with none
+  // known the sentence names the kind of account rather than printing nothing.
+  const SIGNIN = { ...PUBLISHED, door: "sign-in", operator: "dana@northwind.example" };
+  assert.deepEqual(offerOf(SIGNIN, "claude", "public-http").steps.map((s) => s.text), [
+    "Copy the address.",
+    "In Claude, open **Settings → Connectors → Add custom connector**.",
+    "Paste the address and press **Add**.",
+    "Sign in when the browser opens — use **dana@northwind.example**.",
+    "Try it: in your assistant, ask **“Show my recent Clearotron clearances.”** A reply listing them confirms the connection.",
+  ]);
+  const anonymous = offerOf({ ...SIGNIN, operator: null }, "claude", "public-http").steps[3].text;
+  assert.equal(anonymous, "Sign in when the browser opens — use your work email.");
+  // ONE SPELLING of the sign-in for every row that signs its reader in by account, so two apps on one page
+  // cannot word one fact two ways.
+  assert.equal(offerOf(SIGNIN, "chatgpt", "public-http").steps.at(-1).text,
+    "Sign in when the browser opens — use **dana@northwind.example**.");
+});
+
+test("NO STEP ANYWHERE MENTIONS AN AUTHENTICATION WARNING — on any door, in any list a page can draw", () => {
+  // Claude's key steps ended "If Claude shows an authentication warning, ignore it." Nothing in this tree
+  // records that warning's text, so the step asked a reader to ignore a message nobody here could quote —
+  // and behind an identity provider the warning is the sign-in itself. The design drops the sentence. The
+  // population is every row, on every door answer, with a key door beside the sign-in door, and every
+  // list an offer carries: the steps, the unknown door's alternative and the folded key steps.
+  let seen = 0;
+  for (const door of ["sign-in", "key", null]) {
+    for (const o of connectOffers({ ...PUBLISHED, keyAddress: "https://agent-mcp.example.test/mcp", door })) {
+      for (const s of [...o.steps, ...(o.altSteps ?? []), ...(o.keySteps ?? [])]) {
+        seen++;
+        assert.doesNotMatch(`${s.text} ${s.hint ?? ""}`, /warning/i, `${o.client.id} (${door}) mentions a warning: ${s.text}`);
+      }
+    }
+  }
+  assert.ok(seen > CONNECT_CLIENTS.length * ROUTES.length * 3 * 2, `too few steps walked to mean anything (${seen})`);
 });
 
 test("a key door keeps the key route, because on a bare install it is the only one that works", () => {
   const KEYED = { ...PUBLISHED, door: "key" };
   const claude = offerOf(KEYED, "claude", "public-http");
-  assert.equal(claude.steps[0].copy.kind, "secret", "the key door lost the key it takes");
+  const KEYED_OFFER = claude;
+  // THE KEY IS STILL HANDED OVER, at the step that uses it. This read `steps[0].copy.kind === "secret"`
+  // while the address and the key were one press; the design splits them, so step one hands over the
+  // address and the header step hands over the key. What the arm protects is that the key door keeps the
+  // key it takes — not which step it rides on.
+  assert.ok(claude.steps.some((s) => s.copy?.kind === "secret"), "the key door lost the key it takes");
   assert.match(claude.steps.map((s) => s.text).join(" "), /Authentication\*\* to \*\*None/,
     "the driven key steps changed — they were verified against a door that takes a key");
 
-  // AND AN UNREADABLE DOOR SAYS SO rather than guessing. The safe default is the sign-in shape, which
-  // mints nothing: a wrong guess there costs a reader one failed attempt, where the other way round
-  // issues a live credential for a door that cannot use it.
+  // AND AN UNREADABLE DOOR OFFERS BOTH rather than guessing. The sign-in shape leads because it mints
+  // nothing: a wrong guess there costs a reader one failed attempt, where the other way round issues a
+  // live credential for a door that cannot use it.
+  //
+  // ASSERTED ON THE OFFER, NOT ON A SENTENCE. These two lines used to match the words "could not be
+  // read" and "key" in step one's hint. That hint was the only place the alternative was mentioned —
+  // it told the reader both ways were shown while one was drawn — so the repair moved the statement to
+  // the page and gave it real steps to be true about. Matching the hint's new wording would have kept
+  // this green while checking a sentence that no longer carries the property; matching its old wording
+  // reds for the spelling rather than the behaviour. What the page needs from this layer is the DOOR
+  // and the other way's STEPS, so that is what is asserted. That the page draws them is the render
+  // check's arm, where a browser can see it.
   const UNKNOWN = { ...PUBLISHED, door: null };
   const unsure = offerOf(UNKNOWN, "claude", "public-http");
-  assert.notEqual(unsure.steps[0].copy.kind, "secret", "an unreadable door minted a key anyway");
-  assert.match(String(unsure.steps[0].hint ?? ""), /could not be read/, "the page does not say that it could not tell");
-  assert.match(String(unsure.steps[0].hint ?? ""), /key/, "…and does not name the other way in");
+  assert.ok(!unsure.steps.some((s) => s.copy?.kind === "secret"), "an unreadable door minted a key anyway");
+  assert.equal(unsure.door, null, "the offer does not say the door was unreadable, so the page cannot either");
+  assert.ok(Array.isArray(unsure.altSteps) && unsure.altSteps.length > 0, "the other way in is not offered at all");
+  // Anywhere in the list, for the reason given above: the key rides on the step that uses it.
+  assert.ok(unsure.altSteps.some((s) => s.copy?.kind === "secret"), "the other way in does not hand over the thing it needs");
+  // IT IS THE KEY ROUTE'S OWN STEPS, not a second set written here. Composed by asking the same author
+  // with the other answer, so the two cannot drift.
+  assert.deepEqual(unsure.altSteps.map((x) => x.text), claude.steps.map((x) => x.text),
+    "the alternative is not the key door's own steps");
+
+  // AND A DOOR THAT WAS READ IS OFFERED ONE WAY. An alternative beside a door we did read is a set of
+  // instructions that cannot work for that reader, presented as though it might.
+  assert.equal(KEYED_OFFER.door, "key");
+  assert.equal(KEYED_OFFER.altSteps, undefined, "a door that WAS read carries a second set of steps anyway");
+});
+
+test("the key door's address and key are two presses, and a bare address is handed over by its button alone", () => {
+  // One press used to hand over both lines, and the steps then said "the first line" and "the second
+  // line". The design gives each its own button at the step that uses it: "Copy address" where the
+  // address is pasted, "Copy key" at the header the key goes in — so nothing is minted before then.
+  const claude = offerOf({ ...PUBLISHED, door: "key" }, "claude", "public-http");
+  const copies = claude.steps.map((s, i) => (s.copy ? { i, ...s.copy } : null)).filter(Boolean);
+  assert.deepEqual(copies.map((c) => [c.kind, c.label]), [["block", "Copy address"], ["secret", "Copy key"]]);
+  assert.equal(copies[0].text, PUBLISHED.publicAddress, "the address press hands over something else");
+  assert.equal(copies[1].template, KEY_SLOT, "the key press hands over more than the key");
+  assert.match(claude.steps[copies[1].i].text, /then the key/, "the key is not handed over at the step that uses it");
+  assert.doesNotMatch(claude.steps.map((s) => s.text).join(" "), /first line|second line/,
+    "a step still points at a line of a two-line copy that no longer exists");
+
+  // A LABEL ON A BLOCK MEANS THE BUTTON IS ALL THE PAGE DRAWS, so only a single value may carry one. A
+  // command or a settings block is read before it is pasted; drawn as a bare button it would be pasted
+  // unread.
+  for (const door of ["sign-in", "key", null]) {
+    for (const o of connectOffers({ ...HAVE, publicAddress: PUBLISHED.publicAddress, door })) {
+      for (const s of [...o.steps, ...(o.altSteps ?? [])]) {
+        if (s.copy?.kind === "block" && s.copy.label) {
+          assert.doesNotMatch(s.copy.text, /\s/, `${o.client.id} draws a multi-part block as a bare button: ${s.copy.text}`);
+        }
+      }
+    }
+  }
+});
+
+// ── A SIGN-IN DOOR WITH A KEY DOOR BESIDE IT ─────────────────────────────────────────────────────────
+//
+// The design folds the key door's steps under the sign-in steps, for assistants that cannot follow a
+// browser sign-in. A sign-in door never honours a key, so those steps are only true against the key
+// door's OWN host — the API-key door, a separate process with its own address. Where none is deployed
+// there is nothing true to fold.
+test("a sign-in door carries the key door's steps only where a key door exists, resolved at that door", () => {
+  const KEY_DOOR = "https://agent-mcp.example.test/mcp";
+  const SIGNIN = { ...PUBLISHED, door: "sign-in" };
+  const folded = offerOf({ ...SIGNIN, keyAddress: KEY_DOOR }, "claude", "public-http");
+  assert.equal(folded.door, "sign-in", "the door was read, and carrying a fold must not unsay that");
+  assert.equal(folded.altSteps, undefined, "the fold is not the unknown door's alternative, and must not claim to be");
+  assert.ok(Array.isArray(folded.keySteps) && folded.keySteps.length > 0, "a deployment with a key door offers no way through it");
+  // THE KEY DOOR'S OWN STEPS, asked of the same author — never a second set written for the fold.
+  assert.deepEqual(folded.keySteps.map((s) => s.text), offerOf({ ...PUBLISHED, door: "key" }, "claude", "public-http").steps.map((s) => s.text),
+    "the folded steps are not the key door's own");
+  // AT THE KEY DOOR'S ADDRESS. The sign-in host refuses a key; a fold pointing at it is the defect.
+  const foldCopies = folded.keySteps.filter((s) => s.copy).map((s) => s.copy.text ?? s.copy.template);
+  assert.ok(foldCopies.includes(KEY_DOOR), `the fold never hands over the key door's address: ${JSON.stringify(foldCopies)}`);
+  assert.ok(!foldCopies.some((t) => t.includes(PUBLISHED.publicAddress)), "the fold hands over the sign-in host, which refuses a key");
+  assert.ok(folded.steps.some((s) => s.copy?.text === PUBLISHED.publicAddress), "the sign-in steps lost their own address");
+
+  // AND NOWHERE ELSE. No key door: nothing to fold, on every row. A key door answer, or a door nobody could
+  // read, keeps what it had — the fold belongs to a door that was read as signing its reader in.
+  for (const [what, have] of [
+    ["a sign-in door with no key door", SIGNIN],
+    ["a key door", { ...PUBLISHED, door: "key", keyAddress: KEY_DOOR }],
+    ["a door nobody could read", { ...PUBLISHED, door: null, keyAddress: KEY_DOOR }],
+  ]) {
+    for (const o of connectOffers(have)) assert.equal(o.keySteps, undefined, `${what} folded key steps into ${o.client.id}`);
+  }
+  // It travels, through the same mapping as every other list.
+  const wire = offersForWire(connectOffers({ ...SIGNIN, keyAddress: KEY_DOOR })).find((o) => o.id === "claude" && o.route === "public-http");
+  assert.deepEqual(wire.keySteps.map((s) => s.copy?.kind ?? null), folded.keySteps.map((s) => s.copy?.kind ?? null));
 });
 
 test("the wire carries what the page hands over and nothing it would have to trust", () => {
-  const wire = offersForWire(connectOffers(PUBLISHED));
-  assert.equal(wire.length, CONNECT_CLIENTS.length * ROUTES.length);
+  const KEY_DOOR = "https://agent-mcp.example.test/mcp";
+  // Every list the page can draw is on the wire somewhere in these three deployments.
+  const wire = [PUBLISHED, { ...PUBLISHED, door: null }, { ...PUBLISHED, door: "sign-in", keyAddress: KEY_DOOR }]
+    .flatMap((have) => offersForWire(connectOffers(have)));
+  assert.equal(wire.length, CONNECT_CLIENTS.length * ROUTES.length * 3);
+  let lists = 0;
   for (const o of wire) {
-    for (const s of o.steps) {
+    for (const s of [...o.steps, ...(o.altSteps ?? []), ...(o.keySteps ?? [])]) {
       assert.equal(typeof s.text, "string");
       assert.doesNotMatch(s.text, /<[a-z]/i, `${o.id} carries markup in a step — the page would have to trust it`);
+      // A block carries a label only when it is a bare value the page draws as a button.
       if (s.copy) assert.deepEqual(Object.keys(s.copy).sort(), s.copy.kind === "secret"
-        ? ["kind", "label", "slot", "template"] : ["kind", "text"], `${o.id} sends a copy in a shape the page does not read`);
+        ? ["kind", "label", "slot", "template"] : s.copy.label ? ["kind", "label", "text"] : ["kind", "text"],
+        `${o.id} sends a copy in a shape the page does not read`);
     }
+    if (o.altSteps || o.keySteps) lists++;
   }
+  assert.ok(lists > 0, "no alternative list reached the wire — the loop above checked the primary steps alone");
 });
 
 test("an old id still answers, on the route it used to mean", () => {
@@ -289,12 +427,16 @@ test("§3 NO OFFER EVER CARRIES A LOOPBACK ADDRESS, on any deployment", () => {
 });
 
 test("picking the vaguest option does not authorise a posture change", () => {
-  // "Another agent" is a reader who has not told us what their agent can do — not a reader asking for
-  // the client door. Carrying an enable here made the vaguest choice the one that changed who can reach
-  // the install, which is the opposite of on-demand.
+  // "Another AI app" is a reader who has not told us what their app can do — not a reader asking for the
+  // client door. Carrying an enable here made the vaguest choice the one that changed who can reach the
+  // install, which is the opposite of on-demand.
   const other = whatItNeeds(clientById("other"), HAVE);
   assert.equal(other.served, true);
-  assert.equal(other.enables, null, "choosing 'Another agent' must not enable the client door");
+  assert.equal(other.enables, null, "choosing 'Another AI app' must not enable the client door");
+  // NAMED FOR THE READER'S APP, NOT FOR A KIND OF SOFTWARE. "Another agent" asked a lawyer to know what an
+  // agent is; the card is where a reader whose app is not listed lands, and its second line names two.
+  assert.equal(clientById("other").name, "Another AI app");
+  assert.equal(clientById("other").sub, "Perplexity, OpenClaw and others");
 });
 
 test("NO SURFACE BRANCHES ON A CLIENT'S NAME — and the surfaces are derived, not listed here", () => {

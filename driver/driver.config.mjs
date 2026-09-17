@@ -1192,8 +1192,16 @@ export const PROVIDERS = {
         // modes, not strategies, and the API rejects them in the strategies array. These wrappers
         // hand-built the vendor shape and so were untouched by that fix — the translator is the one
         // place that knows which mode rides which request shape, and every caller must go through it.
-        const r = await core.doCountHits(process.env.SIGNA_API_KEY, base,
-          core.toSignaParams({ name, match_mode: matchMode || "exact", nice_classes: classes, regions }),
+        // A MODE THIS PROVIDER CANNOT EXPRESS REFUSES THE CELL, rather than being answered by a
+        // different predicate's number. The translator names it; this turns it into an honest unknown,
+        // which the count kernel already treats as a disclosed gap. The alternative is what this
+        // issue was: a narrower query answering under the wider query's label, invisibly.
+        const signaParams = core.toSignaParams({ name, match_mode: matchMode || "exact", nice_classes: classes, regions });
+        if (signaParams.unsupported_match_mode) {
+          return { ok: false, total: null, unsupported: true,
+            cause: `this register provider cannot express the "${signaParams.unsupported_match_mode}" match mode, so this count is UNKNOWN — it is not answered with a different predicate's number` };
+        }
+        const r = await core.doCountHits(process.env.SIGNA_API_KEY, base, signaParams,
           { kind: "count", agentId, sessionKey, sessionId: null, recordLog });
         const text = typeof r?.text === "string" ? r.text : "";
         if (text.startsWith("ERROR")) return { ok: false, cause: text.slice(0, 200) };
@@ -1215,8 +1223,16 @@ export const PROVIDERS = {
       catch (e) { return { ok: false, records: null, reason: `plugin core unavailable: ${e.message}` }; }
       const base = process.env.SIGNA_BASE_URL || core.DEFAULT_BASE;
       try {
+        // The listing takes the same refusal as the count above, and for the same reason one level on:
+        // a narrower search here returns FEWER records under the wider query's name, so the listing
+        // would under-report and read as complete.
+        const signaListParams = core.toSignaParams({ name, match_mode: matchMode || "exact", nice_classes: classes, regions });
+        if (signaListParams.unsupported_match_mode) {
+          return { ok: false, records: null,
+            reason: `this register provider cannot express the "${signaListParams.unsupported_match_mode}" match mode, so this listing was not taken — it is not answered with a narrower search` };
+        }
         const r = await core.doSearch(process.env.SIGNA_API_KEY, base,
-          { ...core.toSignaParams({ name, match_mode: matchMode || "exact", nice_classes: classes, regions }), limit },
+          { ...signaListParams, limit },
           { kind: "search", agentId, sessionKey, sessionId: null, recordLog });
         const text = typeof r?.text === "string" ? r.text : "";
         if (text.startsWith("ERROR")) return { ok: false, records: null, reason: text.slice(0, 200) };

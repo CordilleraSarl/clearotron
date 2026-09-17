@@ -1,5 +1,166 @@
 # clearotron-driver
 
+## 0.3.2-beta.7
+
+### Patch Changes
+
+- 4bde529: Fixed: A clearance that completed all but one or two of its local-language searches now delivers the report. Before, a single search that did not complete threw the whole clearance away, including the fifty-nine that had run. The report says which term's search was short.
+- b5b789c: Fixed: The exported PDF no longer prints a collapsed arrow above sections that are already fully open.
+
+## 0.3.2-beta.6
+
+### Patch Changes
+
+- 911b0b4: New: The report a client opens has been redrawn. It opens with what was asked, then the rating with its reasons, then the conflicts. What a search is and is not is no longer narrated at length.
+  
+  New: A finding's full detail shows the goods as the register recorded them, and the record's own dates. This is on a full country search.
+  
+  New: A knockout report closes with what happens next. The paragraph moves out of the long read rather than being repeated.
+
+## 0.3.2-beta.5
+
+### Patch Changes
+
+- a4ea94d: For operators: The connector access log now records what happened to each call, and records calls that were refused as well as calls that got through. A line also names which door took the call, so a client key and a staff session can be told apart. Before, a call was recorded only as having been made, and a refused one left no line at all. `doctor` now names where that log is being written. It reads that from the service's own settings, not from the shell you are typing in.
+
+## 0.3.2-beta.4
+
+### Patch Changes
+
+- 3f4367e: Fixed: A multi-country search no longer refuses to start on a form that is already showing the territories it will search. When you have not chosen territories yourself, the form shows your company's own and the search uses those.
+  
+  Fixed: A new clearance form now opens with one line saying what to do. It no longer shows two warning panels about work you have not started.
+- 3f4367e: Fixed: On a phone, the list of clearances can now be scrolled sideways to read its columns. Before, the risk word was printed on top of the date and names broke in the middle of a word.
+
+## 0.3.2-beta.3
+
+### Patch Changes
+
+- cc56786: New: an installation can name its administrator contact, a mail or web address, and Preferences links "Clearotron administrator" to it.
+  
+  New: Preferences carries the top bar's blur button, and the blur now stays as you left it in this browser, reloads included.
+  
+  New: Global config is now Installation settings, with one sign-in row, the engine's own web search under Engine, and providers grouped by category.
+  
+  New: a provider needing action says what it needs in a few words and links its setup guide, instead of naming settings and files.
+  
+  New: About lists its facts in one card, and its source link reads as the repository's name, with the build just above.
+  
+  New: the sign-in page leads with one line, "This Clearotron signs in one person: you.", and keeps the reset and sign-on steps under Administrator help.
+- cc56786: New: a report's header labels both of its dates, searched and issued, with Ask AI and Export beside them as two buttons.
+  
+  New: Ask AI on a report offers four questions, and opens Claude with the one you pick typed in, ready for you to send.
+  
+  New: Use your AI is now Connect your AI, and shows whether your assistant is connected, folding the setup steps away once it is.
+  
+  New: after Set it up on a report's Ask AI, Connect your AI offers a button back to that report once your assistant connects.
+  
+  Fixed: Claude's steps no longer tell you to ignore an authentication warning, and copy the address and the key with separate buttons.
+  
+  New: where your installation offers another way to connect, Connect your AI keeps those steps in a closed fold under the sign-in steps.
+
+## 0.3.2-beta.2
+
+### Patch Changes
+
+- 8642064: Fixed: On one register the "Filings containing the name" figure counted only identical filings. A report could therefore show a field as far less crowded than it really is. That column now asks the register the question its label promises. Where a register cannot answer a given kind of search, the figure is reported as unavailable rather than filled in from a narrower one.
+
+## 0.3.2-beta.1
+
+### Patch Changes
+
+- 2a81abc: New: A report can now show how much was searched to reach its answer. It records the names read and cleared, the records read in each country, and the checks made. Countries where nothing was found are included.
+- 2a81abc: Fixed: The conditions listed on a report are now written in plain legal English, matching the summary line above them. One condition could previously appear as an internal engine note with counts and identifiers in it.
+
+## 0.3.2-beta.0
+
+### Patch Changes
+
+- 7cc0d29: Fixed: A report now lists every part of the search that was left open. One with a short name could be hidden by another line that happened to mention the same word. The overall result was never affected, only the list of what remained open.
+
+## 0.3.1
+
+### Patch Changes
+
+- 240673c: Fixed: A chat notice now carries the channel to send it on, so an assistant with several chat channels no longer drops it silently.
+- a2c4b94: Fixed: A correction to a coverage note or an action is now applied, or the run records why it was not.
+- 240673c: Fixed: Naming a country in words rather than by code now works for every country, including Belgium and Luxembourg. Before, some were carried as unrecognised.
+- b320c65: Fixed: A demo sample that cannot be read is named in the demo's output, and the other demos still publish.
+- 240673c: Fixed: A family search on a name whose first or last word is a single letter or digit now runs. Before, one register refused it and the search was reported as an outage.
+  
+  Fixed: A conflict whose owner could not be identified is no longer given a risk rating. It is carried as an open item naming who must be identified.
+- d0d42f7: Fixed: A name in a knockout batch is no longer rated above every conflict found against it. Its rating now follows from the conflicts on its own page.
+  
+  Fixed: Before, a rule forced any name made of everyday words off the lowest band, whatever the search found. That rule is gone for every client.
+- f96c089: Fixed: Running the test suite from inside another test run no longer lets the outer run delete the inner run's temporary files.
+- f96c089: Fixed: A clearance for a new client can be ordered through an assistant connector without setting up a company first.
+- 240673c: Fixed: In the staff editor, a refused territory in a project now highlights the field it is about, as it already did when editing a customer. Before, the message appeared but no field was marked.
+- 240673c: Fixed: A sign-in refusal now always says which instance answered — by organisation, by sign-in service, or by the address it runs on.
+- 240673c: Fixed: The published list of settings this build reads no longer keeps a name after the code stops reading it. The list was derived from a scan that included the list itself, so a retired name kept itself alive.
+- c3228f3: Fixed: A clearance that stops is recorded as owing a notice even when the folder its notice is queued in cannot be written to.
+- d9798db: Fixed: A clearance that stops now always records that its notice is still owed, so a failure cannot be passed over as already handled.
+- 240673c: Fixed: A search step that streams at a crawl is now stopped early and retried, instead of running to its time limit and losing the work.
+- 56a760f: Fixed: Giving somebody access to everything on the installation now works from the access form. It used to refuse. The message it refused with said you can only give access to what you hold yourself, which was not true of the person seeing it.
+- ae2cc82: For operators: An assistant asking which searches still owe someone a notice now gets all of them, not just the fifty most recent. Asking for recent searches is unchanged.
+- f96c089: Fixed: A mark whose main element contains no vowel — a consonant-only initialism, for example — can now be cleared. Before, the search plan refused to compile and the whole clearance ended without delivering anything.
+- 8c3bc3b: New: Ask AI on a report now opens Claude or ChatGPT with a question about that report already typed in. One press, in a new tab, and nothing is sent until you send it.
+  
+  The button used to hand over a connector address and a question carrying the run's internal code, with no indication of which one you needed. The address belongs on the Use your own AI page, where you set the connector up once. It is no longer shown on reports at all.
+  
+  If you have not connected an assistant yet, the button explains that in a line and offers to take you there.
+  
+  For operators: the report's own "Ask your AI" band is gone, so there is one Ask AI control rather than two. Reports rendered before this upgrade keep the band in their own file, and it is hidden when the portal serves them.
+- c3228f3: Fixed: Check now reports the same problems Save would refuse, so a company setting can no longer pass the check and then fail to save.
+- 240673c: Fixed: Use your AI now gives the steps your connector actually takes — sign-in where it signs you in, a key only where a key works.
+- f96c089: Fixed: `doctor` now names the deployment it is checking, and refuses a name that is missing or not recognised. Before, a deployment that was misnamed — or not named at all — passed the check in silence.
+- 240673c: Fixed: Setup and the framed first-run box now say what to do when the page that opens belongs to another program.
+  
+  Fixed: The port that advice suggests is never the port already in use.
+- 6d0c8f5: Fixed: The portal now tells your browser not to store the data its screens read. Those responses carry people's names, company access and run lists, and nothing previously said how long a browser could keep them.
+  
+  For operators: every JSON response from the portal now sends `Cache-Control: no-store` and `Vary: Accept`. A route that sets a stricter policy of its own keeps it.
+- f96c089: For operators: The repository's own comment-to-code references are now checked for having moved, not only for existing.
+- c3228f3: Fixed: On older Windows-Subsystem installations the engine now identifies the platform by its interop registration rather than by the kernel version string.
+- 240673c: Fixed: On WSL, the "on this computer" rows now start the server inside WSL for you, so an assistant running on Windows can use them.
+- 56a760f: Fixed: `clearotron grant remove --tenant` now refuses when the person has access to everything on the installation. It used to remove the organisation and then warn that nothing they could see had changed.
+  
+  Fixed: Removing somebody whose address is spelled with different capitalisation in different parts of the access file now removes all of them. Half of the entry used to survive, and the command reported success.
+- 56a760f: New: Access can now be narrowed and taken away, not only added to. Somebody who manages one organisation removes that organisation alone. Somebody who can see all of a person removes their access to the installation, and withdraws the keys their AI assistant was using.
+  
+  Fixed: A removal now says plainly when the connector cannot be told about it yet, instead of implying the assistant lost access too.
+- 240673c: Fixed: Somebody you add on the People page can sign in straight away. Before, they were refused until the service restarted with a changed setting.
+- e390417: For operators: The portal's start-up check now says when its engine address is behind a sign-in it cannot pass, instead of reporting that address as reachable.
+- 240673c: Fixed: The demo now removes everything it created when its window closes, and says so. Pass `--keep` to leave the folder and its reports.
+  
+  Fixed: Trying the demo a second time on a machine that has run it before now works. Before, it refused its own folder and suggested dropping a flag that had not been given.
+- 240673c: Fixed: The demo opens ports of its own rather than the ones an installation uses, so the page it points you at is the demo's.
+- 240673c: Fixed: A search now covers every spelling and sound-alike of the name in each category of goods or services the engine judges relevant.
+  
+  Fixed: Before, the added categories were searched for the name exactly and nothing else. The matter frame records each one with the reason it was added.
+- 240673c: Fixed: An off-register search now also covers the channels the matter itself names, not only the account's usual marketplaces.
+  
+  Fixed: A channel no pass ran is now recorded as open rather than described in a note.
+  
+  Fixed: A finding reads what the platform's own record says before calling an owner unidentified.
+- 240673c: For operators: The portal can now call the engine over a local socket instead of a network port, by naming it as its engine address. The deployment check reports that address as wired and says which socket it is.
+- f96c089: Fixed: The run purge no longer deletes a clearance whose report or failure notice has not been sent yet.
+  
+  Fixed: Those runs are marked in the table the purge prints, and removing one now takes a flag that says so.
+  
+  For operators: Every applied purge leaves a record of what it removed, when, and whether any of it was still owed.
+- 1905ea4: Fixed: Saving a territory the engine cannot search now says so, instead of suggesting the kind of entry that was just refused.
+- f1c5925: Fixed: Where a search covers two ratified forms of a name, the report now reasons each form and says which conflicts differ between them.
+  
+  Fixed: Before, both forms were searched but one combined read came back. When the forms read alike the report now says so, rather than leaving it unsaid.
+
+## 0.3.1-beta.4
+
+### Patch Changes
+
+- 6d0c8f5: Fixed: The portal now tells your browser not to store the data its screens read. Those responses carry people's names, company access and run lists, and nothing previously said how long a browser could keep them.
+  
+  For operators: every JSON response from the portal now sends `Cache-Control: no-store` and `Vary: Accept`. A route that sets a stricter policy of its own keeps it.
+
 ## 0.3.1-beta.3
 
 ### Patch Changes

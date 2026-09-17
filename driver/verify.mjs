@@ -10,11 +10,12 @@
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { dirname, join, basename } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
-import { findReceiptViolations, findGridLedgerViolations, findPlatformIdentityViolations, parsePrRiskQueries, MEANING_SEAT } from "./common-law-receipts.mjs";
+import { findReceiptViolations, findGridLedgerViolations, findPlatformIdentityViolations, parsePrRiskQueries, MEANING_SEAT, erroredConnotationQueriesAmong } from "./common-law-receipts.mjs";
 // Conversion 2 — the discriminator the two rulings above key on. PURE-ish: one existsSync-shaped read.
-import { matterFrameWasRecorded } from "./matter-frame-record.mjs";
-import { findConnotationViolations, parsePrRiskResults, MEANING_ANGLES_RE,
-  parseDispositionForm, CONNOTATION_UNRULED_REASONS } from "./connotation-search.mjs";
+import { matterFrameWasRecorded, frameRatifiedForms } from "./matter-frame-record.mjs";
+import { findConnotationViolations, parsePrRiskResults, prRiskPopulation,
+  CONNOTATION_UNMATCHED_MARK, CONNOTATION_NO_RESEMBLANCE_MARK, MEANING_ANGLES_RE,
+  parseDispositionForm, CONNOTATION_UNRULED_REASONS, queryKey } from "./connotation-search.mjs";
 import { formSidecarName, formSidecarPath } from "./disposition-union.mjs";
 // B — the transport's own four failure states. The audit reads the run's records; this file locates them.
 import { auditDispositionCalls, CALL_FAILURE_REASONS } from "./disposition-call-audit.mjs";
@@ -354,12 +355,116 @@ function commonLawMeaningSeat(p, c) {
   try { ledgerRaw = readFileSync(join(dirname(p), `common-law-grid.half-${MEANING_SEAT}.json`), "utf8"); } catch { /* missing → fail-closed below */ }
   if (ledgerRaw == null) return fail(`grid_ledger_missing:common-law-grid.half-${MEANING_SEAT}.json absent while _driver/grid-spec.half-${MEANING_SEAT}.json dictates the meaning sweep`);
   const dictated = Array.isArray(spec?.connotation?.queries) ? spec.connotation.queries : [];
-  let recordedQ;
-  try { recordedQ = new Set(parsePrRiskResults(ledgerRaw).map((e) => String(e?.query ?? "").trim())); }
+  // COMPARED ON A KEY, NOT ON THE RAW TEXT — `queryKey` in connotation-search.mjs, beside the parser,
+  // so there is one author of what "the same query" means. The dictated spelling is the driver's; the
+  // recorded one comes back through a provider that returns typographic punctuation. Measured on a
+  // production clearance, 2026-09-16: one query of sixty-one differed by a single right single quotation
+  // mark where the driver wrote an apostrophe, and the grid had run and recorded every one of them.
+  //
+  // THE ORIGINAL TEXT IS WHAT THE REFUSAL QUOTES, below. Somebody chasing a query that really is missing
+  // needs the spelling the driver asked for, not a flattened key.
+  let recordedRaw;
+  try { recordedRaw = parsePrRiskResults(ledgerRaw).map((e) => String(e?.query ?? "")); }
   catch (e) { return fail(`grid_ledger_unparseable:${String(e.message).slice(0, 80)}`); }
-  const dropped = dictated.filter((q) => !recordedQ.has(String(q).trim()));
-  if (dropped.length)
-    return fail(`connotation_query_unrecorded:${dropped.slice(0, 3).map((q) => abbrev(q, 40)).join(",")}${dropped.length > 3 ? ` (+${dropped.length - 3} more)` : ""}`);
+  // THE REFUSAL NAMES THE FILE IT JOINED AGAINST, because "recorded" is not one question in a run.
+  // A run answers "what did this half record" in four places that each mean something different — this
+  // results ledger, its gap rows, the obligations sidecar, and the final-state receipts audit — and a
+  // sentence that says only "recorded" invites a reader to answer from whichever they happen to open.
+  // Two readers did exactly that on one clearance and reached three different wrong mechanisms, each
+  // from a true measurement of a real record.
+  const LEDGER = `common-law-grid.half-${MEANING_SEAT}.json`;
+  const recordedQ = new Set(recordedRaw.map(queryKey));
+  const dropped = dictated.filter((q) => !recordedQ.has(queryKey(q)));
+  if (dropped.length) {
+    // ── THE REFUSAL SAYS WHAT IT CAN SEE, AND STOPS SHORT OF WHAT IT CANNOT ───────────────────────
+    //
+    // UNMATCHED: something close IS recorded, so the search ran and the two spellings disagree beyond
+    // what the key folds — a re-ordering, a translation, a truncation, a query the provider chose for
+    // itself. Telling the seat to "re-run the missing query" in that case asks for the one thing that
+    // cannot help, and that is what turned one attempt into four on a production clearance.
+    //
+    // NO RESEMBLANCE: nothing recorded looks like it. This used to be reported as ABSENT — "the search
+    // was not run and the seat must run it" — and that is a claim the gate has no way to make. A query
+    // recorded under a translation, a transliteration, or the seat's own rewording resembles nothing and
+    // is not absent; the seat was then told to re-run a search that had already happened, which is the
+    // same loop, one wording-distance further out. The two states are genuinely indistinguishable from
+    // here and always will be: there is no identity to join on, which is why this comparison exists at
+    // all. So the label names the observation and the remedy carries BOTH repairs, cheap either way.
+    //
+    // NO THRESHOLD DECIDES ANYTHING (owner's ruling). The nearest recorded query is shown so a person or
+    // a seat can SEE the difference in one attempt; it never makes the gate pass. A similarity score
+    // that could pass this gate would be a score that can hide a skipped query, which is what the gate
+    // is for.
+    const nearest = (q) => {
+      const words = new Set(queryKey(q).split(" ").filter(Boolean));
+      if (!words.size) return null;
+      let best = null, bestScore = 0;
+      for (const r of recordedRaw) {
+        const rw = queryKey(r).split(" ").filter(Boolean);
+        if (!rw.length) continue;
+        const shared = rw.filter((w) => words.has(w)).length / Math.max(words.size, rw.length);
+        if (shared > bestScore) { bestScore = shared; best = r; }
+      }
+      // A single shared word is a coincidence in a sweep about one mark, where the mark's own name is in
+      // every query. Below half the words in common, say nothing rather than point at a red herring.
+      return bestScore >= 0.5 ? best : null;
+    };
+    // THE SECOND LABEL SAYS WHAT THIS GATE KNOWS, WHICH IS LESS THAN IT USED TO CLAIM.
+    //
+    // It read `[absent from the ledger]`, and that is an assertion the gate cannot make. No near
+    // neighbour means no RECORDED query resembles this one — not that the search never ran. A query that
+    // ran and was recorded under a translation, a transliteration, a re-ordering, or the seat's own
+    // rewording clears no overlap threshold, and was then told to re-run a search that had already
+    // happened. That is the loop this whole gate was filed to break, narrowed but not closed: it needs a
+    // large wording difference now rather than a single apostrophe, and it is still reachable.
+    //
+    // The gate cannot tell the two apart and is not being asked to. There is no identity to join on —
+    // that is the entire reason the dictated-versus-recorded comparison exists. So the label states the
+    // observation, the remedy carries both cases, and no threshold decides which one a seat is told.
+    // ── A QUERY THE PROVIDER REFUSED IS NOT A QUERY NOBODY RAN ────────────────────────────────────
+    //
+    // The plugin's contract is to append `<query> | connotation | <exception>` to the ledger's gaps and
+    // carry on, so a query it threw on says so IN THE FILE THIS GATE JUST READ. The gate did not look:
+    // it refused on receipt membership alone, and a query the provider had already refused got the same
+    // sentence as one nobody ever issued — the two repairs, "edit the wording" and "run it", neither of
+    // which is the remedy when the provider itself declined.
+    //
+    // It still FAILS, and deliberately: `findErroredConnotationQueries` says so in its own words —
+    // laundering an honest error into a clean receipt would be a worse defect than this one. What
+    // changes is only what the seat is told, and therefore how many attempts it spends being told the
+    // wrong thing. On the clearance that prompted this, the half failed eight attempts across two
+    // recovery cycles.
+    //
+    // The missing list is THIS gate's own, joined per half on `queryKey`; the helper joins gap rows on
+    // `norm`, which is the one author of what a gap row names. Two populations, one key.
+    let ledgerParsed = null;
+    try { ledgerParsed = JSON.parse(ledgerRaw); } catch { /* unparseable was refused above */ }
+    const gapRows = (Array.isArray(ledgerParsed) ? ledgerParsed : [ledgerParsed])
+      .flatMap((b) => (Array.isArray(b?.gaps) ? b.gaps : []));
+    const reportedError = new Map(
+      erroredConnotationQueriesAmong(dropped, { gaps: gapRows }).map((e) => [e.query, e.error]));
+    // AND IT SAYS WHEN THE READER REDUCED WHAT IT READ. `parsePrRiskResults` folds rows onto the raw
+    // query text, so its output is smaller than the ledger whenever a query was recorded twice. Every
+    // count taken during one evening's diagnosis was post-fold and nobody had named the raw population,
+    // which made "the seat wrote 59 rows" and "59 survived the fold" the same number and different
+    // facts: one query recorded twice while another was skipped reads exactly like one simply skipped.
+    const pop = prRiskPopulation(ledgerRaw);
+    const foldNote = pop.repeated > 0
+      ? ` (${LEDGER} carries ${pop.rows} row(s) that fold to ${pop.distinct} distinct query(ies): `
+        + `${pop.repeated} repeat a query already counted, so a repeat here may stand where a dictated query is missing)`
+      : "";
+    const parts = dropped.slice(0, 3).map((q) => {
+      const reported = reportedError.get(q);
+      // Named separately because the remedy is different: the search was attempted and the provider
+      // declined it, so re-running it unchanged is the one repair that cannot work.
+      if (reported) return `${abbrev(q, 40)} [not recorded in ${LEDGER} because the provider REPORTED an error on it: ${abbrev(reported, 60)}]`;
+      const n = nearest(q);
+      return n
+        ? `${abbrev(q, 40)} ${CONNOTATION_UNMATCHED_MARK} ${abbrev(n, 40)}] in ${LEDGER} — that is evidence a query LIKE it was recorded there, not that these two are the same query`
+        : `${abbrev(q, 40)} ${CONNOTATION_NO_RESEMBLANCE_MARK} in ${LEDGER}, which is the only file this gate joins against`;
+    });
+    return fail(`connotation_query_unrecorded:${parts.join(",")}${dropped.length > 3 ? ` (+${dropped.length - 3} more)` : ""}${foldNote}`);
+  }
   if (spec?.connotation?.disposition_required === true) {
     const recorded = parsePrRiskResults(ledgerRaw);
     const form = dispositionForm(dirname(p), spec?.connotation?.dispositions_path);
@@ -2249,6 +2354,40 @@ export const validators = {
           return fail(`intake_ask_unanswered:${asks.length - answered}:of:${asks.length}`);
       }
     } catch { /* no sidecar / unreadable — legacy run, gate off */ }
+
+    // ── A TWO-FORM MATTER OWES A READ PER FORM ────────────────────────────────────────────────────
+    //
+    // Synthesis is told to reason each ratified form through the framework and to say which conflicts
+    // move between them — or to state in one line that the reads are the same for both. Until this,
+    // nothing enforced it: the arms on that dictation match the wording, so they red when the prose
+    // moves and cannot red when a model ignores the ask. This is the deterministic floor under it.
+    //
+    // GATED ON THE FRAME HAVING FROZEN MORE THAN ONE FORM, which is why it can exist at all. A run with
+    // no frame, an archived or replayed run whose accepted call predates the field, and every ordinary
+    // single-form run reach `forms.length > 1` as false and leave here untouched — so every one of them
+    // re-verifies byte-identically. Same shape as the intake-asks gate above, and the same reason.
+    //
+    // WHAT IT ASKS FOR IS THE CHEAPEST HONEST THING: each form NAMED in the narrative, or the
+    // stated-alike line. It does not judge the reasoning — a floor that tried would be a worse version
+    // of the refutation pass, which stays the semantic backstop. It judges that the question was
+    // answered at all, which is exactly what was missing: a narrative that never mentions the second
+    // form is indistinguishable from one that examined it and found nothing, and a client who ratified
+    // two forms is choosing between them.
+    try {
+      const forms = frameRatifiedForms(dirname(p));
+      if (forms.length > 1) {
+        const text = String(c ?? "");
+        // The alternative the dictation offers, matched on its own terms rather than by a fixed
+        // sentence: a narrative may state the reads are alike instead of splitting them.
+        const alike = /\bthe reads are the same for both forms\b/i.test(text);
+        if (!alike) {
+          const unnamed = forms.filter((f) => !text.toLowerCase().includes(f.toLowerCase()));
+          if (unnamed.length)
+            return fail(`ratified_form_unread:${unnamed.length}:of:${forms.length}:${abbrev(unnamed[0], 60)}`);
+        }
+      }
+    } catch { /* no frame / unreadable — gate off, exactly as above */ }
+
     // V4-4 item 6 — narrative coverage contract (code-checked, conditional on the closure receipt):
     // a marketplace coverage gap may be stated ONLY as an attempted-and-unreachable fact, never as
     // "commission a re-run" work for a human — the driver already closed or proved-unclosable every

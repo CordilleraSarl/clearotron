@@ -328,6 +328,7 @@ terminal and is rewritten on every start.
 ~/trademark/config/profiles                   the company profiles
 ~/trademark/grants.json                       who may use this install
 ~/trademark/portal-audit.log                  what the portal was asked to do
+~/trademark/telemetry/trademark-mcp-access.jsonl   what a connected assistant asked for, and what it was told
 ~/trademark/portal-local-credential.json      the sign-in this install minted for you
 ```
 
@@ -438,6 +439,8 @@ CLEAROTRON_CUSTOMERS_DIR=/etc/trademark/profiles # your private customer-config 
 CLEAROTRON_BRAND_NAME=Your Firm           # stamped into report titles, the pool index and Excel metadata
 CLEAROTRON_BRAND_TAGLINE=                 # empty means ABSENT: no strapline is rendered at all
 CLEAROTRON_BRAND_PRODUCT=Trademark clearance   # what the deliverable is called
+# Optional: a mail or web address. Preferences links "Clearotron administrator" to it; unset, plain words.
+# CLEAROTRON_ADMINISTRATOR_CONTACT=it@your-firm.example
 
 # ── Register provider (choose ONE) ─────────────────────────────────────
 CLEAROTRON_DATABASE=clarivate       # REQUIRED — corsearch | clarivate | signa | euipo | uspto-local | free-tier

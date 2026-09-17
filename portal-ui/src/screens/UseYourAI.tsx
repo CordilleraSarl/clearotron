@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Use your own AI — two questions, then one panel of steps that never moves.
+// Connect your AI — two questions, then one panel of steps that never moves.
 //
 // ── WHAT THIS REBUILD ANSWERS ────────────────────────────────────────────────────────────────────
 //
@@ -21,7 +21,15 @@
 // beside the list and holds ONE height per card — the tallest any app's steps reach, with every copy
 // done — measured from a hidden copy of every panel rather than guessed, so switching apps or pressing
 // Copy changes nothing around it. Any per-row expansion would move every row beneath it, so there is
-// none.
+// none. The page's two folds open only when the reader opens one.
+//
+// ── THE CONNECTION IS STATED WHERE IT IS KNOWN, AND ONLY THERE ───────────────────────────────────
+//
+// "Connect it" carries a pill saying whether this reader's assistant has been seen calling. The answer is
+// three-valued, and a null — the access log could not be read — draws no pill and no sentence about the
+// connection at all. Once connected the steps fold away under "Setup steps", and a reader who came here
+// from a report's Ask AI is offered the way back to it. Each of those decisions is made in
+// `contract/connectYourAi.ts`, where a test can hand it a null.
 //
 // ── THIS SCREEN HOLDS NO CLIENT TABLE ────────────────────────────────────────────────────────────
 //
@@ -38,15 +46,18 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { ShellContext } from '../shell/AppShell.tsx'
 import { api } from '../contract/api.ts'
-import type { McpAccess, ConnectOffer, ConnectCopy } from '../contract/api.ts'
+import type { McpAccess, ConnectOffer, ConnectCopy, ConnectStep } from '../contract/api.ts'
 import { Icon } from '../components/Icon.tsx'
 import { PageHeader } from '../components/PageHeader.tsx'
+import { reachedFromReport, rememberedReport, withAskOpen } from '../contract/askAi.ts'
+import { connectionPill, continueOffer, foldsSteps, watchForConnected } from '../contract/connectYourAi.ts'
+import { resultPath } from '../nav/nav.config.ts'
 
-/** What the connected assistant can do. His words, four bullets, no jargon. Unchanged, per the brief. */
+/** What the connected assistant can do. His words, four lines, and no claim about how an assistant thinks. */
 const WHAT_YOU_CAN_DO = [
   'Start a clearance and triage what comes back',
   'Watch it run, and add context while it is still early',
-  'Interrogate the reasoning — not just the findings, the thinking behind them',
+  'Examine the reasoning and evidence',
   'Ask what-if: why a finding was rated as it was, what changes if the goods narrow',
 ]
 
@@ -64,12 +75,10 @@ const WHERE: Record<(typeof PLACES)[number], { readonly label: string; readonly 
 }
 
 /**
- * The owner-dictated help link. Its text names the document by what a person searching for it would
- * type, which is why it is the one place on the arriving page the six mechanism words may appear — the
- * browser check exempts exactly this string and nothing else.
+ * The setup guide, at its public home — a document a reader's own AI can open too, which is what "give
+ * your AI the setup guide" asks the reader to do with it.
  */
 const HELP_URL = 'https://github.com/CordilleraSarl/clearotron/blob/main/mcp-server/CONNECT.md'
-const HELP_LINK_TEXT = 'GitHub MCP Connector Documentation'
 
 // A REFUSAL IS A VALUE, NEVER A SWALLOWED EXCEPTION. The one-time reveal below is reachable only if a
 // blocked clipboard comes back as `false`; a bare `catch {}` here would tell a reader we had copied
@@ -122,22 +131,96 @@ const AT_REST: PressState = { copiedAt: null, landedAt: null, landed: null, reve
 /**
  * One app's steps. `measuring` draws the TALLEST state — every secret already copied — for the hidden
  * copy the slot's height is taken from, and binds nothing.
+ *
+ * `folded` draws the steps inside the "Setup steps" fold without a panel of their own, because the fold
+ * is the panel. `watch` is the page's own line under the last step, when there is one to say.
  */
 function StepsPanel({
-  offer, measuring = false, state = AT_REST, onBlock, onSecret,
+  offer, measuring = false, folded = false, watch = null, state = AT_REST, onBlock, onSecret,
 }: {
   readonly offer: ConnectOffer
   readonly measuring?: boolean
+  readonly folded?: boolean
+  readonly watch?: string | null
   readonly state?: PressState
   readonly onBlock?: (i: number, text: string) => void
   readonly onSecret?: (i: number, c: Secret) => void
 }) {
   return (
-    <div className="steps-panel" data-for={measuring ? undefined : offer.id}>
+    <div className={folded ? 'steps-panel-body' : 'steps-panel'} data-for={measuring ? undefined : offer.id}>
       <div className="eyebrow">Steps for</div>
       <h3 className="steps-name">{offer.name}</h3>
-      <ol className="steps">
-        {offer.steps.map((s, i) => {
+      {/* THE PAGE SAYS WHEN IT COULD NOT TELL. `doorKind` answers null for "not read", and its contract
+          says the caller offers both rather than guessing — but the wire carried no door and this panel
+          had no branch for one, so the sign-in steps were drawn as though the door had been read. The
+          steps themselves already carried a sentence promising both ways were shown, which made it a
+          promise the page did not keep: a reader went looking for an alternative that was not there. */}
+      {offer.door === null && offer.altSteps?.length ? (
+        <p className="steps-unknown">
+          We could not check how this Clearotron lets an assistant in, so both ways are below. Try the
+          first — your assistant will tell you if it needs the other.
+        </p>
+      ) : null}
+      <StepList
+        steps={offer.steps} offset={0} watch={watch} measuring={measuring} state={state}
+        onBlock={onBlock} onSecret={onSecret} />
+
+      {/* THE OTHER DOOR'S STEPS, under a heading that says what they are for. OFFSET INDICES, because
+          the copy-flash state is keyed by step index and the two lists share one panel: without it,
+          pressing Copy on the alternative's second step flashes the primary's second step. */}
+      {offer.door === null && offer.altSteps?.length ? (
+        <div className="steps-alt">
+          <h4 className="steps-alt-head">If your assistant asks to be let in another way</h4>
+          <StepList
+            steps={offer.altSteps} offset={offer.steps.length} measuring={measuring} state={state}
+            onBlock={onBlock} onSecret={onSecret} />
+        </div>
+      ) : null}
+
+      {/* THE KEY DOOR, FOLDED, beside a sign-in door on a deployment that runs one. Closed until the reader
+          opens it, with quiet buttons: the sign-in steps above are the way in, and these are for an
+          assistant that asks to be let in another way. The unknown door's heading, because it is the same
+          promise — but not its sentence, because this door WAS read. */}
+      {offer.door === 'sign-in' && offer.keySteps?.length ? (
+        <details className="steps-alt steps-alt-fold">
+          <summary>
+            <span className="steps-alt-head">If your assistant asks to be let in another way</span>
+            <Icon name="chevron" size={15} className="fold-chev" />
+          </summary>
+          <StepList
+            steps={offer.keySteps} offset={offer.steps.length} quiet measuring={measuring} state={state}
+            onBlock={onBlock} onSecret={onSecret} />
+        </details>
+      ) : null}
+    </div>
+  )
+}
+
+/**
+ * One ordered list of steps. Extracted so the alternative an unknown door carries renders through the
+ * SAME code as the primary set — a second copy of this markup is how one of the two lists quietly stops
+ * flashing on copy, or loses a hint, and the one that rots is the fallback nobody looks at.
+ *
+ * `offset` moves this list's indices clear of the other's: the copy-flash state is keyed by step index
+ * and both lists live in one panel. `quiet` draws its buttons as ghost buttons, for a folded list.
+ */
+function StepList({
+  steps, offset, quiet = false, watch = null, measuring = false, state = AT_REST, onBlock, onSecret,
+}: {
+  readonly steps: readonly ConnectStep[]
+  readonly offset: number
+  readonly quiet?: boolean
+  readonly watch?: string | null
+  readonly measuring?: boolean
+  readonly state?: PressState
+  readonly onBlock?: ((i: number, text: string) => void) | undefined
+  readonly onSecret?: ((i: number, c: Secret) => void) | undefined
+}) {
+  const pressable = (flashed: boolean) => `${quiet ? 'btn-ghost btn-sm' : 'btn-primary'}${flashed ? ' is-copied' : ''}`
+  return (
+    <ol className="steps">
+      {steps.map((s, n) => {
+        const i = n + offset
           const c = s.copy
           const flashed = !measuring && state.copiedAt === i
           const landed = measuring && c?.kind === 'secret' ? fill(c, mask('')) : state.landedAt === i ? state.landed : null
@@ -145,7 +228,22 @@ function StepsPanel({
             <li key={i}>
               <div>
                 <div className="step-text"><Marked text={s.text} /></div>
-                {c?.kind === 'block' ? (
+                {/* A BARE VALUE IS ITS BUTTON. An address is pasted, never read back, so the table labels it
+                    and the page draws that button alone — text above it would be a second thing to look at
+                    for one press. A command or a settings block carries no label and is shown in full,
+                    because it is read before it is pasted. */}
+                {c?.kind === 'block' && c.label ? (
+                  <div className="secret-btn">
+                    <button
+                      type="button"
+                      className={pressable(flashed)}
+                      data-step={i}
+                      tabIndex={measuring ? -1 : undefined}
+                      onClick={() => onBlock?.(i, c.text)}
+                    >{flashed ? <><Icon name="check" size={15} />Copied</> : c.label}</button>
+                  </div>
+                ) : null}
+                {c?.kind === 'block' && !c.label ? (
                   <div className="codeblock">
                     <pre>{c.text}</pre>
                     <button
@@ -162,7 +260,7 @@ function StepsPanel({
                     <div className="secret-btn">
                       <button
                         type="button"
-                        className={`btn-primary${flashed ? ' is-copied' : ''}`}
+                        className={pressable(flashed)}
                         data-step={i}
                         tabIndex={measuring ? -1 : undefined}
                         onClick={() => onSecret?.(i, c)}
@@ -186,12 +284,12 @@ function StepsPanel({
                   </>
                 ) : null}
                 {s.hint ? <div className="step-hint"><Marked text={s.hint} /></div> : null}
+                {watch && n === steps.length - 1 ? <div className="step-hint step-watch"><Marked text={watch} /></div> : null}
               </div>
             </li>
           )
         })}
-      </ol>
-    </div>
+    </ol>
   )
 }
 
@@ -221,6 +319,10 @@ export function UseYourAI({ ctx }: { readonly ctx: ShellContext }) {
   const [revealedAt, setRevealedAt] = useState<number | null>(null)
   const [revealed, setRevealed] = useState<string | null>(null)
   const [slotHeight, setSlotHeight] = useState(0)
+  // WHERE THE READER CAME FROM, AND WHICH REPORT THIS BROWSER REMEMBERS — each read once, on arrival. The
+  // marker is in the address, so a reload after connecting in another tab still knows it.
+  const [fromReport] = useState(() => reachedFromReport(window.location.search))
+  const [remembered] = useState(() => rememberedReport())
   const timer = useRef<number | null>(null)
   const probe = useRef<HTMLDivElement | null>(null)
 
@@ -244,6 +346,13 @@ export function UseYourAI({ ctx }: { readonly ctx: ShellContext }) {
   const active = asks ? place : (routes[0] ?? null)
   const here = served.filter((o) => active !== null && o.route === active)
   const chosen = here.find((o) => o.id === picked) ?? null
+
+  // WHAT THE PAGE SAYS ABOUT THE CONNECTION, each decided in the contract from the one three-valued answer.
+  const connected = access?.aiConnected ?? null
+  const pill = connectionPill(connected)
+  const watch = watchForConnected(connected)
+  const folds = foldsSteps(connected)
+  const back = continueOffer({ aiConnected: connected, fromReport, remembered })
 
   // THE SLOT'S HEIGHT IS MEASURED, NOT GUESSED: every panel on this card is drawn, hidden, at the slot's
   // own width, and the tallest wins. Re-measured when the width or the fonts change the answer.
@@ -297,11 +406,24 @@ export function UseYourAI({ ctx }: { readonly ctx: ShellContext }) {
     flash(i)
   }
 
+  // KEYED ON THE APP, so a fold the reader opened for one app is closed again for the next.
+  const panel = chosen ? (
+    <StepsPanel
+      key={chosen.id}
+      offer={chosen}
+      folded={folds}
+      watch={watch}
+      state={{ copiedAt, landedAt, landed, revealedAt, revealed }}
+      onBlock={(i, text) => void copyBlock(i, text)}
+      onSecret={(i, c) => void press(i, c)}
+    />
+  ) : null
+
   return (
     <div className="screen ai-screen">
       <PageHeader
-        title="Use your own AI"
-        lede="Run and interrogate clearances from the assistant you already use — by voice, by email, or just by asking."
+        title="Connect your AI"
+        lede={<>Run and interrogate clearances from the assistant you already use. <span className="lede-opt">Optional</span></>}
       />
 
       <section className="ctx-card ai-can">
@@ -313,7 +435,15 @@ export function UseYourAI({ ctx }: { readonly ctx: ShellContext }) {
       </section>
 
       <section className="ai-connect">
-        <h2 className="ai-connect-head">Connect it</h2>
+        <div className="ai-connect-top">
+          <h2 className="ai-connect-head">Connect it</h2>
+          {pill ? (
+            <span className="conn-state">
+              <span className={pill.on ? 'conn-dot conn-dot-on' : 'conn-dot'} aria-hidden="true" />
+              {pill.label}
+            </span>
+          ) : null}
+        </div>
 
         {!served.length ? <NotOnline /> : (
           <>
@@ -362,23 +492,47 @@ export function UseYourAI({ ctx }: { readonly ctx: ShellContext }) {
                   </div>
                 </div>
 
-                {/* THE RESERVED SLOT, and the hidden copy of every panel its height is taken from. */}
-                <div className="ai-slot" aria-live="polite" style={slotHeight ? { minHeight: slotHeight } : undefined}>
-                  {chosen ? (
-                    <StepsPanel
-                      offer={chosen}
-                      state={{ copiedAt, landedAt, landed, revealedAt, revealed }}
-                      onBlock={(i, text) => void copyBlock(i, text)}
-                      onSecret={(i, c) => void press(i, c)}
-                    />
-                  ) : (
+                {/* THE RESERVED SLOT, and the hidden copy of every panel its height is taken from. Once
+                    connected the steps are a closed fold, and a closed fold reserves nothing: holding the
+                    tallest panel's height open beneath it is the empty space the fold exists to remove. */}
+                <div
+                  className={folds ? 'ai-slot is-folded' : 'ai-slot'}
+                  aria-live="polite"
+                  style={slotHeight && !folds ? { minHeight: slotHeight } : undefined}
+                >
+                  {/* THE WAY BACK, above the steps: the report this reader was on when they went to connect. */}
+                  {back ? (
+                    <div className="back-to-report">
+                      <button
+                        type="button"
+                        className="btn-primary"
+                        onClick={() => ctx.go(withAskOpen(resultPath(back.report.runId, back.report.markSlug)))}
+                      >
+                        <span data-anon="mark">{back.label}</span>
+                      </button>
+                      <span className="back-to-report-line">Back to the report you were reading.</span>
+                    </div>
+                  ) : null}
+                  {folds ? (
+                    <details className="steps-panel steps-fold">
+                      <summary>
+                        <span className="steps-alt-head">Setup steps</span>
+                        <Icon name="chevron" size={15} className="fold-chev" />
+                      </summary>
+                      <div className="steps-fold-body">
+                        {panel ?? (
+                          <span className="steps-empty"><Icon name="arrow-left" size={16} />Select AI to see instructions</span>
+                        )}
+                      </div>
+                    </details>
+                  ) : panel ?? (
                     <div className="steps-panel steps-panel-empty">
                       <span className="steps-empty"><Icon name="arrow-left" size={16} />Select AI to see instructions</span>
                     </div>
                   )}
                   {failed ? <p className="ai-said ai-failed">{failed}</p> : null}
                   <div className="ai-probe" ref={probe} aria-hidden="true">
-                    {here.map((o) => <StepsPanel key={o.id} offer={o} measuring />)}
+                    {here.map((o) => <StepsPanel key={o.id} offer={o} watch={watch} measuring />)}
                   </div>
                 </div>
               </div>
@@ -387,13 +541,12 @@ export function UseYourAI({ ctx }: { readonly ctx: ShellContext }) {
         )}
       </section>
 
-      {/* THE HELP, AS A QUIET NOTICE rather than a fold. It replaced a `<details>` whose link went to a
-          portal route serving the same document; the document's public home is one a reader's own AI can
-          open too, which is what "point your AI at it" asks for. */}
+      {/* THE HELP, AS A QUIET NOTICE rather than a fold. Its button opens the setup guide at its public
+          home, which a reader's own AI can open too — what the line above it asks them to do with it. */}
       <div className="notice quiet ai-help">
         <strong>If it doesn&rsquo;t connect</strong>
-        <p>Point your AI at the full technical setup instructions to diagnose.</p>
-        <p><a href={HELP_URL} target="_blank" rel="noreferrer">{HELP_LINK_TEXT} ↗</a></p>
+        <p>Give your AI the setup guide</p>
+        <p><a className="pill ai-help-guide" href={HELP_URL} target="_blank" rel="noreferrer">Setup guide</a></p>
       </div>
     </div>
   )

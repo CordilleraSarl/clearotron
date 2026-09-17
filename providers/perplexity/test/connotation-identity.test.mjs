@@ -2,12 +2,11 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // Per-query identity of the dictated connotation sweep.
 //
-// The strings here are the REAL ones from the live failure (a CORAL FREEZE clearance
-// run, 2026-07-29 — same probe mark as providers/clarivate's parity fixtures): the
-// driver dictated `提基斯拉什 offensive meaning`, and the sandbox program's stdout carried
-// `提基斯ラッシュ offensive meaning` — the katakana of the sibling Japanese row
-// (`ティキスラッシュ`) fused into the Chinese transliteration. 27 dictated, 27
-// recorded, one dictated query never searched. Every count-based check passed.
+// The fixtures reproduce a TRANSCRIPTION SUBSTITUTION. The sandbox program transcribes the dictated
+// queries into its own source, and one row's script can fuse into another row's transliteration: the
+// two strings differ, the dictated and recorded counts still match exactly, and one dictated query is
+// never searched by anybody. Every count-based check reads clean over it, which is why the join here
+// is on identity and not on a count. Invented marks throughout.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { findUnrecordedConnotationQueries, captureGridFromResponse } from "../src/core.js";
