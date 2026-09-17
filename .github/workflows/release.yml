@@ -1653,13 +1653,19 @@ jobs:
       id-token: write     # the OIDC token npm exchanges for a short-lived credential
     steps:
       - uses: actions/checkout@v7
-      # NO `registry-url:`, and the guard in release-publish-guard.mjs refuses one for a stated reason:
-      # it writes an .npmrc that authenticates with NODE_AUTH_TOKEN, and trusted publishing needs no
-      # registry configured at all, so its presence means somebody is wiring a token. It caught this step
-      # on the first draft, correctly.
+      # `registry-url:` HERE AND NOWHERE ELSE IN THIS FILE, and the comment it replaces said the opposite
+      # for a good reason that has since been ruled on. It writes the .npmrc that authenticates with
+      # NODE_AUTH_TOKEN, and trusted publishing needs no registry configured at all — so anywhere else its
+      # presence still means somebody is wiring a token, and the guard below still refuses it there.
+      #
+      # WHY THIS JOB IS DIFFERENT. `npm deprecate` is a registry WRITE, and the short-lived credential the
+      # OIDC exchange mints for a trusted publish cannot make it: eleven deprecations attempted that way
+      # came back 404 while reads through the same credential succeeded. Owner ruling 2026-09-17 — this one
+      # job reads a granular token with write on this package alone, and publishing stays credential-less.
       - uses: actions/setup-node@v5
         with:
           node-version: 22
+          registry-url: https://registry.npmjs.org
       - run: npm ci
       # EVERY JOB IN THIS FILE RUNS IT, and an arm counts the jobs so a new one cannot quietly skip it.
       # That arm caught this job on its first draft — which is the guard working, since a job that can
@@ -1671,3 +1677,7 @@ jobs:
       # must already be published or the script refuses. There is nothing a branch could poison.
       - name: Deprecate everything below the named stable
         run: node scripts/deprecate-below.mjs --below "${{ inputs.deprecate-below }}"
+        # ON THE STEP, NEVER ON THE JOB. A job-level `env:` hands the token to every step in the job,
+        # including the guard above whose whole purpose is to find one. The guard refuses that spelling.
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_DEPRECATE_TOKEN }}
