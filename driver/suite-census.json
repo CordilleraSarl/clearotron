@@ -5978,8 +5978,8 @@
           "todos": 0
         },
         "composerProduct.test.ts": {
-          "tests": 32,
-          "asserts": 130,
+          "tests": 37,
+          "asserts": 147,
           "skips": 0,
           "todos": 0
         },
@@ -6231,7 +6231,7 @@
         },
         "registerCoverage.test.ts": {
           "tests": 12,
-          "asserts": 36,
+          "asserts": 40,
           "skips": 0,
           "todos": 0
         },
