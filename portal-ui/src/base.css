@@ -380,6 +380,34 @@ html.anon-on [data-anon='mark']:not(.anon-clear) {
   overflow-x: auto;
 }
 
+/* A TABLE THAT CONTINUES PAST THIS WRAPPER'S RIGHT EDGE SHOWS THAT IT DOES. The note further down makes
+   half the argument — a table a reader drags sideways is readable, one printed through itself is not —
+   and this is the other half: a reader has to be able to see that it drags. Ruled 2026-09-17, a
+   scrollbar, always visible, no text.
+
+   THE TWO WAYS OF ASKING FOR ONE CANNOT SIT TOGETHER, and nothing about reading this file would tell
+   you. Putting the standard `scrollbar-width` on the rule above, beside these pseudo-elements, makes the
+   engine take the standard path and IGNORE them — and on the engine these pages render in, that path
+   draws an overlay bar with no layout height at all. Measured on a delivered report at 390px, reading
+   the height the bar takes out of the panel:
+
+       both together          0px
+       pseudo-elements alone  9px
+       standard alone         0px
+
+   So the standard properties sit behind a support query that the engines carrying the pseudo-elements
+   never enter, and each engine gets exactly one instruction. Merging these two blocks back together is
+   the tidy-up that deletes the scrollbar with every check still green, which is why this is written here
+   and pinned by an arm rather than left to be re-derived.
+
+   `--border-strong` is the line the table already sits inside, and it has a real value on both grounds. */
+.table-wrap::-webkit-scrollbar { height: 9px; -webkit-appearance: none; }
+.table-wrap::-webkit-scrollbar-track { background: transparent; }
+.table-wrap::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 5px; }
+@supports not selector(::-webkit-scrollbar) {
+  .table-wrap { scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
+}
+
 table.data {
   width: 100%;
   min-width: 760px;
