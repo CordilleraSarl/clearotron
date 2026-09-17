@@ -60,20 +60,58 @@ export function duplicateNotes(root = ROOT) {
   return { duplicates: waiting.filter((n) => inPre.has(n)), waiting: waiting.length, consumed: consumed.length };
 }
 
-/** The commit that ADDED this note under `pre/`, or null when history cannot answer. */
-export function addedBy(name, root = ROOT) {
+/**
+ * For every note now under `pre/`, the commit that most recently PUT IT THERE.
+ *
+ * ONE WALK OF `.changeset/`, NOT ONE QUERY PER FILE, and that is a correctness fix rather than a saving.
+ * `git log --diff-filter=A -- .changeset/pre/<name>` looks right and lies in two ways. A cut consumes a
+ * note by MOVING it, which git records as a rename and not an add. And a path-limited log simplifies
+ * history: for a note that went into `pre/`, back out, and in again — which is exactly what the note that
+ * prompted this guard did — it reports the FIRST creation and never mentions the release that consumed it.
+ * Measured 2026-09-17: the query named `911b0b4 The report a client opens, redrawn` for a note the beta.6
+ * version commit had just consumed, so the guard refused a tree that was correct.
+ *
+ * `--full-history` stops the simplification, `-M` makes the rename legible, and `--name-status` says where
+ * each file LANDED. The first entry naming a destination under `pre/` is the most recent one, because the
+ * log is newest-first.
+ *
+ * THE TWO FLAGS ARE NOT EQUALLY GUARDED, and that is written down rather than left to be discovered.
+ * Removing `-M` reds the arm for this, because ignoring renames is the original defect and a linear
+ * fixture reproduces it. Removing `--full-history` reds NOTHING, because the simplification it defeats
+ * needs a MERGE in the history and the fixture repository has none — the real case was this repository
+ * with main merged into a branch. So that flag is carried on a measurement rather than on a passing
+ * test, and deleting it because nothing goes red would restore a defect no arm here can see.
+ */
+export function consumedProvenance(root = ROOT) {
+  let out;
   try {
-    const out = execFileSync("git",
-      ["log", "--diff-filter=A", "-1", "--format=%h%x00%an%x00%s", "--", `.changeset/pre/${name}`],
-      // stderr ignored: outside a checkout git writes "fatal: not a git repository", and this function's
-      // answer to that is "no commit found", not a line of noise in the middle of a CI failure.
-      { cwd: root, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
-    if (!out) return null;
-    const [hash, author, subject] = out.split("\0");
-    return { hash, author, subject };
+    out = execFileSync("git",
+      ["log", "--full-history", "-M", "--name-status", "--format=@@%h%x00%an%x00%s", "--", ".changeset/"],
+      { cwd: root, encoding: "utf8", maxBuffer: 32 * 1024 * 1024, stdio: ["ignore", "pipe", "ignore"] });
   } catch {
-    return null;
+    return new Map();   // no history to read — the caller reports that, it does not condemn anything
   }
+  const seen = new Map();
+  let commit = null;
+  for (const line of out.split("\n")) {
+    if (line.startsWith("@@")) {
+      const [hash, author, subject] = line.slice(2).split("\0");
+      commit = { hash, author, subject };
+      continue;
+    }
+    if (!commit || !line.trim()) continue;
+    const parts = line.split("\t");
+    const dest = parts[parts.length - 1];           // A → the path; R → the destination
+    const m = /^\.changeset\/pre\/(.+)$/.exec(dest);
+    if (!m) continue;
+    if (!seen.has(m[1])) seen.set(m[1], commit);    // newest-first, so the first sighting is the latest
+  }
+  return seen;
+}
+
+/** The commit that most recently put this note under `pre/`, or null when history cannot answer. */
+export function addedBy(name, root = ROOT) {
+  return consumedProvenance(root).get(name) ?? null;
 }
 
 /** The commit that consumed this note, as a line for a reader. */
@@ -103,9 +141,10 @@ const VERSION_SUBJECT = /^Release\s/;
 export function misfiledNotes(root = ROOT) {
   const preDir = join(root, ".changeset", "pre");
   if (!existsSync(preDir)) return { misfiled: [], checked: 0, unknown: [] };
+  const provenance = consumedProvenance(root);
   const misfiled = [], unknown = [];
   for (const name of mdIn(preDir, { keepReadme: true })) {
-    const added = addedBy(name, root);
+    const added = provenance.get(name);
     if (!added) { unknown.push(name); continue; }
     if (added.author !== VERSION_AUTHOR || !VERSION_SUBJECT.test(added.subject)) misfiled.push({ name, ...added });
   }

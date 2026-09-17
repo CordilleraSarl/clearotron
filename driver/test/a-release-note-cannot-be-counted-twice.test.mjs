@@ -150,3 +150,39 @@ test("a tree whose history cannot be read gives no verdict either way", () => {
   assert.deepEqual(read.unknown, ["already-published.md"], "it is reported as unread rather than as clean");
   assert.equal(placementMain(root), 2, "could not look is its own exit code, distinct from a pass and a refusal");
 });
+
+// ── THE CASE THAT BROKE THE FIRST IMPLEMENTATION, PINNED ──────────────────────────────────────────
+//
+// A note that is misfiled, moved out to be published, and then consumed by a release properly ends up
+// back under `pre/` — and it is now correct. The obvious query for "which commit put it there",
+// `git log --diff-filter=A -- .changeset/pre/<name>`, answers with the ORIGINAL misfiling and never
+// mentions the release, for two compounding reasons: a cut consumes a note by MOVING it, which git
+// records as a rename rather than an add, and a path-limited log simplifies history straight back
+// through that rename to the file's first creation.
+//
+// Measured on this repository 2026-09-17: the query named the misfiling commit for a note the beta.6
+// version commit had just consumed, so the check refused a tree that was correct. Every future cut
+// would have met the same refusal. `--full-history` is what stops it.
+test("a note misfiled, moved out, then consumed by a release reads as consumed — not as its first sin", () => {
+  const root = repo();
+  commitNote(root, join("pre", "twice-moved.md"), { subject: "a change that filed its note in the wrong pile" });
+  assert.deepEqual(misfiledNotes(root).misfiled.map((m) => m.name), ["twice-moved.md"],
+    "while it sits where no release put it, it is named");
+
+  // Moved out to where a cut can see it.
+  git(root, "mv", ".changeset/pre/twice-moved.md", ".changeset/twice-moved.md");
+  git(root, "commit", "-q", "-m", "move the note where the cut will read it");
+  assert.deepEqual(misfiledNotes(root).misfiled, [], "nothing is in the consumed pile to judge");
+
+  // And consumed by a release, the way a cut does it: a move, authored by the pipeline.
+  git(root, "mv", ".changeset/twice-moved.md", ".changeset/pre/twice-moved.md");
+  git(root, "commit", "-q", "-m", "Release 9.9.9-beta.2",
+    "--author=github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>");
+
+  const { misfiled, unknown } = misfiledNotes(root);
+  assert.deepEqual(unknown, [], "history answers for it");
+  assert.deepEqual(misfiled, [],
+    "the release consumed it, so it belongs where it now sits — reading back past the rename to the "
+    + "original misfiling would refuse a tree that is correct, which is what the first implementation did");
+  assert.equal(placementMain(root), 0);
+});
