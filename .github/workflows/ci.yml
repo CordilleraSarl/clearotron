@@ -91,9 +91,28 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
+  # A JOB THAT HANGS IS INDISTINGUISHABLE FROM ONE THAT IS STILL WORKING, AND THAT IS WHAT THESE BOUND.
+  #
+  # The offline suite has stalled partway through and never ended: the runner stays alive, the log stops
+  # moving, nothing times out, and nothing reports a failure. Observed three times on one branch, always
+  # inside the same two-test region, while this same workflow ran green on main six runs running. Left
+  # alone such a job runs to the platform's own six-hour ceiling, and for those six hours the only way to
+  # tell a stall from a long run is to open the log and compare its last line against the wall clock.
+  #
+  # THE NUMBERS ARE HEADROOM OVER A MEASURED GREEN RUN, not targets. Measured 2026-09-16 on main: the
+  # offline suites 8 minutes, the portal bundle 4, the other two under one each. Each bound below is
+  # several times its job's green cost, so it cannot fail a healthy run — including a branch that adds
+  # a substantial number of tests — and it turns an open-ended silence into a named failure on the job
+  # that caused it.
+  #
+  # THIS DIAGNOSES NOTHING. It makes a stall reportable, which is what the run currently cannot do.
+  # Naming the individual test that hangs needs a per-test bound, a sharper instrument and a separate
+  # change: a per-test bound can fail a legitimately slow test, so it wants sizing against real figures
+  # rather than being added alongside this.
   suites:
     name: The offline suites
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       # A REAL CHECKOUT, WHICH IS LOAD-BEARING AND NOT BOILERPLATE. A large part of this suite reads the
       # files it checks with `git ls-files`, and outside a checkout those guards do not fail — they
@@ -167,6 +186,7 @@ jobs:
   checks:
     name: Lint, licences, tokens and the built bundle
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -215,6 +235,7 @@ jobs:
   build-and-verify:
     name: Build the portal bundle, verify it in a real browser, and scan for secrets
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v7
 
@@ -372,6 +393,7 @@ jobs:
   guards:
     name: The pattern guards
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       # THE WHOLE HISTORY, and it is not caution. The default shallow fetch does not carry the base
       # commit, so `git diff base...HEAD` fails to resolve it — and the way that fails is the shape this
