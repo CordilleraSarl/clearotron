@@ -7329,7 +7329,7 @@ export function fullProseOrdinals(findings) {
     .filter((o) => o != null);
 }
 // ASSEMBLE report.md = the overview shell (front-matter + Actions/Coverage/Methodology) + `# Marks` + the
-// per-card files in render order (composite desc, ordinal asc — mirrors render.mjs:502), `open: true` on the
+// per-card files in render order (composite desc, ordinal asc — mirrors render.mjs `sortedAll`), `open: true` on the
 // single top card. Findings with no card file (a failed report-card, or a secondary finding) are NOT emitted —
 // render.mjs synthesizes them structured-only from findings.json, so nothing is silently dropped. Pure file IO.
 // spec 64 — "### Only you can close these" is CODE-BUILT from the typed actions register (the report-

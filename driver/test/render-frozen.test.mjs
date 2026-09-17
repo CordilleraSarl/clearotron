@@ -1726,7 +1726,8 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // showing the comparison can tell renders apart at all.
 // ── 2026-08-24: THE FREEZE MOVED, AND HERE IS WHY IT HAD TO ────────────────────────────────
 //
-// `render.mjs:856` dropped the entire "What we covered — and what's open" section when the coverage
+// The coverage section `scopeSection` used to render (it was deleted outright in the 2026-09-16
+// report redesign, so there is no live line here to point at) dropped the entire "What we covered — and what's open" section when the coverage
 // ledger had zero rows — no heading, no marker, nothing. A reader who has seen that section on another
 // report could not tell a run that measured nothing from one whose section was not reached, and on the
 // one delivered run in the pool that hits it the internal `Coverage read` line was gone too, so there
