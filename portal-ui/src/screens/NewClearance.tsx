@@ -427,9 +427,13 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   // The rows tag it, and until the reader chooses a search themselves it is the one selected. Nothing is
   // selected on an untouched form — `recommendSearch` answers null until a name or a place is entered —
   // and nothing moves a search the reader picked, a template, or a record being edited.
+  // IT READS WHAT THE PANEL DRAWS, which is the company's own territories when the draft holds none —
+  // the same list `blockers` below is given, and for the same reason. Reading the draft alone, a form
+  // showing four countries recommended nothing and preselected nothing, because the four were never the
+  // reader's own.
   const recommendation = useMemo(
-    () => recommendSearch(levels, names.length, draft.pick.territories),
-    [levels, names.length, draft.pick.territories],
+    () => recommendSearch(levels, names.length, draft.pick.territories.length ? draft.pick.territories : own.territories),
+    [levels, names.length, draft.pick.territories, own.territories],
   )
   useEffect(() => {
     if (pickedByHand || draft.savedSearch || editingSlug || !recommendation) return
@@ -473,7 +477,8 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
       // A BRIEF THAT NAMES NO SEARCH gets the one that fits what it filled in — the same one the rows
       // tag — applied in this same write, so the receipt's Search line says which, and why. Never over
       // a search the reader chose, and never over a template, which carries its own.
-      const fits = recommendSearch(levels, parseNames(after.names).length, after.draft.territories)
+      const fits = recommendSearch(levels, parseNames(after.names).length,
+        after.draft.territories.length ? after.draft.territories : own.territories)
       if (read.product == null && !pickedByHand && !d.savedSearch && fits) {
         after = { ...after, draft: chooseProduct(after.draft, fits.product) }
       }
@@ -508,8 +513,13 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
     // GEOGRAPHY, STATED. The territory list alone could not tell "everywhere" from "I said nothing", and
     // the engine's ladder resolves the second to the account's own territories — so a screen that
     // promised worldwide ran seven countries and no field anywhere disagreed. The stamp says which.
+    //
+    // IT IS ASKED ABOUT THE SAME LIST THE PANEL DRAWS. Silence used to be stamped "worldwide", which is
+    // the one mode the company's own territories may not narrow — so a form showing four countries sent
+    // "everywhere", and the door refused the two searches that read named places while a knockout ran
+    // the world. The product and the inherited list are what tell the three states apart.
     ...(draft.pick.territories.length ? { jurisdictions: [...draft.pick.territories] } : {}),
-    geography: { mode: geographyFor(draft.pick).mode },
+    geography: { mode: geographyFor(draft.pick, activeLevel, own.territories).mode },
     ...(marketplacesApply && parseList(draft.platforms).length ? { platforms: parseList(draft.platforms) } : {}),
     // The ONE toggle in the offering, and only TRUE travels: it can add the native-language
     // investigation and can never take one away, so an explicit false would imply a suppression that

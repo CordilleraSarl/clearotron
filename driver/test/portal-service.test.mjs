@@ -203,6 +203,11 @@ function world(opts = {}) {
     // read as "could not count", never as "no runs today".
     ...(opts.queueDirs ? { queueDirs: () => opts.queueDirs } : {}),
     ...(opts.readBuilt ? { readBuilt: opts.readBuilt } : {}),
+    // The wired register's reach, injected so an arm can drive a Signa-shaped deployment without a
+    // snapshot on disk. `in opts` rather than a truthy test: `undefined` and `null` are two of the
+    // three answers this field has, and a truthy guard would collapse both into "use the default".
+    ...("readTerritories" in opts ? { readTerritories: opts.readTerritories } : {}),
+    ...("readRegisterLabel" in opts ? { readRegisterLabel: opts.readRegisterLabel } : {}),
     ...(opts.upstream ? { upstream: opts.upstream } : {}),
     ...(opts.composeRead ? { composeRead: opts.composeRead } : {}),
     ...(opts.readBudget ? { readBudget: opts.readBudget } : {}),
@@ -3216,4 +3221,101 @@ test("/portal/api/me says which route this install arrived by, as a WORD", async
     "an absolute path reached /portal/api/me — this route publishes no filesystem layout");
   assert.doesNotMatch(wire, /npx |npm run |cd \//,
     "a command line reached the wire; the screen composes the command from the word");
+});
+
+// ── A RUNNING KNOCKOUT IS A KNOCKOUT ON ITS OWN ROW ──────────────────────────────────────────────────
+//
+// `kind` is what Home quotes a turnaround against: a knockout finishes in minutes and a clearance in
+// hours, and there is no third answer. The live row took it from `s.lane` — the runner's queue directory
+// — while the `product` field beside it came from the frozen policy sidecar, so a knockout claimed from
+// any other lane called itself a clearance on the same row that named its knockout product, and the
+// card beside it promised hours for a five-minute search.
+//
+// The queued rows were fixed for exactly this and the live row was left behind, which is why the control
+// here is a SECOND live run rather than a second field: a check that only asserts the knockout would
+// pass against a row that called everything a knockout.
+test("a live run's kind comes from its frozen policy, with the lane as the fallback", () => {
+  const { poolRoot, workspaceRoot } = world();
+  const liveRun = (slug, dirName, status, policy) => {
+    const dir = join(workspaceRoot, "workspace-test", "studio", "prelim-search", slug, dirName);
+    mkdirSync(driverDir(dir), { recursive: true });
+    writeFileSync(join(dir, "status.json"), JSON.stringify({ state: "running", updatedAt: "2026-07-20T09:00:00Z", ...status }));
+    writeFileSync(driverDir(dir, "profile.json"), JSON.stringify({ profileKey: "aurora", name: "Aurora" }));
+    if (policy) writeFileSync(driverDir(dir, "search-policy.json"), JSON.stringify(policy));
+  };
+
+  liveRun("tmp20-ko", "2026-07-20-ko-a", { runId: "ko-live", markName: "KOMARK" }, { level: "knockout-search" });
+  liveRun("tmp21-cl", "2026-07-20-cl-b", { runId: "cl-live", markName: "CLMARK" }, { level: "global-preliminary-search" });
+  // No sidecar at all — a run older than the stamp. The lane is the only evidence there has ever been.
+  liveRun("tmp22-legacy", "2026-07-20-lg-c", { runId: "legacy-live", markName: "LGMARK", lane: "knockout" }, null);
+  // A product the registry cannot place stays a clearance: that is what every listing has always shown
+  // for something it could not identify, and it must not become a knockout by accident.
+  liveRun("tmp23-unknown", "2026-07-20-un-d", { runId: "unknown-live", markName: "UNMARK" }, { level: "no-such-search" });
+
+  const by = Object.fromEntries(scanAccountRuns({ poolRoot, workspaceRoot, account: "aurora" }).map((r) => [r.runId, r]));
+  assert.equal(by["ko-live"].kind, "knockout-batch",
+    "a running knockout reports itself as a clearance, and Home then quotes it hours for a search that takes minutes");
+  assert.equal(by["cl-live"].kind, "clearance",
+    "the control: without it, a row calling everything a knockout passes the assertion above");
+  assert.equal(by["legacy-live"].kind, "knockout-batch", "the lane is still read where there is no sidecar");
+  assert.equal(by["unknown-live"].kind, "clearance", "an unplaceable product is not promoted to a knockout");
+
+  // THE ROW MUST NOT CONTRADICT ITSELF. This is the property the lane could not hold: `kind` and
+  // `product` are now taken from one source, so a row naming a knockout product cannot call itself a
+  // clearance whatever lane it was claimed from.
+  assert.equal(by["ko-live"].product, "knockout-search")
+  assert.equal(by["cl-live"].product, "global-preliminary-search")
+});
+
+// ── THE REGISTER'S REACH ON THE SEARCHES PAYLOAD — the field the whole picker disclosure keys on ─────
+//
+// This field SHIPS and had no arm, which is how it came to be reported as missing from the payload
+// altogether on 2026-09-17. It is omitted when the snapshot does not say, so a deployment whose snapshot
+// was never refreshed looks exactly like a build that never sent it — and the browser's decoder fails
+// open on absence by design, so every territory reads as reachable and nothing anywhere says otherwise.
+//
+// THE THREE ANSWERS ARE THE POINT. A list is "exactly these"; `null` is "no declared restriction", which
+// a global aggregator really does answer; ABSENT is "this deployment did not say". Collapsing any two
+// offers a client zero territories on a production box, or hides a real limit on one.
+test("the searches payload carries the register's reach as THREE answers, never two", async () => {
+  const ten = ["European Union", "United States", "United Kingdom", "France", "Switzerland",
+    "Sweden", "Norway", "Canada", "Singapore", "Australia"];
+
+  const said = await world({ readTerritories: () => ten }).service
+    .route("GET", "/portal/api/searches", CLIENT, {}, {});
+  assert.deepEqual(said.json.territories, ten,
+    "a register that enumerates its coverage must reach the browser, or the picker offers what cannot be searched");
+
+  // `null` — corsearch. A real answer, and it must ARRIVE as null rather than as an absence.
+  const unrestricted = await world({ readTerritories: () => null }).service
+    .route("GET", "/portal/api/searches", CLIENT, {}, {});
+  assert.ok("territories" in unrestricted.json, "no declared restriction is an ANSWER and must be sent");
+  assert.equal(unrestricted.json.territories, null);
+
+  // ABSENT — the snapshot does not say. The key must not appear at all: the decoder reads absence as
+  // "the server did not tell me" and fails open, and a null here would claim the register is unlimited.
+  const silent = await world({ readTerritories: () => undefined }).service
+    .route("GET", "/portal/api/searches", CLIENT, {}, {});
+  assert.equal("territories" in silent.json, false,
+    "a snapshot that does not say must OMIT the field — null would claim no restriction exists");
+});
+
+// THE REGISTER'S NAME RIDES THE SAME PAYLOAD, because the screen has to say what a territory is not
+// available WITH. Without it the marking can only say a territory is unreachable, and the door refuses
+// the same request in a sentence that names the register — one fact, two wordings, which is the thing
+// the disclosure was supposed to stop.
+test("the searches payload names the wired register, and omits the name rather than inventing one", async () => {
+  const named = await world({ readRegisterLabel: () => "Signa" }).service
+    .route("GET", "/portal/api/searches", CLIENT, {}, {});
+  assert.equal(named.json.registerLabel, "Signa",
+    "the screen cannot name the register in its marking unless the server sends the name");
+
+  // A snapshot written before the label shipped carries none. The key must be ABSENT, so the screen
+  // marks the territory without naming a register — the same thing the door's own sentence does.
+  for (const nothing of [null, undefined, ""]) {
+    const silent = await world({ readRegisterLabel: () => nothing }).service
+      .route("GET", "/portal/api/searches", CLIENT, {}, {});
+    assert.equal("registerLabel" in silent.json, false,
+      `a label of ${JSON.stringify(nothing)} must be omitted, never sent as an empty name`);
+  }
 });

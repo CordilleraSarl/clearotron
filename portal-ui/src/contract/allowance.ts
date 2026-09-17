@@ -64,8 +64,12 @@ export function allowanceLine(usage: Usage | null, brand: string): string | null
   // who is refused by the server and a reader who is warned by the screen must meet one sentence.
   if (left === 0) {
     const cap = usage?.dailyRuns ?? 0
+    // NAMED, NOT ADDRESSED — and the same shape as the line below it. "ask your ${who} contact" wrapped
+    // a possessive and a noun around a name that is already the answer, so a deployment with no brand
+    // configured, whose `who` is the words "the operator", told its reader to "ask your the operator
+    // contact to run this one for you". Pinned to the server's own copy by allowanceParity.test.ts.
     return `You have used all ${cap} of this account's searches for today. `
-      + `The allowance resets at midnight UTC — or ask your ${who} contact to run this one for you.`
+      + `The allowance resets at midnight UTC — or ask ${who} to run this one for you.`
   }
 
   // FIVE OR FEWER — what is left, when it comes back, and the way round it, in one line.
