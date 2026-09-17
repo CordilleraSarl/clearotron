@@ -23,7 +23,7 @@
 import { test } from "node:test";
 process.env.CLEAROTRON_MCP_URL ||= "https://mcp.test/mcp";
 import assert from "node:assert/strict";
-import { CLEARED_GROUPS, groupForCleared, clearedNames, recordsByCountry, sweepCounts, courtDecisionsState, localScriptSearched, searchDepthRecord, planTerritoriesOf } from "../publish/search-depth.mjs";
+import { CLEARED_GROUPS, groupForCleared, clearedNames, recordsByCountry, sweepCounts, courtDecisionsState, localScriptSearched, searchDepthRecord, planTerritoriesOf, localLanguageDepth } from "../publish/search-depth.mjs";
 
 // Invented ground throughout. No client content reaches a fixture.
 const AUDIT = `# Negative Results
@@ -201,4 +201,74 @@ test("a deferred territory is never also reported as searched", () => {
 test("a deferral with no jurisdiction is dropped rather than rendered as a blank territory", () => {
   const t = planTerritoriesOf({ deferred_coverage: [{ reason: "nothing names this" }, { jurisdiction: "  " }, { jurisdiction: "US", reason: "" }] });
   assert.deepEqual(t.unreached, [{ jurisdiction: "US", reason: "" }]);
+});
+
+// ── HOW DEEP THE LOCAL-LANGUAGE INVESTIGATION WENT, AGAINST WHAT WAS CONFIGURED ────────────────────
+//
+// The engine can run this shallower than the account asked for. It said so in one place: a sentence a
+// model wrote in the Methodology paragraph. The redesigned report replaces that paragraph with named
+// rows, so a run that went shallow said so on no page at all. These are the four states behind that row.
+
+const lane = (asked, ran, shortfall = asked === "full" && ran !== "full") => ({ asked, ran, shortfall });
+
+test("local-language depth: RAN when every lane reached the depth it was asked for", () => {
+  const d = localLanguageDepth({ zh: lane("full", "full"), ja: lane("candidates", "candidates") });
+  assert.equal(d.state, "ran");
+  assert.deepEqual(d.lanes.zh, { configured: "full", achieved: "full" });
+  assert.deepEqual(d.lanes.ja, { configured: "candidates", achieved: "candidates" });
+});
+
+test("local-language depth: RAN-SHALLOW when a lane falls short of its ask", () => {
+  const d = localLanguageDepth({ zh: lane("full", "candidates") });
+  assert.equal(d.state, "ran-shallow", "a run that asked for full and delivered candidates says so");
+  assert.deepEqual(d.lanes.zh, { configured: "full", achieved: "candidates" });
+});
+
+test("local-language depth: a lane asked and NOT run is short, even beside one that ran", () => {
+  // Not covered by `shortfall`, which only fires on a full ask. A lane asked for candidates that ran
+  // nothing is still less than the matter configured, and folding it into "ran" because a sibling lane
+  // succeeded would report the better half of a partial investigation.
+  assert.equal(localLanguageDepth({ zh: lane("full", "full"), ja: lane("candidates", null) }).state, "ran-shallow");
+});
+
+test("local-language depth: NOT-RUN when lanes were asked and none of them ran", () => {
+  assert.equal(localLanguageDepth({ zh: lane("full", null), ja: lane("candidates", null) }).state, "not-run");
+});
+
+test("local-language depth: NOT-IN-SCOPE for a plain clearance, and for every lane switched off", () => {
+  assert.equal(localLanguageDepth(null).state, "not-in-scope", "no sidecar — the component never ran");
+  assert.equal(localLanguageDepth({}).state, "not-in-scope");
+  assert.equal(localLanguageDepth({ zh: lane("off", null), ja: lane("off", null) }).state, "not-in-scope");
+});
+
+test("local-language depth: an unestablished lane is never quietly the lesser depth", () => {
+  // `ran: null` means the slices settled to nothing readable — the lane cannot say what it delivered.
+  // The jx verdicts report that as unestablished rather than as candidates, and folding it to a depth
+  // here would put a claim no artifact supports onto a client's page.
+  //
+  // ALONE, IT READS AS not-run, AND THAT IS THE CONSERVATIVE ANSWER OF THE TWO AVAILABLE. There is no
+  // "could not establish" among the four states, so the choice is between saying the investigation did
+  // not run and saying it ran shallowly. The second claims coverage this run cannot evidence, which is
+  // the direction that hurts a client; the first understates what may have happened, which a reader
+  // resolves. Understating is the one that is safe to be wrong about.
+  const alone = localLanguageDepth({ zh: { asked: "full", ran: null, shortfall: true } });
+  assert.equal(alone.state, "not-run");
+  assert.equal(alone.lanes.zh.achieved, null, "an unestablished depth must not be reported as a depth");
+
+  // BESIDE A LANE THAT DID RUN it is a shortfall, because then the investigation demonstrably ran and
+  // this part of it demonstrably did not reach what was asked.
+  const beside = localLanguageDepth({ zh: { asked: "full", ran: null, shortfall: true }, ja: lane("candidates", "candidates") });
+  assert.equal(beside.state, "ran-shallow");
+  assert.equal(beside.lanes.zh.achieved, null);
+});
+
+test("the state is derived from the record, and no prose anywhere can move it", () => {
+  // Acceptance 2, asserted rather than asserted-about: the sentence the old Methodology paragraph used
+  // is fed in as audit prose with no lane record beside it, and it changes nothing.
+  const shallowProse = `${AUDIT}\n\nThe local-language investigation ran at a shallower depth than configured.`;
+  assert.equal(searchDepthRecord({ auditMd: shallowProse }).counts.localLanguage.state, "not-in-scope",
+    "prose moved the state — the one thing this field exists to stop");
+  assert.equal(
+    searchDepthRecord({ auditMd: shallowProse, laneDepthVerdicts: { zh: lane("full", "candidates") } }).counts.localLanguage.state,
+    "ran-shallow", "and the record still decides it");
 });
