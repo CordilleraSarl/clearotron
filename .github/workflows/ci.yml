@@ -110,9 +110,27 @@ jobs:
   # change: a per-test bound can fail a legitimately slow test, so it wants sizing against real figures
   # rather than being added alongside this.
   suites:
+    # ── SHARDED, BECAUSE THIS JOB WAS THE WHOLE WALL CLOCK ──────────────────────────────────────────
+    #
+    # Measured on a green run 2026-09-17: this job 12.8 minutes, the portal bundle 4.3, lint 0.4, the
+    # pattern guards 0.2 — the last three beside it, not after it. So CI took as long as this job took,
+    # and nearly all of it is `driver`, 925 of the ~980 test files in the tree, run serially.
+    #
+    # FOUR SHARDS, AND THEY COST NOTHING EXTRA. This repository is public, so GitHub-hosted runners are
+    # free: measured, every run bills zero minutes. Four jobs of four minutes and one job of sixteen are
+    # the same price and a quarter of the wait. Nothing here needs a self-hosted runner, and a public
+    # repository should not have one — a fork's pull request would run its own code on it.
+    #
+    # WHAT MAKES A SHARD SAFE is `scripts/test-full.mjs --shard i/n`: it slices the SORTED file list by
+    # index, so the shards are disjoint and exhaustive as arithmetic rather than as a promise. The two
+    # corpus-guard checks moved to `suites-complete` below, for the reason written there.
     name: The offline suites
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false      # one shard's red must not hide another's
+      matrix:
+        shard: [1, 2, 3, 4]
     steps:
       # A REAL CHECKOUT, WHICH IS LOAD-BEARING AND NOT BOILERPLATE. A large part of this suite reads the
       # files it checks with `git ls-files`, and outside a checkout those guards do not fail — they
@@ -157,21 +175,32 @@ jobs:
       # `tee suite.log` in the checkout, the file exists WHILE the suite runs, and this suite has guards
       # that watch the tree for exactly that: ten arms failed with `~ suite.log — changed by the run`.
       # A check that makes the thing it is checking fail is not a check.
-      - name: The offline suite, and the corpus guards must have looked
+      - name: This shard of the offline suite
         shell: bash
         run: |
           set -o pipefail
           log="${RUNNER_TEMP:-/tmp}/suite.log"
-          npm run test:full 2>&1 | tee "$log"
+          node scripts/test-full.mjs --shard ${{ matrix.shard }}/4 2>&1 | tee "$log"
+          # A SKIPPED GUARD IS FATAL WHEREVER IT APPEARS, so this half stays per-shard: it needs no
+          # knowledge of the other shards to be right, and failing here names the shard that did it.
           if grep -qF '[repo-guard] SKIPPED' "$log"; then
             echo '::error::a repository-scoped guard SKIPPED on a runner that has a checkout — it read no corpus, so its green means nothing. The offending lines follow.'
             grep -F '[repo-guard] SKIPPED' "$log"
             exit 1
           fi
-          grep -qF '[repo-guard] ok' "$log" || {
-            echo '::error::no guard reported that it read the corpus — an absent SKIPPED line is not a pass on its own, because a suite that never ran prints neither marker.'
-            exit 1
-          }
+          # THE AFFIRMATIVE HALF CANNOT LIVE HERE ANY MORE. `[repo-guard] ok` is printed by the guard
+          # tests, which sit in particular files, which land in one shard — so requiring the marker on
+          # every shard would fail the three shards that legitimately do not hold those files. It moves
+          # to `suites-complete`, which reads all four logs together. Dropping it here without putting
+          # it there would be this workflow's own named failure: an absence read as a pass.
+
+      - name: Keep this shard's log for the completeness gate
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: suite-log-${{ matrix.shard }}
+          path: ${{ runner.temp }}/suite.log
+          retention-days: 3
 
       # DELIBERATELY A SECOND RUN OF A CORPUS THE STEP ABOVE ALREADY COVERED, and that is the point.
       # `npm run test:full` now runs every corpus, the provider adapters included, so this step is no
@@ -181,7 +210,63 @@ jobs:
       # and the register adapters are the code that decides whether a clearance can cite a registry at
       # all. The duplicated wall-clock is a few seconds; the failure it covers is a green run over an
       # unexecuted corpus, which is the exact defect this pair of steps was changed to fix.
-      - run: npm run test:providers
+      # DELIBERATELY A SECOND RUN OF A CORPUS THE STEP ABOVE ALREADY COVERED — see the note that was
+      # here before sharding: it is the only execution of the provider adapters that does not depend on
+      # scripts/test-full.mjs being correct. Once, on shard 1: four copies would prove nothing more.
+      - if: matrix.shard == 1
+        run: npm run test:providers
+
+  # ── THE GATE, AND THE ONLY REQUIRED CHECK FOR THE SUITE ─────────────────────────────────────────
+  #
+  # A sharded suite needs one job that answers "did the whole suite run and pass", because branch
+  # protection matches job names and four matrix legs are four names that can each be green while the
+  # set is incomplete. This job is that answer, and it is also where the affirmative guard marker is
+  # checked, across every shard's log at once.
+  #
+  # `if: always()` plus an explicit read of `needs.suites.result` — NOT a bare `needs:` — because a
+  # skipped or cancelled dependency lets a plain `needs:` job be skipped, and a skipped required check
+  # is reported to branch protection as success. That is the exact shape this repository keeps finding:
+  # a green that looked at nothing.
+  suites-complete:
+    name: The offline suites
+    needs: suites
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Every shard ran and passed
+        shell: bash
+        run: |
+          echo "shards reported: ${{ needs.suites.result }}"
+          [ "${{ needs.suites.result }}" = "success" ] || {
+            echo '::error::the sharded suite did not come back success — it was ${{ needs.suites.result }}. A shard that was skipped or cancelled is not a shard that passed.'
+            exit 1
+          }
+
+      - uses: actions/download-artifact@v6
+        with:
+          pattern: suite-log-*
+          path: logs
+
+      - name: All four shard logs are present, and the guards looked
+        shell: bash
+        run: |
+          n=$(find logs -name suite.log | wc -l)
+          echo "shard logs found: $n"
+          [ "$n" -eq 4 ] || {
+            echo "::error::expected 4 shard logs and found $n. A missing log is a shard whose output nobody read, which is not the same as a shard that passed."
+            exit 1
+          }
+          if grep -rqF '[repo-guard] SKIPPED' logs; then
+            echo '::error::a repository-scoped guard SKIPPED in one of the shards.'
+            grep -rF '[repo-guard] SKIPPED' logs
+            exit 1
+          fi
+          grep -rqF '[repo-guard] ok' logs || {
+            echo '::error::no guard in ANY shard reported that it read the corpus. An absent SKIPPED line is not a pass on its own, because a suite that never ran prints neither marker.'
+            exit 1
+          }
+          echo "the corpus guards reported ok across the shards, and none skipped."
 
   checks:
     name: Lint, licences, tokens and the built bundle
