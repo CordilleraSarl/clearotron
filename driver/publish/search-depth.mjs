@@ -104,9 +104,18 @@ export function clearedNames(auditMd, recordIndex = {}) {
  * EVERY COUNTRY THE RUN READ, including the ones that came back clean — those are the whole point. A
  * count keyed off the findings would list only countries with a conflict, which is the gap this closes.
  *
- * @param {string[]} recordFileNames  the `_records/` directory listing, named `<cc>-<id>.json`
+ * THREE-VALUED, in the house pattern outputMeta already uses for a stage's output: `null` in means the
+ * run has NO `_records/` store, and `null` comes back out — we cannot say how many records were read.
+ * An empty ARRAY is the other thing entirely: the store is there and holds nothing, which is a real zero
+ * and renders as one. Collapsing the two is what this fixes; they arrived here as the same `[]` and the
+ * renderer could only drop the section, so a register that archives nothing read as a register nobody
+ * searched.
+ *
+ * @param {string[]|null} recordFileNames  the `_records/` listing, named `<cc>-<id>.json`; null = no store
+ * @returns {object|null} counts by country code, or null when the run cannot say
  */
 export function recordsByCountry(recordFileNames = []) {
+  if (recordFileNames === null) return null;
   const out = {};
   for (const name of recordFileNames) {
     const cc = (String(name).match(/^([a-z]{2})-/i) || [])[1];
@@ -148,6 +157,34 @@ export function courtDecisionsState(caseLawText) {
   return "found";
 }
 
+/**
+ * WHICH TERRITORIES THE RUN SEARCHED, AND WHICH IT COULD NOT REACH — from the register PLAN. PURE.
+ *
+ * The plan is the authority on what was asked of the register; the `_records/` archive is only the
+ * authority on what came back and was kept. Reading "what was searched" off the archive is why a
+ * provider that keeps no records read as a provider nobody asked: no records, no countries, no section.
+ * Both halves are on the plan whether or not anything is archived — `entries[].regions` is what it will
+ * query, and `deferred_coverage` is what this provider does not cover, carrying the reason for each.
+ *
+ * Null for a run with no plan to read, which is an archived or legacy run: that is "cannot say", and it
+ * is not the same answer as a plan that named nothing.
+ *
+ * @param {object|null} plan  the parsed `register-plan.json`, or null when there is none
+ */
+export function planTerritoriesOf(plan) {
+  if (!plan || typeof plan !== "object") return null;
+  const entryRegions = (plan.entries ?? []).flatMap((e) => (Array.isArray(e?.regions) ? e.regions : []));
+  // `plan.regions` is the older shape and is the fallback, not a second source: a plan carrying entries
+  // has already said which regions it will query, and unioning the two would report a region the
+  // compiler moved OUT of `regions` into the deferral list as though it had been searched.
+  const searched = entryRegions.length ? [...new Set(entryRegions.map(String))]
+    : [...new Set((Array.isArray(plan.regions) ? plan.regions : []).map(String))];
+  const unreached = (Array.isArray(plan.deferred_coverage) ? plan.deferred_coverage : [])
+    .map((d) => ({ jurisdiction: String(d?.jurisdiction ?? "").trim(), reason: String(d?.reason ?? "").trim() }))
+    .filter((d) => d.jurisdiction);
+  return { searched, unreached };
+}
+
 /** Was the name searched in a non-Latin script? Read off the plan's own terms, never asserted. PURE. */
 export function localScriptSearched(registerPlan) {
   const entries = Array.isArray(registerPlan?.entries) ? registerPlan.entries : [];
@@ -160,6 +197,9 @@ export function localScriptSearched(registerPlan) {
  * @returns {{schemaVersion: number, cleared: object, counts: object}}
  */
 export function searchDepthRecord({ auditMd = "", recordIndex = {}, recordFileNames = [], commonLawGrid = null, caseLawText = "", registerPlan = null } = {}) {
+  // `recordFileNames: null` travels all the way to the page — see recordsByCountry. The default stays `[]`
+  // because that is "the caller said nothing", not "the store is absent"; only the publish path knows the
+  // difference and it is the one producer.
   const cleared = clearedNames(auditMd, recordIndex);
   const groups = {};
   for (const key of CLEARED_GROUPS) groups[key] = 0;
@@ -169,7 +209,7 @@ export function searchDepthRecord({ auditMd = "", recordIndex = {}, recordFileNa
     cleared: { register: cleared.register, web: cleared.web, groups },
     counts: {
       recordsByCountry: recordsByCountry(recordFileNames),
-      recordsRead: recordFileNames.length,
+      recordsRead: recordFileNames === null ? null : recordFileNames.length,
       sweep: sweepCounts(commonLawGrid, auditMd),
       localScriptSearched: localScriptSearched(registerPlan),
       courtDecisions: courtDecisionsState(caseLawText),

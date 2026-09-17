@@ -23,7 +23,7 @@
 import { test } from "node:test";
 process.env.CLEAROTRON_MCP_URL ||= "https://mcp.test/mcp";
 import assert from "node:assert/strict";
-import { CLEARED_GROUPS, groupForCleared, clearedNames, recordsByCountry, sweepCounts, courtDecisionsState, localScriptSearched, searchDepthRecord } from "../publish/search-depth.mjs";
+import { CLEARED_GROUPS, groupForCleared, clearedNames, recordsByCountry, sweepCounts, courtDecisionsState, localScriptSearched, searchDepthRecord, planTerritoriesOf } from "../publish/search-depth.mjs";
 
 // Invented ground throughout. No client content reaches a fixture.
 const AUDIT = `# Negative Results
@@ -113,4 +113,92 @@ test("the whole record carries a group tally over the closed set only", () => {
   assert.equal(rec.cleared.groups["dead-filing"] + rec.cleared.groups["different-goods"] + rec.cleared.groups.other,
     rec.cleared.register.length, "the tally and the rows disagree");
   assert.equal(rec.counts.courtDecisions, "not-in-scope");
+});
+
+// ── A REGISTER THAT ARCHIVES NOTHING IS NOT A REGISTER NOBODY SEARCHED ──────────────────────────────
+//
+// Both arrived here as `[]` and the page could only drop the section, so a clearance that searched three
+// territories and found a rated conflict in one of them told the reader nothing about the register at
+// all — in the same voice it uses for the things that were deliberately out of scope. Three-valued now,
+// the way a stage's output already is: null means the run cannot say, and a number means it counted.
+
+test("no record store and an empty one are different answers, not the same zero", () => {
+  // The pair that matters. Asserted as a PAIR on purpose: either one alone passes against code that
+  // collapses them, because each is individually what the old behaviour produced for its own input.
+  assert.equal(recordsByCountry(null), null, "no `_records/` store — the run cannot say how many it read");
+  assert.deepEqual(recordsByCountry([]), {}, "a store that is present and empty IS a zero, and reads as one");
+  assert.notDeepEqual(recordsByCountry(null), recordsByCountry([]));
+});
+
+test("the whole record carries the distinction through to what the page reads", () => {
+  const of = (names) => searchDepthRecord({ auditMd: AUDIT, recordFileNames: names }).counts;
+
+  const absent = of(null);
+  assert.equal(absent.recordsByCountry, null);
+  assert.equal(absent.recordsRead, null, "a count of 0 here is a claim the run is not entitled to make");
+
+  const empty = of([]);
+  assert.deepEqual(empty.recordsByCountry, {});
+  assert.equal(empty.recordsRead, 0, "and a real zero must still be a real zero, or this trades one lie for another");
+
+  // The counted case is untouched — the guard against a fix that makes every run say "cannot say".
+  const read = of(["jp-1.json", "jp-2.json", "kr-1.json"]);
+  assert.deepEqual(read.recordsByCountry, { JP: 2, KR: 1 });
+  assert.equal(read.recordsRead, 3);
+});
+
+test("an omitted listing is not a declaration that the store was empty", () => {
+  // The default stays `[]` because only the publish path knows whether the directory exists, and it is
+  // the one producer. This arm pins that the default is a DEFAULT and not the absent case: if someone
+  // later "tidies" it to null, every caller that omits the argument starts reporting "cannot say".
+  assert.equal(searchDepthRecord({ auditMd: AUDIT }).counts.recordsRead, 0);
+});
+
+// ── WHAT WAS SEARCHED IS THE PLAN'S ANSWER, NOT THE ARCHIVE'S ───────────────────────────────────────
+
+test("the searched and unreached territories are read off the plan, with the reason for each", () => {
+  const plan = {
+    entries: [{ regions: ["EU", "GB"] }, { regions: ["GB", "JP"] }, { term: "no regions here" }],
+    deferred_coverage: [
+      { jurisdiction: "US", reason: "outside this register's coverage" },
+      { jurisdiction: "CN", reason: "no index wired on this deployment" },
+    ],
+  };
+  const t = planTerritoriesOf(plan);
+  assert.deepEqual(t.searched, ["EU", "GB", "JP"], "deduped across entries, in plan order");
+  assert.deepEqual(t.unreached, [
+    { jurisdiction: "US", reason: "outside this register's coverage" },
+    { jurisdiction: "CN", reason: "no index wired on this deployment" },
+  ], "the reason travels with the territory — an unnamed gap is a wider gap, not a smaller one");
+});
+
+test("a run with no plan cannot say, and a plan that named nothing said nothing", () => {
+  // The same distinction the record listing makes, for the same reason: collapsing them is what let a
+  // register with no archive read as a register nobody searched.
+  assert.equal(planTerritoriesOf(null), null);
+  assert.equal(planTerritoriesOf(undefined), null);
+  assert.deepEqual(planTerritoriesOf({}), { searched: [], unreached: [] });
+});
+
+test("a deferred territory is never also reported as searched", () => {
+  // The compiler moves an unreachable office OUT of `regions` and into `deferred_coverage`. `plan.regions`
+  // is the OLDER shape and must stay a fallback: unioned with the entries it would report exactly the
+  // territory that was moved out as though it had been queried, which is the false clean the deferral
+  // list exists to prevent.
+  const t = planTerritoriesOf({
+    entries: [{ regions: ["EU"] }],
+    regions: ["EU", "US"],                                  // pre-split shape, still on the artifact
+    deferred_coverage: [{ jurisdiction: "US", reason: "not covered" }],
+  });
+  assert.deepEqual(t.searched, ["EU"], "the entries are the authority where they exist");
+  assert.ok(!t.searched.includes("US"), "a territory that was deferred was reported as searched");
+  assert.deepEqual(t.unreached.map((d) => d.jurisdiction), ["US"]);
+
+  // And the fallback still works where there are no entries at all.
+  assert.deepEqual(planTerritoriesOf({ regions: ["EU", "US"] }).searched, ["EU", "US"]);
+});
+
+test("a deferral with no jurisdiction is dropped rather than rendered as a blank territory", () => {
+  const t = planTerritoriesOf({ deferred_coverage: [{ reason: "nothing names this" }, { jurisdiction: "  " }, { jurisdiction: "US", reason: "" }] });
+  assert.deepEqual(t.unreached, [{ jurisdiction: "US", reason: "" }]);
 });

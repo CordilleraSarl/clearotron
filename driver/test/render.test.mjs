@@ -2887,3 +2887,25 @@ test("the export menu this template draws is the shared one, not a copy of it", 
   // catch one level along. The button itself appears once, and that is the property.
   assert.equal(html.split(EXPORT_TOGGLE).length - 1, 1, "the export button is emitted other than once");
 });
+
+// The country in the Court decisions line comes off the record listing, so a provider that archives
+// nothing leaves it empty — and every branch embedded it mid-sentence. The delivered page read
+// "Case-law research could not be completed for ." on exactly the runs this matters for.
+test("the court-decisions line never ships a dangling clause where the country should be", () => {
+  const depth = (state, byC) => ({ counts: { courtDecisions: state, recordsByCountry: byC } });
+
+  for (const [state, fragment] of [["not-checked", /Case-law research could not be completed/],
+                                   ["none-found", /Court decisions: none found/],
+                                   ["found", /Court decisions were searched/]]) {
+    for (const byC of [null, {}, { WO: 3 }]) {   // no store, an empty store, and international-only
+      const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { ...FULL_COUNTRY_OPTS, searchDepth: depth(state, byC) });
+      assert.match(html, fragment, `${state}: the line itself must still render`);
+      assert.doesNotMatch(html, / for \./, `${state}: a country clause with no country in it reached the page`);
+      assert.doesNotMatch(html, / for <\/p>/, `${state}: the clause was left open`);
+    }
+  }
+
+  // And the country is still named when there IS one — the guard against "fix" it by deleting the clause.
+  const named = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { ...FULL_COUNTRY_OPTS, searchDepth: depth("none-found", { JP: 12 }) });
+  assert.match(named, /Court decisions: none found for Japan\./, "the country drops out of the sentence it belongs in");
+});

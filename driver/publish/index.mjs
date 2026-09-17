@@ -16,7 +16,7 @@ import { buildAudit } from './xlsx.mjs';
 import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, joinFindingToBlock, CLIENT_TIER_BY_COMPOSITE, projectCoverageJudgment } from '../findings-model.mjs';
 import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs';   // — and why an absence did not close
 import { clearanceReportData } from './report-data.mjs';
-import { searchDepthRecord } from './search-depth.mjs';   // how much was read to reach the answer, as counts and tokens
+import { searchDepthRecord, planTerritoriesOf } from './search-depth.mjs';   // how much was read to reach the answer, as counts and tokens
 import { parseFrameworkManifest } from '../framework.mjs';
 import { rollupTokens, servedModels } from '../tokens.mjs';
 import { reportIdentityFor, productCoverageNote, isRegisterOnly } from '../search-policy.mjs';
@@ -845,11 +845,25 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // two must not render the same way. Null on archived runs ⇒ render keeps the prose fallback.
   let scopeBasis = null;
   let searchedJurisdictions = [];
+  // WHAT WAS SEARCHED IS THE PLAN'S ANSWER, NOT THE ARCHIVE'S, and it is carried separately from the
+  // header's list below because the two are used for different things and one of them is deliberately
+  // emptied. The coverage presentation asks which territories the run searched and which it could not
+  // reach; the plan compiles both — entries carry the regions it will query, `deferred_coverage` carries
+  // the ones this provider does not cover with the reason each. A register that archives no records
+  // still has both, which is the whole point: keyed off the record store, a provider that keeps nothing
+  // looked like a provider nobody asked.
+  //
+  // THREE-VALUED like the record listing above it: null means there is no plan to read, so the run
+  // cannot say — an archived or legacy run — and it must not be confused with a plan that named nothing.
+  let planTerritories = null;
   try {
     const plan = JSON.parse(readFileSync(driverDir(runDir ?? dirname(reportMd), 'register-plan.json'), 'utf8'));
     if (plan?.scope_basis === 'worldwide') scopeBasis = 'worldwide';
     searchedJurisdictions = [...new Set((plan?.entries ?? []).flatMap((e) => Array.isArray(e.regions) ? e.regions : []))];
     if (!searchedJurisdictions.length && Array.isArray(plan?.regions)) searchedJurisdictions = [...new Set(plan.regions)];
+    // Derived here, BEFORE the worldwide clearing below — that clearing exists for the header and would
+    // otherwise empty this on exactly the runs that cover the most ground.
+    planTerritories = planTerritoriesOf(plan);
   } catch { /* no plan sidecar — try the instructed scope */ }
   if (!searchedJurisdictions.length) {
     try {
@@ -1106,7 +1120,11 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     searchDepth = searchDepthRecord({
       auditMd: (auditMd && existsSync(auditMd)) ? rdText(auditMd) : '',
       recordIndex: recordsByUri ?? {},
-      recordFileNames: existsSync(recDir) ? readdirSync(recDir) : [],
+      // null, NOT []: a run whose provider archives no records has no `_records/` at all, and an empty
+      // array is a register that was searched and returned nothing. They are different facts and the
+      // page says different things about them, so the distinction this line already computes is kept
+      // rather than thrown away one character later.
+      recordFileNames: existsSync(recDir) ? readdirSync(recDir) : null,
       commonLawGrid: rdJson(join(runBase, 'common-law-grid.json')),
       caseLawText: rdText(join(dirname(reportMd), 'case-law-findings.md')),
       registerPlan: rdJson(driverDir(runBase, 'register-plan.json')),
@@ -1114,7 +1132,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     writeRO('search-depth.json', JSON.stringify(searchDepth, null, 2));
   } catch { /* the depth record is additive — a publish never fails for want of it */ }
 
-  writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, servedModels: served, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', nav: reportNav, chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, recordLinks: officeLinks?.byUri ?? null, providerLabel, seniorRights, findingsSchemaVersion, searchDepth }));
+  writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, servedModels: served, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', nav: reportNav, chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, recordLinks: officeLinks?.byUri ?? null, providerLabel, seniorRights, findingsSchemaVersion, searchDepth }));
   // ONE report (spec 2026-07-30 §5): report.client.html is no longer written. The knockout lane's own
   // collapse note is the precedent: "two renderings of one run is how the wrong link gets sent". The
   // client host serves the same report.html through the portal's readReport() (cleaning built in) — its

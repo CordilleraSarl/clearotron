@@ -61,8 +61,8 @@ const FROZEN_FILES = [
   { path: "audit.md", why: "publish/index.mjs:1022 auditMd, the audit workbook source" },
   { path: "findings.json", why: "publish/index.mjs:715 readStore, the per-finding machine contract" },
   { path: "status.json", why: "publish/index.mjs:913 machineLedgerNote + markName" },
-  { path: "case-law-findings.md", why: "publish/index.mjs:875 clPath, the case-law section" },
-  { path: "common-law-grid.json", why: "publish/index.mjs:1006 commonLawJoinedTerms, common-law coverage" },
+  { path: "case-law-findings.md", why: "`clPath` declared in index.mjs, the case-law section" },
+  { path: "common-law-grid.json", why: "`commonLawJoinedTerms` declared in index.mjs, common-law coverage" },
   // publish/index.mjs — the _driver sidecars it reads by name
   { path: "_driver/receipts.json", why: "publish/index.mjs:761 fetchReceipts" },
   { path: "_driver/senior-rights.json", why: "publish/index.mjs:787 seniorRights" },
@@ -70,12 +70,12 @@ const FROZEN_FILES = [
   { path: "_driver/framework.json", why: "publish/index.mjs, the frozen band vocabulary the run was rated under" },
   { path: "_driver/register-plan.json", why: "publish/index.mjs:846 scopeBasis" },
   { path: "_driver/instructed-scope.json", why: "publish/index.mjs:847 searchedJurisdictions, the fallback for register-plan" },
-  { path: "_driver/enforcer-signals.json", why: "publish/index.mjs:887 esPath" },
+  { path: "_driver/enforcer-signals.json", why: "`esPath` declared in index.mjs" },
   { path: "_driver/predelivery-lint.json", why: "publish/index.mjs:172 lintSink" },
   { path: "_driver/escalation-state.json", why: "publish/index.mjs:173 escSink" },
-  { path: "_driver/reasoning-integrity.json", why: "publish/index.mjs:924 integritySink" },
+  { path: "_driver/reasoning-integrity.json", why: "`integritySink` declared in index.mjs" },
   { path: "_driver/corrections-state.json", why: "publish/index.mjs:174 correctionsSink" },
-  { path: "_driver/search-policy.json", why: "publish/index.mjs:987 searchPolicy, level + stage label" },
+  { path: "_driver/search-policy.json", why: "`searchPolicy` declared in index.mjs, level + stage label" },
   { path: "_driver/profile.json", why: "publish/index.mjs reads the frozen profile; report-registry.mjs:42 republishRun, customer key" },
 ];
 
