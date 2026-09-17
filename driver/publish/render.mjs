@@ -2597,15 +2597,13 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
        completed work appears as numbers and cleared names, never as the engine's account of itself. -->
   ${whatWasSearchedSection(opts, coverage, findings, recordsByUri)}
 
-  <!-- WHICH MODELS SERVED THIS RUN. It used to close the scope fold, and the 2026-09-16 redesign deleted
-       that fold — so the line was re-homed here rather than dropped with its container, which would have
-       removed a statement of provenance from the client's page without anyone ruling that it should go.
-       It sits with the other provenance lines, immediately above the matter and the framework in the
-       footer, and renders as '' on a run that recorded no models, so an archived run republishes exactly
-       as it was delivered. -->
-  ${servedModelsLine(opts.servedModels)}
-
   <footer>
+    <!-- WHICH MODELS SERVED THIS RUN. It used to close the scope fold, and the 2026-09-16 redesign
+         deleted that fold — so the line was re-homed rather than dropped with its container, which
+         would have removed a statement of provenance from the client's page as a side effect of a
+         merge. Owner ruling, 2026-09-17: it belongs in the footer, beside the matter and the framework,
+         which is where a reader who wants to know how the document was made already looks. It renders
+         as '' on a run that recorded no models, so an archived run republishes exactly as delivered. -->${servedModelsLine(opts.servedModels)}
     <span>${productName ? `${esc(productName)}. ` : ''}${FRAMEWORK
         // TWO SENTENCES, and that count is the ruled shape rather than a consequence of trimming.
         //

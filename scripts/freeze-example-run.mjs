@@ -620,7 +620,7 @@ if (proofOk) {
       }
     } else if (name.endsWith(".html") && sA !== sB) {
       const tA = sA.replace(SERVED_LINE_RE, ""), tB = sB.replace(SERVED_LINE_RE, "");
-      if (tA === tB) { aside = ["the scope section's served-models line"]; sA = tA; sB = tB; }
+      if (tA === tB) { aside = ["the footer's served-models line"]; sA = tA; sB = tB; }
     }
     if (sA === sB) {
       note(aside.length

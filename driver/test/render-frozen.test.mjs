@@ -1780,7 +1780,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Advanced again when those four breaks met in one file; see the merge entry above the FROZEN constant.
 // Advanced again by the 2026-09-17 merge recorded above the FROZEN constant: the redesign and this
 // branch in one file, and the provenance line re-homed to the footer. Not licence-only, so this moves too.
-const FROZEN_BEFORE_SPDX = "cc25c49b98937097950a05596cd76459f1179b70aa1b38542ba3d51d0661c341";
+const FROZEN_BEFORE_SPDX = "8b3c70aea890046224a3e34e8ed01fcd9229983348858e6a8390bffa3b39bc37";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2253,7 +2253,7 @@ const FROZEN_BEFORE_SPDX = "cc25c49b98937097950a05596cd76459f1179b70aa1b38542ba3
 // is re-homed to the footer, beside the matter and the framework, and renders '' on a run that recorded no
 // models — so an archived run republishes exactly as it was delivered. The hash below is of that combined
 // file.
-const FROZEN = "edc0ecf6360d03e094ef472bd31ab3c13711694cc92c49231afd377b73751bde";
+const FROZEN = "3a0229390d7ce1d4cb06e7a88731a989233acf0a99511e641e81fa401dc515e9";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

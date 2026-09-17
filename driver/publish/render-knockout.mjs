@@ -1843,6 +1843,10 @@ window.addEventListener('beforeprint',o);})();</script>
     newCaveats.map((c) => inlineMd(c)).join('<br>')}</p></div>` : ''}
 
   <footer>
+    <!-- WHICH MODELS SERVED THIS RUN — the same line, from the same function, as the clearance report's
+         footer. It used to ride the end of the scope block, and the 2026-09-16 redesign took that block
+         off this page; the line is a statement of provenance rather than a piece of the narration that
+         was ruled out, so it moved here instead of going with it. Owner ruling, 2026-09-17. -->${servedModelsLine(servedModels)}
     <span>${productName ? `${esc(productName)}. ` : ''}<br>Matter ${esc(matter || runId || '')}.${issued ? ` Issued ${esc(issued)}.` : ''}</span>
     ${logoLockup({ mark: 16 })}
   </footer>

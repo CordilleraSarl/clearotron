@@ -179,7 +179,7 @@ test("a run whose turns named their models: the frozen copy carries none, and ea
   assert.equal(r.code, 0, r.out);
   assert.match(r.out, /meta\.servedModels differs as expected/, r.out);
   assert.match(r.out, /report-data\.json identical apart from servedModels, which differs as expected/, r.out);
-  assert.match(r.out, /report\.html identical apart from the scope section's served-models line, which differs as expected/, r.out);
+  assert.match(r.out, /report\.html identical apart from the footer's served-models line, which differs as expected/, r.out);
   // Not a vacuous note: the source really rendered the line, and the frozen copy really did not.
   const scratch = /scratch pools kept at (\S+)/.exec(r.out)?.[1];
   assert.ok(scratch, `the scratch pools must be kept to be read: ${r.out}`);

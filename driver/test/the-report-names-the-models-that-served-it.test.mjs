@@ -145,29 +145,38 @@ async function publish(tag, product, rows, prepare = null) {
   return { meta: JSON.parse(read("meta.json")), data: JSON.parse(read("report-data.json")), html: read("report.html") };
 }
 
-/** The rendered scope section alone, so a line elsewhere on the page cannot pass for one in it. */
-function scopeOf(html) {
-  const at = html.indexOf('<details class="scope">');
-  assert.ok(at >= 0, "the page rendered no scope section, so nothing below can be read");
-  const end = html.indexOf("</details>", at);
-  assert.ok(end > at, "the scope section never closes");
+/**
+ * The rendered FOOTER alone, so a line elsewhere on the page cannot pass for one in it.
+ *
+ * This read the scope fold until 2026-09-17. The fold is gone — the redesign took the coverage narrative
+ * off the client's page — and the owner ruled the same day that this line belongs in the footer with the
+ * matter and the framework. What is pinned is unchanged and is the reason the helper exists at all: the
+ * line must be in the REGION that is meant to carry it, not merely somewhere in the document. Widening
+ * these arms to search the whole page would have turned every one of them green while saying nothing
+ * about where a reader meets the sentence.
+ */
+function footerOf(html) {
+  const at = html.indexOf("<footer>");
+  assert.ok(at >= 0, "the page rendered no footer, so nothing below can be read");
+  const end = html.indexOf("</footer>", at);
+  assert.ok(end > at, "the footer never closes");
   return html.slice(at, end);
 }
 
 for (const product of ["clearance", "knockout"]) {
-  test(`a ${product} run publishes the models that served it on meta.json, report-data.json and the scope section`, async () => {
+  test(`a ${product} run publishes the models that served it on meta.json, report-data.json and the footer`, async () => {
     const { meta, data, html } = await publish(`served-${product}`, product, ROWS);
     const ids = ["claude-opus-5", "claude-haiku-4-5-20251001"];
     assert.deepEqual(meta.servedModels, ids, "meta.json");
     assert.deepEqual(data.servedModels, ids, "report-data.json");
-    assert.match(scopeOf(html), /Prepared with Claude: claude-opus-5, claude-haiku-4-5-20251001\./, "the scope section's closing line");
+    assert.match(footerOf(html), /Prepared with Claude: claude-opus-5, claude-haiku-4-5-20251001\./, "the footer's provenance line");
   });
 
   test(`the CONTROL: a ${product} run with no attempt rows publishes no served models and no line`, async () => {
     const { meta, data, html } = await publish(`none-${product}`, product, null);
     assert.equal("servedModels" in meta, false, "meta.json keeps its earlier shape when nothing was read");
     assert.equal(data.servedModels, null, "report-data.json says nothing was read");
-    assert.doesNotMatch(scopeOf(html), /Prepared with/, "no line is rendered for a run with no record");
+    assert.doesNotMatch(footerOf(html), /Prepared with/, "no line is rendered for a run with no record");
   });
 }
 
@@ -260,7 +269,7 @@ for (const product of ["clearance", "knockout"]) {
     const { meta, data, html } = await publish(`jx-only-${product}`, product, null, (runDir) => readingStep(runDir, HAIKU));
     assert.deepEqual(meta.servedModels, [HAIKU], "meta.json");
     assert.deepEqual(data.servedModels, [HAIKU], "report-data.json");
-    assert.match(scopeOf(html), /Prepared with Claude: claude-haiku-4-5-20251001\./, "the scope section's closing line");
+    assert.match(footerOf(html), /Prepared with Claude: claude-haiku-4-5-20251001\./, "the footer's provenance line");
   });
 }
 
@@ -369,7 +378,7 @@ for (const product of ["clearance", "knockout"]) {
       (runDir) => readingThroughTheDoor(runDir, TURNS["answered itself and failed"]));
     assert.deepEqual(meta.servedModels, [], "meta.json says a turn ran and named no model");
     assert.deepEqual(data.servedModels, [], "report-data.json");
-    assert.doesNotMatch(scopeOf(html), /Prepared with/, "no model is named, so no line is rendered");
+    assert.doesNotMatch(footerOf(html), /Prepared with/, "no model is named, so no line is rendered");
   });
 }
 
@@ -576,7 +585,7 @@ for (const product of ["clearance", "knockout"]) {
     const ids = ["claude-opus-4-1-20250805", "claude-sonnet-4-5-20250929"];
     assert.deepEqual(meta.servedModels, ids, "meta.json");
     assert.deepEqual(data.servedModels, ids, "report-data.json");
-    assert.match(scopeOf(html), /Prepared with Claude: claude-opus-4-1-20250805, claude-sonnet-4-5-20250929\./, "the scope section's closing line");
+    assert.match(footerOf(html), /Prepared with Claude: claude-opus-4-1-20250805, claude-sonnet-4-5-20250929\./, "the footer's provenance line");
     assert.doesNotMatch(html, /anthropic\.claude|@20250929|-v1:0/, "no cloud's spelling reaches the page");
   });
 
@@ -589,7 +598,7 @@ for (const product of ["clearance", "knockout"]) {
     ]);
     assert.deepEqual(meta.servedModels, ["Opus", "Sonnet", "Haiku"], "meta.json");
     assert.deepEqual(data.servedModels, ["Opus", "Sonnet", "Haiku"], "report-data.json");
-    assert.match(scopeOf(html), /Prepared with Claude: Opus, Sonnet, Haiku\./, "the scope section's closing line");
+    assert.match(footerOf(html), /Prepared with Claude: Opus, Sonnet, Haiku\./, "the footer's provenance line");
     for (const [where, text] of [["meta.json", JSON.stringify(meta)], ["report-data.json", JSON.stringify(data)], ["the page", html]])
       assert.doesNotMatch(text, COMPANY, `${where} carries no deployment name`);
   });
@@ -602,7 +611,7 @@ for (const product of ["clearance", "knockout"]) {
     ], (runDir) => readingThroughTheDoor(runDir, SERVED_BY_DEPLOYMENT));
     assert.deepEqual(meta.servedModels, ["claude-opus-5", "Sonnet", "Haiku"], "meta.json");
     assert.deepEqual(data.servedModels, ["claude-opus-5", "Sonnet", "Haiku"], "report-data.json");
-    assert.match(scopeOf(html), /Prepared with Claude: claude-opus-5, Sonnet, Haiku\./, "the scope section's closing line");
+    assert.match(footerOf(html), /Prepared with Claude: claude-opus-5, Sonnet, Haiku\./, "the footer's provenance line");
     for (const [where, text] of [["meta.json", JSON.stringify(meta)], ["report-data.json", JSON.stringify(data)], ["the page", html]])
       assert.doesNotMatch(text, COMPANY, `${where} carries no deployment name`);
   });
@@ -615,7 +624,7 @@ for (const product of ["clearance", "knockout"]) {
     ]);
     assert.deepEqual(meta.servedModels, ["Opus", "Sonnet", "Haiku"], "meta.json");
     assert.deepEqual(data.servedModels, ["Opus", "Sonnet", "Haiku"], "report-data.json");
-    assert.match(scopeOf(html), /Prepared with Claude: Opus, Sonnet, Haiku\./, "the scope section's closing line");
+    assert.match(footerOf(html), /Prepared with Claude: Opus, Sonnet, Haiku\./, "the footer's provenance line");
     for (const [where, text] of [["meta.json", JSON.stringify(meta)], ["report-data.json", JSON.stringify(data)], ["the page", html]])
       assert.doesNotMatch(text, COMPANY, `${where} carries no deployment name`);
   });
@@ -627,7 +636,7 @@ for (const product of ["clearance", "knockout"]) {
     ]);
     assert.deepEqual(meta.servedModels, ["Fable"], "meta.json");
     assert.deepEqual(data.servedModels, ["Fable"], "report-data.json");
-    assert.match(scopeOf(html), /Prepared with Claude: Fable\./, "the scope section's closing line");
+    assert.match(footerOf(html), /Prepared with Claude: Fable\./, "the footer's provenance line");
     for (const [where, text] of [["meta.json", JSON.stringify(meta)], ["report-data.json", JSON.stringify(data)], ["the page", html]])
       assert.doesNotMatch(text, COMPANY, `${where} carries no deployment name`);
   });
@@ -636,15 +645,15 @@ for (const product of ["clearance", "knockout"]) {
     const { meta, data, html } = await publish(`fable-own-id-${product}`, product, [stageRow(1, "fable", "claude-fable-5-1")]);
     assert.deepEqual(meta.servedModels, ["claude-fable-5-1"], "meta.json");
     assert.deepEqual(data.servedModels, ["claude-fable-5-1"], "report-data.json");
-    assert.match(scopeOf(html), /Prepared with Claude: claude-fable-5-1\./, "the scope section's closing line");
+    assert.match(footerOf(html), /Prepared with Claude: claude-fable-5-1\./, "the footer's provenance line");
   });
 
   test(`the CONTROL: a ${product} run on Codex publishes its ids as reported`, async () => {
     const { meta, data, html } = await publish(`codex-${product}`, product, [stageRow(1, "opus", "gpt-5.6-sol", "openai-agent")]);
     assert.deepEqual(meta.servedModels, ["gpt-5.6-sol"], "meta.json");
     assert.deepEqual(data.servedModels, ["gpt-5.6-sol"], "report-data.json");
-    const scope = scopeOf(html);
-    assert.match(scope, /Prepared with: gpt-5\.6-sol\./, "the scope section's closing line");
+    const scope = footerOf(html);
+    assert.match(scope, /Prepared with: gpt-5\.6-sol\./, "the footer's provenance line");
     assert.doesNotMatch(scope, /Claude/, "a Codex run is not prepared with Claude");
   });
 }
