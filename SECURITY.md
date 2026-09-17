@@ -26,7 +26,7 @@ affected versions, and a fix or a written decision not to fix. We will credit yo
 ask us not to.
 
 **Never attach a run artifact to a report.** Reports, audit workbooks, run directories and pool
-contents can carry client names, marks and matters. Describe the shape of the data instead, or
+contents can carry company names, marks and matters. Describe the shape of the data instead, or
 reproduce it against the repo's synthetic fixtures.
 
 ## What is in scope
@@ -42,8 +42,8 @@ In particular, we want to hear about anything that breaks these:
 - **Fail-closed construction.** The HTTP face refuses to start without an audience, an issuer, and an
   identity gate. Any path that serves a request with authentication silently absent is in scope.
 - **The dev portal's loopback bind.** `driver/dev-portal.mjs` must refuse every non-loopback host.
-- **Client-facing surfaces leaking internals.** An env var name, a switch name, or an internal path
-  rendered into a report or a client-visible error.
+- **Company-facing surfaces leaking internals.** An env var name, a switch name, or an internal path
+  rendered into a report or a company-visible error.
 - **Traversal and injection** into artifact reads, pool paths, or run directories.
 
 [`docs/SECURITY.md`](docs/SECURITY.md) documents the whole envelope — what protects what, and where
