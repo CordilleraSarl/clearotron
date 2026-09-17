@@ -6,8 +6,8 @@
 // territories by display name ("United States", "European Union" — driver/compose-read.mjs
 // PROMPT_TERRITORIES, mirroring portal-ui composerLevers), and those names flowed verbatim into
 // `region:` clauses because corsearch's offices.translate is an ISO passthrough that ASSUMES codes.
-// Corsearch answers an unknown multi-word region value with HTTP 500 — not a 400 — so auto-recovery
-// classified the failure transient and burned its park budget re-sending the same malformed query.
+// That provider answers an unknown multi-word region value as a server error rather than a bad request,
+// so auto-recovery classified the failure transient and burned its park budget re-sending it.
 // The run died at fan-in with terminalKind:repeat-signature.
 //
 // The register wire vocabulary is CODES (providers/corsearch/src/index.js: "UPPERCASE 2-letter
