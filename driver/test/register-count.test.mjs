@@ -659,3 +659,36 @@ test("the receipts ledger records an approximation as one, not as a failed call"
   assert.equal(row.floor, 10000);
   assert.equal(row.cause, undefined, "an answered call carries no failure cause");
 });
+
+// ── WHAT THE CLIENT ACTUALLY READS WHEN THE REGISTER ANSWERED WITH A FLOOR ───────────────────────────
+//
+// The disclosure above rides the artifact. This is the only surface the figures reach a client on, and
+// until now a floor rendered there as "not available" — the same phrase as a register this deployment
+// could not reach. Two different facts, one sentence, and the reader acts on the wrong one: "not
+// available" sends somebody to look elsewhere for a number that was in fact supplied.
+//
+// The register's own figure, as a number. Ruled 2026-09-17.
+test("a register that answered with a floor shows the floor, not 'not available'", () => {
+  const entry = { classScope: "all-classes", classes: [],
+    counts: { identical: { total: 3 }, containing: { total: null, approximate: true, floor: 10000 } } };
+  const line = countLine(entry);
+  assert.match(line, /containing: more than 10,000/,
+    "the register's own figure is what the client is shown, with the thousands separator a reader expects");
+  assert.doesNotMatch(line, /containing: not available/,
+    "a floor is an answer — phrasing it as the unreachable case is the defect this closes");
+});
+
+test("'not available' still means no figure at all, and a floor is never read as a total", () => {
+  // Both halves, because a rule that renders the floor is satisfied by one that renders it EVERYWHERE,
+  // which would turn a register nobody could reach into a confident number.
+  const unreachable = { classScope: "all-classes", classes: [],
+    counts: { identical: { total: 3 }, containing: { total: null, unavailable: "the US index is not configured" } } };
+  assert.match(countLine(unreachable), /containing: not available/,
+    "a register with no figure at all keeps the phrase that says so");
+
+  // And the floor must not be laundered into the plain count form, which reads as an exact total.
+  const floored = { classScope: "all-classes", classes: [],
+    counts: { containing: { total: null, approximate: true, floor: 10000 } } };
+  assert.doesNotMatch(countLine(floored), /(^|[^n])10,000 containing/,
+    "rendered as a bare count, a floor would read as an exact total — the more-than is the whole point");
+});

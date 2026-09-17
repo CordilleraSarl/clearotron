@@ -528,6 +528,19 @@ export function countLine(entry) {
     const c = entry.counts[p.key];
     const word = p.glance ?? p.label.toLowerCase();
     if (Number.isFinite(c?.total)) return `${c.total} ${word}`;
+    // A REGISTER THAT ANSWERS WITH A FLOOR HAS ANSWERED. Some registers stop counting and report
+    // "more than ten thousand" rather than a total; that is the register's own figure and it is what
+    // the client is shown, as a number. Rendering it as "not available" beside a register that could
+    // not be reached at all tells a reader the same thing about two different facts, and the one the
+    // reader would act on — go and look elsewhere — is wrong for this one.
+    //
+    // No sentence, no adjective: the rest of this line is figures and what they counted, and a
+    // qualification written here would be the only prose on it.
+    if (c?.approximate === true && Number.isFinite(c?.floor)) {
+      return `${word}: more than ${c.floor.toLocaleString("en-US")}`;
+    }
+    // Left for a register this deployment could not reach or could not ask. Those have no figure at
+    // all, which is what this phrase now means and the only thing it means.
     return `${word}: not available`;
   });
   const scope = entry.classScope === "all-classes"
