@@ -85,7 +85,17 @@ on:
   # time. Then nothing again for the next hour, through twelve intervals it should have taken.
   #
   # So treat this as a floor, not a clock. `*/5` on a public repository is what GitHub feels like giving
-  # you; a version sitting cut and unpublished may wait an hour for it.
+  # you, and "an hour" was optimistic. Measured 2026-09-17 across the eight scheduled runs before it, the
+  # seven consecutive gaps ran 2h08, 2h36, 2h57, 3h48, 4h31, 5h09 and 5h28 — a mean near four hours, and
+  # not once the five minutes the expression asks for. A version sitting cut and unpublished can wait
+  # most of a working day for this.
+  #
+  # WHICH MATTERS MOST EXACTLY WHEN THE OTHER COLLECTOR HAS GIVEN UP. The version pull request merges
+  # itself with the built-in token, and a push made with that token starts no run — so the push path
+  # below never sees it. If the dispatched cut's wait has already expired, as it does when that pull
+  # request sat blocked, this schedule is the ONLY thing left holding the release, at the cadence above.
+  # A push to main with an ordinary credential publishes it immediately, and that is worth reaching for
+  # rather than waiting on this.
   #
   # AND THE NET HAS NOT CAUGHT ANYTHING YET. Two stable releases have gone out and NEITHER was published
   # by this cron: 0.1.1 by a merge of an unrelated pull request at 16:17Z, 0.1.2 by another at 17:14Z.
