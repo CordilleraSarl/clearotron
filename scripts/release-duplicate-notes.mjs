@@ -35,7 +35,7 @@
 // state on a tree that has never pre-released. Neither is a defect, but a run that enumerated nothing
 // because it was pointed at the wrong place must not read as a pass, so the count of what was compared is
 // printed on success and a missing `.changeset/` is a refusal rather than a clean answer.
-import { readdirSync, existsSync } from "node:fs";
+import { readdirSync, existsSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
@@ -124,7 +124,36 @@ export function consumedBy(name, root = ROOT) {
 // subject of that commit are how it is recognised, and both are the release pipeline's own doing rather
 // than a convention anybody types.
 const VERSION_AUTHOR = "github-actions[bot]";
-const VERSION_SUBJECT = /^Release\s/;
+
+// THE VERSION COMMIT HAS TWO NAMES, AND THIS CHECK RUNS WHERE BOTH ARE LIVE.
+//
+// On `main` it reads "Release 0.3.2-beta.6", because the squash that merges the version pull request
+// takes the pull request's title. ON THE VERSION BRANCH ITSELF it reads whatever the cut named it, and
+// the cut runs this same check before the merge — so a discriminator built from main's history alone
+// refuses every version pull request, calling the notes it has just consumed misfiled by the very commit
+// that consumed them. Measured 2026-09-17: it blocked a beta cut on its first live run, naming both
+// waiting notes against `Cut a version (beta)`.
+//
+// So the branch-side subject is DERIVED from the workflow that writes it rather than restated here. A
+// restated copy is a second place to keep in step, and it is exactly the copy that was missing.
+const RELEASED_SUBJECT = /^Release\s/;
+
+/** The subject the cut gives its own commit, read from the workflow that sets it. */
+export function cutCommitSubject(root = ROOT) {
+  try {
+    const wf = readFileSync(join(root, ".github", "workflows", "release.yml"), "utf8");
+    return /^\s*commit-message:\s*['"]([^'"]+)['"]/m.exec(wf)?.[1] ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/** Did a release put this note here — under either of the two names that commit goes by? */
+export function isVersionCommit(commit, cutSubject) {
+  if (commit.author !== VERSION_AUTHOR) return false;
+  if (RELEASED_SUBJECT.test(commit.subject)) return true;
+  return Boolean(cutSubject) && commit.subject.startsWith(cutSubject);
+}
 
 /**
  * Notes sitting in the consumed pile that no cut put there — written straight into `.changeset/pre/`.
@@ -142,13 +171,15 @@ export function misfiledNotes(root = ROOT) {
   const preDir = join(root, ".changeset", "pre");
   if (!existsSync(preDir)) return { misfiled: [], checked: 0, unknown: [] };
   const provenance = consumedProvenance(root);
+  const cutSubject = cutCommitSubject(root);
   const misfiled = [], unknown = [];
   for (const name of mdIn(preDir, { keepReadme: true })) {
     const added = provenance.get(name);
     if (!added) { unknown.push(name); continue; }
-    if (added.author !== VERSION_AUTHOR || !VERSION_SUBJECT.test(added.subject)) misfiled.push({ name, ...added });
+    if (!isVersionCommit(added, cutSubject)) misfiled.push({ name, ...added });
   }
-  return { misfiled, checked: misfiled.length + (mdIn(preDir, { keepReadme: true }).length - unknown.length - misfiled.length), unknown };
+  return { misfiled, unknown, cutSubject,
+    checked: mdIn(preDir, { keepReadme: true }).length - unknown.length };
 }
 
 export function placementMain(root = ROOT) {
@@ -157,8 +188,14 @@ export function placementMain(root = ROOT) {
     console.log("release-duplicate-notes: no .changeset/pre/ in this tree — nothing has been consumed yet.");
     return 0;
   }
-  const { misfiled, unknown } = misfiledNotes(root);
+  const { misfiled, unknown, cutSubject } = misfiledNotes(root);
   const total = mdIn(preDir, { keepReadme: true }).length;
+  if (total && !cutSubject) {
+    console.error("release-duplicate-notes: could not look — the release workflow's `commit-message:` could "
+      + "not be read, and that is half of what tells a release's own commit from a hand-filed note. Judging "
+      + "on the other half alone is what refused a correct version pull request once already.");
+    return 2;
+  }
   if (total && unknown.length === total) {
     console.error("release-duplicate-notes: could not look — no commit could be found for any of the "
       + `${total} note(s) under .changeset/pre/. This check reads history to tell a note a cut consumed `

@@ -18,7 +18,7 @@ import { execFileSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { duplicateNotes, main, misfiledNotes, placementMain } from "../../scripts/release-duplicate-notes.mjs";
+import { duplicateNotes, main, misfiledNotes, placementMain, cutCommitSubject } from "../../scripts/release-duplicate-notes.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
@@ -102,11 +102,21 @@ test("no release note in THIS tree is counted twice", () => {
 // directory that is not a checkout answers nothing at all.
 const git = (cwd, ...args) => execFileSync("git", args, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
 
-const repo = () => {
+const repo = ({ workflow = true } = {}) => {
   const d = tree();
   git(d, "init", "-q");
   git(d, "config", "user.email", "nobody@example.invalid");
   git(d, "config", "user.name", "Nobody");
+  // A fixture repository models a repository, and this check derives half its discriminator from the
+  // release workflow. A fixture without one is not a cleaner fixture, it is a tree the check correctly
+  // refuses to judge — which is its own arm, below, and not the state the others want to be in.
+  if (workflow) {
+    mkdirSync(join(d, ".github", "workflows"), { recursive: true });
+    writeFileSync(join(d, ".github", "workflows", "release.yml"),
+      "jobs:\n  version:\n    steps:\n      - with:\n          commit-message: 'Cut a version'\n");
+    git(d, "add", "-A");
+    git(d, "commit", "-q", "-m", "the workflow this tree cuts with");
+  }
   return d;
 };
 
@@ -185,4 +195,51 @@ test("a note misfiled, moved out, then consumed by a release reads as consumed �
     "the release consumed it, so it belongs where it now sits — reading back past the rename to the "
     + "original misfiling would refuse a tree that is correct, which is what the first implementation did");
   assert.equal(placementMain(root), 0);
+});
+
+// ── THE VERSION COMMIT HAS TWO NAMES, AND THIS CHECK RUNS WHERE BOTH ARE LIVE ──────────────────────
+//
+// On `main` it reads "Release 0.3.2-beta.6", because the squash that merges the version pull request takes
+// the pull request's title. On the version BRANCH it reads whatever the cut named it — `Cut a version
+// (beta)`, from the workflow's own `commit-message:`. The cut runs this check before that merge, so a
+// discriminator built from main's history alone refuses every version pull request, naming the notes it
+// has just consumed as misfiled by the commit that consumed them.
+//
+// It did exactly that on its first live run and blocked a beta cut. These arms are why it cannot again.
+test("a note consumed under EITHER name the version commit goes by is where it belongs", () => {
+  const root = repo();
+  assert.equal(cutCommitSubject(root), "Cut a version", "the branch-side name is read, not restated");
+
+  const bot = "--author=github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>";
+  note(root, join("pre", "on-main.md"));
+  git(root, "add", "-A");
+  git(root, "commit", "-q", "-m", "Release 9.9.9-beta.4", bot);
+  note(root, join("pre", "on-the-version-branch.md"));
+  git(root, "add", "-A");
+  git(root, "commit", "-q", "-m", "Cut a version (beta)", bot);
+
+  assert.deepEqual(misfiledNotes(root).misfiled, [],
+    "both names are the same commit at different moments; refusing one of them refuses every cut");
+  assert.equal(placementMain(root), 0);
+});
+
+test("the two names are not a licence for any bot commit to file a note", () => {
+  const root = repo();
+  const bot = "--author=github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>";
+  note(root, join("pre", "by-a-bot-doing-something-else.md"));
+  git(root, "add", "-A");
+  git(root, "commit", "-q", "-m", "Bump a dependency", bot);
+  assert.deepEqual(misfiledNotes(root).misfiled.map((m) => m.name), ["by-a-bot-doing-something-else.md"],
+    "the author alone is not the discriminator — a release says which release it is");
+});
+
+test("a workflow this cannot read makes the discriminator incomplete, and it says so", () => {
+  const root = repo({ workflow: false });   // no release.yml at all
+  note(root, join("pre", "consumed.md"));
+  git(root, "add", "-A");
+  git(root, "commit", "-q", "-m", "Release 9.9.9-beta.5",
+    "--author=github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>");
+  assert.equal(cutCommitSubject(root), null);
+  assert.equal(placementMain(root), 2,
+    "judging on half the discriminator is what refused a correct version pull request once already");
 });

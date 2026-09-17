@@ -706,8 +706,8 @@
           "todos": 0
         },
         "a-release-note-cannot-be-counted-twice.test.mjs": {
-          "tests": 9,
-          "asserts": 27,
+          "tests": 12,
+          "asserts": 33,
           "skips": 0,
           "todos": 0
         },
