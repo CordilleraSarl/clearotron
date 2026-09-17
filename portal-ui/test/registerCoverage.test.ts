@@ -100,10 +100,14 @@ test('suggestions OFFER a territory the register cannot reach, and say so', () =
     'a region is being offered on a search that reads one country')
 })
 
-test('addTerritory ACCEPTS one outside coverage, and still refuses one the product cannot take', () => {
+test('addTerritory REFUSES one outside coverage, and still refuses one the product cannot take', () => {
+  // THE RULE TURNED OVER HERE, owner 2026-09-17. It used to accept a territory outside coverage and let
+  // the report disclose it as not searched; the engine refuses such a search outright now, so accepting
+  // it would compose a request the door is about to reject. The reader still SEES the suggestion and
+  // still sees why — that is the screen's half, pinned below — and it does not enter the draft.
   const d = EMPTY_DRAFT
-  assert.deepEqual(addTerritory(d, 'Germany', MULTI, ['European Union']).territories, ['Germany'],
-    'the add path still drops a territory the reader deliberately chose')
+  assert.deepEqual(addTerritory(d, 'Germany', MULTI, ['European Union']).territories, [],
+    'a territory the register cannot reach entered the draft, and the door will refuse the search')
   assert.deepEqual(addTerritory(d, 'European Union', MULTI, ['European Union']).territories, ['European Union'])
   assert.deepEqual(addTerritory(d, 'Germany', MULTI, null).territories, ['Germany'], 'unrestricted still adds')
   assert.deepEqual(addTerritory(d, 'Germany', MULTI).territories, ['Germany'], 'and so does an older server')
@@ -155,15 +159,32 @@ test('NewClearance threads coverage into BOTH the suggestion list and the add pa
   // neither the suggestion list nor the chips is the same silence with the argument still passed.
   assert.match(src, /reachesTerritory\(t, registerTerritories\)/,
     'the screen threads coverage and then says nothing about it — which is the defect, not the fix')
-  // WHERE'S OWN LEVEL: the search the reader chose, or none while the form's preselection is following
-  // the places (NewClearance's `whereLevel`) — the same product the picker and the add path are fitted to.
-  assert.match(src, /reaches\{' '\}\n\s*\{vocabularyFor\(whereLevel, registerTerritories\)\.length\}/,
-    'the screen never states, once, what this deployment\'s register reaches')
-  // BOTH FIGURES SCOPED TO THE PRODUCT. `registerTerritories.length` is the covered set whole, and a
-  // Full country search can name no regions — so a region the register covers is not one of "the
-  // territories you can name here", and the sentence would overstate the reach on that product.
-  assert.match(src, /\{offerableFor\(whereLevel\)\.length\} territories you can name here/,
-    'the denominator is not the vocabulary this product actually offers')
+  // A FLOOR ON WHAT WAS READ. Every assertion here is a match against a file this test opened itself,
+  // and a file that came back empty or truncated would fail them all for the wrong reason — or, if any
+  // were ever inverted, pass them all. The screen is thousands of lines; a few hundred is already wrong.
+  assert.ok(src.length > 20000, `the screen source read back as ${src.length} bytes — this arm read nothing`)
+
+  // IT NAMES THE REGISTER, and it takes the name off the wire. Without this the line can say a territory
+  // is unavailable but not what it is unavailable WITH, while the door refuses the same request in a
+  // sentence that names it — one fact in two wordings.
+  assert.match(src, /const registerLabel = /, 'the screen must read the register name off the payload')
+
+  // ONE AUTHOR FOR THE LINE. The chips, the suggestion note and the review dialog all show the same
+  // sentence, and it is composed in the contract. A screen that assembles its own copy of it is how the
+  // two halves drift, which this repository has already paid for once with the spent-allowance line.
+  assert.match(src, /notAvailableLine\(/, 'the screen must take the line rather than write one')
+  assert.doesNotMatch(src, /register deferred/,
+    'the screen still carries the superseded wording beside the ruled one')
+
+  // AND IT CANNOT BE ADDED. `addTerritory` refuses it as the rule; this is the reader's answer, so the
+  // control says no before they press it rather than swallowing the press.
+  assert.match(src, /disabled=\{!reachesTerritory\(t, registerTerritories\)\}/,
+    'an unreachable suggestion is still pressable, so the reader presses it and nothing happens')
+
+  // THE COVERAGE PARAGRAPH IS OUT, owner 2026-09-17: the form offers only what the register can search,
+  // so a paragraph explaining what it cannot search explains a gap that is not there.
+  assert.doesNotMatch(src, /territories you can name here/,
+    'the coverage paragraph is back, and it describes an offering the form no longer makes')
 })
 
 // ──, fixed here because a red main blocks every merge ──────────────────────────────────────────

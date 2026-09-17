@@ -78,9 +78,15 @@
 //                               the citation gate only noticed when an edit above shifted it one line
 //                               onto a lone brace. CONTRIBUTING.md's rule is the fix: cite the symbol,
 //                               which is both correct and the thing that makes a citation checkable.)
-//   · publish/render.mjs:372    `hasOnField` sits in the same object as `findings: g` — the group and
-//                               its summary travel together. (:1952 in the same file is the UNGUARDED
-//                               one below; the two sites are unrelated.)
+//   · publish/render.mjs `hasOnField` sits in the same object as `findings: g` — the group and its
+//                               summary travel together. (CITED BY SYMBOL AND NO LINE, for the reason
+//                               given two entries above: the number here was :372, and on the tree
+//                               before this edit that line was a display-vocabulary comment, not
+//                               `hasOnField` at all. The gate only noticed when an edit above shifted
+//                               it onto a blank line. The sibling ":1952" that stood here named no
+//                               symbol and pointed at unrelated prose on the same tree, so it is gone
+//                               rather than renumbered — a line nobody can check is what this block
+//                               exists to argue against.)
 //   · publish/xlsx.mjs:319,587  `anyHit` and `commonLawUnlogged` are derived from the exact rows the
 //                               sheet then writes, in the same builder.
 //   · reasoning-tripwires.mjs:465  `material` is written onto the row it describes.

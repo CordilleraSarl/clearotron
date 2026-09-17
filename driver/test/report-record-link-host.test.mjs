@@ -226,8 +226,12 @@ for (const id of Object.keys(PROVIDERS)) {
     // The strict parse must be the one that ran. A schema slip drops publishReport into its LENIENT
     // branch, which quarantines the offending finding and renders a degraded document — and every
     // assertion below would then be judging a page that never had the links in it. Counted from the
-    // per-finding audit ref, which the renderer emits for every card whether or not it carries a link.
-    const cards = [...html.matchAll(/audit ref F\d+/g)].length;
+    // per-finding card ANCHOR, which the renderer emits for every card whether or not it carries a link.
+    // It counted "audit ref F<n>" until that marker went: the audit reference is the engine's handle for
+    // a finding and no longer prints on a client's card. The property counted is the same one — a marker
+    // per rendered finding — but a counter keyed to a string the product stopped emitting reads every
+    // document as quarantined, which is exactly what it did.
+    const cards = [...html.matchAll(/<div class="card[^"]*" id="c\d+">/g)].length;
     assert.equal(cards, 2,
       `${id}: ${cards} of the fixture's 2 findings rendered — publish fell into the lenient/quarantine ` +
       `branch, so everything below would be judging a degraded document`);

@@ -258,7 +258,10 @@ test("a minter that WRITES while running --check is caught, not logged as curren
   const dir = mkdtempSync(join(tmpdir(), "minters-contract-"));
   const sentinel = join(dir, "state");
   try {
-    writeFileSync(sentinel, "0");
+    // A CLEAN TREE, which is the only state the accusation is now made from: an empty reading stands for
+    // `git status --porcelain` on a tree nobody has written to, so a change appearing during the
+    // minter's run has no other author available.
+    writeFileSync(sentinel, "");
     // Honours the contract: reports, changes nothing.
     writeFileSync(join(dir, "mint-honest.mjs"), `process.exit(0);\n`);
     // Ignores it: re-mints and reports clean, which is the harmful form.
@@ -272,6 +275,32 @@ test("a minter that WRITES while running --check is caught, not logged as curren
     assert.equal(r.stale.length, 0, "and it is not filed as merely stale — different remedy");
     // THE CONTROL. Without it, a probe that flagged everything would satisfy the half above.
     assert.ok(!r.wrote.some((w) => /mint-honest/.test(w.m)), "the minter that honoured the contract is not accused");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("a tree that was ALREADY dirty accuses nobody — the probe says it could not look", async () => {
+  // THE RED THAT TEACHES RERUNS. This probe asks "did the tree move", not "did this process write", and
+  // inside the suite it runs as a subprocess of one test file while every other file in the shard runs
+  // beside it. A neighbour writing anywhere in the repository moved the snapshot and the minter was
+  // named for it — measured on a commit whose whole diff was one stylesheet and a release note, red
+  // once and green on a rerun of the same bytes.
+  //
+  // Both directions are driven, because a probe that simply stopped accusing would satisfy the first.
+  const { checkAll } = await import("../../scripts/generated-files-are-current.mjs");
+  const dir = mkdtempSync(join(tmpdir(), "minters-dirty-"));
+  const sentinel = join(dir, "state");
+  try {
+    // Somebody else has already written: the reading is non-empty before any minter runs.
+    writeFileSync(sentinel, " M some/other/file.txt");
+    writeFileSync(join(dir, "mint-writes.mjs"),
+      `import { writeFileSync } from "node:fs";\n`
+      + `writeFileSync(${JSON.stringify(sentinel)}, " M some/other/file.txt\\n M neighbour/wrote.txt");\nprocess.exit(0);\n`);
+
+    const r = checkAll({ dir, root: dir, log: () => {}, readTree: () => readFileSync(sentinel, "utf8") });
+    assert.deepEqual(r.wrote, [], "a minter was accused on a tree somebody else was already writing to");
+    assert.equal(r.unattributable.length, 1, "and the movement is reported rather than swallowed");
+    assert.deepEqual(r.unattributable[0].moved, ["neighbour/wrote.txt"],
+      "the probe must name WHAT moved — a verdict with no paths cannot be acted on");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 

@@ -15,7 +15,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import {
   EMPTY_DRAFT, REGIONS, COUNTRIES, tierOf, vocabularyFor, territoryMatches, addTerritory,
-  removeTerritory, geographyFor, geographyNote, nativeLanguageControl, toggleNativeLanguage,
+  removeTerritory, takeOverOwnTerritories, notAvailableLine, geographyFor, geographyNote, nativeLanguageControl, toggleNativeLanguage,
   chooseProduct, blockers, nameBudget, machineryFor, composeSaved, draftFromSaved, inherited, readiness,
   missingPieces,
   MAX_TERRITORIES, checksSummary, runsNote, turnaround, effortUnits,
@@ -86,9 +86,32 @@ test('one country REPLACES on a Full country search; it stacks everywhere else',
 
 // ── the geography STAMP: everywhere and silence are different searches ───────────────────────────────
 
-test('the draft states its geography MODE — an empty list is worldwide, not silence', () => {
-  assert.deepEqual(geographyFor(draft()), { mode: 'worldwide', territories: [] })
+test('the draft states its geography MODE — and there are THREE, because the offering has three', () => {
+  // Nothing set and nothing inherited: still "the requester named none". The panel draws a Worldwide
+  // chip and the engine, with nothing to resolve, searches everywhere — but the STATEMENT is not
+  // "worldwide", which would instruct the engine that a company's territories may not narrow this.
+  assert.deepEqual(geographyFor(draft()), { mode: 'account-default', territories: [] })
+  assert.deepEqual(geographyFor(draft(), MULTI), { mode: 'account-default', territories: [] })
   assert.deepEqual(geographyFor(draft({ territories: ['France'] })), { mode: 'named', territories: ['France'] })
+
+  // THE THIRD: the reader named none and the company has its own. Those four are what the panel draws,
+  // so they are what the request has to be about — "worldwide" is the one mode they may not narrow, and
+  // the engine refuses the two searches that read named places when it arrives with none.
+  const FOUR = ['United States', 'United Kingdom', 'European Union', 'Canada']
+  assert.deepEqual(geographyFor(draft(), MULTI, FOUR), { mode: 'account-default', territories: FOUR })
+  assert.deepEqual(geographyFor(draft(), null, FOUR), { mode: 'account-default', territories: FOUR },
+    'before a search is picked the reader has still named no places, and the company still has four')
+
+  // WHAT THE READER SET WINS over what they inherit — inheriting is what happens in its absence.
+  assert.deepEqual(geographyFor(draft({ territories: ['France'] }), MULTI, FOUR),
+    { mode: 'named', territories: ['France'] })
+
+  // THE FLOOR, on a different member of the class: the search that IS worldwide stays worldwide however
+  // many territories the company has. The engine refuses "account-default" on it by name — it accepts no
+  // narrowing — so a rule keyed on the draft alone would break the one product it must not touch.
+  assert.deepEqual(geographyFor(draft(), GLOBAL, FOUR), { mode: 'worldwide', territories: [] })
+  assert.equal(GLOBAL.geography, 'worldwide, and nothing else',
+    'the floor above is keyed on this sentence; if the offering restates it, the floor stops holding')
 })
 
 // ── the product decides the controls, and each says WHY at the control ───────────────────────────────
@@ -119,12 +142,12 @@ test('the native-language investigation is a toggle on exactly one product, auto
 test('switching product DROPS what the new one cannot hold — never leaves it set but hidden', () => {
   const rich = draft({ product: MULTI.key, territories: ['European Union', 'France'], nativeLanguage: true })
   // to a worldwide-only search: no territories at all
-  assert.deepEqual(chooseProduct(rich, GLOBAL), { product: GLOBAL.key, territories: [], nativeLanguage: false })
+  assert.deepEqual(chooseProduct(rich, GLOBAL), { product: GLOBAL.key, territories: [], replacesOwnTerritories: false, nativeLanguage: false })
   // to a one-country search: the first COUNTRY survives, the region does not
-  assert.deepEqual(chooseProduct(rich, FULL), { product: FULL.key, territories: ['France'], nativeLanguage: false })
+  assert.deepEqual(chooseProduct(rich, FULL), { product: FULL.key, territories: ['France'], replacesOwnTerritories: false, nativeLanguage: false })
   // to a knockout: territories are legal, the toggle is not
   assert.deepEqual(chooseProduct(rich, KNOCKOUT),
-    { product: KNOCKOUT.key, territories: ['European Union', 'France'], nativeLanguage: false })
+    { product: KNOCKOUT.key, territories: ['European Union', 'France'], replacesOwnTerritories: false, nativeLanguage: false })
   // and back to the one that offers it — the toggle does not come back on by itself
   assert.equal(chooseProduct(chooseProduct(rich, GLOBAL), MULTI).nativeLanguage, false)
 })
@@ -311,7 +334,7 @@ test('a saved search reads back as a draft — and a product the offering no lon
   )
   // Read back THROUGH the product's own rules: a Full country search holds one country, so the record's
   // second territory does not survive into a form that cannot express it.
-  assert.deepEqual(back, { product: FULL.key, territories: ['France'], nativeLanguage: false })
+  assert.deepEqual(back, { product: FULL.key, territories: ['France'], replacesOwnTerritories: false, nativeLanguage: false })
   assert.equal(draftFromSaved({ base: 'prelim-jx', scope: {} }, PRODUCTS), null,
     'a retired level as a base opens READ-ONLY rather than being reshaped into the nearest live product')
   assert.equal(draftFromSaved({}, PRODUCTS), null)
@@ -425,4 +448,63 @@ test('the picker and the composer keep the name vocabulary they had', () => {
   assert.ok(ALL_TERRITORIES.includes('European Union'), 'the picker vocabulary is still names')
   assert.equal(isKnownTerritory('EU'), false,
     'the NAME check must not start answering for codes — the composer reads it, and its list is names')
+})
+
+// ── taking the company's own territories over ───────────────────────────────────────────────────────
+
+test("removing one of the COMPANY'S OWN takes the rest over as the draft's own named list", () => {
+  const took = takeOverOwnTerritories(draft(), ['European Union', 'United States', 'China'], 'China')
+  assert.deepEqual([...took.territories], ['European Union', 'United States'])
+  assert.equal(took.replacesOwnTerritories, true)
+  // And the stamp follows: these are NAMED now, not inherited. The company's profile no longer speaks
+  // for this request, so a territory added to it between the plan and the run cannot walk back in.
+  assert.deepEqual(geographyFor(took, MULTI, ['European Union', 'United States', 'China']),
+    { mode: 'named', territories: ['European Union', 'United States'] })
+})
+
+test('removing the ONLY one leaves worldwide — the chip does not come back', () => {
+  // THE WHOLE REASON THE FLAG EXISTS, and the defect it prevents. A company whose one default territory
+  // the register cannot reach: the requester is refused, removes it, and — without this — the draft
+  // names none again, the company's list is inherited again, and the territory they just removed is
+  // back. They would be unable to run any search at all, which is exactly what the owner's ruling of
+  // 2026-09-17 forbids: removable, and continue.
+  const took = takeOverOwnTerritories(draft(), ['China'], 'China')
+  assert.deepEqual([...took.territories], [])
+  assert.deepEqual(geographyFor(took, MULTI, ['China']), { mode: 'worldwide', territories: [] },
+    'the company list was inherited again and the removed territory came back')
+})
+
+test('CONTROL — a draft that never took over still inherits, so the two silences stay apart', () => {
+  // Without this the arm above passes on a `geographyFor` that answered `worldwide` for every empty
+  // draft, which would send "my company's territories may not narrow this" on behalf of every
+  // requester who simply had not named any. The two are different searches and the wire carries which.
+  assert.deepEqual(geographyFor(draft(), MULTI, ['China']),
+    { mode: 'account-default', territories: ['China'] })
+  assert.equal(draft().replacesOwnTerritories, false, 'an untouched draft starts out having taken nothing over')
+  // A draft that took over and then NAMED something is plainly named — the flag changes nothing there.
+  assert.deepEqual(geographyFor({ ...draft({ territories: ['France'] }), replacesOwnTerritories: true }, MULTI, ['China']),
+    { mode: 'named', territories: ['France'] })
+})
+
+test('the takeover survives a product change, because every product can express it', () => {
+  const took = takeOverOwnTerritories(draft({ product: MULTI.key }), ['European Union', 'China'], 'China')
+  assert.equal(chooseProduct(took, KNOCKOUT).replacesOwnTerritories, true)
+  // Even where the product drops the territories themselves: the statement is about whose they are.
+  assert.equal(chooseProduct(took, GLOBAL).replacesOwnTerritories, true)
+  assert.deepEqual([...chooseProduct(took, GLOBAL).territories], [])
+})
+
+// ── the one line a screen shows for a territory the register cannot search ──────────────────────────
+
+test('the not-available line is the owner\'s ruled bytes, and names no register when there is none', () => {
+  assert.equal(notAvailableLine(['China'], 'Signa'), 'China \u00b7 not available with register Signa')
+  assert.equal(notAvailableLine(['China', 'Japan'], 'Signa'), 'China, Japan \u00b7 not available with register Signa')
+  // NO NAME TO USE — the clause goes, exactly as the door's own sentence drops it. Printing the
+  // provider key instead would put our vocabulary on a client's screen.
+  assert.equal(notAvailableLine(['China']), 'China \u00b7 not available')
+  assert.equal(notAvailableLine(['China'], null), 'China \u00b7 not available')
+  assert.equal(notAvailableLine(['China'], '   '), 'China \u00b7 not available',
+    'a blank label was printed as a register name')
+  // The suggestion row already prints the territory, so the line carries no name of its own there.
+  assert.equal(notAvailableLine([], 'Signa'), 'not available with register Signa')
 })

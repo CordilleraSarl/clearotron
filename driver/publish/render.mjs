@@ -59,6 +59,16 @@ let SEARCHED_JUR = null;
 let SCOPE_WORLDWIDE = null;
 // T7 — the two deterministic evidence joins (set per render from opts):
 let CASE_LAW_BY_ORD = new Map();   // E5: ordinal → grounded case-law profile
+// Whether the case-law pass found anything: 'found' | 'none-found' | 'not-checked' | null.
+// The CARD strand is suppressed on the two states that mean there is no precedent to cite, because the
+// profile body is then the engine's account of WHY — adapter names, session error codes, which sources
+// were out of scope — a true sentence about the machinery and not the client's answer, and the Court
+// decisions section states that outcome in the reader's own words already.
+//
+// NULL IS NOT ONE OF THEM. A report with no court state carries no Court decisions section either (it
+// is full-country only), so suppressing there would take case-law off the page with nothing left
+// saying so. Absence of a state is not a statement that nothing was found.
+let COURT_DECISIONS = null;
 let ENFORCER_SIGNALS = new Map();  // E6: registration uri (lowercase) → {aggression, oppositions, owner}
 // WP-receipts W2 — per-render provider record-link origin + label, resolved by publish from the run's
 // OWN _driver/receipts.json provider (never the currently-configured provider — a re-published archive
@@ -143,11 +153,19 @@ function frameworkTickIndex(findings) {
 // verdict with EVERY condition, "Why <band>" as the four answers with the basis each rests on, the
 // highest exposure, and what was searched to get there. Nothing here is composed — the conditions are
 // the sidecar's own client-voice clauses, the answers are the engine's, and the coverage line is counts.
-function ratingExtras(fm, findings, coverage, fourAnswers, opts, bandWord) {
+function ratingExtras(fm, findings, coverage, fourAnswers, opts, bandWord, conditionsInVerdict = false) {
   const out = [];
-  const conds = clientConditions(VERDICT_INFO || {});
-  if (conds.length) out.push(`<div class="gconds-wrap"><span class="gk">Conditions</span><ul class="gconds">${
-    conds.map((c) => `<li>${esc(c)}</li>`).join('')}</ul></div>`);
+  // THE CONDITIONS HAVE ONE HOME PER PATH, AND IT IS NEVER NONE. Where the verdict row could take
+  // them — a sidecar whose composed statement carries the "conditional on:" lede — they render there,
+  // inside the verdict, which is where the mock puts them and where they read as the terms the verdict
+  // is conditional on rather than a list beside it. Where it could not, this row renders exactly as it
+  // did: the legacy gauge has no lede to hang them from, and dropping the row there would hide every
+  // condition on precisely the archived runs that cannot be re-rendered with better text.
+  if (!conditionsInVerdict) {
+    const conds = clientConditions(VERDICT_INFO || {});
+    if (conds.length) out.push(`<div class="gconds-wrap"><span class="gk">Conditions</span><ul class="gconds">${
+      conds.map((c) => `<li>${esc(c)}</li>`).join('')}</ul></div>`);
+  }
   const fa = fourAnswers && typeof fourAnswers === 'object' ? fourAnswers : null;
   if (fa) {
     const rows = FOUR_ANSWER_LABELS.map(([key, label], i) => {
@@ -240,8 +258,27 @@ function frameworkGauge(fm, findings, coverage = [], fourAnswers = null, opts = 
       ? (bindRecommendation(fm.recommendation, VERDICT_INFO.verdict, []) || VERDICT_INFO.tier || '')
       : (fm.recommendation || fm.overall_label || '');
   const recLabel = VERDICT_INFO?.statement ? 'Verdict' : 'Recommendation';
+  // THE VERDICT CARRIES EVERY CONDITION, NOT THE FIRST AND A COUNT. The composed statement ends
+  // "(and N more)" because it is also a ONE-LINE surface — the email lede, the registry row — where a
+  // list cannot go. On the page there is room for all of them, and a condition a client is told exists
+  // but is not told is one they cannot act on. The lede is taken from the statement's OWN prefix rather
+  // than re-composed, so the tier wording stays the engine's and only the truncated tail is replaced;
+  // the clauses are the sidecar's client-voice ones, the same list the separate row used to carry.
+  // The legacy `gauge()` below keeps the composed line as it stands: an archived run with no framework
+  // sidecar renders byte-identically, which is the contract stated there.
+  // THE LIST RENDERS ON BOTH PATHS. A sidecar with a composed statement gets the lede and its
+  // conditions; a LEGACY one — reasons, no statement, no client-voice clause — has no lede to match, and
+  // dropping the list there would hide every condition on exactly the archived runs that cannot be
+  // re-rendered with better text. Those still render under the bound recommendation, which is where
+  // they were before this row moved.
+  const verdictConds = clientConditions(VERDICT_INFO || {});
+  const ledeMatch = typeof rec === 'string' ? rec.match(/^(.*?conditional on:)/i) : null;
+  const conditionsInVerdict = Boolean(ledeMatch && verdictConds.length);
+  const recHtml = conditionsInVerdict
+    ? `${esc(ledeMatch[1])}<ul class="gconds">${verdictConds.map((c) => `<li>${esc(c)}</li>`).join('')}</ul>`
+    : esc(rec);
   const conc = [
-    rec && `<div class="grow"><span class="gk">${recLabel}</span><span class="gv gv-rec">${esc(rec)}</span></div>`,
+    rec && `<div class="grow"><span class="gk">${recLabel}</span><span class="gv gv-rec">${recHtml}</span></div>`,
   ].filter(Boolean).join('');
   // — THE FRAMEWORK IS NAMED WHERE ITS WORDS ARE READ, not only in the footer. `.ticks` below spells
   // a vocabulary ("Manageable", "Moderate") that is meaningless without the framework in force, and the
@@ -255,7 +292,7 @@ function frameworkGauge(fm, findings, coverage = [], fourAnswers = null, opts = 
     <div class="scale" style="background:${grad}">${marker}</div>
     <div class="ticks">${ticks}</div>
     <div class="gconc">${conc}</div>
-    ${ratingExtras(fm, findings, coverage, fourAnswers, opts, label)}
+    ${ratingExtras(fm, findings, coverage, fourAnswers, opts, label, conditionsInVerdict)}
   </div>`;
 }
 
@@ -514,7 +551,6 @@ const useEvidence = (m) => [USE_EVIDENCE_LABEL[m?._status], USE_SOURCE_LABEL[m?.
 // runs carry the old value forever and a fourth spelling of it would have to be accepted everywhere.
 const USE_CHECK_NO_RESULT = 'perplexity_research — no result';
 const USE_CHECK_NO_RESULT_CITE = 'Nothing found in the marketplaces searched.';
-const USE_CHECK_NO_RESULT_SHORT = 'marketplace search — no result found';
 // — MATCHED ON NORMALISED PUNCTUATION, NOT ONE SPELLING. The constant itself does not
 // move (archived runs carry it forever, the validators name it), but the SEAT emitted a hyphen where
 // the doctrine writes an em dash, and exact equality let the raw tool name through to a delivered
@@ -963,8 +999,13 @@ function clearedGroupsHtml(searchDepth, auditFile) {
     const items = reg.filter((c) => c.group === g);
     if (!items.length) return '';
     const shown = items.slice(0, NAMES_CAP);
+    // "Cl." and a lower-case status, which is how the mock reads and how a lawyer writes it. The
+    // register hands the status back in capitals — REGISTERED, CANCELLED — and shouting a neutral
+    // fact at a reader is the register's habit, not ours. Only the case changes; the word is the
+    // register's own and is not translated.
     const rows = shown.map((c) => `<div class="crow"><span class="cm-mark">${esc(c.mark || c.term || '')}</span><span class="cwho">${
-      esc([c.owner, regionName(c.country) || c.country, c.classes ? `Class ${c.classes}` : '', c.status].filter(Boolean).join(' \u00b7 '))}</span></div>`).join('');
+      esc([c.owner, regionName(c.country) || c.country, c.classes ? `Cl. ${c.classes}` : '',
+           c.status ? String(c.status).toLowerCase() : ''].filter(Boolean).join(' \u00b7 '))}</span></div>`).join('');
     return `<details class="cgroup"><summary><span class="gname">${esc(CLEARED_GROUP_LABEL[g] || g)}</span><span class="gcount">${
       items.length.toLocaleString('en-GB')} ${items.length === 1 ? 'name' : 'names'}</span></summary><div class="gbody">${rows}${
       items.length > shown.length ? link(items.length) : ''}</div></details>`;
@@ -1011,7 +1052,14 @@ function whereItStandsSection(findings, opts) {
   const withF = [], clean = [];
   for (const c of codes) {
     const key = alias[c] || c;
-    (bandBy.has(c) || bandBy.has(key) ? withF : clean).push({ code: key, name: regionName(c) || c, band: bandBy.get(c) || bandBy.get(key) });
+    // THE NAME IS LOOKED UP ON THE ALIASED KEY, NOT THE RAW CODE. The register writes the EUIPO and
+    // ISO spellings — EM and GB — and `alias` maps those to the codes a reader knows, EU and UK. The
+    // name was resolved from the RAW code, which has no entry under either spelling, so it fell back
+    // to the code itself and the row read "EU EM" and "UK GB": a country column printing a second
+    // code, beside the four rows where the register happened to write the code we already knew.
+    // The raw code is still tried, so anything the alias does not cover resolves exactly as before.
+    const name = regionName(key) || regionName(c) || key;
+    (bandBy.has(c) || bandBy.has(key) ? withF : clean).push({ code: key, name, band: bandBy.get(c) || bandBy.get(key) });
   }
   if (!withF.length && !clean.length) return '';
   const rows = withF.map((c) => `<div class="wrow"><span class="rcode">${esc(c.code)}</span><span class="wname">${esc(c.name)}</span><span class="kc">${esc(c.band)}</span></div>`).join('');
@@ -1082,7 +1130,16 @@ function alsoConsideredSection(ruledOut, recordsByUri = new Map(), opts = {}) {
   const sd = opts.searchDepth || null;
   const ruledCards = ruledOut.map((f) => {
     const who = recordOwner(f, recordsByUri) || f.owner?.name || '';
-    const why = f.ruled_out_reason ? esc(f.ruled_out_reason) : 'a different name in a related field — not a conflict with your mark';
+    // THE ENGINE'S OWN SENTENCE LEADS THE CARD. The face printed a fixed line — "a different name in
+    // a related field" — on every ruled-out card, whatever the run had actually concluded. `net` is the
+    // finding's own one-line reason, written for a reader, and it was rendered NOWHERE: not on the
+    // face, not in the fold, not anywhere on the page. So a client read the same generic sentence
+    // about every name we set aside, while the specific reason we set THAT one aside was discarded at
+    // render time. The fold keeps the legal and practical positions, which are the longer argument.
+    // The fixed line stays as the last resort, for a finding that carries neither.
+    const why = f.ruled_out_reason ? esc(f.ruled_out_reason)
+      : f.net ? esc(String(f.net))
+      : 'a different name in a related field — not a conflict with your mark';
     const legal = f.legal_position ? esc(String(f.legal_position)) : '';
     const practical = f.practical_position ? esc(String(f.practical_position)) : '';
     const fold = (legal || practical)
@@ -1284,36 +1341,19 @@ function keyPanel(findings, recordsByUri = new Map()) {
 // complete in one place. The rights-holder landscape panel keeps its "Common-law" group — that
 // panel is the index of everything, this section is the reading surface.
 function commonLawSection(clSecondary, clOnField, cardFor, recordsByUri = new Map(), allFindings = []) {
-  // T7 (E4) — "what the marketplace layer added": for every REGISTER finding whose use
-  // evidence came from the common-law layer (a use_check cite), one attributed line with the A4
-  // confidence four-tuple + source class — the layer's contribution is visible and attributed, not
-  // buried in prose. Renders even when there are no common-law FINDINGS (contributions alone earn
-  // the section). On-field common-law conflicts keep their FULL cards in the risk-ordered band above
-  // (blocking-power ordering wins; E2's grouping complaint was the per-jurisdiction Marks list, which
-  // secondary CL left in A5) — cross-linked from here.
-  const contrib = (allFindings ?? [])
-    .filter((f) => f && f.disposition !== 'withdrawn' && f.use_check?.source && regionCode(f) !== COMMON_LAW)
-    .map((f) => {
-      // D4 — the evidence pair is LABELLED here too, and it reads out of the one USE_SOURCE_LABEL.
-      const st = useEvidence(f.meters?.use);
-      // D7 — the sentinel is mapped to client words BEFORE the URL parse is attempted. It is not a
-      // URL, so `new URL` threw and the catch printed `host.slice(0, 40)` — and the sentinel is 31
-      // characters, so the page printed the raw tool name, whole.
-      const raw = String(f.use_check.source);
-      let where;
-      if (isUseCheckNoResult(raw)) where = USE_CHECK_NO_RESULT_SHORT;
-      else { try { where = new URL((raw.match(/https?:\/\/[^\s,|]+/) || [raw])[0]).host; } catch { where = raw.slice(0, 40); } }
-      return `<li style="margin:3px 0"><a href="#c${f.ordinal}">#${f.ordinal} ${esc(f.mark)}</a> — use ${esc(humanize(f.meters?.use?.token ?? 'unknown'))} — ${esc(where)}${st ? ` <i class="evstat">(evidence: ${esc(st)})</i>` : ''}</li>`;
-    }).join('');
-  const contribBlock = contrib
-    ? `<p style="margin:4px 0 2px;font-size:13px"><b>What the marketplace layer added to register findings</b></p><ul style="margin:0 0 10px;padding-left:20px;font-size:13px">${contrib}</ul>`
-    : '';
-  if (!clSecondary.length && !clOnField.length && !contribBlock) return '';
+  // THE LAYER'S CONTRIBUTION IS ON THE CARD THAT CARRIES IT, NOT ALSO IN A LIST ABOVE THEM. A
+  // block headed "what the marketplace layer added to register findings" restated, per finding, the
+  // use token, the host and the evidence pair that the finding's OWN card already states in its use
+  // line — measured on the delivered reports: one such line per finding with use evidence, on the
+  // card, in every case the block listed. It attributed a layer to itself in the engine's own terms
+  // and made a reader read the same fact twice, the second time out of the context that explains it.
+  // Nothing is lost with it: the cards it linked to sit directly below.
+  if (!clSecondary.length && !clOnField.length) return '';
   const links = clOnField.length
     ? `<p class="clx" style="margin:4px 0 10px;font-size:13.5px">On-field common-law conflicts (full cards above): ${clOnField.map(f => `<a href="#c${f.ordinal}">#${f.ordinal} ${esc(f.mark)}</a>`).join(' · ')}</p>`
     : '';
   const cards = clSecondary.map(f => compactCard(f, cardFor(f), recordsByUri)).join('\n  ');
-  return contribBlock + links + cards;
+  return links + cards;
 }
 
 // Secondary findings → collapsible region groups (§2.4). Same region order as the key panel; each region a
@@ -1632,11 +1672,20 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   // preparation is portal-report.mjs's job, never a second render fork here.
   const clHead = clProfile ? `<b>Case-law${clProfile.jurisdiction ? ` (${esc(clProfile.jurisdiction)})` : ''}.</b>` : '';
   const clBody = !clProfile ? '' : renderProse(clProfile.body);   // one report: the full body (renderProse handles ::p:: internal lines)
-  const caseLawStrand = clProfile
+  // Only a pass that FOUND precedent puts a strand on the card. Where none was found, or the research
+  // could not be completed, the body is the engine's account of the attempt and the Court decisions
+  // section says the outcome plainly on its own; repeating it here said it twice, the second time in
+  // the machinery's voice on the card a client reads most closely.
+  const caseLawStrand = clProfile && COURT_DECISIONS !== 'not-checked' && COURT_DECISIONS !== 'none-found'
     ? `<div class="clstrand" style="margin:10px 0 0;padding-top:8px;border-top:1px dashed var(--line,#ddd)">${clHead}${clBody}</div>`
     : '';
   const link = f.source?.resolved_link;
-  const prov = link ? `<div class="prov">audit ref F${f.ordinal} · <a href="${esc(link)}" target="_blank" rel="noopener noreferrer">${esc(link.replace(/^https?:\/\//, '').slice(0, 48))}</a></div>` : `<div class="prov">audit ref F${f.ordinal}</div>`;
+  // NO AUDIT REFERENCE ON A CLIENT'S CARD. "audit ref F1" is the engine's handle for the finding —
+  // it indexes the workbook, it means nothing to the reader holding the report, and the mock carries no
+  // such line. The SOURCE LINK stays: it is the only address a reader has for the record on this card
+  // until the workbook row lands beside it, and dropping both would take a fact away rather than a
+  // label. With no link there is nothing left to say, so the row does not render at all.
+  const prov = link ? `<div class="prov"><a href="${esc(link)}" target="_blank" rel="noopener noreferrer">${esc(link.replace(/^https?:\/\//, '').slice(0, 48))}</a></div>` : '';
   // WP-receipts W4 — the code-owned senior-right line (Owner decision 2026-07-05: VERY SIMPLE CLEAR ENGLISH,
   // stated qualification, verdict untouched). Verified senior → nothing extra (the W2 receipt line on
   // the fetched leg is the proof). Unverified → the open item, plainly, where the finding lives.
@@ -2292,6 +2341,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   SEARCHED_JUR = Array.isArray(opts.searchedJurisdictions) && opts.searchedJurisdictions.length ? opts.searchedJurisdictions : null;   // T6 (D4)
   SCOPE_WORLDWIDE = opts.scopeBasis === 'worldwide' ? true : null;   // the plan's scope_basis; null ⇒ fall back to the ledger-prose sniff
   CASE_LAW_BY_ORD = opts.caseLawByOrdinal instanceof Map ? opts.caseLawByOrdinal : new Map();   // T7 (E5)
+  COURT_DECISIONS = opts.searchDepth?.counts?.courtDecisions ?? null;   // gates the card's case-law strand
   ENFORCER_SIGNALS = new Map((Array.isArray(opts.enforcerSignals) ? opts.enforcerSignals : []).map((e) => [String(e.uri ?? '').toLowerCase(), e]));   // T7 (E6)
   RECORD_ORIGIN = opts.recordOrigin ?? null;       // WP-receipts W2
   // — `null` and `` mean DIFFERENT things and the render must not collapse them. `` is an
@@ -2530,7 +2580,16 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   <span class="sp"></span>
   <span class="tb-risk" style="background:var(${STOP_VAR[i]})">${riskLabel}</span>
   <span class="mono tb-matter" style="font-size:11px;color:var(--faint)">${esc(fm.matter || opts.runId || '')}${fm.title ? ' / ' + esc(fm.title) : ''}</span>
-  ${opts.issued ? `<span class="mono tb-issued"><span aria-hidden="true">🗓 </span>Issued on ${esc(opts.issued)}</span>` : ''}
+  ${/* A DATE, NOT A TIMESTAMP. This read "Issued on 2026-09-17 · 08:36 GMT+2" — the minute the file
+       was written, and the zone the machine that wrote it happened to be in. Neither tells a reader
+       anything, and on work that spans days it implies a precision the work does not have. Every mock
+       issues the date alone. Taken by PATTERN rather than by cutting at the separator, so a value in
+       some other shape falls through whole instead of being truncated at whatever character sits
+       there — an archived run's stamp is not this publisher's to assume. */''}
+  ${(() => {
+    const d = (String(opts.issued ?? '').match(/^\d{4}-\d{2}-\d{2}/) || [])[0] ?? opts.issued;
+    return d ? `<span class="mono tb-issued"><span aria-hidden="true">🗓 </span>Issued on ${esc(d)}</span>` : '';
+  })()}
   <button type="button" class="tbbtn tb-ask no-print">✦ <span class="tb-lbl">Ask AI</span></button>
   <div class="tb-menu">
     <button type="button" class="tbbtn primary tb-exp-toggle" aria-haspopup="true" aria-expanded="false">⬇ <span class="tb-lbl">Export</span> ▾</button>
@@ -2598,26 +2657,51 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   ${whatWasSearchedSection(opts, coverage, findings, recordsByUri)}
 
   <footer>
+    ${/* ONE CLIENT LINE, AND IT NAMES WHAT EACH DATE IS. It ran to four.
+         "Rated under" STAYS, and it is not an oversight: the document carries the reviewer's
+         provenance and portal-report strips that one line for every embedded reader at serve time,
+         which is stated there and held by an arm. Deleting it here would take provenance off the
+         reviewer's copy to save the portal a job it already does.
+         "Run under project" also STAYS on the document, for the same reason and with the same
+         remedy. It is internal provenance — an end-to-end arm reads it out of the published internal
+         report, through the front-matter seam — and it was reaching clients only because nothing
+         removed it at serve time. It does now, beside the provenance line, so the document keeps what
+         review needs and the client reads neither. Deleting it here would have taken provenance off
+         the internal copy to fix a leak that belongs in the same place the other one is fixed.
+         The product name lead goes: the identity line already says which search this is.
+         The run string is composed as "<date> · <provider>", and it was printed with neither part
+         labelled, so a bare date sat next to a matter identifier meaning nothing in particular. It is
+         split on the DATE by pattern — the same way `dateOf` does it one file over — and the remainder
+         is the provider. A run string with no date in it is not this renderer's to take apart, so it
+         is printed whole and unlabelled rather than guessed at. */''}
     <!-- WHICH MODELS SERVED THIS RUN. It used to close the scope fold, and the 2026-09-16 redesign
          deleted that fold — so the line was re-homed rather than dropped with its container, which
          would have removed a statement of provenance from the client's page as a side effect of a
-         merge. Owner ruling, 2026-09-17: it belongs in the footer, beside the matter and the framework,
-         which is where a reader who wants to know how the document was made already looks. It renders
-         as '' on a run that recorded no models, so an archived run republishes exactly as delivered. -->${servedModelsLine(opts.servedModels)}
-    <span>${productName ? `${esc(productName)}. ` : ''}${FRAMEWORK
-        // TWO SENTENCES, and that count is the ruled shape rather than a consequence of trimming.
-        //
-        // Two things left. The band note — "the framework in force's own vocabulary, one word per
-        // finding on every surface" — is a note about how the renderer works, printed on every report a
-        // client receives; the framework's NAME is on the "Rated under" line below, once, which is
-        // where a reader who wants it will look.
-        //
-        // AND "Working draft for legal review.", which is a separate decision and is recorded as one.
-        // A delivered clearance is not a draft, and a document that calls itself one on every page is
-        // describing its own status inaccurately to the person paying for it. Raised in review because
-        // the first version of this comment argued only the band note and left the reader to infer that
-        // the status line had gone along for the ride.
-        ? '' : ''}<br>Matter ${esc(fm.matter || '')}${fm.run ? ` · ${esc(fm.run)}` : ''}.${fm.rated_under ? `<br>Rated under: <span class="mono">${esc(fm.rated_under)}</span>.` : ''}${fm.run_under_project ? `<br>Run under project: <span class="mono">${esc(fm.run_under_project)}</span>.` : ''}</span>
+         merge. Owner ruling, 2026-09-17: it belongs in the footer, beside the matter and the framework.
+         It renders as '' on a run that recorded no models, so an archived run republishes exactly as
+         delivered, and the call sits ADJACENT so the whitespace around it belongs to the line and goes
+         with it — the freeze tool sets this paragraph aside by a pattern that takes the space before
+         it. -->${servedModelsLine(opts.servedModels)}
+    <span>${(() => {
+      const runStr = String(fm.run ?? '').trim();
+      const searchedOn = (runStr.match(/\d{4}-\d{2}-\d{2}/) || [])[0] ?? null;
+      const provider = searchedOn
+        ? runStr.replace(searchedOn, '').replace(/^[\s\u00b7]+|[\s\u00b7]+$/g, '').trim()
+        : runStr;
+      const issuedOn = (String(opts.issued ?? '').match(/^\d{4}-\d{2}-\d{2}/) || [])[0] ?? opts.issued ?? null;
+      const parts = [
+        fm.matter ? `Matter ${esc(fm.matter)}` : '',
+        searchedOn ? `searched on ${esc(searchedOn)}` : '',
+        issuedOn ? `issued on ${esc(issuedOn)}` : '',
+        provider ? esc(provider) : '',
+      ].filter(Boolean);
+      const line = parts.length ? `${parts.join(' \u00b7 ')}.` : '';
+      // The reviewer's provenance rides BELOW the client line, where portal-report removes it.
+      // Both provenance lines ride BELOW the client line, where portal-report removes them.
+      return line
+        + (fm.rated_under ? `<br>Rated under: <span class="mono">${esc(fm.rated_under)}</span>.` : '')
+        + (fm.run_under_project ? `<br>Run under project: <span class="mono">${esc(fm.run_under_project)}</span>.` : '');
+    })()}</span>
     ${logoLockup({ mark: 16 })}
   </footer>
 </div>

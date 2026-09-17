@@ -98,6 +98,24 @@ import { fileURLToPath } from "node:url";
 // re-declared: one number, one count, and every existing importer of this module keeps working.
 export { DEFAULT_CLIENT_DAILY_RUNS, accountUsage };
 
+/**
+ * What a requester is told when the day's allowance is gone.
+ *
+ * ONE SENTENCE, TWO PLACES. The server refuses with it and the screen warns with it, and a reader who
+ * meets both must not meet two different sentences about the same fact. The browser cannot import this
+ * module, so the portal composes its own copy and `portal-ui/test/allowanceParity.test.ts` pins the two
+ * together — the same arrangement the effort model already has.
+ *
+ * NAMED, NOT ADDRESSED. It read "ask your <name> contact", which puts a possessive and a noun around a
+ * name that is already the answer: on a deployment that has configured no brand the portal's fallback is
+ * the words "the operator", and the sentence rendered "ask your the operator contact to run this one for
+ * you". The line beside it on the same screen had always said "ask <name>", and that is the one the
+ * approved design draws.
+ */
+export const allowanceExhaustedLine = (cap, who) =>
+  `You have used all ${cap} of this account's searches for today. `
+  + `The allowance resets at midnight UTC — or ask ${who} to run this one for you.`;
+
 // One sentence, two places (the capability payload and the route that refuses). Never names the
 // missing credential: this reaches a client screen, and our plumbing is not their business.
 //
@@ -130,7 +148,7 @@ import { productRows, productRow, baseTurnaroundFor } from "./product-rows.mjs";
 import { resolveForDoor, gateResolvedRequest } from "./door-gates.mjs";
 import { resolveEffectiveScope } from "./effective-scope.mjs";
 import { quoteForJob } from "./run-quote.mjs";
-import { readFlagSnapshot, builtFor, registerCanCountFor, registerTerritoriesFor, caseLawReadyFor } from "./flag-snapshot.mjs";
+import { readFlagSnapshot, builtFor, registerCanCountFor, registerTerritoriesFor, registerLabelFor, caseLawReadyFor } from "./flag-snapshot.mjs";
 import { isDemo, demoPostureLine } from "./demo-posture.mjs";   
 import { triggerCapGap, triggerCapWarning } from "./trigger-cap.mjs";   // F51 — one answer, three surfaces
 import { makeUpstream } from "./portal-upstream.mjs";
@@ -468,7 +486,16 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
       // zombie face this state exists to end. pausedKind "operator" tells the UI which words to use.
       const paused = s.state === "postponed" || s.state === "recovering" || s.state === "parked-for-human";
       out.push({ ...(liveRetired ? { retired: true } : {}),
-        runId: s.runId, account: owner, ...(owner === "generic" ? { organisation: p.organisation ?? null } : {}), title: s.markName ?? s.slug, kind: s.lane === "knockout" ? "knockout-batch" : "clearance",
+        runId: s.runId, account: owner, ...(owner === "generic" ? { organisation: p.organisation ?? null } : {}), title: s.markName ?? s.slug,
+        // THE RUN’S OWN PIPELINE, off the frozen policy sidecar this branch already reads — the same
+        // source the `product` field two lines down takes, so a row cannot contradict its own product.
+        // `s.lane` is the runner’s queue directory and it is not that: a knockout claimed from any other
+        // lane arrived here as a clearance, and Home then quoted it the clearance turnaround — hours,
+        // against a search that finishes in minutes. The queued rows below were fixed for exactly this
+        // and this row was left on the weaker field. The lane stays as the fallback for a run whose
+        // sidecar predates the stamp, and an unplaceable product stays a clearance, which is what every
+        // listing has always shown for something it could not identify.
+        kind: (policyFor(sp?.level)?.pipeline ?? (s.lane === "knockout" ? "knockout" : null)) === "knockout" ? "knockout-batch" : "clearance",
         markName: typeof s.markName === "string" ? s.markName : null,
         // The project, straight off the frozen sidecar this branch already reads as `p`. A LIVE run needs
         // no publish stamp and no back-fill — the sidecar is right there, and freezeProfile has written
@@ -1230,6 +1257,10 @@ export function makePortalService({
   // THREE answers survive the read: null (unrestricted), an array, or undefined (the snapshot does not
   // say — fail open). registerTerritoriesFor is what keeps them apart.
   readTerritories = () => registerTerritoriesFor(readFlagSnapshot(poolRoot)),
+  // What to CALL the wired register on screen. Beside `readTerritories` and injected for the same
+  // reason: the covered set says a territory cannot be searched, and this says by what — the screen
+  // cannot name the register from the key without printing an engine identifier at a client.
+  readRegisterLabel = () => registerLabelFor(readFlagSnapshot(poolRoot)),
   // — whether this deployment has a case-law source enrolled at all. Same
   // injection and same snapshot as the two above, and the same tri-state: null is "the snapshot does not
   // say", which must not render as a warning on a working box.
@@ -1280,6 +1311,7 @@ export function makePortalService({
     const built = readBuilt();
     const canCount = readCanCount();
     const territories = readTerritories();
+    const registerLabel = readRegisterLabel();
     const caseLawReady = readCaseLaw();
     return {
       // Every product is LISTED whatever its state. A product that vanishes when unavailable leaves a
@@ -1335,6 +1367,16 @@ export function makePortalService({
       // not told me", which fails open. A `covered ?? []` anywhere on this path offers zero territories
       // on a production box.
       ...(territories === undefined ? {} : { territories }),
+      // THE REGISTER'S NAME, sent whenever there is one. The covered set alone lets the screen mark a
+      // territory as unreachable; it cannot say by WHAT, and the sentence the door refuses with names
+      // the register ("China is not available with Signa, the register configured here"). A screen that
+      // marked a chip without naming the register would be a second, vaguer wording for one fact.
+      //
+      // OMITTED, never nulled, exactly as `territories` above: absent means this deployment did not say,
+      // and the screen must then mark the territory without naming a register rather than invent one.
+      // It is the register's own display label, never the provider key — the key is an engine
+      // identifier and has no place on a client's screen.
+      ...(registerLabel ? { registerLabel } : {}),
       // `base` and `nativeLanguage` ride the LIST row, not just the record: the composer has to say what
       // geography a saved search accepts while the row is being clicked, and fetching the record per
       // selection would put that answer one round trip behind the Review button. Only `true` travels for
@@ -1842,9 +1884,7 @@ export function makePortalService({
           return null;
         }
         if (used.today + 1 <= limit) return null;
-        return { status: 429, json: { ok: false, errors: [
-          `You have used all ${limit} of this account's searches for today. The allowance resets at midnight UTC — or ask your ${BRAND.name} contact to run this one for you.`,
-        ] } };
+        return { status: 429, json: { ok: false, errors: [allowanceExhaustedLine(limit, BRAND.name)] } };
       };
 
       // /portal/api/run/plan — the confirmation gate (no spend)

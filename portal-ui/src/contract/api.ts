@@ -1307,6 +1307,14 @@ export type Searches = {
    * is not a list the browser could rebuild even if it wanted to.
    */
   readonly registerTerritories?: readonly string[] | null
+  /**
+   * What to CALL the wired register on screen — its own display label, "Signa", never the provider key.
+   *
+   * Absent when the deployment does not know it, and never an empty string. A screen that has no label
+   * drops the clause naming the register rather than printing the key, which is what the door's own
+   * refusal does with the same fact: one line, one wording, whether or not there is a name to use.
+   */
+  readonly registerLabel?: string
 }
 
 // ── decoding ─────────────────────────────────────────────────────────────────────────────────────────
@@ -2069,6 +2077,9 @@ export const api = {
         : { registerTerritories: b['territories'] === null
           ? null
           : asArray(b['territories']).filter((t): t is string => typeof t === 'string') }),
+      // Present or absent, never empty: `asString` already answers null for "" so a server that sent a
+      // blank label is read as having sent none, and the screen names no register rather than a blank one.
+      ...(asString(b['registerLabel']) ? { registerLabel: asString(b['registerLabel']) as string } : {}),
       recipes: asArray(b['recipes']).map((x) => {
         const r = x as Record<string, unknown>
         return {

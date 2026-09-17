@@ -32,7 +32,7 @@ import { writeUpViolations, writeUpMessage } from "./narrative-write-ups.mjs";  
 import { findRegistryArithmeticIssues, findRegistryViolations, splitBlocks } from "./registry-fidelity.mjs";
 import { CLIENT_TIER_BY_COMPOSITE, joinFindingToBlock, parseBlockOrd, worstLiveBand, NO_RATED_CONFLICTS, deriveActionConditions, isUnconditionalProceed, verdictStance, joinAskToAnswer, projectAssessmentField, POSITION_REQUIRED_DISPOSITIONS, OFF_FIELD_GROUNDS, FINDINGS_SCHEMA_VERSION, netChainMarkers, STATEMENT_CLAUSE_MAX } from "./findings-model.mjs";
 import { normalizeBand } from "./framework.mjs";
-import { clientConditions, ENGINE_TOKEN_RE } from "./terminal-clamp.mjs";   // the reader's clause per condition, and the token shape it may never carry
+import { clientConditions, unrenderableConditions, ENGINE_TOKEN_RE } from "./terminal-clamp.mjs";   // the reader's clause per condition, and the token shape it may never carry
 import { knockoutNoteView, REQUEST_NOTE_WORDS, REQUEST_SUBJECT_WORDS } from "./findings-model.mjs";   // one reader for where a note prints
 import { isEngineAppendedCaveat } from "./verify-knockout.mjs";   // ONE derivation for "the engine appended this caveat, not a seat"
 
@@ -1976,10 +1976,20 @@ export function clientConditionVoiceChecks({ verdictDoc }) {
   const carrying = clientConditions(verdictDoc)
     .map((c) => ({ c, m: String(c).match(ENGINE_TOKEN_RE) }))
     .filter((x) => x.m);
+  // THE SECOND CHECK IS WHAT KEEPS THE FIRST ONE HONEST. The fallback now composes the reader's
+  // sentence from a pre-split reason's own counts, and DROPS a token-bearing reason it cannot compose
+  // one for. Both outcomes leave the first check passing, and they mean opposite things: one is the
+  // condition reaching the client in a lawyer's nouns, the other is the condition reaching nobody. A
+  // single check reporting a clean page for both would be an absence read as a pass.
+  const dropped = unrenderableConditions(verdictDoc);
   return [check("client-condition-voice", "verdict", "report", carrying.length === 0,
     carrying.length
       ? `${carrying.length} delivered condition${carrying.length === 1 ? "" : "s"} carr${carrying.length === 1 ? "ies" : "y"} an engine identifier, so the client's "conditional on:" list reads the run record rather than the reader's sentence: ${carrying.slice(0, 3).map((x) => `"${x.m[0]}"`).join(", ")}${carrying.length > 3 ? ` (+${carrying.length - 3} more)` : ""}. The clause exists at the clamp site; persist it and this list takes it. A sidecar written before clauses were persisted flags until the run is re-generated.`
-      : "")];
+      : ""),
+    check("client-condition-dropped", "verdict", "report", dropped.length === 0,
+      dropped.length
+        ? `${dropped.length} condition${dropped.length === 1 ? " was" : "s were"} recorded for this run and reach no client surface: the run-record reason carries an engine identifier and no reader's sentence was stored or could be composed from it, so it is dropped rather than printed in engine voice. The report ships without it and the run record keeps it: ${dropped.slice(0, 2).map((r) => `"${r.slice(0, 80)}…"`).join(", ")}${dropped.length > 2 ? ` (+${dropped.length - 2} more)` : ""}. Add the defect's sentence to the clause authority in terminal-clamp.mjs, or persist a clause at the clamp site.`
+        : "")];
 }
 
 export function statementCoherenceChecks({ verdictDoc }) {

@@ -142,8 +142,8 @@
           "todos": 0
         },
         "a-client-condition-never-carries-an-engine-token.test.mjs": {
-          "tests": 6,
-          "asserts": 10,
+          "tests": 9,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -3250,8 +3250,8 @@
           "todos": 0
         },
         "portal-service.test.mjs": {
-          "tests": 127,
-          "asserts": 683,
+          "tests": 130,
+          "asserts": 695,
           "skips": 1,
           "todos": 0
         },
@@ -3699,6 +3699,12 @@
           "skips": 0,
           "todos": 0
         },
+        "register-reach-refusal.test.mjs": {
+          "tests": 13,
+          "asserts": 26,
+          "skips": 0,
+          "todos": 0
+        },
         "register-record-log-run-scoped.test.mjs": {
           "tests": 9,
           "asserts": 21,
@@ -3772,8 +3778,8 @@
           "todos": 0
         },
         "render.test.mjs": {
-          "tests": 144,
-          "asserts": 572,
+          "tests": 151,
+          "asserts": 607,
           "skips": 0,
           "todos": 0
         },
@@ -4546,8 +4552,8 @@
           "todos": 0
         },
         "test-full-runs-every-corpus-or-names-the-one-it-did-not.test.mjs": {
-          "tests": 16,
-          "asserts": 51,
+          "tests": 17,
+          "asserts": 54,
           "skips": 0,
           "todos": 0
         },
@@ -4577,7 +4583,7 @@
         },
         "the-allowance-line-is-the-servers-words.test.mjs": {
           "tests": 2,
-          "asserts": 4,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },
@@ -4894,8 +4900,8 @@
           "todos": 0
         },
         "the-knockout-page-leads-with-the-read.test.mjs": {
-          "tests": 30,
-          "asserts": 81,
+          "tests": 37,
+          "asserts": 113,
           "skips": 0,
           "todos": 0
         },
@@ -5971,6 +5977,12 @@
           "skips": 0,
           "todos": 0
         },
+        "allowanceParity.test.ts": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "api.test.ts": {
           "tests": 46,
           "asserts": 187,
@@ -6026,8 +6038,8 @@
           "todos": 0
         },
         "composerProduct.test.ts": {
-          "tests": 32,
-          "asserts": 124,
+          "tests": 37,
+          "asserts": 147,
           "skips": 0,
           "todos": 0
         },
@@ -6094,6 +6106,12 @@
         "frameworkGuideLink.test.ts": {
           "tests": 4,
           "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "geographyStampParity.test.ts": {
+          "tests": 1,
+          "asserts": 3,
           "skips": 0,
           "todos": 0
         },
@@ -6273,7 +6291,7 @@
         },
         "registerCoverage.test.ts": {
           "tests": 12,
-          "asserts": 36,
+          "asserts": 40,
           "skips": 0,
           "todos": 0
         },
@@ -6297,7 +6315,7 @@
         },
         "screenCopy.test.ts": {
           "tests": 63,
-          "asserts": 240,
+          "asserts": 243,
           "skips": 0,
           "todos": 0
         },
