@@ -355,6 +355,19 @@ export const DEPLOYMENT_NAMES = new Set([
   // Set by the install on the copy it starts after moving out of npx's cache, never by an operator. Its
   // row declares `deployment`, and no shape matches it, so unlisted it would fall through to `tuning`.
   "CLEAROTRON_RELOCATED",
+  // The two register ledgers, listed the day the scanner learned to read a name held in a table as a
+  // value — the same shape as the optional-chaining three below, one scanner widening later. Both name
+  // WHERE a file lives and resolve by an existence ladder over several directories, which is the
+  // definition `CLEAROTRON_JX_SUBCLASS_DB` was moved here on: a row whose own words name a place is
+  // `deployment`, and it reaches `tuning` only because `tuning` is the residual.
+  //
+  // GETTING THIS WRONG IS WORSE THAN THE BLINDNESS IT REPLACES. No deployed box sets either — the
+  // ledger module says so and explains why the default is resolved by existence rather than by name —
+  // so `tuning` with an empty set-site list is precisely the population step 3 deletes from. Making
+  // them visible without listing them here would move the billing-grade call ledger and the record
+  // ledger a "verified from the record" claim joins against from unseen to proposed for deletion.
+  "CLEAROTRON_REGISTER_CALL_LOG",
+  "CLEAROTRON_REGISTER_RECORD_LOG",
   // Three names read only through optional chaining, so no catalogue check saw them until the scanner
   // learned `?.`. Each row declares `deployment`, and no shape matches them (`_PORT$` does not take
   // `_PORTS`), so unlisted each fell through to `tuning`, the bucket step 3 deletes from. The first is set

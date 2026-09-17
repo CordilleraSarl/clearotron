@@ -203,6 +203,22 @@ export function mergeEnvNameBindings(perFile) {
 // read as `env[X]`, for the reason READ_RE gives.
 const CONST_READ_RE = /(?<![.\w$])(?:process\??\.)?env(?:\?\.)?\[\s*([A-Z][A-Z0-9_]*)\s*\](?!\s*=[^=])/g;
 
+// THE NAME HELD IN A TABLE AS A VALUE, which is a read the three readers above cannot see. A generic
+// resolver takes the name out of a row and reads it — `{ env: "CLEAROTRON_CODEX_PATH", fallback: "codex" }`
+// — so the variable is read on every run and spelled nowhere the audit was looking. Thirteen names are
+// read exactly this way, and two of them are live deployment settings that no rule could ask for a row
+// for, because every ratchet that would is keyed on the name being seen.
+//
+// MATCHED ON THE PROPERTY NAME, NEVER ON THE VALUE'S SHAPE, and that is the whole reason this is safe.
+// A rule that took any uppercase string literal would take every message key, token and enum member in
+// the tree and drown the audit in names nothing reads. The property names are the closed set the
+// resolvers actually use; a new resolver that invents a fourth spelling is invisible again, which is a
+// known limit of this shape rather than a defect in the rule — the same limit the accessor reader has.
+//
+// This is the third time this shape has hidden a read here: the accessor family was the first, `envFrom`
+// the second, and a name held as a value is those two one remove further on.
+const TABLE_NAME_RE = /(?<![.\w$])(?:env|envName|tokenEnv)\s*:\s*["']([A-Z][A-Z0-9_]*)["']/g;
+
 export function namesRead(text, bindings = null) {
   const found = new Set();
   const stripped = stripCommentLines(text);
@@ -210,6 +226,8 @@ export function namesRead(text, bindings = null) {
   for (let m; (m = READ_RE.exec(stripped));) found.add(m[1] || m[2]);
   ACCESSOR_RE.lastIndex = 0;
   for (let m; (m = ACCESSOR_RE.exec(stripped));) found.add(m[1] || m[2]);
+  TABLE_NAME_RE.lastIndex = 0;
+  for (let m; (m = TABLE_NAME_RE.exec(stripped));) found.add(m[1]);
   // Resolved through the corpus map when one is supplied. Absent map ⇒ this half is simply off, which
   // is what keeps the function pure and drivable on a single string.
   if (bindings) {
