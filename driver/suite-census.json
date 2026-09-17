@@ -123,6 +123,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-check-that-could-not-look-does-not-report-a-drift.test.mjs": {
+          "tests": 5,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "a-child-failure-quotes-the-child.test.mjs": {
           "tests": 6,
           "asserts": 13,

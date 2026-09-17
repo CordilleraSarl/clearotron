@@ -103,7 +103,8 @@ import { readDrainerStamp, drainerVerdict, defaultPpidOf } from "../driver/drain
 import { readUpdaterStamp, updaterVerdict, resolveUpdaterStampPath, updaterAbsentHere, UPDATER_STAMP_BASENAME } from "../driver/updater-identity.mjs";   // — the mechanism that PLACES commits
 import { claimerIsAlive } from "../driver/claim-liveness.mjs";                       // the shared liveness test, same polarity as the queue's
 import { processTable } from "../shared/process-table.mjs";                          // — /proc is not the only box
-import { envFrom } from "../shared/env-aliases.mjs";   // — the name a reader is told to set is the one in force
+import { envFrom } from "../shared/env-aliases.mjs";
+import { exitFor } from "../driver/surface-exit-verdict.mjs";   // — a could-not-look is not a drift, and they want different things done   // — the name a reader is told to set is the one in force
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const asJson = process.argv.includes("--json");
@@ -190,10 +191,27 @@ const OPS_TOKEN = (() => {
 })();
 
 const results = [];
-const record = (name, state, detail) => { results.push({ name, state, detail }); return state === "pass"; };
+const record = (name, state, detail, blocked = false) => { results.push({ name, state, detail, blocked }); return state === "pass"; };
 const pass = (n, d) => record(n, "pass", d);
 const fail = (n, d) => record(n, "fail", d);
 const skip = (n, d) => record(n, "skip", d);   // could not be reached — never counted as a pass
+
+/**
+ * COULD NOT LOOK — a skip, and one that moves the exit code.
+ *
+ * Two arms used to call `fail` while their own message said "This is a failure to look, never a pass".
+ * The text was honest and the verdict was not: FAIL is what a genuine drift also produces, so a reader
+ * could not tell "this box has drifted" from "I was unable to look" without reading to the end of the
+ * message. A drift is fixed by redeploying; a could-not-look is fixed by pointing the check at something
+ * it can read. Until somebody does, nothing is known either way.
+ *
+ * IT IS NOT THE SAME AS AN ORDINARY SKIP, which is why this exists rather than reusing `skip`. Several
+ * surfaces are deliberately not probed — the client door answers behind an access proxy, and a door this
+ * instance does not name has no address to dial. Those are by design and are the resting state of a
+ * healthy box. If every skip moved the exit code, the new code would fire on every good run and be
+ * ignored inside a week, which is the failure this whole issue is about repeated one level up.
+ */
+const blocked = (n, d) => record(n, "skip", d, true);
 
 // Named here rather than where the URLs are resolved, because `skip` does not exist yet up there. Each
 // unconfigured door is on the report as its own line, so a reader sees WHICH surface went unread instead
@@ -821,9 +839,10 @@ else {
   catch (e) { resolveError = String(e?.message ?? e).slice(0, 160); }
 
   if (!workspaceRoot) {
-    fail("the process that executes runs is on the deployed commit",
+    blocked("the process that executes runs is on the deployed commit",
       `the workspace root could not be resolved (${resolveError ?? "no value"}), so the drainer's stamp could not be found. `
-      + "This is a failure to look, never a pass.");
+      + "This is a failure to look, never a pass — and it is not a drift either: nothing is known about "
+      + "this surface until the check can be pointed at something it can read.");
   } else {
     // `null` from processTable is UNREADABLE, not empty — the verdict distinguishes them, because
     // "no drainer is running" and "I could not see the process table" are the same empty array and only
@@ -904,9 +923,10 @@ else {
   }
 
   if (!resolveUpdaterStampPath(deployDir)) {
-    fail("the updater that deploys this box is the current one",
+    blocked("the updater that deploys this box is the current one",
       `where the updater stamps itself could not be resolved (${resolveWhy ?? "no value"}), so `
-      + `${UPDATER_STAMP_BASENAME} was not looked for. This is a failure to look, never a pass.`);
+      + `${UPDATER_STAMP_BASENAME} was not looked for. This is a failure to look, never a pass — and not `
+      + "a drift: redeploying would change nothing, because nothing was compared.");
   } else {
     const v = updaterVerdict({
       stamp: readUpdaterStamp(deployDir),
@@ -1101,6 +1121,11 @@ else {
 
 const failed = results.filter((r) => r.state === "fail");
 const skipped = results.filter((r) => r.state === "skip");
+const couldNotLook = results.filter((r) => r.blocked);
+
+// The three answers this check can give, and which outranks which, are in driver/surface-exit-verdict.mjs
+// — extracted for the reason roster-verdict and unit-state-verdict were: this file is a program, and a
+// decision that can only be reached by running it is a decision nobody can drive.
 
 if (asJson) {
   console.log(JSON.stringify({ ok: failed.length === 0, poolRoot: POOL_ROOT, register: wiredRegister, results }, null, 2));
@@ -1108,8 +1133,17 @@ if (asJson) {
   const mark = { pass: "  ok  ", fail: " FAIL ", warn: " warn ", skip: " skip " };
   console.log(`\n== live surface check — ${POOL_ROOT} ==\n`);
   for (const r of results) console.log(`[${mark[r.state]}] ${r.name}\n            ${r.detail}`);
-  console.log(`\n${failed.length === 0 ? "PASS" : `FAIL — ${failed.length} disagreement(s)`}`
+  const headline = failed.length ? `FAIL — ${failed.length} disagreement(s)`
+    : couldNotLook.length ? `COULD NOT LOOK — ${couldNotLook.length} surface(s) unreadable, and none of the rest disagreed`
+    : "PASS";
+  console.log(`\n${headline}`
     + `${skipped.length ? ` · ${skipped.length} surface(s) NOT probed (see above — not probed is not passed)` : ""}\n`);
+  // Named, not left to the exit code alone: whoever reads this on a terminal never sees `$?`.
+  if (couldNotLook.length) {
+    console.log("  could not be read — nothing is known about these either way, and redeploying changes nothing:");
+    for (const r of couldNotLook) console.log(`      ${r.name}`);
+    console.log("");
+  }
 }
 
-process.exit(failed.length === 0 ? 0 : 1);
+process.exit(exitFor({ failed: failed.length, couldNotLook: couldNotLook.length }));
