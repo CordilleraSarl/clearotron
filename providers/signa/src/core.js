@@ -117,8 +117,8 @@ const DETERMINISTIC_MATCH = new Set(["similar", "exact", "starts_with", "ends_wi
 // filter keys outright — `HTTP 400 Unrecognized key: status` — so every status-filtered Signa search
 // failed on the wire, and it survived review because the kernel does not pass one and no fixture
 // carried one. The real names are `status_primary` (pending|active|inactive|unknown) and
-// `status_stage`. `status_primary:["active"]` narrows 685 → 375; the bogus-key
-// control 400s identically, which is what proves the rejection is about the NAME and not the value.
+// `status_stage`. `status_primary:["active"]` narrows a band as a status filter should; the bogus-key
+// control is refused identically, which is what proves the rejection is about the NAME and not the value.
 //
 // Two branches building the same object by hand is what let one of them be wrong for two months, so
 // there is now one function and both branches call it.
@@ -240,7 +240,7 @@ export function normalizeRecord(rec, officeHint = null) {
     imageAvailable: rec.has_media ?? null,
     resolved_link: null, // Signa exposes no per-record public URL; renderer shows "verify at office"
     // ── WHICH LAYER THIS RIGHT SITS ON, carried as data ( →) ──────────────────────────
-    // The normalizer read 18 of the 38 fields a search row carries. Among the 20 it dropped were the
+    // The normalizer read under half the fields a search row carries. Among the ones it dropped were the
     // four that say what KIND of right a record is — and those are not extras, they are the whole
     // vocabulary the binding-layer disclosure is written in. A France search that returns an EUTM and
     // a Madrid IR alongside French national marks could not say so, because the three arrived
@@ -312,9 +312,9 @@ export function isSearchResponseBody(body) {
 // ── THE TOTAL, AND THE ONE CASE WHERE THE VENDOR'S NUMBER IS NOT A COUNT ───────────────────────────
 //
 // `options.include_total` returns `pagination.total_count` AND `pagination.total_count_approximate`.
-// Across nine queries every narrow band answers exact (685, 220, 363, 830, 2047,
-// 21, 101, 18) and — the case that matters — an empty band answered `total_count: 0, approximate:
-// false`, an EXACT zero, which is the only kind this repository is allowed to render.
+// Every narrow band answers an exact total and — the case that matters — an empty band answers
+// `total_count: 0, approximate: false`, an EXACT zero, which is the only kind this repository is
+// allowed to render.
 //
 // An approximate total of exactly 10000 is a saturation marker rather than an estimate.
 // The vendor is saying "at least ten thousand", and it says so on the broad sweeps (a bare owner
@@ -528,14 +528,14 @@ export function toSignaParams(p = {}) {
   // in the French register, and was never searched.
   //
   // `filters.jurisdictions` + `territory_match: "protection"` asks the territory question instead:
-  // every right with effect there, whatever register it sits on. Same term:
+  // every right with effect there, whatever register it sits on. On the same term, an office-scoped
+  // France search returns the national register and NOTHING else — no EU right, no Madrid leg — while
+  // the protection-scoped one returns the national rows unchanged plus both of the layers the first
+  // never saw.
   //
-  //   filters.offices: ["inpi-fr"]                        national 6898, regional 0,     madrid 0
-  //   filters.jurisdictions: ["FR"], protection           national 6898, regional 10000+, madrid 2708
-  //
-  // and the control that shows `protection` adds a layer rather than merely more rows: Switzerland,
-  // under no regional register, returns regional 0 either way while its madrid layer arrives all the
-  // same. Every one of the eleven covered territories reaches its Madrid layer this way; the EU
+  // and the control that shows `protection` adds a LAYER rather than merely more rows: a territory
+  // under no regional register gains no regional rows either way, while its Madrid layer arrives all
+  // the same. Every one of the eleven covered territories reaches its Madrid layer this way; the EU
   // members additionally reach the EU register.
   //
   // IT IS ONE CALL, NOT THREE. No extra queries, no extra spend — which is why this half of Stage 2
@@ -552,7 +552,7 @@ export function toSignaParams(p = {}) {
   // caller that translates before handing params in — the shape a probe or a driver adapter naturally
   // takes — gets it applied twice. On the second pass `regions` is still present, so an earlier draft
   // re-added `offices` beside the `jurisdictions` it had just produced. The API accepts both and the
-  // office filter WINS: a France order went back to 19 national rows from 101, with `territory_match:
+  // office filter WINS: a France order went back to the national rows alone, with `territory_match:
   // "protection"` sitting in the body doing nothing. The expansion silently undid itself and the run
   // reported `state: "enumerated"` either way. Caught by comparing before/after on a live call and
   // finding them identical — the one check that could see it.
@@ -662,9 +662,9 @@ export function toSignaParams(p = {}) {
 /**
  * THE ONE QUERY SHAPE WITH A NARROWER RESULT WINDOW.
  *
- * `filters.owner_name` caps paging at 400 ROWS on this vendor; nothing else does. Same term,
- * same term and limit: `exact` exhausted at 685, `contains` at 2047, and the owner-scoped one stopped
- * dead — "This cursor points beyond the 400 result pagination window."
+ * `filters.owner_name` caps paging at 400 ROWS on this vendor; nothing else does. On one term at one
+ * limit, both unscoped predicates paged to exhaustion and the owner-scoped one stopped dead at the
+ * window, which the vendor's own cursor refusal names.
  *
  * `null` for every other shape, and that is the load-bearing half. Returning 400 across the board would
  * turn every tractable band over 400 into a sanctioned crowd — an UNDER-SEARCH wearing a crowd
