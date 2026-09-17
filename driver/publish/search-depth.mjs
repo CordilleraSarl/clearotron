@@ -157,6 +157,34 @@ export function courtDecisionsState(caseLawText) {
   return "found";
 }
 
+/**
+ * WHICH TERRITORIES THE RUN SEARCHED, AND WHICH IT COULD NOT REACH — from the register PLAN. PURE.
+ *
+ * The plan is the authority on what was asked of the register; the `_records/` archive is only the
+ * authority on what came back and was kept. Reading "what was searched" off the archive is why a
+ * provider that keeps no records read as a provider nobody asked: no records, no countries, no section.
+ * Both halves are on the plan whether or not anything is archived — `entries[].regions` is what it will
+ * query, and `deferred_coverage` is what this provider does not cover, carrying the reason for each.
+ *
+ * Null for a run with no plan to read, which is an archived or legacy run: that is "cannot say", and it
+ * is not the same answer as a plan that named nothing.
+ *
+ * @param {object|null} plan  the parsed `register-plan.json`, or null when there is none
+ */
+export function planTerritoriesOf(plan) {
+  if (!plan || typeof plan !== "object") return null;
+  const entryRegions = (plan.entries ?? []).flatMap((e) => (Array.isArray(e?.regions) ? e.regions : []));
+  // `plan.regions` is the older shape and is the fallback, not a second source: a plan carrying entries
+  // has already said which regions it will query, and unioning the two would report a region the
+  // compiler moved OUT of `regions` into the deferral list as though it had been searched.
+  const searched = entryRegions.length ? [...new Set(entryRegions.map(String))]
+    : [...new Set((Array.isArray(plan.regions) ? plan.regions : []).map(String))];
+  const unreached = (Array.isArray(plan.deferred_coverage) ? plan.deferred_coverage : [])
+    .map((d) => ({ jurisdiction: String(d?.jurisdiction ?? "").trim(), reason: String(d?.reason ?? "").trim() }))
+    .filter((d) => d.jurisdiction);
+  return { searched, unreached };
+}
+
 /** Was the name searched in a non-Latin script? Read off the plan's own terms, never asserted. PURE. */
 export function localScriptSearched(registerPlan) {
   const entries = Array.isArray(registerPlan?.entries) ? registerPlan.entries : [];

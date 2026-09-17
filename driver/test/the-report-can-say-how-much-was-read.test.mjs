@@ -23,7 +23,7 @@
 import { test } from "node:test";
 process.env.CLEAROTRON_MCP_URL ||= "https://mcp.test/mcp";
 import assert from "node:assert/strict";
-import { CLEARED_GROUPS, groupForCleared, clearedNames, recordsByCountry, sweepCounts, courtDecisionsState, localScriptSearched, searchDepthRecord } from "../publish/search-depth.mjs";
+import { CLEARED_GROUPS, groupForCleared, clearedNames, recordsByCountry, sweepCounts, courtDecisionsState, localScriptSearched, searchDepthRecord, planTerritoriesOf } from "../publish/search-depth.mjs";
 
 // Invented ground throughout. No client content reaches a fixture.
 const AUDIT = `# Negative Results
@@ -152,4 +152,53 @@ test("an omitted listing is not a declaration that the store was empty", () => {
   // the one producer. This arm pins that the default is a DEFAULT and not the absent case: if someone
   // later "tidies" it to null, every caller that omits the argument starts reporting "cannot say".
   assert.equal(searchDepthRecord({ auditMd: AUDIT }).counts.recordsRead, 0);
+});
+
+// ── WHAT WAS SEARCHED IS THE PLAN'S ANSWER, NOT THE ARCHIVE'S ───────────────────────────────────────
+
+test("the searched and unreached territories are read off the plan, with the reason for each", () => {
+  const plan = {
+    entries: [{ regions: ["EU", "GB"] }, { regions: ["GB", "JP"] }, { term: "no regions here" }],
+    deferred_coverage: [
+      { jurisdiction: "US", reason: "outside this register's coverage" },
+      { jurisdiction: "CN", reason: "no index wired on this deployment" },
+    ],
+  };
+  const t = planTerritoriesOf(plan);
+  assert.deepEqual(t.searched, ["EU", "GB", "JP"], "deduped across entries, in plan order");
+  assert.deepEqual(t.unreached, [
+    { jurisdiction: "US", reason: "outside this register's coverage" },
+    { jurisdiction: "CN", reason: "no index wired on this deployment" },
+  ], "the reason travels with the territory — an unnamed gap is a wider gap, not a smaller one");
+});
+
+test("a run with no plan cannot say, and a plan that named nothing said nothing", () => {
+  // The same distinction the record listing makes, for the same reason: collapsing them is what let a
+  // register with no archive read as a register nobody searched.
+  assert.equal(planTerritoriesOf(null), null);
+  assert.equal(planTerritoriesOf(undefined), null);
+  assert.deepEqual(planTerritoriesOf({}), { searched: [], unreached: [] });
+});
+
+test("a deferred territory is never also reported as searched", () => {
+  // The compiler moves an unreachable office OUT of `regions` and into `deferred_coverage`. `plan.regions`
+  // is the OLDER shape and must stay a fallback: unioned with the entries it would report exactly the
+  // territory that was moved out as though it had been queried, which is the false clean the deferral
+  // list exists to prevent.
+  const t = planTerritoriesOf({
+    entries: [{ regions: ["EU"] }],
+    regions: ["EU", "US"],                                  // pre-split shape, still on the artifact
+    deferred_coverage: [{ jurisdiction: "US", reason: "not covered" }],
+  });
+  assert.deepEqual(t.searched, ["EU"], "the entries are the authority where they exist");
+  assert.ok(!t.searched.includes("US"), "a territory that was deferred was reported as searched");
+  assert.deepEqual(t.unreached.map((d) => d.jurisdiction), ["US"]);
+
+  // And the fallback still works where there are no entries at all.
+  assert.deepEqual(planTerritoriesOf({ regions: ["EU", "US"] }).searched, ["EU", "US"]);
+});
+
+test("a deferral with no jurisdiction is dropped rather than rendered as a blank territory", () => {
+  const t = planTerritoriesOf({ deferred_coverage: [{ reason: "nothing names this" }, { jurisdiction: "  " }, { jurisdiction: "US", reason: "" }] });
+  assert.deepEqual(t.unreached, [{ jurisdiction: "US", reason: "" }]);
 });
