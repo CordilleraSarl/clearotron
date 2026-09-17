@@ -1,5 +1,12 @@
 # clearotron-driver
 
+## 0.3.2-beta.7
+
+### Patch Changes
+
+- 4bde529: Fixed: A clearance that completed all but one or two of its local-language searches now delivers the report. Before, a single search that did not complete threw the whole clearance away, including the fifty-nine that had run. The report says which term's search was short.
+- b5b789c: Fixed: The exported PDF no longer prints a collapsed arrow above sections that are already fully open.
+
 ## 0.3.2-beta.6
 
 ### Patch Changes
