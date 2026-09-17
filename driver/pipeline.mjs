@@ -99,9 +99,8 @@ import { buildAuditMd, parseSpineFindingBlocks } from "./publish/audit-from-spin
 import { deriveRegisterPresence } from "./publish/register-presence.mjs";   // — the audit stores every live in-scope record
 import { lastAcceptedMatterFrame, frameIdentifiedClasses, frameHouseElementCandidate } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed; and the classes it judged necessary beyond the instructed ones, which the plan compile unions in
 import { romanizedTermsFromPlan, mintSupplementalQid } from "./register-plan.mjs";
-import { excludeHouseElement, verifyHouseElementOwnership, resolveRegions as resolvePlanRegions, HOUSE_ELEMENT_RECEIPT, FORM_CROWDS_RECEIPT, isFormCrowd, formCrowdCeiling, bandsFor } from "./register-plan.mjs";   // 647 — the client's own element leaves the conflict analysis only on a verified receipt
-import { resolveRecordExecutor } from "./register-records.mjs";
-import { resolveCountExecutor } from "./register-count.mjs";   // 618 — a form term is probed before it is fetched   // — the stamp the late lanes never met
+import { excludeHouseElement, verifyHouseElementOwnership, resolveRegions as resolvePlanRegions, HOUSE_ELEMENT_RECEIPT } from "./register-plan.mjs";   // 647 — the client's own element leaves the conflict analysis only on a verified receipt
+import { resolveRecordExecutor } from "./register-records.mjs";   // — the stamp the late lanes never met
 import { slimLine, crowdLine } from "./hit-list.mjs";   // — the list the run works from; crowds ride it as a sibling array
 import { mintCrossCheckDoubts, mintContradictionDoubts, stitchDoubts, applyClosure } from "./doubt-ledger.mjs";   // doubt-stitch + doubt-closure (2026-07-22)
 // Conversion 6: the two line-form parsers are no longer on the live path — the seat sends typed
@@ -2283,63 +2282,6 @@ function logFullyDeferredAxes(plan, P, source) {
  * The element being searched in full is the safe direction and the status quo; the only thing that can
  * narrow a client's search is a register answer naming their own live registration.
  */
-/**
- * Count each one-letter form of the distinctive element, and record which are ordinary words.
- *
- * WHY A COUNT AND NOT A FETCH. The form floor is every single-character mutation of the element. On a
- * short element those mutations ARE ordinary words, and each matches every mark containing that word
- * across every register in scope — two of them put 1,154 records into a 2,146-record band on
- * 2026-09-16. A count is one cheap call per term and answers the only question that matters before
- * spending an enumerate: is this spelling a name, or is it a word.
- *
- * FAIL-OPEN, WHICH IS THE OPPOSITE OF THE HOUSE-ELEMENT RECEIPT NEXT DOOR, and the asymmetry is the
- * point. That receipt can only ever NARROW a search, so silence there must mean "search it". This one
- * also narrows — a dropped spelling is a query not run — so silence must mean the same thing, and it
- * does: no probe, no receipt, nothing dropped, the floor compiles exactly as it does today. A provider
- * that cannot count, an outage, a throw, a term the probe did not answer for: all of them keep the term.
- */
-async function probeAndRecordFormCrowds(ctx, opts = {}) {
-  const P = ctx.paths;
-  try {
-    let form = null;
-    try { form = JSON.parse(readFileSync(P.formNeighbourhood, "utf8")); } catch { return; }
-    const terms = [...new Set(bandsFor(form, null).flatMap((e) => e?.band?.exactQueries ?? []).map((t) => String(t ?? "").trim()).filter(Boolean))];
-    if (!terms.length) return;
-
-    const caps = registerCapabilities();
-    const { regions } = resolvePlanRegions(registerJurisdictions(ctx.job, ctx.profile), caps);
-    const classes = [...new Set([...inScopeClassList(ctx.job, ctx.profile).map(String), ...frameIdentifiedClasses(P.runDir)])].map(Number).filter(Number.isInteger);
-    const exec = resolveCountExecutor({
-      counter: opts?.formCounter ?? null, adapter: activeProvider(),
-      agentId: ctx.agentId ?? null, sessionKey: `prelim-${ctx.run.slug}-${ctx.run.codename}`,
-    });
-    if (typeof exec.count !== "function") return;   // nothing can count here; every term stays
-
-    // The mark's OWN exact count is the yardstick every term is measured against, so it is probed
-    // first and separately. Without it the ceiling is the absolute floor alone, which is the correct
-    // degradation and not a reason to skip the rest.
-    const probe = async (term) => {
-      try {
-        const r = await exec.count(term, { matchMode: "exact" }, { classes, regions });
-        return r?.ok && Number.isFinite(Number(r.total)) ? Number(r.total) : null;
-      } catch { return null; }
-    };
-    const markCount = await probe(String(ctx.job?.markName ?? ctx.run?.slug ?? "").trim());
-    const crowds = [];
-    for (const t of terms) {
-      const n = await probe(t);
-      if (isFormCrowd(n, markCount)) crowds.push({ term: t, count: n, ceiling: formCrowdCeiling(markCount) });
-    }
-    ensureDriverDir(P.runDir);
-    atomicWrite(driverDir(P.runDir, FORM_CROWDS_RECEIPT),
-      JSON.stringify({ ts: new Date().toISOString(), mark_exact_count: markCount, ceiling: formCrowdCeiling(markCount), probed: terms.length, crowds }, null, 2) + "\n");
-    runLog(P.runDir, { event: "form-crowds-probed", probed: terms.length, crowded: crowds.length, ceiling: formCrowdCeiling(markCount), mark_exact_count: markCount });
-    if (crowds.length) note(`form floor: ${crowds.length} of ${terms.length} spelling(s) are ordinary words and are disclosed rather than enumerated`);
-  } catch (e) {
-    runLog(P.runDir, { event: "form-crowds-probe-failed", reason: String(e?.message ?? e).slice(0, 160) });
-  }
-}
-
 async function verifyAndRecordHouseElement(ctx, opts = {}) {
   const P = ctx.paths;
   try {
@@ -2431,10 +2373,6 @@ function attachRegisterPlan(ctx, { frozenOnly = false } = {}) {
     }
     let form = null;
     try { form = JSON.parse(readFileSync(P.formNeighbourhood, "utf8")); } catch { /* form band optional */ }
-    // 618 — the measured ordinary-word spellings. Absent ⇒ [] ⇒ the form floor compiles unchanged.
-    let formCrowds = [];
-    try { formCrowds = JSON.parse(readFileSync(driverDir(P.runDir, FORM_CROWDS_RECEIPT), "utf8"))?.crowds ?? []; }
-    catch { formCrowds = []; }
     compiled = compileRegisterPlan({
       manifest,
       // the SAME class resolution the recall checks use (job.classes ∪ per-mark classes, else the
@@ -2447,10 +2385,7 @@ function attachRegisterPlan(ctx, { frozenOnly = false } = {}) {
       // sweep); fatal on a provider whose regions[] is mandatory, where every entry then errored on its
       // count probe and the whole plan joined MISSING at fan-in (review finding 11).
       job: { jobKey: ctx.run.slug, classes: [...new Set([...inScopeClassList(ctx.job, ctx.profile).map(String), ...frameIdentifiedClasses(P.runDir)])], jurisdictions: registerJurisdictions(ctx.job, ctx.profile) },
-      form, formCrowds, skillVersion: "prelim-register@spec48",
-      // 647 — when the exclusion applied, the element's own form band must be unreachable to `bandFor`,
-      // whose fallback would otherwise hand the compile the very floor being excluded.
-      houseElement: houseConfirmation ? houseReceipt?.element : null,
+      form, skillVersion: "prelim-register@spec48",
       // phase 3 — the plan is compiled AGAINST THE ACTIVE PROVIDER's declared capabilities, so the
       // frozen artifact is executable by construction: the OR-stack split uses that provider's width,
       // jurisdictions are translated into its office vocabulary (EU→EM on Compumark), and a predicate
@@ -9057,8 +8992,7 @@ async function pipelineInner(job, opts = {}) {
     must(await stage("prelim-variants", ctx), "prelim-variants");
     deriveScopeLedgerJson(ctx);   // frame-omission design: code-derive scope-ledger.json from the validated prose (never-kill)
     deriveFormNeighbourhood(ctx); // mechanical FORM band: code-derive form-neighbourhood.json from the manifest's distinctive element(s) — the model-free form floor the register funnel searches (never-kill)
-    await probeAndRecordFormCrowds(ctx, opts);      // 618: count every one-letter form BEFORE the plan spends an enumerate on it
-    await verifyAndRecordHouseElement(ctx, opts);   // 647: ask the register who owns the frame's proposed house element, BEFORE the plan is compiled from it
+    await verifyAndRecordHouseElement(ctx, opts);   // ask the register who owns the frame's proposed house element, BEFORE the plan is compiled from it
     attachRegisterPlan(ctx);      // WS2 (B3): compile/freeze/reuse the deterministic register plan (flag-gated; frozen plan wins on resume; never-kill on mint)
 
     // spec 64 (B2) — proactive recall probes: prior-confirmed conflicts for THIS mark (the workspace

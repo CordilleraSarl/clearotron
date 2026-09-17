@@ -3154,8 +3154,8 @@
           "todos": 0
         },
         "plan-qid-is-an-identity.test.mjs": {
-          "tests": 20,
-          "asserts": 73,
+          "tests": 17,
+          "asserts": 56,
           "skips": 0,
           "todos": 0
         },
