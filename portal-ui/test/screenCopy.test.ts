@@ -344,8 +344,24 @@ test('the wire STATES its geography mode — everywhere and silence are differen
   const start = NEW_CLEARANCE.indexOf('const bodyFor')
   const end = NEW_CLEARANCE.indexOf('const explain', start)
   const fn = flat(NEW_CLEARANCE.slice(start, end))
-  assert.match(fn, /geography: \{ mode: geographyFor\(draft\.pick\)\.mode \}/,
-    'without it, a screen promising worldwide runs the account’s own territories and nothing disagrees')
+  // THE PROPERTY, NOT THE SPELLING. Pinned to the exact call text, this fired for "somebody moved the
+  // line" and not for "the stamp stopped being honest" — and the cheap repair is to update the literal,
+  // which is how the property would have been deleted with the light staying green.
+  //
+  // What has to hold is that the stamp is COMPUTED, and computed from all three things that decide it:
+  // the draft, the product, and the company's own territories. Asked about the draft alone it cannot
+  // tell "everywhere" from "the reader named none and the company's four are on the screen in front of
+  // them" — which are different searches, and the second was being sent as the first. What the three
+  // answers ARE is driven in composerProduct.test.ts, and end to end against a browser in
+  // scripts/composer-render-check.mjs; this holds the call site those two cannot see.
+  const call = /geography: \{ mode: geographyFor\(([^)]*)\)\.mode \}/.exec(fn)
+  assert.ok(call, 'the wire no longer states a geography mode at all — everywhere and silence are back to being the same bytes')
+  const args = call[1]
+  assert.match(args, /draft\.pick/, 'the stamp is not asked about the draft')
+  assert.ok(/activeLevel|whereLevel/.test(args),
+    'the stamp is not asked WHICH SEARCH — a Global preliminary search is worldwide by definition, and the engine refuses the account-default stamp on it by name')
+  assert.match(args, /own\.territories/,
+    'the stamp is not asked about the company’s own territories — the list the Where panel is drawing, which is what makes an empty draft mean silence rather than everywhere')
 })
 
 test('the template line does not claim to fix the scope, because it does not', async () => {
