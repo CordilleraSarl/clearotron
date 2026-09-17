@@ -16,10 +16,15 @@
 // of the same allowlist agree on the day they are written and drift afterwards; that is the defect
 // was filed about one field over, and the fix there was the same — import the function, never
 // re-derive the answer.
-export const DEPLOYMENT_BOXES = ["prod", "test"];
+// `preprod` JOINED 2026-09-17. It is a packaged install like production, on its own account, which takes
+// every published version before production does. Until it could name itself it ran with the variable
+// UNSET — and an unset box does not fail loudly: `live-surface-check` SKIPS its expected-units check
+// when the box is null, so the one install that most wants that check was the one not getting it.
+// Setting `prod` instead would have made the box lie about which box it is.
+export const DEPLOYMENT_BOXES = ["prod", "preprod", "test"];
 
 /**
- * @returns {"prod"|"test"|null} the self-declared box, or null when unset or unrecognised.
+ * @returns {"prod"|"preprod"|"test"|null} the self-declared box, or null when unset or unrecognised.
  *
  * Read at CALL time, deliberately. `shared/brand.mjs` builds its value at module scope and that is
  * exactly why a rename reached the report and not the portal — portal-service is outside

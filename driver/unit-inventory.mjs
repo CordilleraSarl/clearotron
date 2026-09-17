@@ -73,7 +73,24 @@
 // it for current state.)
 
 /** Where a unit is expected to be installed. "none" is a claim, not an absence — see ORPHANED below. */
-export const BOXES = Object.freeze(["prod", "test", "dev"]);
+export const BOXES = Object.freeze(["prod", "preprod", "test", "dev"]);
+
+/**
+ * Whose DECLARED units a box is expected to carry, where that is not its own name.
+ *
+ * `runsOn` is a MEASURED claim — this file says so in as many words: an entry gains a box the day an
+ * enumeration of that box shows the unit, never the day somebody intends it. So pre-prod cannot be
+ * written into `runsOn` from a machine that has not enumerated pre-prod, and it must not be: that would
+ * turn a measurement into a plan, which is the one thing these entries are not.
+ *
+ * What CAN be stated from here is the expectation. Pre-prod is a packaged install of the same product on
+ * its own account, with the same doors and the same worker, so what it is expected to carry is what
+ * production is expected to carry. The expectation derives; the measurement stays measured; and a unit
+ * genuinely absent on pre-prod is reported rather than skipped, which is the whole point of the box
+ * being able to name itself.
+ */
+const EXPECTS_LIKE = Object.freeze({ preprod: "prod" });
+const expectationBox = (box) => EXPECTS_LIKE[box] ?? box;
 
 // ── RESOLVED UNITS (ruling 2026-08-25 — option B) ──────────────────────
 //
@@ -773,7 +790,7 @@ export function unitInventoryVerdict({
   // unit that is gone from a box is the ruling taking effect, not drift; reporting it as a fault trains
   // a reader to skim the arm that would have caught a real one. Both are still REPORTED — the
   // distinction is which of them is a fault.
-  const declaredHere = (u) => box && u.runsOn.includes(box) && !liveBases.includes(u.unit);
+  const declaredHere = (u) => box && u.runsOn.includes(expectationBox(box)) && !liveBases.includes(u.unit);
   const absent = box
     ? inventory.filter((u) => declaredHere(u) && !u.retired).map((u) => u.unit).sort()
     : [];

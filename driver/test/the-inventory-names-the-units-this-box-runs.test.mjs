@@ -308,3 +308,35 @@ test("the two walk failures keep DIFFERENT sentences, because they are different
   assert.match(empty.message, /found NO unit file anywhere/);
   assert.notEqual(incomplete.message, empty.message);
 });
+
+// ── PRE-PROD EXPECTS WHAT PRODUCTION EXPECTS, AND CLAIMS TO HAVE MEASURED NOTHING ───────────────────
+
+test("a pre-prod box is expected to carry production's units, without any entry claiming it runs there", async () => {
+  const { deploymentBox, DEPLOYMENT_BOXES } = await import("../../shared/deployment-box.mjs");
+
+  // IT CAN NAME ITSELF NOW. Until it could, it ran with the variable unset — and an unset box is not a
+  // loud failure: the expected-units check SKIPS, so the install that most wants it was not getting it.
+  assert.equal(deploymentBox({ CLEAROTRON_BOX: "preprod" }), "preprod");
+  // THE CONTROL, without which the line above only proves the function returns its argument. An
+  // unrecognised value must still be null rather than trusted, which is what stops a typo being a box.
+  assert.equal(deploymentBox({ CLEAROTRON_BOX: "preprodd" }), null);
+  assert.equal(deploymentBox({ CLEAROTRON_BOX: "" }), null);
+
+  // NOTHING DECLARES IT RUNS THERE, and that is deliberate rather than an omission to tidy up later.
+  // `runsOn` is a measured claim — this inventory says an entry gains a box the day an enumeration of
+  // that box shows the unit, never the day somebody intends it — and nobody has enumerated pre-prod
+  // from here. Writing it in would turn a measurement into a plan.
+  assert.deepEqual(UNIT_INVENTORY.filter((u) => u.runsOn.includes("preprod")).map((u) => u.unit), [],
+    "an entry claims to run on pre-prod; runsOn is measured, and that claim was not measured here");
+
+  // AND THE EXPECTATION STILL DERIVES. Same MEMBERS, not merely the same count: two totals agreeing is
+  // the thing this repository keeps being caught by, and a set comparison cannot agree by accident.
+  const absentOn = (box) => unitInventoryVerdict({ live: [], files: [], box, probe: { ok: true },
+    boxNames: DEPLOYMENT_BOXES }).absent.slice().sort();
+  assert.deepEqual(absentOn("preprod"), absentOn("prod"),
+    "pre-prod stopped expecting what production expects, so a unit missing there is reported by nothing");
+  assert.notEqual(absentOn("prod").length, 0, "the comparison above is over an EMPTY set and proves nothing");
+
+  // A box with its own name is unaffected: the derivation is one entry, not a rule that flattens boxes.
+  assert.notDeepEqual(absentOn("test"), absentOn("prod"));
+});
