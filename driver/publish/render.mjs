@@ -2636,20 +2636,36 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   ${whatWasSearchedSection(opts, coverage, findings, recordsByUri)}
 
   <footer>
-    <span>${productName ? `${esc(productName)}. ` : ''}${FRAMEWORK
-        // TWO SENTENCES, and that count is the ruled shape rather than a consequence of trimming.
-        //
-        // Two things left. The band note — "the framework in force's own vocabulary, one word per
-        // finding on every surface" — is a note about how the renderer works, printed on every report a
-        // client receives; the framework's NAME is on the "Rated under" line below, once, which is
-        // where a reader who wants it will look.
-        //
-        // AND "Working draft for legal review.", which is a separate decision and is recorded as one.
-        // A delivered clearance is not a draft, and a document that calls itself one on every page is
-        // describing its own status inaccurately to the person paying for it. Raised in review because
-        // the first version of this comment argued only the band note and left the reader to infer that
-        // the status line had gone along for the ride.
-        ? '' : ''}<br>Matter ${esc(fm.matter || '')}${fm.run ? ` · ${esc(fm.run)}` : ''}.${fm.rated_under ? `<br>Rated under: <span class="mono">${esc(fm.rated_under)}</span>.` : ''}${fm.run_under_project ? `<br>Run under project: <span class="mono">${esc(fm.run_under_project)}</span>.` : ''}</span>
+    ${/* ONE CLIENT LINE, AND IT NAMES WHAT EACH DATE IS. It ran to four.
+         "Rated under" STAYS, and it is not an oversight: the document carries the reviewer's
+         provenance and portal-report strips that one line for every embedded reader at serve time,
+         which is stated there and held by an arm. Deleting it here would take provenance off the
+         reviewer's copy to save the portal a job it already does.
+         "Run under project" GOES, and the difference is that nothing strips it — it reaches a client
+         exactly as written, and it is the engine's phrase for the folder a job was filed in. The
+         product name lead goes too: the identity line already says which search this is.
+         The run string is composed as "<date> · <provider>", and it was printed with neither part
+         labelled, so a bare date sat next to a matter identifier meaning nothing in particular. It is
+         split on the DATE by pattern — the same way `dateOf` does it one file over — and the remainder
+         is the provider. A run string with no date in it is not this renderer's to take apart, so it
+         is printed whole and unlabelled rather than guessed at. */''}
+    <span>${(() => {
+      const runStr = String(fm.run ?? '').trim();
+      const searchedOn = (runStr.match(/\d{4}-\d{2}-\d{2}/) || [])[0] ?? null;
+      const provider = searchedOn
+        ? runStr.replace(searchedOn, '').replace(/^[\s\u00b7]+|[\s\u00b7]+$/g, '').trim()
+        : runStr;
+      const issuedOn = (String(opts.issued ?? '').match(/^\d{4}-\d{2}-\d{2}/) || [])[0] ?? opts.issued ?? null;
+      const parts = [
+        fm.matter ? `Matter ${esc(fm.matter)}` : '',
+        searchedOn ? `searched on ${esc(searchedOn)}` : '',
+        issuedOn ? `issued on ${esc(issuedOn)}` : '',
+        provider ? esc(provider) : '',
+      ].filter(Boolean);
+      const line = parts.length ? `${parts.join(' \u00b7 ')}.` : '';
+      // The reviewer's provenance rides BELOW the client line, where portal-report removes it.
+      return line + (fm.rated_under ? `<br>Rated under: <span class="mono">${esc(fm.rated_under)}</span>.` : '');
+    })()}</span>
     ${logoLockup({ mark: 16 })}
   </footer>
 </div>

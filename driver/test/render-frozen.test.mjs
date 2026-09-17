@@ -1770,7 +1770,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Advanced again by the break recorded above the FROZEN constant: seven fixed sentences on the
 // clearance page, which is a behaviour change and not licence-only, so both constants move for the same
 // measured reason.
-const FROZEN_BEFORE_SPDX = "9de05bde6a160ed665cae61bbf53099b1ae7b810d78cc5cbe9b23a0aa1decc1a";
+const FROZEN_BEFORE_SPDX = "3bfbd9acc3f52e64e5907e428d8cb3679b4f8272dc634756218f4eb5d25cc9a8";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2245,7 +2245,23 @@ const FROZEN_BEFORE_SPDX = "9de05bde6a160ed665cae61bbf53099b1ae7b810d78cc5cbe9b2
 //
 // Could it live in report.css? No — hiding the time leaves it in the delivered bytes and the print.
 
-const FROZEN = "fb96d0f825e0f55db07b72b297e8241e3db31761c039dddbe4b694ec59daa9de";
+// AND AGAIN (2026-09-17): THE FOOTER IS ONE CLIENT LINE, WITH ITS DATES NAMED.
+//
+// Reachable from a republish? Yes. A re-rendered archived run loses the product-name lead, which its
+// identity line already carries, and loses "Run under project" — the engine's phrase for the folder a
+// job was filed in, which nothing strips and which therefore reached a client exactly as written. Its
+// two dates gain names: a bare date beside a matter identifier said nothing about which date it was.
+//
+// "Rated under" IS KEPT, deliberately. The document carries the reviewer's provenance and
+// portal-report removes that one line at serve time for every embedded reader; deleting it here would
+// strip the reviewer's copy to save the portal a job it already does. An arm pins the markup to the
+// shape that strip matches, so changing it fails there rather than quietly surviving a strip that no
+// longer matches.
+//
+// Could it live in report.css? No — the lines removed are text, and hiding them leaves them in the
+// delivered bytes and the print.
+
+const FROZEN = "49a48ef3579cb18b8591a0abd7df338133c535b39ce2e248661f88633b13d2be";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

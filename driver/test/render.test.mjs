@@ -1640,6 +1640,46 @@ test("doc-54: one footer — the full provenance line rides the document; serve-
   assert.equal(stale, internal, "opts.client no longer forks the footer");
 });
 
+// ── THE FOOTER IS ONE CLIENT LINE, AND THE REVIEWER'S PROVENANCE STILL RIDES UNDER IT ────────────
+//
+// It ran to four lines. The product name repeats the identity line; "Run under project" is the
+// engine's phrase for the folder a job was filed in and NOTHING strips it, so it reached a client
+// exactly as written. Both go. The dates were unlabelled — a bare date beside a matter identifier,
+// meaning nothing in particular — and are now named for what they are.
+//
+// "Rated under" STAYS, and this arm is here because deleting it is the obvious-looking move. The
+// document carries the reviewer's provenance and portal-report removes that one line at serve time
+// for every embedded reader. Taking it out here would strip the reviewer's copy to save the portal a
+// job it already does — and the LAST assertion is the one that matters: the markup has to keep the
+// shape that strip matches, or the line stops being removable and starts reaching clients.
+test("the footer is one client line with its dates named, and the reviewer's provenance survives in a strippable shape", () => {
+  const fmRun = REPORT.replace("run: 2026-06-10", "run: 2026-06-10 · Corsearch register + common-law grid")
+    .replace("---\n\n#", "rated_under: Aurora Interactive (aurora) · custom framework · profile 890f610e\n---\n\n#");
+  const html = renderHtml(parsedOf(fmRun), BAND_FINDINGS, [], { issued: "2026-06-16 · 14:32 CEST" });
+  const foot = (html.match(/<footer[^>]*>([\s\S]*?)<\/footer>/) || [])[1] ?? "";
+
+  assert.match(foot, /searched on 2026-06-10/, "the run date is named as the date searched");
+  assert.match(foot, /issued on 2026-06-16/, "and the issue date as the date issued");
+  assert.doesNotMatch(foot, /14:32|CEST/, "the publish minute reaches no surface");
+  assert.match(foot, /Corsearch register \+ common-law grid/, "the provider survives the split");
+  assert.doesNotMatch(foot, /Run under project/, "the engine's word for a job folder reaches no client");
+
+  assert.match(foot, /Rated under: <span class="mono">/, "the reviewer's provenance is still on the document");
+  // The shape portal-report's RATED_UNDER_RE matches, spelled here so a change to the markup fails
+  // HERE rather than by quietly surviving a strip that no longer matches it.
+  assert.match(foot, /<br\s*\/?>Rated under:\s*<span class="mono">[^<]*<\/span>\./,
+    "…in exactly the shape the serve-time strip removes");
+});
+
+test("clause: a run string with no date in it is printed whole rather than taken apart", () => {
+  // The split is on the DATE by pattern. An archived run whose `run` was written in another shape is
+  // not this renderer's to guess at, so it is printed unlabelled rather than cut at a separator.
+  const odd = REPORT.replace("run: 2026-06-10", "run: Corsearch register only");
+  const foot = (renderHtml(parsedOf(odd), BAND_FINDINGS, [], {}).match(/<footer[^>]*>([\s\S]*?)<\/footer>/) || [])[1] ?? "";
+  assert.match(foot, /Corsearch register only/, "the run string survives whole");
+  assert.doesNotMatch(foot, /searched on/, "and nothing is labelled a date that was not one");
+});
+
 test("B1 (spec 2026-07-30 §4): the 'Subject to:' bound line is DELETED — no third copy of the conditions on the hero", () => {
   const acts = ["# Actions", "### Only you can close these",
     "- **[Time-critical] Identify the publisher of The Unbeatable Path** — storefront silence.",
