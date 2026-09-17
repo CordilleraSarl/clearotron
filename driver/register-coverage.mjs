@@ -231,8 +231,13 @@ const joinAnd = (parts) => (parts.length <= 1 ? parts.join("") : `${parts.slice(
  *
  * WRITTEN ONCE, FOR EVERY DOOR. Wording approved by the owner on 2026-09-17, including naming the wired
  * register, which the composer's own design note otherwise forbids on screen. The remedy clause is his
- * addition of the same day and it names the territories again on purpose: a caller with no screen —
- * start_run, the CLI — has to be able to act on this sentence alone, on the next call.
+ * addition of the same day: a caller with no screen — start_run, the CLI — has to be able to act on this
+ * sentence alone, on the next call.
+ *
+ * IT POINTS BACK RATHER THAN REPEATING. The first draft named the territories twice ("remove China and
+ * Japan"); the owner ruled on the plural the same day — "remove them", no need to repeat the countries —
+ * and the singular follows the same reason, since it repeated its one country for no better cause. The
+ * sentence already names them, so a screenless caller still has every territory it must drop.
  *
  * @param registerLabel the register's display label. Absent on a snapshot written before it was carried,
  *                      and the sentence simply does not name it then rather than naming a key.
@@ -243,5 +248,5 @@ export function registerReachRefusal(uncovered, registerLabel = null) {
   const register = String(registerLabel ?? "").trim();
   const where = register ? `${register}, the register configured here` : "the register configured here";
   return `${names} ${uncovered.length === 1 ? "is" : "are"} not available with ${where}`
-    + ` — remove ${names} to run this search.`;
+    + ` — remove ${uncovered.length === 1 ? "it" : "them"} to run this search.`;
 }
