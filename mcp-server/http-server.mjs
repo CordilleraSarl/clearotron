@@ -362,6 +362,10 @@ if (isMain) {
       // read inside it, so the factory keeps one rule and the caller names which door it is.
       createSession: (sessions, scope, owner) => createSession(sessions, scope, owner, { networkDoor: false }),
       authHeader: AUTH_HEADER, firmDomains: ALLOWED_DOMAINS, log,
+      // THE THIRD DOOR, and it has to name itself. It is not the staff surface and it is not the network
+      // client surface; a key presented here arrives over a local socket. Until this was passed, every
+      // audit line this door wrote carried no door at all and read as the staff surface by elimination.
+      door: "key",
     });
     openKeyDoor({ handler: keyHandler, path: KEY_SOCKET, log })
       .catch((e) => { log(`FATAL: could not open the key socket at ${KEY_SOCKET} — ${e.message}`); process.exit(1); });

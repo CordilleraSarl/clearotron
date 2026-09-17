@@ -346,6 +346,30 @@ export async function update(argv = process.argv.slice(2)) {
     return installed;
   }
 
+  // ── AND THE STAMP THE PULL CANNOT MOVE ─────────────────────────────────────────────────────────────
+  //
+  // `build-info.json` names the commit an archive was packed from. It is written by `prepack`, which this
+  // route never runs, and it is untracked, so the pull above cannot bring it forward either. A checkout
+  // that was ever packed by hand keeps whatever that pack wrote, and the file then ages while the tree
+  // moves: measured on the test box 2026-09-16, it named a commit five days and two minor versions behind
+  // the tree it was sitting in.
+  //
+  // NOTHING THE PRODUCT READS IS FOOLED BY IT, which is why this stamps rather than refuses. `engineCommit`
+  // takes git first and never lets a packed stamp override a live checkout, so no run has been
+  // misattributed and no client has seen a wrong version. The reader it misleads is a person — checking on
+  // the box which build is deployed, answered confidently and wrongly, with nothing on the file to say it
+  // is stale. This verb is what moves the commit on this route, so it is the cheapest place to keep the
+  // answer true.
+  //
+  // A failure here does not fail the update. The code and its dependencies are already correct, and
+  // reporting a half-done deploy because a note could not be rewritten would be the louder lie.
+  const stamped = runInCheckout("node", ["scripts/write-build-info.mjs"]);
+  if (stamped !== 0) {
+    console.error("\n  The update succeeded, but build-info.json could not be re-stamped. A reader of that");
+    console.error("  file on this box would be told the commit of an earlier pack rather than this one.");
+    console.error("  What this install RUNS is unaffected — that is named from the checkout itself.\n");
+  }
+
   // ── THE BUNDLE THE PULL COULD NOT UPDATE ─────────────────────────────────────────────────────────
   //
   // `portal-ui/dist` is untracked on the public tree, so `git pull` above can never bring it forward.

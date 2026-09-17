@@ -105,7 +105,7 @@ export function measure(name, html, work, env) {
       "--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1",
       `--user-data-dir=${join(work, `chrome-${name}`)}`, "--virtual-time-budget=8000",
       "--dump-dom", `file://${file}`,
-    ], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"], maxBuffer: 64 * 1024 * 1024, env });
+    ], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"], maxBuffer: 64 * 1024 * 1024, env: env });
   } catch (e) {
     return { error: `${name}: the browser did not run (${String(e.message).split("\n")[0]})` };
   }
@@ -130,7 +130,10 @@ export function pagesIn(pool, work) {
 
 export function main() {
   const keep = process.argv.includes("--keep");
-  const { root: work, env } = browserRun("report-print-check-");
+  // `keep` is the handle that takes this run's root OUT of the exit sweep. Destructuring only the root
+  // and the environment is what defeats a --keep flag silently: the flag still parses, the sweep still
+  // runs, and nothing in the check's own output changes. The membership arm catches exactly that.
+  const { root: work, env: chromeEnv, keep: keepRoot } = browserRun("report-print-check-");
   const pool = buildFixturePool(mkdtempSync(join(tmpdir(), "print-check-pool-")));
   let failures = 0;
   const fail = (m) => { failures += 1; console.error(`  ✕ ${m}`); };
@@ -145,7 +148,7 @@ export function main() {
     let ruled = 0;
     const byMechanism = { hidden: 0, "static-header": 0 };
     for (const [name, html] of pages) {
-      const got = measure(name, html, work, env);
+      const got = measure(name, html, work, chromeEnv);
       if (got.error) { fail(got.error); continue; }
       const printed = got.rows.filter((r) => r.renders);
       console.log(`${name}: ${got.rows.length} disclosure(s), ${printed.length} of them printed`);
@@ -180,8 +183,11 @@ export function main() {
       + `${byMechanism["static-header"]} as static headers with the marker blanked.`);
     return 0;
   } finally {
-    if (!keep) { rmSync(pool, { recursive: true, force: true }); rmSync(work, { recursive: true, force: true }); }
-    else console.log(`  kept: ${work}`);
+    // Out of the exit sweep first, or --keep promises a directory that goes at exit anyway — the flag
+    // parses, the removal it guards still runs, and nothing in the output says so.
+    if (keep) keepRoot();
+    if (keep) console.log(`  kept: ${work} (and the fixture pool at ${pool})`);
+    else { rmSync(pool, { recursive: true, force: true }); rmSync(work, { recursive: true, force: true }); }
   }
 }
 
