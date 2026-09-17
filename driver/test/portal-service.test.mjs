@@ -14,7 +14,8 @@ const __t = (prefix) => { const d = __mkdtemp(__join(__tmpdir(), prefix)); __EAR
 import { tmpdir as __tmpdir } from "node:os";
 import { join as __join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
-import { stdioConnectCommand } from "../../shared/stdio-connect.mjs";   // — assert against the ONE author, never a literal
+import { stdioConnectFor } from "../../shared/stdio-connect.mjs";   // — assert against the ONE author, never a literal
+import { wslTarget } from "../../shared/wsl.mjs";                    // — asked with the target this install actually has   // — assert against the ONE author, never a literal
 import { pinEnv, envFrom } from "../../shared/env-aliases.mjs";   // — the default is taken only when NO spelling holds a value
 pinEnv(process.env, "CLEAROTRON_WORK_DIR", envFrom(process.env, "CLEAROTRON_WORK_DIR") || __t("portal-ws-"));
 pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", envFrom(process.env, "CLEAROTRON_REPORTS_DIR") || __t("portal-pool-"));
@@ -2249,8 +2250,40 @@ test("mcp-access: STAFF are handed the local connect route; a CLIENT never is", 
   // ASSERTED AGAINST THE COMPOSER, not against a literal. Spelling the command here would make this file
   // a second author of it — which the one-author guard correctly flagged when this arm first did that —
   // and it is the stronger check anyway: the wire must carry exactly what the one composer produces.
-  assert.equal(staff.json.stdio.command, stdioConnectCommand({ workDir: process.env.CLEAROTRON_WORK_DIR || null, reportsDir: process.env.CLEAROTRON_REPORTS_DIR || null }),
+  // ASKED WITH THE SAME TARGET THE SERVICE READS. Without it this arm is only true on a box that is not
+  // under WSL — where the two answers coincide — and would red on a WSL box for the install being right.
+  assert.equal(staff.json.stdio.command, stdioConnectFor("claude-cli", { workDir: process.env.CLEAROTRON_WORK_DIR || null, reportsDir: process.env.CLEAROTRON_REPORTS_DIR || null, wsl: wslTarget() }).text,
     "the wire carries a command the composer did not produce");
+  // AND IT AGREES WITH THE ROWS BESIDE IT, which is the property the line above cannot hold on its own:
+  // off WSL both composers answer the same thing, so an install that DID differ — one under WSL, where a
+  // launcher has two sides — would pass the equality above while this field named the other side from the
+  // row a reader presses. Asserted against the wire's own rows rather than against a second composition.
+  // THE ROW OF THE SAME SHAPE. A disk row's command is whatever its assistant takes — one is a settings
+  // block, one is a command line — so the row to compare against is the one this field is composed as.
+  const diskRow = staff.json.offers.find((o) => o.served && o.route === "disk" && o.stdio?.shape === "claude-cli");
+  assert.ok(diskRow, "the staff wire carries no on-this-computer row of the composer's own shape");
+  assert.equal(staff.json.stdio.command, diskRow.command,
+    "the staff field and the on-this-computer rows name different launchers for one install");
+
+  // ── AND ON THE INSTALL WHERE THE TWO CAN DIFFER, WHICH IS THE ONLY PLACE THE DEFECT LIVES ────────
+  //
+  // Off WSL a launcher has one side, so both answers coincide and the assertion above passes whether or
+  // not the field reads this install's own target — it passed for months while the field did not. Under
+  // WSL a launcher has two, and a field composed without the target names the side the rows do not lead
+  // with. CI does not run on WSL, so the environment is driven here rather than waited for.
+  const wasDistro = process.env.WSL_DISTRO_NAME;
+  process.env.WSL_DISTRO_NAME = "Ubuntu";
+  try {
+    const onWsl = await service.route("GET", "/portal/api/mcp-access", STAFF, {}, {});
+    assert.equal(onWsl.status, 200);
+    const wslRow = onWsl.json.offers.find((o) => o.served && o.route === "disk" && o.stdio?.shape === "claude-cli");
+    assert.ok(wslRow, "the WSL wire carries no on-this-computer row of the composer's own shape");
+    assert.match(wslRow.command, /wsl\.exe/, "the rows stopped crossing into the distribution; this arm is measuring nothing");
+    assert.equal(onWsl.json.stdio.command, wslRow.command,
+      "under WSL the staff field names the side the rows do not lead with");
+  } finally {
+    if (wasDistro === undefined) delete process.env.WSL_DISTRO_NAME; else process.env.WSL_DISTRO_NAME = wasDistro;
+  }
   assert.ok(staff.json.stdio.note && staff.json.stdio.verify, "a bare command with no note or check");
 
   const client = await service.route("GET", "/portal/api/mcp-access", MULTI_CLIENT, {}, {});

@@ -2503,8 +2503,14 @@ async function connectorDoorKind(url) {
         //
         // COMPOSED IN ONE PLACE and handed over as a string. The browser cannot know this install's
         // path, so the three surfaces stating this route cannot drift apart even if someone tries.
+        //
+        // AND IT NAMES THE DISTRIBUTION, like every other surface that states this route. Without the
+        // target this one composer answers as it does for an install that is not under WSL at all, so on
+        // a WSL box this field alone carried the inside-WSL line while the rows beside it led with the
+        // Windows-side one. Nothing draws this field today; it is on the wire, and a field that answers
+        // differently from the rows is a trap for whoever draws it next.
         const stdio = seesEverything(principal)
-          ? stdioConnectOffer({ workDir: process.env.CLEAROTRON_WORK_DIR || null, reportsDir: process.env.CLEAROTRON_REPORTS_DIR || null })
+          ? stdioConnectOffer({ workDir: process.env.CLEAROTRON_WORK_DIR || null, reportsDir: process.env.CLEAROTRON_REPORTS_DIR || null, wsl: wslTarget() })
           : null;
 
         // ── THE PAGE IS HANDED ANSWERS, NOT FACTS TO REASON FROM ─────────────
