@@ -17,12 +17,12 @@
 //
 //   D1 verify.mjs:940   fail(`connotation_${reason}:…`)      — reason iterates the table at line 894
 //   D2 verify.mjs   fail(String(e.message))              — parseFindingsJson throws token-first
-//   D3 verify.mjs:1184   checkJson: fail(String(e.message))   — FIVE parsers reach this one site
+//   D3 verify.mjs:1210   checkJson: fail(String(e.message))   — FIVE parsers reach this one site
 //   D4 verify.mjs  parseCoverageLedgerJson, same shape
 //   D5 verify.mjs:1504  fail(`${unaccounted[0].token}:…`)    — token minted in a DATA ROW
 //   D6 verify.mjs:1567  fail(`${violations[0].token}…`)      — validatePlanFeasibility in register-plan.mjs
 //   D7 verify.mjs:1558  fail(`${v2[0].token}${detail}…`)     — register-plan.mjs:2018 disclosureTextByAxis
-//   D8 verify.mjs:1692  fail(caseLawLedgerFail(…))           — token built in case-law-ledger.mjs:204
+//   D8 verify.mjs:2425 caseLawLedgerFail  fail(caseLawLedgerFail(…))           — token built in case-law-ledger.mjs:204 caseLawLedgerFail
 //
 // A partition built on the 60 tokens a regex CAN see would run green while blind to the rest, which is
 // worse than having no E2 at all: it certifies a partition it never checked. So the census is authored
@@ -109,7 +109,7 @@ export const VOCABULARY = [
   { token: "coverage_form_missing", stages: ["register-digest"], site: "driver/verify.mjs" },
   { token: "coverage_form_empty", stages: ["register-digest"], site: "driver/verify.mjs" },
   { token: "coverage_status_offenum", stages: ["register-digest"], site: "driver/verify.mjs:2050" },
-  { token: "coverage_deferred_unaccounted", stages: ["register-digest"], site: "driver/verify.mjs:1510 coverageFormFail", family: "driver/register-plan.mjs:1642 PROVIDER_HARD_ERROR_PREFIX — token on a data row", dynamic: "D5" },
+  { token: "coverage_deferred_unaccounted", stages: ["register-digest"], site: "driver/verify.mjs:1536 coverageFormFail", family: "driver/register-plan.mjs:1642 PROVIDER_HARD_ERROR_PREFIX — token on a data row", dynamic: "D5" },
   { token: "coverage_clean_unexecuted", stages: ["register-digest"], site: "driver/verify.mjs, the matterContext validator", family: "driver/register-plan.mjs:1417 validatePlanFeasibility", dynamic: "D6" },
   { token: "coverage_clean_skipped", stages: ["register-digest"], site: "driver/verify.mjs, the matterContext validator", family: "driver/register-plan.mjs:1766 searchedJurisdictionsFromPlan", dynamic: "D6" },
   { token: "coverage_clean_unverified_incomplete", stages: ["register-digest"], site: "driver/verify.mjs, the matterContext validator", family: "driver/register-plan.mjs:2018 disclosureTextByAxis", dynamic: "D7" },
@@ -130,7 +130,7 @@ export const VOCABULARY = [
   { token: "variantmodel_term_markup", stages: ["prelim-variants"], site: "driver/verify.mjs" },
   { token: "variantmodel_missing", stages: ["prelim-variants"], site: "driver/verify.mjs:1153, 1212" },
   // Recovered during E2 authoring, absent from the draft census: variant-manifest.json is strict-parsed
-  // through checkSiblingJson (verify.mjs:1197) → checkJson (:742), so the WHOLE variantmodel_* family
+  // through checkSiblingJson (verify.mjs:1223) → checkJson (:742), so the WHOLE variantmodel_* family
   // reaches prelim-variants, not just the four literal tokens above.
   // CONVERSION 3 widened this family's SOURCE without widening its prefix. `acceptPrelimVariants` raises
   // `variantmodel_scope_layer_invalid`, `_scope_status_invalid`, `_scope_item_missing` and `_scope_pipe`
@@ -184,7 +184,7 @@ export const VOCABULARY = [
   // ── case-law / narrative-refutation ────────────────────────────────────────────────────────────────
   { token: "caselaw_ledger_missing", stages: ["case-law"], site: "driver/verify.mjs:1682, 1685" },
   { token: "caselaw_ledger_unparseable", stages: ["case-law"], site: "driver/verify.mjs" },
-  { token: "caselaw_ledger", stages: ["case-law"], site: "driver/verify.mjs:1692", family: "driver/case-law-ledger.mjs:204 (census reasons)", dynamic: "D8" },
+  { token: "caselaw_ledger", stages: ["case-law"], site: "driver/verify.mjs:2425 caseLawLedgerFail", family: "driver/case-law-ledger.mjs caseLawLedgerFail (census reasons)", dynamic: "D8" },
   { token: "no_verdict_line", stages: ["narrative-refutation"], site: "driver/verify.mjs" },
   { token: "plan_audit_missing", stages: ["narrative-refutation"], site: "driver/verify.mjs" },
 
@@ -477,7 +477,7 @@ export const INNER_CODES = Object.freeze([
   // `axis_invalid` cause into its own family before counting the rest. A ruling naming only
   // `coverage_no_status` would be true of most `no_status` records and false of the ones that matter most.
   { code: "no_status", mints: ["driver/coverage-form.mjs:836"], rollsUpTo: ["coverage_no_status", "coverage_form_axis_invalid"],
-    why: "Two composites, split on the record's `cause`: verify.mjs:1172 for cause `axis_invalid`, verify.mjs:1263 for the rest. NOT cited at coverage-form.mjs:810 — that is the JSDoc @returns annotation, not the mint." },
+    why: "Two composites, split on the record's `cause`: `checkFindingsSibling()` in verify.mjs for cause `axis_invalid`, `dispositionForm()` there for the rest. NOT the `@returns` annotation above `COVERAGE_CAUSES` in coverage-form.mjs — that is the annotation, not the mint." },
   { code: "engine_vocabulary", mints: ["driver/coverage-form.mjs:826"], rollsUpTo: ["coverage_form_engine_vocabulary"],
     why: "#669 — the seat wrote an engine token into the `reason` sentence that reaches the reader's page. Checked on settled rows too, because a row the seat considers finished is exactly the one whose sentence gets printed. Namespaced at verify.mjs:1165; the bare code names a row, never a stage." },
 
