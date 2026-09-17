@@ -9,7 +9,7 @@
     "agent-trailer",
     "machine-trailer"
   ],
-  "total": 23,
+  "total": 25,
   "files": {
     "bin/onboard.mjs": [
       0,
@@ -122,6 +122,16 @@
       0
     ],
     "driver/test/the-citation-strip-removes-openers-and-nothing-else.test.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/the-docs-say-organisation-and-company.test.mjs": [
       0,
       2,
       0,

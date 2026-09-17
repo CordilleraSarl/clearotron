@@ -18,9 +18,9 @@
 // is right from one that has drifted, because both point somewhere, and appending the destination makes
 // either self-consistent. Driven against the two citations a hand audit had already proved wrong:
 //
-//   verify.mjs:1539  would become "verify.mjs:1539 coverageEntryList" — the line is still
+//   verify.mjs line 1539   would gain the name coverageEntryList — and the line is still
 //                    `entries.push(e);` and the token it claims to site is minted three other places.
-//   stages.mjs:844   would become "stages.mjs:844 inputsForReference" — the line is still a comment,
+//   stages.mjs line 844    would gain the name inputsForReference — and the line is still a comment,
 //                    and that citation carries `[citation unverified]` today, which is a reader having
 //                    doubted it. The rewrite strips the doubt and leaves a green tick.
 //
@@ -37,7 +37,7 @@
 //
 // A CITATION POINTING INSIDE A FUNCTION IT NAMES IS CORRECT, and the innermost rule reports it as a
 // disagreement. Two of this report's first six "confirmed" rows were that bug rather than a bad citation:
-// publish-inputs.mjs cites mcp-server/lib/coverage.mjs:65 and names `assertValidatorCoverage`, declared at
+// publish-inputs.mjs cites line 65 of mcp-server/lib/coverage.mjs and names `assertValidatorCoverage`, declared at
 // 63, which is exactly right. The rule below is why they no longer appear.
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";

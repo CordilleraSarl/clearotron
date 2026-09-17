@@ -35,7 +35,7 @@ const WORD = new RegExp(`\\b(?:${WORDS.join("|")})(?:s|'s|s'|’s)?\\b`, "gi");
 
 /**
  * The corpus: the README a stranger lands on, every document under docs/, and the three root documents
- * beside them — CONTRIBUTING.md, SECURITY.md and AGENTS.md (tracker issue 657).
+ * beside them — CONTRIBUTING.md, SECURITY.md and AGENTS.md.
  *
  * CHANGELOG.md IS EXCLUDED, DELIBERATELY AND BY NAME. It is generated from release notes and is history:
  * a note said what it said on the day it was cut, and rewriting one to today's vocabulary would make the
@@ -216,7 +216,7 @@ const EXCEPTIONS = [
     reason: "a cloud vendor's own account, which pays for model access — never the organisation that owns the installation",
   },
 
-  // ── THE THREE ROOT DOCUMENTS (tracker issue 657) ──────────────────────────────────────────────────
+  // ── THE THREE ROOT DOCUMENTS BESIDE THE README ────────────────────────────────────────────────────
   //
   // Eleven uses across CONTRIBUTING.md, SECURITY.md and AGENTS.md became "company" on the owner's ruling
   // of 2026-09-17. What stayed, stayed for a stated reason, and each reason is one of these entries.
