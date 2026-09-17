@@ -33,7 +33,13 @@ register records it read, and a line for each check a search decided to make and
 sentences written by a developer for a page whose presentation is designed, and both are out. The
 images for them have been removed rather than left here to be read as current.
 
-## One thing these images show that is not ours
+## The report on a phone
 
-At 390px the delivered report's document is 500px wide and scrolls sideways. Measured identical on the
-before and the after trees, so it is older than this pack and is filed separately.
+`report-phone-old-light.png` — the document is 425px wide in a 390px viewport, so the page scrolls
+sideways and the Export button sits off the right edge. `report-phone-new-light.png` and
+`report-phone-new-dark.png` — the same report at the same width, fitting exactly.
+
+An earlier version of this file said the document was 500px wide. That figure was wrong and worth
+naming: headless Chrome clamps `--window-size` at a floor near 500px, so a page asked for at 390 was
+laid out at 500 and the number measured the browser rather than the page. The layout viewport has to be
+set through the browser's own device metrics. Every image in this folder is now taken that way.
