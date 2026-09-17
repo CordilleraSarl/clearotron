@@ -128,12 +128,44 @@ if (!POOL_ROOT) {
 // fell through to a hardcoded default while the pool root correctly pointed at test. A cross-instance
 // probe that reports "ok" is worse than no probe at all.
 const at = (host, port) => `http://${host || "127.0.0.1"}:${port}`;
-const MCP_URL = process.env.TRADEMARK_MCP_URL
-  || (process.env.TRADEMARK_MCP_HTTP_PORT ? at(process.env.TRADEMARK_MCP_HTTP_HOST, process.env.TRADEMARK_MCP_HTTP_PORT) : "http://127.0.0.1:18792");
-const PORTAL_URL = process.env.PORTAL_URL
-  || (process.env.PORTAL_SERVICE_PORT ? at(process.env.PORTAL_SERVICE_HOST, process.env.PORTAL_SERVICE_PORT) : "http://127.0.0.1:18802");
-const CLIENT_MCP_URL = process.env.CLIENT_MCP_URL
-  || (process.env.CLIENT_MCP_HTTP_PORT ? at(process.env.CLIENT_MCP_HTTP_HOST, process.env.CLIENT_MCP_HTTP_PORT) : "http://127.0.0.1:18811");
+
+// AND THE THREE DOORS BELOW USED TO CONTRADICT THAT PARAGRAPH. Each fell back to a literal — 18792,
+// 18802, 18811 — and all three of those are PRODUCTION's ports. So the note above described the defect
+// rather than the behaviour: an instance that does not name its own ports was checked against
+// production's doors and told the result was its own. The reports directory two blocks up had already
+// been given the cure, for the identical reason, and the doors were left behind.
+//
+// The failure is worst where it looks best. On a box with nothing on those ports the arms fail with
+// ECONNREFUSED, which is loud and gets read. On a box that HAS something listening there — this one
+// runs several instances — the probe succeeds and the check reports another instance's health as this
+// instance's, in a PASS. A cross-instance probe that reports "ok" is worse than no probe at all.
+//
+// So: no literal, and unset refuses by name rather than guessing. Every missing variable is named in
+// one refusal, because a reader fixing these one exit code at a time runs the check four times.
+const doorUrl = (explicit, portName, hostName) => {
+  const direct = (process.env[explicit] ?? "").trim();
+  if (direct) return { url: direct, missing: null };
+  const port = (process.env[portName] ?? "").trim();
+  if (port) return { url: at(process.env[hostName], port), missing: null };
+  return { url: null, missing: `${explicit} or ${portName}` };
+};
+
+const DOORS = {
+  "ops-MCP": doorUrl("TRADEMARK_MCP_URL", "TRADEMARK_MCP_HTTP_PORT", "TRADEMARK_MCP_HTTP_HOST"),
+  portal: doorUrl("PORTAL_URL", "PORTAL_SERVICE_PORT", "PORTAL_SERVICE_HOST"),
+  "client door": doorUrl("CLIENT_MCP_URL", "CLIENT_MCP_HTTP_PORT", "CLIENT_MCP_HTTP_HOST"),
+};
+
+// An unconfigured door is NOT PROBED and says so by name. It is deliberately NOT a refusal: this check
+// is driven against boxes that legitimately do not run every door, and an arrival check that aborts
+// because one door is unnamed reports nothing about the seven surfaces it could have read. The
+// `trigger lane reachable` arm below has answered exactly this way since it was written — an unset
+// origin is skipped, never passed and never failed — and this is that rule applied to the other three.
+const DOORS_UNSET = Object.entries(DOORS).filter(([, d]) => d.missing);
+
+const MCP_URL = DOORS["ops-MCP"].url;
+const PORTAL_URL = DOORS.portal.url;
+const CLIENT_MCP_URL = DOORS["client door"].url;
 
 // The bundled demo roster, as `list_profiles` REPORTS it. A door that resolves exactly this set is a
 // door with no CLEAROTRON_CUSTOMERS_DIR — #83. Compared as a set, not a count: a deployment may legitimately
@@ -162,6 +194,15 @@ const record = (name, state, detail) => { results.push({ name, state, detail });
 const pass = (n, d) => record(n, "pass", d);
 const fail = (n, d) => record(n, "fail", d);
 const skip = (n, d) => record(n, "skip", d);   // could not be reached — never counted as a pass
+
+// Named here rather than where the URLs are resolved, because `skip` does not exist yet up there. Each
+// unconfigured door is on the report as its own line, so a reader sees WHICH surface went unread instead
+// of inferring it from arms that are quietly missing.
+for (const [name, d] of DOORS_UNSET) {
+  skip(`${name} configured`, `neither ${d.missing} is set, so this instance does not say where its ${name} is `
+    + "— NOT PROBED. It used to fall through to production's port and report that door's answer as this "
+    + "instance's own.");
+}
 
 // ── helpers ──────────────────────────────────────────────────────────────────────────────────────────
 
@@ -487,6 +528,7 @@ else skip("register wired", "the snapshot carries no register block");
 //     it from what the door itself resolved is what keeps a customer key out of this source file.
 let probeProfileKey = null;
 try {
+  if (!MCP_URL) throw new Error("__door_unset__");
   const listed = await mcpToolCall({ url: MCP_URL, token: OPS_TOKEN, tool: "list_profiles", args: {}, timeoutMs: 15000 });
   const keys = (Array.isArray(listed?.clients) ? listed.clients : []).map((p) => p.key ?? p.profileKey).filter(Boolean).sort();
   probeProfileKey = keys[0] ?? null;
@@ -547,7 +589,8 @@ try {
     }
   }
 } catch (e) {
-  fail("roster resolves", `list_profiles failed: ${e.message}`);
+  if (e?.message === "__door_unset__") skip("roster resolves", "this instance does not say where its ops-MCP is, so the roster was NOT PROBED");
+  else fail("roster resolves", `list_profiles failed: ${e.message}`);
 }
 
 // 3. THE LOAD-BEARING CHECK — every door's availability answer vs the engine's own, recomputed here
@@ -555,6 +598,7 @@ try {
 //    from its own process environment instead of from this file.
 let mcpOptions = null;
 try {
+  if (!MCP_URL) throw new Error("__door_unset__");
   mcpOptions = await mcpToolCall({ url: MCP_URL, token: OPS_TOKEN, tool: "describe_options", args: {}, timeoutMs: 20000 });
   pass("ops-MCP reachable", `${MCP_URL} answered describe_options`);
   // ── — REACHABLE IS NOT THE SAME AS DELIBERATE ─────────────────────────────
@@ -584,7 +628,8 @@ try {
     record("the ops door's auth mode was chosen for it", posture.state, posture.message);
   }
 } catch (e) {
-  fail("ops-MCP reachable", `${MCP_URL}: ${e.message}`);
+  if (e?.message === "__door_unset__") skip("ops-MCP reachable", "this instance does not say where its ops-MCP is — NOT PROBED");
+  else fail("ops-MCP reachable", `${MCP_URL}: ${e.message}`);
 }
 
 // ── 3b. THE TRIGGER LANE, AS ITS OWN SURFACE ─────────────────────────────────────────────────────────
@@ -702,15 +747,17 @@ if (mcpOptions) {
 
 // 6. The portal. Only /portal/health is reachable without a Cloudflare Access JWT — everything else is
 //    NOT PROBED, and says so rather than passing by omission.
-const health = await getJson(`${PORTAL_URL}/portal/health`);
-if (health.status !== 200 || !health.json) fail("portal health", `${PORTAL_URL}/portal/health → ${health.status || health.error}`);
+const health = PORTAL_URL ? await getJson(`${PORTAL_URL}/portal/health`) : null;
+if (!PORTAL_URL) skip("portal health", "this instance does not say where its portal is — NOT PROBED");
+else if (health.status !== 200 || !health.json) fail("portal health", `${PORTAL_URL}/portal/health → ${health.status || health.error}`);
 else if (health.json.ui !== "built") fail("portal health", `ui="${health.json.ui}" — the portal is serving a stale or missing bundle (never add --omit=dev to the deploy)`);
 else pass("portal health", `ok=${health.json.ok} ui="${health.json.ui}"`);
 skip("portal gates agree", "every portal route but /portal/health is behind Cloudflare Access — not callable from a script, so NOT probed");
 
 // 7. client-MCP liveness only, for the same reason. Its API-key door's secret is a crown jewel and is
 //    never read, let alone logged, by this script.
-skip("client-MCP", (await tcpAlive(CLIENT_MCP_URL)) ? "listening; behind CF Access so its answers are NOT probed" : `not listening on ${CLIENT_MCP_URL}`);
+skip("client-MCP", !CLIENT_MCP_URL ? "this instance does not say where its client door is — NOT PROBED"
+  : (await tcpAlive(CLIENT_MCP_URL)) ? "listening; behind CF Access so its answers are NOT probed" : `not listening on ${CLIENT_MCP_URL}`);
 
 // 8. Every service on the commit you think it is. This is the straddle check.
 const { clones, probe: unitProbe } = serviceClones();

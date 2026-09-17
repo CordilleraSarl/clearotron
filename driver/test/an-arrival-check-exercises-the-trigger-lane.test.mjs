@@ -127,3 +127,49 @@ test("WIRED and REACHABLE are different answers: configured, and nothing behind 
   assert.equal(stateOf(lane, "trigger lane reachable"), "fail",
     "a dead door was reported reachable");
 });
+
+// ── AND THE OTHER THREE DOORS, WHICH USED TO BE GUESSED AT ───────────────────────────────────────────
+//
+// The ops-MCP, portal and client-door URLs each fell back to a literal when the environment named no
+// port, and all three literals were PRODUCTION's: 18792, 18802, 18811. The comment above them in the
+// script asserts the opposite property — that a run against one instance can never silently probe
+// another's door — and cites the incident that made it true. It was written and never applied.
+//
+// The failure is worst where it looks best. Where nothing listens on those ports the arms fail loudly.
+// Where something DOES — this box runs several instances — the probe succeeds and another instance's
+// health is reported as this one's, in a pass.
+//
+// So this drives the script with every door variable explicitly removed, and asserts the two halves
+// that matter: no production port is named anywhere in the output, and each door says NOT PROBED
+// rather than going quiet. A `skip` is the honest answer and is never counted as a pass.
+test("a door this instance does not name is NOT PROBED, never guessed at production's port", () => {
+  const dir = mkdtempSync(join(tmpdir(), "ct715-"));
+  mkdirSync(join(dir, "pool"), { recursive: true });
+  mkdirSync(join(dir, "ws"), { recursive: true });
+  try {
+    const env = { ...process.env, CLEAROTRON_REPORTS_DIR: join(dir, "pool"), CLEAROTRON_WORK_DIR: join(dir, "ws") };
+    for (const n of ["TRADEMARK_MCP_URL", "TRADEMARK_MCP_HTTP_PORT", "PORTAL_URL", "PORTAL_SERVICE_PORT",
+      "CLIENT_MCP_URL", "CLIENT_MCP_HTTP_PORT"]) delete env[n];
+
+    let out = "";
+    try { out = execFileSync(process.execPath, [CHECK], { encoding: "utf8", timeout: 240_000, env }); }
+    catch (e) { out = `${e.stdout ?? ""}${e.stderr ?? ""}`; }
+
+    // The same could-not-look floor the helper above uses: without it an aborted script reads as a pass
+    // on "no production port was named", which is the exact shape this arm exists to refuse.
+    assert.ok(/== live surface check —/.test(out),
+      `the check never reached its report, so this arm could not look at the doors:\n${out.slice(0, 800)}`);
+
+    for (const port of ["18792", "18802", "18811"]) {
+      assert.ok(!out.includes(port),
+        `the check named production's port ${port} on an instance that never mentioned it — it fell `
+        + `through to a hardcoded default and would have reported that door's answer as this one's`);
+    }
+
+    for (const door of ["ops-MCP configured", "portal configured", "client door configured"]) {
+      const line = out.split("\n").find((l) => l.includes(door));
+      assert.ok(line, `no line named "${door}" — an unnamed door must say so rather than go quiet`);
+      assert.match(line, /\[ skip \]/, `"${door}" was not skipped — an unnamed door is NOT PROBED, never passed and never failed`);
+    }
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
