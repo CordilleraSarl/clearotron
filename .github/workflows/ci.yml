@@ -266,7 +266,21 @@ jobs:
             echo '::error::no guard in ANY shard reported that it read the corpus. An absent SKIPPED line is not a pass on its own, because a suite that never ran prints neither marker.'
             exit 1
           }
-          echo "the corpus guards reported ok across the shards, and none skipped."
+          # AND WHICH ROSTER THE IDENTIFIER SWEEP RAN AGAINST, which is a different claim from "a guard
+          # looked". That sweep's real table lives outside this repository by design, so here it can only
+          # run against the synthetic sentinels — and a sweep armed with an empty table returns the same
+          # clean zero as one that worked. Until this step existed the arm could have been deleted or
+          # quietly skipped and every run would have stayed green, which is the shape this workflow
+          # already refuses twice above.
+          #
+          # Read across the shard logs rather than per shard: the arm lives in one file, so it runs in
+          # exactly one shard and the other three are silent by construction. Asserted per shard it
+          # would red three times on a healthy run.
+          grep -rqF '[repo-guard] blocklist mode=sentinel' logs || {
+            echo '::error::no shard reported which roster the identifier sweep ran against. The arm prints its mode only once it holds the corpus, so an absent line means it did not sweep — not that it swept and found nothing.'
+            exit 1
+          }
+          echo "the corpus guards reported ok across the shards, none skipped, and the identifier sweep named its mode."
 
   checks:
     name: Lint, licences, tokens and the built bundle
