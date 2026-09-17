@@ -24,11 +24,20 @@ const GONE = () => false;
 const stampOf = (o = {}) => ({ schema: 1, pid: 4242, pidStarttime: "999", engineCommit: HEAD,
   engineCommitSource: "git", mode: "watch", ...o });
 
-test("no stamp is a FAILURE, not a skip — the deploy must not report a build live having never looked", () => {
+test("no stamp with a table that ANSWERED is a finding, and says the table answered", () => {
+  // Was "no stamp is a FAILURE, not a skip", over every no-stamp case, for a reason that has since been
+  // fixed elsewhere: live-surface-check exited non-zero on `fail` alone, so a skip left the deploy green
+  // and moving anything here to skip would have passed the box this arm exists for. It now has a third
+  // exit for a surface it could not read, which is what makes the split below safe.
+  //
+  // This case is not that split. The process table was READ and holds no drainer, so nothing is
+  // executing runs on this box — a finding, and one a reader acts on by starting something.
   const v = drainerVerdict({ stamp: null, headCommit: HEAD, isAlive: ALIVE, processes: [] });
-  assert.equal(v.state, "fail", "an absent stamp recorded as skip would pass the very box this arm exists for: "
-    + "live-surface-check exits non-zero on `fail` only, so a skip leaves the deploy green");
-  assert.match(v.message, /never a pass/);
+  assert.equal(v.state, "fail", "the table answered, so this is what the box is, not what could not be seen");
+  assert.ok(v.blocked !== true, "…and it is not marked as a could-not-look, because looking is what produced it");
+  assert.match(v.message, /nothing is executing runs on this box/);
+  assert.doesNotMatch(v.message, /failure to look/,
+    "the old message asserted a finding and then called itself a failure to look — a reader could act on either");
 });
 
 test("no stamp WITH drainer processes running names them — an orphan that stamped nothing is the incident", () => {
@@ -39,11 +48,16 @@ test("no stamp WITH drainer processes running names them — an orphan that stam
   assert.match(v.message, /unstamped/);
 });
 
-test("no stamp and no readable process table says BOTH could not be looked at", () => {
+test("no stamp and no readable process table is a COULD-NOT-LOOK, not a finding", () => {
+  // `null` is UNREADABLE and `[]` is EMPTY — reporting them the same way is how an absence becomes a
+  // pass, and reporting them as the same FAIL is how a could-not-look becomes an instruction to redeploy.
+  // Nothing was established in either direction here: the box could be healthy or completely wedged.
   const v = drainerVerdict({ stamp: null, headCommit: HEAD, isAlive: ALIVE, processes: null });
-  assert.equal(v.state, "fail");
-  assert.match(v.message, /process table could not be read/,
-    "null is UNREADABLE and [] is EMPTY — reporting them the same way is how an absence becomes a pass");
+  assert.equal(v.state, "skip", "never a pass — a skip that the caller counts toward its could-not-look exit");
+  assert.equal(v.blocked, true, "…and marked, or the caller cannot tell it from a surface skipped by design");
+  assert.match(v.message, /process table could not be read/);
+  assert.match(v.message, /redeploying would change nothing/,
+    "the message must say what NOT to do, because the reflex on a red deployment check is to redeploy");
 });
 
 test("THE INCIDENT: a live drainer on a different commit fails, and the message names BOTH commits", () => {

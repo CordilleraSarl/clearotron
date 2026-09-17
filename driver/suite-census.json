@@ -2081,7 +2081,7 @@
         },
         "drainer-identity.test.mjs": {
           "tests": 17,
-          "asserts": 46,
+          "asserts": 50,
           "skips": 0,
           "todos": 0
         },
@@ -3023,7 +3023,7 @@
         },
         "one-rule-decides-whether-an-absent-drainer-is-a-fault.test.mjs": {
           "tests": 16,
-          "asserts": 53,
+          "asserts": 54,
           "skips": 0,
           "todos": 0
         },

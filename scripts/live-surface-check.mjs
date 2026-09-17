@@ -864,7 +864,10 @@ else {
       // to an unprobed posture — a failure to look, never a pass.
       posture: { worker: probeWorker(), timer: probeTimer() },
     });
-    record("the process that executes runs is on the deployed commit", v.state, v.message);
+    // — AND THE VERDICT'S OWN could-not-look MARKER, carried through. The verdict distinguishes a
+    // process table it could not read from one that answered; dropping that here would put the
+    // distinction back where it was, one layer down.
+    record("the process that executes runs is on the deployed commit", v.state, v.message, v.blocked === true);
   }
 }
 
