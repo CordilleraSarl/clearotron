@@ -802,9 +802,16 @@ export function prepareReportForEmbed(html, { staff = false, poolRoot = null, fe
 
   // The footer fingerprint. Counted like the rest so a renderer change that moves it shows up as a zero
   // rather than as a line that quietly starts shipping again.
+  //
+  // ONE COUNTER PER LINE, AND THAT IS THE WHOLE POINT OF COUNTING. These two strips shared a counter, so
+  // the check that exists to catch a renderer moving this markup could not tell WHICH line moved: the
+  // renderer could rename one of them, that strip would match nothing, the other would still fire, and
+  // the count would read 1 exactly as it does when both work. A count that cannot fall to zero for one
+  // of the two things it counts is not a measurement of either.
   let ratedUnderDropped = 0;
+  let runUnderProjectDropped = 0;
   out = out.replace(RATED_UNDER_RE, () => { ratedUnderDropped += 1; return ""; });
-  out = out.replace(RUN_UNDER_PROJECT_RE, () => { ratedUnderDropped += 1; return ""; });
+  out = out.replace(RUN_UNDER_PROJECT_RE, () => { runUnderProjectDropped += 1; return ""; });
 
   // ── THE ASK-AI BAND COMES OUT FOR EVERY READER ──────────────────────────────────────────────────
   //
@@ -861,7 +868,7 @@ export function prepareReportForEmbed(html, { staff = false, poolRoot = null, fe
   out = injectEmbedLayer(out, { feedback });
 
   return {
-    html: out, strippedNav, neutralised, mcpLeaks, tokensDropped, ratedUnderDropped,
+    html: out, strippedNav, neutralised, mcpLeaks, tokensDropped, ratedUnderDropped, runUnderProjectDropped,
     internalTailsDropped, reviewerCodesDropped, unbalanced, missingCss,
   };
 }
