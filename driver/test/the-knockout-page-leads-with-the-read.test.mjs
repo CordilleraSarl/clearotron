@@ -147,10 +147,30 @@ test("the header issues the same date, and neither surface carries the clock", (
 });
 
 test("clause F: an issued value in an unexpected shape falls through whole rather than being cut", () => {
-  // The date is taken by pattern, not by splitting on the separator. An archived run whose `issued`
-  // was written in some other shape must not be truncated at whatever character happens to be there.
-  const html = RENDER([MARK()], { runId: RUNID, matter: RUNID, issued: "15 September 2026" });
-  assert.match(footerOf(html), /issued on 15 September 2026/, "an unrecognised shape survives intact");
+  // The date is taken by PATTERN, not by splitting on the separator. Both approaches agree on the
+  // shape this publisher writes today, so the fixture that separates them is one where a separator
+  // appears and the leading part is NOT a date — an archived run written before the format settled.
+  // Splitting would hand the reader "Q3" as the day the search issued; matching hands back the whole
+  // string, which is honest about not recognising it. Driven in this direction on purpose: the arm
+  // that used "15 September 2026" passed under BOTH, so it proved nothing about the rule.
+  const odd = RENDER([MARK()], { runId: RUNID, matter: RUNID, issued: "Q3 \u00b7 2026" });
+  assert.match(footerOf(odd), /issued on Q3 \u00b7 2026/, "an unrecognised shape survives whole");
+  assert.doesNotMatch(footerOf(odd), /issued on Q3\./, "it is not truncated at the separator");
+
+  const plain = RENDER([MARK()], { runId: RUNID, matter: RUNID, issued: "15 September 2026" });
+  assert.match(footerOf(plain), /issued on 15 September 2026/, "…and a shape with no separator too");
+});
+
+test("clause F: with no mark title either, the line is the search alone — still never the identifier", () => {
+  // The fallback this guards cannot fire while a mark is present, so an arm that only renders a
+  // normal report proves nothing: `title || matter || runId` returns the title every time. The case
+  // that separates them is a document with NO title, which is the batch shape that used to reach the
+  // identifier first.
+  const html = RENDER([], { runId: RUNID, matter: RUNID });
+  assert.doesNotMatch(html, /tmpdemo|sample-capture/,
+    "with nothing else to name, the page still does not fall back to the run directory");
+  const line = identityLine(html);
+  if (line) assert.doesNotMatch(line, /tmpdemo|sample-capture/, "nor does the identity line itself");
 });
 
 // ── A.1 — what was asked, and any flag on the asking, at the top ─────────────────────────────────────
