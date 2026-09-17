@@ -1174,8 +1174,8 @@
           "todos": 0
         },
         "audit-workbook-commonlaw-unlogged.test.mjs": {
-          "tests": 8,
-          "asserts": 29,
+          "tests": 9,
+          "asserts": 37,
           "skips": 0,
           "todos": 0
         },
@@ -3778,8 +3778,8 @@
           "todos": 0
         },
         "render.test.mjs": {
-          "tests": 151,
-          "asserts": 607,
+          "tests": 152,
+          "asserts": 611,
           "skips": 0,
           "todos": 0
         },
@@ -4900,8 +4900,8 @@
           "todos": 0
         },
         "the-knockout-page-leads-with-the-read.test.mjs": {
-          "tests": 37,
-          "asserts": 113,
+          "tests": 38,
+          "asserts": 117,
           "skips": 0,
           "todos": 0
         },
@@ -5673,8 +5673,8 @@
           "todos": 0
         },
         "a-run-list-names-its-client.test.mjs": {
-          "tests": 4,
-          "asserts": 29,
+          "tests": 5,
+          "asserts": 35,
           "skips": 0,
           "todos": 0
         },

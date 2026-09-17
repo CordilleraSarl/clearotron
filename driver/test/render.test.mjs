@@ -18,6 +18,7 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { parseReport } from "../publish/parse.mjs";
 import { renderHtml, homeButton } from "../publish/render.mjs";
+import { EXPORT_TOGGLE, EXPORT_MENU_JS } from "../publish/report-topbar.mjs";
 
 function parsedOf(reportMd) {
   const dir = mkdtempSync(join(tmpdir(), "clearotron-render-"));
@@ -2858,4 +2859,31 @@ test("a completed search does not suppress the row disclosing an uncompleted one
   // 3. THE CONTROL. Nothing else names it, so it is the only disclosure and must stand.
   const alone = renderHtml(parsedOf(REPORT), FINDINGS, [composedRow], { runId: "alone" });
   assert.match(alone, /Follow-up \/ dolphin/, "the only row disclosing this gap was suppressed");
+});
+
+// ── THE EXPORT MENU IS ONE CONTROL, AND THIS IS THE clearance HALF OF SAYING SO ──────────────────────
+//
+// Both report templates draw an export menu. They drew two copies of it — the knockout's arrived by
+// being re-emitted from the clearance's markup, because the clearance renderer is frozen and lifting the
+// control out was its own change. The shell now comes from `report-topbar.mjs` and both templates import
+// it; the ENTRIES stay each template's own, because they are a statement about what that template can do.
+//
+// PINNED TO THE MODULE'S OWN STRINGS, not to a spelling written here. A future author who re-forks a
+// copy has to keep it byte-identical to pass, and the moment the fork drifts — a class renamed, an aria
+// attribute dropped, a listener changed — this reds, in the file whose template drifted.
+//
+// BREAK MATRIX:
+//   · the page emits the module's toggle      → break: spell a second one here, arm 1 red
+//   · the page carries the module's listeners → break: copy them back inline and change one, arm 2 red
+//   · ONE menu, not two                       → break: emit the shell twice, arm 3 red
+test("the export menu this template draws is the shared one, not a copy of it", () => {
+  const html = renderHtml(parsedOf(REPORT), [], [], {});
+  assert.ok(html.includes(EXPORT_TOGGLE), "the export button is not the shared one — this template spells its own");
+  assert.ok(html.includes(EXPORT_MENU_JS), "the open/close behaviour is not the shared one");
+  assert.equal(html.split('class="tb-pop tb-exp-pop"').length - 1, 1, "the page carries more than one export panel");
+  // COUNTED ON THE BUTTON, NOT ON ITS CLASS NAME. The first spelling of this assertion counted the bare
+  // string and expected two — one in the markup, one in the listeners — and the listeners name it three
+  // times. The number was guessed rather than measured, which is the defect this whole arm exists to
+  // catch one level along. The button itself appears once, and that is the property.
+  assert.equal(html.split(EXPORT_TOGGLE).length - 1, 1, "the export button is emitted other than once");
 });

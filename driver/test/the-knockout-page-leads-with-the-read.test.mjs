@@ -21,6 +21,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 import { renderKnockoutHtml, knockoutReportData } from "../publish/render-knockout.mjs";
+import { EXPORT_TOGGLE, EXPORT_MENU_JS } from "../publish/report-topbar.mjs";
 
 // Worst-first, and deliberately FOUR rungs with "Low" at the bottom: a ladder whose lowest rung is the
 // one a fixture happens to use cannot tell "above the lowest" from "has a band at all".
@@ -665,4 +666,31 @@ test("the knockout's top bar carries an Export control, and it offers only what 
   // whatever the markup did. This is the second assertion in this arm to need narrowing for the same
   // reason: the rendered page carries the vocabulary of both templates, only one of which it uses.
   assert.doesNotMatch(html, /<div class="tb-pop-title"/, "the menu carries a heading the board does not draw");
+});
+
+// ── THE EXPORT MENU IS ONE CONTROL, AND THIS IS THE knockout HALF OF SAYING SO ──────────────────────
+//
+// Both report templates draw an export menu. They drew two copies of it — the knockout's arrived by
+// being re-emitted from the clearance's markup, because the clearance renderer is frozen and lifting the
+// control out was its own change. The shell now comes from `report-topbar.mjs` and both templates import
+// it; the ENTRIES stay each template's own, because they are a statement about what that template can do.
+//
+// PINNED TO THE MODULE'S OWN STRINGS, not to a spelling written here. A future author who re-forks a
+// copy has to keep it byte-identical to pass, and the moment the fork drifts — a class renamed, an aria
+// attribute dropped, a listener changed — this reds, in the file whose template drifted.
+//
+// BREAK MATRIX:
+//   · the page emits the module's toggle      → break: spell a second one here, arm 1 red
+//   · the page carries the module's listeners → break: copy them back inline and change one, arm 2 red
+//   · ONE menu, not two                       → break: emit the shell twice, arm 3 red
+test("the export menu this template draws is the shared one, not a copy of it", () => {
+  const html = RENDER([MARK()]);
+  assert.ok(html.includes(EXPORT_TOGGLE), "the export button is not the shared one — this template spells its own");
+  assert.ok(html.includes(EXPORT_MENU_JS), "the open/close behaviour is not the shared one");
+  assert.equal(html.split('class="tb-pop tb-exp-pop"').length - 1, 1, "the page carries more than one export panel");
+  // COUNTED ON THE BUTTON, NOT ON ITS CLASS NAME. The first spelling of this assertion counted the bare
+  // string and expected two — one in the markup, one in the listeners — and the listeners name it three
+  // times. The number was guessed rather than measured, which is the defect this whole arm exists to
+  // catch one level along. The button itself appears once, and that is the property.
+  assert.equal(html.split(EXPORT_TOGGLE).length - 1, 1, "the export button is emitted other than once");
 });
