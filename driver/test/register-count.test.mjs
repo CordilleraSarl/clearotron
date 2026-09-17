@@ -20,7 +20,7 @@ import {
 import { variantForms } from "../register-variants.mjs";
 import { capabilitiesFor } from "../register-capabilities.mjs";
 import { buildKnockoutWorkbook } from "../publish/knockout.mjs";
-import { renderKnockoutHtml } from "../publish/render-knockout.mjs";
+import { renderKnockoutHtml, knockoutReportData } from "../publish/render-knockout.mjs";
 
 const CORSEARCH = capabilitiesFor("corsearch");
 const CLARIVATE = capabilitiesFor("clarivate");
@@ -454,9 +454,10 @@ test("the report prints the figures as their own section, and the model's guess 
   const opts = { runId: "r", overall: "Medium", identity: { banner: "Depth 2 — Knockout review with register hit-counts" } };
 
   const html = renderKnockoutHtml(findings, fw, { ...opts, registerCounts: doc });
-  // spine (spec 2026-07-30): the counts table now lives inside the merged "On-field conflicts"
-  // section — still a first-class numbered section, never a bullet in a cell.
-  assert.match(html, /<h2>On-field conflicts<\/h2>/, "the counts live in the merged numbered section, not a bullet in a cell");
+  // The counts table lives inside the merged conflicts section — still a first-class section of its
+  // own, never a bullet in a cell. The heading lost the "On-field" qualifier with the 2026-09-16
+  // redesign; what this line holds is where the table sits, not what the heading is called.
+  assert.match(html, /<h2>Conflicts<\/h2>/, "the counts live in the merged section, not a bullet in a cell");
   assert.match(html, /class="ko-counts/, "the counts table renders");
   assert.match(html, /<td class="num">3<\/td>/);
   assert.match(html, /<td class="num">41<\/td>/);
@@ -480,21 +481,20 @@ test("the report prints the figures as their own section, and the model's guess 
   // now it is not printed at all: it is an internal working note, and it lives in the audit workbook.
   assert.doesNotMatch(html, /moderate filings expected/, "the guess never sits beside the fact");
 
-  // THE STAFF NOTE IS ON THE PAGE SINCE 2026-09-07, and this arm used to assert the opposite
-  // (`doesNotMatch(/Register search pending/)`). The owner ruled that there is one report and the person
-  // who ran Clearotron reads it, so notes written for the reviewer belong on it. The
-  // two halves of the old rule came apart: the ESTIMATE is still off the page — it is a guess sitting
-  // beside a measurement of the same thing — and the NOTE is on it.
+  // THE NOTE WENT BACK OFF THE PAGE (owner, 2026-09-16). It was put ON it on 2026-09-07, on the ruling
+  // that there is one report and the person who ran Clearotron reads it; this arm then asserted the note
+  // present and LABELLED, because the way that ruling could produce a worse report was by merging the
+  // reviewer's asides into the client-voiced body where they read as findings about the mark.
   //
-  // Asserting the note is PRESENT AND LABELLED, rather than deleting the old line, is the point: the way
-  // this ruling could produce a worse report is by merging the reviewer's asides into the client-voiced
-  // body, where they would read as findings about the mark. The label is what stops that, so the label is
-  // what the arm checks.
-  assert.match(html, /Register search pending/, "the reviewer's note reaches the report");
-  assert.match(html, /class="internal"/, "…in the purple internal convention, not merged into the body");
-  const noteBlock = html.slice(html.indexOf('class="internal"'));
-  assert.ok(noteBlock.indexOf("Register search pending") < noteBlock.indexOf("</div>") + 400,
-    "the note sits INSIDE the labelled block rather than anywhere on the page");
+  // The later ruling removes the note from the delivered page entirely, which answers that risk outright
+  // rather than by a label. So the two fields the old rule split apart are one rule again: neither the
+  // guess nor the note is drawn, and both stay in the working record. Asserted together, because they
+  // arrived by different rulings and could leave by different ones.
+  assert.doesNotMatch(html, /Register search pending/, "the reviewer's note is not on the delivered page");
+  assert.doesNotMatch(html, /class="internal"/, "and no labelled block is drawn to hold one");
+  const data = knockoutReportData(findings, fw, { ...opts, registerCounts: doc });
+  assert.deepEqual(data.marks[0].reviewerNotes, ["Register search pending."],
+    "the working record keeps it — the page is filtered, the record is not");
 
   // An all-classes run SAYS the count was not narrowed — the bigger, scarier number never passes as
   // the narrow one counsel asked for.
@@ -510,19 +510,20 @@ test("the report prints the figures as their own section, and the model's guess 
   assert.match(plain, /not included in this product tier/, "absence reads as a tier fact, never as an omission");
   assert.match(plain, /identical · containing · close variations/, "and names what the tier that has them includes");
   assert.doesNotMatch(plain, /moderate filings expected/, "a report with no counts still does not print the guess");
-  // THE SCOPE BLOCK IS CODE-OWNED AND UNCONDITIONAL. It replaced a composed set
-  // of lines that said "not a clearance" three times and "proceeds to clearance" twice in 362 words.
-  // What it says does not depend on a frozen policy, so an archived run gets the same two paragraphs.
-  assert.match(plain, /<b>What this is\.<\/b> A fast screen for obvious blockers/);
-  assert.match(plain, /<b>What it is not\.<\/b> A clearance search\./);
-  // The provider is named as the data source only where there IS register data to source.
-  assert.doesNotMatch(plain, /Register data:/, "a run with no counts names no register data source");
-  // AND THE POSITIVE DIRECTION, which nothing asserted (public issue 150). A negative alone is satisfied
-  // by a page that has stopped naming the provider at all: delete the line and this arm goes green while
-  // every report that HAS register data stops saying where it came from. The two together say the line
-  // is conditional; either on its own says only that it is sometimes absent.
+  // THE SCOPE BLOCK IS OFF THE PAGE (2026-09-16). It was code-owned and unconditional, and it replaced
+  // a composed set of lines that said "not a clearance" three times in 362 words; the redesign takes the
+  // paragraphs themselves off a client's page. Asserted absent rather than deleted, so they cannot come
+  // back unremarked on a later edit near the same block.
+  assert.doesNotMatch(plain, /A fast screen for obvious blockers/);
+  assert.doesNotMatch(plain, /<b>What it is not\.<\/b>/);
+  // WHOSE REGISTER WAS COUNTED IS STILL SAID, and still only where there is something to source. The
+  // sentence moved under the counts table and reads "Counted <scope> on <provider>", which is where a
+  // reader meets the figures it qualifies. BOTH DIRECTIONS, because a negative alone is satisfied by a
+  // page that has stopped naming the provider at all: delete the line and the absence assertion goes
+  // green while every report that HAS register data stops saying where it came from.
+  assert.doesNotMatch(plain, /on Corsearch/, "a run with no counts names no register data source");
   const sourced = renderKnockoutHtml(findings, fw, { ...opts, registerCounts: doc });
-  assert.match(sourced, /Register data:/,
+  assert.match(sourced, /Counted [^<]*on Corsearch/,
     "a run WITH counts does not name its register data source — a reader cannot tell whose register was counted");
 
   const failed = renderKnockoutHtml(findings, fw, { ...opts, registerCounts: null, probeRan: true });

@@ -900,7 +900,22 @@ test("spec 62 sidecar: a project-bearing job freezes the PROJECT's marketplaces 
   const { dirname: pdir, basename: pbase } = await import("node:path");
   const internal = readFileSync(join(poolCfg.poolRoot, `${pbase(pdir(res.runDir))}-${pbase(res.runDir)}`, "report.html"), "utf8");
   assert.match(internal, /Run under project:\s*<span class="mono">Console ecosystem \(Aurora Interactive\)<\/span>/, "the internal report footer discloses the project");
-  assert.match(internal, /Configuration provenance \(internal\)/, "the internal report renders the origin table (front-matter round-trip intact)");
+  // THE ORIGIN TABLE IS OFF THE PAGE (the 2026-09-16 report redesign). It rendered inside the scope
+  // fold, which the redesign deletes, and it was the one block in there labelled "(internal)" — the
+  // same class as the reviewer notes that were ruled off the delivered page. It was never on export,
+  // and its own comment always said it stays in the run's artifacts and the workbook.
+  //
+  // WHAT THIS ARM NOW DRIVES IS THE ROUND-TRIP, which is what it was really guarding: the front matter
+  // still carries origins_json, so a reader who wants to know which layer set a knob can still find out
+  // — from the record, not from a table on a client's report. Both halves, because asserting only the
+  // absence would pass just as well if the run had stopped recording it.
+  assert.doesNotMatch(internal, /Configuration provenance \(internal\)/, "the internal block is not drawn on the report");
+  const reportMd = readFileSync(join(res.runDir, "report.md"), "utf8");
+  const originsLine = /^origins_json:\s*(.+)$/m.exec(reportMd);
+  assert.ok(originsLine, "the run no longer records which layer set each knob — the record lost it, not just the page");
+  const originRows = JSON.parse(originsLine[1].trim().replace(/^['"]|['"]$/g, ""));
+  assert.ok(Array.isArray(originRows) && originRows.length, "origins_json is present but empty");
+  assert.ok(originRows.every((r) => r.field && r.origin), "every recorded row says which setting and which layer set it");
   // ONE report (spec 2026-07-30 §5): no client twin is ever written — the portal/client-access serve
   // the same report.html through readReport's serve-time preparation.
   assert.equal(findFile(root, "report.client.html"), null, "no report.client.html twin is published");

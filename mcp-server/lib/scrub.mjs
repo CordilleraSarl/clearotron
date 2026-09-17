@@ -13,7 +13,7 @@
 // because a lawyer defending a filing decision needs the records, and it is bounded by a different
 // mechanism (a structured-field projection, never prose) in lib/evidence.mjs. Read that file's header
 // before widening anything here; the line it draws is evidence vs METHOD, and method stays sealed.
-// publish/render.mjs renders the Methodology section to the client (scopeSection → plainScopeNote) and
+// publish/render.mjs no longer renders a Methodology section to the client (the 2026-09-16 report redesign) and
 // deliberately names the register provider (provenance honesty, receipts, enforcement telemetry). A scrubber
 // stricter than the report would delete content the client was already sent, and would quietly make the MCP
 // a different product from the PDF in their inbox.

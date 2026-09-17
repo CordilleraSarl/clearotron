@@ -94,37 +94,47 @@ const SCOPE = {
 
 test("A.1: what was asked comes from the run's OWN instructed scope, not from model prose", () => {
   const html = RENDER([MARK()], { instructedScope: SCOPE });
-  assert.match(html, /class="ko-req"/, "the request block renders");
+  assert.match(html, /class="panel about"/, "the request panel renders");
   assert.match(html, /About this request/);
-  assert.match(html, /Class 8 — hand tools and kitchen implements/, "the goods as the requester stated them");
-  assert.match(html, /Searched in the European Union and the United States\./, "territories in words");
+  // The prose sentences became labelled rows. What the requester stated has to survive that, so the
+  // arm reads the VALUES, which is the part a client acts on, and not the wording around them.
+  assert.match(html, /<span class="k">Instructed use<\/span><span class="v">hand tools and kitchen implements<\/span>/,
+    "the goods as the requester stated them");
+  assert.match(html, /<span class="k">Classes<\/span><span class="v">8<\/span>/);
+  assert.match(html, /<span class="k">Where searched<\/span><span class="v">the European Union and the United States<\/span>/,
+    "territories in words");
 });
 
-test("A.1: a note about the REQUEST is lifted to the top and does not also print under the cards", () => {
-  const flag = "The dispatch states a beverages industry, which does not match the instructed Class 8 goods.";
-  const own = "Check for firm-specific history on this name before advising.";
-  const html = RENDER([MARK({ purpleNotes: [own, flag] })], { instructedScope: SCOPE });
-  const req = html.slice(html.indexOf('class="ko-req"'), html.indexOf("On-field conflicts"));
-  const cards = html.slice(html.indexOf("On-field conflicts"));
-  assert.ok(req.includes(flag), "the request flag is above the conflicts");
-  assert.ok(!cards.includes(flag), "and is not repeated under them");
-  assert.ok(cards.includes(own), "a note about the NAME stays where it was");
-  assert.ok(!req.includes(own), "and is not lifted");
-});
-
-test("A.1: the rater's own split WINS over the fallback, which is then never consulted", () => {
-  // The word the fallback keys on, on a note the rater has typed as being about the NAME. If the
-  // fallback ran at all — even additively — this note would be lifted. It must not be.
+// Item 18 (owner, 2026-09-16) retired the whole of the notes-on-the-page design, which these three arms
+// were written against: a reviewer's note was lifted to the top when it was about the REQUEST, left under
+// the cards when it was about the NAME, and labelled for the reader it was written for. None of that is
+// drawn now. What replaces those arms is the property that OUTLIVES the design — the page is filtered and
+// the record is not — driven both ways round, because an arm asserting only the absence would pass just as
+// well if the notes had been dropped from the run record too.
+test("A.4/A.5 item 18: no reviewer note reaches the page, however it is typed", () => {
+  const aboutRequest = "The dispatch states a beverages industry, which does not match the instructed Class 8 goods.";
+  const aboutName = "Check for firm-specific history on this name before advising.";
   const typed = { about: "name", text: "The dispatch is irrelevant here; this is about the mark itself." };
-  const html = RENDER([MARK({ purpleNotes: [typed] })], { instructedScope: SCOPE });
-  const req = html.slice(html.indexOf('class="ko-req"'), html.indexOf("On-field conflicts"));
-  assert.ok(!req.includes("irrelevant here"), "a typed name-note is never lifted by the word-fallback");
-  assert.ok(html.slice(html.indexOf("On-field conflicts")).includes("irrelevant here"), "it renders under the cards");
+  const html = body(RENDER([MARK({ purpleNotes: [aboutName, aboutRequest, typed] })], { instructedScope: SCOPE }));
+  assert.ok(!html.includes(aboutRequest), "a note about the request is not lifted to the top");
+  assert.ok(!html.includes(aboutName), "a note about the name is not drawn under the cards");
+  assert.ok(!html.includes("irrelevant here"), "nor is one the rater typed itself");
+  assert.doesNotMatch(html, /For the reviewing lawyer/, "and no label for a reader the page no longer has");
+  assert.doesNotMatch(html, /Remove them before this goes to the client/,
+    "the legend is back — a caveat telling the reader how to handle the document, which was ruled out");
 });
 
-test("A.1 clause F: no instructed scope and no request flag renders NO block, never an empty one", () => {
+test("A.4/A.5 item 18: the run record keeps every one of them", () => {
+  const notes = ["Check for firm-specific history on this name before advising.",
+    "The dispatch states a beverages industry, which does not match the instructed Class 8 goods."];
+  const data = knockoutReportData({ marks: [MARK({ purpleNotes: notes })], batch: {} }, FW, { runId: "r", overall: "Medium" });
+  assert.deepEqual(data.marks[0].reviewerNotes, notes,
+    "item 18 took the notes off the delivered page, not out of the working record");
+});
+
+test("A.1 clause F: no instructed scope renders NO panel, never an empty one", () => {
   const html = body(RENDER([MARK()]));
-  assert.doesNotMatch(html, /class="ko-req"/, "an archived run with no sidecar grows no empty heading");
+  assert.doesNotMatch(html, /class="panel about"/, "an archived run with no sidecar grows no empty heading");
   assert.doesNotMatch(html, /About this request/);
 });
 
@@ -245,30 +255,73 @@ test("A.3: a band this build cannot place on the ladder keeps its card", () => {
 
 // ── A.4 / A.5 — the reviewer's notes, and their absence from the export ──────────────────────────────
 
-test("A.4/A.5: the notes say who they are for, and the export strips them", () => {
-  const html = RENDER([MARK({ purpleNotes: ["Pull the full goods list before advising."] })]);
-  assert.match(html, /For the reviewing lawyer/, "the label names the reader");
-  // NO LEGEND, by owner ruling. The line read "Purple notes are for the reviewing lawyer. Remove them
-  // before this goes to the client." — an instruction to the reader, printed on the document. The label
-  // above stays because it names a reader, which is a fact about the note; the legend told somebody what
-  // to do about it, which is not. Asserted ABSENT rather than deleted, so the sentence cannot come back
-  // quietly on the next edit near it.
-  assert.doesNotMatch(html, /Remove them before this goes to the client/,
-    "the legend is back — a caveat telling the reader how to handle the document, which was ruled out");
-  assert.doesNotMatch(html, /Purple notes are for the reviewing lawyer/,
-    "the legend is back in another spelling");
-  // The knockout's export IS window.print() (exportPDF), so the print rule is the whole strip.
-  assert.match(html, /@media print\{\.internal\{display:none ?!important\}\}/,
-    "internal notes come off the PDF, as the clearance page has always done");
+// ── A.7 — what happens next, and the assessment it is taken from ────────────────────────────────────
+//
+// THE PARAGRAPH MOVES; IT IS NOT COPIED. The first cut of this rendered the section from the assessment
+// and left the assessment whole, so the client read the same paragraph twice — once in the fold, once at
+// the foot. Nothing red: a spec check asking whether the section is PRESENT passes either way, and so
+// does every arm above. The arm that discriminates is a count.
+
+const SPLIT = "## The name\n\nA compound.\n\n## What drives the rating\n\nTwo storefronts.\n\n"
+  + "## What to do with it\n\nProceed, and check the domain before filing.";
+
+test("A.7: the outcome paragraph closes the page, and is not also left in the fold", () => {
+  const html = body(RENDER([MARK({ assessment: SPLIT })]));
+  assert.match(html, /<h2>What happens next<\/h2>/, "it has a section of its own");
+  const once = (needle) => (html.split(needle).length - 1);
+  assert.equal(once("Proceed, and check the domain before filing."), 1,
+    "the paragraph appears exactly once on the page");
+  assert.equal(once("What to do with it"), 0, "and its heading went with it");
+  assert.equal(once("Two storefronts."), 1, "the rest of the assessment is untouched, and still folded");
+  assert.ok(html.indexOf("Two storefronts.") < html.indexOf("Proceed, and check the domain"),
+    "the outcome closes the page rather than moving above the read it came from");
+});
+
+test("A.7: only the LAST block is hoisted, so a mid-document heading is never reordered", () => {
+  // The heading is the model's own — the assessing skill fixes no vocabulary for it. A phrase match
+  // anywhere in the document would lift this middle section to the foot and hand the client the
+  // engine's argument in an order the engine did not write, with nothing to show for it.
+  const mid = "## The name\n\nA compound.\n\n## Recommendation\n\nProceed for now.\n\n"
+    + "## What drives the rating\n\nTwo storefronts.";
+  const html = body(RENDER([MARK({ assessment: mid })]));
+  assert.doesNotMatch(html, /<h2>What happens next<\/h2>/, "no section is built from a middle block");
+  assert.ok(html.includes("Recommendation"), "and the assessment renders whole, in its own order");
+  assert.ok(html.indexOf("Proceed for now.") < html.indexOf("Two storefronts."),
+    "the middle stays in the middle");
+});
+
+test("A.7 clause F: an assessment with no such heading renders whole and grows no section", () => {
+  const html = body(RENDER([MARK()]));
+  assert.doesNotMatch(html, /<h2>What happens next<\/h2>/);
+  assert.ok(html.includes("Two storefronts"), "the assessment is still drawn");
+});
+
+test("A.7: a batch gives every name its paragraph, under its own name", () => {
+  const second = SPLIT.replace("Proceed, and check the domain before filing.", "Do not file this one.");
+  const html = body(RENDER([MARK({ assessment: SPLIT }), MARK({ name: "COPPERWHISK", assessment: second })]));
+  const sec = html.slice(html.indexOf("<h2>What happens next</h2>"));
+  assert.ok(sec.includes("Proceed, and check the domain before filing."), "the first name's paragraph");
+  assert.ok(sec.includes("Do not file this one."), "and the second's, which a single-outcome section would drop");
+  assert.match(sec, /<h3>IRONWHISK<\/h3>/, "each under the name it belongs to");
+  assert.match(sec, /<h3>COPPERWHISK<\/h3>/);
 });
 
 // ── A.6 — the one-name page has no index ─────────────────────────────────────────────────────────────
 
 test("A.6: one name renders no at-a-glance row; two names still do", () => {
+  // READ THROUGH THE PANEL, NOT THE LEGEND IT USED TO CARRY. This arm probed the index through its
+  // "Rated under <framework>" child, and that line is off the page — the framework is named on the
+  // rating card now. COUNTED, NOT MATCHED. The index and the cards are built by two functions that emit the same
+  // markup — same panel class, same row, same name line — so no selector tells them apart and an arm
+  // written as one would be green on a page that draws no index at all. What the index IS, observably,
+  // is one extra name line per mark: one name draws its card and nothing else, two draw two cards and
+  // the two-line index above them.
+  const names = (html) => (html.match(/class="ko-name"/g) ?? []).length;
   const one = RENDER([MARK()], { registerCounts: COUNTS() });
-  assert.doesNotMatch(one, /class="ko-legend"/, "nothing to index, so no index");
+  assert.equal(names(one), 1, "nothing to index, so the name is printed once, on its card");
   const two = RENDER([MARK(), MARK({ name: "COPPERWHISK" })], { registerCounts: COUNTS() });
-  assert.match(two, /class="ko-legend"/, "a batch keeps the index it needs");
+  assert.equal(names(two), 4, "a batch keeps the index it needs: two cards, and a row each above them");
+  assert.ok(two.includes("COPPERWHISK"), "and names the second mark in it");
 });
 
 // ── B — the counts table says what it counted ────────────────────────────────────────────────────────
@@ -351,28 +404,16 @@ test("D: a registration does not say 'registration (registered)'", () => {
 
 // ── E — the scope block ──────────────────────────────────────────────────────────────────────────────
 
-test("E: the scope block says what the screen is and is not, with 'clearance' at most twice", () => {
-  const html = RENDER([MARK()], { registerCounts: COUNTS() });
-  const scope = html.slice(html.indexOf("Scope &amp; what we didn't search"));
-  assert.match(scope, /<b>What this is\.<\/b> A fast screen for obvious blockers/);
-  assert.match(scope, /<b>What it is not\.<\/b> A clearance search\./);
-  // COUNTED ON WHAT A READER SEES. The first pass counted the raw HTML and reached three, the third
-  // being the word inside a source comment — so the arm was measuring the file, not the page. The
-  // model's caveats sit behind a border after this block; how often THEY say it is the two-register rule's
-  // business, not this renderer's.
-  const cut = scope.indexOf('style="border-top');
-  const fixed = (cut > 0 ? scope.slice(0, cut) : scope)
-    .replace(/<!--[\s\S]*?-->/g, '').replace(/<[^>]*>/g, ' ');
-  assert.equal((fixed.match(/clearance/gi) ?? []).length, 2,
-    "the code-owned block states it twice; five restatements were the complaint");
-});
-
-test("E: 'every conflict above links to what we found' is not said when a conflict cites nothing", () => {
-  const cited = RENDER([MARK({ findings: [FINDING()] })], { registerCounts: COUNTS() });
-  assert.match(cited, /Every conflict above links to the material we found\./);
-  const uncited = RENDER([MARK({ findings: [FINDING(), FINDING({ ordinal: 2, evidence: [] })] })], { registerCounts: COUNTS() });
-  assert.doesNotMatch(uncited, /Every conflict above links/,
-    "said over a finding that cites nothing it is an absence claim wider than what was examined");
+// The scope block is off the page (the 2026-09-16 report redesign): the fixed paragraph saying what a screen is and
+// is not, and with it the "every conflict above links to the material we found" line. Both were the
+// narration the redesign was ordered to cut. ONE ARM HOLDS THE GROUND the deleted arms held, because a
+// block removed with nothing asserting its absence comes back on the next edit near it and nothing reds.
+test("E: the scope block and its fixed narration are off the page", () => {
+  const html = body(RENDER([MARK({ findings: [FINDING()] })], { registerCounts: COUNTS() }));
+  assert.doesNotMatch(html, /Scope &amp; what we didn't search/);
+  assert.doesNotMatch(html, /<details class="scope"/);
+  assert.doesNotMatch(html, /A fast screen for obvious blockers/, "the fixed What this is paragraph");
+  assert.doesNotMatch(html, /Every conflict above links to the material we found/);
 });
 
 test("E: a caveat making a NEW claim survives; one that only restates the block does not", () => {
@@ -382,6 +423,7 @@ test("E: a caveat making a NEW claim survives; one that only restates the block 
     { marks: [MARK()], batch: { executiveSummary: "s", standardCaveats: [restates, adds] } }, FW,
     { runId: "r", overall: "Medium", registerCounts: COUNTS() },
   );
+  assert.match(html, /class="panel ko-caveats"/, "the caveats have a block of their own now the scope section has gone");
   assert.ok(html.includes("worst-case exposure"), "a caveat with a new claim is kept");
   assert.ok(!html.includes(restates), "one whose every content word is already in the block is not repeated");
 });

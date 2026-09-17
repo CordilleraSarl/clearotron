@@ -209,11 +209,18 @@ test("a 3-mark knockout batch runs end to end: receipts, degrade, publish stamps
   // weighs them, so a masthead saying they are not tells this report's reader the opposite of what the
   // pages below it do. Asserted here on a REAL DELIVERED REPORT rather than on a rendered fixture, which
   // is why this arm is worth keeping: it is the copy a client opens.
-  assert.match(report, /takes register hit-counts/i,
-    "one Knockout search: the masthead still says the product takes the filing counts");
-  // "READS", NOT "WEIGHS" (owner,) — same clause, same requirement, the word he uses.
-  assert.match(report, /reads the filings it retrieves/i,
-    "…and says, in the same line, what it does with them — which it now does");
+  // THE MASTHEAD SENTENCE NO LONGER REACHES THE PAGE (the 2026-09-16 report redesign, which names the
+  // engine's search-policy line and takes it off both reports). This arm asserted the sentence said the
+  // right thing; with no sentence there is nothing to say it wrong, and the defect it was really
+  // guarding — a masthead telling the reader the opposite of what the pages below it do — cannot occur.
+  //
+  // ASSERTED ABSENT RATHER THAN DELETED, and the false clause named explicitly, because the way this
+  // could come back is a later edit restoring the line from the policy module with the old wording.
+  // What the product covers is said by the About this request panel instead, and that panel has its own
+  // arms over a rendered fixture — not asserted here, because what this run passes as its instructed
+  // scope is the runner's business and an arm that guessed at it would be testing the fixture.
+  assert.doesNotMatch(report, /takes register hit-counts/i, "the policy sentence is off the page");
+  assert.doesNotMatch(report, /not weighed/i, "and with it the clause that went false");
   assert.doesNotMatch(report, /not weighed or analysed in this search/i,
     "the retired denial reached a delivered report");
   assert.ok(report.includes("IRONWHISK #1"), "the drill-through key is on the page beside the conflict");
@@ -431,7 +438,9 @@ test("STAGE 0.5 end to end: counts measured in code, on the report, in the workb
     .map((r) => readFileSync(join(pool, d, r.file), "utf8"));
   const report = docsFor(dir).join("\n");
   assert.match(report, /Knockout search/, "the report names the search that ran, by its own name");
-  assert.match(report, /<h2>On-field conflicts<\/h2>/, "the counts render in the merged spine section — the complaint was that they were buried in a cell");
+  // The heading lost its "On-field" qualifier with the redesign; what this line holds is that the counts
+  // render in the merged section rather than buried in a cell.
+  assert.match(report, /<h2>Conflicts<\/h2>/, "the counts render in the merged section — the complaint was that they were buried in a cell");
   assert.match(report, /class="ko-counts/, "the counts table renders");
   assert.match(report, /<td class="num">3<\/td>/, "the measured figures are on the page");
   assert.match(report, /<td class="num">41<\/td>/);
