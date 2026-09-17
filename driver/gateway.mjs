@@ -255,7 +255,8 @@ import { undispatchableFiringDirectives } from "./frame-diff-model.mjs";
 import { witnessStageMethodology, describeMethodologyDrift } from "./methodology-witness.mjs";
 // — the meaning-sweep form and its accumulator. Both PURE and acyclic: connotation-search.mjs
 // imports nothing, disposition-union.mjs imports only it, and neither reaches back here.
-import { parsePrRiskResults, connotationObligations, parseDispositionForm, rulingsProse, CONNOTATION_FORM_TOKEN_SRC, CONNOTATION_FORM_TOKEN_RE } from "./connotation-search.mjs";
+import { parsePrRiskResults, connotationObligations, parseDispositionForm, rulingsProse, CONNOTATION_FORM_TOKEN_SRC,
+  CONNOTATION_UNMATCHED_MARK, CONNOTATION_NO_RESEMBLANCE_MARK, CONNOTATION_FORM_TOKEN_RE } from "./connotation-search.mjs";
 import { unionDispositionForm, formSidecarPath } from "./disposition-union.mjs";
 import { unionCoverageForm } from "./coverage-union.mjs";
 import { coverageFormStamp, readCoverageForm, readCoverageFormInput, writeCoverageForm } from "./coverage-form-io.mjs";
@@ -2613,8 +2614,10 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     // applies by looking at its own ledger, and neither wastes an attempt: if the search did run, fix
     // the row's wording; if it did not, run it and append the row. Where both labels appear, both
     // sentences are sent, as before.
-    const anyUnmatched = /\[unmatched; nearest recorded:/.test(dropped);
-    const anyUnresembled = /\[no recorded query resembles this one\]/.test(dropped);
+    // Detected from the validator's own constants, never a copy of its prose: these two choose between
+    // opposite repairs, and a re-worded label with a stale matcher here keeps sending the wrong one.
+    const anyUnmatched = String(dropped).includes(CONNOTATION_UNMATCHED_MARK);
+    const anyUnresembled = String(dropped).includes(CONNOTATION_NO_RESEMBLANCE_MARK);
     hint = anyUnmatched && !anyUnresembled
       ? `these dictated meaning queries ARE recorded in ${gridLedgerName} extras.pr_risk[] under a ` +
         `different wording, which is why the driver cannot match them: ${dropped}. Do NOT re-run them — ` +

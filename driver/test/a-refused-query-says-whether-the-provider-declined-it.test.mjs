@@ -65,8 +65,11 @@ const gap = (term, error) => ({ term, platform: "connotation", error });
 test("a query the provider REPORTED an error on is named as that, not as one nobody ran", async () => {
   const reason = await refusalFor([`${MARK} meaning`], [], [gap(`${MARK} meaning`, "upstream 503 from the search API")]);
   assert.match(reason, /connotation_query_unrecorded/, "an errored query must still fail the gate");
-  assert.match(reason, /the provider REPORTED an error on this query/,
+  assert.match(reason, /the provider REPORTED an error on it/,
     "the gate is not reading the gap rows in the ledger it just read");
+  // And it names the file it joined against, so "recorded" cannot be read as "anywhere in this run".
+  assert.match(reason, /common-law-grid\.half-[a-z]+\.json/,
+    "the refusal does not say which collection it searched");
   assert.match(reason, /upstream 503/, "the provider's own reason is not carried to the seat");
   assert.doesNotMatch(reason, /no recorded query resembles this one/,
     "an errored query is still being described as one nothing resembles");
