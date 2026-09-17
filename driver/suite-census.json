@@ -3658,8 +3658,8 @@
           "todos": 0
         },
         "register-count.test.mjs": {
-          "tests": 27,
-          "asserts": 169,
+          "tests": 28,
+          "asserts": 177,
           "skips": 0,
           "todos": 0
         },
@@ -6364,6 +6364,12 @@
         "summaryBlocks.test.ts": {
           "tests": 3,
           "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "tableWrapShowsItScrolls.test.ts": {
+          "tests": 1,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },
