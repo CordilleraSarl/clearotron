@@ -1793,7 +1793,32 @@ ${filings}`
   ${title || productName ? `<span class="mono tb-matter" style="font-size:11px;color:var(--faint)">${
     [title, productName].filter(Boolean).map(esc).join(' / ')}</span>` : ''}
   ${issuedDate ? `<span class="mono tb-issued"><span aria-hidden="true">🗓 </span>Issued on ${esc(issuedDate)}</span>` : ''}
-  <button type="button" class="tbbtn tb-ask no-print">\u2726 <span class="tb-lbl">Ask AI</span></button>
+  ${/* THE EXPORT CONTROL, which this template had never emitted. The approved header carries it and the
+       clearance report has it; the knockout offered a reader who opens the file no route to a PDF at
+       all, while its own stylesheet still described the utility buttons as "used by the topbar Export
+       popover" — the styling for a control that was not there.
+       NO TICK WORDING AND NO SELECT-ALL. The clearance's entry reads "Export PDF (ticked findings)"
+       and its popover offers Select all / Select none, because its exportPDF filters to the ticked
+       ones. This template has no pickbox anywhere, so `pickAll` is deliberately not defined here and a
+       tick verb would name a control that cannot exist. What prints is the whole document.
+       EVERY WORD IN IT IS ALREADY THE PRODUCT'S. The board draws the Export button and its caret and
+       stops there — it does not draw what the menu contains — so the entries are the clearance
+       report's own, verbatim, minus the tick wording that names a control this template does not have.
+       The heading this first carried ("Export") was written here and is gone: a word on a page a
+       client reads is the owner's to choose, and the board does not ask for one.
+       THE MARKUP IS THE CLEARANCE'S, RE-EMITTED RATHER THAN SHARED, and that is a debt this change
+       takes on knowingly: `render.mjs` is frozen at a content hash, and extracting its top bar is its
+       own change with its own byte-comparison against a real archived run. Filed as a follow-up. The
+       class names are the shared vocabulary this file already emits, so report.css styles both. */''}
+  <div class="tb-menu">
+    <button type="button" class="tbbtn tb-ask no-print">\u2726 <span class="tb-lbl">Ask AI</span></button>
+    <button type="button" class="tbbtn primary tb-exp-toggle" aria-haspopup="true" aria-expanded="false">\u2b07 <span class="tb-lbl">Export</span> \u25be</button>
+    <div class="tb-pop tb-exp-pop" hidden>
+      <button class="util primary" onclick="exportPDF()">\u2b07 Export PDF</button>
+      <div class="tb-sep"></div>
+      <div class="tb-row"><button class="util" onclick="openAll(true)">Expand all</button><button class="util" onclick="openAll(false)">Collapse all</button></div>
+    </div>
+  </div>
 </div>
 </div>
 <div class="fab-stack">${themeButton()}</div>
@@ -1814,7 +1839,11 @@ function openAll(v){document.querySelectorAll('details.ko-full').forEach(functio
 function exportPDF(){window.print();}
 (function(){var o=function(){openAll(true);};
 if(window.matchMedia){var m=window.matchMedia('print');if(m.addEventListener)m.addEventListener('change',function(e){if(e.matches)o();});}
-window.addEventListener('beforeprint',o);})();</script>
+window.addEventListener('beforeprint',o);})();
+/* The popover opens on its own button, closes on a click outside it and on Escape. Same two listeners
+   the clearance template carries, for the same markup; they move together when the top bar is shared. */
+document.addEventListener('click',function(e){var t=e.target.closest('.tb-exp-toggle'),pop=document.querySelector('.tb-exp-pop');if(t){if(pop){pop.hidden=!pop.hidden;t.setAttribute('aria-expanded',String(!pop.hidden));}return;}if(pop&&!pop.hidden&&!e.target.closest('.tb-exp-pop')){pop.hidden=true;var b=document.querySelector('.tb-exp-toggle');if(b)b.setAttribute('aria-expanded','false');}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){var pop=document.querySelector('.tb-exp-pop');if(pop&&!pop.hidden){pop.hidden=true;var b=document.querySelector('.tb-exp-toggle');if(b)b.setAttribute('aria-expanded','false');}}});</script>
 <div class="wrap">
   <header class="hero">
     ${demoBannerHtml(demoData === true)}

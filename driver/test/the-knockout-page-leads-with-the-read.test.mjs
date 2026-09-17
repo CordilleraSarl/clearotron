@@ -611,3 +611,58 @@ test("the one-name page stays inside its word budget, folds closed", () => {
   assert.ok(open > closed + 200,
     `opening the folds added only ${open - closed} words, so the detail is not being folded away — it is missing`);
 });
+
+// ── THE KNOCKOUT CARRIES THE EXPORT CONTROL THE APPROVED HEADER DRAWS ───────────────────────────────
+//
+// The approved header is "brand, band badge, name and type, Issued on, Ask AI, Export", the same as the
+// clearance report's. This template emitted no Export control and no popover, while the stylesheet it
+// inlines still described its utility buttons as the ones "used by the topbar Export popover". A reader
+// inside the portal could still ask the assistant to export, because the serve-time bridge reaches
+// `exportPDF` by name; a reader who opened the file itself had the browser's print command and nothing
+// on the page.
+//
+// BREAK MATRIX:
+//   · the control is in the top bar             → break: emit no popover, arm 1 red
+//   · its entry is the plain print              → break: copy the clearance's tick wording, arm 2 red
+//   · no select-all names a control that cannot exist → break: copy the clearance's pickAll row, arm 3 red
+//   · the verbs it calls are DEFINED here       → break: offer a verb this template does not define, arm 4 red
+//   · it is not printed                         → break: drop no-print from the bar, arm 5 red
+test("the knockout's top bar carries an Export control, and it offers only what this template can do", () => {
+  const html = RENDER([MARK()]);
+
+  assert.match(html, /class="tbbtn primary tb-exp-toggle"/, "no Export control in the knockout's top bar");
+  assert.match(html, /class="tb-pop tb-exp-pop" hidden/, "the Export control opens no popover");
+  assert.match(html, /<button class="util primary" onclick="exportPDF\(\)">[^<]*Export PDF<\/button>/,
+    "the popover has no plain Export PDF entry");
+
+  // THE TICK WORDING IS THE CLEARANCE'S AND IT DOES NOT BELONG HERE. This template has no pickbox, so a
+  // "(ticked findings)" entry and a Select all row would both name a control that cannot exist.
+  assert.doesNotMatch(html, /ticked findings/, "the knockout offers to filter by a tick it does not have");
+  // ON THE CALL, NOT ON THE WORD. The page's own script CARRIES the name in a comment explaining why
+  // this template defines no pickAll, so a bare search for it matches the reason the control is absent.
+  assert.doesNotMatch(html, /onclick="pickAll/, "a select-all reaches a verb this template deliberately does not define");
+  assert.doesNotMatch(html, /Tick a finding/, "the clearance's hint about ticking came with the markup");
+
+  // EVERY VERB THE POPOVER CALLS IS DEFINED IN THE PAGE. The serve-time bridge looks these up by name,
+  // and the whole reason this template defines no pickAll is that an absent verb is an absent menu item
+  // rather than a control that fails. A popover calling one anyway would put that back.
+  for (const verb of [...html.matchAll(/onclick="(\w+)\(/g)].map((m) => m[1])) {
+    assert.match(html, new RegExp(`function ${verb}\\(`), `the page calls ${verb}() and does not define it`);
+  }
+
+  // The bar is chrome, not document: it carries no-print, so the exported PDF shows no controls.
+  assert.match(html, /<div class="topbar no-print">/, "the top bar would print into the PDF");
+
+  // BUILT TO THE BOARD, NOT TO THE ISSUE TEXT. The board puts Ask AI and Export in one menu and draws
+  // the Export button and its caret; it does not draw what the menu contains. So the entries are the
+  // clearance report's own words and the menu carries no heading — a heading here would be a word on a
+  // client's page that nobody chose.
+  const menu = (html.match(/<div class="tb-menu">[\s\S]*?<\/div>\s*<\/div>/) || [])[0] ?? "";
+  assert.match(menu, /tb-ask/, "Ask AI sits outside the menu the board draws it in");
+  assert.match(menu, /tb-exp-toggle/, "the Export button sits outside that menu");
+  // ON THE ELEMENT, NOT ON THE WORD — again. The page INLINES report.css, which styles a heading the
+  // clearance report uses, so a bare search for the class name matches the stylesheet and would fail
+  // whatever the markup did. This is the second assertion in this arm to need narrowing for the same
+  // reason: the rendered page carries the vocabulary of both templates, only one of which it uses.
+  assert.doesNotMatch(html, /<div class="tb-pop-title"/, "the menu carries a heading the board does not draw");
+});
