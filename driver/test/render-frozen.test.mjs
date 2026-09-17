@@ -1770,7 +1770,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Advanced again by the break recorded above the FROZEN constant: seven fixed sentences on the
 // clearance page, which is a behaviour change and not licence-only, so both constants move for the same
 // measured reason.
-const FROZEN_BEFORE_SPDX = "eb93fb63e88d6970fab890e5f027e464709f266751c0dddfc6d9e6562da912ff";
+const FROZEN_BEFORE_SPDX = "b70888f791e1d716b3c0880f8d6b765fed125172d40e6721529156e4587d7332";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2266,7 +2266,18 @@ const FROZEN_BEFORE_SPDX = "eb93fb63e88d6970fab890e5f027e464709f266751c0dddfc6d9
 // Could it live in report.css? No — the lines removed are text, and hiding them leaves them in the
 // delivered bytes and the print.
 
-const FROZEN = "964f5f368877214b0d2ef0832bc074fd1f1897ac423f5274f07304bcf774d99f";
+// AND AGAIN (2026-09-17): "WHERE IT STANDS" NAMES A COUNTRY, NOT A SECOND CODE.
+//
+// Reachable from a republish? Yes, and it is a repair on every archived run that has one of these
+// rows. The register writes EM and GB; the section already mapped those to EU and UK for the code
+// column, but resolved the NAME from the raw code, which has an entry under neither spelling. So the
+// name fell back to the code and the row read "EU EM" — a country column printing a second code. The
+// raw code is still tried after the aliased one, so anything the alias does not cover resolves
+// exactly as it did.
+//
+// Could it live in report.css? No — the wrong string is in the markup, not its styling.
+
+const FROZEN = "7e0200043a31806c5a42461d99102e8fad8191d47835e6d194f6c349f51fdb68";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

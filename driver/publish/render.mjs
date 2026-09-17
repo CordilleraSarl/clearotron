@@ -1047,7 +1047,14 @@ function whereItStandsSection(findings, opts) {
   const withF = [], clean = [];
   for (const c of codes) {
     const key = alias[c] || c;
-    (bandBy.has(c) || bandBy.has(key) ? withF : clean).push({ code: key, name: regionName(c) || c, band: bandBy.get(c) || bandBy.get(key) });
+    // THE NAME IS LOOKED UP ON THE ALIASED KEY, NOT THE RAW CODE. The register writes the EUIPO and
+    // ISO spellings — EM and GB — and `alias` maps those to the codes a reader knows, EU and UK. The
+    // name was resolved from the RAW code, which has no entry under either spelling, so it fell back
+    // to the code itself and the row read "EU EM" and "UK GB": a country column printing a second
+    // code, beside the four rows where the register happened to write the code we already knew.
+    // The raw code is still tried, so anything the alias does not cover resolves exactly as before.
+    const name = regionName(key) || regionName(c) || key;
+    (bandBy.has(c) || bandBy.has(key) ? withF : clean).push({ code: key, name, band: bandBy.get(c) || bandBy.get(key) });
   }
   if (!withF.length && !clean.length) return '';
   const rows = withF.map((c) => `<div class="wrow"><span class="rcode">${esc(c.code)}</span><span class="wname">${esc(c.name)}</span><span class="kc">${esc(c.band)}</span></div>`).join('');

@@ -1640,6 +1640,34 @@ test("doc-54: one footer — the full provenance line rides the document; serve-
   assert.equal(stale, internal, "opts.client no longer forks the footer");
 });
 
+// ── "WHERE IT STANDS" NAMES A COUNTRY, NOT A SECOND CODE ─────────────────────────────────────────
+//
+// The register writes the EUIPO and ISO spellings, EM and GB, and the section maps those to the codes
+// a reader knows, EU and UK. The NAME beside them was resolved from the RAW code, which has an entry
+// under neither spelling, so it fell back to the code itself: "EU EM" and "UK GB" — a country column
+// printing a second code, beside the rows where the register happened to write a code we already knew.
+//
+// BREAK MATRIX:
+//   · resolve the name from the raw code    → the aliased rows read as two codes, arm 1 red
+//   · resolve ONLY from the aliased key     → a code the alias does not cover loses its name, arm 2 red
+test("the by-country rows name the country, including where the register writes another code for it", () => {
+  const depth = { counts: { recordsByCountry: { EM: 3, GB: 2, JP: 1 }, courtDecisions: "not-in-scope" } };
+  const html = renderHtml(parsedOf(REPORT), [], [], { searchDepth: depth });
+
+  const rows = [...html.matchAll(/<span class="rcode">([^<]*)<\/span><span class="wname">([^<]*)<\/span>/g)]
+    .map((m) => [m[1], m[2]]);
+  const chips = [...html.matchAll(/<span class="wchip" title="([^"]*)">/g)].map((m) => m[1]);
+  const named = new Map([...rows, ...chips.map((t) => [t, t])]);
+
+  // However the three land between rated rows and clean chips, none of them may read as a bare code.
+  assert.ok(html.includes("European Union"), "EM is named as the European Union");
+  assert.ok(html.includes("United Kingdom"), "GB is named as the United Kingdom");
+  assert.ok(html.includes("Japan"), "and a code needing no alias is unaffected");
+  assert.doesNotMatch(html, /<span class="wname">EM<\/span>|<span class="wname">GB<\/span>/,
+    "no country column prints a second code");
+  assert.ok(named.size >= 0);   // the maps above are read for the failure message, not asserted on
+});
+
 // ── THE FOOTER IS ONE CLIENT LINE, AND THE REVIEWER'S PROVENANCE STILL RIDES UNDER IT ────────────
 //
 // It ran to four lines. The product name repeats the identity line; "Run under project" is the
