@@ -255,7 +255,8 @@ import { undispatchableFiringDirectives } from "./frame-diff-model.mjs";
 import { witnessStageMethodology, describeMethodologyDrift } from "./methodology-witness.mjs";
 // — the meaning-sweep form and its accumulator. Both PURE and acyclic: connotation-search.mjs
 // imports nothing, disposition-union.mjs imports only it, and neither reaches back here.
-import { parsePrRiskResults, connotationObligations, parseDispositionForm, rulingsProse, CONNOTATION_FORM_TOKEN_SRC, CONNOTATION_FORM_TOKEN_RE } from "./connotation-search.mjs";
+import { parsePrRiskResults, connotationObligations, parseDispositionForm, rulingsProse, CONNOTATION_FORM_TOKEN_SRC,
+  CONNOTATION_UNMATCHED_MARK, CONNOTATION_NO_RESEMBLANCE_MARK, CONNOTATION_FORM_TOKEN_RE } from "./connotation-search.mjs";
 import { unionDispositionForm, formSidecarPath } from "./disposition-union.mjs";
 import { unionCoverageForm } from "./coverage-union.mjs";
 import { coverageFormStamp, readCoverageForm, readCoverageFormInput, writeCoverageForm } from "./coverage-form-io.mjs";
@@ -1144,17 +1145,17 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // it; the log was already saying what the code believed.
     //
     // TWO FIELDS, NEVER COLLAPSED INTO ONE:
-    //   modelUsed   — the requested resolution. Unchanged in meaning and unchanged in value, because
-    //                 run-economics.mjs and tokens.mjs both read it and a field that quietly changes
-    //                 what it means is its own corruption.
-    //   modelActual — the id the WIRE reported (engine tuple `modelWire`), or NULL when the stream
-    //                 never said: an engine that does not emit one (codex), a turn killed before any
-    //                 event, a spawn error. It NEVER falls back to the requested alias.
-    // `modelBasis` names which of the two the row can defend: "actual" or "unknown". There is no third
-    // state in which a requested value is dressed as an observed one.
+    //   modelUsed   — the requested resolution, unchanged in meaning and value: run-economics.mjs and
+    //                 tokens.mjs both read it, and a field that quietly changes meaning is its own corruption.
+    //   modelActual — the id the WIRE reported (engine tuple `modelWire`), or NULL when the stream never
+    //                 said: an engine that does not emit one (codex), a turn killed before any event, a
+    //                 spawn error. It NEVER falls back to the requested alias, and `modelBasis` ("actual" or
+    //                 "unknown") never dresses a requested value as an observed one. `providerReported` is
+    //                 the provider word the same stream gave (tuple `providerWire`), null on the same terms.
     const modelRequested = engine.resolveModelId ? engine.resolveModelId(model) : resolveModel(model);
     const modelActual = (typeof turn.modelWire === "string" && turn.modelWire) ? turn.modelWire : null;
     const modelBasis = modelActual ? "actual" : "unknown";
+    const providerReported = (typeof turn.providerWire === "string" && turn.providerWire) ? turn.providerWire : null;
     // WHETHER THE OBSERVED ID NAMES A FIXED BUILD. `modelBasis: "actual"` says the provider answered,
     // not that the answer is pinned: two of the three tiers come back as undated aliases the provider
     // may repoint, and recorded beside a dated one they read identically. null when there is nothing to
@@ -1170,9 +1171,13 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // "written before anybody asked", which is the distinction the field exists for. One spawn per
     // binary per process; a probe never throws, because taking down a dispatch to record a version
     // would be a worse defect than the gap it closes.
+    // `source` says WHICH copy served (explicit / path / installed), and it is attached here, outside the
+    // probe's cache: that cache is keyed by the file, and one file can be reached by more than one route.
     const cli = (() => {
-      try { return probeCliVersion(preflightEngineBinary(process.env)?.resolved ?? null); }
-      catch (e) { return { version: null, probe: "unreadable", why: String(e?.message ?? e).slice(0, 160) }; }
+      try {
+        const pre = preflightEngineBinary(process.env);
+        return { ...probeCliVersion(pre?.resolved ?? null), source: pre?.source ?? null };
+      } catch (e) { return { version: null, probe: "unreadable", why: String(e?.message ?? e).slice(0, 160), source: null }; }
     })();
     if (modelActual) lastModelWire = modelActual;                       // — never overwritten with null
     // The comparison is by FAMILY (driver.config modelFamily), because `--model haiku` legitimately comes
@@ -1293,7 +1298,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
           attempt, key, agent, model,
           modelUsed: (lastModelUsed = engine.resolveModelId ? engine.resolveModelId(model) : resolveModel(model)),
           // Same billing stamp as the attempt row, written on the same terms — see the note there.
-          engine: engine.name, writeBoundary: writeBoundaryOf(engine), authMode: auth.mode, apiBilled: auth.apiBilled === true,
+          engine: engine.name, writeBoundary: writeBoundaryOf(engine), authMode: auth.mode, apiBilled: auth.apiBilled === true, cloud: auth.cloud ?? null,
           code: rt.code, wall: rt.wall, timeoutSec: effTimeout,
           // — same rename as the attempt row above. This row already carries the driver's verdict as
           // `repairOutcome` (only "repaired" is success), so it needs no `ok`; what it lacked was any mark
@@ -1637,8 +1642,8 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         //   modelMismatch — true/false when both sides name a family, null when either does not.
         // Written even on the rows where they are null, so "this engine cannot report" stays visibly
         // different from "this record predates the gauge".
-        modelActual, modelBasis, modelSnapshot, modelMismatch,
-        cliVersion: cli.version, cliVersionProbe: cli.probe, ...(cli.why ? { cliVersionWhy: cli.why } : {}),
+        modelActual, modelBasis, modelSnapshot, modelMismatch, providerReported,
+        cliVersion: cli.version, cliVersionProbe: cli.probe, ...(cli.why ? { cliVersionWhy: cli.why } : {}), cliSource: cli.source,
         // W3 billing telemetry: which engine ran + the RESOLVED billing mode (subscription vs api-key). This
         // records INTENT (the mode the engine was configured to bill under), not independent billing evidence
         // — the actual proof is the provider console (claude's stream also reports apiKeySource; codex does
@@ -1652,7 +1657,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         // "every telemetry field is written unconditionally, so 'did not happen' stays distinguishable
         // from 'not recorded'" (instrumentation-house-rule.test.mjs). A run must be able to STATE that it
         // billed subscription, not merely fail to state that it billed API.
-        engine: engine.name, writeBoundary: writeBoundaryOf(engine), authMode: auth.mode, apiBilled: auth.apiBilled === true,
+        engine: engine.name, writeBoundary: writeBoundaryOf(engine), authMode: auth.mode, apiBilled: auth.apiBilled === true, cloud: auth.cloud ?? null,
         // build 2 — THIS attempt is the fresh dispatch bought by discarding a warm session that
         // reproduced its own failure. Exact, not cumulative: a `warmEscalatedAt > 0` test would mark
         // every later attempt too the moment the ladder is deepened, and the row would stop meaning
@@ -1776,8 +1781,8 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
           event: "attempt", stage: name, attempt, of: maxRetries + 1, ok: !fail, fail: fail ?? null,
           //: the spine carries the same pair as the per-stage log, or the two disagree about what
           // ran. `model` stays the requested resolution (its existing readers); `modelActual` is the wire.
-          model: modelRequested, modelActual, modelBasis, modelSnapshot, modelMismatch,
-          cliVersion: cli.version, cliVersionProbe: cli.probe, ...(cli.why ? { cliVersionWhy: cli.why } : {}),
+          model: modelRequested, modelActual, modelBasis, modelSnapshot, modelMismatch, providerReported,
+          cliVersion: cli.version, cliVersionProbe: cli.probe, ...(cli.why ? { cliVersionWhy: cli.why } : {}), cliSource: cli.source,
           wrote, warm: warm || undefined, warmEscalated: attempt === warmEscalatedAt || undefined,
           rescued: rescued ?? undefined, killed: killed || undefined,
           quiescentMs: Number.isFinite(quiescentMs) ? Math.round(quiescentMs) : undefined,   // — see the per-stage row
@@ -1789,7 +1794,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
           // archived runs actually reads, and the question "has this box ever billed API" could not be
           // answered from it because the pair was only ever on the per-stage log. Written unconditionally,
           // like everything else here: a subscription run states `false`.
-          authMode: auth.mode, apiBilled: auth.apiBilled === true,
+          authMode: auth.mode, apiBilled: auth.apiBilled === true, cloud: auth.cloud ?? null,
           //: the spine carries the POINTER and the sha, not the text — enough to find the file and
           // to tell two attempts apart without opening either.
           dispatch: dispatch?.file ?? null, dispatchSha: dispatch?.sha ?? null,
@@ -2615,8 +2620,10 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     // applies by looking at its own ledger, and neither wastes an attempt: if the search did run, fix
     // the row's wording; if it did not, run it and append the row. Where both labels appear, both
     // sentences are sent, as before.
-    const anyUnmatched = /\[unmatched; nearest recorded:/.test(dropped);
-    const anyUnresembled = /\[no recorded query resembles this one\]/.test(dropped);
+    // Detected from the validator's own constants, never a copy of its prose: these two choose between
+    // opposite repairs, and a re-worded label with a stale matcher here keeps sending the wrong one.
+    const anyUnmatched = String(dropped).includes(CONNOTATION_UNMATCHED_MARK);
+    const anyUnresembled = String(dropped).includes(CONNOTATION_NO_RESEMBLANCE_MARK);
     hint = anyUnmatched && !anyUnresembled
       ? `these dictated meaning queries ARE recorded in ${gridLedgerName} extras.pr_risk[] under a ` +
         `different wording, which is why the driver cannot match them: ${dropped}. Do NOT re-run them — ` +

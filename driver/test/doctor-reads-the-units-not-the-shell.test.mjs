@@ -69,16 +69,22 @@ test("an OPTIONAL missing file is not a hole, but an UNRESOLVED specifier is", (
   }
 });
 
-test("%h expands to the unit's home, and later assignments win as systemd applies them", () => {
-  const r = unitEnvironment({
-    units: [{ name: "u.service", text: "EnvironmentFile=%h/.env\nEnvironment=B=from-unit C=3\n" }],
-    readEnvFile: (p) => (p === "/srv/example/.env" ? "A=1\nB=from-file\n" : null),
-    home: "/srv/example" });
-  assert.equal(r.known, true, r.why ?? "");
-  assert.equal(unitValue(r, "A").value, "1");
-  assert.equal(unitValue(r, "C").value, "3");
-  assert.equal(unitValue(r, "B").value, "from-unit",
-    "Environment= appears after EnvironmentFile= here, and systemd lets the later assignment win");
+test("%h expands to the unit's home, and a settings file wins over Environment= as systemd applies them", () => {
+  // systemd.exec(5), on EnvironmentFile=: "Settings from these files override settings made with
+  // Environment=." Where the lines sit does not change that, so both orders give the file's value.
+  for (const text of ["EnvironmentFile=%h/.env\nEnvironment=B=from-unit C=3\n", "Environment=B=from-unit C=3\nEnvironmentFile=%h/.env\n"]) {
+    const r = unitEnvironment({
+      units: [{ name: "u.service", text }],
+      readEnvFile: (p) => (p === "/srv/example/.env" ? "A=1\nB=from-file\n" : null),
+      home: "/srv/example" });
+    assert.equal(r.known, true, r.why ?? "");
+    assert.equal(unitValue(r, "A").value, "1");
+    assert.equal(unitValue(r, "C").value, "3", "a name only the unit sets keeps the unit's value");
+    assert.equal(unitValue(r, "B").value, "from-file", `the unit's own value won over the settings file's for:\n${text}`);
+  }
+  // Within one kind, a later assignment still wins.
+  const twice = unitEnvironment({ units: [{ name: "u.service", text: "Environment=B=1\nEnvironment=B=2\n" }] });
+  assert.equal(unitValue(twice, "B").value, "2");
 });
 
 test("no units at all is UNKNOWN, and says so in words a reader can act on", () => {
@@ -815,4 +821,47 @@ test("a hosted box whose units' file cannot be read says it COULD NOT LOOK, neve
       "the could-not-look must not be phrased as the absence it exists to avoid asserting");
     assert.doesNotMatch(out, /this box names itself/, "and it must not name a box either");
   } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+
+// ── THE CLIENT DOOR'S ACCESS LOG, WHICH IS THE SAME F34 PROPERTY ON A NEW SETTING ──────────────────
+//
+// `TRADEMARK_MCP_AUDIT_LOG` decides where the client door appends its record of what a key did. The
+// WRITER is the service; this command is not. So reading it from the shell would name a file the door
+// never touches, while reading as a clean check — which is the defect this whole file exists for,
+// pointed at the one setting a compliance question is answered from.
+
+test("the access log doctor names is the one the UNITS point at, not the one this shell does", () => {
+  const home = installedHome(`TRADEMARK_MCP_AUDIT_LOG=${join(tmpdir(), "f34-units-access.jsonl")}\n`);
+  const r = doctor(home, { TRADEMARK_MCP_AUDIT_LOG: join(tmpdir(), "f34-shell-access.jsonl") });
+  assert.match(r.out, /f34-units-access\.jsonl/,
+    `doctor did not name the units' access log. Output:\n${r.out}`);
+  assert.ok(!/f34-shell-access\.jsonl/.test(r.out),
+    `doctor named THIS SHELL's access log, which the door does not write to. Output:\n${r.out}`);
+});
+
+test("THE PLANT — a shell that sets the log and units that do not is a DISAGREEMENT, said out loud", () => {
+  // The units carry no override, so the door writes to its default. A reader whose shell points
+  // somewhere else would otherwise go looking in the wrong file and find nothing, which reads as
+  // "this door recorded nothing" — the exact wrong answer to an incident question.
+  const home = installedHome(GOOD_ENV);
+  const r = doctor(home, { TRADEMARK_MCP_AUDIT_LOG: join(tmpdir(), "f34-only-in-shell.jsonl") });
+  assert.match(r.out, /this shell sets TRADEMARK_MCP_AUDIT_LOG and the units do not/,
+    `doctor resolved the disagreement silently instead of naming it. Output:\n${r.out}`);
+});
+
+test("units whose environment cannot be read withhold the access log's location rather than guessing", () => {
+  // An unreadable unit environment is a could-not-look. Naming a path anyway would be a claim about
+  // where the door writes, made without having read anything that says so.
+  const home = mkdtempSync(join(tmpdir(), "f34-unreadable-"));
+  const unitDir = join(home, ".config", "systemd", "user");
+  mkdirSync(unitDir, { recursive: true });
+  for (const u of UNITS)
+    writeFileSync(join(unitDir, u), `[Service]\nEnvironmentFile=%h/.env\nExecStart=/bin/true\n`);
+  writeFileSync(join(home, ".env"), GOOD_ENV);
+  chmodSync(join(home, ".env"), 0o000);
+  const r = doctor(home);
+  chmodSync(join(home, ".env"), 0o600);
+  assert.match(r.out, /could not determine whether TRADEMARK_MCP_AUDIT_LOG is set/,
+    `doctor should report a could-not-look for the access log. Output:\n${r.out}`);
 });

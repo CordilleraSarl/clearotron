@@ -92,7 +92,7 @@ const FINDINGS = {
 };
 
 /** A run workspace laid out the way the archive lays one out: …/<matter>/<date>-<codename>. */
-function makeRun({ payloads = true, records = 0, plant = null } = {}) {
+function makeRun({ payloads = true, records = 0, plant = null, served = null } = {}) {
   const root = mkdtempSync(join(tmpdir(), "freeze-src-"));
   const runDir = join(root, "archive", "2026-01", "tmp8439-aquaplus", "2026-01-01-synthetic-fixture");
   mkdirSync(driverDir(runDir, "stage-inputs"), { recursive: true });
@@ -106,7 +106,11 @@ function makeRun({ payloads = true, records = 0, plant = null } = {}) {
   if (payloads) {
     // The things the freeze exists to leave behind.
     writeFileSync(driverDir(runDir, "run.jsonl"), '{"event":"stage"}\n');
-    writeFileSync(driverDir(runDir, "synthesis.jsonl"), '{"model":"anthropic/claude-opus-5","usage":{"input":10,"output":20}}\n');
+    // By default a turn ran and named no served model. `served` gives each turn the id the engine
+    // reported, which is what a real run's rows carry and what the report's scope line is built from.
+    writeFileSync(driverDir(runDir, "synthesis.jsonl"), served
+      ? served.map((id, i) => JSON.stringify({ ts: `2026-01-01T10:0${i}:00.000Z`, model: "anthropic/claude-opus-5", modelActual: id, usage: { input: 10, output: 20 } })).join("\n") + "\n"
+      : '{"model":"anthropic/claude-opus-5","usage":{"input":10,"output":20}}\n');
     writeFileSync(driverDir(runDir, "synthesis.attempt1.dispatch.txt"), "the prompt sent to the model\n");
     writeFileSync(driverDir(runDir, "stage-inputs", "synthesis.json"), "{}\n");
   }
@@ -147,8 +151,9 @@ test("a finished run freezes clean: allowlist carried, payloads dropped, report 
   assert.ok(!existsSync(driverDir(frozen, "synthesis.jsonl")), "telemetry dropped");
   assert.ok(!existsSync(driverDir(frozen, "synthesis.attempt1.dispatch.txt")), "dispatch payload dropped");
   assert.ok(!existsSync(driverDir(frozen, "stage-inputs")), "stage inputs dropped");
-  // The proof ran and found the rendered report identical, not merely present.
-  assert.match(r.out, /report\.html identical/, r.out);
+  // The proof ran and found the rendered report identical outright: not merely present, and not identical
+  // apart from a named difference.
+  assert.match(r.out, /report\.html identical \(\d+ bytes\)/, r.out);
   // The manifest carries only what republishRun reads as an input — no issuedAt, no engineCommit, no tokens.
   const meta = JSON.parse(readFileSync(join(out, "meta.json"), "utf8"));
   assert.deepEqual(Object.keys(meta).sort(), ["codename", "customerKey", "runId", "template"]);
@@ -158,11 +163,30 @@ test("a finished run freezes clean: allowlist carried, payloads dropped, report 
   rmSync(root, { recursive: true, force: true });
 });
 
-test("the token rollup is the ONE expected difference, and it is named rather than normalised away", () => {
+test("the pruned telemetry's two records, the token rollup and the served models, are the expected differences, each named rather than normalised away", () => {
   const { root, runDir } = makeRun();
   const r = runFreeze(runDir, join(root, "frozen"));
   assert.equal(r.code, 0, r.out);
   assert.match(r.out, /meta\.tokens differs as expected/, r.out);
+  // A turn ran and named no model: [] on the source, absent on the frozen copy, which has no rows to read.
+  assert.match(r.out, /meta\.servedModels differs as expected/, r.out);
+  rmSync(root, { recursive: true, force: true });
+});
+
+test("a run whose turns named their models: the frozen copy carries none, and each surface that showed them says so by name", () => {
+  const { root, runDir } = makeRun({ served: ["claude-opus-5", "claude-haiku-4-5-20251001"] });
+  const r = runFreeze(runDir, join(root, "frozen"), ["--keep-scratch"]);
+  assert.equal(r.code, 0, r.out);
+  assert.match(r.out, /meta\.servedModels differs as expected/, r.out);
+  assert.match(r.out, /report-data\.json identical apart from servedModels, which differs as expected/, r.out);
+  assert.match(r.out, /report\.html identical apart from the footer's served-models line, which differs as expected/, r.out);
+  // Not a vacuous note: the source really rendered the line, and the frozen copy really did not.
+  const scratch = /scratch pools kept at (\S+)/.exec(r.out)?.[1];
+  assert.ok(scratch, `the scratch pools must be kept to be read: ${r.out}`);
+  const page = (pool) => readFileSync(join(scratch, pool, "tmp8439-aquaplus-2026-01-01-synthetic-fixture", "report.html"), "utf8");
+  assert.match(page("full"), /Prepared with Claude: claude-opus-5, claude-haiku-4-5-20251001\./);
+  assert.doesNotMatch(page("frozen"), /Prepared with/);
+  rmSync(scratch, { recursive: true, force: true });
   rmSync(root, { recursive: true, force: true });
 });
 
@@ -241,10 +265,8 @@ test("an absent report.md is refused as 'could not look' (exit 2), and the refus
   rmSync(root, { recursive: true, force: true });
 });
 
-test("the republish proof CATCHES an allowlist that lost an input the renderer reads", () => {
-  // The whole point of step 5. Drive the tool with a deliberately holed allowlist and prove it notices —
-  // otherwise "the two reports matched" only ever means "the tool did not look".
-  const { root, runDir } = makeRun();
+/** The freeze script with findings.json cut from its allowlist, run over `runDir`. */
+function runHoledFreeze(root, runDir) {
   const holed = join(root, "holed-freeze.mjs");
   const src = readFileSync(SCRIPT, "utf8");
   // Drop findings.json from the allowlist. publishReport falls back to dirname(reportMd)/findings.json,
@@ -274,9 +296,28 @@ test("the republish proof CATCHES an allowlist that lost an input the renderer r
       env: pinEnvAll({ ...process.env }, { CLEAROTRON_DATABASE: process.env.CLEAROTRON_DATABASE || "corsearch" }),
     });
   } catch (e) { code = e.status ?? -1; out = `${e.stdout ?? ""}${e.stderr ?? ""}`; }
+  return { code, out };
+}
+
+test("the republish proof CATCHES an allowlist that lost an input the renderer reads", () => {
+  // The whole point of step 5. Drive the tool with a deliberately holed allowlist and prove it notices —
+  // otherwise "the two reports matched" only ever means "the tool did not look".
+  const { root, runDir } = makeRun();
+  const { code, out } = runHoledFreeze(root, runDir);
   assert.equal(code, 1, `a holed allowlist must be a finding: ${out}`);
   assert.match(out, /FINDING: .*(?:differs|publishes fewer artifacts)/, out);
   // and specifically over the delivered surface, not only over a sidecar
   assert.match(out, /report\.html differs between the source run and the frozen copy/, out);
+  rmSync(root, { recursive: true, force: true });
+});
+
+test("the CONTROL: setting the served models aside hides no other difference, on the page or in its data", () => {
+  // The key and the line are set aside by name. Were either pattern wider than its own key or paragraph,
+  // this run's real difference, the missing machine contract, would be set aside with it.
+  const { root, runDir } = makeRun({ served: ["claude-opus-5"] });
+  const { code, out } = runHoledFreeze(root, runDir);
+  assert.equal(code, 1, `a holed allowlist must be a finding: ${out}`);
+  assert.match(out, /report\.html differs between the source run and the frozen copy/, out);
+  assert.match(out, /report-data\.json differs between the source run and the frozen copy/, out);
   rmSync(root, { recursive: true, force: true });
 });

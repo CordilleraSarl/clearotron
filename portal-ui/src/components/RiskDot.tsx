@@ -52,8 +52,6 @@ function resumeWording(iso: string): string {
 export function StatusCell({
   state,
   step,
-  stepN,
-  stepTotal,
   reason,
   failedStage,
   pausedKind = null,
@@ -64,8 +62,6 @@ export function StatusCell({
 }: {
   readonly state: RunState
   readonly step: string | null
-  readonly stepN: number | null
-  readonly stepTotal: number | null
   readonly reason: string | null
   readonly failedStage: string | null
   readonly pausedKind?: 'rate-limit' | 'recovering' | 'operator' | null
@@ -178,11 +174,13 @@ export function StatusCell({
           : resetsAt
             ? `Paused by a provider limit — resumes ${resumeWording(resetsAt)}`
             : 'Paused by a provider limit — resumes on its own'
+      // THE STEP, AND NOT A COUNT OF STEPS. This read "Register sweeps · 3 of 9". The approved design
+      // draws the step alone, and the count was the part that could not be honest: the denominator is
+      // how many steps this run's plan happens to have, so the same search reads 3 of 9 and 3 of 6 on
+      // two accounts, and a reader takes it for a fraction of the work done. The run's own step count
+      // is still on the wire and Home still draws it as a row of pips, where it is a position and not
+      // a proportion.
       : step
-        ? stepN != null && stepTotal != null
-          ? `${step} · ${stepN} of ${stepTotal}`
-          : step
-        : null
 
   return (
     <span>

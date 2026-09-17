@@ -4,6 +4,35 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.3.2-beta.7
+
+### Fixed
+
+- A clearance that completed all but one or two of its local-language searches now delivers the report. Before, a single search that did not complete threw the whole clearance away, including the fifty-nine that had run. The report says which term's search was short.
+- The exported PDF no longer prints a collapsed arrow above sections that are already fully open.
+
+## 0.3.2-beta.6
+
+### New
+
+- The report a client opens has been redrawn. It opens with what was asked, then the rating with its reasons, then the conflicts. What a search is and is not is no longer narrated at length.
+- A finding's full detail shows the goods as the register recorded them, and the record's own dates. This is on a full country search.
+- A knockout report closes with what happens next. The paragraph moves out of the long read rather than being repeated.
+
+## 0.3.2-beta.5
+
+### For operators
+
+- The connector access log now records what happened to each call, and records calls that were refused as well as calls that got through. A line also names which door took the call, so a client key and a staff session can be told apart. Before, a call was recorded only as having been made, and a refused one left no line at all. `doctor` now names where that log is being written. It reads that from the service's own settings, not from the shell you are typing in.
+
+## 0.3.2-beta.4
+
+### Fixed
+
+- A multi-country search no longer refuses to start on a form that is already showing the territories it will search. When you have not chosen territories yourself, the form shows your company's own and the search uses those.
+- A new clearance form now opens with one line saying what to do. It no longer shows two warning panels about work you have not started.
+- On a phone, the list of clearances can now be scrolled sideways to read its columns. Before, the risk word was printed on top of the date and names broke in the middle of a word.
+
 ## 0.3.2-beta.3
 
 ### New

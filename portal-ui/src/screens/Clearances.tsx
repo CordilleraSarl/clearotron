@@ -1138,7 +1138,7 @@ function FamilyRows({
               <span className="status-count">{busy.text}</span>
             </span>
           ) : (
-            <StatusCell state={family.state} step={null} stepN={null} stepTotal={null} reason={null} failedStage={null} />
+            <StatusCell state={family.state} step={null} reason={null} failedStage={null} />
           )}
         </td>
         <td>{family.band ? <RiskDot tone={family.tone} label={family.band} /> : <span style={{ color: 'var(--text-faint)' }}>—</span>}</td>
@@ -1300,8 +1300,6 @@ function MarkRow({
           <StatusCell
             state={run.state}
             step={run.step}
-            stepN={run.stepN}
-            stepTotal={run.stepTotal}
             reason={run.reason}
             failedStage={run.failedStage}
             pausedKind={run.pausedKind}
@@ -1480,8 +1478,6 @@ function ReadRow({
         <StatusCell
           state={read.state}
           step={read.step}
-          stepN={read.stepN}
-          stepTotal={read.stepTotal}
           reason={read.reason}
           failedStage={read.failedStage}
           stopRequestedAt={read.stopRequestedAt}

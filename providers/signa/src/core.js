@@ -316,7 +316,7 @@ export function isSearchResponseBody(body) {
 // 21, 101, 18) and — the case that matters — an empty band answered `total_count: 0, approximate:
 // false`, an EXACT zero, which is the only kind this repository is allowed to render.
 //
-// Every approximate answer came back as exactly 10000: it is a saturation marker, not an estimate.
+// An approximate total of exactly 10000 is a saturation marker rather than an estimate.
 // The vendor is saying "at least ten thousand", and it says so on the broad sweeps (a bare owner
 // filter, `match: similar`, an unanchored `contains`) — precisely the bands a clearance cannot
 // enumerate anyway.

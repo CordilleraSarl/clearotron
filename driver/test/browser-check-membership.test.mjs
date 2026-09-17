@@ -22,10 +22,13 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
+import { publishedOf } from "../../shared/reference-guard-classes.mjs";
 
 const GUARD = "browser-check membership";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -78,21 +81,57 @@ export const browserSpawnOptions = (text) => {
   return out;
 };
 
+// ── THE POPULATION IS WHAT THIS CHECKOUT PUBLISHES, NOT WHAT IT TRACKS ────────────────────────────
+//
+// This arm judges a script against the PUBLIC `ci.yml` and the PUBLIC exemption list below. The suite
+// also runs over a bigger tree: the withheld corpus is laid back over a clone at its pre-cut paths, and
+// that overlay stages what it lays without committing it. So under the control, `scripts/` holds files
+// that exist in no public repository — and a laid script can be in neither the public workflow nor the
+// public exemption list, which made this arm permanently red there over a file the public tree does not
+// have.
+//
+// BOTH OBVIOUS REPAIRS ARE WRONG. Naming a private script in `ci.yml` or in the list below publishes a
+// private filename in the public tree. Listing this arm as a known red buries a live diagnosis, which
+// the expected-failure list's own header forbids. The right answer is that the arm was asking the wrong
+// population: a laid script is judged by the private side's own rules, not by this file.
+//
+// `publishedOf` is the discriminator and it is exact rather than a heuristic about paths — a laid path
+// is in the index and not in HEAD. It is imported rather than re-derived, because the floor and the mint
+// already read it and two spellings of "the population" is one population and one guess.
 const populations = () => {
   const byName = trackedFiles(GUARD, { root: ROOT, pathspec: CHECK_BY_NAME });
   const allScripts = trackedFiles(GUARD, { root: ROOT, pathspec: ["scripts/*.mjs"] });
   if (byName === null || allScripts === null) return null;
-  const byProperty = allScripts.filter((f) => {
+
+  // A TREE THAT CANNOT SAY WHAT IT PUBLISHED IS A COULD-NOT-LOOK, and it must not read as "nothing is
+  // laid here" — that is the permissive answer and the one that passes over a population it never
+  // narrowed. It surfaces as the same loud skip as having no checkout at all.
+  const pubName = publishedOf(byName, ROOT);
+  const pubAll = publishedOf(allScripts, ROOT);
+  if (pubName.error || pubAll.error) return { error: pubName.error ?? pubAll.error };
+
+  const byProperty = pubAll.files.filter((f) => {
     try { return DRIVES_A_BROWSER.test(readFileSync(join(ROOT, f), "utf8")); } catch { return false; }
   });
-  const union = [...new Set([...byName, ...byProperty])].sort();
-  return { byName: byName.slice().sort(), byProperty: byProperty.slice().sort(), union };
+  const union = [...new Set([...pubName.files, ...byProperty])].sort();
+  // WHICH paths were laid, not merely how many. The staleness arm below needs to tell "declared for a
+  // script nobody publishes" from "declared for a script that was deleted", and only the set can.
+  const published = new Set(pubAll.files);
+  const laidPaths = allScripts.filter((f) => !published.has(f));
+  return { byName: pubName.files.slice().sort(), byProperty: byProperty.slice().sort(), union,
+    laid: pubName.laid + pubAll.laid, laidPaths: new Set(laidPaths) };
 };
 
 const checkScripts = () => {
   const p = populations();
-  return p === null ? null : p.union;
+  if (p === null) return null;
+  if (p.error) return { error: p.error };
+  return p.union;
 };
+
+/** The skip sentence for either could-not-look: no checkout at all, or a checkout with no HEAD. */
+const cannotLook = (scripts) => (scripts === null ? skipReason(GUARD)
+  : scripts?.error ? `${GUARD} — ${scripts.error}` : null);
 
 // Invocations, from NON-COMMENT lines only. The comments in build-and-verify discuss these scripts by
 // name at length — reading them as invocations would make every one of them look wired up, which is
@@ -159,7 +198,8 @@ const CANNOT_RUN_IN_CI = [
 
 test("every browser check in scripts/ is either run by CI or declared as one that cannot be", (ctx) => {
   const scripts = checkScripts();
-  if (scripts === null) return ctx.skip(skipReason(GUARD));
+  const why = cannotLook(scripts);
+  if (why) return ctx.skip(why);
   const ci = invoked();
   const declared = new Map(CANNOT_RUN_IN_CI.map((d) => [d.path, d.why]));
   const orphans = scripts.filter((s) => !ci.has(s) && !declared.has(s));
@@ -170,7 +210,8 @@ test("every browser check in scripts/ is either run by CI or declared as one tha
 
 test("render-check is INVOKED by CI, and the exemption that kept it out is gone", (ctx) => {
   const scripts = checkScripts();
-  if (scripts === null) return ctx.skip(skipReason(GUARD));
+  const why = cannotLook(scripts);
+  if (why) return ctx.skip(why);
   assert.ok(scripts.includes("scripts/render-check.mjs"), "the script this issue is about must still exist");
 
   // This arm REPLACES an earlier "render-check is DECLARED …", which asserted the opposite and was correct
@@ -187,11 +228,23 @@ test("render-check is INVOKED by CI, and the exemption that kept it out is gone"
 
 test("no declared exemption has gone stale", (ctx) => {
   const scripts = checkScripts();
-  if (scripts === null) return ctx.skip(skipReason(GUARD));
+  const why = cannotLook(scripts);
+  if (why) return ctx.skip(why);
   const ci = invoked();
   const present = new Set(scripts);
+  // AN EXEMPTION FOR A LAID SCRIPT IS NOT A STALE ONE. The overlay that lays the withheld corpus also
+  // declares what it laid into this list — it patches `CANNOT_RUN_IN_CI` at lay time so a private script
+  // is accounted for rather than reported as running nowhere. Once the population above is narrowed to
+  // what this checkout PUBLISHES, that declared script is legitimately outside it, and reading its entry
+  // as stale would tell the overlay to delete the very declaration that keeps it honest.
+  //
+  // The distinction is exact and is why `populations()` returns the laid SET rather than a count: an
+  // entry is stale when its script is in neither the published population nor the laid one. A script
+  // genuinely deleted is in neither, and still reds.
+  const laid = populations()?.laidPaths ?? new Set();
   for (const { path, why } of CANNOT_RUN_IN_CI) {
-    assert.ok(present.has(path), `${path} is declared here and no longer exists — delete the entry`);
+    assert.ok(present.has(path) || laid.has(path),
+      `${path} is declared here and is neither published by this checkout nor laid over it — delete the entry`);
     assert.ok(!ci.has(path), `${path} is declared as unable to run in CI and ${CI_PATH} runs it — delete the entry`);
     assert.ok(why.trim().length > 40, `${path}: an exemption without a usable reason is an exemption nobody can retire`);
   }
@@ -199,7 +252,8 @@ test("no declared exemption has gone stale", (ctx) => {
 
 test("the enumeration and the invocation parse both have floors — a broken glob names itself", (ctx) => {
   const scripts = checkScripts();
-  if (scripts === null) return ctx.skip(skipReason(GUARD));
+  const why = cannotLook(scripts);
+  if (why) return ctx.skip(why);
   // An absence is a finding. Zero matched scripts, or zero parsed invocations, is the shape in which
   // this whole file silently stops asserting anything while reporting the same green.
   assert.ok(scripts.length >= 9,
@@ -239,7 +293,7 @@ const TEMP_ROOT_MODULE = "shared/browser-temp-root.mjs";
 
 test("every script that spawns a browser passes it an environment", (ctx) => {
   const p = populations();
-  if (p === null) return ctx.skip(skipReason(GUARD));
+  if (p === null || p.error) return ctx.skip(p?.error ? `${GUARD} — ${p.error}` : skipReason(GUARD));
   const faults = [];
   for (const f of p.byProperty) {
     const text = readFileSync(join(ROOT, f), "utf8");
@@ -257,7 +311,7 @@ test("every script that spawns a browser passes it an environment", (ctx) => {
 
 test("and takes that environment from the one module that owns the temp root", (ctx) => {
   const p = populations();
-  if (p === null) return ctx.skip(skipReason(GUARD));
+  if (p === null || p.error) return ctx.skip(p?.error ? `${GUARD} — ${p.error}` : skipReason(GUARD));
   // The env assertion above can be satisfied by any object. This is what stops a second, hand-rolled
   // TMPDIR appearing beside the helper — two definitions of where a browser's lock goes is one
   // definition and one imitation of it, and the imitation is whichever the reader did not run.
@@ -270,7 +324,7 @@ test("and takes that environment from the one module that owns the temp root", (
 
 test("the temp-root population has a floor — an empty one is not a clean sweep", (ctx) => {
   const p = populations();
-  if (p === null) return ctx.skip(skipReason(GUARD));
+  if (p === null || p.error) return ctx.skip(p?.error ? `${GUARD} — ${p.error}` : skipReason(GUARD));
   // Both arms above iterate `byProperty`. An empty list passes both while asserting nothing, and the
   // property matcher CAN empty itself — it reads a literal call site, so a refactor behind a helper
   // module removes every member at once.
@@ -294,7 +348,7 @@ const DEREGISTERS = /if\s*\(\s*(?:keep|has\(\s*["']keep["']\s*\))\s*\)\s*[A-Za-z
 
 test("a browser check offering --keep takes its run root out of the exit sweep", (ctx) => {
   const p = populations();
-  if (p === null) return ctx.skip(skipReason(GUARD));
+  if (p === null || p.error) return ctx.skip(p?.error ? `${GUARD} — ${p.error}` : skipReason(GUARD));
   const offering = p.byProperty.filter((f) => KEEP_FLAG.test(readFileSync(join(ROOT, f), "utf8")));
   // A FLOOR ON THE POPULATION, because the arm is vacuous over an empty one and the selector is a
   // regex over source: rename the flag and this stops looking at anything while staying green.
@@ -306,4 +360,92 @@ test("a browser check offering --keep takes its run root out of the exit sweep",
     `these offer --keep but let the exit sweep remove the root anyway:\n  ${broken.join("\n  ")}\n`
     + `Call the handle browserRun returns as \`keep\` (or removeOnExit's return) when the flag is set, `
     + `or the flag reads as working while the directory it promises goes at exit.`);
+});
+
+// ── THE DISCRIMINATOR ITSELF, DRIVEN ───────────────────────────────────────────────────────────────
+//
+// The narrowing above is the whole fix for a red this arm carried under the private control, so it is
+// driven rather than described. A laid path is in the index and NOT in HEAD — that is exact, and it is
+// what a real overlay produces: it stages what it lays and never commits it.
+//
+// Built here rather than asserted about the real tree, because the public checkout has nothing laid in
+// it: an arm that only checked `laid === 0` here would pass just as well if the discriminator had been
+// deleted.
+test("a script staged but never committed is OUT of the population, and one in HEAD is in", () => {
+  const dir = mkdtempSync(join(tmpdir(), "browser-check-laid-"));
+  try {
+    const git = (...a) => execFileSync("git", ["-C", dir, ...a], { encoding: "utf8" });
+    git("init", "-q");
+    git("config", "user.email", "t@example.test");
+    git("config", "user.name", "t");
+    mkdirSync(join(dir, "scripts"), { recursive: true });
+    writeFileSync(join(dir, "scripts", "published-check.mjs"), "// published\n");
+    git("add", "scripts/published-check.mjs");
+    git("commit", "-qm", "published");
+
+    // Laid: staged at its path and never committed, exactly as the overlay leaves it.
+    writeFileSync(join(dir, "scripts", "laid-check.mjs"), "// laid by the overlay\n");
+    git("add", "scripts/laid-check.mjs");
+
+    const tracked = git("ls-files").split("\n").filter(Boolean);
+    assert.ok(tracked.includes("scripts/laid-check.mjs"),
+      "the fixture is wrong: a staged file must be tracked, or this arm proves nothing");
+
+    const pub = publishedOf(tracked, dir);
+    assert.equal(pub.error, undefined, `publishedOf could not read HEAD: ${pub.error}`);
+    assert.deepEqual(pub.files, ["scripts/published-check.mjs"],
+      "the committed script must stay in the population");
+    assert.equal(pub.laid, 1, "the staged-not-committed script must be counted as laid and excluded");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("a tree with no HEAD is a could-not-look, never an empty population", () => {
+  // THE PERMISSIVE READING IS THE DANGEROUS ONE. A tree that cannot say what it published must not
+  // answer "nothing is laid here", because that is the answer that passes over a population never
+  // narrowed. It has to come back as an error the arms turn into a loud skip.
+  const dir = mkdtempSync(join(tmpdir(), "browser-check-nohead-"));
+  try {
+    execFileSync("git", ["-C", dir, "init", "-q"]);
+    const pub = publishedOf(["scripts/whatever-check.mjs"], dir);
+    assert.ok(pub.error, "a repository with no commit must report an error, not an empty laid count");
+    assert.equal(pub.files, undefined, "and it must not hand back a population it could not compute");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("an exemption for a LAID script is not stale, and one for a deleted script still is", () => {
+  // THE EFFECT THIS ARM EXISTS FOR, AND IT WAS FOUND THE EXPENSIVE WAY. Narrowing the population to what
+  // the checkout publishes made the overlay's OWN declaration read as stale: it patches this exemption
+  // list at lay time so a private script is accounted for rather than reported as running nowhere, and
+  // the first draft of that narrowing told it to delete the declaration that keeps it honest. The public
+  // tree could not show it — nothing is laid here — so only the paired control did.
+  //
+  // The distinction is what is asserted, not the names of today's files: an entry is stale when its
+  // script is in NEITHER the published population NOR the laid one.
+  const dir = mkdtempSync(join(tmpdir(), "browser-check-exempt-"));
+  try {
+    const git = (...a) => execFileSync("git", ["-C", dir, ...a], { encoding: "utf8" });
+    git("init", "-q");
+    git("config", "user.email", "t@example.test");
+    git("config", "user.name", "t");
+    mkdirSync(join(dir, "scripts"), { recursive: true });
+    writeFileSync(join(dir, "scripts", "published-check.mjs"), "// published\n");
+    git("add", "scripts/published-check.mjs");
+    git("commit", "-qm", "published");
+    writeFileSync(join(dir, "scripts", "laid-check.mjs"), "// laid by the overlay\n");
+    git("add", "scripts/laid-check.mjs");
+
+    const tracked = git("ls-files").split("\n").filter(Boolean);
+    const pub = publishedOf(tracked, dir);
+    const present = new Set(pub.files);
+    const laid = new Set(tracked.filter((f) => !present.has(f)));
+
+    const notStale = (path) => present.has(path) || laid.has(path);
+    assert.equal(notStale("scripts/published-check.mjs"), true, "a published script's exemption is live");
+    assert.equal(notStale("scripts/laid-check.mjs"), true,
+      "a LAID script's exemption is live — the overlay declares it on purpose, and calling it stale tells "
+      + "the overlay to delete its own declaration");
+    assert.equal(notStale("scripts/deleted-check.mjs"), false,
+      "a script in neither population is genuinely gone, and its exemption must still red — or this "
+      + "widening has bought the laid case by giving up the property the arm is for");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
 });

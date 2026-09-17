@@ -129,7 +129,7 @@ const truthy = (v) => ["1", "true", "yes", "on"].includes(String(v ?? "").trim()
  * `capturedAt` is supplied rather than read from the clock so this stays testable and so a caller can
  * stamp it from the same instant it stamps everything else.
  */
-export function buildFlagSnapshot(env, { capturedAt, registerProvider = null, registerCanCount = null, registerTerritories = undefined, engine = undefined, providers = undefined }) {
+export function buildFlagSnapshot(env, { capturedAt, registerProvider = null, registerLabel = null, registerCanCount = null, registerTerritories = undefined, engine = undefined, providers = undefined }) {
   const flags = {};
   // Written unconditionally, true or false to a count: a reader must be able to tell "this snapshot
   // tracks no flags" from "this snapshot lost its flags", and `flags: {}` alone cannot say which.
@@ -181,6 +181,12 @@ export function buildFlagSnapshot(env, { capturedAt, registerProvider = null, re
     register: registerProvider
       ? {
         provider: registerProvider,
+        // The register's own DISPLAY label ("Signa"), beside the key the engine switches on ("signa").
+        // A door that names the register to a client must not print the key, and capabilities — where
+        // the label lives — is a provider module this process may not be able to import. Same split as
+        // `territories` directly below: the writer runs in the engine environment and resolves it once.
+        // Omitted rather than guessed when the writer had none, and every reader falls back to the key.
+        ...(registerLabel ? { label: registerLabel } : {}),
         canCount: registerCanCount,
         ...(registerTerritories === undefined ? {} : { territories: registerTerritories }),
       }
@@ -335,9 +341,9 @@ export function postureDisagreement(snapshot, live) {
   // the better answer for a reader: "found" against "not found" says it without a legend.
   const found = (v) => (v === true ? "found" : v === false ? "not found" : null);
   differ("engine program", found(snapshot.engine?.binaryPresent), found(live.engine?.binaryPresent),
-    "whether a NEW search can start — the engine that last ran and this deployment do not agree that the "
-    + "engine program can be found, so one screen offers a search the other refuses. Restart the engine "
-    + "service so it re-reads its PATH, or install the CLI where the service can see it");
+    "whether a NEW search can start — the services, when they last started, and this deployment do not agree "
+    + "that the engine program can be found, so one screen offers a search the other refuses. Restart the "
+    + "services so they look again; if they still disagree, `clearotron doctor` says which side to fix and how");
 
   // Flags: compare only names BOTH sides declare, for the same reason `differ` skips absent values —
   // a build that adds a flag must not read as every older capture disagreeing with it.
@@ -423,6 +429,22 @@ export function registerTerritoriesFor(snapshot) {
   const v = snapshot.register.territories;
   if (v === null) return null;
   return Array.isArray(v) ? v.filter((n) => typeof n === "string") : undefined;
+}
+
+/**
+ * The wired register's DISPLAY label, for a sentence a client reads — `null` when the snapshot does not
+ * carry one, which every snapshot written before this shipped does not.
+ *
+ * FALLS BACK TO THE PROVIDER KEY rather than to nothing: a door that names the register is better off
+ * saying "signa" than saying nothing at all, and the caller decides whether a key is good enough to
+ * print. It is deliberately NOT title-cased on the way out — "uspto-local" title-cased is worse prose
+ * than the key, and inventing a display name is the provider module's job, not this reader's.
+ */
+export function registerLabelFor(snapshot) {
+  const l = snapshot?.register?.label;
+  if (typeof l === "string" && l.trim()) return l.trim();
+  const p = snapshot?.register?.provider;
+  return typeof p === "string" && p.trim() ? p.trim() : null;
 }
 
 /**
@@ -535,11 +557,12 @@ export async function livePosture({ env = process.env } = {}) {
   const { REGISTER_PROVIDER } = await import("./driver.config.mjs");
   const { capabilitiesFor } = await import("./register-capabilities.mjs");
   const canCount = (() => { try { return capabilitiesFor(REGISTER_PROVIDER).countProbe !== "none"; } catch { return null; } })();
+  const label = (() => { try { return capabilitiesFor(REGISTER_PROVIDER).label ?? null; } catch { return null; } })();
   const { coveredTerritoryNames } = await import("./register-coverage.mjs");
   const territories = await (async () => { try { return await coveredTerritoryNames(capabilitiesFor(REGISTER_PROVIDER)); } catch { return undefined; } })();
   const { engineInventory, providerInventory } = await import("./config-inventory.mjs");
   return buildFlagSnapshot(env, {
-    capturedAt: new Date().toISOString(), registerProvider: REGISTER_PROVIDER, registerCanCount: canCount,
+    capturedAt: new Date().toISOString(), registerProvider: REGISTER_PROVIDER, registerLabel: label, registerCanCount: canCount,
     registerTerritories: territories,
     engine: engineInventory(env), providers: providerInventory(env),
   });

@@ -58,7 +58,7 @@ import { parseNames, parseList } from '../contract/compose.ts'
 import type { Draft as Pick, EffortInput } from '../contract/composerProduct.ts'
 import {
   EMPTY_DRAFT, blockers, runCount, turnaround, turnaroundInWords, checksSummary, runsNote, machineryFor,
-  territoryMatches, addTerritory, removeTerritory, reachesTerritory, vocabularyFor, offerableFor,
+  territoryMatches, addTerritory, removeTerritory, takeOverOwnTerritories, reachesTerritory, notAvailableLine,
   inherited, composeSaved, draftFromSaved, nameBudget, missingPieces, readiness,
   chooseProduct, geographyFor, geographyNote, nativeLanguageControl, toggleNativeLanguage,
   recommendSearch, templateLine, territoryCode, joinAnd, nativeLanguageLine, firstAndMore,
@@ -168,6 +168,9 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   // NULL when the register declares no restriction; both leave the picker offering everything, and only
   // an array narrows it. Threaded rather than read inside the contract functions so those stay pure.
   const registerTerritories = searches?.kind === 'ok' ? searches.value.registerTerritories : undefined
+  // What to CALL that register in the one line above. Absent on a deployment that does not know it,
+  // and the line then names no register rather than printing the provider key.
+  const registerLabel = searches?.kind === 'ok' ? searches.value.registerLabel : undefined
   const savedSearches = searches?.kind === 'ok' ? searches.value.recipes : []
   // Unavailable until a loaded payload says otherwise — the same fail-dark rule the decoder applies,
   // repeated here so a screen drawn before the fetch lands cannot briefly offer a live button.
@@ -427,9 +430,13 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   // The rows tag it, and until the reader chooses a search themselves it is the one selected. Nothing is
   // selected on an untouched form — `recommendSearch` answers null until a name or a place is entered —
   // and nothing moves a search the reader picked, a template, or a record being edited.
+  // IT READS WHAT THE PANEL DRAWS, which is the company's own territories when the draft holds none —
+  // the same list `blockers` below is given, and for the same reason. Reading the draft alone, a form
+  // showing four countries recommended nothing and preselected nothing, because the four were never the
+  // reader's own.
   const recommendation = useMemo(
-    () => recommendSearch(levels, names.length, draft.pick.territories),
-    [levels, names.length, draft.pick.territories],
+    () => recommendSearch(levels, names.length, draft.pick.territories.length ? draft.pick.territories : own.territories),
+    [levels, names.length, draft.pick.territories, own.territories],
   )
   useEffect(() => {
     if (pickedByHand || draft.savedSearch || editingSlug || !recommendation) return
@@ -473,7 +480,8 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
       // A BRIEF THAT NAMES NO SEARCH gets the one that fits what it filled in — the same one the rows
       // tag — applied in this same write, so the receipt's Search line says which, and why. Never over
       // a search the reader chose, and never over a template, which carries its own.
-      const fits = recommendSearch(levels, parseNames(after.names).length, after.draft.territories)
+      const fits = recommendSearch(levels, parseNames(after.names).length,
+        after.draft.territories.length ? after.draft.territories : own.territories)
       if (read.product == null && !pickedByHand && !d.savedSearch && fits) {
         after = { ...after, draft: chooseProduct(after.draft, fits.product) }
       }
@@ -508,8 +516,13 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
     // GEOGRAPHY, STATED. The territory list alone could not tell "everywhere" from "I said nothing", and
     // the engine's ladder resolves the second to the account's own territories — so a screen that
     // promised worldwide ran seven countries and no field anywhere disagreed. The stamp says which.
+    //
+    // IT IS ASKED ABOUT THE SAME LIST THE PANEL DRAWS. Silence used to be stamped "worldwide", which is
+    // the one mode the company's own territories may not narrow — so a form showing four countries sent
+    // "everywhere", and the door refused the two searches that read named places while a knockout ran
+    // the world. The product and the inherited list are what tell the three states apart.
     ...(draft.pick.territories.length ? { jurisdictions: [...draft.pick.territories] } : {}),
-    geography: { mode: geographyFor(draft.pick).mode },
+    geography: { mode: geographyFor(draft.pick, activeLevel, own.territories).mode },
     ...(marketplacesApply && parseList(draft.platforms).length ? { platforms: parseList(draft.platforms) } : {}),
     // The ONE toggle in the offering, and only TRUE travels: it can add the native-language
     // investigation and can never take one away, so an explicit false would imply a suppression that
@@ -962,8 +975,28 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
                 {draft.pick.territories.length === 0 ? (
                   own.territories.length ? (
                     <>
+                      {/* THE COMPANY'S OWN, AND REMOVABLE — because the engine judges them exactly as it
+                          judges a territory the requester typed (owner's ruling, 2026-09-17). A register
+                          that cannot reach one of them refuses the search, naming it; a client who never
+                          typed that territory has to be able to take it off on this screen and carry on,
+                          so these chips carry the same mark and the same control as the named ones below.
+                          Removing one takes the whole list over as the draft's own — see
+                          takeOverOwnTerritories, and geographyFor for what taking them over and naming
+                          none then means. */}
                       {own.territories.map((t) => (
-                        <span key={t} className="chip" data-anon="mark">{t}</span>
+                        <span key={t} data-anon="mark"
+                          className={reachesTerritory(t, registerTerritories) ? 'chip' : 'chip chip-deferred'}
+                          title={reachesTerritory(t, registerTerritories) ? undefined : notAvailableLine([t], registerLabel)}>
+                          {reachesTerritory(t, registerTerritories) ? t : notAvailableLine([t], registerLabel)}
+                          <button
+                            type="button"
+                            aria-label={`Remove ${t}`}
+                            className="chip-x"
+                            onClick={() => setPick(takeOverOwnTerritories(draft.pick, own.territories, t))}
+                          >
+                            <Icon name="x" size={13} />
+                          </button>
+                        </span>
                       ))}
                       <span style={{ fontSize: 11, color: 'var(--text-faint)', alignSelf: 'center' }}>
                         {own.territoriesFrom}
@@ -978,8 +1011,8 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
                      searched; removing it from the list would be the silent narrowing this issue is
                      about, one step later. */
                   <span key={t} className={reachesTerritory(t, registerTerritories) ? 'chip chip-own' : 'chip chip-own chip-deferred'}
-                    title={reachesTerritory(t, registerTerritories) ? undefined : 'The register wired to this deployment does not reach this territory — it is disclosed in the report as deferred coverage rather than searched.'}>
-                    {t}{reachesTerritory(t, registerTerritories) ? '' : ' · register deferred'}
+                    title={reachesTerritory(t, registerTerritories) ? undefined : notAvailableLine([t], registerLabel)}>
+                    {reachesTerritory(t, registerTerritories) ? t : notAvailableLine([t], registerLabel)}
                     <button
                       type="button"
                       aria-label={`Remove ${t}`}
@@ -1010,41 +1043,32 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
                       <button
                         key={t}
                         type="button"
+                        // SHOWN, AND NOT SELECTABLE. Two of the owner's rulings meet on this control and
+                        // both are kept. It must not be ADDED, because the engine refuses a search that
+                        // names a territory the register cannot reach, and a form that composes a request
+                        // the door will reject is a form that wastes the reader's time. It must not be
+                        // HIDDEN either — he has already met that version: "nothing tells the user what
+                        // its limited to, or why", and an absent suggestion cannot be told from a typo.
+                        // So it is listed, it says why, and it does not go in. `addTerritory` refuses it
+                        // as well: this attribute is the reader's answer, that one is the rule.
+                        disabled={!reachesTerritory(t, registerTerritories)}
                         onClick={() => { setPick(addTerritory(draft.pick, t, whereLevel, registerTerritories)); setTerritoryQuery('') }}
                       >
                         {t}
-                        {/* — SHOWN AND SELECTABLE, with the reason at the
-                            control. It used to be absent, which teaches a reader nothing: they
-                            cannot tell an unsupported territory from one they mistyped. */}
                         {reachesTerritory(t, registerTerritories) ? null : (
-                          <span className="typeahead-note">register deferred</span>
+                          <span className="typeahead-note">{notAvailableLine([], registerLabel)}</span>
                         )}
                       </button>
                     ))}
                   </div>
                 ) : null}
               </div>
-              {/* ── — STATED ONCE, ON THE SCREEN THAT CHOOSES AGAINST IT ──
-                  "A reader choosing territories is choosing against a coverage map they cannot
-                  currently see." This is that map, in one line and in the reader's own vocabulary.
-                  Rendered only where there is something to say: a register that declares no
-                  restriction, or a server that has not told us, has no coverage map to state, and a
-                  line saying so would be noise on every deployment. It names no vendor — one
-                  register, never a baked-in provider name — because what a reader can act on is the
-                  reach, not the brand. */}
-              {Array.isArray(registerTerritories) ? (
-                // BOTH FIGURES ARE SCOPED TO THE PRODUCT, which is what `registerTerritories.length`
-                // alone would get wrong: a Full country search can name no regions, so a region the
-                // register covers is not one of "the territories you can name here".
-                <p className="section-hint" style={{ marginTop: 10 }}>
-                  The trademark register wired to this deployment reaches{' '}
-                  {vocabularyFor(whereLevel, registerTerritories).length} of the{' '}
-                  {offerableFor(whereLevel).length} territories you can name here:{' '}
-                  {vocabularyFor(whereLevel, registerTerritories).join(', ')}. Anywhere else can
-                  still be ordered — it is disclosed in the report as deferred coverage rather than
-                  searched at the register.
-                </p>
-              ) : null}
+              {/* THE COVERAGE PARAGRAPH IS GONE, and this note is here so nobody reinstates it.
+                  It stated how many of the territories on offer the register reaches, which was worth
+                  saying only while the form offered territories the register cannot search. It no
+                  longer does — the offering is the reach — so a paragraph explaining the gap would be
+                  explaining a gap that is not there. Owner's ruling, 2026-09-17: the only thing said
+                  about an unreachable territory is the one line on the thing itself. */}
               {/* ONE COUNTRY REPLACES, it does not stack — so the note says what just happened rather
                   than leaving the reader to notice a chip disappear. */}
               {whereLevel?.geography === 'exactly one country' && draft.pick.territories.length === 1 ? (
@@ -1548,6 +1572,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
         <ReviewDialog
           uses={runCount(effort)}
           left={searchesLeft(usage)}
+          registerLabel={registerLabel}
           plan={plan}
           busy={busy}
           owner={ownerLabel}
@@ -2104,9 +2129,16 @@ function PickRow({
  */
 function ReviewDialog({
   plan, busy, owner, project, names, goods, nativeOn, onStart, onBack, failure, onReview, uses, left,
+  registerLabel,
 }: {
   readonly plan: Plan
   readonly busy: boolean
+  /**
+   * What to call the wired register in the one line this dialog shows for a territory it cannot search.
+   * Absent where the deployment does not know it, and the line then names no register — the same rule
+   * the chips on the form behind this dialog follow, because it is the same line.
+   */
+  readonly registerLabel?: string | undefined
   /** How many of the day's searches this request spends. */
   readonly uses: number
   /** How many are left before it, or null when the account is uncapped or the usage could not be read. */
@@ -2174,11 +2206,11 @@ function ReviewDialog({
               <>
                 {plan.coverage.reached.length ? joinAnd(plan.coverage.reached) : 'None'}
                 {plan.coverage.missing.length ? (
-                  <Muted>
-                    . {joinAnd(plan.coverage.missing)} {plan.coverage.missing.length === 1 ? 'is' : 'are'} not
-                    reached by the register wired here, and will be disclosed in the report as deferred
-                    coverage rather than searched.
-                  </Muted>
+                  // THE SAME LINE THE CHIPS CARRY, composed by the same function. This row used to
+                  // promise that anything unreached would be ordered and disclosed in the report as not
+                  // searched; the engine refuses such a search now, so that promise would be one the
+                  // product no longer keeps — on the last screen before the reader spends a search.
+                  <Muted>. {notAvailableLine(plan.coverage.missing, registerLabel)}</Muted>
                 ) : null}
               </>
             ) : places.length ? joinAnd(places) : 'Worldwide'}

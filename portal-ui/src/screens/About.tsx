@@ -122,10 +122,11 @@ export function About() {
                 does not. */}
             <dt>Model access</dt>
             <dd>
-              This runs on your own model access — a subscription or your own API key — and the paid registers
-              on your own agreements with those providers. The reasoning stages are a proprietary third-party
-              CLI that you install and license under that vendor&rsquo;s own terms; this licence grants nothing
-              over any of them.
+              This runs on your own model access — a subscription, an API key, or your own cloud account — and
+              the paid registers on your own agreements with those providers. The reasoning stages are a
+              third-party command-line program, Claude Code (proprietary) or the Codex CLI (Apache-2.0), that
+              you install and license under that vendor&rsquo;s own terms; this licence grants nothing over any
+              of them.
             </dd>
 
             {/* The mark is NOT licensed with the code, and this is the surface where someone reads the

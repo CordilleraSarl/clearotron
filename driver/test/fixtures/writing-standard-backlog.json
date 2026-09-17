@@ -6,7 +6,7 @@
     "eyebrow-heading",
     "restating-lede"
   ],
-  "total": 12,
+  "total": 5,
   "files": {
     "driver/publish/pool-admin.mjs": [
       1,
@@ -17,15 +17,8 @@
     ],
     "driver/publish/render-knockout.mjs": [
       0,
-      2,
-      6,
       0,
-      0
-    ],
-    "driver/publish/render.mjs": [
-      0,
-      0,
-      3,
+      4,
       0,
       0
     ]

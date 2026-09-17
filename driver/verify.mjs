@@ -10,10 +10,11 @@
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { dirname, join, basename } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
-import { findReceiptViolations, findGridLedgerViolations, findPlatformIdentityViolations, parsePrRiskQueries, MEANING_SEAT } from "./common-law-receipts.mjs";
+import { findReceiptViolations, findGridLedgerViolations, findPlatformIdentityViolations, parsePrRiskQueries, MEANING_SEAT, erroredConnotationQueriesAmong } from "./common-law-receipts.mjs";
 // Conversion 2 — the discriminator the two rulings above key on. PURE-ish: one existsSync-shaped read.
 import { matterFrameWasRecorded, frameRatifiedForms } from "./matter-frame-record.mjs";
-import { findConnotationViolations, parsePrRiskResults, MEANING_ANGLES_RE,
+import { findConnotationViolations, parsePrRiskResults, prRiskPopulation,
+  CONNOTATION_UNMATCHED_MARK, CONNOTATION_NO_RESEMBLANCE_MARK, MEANING_ANGLES_RE,
   parseDispositionForm, CONNOTATION_UNRULED_REASONS, queryKey } from "./connotation-search.mjs";
 import { formSidecarName, formSidecarPath } from "./disposition-union.mjs";
 // B — the transport's own four failure states. The audit reads the run's records; this file locates them.
@@ -366,6 +367,13 @@ function commonLawMeaningSeat(p, c) {
   let recordedRaw;
   try { recordedRaw = parsePrRiskResults(ledgerRaw).map((e) => String(e?.query ?? "")); }
   catch (e) { return fail(`grid_ledger_unparseable:${String(e.message).slice(0, 80)}`); }
+  // THE REFUSAL NAMES THE FILE IT JOINED AGAINST, because "recorded" is not one question in a run.
+  // A run answers "what did this half record" in four places that each mean something different — this
+  // results ledger, its gap rows, the obligations sidecar, and the final-state receipts audit — and a
+  // sentence that says only "recorded" invites a reader to answer from whichever they happen to open.
+  // Two readers did exactly that on one clearance and reached three different wrong mechanisms, each
+  // from a true measurement of a real record.
+  const LEDGER = `common-law-grid.half-${MEANING_SEAT}.json`;
   const recordedQ = new Set(recordedRaw.map(queryKey));
   const dropped = dictated.filter((q) => !recordedQ.has(queryKey(q)));
   if (dropped.length) {
@@ -414,13 +422,49 @@ function commonLawMeaningSeat(p, c) {
     // The gate cannot tell the two apart and is not being asked to. There is no identity to join on —
     // that is the entire reason the dictated-versus-recorded comparison exists. So the label states the
     // observation, the remedy carries both cases, and no threshold decides which one a seat is told.
+    // ── A QUERY THE PROVIDER REFUSED IS NOT A QUERY NOBODY RAN ────────────────────────────────────
+    //
+    // The plugin's contract is to append `<query> | connotation | <exception>` to the ledger's gaps and
+    // carry on, so a query it threw on says so IN THE FILE THIS GATE JUST READ. The gate did not look:
+    // it refused on receipt membership alone, and a query the provider had already refused got the same
+    // sentence as one nobody ever issued — the two repairs, "edit the wording" and "run it", neither of
+    // which is the remedy when the provider itself declined.
+    //
+    // It still FAILS, and deliberately: `findErroredConnotationQueries` says so in its own words —
+    // laundering an honest error into a clean receipt would be a worse defect than this one. What
+    // changes is only what the seat is told, and therefore how many attempts it spends being told the
+    // wrong thing. On the clearance that prompted this, the half failed eight attempts across two
+    // recovery cycles.
+    //
+    // The missing list is THIS gate's own, joined per half on `queryKey`; the helper joins gap rows on
+    // `norm`, which is the one author of what a gap row names. Two populations, one key.
+    let ledgerParsed = null;
+    try { ledgerParsed = JSON.parse(ledgerRaw); } catch { /* unparseable was refused above */ }
+    const gapRows = (Array.isArray(ledgerParsed) ? ledgerParsed : [ledgerParsed])
+      .flatMap((b) => (Array.isArray(b?.gaps) ? b.gaps : []));
+    const reportedError = new Map(
+      erroredConnotationQueriesAmong(dropped, { gaps: gapRows }).map((e) => [e.query, e.error]));
+    // AND IT SAYS WHEN THE READER REDUCED WHAT IT READ. `parsePrRiskResults` folds rows onto the raw
+    // query text, so its output is smaller than the ledger whenever a query was recorded twice. Every
+    // count taken during one evening's diagnosis was post-fold and nobody had named the raw population,
+    // which made "the seat wrote 59 rows" and "59 survived the fold" the same number and different
+    // facts: one query recorded twice while another was skipped reads exactly like one simply skipped.
+    const pop = prRiskPopulation(ledgerRaw);
+    const foldNote = pop.repeated > 0
+      ? ` (${LEDGER} carries ${pop.rows} row(s) that fold to ${pop.distinct} distinct query(ies): `
+        + `${pop.repeated} repeat a query already counted, so a repeat here may stand where a dictated query is missing)`
+      : "";
     const parts = dropped.slice(0, 3).map((q) => {
+      const reported = reportedError.get(q);
+      // Named separately because the remedy is different: the search was attempted and the provider
+      // declined it, so re-running it unchanged is the one repair that cannot work.
+      if (reported) return `${abbrev(q, 40)} [not recorded in ${LEDGER} because the provider REPORTED an error on it: ${abbrev(reported, 60)}]`;
       const n = nearest(q);
       return n
-        ? `${abbrev(q, 40)} [unmatched; nearest recorded: ${abbrev(n, 40)}]`
-        : `${abbrev(q, 40)} [no recorded query resembles this one]`;
+        ? `${abbrev(q, 40)} ${CONNOTATION_UNMATCHED_MARK} ${abbrev(n, 40)}] in ${LEDGER} — that is evidence a query LIKE it was recorded there, not that these two are the same query`
+        : `${abbrev(q, 40)} ${CONNOTATION_NO_RESEMBLANCE_MARK} in ${LEDGER}, which is the only file this gate joins against`;
     });
-    return fail(`connotation_query_unrecorded:${parts.join(",")}${dropped.length > 3 ? ` (+${dropped.length - 3} more)` : ""}`);
+    return fail(`connotation_query_unrecorded:${parts.join(",")}${dropped.length > 3 ? ` (+${dropped.length - 3} more)` : ""}${foldNote}`);
   }
   if (spec?.connotation?.disposition_required === true) {
     const recorded = parsePrRiskResults(ledgerRaw);

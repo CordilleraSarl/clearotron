@@ -41,7 +41,9 @@
 import { resolveEffectiveProfile, recipeProseGuard, platformEntryErrors } from "./profiles.mjs";
 import { wantsPortalRoute, PORTAL_ROUTE_UNAVAILABLE } from "./enqueue-schema.mjs";
 import { gateResolvedPolicy, loadRecipes } from "./search-policy.mjs";
-import { readFlagSnapshot, registerTerritoriesFor } from "./flag-snapshot.mjs";
+import { resolveTerritories } from "./effective-scope.mjs";
+import { uncoveredTerritories, registerReachRefusal } from "./register-coverage.mjs";
+import { readFlagSnapshot, registerTerritoriesFor, registerLabelFor } from "./flag-snapshot.mjs";
 import { config } from "./driver.config.mjs";
 import { resolveRequest } from "./resolve-request.mjs";
 import { checkResolvedProduct } from "./scope-rules.mjs";
@@ -56,10 +58,14 @@ import { checkResolvedProduct } from "./scope-rules.mjs";
  * `readable` says whether the profile store answered at all — the input `checkClearanceScopeRules`
  * needs to tell "this account has no default territories" apart from "we could not read the account".
  */
-/** The wired register's covered territories, read once per gate call. Never throws: a door that cannot
- *  read the snapshot must still open. */
-function snapshotTerritories() {
-  try { return registerTerritoriesFor(readFlagSnapshot(config.poolRootOrNull)); } catch { return undefined; }
+/** The wired register as a door needs it: what it covers, and what to CALL it in a sentence a client
+ *  reads. One read, both answers. Never throws — a door that cannot read the snapshot must still open,
+ *  and `territories: undefined` is the fail-open answer every layer below already speaks. */
+function snapshotRegister() {
+  try {
+    const snap = readFlagSnapshot(config.poolRootOrNull);
+    return { territories: registerTerritoriesFor(snap), label: registerLabelFor(snap) };
+  } catch { return { territories: undefined, label: null }; }
 }
 
 export function resolveForDoor(job) {
@@ -92,8 +98,12 @@ export function resolveForDoor(job) {
  *          products.mjs and search-policy.mjs, for every door.
  */
 export function gateResolvedRequest({ job = null, profile = null, resolved = null, readable = true } = {},
-  { availability = true, registerTerritories = undefined } = {}) {
+  { availability = true, registerTerritories = undefined, registerLabel = undefined } = {}) {
   const out = { errors: [], warnings: [], byCheck: {} };
+  // Read at most once per gate call, and not at all when both arms were given their answer — a test
+  // driving a Signa-shaped deployment must not need a snapshot on disk to do it.
+  let snapshot;
+  const register = () => (snapshot ??= snapshotRegister());
   // A resolution that could not be taken is not a refusal — see the fail-open note in the header.
   if (!resolved) return out;
   // A CLARIFY IS RELAYED VERBATIM. It is already an actionable sentence naming the selector that could
@@ -114,9 +124,33 @@ export function gateResolvedRequest({ job = null, profile = null, resolved = nul
     //
     // `undefined` is the fail-open answer at every layer below, so an unreadable or absent snapshot
     // leaves this arm silent and the runner's wall still decides — the door rule stated in the header.
-    const terr = registerTerritories !== undefined ? registerTerritories : snapshotTerritories();
+    const terr = registerTerritories !== undefined ? registerTerritories : register().territories;
     const gateMsg = gateResolvedPolicy(resolved, { registerTerritories: terr });
     if (gateMsg) { out.errors.push(gateMsg); return out; }
+  }
+  // ── A TERRITORY THIS REQUEST NAMES THAT THE WIRED REGISTER CANNOT SEARCH ──────────────────────────
+  //
+  // OUTSIDE the availability block, and that placement is the whole correctness of this arm. The portal
+  // and plan_run pass `availability:false` because they word an unavailable PRODUCT in their own words
+  // (the header's staff-prose split) — so an arm written inside that block cannot fire at the two doors
+  // a client actually orders through, and it would fail to fire SILENTLY, green, on the case the ruling
+  // of 2026-09-17 is about. This refusal carries no switch name and no internal key, so unlike the
+  // availability twin it is the same sentence on every surface and needs no client-facing rewording.
+  //
+  // THE TERRITORIES ARE RESOLVED HERE, NOT THREADED IN. `resolveTerritories` is the same ladder
+  // effective-scope.mjs runs for the scope a door prints beside this refusal, so the two cannot
+  // disagree. Asking each of the six doors to pass its own scope would let one forget the argument and
+  // fail open in silence — the exact shape `register-coverage-doors.test.mjs` exists to catch one layer
+  // up. One call, in the one gate they all share, covers every door by construction.
+  //
+  // Fail-open on a throw, the door's rule: an unreadable profile store must not stop somebody searching.
+  {
+    let named = [];
+    try { named = resolveTerritories(job ?? {}, profile, resolved?.recipeScope ?? null).jurisdictions ?? []; } catch { named = []; }
+    const terr = registerTerritories !== undefined ? registerTerritories : register().territories;
+    const label = registerLabel !== undefined ? registerLabel : register().label;
+    const refusal = registerReachRefusal(uncoveredTerritories(named, terr), label);
+    if (refusal) { out.errors.push(refusal); return out; }
   }
   const gates = checkResolvedProduct({ job, profile, resolved, profileReadable: profile !== null && readable });
   out.errors.push(...gates.errors);

@@ -34,7 +34,7 @@
 //     it beats a number that is right for one shape and wrong for the other. See
 //     OWNER_SCOPED_WINDOW below, which is the machine-readable half.
 //
-//     What IS observed about the total is separate: it saturates at 10000 and flags itself
+//     The total is a separate matter: it saturates at 10000 and flags itself
 //     approximate there — a fact about the count, not about the window.
 //
 // PURE: no node imports, no vendor HTTP.
@@ -129,7 +129,7 @@ export const CAPABILITIES = Object.freeze({
   classFilter: "native",
   // Search rows already carry status / nice_classes / owner_name → screening is inline, zero extra calls.
   screenSource: "search-row",
-  // No documented or observed hard result ceiling, and no total to compare one against.
+  // No hard result ceiling, and no total to compare one against.
   resultCeiling: null,
 
   // ── the predicates, and WHICH REQUEST SHAPE each one rides ──────────────────────────────────────
@@ -247,10 +247,9 @@ export const CAPABILITIES = Object.freeze({
   // `legacy_code`. asks for `code` to be primary, and it now is, in the one place it decides
   // anything: `SIGNA_OFFICE_CODES` is what a reader and a future translate() should reach for.
   //
-  // THE MIGRATION IS NOT URGENT AND THE REASON IS MEASURED, not assumed. All eleven legacy keys were
-  // sent to the live wire beside their ISO codes, and every pair returned an identical
-  // total (cipo/CA 83, euipo/EM 80, inpi-fr/FR 19, ipau/AU 72, ipi/CH 46, ipos/SG 58, nipo/NO 42,
-  // prv/SE 22, ukipo/GB 96, uspto/US 169, wipo/WO 68). Nothing on the wire moves if `translate` keeps
+  // THE MIGRATION IS NOT URGENT, AND THE REASON IS A PROPERTY OF THE REGISTER rather than a guess:
+  // each legacy key and its ISO code address the same office, so the two spellings are interchangeable
+  // for every office this deployment reaches. Nothing on the wire moves if `translate` keeps
   // emitting keys, so it does — a vocabulary swap under the executor buys nothing and risks a live
   // office lookup.
   //

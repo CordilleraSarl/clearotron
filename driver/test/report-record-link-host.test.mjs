@@ -108,10 +108,11 @@ overall_caption: Synthetic single-purpose fixture for the #775 rendered-link reg
 
 # Summary
 Synthetic fixture. The one thing this document is for is the hosts its anchors name.
+Prose citation, which is the synthesis writing markdown and not a record field:
+[an office page](${EV.prose}).
 
 # Methodology
-The register was searched. Prose citation, which is the synthesis writing markdown and not a record field:
-[an office page](${EV.prose}).
+The register was searched.
 
 # Coverage
 Synthetic coverage panel.
@@ -200,6 +201,20 @@ async function publishAs(providerId, { findings = null, records = null, tag = pr
 /** Every `<a …>` open tag with its href, as written. */
 const anchorsOf = (html) => [...html.matchAll(/<a\b[^>]*\shref="([^"]*)"[^>]*>/gi)].map((m) => ({ tag: m[0], href: m[1] }));
 
+// THE PROSE CITATION MOVED SECTIONS, AND WHY THAT IS NOT THE GUARD GOING SOFT. It was written under
+// `# Methodology`, and the report no longer draws that section: what a run could not reach is stated as
+// the counts and the left-open rows of "What was searched", which say it per item and in more detail
+// than the paragraph did (the 2026-09-16 report redesign, and the design's "counts only" rule for that section).
+// `# Summary` is a prose section the design keeps, its markdown goes through the same inline renderer,
+// and the invariant these arms hold — an evidence URL the synthesis wrote in prose reaches the reader
+// exactly as found — is the same one either way. The arm below pins the section's absence, so the move
+// is recorded as a decision rather than left to look like a fixture that drifted.
+test("the Methodology section is off the page, so no prose there reaches a reader", async () => {
+  const html = await publishAs("euipo", { tag: "methodology" });
+  assert.ok(!html.includes("The register was searched."),
+    "a run whose synthesis writes under # Methodology has that paragraph drawn nowhere");
+});
+
 const covered = [];
 
 for (const id of Object.keys(PROVIDERS)) {
@@ -211,8 +226,12 @@ for (const id of Object.keys(PROVIDERS)) {
     // The strict parse must be the one that ran. A schema slip drops publishReport into its LENIENT
     // branch, which quarantines the offending finding and renders a degraded document — and every
     // assertion below would then be judging a page that never had the links in it. Counted from the
-    // per-finding audit ref, which the renderer emits for every card whether or not it carries a link.
-    const cards = [...html.matchAll(/audit ref F\d+/g)].length;
+    // per-finding card ANCHOR, which the renderer emits for every card whether or not it carries a link.
+    // It counted "audit ref F<n>" until that marker went: the audit reference is the engine's handle for
+    // a finding and no longer prints on a client's card. The property counted is the same one — a marker
+    // per rendered finding — but a counter keyed to a string the product stopped emitting reads every
+    // document as quarantined, which is exactly what it did.
+    const cards = [...html.matchAll(/<div class="card[^"]*" id="c\d+">/g)].length;
     assert.equal(cards, 2,
       `${id}: ${cards} of the fixture's 2 findings rendered — publish fell into the lenient/quarantine ` +
       `branch, so everything below would be judging a degraded document`);

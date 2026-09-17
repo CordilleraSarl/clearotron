@@ -24,10 +24,19 @@
 //   · a legacy sidecar still yields its conditions      → break: require the clauses key, arm 3 red
 //   · clauses shorter than reasons loses nothing        → break: map over clauses, arm 4 red
 //   · the lint sees what the surface renders            → break: read either array directly, arm 6 red
+//   · a pre-split reason renders as the lawyer's       → break: return the reason, arm 7 red
+//   · one composer serves both entry points            → break: spell the sentence twice, arm 8 red
+//   · a reason nobody can render leaves a trace        → break: drop it silently, arm 9 red
+//
+// THE DROP IS THE PART TO READ TWICE. A token-bearing reason with no clause and no composable sentence
+// no longer reaches the page — which also stops the voice lint flagging it, because the page is clean.
+// That is a gap closed and a disclosure closed with it, and only the second check tells them apart. So
+// arm 9 asserts the POPULATION as well as the absence: a `clientConditions` that returned nothing at
+// all would satisfy "the token is gone" and is the defect, not the fix.
 import { test } from "node:test";
 process.env.CLEAROTRON_MCP_URL ||= "https://mcp.test/mcp";
 import assert from "node:assert/strict";
-import { clientConditions } from "../terminal-clamp.mjs";
+import { clientConditions, clauseForDefect, clauseFromReason, unrenderableConditions, ENGINE_TOKEN_RE } from "../terminal-clamp.mjs";
 import { clientConditionVoiceChecks } from "../predelivery-lint.mjs";
 import { clearanceReportData } from "../publish/report-data.mjs";
 
@@ -76,12 +85,63 @@ test("the report's own client conditions take the clause", () => {
 
 test("the lint reads what the surface renders, in both directions", () => {
   // A DIFFERENT TOKEN from the arms above: if the check only ever saw floor_duty it would be a string
-  // match wearing a rule's name.
+  // match wearing a rule's name. THE ROUTE CHANGED AND THE PROPERTY DID NOT. A token-bearing reason with
+  // no clause is now dropped before it renders, so the surface a lint can flag is reached by a STORED
+  // clause carrying a token — the machinery sites push free text as their own clause and nothing on that
+  // path passes through `terminalClampDecision`. Planting the old route here would drive a surface that
+  // no longer exists and pass whatever the lint did.
   const reason = "records_unscreened:12 of 88 rows — the band gave the seat nothing to name";
   const clause = "12 of the 88 records read were not individually screened in this report";
-  const legacy = clientConditionVoiceChecks({ verdictDoc: { reasons: [reason] } });
-  assert.equal(legacy[0].pass, false, "a delivered condition carrying an engine identifier passed the lint");
-  assert.match(legacy[0].detail, /records_unscreened:12/, "the flag does not name the identifier it found");
+  const fused = clientConditionVoiceChecks({ verdictDoc: { reasons: [reason], clauses: [reason] } });
+  assert.equal(fused[0].pass, false, "a delivered condition carrying an engine identifier passed the lint");
+  assert.match(fused[0].detail, /records_unscreened:12/, "the flag does not name the identifier it found");
   const fixed = clientConditionVoiceChecks({ verdictDoc: { reasons: [reason], clauses: [clause] } });
   assert.equal(fixed[0].pass, true, "the lint still flags a run whose conditions now read the clause — it is not reading the surface");
+});
+
+test("a pre-split reason renders as the lawyer's sentence, not as the run record", () => {
+  // The defect this file is named for, on the run shape that actually produced it: an archived run
+  // carries reasons and no clauses, and its report is republished from that sidecar unchanged.
+  const out = clientConditions({ reasons: [TOKEN_REASON] });
+  assert.equal(out.length, 1, "the condition was dropped — a reason whose sentence IS composable must still reach the client");
+  assert.equal(out[0], clauseForDefect("floor_duty_undischarged", 4, 430),
+    "the republished sentence is not the one the clamp site composes for a fresh run");
+  assert.ok(out[0].startsWith(TOKEN_CLAUSE), "the composed sentence is not the clause the clamp site writes");
+  assert.doesNotMatch(out[0], /floor_duty_undischarged/, "the client's condition still opens with the engine's identifier");
+});
+
+test("one composer serves the clamp site and the republish path", () => {
+  // TWO ENTRY POINTS, ONE SENTENCE. The clamp site has the counts; the republish path has only the
+  // reason. A second spelling of either sentence would drift, and both surfaces would still render —
+  // only a reader holding a fresh run beside a republished one would ever see it.
+  for (const [defect, n, m, reason] of [
+    ["floor_duty_undischarged", 4, 430, TOKEN_REASON],
+    ["synthesis_unaccounted_delivered", 2, 17, "synthesis_unaccounted_delivered:2 of 17 record(s) reached the findings surface and the delivered document accounts for none of them"],
+  ]) {
+    const fromCounts = clauseForDefect(defect, n, m);
+    assert.ok(fromCounts, `${defect} has no sentence in the clause authority`);
+    assert.equal(clauseFromReason(reason), fromCounts, `${defect}: the republish path composes a different sentence from the clamp site`);
+    // THE MODULE'S OWN SHAPE, not a second spelling of it: a narrowing of `ENGINE_TOKEN_RE` would
+    // never reach a copy written here, and this arm would go on passing against the old definition.
+    assert.doesNotMatch(fromCounts, ENGINE_TOKEN_RE, `${defect}: the composed client sentence carries an engine identifier`);
+  }
+});
+
+test("a reason nobody can render is dropped from the page and reported to the operator", () => {
+  // THE POPULATION IS ASSERTED, NOT ONLY THE ABSENCE. "The token is gone" is also true of a function
+  // that returns nothing at all, which is why the clean condition rides along and is checked by name.
+  const unknown = "records_unscreened:12 of 88 rows — the band gave the seat nothing to name";
+  const doc = { reasons: [ASK_REASON, unknown] };
+  const out = clientConditions(doc);
+  assert.deepEqual(out, [ASK_REASON], "the surviving condition went too — this drops more than the unrenderable one");
+  assert.deepEqual(unrenderableConditions(doc), [unknown], "the dropped condition is not reported, so the disclosure closed silently");
+  const checks = clientConditionVoiceChecks({ verdictDoc: doc });
+  assert.equal(checks[0].pass, true, "the page is clean and the voice check says otherwise");
+  const droppedCheck = checks.find((c) => c.id === "client-condition-dropped");
+  assert.ok(droppedCheck, "no check reports a condition that reached no client surface");
+  assert.equal(droppedCheck.pass, false, "a condition that reaches nobody passed the lint");
+  assert.match(droppedCheck.detail, /records_unscreened:12/, "the flag does not name the condition it lost");
+  // The clean run says nothing — a check that fires on every run is not a measurement.
+  const clean = clientConditionVoiceChecks({ verdictDoc: { reasons: [ASK_REASON] } });
+  assert.equal(clean.find((c) => c.id === "client-condition-dropped").pass, true, "the dropped check fires on a run that dropped nothing");
 });

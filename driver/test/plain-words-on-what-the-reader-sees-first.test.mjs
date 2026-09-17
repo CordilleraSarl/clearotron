@@ -246,7 +246,12 @@ test("every field a reader meets without clicking is a field the reviewer reads"
     ["mitigation",       (m) => { m.mitigation = `The proprietor ${MARKER}.`; }],
     ["factors",          (m) => { m.factors = [`The proprietor ${MARKER}.`]; }],
     ["counterFactors",   (m) => { m.counterFactors = [`The proprietor ${MARKER}.`]; }],
-    ["purpleNotes",      (m) => { m.purpleNotes = [`The proprietor ${MARKER}.`]; }],
+    // `purpleNotes` was a row here until the reviewer's notes came off the delivered page entirely
+    // (owner, 2026-09-16). It is not moved to the folded side of the partition: a field that renders
+    // NOWHERE is neither visible nor folded, and the third fact below would refuse it — correctly,
+    // because a row proving nothing is worse than no row. What replaces it is the arm in
+    // the-report-carries-what-the-assessment-wrote.test.mjs, which drives the absence from the page and
+    // the presence in the record together.
     ["a finding's net",  (m) => { m.findings = [{ ordinal: 1, name: "N", net: `The proprietor ${MARKER}.` }]; }],
     ["assessment",       (m) => { m.assessment = `The proprietor ${MARKER}.`; }],
     ["a finding's basis",(m) => { m.findings = [{ ordinal: 1, name: "N", net: "Plain.", basis: `The proprietor ${MARKER}.` }]; }],

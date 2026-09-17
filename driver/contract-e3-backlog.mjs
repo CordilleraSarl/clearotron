@@ -185,7 +185,7 @@ export const E3_BACKLOG = [
     // it one: authored once in renderConnotationObligations, and reaching the seat through the perplexity
     // MCP server (driver/engine/mcp/perplexity-server.mjs:111) rather than a stage message. Three rows
     // pointing at one block would fabricate two authored sites the surface does not have.
-    where: "driver/connotation-search.mjs:1435-1448 (renderConnotationObligations; delivered to the seat via driver/engine/mcp/perplexity-server.mjs:111 — a TOOL RESPONSE, no longer a stage message)",
+    where: "driver/connotation-search.mjs:1480-1493 (renderConnotationObligations; delivered to the seat via driver/engine/mcp/perplexity-server.mjs:111 — a TOOL RESPONSE, no longer a stage message)",
     surface: "tool-response",
     // ── (a) THE ORIGINAL SUBJECT WAS DELETED BY DESIGN — DISCHARGED, NOT FAILED ────────────────────
     // The old rows dictated `receipt_id` (an 8-char token the seat copied) and `quote`. Both are gone:
@@ -488,7 +488,7 @@ export const E3_BACKLOG = [
     where: "driver/stages.mjs:3235",
     surface: "stage-message",
     evidence: "- meters: {\"mark_similarity\":{...},\"goods_proximity\":{...},\"use\":{...},\"enforcer\":{...}} — all four present, each {\"token\",\"basis\",\"source\"}. … mark_similarity = high | medium | low. goods_proximity = high | medium | low. enforcer = high | medium | low | unknown. use = confirmed | not-confirmed | un",
-    reparsedBy: "driver/findings-model.mjs:813 parseFindingsJson; driver/verify.mjs:1127 checkFindingsSibling gates meters.*.source; finding_basis_source_missing",
+    reparsedBy: "driver/findings-model.mjs:813 parseFindingsJson; driver/verify.mjs:1171 checkFindingsSibling gates meters.*.source; finding_basis_source_missing",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   {
@@ -684,7 +684,7 @@ export const E3_BACKLOG = [
     // because an un-anchorable row lands in the NOT-CHECKED slice, and that is coverage lost rather than
     // a pass.
     evidence: "is ONE of coverage-disposition | fact | rating | narrative — pick the one your own legal read says the correction IS: coverage-disposition (a coverage row / disposition placement is wrong or dishonest)",
-    reparsedBy: "driver/verify.mjs:804 CORRECTION_KIND_RE = /\\[kind:\\s*([a-z][a-z-]*)\\s*\\]/i → parseCorrectionKinds (verify.mjs:1026), consumed in pipelineInner() in pipeline.mjs for the run.jsonl `correction-kinds` histogram, which since #1558 also carries `kindChannelOk` — the counts are DERIVED from the parsed rows, and that key states whether the reviewer's kind channel produced anything at all rather than leaving a reader to infer it by comparing untyped against total. Telemetry only today",
+    reparsedBy: "driver/verify.mjs CORRECTION_KIND_RE = /\\[kind:\\s*([a-z][a-z-]*)\\s*\\]/i → parseCorrectionKinds (verify.mjs), consumed in pipelineInner() in pipeline.mjs for the run.jsonl `correction-kinds` histogram, which since #1558 also carries `kindChannelOk` — the counts are DERIVED from the parsed rows, and that key states whether the reviewer's kind channel produced anything at all rather than leaving a reader to infer it by comparing untyped against total. Telemetry only today",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   {
@@ -697,7 +697,7 @@ export const E3_BACKLOG = [
     // `[on: -]` case went from a value to an ABSENCE — you omit the field — which is the one part a
     // reader could get wrong from the old wording, since there is no value meaning "no finding".
     evidence: "**AND EVERY FLAG CARRIES WHICH FINDING IT IS ABOUT** — the `on` field, an array of ordinals. Same rule as `kind`: you send the values, the driver renders the token.",
-    reparsedBy: "driver/verify.mjs:820 CORRECTION_ON_RE = /\\[on:\\s*([0-9,\\s-]*?)\\s*\\]/i. SKILL-FILE ONLY — the stage message at stages.mjs:1842-1877 never mentions `[on:]`. This is #850's \"the element shape is in the skill file, not the stage message\" in its purest form: an E3 lint reading stages.mjs alone sees the [kind:] token and misses its twin",
+    reparsedBy: "driver/verify.mjs:864 CORRECTION_ON_RE = /\\[on:\\s*([0-9,\\s-]*?)\\s*\\]/i. SKILL-FILE ONLY — the stage message at stages.mjs:1842-1877 never mentions `[on:]`. This is #850's \"the element shape is in the skill file, not the stage message\" in its purest form: an E3 lint reading stages.mjs alone sees the [kind:] token and misses its twin",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   {

@@ -179,15 +179,15 @@ test("the band chip is drawn on a banded filing and on no other", () => {
 
 // The ruling that put these on the page is also the way this change could produce a WORSE report: notes
 // merged into the client-voiced body would read as findings about the mark. The label is the guard.
-test("the reviewer's notes render LABELLED, never merged into the findings body", () => {
+// Item 18 (owner, 2026-09-16) took the notes off the delivered page altogether, so the arm that drove
+// them onto it in a labelled block drives nothing a reader meets. What it was really holding — that a
+// note the reviewer wrote is never quietly merged into the findings a client reads as the engine's —
+// is held here in its stronger form: it reaches the page in NO shape, and the working record keeps it.
+test("item 18: no reviewer note reaches the report, and none is merged into the findings body", () => {
   const out = html();
-  assert.match(out, /Confirm firm history on IRONWHISK/, "the note reaches the report");
-  assert.match(out, /class="internal"/, "in the established purple internal convention");
-
-  const block = /<div class="internal">([\s\S]*?)<\/div>/.exec(out);
-  assert.ok(block, "the labelled block exists");
-  assert.match(block[1], /Confirm firm history on IRONWHISK/, "and the note is INSIDE it");
-  assert.match(block[1], /quiet rather than cleared/, "every note, not just the first");
+  assert.doesNotMatch(out, /Confirm firm history on IRONWHISK/, "the note is not drawn");
+  assert.doesNotMatch(out, /quiet rather than cleared/, "nor any other of them");
+  assert.doesNotMatch(out, /class="internal"/, "and no block is drawn to hold them");
 });
 
 // THE LEGEND IS GONE ENTIRELY, by owner ruling, and this arm changed shape with it. It used to say "a
@@ -207,8 +207,11 @@ test("the legend renders in no state, and an empty note list draws no block", ()
 // The model's estimate of what the registers hold is NOT covered by the ruling that put the notes on the
 // page: it is a guess about a thing the same run measured, and it stays off. Stated as an arm because
 // the two used to be one rule, and a later reader would otherwise have only the comment.
-test("the ruling moved the reviewer's notes and NOT the register estimate", () => {
+test("neither the reviewer's notes nor the register estimate reaches the page", () => {
+  // These were once one rule and then two, the notes having been ruled onto the page while the estimate
+  // stayed off. Item 18 put the notes back off it, so the two are one rule again — asserted as two
+  // clauses in one arm, because they arrived by different rulings and could leave by different ones.
   const out = html({ registerEstimate: "moderate filings expected" });
-  assert.match(out, /Confirm firm history/, "the notes are on the page");
-  assert.doesNotMatch(out, /moderate filings expected/, "the estimate is not");
+  assert.doesNotMatch(out, /Confirm firm history/, "the notes are not on the page");
+  assert.doesNotMatch(out, /moderate filings expected/, "and neither is a guess about what the run measured");
 });

@@ -46,10 +46,10 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
-import { resolveModel } from "./driver.config.mjs";
+import { resolveModel, modelFamily } from "./driver.config.mjs";
 import { runLog, note } from "./log.mjs";
 import { writeRunStatus } from "./progress.mjs";
-import { stampRunEconomics, isCodeSide } from "./run-economics.mjs";
+import { stampRunEconomics, isCodeSide, vendorOf } from "./run-economics.mjs";
 
 function emptyAcc() {
   return { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, attempts: 0, thoughtTurns: 0 };
@@ -84,7 +84,25 @@ function modelKey(rec) {
   // them would break byModel summing to total, and an invisible gap is the failure this file already
   // fixed once for byEngine), and the key says what is missing rather than asserting an Anthropic
   // model produced them.
+  //
+  // A TURN THAT NAMED NO MODEL, a native-language row recording `modelActual: null` (see isAttemptRow),
+  // has no id at all. Its tokens still account, under a key that says the model is missing rather than
+  // one built from the absent field. Such a row always carries its vendor's stamp, so it reaches here.
+  if (typeof rec.model !== "string") return `${engine || "unknown"}/no-model-reported`;
   return `${engine}/unstamped:${rec.model}`;
+}
+
+/**
+ * WHETHER A ROW IS A PROVIDER ATTEMPT, the one test rollupTokens and servedModels both apply. A row that
+ * names a model is one: every stage attempt row carries the tier it asked for, and a native-language row
+ * the id its turn reported. So is a native-language row whose turn ran and named no model, which records
+ * `modelActual: null` instead (jxModelFields in jx-lanes.mjs). Without that second half, such a turn's
+ * attempt and the tokens it reported were dropped from every total, and a run made only of such turns
+ * read as one where nothing was looked at. A row with neither field is not a turn: the run log's events,
+ * a tool call, a native-language call no provider served.
+ */
+export function isAttemptRow(rec) {
+  return Boolean(rec) && (typeof rec.model === "string" || rec.modelActual === null);
 }
 
 // usage shape (gateway.mjs): {input,output,cacheRead,cacheWrite}. There is deliberately NO reasoning-token
@@ -128,7 +146,7 @@ export function rollupTokens(runDir) {
       if (!ln.trim()) continue;
       let rec;
       try { rec = JSON.parse(ln); } catch { continue; }
-      if (!rec || typeof rec.model !== "string") continue; // only stage-attempt records carry a model
+      if (!isAttemptRow(rec)) continue; // only provider attempts carry tokens (see isAttemptRow)
       const t = tokensOf(rec.usage);
       const accs = [total, (byStage[stage] ??= emptyAcc()), (byModel[modelKey(rec)] ??= emptyAcc())];
       // Engine and billing mode are split out because a token is not a portable unit of cost: a turn on a
@@ -166,6 +184,154 @@ export function rollupTokens(runDir) {
   }
 
   return { total, byStage, byModel, byEngine, byAuthMode };
+}
+
+/**
+ * THE MODELS THAT SERVED THIS RUN, as the engine reported them: distinct ids, in the order each first
+ * served a turn. Read from every attempt row's `modelActual`, the id the wire named: the stage rows
+ * gateway.mjs writes and the native-language rows jx.mjs and jx-units.mjs write, one list across both. Never
+ * the tier a stage asked for in place of a model the wire named: a tier goes to the CLI as the vendor's
+ * alias, so the request says nothing about which model ran, and this is the record that does. The tier
+ * stands in only for a name no client may read (below).
+ *
+ * THREE-VALUED. `null` when there is no attempt row to read (no telemetry directory, or no row in it is
+ * a provider turn), so nothing was looked at. `[]` when attempt rows exist and none names a served model
+ * a client may read (an engine that does not report one, a turn killed before it said, a turn the Claude
+ * program answered itself), on a stage turn and a native-language turn alike. One more case reads `[]`:
+ * a Claude turn served under a deployment name whose requested tier the tier reader cannot place (a request
+ * outside opus, sonnet, haiku and fable) is left off, because the name must not be printed and there is no
+ * tier word to print instead. In a run that mixes such turns with others, the list names only the others.
+ * So does a turn stamped by an engine whose vendor the closed table in run-economics.mjs does not name:
+ * nobody can say whose model served it. An empty list is never a guess.
+ *
+ * WHAT IS LISTED IS WHAT A CLIENT MAY READ, mapped here and nowhere else (servedName below), so meta.json,
+ * report-data.json and the report's closing line carry one list and cannot disagree. Through a cloud, a
+ * turn reports either that cloud's spelling of a Claude model or a name the company gave its own
+ * deployment. The first is listed as the Claude id it names; the second is listed as the tier the turn
+ * asked for ("Opus"), never as the name. The attempt row itself keeps what the program reported.
+ */
+export function servedModels(runDir) {
+  const dDir = driverDir(runDir);
+  let files;
+  try { files = readdirSync(dDir).filter((f) => f.endsWith(".jsonl") && f !== "run.jsonl"); }
+  catch { return null; }
+  const firstSeen = new Map();   // id → the earliest row timestamp that named it
+  let attempts = 0;
+  for (const file of files) {
+    let raw;
+    try { raw = readFileSync(join(dDir, file), "utf8"); } catch { continue; }
+    for (const ln of raw.split("\n")) {
+      if (!ln.trim()) continue;
+      let rec;
+      try { rec = JSON.parse(ln); } catch { continue; }
+      // The same test rollupTokens applies for an attempt row, less the driver's own code-side rows:
+      // no provider served those, so they cannot stand for "a turn ran and named no model".
+      if (!isAttemptRow(rec) || isCodeSide(rec)) continue;
+      attempts += 1;
+      const id = typeof rec.modelActual === "string" ? rec.modelActual.trim() : "";
+      // `<synthetic>` is the Claude CLI's name for a message it wrote itself, measured in testing on a
+      // turn a cloud refused for a missing deployment (2026-09-14). No model served that turn, so a
+      // bracketed marker is never listed as one.
+      if (!id || /^<.*>$/.test(id)) continue;
+      // Keyed on the name a client reads, so two deployments serving one tier, or one model reached
+      // through two clouds, are listed once.
+      const name = servedName(rec, id);
+      if (!name) continue;
+      const ts = String(rec.ts ?? "");
+      if (!firstSeen.has(name) || ts < firstSeen.get(name)) firstSeen.set(name, ts);
+    }
+  }
+  if (!attempts) return null;
+  return [...firstSeen].sort((a, b) => (a[1] < b[1] ? -1 : a[1] > b[1] ? 1 : 0)).map(([id]) => id);
+}
+
+// Imported here, beside its one reader: the tier every native-language step asks for (see servedName).
+import { JX_TIER } from "./engine/jx-turn.mjs";
+
+// AMAZON'S SPELLING OF A CLAUDE ID: an optional cross-region prefix (`us.`, `eu.`, `apac.`, `global.`), the
+// vendor prefix `anthropic.`, and a version suffix (`-v1:0`), optionally at the end of an inference
+// profile's full address (`arn:aws:bedrock:<region>:<account>:inference-profile/…`), whose account number
+// is the company's and is dropped with the rest. `us.anthropic.claude-opus-4-1-20250805-v1:0` is
+// `claude-opus-4-1-20250805`. Anchored on `anthropic.claude-`, so no other vendor's id is rewritten.
+const AMAZON_CLAUDE_ID_RE = /^(?:arn:aws[\w-]*:bedrock:[^/]*\/)?(?:[a-z]{2,6}(?:-[a-z]+)?\.)?anthropic\.(claude-[a-z0-9.-]+?)(?:-v\d+(?::\d+)?)?$/i;
+// GOOGLE'S SPELLING, `claude-opus-4-1@20250805`. It already names the model; it is listed as the dated id
+// `claude-opus-4-1-20250805` because that is the same model's name on Anthropic's own API and on Amazon's,
+// so a model reached through two routes is one entry rather than two spellings of one model. An older
+// model's Google name carries a version mark before the date (`claude-3-5-sonnet-v2@20241022`), the same
+// mark Amazon writes as `-v2:0`; it is not in the model's own name, so it goes too.
+const GOOGLE_CLAUDE_ID_RE = /^(claude-[a-z0-9.-]+?)(?:-v\d+)?@(\d{8})$/i;
+// THE SHAPE OF A CLAUDE MODEL ID, which is what lets an id be printed as itself. A family and one or two
+// version numbers (`claude-opus-4-1`), or the older order of version before family
+// (`claude-3-5-sonnet`); then an optional date; then an optional context-window mark (`[1m]`), which
+// the program may report beside the model and is kept as reported. Tested lower-cased, after the cloud
+// spellings above are rewritten. A prefix test is not enough: a company may name its own deployment
+// `claude-acme-prod`, or wrap its own name in Amazon's form, and neither is a Claude model. A family with
+// no version, `claude-opus`, names no model either: it is the name an operator types for a deployment of
+// that tier, and printed as itself it would put that name on the report, and a Sonnet deployment's name
+// on a turn that asked for Haiku. A `latest` alias, `-latest` or Google's `@latest`, is a pointer the
+// provider moves, never the name of the model a turn reports, so it reads as the tier too.
+const CLAUDE_MODEL_ID_RE = /^claude-(?:(?:opus|sonnet|haiku|fable)(?:-\d{1,2}){1,2}|\d(?:-\d)?-(?:opus|sonnet|haiku))(?:-\d{8})?(?:\[\d+[km]\])?$/;
+const CLAUDE_TIERS = new Set(["opus", "sonnet", "haiku", "fable"]);   // fable is reached through the synthesis override
+// A FABLE REQUEST IS READ HERE, NOT BY modelFamily. modelFamily is also the gateway's family comparison on every
+// turn, and it places opus, sonnet and haiku only: an id naming fable stays unknown there, so it can never
+// refuse a turn (driver.config.mjs says why). The report still needs the tier word of a fable turn served under
+// a company's deployment name, so it is read for the report alone, placed where the family reader places the
+// other three: the whole request, or first in it or after a `/`, with or without `claude-`. So `fable` and a
+// request in a pinned id's spelling (`claude-fable-5-1`) both read fable, and `acme-fable` does not. A turn
+// served as a fable id never reaches this: that id is a Claude model's name and prints as itself. modelFamily is
+// asked first, so a request it places reads as that tier even when it also names fable (`fable-x/sonnet` is
+// Sonnet), and one it cannot place falls through to this reader (`sonnet/fable-x` is Fable).
+const FABLE_REQUEST_RE = /(?:^|\/)(?:claude-)?fable(?:[-.]|$)/i;
+const requestedTier = (asked) =>
+  modelFamily(asked) ?? (FABLE_REQUEST_RE.test(String(resolveModel(asked) ?? "")) ? "fable" : null);
+
+/** A Claude model id in any cloud's spelling, as its own lower-case name, or null when it is not one. */
+function claudeModelId(id) {
+  const raw = String(id ?? "").trim();
+  const amazon = AMAZON_CLAUDE_ID_RE.exec(raw);
+  const google = amazon ? null : GOOGLE_CLAUDE_ID_RE.exec(raw);
+  const named = (amazon ? amazon[1] : google ? `${google[1]}-${google[2]}` : raw).toLowerCase();
+  return CLAUDE_MODEL_ID_RE.test(named) ? named : null;
+}
+
+/**
+ * The name a client reads for one served id, or null when it must not be listed.
+ *
+ * A CLAUDE ID, in any cloud's spelling, is the model it names. ANY OTHER ID ON A CLAUDE TURN names no
+ * Claude model, and on Azure Foundry that is the name a company gave its deployment (`acme-prod-opus`): a
+ * company's internal name, and never one to print on its client's report. The turn is listed as the tier
+ * it asked for instead, which is what the company deployed under that name.
+ *
+ * WHOSE TURN IT WAS IS THE VENDOR'S QUESTION, answered by the one closed table of engines (vendorOf in
+ * run-economics.mjs), not by a list kept here. An OpenAI turn's id is listed as reported: a Codex id is the
+ * model's own name. An Anthropic turn under any engine name is mapped as above; a second list of Claude
+ * engines here printed a deployment name, as reported, for every engine it left out. An engine the table
+ * does not name is left off: printing its id would make a vendor claim nobody can check.
+ *
+ * A ROW WITH NO ENGINE STAMP reads as Claude's, as modelKey above reads it, EXCEPT when the id is plainly
+ * another vendor's (a `gpt-` or o-series id, by modelFamily's OpenAI reader): printing that as a Claude
+ * tier would put a false vendor on a client's report, where a wrong guess in modelKey costs only a key.
+ */
+function servedName(rec, id) {
+  const claude = claudeModelId(id);
+  if (claude) return claude;
+  const engine = typeof rec.engine === "string" ? rec.engine : "";
+  const family = engine ? null : modelFamily(id);
+  const vendor = engine ? vendorOf(engine) : family && !CLAUDE_TIERS.has(family) ? "openai" : "anthropic";
+  if (vendor === "openai") return id;
+  if (vendor !== "anthropic") return null;
+  // THE TIER THE TURN ASKED FOR, told apart by the kind of row, which its engine stamp names. A stage row
+  // (engine "anthropic-agent", another Anthropic engine, or no stamp) records that request as `model`
+  // ("opus"), and that holds even when the served id is spelled the same as the request, as it is for a
+  // deployment named after its tier. A native-language row (engine "anthropic") records its SERVED id as `model`, beside
+  // `modelActual` (jxModelFields), so reading it as the request would hand back the deployment name;
+  // every one of those steps asks for JX_TIER. A request in a cloud's spelling is read as the Claude id it
+  // names first. modelFamily reads opus, sonnet and haiku, and requestedTier adds fable, for the report
+  // alone. A tier neither can place returns null and the id is left off: listing nothing is honest, and
+  // listing the name is the leak this prevents.
+  const asked = engine === "anthropic" ? JX_TIER : rec.model;
+  const tier = requestedTier(claudeModelId(asked) ?? asked);
+  return CLAUDE_TIERS.has(tier) ? tier[0].toUpperCase() + tier.slice(1) : null;
 }
 
 /**

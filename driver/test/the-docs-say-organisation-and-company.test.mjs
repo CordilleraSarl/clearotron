@@ -193,6 +193,17 @@ const EXCEPTIONS = [
     reason: "the writing rules quote a filler word and an example sentence about a business in general; "
       + "neither is about this product",
   },
+  {
+    // A CLOUD VENDOR'S ACCOUNT IS NOT THE ORGANISATION, and this is the same distinction the
+    // service-account exception draws for an operating-system user. An organisation owns the
+    // installation; a cloud account is one of the three ways the model access it runs on is paid for —
+    // the reader's existing arrangement with Google, Microsoft or Amazon, named because the Claude
+    // program's own switches are what select it. Phrases, not the bare word: "cloud account" lets this
+    // through and still refuses the next "the account's territories".
+    phrases: [/\bcloud\s+account\b/gi, /\bAzure\s+account\b/gi, /\bservice-account\s+key\b/gi],
+    files: /^(?:README\.md|docs\/architecture\/\d\d-[a-z-]+\.md)$/,
+    reason: "a cloud vendor's own account, which pays for model access — never the organisation that owns the installation",
+  },
 ];
 
 /**

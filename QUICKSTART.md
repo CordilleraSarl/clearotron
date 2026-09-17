@@ -10,7 +10,7 @@ of its own and calls nothing on your behalf.
 
 | What | Why | Where |
 |---|---|---|
-| A reasoning CLI | Every stage runs as a headless turn of it | [Claude Code](https://claude.com/claude-code) (`claude`), or the Codex CLI (`codex`) |
+| A reasoning program | Every stage runs as a headless turn of it | [Claude Code](https://claude.com/claude-code) (`claude`) or the Codex CLI (`codex`). Setup installs it if the machine has none. Sign in with the program setup installed (doctor prints its path), or with `claude` or `codex login` if the machine has its own |
 | A register | Sets what the search reaches, and what it costs | [Signa](https://signa.so) — one key, self-serve, US + EU + WIPO and eight more offices |
 | Web research | Covers the open web and the marketplaces | [Perplexity](https://www.perplexity.ai) |
 
@@ -19,19 +19,18 @@ reach one office each; Signa is the recommended paid route and the fastest to a 
 [The six, and what each reaches](providers/README.md).
 
 **macOS, Linux, or native Windows for the demo; WSL2 for a clearance.** `npx clearotron demo` runs
-anywhere Node does, native Windows included. A real clearance does not: the engine resolves the
-reasoning CLI the POSIX way, so a native-Windows clearance refuses at preflight even with the CLI on
-`PATH`. On Windows, `wsl --install -d Ubuntu`, then `wsl -d Ubuntu`, and work through this page from
-**inside** that distribution. Name it: plain `wsl` can open a minimal image with no apt, no curl and
-no bash, and everything below assumes Ubuntu. A fresh Ubuntu has no Node, and apt's package is below
-what this needs, so `npx` answers "not found" before anything of ours runs. From the Ubuntu prompt:
+anywhere Node does, native Windows included. A real clearance does not: the engine spawns each stage
+with POSIX path and process semantics, so on native Windows a clearance is refused before it
+starts, even with the program installed. On Windows, `wsl --install -d Ubuntu`, then
+`wsl -d Ubuntu`, and work through this page from **inside** that distribution. Name it: plain `wsl`
+can open a minimal image with no apt, no curl and no bash, and everything below assumes Ubuntu. A
+fresh Ubuntu has no Node, and apt's package is below what this needs, so `npx` answers "not found"
+before anything of ours runs. From the Ubuntu prompt:
 
 ```bash
 sudo apt update && sudo apt install -y curl
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 . "$HOME/.nvm/nvm.sh" && nvm install 22
-npm install -g @anthropic-ai/claude-code
-claude                    # once, interactively, to sign in
 ```
 
 Then carry on below. [INSTALL.md](INSTALL.md) §1 has the exact version floor and why it is one.
@@ -40,7 +39,7 @@ Then carry on below. [INSTALL.md](INSTALL.md) §1 has the exact version floor an
 
 ```bash
 npm install -g clearotron
-clearotron install
+clearotron install  # offers to install the reasoning program if the machine has none, and shows you how to sign it in
 clearotron doctor --probe-engine
 ```
 
@@ -49,9 +48,10 @@ and the first line fails with `EACCES`. Do not answer that with `sudo`: run
 `npm install -g clearotron --prefix ~/.local` instead, or `npx clearotron install`, which installs under
 `~/.local` itself.
 
-`doctor` is the one to read. It checks that your CLI is on `PATH`, that it is signed in — by running
-a turn, not by finding the executable — and that your register credential resolves. An executable
-that is signed out passes every other check and fails at the first stage.
+`doctor` is the one to read. It checks that the reasoning program is there, on `PATH` or as the copy
+setup installed; that it is signed in, by running a turn rather than by finding the executable; and
+that your register credential resolves. An executable that is signed out passes every other check and
+fails at the first stage.
 
 ## Run one
 

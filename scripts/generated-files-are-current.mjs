@@ -53,6 +53,29 @@ export function treeState(root = ROOT) {
  * The alternative — dirtying a real generated file and restoring it — is a shared-file mutation, and
  * the test runner runs files in parallel, so it would be a race that reddens somebody else's arm.
  */
+/**
+ * Which paths differ between two `git status --porcelain` readings, named so a reader can see WHAT moved.
+ *
+ * A porcelain line is a two-character state, a space, and the path. Lines are compared as a multiset so
+ * a path whose STATE changed — staged to modified, say — is reported as having moved, and the paths are
+ * returned rather than a count, because two numbers agreeing is not the same as two sets agreeing.
+ */
+export function movedPaths(before, after) {
+  const bag = (s) => {
+    const m = new Map();
+    for (const line of String(s).split("\n")) {
+      if (!line.trim()) continue;
+      m.set(line, (m.get(line) ?? 0) + 1);
+    }
+    return m;
+  };
+  const [b, a] = [bag(before), bag(after)];
+  const out = new Set();
+  for (const [line, n] of a) if ((b.get(line) ?? 0) !== n) out.add(line.slice(3).trim() || line.trim());
+  for (const [line, n] of b) if ((a.get(line) ?? 0) !== n) out.add(line.slice(3).trim() || line.trim());
+  return [...out].sort();
+}
+
 export function checkAll({ dir = HERE, root = ROOT, log = console.log, readTree = () => treeState(root) } = {}) {
   const found = minters(dir);
   if (!found.length) return { found, stale: [], unreadable: [], wrote: [], empty: true };
@@ -60,6 +83,7 @@ export function checkAll({ dir = HERE, root = ROOT, log = console.log, readTree 
   const stale = [];
   const unreadable = [];
   const wrote = [];
+  const unattributable = [];
   for (const m of found) {
     // ── `--check` IS A CONTRACT, AND NOTHING WAS VERIFYING IT ──────────────────────────────────────
     //
@@ -73,13 +97,41 @@ export function checkAll({ dir = HERE, root = ROOT, log = console.log, readTree 
     // one ran, it wrote. THE LIMIT, SAID RATHER THAN LEFT: this catches the harmful inert form, the
     // one that silently repairs. A minter that ignores the flag and does nothing at all still reports
     // `current`, and no probe from out here can tell that from a file that really is current.
+    // ── "DID THE TREE MOVE" IS NOT "DID THIS PROCESS WRITE" ────────────────────────────────────────
+    //
+    // Those are the same question only where nothing else can write, and this probe does not run
+    // there. Inside the suite it is a subprocess of one test file while every other file in its shard
+    // runs beside it, deliberately unserialised — dropping `--test-concurrency=1` is what made the
+    // suite 2.4 times faster. So a neighbour writing anywhere in the repository moved the snapshot and
+    // this reported it as the minter having written.
+    //
+    // Measured: a commit whose whole diff was one stylesheet's phone-width rules and a release note
+    // failed here naming TWO minters, and the same bytes passed on a rerun. Two is the tell — a minter
+    // that ignores `--check` and re-mints leaves its repair in the tree, so the NEXT minter's `before`
+    // already carries it and the next one is not flagged. Both being named cannot come from either.
+    //
+    // So the accusation is made only where it can be: from a tree that was CLEAN when this minter
+    // started, where a change appearing during its run has no other author available. A tree that was
+    // already dirty is one where somebody else is writing, and the honest answer is that this probe
+    // could not look — which is this file's own rule one level in, since it already refuses to read a
+    // minter that could not look as a pass.
+    //
+    // THE LIMIT, SAID RATHER THAN LEFT: a neighbour that begins writing after a clean reading and
+    // before the minter exits is still attributed here. Closing that needs the probe to own the tree,
+    // which is a change to where it runs rather than to what it asks.
     const before = readTree();
     const r = spawnSync(process.execPath, [join(dir, m), "--check"], { cwd: root, encoding: "utf8" });
     const after = readTree();
     const out = ((r.stdout || "") + (r.stderr || "")).trim();
     if (before !== null && after !== null && before !== after) {
-      wrote.push({ m, out });
-      log(`  WROTE    ${m} (during --check)`);
+      const moved = movedPaths(before, after);
+      if (before.trim() === "") {
+        wrote.push({ m, out, moved });
+        log(`  WROTE    ${m} (during --check): ${moved.join(", ") || "the tree moved"}`);
+      } else {
+        unattributable.push({ m, moved });
+        log(`  ?        ${m} — the tree moved and this probe cannot say who moved it: ${moved.join(", ") || "paths unknown"}`);
+      }
       continue;
     }
     // 0 is current, 1 is stale, anything else is a minter that could not look — reported separately,
@@ -89,11 +141,11 @@ export function checkAll({ dir = HERE, root = ROOT, log = console.log, readTree 
     unreadable.push({ m, out, code: r.status });
     log(`  ?        ${m} (exit ${r.status})`);
   }
-  return { found, stale, unreadable, wrote, empty: false, contractChecked: readTree() !== null };
+  return { found, stale, unreadable, wrote, unattributable, empty: false, contractChecked: readTree() !== null };
 }
 
 function main() {
-  const { found, stale, unreadable, wrote, empty, contractChecked } = checkAll();
+  const { found, stale, unreadable, wrote, unattributable, empty, contractChecked } = checkAll();
   if (empty) {
     console.error("generated-files-are-current: no scripts/mint-*.mjs found. Either they moved or the "
       + "naming changed — and a pass over nothing is not a pass.");
@@ -109,6 +161,19 @@ function main() {
     console.error(`\n${wrote.length} minter(s) CHANGED THE TREE while running \`--check\`. \`--check\` `
       + `reports and changes nothing; one that re-mints repairs the drift on whoever ran it, leaves the `
       + `commit without the repair, and reports current over a check that did not happen. Fix the minter.`);
+    process.exit(2);
+  }
+  // BEFORE the staleness verdict, and exit 2 rather than 1: a tree moving under the probe means the
+  // staleness answers were read off a tree that was changing while they were taken, so "out of date" is
+  // not a claim this run has the standing to make either. Could-not-look is the whole verdict.
+  if (unattributable.length) {
+    console.error(`\n${unattributable.length} minter(s) ran while the tree was ALREADY dirty and it moved `
+      + `underneath them. This probe cannot say whether the minter wrote or something running beside it `
+      + `did, so it names neither. That is a could-not-look, not a pass and not an accusation.\n`);
+    for (const { m, moved } of unattributable) {
+      console.error(`  ${m} — moved: ${moved.join(", ") || "paths unknown"}`);
+    }
+    console.error(`\nRun it on a tree nobody else is writing to, and it will answer.`);
     process.exit(2);
   }
   if (unreadable.length) {

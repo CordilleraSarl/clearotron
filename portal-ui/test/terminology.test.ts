@@ -190,6 +190,13 @@ const ORGANISATION_COMPANY_EXCEPTIONS: readonly { readonly file: string; readonl
     why: 'the engine\'s own refusal sentence, composed by the server from the same two facts; a reader refused '
       + 'by the server and a reader warned by the screen must meet one sentence, so it changes on both sides or neither',
   },
+  {
+    file: 'contract/engineState.ts',
+    text: 'a cloud account',
+    why: "a cloud vendor's own account — the arrangement a reader already has with Google, Microsoft or "
+      + 'Amazon and pays their model use through. It is one of the three ways the engine is paid for, never '
+      + 'the organisation that owns the installation, which is what the word is reserved for here',
+  },
   { file: 'components/ContextPackEditor.tsx', text: 'the priors that matter', why: 'the verb — what counts — not a case' },
   { file: 'screens/NewClearance.tsx', text: 'the part that matters', why: 'the verb — what counts — not a case' },
   {

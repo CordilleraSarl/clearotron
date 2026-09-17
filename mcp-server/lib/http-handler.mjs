@@ -69,7 +69,7 @@ export function evictOldest(sessions) {
  * presents another identity's mcp-session-id is refused (403) — a leaked/guessed session id must never
  * let one CF-authed person attach to another's session (which may carry an ops-scoped inner token).
  */
-export function makeHttpHandler({ verify, limiter, opsLimiter = null, sessions, createSession, ns = "trademark-artifacts", sessionMax = 500, maxBody = 4 * 1024 * 1024, authHeader = "cf-access-jwt-assertion", firmDomains = [], clientSurface = false, devMode = false, tokenOnly = false, keyDoorPath = null,
+export function makeHttpHandler({ verify, limiter, opsLimiter = null, sessions, createSession, ns = "trademark-artifacts", sessionMax = 500, maxBody = 4 * 1024 * 1024, authHeader = "cf-access-jwt-assertion", firmDomains = [], clientSurface = false, door: doorName = null, devMode = false, tokenOnly = false, keyDoorPath = null,
   // Is this identity still on the guest list? ASKED PER REQUEST on an ACCOUNT session, cached on the
   // grants file's mtime, so it costs a stat between edits. Injected so an arm can move the answer
   // without a file; the default is the real read, because a door composed without this seam would
@@ -82,6 +82,30 @@ export function makeHttpHandler({ verify, limiter, opsLimiter = null, sessions, 
   // the synthetic identity would be the thing that answers — an open door wearing a locked door's label.
   if (tokenOnly && devMode) throw new Error("makeHttpHandler: tokenOnly and devMode are mutually exclusive (devMode's synthetic identity would defeat the mandatory key)");
   if (tokenOnly && verify) throw new Error("makeHttpHandler: tokenOnly is for a door with no auth proxy in front — pass verify:null");
+
+  // ── A TURNED-AWAY CALL IS A RECORD, NOT A GAP ─────────────────────────────────────────────────────
+  //
+  // Every refusal below used to return without writing anything, so this log held calls that SUCCEEDED
+  // and nothing else. An absent line then meant either "never asked" or "asked and was turned away",
+  // and nobody reading it back can tell those apart — which is the one question the log exists to
+  // answer. Measured on the production access log, 2026-09-16: zero lines in its most recent five
+  // thousand carry a refused or error status, which is what never being able to write one looks like.
+  //
+  // IT INVENTS NO IDENTITY. The key refusals fire BEFORE any identity is established. `user` is in
+  // scope there, but only as the placeholder this function starts with, and writing that would name a
+  // caller who does not exist. Those lines carry no email and no principal, and say a call was refused
+  // at this door at this time — which is true, and is the shape the local route already uses for the
+  // same reason: a synthesized identity would match somebody who did nothing.
+  // WHICH SURFACE THIS HANDLER IS, named rather than inferred. `clientSurface` answers a scope question
+  // and was doing double duty as the door's name, which left the key door — built with neither
+  // `clientSurface` nor a name — writing lines with no door at all. A caller that knows it is a third
+  // thing passes `door`; the two that do not get the surface they already declare.
+  const door = doorName ?? (clientSurface ? "client" : "portal");
+  const refuse = (res, status, obj, who = {}) => {
+    try { appendAudit({ email: who.email ?? null, sub: who.sub ?? null, body: who.body ?? null, status: "refused", door }); }
+    catch { /* best-effort: a write failure must never change what the caller is told */ }
+    return send(res, status, obj);
+  };
 
   /**
    * Has this identity been taken off the guest list since its session was opened? Null when it has not,
@@ -182,7 +206,7 @@ export function makeHttpHandler({ verify, limiter, opsLimiter = null, sessions, 
             // reach it — the protection is the filesystem — so it is disclosure rather than exposure,
             // and it buys nothing: an operator needs to know a local socket is where to look, and
             // already has the path in the boot line and the unit file. A stranger gets nothing usable.
-            return send(res, 401, { error: "this listener takes an auth-proxy JWT and never an access key — a key has no door here"
+            return refuse(res, 401, { error: "this listener takes an auth-proxy JWT and never an access key — a key has no door here"
               + (keyDoorPath ? ". A key is taken on this deployment's local socket; the engine's boot line names it" : ". This deployment has no key door configured") });
           }
           log(`auth reject ${status}: ${e.message}`);
@@ -197,7 +221,7 @@ export function makeHttpHandler({ verify, limiter, opsLimiter = null, sessions, 
         const tok = readInnerToken(url, req.headers, { allowAuthorization: true });
         if (!tok) {
           log("auth reject 401: no key presented on the token-only door");
-          return send(res, 401, { error: "this address needs an access key — put it in your assistant's API-key field, or add ?token=<key> to the URL" });
+          return refuse(res, 401, { error: "this address needs an access key — put it in your assistant's API-key field, or add ?token=<key> to the URL" });
         }
         let t;
         try { t = verifyToken(tok); }
@@ -209,26 +233,26 @@ export function makeHttpHandler({ verify, limiter, opsLimiter = null, sessions, 
           // the original defect survived, silently, on every default install.
           if (e.code === "REVOCATION_UNCHECKABLE") {
             log(`DOOR FAULT — refusing every key: ${e.message} Create it, or point TRADEMARK_MCP_TOKEN_DENYLIST at the list this install actually uses; \`clearotron doctor\` reports the state.`);
-            return send(res, 401, { error: `this install cannot check whether keys have been revoked, so it is refusing all of them: ${e.message}` });
+            return refuse(res, 401, { error: `this install cannot check whether keys have been revoked, so it is refusing all of them: ${e.message}` });
           }
           log(`auth reject 401: ${e.message}`);
-          return send(res, 401, { error: `invalid access key: ${e.message}` });
+          return refuse(res, 401, { error: `invalid access key: ${e.message}` });
         }
         user = { email: t.sub || t.runId || t.jti || "unnamed-key" };
       }
-      if (!limiter.take(user.email)) return send(res, 429, { error: "rate limit exceeded — retry shortly" });
+      if (!limiter.take(user.email)) return refuse(res, 429, { error: "rate limit exceeded — retry shortly" }, { email: user.email });
 
       if (req.method === "POST") {
         let body;
         try { body = await readJsonBody(req, maxBody); }
-        catch (e) { return send(res, 400, { error: `bad request body: ${e.message}` }); }
+        catch (e) { return refuse(res, 400, { error: `bad request body: ${e.message}` }, { email: user.email }); }
 
         const sid = hdr(req.headers["mcp-session-id"]);
         let entry = sid ? sessions.get(sid) : null;
         let stampScope = null;
         if (!entry) {
-          if (sid) return send(res, 404, { error: "unknown or expired session" });
-          if (!isInitializeRequest(body)) return send(res, 400, { error: "no session — the first request must be an MCP initialize" });
+          if (sid) return refuse(res, 404, { error: "unknown or expired session" }, { email: user.email, body });
+          if (!isInitializeRequest(body)) return refuse(res, 400, { error: "no session — the first request must be an MCP initialize" }, { email: user.email, body });
           if (sessions.size >= sessionMax) evictOldest(sessions);
           // INNER authz token (rides the /mcp?token= query or the X-Trademark-Token header) → the session's
           // scope: ops (full), run-bound user (read-only one run), or — no token but firm staff — internal
@@ -274,20 +298,39 @@ export function makeHttpHandler({ verify, limiter, opsLimiter = null, sessions, 
         } else {
           if (entry.email && entry.email !== user.email) {
             log(`session owner mismatch: ${user.email} presented a session created by another identity`);
-            return send(res, 403, { error: "session belongs to another identity" });
+            return refuse(res, 403, { error: "session belongs to another identity" }, { email: user.email, sub: entry.sub ?? null, body });
           }
           const gone = revokedMidSession(entry);
-          if (gone) return send(res, 403, gone);
+          if (gone) return refuse(res, 403, gone, { email: user.email, sub: entry.sub ?? null, body });
           entry.lastSeen = Date.now();
         }
         // OPS-TOKENS item 6 — automation principals get their own (lower) bucket, keyed by the token's
         // sub, ON TOP of the transport-identity limit above: a runaway connector throttles itself, not
         // the interactive staff sharing the proxy identity.
         if (opsLimiter && entry.kind === "ops" && !opsLimiter.take(`ops:${entry.sub ?? "unnamed"}`))
-          return send(res, 429, { error: "ops principal rate limit exceeded — retry shortly" });
+          return refuse(res, 429, { error: "ops principal rate limit exceeded — retry shortly" }, { email: user.email, sub: entry.sub ?? null, body });
         // Audit AFTER scope resolution so the line names the PRINCIPAL (token sub), not just the
-        // transport identity — still strictly before any tool dispatch. Best-effort, never blocks.
-        try { appendAudit({ email: user.email, sub: entry.sub ?? null, body }); } catch { /* best-effort */ }
+        // transport identity. Best-effort, never blocks.
+        //
+        // ── ONE LINE, WRITTEN WHEN THE OUTCOME IS KNOWN ────────────────────────────────────────────
+        //
+        // This used to be written here, before dispatch, and therefore with `status: null` — a record
+        // that a call was made and no record of what happened to it. On a deployed log every one of the
+        // five thousand most recent lines carries a null status, so "did this key read that report" was
+        // answerable only as "it asked".
+        //
+        // THE TRADE MADE, SAID PLAINLY: writing before dispatch survives a crash mid-call, and writing
+        // on `finish` does not. One line carrying the outcome is what a reader needs and what this was
+        // asked for, and a crash that loses the line also loses the response, so the caller is not left
+        // believing a lost call succeeded. The refusals above are recorded at their own sites and do not
+        // depend on this hook at all, which is the case a review actually asks about.
+        //
+        // `finish` fires once the response is fully sent, which is when `res.statusCode` is the answer
+        // the caller got rather than the default it started as.
+        res.once("finish", () => {
+          try { appendAudit({ email: user.email, sub: entry.sub ?? null, body, status: res.statusCode, door }); }
+          catch { /* best-effort */ }
+        });
         const answered = entry.transport.handleRequest(req, res, body);
         if (stampScope) { try { await answered; } finally { stampScope(); } }
         return answered;

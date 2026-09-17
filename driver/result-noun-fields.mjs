@@ -74,8 +74,11 @@ export const RESULT_NOUN_FIELDS = Object.freeze([
     why: "the one member that reported an invocation — taint-rerun's `r.ok ? \"ok\" : …`, which travels on a StageFailure packet — now carries a `cleared` sibling read from the taint, the remedy 10/5 -> 11/6 at the profile-store receipt's `outcome: pr.outcome`. Classified by READING ITS WRITING SITE, which is profiles.mjs and not this file: the value is one of three literals chosen by a situation the resolver decided (`overlay` and `bundled-fallback` are `pass`, `env-arrived-late` is `blocked`), never a call's return read as a verdict. `bundled-fallback` being `pass` is the point of the whole receipt — a legitimate install that nobody was told about is what this row says out loud." },
   { file: "driver/pipeline.mjs", noun: "permanent", sites: 1, atWriteSite: 1, verdict: "result",
     why: "`permanent.length` — a count of the classified set" },
-  { file: "driver/pipeline.mjs", noun: "recovered", sites: 3, atWriteSite: 3, verdict: "result",
-    why: "each sits on a branch reached only after the gap was cleared; one follows a `throw` that guarantees the ledger exists" },
+  { file: "driver/pipeline.mjs", noun: "recovered", sites: 5, atWriteSite: 5, verdict: "result",
+    why: "each sits on a branch reached only after the gap was cleared; one follows a `throw` that guarantees the ledger exists. "
+      + "The two newest record what an engine-side re-issue of a missing meaning search actually brought back, counted off the rows "
+      + "in hand at the write site rather than from anything the call promised — an attempt that recovered nothing writes 0, which "
+      + "is the fact the disclosure downstream depends on" },
   { file: "driver/pipeline.mjs", noun: "settled", sites: 5, atWriteSite: 4, verdict: "result",
     why: "counts off the union and the doubt ledger" },
   { file: "driver/pipeline.mjs", noun: "verified", sites: 4, atWriteSite: 2, verdict: "result",

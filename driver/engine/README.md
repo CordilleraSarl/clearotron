@@ -13,7 +13,7 @@ does not exist — that is the design, and [`CONTRACT.md`](CONTRACT.md) is the d
 | [`CONTRACT.md`](CONTRACT.md) | **The adapter contract.** What an engine must implement, the model-tier map, and what a turn is allowed to assume. Read this before either adapter |
 | `anthropic-agent.mjs` | Spawns `claude -p`. Skill-reference absolutization, `--add-dir` grants, rate-limit and no-progress handling |
 | `openai-agent.mjs` | Spawns `codex exec`. A per-run `CODEX_HOME` carrying a rendered `config.toml`, and the session-rollout reader that recovers the turn's usage |
-| `auth.mjs` | `resolveAuthMode()` — subscription or API key, resolved once per turn and stamped on the telemetry |
+| `auth.mjs` | `resolveAuthMode()` — subscription, API key or (Claude only) cloud account, resolved once per turn and stamped on the telemetry |
 | `probe.mjs` | Drives one cheap turn through whichever adapter is configured, to prove the engine can complete a turn at all. What `npm run setup` spends |
 | `common.mjs` | Helpers both adapters share |
 | `deny-authority-write.mjs` | A PreToolUse hook. `--add-dir` has no read-only form, so the read-only intent over the skills tree is enforced here |
@@ -27,7 +27,7 @@ succeeding on the other one. A run's manifest records which engine served it.
 
 ## Billing mode is resolved here, and it fails loud
 
-`resolveAuthMode()` is the single place "subscription or API key" is decided, and it is deliberately
+`resolveAuthMode()` is the single place a turn's billing mode (subscription, API key or cloud account) is decided, and it is deliberately
 unforgiving in one direction:
 
 ```
