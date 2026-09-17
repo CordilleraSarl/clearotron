@@ -98,6 +98,24 @@ import { fileURLToPath } from "node:url";
 // re-declared: one number, one count, and every existing importer of this module keeps working.
 export { DEFAULT_CLIENT_DAILY_RUNS, accountUsage };
 
+/**
+ * What a requester is told when the day's allowance is gone.
+ *
+ * ONE SENTENCE, TWO PLACES. The server refuses with it and the screen warns with it, and a reader who
+ * meets both must not meet two different sentences about the same fact. The browser cannot import this
+ * module, so the portal composes its own copy and `portal-ui/test/allowanceParity.test.ts` pins the two
+ * together — the same arrangement the effort model already has.
+ *
+ * NAMED, NOT ADDRESSED. It read "ask your <name> contact", which puts a possessive and a noun around a
+ * name that is already the answer: on a deployment that has configured no brand the portal's fallback is
+ * the words "the operator", and the sentence rendered "ask your the operator contact to run this one for
+ * you". The line beside it on the same screen had always said "ask <name>", and that is the one the
+ * approved design draws.
+ */
+export const allowanceExhaustedLine = (cap, who) =>
+  `You have used all ${cap} of this account's searches for today. `
+  + `The allowance resets at midnight UTC — or ask ${who} to run this one for you.`;
+
 // One sentence, two places (the capability payload and the route that refuses). Never names the
 // missing credential: this reaches a client screen, and our plumbing is not their business.
 //
@@ -1851,9 +1869,7 @@ export function makePortalService({
           return null;
         }
         if (used.today + 1 <= limit) return null;
-        return { status: 429, json: { ok: false, errors: [
-          `You have used all ${limit} of this account's searches for today. The allowance resets at midnight UTC — or ask your ${BRAND.name} contact to run this one for you.`,
-        ] } };
+        return { status: 429, json: { ok: false, errors: [allowanceExhaustedLine(limit, BRAND.name)] } };
       };
 
       // /portal/api/run/plan — the confirmation gate (no spend)
