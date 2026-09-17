@@ -47,7 +47,8 @@ import { COUNT_BASIS, COUNT_PREDICATES, countsForMark, countLine, variantFormsLi
 import { RECORD_BASIS, recordsForMark, recordsLine } from '../register-records.mjs';
 import { officeLinkSentences } from './office-record-links.mjs';
 import { knockoutFindingViews, splitKnockoutNotes } from '../findings-model.mjs';
-import { demoBannerHtml } from './render.mjs';   // — the SAME banner the clearance template renders, not a second wording
+import { demoBannerHtml } from './render.mjs';
+import { EXPORT_TOGGLE, exportPopover, EXPORT_MENU_JS } from './report-topbar.mjs';   // — the export menu's shell and behaviour, shared with the clearance template   // — the SAME banner the clearance template renders, not a second wording
 // — the two facts the register card is allowed to read off a raw record, and NEITHER is minted
 // here. `makeClassifyStatus` and `isAllClass` are the screening lane's own, already shipped, already
 // fail-open; re-deriving either in a renderer would be this file starting a second status vocabulary,
@@ -1812,12 +1813,12 @@ ${filings}`
        class names are the shared vocabulary this file already emits, so report.css styles both. */''}
   <div class="tb-menu">
     <button type="button" class="tbbtn tb-ask no-print">\u2726 <span class="tb-lbl">Ask AI</span></button>
-    <button type="button" class="tbbtn primary tb-exp-toggle" aria-haspopup="true" aria-expanded="false">\u2b07 <span class="tb-lbl">Export</span> \u25be</button>
-    <div class="tb-pop tb-exp-pop" hidden>
+    ${EXPORT_TOGGLE}
+    ${exportPopover(`
       <button class="util primary" onclick="exportPDF()">\u2b07 Export PDF</button>
       <div class="tb-sep"></div>
       <div class="tb-row"><button class="util" onclick="openAll(true)">Expand all</button><button class="util" onclick="openAll(false)">Collapse all</button></div>
-    </div>
+    `)}
   </div>
 </div>
 </div>
@@ -1842,8 +1843,7 @@ if(window.matchMedia){var m=window.matchMedia('print');if(m.addEventListener)m.a
 window.addEventListener('beforeprint',o);})();
 /* The popover opens on its own button, closes on a click outside it and on Escape. Same two listeners
    the clearance template carries, for the same markup; they move together when the top bar is shared. */
-document.addEventListener('click',function(e){var t=e.target.closest('.tb-exp-toggle'),pop=document.querySelector('.tb-exp-pop');if(t){if(pop){pop.hidden=!pop.hidden;t.setAttribute('aria-expanded',String(!pop.hidden));}return;}if(pop&&!pop.hidden&&!e.target.closest('.tb-exp-pop')){pop.hidden=true;var b=document.querySelector('.tb-exp-toggle');if(b)b.setAttribute('aria-expanded','false');}});
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){var pop=document.querySelector('.tb-exp-pop');if(pop&&!pop.hidden){pop.hidden=true;var b=document.querySelector('.tb-exp-toggle');if(b)b.setAttribute('aria-expanded','false');}}});</script>
+${EXPORT_MENU_JS}</script>
 <div class="wrap">
   <header class="hero">
     ${demoBannerHtml(demoData === true)}

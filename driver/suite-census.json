@@ -3748,8 +3748,8 @@
           "todos": 0
         },
         "render.test.mjs": {
-          "tests": 151,
-          "asserts": 607,
+          "tests": 152,
+          "asserts": 611,
           "skips": 0,
           "todos": 0
         },
@@ -4852,8 +4852,8 @@
           "todos": 0
         },
         "the-knockout-page-leads-with-the-read.test.mjs": {
-          "tests": 37,
-          "asserts": 113,
+          "tests": 38,
+          "asserts": 117,
           "skips": 0,
           "todos": 0
         },
