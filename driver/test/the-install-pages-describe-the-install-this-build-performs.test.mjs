@@ -21,6 +21,25 @@ import { platformEngineRefusal, installSizeLine, engineOptions, leaveDemoAdvice 
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const read = (p) => readFileSync(join(ROOT, p), "utf8");
+/**
+ * A release note, wherever the cut has left it.
+ *
+ * A note lives at `.changeset/<name>.md` until a version is cut and at `.changeset/pre/<name>.md`
+ * after, because cutting MOVES it as it folds it into the changelog. An arm that reads only the first
+ * path passes every day until the release it describes is actually cut, and then fails on the version
+ * pull request with ENOENT — blocking every cut from then on rather than the change it guards. Measured
+ * 2026-09-17: the 0.3.2-beta.8 version pull request went red here, on notes whose wording was correct.
+ *
+ * Absent from BOTH is a real failure and throws naming both paths, because a note that has gone missing
+ * is exactly what these arms exist to catch and a resolver returning "" would read as a pass.
+ */
+const releaseNote = (name) => {
+  const tried = [`.changeset/${name}.md`, `.changeset/pre/${name}.md`];
+  for (const p of tried) {
+    try { return readFileSync(join(ROOT, p), "utf8"); } catch { /* not here; try where a cut would have put it */ }
+  }
+  throw new Error(`release note "${name}" is at neither ${tried[0]} nor ${tried[1]}`);
+};
 /** Prose with its line breaks folded, so a sentence wrapped at another column still matches. */
 const flat = (s) => s.replace(/\s+/g, " ");
 const escape = (s) => s.replace(/[.*+?^${}()|[\]\\/]/g, "\\$&");
@@ -273,7 +292,7 @@ test("every model pin the checks carry is documented beside the others, the fabl
 });
 
 test("the release notes promise what setup does", () => {
-  const program = flat(read(".changeset/the-reasoning-program-comes-with-the-install.md"));
+  const program = flat(releaseNote("the-reasoning-program-comes-with-the-install"));
   assert.doesNotMatch(program, /needs nothing installed first/, "the note promises a machine needs nothing installed; setup offers, and the reader may say no");
   // THE APPROVED SENTENCES, WORD FOR WORD. A clause appended to either one is a sentence nobody approved.
   assert.ok(program.includes("Setup offers to install the reasoning program your engine uses."),
@@ -291,13 +310,13 @@ test("the release notes promise what setup does", () => {
     assert.match(row({ executable: false, rejected: [] }), /not on this computer — setup can install it/, `the ${eng.product} row does not say setup can install it`);
   }
   assert.equal(engineOptions().at(-1).label, "None for now");
-  assert.match(flat(read(".changeset/claude-through-your-own-cloud-account.md")),
+  assert.match(flat(releaseNote("claude-through-your-own-cloud-account")),
     /Tested on Microsoft Azure; Google Cloud and Amazon Bedrock use the Claude program's own settings\./);
 });
 
 test("the release notes say which machines a sentence holds on, where the code decides it by machine", () => {
   // One entry of a note: each paragraph reaches the releases page on its own (.changeset/README.md).
-  const entry = (note, re) => read(`.changeset/${note}.md`).split(/\n\s*\n/).map(flat).find((p) => re.test(p));
+  const entry = (note, re) => releaseNote(note).split(/\n\s*\n/).map(flat).find((p) => re.test(p));
   // DEMO MODE NAMES SETUP ONLY OFF WINDOWS. On native Windows the run door refuses on the platform, so the
   // advice names WSL2 and the devcontainer, and a note saying demo mode points to setup is false there.
   const claude = ENGINE_BINARIES["anthropic-agent"];
