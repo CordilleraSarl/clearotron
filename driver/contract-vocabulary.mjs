@@ -22,7 +22,7 @@
 //   D5 verify.mjs:1504  fail(`${unaccounted[0].token}:…`)    — token minted in a DATA ROW
 //   D6 verify.mjs:1567  fail(`${violations[0].token}…`)      — validatePlanFeasibility in register-plan.mjs
 //   D7 verify.mjs:1558  fail(`${v2[0].token}${detail}…`)     — register-plan.mjs:2018 disclosureTextByAxis
-//   D8 verify.mjs:1718  fail(caseLawLedgerFail(…))           — token built in case-law-ledger.mjs:204
+//   D8 verify.mjs:2425 caseLawLedgerFail  fail(caseLawLedgerFail(…))           — token built in case-law-ledger.mjs:204 caseLawLedgerFail
 //
 // A partition built on the 60 tokens a regex CAN see would run green while blind to the rest, which is
 // worse than having no E2 at all: it certifies a partition it never checked. So the census is authored
@@ -184,7 +184,7 @@ export const VOCABULARY = [
   // ── case-law / narrative-refutation ────────────────────────────────────────────────────────────────
   { token: "caselaw_ledger_missing", stages: ["case-law"], site: "driver/verify.mjs:1682, 1685" },
   { token: "caselaw_ledger_unparseable", stages: ["case-law"], site: "driver/verify.mjs" },
-  { token: "caselaw_ledger", stages: ["case-law"], site: "driver/verify.mjs:1718", family: "driver/case-law-ledger.mjs:204 (census reasons)", dynamic: "D8" },
+  { token: "caselaw_ledger", stages: ["case-law"], site: "driver/verify.mjs:2425 caseLawLedgerFail", family: "driver/case-law-ledger.mjs caseLawLedgerFail (census reasons)", dynamic: "D8" },
   { token: "no_verdict_line", stages: ["narrative-refutation"], site: "driver/verify.mjs" },
   { token: "plan_audit_missing", stages: ["narrative-refutation"], site: "driver/verify.mjs" },
 
@@ -477,7 +477,7 @@ export const INNER_CODES = Object.freeze([
   // `axis_invalid` cause into its own family before counting the rest. A ruling naming only
   // `coverage_no_status` would be true of most `no_status` records and false of the ones that matter most.
   { code: "no_status", mints: ["driver/coverage-form.mjs:836"], rollsUpTo: ["coverage_no_status", "coverage_form_axis_invalid"],
-    why: "Two composites, split on the record's `cause`: verify.mjs:1198 for cause `axis_invalid`, verify.mjs:1263 for the rest. NOT cited at coverage-form.mjs:810 — that is the JSDoc @returns annotation, not the mint." },
+    why: "Two composites, split on the record's `cause`: `checkFindingsSibling()` in verify.mjs for cause `axis_invalid`, `dispositionForm()` there for the rest. NOT the `@returns` annotation above `COVERAGE_CAUSES` in coverage-form.mjs — that is the annotation, not the mint." },
   { code: "engine_vocabulary", mints: ["driver/coverage-form.mjs:826"], rollsUpTo: ["coverage_form_engine_vocabulary"],
     why: "#669 — the seat wrote an engine token into the `reason` sentence that reaches the reader's page. Checked on settled rows too, because a row the seat considers finished is exactly the one whose sentence gets printed. Namespaced at verify.mjs:1165; the bare code names a row, never a stage." },
 

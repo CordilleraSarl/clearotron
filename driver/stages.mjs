@@ -1920,7 +1920,7 @@ export const STAGES = {
       },
       "Findings section prose (both branches — on seat m, every loaded reading as its own finding with its receipt)": {
         class: "judgment", tokens: ["missing", "too_short", "declared_unavailable"],
-        why: "#850 rules the prose J. The findings-heading arm differs per seat: verify.mjs:473 for a/b, verify.mjs:252 for m (which also accepts meaning/connotation). [citation unverified]",
+        why: "#850 rules the prose J. The findings-heading arm differs per seat: `commonLawStructural()` in verify.mjs for a/b, `commonLawMeaningSeat()` for m (which also accepts meaning/connotation)",
       },
       "Negative-results matrix — one receipt-carrying row per (variant x platform) cell (seats a/b only)": {
         class: "judgment", tokens: ["missing"],
