@@ -201,29 +201,6 @@ export function mergeEnvNameBindings(perFile) {
 // The computed read whose subscript is a BARE IDENTIFIER. `env["X"]` is READ_RE's; this is the one that
 // needs the map. Same assignment guard as its siblings — `env[X] = v` is a write. `env?.[X]` is the same
 // read as `env[X]`, for the reason READ_RE gives.
-// ── A NAME HELD IN A TABLE IS A READ, AND THIS IS THE THIRD TIME THE SAME SHAPE HAS HIDDEN ONE ───
-//
-// #1460 closed the accessor family; #1838's step 4 closed `envFrom`. Both were the same defect: a read
-// that stopped spelling `process.env.X` stopped being visible here, silently, while still being a read.
-// This is that shape once more, one remove further on — the name lives in a TABLE and a generic reader
-// resolves it:
-//
-//     "openai-agent": { env: "CLEAROTRON_CODEX_PATH", fallback: "codex" }
-//     record: { env: "CLEAROTRON_REGISTER_RECORD_LOG", file: "register-records.jsonl" }
-//
-// MEASURED over the tracked corpus: thirteen names read exactly this way and seen by nothing above.
-// Two of them — the billing-grade call ledger and the record ledger a provenance claim joins against —
-// had no catalogue row in EITHER contract file and no governance row, and could not have been given one
-// by any ratchet here, because no ratchet could see that they were read. Two more, the engine program
-// paths, had gone the other way: still read, invisible, and their exemptions reading as dead names.
-//
-// NARROW ON PURPOSE — the PROPERTY NAME carries the meaning, not the value's shape. Matching any
-// uppercase string literal would take every message key and enum in the tree; `env`, `tokenEnv` and
-// `envName` are the three spellings this repo uses for "the name of the variable to read", and a fourth
-// spelling is a new blind spot rather than a silent pass, because a name with no reader is what the
-// orphan direction already refuses.
-const TABLE_NAME_RE = /\b(?:env|tokenEnv|envName)\s*:\s*["\']([A-Z][A-Z0-9_]{3,})["\']/g;
-
 const CONST_READ_RE = /(?<![.\w$])(?:process\??\.)?env(?:\?\.)?\[\s*([A-Z][A-Z0-9_]*)\s*\](?!\s*=[^=])/g;
 
 export function namesRead(text, bindings = null) {
@@ -233,8 +210,6 @@ export function namesRead(text, bindings = null) {
   for (let m; (m = READ_RE.exec(stripped));) found.add(m[1] || m[2]);
   ACCESSOR_RE.lastIndex = 0;
   for (let m; (m = ACCESSOR_RE.exec(stripped));) found.add(m[1] || m[2]);
-  TABLE_NAME_RE.lastIndex = 0;
-  for (let m; (m = TABLE_NAME_RE.exec(stripped));) found.add(m[1]);
   // Resolved through the corpus map when one is supplied. Absent map ⇒ this half is simply off, which
   // is what keeps the function pure and drivable on a single string.
   if (bindings) {
