@@ -2909,3 +2909,95 @@ test("the court-decisions line never ships a dangling clause where the country s
   const named = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { ...FULL_COUNTRY_OPTS, searchDepth: depth("none-found", { JP: 12 }) });
   assert.match(named, /Court decisions: none found for Japan\./, "the country drops out of the sentence it belongs in");
 });
+
+// ── "WHERE IT STANDS" IS ABOUT WHAT WAS SEARCHED, NOT ABOUT WHAT WAS ARCHIVED ─────────────────────
+//
+// The section took its countries from the record archive, which is the authority on what came back and
+// was kept. A register that keeps no records therefore produced no countries, no rows, no chips and no
+// section — so a register nobody could archive read exactly like a register nobody searched, on the page
+// a client acts on. The plan is the authority on what was asked, and it is there whether or not anything
+// was kept.
+//
+// BREAK MATRIX:
+//   · a register that archives nothing still fills   → break: read the archive, arm 1 red
+//   · a finding's own country keeps its row          → break: filter the codes to the plan, arm 2 red
+//   · no plan renders exactly as it always has       → break: read null as an empty list, arm 3 red
+//   · a plan that named nothing draws nothing        → break: fall back to the archive, arm 4 red
+//   · an unreached territory is NOT a clean chip     → break: chip it, arm 5 red
+test("where it stands is filled from the search plan, so a register that archives nothing still says where it looked", () => {
+  // THE CHIP'S TEXT IS THE NAME OR THE CODE depending on how many chips there are — twelve is the seam,
+  // drawn that way by the board. Its `title` is always the country's name, so the arms read that and the
+  // rows' own code, which is what makes them stable whichever side of the seam a case falls on.
+  // READ INSIDE THE SECTION'S OWN PANEL, never across the whole page. `rcode` is drawn by other sections
+  // too, so a page-wide walk found an MX row that this section had not drawn: the arm asserting that a
+  // finding's country keeps its row passed with the union removed, which is the one break it exists for.
+  // Measured — plant 2 of the matrix above did not red until this slice was added.
+  const panelOf = (html) => {
+    const i = html.indexOf('class="panel where"');
+    if (i === -1) return '';
+    const j = html.indexOf('<div class="sec"', i);
+    return j === -1 ? html.slice(i) : html.slice(i, j);
+  };
+  const codesOf = (html) => {
+    const panel = panelOf(html);
+    return {
+      rows: [...panel.matchAll(/<span class="rcode">([^<]*)<\/span>/g)].map((m) => m[1]),
+      chips: [...panel.matchAll(/<span class="wchip" title="([^"]*)">/g)].map((m) => m[1]),
+    };
+  };
+
+  // A REGISTER THAT ARCHIVES NOTHING. recordsByCountry is empty — the shape a provider keeping no
+  // records produces — and the plan named three territories.
+  const depth = { counts: { recordsByCountry: {}, courtDecisions: "not-in-scope" } };
+  const plan = { searched: ["JP", "KR", "EM"], unreached: [{ jurisdiction: "US", reason: "outside this register's coverage entirely" }] };
+  const html = renderHtml(parsedOf(REPORT), [], [], { searchDepth: depth, planTerritories: plan });
+  assert.match(html, /Where it stands/, "a register that archives nothing drew no section at all");
+  const { rows, chips } = codesOf(html);
+  assert.deepEqual([...rows, ...chips].sort(), ["European Union", "Japan", "South Korea"],
+    "the section does not name the three territories the plan searched");
+
+  // THE UNREACHED TERRITORY IS NOT ON THE PAGE. This section draws a row carrying a band and a "Nothing
+  // found" chip, and a territory the provider does not cover is neither: chipping it would state a clean
+  // result for a register nobody read.
+  assert.ok(!chips.includes("United States") && !rows.includes("US"),
+    "a territory the register does not cover was drawn as a result");
+  assert.doesNotMatch(html, /outside this register's coverage entirely/, "the deferral's reason reached the page");
+
+  // A FINDING'S OWN COUNTRY KEEPS ITS ROW even where the plan does not list it — an international
+  // registration designating a territory the plan never named is the ordinary case.
+  const inMX = [{ ...FINDINGS[0], ordinal: 41, band: "Moderate", owner: { ...FINDINGS[0].owner, country: "MX",
+    registrations: [{ ...(FINDINGS[0].owner.registrations?.[0] ?? {}), jurisdiction: "MX" }] } }];
+  const withF = renderHtml(parsedOf(REPORT), inMX, [], { searchDepth: depth, planTerritories: { searched: ["JP"], unreached: [] } });
+  const both = codesOf(withF);
+  assert.ok(both.rows.includes("MX") || both.chips.includes("Mexico"),
+    "a finding's own country was filtered out because the plan did not list it");
+
+  // ONE ROW PER COUNTRY WHERE THE PLAN CARRIES BOTH SPELLINGS. A plan lists the register's own EM and GB
+  // beside the EU and UK a reader knows; aliased without deduping, the first worldwide run measured
+  // through this drew two EU rows and two UK rows. The band must survive the fold: the conflict here is
+  // recorded under EM and has to reach the EU row.
+  const inEM = [{ ...FINDINGS[0], ordinal: 42, band: "Moderate", owner: { ...FINDINGS[0].owner, country: "EM",
+    registrations: [{ ...(FINDINGS[0].owner.registrations?.[0] ?? {}), jurisdiction: "EM" }] } }];
+  const bothSpellings = renderHtml(parsedOf(REPORT), inEM, [], { searchDepth: depth,
+    planTerritories: { searched: ["EU", "EM", "GB", "UK", "JP"], unreached: [] } });
+  const folded = codesOf(bothSpellings);
+  const all = [...folded.rows, ...folded.chips];
+  assert.equal(new Set(all).size, all.length, `a country is drawn twice: ${JSON.stringify(all)}`);
+  assert.ok(folded.rows.includes("EU"), "the two EU spellings did not fold onto the reader's own code");
+  assert.match(bothSpellings, /<span class="rcode">EU<\/span><span class="wname">European Union<\/span><span class="kc[^"]*">Moderate</,
+    "a conflict recorded under the register's own spelling lost its band in the fold");
+
+  // NO PLAN IS NOT AN EMPTY PLAN. Every archived and legacy run has none, and those keep the archive as
+  // their only authority and must re-render exactly as they always have.
+  const archived = { counts: { recordsByCountry: { JP: 12, KR: 4 }, courtDecisions: "not-in-scope" } };
+  const before = renderHtml(parsedOf(REPORT), [], [], { searchDepth: archived });
+  const withNull = renderHtml(parsedOf(REPORT), [], [], { searchDepth: archived, planTerritories: null });
+  assert.equal(withNull, before, "passing no plan changed the page an archived run renders");
+  assert.deepEqual(codesOf(before).chips.sort(), ["Japan", "South Korea"],
+    "the archive's own countries stopped rendering");
+
+  // AND A PLAN THAT NAMED NOTHING SAID NOTHING. It is a different answer from no plan at all, so it does
+  // not silently fall back to the archive.
+  const named = renderHtml(parsedOf(REPORT), [], [], { searchDepth: archived, planTerritories: { searched: [], unreached: [] } });
+  assert.doesNotMatch(named, /Where it stands/, "a plan that named nothing fell back to the record archive");
+});

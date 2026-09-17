@@ -1041,18 +1041,55 @@ function whereItStandsSection(findings, opts) {
   const sd = opts && opts.searchDepth;
   if (!sd || !sd.counts || isFullCountry(opts)) return '';
   const byC = sd.counts.recordsByCountry || {};
-  const codes = Object.keys(byC).filter((c) => c !== 'WO');
-  if (!codes.length) return '';
   const bandBy = new Map();
   for (const f of findings) {
     const c = regionCode(f);
     if (!c || c === COMMON_LAW || !f.band) continue;
     if (!bandBy.has(c)) bandBy.set(c, f.band);
   }
+  // WHICH COUNTRIES THIS SECTION IS ABOUT COMES FROM THE SEARCH PLAN, NOT FROM THE RECORD ARCHIVE.
+  //
+  // The archive is the authority on what came back and was kept; the plan is the authority on what was
+  // asked of the register. Read off the archive, a provider that keeps no records produced no countries,
+  // no rows, no chips and no section at all — so a register nobody could archive read exactly like a
+  // register nobody searched, on the page a client acts on. Every provider that keeps partial records
+  // under-reported here for the same reason.
+  //
+  // `planTerritories` is three-valued and the third value is why this is not a one-line swap. `null`
+  // means there is no plan to read, which is every archived and legacy run: those keep the archive as
+  // their only authority and re-render exactly as they always have. A plan that named nothing is a
+  // different answer from no plan at all and is allowed to leave this section empty.
+  //
+  // THE FINDINGS' OWN COUNTRIES ARE UNIONED IN, never filtered out. A finding sitting in a territory the
+  // plan does not list — an international registration designating one, most often — had its row from
+  // the archive before this and must keep it: the section's first duty is that a country carrying a
+  // conflict is on the page.
+  //
+  // The plan's unreached territories are NOT drawn. This section has two slots in the approved board, a
+  // row carrying a band and a "Nothing found" chip, and a territory the provider does not cover is
+  // neither: filing it under "Nothing found" would state a clean result for a register nobody read,
+  // which is the one fusion this file's court-decisions section exists to keep apart.
+  const plan = opts && opts.planTerritories;
+  const planned = plan && Array.isArray(plan.searched) ? plan.searched.map(String) : null;
+  const codes = (planned
+    ? [...new Set([...planned, ...bandBy.keys()])]
+    : Object.keys(byC)).filter((c) => c !== 'WO');
+  if (!codes.length) return '';
   const alias = { EM: 'EU', GB: 'UK' };
-  const withF = [], clean = [];
+  // ONE ROW PER COUNTRY, DEDUPED AFTER THE ALIAS AND NOT BEFORE. The archive wrote each country once, so
+  // this loop never had to ask; a plan carries both spellings — the register's EM and GB alongside the EU
+  // and UK a reader knows — and aliasing them afterwards produced two EU rows and two UK rows on the
+  // first worldwide run measured through it. The band is looked up across every raw code that folded
+  // into the key, so a conflict recorded under EM still reaches the EU row.
+  const rawByKey = new Map();
   for (const c of codes) {
     const key = alias[c] || c;
+    if (!rawByKey.has(key)) rawByKey.set(key, []);
+    rawByKey.get(key).push(c);
+  }
+  const withF = [], clean = [];
+  for (const [key, raws] of rawByKey) {
+    const c = raws.find((r) => bandBy.has(r)) ?? raws[0];
     // THE NAME IS LOOKED UP ON THE ALIASED KEY, NOT THE RAW CODE. The register writes the EUIPO and
     // ISO spellings — EM and GB — and `alias` maps those to the codes a reader knows, EU and UK. The
     // name was resolved from the RAW code, which has no entry under either spelling, so it fell back

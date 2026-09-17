@@ -1784,7 +1784,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // branch in one file, and the provenance line re-homed to the footer. Not licence-only, so this moves too.
 // Advanced again by the break recorded above the FROZEN constant: the export menu moved out to its own
 // module. Not licence-only, so this constant moves with it.
-const FROZEN_BEFORE_SPDX = "c405ed306e3b6d92811a91c36fc13bb01b745c8d6a2c73b17e329f538286d57d";
+const FROZEN_BEFORE_SPDX = "670820cd1f2d63f13db87be649a3c99a78d5b79c3b798d8906f910d35ba2211b";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2399,7 +2399,40 @@ const FROZEN_BEFORE_SPDX = "c405ed306e3b6d92811a91c36fc13bb01b745c8d6a2c73b17e32
 // shell is markup. `brand.mjs` carries chrome that every surface shares; this control belongs to the two
 // report templates and nothing else.
 
-const FROZEN = "2ad495b7be6e42fb95fbd2456896e20150deddd383797fcc8e5af39b647b7725";
+// ── 2026-09-17 — "Where it stands" reads the SEARCH PLAN, not the record archive ─────────────────
+//
+// The section took its countries from `searchDepth.counts.recordsByCountry`, which is the authority on
+// what came back from the register and was kept. A provider that keeps no records therefore produced no
+// countries, no rows, no chips and no section at all — so a register nobody could archive read exactly
+// like a register nobody searched, on the page a client acts on. Measured at the door: a demo run with a
+// register plan naming Japan and Korea and no `_records/` store published with NO "Where it stands"
+// section before this change, and with the board's own two rows after it — `JP Japan Moderate` and
+// `KR South Korea Manageable`, which is what the approved multi-country board draws.
+//
+// IS IT REACHABLE FROM A REPUBLISH? YES, AND IT CHANGES ONE OF THE FOUR DEMOS. This is the question the
+// checklist puts first and it has a real answer here rather than a reassuring one. A run with no plan
+// sidecar — every archived and legacy run — keeps the archive as its only authority and re-renders
+// byte-identically, which is why `planTerritories` is three-valued and null is not an empty list. A run
+// that HAS a plan re-renders with the plan's territories: on the global preliminary demo that is 181
+// chips where the archive gave 82, because the archive held records for 82 of the offices the plan
+// queried. The approved board for that product draws 168, so this moves the page toward the design and
+// not away from it, and the rows are unchanged at EU, UK, JP, KR. The other three demos are
+// byte-identical bar the knockout's publish clock.
+//
+// One defect of my own, found by that measurement and now held by an arm: a plan carries the register's
+// own EM and GB beside the EU and UK a reader knows, so aliasing without deduping drew two EU rows and
+// two UK rows. The fold is now on the aliased key and the band is looked up across every raw code that
+// folded into it, so a conflict recorded under EM still reaches the EU row.
+//
+// The plan's unreached territories are NOT drawn. The board has two slots here, a row carrying a band
+// and a "Nothing found" chip, and a territory the provider does not cover is neither: chipping it would
+// state a clean result for a register nobody read, which is the fusion the court-decisions section three
+// functions down exists to keep apart.
+//
+// Could it live in report.css or brand.mjs? No. Nothing about the section's appearance changes — this is
+// which of the run's own artifacts it reads, and that is renderer logic.
+
+const FROZEN = "13f1f26a83cbb7df13080cd3bab490e408f005bc7351eca0363aed1dd3e1c196";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));
