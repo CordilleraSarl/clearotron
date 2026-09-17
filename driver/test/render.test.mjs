@@ -76,6 +76,37 @@ test("data-driven: gauge, quadrant, key panel, on-field + secondary cards, cover
   assert.match(html, /confirmed-clean|✓/);
 });
 
+test("the delivered report carries none of what the redesign removed", () => {
+  // ONE ARM FOR EVERY REMOVAL, so the eight arms this replaces do not each survive as a test that
+  // something is absent. Each line below was a section, a panel or a marker a client used to meet; the
+  // owner ruled it off the page on 2026-09-16 and the reasons are on the 2026-09-16 report redesign. The arms that
+  // held the SURVIVING half of any of these were repointed rather than deleted, and are above.
+  //
+  // BREAK MATRIX: re-introduce any one of these and exactly one line here reds, naming it.
+  const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, {
+    runId: "removals", nav: '<nav class="sitenav"><span class="lockup">X</span></nav>',
+    depthNote: "Preliminary clearance — covers registered rights",
+  });
+  const gone = [
+    ["a second header bar", /class="sitenav"/],
+    ["the masthead depth strip", /class="depth-strip"/],
+    ["the scope-and-what-we-did-not-search fold", /What we covered/],
+    ["the facts card", /class="panel facts"/],
+    ["the common-law section", /id="common-law"/],
+    ["section numbers", /class="num">\s*0[0-9]/],
+    ["section subtitles", /class="note">these drive the risk read/],
+    ["the heading a lawyer would not say", /On-field conflicts/],
+    ["internal notes", /class="[^"]*int-note/],
+    ["the footer's ladder legend", /Risk bands:/],
+    ["the purple-notes explanation", /Purple notes are for the reviewing lawyer/],
+  ];
+  const lingering = gone.filter(([, re]) => re.test(html)).map(([n]) => n);
+  assert.deepEqual(lingering, [], `a delivered report still carries: ${lingering.join(", ")}`);
+  // AND THE CORPUS IS REAL. An empty render would pass every line above.
+  assert.ok(html.length > 20000, "the fixture rendered almost nothing, so the absences above mean nothing");
+  assert.match(html, /class="panel about"/, "…and it is the redesigned page, not some other document");
+});
+
 test("a genuinely-open floor still surfaces plainly in the report Coverage section (no disclosure suppressed)", () => {
   // Fix-3 guard: dropping internal-axis codenames from the reviewer EMAIL, and filtering an inactive
   // axis out of the open-floor NOTE, must not touch the reader-visible disclosure — the report Coverage
@@ -85,7 +116,10 @@ test("a genuinely-open floor still surfaces plainly in the report Coverage secti
     ...COVERAGE,
   ];
   const html = renderHtml(parsedOf(REPORT), FINDINGS, OPEN_COVERAGE, { runId: "noref-open" });
-  assert.match(html, /What we covered/);
+  // The heading moved with the layout (the 2026-09-16 report redesign): the scope fold and its "What we covered"
+  // grid of every row are gone, and what is LEFT OPEN renders with the counts instead. The disclosure
+  // this arm exists for is the line below, not the heading above it.
+  assert.match(html, /Left open/);
   assert.match(html, /VIBRA \(the shorter root of VIBRANTE\)/, "the meaningful open floor is disclosed to the reader");
   assert.doesNotMatch(html, /primary-sweep|saturation-probe|transliteration-numeric|incumbent-class/, "the reader disclosure is plain — no internal axis codenames");
 });
@@ -130,7 +164,7 @@ test("B1: the enforcer meter states its basis (inferred), never presented as fac
 
 test("classification: composite ≥3 is on-field (02); a common-law secondary renders in its OWN section (spec-48 A5)", () => {
   const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, {});
-  assert.match(html, /On-field conflicts/);
+  assert.match(html, /<h2>Conflicts<\/h2>/);
   // the only secondary finding here is common-law → it renders in the Common-law section, and the
   // register-region "Secondary & watch" section (which would be empty) is omitted.
   assert.match(html, /Common-law &amp; marketplace/);
@@ -320,6 +354,63 @@ test("Map A: a fetched record in recordsByUri OVERRIDES the finding's fields (tr
   assert.doesNotMatch(html, /filed 2008/);              // the finding's transposable field is gone
 });
 
+// ── the depth rule for the Full detail fold: the goods as registered, and the record's dates ─────────
+//
+// The design's depth rule is that the same sections render at every depth and what GROWS is what a
+// finding's fold carries. These two blocks are the full country's alone, and both come off the fetched
+// record: the goods in the register's own words, and the dates to the day where the summary line above
+// carries only years.
+
+const GOODS_REC = {
+  _uri: "https://tm.example/jp/6231111",
+  applicationNumber: "2019046708", registrationNumber: "6231111",
+  applicationDate: "2019-04-02", registrationDate: "2020-03-02", expiryDate: "2030-03-02",
+  statusText: "Registered", jurisdiction: "JP", classList: ["9"],
+  goodsServices: [{ classes: [9], language: null, description: "再充電可能な電池，タコグラフ，ビデオカメラ" }],
+};
+const GOODS_F = () => [{ ...FINDINGS[0], owner: { name: "Yiwu Tengding", country: "JP", registrations: [
+  { uri: "https://tm.example/jp/6231111", classes: ["9"], jurisdiction: "JP" }] } }];
+const FULL_COUNTRY_OPTS = { depthNote: "Full country search — Japan" };
+
+test("depth: a full country's fold carries the goods as registered and the record's own dates", () => {
+  const html = renderHtml(parsedOf(REPORT), GOODS_F(), COVERAGE,
+    { recordsByUri: new Map([[GOODS_REC._uri, GOODS_REC]]), ...FULL_COUNTRY_OPTS });
+  assert.match(html, /<span class="k">As registered<\/span><span class="v">Class 9: 再充電可能な電池，タコグラフ，ビデオカメラ<\/span>/,
+    "the register's own wording, in the language it granted the right in");
+  assert.match(html, /<span class="k">Dates<\/span><span class="v">filed 2019-04-02 · registered 2020-03-02 · expires 2030-03-02<\/span>/,
+    "to the day — the summary line above carries years, which cannot say whether a right lapses this month");
+});
+
+test("depth: the two blocks are the full country's alone", () => {
+  for (const note of ["Global preliminary search — worldwide", "Multi-country focus search — Japan and Korea", ""]) {
+    const html = renderHtml(parsedOf(REPORT), GOODS_F(), COVERAGE,
+      { recordsByUri: new Map([[GOODS_REC._uri, GOODS_REC]]), depthNote: note });
+    assert.doesNotMatch(html, /As registered/, `goods on: ${note || "a run with no depth note"}`);
+    assert.doesNotMatch(html, /class="k">Dates</, `dates on: ${note || "a run with no depth note"}`);
+    // …and the summary line the shallower products DO carry is untouched by their absence.
+    assert.match(html, /filed 2019, registered 2020/, "the one-line summary still reads as it did");
+  }
+});
+
+test("depth: an English entry is preferred where the register wrote one, and nothing is ever translated", () => {
+  const bilingual = { ...GOODS_REC, goodsServices: [
+    { classes: [9], language: null, description: "再充電可能な電池" },
+    { classes: [9], language: "en", description: "Rechargeable batteries" },
+  ] };
+  const html = renderHtml(parsedOf(REPORT), GOODS_F(), COVERAGE,
+    { recordsByUri: new Map([[bilingual._uri, bilingual]]), ...FULL_COUNTRY_OPTS });
+  assert.match(html, /Class 9: Rechargeable batteries/, "the register's own English is the one shown");
+  assert.doesNotMatch(html, /再充電可能な電池/, "and it replaces the local entry rather than doubling it");
+});
+
+test("depth clause F: a record with no goods and no dates grows no empty block", () => {
+  const bare = { ...GOODS_REC };
+  delete bare.goodsServices; delete bare.applicationDate; delete bare.registrationDate; delete bare.expiryDate;
+  const html = renderHtml(parsedOf(REPORT), GOODS_F(), COVERAGE,
+    { recordsByUri: new Map([[bare._uri, bare]]), ...FULL_COUNTRY_OPTS });
+  assert.doesNotMatch(html, /class="record"/, "an archived record missing both fields draws no labelled shell");
+});
+
 // ── WP-receipts W2: the provable "verified" label + provider record links ─────────────────────────────
 test("W2: a record artifact carrying _receipt renders the verified-fetched line; absent receipt renders none (byte-stable)", () => {
   const rec = {
@@ -395,30 +486,34 @@ test("doc-31 owner binding: no record owner → falls back to the model's findin
   assert.match(html, /Matchday, Inc\./);                        // model owner stands when the record has none
 });
 
-test("report floating nav: rendered whenever opts.nav is passed — serve-time nav stripping is portal-report's job", () => {
+test("ONE header bar: an injected site nav is not rendered on a report, whatever is passed", () => {
+  // THE PROPERTY INVERTED WITH THE DESIGN (the 2026-09-16 report redesign). A reader met two stacked headers and the
+  // lower one carried the only brand. The report renders its own bar and nothing else, so a caller that
+  // still passes a nav — the pool index does — gets a report with one header rather than two.
   const NAV = '<nav class="sitenav"><div class="navinner"><a href="../index.html">Archive</a></nav>';
   const internal = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-demo", nav: NAV });
-  assert.match(internal, /class="sitenav"/);
-  assert.match(internal, /href="\.\.\/index.html"/);
-  // one sticky header: nav + topbar wrap in .rep-stickyhead; the nav is static inside it (doesn't fight the topbar)
-  assert.match(internal, /class="rep-stickyhead/);
-  assert.match(internal, /\.rep-stickyhead \.sitenav\{position:static/);
-  // ONE report: opts.client is inert — the nav rides the document; portal-report/readReport strips it
-  // (it lists every customer key) before any embedded reader sees it.
+  assert.doesNotMatch(internal, /class="sitenav"/, "the site bar is the second header the design removed");
+  assert.doesNotMatch(internal, /href="\.\.\/index.html"/, "nothing of the injected nav survives");
+  assert.match(internal, /class="rep-stickyhead/, "the report's own bar still sticks");
+  // ONE report: opts.client is inert, and passing a nav must not fork the render either.
   const stale = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { client: true, runId: "noref-demo", nav: NAV });
   assert.equal(stale, internal, "opts.client no longer forks the render");
+  const navless = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-demo" });
+  assert.equal(navless, internal, "passing a nav changes nothing — it is simply not rendered");
 });
 
-test("logo de-dup: the topbar NEVER carries a lockup — the brand arrives via the injected nav and the footer", () => {
+test("the brand is in the report's own bar, once, and once more in the footer", () => {
+  // ALSO INVERTED. The topbar carried no lockup because the injected site bar already branded the
+  // header; with that bar gone the report had no brand in its header at all. One in the bar, one in the
+  // footer, and never two in the same header — which is the de-duplication this arm was always about.
   const NAV = '<nav class="sitenav"><div class="navinner"><span class="lockup">NAVLOCK</span><a href="../index.html">Archive</a></div></nav>';
   const tbOf = (h) => h.slice(h.indexOf('class="topbar'), h.indexOf('class="tb-menu"'));
   const internal = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-demo", nav: NAV });
-  assert.doesNotMatch(tbOf(internal), /class="lockup"/, "topbar carries no SECOND lockup — the nav already brands the header");
-  assert.match(internal, /class="lockup">NAVLOCK/, "…the single header brand lockup is the nav's");
-  // ONE report: the old client-only topbar lockup went with the CLIENT flag — a navless render brands
-  // via the footer lockup alone.
+  assert.match(tbOf(internal), /class="[^"]*lockup/, "the report's bar carries the brand");
+  assert.doesNotMatch(internal, /NAVLOCK/, "the injected bar's lockup is not rendered — that is the second one");
+  assert.equal((tbOf(internal).match(/class="[^"]*lockup/g) || []).length, 1, "one lockup in the header, never two");
   const navless = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-demo" });
-  assert.doesNotMatch(tbOf(navless), /class="lockup"/, "no audience-forked topbar lockup remains");
+  assert.match(tbOf(navless), /class="[^"]*lockup/, "a navless render brands its own bar too");
   assert.match(navless, /<footer>[\s\S]*class="lockup"/, "the footer lockup still brands the document");
 });
 
@@ -472,22 +567,13 @@ test("theme gating: one report, EXPLICIT theming only (no OS media query + pre-p
 test("no findings.json (legacy / model miss) → renders without crashing, no findings sections", () => {
   const html = renderHtml(parsedOf(REPORT), [], [], {});
   assert.match(html, /THIS IS MY MATCHDAY/);
-  assert.doesNotMatch(html, /On-field conflicts/);             // no findings → section omitted, no crash
+  assert.doesNotMatch(html, /<h2>Conflicts<\/h2>/);             // no findings → section omitted, no crash
 });
 
 // ---- A1/A3 fix: context_notes block + quarantine banner ------------------------------------------
 
 const CTX_NOTE = { type: "famous-neighbour-ungrounded", mark: "CHROME", owner: "Google LLC", context: "one keystroke from NOVAPULSE; famous mark; no fetched record; off-field" };
 const QUAR = [{ index: 8, mark: "CHROME", error: "finding_registration_invalid: (registration.uri must be a non-empty string)" }];
-
-test("A1 render: the famous-neighbour context_notes block renders on the one report", () => {
-  const parsed = parsedOf(FM);
-  const internal = renderHtml(parsed, [], [], { contextNotes: [CTX_NOTE] });
-  assert.match(internal, /Famous-mark neighbours noted/);
-  assert.match(internal, /CHROME/);
-  // a stale opts.client is inert (one report, spec 2026-07-30 §5)
-  assert.equal(renderHtml(parsed, [], [], { client: true, contextNotes: [CTX_NOTE] }), internal);
-});
 
 test("spec-49 T4: the quarantine banner is dead on every variant (a quarantined finding fails the run upstream)", () => {
   const parsed = parsedOf(FM);
@@ -583,39 +669,19 @@ test("§2.2: a pending finding is a hollow ring; filled dots carry the dark cont
   assert.match(svgOf(html), /stroke="#250902" stroke-opacity=".22"/);   // filled dots get the dark outline
 });
 
-test("§2.3/2.4: region grouping — key-panel and secondary share the same region order; common-law leaves the region groups (spec-48 A5)", () => {
-  const html = renderHtml(parsedOf(FM), REGION_FINDINGS, REGION_COVERAGE, {});
-  // key-panel region order = ascending lowest ordinal: US(1) EU(3) JP(4) C/L(5) UK(6) — the landscape
-  // panel keeps its Common-law group (it is the index of everything). The sentinel is C/L, never
-  // Chile's ISO code CL (spec 47).
-  // wp50/wi8: C/L is no longer interleaved in the jurisdiction order — it renders LAST, as its own
-  // labelled non-jurisdiction block (cross-linked to the reading section).
-  assert.deepEqual(orderedCodes(html, "rrow"), ["US", "EU", "JP", "UK", "C/L"], "key panel region order (C/L last)");
-  assert.doesNotMatch(html, /<span class="rcode">CL<\/span>/, "the two-letter CL (Chile) never labels common-law");
-  // A5: the secondary REGION groups hold registers only — common-law has its own section.
-  assert.deepEqual(orderedCodes(html, "rgroup"), ["JP", "UK"], "secondary region order (registers only)");
-  assert.match(html, /<h2>Common-law &amp; marketplace<\/h2>/);            // its own section
-  assert.match(html, /<span class="rname">Common-law \/ marketplace<\/span>/); // labelled as non-register block
-  assert.match(html, /<a href="#common-law">/, "cross-link to the reading section");
-  assert.match(html, /<details class="rrow" open>/);                       // on-field region open by default
-  assert.match(html, /<details class="rgroup"><summary><span class="rcode">UK<\/span>/);  // GB normalized → UK region
-});
-
 test("§2.6/2.8: hero is split — conclusion card carries the verdict, scope card carries jurisdiction chips", () => {
   const html = renderHtml(parsedOf(FM), REGION_FINDINGS, REGION_COVERAGE, {});
   assert.match(html, /class="gconc"/);                                     // verdict block sits with the dial
   assert.match(html, /class="gk">Recommendation<\/span>/);
   // doc-35: the "Open conditions: N to close" self-audit KPI was removed from the conclusion card
   assert.doesNotMatch(html, /class="gk">Open conditions<\/span>/);
-  assert.match(html, /class="jchips"/);                                    // jurisdiction chips in the scope card
-  assert.match(html, /<span class="jchip" title="United States">US<\/span>/);            // hover carries the full country name
-  assert.match(html, /<span class="jchip lim" title="Turkey — coverage-limited">TR\*<\/span>/);   // coverage-limited office dashed + * + named
-  assert.match(html, /coverage-limited \(see/);                            // the limited-office note
+  assert.match(whereRow(html), /United States/, "the country is named in full where a client reads it");
+  assert.match(whereRow(html), /Turkey \(coverage-limited\)/, "a coverage-limited office still says so");
 });
 
 test("§2.9: the issued timestamp renders verbatim from opts (deterministic), omitted when absent", () => {
   const withIssued = renderHtml(parsedOf(FM), REGION_FINDINGS, REGION_COVERAGE, { issued: "2026-06-16 · 14:32 CEST" });
-  assert.match(withIssued, /Issued 2026-06-16 · 14:32 CEST/);
+  assert.match(withIssued, /Issued on 2026-06-16 · 14:32 CEST/);
   assert.match(withIssued, /class="mono tb-issued"/);
   const without = renderHtml(parsedOf(FM), REGION_FINDINGS, REGION_COVERAGE, {});
   assert.doesNotMatch(without, /class="mono tb-issued"/);                  // no issued field when not passed (the .tb-issued CSS rule still lives in <style>)
@@ -678,12 +744,12 @@ test("CHANGE 2: disposition bands — adversarial leads band 1; a Composite-3 co
   // spec 2026-07-30 §3 — 03 Notable but manageable ABSORBS 04 Commercial awareness: the off-field
   // band renders under the SAME heading, demoted to a fold-lead ("we looked, it is not a problem" is
   // one section, not two). The heading count drops; the cards and their words are unchanged.
-  assert.match(html, /<h2>On-field conflicts<\/h2>/);
+  assert.match(html, /<h2>Conflicts<\/h2>/);
   assert.match(html, /<h2>Notable but manageable<\/h2>/);
   assert.doesNotMatch(html, /<h2>Commercial awareness<\/h2>/, "the absorbed heading is gone");
   assert.match(html, /<p class="fold-lead"><b>Same name, a different commercial field\.<\/b>/, "the band-3 lead-in survives as a fold-lead");
   // placement: adversarial (c1) in band 1; coexistence-partner (c2) + distinguished (c3) + off-field (c4) all under 03
-  assert.equal(bandOfCard(html, 1), "On-field conflicts", "adversarial composite-3 leads band 1");
+  assert.equal(bandOfCard(html, 1), "Conflicts", "adversarial composite-3 leads band 1");
   assert.equal(bandOfCard(html, 2), "Notable but manageable", "NORDWAVE-style coexistence-partner composite-3 is band 2, NOT band 1");
   assert.equal(bandOfCard(html, 3), "Notable but manageable", "distinguished composite-3 is band 2");
   assert.equal(bandOfCard(html, 4), "Notable but manageable", "off-field renders under 03 (absorbed), after the fold-lead");
@@ -708,7 +774,7 @@ test("CHANGE 2 back-compat: NO finding carries disposition → legacy composite 
   const legacy = DISP_FINDINGS.map(({ disposition, ...f }) => f);
   const html = renderHtml(parsedOf(FM), legacy, REGION_COVERAGE, { runId: "novapulse-demo" });
   // doc-52 — coverage is no longer a numbered top section; it renders inside the collapsed Scope section.
-  assert.deepEqual(sectionOrder(html), ["The conflict landscape", "On-field conflicts", "Secondary & watch"]);
+  assert.deepEqual(sectionOrder(html), ["The conflict landscape", "Conflicts", "Secondary & watch"]);
   assert.doesNotMatch(html, /Notable but manageable/);
   assert.doesNotMatch(html, /Commercial awareness/);
   // composite≥3 → on-field (c1,c2,c3 full), composite≤2 → secondary (c4 compact) — the pre-change split
@@ -716,40 +782,21 @@ test("CHANGE 2 back-compat: NO finding carries disposition → legacy composite 
   assert.match(html, /<div class="card" id="c2"/);
   assert.match(html, /<div class="card" id="c3"/);
   assert.match(html, /<div class="card compact" id="c4"/);
-  // doc-52 — coverage moved into the collapsed Scope section, under its own subheading
-  assert.match(html, /<details class="scope"><summary>Scope/);
-  assert.match(html, /What we covered — and what's open/);
+  // The 2026-09-16 report redesign — the Scope fold is gone. What a run LEFT OPEN renders in the counts fold, which
+  // is the half of that section a client needed; the rest was the engine's account of its own searching.
+  assert.match(html, /<details class="searched">/);
 });
 
 test("CHANGE 2 back-compat: the EXISTING composite-only fixtures render byte-identically (no disposition anywhere)", () => {
   // REGION_FINDINGS carries no disposition → must use the legacy split + headings unchanged.
   const html = renderHtml(parsedOf(FM), REGION_FINDINGS, REGION_COVERAGE, {});
-  assert.match(html, /On-field conflicts/);
+  assert.match(html, /<h2>Conflicts<\/h2>/);
   assert.match(html, /Secondary &amp; watch/);
   assert.doesNotMatch(html, /Notable but manageable/);
   assert.doesNotMatch(html, /Commercial awareness/);
 });
 
 // ── CHANGE 1: the Methodology telemetry block + frame-reopen note are no longer rendered (internal too) ──
-test("CHANGE 1: the 'How this search was run' Methodology block is NOT rendered (telemetry stripped)", () => {
-  const FM_METH = [
-    "---", "type: prelim-clearance", "matter: meth-demo", "title: METH",
-    "overall_label: LOW", "frame_reopen_note: blind re-derivation diff: 3 cells changed", "---", "",
-    "# Methodology", "Ran 412 searches, 86 record fetches, 14 batches; saturation baseline 0.92; cell-matrix 100/105; has_more=false.",
-    "# Marks", "## Acme", "- ord: 1", "- one: x", "### The read", "y",
-  ].join("\n");
-  const html = renderHtml(parsedOf(FM_METH), FINDINGS, COVERAGE, { runId: "meth-demo" });
-  assert.doesNotMatch(html, /How this search was run/, "the Methodology disclosure block is gone");
-  assert.doesNotMatch(html, /class="method"/);
-  assert.doesNotMatch(html, /86 record fetches/, "fetch counts never surface");
-  assert.doesNotMatch(html, /saturation baseline/);
-  assert.doesNotMatch(html, /cell-matrix/);
-  assert.doesNotMatch(html, /has_more/);
-  // genuine coverage OPEN ITEMS still render (the coverage grid is untouched)
-  assert.match(html, /What we covered/);
-  assert.match(html, /class="cov"/);
-});
-
 test("spec-49 T4: legacy fm caveat notes (frame_reopen_note / envelope_note) render on NO report variant", () => {
   // Archived runs may still carry these fm fields — the render must not resurrect the caveat surface.
   // Their substance reaches the reader via verdict clamp reasons + injected coverage rows (T1/T3);
@@ -879,9 +926,11 @@ test("Full detail: a registration URI links from the run's ALLOW-LIST, never fro
 test("the card header shows the contentious MARK + the classes it matched in (not only the holder)", () => {
   const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, {});
   // FINDINGS[0]: holder "Matchday, Inc." owns the mark MATCHDAY in class 41 — the card shows BOTH, prominently
-  assert.match(html, /class="who">Matchday, Inc\.<\/span>/, "the holder is still shown");
-  assert.match(html, /class="cm-mark">MATCHDAY<\/span>/, "the contentious mark is shown next to the holder");
-  assert.match(html, /class="ccl">Cl\.&nbsp;41<\/span>/, "the matched class is shown");
+  // MARK FIRST, THEN WHERE AND WHICH CLASS, THEN THE HOLDER ON THE LINE BELOW (the 2026-09-16 report redesign). All
+  // three facts are still on the card; the order is the one a reader asks them in.
+  assert.match(html, /class="who mark-first">MATCHDAY/, "the contentious mark leads the card");
+  assert.match(html, /class="where">— [^<]*Class 41/, "the matched class rides the same line");
+  assert.match(html, /class="owner-line"><span class="ok">Owner<\/span> Matchday, Inc\./, "the holder is still shown, on its own line");
 });
 
 // ---- A1: a review-killed (withdrawn) finding renders NOWHERE; internal bar notes the kill ----
@@ -992,11 +1041,13 @@ test("spec-48 A5: on-field common-law stays in On-field (full card) and is cross
     composite: 4, level: "D", dispute_type: "classic", meters: RMETERS, quadrant: { x: 0.85, y: 0.85 },
     source: { source_type: "common-law-marketplace" } };
   const html = renderHtml(parsedOf(FM), [...REGION_FINDINGS, clOn], REGION_COVERAGE, {});
-  assert.equal(bandOfCard(html, 7), "On-field conflicts", "the on-field CL card drives the read from On-field");
-  assert.equal(bandOfCard(html, 5), "Common-law & marketplace", "the secondary CL card lives in the CL section");
+  assert.equal(bandOfCard(html, 7), "Conflicts", "the on-field CL card drives the read from On-field");
+  // The 2026-09-16 report redesign — the section heading is gone and the cards render with the other findings, so a
+  // secondary common-law card sits under the last heading above it rather than under one of its own.
+  // What this arm holds is that the card is ON the page and cross-linked, which is what went missing
+  // when the heading was first removed.
+  assert.match(html, / id="c5"/, "the secondary common-law card still renders");
   assert.match(html, /On-field common-law conflicts \(full cards above\): <a href="#c7">#7 AURA<\/a>/);
-  // doc-52 — coverage renders inside the collapsed Scope section, not as a numbered top section
-  assert.match(html, /<details class="scope"><summary>Scope[\s\S]*What we covered — and what's open/);
 });
 
 test("spec-48 A5: disposition mode — common-law leaves the bands for its own section, numbered sequentially", () => {
@@ -1004,10 +1055,11 @@ test("spec-48 A5: disposition mode — common-law leaves the bands for its own s
     composite: 2, level: "B", dispute_type: "nuisance-claim", disposition: "off-field",
     meters: DMETERS, quadrant: { x: 0.15, y: 0.15 }, source: { source_type: "common-law-marketplace" } };
   const html = renderHtml(parsedOf(FM_NOVAPULSE), [...DISP_FINDINGS, clOff], [], { runId: "novapulse-demo" });
-  assert.equal(bandOfCard(html, 5), "Common-law & marketplace", "the CL off-field card is in the CL section, not band 3");
-  assert.equal(bandOfCard(html, 4), "Notable but manageable", "register off-field stays in the absorbed 03 band");
-  const order = sectionOrder(html);
-  assert.deepEqual(order.slice(-1), ["Common-law & marketplace"], "CL section renders after the bands (no coverage in this fixture)");
+  // The 2026-09-16 report redesign — same as above: the cards outlive their heading. An off-field common-law card
+  // still renders and still does not join the register bands, which is the distinction this arm is for.
+  assert.match(html, / id="c5"/, "the off-field common-law card still renders");
+  assert.notEqual(bandOfCard(html, 5), "Notable but manageable", "…and it is not absorbed into the register band");
+  assert.equal(bandOfCard(html, 4), "Notable but manageable", "register off-field stays in the absorbed band");
 });
 
 // ---- C1/C2: jurisdiction-system labels + the Paris-priority window flag ----
@@ -1051,16 +1103,19 @@ test("spec 47: a reasoned Enforcer prose bullet suppresses the templated meter l
   assert.doesNotMatch(card1, /appetite <i>inferred<\/i>/, "the templated meter line never doubles a reasoned prose bullet");
   // card 2 has no prose enforcer bullet — the templated meter line still renders (inferred, honest)
   const card2 = html.slice(html.indexOf('id="c2"'));
-  assert.match(card2, /<b>Enforcer\.<\/b> Low appetite <i>inferred<\/i>/);
+  // "Enforcer" was a noun for the owner; the meter measures what the owner is likely to DO
+  // (the 2026-09-16 report redesign). The token under the label is untouched, and so is the suppression above.
+  assert.match(card2, /<b>Likely to enforce\.<\/b> Low appetite <i>inferred<\/i>/);
 });
 
 test("spec 47: the title heading carries classes + searched countries, full names on hover", () => {
   const html = renderHtml(parsedOf(FM), REGION_FINDINGS, REGION_COVERAGE, {});
-  const scope = (html.match(/<div class="mark-scope"[^>]*>[\s\S]*?<\/div>/) || [""])[0];
-  assert.ok(scope, "the mark-scope line renders under the H1");
-  assert.match(scope, /Cl\.&nbsp;5 · 32 · 41/);
-  assert.match(scope, /<span title="United States">US<\/span>/);
-  assert.match(scope, /<span title="Turkey">TR<\/span>/);
+  // The scope line under the H1 became labelled rows of About this request (the 2026-09-16 report redesign): the same
+  // two facts, named rather than abbreviated, so nothing depends on a hover to be read.
+  const about = (html.match(/<div class="panel about">[\s\S]*?<\/div><\/div>/) || [""])[0] || html;
+  assert.match(about, /Classes<\/span><span class="v">5 · 32 · 41/);
+  assert.match(about, /Where searched<\/span><span class="v">[^<]*United States/);
+  assert.match(about, /Where searched<\/span><span class="v">[^<]*Turkey/);
 });
 
 test("spec 47: external links in prose open in a new tab; internal anchors do not", () => {
@@ -1118,7 +1173,12 @@ test("spec 49: verdictInfo drives the gauge and bound recommendation — fm.over
   // doc-52 — the conditions live in the plain bound line (sourced from "Only you can close these"),
   // stated ONCE; the gauge shows the bare recommendation and the engine clamp reason never reaches any reader.
   assert.match(withVi, /class="gv gv-rec">Proceed with the filing/);
-  assert.doesNotMatch(withVi, /close the CN register gap/, "the engine clamp reason never renders");
+  // OWNER RULING 2026-09-16: the verdict shows EVERY condition, never the first and a count of the rest.
+  // This sidecar is a legacy one with no client-voice clause beside its reason, so the run-record text is
+  // what a reader gets. That is the remaining half of the 2026-09-16 report redesign and it is with the owner; what
+  // this arm now holds is that nothing is hidden behind a count.
+  assert.match(withVi, /close the CN register gap/, "every condition reaches the page");
+  assert.doesNotMatch(withVi, /and \d+ more/, "…and none of them hides behind a count");
   // wp50: ONE vocabulary — pill/topbar speak the client tier word, ticks the client scale; no third scale
   assert.match(withVi, />MANAGEABLE<\/div>/, "gauge pill speaks the derived client tier word");
   assert.match(withVi, /class="tb-risk"[^>]*>MANAGEABLE</, "topbar badge speaks the same word");
@@ -1132,23 +1192,27 @@ test("spec 49: verdictInfo drives the gauge and bound recommendation — fm.over
   assert.match(noVi, />Severe</, "legacy tick vocabulary preserved without a sidecar");
 });
 
+  // WHERE SEARCHED MOVED FROM CHIPS TO A LABELLED ROW (the 2026-09-16 report redesign). The derivation is untouched —
+  // the same jurisdictionCodes decides the set, the order and which office was coverage-limited — so the
+  // property these arms hold is the same one, read where a client now reads it.
+  const whereRow = (h) => (h.match(/Where searched<\/span><span class="v">([^<]*)/) || [])[1] || "";
 // ── T6 (D4 + H10): honest searched scope + the worst-exposure jurisdiction ──────────────────────
 test("spec 49 (D4): the machine-derived searched set drives the header; a code-LIST coverage row also parses (copper-spire's shape)", () => {
   // machine set (register-plan regions via publish) wins
   const withSet = renderHtml(parsedOf(FM), REGION_FINDINGS, [], { searchedJurisdictions: ["US", "EU", "UK", "CN", "JP", "NZ", "PH", "IN", "RU", "ID", "ZA", "TR"] });
-  for (const code of ["US", "CN", "NZ", "PH", "ZA", "TR"]) assert.match(withSet, new RegExp(`<span class="jchip" title="[^"]*">${code}</span>`), `${code} chips in`);
+  for (const name of ["United States", "China", "New Zealand", "Philippines", "South Africa", "Turkey"]) assert.match(whereRow(withSet), new RegExp(name), `${name} in the searched set`);
   // copper-spire's single row carrying a code LIST — the old single-code regex matched nothing → "CN/EU"
   const listCoverage = [{ area: "register / material jurisdictions US·EU·UK·CN·JP·NZ", state: "confirmed-clean", note: "" }];
   const legacy = renderHtml(parsedOf(FM), REGION_FINDINGS, listCoverage, {});
-  for (const code of ["US", "EU", "UK", "CN", "JP", "NZ"]) assert.match(legacy, new RegExp(`>${code}\\*?</span>`), `${code} extracted from the list row`);
+  for (const name of ["United States", "European Union", "United Kingdom", "China", "Japan", "New Zealand"]) assert.match(whereRow(legacy), new RegExp(name), `${name} extracted from the list row`);
 });
 
 test("spec 49 (H10): the hero names the highest-exposure jurisdiction(s), derived from the highest-rated finding(s)", () => {
   const html = renderHtml(parsedOf(FM), REGION_FINDINGS, REGION_COVERAGE, {});
   // REGION_FINDINGS: max composite 4 = the EU finding
   assert.match(html, /Highest exposure<\/span>/);
-  assert.match(html, /Highest exposure<\/span><span class="v"><span title="European Union">EU<\/span>/);
-  assert.match(html, /from the highest-rated finding/);
+  assert.match(html, /Highest exposure<\/span><span class="gv">European Union/, "the rating card names it in full");
+  assert.match(html, /Highest exposure<\/span><span class="gv">/, "the rating card carries it; the explanatory suffix is off the page");
   // no rated findings ⇒ the row is suppressed
   const none = renderHtml(parsedOf(FM), [], [], {});
   assert.doesNotMatch(none, /Highest exposure/);
@@ -1171,20 +1235,6 @@ test("spec 49 (E5/E6): matched case-law strands render on EVERY joined card; enf
   // E1: the chip set states the contributing layers
   assert.match(card1, /<span class="src reg">Register<\/span>/);
   assert.match(card1, /<span class="src cl">Case-law<\/span>/);
-});
-
-test("spec 49 (E4): the common-law section lists what the marketplace layer added to register findings — even with zero CL findings", () => {
-  const f = [{ ...FINDINGS[0],
-    use_check: { source: "https://store.example/matchday-listing" },
-    meters: { ...FINDINGS[0].meters, use: { token: "confirmed", basis: "verified-from-record", _status: "confirmed", _useSourceClass: "owner-site" } } }];
-  const html = renderHtml(parsedOf(REPORT), f, COVERAGE, {});
-  assert.match(html, /Common-law &amp; marketplace/, "the section renders on contributions alone");
-  assert.match(html, /What the marketplace layer added to register findings/);
-  // D4 — same three facts, three positions, none of them fused: what was found, where it was
-  // checked, and how well it is evidenced. The line used to spend ' · ' on two different jobs.
-  // — no verification word on the use surface (ruling); the source class alone.
-  assert.match(html, /use Confirmed — store\.example <i class="evstat">\(evidence: from the owner's own site\)<\/i>/,
-    "attributed, with the source class (the use line prints no verification word)");
 });
 
 // ── wp50/wi5: # Actions renders on the report — the Q&A can no longer be email-only ────────────────────
@@ -1242,19 +1292,21 @@ test("doc-52: reading order + plain banner (from only-you) + ruled-out routing +
   const html = renderHtml(parsedOf(md), F, COV, opts);
   const client = renderHtml(parsedOf(md), F, COV, { ...opts, client: true });
   // reading order: verdict (mark) → conflicts → What only you can close → Scope
-  const iVerdict = html.indexOf('class="mark"'), iConf = html.indexOf("On-field conflicts");
-  const iYou = html.indexOf("What only you can close"), iScope = html.indexOf("Scope &amp; what we didn't search");
-  assert.ok(iVerdict >= 0 && iVerdict < iConf && iConf < iYou && iYou < iScope, "verdict → conflicts → only-you → Scope");
+  const iVerdict = html.indexOf('class="mark"'), iConf = html.indexOf("<h2>Conflicts</h2>");
+  const iYou = html.indexOf("What only you can close"), iScope = html.indexOf('<details class="searched">');
+  assert.ok(iVerdict >= 0 && iVerdict < iConf && iConf < iYou && iYou < iScope, "verdict → conflicts → only-you → what was searched");
   // the lawyer's Q&A leads in the verdict block, before the conflicts
   assert.ok(html.indexOf("Answers to your instructions") >= 0 && html.indexOf("Answers to your instructions") < iConf, "Q&A in the verdict block");
   // B1 (spec 2026-07-30 §4) — the "Subject to:" bound line is DELETED (a third copy of the verdict's
   // conditions); the conditions live in "What only you can close" and the verdict statement. The
   // engine clamp reason still never renders anywhere.
   assert.doesNotMatch(html, /class="bound"/, "no bound line — deleted, not reformatted");
-  assert.doesNotMatch(html, /the slice crossed into the band/, "engine clamp reason never renders");
+  // Every condition renders by ruling (2026-09-16); nothing hides behind a count. Giving this site a
+  // client-voice clause is the remaining half of the 2026-09-16 report redesign and is with the owner.
+  assert.doesNotMatch(html, /and \d+ more/, "no condition hides behind a count");
   // ruled-out routing: UNTAMED (off-field, shares no word with NOVAPULSE) leaves the conflict bands
-  assert.match(html, /Also considered — ruled out/);
-  assert.match(html, /<b>#\d+ UNTAMED<\/b>/);
+  assert.match(html, /<h2>Also considered<\/h2>/);
+  assert.match(html, /class="fnum">\d+<\/span><span class="who mark-first">UNTAMED/);
   assert.doesNotMatch(html, /Commercial awareness/, "the genre-neighbour is not surfaced as a conflict");
   // RE-POINTED. This asserted that the renderer REWROTE engine idioms out of a coverage note.
   // That mechanism is deleted: it was find-and-replace over a client-facing string, and is what it
@@ -1295,7 +1347,7 @@ test("doc-52: reading order + plain banner (from only-you) + ruled-out routing +
   assert.doesNotMatch(labelled, /incumbent-class/, "…and the identifier is not on the page");
   assert.match(labelled, /AXIS and Axis both enumerated to zero/, "the seat's sentence rides verbatim — both casings of the mark intact");
   // exactly ONE collapsible Scope section
-  assert.equal((html.match(/<details class="scope"><summary>Scope/g) || []).length, 1, "one Scope section");
+  assert.equal((html.match(/<details class="searched">/g) || []).length, 1, "one counts fold, which is what the Scope section became");
 });
 
 // ── scope_basis: the worldwide claim comes from the PLAN, not from model prose ──────────────────────
@@ -1308,20 +1360,18 @@ test("scope_basis: a worldwide plan reads as worldwide even when no ledger row s
   // Deliberately prose-free: no row mentions worldwide, so only scope_basis can carry the claim.
   const coverage = [{ area: "register / citation-core exact", state: "confirmed-clean", note: "enumerated to has_more:false" }];
   const html = renderHtml(parsedOf(FM), [], coverage, { runId: "ww-plan", scopeBasis: "worldwide" });
-  assert.match(html, /class="jchip ww"[^>]*>worldwide</, "the plan's own answer drives the chip");
-  assert.match(html, /worldwide register sweep/, "and the scope line");
-  assert.match(html, /register sweep ran worldwide/, "and the plain-language disclosure");
-  assert.match(html, /class="jchip"[^>]*>WO<\/span>/, "doc-55 B: WO is always shown on a worldwide sweep");
+  assert.match(whereRow(html), /^Worldwide/, "the plan's own answer leads the row");
+  assert.match(whereRow(html), /WIPO \(Madrid\)/, "doc-55 B: the international register is always in scope on a worldwide sweep");
 
   // Same inputs without the plan flag: unchanged from before — archived runs keep the prose fallback.
   const legacy = renderHtml(parsedOf(FM), [], coverage, { runId: "ww-plan" });
-  assert.ok(!/jchip ww/.test(legacy), "no plan flag and no prose ⇒ no worldwide claim");
+  assert.ok(!/^Worldwide/.test(whereRow(legacy)), "no plan flag and no prose ⇒ no worldwide claim");
 });
 
 test("scope_basis: prose still wins on archived runs that have no plan flag", () => {
   const coverage = [{ area: "register / worldwide sweep", state: "confirmed-clean", note: "enumerated worldwide" }];
   const html = renderHtml(parsedOf(FM), [], coverage, { runId: "ww-prose", scopeBasis: null });
-  assert.match(html, /class="jchip ww"[^>]*>worldwide</, "the pre-existing sniff is untouched");
+  assert.match(whereRow(html), /^Worldwide/, "the pre-existing sniff is untouched");
 });
 
 test("scope_basis: a worldwide sweep never chips its office list", () => {
@@ -1329,7 +1379,7 @@ test("scope_basis: a worldwide sweep never chips its office list", () => {
   // cleared. The office list belongs in "What we covered", never as 186 header chips.
   const coverage = [{ area: "register / citation-core exact", state: "confirmed-clean", note: "" }];
   const html = renderHtml(parsedOf(FM), [], coverage, { runId: "ww-offices", scopeBasis: "worldwide", searchedJurisdictions: [] });
-  assert.match(html, /class="jchip ww"[^>]*>worldwide</);
+  assert.match(html, /Where searched<\/span><span class="v">Worldwide/);
   for (const code of ["AD", "AF", "BQ", "ZW"]) assert.ok(!new RegExp(`<span class="jchip"[^>]*>${code}<`).test(html), `${code} never chips on a worldwide run`);
 });
 
@@ -1349,9 +1399,9 @@ test("wp50: script rows are skipped, worldwide leads the scope, and every leg of
       { uri: "https://tm.corsearch.com/mark/pk/444492" } ] }, source: { source_type: "register-vendor" } },
   ];
   const html = renderHtml(parsedOf(FM), findings, coverage, { runId: "scope-demo" });
-  assert.match(html, /worldwide register sweep/, "the header states the true scope");
-  assert.match(html, /class="jchip ww"[^>]*>worldwide</, "worldwide chip leads the facts panel");
-  for (const code of ["TR", "AE", "SA"]) assert.match(html, new RegExp(`<span class="jchip"[^>]*>${code}</span>`), `${code} (risk-bearing leg) chips in`);
+  assert.match(html, /Where searched<\/span><span class="v">Worldwide/, "the About panel states the true scope");
+  assert.match(html, /Where searched<\/span><span class="v">Worldwide/, "worldwide leads the searched row");
+  for (const name of ["Turkey", "United Arab Emirates", "Saudi Arabia"]) assert.match(html, new RegExp(`Where searched</span><span class="v">[^<]*${name}`), `${name} (risk-bearing leg) is in the searched set`);
   for (const bad of ["ZH", "AR", "CY", "KR"]) assert.ok(!new RegExp(`<span class="jchip"[^>]*>${bad}<`).test(html), `script token ${bad} never chips`);
   assert.ok(!/jchip"[^>]*>PK</.test(html), "a composite-2 finding's leg does not join the union");
   // no worldwide row, no ≥3 finding → legacy shape untouched
@@ -1414,24 +1464,6 @@ test("wp50: the C/L group renders AFTER the region list, labelled and cross-link
 });
 
 // ── wp50/wi9: coverage reads as covered vs next-steps, in plain English ─────────────────────────────────
-test("wp50: coverage grid — clean rows green, routine states neutral (.todo/.info, never orange warn), split intro renders", () => {
-  const cov = [
-    { area: "register / worldwide Class-5 sweep", state: "confirmed-clean", note: "enumerated to has_more:false" },
-    { area: "Follow-up / WHO INN drug-name-stem screening", state: "open", note: "not completed this run — the source timed out this run" },
-    { area: "common-law / non-Latin marketplace reach", state: "coverage-limited", note: "thin non-Latin marketplace data" },
-    { area: "common-law / per-jurisdiction ledger", state: "note", note: "ledger accounts at platform level" },
-  ];
-  const html = renderHtml(parsedOf(REPORT), FINDINGS, cov, {});
-  assert.match(html, /covcell ok/, "clean row keeps the green check");
-  assert.ok(!/covcell warn/.test(html), "no orange warn cells for routine states");
-  assert.match(html, /covcell todo/, "open/limited rows are neutral to-dos");
-  assert.match(html, /covcell info/, "note rows are info");
-  assert.match(html, /Next steps &amp; monitoring/, "the split intro renders");
-  assert.match(html, /· Open item</, "state word in plain English");
-  assert.match(html, /· Partially covered</, "coverage-limited state word");
-  assert.ok(html.indexOf("covcell ok") < html.indexOf("Next steps"), "covered group leads");
-});
-
 // ---- doc-54: the dynamic framework band ladder (one tick per band; Clear = zero-state, not a tick) ----
 import { parseFrameworkManifest } from "../framework.mjs";
 const AURORA_MANIFEST = parseFrameworkManifest(JSON.stringify({
@@ -1571,17 +1603,6 @@ test("B1 (spec 2026-07-30 §4): the 'Subject to:' bound line is DELETED — no t
 });
 
 // ---- report-leftovers: session-wide notice, pending dot, C/L default-collapse ----
-test("leftovers: the case-law session-wide notice renders ONCE in §04 when strands exist to reference it", () => {
-  const clMap = new Map([[1, { ord: 1, mark: "MATCHDAY", owner: "Matchday, Inc.", jurisdiction: "US", body: "No on-point precedent found.\nCoverage gaps: as § Session-wide notice above." }]]);
-  const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { caseLawByOrdinal: clMap, caseLawNotice: "CourtListener and EUR-Lex were unavailable this session; federal-court coverage is partial." });
-  assert.match(html, /Session-wide notice/);
-  assert.match(html, /CourtListener and EUR-Lex were unavailable/);
-  assert.equal((html.match(/Session-wide notice/g) || []).length <= 2, true, "notice heading appears once (plus at most one strand ref)");
-  // no strands ⇒ no orphan notice block
-  const bare = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { caseLawNotice: "CourtListener was down." });
-  assert.doesNotMatch(bare, /Session-wide notice/);
-});
-
 test("leftovers: a _wasPending registration plots with the pending ring, not the solid registered dot", () => {
   const f = [{ ...FINDINGS[0], owner: { ...FINDINGS[0].owner, registrations: [
     { uri: "/mark/gb/1", status: null, _wasPending: true, classes: [] },
@@ -1634,7 +1655,7 @@ test("doc-55 A3 (one-report form): the case-law strand renders its full body onc
   const caseLawNotice = "Case-law grounding incomplete: CourtListener MCP not wired; Legal Data Hunter quota exhausted (HTTP 429).";
   const internal = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { caseLawByOrdinal, caseLawNotice });
   assert.match(internal, /MCP server did not connect/, "the reviewer keeps the full case-law diagnostics");
-  assert.match(internal, /Session-wide notice/, "the session-wide notice renders on the report");
+  assert.doesNotMatch(internal, /Session-wide notice/, "the session notice is operational narration and is off the client's page (the 2026-09-16 report redesign)");
   // ONE report (spec 2026-07-30 §5): the code-owned client line and the client body-fork are retired
   // with the CLIENT flag — a stale opts.client is inert. Getting engine vocabulary off the DOCUMENT for
   // every reader is the prompt-side voice work (charter P6/P7), never a second render here.
@@ -1685,16 +1706,15 @@ test("doc-55 B: a worldwide sweep ALWAYS shows WO (WIPO/Madrid) + the national/r
   const coverage = [{ area: "register / worldwide sweep", state: "confirmed-clean", note: "exact + near-form enumerated worldwide" }];
   const F = [{ ordinal: 1, mark: "ZED", composite: 3, level: "B", dispute_type: "classic", meters: {}, owner: { name: "Z", registrations: [{ uri: "https://tm.example/mark/us/1", jurisdiction: "US" }] }, source: { source_type: "register-vendor" } }];
   const html = renderHtml(parsedOf(FM), F, coverage, { runId: "b" });
-  assert.match(html, /class="jchip"[^>]*>WO<\/span>/, "WO shows even with no Madrid conflict — the worldwide sweep covers the WIPO register");
-  assert.match(html, /national register, the EU regional register[^<]*WIPO\/Madrid/, "the honest per-source coverage note renders");
+  assert.match(html, /Where searched<\/span><span class="v">[^<]*WIPO \(Madrid\)/, "WIPO shows even with no Madrid conflict — the worldwide sweep covers that register");
   // a Madrid record (jurisdiction INT / uri /mark/int/) normalizes to WO, never a raw 'INT' chip
   const madrid = [{ ...F[0], owner: { name: "Z", registrations: [{ uri: "https://tm.example/mark/int/878545", jurisdiction: "INT" }] } }];
   const h2 = renderHtml(parsedOf(FM), madrid, coverage, { runId: "b2" });
-  assert.ok(!/class="jchip"[^>]*>INT</.test(h2), "a Madrid record never chips as raw 'INT'");
-  assert.match(h2, /class="jchip"[^>]*>WO</, "it normalizes to the WO (WIPO/Madrid) register");
+  assert.ok(!/Where searched<\/span><span class="v">[^<]*\bINT\b/.test(h2), "a Madrid record is never named as raw 'INT'");
+  assert.match(h2, /Where searched<\/span><span class="v">[^<]*WIPO \(Madrid\)/, "it normalizes to the WIPO register");
   // a targeted (non-worldwide) run does NOT get a forced WO chip
   const targeted = renderHtml(parsedOf(FM), F, [{ area: "register / US", state: "confirmed-clean", note: "" }], { runId: "b3" });
-  assert.ok(!/class="jchip"[^>]*>WO</.test(targeted), "WO is not forced onto a targeted (non-worldwide) run");
+  assert.ok(!/Where searched<\/span><span class="v">[^<]*WIPO/.test(targeted), "WIPO is not forced onto a targeted (non-worldwide) run");
 });
 
 // ---- WP-56 B2: the standing mark-itself section (typed mark_assessment → top-of-report render) ----
@@ -1802,34 +1822,6 @@ test("spec 64: f.impact renders as a code-built 'If enforced' bullet (structured
 });
 
 // ── spec 62: per-project disclosure — the project line (both surfaces) + the origin table (internal-only) ──
-test("spec 62: 'Run under project' + the configuration-provenance table render on the one report; serve-time removal is portal-report's", () => {
-  const originsJson = JSON.stringify([
-    { field: "Marketplaces", value: "9 stores + web", origin: "project" },
-    { field: "Default classes", value: "9, 28, 41", origin: "project" },
-    { field: "Delivery format", value: "summary", origin: "customer" },
-  ]);
-  const fmProj = [
-    "---", "type: prelim-clearance", "matter: noref-demo", "title: THIS IS MY MATCHDAY",
-    "overall_label: MEDIUM", "overall_badge: l3", "overall_caption: medium overall.",
-    "classes: 5 · 32 · 41", "jurisdiction: United States only", "run: 2026-06-10",
-    "run_under_project: Console ecosystem (Aurora Interactive)",
-    `origins_json: ${originsJson}`,
-    "---", "",
-  ].join("\n");
-  const report = `${fmProj}\n${CARDS}`;
-
-  const internal = renderHtml(parsedOf(report), FINDINGS, COVERAGE, { runId: "noref-demo" });
-  assert.match(internal, /Run under project: <span class="mono">Console ecosystem \(Aurora Interactive\)<\/span>/, "project line on the internal footer");
-  assert.match(internal, /Configuration provenance \(internal\)/, "the origin table renders internally");
-  assert.match(internal, /Marketplaces/, "an origin row renders (effective + set-by)");
-
-  // ONE report (spec 2026-07-30 §5): the origin table rides the document (class scoperead/origins);
-  // portal-report.mjs strips those elements for EVERY embedded reader at serve time — one place,
-  // tested there. A stale opts.client is inert here.
-  const stale = renderHtml(parsedOf(report), FINDINGS, COVERAGE, { client: true, runId: "noref-demo" });
-  assert.equal(stale, internal, "opts.client no longer forks the provenance table");
-});
-
 // ── 404-card caveat (2026-07-22): a closure-fetch-FAILED citation gets ONE code-owned unverified line ──
 test("404-card caveat: a _recordFetchFailure finding carries the deterministic caveat line; unstamped findings do not", () => {
   const stamped = FINDINGS.map((f, i) => i === 1
@@ -1937,15 +1929,15 @@ test("spec 2026-07-30 §3: structured mark_assessment renders the `read` sentenc
 test("charter ruling 1: opts.depthNote renders as a NAME-LED masthead depth strip; absent (archived) ⇒ no strip", () => {
   const note = "Preliminary clearance — covers registered rights and unregistered (common-law) use; the dedicated per-jurisdiction native-script deep dive is not part of this depth.";
   const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "d", stageLabel: "Depth 4", depthNote: note });
-  assert.match(html, /<div class="depth-strip">/);
+  assert.match(html, /Type of search<\/span><span class="v">/, "the depth note is a labelled row of About this request now");
   // name-led (the pill name), bolded ahead of the coverage clauses
-  assert.match(html, /<div class="depth-strip"><b>Preliminary clearance<\/b> — covers registered rights and unregistered \(common-law\) use/);
-  assert.ok(html.indexOf('<div class="depth-strip">') < html.indexOf('class="mark"'), "the strip sits in the masthead, above the mark");
+  assert.match(html, /Type of search<\/span><span class="v">Preliminary clearance</, "the type leads the row; the covers sentence is off the page by ruling");
+  assert.ok(html.indexOf('panel about') > html.indexOf('class="mark"'), "About this request sits under the name, where a reader looks after it");
   // a nameless note (retired-level degradation) renders whole, unbolded — never an invented name
   const plain = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "d", depthNote: "This depth covers registered rights." });
-  assert.match(plain, /<div class="depth-strip">This depth covers registered rights\.<\/div>/);
+  assert.match(plain, /Type of search<\/span><span class="v">This depth covers registered rights\./, "a note with no dash is the type entire");
   const bare = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "d" });
-  assert.doesNotMatch(bare, /<div class="depth-strip">/, "no sidecar ⇒ no strip ⇒ archived runs render as before");
+  assert.doesNotMatch(bare, /Type of search/, "no sidecar ⇒ no row ⇒ archived runs render as before");
 });
 
 test("§L: disposition mode absorbs the famous-mark notes into 03 Notable but manageable (out of Scope)", () => {
@@ -1969,13 +1961,19 @@ test("§L: a same-element mark (token containment ≥4 chars) is NEVER silently 
     { ordinal: 3, mark: "UNTAMED", owner: dreg("US", "/mark/us/3"), composite: 2, level: "B", dispute_type: "nuisance-claim", disposition: "off-field", meters: DMETERS, quadrant: { x: 0.2, y: 0.1 }, source: { source_type: "register-vendor" } },
   ];
   const html = renderHtml(parsedOf(FM_TIKI), F, [], { runId: "plot-demo" });
-  const svg = html.slice(html.indexOf("<svg viewBox"), html.indexOf("</svg>"));
+  // ANCHOR ON THE CHART, not on the first svg in the document: the report bar carries the brand lockup,
+  // which is an svg and comes first. Slicing from the landscape wrapper reads the chart whatever else
+  // the page draws above it.
+  const land = html.slice(html.indexOf('class="landwrap"'));
+  const svg = land.slice(land.indexOf("<svg viewBox"), land.indexOf("</svg>"));
   assert.match(svg, /href="#c2"/, "FREEZEIV plots on the landscape");
   assert.equal(bandOfCard(html, 2), "Notable but manageable", "and renders in the absorbed awareness band, not the ruled-out list");
   // the genuinely word-free neighbour still routes to the quiet list, with its ordinal accounted for
   assert.doesNotMatch(svg, /href="#c3"/, "UNTAMED stays off the chart");
-  assert.match(html, /Also considered — ruled out/);
-  assert.match(html, /<b>#3 UNTAMED<\/b>/, "the ruled-out ordinal stays accounted for");
+  assert.match(html, /<h2>Also considered<\/h2>/);
+  // The ruled-out list became cards under Also considered (the 2026-09-16 report redesign): the ordinal and the mark
+  // are both still on the page, which is what keeps a numbering gap from reading as a lost finding.
+  assert.match(html, /class="fnum">3<\/span><span class="who mark-first">UNTAMED/, "the ruled-out ordinal stays accounted for");
 });
 
 // ── P5 (charter 2026-07-30, Reviewer §L) — content model on the render ──────────────────────────────────
@@ -2019,19 +2017,19 @@ test("P5: the four-answers panel renders in the hero from opts.fourAnswers; abse
     registrability: { read: "The descriptive element carries no exclusive rights of its own.", token: "registrable-with-conditions", obstacles: [{ class: "41", note: "the office holds the element descriptive for these services" }] },
   };
   const html = renderHtml(parsedOf(REPORT), P5_BANDED, COVERAGE, { runId: "noref-demo", fourAnswers });
-  assert.match(html, /The four answers/);
+  assert.match(html, /class="gwhy"/, "the four answers are the rating card's Why <band> now");
   assert.match(html, /Third-party rights/);
-  assert.match(html, /fa-token">Strong<\/span> — Strong senior rights block the core class\./);
+  assert.match(html, /fa-token tone-[a-z]+">Strong<\/span> — Strong senior rights block the core class\./, "the judgment word carries its own colour now");
   assert.match(html, /Likelihood of objection/);
   assert.match(html, /fa-ords"><a href="#c1">#1<\/a>/);
   assert.match(html, /Class 41\.<\/b> the office holds the element descriptive for these services/);
   // the omitted fourth answer renders no row; the panel never fakes it
   assert.ok(!html.includes("Your own enforceability"));
   const bare = renderHtml(parsedOf(REPORT), P5_BANDED, COVERAGE, { runId: "noref-demo" });
-  assert.ok(!bare.includes("The four answers"), "absent fourAnswers must render no panel");
+  assert.ok(!bare.includes('class="gwhy"'), "absent fourAnswers must render no Why block");
   // both variants carry it (one report)
   const client = renderHtml(parsedOf(REPORT), P5_BANDED, COVERAGE, { runId: "noref-demo", client: true, fourAnswers });
-  assert.match(client, /The four answers/);
+  assert.match(client, /class="gwhy"/);
 });
 
 // Review 2026-07-31 (BLOCKING): the six new P5 free-prose fields bypassed inline() — the ONE
@@ -2066,35 +2064,6 @@ const P5_TAILED_ANSWERS = {
     obstacles: [{ class: "41", note: "the office holds the element descriptive ::p:: STAFFONLYOBSTACLE" }] },
 };
 const P5_STAFF_TAGS = ["STAFFONLYLEGAL", "STAFFONLYPRACTICAL", "STAFFONLYMANAGEABLE", "STAFFONLYREAD", "STAFFONLYBASIS", "STAFFONLYOBSTACLE"];
-
-test("P5 internal-note safety: every new free-prose field routes through the choke point — no raw marker, tails RELABELLED", () => {
-  const html = renderHtml(parsedOf(REPORT), P5_TAILED, COVERAGE, { runId: "noref-demo", fourAnswers: P5_TAILED_ANSWERS });
-  // BOTH of these fail on the pre-fix bytes: bare esc() renders the marker and never mints the label.
-  assert.ok(!html.includes("::p::"), "the raw internal marker must never survive to any surface");
-  assert.match(html, /\[internal\] STAFFONLYLEGAL/);
-  assert.match(html, /\[internal\] STAFFONLYPRACTICAL/);
-  assert.match(html, /\[internal\] STAFFONLYMANAGEABLE/);
-  assert.match(html, /\[internal\] STAFFONLYREAD/);
-  assert.match(html, /\[internal\] STAFFONLYBASIS/);
-  assert.match(html, /\[internal\] STAFFONLYOBSTACLE/);
-  // the PUBLIC head of each mixed field survives — labelling is not suppression
-  assert.match(html, /Legal risk\.<\/b> High similarity over identical services\./);
-  assert.match(html, /Practical position\.<\/b> The owner looks dormant\./);
-  assert.match(html, /Commercial partner\.<\/b> a client partner/);
-  assert.match(html, /Strong senior rights block the core class\./);
-});
-
-test("P5 internal-note safety: a line-leading label wears the int-note print class, on both P5 containers", () => {
-  const whollyInternal = [{ ...P5_TAILED[0], legal_position: "::p:: STAFFONLYWHOLE", practical_position: "" }];
-  const html = renderHtml(parsedOf(REPORT), whollyInternal, COVERAGE, { runId: "noref-demo",
-    fourAnswers: { third_party_rights: { read: "::p:: STAFFONLYWHOLEREAD", token: "strong" } } });
-  // the paragraph form (legal/practical, manageable) …
-  assert.match(html, /<p class="lp int-note"><b>Legal risk\.<\/b> \[internal\] STAFFONLYWHOLE<\/p>/);
-  // … and the four-answers ROW form. It is a <div>, which is why serve-time preparation needed a
-  // div rule of its own — the class is what both the print stylesheet and the strip key on.
-  assert.match(html, /<div class="fa-row int-note">/);
-  assert.ok(!html.includes("::p::"));
-});
 
 // ONE report (/): `client` is a retired flag. A stale caller must get the SAME bytes — that
 // is the honest statement of the retired fork, and it stops a future reader re-growing a client branch
@@ -2199,7 +2168,7 @@ test("a blank or whitespace-only net falls through the fallback chain exactly as
 // down here, in that order — the argument first, the evidence under it.
 test("the positions render below the fold, complete, and lead the drawer", () => {
   const html = renderHtml(parsedOf(REPORT), P5_BANDED, COVERAGE, { runId: "noref-demo" });
-  const drawer = html.slice(html.indexOf('<summary>Full detail &amp; provenance</summary>'));
+  const drawer = html.slice(html.indexOf('<summary>Full detail</summary>'));
   assert.match(drawer, /<div class="drillbody"><div class="lp-split"><p class="lp"><b>Legal risk\.<\/b> Near-identical mark over identical class-41 services — a high legal read\.<\/p>/,
     "the legal read opens the drawer, whole");
   assert.match(drawer, /<b>Practical position\.<\/b> Owner actively enforces; two oppositions in the last three years\./);
@@ -2242,9 +2211,9 @@ test("on a v6 record the reasoned negatives group by their shared ground, one li
   assert.ok(!/rn-mark">MATCHDAY</.test(html.split("Notable but manageable")[1] ?? ""), "band-1 conflicts never enter the negatives section");
 });
 
-test("zero reasoned negatives SAYS so — an empty heading with nothing under it never renders", () => {
+test("zero reasoned negatives renders NOTHING — no heading, no sentence explaining the emptiness", () => {
   const html = renderHtml(parsedOf(REPORT), [P5_BANDED[0]], COVERAGE, { runId: "noref-demo", findingsSchemaVersion: 6 });
-  assert.match(html, /<b>No reasoned negatives\.<\/b> Every retrieved close match on this run is an on-field conflict/);
+  assert.doesNotMatch(html, /Notable but manageable/, "a heading with nothing under it does not render at all (owner, 2026-09-16)");
   assert.ok(!/class="rn-mark"/.test(html), "no member rows under a zero grouping");
   // and the distinguishing signal: a v5 record renders no such claim either way, because it never grouped
   const legacy = renderHtml(parsedOf(REPORT), [P5_BANDED[0]], COVERAGE, { runId: "noref-demo" });
@@ -2459,25 +2428,6 @@ test("D4/D7: the use-source class has ONE definition, and it reads as a source p
 // was dropped. Dropping a telemetry lead-in only made the wreckage visible — the first surviving bullet
 // became the paragraph and the rest printed their dashes as text. It calls parse.mjs's stripTelemetry
 // now, which splits per LINE first, so the two rules are one rule.
-test("a telemetry lead-in is dropped and the bullets it led each stand as their own item", () => {
-  const meth = "Scope: 146 of 147 searches completed.\n- Japan was not searched.\n- Korea was not searched.";
-  const html = renderHtml(parsedOf(`${REPORT}\n\n# Methodology\n${meth}\n`), FINDINGS, COVERAGE, {});
-  const note = html.match(/<div class="methnote"[^>]*>([\s\S]*?)<\/div>/)?.[1] ?? "";
-  assert.ok(note, "premise: the Methodology note renders at all");
-  assert.doesNotMatch(note, /146 of 147/, "process telemetry never renders — doc-52 CHANGE-1, unchanged");
-  assert.equal((note.match(/<li>/g) ?? []).length, 2, "two authored bullets render as two");
-  assert.match(note, /<li>Japan was not searched\.<\/li><li>Korea was not searched\.<\/li>/,
-    "…and no dash is left printing as text inside another item");
-});
-
-test("the weld never needed telemetry — a multi-line note with none keeps its lead-in AND its bullets", () => {
-  const meth = "Scope note.\n- Japan was not searched.\n- Korea was not searched.";
-  const html = renderHtml(parsedOf(`${REPORT}\n\n# Methodology\n${meth}\n`), FINDINGS, COVERAGE, {});
-  const note = html.match(/<div class="methnote"[^>]*>([\s\S]*?)<\/div>/)?.[1] ?? "";
-  assert.equal(note, "<p>Scope note.</p><ul><li>Japan was not searched.</li><li>Korea was not searched.</li></ul>",
-    "the lead-in is a paragraph and each bullet is an item — before #832 all three welded into one <p>");
-});
-
 test("an ALL-telemetry note still reduces to nothing — no empty methodology block", () => {
   const meth = "Scope: 146 of 147 searches completed.\n- 12 batches ran against the mirror.";
   const html = renderHtml(parsedOf(`${REPORT}\n\n# Methodology\n${meth}\n`), FINDINGS, COVERAGE, {});
@@ -2486,36 +2436,9 @@ test("an ALL-telemetry note still reduces to nothing — no empty methodology bl
   assert.doesNotMatch(html, /How this search was run/, "…and neither is its heading");
 });
 
-test("the ONE-PARAGRAPH archived shape is byte-identical — this is the row every old run sits on", () => {
-  const meth = "Register layer covered worldwide exact VENZY. Common-law layer covered 25 search terms. "
-    + "146 of 147 searches completed.";
-  const html = renderHtml(parsedOf(`${REPORT}\n\n# Methodology\n${meth}\n`), FINDINGS, COVERAGE, {});
-  const note = html.match(/<div class="methnote"[^>]*>([\s\S]*?)<\/div>/)?.[1] ?? "";
-  assert.equal(note, "<p>Register layer covered worldwide exact VENZY. Common-law layer covered 25 search terms.</p>",
-    "one line in, one paragraph out, telemetry clause dropped — the pre-#832 output exactly");
-});
-
 // The divergence names as the actual defect: a fix that leaves the two rules disagreeing has only
 // moved it. They agree because there is now ONE rule — this arm is what would notice a second copy
 // growing back in the renderer.
-test("plainScopeNote and stripTelemetry answer the same input the same way", async () => {
-  const { stripTelemetry } = await import("../publish/parse.mjs");
-  for (const meth of [
-    "Scope: 146 of 147 searches completed.\n- Japan was not searched.\n- Korea was not searched.",
-    "Scope note.\n- Japan was not searched.",
-    "One paragraph with 146 of 147 searches completed inside it. And a real clause.",
-    "First paragraph stands alone.\n\nSecond paragraph stands alone.",
-  ]) {
-    const html = renderHtml(parsedOf(`${REPORT}\n\n# Methodology\n${meth}\n`), FINDINGS, COVERAGE, {});
-    const rendered = html.match(/<div class="methnote"[^>]*>([\s\S]*?)<\/div>/)?.[1] ?? "";
-    const expected = stripTelemetry(meth).trim();
-    // renderProse is markup, so compare the TEXT the renderer kept against the text the sibling rule keeps.
-    const text = rendered.replace(/<\/(p|li)>/g, "\n").replace(/<[^>]+>/g, "").trim();
-    assert.equal(text.replace(/\s+/g, " "), expected.replace(/^- /gm, "").replace(/\s+/g, " "),
-      `the two rules disagree on:\n${meth}`);
-  }
-});
-
 // ── — NO EXTERNAL LINK IS TARGETLESS, AS AN INVARIANT RATHER THAN PER EMITTER ──────────────────
 //
 // Counsel reported two symptoms in delivered reports viewed in the portal: links that open in the
@@ -2639,26 +2562,6 @@ test("no destination that is not http(s), mailto: or a fragment ever reaches an 
 // PINNED IN BOTH DIRECTIONS. The populated branch must stay byte-for-byte what it was — 28 of the pool's
 // 29 clearance reports go down it, and `doRepublish()` re-renders archived runs — so an arm that only
 // checked the empty state would let a careless edit rewrite documents already delivered.
-test("zero coverage rows render the heading and an explicit statement, never silence", () => {
-  const html = renderHtml(parsedOf(REPORT), FINDINGS, [], { runId: "cov-none" });
-  assert.match(html, /What we covered — and what's open/,
-    "the section vanished on a zero-row run: a reader cannot tell a run that measured nothing from one "
-    + "whose section was never reached");
-  assert.match(html, /No coverage record was produced for this run/);
-  assert.match(html, /not a finding that nothing is open/,
-    "the empty state must not read as an all-clear — that is the one way it could be worse than silence");
-});
-
-test("the populated branch is untouched — a republish of a normal run rewrites nothing", () => {
-  const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "cov-rows" });
-  assert.match(html, /What we covered — and what's open/);
-  assert.doesNotMatch(html, /No coverage record was produced/,
-    "the empty-state sentence leaked into a run that HAS coverage — every delivered report would gain it "
-    + "on its next republish");
-  // And the grid is really there, so "no empty-state sentence" is not passing on an empty section.
-  assert.match(html, /class="cov"/, "the grid itself is missing, so the assertion above passed over an empty section");
-});
-
 // ── one row per gap ─────────────────────────────────────────────────────────────────────────────────
 //
 // A deferred search was named twice on the page: once as the model wrote it, and once as the driver

@@ -49,8 +49,14 @@ const CHIP = /ko-findband/;
 // THE REGISTER CARD ONLY. `/ko-findband/` over the whole document matches the MARK's own chip, so an
 // assertion written that way passes with the register card's chip deleted — which is how the first
 // version of the arm below was vacuous. Every chip claim here is scoped to the card under test.
+// A REF IS ALSO A WORD IN A SENTENCE. The register position clause under the counts names the refs it
+// points at — that is what lets a reader walk from the framing to the filing — and it renders above the
+// cards, so the FIRST "BRIMSTONE REG" in the document is prose. Locating the card from that occurrence
+// walked back past every card and returned a slice with no card in it, and the chip assertions below
+// then failed over text that was never a card. The card carries its ref in a `fnum` span; nothing else
+// on the page does, which is what makes it a locator rather than a string that happens to match.
 const registerCard = (html) => {
-  const at = html.indexOf("BRIMSTONE REG");
+  const at = html.search(/<span class="fnum">BRIMSTONE REG/);
   if (at < 0) return "";
   const start = html.lastIndexOf('<div class="card ko-find"', at);
   return html.slice(start, html.indexOf("</div></div>", at) + 12);
@@ -58,7 +64,7 @@ const registerCard = (html) => {
 
 test("a BANDED register card does not also say it carries no rating", () => {
   const html = render("High", "");
-  assert.ok(html.includes("BRIMSTONE REG"), "precondition: the register card rendered at all");
+  assert.match(html, /<span class="fnum">BRIMSTONE REG/, "precondition: the register card rendered at all");
   assert.match(registerCard(html), CHIP,
     "the rater's band is not on the REGISTER card, which is what the later ruling requires");
   assert.ok(!html.includes(NOT_WEIGHED_LINE),
@@ -68,7 +74,7 @@ test("a BANDED register card does not also say it carries no rating", () => {
 
 test("an UNBANDED register card keeps the neutral line and wears no chip", () => {
   const html = render(null, "");
-  assert.ok(html.includes("BRIMSTONE REG"), "precondition: the card rendered");
+  assert.match(html, /<span class="fnum">BRIMSTONE REG/, "precondition: the card rendered");
   assert.ok(html.includes(NOT_WEIGHED_LINE),
     "the neutral line is gone from a card that genuinely carries no rating — which is the state it was "
     + "written for, and dropping it leaves the anatomy silent about why this card has no band");

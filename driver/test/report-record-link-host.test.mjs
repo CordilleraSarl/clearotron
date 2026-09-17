@@ -108,10 +108,11 @@ overall_caption: Synthetic single-purpose fixture for the #775 rendered-link reg
 
 # Summary
 Synthetic fixture. The one thing this document is for is the hosts its anchors name.
+Prose citation, which is the synthesis writing markdown and not a record field:
+[an office page](${EV.prose}).
 
 # Methodology
-The register was searched. Prose citation, which is the synthesis writing markdown and not a record field:
-[an office page](${EV.prose}).
+The register was searched.
 
 # Coverage
 Synthetic coverage panel.
@@ -199,6 +200,20 @@ async function publishAs(providerId, { findings = null, records = null, tag = pr
 
 /** Every `<a …>` open tag with its href, as written. */
 const anchorsOf = (html) => [...html.matchAll(/<a\b[^>]*\shref="([^"]*)"[^>]*>/gi)].map((m) => ({ tag: m[0], href: m[1] }));
+
+// THE PROSE CITATION MOVED SECTIONS, AND WHY THAT IS NOT THE GUARD GOING SOFT. It was written under
+// `# Methodology`, and the report no longer draws that section: what a run could not reach is stated as
+// the counts and the left-open rows of "What was searched", which say it per item and in more detail
+// than the paragraph did (the 2026-09-16 report redesign, and the design's "counts only" rule for that section).
+// `# Summary` is a prose section the design keeps, its markdown goes through the same inline renderer,
+// and the invariant these arms hold — an evidence URL the synthesis wrote in prose reaches the reader
+// exactly as found — is the same one either way. The arm below pins the section's absence, so the move
+// is recorded as a decision rather than left to look like a fixture that drifted.
+test("the Methodology section is off the page, so no prose there reaches a reader", async () => {
+  const html = await publishAs("euipo", { tag: "methodology" });
+  assert.ok(!html.includes("The register was searched."),
+    "a run whose synthesis writes under # Methodology has that paragraph drawn nowhere");
+});
 
 const covered = [];
 

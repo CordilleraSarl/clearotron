@@ -1769,7 +1769,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Advanced again by the break recorded above the FROZEN constant: seven fixed sentences on the
 // clearance page, which is a behaviour change and not licence-only, so both constants move for the same
 // measured reason.
-const FROZEN_BEFORE_SPDX = "5180e3921677db228c542c38834759b268b9d847716b92f2cc779664b431eed3";
+const FROZEN_BEFORE_SPDX = "54db7aee5527887272751814e157f466be0e9fae5d8f47ad90ce290656c857ca";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2123,7 +2123,60 @@ const FROZEN_BEFORE_SPDX = "5180e3921677db228c542c38834759b268b9d847716b92f2cc77
 //   3. WHY IT MUST LAND HERE: the suppression is here. `findings.json` is already correct — the composer
 //      writes each slice exactly once. Only the render drops it.
 
-const FROZEN = "6406616e7217b7a39b746afd6fbba39e221037b26d17fabda77bff5d4a855cf1";
+// ── BREAK: the report a client opens, redrawn (the 2026-09-16 report redesign) ────────────────────────────────────
+//
+// The largest break this file has recorded, and one break rather than a dozen because every edit in it
+// serves one design and a reader meets them as one page. The complaint behind it was length and order:
+// a reader met the name, the band and the classes three times before a sentence of reading, then the
+// narration about what a screen is and is not, and only under all of that the answer.
+//
+// WHAT CHANGED, in the order a reader now meets it: the scope fold and its fixed paragraphs are off the
+// page, replaced by an About this request panel of labelled rows; the rating card carries the company's
+// own ladder with the band lit, the reasons under it, and the framework named once; three sections say
+// how far the search reached — where it stands by country, court decisions, and what was searched as
+// counts; the cleared names are grouped with the reason each was ruled out; and each finding's Full
+// detail fold carries the goods as registered and the record's own dates on a full country search.
+// Three labels take the design's wording: "Likely to enforce", "Full detail", and a summary fold that
+// says what opening it gives.
+//
+// WHAT WAS CARRIED OUT OF THE DELETED FOLD BY HAND, each with its own arm, because a fold removed with
+// its contents assumed is how a disclosure leaves a client's page silently: the rows a run LEFT OPEN,
+// the record provenance legend, and the coverage-limited jurisdiction marker. The Methodology note did
+// NOT come with them — what a run could not reach is stated by the left-open rows and the counts, per
+// item and in more detail than the paragraph managed, and report-record-link-host.test.mjs pins that
+// section's absence so the decision is recorded rather than inferred.
+//
+// ── the checklist, answered ───────────────────────────────────────────────────────────────────────────
+//
+//   1. REACHABLE FROM A REPUBLISH — YES, and every part of it. A republished archived run is redrawn to
+//      this design. That is the point of the break rather than its risk: the same findings, the same
+//      bands, the same words, in the order the owner ruled for. Nothing reaches back and rewrites a file
+//      already sent, and no judgment moves — this renderer reads bands and never derives one.
+//      EVERY NEW SECTION FAILS SOFT ON AN ARCHIVED RUN. Where it stands, court decisions and what was
+//      searched all read the search-depth record, which runs published before it do not carry; each
+//      returns '' rather than drawing a zero, and each has its own absent-field arm.
+//   2. COULD IT LIVE IN report.css OR brand.mjs? No. It decides which sections exist, what each one
+//      says and in what order — no stylesheet moves a section or writes a row. The parts that ARE
+//      styling went to report.css and are not in this hash.
+//   3. WHY IT MUST LAND HERE: the sections are assembled here. The engine's own output is unchanged by
+//      this break; what a reader is given of it is not.
+//
+// A LINE-COUNT NOTE: this adds and removes lines throughout render.mjs, so citations aimed into it move.
+// `scripts/citation-line-check.mjs` is the instrument, and it ran clean on this branch.
+//
+// A THIRD PAYMENT, AND THIS ONE IS A DEFECT FIX INSIDE THE SAME BREAK. A wholly-internal answer row was
+// marked `int-note` and rendered; the class went with this break's removal of internal material, and the
+// row went on rendering unmarked — staff prose on a client's report with nothing marking it, which is
+// worse than either state before it. It is dropped now, like every other internal line in this file. The
+// private control caught it; nothing in the public suite could, because on screen an unmarked row looks
+// like an ordinary one.
+//
+// THE HASH IN THIS ENTRY WAS PAID TWICE BEFORE THAT, and the second time was not a second break. The first payment
+// stood over a file that still carried its decision numbers in comments; taking those out — the tree
+// carries the reason for a decision and not its address — moved the bytes again with no behaviour
+// between the two. One entry, because a reader asking what changed gets the same answer either way.
+
+const FROZEN = "4c9a9ace10f7145b95dc5ee3fa27c7b19c70dda7573ba19810b072a0a0a73469";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));
