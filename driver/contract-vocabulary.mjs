@@ -459,9 +459,9 @@ export const INNER_CODES = Object.freeze([
     why: "As call_never_made — same table, same projection." },
   { code: "call_partial", mints: ["driver/connotation-search.mjs:2055"], rollsUpTo: ["connotation_call_partial"],
     why: "As call_never_made — same table, same projection. This is the pair #1211 cites as its worked example: the composite is covered, the bare form reaches no stage." },
-  { code: "quote_unbound", mints: ["driver/connotation-search.mjs:2141"], rollsUpTo: ["connotation_quote_unbound"],
+  { code: "quote_unbound", mints: ["driver/connotation-search.mjs:2186"], rollsUpTo: ["connotation_quote_unbound"],
     why: "The ruled-but-unbound row. Projected at verify.mjs:1450 unbound, and reported only once nothing is unruled." },
-  { code: "token_absent", mints: ["driver/connotation-search.mjs:2168"], rollsUpTo: ["connotation_token_absent"],
+  { code: "token_absent", mints: ["driver/connotation-search.mjs:2213"], rollsUpTo: ["connotation_token_absent"],
     why: "#592 split this out of no_ruling. Row-level only — repairs.mjs:352 says so in as many words: `never a top-level token`." },
   { code: "cite_absent", mints: ["driver/connotation-search.mjs:2222"], rollsUpTo: ["connotation_cite_absent"],
     why: "#592, as token_absent. repairs.mjs:353: `row-level only — never a top-level token`." },
@@ -472,7 +472,7 @@ export const INNER_CODES = Object.freeze([
   // for this row that produces `connotation_no_recorded_queries`, which nothing mints and nothing covers.
   // verify.mjs:912-913 states the ruling: a sweep that did not RUN is a canonical-only decision with its
   // own token and its own remedy, so the projector beside verify.mjs's CORRECTIONS_SECTION_RE deliberately does not handle it.
-  { code: "no_recorded_queries", mints: ["driver/connotation-search.mjs:2025"], rollsUpTo: ["connotation_search_missing"],
+  { code: "no_recorded_queries", mints: ["driver/connotation-search.mjs:2070"], rollsUpTo: ["connotation_search_missing"],
     why: "RENAMED, not namespaced: verify.mjs emits `connotation_search_missing`. It is excluded from CONNOTATION_FORM_REASONS at connotation-search.mjs for exactly this reason." },
 
   // ── case-law-ledger.mjs — ONE token, the codes as census payload ─────────────────────────────────
