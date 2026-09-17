@@ -389,5 +389,9 @@ export function publishedOf(trackedList, root) {
     return { error: `could not read HEAD in ${root}: ${String(e.message).split("\n")[0]}` };
   }
   const files = trackedList.filter((f) => head.has(f));
-  return { files, laid: trackedList.length - files.length };
+  // THE PATHS, not only how many. A count tells a reader that something was not counted and leaves them
+  // to find out what; every caller that acts on `laid` needs to name them, and deriving the list again at
+  // each call site is three chances to derive it differently.
+  const laidPaths = trackedList.filter((f) => !head.has(f));
+  return { files, laid: laidPaths.length, laidPaths };
 }
