@@ -4535,7 +4535,7 @@
         },
         "the-allowance-line-is-the-servers-words.test.mjs": {
           "tests": 2,
-          "asserts": 4,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },
