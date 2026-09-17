@@ -218,22 +218,26 @@ test("the cloud-account section asks only for settings setup and doctor carry, a
 
 test("every model pin the checks carry is documented beside the others, the fable pin with when to set it", () => {
   // The containment above runs one way, pages within the code, so a pin added to the code and left off the
-  // pages passes it. This runs the other way for the pins: each one on CLOUD_SETTINGS is named in §3b, in
-  // the reference's pin row and in the example settings file's Foundry block.
+  // pages passes it. This runs the other way for the pins: each one on CLOUD_SETTINGS is named in §3b and
+  // in the reference's pin row.
+  //
+  // THE EXAMPLE SETTINGS FILE IS NO LONGER ONE OF THE SURFACES (2026-09-17). The cloud block moved to the
+  // deployment half of the catalogue, because `.env.example` is the short file a reader meets first and
+  // sixteen cloud rows had come to dominate it. The deployment half is withheld from the public tree, so
+  // an arm here cannot read it — and it does not need to: what this checks is that a reader finds each
+  // pin documented, and the two surfaces below are the ones a reader of this repository actually has.
   const pins = CLOUD_SETTINGS.filter((n) => /^ANTHROPIC_DEFAULT_[A-Z]+_MODEL$/.test(n));
   assert.ok(pins.includes("ANTHROPIC_DEFAULT_FABLE_MODEL"), `the fable pin is not carried, so the pages would be held to ${pins.length}`);
   const b = section(read("INSTALL.md"), "3b.");
   const pinRow = read("docs/architecture/04-configuration-reference.md").split("\n").find((l) => l.startsWith("| `ANTHROPIC_DEFAULT_OPUS_MODEL`"));
   assert.ok(pinRow, "the configuration reference has no row for the model pins");
-  const example = read(".env.example");
   for (const n of pins) {
     assert.ok(b.includes(n), `§3b does not name ${n}`);
     assert.ok(pinRow.includes(`\`${n}\``), `the reference's pin row does not name ${n}`);
-    assert.match(example, new RegExp(`^# ${n}=`, "m"), `.env.example does not show ${n}`);
   }
   // No stage asks for fable by default; the synthesis override is the setting documented for it, so each
   // page says the pin is for that.
-  for (const [where, text] of [["§3b", flat(b)], ["the reference's pin row", pinRow], [".env.example", flat(example.replace(/^#\s?/gm, ""))]])
+  for (const [where, text] of [["§3b", flat(b)], ["the reference's pin row", pinRow]])
     assert.match(text, /fable deployment's name if you set `?CLEAROTRON_SYNTHESIS_MODEL=fable/i, `${where} does not say when to set the fable pin`);
   // A SENTENCE THAT LISTS THE PINS LISTS ALL OF THEM. The presence check above passes when one paragraph of
   // §3b names the fable pin, so a second list of pins elsewhere in the section, for another cloud, could

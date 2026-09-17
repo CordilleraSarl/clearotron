@@ -166,9 +166,11 @@ structural, or dev seam); [dev] = dev/test seam, never set in prod.
 `CLEAROTRON_SYNTHESIS_MODEL` (opus), `CLEAROTRON_KNOCKOUT_MODEL` (opus),
 `CLEAROTRON_KNOCKOUT_PRESET` (pro-search), `CLEAROTRON_MAX_BUDGET_USD` (unset).
 
-The Claude program's own cloud settings (`CLAUDE_CODE_USE_*`, each cloud's settings, the gateway pair and
-the model pins) are the vendor's names, not this tier's; the configuration reference's credentials table
-lists them.
+The Claude program's own cloud settings — `CLAUDE_CODE_USE_FOUNDRY`, `CLAUDE_CODE_USE_VERTEX` and
+`CLAUDE_CODE_USE_BEDROCK`, each cloud's own settings, the gateway pair and the model pins — are the
+vendor's names, not this tier's; the configuration reference's credentials table lists them. Written out
+rather than as one wildcard: a guard reads these documents for the names they govern, and a trailing `*`
+matches nothing it can check, so a name hidden behind one reads as governed while being invisible.
 
 ### 5.3 Concurrency, admission, retries, walls — T3 (walls are load-bearing; change deliberately)
 

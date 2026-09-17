@@ -55,7 +55,13 @@ test("the example settings file carries no Azure OpenAI rows, and marks Amazon a
   assert.doesNotMatch(read("docs/architecture/05-config-governance.md"), /still there and stay/,
     "the governance register still says the Azure OpenAI rows stay");
 
-  assert.match(example, /^# {3}Amazon Bedrock \(not yet tested\)\./m, "the Amazon block is not marked as not yet tested");
-  assert.match(example, /^# {3}Google Cloud \(Vertex AI\)\./m, "the Google block's heading changed; it is not marked");
-  assert.match(example, /^# CLAUDE_CODE_USE_BEDROCK=1$/m, "Amazon left the example file; it stays, marked");
+  // THE CLOUD BLOCKS ARE READ ON THE INSTALL PAGE NOW (2026-09-17). They left `.env.example` for the
+  // deployment half of the catalogue — that file is the short one a reader meets first, and sixteen cloud
+  // rows had come to dominate it — and the deployment half is withheld from the public tree, so an arm
+  // here cannot read it. What this half checks is unchanged and is the part that matters: a reader is not
+  // led to believe Amazon is proven when it is not, and each cloud is named where they will look for it.
+  const install = read("INSTALL.md");
+  assert.match(install, /^\*\*Amazon Bedrock \(not yet tested\)\*\*/m, "the Amazon block is not marked as not yet tested");
+  assert.match(install, /^\*\*Google Cloud \(Vertex AI\)\*\*/m, "the Google block's heading changed; it is not marked");
+  assert.match(install, /^\*\*Microsoft Azure \(Foundry\)\*\*/m, "the Microsoft block's heading changed; it is not marked");
 });
