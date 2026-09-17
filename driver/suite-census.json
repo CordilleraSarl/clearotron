@@ -4721,7 +4721,7 @@
         },
         "the-cut-approves-its-own-parked-run.test.mjs": {
           "tests": 8,
-          "asserts": 19,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
