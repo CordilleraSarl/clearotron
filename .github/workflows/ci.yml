@@ -454,6 +454,15 @@ jobs:
       - name: No uncheckable citation is added
         run: node scripts/citation-line-check.mjs --ratchet --base "${{ github.event.pull_request.base.sha || 'origin/main' }}"
 
+      # HERE RATHER THAN IN THE SUITE, AND THAT IS THE WHOLE REASON THIS STEP EXISTS SEPARATELY. The check
+      # reads which commit added each note under `.changeset/pre/`, to tell a note a release consumed from
+      # one written straight into the consumed pile. The suites job checks out at the default depth, where
+      # a file's adding commit is not in history at all — the check would find nothing it could answer and
+      # report every note as unread. This job already takes `fetch-depth: 0` because its diff needs a base,
+      # so it is the one place in the workflow that can answer the question.
+      - name: No release note was filed as already published
+        run: node scripts/release-duplicate-notes.mjs --placement
+
       # THE SAME BASE, AND THE SAME REASON FOR WRITING IT OUT. This asks whether a change a reader can
       # see arrived with something for them to read. It refuses a range that changes shipped code and
       # adds no release note, unless a commit in it says `Release-note: none` and gives a reason.

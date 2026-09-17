@@ -60,18 +60,86 @@ export function duplicateNotes(root = ROOT) {
   return { duplicates: waiting.filter((n) => inPre.has(n)), waiting: waiting.length, consumed: consumed.length };
 }
 
-/** The commit that ADDED this note under `pre/` — the version commit of the cut that consumed it. */
-export function consumedBy(name, root = ROOT) {
+/** The commit that ADDED this note under `pre/`, or null when history cannot answer. */
+export function addedBy(name, root = ROOT) {
   try {
     const out = execFileSync("git",
-      ["log", "--diff-filter=A", "-1", "--format=%h %s", "--", `.changeset/pre/${name}`],
+      ["log", "--diff-filter=A", "-1", "--format=%h%x00%an%x00%s", "--", `.changeset/pre/${name}`],
       // stderr ignored: outside a checkout git writes "fatal: not a git repository", and this function's
       // answer to that is "no commit found", not a line of noise in the middle of a CI failure.
       { cwd: root, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
-    return out || null;
+    if (!out) return null;
+    const [hash, author, subject] = out.split("\0");
+    return { hash, author, subject };
   } catch {
     return null;
   }
+}
+
+/** The commit that consumed this note, as a line for a reader. */
+export function consumedBy(name, root = ROOT) {
+  const a = addedBy(name, root);
+  return a ? `${a.hash} ${a.subject}` : null;
+}
+
+// A NOTE ARRIVES UNDER `pre/` ONE WAY ONLY: a cut moves it there after publishing it. The author and the
+// subject of that commit are how it is recognised, and both are the release pipeline's own doing rather
+// than a convention anybody types.
+const VERSION_AUTHOR = "github-actions[bot]";
+const VERSION_SUBJECT = /^Release\s/;
+
+/**
+ * Notes sitting in the consumed pile that no cut put there — written straight into `.changeset/pre/`.
+ *
+ * Such a note is born consumed: the versioning tool filters `pre/` ids out of its count while the tree is
+ * in pre-release mode, so the note is never eligible for a release and nothing refuses it. It then lands
+ * in the eventual stable's changelog as though a pre-release had already carried it. Measured
+ * 2026-09-17: one note in this state, holding the whole report redesign, published by no release at all.
+ *
+ * NEEDS HISTORY. A shallow clone cannot say which commit added a file, and answering "misfiled" from a
+ * missing answer would condemn every note on a depth-1 checkout. Those are returned as `unknown` and the
+ * caller decides; `main` refuses to give a verdict when it could not look at any of them.
+ */
+export function misfiledNotes(root = ROOT) {
+  const preDir = join(root, ".changeset", "pre");
+  if (!existsSync(preDir)) return { misfiled: [], checked: 0, unknown: [] };
+  const misfiled = [], unknown = [];
+  for (const name of mdIn(preDir, { keepReadme: true })) {
+    const added = addedBy(name, root);
+    if (!added) { unknown.push(name); continue; }
+    if (added.author !== VERSION_AUTHOR || !VERSION_SUBJECT.test(added.subject)) misfiled.push({ name, ...added });
+  }
+  return { misfiled, checked: misfiled.length + (mdIn(preDir, { keepReadme: true }).length - unknown.length - misfiled.length), unknown };
+}
+
+export function placementMain(root = ROOT) {
+  const preDir = join(root, ".changeset", "pre");
+  if (!existsSync(preDir)) {
+    console.log("release-duplicate-notes: no .changeset/pre/ in this tree — nothing has been consumed yet.");
+    return 0;
+  }
+  const { misfiled, unknown } = misfiledNotes(root);
+  const total = mdIn(preDir, { keepReadme: true }).length;
+  if (total && unknown.length === total) {
+    console.error("release-duplicate-notes: could not look — no commit could be found for any of the "
+      + `${total} note(s) under .changeset/pre/. This check reads history to tell a note a cut consumed `
+      + "from one written straight into the consumed pile, so it needs a full clone (fetch-depth: 0).");
+    return 2;
+  }
+  if (misfiled.length) {
+    for (const m of misfiled) {
+      console.error(`::error file=.changeset/pre/${m.name}::${m.name} sits in .changeset/pre/, the pile a cut `
+        + `moves a note into AFTER publishing it, but it was put there by \`${m.hash} ${m.subject}\` rather than `
+        + "by a release. A note written straight into pre/ is never counted, never published, and then appears "
+        + "in the next stable's changelog as though a pre-release had carried it. Move it to .changeset/.");
+    }
+    console.error(`\nrelease-duplicate-notes: ${misfiled.length} note(s) in the consumed pile that no cut consumed`
+      + `${unknown.length ? `, and ${unknown.length} whose history could not be read` : ""}.`);
+    return 1;
+  }
+  console.log(`release-duplicate-notes: every one of the ${total - unknown.length} consumed note(s) was put there `
+    + `by a release${unknown.length ? `; ${unknown.length} could not be read` : ""}.`);
+  return 0;
 }
 
 export function main(root = ROOT) {
@@ -97,4 +165,6 @@ export function main(root = ROOT) {
   return 0;
 }
 
-if (isEntrypoint(import.meta.url)) process.exitCode = main();
+if (isEntrypoint(import.meta.url)) {
+  process.exitCode = process.argv.includes("--placement") ? placementMain() : main();
+}

@@ -14,10 +14,11 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync, existsSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { duplicateNotes, main } from "../../scripts/release-duplicate-notes.mjs";
+import { duplicateNotes, main, misfiledNotes, placementMain } from "../../scripts/release-duplicate-notes.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
@@ -87,4 +88,65 @@ test("no release note in THIS tree is counted twice", () => {
   assert.deepEqual(read.duplicates, [],
     "a note here in both .changeset/ and .changeset/pre/ would have its text republished by the next cut");
   assert.ok(existsSync(join(ROOT, ".changeset")), "and the directory it read is this repository's own");
+});
+
+// ── AND A NOTE IN THE CONSUMED PILE THAT NO CUT PUT THERE ──────────────────────────────────────────
+//
+// `.changeset/pre/` is where a cut MOVES a note after publishing it. A note written straight into it is
+// born consumed: the versioning tool filters `pre/` ids out of its count, so it is never eligible for a
+// release, nothing refuses it, and it later appears in the stable's changelog as though a pre-release had
+// carried it. One note reached that state in this repository and took the whole report redesign with it —
+// shipped, and announced in no release from beta.0 to beta.5.
+//
+// These arms build a REAL repository, because the check reads history to tell the two cases apart and a
+// directory that is not a checkout answers nothing at all.
+const git = (cwd, ...args) => execFileSync("git", args, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
+
+const repo = () => {
+  const d = tree();
+  git(d, "init", "-q");
+  git(d, "config", "user.email", "nobody@example.invalid");
+  git(d, "config", "user.name", "Nobody");
+  return d;
+};
+
+const commitNote = (root, rel, { asRelease = false, subject = "an ordinary change" } = {}) => {
+  note(root, rel);
+  git(root, "add", "-A");
+  const args = ["commit", "-q", "-m", asRelease ? "Release 9.9.9-beta.1" : subject];
+  if (asRelease) args.push("--author=github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>");
+  git(root, ...args);
+};
+
+test("a note a release put in the consumed pile is where it belongs", () => {
+  const root = repo();
+  commitNote(root, join("pre", "already-published.md"), { asRelease: true });
+  assert.deepEqual(misfiledNotes(root).misfiled, [],
+    "a version commit moving a note into pre/ is a note being consumed correctly");
+  assert.equal(placementMain(root), 0);
+});
+
+test("a note written straight into the consumed pile is named, with the commit that put it there", () => {
+  const root = repo();
+  commitNote(root, join("pre", "already-published.md"), { asRelease: true });
+  commitNote(root, join("pre", "never-announced.md"), { subject: "a change that wrote its own note" });
+
+  const { misfiled } = misfiledNotes(root);
+  assert.deepEqual(misfiled.map((m) => m.name), ["never-announced.md"],
+    "only the hand-filed one is named; the consumed one beside it must not be swept up with it");
+  assert.equal(misfiled[0].subject, "a change that wrote its own note",
+    "the commit that misfiled it is named, because that is what tells the author where it went wrong");
+  assert.equal(placementMain(root), 1);
+});
+
+test("a tree whose history cannot be read gives no verdict either way", () => {
+  // A shallow clone is the real case: CI checks out depth 1 for the suites, and a file's adding commit is
+  // not in that history. Answering "misfiled" from a missing answer would condemn every note there.
+  const root = tree();
+  mkdirSync(join(root, ".changeset", "pre"), { recursive: true });
+  note(root, join("pre", "already-published.md"));
+  const read = misfiledNotes(root);
+  assert.deepEqual(read.misfiled, [], "an unanswerable history is not evidence of misfiling");
+  assert.deepEqual(read.unknown, ["already-published.md"], "it is reported as unread rather than as clean");
+  assert.equal(placementMain(root), 2, "could not look is its own exit code, distinct from a pass and a refusal");
 });
