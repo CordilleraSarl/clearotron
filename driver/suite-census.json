@@ -4763,7 +4763,7 @@
         },
         "the-docs-say-organisation-and-company.test.mjs": {
           "tests": 6,
-          "asserts": 18,
+          "asserts": 19,
           "skips": 3,
           "todos": 0
         },
