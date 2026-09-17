@@ -28,6 +28,10 @@ import { spawn } from 'node:child_process'
 import { rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { productRows } from '../driver/product-rows.mjs'
+// THE DOOR'S OWN LADDER, not a copy of it. The plan below reports the scope a request RESOLVES to, and a
+// stub that echoed the request instead could not tell "the requester named these" from "the requester
+// named none and the company's own apply" — which is the whole of the check added at the end of this file.
+import { resolveTerritories } from '../driver/effective-scope.mjs'
 import { RETIRED_PRODUCTS } from '../driver/search-policy.mjs'
 import { browserRun } from "../shared/browser-temp-root.mjs";
 
@@ -110,6 +114,14 @@ const ROUTES = {
  * phase moves it between reloads to draw each of the line's three states — the same mutable-answer
  * shape `meEngine` below uses, for the same reason: one server, so only the measured thing differs.
  */
+/**
+ * The company's own default territories RIGHT NOW. Empty for the main pass, because that pass measures a
+ * reader who names their own places; set by the inherited pass below, which measures the reader who names
+ * none and is shown the company's instead. Mutable for the same reason `meEngine` is: one server, so the
+ * only thing differing between two renders is the thing being measured.
+ */
+let profileTerritories = []
+
 let usageNow = { account: 'coastline', today: 1, thisMonth: 4, queued: 0, dailyRuns: 3, monthlyRuns: null, maxQueued: null, capped: true }
 
 /** Every plan body the page posts, so the check can assert what the levers actually put on the wire. */
@@ -201,7 +213,12 @@ const server = createServer((req, res) => {
         : {
             name: row?.name ?? 'Depth 4', stageLabel: row?.name ?? 'Depth 4', marks: 1, confirmationToken: 'tok', warnings: [],
             caveat: 'Ratings reflect our common law assessment.',
-            scope: { jurisdictions: Array.isArray(body.jurisdictions) ? body.jurisdictions : [], jurisdictionsFrom: 'this search', classes: [5, 32], classesFrom: 'the account', platforms: PLATFORMS, platformsAdded: [] },
+            // RESOLVED, NOT ECHOED. `scope` is what the run would actually search, and the engine's own
+            // ladder is what decides it: a geography stamp of "worldwide" takes no territories from the
+            // company, "named" takes the request's, and "account-default" falls through to the company's.
+            // Echoing the request made all three identical here, so the dialog drawn from it agreed with
+            // the form by construction and could not have caught a request that disagreed with it.
+            scope: { ...(() => { const r = resolveTerritories({ geography: body.geography, jurisdictions: body.jurisdictions }, { defaultJurisdictions: profileTerritories }, null); return { jurisdictions: r.jurisdictions, jurisdictionsFrom: r.from } })(), classes: [5, 32], classesFrom: 'the account', platforms: PLATFORMS, platformsAdded: [] },
             turnaround: row?.baseTurnaround ?? 'same day',
           }))
     })
@@ -209,6 +226,13 @@ const server = createServer((req, res) => {
   }
 
   const base = path.split('?')[0]
+  // Served from the mutable list rather than the frozen route, so the inherited pass can move it.
+  if (base === '/portal/api/config/profile') {
+    res.writeHead(200, { 'content-type': 'application/json' })
+    const r = ROUTES[base]
+    res.end(JSON.stringify({ ...r, profile: { ...r.profile, defaultJurisdictions: profileTerritories } }))
+    return
+  }
   if (ROUTES[base] !== undefined) {
     res.writeHead(200, { 'content-type': 'application/json' })
     // /me carries whatever phase two has set about the engine; every other route is a constant. Merged
@@ -855,6 +879,115 @@ const SCRIPT = `
 })()
 `
 
+// ── THE READER WHO NAMES NO PLACES, AND IS SHOWN THEIR COMPANY’S ─────────────────────────────────
+//
+// The Where panel draws the company’s own territories whenever the draft holds none, tagged with where
+// they came from. For a while the rest of the screen could not see them: the recommendation read the
+// DRAFT, so a form showing four countries recommended nothing and preselected nothing, and the request
+// stamped its geography "worldwide" — the one mode the company’s territories may not narrow. The two
+// searches that read named places were then refused at the engine’s door, in words telling the reader to
+// name territories the screen was already showing them, and a knockout ran the whole world instead of
+// the four.
+//
+// SO THIS DRIVES THE STATE AND READS THREE THINGS AT ONCE: what the screen recommends, what the request
+// stamps, and what the dialog tells the client. They are one fact and they used to disagree.
+const INHERITED_SCRIPT = `
+(async () => {
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const settle = async (pred, ms = 6000) => { const t0 = Date.now();
+    while (Date.now() - t0 < ms) { if (pred()) return true; await sleep(60); } return false; };
+  const mustSettle = async (pred, ms, what) => { if (!await settle(pred, ms)) throw new Error(what + ' (waited ' + ms + 'ms)'); };
+  const txt = () => document.body.innerText;
+  const maybeByText = (sel, re) => [...document.querySelectorAll(sel)].find((e) => re.test(e.innerText || ''));
+  const findByText = (sel, re) => { const el = maybeByText(sel, re);
+    if (!el) throw new Error('no ' + sel + ' matching ' + re + ' is on screen'); return el; };
+  const set = (el, v) => { Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set.call(el, v);
+    el.dispatchEvent(new Event('input', { bubbles: true })); };
+  const scrim = () => document.querySelector('.modal-scrim');
+  const rowText = (label) => { const r = [...scrim().querySelectorAll('.modal-row')]
+    .find((x) => ((x.querySelector('.field-label') || {}).textContent || '') === label);
+    return r ? r.innerText.replace(/\\s+/g, ' ').trim() : null; };
+  const pickProduct = (re) => {
+    const row = [...document.querySelectorAll('.pick-row')].find((b) => re.test(b.innerText || ''));
+    if (!row) throw new Error('no product row matching ' + String(re));
+    const hit = row.querySelector('.pick-row-hit');
+    if (!hit) throw new Error('the row matching ' + String(re) + ' has no pick button');
+    hit.click(); };
+  const out = { steps: [] };
+  try {
+
+  await mustSettle(() => document.querySelectorAll('.pick-row').length >= 4 && /Describe it/.test(txt()), 8000,
+    'the one form never painted its search rows');
+
+  // WAIT FOR THE COMPANY’S OWN LIST TO LAND BEFORE TOUCHING THE FORM. The profile arrives after the
+  // first paint and the draft is rebuilt when it does, so a name typed before it is silently thrown
+  // away — which surfaced three screens later as a missing Review button and named nothing.
+  await mustSettle(() => [...document.querySelectorAll('.chip')].some((c) => (c.innerText || '').trim() === 'Canada'),
+    8000, 'the company own territories never reached the Where panel');
+
+  // ONE NAME AND NOTHING ELSE. Every territory on this screen is the company’s.
+  //
+  // TYPED UNTIL IT HOLDS, and the attempts are reported. This screen is still settling when the form
+  // first paints — a late answer rebuilds the draft and discards what was typed before it — so a single
+  // set left the form empty and the failure surfaced three reads later as a missing button, naming
+  // nothing about the cause. Retrying is not papering over that: the number of attempts is recorded, so
+  // a screen that needs five is visible as a screen that needs five rather than as a green tick.
+  const nameBox = () => document.querySelector('textarea[aria-label="Names to clear"]');
+  const reviewBtn = () => maybeByText('button', /Review search/);
+  out.typeAttempts = 0;
+  const filled = await settle(() => {
+    if ((nameBox() || {}).value === 'AQUAPLUS' && reviewBtn()) return true;
+    if (nameBox()) { out.typeAttempts++; set(nameBox(), 'AQUAPLUS'); }
+    return false;
+  }, 12000);
+  if (!filled) throw new Error('the form never held the name and drew a Review button (typed '
+    + out.typeAttempts + ' times; name now ' + JSON.stringify((nameBox() || {}).value ?? null)
+    + '; rows ' + document.querySelectorAll('.pick-row').length
+    + '; buttons ' + JSON.stringify([...document.querySelectorAll('button')].map((b) => (b.innerText || b.textContent || '').trim()).filter(Boolean).slice(0, 40)) + ')');
+  await sleep(400);
+  out.chips = [...document.querySelectorAll('.chip')].map((c) => (c.innerText || '').trim());
+  const on = document.querySelector('.pick-row-on');
+  out.preselected = on ? (on.innerText || '').split('\\n')[0].trim() : null;
+  out.recommends = /Recommended for what you entered/.test(txt());
+  const footer = [...document.querySelectorAll('div')].find((e) => getComputedStyle(e).position === 'sticky');
+  out.footer = footer ? (footer.innerText || '').replace(/\\s+/g, ' ').trim() : null;
+  out.reviewShut = findByText('button', /Review search/).disabled;
+  out.steps.push('inherited territories, nothing picked by hand');
+
+  // A SHUT REVIEW IS A FINDING, NOT A CRASH. Pressing it and waiting for a dialog that cannot open
+  // reports "the review dialog never opened" — true, and three steps from the cause. The reads above
+  // are already taken; the assertions name which of them is wrong.
+  if (out.reviewShut) return out;
+
+  findByText('button', /Review search/).click();
+  await mustSettle(() => /review before you start/i.test(txt()), 6000, 'the review dialog never opened');
+  out.dialogSearch = rowText('Search');
+  out.dialogWhere = rowText('Where');
+  out.dialogRegisters = rowText('Registers to search');
+  out.steps.push('dialog read');
+
+  // ── THE FLOOR: the search that IS worldwide must still say so ──
+  // "account-default" is refused by name on a Global preliminary search — it accepts no narrowing — so a
+  // fix that stamped every empty draft the same way would break the one product it must not touch.
+  findByText('button', /^Back$/).click();
+  await mustSettle(() => !scrim(), 5000, 'the composer never came back after Back');
+  pickProduct(/Global preliminary search/);
+  await sleep(300);
+  out.worldwideChip = [...document.querySelectorAll('.chip')].some((c) => (c.innerText || '').trim() === 'Worldwide');
+  findByText('button', /Review search/).click();
+  await mustSettle(() => /review before you start/i.test(txt()), 6000, 'the review dialog never opened on the worldwide search');
+  out.worldwideWhere = rowText('Where');
+  out.steps.push('worldwide floor read');
+
+  return out;
+  } catch (e) {
+    out.fatal = String(e && e.message ? e.message : e);
+    out.raw = 'driver threw after: ' + out.steps.join(' -> ');
+    out.body = txt().slice(0, 900);
+    return out;
+  }
+})()
+`
 // The profile goes inside a run root whose TMPDIR the browser inherits, so the singleton
 // lock it writes there leaves with the root instead of accumulating in the shared one.
 const { profile: userDir, env: chromeEnv, keep: keepRoot } = browserRun("composer-check-")
@@ -992,6 +1125,11 @@ for (const st of NOTICE_STATES) {
   const read = (await evalIn(REACH_AND_READ)).result?.result?.value ?? null
   notices.push({ state: st.name, expect: st, got: read })
 }
+// PUT THE ENGINE BACK. This loop leaves `meEngine` holding the LAST blocked state, and every phase added
+// after it then measures an installation with no usable engine — a composer that renders the notice
+// INSTEAD of the start button. It costs nothing here and it is invisible from there: the screen paints,
+// the rows paint, the form fills in, and only the button the reader would press is missing.
+meEngine = {}
 
 // ── phase three: the evidence, one picture per state the design draws ───────────────────────────────
 //
@@ -1076,6 +1214,17 @@ const capture = async (path) => {
 // The main pass's own posts end here. The evidence below posts plans of its own, and the verdict on what
 // the main pass put on the wire must not read one of those as the last plan it made.
 const mainPassPosts = posted.length
+
+// ── the inherited-territories pass ──────────────────────────────────────────────────────────────────
+// After mainPassPosts deliberately: this pass posts plans of its own, and the verdict on what the main
+// pass put on the wire must not read one of them as the last plan it made.
+profileTerritories = ['United States', 'United Kingdom', 'European Union', 'Canada']
+const inheritedFrom = posted.length
+await evalIn(`location.href = ${JSON.stringify(`http://127.0.0.1:${port}/portal/new`)}; 'go'`)
+await new Promise((r) => setTimeout(r, 1400))
+const inherited = (await evalIn(INHERITED_SCRIPT)).result?.result?.value ?? { fatal: 'evaluate returned nothing' }
+const inheritedPlans = posted.slice(inheritedFrom).filter((p) => p.path === '/portal/api/run/plan').map((p) => p.body)
+profileTerritories = []
 const evidence = []
 if (shotDir) {
   // A named company and a named operator, so each line reads the way a reader meets it.
@@ -1388,6 +1537,72 @@ for (const n of notices) {
   ok(got.buttons.length === (n.expect.link ? 1 : 0),
     `${n.state}: the link to the configuration page is ${n.expect.link ? 'missing' : 'offered to a reader who cannot open that page'} `
     + `(buttons: ${JSON.stringify(got.buttons)})`)
+}
+
+// ── THE COMPANY'S OWN TERRITORIES REACH THE RECOMMENDATION, THE REQUEST AND THE DIALOG ──────────────
+//
+// One fact read at three places, because it used to disagree at all three. A FLOOR comes first: if the
+// panel never drew the four, every assertion under it is about a screen that was not in the state this
+// pass exists to measure, and would pass by being vacuous.
+if (inherited.fatal) {
+  // the throw says WHAT was missing; the screen says what was there instead. Both, or the next
+  // reader reruns it to find out.
+  ok(false, `the inherited-territories pass could not be driven: ${inherited.fatal} — ${inherited.raw ?? ''} — on screen: ${JSON.stringify((inherited.body ?? '').slice(0, 700))}`)
+} else {
+  const FOUR = ['United States', 'United Kingdom', 'European Union', 'Canada']
+  const drawn = FOUR.filter((t) => (inherited.chips ?? []).includes(t))
+  ok(drawn.length === FOUR.length,
+    `the Where panel drew ${drawn.length} of the company's ${FOUR.length} territories (${JSON.stringify(inherited.chips)}) — nothing below this line is a measurement without them`)
+
+  // THE SCREEN. The recommendation reads what the panel draws, so a form showing four countries is a form
+  // that recommends the search which reads four countries.
+  ok(inherited.recommends,
+    'nothing is recommended on a form showing the company\'s own four territories — the recommendation is reading the draft instead of what the panel drew')
+  ok(inherited.preselected === 'Multi-country focus search',
+    `the form preselected ${JSON.stringify(inherited.preselected)} over the company's four territories, not the Multi-country focus search`)
+  ok(inherited.reviewShut === false, 'Review search is shut on a form that has a name and four territories on it')
+  ok(!/No search picked/.test(inherited.footer ?? ''),
+    `the sticky bar says no search is picked while naming the territories it would search: ${JSON.stringify(inherited.footer)}`)
+
+  // THE REQUEST. "worldwide" is a positive instruction the company's territories may not narrow, and the
+  // door refuses the two searches that read named places when it arrives with none. "account-default" is
+  // how a request says the requester named none — the state this screen is actually in.
+  const body = inheritedPlans[0] ?? null
+  ok(body != null, 'the inherited pass posted no plan')
+  if (body) {
+    ok(body.geography?.mode === 'account-default',
+      `the request stamped geography ${JSON.stringify(body.geography?.mode ?? null)} on a form showing the company's own territories — "worldwide" is the one mode those territories may not narrow`)
+    ok(!('jurisdictions' in body),
+      `the request named ${JSON.stringify(body.jurisdictions)} as the requester's own — the company's defaults are resolved by the engine, and freezing today's list into the run attributes it to somebody who never named it`)
+  }
+
+  // THE DIALOG. What the reader confirms has to be the search on the form behind it. Skipped when the
+  // button is shut, because the arm above has already said so and a null dialog would repeat it four times.
+  if (!inherited.reviewShut) {
+  ok(inherited.dialogSearch === 'SEARCH Multi-country focus search',
+    `the review dialog names ${JSON.stringify(inherited.dialogSearch)} while the form holds a Multi-country focus search`)
+  const missing = FOUR.filter((t) => !(inherited.dialogWhere ?? '').includes(t))
+  ok(!missing.length,
+    `the review dialog's Where does not name ${JSON.stringify(missing)}: ${JSON.stringify(inherited.dialogWhere)} — a reader confirming this is shown a different search from the one on the form`)
+  ok(!/\bWorldwide\b/.test(inherited.dialogWhere ?? ''),
+    `the review dialog offers a worldwide search over a form naming four territories: ${JSON.stringify(inherited.dialogWhere)}`)
+  const missingReg = FOUR.filter((t) => !(inherited.dialogRegisters ?? '').includes(t))
+  ok(!missingReg.length,
+    `the review dialog's Registers to search does not name ${JSON.stringify(missingReg)}: ${JSON.stringify(inherited.dialogRegisters)}`)
+
+  }
+
+  // ── THE FLOOR, on a different member of the class ──
+  // The search that IS worldwide must still stamp worldwide: the door refuses "account-default" on it by
+  // name. Without this, a fix that stamped every empty draft the same way passes everything above.
+  if (!inherited.reviewShut) {
+  ok(inherited.worldwideChip, 'the Global preliminary search does not draw its Worldwide chip')
+  ok(/Worldwide/.test(inherited.worldwideWhere ?? ''),
+    `the review dialog for a Global preliminary search reads ${JSON.stringify(inherited.worldwideWhere)} instead of worldwide`)
+  const wide = inherited.reviewShut ? null : (inheritedPlans[inheritedPlans.length - 1] ?? null)
+  ok(wide?.geography?.mode === 'worldwide',
+    `a Global preliminary search stamped geography ${JSON.stringify(wide?.geography?.mode ?? null)} — that search accepts no narrowing and the door refuses "account-default" on it by name`)
+  }
 }
 
 for (const e of evidence) ok(e.ok, `evidence state ${e.state} could not be reached: ${e.error} — on screen: ${JSON.stringify((e.body || '').slice(0, 300))}`)

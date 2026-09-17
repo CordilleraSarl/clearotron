@@ -268,20 +268,43 @@ export function removeTerritory(d: Draft, name: string): Draft {
 
 // ── what the wire carries ───────────────────────────────────────────────────────────────────────────
 
-export type Geography = { readonly mode: 'worldwide' | 'named'; readonly territories: readonly string[] }
+export type Geography = {
+  readonly mode: 'worldwide' | 'named' | 'account-default'
+  readonly territories: readonly string[]
+}
 
 /**
  * The geography STAMP for this draft, stated rather than implied.
  *
- * The composer knows something the wire could not carry until now: an empty territory list on THIS
- * screen means the requester asked for everywhere, not that they said nothing. Sending the list alone
- * made those byte-identical, and an account with seven default territories then ran seven — a search
- * that was sold as worldwide.
+ * THREE STATES, BECAUSE THE OFFERING HAS THREE: the requester asked for everywhere, the requester named
+ * these places, or the requester named none and the company's own apply. Those are the three the engine's
+ * door has accepted since the stamp was added — "worldwide" is a positive instruction that the company's
+ * territories may not narrow, and "account-default" is how a request says the requester named none.
+ *
+ * This answered with two of them and folded the third into "worldwide". That was true while the only way
+ * to an empty list was clearing it on purpose. It stopped being true when the Where panel began drawing
+ * the company's own territories under an empty draft: the screen then showed four countries while the
+ * request said everywhere, which is the incident below arriving from the other direction — and on the
+ * two searches that read named places, the door refuses it outright and the requester is told to name
+ * territories the screen is already showing them.
+ *
+ * The incident it exists to end: an empty list meant both "everywhere" and "I said nothing", so an
+ * account with seven default territories ran seven on a search sold as worldwide, and no field anywhere
+ * disagreed.
  */
-export function geographyFor(d: Draft): Geography {
-  return d.territories.length
-    ? { mode: 'named', territories: [...d.territories] }
-    : { mode: 'worldwide', territories: [] }
+export function geographyFor(
+  d: Draft, product: Product | null = null, resolved: readonly string[] = [],
+): Geography {
+  // THE PRODUCT DECIDES FIRST: on a search that IS worldwide there is no silence to interpret, and the
+  // door refuses "account-default" on that product by name.
+  if (product?.geography === 'worldwide, and nothing else') return { mode: 'worldwide', territories: [] }
+  if (d.territories.length) return { mode: 'named', territories: [...d.territories] }
+  // The company's own, which is the list the Where panel is drawing. They ride here for the screen to
+  // read; the WIRE sends the mode and lets the engine resolve the list, so a request cannot freeze
+  // today's profile into a run and call it what the requester asked for.
+  if (resolved.length) return { mode: 'account-default', territories: [...resolved] }
+  // Nothing set and nothing inherited. The panel draws a Worldwide chip here, and it is right.
+  return { mode: 'worldwide', territories: [] }
 }
 
 /**

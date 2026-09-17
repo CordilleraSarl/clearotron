@@ -86,9 +86,29 @@ test('one country REPLACES on a Full country search; it stacks everywhere else',
 
 // ── the geography STAMP: everywhere and silence are different searches ───────────────────────────────
 
-test('the draft states its geography MODE — an empty list is worldwide, not silence', () => {
+test('the draft states its geography MODE — and there are THREE, because the offering has three', () => {
+  // Nothing set, nothing inherited: the Where panel draws a Worldwide chip here, and it is right.
   assert.deepEqual(geographyFor(draft()), { mode: 'worldwide', territories: [] })
   assert.deepEqual(geographyFor(draft({ territories: ['France'] })), { mode: 'named', territories: ['France'] })
+
+  // THE THIRD: the reader named none and the company has its own. Those four are what the panel draws,
+  // so they are what the request has to be about — "worldwide" is the one mode they may not narrow, and
+  // the engine refuses the two searches that read named places when it arrives with none.
+  const FOUR = ['United States', 'United Kingdom', 'European Union', 'Canada']
+  assert.deepEqual(geographyFor(draft(), MULTI, FOUR), { mode: 'account-default', territories: FOUR })
+  assert.deepEqual(geographyFor(draft(), null, FOUR), { mode: 'account-default', territories: FOUR },
+    'before a search is picked the reader has still named no places, and the company still has four')
+
+  // WHAT THE READER SET WINS over what they inherit — inheriting is what happens in its absence.
+  assert.deepEqual(geographyFor(draft({ territories: ['France'] }), MULTI, FOUR),
+    { mode: 'named', territories: ['France'] })
+
+  // THE FLOOR, on a different member of the class: the search that IS worldwide stays worldwide however
+  // many territories the company has. The engine refuses "account-default" on it by name — it accepts no
+  // narrowing — so a rule keyed on the draft alone would break the one product it must not touch.
+  assert.deepEqual(geographyFor(draft(), GLOBAL, FOUR), { mode: 'worldwide', territories: [] })
+  assert.equal(GLOBAL.geography, 'worldwide, and nothing else',
+    'the floor above is keyed on this sentence; if the offering restates it, the floor stops holding')
 })
 
 // ── the product decides the controls, and each says WHY at the control ───────────────────────────────
