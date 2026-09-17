@@ -574,3 +574,88 @@ test("the workbook grows a fourth sheet only when counts exist, and never a blan
   assert.equal(sim[5], "not available", "…the close column included");
   assert.match(String(sim[9]), /multi-word/, "the auditable reason travels with the missing figure");
 });
+
+// ── A DISCLOSED APPROXIMATION IS AN ANSWER, NOT AN UNREACHABLE REGISTER ────────────────────────────
+//
+// When the register says "more than ten thousand", it has answered — with a floor instead of a count,
+// which is a different thing from not answering. The probe recomputed `ok` as "the total is finite", so
+// an honest approximation was demoted to a dead probe and the client was told the count was NOT
+// AVAILABLE: the same four words the report uses when the register could not be reached at all. The
+// direction is inverted as well, because saturation is a finding about the mark — the denser the crowd,
+// the more certainly it was suppressed.
+
+test("a register that answers with a floor is not read as a register that did not answer", async () => {
+  const doc = await run({
+    marks: [{ name: "ALCHEMIST" }],
+    counter: async (_t, p) => (p.key === "containing"
+      ? { ok: true, total: null, approximate: true, floor: 10000, note: "the vendor flagged this total an approximation" }
+      : { ok: true, total: 5 }),
+  });
+  const cell = doc.marks[0].counts.containing;
+  assert.equal(cell.approximate, true, "the disclosure was thrown away and the cell reads as a dead probe");
+  assert.equal(cell.floor, 10000, "the floor is the whole disclosure — without it this says no more than 'unknown'");
+  assert.equal(cell.unavailable, undefined, "an answered probe must not carry the words for an unreachable register");
+});
+
+test("the floor never becomes the count", async () => {
+  // The rule the normalizer states and this must not undo: an approximation may never be filled in as a
+  // figure. A floor that became `total` would ride out as an enumerated number and be summed, compared
+  // and banded like a real one.
+  const doc = await run({
+    marks: [{ name: "ALCHEMIST" }],
+    counter: async (_t, p) => (p.key === "containing"
+      ? { ok: true, total: null, approximate: true, floor: 10000 }
+      : { ok: true, total: 5 }),
+  });
+  assert.equal(doc.marks[0].counts.containing.total, null, "the floor was published as a count");
+});
+
+test("a real failure is still a failure, and a bare approximate flag is not an answer", async () => {
+  // The guard against reading the arms above as "treat anything with ok:true as answered". An
+  // approximation without a floor tells a reader nothing they did not already have, so it stays the
+  // state it was — otherwise this trades the wrong four words for a different set of wrong four words.
+  const doc = await run({
+    marks: [{ name: "ALCHEMIST" }],
+    counter: async (_t, p) => (p.key === "containing"
+      ? { ok: true, total: null, approximate: true }                       // flagged, no floor
+      : (p.key === "close" ? { ok: false, reason: "the index is offline" } : { ok: true, total: 5 })),
+  });
+  const containing = doc.marks[0].counts.containing;
+  assert.equal(containing.approximate, undefined, "an approximation with no floor was treated as a disclosure");
+  assert.ok(containing.unavailable, "…and it must still report as untaken");
+  assert.match(doc.marks[0].counts.close.unavailable, /index is offline/, "a genuine refusal still reports its reason");
+});
+
+test("a provider that names its refusal `cause` is not reported as 'unknown'", async () => {
+  // `reason` on some providers, `cause` on others. Reading only the first is why an honest refusal
+  // arrived as the fallback string, with the operator's own receipts ledger recording cause "unknown".
+  const dir = mkdtempSync(join(tmpdir(), "count-cause-"));
+  const ledgerPath = join(dir, "register-count.jsonl");
+  const doc = await run({
+    marks: [{ name: "ALCHEMIST" }], ledgerPath,
+    counter: async (_t, p) => (p.key === "containing"
+      ? { ok: false, total: null, cause: "SIGNA_API_KEY absent from driver env" }
+      : { ok: true, total: 5 }),
+  });
+  assert.match(doc.marks[0].counts.containing.unavailable, /SIGNA_API_KEY absent/,
+    "the cause was dropped and the fallback string shipped in its place");
+  const rows = readFileSync(ledgerPath, "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l));
+  const row = rows.find((r) => r.predicate === "containing");
+  assert.match(String(row.cause), /SIGNA_API_KEY absent/, "the receipts ledger recorded 'unknown' for a stated cause");
+});
+
+test("the receipts ledger records an approximation as one, not as a failed call", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "count-approx-"));
+  const ledgerPath = join(dir, "register-count.jsonl");
+  await run({
+    marks: [{ name: "ALCHEMIST" }], ledgerPath,
+    counter: async (_t, p) => (p.key === "containing"
+      ? { ok: true, total: null, approximate: true, floor: 10000 }
+      : { ok: true, total: 5 }),
+  });
+  const rows = readFileSync(ledgerPath, "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l));
+  const row = rows.find((r) => r.predicate === "containing");
+  assert.equal(row.approximate, true, "the call billed and answered; the receipt says neither");
+  assert.equal(row.floor, 10000);
+  assert.equal(row.cause, undefined, "an answered call carries no failure cause");
+});

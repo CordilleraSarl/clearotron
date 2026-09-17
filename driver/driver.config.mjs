@@ -1210,8 +1210,12 @@ export const PROVIDERS = {
         // on the search response, so this no longer has to answer `present` and nothing else. It is
         // still null whenever the vendor would only approximate it — and null there means UNKNOWN,
         // which is the whole reason the field may never be filled in with a figure from anywhere else.
+        // `floor` rides beside `approximate` because the two are one fact: the register answered, and the
+        // answer is "more than this". Without the number the disclosure is not usable — "approximate"
+        // alone says no more than "unknown" does, which is the state this replaces.
         return { ok: true, total: Number.isFinite(p.total_hits) ? p.total_hits : null,
-          approximate: p.total_approximate === true, present: p.present === true, note: p.note };
+          approximate: p.total_approximate === true, floor: Number.isFinite(p.total_floor) ? p.total_floor : null,
+          present: p.present === true, note: p.note };
       } catch (e) { return { ok: false, cause: `countHits threw: ${e.message}` }; }
     },
     // `reason`, not `cause`, on every refusal: the listing reads `reason` (register-records.mjs), so a
