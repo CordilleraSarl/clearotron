@@ -4343,7 +4343,7 @@ async function stageOnce(name, ctx, opts = {}) {
     // skips — i.e. on the babysit surface, in the middle of the shift where someone is watching it.
     runLog(P.runDir, { event: "skip", stage: label, trigger: "skip", model: won?.model ?? resolveModel(model), output: outputMeta(out), ...stageWallFields(tDispatch) });
     (ctx.skippedStages ??= []).push(label);   // V4-1: the lint receipt states which artifacts this delivery inherited
-    recordTransition(ctx, name);   // advance the displayed step on resume too (monotonic, no-op for unmapped)
+    recordTransition(ctx, name);   // advance the displayed step on resume too (monotonic; an unmapped stage records what it is, and moves no step)
     // `won ? won.key : …` (NOT `won?.key ?? …`): a recovered CODE-SIDE winner carries key:null on purpose —
     // falling back to opts.sessionKey there would re-mint the phantom session the null exists to suppress.
     return { ok: true, skipped: true, sessionKey: won ? won.key : opts.sessionKey, model: won?.model ?? model };
@@ -4353,6 +4353,25 @@ async function stageOnce(name, ctx, opts = {}) {
   // holds the artifact to, BEFORE the model runs, so a crash mid-stage still re-validates the partial
   // output under the rules it is being minted under. See recordStageContract's doc block.
   if (def.contract) recordStageContract(P.runDir, name, def.contract);
+
+  // ── AND RECORD THAT THE RUN IS IN IT, AT THE SAME MOMENT ───────────────────────────────────────────
+  //
+  // The displayed step advanced only where a stage SUCCEEDED, so a run inside a stage that takes minutes
+  // read as being in the previous one for the whole of it — a resumed run entered placement at 10:05Z and
+  // still showed "Register sweeps" at 10:10Z, which reads as the run having gone backwards. Nothing
+  // durable said a stage had STARTED: every stage record is written at completion, and the one start-time
+  // signal goes to stderr and never reaches the trace. So no reader could derive it either.
+  //
+  // Here rather than at the dispatch below, because this is the line that already declares the stage is
+  // dispatching, and every mutating path — corrective, followup, escalation, frame-reopen, stale-repair,
+  // verdict-recheck — funnels through it. One declaration of entry, for the contract record and the
+  // status alike.
+  //
+  // Safe against the two things that look like it should not be. `writeRunStatus` keeps the furthest step
+  // ever reached, so an escalation re-run mapping to an earlier stage still cannot pull the stepper back;
+  // and the bare `name` is passed exactly as the success path passes it, so a fan-out's axes go on
+  // collapsing to one display step.
+  recordTransition(ctx, name);
 
   // — THE PLACEMENT FORM IS ON DISK BEFORE THE SEAT IS ASKED ANYTHING, and it is written at the SAME
   // choke point every dispatch funnels through: the main path, the stale-repair path and the frame-reopen
@@ -4580,6 +4599,8 @@ async function stageOnce(name, ctx, opts = {}) {
   });
   // P2 — record WHAT this output was produced from, so a later resume can tell whether it still holds.
   if (r.ok && out) writeStamp(P.runDir, label, stageInputs(name, P, { axes: ctx.axes, axis: ctx.axis, registerOnly: ctx.registerOnly }), { project: projectStageInput });
+  // Re-asserted on success, and no longer the only advance: entry records the same transition above, so
+  // this is what re-states the stage after a fan-out's concurrent axes have each written their own.
   if (r.ok) recordTransition(ctx, name);   // bare name → fan-out axes collapse to one display step (monotonic)
   // PR-4 — document-growth tripwire, keyed on TRIGGER so it covers BOTH growth loops (the lint-repair
   // "re-emit the COMPLETE updated file" cycle AND the skeptic/refutation corrective loop — the 2026-07-28 postmortem run's
