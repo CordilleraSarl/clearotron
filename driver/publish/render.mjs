@@ -2559,7 +2559,16 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   <span class="sp"></span>
   <span class="tb-risk" style="background:var(${STOP_VAR[i]})">${riskLabel}</span>
   <span class="mono tb-matter" style="font-size:11px;color:var(--faint)">${esc(fm.matter || opts.runId || '')}${fm.title ? ' / ' + esc(fm.title) : ''}</span>
-  ${opts.issued ? `<span class="mono tb-issued"><span aria-hidden="true">🗓 </span>Issued on ${esc(opts.issued)}</span>` : ''}
+  ${/* A DATE, NOT A TIMESTAMP. This read "Issued on 2026-09-17 · 08:36 GMT+2" — the minute the file
+       was written, and the zone the machine that wrote it happened to be in. Neither tells a reader
+       anything, and on work that spans days it implies a precision the work does not have. Every mock
+       issues the date alone. Taken by PATTERN rather than by cutting at the separator, so a value in
+       some other shape falls through whole instead of being truncated at whatever character sits
+       there — an archived run's stamp is not this publisher's to assume. */''}
+  ${(() => {
+    const d = (String(opts.issued ?? '').match(/^\d{4}-\d{2}-\d{2}/) || [])[0] ?? opts.issued;
+    return d ? `<span class="mono tb-issued"><span aria-hidden="true">🗓 </span>Issued on ${esc(d)}</span>` : '';
+  })()}
   <button type="button" class="tbbtn tb-ask no-print">✦ <span class="tb-lbl">Ask AI</span></button>
   <div class="tb-menu">
     <button type="button" class="tbbtn primary tb-exp-toggle" aria-haspopup="true" aria-expanded="false">⬇ <span class="tb-lbl">Export</span> ▾</button>

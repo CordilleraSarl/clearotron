@@ -1770,7 +1770,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Advanced again by the break recorded above the FROZEN constant: seven fixed sentences on the
 // clearance page, which is a behaviour change and not licence-only, so both constants move for the same
 // measured reason.
-const FROZEN_BEFORE_SPDX = "af558c01787809d5a12092cf2a9e109df14740e725d34f89848f176024329fd2";
+const FROZEN_BEFORE_SPDX = "9de05bde6a160ed665cae61bbf53099b1ae7b810d78cc5cbe9b23a0aa1decc1a";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2231,7 +2231,21 @@ const FROZEN_BEFORE_SPDX = "af558c01787809d5a12092cf2a9e109df14740e725d34f89848f
 //
 // Could it live in report.css? No — hiding the block leaves it in the delivered bytes and the print.
 
-const FROZEN = "38ae9fd31bb3145f1952979ea9222b66223ab7352dc623fc5579fe989a8dbd39";
+// AND AGAIN (2026-09-17): THE REPORT ISSUES A DATE, NOT A PUBLISH TIMESTAMP.
+//
+// Reachable from a republish? Yes, and that is the argument for it rather than against. The line read
+// "Issued on <date> · <time> <zone>" — the minute the file was written and the zone of the machine
+// that wrote it. A re-rendered archived run therefore restamped itself with a time that was never
+// about the work, and a reader comparing two copies of the same report saw two different stamps. The
+// DATE is the caller's, as it always was; nothing here consults a clock, which is the property the
+// arm holding this was written for and still holds.
+//
+// A stamp in some other shape falls through whole. It is taken by pattern, not by cutting at the
+// separator: an archived run's stamp is not this publisher's to assume the shape of.
+//
+// Could it live in report.css? No — hiding the time leaves it in the delivered bytes and the print.
+
+const FROZEN = "fb96d0f825e0f55db07b72b297e8241e3db31761c039dddbe4b694ec59daa9de";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

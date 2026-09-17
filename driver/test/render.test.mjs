@@ -679,10 +679,20 @@ test("§2.6/2.8: hero is split — conclusion card carries the verdict, scope ca
   assert.match(whereRow(html), /Turkey \(coverage-limited\)/, "a coverage-limited office still says so");
 });
 
-test("§2.9: the issued timestamp renders verbatim from opts (deterministic), omitted when absent", () => {
+test("§2.9: the issued DATE comes from opts and never from a clock, and is omitted when absent", () => {
+  // This arm read the value back verbatim, time and zone included. The value is still the caller's
+  // and is still never computed here — that is the property the arm was written for and it is
+  // unchanged — but what REACHES the page is the date. "Issued on 2026-09-17 · 08:36 GMT+2" told a
+  // reader the minute the file was written and the zone of the machine that wrote it; neither is
+  // something they can use, and on work spanning days the minute implies a precision it does not have.
   const withIssued = renderHtml(parsedOf(FM), REGION_FINDINGS, REGION_COVERAGE, { issued: "2026-06-16 · 14:32 CEST" });
-  assert.match(withIssued, /Issued on 2026-06-16 · 14:32 CEST/);
+  assert.match(withIssued, /Issued on 2026-06-16/, "the date the caller passed");
+  assert.doesNotMatch(withIssued, /14:32|CEST/, "not the minute, and not the machine's zone");
   assert.match(withIssued, /class="mono tb-issued"/);
+  // A stamp in some other shape is not this publisher's to assume, so it falls through whole rather
+  // than being cut at whatever character happens to sit where a separator would be.
+  const odd = renderHtml(parsedOf(FM), REGION_FINDINGS, REGION_COVERAGE, { issued: "Q2 · 2026" });
+  assert.match(odd, /Issued on Q2 · 2026/, "an unrecognised stamp survives whole");
   const without = renderHtml(parsedOf(FM), REGION_FINDINGS, REGION_COVERAGE, {});
   assert.doesNotMatch(without, /class="mono tb-issued"/);                  // no issued field when not passed (the .tb-issued CSS rule still lives in <style>)
   assert.doesNotMatch(without, />Issued /);

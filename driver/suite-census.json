@@ -3743,7 +3743,7 @@
         },
         "render.test.mjs": {
           "tests": 145,
-          "asserts": 579,
+          "asserts": 581,
           "skips": 0,
           "todos": 0
         },
