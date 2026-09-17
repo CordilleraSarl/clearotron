@@ -1211,7 +1211,7 @@ export async function doBatchScreen(apiKey, base, params, tctx) {
         // judgment was shown a native-script mark beside its own romanised query with no reading on
         // either and concluded they were different marks. A delivered report told a client a
         // jurisdiction had not been searched in its own script while the run held both the query and
-        // this value. On the measured round 558 of 1,937 records had one to carry.
+        // this value. A large share of records carry one, so a dropped reading is not a rare edge.
         //
         // Null where the office records none, which is most Latin-script filings: this says what the
         // register says, and inventing a romanisation here would be this row certifying a reading

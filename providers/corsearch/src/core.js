@@ -192,7 +192,7 @@ export const DEFAULT_SEARCH_FIELDS = [
 // ONE JSON envelope away: a 200 whose body is `{"message":"upstream search cluster unavailable"}`
 // is valid JSON, so parseError never fires — and the old fallback coerced "an object with no
 // totalHitCount" to 0, on a comment claiming a present body is "the provider answering". It is not.
-// A SEARCH RESPONSE is a body that carries the search-response shape this endpoint was probed to
+// A SEARCH RESPONSE is a body that carries the search-response shape this endpoint is documented to
 // return: totalHitCount (the count), rows (the records) or nextRequest (the paging cursor). A
 // parseable body with none of the three — an error envelope, a gateway stub — is the provider
 // saying something OTHER than an answer, and it rides out as a non-answer (null total, an error
@@ -435,7 +435,7 @@ export async function doExpandPhoneme(sessionKey, params, tctx) {
 // provider); they are RE-EXPORTED here unchanged so every existing importer — engine/mcp/corsearch-server.mjs,
 // register-plan.mjs, the driver — keeps resolving them from this module with identical semantics.
 // classifyStatus carries brand-json's vocabulary (Valid/Pending/GracePeriod live; Invalid/Expired dead;
-// anything else AMBIGUOUS → never auto-drop). BATCH_SCREEN_CHUNK = 100 = the observed brand-json page size.
+// anything else AMBIGUOUS → never auto-drop). BATCH_SCREEN_CHUNK = 100 matches the brand-json page size.
 export { BATCH_SCREEN_CHUNK, chunk, classifyStatus, isAllClass, normalizeBrandRow, screenVerdict };
 
 export async function doBatchScreen(sessionKey, params, tctx) {

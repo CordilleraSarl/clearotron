@@ -217,11 +217,11 @@ export const CAPABILITIES = Object.freeze({
   // ── WHICH FORM OF A NON-LATIN MARK DOES THE INDEX HOLD? ──────────────────────────────────────────
   // `false` = the TRANSLITERATION ONLY. The characters are not indexed, so searching them returns 0
   // with no error — the exact false-clean shape a reader calls CLEAN:
-  //   华威豹 → 0    HUA WEI BAO → 32 (and the 32 CONTAIN 华威豹)
-  //   小米   → 0    XIAOMI      → 57632
-  //   스타벅스 → 0
+  //   Searching the characters of a non-Latin mark returns nothing; searching its transliteration
+  //   returns records, and those records carry the characters. Both halves are needed to see it —
+  //   the empty answer alone is indistinguishable from a mark nobody has filed.
   // Universal, not a CJK-specific behaviour: non-Latin records across CN/TW/JP/KR/TH/GR/UA/EG/IL/SA
-  // carried a populated markTransliteration.
+  // carry a populated markTransliteration.
   //
   // This declaration is what makes the refusal a CONTRACT rather than one vendor file's hand-written
   // check: the shared executor (providers/_shared/execute-plan.mjs, via script-form.mjs) reads it and
@@ -250,7 +250,7 @@ export const CAPABILITIES = Object.freeze({
   // makeEnumerate({ capabilities: {...CAPABILITIES.kernel} }) — these values are the LIVE seam settings,
   // no longer a design note. pageGuard is 1 because /search is single-shot: there is no page 2 to
   // fetch, so the guard can only ever be a backstop. namesChunkDefault = maxOrWidth (500): the kernel
-  // chunks a wide OR-stack to the parser's probed nesting bound before it reaches the wire.
+  // chunks a wide OR-stack to the parser's nesting bound before it reaches the wire.
   kernel: Object.freeze({
     countProbe: "endpoint",
     screenSource: "billed-record-fetch",
