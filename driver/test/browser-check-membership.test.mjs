@@ -164,6 +164,15 @@ const CANNOT_RUN_IN_CI = [
       + "and the commit they were started from. CI has no deployment; pointed at one it would be "
       + "asserting about the last box someone happened to name.",
   },
+  {
+    path: "scripts/merge-shape-check.mjs",
+    why: "it judges A MERGE SOMEBODY MADE, and in CI there is no such merge. The suite runs on "
+      + "`refs/pull/N/merge`, a merge the host constructs for the run and throws away, so every question "
+      + "this check asks — what did this bring back, what did it remove from the branch it landed on — "
+      + "would be answered about an artefact rather than about the act. Its whole value is being run "
+      + "BEFORE the push, on the merge as it was actually made; the damage it looks for is already in the "
+      + "tree by the time CI sees it, and the guards that catch the consequences run there already.",
+  },
   // THE DEPLOY-DRIFT ENTRY IS GONE BECAUSE THE CHECK IS NOT ON THIS TREE — WITHHELD, NOT RETIRED.
   // It asks a box whether its deployed copy of the deploy script matches the tracked one, so it belongs
   // with the ops scripts in the configuration repository rather than in a public product tree, and that

@@ -471,6 +471,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-merge-is-judged-by-what-it-did-to-the-tree.test.mjs": {
+          "tests": 6,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
         "a-mid-run-mint-cannot-lose-a-mark.test.mjs": {
           "tests": 10,
           "asserts": 20,
