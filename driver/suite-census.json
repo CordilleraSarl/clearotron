@@ -5967,7 +5967,7 @@
         },
         "composerProduct.test.ts": {
           "tests": 32,
-          "asserts": 124,
+          "asserts": 129,
           "skips": 0,
           "todos": 0
         },
@@ -6237,7 +6237,7 @@
         },
         "screenCopy.test.ts": {
           "tests": 63,
-          "asserts": 240,
+          "asserts": 243,
           "skips": 0,
           "todos": 0
         },
