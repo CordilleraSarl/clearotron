@@ -91,7 +91,7 @@ function writeSnapshot(dir, fields) {
   return file;
 }
 
-const REFUSAL_CN = "China is not available with Signa, the register configured here — remove China to run this search.";
+const REFUSAL_CN = "China is not available with Signa, the register configured here — remove it to run this search.";
 
 test("arm 1 — a multi-country search naming China is refused, and the sentence names the remedy", () => {
   const errors = errorsFor({ job: { geography: { mode: "named" }, jurisdictions: ["China", "United States"] } });
@@ -142,7 +142,7 @@ test("arm 5 — an account default that is NOT covered is refused, and named so 
     job: { geography: { mode: "account-default" } },
     profile: { defaultJurisdictions: ["France", "Japan"] },
   });
-  assert.ok(errors.some((e) => e.includes("Japan") && e.includes("remove Japan")),
+  assert.ok(errors.some((e) => e.includes("Japan") && e.includes("remove it")),
     `an account default the register cannot search was accepted: ${JSON.stringify(errors)}`);
 });
 
@@ -225,8 +225,9 @@ test("arm 9 — a name outside the composer's 37 fails OPEN rather than refusing
 
 test("arm 10 — two territories read as a list, and a CODE is named back as its display name", () => {
   const two = errorsFor({ job: { geography: { mode: "named" }, jurisdictions: ["China", "Japan"] } });
+  // Owner ruling, 2026-09-17: the remedy points back rather than naming the territories a second time.
   assert.ok(two.includes("China and Japan are not available with Signa, the register configured here"
-    + " — remove China and Japan to run this search."), JSON.stringify(two));
+    + " — remove them to run this search."), JSON.stringify(two));
   // The requester wrote a code; the sentence must hand back the name they would recognise on the form.
   const code = errorsFor({ job: { geography: { mode: "named" }, jurisdictions: ["cn"] } });
   assert.ok(code.includes(REFUSAL_CN), `a code was not named back as its display name: ${JSON.stringify(code)}`);
@@ -257,7 +258,7 @@ test("arm 12 — a snapshot with no label names the register not at all, rather 
   });
   assert.equal(registerLabelFor(no), "signa", "the reader falls back to the provider key");
   assert.equal(registerReachRefusal(["China"], null),
-    "China is not available with the register configured here — remove China to run this search.");
+    "China is not available with the register configured here — remove it to run this search.");
 });
 
 test("arm 13 — the rule itself, over the three coverage states", () => {
