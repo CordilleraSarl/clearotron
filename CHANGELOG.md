@@ -4,6 +4,69 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.3.2-beta.8
+
+### Before you upgrade
+
+- A billing setting Clearotron does not recognise now stops a search before it starts, where it used to bill the subscription. Run `clearotron doctor` after upgrading.
+- On a Claude install, a cloud's own switch left on, such as `CLAUDE_CODE_USE_FOUNDRY`, now stops a search unless `CLEAROTRON_AI_BILLING=cloud`.
+
+### New
+
+- Each search in your list now says which of the four searches it was.
+- Pay for Claude through your own Google Cloud, Microsoft Azure or Amazon Bedrock account with `CLEAROTRON_AI_BILLING=cloud`. Tested on Microsoft Azure; Google Cloud and Amazon Bedrock use the Claude program's own settings.
+- Each run records which cloud account paid for it, and `clearotron doctor` names the cloud account it charges.
+- Setup asks how Claude is paid for, and for a cloud account asks which cloud and checks it with one turn.
+- `clearotron start`, when no billing is set, names a cloud account for Claude beside a subscription and an API key.
+- `clearotron start --background` carries the cloud account's settings to the background services.
+- `clearotron doctor` says how the background services pay, and warns when your own configuration sets a different way of paying.
+- Global config's Engine row names the cloud account that pays, and turns red, naming the setting to change, when searches would be refused.
+- If a restart does not help the background services find the reasoning program, `clearotron doctor` says how to point them at it.
+- `clearotron doctor --probe-engine` tries Claude with the cloud settings in Clearotron's settings file, the Amazon keys included, as a search does.
+- The sign-in command from setup, `clearotron doctor` and a starting search names the copy setup installed, which is not on the PATH.
+- Setup's test turn tries Claude with the cloud settings in Clearotron's settings file, the Amazon keys included, as a search does.
+- A knockout report has an Export button, so anyone who opens the file can save it as a PDF.
+- Claude steps run on the newest Opus and Sonnet as soon as they ship, unless a setting holds a tier at one model.
+- Setup offers to install the reasoning program your engine uses. Before it asks, it says how much space the program takes and how to remove it.
+- Setup asks which AI should run your searches, Claude or Codex, and says what it found on this computer.
+- Claude Code or the Codex CLI already on the machine is still used first. `clearotron update` keeps the installed one current, and `clearotron doctor` says which copy runs, and its version when the program reports one.
+- Outside Windows, in demo mode, `clearotron doctor` points to setup to install the reasoning program.
+- When the reasoning program cannot be found, Global config's Engine row and the search screen name the setup command that installs it.
+- Each report names the models that did the work, including those behind the Chinese, Japanese and Korean language steps.
+- Through a cloud account, a report names the Claude model or its tier, never your organisation's own name for its deployment.
+- When a cloud account refuses the credentials, setup, `clearotron doctor` and a starting search name that cloud and the settings to check.
+
+### Fixed
+
+- A knockout search now covers the territories the form is showing you, rather than searching the whole world instead of them.
+- A new clearance recommends and preselects a search when the form is showing your company's own territories. It previously offered none and said no search was picked, beside a summary naming those same countries.
+- A report opened on a phone fits the screen instead of scrolling sideways.
+- A knockout search that is running says it usually takes 5 to 10 minutes. It previously showed 1.5 to 2.5 hours, which is how long a full clearance takes.
+- A running search says which step it is on, such as "Register sweeps", rather than "Register sweeps · 3 of 9". How many steps a search has varies with what it needs to do, so the number did not mean what it looked like.
+- A new clearance now offers only the territories your register can search. Before, it offered countries your register cannot reach, and choosing one stopped the search from starting.
+- You can now remove one of your company's default territories on the clearance form. Before, if your register could not search one of them, nothing on that screen let you take it off and carry on.
+- A report now gives the specific reason each name was set aside. Before, every such name carried the same general sentence, and the reason the search actually recorded for it was not shown.
+- A search naming a territory your trademark register does not cover is now refused before it starts, and says which territory to remove. Before, the search ran and that territory was reported as not searched at the end.
+- An install that pays with an API key and runs as background services now hands the services its key. Before, every search stopped after it was ordered.
+- A subscription install signed in with a long-lived token from `claude setup-token` now hands that token to its background services.
+- `clearotron start` now reports a billing setting that would stop every search, such as an API key that is not set. `clearotron doctor` also checks the settings the background services read.
+- Connect your AI now sits last in the sidebar, under Company settings. It used to sit second, directly under Home.
+- `clearotron doctor` and `clearotron start --background` look for Claude Code or the Codex CLI on the PATH the background services use. They used to say every search would be refused on a machine whose searches found the program and ran.
+- When a background service's unit and its settings file set the same value, `clearotron doctor` and `clearotron connect` take the file's, as systemd does.
+- `clearotron doctor` and `clearotron connect` read a doubled percent sign (`%%`) in a background service's unit as one, as systemd does.
+- When the background services found the reasoning program and this machine cannot, `clearotron doctor` now suggests installing it here with setup. It used to suggest installing it where the services could already see it.
+- A search on a short or common word could return so many unrelated marks that one query filled most of the results. Any single query now contributes at most a fixed number of records. Anything beyond that is reported as a crowd, with its full count, rather than left out silently.
+- A report made before this summer, reopened today, states its conditions in the same words as a new one.
+- A search covering a very large number of register records could finish with no findings document at all. Those records are now accounted for in fixed batches instead of all at once. An interrupted attempt resumes from the records still outstanding, rather than starting again.
+- When an API key is refused, setup, `clearotron doctor` and a starting search name the key to check, rather than asking for a sign-in.
+- When you have used all of today's searches, the screen names the person to ask for another. On an installation with no name set it read "ask your the operator contact to run this one for you".
+- A report's verdict now lists every condition it is conditional on. It used to name the first and close with "(and 2 more)". The rest sat in a separate list below it, so a reader could see that conditions existed without reading them.
+
+### For operators
+
+- `clearotron start --background` names each setting on which `~/.env` and Clearotron's settings disagree, such as a rotated key, without printing values. It adds only settings `~/.env` lacks and never replaces one, so change a setting in both files.
+- the offline test suite runs in four parallel shards, so a change is checked in about a quarter of the time it used to take.
+
 ## 0.3.2-beta.7
 
 ### Fixed

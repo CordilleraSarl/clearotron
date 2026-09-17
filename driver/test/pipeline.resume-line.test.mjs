@@ -20,7 +20,7 @@ const require = createRequire(import.meta.url);
 pinEnv(process.env, "CLEAROTRON_DATABASE", envFrom(process.env, "CLEAROTRON_DATABASE") || "corsearch");
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 
-const { resumeAdvice, resumeCommand } = await import("../pipeline.mjs");
+const { resumeAdvice, resumeCommand, jobFromStatus, resumeJobRefusal } = await import("../pipeline.mjs");
 
 const SCRIPT = "/srv/app/driver/pipeline.mjs";
 const JOB = "/srv/jobs/acme.json";   // neutral root: forbids naming an operator's home anywhere executable
@@ -176,4 +176,53 @@ test("the CLI installs its signal handlers in the mainline block only", async ()
   assert.ok(!/process\.on\("SIG/.test(before), "no signal listener may be installed on import");
   assert.match(src.slice(entry), /process\.on\(sig, \(\) => \{/);
   assert.ok(!/installStopHandlers/.test(src), "the runner's handler must not be imported here");
+});
+
+// ── THE COMMAND MUST NOT NAME A FILE THE BOX NO LONGER HAS ─────────────────────────────────────────
+//
+// The queue entry carrying the job is consumed when the run starts, so by the time a failure makes a
+// resume necessary the job file is gone. The advice composed a command naming it anyway, and the person
+// who found out was the person trying to repair the run.
+
+test("a resume command is valid without a job file, because the codename is the identity", () => {
+  assert.equal(resumeCommand({ script: SCRIPT, jobPath: null, codename: "tealkeystone" }),
+    `node ${SCRIPT} --resume tealkeystone`,
+    "no command was offered for a run whose job file is gone — which is every failed run");
+  assert.equal(resumeCommand({ script: SCRIPT, jobPath: null, codename: "tealkeystone", agent: "lisa" }),
+    `node ${SCRIPT} --agent lisa --resume tealkeystone`);
+  // The path still rides when there IS one: a caller holding the job should keep naming it.
+  assert.equal(resumeCommand({ script: SCRIPT, jobPath: JOB, codename: "tealkeystone" }),
+    `node ${SCRIPT} --job ${JOB} --resume tealkeystone`);
+  // And no codename is still nothing to resume — the identity is what was missing, not the path.
+  assert.equal(resumeCommand({ script: SCRIPT, jobPath: null, codename: null }), null);
+});
+
+test("a failure with no job path still prints a command rather than 'nothing to resume'", () => {
+  const said = resumeAdvice({ script: SCRIPT, jobPath: null, codename: "tealkeystone",
+    result: { ok: false, failedStage: "synthesis" } }).join("\n");
+  assert.doesNotMatch(said, /nothing to resume/,
+    "a failed run with no job file was told it had no identity, when its codename is its identity");
+  assert.match(said, /--resume tealkeystone/);
+});
+
+test("the job a run ran is read back out of its own status, and only the fields the engine wrote", () => {
+  const status = { id: "j9", ref: "TMP9001", markName: "AURORA", classes: [9], forwarder: "requester",
+    state: "failed", stepIndex: 4, verdict: null, url: null };
+  assert.deepEqual(jobFromStatus(status),
+    { id: "j9", ref: "TMP9001", markName: "AURORA", classes: [9], forwarder: "requester" },
+    "the rebuild carries a field the engine did not write from the job, or drops one it did");
+  // A status with nothing identifying in it is not a job — an absence reported, never an empty job built.
+  assert.equal(jobFromStatus({ state: "failed" }), null);
+  assert.equal(jobFromStatus(null), null);
+});
+
+test("a rebuild that does not derive the run's own slug is REFUSED, not resumed", () => {
+  // The check that makes the rebuild safe. `deriveSlug` reads ref and markName and nothing else, so a
+  // rebuild reproducing the run's slug has reproduced its identity — and one that does not is a job for
+  // a different matter, which would resume into the wrong run.
+  const job = { id: "j9", ref: "TMP9001", markName: "AURORA", classes: [9], forwarder: "requester" };
+  assert.equal(resumeJobRefusal(job, "tmp9001-aurora"), null, "the matching slug was refused");
+  assert.match(resumeJobRefusal(job, "tmp9002-borealis"), /different matters/,
+    "a job for another matter was accepted into this run");
+  assert.match(resumeJobRefusal(null, "tmp9001-aurora"), /cannot be read back/);
 });

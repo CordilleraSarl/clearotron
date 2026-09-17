@@ -265,7 +265,15 @@ const KO_CSS = `
   .ko-scope b{color:var(--ink)}
   /* A wide counts table must scroll inside its own panel, never push the page sideways. */
   .ko-scroll{overflow-x:auto}
-  @media(max-width:700px){.ko-row{grid-template-columns:1fr;gap:10px}}
+  /* A finding's bullets carry bare source URLs, and a URL offers a line no place to break. On a phone
+     that unbreakable run becomes the minimum width of the grid item, so the single column floors at
+     443px inside a 360px viewport and the whole page scrolls sideways -- 135px of it, measured
+     2026-09-17. Only the value "anywhere" lowers that minimum: "break-word" breaks the line but
+     leaves the minimum where it was, which is why the blocks beside this one that already set
+     word-break were never the cause. Phone widths only: nothing at or above 700px changes.
+     NO BACKTICK IN THIS COMMENT -- it sits inside the stylesheet's own template literal. */
+  @media(max-width:700px){.ko-row{grid-template-columns:1fr;gap:10px}
+    .ko-bul{overflow-wrap:anywhere}}
 
   /* The band ladder, the territories fold and the run's own caveats (the 2026-09-16 report redesign). Ported from
      the design's stylesheet with its fixed colours replaced by this page's tokens, so the ladder reads

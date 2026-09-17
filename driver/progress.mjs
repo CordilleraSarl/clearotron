@@ -398,11 +398,21 @@ export function seedRunStatus(ctx, { resume = false } = {}) {
   }, null, { critical: true });   // door B — the clearance lane's identity seed, same rule
 }
 
-// Convenience: advance the run to the step for `rawStageKey` (no-op for unmapped keys) then refresh STATUS.md.
+// Record that the run is at `rawStageKey`: advance the displayed step where the stage has one, and say
+// what the run is doing either way, then refresh STATUS.md.
+//
+// AN UNMAPPED STAGE MOVES NO STEP AND IS STILL SOMETHING THE RUN IS DOING. This returned early for one,
+// so it wrote no `lastStage` at all — and `lastStage` is what status-snapshot publishes as "what the run
+// is actually doing". Three stages have no display step ON PURPOSE (STAGE_NO_STEP names each and why),
+// so for the whole of any of them every surface went on naming the PREVIOUS stage, which is the same
+// defect as a stale step wearing a different field. The step fields are still withheld — that part of
+// the early return was right, and an unmapped stage must never touch the displayed step.
 export function recordTransition(ctx, rawStageKey) {
   const step = stepForStage(rawStageKey);
-  if (!step) return;
-  writeRunStatus(ctx, { stepIndex: step.index, stepLabel: step.label, stepN: step.n, stepTotal: step.total, lastStage: rawStageKey });
+  writeRunStatus(ctx, {
+    ...(step ? { stepIndex: step.index, stepLabel: step.label, stepN: step.n, stepTotal: step.total } : {}),
+    lastStage: rawStageKey,
+  });
   rollupStatus(ctx?.run?.studioRoot);
 }
 

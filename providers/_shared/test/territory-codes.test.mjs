@@ -110,3 +110,63 @@ test("the long tail resolves too, and the curated promises are not at the mercy 
   assert.equal(normalizeTerritory("European Union"), "EU", "and the curated entry still wins over any derived one");
   assert.equal(normalizeTerritory("International"), "WO");
 });
+
+// ── A NAME RESOLVES TO A CODE A REGISTER CAN ANSWER ────────────────────────────────────────────────
+//
+// The runtime still knows the codes ISO has retired and gives them the CURRENT country's name, so `VD`
+// (North Vietnam, withdrawn 1977) and `VN` both answer "Vietnam". The derived scan runs AA to ZZ, so the
+// dead code claimed the name and the live one found it taken. Seven territories resolved that way. None
+// is a code this engine holds a jurisdiction for, so the name was pointed at a register that cannot
+// answer it — and a requester who wrote BOTH the name and the code had two countries and was refused a
+// search they had described correctly.
+test("a territory NAME resolves to the code that is current, never to a withdrawn one", () => {
+  for (const [name, code] of [
+    ["Vietnam", "VN"], ["Yemen", "YE"], ["Serbia", "RS"], ["Zimbabwe", "ZW"],
+    ["Vanuatu", "VU"], ["Myanmar (Burma)", "MM"], ["Curaçao", "CW"],
+  ]) assert.equal(normalizeTerritory(name), code, `${name} resolved to a code no register can answer`);
+});
+
+test("a name and the country's own code are ONE place", () => {
+  // The client-facing half, and the reason the codes matter rather than being a tidiness point: every
+  // rule that counts territories counts these two as one or as two, and "two or more countries" is a
+  // rule a multi-country search is accepted or refused on.
+  //
+  // WRITTEN AGAINST THE CODE A REQUESTER WOULD WRITE, not against whatever the name resolved to. The
+  // first cut of this arm fed the name's own answer back in and asserted it was stable — which is
+  // idempotence, true of every two-letter code including a withdrawn one, so it passed against the
+  // defect it is named for. A plant is what said so.
+  for (const [name, code] of [
+    ["Vietnam", "VN"], ["Yemen", "YE"], ["Serbia", "RS"], ["Zimbabwe", "ZW"],
+    ["Vanuatu", "VU"], ["Curaçao", "CW"],
+  ]) assert.equal(normalizeTerritory(name), normalizeTerritory(code),
+    `${name} and ${code} are two places to every rule that counts them`);
+});
+
+test("the canonicalisation is inert for every other name, and cannot empty the table", () => {
+  // THE FLOOR, because a repair that pointed every name at nothing would satisfy the two arms above by
+  // making the whole map unreachable. Asserted on the POPULATION before anything is asserted about a
+  // member: the derived widening carries the long tail — measured at 200+ names beyond the curated
+  // shortlist — and a build that loses it should say so here rather than in a client's scope.
+  const names = new Intl.DisplayNames(["en"], { type: "region" });
+  let resolved = 0, moved = [];
+  for (let a = 65; a <= 90; a++) for (let b = 65; b <= 90; b++) {
+    const code = String.fromCharCode(a, b);
+    let name; try { name = names.of(code); } catch { continue; }
+    if (!name || name === code || /^unknown/i.test(name)) continue;
+    const got = normalizeTerritory(name);
+    if (got) resolved += 1;
+    // A code the runtime itself canonicalises elsewhere is a withdrawn one. NONE may survive as an answer.
+    if (got && new Intl.Locale(`und-${got}`).region !== got) moved.push(`${name} -> ${got}`);
+  }
+  assert.ok(resolved > 200, `only ${resolved} region names resolve — the derived tail is gone, not narrowed`);
+  assert.deepEqual(moved, [], "these names still answer with a code ISO has withdrawn");
+});
+
+test("UK is still UK, because that is an alias and not a withdrawal", () => {
+  // `UK` canonicalises to `GB` and deliberately must not here: the direct-code branch hands aliasing to
+  // the provider's translate step, which is where the decision belongs. The repair touches the DERIVED
+  // name table only, so this is the arm that catches it reaching further than it should.
+  assert.equal(normalizeTerritory("UK"), "UK");
+  assert.equal(normalizeTerritory("uk"), "UK");
+  assert.equal(normalizeTerritory("United Kingdom"), "GB", "the NAME still resolves as it always did");
+});

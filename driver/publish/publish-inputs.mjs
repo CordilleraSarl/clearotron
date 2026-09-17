@@ -57,10 +57,22 @@ export const PUBLISH_INPUTS = {
   "_driver/verdict.json": "optional",
   // doc 50 — the frozen band vocabulary. Present on band-doctrine runs only, by design.
   "_driver/framework.json": "optional",
+  // The recall net's receipt. Its overflow[] carries the probes the run minted and did not dispatch,
+  // one row each on the workbook's gaps sheet. `optional`, and the reason is the recall net's own
+  // switches: the lane is env-gated for rollback and mints nothing when a matter has no remembered
+  // conflict, so an absent receipt is a run that had nothing to record rather than one that lost it.
+  // `required` would close the gate on every knockout and every matter with a clean history.
+  "_driver/register-recall.json": "optional",
   // T6 (D4) — the frozen register plan; the render falls back to the coverage prose without it.
   "_driver/register-plan.json": "optional",
   // The instructed scope, read only as the register plan's fallback for the searched-jurisdiction set.
   "_driver/instructed-scope.json": "optional",
+  // The frozen local-language lane decision, and the units the fold wrote. Read to derive how deep that
+  // investigation went against what the matter configured — through the engine's own asked-versus-ran
+  // reader, not by re-deciding it here. Optional and genuinely so: a plain clearance never runs the
+  // component and carries neither file, which is the state that folds to not-in-scope.
+  "_driver/jx-lanes.json": "optional",
+  "_driver/jx/units.json": "optional",
   // T7 (E5) — the grounded case-law profiles. A run with no case-law layer legitimately has none.
   "case-law-findings.md": "optional",
   // T7 (E6) — Corsearch enforcement telemetry; presentation-only, absent ⇒ no lines.

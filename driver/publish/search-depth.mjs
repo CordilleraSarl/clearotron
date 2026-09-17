@@ -104,9 +104,18 @@ export function clearedNames(auditMd, recordIndex = {}) {
  * EVERY COUNTRY THE RUN READ, including the ones that came back clean — those are the whole point. A
  * count keyed off the findings would list only countries with a conflict, which is the gap this closes.
  *
- * @param {string[]} recordFileNames  the `_records/` directory listing, named `<cc>-<id>.json`
+ * THREE-VALUED, in the house pattern outputMeta already uses for a stage's output: `null` in means the
+ * run has NO `_records/` store, and `null` comes back out — we cannot say how many records were read.
+ * An empty ARRAY is the other thing entirely: the store is there and holds nothing, which is a real zero
+ * and renders as one. Collapsing the two is what this fixes; they arrived here as the same `[]` and the
+ * renderer could only drop the section, so a register that archives nothing read as a register nobody
+ * searched.
+ *
+ * @param {string[]|null} recordFileNames  the `_records/` listing, named `<cc>-<id>.json`; null = no store
+ * @returns {object|null} counts by country code, or null when the run cannot say
  */
 export function recordsByCountry(recordFileNames = []) {
+  if (recordFileNames === null) return null;
   const out = {};
   for (const name of recordFileNames) {
     const cc = (String(name).match(/^([a-z]{2})-/i) || [])[1];
@@ -148,6 +157,73 @@ export function courtDecisionsState(caseLawText) {
   return "found";
 }
 
+/**
+ * WHICH TERRITORIES THE RUN SEARCHED, AND WHICH IT COULD NOT REACH — from the register PLAN. PURE.
+ *
+ * The plan is the authority on what was asked of the register; the `_records/` archive is only the
+ * authority on what came back and was kept. Reading "what was searched" off the archive is why a
+ * provider that keeps no records read as a provider nobody asked: no records, no countries, no section.
+ * Both halves are on the plan whether or not anything is archived — `entries[].regions` is what it will
+ * query, and `deferred_coverage` is what this provider does not cover, carrying the reason for each.
+ *
+ * Null for a run with no plan to read, which is an archived or legacy run: that is "cannot say", and it
+ * is not the same answer as a plan that named nothing.
+ *
+ * @param {object|null} plan  the parsed `register-plan.json`, or null when there is none
+ */
+export function planTerritoriesOf(plan) {
+  if (!plan || typeof plan !== "object") return null;
+  const entryRegions = (plan.entries ?? []).flatMap((e) => (Array.isArray(e?.regions) ? e.regions : []));
+  // `plan.regions` is the older shape and is the fallback, not a second source: a plan carrying entries
+  // has already said which regions it will query, and unioning the two would report a region the
+  // compiler moved OUT of `regions` into the deferral list as though it had been searched.
+  const searched = entryRegions.length ? [...new Set(entryRegions.map(String))]
+    : [...new Set((Array.isArray(plan.regions) ? plan.regions : []).map(String))];
+  const unreached = (Array.isArray(plan.deferred_coverage) ? plan.deferred_coverage : [])
+    .map((d) => ({ jurisdiction: String(d?.jurisdiction ?? "").trim(), reason: String(d?.reason ?? "").trim() }))
+    .filter((d) => d.jurisdiction);
+  return { searched, unreached };
+}
+
+/**
+ * HOW DEEP THE LOCAL-LANGUAGE INVESTIGATION ACTUALLY WENT, against what the matter configured. PURE.
+ *
+ * The engine can run this investigation shallower than the account asked for, and until now it said so
+ * in exactly one place: a sentence a model wrote in the Methodology paragraph. The redesigned report
+ * replaces that paragraph with counts and named rows, so a run that went shallow said so on no page at
+ * all. This is the field behind that row.
+ *
+ * DERIVED FROM THE RUN'S OWN RECORD, NEVER FROM PROSE, and not derived here either: the caller hands in
+ * what `deriveLaneDepthVerdicts` produced, which is the one author of asked-versus-ran and reads the
+ * frozen lane sidecar against the slices that executed. A second opinion computed in the publish path
+ * would be a second answer to a question the engine has already answered.
+ *
+ * THE FOUR STATES, and the order they are decided in matters:
+ *   not-in-scope  no lane was asked for anything — a plain clearance, or every lane switched off
+ *   not-run       lanes were asked and none of them ran
+ *   ran-shallow   a lane fell short of its ask, or was asked and did not run while another did
+ *   ran           every lane that was asked ran at the depth it was asked for
+ *
+ * `ran: null` IS NOT `candidates`. A lane whose slices settle to nothing readable cannot say what it
+ * delivered, and the jx verdicts are careful to report that as unestablished rather than as the lesser
+ * depth. Folding it to `ran` here would put that claim back on a client's page, so it counts as short.
+ *
+ * @param {object|null} verdicts  per-lane `{asked, ran, shortfall}` from deriveLaneDepthVerdicts
+ */
+export function localLanguageDepth(verdicts) {
+  if (!verdicts || typeof verdicts !== "object") return { state: "not-in-scope", lanes: {} };
+  const lanes = {};
+  for (const [lane, v] of Object.entries(verdicts)) {
+    lanes[lane] = { configured: v?.asked ?? null, achieved: v?.ran ?? null };
+  }
+  const asked = Object.entries(verdicts).filter(([, v]) => v?.asked && v.asked !== "off");
+  if (!asked.length) return { state: "not-in-scope", lanes };
+  const ran = asked.filter(([, v]) => v?.ran);
+  if (!ran.length) return { state: "not-run", lanes };
+  const short = asked.some(([, v]) => v?.shortfall === true || !v?.ran);
+  return { state: short ? "ran-shallow" : "ran", lanes };
+}
+
 /** Was the name searched in a non-Latin script? Read off the plan's own terms, never asserted. PURE. */
 export function localScriptSearched(registerPlan) {
   const entries = Array.isArray(registerPlan?.entries) ? registerPlan.entries : [];
@@ -159,7 +235,10 @@ export function localScriptSearched(registerPlan) {
  *
  * @returns {{schemaVersion: number, cleared: object, counts: object}}
  */
-export function searchDepthRecord({ auditMd = "", recordIndex = {}, recordFileNames = [], commonLawGrid = null, caseLawText = "", registerPlan = null } = {}) {
+export function searchDepthRecord({ auditMd = "", recordIndex = {}, recordFileNames = [], commonLawGrid = null, caseLawText = "", registerPlan = null, laneDepthVerdicts = null } = {}) {
+  // `recordFileNames: null` travels all the way to the page — see recordsByCountry. The default stays `[]`
+  // because that is "the caller said nothing", not "the store is absent"; only the publish path knows the
+  // difference and it is the one producer.
   const cleared = clearedNames(auditMd, recordIndex);
   const groups = {};
   for (const key of CLEARED_GROUPS) groups[key] = 0;
@@ -169,10 +248,14 @@ export function searchDepthRecord({ auditMd = "", recordIndex = {}, recordFileNa
     cleared: { register: cleared.register, web: cleared.web, groups },
     counts: {
       recordsByCountry: recordsByCountry(recordFileNames),
-      recordsRead: recordFileNames.length,
+      recordsRead: recordFileNames === null ? null : recordFileNames.length,
       sweep: sweepCounts(commonLawGrid, auditMd),
       localScriptSearched: localScriptSearched(registerPlan),
       courtDecisions: courtDecisionsState(caseLawText),
+      // `localScriptSearched` above answers whether the spellings were searched; this answers how deep
+      // the investigation went against what was configured. Two different facts, and the row the report
+      // reserves is for the second.
+      localLanguage: localLanguageDepth(laneDepthVerdicts),
     },
   };
 }

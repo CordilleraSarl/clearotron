@@ -489,6 +489,12 @@
           "skips": 1,
           "todos": 0
         },
+        "a-name-held-in-a-table-is-a-read.test.mjs": {
+          "tests": 5,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "a-name-is-never-rated-above-its-worst-card.test.mjs": {
           "tests": 4,
           "asserts": 15,
@@ -1174,8 +1180,8 @@
           "todos": 0
         },
         "audit-workbook-commonlaw-unlogged.test.mjs": {
-          "tests": 9,
-          "asserts": 37,
+          "tests": 10,
+          "asserts": 51,
           "skips": 0,
           "todos": 0
         },
@@ -3112,8 +3118,8 @@
           "todos": 0
         },
         "pipeline.mock.test.mjs": {
-          "tests": 97,
-          "asserts": 806,
+          "tests": 98,
+          "asserts": 811,
           "skips": 0,
           "todos": 0
         },
@@ -3130,8 +3136,8 @@
           "todos": 0
         },
         "pipeline.resume-line.test.mjs": {
-          "tests": 14,
-          "asserts": 44,
+          "tests": 18,
+          "asserts": 56,
           "skips": 0,
           "todos": 0
         },
@@ -3370,8 +3376,8 @@
           "todos": 0
         },
         "progress.test.mjs": {
-          "tests": 24,
-          "asserts": 86,
+          "tests": 26,
+          "asserts": 96,
           "skips": 0,
           "todos": 0
         },
@@ -3412,8 +3418,8 @@
           "todos": 0
         },
         "publish-input-coverage.test.mjs": {
-          "tests": 6,
-          "asserts": 34,
+          "tests": 7,
+          "asserts": 37,
           "skips": 0,
           "todos": 0
         },
@@ -3778,8 +3784,8 @@
           "todos": 0
         },
         "render.test.mjs": {
-          "tests": 152,
-          "asserts": 611,
+          "tests": 155,
+          "asserts": 637,
           "skips": 0,
           "todos": 0
         },
@@ -4906,8 +4912,8 @@
           "todos": 0
         },
         "the-knockout-reviewing-pass-rewrites-what-a-reader-sees-first.test.mjs": {
-          "tests": 15,
-          "asserts": 57,
+          "tests": 18,
+          "asserts": 70,
           "skips": 0,
           "todos": 0
         },
@@ -5104,8 +5110,8 @@
           "todos": 0
         },
         "the-report-can-say-how-much-was-read.test.mjs": {
-          "tests": 8,
-          "asserts": 23,
+          "tests": 22,
+          "asserts": 59,
           "skips": 0,
           "todos": 0
         },
@@ -6468,8 +6474,8 @@
           "todos": 0
         },
         "providers/_shared/test/territory-codes.test.mjs": {
-          "tests": 11,
-          "asserts": 38,
+          "tests": 15,
+          "asserts": 45,
           "skips": 0,
           "todos": 0
         },

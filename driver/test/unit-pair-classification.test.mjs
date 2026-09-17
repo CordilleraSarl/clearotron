@@ -53,9 +53,9 @@
 // arrive and contradict. That `quote_required` was exactly this: a flag on a form, met later by
 // candidates that had been rebuilt textless.
 //
-// ── THE RULING, ALL TWENTY-TWO AS CLASSIFIED — TWENTY-ONE IN THE SWEEP TODAY, SEE THE CURE BELOW ─────
+// ── THE RULING, ALL TWENTY-THREE AS CLASSIFIED — TWENTY-TWO IN THE SWEEP TODAY, SEE THE CURE BELOW ──
 //
-//  AGREE (20) — the flag and the data it summarises are written into ONE structure in ONE expression, or
+//  AGREE (21) — the flag and the data it summarises are written into ONE structure in ONE expression, or
 //  consumed inside the pass that computed them, so a reader cannot get one without the other:
 //   · band-shape.mjs:494        `live` is minted in the same object literal as `records`, off the same
 //                               `rs`. A reader holding the position holds both.
@@ -104,6 +104,23 @@
 //                               is `reachCovers` on the write routes, which reads the FILE rather than
 //                               this row: that is deliberate and is the opposite of the defect, because
 //                               the page's copy of somebody is never what a change is applied against.
+//                               (CITED BY SYMBOL AND NO LINE, per CONTRIBUTING.md.)
+//   · `localLanguageDepth` declared in search-depth.mjs mints `state` in the SAME object literal as
+//                               the `lanes` map it summarises, off the one `verdicts` argument, so there
+//                               is no second derivation for later data to contradict. The summary is
+//                               over a SUBSET and that is deliberate: `state` counts only lanes that
+//                               were asked for, while `lanes` carries every lane including those
+//                               switched off. The asymmetry is the function's purpose and cannot drift,
+//                               because both members are fixed in the one call. `short` itself is spent
+//                               on the next line choosing between two state words and is never persisted
+//                               — but the WORD it chooses is, which is why this is ruled here and not
+//                               read as contained.
+//                               THE CONSUMER IS WHAT WOULD MAKE THIS A PAIR, AND IT IS THE OPPOSITE.
+//                               publish/render.mjs draws the row only when `lanes` is non-empty and
+//                               takes nothing but the WORD from `state`, so a summary with no lane
+//                               record behind it prints nothing — rather than printing "not part of
+//                               this search" over a run that asked and whose record was never written.
+//                               The guard is on the data, not on the flag, which is the right way round.
 //                               (CITED BY SYMBOL AND NO LINE, per CONTRIBUTING.md.)
 //
 //  DISAGREE (1), fixed here:
@@ -190,7 +207,7 @@ const RULED = new Map([
   ["form-neighbourhood.mjs", 3], ["gateway.mjs", 2], ["grounds-grammar.mjs", 1],
   ["pipeline.mjs", 2], ["publish/render.mjs", 1], ["publish/xlsx.mjs", 2],
   ["reasoning-tripwires.mjs", 1], ["reference-score.mjs", 3], ["registry-fidelity.mjs", 2],
-  ["portal-config-view.mjs", 1],
+  ["portal-config-view.mjs", 1], ["publish/search-depth.mjs", 1],
 ]);
 
 const shortName = (f) => f.replace(/^driver\//, "");

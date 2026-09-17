@@ -270,3 +270,86 @@ test("a condition that reached no client surface is an ordinary row on the gaps 
   await unlink(DROPPED).catch(() => {});
   await unlink(CLEAN).catch(() => {});
 });
+
+// ── A PROBE THE RUN DECIDED ON AND DID NOT MAKE IS A ROW ON THE SAME SHEET ────────────────────────
+//
+// The recall net mints a probe per remembered conflict and one per owner behind it, then dispatches at
+// most five owner probes. The excess is recorded with the party and the probe id and reached no reader,
+// so a search that decided on nineteen ownership checks, made five and said nothing about the other
+// fourteen read as a search that made the checks it wanted. The cap is deliberate and its rows are
+// ranked material-first; what was missing is the disclosure, and it lands where the 2026-09-17 ruling
+// put the same class of fact.
+//
+// BREAK MATRIX:
+//   · the undispatched probe reaches the sheet   → break: pass it nowhere, arm 1 red
+//   · as an ORDINARY row, four columns           → break: give it a shape of its own, arm 2 red
+//   · "What was done" is EMPTY                   → break: put a seam in the note, arm 3 red
+//   · the party and the probe id both survive    → break: drop either, arm 4 red
+//   · a run with none grows no row               → break: emit a header for nothing, arm 5 red
+//   · it APPENDS beside a dropped condition      → break: substitute one for the other, arm 6 red
+test("a probe the run decided on and never dispatched is an ordinary row on the gaps sheet", async () => {
+  const OVER = out("overcap");
+  const c = contract();
+  const before = (c.coverage || []).length;
+  const probes = [
+    { area: "TT Combat Ltd", state: "not-searched", note: "over the cap, never dispatched (recall-owner-tt-combat-ltd)" },
+    { area: "Harmonix Music Systems", state: "not-searched", note: "over the cap, never dispatched (recall-owner-harmonix-music-systems)" },
+  ];
+
+  await buildAudit({ ...c, undispatchedProbes: probes }, JX_AUDIT, OVER, fm.title, fm);
+  const wb = new ExcelJS.Workbook();
+  await wb.xlsx.readFile(OVER);
+  const ws = wb.getWorksheet("Coverage & gaps");
+
+  // THE SAME FOUR COLUMNS as every other row on this sheet.
+  assert.deepEqual(headers(ws), ["Area", "State", "What was done", "What's left"],
+    "the gaps sheet grew a column for this");
+  const rows = [];
+  ws.eachRow((r, n) => { if (n > 1) rows.push([1, 2, 3, 4].map((i) => cellText(r, i))); });
+
+  const row = rows.find((r) => r[0] === "TT Combat Ltd");
+  assert.ok(row, "the undispatched probe reaches no row at all");
+  assert.equal(row[1], "Open", "the row does not carry the sheet's own state word");
+
+  // NOTHING WAS DONE, AND THE ROW SAYS SO BY SAYING NOTHING. This is the assertion the issue turns on:
+  // a lawyer reads this sheet for the difference between a check that came back clean and a check that
+  // was never made. A note carrying an em dash or a semicolon would be split across both columns by the
+  // sheet's own splitter and would put words under "What was done" for work nobody did.
+  assert.equal(row[2].trim(), "", `"What was done" reads ${JSON.stringify(row[2])} for a probe nobody ran`);
+  assert.ok(row[3].includes("over the cap"), "the row does not say why the probe was not made");
+  assert.ok(row[3].includes("never dispatched"), "the row does not say the probe was never made");
+  assert.ok(row[3].includes("recall-owner-tt-combat-ltd"), "the row does not carry the probe id");
+
+  // ONE ROW PER PROBE, and the party is the Area — the reviewing lawyer looks these up by name.
+  assert.ok(rows.some((r) => r[0] === "Harmonix Music Systems"), "only one of two undispatched probes reached the sheet");
+
+  // THE REAL COVERAGE ROWS ARE STILL THERE. Appended, not substituted.
+  assert.equal(rows.length, before + probes.length,
+    `${before} coverage row(s) in, ${rows.length - probes.length} out beside the probes`);
+
+  // AND IT APPENDS BESIDE A DROPPED CONDITION rather than replacing it: both are rows on this sheet and
+  // a run can carry both at once. Substituting one for the other satisfies every assertion above.
+  const BOTH = out("overcap-and-drop");
+  await buildAudit({ ...c, undispatchedProbes: probes,
+    droppedConditions: [{ area: "Conditions", state: "open", note: "records_unscreened:12 of 88 rows — nothing to name" }] },
+  JX_AUDIT, BOTH, fm.title, fm);
+  const wb3 = new ExcelJS.Workbook();
+  await wb3.xlsx.readFile(BOTH);
+  const both = [];
+  wb3.getWorksheet("Coverage & gaps").eachRow((r, n) => { if (n > 1) both.push(cellText(r, 1)); });
+  assert.ok(both.includes("Conditions"), "the dropped condition was pushed off by the probes");
+  assert.ok(both.includes("TT Combat Ltd"), "the probes were pushed off by the dropped condition");
+  assert.equal(both.length, before + probes.length + 1, "the two kinds of row do not both append");
+
+  // AND A RUN THAT DISPATCHED EVERYTHING IT MINTED GROWS NOTHING.
+  const NONE = out("nocap");
+  await buildAudit(contract(), JX_AUDIT, NONE, fm.title, fm);
+  const wb2 = new ExcelJS.Workbook();
+  await wb2.xlsx.readFile(NONE);
+  const clean = [];
+  wb2.getWorksheet("Coverage & gaps").eachRow((r, n) => { if (n > 1) clean.push(cellText(r, 1)); });
+  assert.ok(!clean.includes("TT Combat Ltd"), "a run that dispatched every probe grew a row saying it did not");
+  assert.equal(clean.length, before, "the ordinary rows moved too");
+
+  for (const p of [OVER, BOTH, NONE]) await unlink(p).catch(() => {});
+});
