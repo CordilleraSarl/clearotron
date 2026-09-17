@@ -797,6 +797,21 @@ if (plus && group && aster && coral && tide && max) {
   ok(coral.status === `Stopped${STOPPED_LINE}` || coral.status === `Stopped ${STOPPED_LINE}`, `CORAL FREEZE reads "${coral.status}"`)
   ok(coral.risk === '—' && !coral.open, `CORAL FREEZE reads risk "${coral.risk}" with ${JSON.stringify(coral.open)}`)
   ok(tide.status.startsWith('Running') && tide.status.includes('Register sweeps'), `TIDEGLASS reads "${tide.status}"`)
+  // THE STEP, AND NOT A COUNT OF STEPS. The approved design draws the step alone. The count was the part
+  // that could not be honest: the denominator is how many steps THIS run's plan happens to have, so the
+  // same search reads "3 of 9" on one account and "3 of 6" on another, and a reader takes it for a
+  // fraction of the work done.
+  //
+  // THE FLOOR FIRST. The fixture gives this run a step count on purpose, and without checking that, an
+  // arm asserting the count is absent passes hardest on the day somebody quietly drops it from the
+  // fixture — which is the one change that would make every run below it meaningless.
+  {
+    const src = RUNS().find((r) => r.runId === 'tide-1')
+    ok(src && src.stepN != null && src.stepTotal != null,
+      `the running fixture no longer carries a step count (stepN ${src?.stepN}, stepTotal ${src?.stepTotal}) — nothing below this line is a measurement without it`)
+    ok(!/\b\d+ of \d+\b/.test(tide.status),
+      `TIDEGLASS's status line carries a step count: "${tide.status}" — the design draws the step alone`)
+  }
   ok(tide.risk === '—' && !tide.open && tide.inert, `TIDEGLASS reads risk "${tide.risk}", open ${JSON.stringify(tide.open)}, inert ${tide.inert}`)
   ok(aster.status === 'Finished' && aster.open?.text === 'Open', `ASTERION reads "${aster.status}" with ${JSON.stringify(aster.open)}`)
 }

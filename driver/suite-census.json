@@ -6043,6 +6043,12 @@
           "skips": 0,
           "todos": 0
         },
+        "geographyStampParity.test.ts": {
+          "tests": 1,
+          "asserts": 3,
+          "skips": 0,
+          "todos": 0
+        },
         "grouping.test.ts": {
           "tests": 27,
           "asserts": 70,
