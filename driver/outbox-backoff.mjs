@@ -15,7 +15,7 @@
 //            sendPending with no .sent, so a lost/given-up marker (or an overnight finish) is retried
 //            on the prelim-outbox.timer cadence independent of heartbeat activeHours.
 //
-// TIGHT-LOOP INVARIANT (load-bearing): prelim-outbox.path is PathExistsGlob=…/prelim-outbox/*.pending —
+// TIGHT-LOOP INVARIANT (load-bearing): prelim-outbox.path is PathExistsGlob=…/clearance-outbox/*.pending —
 // level-triggered, so a RETAINED marker re-triggers the service the moment it deactivates. The backoff
 // sidecars therefore live in <outbox>/backoff/ — a subdirectory the glob can never match (`*` does not
 // cross `/`, and "backoff" has no .pending suffix; inotify on the outbox dir doesn't recurse either) —

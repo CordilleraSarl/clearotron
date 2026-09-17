@@ -556,7 +556,7 @@ export const config = {
 
   // ── THE DIRECTORY THIS DEFAULT USED TO NAME, AND WHY IT IS STILL READ ──────────────────────────────
   //
-  // This default was `prelim-outbox` until the identifier was renamed. A deployment that never pinned
+  // This default was `clearance-outbox` until the identifier was renamed. A deployment that never pinned
   // `CLEAROTRON_OUTBOX_DIR` has its `<runId>.pending` markers sitting in the old directory, and moving
   // the default without reading the old one orphans every one of them. That failure is silent and it is
   // the expensive kind: a marker is a report a client is OWED, an unread outbox is indistinguishable
@@ -566,7 +566,7 @@ export const config = {
   // default in play. Writers use `outboxDir` alone; only readers consult this, which is the same posture
   // the run records take — new work uses the new name, old work is still understood.
   get legacyOutboxDir() {
-    return this.envValue("CLEAROTRON_OUTBOX_DIR") ? null : join(this.workspaceRoot, "prelim-outbox");
+    return this.envValue("CLEAROTRON_OUTBOX_DIR") ? null : join(this.workspaceRoot, "clearance-outbox");
   },
 
   // ── Delivery/comms (Phase 2, standalone product) ─────────────────────────────────────────────────

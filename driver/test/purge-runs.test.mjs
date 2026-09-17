@@ -296,7 +296,7 @@ test("a RUNNING run with no claim is still spared — the original guard is unto
 
 /** The outbox the delivery path would resolve for this fixture, with the given runs owed. */
 function outbox(env, owedRunIds = []) {
-  const dir = join(env.wsRoot, "prelim-outbox");
+  const dir = join(env.wsRoot, "clearance-outbox");
   mkdirSync(dir, { recursive: true });
   for (const id of owedRunIds) writeFileSync(join(dir, `${id}.pending`), "clawdi\n");
   return dir;

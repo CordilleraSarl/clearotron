@@ -56,7 +56,7 @@ test("runner drains every agent queue and runs each job as its own agent", async
   // — BEFORE the assertions below. A run that never started leaves its
   // reason in the packets beside the queue; without this the counts below report it as a
   // product defect.
-  refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.queue.test.mjs");
+  refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.queue.test.mjs");
 
   // Each job marked .done in its OWN origin queue (not centralized to clawdi's).
   assert.ok(existsSync(join(lisaQ, "job-alex.done")), ".done landed in clawdi-alex's queue");
@@ -106,7 +106,7 @@ test("WS-C runner: a broken queue dir is isolated — sibling queues still drain
     // — BEFORE the assertions below. A run that never started leaves its
     // reason in the packets beside the queue; without this the counts below report it as a
     // product defect.
-    refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.queue.test.mjs");
+    refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.queue.test.mjs");
   } finally {
     chmod(brokenQ, 0o755);                                // restore so tmp cleanup works
   }

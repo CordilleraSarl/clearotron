@@ -97,7 +97,7 @@ test("WS1b-core: resume reuses the run-dir — upstream stages SKIP, only synthe
   assert.equal(failPacket.kind, "run-failed");
   assert.equal(failPacket.failedStage, "synthesis");
   assert.match(failPacket.text, /nothing was delivered/i);
-  const outboxCopy = JSON.parse(readFileSync(join(ROOT, "prelim-outbox", `${failPacket.runId}.failed.pending`), "utf8"));
+  const outboxCopy = JSON.parse(readFileSync(join(ROOT, "clearance-outbox", `${failPacket.runId}.failed.pending`), "utf8"));
   assert.equal(outboxCopy.failedStage, "synthesis");
 
   // Run 2: resume (clear knobs so synthesis succeeds). Idempotency skips the valid upstream stages.

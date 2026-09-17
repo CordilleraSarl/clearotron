@@ -302,7 +302,7 @@ test("an ordinary knockout failure carries terminalKind null and reads exactly a
 // CLEAROTRON_WORK_DIR at import; if the ordering at the top of this file ever breaks, the packets land
 // somewhere real and every assertion above still passes.
 test("the harness stayed inside its sandbox — the outbox packets are under the temp root", () => {
-  const outbox = join(ROOT, "prelim-outbox");
+  const outbox = join(ROOT, "clearance-outbox");
   assert.ok(existsSync(outbox), "the refusals' notices went somewhere, and it was here");
   const packets = readdirSync(outbox).filter((n) => n.endsWith(".pending"));
   assert.ok(packets.length > 0, "an absent packet would mean the notice went to a real outbox, not that none was sent");

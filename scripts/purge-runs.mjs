@@ -94,10 +94,10 @@ const WORKSPACE_ROOT = requireRoot("CLEAROTRON_WORK_DIR", "workspace");
 // same answer to a careless reader, and the careless answer is DELETE.
 // THE SAME RESOLUTION THE DELIVERY PATH USES, including its default. Reading only the environment
 // variable would be a SECOND resolution, and a wrong one: `driver.config.mjs` falls back to
-// `<workspaceRoot>/prelim-outbox`, so on every box that does not set the variable — which is most of
+// `<workspaceRoot>/clearance-outbox`, so on every box that does not set the variable — which is most of
 // them — an env-only read answers "no outbox" for an outbox that exists and has markers in it. That is
 // the same class of defect as not looking at all.
-const OUTBOX_DIR = String(process.env.CLEAROTRON_OUTBOX_DIR ?? "").trim() || join(WORKSPACE_ROOT, "prelim-outbox");
+const OUTBOX_DIR = String(process.env.CLEAROTRON_OUTBOX_DIR ?? "").trim() || join(WORKSPACE_ROOT, "clearance-outbox");
 const OUTBOX_NAMES = (() => {
   try { return readdirSync(OUTBOX_DIR); } catch (e) {
     // AN OUTBOX THAT WAS NEVER CREATED IS EMPTY; ONE THAT WILL NOT OPEN IS UNKNOWN. Collapsing the two

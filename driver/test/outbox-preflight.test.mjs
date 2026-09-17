@@ -28,7 +28,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 // same `PathExistsGlob=` line a watcher would carry, in the idiom the first arm already uses.
 // Verbatim the glob the retired unit carried, kept because the disagreement it produced against
 // `config.outboxDir` is the exact drift these arms exist to report.
-const OUTBOX_GLOB = "PathExistsGlob=%h/.openclaw/prelim-outbox/*.pending";
+const OUTBOX_GLOB = "PathExistsGlob=%h/.openclaw/clearance-outbox/*.pending";
 
 test("THE GLOB STRIP IS EXTENSION-AGNOSTIC — the bug pointing the reader at a second unit found", () => {
   // The queue watcher globs `*.json`; the outbox watcher globs `*.pending`. A `/\*\.json$/` strip left
@@ -49,8 +49,8 @@ test("A DISAGREEMENT IS REPORTED FROM BOTH SIDES", () => {
   // Unwatched outbox: markers land where nothing looks — delivery falls to the 55-minute heartbeat.
   // A watch on nothing: dead config, and the tell that the unit and the deployment have drifted.
   const watched = watchedQueueDirs(OUTBOX_GLOB, "/srv/testhome");
-  const r = compareWatches(["/srv/testhome/trademark/workspace/prelim-outbox"], watched);
-  assert.deepEqual(r.unwatched, ["/srv/testhome/trademark/workspace/prelim-outbox"]);
+  const r = compareWatches(["/srv/testhome/trademark/workspace/clearance-outbox"], watched);
+  assert.deepEqual(r.unwatched, ["/srv/testhome/trademark/workspace/clearance-outbox"]);
   assert.equal(r.watchesNothing.length, 1, "and the watch that points at nothing is named too");
 });
 

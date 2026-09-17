@@ -99,7 +99,7 @@ test("the order file decides which queued job runs next — asserted on COMPLETI
     // — BEFORE the assertions below. A run that never started leaves its
     // reason in the packets beside the queue; without this the counts below report it as a
     // product defect.
-    refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.queue-order.test.mjs");
+    refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.queue-order.test.mjs");
     watcher.stop();   // final sweep BEFORE asserting — the finally runs after a failed assert, too late to catch the last completion
     assert.deepEqual(done, ["ord-d", "ord-c", "ord-b", "ord-a"],
       "every job ran, and they COMPLETED in the order the file asserted");
@@ -128,7 +128,7 @@ test("with no order file, the queue runs oldest-first by enqueuedAt — the fiel
     // — BEFORE the assertions below. A run that never started leaves its
     // reason in the packets beside the queue; without this the counts below report it as a
     // product defect.
-    refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.queue-order.test.mjs");
+    refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.queue-order.test.mjs");
     watcher.stop();   // final sweep BEFORE asserting — the finally runs after a failed assert, too late to catch the last completion
     assert.deepEqual(done, ["ord-c", "ord-b", "ord-a"], "oldest enqueuedAt ran first, not the first filename");
   } finally {
@@ -159,7 +159,7 @@ test("a job the order file no longer knows about still runs — the file is advi
     // — BEFORE the assertions below. A run that never started leaves its
     // reason in the packets beside the queue; without this the counts below report it as a
     // product defect.
-    refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.queue-order.test.mjs");
+    refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.queue-order.test.mjs");
     watcher.stop();   // final sweep BEFORE asserting — the finally runs after a failed assert, too late to catch the last completion
     assert.deepEqual(done, ["ord-b", "ord-c"],
       "the dead entry was skipped, the listed job led, and the unlisted job followed rather than being stranded");
@@ -198,7 +198,7 @@ test("no run slot free: the drain HOLDS the job queued and admits it when a slot
     await new Promise((r) => setTimeout(r, 600));
     // — a drain that refused before starting settles at once, which reads here as
     // "it returned while a job was queued". Ask the packets before believing that.
-    if (settled) refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.queue-order.test.mjs");
+    if (settled) refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.queue-order.test.mjs");
     assert.equal(settled, false, "the drain did NOT return while a claimable job was still queued");
     assert.ok(existsSync(join(Q, "ord-a.json")), "and it left the job as `.json` — queued and visible, not claimed into invisibility");
     assert.ok(!existsSync(join(Q, "ord-a.processing")), "specifically: NOT claimed while there was no slot to run it in");
@@ -208,7 +208,7 @@ test("no run slot free: the drain HOLDS the job queued and admits it when a slot
     // — BEFORE the assertions below. A run that never started leaves its
     // reason in the packets beside the queue; without this the counts below report it as a
     // product defect.
-    refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.queue-order.test.mjs");
+    refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.queue-order.test.mjs");
     watcher.stop();
     assert.deepEqual(done, ["ord-a"], "the held job was admitted and completed in the SAME drain");
   } finally {

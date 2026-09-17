@@ -20,7 +20,7 @@ Change behaviour in these files, never in a tool handler.
 - `ops.mjs` — the write verbs: `start_run`, `stop_run`, `feed_context`, plus the delivery seam
   (`list_outbox_events`, `get_delivery_packet`, `ack_event`, `mark_sent`). Writes in an agent's own queue and run
   dirs *and* clears `.pending` markers in the one shared outbox (`CLEAROTRON_OUTBOX_DIR`, default
-  `<workspaceRoot>/prelim-outbox`), which is why `ack_event` is account-gated; shells nothing. **`start_run`
+  `<workspaceRoot>/clearance-outbox`), which is why `ack_event` is account-gated; shells nothing. **`start_run`
   enqueues a job that spends real money.**
 - `whatif.mjs` — the approval-gated counterfactual. `whatIfPlan()` never spends and returns the cost prior, what
   downstream will *not* be recomputed, a completeness verdict and a `confirmationToken`; `whatIfRun(token)` re-runs

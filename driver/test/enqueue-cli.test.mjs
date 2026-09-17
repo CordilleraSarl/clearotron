@@ -80,7 +80,7 @@ test("enqueue CLI → explicit CLEAROTRON_QUEUE_DIR → runner drains to .done (
   // — BEFORE the assertions below. A run that never started leaves its
   // reason in the packets beside the queue; without this the counts below report it as a
   // product defect.
-  refuseOnPreRunFailure(join(root, "prelim-outbox"), "enqueue-cli.test.mjs");
+  refuseOnPreRunFailure(join(root, "clearance-outbox"), "enqueue-cli.test.mjs");
   assert.ok(existsSync(join(qdir, "encli-1.done")), "runner admitted + ran the CLI-queued job");
   const res = JSON.parse(readFileSync(join(qdir, "encli-1.done.result"), "utf8"));
   assert.equal(res.ok, true, JSON.stringify(res));

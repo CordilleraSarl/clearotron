@@ -81,7 +81,7 @@ test("clearance-jx e2e: JP+KR scope → frozen ja+ko lanes → per-lane fixture 
   // — BEFORE the assertions below. A run that never started leaves its
   // reason in the packets beside the queue; without this the counts below report it as a
   // product defect.
-  refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.jx-jako-e2e.test.mjs");
+  refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.jx-jako-e2e.test.mjs");
   assert.ok(existsSync(join(Q, "jako-run.done")), `queue entry consumed as .done (markers: ${readdirSync(Q).join(",")})`);
   const dirs = findRun("novapulse");
   assert.equal(dirs.length, 1, `expected one novapulse run dir, got: ${dirs.join(" | ")}`);
@@ -144,7 +144,7 @@ test("per-lane kill switch: CLEAROTRON_NATIVE_LANGUAGE_KO=0 excludes ko at the f
     // — BEFORE the assertions below. A run that never started leaves its
     // reason in the packets beside the queue; without this the counts below report it as a
     // product defect.
-    refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.jx-jako-e2e.test.mjs");
+    refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.jx-jako-e2e.test.mjs");
     assert.ok(existsSync(join(Q, "jaonly-run.done")));
     const rd = findRun("novapulse-ja-only")[0];
     assert.ok(rd, "ja-only run dir found");

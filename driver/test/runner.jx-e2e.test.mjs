@@ -75,7 +75,7 @@ test("clearance-jx e2e: frozen zh lane → fixture candidates → fold on transl
   // — BEFORE the assertions below. A run that never started leaves its
   // reason in the packets beside the queue; without this the counts below report it as a
   // product defect.
-  refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.jx-e2e.test.mjs");
+  refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.jx-e2e.test.mjs");
   assert.ok(existsSync(join(Q, "jx-run.done")), `queue entry consumed as .done (markers: ${readdirSync(Q).join(",")})`);
   const dirs = findRun("novapulse");
   assert.equal(dirs.length, 1, `expected one novapulse run dir, got: ${dirs.join(" | ")}`);
@@ -132,7 +132,7 @@ test("component gate: a clearance without the investigation, in the SAME process
   // — BEFORE the assertions below. A run that never started leaves its
   // reason in the packets beside the queue; without this the counts below report it as a
   // product defect.
-  refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.jx-e2e.test.mjs");
+  refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.jx-e2e.test.mjs");
   assert.ok(existsSync(join(Q, "plain-run.done")));
   const rd = findRun("quietmark")[0];
   assert.ok(rd, "plain run dir found");

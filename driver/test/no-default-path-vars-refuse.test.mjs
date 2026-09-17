@@ -61,6 +61,11 @@ const CLASS = {
   poolRootOrNull:   "OPTIONAL",
   runLockDir:       "DEFAULTS",
   outboxDir:        "DEFAULTS",
+  // The directory the outbox default used to name, still read so markers written before the rename
+  // drain. DEFAULTS and not OPTIONAL, and the two are the opposite way round here: it returns null when
+  // CLEAROTRON_OUTBOX_DIR IS set, because an operator who named the directory has no old default in
+  // play — and with the variable unset, which is the state this file probes, it must resolve.
+  legacyOutboxDir:  "DEFAULTS",
 };
 
 /** Every path-ish variable the config reads, cleared together so one probe cannot mask another. */

@@ -220,7 +220,7 @@ test("DRAIN_WAIT=0 and the courier consumed everything: the drain is reported, n
   writeFileSync(join(h.outbox, "run-z.pending"), "clawdi\n");
   const r = h.run();
   assert.doesNotMatch(r.stderr, /unbound variable/, `set -u tripped inside the drain block:\n${r.stderr}`);
-  assert.match(r.stdout, /prelim-outbox: drained/, "the drain outcome reaches the journal");
+  assert.match(r.stdout, /clearance-outbox: drained/, "the drain outcome reaches the journal");
 });
 
 test("DRAIN_WAIT=0 with an event left behind: the retained COUNT is reported", SHELL_GATE, () => {

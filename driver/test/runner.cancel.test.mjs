@@ -89,7 +89,7 @@ test("stopping a RUNNING run ends it as cancelled — and a second admission pas
     const runDir = await until(() => findRunDir(root));
     // — an empty wait here is the first sign the run never started; the check at
     // the await point below is too late to protect the assertions in between.
-    if (!runDir) refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.cancel.test.mjs");
+    if (!runDir) refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.cancel.test.mjs");
     assert.ok(runDir, "the run created its run dir");
     const { requestCancel } = await import("../cancel.mjs");
     requestCancel(runDir, { via: "test" });
@@ -98,7 +98,7 @@ test("stopping a RUNNING run ends it as cancelled — and a second admission pas
     // — BEFORE the assertions below. A run that never started leaves its
     // reason in the packets beside the queue; without this the counts below report it as a
     // product defect.
-    refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.cancel.test.mjs");
+    refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.cancel.test.mjs");
 
     const s = statusOf(runDir);
     assert.equal(s?.state, "cancelled", "the run ended in the cancelled state");
@@ -149,7 +149,7 @@ test("a stopped run tells nobody it failed — no outbox run-failed packet", asy
     const runDir = await until(() => findRunDir(root));
     // — an empty wait here is the first sign the run never started; the check at
     // the await point below is too late to protect the assertions in between.
-    if (!runDir) refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.cancel.test.mjs");
+    if (!runDir) refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.cancel.test.mjs");
     const { requestCancel } = await import("../cancel.mjs");
     requestCancel(runDir, { via: "test" });
     writeFileSync(barrier, "go");
@@ -157,9 +157,9 @@ test("a stopped run tells nobody it failed — no outbox run-failed packet", asy
     // — BEFORE the assertions below. A run that never started leaves its
     // reason in the packets beside the queue; without this the counts below report it as a
     // product defect.
-    refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.cancel.test.mjs");
+    refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.cancel.test.mjs");
 
-    const outbox = join(root, "prelim-outbox");
+    const outbox = join(root, "clearance-outbox");
     let events = [];
     try { events = readdirSync(outbox); } catch { /* no outbox at all is also fine */ }
     const bodies = events.map((f) => { try { return readFileSync(join(outbox, f), "utf8"); } catch { return ""; } });
@@ -208,7 +208,7 @@ test("a run STOPPED WHILE PARKED never wakes up — the resume path reads the ma
     // — BEFORE the assertions below. A run that never started leaves its
     // reason in the packets beside the queue; without this the counts below report it as a
     // product defect.
-    refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.cancel.test.mjs");
+    refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.cancel.test.mjs");
 
     const markers = queueMarkers(Q);
     assert.ok(markers.includes("stop-c.cancelled"), `the parked marker was retired to .cancelled (got ${markers.join(", ")})`);
@@ -267,7 +267,7 @@ test("the run-dir self-resume watcher also refuses a cancelled run", async () =>
     // — BEFORE the assertions below. A run that never started leaves its
     // reason in the packets beside the queue; without this the counts below report it as a
     // product defect.
-    refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.cancel.test.mjs");
+    refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.cancel.test.mjs");
 
     assert.ok(!existsSync(join(runDir, ".resuming")), "the watcher did not claim it for a resume");
     assert.ok(!existsSync(join(runDir, ".delivered")), "and it certainly did not deliver");

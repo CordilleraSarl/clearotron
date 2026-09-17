@@ -41,7 +41,7 @@ import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins E
 
 const ROOT = mkdtempSync(join(tmpdir(), "ack-gate-ws-"));
 pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);                     // driver.config reads it lazily, but pin it before import
-const OUTBOX = join(ROOT, "prelim-outbox");
+const OUTBOX = join(ROOT, "clearance-outbox");
 pinEnv(process.env, "CLEAROTRON_OUTBOX_DIR", OUTBOX);
 mkdirSync(OUTBOX, { recursive: true });
 

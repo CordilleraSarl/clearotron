@@ -49,7 +49,7 @@ const { main, matterSignature, findDuplicateMatter, recordMatter } = await impor
 const { resolveSearchPolicy, gateResolvedPolicy } = await import("../search-policy.mjs");
 const Q = join(root, "workspace-clawdi", "studio", "clearance-search", "queue");
 mkdirSync(Q, { recursive: true });
-const OUTBOX = join(root, "prelim-outbox");   // config.outboxDir default: <workspaceRoot>/prelim-outbox
+const OUTBOX = join(root, "clearance-outbox");   // config.outboxDir default: <workspaceRoot>/clearance-outbox
 
 // Delivered runs are MOVED to the archive subtree — discover run dirs by walking for the sidecar.
 const findSidecarRuns = (base) => {
@@ -142,7 +142,7 @@ test("a deliveryRoute:'portal' job PARKS AS CLARIFY (no consumer yet — never a
   // — BEFORE the assertions below. A run that never started leaves its
   // reason in the packets beside the queue; without this the counts below report it as a
   // product defect.
-  refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.search-policy-gate.test.mjs");
+  refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.search-policy-gate.test.mjs");
   assert.ok(existsSync(join(Q, "dr-1.failed")));
   assert.match(readFileSync(join(Q, "dr-1.failed.reason"), "utf8"), /portal.*not available/);
 });
@@ -158,7 +158,7 @@ test("a Full country search over more than one country PARKS AS CLARIFY at the w
   // — BEFORE the assertions below. A run that never started leaves its
   // reason in the packets beside the queue; without this the counts below report it as a
   // product defect.
-  refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.search-policy-gate.test.mjs");
+  refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.search-policy-gate.test.mjs");
   assert.ok(existsSync(join(Q, "cl-1.failed")), "parked as .failed — never run, never dropped");
   const reason = readFileSync(join(Q, "cl-1.failed.reason"), "utf8");
   assert.match(reason, /reads exactly one country/);
@@ -182,7 +182,7 @@ test("a NO-selector job runs the product its SCOPE names, end to end, and the ru
   // — BEFORE the assertions below. A run that never started leaves its
   // reason in the packets beside the queue; without this the counts below report it as a
   // product defect.
-  refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.search-policy-gate.test.mjs");
+  refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.search-policy-gate.test.mjs");
   assert.ok(existsSync(join(Q, "plain-1.done")), "the default path still delivers");
   // the frozen product identity (the delivered run has moved to the archive subtree)
   const runDirs = findSidecarRuns(join(root, "workspace-clawdi", "studio", "clearance-search"));

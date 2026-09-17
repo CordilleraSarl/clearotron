@@ -101,7 +101,7 @@ test("phase-4 e2e: shadow units run on fixtures — grid receipted + gate green,
   // — BEFORE the assertions below. A run that never started leaves its
   // reason in the packets beside the queue; without this the counts below report it as a
   // product defect.
-  refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.jx-p4-e2e.test.mjs");
+  refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.jx-p4-e2e.test.mjs");
   assert.ok(existsSync(join(Q, "p4-run.done")), `queue entry consumed as .done (markers: ${readdirSync(Q).join(",")})`);
   const rd = findRun("velvetstorm")[0];
   assert.ok(rd, "run dir found");
@@ -198,7 +198,7 @@ test("the lane kill switch: the SAME process with CLEAROTRON_NATIVE_LANGUAGE_ZH 
   // — BEFORE the assertions below. A run that never started leaves its
   // reason in the packets beside the queue; without this the counts below report it as a
   // product defect.
-  refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.jx-p4-e2e.test.mjs");
+  refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.jx-p4-e2e.test.mjs");
   assert.ok(existsSync(join(Q, "p4-off.done")));
   const rd = findRun("quietwave")[0];
   assert.ok(rd, "control run dir found");

@@ -60,7 +60,7 @@ for (const [k, v] of Object.entries({
 const { main } = await import("../runner.mjs");
 const Q = join(root, "workspace-clawdi", "studio", "clearance-search", "queue");
 mkdirSync(Q, { recursive: true });
-const OUTBOX = join(root, "prelim-outbox");
+const OUTBOX = join(root, "clearance-outbox");
 
 // every run dir under a tree (delivered runs move to the archive subtree)
 const findRuns = (base) => {
@@ -120,7 +120,7 @@ test("a 3-mark knockout batch runs end to end: receipts, degrade, publish stamps
   // — BEFORE the assertions below. A run that never started leaves its
   // reason in the packets beside the queue; without this the counts below report it as a
   // product defect.
-  refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.knockout-e2e.test.mjs");
+  refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.knockout-e2e.test.mjs");
   assert.ok(existsSync(join(Q, "ko-batch.done")), "queue entry consumed as .done");
 
   const runDirs = findRuns(join(root, "workspace-clawdi", "studio", "clearance-search"));
@@ -356,7 +356,7 @@ test("STAGE 0.5 end to end: counts measured in code, on the report, in the workb
   // — BEFORE the assertions below. A run that never started leaves its
   // reason in the packets beside the queue; without this the counts below report it as a
   // product defect.
-  refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.knockout-e2e.test.mjs");
+  refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.knockout-e2e.test.mjs");
   assert.ok(existsSync(join(Q, "ko-reg.done")), "Depth 2 is admitted and runs — no clarify");
 
   // SCOPED TO THIS RUN'S OWN MARK. Every Knockout search carries the count probe now — there is one
