@@ -3076,8 +3076,8 @@
           "todos": 0
         },
         "pipeline.mock.test.mjs": {
-          "tests": 94,
-          "asserts": 795,
+          "tests": 97,
+          "asserts": 806,
           "skips": 0,
           "todos": 0
         },
