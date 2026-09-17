@@ -105,12 +105,16 @@ const STATES = {
  * The mcp-access body for one deck, composed the way driver/portal-service.mjs composes it: staff get
  * this install's stdio routes, offers resolve through the one table, `steps` is dropped on the way out.
  */
-function accessFor({ role, url, door, keyUrl, aiConnected }) {
-  const stdio = role === 'staff' ? stdioConnectOffer({ workDir: null }) : null
+function accessFor({ role, url, door, keyUrl, aiConnected, wsl = false }) {
+  // WHICH DISTRIBUTION A ROW WOULD START THE SERVER IN, stated by the deck the way the door's answer is:
+  // a fixture's job is to be the deployment, not to re-read this box's own environment.
+  const target = wsl ? { distro: 'Ubuntu' } : null
+  const stdio = role === 'staff' ? stdioConnectOffer({ workDir: null, wsl: target }) : null
   const offers = connectOffers({
     stdioRoutes: stdio
-      ? Object.fromEntries(Object.keys(STDIO_SHAPES).map((shape) => [shape, stdioConnectFor(shape, { workDir: null })]))
+      ? Object.fromEntries(Object.keys(STDIO_SHAPES).map((shape) => [shape, stdioConnectFor(shape, { workDir: null, wsl: target })]))
       : {},
+    wsl,
     publicAddress: url,
     keyAddress: keyUrl,
     operator: OPERATOR,
@@ -125,13 +129,24 @@ function accessFor({ role, url, door, keyUrl, aiConnected }) {
   }
 }
 
+// THE SAME INSTALL, INSIDE WSL — and a deck of its own rather than a seventh row above.
+//
+// Under WSL the rows open with the step that says so and carry two launchers, so the walk above, whose
+// assertions are written for "step one is the copy", would red on every one of them. That walk states
+// the design for an ordinary install and is left saying exactly that; this deck is driven where its own
+// shape is what is being asserted.
+const WSL_STATES = {
+  'local-staff-wsl': { role: 'staff', url: null, door: null, keyUrl: null, aiConnected: false, wsl: true },
+}
+const DECKS = { ...STATES, ...WSL_STATES }
+
 let current = 'local-staff'
 let mints = 0    // POSTs to /portal/api/connect-key since the last reset — a local press must never mint
 
 const server = createServer((req, res) => {
   const path = new URL(req.url, 'http://localhost').pathname
   const json = (o) => { res.writeHead(200, { 'content-type': 'application/json' }); res.end(JSON.stringify(o)) }
-  const s = STATES[current]
+  const s = DECKS[current]
   if (path === '/portal/api/me') {
     // The deck's `role` names who is looking in the resolver's own terms; the wire carries the switches.
     return json({ permissions: { run: true, manage: s.role === 'staff' },
@@ -756,6 +771,51 @@ for (const st of EVIDENCE) {
       await capture(join(shotDir, 'connect-your-ai-key-fold-open-dark.png'))
       await evalIn(`(() => { document.documentElement.removeAttribute('data-theme'); return true })()`)
     }
+  }
+}
+
+// ── AND THE TWO SIDES OF A WSL INSTALL, DRAWN ───────────────────────────────────────────────────────
+//
+// An install inside WSL is reachable two ways and the page offered one of them, unheaded: the owner
+// pasted it into Claude Code inside the distribution and got a closed connection. Both rows are drawn
+// here, each under the side it is for, with the commands read off the page rather than off the composer.
+console.log('\nthe two sides of a WSL install:')
+{
+  current = 'local-staff-wsl'
+  const app = accessFor(WSL_STATES['local-staff-wsl']).offers.find((o) => o.served && o.route === 'disk')
+  ok(!!app, `an on-this-computer row is served under WSL (saw ${JSON.stringify(app?.id ?? null)})`)
+  await cmd('Page.navigate', { url: 'about:blank' })
+  await new Promise((r) => setTimeout(r, 150))
+  await navigateOrRefuse(cmd, `${origin}/portal/ai`, { what: 'ai-page-render-check' })
+  await new Promise((r) => setTimeout(r, 1400))
+  // THE PAGE ASKS WHERE FIRST, and nothing below that is drawn until it is answered — the same two
+  // presses the walk above makes, and the same two a reader makes.
+  await click('.where-card[data-place="disk"]')
+  await new Promise((r) => setTimeout(r, 400))
+  await click(`button.ai-app[data-id="${app.id}"]`)
+  await new Promise((r) => setTimeout(r, 400))
+  const rows = await evalIn(`(() => {
+    const flat = (s) => (s ?? '').replace(/\\s+/g, ' ').trim()
+    const panel = [...document.querySelectorAll('[data-for]')].filter((el) => !el.closest('.ai-probe'))[0]
+    return [...(panel?.querySelectorAll('ol.steps > li') ?? [])].map((li) => ({
+      text: flat(li.querySelector('.step-text')?.textContent),
+      command: flat(li.querySelector('pre')?.textContent) || null,
+    }))
+  })()`)
+  out['wsl rows'] = rows
+  const headed = rows.filter((r) => r.command)
+  ok(headed.length === 2, `both sides are drawn, not one (saw ${headed.length})`)
+  ok(headed[0]?.text === 'From Windows' && headed[1]?.text === 'Inside WSL',
+    `each row says which side it is for (saw ${JSON.stringify(headed.map((r) => r.text))})`)
+  ok(/wsl\.exe/.test(headed[0]?.command ?? '') && !/wsl\.exe/.test(headed[1]?.command ?? ''),
+    'the Windows row crosses into the distribution and the inside-WSL row does not')
+  if (shotDir) {
+    await evalIn(`(() => { window.scrollTo(0, 0); document.documentElement.removeAttribute('data-theme'); return true })()`)
+    await capture(join(shotDir, 'connect-your-ai-wsl-both-sides-light.png'))
+    await evalIn(`(() => { document.documentElement.setAttribute('data-theme', 'dark'); return true })()`)
+    await new Promise((r) => setTimeout(r, 350))
+    await capture(join(shotDir, 'connect-your-ai-wsl-both-sides-dark.png'))
+    await evalIn(`(() => { document.documentElement.removeAttribute('data-theme'); return true })()`)
   }
 }
 

@@ -61,8 +61,15 @@ export function stdioConnectCommand({ installRoot = stableInstallRoot({ installR
  * descriptions of one thing drift into three different promises about what it does.
  */
 export function stdioConnectOffer(opts = {}) {
+  // ASKED OF THE SAME COMPOSER THE PAGE ASKS, so a terminal under WSL offers the two sides the page
+  // offers and neither surface has to know how a launcher is built. `command` is what it has always
+  // been — off WSL the one line, and under WSL the Windows-side one, which is the row that leads there
+  // too — and `variants` is null unless the caller named a WSL target, so no surface grows a second
+  // line because this file changed.
+  const both = stdioConnectFor("claude-cli", opts);
   return {
-    command: stdioConnectCommand(opts),
+    command: both.text,
+    variants: both.variants,
     name: STDIO_SERVER_NAME,
     // Deliberately states the two facts a reader needs to judge it: no network, and it only works from a
     // machine with this install on its disk. Both are why it is offered to staff and not to a client.
@@ -315,13 +322,41 @@ export function remoteConnectFor(shape, { address = null } = {}) {
  * absence is a finding: a row naming a shape nobody implemented should surface as missing, and the
  * table's own arm refuses such a row outright.
  */
+/**
+ * THE TWO SIDES OF A WSL INSTALL, in the product's own words and in ONE place.
+ *
+ * An install inside WSL can be reached by an assistant on the Windows side — Claude Desktop, Claude Code
+ * in PowerShell — through the `wsl.exe` wrapper, and by an assistant running inside the distribution
+ * with the plain `node` line. They are different commands and the reader has to be told which is which;
+ * the owner pasted the Windows one into Claude Code inside WSL and got a closed connection.
+ *
+ * Ruled 2026-09-17: these words exactly, and no other new sentence. They are exported rather than spelled
+ * at each surface so the page and the terminal cannot drift apart — one author, as everything else here.
+ */
+export const WSL_ROW_HEADINGS = Object.freeze({ fromWindows: "From Windows", insideWsl: "Inside WSL" });
+
 export function stdioConnectFor(shape, { installRoot = stableInstallRoot({ installRoot: INSTALL_ROOT }), workDir = null, reportsDir = null, platform = process.platform, wsl = null } = {}) {
   const spec = Object.hasOwn(STDIO_SHAPES, String(shape ?? "")) ? STDIO_SHAPES[shape] : null;
   if (!spec) return null;
   const server = join(installRoot, "mcp-server", "server.mjs");
+  const render = (target) => spec.render({ server, workDir, reportsDir, platform, wsl: target });
+  const base = { shape, kind: spec.kind, where: spec.where, after: spec.after, name: STDIO_SERVER_NAME };
+  // OFF WSL NOTHING CHANGES: one launcher, no variants, and `variants: null` rather than an empty array
+  // so a consumer cannot read "this install has no sides" as "this install has two sides, both missing".
+  if (!wsl) return { ...base, text: render(null), variants: null };
+  // ON WSL, TWO, AND THE SECOND IS NOT WRITTEN TWICE. The inside-WSL launcher is exactly what this shape
+  // renders for an install that is not under WSL at all — the same author, asked with the target taken
+  // away — so it is the line every off-WSL install already offers and every arm already covers, rather
+  // than a second composition that can drift from it.
+  //
+  // `text` stays the Windows-side one. Every consumer that reads a single `text` today keeps the answer
+  // it has always had, and only the surfaces that ask for `variants` draw the pair.
   return {
-    shape, kind: spec.kind, where: spec.where, after: spec.after,
-    text: spec.render({ server, workDir, reportsDir, platform, wsl }),
-    name: STDIO_SERVER_NAME,
+    ...base,
+    text: render(wsl),
+    variants: [
+      { heading: WSL_ROW_HEADINGS.fromWindows, text: render(wsl) },
+      { heading: WSL_ROW_HEADINGS.insideWsl, text: render(null) },
+    ],
   };
 }

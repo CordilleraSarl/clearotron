@@ -408,6 +408,30 @@ export const WSL_STEP = "This install runs inside WSL, and the command below sta
   + "An assistant running inside this WSL terminal cannot use it: start the server from the WSL terminal "
   + "yourself instead.";
 
+/**
+ * ONE ROW PER SIDE, where a launcher has two.
+ *
+ * `stdioConnectFor` answers a WSL install with both launchers under `variants`, headed in the product's
+ * own words. Each becomes a row of its own here, carrying its side's heading as the row's line and its
+ * side's command as the row's copy — so the reader sees which command is theirs before they press it,
+ * and does not paste the Windows one into a terminal already inside the distribution.
+ *
+ * The heading takes the row's line rather than a slot of its own: every surface that draws a step draws
+ * that line already — the page above the copy block, the terminal beside the number — so both sides get
+ * the headings from one author and neither needs new markup to show them.
+ *
+ * Anywhere else this is the identity. One launcher stays one row, with the line its author wrote.
+ */
+const splitSides = (step) => {
+  const variants = step.copy?.stdio?.variants;
+  if (!variants) return [step];
+  return variants.map((v) => ({
+    ...step,
+    text: v.heading,
+    copy: { ...step.copy, text: v.text, stdio: { ...step.copy.stdio, text: v.text, variants: null } },
+  }));
+};
+
 export function whatItNeeds(client, have = {}, route = client?.lead) {
   if (!client) return null;
   const author = client.routes?.[route];
@@ -494,10 +518,13 @@ export function whatItNeeds(client, have = {}, route = client?.lead) {
     // ON WSL, "THIS COMPUTER" IS THE LINUX INSIDE WINDOWS. The line names WSL paths, so it runs in the WSL
     // terminal where Clearotron is installed. Pasted into PowerShell it fails, and an assistant running on
     // Windows itself could not start a program at a Linux path anyway.
-    if (have.wsl) steps.unshift({ text: WSL_STEP });
-    const first = steps.find((s) => s.copy)?.copy;
+    // AND A LAUNCHER WITH TWO SIDES BECOMES TWO ROWS, under the step that says this install is in WSL.
+    const rows = steps.flatMap(splitSides);
+    if (have.wsl) rows.unshift({ text: WSL_STEP });
+    // The Windows-side row leads, so `command` and `stdio` answer what they have always answered.
+    const first = rows.find((s) => s.copy)?.copy;
     // `command` and `stdio` ride for the terminal, which prints a disk offer's copy by its shape.
-    return { client, served: true, route, steps, launch: client.launch ?? null, enables: null, ...evidence,
+    return { client, served: true, route, steps: rows, launch: client.launch ?? null, enables: null, ...evidence,
       command: first?.text ?? null, stdio: first?.stdio ?? null, address: null, key: null,
       note: "Nothing to sign up for and nothing to open up — this assistant runs the software itself, from the copy already on this machine." };
   }
