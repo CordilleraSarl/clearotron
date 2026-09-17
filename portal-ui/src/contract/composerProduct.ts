@@ -302,9 +302,19 @@ export function geographyFor(
   // The company's own, which is the list the Where panel is drawing. They ride here for the screen to
   // read; the WIRE sends the mode and lets the engine resolve the list, so a request cannot freeze
   // today's profile into a run and call it what the requester asked for.
-  if (resolved.length) return { mode: 'account-default', territories: [...resolved] }
-  // Nothing set and nothing inherited. The panel draws a Worldwide chip here, and it is right.
-  return { mode: 'worldwide', territories: [] }
+  // The requester named none. That is true whether the company has territories of its own or has none,
+  // and it is the whole of what this mode says — the engine resolves the list, and with nothing to
+  // resolve it searches everywhere, which is the Worldwide chip the panel draws in that case.
+  //
+  // NOT "worldwide" WHEN THE COMPANY HAS NONE EITHER. The outcome is the same today and the STATEMENT is
+  // not: "worldwide" instructs the engine that the company's territories may not narrow this search, and
+  // a requester who simply did not name any has given no such instruction. Stamping it would put a
+  // positive claim on the wire that nobody made, and it is the claim that cannot be walked back —
+  // territories added to the company between the plan and the run would be ignored by a request that
+  // said everywhere, and honoured by one that said nothing. This is also what makes the portal state
+  // exactly what the engine's own door derives for a request carrying no stamp, which
+  // geographyStampParity.test.ts holds.
+  return { mode: 'account-default', territories: [...resolved] }
 }
 
 /**

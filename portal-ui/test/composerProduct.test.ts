@@ -87,8 +87,11 @@ test('one country REPLACES on a Full country search; it stacks everywhere else',
 // ── the geography STAMP: everywhere and silence are different searches ───────────────────────────────
 
 test('the draft states its geography MODE — and there are THREE, because the offering has three', () => {
-  // Nothing set, nothing inherited: the Where panel draws a Worldwide chip here, and it is right.
-  assert.deepEqual(geographyFor(draft()), { mode: 'worldwide', territories: [] })
+  // Nothing set and nothing inherited: still "the requester named none". The panel draws a Worldwide
+  // chip and the engine, with nothing to resolve, searches everywhere — but the STATEMENT is not
+  // "worldwide", which would instruct the engine that a company's territories may not narrow this.
+  assert.deepEqual(geographyFor(draft()), { mode: 'account-default', territories: [] })
+  assert.deepEqual(geographyFor(draft(), MULTI), { mode: 'account-default', territories: [] })
   assert.deepEqual(geographyFor(draft({ territories: ['France'] })), { mode: 'named', territories: ['France'] })
 
   // THE THIRD: the reader named none and the company has its own. Those four are what the panel draws,

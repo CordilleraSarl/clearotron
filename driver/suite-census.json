@@ -5911,6 +5911,12 @@
           "skips": 0,
           "todos": 0
         },
+        "allowanceParity.test.ts": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "api.test.ts": {
           "tests": 46,
           "asserts": 187,
@@ -5967,7 +5973,7 @@
         },
         "composerProduct.test.ts": {
           "tests": 32,
-          "asserts": 129,
+          "asserts": 130,
           "skips": 0,
           "todos": 0
         },
