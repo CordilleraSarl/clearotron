@@ -817,6 +817,56 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
         reasons: droppedConditions.map((c) => c.note) });
     } catch { /* the workbook row is the record that matters; this line is the second copy */ }
   }
+  // ── THE CHECKS THE RUN DECIDED ON AND DID NOT MAKE ─────────────────────────────────────────────
+  //
+  // The recall net mints a probe per remembered conflict and a probe per owner behind one, then
+  // dispatches at most five owner probes. The excess is recorded in the run's own receipt and nothing
+  // downstream carried it to a reader, so a search that decided on nineteen ownership checks, made five
+  // and said nothing about the other fourteen read as a search that made the checks it wanted.
+  //
+  // The cap is not the defect: it is deliberate and the rows it drops are ranked material-first, so the
+  // five that run are the five that matter most. What was missing is the disclosure, and it lands where
+  // the 2026-09-17 ruling put the same class of fact — an ordinary row on the workbook's gaps sheet and
+  // one line in the run record. Nothing reaches the report page: the approved boards draw a forward
+  // decision and an open question back to the client, and a check nobody made is neither.
+  //
+  // THE WORDS ARE THE RECEIPT'S OWN. The party and the probe id are read from it verbatim; "over the
+  // cap" and "never dispatched" are the vocabulary the ask ledger already ships for these same rows.
+  // Nothing here composes a sentence, and the note carries no seam, so the gaps sheet's own splitter
+  // leaves "What was done" empty — which is the fact: nothing was done.
+  // READ THROUGH THE DECLARED HELPER, three states and not two. An absent receipt is a run whose recall
+  // net minted nothing — env-gated off, or a matter with no remembered conflict — and there is nothing
+  // to disclose. A DAMAGED one is a different fact: the probes may have overflowed and this publish
+  // cannot tell, so it says so in the run record instead of shipping the same empty sheet an
+  // everything-dispatched run ships. Collapsing those two is the defect publish-inputs.mjs exists for.
+  //
+  // NOT PUSHED ONTO `inputsAbsent`. That list rides meta.json's clientGate record, whose own note two
+  // hundred lines down is that it stays undefined when every store was found so a complete run's meta
+  // is byte-identical to one written before the list existed. Most runs have no recall receipt, so
+  // adding this store to it would change the meta of every archived run on re-render for a store that
+  // feeds a workbook row and not the gate -- the same reason the other presentation-only stores are
+  // not on it either.
+  const recallStore = readStore(runDir, '_driver/register-recall.json');
+  const undispatchedProbes = (recallStore.value?.overflow ?? [])
+    .filter((o) => o && (o.term || o.qid))
+    .map((o) => ({
+      area: String(o.term ?? o.qid),
+      state: 'not-searched',
+      note: `over the cap, never dispatched (${String(o.qid ?? 'no probe id recorded')})`,
+    }));
+  if (recallStore.state === 'damaged' && runDir) {
+    try {
+      runLog(runDir, { event: 'probe-over-cap-unreadable', store: recallStore.name, error: recallStore.error });
+    } catch { /* best-effort, as below */ }
+  }
+  // Best-effort, as above: a publish never fails for want of a log line.
+  if (undispatchedProbes.length && runDir) {
+    try {
+      runLog(runDir, { event: 'probe-over-cap-undispatched', n: undispatchedProbes.length,
+        parties: undispatchedProbes.map((p) => p.area) });
+    } catch { /* the workbook row is the record that matters; this line is the second copy */ }
+  }
+
   // doc 50 — the run's FROZEN framework manifest (band vocabulary). Present on band-doctrine runs;
   // absent on every archived run (they render byte-identically on the legacy paths).
   let framework = null;
@@ -1079,7 +1129,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
       // the same rule (the workbook's own BANNED gate had already started firing on the raw detail —
       // advisory, so CI stayed green). reviewReceipts.lint keeps its raw detail for the internal
       // readers above (fetchState reads registry-record-coverage's URIs out of it).
-      counts = await buildAudit({ droppedConditions, findings, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
+      counts = await buildAudit({ droppedConditions, undispatchedProbes, findings, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
       grpRead(join(poolRunDir, auditFile), 0o640);
       if (counts?.gateViolations?.length) console.warn(`[audit-workbook] advisory: ${counts.gateViolations.join(' | ')}`);
     } catch (e) {

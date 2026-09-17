@@ -1174,8 +1174,8 @@
           "todos": 0
         },
         "audit-workbook-commonlaw-unlogged.test.mjs": {
-          "tests": 9,
-          "asserts": 37,
+          "tests": 10,
+          "asserts": 51,
           "skips": 0,
           "todos": 0
         },
