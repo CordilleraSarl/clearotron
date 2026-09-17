@@ -185,7 +185,7 @@ export const E3_BACKLOG = [
     // it one: authored once in renderConnotationObligations, and reaching the seat through the perplexity
     // MCP server (driver/engine/mcp/perplexity-server.mjs:111) rather than a stage message. Three rows
     // pointing at one block would fabricate two authored sites the surface does not have.
-    where: "driver/connotation-search.mjs:1480-1493 (renderConnotationObligations; delivered to the seat via driver/engine/mcp/perplexity-server.mjs:111 — a TOOL RESPONSE, no longer a stage message)",
+    where: "driver/connotation-search.mjs:1480-1493, renderConnotationObligations() in connotation-search.mjs (delivered to the seat via driver/engine/mcp/perplexity-server.mjs:111 — a TOOL RESPONSE, no longer a stage message)",
     surface: "tool-response",
     // ── (a) THE ORIGINAL SUBJECT WAS DELETED BY DESIGN — DISCHARGED, NOT FAILED ────────────────────
     // The old rows dictated `receipt_id` (an 8-char token the seat copied) and `quote`. Both are gone:
@@ -638,7 +638,7 @@ export const E3_BACKLOG = [
     where: "driver/stages.mjs:3474",
     surface: "stage-message",
     evidence: "EVERY \"Grounded profile\" section MUST start its body with the line \"- ord: <N>\" naming which finding it grounds (use the ordinal from this list; a profile that grounds no listed finding omits the line)",
-    reparsedBy: "driver/publish/parse.mjs:339 parseCaseLawProfiles (\"the optional '- ord: <N>' first body line … gives an EXACT join\"); driver/findings-model.mjs:273 /^-\\s*ord:\\s*(\\d+)\\s*$/m; driver/publish/index.mjs:778 runOrigins",
+    reparsedBy: "driver/publish/parse.mjs:339, parseCaseLawProfiles() in parse.mjs (\"the optional '- ord: <N>' first body line … gives an EXACT join\"); driver/findings-model.mjs:273 /^-\\s*ord:\\s*(\\d+)\\s*$/m; driver/publish/index.mjs:778 runOrigins",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   {
