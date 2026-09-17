@@ -1654,7 +1654,10 @@ test("doc-54: one footer — the full provenance line rides the document; serve-
 // shape that strip matches, or the line stops being removable and starts reaching clients.
 test("the footer is one client line with its dates named, and the reviewer's provenance survives in a strippable shape", () => {
   const fmRun = REPORT.replace("run: 2026-06-10", "run: 2026-06-10 · Corsearch register + common-law grid")
-    .replace("---\n\n#", "rated_under: Aurora Interactive (aurora) · custom framework · profile 890f610e\n---\n\n#");
+    // BOTH optional lines are set, and run_under_project is here because without it the assertion
+    // below passes vacuously: the fixture never carried the field, so "is it absent from the output"
+    // was true whatever the renderer did with it. Driven that way and it proved nothing.
+    .replace("---\n\n#", "rated_under: Aurora Interactive (aurora) · custom framework · profile 890f610e\nrun_under_project: Japan and Korea app launch (Demo Brand Owner)\n---\n\n#");
   const html = renderHtml(parsedOf(fmRun), BAND_FINDINGS, [], { issued: "2026-06-16 · 14:32 CEST" });
   const foot = (html.match(/<footer[^>]*>([\s\S]*?)<\/footer>/) || [])[1] ?? "";
 
@@ -1663,6 +1666,7 @@ test("the footer is one client line with its dates named, and the reviewer's pro
   assert.doesNotMatch(foot, /14:32|CEST/, "the publish minute reaches no surface");
   assert.match(foot, /Corsearch register \+ common-law grid/, "the provider survives the split");
   assert.doesNotMatch(foot, /Run under project/, "the engine's word for a job folder reaches no client");
+  assert.doesNotMatch(foot, /Japan and Korea app launch/, "…nor the folder's name, which the fixture does carry");
 
   assert.match(foot, /Rated under: <span class="mono">/, "the reviewer's provenance is still on the document");
   // The shape portal-report's RATED_UNDER_RE matches, spelled here so a change to the markup fails
