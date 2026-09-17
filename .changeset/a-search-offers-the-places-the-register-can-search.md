@@ -2,6 +2,6 @@
 "clearotron-driver": patch
 ---
 
-Fixed: A new clearance now offers only the territories your register can search. Before, the form let you choose a country and the search was then refused for it.
+Fixed: A new clearance now offers only the territories your register can search. Before, it offered countries your register cannot reach, and choosing one stopped the search from starting.
 
-Fixed: The territories your company saves as its defaults can now be removed on the clearance form. Before, a search refused for one of them could not be corrected on the screen that started it.
+Fixed: You can now remove one of your company's default territories on the clearance form. Before, if your register could not search one of them, nothing on that screen let you take it off and carry on.
