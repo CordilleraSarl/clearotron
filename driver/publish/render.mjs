@@ -2641,9 +2641,13 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
          provenance and portal-report strips that one line for every embedded reader at serve time,
          which is stated there and held by an arm. Deleting it here would take provenance off the
          reviewer's copy to save the portal a job it already does.
-         "Run under project" GOES, and the difference is that nothing strips it — it reaches a client
-         exactly as written, and it is the engine's phrase for the folder a job was filed in. The
-         product name lead goes too: the identity line already says which search this is.
+         "Run under project" also STAYS on the document, for the same reason and with the same
+         remedy. It is internal provenance — an end-to-end arm reads it out of the published internal
+         report, through the front-matter seam — and it was reaching clients only because nothing
+         removed it at serve time. It does now, beside the provenance line, so the document keeps what
+         review needs and the client reads neither. Deleting it here would have taken provenance off
+         the internal copy to fix a leak that belongs in the same place the other one is fixed.
+         The product name lead goes: the identity line already says which search this is.
          The run string is composed as "<date> · <provider>", and it was printed with neither part
          labelled, so a bare date sat next to a matter identifier meaning nothing in particular. It is
          split on the DATE by pattern — the same way `dateOf` does it one file over — and the remainder
@@ -2664,7 +2668,10 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
       ].filter(Boolean);
       const line = parts.length ? `${parts.join(' \u00b7 ')}.` : '';
       // The reviewer's provenance rides BELOW the client line, where portal-report removes it.
-      return line + (fm.rated_under ? `<br>Rated under: <span class="mono">${esc(fm.rated_under)}</span>.` : '');
+      // Both provenance lines ride BELOW the client line, where portal-report removes them.
+      return line
+        + (fm.rated_under ? `<br>Rated under: <span class="mono">${esc(fm.rated_under)}</span>.` : '')
+        + (fm.run_under_project ? `<br>Run under project: <span class="mono">${esc(fm.run_under_project)}</span>.` : '');
     })()}</span>
     ${logoLockup({ mark: 16 })}
   </footer>

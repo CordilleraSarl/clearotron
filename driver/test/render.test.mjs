@@ -1665,14 +1665,35 @@ test("the footer is one client line with its dates named, and the reviewer's pro
   assert.match(foot, /issued on 2026-06-16/, "and the issue date as the date issued");
   assert.doesNotMatch(foot, /14:32|CEST/, "the publish minute reaches no surface");
   assert.match(foot, /Corsearch register \+ common-law grid/, "the provider survives the split");
-  assert.doesNotMatch(foot, /Run under project/, "the engine's word for a job folder reaches no client");
-  assert.doesNotMatch(foot, /Japan and Korea app launch/, "…nor the folder's name, which the fixture does carry");
-
-  assert.match(foot, /Rated under: <span class="mono">/, "the reviewer's provenance is still on the document");
-  // The shape portal-report's RATED_UNDER_RE matches, spelled here so a change to the markup fails
-  // HERE rather than by quietly surviving a strip that no longer matches it.
+  // BOTH provenance lines stay ON THE DOCUMENT and are removed at serve time. That is the shape the
+  // page already used for "Rated under", and "Run under project" was the same class of line sitting
+  // beside it with no strip — so it reached every embedded reader while its neighbour did not.
   assert.match(foot, /<br\s*\/?>Rated under:\s*<span class="mono">[^<]*<\/span>\./,
-    "…in exactly the shape the serve-time strip removes");
+    "the reviewer's provenance is on the document, in the shape the strip removes");
+  assert.match(foot, /<br\s*\/?>Run under project:\s*<span class="mono">[^<]*<\/span>\./,
+    "and the project line beside it, in the same shape");
+});
+
+// The strip itself, driven rather than described: an embedded reader gets the client line and neither
+// provenance line. Asserting their ABSENCE from the rendered document would have been the wrong place
+// and would have deleted what review needs.
+test("an embedded reader gets the client footer line and neither provenance line", async () => {
+  const { prepareReportForEmbed } = await import("../portal-report.mjs");
+  const fmRun = REPORT.replace("run: 2026-06-10", "run: 2026-06-10 · Corsearch register + common-law grid")
+    .replace("---\n\n#", "rated_under: Aurora Interactive (aurora) · custom framework · profile 890f610e\nrun_under_project: Japan and Korea app launch (Demo Brand Owner)\n---\n\n#");
+  const html = renderHtml(parsedOf(fmRun), BAND_FINDINGS, [], { issued: "2026-06-16 · 14:32 CEST" });
+  const embedded = prepareReportForEmbed(html, {}).html ?? prepareReportForEmbed(html, {});
+  const served = typeof embedded === "string" ? embedded : String(embedded);
+
+  assert.match(served, /searched on 2026-06-10/, "the client line survives");
+  assert.doesNotMatch(served, /Rated under:/, "the framework provenance is removed for the reader");
+  assert.doesNotMatch(served, /Run under project:/, "and so is the project line");
+  // The project's NAME is NOT swept: it is a client-facing fact in its own right, stated as the
+  // Project row of "About this request", and the mock carries it there. What goes is the internal
+  // framing — "Run under project", which is the engine describing which folder it filed a job in.
+  // The first version of this arm asserted the name was gone too, and was wrong about the page.
+  assert.match(served, /Japan and Korea app launch/,
+    "the project's own name stays where a client reads it, in About this request");
 });
 
 test("clause: a run string with no date in it is printed whole rather than taken apart", () => {

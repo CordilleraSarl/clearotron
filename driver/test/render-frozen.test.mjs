@@ -1770,7 +1770,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Advanced again by the break recorded above the FROZEN constant: seven fixed sentences on the
 // clearance page, which is a behaviour change and not licence-only, so both constants move for the same
 // measured reason.
-const FROZEN_BEFORE_SPDX = "3bfbd9acc3f52e64e5907e428d8cb3679b4f8272dc634756218f4eb5d25cc9a8";
+const FROZEN_BEFORE_SPDX = "eb93fb63e88d6970fab890e5f027e464709f266751c0dddfc6d9e6562da912ff";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2252,16 +2252,21 @@ const FROZEN_BEFORE_SPDX = "3bfbd9acc3f52e64e5907e428d8cb3679b4f8272dc634756218f
 // job was filed in, which nothing strips and which therefore reached a client exactly as written. Its
 // two dates gain names: a bare date beside a matter identifier said nothing about which date it was.
 //
-// "Rated under" IS KEPT, deliberately. The document carries the reviewer's provenance and
-// portal-report removes that one line at serve time for every embedded reader; deleting it here would
-// strip the reviewer's copy to save the portal a job it already does. An arm pins the markup to the
-// shape that strip matches, so changing it fails there rather than quietly surviving a strip that no
-// longer matches.
+// BOTH PROVENANCE LINES ARE KEPT, deliberately, and the first version of this entry got it half
+// wrong. "Rated under" was always removed at serve time. "Run under project" is the same class of
+// line sitting beside it — internal provenance, read out of the published internal report by an
+// end-to-end arm — and it had NO strip, so it reached every embedded reader while its neighbour did
+// not. This entry first recorded that line as deleted from the document; CI refused that, correctly,
+// and the strip was added beside RATED_UNDER_RE instead. Deleting it here would have taken provenance
+// off the internal copy to fix a leak that belongs where the other one is fixed.
+//
+// Arms pin the markup to the shape those strips match AND drive the strip itself, so a change fails
+// there rather than quietly surviving a removal that no longer matches it.
 //
 // Could it live in report.css? No — the lines removed are text, and hiding them leaves them in the
 // delivered bytes and the print.
 
-const FROZEN = "49a48ef3579cb18b8591a0abd7df338133c535b39ce2e248661f88633b13d2be";
+const FROZEN = "964f5f368877214b0d2ef0832bc074fd1f1897ac423f5274f07304bcf774d99f";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));
