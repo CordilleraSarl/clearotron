@@ -185,7 +185,7 @@ export const E3_BACKLOG = [
     // it one: authored once in renderConnotationObligations, and reaching the seat through the perplexity
     // MCP server (driver/engine/mcp/perplexity-server.mjs:111) rather than a stage message. Three rows
     // pointing at one block would fabricate two authored sites the surface does not have.
-    where: "driver/connotation-search.mjs:1435-1448 (renderConnotationObligations; delivered to the seat via driver/engine/mcp/perplexity-server.mjs:111 — a TOOL RESPONSE, no longer a stage message)",
+    where: "driver/connotation-search.mjs:1480-1493 (renderConnotationObligations; delivered to the seat via driver/engine/mcp/perplexity-server.mjs:111 — a TOOL RESPONSE, no longer a stage message)",
     surface: "tool-response",
     // ── (a) THE ORIGINAL SUBJECT WAS DELETED BY DESIGN — DISCHARGED, NOT FAILED ────────────────────
     // The old rows dictated `receipt_id` (an 8-char token the seat copied) and `quote`. Both are gone:
