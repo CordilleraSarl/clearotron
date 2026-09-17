@@ -375,6 +375,15 @@ export const EFFECT_CLASSES = Object.freeze({
   credential: "authentication material; absent, the run refuses at preflight by name",
   deployment: "where input and output live; the conclusion a run reaches is unchanged",
   tuning: "how long or how hard a run tries; the conclusion a run reaches is unchanged",
+  // WHAT THE INSTALL WIZARD WROTE WHEN IT SET THIS MACHINE UP. Added because the classifier had computed
+  // this class for years and no declaration could say it: five names computed `setup` against a
+  // vocabulary with no word for it, so each was either undeclared or declared as the nearest wrong
+  // thing. A declaration that cannot be true is worse than none — it reads as considered.
+  //
+  // It is its own class rather than a flavour of `deployment` because the two answer different
+  // questions. `deployment` says where this machine keeps things; `setup` says what the installer
+  // found or made here, which is the fact an operator needs when a program has moved.
+  setup: "what the install wizard found or wrote when it set this machine up; the conclusion a run reaches is unchanged",
   harness: "read only on a fixture, replay or self-test path; no production run reaches it",
 });
 

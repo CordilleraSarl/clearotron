@@ -21,7 +21,7 @@
 //   - each is classified as its row declares, rather than falling to the class a cleanup deletes from.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { namesRead, auditEnv, auditCatalogue, declaredEffects } from "../../scripts/env-audit.mjs";
+import { namesRead, auditEnv, auditCatalogue, declaredEffects, EFFECT_CLASSES } from "../../scripts/env-audit.mjs";
 import { classify } from "../../scripts/env-classify.mjs";
 
 const seen = (code) => [...namesRead(code)].sort();
@@ -84,4 +84,35 @@ test("each ledger is classified as its row declares, not left in the bucket a cl
   const { rows } = classify({ catalogue: names, sources: NOBODY, setup: new Set(), readSites: () => null });
   assert.equal(rows.length, 2, "the classifier did not answer for every name");
   for (const r of rows) assert.equal(r.class, "deployment", `${r.name} is declared deployment and classified ${r.class}`);
+});
+
+// ── A CLASS THE CLASSIFIER COMPUTES MUST BE A CLASS A ROW CAN DECLARE ────────────────────────────────
+//
+// The classifier has computed `setup` for as long as it has had a setup population, and the declared
+// vocabulary had no such word. So the names the install wizard writes could not be declared truthfully:
+// each was left undeclared, or declared as the nearest wrong thing and frozen with a note saying so.
+// A declaration that cannot be true is worse than no declaration, because it reads as considered.
+//
+// Ruled 2026-09-17: add the word. These arms hold the two halves of that — the word exists, and the two
+// names it was added for use it.
+test("the vocabulary has a word for what the install wizard writes", () => {
+  assert.ok(Object.prototype.hasOwnProperty.call(EFFECT_CLASSES, "setup"),
+    "the classifier computes `setup`; without it in the declared vocabulary those names cannot declare truthfully");
+  assert.match(EFFECT_CLASSES.setup, /install|set(s|ting)? (this )?machine up|wizard/i,
+    "the class needs a definition a reader can apply, not just a slot in the set");
+});
+
+test("the two engine program paths declare the class they compute", () => {
+  // The pair this was ruled for. Read through the catalogue's own parser rather than by grepping the
+  // file, because the declaration's REACH is the thing that goes wrong: an `# effect:` marker runs to
+  // the next blank line or comment, so one written in the wrong place silently declares its neighbour
+  // too. That happened while this was being written and only the parser showed it.
+  const declared = declaredEffects(auditCatalogue().rows);
+  for (const name of ["CLEAROTRON_CLAUDE_PATH", "CLEAROTRON_CODEX_PATH"]) {
+    assert.equal(declared.get(name), "setup", `${name} must declare the class the classifier computes for it`);
+  }
+  // THE NEIGHBOUR, so the reach failure above cannot come back unnoticed. It sits directly beneath the
+  // codex row and carries no declaration of its own; a marker that over-reaches gives it one.
+  assert.equal(declared.get("CLEAROTRON_WORK_DIR"), undefined,
+    "a declaration reached a row it was not written for — the marker's run is not ended where it should be");
 });
