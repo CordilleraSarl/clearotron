@@ -1360,8 +1360,8 @@
           "todos": 0
         },
         "census-merge-driver.test.mjs": {
-          "tests": 5,
-          "asserts": 14,
+          "tests": 7,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
