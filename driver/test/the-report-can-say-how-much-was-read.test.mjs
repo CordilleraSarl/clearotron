@@ -114,3 +114,42 @@ test("the whole record carries a group tally over the closed set only", () => {
     rec.cleared.register.length, "the tally and the rows disagree");
   assert.equal(rec.counts.courtDecisions, "not-in-scope");
 });
+
+// ── A REGISTER THAT ARCHIVES NOTHING IS NOT A REGISTER NOBODY SEARCHED ──────────────────────────────
+//
+// Both arrived here as `[]` and the page could only drop the section, so a clearance that searched three
+// territories and found a rated conflict in one of them told the reader nothing about the register at
+// all — in the same voice it uses for the things that were deliberately out of scope. Three-valued now,
+// the way a stage's output already is: null means the run cannot say, and a number means it counted.
+
+test("no record store and an empty one are different answers, not the same zero", () => {
+  // The pair that matters. Asserted as a PAIR on purpose: either one alone passes against code that
+  // collapses them, because each is individually what the old behaviour produced for its own input.
+  assert.equal(recordsByCountry(null), null, "no `_records/` store — the run cannot say how many it read");
+  assert.deepEqual(recordsByCountry([]), {}, "a store that is present and empty IS a zero, and reads as one");
+  assert.notDeepEqual(recordsByCountry(null), recordsByCountry([]));
+});
+
+test("the whole record carries the distinction through to what the page reads", () => {
+  const of = (names) => searchDepthRecord({ auditMd: AUDIT, recordFileNames: names }).counts;
+
+  const absent = of(null);
+  assert.equal(absent.recordsByCountry, null);
+  assert.equal(absent.recordsRead, null, "a count of 0 here is a claim the run is not entitled to make");
+
+  const empty = of([]);
+  assert.deepEqual(empty.recordsByCountry, {});
+  assert.equal(empty.recordsRead, 0, "and a real zero must still be a real zero, or this trades one lie for another");
+
+  // The counted case is untouched — the guard against a fix that makes every run say "cannot say".
+  const read = of(["jp-1.json", "jp-2.json", "kr-1.json"]);
+  assert.deepEqual(read.recordsByCountry, { JP: 2, KR: 1 });
+  assert.equal(read.recordsRead, 3);
+});
+
+test("an omitted listing is not a declaration that the store was empty", () => {
+  // The default stays `[]` because only the publish path knows whether the directory exists, and it is
+  // the one producer. This arm pins that the default is a DEFAULT and not the absent case: if someone
+  // later "tidies" it to null, every caller that omits the argument starts reporting "cannot say".
+  assert.equal(searchDepthRecord({ auditMd: AUDIT }).counts.recordsRead, 0);
+});

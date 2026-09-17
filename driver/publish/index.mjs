@@ -1106,7 +1106,11 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     searchDepth = searchDepthRecord({
       auditMd: (auditMd && existsSync(auditMd)) ? rdText(auditMd) : '',
       recordIndex: recordsByUri ?? {},
-      recordFileNames: existsSync(recDir) ? readdirSync(recDir) : [],
+      // null, NOT []: a run whose provider archives no records has no `_records/` at all, and an empty
+      // array is a register that was searched and returned nothing. They are different facts and the
+      // page says different things about them, so the distinction this line already computes is kept
+      // rather than thrown away one character later.
+      recordFileNames: existsSync(recDir) ? readdirSync(recDir) : null,
       commonLawGrid: rdJson(join(runBase, 'common-law-grid.json')),
       caseLawText: rdText(join(dirname(reportMd), 'case-law-findings.md')),
       registerPlan: rdJson(driverDir(runBase, 'register-plan.json')),

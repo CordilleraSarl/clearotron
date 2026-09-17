@@ -1080,10 +1080,15 @@ function courtDecisionsSection(opts) {
   const byC = sd.counts.recordsByCountry || {};
   const first = Object.keys(byC).filter((c) => c !== 'WO')[0];
   const where = first ? (regionName(first) || first) : '';
+  // The country comes from the record listing, so a run whose provider archives nothing has no name to
+  // put here — and every branch below embedded it mid-sentence. The page then read "Case-law research
+  // could not be completed for ." Each clause is now attached to the name rather than assuming one:
+  // same words when there is a country, one clause shorter when there is not.
+  const forWhere = where ? ` for ${where}` : '';
   let line = '';
-  if (state === 'not-checked') line = `Case-law research could not be completed for ${where}.`;
-  else if (state === 'none-found') line = `Court decisions: none found for ${where}.`;
-  else if (state === 'found') line = `Court decisions were searched for ${where} and are cited against the findings above.`;
+  if (state === 'not-checked') line = `Case-law research could not be completed${forWhere}.`;
+  else if (state === 'none-found') line = `Court decisions: none found${forWhere}.`;
+  else if (state === 'found') line = `Court decisions were searched${forWhere} and are cited against the findings above.`;
   if (!line) return '';
   return `<div class="sec" id="court"><h2>Court decisions</h2></div>
   <div class="panel courtp"><p>${esc(line)}</p></div>`;

@@ -104,9 +104,18 @@ export function clearedNames(auditMd, recordIndex = {}) {
  * EVERY COUNTRY THE RUN READ, including the ones that came back clean — those are the whole point. A
  * count keyed off the findings would list only countries with a conflict, which is the gap this closes.
  *
- * @param {string[]} recordFileNames  the `_records/` directory listing, named `<cc>-<id>.json`
+ * THREE-VALUED, in the house pattern outputMeta already uses for a stage's output: `null` in means the
+ * run has NO `_records/` store, and `null` comes back out — we cannot say how many records were read.
+ * An empty ARRAY is the other thing entirely: the store is there and holds nothing, which is a real zero
+ * and renders as one. Collapsing the two is what this fixes; they arrived here as the same `[]` and the
+ * renderer could only drop the section, so a register that archives nothing read as a register nobody
+ * searched.
+ *
+ * @param {string[]|null} recordFileNames  the `_records/` listing, named `<cc>-<id>.json`; null = no store
+ * @returns {object|null} counts by country code, or null when the run cannot say
  */
 export function recordsByCountry(recordFileNames = []) {
+  if (recordFileNames === null) return null;
   const out = {};
   for (const name of recordFileNames) {
     const cc = (String(name).match(/^([a-z]{2})-/i) || [])[1];
@@ -160,6 +169,9 @@ export function localScriptSearched(registerPlan) {
  * @returns {{schemaVersion: number, cleared: object, counts: object}}
  */
 export function searchDepthRecord({ auditMd = "", recordIndex = {}, recordFileNames = [], commonLawGrid = null, caseLawText = "", registerPlan = null } = {}) {
+  // `recordFileNames: null` travels all the way to the page — see recordsByCountry. The default stays `[]`
+  // because that is "the caller said nothing", not "the store is absent"; only the publish path knows the
+  // difference and it is the one producer.
   const cleared = clearedNames(auditMd, recordIndex);
   const groups = {};
   for (const key of CLEARED_GROUPS) groups[key] = 0;
@@ -169,7 +181,7 @@ export function searchDepthRecord({ auditMd = "", recordIndex = {}, recordFileNa
     cleared: { register: cleared.register, web: cleared.web, groups },
     counts: {
       recordsByCountry: recordsByCountry(recordFileNames),
-      recordsRead: recordFileNames.length,
+      recordsRead: recordFileNames === null ? null : recordFileNames.length,
       sweep: sweepCounts(commonLawGrid, auditMd),
       localScriptSearched: localScriptSearched(registerPlan),
       courtDecisions: courtDecisionsState(caseLawText),
