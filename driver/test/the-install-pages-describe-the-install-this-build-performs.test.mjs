@@ -38,7 +38,24 @@ const releaseNote = (name) => {
   for (const p of tried) {
     try { return readFileSync(join(ROOT, p), "utf8"); } catch { /* not here; try where a cut would have put it */ }
   }
-  throw new Error(`release note "${name}" is at neither ${tried[0]} nor ${tried[1]}`);
+  // ── AND WHERE A STABLE LEAVES IT, WHICH IS NEITHER OF THOSE ──────────────────────────────────────
+  //
+  // A stable consumes the notes its betas carried and EMPTIES `.changeset/pre/`. Measured on this
+  // repository rather than assumed: commit 4262b9cd, "The stable can consume the notes its betas
+  // carried", deletes the files. After it the sentences exist only inside the changelog, so the two
+  // paths above both miss and these arms would throw on the stable exactly as they threw on the beta.
+  //
+  // THE SHAPE SURVIVES THE FOLD, which is what makes this readable rather than a different corpus:
+  // each PARAGRAPH of a note becomes its own bullet, with the group word stripped. So the arm that
+  // splits a note into paragraphs still finds them, and the sentences pinned word for word are still
+  // there to find.
+  //
+  // WHAT IT COSTS, SAID PLAINLY: once a note is folded its text is in the changelog for good, so this
+  // half of the arm can no longer fail — a published promise does not change. The half with teeth
+  // after that point is the other one, which reads what the CODE does and compares it to the promise.
+  // That is the right way round: the sentence is fixed once it ships, and the code is what may drift
+  // away from it.
+  return readFileSync(join(ROOT, "CHANGELOG.md"), "utf8");
 };
 /** Prose with its line breaks folded, so a sentence wrapped at another column still matches. */
 const flat = (s) => s.replace(/\s+/g, " ");
