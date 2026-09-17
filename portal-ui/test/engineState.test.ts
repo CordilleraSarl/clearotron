@@ -272,7 +272,10 @@ const BILLING_STATES: readonly { readonly name: string; readonly env: Record<str
   { name: 'subscription', env: CLAUDE, state: 'Subscription', fault: null },
   { name: 'an API key that is set', env: { ...CLAUDE, CLEAROTRON_AI_BILLING: 'api-key', ANTHROPIC_API_KEY: 'sk-x' }, state: 'API key', fault: null },
   { name: 'an API key that is not set', env: { ...CLAUDE, CLEAROTRON_AI_BILLING: 'api-key' }, state: 'Refused',
-    fault: 'Set to bill an API key, and ANTHROPIC_API_KEY is not set — a run is refused rather than billed to the subscription.' },
+    // The setting's NAME came out of this sentence on main: an environment variable is an engineering
+    // identifier, and the reader of this row is an operator looking at a screen, not at a unit file.
+    // The arm followed the wording rather than keeping it alive here.
+    fault: 'Set to bill an API key, and no key is set — a run is refused rather than billed to the subscription.' },
   { name: 'Google Cloud', env: { ...CLAUDE, CLEAROTRON_AI_BILLING: 'cloud', CLAUDE_CODE_USE_VERTEX: '1' }, state: 'Google Cloud', fault: null },
   { name: 'Microsoft Azure', env: { ...CLAUDE, CLEAROTRON_AI_BILLING: 'cloud', CLAUDE_CODE_USE_FOUNDRY: '1' }, state: 'Microsoft Azure', fault: null },
   { name: 'Amazon Bedrock', env: { ...CLAUDE, CLEAROTRON_AI_BILLING: 'cloud', CLAUDE_CODE_USE_BEDROCK: '1' }, state: 'Amazon Bedrock', fault: null },
@@ -306,7 +309,7 @@ const BILLING_STATES: readonly { readonly name: string; readonly env: Record<str
   { name: 'Codex on subscription', env: CODEX, state: 'Subscription', fault: null },
   { name: 'Codex on an API key that is set', env: { ...CODEX, CLEAROTRON_AI_BILLING: 'api-key', CODEX_API_KEY: 'k' }, state: 'API key', fault: null },
   { name: 'Codex on an API key that is not set', env: { ...CODEX, CLEAROTRON_AI_BILLING: 'api-key' }, state: 'Refused',
-    fault: 'Set to bill an API key, and CODEX_API_KEY is not set — a run is refused rather than billed to the subscription.' },
+    fault: 'Set to bill an API key, and no key is set — a run is refused rather than billed to the subscription.' },
   { name: 'Codex on a cloud account', env: { ...CODEX, CLEAROTRON_AI_BILLING: 'cloud', CLAUDE_CODE_USE_FOUNDRY: '1' }, state: 'Refused',
     fault: 'Searches will be refused: payment is set to a cloud account, which pays only for Claude, and this machine runs the Codex engine. '
       + 'Set CLEAROTRON_AI_BILLING to subscription or api-key, or set CLEAROTRON_AI to anthropic-agent to pay for Claude through your cloud.' },
@@ -402,8 +405,13 @@ test('an older service, which sends no cloud and no reason, draws the row as bef
   const before = (billing: { apiBilled: boolean; missing: string[] }, id: string, vendor: string) => ({
     ok: billing.missing.length === 0, name: vendor, mono: id,
     state: billing.missing.length ? 'Refused' : billing.apiBilled ? 'API key' : 'Subscription',
+    // THE SENTENCE NO LONGER NAMES THE VARIABLES, and this helper used to re-spell it from their names.
+    // An environment variable is an engineering identifier and the reader of this row is an operator
+    // looking at a screen; the product says "no key is set" for every engine. What this arm holds is
+    // unchanged — an older service, sending none of the newer fields, still draws the row it always did
+    // — so the model follows the wording rather than keeping the old one alive here.
     faults: billing.missing.length
-      ? [`Set to bill an API key, and ${billing.missing.join(' and ')} is not set — a run is refused rather than billed to the subscription.`]
+      ? ['Set to bill an API key, and no key is set — a run is refused rather than billed to the subscription.']
       : [],
   })
   for (const s of BILLING_STATES) {
