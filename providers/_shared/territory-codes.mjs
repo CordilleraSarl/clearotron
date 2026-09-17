@@ -98,6 +98,26 @@ export const TERRITORY_TO_CODE = Object.freeze({
 // two Benelux members — and they must not depend on which internationalisation data a customer's
 // runtime happens to carry. What is derived is a WIDENING: it can only add names that would otherwise
 // have resolved to nothing, and a build whose data is thinner loses names it never promised.
+// A WITHDRAWN CODE ANSWERS TO THE SAME NAME AND IS REACHED FIRST. The runtime still knows the codes ISO
+// has retired, and it gives them the CURRENT country's name: `VD` (North Vietnam, withdrawn 1977) and
+// `VN` both answer "Vietnam". The scan runs AA to ZZ, so the dead code claims the name and the live one
+// finds it taken — seven territories resolved that way, Vietnam, Yemen, Serbia, Zimbabwe, Vanuatu,
+// Myanmar and Curaçao. None of them is a name this engine holds a jurisdiction for, so a requester who
+// wrote "Vietnam" was pointed at a code no register can answer, and one who wrote "Vietnam" AND "VN" had
+// two countries and was refused a search they had described correctly.
+//
+// Asking the runtime to canonicalise the region fixes all seven from the runtime's own data rather than
+// from a hand-written list of retirements that would go stale the next time ISO withdraws one. A code
+// that is current canonicalises to itself, so this is inert for every other entry — measured over the
+// whole AA-ZZ scan, the only entries that move are those seven.
+//
+// It does not touch the direct-code branch in normalizeTerritory, where UK deliberately stays UK: that
+// is an alias the providers own, not a withdrawal, and canonicalising there would take the decision
+// away from the translate step that is supposed to make it.
+const canonicalRegion = (code) => {
+  try { return new Intl.Locale(`und-${code}`).region || code; } catch { return code; }
+};
+
 const DERIVED_NAME_TO_CODE = (() => {
   const out = Object.create(null);
   let names;
@@ -109,7 +129,7 @@ const DERIVED_NAME_TO_CODE = (() => {
       try { name = names.of(code); } catch { continue; }
       if (!name || name === code || /^unknown/i.test(name)) continue;
       const key = strip(name);
-      if (key && !(key in TERRITORY_TO_CODE) && !(key in out)) out[key] = code;
+      if (key && !(key in TERRITORY_TO_CODE) && !(key in out)) out[key] = canonicalRegion(code);
     }
   }
   return out;
