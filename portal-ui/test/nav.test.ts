@@ -27,17 +27,20 @@ test('a screen reached from a row still resolves, even though the sidebar never 
   assert.equal(ids.includes('result'), false)
   // The sidebar order IS this array's order, so asserting it is asserting the deliverable.
   //
-  // The order encodes THE LINE: everything the company switcher does NOT reach comes first (Home, Use
-  // your AI), then everything it does. The switcher is drawn between them, so what it governs is
-  // exactly what is printed beneath it. Admin is no longer here at all — it moved to the avatar menu,
-  // where it belongs to the person rather than to either scope.
+  // The order encodes THE LINE: what the company switcher does NOT reach comes first, then everything
+  // it does. The switcher is drawn between them, so what it governs is exactly what is printed beneath
+  // it. Admin is no longer here at all — it moved to the avatar menu, where it belongs to the person
+  // rather than to either scope.
+  //
+  // CONNECT YOUR AI SITS LAST, below the line, on the owner's ruling of 2026-09-17 — and its `scope` is
+  // still 'account', because the two are different questions. See the rail arm below.
   //
   // CLEARANCES SITS BELOW THE LINE. It always filtered its rows by the switcher's value; it merely sat
   // above the line while doing so, which is the disagreement this order corrects.
   //
   // COMPANY SETTINGS IS ONE ITEM, and the company's three pages are its children in their reading order:
   // one place with three pages, not three places.
-  assert.deepEqual(ids, ['home', 'ai', 'new', 'clearances', 'brand'])
+  assert.deepEqual(ids, ['home', 'new', 'clearances', 'brand', 'ai'])
   const settings = navFor(RUNNER).find((e) => e.id === 'brand')
   assert.equal(settings?.label, 'Company settings')
   assert.deepEqual(settings?.children?.map((c) => c.label), ['Profile', 'Projects', 'Search templates'])
@@ -52,8 +55,21 @@ test('THE LINE: every sidebar entry declares which side of the switcher it is on
     assert.ok(e.scope === 'account' || e.scope === 'owner', `${e.id} does not say which side of the switcher it is on`)
   }
   const g = navGroupsFor(RUNNER)
-  assert.deepEqual(g.account.map((e) => e.id), ['home', 'ai'], 'reviewed across everything')
-  assert.deepEqual(g.owner.map((e) => e.id), ['new', 'clearances', 'brand'], 'one company at a time')
+  assert.deepEqual(g.account.map((e) => e.id), ['home'], 'reviewed across everything')
+  assert.deepEqual(g.owner.map((e) => e.id), ['new', 'clearances', 'brand', 'ai'], 'one company at a time')
+
+  // ── SIDE AND SCOPE ARE TWO QUESTIONS, AND THIS IS THE ITEM THAT PROVES IT ────────────────────────
+  //
+  // Connect your AI is drawn last, below the switcher (owner, 2026-09-17), and the top bar must still
+  // name the ACCOUNT on it: the connector is issued per identity, and a company's name printed over a
+  // page that has nothing to do with that company is the conflation this family exists to remove.
+  //
+  // The cheap way to move it is to call it 'owner', and that would pass the two assertions above while
+  // breaking the top bar on a screen nobody checks in the same breath. This is what refuses that.
+  assert.equal(NAV.find((e) => e.id === 'ai')?.scope, 'account',
+    'Connect your AI was moved below the line by changing its scope, which puts a company name in the top bar over it')
+  assert.equal(scopeOf('ai'), 'account')
+  assert.equal(g.owner.at(-1)?.id, 'ai', 'and it is LAST below the line, not merely somewhere below it')
   // A CHILD IS WHAT YOU STAND ON, and the top bar names the scope of the screen you are on — so each
   // company page declares the side it sits on too, rather than leaning on its parent's.
   for (const c of g.owner.find((e) => e.id === 'brand')?.children ?? []) {
@@ -66,8 +82,8 @@ test('THE LINE: every sidebar entry declares which side of the switcher it is on
   // nothing here, because People and Installation settings are in the avatar menu. Nothing else changes shape.
   assert.deepEqual(navGroupsFor(MANAGER).account.map((e) => e.id), g.account.map((e) => e.id), 'a manager has the same rail above the line')
   assert.deepEqual(navGroupsFor(MANAGER).owner.map((e) => e.id), g.owner.map((e) => e.id))
-  assert.deepEqual(navGroupsFor(READER).account.map((e) => e.id), ['home', 'ai'])
-  assert.deepEqual(navGroupsFor(READER).owner.map((e) => e.id), ['clearances', 'brand'],
+  assert.deepEqual(navGroupsFor(READER).account.map((e) => e.id), ['home'])
+  assert.deepEqual(navGroupsFor(READER).owner.map((e) => e.id), ['clearances', 'brand', 'ai'],
     'no New clearance for a person who cannot start one')
 })
 
