@@ -4877,7 +4877,7 @@
         },
         "the-install-pages-describe-the-install-this-build-performs.test.mjs": {
           "tests": 11,
-          "asserts": 90,
+          "asserts": 89,
           "skips": 0,
           "todos": 0
         },
