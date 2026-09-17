@@ -44,34 +44,35 @@ claimed. Booleans, parentheses and wildcards are parsed **inside `searchFields[]
 
 | `match_mode` | Field + value shape | Semantics | Probe |
 |---|---|---|---|
-| `default` | `WORD_MARK_SPECIFICATION` = `*TERM*` | **A TRUE CONTAINS** — the substring band | `*TERM*` |
-| `exact` | `EXACT_WORD_MARK_SPECIFICATION` = `TERM` | Full-string, case-insensitive, **punctuation-sensitive** (punctuation is stripped client-side for you) | `TERM` |
-| `wildcard` | `WORD_MARK_SPECIFICATION` = your pattern, untouched | `*` and `?` are native | `TERM*`, `*TERM`, `TER?` |
-| `starts_with` | `WORD_MARK_SPECIFICATION` = `TERM*` | prefix | `TERM*` |
-| `ends_with` | `WORD_MARK_SPECIFICATION` = `*TERM` | suffix | `*TERM` |
+| `default` | `WORD_MARK_SPECIFICATION` = `*TERM*` | **A TRUE CONTAINS** — the substring band | `*NIK*` = 806 |
+| `exact` | `EXACT_WORD_MARK_SPECIFICATION` = `TERM` | Full-string, case-insensitive, **punctuation-sensitive** (punctuation is stripped client-side for you) | `NIKE` = 34 on CH |
+| `wildcard` | `WORD_MARK_SPECIFICATION` = your pattern, untouched | `*` and `?` are native | `NIK*` = 128, `*NIKE` = 36, `NIK?` = 48 |
+| `starts_with` | `WORD_MARK_SPECIFICATION` = `TERM*` | prefix | `NIK*` = 128 |
+| `ends_with` | `WORD_MARK_SPECIFICATION` = `*TERM` | suffix | `*NIKE` = 36 |
 | `phonetic` | `PHONETIC_WORD_MARK_SPECIFICATION` = `TERM` | Native server-side sound-alike. Opaque — no variant list. | — |
 
 `contains` is accepted as an alias of `default` and produces the identical query. There is no separate
 "contains mode" to reach for any more.
 
-**Booleans are explicit and native.** `OR` is exact — a two-name stack answers the sum of its legs, with
-no double counting. `AND` works. `NOT` subtracts exactly the same way. Parentheses group. Regex is not
-supported despite what the field description hints: a regex value matches nothing rather than erroring.
+**Booleans are explicit and native.** `"NIKE OR ADIDAS"` = 38 = 34 + 4 exactly. `AND` works. `NOT` works
+(`"NIK* NOT NIKE"` = 94 = 128 − 34). Parentheses group. Regex is not supported (`/NIK./` = 0) despite
+what the field description hints.
 
-**Multi-word terms work — pass them normally.** A bare space is an implicit *AND*, and it is order-blind,
-so the tool compiles your phrase to the **ADJ** adjacency operator instead — an ordered phrase match,
-which answers nothing when the words are reversed. You write the term the way a
+**Multi-word terms work — pass them normally.** A bare space is an implicit *AND*
+(`*KESTREL BEVERAGE*` = `*KESTREL* AND *BEVERAGE*` = 75, and it is order-blind: `*CORAL PUP*` =
+`*PUP CORAL*` = 11), so the tool compiles your phrase to the **ADJ** adjacency operator instead —
+`*CORAL ADJ PUP*`, an ordered phrase match (11 hits; reversed = 0). You write the term the way a
 lawyer would say it; the tool does the translation. This applies to `default`/`contains`/`wildcard`/
 `starts_with`/`ends_with`/`phonetic` alike.
 
 Two things to know when you read the results:
 
 - **A multi-word `starts_with`/`ends_with` is not anchored.** No string anchor exists on this provider
-  (`BEGINS_WITH` on a two-word value answers wider than the phrase operator does), so it runs as a
-  phrase-*contains* — a superset of what you asked. Extra hits, never fewer. Screen them as usual.
+  (`BEGINS_WITH "ALPINE SPRING"` = 9 vs the phrase's 7), so it runs as a phrase-*contains* — a superset
+  of what you asked. Extra hits, never fewer. Screen them as usual.
 - **`exact` is still the tightest read** — `EXACT_WORD_MARK_SPECIFICATION` is an ordered whole-string
-  match: the words in the order written, and nothing for the same words reversed. Use it when you want
-  the mark itself, not the neighbourhood.
+  match ("KESTREL BEVERAGE" = 4, "BEVERAGE KESTREL" = 0). Use it when you want the mark itself, not the
+  neighbourhood.
 
 **A term you pass is never silently re-parsed.** Parentheses, or (outside `wildcard`) a stray `*`/`?`,
 are **REJECTED** with a plain-English error and the slice defers — there is no escape syntax for those.
@@ -79,9 +80,9 @@ An operator word *inside* a phrase is handled for you: "BLACK AND DECKER" goes o
 `*BLACK ADJ A?D ADJ DECKER*` (the `?` stops the parser reading AND as an operator). The one term that
 still defers is a bare two-letter operator word — `OR` alone has no interior character to wildcard.
 
-`names[]` (an OR-stack) becomes ONE value joined with explicit ` OR `. The safe width is **500 terms** —
-the bound is the JSON parser's document-nesting cap, which the register names in the refusal it answers a
-wider stack with. `register_enumerate` chunks wider stacks for you at that bound.
+`names[]` (an OR-stack) becomes ONE value joined with explicit ` OR `. The safe width is **500 terms**
+(80/200/500 all fine; 1000 → HTTP 500 *"Document nesting depth (1001) exceeds the maximum allowed"*).
+`register_enumerate` chunks wider stacks for you at that bound.
 
 ## Filters
 
@@ -98,8 +99,8 @@ wider stack with. `register_enumerate` chunks wider stacks for you at that bound
 
 ### Multi-class is ONE call — the fan-out is gone
 
-`INT_CLASS_NUMBER` value `"9 OR 28 OR 41 OR 42"` returns the deduplicated union of what four per-class
-calls returned — the comma form `"9,28,41,42"` is the same. The old per-class fan-out and its `warnings[]` cost
+`INT_CLASS_NUMBER` value `"9 OR 28 OR 41 OR 42"` returns **18** — identical to the deduplicated union of
+four per-class calls (`"9,28,41,42"` also = 18). The old per-class fan-out and its `warnings[]` cost
 breakdown have been **deleted from the core**. N classes cost one call; budget accordingly, and ignore
 any older guidance that told you to size a class fan-out.
 
@@ -112,8 +113,8 @@ becomes a `deferred` coverage row — it is never quietly dropped from the filte
 
 ### Owner search — resolve first, and never emit CONTAINS
 
-`APPLICANT_NAME` supports `EQUALS`, `BEGINS_WITH`, wildcards (a trailing `*` with EQUALS answers exactly
-what BEGINS_WITH answers), and `OR`. **`CONTAINS` is a hard HTTP 400** —
+`APPLICANT_NAME` supports `EQUALS` (156 hits), `BEGINS_WITH` (159), wildcards (`"NIKE*"` with EQUALS =
+159, i.e. equivalent to BEGINS_WITH), and `OR`. **`CONTAINS` is a hard HTTP 400** —
 *"Operator CONTAINS is not supported for search field APPLICANT_NAME"* — and is never emitted anywhere.
 
 This provider has something Corsearch does not: **`POST /resolution/company`** returns confidence-scored
@@ -124,12 +125,13 @@ a narrower one. The result carries an `owner_resolution` note; cite it when the 
 
 ## Completeness, crowds and the ceiling
 
-`/search` has **no pagination** and needs none: it returns one guid for every hit the count reports, at
-any size below the ceiling. Past the ceiling it **fails loud** with a `tooManyResults` HTTP 400 that names
-the ceiling and the number of results the search reached.
+`/search` has **no pagination** and needs none: it returns the whole guid set (128 guids for a count of
+128; 806 for 806). Past 30 000 it **fails loud**: HTTP 400 *"tooManyResults — The search returned 209012
+results. Maximum number of results is 30000."*
 
 `register_enumerate` therefore probes `POST /count` first. `/count` is cheap, takes the same body, works
-at **any** magnitude, and returns a `counts` object keyed by office code in one call.
+at **any** magnitude, and returns per-office counts in one call
+(`{"counts":{"CH":34,"EM":60,"WO":7,"CN":14345,"GB":91,"US":138}}`).
 
 **A `tooManyResults` / over-ceiling band is `state:"incomplete"` — a CROWD DESCRIPTOR, never an error and
 never a clean negative.** It is dilution the lawyer reads. On this provider the crowd block also carries
@@ -154,7 +156,7 @@ identical-match is class-agnostic.
 
 ## Records — `register_record_fetch` / `register_batch_screen`
 
-`/text` takes **exactly 100 ids** per call and refuses a longer list; the adapter chunks at 100. Response splits
+`/text` takes **exactly 100 ids** per call (101+ → HTTP 400); the adapter chunks at 100. Response splits
 into `trademarks[]` and `nonTrademarks[]` (design-only / bookkeeping artefacts — generally skip, but
 sanity-check it if results look sparse).
 
@@ -203,17 +205,16 @@ silently omit the dimension.
 - **No regex** — wildcards and booleans cover the plan vocabulary.
 - **No cross-language single query** — run the variant manifest per script.
 - **No native-script search — send the ROMANISATION instead.** This index holds non-Latin marks by
-  their transliteration and does not hold the characters at all. A native-script term answers nothing;
-  its own transliteration answers records that carry those very characters. Universal — every non-Latin
-  record sampled across CN/TW/JP/KR/TH/GR/UA/EG/SA/IL
+  their transliteration and does not hold the characters at all. `华威豹` answers **0**; its own
+  transliteration `HUA WEI BAO` answers **32**, and those 32 include 华威豹. Same for `小米` (0) vs
+  `XIAOMI` (57632). Universal — every non-Latin record sampled across CN/TW/JP/KR/TH/GR/UA/EG/SA/IL
   carried a populated `markTransliteration`. A native term you send is REFUSED client-side (a 0 here
   would read as clean), so send the romanised form and say in the report that the register was
   searched by transliteration. Two rules that come with it:
   - use **contains, not `exact`** — the office writes its own spacing and trailing tokens, so
-    `exact` on a transliteration is a silent zero where the same term under contains answers;
-  - the romanisation is **broader than the characters, not narrower** — one romanisation returns
-    several distinct character sets that share its pronunciation, which is the shape most Chinese
-    squatting takes.
+    `exact` on a transliteration is a silent zero (GR 0/10, EG 0/7);
+  - the romanisation is **broader than the characters, not narrower** — it catches homophone
+    variants (`HUA WEI BAO` → 华威豹, 华味宝, 华为爆破), which is the shape most Chinese squatting takes.
 
 Each of these, when it blocks a dictated slice, is a **`deferred` coverage row** — escalate and disclose.
 Never substitute a weaker query under the same heading.
