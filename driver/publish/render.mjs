@@ -1663,7 +1663,12 @@ function fullDetail(f, card, recordsByUri = new Map()) {
     ? `<div class="clstrand" style="margin:10px 0 0;padding-top:8px;border-top:1px dashed var(--line,#ddd)">${clHead}${clBody}</div>`
     : '';
   const link = f.source?.resolved_link;
-  const prov = link ? `<div class="prov">audit ref F${f.ordinal} · <a href="${esc(link)}" target="_blank" rel="noopener noreferrer">${esc(link.replace(/^https?:\/\//, '').slice(0, 48))}</a></div>` : `<div class="prov">audit ref F${f.ordinal}</div>`;
+  // NO AUDIT REFERENCE ON A CLIENT'S CARD. "audit ref F1" is the engine's handle for the finding —
+  // it indexes the workbook, it means nothing to the reader holding the report, and the mock carries no
+  // such line. The SOURCE LINK stays: it is the only address a reader has for the record on this card
+  // until the workbook row lands beside it, and dropping both would take a fact away rather than a
+  // label. With no link there is nothing left to say, so the row does not render at all.
+  const prov = link ? `<div class="prov"><a href="${esc(link)}" target="_blank" rel="noopener noreferrer">${esc(link.replace(/^https?:\/\//, '').slice(0, 48))}</a></div>` : '';
   // WP-receipts W4 — the code-owned senior-right line (Owner decision 2026-07-05: VERY SIMPLE CLEAR ENGLISH,
   // stated qualification, verdict untouched). Verified senior → nothing extra (the W2 receipt line on
   // the fetched leg is the proof). Unverified → the open item, plainly, where the finding lives.

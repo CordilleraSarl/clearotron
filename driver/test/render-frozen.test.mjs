@@ -1769,7 +1769,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Advanced again by the break recorded above the FROZEN constant: seven fixed sentences on the
 // clearance page, which is a behaviour change and not licence-only, so both constants move for the same
 // measured reason.
-const FROZEN_BEFORE_SPDX = "82ab4c23d1ed4e0a318f8d1fb76209059ed672e9df9418e588e80ddb1ac67c9f";
+const FROZEN_BEFORE_SPDX = "60b95560db0746b18902d58e4e56a257f9ec28b6551beb79ec0af3fd93ee9456";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2193,7 +2193,19 @@ const FROZEN_BEFORE_SPDX = "82ab4c23d1ed4e0a318f8d1fb76209059ed672e9df9418e588e8
 // Could it live in report.css or brand.mjs? NO. It decides what TEXT reaches a client's page and how
 // much of it, not how that text looks.
 
-const FROZEN = "b2691b254381bdb642f0e5db650d25f183b9389fe58da66831718acb5af41855";
+// AND AGAIN (2026-09-17): NO AUDIT REFERENCE ON A CLIENT'S CARD.
+//
+// Reachable from a republish? Yes. "audit ref F1" is the engine's handle for a finding — it indexes the
+// workbook and means nothing to the reader holding the report — so a re-rendered archived run loses a
+// label, not a fact. The SOURCE LINK on that row stays: it is the only address a reader has for the
+// record on that card until the workbook row lands beside it, and taking both would have been a loss.
+// Where there is no link the row now renders not at all, because a row whose only content was the
+// engine's handle is furniture.
+//
+// Could it live in report.css? No — hiding it in the stylesheet leaves it in the delivered bytes and in
+// the printed page, which is where it was read.
+
+const FROZEN = "f598c5e08aeac728ecc4f14df16e29f39c01243156025c477e20d92f9669f0b1";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));
