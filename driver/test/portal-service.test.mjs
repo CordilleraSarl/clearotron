@@ -3217,3 +3217,47 @@ test("/portal/api/me says which route this install arrived by, as a WORD", async
   assert.doesNotMatch(wire, /npx |npm run |cd \//,
     "a command line reached the wire; the screen composes the command from the word");
 });
+
+// ── A RUNNING KNOCKOUT IS A KNOCKOUT ON ITS OWN ROW ──────────────────────────────────────────────────
+//
+// `kind` is what Home quotes a turnaround against: a knockout finishes in minutes and a clearance in
+// hours, and there is no third answer. The live row took it from `s.lane` — the runner's queue directory
+// — while the `product` field beside it came from the frozen policy sidecar, so a knockout claimed from
+// any other lane called itself a clearance on the same row that named its knockout product, and the
+// card beside it promised hours for a five-minute search.
+//
+// The queued rows were fixed for exactly this and the live row was left behind, which is why the control
+// here is a SECOND live run rather than a second field: a check that only asserts the knockout would
+// pass against a row that called everything a knockout.
+test("a live run's kind comes from its frozen policy, with the lane as the fallback", () => {
+  const { poolRoot, workspaceRoot } = world();
+  const liveRun = (slug, dirName, status, policy) => {
+    const dir = join(workspaceRoot, "workspace-test", "studio", "prelim-search", slug, dirName);
+    mkdirSync(driverDir(dir), { recursive: true });
+    writeFileSync(join(dir, "status.json"), JSON.stringify({ state: "running", updatedAt: "2026-07-20T09:00:00Z", ...status }));
+    writeFileSync(driverDir(dir, "profile.json"), JSON.stringify({ profileKey: "aurora", name: "Aurora" }));
+    if (policy) writeFileSync(driverDir(dir, "search-policy.json"), JSON.stringify(policy));
+  };
+
+  liveRun("tmp20-ko", "2026-07-20-ko-a", { runId: "ko-live", markName: "KOMARK" }, { level: "knockout-search" });
+  liveRun("tmp21-cl", "2026-07-20-cl-b", { runId: "cl-live", markName: "CLMARK" }, { level: "global-preliminary-search" });
+  // No sidecar at all — a run older than the stamp. The lane is the only evidence there has ever been.
+  liveRun("tmp22-legacy", "2026-07-20-lg-c", { runId: "legacy-live", markName: "LGMARK", lane: "knockout" }, null);
+  // A product the registry cannot place stays a clearance: that is what every listing has always shown
+  // for something it could not identify, and it must not become a knockout by accident.
+  liveRun("tmp23-unknown", "2026-07-20-un-d", { runId: "unknown-live", markName: "UNMARK" }, { level: "no-such-search" });
+
+  const by = Object.fromEntries(scanAccountRuns({ poolRoot, workspaceRoot, account: "aurora" }).map((r) => [r.runId, r]));
+  assert.equal(by["ko-live"].kind, "knockout-batch",
+    "a running knockout reports itself as a clearance, and Home then quotes it hours for a search that takes minutes");
+  assert.equal(by["cl-live"].kind, "clearance",
+    "the control: without it, a row calling everything a knockout passes the assertion above");
+  assert.equal(by["legacy-live"].kind, "knockout-batch", "the lane is still read where there is no sidecar");
+  assert.equal(by["unknown-live"].kind, "clearance", "an unplaceable product is not promoted to a knockout");
+
+  // THE ROW MUST NOT CONTRADICT ITSELF. This is the property the lane could not hold: `kind` and
+  // `product` are now taken from one source, so a row naming a knockout product cannot call itself a
+  // clearance whatever lane it was claimed from.
+  assert.equal(by["ko-live"].product, "knockout-search")
+  assert.equal(by["cl-live"].product, "global-preliminary-search")
+});

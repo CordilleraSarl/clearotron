@@ -468,7 +468,16 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
       // zombie face this state exists to end. pausedKind "operator" tells the UI which words to use.
       const paused = s.state === "postponed" || s.state === "recovering" || s.state === "parked-for-human";
       out.push({ ...(liveRetired ? { retired: true } : {}),
-        runId: s.runId, account: owner, ...(owner === "generic" ? { organisation: p.organisation ?? null } : {}), title: s.markName ?? s.slug, kind: s.lane === "knockout" ? "knockout-batch" : "clearance",
+        runId: s.runId, account: owner, ...(owner === "generic" ? { organisation: p.organisation ?? null } : {}), title: s.markName ?? s.slug,
+        // THE RUN’S OWN PIPELINE, off the frozen policy sidecar this branch already reads — the same
+        // source the `product` field two lines down takes, so a row cannot contradict its own product.
+        // `s.lane` is the runner’s queue directory and it is not that: a knockout claimed from any other
+        // lane arrived here as a clearance, and Home then quoted it the clearance turnaround — hours,
+        // against a search that finishes in minutes. The queued rows below were fixed for exactly this
+        // and this row was left on the weaker field. The lane stays as the fallback for a run whose
+        // sidecar predates the stamp, and an unplaceable product stays a clearance, which is what every
+        // listing has always shown for something it could not identify.
+        kind: (policyFor(sp?.level)?.pipeline ?? (s.lane === "knockout" ? "knockout" : null)) === "knockout" ? "knockout-batch" : "clearance",
         markName: typeof s.markName === "string" ? s.markName : null,
         // The project, straight off the frozen sidecar this branch already reads as `p`. A LIVE run needs
         // no publish stamp and no back-fill — the sidecar is right there, and freezeProfile has written

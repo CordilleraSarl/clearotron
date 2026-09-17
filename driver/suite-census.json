@@ -3220,8 +3220,8 @@
           "todos": 0
         },
         "portal-service.test.mjs": {
-          "tests": 127,
-          "asserts": 683,
+          "tests": 128,
+          "asserts": 689,
           "skips": 1,
           "todos": 0
         },
