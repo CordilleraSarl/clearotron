@@ -1151,6 +1151,41 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
   if (sw.checks) rows.push(['Marketplace and web', `${sw.checks.toLocaleString('en-GB')} checks across ${sw.platforms} platforms`]);
   if (sw.reputation) rows.push(['Reputation and meaning', `${sw.reputation.toLocaleString('en-GB')} checks`]);
   rows.push(['Local-script spellings', c.localScriptSearched ? 'searched' : 'not searched']);
+  // HOW DEEP THE LOCAL-LANGUAGE INVESTIGATION WENT, which is a different question from the row above it.
+  // That one answers whether the spellings were searched; this one answers whether the investigation ran
+  // at the depth the matter configured. The engine can run it shallower than the account asked for, and
+  // it used to say so in exactly one place — a sentence a model wrote into the Methodology paragraph the
+  // redesign replaced with named rows — so a run that went shallow said so on no page at all.
+  //
+  // EVERY ONE OF THE FOUR WORDS IS ALREADY ON THE PAGE. "Included" and "Not part of this search" are the
+  // approved board's own values for this row; "Partially covered" and "Not run this run" are the coverage
+  // vocabulary this file already renders, taken from COV_STATE rather than retyped so they cannot drift
+  // apart from it. Nothing here composes a sentence.
+  //
+  // A state this table has no word for draws NO ROW, rather than the nearest word. The four are the whole
+  // set the record can produce, so the fallthrough is unreachable today and is there for the fifth state
+  // somebody adds: a row is a claim about a client's search, and the nearest word to an unknown state is
+  // a claim nobody checked.
+  const LL_WORD = {
+    ran: 'Included',
+    'ran-shallow': COV_STATE['coverage-limited'].word,
+    'not-run': COV_STATE['not-searched'].word,
+    'not-in-scope': 'Not part of this search',
+  };
+  //
+  // AND THE ROW NEEDS A LANE RECORD BEHIND IT, not just a state. The state folds to `not-in-scope` when
+  // there is no lane record at all, which is right for a clearance that never asked for the
+  // investigation and WRONG for a run that asked and whose record was never written. Measured on the
+  // full country demo: its own coverage carries "Native-language investigation depth / ja — the
+  // configured depth for this lane was full and this run delivered a depth this run cannot establish",
+  // and the state beside it reads not-in-scope, so this row would have told that reader the
+  // investigation was not part of their search. An empty `lanes` map is that absence, and an absence is
+  // not a finding — so the row is drawn from a record and not from a default. A run whose record exists
+  // draws it on every one of the four states.
+  const llLanes = c.localLanguage?.lanes;
+  const llRecorded = !!llLanes && typeof llLanes === 'object' && Object.keys(llLanes).length > 0;
+  const ll = llRecorded ? LL_WORD[c.localLanguage?.state] : null;
+  if (ll) rows.push(['Local-language investigation', ll]);
   const cd = { 'found': 'found', 'none-found': 'none found', 'not-checked': 'could not be checked', 'not-in-scope': 'not part of this search' }[c.courtDecisions];
   if (cd) rows.push(['Court decisions', cd]);
   const openHtml = open.length ? `<div class="openrows"><div class="rk">Left open</div>${coverageGrid(open)}</div>` : '';

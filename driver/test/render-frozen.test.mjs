@@ -1784,7 +1784,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // branch in one file, and the provenance line re-homed to the footer. Not licence-only, so this moves too.
 // Advanced again by the break recorded above the FROZEN constant: the export menu moved out to its own
 // module. Not licence-only, so this constant moves with it.
-const FROZEN_BEFORE_SPDX = "670820cd1f2d63f13db87be649a3c99a78d5b79c3b798d8906f910d35ba2211b";
+const FROZEN_BEFORE_SPDX = "9f8be1b597abd30f093044ddff8fe13f1dc6e328740b89e4e34281e659306a44";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2432,7 +2432,36 @@ const FROZEN_BEFORE_SPDX = "670820cd1f2d63f13db87be649a3c99a78d5b79c3b798d8906f9
 // Could it live in report.css or brand.mjs? No. Nothing about the section's appearance changes — this is
 // which of the run's own artifacts it reads, and that is renderer logic.
 
-const FROZEN = "13f1f26a83cbb7df13080cd3bab490e408f005bc7351eca0363aed1dd3e1c196";
+// ── 2026-09-17 — the local-language investigation's DEPTH becomes a row in the counts fold ────────
+//
+// The engine can run this investigation shallower than the matter configured, and it said so in exactly
+// one place: a sentence a model wrote into the Methodology paragraph. The redesign replaced that
+// paragraph with named rows, so from then on a run that went shallow said so on no page at all. The
+// approved boards reserve the row; the field behind it did not exist until today.
+//
+// NO NEW WORDING. All four words are already on the page: "Included" and "Not part of this search" are
+// the approved boards' own values for this row, and "Partially covered" and "Not run this run" are read
+// out of COV_STATE rather than retyped, so they cannot drift from the coverage rows they belong to. An
+// arm holds that by comparing the row against a coverage row drawn with the same state.
+//
+// THE ROW NEEDS A LANE RECORD BEHIND IT, and that is the half worth reading. The state folds to
+// `not-in-scope` when no lane record was written, which is right for a clearance that never asked for
+// the investigation and wrong for a run that asked and whose record is missing. Measured at the door on
+// the full country demo: its own coverage carries "Native-language investigation depth / ja — the
+// configured depth for this lane was full and this run delivered a depth this run cannot establish",
+// and the new state beside it reads not-in-scope. Rendered from the state alone, this row would have
+// told that reader the investigation was not part of their search. An empty lanes map is an absence and
+// an absence is not a finding, so the row is drawn from a record or not at all.
+//
+// IS IT REACHABLE FROM A REPUBLISH? Only for a run carrying the lane sidecar. All three archived
+// clearance demos publish byte-identically, measured — they have no sidecar, so they draw no row, which
+// is what they drew before. A demo with a sidecar planted draws "Not run this run", and one with a
+// truncated sidecar draws no row and still publishes.
+//
+// Could it live in report.css or brand.mjs? No — it is a row in a table this file builds, from a field
+// of the run's own record.
+
+const FROZEN = "54ee9ac517dedd6ca450d2d20f054a2391248f2f402aee9ac3c9d333368500d2";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

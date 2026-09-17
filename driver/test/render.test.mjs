@@ -3001,3 +3001,102 @@ test("where it stands is filled from the search plan, so a register that archive
   const named = renderHtml(parsedOf(REPORT), [], [], { searchDepth: archived, planTerritories: { searched: [], unreached: [] } });
   assert.doesNotMatch(named, /Where it stands/, "a plan that named nothing fell back to the record archive");
 });
+
+// ── THE LOCAL-LANGUAGE ROW SAYS HOW DEEP THE INVESTIGATION WENT, IN WORDS ALREADY ON THE PAGE ──────
+//
+// The engine can run this investigation shallower than the matter configured. It said so in one place —
+// a sentence a model wrote into the Methodology paragraph — and the redesign replaced that paragraph
+// with named rows, so a run that went shallow said so on no page at all. The board reserves the row.
+//
+// THE ARM THAT MATTERS IS THE LAST ONE. Two of the four words are taken from the coverage vocabulary
+// this file already renders rather than retyped, and that arm holds them against a coverage row drawn
+// with the same state — so the row cannot drift into wording of its own without reding.
+//
+// BREAK MATRIX:
+//   · each state draws its own word              → break: map two states to one word, arm 1 red
+//   · a shallow run is never "Included"          → break: fold ran-shallow into ran, arm 2 red
+//   · an unknown state draws NO row              → break: fall back to the nearest word, arm 3 red
+//   · the row sits where the board draws it      → break: append it after Court decisions, arm 4 red
+//   · its words are the page's own               → break: retype them, arm 5 red
+test("the local-language row states the depth reached, in the words the page already uses", () => {
+  const LANES = { ja: { configured: "full", achieved: "full" } };
+  const depth = (state, lanes = LANES) => ({ counts: { recordsByCountry: { JP: 3 }, courtDecisions: "not-in-scope",
+    localScriptSearched: true, localLanguage: state === undefined ? undefined : { state, lanes } } });
+  // The counts fold draws key/value rows; read the pair, not the page.
+  const rowFor = (html, key) => {
+    const re = new RegExp(`<span class="k">${key}</span><span class="v">([^<]*)</span>`);
+    const m = html.match(re);
+    return m ? m[1] : null;
+  };
+  const render = (state, lanes) => renderHtml(parsedOf(REPORT), [], [], { searchDepth: depth(state, lanes) });
+
+  const seen = {};
+  for (const [state, word] of [["ran", "Included"], ["ran-shallow", "Partially covered"],
+    ["not-run", "Not run this run"], ["not-in-scope", "Not part of this search"]]) {
+    const got = rowFor(render(state), "Local-language investigation");
+    assert.equal(got, word, `the ${state} state draws ${JSON.stringify(got)}`);
+    seen[word] = (seen[word] ?? 0) + 1;
+  }
+  assert.equal(Object.keys(seen).length, 4, "two states share a word, so the row cannot tell them apart");
+
+  // A SHALLOW RUN IS NEVER "INCLUDED". Stated on its own because it is the claim the issue was filed on:
+  // folding short into ran is the one wrong answer that reads as a working row.
+  assert.notEqual(rowFor(render("ran-shallow"), "Local-language investigation"), "Included",
+    "a run that went shallower than configured reports as included");
+
+  // A STATE THIS TABLE HAS NO WORD FOR DRAWS NO ROW, rather than the nearest word.
+  for (const unknown of [undefined, "could-not-establish", "", null]) {
+    assert.equal(rowFor(render(unknown), "Local-language investigation"), null,
+      `the state ${JSON.stringify(unknown)} drew a row this table has no word for`);
+  }
+
+  // NO LANE RECORD, NO ROW — an absence is not a finding, and this is the assertion that keeps a false
+  // claim off a client's page. The state folds to not-in-scope when no record was written, which is
+  // right for a clearance that never asked and wrong for a run that asked and whose record is missing.
+  // Measured on the full country demo, whose own coverage says the Japanese lane delivered a depth the
+  // run cannot establish while the state beside it reads not-in-scope.
+  for (const empty of [{}, null]) {
+    for (const state of ["ran", "ran-shallow", "not-run", "not-in-scope"]) {
+      assert.equal(rowFor(render(state, empty), "Local-language investigation"), null,
+        `the ${state} state drew a row with no lane record behind it (lanes ${JSON.stringify(empty)})`);
+    }
+  }
+  // …and with no `lanes` key at all, which the helper's default parameter cannot express: passing
+  // undefined through it lands on the default and the case reads as a pass. Built here instead.
+  for (const state of ["ran", "ran-shallow", "not-run", "not-in-scope"]) {
+    const noKey = renderHtml(parsedOf(REPORT), [], [], { searchDepth: { counts: { recordsByCountry: { JP: 3 },
+      courtDecisions: "not-in-scope", localScriptSearched: true, localLanguage: { state } } } });
+    assert.equal(rowFor(noKey, "Local-language investigation"), null,
+      `the ${state} state drew a row from a record with no lanes key`);
+  }
+
+  // WHERE THE BOARD DRAWS IT: after the spellings row, before court decisions.
+  // Both neighbours, not just the one above: asserting only the spellings row passed with the row moved
+  // below court decisions, which is a different table from the one the board approved. Measured — plant 4
+  // of the matrix did not red until the court-decisions side was asserted too.
+  const html = renderHtml(parsedOf(REPORT), [], [], { searchDepth: { counts: { recordsByCountry: { JP: 3 },
+    courtDecisions: "found", localScriptSearched: true, localLanguage: { state: "ran", lanes: LANES } } } });
+  const at = (k) => {
+    const i = html.indexOf(`<span class="k">${k}</span>`);
+    assert.notEqual(i, -1, `the ${k} row is not on the page, so the order assertion proves nothing`);
+    return i;
+  };
+  assert.ok(at("Local-script spellings") < at("Local-language investigation"),
+    "the row is drawn above the spellings row it follows on the board");
+  assert.ok(at("Local-language investigation") < at("Court decisions"),
+    "the row is drawn below court decisions, which the board draws after it");
+
+  // ITS WORDS ARE THE PAGE'S OWN. Two of the four are the coverage vocabulary, and this holds them
+  // against a coverage row carrying the same state rather than against a literal typed twice.
+  const covWord = (state) => {
+    const page = renderHtml(parsedOf(REPORT), [], [{ area: "x", state, note: "n" }], { searchDepth: depth("ran") });
+    // The coverage cell draws its state word behind a "· " separator inside `.cst`. Read the span and
+    // drop the separator — the word is what is shared, not the punctuation around it.
+    const m = page.match(/<span class="cst">\s*·\s*([^<]*)<\/span>/);
+    return m ? m[1].trim() : null;
+  };
+  assert.equal(rowFor(render("ran-shallow"), "Local-language investigation"), covWord("coverage-limited"),
+    "the shallow word drifted from the coverage word it is taken from");
+  assert.equal(rowFor(render("not-run"), "Local-language investigation"), covWord("not-searched"),
+    "the not-run word drifted from the coverage word it is taken from");
+});
