@@ -302,6 +302,16 @@ jobs:
       # actually kept, rather than the ones the source sets.
       - run: node scripts/report-frame-check.mjs
 
+      # WHAT THE EXPORTED PDF SHOWS, which nothing else in this repository can see. The frozen hash pins
+      # the renderer's bytes and the render tests read its HTML; on screen a mis-ruled disclosure is
+      # correct, and only the print block decides otherwise. Two folds have shipped printing a collapsed
+      # arrow over content already forced fully open, and a third pair — thirteen disclosures across all
+      # four search types — was found by this check the first time it ran.
+      #
+      # It walks every <details> a rendered report contains rather than naming classes, so a new
+      # disclosure fails until somebody rules it. It needs the browser this job already has.
+      - run: node scripts/report-print-check.mjs
+
       # DRIVEN IN BOTH DIRECTIONS, because a refusal that only ever runs on a supported Node has never
       # been shown to refuse. The runner is always above the floor, so the second half raises the floor
       # in a COPY of the manifest and requires exit 1 — the guard's own reason for existing, exercised
