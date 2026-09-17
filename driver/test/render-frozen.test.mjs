@@ -1770,7 +1770,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Advanced again by the break recorded above the FROZEN constant: seven fixed sentences on the
 // clearance page, which is a behaviour change and not licence-only, so both constants move for the same
 // measured reason.
-const FROZEN_BEFORE_SPDX = "6c1178abcec3f6cd481d39440e636e7bdb8a2034822cd7c24c90941c1de7d39a";
+const FROZEN_BEFORE_SPDX = "af558c01787809d5a12092cf2a9e109df14740e725d34f89848f176024329fd2";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2218,7 +2218,20 @@ const FROZEN_BEFORE_SPDX = "6c1178abcec3f6cd481d39440e636e7bdb8a2034822cd7c24c90
 // Could it live in report.css? No — hiding the strand leaves the adapter narrative in the delivered
 // bytes and in the printed page.
 
-const FROZEN = "ee2a5674e94409351cf245df986c7d9a8d46dcd9256d561821f4d948b56aad9b";
+// AND AGAIN (2026-09-17): THE LAYER'S CONTRIBUTION IS ON THE CARD, NOT ALSO IN A LIST ABOVE IT.
+//
+// Reachable from a republish? Yes, and it removes a restatement rather than a fact. The block listed,
+// per finding, the use token, the host and the evidence pair that the finding's own card already
+// states in its use line — measured on the delivered reports: one such line per finding with use
+// evidence, on the card, in every case the block listed. The cards it linked to sit directly below it.
+//
+// The leak it used to be the second guard for is unaffected: the marketplace sentinel is mapped to
+// client words on the card's own path, independently, and that is now the only print site. The arm
+// that held it was re-pointed there rather than deleted.
+//
+// Could it live in report.css? No — hiding the block leaves it in the delivered bytes and the print.
+
+const FROZEN = "38ae9fd31bb3145f1952979ea9222b66223ab7352dc623fc5579fe989a8dbd39";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

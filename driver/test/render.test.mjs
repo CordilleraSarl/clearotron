@@ -2436,6 +2436,12 @@ test("D5: the INTERNAL legacy Level/Composite chip is untouched — this is the 
 const NO_RESULT = "perplexity_research — no result";
 
 test("D7: the sentinel renders as client words on the finding card, and the tool name is nowhere", () => {
+  // THE MECHANISM. The sentinel is not a URL, so `new URL(...)` threw and the catch printed
+  // `host.slice(0, 40)`. The sentinel is 31 characters, so what a client read was the tool name WHOLE.
+  // (That premise came from a second arm, which drove the same property through the contribution list
+  // under the cards. The list restated the card's use line and has gone; the card is now the ONLY
+  // print site, so one arm holds this and there is nothing left for a second to read.)
+  assert.equal(NO_RESULT.length, 31, "premise: the slice truncated nothing — the leak was the full name");
   const f = [{ ...FINDINGS[0], use_check: { source: NO_RESULT } }];
   const html = renderHtml(parsedOf(REPORT), f, COVERAGE, {});
   assert.match(html, /<b>Use checked\.<\/b> Nothing found in the marketplaces searched\./);
@@ -2445,17 +2451,6 @@ test("D7: the sentinel renders as client words on the finding card, and the tool
     "an evidence tag was hung off an empty result");
   assert.doesNotMatch(html, /perplexity_research/, "the raw tool name reached a client's page");
   assert.doesNotMatch(html, /perplexity/i, "…in any casing");
-});
-
-test("D7: the common-law contribution list maps it too — where `new URL` used to throw", () => {
-  // THE MECHANISM. The sentinel is not a URL, so `new URL(...)` threw and the catch printed
-  // `host.slice(0, 40)`. The sentinel is 31 characters, so what a client read was the tool name WHOLE.
-  assert.equal(NO_RESULT.length, 31, "premise: the slice truncated nothing — the leak was the full name");
-  const f = [{ ...FINDINGS[0], use_check: { source: NO_RESULT } }];
-  const html = renderHtml(parsedOf(REPORT), f, COVERAGE, {});
-  assert.match(html, /What the marketplace layer added to register findings/, "premise: the list renders at all");
-  assert.match(html, /#1 MATCHDAY<\/a> — use Confirmed — marketplace search — no result found/);
-  assert.doesNotMatch(html, /perplexity_research/);
 });
 
 test("the sentinel matches on NORMALISED punctuation — the seat's hyphen renders as client words", () => {
@@ -2478,7 +2473,6 @@ test("D7: a real source URL is NOT touched — the map is one equality, never a 
   const f = [{ ...FINDINGS[0], use_check: { source: "https://shop.example.com/matchday-gear" } }];
   const html = renderHtml(parsedOf(REPORT), f, COVERAGE, {});
   assert.match(html, /href="https:\/\/shop\.example\.com\/matchday-gear"/, "the cite still links the real source");
-  assert.match(html, /— use Confirmed — shop\.example\.com/, "the contribution list still names the host");
   assert.doesNotMatch(html, /no result found/, "nothing was substituted into a source that had one");
 });
 
@@ -2486,16 +2480,22 @@ test("D4/D7: the use-source class has ONE definition, and it reads as a source p
   // It was declared twice with two different strings for the same closed member: fullDetail said
   // "register mirror — not evidence of use", the contribution list said "register mirror — not use
   // evidence". One vocabulary, two spellings, one page.
+  //
+  // The contribution list has since gone — it restated the card's own use line — so there is one
+  // print site left. The property is unchanged and worth keeping: the closed member has ONE spelling,
+  // and the arm still fails if a second one is introduced anywhere on the page.
   const f = [{ ...FINDINGS[0], use_check: { source: "https://shop.example.com/x" },
     meters: { ...FINDINGS[0].meters,
       use: { token: "confirmed", basis: "verified-from-record", _status: "confirmed", _useSourceClass: "register-mirror" } } }];
   const html = renderHtml(parsedOf(REPORT), f, COVERAGE, {});
   const phrase = "from a register mirror, which is not evidence of use";
-  assert.equal((html.match(new RegExp(phrase, "g")) ?? []).length, 2, "both print sites, one wording");
+  // ONE print site now. The second was the contribution list, which restated the card's use line and
+  // is gone; the property this arm holds — one wording for one closed member — is what mattered, and a
+  // count of two would now be the page saying it twice again.
+  assert.equal((html.match(new RegExp(phrase, "g")) ?? []).length, 1, "the one print site, one wording");
   assert.doesNotMatch(html, /not use evidence/, "the second spelling is gone");
   // — the use line prints no verification word; the source phrase stands alone.
   assert.match(html, new RegExp(`Evidence: ${phrase}`), "the cite labels the source class");
-  assert.match(html, new RegExp(`\\(evidence: ${phrase}\\)`), "…and so does the contribution line");
   assert.doesNotMatch(html, /Evidence: verified, from|Evidence: not yet verified, from/, "no verification word rides the use line");
 });
 

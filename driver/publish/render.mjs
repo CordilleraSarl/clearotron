@@ -551,7 +551,6 @@ const useEvidence = (m) => [USE_EVIDENCE_LABEL[m?._status], USE_SOURCE_LABEL[m?.
 // runs carry the old value forever and a fourth spelling of it would have to be accepted everywhere.
 const USE_CHECK_NO_RESULT = 'perplexity_research — no result';
 const USE_CHECK_NO_RESULT_CITE = 'Nothing found in the marketplaces searched.';
-const USE_CHECK_NO_RESULT_SHORT = 'marketplace search — no result found';
 // — MATCHED ON NORMALISED PUNCTUATION, NOT ONE SPELLING. The constant itself does not
 // move (archived runs carry it forever, the validators name it), but the SEAT emitted a hyphen where
 // the doctrine writes an em dash, and exact equality let the raw tool name through to a delivered
@@ -1321,36 +1320,19 @@ function keyPanel(findings, recordsByUri = new Map()) {
 // complete in one place. The rights-holder landscape panel keeps its "Common-law" group — that
 // panel is the index of everything, this section is the reading surface.
 function commonLawSection(clSecondary, clOnField, cardFor, recordsByUri = new Map(), allFindings = []) {
-  // T7 (E4) — "what the marketplace layer added": for every REGISTER finding whose use
-  // evidence came from the common-law layer (a use_check cite), one attributed line with the A4
-  // confidence four-tuple + source class — the layer's contribution is visible and attributed, not
-  // buried in prose. Renders even when there are no common-law FINDINGS (contributions alone earn
-  // the section). On-field common-law conflicts keep their FULL cards in the risk-ordered band above
-  // (blocking-power ordering wins; E2's grouping complaint was the per-jurisdiction Marks list, which
-  // secondary CL left in A5) — cross-linked from here.
-  const contrib = (allFindings ?? [])
-    .filter((f) => f && f.disposition !== 'withdrawn' && f.use_check?.source && regionCode(f) !== COMMON_LAW)
-    .map((f) => {
-      // D4 — the evidence pair is LABELLED here too, and it reads out of the one USE_SOURCE_LABEL.
-      const st = useEvidence(f.meters?.use);
-      // D7 — the sentinel is mapped to client words BEFORE the URL parse is attempted. It is not a
-      // URL, so `new URL` threw and the catch printed `host.slice(0, 40)` — and the sentinel is 31
-      // characters, so the page printed the raw tool name, whole.
-      const raw = String(f.use_check.source);
-      let where;
-      if (isUseCheckNoResult(raw)) where = USE_CHECK_NO_RESULT_SHORT;
-      else { try { where = new URL((raw.match(/https?:\/\/[^\s,|]+/) || [raw])[0]).host; } catch { where = raw.slice(0, 40); } }
-      return `<li style="margin:3px 0"><a href="#c${f.ordinal}">#${f.ordinal} ${esc(f.mark)}</a> — use ${esc(humanize(f.meters?.use?.token ?? 'unknown'))} — ${esc(where)}${st ? ` <i class="evstat">(evidence: ${esc(st)})</i>` : ''}</li>`;
-    }).join('');
-  const contribBlock = contrib
-    ? `<p style="margin:4px 0 2px;font-size:13px"><b>What the marketplace layer added to register findings</b></p><ul style="margin:0 0 10px;padding-left:20px;font-size:13px">${contrib}</ul>`
-    : '';
-  if (!clSecondary.length && !clOnField.length && !contribBlock) return '';
+  // THE LAYER'S CONTRIBUTION IS ON THE CARD THAT CARRIES IT, NOT ALSO IN A LIST ABOVE THEM. A
+  // block headed "what the marketplace layer added to register findings" restated, per finding, the
+  // use token, the host and the evidence pair that the finding's OWN card already states in its use
+  // line — measured on the delivered reports: one such line per finding with use evidence, on the
+  // card, in every case the block listed. It attributed a layer to itself in the engine's own terms
+  // and made a reader read the same fact twice, the second time out of the context that explains it.
+  // Nothing is lost with it: the cards it linked to sit directly below.
+  if (!clSecondary.length && !clOnField.length) return '';
   const links = clOnField.length
     ? `<p class="clx" style="margin:4px 0 10px;font-size:13.5px">On-field common-law conflicts (full cards above): ${clOnField.map(f => `<a href="#c${f.ordinal}">#${f.ordinal} ${esc(f.mark)}</a>`).join(' · ')}</p>`
     : '';
   const cards = clSecondary.map(f => compactCard(f, cardFor(f), recordsByUri)).join('\n  ');
-  return contribBlock + links + cards;
+  return links + cards;
 }
 
 // Secondary findings → collapsible region groups (§2.4). Same region order as the key panel; each region a
