@@ -38,17 +38,41 @@ export const REPOSITORY = "CordilleraSarl/clearotron";
  *
  * A job is "publishing" if its own block runs `npm publish`. Comments are already stripped by the caller.
  */
-export function publishingJobs(live) {
-  const out = [];
+export function jobBlocks(live) {
+  const out = new Map();
   const starts = [...live.matchAll(/^ {2}([A-Za-z_][A-Za-z0-9_-]*):$/gm)];
   for (let i = 0; i < starts.length; i++) {
     const from = starts[i].index;
     const to = i + 1 < starts.length ? starts[i + 1].index : live.length;
-    const block = live.slice(from, to);
-    if (/\bnpm\s+publish\b/.test(block)) out.push([starts[i][1], block]);
+    out.set(starts[i][1], live.slice(from, to));
   }
   return out;
 }
+
+export function publishingJobs(live) {
+  return [...jobBlocks(live)].filter(([, block]) => /\bnpm\s+publish\b/.test(block));
+}
+
+/**
+ * The ONE job permitted to hold a registry credential, and the secret it must come from.
+ *
+ * Owner ruling 2026-09-17. Deprecating a published version is a write the OIDC exchange cannot make: the
+ * short-lived credential npm mints for a trusted publish is scoped to publishing, and eleven deprecations
+ * attempted with it came back 404 while reads succeeded. So this one job reads a granular token, created
+ * by hand and held as a repository secret, into NODE_AUTH_TOKEN for its own step.
+ *
+ * WHAT THE RULING DID NOT CHANGE, and what the checks below hold: publishing stays credential-less. A
+ * credential anywhere else in this file is the thing this guard was written for and is still refused. The
+ * exemption is one named job, it may not publish, its credential must come from the named secret, and it
+ * must be scoped to a step rather than to the job — a job-level `env:` would hand the token to every step
+ * in it, including this guard.
+ */
+export const CREDENTIALLED_JOB = "deprecate";
+export const DEPRECATE_SECRET = "NPM_DEPRECATE_TOKEN";
+
+/** The only two lines in this file permitted to name a credential or a registry, spelled exactly. */
+export const PERMITTED_CREDENTIAL_LINE = `NODE_AUTH_TOKEN: \${{ secrets.${DEPRECATE_SECRET} }}`;
+export const PERMITTED_REGISTRY_LINE = "registry-url: https://registry.npmjs.org";
 
 /** Credential spellings that would let this repository publish without the OIDC exchange. */
 export const CREDENTIAL_TOKENS = Object.freeze([
@@ -68,12 +92,46 @@ export function refusals({ workflow, rootPkg }) {
   // scanner that reads its own prose as a finding refuses the thing it is describing.
   const live = workflow.split("\n").filter((l) => !/^\s*#/.test(l)).join("\n");
 
+  // THE EXEMPTION IS TWO EXACT LINES, NOT A REGION, and the difference is not pedantry — it was measured.
+  // Exempting the whole `deprecate` job looked equivalent and was not: that job is the LAST in the file,
+  // so its block runs to end-of-file, and every plant this guard's own arms append at the end landed
+  // inside the exemption. Four credential spellings went from refused to accepted in one edit, and the
+  // arm caught it. So one occurrence of each permitted line is removed and everything else is scanned:
+  // a second copy, a different spelling, or the same line in another job all stay in what is scanned.
+  const deprecateBlock = jobBlocks(live).get(CREDENTIALLED_JOB) ?? "";
+  let rest = live;
+  for (const line of [PERMITTED_CREDENTIAL_LINE, PERMITTED_REGISTRY_LINE]) {
+    if (!deprecateBlock.includes(line)) continue;   // permitted only where the ruling put it
+    const at = rest.indexOf(line);
+    if (at !== -1) rest = rest.slice(0, at) + rest.slice(at + line.length);
+  }
+
   for (const tok of CREDENTIAL_TOKENS) {
-    if (live.includes(tok)) add(`the release workflow carries a registry credential (${tok})`);
+    if (rest.includes(tok)) add(`the release workflow carries a registry credential (${tok})`);
   }
   // `registry-url:` on setup-node writes an .npmrc that authenticates with NODE_AUTH_TOKEN. Trusted
   // publishing needs no registry configured at all, so its presence means somebody is wiring a token.
-  if (/registry-url:/.test(live)) add("the release workflow configures a registry to authenticate against");
+  if (/registry-url:/.test(rest)) add("the release workflow configures a registry to authenticate against");
+
+  // ── AND THE PERMITTED JOB IS HELD TO THE TERMS OF ITS OWN EXEMPTION ─────────────────────────────
+  //
+  // An exemption nobody checks is a hole. These are the conditions the ruling was given under, and each
+  // one is a way the exemption could quietly become general.
+  if (deprecateBlock) {
+    if (/\bnpm\s+publish\b/.test(deprecateBlock)) {
+      add(`job \`${CREDENTIALLED_JOB}\` publishes, and it is the one job allowed to hold a credential — `
+        + "the two must never be the same job");
+    }
+    if (deprecateBlock.includes("NODE_AUTH_TOKEN") && !deprecateBlock.includes(`secrets.${DEPRECATE_SECRET}`)) {
+      add(`job \`${CREDENTIALLED_JOB}\` takes its credential from something other than \`secrets.${DEPRECATE_SECRET}\``);
+    }
+    // Job-level `env:` sits at four spaces; a step's sits at eight. The distinction is the whole point:
+    // a job-level block hands the token to every step, this guard included.
+    if (/^ {4}env:/m.test(deprecateBlock) && deprecateBlock.includes("NODE_AUTH_TOKEN")) {
+      add(`job \`${CREDENTIALLED_JOB}\` holds its credential at job level, so every step in it gets the token; `
+        + "it belongs on the one step that deprecates");
+    }
+  }
 
   // A publish without provenance is a publish nobody can trace back to a commit — which is the whole
   // reason the owner's ruling moved from a human publish to a CI one.

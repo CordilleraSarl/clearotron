@@ -339,7 +339,16 @@
        walks a rendered page and refuses any disclosure that is in neither list; the public suite does
        not run it, so the commit that added this fold could ship the half it did not think about. */
     .rrow>summary::before,.rgroup>summary::before,details.scope>summary::before,
-    details.searched>summary::before{content:""!important}
+    details.searched>summary::before,
+    /* `.cgroup` ("Dead filings — 6 names") and `.ma-more` ("By class and market (3)") are the same kind of
+       thing as the four above: summaries that CARRY content, so they print as static headers rather than
+       vanishing. They were in neither list, so the exported PDF drew their ▸ over content this block has
+       already forced fully open — thirteen of them, eight `.cgroup` and five `.ma-more`, across THREE of
+       the four search types: full country 5, global preliminary 5, multi-country focus 3. The knockout
+       report carries neither class and nothing in it changes. Found by the print check that now runs in
+       CI; the fixture the hand-run control walks carries neither class either, which is why two earlier
+       folds were caught there and these thirteen were not. */
+    .cgroup>summary::before,.markassess details.ma-more>summary::before{content:""!important}
     details{border-top:1px solid var(--line)}
     /* …AND THE HERO'S FOLD IS NOT A SECTION. The rule above separates the disclosures that ARE sections
        of the document; `details.sub-more` is one paragraph of the verdict caption folded away from

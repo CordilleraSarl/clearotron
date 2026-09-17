@@ -705,6 +705,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-release-note-cannot-be-counted-twice.test.mjs": {
+          "tests": 9,
+          "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
         "a-release-note-is-written-for-its-reader.test.mjs": {
           "tests": 9,
           "asserts": 66,
@@ -3712,8 +3718,8 @@
           "todos": 0
         },
         "release-pipeline.test.mjs": {
-          "tests": 99,
-          "asserts": 376,
+          "tests": 101,
+          "asserts": 384,
           "skips": 0,
           "todos": 0
         },
@@ -5392,8 +5398,8 @@
           "todos": 0
         },
         "update-refuses-on-a-packaged-install.test.mjs": {
-          "tests": 6,
-          "asserts": 21,
+          "tests": 8,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
@@ -5739,8 +5745,8 @@
           "todos": 0
         },
         "http-handler.test.mjs": {
-          "tests": 17,
-          "asserts": 40,
+          "tests": 20,
+          "asserts": 47,
           "skips": 0,
           "todos": 0
         },
@@ -5878,7 +5884,7 @@
         },
         "the-portal-can-tell-who-has-connected-an-assistant.test.mjs": {
           "tests": 12,
-          "asserts": 33,
+          "asserts": 35,
           "skips": 0,
           "todos": 0
         },
