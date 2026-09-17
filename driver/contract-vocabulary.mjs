@@ -392,7 +392,7 @@ export const TRIPWIRE_OUT_OF_SCOPE = [
   {
     token: "accepted_not_folded",
     symbol: { file: "driver/disposition-call.mjs", names: ["CALL_DROPS"] },
-    site: "driver/disposition-tool.mjs:378 (minted), driver/disposition-call.mjs:192, `CALL_DROPS` declared in `disposition-call.mjs`",
+    site: "driver/disposition-tool.mjs:378 recordDispositions — where the token is minted, driver/disposition-call.mjs:192 CALL_DROPS",
     reason: "A DRIVER-FAULT journal code, and the fault is ours. It records that the tool accepted a row the accumulator then did not carry; it is written to the call verdict ledger and reaches a seat only inside a sentence that orders the seat NOT to act (`your answer was valid and this is ours to fix`). A stage refusal built on it would be the driver failing a seat for the driver's own defect, so no stage can emit it by construction rather than by omission.",
   },
   {
