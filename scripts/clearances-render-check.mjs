@@ -356,6 +356,13 @@ const MEASURE = `(async () => {
   };
 })()`
 
+// A NARROW WIDTH IS ONLY NARROW UNDER MOBILE EMULATION. `setDeviceMetricsOverride` with `mobile: false`
+// does not take the page below the browser's own minimum: asked for 400 this reported
+// `document.documentElement.clientWidth === 500`, and every line it printed said 400. The breakpoint it
+// is aimed at is 560px so the defect still showed, but a check that names a width it is not measuring is
+// one repair away from proving something about a width nobody ships. `mobile: width < 700` is what
+// settings-render-check already does for the People screen at 400, and the two now agree.
+
 // ── chrome ──────────────────────────────────────────────────────────────────────────────────────────
 
 // The profile goes inside a run root whose TMPDIR the browser inherits, so the singleton
@@ -577,7 +584,7 @@ if (shotDir) {
   longTitle = false
   const capture = async (file, width) => {
     const h = (await value('Math.max(document.documentElement.scrollHeight, document.body.scrollHeight)')) ?? 900
-    await cmd('Emulation.setDeviceMetricsOverride', { width, height: Math.max(900, h), deviceScaleFactor: 1, mobile: false })
+    await cmd('Emulation.setDeviceMetricsOverride', { width, height: Math.max(900, h), deviceScaleFactor: 1, mobile: width < 700 })
     await new Promise((r) => setTimeout(r, 400))
     const shot = await cmd('Page.captureScreenshot', { format: 'png' })
     const data = shot.result?.result?.data ?? shot.result?.data
@@ -601,7 +608,7 @@ if (shotDir) {
     return true;
   })()`
   for (const width of [WIDE, WIDTH]) {
-    await cmd('Emulation.setDeviceMetricsOverride', { width, height: 1000, deviceScaleFactor: 1, mobile: false })
+    await cmd('Emulation.setDeviceMetricsOverride', { width, height: 1000, deviceScaleFactor: 1, mobile: width < 700 })
     await reload()
     await value(EXPAND([FAMILY_NAME, 'AQUAPLUS']))
     await both(`clearances-rows-${width}`, width)

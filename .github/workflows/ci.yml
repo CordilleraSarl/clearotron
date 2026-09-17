@@ -449,6 +449,12 @@ jobs:
 
       - run: node scripts/home-render-check.mjs
       - run: node scripts/clearances-render-check.mjs
+      # AND AT PHONE WIDTH, WHICH NOTHING RAN. This check has always taken a width and CI only ever gave
+      # it the default, so the desktop table was guarded and the phone one was not — which is how the
+      # page came to scroll sideways at 400px on a client-facing screen with every check green. The
+      # People screen's own check draws both widths inside one run; this one takes a flag, so it gets a
+      # second step rather than a second instrument.
+      - run: node scripts/clearances-render-check.mjs --width 400
       - run: node scripts/composer-render-check.mjs
       - run: node scripts/ai-page-render-check.mjs
       - run: node scripts/ask-ai-render-check.mjs
