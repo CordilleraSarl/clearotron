@@ -43,6 +43,9 @@ import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { refuseUndeclared as refuseUndeclaredShared, lastAccepted, acceptedEnvelope } from "./preserve-merge.mjs";
 import { knockoutVisibleProse } from "./predelivery-lint.mjs";   // the walk is the authority on what a reader sees
 import { plainRegisterFlags } from "./plain-register.mjs";        // the pinned rule, one copy
+// THE HINT'S fold, and it is imported rather than rebuilt — see nearestAddress. It is a comparison key
+// for saying WHICH line was probably meant; it never decides whether an address resolves.
+import { queryKey } from "./connotation-search.mjs";
 
 const SCHEMA_VERSION = 1;
 
@@ -140,6 +143,42 @@ const ADDRESS_SEP = "\u0000";   // named: a literal control character in the sou
 export function addressKey(at) {
   const a = at ?? {};
   return [a.field, a.mark ?? "", a.index ?? "", a.ordinal ?? ""].join(ADDRESS_SEP);
+}
+
+/**
+ * THE ADDRESS A SEAT PROBABLY MEANT, FOR THE REFUSAL TO NAME — and for nothing else.
+ *
+ * The lookup above stays EXACT and that is a ruling, not an oversight (owner, 2026-09-16). Punctuation
+ * can be part of a mark's identity, so two marks differing by an apostrophe form are not assumed to be
+ * one mark and a rewrite is never applied by analogy. What was wrong was the refusal, not the matching:
+ * a seat that re-typed a name with a right single quotation mark where the record has an apostrophe was
+ * told its rewrite "names no line on this record", which describes the record rather than the difference,
+ * and the rewrite was dropped with nobody able to see why. One character, invisible in most fonts.
+ *
+ * So this names the nearest and changes nothing. It folds ONLY typographic form — `queryKey`, the same
+ * key the meaning gate was folded onto after a production clearance stopped on exactly this character —
+ * and it is imported rather than copied, because two private folds are how the two gates drift apart.
+ * That key deliberately does not fold accents, so it cannot quietly propose that Café and Cafe are the
+ * same mark.
+ *
+ * It requires an EXACT match on every other part of the address — field, index, ordinal — so the hint is
+ * always the same line of the same record, differing only in how the mark's name was typed. A candidate
+ * whose mark is byte-identical is not a hint: the caller only asks when the exact lookup already failed,
+ * and pointing at the address that was just refused would say nothing.
+ *
+ * @returns {object|null} the address on this record, or null when nothing differs by form alone
+ */
+export function nearestAddress(at, knownAts) {
+  const want = at ?? {};
+  if (want.mark == null) return null;   // no name to have mistyped
+  const same = (a, b) => (a ?? "") === (b ?? "");
+  for (const k of knownAts ?? []) {
+    if (!k || k.field !== want.field) continue;
+    if (!same(k.index, want.index) || !same(k.ordinal, want.ordinal)) continue;
+    const kn = String(k.mark ?? ""), wn = String(want.mark ?? "");
+    if (kn !== wn && queryKey(kn) === queryKey(wn)) return k;
+  }
+  return null;
 }
 
 /** Is this a well-formed address for a field the pass may reach? The reason, or null. */
@@ -296,15 +335,21 @@ export function validateKnockoutReviewFile(file, text) {
   try { merged = JSON.parse(readFileSync(findingsFile, "utf8")); }
   catch (e) { return { ok: false, reason: `the merged record will not parse, so no address could be checked: ${e.message}` }; }
 
-  const known = new Set(knockoutVisibleProse(merged).map((v) => addressKey(v.at)));
+  const knownAts = knockoutVisibleProse(merged).map((v) => v.at);
+  const known = new Set(knownAts.map((a) => addressKey(a)));
   const owned = new Set(knockoutVisibleProse(merged).filter((v) => v.at?.engineOwned).map((v) => addressKey(v.at)));
+  // Appended to a refusal, never consulted before one: the address still has to match exactly.
+  const hint = (at) => {
+    const n = nearestAddress(at, knownAts);
+    return n ? ` — this record carries "${n.mark}" at that line, which differs from "${at.mark}" only in how it is typed; the two are not assumed to be the same mark, so re-send the rewrite naming the record's spelling` : "";
+  };
   for (const r of doc.rewrites ?? []) {
     const key = addressKey(r.at);
     if (owned.has(key)) return { ok: false, reason: `the rewrite for ${r.at.field} names a caveat the engine wrote, not a seat — it is not offered and cannot be changed` };
-    if (!known.has(key)) return { ok: false, reason: `the rewrite for ${r.at.field}${r.at.mark ? ` on "${r.at.mark}"` : ""} names no line on this record` };
+    if (!known.has(key)) return { ok: false, reason: `the rewrite for ${r.at.field}${r.at.mark ? ` on "${r.at.mark}"` : ""} names no line on this record${hint(r.at)}` };
   }
   for (const d of doc.declined ?? []) {
-    if (!known.has(addressKey(d.at))) return { ok: false, reason: `the declined row for ${d.at.field}${d.at.mark ? ` on "${d.at.mark}"` : ""} names no line on this record` };
+    if (!known.has(addressKey(d.at))) return { ok: false, reason: `the declined row for ${d.at.field}${d.at.mark ? ` on "${d.at.mark}"` : ""} names no line on this record${hint(d.at)}` };
   }
   return { ok: true };
 }
@@ -340,7 +385,14 @@ export function applyKnockoutReview(merged, review) {
   for (const r of review?.rewrites ?? []) {
     const key = addressKey(r.at);
     const seen = byKey.get(key);
-    if (!seen) { unresolved.push({ at: r.at, why: "no such line on this record" }); continue; }
+    if (!seen) {
+      // Same hint as the validator's, for the same reason: the apply path is reached on a record this
+      // pass did not validate, and an unresolved row that cannot say WHY is the state that cost a
+      // rewrite silently. It still changes nothing — `unresolved` is a report.
+      const near = nearestAddress(r.at, [...byKey.values()].map((v) => v.at));
+      unresolved.push({ at: r.at, why: near ? `no such line on this record — it carries "${near.mark}" there, differing from "${r.at.mark}" only in how it is typed` : "no such line on this record" });
+      continue;
+    }
     if (seen.at?.engineOwned) { refused.push({ at: r.at, why: "the engine wrote this caveat, not a seat" }); continue; }
     const at = r.at, text = String(r.text);
     // THE WALK IS THE BOUNDS CHECK. `seen` came from this same record, so a resolved address names a

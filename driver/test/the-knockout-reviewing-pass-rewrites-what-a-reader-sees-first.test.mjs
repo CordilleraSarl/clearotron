@@ -26,7 +26,7 @@ import { join } from "node:path";
 import { knockoutVisibleProse } from "../predelivery-lint.mjs";
 import {
   ADDRESSABLE, addressKey, applyKnockoutReview, reviewEvidence, reviewAbout,
-  validateKnockoutReviewFile, knockoutReviewFile, recordKnockoutReview,
+  validateKnockoutReviewFile, knockoutReviewFile, recordKnockoutReview, nearestAddress,
 } from "../knockout-review-record.mjs";
 
 // A REAL DELIVERED RECORD, not an invented one: the shape these read is the shape a run writes, and a
@@ -311,4 +311,55 @@ test("the address grammar cannot express a band, an ordinal reassignment or a ne
     assert.equal(r.written, null, `a payload reaching past presentation was accepted: ${JSON.stringify(payload)}`);
     assert.ok(r.refused, "…and it was not refused by name");
   }
+});
+
+// ── A REWRITE IS STILL REFUSED, AND THE REFUSAL SAYS WHY ───────────────────────────────────────────
+//
+// A seat re-types a mark name to address its own rewrite. One that writes U+2019 where the record holds
+// U+0027 — the single character that stopped a production clearance, invisible in most fonts — addressed
+// a line that did not exist, and the rewrite was dropped with a refusal that described the record rather
+// than the difference. The owner ruled the matching stays EXACT, because punctuation can be part of a
+// mark's identity: what changes is that the refusal names the nearest line so a person can see it.
+
+const CURLY = "L’ORNAY";      // right single quotation mark
+const STRAIGHT = "L'ORNAY";        // apostrophe
+
+test("nearestAddress names a line that differs only in how the mark was typed", () => {
+  const known = [{ field: "factors", mark: STRAIGHT, index: 2 }];
+  assert.deepEqual(nearestAddress({ field: "factors", mark: CURLY, index: 2 }, known), known[0]);
+});
+
+test("nearestAddress proposes nothing where the difference is more than typography", () => {
+  const known = [{ field: "factors", mark: "CAFÉ", index: 0 }, { field: "factors", mark: STRAIGHT, index: 2 }];
+  // An ACCENT is not a typographic form — the fold this borrows deliberately keeps CAFE and CAFÉ apart,
+  // so a hint can never quietly propose that two different marks are one.
+  assert.equal(nearestAddress({ field: "factors", mark: "CAFE", index: 0 }, known), null);
+  assert.equal(nearestAddress({ field: "factors", mark: "SOMETHING ELSE", index: 2 }, known), null);
+  // The same name at a DIFFERENT line is not the line that was meant.
+  assert.equal(nearestAddress({ field: "factors", mark: CURLY, index: 7 }, known), null);
+  assert.equal(nearestAddress({ field: "mitigation", mark: CURLY, index: 2 }, known), null);
+  // And an address that matches byte for byte is not a hint: the caller only asks once the exact
+  // lookup has already failed, so pointing back at it would say nothing.
+  assert.equal(nearestAddress({ field: "factors", mark: STRAIGHT, index: 2 }, known), null);
+  assert.equal(nearestAddress({ field: "factors", mark: null, index: 2 }, known), null, "no name to have mistyped");
+});
+
+test("the rewrite is NOT applied by analogy, and the row says which spelling the record holds", () => {
+  // The ruling's own two halves, asserted together: a hint that changed what resolves would be the
+  // fold the owner refused, and a refusal that stayed silent is the defect this closes.
+  const doc = record();
+  doc.marks[0].name = STRAIGHT;
+  doc.marks[0].factors[2] = LONG;
+  const ev = reviewEvidence(doc, reviewAbout(doc, null));
+  const row = ev.rows.find((r) => r.at.field === "factors" && r.at.index === 2);
+  assert.ok(row, "the planted factor was not offered — this arm would prove nothing");
+
+  const { doc: out, receipt } = applyKnockoutReview(doc, {
+    rewrites: [{ at: { ...row.at, mark: CURLY }, text: "A rewrite aimed with the wrong apostrophe." }],
+  });
+  assert.equal(receipt.applied, 0, "a rewrite was applied to a mark the seat did not name exactly");
+  assert.equal(out.marks[0].factors[2], LONG, "the record moved under an address that did not resolve");
+  assert.equal(receipt.unresolved.length, 1);
+  assert.match(receipt.unresolved[0].why, /differing from/, "the row does not say what the difference was");
+  assert.ok(receipt.unresolved[0].why.includes(STRAIGHT), "the row never names the spelling the record holds");
 });
