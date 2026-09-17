@@ -60,8 +60,8 @@ import { clipProviderText } from "./provider-text.mjs";   // — keep the discri
 
 // ── — HOW MUCH OF A PROVIDER ERROR SURVIVES INTO THE BAND BLOCK ───────────────────────────────
 //
-// Both were 140, and 140 is where the defect lived: the Clarivate Near/Adj refusal is 144 characters
-// and its verdict — `are not allowed` — is the last two words. Cut at 140 it arrived as `are not all`,
+// Both were 140, and 140 is where the defect lived: one register's Near/Adj refusal runs just past that
+// bound and its verdict — `are not allowed` — is the last two words. Cut at 140 it arrived truncated,
 // That structural predicate could not match, and a refusal that recurs byte-identically forever was
 // filed as weather and retried on every future run of that shape.
 //
@@ -299,9 +299,9 @@ export function makeEnumerate(deps) {
   }
 
   // ── count-first per-CLASS rescue ──────────────────────────────────────────────────────────────────
-  // The per-term rescue's exact sibling, on the OTHER axis a stack can crowd along. A multi-class
-  // owner query [cl 5,29,30,32,33,35,43] came back 805 > 600 and shipped as one blind count — "Cl. 30
-  // leg unopened" became the whole of the residual risk story — when per-class counts would have made
+  // The per-term rescue's exact sibling, on the OTHER axis a stack can crowd along. A multi-class owner
+  // query crowded over the ceiling and shipped as one blind count — a single unopened class leg became
+  // the whole of the residual risk story — when per-class counts would have made
   // EVERY leg individually enumerable. So: an OWNER-SCOPED query (a bare-owner sweep or an owner×term
   // slice — the only shapes whose crowds are portfolio-shaped rather than name-shaped) that crowds over
   // the ceiling across >1 class is counted per class with the SAME shared count kernel, and every
@@ -371,7 +371,7 @@ export function makeEnumerate(deps) {
     // A provider with no total anywhere cannot run a count-first rescue — there is nothing to count.
     const countFirst = countProbe !== "none";
     // The per-class rescue's trigger shape: an owner-scoped query (bare-owner sweep or owner×term
-    // slice) spanning >1 class — the portfolio-shaped crowd the 805 count died as. The per-term rescue
+    // slice) spanning >1 class — the portfolio-shaped crowd a single blind count dies as. The per-term rescue
     // keeps precedence on multi-name stacks (its accounting is the finer truth there).
     const ownerScoped = isOwnerScoped(params);
     const splitClasses = ownerScoped

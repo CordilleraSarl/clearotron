@@ -138,8 +138,8 @@ export function assembleQuery(p) {
   // Filters (each value must be backtick-quoted)
   if (Array.isArray(p.nice_classes))  for (const c of p.nice_classes) parts.push(clause("", "nice-class", c));
   if (Array.isArray(p.registries))    for (const r of p.registries)   parts.push(clause("", "registry", r));
-  // Regions go to the wire as CODES only (copper-bastion incident: Corsearch answers an unknown
-  // multi-word region value with HTTP 500 — not a 400 — so a display name here poisons every retry).
+  // Regions go to the wire as CODES only (copper-bastion incident: an unknown multi-word region value
+  // is answered as a server error rather than a bad request, so a display name here poisons every retry).
   // Known display names are translated; Worldwide drops the clause; anything else fails loudly with
   // a message the composing model can act on in-session.
   if (Array.isArray(p.regions)) for (const r of p.regions) {

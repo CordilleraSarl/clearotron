@@ -172,9 +172,9 @@ export const unresolvedOwnerCountReason = (term, coveredBy) =>
  *
  * WHAT IT NO LONGER CLAIMS. It used to say "this owner is answered record-by-record by the owner×term
  * slice(s) …". `covered_by` is stamped at PLAN COMPILE time and names the slices that were DICTATED for
- * this owner — it says nothing about whether they enumerated. Measured across a delivered round: true
- * for 4 of 14 owners and false for 10, covering 39,302 hits (31% of the untraced total). The descriptor
- * was asserting coverage it is not in a position to observe, on the largest class in the artifact.
+ * this owner — it says nothing about whether they enumerated. Measured across a delivered round, it was
+ * true for a minority of owners and false for the rest, and the hits it covered were the largest single
+ * class in the artifact. The descriptor was asserting coverage it is not in a position to observe.
  *
  * The pointer is the part worth keeping, so it stays and the CLAIM around it goes: these are where the
  * records were sought, and their own state is what says whether they were found. PURE.

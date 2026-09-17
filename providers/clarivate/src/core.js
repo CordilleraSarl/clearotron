@@ -120,7 +120,7 @@ export const OWNER_FIELD = "APPLICANT_NAME";
 /**
  * match_mode → { name, operator, pre, post, … }.
  *
- * `default` is a TRUE contains (`*term*`, probe: *NIK* = 806) — the old EQUALS mapping silently lost
+ * `default` is a TRUE contains (`*term*`) — the old EQUALS mapping silently lost
  * recall and is gone. `exact` strips punctuation client-side (the EXACT field is case-insensitive but
  * punctuation-SENSITIVE). `wildcard` passes the caller's metacharacters through untouched — no
  * BEGINS_WITH/ENDS_WITH remapping is needed because `*`/`?` are native in the value; its only
@@ -159,24 +159,23 @@ export const MATCH_MODE_TO_FIELD = Object.freeze({
 // the space is NOT is a phrase match — and a phrase operator exists, absent from the vendor's schema but
 // solid on the wire:
 //
-//   MONSTER ADJ ENERGY = 67   ENERGY ADJ MONSTER = 0     ordered adjacency == phrase-contains
-//   CORAL ADJ PUP   = 11   PUP ADJ CORAL   = 0
-//   MOUNTAIN ADJ DEW ADJ VISIONARY = 1                   chains past two tokens (that mark was READ,
-//                                                        not guessed — /search + /text, 49 texts)
-//   *MOUNTAIN ADJ DEW* OR *MONSTER ADJ ENERGY* = 157 = 90 + 67    survives an OR-stack, exact sum, and
-//   (…) OR (…) = 157 too                                 ADJ binds TIGHTER than OR — no parens needed
+//   · ordered adjacency IS phrase-contains — the tokens match in the order written, and the reversed
+//     pair matches nothing. A space cannot express that, because a space is order-blind.
+//   · it chains past two tokens, and the record that shows it was READ rather than inferred (/search
+//     for the hit, /text for the mark itself).
+//   · it survives an OR-stack, and the stack answers the exact sum of its legs — so ADJ binds TIGHTER
+//     than OR and no parentheses are needed.
 //
-// A phrase is therefore EXPRESSIBLE, so doctrine 2 says express it. Precision beats the space's AND
-// (67 ≤ 75), which matters: the AND would have quietly widened every multi-word slice.
+// A phrase is therefore EXPRESSIBLE, so doctrine 2 says express it. Precision beats the space's AND,
+// which matters: the AND would have quietly widened every multi-word slice.
 //
 // Two caveats, both recorded rather than hidden:
-//   · There is NO string anchor for a phrase. `BEGINS_WITH "DIET MOUNTAIN"` = 9 > `DIET ADJ MOUNTAIN`
-//     = 7, i.e. the operator degrades to per-token AND. So multi-word `starts_with`/`ends_with` become
+//   · There is NO string anchor for a phrase: `BEGINS_WITH` on a multi-word value degrades to per-token
+//     AND and answers WIDER than the phrase operator. So multi-word `starts_with`/`ends_with` become
 //     phrase-CONTAINS — a strict superset of what was asked. Safe in a clearance sweep, which fails by
 //     MISSING a mark and never by surfacing an extra one, but it is a widening and it is disclosed.
-//   · Punctuation is not indexed (`MOUNTAIN ADJ DEW ADJ HI-RES` == `… HI ADJ RES` == 1), so a
-//     punctuation-only token is dropped from the chain. Kept, it matches nothing and would zero the
-//     whole phrase — `TIKI ADJ & ADJ SLUSH` = 0.
+//   · Punctuation is not indexed — a hyphenated token matches as its split form — so a punctuation-only
+//     token is dropped from the chain. Kept, it matches nothing and would zero the whole phrase.
 const PHRASE_OPERATOR = "ADJ";
 // ── A TERM MUST BE ONE MARK, ON EVERY MARK-FIELD PREDICATE ────────────────────────────────────────
 // The supplemental/cross-check lanes sometimes mint a LIST or a DESCRIPTION into the term field. All
@@ -316,7 +315,7 @@ export function compilePhraseValue(term, { pre = "", post = "", dropReserved = f
 //
 // `allowReserved` is set on the PHRASE path only, where the term is tokenised and each operator word is
 // dropped with the adjacency across it widened — so "BLACK AND DECKER" goes out as
-// `*BLACK ADJ2 DECKER*` (55 hits; the register writes it "BLACK & DECKER") rather than being refused.
+// `*BLACK ADJ2 DECKER*` — the register writes such a mark with the ampersand — rather than being refused.
 // That is an EXPRESSION of the term, not a rewrite of it, and it is a SUPERSET of the literal phrase.
 // `exact` still rejects, and correctly: that field answers HTTP 400 "Use of operators (AND, NOT, ADJ,
 // NEAR) is not allowed in this field" and offers no escape at all. The owner field is not ADJ-joined,
@@ -333,23 +332,17 @@ export function stripPunctuation(term) {
 }
 
 // ── NON-LATIN MARK TERMS ARE NOT SEARCHABLE — AND THE FAILURE IS A SILENT ZERO ─────────────────────
-// Compumark indexes a non-Latin filing by its ROMANISATION, never by its characters. The record
-// carries both, and only the romanisation is a search key:
+// Compumark indexes a non-Latin filing by its ROMANISATION, never by its characters. The record carries
+// both — `markVerbalElementText` holds the characters, `markTransliteration` the romanisation — and only
+// the romanisation is a search key. The characters answer nothing; the romanisation answers records that
+// carry those very characters, so both halves are needed to see the behaviour at all.
 //
-//     markVerbalElementText "华威豹"   markTransliteration "HUA WEI BAO"
+// Universal, not a CJK-specific behaviour: every non-Latin record read across CN/TW/JP/KR/TH/GR/UA/EG/
+// IL/SA carried a populated `markTransliteration`.
 //
-// Established against records actually fetched and read, so this is not inference:
-//
-//     华威豹 → 0        HUA WEI BAO → 32   (and the 32 contain 华威豹)
-//     小米   → 0        XIAOMI      → 57632
-//
-// Universal, not a CJK-specific behaviour — non-Latin records across CN/TW/JP/KR/TH/GR/UA/EG/IL/SA
-// carried a populated markTransliteration (JP 7/7, KR 7/7, TW 12/12, TH 10/10, GR 6/6, UA 10/10,
-// EG 11/11, SA 6/6, IL 1/1, CN 12/12).
-//
-// The romanisation is also STRICTLY BETTER for clearance than a character search would be:
-// `HUA WEI BAO` returns 华威豹, 华味宝 AND 华为爆破 — three character sets, one pronunciation. Chinese
-// squatting is overwhelmingly homophone-based, and a literal character match finds one of the three.
+// The romanisation is also STRICTLY BETTER for clearance than a character search would be: one
+// romanisation returns several distinct character sets that share its pronunciation. Chinese squatting
+// is overwhelmingly homophone-based, and a literal character match finds one of them.
 //
 // So a native-script term reaching the wire is a CLIENT-SIDE REFUSAL, never a query: 0 with no error
 // is the exact false-clean this provider swap exists to prevent, and it is the shape a caller is most
@@ -415,10 +408,11 @@ export function substituteRomanizedNames(e, pp, plan) {
 //
 // Both are EXPRESSIBLE, which is why neither is a reason to drop the name (same call as the
 // apostrophe,). The shapes that work:
-//   a quoted name      literal → 400,  the quotes stripped → answers,  `?`-substituted → answers
-//   an accented name   literal → 400,  ASCII-folded → answers
-//   `COMUNICAÇÕES`                    literal → 400,  ASCII-folded → 6605
-//   `KEY COMÉRCIO`                    literal → 23,   ASCII-folded → 23   (folding never narrows)
+//   a quoted name      literal → refused,  the quotes stripped → answers,  `?`-substituted → answers
+//   an accented name   literal → refused,  ASCII-folded → answers
+//
+// Folding never NARROWS, either: a name whose accents are already absent from the index answers the same
+// either way, so the fold is safe to apply to every name rather than only the ones that fail.
 //
 // Strip rather than `?`-substitute: a bare space is an implicit AND on this field so the tokens still
 // have to co-occur, and stripping cannot produce the `??` adjacency that a substitution would when two
@@ -542,8 +536,8 @@ export function resolveOffices(regions) {
 /**
  * ONE /search (or /count) body — the SAME SearchRequest shape for both endpoints.
  *
- * Multi-class is ONE searchField whose value is the class OR-list ("9 OR 28 OR 41 OR 42"), probe-
- * verified identical (18 hits) to the deleted 4-call per-class fan-out.
+ * Multi-class is ONE searchField whose value is the class OR-list ("9 OR 28 OR 41 OR 42"), which
+ * answers the deduplicated union of the deleted 4-call per-class fan-out.
  */
 // ── THE APOSTROPHE IS NOT SEARCHABLE IN APPLICANT_NAME ────────────────────────────────────────────
 // An apostrophe is not searchable: "TRADER VIC'S", "MCDONALD'S CORPORATION" and
@@ -1150,7 +1144,7 @@ async function fetchText(apiKey, base, group, testMode, tctx) {
 // Accepts record_ids that are EITHER synthetic `/mark/<office>/<guid>` refs OR bare guids (so the
 // skill flow is identical to Corsearch: search → record_id → record_fetch(record_id)). Returns the
 // NORMALIZED records and persists each (keyed by its synthetic ref) for the driver's A1 citation gate.
-// /text takes EXACTLY 100 ids per call (101+ → HTTP 400) — chunked here, at the bound the probe pins.
+// /text takes EXACTLY 100 ids per call and refuses a longer list, so the chunking happens here.
 export async function doRecordFetch(apiKey, base, params, tctx) {
   const inputs = Array.isArray(params.record_ids) ? params.record_ids : [];
   if (inputs.length === 0) return { type: "text", text: "ERROR: clarivate_record_fetch — record_ids is required (non-empty array of refs or guids)." };
@@ -1262,10 +1256,10 @@ export async function doBatchScreen(apiKey, base, params, tctx) {
 // names with per-office trademark counts, so the owner cross-check sweeps the applicant names the
 // register actually holds instead of a guess at the entity's styling.
 //
-// THRESHOLD (a judgment call, recorded): accept confidenceScore >= 50. The probe's control returned one
-// applicant styling at 74.0/156 marks, a second at 50.0/1, then 32/31/31 — a clean break below 50. The
-// scores are the probe's; the names are not, and the fixture spells them PAKA IZHUSEDI C.V. and IZHUSEDI
-// ATQUDCGOXET LIMITED (fixtures/README.md). Over-inclusive is the SAFE direction here: a
+// THRESHOLD (a judgment call, recorded): accept confidenceScore >= 50. The control that set it showed a
+// clean break at that value — the stylings above it held the portfolio, the ones below it held almost
+// nothing — rather than a gradient a cut-off would have to be invented for. The fixture's names are
+// invented and spelled out in fixtures/README.md. Over-inclusive is the SAFE direction here: a
 // surplus applicant name adds marks a lawyer can discard, a missing one is invisible.
 // And the expansion is strictly ADDITIVE — the caller's raw term is ALWAYS swept as well, so
 // resolution can only ever gain recall, never lose it (a failed or empty resolution degrades to exactly
@@ -1389,8 +1383,8 @@ export async function expandOwnerTerms(apiKey, base, params, tctx) {
 // against the provider's own owner vocabulary at all.
 //
 // That matters because APPLICANT_NAME EQUALS is not a full-string equality: a bare space in the value
-// is an IMPLICIT AND over the tokens (a two-word owner term = 156 == that owner's
-// full `… C.V.` styling = 156, and the mark field behaves the same way). So an un-resolved owner term is usually
+// is an IMPLICIT AND over the tokens, so a two-word owner term answers exactly what that owner's full
+// legal styling answers, and the mark field behaves the same way. So an un-resolved owner term is usually
 // BROADER than the register's own styling, not narrower — which is why this went unnoticed. But an AND
 // still requires EVERY token the caller wrote to appear in the applicant string, and a manifest names
 // an owner the way the world writes it, not the way the register spells it. One token the register does

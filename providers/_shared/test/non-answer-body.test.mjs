@@ -31,8 +31,8 @@
 //
 // The envelope shapes are the shapes these providers actually answer errors with: corsearch's
 // `{"message":…}` (the same key its 4xx/5xx bodies carry — the fault lane's 404/429 use it),
-// clarivate's `{"errorMessage":…}` (`{"errorMessage":"ids - Maximum number of ids is
-// 100."}`), euipo's RFC-7807 problem (`{type,title,status,detail}` — documented in the client). The
+// clarivate's `{"errorMessage":…}`, euipo's RFC-7807 problem (`{type,title,status,detail}` — documented
+// in the client). The
 // The clarivate controls are recorded responses: the envelopes and error strings are the API's own.
 
 import { test, beforeEach, after } from "node:test";

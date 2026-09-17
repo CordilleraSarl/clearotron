@@ -22,17 +22,21 @@ Auth: `CORSEARCH_SESSION_KEY` environment variable, supplied from the deployment
 
 Corsearch's supremesearch API uses single-character prefixes on field names. All field values must be **backtick-quoted** (the plugin handles this).
 
-| Match mode | API prefix | Semantics | Hit volume (NIKE benchmark) |
+| Match mode | API prefix | Semantics | Breadth |
 |---|---|---|---|
-| `default` | (none) | Exact-token, case-insensitive — catches tokenisation splits and case variations | ~15,083 |
-| `exact` | `=` | Strictest — full-string match | ~3,014 |
-| `phrase` | `"` | Ordered phrase match | ~10,075 |
-| `starts_with` | `^` | Prefix | ~7,681 |
-| `ends_with` | `$` | Suffix | ~8,248 |
-| `phonetic` | `*` (or `P`) | Server-side phoneme match; extend with `phonetic_variants[]` | ~5,854 bare / ~6,022 with variants |
-| `fuzzy` | `~` | Approximate (diacritics, transliterations) | ~143,184 |
+| `default` | (none) | Exact-token, case-insensitive — catches tokenisation splits and case variations | wide |
+| `exact` | `=` | Strictest — full-string match | narrowest of the single-term modes |
+| `phrase` | `"` | Ordered phrase match | between `exact` and `default` |
+| `starts_with` | `^` | Prefix | narrower than `phrase` |
+| `ends_with` | `$` | Suffix | a little wider than `starts_with` |
+| `phonetic` | `*` (or `P`) | Server-side phoneme match; extend with `phonetic_variants[]` | narrower than either anchor; the variant list widens it slightly |
+| `fuzzy` | `~` | Approximate (diacritics, transliterations) | **widest by an order of magnitude** — a band, not a read |
 | `not` | `!` (or `-`) | Complement; useful in compound queries | — |
-| `must` | `&` | Force AND within same-field stacking | ~433 (NIKE + ADIDAS) |
+| `must` | `&` | Force AND within same-field stacking | narrowest of all: the intersection |
+
+Breadth is the ordering one mark answers across the modes, not a promise about yours: `must` ⊂ `exact` ⊂
+`phonetic` ⊂ `starts_with` ⊂ `ends_with` ⊂ `phrase` ⊂ `default` ⊂ `fuzzy`. Budget a `fuzzy` band as a
+crowd unless you have narrowed it another way.
 
 **Critical:** No explicit `AND` / `OR` keywords — those return HTTP 400. Composition is space-separated. Repeated fields = implicit OR. Use `must` prefix for AND within same field. Repeated `nice-class:` fields are therefore an implicit-OR union — `nice_classes:[9,28,41,42]` correctly scopes to *any of* those classes.
 
@@ -150,7 +154,7 @@ Capture VERBATIM in the register findings file's "Opposition history" section. D
 
 Corsearch supports phoneme expansion via `register_expand_phoneme`. Returns `{ base, aiVariants[] }`. Use the variants as `phonetic_variants[]` in `register_search` with `match_mode: "phonetic"`.
 
-Declared languages: `en_US` (~29 variants per word), `de_DE` (~29), `fr_FR` (~49). Other languages (`it_IT`, `es_ES`) are supported by the API but UNDECLARED here — treat them as a stated unknown, not as unavailable.
+Declared languages: `en_US`, `de_DE`, `fr_FR` — each returns a few dozen variants per word, French somewhat more. Other languages (`it_IT`, `es_ES`) are supported by the API but UNDECLARED here — treat them as a stated unknown, not as unavailable.
 
 **Usage pattern:** for multi-language jurisdictions, call expand-phoneme once per relevant language, concatenate `aiVariants[]`, pass to a single search call. Don't run multiple separate phonetic searches — costs more, returns largely overlapping results.
 
