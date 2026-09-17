@@ -699,6 +699,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-release-note-cannot-be-counted-twice.test.mjs": {
+          "tests": 5,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "a-release-note-is-written-for-its-reader.test.mjs": {
           "tests": 9,
           "asserts": 66,

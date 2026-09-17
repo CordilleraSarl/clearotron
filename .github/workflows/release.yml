@@ -250,6 +250,20 @@ jobs:
       - name: Every release note is written for the person who reads it
         run: node scripts/release-notes-lint.mjs
 
+      # ALSO BEFORE THE VERSION STEP, and for a different failure. The step above judges what a note SAYS;
+      # this one judges whether the same note is about to be counted twice. A pre-release consumes a note by
+      # moving it into `.changeset/pre/`, and a branch carrying its own copy of work main already has can
+      # put that filename back at the top level. `changeset version` would then consume the top-level copy
+      # again and republish its sentence on the releases page, which is the surface a stranger reads to
+      # decide whether to upgrade. Ten notes reached exactly that state on one head in September 2026 and
+      # nothing failed.
+      #
+      # The offline suite carries the same comparison, so an ordinary pull request meets it long before
+      # here. This is the half a skipped or stale check cannot get past: it runs inside the cut, against the
+      # tree the cut is about to version.
+      - name: No release note is counted twice
+        run: node scripts/release-duplicate-notes.mjs
+
       # `version:` is our wrapper, and it is not optional: `changeset version` moves the four WORKSPACE
       # packages and leaves the root package — `clearotron`, the one thing a user installs — where it
       # was. The wrapper carries the number to the root, assembles the one changelog a reader opens, and

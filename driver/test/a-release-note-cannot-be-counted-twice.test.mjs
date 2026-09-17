@@ -1,0 +1,90 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
+//
+// A RELEASE NOTE IN BOTH PLACES AT ONCE IS PUBLISHED TWICE, AND NOTHING USED TO REFUSE IT.
+//
+// A pre-release consumes a note by moving it from `.changeset/` into `.changeset/pre/`. A branch carrying
+// its own copy of work main already has can put that filename back at the top level, and the tree then
+// holds both: the next cut consumes the top-level copy a second time and republishes its sentence on the
+// public releases page. Ten notes reached that state on one head in September 2026 and no run failed.
+//
+// THE ARMS BELOW ARE DRIVEN ON A FIXTURE, not on this tree, because this tree is usually clean and an arm
+// that only ever sees a clean tree would pass just as well if the comparison had been deleted. The live
+// tree is then checked separately, which is the assertion that actually protects the releases page.
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, existsSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+import { duplicateNotes, main } from "../../scripts/release-duplicate-notes.mjs";
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+
+const TEMP = [];
+const tree = () => {
+  const d = mkdtempSync(join(tmpdir(), "dupnotes-"));
+  TEMP.push(d);
+  mkdirSync(join(d, ".changeset", "pre"), { recursive: true });
+  return d;
+};
+const note = (root, rel) => writeFileSync(join(root, ".changeset", rel),
+  '---\n"clearotron-driver": patch\n---\n\nFixed: A thing a reader can see.\n');
+
+test.after(() => { for (const d of TEMP) rmSync(d, { recursive: true, force: true }); });
+
+test("a note consumed by a cut and then re-added at the top level is named, and removing the copy clears it", () => {
+  const root = tree();
+  note(root, join("pre", "a-thing.md"));
+  note(root, join("pre", "another.md"));
+
+  // The ordinary state after a cut: everything consumed, nothing waiting.
+  assert.deepEqual(duplicateNotes(root).duplicates, []);
+
+  // The branch puts its own copy back.
+  note(root, "a-thing.md");
+  assert.deepEqual(duplicateNotes(root).duplicates, ["a-thing.md"],
+    "a note present in .changeset/ and .changeset/pre/ at once is what gets published twice");
+  assert.equal(main(root), 1, "and the command refuses, so a pipeline step can be gated on it");
+
+  // The same tree with the copy deleted passes — which is what says the arm is judging the duplicate
+  // and not merely the presence of notes.
+  rmSync(join(root, ".changeset", "a-thing.md"));
+  assert.deepEqual(duplicateNotes(root).duplicates, []);
+  assert.equal(main(root), 0);
+});
+
+test("a note waiting at the top level that no cut has consumed is not a duplicate", () => {
+  const root = tree();
+  note(root, "brand-new.md");
+  note(root, join("pre", "already-shipped.md"));
+  const read = duplicateNotes(root);
+  assert.deepEqual(read.duplicates, [], "different names in the two places are the normal working state");
+  // THE FLOOR. Both sides must have been enumerated; a comparison of two empty lists is also empty, and
+  // would pass this arm while checking nothing at all.
+  assert.equal(read.waiting, 1, "the waiting notes were read");
+  assert.equal(read.consumed, 1, "the consumed notes were read");
+});
+
+test("README.md is not a release note, and pre/ is compared by file name", () => {
+  const root = tree();
+  writeFileSync(join(root, ".changeset", "README.md"), "# how to write a note\n");
+  writeFileSync(join(root, ".changeset", "pre", "README.md"), "# notes already consumed\n");
+  assert.deepEqual(duplicateNotes(root).duplicates, [],
+    "the contract document sits in .changeset/ on every tree and is not a note anyone publishes");
+});
+
+test("a tree with no .changeset/ is a refusal, not a clean answer", () => {
+  const root = tree();
+  rmSync(join(root, ".changeset"), { recursive: true });
+  assert.ok(duplicateNotes(root).error, "an absence is a finding — it must not read as no duplicates");
+  assert.equal(main(root), 2, "could not look is its own exit code, distinct from a pass and from a refusal");
+});
+
+test("no release note in THIS tree is counted twice", () => {
+  const read = duplicateNotes(ROOT);
+  assert.ok(!read.error, `the repository's own .changeset/ must be readable: ${read.error ?? ""}`);
+  assert.deepEqual(read.duplicates, [],
+    "a note here in both .changeset/ and .changeset/pre/ would have its text republished by the next cut");
+  assert.ok(existsSync(join(ROOT, ".changeset")), "and the directory it read is this repository's own");
+});
