@@ -178,3 +178,72 @@ test("THE DESCRIPTION STOPS CALLING THE LIST ONE CLIENT'S — for every session 
       "the client cut points at a way to enumerate clients");
   }
 });
+
+// ── AND WHAT KIND OF SEARCH IT WAS, which is the same defect one turn later ─────────────────────────
+//
+// A mark and a date are not a key. Asked about "the LUMEN clearance from that day", a session holding
+// the whole account gets two rows, both that mark, both delivered, differing only in which search ran —
+// and the row carried nothing to tell them apart but the runId, an internal slug a client has never seen
+// and which this tool's own description says is not theirs to read. A report-bound session was always
+// safe, because its scope carries the runId whatever the question says; an account-scoped one had only
+// the list.
+//
+// ITS OWN WORKSPACE, not the one above. That fixture is asserted row for row by the arms that own it,
+// and the pair this arm needs — one mark, one day, two products — would have changed their populations
+// to make room. An arm that edits another arm's ground is how a fixture stops proving what it says.
+//
+// BREAK MATRIX:
+//   · every row says which search it was      → break: leave the field off, arm 1 red
+//   · two runs of one mark are told apart     → break: derive it from the runId, arm 2 red
+//   · the words are the report's own          → break: invent a label here, arm 3 red
+//   · a level the registry lost says nothing  → break: fall back to the stored id, arm 4 red
+test("EVERY ROW SAYS WHICH SEARCH IT WAS, so one mark on one day is not two indistinguishable rows", async () => {
+  const ws = mkdtempSync(join(tmpdir(), "run-list-product-"));
+  const mk = (slug, run, markName, level) => {
+    const d = join(ws, "workspace-test", "studio", "prelim-search", slug, run);
+    mkdirSync(driverDir(d), { recursive: true });
+    writeFileSync(join(d, "status.json"), JSON.stringify({
+      schema: 1, runId: `${slug}-${run}`, slug, codename: run, agent: "test",
+      state: "delivered", markName, updatedAt: "2026-01-01T00:00:00Z",
+    }));
+    writeFileSync(driverDir(d, "profile.json"), JSON.stringify({ profileKey: "aurora", name: CLIENTS.aurora }));
+    // The frozen LEVEL — the product's id, in the sidecar the resolver reads. The run records which
+    // search ran; what that search is CALLED is the registry's answer at read time, so an archived run
+    // is named the way the product is named today.
+    if (level) writeFileSync(driverDir(d, "search-policy.json"), JSON.stringify({ level }));
+  };
+  // The pair the question lands on: same client, same mark, same day, two different searches.
+  mk("p1-lumen-fc", "run-a", "LUMEN", "full-country-search");
+  mk("p2-lumen-ko", "run-b", "LUMEN", "knockout-search");
+  mk("p3-pellar", "run-c", "PELLAR", "multi-country-focus-search");
+  mk("p4-retired", "run-d", "RETIRED", "a-level-that-never-existed");   // a row retired since the run
+  mk("p5-nolevel", "run-e", "NOLEVEL", null);                           // older than the sidecar
+
+  const saved = process.env.CLEAROTRON_WORK_DIR;
+  pinEnv(process.env, "CLEAROTRON_WORK_DIR", ws);
+  try {
+    const { tools } = await import("../server.mjs");
+    const rows = tools.list_runs({});
+    for (const row of rows) {
+      assert.ok("product" in row, `the row for ${row.markName} does not carry the search it was at all`);
+    }
+
+    const lumen = rows.filter((r) => r.markName === "LUMEN");
+    assert.equal(lumen.length, 2, "the fixture no longer holds the two runs this arm is about");
+    assert.deepEqual(lumen.map((r) => r.product).sort(), ["Full country search", "Knockout search"],
+      "the two runs of one mark are not told apart by the row");
+
+    // THE REGISTRY'S WORDS, not a label written here: these are what the report's own header prints.
+    assert.equal(rows.find((r) => r.markName === "PELLAR").product, "Multi-country focus search");
+
+    // A LEVEL THE REGISTRY LOST, and a run with no sidecar at all: both say nothing rather than guess.
+    // A hardcoded fallback is how a knockout once announced itself as a product it provably was not.
+    assert.equal(rows.find((r) => r.markName === "RETIRED").product, null,
+      "a level this build has never heard of was given a name anyway");
+    assert.equal(rows.find((r) => r.markName === "NOLEVEL").product, null,
+      "a run with no frozen level was given a name anyway");
+  } finally {
+    pinEnv(process.env, "CLEAROTRON_WORK_DIR", saved);
+    rmSync(ws, { recursive: true, force: true });
+  }
+});

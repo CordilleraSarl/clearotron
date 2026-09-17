@@ -42,6 +42,7 @@ import { parseNamedBand, findCollapsedBands } from "./named-band.mjs";
 import { parseBlindFrameModel } from "./blind-frame-model.mjs";
 import { parseFrameDiff } from "./frame-diff-model.mjs";
 import { parseVariantManifestModel, variantRomanizationGaps, variantCompletenessGaps, variantTermShapeGaps } from "./variant-manifest-model.mjs";
+import { digestAccountingGap } from "./register-digest-record.mjs";
 
 // ── WS-B: the run-scoped profile sidecar ────────────────────────────────────────────────────────────
 // _driver/profile.json carries the run's frozen customer values (floor, platform list) for these
@@ -2087,6 +2088,32 @@ export const validators = {
         ], "findings+ledger"),
         hasCoverageLedgerRow(c) ? ok() : fail("no_coverage_status_row"));
     if (!structural.ok) return structural;
+    // ── EVERY RECORD THE RUN CARRIED IN ENDS SOMEWHERE — CHECKED AT THE EXIT, NOT ONLY AT THE CALL ──
+    //
+    // The call-time refusal is scoped to the batch it judges, which is what lets a dense band be
+    // recorded at all: a 1,161-record band does not fit in one turn, and the stage failed on one for 35
+    // minutes without writing a document. It buys that at a price, and this is where the price is paid.
+    // Once batch 1 is accepted the findings document EXISTS, so a seat that stopped after batch 6 no
+    // longer fails as a missing artifact — it ships a document holding half the band, with every call it
+    // made reading as accepted. Nothing else would notice: this stage's other arms read the document's
+    // shape, and half a band is the same shape as a whole one.
+    //
+    // ARMED BY THE SAME ERA STAMP as the call-time rule, so an archived run carries no stamp and replays
+    // to the verdict it always had. A STAMPED run whose transport stored no model is a driver fault and
+    // is named as one, on `coverage_form_missing`'s precedent below and for its reason: an absent
+    // artifact must never read as a satisfied one. A throw fails closed for the same reason — this gate
+    // going quiet is indistinguishable from a complete digest, which is the state it exists to refuse.
+    {
+      let gap;
+      try { gap = digestAccountingGap(dirname(p)); }
+      catch (e) { return fail(`registerdigest_accounting_unreadable:${short(String(e?.message ?? e))} (driver-written — this is a bug, not a model defect)`.slice(0, 200)); }
+      if (gap.armed && gap.unaccounted === null)
+        return fail("registerdigest_accounting_unreadable: stamped for per-record accounting with no owed list in the driver's facts (driver-written — this is a bug, not a model defect)");
+      if (gap.armed && gap.no_model)
+        return fail("registerdigest_model_missing: stamped for per-record accounting and the typed transport stored no model, while the findings document exists (driver-written — this is a bug, not a model defect)");
+      if (gap.armed && gap.unaccounted.length)
+        return fail(`registerdigest_unaccounted_records:${gap.unaccounted.length} of ${gap.owed.length} — ${gap.unaccounted.slice(0, 6).join(",")}${gap.unaccounted.length > 6 ? ` (+${gap.unaccounted.length - 6} more)` : ""}`.slice(0, 200));
+    }
     // ── THE COVERAGE FORM, AND THE FOUR STATES THAT ARE NOT THE SAME FACT ──────────────────────────
     //   not required        — no era stamp: EVERY ARCHIVED RUN, and nothing else since  M6. A run
     //                         whose plan apparatus is out of reach used to land here too; it now gets a

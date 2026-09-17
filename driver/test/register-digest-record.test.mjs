@@ -11,7 +11,7 @@
 // downstream.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync, readdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -641,4 +641,194 @@ test("negativeMarkCell falls back to the bare mark rather than rendering a broke
   // Out of scope for every other ground, and for a row with no mark at all.
   assert.equal(negativeMarkCell({ ground: "off-field", cells: { mark: "DELFITY", uri: "/mark/em/x" } }), "DELFITY");
   assert.equal(negativeMarkCell({ ground: "duplicate-of-surfaced", cells: { mark: "", uri: "/mark/em/x" } }), "");
+});
+
+// ── BATCHING: THE 2026-09-16 PRODUCTION FAILURE, AND THE ARMS THE RULING NAMES ───────────────────
+//
+// A dense matter carried 1,161 records into this stage. They went over in ONE turn against an
+// all-or-nothing accounting refusal, so the turn ended with 902 of them unaccounted, the call was
+// refused, the ladder re-sent the same shape, and the stage died ~35 minutes later having written
+// nothing at all. The client got no report.
+//
+// These drive the batched shape through the REAL writer against a REAL run directory at the size the
+// ruling names — never a hand-built facts object, for the reason the arms above this one give.
+const { DIGEST_BATCH_RECORDS, batchesOf, accountedUris, digestAccountingGap, batchLedger } =
+  await import("../register-digest-record.mjs");
+
+/** A run directory whose band and placements both carry `n` records. */
+function densRunDir(n) {
+  const runDir = mkdtempSync(join(process.env.TMPDIR || tmpdir(), "digest-batch-"));
+  const P = runPaths(runDir);
+  mkdirSync(driverDir(runDir), { recursive: true });
+  const recs = Array.from({ length: n }, (_, i) => ({
+    record_id: `/mark/eu/${String(2000000 + i)}`, mark_text: `DENSEMARK ${i}`,
+    owner_name: `Holder ${i} AG`, classes: [9], status: "Registered",
+  }));
+  writeFileSync(P.registerNamedBand, JSON.stringify({ enumerated: recs }) + "\n");
+  writeFileSync(P.placementModel, JSON.stringify({
+    schema_version: 1,
+    placements: [{
+      mark: "DENSEMARK", owner: "Holder AG", jurisdiction: "EU", tier: "sheet-2",
+      records: recs.map((r) => r.record_id),
+      reason: "A dense band: every record placement carried into the digest.",
+    }],
+  }) + "\n");
+  const ctx = { paths: P, job: { markName: "DENSEMARK" }, run: { slug: "s", codename: "c" } };
+  writeRegisterDigestFacts(ctx, "test");
+  return { runDir, P, recs, facts: readDigestFacts(runDir) };
+}
+
+/** Account for `keys` as this batch's drops — the cheapest of the three exits to send in bulk. */
+const dropRows = (keys) => keys.map((k) => ({
+  uri: k, drop_reason: "off-field — the relevance gate decided it on its own goods", ground: "off-field",
+}));
+
+/** Batches are ONE-BASED on the wire, which is what the seat is told and what the ledger keys on. */
+const sendBatch = (runDir, keys, batch, rows = null) =>
+  recordRegisterDigest(runDir, { patch: true, batch, negative_rows: rows ?? dropRows(keys) });
+
+/** How many typed calls this run has captured — refusals included, one file per call. */
+const callCount = (runDir) => {
+  const { dir } = registerDigestCallPaths(runDir);
+  return existsSync(dir) ? readdirSync(dir).filter((f) => /^call-\d+\.json$/.test(f)).length : 0;
+};
+
+/** The batches this run still owes, one-based, derived from what was accepted. */
+const remaining = (runDir) => {
+  const gap = digestAccountingGap(runDir);
+  const out = [];
+  batchesOf(gap.owed ?? []).forEach((keys, i) => {
+    if (keys.some((k) => (gap.unaccounted ?? []).includes(k))) out.push(i + 1);
+  });
+  return out;
+};
+
+test("CRITERION 1 — 1,200 records pass the gate accounted exactly once, across exactly 12 calls", () => {
+  const { runDir, facts } = densRunDir(1200);
+  const batches = batchesOf(facts.owed);
+  assert.equal(DIGEST_BATCH_RECORDS, 100, "the constant is the one the ruling set, in one place");
+  assert.equal(batches.length, 12, "1,200 records at 100 a batch is TWELVE batches, not eleven or thirteen");
+
+  let last = null;
+  batches.forEach((keys, i) => {
+    last = sendBatch(runDir, keys, i + 1);
+    assert.equal(last.refused, null, `batch ${i + 1} must be accepted on its own records — ${last.refused ?? ""}`);
+  });
+
+  // THE FLOOR, not a ">=": eleven batches accounting for 1,200 records would mean a batch was skipped
+  // and the run still passed, which is the defect one level down from the one being fixed.
+  assert.equal(callCount(runDir), 12, "EXACTLY twelve recording calls — a thirteenth means a batch was re-sent");
+  assert.equal(last.written, join(runDir, FINDINGS_FILE), "the twelfth call closes the union and writes the document");
+  const accounted = accountedUris(lastAcceptedModel(runDir), facts.owed);
+  assert.equal(accounted.size, 1200, "every one of the 1,200 is accounted, and DISTINCTLY — a set, so a double-send cannot pad it");
+  assert.deepEqual(remaining(runDir), [], "nothing outstanding once the union closed");
+});
+
+test("CRITERION 2 — a batch with one unaccounted record is refused BY NAME, and the others stay accepted", () => {
+  const { runDir, facts } = densRunDir(1200);
+  const batches = batchesOf(facts.owed);
+  for (const i of [0, 1]) assert.equal(sendBatch(runDir, batches[i], i + 1).refused, null);
+
+  const planted = batches[2][57];
+  const short = batches[2].filter((k) => k !== planted);
+  const r = sendBatch(runDir, short, 3);
+  assert.ok(r.refused, "a batch that leaves one of its own records unaccounted is refused");
+  assert.match(r.refused, /registerdigest_unaccounted_records/);
+  assert.ok(r.refused.includes(planted),
+    "the refusal NAMES the record — the seat's next act is to account for exactly it");
+
+  // THE SECOND CLAUSE, and the one that passes silently if it is not asserted: the refusal must not
+  // take the accepted batches down with it.
+  const accounted = accountedUris(lastAcceptedModel(runDir), facts.owed);
+  assert.equal(accounted.size, 200, "batches 1 and 2 survive the refusal of batch 3");
+  assert.equal(accounted.has(planted), false, "and the planted record is NOT accounted");
+});
+
+test("CRITERION 3 — after a kill at batch 6, the retry records batches 7 to 12 and no others", () => {
+  const { runDir, P, facts } = densRunDir(1200);
+  const batches = batchesOf(facts.owed);
+  for (let i = 0; i < 6; i++) assert.equal(sendBatch(runDir, batches[i], i + 1).refused, null);
+
+  assert.equal(existsSync(P.registerFindings), false,
+    "THE INVARIANT: six of twelve batches in, the client's document does NOT exist. Writing it per "
+    + "batch would leave a page carrying a title, every heading and half the records — complete to the "
+    + "nine parsers that read it, complete to the gateway, and complete to a client");
+  assert.equal(accountedUris(lastAcceptedModel(runDir), facts.owed).size, 600,
+    "…while the driver's own model holds the 600 that did land, which is what makes the resume cheap");
+
+  // A SET, NOT A COUNT. A count of six is satisfied by re-sending batches 1-6, which is the defect.
+  assert.deepEqual(remaining(runDir), [7, 8, 9, 10, 11, 12],
+    "the resume's worklist is exactly the batches that never landed");
+
+  const before = callCount(runDir);
+  let last = null;
+  for (const b of remaining(runDir)) last = sendBatch(runDir, batches[b - 1], b);
+  assert.equal(callCount(runDir) - before, 6, "six further calls, one per outstanding batch");
+  assert.equal(last.written, join(runDir, FINDINGS_FILE), "and the last of them closes the union");
+  assert.equal(accountedUris(lastAcceptedModel(runDir), facts.owed).size, 1200);
+});
+
+test("CRITERION 4 — a record already ended under another batch is refused as double-counted", () => {
+  const { runDir, facts } = densRunDir(1200);
+  const batches = batchesOf(facts.owed);
+  assert.equal(sendBatch(runDir, batches[0], 1).refused, null);
+
+  // Rows merge BY URI, so the merged model cannot see this: the repeat REPLACES its twin and the count
+  // never moves. The per-record batch ledger is the only place it is visible.
+  const stolen = batches[0][12];
+  const r = sendBatch(runDir, [...batches[1], stolen], 2);
+  assert.ok(r.refused, "a record ended under batch 1 cannot be ended again under batch 2");
+  assert.ok(r.refused.includes(stolen), "and it names the record, so the seat can drop that row and re-send");
+  assert.equal(accountedUris(lastAcceptedModel(runDir), facts.owed).size, 100,
+    "batch 1 stands; the refused batch 2 added nothing");
+});
+
+test("the SAME batch re-sent in full is the legitimate refresh, and is NOT double-counting", () => {
+  // THE CONTROL FOR THE ARM ABOVE, and the distinction the ledger exists to draw. `mergeDigestPatch`
+  // and the flush rung both depend on a seat being able to re-send a row it is correcting. An
+  // implementation that refused any repeated uri would pass criterion 4 and break the repair path.
+  const { runDir, facts } = densRunDir(300);
+  const batches = batchesOf(facts.owed);
+  assert.equal(sendBatch(runDir, batches[0], 1).refused, null);
+  const again = sendBatch(runDir, batches[0], 1);
+  assert.equal(again.refused, null, "batch 1 re-sent under its OWN number is a refresh, not a double count");
+  assert.equal(accountedUris(lastAcceptedModel(runDir), facts.owed).size, 100);
+});
+
+test("the batch ledger draws that line on the records themselves", () => {
+  const first = batchLedger(null, { batch: 1, negative_rows: [{ uri: "/mark/eu/1" }, { uri: "/mark/eu/2" }] });
+  assert.deepEqual(first.doubled, []);
+  const refresh = batchLedger(first.batchOf, { batch: 1, negative_rows: [{ uri: "/mark/eu/1" }] });
+  assert.deepEqual(refresh.doubled, [], "same record, same batch ⇒ a refresh");
+  const stolen = batchLedger(first.batchOf, { batch: 2, negative_rows: [{ uri: "/mark/eu/1" }] });
+  assert.equal(stolen.doubled.length, 1, "same record, different batch ⇒ ended twice");
+  assert.equal(stolen.doubled[0].was, 1);
+  assert.equal(stolen.doubled[0].now, 2);
+});
+
+test("an unbatched call is judged on the WHOLE owed list, exactly as it was before batching existed", () => {
+  // THE CONTROL. Every arm above names a batch, so all of them would pass against a transport that had
+  // quietly stopped checking the un-batched path — the one every archived run and every replay uses.
+  const { runDir, facts } = densRunDir(250);
+  const r = recordRegisterDigest(runDir, { negative_rows: dropRows(facts.owed.slice(0, 100)) });
+  assert.ok(r.refused, "100 of 250 accounted, no batch named ⇒ still refused run-wide");
+  assert.match(r.refused, /registerdigest_unaccounted_records/);
+  const ok = recordRegisterDigest(runDir, { negative_rows: dropRows(facts.owed) });
+  assert.equal(ok.refused, null, "and the whole list in one call is accepted, as it always was");
+  assert.equal(ok.written, join(runDir, FINDINGS_FILE), "with the document written on that same call");
+});
+
+test("the batch boundaries do NOT move when the facts sidecar is rewritten mid-run", () => {
+  // THE PROMISE THE RESUME RESTS ON, and nothing else checks it. The worklist is batch NUMBERS, so
+  // "batch 7" has to mean the same hundred records to the pass that resumes as to the attempt that
+  // died — and `runDigest` rewrites the facts sidecar between them. A rewrite returning the same
+  // records in a different ORDER would silently re-cut every boundary, and nothing would refuse:
+  // every batch would be internally consistent and the union would be wrong.
+  const { runDir, P, facts } = densRunDir(450);
+  const before = batchesOf(facts.owed);
+  assert.equal(before.length, 5, "precondition: 450 records is five batches, the last one short");
+  const ctx = { paths: P, job: { markName: "DENSEMARK" }, run: { slug: "s", codename: "c" } };
+  writeRegisterDigestFacts(ctx, "rewrite");
+  assert.deepEqual(batchesOf(readDigestFacts(runDir).owed), before,
+    "the same placements must cut the same batches across a rewrite");
 });

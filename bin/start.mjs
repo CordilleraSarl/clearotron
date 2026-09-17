@@ -84,8 +84,10 @@ import { writeSecretFile } from "../shared/secret-file.mjs";   // one atomic wri
 // below: to COMPOSE the units' environment and to GUARD it before this command reports success. The
 // tables are handed in rather than imported by it, because the register table lives in a CLI entry and
 // the driver must not point at `bin/`.
-import { runRequiredNames, missingRequirements } from "../driver/run-requirements.mjs";
-import { ENGINE_BINARIES, DEFAULT_ENGINE_ID as RUN_DEFAULT_ENGINE } from "../driver/driver.config.mjs";
+import { runRequiredNames, missingRequirements, CLOUD_ROUTES } from "../driver/run-requirements.mjs";
+import { CLOUD_SWITCH, cloudsSwitchedOn } from "../driver/engine/auth.mjs";   // a switch compared the way the program reads it: on or off
+import { ENGINE_BINARIES, DEFAULT_ENGINE_ID as RUN_DEFAULT_ENGINE, resolveEngineProgram } from "../driver/driver.config.mjs";
+import { unitEnvironment, unitValue } from "../driver/unit-environment.mjs";   // the PATH the worker unit will run with, read the way doctor reads it
 
 /**
  * The tables the requirements authority needs — resolved at CALL time, never at module scope.
@@ -104,9 +106,9 @@ import { ENGINE_BINARIES, DEFAULT_ENGINE_ID as RUN_DEFAULT_ENGINE } from "../dri
  * driver/test/a-backgrounded-install-can-actually-run-a-clearance.test.mjs refuses a static import of
  * onboard from this file, so the cycle cannot come back quietly.
  */
-async function runTables() {
+export async function runTables() {
   const { PROVIDERS } = await import("./onboard.mjs");
-  return { registers: PROVIDERS, engines: ENGINE_BINARIES, defaultEngine: RUN_DEFAULT_ENGINE };
+  return { registers: PROVIDERS, engines: ENGINE_BINARIES, defaultEngine: RUN_DEFAULT_ENGINE, resolveEngine: resolveEngineProgram };
 }
 import { spawn, spawnSync, execFileSync } from "node:child_process";
 import { storeInRepo, storeOutsideRepoMessage, storeCommitRefusal } from "../shared/store-in-repo.mjs";   //
@@ -186,6 +188,89 @@ export const LAUNCHER_MINTED = Object.freeze(["PORTAL_OPS_TOKEN"]);
  */
 export function homeEnvUpdate(homeText, union) {
   return mergeEnvFile(homeText, union, { refresh: LAUNCHER_MINTED });
+}
+
+/**
+ * The services' settings file as this start will leave it, and the run's settings in it that differ from
+ * the configuration this command holds. PURE, and the one reading `--background` uses for both its guard
+ * and its write, so a test drives start's own answer rather than a copy of it.
+ *
+ * THE GUARD CHECKED A MERGE THE FILE DOES NOT PERFORM. It read `{ ...file, ...union }`, where this
+ * command's value wins, while the add-only merge keeps the file's line, an empty one included. So a file
+ * holding `CLAUDE_CODE_USE_FOUNDRY=` passed the guard on this command's `=1`, kept its empty line, and
+ * every search was refused at the order wall. `reads` is the merged text, parsed: what the units read.
+ *
+ * AND WHAT THE FILE KEEPS IS SAID, never replaced. The merge adds only what the file lacks, and that is
+ * deliberate: the file is the running product's configuration, an operator edits it to change what the
+ * services do, and a start that rewrote it from this command's configuration would undo that edit. What
+ * was wrong was the silence. A machine moved from one cloud to another, or holding a rotated key, started
+ * again and reported the file complete while the services kept the old account.
+ * `differ` names the run settings on which the two disagree, so start can say which. Names only, never a
+ * value.
+ *
+ * WHICH DISAGREEMENTS, BY THE KIND OF SETTING, and never by which side holds the value. A healthy install
+ * can keep its register key, its engine's path and its research key in the units' file alone, because
+ * that file is where start tells an operator to change what the services use; this command's shell then
+ * holds none of them, and naming them on every start would warn about a working install. So a setting
+ * counts only when this command holds a value the file contradicts: a rotated key, or a line kept empty.
+ * The billing word and the settings that pick a cloud are the exception, and count in either direction,
+ * because the file holding one this command does not is exactly the machine billing an account nobody
+ * chose any more. They are compared as the program reads them: an unset billing word is the subscription,
+ * and a switch is on or off, so `1` beside `true` is not a difference.
+ *
+ * BUT ONLY WHERE THIS COMMAND HOLDS AN OPINION. A configuration that sets no billing word says nothing
+ * about how the services pay: an api-key, Codex api-key or cloud install whose billing lives in the units'
+ * file alone, where start's own remedy offers to put it, was warned about its billing word and its switch
+ * on every start. So with no billing word here, neither the word nor the cloud settings are compared. Under
+ * `cloud` with no cloud named here, which cloud is not compared either. And under `subscription` or
+ * `api-key` a cloud setting this command holds counts as unset, because the run door refuses a switch
+ * beside either word and start never carries one: naming it sent the operator to put into the file a
+ * switch every search would then be refused over. A cloud the FILE holds under those words still counts.
+ */
+export function unitsFileAfterStart(homeText, union, { config = {}, tables = {} } = {}) {
+  const merged = homeEnvUpdate(homeText, union);
+  const reads = parseEnvFile(merged.text);
+  const ours = (k) => String(union[k] ?? config[k] ?? "").trim();
+  const theirs = (k) => String(reads[k] ?? "").trim();
+  const words = new Set(Object.values(tables.engines ?? {}).map((e) => e?.authEnv).filter(Boolean));
+  const switches = Object.values(CLOUD_SWITCH);
+  const as = (k, v) => words.has(k) ? (v.toLowerCase() || "subscription")
+    : switches.includes(k) ? cloudsSwitchedOn({ [k]: v }).length > 0 : v;
+  const ourWord = ([...words].map(ours).find(Boolean) ?? "").toLowerCase();
+  const ourRoutes = Object.fromEntries(CLOUD_ROUTES.map((k) => [k, ours(k)]));
+  const ourCloud = cloudsSwitchedOn(ourRoutes).length > 0 || ourRoutes.ANTHROPIC_BASE_URL !== "";
+  const route = (k) => CLOUD_ROUTES.includes(k);
+  const opinion = (k) => ourWord !== "" && (!route(k) || ourWord !== "cloud" || ourCloud);
+  const oursAs = (k) => as(k, route(k) && ourWord !== "cloud" ? "" : ours(k));
+  const eitherWay = (k) => words.has(k) || route(k);
+  const names = new Set([...runRequiredNames(config, tables), ...runRequiredNames(reads, tables), ...CLOUD_ROUTES]);
+  const differ = [...names].filter((k) => !LAUNCHER_MINTED.includes(k)
+    && (eitherWay(k) ? opinion(k) && oursAs(k) !== as(k, theirs(k)) : ours(k) !== "" && ours(k) !== theirs(k)));
+  return { merged, reads, differ };
+}
+
+/**
+ * What start says about `differ`, the settings on which the units' file and this command's configuration
+ * disagree. PURE, so the words are driven rather than read from source. Names only, never a value.
+ *
+ * BOTH PLACES, because the add-only merge makes one of them a trap. This said to edit the units' file and
+ * restart. An operator who moved the services from one cloud to another that way, with this command's
+ * configuration still naming the first, had the first cloud's switch added back on the next start, since
+ * the file no longer held its line: two clouds on, and every search refused. Deleting that line, as the
+ * notice said, only repeated it. So it names the file the units read and the configuration start adds from,
+ * `cliEnv` (envFileRead(), or null when this command read no file and its shell is the configuration).
+ */
+export function keptSettingsNotice(differ, { homeEnv, cliEnv = null } = {}) {
+  if (!differ?.length) return [];
+  const one = differ.length === 1;
+  return [
+    `  ⚠ ${homeEnv} and this command's configuration differ on ${one ? "this setting" : "these settings"}, and the units use what the file says:`,
+    `      ${differ.join(", ")}`,
+    `    This command only adds a setting the file has no line for; it never replaces one. To change what the units`,
+    `    use, change ${one ? "it" : "them"} in both places, then restart them:`,
+    `      ${homeEnv}\n          the file the units read`,
+    `      ${cliEnv ?? "this command's environment"}\n          what this command adds from: a line the file above lacks is added back from here on the next start`,
+  ];
 }
 
 /**
@@ -1709,22 +1794,19 @@ if (isMain) {
     // said everything was fine, and a lawyer's search that died at its first stage with a stack trace,
     // delivering "nothing was delivered. Clearotron has been notified" on a box that notified nobody.
     //
-    // CHECKED AGAINST `union`, WHICH IS WHAT THE FILE WILL SAY — plus what the file ALREADY says, since
-    // `mergeEnvFile` is add-only and an operator's existing line wins. Checking `process.env` here would
+    // CHECKED AGAINST WHAT THE FILE WILL SAY: the file's own lines, with `union` added where the file has
+    // no line, because `mergeEnvFile` is add-only and an existing line wins, an empty one included. That
+    // is `unitsFileAfterStart`, the same reading the write below uses. Checking `process.env` here would
     // measure this shell rather than the units, and pass on exactly the box that fails.
+    let homeText = "";
+    try { homeText = readFileSync(HOME_ENV, "utf8"); } catch (e) { if (e.code !== "ENOENT") fatal(`${HOME_ENV} exists but could not be read (${e.code}).`); }
+    const unitsFile = unitsFileAfterStart(homeText, union, { config: process.env, tables: RUN_TABLES });
     //
     // BLOCKING REFUSES; NARROWING IS SAID OUT LOUD AND STARTS ANYWAY. A research key this box does not
     // hold means the three clearance searches refuse at preflight and a Knockout search still runs and
     // discloses what it skipped — so refusing to start over it would take a box that can serve a real
     // product and make it serve none. The operator is told which products this install can fill.
     {
-      const already = {};
-      try {
-        for (const line of readFileSync(HOME_ENV, "utf8").split("\n")) {
-          const m = /^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=(.*)$/.exec(line);
-          if (m) already[m[1]] = m[2];
-        }
-      } catch { /* no file yet — the union is the whole of it */ }
       // ONE COMPOSER for "where do I set these", used by the start-time refusal and by the order-time
       // announcement below it. Two copies of this sentence is how one of them comes to name a file the
       // reader cannot use.
@@ -1739,7 +1821,29 @@ if (isMain) {
           : `Set them in ${homeEnv} — the file the units read. This command read no environment file of `
             + `its own, so that is the address. \`${invoke("install")}\` writes them for you IN A TERMINAL.`;
       };
-      const willRead = { ...already, ...union };
+      const willRead = { ...unitsFile.reads };
+      // ── AND THE PATH THE WORKER WILL SEARCH FOR THE ENGINE'S PROGRAM ─────────────────────────────
+      //
+      // The check asks the engine resolver, and a resolver handed no PATH finds only a path setting or
+      // the copy setup installed. So a `claude` on the units' PATH was announced as "every run is
+      // refused", and the run found it and ran. The PATH is the worker unit's own, read from the file
+      // placed below: the worker runs the clearance, and every shipped unit sets
+      // `Environment=PATH=%h/…`, which the unit reader expands to this home. Never this shell's PATH,
+      // which the units do not inherit.
+      //
+      // THE SETTINGS FILE IS READ WITH IT, because on systemd a PATH in that file wins over the unit's own
+      // `Environment=PATH=` line, wherever the two lines sit (systemd.exec(5)), and the unit reader
+      // applies that rule. Nothing Clearotron writes puts a PATH there, but a hand-edited file can, and
+      // then the worker searches that PATH and not the unit's. A file that is not there yet reads as
+      // empty: this command is about to write it, and the unit's PATH is then the one in force.
+      {
+        let text = null;
+        try { text = readFileSync(join(REPO, "driver", "systemd", "clearotron-worker.service"), "utf8"); } catch { /* the install loop below names a missing unit */ }
+        const settingsFile = (p) => { if (p !== HOME_ENV) return ""; try { return readFileSync(p, "utf8"); } catch { return ""; } };
+        const workerPath = unitValue(unitEnvironment({ units: [{ name: "clearotron-worker.service", text }],
+          readEnvFile: settingsFile, home: homedir() }), "PATH").value;
+        if (workerPath) willRead.PATH = workerPath;
+      }
       const miss = missingRequirements(willRead, RUN_TABLES);
       // ── — WHICH HALF OF `blocking` MAY REFUSE A START ─────────────────────────
       //
@@ -1769,9 +1873,9 @@ if (isMain) {
         //
         // BOTH FILES, and that is the difference from the port refusals, which say `~/.env` "is NOT read
         // here". They are right: nothing in that file reaches a port decision. Here both are true. The
-        // block above reads HOME_ENV into `already` and merges it into `willRead`, so a value set there
-        // satisfies this check on the next run; and the CLI's own file reaches it too, through the
-        // `runRequiredNames(process.env, …)` loop that copies its values into `union`. Driven rather than
+        // block above reads HOME_ENV into `willRead`, with its lines winning as they do in the file, so a
+        // value set there satisfies this check on the next run; and the CLI's own file reaches it too,
+        // through the `runRequiredNames(process.env, …)` loop that copies its values into `union`. Driven rather than
         // read: three blocking names cleared from the CLI's file alone, and the refusal came back naming
         // a fourth that the first three had newly required.
         //
@@ -1817,26 +1921,32 @@ if (isMain) {
         // it"), not about which gate happened to print it, and the arms in
         // `a-refusal-names-the-file-when-the-command-it-offers-cannot-be-run.test.mjs` measure it here now.
         //
-        // BOTH FILES, because both genuinely reach the check: `~/.env` is merged into `already` above,
-        // and this command's own file reaches it through the carry loop. `envFileRead()` for the second,
-        // never a path composed here — null means this process read no file of its own (a systemd start,
+        // BOTH FILES, because both genuinely reach the check: `~/.env` is read into `willRead` above,
+        // and this command's own file reaches it through the carry loop where `~/.env` has no line.
+        // `envFileRead()` for the second, never a path composed here — null means this process read no file of its own (a systemd start,
         // or CLEAROTRON_NO_ENV_FILE=1) and then HOME_ENV is the only honest address there is.
         say(`    Nothing has been installed that cannot run, and nothing has been spent.`);
         say(`    ${orderRemedy(HOME_ENV)}`);
       }
       for (const r of miss.narrowing)
         say(`  ⚠ ${r.name} is not set — ${r.why}`);
+      // ── WHAT THE FILE KEEPS, SAID BY NAME ──────────────────────────────────────────────────────────
+      //
+      // The merge never replaces a line (see `unitsFileAfterStart`), so a setting changed in this
+      // command's configuration after the first start does not reach the units. A machine moved from one
+      // cloud to another went on billing the first, and a rotated key stayed at its first value, while this
+      // command reported the file complete. Said here, by name and never by value, naming both places the
+      // setting lives (see `keptSettingsNotice` for why one is not enough).
+      for (const line of keptSettingsNotice(unitsFile.differ, { homeEnv: HOME_ENV, cliEnv: envFileRead() })) say(line);
     }
 
-    let homeText = "";
-    try { homeText = readFileSync(HOME_ENV, "utf8"); } catch (e) { if (e.code !== "ENOENT") fatal(`${HOME_ENV} exists but could not be read (${e.code}).`); }
     // THE TRIGGER KEY IS MINTED HERE, SO IT IS REWRITTEN HERE. Everything else in this union is
     // collected — the operator's credentials, their paths — and add-only is what stops a launcher from
     // losing them. The trigger key is the opposite: this process mints it, thirty days at a time, and a
     // value written once and never again runs down to expiry on a server nobody has touched. When it
     // lapses every Start stops, and the failure arrives as an upstream refusal that reads like an engine
     // fault rather than an expired key card.
-    const merged = homeEnvUpdate(homeText, union);
+    const { merged } = unitsFile;
     if (merged.added.length || merged.refreshed.length) {
       writeSecretFile(HOME_ENV, merged.text);
       const parts = [];

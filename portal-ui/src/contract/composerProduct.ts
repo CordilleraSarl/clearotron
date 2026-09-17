@@ -46,11 +46,23 @@ export type Draft = {
    * searches and the wire has to carry which.
    */
   readonly territories: readonly string[]
+  /**
+   * Has the requester TAKEN OVER the company's own territories? Only `removeTerritory` on an inherited
+   * chip sets it, and it exists because the two ways of naming nothing are different searches.
+   *
+   * Without it, a company whose single default territory the register cannot reach is stuck: the
+   * requester removes it, the draft names none again, the company's list is inherited again, and the
+   * chip they just removed comes back — the owner's rule of 2026-09-17 says they must be able to remove
+   * it and continue, never be blocked. With it, "I removed my company's territories and named none" is
+   * `worldwide`, which is the instruction that an account's own territories may not narrow this search.
+   * That is not a new meaning invented here; it is exactly what the requester just did.
+   */
+  readonly replacesOwnTerritories: boolean
   /** The one toggle in the offering. Only meaningful where the product offers it. */
   readonly nativeLanguage: boolean
 }
 
-export const EMPTY_DRAFT: Draft = { product: null, territories: [], nativeLanguage: false }
+export const EMPTY_DRAFT: Draft = { product: null, territories: [], replacesOwnTerritories: false, nativeLanguage: false }
 
 // ── the territory vocabulary ────────────────────────────────────────────────────────────────────────
 //
@@ -251,12 +263,20 @@ export function matchTerritoriesIn(
  * and has to explain that it cannot send them.
  */
 export function addTerritory(
-  d: Draft, name: string, product: Product | null, _covered?: readonly string[] | null,
+  d: Draft, name: string, product: Product | null, covered?: readonly string[] | null,
 ): Draft {
-  // — the wall is the PRODUCT's vocabulary, not the register's coverage. A
-  // territory outside coverage is orderable and disclosed, exactly as the product rows now are; a
-  // region on a one-country search is still refused, because that one cannot be sent at all.
+  // TWO WALLS NOW, and the second one is new (owner's ruling, 2026-09-17). The first is the PRODUCT's
+  // vocabulary: a region on a one-country search cannot be sent at all. The second is the wired
+  // register's reach, which used to let a territory outside coverage be ordered and disclosed as not
+  // searched — the engine refuses such a search outright now, so offering it here would be composing a
+  // request the door is about to reject.
+  //
+  // IT IS REFUSED, NOT HIDDEN. The suggestion still appears, carrying `notAvailableLine`, because the
+  // owner has already met the alternative: "nothing tells the user what its limited to, or why" — a
+  // territory that is simply absent cannot be told from one the reader mistyped. So the reader sees it
+  // and sees why, and this is what stops it becoming part of the draft.
   if (!offerableFor(product).includes(name)) return d
+  if (!reachesTerritory(name, covered)) return d
   if (d.territories.includes(name)) return d
   if (product?.geography === 'exactly one country') return { ...d, territories: [name] }
   return { ...d, territories: [...d.territories, name] }
@@ -266,22 +286,91 @@ export function removeTerritory(d: Draft, name: string): Draft {
   return { ...d, territories: d.territories.filter((t) => t !== name) }
 }
 
+/**
+ * Remove one of the COMPANY'S OWN territories: the draft takes the rest over as its own named list.
+ *
+ * The company's list is not the draft's — the Where panel draws it when the draft names none, and the
+ * wire sends the mode so the engine resolves today's list rather than freezing it. Removing one of them
+ * is therefore not a removal from anything the draft holds; it is the requester taking the list over
+ * with one gone. Whatever is left is theirs, named, and the company's profile no longer speaks for it.
+ */
+/**
+ * THE ONE LINE a screen shows for a territory the wired register cannot search — chip, hover, dropdown
+ * note and review step alike (owner's ruling, 2026-09-17). It is the whole message: the reader takes the
+ * territory off, or is never offered it. Nothing explains further, because there is nothing they can do
+ * with more.
+ *
+ * COMPOSED HERE AND NOWHERE ELSE. The same fact is refused at the door in a sentence of its own, written
+ * for a caller with no screen; one fact in two wordings is the defect this codebase has already paid for
+ * with the spent-allowance line. The screens take this and assemble nothing.
+ *
+ * NO REGISTER IS NAMED WHEN THERE IS NO NAME, exactly as the door's sentence drops the same clause. The
+ * alternative is printing the provider key, which is our vocabulary and not the reader's.
+ */
+export function notAvailableLine(names: readonly string[], registerLabel?: string | null): string {
+  const named = names.join(', ')
+  const who = typeof registerLabel === 'string' && registerLabel.trim() ? registerLabel.trim() : null
+  return `${named ? `${named} \u00b7 ` : ''}not available${who ? ` with register ${who}` : ''}`
+}
+
+export function takeOverOwnTerritories(d: Draft, own: readonly string[], without: string): Draft {
+  return { ...d, territories: own.filter((t) => t !== without), replacesOwnTerritories: true }
+}
+
 // ── what the wire carries ───────────────────────────────────────────────────────────────────────────
 
-export type Geography = { readonly mode: 'worldwide' | 'named'; readonly territories: readonly string[] }
+export type Geography = {
+  readonly mode: 'worldwide' | 'named' | 'account-default'
+  readonly territories: readonly string[]
+}
 
 /**
  * The geography STAMP for this draft, stated rather than implied.
  *
- * The composer knows something the wire could not carry until now: an empty territory list on THIS
- * screen means the requester asked for everywhere, not that they said nothing. Sending the list alone
- * made those byte-identical, and an account with seven default territories then ran seven — a search
- * that was sold as worldwide.
+ * THREE STATES, BECAUSE THE OFFERING HAS THREE: the requester asked for everywhere, the requester named
+ * these places, or the requester named none and the company's own apply. Those are the three the engine's
+ * door has accepted since the stamp was added — "worldwide" is a positive instruction that the company's
+ * territories may not narrow, and "account-default" is how a request says the requester named none.
+ *
+ * This answered with two of them and folded the third into "worldwide". That was true while the only way
+ * to an empty list was clearing it on purpose. It stopped being true when the Where panel began drawing
+ * the company's own territories under an empty draft: the screen then showed four countries while the
+ * request said everywhere, which is the incident below arriving from the other direction — and on the
+ * two searches that read named places, the door refuses it outright and the requester is told to name
+ * territories the screen is already showing them.
+ *
+ * The incident it exists to end: an empty list meant both "everywhere" and "I said nothing", so an
+ * account with seven default territories ran seven on a search sold as worldwide, and no field anywhere
+ * disagreed.
  */
-export function geographyFor(d: Draft): Geography {
-  return d.territories.length
-    ? { mode: 'named', territories: [...d.territories] }
-    : { mode: 'worldwide', territories: [] }
+export function geographyFor(
+  d: Draft, product: Product | null = null, resolved: readonly string[] = [],
+): Geography {
+  // THE PRODUCT DECIDES FIRST: on a search that IS worldwide there is no silence to interpret, and the
+  // door refuses "account-default" on that product by name.
+  if (product?.geography === 'worldwide, and nothing else') return { mode: 'worldwide', territories: [] }
+  if (d.territories.length) return { mode: 'named', territories: [...d.territories] }
+  // The company's own, which is the list the Where panel is drawing. They ride here for the screen to
+  // read; the WIRE sends the mode and lets the engine resolve the list, so a request cannot freeze
+  // today's profile into a run and call it what the requester asked for.
+  // The requester named none. That is true whether the company has territories of its own or has none,
+  // and it is the whole of what this mode says — the engine resolves the list, and with nothing to
+  // resolve it searches everywhere, which is the Worldwide chip the panel draws in that case.
+  //
+  // NOT "worldwide" WHEN THE COMPANY HAS NONE EITHER. The outcome is the same today and the STATEMENT is
+  // not: "worldwide" instructs the engine that the company's territories may not narrow this search, and
+  // a requester who simply did not name any has given no such instruction. Stamping it would put a
+  // positive claim on the wire that nobody made, and it is the claim that cannot be walked back —
+  // territories added to the company between the plan and the run would be ignored by a request that
+  // said everywhere, and honoured by one that said nothing. This is also what makes the portal state
+  // exactly what the engine's own door derives for a request carrying no stamp, which
+  // geographyStampParity.test.ts holds.
+  // TAKEN OVER AND NAMED NONE. The requester removed the company's own territories from this draft, so
+  // the silence above is not theirs — it is a positive instruction that the company's list may not
+  // narrow this search, which is what `worldwide` says. Below this line the requester has said nothing
+  // at all and the company's list stands.
+  if (d.replacesOwnTerritories) return { mode: 'worldwide', territories: [] }
+  return { mode: 'account-default', territories: [...resolved] }
 }
 
 /**
@@ -321,6 +410,10 @@ export function chooseProduct(d: Draft, product: Product | null): Draft {
   return {
     product: product?.key ?? null,
     territories,
+    // IT SURVIVES THE MOVE, unlike the two above. Those are dropped because the new product cannot
+    // express them; taking over the company's own list is expressible under every product, and it is a
+    // statement about whose territories these are rather than about which ones.
+    replacesOwnTerritories: d.replacesOwnTerritories,
     nativeLanguage: nativeLanguageControl(product) === 'toggle' ? d.nativeLanguage : false,
   }
 }
@@ -1098,6 +1191,10 @@ export function draftFromSaved(
   return chooseProduct({
     product: base,
     territories,
+    // A SAVED SEARCH NAMING NO TERRITORY INHERITS, as it always has. The saved form carries the
+    // jurisdictions it was saved with and no record of anyone having taken a list over, so reading one
+    // back is the requester saying nothing about the company's own — not saying it may not apply.
+    replacesOwnTerritories: false,
     nativeLanguage: recipe['nativeLanguage'] === true,
   }, product)
 }

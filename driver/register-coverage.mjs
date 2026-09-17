@@ -51,7 +51,7 @@
 // once per snapshot, by a writer that is already async. So that import is DYNAMIC, and search-policy
 // never pulls the plan layer in to answer a question about a product menu.
 import { PROMPT_TERRITORIES } from "./compose-read.mjs";
-import { territoryTier } from "./territory-tiers.mjs";
+import { territoryTier, territoryKey } from "./territory-tiers.mjs";
 
 /**
  * The composer display names this register can actually search.
@@ -156,4 +156,97 @@ export function registerCoverageCause(geography, territories, all = PROMPT_TERRI
   if (!rule) return null;
   if (rule(territories, all)) return null;
   return geography === "worldwide, and nothing else" ? "register-not-worldwide" : "register-coverage";
+}
+
+// ── the REQUEST half ────────────────────────────────────────────────────────────────────────────────
+//
+// The product half above asks whether a PRODUCT can be ordered at all. This asks whether THIS request's
+// territories can be searched. Two questions, two rulings, deliberately not folded together:
+//
+//   · the PRODUCT-level refusal was retired on 2026-08-31 and stays retired — a worldwide search is
+//     orderable on a partial register and the gap is DISCLOSED in the report.
+//     `coverage-is-disclosed-never-refused.test.mjs` pins that, and this function must never make it red.
+//   · the REQUEST-level refusal was ruled on 2026-09-17: a requester who NAMES a territory the wired
+//     register cannot search is told so BEFORE the run. That gap is not disclosable — there is no result
+//     to caveat, only a territory the client asked about and would never hear another word on.
+//
+// AN EMPTY LIST IS THE "NAMES NO TERRITORY" STATE, BY CONSTRUCTION, and that is why no mode string is
+// read here. `effective-scope.mjs`'s ladder answers `[]` for a worldwide stamp — worldwide accepts no
+// narrowing, so the account's defaults are not consulted — and `[]` again when no layer set a territory.
+// So "a search that names no territory always runs" falls out of the empty set passing. A saved account
+// default that DID reach the ladder is in the list and is judged with the rest, which is the ruling of
+// 2026-09-17 on that question: a default counts as named once it reaches the engine.
+//
+// AND A NAME THE SNAPSHOT CANNOT SPEAK TO FAILS OPEN. `registerTerritories` is scoped to the composer's
+// 37 display names. The other doors are not: `normalizeTerritory` passes any two-letter token through, so
+// the CLI and start_run can name `VN`, which is inside clarivate's own 186-office enum and outside those
+// 37. A bare membership test would refuse a search this engine runs today. Only a territory the
+// snapshot's vocabulary can SPEAK TO is judged, and everything else is the pipeline's to defer as now.
+
+/** Composer display name for a canonical key, so a refusal says "China" whether the requester wrote
+ *  "China", "cn" or "CN". Built per call from the same list the covered set is scoped to. */
+function displayByKey(all) {
+  const out = new Map();
+  for (const name of all) out.set(territoryKey(name), name);
+  return out;
+}
+
+/**
+ * The territories this request NAMES that the wired register cannot search, as composer display names.
+ *
+ * @param territories        the resolved territories — `effective-scope.mjs`'s ladder answer
+ * @param registerTerritories what `coveredTerritoryNames` returned: `[...]`, `null` (no declared
+ *                            restriction) or `undefined` (the snapshot does not say)
+ * @returns `[]` — nothing to refuse, INCLUDING on `null` and `undefined`, which fail open exactly as
+ *          they do at every other layer. Never treat an empty return as "the check did not run".
+ *
+ * Both sides are compared through `territoryKey`, which is the identity function this tree already has
+ * for "what makes two spellings the same place" — it folds EM/EUTM/EUIPO to EU and UK to GB. That fold
+ * is the whole of requirement 2: an EU-covering register refusing a request that names "European Union"
+ * was the defect measured on 2026-09-17, and it cannot recur while both sides go through one authority.
+ */
+export function uncoveredTerritories(territories, registerTerritories, all = PROMPT_TERRITORIES) {
+  if (registerTerritories === null || registerTerritories === undefined) return [];
+  const covered = new Set(registerTerritories.map(territoryKey));
+  const display = displayByKey(all);
+  const out = [];
+  const seen = new Set();
+  for (const t of territories ?? []) {
+    const key = territoryKey(t);
+    // Outside the snapshot's vocabulary ⇒ this register's covered list says nothing about it. Fail open.
+    if (!key || !display.has(key) || covered.has(key) || seen.has(key)) continue;
+    seen.add(key);
+    out.push(display.get(key));
+  }
+  return out;
+}
+
+// One-line join rather than an import: this module's header makes its static graph part of the design
+// ("search-policy.mjs imports this file … a cycle is one careless import away"), and the only other
+// spelling of this lives behind scope-facts.mjs, which is not a leaf.
+const joinAnd = (parts) => (parts.length <= 1 ? parts.join("") : `${parts.slice(0, -1).join(", ")} and ${parts[parts.length - 1]}`);
+
+/**
+ * The door's sentence for a request naming territories the wired register cannot search — or null.
+ *
+ * WRITTEN ONCE, FOR EVERY DOOR. Wording approved by the owner on 2026-09-17, including naming the wired
+ * register, which the composer's own design note otherwise forbids on screen. The remedy clause is his
+ * addition of the same day: a caller with no screen — start_run, the CLI — has to be able to act on this
+ * sentence alone, on the next call.
+ *
+ * IT POINTS BACK RATHER THAN REPEATING. The first draft named the territories twice ("remove China and
+ * Japan"); the owner ruled on the plural the same day — "remove them", no need to repeat the countries —
+ * and the singular follows the same reason, since it repeated its one country for no better cause. The
+ * sentence already names them, so a screenless caller still has every territory it must drop.
+ *
+ * @param registerLabel the register's display label. Absent on a snapshot written before it was carried,
+ *                      and the sentence simply does not name it then rather than naming a key.
+ */
+export function registerReachRefusal(uncovered, registerLabel = null) {
+  if (!uncovered?.length) return null;
+  const names = joinAnd(uncovered);
+  const register = String(registerLabel ?? "").trim();
+  const where = register ? `${register}, the register configured here` : "the register configured here";
+  return `${names} ${uncovered.length === 1 ? "is" : "are"} not available with ${where}`
+    + ` — remove ${uncovered.length === 1 ? "it" : "them"} to run this search.`;
 }

@@ -29,9 +29,11 @@ import { join } from "node:path";
 import { runStreamingChild, absolutizeSkillRefs, WRITE_DISCIPLINE, buildEnvelope, resolveSpawnCwd } from "./common.mjs";
 import { renderCodexConfigToml } from "./mcp/codex-config.mjs";
 import { resolveAuthMode } from "./auth.mjs";
-import { envFrom } from "../../shared/env-aliases.mjs";   // — advice names the name in force
+import { resolveEngineProgram } from "../driver.config.mjs";   // — the one place that finds the program; it reads every spelling of the setting
 
-const codexBin = () => envFrom(process.env, "CLEAROTRON_CODEX_PATH") || "codex";
+// The same one resolver as the claude adapter (driver.config.mjs resolveEngineProgram), for the same reason:
+// the absolute path it found, or what was asked for when it found nothing.
+const codexBin = () => { const r = resolveEngineProgram("openai-agent"); return r.resolved ?? r.bin; };
 
 // tier/alias → codex `-m` model id. opus/sonnet/haiku are the driver's abstract tiers (CONTRACT §3). The
 // GPT ids are ENV-OVERRIDABLE and default to three DISTINCT rungs of the codex ladder — `gpt-5.6-sol`,

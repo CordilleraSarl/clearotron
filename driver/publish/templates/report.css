@@ -239,7 +239,19 @@
   .tb-hint{font-size:11px;color:var(--faint);line-height:1.4;margin:2px 2px 0}
   @media(max-width:860px){.tb-matter{display:none}}
   @media(max-width:640px){.tb-issued{display:none}}
-  @media(max-width:560px){.wm small{display:none}.tb-back-lbl{display:none}.tb-lbl{display:none}}
+  @media(max-width:560px){.wm small{display:none}.tb-back-lbl{display:none}.tb-lbl{display:none}
+    /* THE SAME ROW, CLOSER TOGETHER — the ladder above already collapses this bar's LABELS at these
+       widths, and it was still 35 to 51px wider than a phone screen, so the whole document scrolled
+       sideways: the reader dragged the page left and right to read a paragraph. Nothing is hidden and
+       nothing moves; the gutter, the gaps and one dead margin come in. The margin is dead here by the
+       line above — it separated the wordmark from a tagline that is no longer displayed. */
+    .topbar{gap:4px;padding-left:12px;padding-right:12px}}
+  /* AND ON A SMALL PHONE, ONE THING GOES. Closing 375px and below is not a spacing problem — the row's
+     own items are wider than the screen — so something has to go, and which one is a decision about what
+     a reader keeps rather than a number to tune. Ruled: the back arrow. The product's name and the risk
+     label stay, because they say where the reader is and what the answer was; the arrow is a route back
+     to a list, and a reader on a phone has the browser's own. (owner, 2026-09-17) */
+  @media(max-width:375px){.topbar .tb-back{display:none}}
 
   /* hero: conclusion card (dial + verdict) + scope card jurisdiction chips */
   .heroGrid .gauge{display:flex;flex-direction:column;justify-content:flex-start}
@@ -513,3 +525,8 @@
   .openrows .rk,.provwrap .rk{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-bottom:6px}
   .provnote{margin:0;font-size:12.5px;line-height:1.5;color:var(--slate)}
   .topbar .tb-lockup{margin-right:10px;flex:0 0 auto}
+  /* AFTER the rule it overrides, not beside its siblings at the breakpoint above: both selectors carry
+     the same weight, so the later one wins and a phone rule written earlier in this file did nothing at
+     all — measured, not assumed. The margin separates the wordmark from the tagline, and the tagline is
+     already hidden at this width. */
+  @media(max-width:560px){.topbar .tb-lockup{margin-right:0}}

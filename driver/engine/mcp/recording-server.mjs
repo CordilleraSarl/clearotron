@@ -627,6 +627,19 @@ serve({
             },
           },
         },
+        batch: {
+          type: "integer",
+          minimum: 1,
+          description:
+            "The batch of records this call accounts for, when the dispatch splits the band into " +
+            "batches. Send one call per batch, carrying its number. Every record in THAT batch must end " +
+            "in this call — a findings row, an incumbent row, a Negative-results drop, or a " +
+            "Disagreement resolution — and the call is refused naming any that end nowhere; the records " +
+            "in every other batch are not this call's business. A batch call MERGES onto what you have " +
+            "already recorded, so earlier batches are kept without re-sending them, and a record ended " +
+            "under one batch cannot be ended again under another. Omit it only when you are sending the " +
+            "whole band in one call, which the dispatch tells you when it is.",
+        },
         patch: {
           type: "boolean",
           description:

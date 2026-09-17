@@ -18,10 +18,12 @@ import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.
 import { clearanceReportData } from './report-data.mjs';
 import { searchDepthRecord } from './search-depth.mjs';   // how much was read to reach the answer, as counts and tokens
 import { parseFrameworkManifest } from '../framework.mjs';
-import { rollupTokens } from '../tokens.mjs';
+import { rollupTokens, servedModels } from '../tokens.mjs';
 import { reportIdentityFor, productCoverageNote, isRegisterOnly } from '../search-policy.mjs';
 import { readRecordArtifacts, bindFindingsToRecords, joinEvidenceStatus } from '../registry-fidelity.mjs';
 import { deliveryFlagLines } from '../predelivery-lint.mjs';
+import { unrenderableConditions } from '../terminal-clamp.mjs';   // — the conditions that reach no client surface
+import { runLog } from '../log.mjs';   // — one line in the run record when one does
 import { PROVIDERS, config } from '../driver.config.mjs';
 import { declaredRecordOrigins } from '../record-origins.mjs';
 import { NEUTRAL_DELIVERY, loadProfiles } from '../profiles.mjs';
@@ -791,6 +793,30 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // the narrative, never in a status line). Best-effort; legacy runs have no sidecar.
   let verdictInfo = null;
   try { verdictInfo = JSON.parse(readFileSync(driverDir(runDir, 'verdict.json'), 'utf8')); } catch { /* legacy */ }
+  // ── THE CONDITIONS THAT REACH NO PAGE, RECORDED RATHER THAN LOST ────────────────────────────────
+  //
+  // A condition whose reader-facing sentence was never stored and cannot be composed from the run
+  // record's own counts is dropped instead of printed in the engine's words. That is right for the
+  // reader and it is a silent loss for everyone else, so the drop reports itself twice: an ordinary
+  // row on the workbook's gaps sheet, and one line in the run record here.
+  //
+  // THE WORDS ARE THE RUN RECORD'S OWN. The reason is what the clamp site wrote; the state word and the
+  // column headings are the gaps sheet's. Nothing on this path composes a sentence.
+  //
+  // A FRESH RUN NEVER REACHES THIS. Every clamp site stores its clause, so the list is empty and the
+  // sheet grows no row and the log gains no line. It bites on a republished archive, which is exactly
+  // where the operator has no other way to learn the page is short of a point.
+  const droppedConditions = unrenderableConditions(verdictInfo || {}).map((reason) => ({
+    area: 'Conditions', state: 'open', note: reason,
+  }));
+  // Best-effort, in the house pattern: a publish never fails for want of a log line, and a republish
+  // from a directory this process cannot write is still a publish.
+  if (droppedConditions.length && runDir) {
+    try {
+      runLog(runDir, { event: 'client-condition-dropped', n: droppedConditions.length,
+        reasons: droppedConditions.map((c) => c.note) });
+    } catch { /* the workbook row is the record that matters; this line is the second copy */ }
+  }
   // doc 50 — the run's FROZEN framework manifest (band vocabulary). Present on band-doctrine runs;
   // absent on every archived run (they render byte-identically on the legacy paths).
   let framework = null;
@@ -902,7 +928,14 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   const reviewReceipts = {
     // `family` rides along for deliveryFlagLines' fallback: a check whose id is not in the projection
     // table still projects to its family's sentence rather than to anything the engine wrote.
-    lint: (lintSink?.checks ?? []).filter(c => !c.pass).map(c => ({ id: c.id ?? '', family: c.family ?? '', detail: c.detail ?? '' })),
+    // ONE CHECK IS DELIBERATELY NOT PROJECTED. `client-condition-dropped` has no sentence of its own
+    // in the projection table, so it fell through to its family's — "the delivered outcome and the
+    // report's own text do not agree" — which describes a contradiction. This is an omission: the
+    // outcome and the text agree perfectly and both are short of a point. It says what happened on the
+    // gaps sheet and in the run record now, in the run record's own words, so the borrowed sentence
+    // comes off rather than being replaced by a better one (ruled 2026-09-17).
+    lint: (lintSink?.checks ?? []).filter(c => !c.pass && c.id !== 'client-condition-dropped')
+      .map(c => ({ id: c.id ?? '', family: c.family ?? '', detail: c.detail ?? '' })),
     engagement: integritySink?.engagement ?? null,
     registryCorrections: Array.isArray(integritySink?.registryCorrections)
       ? integritySink.registryCorrections.filter((c) => c && c.from != null && c.to != null) : [],
@@ -1032,7 +1065,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
       // the same rule (the workbook's own BANNED gate had already started firing on the raw detail —
       // advisory, so CI stayed green). reviewReceipts.lint keeps its raw detail for the internal
       // readers above (fetchState reads registry-record-coverage's URIs out of it).
-      counts = await buildAudit({ findings, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
+      counts = await buildAudit({ droppedConditions, findings, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
       grpRead(join(poolRunDir, auditFile), 0o640);
       if (counts?.gateViolations?.length) console.warn(`[audit-workbook] advisory: ${counts.gateViolations.join(' | ')}`);
     } catch (e) {
@@ -1053,6 +1086,11 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // rather than wire the overlay in: client names saturate privileged report prose — a partial blur is a
   // worse demo than no toggle.
   const reportNav = siteNav(poolRoot, 'report', null, '../', { anon: false });
+  // The models that served this run, named as a client may read them (tokens.mjs servedModels). The closing
+  // line of the report's scope section, the data file and the meta below all take this one read; a read
+  // that throws records nothing rather than failing the publish.
+  let served = null;
+  try { served = runDir ? servedModels(runDir) : null; } catch { served = null; }
   // `demoData` is resolved above the report.md write — one answer, every surface.
   // ── HOW MUCH WAS READ TO REACH THE ANSWER ──────────────────────────────────────────────────────
   // Derived here rather than in a stage so a REPUBLISH of an archived run picks the fields up with no
@@ -1076,7 +1114,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     writeRO('search-depth.json', JSON.stringify(searchDepth, null, 2));
   } catch { /* the depth record is additive — a publish never fails for want of it */ }
 
-  writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', nav: reportNav, chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, recordLinks: officeLinks?.byUri ?? null, providerLabel, seniorRights, findingsSchemaVersion, searchDepth }));
+  writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, servedModels: served, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', nav: reportNav, chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, recordLinks: officeLinks?.byUri ?? null, providerLabel, seniorRights, findingsSchemaVersion, searchDepth }));
   // ONE report (spec 2026-07-30 §5): report.client.html is no longer written. The knockout lane's own
   // collapse note is the precedent: "two renderings of one run is how the wrong link gets sent". The
   // client host serves the same report.html through the portal's readReport() (cleaning built in) — its
@@ -1150,7 +1188,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
       // is the LAST resort (a level today's registry no longer knows). meta.json below keeps the frozen
       // stamp BY DESIGN — its readers re-derive.
       auditFile, searchLevel: searchPolicy?.level ?? null, stageLabel: stageLabel ?? searchPolicy?.stageLabel ?? null,
-      engineCommit: engineCommit(),
+      engineCommit: engineCommit(), servedModels: served,
       framework, verdictInfo, findings, coverage, contextNotes, markAssessment, fourAnswers, askAnswers,
       actions: actionsRegister, jurisdiction, searchedJurisdictions, scopeBasis, caption: fm.overall_caption ?? null,
     });
@@ -1175,6 +1213,9 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     issuedAt,
     // WHICH BUILD produced this. null off a git checkout — a provenance stamp never fails a publish.
     engineCommit: engineCommit(),
+    // The models that served the run, named as a client may read them (tokens.mjs servedModels). Absent when
+    // nothing was read, so a meta from before the record keeps its shape; [] when turns ran and named none a client may read.
+    servedModels: served ?? undefined,
     kind: 'clearance', recordLinks: officeLinks?.tally ?? undefined,   // per office: linked, or cited by number and why; only where the register has no record pages
     searchLevel: searchPolicy?.level ?? undefined,
     // Display-only face of the level ("Depth 4"), frozen alongside it so the list can show which reads

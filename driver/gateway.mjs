@@ -817,7 +817,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     followup = false,   // #5b: this run is a warm-resume / followup (escalation, envelope close, frame-reopen
                         // sweep) — a hard-wall timeout breaks after ONE attempt (a 1.5× extension can't fit
                         // an already-over-budget resume; the caller records the coverage-limited deferral).
-    excludeTools, bandSize,   // copper-lattice re-route: tool names dropped from this stage's allowedTools
+    excludeTools, bandSize, derivedLimit = null,   // copper-lattice re-route: tool names dropped from this stage's allowedTools
   } = opts;
   if (!message) throw new Error(`runStage(${name}): message is required`);
   if (!sessionKey) throw new Error(`runStage(${name}): sessionKey is required`);
@@ -1145,17 +1145,17 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // it; the log was already saying what the code believed.
     //
     // TWO FIELDS, NEVER COLLAPSED INTO ONE:
-    //   modelUsed   — the requested resolution. Unchanged in meaning and unchanged in value, because
-    //                 run-economics.mjs and tokens.mjs both read it and a field that quietly changes
-    //                 what it means is its own corruption.
-    //   modelActual — the id the WIRE reported (engine tuple `modelWire`), or NULL when the stream
-    //                 never said: an engine that does not emit one (codex), a turn killed before any
-    //                 event, a spawn error. It NEVER falls back to the requested alias.
-    // `modelBasis` names which of the two the row can defend: "actual" or "unknown". There is no third
-    // state in which a requested value is dressed as an observed one.
+    //   modelUsed   — the requested resolution, unchanged in meaning and value: run-economics.mjs and
+    //                 tokens.mjs both read it, and a field that quietly changes meaning is its own corruption.
+    //   modelActual — the id the WIRE reported (engine tuple `modelWire`), or NULL when the stream never
+    //                 said: an engine that does not emit one (codex), a turn killed before any event, a
+    //                 spawn error. It NEVER falls back to the requested alias, and `modelBasis` ("actual" or
+    //                 "unknown") never dresses a requested value as an observed one. `providerReported` is
+    //                 the provider word the same stream gave (tuple `providerWire`), null on the same terms.
     const modelRequested = engine.resolveModelId ? engine.resolveModelId(model) : resolveModel(model);
     const modelActual = (typeof turn.modelWire === "string" && turn.modelWire) ? turn.modelWire : null;
     const modelBasis = modelActual ? "actual" : "unknown";
+    const providerReported = (typeof turn.providerWire === "string" && turn.providerWire) ? turn.providerWire : null;
     // WHETHER THE OBSERVED ID NAMES A FIXED BUILD. `modelBasis: "actual"` says the provider answered,
     // not that the answer is pinned: two of the three tiers come back as undated aliases the provider
     // may repoint, and recorded beside a dated one they read identically. null when there is nothing to
@@ -1171,9 +1171,13 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // "written before anybody asked", which is the distinction the field exists for. One spawn per
     // binary per process; a probe never throws, because taking down a dispatch to record a version
     // would be a worse defect than the gap it closes.
+    // `source` says WHICH copy served (explicit / path / installed), and it is attached here, outside the
+    // probe's cache: that cache is keyed by the file, and one file can be reached by more than one route.
     const cli = (() => {
-      try { return probeCliVersion(preflightEngineBinary(process.env)?.resolved ?? null); }
-      catch (e) { return { version: null, probe: "unreadable", why: String(e?.message ?? e).slice(0, 160) }; }
+      try {
+        const pre = preflightEngineBinary(process.env);
+        return { ...probeCliVersion(pre?.resolved ?? null), source: pre?.source ?? null };
+      } catch (e) { return { version: null, probe: "unreadable", why: String(e?.message ?? e).slice(0, 160), source: null }; }
     })();
     if (modelActual) lastModelWire = modelActual;                       // — never overwritten with null
     // The comparison is by FAMILY (driver.config modelFamily), because `--model haiku` legitimately comes
@@ -1294,7 +1298,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
           attempt, key, agent, model,
           modelUsed: (lastModelUsed = engine.resolveModelId ? engine.resolveModelId(model) : resolveModel(model)),
           // Same billing stamp as the attempt row, written on the same terms — see the note there.
-          engine: engine.name, writeBoundary: writeBoundaryOf(engine), authMode: auth.mode, apiBilled: auth.apiBilled === true,
+          engine: engine.name, writeBoundary: writeBoundaryOf(engine), authMode: auth.mode, apiBilled: auth.apiBilled === true, cloud: auth.cloud ?? null,
           code: rt.code, wall: rt.wall, timeoutSec: effTimeout,
           // — same rename as the attempt row above. This row already carries the driver's verdict as
           // `repairOutcome` (only "repaired" is success), so it needs no `ok`; what it lacked was any mark
@@ -1638,8 +1642,8 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         //   modelMismatch — true/false when both sides name a family, null when either does not.
         // Written even on the rows where they are null, so "this engine cannot report" stays visibly
         // different from "this record predates the gauge".
-        modelActual, modelBasis, modelSnapshot, modelMismatch,
-        cliVersion: cli.version, cliVersionProbe: cli.probe, ...(cli.why ? { cliVersionWhy: cli.why } : {}),
+        modelActual, modelBasis, modelSnapshot, modelMismatch, providerReported,
+        cliVersion: cli.version, cliVersionProbe: cli.probe, ...(cli.why ? { cliVersionWhy: cli.why } : {}), cliSource: cli.source,
         // W3 billing telemetry: which engine ran + the RESOLVED billing mode (subscription vs api-key). This
         // records INTENT (the mode the engine was configured to bill under), not independent billing evidence
         // — the actual proof is the provider console (claude's stream also reports apiKeySource; codex does
@@ -1653,7 +1657,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         // "every telemetry field is written unconditionally, so 'did not happen' stays distinguishable
         // from 'not recorded'" (instrumentation-house-rule.test.mjs). A run must be able to STATE that it
         // billed subscription, not merely fail to state that it billed API.
-        engine: engine.name, writeBoundary: writeBoundaryOf(engine), authMode: auth.mode, apiBilled: auth.apiBilled === true,
+        engine: engine.name, writeBoundary: writeBoundaryOf(engine), authMode: auth.mode, apiBilled: auth.apiBilled === true, cloud: auth.cloud ?? null,
         // build 2 — THIS attempt is the fresh dispatch bought by discarding a warm session that
         // reproduced its own failure. Exact, not cumulative: a `warmEscalatedAt > 0` test would mark
         // every later attempt too the moment the ladder is deepened, and the row would stop meaning
@@ -1743,6 +1747,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         // null (not 0, and not absent) on an engine that cannot report them, so "this adapter does not
         // measure" stays visibly different from "this turn called no tools" — see toolGauge.
         ...toolGauge(turn), band: bandSize ?? undefined,
+        inputBytes: derivedLimit?.inputBytes ?? undefined, derivedLimitSec: derivedLimit?.sec ?? undefined,
         // AD-4 emitted-vs-landed, UNCONDITIONAL (was success-only, which made a failed attempt's mid-write
         // artifact invisible): `output` = what LANDED on disk after this attempt (null when the stage has no
         // expected file); `wrote` = whether THIS attempt emitted it (see the computation above the runDir
@@ -1776,8 +1781,8 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
           event: "attempt", stage: name, attempt, of: maxRetries + 1, ok: !fail, fail: fail ?? null,
           //: the spine carries the same pair as the per-stage log, or the two disagree about what
           // ran. `model` stays the requested resolution (its existing readers); `modelActual` is the wire.
-          model: modelRequested, modelActual, modelBasis, modelSnapshot, modelMismatch,
-          cliVersion: cli.version, cliVersionProbe: cli.probe, ...(cli.why ? { cliVersionWhy: cli.why } : {}),
+          model: modelRequested, modelActual, modelBasis, modelSnapshot, modelMismatch, providerReported,
+          cliVersion: cli.version, cliVersionProbe: cli.probe, ...(cli.why ? { cliVersionWhy: cli.why } : {}), cliSource: cli.source,
           wrote, warm: warm || undefined, warmEscalated: attempt === warmEscalatedAt || undefined,
           rescued: rescued ?? undefined, killed: killed || undefined,
           quiescentMs: Number.isFinite(quiescentMs) ? Math.round(quiescentMs) : undefined,   // — see the per-stage row
@@ -1789,7 +1794,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
           // archived runs actually reads, and the question "has this box ever billed API" could not be
           // answered from it because the pair was only ever on the per-stage log. Written unconditionally,
           // like everything else here: a subscription run states `false`.
-          authMode: auth.mode, apiBilled: auth.apiBilled === true,
+          authMode: auth.mode, apiBilled: auth.apiBilled === true, cloud: auth.cloud ?? null,
           //: the spine carries the POINTER and the sha, not the text — enough to find the file and
           // to tell two attempts apart without opening either.
           dispatch: dispatch?.file ?? null, dispatchSha: dispatch?.sha ?? null,
@@ -1806,6 +1811,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
           wall, outputTokens: usage?.output ?? null, tokensPerSec: tokensPerSec(usage, wall),
           // — the spine carries them too, or a round has to join two files to ask why a stage was slow.
           ...toolGauge(turn), band: bandSize ?? undefined,
+        inputBytes: derivedLimit?.inputBytes ?? undefined, derivedLimitSec: derivedLimit?.sec ?? undefined,
           formRepairs: formRepairsThisAttempt || undefined,   //, see the stage row above
         });
       } catch { /* telemetry best-effort — never fail a turn over a journal line */ }

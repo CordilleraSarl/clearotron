@@ -31,7 +31,7 @@ import { join, basename } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { fileURLToPath } from "node:url";
 
-import { enumerateRuns, resolveRun, runAccountKey, runOrganisation, runProfileFacts } from "./lib/runs.mjs";
+import { enumerateRuns, resolveRun, runAccountKey, runOrganisation, runProfileFacts, productIdentityFor } from "./lib/runs.mjs";
 import { ORDERABLE_PRODUCTS } from "../driver/search-policy.mjs";
 import { PRODUCTS } from "../driver/products.mjs";
 
@@ -193,6 +193,20 @@ function runSummary(run) {
       ? { key: facts.account, name: facts.clientName }
       : { key: null, name: null, known: false, note: "this run's client could not be read from its own record" },
     project: facts.projectKey ? { key: facts.projectKey, name: facts.projectName ?? facts.projectKey } : null,
+    // WHAT KIND OF SEARCH IT WAS, on every row, and it is the same defect as the client above one turn
+    // later. A mark and a date do not name one run: on the bundled demo data alone, one mark and one day
+    // return nine rows across four products — a full country search, a multi-country focus search, a
+    // global preliminary search and two knockouts. A session bound to one report is safe whatever the
+    // row says, because the scope carries the runId; an account-scoped session has only these rows, and
+    // nothing in them told the two apart except the runId string, which is an internal slug a client has
+    // never seen and which this tool's own description warns is not theirs to read.
+    //
+    // RESOLVED AT READ TIME THROUGH THE REGISTRY, never a stored string, for the reason `runs.mjs` gives
+    // where this resolver lives: a run freezes its product ID and the name is today's name, so the row,
+    // the brief and the report masthead cannot disagree and a renamed product renames everywhere at
+    // once. null where the registry cannot name it — the row says nothing rather than guessing, because
+    // a hardcoded fallback is how a knockout once announced itself as a product it provably was not.
+    product: productIdentityFor(run),
     state: run.state, location: run.location, verdict: run.verdict, url: run.url,
     markName: run.markName, ref: run.ref, classes: run.classes,
     step: s.stepN ? `${s.stepN}/${s.stepTotal} ${s.stepLabel ?? ""}`.trim() : null,

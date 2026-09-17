@@ -362,6 +362,12 @@ const MCP_HOST_RE = /https?:\/\/[A-Za-z0-9.-]+\/mcp/gi;
 // introduces it and the full stop that closes it — leaving either behind puts a stray break or an orphan
 // "." in the footer of every report.
 const RATED_UNDER_RE = /<br\s*\/?>Rated under:\s*<span class="mono">[^<]*<\/span>\./gi;
+// THE PROJECT LINE IS THE SAME CLASS AND WAS MISSING ITS STRIP. "Run under project: <name>" is
+// internal provenance — an end-to-end arm reads it out of the published internal report — and it sat
+// beside "Rated under" in the footer with nothing removing it here, so it reached every embedded
+// reader exactly as written: the engine's phrase for the folder a job was filed in, and the folder's
+// name. Same shape, same removal, one line apart.
+const RUN_UNDER_PROJECT_RE = /<br\s*\/?>Run under project:\s*<span class="mono">[^<]*<\/span>\./gi;
 
 const CONNECTOR_TOKEN_RE = /([?&])token=v1\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+(&)?/g;
 
@@ -796,8 +802,16 @@ export function prepareReportForEmbed(html, { staff = false, poolRoot = null, fe
 
   // The footer fingerprint. Counted like the rest so a renderer change that moves it shows up as a zero
   // rather than as a line that quietly starts shipping again.
+  //
+  // ONE COUNTER PER LINE, AND THAT IS THE WHOLE POINT OF COUNTING. These two strips shared a counter, so
+  // the check that exists to catch a renderer moving this markup could not tell WHICH line moved: the
+  // renderer could rename one of them, that strip would match nothing, the other would still fire, and
+  // the count would read 1 exactly as it does when both work. A count that cannot fall to zero for one
+  // of the two things it counts is not a measurement of either.
   let ratedUnderDropped = 0;
+  let runUnderProjectDropped = 0;
   out = out.replace(RATED_UNDER_RE, () => { ratedUnderDropped += 1; return ""; });
+  out = out.replace(RUN_UNDER_PROJECT_RE, () => { runUnderProjectDropped += 1; return ""; });
 
   // ── THE ASK-AI BAND COMES OUT FOR EVERY READER ──────────────────────────────────────────────────
   //
@@ -854,7 +868,7 @@ export function prepareReportForEmbed(html, { staff = false, poolRoot = null, fe
   out = injectEmbedLayer(out, { feedback });
 
   return {
-    html: out, strippedNav, neutralised, mcpLeaks, tokensDropped, ratedUnderDropped,
+    html: out, strippedNav, neutralised, mcpLeaks, tokensDropped, ratedUnderDropped, runUnderProjectDropped,
     internalTailsDropped, reviewerCodesDropped, unbalanced, missingCss,
   };
 }

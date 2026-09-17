@@ -88,6 +88,153 @@ export function accountingArmed(runDir) {
   return existsSync(driverDir(String(runDir ?? ""), ACCOUNTING_STAMP));
 }
 
+// ── THE BAND REACHES THE SEAT IN BATCHES, AND A BATCH IS THE UNIT OF ACCOUNTING ───────────────────
+//
+// A dense matter carried 1,161 records into one digest turn (2026-09-16). The seat ran out of turn
+// before it had accounted for them all, the call was refused with 902 outstanding, and the ladder
+// re-sent the same shape: 35 minutes and 172,900 output tokens for a document that was never written.
+// Nothing was wrong with the judgment. The stage was handed more records than one turn holds.
+//
+// SO THE DRIVER SPLITS THE OWED SET AND THE SEAT RECORDS ONE CALL PER BATCH. What made that impossible
+// was not the absence of a split — the transport has taken several calls since the patch path was
+// built — but WHERE THE REFUSAL LOOKED. It looked at the whole owed set on every call, and a refused
+// call stores no model, so the accumulator could never start: batch 1 was refused for not being
+// batches 2 to 12, and the work in it was discarded. Driven before this change, three calls of one
+// record each against an owed set of three: every call refused "2 of 3", no model stored, no document
+// written, and the same refusal on call 3 as on call 1.
+//
+// A CALL NAMING A BATCH IS JUDGED ON THAT BATCH. A call naming none is judged on the whole owed set,
+// exactly as before, which is what keeps the existing rungs working unchanged: the re-classify rung
+// sends the COMPLETE set of rows and the recall-reconciliation flush sends a patch of the rows it is
+// ending, and neither names a batch.
+export const DIGEST_BATCH_RECORDS = 100;
+
+/**
+ * The owed set split into batches, in order. PURE, and deterministic across a resume: `owed` is derived
+ * from placements.json, not from anything the run accumulates, so batch 7 holds the same records on the
+ * retry as it did on the attempt that was killed.
+ */
+export function batchesOf(owed, size = DIGEST_BATCH_RECORDS) {
+  const list = [...new Set((Array.isArray(owed) ? owed : []).map(joinKey).filter(Boolean))];
+  const n = Math.max(1, Number(size) || DIGEST_BATCH_RECORDS);
+  const out = [];
+  for (let i = 0; i < list.length; i += n) out.push(list.slice(i, i + n));
+  return out;
+}
+
+/**
+ * The records a model accounts for, by the three exits this seam recognises. PURE.
+ *
+ * ONE READER FOR TWO GATES, and that is the point of exporting it. The call-time refusal and the
+ * stage's exit gate have to be counting the same thing; two implementations of "accounted" would drift
+ * and the drift would show up as a stage that passed with records ended nowhere.
+ */
+export function accountedUris(model, owed = []) {
+  const accounted = new Set();
+  for (const r of [...(model?.findings_rows ?? []), ...(model?.incumbent_rows ?? []), ...(model?.negative_rows ?? [])])
+    accounted.add(joinKey(r?.uri));
+  // A disagreement resolution accounts for a record when its subject names that record's uri — the
+  // third exit, and the one a reader is least likely to expect, so it is joined rather than assumed.
+  for (const d of model?.disagreement_resolutions ?? [])
+    for (const k of (Array.isArray(owed) ? owed : [])) if (k && lc(d?.subject).includes(k)) accounted.add(k);
+  accounted.delete("");
+  return accounted;
+}
+
+/** Every record uri a raw call carries, across the three row lists. PURE. */
+export function callUris(call) {
+  const out = [];
+  for (const r of [...(call?.findings_rows ?? []), ...(call?.incumbent_rows ?? []), ...(call?.negative_rows ?? [])]) {
+    const k = joinKey(r?.uri);
+    if (k) out.push(k);
+  }
+  return out;
+}
+
+/**
+ * Which batch accounted each record, after this call. PURE. Returns `{ batchOf, doubled }`.
+ *
+ * DOUBLE-COUNTING IS A BATCH COLLISION, NEVER A REPEATED URI, and the distinction is the whole reason
+ * this is keyed rather than a membership test. `mergeDigestPatch` replaces a row by uri on purpose —
+ * "refreshing an ending is idempotent" — and the recall-reconciliation flush rung depends on it,
+ * telling the seat to re-send rows it is changing. So a uri arriving again UNDER ITS OWN BATCH is that
+ * legitimate refresh and is kept; the same uri arriving under a DIFFERENT batch is a record ended
+ * twice, which is what inflates a count nobody can reconcile, and it is refused naming both batches.
+ */
+export function batchLedger(storedBatchOf, call) {
+  const batchOf = { ...(storedBatchOf ?? {}) };
+  const doubled = [];
+  const batch = call?.batch;
+  if (!Number.isInteger(batch) || batch < 1) return { batchOf, doubled };
+  for (const k of callUris(call)) {
+    const was = batchOf[k];
+    if (was !== undefined && was !== batch) { doubled.push({ uri: k, was, now: batch }); continue; }
+    batchOf[k] = batch;
+  }
+  return { batchOf, doubled };
+}
+
+/**
+ * The batch block the digest dispatch carries: how the driver split this run's band, which batches are
+ * outstanding, and the one rule that makes a batch call different from a whole-document one. `null` when
+ * the run has no owed population, because a brief that enumerates nothing reads as a rule with no work.
+ *
+ * ON A RESUME IT IS THE RESUME INSTRUCTION, and that is why it is computed rather than fixed: the
+ * batches already accounted for are named as done, so the seat re-reads none of them. A retry that
+ * starts at batch 1 is how the stage burned 35 minutes twice on the same matter.
+ */
+export function digestBatchBrief(gap) {
+  if (!gap?.armed || !Array.isArray(gap.owed) || !gap.owed.length) return null;
+  const plan = batchesOf(gap.owed);
+  const outstanding = new Set(gap.unaccounted ?? []);
+  const todo = [];
+  for (let i = 0; i < plan.length; i++) if (plan[i].some((k) => outstanding.has(k))) todo.push(i + 1);
+  const done = plan.length - todo.length;
+  const lines = [
+    `## Your records, in ${plan.length} batch${plan.length === 1 ? "" : "es"}`,
+    "",
+    `This run carried ${gap.owed.length} record${gap.owed.length === 1 ? "" : "s"} into the digest. The driver has split them into `
+      + `${plan.length} batch${plan.length === 1 ? "" : "es"} of up to ${DIGEST_BATCH_RECORDS}. Record ONE `
+      + "`record_register_digest` call per batch, carrying `batch: <the number>` — not one call for the whole band.",
+    "",
+    "Every record in the batch you name must end in that same call: a findings row, an incumbent row, a "
+      + "Negative-results drop with its ground token, or a Disagreement resolution. The call is refused if "
+      + "one of them ends nowhere, and the refusal lists exactly which — send only those; everything you "
+      + "have already recorded is kept. A record ends in ONE batch: ending it again under a different "
+      + "batch number is refused.",
+    "",
+    `Your prose sections (opposition, merch_sweep, cross_checks, open_flags) ride any batch call and are `
+      + "kept when a later call omits them.",
+    "",
+  ];
+  if (done) lines.push(`${done} of these batches ${done === 1 ? "is" : "are"} already recorded and complete. `
+    + `Outstanding: batch ${todo.join(", ")}. Do not re-read or re-send the batches that are done.`, "");
+  else lines.push(`Outstanding: every batch, 1 to ${plan.length}.`, "");
+  return lines.join("\n");
+}
+
+/**
+ * What this run's digest still owes, read off the stored model. `{ armed, owed, accounted, unaccounted }`.
+ *
+ * THE EXIT GATE'S READ. Before batching, a digest that ended nothing failed because no document was
+ * ever written — the refusal on the last call was the gate. Once a batch call is accepted, the document
+ * EXISTS from batch 1 onwards, so that failure stops firing, and a seat that stopped after batch 6 would
+ * ship a document missing half the band with nothing refusing it. That inversion is what this closes,
+ * and it is armed by the same era stamp as the call-time refusal so archived runs are judged as they
+ * always were.
+ */
+export function digestAccountingGap(runDir) {
+  const armed = accountingArmed(runDir);
+  if (!armed) return { armed: false, owed: [], accounted: [], unaccounted: [] };
+  const facts = readDigestFacts(runDir);
+  if (!Array.isArray(facts.owed)) return { armed: true, owed: null, accounted: [], unaccounted: null };
+  const model = lastAcceptedModel(runDir);
+  if (!model) return { armed: true, owed: facts.owed, accounted: [], unaccounted: facts.owed, no_model: true };
+  const accounted = accountedUris(model, facts.owed);
+  return { armed: true, owed: facts.owed, accounted: [...accounted],
+    unaccounted: facts.owed.filter((k) => !accounted.has(k)) };
+}
+
 /**
  * The document's section headings, EXPORTED because three separate readers key on them and a heading
  * changed here without changing them is the failure this constant exists to make impossible.
@@ -597,6 +744,10 @@ export function acceptRegisterDigest(params, facts = emptyFacts()) {
     open_flags: str(params?.open_flags),
     instructed_checks,
     disagreement_resolutions,
+    // WRITTEN ONLY WHEN THERE IS ONE, so a run that never batched stores the model it always stored and
+    // an archived model replays byte-identical. It is the accumulator's own bookkeeping and no renderer
+    // reads it: `renderRegisterFindings` takes the keys it names and ignores the rest.
+    ...(params?.batch_of && Object.keys(params.batch_of).length ? { batch_of: params.batch_of } : {}),
   };
 
   // ASK WHAT THE ZERO MEANS. A digest that surfaced nothing AND dropped nothing has not judged the
@@ -610,16 +761,39 @@ export function acceptRegisterDigest(params, facts = emptyFacts()) {
   // Disagreement-resolutions row. Nothing new is invented here — the join is over lists this call
   // already carries.
   if (facts.armed) {
-    const accounted = new Set();
-    for (const r of [...model.findings_rows, ...model.incumbent_rows, ...model.negative_rows]) accounted.add(joinKey(r.uri));
-    // A disagreement resolution accounts for a record when its subject names that record's uri — the
-    // third exit, and the one a reader is least likely to expect, so it is joined rather than assumed.
-    for (const d of model.disagreement_resolutions)
-      for (const k of facts.owed) if (k && lc(d.subject).includes(k)) accounted.add(k);
-    const unaccounted = facts.owed.filter((k) => !accounted.has(k));
+    // A RECORD ENDED TWICE IS ANSWERED BEFORE A RECORD ENDED NOWHERE. The ledger is the driver's
+    // (batchLedger, from the raw call), so this reads a decision rather than making one.
+    const doubled = Array.isArray(params?.batch_doubled) ? params.batch_doubled : [];
+    if (doubled.length) {
+      const show = doubled.slice(0, 5).map((d) => `${d.uri} (batch ${d.was}, again in batch ${d.now})`).join("; ");
+      return { ok: false, reason: `registerdigest_double_counted:${doubled.length} record(s) this call ends were already ended by another batch: ${show}${doubled.length > 5 ? ` (+${doubled.length - 5} more)` : ""}. Each record ends exactly once, in its own batch — re-send the batch that owns it if the ending was wrong, and drop it from this one` };
+    }
+    const accounted = accountedUris(model, facts.owed);
+    // ── THE SCOPE IS THE BATCH WHEN THE CALL NAMES ONE, AND THE WHOLE OWED SET WHEN IT DOES NOT ─────
+    //
+    // Both arms use the same accounted set and the same three exits; only the population moves. A call
+    // naming no batch is judged exactly as it was before batching existed, which is what every rung
+    // that re-sends a complete document depends on.
+    const batch = Number.isInteger(params?.batch) && params.batch >= 1 ? params.batch : null;
+    let scope = facts.owed, where = "this run carried into the digest";
+    if (batch !== null) {
+      const plan = batchesOf(facts.owed);
+      const slice = plan[batch - 1];
+      if (!slice) {
+        return { ok: false, reason: `registerdigest_batch_unknown:batch ${batch} — this run's band splits into ${plan.length} batch(es) of up to ${DIGEST_BATCH_RECORDS} records, so there is no batch ${batch} to record. The dispatch names the batch count; send the batches it lists` };
+      }
+      scope = slice;
+      where = `batch ${batch} of ${plan.length} carried`;
+    }
+    const unaccounted = scope.filter((k) => !accounted.has(k));
     if (unaccounted.length) {
-      const show = unaccounted.slice(0, 5).join(", ");
-      return { ok: false, reason: `registerdigest_unaccounted_records:${unaccounted.length} of ${facts.owed.length} record(s) this run carried into the digest end nowhere — neither a findings row, nor a Negative-results drop, nor a Disagreement resolution: ${show}${unaccounted.length > 5 ? ` (+${unaccounted.length - 5} more)` : ""}. Each needs one of the three, and a drop needs its ground token` };
+      // THE REFUSAL IS THE WORK LIST. It used to show five of them and leave the seat to infer the rest,
+      // which is what made "retry the digest" the only move it could read off the refusal. A batch is at
+      // most DIGEST_BATCH_RECORDS records, so its outstanding set is quotable in full and the seat can
+      // act on THIS refusal without re-reading the band.
+      const cap = batch !== null ? DIGEST_BATCH_RECORDS : 5;
+      const show = unaccounted.slice(0, cap).join(", ");
+      return { ok: false, reason: `registerdigest_unaccounted_records:${unaccounted.length} of ${scope.length} record(s) ${where} into the digest end nowhere — neither a findings row, nor a Negative-results drop, nor a Disagreement resolution: ${show}${unaccounted.length > cap ? ` (+${unaccounted.length - cap} more)` : ""}. Each needs one of the three, and a drop needs its ground token. Send ONLY these — everything you have already recorded is kept` };
     }
   }
 
@@ -652,7 +826,20 @@ export function recordRegisterDigest(runDir, received, { facts = null, now = () 
 
   // A PATCH call merges onto the stored model BEFORE acceptance, so the whole document is validated
   // as one thing every time — a patch cannot slip a row past a check by arriving alone.
-  const params = received?.patch === true ? mergeDigestPatch(lastAcceptedModel(runDir), received) : received;
+  //
+  // A BATCH CALL IS A PATCH, AND IT IS NOT OPTIONAL THAT IT IS. Batches accumulate by definition: if
+  // batch 2 replaced the stored model rather than merging onto it, batch 1's rows would leave the
+  // document the moment batch 2 was accepted, and the run would reach delivery a batch short with every
+  // call reading as accepted. The batch ledger travels the same way — read off the stored model, so a
+  // resume that re-enters the stage carries what the killed attempt had already accounted for.
+  const batching = Number.isInteger(received?.batch) && received.batch >= 1;
+  const accumulates = received?.patch === true || batching;
+  const stored = accumulates ? lastAcceptedModel(runDir) : null;
+  const merged = accumulates ? mergeDigestPatch(stored, received) : received;
+  const ledger = batchLedger(stored?.batch_of, received);
+  const params = batching
+    ? { ...merged, batch: received.batch, batch_of: ledger.batchOf, batch_doubled: ledger.doubled }
+    : merged;
   const verdict = acceptRegisterDigest(params, facts ?? readDigestFacts(runDir));
   if (!verdict.ok) {
     try { writeFileSync(paths.refusals, `${JSON.stringify({ at: now(), reason: verdict.reason })}\n`, { flag: "a" }); }
@@ -682,8 +869,46 @@ export function recordRegisterDigest(runDir, received, { facts = null, now = () 
   const at = join(String(runDir ?? ""), FINDINGS_FILE);
   // The model lands BEFORE the document: a later patch merges onto what was accepted, so a write that
   // fails must not leave a stored model describing a document nobody has.
+  //
+  // ── AND UNDER BATCHING THE MODEL IS THE ACCUMULATOR, SO LOSING IT IS FATAL HERE ──────────────────
+  //
+  // Best-effort was right while one call carried the whole document: a lost model cost the next patch
+  // its base and said so by refusing. It is wrong once the batches ARE the document. Lose it after
+  // batch 3 and batch 4 merges onto nothing, batch 3's records stop being accounted, the union never
+  // closes, and the run ends refusing over records the seat accounted for correctly twenty minutes
+  // earlier — a loop with a true-looking refusal at the end of it.
+  let modelWriteFailed = null;
   try { writeFileSync(paths.model, JSON.stringify(verdict.model, null, 2) + "\n"); }
-  catch { /* best-effort; a lost model costs the next patch its base, and it says so by refusing */ }
+  catch (e) { modelWriteFailed = String(e?.message ?? e).slice(0, 200); }
+  if (modelWriteFailed && Number.isInteger(received?.batch)) {
+    const reason = `registerdigest_model_write_failed:this run accounts for its records in batches and the driver could not store what this batch accepted (${modelWriteFailed}), so the next batch would merge onto a base missing these rows and the run would refuse over records you have already accounted for (driver-written: this is a bug, not a model defect, and re-stating the call cannot fix it)`;
+    try { writeFileSync(paths.refusals, `${JSON.stringify({ at: now(), reason })}\n`, { flag: "a" }); }
+    catch { /* the refusal record is best-effort; the refusal itself is returned regardless */ }
+    return { written: null, refused: reason, captured: closeCapture({ ok: false, refused: reason }), capture_failed: captureFailed };
+  }
+
+  // ── THE CLIENT'S DOCUMENT STAYS ALL-OR-NOTHING WHILE BATCHES ARE OUTSTANDING ─────────────────────
+  //
+  // `register-findings.md` is read by nine parsers, by the gateway through `toolWrittenArtifact` to
+  // decide whether this stage produced anything at all, and by a lawyer. Writing it on each accepted
+  // batch puts a page on disk carrying the title, every heading and a third of the records — complete
+  // to every one of those readers. The exit gate in `validators.registerFindings` refuses such a
+  // document, which catches a seat that stops half way; it catches it AFTER the partial page exists.
+  //
+  // So while any owed record is still outstanding the batch accumulates into the MODEL, which is the
+  // driver's own state, and the document is rendered on the call that closes the union. A run that dies
+  // at batch 6 then leaves no document at all — exactly what an unfinished digest has always left, so
+  // the older "no document" stage failure keeps working unchanged and the exit gate becomes the second
+  // lock rather than the only one.
+  const gap = digestAccountingGap(runDir);
+  if (Array.isArray(gap.unaccounted) && gap.unaccounted.length) {
+    return {
+      written: null, refused: null, batch_accepted: received?.batch ?? null, remaining: gap.unaccounted.length,
+      accounted: gap.accounted.length,
+      captured: closeCapture({ ok: true, batch_accepted: received?.batch ?? null, remaining: gap.unaccounted.length }),
+      capture_failed: captureFailed,
+    };
+  }
   try { writeFileSync(at, verdict.content); }
   catch (e) {
     return { written: null, refused: null, write_failed: String(e?.message ?? e).slice(0, 200),

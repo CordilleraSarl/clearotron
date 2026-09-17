@@ -1726,7 +1726,8 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // showing the comparison can tell renders apart at all.
 // ── 2026-08-24: THE FREEZE MOVED, AND HERE IS WHY IT HAD TO ────────────────────────────────
 //
-// `render.mjs:856` dropped the entire "What we covered — and what's open" section when the coverage
+// The coverage section `scopeSection` used to render (it was deleted outright in the 2026-09-16
+// report redesign, so there is no live line here to point at) dropped the entire "What we covered — and what's open" section when the coverage
 // ledger had zero rows — no heading, no marker, nothing. A reader who has seen that section on another
 // report could not tell a run that measured nothing from one whose section was not reached, and on the
 // one delivered run in the pool that hits it the internal `Coverage read` line was gone too, so there
@@ -1769,7 +1770,21 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Advanced again by the break recorded above the FROZEN constant: seven fixed sentences on the
 // clearance page, which is a behaviour change and not licence-only, so both constants move for the same
 // measured reason.
-const FROZEN_BEFORE_SPDX = "54db7aee5527887272751814e157f466be0e9fae5d8f47ad90ce290656c857ca";
+
+// Advanced again by the break recorded above the FROZEN constant: the closing line naming the models that
+// served the search, a behaviour change and not licence-only, so both constants move.
+// Advanced again by the break recorded above the FROZEN constant: a tier word on the closing line is
+// Claude's, a behaviour change and not licence-only, so both constants move.
+// Advanced again by the break recorded above the FROZEN constant: Fable is a tier word like the other
+// three, a behaviour change and not licence-only, so both constants move.
+// Advanced again by the break recorded above the FROZEN constant: the Ask-AI band comes out of the
+// report, a behaviour change and not licence-only, so both constants move.
+// Advanced again when those four breaks met in one file; see the merge entry above the FROZEN constant.
+// Advanced again by the 2026-09-17 merge recorded above the FROZEN constant: the redesign and this
+// branch in one file, and the provenance line re-homed to the footer. Not licence-only, so this moves too.
+// Advanced again by the break recorded above the FROZEN constant: the export menu moved out to its own
+// module. Not licence-only, so this constant moves with it.
+const FROZEN_BEFORE_SPDX = "c405ed306e3b6d92811a91c36fc13bb01b745c8d6a2c73b17e329f538286d57d";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2045,6 +2060,61 @@ const FROZEN_BEFORE_SPDX = "54db7aee5527887272751814e157f466be0e9fae5d8f47ad90ce
 // The renderer's own lines are edited in place and its two new helpers sit at the end of the file, so no
 // line the rest of the tree cites by number moved.
 //
+// THE MODELS THAT SERVED THE SEARCH, as one closing line of Scope (2026-09-14). Every tier now goes to the
+// program as the vendor's alias, so the tier a stage asked for names no model; the ids the engine reported
+// for its turns are the record, and the owner asked for them on the report. The file's own checklist,
+// answered:
+//
+//   1. Is it reachable from a REPUBLISH? YES. doRepublish re-renders from the archived workspace, whose
+//      attempt rows carry the id the engine reported, so a re-rendered run gains one line naming the
+//      models that served it. That adds provenance; no finding, band, count, record or date moves. A run
+//      with no such rows renders as before, and that is MEASURED: the three committed clearance demos and
+//      the knockout demo, republished through the ordinary publisher before and after this change, gave
+//      report.html and meta.json that differ only in the issue stamp, and a report-data.json that gains
+//      only `"servedModels": null`.
+//   2. Could it live in report.css or brand.mjs? NO. It is words read from the run's own record.
+//   3. The hash moves HERE, in the commit that ships it. NOT licence-only, so FROZEN_BEFORE_SPDX advances
+//      with it.
+//
+// The renderer's own lines are edited in place and its one new helper sits at the end of the file, so no
+// line the rest of the tree cites by number moved.
+//
+// A COMPANY'S OWN NAME FOR ITS DEPLOYMENT NEVER REACHES THE LINE (2026-09-15). Through a cloud, a turn may
+// report a name the company gave its own deployment. servedModels (tokens.mjs) now lists such a turn as the
+// tier it asked for ("Opus"), and a cloud's spelling of a Claude id as the dated Claude id, so the list may
+// read "claude-opus-5, Haiku". The line has to count a tier word as Claude's, or that list would print
+// "Prepared with:" and lose its vendor. The file's own checklist, answered:
+//
+//   1. Is it reachable from a REPUBLISH? YES, and that is the point: a republished run served under a
+//      deployment name loses the name and gains the tier word. Every list the previous code could be
+//      handed (Claude ids only, any other ids, nothing) renders byte for byte as before, because a list
+//      with no tier word takes exactly the old branch. The served-models test's earlier line arms, unchanged
+//      and green, hold that.
+//   2. Could it live in report.css or brand.mjs? NO. It decides which words the line prints.
+//   3. The hash moves HERE, in the commit that ships it. NOT licence-only, so FROZEN_BEFORE_SPDX advances
+//      with it.
+//
+// The edit sits inside the file's last helper, after every line the rest of the tree cites by number.
+//
+// FABLE IS A TIER WORD LIKE THE OTHER THREE (2026-09-15). A stage reaches the fable tier through the synthesis
+// override, and a fable turn served under a company's deployment name was left off the list, because the tier
+// reader placed only opus, sonnet and haiku; servedModels' docstring in tokens.mjs said so. servedModels (tokens.mjs) now lists such a
+// turn as "Fable", so the line's tier-word pattern reads Fable too, or that list would print "Prepared with:"
+// and lose its vendor. The file's own checklist, answered:
+//
+//   1. Is it reachable from a REPUBLISH? YES: a republished run whose fable turns were served under a
+//      deployment name gains "Prepared with Claude: Fable." where it printed no line, or names Fable beside the
+//      other models where it named only those. Every other list renders as before: a list with no Fable in it
+//      takes exactly the old branch. MEASURED: the three committed clearance demos and the knockout demo,
+//      republished through the ordinary publisher before and after this change, gave report.html, meta.json and
+//      report-data.json identical once the issue stamp is removed (twelve files; their record carries no served
+//      model, so the new word cannot reach them).
+//   2. Could it live in report.css or brand.mjs? NO. It decides which words the line prints.
+//   3. The hash moves HERE, in the commit that ships it. NOT licence-only, so FROZEN_BEFORE_SPDX advances
+//      with it.
+//
+// The edit is three lines beside the file's last helper, changed in place, so no line the rest of the tree cites moved.
+//
 // ── BREAK: the Ask-AI band comes out of the report ──────────────────────────────────────────────────
 //
 // WHAT WENT. `askAi()`, the "Ask your AI about this run" banner under the verdict; the `mcpUrl`
@@ -2176,7 +2246,160 @@ const FROZEN_BEFORE_SPDX = "54db7aee5527887272751814e157f466be0e9fae5d8f47ad90ce
 // carries the reason for a decision and not its address — moved the bytes again with no behaviour
 // between the two. One entry, because a reader asking what changed gets the same answer either way.
 
-const FROZEN = "4c9a9ace10f7145b95dc5ee3fa27c7b19c70dda7573ba19810b072a0a0a73469";
+// NEXT BREAK (2026-09-17): THE VERDICT CARRIES EVERY CONDITION, on the owner's ruling of 2026-09-16.
+//
+// Answering the checklist at the top of this file honestly, one line each.
+//
+// Reachable from a republish? YES, and here that is the repair rather than the cost. The conditions were
+// already on the page — in a separate labelled row beside the verdict — so a re-rendered archived run
+// gains no fact it did not carry and loses none. What goes is the "(and N more)" truncation in the
+// verdict sentence; what moves is where the list sits, into the verdict itself, which is where the
+// redesign's mock puts it and where it reads as the terms the verdict is conditional on rather than a
+// list standing next to it. A sidecar with no composed statement to take a lede from — every legacy
+// archive, and every run predating the reason/clause split — renders exactly as it did, separate row
+// included. That path was checked because removing the row without it drops every condition on
+// precisely the runs that cannot be re-rendered with better text, which an existing arm caught.
+//
+// Could it live in report.css or brand.mjs? NO. It decides what TEXT reaches a client's page and how
+// much of it, not how that text looks.
+
+// AND AGAIN (2026-09-17): NO AUDIT REFERENCE ON A CLIENT'S CARD.
+//
+// Reachable from a republish? Yes. "audit ref F1" is the engine's handle for a finding — it indexes the
+// workbook and means nothing to the reader holding the report — so a re-rendered archived run loses a
+// label, not a fact. The SOURCE LINK on that row stays: it is the only address a reader has for the
+// record on that card until the workbook row lands beside it, and taking both would have been a loss.
+// Where there is no link the row now renders not at all, because a row whose only content was the
+// engine's handle is furniture.
+//
+// Could it live in report.css? No — hiding it in the stylesheet leaves it in the delivered bytes and in
+// the printed page, which is where it was read.
+
+// AND AGAIN (2026-09-17): A CARD CARRIES CASE-LAW ONLY WHERE A PASS FOUND PRECEDENT.
+//
+// Reachable from a republish? Yes, and on an archived run whose case-law pass failed it removes the
+// engine's account of that failure — the adapter it could not reach, the session error code, the
+// sources out of scope — from the client's card. The OUTCOME is not removed: the Court decisions
+// section states it in the reader's own words, and did already, so the page said it twice. A run whose
+// pass found precedent keeps its strand and its citations, and a report carrying no court state at all
+// is untouched, because those carry no Court decisions section to say it instead.
+//
+// Could it live in report.css? No — hiding the strand leaves the adapter narrative in the delivered
+// bytes and in the printed page.
+
+// AND AGAIN (2026-09-17): THE LAYER'S CONTRIBUTION IS ON THE CARD, NOT ALSO IN A LIST ABOVE IT.
+//
+// Reachable from a republish? Yes, and it removes a restatement rather than a fact. The block listed,
+// per finding, the use token, the host and the evidence pair that the finding's own card already
+// states in its use line — measured on the delivered reports: one such line per finding with use
+// evidence, on the card, in every case the block listed. The cards it linked to sit directly below it.
+//
+// The leak it used to be the second guard for is unaffected: the marketplace sentinel is mapped to
+// client words on the card's own path, independently, and that is now the only print site. The arm
+// that held it was re-pointed there rather than deleted.
+//
+// Could it live in report.css? No — hiding the block leaves it in the delivered bytes and the print.
+
+// AND AGAIN (2026-09-17): THE REPORT ISSUES A DATE, NOT A PUBLISH TIMESTAMP.
+//
+// Reachable from a republish? Yes, and that is the argument for it rather than against. The line read
+// "Issued on <date> · <time> <zone>" — the minute the file was written and the zone of the machine
+// that wrote it. A re-rendered archived run therefore restamped itself with a time that was never
+// about the work, and a reader comparing two copies of the same report saw two different stamps. The
+// DATE is the caller's, as it always was; nothing here consults a clock, which is the property the
+// arm holding this was written for and still holds.
+//
+// A stamp in some other shape falls through whole. It is taken by pattern, not by cutting at the
+// separator: an archived run's stamp is not this publisher's to assume the shape of.
+//
+// Could it live in report.css? No — hiding the time leaves it in the delivered bytes and the print.
+
+// AND AGAIN (2026-09-17): THE FOOTER IS ONE CLIENT LINE, WITH ITS DATES NAMED.
+//
+// Reachable from a republish? Yes. A re-rendered archived run loses the product-name lead, which its
+// identity line already carries, and loses "Run under project" — the engine's phrase for the folder a
+// job was filed in, which nothing strips and which therefore reached a client exactly as written. Its
+// two dates gain names: a bare date beside a matter identifier said nothing about which date it was.
+//
+// BOTH PROVENANCE LINES ARE KEPT, deliberately, and the first version of this entry got it half
+// wrong. "Rated under" was always removed at serve time. "Run under project" is the same class of
+// line sitting beside it — internal provenance, read out of the published internal report by an
+// end-to-end arm — and it had NO strip, so it reached every embedded reader while its neighbour did
+// not. This entry first recorded that line as deleted from the document; CI refused that, correctly,
+// and the strip was added beside RATED_UNDER_RE instead. Deleting it here would have taken provenance
+// off the internal copy to fix a leak that belongs where the other one is fixed.
+//
+// Arms pin the markup to the shape those strips match AND drive the strip itself, so a change fails
+// there rather than quietly surviving a removal that no longer matches it.
+//
+// Could it live in report.css? No — the lines removed are text, and hiding them leaves them in the
+// delivered bytes and the print.
+
+// AND AGAIN (2026-09-17): "WHERE IT STANDS" NAMES A COUNTRY, NOT A SECOND CODE.
+//
+// Reachable from a republish? Yes, and it is a repair on every archived run that has one of these
+// rows. The register writes EM and GB; the section already mapped those to EU and UK for the code
+// column, but resolved the NAME from the raw code, which has an entry under neither spelling. So the
+// name fell back to the code and the row read "EU EM" — a country column printing a second code. The
+// raw code is still tried after the aliased one, so anything the alias does not cover resolves
+// exactly as it did.
+//
+// Could it live in report.css? No — the wrong string is in the markup, not its styling.
+
+// AND AGAIN (2026-09-17): ALSO CONSIDERED — THE ENGINE'S OWN REASON, AND A ROW IN THE READER'S CASE.
+//
+// Reachable from a republish? Yes, and it is a repair on every archived run with a ruled-out card. The
+// face printed one fixed line, "a different name in a related field", on every such card whatever the
+// run concluded — while the finding's OWN one-line reason was rendered nowhere on the page at all.
+// The fixed line stays as the last resort for a finding carrying neither reason.
+//
+// The cleared register rows read "Cl." rather than "Class", and state the register's status in the
+// reader's case rather than shouting it back as the register hands it over. Only the case changes; the
+// word is the register's own.
+//
+// Could it live in report.css? The case could — `text-transform` would do it — and it should not: the
+// delivered bytes and the plain-text reads would still carry the shout, and the abbreviation is a word
+// change, not a style.
+
+//
+// MERGED (2026-09-17): the report redesign on main and the engine-install branch met in this file. The
+// ledger above is both lineages, kept whole — main's breaks and this branch's four — because each entry
+// records a decision somebody took and a merge is not a place to drop one.
+//
+// The renderer they produce is neither side's. Main deleted the scope fold, and the closing line naming
+// the models that served the search was rendered inside it; taking main's side alone would have removed a
+// statement of provenance from the client's page as a side effect of a merge, which nobody ruled. The line
+// is re-homed to the footer, beside the matter and the framework, and renders '' on a run that recorded no
+// models — so an archived run republishes exactly as it was delivered. The hash below is of that combined
+// file.
+//
+// MERGED (2026-09-17, second time): the beta's report pack and this branch met in the footer. Both
+// lineages above stand as written — each entry records a decision somebody took, and a merge is not a
+// place to drop one. The beta recomposed what the footer says; this branch put the line naming the
+// models that served the run into it. Neither replaces the other, so the footer carries both and the
+// hash below is of that combined file.
+// AND AGAIN (2026-09-17): THE EXPORT MENU IS ONE CONTROL, EMITTED ONCE.
+//
+// Reachable from a republish? Yes — and the answer is that it changes nothing there, which was checked
+// rather than claimed. The knockout template had gained the same export menu, re-emitted, because this
+// file is frozen and lifting the control out was its own change. This is that change: the toggle, the
+// popover shell and the two listeners that open and close it now come from
+// `driver/publish/report-topbar.mjs`, and both templates import them. The ENTRIES stay each template's
+// own — the clearance filters its export to ticked findings and says so; the knockout has no tick boxes
+// and must not offer to tick.
+//
+// PURE CODE MOTION, BYTE-COMPARED ON REAL RUNS, which is what this file's checklist asks for and what the
+// third break here established as the way to answer it. All four demo runs were published through the
+// real publisher from the tree before and the tree after, and every delivered document is identical byte
+// for byte; the knockout's only difference was the publish clock it stamps into "Searched on", which is
+// its own open defect and not this change. Both serve-time passes were driven too, client and internal,
+// through `prepareReportForEmbed`: eight comparisons, eight identical.
+//
+// Could it live in report.css or brand.mjs? No — the popover's behaviour is two event listeners and its
+// shell is markup. `brand.mjs` carries chrome that every surface shares; this control belongs to the two
+// report templates and nothing else.
+
+const FROZEN = "2ad495b7be6e42fb95fbd2456896e20150deddd383797fcc8e5af39b647b7725";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

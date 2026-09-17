@@ -8,7 +8,7 @@
 //
 // THE LADDERS BELOW ARE COPIED FROM REAL MANIFESTS, and that matters. An earlier version of this file
 // invented fixtures ordered safest-first, which is the intuitive reading and the wrong one — the
-// manifests are MOST-SEVERE-FIRST (`render.mjs:96`, `:114`). The implementation was written against
+// manifests are MOST-SEVERE-FIRST (render.mjs `frameworkTickIndex`, `frameworkGauge`). The implementation was written against
 // the same wrong assumption, so the tests passed while worstBand returned the SAFEST band in a batch.
 // Fixtures that agree with the code they test prove nothing; these agree with the engine.
 //
@@ -46,7 +46,8 @@ const BESPOKE: Band[] = [
 ]
 
 test('index 0 is the MOST SEVERE band — the manifest order, not the intuitive one', () => {
-  // Stated at render.mjs:96 ("manifest index (0 = worst)") and :114 ("manifest is most-severe-first").
+  // Stated in render.mjs `frameworkTickIndex` ("manifest index (0 = worst)") and `frameworkGauge`
+  // ("manifest is most-severe-first").
   // If this ever inverts, every function in tone.ts is wrong in the dangerous direction.
   for (const ladder of [TRIAGE, HOUSE, BESPOKE]) {
     assert.equal(ladder[0]!.tone, 'severe', 'the first rung is the worst one')
@@ -97,7 +98,7 @@ test('the gauge runs safest-left, which is the REVERSE of the storage order', ()
     const worst = bandPosition(bands, bands[0]!.label)!
     const safest = bandPosition(bands, bands[bands.length - 1]!.label)!
     // This is the assertion that catches the inversion: the worst band belongs on the RIGHT, matching
-    // the frozen renderer's own reversal at render.mjs:114. Get it backwards and a native report and a
+    // the frozen renderer's own reversal in render.mjs `frameworkGauge`. Get it backwards and a native report and a
     // legacy report of the same run put the marker on opposite ends of the ramp.
     assert.ok(worst > safest, 'the most severe band sits at the right-hand end of the gauge')
     assert.ok(safest >= 0 && worst <= 100, 'the marker stays on the ramp')

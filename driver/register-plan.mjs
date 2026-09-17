@@ -573,6 +573,176 @@ export function mintSupplementalQid({ prefix, term, used }) {
  *                  driver/register-capabilities.mjs). Omitted ⇒ the pre-phase-3 corsearch-shaped
  *                  behaviour, byte-identical (no entry gains a key, no jurisdiction is translated).
  */
+/**
+ * The receipt that ARMS the house-element exclusion, and the only thing that may.
+ *
+ * A SEPARATE FILE FROM THE FRAME'S PROPOSAL, deliberately, and for the reason the digest's accounting
+ * stamp is separate from its facts: the proposal is what a model said, the receipt is what the register
+ * answered, and a reader who cannot tell those apart cannot tell a judgement from evidence. Absent means
+ * the question was never asked, which is the same as unverified and excludes nothing.
+ */
+export const HOUSE_ELEMENT_RECEIPT = "house-element.json";
+
+/**
+ * Verify that the client actually owns the proposed house element, on the register, by owner.
+ *
+ * IT SITS BESIDE THE TRANSFORM IT GATES, for the reason `accountingArmed` sits beside the refusal it
+ * arms: the gate and the thing gated go stale together or not at all, and a reader meeting one finds the
+ * other. Nothing else may arm this exclusion.
+ *
+ * FAIL-CLOSED ON EVERY PATH, and that is the whole design. The frame PROPOSED this element from its
+ * reading of the matter; acting on the proposal alone would drop an element from a client's search on a
+ * model's assertion, and an element nobody swept is a clean report over unswept ground — the one defect
+ * that reaches a client as a confident wrong answer rather than as a visible failure. So every way of
+ * not knowing lands in the same place: not verified, no exclusion, the element searched in full, and a
+ * reason on the receipt saying which way it was. An outage, an unknown client name, a lookup that threw,
+ * a dead registration, a registration in some other class — none of them excludes anything.
+ *
+ * `lookup` is injected, exactly as `runOwnerChecks` takes its `exec` and `countRegisterHits` its
+ * `counter`: the fixture path that makes this product testable at no cost covers this call too, and a
+ * test never reaches a provider. NEVER THROWS and never rejects.
+ *
+ * @param owners  the client's own names — the profile's trading names and the matter's customer. Empty
+ *                is a real answer and it means NOT VERIFIED: with no name to match an owner against,
+ *                "the client owns it" cannot be established by anything this function can see.
+ * @returns the receipt, always. `verified: true` is the only value that may arm an exclusion.
+ */
+export async function verifyHouseElementOwnership({
+  element, classes = [], owners = [], lookup, now = () => new Date().toISOString(),
+}) {
+  const el = String(element ?? "").trim();
+  const wanted = (Array.isArray(classes) ? classes : []).map(String).map((c) => c.trim()).filter(Boolean);
+  const names = (Array.isArray(owners) ? owners : []).map((o) => String(o ?? "").trim()).filter(Boolean);
+  const receipt = (verified, reason, records = []) =>
+    ({ verified, element: el, owners_checked: names, classes: wanted, records, reason, ts: now() });
+
+  if (!el) return receipt(false, "house_element_absent: nothing was proposed");
+  if (!names.length)
+    return receipt(false, "client_owner_unknown: this run holds no trading name for the client, so an owner on the register cannot be matched to it");
+  if (!wanted.length)
+    return receipt(false, "instructed_classes_absent: ownership is only decisive in the classes the matter is instructed in");
+  if (typeof lookup !== "function")
+    return receipt(false, "lookup_unavailable: no register lookup was wired, so ownership was never asked");
+
+  let rows = [];
+  try {
+    const r = await lookup({ element: el, owners: names, classes: wanted });
+    if (!r?.ok) return receipt(false, `lookup_did_not_answer: ${String(r?.reason ?? "no reason given").slice(0, 200)}`);
+    rows = Array.isArray(r.records) ? r.records : [];
+  } catch (e) {
+    return receipt(false, `lookup_threw: ${String(e?.message ?? e).slice(0, 200)}`);
+  }
+
+  // A MATCH IS ALL THREE AT ONCE — the client's own name, alive, in an instructed class. Checking them
+  // separately would let a dead registration in class 9 and a live one in class 25 held by someone else
+  // combine into an ownership nobody has.
+  const norm = (v) => String(v ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  const ours = names.map(norm).filter(Boolean);
+  const live = (st) => { const t = norm(st); return Boolean(t) && !/(dead|expired|cancell?ed|withdrawn|refused|lapsed|abandoned)/.test(t); };
+  const matched = rows.filter((r) => {
+    const owner = norm(r?.owner_name);
+    if (!owner || !ours.some((o) => owner === o || owner.includes(o) || o.includes(owner))) return false;
+    if (!live(r?.status)) return false;
+    const rc = (Array.isArray(r?.classes) ? r.classes : []).map(String).map((c) => c.trim());
+    return rc.some((c) => wanted.includes(c));
+  });
+
+  if (!matched.length)
+    return receipt(false, `no_live_owned_registration: ${rows.length} record(s) came back and none is a live registration held by this client in an instructed class`, []);
+  // The records are the EVIDENCE the report states the exclusion on, so they ride the receipt.
+  return receipt(true, `verified: ${matched.length} live registration(s) held by this client in an instructed class`,
+    matched.map((r) => ({ record_id: String(r?.record_id ?? r?.uri ?? ""), owner_name: String(r?.owner_name ?? ""),
+      status: String(r?.status ?? ""), classes: (Array.isArray(r?.classes) ? r.classes : []).map(String) })));
+}
+
+/**
+ * The manifest with the client's own house element taken out of the conflict analysis. PURE.
+ *
+ * THE DEFECT (production run, 2026-09-16). The mark was the client's own famous house mark followed by
+ * a tagline. `dominant_element` was the house element, so the machine-built one-letter mutation forms
+ * were built from it — and because those mutations are ordinary short words they pull every mark
+ * containing them across four registers. Two such queries put 1,154 records into a 2,146-record band,
+ * 54% of it, reachable from nothing else. The reviewing lawyer's method for the same matter was three
+ * searches: the whole phrase, the shorter phrase, the last word alone.
+ *
+ * WHAT IS NOT DONE HERE, AND IT IS THE POINT. This does not decide that the client owns the element —
+ * it is called only where the driver has already verified ownership on the register by owner and written
+ * its receipt. A `house` argument that arrived from a model's assertion would be an element nobody
+ * searched because a model said it was safe.
+ *
+ * THE WHOLE PHRASE SURVIVES, and that is the lawyer's method rather than a softening of it. `mark` is
+ * untouched, so the exact search for the full phrase still runs. What stops is treating the house
+ * element as an AXIS — its mutations, its forms, its own dominant-element sweep — because that is where
+ * the band came from, not from the one exact query.
+ *
+ * Returns `{ manifest, confirmation, refused }`. `refused` non-null means the exclusion was NOT applied
+ * and the returned manifest is the input: the caller plans as it would have with no receipt at all.
+ */
+export function excludeHouseElement(manifest, house) {
+  const element = String(house?.element ?? "").trim();
+  const remainder = String(house?.remainder ?? "").trim();
+  const keep = (why) => ({ manifest, confirmation: null, refused: why });
+  if (!element || !remainder) return keep("house_element_incomplete");
+
+  const words = remainder.split(/\s+/).filter(Boolean);
+  // ── THE FLOOR IS THE JOIN TO THIS MANIFEST'S OWN MARK ───────────────────────────────────────────
+  //
+  // The direction that reaches a client is naming too MUCH as the house element: ownership verifies
+  // perfectly, nothing distinctive is left, and no count downstream catches it because "queries on the
+  // house element: 0" is satisfied by a plan holding no queries at all. The frame refuses the shapes it
+  // can see — an empty remainder, a remainder equal to the element, an element containing it.
+  //
+  // WHAT THE FRAME CANNOT SEE IS THIS MARK. The proposal is made against the matter, the exclusion is
+  // applied against a compiled manifest, and nothing until here has joined the two. A remainder that is
+  // not part of the mark being planned means the receipt and the manifest are describing different
+  // things — a re-frame, a second ratified form, a resumed run whose manifest moved — and cutting the
+  // dominant element down to a word that is not in the mark would leave the plan searching something
+  // the client never applied for. So the exclusion applies only where both halves are in the mark.
+  const lcMark = String(manifest?.mark ?? "").toLowerCase();
+  if (!lcMark) return keep("house_element_no_mark_to_join");
+  if (!lcMark.includes(remainder.toLowerCase())) return keep("house_element_remainder_not_in_mark");
+  if (!lcMark.includes(element.toLowerCase())) return keep("house_element_not_in_mark");
+
+  const lcEl = element.toLowerCase();
+  const lcWords = words.map((w) => w.toLowerCase());
+  // A word of the remainder, by word boundary rather than by containment: `includes` would count the
+  // remainder word "on" inside an unrelated mutation and keep a query this exists to drop.
+  const namesRemainder = (v) => {
+    const t = String(v ?? "").toLowerCase();
+    return lcWords.some((w) => new RegExp(`(^|[^\\p{L}\\p{N}])${w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}([^\\p{L}\\p{N}]|$)`, "u").test(t));
+  };
+
+  // THE DOMINANT WORD OF THE REMAINDER: longest, ties broken by the LAST of them. The lawyer's own
+  // phrasing was "the last word alone", and on the matter that produced this the two agree; longest is
+  // the better rule where they do not, because a trailing article is last and carries nothing.
+  let dominant = words[0];
+  for (const w of words) if (w.length >= dominant.length) dominant = w;
+
+  const variants = (Array.isArray(manifest?.variants) ? manifest.variants : []).filter((v) => namesRemainder(v?.value));
+  const next = {
+    ...manifest,
+    // UNTOUCHED: the exact search for the full phrase is the first of the lawyer's three.
+    mark: manifest?.mark,
+    dominant_element: dominant,
+    elements: (Array.isArray(manifest?.elements) ? manifest.elements : []).filter((e) => String(e?.value ?? "").trim().toLowerCase() !== lcEl),
+    // The shorter phrase is the second of the three, and it has to be PUSHED: with `dominant_element`
+    // now a single word and `mark` the full phrase, nothing else in the compile would search the
+    // remainder as a phrase on its own.
+    // `exact-phrase` because that is what it is, and because the category vocabulary is CLOSED —
+    // `parseVariantManifestModel` refuses anything outside it, so a descriptive category invented here
+    // would fail the manifest on its way into the compile.
+    variants: [{ category: "exact-phrase", value: remainder,
+      rationale: "the distinctive remainder once the client's own registered element is set aside" },
+      ...variants],
+  };
+  // REQUIREMENT 3: the element is still checked ONCE, as a confirmation of the client's own live
+  // registrations rather than as a conflict search — so the exclusion is evidenced on the report by a
+  // query that ran, not by a sentence saying one would have.
+  const confirmation = { axis: "incumbent-class", predicate: "owner", term: element,
+    expected_kind: "enumerate", provenance: "mark", house_element_confirmation: true };
+  return { manifest: next, confirmation, refused: null };
+}
+
 export function compileRegisterPlan({ manifest, job, form = null, skillVersion = "", capabilities = null, unavailableOffices = [] }) {
   const classes = (job?.classes ?? []).map(String).filter(Boolean);
   if (!classes.length) throw new Error("register_plan_classes_missing: a plan is always class-scoped — compile with the matter's in-scope Nice classes");

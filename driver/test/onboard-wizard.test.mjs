@@ -21,10 +21,12 @@ import { preflightSkillsStore } from "../skills-store-provenance.mjs";
 import { RESEARCH_PROVIDERS, SERP_PROVIDERS } from "../driver.config.mjs";
 import { resolveEngineBin, readEnvFile, preflightCandidate, PROVIDERS, engineOptions,
   usptoSyncPlan, usptoConsentPrompt, isExplicitYes, backgroundSyncSpec,
-  offerUsptoSync, deploymentCurrency } from "../../bin/onboard.mjs";
+  offerUsptoSync, deploymentCurrency, namingProgram, engineProgramSetting, unusableEngineWords,
+  installSizeLine, engineMenuState, PAY_PREAMBLE, payQuestion, proofTurn } from "../../bin/onboard.mjs";
+import { probeEngineTurn } from "../engine/probe.mjs";
 import { VERBS } from "../../bin/clearotron.mjs";
 import { USPTO_ARCHIVE_GB, USPTO_INGEST_GB_PER_HOUR, usptoBuildHours } from "../../shared/uspto-index-size.mjs";
-import { config, KNOWN_REGISTER_PROVIDERS, ENGINE_BINARIES } from "../driver.config.mjs";
+import { config, KNOWN_REGISTER_PROVIDERS, ENGINE_BINARIES, resolveEngineProgram } from "../driver.config.mjs";
 import { loadEnvLocal } from "../../shared/env-local.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
@@ -42,6 +44,14 @@ const ONBOARD = join(REPO, "bin", "onboard.mjs");
  */
 const NODE_BIN = mkdtempSync(join(tmpdir(), "onboard-node-"));
 symlinkSync(process.execPath, join(NODE_BIN, "node"));
+
+/**
+ * An empty engines folder, for `run()` to hand the engine resolver as the place to find the copy
+ * Clearotron installed. A developer's own engines folder may hold a REAL engine program, and the
+ * resolver's last step finds it without PATH, so a hermetic PATH alone does not mean "no engine on this
+ * machine".
+ */
+const NO_ENGINES = mkdtempSync(join(tmpdir(), "onboard-no-engines-"));
 
 /** Run the CLI with the ambient environment stripped — the shell this test runs in has real credentials. */
 function run(args, env = {}) {
@@ -91,7 +101,7 @@ function run(args, env = {}) {
       // measured: this file passes with both set in the parent.
       env: {
         HOME: env.HOME ?? tmpdir(), PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"),
-        CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", ...env,
+        CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", CLEAROTRON_ENGINES_DIR: NO_ENGINES, ...env,
       },
     });
     return { code: 0, out };
@@ -470,10 +480,141 @@ test("the engine menu is built from the driver's registry, plus one row that is 
   assert.equal(opts[0].id, "anthropic-agent", "the production default is the Enter answer — setup must not change what a run does by accident");
   const none = opts.filter((o) => o.id === null);
   assert.equal(none.length, 1, "exactly one deliberate 'no engine' row");
-  assert.match(none[0].label, /npm run example/, "…and it says what still works without one");
+  assert.equal(none[0].label, "None for now", "the row that is not an engine, in the approved words");
+  // What still works without an engine is said AFTER that choice, by the one helper every no-engine route
+  // uses, rather than in the row.
+  const src = readFileSync(ONBOARD, "utf8");
+  const helper = src.slice(src.indexOf("const sayNoEngine = () => {"), src.indexOf("const choose = async"));
+  assert.match(helper, /info\(NO_AI_CHOSEN\);/, "the no-engine ending is not the one approved line");
+  assert.match(src, /export const NO_AI_CHOSEN = "No AI chosen\. The demo works without one;/, "the no-engine ending no longer says the demo still works");
+  assert.match(src, /if \(!pick\.id\) \{ sayNoEngine\(\); break; \}/, "picking \"None for now\" no longer reaches that ending");
   for (const o of opts.filter((o) => o.id)) {
-    assert.ok(o.label.includes(ENGINE_BINARIES[o.id].fallback), `${o.id} names the binary it needs`);
+    const e = ENGINE_BINARIES[o.id];
+    assert.ok(e.product && o.label.startsWith(`${e.product}, by ${e.vendor}`), `${o.id} is not named by its AI and maker from the registry: ${o.label}`);
   }
+});
+
+// THE ENGINE QUESTION SAYS WHAT SETUP FOUND. Its rows said "uses its `claude` program on this machine"
+// whether or not there was one, so a reader could not tell from the question which answer needed an
+// install. The approved rows, with the version setup read (every case, for both engines, is in
+// setup-asks-which-ai-runs-your-searches.test.mjs):
+test("each row of the engine question says what setup found of that program, in the approved words", () => {
+  const opts = engineOptions({
+    "anthropic-agent": { executable: true, relative: false, version: "2.1.270", rejected: [] },
+    "openai-agent": { executable: false, relative: false, version: null, rejected: [] },
+  });
+  assert.deepEqual(opts.map((o) => o.label), [
+    "Claude, by Anthropic   found on this computer (version 2.1.270)",
+    "Codex, by OpenAI       not on this computer — setup can install it",
+    "None for now",
+  ]);
+  // A program found whose version could not be read is still found.
+  assert.equal(engineOptions({ "anthropic-agent": { executable: true, relative: false, version: null, rejected: [] } })[0].label,
+    "Claude, by Anthropic   found on this computer");
+});
+
+test("the engine question resolves each program the way a run does: setting, then PATH, then the copy setup installed", () => {
+  const sh = (dir, name, body) => { const p = join(dir, name); writeFileSync(p, `#!/bin/sh\n${body}\n`, { mode: 0o755 }); return p; };
+  const machine = mkdtempSync(join(tmpdir(), "onboard-menu-path-"));
+  const elsewhere = mkdtempSync(join(tmpdir(), "onboard-menu-set-"));
+  const silent = mkdtempSync(join(tmpdir(), "onboard-menu-silent-"));
+  sh(machine, "claude", 'echo "2.1.241 (Claude Code)"');
+  const named = sh(elsewhere, "my-claude", 'echo "3.0.0 (Claude Code)"');
+  sh(silent, "claude", "exit 1");
+  const { root } = plantInstalledCopy("#!/bin/sh\nexit 1\n", "2.1.270");
+  const labels = (state) => engineOptions(state).map((o) => o.label);
+  try {
+    // The machine's own copy, on PATH: its version is asked with `--version`.
+    const onPath = engineMenuState({ env: { PATH: machine }, enginesDir: NO_ENGINES });
+    assert.equal(onPath["anthropic-agent"].path, join(machine, "claude"));
+    assert.deepEqual(labels(onPath).slice(0, 2), [
+      "Claude, by Anthropic   found on this computer (version 2.1.241)",
+      "Codex, by OpenAI       not on this computer — setup can install it",
+    ]);
+    // The explicit setting comes before PATH.
+    const set = engineMenuState({ env: { PATH: machine, [ENGINE_BINARIES["anthropic-agent"].env]: named }, enginesDir: NO_ENGINES });
+    assert.equal(set["anthropic-agent"].path, named);
+    assert.equal(labels(set)[0], "Claude, by Anthropic   found on this computer (version 3.0.0)");
+    // The copy setup installed is found last, and says its version in its own package.json: the program
+    // itself exits 1 on `--version`, so the version can only have come from there.
+    const installed = engineMenuState({ env: { PATH: "" }, enginesDir: root });
+    assert.equal(installed["anthropic-agent"].source, "installed");
+    assert.equal(labels(installed)[0], "Claude, by Anthropic   found on this computer (version 2.1.270)");
+    // A program that will not say its version is still found.
+    const quiet = engineMenuState({ env: { PATH: silent }, enginesDir: NO_ENGINES });
+    assert.equal(labels(quiet)[0], "Claude, by Anthropic   found on this computer");
+    // CONTROL: a setting naming nothing is not reported as found, nor as nothing found that an install mends.
+    const setWrong = "Claude, by Anthropic   problem: this computer is set to use a copy of Claude that isn't there — choose it to see the fix";
+    const gone = engineMenuState({ env: { PATH: machine, [ENGINE_BINARIES["anthropic-agent"].env]: join(elsewhere, "absent") }, enginesDir: NO_ENGINES });
+    assert.equal(labels(gone)[0], setWrong);
+    // A setting naming a bare word that is not on PATH refuses nothing, since there is no file to refuse,
+    // yet it still rules out the copy setup installs, so it is the setting's row too.
+    const bare = engineMenuState({ env: { PATH: machine, [ENGINE_BINARIES["anthropic-agent"].env]: "no-such-claude" }, enginesDir: root });
+    assert.deepEqual(bare["anthropic-agent"].rejected, [], "fixture precondition: nothing was refused, so only the setting decides this row");
+    assert.equal(labels(bare)[0], setWrong);
+  } finally {
+    for (const d of [machine, elsewhere, silent, root]) rmSync(d, { recursive: true, force: true });
+  }
+});
+
+test("the engine question shows a version only when the program answers with one, and waits at most two seconds for it", () => {
+  const sh = (body) => { const d = mkdtempSync(join(tmpdir(), "onboard-menu-version-")); writeFileSync(join(d, "claude"), `#!/bin/sh\n${body}\n`, { mode: 0o755 }); return d; };
+  const prose = sh('echo "Welcome to a wrapper that prints a banner and never names a version"');
+  const hung = sh("exec sleep 30");
+  try {
+    // A program that answers in prose is found, and its prose stays out of the menu row.
+    const worded = engineMenuState({ env: { PATH: prose }, enginesDir: NO_ENGINES });
+    assert.equal(worded["anthropic-agent"].version, null);
+    assert.equal(engineOptions(worded)[0].label, "Claude, by Anthropic   found on this computer");
+    // A program that never answers holds the question for the short limit, not a run's five seconds.
+    const t0 = Date.now();
+    const slow = engineMenuState({ env: { PATH: hung }, enginesDir: NO_ENGINES });
+    const waited = Date.now() - t0;
+    assert.equal(engineOptions(slow)[0].label, "Claude, by Anthropic   found on this computer");
+    assert.ok(waited < 4000, `the question waited ${waited} ms on one program that does not answer`);
+  } finally { for (const d of [prose, hung]) rmSync(d, { recursive: true, force: true }); }
+});
+
+test("the line printed with the engine question names every way to pay that the question after it offers", () => {
+  const said = PAY_PREAMBLE.join(" ").replace(/\s+/g, " ");
+  const words = { subscription: /\bsubscription\b/, "api-key": /\bAPI key\b/, cloud: /\bcloud account\b/ };
+  const offered = new Map();
+  for (const [id, eng] of Object.entries(ENGINE_BINARIES))
+    for (const a of payQuestion({ engineId: id, eng, bin: null }).answers) offered.set(a.id, [...(offered.get(a.id) ?? []), id]);
+  assert.ok(offered.size > 0, "no engine offers any way to pay, so nothing below was checked");
+  for (const [mode, engines] of offered) {
+    assert.ok(words[mode], `the pay question offers "${mode}", which this test has no words for`);
+    assert.match(said, words[mode], `"${said}" does not name ${mode}`);
+    // A way to pay only some programs offer is said with the program it belongs to.
+    if (engines.length < Object.keys(ENGINE_BINARIES).length)
+      for (const id of engines) assert.match(said, new RegExp(`for ${ENGINE_BINARIES[id].product}\\b`), `"${said}" offers ${mode} to every program`);
+  }
+  // And it is what the wizard says, with the engine question, under its rows.
+  const src = readFileSync(join(REPO, "bin", "onboard.mjs"), "utf8");
+  assert.match(src, /const pick = await choose\(ENGINE_QUESTION, engineOptions\(found\), 0, PAY_PREAMBLE\);/);
+});
+
+test("setup's proof turn pins the path of the copy it proves, and its advice still names the copy setup installed", async () => {
+  const { root, program } = plantInstalledCopy("#!/bin/sh\nexit 0\n", "2.1.270");
+  const eng = ENGINE_BINARIES["anthropic-agent"];
+  const empty = mkdtempSync(join(tmpdir(), "onboard-proof-path-"));
+  try {
+    const bin = resolveEngineBin(eng.fallback, { env: { PATH: empty }, engine: "anthropic-agent", enginesDir: root });
+    assert.equal(bin.source, "installed", "fixture precondition: the copy found is the one setup installed");
+    const args = proofTurn({ engineId: "anthropic-agent", eng, bin, authEnv: { CLEAROTRON_AI_BILLING: "subscription" }, env: { PATH: empty } });
+    assert.equal(args.env[eng.env], program, "the turn runs the copy setup proved, pinned by its path");
+    const refused = { code: 1, killed: false, stdout: "", stderr: "API Error: 401 Unauthorized", signals: {} };
+    const v = await probeEngineTurn({ ...args, runTurn: async () => refused,
+      loadAdapter: () => { throw new Error("no adapter is loaded here; the turn is injected"); } });
+    assert.equal(v.mode, "signed-out");
+    assert.ok(v.fix.includes(`run \`${program}\` once`), v.fix);
+    assert.doesNotMatch(v.fix, /run `claude` once/, "the bare word, which that copy does not answer to");
+    // And these are the arguments the wizard's proof turn is given. The turn itself runs only behind a
+    // terminal, so the call is read from the source.
+    const src = readFileSync(join(REPO, "bin", "onboard.mjs"), "utf8");
+    assert.match(src, /const v = await probeEngineTurn\(proofTurn\(\{ engineId: pick\.id, eng, bin, authEnv, settings: settingsInForce\(\) \}\)\);/,
+      "setup's proof turn no longer takes its arguments from proofTurn, so the copy it proves is not handed to the probe");
+  } finally { for (const d of [root, empty]) rmSync(d, { recursive: true, force: true }); }
 });
 
 test("setup no longer assigns an engine behind the reader's back", () => {
@@ -911,7 +1052,7 @@ test("--check names the MODE on a machine with no engine, and does not send the 
   assert.match(r.out, /MODE: demo/, `--check no longer names the mode:\n${r.out}`);
   assert.match(r.out, /everything works except starting a NEW search/,
     "the demo line stopped saying what DOES work, which is the half a reader is deciding on");
-  assert.match(r.out, /To leave demo: install .+ CLI/, "nothing tells the reader how to leave demo mode");
+  assert.match(r.out, /To leave demo: run `[^`]*clearotron install`/, "nothing tells the reader how to leave demo mode");
 
   // Advice that cannot pay off is noise. With nothing to spawn, --probe-engine answers "there is no
   // usable binary to probe" — so offering it here spends a reader's round trip to be told what they
@@ -1050,22 +1191,52 @@ test("every engine in the table carries an install command, and it is one a read
   }
 });
 
+// THE OFFER SAYS WHAT THE INSTALL TAKES AND HOW TO TAKE IT BACK. It showed the licence, the folder and
+// the command, and asked, so a reader agreed to a download of a few hundred megabytes without being told
+// its size or that removing it is deleting one folder.
+test("each engine's install offer states its measured size and how to remove it", () => {
+  const withPackage = Object.entries(ENGINE_BINARIES).filter(([, e]) => e.package);
+  assert.ok(withPackage.length >= 2, "fixture precondition: both engines carry a package setup can install");
+  for (const [id, eng] of withPackage) {
+    assert.ok(Number.isInteger(eng.installMB) && eng.installMB > 0,
+      `${id} carries no measured install size beside its package, so the offer cannot say what it takes`);
+  }
+  // The measured figures, in the words the offer prints.
+  assert.equal(installSizeLine(ENGINE_BINARIES["anthropic-agent"]), "It takes about 214 MB. To remove it, delete that folder.");
+  assert.equal(installSizeLine(ENGINE_BINARIES["openai-agent"]), "It takes about 324 MB. To remove it, delete that folder.");
+});
+
+test("the size line is said after the folder is named and before the question, whose default stays No", () => {
+  // Source-shape, for the reason the next arm gives: the offer only runs behind a terminal.
+  const src = readFileSync(join(REPO, "bin/onboard.mjs"), "utf8");
+  const folder = src.indexOf("say(`    It goes into ${dir}");
+  const size = src.indexOf("say(`    ${installSizeLine(eng)}`)");
+  const ask = src.indexOf("await confirm(`Run \\`${engineInstallCommand(eng, dir)}\\` now?`");
+  assert.notEqual(folder, -1, "anchor missing: the line naming the engines folder");
+  assert.notEqual(ask, -1, "anchor missing: the install question");
+  assert.ok(size > folder && size < ask,
+    "the size and removal line must follow the folder line (\"delete that folder\" points at it) and come before the question");
+  assert.match(src.slice(ask, ask + 120), /now\?`, false\)/, "the install question must still default to No");
+});
+
 test("the wizard offers the install, and does NOT take the installer's exit code as proof", () => {
   // A SOURCE-SHAPE ARM over the interactive branch, and it says so: the flow needs a TTY, so what can
   // be asserted here is that the wiring exists and that the two rules the issue is explicit about are
   // in it — the command comes from the table, and success is decided by resolution and then a turn.
   const src = readFileSync(join(REPO, "bin/onboard.mjs"), "utf8");
 
-  assert.match(src, /confirm\([^)]*eng\.install/,
+  assert.match(src, /confirm\([^)]*engineInstallCommand\(eng, dir\)/,
     "the wizard never offers to run the install command, so a reader with no engine still ends at a "
     + "sentence — the gap #1720 measured");
-  assert.match(src, /spawnSync\(cmd, args/,
-    "the install is not spawned as argv — a shell here would make the table's contents shell input");
+  // The command shown and the argv spawned are made from the same parts for the same folder; that the
+  // shown command parses back to that argv is driven in the last-resort test file.
+  assert.match(src, /spawnSync\("npm", engineInstallArgs\(eng, dir\)/,
+    "the install is not spawned as argv from the parts the reader was shown — a shell here would make the table's contents shell input");
 
   // The rule, asserted as an ORDER: the binary is re-resolved AFTER the spawn, and the probe still
   // gates what gets written. A wizard that wrote an engine on a zero exit code would be claiming a
   // working engine from a package manager's opinion.
-  const spawnAt = src.indexOf("spawnSync(cmd, args");
+  const spawnAt = src.search(/spawnSync\("npm", engineInstallArgs\(eng, dir\)/);
   assert.ok(spawnAt > 0, "no install spawn to reason about — this arm has lost its subject");
   // WITHIN THE INSTALL BLOCK, not "anywhere after it". Searching the rest of the file finds the
   // give-me-a-path branch's own resolve and passes with the re-resolve deleted — planted exactly that
@@ -1369,4 +1540,174 @@ test("unset is the supported mode and it passes, which is why setup no longer wr
   assert.match(src, /CLEAROTRON_INSTRUCTIONS_DIR stays unset/,
     "the closing note must say the name is unset and what to do when they do want an overlay");
   assert.match(src, /COMMIT it/, "including that an uncommitted store is the state that cannot be identified");
+});
+
+// ── THE COPY INSTALLED WITH CLEAROTRON, WHERE A READER MEETS IT ──────────────────────────────────────
+//
+// The resolver's own arms are in an-engine-program-installed-with-clearotron-is-the-last-resort.test.mjs.
+// These hold the two surfaces a reader sees that copy on: `--check` names it or refuses its placeholder,
+// and the wizard names it by path where it tells the reader what to run, and never writes its path down.
+
+/** An npm install of the Claude package in a fresh directory, whose program is `content`. */
+function plantInstalledCopy(content, version = "9.9.9") {
+  const spec = ENGINE_BINARIES["anthropic-agent"];
+  const root = mkdtempSync(join(tmpdir(), "onboard-installed-"));
+  const dir = join(root, "node_modules", ...spec.package.split("/"));
+  mkdirSync(join(dir, "bin"), { recursive: true });
+  writeFileSync(join(dir, "package.json"),
+    JSON.stringify({ name: spec.package, version, bin: { [spec.fallback]: "bin/claude.exe" } }));
+  const program = join(dir, "bin", "claude.exe");
+  writeFileSync(program, content, { mode: 0o755 });
+  return { root, program };
+}
+
+test("--check names the copy Clearotron installed and its version, and offers no vendor install", () => {
+  const { install } = ENGINE_BINARIES["anthropic-agent"];
+  const { root, program } = plantInstalledCopy("#!/bin/sh\nexit 0\n");
+  try {
+    const r = run(["--check"], { CLEAROTRON_ENGINES_DIR: root });
+    assert.equal(r.code, 0, r.out);
+    assert.ok(r.out.includes(`${program} — the copy Clearotron installed, version 9.9.9`), r.out);
+    // The install is offered by setup, and --check sends a reader with no copy there. The npm command
+    // itself is said only by setup's own offer, so --check prints it in neither case.
+    const offersInstall = /To leave demo: run `[^`]*clearotron install`\. It offers to install/;
+    assert.doesNotMatch(r.out, offersInstall, `a copy was found and the reader was still told to install one:\n${r.out}`);
+    assert.ok(!r.out.includes(install), `a copy was found and the reader was still told to install one:\n${r.out}`);
+    // THE CONTROL, so the assertion above can fail: with nothing installed, --check says so, and it
+    // does send the reader to setup's install.
+    const none = run(["--check"]);
+    assert.match(none.out, /Clearotron has not installed one/, none.out);
+    assert.match(none.out, offersInstall,
+      `the control never offers the install, so its absence above proves nothing:\n${none.out}`);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("--check refuses the placeholder the Claude package leaves when its install step did not run", () => {
+  // The package ships a shell script with no `#!` as its program and replaces it in its install step, so
+  // `npm install --ignore-scripts` leaves a file that passes an execute-bit check and fails every stage.
+  const { root, program } = plantInstalledCopy('echo "Error: the native binary is not installed." >&2\nexit 1\n');
+  try {
+    const r = run(["--check"], { CLEAROTRON_ENGINES_DIR: root });
+    assert.equal(r.code, 1, r.out);
+    assert.ok(r.out.includes(`${program} is the placeholder`), r.out);
+    assert.match(r.out, /Reinstall without --ignore-scripts/, r.out);
+    assert.ok(!r.out.includes("the copy Clearotron installed, version"),
+      `the placeholder was reported as a usable copy:\n${r.out}`);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("the wizard names the installed copy by path where it tells the reader what to run, and only that copy", () => {
+  // The package links only `clearotron` onto PATH, so for the installed copy the bare program word is a
+  // command the reader's shell cannot find. Driven over the engine table's own sentences, never a copy.
+  const path = "/opt/app/node_modules/pkg/bin/program";
+  const spaced = "/opt/my app/node_modules/pkg/bin/program";
+  for (const [id, eng] of Object.entries(ENGINE_BINARIES)) {
+    const bare = new RegExp(`(^|\`)${eng.fallback}(?=[\\s\`]|$)`);
+    let named = 0;
+    for (const text of [eng.subscriptionHow, eng.signIn, eng.headless?.cmd].filter((t) => typeof t === "string")) {
+      for (const source of ["path", "explicit"]) {
+        assert.equal(namingProgram(text, eng, { source, path }), text,
+          `${id}: a copy found by ${source} is reachable as named, so "${text}" must not change`);
+      }
+      if (!bare.test(text)) continue;
+      named++;
+      const out = namingProgram(text, eng, { source: "installed", path });
+      assert.ok(out.includes(path), `${id}: "${text}" does not name the installed copy: "${out}"`);
+      assert.doesNotMatch(out, bare, `${id}: "${out}" still tells the reader to run a bare \`${eng.fallback}\``);
+      assert.ok(namingProgram(text, eng, { source: "installed", path: spaced }).includes(`"${spaced}"`),
+        `${id}: a path with a space is not quoted, so the command cannot be pasted`);
+    }
+    assert.ok(named > 0, `none of ${id}'s sign-in sentences names its program, so this arm checks nothing for it`);
+  }
+});
+
+test("setup writes the installed copy as the engine's default word, which replaces an older path and still finds the copy", () => {
+  // Written as its path, the installed copy would become the explicit setting, and a copy the reader
+  // installs on this machine later would never be used. Left out, a path an older setup wrote survives the
+  // rewrite, because composeEnvBody keeps what setup did not collect, and the run door refuses on it for good.
+  const eng = ENGINE_BINARIES["anthropic-agent"];
+  const { root, program } = plantInstalledCopy("#!/bin/sh\nexit 0\n");
+  const dir = mkdtempSync(join(tmpdir(), "onboard-rewrite-"));
+  try {
+    const envFile = join(dir, ".env");
+    writeFileSync(envFile, composeEnvBody({ [eng.env]: engineProgramSetting(eng, { source: "installed", path: program }) },
+      { [eng.env]: "/gone/since/bin/claude" }));
+    const written = readEnvFile(envFile)[eng.env];
+    assert.equal(written, eng.fallback, `the rewrite kept "${written}" where the engine's default word belongs`);
+    const now = resolveEngineProgram("anthropic-agent", { env: { PATH: "", [eng.env]: written }, enginesDir: root });
+    assert.equal(now.source, "installed", `what setup wrote does not reach the installed copy: ${JSON.stringify(now)}`);
+    assert.equal(now.resolved, program);
+    const machine = mkdtempSync(join(tmpdir(), "onboard-machine-copy-"));
+    writeFileSync(join(machine, eng.fallback), "#!/bin/sh\nexit 0\n", { mode: 0o755 });
+    const later = resolveEngineProgram("anthropic-agent", { env: { PATH: machine, [eng.env]: written }, enginesDir: root });
+    rmSync(machine, { recursive: true, force: true });
+    assert.equal(later.source, "path", "a copy this machine gets later must win over what setup wrote");
+    // A copy found on PATH or given by path is written as that path: a service's PATH is not the shell's.
+    for (const source of ["path", "explicit"])
+      assert.equal(engineProgramSetting(eng, { source, path: "/usr/local/bin/claude" }), "/usr/local/bin/claude");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("the wizard writes the engine's program setting in one statement, and it is engineProgramSetting's answer", () => {
+  // The wizard refuses a non-terminal stdin, so its flow is not driven here: the arm above drives the value,
+  // and this holds the wiring. ONE write, so every path through the engine step reaches the same answer.
+  const src = readFileSync(ONBOARD, "utf8");
+  const writes = nonEmpty(
+    src.split("\n").filter((l) =>
+      /candidate\[eng\.env\]\s*=|candidate\s*=\s*\{[^}]*\[eng\.env\]|Object\.assign\(\s*candidate\b[^)]*\[eng\.env\]/.test(l)),
+    "statements writing an engine program's variable into the wizard's candidate .env");
+  assert.equal(writes.length, 1, `more than one statement writes the engine's program setting:\n${writes.join("\n")}`);
+  assert.match(writes[0], /=\s*engineProgramSetting\(eng,\s*bin\)/, writes[0].trim());
+});
+
+test("--check names the placeholder when the setting points at it, not a permission the file does not lack", () => {
+  // An earlier setup wrote the path of a global install that later ran with --ignore-scripts, so the file
+  // it names is the vendor's placeholder: executable, and unable to run a stage.
+  const { root, program } = plantInstalledCopy('echo "Error: the native binary is not installed." >&2\nexit 1\n');
+  try {
+    const r = run(["--check"], { CLEAROTRON_CLAUDE_PATH: program });
+    assert.equal(r.code, 1, r.out);
+    assert.ok(r.out.includes(`${program} is the placeholder`), r.out);
+    assert.match(r.out, /Reinstall without --ignore-scripts/, r.out);
+    assert.doesNotMatch(r.out, /is not an executable file/, r.out);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("where no copy can run, the wizard says which was refused and why, never that none was installed", () => {
+  const eng = ENGINE_BINARIES["anthropic-agent"];
+  const { root, program } = plantInstalledCopy('echo "Error: the native binary is not installed." >&2\nexit 1\n');
+  try {
+    const b = resolveEngineBin(eng.fallback, { engine: "anthropic-agent", env: { PATH: "" }, enginesDir: root });
+    assert.equal(b.executable, false, "the placeholder must not resolve");
+    const said = unusableEngineWords(eng, b);
+    assert.ok(said.includes(program) && /Reinstall without --ignore-scripts/.test(said), said);
+    assert.doesNotMatch(said, /no copy was installed/, said);
+    assert.match(unusableEngineWords(eng, { rejected: [] }, "claude-beta"), /CLEAROTRON_CLAUDE_PATH="claude-beta"/);
+    // THE CONTROL: nothing found and nothing named, and it does say none was installed. The fallback word is
+    // the default spelled out, not a program somebody named.
+    for (const setting of ["", eng.fallback])
+      assert.match(unusableEngineWords(eng, { rejected: [] }, setting), /Clearotron has not installed one/);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("every sentence in the wizard that states a CLI's licence takes it from the engine table", () => {
+  // The licence each vendor's package declares is recorded beside it in ENGINE_BINARIES (read from the
+  // packages, 2026-09-14: Claude Code "SEE LICENSE IN README.md", the Codex CLI "Apache-2.0"). Nothing is
+  // bundled, so no package is in this checkout to read again; what this holds is that no sentence in the
+  // wizard states a licence of its own, which is how an Apache-2.0 program was called proprietary.
+  const sentences = nonEmpty(readFileSync(ONBOARD, "utf8").split("\n").filter((l) => /say\(/.test(l) && /'s CLI is /.test(l)),
+    "wizard sentences stating a CLI's licence");
+  for (const l of sentences) assert.match(l, /\$\{eng\.licence\}/, `a licence stated as a literal: ${l.trim()}`);
+  for (const [id, eng] of Object.entries(ENGINE_BINARIES)) assert.ok(eng.licence, `${id} states no licence`);
 });

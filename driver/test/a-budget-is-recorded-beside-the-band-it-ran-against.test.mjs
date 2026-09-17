@@ -182,3 +182,67 @@ test("a named absence reaches the row as a reason, and a stage with no band carr
   const none = (await driveStage("unset", {})).at(-1);
   assert.ok(!("band" in none), `a non-band stage's row carries a band key: ${JSON.stringify(none.band)}`);
 });
+
+
+// ── AND THE BUDGET IS NOW DERIVED FROM THAT BAND, NOT SET AGAINST ONE CROWDED MATTER ─────────────
+//
+// The two stages that read the band carried constants chosen once, against a band nobody recorded
+// beside them. On a dense matter both died at their wall having written nothing, each sitting exactly
+// AT its ceiling — so what ended them was the budget expiring, not a guard firing, and the stall guards
+// had half an hour of quiet to fire in and could not because tokens were still moving.
+const { derivedLimitSec, limitExceedsCeiling, ceilingRefusal, LIMIT_REFERENCE_MB, LIMIT_CEILING_SEC } =
+  await import("../band-size.mjs");
+
+const MB = 1024 * 1024;
+const PLACEMENT_BASE = 2700;   // what the stage carried when the dense matter killed it
+
+test("the two measurements the formula is set against, asserted as the formula's two ends", () => {
+  // THE DENSE MATTER. The killed attempt took 2,765s against a 2,700s budget, so a derivation that
+  // does not clear what the attempt actually took has not fixed anything — it has moved the wall to
+  // somewhere the same run still dies.
+  const dense = derivedLimitSec(PLACEMENT_BASE, { bytes: 8 * MB, records: 2146, crowds: 0 });
+  assert.ok(dense.sec > 2765,
+    `an 8 MB band must derive past the 2,765s the killed attempt took; got ${dense.sec}s`);
+  assert.equal(dense.inputBytes, 8 * MB, "and the size it was derived from rides with it");
+
+  // EVERY ORDINARY MATTER. At or under the reference the base comes back UNCHANGED. Anything else
+  // re-decides the budget of every run already verified at these numbers, to fix a defect they did not
+  // have — and an archived verdict moved by a fix is a fix that broke something to mend something else.
+  for (const mb of [0.1, 1, LIMIT_REFERENCE_MB]) {
+    const ordinary = derivedLimitSec(PLACEMENT_BASE, { bytes: mb * MB, records: 300, crowds: 0 });
+    assert.equal(ordinary.sec, PLACEMENT_BASE, `${mb} MB must return the base untouched, not ${ordinary.sec}`);
+  }
+});
+
+test("an unmeasurable band returns the base and SAYS it could not measure", () => {
+  // THE FAIL-SAFE DIRECTION, and it is the one that needs stating. Guessing higher spends a client's
+  // money on an input nobody measured; guessing lower kills a stage for a band that may be ordinary.
+  // The base is what the run would have used anyway, so an absent measurement changes nothing.
+  for (const band of [{ absent: "no merged register band on disk" }, undefined, {}, { bytes: null }]) {
+    const r = derivedLimitSec(PLACEMENT_BASE, band);
+    assert.equal(r.sec, PLACEMENT_BASE, `an unmeasured band must not move the budget: ${JSON.stringify(band)}`);
+    assert.equal(r.inputBytes, null);
+    assert.ok(r.basis, "and it records WHY it could not derive, rather than reading as a derivation");
+  }
+  // A stage with no base of its own cannot be derived for, and says so rather than inventing one.
+  assert.equal(derivedLimitSec(null, { bytes: 8 * MB }).sec, null);
+});
+
+test("a band past the ceiling is REFUSED at dispatch, with its size in the message", () => {
+  // The 177 MB band measured on an earlier round. A limit past the ceiling is not a budget, it is a
+  // prediction that the stage will be killed; starting it spends the whole prediction to arrive where
+  // the refusal already is.
+  const huge = derivedLimitSec(PLACEMENT_BASE, { bytes: 177 * MB });
+  assert.equal(limitExceedsCeiling(huge.sec), true, `177 MB derives ${huge.sec}s, which must exceed ${LIMIT_CEILING_SEC}s`);
+
+  const msg = ceilingRefusal("placement-inquiry", huge);
+  assert.match(msg, /^stage_input_over_ceiling:/, "token-first, like every other refusal the ladder reads");
+  assert.ok(msg.includes("177"), "THE SIZE IS THE FINDING — a refusal that does not name it says only that something was too big");
+  assert.ok(msg.includes("placement-inquiry"), "and it names the stage refused");
+
+  // THE FLOOR ON THE OTHER SIDE. Without this, a ceiling set low enough to refuse everything would
+  // pass the arm above and turn every dense matter into a refusal instead of a longer run.
+  const dense = derivedLimitSec(PLACEMENT_BASE, { bytes: 8 * MB });
+  assert.equal(limitExceedsCeiling(dense.sec), false,
+    "the matter this was built for must RUN with a longer budget, not be refused — the ceiling is for the band that is itself the defect");
+});

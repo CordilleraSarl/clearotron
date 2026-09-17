@@ -91,8 +91,9 @@ const send = (m) => process.stdout.write(JSON.stringify(m) + "\n");
 // field, so a mock that ignores --model would report a mismatch on every honest turn.
 //
 // The real CLI echoes the model it resolved, in ITS OWN naming — a dated id for haiku
-// ("claude-haiku-4-5-20251001", the form driver.config's normaliser exists for), the pinned catalog
-// names for opus/sonnet. The table is keyed on what `claudeModel()` actually passes on the wire.
+// ("claude-haiku-4-5-20251001", the form driver.config's normaliser exists for), the undated catalog
+// names for opus/sonnet, which is what the vendor's aliases served when this was written. The table is
+// keyed on what `claudeModel()` actually passes on the wire: the alias, or a catalog id a caller named.
 //   MOCK_CLAUDE_WIRE_MODEL=<id> — report <id> INSTEAD, whatever was asked for. That is the substitution
 //     fixture: the shape `--model gemini` had when it logged gemini and ran sonnet.
 const mIdx = argv.indexOf("--model");
@@ -425,6 +426,9 @@ if (process.env.MOCK_CLAUDE_USAGE_THEN_STALL) {
       stop_reason: fail ? "error" : "end_turn", session_id: session,
       total_cost_usd: process.env.MOCK_CLAUDE_COST != null ? Number(process.env.MOCK_CLAUDE_COST) : 0.0123,
       usage,
+      // MOCK_CLAUDE_PROVIDER=<word> — the per-model usage the real program reports, naming its provider
+      // ("firstParty", "foundry"). Absent by default, as it was before the provider gauge read it.
+      ...(process.env.MOCK_CLAUDE_PROVIDER ? { modelUsage: { [wireModel]: { provider: process.env.MOCK_CLAUDE_PROVIDER } } } : {}),
     };
     // MOCK_CLAUDE_NO_NEWLINE=1 — emit the FINAL result event with NO trailing newline (NDJSON last record);
     // the engine MUST flush its buffer on close or the result is dropped (the B1 regression).

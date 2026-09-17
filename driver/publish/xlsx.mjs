@@ -618,7 +618,19 @@ export async function buildAudit(contract, auditParsed, outPath, mark = '', fm =
   });
 
   // 4 · Coverage & gaps — the honest completeness ledger, state coloured.
-  addSheet(wb, 'Coverage & gaps', COVERAGE_COLS, coverageRows(coverage), (row, _d, kept) => {
+  // ── A CONDITION THAT REACHED NO PAGE IS A GAP, AND IT BELONGS ON THE GAPS SHEET ──────────────────
+  //
+  // A report republished from a run recorded before conditions carried two texts can hold a condition
+  // whose reader-facing sentence was never stored and cannot be composed. It is dropped rather than
+  // printed in the engine's own words, and a drop nobody records is the disclosure closing quietly —
+  // which is worse than the sentence it replaced. Ruled 2026-09-17: one row here, one line in the run
+  // record, no new wording, and delivery never fails for it.
+  //
+  // THE ROW IS AN ORDINARY COVERAGE ROW, built by the same function as every other, so it carries the
+  // same four columns and takes the same State colour. It is not a second shape and not a new sheet.
+  // The words in it are the run record's own: nothing here composes prose.
+  addSheet(wb, 'Coverage & gaps', COVERAGE_COLS,
+    [...coverageRows(coverage), ...coverageRows(contract?.droppedConditions || [])], (row, _d, kept) => {
     if (!kept.has('State')) return;
     const st = row.getCell('State'); const f = STATE_FILL[String(st.value).trim()];
     if (f) { st.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF' + f } }; st.font = { bold: true }; }

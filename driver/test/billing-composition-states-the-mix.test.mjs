@@ -214,7 +214,9 @@ test("an engine the table cannot place is NAMED and blocks the single-vendor cla
 test("every engine the tree stamps has a vendor row", () => {
   // The table is closed, so its completeness is the thing that decides whether `unmappedEngines` is a
   // real signal or a permanent nag. Checked against the engines the code actually writes.
-  for (const e of ["anthropic-agent", "anthropic-direct", "anthropic-completions", "openai-agent"])
+  // `anthropic` and `openai` are the native-language rows' stamp: jxBillingStamp writes the vendor the
+  // engine door resolved (auth.mjs's provider) as the row's engine.
+  for (const e of ["anthropic-agent", "anthropic-direct", "anthropic-completions", "openai-agent", "anthropic", "openai"])
     assert.ok(vendorOf(e), `${e} is stamped by the driver and bills to no vendor this table names`);
   assert.equal(vendorOf("code"), null, "code-side must not resolve to a vendor — it is excluded upstream");
   assert.equal(vendorOf("unknown"), null, "'unknown' must never resolve to a vendor's name");

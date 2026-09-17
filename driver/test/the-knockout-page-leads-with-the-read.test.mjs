@@ -21,6 +21,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 import { renderKnockoutHtml, knockoutReportData } from "../publish/render-knockout.mjs";
+import { EXPORT_TOGGLE, EXPORT_MENU_JS } from "../publish/report-topbar.mjs";
 
 // Worst-first, and deliberately FOUR rungs with "Low" at the bottom: a ladder whose lowest rung is the
 // one a fixture happens to use cannot tell "above the lowest" from "has a band at all".
@@ -84,6 +85,100 @@ const RENDER = (marks, over = {}) => renderKnockoutHtml(
   { marks, batch: { executiveSummary: "One name screened.", standardCaveats: [] } }, FW,
   { runId: "r", overall: "Medium", identity: { identity: "Knockout search" }, ...over },
 );
+
+// ── THE IDENTITY LINE NAMES THE MARK AND THE SEARCH, NEVER THE RUN ───────────────────────────────
+//
+// It printed `matter || runId`, and the publisher passes the runId AS the matter, so a client read the
+// engine's run identifier: on a real run a temporary-directory name carrying a capture suffix. It is
+// ours, it means nothing to them, and it is the one string on that page that could not be shown to
+// anyone at all. The mock reads mark then search type.
+//
+// Clause F, and it is the whole reason this has two halves: a run with no registry identity is exactly
+// the run that used to print the raw name, so a fallback to the identifier would keep the defect for
+// precisely the documents that have it. With no product name the mark stands alone; with neither, the
+// line does not render.
+const RUNID = "tmpdemo2014knockoutsearch-ironwhisk-2026-09-02-sample-capture";
+const identityLine = (html) => (html.match(/<span class="mono tb-matter"[^>]*>([\s\S]*?)<\/span>/) || [])[1] ?? null;
+
+test("the identity line names the mark and the search, and no run identifier reaches it", () => {
+  const html = RENDER([MARK()], { runId: RUNID, matter: RUNID });
+  const line = identityLine(html);
+  assert.ok(line, "the identity line renders");
+  assert.match(line, /IRONWHISK/, "the mark is named");
+  assert.match(line, /Knockout search/, "and the search type beside it");
+  assert.doesNotMatch(html, /tmpdemo|sample-capture/, "no run identifier anywhere on the page");
+});
+
+test("clause F: with no registry identity the mark stands alone — never the run identifier", () => {
+  const html = RENDER([MARK()], { runId: RUNID, matter: RUNID, identity: null });
+  const line = identityLine(html);
+  assert.ok(line, "an archived run still gets an identity line");
+  assert.match(line, /IRONWHISK/, "the mark stands alone");
+  assert.doesNotMatch(line, /Knockout search/, "nothing is invented for a run that carries no identity");
+  assert.doesNotMatch(html, /tmpdemo|sample-capture/,
+    "the run that has no identity is the one that used to print the raw name — it must not fall back to it");
+});
+
+// ── THE FOOTER SAYS THE SAME THREE THINGS, AND ISSUES A DATE ─────────────────────────────────────
+//
+// It read "<product>. / Matter <runId>. Issued <date · time>." — the run identifier a second time,
+// under a label calling it the client's matter when it is the engine's own run directory, and the
+// publish clock. Built from the same parts as the identity line now, so the two cannot drift apart.
+//
+// The TIME is dropped on both. `issued` is composed at publish as date-then-time, and that time is the
+// minute the file was written: it tells a reader nothing, and on a screen whose work spans hours it
+// implies a precision the work does not have.
+const footerOf = (html) => (html.match(/<footer[^>]*>([\s\S]*?)<\/footer>/) || [])[1] ?? "";
+
+test("the footer names mark, search and an issue DATE — no identifier, no clock", () => {
+  const html = RENDER([MARK()], { runId: RUNID, matter: RUNID, issued: "2026-09-15 · 08:36" });
+  const foot = footerOf(html);
+  assert.match(foot, /IRONWHISK/, "the mark");
+  assert.match(foot, /Knockout search/, "the search");
+  assert.match(foot, /issued on 2026-09-15/, "the date it was issued");
+  assert.doesNotMatch(foot, /08:36/, "not the minute the file was written");
+  assert.doesNotMatch(foot, /Matter/, "nothing calls the run directory the client's matter");
+  assert.doesNotMatch(html, /tmpdemo|sample-capture/, "and the identifier is nowhere on the page");
+});
+
+test("the header issues the same date, and neither surface carries the clock", () => {
+  const html = RENDER([MARK()], { runId: RUNID, matter: RUNID, issued: "2026-09-15 · 08:36" });
+  assert.match(html, /Issued on 2026-09-15/, "the header issues a date");
+  assert.doesNotMatch(html, /08:36/, "the publish clock reaches neither surface");
+});
+
+test("clause F: an issued value in an unexpected shape falls through whole rather than being cut", () => {
+  // The date is taken by PATTERN, not by splitting on the separator. Both approaches agree on the
+  // shape this publisher writes today, so the fixture that separates them is one where a separator
+  // appears and the leading part is NOT a date — an archived run written before the format settled.
+  // Splitting would hand the reader "Q3" as the day the search issued; matching hands back the whole
+  // string, which is honest about not recognising it. Driven in this direction on purpose: the arm
+  // that used "15 September 2026" passed under BOTH, so it proved nothing about the rule.
+  const odd = RENDER([MARK()], { runId: RUNID, matter: RUNID, issued: "Q3 \u00b7 2026" });
+  assert.match(footerOf(odd), /issued on Q3 \u00b7 2026/, "an unrecognised shape survives whole");
+  assert.doesNotMatch(footerOf(odd), /issued on Q3\./, "it is not truncated at the separator");
+
+  const plain = RENDER([MARK()], { runId: RUNID, matter: RUNID, issued: "15 September 2026" });
+  assert.match(footerOf(plain), /issued on 15 September 2026/, "…and a shape with no separator too");
+});
+
+test("clause F: a batch with no marks still names no run directory", () => {
+  // WHAT THIS DOES AND DOES NOT HOLD, because the first version of this comment was wrong. A title
+  // is ALWAYS truthy here — `batchTitle` returns the mark's name, or "<n> names", and for an empty
+  // batch that is the string "0 names". So there is no input under which a `title || runId` fallback
+  // could reach the identifier, and no arm can separate that fallback from its absence. It is
+  // unreachable rather than guarded, and writing an arm that claims to guard it would be a false
+  // reassurance to whoever changes this next.
+  //
+  // What this arm does hold is the degenerate batch: a document with nothing to name still prints no
+  // run directory anywhere. The regression it actually catches is the real one — restoring the old
+  // `matter || runId` line — and that was driven, not assumed.
+  const html = RENDER([], { runId: RUNID, matter: RUNID });
+  assert.doesNotMatch(html, /tmpdemo|sample-capture/,
+    "with nothing else to name, the page still does not fall back to the run directory");
+  const line = identityLine(html);
+  if (line) assert.doesNotMatch(line, /tmpdemo|sample-capture/, "nor does the identity line itself");
+});
 
 // ── A.1 — what was asked, and any flag on the asking, at the top ─────────────────────────────────────
 
@@ -516,4 +611,86 @@ test("the one-name page stays inside its word budget, folds closed", () => {
   // "folds closed" would be measuring a page that has no folds.
   assert.ok(open > closed + 200,
     `opening the folds added only ${open - closed} words, so the detail is not being folded away — it is missing`);
+});
+
+// ── THE KNOCKOUT CARRIES THE EXPORT CONTROL THE APPROVED HEADER DRAWS ───────────────────────────────
+//
+// The approved header is "brand, band badge, name and type, Issued on, Ask AI, Export", the same as the
+// clearance report's. This template emitted no Export control and no popover, while the stylesheet it
+// inlines still described its utility buttons as the ones "used by the topbar Export popover". A reader
+// inside the portal could still ask the assistant to export, because the serve-time bridge reaches
+// `exportPDF` by name; a reader who opened the file itself had the browser's print command and nothing
+// on the page.
+//
+// BREAK MATRIX:
+//   · the control is in the top bar             → break: emit no popover, arm 1 red
+//   · its entry is the plain print              → break: copy the clearance's tick wording, arm 2 red
+//   · no select-all names a control that cannot exist → break: copy the clearance's pickAll row, arm 3 red
+//   · the verbs it calls are DEFINED here       → break: offer a verb this template does not define, arm 4 red
+//   · it is not printed                         → break: drop no-print from the bar, arm 5 red
+test("the knockout's top bar carries an Export control, and it offers only what this template can do", () => {
+  const html = RENDER([MARK()]);
+
+  assert.match(html, /class="tbbtn primary tb-exp-toggle"/, "no Export control in the knockout's top bar");
+  assert.match(html, /class="tb-pop tb-exp-pop" hidden/, "the Export control opens no popover");
+  assert.match(html, /<button class="util primary" onclick="exportPDF\(\)">[^<]*Export PDF<\/button>/,
+    "the popover has no plain Export PDF entry");
+
+  // THE TICK WORDING IS THE CLEARANCE'S AND IT DOES NOT BELONG HERE. This template has no pickbox, so a
+  // "(ticked findings)" entry and a Select all row would both name a control that cannot exist.
+  assert.doesNotMatch(html, /ticked findings/, "the knockout offers to filter by a tick it does not have");
+  // ON THE CALL, NOT ON THE WORD. The page's own script CARRIES the name in a comment explaining why
+  // this template defines no pickAll, so a bare search for it matches the reason the control is absent.
+  assert.doesNotMatch(html, /onclick="pickAll/, "a select-all reaches a verb this template deliberately does not define");
+  assert.doesNotMatch(html, /Tick a finding/, "the clearance's hint about ticking came with the markup");
+
+  // EVERY VERB THE POPOVER CALLS IS DEFINED IN THE PAGE. The serve-time bridge looks these up by name,
+  // and the whole reason this template defines no pickAll is that an absent verb is an absent menu item
+  // rather than a control that fails. A popover calling one anyway would put that back.
+  for (const verb of [...html.matchAll(/onclick="(\w+)\(/g)].map((m) => m[1])) {
+    assert.match(html, new RegExp(`function ${verb}\\(`), `the page calls ${verb}() and does not define it`);
+  }
+
+  // The bar is chrome, not document: it carries no-print, so the exported PDF shows no controls.
+  assert.match(html, /<div class="topbar no-print">/, "the top bar would print into the PDF");
+
+  // BUILT TO THE BOARD, NOT TO THE ISSUE TEXT. The board puts Ask AI and Export in one menu and draws
+  // the Export button and its caret; it does not draw what the menu contains. So the entries are the
+  // clearance report's own words and the menu carries no heading — a heading here would be a word on a
+  // client's page that nobody chose.
+  const menu = (html.match(/<div class="tb-menu">[\s\S]*?<\/div>\s*<\/div>/) || [])[0] ?? "";
+  assert.match(menu, /tb-ask/, "Ask AI sits outside the menu the board draws it in");
+  assert.match(menu, /tb-exp-toggle/, "the Export button sits outside that menu");
+  // ON THE ELEMENT, NOT ON THE WORD — again. The page INLINES report.css, which styles a heading the
+  // clearance report uses, so a bare search for the class name matches the stylesheet and would fail
+  // whatever the markup did. This is the second assertion in this arm to need narrowing for the same
+  // reason: the rendered page carries the vocabulary of both templates, only one of which it uses.
+  assert.doesNotMatch(html, /<div class="tb-pop-title"/, "the menu carries a heading the board does not draw");
+});
+
+// ── THE EXPORT MENU IS ONE CONTROL, AND THIS IS THE knockout HALF OF SAYING SO ──────────────────────
+//
+// Both report templates draw an export menu. They drew two copies of it — the knockout's arrived by
+// being re-emitted from the clearance's markup, because the clearance renderer is frozen and lifting the
+// control out was its own change. The shell now comes from `report-topbar.mjs` and both templates import
+// it; the ENTRIES stay each template's own, because they are a statement about what that template can do.
+//
+// PINNED TO THE MODULE'S OWN STRINGS, not to a spelling written here. A future author who re-forks a
+// copy has to keep it byte-identical to pass, and the moment the fork drifts — a class renamed, an aria
+// attribute dropped, a listener changed — this reds, in the file whose template drifted.
+//
+// BREAK MATRIX:
+//   · the page emits the module's toggle      → break: spell a second one here, arm 1 red
+//   · the page carries the module's listeners → break: copy them back inline and change one, arm 2 red
+//   · ONE menu, not two                       → break: emit the shell twice, arm 3 red
+test("the export menu this template draws is the shared one, not a copy of it", () => {
+  const html = RENDER([MARK()]);
+  assert.ok(html.includes(EXPORT_TOGGLE), "the export button is not the shared one — this template spells its own");
+  assert.ok(html.includes(EXPORT_MENU_JS), "the open/close behaviour is not the shared one");
+  assert.equal(html.split('class="tb-pop tb-exp-pop"').length - 1, 1, "the page carries more than one export panel");
+  // COUNTED ON THE BUTTON, NOT ON ITS CLASS NAME. The first spelling of this assertion counted the bare
+  // string and expected two — one in the markup, one in the listeners — and the listeners name it three
+  // times. The number was guessed rather than measured, which is the defect this whole arm exists to
+  // catch one level along. The button itself appears once, and that is the property.
+  assert.equal(html.split(EXPORT_TOGGLE).length - 1, 1, "the export button is emitted other than once");
 });

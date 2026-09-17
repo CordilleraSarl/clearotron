@@ -370,3 +370,64 @@ test("the plan compile actually calls it — the wiring, not the helper", () => 
   assert.match(line, /frameIdentifiedClasses\(/, "the compile does not union the frame's identified classes");
   assert.match(line, /inScopeClassList\(/, "and it must still carry the instructed ones");
 });
+
+
+// ── THE CLIENT'S OWN HOUSE ELEMENT — PROPOSED HERE, VERIFIED ELSEWHERE ───────────────────────────
+//
+// The 2026-09-16 production run: the mark was the client's own famous house mark plus a tagline, the
+// plan treated the house element as a conflict axis, and over half the band came from that element.
+// The reviewing lawyer's method was three queries on the remainder. What the frame may do about that is
+// PROPOSE; it cannot verify, because it runs before the plan and holds no band tool.
+const { frameHouseElementCandidate } = await import("../matter-frame-record.mjs");
+
+const HOUSE = Object.freeze({ element: "NOVAPULSE", remainder: "SOUND OF TOMORROW",
+  owner_basis: "the client's own registered house mark, used in the instructed classes" });
+
+test("the frame PROPOSES a house element, and the document says it is not yet excluded", () => {
+  const v = accepted({ house_element_candidate: HOUSE });
+  assert.deepEqual(v.model.house_element_candidate, HOUSE);
+
+  // THE SENTENCE A READER MEETS. "Excluded" on this document would tell a reader the search had been
+  // narrowed on the frame's authority, which is exactly what has NOT happened at this point in the run.
+  assert.match(v.content, /proposed for exclusion/i,
+    "the line states a proposal, never a decision");
+  assert.match(v.content, /Excluded only if the driver confirms/i,
+    "…and names the condition, so a reader can tell whether the narrowing actually happened");
+  assert.ok(v.content.includes(HOUSE.owner_basis), "the basis is evidenced on the document, not only in a field");
+});
+
+test("a frame that proposes nothing renders nothing, and that is the ordinary case", () => {
+  // THE CONTROL. Every arm here sends the field, so all of them would pass against a transport that had
+  // started rendering the line unconditionally — on every archived run, and on every matter whose mark
+  // the client does not own a word of.
+  const v = accepted();
+  assert.equal(v.model.house_element_candidate, null);
+  assert.equal(/proposed for exclusion/i.test(v.content), false,
+    "no field, no line — an asserted 'none' here would be the frame answering a question nobody asked it");
+});
+
+test("the refusals that stop an exclusion swallowing the whole mark", () => {
+  const bad = (h, token) => {
+    const v = acceptMatterFrame({ ...PARAMS, house_element_candidate: h }, { instructedScope: SCOPE });
+    assert.equal(v.ok, false, `expected a refusal for ${token}`);
+    assert.match(v.reason, new RegExp(`^${token}`));
+  };
+  bad({ ...HOUSE, element: "" }, "matterframe_house_element_empty");
+  bad({ ...HOUSE, owner_basis: "" }, "matterframe_house_element_basis_missing");
+
+  // THE FLOOR, AND THE DIRECTION THAT WOULD REACH A CLIENT. Naming the whole mark as the house element
+  // leaves nothing to search, ownership can verify perfectly, and no count downstream would catch it:
+  // "queries on the house element: 0" is satisfied by a plan holding no queries at all.
+  bad({ ...HOUSE, remainder: "" }, "matterframe_house_element_no_remainder");
+  bad({ ...HOUSE, remainder: "novapulse" }, "matterframe_house_element_remainder_same");
+  bad({ element: "NOVAPULSE SOUND OF TOMORROW", remainder: "SOUND OF TOMORROW", owner_basis: "x" },
+    "matterframe_house_element_swallows_remainder");
+});
+
+test("the reader hands the driver a PROPOSAL, and nothing on an archived frame", () => {
+  const d = runDir();
+  assert.equal(frameHouseElementCandidate(d), null,
+    "a run with no accepted frame proposes nothing — an absent field must never read as an exclusion");
+  recordMatterFrame(d, { ...PARAMS, house_element_candidate: HOUSE });
+  assert.deepEqual(frameHouseElementCandidate(d), HOUSE);
+});

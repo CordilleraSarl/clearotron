@@ -141,6 +141,16 @@ export function renderMatterFrame(model) {
   // is owed against — so the frame states it where a reader can see it rather than only in a field.
   if ((model.ratified_forms ?? []).length > 1)
     out.push(`- **Ratified forms:** ${model.ratified_forms.join(", ")}`);
+  // THE EXCLUSION IS EVIDENCED ON THE DOCUMENT A READER SEES, and it is stated as a PROPOSAL because
+  // that is what it is at this point in the run. A reader meeting "excluded" here would believe the
+  // search was narrowed on the frame's authority; the driver's verification has not run yet, and if it
+  // cannot confirm the client's ownership the element is searched in full and this line is the only
+  // place the question was ever raised.
+  if (model.house_element_candidate)
+    out.push(`- **Client's own element, proposed for exclusion:** ${model.house_element_candidate.element}`
+      + ` — the analysis would be limited to ${model.house_element_candidate.remainder}.`
+      + ` Basis: ${model.house_element_candidate.owner_basis}.`
+      + " Excluded only if the driver confirms the client's own registrations on the register; otherwise searched in full.");
   out.push("");
 
   // `Search channels:` — domains only; the grid site-restricts to them and the general web is always
@@ -172,9 +182,10 @@ export function renderMatterFrame(model) {
  */
 /** The shape this tool declares, at every depth — what the ACCEPTOR enforces. */
 const DECLARED = Object.freeze({
-  "": ["prose_body", "scope_basis", "scope_jurisdictions", "excluded_jurisdictions", "search_channels", "meaning_angles", "meaning_angles_none", "intake_asks", "identified_classes", "ratified_forms"],
+  "": ["prose_body", "scope_basis", "scope_jurisdictions", "excluded_jurisdictions", "search_channels", "meaning_angles", "meaning_angles_none", "intake_asks", "identified_classes", "ratified_forms", "house_element_candidate"],
   intake_asks: ["ask", "owner"],
   identified_classes: ["class", "reason"],
+  house_element_candidate: ["element", "remainder", "owner_basis"],
 });
 
 /** Refuse an undeclared key by path, at depth. Shared walk; the table above is what is this tool's. */
@@ -218,6 +229,26 @@ export function frameRatifiedForms(runDir) {
   return (Array.isArray(rows) ? rows : []).map((r) => String(r ?? "").trim()).filter(Boolean);
 }
 
+/**
+ * The house element this run's frame PROPOSED, or null. IMPURE (reads the run's own accepted call).
+ *
+ * A PROPOSAL, AND THE CALLER MUST TREAT IT AS ONE. Nothing here has been checked against the register:
+ * the frame runs before the plan, holds no band tool, and is reporting how it reads the matter. The
+ * caller verifies ownership by owner-scoped lookup and writes its own receipt; the plan excludes on
+ * that receipt. A caller that excluded on this return would be dropping an element from the search on a
+ * model's say-so, which is the one direction that reaches a client as a clean answer over unswept
+ * ground rather than as a visible failure.
+ *
+ * Null on every archived and replayed run whose accepted call predates the field, so none of them moves.
+ */
+export function frameHouseElementCandidate(runDir) {
+  const h = lastAcceptedMatterFrame(runDir)?.house_element_candidate;
+  const element = String(h?.element ?? "").trim();
+  const remainder = String(h?.remainder ?? "").trim();
+  if (!element || !remainder) return null;
+  return { element, remainder, owner_basis: String(h?.owner_basis ?? "").trim() };
+}
+
 /** The last ACCEPTED call for this run, or null. */
 export function lastAcceptedMatterFrame(runDir) {
   return lastAccepted(matterFrameCallPaths(String(runDir ?? "")).accepted, readFileSync);
@@ -252,6 +283,15 @@ export function mergeMatterFrameCall(stored, received) {
     // omission here is a repair that did not mention them, never a decision to withdraw them.
     identified_classes: keepIfAbsent(received?.identified_classes, base.identified_classes),
     ratified_forms: keepIfAbsent(received?.ratified_forms, base.ratified_forms),
+    // KEEP-IF-ABSENT, and the direction of its failure is the OPPOSITE of the two above — which is
+    // worth saying, because the reasoning that protects them does not transfer and a reader who assumed
+    // it did would mis-rank this key. Dropping the identified classes NARROWS the next compile, towards
+    // missing rights. Dropping this one WIDENS it: the house element goes back to being searched as a
+    // conflict axis, which is the band this field exists to shrink, so a partial call that lost it costs
+    // a slower run and the report's one sentence explaining what was excluded and why — never coverage.
+    // It is kept because a repair turn that did not mention the element is not a withdrawal of it, which
+    // is the same rule, reached by a different road.
+    house_element_candidate: keepIfAbsent(received?.house_element_candidate, base.house_element_candidate),
   };
 }
 
@@ -346,6 +386,54 @@ export function acceptMatterFrame(params, { instructedScope = null } = {}) {
     ratified_forms.push(form);
   }
 
+  // ── THE CLIENT'S OWN HOUSE ELEMENT — A CANDIDATE, NEVER A DECISION ───────────────────────────────
+  //
+  // THE DEFECT (production run, 2026-09-16). The mark was the client's own famous house mark followed by
+  // a tagline, and the plan treated the house element as a conflict axis: exact, variants, one-letter
+  // mutations, transliterations, incumbent checks. Over half the band came from that element. The
+  // reviewing lawyer's method for the same matter was three queries — the whole phrase, the shorter
+  // phrase, the last word alone — because an element the client already owns outright is not what the
+  // analysis is about. The engine planned thirty-six.
+  //
+  // WHY THE FIELD IS NAMED `candidate`, AND WHY THE NAME IS LOAD-BEARING. This frame CANNOT verify
+  // ownership: `BAND_READING_STAGES` is placement-inquiry, register-digest and synthesis, and the band
+  // does not exist yet when the frame runs. So everything here is the seat's reading of the matter, and
+  // an exclusion taken on a seat's say-so is an unsearched element justified by an assertion — a clean
+  // report over ground nobody swept, which is the one failure that reaches a client as a wrong answer
+  // rather than as no answer. The driver verifies against the register by owner and writes the receipt;
+  // the plan excludes on the RECEIPT and never on this field. Requirement 4 ("when the frame cannot
+  // verify, it does not exclude, and says so") is then the write order rather than a branch someone has
+  // to remember: no receipt, no exclusion.
+  //
+  // TYPED RATHER THAN PARSED, for the reason `identified_classes` gives and measures: a list derived
+  // from judgment prose dropped the primary entry in 19 of 21 runs.
+  let house_element_candidate = null;
+  if (params?.house_element_candidate !== undefined && params?.house_element_candidate !== null) {
+    const h = params.house_element_candidate;
+    const element = str(h?.element), remainder = str(h?.remainder), owner_basis = str(h?.owner_basis);
+    if (!element)
+      return { ok: false, reason: "matterframe_house_element_empty: name the element of the mark the client already owns, or omit the field entirely — a blank row is not an answer" };
+    if (!owner_basis)
+      return { ok: false, reason: `matterframe_house_element_basis_missing:${element} — say why you read this as the client's own registered element. It is not taken on your word (the driver verifies it against the register by owner), but the reader of the report is owed the ground, and an unverifiable basis is how a wrong exclusion would be argued for` };
+    // ── THE FLOOR, AND IT IS ON THE POPULATION RATHER THAN ON THE RULE ────────────────────────────
+    //
+    // The catastrophic direction here is naming too MUCH as the house element: mark "ACME WIDGETS",
+    // element "ACME WIDGETS", remainder nothing — and the plan becomes three queries that do not exist.
+    // Ownership can verify perfectly in that case, so requirement 4 does not catch it and no refusal
+    // downstream would either: "queries on the house element: 0" is satisfied by a plan with no queries
+    // at all. So the remainder is checked for being something a search can be built on, here, where the
+    // claim is made.
+    if (!remainder)
+      return { ok: false, reason: `matterframe_house_element_no_remainder:${element} — excluding it would leave nothing to search. The remainder is what the analysis is about; if the mark IS the client's own element with nothing distinctive after it, there is no exclusion to make and the field is omitted` };
+    if (remainder.toLowerCase() === element.toLowerCase())
+      return { ok: false, reason: `matterframe_house_element_remainder_same:${element} — the remainder must be the part of the mark that is NOT the house element` };
+    // The whole mark cannot be the house element by another spelling: an element that swallows the
+    // remainder leaves the same empty plan, arriving as two fields that merely look different.
+    if (element.toLowerCase().includes(remainder.toLowerCase()))
+      return { ok: false, reason: `matterframe_house_element_swallows_remainder:${element} — the element you named contains the remainder, so excluding it excludes the whole mark` };
+    house_element_candidate = { element, remainder, owner_basis };
+  }
+
   const model = {
     schema_version: SCHEMA_VERSION,
     instructed_scope: instructedScope ?? null,
@@ -358,6 +446,7 @@ export function acceptMatterFrame(params, { instructedScope = null } = {}) {
     intake_asks,
     identified_classes,
     ratified_forms,
+    house_element_candidate,
   };
   return { ok: true, model, content: renderMatterFrame(model) };
 }

@@ -15,7 +15,7 @@ after §5 is needed to produce a report.
 
 | | Sections | For |
 |---|---|---|
-| **Installing** | §1 Prerequisites · §2 Install · §3 Configuration · §3a Free register route · §4 Config store · §5 Run a clearance | Anyone |
+| **Installing** | §1 Prerequisites · §2 Install · §3 Configuration · §3a Free register route · §3b Paying through a cloud account · §4 Config store · §5 Run a clearance | Anyone |
 | **Operating** | §6 `npx clearotron start` · §7 The MCP server · §8 Access control and isolation | Running it as a service for other people |
 | **Reference** | §9 What an integrator supplies · §10 Licence | — |
 
@@ -46,9 +46,10 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
   `ERR_UNKNOWN_BUILTIN_MODULE`, saying nothing about Node. `package.json` declares the floor, the
   install refuses below it before writing anything, and `nvm use` picks the pin up.
 - **macOS, Linux, or native Windows for the demo; WSL2 for a clearance.** `npx clearotron
-  demo` runs anywhere Node does, native Windows included. A real clearance does not: the engine resolves
-  the reasoning CLI the POSIX way, so a native-Windows clearance refuses at preflight even with the CLI
-  on `PATH`. Native Windows clearances are planned for a later release. Until then, on Windows,
+  demo` runs anywhere Node does, native Windows included. A real clearance does not: the engine spawns
+  each stage with POSIX path and process semantics, so on native Windows a clearance is refused before it
+  starts, even with the program installed. Native Windows clearances are planned for a later
+  release. Until then, on Windows,
   `wsl --install -d Ubuntu`, then `wsl -d Ubuntu`, and work through this page
   from **inside** that distribution. Name it: plain `wsl` can open a minimal image with no apt, no
   curl and no bash, and everything below assumes Ubuntu. A fresh Ubuntu has no Node at all, and
@@ -59,9 +60,7 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
   sudo apt update && sudo apt install -y curl
   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
   . "$HOME/.nvm/nvm.sh" && nvm install 22    # 22.13 or newer, per the floor above
-  npm install -g @anthropic-ai/claude-code
-  claude                              # once, interactively, to sign in
-  npx clearotron install
+  npx clearotron install  # offers to install the reasoning program if the machine has none, and shows you how to sign it in
   ```
 
   Run from `npx`, the install first installs Clearotron under `~/.local`, as `npm install -g --prefix
@@ -75,33 +74,30 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
 
   A *hosted* deployment needs Linux for one further thing, the systemd outbox trigger —
   [driver/systemd/README.md](driver/systemd/README.md).
-- **A reasoning CLI on your `PATH`, signed in.** This is the prerequisite people miss. Every stage runs
-  as a headless turn of a third-party binary, and `CLEAROTRON_AI` picks which one for the whole install.
-  An API key is not a substitute for the binary — it decides what the child process is handed, not
-  whether one is spawned.
+- **Setup installs the reasoning program.** Clearotron runs each step of a clearance as a short,
+  unattended session of Claude Code or the Codex CLI. Setup installs the one your engine uses, for this
+  machine, when you say yes. A copy already on the machine is used instead and keeps updating itself.
 
-  **Install one first.** The sign-in table below assumes the binary is already on the box; these are the
-  same commands the installer offers when it asks you, so nothing here is new advice.
+  **Sign in, or give it a key.** Sign in once with a Claude subscription (Pro, Max or Team), paste an
+  Anthropic API key, or point it at the Google, Microsoft or Amazon cloud account that already bills you
+  for AI. A key or a cloud account skips the sign-in. Hosting Clearotron for other organisations requires
+  a key or a cloud account.
 
-  | `CLEAROTRON_AI` | Binary | Install it with |
-  |---|---|---|
-  | `anthropic-agent` (default) | `claude` | `npm install -g @anthropic-ai/claude-code` |
-  | `openai-agent` | `codex` | `npm install -g @openai/codex` |
+  **Models follow the vendor.** Each step asks for a tier, opus, sonnet or haiku, and the vendor answers
+  with its newest model of that tier. Every report names the models that ran. To hold a tier at one
+  version, set the vendor's pin, `ANTHROPIC_DEFAULT_OPUS_MODEL` and siblings.
 
-  **If npm's global prefix needs root and you do not have it**, the `claude` CLI has a second route —
-  `curl -fsSL https://claude.ai/install.sh | bash`, which lands in `~/.local/bin` and prints its own
-  `PATH` advice. Run it by your own hand: this product will not execute a piped remote script for you,
-  because a command it runs on your box has to be one you can read in full before you answer. There is
-  no vendor shell installer for `codex`; on a root-only prefix, move npm's prefix instead.
+  `CLEAROTRON_AI` picks the program for the whole install. A key or a cloud account is not a substitute
+  for the program: it decides what the program is handed, not whether it runs.
 
-  Then sign it in:
+  To sign in:
 
-  | `CLEAROTRON_AI` | Binary | Signed-in laptop | A box you cannot complete a sign-in on |
+  | `CLEAROTRON_AI` | Program | Signed-in laptop | A machine you cannot complete a sign-in on |
   |---|---|---|---|
-  | `anthropic-agent` (default) | `claude` | `claude` OAuth login — rides your subscription | `claude setup-token` once anywhere you *can* log in, then put it on the server as `CLAUDE_CODE_OAUTH_TOKEN` |
-  | `openai-agent` | `codex` | `codex login` | `codex login --device-auth` — prints a code you complete on another device |
+  | `anthropic-agent` (default) | `claude` | run the program setup installed (doctor prints its path), or `claude` if the machine has its own, once — rides your subscription | `claude setup-token` once anywhere you *can* log in, then put it on the server as `CLAUDE_CODE_OAUTH_TOKEN` |
+  | `openai-agent` | `codex` | `login` on the program setup installed (doctor prints its path), or `codex login` if the machine has its own | `login --device-auth` on the same program — prints a code you complete on another device |
 
-  **The right-hand column is about where you can complete a sign-in, not about whether the box has a
+  **The right-hand column is about where you can complete a sign-in, not about whether the machine has a
   screen.** A server you can reach a browser from takes the left-hand route perfectly well; a laptop
   locked out of the vendor's login page takes the right-hand one. Reading it as "server ⇒ setup-token"
   sends you down the fallback for no reason.
@@ -113,7 +109,8 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
   spread of the driver's — and that inheritance is the whole mechanism.
 
   Both stay on the subscription. Reach for `CLEAROTRON_AI_BILLING=api-key` (plus `ANTHROPIC_API_KEY` or
-  `CODEX_API_KEY`) only when metered billing is what you want.
+  `CODEX_API_KEY`) only when metered billing is what you want, or for `CLEAROTRON_AI_BILLING=cloud` to
+  pay for Claude through your own Google Cloud, Microsoft Azure or Amazon Bedrock account (§3b).
 
   **Installed is not usable.** `npx clearotron install` proves the engine can complete a turn before it
   writes anything, and `npx clearotron doctor --probe-engine` re-proves it on a configured box. Both
@@ -172,7 +169,7 @@ The rest of this section is about the two ways a package reaches you, which is a
 which version it is.
 
 There are two routes in, and they are not variations on one another. **If you were sent a `.tgz` file,
-you want the second one** — the first assumes access to the repository, which a customer does not have.
+you want the second one** — the first assumes access to the repository, which someone installing the package does not have.
 
 ### From the repository
 
@@ -192,7 +189,7 @@ npm test               # offline, fixture-backed suites — no network, no gatew
 
 ### From a packaged tarball
 
-This is the shape a customer receives, and it is the one `scripts/verify-publishable.mjs` drives on every
+This is the shape someone installing it receives, and it is the one `scripts/verify-publishable.mjs` drives on every
 CI run — it packs, installs into a tree with no checkout, and runs the verbs: **an empty project with the
 tarball as a dependency.** Not an unpacked archive; there is no step here that untars anything.
 
@@ -354,7 +351,9 @@ clearotron-client-mcp.service
 
 **And `~/.env`, which only a background install writes.** A service inherits nothing from the terminal
 that installed it, so `clearotron start --background` writes everything those services need into `~/.env`,
-mode 600 — your register credential, your research key and the engine's settings among it. It is not the
+mode 600 — your register credential, your research key and the engine's settings among it. A later start
+adds only what the file lacks and never replaces a line, and names any setting on which the file and your
+configuration differ; to change one, change it in both. It is not the
 same file as `~/.config/clearotron/.env`, which configures the product when you run it yourself. Delete
 both, or you leave a file of credentials in your home for services that no longer exist.
 
@@ -417,20 +416,21 @@ Only the integrator-set knobs are shown — copy what you need:
 ```sh
 # ── Reasoning engine (LLM) ─────────────────────────────────────────────
 CLEAROTRON_AI=anthropic-agent            # headless `claude -p`
-CLEAROTRON_CLAUDE_PATH=claude             # path to the Claude CLI (default: `claude` on PATH)
-CLEAROTRON_AI_BILLING=subscription       # `subscription` (OAuth, default) | `api-key`
+# CLEAROTRON_CLAUDE_PATH=                # only to force one copy (default: `claude` on PATH, then the copy setup installed)
+CLEAROTRON_AI_BILLING=subscription       # `subscription` (OAuth, default) | `api-key` | `cloud` (§3b)
 # ANTHROPIC_API_KEY=sk-ant-...           # only when CLEAROTRON_AI_BILLING=api-key
+# ANTHROPIC_DEFAULT_OPUS_MODEL=...       # optional: hold the opus tier at one model (and _SONNET_, _HAIKU_, _FABLE_)
 # CLEAROTRON_AI=openai-agent             # …or the second adapter: headless `codex exec`
-# CLEAROTRON_CODEX_PATH=codex              # path to the codex CLI (default: `codex` on PATH)
+# CLEAROTRON_CODEX_PATH=                 # only to force one copy (default: `codex` on PATH, then the copy setup installed)
 
 # ── Where this install keeps its data ──────────────────────────────────
 # REQUIRED. CLEAROTRON_REPORTS_DIR has NO default: unset, a run refuses and names it.
 # It is the one path the engine will not guess, because guessing wrong means
-# publishing a client's report into somebody else's archive.
+# publishing a company's report into somebody else's archive.
 CLEAROTRON_REPORTS_DIR=/home/you/trademark/pool   # published reports + audits (outside the repo)
 CLEAROTRON_WORK_DIR=/home/you/trademark/workspace   # run directories and queues
 CLEAROTRON_REPORTS_URL=https://reports.example.com # base URL the pool is served at (for report links)
-CLEAROTRON_CUSTOMERS_DIR=/etc/trademark/profiles # your private customer-config store (default: bundled profiles/)
+CLEAROTRON_CUSTOMERS_DIR=/etc/trademark/profiles # your private company-config store (default: bundled profiles/)
 
 # ── Run it under your own name ─────────────────────────────────────────
 # Optional, and read at start-up. Unset, a report says only what the software is —
@@ -519,6 +519,69 @@ credentials are in, and the US office rides as a deferred coverage row until the
 staleness thresholds that decide when an index is too old to trust are in
 [providers/uspto-local/README.md](providers/uspto-local/README.md).
 
+## 3b. Paying for Claude through your cloud account
+
+Set `CLEAROTRON_AI_BILLING=cloud` and the lines for your cloud below. The Claude program still has to be
+installed (§1): it is what talks to the cloud. Clearotron checks that exactly one cloud is switched on,
+or that a gateway is named (below). Otherwise every search is refused before anything is spent, and
+`clearotron start` and `clearotron doctor` name what to set. Every run records which cloud account
+paid for it. Codex does not run through a cloud account.
+
+`clearotron start --background` carries these settings into `~/.env`, which the background services
+read. It only adds a line `~/.env` lacks and never replaces one, so to change cloud later, change the
+switch in both `~/.env` and Clearotron's settings file, then restart; `start` names any setting on which
+the two differ.
+
+Tested on Microsoft Azure. For Google Cloud and Amazon Bedrock these are the Claude program's own
+settings, as its documentation gives them.
+
+**Microsoft Azure (Foundry)**
+
+```sh
+CLEAROTRON_AI_BILLING=cloud
+CLAUDE_CODE_USE_FOUNDRY=1
+ANTHROPIC_FOUNDRY_RESOURCE=<your Foundry resource name>
+ANTHROPIC_FOUNDRY_API_KEY=<its key>              # or leave unset to use an Azure sign-in already on the machine
+ANTHROPIC_DEFAULT_OPUS_MODEL=<your Opus deployment name>
+ANTHROPIC_DEFAULT_SONNET_MODEL=<your Sonnet deployment name>
+ANTHROPIC_DEFAULT_HAIKU_MODEL=<your Haiku deployment name>
+```
+
+Foundry calls each model by the name of your deployment, so set the three to your deployment names. A tier
+whose deployment does not exist is refused by Azure, and the run stops and names it. Set
+`ANTHROPIC_DEFAULT_FABLE_MODEL` to your Fable deployment's name if you set `CLEAROTRON_SYNTHESIS_MODEL=fable`.
+
+**Google Cloud (Vertex AI)**
+
+```sh
+CLEAROTRON_AI_BILLING=cloud
+CLAUDE_CODE_USE_VERTEX=1
+ANTHROPIC_VERTEX_PROJECT_ID=<your project id>
+CLOUD_ML_REGION=global                            # or the region your Claude quota is in
+GOOGLE_APPLICATION_CREDENTIALS=<path to a service-account key>   # or a gcloud sign-in already on the machine
+```
+
+**Amazon Bedrock (not yet tested)**
+
+```sh
+CLEAROTRON_AI_BILLING=cloud
+CLAUDE_CODE_USE_BEDROCK=1
+AWS_REGION=<the region your Claude models are enabled in>
+```
+
+Bedrock uses whatever AWS credentials the machine already has: a profile, an instance role, or the
+standard AWS key variables, `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` (with `AWS_SESSION_TOKEN` for
+temporary credentials).
+
+On Google Cloud and Bedrock, set `ANTHROPIC_DEFAULT_OPUS_MODEL`, `_SONNET_` and `_HAIKU_` to the model
+ids your account offers if the program does not pick up the newest ones by itself, and `_FABLE_` to your Fable
+model's id if you set `CLEAROTRON_SYNTHESIS_MODEL=fable`.
+
+**Through a gateway.** If your organisation puts its own proxy in front of a cloud, set
+`CLEAROTRON_AI_BILLING=cloud`, `ANTHROPIC_BASE_URL` to the gateway and `ANTHROPIC_AUTH_TOKEN` to its
+token. Under `cloud`, Clearotron removes `ANTHROPIC_API_KEY` from every step, so the gateway's credential
+has to be the token.
+
 ## 4. The config-store model
 
 ### The four things, and what contains what
@@ -528,8 +591,8 @@ points on it.
 
 | What it is | What the product calls it | Where it lives | What creates it |
 |---|---|---|---|
-| A group of people and the companies they clear for — a firm, a brand team, one customer of a hosted install | **organisation** (`tenant` in `grants.json`) | a key under `tenants` in `grants.json`, with its `name` | setup creates the first; after that, a key you add to `grants.json` |
-| A company you do clearances for | **company** (`account` in `grants.json` and on the wire; the CLI calls it **brand owner**) | a bundle in the customer store, keyed by an account key, and listed under exactly one organisation | the portal's `+ New company`, or `npx clearotron brandowner add <key>` |
+| A group of people and the companies they clear for — a firm, a brand team, one company on a hosted install | **organisation** (`tenant` in `grants.json`) | a key under `tenants` in `grants.json`, with its `name` | setup creates the first; after that, a key you add to `grants.json` |
+| A company you do clearances for | **company** (`account` in `grants.json` and on the wire; the CLI calls it **brand owner**) | a bundle in the company store, keyed by an account key, and listed under exactly one organisation | the portal's `+ New company`, or `npx clearotron brandowner add <key>` |
 | One engagement under that company — its classes, jurisdictions, platforms | **project** | inside that company's bundle | `npx clearotron project add` |
 | Someone who may see some of it | **person** | `grants.json`: their access under each organisation's `users`, their two switches under `people` | the portal's People page, or `npx clearotron grant add` |
 
@@ -555,8 +618,8 @@ and the command line keep `tenant` and `account`, and the CLI verb stays `brando
 break every file and script written against them.
 
 
-A clearance run is shaped by a **customer profile** — a small JSON file that declares that customer's
-marketplaces, default classes/jurisdictions, own-brand names to exclude, delivery style, and (optionally)
+A clearance run is shaped by a **company profile** — a small JSON file that declares that company's
+marketplaces, default classes/jurisdictions, its own marks to exclude, delivery style, and (optionally)
 a bespoke risk framework. A job resolves to a profile by the **forwarder's email domain**; if nothing
 matches, the neutral Generic default applies.
 
@@ -565,13 +628,13 @@ matches, the neutral Generic default applies.
   immediately. `driver/profiles/README.md` documents every field. (A clone of the repository carries
   three more, marked `testFixture` in their own files: the test suite reads them, no install offers
   them, and they are excluded from the published package as well.)
-- **Your real customers live outside the repo.** Point `CLEAROTRON_CUSTOMERS_DIR` at your own private
+- **Your real companies live outside the repo.** Point `CLEAROTRON_CUSTOMERS_DIR` at your own private
   config store and the engine loads *those* accounts instead. **Same engine, different config path** —
-  the code carries no customer identities.
+  the code carries no company identities.
 
   Two things go with it, and both are refusals rather than preferences:
 
-  - **`PROFILE_REPO_ROOT` moves too.** The customer directory has to sit inside the repository that
+  - **`PROFILE_REPO_ROOT` moves too.** The company directory has to sit inside the repository that
     variable names, because editing a profile is a commit. Point one somewhere new and leave the other
     behind and the portal and the profile service both refuse to start, naming both variables.
   - **That repository needs a `user.name` and a `user.email` of its own.** Saves are committed under
@@ -588,20 +651,20 @@ matches, the neutral Generic default applies.
     `clearotron start` does this for the store it creates. A store you make yourself does not get it,
     and the symptom is the first save failing at a commit rather than anything about profiles.
 - **Run data is external too.** Published reports, audits, and per-run state go to the archive pool at
-  `CLEAROTRON_REPORTS_DIR`. Nothing customer-specific is committed to the repository.
+  `CLEAROTRON_REPORTS_DIR`. Nothing company-specific is committed to the repository.
 
 The profile set and the archive pool are the two things a deployment supplies; the engine is otherwise
 self-contained.
 
-### What a customer store holds besides the profile
+### What a company store holds besides the profile
 
-A customer is not only its `<key>.json`. Two more things sit beside it, both optional, both shipped as
+A company is not only its `<key>.json`. Two more things sit beside it, both optional, both shipped as
 working examples in `driver/profiles/`:
 
 - **A context pack** — `<key>.context.md`, a sibling of the profile. Free prose about the account that
-  the engine attaches to the profile it loads. One ships beside a bundled demo customer.
+  the engine attaches to the profile it loads. One ships beside a bundled demo company.
 - **Project overlays** — `projects/<customer-key>/<slug>.json`. A project is one engagement under a
-  customer: a launch screening, a flagship clearance, a regional push. Each may carry its own
+  company: a launch screening, a flagship clearance, a regional push. Each may carry its own
   `<slug>.context.md` beside it. `projects/demo-brand-owner/japan-and-korea-app-launch.json` is the
   shipped example.
 
@@ -609,35 +672,35 @@ working examples in `driver/profiles/`:
 
 A project overlays eight fields and is refused if it sets any of the other nine:
 
-| A project may set | Only the customer may set |
+| A project may set | Only the company may set |
 |---|---|
 | `platforms` · `defaultClasses` · `defaultJurisdictions` · `marketplaceDensity` · `delivery` · `riskAppetite` · `industry` · `defaultProduct` | `name` · `matchDomains` · `selfExclusionOwners` · `frameworkPath` · `workedExamplesPath` · `allowedRecipes` · `jxPolicy` · `runCaps` · `demoData` |
 
-The split is identity and rating authority: a project selects machinery, never who the customer is or
-what standard their risk is rated against. Setting a customer-only key in an overlay fails validation by
+The split is identity and rating authority: a project selects machinery, never who the company is or
+what standard their risk is rated against. Setting a company-only key in an overlay fails validation by
 name rather than being ignored.
 
-**A project replaces the fields it states — except `platforms`, which is added to the customer's.** The
-customer's marketplaces are client-mandated: the account asked for those to be swept, and an engagement
+**A project replaces the fields it states — except `platforms`, which is added to the company's.** The
+company's marketplaces are company-mandated: the company asked for those to be swept, and an engagement
 may add to that instruction but never revoke it. Every other overlaid field replaces outright, so an
 overlay stating `defaultClasses` narrows to exactly what it states.
 
 ### Your store replaces the shipped one — it does not layer on it
 
 **Setting `CLEAROTRON_CUSTOMERS_DIR` replaces the whole tree, projects included.** The engine reads your
-store's customers and your store's `projects/`, and none of ours. That is deliberate — a deployment's
+store's companies and your store's `projects/`, and none of ours. That is deliberate — a deployment's
 roster holds its own accounts and nothing of ours — but it is silent, and it is the one thing here that
 becomes an incident on a real deployment rather than a bundled one:
 
 - A job naming a project your store does not carry is **not refused**. The `projectKey` is dropped and
-  the run proceeds on the customer's own defaults — its classes, its marketplaces, its product — and the
+  the run proceeds on the company's own defaults — its classes, its marketplaces, its product — and the
   report records no project. Nothing warns, so this reads as a clean run of the wrong scope.
 - `generic.json` — the universal fallback — is the ONE file that does fall through: if your store does
   not supply one, the bundled copy is used by name, so an empty store still resolves every unprofiled
   job. (An earlier version of this line said "nothing else fills in"; since the layering change that is
   true of everything EXCEPT generic, and the difference is exactly a fresh install working or 500ing.)
 
-Copy or author the customers, context packs and project overlays you want; assume you inherit none.
+Copy or author the companies, context packs and project overlays you want; assume you inherit none.
 
 ## 5. Run a headless clearance report
 
@@ -647,7 +710,7 @@ Copy or author the customers, context packs and project overlays you want; assum
    executable on `PATH` that is signed out passes every other check and fails at the first stage.
 
 2. Write a **job file**. The required fields are an `id`, a `forwarder` handle, at least one mark
-   **name**, and either classes or a goods description — a customer profile can supply the last one.
+   **name**, and either classes or a goods description — a company profile can supply the last one.
    `msgId` is optional: it threads the reply into the original email, and a job without one is warned,
    not refused. A minimal neutral example:
 
@@ -703,7 +766,7 @@ Copy or author the customers, context packs and project overlays you want; assum
    [How long a run takes](#how-long-a-run-takes) below gives the provenance of each figure.
 
    This run sends the matter off the machine — the mark, its classes, the goods wording, and the
-   client's context reach a reasoning provider and Perplexity, and the mark and its variants reach your
+   company's context reach a reasoning provider and Perplexity, and the mark and its variants reach your
    register. Before the first live matter, read
    [what leaves the machine](docs/architecture/09-security-and-data.md#what-leaves-the-machine).
 
@@ -856,7 +919,7 @@ nobody else at its domain; enrolling anyone else is that same file, exactly as o
 **No authentication is switched off to make this work, and none can be.** Both doors prove who the
 caller is — the portal by passphrase and a signed session cookie, the engine door by a mandatory
 access key that `npx clearotron start` mints in memory at every start and never writes down. The key is scoped to
-two verbs and capped to the customers this install knows about. The `*_AUTH_DISABLED` switches
+two verbs and capped to the companies this install knows about. The `*_AUTH_DISABLED` switches
 elsewhere in this repository are for something else and are written into the child environment as `0`.
 
 ### Signing in, and putting your own provider in front
@@ -936,12 +999,12 @@ front of it is still addressed to the old one.
 
 Two lines on a fresh install look worse than they are:
 
-- *"skills overlay unset — customer risk frameworks will resolve to this repo's demo fixtures."* On a
+- *"skills overlay unset — company risk frameworks will resolve to this repo's demo fixtures."* On a
   demo install they **are** the demo fixtures, and the warning is correct to fire: it exists so that a
-  real deployment never shows a synthetic framework as a client's own. It goes quiet once
+  real deployment never shows a synthetic framework as a company's own. It goes quiet once
   `CLEAROTRON_CUSTOMERS_DIR` and `CLEAROTRON_INSTRUCTIONS_DIR` point at your own config store (§4).
 - *"saved searches ON — store=…"* names a directory under `~/trademark/`, not your repository. Editing a
-  **customer profile**, however, still commits into this checkout until `PROFILE_REPO_ROOT` names a
+  **company profile**, however, still commits into this checkout until `PROFILE_REPO_ROOT` names a
   config store of your own. Point it at one before you edit a profile you intend to keep.
 
 `driver/dev-portal.mjs` is **not** this. It is a loopback pool browser for people working on the engine,
@@ -1026,7 +1089,7 @@ So an install behind `ssh -L` or an editor's port forward serves shape 1 perfect
 shape 2 at all, however the reader reaches the portal. `npx clearotron connect` says so plainly rather
 than printing an address that will be rejected.
 
-**The address is set once, at install.** `npx clearotron install` asks for it — *"the address clients'
+**The address is set once, at install.** `npx clearotron install` asks for it — *"the address companies'
 assistants reach this install at"* — and writes `CLEAROTRON_CLIENT_MCP_URL`, which is the single value the
 Use-your-AI page, a report's Ask-your-AI control and `doctor` all read. Leave it empty on a local
 install: every one of those surfaces then shows its honest empty state, which is correct for a machine
@@ -1092,7 +1155,7 @@ going to look.
 
 **Then confirm the address from outside, and use the one that answered.** Never the one you remember —
 hostnames that were provisioned once and never used are exactly the ones that do not resolve, and the
-failure appears later as a client whose assistant cannot connect. Ask from off the box:
+failure appears later as a company whose assistant cannot connect. Ask from off the box:
 
 ```
 curl -sS -o /dev/null -w '%{http_code}\n' https://<your-host>/mcp
@@ -1118,12 +1181,16 @@ infer it from an install step. The operational side — issuing and rotating gra
 
 What belongs here is only what you set at install time.
 
+**Serving other organisations.** An instance that runs searches for organisations other than your own
+bills Claude through an API key or a cloud account, never a Claude subscription, as Anthropic's terms
+require.
+
 **The guest list.** `CLEAROTRON_ACCESS_FILE` turns account scoping on for **every face at once** — the
 portal, the MCP read face, and the client connector. `npx clearotron start` (§6) writes one into its
 state directory the first time it runs: you, with access to everything, your organisation if setup was
 told its name, and nobody else yet.
 [examples/grants.example.json](examples/grants.example.json) is a runnable guest list over the demo
-clients.
+companies.
 
 **Giving someone access.** `npx clearotron grant add` writes the same file the portal's People page
 writes:
@@ -1179,7 +1246,7 @@ wrong and every layer reports healthy while nothing can connect.
 |---|---|---|---|---|
 | Portal | `trademark.example.com/portal` | `CLEAROTRON_OIDC_AUDIENCE` | your staff, interactively | a browser redirect is fine — a person is at the keyboard |
 | Staff MCP door | same host, `/mcp` | `CLEAROTRON_OIDC_AUDIENCE` | staff, **non-interactively** | an OAuth challenge, or a service token |
-| Client connector | `clients-mcp.example.com/mcp` | `CLEAROTRON_CLIENT_OIDC_AUDIENCE` | your clients' assistants | an OAuth challenge, or a service token |
+| Client connector | `clients-mcp.example.com/mcp` | `CLEAROTRON_CLIENT_OIDC_AUDIENCE` | your companies' assistants | an OAuth challenge, or a service token |
 
 **The client door needs its own audience, and it refuses to start without one.** Two separate refusals,
 both fail-closed and both printed with the reason:
@@ -1245,9 +1312,9 @@ writes nothing.
 > goes stale. Nothing on either side says so. If a connector that used to work has stopped, check
 > whether the application was recreated before you change anything else.
 
-**Seeing what a client sees.** There is no "view as" screen. The documented route is a **client-scoped
-connector key**: issue one for that client with `npx clearotron key issue`, point an assistant at the
-client connector with it, and you get exactly that client's scope. Changing `PORTAL_LOCAL_USER` to
+**Seeing what a company sees.** There is no "view as" screen. The documented route is a **client-scoped
+connector key**: issue one for that company with `npx clearotron key issue`, point an assistant at the
+client connector with it, and you get exactly that company's scope. Changing `PORTAL_LOCAL_USER` to
 impersonate someone is not the answer — local sign-in is one user by design, and the service refuses to
 start if the credential does not match the configured address, so you lose your own access and take the
 deployment down to answer a question.
@@ -1278,7 +1345,7 @@ The engine is complete as a clearance-and-report producer. A deployment adds:
 
 - **Channel delivery** — the code that reads `_driver/delivery.json` and actually sends the report by
   email/chat, plus whatever intake writes the job files.
-- **Customer bundles** — the private `CLEAROTRON_CUSTOMERS_DIR` config store and any per-customer risk
+- **Company bundles** — the private `CLEAROTRON_CUSTOMERS_DIR` config store and any per-company risk
   frameworks or worked-examples the profiles point at.
 - **Remote ingress** — if you expose the MCP HTTP face, the reverse proxy / tunnel / IdP in front of it.
 
@@ -1310,7 +1377,7 @@ A courier is a loop over one directory, and it needs no unit of its own if you a
 
 **An unclaimed marker is the documented terminal state, not a stall.** A box with no courier
 accumulates `.pending` files while every report behind them is published and readable. Do not read that
-count as undelivered client work.
+count as undelivered company work.
 
 ## 10. Licence, and what it does not cover
 
@@ -1324,10 +1391,10 @@ About page, the MCP server's `server_info`, and `npx clearotron start --license`
 **Everything §1 told you to bring is outside it.** Read this before you count the licence as your
 answer on any of them:
 
-- **The reasoning CLI is proprietary third-party software.** Every reasoning stage spawns the Claude
-  CLI or the Codex CLI as a child process. You install it and sign in to it, and your use is governed
-  by that vendor's terms. AGPL-3.0 grants you nothing over it, and this repository redistributes no
-  part of it.
+- **The reasoning program is third-party software.** Claude Code is proprietary; the Codex CLI is open
+  source, under the licence OpenAI publishes with it. Every reasoning stage spawns one of them as a child
+  process. Setup installs it only when you say yes; you sign in to it, and your use of it is governed by
+  its vendor's terms. AGPL-3.0 grants you nothing over it, and this repository redistributes no part of it.
 - **Register and research providers are your own agreements.** EUIPO, the USPTO bulk product,
   `PERPLEXITY_API_KEY`, CourtListener, and the subscription registers (Clarivate, Signa, Corsearch)
   each sit on terms you accept directly with that provider. The adapters in `providers/` are ours and

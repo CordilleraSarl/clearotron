@@ -11,7 +11,7 @@
     "the baseline tracks named elements, and a rename is a new name. Regenerate rather than work around it.",
     "Measured 139 of 287 declared elements."
   ],
-  "total": 107,
+  "total": 105,
   "byStage": {
     "matter-frame": [
       "### Intake asks line shape — rendered by the driver from intake_asks[]",
@@ -94,8 +94,6 @@
     "register-digest": [
       "## Summary counts — total queries executed (search + detail-fetch), enumerated records across N axes, crowd-descriptor count, candidates past the gate, surfaced count, open-verification-flag count",
       "Audit trail — per-unit search/detail-fetch counts, per-jurisdiction `_query` attribution",
-      "INSTRUCTED CHECKS — the answer to each requester ask the register owns",
-      "adopt-or-override each placement by engaging its reason, and the `### Disagreement resolutions` rows (one per surfaced disagreement and per borderline:true, each ADOPTED/OVERRODE in writing)",
       "return payload — the absolute output path plus a 2-3 line summary (counts + the path of the file written)",
       "rolled-up coverage judgment — `sufficient: <true|false>`",
       "source attribution — the register name tagged on each record, plus the EUIPO `environment` word",

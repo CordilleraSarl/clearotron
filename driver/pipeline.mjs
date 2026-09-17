@@ -10,7 +10,7 @@ import { readFileSync, existsSync, mkdirSync, writeFileSync, renameSync, copyFil
 import { createHash } from "node:crypto";
 import { join, dirname, basename, resolve } from "node:path";   // resolve: the resume line must work from any cwd
 import { driverDir, driverRel, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
-import { terminalClampDecision, orderClausesForLede, clientConditions } from "./terminal-clamp.mjs";   // — deliver and clamp, never withhold
+import { terminalClampDecision, orderClausesForLede, clientConditions, clauseForDefect } from "./terminal-clamp.mjs";   // — deliver and clamp, never withhold
 import { recordSpan } from "./attributed-span.mjs";   // — driver work the decomposition can attribute
 import { fileURLToPath } from "node:url";
 import { runStage, correctionHint, gridLedgerNameFor, draftCarryEligible, toolWrittenArtifact, selectEngine } from "./gateway.mjs";
@@ -31,7 +31,7 @@ import { buildRunContext, deriveSlug, kebab } from "./phase0.mjs";
 import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveTier, lines, AGENT_WHATSAPP, whatsappRouting,
   chainEntries, stageOrdinal, stageInputs, stageOutputs, dependencyOrder, REGISTER_AXES, REGISTER_ENUMERATE_TOOL,
   buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenFollowup,
-  buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, proseRungDirective, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage } from "./band-size.mjs";
+  buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, proseRungDirective, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal } from "./band-size.mjs";
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE } from "./report-overview-record.mjs";
 import { dispatchRows, clearedSignatures } from "./seat-attempts.mjs";
 import { CONTEXT_DERIVATIONS, DISPATCH_EXTRAS, INLINE_CONTEXT, sandboxManifest, sandboxGaps, derivationsFor } from "./stage-context.mjs";   // — what a stage is actually handed
@@ -45,7 +45,8 @@ import { readRegisterTaint, readActiveTaintAxes } from "./register-taint.mjs";
 import { parseNamedBand, mergeNamedBands, findCollapsedBands, quarantineUnknownStates, taintQuarantineCleanBlocks, bandRecords } from "./named-band.mjs";
 import { recordOriginsFor } from "./record-origins.mjs";
 import { REGISTER_PROVIDER } from "./driver.config.mjs";
-import { FACTS_FILE as DIGEST_FACTS_FILE, ACCOUNTING_STAMP as DIGEST_ACCOUNTING_STAMP, recordedFindingUris } from "./register-digest-record.mjs";   // conversion 11 — the render's facts sidecar and the accounting era stamp
+import { FACTS_FILE as DIGEST_FACTS_FILE, ACCOUNTING_STAMP as DIGEST_ACCOUNTING_STAMP, recordedFindingUris,
+  digestAccountingGap, digestBatchBrief, batchesOf } from "./register-digest-record.mjs";   // conversion 11 — the render's facts sidecar and the accounting era stamp
 import { buildBandShape, dominantElementComposites, deriveRegisterPositions, floorTierByMark, floorMarkKey } from "./band-shape.mjs";   // PR-8 — the deterministic reading layer; P2-A — candidates + positions
 import { deriveOwnerScreen, ownerScreenNegative } from "./owner-screen.mjs";   // P2-B — the owner×element screen's own receipt
 import { reconcileRecall, parseFindingsEndings, parseCrowdRulings, readOkRecordUris,
@@ -96,8 +97,10 @@ import { publishReport, composeEmailHtml, deliverySubject } from "./publish/inde
 import { parseCaseLawProfiles, joinCaseLawProfiles } from "./publish/parse.mjs";
 import { buildAuditMd, parseSpineFindingBlocks } from "./publish/audit-from-spine.mjs";
 import { deriveRegisterPresence } from "./publish/register-presence.mjs";   // — the audit stores every live in-scope record
-import { lastAcceptedMatterFrame, frameIdentifiedClasses } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed; and the classes it judged necessary beyond the instructed ones, which the plan compile unions in
-import { romanizedTermsFromPlan, mintSupplementalQid } from "./register-plan.mjs";   // — the stamp the late lanes never met
+import { lastAcceptedMatterFrame, frameIdentifiedClasses, frameHouseElementCandidate } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed; and the classes it judged necessary beyond the instructed ones, which the plan compile unions in
+import { romanizedTermsFromPlan, mintSupplementalQid } from "./register-plan.mjs";
+import { excludeHouseElement, verifyHouseElementOwnership, resolveRegions as resolvePlanRegions, HOUSE_ELEMENT_RECEIPT } from "./register-plan.mjs";   // 647 — the client's own element leaves the conflict analysis only on a verified receipt
+import { resolveRecordExecutor } from "./register-records.mjs";   // — the stamp the late lanes never met
 import { slimLine, crowdLine } from "./hit-list.mjs";   // — the list the run works from; crowds ride it as a sibling array
 import { mintCrossCheckDoubts, mintContradictionDoubts, stitchDoubts, applyClosure } from "./doubt-ledger.mjs";   // doubt-stitch + doubt-closure (2026-07-22)
 // Conversion 6: the two line-form parsers are no longer on the live path — the seat sends typed
@@ -2258,6 +2261,69 @@ function logFullyDeferredAxes(plan, P, source) {
 // `frozenOnly` (item): read the FROZEN plan or nothing. reconstructCtx is an introspection path —
 // it must never compile and freeze a plan into an existing run as a side effect of being asked what the
 // run already holds. (attachProfile / attachFramework take the same posture via `write:false`.)
+/**
+ * Ask the register whether the client owns the element the frame proposed, and record the answer.
+ *
+ * ASYNC AND SEPARATE FROM THE COMPILE, which is why it is its own step rather than a branch inside
+ * `attachRegisterPlan`: that function is synchronous and is called on the resume path too. The shape is
+ * the digest's — an async driver step writes a receipt, a synchronous consumer reads it — and it buys
+ * the property that matters here: the compile cannot accidentally exclude anything by reaching for a
+ * promise it does not await.
+ *
+ * NOT A REGISTERED CONTEXT DERIVATION, and the reason is worth stating because the obvious reading is
+ * that it should be. `stage-context.mjs` declares the derivations a sandbox can REPLAY, and its runners
+ * are synchronous. This one asks a live register a question; there is no offline re-derivation of that,
+ * and declaring it would promise the `--experiment` rig something no runner can deliver — which the
+ * guard catches by name, loudly, as it should. A sandbox instead inherits the receipt with the rest of
+ * `_driver/`, and a sandbox that has none excludes nothing, which is the same answer every other
+ * unverified run gets.
+ *
+ * NEVER-KILL. Every failure writes an unverified receipt and the run plans exactly as it does today.
+ * The element being searched in full is the safe direction and the status quo; the only thing that can
+ * narrow a client's search is a register answer naming their own live registration.
+ */
+async function verifyAndRecordHouseElement(ctx, opts = {}) {
+  const P = ctx.paths;
+  try {
+    const proposed = frameHouseElementCandidate(P.runDir);
+    if (!proposed) return;   // the ordinary case: the frame proposed nothing and there is no question
+
+    const classes = [...new Set([...inScopeClassList(ctx.job, ctx.profile).map(String), ...frameIdentifiedClasses(P.runDir)])];
+    // THE CLIENT'S OWN NAMES. The profile's trading names are the curated list; the matter's customer is
+    // the free-text one. Both, because a profile may be absent on a one-off matter and a customer string
+    // may be a person where the filings are held by a company.
+    const owners = [...new Set([...(ctx.profile?.selfExclusionOwners ?? []), ctx.job?.customer].map((o) => String(o ?? "").trim()).filter(Boolean))];
+    const caps = registerCapabilities();
+    const { regions } = resolvePlanRegions(registerJurisdictions(ctx.job, ctx.profile), caps);
+    const rec = resolveRecordExecutor({
+      lister: opts?.recordLister ?? null, adapter: activeProvider(),
+      agentId: ctx.agentId ?? null, sessionKey: `prelim-${ctx.run.slug}-${ctx.run.codename}`,
+      recordLog: runRecordLogPath(P.runDir),
+      fixtureDir: ctx.job?.registerFixtures?.records ?? null,
+    });
+    // AN EXACT-NAME LISTING OF THE ELEMENT, filtered to the client's own live in-class registrations by
+    // the verifier. The owner join is done on REAL RECORDS the register returned, which is what
+    // "verified by owner, not asserted" means — there is no owner-predicate listing on this interface
+    // and inventing one would be a second way to ask the same question.
+    const lookup = typeof rec.list !== "function" ? null : async ({ element, classes: cls }) => {
+      const r = await rec.list(element, { classes: cls, regions, limit: 50 });
+      if (!r || r.ok === false) return { ok: false, reason: String(r?.reason ?? "the register listing did not answer") };
+      return { ok: true, records: Array.isArray(r.records) ? r.records : [] };
+    };
+
+    const receipt = await verifyHouseElementOwnership({ element: proposed.element, classes, owners, lookup });
+    receipt.remainder = proposed.remainder;   // carried so the compile needs only this one file
+    ensureDriverDir(P.runDir);
+    atomicWrite(driverDir(P.runDir, HOUSE_ELEMENT_RECEIPT), JSON.stringify(receipt, null, 2) + "\n");
+    runLog(P.runDir, { event: "house-element-ownership", verified: receipt.verified, reason: receipt.reason,
+      records: receipt.records.length, owners: owners.length, executor: rec.source });
+    if (!receipt.verified) note(`house element: ${proposed.element} stays in the search — ${receipt.reason}`);
+  } catch (e) {
+    // A THROW HERE MUST NOT COST A REPORT. No receipt means no exclusion, which is today's plan.
+    runLog(P.runDir, { event: "house-element-ownership-failed", reason: String(e?.message ?? e).slice(0, 160) });
+  }
+}
+
 function attachRegisterPlan(ctx, { frozenOnly = false } = {}) {
   const P = ctx.paths;
   if (frozenOnly) {
@@ -2281,7 +2347,30 @@ function attachRegisterPlan(ctx, { frozenOnly = false } = {}) {
   ctx.registerPlan = null;
   let compiled;
   try {
-    const manifest = parseVariantManifestModel(readFileSync(P.variantManifestModel, "utf8"));
+    let manifest = parseVariantManifestModel(readFileSync(P.variantManifestModel, "utf8"));
+    // ── 647 — THE CLIENT'S OWN ELEMENT LEAVES THE CONFLICT ANALYSIS, ON EVIDENCE OR NOT AT ALL ─────
+    //
+    // The receipt is the ONLY thing that arms this. An absent, unreadable or unverified receipt plans
+    // exactly as this compile did before the rule existed, which is the element searched in full — the
+    // safe direction, and the one a client is never harmed by.
+    let houseConfirmation = null;
+    let houseReceipt = null;
+    try { houseReceipt = JSON.parse(readFileSync(driverDir(P.runDir, HOUSE_ELEMENT_RECEIPT), "utf8")); }
+    catch { houseReceipt = null; }
+    if (houseReceipt?.verified === true) {
+      const r = excludeHouseElement(manifest, { element: houseReceipt.element, remainder: houseReceipt.remainder });
+      if (r.refused) {
+        // VERIFIED OWNERSHIP AND STILL NOT APPLIED. The receipt answers who owns the element; the
+        // transform answers whether this manifest's mark can survive the cut. Both must hold.
+        runLog(P.runDir, { event: "house-element-not-applied", reason: r.refused, element: houseReceipt.element });
+      } else {
+        manifest = r.manifest;
+        houseConfirmation = r.confirmation;
+        runLog(P.runDir, { event: "house-element-excluded", element: houseReceipt.element,
+          remainder: houseReceipt.remainder, dominant_element: manifest.dominant_element,
+          evidence: (houseReceipt.records ?? []).length });
+      }
+    }
     let form = null;
     try { form = JSON.parse(readFileSync(P.formNeighbourhood, "utf8")); } catch { /* form band optional */ }
     compiled = compileRegisterPlan({
@@ -2308,6 +2397,19 @@ function attachRegisterPlan(ctx, { frozenOnly = false } = {}) {
       // rides the plan as a disclosed deferral, never as a silently narrower search.
       unavailableOffices: registerUnavailableOffices(),
     });
+    // REQUIREMENT 3 — the element is still checked ONCE, as a confirmation of the client's own live
+    // registrations rather than as a conflict sweep, so the exclusion is evidenced on the report by a
+    // query that ran. Appended after the compile because it is not derived from the manifest: it is the
+    // one question about the element the plan still owes.
+    if (houseConfirmation && compiled?.entries) {
+      const used = new Set(compiled.entries.map((e) => e.qid));
+      compiled.entries.push({
+        ...houseConfirmation,
+        qid: mintSupplementalQid({ prefix: "house", term: houseConfirmation.term, used }),
+        nice_classes: compiled.nice_classes ?? [],
+        regions: compiled.regions ?? [],
+      });
+    }
   } catch (e) {
     // NEVER-KILL at mint time: no/malformed sibling or a class-less matter degrades to the legacy
     // path with a logged reason — the plan improves the run, it never turns delivery off.
@@ -3648,6 +3750,27 @@ export function digestDispatchExtra(ctx, { trigger = "fresh", willRun = true, ex
       }
     }
   } catch (e) { note(`coverage-form brief skipped (non-fatal — the form is in _driver/ and the validator refuses an unsettled row): ${String(e.message).slice(0, 80)}`); }
+  // — THE BATCH BLOCK: how the driver split this run's band, and which batches are still outstanding.
+  //
+  // The seat is told the split HERE rather than in the stage's dictation because the numbers are the
+  // run's, not the contract's: a band of 40 records is one batch and a band of 1,161 is twelve, and on a
+  // resume the outstanding set is what the killed attempt did not reach. The dictation says the rule;
+  // this says the arithmetic.
+  //
+  // BEST-EFFORT, AND SAFE BY CONSTRUCTION rather than by argument — the coverage brief's precedent above,
+  // for its reason. Nothing here enforces anything: a call naming a batch is judged against the driver's
+  // own split whether or not this block composed, the tool's refusal re-states what is outstanding, and
+  // the stage's exit gate refuses a document that ends fewer records than the run carried in. A brief
+  // that fails to compose costs a corrective round; it cannot cost a record.
+  try {
+    const gap = digestAccountingGap(P.runDir);
+    const block = digestBatchBrief(gap);
+    if (block) {
+      out = out ? `${out}\n\n${block}` : block;
+      runLog(P.runDir, { event: "digest-batch-brief", trigger, owed: gap.owed.length,
+        batches: batchesOf(gap.owed).length, unaccounted: gap.unaccounted.length });
+    }
+  } catch (e) { note(`digest batch brief skipped (non-fatal — the tool judges every batch against the driver's own split regardless): ${String(e.message).slice(0, 80)}`); }
   // AD-2 A9 (E2E-R2) + the P5 review (2026-07-31): a corrective/repair pass is told NOT to re-read the
   // whole placement file — the per-candidate tiers are in placements.json — but the RULINGS TAIL (band
   // reconciliation, disagreements, coverage rulings, open questions) lives ONLY in the md. Leaving it to
@@ -4342,6 +4465,25 @@ async function stageOnce(name, ctx, opts = {}) {
   // Evaluated on `effThinking`, not `thinking`: the anthropic gate above nulls the tier for a
   // cross-provider model, and a guard that reads the nulled value would go blind on the same overrides.
   assertEffectiveTier(label, { model, thinking: effThinking });
+  // ── THE TIME LIMIT IS DERIVED FROM THE BAND THIS DISPATCH IS HANDED ─────────────────────────────
+  //
+  // `def.timeoutSec` was a constant chosen once against a band nobody recorded beside it, and on a
+  // dense matter the two band-reading stages died AT their walls having written nothing. The base is
+  // still the stage's own number; what the band decides is how far above it this dispatch may go. A
+  // band at or under the reference returns the base untouched, so nothing already verified moves.
+  const dispatchBand = bandSizeForStage(name, P);
+  const derivedLimit = derivedLimitSec(def.timeoutSec, dispatchBand);
+  // REFUSED BEFORE A SEAT IS DISPATCHED, not after the wall. A limit past the ceiling is a prediction
+  // that this stage will be killed; starting it spends the whole prediction to arrive where the refusal
+  // already is, and the refusal NAMES the band size, which is the finding a killed attempt never gives.
+  if (limitExceedsCeiling(derivedLimit.sec)) {
+    const reason = ceilingRefusal(name, derivedLimit);
+    runLog(P.runDir, { event: "stage-input-over-ceiling", stage: name,
+      inputBytes: derivedLimit.inputBytes, derivedLimitSec: derivedLimit.sec });
+    throw new StageFailure(name, reason, undefined, { failClass: "deterministic" });
+  }
+  runLog(P.runDir, { event: "stage-limit-derived", stage: name, base: def.timeoutSec,
+    inputBytes: derivedLimit.inputBytes, derivedLimitSec: derivedLimit.sec, basis: derivedLimit.basis });
   const r = await runStage(label, {
     agent: execAgent,
     message,
@@ -4350,11 +4492,12 @@ async function stageOnce(name, ctx, opts = {}) {
     // opts.sessionKey lets a followup RESUME the exact key a prior run won on (winning-key hardening); else
     // the canonical base key. (A followup with a stale base key would resume a failed attempt — see runStage.)
     sessionKey: opts.sessionKey ?? `prelim-${ctx.run.slug}-${ctx.run.codename}-${name}${keyAxis}`,
-    timeoutSec: def.timeoutSec,
+    timeoutSec: derivedLimit.sec ?? def.timeoutSec,
+    derivedLimit,               // recorded on every attempt row: the size it was derived from, and the number
     stallSec: def.stallSec,     // per-stage stall override (heavy stages); undefined → global CLEAROTRON_STALL_MS
     expectFile: out,
     validate: def.validate,
-    runDir: P.runDir, bandSize: bandSizeForStage(name, P),
+    runDir: P.runDir, bandSize: dispatchBand,
     // ── — THE PRESENTING SIDE, RECOMPOSED PER ATTEMPT ────────────────────────────────────────
     //
     // A stage that declares `refreshCtx` is saying its dispatch text depends on state the run CHANGES
@@ -7329,7 +7472,7 @@ export function fullProseOrdinals(findings) {
     .filter((o) => o != null);
 }
 // ASSEMBLE report.md = the overview shell (front-matter + Actions/Coverage/Methodology) + `# Marks` + the
-// per-card files in render order (composite desc, ordinal asc — mirrors render.mjs:502), `open: true` on the
+// per-card files in render order (composite desc, ordinal asc — mirrors render.mjs `sortedAll`), `open: true` on the
 // single top card. Findings with no card file (a failed report-card, or a secondary finding) are NOT emitted —
 // render.mjs synthesizes them structured-only from findings.json, so nothing is silently dropped. Pure file IO.
 // spec 64 — "### Only you can close these" is CODE-BUILT from the typed actions register (the report-
@@ -8849,6 +8992,7 @@ async function pipelineInner(job, opts = {}) {
     must(await stage("prelim-variants", ctx), "prelim-variants");
     deriveScopeLedgerJson(ctx);   // frame-omission design: code-derive scope-ledger.json from the validated prose (never-kill)
     deriveFormNeighbourhood(ctx); // mechanical FORM band: code-derive form-neighbourhood.json from the manifest's distinctive element(s) — the model-free form floor the register funnel searches (never-kill)
+    await verifyAndRecordHouseElement(ctx, opts);   // ask the register who owns the frame's proposed house element, BEFORE the plan is compiled from it
     attachRegisterPlan(ctx);      // WS2 (B3): compile/freeze/reuse the deterministic register plan (flag-gated; frozen plan wins on resume; never-kill on mint)
 
     // spec 64 (B2) — proactive recall probes: prior-confirmed conflicts for THIS mark (the workspace
@@ -12872,7 +13016,11 @@ async function pipelineInner(job, opts = {}) {
           reason: `synthesis_unaccounted_delivered:${duty.unaccounted.length} of ${duty.totals.owed} record(s) reached the findings surface and the delivered document accounts for none of them — neither a finding that names them nor a declination with a ground: ${sample}${duty.unaccounted.length > 4 ? " …" : ""}. The report ships with this named rather than being withheld; these records are open points a reader must weigh.`,
           // — the READER's sentence: what is open, in a lawyer's nouns. Counts survive;
           // the token, the record ids and the engine's nouns stay in `reason` and the run record.
-          clause: `${duty.unaccounted.length} of the ${duty.totals.owed} register records this search surfaced are neither addressed as findings nor expressly set aside in this report — they remain open points a reader must weigh`,
+          // COMPOSED BY THE AUTHORITY, NOT SPELLED HERE. The same sentence has to be reachable from a
+          // run that stored no clause, where these two objects are long gone and only the reason's own
+          // counts survive; `terminal-clamp.mjs` composes it from the counts either way, so the fresh
+          // run and the republished archive cannot drift apart.
+          clause: clauseForDefect("synthesis_unaccounted_delivered", duty.unaccounted.length, duty.totals.owed),
         });
       }
     }
@@ -12898,7 +13046,9 @@ async function pipelineInner(job, opts = {}) {
           // — the READER's sentence. "Floor row" is an engine noun; what the fact IS for a
           // lawyer: live registrations identical or near-identical to the mark that the report does not
           // individually address. Counts survive; token, ids and engine nouns stay in `reason`.
-          clause: `${block.undischarged} of the ${block.floors} live registrations identical or near-identical to the mark are not individually addressed in this report — each remains an open point a reader must weigh`,
+          // Composed by the authority in `terminal-clamp.mjs` for the reason the sibling site above
+          // gives: a republished pre-split run has to reach the same sentence from the counts alone.
+          clause: clauseForDefect("floor_duty_undischarged", block.undischarged, block.floors),
         });
       }
     }
@@ -12940,7 +13090,7 @@ async function pipelineInner(job, opts = {}) {
           for (const c of fresh) clampClauses.push(conditionClauses[conditions.indexOf(c)] ?? c);
           clampReasons.push(...fresh);
           if (verdict === "CLEAR") {
-            runLog(run.runDir, { event: "coverage-floor-clamp", from: "CLEAR", to: "CONDITIONAL", legalActions: conditions.length });
+            runLog(run.runDir, { event: "coverage-floor-clamp", cause: "forward-actions", from: "CLEAR", to: "CONDITIONAL", legalActions: conditions.length });
             note(`deliver-conditional floor: the opinion names ${conditions.length} forward legal action(s) a human must take (${conditions[0].slice(0, 140)}${conditions.length > 1 ? `; +${conditions.length - 1} more` : ""}) — clamping CLEAR→CONDITIONAL (spec 64: the disposition is derived from the findings' named actions).`);
             verdict = "CONDITIONAL";
             writeRunStatus(ctx, { verdict });
@@ -12979,7 +13129,7 @@ async function pipelineInner(job, opts = {}) {
         // The CLAMP is outside that guard on purpose: a re-ask can flip a clamped verdict back to CLEAR,
         // and it must meet this floor again with the reason already recorded.
         if (droppedConditions.length && verdict === "CLEAR") {
-          runLog(run.runDir, { event: "coverage-floor-clamp", from: "CLEAR", to: "CONDITIONAL", actionsDropped: droppedConditions.length });
+          runLog(run.runDir, { event: "coverage-floor-clamp", cause: "dropped-actions", from: "CLEAR", to: "CONDITIONAL", actionsDropped: droppedConditions.length });
           verdict = "CONDITIONAL";
           writeRunStatus(ctx, { verdict });
         }
@@ -13070,22 +13220,49 @@ async function pipelineInner(job, opts = {}) {
       // could-not-examine record, and an unfinished register slice — CONDITIONAL carries
       // lawyer-judged/disclosed residue only.
       if (coverageInsufficient || frameResidual || screenGateGap || seniorGap || registerGap || deadlineGap) {
+        // THESE SENTENCES REACH A CLIENT AND THEY ARE NOT OURS TO WRITE (owner, 2026-09-17). One of
+        // them — the screen-gate line, which says a mark "could not be record_fetched" — carries an
+        // engine identifier into the list a client reads as the conditions on their result, by a route
+        // `terminalClampDecision` guards and this one does not. A reader's sentence for it was written
+        // here and refused: the objection was the class, not the wording. It is on the owner's design
+        // table as audit item 25, and until he rules, this stays exactly as it was rather than carrying
+        // a caveat a developer composed.
         const reasons = [];
-        if (coverageInsufficient) reasons.push(`the lawyer judged a material slice not fully cleared: ${coverageJudgment.reason || "register coverage gap"}`);
-        if (frameGap) reasons.push("the blind frame-diff flagged a dominant-element omission the reopen pass did not close");
-        else if (frameDeferrals.length) reasons.push(`follow-ups left open this run: ${frameDeferrals.map((d) => plainDirective(d.directive)).slice(0, 3).join(", ")}`);
-        if (screenGateGap) reasons.push(`${sgUnresolved.length} in-scope mark(s) dropped on goods could not be record_fetched (unverified): ${sgUnresolved.map((g) => g.mark).join(", ")}`);
-        if (seniorGap) reasons.push(`the oldest registration in a verdict-driving family could not be retrieved (policy: clamp): ${(ctx.seniorRights?.rows ?? []).filter((r) => r.applicable && !r.verified).map((r) => r.mark).join(", ")}`);
+        const machinery = (reason) => reasons.push(reason);
+        if (coverageInsufficient) machinery(`the lawyer judged a material slice not fully cleared: ${coverageJudgment.reason || "register coverage gap"}`);
+        if (frameGap) machinery("the blind frame-diff flagged a dominant-element omission the reopen pass did not close");
+        else if (frameDeferrals.length) machinery(`follow-ups left open this run: ${frameDeferrals.map((d) => plainDirective(d.directive)).slice(0, 3).join(", ")}`);
+        if (screenGateGap) machinery(`${sgUnresolved.length} in-scope mark(s) dropped on goods could not be record_fetched (unverified): ${sgUnresolved.map((g) => g.mark).join(", ")}`);
+        if (seniorGap) machinery(`the oldest registration in a verdict-driving family could not be retrieved (policy: clamp): ${(ctx.seniorRights?.rows ?? []).filter((r) => r.applicable && !r.verified).map((r) => r.mark).join(", ")}`);
         if (registerGap) {
-          if (regGap.deferred.length) reasons.push(`register coverage deferred on ${[...new Set(regGap.deferred.map((g) => g.axis))].join(", ")} — the search did not finish and must be re-run before this can be relied on`);
-          if (regGap.taintAxes.length) reasons.push(`the ${regGap.taintAxes.join(", ")} register pass was cut down at the timeout wall and its self-reported coverage is unverified`);
+          if (regGap.deferred.length) machinery(`register coverage deferred on ${[...new Set(regGap.deferred.map((g) => g.axis))].join(", ")} — the search did not finish and must be re-run before this can be relied on`);
+          if (regGap.taintAxes.length) machinery(`the ${regGap.taintAxes.join(", ")} register pass was cut down at the timeout wall and its self-reported coverage is unverified`);
           // Named regressions (2026-07-22): `<MARK> (<owner> — <canonical uri>)` — a bare mark name
           // shipped "ION, ION, ION" (three indistinguishable strings); the identity is front-loaded
           // because the delivered statement truncates from the tail.
-          if (regGap.recallRegressions.length) reasons.push(`a prior-confirmed live conflict was neither carried nor justified this run: ${regGap.recallRegressions.slice(0, 3).map(formatRecallRegression).join(", ")}`);
+          if (regGap.recallRegressions.length) machinery(`a prior-confirmed live conflict was neither carried nor justified this run: ${regGap.recallRegressions.slice(0, 3).map(formatRecallRegression).join(", ")}`);
         }
-        if (deadlineGap) reasons.push(`a recorded opposition deadline was delivered without its date: ${ctx.deadlineCarryMaterial.map((v) => `${v.mark_text ?? v.uri} (window closes ${v.opposition_end})`).slice(0, 3).join(", ")}`);
-        runLog(run.runDir, { event: "coverage-floor-clamp", from: "CLEAR", to: "CONDITIONAL", coverageInsufficient: coverageInsufficient || undefined, frameGap: frameGap || undefined, frameDeferred: frameDeferrals.length || undefined, screenGate: screenGateGap ? sgUnresolved.length : undefined, seniorRight: seniorGap || undefined, registerGap: registerGap ? { deferred: regGap.deferred.length, taint: regGap.taintAxes.length, recall: regGap.recallRegressions.length } : undefined, deadlineCarry: deadlineGap ? ctx.deadlineCarryMaterial.length : undefined });
+        if (deadlineGap) machinery(`a recorded opposition deadline was delivered without its date: ${ctx.deadlineCarryMaterial.map((v) => `${v.mark_text ?? v.uri} (window closes ${v.opposition_end})`).slice(0, 3).join(", ")}`);
+        // ── THE THIRD CLAMP SITE NAMES ITSELF, AND NAMES WHICH OF ITS SEVEN INPUTS FIRED ────────────────
+        //
+        // All three clamp sites emitted this event under one name with the same from/to, distinguishable
+        // only by which optional payload key happened to be present. Two of them fired three milliseconds
+        // apart on a production run — the first without `frameDeferred`, the second with it — which reads
+        // as one decision logged twice. It was two different decisions wearing one name, and the test lane
+        // reasonably discounted one of them. `cause` makes the event self-describing.
+        //
+        // THE EVENT NAME IS DELIBERATELY NOT SPLIT. It is a true statement about the effect — the verdict
+        // was clamped — and something downstream may already count clamps in aggregate. A discriminator is
+        // additive; three names would not be.
+        //
+        // This site is itself seven causes under one name, so it also lists WHICH fired rather than
+        // leaving a reader to key on field presence and guess.
+        const clampInputs = Object.entries({
+          coverageInsufficient, frameGap, frameDeferred: frameDeferrals.length,
+          screenGate: screenGateGap ? sgUnresolved.length : 0, seniorRight: seniorGap,
+          registerGap, deadlineCarry: deadlineGap ? ctx.deadlineCarryMaterial.length : 0,
+        }).filter(([, v]) => Boolean(v)).map(([k]) => k);
+        runLog(run.runDir, { event: "coverage-floor-clamp", cause: "coverage", causes: clampInputs, from: "CLEAR", to: "CONDITIONAL", coverageInsufficient: coverageInsufficient || undefined, frameGap: frameGap || undefined, frameDeferred: frameDeferrals.length || undefined, screenGate: screenGateGap ? sgUnresolved.length : undefined, seniorRight: seniorGap || undefined, registerGap: registerGap ? { deferred: regGap.deferred.length, taint: regGap.taintAxes.length, recall: regGap.recallRegressions.length } : undefined, deadlineCarry: deadlineGap ? ctx.deadlineCarryMaterial.length : undefined });
         note(`deliver-conditional floor: ${reasons.join("; ")} — clamping CLEAR→CONDITIONAL so the delivered status carries the gap (never withheld, never halted).`);
         verdict = "CONDITIONAL";
         // APPEND (dedup by exact text) — the legalActions arm may already have recorded conditions,

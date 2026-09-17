@@ -21,10 +21,17 @@ import { newBareCitations, addedLinesSince } from "../../scripts/citation-line-c
 
 const line = (text) => [{ file: "x.mjs", line: 1, text }];
 
+// THE FIXTURES CITE `planted/`, NOT A REAL FILE, and that is the namespace this repository keeps for
+// exactly this (citation-line-check.mjs's exemption table). What these arms are about is the SHAPE of a
+// citation — a number with no symbol beside it — and nothing about the file it points into. Pointed at a
+// real file and a real line, as they were until 2026-09-17, they became a citation the line checker
+// resolves for real: the moment a merge moved that file the fixtures pointed at a blank line and the
+// checker failed seven arms that had not changed and were not wrong.
+
 test("a NEW citation with a line number and no symbol is refused", () => {
-  const hits = newBareCitations(line("// a note pointing at driver/pipeline.mjs:875 with nothing beside it"));
+  const hits = newBareCitations(line("// a note pointing at planted/pipeline.mjs:875 with nothing beside it"));
   assert.equal(hits.length, 1, "the one shape that cannot be checked must be the one that is refused");
-  assert.equal(hits[0].cited, "driver/pipeline.mjs");
+  assert.equal(hits[0].cited, "planted/pipeline.mjs");
   assert.equal(hits[0].start, 875);
 });
 
@@ -32,8 +39,8 @@ test("the forms that CAN be checked are allowed — a refusal of everything guar
   // Without this the one above is satisfied by a rule that refuses every citation, which would pass
   // it while making the ratchet unusable and getting itself removed within a week.
   for (const ok of [
-    "// see driver/pipeline.mjs:875 recordsFromSearch for the refusal",   // symbol after the number
-    "// recordsFromSearch at driver/pipeline.mjs:875 refuses it",         // and before it
+    "// see planted/pipeline.mjs:875 recordsFromSearch for the refusal",   // symbol after the number
+    "// recordsFromSearch at planted/pipeline.mjs:875 refuses it",         // and before it
     "// see driver/pipeline.mjs for the refusal",                          // no line number at all
     "// `toolGroupsForStage()` in `gather-config.mjs` — the documented form",
   ]) assert.equal(newBareCitations(line(ok)).length, 0, `refused a checkable form: ${ok}`);
@@ -42,7 +49,7 @@ test("the forms that CAN be checked are allowed — a refusal of everything guar
 test("a lowercase word beside a number is not a symbol, and does not buy an exemption", () => {
   // `SYMBOLIC` requires a capital or an underscore. Ordinary prose after a citation — "875 already
   // covers it" — would otherwise read as a named symbol and exempt exactly the citations this exists for.
-  assert.equal(newBareCitations(line("// see driver/pipeline.mjs:875 already covers it")).length, 1);
+  assert.equal(newBareCitations(line("// see planted/pipeline.mjs:875 already covers it")).length, 1);
 });
 
 test("a captured V8 stack frame in a fixture is not a citation", () => {
@@ -56,7 +63,7 @@ test("the range is read from the diff's ADDED lines, with their real line number
   const diff = [
     "+++ b/a.mjs",
     "@@ -0,0 +12,2 @@",
-    "+// see driver/pipeline.mjs:875 with nothing beside it",
+    "+// see planted/pipeline.mjs:875 with nothing beside it",
     "+const ok = 1;",
     "",
   ].join("\n");
@@ -85,7 +92,7 @@ test("an added line beginning with ++ is judged, and the lines after it keep the
     "+++ b/a.mjs",
     "@@ -2 +2,3 @@",
     "-const was = 1;",
-    "+++ // see driver/pipeline.mjs:875 with nothing beside it",
+    "+++ // see planted/pipeline.mjs:875 with nothing beside it",
     "+++concat = 2;",
     "+const ok = 1;",
     "",
@@ -95,7 +102,7 @@ test("an added line beginning with ++ is judged, and the lines after it keep the
   assert.deepEqual(
     r.lines.map((l) => [l.file, l.line, l.text]),
     [
-      ["a.mjs", 2, "++ // see driver/pipeline.mjs:875 with nothing beside it"],
+      ["a.mjs", 2, "++ // see planted/pipeline.mjs:875 with nothing beside it"],
       ["a.mjs", 3, "++concat = 2;"],
       ["a.mjs", 4, "const ok = 1;"],
     ],

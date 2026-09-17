@@ -51,36 +51,63 @@ const OPTIONAL = "-";
  * @returns {{path: string}|{unresolved: string}}
  */
 function expandSpecifiers(raw, home) {
-  const path = String(raw).replace(/%h/g, home ?? "");
-  if (!home && /%h/.test(raw)) return { unresolved: raw };
-  // %% is an escaped percent and is legal; anything else left over is a specifier we do not implement.
-  const leftover = path.replace(/%%/g, "").match(/%[A-Za-z]/);
-  return leftover ? { unresolved: raw } : { path };
+  // ONE PASS, LEFT TO RIGHT, as systemd reads them. `%%` is an escaped percent and becomes one `%`, so
+  // `%%h` is a literal `%h`, never the home. Replacing `%h` first and unescaping after read `%%h` as a
+  // `%` followed by the home, and left `50%%` doubled, so a value reached doctor and connect in a form
+  // the service was never given. Any other letter after a `%` is a specifier this reader does not
+  // implement.
+  let unresolved = false;
+  const path = String(raw).replace(/%([%A-Za-z])/g, (whole, c) => {
+    if (c === "%") return "%";
+    if (c === "h" && home) return home;
+    unresolved = true;
+    return whole;
+  });
+  return unresolved ? { unresolved: raw } : { path };
 }
 
 /**
- * Merge one unit file's environment directives IN FILE ORDER.
+ * Merge one unit file's environment directives THE WAY SYSTEMD MERGES THEM: every `Environment=`
+ * assignment first, then every `EnvironmentFile=`'s contents over them, the files in the order listed.
  *
- * systemd applies `EnvironmentFile=` and `Environment=` as it encounters them, and a later assignment
- * overrides an earlier one. Reading the whole file and applying the two kinds in separate passes would
- * be a different resolution order from the one the running service got — which is exactly the class of
- * bug this module exists to close, so the order is preserved rather than approximated.
+ * WHERE A LINE SITS DOES NOT DECIDE IT. systemd.exec(5) on `EnvironmentFile=`: "Settings from these files
+ * override settings made with Environment=." This reader used to apply the two kinds in file order, so a
+ * name set by both came back with the unit's value whenever its `Environment=` line followed the file,
+ * which is how every shipped unit is written, while the service ran with the file's. A PATH in the
+ * settings file was the case that showed: doctor looked for the engine's program on the unit's PATH,
+ * found it, and passed a machine whose services would not find it. The renderer's header
+ * (driver/systemd/render-units.mjs) states the same rule, and one unit loads no settings file because of it.
+ *
+ * Within each kind a later assignment still overrides an earlier one.
  *
  * @param {string} unitText            the unit file's contents
  * @param {(path: string) => string|null} readEnvFile  returns the file's text, or null if unreadable
- * @returns {{env: Object, missing: string[]}}  `missing` names REQUIRED files that could not be read
+ * @returns {{env: Object, missing: string[]}}  `missing` names REQUIRED files that could not be read, and
+ *   assignments whose value carries a specifier that could not be expanded
  */
 function applyUnit(unitText, readEnvFile, home) {
   const env = {};
+  const fromFiles = {};
   const missing = [];
   for (const raw of String(unitText ?? "").split("\n")) {
     const line = raw.trim();
     // `Environment=` may carry several assignments on one line; systemd splits on whitespace.
+    //
+    // ITS VALUES ARE EXPANDED TOO, by the same rule as a file path. Every shipped unit writes
+    // `Environment=PATH=%h/.local/bin:%h/.npm-global/bin:…`, and systemd hands the service that PATH with
+    // the home filled in. Passed through as written, it named a folder called `%h/.local/bin` that exists
+    // nowhere, so a check that looked for the engine's program on the units' PATH found nothing on a
+    // machine whose searches found it and ran. A value that cannot be expanded is a hole in the picture,
+    // for the reason the file branch below gives: a literal `%h` answers "absent" for a reader that
+    // failed.
     const direct = /^Environment=(.*)$/.exec(line);
     if (direct) {
       for (const pair of direct[1].trim().split(/\s+/)) {
         const m = /^"?([A-Za-z_][A-Za-z0-9_]*)=(.*?)"?$/.exec(pair);
-        if (m) env[m[1]] = m[2];
+        if (!m) continue;
+        const value = expandSpecifiers(m[2], home);
+        if (value.unresolved !== undefined) missing.push(`${m[1]}=${value.unresolved} (unresolved systemd specifier)`);
+        else env[m[1]] = value.path;
       }
       continue;
     }
@@ -106,10 +133,10 @@ function applyUnit(unitText, readEnvFile, home) {
         if (!optional) missing.push(path);
         continue;
       }
-      Object.assign(env, parseEnvFile(text));
+      Object.assign(fromFiles, parseEnvFile(text));
     }
   }
-  return { env, missing };
+  return { env: { ...env, ...fromFiles }, missing };
 }
 
 /**
@@ -143,7 +170,7 @@ export function unitEnvironment({ units = [], readEnvFile = () => null, home = n
     // name we did not find might live in it — and reporting those as absent would be the original bug
     // with a smaller blast radius. The whole picture is refused instead.
     return { known: false, env, read,
-      why: `the units require environment file(s) this command could not read: ${[...new Set(holes)].join(", ")}` };
+      why: `the units require environment file(s) or values this command could not read: ${[...new Set(holes)].join(", ")}` };
   }
   return { known: true, env, read, why: null };
 }

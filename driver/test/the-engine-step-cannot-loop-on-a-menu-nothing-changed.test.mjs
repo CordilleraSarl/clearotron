@@ -25,6 +25,7 @@ import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { hermeticInstallRoot } from "./hermetic-install-root.mjs";
+import { NO_INSTALLED_ENGINES } from "./drive-env.mjs";   // this doctor's env is composed from nothing
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const ONBOARD = join(REPO, "bin", "onboard.mjs");
@@ -85,7 +86,7 @@ test("nothing in that branch can reach a continue before it has been offered the
 });
 
 test("what 'no engine' means is said in ONE place, so the two routes cannot drift", () => {
-  const line = "No engine configured, and nothing engine-related will be written.";
+  const line = "No AI chosen. The demo works without one; a real search needs one, so run setup again when you're ready.";
   const hits = src.split(line).length - 1;
   assert.equal(hits, 1,
     `the no-engine wording appears ${hits} times; the menu's last row and the loop's escape must both `
@@ -105,7 +106,7 @@ test("the fix did NOT move which engine Enter selects", () => {
   // The other way to end the loop is to default the menu onto the no-engine row. That also moves the
   // default on a box carrying the SECOND binary and not the first — a different vendor, and a proof
   // turn spent on it, chosen by a reader who pressed Enter. Not this defect's to decide.
-  assert.match(src, /choose\("Which engine runs the reasoning stages\?", engineOptions\(\), 0\)/,
+  assert.match(src, /choose\(ENGINE_QUESTION, engineOptions\(found\), 0, PAY_PREAMBLE\)/,
     "the engine menu's default index must stay a literal 0 — `onboard-wizard.test.mjs` fixes row 0 "
     + "as the production engine for the same reason");
 });
@@ -141,7 +142,7 @@ function doctor({ envFile = null, ...env } = {}) {
     return { rc: 0, out: execFileSync(process.execPath, [onboard, "--check"], {
       encoding: "utf8", stdio: ["ignore", "pipe", "pipe"],
       env: { PATH: `${NODE_DIR}:/usr/bin:/bin`, HOME: mkdtempSync(join(tmpdir(), "onboard-1907-home-")),
-             CLEAROTRON_NO_ENV_FILE: "1", ...env },
+             CLEAROTRON_NO_ENV_FILE: "1", ...NO_INSTALLED_ENGINES, ...env },
     }) };
   } catch (e) { return { rc: e.status ?? 1, out: `${e.stdout ?? ""}${e.stderr ?? ""}` }; }
 }
