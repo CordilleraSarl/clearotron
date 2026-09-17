@@ -5739,8 +5739,8 @@
           "todos": 0
         },
         "http-handler.test.mjs": {
-          "tests": 17,
-          "asserts": 40,
+          "tests": 20,
+          "asserts": 47,
           "skips": 0,
           "todos": 0
         },

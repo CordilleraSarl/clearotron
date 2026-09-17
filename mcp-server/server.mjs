@@ -1096,7 +1096,7 @@ if (isMain) {
       // route. On an install with no hosted client door the reader IS the operator, which is the same
       // split `stdioConnectOffer` already trusts, so that fact answers the question by itself; on a
       // hosted install it answers for nobody and the portal ignores it.
-      appendAudit({ email: null, sub: null, body: { method: "initialize" }, status: "connected", transport: "stdio" });
+      appendAudit({ email: null, sub: null, body: { method: "initialize" }, status: "connected", transport: "stdio", door: "local" });
     })
     .catch((e) => { log(`fatal: ${e?.stack ?? e}`); process.exit(1); });
 }

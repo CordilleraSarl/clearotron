@@ -69,7 +69,7 @@ export function evictOldest(sessions) {
  * presents another identity's mcp-session-id is refused (403) — a leaked/guessed session id must never
  * let one CF-authed person attach to another's session (which may carry an ops-scoped inner token).
  */
-export function makeHttpHandler({ verify, limiter, opsLimiter = null, sessions, createSession, ns = "trademark-artifacts", sessionMax = 500, maxBody = 4 * 1024 * 1024, authHeader = "cf-access-jwt-assertion", firmDomains = [], clientSurface = false, devMode = false, tokenOnly = false, keyDoorPath = null,
+export function makeHttpHandler({ verify, limiter, opsLimiter = null, sessions, createSession, ns = "trademark-artifacts", sessionMax = 500, maxBody = 4 * 1024 * 1024, authHeader = "cf-access-jwt-assertion", firmDomains = [], clientSurface = false, door: doorName = null, devMode = false, tokenOnly = false, keyDoorPath = null,
   // Is this identity still on the guest list? ASKED PER REQUEST on an ACCOUNT session, cached on the
   // grants file's mtime, so it costs a stat between edits. Injected so an arm can move the answer
   // without a file; the default is the real read, because a door composed without this seam would
@@ -96,7 +96,11 @@ export function makeHttpHandler({ verify, limiter, opsLimiter = null, sessions, 
   // caller who does not exist. Those lines carry no email and no principal, and say a call was refused
   // at this door at this time — which is true, and is the shape the local route already uses for the
   // same reason: a synthesized identity would match somebody who did nothing.
-  const door = clientSurface ? "client" : undefined;
+  // WHICH SURFACE THIS HANDLER IS, named rather than inferred. `clientSurface` answers a scope question
+  // and was doing double duty as the door's name, which left the key door — built with neither
+  // `clientSurface` nor a name — writing lines with no door at all. A caller that knows it is a third
+  // thing passes `door`; the two that do not get the surface they already declare.
+  const door = doorName ?? (clientSurface ? "client" : "portal");
   const refuse = (res, status, obj, who = {}) => {
     try { appendAudit({ email: who.email ?? null, sub: who.sub ?? null, body: who.body ?? null, status: "refused", door }); }
     catch { /* best-effort: a write failure must never change what the caller is told */ }
