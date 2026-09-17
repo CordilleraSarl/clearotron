@@ -1220,7 +1220,7 @@ const EVIDENCE = [
             await must(() => /China . not available with register Signa/.test(txt()), 4000,
               'the unreachable territory is not marked on the screen — this picture would show nothing');
             await must(() => Boolean([...document.querySelectorAll('button[aria-label]')].find((b) => /^Remove China$/.test(b.getAttribute('aria-label')))), 3000,
-              'the unreachable territory cannot be removed, so the client is blocked');` },
+              'the unreachable territory cannot be removed, so nothing on this screen can take it off');` },
   { name: 'queued', usage: PLENTY,
     setup: `await ready(); await described(true); await reviewed(); byText('button', /^Start search$/).click();
             await must(() => /Clearance queued/.test(txt()), 5000, 'the queued screen never appeared');` },
