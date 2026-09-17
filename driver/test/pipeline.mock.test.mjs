@@ -2964,3 +2964,28 @@ test("the model gets ONE repair turn, not a loop", async () => {
   assert.ok(events.filter((e) => e.event === "connotation-reissue").length <= 1,
     "the engine re-issued more than once — the attempts are supposed to be bounded");
 });
+
+// ── A STAGE THAT WAS ENTERED AND DID NOT SUCCEED IS STILL WHERE THE RUN IS ──────────────────────────
+//
+// The displayed step advanced on SUCCESS only, so a run sitting in a stage read as being in the previous
+// one for as long as that stage took. The live case is what the issue measured — placement entered at
+// 10:05Z, the portal still saying "Register sweeps" at 10:10Z — and it cannot be asserted after the fact,
+// because a run in flight has settled nothing. A stage that is entered and FAILS is the same distinction
+// in a state that persists: under success-only recording the run's own status names the last stage that
+// finished, which is not where it stopped.
+test("a run that dies in a stage says THAT stage is where it was, not the last one that finished", async () => {
+  const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_FAIL_STAGE: "joint synthesis narrative" });
+  assert.equal(res.ok, false);
+  assert.equal(res.failedStage, "synthesis");
+
+  const status = JSON.parse(readFileSync(join(res.runDir, "status.json"), "utf8"));
+  assert.equal(status.lastStage, "synthesis",
+    `the run stopped in synthesis and its status says it was in ${status.lastStage} — the reader is told the last stage that SUCCEEDED, which is the defect`);
+
+  // And synthesis genuinely did not succeed, so this is not a stage that merely finished quietly: without
+  // it the arm would pass against success-only recording the moment the mock stopped failing.
+  assert.ok(!events.some((e) => e.event === "stage" && e.stage === "synthesis" && e.ok),
+    "synthesis recorded a successful stage event — the fixture is no longer failing where this arm needs it to");
+  assert.ok(events.some((e) => e.event === "stage" && e.stage === "synthesis"),
+    "synthesis never produced a stage event at all — the run died before reaching it and this arm proves nothing");
+});

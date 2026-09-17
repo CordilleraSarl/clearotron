@@ -3112,8 +3112,8 @@
           "todos": 0
         },
         "pipeline.mock.test.mjs": {
-          "tests": 97,
-          "asserts": 806,
+          "tests": 98,
+          "asserts": 811,
           "skips": 0,
           "todos": 0
         },
@@ -3370,8 +3370,8 @@
           "todos": 0
         },
         "progress.test.mjs": {
-          "tests": 24,
-          "asserts": 86,
+          "tests": 26,
+          "asserts": 96,
           "skips": 0,
           "todos": 0
         },

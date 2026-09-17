@@ -431,3 +431,57 @@ test("…and the first write still lands, so hardening never becomes silence", (
     assert.equal(JSON.parse(readFileSync(join(dir, "status.json"), "utf8")).deliveredAt, "2026-08-14T10:00:00.000Z");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
+
+// ── A STAGE WITH NO DISPLAY STEP IS STILL SOMETHING THE RUN IS DOING ────────────────────────────────
+//
+// `lastStage` is what status-snapshot publishes as "what the run is actually doing". recordTransition
+// returned early for a stage that maps to no display step, so it wrote no lastStage either — and for the
+// whole of blind-frame, frame-diff or doubt-closure every surface went on naming the stage before it.
+test("an unmapped stage records what the run is doing, and still moves no step", () => {
+  const studioRoot = mkdtempSync(join(tmpdir(), "prog-unmapped-"));
+  const runDir = join(studioRoot, "tmp9-aurora", "2026-06-02-copper-spire");
+  mkdirSync(runDir, { recursive: true });
+  const ctx = {
+    run: { runDir, studioRoot, slug: "tmp9-aurora", codename: "copper-spire", date: "2026-06-02" },
+    job: { id: "j9", forwarder: "requester", ref: "TMP9002", markName: "AURORA", classes: [9] },
+    agent: "clawdi",
+  };
+  const read = () => JSON.parse(readFileSync(join(runDir, "status.json"), "utf8"));
+  seedRunStatus(ctx);
+  recordTransition(ctx, "register-unit");          // a mapped stage first, so there is a step to hold
+  assert.equal(read().stepIndex, 1);
+
+  // EVERY member of the unmapped set, not one of them: this is the closed partition the file asserts in
+  // both directions, and an arm naming one member would pass against code that special-cased it.
+  for (const stage of Object.keys(STAGE_NO_STEP)) {
+    recordTransition(ctx, stage);
+    const s = read();
+    assert.equal(s.lastStage, stage, `${stage} moved no step and said nothing — the surface still names the stage before it`);
+    assert.equal(s.stepIndex, 1, `${stage} has no display step ON PURPOSE and must not move the stepper`);
+    assert.equal(s.stepLabel, DISPLAY_STEPS[1], `${stage} moved the label without the index`);
+  }
+
+  // A mapped stage after them still advances — the guard against "fix" it by never writing steps again.
+  recordTransition(ctx, "skeptic");
+  assert.equal(read().stepIndex, 3);
+  assert.equal(read().lastStage, "skeptic");
+});
+
+test("an unmapped stage cannot pull the displayed step backwards", () => {
+  // The monotonic guard covers a mapped stage. This pins that the unmapped write does not reach the step
+  // fields at all: it passes no stepIndex, so there is nothing for the guard to have to catch.
+  const studioRoot = mkdtempSync(join(tmpdir(), "prog-unmapped-back-"));
+  const runDir = join(studioRoot, "tmp9-aurora", "2026-06-02-copper-spire");
+  mkdirSync(runDir, { recursive: true });
+  const ctx = { run: { runDir, studioRoot, slug: "tmp9-aurora", codename: "copper-spire", date: "2026-06-02" },
+    job: { id: "j9", forwarder: "requester", ref: "TMP9003", markName: "AURORA", classes: [9] }, agent: "clawdi" };
+  seedRunStatus(ctx);
+  recordTransition(ctx, "publish");                 // the furthest step this run reaches
+  const far = JSON.parse(readFileSync(join(runDir, "status.json"), "utf8"));
+  recordTransition(ctx, "doubt-closure");
+  const after = JSON.parse(readFileSync(join(runDir, "status.json"), "utf8"));
+  assert.equal(after.stepIndex, far.stepIndex);
+  assert.equal(after.stepN, far.stepN);
+  assert.equal(after.stepTotal, far.stepTotal);
+  assert.equal(after.lastStage, "doubt-closure", "and it still says what the run is doing");
+});
