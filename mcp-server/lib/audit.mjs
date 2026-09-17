@@ -40,6 +40,16 @@ export function summarize(body) {
   return out;
 }
 
+/**
+ * The value written when a caller names no door. A door-less line USED TO BE POSSIBLE and one writer
+ * produced them: the key door built its handler without saying which surface it was, so every line it
+ * wrote omitted the field while the lines either side of it carried it. Absence then read as the staff
+ * surface, because that was the only other thing it could have been, so the trail quietly attributed a
+ * client's calls to staff. The field is now always written and an unnamed door is loud rather than
+ * missing — a reader can search for this value, which is not true of a key that is not there.
+ */
+export const UNNAMED_DOOR = "unnamed";
+
 export function appendAudit({ email, sub, body, status, transport, door, path = DEFAULT_AUDIT_PATH }) {
   // `sub` = the inner-token PRINCIPAL (ops-token issuance, INSTALL.md §8) — distinguishes
   // two automations sharing a transport identity. null for internal/user sessions without a sub claim.
@@ -59,7 +69,7 @@ export function appendAudit({ email, sub, body, status, transport, door, path = 
   // WRITTEN ONLY WHEN GIVEN, the same rule as `transport` and for the same reason: the existing log
   // shape must not move for records that have no answer to this. A door that does not name itself is a
   // record with no `door` key, not a record claiming to be from nowhere.
-  const line = JSON.stringify({ ts: new Date().toISOString(), email: email ?? null, sub: sub ?? null, ...summarize(body), status: status ?? null, ...(transport ? { transport } : {}), ...(door ? { door } : {}) }) + "\n";
+  const line = JSON.stringify({ ts: new Date().toISOString(), email: email ?? null, sub: sub ?? null, ...summarize(body), status: status ?? null, ...(transport ? { transport } : {}), door: door || UNNAMED_DOOR }) + "\n";
   try { mkdirSync(dirname(path), { recursive: true }); appendFileSync(path, line); } catch { /* best-effort */ }
 }
 

@@ -21,7 +21,8 @@ import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { findings, BANNED_WORDS } from "../../scripts/changelog-plain-language.mjs";
-import { refusals as publishRefusals, WORKFLOW, CREDENTIAL_TOKENS, REPOSITORY, publishingJobs } from "../../scripts/release-publish-guard.mjs";
+import { refusals as publishRefusals, WORKFLOW, CREDENTIAL_TOKENS, REPOSITORY, publishingJobs, jobBlocks,
+  CREDENTIALLED_JOB, PERMITTED_CREDENTIAL_LINE, PERMITTED_REGISTRY_LINE } from "../../scripts/release-publish-guard.mjs";
 import { distTag, isPrerelease, preModeFrom, STABLE, UNNAMED_PRERELEASE } from "../../scripts/release-dist-tag.mjs";
 import { cutDecision, versionAtHead } from "../../scripts/release-cut-decision.mjs";
 import { checksVerdict, waitForChecks, RUNNING, NOTHING_STARTED, WAITING_FOR_A_PERSON, exitCodeFor, CHECKS_WINDOW_MS, CHECKS_JOB_MARGIN_MS } from "../../scripts/release-version-pr-checks.mjs";
@@ -2481,4 +2482,54 @@ test("tracker 640 the step runs before the action that reads what it writes", ()
     + "and the stable cut is blocked again — with the step present and green");
   assert.match(executable, /release-pre-gate\.mjs --cut=\$\{\{ inputs\.cut \}\}/,
     "the step does not receive the channel, so it cannot tell a stable cut from a beta");
+});
+
+// ── ONE JOB MAY HOLD A CREDENTIAL, AND THE EXEMPTION IS HELD TO ITS OWN TERMS ──────────────────────
+//
+// Owner ruling 2026-09-17: deprecating a published version is a registry WRITE the OIDC exchange cannot
+// make, so the `deprecate` job reads a granular token. Publishing stays credential-less. An exemption
+// nobody checks is a hole, and these are the ways this one could quietly become general.
+//
+// THE FIRST DRAFT OF THAT EXEMPTION WAS A HOLE, which is why these arms are here rather than a comment.
+// Exempting the whole job read as equivalent to exempting its two permitted lines. It was not: `deprecate`
+// is the LAST job in the file, its block runs to end-of-file, and the plants the arm above appends at the
+// end landed inside it. Four credential spellings went from refused to accepted in a single edit.
+test("the credential exemption is two exact lines in one job, not a region of the file", () => {
+  const wf = read(WORKFLOW);
+  const pkg = rootPkg();
+  assert.deepEqual(publishRefusals({ workflow: wf, rootPkg: pkg }), [],
+    "the workflow as shipped must satisfy its own guard, credential and all");
+
+  // The permitted lines are where the ruling put them, and the job is still not a publishing job.
+  const block = jobBlocks(wf.split("\n").filter((l) => !/^\s*#/.test(l)).join("\n")).get(CREDENTIALLED_JOB);
+  assert.ok(block, `the ${CREDENTIALLED_JOB} job must exist for this exemption to mean anything`);
+  assert.ok(block.includes(PERMITTED_CREDENTIAL_LINE), "the credential is read from the secret the ruling named");
+  assert.ok(block.includes(PERMITTED_REGISTRY_LINE), "and the registry it authenticates against is configured there");
+  assert.ok(!/\bnpm\s+publish\b/.test(block), "the job holding a credential must never be a job that publishes");
+
+  const plants = [
+    ["a SECOND copy of the permitted credential line", `          ${PERMITTED_CREDENTIAL_LINE}\n`],
+    ["a SECOND copy of the permitted registry line", `          ${PERMITTED_REGISTRY_LINE}\n`],
+    ["the same key taken from a different secret", "          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}\n"],
+    ["another credential spelling entirely", "          NPM_CONFIG_TOKEN: xxx\n"],
+    ["an auth token written straight into .npmrc", "      - run: echo '//registry.npmjs.org/:_authToken=x' > .npmrc\n"],
+  ];
+  for (const [what, line] of plants) {
+    // Appended at the END OF FILE on purpose: that is inside the last job's block, which is exactly where
+    // the first draft of this exemption stopped looking.
+    assert.ok(publishRefusals({ workflow: wf + "\n" + line, rootPkg: pkg }).length,
+      `the guard accepted a workflow carrying ${what} — the exemption has widened past the two lines it is`);
+  }
+});
+
+test("a credential held at job level, where every step would get it, is refused", () => {
+  const wf = read(WORKFLOW);
+  // The guard above runs as a STEP of the credentialled job. A job-level env block would hand it the very
+  // token it exists to find, so the spelling matters and not only the secret's name.
+  const jobLevel = wf.replace(
+    /(\n  deprecate:\n)/,
+    `$1    env:\n      ${PERMITTED_CREDENTIAL_LINE}\n`);
+  assert.notEqual(jobLevel, wf, "the plant did not apply, so this arm is measuring nothing");
+  assert.ok(publishRefusals({ workflow: jobLevel, rootPkg: rootPkg() }).length,
+    "a job-level credential gives every step in the job the token, including the guard");
 });
