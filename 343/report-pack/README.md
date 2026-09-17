@@ -35,6 +35,9 @@ images for them have been removed rather than left here to be read as current.
 
 ## The report on a phone
 
+`report-phone-360-light.png` — the same report on a small phone, after the ruling that the back arrow
+goes below 375px while the product's name and the risk label stay. Every report fits at 360 and up.
+
 `report-phone-old-light.png` — the document is 425px wide in a 390px viewport, so the page scrolls
 sideways and the Export button sits off the right edge. `report-phone-new-light.png` and
 `report-phone-new-dark.png` — the same report at the same width, fitting exactly.
