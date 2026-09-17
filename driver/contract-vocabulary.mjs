@@ -65,7 +65,7 @@ const CL = ["common-law", "common-law-half"];
 export const VOCABULARY = [
   // ── the shared helpers: one token, many stages, different owners per stage ─────────────────────────
   { token: "too_short", stages: ALL_STAGES.filter((s) => !["blind-frame", "doubt-closure", "narrative-refutation"].includes(s)), site: "driver/verify.mjs:133" },
-  { token: "missing", stages: ["matter-frame", "clearance-variants", "common-law", "common-law-half", "placement-inquiry", "register-digest", "doubt-closure", "report-overview", "report-card"], site: "driver/verify.mjs:164" },
+  { token: "missing", stages: ["matter-frame", "clearance-variants", "common-law", "common-law-half", "placement-inquiry", "register-digest", "doubt-closure", "report-overview", "report-card"], site: "driver/verify.mjs:164 needs" },
 
   // ── common-law / common-law-half ───────────────────────────────────────────────────────────────────
   { token: "declared_unavailable", stages: CL, site: "driver/verify.mjs" },
@@ -152,7 +152,7 @@ export const VOCABULARY = [
   { token: "plan_execution_unreadable", stages: ["register-digest", "narrative-refutation"], site: "driver/verify.mjs:1496, 1712" },
 
   // ── matter-frame / clearance-variants / blind-frame / frame-diff ──────────────────────────────────────
-  { token: "stagecontracts_invalid", stages: ["matter-frame", "clearance-variants", "placement-inquiry", "case-law"], site: "driver/verify.mjs:1539, 1170, 1366, 1677" },
+  { token: "stagecontracts_invalid", stages: ["matter-frame", "clearance-variants", "placement-inquiry", "case-law"], site: "driver/verify.mjs:1539 coverageEntryList, and 1170, 1366, 1677" },
   { token: "meaning_angles_missing", stages: ["matter-frame"], site: "driver/verify.mjs" },
   { token: "frame_scope_missing", stages: ["matter-frame"], site: "driver/verify.mjs:1119" },
   { token: "variantmodel_romanization_missing", stages: ["clearance-variants"], site: "driver/verify.mjs" },

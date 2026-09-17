@@ -3868,7 +3868,7 @@ export function readFloorAxes(paths) {   // @internal
 }
 
 // A never-active axis self-writes a harmless "not applicable" digest — the skill MANDATES the exact
-// scope wording (skills/clearance-register/unit.md:89-90: `query:"<axis> not applicable"`,
+// scope wording (skills/clearance-register/unit.md: `query:"<axis> not applicable"`,
 // `reason:"not applicable — <why>"`), so the coverage-ledger row lands as `<axis> / axis not applicable`.
 // It is `deferred` only because a non-search must not be dressed as a clean — it is NOT floor work left
 // open. Keyed on the self-digest scope (deterministic, skill-dictated), never a genuine floor's
@@ -7704,7 +7704,7 @@ export function buildOnlyYouSection(actions, findings, { nowMs = Date.now(), wit
 // blocking review goes." That REVERSES T3, which retired "delivered-with-open-questions" and
 // is itself recorded as an owner-approved decision — both are his, and this is the standing one.
 //
-// The section the reviewer's concerns land in is not new. `driver/skills/clearance-search/SKILL.md:241`
+// The section the reviewer's concerns land in is not new. `driver/skills/clearance-search/SKILL.md`
 // has described it all along — "delivered … as a prominent Reviewer's open questions section at the
 // top of the body (the driver passes them in)" — and `:295` lists it as a required section with
 // "Never omit it to look more finished." deleted the driver's half and left that text
@@ -8034,7 +8034,7 @@ export function assembleReportMd(P, findings, cardOrdinals, { grouped = [], byRi
   } catch { /* never-kill: a malformed findings.json leaves the overview untouched (its own gates own that) */ }
   // ── T3a — THE REVIEWER'S OPEN POINTS, AT THE TOP OF THE BODY ──────────────────────────────────────
   //
-  // `driver/skills/clearance-search/SKILL.md:241` says where: "a prominent Reviewer's open questions section at the TOP of the body
+  // `driver/skills/clearance-search/SKILL.md` says where: "a prominent Reviewer's open questions section at the TOP of the body
   // (the driver passes them in)". That sentence has been true of the contract and false of the code
   // since deleted the driver's half; this is the half coming back.
   //
@@ -13407,7 +13407,7 @@ async function pipelineInner(job, opts = {}) {
     // review goes." This REVERSES T3 (H3/H5), whose flip to fail-on-BLOCKING is itself recorded
     // itself an owner-approved decision. Both are his; this is the standing one, and the
     // history is kept here rather than deleted because a reader who finds only one of them will conclude
-    // the code drifted from its contract. (It did not; driver/skills/clearance-search/SKILL.md:241/295 was the stale half, and this
+    // the code drifted from its contract. (It did not; driver/skills/clearance-search/SKILL.md was the stale half, and this
     // change makes it true again.)
     //
     // COPPER-SPIRE IS STILL ANSWERED, AND NOT BY REFUSING. That failure was a BLOCKING verdict reaching
