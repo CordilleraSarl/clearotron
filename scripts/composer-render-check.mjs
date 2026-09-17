@@ -121,6 +121,15 @@ const ROUTES = {
  * only thing differing between two renders is the thing being measured.
  */
 let profileTerritories = []
+// THE WIRED REGISTER'S REACH AND ITS NAME, mutable for the same reason the territories above are: a
+// state has to move them between pictures, and the frozen route cannot.
+//
+// `undefined` IS THE DEFAULT ON PURPOSE, and it is the wire's third answer rather than a missing value.
+// Absent means "this deployment did not say", the browser fails open on it, and that is the condition
+// every picture in this file was taken under until a state says otherwise — which is exactly why none of
+// them could show a territory being refused.
+let registerReach
+let registerLabelNow = null
 
 let usageNow = { account: 'coastline', today: 1, thisMonth: 4, queued: 0, dailyRuns: 3, monthlyRuns: null, maxQueued: null, capped: true }
 
@@ -231,6 +240,18 @@ const server = createServer((req, res) => {
     res.writeHead(200, { 'content-type': 'application/json' })
     const r = ROUTES[base]
     res.end(JSON.stringify({ ...r, profile: { ...r.profile, defaultJurisdictions: profileTerritories } }))
+    return
+  }
+  // Served from the mutable pair rather than the frozen route, for the reason written beside them.
+  if (base === '/portal/api/searches') {
+    res.writeHead(200, { 'content-type': 'application/json' })
+    res.end(JSON.stringify({
+      ...ROUTES[base],
+      // The tri-state, kept apart on the way out as the real payload keeps it: a list, an explicit
+      // null, or the key absent. A `?? null` here would tell every screen the register is unrestricted.
+      ...(registerReach === undefined ? {} : { territories: registerReach }),
+      ...(registerLabelNow ? { registerLabel: registerLabelNow } : {}),
+    }))
     return
   }
   if (ROUTES[base] !== undefined) {
@@ -1186,6 +1207,20 @@ const EVIDENCE = [
             await must(() => /sets the search and how deep it goes/.test(txt()), 4000, 'the template line never appeared');` },
   { name: 'review-native-on', usage: PLENTY, setup: 'await ready(); await described(true); await reviewed();' },
   { name: 'review-native-off', usage: PLENTY, setup: 'await ready(); await described(false); await reviewed();' },
+  // THE STATE THIS FILE COULD NOT DRAW. The register reaches four of the places the company has saved,
+  // and not the fifth — so the form marks it, refuses to add another like it, and the client takes it off
+  // and carries on. Its setup ASSERTS the line is on the screen before a picture is taken: a state that
+  // cannot find it errors and writes no file, which is what stops this becoming another picture of a
+  // screen that had nothing to show.
+  { name: 'register-cannot-reach', usage: PLENTY,
+    reach: ['European Union', 'United States', 'United Kingdom', 'Switzerland'],
+    registerLabel: 'Signa',
+    profile: ['European Union', 'United States', 'China'],
+    setup: `await ready(); set(names(), 'AQUAPLUS'); await sleep(300);
+            await must(() => /China . not available with register Signa/.test(txt()), 4000,
+              'the unreachable territory is not marked on the screen — this picture would show nothing');
+            await must(() => Boolean([...document.querySelectorAll('button[aria-label]')].find((b) => /^Remove China$/.test(b.getAttribute('aria-label')))), 3000,
+              'the unreachable territory cannot be removed, so the client is blocked');` },
   { name: 'queued', usage: PLENTY,
     setup: `await ready(); await described(true); await reviewed(); byText('button', /^Start search$/).click();
             await must(() => /Clearance queued/.test(txt()), 5000, 'the queued screen never appeared');` },
@@ -1200,9 +1235,15 @@ const cdp = (method, params = {}) => new Promise((r) => {
 // fixed overlay, and a beyond-viewport capture paints both where the 900px viewport put them — over the
 // middle of the page. Growing the viewport to the page's height puts the footer at the page's end and lets
 // the overlay cover the page, which is what a reader scrolling it sees.
-const capture = async (path) => {
+// WIDTH IS THE CALLER'S, because a layout that works at 1280 and breaks on a phone is a defect this
+// file could not see while it only ever rendered one width. The height is still measured AFTER the width
+// is applied, below — a narrow viewport reflows the page taller, and measuring first captures a page cut
+// off at the fold.
+const capture = async (path, width = 1280) => {
+  await cdp('Emulation.setDeviceMetricsOverride', { width, height: 900, deviceScaleFactor: 1, mobile: width < 700 })
+  await new Promise((r) => setTimeout(r, 300))
   const h = (await evalIn('Math.max(document.documentElement.scrollHeight, document.body.scrollHeight)')).result?.result?.value ?? 900
-  await cdp('Emulation.setDeviceMetricsOverride', { width: 1280, height: Math.max(900, h), deviceScaleFactor: 1, mobile: false })
+  await cdp('Emulation.setDeviceMetricsOverride', { width, height: Math.max(900, h), deviceScaleFactor: 1, mobile: width < 700 })
   await new Promise((r) => setTimeout(r, 400))
   const shot = await cdp('Page.captureScreenshot', { format: 'png' })
   await cdp('Emulation.clearDeviceMetricsOverride', {})
@@ -1231,17 +1272,30 @@ if (shotDir) {
   meEngine = { brand: 'Tolliver & Quillon', accountNames: { coastline: 'Coastline Drinks' } }
   for (const st of EVIDENCE) {
     usageNow = { ...usageNow, ...st.usage }
+    // A state says what the deployment is, or inherits the default: no declared reach, no register name,
+    // and no company territories. Reset every time rather than left set, so one state cannot silently
+    // decide what the next one renders.
+    registerReach = st.reach
+    registerLabelNow = st.registerLabel ?? null
+    profileTerritories = st.profile ?? []
     await evalIn(`document.documentElement.removeAttribute('data-theme'); location.href = ${JSON.stringify(`http://127.0.0.1:${port}/portal/new`)}; 'go'`)
     await new Promise((r) => setTimeout(r, 1200))
     const got = (await evalIn(`(async () => { ${EVIDENCE_HELPERS} try { ${st.setup} window.scrollTo(0, 0); return { ok: true }; } catch (e) { return { ok: false, error: String(e && e.message || e), body: txt().slice(0, 600) }; } })()`)).result?.result?.value ?? { ok: false, error: 'evaluate returned nothing' }
     evidence.push({ state: st.name, ...got })
     if (!got.ok) continue
+    // BOTH THEMES AND BOTH WIDTHS. 390 is the narrow end of the phones the report was fitted to, and a
+    // column that overflows there is invisible to every assertion in this file.
     await capture(join(shotDir, `new-clearance-${st.name}-light.png`))
+    await capture(join(shotDir, `new-clearance-${st.name}-light-390.png`), 390)
     await evalIn(`document.documentElement.setAttribute('data-theme','dark'); 'ok'`)
     await new Promise((r) => setTimeout(r, 400))
     await capture(join(shotDir, `new-clearance-${st.name}-dark.png`))
+    await capture(join(shotDir, `new-clearance-${st.name}-dark-390.png`), 390)
     await evalIn(`document.documentElement.removeAttribute('data-theme'); 'ok'`)
   }
+  registerReach = undefined
+  registerLabelNow = null
+  profileTerritories = []
   meEngine = {}
 }
 
