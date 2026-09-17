@@ -17,7 +17,7 @@
 // contract the publication gate held before it was retired into tests at — pass, fail, and COULD
 // NOT RUN, never folded into two — carried to the seam where a run becomes a client artifact.
 //
-// Modelled on mcp-server/lib/coverage.mjs:65-75 (assertValidatorCoverage): a closed partition asserted
+// Modelled on mcp-server/lib/coverage.mjs:65-75 — assertValidatorCoverage() in coverage.mjs: a closed partition asserted
 // at LOAD, so a new store cannot be added without consciously choosing its gating. The failure that
 // mechanism exists to prevent is the — a hand-copied mirror that silently stopped covering an
 // artifact and still answered "complete: yes" about a file it never checked.
@@ -116,7 +116,7 @@ export const CALLER_SUPPLIED = {
 };
 
 /**
- * Load-time gate, on the assertValidatorCoverage model (mcp-server/lib/coverage.mjs:64-73).
+ * Load-time gate, on the assertValidatorCoverage() in coverage.mjs model (mcp-server/lib/coverage.mjs:64-73).
  *
  * Asserts the table is a well-formed closed partition: every gating is one of the two words, no store
  * is declared in more than one table, and no declaration is blank. It deliberately does NOT scan

@@ -387,12 +387,12 @@ export const TRIPWIRE_OUT_OF_SCOPE = [
     token: "no_citations",
     symbol: { file: "driver/case-law-ledger.mjs", names: ["findCaseLawLedgerViolations", "CASE_LAW_ADVISORY_REASONS", "isCaseLawBlocking"] },
     site: "driver/case-law-ledger.mjs:179 (minted), :65 CASE_LAW_ADVISORY_REASONS, :67 isCaseLawBlocking",
-    reason: "ADVISORY, and filtered before the token is built. `caseLawLedgerFail` keeps only blocking violations (case-law-ledger.mjs:196), and `no_citations` is the one member of CASE_LAW_ADVISORY_REASONS — so it cannot appear even in the `caselaw_ledger` census payload, let alone as a token head. It is the honest no-on-point-precedent result the report is allowed to state; failing a run for it would manufacture citations.",
+    reason: "ADVISORY, and filtered before the token is built. caseLawLedgerFail() in case-law-ledger.mjs keeps only blocking violations (:196), and `no_citations` is the one member of CASE_LAW_ADVISORY_REASONS — so it cannot appear even in the `caselaw_ledger` census payload, let alone as a token head. It is the honest no-on-point-precedent result the report is allowed to state; failing a run for it would manufacture citations.",
   },
   {
     token: "accepted_not_folded",
     symbol: { file: "driver/disposition-call.mjs", names: ["CALL_DROPS"] },
-    site: "driver/disposition-tool.mjs:378 (minted), driver/disposition-call.mjs:192 (CALL_DROPS)",
+    site: "driver/disposition-tool.mjs:378 (minted), driver/disposition-call.mjs:192, `CALL_DROPS` declared in `disposition-call.mjs`",
     reason: "A DRIVER-FAULT journal code, and the fault is ours. It records that the tool accepted a row the accumulator then did not carry; it is written to the call verdict ledger and reaches a seat only inside a sentence that orders the seat NOT to act (`your answer was valid and this is ours to fix`). A stage refusal built on it would be the driver failing a seat for the driver's own defect, so no stage can emit it by construction rather than by omission.",
   },
   {
@@ -477,7 +477,7 @@ export const INNER_CODES = Object.freeze([
 
   // ── case-law-ledger.mjs — ONE token, the codes as census payload ─────────────────────────────────
   //
-  // `caseLawLedgerFail` (case-law-ledger.mjs:195) returns `caselaw_ledger:<census>;<detail>`, and
+  // caseLawLedgerFail() in case-law-ledger.mjs (:195) returns `caselaw_ledger:<census>;<detail>`, and
   // `normalizeFailToken` cuts at the first colon — so the token is `caselaw_ledger` and every code below
   // lives in the payload. The `caselaw_ledger` row already carries `family:
   // "driver/case-law-ledger.mjs:204 (census reasons)"`, which is this ruling written down before the

@@ -151,7 +151,7 @@ export function readBackLadder(ctx, sidecarPath, { minted }) {   // exported for
   if (ladder.length) return;
   const detail = `${sidecarPath} does not read back as a band ladder, so knockoutAssessChunk's three band checks would pass every rating unchecked`;
   if (minted) throw new Error(`knockout_ladder_unreadable: ${detail} — the driver wrote this file itself from a parsed manifest, so this is a driver fault and no seat can fix it`);
-  // THE RECORDING CANNOT BE WHAT STOPS THE RUN. `runLog` → `appendLine` (log.mjs:11) does an unguarded
+  // THE RECORDING CANNOT BE WHAT STOPS THE RUN. `runLog` → appendLine() in log.mjs (:11) does an unguarded
   // mkdirSync + appendFileSync: on EACCES or a full disk it THROWS. Everywhere else in the driver that is
   // the accepted behaviour, but not here — this branch exists precisely to keep a pre-existing run alive,
   // and a throw out of it would take down the run it is written to spare, for a reason unrelated to
