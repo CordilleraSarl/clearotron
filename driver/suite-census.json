@@ -3220,8 +3220,8 @@
           "todos": 0
         },
         "portal-service.test.mjs": {
-          "tests": 127,
-          "asserts": 683,
+          "tests": 128,
+          "asserts": 687,
           "skips": 1,
           "todos": 0
         },
@@ -3666,6 +3666,12 @@
         "register-provider-required.test.mjs": {
           "tests": 10,
           "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
+        "register-reach-refusal.test.mjs": {
+          "tests": 13,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },

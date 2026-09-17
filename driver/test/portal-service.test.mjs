@@ -203,6 +203,10 @@ function world(opts = {}) {
     // read as "could not count", never as "no runs today".
     ...(opts.queueDirs ? { queueDirs: () => opts.queueDirs } : {}),
     ...(opts.readBuilt ? { readBuilt: opts.readBuilt } : {}),
+    // The wired register's reach, injected so an arm can drive a Signa-shaped deployment without a
+    // snapshot on disk. `in opts` rather than a truthy test: `undefined` and `null` are two of the
+    // three answers this field has, and a truthy guard would collapse both into "use the default".
+    ...("readTerritories" in opts ? { readTerritories: opts.readTerritories } : {}),
     ...(opts.upstream ? { upstream: opts.upstream } : {}),
     ...(opts.composeRead ? { composeRead: opts.composeRead } : {}),
     ...(opts.readBudget ? { readBudget: opts.readBudget } : {}),
@@ -3216,4 +3220,37 @@ test("/portal/api/me says which route this install arrived by, as a WORD", async
     "an absolute path reached /portal/api/me — this route publishes no filesystem layout");
   assert.doesNotMatch(wire, /npx |npm run |cd \//,
     "a command line reached the wire; the screen composes the command from the word");
+});
+
+// ── THE REGISTER'S REACH ON THE SEARCHES PAYLOAD — the field the whole picker disclosure keys on ─────
+//
+// This field SHIPS and had no arm, which is how it came to be reported as missing from the payload
+// altogether on 2026-09-17. It is omitted when the snapshot does not say, so a deployment whose snapshot
+// was never refreshed looks exactly like a build that never sent it — and the browser's decoder fails
+// open on absence by design, so every territory reads as reachable and nothing anywhere says otherwise.
+//
+// THE THREE ANSWERS ARE THE POINT. A list is "exactly these"; `null` is "no declared restriction", which
+// a global aggregator really does answer; ABSENT is "this deployment did not say". Collapsing any two
+// offers a client zero territories on a production box, or hides a real limit on one.
+test("the searches payload carries the register's reach as THREE answers, never two", async () => {
+  const ten = ["European Union", "United States", "United Kingdom", "France", "Switzerland",
+    "Sweden", "Norway", "Canada", "Singapore", "Australia"];
+
+  const said = await world({ readTerritories: () => ten }).service
+    .route("GET", "/portal/api/searches", CLIENT, {}, {});
+  assert.deepEqual(said.json.territories, ten,
+    "a register that enumerates its coverage must reach the browser, or the picker offers what cannot be searched");
+
+  // `null` — corsearch. A real answer, and it must ARRIVE as null rather than as an absence.
+  const unrestricted = await world({ readTerritories: () => null }).service
+    .route("GET", "/portal/api/searches", CLIENT, {}, {});
+  assert.ok("territories" in unrestricted.json, "no declared restriction is an ANSWER and must be sent");
+  assert.equal(unrestricted.json.territories, null);
+
+  // ABSENT — the snapshot does not say. The key must not appear at all: the decoder reads absence as
+  // "the server did not tell me" and fails open, and a null here would claim the register is unlimited.
+  const silent = await world({ readTerritories: () => undefined }).service
+    .route("GET", "/portal/api/searches", CLIENT, {}, {});
+  assert.equal("territories" in silent.json, false,
+    "a snapshot that does not say must OMIT the field — null would claim no restriction exists");
 });
