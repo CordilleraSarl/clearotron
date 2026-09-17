@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // @tier full — drives a full mock clearance through the real runner (the jx shadow units)
 // runner.jx-p4-e2e.test.mjs — the jx shadow units end to end through the REAL runner at $0: a
-// prelim-jx job (CN in scope) with the SERP-grid and nativeread units armed on fixtures. Proves the
+// clearance-jx job (CN in scope) with the SERP-grid and nativeread units armed on fixtures. Proves the
 // full shadow chain — frozen dictation, cell accounting + receipts-gate green, code-side mirror
 // demotion, judged findings, the grounded read + aim-attention artifact — AND the shadow doctrine
 // itself: the register plan carries only the slice-1 fold, synthesis consumed nothing (no
@@ -15,7 +15,7 @@ import { envFrom, pinEnv } from "../../shared/env-aliases.mjs";   // — a fixtu
 import { tmpdir as __tmpdir } from "node:os";
 import { join as __join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
-pinEnv(process.env, "CLEAROTRON_WORK_DIR", envFrom(process.env, "CLEAROTRON_WORK_DIR") || __mkdtemp(__join(__tmpdir(), "prelim-jx-p4-e2e-")));
+pinEnv(process.env, "CLEAROTRON_WORK_DIR", envFrom(process.env, "CLEAROTRON_WORK_DIR") || __mkdtemp(__join(__tmpdir(), "clearance-jx-p4-e2e-")));
 pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", envFrom(process.env, "CLEAROTRON_REPORTS_DIR") || __join(process.env.CLEAROTRON_WORK_DIR, "pool"));
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -76,7 +76,7 @@ for (const [k, v] of Object.entries({
 })) pinEnv(process.env, k, v);
 
 const { main } = await import("../runner.mjs");
-const Q = join(root, "workspace-clawdi", "studio", "prelim-search", "queue");
+const Q = join(root, "workspace-clawdi", "studio", "clearance-search", "queue");
 mkdirSync(Q, { recursive: true });
 
 const findRun = (needle) => {
@@ -87,7 +87,7 @@ const findRun = (needle) => {
     if (existsSync(driverDir(d, "search-policy.json")) && d.includes(needle)) { hits.push(d); return; }
     for (const e of es) if (e.isDirectory()) walk(join(d, e.name), depth + 1);
   };
-  walk(join(root, "workspace-clawdi", "studio", "prelim-search"), 0);
+  walk(join(root, "workspace-clawdi", "studio", "clearance-search"), 0);
   return hits;
 };
 
@@ -101,7 +101,7 @@ test("phase-4 e2e: shadow units run on fixtures — grid receipted + gate green,
   // — BEFORE the assertions below. A run that never started leaves its
   // reason in the packets beside the queue; without this the counts below report it as a
   // product defect.
-  refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.jx-p4-e2e.test.mjs");
+  refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.jx-p4-e2e.test.mjs");
   assert.ok(existsSync(join(Q, "p4-run.done")), `queue entry consumed as .done (markers: ${readdirSync(Q).join(",")})`);
   const rd = findRun("velvetstorm")[0];
   assert.ok(rd, "run dir found");
@@ -128,7 +128,7 @@ test("phase-4 e2e: shadow units run on fixtures — grid receipted + gate green,
   // the corsearch-shape call ledger, run-prefixed
   const calls = readFileSync(jx("serp-calls.jsonl"), "utf8").trim().split("\n").map(JSON.parse);
   assert.equal(calls.length, grid.cells.length);
-  assert.ok(calls.every((c) => /^prelim-.*velvetstorm.*-jx-serp/.test(c.sessionKey)), `run-prefixed sessionKey (${calls[0]?.sessionKey})`);
+  assert.ok(calls.every((c) => /^clearance-.*velvetstorm.*-jx-serp/.test(c.sessionKey)), `run-prefixed sessionKey (${calls[0]?.sessionKey})`);
 
   // slice 3 — the read: grounded item stands, fabricated cite demoted, slice-wide note grounded
   assert.equal(unit["nativeread:zh"].done, true);
@@ -198,7 +198,7 @@ test("the lane kill switch: the SAME process with CLEAROTRON_NATIVE_LANGUAGE_ZH 
   // — BEFORE the assertions below. A run that never started leaves its
   // reason in the packets beside the queue; without this the counts below report it as a
   // product defect.
-  refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.jx-p4-e2e.test.mjs");
+  refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.jx-p4-e2e.test.mjs");
   assert.ok(existsSync(join(Q, "p4-off.done")));
   const rd = findRun("quietwave")[0];
   assert.ok(rd, "control run dir found");

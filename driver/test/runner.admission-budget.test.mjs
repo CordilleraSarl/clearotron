@@ -29,7 +29,7 @@ process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
 // production call ledger can never evidence their bands; the dedicated band-truth-gate tests turn it ON.
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 
-const queueFor = (root, agentId) => join(root, `workspace-${agentId}`, "studio", "prelim-search", "queue");
+const queueFor = (root, agentId) => join(root, `workspace-${agentId}`, "studio", "clearance-search", "queue");
 const jobJson = (ref) => JSON.stringify({
   id: `bud-${ref}`, msgId: `<bud-${ref}@x>`, forwarder: "jordan", forwarderDomain: "example.com",
   ref, markName: "BUDGET PROBE", classes: [9], provider: "corsearch",
@@ -67,7 +67,7 @@ test("admission budget: past the budget the drain stops claiming NEW jobs, finis
     // — see runner.admission: the first run-dependent wait is where an absent
     // precondition surfaces, and the check at the await point below is too late to protect it.
     const aClaimed = await until(() => existsSync(join(Q, "job-a.processing")));
-    if (!aClaimed) refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.admission-budget.test.mjs");
+    if (!aClaimed) refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.admission-budget.test.mjs");
     assert.ok(aClaimed, "A claimed while admission was open");
     // Let the budget elapse (deadline is armed at main() start, so t0 + BUDGET is an upper bound), THEN drop B.
     await sleep(Math.max(0, t0 + BUDGET_MS - Date.now()) + 600);
@@ -84,7 +84,7 @@ test("admission budget: past the budget the drain stops claiming NEW jobs, finis
     // — BEFORE the assertions below. A run that never started leaves its
     // reason in the packets beside the queue; without this the counts below report it as a
     // product defect.
-    refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.admission-budget.test.mjs");
+    refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.admission-budget.test.mjs");
 
     assert.ok(existsSync(join(Q, "job-a.done")), "A (in flight at cutoff) was finished, not abandoned");
     assert.ok(existsSync(join(Q, "job-b.json")) && !existsSync(join(Q, "job-b.processing")) && !existsSync(join(Q, "job-b.done")),

@@ -131,9 +131,9 @@ export function fixtureFilesIn(entries) {
  * no framework rates nothing, and it would pass every other line in this file.
  */
 export const MUST_SHIP = Object.freeze([
-  "driver/skills/prelim-search/risk-framework.md",
-  "driver/skills/prelim-search/risk-framework.manifest.json",
-  "driver/skills/prelim-search/worked-examples.md",
+  "driver/skills/clearance-search/risk-framework.md",
+  "driver/skills/clearance-search/risk-framework.manifest.json",
+  "driver/skills/clearance-search/worked-examples.md",
   "driver/profiles/generic.json",
 ]);
 

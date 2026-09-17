@@ -22,11 +22,11 @@
 set -u
 
 # this fallback chain MIRRORS driver.config.mjs (`outboxDir` = CLEAROTRON_OUTBOX_DIR, else
-# <workspaceRoot>/prelim-outbox; `workspaceRoot` = CLEAROTRON_WORK_DIR, else $HOME/trademark/workspace).
+# <workspaceRoot>/clearance-outbox; `workspaceRoot` = CLEAROTRON_WORK_DIR, else $HOME/trademark/workspace).
 # It is a second derivation of the same answer in a language that cannot import the first, so it moves
 # whenever that one does. If they disagree, the driver writes markers where this script never looks and
 # delivery stops with nothing in any log — the shape prelim-outbox.path already has.
-OUTBOX="${CLEAROTRON_OUTBOX_DIR:-${CLEAROTRON_WORK_DIR:-${OPENCLAW_HOME:-$HOME}/trademark/workspace}/prelim-outbox}"
+OUTBOX="${CLEAROTRON_OUTBOX_DIR:-${CLEAROTRON_WORK_DIR:-${OPENCLAW_HOME:-$HOME}/trademark/workspace}/clearance-outbox}"
 OPENCLAW="$(command -v openclaw || echo "${OPENCLAW_HOME:-$HOME}/.npm-global/bin/openclaw")"
 HELPER="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/outbox-backoff.mjs"
 DRAIN_WAIT="${CLEAROTRON_OUTBOX_DRAIN_WAIT:-180}"
@@ -58,7 +58,7 @@ MSG="The trademark engine's outbox has pending events. Run the clearotron-delive
 # below still runs, so a refusal cannot hot-loop the level-triggered .path unit.
 WALL="$(command -v timeout || command -v gtimeout || true)"
 if [ -z "$WALL" ]; then
-  echo "prelim-outbox: REFUSING TO WAKE — neither timeout(1) nor gtimeout(1) is on PATH, and every" >&2
+  echo "clearance-outbox: REFUSING TO WAKE — neither timeout(1) nor gtimeout(1) is on PATH, and every" >&2
   echo "  courier wake runs under it as an enforced wall (a wake that cannot be killed wedged this" >&2
   echo "  lane for 19h on 2026-07-04). NO event has been touched — they are all still pending and" >&2
   echo "  will deliver as soon as this is fixed. Install GNU coreutils on this host (Debian/Ubuntu:" >&2
@@ -70,7 +70,7 @@ fi
 
 # C5 — deterministic rescan FIRST (cheap: readdir + status.json of unsettled runs only). On a timer fire
 # this is what creates the work; on a marker fire it is a free consistency pass. Failure-tolerant.
-node "$HELPER" rescan || echo "prelim-outbox: rescan failed (non-fatal — existing markers still processed)"
+node "$HELPER" rescan || echo "clearance-outbox: rescan failed (non-fatal — existing markers still processed)"
 
 [ -d "$OUTBOX" ] || exit 0
 shopt -s nullglob
@@ -89,7 +89,7 @@ for m in "${markers[@]}"; do
   if printf '%s' "$a" | grep -qE '^[A-Za-z0-9_-]+$'; then
     by_agent["$a"]+="$m"$'\n'
   else
-    echo "prelim-outbox: quarantining marker with no routable agent: $m (payload kept)"
+    echo "clearance-outbox: quarantining marker with no routable agent: $m (payload kept)"
     if mkdir -p "$OUTBOX/quarantine"; then mv -f "$m" "$OUTBOX/quarantine/" || true; fi
   fi
 done
@@ -107,24 +107,24 @@ for agent in "${!by_agent[@]}"; do
   # paces the .path re-trigger. Helper failure answers "due" (never lose a delivery).
   gate="$(node "$HELPER" check "$agent" || echo due)"
   if [ "${gate%% *}" = "wait" ]; then
-    echo "prelim-outbox: $agent in backoff (${gate#wait } s left) — events retained, not waking"
+    echo "clearance-outbox: $agent in backoff (${gate#wait } s left) — events retained, not waking"
     track_wait "${gate#wait }"
     continue
   fi
 
-  echo "prelim-outbox: waking $agent to run clearotron-deliver"
+  echo "clearance-outbox: waking $agent to run clearotron-deliver"
   # timeout(1) is the enforced wall: the 2026-07-04 incident proved the CLI's own --timeout does not
   # guarantee process EXIT (the agent turn finished; the process idled 19h and wedged the lane).
   # SIGTERM at 840s (inside the unit's TimeoutStartSec budget so the failure is OURS and logged),
   # SIGKILL 30s later. The turn runs server-side to completion either way; since this trigger deletes
   # nothing, a killed wake just leaves the events for the re-fire.
   #
-  # FRESH session per wake (was a fixed --session-key prelim-outbox): reusing ONE session meant every
+  # FRESH session per wake (was a fixed --session-key clearance-outbox): reusing ONE session meant every
   # re-fire piled onto an ever-growing transcript the model reprocessed each time — that unbounded
   # growth, not the wake count alone, is what turned a stuck marker into $200+/day (2026-07-24/25). A
   # unique key bounds each wake to the skill + this one outbox read. The circuit-breaker in
   # outbox-backoff.mjs (not session history) now owns cross-wake loop detection.
-  wake_session="prelim-outbox-$(date -u +%Y%m%dT%H%M%SZ)-$$-${RANDOM}"
+  wake_session="clearance-outbox-$(date -u +%Y%m%dT%H%M%SZ)-$$-${RANDOM}"
   model_args=()
   [ -n "$WAKE_MODEL" ] && model_args=(--model "$WAKE_MODEL")
   out="$("$WALL" --kill-after=30 840 "$OPENCLAW" agent --agent "$agent" --session-key "$wake_session" "${model_args[@]}" --message "$MSG" --json --timeout 300)"
@@ -142,21 +142,21 @@ for agent in "${!by_agent[@]}"; do
       # is the load-bearing cost stop — it ends the re-fire loop for a marker mark_sent/ack_event can never
       # settle (the 2026-07 runaway class), whatever the cause. Operator notification is integrator-owned:
       # surface stuck deliveries from the audit record / MCP read surface, not from the requester outbox.
-      echo "prelim-outbox: 🚨 stuck marker(s) for $agent set aside after repeated no-progress wakes — see $OUTBOX/quarantine/STUCK-ALERTS.jsonl"
+      echo "clearance-outbox: 🚨 stuck marker(s) for $agent set aside after repeated no-progress wakes — see $OUTBOX/quarantine/STUCK-ALERTS.jsonl"
       track_wait "${verdict#* }"
       ;;
     stuck)
       # OK wake that consumed nothing — not a failure, but not progress either. Paced down toward the
       # quarantine threshold instead of hot-refiring every ~3.5min.
-      echo "prelim-outbox: no delivery progress for $agent — marker retained, paced ${verdict#* }s (circuit-breaker counting toward quarantine)"
+      echo "clearance-outbox: no delivery progress for $agent — marker retained, paced ${verdict#* }s (circuit-breaker counting toward quarantine)"
       track_wait "${verdict#* }"
       ;;
     giveup)
-      echo "prelim-outbox: wake for $agent failed rc=$rc — fast retries exhausted; sidecar cooldown + rescan timer own this delivery (events retained)"
+      echo "clearance-outbox: wake for $agent failed rc=$rc — fast retries exhausted; sidecar cooldown + rescan timer own this delivery (events retained)"
       track_wait "${verdict#* }"
       ;;
     *)
-      echo "prelim-outbox: wake for $agent failed rc=$rc — events retained, backoff ${verdict#* }s"
+      echo "clearance-outbox: wake for $agent failed rc=$rc — events retained, backoff ${verdict#* }s"
       track_wait "${verdict#* }"
       ;;
   esac
@@ -185,8 +185,8 @@ if [ "$woke_ok" = 1 ]; then
     sleep 5; waited=$((waited + 5))
     remaining=("$OUTBOX"/*.pending)
   done
-  [ ${#remaining[@]} -gt 0 ] || { echo "prelim-outbox: drained"; exit 0; }
-  echo "prelim-outbox: ${#remaining[@]} event(s) still pending after ${DRAIN_WAIT}s"
+  [ ${#remaining[@]} -gt 0 ] || { echo "clearance-outbox: drained"; exit 0; }
+  echo "clearance-outbox: ${#remaining[@]} event(s) still pending after ${DRAIN_WAIT}s"
 fi
 
 # TIGHT-LOOP GUARD (load-bearing): prelim-outbox.path is PathExistsGlob on *.pending — level-triggered,
@@ -201,7 +201,7 @@ if [ -n "$min_wait" ]; then
   [ "$w" -gt "$cap" ] && w="$cap"
   [ "$w" -gt "$budget" ] && w="$budget"
   if [ "$w" -gt 0 ]; then
-    echo "prelim-outbox: events retained — sleeping ${w}s so the .path re-fire matches the backoff"
+    echo "clearance-outbox: events retained — sleeping ${w}s so the .path re-fire matches the backoff"
     sleep "$w"
   fi
 fi

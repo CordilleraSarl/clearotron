@@ -20,7 +20,7 @@ pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", join(ROOT, "pool"));
 // EnvironmentFile. A built depth must preview as runnable anyway — that is the regression test for the
 // bug that retired them (plan_run telling clients three shipped depths were "not switched on").
 for (const sw of ["CLEAROTRON_JX_LANES", "CLEAROTRON_KNOCKOUT_MODE", "CLEAROTRON_RECIPES_MODE"]) delete process.env[sw];
-const STUDIO = join(ROOT, "workspace-clawdi", "studio", "prelim-search");
+const STUDIO = join(ROOT, "workspace-clawdi", "studio", "clearance-search");
 const QUEUE = join(STUDIO, "queue");
 
 const { planRun, PLAN_CAVEAT } = await import("../lib/plan.mjs");
@@ -274,7 +274,7 @@ test("the ONE-COUNTRY rule reaches the requester through the preview, as a quest
 // ---- availability, in words a client's assistant can relay ---------------------------------------
 
 test("THE REGRESSION: a BUILT depth previews as runnable from a process with no engine environment", () => {
-  // This used to assert that prelim-jx came back `wouldRun: false` with "Depth 5 is unavailable. Not
+  // This used to assert that clearance-jx came back `wouldRun: false` with "Depth 5 is unavailable. Not
   // switched on for this account yet — Cordillera can enable it." It passed, and it was asserting the bug:
   // the ops-MCP unit has no EnvironmentFile, so CLEAROTRON_JX_LANES read as unset, unset was the same as off,
   // and plan_run told clients a shipped depth could not be ordered. Retired 2026-07-27.
@@ -457,7 +457,7 @@ test("a can't-count register blocks the Knockout search with the provider cause 
   // snapshot. Same question, same answer, whichever door asked.
   const stateDir = join(ROOT, "pool", "_state");
   mkdirSync(stateDir, { recursive: true });
-  writeFileSync(join(stateDir, "prelim-flag-snapshot.json"), JSON.stringify({
+  writeFileSync(join(stateDir, "clearance-flag-snapshot.json"), JSON.stringify({
     capturedAt: new Date().toISOString(), flags: {}, built: { registerProbe: false },
     register: { provider: "signa", canCount: false },
   }));

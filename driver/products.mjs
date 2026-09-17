@@ -405,7 +405,7 @@ export function nativeLanguageMode(product) {
  *
  * Exported because two surfaces outside this module have to say it and both used to say something else:
  * the resolution-time recommendation (jx-lanes.mjs zhScopeDepthNotes) and the DELIVERED REPORT's own
- * coverage row (pipeline.mjs scriptScopeDisclosure). Both named `prelim-jx` and `Depth 5` — an internal
+ * coverage row (pipeline.mjs scriptScopeDisclosure). Both named `clearance-jx` and `Depth 5` — an internal
  * product key and a rung on a ladder — so the coverage row named a remedy that was a product
  * deleted, quoted at a number that no longer exists, and could not have ordered either.
  *

@@ -147,7 +147,7 @@ test("a store whose jobs match their declared outcomes sweeps clean", () => {
     ...GOOD, id: "R0",
     cases: [{
       id: "R0x-retired-product",
-      job: { ref: "E2E-R0x", markName: "PROBE", classes: [9], product: "prelim-register-only", forwarder: "e2e" },
+      job: { ref: "E2E-R0x", markName: "PROBE", classes: [9], product: "clearance-register-only", forwarder: "e2e" },
       expect: { terminal: "clarify" },
     }],
   };
@@ -159,7 +159,7 @@ test("a scenario expecting `delivered` that the doors refuse is caught, named, a
   const bad = structuredClone(GOOD);
   bad.id = "R2";
   bad.job.ref = "E2E-R2";
-  bad.job.searchLevel = "prelim-jx";          // the retired vocabulary every door refuses by name
+  bad.job.searchLevel = "clearance-jx";          // the retired vocabulary every door refuses by name
   const wrong = validateStoreJobs([bad]);
   assert.equal(wrong.length, 1, JSON.stringify(wrong));
   assert.match(wrong[0], /R2/);
@@ -193,7 +193,7 @@ test("a refusal case the doors would ADMIT is the same defect from the other sid
 test("and the underlying refusal is real — the retired vocabulary is refused by the schema itself", () => {
   // Guards the guard: if validateJob ever stops refusing searchLevel/caseLaw, the sweep above passes
   // for the wrong reason. Proved by construction rather than asserted.
-  const retired = validateJob({ id: "e2e-probe", ...GOOD.job, searchLevel: "prelim-jx", caseLaw: true });
+  const retired = validateJob({ id: "e2e-probe", ...GOOD.job, searchLevel: "clearance-jx", caseLaw: true });
   assert.notEqual(retired.classify, "run");
   const clean = validateJob({ id: "e2e-probe", ...GOOD.job });
   assert.equal(clean.classify, "run", clean.errors.join("; "));

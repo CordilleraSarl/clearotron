@@ -69,7 +69,7 @@ function estate(t) {
   const dir = mkdtempSync(join(tmpdir(), "purge-559-"));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
   mkdirSync(join(dir, "pool"), { recursive: true });
-  mkdirSync(join(dir, "ws", "workspace-test", "studio", "prelim-search"), { recursive: true });
+  mkdirSync(join(dir, "ws", "workspace-test", "studio", "clearance-search"), { recursive: true });
   return { dir, pool: join(dir, "pool"), workspace: join(dir, "ws") };
 }
 

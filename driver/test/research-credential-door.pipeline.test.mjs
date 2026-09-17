@@ -81,10 +81,10 @@ test("a clearance with no research credential is refused at the door — nothing
       assert.match(e.message, /full-country-search/, "…and the product it refused");
       return true;
     });
-    // The claim: the run spent nothing and left nothing. `prelim-run-locks` is taken by `pipeline()`
+    // The claim: the run spent nothing and left nothing. `clearance-run-locks` is taken by `pipeline()`
     // before `pipelineInner` is entered at all, so it is present whatever the door does; an agent
     // workspace beside it would mean the run got past.
-    assert.deepEqual(readdirSync(root), ["prelim-run-locks"],
+    assert.deepEqual(readdirSync(root), ["clearance-run-locks"],
       "no agent workspace, no run directory, no frozen profile — refused before the register stages it used to pay for");
   });
 });

@@ -44,7 +44,7 @@ import { VARIANT_DIRECTIONS, RANKING_BASES } from "../../blind-frame-model.mjs";
 import { recordSkeptic } from "../../skeptic-record.mjs";
 import { recordFrameDiff } from "../../frame-diff-record.mjs";
 import { recordMatterFrame, INTAKE_ASK_OWNERS, SCOPE_BASES } from "../../matter-frame-record.mjs";
-import { recordPrelimVariants, SCOPE_LAYERS, SCOPE_STATUS } from "../../prelim-variants-record.mjs";
+import { recordClearanceVariants, SCOPE_LAYERS, SCOPE_STATUS } from "../../clearance-variants-record.mjs";
 import { recordReportOverview } from "../../report-overview-record.mjs";
 import { recordReportCard } from "../../report-card-record.mjs";      // conversion 5 — the fan-out transport
 import { recordRefutation, REVIEW_VERDICTS } from "../../narrative-refutation-record.mjs";   // conversion 9
@@ -125,12 +125,12 @@ async function record_knockout_review(params) {
   return recordKnockoutReview(runDir, params);
 }
 
-async function record_prelim_variants(params) {
+async function record_clearance_variants(params) {
   const runDir = String(process.env.CLEAROTRON_BAND_RUN_DIR ?? "");
   if (!runDir) {
     return { error: "this server was started without a run — the driver wires it per run; there is no parameter for it and this tool never guesses one" };
   }
-  return recordPrelimVariants(runDir, params);
+  return recordClearanceVariants(runDir, params);
 }
 
 async function record_report_card(params) {
@@ -444,7 +444,7 @@ serve({
     //
     // `scope_ledger` is the one genuinely new field, and it is what deletes a derivation: those rows used
     // to reach the driver only by re-parsing a markdown table out of the prose manifest.
-    name: "record_prelim_variants",
+    name: "record_clearance_variants",
     description:
       "Hand back the variant manifest as VALUES. The driver serialises variant-manifest.json, renders " +
       "variant-manifest.md and writes scope-ledger.json from what you send, so you never format JSON, " +
@@ -516,7 +516,7 @@ serve({
       },
     },
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
-    handler: record_prelim_variants,
+    handler: record_clearance_variants,
   }, {
     // ── CONVERSION 4 — THE REPORT SHELL, AND THE FIRST ARTIFACT A CLIENT READS ────────────────────
     //

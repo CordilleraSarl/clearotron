@@ -19,7 +19,7 @@ You read the **complete named band** the funnel handed up; the funnel decided *n
 
 ## When invoked
 
-After register-unit workers and common-law workers have returned their findings (Phase 2 Step 2B end), BEFORE the digest worker (`prelim-register` MODE B) spawns to tier candidates. One Opus call (inline by the orchestrator), reads matter-context.md + the complete named band (through the band tools) + the common-law findings.
+After register-unit workers and common-law workers have returned their findings (Phase 2 Step 2B end), BEFORE the digest worker (`clearance-register` MODE B) spawns to tier candidates. One Opus call (inline by the orchestrator), reads matter-context.md + the complete named band (through the band tools) + the common-law findings.
 
 ## Model
 
@@ -27,19 +27,19 @@ Inherits the orchestrator's tier when invoked inline. No `sessions_spawn` — th
 
 ## Inputs you receive
 
-- `matter-context.md` from `matter-frame` at `studio/prelim-search/<slug>/<date>/matter-context.md` (the strategic foundation — read it once, reference it throughout)
+- `matter-context.md` from `matter-frame` at `studio/clearance-search/<slug>/<date>/matter-context.md` (the strategic foundation — read it once, reference it throughout)
 - **The complete named band** — read through the **band tools** (every call lands in the run's reading audit; never slice band files with shell). `band_shape` first: the deterministic shape of the complete merged band — totals, mechanical similarity tiers, **THE FLOORS** (every live in-class identical/near-identical record, listed individually and unconditionally — **every floor row must come back on your form, by record id.** Either you place it, or you select it with `tier: "out-of-scope-filtered"` and one line in `reason` saying why it is not a candidate. Discussing a floor in your prose is NOT accounting for it: the row is what the driver can check, and a floor you leave off the form is recorded as unanswered whatever the prose says. This is the one duty with no cap — see **Length target**, which bounds the general band and not this), census, owner concentrations, crowd descriptors, blind spots. A floors-heavy shape is served in PARTS (the response labels itself part N/M and names the next call) — read every part; a partial shape is never the shape. Then `band_lookup` / `band_record` for the records your inquiry needs. This is the funnel's real output, lifted across the firewall:
   - **enumerated records** — every named record the funnel paged to completion, each carrying `record_id, mark_text, classes, status, owner_name, owner_country, application_date, registration_date, expiry_date, jurisdictions, screen_verdict` (+ `_query` provenance). Apply the relevance / off-field gate over **this complete set** (work through the shape's totals slice by slice) — nothing was pre-sampled, so your gate is the *only* gate.
   - **`incomplete` crowd descriptors** — a query the funnel could NOT enumerate (genuinely too large, provider cap, budget): `query, total_hits, fetched, reason`. These are NOT findings and NOT clean negatives — they are signals you must rule on (cleared / material-gap; see "Crowd-descriptor materiality" below). They ride along on matching lookups too, so a counted-only zone can never read as a clean.
   - The unit's compact prose digest (`register-units/<axis>.md`) still exists for the audit trail; the **band is the material you judge.** Where they disagree, the band wins — it is the complete record, the prose is a summary.
-- The common-law-findings file at `studio/prelim-search/<slug>/<date>/common-law-findings.md` (common-law candidate inventory)
+- The common-law-findings file at `studio/clearance-search/<slug>/<date>/common-law-findings.md` (common-law candidate inventory)
 - Any prior `placement-recommendations.md` from earlier rounds (for re-runs after a skeptic-flagged re-spawn)
 
 ## Output
 
 TWO files.
 
-**1. The markdown file** `studio/prelim-search/<slug>/<date>/placement-recommendations.md`. Use these section headings, in this order: **Band reconciliation** (the expectation-vs-band check), the four placement tiers (**Headline candidates**, **Sheet 2 / register watch**, **Watchlist annex**, **Out-of-scope / filtered**), **Disagreements / flags surfaced to downstream**, **Coverage rulings & open questions** (the per-crowd-descriptor cleared/material-gap rulings that feed synthesis `coverage_judgment`), and **Open questions for the client / reviewer** (genuine open judgment that ships).
+**1. The markdown file** `studio/clearance-search/<slug>/<date>/placement-recommendations.md`. Use these section headings, in this order: **Band reconciliation** (the expectation-vs-band check), the four placement tiers (**Headline candidates**, **Sheet 2 / register watch**, **Watchlist annex**, **Out-of-scope / filtered**), **Disagreements / flags surfaced to downstream**, **Coverage rulings & open questions** (the per-crowd-descriptor cleared/material-gap rulings that feed synthesis `coverage_judgment`), and **Open questions for the client / reviewer** (genuine open judgment that ships).
 
 **Section anchor — copy it verbatim.** Directly under the FIRST of the four placement-tier headings,
 emit this line exactly as written, on its own line:
@@ -55,7 +55,7 @@ no reader ever sees it.
 **Word the headings however reads best.** The anchor is the contract; the heading text is yours. The
 order above is still the order to write them in, but you will not be failed for choosing other words.
 
-**2. The structured mirror** `studio/prelim-search/<slug>/<date>/placements.json` — the four tier sections as data: `{"schema_version":1,"placements":[...]}`, ONE object per placed candidate, keys EXACTLY `{"mark","owner","jurisdiction","records","tier","reason"}` plus the optional `"borderline"`:
+**2. The structured mirror** `studio/clearance-search/<slug>/<date>/placements.json` — the four tier sections as data: `{"schema_version":1,"placements":[...]}`, ONE object per placed candidate, keys EXACTLY `{"mark","owner","jurisdiction","records","tier","reason"}` plus the optional `"borderline"`:
 
 - `mark` / `owner` — verbatim as in your md entry (downstream joins on mark + owner + jurisdiction)
 - `jurisdiction` — the office/territory; `""` where none applies

@@ -34,7 +34,7 @@ const job = (ref, mark) => ({
   id: `crash-${ref}`, msgId: `<crash-${ref}@x>`, forwarder: "requesting-lawyer", forwarderDomain: "example.com",
   ref, markName: mark, classes: [9], provider: "corsearch",
 });
-const studioFor = (root) => join(root, "workspace-clawdi", "studio", "prelim-search");
+const studioFor = (root) => join(root, "workspace-clawdi", "studio", "clearance-search");
 const queueFor = (root) => join(studioFor(root), "queue");
 
 // Child env: explicit, so a knob a sibling test exported can never leak into the spawned runner.
@@ -97,7 +97,7 @@ test("SIGKILLed claimer with identity meta → re-drain RESUMES the same codenam
   const slug = "tmp9101-crash-probe";
   writeFileSync(join(Q, "job-a.json"), JSON.stringify(J));
 
-  // Barrier2 holds the prelim-variants turn, so matter-frame COMPLETES and the run is provably mid-flight.
+  // Barrier2 holds the clearance-variants turn, so matter-frame COMPLETES and the run is provably mid-flight.
   const barrier2 = join(root, "release-variants");
   const env = envFor(root, { MOCK_BARRIER2_FILE: barrier2 });
   const claimer = spawnRunner(env);

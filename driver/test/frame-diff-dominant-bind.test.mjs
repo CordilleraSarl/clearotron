@@ -201,7 +201,7 @@ test("the tool's input schema has no dominant_element property", async () => {
   const src = readFileSync(join(DRIVER, "engine", "mcp", "recording-server.mjs"), "utf8");
   // BOUNDED AT THE NEXT TOOL, whatever it is — not at a hardcoded sibling. The first cut sliced
   // "record_frame_diff → record_search_run_artifacts" because those were adjacent when it was written;
-  // conversion 3 inserted `record_prelim_variants` between them, and THAT tool has a `dominant_element`
+  // conversion 3 inserted `record_clearance_variants` between them, and THAT tool has a `dominant_element`
   // field of its own, so the slice swallowed a neighbour's schema and the assertion failed on a property
   // frame-diff does not declare. An anchor that names its neighbour is an anchor that breaks when the
   // neighbour changes.

@@ -48,7 +48,7 @@ export type MatrixColumn = {
  *   partial  the axis runs, at a shallower reach than its deepest form
  *   optional the axis EXISTS here and a lever on THIS depth adds it — the sharpest line in the table.
  *            Case law on a clearotron is still a clearotron, so it is an option WITHIN this column. A script
- *            lane moves you to prelim-jx, a DIFFERENT column, so it is never `optional`; it is what the
+ *            lane moves you to clearance-jx, a DIFFERENT column, so it is never `optional`; it is what the
  *            delta view is for. The matrix answers "what does each depth do"; the delta view answers
  *            "what would moving between them cost".
  *   absent   the axis does not exist here. No lever on this depth reaches it, at any price.

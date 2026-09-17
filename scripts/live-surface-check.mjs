@@ -260,7 +260,7 @@ function declaredTimers() {
 function serviceClones() {
   // — the list is DECLARED, not written here. It used to be eight names inline, which put a unit
   // inside the drift guarantee or outside it by omission: `client-access` was live on production and in
-  // no list at all, and `prelim-outbox` was tracked, live on production, and equally invisible. Both are
+  // no list at all, and `clearance-outbox` was tracked, live on production, and equally invisible. Both are
   // in the inventory now, and so is the reason each untracked unit is untracked.
   const units = [...CHECKED_UNITS];
   const env = userBusEnv();
@@ -951,7 +951,7 @@ else {
 //
 // The check above compares a unit against its tracked file. It can only do that for units it was told
 // to look at, and the list was eight names written inline — so `client-access` ran on production, in no
-// list, compared against nothing, and reported by nothing. `prelim-outbox` was the mirror: tracked and
+// list, compared against nothing, and reported by nothing. `clearance-outbox` was the mirror: tracked and
 // live on production, and equally absent from the list, so its drift was never checked either.
 //
 // This arm asks the question one level up. It is deliberately NOT the drift comparison: a unit can be

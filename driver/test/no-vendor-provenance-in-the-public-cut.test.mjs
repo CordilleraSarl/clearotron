@@ -54,9 +54,9 @@ const SCANNED = [
   "providers/corsearch",
   "providers/signa",
   "providers/_shared",
-  "driver/skills/prelim-register/providers/clarivate.md",
-  "driver/skills/prelim-register/providers/corsearch.md",
-  "driver/skills/prelim-register/providers/signa.md",
+  "driver/skills/clearance-register/providers/clarivate.md",
+  "driver/skills/clearance-register/providers/corsearch.md",
+  "driver/skills/clearance-register/providers/signa.md",
 ];
 
 /**

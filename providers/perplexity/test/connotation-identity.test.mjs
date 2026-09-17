@@ -92,7 +92,7 @@ test("a faithful sweep still passes — the gate does not trip on a clean run", 
 //
 // The fixture below is that run's own failure.
 
-const bigSpec = (n, output_path = "/studio/prelim-search/run/g.json") => ({
+const bigSpec = (n, output_path = "/studio/clearance-search/run/g.json") => ({
   terms: [], platforms: ["web"], output_path, ledger_required: true,
   connotation: { queries: Array.from({ length: n }, (_, i) => `meaning probe ${i}`) },
 });
@@ -155,7 +155,7 @@ test("ZERO recorded keeps its own message — a sweep that never ran is not a sw
 test("the MARKETPLACE side is untouched — this deletes a contradiction, it does not widen a hole", () => {
   // The change must not have relaxed the grid's own floor while aligning the sweep to it. Same function,
   // same run, the other collection.
-  const spec = { terms: ["A", "B", "C", "D"], platforms: ["amazon.com"], output_path: "/studio/prelim-search/run/g.json" };
+  const spec = { terms: ["A", "B", "C", "D"], platforms: ["amazon.com"], output_path: "/studio/clearance-search/run/g.json" };
   const out = captureGridFromResponse(sandbox(JSON.stringify({
     cells: [{ term: "A", platform: "amazon.com", status: "no_hit", candidates: [] }], gaps: [], extras: {},
   })), spec);

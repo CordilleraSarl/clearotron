@@ -15,7 +15,7 @@
 //
 // The decks this lint exists to protect are the ones a customer writes, and those live in the config
 // store, not here. Two lines put every one of them out of reach: the population came from a readdir of
-// `ROOT/skills/prelim-search`, and every path resolved by joining the repository root — while the engine
+// `ROOT/skills/clearance-search`, and every path resolved by joining the repository root — while the engine
 // resolves the same paths through the config store first and the repository second. So the lint saw the
 // bundled profiles, passed, and said nothing whatever about the files it was written for; and where a
 // customer deck and a shipped one share a filename, the two resolutions read DIFFERENT FILES and neither
@@ -43,7 +43,7 @@ import { preflightFramework } from "../framework-preflight.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";   // — one corpus floor, shared with the guard that reads for it
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const SKILL_DIR = join(ROOT, "skills", "prelim-search");
+const SKILL_DIR = join(ROOT, "skills", "clearance-search");
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 /**
@@ -55,10 +55,10 @@ const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 export function reachableFrameworks(roots = config.skillsGrantRoots) {
   const seen = new Map();
   for (const root of roots) {                                   // store first, repository second
-    const dir = join(root, "prelim-search");
+    const dir = join(root, "clearance-search");
     if (!existsSync(dir)) continue;
     for (const f of readdirSync(dir).filter((x) => /^risk-framework.*\.md$/.test(x)))
-      if (!seen.has(f)) seen.set(f, `skills/prelim-search/${f}`);
+      if (!seen.has(f)) seen.set(f, `skills/clearance-search/${f}`);
   }
   // GUARDED HERE, NOT AT EACH ROOT. A configured store with no frameworks of its own is the ordinary
   // state and an empty read of it means nothing; a run where NEITHER root offered one means this lint
@@ -129,7 +129,7 @@ test("the framework population refuses to be empty, and a store with no framewor
   try {
     assert.throws(() => reachableFrameworks([empty]), /VACUOUS: risk frameworks under any skills root/,
       "neither root offered one: every arm below would assert its rule over nothing");
-    mkdirSync(join(empty, "prelim-search"), { recursive: true });
+    mkdirSync(join(empty, "clearance-search"), { recursive: true });
     assert.throws(() => reachableFrameworks([empty]), /VACUOUS: risk frameworks under any skills root/,
       "an existing but frameworkless directory is the same nothing");
     // a store that carries no framework is ORDINARY — the repository's decks are still reachable
@@ -165,27 +165,27 @@ test("a deck the store does not hold, answered by the repository's file of the s
   const store = mkdtempSync(join(tmpdir(), "fw-store-"));
   const before = process.env.CLEAROTRON_INSTRUCTIONS_DIR;
   try {
-    mkdirSync(join(store, "skills", "prelim-search"), { recursive: true });
+    mkdirSync(join(store, "skills", "clearance-search"), { recursive: true });
     // the store holds ONE framework and not the other, which is the customer-deck-removed state
     for (const f of ["risk-framework-zephyr.md", "risk-framework-zephyr.manifest.json"])
-      writeFileSync(join(store, "skills", "prelim-search", f), readFileSync(join(SKILL_DIR, f), "utf8"));
+      writeFileSync(join(store, "skills", "clearance-search", f), readFileSync(join(SKILL_DIR, f), "utf8"));
     process.env.CLEAROTRON_INSTRUCTIONS_DIR = join(store, "skills");
 
-    const held = config.resolveSkillPathReport("skills/prelim-search/risk-framework-zephyr.md");
+    const held = config.resolveSkillPathReport("skills/clearance-search/risk-framework-zephyr.md");
     assert.equal(held.layer, "overlay", "the store's own deck is served from the store");
 
-    const swapped = config.resolveSkillPathReport("skills/prelim-search/risk-framework-aurora.md");
+    const swapped = config.resolveSkillPathReport("skills/clearance-search/risk-framework-aurora.md");
     assert.equal(swapped.layer, "base", "a deck the store does not hold is served by the repository's copy");
     assert.equal(swapped.path, join(SKILL_DIR, "risk-framework-aurora.md"));
 
-    const absent = config.resolveSkillPathReport("skills/prelim-search/risk-framework-nobody-wrote.md");
+    const absent = config.resolveSkillPathReport("skills/clearance-search/risk-framework-nobody-wrote.md");
     assert.equal(absent.layer, "missing", "held by neither root — the read that follows reports it");
 
     // and the pre-flight a person runs says it in a sentence rather than leaving them the layer word
-    const r = preflightFramework("skills/prelim-search/risk-framework-aurora.md");
+    const r = preflightFramework("skills/clearance-search/risk-framework-aurora.md");
     assert.equal(r.substitutions.length, 2, "the deck AND its manifest both came from the repository");
     assert.match(r.substitutions[0].say, /not the configured store/);
-    assert.equal(preflightFramework("skills/prelim-search/risk-framework-zephyr.md").substitutions.length, 0,
+    assert.equal(preflightFramework("skills/clearance-search/risk-framework-zephyr.md").substitutions.length, 0,
       "a framework the store holds is not reported — the report is about substitution, not about the repository");
   } finally {
     if (before === undefined) delete process.env.CLEAROTRON_INSTRUCTIONS_DIR;
@@ -196,7 +196,7 @@ test("a deck the store does not hold, answered by the repository's file of the s
 
 // ── 3: the doc-50 shipped anchors ────────────────────────────────────────────────────────────────────────
 test("house default: 4 bands (Very High/High/Moderate/Manageable), no Low, entity 'the company', bands-shaped", () => {
-  const m = loadFrameworkManifest(ROOT, "skills/prelim-search/risk-framework.md");
+  const m = loadFrameworkManifest(ROOT, "skills/clearance-search/risk-framework.md");
   assert.equal(m.framework_key, "house-default");
   assert.deepEqual(m.bands.map((b) => b.label), ["Very High", "High", "Moderate", "Manageable"]);
   assert.equal(m.entity_label, "the company");
@@ -205,8 +205,8 @@ test("house default: 4 bands (Very High/High/Moderate/Manageable), no Low, entit
 });
 
 test("zephyr: the house default with exactly the two deck deltas (band 3 'Medium'; entity Zephyr/Volt/Kaskade)", () => {
-  const house = loadFrameworkManifest(ROOT, "skills/prelim-search/risk-framework.md");
-  const m = loadFrameworkManifest(ROOT, "skills/prelim-search/risk-framework-zephyr.md");
+  const house = loadFrameworkManifest(ROOT, "skills/clearance-search/risk-framework.md");
+  const m = loadFrameworkManifest(ROOT, "skills/clearance-search/risk-framework-zephyr.md");
   assert.equal(m.framework_key, "zephyr");
   assert.deepEqual(m.bands.map((b) => b.label), ["Very High", "High", "Medium", "Manageable"]);
   assert.deepEqual(m.bands.map((b) => b.tone), house.bands.map((b) => b.tone), "same ladder shape/tones as the house deck");
@@ -215,7 +215,7 @@ test("zephyr: the house default with exactly the two deck deltas (band 3 'Medium
 });
 
 test("aurora: matrix-shaped, 5 bands ending in Low (its Level-A output), entity Aurora Interactive", () => {
-  const m = loadFrameworkManifest(ROOT, "skills/prelim-search/risk-framework-aurora.md");
+  const m = loadFrameworkManifest(ROOT, "skills/clearance-search/risk-framework-aurora.md");
   assert.equal(m.framework_key, "aurora");
   assert.deepEqual(m.bands.map((b) => b.label), ["Very High", "High", "Medium", "Manageable", "Low"]);
   assert.equal(m.entity_label, "Aurora Interactive");
@@ -227,7 +227,7 @@ test("aurora: matrix-shaped, 5 bands ending in Low (its Level-A output), entity 
 // ── 4: bands-shaped decks carry no residual score machinery ─────────────────────────────────────────────
 test("bands-shaped decks (house, zephyr) carry no Composite/Level rating machinery", () => {
   for (const f of frameworkFiles) {
-    const manifest = loadFrameworkManifest(ROOT, `skills/prelim-search/${f}`);
+    const manifest = loadFrameworkManifest(ROOT, `skills/clearance-search/${f}`);
     if (manifest.structure.kind !== "bands") continue;
     const prose = readFileSync(join(SKILL_DIR, f), "utf8");
     assert.doesNotMatch(prose, /\bComposite\b/i, `${f}: no Composite scores in a bands-shaped deck`);
@@ -254,7 +254,7 @@ test("parseFrameworkManifest: closed keys, ordered unique bands, tones, no digit
   bad({ structure: { kind: "scores" } }, /framework_structure_kind_invalid:scores/);
   bad({ structure: { kind: "matrix", axes: [""] } }, /framework_structure_axes_invalid/);
   assert.throws(() => parseFrameworkManifest("{nope"), /framework_manifest_unparseable/);
-  assert.throws(() => loadFrameworkManifest(ROOT, "skills/prelim-search/no-such-framework.md"), /framework_manifest_missing/);
+  assert.throws(() => loadFrameworkManifest(ROOT, "skills/clearance-search/no-such-framework.md"), /framework_manifest_missing/);
 });
 
 // ── band helpers ─────────────────────────────────────────────────────────────────────────────────────────
@@ -274,5 +274,5 @@ test("band helpers: rank by manifest order, case-insensitive, lowest-band predic
   assert.equal(aboveLowestBand(m, "Nonsense"), false);
   assert.equal(worstBand(m, ["Manageable", "moderate", "junk"]), "Moderate");
   assert.equal(worstBand(m, ["junk"]), null);
-  assert.equal(manifestPathFor("skills/prelim-search/risk-framework-zephyr.md"), "skills/prelim-search/risk-framework-zephyr.manifest.json");
+  assert.equal(manifestPathFor("skills/clearance-search/risk-framework-zephyr.md"), "skills/clearance-search/risk-framework-zephyr.manifest.json");
 });

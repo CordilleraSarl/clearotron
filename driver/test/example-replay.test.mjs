@@ -23,7 +23,7 @@ const DEMO = join(REPO, "bin", "example.mjs");
 const FREEZE = join(REPO, "scripts", "freeze-example-run.mjs");
 
 const REPORT_MD = `---
-type: prelim-clearance
+type: clearance-clearance
 matter: TMP8439
 title: PROJECT AQUAPLUS
 client: Zephyr Beverages

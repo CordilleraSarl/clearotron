@@ -488,7 +488,7 @@ test("a missing artifact fails rather than passing vacuously", () => {
 // boolean that correct self-correction reads as failure. So retries are FACTS the ledger reports, with
 // their cause and duration, and a reader judges. Shapes below are real.
 
-const RETRY_FAIL = 'invalid_file:prelim-search/tmpe2er3-project-halcyon/2026-07-30-fixture-two/_driver/'
+const RETRY_FAIL = 'invalid_file:clearance-search/tmpe2er3-project-halcyon/2026-07-30-fixture-two/_driver/'
   + 'knockout-assess-0.json:mark "PROJECT HALCYON": banned tone "Massive" — measured tone only (the band colour carries urgency)';
 
 test("investigate SHOUTS a retry and keeps the cause, which lives at the END of a driver failure string", () => {
@@ -665,7 +665,7 @@ test("queueOutcomes matches by PREFIX and returns EVERY door — an exact match 
 });
 
 test("a refusal reason keeps the rule it fired on, which is what reasonMatches checks", () => {
-  const reason = 'a native-script deepening (prelim-jx) resolved no routing territory from ["United States"]';
+  const reason = 'a native-script deepening (clearance-jx) resolved no routing territory from ["United States"]';
   assert.ok(reason.toLowerCase().includes("routing territor"), "R0a's reasonMatches must find its own rule");
   assert.equal(brief(reason, 200), reason, "a reason inside the budget is never mangled");
 });
@@ -1006,7 +1006,7 @@ const REFUSED = (reason) => ({
 });
 
 test("every door refused ⇒ the receipt answers, and it names the doors", () => {
-  const r = doorRefusal(REFUSED('job rejected — product "prelim-register-only" names no search we offer'), "E2E-R0h",
+  const r = doorRefusal(REFUSED('job rejected — product "clearance-register-only" names no search we offer'), "E2E-R0h",
     { terminal: "clarify", reasonMatches: "no search we offer" });
   assert.deepEqual(r.doors, ["cli", "ops-mcp"]);
   assert.equal(r.reasonRecorded, true);

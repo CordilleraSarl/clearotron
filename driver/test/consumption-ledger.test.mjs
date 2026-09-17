@@ -16,7 +16,7 @@ function mkWorkspace(agents = ["clawdi"]) {
   const root = mkdtempSync(join(tmpdir(), "clearotron-consumption-"));
   const studios = {};
   for (const a of agents) {
-    const studio = join(root, `workspace-${a}`, "studio", "prelim-search");
+    const studio = join(root, `workspace-${a}`, "studio", "clearance-search");
     mkdirSync(studio, { recursive: true });
     studios[a] = studio;
   }
@@ -73,14 +73,14 @@ test("recordConsumption: carries wall-clock beside the tokens, and no currency a
   const now = Date.parse("2026-07-28T12:00:00Z");
   try {
     recordConsumption({
-      studioRoot: studios.clawdi, runId: "r1", phase: "delivered", profileKey: "acme", level: "prelim",
+      studioRoot: studios.clawdi, runId: "r1", phase: "delivered", profileKey: "acme", level: "clearance",
       stageLabel: "Depth 4", clientPrincipal: true, markCount: 1, tokens: tokens(100, 10),
       providerUsage: { corsearch: { search: 12, record_fetch: 40, total: 52 } },
       startedAt: new Date(now - 5400_000).toISOString(), now,
     });
     const row = JSON.parse(readFileSync(consumptionLedgerPath(studios.clawdi), "utf8").trim());
     assert.equal(row.wallSec, 5400, "a speed pass reads the same row as a spend pass");
-    assert.equal(row.level, "prelim");
+    assert.equal(row.level, "clearance");
     assert.equal(row.clientPrincipal, true);
     assert.equal(row.providerUsage.corsearch.total, 52, "register calls are the second cost axis");
     // owner directive 2026-07-11 — tokens only, no currency in the measurement plane
@@ -100,7 +100,7 @@ test("recordRunConsumption: maps a run ctx onto a row, taking startedAt from sta
     const ctx = {
       run: { runDir, studioRoot: studios.clawdi, slug: "acme-corp", date: "2026-07-28", codename: "zesty-otter" },
       profile: { profileKey: "acme", projectKey: "eu-launch" },
-      searchPolicy: { level: "prelim-jx", stageLabel: "Depth 5" },
+      searchPolicy: { level: "clearance-jx", stageLabel: "Depth 5" },
       job: { clientPrincipal: true, marks: [{ name: "A" }, { name: "B" }] },
     };
     assert.equal(recordRunConsumption(ctx, { phase: "delivered", tokens: tokens(7, 3), now }), true);
@@ -108,7 +108,7 @@ test("recordRunConsumption: maps a run ctx onto a row, taking startedAt from sta
     const row = JSON.parse(readFileSync(consumptionLedgerPath(studios.clawdi), "utf8").trim());
     assert.equal(row.runId, "acme-corp-2026-07-28-zesty-otter");
     assert.equal(row.projectKey, "eu-launch");
-    assert.equal(row.level, "prelim-jx");
+    assert.equal(row.level, "clearance-jx");
     assert.equal(row.markCount, 2);
     assert.ok(row.wallSec >= 1795 && row.wallSec <= 1805, `wall from status.json startedAt, got ${row.wallSec}`);
   } finally {
@@ -129,7 +129,7 @@ test("recordRunConsumption: carries the frozen quote beside the measured tokens"
     const ctx = {
       run: { runDir, studioRoot: studios.clawdi, slug: "acme", date: "2026-07-28", codename: "plucky-vireo" },
       profile: { profileKey: "acme" },
-      searchPolicy: { level: "prelim", stageLabel: "Depth 4" },
+      searchPolicy: { level: "clearance", stageLabel: "Depth 4" },
       job: { clientPrincipal: true, markName: "A" },
       quote: { unitsVersion: 1, units: 5, costBand: 3, raw: 23.2, searches: 1, turnaround: "~1.5 hours" },
     };

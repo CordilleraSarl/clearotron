@@ -53,7 +53,7 @@ test("A COMPANY CREATED AFTER THE DOOR BOOTED CAN START A SEARCH", async () => {
   // 2. somebody creates a company through the portal, after that
   writeFileSync(join(store, "acme.json"), JSON.stringify({
     name: "Acme Ltd", platforms: ["amazon.com"],
-    frameworkPath: "skills/prelim-search/risk-framework.md",
+    frameworkPath: "skills/clearance-search/risk-framework.md",
   }));
 
   // THE CONTROL, FIRST. A company that was in the roster at boot must pass the identical request. If it

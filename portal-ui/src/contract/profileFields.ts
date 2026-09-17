@@ -24,7 +24,7 @@ export const CODE_OWNED = ['frameworkPath', 'workedExamplesPath', 'allowedRecipe
 /**
  * Code-owned fields whose VALUE is a path inside the engine.
  *
- * These render as `skills/prelim-search/risk-framework-<customer>.md` — the internal directory layout,
+ * These render as `skills/clearance-search/risk-framework-<customer>.md` — the internal directory layout,
  * the naming convention, and a customer key embedded in a filename, which together let a reader guess
  * the path of another client's framework. Not catastrophic, and not a client's business either.
  *
@@ -464,7 +464,7 @@ export const projectFields = (): readonly FieldSpec[] =>
  * The human label for a stored value, or null when there isn't one.
  *
  * Stored values and display values are not the same vocabulary, and for `defaultProduct` the gap
- * matters: the stored value is a registry key — `prelim-jx`, `knockout-register` — and
+ * matters: the stored value is a registry key — `clearance-jx`, `knockout-register` — and
  * driver/search-policy.mjs reserves the display face to `stageLabel`. Rendering the raw key puts
  * internal vocabulary in front of a client, which is the same class of leak as an engine path.
  *

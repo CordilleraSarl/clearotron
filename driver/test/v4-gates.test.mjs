@@ -46,12 +46,12 @@ test("assembleRunRecords: run-dir artifacts ∪ this-session ledger (session win
   // inherited artifact (the fork case: _records/ copied, ledger prefix knows nothing)
   writeRecordArtifacts(runDir, new Map([["/mark/us/86272665", { ...REC, registrationNumber: "OLD" }]]));
   appendFileSync(ledger, JSON.stringify({
-    ts: "t", sessionKey: "agent:clawdi:prelim-tmp1-aa-record-closure", target: "/mark/us/86272665", body: REC,
+    ts: "t", sessionKey: "agent:clawdi:clearance-tmp1-aa-record-closure", target: "/mark/us/86272665", body: REC,
   }) + "\n");
   appendFileSync(ledger, JSON.stringify({
-    ts: "t", sessionKey: "agent:clawdi:prelim-tmp1-aa-register-unit-x", target: "/mark/eu/018922211", body: { registrationNumber: "9" },
+    ts: "t", sessionKey: "agent:clawdi:clearance-tmp1-aa-register-unit-x", target: "/mark/eu/018922211", body: { registrationNumber: "9" },
   }) + "\n");
-  const { records, fromRunDir, fromLedger } = assembleRunRecords(runDir, "prelim-tmp1-aa-", ledger);
+  const { records, fromRunDir, fromLedger } = assembleRunRecords(runDir, "clearance-tmp1-aa-", ledger);
   assert.deepEqual({ size: records.size, fromRunDir, fromLedger }, { size: 2, fromRunDir: 1, fromLedger: 2 });
   assert.equal(records.get("/mark/us/86272665").registrationNumber, "4641314", "this-session row wins over inherited");
   // persisted: the ledger-only record materialized as an artifact, so the NEXT session inherits it
@@ -124,7 +124,7 @@ test("V4-2 e2e: a cited record absent from the set triggers ONE targeted fetch; 
   assert.equal(res.ok, true, JSON.stringify(res));
   assert.equal(calls.length, 1, "exactly one targeted fetch");
   assert.equal(calls[0].uri, "/mark/us/86272665");
-  assert.match(calls[0].sessionKey, /^prelim-tmp8443-novapulse-.+-record-closure$/, "run-attributed closure session key");
+  assert.match(calls[0].sessionKey, /^clearance-tmp8443-novapulse-.+-record-closure$/, "run-attributed closure session key");
   const closure = events.find((e) => e.event === "registry-record-closure");
   assert.deepEqual({ missing: closure.missing, fetched: closure.fetched, failed: closure.failed }, { missing: ["/mark/us/86272665"], fetched: 1, failed: [] });
   const cov = receipt.checks.find((c) => c.id === "registry-record-coverage" && c.surface === "report");

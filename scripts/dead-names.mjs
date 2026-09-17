@@ -47,7 +47,7 @@ export const GUARD = "dead-names (#853)";
 // agent identities for individuals at this firm, shipped in an operator script's default roster, in a
 // systemd unit watching their queues, and in two test fixtures. That out-of-scope note ruled `alex`
 // and `sam` INVENTED, which is why those stay; these two were never covered by that ruling.
-export const DEAD_NAME_RE = /lorestar|lore_(pool|url|flags)|prelim_lore|lorectl|loreurl|lorecontrols|trademark-lore|\blore\b|\baughra|clawdi-(lisa|lidia)/i;
+export const DEAD_NAME_RE = /lorestar|lore_(pool|url|flags)|clearance_lore|lorectl|loreurl|lorecontrols|trademark-lore|\blore\b|\baughra|clawdi-(lisa|lidia)/i;
 
 /**
  * Where a true match is somebody else's word rather than our dead name. NAMED, with the reason, and

@@ -257,7 +257,7 @@ test("invariant pin: a plugin-recorded gap cell counts as accounted by findGridL
 
 // ── the regression knob has teeth: the injected shape IS the grid_ledger_unparseable corruption ────────
 test("regression knob has teeth: the malformed append shape genuinely fails the ledger parse", () => {
-  const bad = malformedAppend("grid_spec_path: /studio/prelim-search/x/_driver/grid-spec.json");
+  const bad = malformedAppend("grid_spec_path: /studio/clearance-search/x/_driver/grid-spec.json");
   assert.match(bad, /\}\n,\n\]/, "the knob reproduces the exact `}\\n,\\n]` shape from run.jsonl:62");
   assert.throws(() => JSON.parse(bad), "the shape is genuinely malformed JSON");
   assert.throws(() => parseGridLedger(bad), "parseGridLedger rejects it → this is what grid_ledger_unparseable would fire on if any append instruction returned");

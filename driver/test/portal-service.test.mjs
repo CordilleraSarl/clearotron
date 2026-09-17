@@ -189,7 +189,7 @@ function world(opts = {}) {
   mkPool("tmp2-aurora-held", "aurora", { released: false });   // failed-QC stamp — must change NOTHING below
   mkPool("tmp3-zephyr-run", "zephyr");
   // live: one aurora running (frozen sidecar shape: profileKey)
-  const live = join(workspaceRoot, "workspace-test", "studio", "prelim-search", "tmp9-live", "2026-07-18-amber-x");
+  const live = join(workspaceRoot, "workspace-test", "studio", "clearance-search", "tmp9-live", "2026-07-18-amber-x");
   mkdirSync(driverDir(live), { recursive: true });
   writeFileSync(join(live, "status.json"), JSON.stringify({ runId: "tmp9-live-amber-x", markName: "LIVEMARK", state: "running", stepLabel: "Searching registers", stepN: 4, stepTotal: 9, updatedAt: "2026-07-18T10:00:00Z" }));
   writeFileSync(driverDir(live, "profile.json"), JSON.stringify({ profileKey: "aurora", name: "Aurora" }));
@@ -580,7 +580,7 @@ test("the new refusals name no switch, variable or internal level key either", a
     // bare `clearotron` included: it is a ORDERABLE_PRODUCTS key, these lines render verbatim in a client browser,
     // and the rule this gate states six lines up is the STAGE label or plain words — never the level key.
     // The assertion omitted it while its own title claimed to check it (review 2026-07-27).
-    assert.ok(!/jxLanes|registerProbe|commonLawGrid|\bprelim\b|prelim-jx|prelim-register-only/.test(body),
+    assert.ok(!/jxLanes|registerProbe|commonLawGrid|\bclearance\b|clearance-jx|clearance-register-only/.test(body),
       `an internal name reached the client: ${body}`);
     // THE PRODUCT IDS, DERIVED FROM THE REGISTRY AND NOT TYPED OUT. These refusals are written in
     // products.mjs now, so the id-leak risk arrived at this door with them — and the line above is a
@@ -1076,7 +1076,7 @@ test("scanAccountRuns: WHICH PROJECT a run belongs to survives the trip back, on
   }));
 
   // live — straight off the frozen sidecar the live branch already reads
-  const live = join(workspaceRoot, "workspace-test", "studio", "prelim-search", "tmp8-proj", "2026-07-19-jade-y");
+  const live = join(workspaceRoot, "workspace-test", "studio", "clearance-search", "tmp8-proj", "2026-07-19-jade-y");
   mkdirSync(driverDir(live), { recursive: true });
   writeFileSync(join(live, "status.json"), JSON.stringify({ runId: "tmp8-proj-jade-y", markName: "PROJMARK", state: "running", updatedAt: "2026-07-19T09:00:00Z" }));
   writeFileSync(driverDir(live, "profile.json"), JSON.stringify({
@@ -1084,7 +1084,7 @@ test("scanAccountRuns: WHICH PROJECT a run belongs to survives the trip back, on
   }));
 
   // queued — the job carries the KEY but no name; the engine resolves the name at start
-  const q = join(workspaceRoot, "workspace-test", "studio", "prelim-search", "queue");
+  const q = join(workspaceRoot, "workspace-test", "studio", "clearance-search", "queue");
   mkdirSync(q, { recursive: true });
   writeFileSync(join(q, "portal-proj.json"), JSON.stringify({
     id: "portal-proj", profileKey: "aurora", markName: "QMARK", projectKey: "spring-launch",
@@ -1110,7 +1110,7 @@ test("scanAccountRuns: a job still in the QUEUE is listed as queued — the wind
   // had just accepted it promised "it will appear in Clearances". Indistinguishable, to whoever went
   // and looked, from a run that never started.
   const { poolRoot, workspaceRoot } = world();
-  const q = join(workspaceRoot, "workspace-test", "studio", "prelim-search", "queue");
+  const q = join(workspaceRoot, "workspace-test", "studio", "clearance-search", "queue");
   mkdirSync(q, { recursive: true });
   writeFileSync(join(q, "portal-abc123.json"), JSON.stringify({
     id: "portal-abc123", profileKey: "aurora", markName: "LUMEN", product: "global-preliminary-search",
@@ -1143,7 +1143,7 @@ test("scanAccountRuns: TERMINAL queue markers produce NO row — the queue is a 
   // Narrowing by age or by owner would only shrink the junk. The fix is that this scan answers "what is
   // waiting", and a refusal is answered at the door that refused it.
   const { poolRoot, workspaceRoot } = world();
-  const q = join(workspaceRoot, "workspace-test", "studio", "prelim-search", "queue");
+  const q = join(workspaceRoot, "workspace-test", "studio", "clearance-search", "queue");
   mkdirSync(q, { recursive: true });
   const job = (id, mark) => JSON.stringify({ id, profileKey: "aurora", markName: mark, product: "global-preliminary-search" });
 
@@ -1241,7 +1241,7 @@ test("scanAccountRuns: the writers' STRING reportSchema ('report-data/1') arms t
 test("scanAccountRuns: a failed live run carries its reason — an unexplained failure is a phone call", () => {
   const poolRoot = tempDir("portal-fail-");
   const workspaceRoot = tempDir("portal-failws-");
-  const dir = join(workspaceRoot, "workspace-test", "studio", "prelim-search", "slug", "run");
+  const dir = join(workspaceRoot, "workspace-test", "studio", "clearance-search", "slug", "run");
   mkdirSync(driverDir(dir), { recursive: true });
   writeFileSync(join(dir, "status.json"), JSON.stringify({ runId: "r-fail", markName: "BROKEN", state: "failed",
     failedStage: "register-probe", reason: "the register provider returned no results for three retries",
@@ -1350,7 +1350,7 @@ test("the config surface checks the DOOR before the method — and a wrong shape
 test('a failure reason reaches staff verbatim and never reaches a client', async () => {
   const poolRoot = tempDir("portal-redact-");
   const workspaceRoot = tempDir("portal-redactws-");
-  const dir = join(workspaceRoot, "workspace-t", "studio", "prelim-search", "s", "r");
+  const dir = join(workspaceRoot, "workspace-t", "studio", "clearance-search", "s", "r");
   mkdirSync(driverDir(dir), { recursive: true });
   const TRACE = "TypeError: x is not a function at /srv/app/driver/pipeline.mjs:2411:9";
   writeFileSync(join(dir, "status.json"), JSON.stringify({ runId: "r-fail", markName: "M", state: "failed",
@@ -1526,13 +1526,13 @@ test("THE REGRESSION: on a complete build every level is available, with no envi
   const res = await service.route("GET", "/portal/api/searches", CLIENT, {}, {});
   assert.equal(res.status, 200);
   const by = Object.fromEntries(res.json.products.map((l) => [l.key, l]));
-  // FOUR, not five: `prelim-register-only` is retired and the menu is built from the orderable
+  // FOUR, not five: `clearance-register-only` is retired and the menu is built from the orderable
   // registry. It is not listed-and-greyed — that shape is for a level this deployment cannot run TODAY,
   // and a client can act on it by asking. A retired level is not coming back, so listing it would be an
   // invitation to ask for a product that no longer exists.
   assert.deepEqual(Object.keys(by).sort(),
     ["full-country-search", "global-preliminary-search", "knockout-search", "multi-country-focus-search"]);
-  for (const retired of ["prelim", "prelim-jx", "knockout", "knockout-register", "prelim-register-only"])
+  for (const retired of ["clearance", "clearance-jx", "knockout", "knockout-register", "clearance-register-only"])
     assert.ok(!(retired in by), `${retired} is retired and is never offered, greyed or otherwise`);
   for (const [key, l] of Object.entries(by)) {
     assert.equal(l.available, true, `${key} is built and must be pickable`);
@@ -1678,7 +1678,7 @@ test("a saved search is PLANNABLE — the door it used to be refused at has no s
 
 test("the plan door names the product it QUOTED — one resolution, not two", async () => {
   // The regression this exists for: the door named the product with
-  // `policyFor(body.product || "prelim")` while quoting effort off the RESOLVED policy. Those are
+  // `policyFor(body.product || "clearance")` while quoting effort off the RESOLVED policy. Those are
   // two different answers. On the recipeKey arm the first was null outright, so the review modal — the
   // last screen before money is spent — showed the headline "saved search" above an effort figure and a
   // turnaround computed for a Depth 1 knockout. An account whose profile defaults to a knockout got the
@@ -1695,7 +1695,7 @@ test("the plan door names the product it QUOTED — one resolution, not two", as
     assert.equal(res.json.name, "Knockout search", "the recipe's BASE level names the plan");
     assert.equal(res.json.stageLabel, "Knockout search", "no longer the placeholder 'saved search'");
     // The turnaround must come off the same level as the name. A knockout quotes 5–10 min; a clearance
-    // quotes 1.5–2.5 hours, which is what the old `|| "prelim"` fallback would have quoted here. The two
+    // quotes 1.5–2.5 hours, which is what the old `|| "clearance"` fallback would have quoted here. The two
     // are unmistakable for each other, which is the property this arm needs — it is checking that ONE
     // resolution produced both the name and the figure, not that the figure has any particular value.
     // ( ruled the knockout quote down from ~45 min against 4–6 min delivered.)
@@ -1709,7 +1709,7 @@ test("the plan door names the product it QUOTED — one resolution, not two", as
 });
 
 // THE SAVED-SEARCH HOLE this gate was added for. A recipe carries its own base level, so nothing on this
-// path ever names product — a prelim-jx recipe used to sail through /plan and spend on zero lanes.
+// path ever names product — a clearance-jx recipe used to sail through /plan and spend on zero lanes.
 // It also pins the honest consequence of measuring the MACHINERY's scope: the recipe's own saved
 // scope.jurisdictions is display-only at runtime (decideJxLanes reads job||profile), so a saved deep
 // dive does NOT route its lane unless the request names the territory again. Refusing says so before the
@@ -3237,7 +3237,7 @@ test("/portal/api/me says which route this install arrived by, as a WORD", async
 test("a live run's kind comes from its frozen policy, with the lane as the fallback", () => {
   const { poolRoot, workspaceRoot } = world();
   const liveRun = (slug, dirName, status, policy) => {
-    const dir = join(workspaceRoot, "workspace-test", "studio", "prelim-search", slug, dirName);
+    const dir = join(workspaceRoot, "workspace-test", "studio", "clearance-search", slug, dirName);
     mkdirSync(driverDir(dir), { recursive: true });
     writeFileSync(join(dir, "status.json"), JSON.stringify({ state: "running", updatedAt: "2026-07-20T09:00:00Z", ...status }));
     writeFileSync(driverDir(dir, "profile.json"), JSON.stringify({ profileKey: "aurora", name: "Aurora" }));

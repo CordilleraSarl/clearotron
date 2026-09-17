@@ -137,7 +137,7 @@ on a **literal glob** -- a `.path` unit cannot read an environment variable, so 
 your configuration:
 
 ```
-PathExistsGlob=%h/.openclaw/workspace-clawdi/studio/prelim-search/queue/*.json
+PathExistsGlob=%h/.openclaw/workspace-clawdi/studio/clearance-search/queue/*.json
 ```
 
 **That prefix is one deployment's layout, not yours.** Enable this unit without editing that line to
@@ -194,7 +194,7 @@ degrades and the degradation should be findable.
 
 | Part | Needs | What happens without it |
 |---|---|---|
-| **Outbox delivery trigger** — `driver/deliver-trigger.sh`, driven by the `prelim-outbox` systemd `.path`/`.service`/`.timer` units | systemd; bash >= 4 for `declare -A`; `timeout(1)` (GNU coreutils, or `gtimeout` from Homebrew) as the enforced wall on every courier wake | The script refuses at startup and names the missing piece. It will not wake a courier it cannot put a wall around — an unkillable wake wedged a lane for 19h once. No event is touched: everything stays pending and delivers as soon as the host is fixed. |
+| **Outbox delivery trigger** — `driver/deliver-trigger.sh`, driven by the `clearance-outbox` systemd `.path`/`.service`/`.timer` units | systemd; bash >= 4 for `declare -A`; `timeout(1)` (GNU coreutils, or `gtimeout` from Homebrew) as the enforced wall on every courier wake | The script refuses at startup and names the missing piece. It will not wake a courier it cannot put a wall around — an unkillable wake wedged a lane for 19h once. No event is touched: everything stays pending and delivers as soon as the host is fixed. |
 | **PID-reuse claim defence** — the queue runner telling a live claimer from a recycled pid | A birth stamp for a process:`/proc/<pid>/stat` on Linux, `ps -o lstart` on macOS and anywhere else POSIX. Absent only where neither answers — WSL1, some sandboxes | Degrades **fail-safe**, and the runner says so once at startup. Claims record a bare pid, so a claim whose liveness cannot be proved counts as alive: no run is ever double-claimed and no lawyer double-delivered to. What is lost is the escape hatch — a `.processing` marker held by a recycled pid waits for the max-claim-age ceiling instead of being freed on the next tick. |
 
 CI runs the suite on macOS as well as Linux, and an assertion covering a capability the box lacks skips

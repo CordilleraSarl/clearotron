@@ -47,7 +47,7 @@ test("the render carries every driver-held front-matter key, and parseFront read
   const { fm } = parseFront(v.content);
   // The nine keys the seat used to type, now stamped — asserted by NAME AND VALUE. A key-count arm would
   // pass while a value silently went missing, which is the failure this conversion is supposed to remove.
-  assert.equal(fm.type, "prelim-clearance");
+  assert.equal(fm.type, "clearance-clearance");
   assert.equal(fm.matter, "TMP8439");
   assert.equal(fm.title, "PROJECT NOVAPULSE");
   assert.equal(fm.client, "ACME Interactive");
@@ -93,7 +93,7 @@ test("THE IDENTITY IS THE DRIVER'S — a seat cannot set one of the nine keys by
   const { fm } = parseFront(v.content);
   assert.equal(fm.matter, "TMP8439", "a seat-sent `matter` reached the front-matter");
   assert.equal(fm.overall_label, "MEDIUM", "a seat-sent `overall_label` reached the front-matter");
-  assert.equal(fm.type, "prelim-clearance", "a seat-sent `type` reached the front-matter");
+  assert.equal(fm.type, "clearance-clearance", "a seat-sent `type` reached the front-matter");
 });
 
 test("no identity on disk — the shell renders the keys it has rather than inventing any", () => {

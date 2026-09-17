@@ -680,7 +680,7 @@ export type Plan = {
    *
    * The composer computes its own bar while the levers move (composerLevers.ts) because that has to be
    * instant; this is the authoritative figure, and it can differ where a lever does not survive the wire
-   * — three script lanes and one both arrive as `prelim-jx`, and which lanes actually run is decided
+   * — three script lanes and one both arrive as `clearance-jx`, and which lanes actually run is decided
    * server-side from the jurisdictions. At REVIEW the server's number wins, which is what that step is
    * for. `driver/effort-model.mjs` and `composerLevers.ts` are pinned together by
    * `test/effortModelParity.test.ts`, so the two can only differ where the INPUTS differ, never the math.

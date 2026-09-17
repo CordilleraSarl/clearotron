@@ -113,7 +113,7 @@ const USAGE = `
     --domains    comma-separated email domains that resolve to this owner
     --platforms  comma-separated marketplaces their searches cover
                  omitted ⇒ the Generic default's platforms are applied and named in the output
-    --framework  their risk framework, as skills/prelim-search/<file>.md
+    --framework  their risk framework, as skills/clearance-search/<file>.md
                  omitted ⇒ the Generic default is applied and named in the output
     --industry   free text, shown on their profile
     --context    a file whose contents become this owner's context pack
@@ -121,7 +121,7 @@ const USAGE = `
 
   clearotron brandowner framework <key> <path>
 
-    Point an existing company at a risk framework, as skills/prelim-search/<file>.md.
+    Point an existing company at a risk framework, as skills/clearance-search/<file>.md.
     The deck is checked before anything is written: a path that does not resolve, or a
     manifest that will not load, is refused and the company is left exactly as it was.
 
@@ -298,7 +298,7 @@ export async function framework(argv, {
 } = {}) {
   const [key, path] = argv;
   if (!key) throw new Refusal(`this command needs a company key.${USAGE}`);
-  if (!path) throw new Refusal(`this command needs a framework path, as skills/prelim-search/<file>.md.${USAGE}`);
+  if (!path) throw new Refusal(`this command needs a framework path, as skills/clearance-search/<file>.md.${USAGE}`);
   try { assertProfileKey(key); }
   catch (e) { throw new Refusal(e?.message ?? String(e)); }
 

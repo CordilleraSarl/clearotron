@@ -36,15 +36,15 @@ const src = (f) => readFileSync(join(DRIVER, f), "utf8");
 
 const AXIS = "primary-sweep";
 const P = {
-  registerBand: (a) => `/runs/x/prelim-search/run/register-units/${a}-band.json`,
-  registerUnit: (a) => `/runs/x/prelim-search/run/register-units/${a}.md`,
+  registerBand: (a) => `/runs/x/clearance-search/run/register-units/${a}-band.json`,
+  registerUnit: (a) => `/runs/x/clearance-search/run/register-units/${a}.md`,
 };
 const UNIT = P.registerUnit(AXIS);
 const DIRECTIVES = [
   { layer: "variant", severity: "dominant-element", item: "HALCYON", observation: "the dominant element was never enumerated in class 35" },
   { layer: "field", severity: "class-gap", item: "Cl.35/38", observation: "the class gap was never scoped" },
 ];
-const FINDINGS = "/runs/x/prelim-search/run/register-findings.md";
+const FINDINGS = "/runs/x/clearance-search/run/register-findings.md";
 
 // What "orders targeted edits" MEANS, asserted once here so every site below can be checked against the
 // same bar rather than each inventing its own phrasing test.
@@ -138,7 +138,7 @@ test("frame-reopen WARM resume orders the digest CALL — and the band prohibiti
   // Introducing the Edit tool into a prompt whose band is TOOL-OWNED is the one new hazard this conversion
   // creates: "you may edit" must not read as "you may edit the band". The scope is stated in the sentence
   // immediately before the tail, where it is read as a qualification of it.
-  assert.match(lane, /never author, edit, append to or re-save \/runs\/x\/prelim-search\/run\/register-units\/primary-sweep-band\.json yourself/);
+  assert.match(lane, /never author, edit, append to or re-save \/runs\/x\/clearance-search\/run\/register-units\/primary-sweep-band\.json yourself/);
   // THE SCOPE SENTENCE OUTLIVED THE HAZARD IT QUALIFIED, and that is why it stays. It existed because
   // introducing the Edit tool into a prompt whose band is TOOL-OWNED risked reading as "you may edit the
   // band". There is no Edit direction here now — the digest is a call — so the sentence no longer

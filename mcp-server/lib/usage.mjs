@@ -10,9 +10,9 @@
 
 import { tallyRegisterCalls, DEFAULT_LEDGER_PATH } from "./driver.mjs";
 
-// The driver tags every billed call's gateway session-key `prelim-<slug>-<codename>-<stage>…`. Our server is
-// named "trademark-artifacts", but the RUNS were produced by the prelim-driver, so the prefix stays `prelim-`.
-export function runPrefix(run) { return `prelim-${run.slug}-${run.codename}-`; }
+// The driver tags every billed call's gateway session-key `clearance-<slug>-<codename>-<stage>…`. Our server is
+// named "trademark-artifacts", but the RUNS were produced by the prelim-driver, so the prefix stays `clearance-`.
+export function runPrefix(run) { return `clearance-${run.slug}-${run.codename}-`; }
 
 // — the compared key set is DERIVED from the two tallies, not restated here.
 //

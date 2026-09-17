@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// prelim-variants-record.mjs — the recording transport for the variant manifest.
+// clearance-variants-record.mjs — the recording transport for the variant manifest.
 //
 // Conversion 3, after blind-frame, skeptic, frame-diff and matter-frame. It is
 // the first conversion whose ruling includes CLASS 3, and the first that can DELETE a derivation rather
@@ -17,7 +17,7 @@
 // O3c measured the cost of that hand-formatting directly: 9 Bash calls with 4 WRITES across 15 attempts,
 // and the shape is `python3 -c` over `variant-manifest.json` — the seat pre-checking its own JSON before
 // saving it. That is CLASS 3, and the design's ruling is that such a check does not get a compute tool:
-// it moves to the ACCEPTANCE BOUNDARY. `acceptPrelimVariants` measures on accept and refuses with the
+// it moves to the ACCEPTANCE BOUNDARY. `acceptClearanceVariants` measures on accept and refuses with the
 // measured value, so the check runs on every call instead of when a seat remembers to run it.
 //
 // ── AND IT DELETES A DERIVATION, WHICH IS THE REAL PRIZE ────────────────────────────────────────────
@@ -45,8 +45,8 @@ export const PROSE_FILE = "variant-manifest.md";
 const SCHEMA_VERSION = 1;
 
 /** Where the call's evidence lives — the driver's own record of what the seat handed it. */
-export function prelimVariantsCallPaths(runDir) {
-  const dir = driverDir(runDir, "prelim-variants-calls");
+export function clearanceVariantsCallPaths(runDir) {
+  const dir = driverDir(runDir, "clearance-variants-calls");
   return { dir, payload: join(dir, "call-001.json"), accepted: join(dir, "accepted.json") };
 }
 
@@ -107,7 +107,7 @@ export function renderScopeLedgerTable(rows) {
  * Rendering from the parsed model is what makes the two artifacts one statement: they cannot disagree
  * about a variant, because both are projections of one validated object. PURE.
  */
-export function renderPrelimVariants(model, scopeRows) {
+export function renderClearanceVariants(model, scopeRows) {
   // ── HEADING DEPTH IS LOAD-BEARING, AND THIS IS THE ONE THING IN THIS FILE NOT TO "TIDY" ────────────
   //
   // `variantsManifestAudit` (common-law-receipts.mjs) arms a term collector on any heading matching
@@ -151,7 +151,7 @@ export function renderPrelimVariants(model, scopeRows) {
       ...model.search_floor.map((a) => `- ${a}`), "");
 
   out.push(...renderScopeLedgerTable(scopeRows));
-  out.push("---", "", "Rendered by the driver from the stage's `record_prelim_variants` call. "
+  out.push("---", "", "Rendered by the driver from the stage's `record_clearance_variants` call. "
     + `The structured model in ${MODEL_FILE} is the authority for the terms, and scope-ledger.json for the `
     + "ledger; this file is their human-readable projection.", "");
   return out.join("\n");
@@ -178,8 +178,8 @@ const DECLARED = Object.freeze({
 export const refuseUndeclared = (params) => refuseUndeclaredShared(params, DECLARED, "variantmodel");
 
 /** The last ACCEPTED call for this run, or null. */
-export function lastAcceptedPrelimVariants(runDir) {
-  return lastAccepted(prelimVariantsCallPaths(String(runDir ?? "")).accepted, readFileSync);
+export function lastAcceptedClearanceVariants(runDir) {
+  return lastAccepted(clearanceVariantsCallPaths(String(runDir ?? "")).accepted, readFileSync);
 }
 
 /**
@@ -190,7 +190,7 @@ export function lastAcceptedPrelimVariants(runDir) {
  * Preserving rather than requiring, because nothing here can tell a first call from a repair and a
  * product refusal is never a pass. See preserve-merge.mjs for the class.
  */
-export function mergePrelimVariantsCall(stored, received) {
+export function mergeClearanceVariantsCall(stored, received) {
   const base = stored ?? {};
   return {
     mark: received?.mark,
@@ -207,7 +207,7 @@ export function mergePrelimVariantsCall(stored, received) {
   };
 }
 
-export function acceptPrelimVariants(params) {
+export function acceptClearanceVariants(params) {
   const model = {
     schema_version: SCHEMA_VERSION,
     mark: params?.mark,
@@ -250,7 +250,7 @@ export function acceptPrelimVariants(params) {
     scopeRows.push({ layer, item, status, reason, reopen_trigger });
   }
 
-  return { ok: true, model: parsed, scopeRows, content: renderPrelimVariants(parsed, scopeRows) };
+  return { ok: true, model: parsed, scopeRows, content: renderClearanceVariants(parsed, scopeRows) };
 }
 
 /**
@@ -263,8 +263,8 @@ export function acceptPrelimVariants(params) {
  * the first two, so a crash between writes leaves the run with its load-bearing files and a missing
  * restatement rather than a restatement of something never stored.
  */
-export function recordPrelimVariants(runDir, received, { now = () => new Date().toISOString() } = {}) {
-  const { dir, payload } = prelimVariantsCallPaths(String(runDir ?? ""));
+export function recordClearanceVariants(runDir, received, { now = () => new Date().toISOString() } = {}) {
+  const { dir, payload } = clearanceVariantsCallPaths(String(runDir ?? ""));
   // — ONE FILE PER CALL, refusals included. This wrote a single fixed `call-001.json`,
   // so a turn refused and then re-sent kept only the survivor: the file whose header promises "including
   // calls that were refused" held the one call that was not. Sequence 1 still resolves to `call-001.json`,
@@ -288,8 +288,8 @@ export function recordPrelimVariants(runDir, received, { now = () => new Date().
   if (undeclared) {
     return { written: null, refused: undeclared, captured: closeCapture({ ok: false, refused: undeclared }), capture_failed: captureFailed };
   }
-  const call = mergePrelimVariantsCall(lastAcceptedPrelimVariants(runDir), received);
-  const verdict = acceptPrelimVariants(call);
+  const call = mergeClearanceVariantsCall(lastAcceptedClearanceVariants(runDir), received);
+  const verdict = acceptClearanceVariants(call);
   if (!verdict.ok) {
     return { written: null, refused: verdict.reason, captured: closeCapture({ ok: false, refused: verdict.reason }), capture_failed: captureFailed };
   }
@@ -299,7 +299,7 @@ export function recordPrelimVariants(runDir, received, { now = () => new Date().
   try {
     writeFileSync(at, JSON.stringify(verdict.model, null, 2) + "\n");
     // Step 5. BEST-EFFORT, in its own try — see report-overview-record.mjs for why.
-    try { writeFileSync(prelimVariantsCallPaths(String(runDir ?? "")).accepted, acceptedEnvelope(call, now())); }
+    try { writeFileSync(clearanceVariantsCallPaths(String(runDir ?? "")).accepted, acceptedEnvelope(call, now())); }
     catch { /* a lost base is never a lost artifact */ }
     writeFileSync(proseAt, verdict.content);
   } catch (e) {
@@ -320,7 +320,7 @@ export function recordPrelimVariants(runDir, received, { now = () => new Date().
 
 /** The typed scope-ledger rows, for the driver's own serialisation. PURE — no re-parse of the table. */
 export function recordedScopeRows(received) {
-  const v = acceptPrelimVariants(received);
+  const v = acceptClearanceVariants(received);
   return v.ok ? v.scopeRows : [];
 }
 
@@ -332,7 +332,7 @@ export function recordedScopeRows(received) {
  * and it carried no ledger rows" — which is a manifest with an empty ledger, not a manifest to re-parse.
  * Collapsing the two would send the driver back to the table on a run that had already answered.
  *
- * The rows are re-validated through `acceptPrelimVariants` rather than trusted raw out of the capture:
+ * The rows are re-validated through `acceptClearanceVariants` rather than trusted raw out of the capture:
  * the capture records what ARRIVED, untidied, including a refused call's params. IMPURE (reads the run).
  */
 export function recordedScopeLedgerRows(runDir) {
@@ -344,22 +344,22 @@ export function recordedScopeLedgerRows(runDir) {
   // partial does not validate on its own, so this would have returned null — "no typed call, go and
   // parse the prose" — on a run whose merged call had validated and written a manifest. The accepted
   // base IS the merged, validated call, which is exactly what this wants.
-  const merged = lastAcceptedPrelimVariants(dir0);
+  const merged = lastAcceptedClearanceVariants(dir0);
   if (merged) {
-    const v = acceptPrelimVariants(merged);
+    const v = acceptClearanceVariants(merged);
     if (v.ok) return v.scopeRows;
   }
   // FALLBACK: runs that predate the base, which have a capture and no accepted.json. Unchanged
   // behaviour for them, and it is why this is a fallback rather than a replacement.
   let captured;
-  try { captured = JSON.parse(readFileSync(prelimVariantsCallPaths(dir0).payload, "utf8")); }
+  try { captured = JSON.parse(readFileSync(clearanceVariantsCallPaths(dir0).payload, "utf8")); }
   catch { return null; }                                  // no call — the prose path is the answer
-  const v = acceptPrelimVariants(captured?.params);
+  const v = acceptClearanceVariants(captured?.params);
   return v.ok ? v.scopeRows : null;                       // a refused call never wrote a manifest either
 }
 
 /** Was this run's manifest written through the typed transport? The ruled discriminator. */
-export function prelimVariantsWasRecorded(runDir) {
-  try { readFileSync(prelimVariantsCallPaths(String(runDir ?? "")).payload, "utf8"); return true; }
+export function clearanceVariantsWasRecorded(runDir) {
+  try { readFileSync(clearanceVariantsCallPaths(String(runDir ?? "")).payload, "utf8"); return true; }
   catch { return false; }
 }

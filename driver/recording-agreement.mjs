@@ -70,7 +70,7 @@ export const SURFACE = "surface";
  * performs anyway. Since the warm and cold rungs DERIVE the tool name from `TOOL_WRITTEN_ARTIFACTS`,
  * so adding that row — step 1 of every conversion — makes both rungs name the record tool, and (a) went
  * quiet for it whatever the dispatch said. Measured on conversion 3 before its dispatch was touched: the
- * grant carried `record_prelim_variants`, the dispatch did not mention it, both repair rungs did, and (a)
+ * grant carried `record_clearance_variants`, the dispatch did not mention it, both repair rungs did, and (a)
  * was silent. The guard asked a question the conversion's own bookkeeping answered — the tautology shape
  * `b04d6d58` and the `RECORDING_TOOLS` non-derivation both exist to remove.
  *

@@ -50,7 +50,7 @@ function plantContainer() {
   });
   child("planted-clearance", {
     "meta.json": JSON.stringify({ runId: "tmp8814-planted-clearance" }),
-    "run/report.md": "---\ntype: prelim-clearance\n---\n\n# Marks\n",
+    "run/report.md": "---\ntype: clearance-clearance\n---\n\n# Marks\n",
   });
   // A run with neither entry file, and a manifest-less directory that has one. Both are the shapes an
   // existsSync on the container alone waves through, and neither is openable.

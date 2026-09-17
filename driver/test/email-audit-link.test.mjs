@@ -145,7 +145,7 @@ test("a trailing slash on the configured pool URL cannot double up in the path",
 // ── and the two surfaces that carry it ───────────────────────────────────────────────────────────────
 
 const REPORT_MD = [
-  "---", "type: prelim-clearance", "matter: TMP8552", "title: Satin & Steel",
+  "---", "type: clearance-clearance", "matter: TMP8552", "title: Satin & Steel",
   "client: ACME", "classes: 9", "overall_label: MEDIUM", "overall_badge: l3",
   "---", "", "# Summary", "One conflict matters.", "", "# Marks", "## SATIN & BRONZE — US", "- tier: 3", "", "# Coverage", "text",
 ].join("\n");

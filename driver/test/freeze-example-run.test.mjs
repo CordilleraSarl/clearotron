@@ -21,7 +21,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const SCRIPT = join(HERE, "..", "..", "scripts", "freeze-example-run.mjs");
 
 const REPORT_MD = `---
-type: prelim-clearance
+type: clearance-clearance
 matter: TMP8439
 title: PROJECT AQUAPLUS
 client: Zephyr Beverages

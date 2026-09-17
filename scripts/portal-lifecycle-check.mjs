@@ -63,7 +63,7 @@ const KEY = 'vantor'
 const NAME = 'Vantor Labs'
 // A code-owned path the profile stub serves to everyone, as a server that forgot to strip it would. Only a
 // person with access to everything may read it on Profile; see PROFILE_PATHS_SCRIPT.
-const PLANTED_PATH = 'skills/prelim-search/risk-framework-planted.md'
+const PLANTED_PATH = 'skills/clearance-search/risk-framework-planted.md'
 // The source repository the about stub states, and deliberately not the firm's: the local sign-in notice
 // builds its link from whatever the server states, so a fork's notice points at the fork.
 const STUB_SOURCE_REPO = 'https://git.example.test/a-fork/clearotron'

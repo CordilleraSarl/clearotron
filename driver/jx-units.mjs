@@ -144,7 +144,7 @@ function ledgerRow(runDir, row) {
   try { appendFileSync(driverDir(runDir, "jx-completions.jsonl"), JSON.stringify(row) + "\n"); } catch { /* receipts best-effort */ }
 }
 
-const runPrefix = (run) => `prelim-${run?.slug ?? "run"}-${run?.codename ?? "local"}-`;
+const runPrefix = (run) => `clearance-${run?.slug ?? "run"}-${run?.codename ?? "local"}-`;
 
 // ── Executor chains (the resolveJxExecutor idiom: injected → CLEAROTRON_JX_FIXTURES → live) ─────────────
 export function resolveSerpExecutor(opts, { mark, lane }) {

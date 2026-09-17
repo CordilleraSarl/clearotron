@@ -89,7 +89,7 @@ kind of thing a module is before you open it.
 - The `anthropic-agent` engine shells `claude -p` per stage (stream-json, blocking to the final
   result); warm retries `--resume` the same session, fresh retries start clean — see
   `engine/CONTRACT.md §3` for the model-tier map and `§8` for runtime caveats.
-- Stage identity keys are `prelim-<slug>-<codename>-<stage>`; telemetry ledgers record every attempt.
+- Stage identity keys are `clearance-<slug>-<codename>-<stage>`; telemetry ledgers record every attempt.
 - A stage's output is judged by **file truth** (the validator on the written artifact), never by the
   engine's own success claim.
 - Retries never re-dispatch the same second an attempt failed: every retry waits
@@ -114,8 +114,8 @@ conformance → paid run).
 
 ## Single path
 
-prelim-search runs **only** via this driver — every intake path lands a job JSON in a queue and the
+clearance-search runs **only** via this driver — every intake path lands a job JSON in a queue and the
 driver does the rest. There is no legacy spawn path and no enable/dormant flag. (The old
 LLM-orchestrator `sessions_yield` WAIT/PROCEED/SUPPRESS machinery was stripped from
-`skills/prelim-search/phase2-execution.md` — only the historical removal note at its head remains;
+`skills/clearance-search/phase2-execution.md` — only the historical removal note at its head remains;
 the file is live methodology the stages read.)

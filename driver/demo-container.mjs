@@ -155,7 +155,7 @@ export function publishContainer(root, { repoRoot, tmp = tmpdir() } = {}) {
  * The demo published its samples as reports and made no run directory, so the connector its own connect
  * line wires listed nothing: an assistant, one of the demo's three faces, had nothing to explore. Each
  * sample's finished `run/` is copied to the layout the connector walks, under the DEMO'S OWN workspace:
- * `<workspace>/workspace-<agent>/studio/prelim-search/<slug>/<date>-<codename>/`. Nothing is written
+ * `<workspace>/workspace-<agent>/studio/clearance-search/<slug>/<date>-<codename>/`. Nothing is written
  * anywhere else, so a real install started afterwards sees none of it (the demo is its own install).
  *
  * Copied, never linked: a connector reading a run may write beside it, and `demo/` is tracked. A run
@@ -176,7 +176,7 @@ export function seedDemoRuns({ workspace, examplesDir, portalOrigin = null }) {
     let s;
     try { s = JSON.parse(readFileSync(join(run, "status.json"), "utf8")); } catch { continue; }
     if (!s?.slug || !s?.codename || !s?.date) continue;
-    const dir = join(workspace, `workspace-${s.agent || "clawdi"}`, "studio", "prelim-search", s.slug, `${s.date}-${s.codename}`);
+    const dir = join(workspace, `workspace-${s.agent || "clawdi"}`, "studio", "clearance-search", s.slug, `${s.date}-${s.codename}`);
     if (existsSync(join(dir, "status.json"))) already.push(s.runId);
     else {
       // ONE SAMPLE'S UNREADABLE FILE COSTS THAT SAMPLE ONLY, and is named, never a throw out of the loop.

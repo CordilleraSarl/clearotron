@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // report-overview-record.mjs — the recording transport for the report shell.
 //
-// Conversion 4, after blind-frame, skeptic, frame-diff, matter-frame and prelim-variants
+// Conversion 4, after blind-frame, skeptic, frame-diff, matter-frame and clearance-variants
 //. It is the FIRST conversion whose artifact a client reads. report-overview.md is not an internal
 // input that a later stage consumes — it is the front-matter and the Actions section of the delivered
 // report, so a render defect here reaches a lawyer's desk rather than a test log.
@@ -181,7 +181,7 @@ export function renderReportOverview(model, identity) {
   const id = identity ?? {};
   const fm = [
     "---",
-    "type: prelim-clearance",
+    "type: clearance-clearance",
     id.matter ? `matter: ${id.matter}` : "",
     id.title ? `title: ${id.title}` : "",
     id.client ? `client: ${id.client}` : "",

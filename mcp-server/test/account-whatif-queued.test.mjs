@@ -85,7 +85,7 @@ let clientUrl, clientSrv, fixture, richDir, studioRoots;
 before(async () => {
   fixture = buildFixture();
   buildRichRun();
-  richDir = join(ROOT, "workspace-test", "studio", "prelim-search", "archive", "2026-05", "tmpmyrk1-myrkur", "2026-05-20-iron-heron");
+  richDir = join(ROOT, "workspace-test", "studio", "clearance-search", "archive", "2026-05", "tmpmyrk1-myrkur", "2026-05-20-iron-heron");
   const gdir = mkdtempSync(join(tmpdir(), "whatif-queued-grants-"));
   writeFileSync(join(gdir, "grants.json"), JSON.stringify({
     tenants: {
@@ -99,7 +99,7 @@ before(async () => {
   process.env.CLIENT_MCP_ACCOUNT_ACCESS = "1";
   writeFileSync(driverDir(fixture.runDir, "profile.json"), JSON.stringify({ profileKey: "acme" }));
   writeFileSync(driverDir(richDir, "profile.json"), JSON.stringify({ profileKey: "myrkur" }));
-  studioRoots = [join(ROOT, "workspace-test", "studio", "prelim-search")];
+  studioRoots = [join(ROOT, "workspace-test", "studio", "clearance-search")];
 
   const sessions = new Map();
   clientSrv = createServer(makeHttpHandler({ verify: null, devMode: true, clientSurface: true, tokenOnly: false,

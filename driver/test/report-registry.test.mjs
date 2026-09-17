@@ -29,7 +29,7 @@ test("every level states its report identity — a new level cannot ship without
 
 test("the banner joins the stage label to the identity — this is the line the reader sees", () => {
   assert.equal(reportIdentityFor("knockout-register").banner, "Depth 2 — Knockout review with register hit-counts");
-  assert.equal(reportIdentityFor("prelim").banner, "Depth 4 — Preliminary clearance");
+  assert.equal(reportIdentityFor("clearance").banner, "Depth 4 — Preliminary clearance");
   assert.equal(reportIdentityFor("knockout-search").banner, "Knockout search");
 });
 
@@ -115,9 +115,9 @@ test("productCoverageNote: every level states its coverage; adjacent depths neve
   assert.match(productCoverageNote("knockout-search"), /register hit-counts/,
     "the one Knockout search we offer carries the counts, and its note says so");
   assert.match(productCoverageNote("knockout-register"), /register hit-counts/);
-  assert.match(productCoverageNote("prelim-register-only"), /unregistered \(common-law\) use is not covered/);
-  assert.match(productCoverageNote("prelim"), /covers registered rights and unregistered \(common-law\) use/);
-  assert.match(productCoverageNote("prelim-jx"), /native-script/);
+  assert.match(productCoverageNote("clearance-register-only"), /unregistered \(common-law\) use is not covered/);
+  assert.match(productCoverageNote("clearance"), /covers registered rights and unregistered \(common-law\) use/);
+  assert.match(productCoverageNote("clearance-jx"), /native-script/);
 });
 
 // charter ruling 1, NAME-LED (match the registry-name pills): the note LEADS with the product's
@@ -129,15 +129,15 @@ test("productCoverageNote is name-led: every registry level's note leads with it
     assert.ok(productCoverageNote(lvl).startsWith(`${name} — `), `${lvl} leads with "${name}"`);
     assert.doesNotMatch(productCoverageNote(lvl), /^Depth \d/, `${lvl} never leads with a rung`);
   }
-  assert.match(productCoverageNote("prelim"), /^Preliminary clearance — covers /);
+  assert.match(productCoverageNote("clearance"), /^Preliminary clearance — covers /);
   assert.match(productCoverageNote("knockout-search"), /^Knockout search — screens /);
 });
 
 test("productCoverageNote: a frozen sidecar's own components decide; no policy ⇒ null (archived runs stay silent)", () => {
-  // a frozen prelim sidecar with the grid switched OFF must speak register-only truth in the clauses,
+  // a frozen clearance sidecar with the grid switched OFF must speak register-only truth in the clauses,
   // while the NAME stays the registry join for the level that ran (the doctrine: name what was
   // sold; the clauses disclose what actually ran).
-  const frozen = { level: "prelim", pipeline: "clearance", components: { registerProbe: false, jxLanes: false, commonLawGrid: false } };
+  const frozen = { level: "clearance", pipeline: "clearance", components: { registerProbe: false, jxLanes: false, commonLawGrid: false } };
   assert.match(productCoverageNote(frozen), /^Preliminary clearance — /);
   assert.match(productCoverageNote(frozen), /unregistered \(common-law\) use is not covered/);
   // a level the registry no longer knows has no name to lead with — degrade to the nameless form,

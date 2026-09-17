@@ -48,16 +48,16 @@ test("no stage or depth number reaches a run row — including on a retired run"
   }
   // The trap this guards: `.banner` and `.stageLabel` BOTH carry the rung on a retired row, and either
   // would have been a one-word change in portal-service.mjs.
-  assert.match(reportIdentityFor("prelim").banner, /Depth 4/, "precondition: banner is the field that leaks");
-  assert.equal(reportIdentityFor("prelim").stageLabel, "Depth 4", "precondition: so does stageLabel");
-  assert.equal(productNameOf("prelim"), "Preliminary clearance", "the row takes neither");
+  assert.match(reportIdentityFor("clearance").banner, /Depth 4/, "precondition: banner is the field that leaks");
+  assert.equal(reportIdentityFor("clearance").stageLabel, "Depth 4", "precondition: so does stageLabel");
+  assert.equal(productNameOf("clearance"), "Preliminary clearance", "the row takes neither");
 });
 
-test("the retired preliminaries stay distinguishable — the reason the card wraps instead of truncating", () => {
+test("the retired clearanceinaries stay distinguishable — the reason the card wraps instead of truncating", () => {
   // Ellipsised, "Preliminary clearance — register only" and "Preliminary clearance" collapse to the same
   // string, and they are close to opposite. Archived runs still carry both.
-  const names = ["prelim", "prelim-register-only", "prelim-jx"].map(productNameOf);
-  assert.equal(new Set(names).size, 3, "three retired preliminaries, three distinct names");
+  const names = ["clearance", "clearance-register-only", "clearance-jx"].map(productNameOf);
+  assert.equal(new Set(names).size, 3, "three retired clearanceinaries, three distinct names");
 });
 
 test("a level the registry has forgotten resolves to NOTHING, never a guess", () => {
@@ -77,7 +77,7 @@ test("a level the registry has forgotten resolves to NOTHING, never a guess", ()
 function withQueued(job, fn) {
   const root = mkdtempSync(join(tmpdir(), "portal-rows-"));
   try {
-    const q = join(root, "workspace-clawdi", "studio", "prelim-search", "queue");
+    const q = join(root, "workspace-clawdi", "studio", "clearance-search", "queue");
     mkdirSync(q, { recursive: true });
     mkdirSync(join(root, "pool"), { recursive: true });
     writeFileSync(join(q, `${job.id}.json`), JSON.stringify(job, null, 2));
@@ -145,7 +145,7 @@ test("a QUEUED knockout batch is a batch, and carries every name it was submitte
 function withLive(status, fn) {
   const root = mkdtempSync(join(tmpdir(), "portal-rows-live-"));
   try {
-    const dir = join(root, "workspace-clawdi", "studio", "prelim-search", "tmp9100-ironwhisk", "2026-08-07-fixture");
+    const dir = join(root, "workspace-clawdi", "studio", "clearance-search", "tmp9100-ironwhisk", "2026-08-07-fixture");
     mkdirSync(driverDir(dir), { recursive: true });
     mkdirSync(join(root, "pool"), { recursive: true });
     writeFileSync(join(dir, "status.json"), JSON.stringify(status, null, 2));

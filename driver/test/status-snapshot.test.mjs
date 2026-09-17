@@ -20,7 +20,7 @@ function tree() {
   writeFileSync(join(runLock, "slot-1.lock"), `${DEAD_PID}:def:agent-b`);
   writeFileSync(join(turnLock, "turn-0.lock"), `${process.pid}:ghi`);
   // queue: one waiting .json (+ markName sidecar) and one claimed .processing
-  const qdir = join(root, "workspace-clawdi", "studio", "prelim-search", "queue"); mkdirSync(qdir, { recursive: true });
+  const qdir = join(root, "workspace-clawdi", "studio", "clearance-search", "queue"); mkdirSync(qdir, { recursive: true });
   writeFileSync(join(qdir, "job1.json"), JSON.stringify({ classes: [9, 42], profileKey: "zephyr", forwarder: "requesting-lawyer" }));
   writeFileSync(join(qdir, "job1.markName.md"), "AURORA GLOW\n");
   writeFileSync(join(qdir, "job2.processing"), "{}");

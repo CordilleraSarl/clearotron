@@ -88,7 +88,7 @@ const REAL_REASON = "[register-provider] CLEAROTRON_DATABASE is not set, and the
 
 /** A scratch outbox holding exactly the packets named. */
 const outboxWith = (packets) => {
-  const dir = join(mkdtempSync(join(tmpdir(), "precond-2030-")), "prelim-outbox");
+  const dir = join(mkdtempSync(join(tmpdir(), "precond-2030-")), "clearance-outbox");
   mkdirSync(dir, { recursive: true });
   for (const [name, body] of Object.entries(packets)) writeFileSync(join(dir, name), JSON.stringify(body));
   return dir;

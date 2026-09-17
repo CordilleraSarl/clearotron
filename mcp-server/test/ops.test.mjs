@@ -21,12 +21,12 @@ pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
 const { config } = await import("../lib/driver.mjs");
 const AGENT = config.defaultAgent;
 const WS = join(ROOT, `workspace-${AGENT}`);
-const QUEUE = join(WS, "studio", "prelim-search", "queue");
+const QUEUE = join(WS, "studio", "clearance-search", "queue");
 
 const { startRun, stopRun, feedContext, markSent, listOutboxEvents, getDeliveryPacket, ackEvent } = await import("../lib/ops.mjs");
 
 function makeRun({ slug = "tmpx-acme", codename = "2026-06-16-jade-x", state = "running" } = {}) {
-  const runDir = join(WS, "studio", "prelim-search", slug, codename);
+  const runDir = join(WS, "studio", "clearance-search", slug, codename);
   mkdirSync(driverDir(runDir), { recursive: true });
   const runId = `${slug}-${codename}`;
   writeFileSync(join(runDir, "status.json"), JSON.stringify({ runId, slug, codename, agent: AGENT, state, markName: "ACME" }));
@@ -97,7 +97,7 @@ test("start_run: rejects an unknown agent", () => {
 
 test("mark_sent: writes .sent + flips sendPending + clears the marker; idempotent on retry", () => {
   const { runDir, runId } = makeRun({ slug: "tmpx-sendme", codename: "2026-07-16-jade-y", state: "delivered" });
-  const outbox = join(ROOT, "prelim-outbox");
+  const outbox = join(ROOT, "clearance-outbox");
   mkdirSync(outbox, { recursive: true });
   pinEnv(process.env, "CLEAROTRON_OUTBOX_DIR", outbox);
   try {
@@ -132,7 +132,7 @@ test("mark_sent: a retry with the marker STILL present (a killed first call) rem
   // so the level-triggered prelim-outbox.path re-woke the courier every ~3.5min. This asserts the
   // previously-untested quadrant: .sent present AND marker present -> alreadySent:true AND marker removed.
   const { runDir, runId } = makeRun({ slug: "tmpx-orphan", codename: "2026-07-23-crimson-y", state: "delivered" });
-  const outbox = join(ROOT, "prelim-outbox");
+  const outbox = join(ROOT, "clearance-outbox");
   mkdirSync(outbox, { recursive: true });
   pinEnv(process.env, "CLEAROTRON_OUTBOX_DIR", outbox);
   try {
@@ -163,11 +163,11 @@ test("mark_sent: a retry with the marker STILL present (a killed first call) rem
 // ever finish the cleanup. Same dual-form defence rescanOwedRuns already applies to the queued check.
 test("mark_sent: BOTH runId forms of the marker are cleared — the packet's and the resolved run's (and on the alreadySent retry)", () => {
   const slug = "tmpcoralfreezealn-coral-freeze";
-  const runDir = join(WS, "studio", "prelim-search", slug, "2026-07-29-jade-w");
+  const runDir = join(WS, "studio", "clearance-search", slug, "2026-07-29-jade-w");
   mkdirSync(driverDir(runDir), { recursive: true });
   const dated = `${slug}-2026-07-29-jade-w`;      // status.json runId — the canonical form
   const dateless = `${slug}-jade-w`;              // delivery.json runId — the pre-change packet form
-  const outbox = join(ROOT, "prelim-outbox-forms");   // its OWN outbox: a leaked marker must never
+  const outbox = join(ROOT, "clearance-outbox-forms");   // its OWN outbox: a leaked marker must never
   mkdirSync(outbox, { recursive: true });             // change what the shared-dir listing tests count
   pinEnv(process.env, "CLEAROTRON_OUTBOX_DIR", outbox);
   try {
@@ -246,7 +246,7 @@ test("start_run: with CLEAROTRON_QUEUE_DIR set and NO agent, enqueues into the h
 });
 
 test("pure-MCP integrator loop: list_outbox_events -> get_delivery_packet -> ack_event", () => {
-  const outbox = join(ROOT, "prelim-outbox");
+  const outbox = join(ROOT, "clearance-outbox");
   mkdirSync(outbox, { recursive: true });
   pinEnv(process.env, "CLEAROTRON_OUTBOX_DIR", outbox);
   try {
@@ -558,7 +558,7 @@ test("stop_run by id: an untagged (pre-grants) job is NOT cancellable by a scope
 
 const failedRunWithNotice = (slug, codename) => {
   const { runDir, runId } = makeRun({ slug, codename, state: "failed" });
-  const outbox = join(ROOT, "prelim-outbox");
+  const outbox = join(ROOT, "clearance-outbox");
   mkdirSync(outbox, { recursive: true });
   pinEnv(process.env, "CLEAROTRON_OUTBOX_DIR", outbox);
   const packetRunId = `${slug}-${codename.split("-").slice(3).join("-")}`;
@@ -635,7 +635,7 @@ test("mark_sent: refuses without evidence; records an out-of-band attestation VE
   // called mark_sent anyway, .sent landed with messageId:null — and the .sent guard then suppressed
   // every retry while STATUS.md still said SEND PENDING. A settle without evidence is that lie's door.
   const { runDir, runId } = makeRun({ slug: "tmpx-evidence", codename: "2026-07-31-ivory-y", state: "delivered" });
-  const outbox = join(ROOT, "prelim-outbox");
+  const outbox = join(ROOT, "clearance-outbox");
   mkdirSync(outbox, { recursive: true });
   pinEnv(process.env, "CLEAROTRON_OUTBOX_DIR", outbox);
   try {
@@ -677,11 +677,11 @@ test("mark_sent: a marker minted under the DERIVED <slug>-<codename> form is cle
   // name next pass) but the recovery costs a RE-SEND: the deliver skill sends BEFORE mark_sent, so the
   // reader gets the report twice.
   const slug = "tmpz-legacyform";
-  const runDir = join(WS, "studio", "prelim-search", slug, "2026-07-31-slate-heron");
+  const runDir = join(WS, "studio", "clearance-search", slug, "2026-07-31-slate-heron");
   mkdirSync(driverDir(runDir), { recursive: true });
   const dated = `${slug}-2026-07-31-slate-heron`;
   const derived = `${slug}-slate-heron`;              // what rescanOwedRuns would mint; named by NO observed id
-  const outbox = join(ROOT, "prelim-outbox-derived");
+  const outbox = join(ROOT, "clearance-outbox-derived");
   mkdirSync(outbox, { recursive: true });
   pinEnv(process.env, "CLEAROTRON_OUTBOX_DIR", outbox);
   try {

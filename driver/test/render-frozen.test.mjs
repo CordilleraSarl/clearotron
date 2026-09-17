@@ -1920,7 +1920,7 @@ const FROZEN_BEFORE_SPDX = "9f8be1b597abd30f093044ddff8fe13f1dc6e328740b89e4e342
 // ── BREAK, 2026-09-04 — THE GLOBAL NAMESPACE RENAME (ruling, pre-cut) ────────────────────────
 //
 //   WHAT MOVED: two lines, and both carry the renamed token. One comment, and one real read —
-//   `process.env.PRELIM_MCP_URL` became `process.env.CLEAROTRON_MCP_URL`. Verified as the WHOLE of the
+//   `process.env.CLEARANCE_MCP_URL` became `process.env.CLEAROTRON_MCP_URL`. Verified as the WHOLE of the
 //   diff before the hash was touched: every changed line in the file carries the token and nothing
 //   else rode along.
 //

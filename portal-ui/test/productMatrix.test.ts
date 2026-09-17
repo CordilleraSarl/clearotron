@@ -164,7 +164,7 @@ test('nothing in the table names a component, a level key or a variable', () => 
   const words = productMatrix(PRODUCTS).rows.flatMap((r) => [r.label, ...r.cells.map((c) => c.text)]).join(' | ')
   for (const leak of [
     /jxLanes|commonLawGrid|registerProbe/,
-    /prelim-jx|knockout-register|prelim-register-only/,
+    /clearance-jx|knockout-register|clearance-register-only/,
     /[A-Z][A-Z0-9]*_[A-Z0-9_]+/,
     /\.mjs\b/,
   ]) {

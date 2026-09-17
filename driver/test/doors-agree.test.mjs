@@ -532,7 +532,7 @@ const REFUSAL_CASES = {
   // it — which is what makes it a parity case rather than a scope case wearing one's clothes.
   [REFUSAL_REASONS.SEARCH_LEVEL_RETIRED]: {
     label: "searchLevel, the retired depth selector, on an otherwise perfectly legal request",
-    req: { product: "knockout-search", worldwide: true, searchLevel: "prelim-jx" },
+    req: { product: "knockout-search", worldwide: true, searchLevel: "clearance-jx" },
     message: () => SEARCH_LEVEL_NOT_A_REQUEST.message,
   },
 };
@@ -627,13 +627,13 @@ test("caseLaw is refused for FALSE as well — it never suppressed anything", as
 });
 
 test("a product nobody offers is refused by name, with the offering enumerated and the remedy clause, at every door", async () => {
-  const said = await driveAll({ product: "prelim", worldwide: true });
-  // ONE sentence, from products.mjs. The CLI used to answer with its own — `--product "prelim" names no
+  const said = await driveAll({ product: "clearance", worldwide: true });
+  // ONE sentence, from products.mjs. The CLI used to answer with its own — `--product "clearance" names no
   // search we offer …` — fired before validateJob and missing `(or omit it for the account's default)`,
   // the single clause that tells a requester the field is optional. resolveSearchPolicy carried a third
   // variant, which is what the runner and the previews quoted.
-  assertAllRefuse("a retired level key as a product", said, unknownProductMessage("prelim"));
-  assert.match(unknownProductMessage("prelim"), /\(or omit it for the account's default\)$/);
+  assertAllRefuse("a retired level key as a product", said, unknownProductMessage("clearance"));
+  assert.match(unknownProductMessage("clearance"), /\(or omit it for the account's default\)$/);
 });
 
 test("more names than the product reads is refused in the same words — and SURFACED, never truncated", async () => {
@@ -865,7 +865,7 @@ const PROBE = Object.freeze({
   // plain passthroughs
   msgId: "<probe@enqueue.local>", conversationId: "probe-conv", forwarderEmail: "probe@example.com",
   forwarderDomain: "example.com", provider: "probe-provider", ref: "PROBE-REF", classes: [9],
-  product: "prelim-search", recipeKey: "probe-recipe", deliveryRoute: "email", parentRunId: "probe-parent",
+  product: "clearance-search", recipeKey: "probe-recipe", deliveryRoute: "email", parentRunId: "probe-parent",
   customer: "Probe Customer", profileKey: "generic", projectKey: "probe-project",
   // which organisation's Generic — the profile above is `generic`, so the field means something here
   tenant: "probe-org",

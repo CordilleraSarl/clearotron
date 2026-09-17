@@ -32,7 +32,7 @@ const ROOT = mkdtempSync(join(tmpdir(), "clearotron-2155-"));
 pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 
-const STUDIO = (agent) => join(ROOT, `workspace-${agent}`, "studio", "prelim-search");
+const STUDIO = (agent) => join(ROOT, `workspace-${agent}`, "studio", "clearance-search");
 const mkRun = (slug, run, agent = "clawdi") => {
   const d = join(STUDIO(agent), slug, run);
   mkdirSync(d, { recursive: true });

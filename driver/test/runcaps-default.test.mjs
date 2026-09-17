@@ -20,7 +20,7 @@ const { DEFAULT_CLIENT_DAILY_RUNS: PORTAL_DEFAULT, accountUsage } = await import
 const DAY = "2026-07-20T10:00:00.000Z";
 function ledger(rows) {
   const root = mkdtempSync(join(tmpdir(), "runcaps-"));
-  const qdir = join(root, "workspace-clawdi", "studio", "prelim-search", "queue");
+  const qdir = join(root, "workspace-clawdi", "studio", "clearance-search", "queue");
   mkdirSync(qdir, { recursive: true });
   const p = matterLedgerPath(qdir);
   mkdirSync(dirname(p), { recursive: true });

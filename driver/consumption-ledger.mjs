@@ -158,7 +158,7 @@ export function accountConsumption({ workspaceRoot, account, now = Date.now() })
 
   const rows = [];
   for (const ws of workspaces) {
-    const studio = join(workspaceRoot, ws, "studio", "prelim-search");
+    const studio = join(workspaceRoot, ws, "studio", "clearance-search");
     try {
       for (const line of readFileSync(consumptionLedgerPath(studio), "utf8").split("\n")) {
         if (!line.trim()) continue;

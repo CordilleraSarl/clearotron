@@ -7,7 +7,7 @@
 //   • run SLOTS         — live <pid>:<nonce>[:<tag>] lock files in runLockDir (slot-lock.mjs). A TURN
 //                         slot count sat beside it until; the turn cap fenced an agent gateway's
 //                         command lanes, and it left the product with the delivery mode that used it.
-//   • QUEUE             — <id>.json (+ prose sidecars) waiting in each agent's studio/prelim-search/queue/,
+//   • QUEUE             — <id>.json (+ prose sidecars) waiting in each agent's studio/clearance-search/queue/,
 //                         plus a .processing count (claimed-but-not-yet-published).
 //   • IN-FLIGHT + POSTPONED + RECENT — enumerateRuns() over every workspace status.json (running /
 //                         postponed [rate-limit paused, auto-resuming] / delivered / failed).
@@ -42,7 +42,7 @@ function countSlots(dir) {
   return { inUse, tags };
 }
 
-// …/<prefix><id>/studio/prelim-search/queue → "<id>"; "?" if the path isn't an agent queue dir.
+// …/<prefix><id>/studio/clearance-search/queue → "<id>"; "?" if the path isn't an agent queue dir.
 function agentOfQueue(qdir) {
   return config.agentIdFromQueueDir(qdir) ?? "?";
 }

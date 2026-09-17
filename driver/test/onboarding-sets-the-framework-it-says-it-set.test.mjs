@@ -115,7 +115,7 @@ test("SUPPLIED framework — used as given, and reported as the client's own", (
 });
 
 test("BROKEN framework — refused BY NAME, and never quietly rated under the default", () => {
-  const e = refusalFrom(() => resolveFramework("skills/prelim-search/no-such-framework.md", { resolveSkill }));
+  const e = refusalFrom(() => resolveFramework("skills/clearance-search/no-such-framework.md", { resolveSkill }));
   assert.match(e.message, /no-such-framework\.md/, "names the document that is missing");
   assert.match(e.message, /Refusing rather than/, "and says why it is not falling back");
   assert.match(e.message, /mistake, not an absence/, "the ruling's own distinction, in the message");
@@ -133,9 +133,9 @@ test("a framework whose manifest will not load is BROKEN, not absent", () => {
 });
 
 test("a path outside the shipped skills directory is refused before anything is read", () => {
-  for (const bad of ["/etc/passwd", "skills/prelim-search/../../secrets.md", "framework.md", "skills/other/x.md"]) {
+  for (const bad of ["/etc/passwd", "skills/clearance-search/../../secrets.md", "framework.md", "skills/other/x.md"]) {
     const e = refusalFrom(() => resolveFramework(bad, { resolveSkill }));
-    assert.match(e.message, /skills\/prelim-search/, `${bad} should be refused against the stated shape`);
+    assert.match(e.message, /skills\/clearance-search/, `${bad} should be refused against the stated shape`);
   }
 });
 
@@ -208,7 +208,7 @@ test("the collision check is case-insensitive on the roster's side too", () => {
 test("an unknown option is REFUSED rather than ignored", () => {
   // `--fraemwork skills/…` under a permissive parser onboards the client under the house default while
   // the operator believes they set theirs — a silent wrong answer on the one field this verb exists for.
-  const e = refusalFrom(() => parseArgs(["acme", "--fraemwork", "skills/prelim-search/x.md"]));
+  const e = refusalFrom(() => parseArgs(["acme", "--fraemwork", "skills/clearance-search/x.md"]));
   assert.match(e.message, /--fraemwork/, "names what was typed");
   assert.match(e.message, /--framework/, "and what exists");
 });
@@ -270,7 +270,7 @@ test("A BRAND OWNER ONBOARDED ONTO THE HOUSE DEFAULT IS NOT CALLED CUSTOM EITHER
 test("a brand owner with a framework of their own IS custom", async () => {
   // The capability has to survive the fix: this is the client whose page must say their matters are
   // NOT rated under the generic default.
-  const own = "skills/prelim-search/risk-framework-aurora.md";
+  const own = "skills/clearance-search/risk-framework-aurora.md";
   const service = serviceOver({ acme: { name: "Acme", platforms: ["amazon.com"], frameworkPath: own } });
   const r = await service.route("GET", "/profiles/acme", STAFF_IDENTITY);
   assert.equal(r.status, 200);
@@ -340,7 +340,7 @@ test("a BROKEN framework refuses BEFORE the bundle is written", async () => {
   const dir = tmp();
   let threw = null;
   try {
-    await add(["acme", "--name", "Acme SA", "--framework", "skills/prelim-search/no-such-framework.md"],
+    await add(["acme", "--name", "Acme SA", "--framework", "skills/clearance-search/no-such-framework.md"],
       { resolution: overlayOn(dir), loadProfiles: rosterOf({}), out: () => {} });
   } catch (e) { threw = e; }
   assert.ok(threw instanceof Refusal, `expected a Refusal, got ${threw?.name}: ${threw?.message}`);

@@ -154,8 +154,8 @@ async function research(params) {
     let spec;
     try { spec = validateGridSpec(JSON.parse(readFileSync(grid_spec_path, "utf8"))); }
     catch (err) { return `ERROR: grid_spec_path unreadable/invalid (${err.message}). The driver writes this file; do not hand-author it.`; }
-    if (!/\/studio\/prelim-search\//.test(spec.output_path))
-      return requiredLedgerRefusal(`ERROR: grid spec.output_path must be within a studio/prelim-search run dir; got ${spec.output_path}`, { spec, gridSpecPath: grid_spec_path });
+    if (!/\/studio\/clearance-search\//.test(spec.output_path))
+      return requiredLedgerRefusal(`ERROR: grid spec.output_path must be within a studio/clearance-search run dir; got ${spec.output_path}`, { spec, gridSpecPath: grid_spec_path });
     // — already recorded and complete? Answer from the ledger; do not buy the grid twice.
     const already = recordedLedgerFor(spec);
     if (already) {

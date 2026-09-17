@@ -130,7 +130,7 @@ test("the package is refused when it carries no house risk framework to rate und
   assert.deepEqual(missingFrom(full), [], "a package carrying all four is not refused");
 
   const withoutFramework = full.filter((e) => !e.path.endsWith("risk-framework.manifest.json"));
-  assert.deepEqual(missingFrom(withoutFramework), ["driver/skills/prelim-search/risk-framework.manifest.json"]);
+  assert.deepEqual(missingFrom(withoutFramework), ["driver/skills/clearance-search/risk-framework.manifest.json"]);
 
   assert.equal(missingFrom([]).length, MUST_SHIP.length, "an empty package is missing all of them");
 });
@@ -139,9 +139,9 @@ test("a FIXTURE framework is not the house default — the match is exact, not a
   // Without this the arm above is satisfied by a check that accepts risk-framework-demo.manifest.json
   // in place of the default, which is the shape the hyphen/dot accident produces in the first place.
   const decoys = [
-    { path: "package/driver/skills/prelim-search/risk-framework-demo.md", text: "" },
-    { path: "package/driver/skills/prelim-search/risk-framework-demo.manifest.json", text: "" },
-    { path: "package/driver/skills/prelim-search/worked-examples-demo.md", text: "" },
+    { path: "package/driver/skills/clearance-search/risk-framework-demo.md", text: "" },
+    { path: "package/driver/skills/clearance-search/risk-framework-demo.manifest.json", text: "" },
+    { path: "package/driver/skills/clearance-search/worked-examples-demo.md", text: "" },
     { path: "package/driver/profiles/demo-brand-owner.json", text: "" },
   ];
   assert.deepEqual(missingFrom(decoys), [...MUST_SHIP], "the fixtures satisfy none of the four");

@@ -73,7 +73,7 @@ test("loadCards reads the STAMPED `- net:` line, so a fresh run's cards do not g
   const dir = mkdtempSync(join(tmpdir(), "mcp-net-"));
   const report = join(dir, "report.md");
   writeFileSync(report, [
-    "---", "type: prelim-clearance", "overall_label: MEDIUM", "---", "",
+    "---", "type: clearance-clearance", "overall_label: MEDIUM", "---", "",
     "# Marks", "",
     "## Synth Pharma AG — VOLTMAX, EU",
     "- ord: 1",

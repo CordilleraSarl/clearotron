@@ -489,7 +489,7 @@ function Card({
       <span className={`home2-card-rule ${run.state}`} />
       <div className="home2-card-body">
         <div className="home2-card-head">
-          {/* WRAPS, never truncates — the retired preliminaries differ only in their suffix, so an
+          {/* WRAPS, never truncates — the retired clearanceinaries differ only in their suffix, so an
               ellipsis turns "registers + marketplace" and "registers only" into the same string, and
               they are close to opposite. Archived runs still carry those names. */}
           <span className="home2-depth">{label}</span>

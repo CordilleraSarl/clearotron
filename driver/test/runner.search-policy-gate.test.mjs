@@ -47,9 +47,9 @@ delete process.env.CLEAROTRON_JX_LANES;
 // Dynamic import AFTER env is set (driver.config captures the roots at module load).
 const { main, matterSignature, findDuplicateMatter, recordMatter } = await import("../runner.mjs");
 const { resolveSearchPolicy, gateResolvedPolicy } = await import("../search-policy.mjs");
-const Q = join(root, "workspace-clawdi", "studio", "prelim-search", "queue");
+const Q = join(root, "workspace-clawdi", "studio", "clearance-search", "queue");
 mkdirSync(Q, { recursive: true });
-const OUTBOX = join(root, "prelim-outbox");   // config.outboxDir default: <workspaceRoot>/prelim-outbox
+const OUTBOX = join(root, "clearance-outbox");   // config.outboxDir default: <workspaceRoot>/clearance-outbox
 
 // Delivered runs are MOVED to the archive subtree — discover run dirs by walking for the sidecar.
 const findSidecarRuns = (base) => {
@@ -98,16 +98,16 @@ test("findDuplicateMatter: the THREAD dimension is level-aware — a same-thread
   mkdirSync(qdir, { recursive: true });
   const now = Date.now();
   const koSig = "jordan|nova|9|acme||level:knockout";
-  const prelimSig = "jordan|nova|9|acme|";
+  const clearanceSig = "jordan|nova|9|acme|";
   recordMatter(qdir, { sig: koSig, conversationId: "conv1", msgId: "<m1@x>", id: "m1", ts: now });
   // the headline flow: same thread, same mark, DIFFERENT level ⇒ not a duplicate on either dimension
-  assert.equal(findDuplicateMatter(qdir, { sig: prelimSig, conversationId: "conv1", msgId: "<m2@x>" }, now), null,
+  assert.equal(findDuplicateMatter(qdir, { sig: clearanceSig, conversationId: "conv1", msgId: "<m2@x>" }, now), null,
     "knockout→clearotron escalation in the SAME email thread must run, not park");
   // same level, same thread ⇒ still a duplicate (the gate keeps protecting double-spend)
   assert.ok(findDuplicateMatter(qdir, { sig: koSig, conversationId: "conv1", msgId: "<m3@x>" }, now));
   // legacy entries (no suffix) read as clearotron: a clearotron re-send still dedups against them by thread
-  recordMatter(qdir, { sig: prelimSig, conversationId: "conv2", msgId: "<m4@x>", id: "m4", ts: now });
-  assert.ok(findDuplicateMatter(qdir, { sig: prelimSig, conversationId: "conv2", msgId: "<m5@x>" }, now));
+  recordMatter(qdir, { sig: clearanceSig, conversationId: "conv2", msgId: "<m4@x>", id: "m4", ts: now });
+  assert.ok(findDuplicateMatter(qdir, { sig: clearanceSig, conversationId: "conv2", msgId: "<m5@x>" }, now));
 });
 
 // ── admission gate (end to end through the real runner) ────────────────────────────────────────────
@@ -129,7 +129,7 @@ test("the retired switches refuse NOTHING at the gate — with the engine's own 
   for (const [label, resolved] of [
     ["knockout", resolveSearchPolicy({ product: "knockout-search" }, {})],
     ["knockout-register", resolveSearchPolicy({ product: "knockout-search" }, {})],
-    ["prelim-jx", resolveSearchPolicy({ product: "multi-country-focus-search" }, {})],
+    ["clearance-jx", resolveSearchPolicy({ product: "multi-country-focus-search" }, {})],
     ["a saved search", resolveSearchPolicy({ recipeKey: "plain" }, { profile: { key: "generic" }, recipes })],
   ]) {
     assert.equal(gateResolvedPolicy(resolved), null, `${label} must be admitted — it is built`);
@@ -142,7 +142,7 @@ test("a deliveryRoute:'portal' job PARKS AS CLARIFY (no consumer yet — never a
   // — BEFORE the assertions below. A run that never started leaves its
   // reason in the packets beside the queue; without this the counts below report it as a
   // product defect.
-  refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.search-policy-gate.test.mjs");
+  refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.search-policy-gate.test.mjs");
   assert.ok(existsSync(join(Q, "dr-1.failed")));
   assert.match(readFileSync(join(Q, "dr-1.failed.reason"), "utf8"), /portal.*not available/);
 });
@@ -158,7 +158,7 @@ test("a Full country search over more than one country PARKS AS CLARIFY at the w
   // — BEFORE the assertions below. A run that never started leaves its
   // reason in the packets beside the queue; without this the counts below report it as a
   // product defect.
-  refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.search-policy-gate.test.mjs");
+  refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.search-policy-gate.test.mjs");
   assert.ok(existsSync(join(Q, "cl-1.failed")), "parked as .failed — never run, never dropped");
   const reason = readFileSync(join(Q, "cl-1.failed.reason"), "utf8");
   assert.match(reason, /reads exactly one country/);
@@ -182,10 +182,10 @@ test("a NO-selector job runs the product its SCOPE names, end to end, and the ru
   // — BEFORE the assertions below. A run that never started leaves its
   // reason in the packets beside the queue; without this the counts below report it as a
   // product defect.
-  refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.search-policy-gate.test.mjs");
+  refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.search-policy-gate.test.mjs");
   assert.ok(existsSync(join(Q, "plain-1.done")), "the default path still delivers");
   // the frozen product identity (the delivered run has moved to the archive subtree)
-  const runDirs = findSidecarRuns(join(root, "workspace-clawdi", "studio", "prelim-search"));
+  const runDirs = findSidecarRuns(join(root, "workspace-clawdi", "studio", "clearance-search"));
   assert.equal(runDirs.length, 1, "exactly one run froze a search-policy sidecar");
   const sp = JSON.parse(readFileSync(driverDir(runDirs[0], "search-policy.json"), "utf8"));
   // NOT a house default any more: `clearotron` named three different searches depending on where it pointed,

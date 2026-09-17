@@ -37,7 +37,7 @@ test("HANDOFF (default): intake rejects park + write outbox packets with ZERO ga
   })) pinEnv(process.env, k, v);
   delete process.env.CLEAROTRON_DELIVERY; // exercise the DEFAULT (handoff)
 
-  const q = join(root, "workspace-clawdi", "studio", "prelim-search", "queue");
+  const q = join(root, "workspace-clawdi", "studio", "clearance-search", "queue");
   mkdirSync(q, { recursive: true });
   // (1) markless → "clarify"-class intake failure (runnable identity, missing search subject)
   writeFileSync(join(q, "job-markless.json"),

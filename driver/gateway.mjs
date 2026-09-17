@@ -34,7 +34,7 @@ import { MODEL_FILE as BLIND_FRAME_MODEL_FILE } from "./blind-frame-record.mjs";
 import { FLAGS_FILE as SKEPTIC_FLAGS_FILE } from "./skeptic-record.mjs";
 import { MODEL_FILE as FRAME_DIFF_MODEL_FILE, PROSE_FILE as FRAME_DIFF_PROSE_FILE } from "./frame-diff-record.mjs";
 import { MATTER_CONTEXT_FILE } from "./matter-frame-record.mjs";
-import { MODEL_FILE as VARIANT_MODEL_FILE, PROSE_FILE as VARIANT_PROSE_FILE } from "./prelim-variants-record.mjs";
+import { MODEL_FILE as VARIANT_MODEL_FILE, PROSE_FILE as VARIANT_PROSE_FILE } from "./clearance-variants-record.mjs";
 import { PROSE_FILE as REPORT_OVERVIEW_FILE } from "./report-overview-record.mjs";
 import { NARRATIVE_FILE, FINDINGS_FILE, refusalsFor } from "./synthesis-record.mjs";
 import { FINDINGS_FILE as REGISTER_FINDINGS_FILE, refusalsFor as registerDigestRefusalsFor } from "./register-digest-record.mjs";
@@ -96,8 +96,8 @@ export const TOOL_WRITTEN_ARTIFACTS = new Map([
   // scope-ledger.json is deliberately ABSENT: it was already driver-written before this conversion (the
   // driver derived it), so it is outside this conversion's claim. What changed is where its values come
   // from, not who writes it.
-  [VARIANT_MODEL_FILE, { tool: "record_prelim_variants", what: "the variant manifest" }],
-  [VARIANT_PROSE_FILE, { tool: "record_prelim_variants", what: "the variant manifest" }],
+  [VARIANT_MODEL_FILE, { tool: "record_clearance_variants", what: "the variant manifest" }],
+  [VARIANT_PROSE_FILE, { tool: "record_clearance_variants", what: "the variant manifest" }],
   // Conversion 4 — ONE basename, and the first row whose artifact a CLIENT reads. report-overview.md is
   // the delivered report's front-matter and its Actions section; assembleReportMd splices the code-built
   // sections into it and publishes the result. So a repair that arrives naming this file and gets handed
@@ -2088,7 +2088,7 @@ function refusalsInWindow(files, runDir, from, to) {
 }
 
 function rel(p) {
-  const i = p.indexOf("/prelim-search/");
+  const i = p.indexOf("/clearance-search/");
   return i >= 0 ? p.slice(i + 1) : p;
 }
 

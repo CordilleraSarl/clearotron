@@ -32,7 +32,7 @@
 //
 // ── WHAT IS DELIBERATELY NOT HERE ────────────────────────────────────────────────────────────────
 //
-// PRODUCT VOCABULARY. `lane`, `round`, `box`, `ruling`, `prelim`, `knockout`, `seat` and `jx` are this
+// PRODUCT VOCABULARY. `lane`, `round`, `box`, `ruling`, `clearance`, `knockout`, `seat` and `jx` are this
 // product's own nouns. A guard refusing them fires thousands of times, and a guard that fires on
 // correct prose is one whose next reader deletes from the workflow.
 //

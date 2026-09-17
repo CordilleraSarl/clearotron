@@ -117,7 +117,7 @@ test("validators.commonLaw: the dictated grid-spec is the join source — floor 
     mkdirSync(driverDir(dir), { recursive: true });
     // A 3-platform dictated grid (NOT the historical hardcoded 7) for terms the prose manifest never names.
     const SP = ["store.steampowered.com", "play.google.com", "web"];
-    const spec = { terms: ["AURORA", "AUR0RA", "ORORA"], platforms: SP, output_path: "/x/studio/prelim-search/r/common-law-grid.json" };
+    const spec = { terms: ["AURORA", "AUR0RA", "ORORA"], platforms: SP, output_path: "/x/studio/clearance-search/r/common-law-grid.json" };
     writeFileSync(driverDir(dir, "grid-spec.json"), JSON.stringify(spec));
     writeFileSync(join(dir, "variant-manifest.md"), MANIFEST); // disagrees with the spec on purpose
     const findings = `# Common-law findings

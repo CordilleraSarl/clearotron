@@ -41,7 +41,7 @@ import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins E
 
 const ROOT = mkdtempSync(join(tmpdir(), "ack-gate-ws-"));
 pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);                     // driver.config reads it lazily, but pin it before import
-const OUTBOX = join(ROOT, "prelim-outbox");
+const OUTBOX = join(ROOT, "clearance-outbox");
 pinEnv(process.env, "CLEAROTRON_OUTBOX_DIR", OUTBOX);
 mkdirSync(OUTBOX, { recursive: true });
 
@@ -49,7 +49,7 @@ const { ackEvent, listOutboxEvents } = await import("../lib/ops.mjs");
 
 /** A run tagged with an account, exactly as the driver freezes it. Returns its runId. */
 function makeRun(slug, codename, profileKey) {
-  const runDir = join(ROOT, "workspace-clawdi", "studio", "prelim-search", slug, codename);
+  const runDir = join(ROOT, "workspace-clawdi", "studio", "clearance-search", slug, codename);
   mkdirSync(driverDir(runDir), { recursive: true });
   const runId = `${slug}-${codename}`;
   writeFileSync(join(runDir, "status.json"), JSON.stringify({

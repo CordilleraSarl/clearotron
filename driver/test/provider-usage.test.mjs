@@ -119,7 +119,7 @@ test("rerun suffixes still attribute to the run (prefix match covers -rerunN)", 
 
 test("attributes gateway-namespaced sessionKeys: agent:<id>:clearotron-… (the live format)", () => {
   // The gateway prepends `agent:<agentId>:` to the driver's --session-key before it reaches the plugin;
-  // a bare startsWith("prelim-…") would miss all of these. This is the exact shape seen on the first live run.
+  // a bare startsWith("clearance-…") would miss all of these. This is the exact shape seen on the first live run.
   const t = tallyRows([
     { ts: "t", sessionKey: `agent:clawdi:${RUN}register-unit-primary-sweep`,            sessionId: "uuid-a", tool: "search",       ok: true, attempts: 1, bytes: 10, cache_hit: false },
     { ts: "t", sessionKey: `agent:clawdi:${RUN}register-unit-transliteration-numeric`,  sessionId: "uuid-b", tool: "record_fetch", target: "/m/1", ok: true, attempts: 1, bytes: 20, cache_hit: false },

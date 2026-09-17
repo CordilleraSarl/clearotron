@@ -80,8 +80,8 @@ test("E2(openai): full pipeline runs on the openai-agent engine (CLEAR, delivere
   const order = events.filter((e) => e.event === "stage").map((e) => e.stage);
   const idx = (s) => order.findIndex((x) => x.startsWith(s));
   // SAME ordering invariants as the anthropic happy path → the engine swap is structurally transparent.
-  assert.ok(idx("matter-frame") >= 0 && idx("matter-frame") < idx("prelim-variants"), "matter-frame before variants");
-  assert.ok(idx("prelim-variants") < idx("common-law"), "variants before gather");
+  assert.ok(idx("matter-frame") >= 0 && idx("matter-frame") < idx("clearance-variants"), "matter-frame before variants");
+  assert.ok(idx("clearance-variants") < idx("common-law"), "variants before gather");
   assert.ok(idx("skeptic") < idx("synthesis"), "skeptic before synthesis");
   assert.ok(idx("synthesis") < idx("narrative-refutation"), "synthesis before refutation");
   for (const ax of ["saturation-probe", "primary-sweep", "transliteration-numeric", "incumbent-class"])
@@ -108,7 +108,7 @@ test("E2(openai): full pipeline runs on the openai-agent engine (CLEAR, delivere
     const msg = call.prompt || "";
     assert.ok(!BARE_SKILL_REF.test(msg), `a stage prompt kept a workspace-relative skills ref: ${msg.match(BARE_SKILL_REF)?.[0]}`);
     const addDirs = call.argv.reduce((acc, a, i) => (a === "--add-dir" ? [...acc, call.argv[i + 1]] : acc), []);
-    assert.ok(addDirs.some((d) => d && /\/studio\/prelim-search\//.test(d)), "compute turn grants --add-dir on the run dir");
+    assert.ok(addDirs.some((d) => d && /\/studio\/clearance-search\//.test(d)), "compute turn grants --add-dir on the run dir");
   }
   assert.match(first.prompt, /\/driver\/skills\/matter-frame\/SKILL\.md/, "matter-frame skill ref absolutized to the driver's skills tree");
 
@@ -270,9 +270,9 @@ test("E2(openai): an api-key billing mode with no key is REFUSED AT THE DOOR (na
   });
   // "Before a run directory exists" is the whole property, so it is asserted from the filesystem and not
   // from the message. The whole ROOT is listed rather than one guessed path checked absent: a run dir sits
-  // two levels down (<root>/workspace-clawdi/studio/prelim-search/…), so a path guessed at the top would
-  // read as absent whatever the door did. `prelim-run-locks` is the run slot `pipeline()` takes before
+  // two levels down (<root>/workspace-clawdi/studio/clearance-search/…), so a path guessed at the top would
+  // read as absent whatever the door did. `clearance-run-locks` is the run slot `pipeline()` takes before
   // `pipelineInner` runs; a run that got past the door would put `workspace-clawdi` beside it.
-  assert.deepEqual(readdirSync(lastRoot), ["prelim-run-locks"],
+  assert.deepEqual(readdirSync(lastRoot), ["clearance-run-locks"],
     "a refused run leaves no run directory, no frozen profile and no status sidecar behind");
 });

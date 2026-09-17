@@ -79,8 +79,8 @@ test("E2: full pipeline runs on the anthropic-agent engine (CLEAR, delivered, al
   const order = events.filter((e) => e.event === "stage").map((e) => e.stage);
   const idx = (s) => order.findIndex((x) => x.startsWith(s));
   // same ordering invariants as the gateway-bin happy path → the engine swap is transparent
-  assert.ok(idx("matter-frame") >= 0 && idx("matter-frame") < idx("prelim-variants"), "matter-frame before variants");
-  assert.ok(idx("prelim-variants") < idx("common-law"), "variants before gather");
+  assert.ok(idx("matter-frame") >= 0 && idx("matter-frame") < idx("clearance-variants"), "matter-frame before variants");
+  assert.ok(idx("clearance-variants") < idx("common-law"), "variants before gather");
   assert.ok(idx("skeptic") < idx("synthesis"), "skeptic before synthesis");
   assert.ok(idx("synthesis") < idx("narrative-refutation"), "synthesis before refutation");
   assert.ok(idx("narrative-refutation") < idx("report-overview"), "report-overview after refutation");
@@ -106,7 +106,7 @@ test("E2: full pipeline runs on the anthropic-agent engine (CLEAR, delivered, al
   // its skill refs absolutized: no bare `skills/…md` token survives into the prompt (claude -p
   // cwd=tmpdir cannot resolve workspace-relative paths; that was the matter-frame blocker).
   const BARE_SKILL_REF = /(?<![\w/.])skills\/[A-Za-z0-9._/-]+\.md/;
-  const RUN_DIR_RE = /\/studio\/prelim-search\//;
+  const RUN_DIR_RE = /\/studio\/clearance-search\//;
   for (const call of claudeCalls) {
     const msg = call.prompt || "";
     assert.ok(!BARE_SKILL_REF.test(msg), `a stage prompt kept a workspace-relative skills ref: ${msg.match(BARE_SKILL_REF)?.[0]}`);

@@ -174,7 +174,7 @@ test("REPLAY — the issue's own acceptance, in its own terms", () => {
   const QUEUE = "/srv/trademark-test/queue";
   const r = v({
     queueDirs: [QUEUE],
-    watched: ["/srv/agentplatform/workspace-a/studio/prelim-search/queue"],
+    watched: ["/srv/agentplatform/workspace-a/studio/clearance-search/queue"],
     timer: { unit: "prelim-driver.timer", present: true, enabled: true, error: null },
   });
   assert.doesNotMatch(r.message, /never drained/, "#1368's replay acceptance, verbatim");

@@ -36,7 +36,7 @@ const FRAGMENT = "1871 Meridian race riot";
 
 function fixture() {
   const root = mkdtempSync(join(tmpdir(), "clearotron-disp-tool-"));
-  const runDir = join(root, "studio", "prelim-search", "tmp9001-novapulse", "2026-08-16-quiet-harbour");
+  const runDir = join(root, "studio", "clearance-search", "tmp9001-novapulse", "2026-08-16-quiet-harbour");
   mkdirSync(driverDir(runDir), { recursive: true });
   const output_path = join(runDir, "common-law-grid.half-m.json");
   writeFileSync(output_path, JSON.stringify(ON_DISK, null, 2));

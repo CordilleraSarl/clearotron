@@ -164,7 +164,7 @@ test("filterByAccounts narrows list_runs/list_profiles/list_outbox_events/search
   // that left every real run untagged)
   const ws = mkdtempSync(join(tmpdir(), "grants-ws-"));
   const mk = (slug, run, key) => {
-    const d = join(ws, "workspace-test", "studio", "prelim-search", slug, run);
+    const d = join(ws, "workspace-test", "studio", "clearance-search", slug, run);
     mkdirSync(driverDir(d), { recursive: true });
     writeFileSync(join(d, "status.json"), JSON.stringify({ schema: 1, runId: `${slug}-${run}`, slug, codename: run, agent: "test", state: "delivered", updatedAt: "2026-01-01T00:00:00Z" }));
     if (key) writeFileSync(driverDir(d, "profile.json"), JSON.stringify({ profileKey: key, name: "Fixture" }));

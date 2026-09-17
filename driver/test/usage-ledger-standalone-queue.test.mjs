@@ -4,7 +4,7 @@
 // deployment shape that broke it.
 //
 // THE FIXTURE IS THE POINT. runcaps-default.test.mjs builds its queue INSIDE a workspace
-// (<root>/workspace-clawdi/studio/prelim-search/queue), which is the layout the old workspace-relative
+// (<root>/workspace-clawdi/studio/clearance-search/queue), which is the layout the old workspace-relative
 // reconstruction was written for — so it passed while the deployed product counted zero for every
 // account. Here the queue is a standalone directory with the ledger beside it, exactly as
 // CLEAROTRON_QUEUE_DIR deployments run, and there is no workspace anywhere.
@@ -46,8 +46,8 @@ test("the wall and the pre-check share ONE ledger-path function — the SAME fun
 test("the ledger path is derived from the QUEUE dir, wherever the queue lives", () => {
   assert.equal(matterLedgerPath("/srv/tm/queue"), "/srv/tm/.matter-ledger.jsonl");
   // the workspace-embedded layout still resolves the way it always did
-  assert.equal(matterLedgerPath("/h/agentplatform/workspace-clawdi/studio/prelim-search/queue"),
-    "/h/agentplatform/workspace-clawdi/studio/prelim-search/.matter-ledger.jsonl");
+  assert.equal(matterLedgerPath("/h/agentplatform/workspace-clawdi/studio/clearance-search/queue"),
+    "/h/agentplatform/workspace-clawdi/studio/clearance-search/.matter-ledger.jsonl");
 });
 
 // ── The count, on the shape that broke ─────────────────────────────────────────────────────────────
