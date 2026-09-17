@@ -37,7 +37,7 @@ test("every label is a BARE rung, which is why there is no separate stage field"
     assert.equal(productRow(key).stageLabel, productRow(key).name, `${key}: the label is the name`);
     assert.doesNotMatch(productRow(key).stageLabel, /^Depth \d/, `${key}: a rung survived into the offering`);
   }
-  assert.equal(productRow("prelim").stageLabel, "Depth 4", "an archived run keeps the rung it was sold under");
+  assert.equal(productRow("clearance").stageLabel, "Depth 4", "an archived run keeps the rung it was sold under");
 });
 
 test("the menu is the offering, in offering order, and it ascends by effort", () => {
@@ -47,7 +47,7 @@ test("the menu is the offering, in offering order, and it ascends by effort", ()
   assert.ok(rows.every((r) => r.orderable), "productRows offers; it never lists a retired row");
   // EVERY RETIRED ROW IS STILL NAMEABLE, and that is what separates naming from offering: a run
   // delivered before the offering existed re-renders under the name it was sold under.
-  for (const key of ["knockout", "knockout-register", "prelim", "prelim-jx", "prelim-register-only"]) {
+  for (const key of ["knockout", "knockout-register", "clearance", "clearance-jx", "clearance-register-only"]) {
     const row = productRow(key);
     assert.ok(row, `${key}: a retired row must stay nameable`);
     assert.equal(row.orderable, false, `${key}: …and must not be orderable`);

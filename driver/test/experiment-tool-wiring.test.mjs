@@ -21,7 +21,7 @@
 //   · the seat held no research tool                (ruled out below, for every stage)
 //   · PERPLEXITY_API_KEY unset — the server starts fine and answers the CALL with an ERROR string
 //     (perplexity-server.mjs:108), which the driver never sees
-//   · the tool refused the output_path             (perplexity-server.mjs:116, the studio/prelim-search guard)
+//   · the tool refused the output_path             (perplexity-server.mjs:116, the studio/clearance-search guard)
 //   · the seat simply did not call it
 //
 // The arm's context receipt now records its wiring, so the first of those is answerable from the record
@@ -80,8 +80,8 @@ test("the sandbox dispatches on the same label production does — one construct
 // ══ every stage: arm wiring == production wiring ═════════════════════════════════════════════════
 
 test("for EVERY stage, an arm's tool wiring equals the production dispatch's", () => {
-  const opts = { sessionKey: "clearotron-x-y-z", agent: "clearotron-agent-1", runDir: "/srv/x/studio/prelim-search/j/c" };
-  const armOpts = { ...opts, sessionKey: "prelim-exp-x-y-z", runDir: `${opts.runDir}/_experiments/2026-01-01-x` };
+  const opts = { sessionKey: "clearotron-x-y-z", agent: "clearotron-agent-1", runDir: "/srv/x/studio/clearance-search/j/c" };
+  const armOpts = { ...opts, sessionKey: "clearance-exp-x-y-z", runDir: `${opts.runDir}/_experiments/2026-01-01-x` };
   let tooled = 0;
   for (const name of Object.keys(STAGES)) {
     const axes = AXIS_CASES.filter(([n]) => n === name).map(([, a]) => a);
@@ -103,7 +103,7 @@ test("for EVERY stage, an arm's tool wiring equals the production dispatch's", (
 
 test("a common-law-half arm DOES hold the research tool — the issue's premise, tested", () => {
   const arm = experimentWiring("common-law-half", "m",
-    { sessionKey: "prelim-exp-a", agent: "clearotron-agent-1", runDir: "/srv/x/studio/prelim-search/j/c/_experiments/e" });
+    { sessionKey: "clearance-exp-a", agent: "clearotron-agent-1", runDir: "/srv/x/studio/clearance-search/j/c/_experiments/e" });
   // — TWO groups and two servers. The disposition transport left the shared `perplexity` entry
   // for its own key; an experiment arm resolves the SAME map as the production dispatch, so it picks up
   // the split without a second declaration — which is the property the sweep above exists to keep.
@@ -128,7 +128,7 @@ test("the tool this sweep needs is reachable, but its ABSENCE would not be visib
   assert.match(src, /if \(!API_KEY\) return "ERROR: PERPLEXITY_API_KEY not set/,
     "a keyless server STARTS and refuses at the call — so the tool is present, answers an error string, "
     + "and the driver's record shows only that no ledger appeared");
-  assert.match(src, /grid spec\.output_path must be within a studio\/prelim-search run dir/,
+  assert.match(src, /grid spec\.output_path must be within a studio\/clearance-search run dir/,
     "…and a path the tool refuses produces the same silence");
 });
 

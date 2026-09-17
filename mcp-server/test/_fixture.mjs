@@ -36,14 +36,14 @@ process.on("exit", () => {
 export const WS = process.env.CLEAROTRON_WORK_DIR;
 export const POOL = process.env.CLEAROTRON_REPORTS_DIR;
 export const RUN_ID = "tmptest1-acme-2026-06-08-copper-anvil";
-const RUN_DIR = join(WS, "workspace-test", "studio", "prelim-search", "tmptest1-acme", "2026-06-08-copper-anvil");
-const STUDIO = join(WS, "workspace-test", "studio", "prelim-search");
+const RUN_DIR = join(WS, "workspace-test", "studio", "clearance-search", "tmptest1-acme", "2026-06-08-copper-anvil");
+const STUDIO = join(WS, "workspace-test", "studio", "clearance-search");
 
 // A second, "rich" run (delivered, archived) for the timeline / diff / cross-run tools: an escalation
 // re-digest that changed register-findings.md's sha, a BLOCKING→CONDITIONAL verdict pair, a manual-rerun
 // _history snapshot to diff against, and a scattered-token line (MYRKUR … similar mark … conflict).
 export const RUN_ID2 = "tmpmyrk1-myrkur-2026-05-20-iron-heron";
-const RUN_DIR2 = join(WS, "workspace-test", "studio", "prelim-search", "archive", "2026-05", "tmpmyrk1-myrkur", "2026-05-20-iron-heron");
+const RUN_DIR2 = join(WS, "workspace-test", "studio", "clearance-search", "archive", "2026-05", "tmpmyrk1-myrkur", "2026-05-20-iron-heron");
 
 const sha = (buf) => createHash("sha256").update(buf).digest("hex").slice(0, 12);
 function w(path, text) { mkdirSync(join(path, ".."), { recursive: true }); writeFileSync(path, text); }
@@ -69,7 +69,7 @@ export function buildFixture() {
     // front matter carries the two INTERNAL-only keys a client must never see, in their real shapes:
     // overall_badge (the Level/Composite code the report footer says is "removed on export") and
     // rated_under's `· profile <hash>` tail (framework config identity). See lib/scrub.mjs.
-    "---", "type: prelim-clearance", "matter: TMPTEST1", "title: ACME", "client: ACME Corp",
+    "---", "type: clearance-clearance", "matter: TMPTEST1", "title: ACME", "client: ACME Corp",
     "classes: 9, 42", "overall_label: MEDIUM", "overall_badge: l3",
     "rated_under: House default (generic) · house default framework · profile d37721cda899", "---", "",
     "# Marks", "",
@@ -117,7 +117,7 @@ export function buildFixture() {
 
   // per-attempt telemetry for report-overview (cost prior + get_telemetry)
   w(driverDir(RUN_DIR, "report-overview.jsonl"),
-    JSON.stringify({ ts: "2026-06-08T10:00:00Z", attempt: 1, key: "prelim-tmptest1-acme-copper-anvil-report-overview", model: "anthropic/claude-sonnet-4-6", modelUsed: "anthropic/claude-sonnet-4-6", code: 0, wall: 45, status: "ok", fail: null, usage: { input: 4000, output: 1200, total: 5200 }, output: meta(p("report.md")) }) + "\n");
+    JSON.stringify({ ts: "2026-06-08T10:00:00Z", attempt: 1, key: "clearance-tmptest1-acme-copper-anvil-report-overview", model: "anthropic/claude-sonnet-4-6", modelUsed: "anthropic/claude-sonnet-4-6", code: 0, wall: 45, status: "ok", fail: null, usage: { input: 4000, output: 1200, total: 5200 }, output: meta(p("report.md")) }) + "\n");
 
   // run.jsonl — the self-describing provenance graph
   const stage = (label, out, inputs, model, trigger = "fresh") => ({
@@ -129,7 +129,7 @@ export function buildFixture() {
     { event: "start", agent: "test", job: { id: "job1", slug: "tmptest1-acme", codename: "copper-anvil" } },
     { event: "axes", axes: ["saturation-probe", "primary-sweep"] },
     stage("matter-frame", "matter-context.md", [], OPUS),
-    stage("prelim-variants", "variant-manifest.md", ["matter-context.md"], OPUS),
+    stage("clearance-variants", "variant-manifest.md", ["matter-context.md"], OPUS),
     stage("common-law", "common-law-findings.md", ["variant-manifest.md", "matter-context.md"], HAIKU),
     stage("register-unit:primary-sweep", "register-units/primary-sweep.md", ["variant-manifest.md", "matter-context.md"], SONNET),
     stage("register-unit:saturation-probe", "register-units/saturation-probe.md", ["variant-manifest.md", "matter-context.md"], HAIKU),
@@ -158,9 +158,9 @@ export function buildFixture() {
   const led = process.env.CLEAROTRON_REGISTER_CALL_LOG;
   const lrow = (tool, key) => JSON.stringify({ ts: "2026-06-08T10:00:00Z", agentId: "test", sessionKey: `agent:test:${key}`, sessionId: `agent:test:${key}`, tool, target: "/mark/us/123", http_status: 200, ok: true, attempts: 1, took_ms: 50, bytes: 100, cache_hit: false });
   w(led, [
-    lrow("search", "prelim-tmptest1-acme-copper-anvil-register-unit-primary-sweep"),
-    lrow("search", "prelim-tmptest1-acme-copper-anvil-register-digest"),
-    lrow("record_fetch", "prelim-tmptest1-acme-copper-anvil-register-unit-primary-sweep"),
+    lrow("search", "clearance-tmptest1-acme-copper-anvil-register-unit-primary-sweep"),
+    lrow("search", "clearance-tmptest1-acme-copper-anvil-register-digest"),
+    lrow("record_fetch", "clearance-tmptest1-acme-copper-anvil-register-unit-primary-sweep"),
     JSON.stringify({ ts: "x", sessionKey: "agent:other:clearotron-someoneelse-xyz-register-digest", tool: "search", ok: true }), // must NOT match
   ].join("\n") + "\n");
 

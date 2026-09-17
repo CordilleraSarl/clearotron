@@ -10,7 +10,7 @@ import type { CreatedCompany } from '../src/contract/api.ts'
 const made = (over: Partial<CreatedCompany> = {}): CreatedCompany => ({
   key: 'acme',
   name: 'Acme Ltd',
-  framework: { path: 'skills/prelim-search/risk-framework.md', defaulted: true },
+  framework: { path: 'skills/clearance-search/risk-framework.md', defaulted: true },
   marketplaces: { count: 6, defaulted: true },
   commitError: null,
   ...over,

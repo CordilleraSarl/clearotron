@@ -37,7 +37,7 @@ import { stageInputs, REGISTER_ONLY_NOTE } from "../stages.mjs";
 import { buildAudit, validateAudit } from "../publish/xlsx.mjs";
 import * as plan from "../../mcp-server/lib/plan.mjs";
 
-const KEY = "prelim-register-only";
+const KEY = "clearance-register-only";
 const RO = policyFor(KEY);
 const DRIVER_DIR = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -73,7 +73,7 @@ test("the ladder is gone entirely, and the retired rung keeps its number anyway"
   assert.deepEqual(productRows().map((r) => r.stageLabel),
     ["Knockout search", "Global preliminary search", "Multi-country focus search", "Full country search"]);
   assert.equal(productRow(KEY).stageLabel, "Depth 3");
-  assert.equal(productRow("prelim").stageLabel, "Depth 4", "and the rung it sat beside is untouched too");
+  assert.equal(productRow("clearance").stageLabel, "Depth 4", "and the rung it sat beside is untouched too");
 });
 
 // ── the doors ────────────────────────────────────────────────────────────────────────────────────────
@@ -160,7 +160,7 @@ test("a knockout is NOT register-only, even though it carries commonLawGrid:fals
   assert.equal(isRegisterOnly(policyFor("knockout-search")), false);
   assert.equal(isRegisterOnly(policyFor("knockout-register")), false);
   assert.equal(isRegisterOnly(FROZEN), true, "a frozen sidecar from a run that did happen still reads true");
-  assert.equal(isRegisterOnly(policyFor("prelim")), false);
+  assert.equal(isRegisterOnly(policyFor("clearance")), false);
 });
 
 test("a policy frozen before the component existed reads as grid-ran (archived runs never change)", () => {

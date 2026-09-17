@@ -21,12 +21,12 @@ pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
 const { config } = await import("../lib/driver.mjs");
 const AGENT = config.defaultAgent;
 const WS = join(ROOT, `workspace-${AGENT}`);
-const QUEUE = join(WS, "studio", "prelim-search", "queue");
+const QUEUE = join(WS, "studio", "clearance-search", "queue");
 
 const { startRun, stopRun, feedContext, markSent, listOutboxEvents, getDeliveryPacket, ackEvent } = await import("../lib/ops.mjs");
 
 function makeRun({ slug = "tmpx-acme", codename = "2026-06-16-jade-x", state = "running" } = {}) {
-  const runDir = join(WS, "studio", "prelim-search", slug, codename);
+  const runDir = join(WS, "studio", "clearance-search", slug, codename);
   mkdirSync(driverDir(runDir), { recursive: true });
   const runId = `${slug}-${codename}`;
   writeFileSync(join(runDir, "status.json"), JSON.stringify({ runId, slug, codename, agent: AGENT, state, markName: "ACME" }));
@@ -163,7 +163,7 @@ test("mark_sent: a retry with the marker STILL present (a killed first call) rem
 // ever finish the cleanup. Same dual-form defence rescanOwedRuns already applies to the queued check.
 test("mark_sent: BOTH runId forms of the marker are cleared — the packet's and the resolved run's (and on the alreadySent retry)", () => {
   const slug = "tmpcoralfreezealn-coral-freeze";
-  const runDir = join(WS, "studio", "prelim-search", slug, "2026-07-29-jade-w");
+  const runDir = join(WS, "studio", "clearance-search", slug, "2026-07-29-jade-w");
   mkdirSync(driverDir(runDir), { recursive: true });
   const dated = `${slug}-2026-07-29-jade-w`;      // status.json runId — the canonical form
   const dateless = `${slug}-jade-w`;              // delivery.json runId — the pre-change packet form
@@ -677,7 +677,7 @@ test("mark_sent: a marker minted under the DERIVED <slug>-<codename> form is cle
   // name next pass) but the recovery costs a RE-SEND: the deliver skill sends BEFORE mark_sent, so the
   // reader gets the report twice.
   const slug = "tmpz-legacyform";
-  const runDir = join(WS, "studio", "prelim-search", slug, "2026-07-31-slate-heron");
+  const runDir = join(WS, "studio", "clearance-search", slug, "2026-07-31-slate-heron");
   mkdirSync(driverDir(runDir), { recursive: true });
   const dated = `${slug}-2026-07-31-slate-heron`;
   const derived = `${slug}-slate-heron`;              // what rescanOwedRuns would mint; named by NO observed id

@@ -21,7 +21,7 @@ const runDir = () => {
 };
 const ctxFor = (d, profile = null) => ({ paths: { runDir: d }, profile });
 
-test("cold start mints the sidecar: house-default prelim, frozen once, read verbatim on resume", () => {
+test("cold start mints the sidecar: house-default clearance, frozen once, read verbatim on resume", () => {
   const d = runDir();
   const ctx = ctxFor(d);
   attachSearchPolicy(ctx, {}, { write: true });
@@ -56,19 +56,19 @@ test("a corrupt sidecar fails LOUD — the frozen policy is never silently re-de
   assert.throws(() => attachSearchPolicy(ctxFor(d), {}, { write: false }), /corrupt/);
 });
 
-test("legacy resume (no sidecar, read-only) is an implicit prelim and mints NOTHING — but only for selector-less jobs", () => {
+test("legacy resume (no sidecar, read-only) is an implicit clearance and mints NOTHING — but only for selector-less jobs", () => {
   const d = runDir();
   const ctx = ctxFor(d);
   attachSearchPolicy(ctx, {}, { write: false });
   // THE LEGACY SHAPE KEEPS ITS OWN NAME. A run dir with no frozen sidecar predates the offering, and
-  // naming it as a product this build sells would claim it was one. `prelim` is a RETIRED row, still
+  // naming it as a product this build sells would claim it was one. `clearance` is a RETIRED row, still
   // nameable, which is exactly what a run from before the offering needs.
-  assert.equal(ctx.searchPolicy.level, "prelim");
+  assert.equal(ctx.searchPolicy.level, "clearance");
   assert.equal(ctx.searchPolicy.origins.level, "legacy-implicit");
   assert.ok(!existsSync(driverDir(d, "search-policy.json")), "read-only never retro-mints");
   // A SELECTOR-CARRYING JOB MUST NOT BE ASSUMED INTO A CLEARANCE. The guard read the DELETED
   // `job.searchLevel`, so it was true for every job and the product arm was unreachable — a job that
-  // spelled out `product: "full-country-search"` was assumed into a retired `prelim`. It reads the two
+  // spelled out `product: "full-country-search"` was assumed into a retired `clearance`. It reads the two
   // selectors that exist now, and BOTH arms refuse.
   assert.throws(() => attachSearchPolicy(ctxFor(runDir()), { product: "global-preliminary-search" }, { write: false }), /refusing the legacy-implicit/);
   assert.throws(() => attachSearchPolicy(ctxFor(runDir()), { recipeKey: "quick" }, { write: false }), /refusing the legacy-implicit/);
@@ -99,7 +99,7 @@ test("never a silent substitution: a BUILT selection mints, and a frozen future 
   // (minted by a future build) must never be re-run as something else.
   const d = runDir();
   writeFileSync(driverDir(d, "search-policy.json"),
-    JSON.stringify({ schema: 1, level: "prelim-quantum", pipeline: "quantum", components: {}, recipe: null, origins: { level: "job.product" } }));
+    JSON.stringify({ schema: 1, level: "clearance-quantum", pipeline: "quantum", components: {}, recipe: null, origins: { level: "job.product" } }));
   assert.throws(() => attachSearchPolicy(ctxFor(d), {}, { write: false }), /refusing to run it as a clearance/);
 });
 

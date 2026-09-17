@@ -170,7 +170,7 @@ test("themeButton + THEME_BTN_CSS: toggle markup and its nav styling", () => {
 test("a rendered report carries the brand :root + Satoshi and no blue skin", () => {
   const dir = mkdtempSync(join(tmpdir(), "brand-render-"));
   const path = join(dir, "f.report.md");
-  writeFileSync(path, "---\ntype: prelim-clearance\nmatter: b1\ntitle: BRAND CHECK\noverall_label: LOW\noverall_badge: l2\nrun: 2026-06-14\n---\n# Summary\nx\n");
+  writeFileSync(path, "---\ntype: clearance-clearance\nmatter: b1\ntitle: BRAND CHECK\noverall_label: LOW\noverall_badge: l2\nrun: 2026-06-14\n---\n# Summary\nx\n");
   try {
     const html = renderHtml(parseReport(path), [], [], { runId: "b1" });
     assert.match(html, /--crimson:#860F09/i);

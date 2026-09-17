@@ -1548,7 +1548,7 @@ export function agentStudioRoots() {
   try {
     for (const name of readdirSync(config.workspaceRoot)) {
       if (config.agentIdFromWorkspaceName(name) == null) continue;
-      const s = join(config.workspaceRoot, name, "studio", "prelim-search");
+      const s = join(config.workspaceRoot, name, "studio", "clearance-search");
       if (existsSync(s)) out.push(s);
     }
   } catch { /* workspaceRoot absent in some envs */ }

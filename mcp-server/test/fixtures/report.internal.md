@@ -1,5 +1,5 @@
 ---
-type: prelim-clearance
+type: clearance-clearance
 matter: noref000001
 title: VENZY
 client: Undisclosed pharmaceutical company

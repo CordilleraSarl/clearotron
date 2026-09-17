@@ -179,7 +179,7 @@ const job = (ref, mark) => ({
   id: `eb-${ref}`, msgId: `<eb-${ref}@x>`, forwarder: "requester", forwarderDomain: "example.com",
   ref, markName: mark, classes: [9], provider: "corsearch",
 });
-const studioFor = (root) => join(root, "workspace-clawdi", "studio", "prelim-search");
+const studioFor = (root) => join(root, "workspace-clawdi", "studio", "clearance-search");
 const queueFor = (root) => join(studioFor(root), "queue");
 const runToExit = (env) => {
   const c = spawn(process.execPath, [RUNNER], { env, stdio: ["ignore", "pipe", "pipe"] });
@@ -304,10 +304,10 @@ test("no entry point names a retired spelling on its own screen", async () => {
   // now too. A defence against a text sweep has to cover every literal the list is BUILT from, not only
   // the ones a reader thinks of as the data.
   //
-  // The list also means MORE after that sweep rather than less: the rename retired the whole `PRELIM_`
+  // The list also means MORE after that sweep rather than less: the rename retired the whole `CLEARANCE_`
   // namespace at once, so an emitter still printing one of these sends a stranger looking for a name
   // that exists nowhere in the product.
-  const P = "PRELIM" + "_";
+  const P = "CLEARANCE" + "_";
   const retired = [P + "ENGINE", P + "ANTHROPIC_AUTH", P + "OPENAI_AUTH", P + "CLAUDE_BIN",
     P + "CODEX_BIN", P + "REGISTER_PROVIDER", P + "POOL_ROOT", P + "POOL_URL",
     P + "WORKSPACE_ROOT", P + "PROFILES_DIR", P + "SKILLS_DIR", P + "GRANTS_FILE",

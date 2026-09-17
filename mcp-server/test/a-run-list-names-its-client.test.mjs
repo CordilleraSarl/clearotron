@@ -34,7 +34,7 @@ const CLIENTS = {
 function workspace() {
   const ws = mkdtempSync(join(tmpdir(), "run-list-client-"));
   const mk = (slug, run, key, markName, project) => {
-    const d = join(ws, "workspace-test", "studio", "prelim-search", slug, run);
+    const d = join(ws, "workspace-test", "studio", "clearance-search", slug, run);
     mkdirSync(driverDir(d), { recursive: true });
     writeFileSync(join(d, "status.json"), JSON.stringify({
       schema: 1, runId: `${slug}-${run}`, slug, codename: run, agent: "test",
@@ -200,7 +200,7 @@ test("THE DESCRIPTION STOPS CALLING THE LIST ONE CLIENT'S — for every session 
 test("EVERY ROW SAYS WHICH SEARCH IT WAS, so one mark on one day is not two indistinguishable rows", async () => {
   const ws = mkdtempSync(join(tmpdir(), "run-list-product-"));
   const mk = (slug, run, markName, level) => {
-    const d = join(ws, "workspace-test", "studio", "prelim-search", slug, run);
+    const d = join(ws, "workspace-test", "studio", "clearance-search", slug, run);
     mkdirSync(driverDir(d), { recursive: true });
     writeFileSync(join(d, "status.json"), JSON.stringify({
       schema: 1, runId: `${slug}-${run}`, slug, codename: run, agent: "test",

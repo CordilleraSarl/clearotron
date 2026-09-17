@@ -153,7 +153,7 @@ passed, and nothing has driven a live register through it.
 
 **Upgrading an install made before 0.2.2: pin the agent id first.** The default agent id changed from
 `clawdi` to `localagent`, and that id is part of a path — your runs live under
-`<workspaceRoot>/workspace-<agent>/studio/prelim-search/`. If you never set an agent id, the upgraded
+`<workspaceRoot>/workspace-<agent>/studio/clearance-search/`. If you never set an agent id, the upgraded
 install reads a workspace that does not exist yet, and an empty workspace looks like an account with no
 runs rather than like a misconfiguration. Set **both** names in your environment file before starting
 it, because the register-search servers read their own:
@@ -1364,7 +1364,7 @@ A courier is a loop over one directory, and it needs no unit of its own if you a
 
 1. **Watch the outbox** — `$CLEAROTRON_OUTBOX_DIR`. A `.pending` file appears there when a run
    finishes. Read the variable rather than guessing the directory: the wizard writes `<data
-   base>/outbox`, but an unset variable falls back to `prelim-outbox` under the workspace root
+   base>/outbox`, but an unset variable falls back to `clearance-outbox` under the workspace root
    (`driver/driver.config.mjs`), so the two are not the same path and only one of them is where your
    markers are.
 2. **Read what it points at.** A success marker is a few bytes naming the agent, *not* the payload —

@@ -31,7 +31,7 @@ chmodSync(CLAUDE, 0o755);
 
 process.env.CORSEARCH_SESSION_KEY ||= "test-offline";
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
-const ROOT = mkdtempSync(join(tmpdir(), "prelim-exp-ctx-"));
+const ROOT = mkdtempSync(join(tmpdir(), "clearance-exp-ctx-"));
 process.env.CLEAROTRON_AI = "anthropic-agent";
 pinEnv(process.env, "CLEAROTRON_CLAUDE_PATH", CLAUDE);
 pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
@@ -68,7 +68,7 @@ const events = (runDir) => readFileSync(driverDir(runDir, "run.jsonl"), "utf8").
 // to happen in the same PR that makes it.
 const FRESHNESS_GOLDEN = {
   "matter-frame": [],
-  "prelim-variants": ["matter-context.md"],
+  "clearance-variants": ["matter-context.md"],
   "blind-frame": ["inbound-request.txt"],
   "common-law": ["variant-manifest.md", "matter-context.md"],
   "common-law-half": ["variant-manifest.md", "matter-context.md"],

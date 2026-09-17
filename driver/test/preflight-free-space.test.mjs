@@ -109,11 +109,11 @@ test("freeBytes is bavail × bsize — asserted against a known statfs, never ag
 });
 
 test("a run directory that does not exist yet is measured on its nearest existing ancestor", () => {
-  // The first run on a fresh box has no …/workspace-<agent>/studio/prelim-search. Measuring the leaf
+  // The first run on a fresh box has no …/workspace-<agent>/studio/clearance-search. Measuring the leaf
   // would throw ENOENT and land in the unmeasurable branch, which would silently disable this check on
   // exactly the installs it was written for.
   const root = tmp("freespace-fresh-");
-  const leaf = join(root, "workspace-clawdi", "studio", "prelim-search");
+  const leaf = join(root, "workspace-clawdi", "studio", "clearance-search");
   assert.equal(existsSync(leaf), false, "the fixture is only meaningful while the leaf is absent");
   const r = preflightFreeSpace({}, leaf);
   assert.equal(r.checked, true, "it measured something rather than reporting itself blind");
@@ -174,7 +174,7 @@ const job = (ref, mark) => ({
   id: `fs-${ref}`, msgId: `<fs-${ref}@x>`, forwarder: "requester", forwarderDomain: "example.com",
   ref, markName: mark, classes: [9], provider: "corsearch",
 });
-const studioFor = (root) => join(root, "workspace-clawdi", "studio", "prelim-search");
+const studioFor = (root) => join(root, "workspace-clawdi", "studio", "clearance-search");
 const queueFor = (root) => join(studioFor(root), "queue");
 const runToExit = (env) => {
   const c = spawn(process.execPath, [RUNNER], { env, stdio: ["ignore", "pipe", "pipe"] });

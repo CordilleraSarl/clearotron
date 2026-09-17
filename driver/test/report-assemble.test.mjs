@@ -31,7 +31,7 @@ test("B1 assembleReportMd: shell + # Marks + cards in composite-desc/ordinal-asc
   const dir = mkdtempSync(join(tmpdir(), "b1-assemble-"));
   mkdirSync(join(dir, "report-cards"));
   const P = mkP(dir);
-  writeFileSync(P.reportOverview, "---\ntype: prelim-clearance\noverall_label: MEDIUM\noverall_caption: bottom line\n---\n\n# Actions\n### Only you can close these\n- [Time-critical] confirm prior use\n\n# Coverage\nclean\n\n# Methodology\nshort note\n");
+  writeFileSync(P.reportOverview, "---\ntype: clearance-clearance\noverall_label: MEDIUM\noverall_caption: bottom line\n---\n\n# Actions\n### Only you can close these\n- [Time-critical] confirm prior use\n\n# Coverage\nclean\n\n# Methodology\nshort note\n");
   writeFileSync(P.reportCard("1"), "## Owner A — MARK A, US\n- ord: 1\n- one: net A\n### The read\nRead A.\n### Full detail\n- Source: [x](/mark/us/1)\n");
   writeFileSync(P.reportCard("2"), "## Owner B — MARK B, EU\n- ord: 2\n- one: net B\n### The read\nRead B.\n### Full detail\n- Source: [x](/mark/eu/2)\n");
   const findings = [
@@ -41,7 +41,7 @@ test("B1 assembleReportMd: shell + # Marks + cards in composite-desc/ordinal-asc
   ];
   assembleReportMd(P, findings, [1, 2, 3]);
   const md = readFileSync(P.report, "utf8");
-  assert.match(md, /^---\ntype: prelim-clearance/, "front-matter preserved at the very top");
+  assert.match(md, /^---\ntype: clearance-clearance/, "front-matter preserved at the very top");
   assert.match(md, /^# Marks$/m, "validators.report needs the # Marks heading");
   assert.ok(md.indexOf("MARK B") < md.indexOf("MARK A"), "higher-composite card (ord 2) renders before the lower (ord 1)");
   assert.ok(md.slice(md.indexOf("## Owner B")).startsWith("## Owner B — MARK B, EU\n- ord: 2\n- open: true"), "open: true inserted after the top card's ord line");
@@ -249,7 +249,7 @@ test("spec 64 assembleReportMd: the code-built only-you section merges INTO # Ac
   const dir = mkdtempSync(join(tmpdir(), "b1-assemble-"));
   mkdirSync(join(dir, "report-cards"));
   const P = { ...mkP(dir), findings: join(dir, "findings.json") };
-  writeFileSync(P.reportOverview, "---\ntype: prelim-clearance\n---\n\n# Actions\n### Checks we ran — what we found\n- Register sweep: clean.\n\n# Methodology\nnote\n");
+  writeFileSync(P.reportOverview, "---\ntype: clearance-clearance\n---\n\n# Actions\n### Checks we ran — what we found\n- Register sweep: clean.\n\n# Methodology\nnote\n");
   writeFileSync(P.findings, JSON.stringify({ schema_version: 1, findings: [], coverage: [{ area: "register / EU", state: "confirmed-clean", note: "" }], actions: [{ id: 1, kind: "consent", text: "Obtain consent from X.", ordinals: [] }] }));
   assembleReportMd(P, [], []);
   const md = readFileSync(P.report, "utf8");

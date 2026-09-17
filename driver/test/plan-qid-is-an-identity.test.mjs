@@ -143,7 +143,7 @@ const MODEL = (variants) => JSON.stringify({
 });
 const JOB = { jobKey: "TMP9999-lumengarde", classes: ["9"], jurisdictions: ["EU"] };
 const compileWith = (variants) => compileRegisterPlan({
-  manifest: parseVariantManifestModel(MODEL(variants)), job: JOB, skillVersion: "prelim-register@spec48",
+  manifest: parseVariantManifestModel(MODEL(variants)), job: JOB, skillVersion: "clearance-register@spec48",
 });
 const CYRILLIC = [
   { value: "Чертополох", category: "transliteration", rationale: "cyrillic" },
@@ -280,7 +280,7 @@ test("THE FLOOR — an element that leaves nothing to search excludes NOTHING, a
 test("the compiled plan loses the house element's own sweep and keeps the whole phrase", () => {
   const plan = (m) => compileRegisterPlan({ manifest: parseVariantManifestModel(JSON.stringify(m)),
     job: { jobKey: "TMP9999-novapulse", classes: ["9"], jurisdictions: ["EU"] },
-    skillVersion: "prelim-register@spec48" });
+    skillVersion: "clearance-register@spec48" });
   const before = plan(HOUSE_MODEL);
   const after = plan(excludeHouseElement(HOUSE_MODEL, HOUSE).manifest);
 

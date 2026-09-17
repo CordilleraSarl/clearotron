@@ -73,7 +73,7 @@ import { envFrom } from "../shared/env-aliases.mjs";   // — resolves EITHER sp
 import { ownersOwedACheck, runOwnerChecks } from "./owner-use-check.mjs";
 
 const DRIVER_DIR = dirname(fileURLToPath(import.meta.url));
-export const TRIAGE_FRAMEWORK = "skills/prelim-search/risk-framework-triage.md";
+export const TRIAGE_FRAMEWORK = "skills/clearance-search/risk-framework-triage.md";
 
 // sentinel/archive mirror pipeline.mjs's private helpers (cross-referenced there) — byte-faithful.
 const sentinel = (runDir, name, obj) => atomicWrite(join(runDir, name), JSON.stringify({ ts: new Date().toISOString(), ...obj }, null, 2) + "\n");
@@ -250,7 +250,7 @@ async function koStage(name, ctx, { chunkNo = null, msgCtx = {} } = {}) {
     agent: ctx.agent,
     message: def.message({ ...ctx, K, chunkNo, ...msgCtx }),
     model, thinking: def.thinking,
-    sessionKey: `prelim-${ctx.run.slug}-${ctx.run.codename}-${label}`,
+    sessionKey: `clearance-${ctx.run.slug}-${ctx.run.codename}-${label}`,
     timeoutSec: def.timeoutSec, stallSec: def.stallSec,
     expectFile: out, validate: def.validate, runDir: ctx.paths.runDir,
   });
@@ -494,7 +494,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
       const caps = capabilitiesFor(REGISTER_PROVIDER);
       countExec = resolveCountExecutor({
         counter: opts?.countExecutor ?? null, adapter: registerAdapter,
-        agentId: agent, sessionKey: `prelim-${run.slug}-${run.codename}`,
+        agentId: agent, sessionKey: `clearance-${run.slug}-${run.codename}`,
         recordLog: runRecordLogPath(run.runDir),
         // FROM THE JOB, not the environment. Whether this run calls a real register
         // is a fact about the run, so it arrives with the run and lands on its record.
@@ -684,7 +684,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
       // Every failure lands as a recorded reason on the surfaces instead.
       const recExec = resolveRecordExecutor({
         lister: opts?.recordLister ?? null, adapter: activeProvider(),
-        agentId: agent, sessionKey: `prelim-${run.slug}-${run.codename}`,
+        agentId: agent, sessionKey: `clearance-${run.slug}-${run.codename}`,
         // — this run's record log, not the box's. The knockout lane never reads the record bodies
         // its batch-screen hydration writes; before this they were pure growth on a global file.
         recordLog: runRecordLogPath(run.runDir),

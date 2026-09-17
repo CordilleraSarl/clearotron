@@ -29,7 +29,7 @@ pinEnv(process.env, "CLEAROTRON_DATABASE", envFrom(process.env, "CLEAROTRON_DATA
 const { buildGatherMcpConfig } = await import("../engine/mcp/gather-config.mjs");
 
 const REPO = join(fileURLToPath(new URL("../..", import.meta.url)));
-const PREFIX = "prelim-tmp594-aa-";
+const PREFIX = "clearance-tmp594-aa-";
 const ROW = (target, body) => JSON.stringify({
   ts: "t", sessionKey: `agent:clawdi:${PREFIX}register-unit-x`, target, body,
 }) + "\n";

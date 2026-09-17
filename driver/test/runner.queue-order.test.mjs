@@ -24,7 +24,7 @@ process.env.CORSEARCH_SESSION_KEY ||= "test-offline";
 process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 
-const queueFor = (root, agentId) => join(root, `workspace-${agentId}`, "studio", "prelim-search", "queue");
+const queueFor = (root, agentId) => join(root, `workspace-${agentId}`, "studio", "clearance-search", "queue");
 
 // enqueuedAt ASCENDS with the letter, and the filenames sort alphabetically the same way — so a-b-c-d is
 // what BOTH fallbacks produce. Any test below that expects a different completion order can only be

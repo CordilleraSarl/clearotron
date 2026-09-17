@@ -16,7 +16,7 @@ import { drainWhatIfQueues, liveRunDirs } from "../whatif-worker.mjs";
 
 function studio() {
   const root = mkdtempSync(join(tmpdir(), "whatif-q-"));
-  const s = join(root, "workspace-x", "studio", "prelim-search");
+  const s = join(root, "workspace-x", "studio", "clearance-search");
   const runDir = join(s, "tmp1-acme", "2026-09-02-copper-anvil");
   mkdirSync(runDir, { recursive: true });
   return { studioRoot: s, runDir };

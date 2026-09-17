@@ -38,7 +38,7 @@ function world(jobs, { live = [], pool = [], order = null } = {}) {
     }));
     writeFileSync(join(poolRoot, r.id, "report.html"), "<title>x</title>ok");
   }
-  const studio = join(workspaceRoot, "workspace-clawdi", "studio", "prelim-search");
+  const studio = join(workspaceRoot, "workspace-clawdi", "studio", "clearance-search");
   const q = join(studio, "queue");
   mkdirSync(q, { recursive: true });
   for (const j of jobs) {
@@ -218,7 +218,7 @@ test("reorderQueue: a lane the caller has nothing in is left completely alone", 
   // silent reshuffle of work the caller never asked about.
   const workspaceRoot = mkdtempSync(join(tmpdir(), "rc-lanes-"));
   const mk = (agent, ids) => {
-    const q = join(workspaceRoot, `workspace-${agent}`, "studio", "prelim-search", "queue");
+    const q = join(workspaceRoot, `workspace-${agent}`, "studio", "clearance-search", "queue");
     mkdirSync(q, { recursive: true });
     for (const id of ids) writeFileSync(join(q, `${id}.json`), JSON.stringify({ id, enqueuedAt: "2026-07-28T10:00:00.000Z" }));
     return q;

@@ -9,7 +9,7 @@
 // the fifteen return-path transports were measured with that hole:
 //
 //   record_report_overview   actions, methodology, handling_note   (a section of the client's report)
-//   record_prelim_variants   incumbent_classes, watchlist_owners, search_floor
+//   record_clearance_variants   incumbent_classes, watchlist_owners, search_floor
 //   record_blind_frame       sources
 //   record_matter_frame      scope_jurisdictions, excluded_jurisdictions
 //   record_unit_note         null_result, note
@@ -65,8 +65,8 @@ export function refuseUndeclared(params, declared, token, path = "") {
     // does not declare it: `narrative.corrections`, accepted and dropped. That is what this refuses.
     //
     // Refusing unknown TOP-LEVEL keys as well was the first cut, and it was wrong. Real traffic carries
-    // envelope fields the tool schema does not declare — the prelim-variants mock sends
-    // `schema_version`, which `acceptPrelimVariants` ignores because it writes its OWN
+    // envelope fields the tool schema does not declare — the clearance-variants mock sends
+    // `schema_version`, which `acceptClearanceVariants` ignores because it writes its OWN
     // `schema_version: SCHEMA_VERSION` into the model. Inert for as long as it has existed, and the
     // strict version made it FATAL: the whole stage refused, the run dead, for a key nobody reads.
     //

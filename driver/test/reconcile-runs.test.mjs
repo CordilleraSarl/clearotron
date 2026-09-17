@@ -164,7 +164,7 @@ test("planReconcile plans the actionable ones and skips the rest, keeping both",
 const workspace = () => {
   const root = mkdtempSync(join(tmpdir(), "reconcile-runs-test-"));
   const mk = (agent, slug, leaf, status) => {
-    const dir = join(root, `workspace-${agent}`, "studio", "prelim-search", slug, leaf);
+    const dir = join(root, `workspace-${agent}`, "studio", "clearance-search", slug, leaf);
     mkdirSync(dir, { recursive: true });
     writeFileSync(join(dir, "status.json"), JSON.stringify(status, null, 2) + "\n");
     return dir;
@@ -225,7 +225,7 @@ test("the walk finds live and archived runs and skips the queue and the driver s
   try {
     mk("clawdi", "novapulse", "r1", { state: "running" });
     mk("clawdi", join("archive", "2026-07"), join("oldmark", "r9"), { state: "delivered" });
-    const studio = join(root, "workspace-clawdi", "studio", "prelim-search");
+    const studio = join(root, "workspace-clawdi", "studio", "clearance-search");
     // A status.json under queue/ or _driver/ is not a run — the walk must not descend into either.
     for (const skip of ["queue", "_driver", "register-units"]) {
       mkdirSync(join(studio, "novapulse", "r1", skip), { recursive: true });

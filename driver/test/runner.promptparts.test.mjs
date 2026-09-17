@@ -87,7 +87,7 @@ assert.ok(stripped > 0,
   + "proves nothing. Either the marker moved or the copy did not reach the roster.");
 pinEnv(process.env, "CLEAROTRON_CUSTOMERS_DIR", customersDir);
 
-  const q = join(root, "workspace-clawdi", "studio", "prelim-search", "queue");
+  const q = join(root, "workspace-clawdi", "studio", "clearance-search", "queue");
   mkdirSync(q, { recursive: true });
 
   // (1) THE regression: prose with unescaped quotes + newline + backslash — the exact shape that broke

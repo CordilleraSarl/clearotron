@@ -23,7 +23,7 @@ Resolution (the runner drains **all** of these; `config.queueDirs`):
 | Source | Path | Use |
 |---|---|---|
 | `CLEAROTRON_QUEUE_DIR` env | one explicit dir | **headless deployments** (the product default; no agent workspaces needed). Jobs here run as `config.defaultAgent`. |
-| workspace scan | `<CLEAROTRON_WORK_DIR>/workspace-<agent>/studio/prelim-search/queue` | legacy/agent-adjacent deployments; the agent identity is derived from the queue location |
+| workspace scan | `<CLEAROTRON_WORK_DIR>/workspace-<agent>/studio/clearance-search/queue` | legacy/agent-adjacent deployments; the agent identity is derived from the queue location |
 
 The enqueue CLI resolves its target the same way: `--queue-dir` flag → `CLEAROTRON_QUEUE_DIR` →
 the default agent's workspace queue.

@@ -92,7 +92,7 @@ test("dev cockpit: enqueue validates-first into the dev queue; runs + outbox end
   const outbox = join(base, "outbox"); mkdirSync(outbox, { recursive: true });
   const ws = join(base, "ws");
   // one live run's status.json in a workspace the scanner recognises
-  const runDir = join(ws, "workspace-dev", "studio", "prelim-search", "tmp1-demomark", "2026-01-01-mock-run");
+  const runDir = join(ws, "workspace-dev", "studio", "clearance-search", "tmp1-demomark", "2026-01-01-mock-run");
   mkdirSync(runDir, { recursive: true });
   writeFileSync(join(runDir, "status.json"), JSON.stringify({
     runId: "tmp1-demomark-mock-run", slug: "tmp1-demomark", codename: "mock-run", agent: "dev",

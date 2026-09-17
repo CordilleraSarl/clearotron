@@ -24,10 +24,10 @@ import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 
 import {
-  acceptPrelimVariants, renderPrelimVariants, renderScopeLedgerTable, recordPrelimVariants,
-  recordedScopeLedgerRows, prelimVariantsWasRecorded, prelimVariantsCallPaths,
+  acceptClearanceVariants, renderClearanceVariants, renderScopeLedgerTable, recordClearanceVariants,
+  recordedScopeLedgerRows, clearanceVariantsWasRecorded, clearanceVariantsCallPaths,
   MODEL_FILE, PROSE_FILE, SCOPE_LAYERS, SCOPE_STATUS,
-} from "../prelim-variants-record.mjs";
+} from "../clearance-variants-record.mjs";
 import {
   renderScopeLedgerJson, scopeLedgerJsonFromRows, parseScopeLedgerJson, scopeJurisdictions,
   droppedVariantFamilies,
@@ -65,13 +65,13 @@ const PARAMS = Object.freeze({
 });
 
 const accepted = (over = {}) => {
-  const v = acceptPrelimVariants({ ...PARAMS, ...over });
+  const v = acceptClearanceVariants({ ...PARAMS, ...over });
   assert.equal(v.ok, true, `expected an accepted call: ${v.reason}`);
   return v;
 };
 
 const runDir = () => {
-  const d = mkdtempSync(join(tmpdir(), "ct-prelimvariants-"));
+  const d = mkdtempSync(join(tmpdir(), "ct-clearancevariants-"));
   mkdirSync(driverDir(d), { recursive: true });
   return d;
 };
@@ -86,7 +86,7 @@ test("conversion 3 — the typed rows and the prose table serialise to BYTE-IDEN
 
   // Path B — an archived manifest: the SAME rows rendered as the table, then parsed back out of prose
   // exactly as `deriveScopeLedgerJson` does for a manifest this build did not write.
-  const proseManifest = renderPrelimVariants(v.model, v.scopeRows);
+  const proseManifest = renderClearanceVariants(v.model, v.scopeRows);
   const fromProse = renderScopeLedgerJson(proseManifest);
 
   assert.equal(fromRows, fromProse,
@@ -117,7 +117,7 @@ test("conversion 3 — the rendered table carries FIVE columns, reopen trigger i
 
 test("conversion 3 — the transport refuses what the seat used to pre-check by hand", () => {
   const bad = (over, token) => {
-    const v = acceptPrelimVariants({ ...PARAMS, ...over });
+    const v = acceptClearanceVariants({ ...PARAMS, ...over });
     assert.equal(v.ok, false, `expected a refusal for ${token}`);
     assert.match(v.reason, new RegExp(`^${token}`));
   };
@@ -135,14 +135,14 @@ test("conversion 3 — a pipe in a ledger cell is REFUSED, not escaped", () => {
   // cheap — and the reason a seat wrote is evidence, so a transport that rewrites it is not carrying it.
   for (const field of ["item", "reason", "reopen_trigger"]) {
     const row = { layer: "variant", item: "x", status: "dropped", reason: "r", reopen_trigger: "t", [field]: "a | b" };
-    const v = acceptPrelimVariants({ ...PARAMS, scope_ledger: [row] });
+    const v = acceptClearanceVariants({ ...PARAMS, scope_ledger: [row] });
     assert.equal(v.ok, false, `a pipe in ${field} must be refused`);
     assert.match(v.reason, new RegExp(`^variantmodel_scope_pipe:${field}`));
   }
 
   // NEGATIVE CONTROL — the same row without the pipe is accepted, so the refusal is about the pipe and
   // not about the fixture being malformed some other way.
-  const clean = acceptPrelimVariants({ ...PARAMS, scope_ledger: [{ layer: "variant", item: "x", status: "dropped", reason: "r", reopen_trigger: "t" }] });
+  const clean = acceptClearanceVariants({ ...PARAMS, scope_ledger: [{ layer: "variant", item: "x", status: "dropped", reason: "r", reopen_trigger: "t" }] });
   assert.equal(clean.ok, true, clean.reason);
 });
 
@@ -150,14 +150,14 @@ test("conversion 3 — a pipe in a ledger cell is REFUSED, not escaped", () => {
 
 test("conversion 3 — the driver writes both artifacts and the capture proves the transport was taken", () => {
   const dir = runDir();
-  assert.equal(prelimVariantsWasRecorded(dir), false);
+  assert.equal(clearanceVariantsWasRecorded(dir), false);
 
-  const r = recordPrelimVariants(dir, PARAMS);
+  const r = recordClearanceVariants(dir, PARAMS);
   assert.equal(r.refused, null, `unexpected refusal: ${r.refused}`);
   assert.equal(r.written, join(dir, MODEL_FILE));
   assert.equal(r.prose, join(dir, PROSE_FILE));
   assert.equal(r.scope_rows, ROWS.length);
-  assert.equal(prelimVariantsWasRecorded(dir), true);
+  assert.equal(clearanceVariantsWasRecorded(dir), true);
 
   const model = JSON.parse(readFileSync(join(dir, MODEL_FILE), "utf8"));
   assert.equal(model.mark, "PROJECT NOVAPULSE");
@@ -174,16 +174,16 @@ test("conversion 3 — recordedScopeLedgerRows separates `no call` from `call wi
   assert.equal(recordedScopeLedgerRows(none), null, "no capture at all ⇒ null, the prose path");
 
   const empty = runDir();
-  recordPrelimVariants(empty, { ...PARAMS, scope_ledger: [] });
+  recordClearanceVariants(empty, { ...PARAMS, scope_ledger: [] });
   assert.deepEqual(recordedScopeLedgerRows(empty), [], "a call carrying no rows ⇒ [], NOT null");
 
   const full = runDir();
-  recordPrelimVariants(full, PARAMS);
+  recordClearanceVariants(full, PARAMS);
   assert.equal(recordedScopeLedgerRows(full).length, ROWS.length);
 
   // A REFUSED call wrote no manifest, so its rows must not be offered as if one existed.
   const refused = runDir();
-  const rr = recordPrelimVariants(refused, { ...PARAMS, mark: "" });
+  const rr = recordClearanceVariants(refused, { ...PARAMS, mark: "" });
   assert.ok(rr.refused, "the fixture must actually be refused or this arm proves nothing");
   assert.equal(recordedScopeLedgerRows(refused), null,
     "a refused call left a capture but no manifest — its rows must not stand in for one");
@@ -191,13 +191,13 @@ test("conversion 3 — recordedScopeLedgerRows separates `no call` from `call wi
 
 test("conversion 3 — a REFUSED call still leaves the capture, and writes nothing", () => {
   const dir = runDir();
-  const r = recordPrelimVariants(dir, { ...PARAMS, variants: [] });
+  const r = recordClearanceVariants(dir, { ...PARAMS, variants: [] });
   assert.ok(r.refused, `expected a refusal, got: ${JSON.stringify(r).slice(0, 120)}`);
   assert.equal(r.written, null);
-  assert.equal(prelimVariantsWasRecorded(dir), true,
+  assert.equal(clearanceVariantsWasRecorded(dir), true,
     "the capture exists even for a refusal — that is why its presence answers 'was the transport taken', "
     + "not 'did the manifest come out well'");
-  const capture = JSON.parse(readFileSync(prelimVariantsCallPaths(dir).payload, "utf8"));
+  const capture = JSON.parse(readFileSync(clearanceVariantsCallPaths(dir).payload, "utf8"));
   assert.deepEqual(capture.params.variants, [], "the capture records what ARRIVED, untidied");
 });
 
@@ -214,7 +214,7 @@ test("conversion 3 — the vocabularies are the shipped parser's, not a second c
   // Every layer the ledger's own consumers key on must be sendable, or a scope decision becomes
   // unstateable through the transport that replaced the table.
   for (const layer of SCOPE_LAYERS)
-    assert.equal(acceptPrelimVariants({ ...PARAMS, scope_ledger: [{ layer, item: "x", status: "applied", reason: "r" }] }).ok, true,
+    assert.equal(acceptClearanceVariants({ ...PARAMS, scope_ledger: [{ layer, item: "x", status: "applied", reason: "r" }] }).ok, true,
       `${layer} must be sendable`);
 });
 
@@ -234,7 +234,7 @@ test("conversion 3 — the vocabularies are the shipped parser's, not a second c
 
 test("conversion 3 — the rendered manifest yields EXACTLY the model's terms to the common-law walk", () => {
   const v = accepted();
-  const md = renderPrelimVariants(v.model, v.scopeRows);
+  const md = renderClearanceVariants(v.model, v.scopeRows);
 
   const audit = variantsManifestAudit(md);
   assert.deepEqual(audit.variants, v.model.variants.map((x) => x.value),
@@ -261,11 +261,11 @@ test("conversion 3 — the prose reader and the model reader agree about an incu
   // The render is what keeps them in step now, so it is asserted here rather than left to a mock.
   const withAlert = accepted();
   assert.ok(withAlert.model.incumbent_classes?.length, "fixture carries the alert");
-  assert.ok(decideAxes(renderPrelimVariants(withAlert.model, withAlert.scopeRows)).includes("incumbent-class"),
+  assert.ok(decideAxes(renderClearanceVariants(withAlert.model, withAlert.scopeRows)).includes("incumbent-class"),
     "the prose reader must see the alert the model declares");
 
   const without = accepted({ incumbent_classes: [] });
-  const mdNone = renderPrelimVariants(without.model, without.scopeRows);
+  const mdNone = renderClearanceVariants(without.model, without.scopeRows);
   assert.ok(!/incumbent/i.test(mdNone),
     "an absent alert must leave NO incumbent wording in the prose — a rendered word the model denies is "
     + "the contradiction this conversion exists to remove, and it would fire a whole register axis");
@@ -273,7 +273,7 @@ test("conversion 3 — the prose reader and the model reader agree about an incu
 
 // ── — THE SEARCH FLOOR, DESIGNATED HERE AND JUDGED DOWNSTREAM ──────────────────────────────────
 //
-// prelim-variants designates; prelim-register writes the coverage row that honours it or does not.
+// clearance-variants designates; clearance-register writes the coverage row that honours it or does not.
 // Different stage, earlier turn, before any outcome is known — which is the entire mechanism. These arms
 // cover the designation half: what the transport accepts, and that the artifact keeps "no floor" and
 // "a floor" apart. The breach arithmetic is in envelope.test.mjs.
@@ -285,10 +285,10 @@ test("the floor is designated as AXES, closed against the shipped enum", () => {
   assert.deepEqual(accepted({ search_floor: ["Primary-Sweep", " primary-sweep "] }).model.search_floor, ["primary-sweep"]);
   // The enum is the SHIPPED one, not a copy — an axis name that no coverage row can carry is refused,
   // because a designation naming something unjoinable is a floor that can never be breached or honoured.
-  const bad = acceptPrelimVariants({ ...PARAMS, search_floor: ["everything"] });
+  const bad = acceptClearanceVariants({ ...PARAMS, search_floor: ["everything"] });
   assert.equal(bad.ok, false);
   assert.match(bad.reason, /^variantmodel_search_floor_invalid:everything/);
-  for (const axis of REGISTER_AXES) assert.equal(acceptPrelimVariants({ ...PARAMS, search_floor: [axis] }).ok, true,
+  for (const axis of REGISTER_AXES) assert.equal(acceptClearanceVariants({ ...PARAMS, search_floor: [axis] }).ok, true,
     `${axis} is a real register axis and the designation refused it`);
 });
 
@@ -297,7 +297,7 @@ test("OMITTING the field is a real answer, and it is the default", () => {
   // has to mean absence here rather than "unset, treat as all".
   assert.deepEqual(accepted().model.search_floor, [], "an omitted floor did not read as none");
   assert.deepEqual(accepted({ search_floor: [] }).model.search_floor, []);
-  const bad = acceptPrelimVariants({ ...PARAMS, search_floor: "primary-sweep" });
+  const bad = acceptClearanceVariants({ ...PARAMS, search_floor: "primary-sweep" });
   assert.equal(bad.ok, false, "a bare string was accepted where an array is the contract");
   assert.match(bad.reason, /^variantmodel_search_floor_invalid/);
 });

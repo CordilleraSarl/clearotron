@@ -115,7 +115,7 @@ function main() {
   const counts = {};
   const rows = [];
   for (const agent of AGENTS) {
-    const studio = join(WORKSPACE_ROOT, `workspace-${agent}`, "studio", "prelim-search");
+    const studio = join(WORKSPACE_ROOT, `workspace-${agent}`, "studio", "clearance-search");
     if (!existsSync(studio)) continue;
     for (const runDir of findRunDirs(studio)) {
       const r = backfillRun(runDir, { apply: APPLY });

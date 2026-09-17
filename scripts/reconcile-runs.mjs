@@ -120,7 +120,7 @@ function main() {
   const now = Date.now();
   const rows = [];
   for (const agent of AGENTS) {
-    const studio = join(WORKSPACE_ROOT, `workspace-${agent}`, "studio", "prelim-search");
+    const studio = join(WORKSPACE_ROOT, `workspace-${agent}`, "studio", "clearance-search");
     for (const dir of findRunDirs(studio)) rows.push({ agent, ...reconcileRunDir(dir, { apply: APPLY, now, quietMs: QUIET_MS }) });
   }
 

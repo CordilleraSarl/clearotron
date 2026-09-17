@@ -369,7 +369,7 @@ export function postureDisagreement(snapshot, live) {
 
 /** Where the snapshot lives. Beside the pool, so it shares the pool's lifecycle and backup. */
 export function snapshotPath(poolRoot) {
-  return join(poolRoot, "_state", "prelim-flag-snapshot.json");
+  return join(poolRoot, "_state", "clearance-flag-snapshot.json");
 }
 
 /**

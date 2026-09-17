@@ -92,8 +92,8 @@ test("an ALREADY-RECORDED grid says nothing was bought — a stamp is not a rece
 });
 
 test("the sidecar sits beside the ledger, derived from the ledger's own path", () => {
-  assert.equal(gridProvenancePath("/x/studio/prelim-search/r/common-law-grid.json"),
-    "/x/studio/prelim-search/r/common-law-grid.provenance.json");
+  assert.equal(gridProvenancePath("/x/studio/clearance-search/r/common-law-grid.json"),
+    "/x/studio/clearance-search/r/common-law-grid.provenance.json");
   scratch((root) => {
     const out = join(root, "common-law-grid.json");
     writeGridProvenance({ output_path: out }, { ran: true, present: 3, requested: 4 });

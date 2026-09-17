@@ -49,7 +49,7 @@ const { ackEvent, listOutboxEvents } = await import("../lib/ops.mjs");
 
 /** A run tagged with an account, exactly as the driver freezes it. Returns its runId. */
 function makeRun(slug, codename, profileKey) {
-  const runDir = join(ROOT, "workspace-clawdi", "studio", "prelim-search", slug, codename);
+  const runDir = join(ROOT, "workspace-clawdi", "studio", "clearance-search", slug, codename);
   mkdirSync(driverDir(runDir), { recursive: true });
   const runId = `${slug}-${codename}`;
   writeFileSync(join(runDir, "status.json"), JSON.stringify({

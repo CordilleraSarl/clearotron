@@ -677,7 +677,7 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
   };
   // THE CANONICAL INTAKE FIRST, and it is why this parameter exists. `CLEAROTRON_QUEUE_DIR` is where the
   // enqueue CLI and ops-MCP `start_run` write — which is where the PORTAL's own submissions land, since
-  // its `trigger` is an ops-MCP hop. The walk below finds only `workspace-*/studio/prelim-search/queue`,
+  // its `trigger` is an ops-MCP hop. The walk below finds only `workspace-*/studio/clearance-search/queue`,
   // and a documented headless install has no workspaces at all: measured on the test box, the only queue
   // under the whole tree is the configured one, and it holds portal-prefixed jobs. So this scan ran ZERO
   // times there, and a submitted search was invisible on the dashboard from submit until claim — a
@@ -687,7 +687,7 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
   }
   try {
     for (const ws of readdirSync(workspaceRoot).filter((n) => n.startsWith("workspace-"))) {
-      const studio = join(workspaceRoot, ws, "studio", "prelim-search");
+      const studio = join(workspaceRoot, ws, "studio", "clearance-search");
       let slugs = []; try { slugs = readdirSync(studio); } catch { continue; }
       for (const slug of slugs) {
         // Still walked, so a deployment whose queue is not in `queueDirs` keeps working. The union is
@@ -1742,7 +1742,7 @@ export function makePortalService({
         // The recipeKey arm that used to sit here (a 422 when saved searches were "not switched on") went
         // with CLEAROTRON_RECIPES_MODE on 2026-07-27: a saved search is now honoured wherever it resolves.
         // Asked of the RESOLVED product, not of the body: a request that names none resolves through
-        // the account's default and its own territories, and the old read (`body.searchLevel || "prelim"`)
+        // the account's default and its own territories, and the old read (`body.searchLevel || "clearance"`)
         // answered about a product nobody had chosen. `resolveFor` fails open to a null resolution, and a
         // null one is not judged here — validateJob and the scope rules below still run, and the runner
         // is the wall.

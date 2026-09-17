@@ -12,7 +12,7 @@
 // reach a different answer from the engine's.
 //
 // That inversion is the regression test for the bug that prompted the retirement. `describe_options` and
-// `plan_run` told clients that knockout, knockout-register and prelim-jx were "not switched on for this
+// `plan_run` told clients that knockout, knockout-register and clearance-jx were "not switched on for this
 // account" while the engine would have run all three, because the ops-MCP unit has no EnvironmentFile and
 // nobody had plumbed a snapshot into it. Every test that existed at the time injected a `flags` map, which
 // is exactly why a caller relying on the default went unnoticed. These do not.
@@ -23,7 +23,7 @@ import { buildFlagSnapshot, builtFor, isStale, snapshotPath, postureDelta, PRODU
 import { gateResolvedPolicy, productAvailability, gateCause, BUILT, PRODUCT_POLICIES, ORDERABLE_PRODUCTS } from "../search-policy.mjs";
 
 const KNOCKOUT = { level: "knockout", stageLabel: "Depth 1", pipeline: "knockout", components: {} };
-const CLEAROTRON = { level: "prelim", stageLabel: "Depth 4", pipeline: "clearotron", components: {} };
+const CLEAROTRON = { level: "clearance", stageLabel: "Depth 4", pipeline: "clearotron", components: {} };
 const AT = "2026-07-19T12:00:00Z";
 
 // The engine's environment once carried three switches; nothing reads them now. Kept as a realistic
@@ -41,7 +41,7 @@ test("THE REGRESSION: an EMPTY environment must refuse nothing — no caller can
   try {
     assert.equal(gateResolvedPolicy(KNOCKOUT), null, "knockout runs with no environment");
     assert.equal(gateResolvedPolicy(CLEAROTRON), null);
-    const jx = { level: "prelim-jx", stageLabel: "Depth 5", pipeline: "clearance", components: { jxLanes: true } };
+    const jx = { level: "clearance-jx", stageLabel: "Depth 5", pipeline: "clearance", components: { jxLanes: true } };
     assert.equal(gateResolvedPolicy(jx), null, "and so does the native-script deepening");
     const recipe = { ...CLEAROTRON, recipe: { slug: "screen" } };
     assert.equal(gateResolvedPolicy(recipe), null, "and a saved search");

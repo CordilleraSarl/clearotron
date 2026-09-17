@@ -58,7 +58,7 @@ for (const [k, v] of Object.entries({
 })) pinEnv(process.env, k, v);
 
 const { main } = await import("../runner.mjs");
-const Q = join(root, "workspace-clawdi", "studio", "prelim-search", "queue");
+const Q = join(root, "workspace-clawdi", "studio", "clearance-search", "queue");
 mkdirSync(Q, { recursive: true });
 const OUTBOX = join(root, "prelim-outbox");
 
@@ -123,7 +123,7 @@ test("a 3-mark knockout batch runs end to end: receipts, degrade, publish stamps
   refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.knockout-e2e.test.mjs");
   assert.ok(existsSync(join(Q, "ko-batch.done")), "queue entry consumed as .done");
 
-  const runDirs = findRuns(join(root, "workspace-clawdi", "studio", "prelim-search"));
+  const runDirs = findRuns(join(root, "workspace-clawdi", "studio", "clearance-search"));
   assert.equal(runDirs.length, 1);
   const rd = runDirs[0];
   assert.ok(rd.includes("/archive/"), "the delivered run was archived");
@@ -362,7 +362,7 @@ test("STAGE 0.5 end to end: counts measured in code, on the report, in the workb
   // SCOPED TO THIS RUN'S OWN MARK. Every Knockout search carries the count probe now — there is one
   // knockout product and the counts are in it — so "the run that wrote a counts sidecar" no longer
   // identifies one run in this file.
-  const rd = findRuns(join(root, "workspace-clawdi", "studio", "prelim-search"))
+  const rd = findRuns(join(root, "workspace-clawdi", "studio", "clearance-search"))
     .find((d) => {
       const f = driverDir(d, "register-counts.json");
       if (!existsSync(f)) return false;

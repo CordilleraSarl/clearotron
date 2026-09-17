@@ -130,20 +130,28 @@ export function settleWake(agent, { code, stdout }, now = Date.now()) {
 // Which *.pending markers currently route to <agent>? Mirrors deliver-trigger.sh's grouping exactly: a
 // JSON packet carries an "agent" field; a legacy delivered marker's first-line body IS the agent id.
 export function markersForAgent(agent) {
-  let names = [];
-  try { names = readdirSync(config.outboxDir).filter((f) => f.endsWith(".pending")); } catch { return []; }
+  // BOTH DIRECTORIES, AND THE OLD ONE IS NOT OPTIONAL. The default outbox was renamed with the `clearance`
+  // identifier; a box that never pinned `CLEAROTRON_OUTBOX_DIR` still has markers under the old name.
+  // Reading only the new directory would leave them there for ever, and each one is a report a client
+  // is owed — with nothing to see, because an outbox nobody reads looks exactly like an empty one.
+  // Each marker keeps the path it was found at, so an ack removes the file that actually exists.
   const out = [];
-  for (const file of names.sort()) {
-    let raw;
-    try { raw = readFileSync(join(config.outboxDir, file), "utf8"); } catch { continue; } // raced an ack — skip
-    let who = null, kind = "delivered";
-    if (raw.trimStart().startsWith("{")) {
-      try { const j = JSON.parse(raw); who = j.agent != null ? String(j.agent) : null; kind = j.kind != null ? String(j.kind) : "delivered"; }
-      catch { who = null; }
-    } else {
-      who = raw.split("\n")[0].trim();
+  for (const dir of [config.outboxDir, config.legacyOutboxDir]) {
+    if (!dir) continue;
+    let names = [];
+    try { names = readdirSync(dir).filter((f) => f.endsWith(".pending")); } catch { continue; }
+    for (const file of names.sort()) {
+      let raw;
+      try { raw = readFileSync(join(dir, file), "utf8"); } catch { continue; } // raced an ack — skip
+      let who = null, kind = "delivered";
+      if (raw.trimStart().startsWith("{")) {
+        try { const j = JSON.parse(raw); who = j.agent != null ? String(j.agent) : null; kind = j.kind != null ? String(j.kind) : "delivered"; }
+        catch { who = null; }
+      } else {
+        who = raw.split("\n")[0].trim();
+      }
+      if (who === agent) out.push({ file, path: join(dir, file), kind });
     }
-    if (who === agent) out.push({ file, path: join(config.outboxDir, file), kind });
   }
   return out;
 }
@@ -188,7 +196,7 @@ function* eachRunDir() {
   let workspaces = [];
   try { workspaces = readdirSync(config.workspaceRoot).filter((n) => n.startsWith("workspace-")); } catch { return; }
   for (const ws of workspaces) {
-    const studio = join(config.workspaceRoot, ws, "studio", "prelim-search");
+    const studio = join(config.workspaceRoot, ws, "studio", "clearance-search");
     let slugs = [];
     try { slugs = readdirSync(studio); } catch { continue; }
     for (const slug of slugs) {
@@ -311,7 +319,7 @@ export function rescanOwedRuns() {
   let workspaces = [];
   try { workspaces = readdirSync(config.workspaceRoot).filter((n) => n.startsWith("workspace-")); } catch { return dropped; }
   for (const ws of workspaces) {
-    const studio = join(config.workspaceRoot, ws, "studio", "prelim-search");
+    const studio = join(config.workspaceRoot, ws, "studio", "clearance-search");
     let slugs = [];
     try { slugs = readdirSync(studio); } catch { continue; }
     for (const slug of slugs) {

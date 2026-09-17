@@ -403,7 +403,7 @@ function BandPill({ label, tone }: { readonly label: string; readonly tone: unkn
  * someone to try, and implies the page could write it if only it were enabled. It cannot: a framework is
  * selected in code under review, and the server strips these fields from every write.
  *
- * Access to everything decides the PATHS (`skills/prelim-search/risk-framework-<customer>.md`), and it
+ * Access to everything decides the PATHS (`skills/clearance-search/risk-framework-<customer>.md`), and it
  * decides them upstream in portal-upstream's getProfile — by the time this renders, anyone else's payload
  * no longer carries them. visibleReadOnlyFields stays as the second wall, on the same rule, not the only one.
  */

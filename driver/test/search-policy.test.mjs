@@ -106,7 +106,7 @@ test("resolution: unknown tokens CLARIFY — job level, profile default, and bot
   assert.match(resolveSearchPolicy({ product: "global-preliminary-search", recipeKey: "quick" }, {}).clarify, /name ONE selector/);
   // A RETIRED level key is refused BY NAME rather than silently resolving to the row that still names
   // archived runs — the orderability wall, from the direction a stale request comes at it.
-  assert.match(resolveSearchPolicy({ product: "prelim" }, {}).clarify, /names no search we offer/);
+  assert.match(resolveSearchPolicy({ product: "clearance" }, {}).clarify, /names no search we offer/);
 });
 
 test("resolution: allowedRecipes (when present) is a closed menu over the RESOLVED selection, any source", () => {
@@ -155,7 +155,7 @@ test("recipeShaOf: canonical — key-order independent, content-sensitive", () =
 
 // ── the admission gate (built-shape availability; the kill switches were retired 2026-07-27) ────────
 test("gate: every BUILT level passes, with no environment at all — the switches are gone", () => {
-  // This test used to assert the opposite for knockout, prelim-jx and recipes: BUILT but refused until a
+  // This test used to assert the opposite for knockout, clearance-jx and recipes: BUILT but refused until a
   // CLEAROTRON_* switch was set. Those three switches sat over shipped machinery, so on any correct
   // deployment they could only read `true` — and on a process without an engine environment (the portal,
   // the ops-MCP) they read as OFF and refused shipped depths. Availability is now the build alone.
@@ -197,8 +197,8 @@ test("gateCause is null exactly when gateResolvedPolicy is — one gate, two voc
     ["default clearotron", resolveSearchPolicy({}, {})],
     ["knockout", resolveSearchPolicy({ product: "knockout-search" }, {})],
     ["knockout-register", resolveSearchPolicy({ product: "knockout-search" }, {})],
-    ["prelim-jx", resolveSearchPolicy({ product: "multi-country-focus-search" }, {})],
-    ["register-only", resolveSearchPolicy({ product: "prelim-register-only" }, {})],
+    ["clearance-jx", resolveSearchPolicy({ product: "multi-country-focus-search" }, {})],
+    ["register-only", resolveSearchPolicy({ product: "clearance-register-only" }, {})],
     ["via recipe", resolveSearchPolicy({ recipeKey: "plain" }, { profile: { key: "acme" }, recipes })],
     ["clarify", { clarify: "boom" }],
     ["nothing at all", null],
@@ -336,7 +336,7 @@ test("name budget: the OFFERING's figure, on EVERY product — and the soft cap 
   assert.match(errs[0], /order a Knockout search to screen them together/, "the way through is named");
   assert.deepEqual(checkMarkBudget(marks(1), policyFor("global-preliminary-search")), { errors: [], warnings: [] });
   // A RETIRED row has no offering figure and is not budgeted — nothing can be ordered at one.
-  assert.deepEqual(checkMarkBudget(marks(9), policyFor("prelim")), { errors: [], warnings: [] });
+  assert.deepEqual(checkMarkBudget(marks(9), policyFor("clearance")), { errors: [], warnings: [] });
   assert.equal(countJobMarks({ markName: "SOLO" }), 1);
   assert.equal(countJobMarks(marks(3)), 3);
 });
@@ -407,7 +407,7 @@ test("checkScopeAgainstPolicy: scope is refused only by machinery that cannot ac
     assert.equal(checkScopeAgainstPolicy(jobPlat, policyFor(level)).errors.length, 1, `${level} + platforms`);
   }
   // clearance pipelines honour both, so they pass through untouched
-  for (const level of ["prelim", "prelim-jx"]) {
+  for (const level of ["clearance", "clearance-jx"]) {
     assert.deepEqual(checkScopeAgainstPolicy(jobJx, policyFor(level)).errors, [], `${level} + jurisdictions`);
     assert.deepEqual(checkScopeAgainstPolicy(jobPlat, policyFor(level)).errors, [], `${level} + platforms`);
   }

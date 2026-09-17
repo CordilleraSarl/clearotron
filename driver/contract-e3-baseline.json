@@ -5,7 +5,7 @@
       "exactly-these-keys": 0,
       "dictated-line-shape": 0
     },
-    "prelim-variants": {
+    "clearance-variants": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 0,
       "dictated-line-shape": 0
@@ -97,12 +97,12 @@
       "exactly-these-keys": 0,
       "dictated-line-shape": 1
     },
-    "skills/prelim-variants/SKILL.md": {
+    "skills/clearance-variants/SKILL.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 0,
       "dictated-line-shape": 1
     },
-    "skills/prelim-variants/transliteration-scripts.md": {
+    "skills/clearance-variants/transliteration-scripts.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 0,
       "dictated-line-shape": 1
@@ -112,17 +112,17 @@
       "exactly-these-keys": 2,
       "dictated-line-shape": 0
     },
-    "skills/prelim-common-law/SKILL.md": {
+    "skills/clearance-common-law/SKILL.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 1,
       "dictated-line-shape": 2
     },
-    "skills/prelim-register/SKILL.md": {
+    "skills/clearance-register/SKILL.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 0,
       "dictated-line-shape": 4
     },
-    "skills/prelim-register/unit.md": {
+    "skills/clearance-register/unit.md": {
       "literal-json-skeleton": 5,
       "exactly-these-keys": 0,
       "dictated-line-shape": 6
@@ -132,12 +132,12 @@
       "exactly-these-keys": 3,
       "dictated-line-shape": 1
     },
-    "skills/prelim-register/digest.md": {
+    "skills/clearance-register/digest.md": {
       "literal-json-skeleton": 1,
       "exactly-these-keys": 1,
       "dictated-line-shape": 4
     },
-    "skills/prelim-search/phase2-execution.md": {
+    "skills/clearance-search/phase2-execution.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 0,
       "dictated-line-shape": 3
@@ -147,27 +147,27 @@
       "exactly-these-keys": 2,
       "dictated-line-shape": 0
     },
-    "skills/prelim-search/synthesis-rules.md": {
+    "skills/clearance-search/synthesis-rules.md": {
       "literal-json-skeleton": 1,
       "exactly-these-keys": 1,
       "dictated-line-shape": 2
     },
-    "skills/prelim-search/firm-wide-reasoning.md": {
+    "skills/clearance-search/firm-wide-reasoning.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 0,
       "dictated-line-shape": 0
     },
-    "skills/prelim-search/risk-framework.md": {
+    "skills/clearance-search/risk-framework.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 0,
       "dictated-line-shape": 0
     },
-    "skills/prelim-search/worked-examples.md": {
+    "skills/clearance-search/worked-examples.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 0,
       "dictated-line-shape": 1
     },
-    "skills/prelim-search/report-prose.md": {
+    "skills/clearance-search/report-prose.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 0,
       "dictated-line-shape": 0
@@ -182,7 +182,7 @@
       "exactly-these-keys": 2,
       "dictated-line-shape": 1
     },
-    "skills/prelim-search/delivery-contract.md": {
+    "skills/clearance-search/delivery-contract.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 1,
       "dictated-line-shape": 1

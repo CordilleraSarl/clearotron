@@ -29,7 +29,7 @@ function parsedOf(reportMd) {
 }
 
 const FM = [
-  "---", "type: prelim-clearance", "matter: noref-demo", "title: THIS IS MY MATCHDAY",
+  "---", "type: clearance-clearance", "matter: noref-demo", "title: THIS IS MY MATCHDAY",
   "overall_label: MEDIUM", "overall_badge: l3", "overall_caption: medium overall.",
   "classes: 5 · 32 · 41", "jurisdiction: United States only", "run: 2026-06-10",
   "lint_flags: one identifier to re-verify", "---", "",
@@ -178,7 +178,7 @@ test("classification: composite ≥3 is on-field (02); a common-law secondary re
 // render their OWN card prose. The fix keys matchCard on the `- ord:` line every card now carries, so the
 // join is exact + injective. Under the old code all three rendered ord-1's body (verified in the live run).
 test("C1: each on-field card joins to its OWN ordinal's prose — no copy-paste across colliding marks", () => {
-  const FM_P = ["---", "type: prelim-clearance", "matter: noref-petcary", "title: PETCARY",
+  const FM_P = ["---", "type: clearance-clearance", "matter: noref-petcary", "title: PETCARY",
     "overall_label: MEDIUM", "overall_caption: medium overall.", "classes: 5 · 10 · 44",
     "jurisdiction: CH", "run: 2026-06-18", "---", ""].join("\n");
   const CARDS_P = [
@@ -813,7 +813,7 @@ test("spec-49 T4: legacy fm caveat notes (frame_reopen_note / envelope_note) ren
   // Their substance reaches the reader via verdict clamp reasons + injected coverage rows (T1/T3);
   // envelope_note survives only as the email's plain "Search scope:" line.
   const FM_FR = [
-    "---", "type: prelim-clearance", "matter: fr", "title: FR", "overall_label: LOW",
+    "---", "type: clearance-clearance", "matter: fr", "title: FR", "overall_label: LOW",
     "frame_reopen_note: frame-diff directives left unswept: variant:venzy phonetic family",
     "envelope_note: EU adjacent classes not exhausted", "---", "", "# Marks", "## Acme", "- one: x",
   ].join("\n");

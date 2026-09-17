@@ -49,7 +49,7 @@ Environment=PATH=%h/.local/bin:%h/.npm-global/bin:/usr/local/bin:/usr/bin:/bin
 Environment=CLEAROTRON_NO_ENV_FILE=1
 ExecStart=/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/driver/runner.mjs --watch
 # ── REFRESH THE CAPABILITY PAGE'S CAPTURE AT EVERY START ─────────────────────────────────────────────
-# The capability page renders `pool/_state/prelim-flag-snapshot.json`, and until this line its only
+# The capability page renders `pool/_state/clearance-flag-snapshot.json`, and until this line its only
 # writers were a RUN and the `clearotron start` launcher. A hosted box runs neither: these units are the
 # entrypoint, and a deployment being CONFIGURED runs nothing by definition. So the page reported the old
 # configuration as current fact for exactly as long as somebody was working on the configuration, which

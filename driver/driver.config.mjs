@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Central paths + tunables for the prelim-search deterministic driver.
+// Central paths + tunables for the clearance-search deterministic driver.
 //
 // The driver runs as an ordinary UNIX service account (launched by systemd), NOT as an LLM agent.
 // The agent exec-deny is a gateway agent-tool restriction; it does not apply to this OS process.
@@ -276,7 +276,7 @@ export const config = {
     return roots;
   },
 
-  // The base that a profile's "skills/prelim-search/<file>.md" path is relative to — i.e. the PARENT
+  // The base that a profile's "skills/clearance-search/<file>.md" path is relative to — i.e. the PARENT
   // of skillsDir. Everything the DRIVER reads itself (framework manifests, band-meaning extraction)
   // must join against this, exactly as the agent resolves the same relative paths against the
   // skillsDir it is handed (gateway.mjs engineSkillsDir).
@@ -305,7 +305,7 @@ export const config = {
   },
   // Escaped prefix for the reverse regexes below (a custom prefix may carry regex metachars).
   get workspacePrefixRe() { return this.workspacePrefix.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); },
-  // `prelim-search` IS NOT A PRODUCT NAME HERE and does not follow the product rename. It is a
+  // `clearance-search` IS NOT A PRODUCT NAME HERE and does not follow the product rename. It is a
   // directory segment on disk, and every archived run — its slug dirs, its `archive/`, its matter
   // ledger — was written under it. Renaming the segment does not move those runs; it points the
   // reader somewhere empty, and an empty directory reads as "no runs" rather than as an error.
@@ -313,7 +313,7 @@ export const config = {
   // its old spelling, or the code refuses its own archive. Thirteen sites compute this segment and
   // all thirteen stay.
   studioRootForAgent(agentId) {
-    return join(this.workspaceRoot, this.workspaceDirName(agentId), "studio", "prelim-search");
+    return join(this.workspaceRoot, this.workspaceDirName(agentId), "studio", "clearance-search");
   },
   queueDirForAgent(agentId) {
     return join(this.studioRootForAgent(agentId), "queue");
@@ -321,9 +321,9 @@ export const config = {
   archiveRootForAgent(agentId) {
     return join(this.studioRootForAgent(agentId), "archive");
   },
-  // …/<prefix><id>/studio/prelim-search/queue → "<id>"; null if the path isn't an agent queue dir.
+  // …/<prefix><id>/studio/clearance-search/queue → "<id>"; null if the path isn't an agent queue dir.
   agentIdFromQueueDir(qdir) {
-    const m = new RegExp(`(?:^|/)${this.workspacePrefixRe}([^/]+)/studio/prelim-search/queue/?$`).exec(qdir);
+    const m = new RegExp(`(?:^|/)${this.workspacePrefixRe}([^/]+)/studio/clearance-search/queue/?$`).exec(qdir);
     return m ? m[1] : null;
   },
   // Every agent workspace's clearotron queue. The systemd `.path` watches these and the runner drains ALL of
@@ -343,14 +343,14 @@ export const config = {
     try {
       for (const name of readdirSync(root)) {
         if (this.agentIdFromWorkspaceName(name) == null) continue;
-        const q = join(root, name, "studio", "prelim-search", "queue");
+        const q = join(root, name, "studio", "clearance-search", "queue");
         if (existsSync(q)) dirs.push(q);
       }
     } catch { /* workspaceRoot may not exist in some test envs — fall through to the canonical queue */ }
     // THE ONE AGENT NAME NO CONFIGURATION REMOVES, and it is deliberate. row 5.
     //
     // `this.queueDir` is `queueDirForAgent("clawdi")` — a LITERAL, not `defaultAgent` — so every
-    // deployment, however configured, watches `<workspacePrefix>clawdi/studio/prelim-search/queue`.
+    // deployment, however configured, watches `<workspacePrefix>clawdi/studio/clearance-search/queue`.
     // Setting CLEAROTRON_DEFAULT_AGENT does not remove it (prod runs `ops`, dev runs `dev`, and both still
     // watch this); nor does CLEAROTRON_WORKSPACE_PREFIX. An installer who copies `.env.example` gets a
     // neutral default agent AND this directory.
@@ -540,7 +540,7 @@ export const config = {
   // directory, so renaming the default moves the install to an empty one and nothing migrates. Here
   // the orphaned files are run-slot locks, so a live run's slot goes unseen and the global cap is
   // silently exceeded rather than enforced. Ruling.
-  get runLockDir() { return this.envValue("CLEAROTRON_RUN_LOCK_DIR") || join(this.workspaceRoot, "prelim-run-locks"); },
+  get runLockDir() { return this.envValue("CLEAROTRON_RUN_LOCK_DIR") || join(this.workspaceRoot, "clearance-run-locks"); },
 
   // Delivery outbox (Workstream B). On a handoff-mode finish the driver drops <runId>.pending here (naming
   // the forwarder agent); the systemd-user prelim-outbox.path unit fires an INSTANT clearotron-deliver wake off
@@ -552,7 +552,22 @@ export const config = {
   // directory, so renaming the default moves the install to an empty one and nothing migrates. Here
   // the orphaned files are requester-facing events — delivered, run-failed, intake-rejected — so the
   // visible failure is a requester never told their run finished. Ruling.
-  get outboxDir() { return this.envValue("CLEAROTRON_OUTBOX_DIR") || join(this.workspaceRoot, "prelim-outbox"); },
+  get outboxDir() { return this.envValue("CLEAROTRON_OUTBOX_DIR") || join(this.workspaceRoot, "clearance-outbox"); },
+
+  // ── THE DIRECTORY THIS DEFAULT USED TO NAME, AND WHY IT IS STILL READ ──────────────────────────────
+  //
+  // This default was `prelim-outbox` until the identifier was renamed. A deployment that never pinned
+  // `CLEAROTRON_OUTBOX_DIR` has its `<runId>.pending` markers sitting in the old directory, and moving
+  // the default without reading the old one orphans every one of them. That failure is silent and it is
+  // the expensive kind: a marker is a report a client is OWED, an unread outbox is indistinguishable
+  // from nothing to send, and the run that produced it has already recorded itself as delivered-pending.
+  //
+  // NULL WHEN THE VARIABLE IS SET, because then the operator named the directory and there is no old
+  // default in play. Writers use `outboxDir` alone; only readers consult this, which is the same posture
+  // the run records take — new work uses the new name, old work is still understood.
+  get legacyOutboxDir() {
+    return this.envValue("CLEAROTRON_OUTBOX_DIR") ? null : join(this.workspaceRoot, "prelim-outbox");
+  },
 
   // ── Delivery/comms (Phase 2, standalone product) ─────────────────────────────────────────────────
   // THERE IS ONE MODE AND IT IS NOT A SETTING. The driver SENDS NOTHING: every requester-facing event
@@ -570,7 +585,7 @@ export const config = {
   // LOCATION (see studioRootForAgent / agentIdFromQueueDir above).
   //
   // THE DEFAULT IS PART OF A PATH, so changing it moves where an install looks for its own runs:
-  // every run dir is `<workspaceRoot>/workspace-<agent>/studio/prelim-search/…`. An install created
+  // every run dir is `<workspaceRoot>/workspace-<agent>/studio/clearance-search/…`. An install created
   // before this default changed keeps its runs under the old id and must pin it — both spellings,
   // because the gather servers read their own variable:
   //
@@ -939,7 +954,7 @@ export const PROVIDERS = {
     id: "corsearch",
     label: "Corsearch",
     credEnv: "CORSEARCH_SESSION_KEY",
-    skillDoc: "skills/prelim-register/providers/corsearch.md",
+    skillDoc: "skills/clearance-register/providers/corsearch.md",
     hasPublicRecordUrl: true,
     // WP-receipts W2: the public per-record origin (publicRecordOrigin + /mark/<jur>/<id> is a working
     // link) — replaces the fragile resolved-link-origin inference at render for receipt-carrying runs.
@@ -1013,7 +1028,7 @@ export const PROVIDERS = {
     id: "clarivate",
     label: "Clarivate Compumark",
     credEnv: "CLARIVATE_API_KEY",
-    skillDoc: "skills/prelim-register/providers/clarivate.md",
+    skillDoc: "skills/clearance-register/providers/clarivate.md",
     hasPublicRecordUrl: false, // Compumark Content has no public record URL — cite the office register
     //, ruling 2026-08-20 — WHAT A CARD SHOWS WHERE A LINK CANNOT GO. A UI exists for this
     // provider and we do not know its per-record URL, so the card says so and says it is unfinished.
@@ -1155,7 +1170,7 @@ export const PROVIDERS = {
     id: "signa",
     label: "Signa",
     credEnv: "SIGNA_API_KEY",
-    skillDoc: "skills/prelim-register/providers/signa.md",
+    skillDoc: "skills/clearance-register/providers/signa.md",
     hasPublicRecordUrl: false, // Signa exposes no per-record public URL — cite the office register
     //, ruling 2026-08-20 — no register UI exists to link to at all, so the card points at
     // the artifact that DOES carry the record: the audit workbook. Naming it is the whole of this
@@ -1301,7 +1316,7 @@ export const PROVIDERS = {
     // list — without this, an instance holding the id and no secret passes preflight and dies on the
     // first token request, after model spend and reported as a provider fault.
     credEnvAlso: ["EUIPO_CLIENT_SECRET"],
-    skillDoc: "skills/prelim-register/providers/euipo.md",
+    skillDoc: "skills/clearance-register/providers/euipo.md",
     hasPublicRecordUrl: true,
     publicRecordOrigin: "https://euipo.europa.eu",
     async recordFetch(uri, { agentId, sessionKey, recordLog = null }) {
@@ -1367,7 +1382,7 @@ export const PROVIDERS = {
     id: "uspto-local",
     label: "USPTO (local index)",
     credEnv: "USPTO_LOCAL_DB",
-    skillDoc: "skills/prelim-register/providers/uspto-local.md",
+    skillDoc: "skills/clearance-register/providers/uspto-local.md",
     hasPublicRecordUrl: true,
     // TSDR publishes a page per serial, so a finding can cite an address the reader can open. The
     // record ref is /mark/us/<serial>, and the core builds the full statusSearch link on the record.
@@ -1471,7 +1486,7 @@ export const PROVIDERS = {
     label: "Free tier (EUIPO + USPTO local index)",
     credEnv: "EUIPO_CLIENT_ID",
     credEnvAlso: ["EUIPO_CLIENT_SECRET"],
-    skillDoc: "skills/prelim-register/providers/free-tier.md",
+    skillDoc: "skills/clearance-register/providers/free-tier.md",
     hasPublicRecordUrl: true,
     // NULL, deliberately: the two members have DIFFERENT public origins (euipo.europa.eu and the USPTO),
     // so a single origin string here would stamp one office's host onto the other's citations. The
@@ -1821,7 +1836,7 @@ export function preflightCredentials(env = process.env) {
 // paid for. This door is that same failure, moved in front of the spend.
 //
 // GATED ON THE COMPONENT, NEVER ON THE PIPELINE. `pipeline === "clearance"` is the wrong predicate and
-// fails in the expensive direction: `prelim-register-only` is a clearance that carries
+// fails in the expensive direction: `clearance-register-only` is a clearance that carries
 // `commonLawGrid: false`, searches no unregistered-use half by design, and would be refused for a
 // credential its lane never reads. The component IS the question — search-policy.mjs calls it "the
 // clearance's unregistered-use half" in as many words.
@@ -2332,7 +2347,7 @@ export function preflightDeploymentUrls(env = process.env) {
 const RUN_FREE_BYTES_FLOOR = 500e6;
 
 /** Nearest ancestor of `p` that exists. statfs needs a real path, and on a first run NONE of
- *  …/workspace-<agent>/studio/prelim-search exists yet — measuring the leaf would throw ENOENT and land
+ *  …/workspace-<agent>/studio/clearance-search exists yet — measuring the leaf would throw ENOENT and land
  *  in the unmeasurable branch, which would disable this check on exactly the fresh installs it is for. */
 function nearestExistingDir(p) {
   let dir = p;
@@ -2374,7 +2389,7 @@ export function freeSpacePlan({ freeBytes, needBytes, path }) {
  * shape of run that can proceed without one, so there is no exemption to write.
  *
  * MEASURES THE FILESYSTEM THAT WILL HOLD THE BYTES, which is the workspace root's, not `/` and not the
- * repo's. Run directories live under config.studioRoot (…/workspace-<agent>/studio/prelim-search); the
+ * repo's. Run directories live under config.studioRoot (…/workspace-<agent>/studio/clearance-search); the
  * published report goes to poolRoot and the packet to outboxDir, which on a laptop are different
  * filesystems again. A check aimed at the wrong mount passes while the right one is full, which is the
  * silent-pass this exists to prevent — so the path is taken from the caller's studioRoot when the runner

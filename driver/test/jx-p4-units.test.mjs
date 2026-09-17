@@ -118,7 +118,7 @@ test("serp grid: dictated spec frozen, every cell accounted, gates green, mirror
     // the corsearch-shape call ledger, run-prefixed, counts only
     const rows = readFileSync(jxp(ctx, "serp-calls.jsonl"), "utf8").trim().split("\n").map(JSON.parse);
     assert.equal(rows.length, calls.length);
-    assert.ok(rows.every((row) => row.sessionKey.startsWith("prelim-novapulse-test-run-jx-serp")), "run-prefixed sessionKey");
+    assert.ok(rows.every((row) => row.sessionKey.startsWith("clearance-novapulse-test-run-jx-serp")), "run-prefixed sessionKey");
     assert.ok(rows.every((row) => row.tool === "search" && typeof row.took_ms === "number" && typeof row.bytes === "number"));
     assert.ok(rows.every((row) => !("usd" in row) && !("cost" in row)), "never currency");
 

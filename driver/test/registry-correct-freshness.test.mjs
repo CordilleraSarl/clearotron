@@ -44,7 +44,7 @@ const REC = {
   corsearchStatusCode: "Registered",
 };
 const RECORDS = new Map([["/mark/us/86272665", REC]]);
-const REPORT_WRONG = "---\ntype: prelim-clearance\n---\n\n# Marks\n"
+const REPORT_WRONG = "---\ntype: clearance-clearance\n---\n\n# Marks\n"
   + "## H-1 — SATIN & BRONZE ([record](/mark/us/86272665))\n"
   + "US application 86272665, Reg. No. 4,349,603, registered 2013.\n";
 

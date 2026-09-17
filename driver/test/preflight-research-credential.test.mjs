@@ -9,7 +9,7 @@
 // failure was correct and the spend before it was avoidable.
 //
 // WHAT IS EASY TO GET WRONG HERE, and what most of this file is about: the refusal must NOT be gated on
-// `pipeline === "clearance"`. `prelim-register-only` is a clearance that carries `commonLawGrid: false`
+// `pipeline === "clearance"`. `clearance-register-only` is a clearance that carries `commonLawGrid: false`
 // and reads no research credential at all — refusing it would break a working lane in the expensive
 // direction, and it would look right. The component is the predicate. Both directions are asserted
 // below, and a knockout is asserted NOT refused because acceptance 6 ruled that lane the other way.
@@ -48,7 +48,7 @@ test("a knockout is NOT refused — #1223 acceptance 6 ruled that lane skips and
 // THE EXPENSIVE-DIRECTION CASE. A register-only clearance is a clearance, so the obvious predicate
 // (`pipeline === "clearance"`) refuses it — for a credential it never reads, on a lane that works today.
 test("a register-only clearance is NOT refused, though its pipeline is clearance", () => {
-  const policy = policyFor("prelim-register-only");
+  const policy = policyFor("clearance-register-only");
   assert.equal(policy?.pipeline, "clearance", "fixture check: this row is a clearance");
   assert.equal(policy?.components?.commonLawGrid, false, "fixture check: and it carries no grid");
   const r = preflightResearchCredential(policy, noKey);
@@ -58,7 +58,7 @@ test("a register-only clearance is NOT refused, though its pipeline is clearance
 // THE RESUME CASE. `policyFor` answers from RETIRED_POLICIES too, so an archived Depth 4 / Depth 5
 // re-entering the pipeline is caught here rather than falling through to the old late failure.
 test("a RETIRED product carrying the grid is still refused — resumes reach this door", () => {
-  for (const product of ["prelim", "prelim-jx"]) {
+  for (const product of ["clearance", "clearance-jx"]) {
     const policy = policyFor(product);
     assert.ok(policy, `fixture check: ${product} is still answerable as a retired row`);
     assert.equal(policy.components.commonLawGrid, true, `fixture check: ${product} carries the grid`);

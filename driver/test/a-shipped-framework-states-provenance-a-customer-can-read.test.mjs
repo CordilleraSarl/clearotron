@@ -39,7 +39,7 @@ const NOT_FOR_A_STRANGER = [
 const SHIPPED_MANIFESTS = ["risk-framework.manifest.json", "risk-framework-demo.manifest.json",
   "risk-framework-triage.manifest.json"];
 
-const manifestDir = join(ROOT, "driver/skills/prelim-search");
+const manifestDir = join(ROOT, "driver/skills/clearance-search");
 const readDeck = (p) => String(JSON.parse(readFileSync(p, "utf8")).source_deck ?? "");
 
 test("a shipped framework's provenance carries nothing a stranger would misread", () => {

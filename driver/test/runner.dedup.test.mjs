@@ -151,7 +151,7 @@ test("ledger: reply dedups; same-msgId/different-matter/stale do NOT; a failed r
 });
 
 test("integration: signature + same-mark-thread dedup park .duplicate; distinct-mark thread + dupOverride run", async () => {
-  const q = join(root, "workspace-clawdi", "studio", "prelim-search", "queue");
+  const q = join(root, "workspace-clawdi", "studio", "clearance-search", "queue");
   mkdirSync(q, { recursive: true });
   // (1) SAME matter, two messages (original + "please proceed"), casing/class-order drift, NO conversationId
   //     — exercises the MATTER-SIGNATURE dimension.
@@ -244,7 +244,7 @@ test("integration: signature + same-mark-thread dedup park .duplicate; distinct-
 
   // Ledger records the seeded prior + every RUN matter (vel 1, thr 2, drf 1, other 1, ovr-force 1), never the
   // three parked dups (vel, drf).
-  const ledgerPath = join(root, "workspace-clawdi", "studio", "prelim-search", ".matter-ledger.jsonl");
+  const ledgerPath = join(root, "workspace-clawdi", "studio", "clearance-search", ".matter-ledger.jsonl");
   const ledger = readFileSync(ledgerPath, "utf8").trim().split("\n").map((l) => JSON.parse(l));
   assert.equal(ledger.length, 7, `ledger has the seeded prior + six runs (got ${ledger.length})`);
 

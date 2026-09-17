@@ -54,7 +54,7 @@ test("the band axis IS policy.pipeline — the table has a row for every pipelin
 });
 
 test("an unknown band is null, never zero and never a default — 0 is a benchmark every run exceeds", () => {
-  for (const bad of ["full-depth", "prelim", "prelim-jx", "", null, undefined, 5, {}]) {
+  for (const bad of ["full-depth", "clearance", "clearance-jx", "", null, undefined, 5, {}]) {
     assert.equal(bandForPipeline(bad), null, `${JSON.stringify(bad)} must not resolve to a band`);
     assert.equal(benchmarkMinutes(bad), null, `${JSON.stringify(bad)} must have no benchmark`);
     assert.equal(benchmarkSource(bad), null);

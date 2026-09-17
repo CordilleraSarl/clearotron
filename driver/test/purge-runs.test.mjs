@@ -47,7 +47,7 @@ function pool(runs = RUNS) {
 // from a pool meta.json. So the running-run guard has to be exercised against the live store — putting
 // a state on a pool fixture tests nothing (and looks like it passes for the wrong reason).
 function liveRun({ root, ...rest }, { matter, codename, runId, state, agent = "clawdi" }) {
-  const dir = join(root, "ws", `workspace-${agent}`, "studio", "prelim-search", matter, codename);
+  const dir = join(root, "ws", `workspace-${agent}`, "studio", "clearance-search", matter, codename);
   mkdirSync(dir, { recursive: true });
   writeFileSync(join(dir, "status.json"), JSON.stringify({ runId, state }));
   return { root, ...rest };
@@ -227,7 +227,7 @@ test("no real runtime identifiers are hardcoded in the script", async () => {
 // identity, `<base>.processing.pid` carries "<pid>:<starttime>". The pid is THIS test process, which is
 // definitively alive, so the liveness answer is real rather than stubbed.
 function queueClaim({ root, ...rest }, { codename, pid = process.pid, agent = "clawdi" }) {
-  const q = join(root, "ws", `workspace-${agent}`, "studio", "prelim-search", "queue");
+  const q = join(root, "ws", `workspace-${agent}`, "studio", "clearance-search", "queue");
   mkdirSync(q, { recursive: true });
   const stat = (() => { try { return readFileSync(`/proc/${pid}/stat`, "utf8"); } catch { return null; } })();
   const starttime = stat ? stat.slice(stat.lastIndexOf(")") + 2).trim().split(/\s+/)[19] : null;

@@ -95,7 +95,7 @@ A framework is two files that travel together:
 | `risk-framework.manifest.json` | A small sidecar carrying the framework's **vocabulary**: band labels, their severity order, the entity label, provenance. |
 
 The Generic default ships at
-[`driver/skills/prelim-search/risk-framework.md`](../driver/skills/prelim-search/risk-framework.md)
+[`driver/skills/clearance-search/risk-framework.md`](../driver/skills/clearance-search/risk-framework.md)
 with bands Very High · High · Moderate · Manageable.
 
 **Replace it with your own.** Write your rubric as prose, add a manifest naming your bands,
@@ -174,14 +174,14 @@ prints what they declare, and where the deck and the manifest disagree it names 
 the deck did not do. It creates nothing, rates nothing and contacts nobody.
 
 ```
-clearotron framework skills/prelim-search/your-framework.md
+clearotron framework skills/clearance-search/your-framework.md
 ```
 
 ```
-Framework: skills/prelim-search/your-framework.md
-  deck      /srv/clearotron-config/skills/prelim-search/your-framework.md
+Framework: skills/clearance-search/your-framework.md
+  deck      /srv/clearotron-config/skills/clearance-search/your-framework.md
             read from the configured store
-  manifest  /srv/clearotron-config/skills/prelim-search/your-framework.manifest.json
+  manifest  /srv/clearotron-config/skills/clearance-search/your-framework.manifest.json
             read from the configured store
 
 It declares itself "Your firm's clearance risk framework" (your-firm-2026), a bands-shaped

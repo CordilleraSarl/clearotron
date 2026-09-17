@@ -60,7 +60,7 @@ async function ladder(tag, turnsAfterFirst, { maxRetries = "2" } = {}) {
     async runTurn() { n++; return n === 1 ? OK_BUT_NO_FILE : turnsAfterFirst; } });
   await withEnv({ CLEAROTRON_AI: "openai-agent", CLEAROTRON_MAX_RETRIES: maxRetries, CLEAROTRON_RECOVERY_MAX: "0" }, () =>
     GW.runStage("synthesis", { agent: "clawdi", message: "go", model: "haiku",
-      sessionKey: `prelim-${tag}`, timeoutSec: 30, runDir, expectFile: [join(runDir, "out.md")] }));
+      sessionKey: `clearance-${tag}`, timeoutSec: 30, runDir, expectFile: [join(runDir, "out.md")] }));
   const readJsonl = (f) => { try { return readFileSync(driverDir(runDir, f), "utf8").trim().split("\n").filter(Boolean).map((l) => JSON.parse(l)); } catch { return []; } };
   return { turns: n, attempts: readJsonl("synthesis.jsonl"), run: readJsonl("run.jsonl") };
 }

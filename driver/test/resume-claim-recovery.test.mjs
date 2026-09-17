@@ -122,8 +122,8 @@ test("a missing claim file is not abandoned — an absence is not a recovery", (
 // ── the scan, end to end over a real studio tree ─────────────────────────────────────────────────────
 
 test("a run holding ONLY a dead .resuming is seen by a fresh scan; a live one is not", () => {
-  // The real tree shape agentStudioRoots() walks: <workspaceRoot>/workspace-<agent>/studio/prelim-search.
-  const studio = join(WS, "workspace-acme", "studio", "prelim-search");
+  // The real tree shape agentStudioRoots() walks: <workspaceRoot>/workspace-<agent>/studio/clearance-search.
+  const studio = join(WS, "workspace-acme", "studio", "clearance-search");
 
   const mk = (runName, sidecar) => {
     const dir = join(studio, "amber", runName);
@@ -161,7 +161,7 @@ test("two watchers recovering the SAME abandoned claim run the pipeline ONCE", a
   // no claim, two pipelines, one billable search run twice and one lawyer delivered to twice.
   //
   // Nothing in the liveness tests above can see that: none of them races. This one does.
-  const dir = join(WS, "workspace-race", "studio", "prelim-search", "amber", "2026-08-12-contended");
+  const dir = join(WS, "workspace-race", "studio", "clearance-search", "amber", "2026-08-12-contended");
   mkdirSync(dir, { recursive: true });
   writeFileSync(join(dir, ".resuming"), JSON.stringify({ job: { mark: "AMBER" }, agent: "race", codename: "contended" }));
   writeFileSync(join(dir, ".resuming.pid"), "2147483646:99\n");   // a pid that cannot exist
@@ -183,7 +183,7 @@ test("two watchers recovering the SAME abandoned claim run the pipeline ONCE", a
 test("the dead claimer's sidecar does not outlive its claim", async () => {
   // A stale `.pid` beside a LIVE claim makes the next scan ask about the wrong process, and the answer
   // it gets is "dead" — which would re-recover a run that is currently working.
-  const dir = join(WS, "workspace-sidecar", "studio", "prelim-search", "amber", "2026-08-12-stale");
+  const dir = join(WS, "workspace-sidecar", "studio", "clearance-search", "amber", "2026-08-12-stale");
   mkdirSync(dir, { recursive: true });
   writeFileSync(join(dir, ".resuming"), JSON.stringify({ job: {}, agent: "s", codename: "stale" }));
   writeFileSync(join(dir, ".resuming.pid"), "2147483646:99\n");

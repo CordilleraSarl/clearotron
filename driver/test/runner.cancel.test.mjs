@@ -25,8 +25,8 @@ process.env.CORSEARCH_SESSION_KEY ||= "test-offline";
 process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 
-const queueFor = (root) => join(root, "workspace-clawdi", "studio", "prelim-search", "queue");
-const studioFor = (root) => join(root, "workspace-clawdi", "studio", "prelim-search");
+const queueFor = (root) => join(root, "workspace-clawdi", "studio", "clearance-search", "queue");
+const studioFor = (root) => join(root, "workspace-clawdi", "studio", "clearance-search");
 
 const jobJson = (id) => JSON.stringify({
   id, msgId: `<${id}@x>`, forwarder: "jordan", forwarderDomain: "example.com",

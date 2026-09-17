@@ -69,7 +69,7 @@ export function queueDirsUnder(workspaceRoot) {
   try { names = readdirSync(workspaceRoot); } catch { return out; }
   for (const n of names) {
     if (!n.startsWith("workspace-")) continue;
-    const q = join(workspaceRoot, n, "studio", "prelim-search", "queue");
+    const q = join(workspaceRoot, n, "studio", "clearance-search", "queue");
     try { readdirSync(q); out.push(q); } catch { /* no queue in this workspace */ }
   }
   return out.sort();

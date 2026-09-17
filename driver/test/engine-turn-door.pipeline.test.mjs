@@ -85,12 +85,12 @@ test("a SIGNED-OUT engine is refused at the door — before a run directory exis
   // The property, asserted from disk rather than from the message: nothing was built in order to fail.
   //
   // The WHOLE ROOT is listed rather than one guessed path checked absent. A run dir does not live at
-  // <root>/studio/prelim-search — it lives two levels down, under the executing agent's own workspace —
-  // so `existsSync(<root>/studio/prelim-search) === false` is a sentence that passes whatever the door
+  // <root>/studio/clearance-search — it lives two levels down, under the executing agent's own workspace —
+  // so `existsSync(<root>/studio/clearance-search) === false` is a sentence that passes whatever the door
   // does, and would have shipped this file's headline assertion as decoration. The only entry is the run
   // slot, which `pipeline()` takes before `pipelineInner` is called at all and releases in its finally;
   // a run that got past the door would add `workspace-clawdi` beside it, as the test below shows.
-  assert.deepEqual(readdirSync(root), ["prelim-run-locks"],
+  assert.deepEqual(readdirSync(root), ["clearance-run-locks"],
     "no agent workspace, no run directory, no frozen profile, no status sidecar — the refusal costs one cheap turn and nothing else");
 });
 
@@ -106,7 +106,7 @@ test("an UPSTREAM OVERLOAD does NOT refuse — the door fails open and says so o
   // not the archive. It says where a run that gets past the door puts itself — which is what makes "the
   // workspace root is empty" up there an assertion about the door rather than about a path that never
   // existed. Keep these two together; separating them is how the absence stops being a finding.
-  assert.ok(res.runDir.startsWith(join(root, "workspace-clawdi", "studio", "prelim-search")),
+  assert.ok(res.runDir.startsWith(join(root, "workspace-clawdi", "studio", "clearance-search")),
     `a run that passes the door populates the workspace root: ${res.runDir}`);
 
   const probeRow = runEvents(res.runDir).find((e) => e.event === "engine-turn-probe");

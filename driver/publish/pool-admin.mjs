@@ -116,7 +116,7 @@ function linkHome(poolDir) {
 
 // Locate an archived run's WORKSPACE dir (the publishReport input set: raw report.md, findings.json,
 // _driver/ sidecars) across every agent workspace. Layout (pipeline archive step):
-//   <workspaceRoot>/<workspacePrefix><agent>/studio/prelim-search/archive/<month|legacy-*>/<matter-slug>/<date-codename>/
+//   <workspaceRoot>/<workspacePrefix><agent>/studio/clearance-search/archive/<month|legacy-*>/<matter-slug>/<date-codename>/
 // where `<matter-slug>-<date-codename>` === runId. Returns every match (ambiguity is the caller's error).
 // The roots route through driver.config.mjs's workspace helpers (never inline the `workspace-` literal —
 // a deployment picks its own prefix via CLEAROTRON_WORKSPACE_PREFIX / CLEAROTRON_WORK_DIR).

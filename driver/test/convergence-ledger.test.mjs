@@ -145,7 +145,7 @@ const replay = async (name, steps, { stamp = true, maxRetries = 3 } = {}) => {
   const out = join(dir, `${name}.md`);
   return runStage(name, {
     agent: "clawdi", message: `BASE TASK — write your output to the ABSOLUTE path: ${out}`,
-    sessionKey: `prelim-${name}`, timeoutSec: 30, expectFile: out, maxRetries, runDir: dir, validate,
+    sessionKey: `clearance-${name}`, timeoutSec: 30, expectFile: out, maxRetries, runDir: dir, validate,
   });
 };
 

@@ -55,7 +55,7 @@ test("boundRead: a missing PRODUCT is null, and null is a real answer — never 
   assert.deepEqual(out.names, []);
   assert.equal(out.goods, "");
   // a product the offering does not list is dropped rather than passed through to a door that refuses it
-  assert.equal(boundRead({ product: "prelim" }).product, null);
+  assert.equal(boundRead({ product: "clearance" }).product, null);
   assert.equal(boundRead({ product: "knockout-search" }).product, "knockout-search");
 });
 

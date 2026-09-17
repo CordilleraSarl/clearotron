@@ -71,7 +71,7 @@ export function Field({
         // NewClearance failure branch.
         //
         // What is NOT printed here is the raw stored value. For defaultProduct that is a registry
-        // key (`prelim-jx`, `knockout-register`) whose display face is `stageLabel` — and this screen
+        // key (`clearance-jx`, `knockout-register`) whose display face is `stageLabel` — and this screen
         // is client-reachable, so the key is internal vocabulary leaking to a client. The labels
         // arrive over the wire with the options, so on the degraded path there is nothing to resolve
         // it against; say a value is set and say why its name is missing.

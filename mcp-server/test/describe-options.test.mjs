@@ -68,7 +68,7 @@ test("NOTHING staff-facing reaches a client's assistant — the whole response i
 });
 
 test("THE REGRESSION: every BUILT search is offered, from a process with no engine environment", () => {
-  // This test used to assert the opposite — that knockout and prelim-jx came back `available: false` with
+  // This test used to assert the opposite — that knockout and clearance-jx came back `available: false` with
   // the note "Not switched on for this account yet — Cordillera can enable it." It passed, and it was
   // asserting the bug: this process has no EnvironmentFile, the kill switches read as unset, unset was
   // indistinguishable from off, and so `describe_options` told clients three SHIPPED products could not
@@ -101,7 +101,7 @@ test("products: the closed offering, in offering order, each in words a requeste
     // the machinery's names for itself are not the product's names
     assert.doesNotMatch(JSON.stringify(l), /jxLanes|commonLawGrid|registerProbe/, `${l.key}: engineering vocabulary in the menu`);
     // and neither is our own retired ladder
-    assert.doesNotMatch(JSON.stringify(l), /Depth \d|prelim-jx|knockout-register/, `${l.key}: a retired rung in the menu`);
+    assert.doesNotMatch(JSON.stringify(l), /Depth \d|clearance-jx|knockout-register/, `${l.key}: a retired rung in the menu`);
   }
 });
 
@@ -144,7 +144,7 @@ test("availability is read from the flag SNAPSHOT's build map, exactly as the po
   // browser said it is not.
   const stateDir = join(ROOT, "pool", "_state");
   mkdirSync(stateDir, { recursive: true });
-  writeFileSync(join(stateDir, "prelim-flag-snapshot.json"), JSON.stringify({
+  writeFileSync(join(stateDir, "clearance-flag-snapshot.json"), JSON.stringify({
     capturedAt: new Date().toISOString(), flags: {}, built: { registerProbe: false },
     register: { provider: "signa", canCount: false },
   }));
@@ -310,7 +310,7 @@ test("saved searches: a store that cannot be READ is not reported as having none
 // ---- 4. the allowance ---------------------------------------------------------------------------
 
 test("the allowance is the LEDGER's number — the same one the admission wall counts", () => {
-  const studio = join(ROOT, "workspace-clawdi", "studio", "prelim-search");
+  const studio = join(ROOT, "workspace-clawdi", "studio", "clearance-search");
   mkdirSync(studio, { recursive: true });
   const now = Date.now();
   writeFileSync(join(studio, ".matter-ledger.jsonl"), [
@@ -365,7 +365,7 @@ test("a ledger the menu could not read reports NO FIGURES and says so — never 
 test("a ledger that WAS read says complete:true beside its figures", () => {
   // The control for the test above: the same field, on the same shape, when the count is real. Without
   // it `complete:false` could be constant and every assertion up there would still pass.
-  const studio = join(ROOT, "workspace-clawdi", "studio", "prelim-search");
+  const studio = join(ROOT, "workspace-clawdi", "studio", "clearance-search");
   mkdirSync(studio, { recursive: true });
   const now = Date.now();
   writeFileSync(join(studio, ".matter-ledger.jsonl"),

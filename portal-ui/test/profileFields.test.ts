@@ -125,8 +125,8 @@ test('A CLIENT IS NEVER SHOWN AN ENGINE PATH', () => {
   // the naming convention, and the customer key inside the filename — which together let a reader
   // guess where another client's framework lives.
   const readOnly = {
-    frameworkPath: 'skills/prelim-search/risk-framework-aurora.md',
-    workedExamplesPath: 'skills/prelim-search/worked-examples-aurora.md',
+    frameworkPath: 'skills/clearance-search/risk-framework-aurora.md',
+    workedExamplesPath: 'skills/clearance-search/worked-examples-aurora.md',
     allowedRecipes: ['clearotron'],
     runCaps: { perMonth: 4 },
   }
@@ -140,7 +140,7 @@ test('A CLIENT IS NEVER SHOWN AN ENGINE PATH', () => {
 })
 
 test('staff keep the paths, because they are the ones who open the file', () => {
-  const readOnly = { frameworkPath: 'skills/prelim-search/risk-framework-aurora.md', runCaps: {} }
+  const readOnly = { frameworkPath: 'skills/clearance-search/risk-framework-aurora.md', runCaps: {} }
   assert.deepEqual(visibleReadOnlyFields(readOnly, true), ['frameworkPath', 'runCaps'])
 })
 
@@ -161,8 +161,8 @@ test('defaultProduct CLEARS to "" rather than deleting its key', () => {
   const untouched = applyField({ name: 'Aurora', defaultProduct: 'clearotron' }, spec('name'), 'A')
   assert.equal(untouched.defaultProduct, 'clearotron', 'preserve: an unrelated edit does not disturb it')
 
-  const set = applyField({ name: 'Aurora' }, f, 'prelim-jx')
-  assert.equal(set.defaultProduct, 'prelim-jx')
+  const set = applyField({ name: 'Aurora' }, f, 'clearance-jx')
+  assert.equal(set.defaultProduct, 'clearance-jx')
 
   const cleared = applyField({ name: 'Aurora', defaultProduct: 'clearotron' }, f, '')
   assert.ok('defaultProduct' in cleared, 'the key must SURVIVE the clear, carrying the sentinel')
@@ -264,7 +264,7 @@ test('choiceLabel returns null rather than the raw value, so no caller can print
   assert.equal(choiceLabel(spec('delivery.privileged'), 'no'), 'No marking')
   assert.equal(choiceLabel(spec('delivery.privileged'), 'nonsense'), null, 'an unknown value has no label')
   assert.equal(
-    choiceLabel(spec('defaultProduct'), 'prelim-jx'), null,
+    choiceLabel(spec('defaultProduct'), 'clearance-jx'), null,
     'the level spec carries no static choices, so the internal key resolves to nothing to print',
   )
 })

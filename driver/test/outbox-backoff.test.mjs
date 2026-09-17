@@ -106,7 +106,7 @@ test("fail-safe: a torn sidecar reads as due (retry, never a wedged agent)", () 
 // ── rescan ─────────────────────────────────────────────────────────────────────────────────────────
 
 function makeRun({ agent = "clawdi", slug, leaf, archived = false, sendPending, withSent = false, runId = null, codename = null, state}) {
-  const studio = join(process.env.CLEAROTRON_WORK_DIR, `workspace-${agent}`, "studio", "prelim-search");
+  const studio = join(process.env.CLEAROTRON_WORK_DIR, `workspace-${agent}`, "studio", "clearance-search");
   const runDir = archived ? join(studio, "archive", "2026-07", slug, leaf) : join(studio, slug, leaf);
   mkdirSync(runDir, { recursive: true });
   // codename defaults to the leaf (fixture shorthand); the runId-form tests pass the REAL bare codename

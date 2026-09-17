@@ -15,10 +15,10 @@
 // ── THE DEPTH LADDER IS GONE ─────────────────────────────────────────────────────────────────────────────────
 //
 // There used to be a second vocabulary here: a closed set of LEVELS (`knockout`, `knockout-register`,
-// `prelim`, `prelim-jx`) with a display face reading "Depth 1"…"Depth 5", ordered by effort. A client
+// `clearance`, `clearance-jx`) with a display face reading "Depth 1"…"Depth 5", ordered by effort. A client
 // bought a level; the thing they were sold — a knockout, a worldwide preliminary, a single-country deep
 // dive — was a different word that appeared on no wire. The two disagreed in the one place it mattered:
-// `prelim` named THREE products depending on where it pointed, and the composer's own footer had to
+// `clearance` named THREE products depending on where it pointed, and the composer's own footer had to
 // invent labels ("Deep dive — United States", "Full clearance") for distinctions "the registry has no
 // word for". The registry now has the word. The level menu, its numbering, its ordering and the
 // `searchLevel` wire field are DELETED — not deprecated, not hidden behind the product name.
@@ -61,7 +61,7 @@ export const ORDERABLE_PRODUCTS = PRODUCT_IDS;
 //
 // This is the reading that squares "no old mechanism survives its replacement" with an archive: the
 // delete rule governs the ORDERABLE path, and naming a run that already happened is not that path.
-export const RETIRED_PRODUCTS = ["knockout", "knockout-register", "prelim-register-only", "prelim", "prelim-jx"];
+export const RETIRED_PRODUCTS = ["knockout", "knockout-register", "clearance-register-only", "clearance", "clearance-jx"];
 
 /** Saved searches dropped by the last `loadRecipes` because their base is a retired product. Rewritten on
  *  every load, so it describes the CURRENT store and never accumulates. Read it to tell a reader why a
@@ -304,9 +304,9 @@ export const RETIRED_POLICIES = {
   // Retired 2026-08-06: the clearance shape with its unregistered-use half removed. That basis
   // still composes into riskStatement, and the workbook's own gate still inverts on it, because an
   // archived run of it must not re-render claiming a sweep that never ran.
-  "prelim-register-only": { product: "prelim-register-only", stageLabel: "Depth 3", pipeline: "clearance", report: { template: "clearance", identity: "Preliminary clearance — register only" },                       components: { registerProbe: false, jxLanes: false, commonLawGrid: false } },
-  "prelim":               { product: "prelim",               stageLabel: "Depth 4", pipeline: "clearance", report: { template: "clearance", identity: "Preliminary clearance" },                                       components: { registerProbe: false, jxLanes: false, commonLawGrid: true } },
-  "prelim-jx":            { product: "prelim-jx",            stageLabel: "Depth 5", pipeline: "clearance", report: { template: "clearance", identity: "Preliminary clearance with jurisdiction deep-dive" },           components: { registerProbe: false, jxLanes: true,  commonLawGrid: true } },
+  "clearance-register-only": { product: "clearance-register-only", stageLabel: "Depth 3", pipeline: "clearance", report: { template: "clearance", identity: "Preliminary clearance — register only" },                       components: { registerProbe: false, jxLanes: false, commonLawGrid: false } },
+  "clearance":               { product: "clearance",               stageLabel: "Depth 4", pipeline: "clearance", report: { template: "clearance", identity: "Preliminary clearance" },                                       components: { registerProbe: false, jxLanes: false, commonLawGrid: true } },
+  "clearance-jx":            { product: "clearance-jx",            stageLabel: "Depth 5", pipeline: "clearance", report: { template: "clearance", identity: "Preliminary clearance with jurisdiction deep-dive" },           components: { registerProbe: false, jxLanes: true,  commonLawGrid: true } },
 };
 
 /** The report identity to print on a run's document: `{ template, identity, stageLabel, banner }`.
@@ -470,7 +470,7 @@ export function policyFor(product) {
 
 // What THIS build can actually execute. A resolution onto machinery a build does not carry must CLARIFY
 // at admission (never silently run the wrong-priced product — a knockout request running as a $40
-// prelim, or a 1.5 request running as a plain Stage 1, is the exact silent-substitution this file exists
+// clearance, or a 1.5 request running as a plain Stage 1, is the exact silent-substitution this file exists
 // to forbid). These flags are flipped in CODE as each lane lands, never from the environment: there are
 // no runtime env kill switches — see the note below.
 // EXPORTED because availability is now asked about in two places, not one. The runner asks "may this
@@ -498,7 +498,7 @@ export const BUILT = { knockout: true, jxLanes: true, registerProbe: true };
 // They were not merely dead, they were actively harmful, and in exactly the way the old comment here
 // predicted: a caller outside the engine's environment reads every switch as unset, and unset was
 // indistinguishable from off. The portal was given a snapshot to work around it. The ops-MCP was not,
-// so `describe_options` and `plan_run` told clients that knockout, knockout-register and prelim-jx were
+// so `describe_options` and `plan_run` told clients that knockout, knockout-register and clearance-jx were
 // "Not switched on for this account yet" while the engine would have run all three (2026-07-27). That is
 // the second time this service has lied for want of an environment variable — the first was the profiles
 // dir answering with a demo roster. Deleting the switch is the fix that cannot recur; plumbing a
@@ -830,7 +830,7 @@ export const CAPABILITY_SKIPPED_CAUSE = {
  * now honoured wherever it resolves, and built machinery is never "off".
  *
  * The RESOLVED policy is measured, never `policyFor(resolved.level)`: a recipe can turn jxLanes on over a
- * base of `prelim`, and the base registry entry would answer "available" for a resolution that is not.
+ * base of `clearance`, and the base registry entry would answer "available" for a resolution that is not.
  * Delegating the built arms to productAvailability is what makes the null-equivalence with
  * gateResolvedPolicy structural rather than a coincidence two edits can break (search-policy.test.mjs
  * pins it over the whole matrix).
@@ -1216,7 +1216,7 @@ export function checkMarkBudget(job, policy) {
 // THE SCOPE ITSELF.
 //
 // THAT LAST RUNG IS THE OFFERING, AND IT IS NOT A CONSTANT. The Generic default used to be the literal
-// level `prelim`, which named three different products depending on where it pointed. A clearance that
+// level `clearance`, which named three different products depending on where it pointed. A clearance that
 // names no product IS whichever product its territories make it — `productFor(pipeline, scope)`, the one
 // function that answers that question anywhere — so the default is derived, not picked. The caller hands
 // in the RESOLVED scope (`territories`) because resolving it needs the profile and the project overlay,

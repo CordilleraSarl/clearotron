@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // @tier full — drives a full mock clearance through the real runner (zh lane)
-// runner.jx-e2e.test.mjs — the zh candidate lane end to end through the REAL runner at $0: a prelim-jx job
+// runner.jx-e2e.test.mjs — the zh candidate lane end to end through the REAL runner at $0: a clearance-jx job
 // (CN in scope) runs the FULL mock clearance with the zh candidate lane on fixtures — the frozen lane
 // decision, the fold onto transliteration-numeric, the auto-spawned unit, receipts/ledger — and a
 // plain-clearotron control job in the same process proves the component gate (no jx artifacts at all).
@@ -12,7 +12,7 @@ import { envFrom, pinEnv } from "../../shared/env-aliases.mjs";   // — a fixtu
 import { tmpdir as __tmpdir } from "node:os";
 import { join as __join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
-pinEnv(process.env, "CLEAROTRON_WORK_DIR", envFrom(process.env, "CLEAROTRON_WORK_DIR") || __mkdtemp(__join(__tmpdir(), "prelim-jx-e2e-")));
+pinEnv(process.env, "CLEAROTRON_WORK_DIR", envFrom(process.env, "CLEAROTRON_WORK_DIR") || __mkdtemp(__join(__tmpdir(), "clearance-jx-e2e-")));
 pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", envFrom(process.env, "CLEAROTRON_REPORTS_DIR") || __join(process.env.CLEAROTRON_WORK_DIR, "pool"));
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -50,7 +50,7 @@ for (const [k, v] of Object.entries({
 })) pinEnv(process.env, k, v);
 
 const { main } = await import("../runner.mjs");
-const Q = join(root, "workspace-clawdi", "studio", "prelim-search", "queue");
+const Q = join(root, "workspace-clawdi", "studio", "clearance-search", "queue");
 mkdirSync(Q, { recursive: true });
 
 const findRun = (needle) => {
@@ -61,11 +61,11 @@ const findRun = (needle) => {
     if (existsSync(driverDir(d, "search-policy.json")) && d.includes(needle)) { hits.push(d); return; }
     for (const e of es) if (e.isDirectory()) walk(join(d, e.name), depth + 1);
   };
-  walk(join(root, "workspace-clawdi", "studio", "prelim-search"), 0);
+  walk(join(root, "workspace-clawdi", "studio", "clearance-search"), 0);
   return hits;
 };
 
-test("prelim-jx e2e: frozen zh lane → fixture candidates → fold on transliteration-numeric → unit spawned → delivered", async () => {
+test("clearance-jx e2e: frozen zh lane → fixture candidates → fold on transliteration-numeric → unit spawned → delivered", async () => {
   writeFileSync(join(Q, "jx-run.json"), JSON.stringify({
     id: "jx-run", msgId: "<jx@x>", forwarder: "dev", forwarderDomain: "example.com",
     product: "multi-country-focus-search", nativeLanguage: true, ref: "TMP9200", markName: "NOVAPULSE",

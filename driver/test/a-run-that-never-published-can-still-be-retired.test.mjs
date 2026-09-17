@@ -38,7 +38,7 @@ function world(runs) {
   const poolRoot = mkdtempSync(join(tmpdir(), "retire-pool-"));
   const workspaceRoot = mkdtempSync(join(tmpdir(), "retire-ws-"));
   for (const [runId, state] of Object.entries(runs)) {
-    const dir = join(workspaceRoot, `workspace-${runId}`, "studio", "prelim-search", "runs", runId);
+    const dir = join(workspaceRoot, `workspace-${runId}`, "studio", "clearance-search", "runs", runId);
     mkdirSync(driverDir(dir), { recursive: true });
     writeFileSync(join(dir, "status.json"), JSON.stringify({ runId, state, markName: runId.toUpperCase(), slug: runId }));
     writeFileSync(driverDir(dir, "profile.json"), JSON.stringify({ profileKey: "aurora" }));

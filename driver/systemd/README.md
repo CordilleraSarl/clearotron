@@ -137,7 +137,7 @@ on a **literal glob** -- a `.path` unit cannot read an environment variable, so 
 your configuration:
 
 ```
-PathExistsGlob=%h/.openclaw/workspace-clawdi/studio/prelim-search/queue/*.json
+PathExistsGlob=%h/.openclaw/workspace-clawdi/studio/clearance-search/queue/*.json
 ```
 
 **That prefix is one deployment's layout, not yours.** Enable this unit without editing that line to

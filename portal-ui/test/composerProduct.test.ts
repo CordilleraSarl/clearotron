@@ -335,7 +335,7 @@ test('a saved search reads back as a draft — and a product the offering no lon
   // Read back THROUGH the product's own rules: a Full country search holds one country, so the record's
   // second territory does not survive into a form that cannot express it.
   assert.deepEqual(back, { product: FULL.key, territories: ['France'], replacesOwnTerritories: false, nativeLanguage: false })
-  assert.equal(draftFromSaved({ base: 'prelim-jx', scope: {} }, PRODUCTS), null,
+  assert.equal(draftFromSaved({ base: 'clearance-jx', scope: {} }, PRODUCTS), null,
     'a retired level as a base opens READ-ONLY rather than being reshaped into the nearest live product')
   assert.equal(draftFromSaved({}, PRODUCTS), null)
 })

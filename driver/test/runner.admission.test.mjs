@@ -26,7 +26,7 @@ process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
 // production call ledger can never evidence their bands; the dedicated band-truth-gate tests turn it ON.
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 
-const queueFor = (root, agentId) => join(root, `workspace-${agentId}`, "studio", "prelim-search", "queue");
+const queueFor = (root, agentId) => join(root, `workspace-${agentId}`, "studio", "clearance-search", "queue");
 const jobJson = (ref) => JSON.stringify({
   id: `adm-${ref}`, msgId: `<adm-${ref}@x>`, forwarder: "jordan", forwarderDomain: "example.com",
   ref, markName: "ADMISSION PROBE", classes: [9], provider: "corsearch",

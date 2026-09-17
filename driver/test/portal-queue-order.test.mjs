@@ -34,7 +34,7 @@ const SOLO = { email: "solo@celta.example" };
 function queueWorld(jobs, order = null) {
   const poolRoot = mkdtempSync(join(tmpdir(), "pq-poolfx-"));
   const workspaceRoot = mkdtempSync(join(tmpdir(), "pq-wsfx-"));
-  const studio = join(workspaceRoot, "workspace-clawdi", "studio", "prelim-search");
+  const studio = join(workspaceRoot, "workspace-clawdi", "studio", "clearance-search");
   const q = join(studio, "queue");
   mkdirSync(q, { recursive: true });
   for (const j of jobs) {

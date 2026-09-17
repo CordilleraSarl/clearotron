@@ -39,7 +39,7 @@ const JOB = { jobKey: "TMP9999-veltri", classes: ["9", "42"], jurisdictions: ["U
 
 const entriesByTerm = () => {
   const plan = parseRegisterPlan(JSON.stringify(compileRegisterPlan({
-    manifest: parseVariantManifestModel(JSON.stringify(MODEL)), job: JOB, form: null, skillVersion: "prelim-register@spec48",
+    manifest: parseVariantManifestModel(JSON.stringify(MODEL)), job: JOB, form: null, skillVersion: "clearance-register@spec48",
   })));
   // NO provenance filter: a variant whose value equals the mark folds into the mark's own entry
   // (measured — the exact-phrase row compiles with provenance "mark"), and the question is what the
@@ -82,7 +82,7 @@ test("exact-phrase stays EXACT, and the 2047 strip rule is untouched — the wid
 test("an anchored-wildcard family value still takes the wildcard lane — decided before the category", () => {
   const m = { ...MODEL, variants: [...MODEL.variants, { value: "VELTRI*", category: "formative-family", rationale: "prefix family" }] };
   const plan = parseRegisterPlan(JSON.stringify(compileRegisterPlan({
-    manifest: parseVariantManifestModel(JSON.stringify(m)), job: JOB, form: null, skillVersion: "prelim-register@spec48",
+    manifest: parseVariantManifestModel(JSON.stringify(m)), job: JOB, form: null, skillVersion: "clearance-register@spec48",
   })));
   const e = plan.entries.find((x) => x.term === "VELTRI*");
   assert.ok(e, "the wildcard family value compiled to no entry");

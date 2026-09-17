@@ -1,6 +1,6 @@
 ---
-name: prelim-search
-description: Orchestrator for preliminary trademark search requests with register coverage. Invoke when a forwarded email asks for a preliminary trademark search (common-law and register layers, run in parallel). Coordinates `prelim-variants` → `prelim-common-law` + `prelim-register`, then synthesises into client-ready HTML email drafts plus unified audit-trail Excel deliverables for the reviewing lawyer to evaluate. The paid register vendor is whichever sits in the runtime tool surface (the neutral `register_*` surface — one vendor at a time, selected by REGISTER_PROVIDER); free EUIPO (`euipo_*`) and the case-law citation tools (`courtlistener__*` / `legaldatahunter__*`) sit alongside it for EU cross-checks and precedent grounding.
+name: clearance-search
+description: Orchestrator for preliminary trademark search requests with register coverage. Invoke when a forwarded email asks for a preliminary trademark search (common-law and register layers, run in parallel). Coordinates `clearance-variants` → `clearance-common-law` + `clearance-register`, then synthesises into client-ready HTML email drafts plus unified audit-trail Excel deliverables for the reviewing lawyer to evaluate. The paid register vendor is whichever sits in the runtime tool surface (the neutral `register_*` surface — one vendor at a time, selected by REGISTER_PROVIDER); free EUIPO (`euipo_*`) and the case-law citation tools (`courtlistener__*` / `legaldatahunter__*`) sit alongside it for EU cross-checks and precedent grounding.
 ---
 
 ## Contents
@@ -44,11 +44,11 @@ Top-level reusable judgment skills (the three new "touchpoints" — see Phase 2 
 - `narrative-refutation` — runs as a **spawned isolated worker** at Phase 2 (between Step 4 synthesis and Phase 3): refutes the narrative against the underlying files; produces `senior-eye-review.md`. Its verdict drives the corrective pass before Phase 3. Reusable.
 
 Sub-skills used during the workflow:
-- `prelim-variants` — runs **inline** in this orchestrator session: shared strategy + variant
+- `clearance-variants` — runs **inline** in this orchestrator session: shared strategy + variant
   generation (produces the variant manifest, consumes `matter-context.md`). Cheap, no bulk payloads — stays in context.
-- `prelim-common-law` — runs as a **spawned isolated worker** (Phase 2 Step 2): Perplexity
+- `clearance-common-law` — runs as a **spawned isolated worker** (Phase 2 Step 2): Perplexity
   execution against the manifest (produces the common-law findings file with `developer_of_record` / `publisher_of_record` extracted per game-title finding).
-- `prelim-register` — runs as a **spawned isolated worker** (Phase 2 Step 2): register-search
+- `clearance-register` — runs as a **spawned isolated worker** (Phase 2 Step 2): register-search
   execution against the manifest; consumes `matter-context.md` for materially-matters jurisdictions in per-jurisdiction sub-queries; consumes `placement-recommendations.md` (MODE B digest) for per-candidate placements.
 
 The two gather workers run in their **own isolated sessions** so their raw search payloads
@@ -67,7 +67,7 @@ Your tool surface binds **one paid register vendor** plus free / citation tools 
 - **Paid vendor = the register source of truth** (global coverage, phonetic). The tools are always `register_*`; the vendor behind them is whichever REGISTER_PROVIDER selects — **one vendor at a time** (gated via `agents.list[].tools.allow`, swapped by the operator). Record which one in the audit trail + the scope statement.
 - **EUIPO is one of the four register providers, not a cross-check alongside one.** When it is active
   it IS the register, covering the EU alone; every other territory is a disclosed deferred gap.
-  `prelim-register/providers/euipo.md` carries the detail.
+  `clearance-register/providers/euipo.md` carries the detail.
 - **Case-law tools (`courtlistener__*` / `legaldatahunter__*`) are a separate layer** — precedent grounding via the `case-law-citation` skill at Step 4.5, **not** register search.
   *(Tool-naming note: the double-underscore prefix is the MCP-bridge naming convention (`<server>__<tool>`) — see `providers/oauth-mcp-bridge/bridge.mjs`. Keep the names exactly as written; bare names without the prefix would not resolve at the tool layer.)*
 
@@ -77,8 +77,8 @@ The old "exactly one register provider; you will never see both" referred to the
 
 Model tiers are set **per stage by the deterministic driver** — `driver/stages.mjs` is the
 source of truth. Current tiers: register sweep axes (`primary-sweep` / `transliteration-numeric` /
-`incumbent-class`) = `sonnet` / adaptive; `saturation-probe` = `haiku` / off; `prelim-common-law` = `haiku` /
-low; register digest + `matter-frame` / `prelim-variants` / `placement-inquiry` / synthesis = `opus`; Step-2.6
+`incumbent-class`) = `sonnet` / adaptive; `saturation-probe` = `haiku` / off; `clearance-common-law` = `haiku` /
+low; register digest + `matter-frame` / `clearance-variants` / `placement-inquiry` / synthesis = `opus`; Step-2.6
 skeptic = `sonnet`; `narrative-refutation` = `opus`. Every stage runs under the
 **forwarding identity** (derived from the queue location); delivery is not an agent capability — it is
 the driver's outbox contract (`../../docs/DELIVERY.md`).
@@ -124,7 +124,7 @@ Three phases, all complete before a single reply is sent to the forwarder.
 3. Derive the run slug and open the run-dir from those fields — Phase 1 authors NO client prose. The report is written in Phase 2 synthesis (per [delivery-contract.md](delivery-contract.md)) and the client email is composed in CODE at Phase 3 (`composeEmailHtml`)
 
 **Phase 2 — Research and synthesis** (run by the deterministic driver; methodology in [phase2-execution.md](phase2-execution.md)):
-1. **Variants** — `prelim-variants` produces the variant manifest (consumes `matter-context.md` from Phase 0)
+1. **Variants** — `clearance-variants` produces the variant manifest (consumes `matter-context.md` from Phase 0)
 2. **Gather** — common-law + the applicable register units run as batched stages against the manifest
 3. **Touchpoint 2: placement-inquiry** — structured inquiry per candidate; produces `placement-recommendations.md` (each candidate placed headline / sheet-2 / watchlist / out-of-scope with reasoning)
 4. **Register digest** — combines the unit digests into `register-findings.md`; consumes `placement-recommendations.md`
@@ -141,16 +141,16 @@ Three phases, all complete before a single reply is sent to the forwarder.
 - Reply to forwarder
 - Cross-person deadline flag
 - Mark as read, log handoff, done message
-- Archive the run dir (move `studio/prelim-search/<slug>/<date>/` → `studio/prelim-search/archive/<YYYY-MM>/<slug>/<date>/`)
+- Archive the run dir (move `studio/clearance-search/<slug>/<date>/` → `studio/clearance-search/archive/<YYYY-MM>/<slug>/<date>/`)
 
 ## Tool call budget
 
 The orchestrator itself makes few direct tool calls. Most calls happen inside sub-skills under their own budgets:
 
-- `prelim-common-law`: **15** `perplexity_research` per workflow
+- `clearance-common-law`: **15** `perplexity_research` per workflow
   *(rationale: cost-based overflow protection against a looping worker — the API is usage-billed; a search-as-code grid call ≈ $0.06, prose follow-ups ≈ $0.01–0.15 each (measured 2026-06-10). Typical workflow uses 2–6 calls/mark; 15 leaves headroom for thinness re-spawns)*
-- `prelim-register`: **150** provider calls per workflow, across all marks
-  *(rationale: Corsearch billing-tier ceiling; calibrated against May runs which used 80–110 calls each. The per-mark hard constraints are tighter — see `prelim-register/SKILL.md` "Per-mark ceilings": 20 search / 40 detail-fetch / 5 phoneme / 10 image)*
+- `clearance-register`: **150** provider calls per workflow, across all marks
+  *(rationale: Corsearch billing-tier ceiling; calibrated against May runs which used 80–110 calls each. The per-mark hard constraints are tighter — see `clearance-register/SKILL.md` "Per-mark ceilings": 20 search / 40 detail-fetch / 5 phoneme / 10 image)*
 - This skill: file read/write and memory write — bounded by workflow steps. It builds no workbook and sends no mail: the driver does both at publish, in code.
 
 Cross-pollination dispatches add at most **10** calls split across the two sub-skills (Option D cap).
@@ -158,7 +158,7 @@ Cross-pollination dispatches add at most **10** calls split across the two sub-s
 
 ## HITL exception (shared across sub-skills)
 
-Trademark research queries within this workflow are **pre-approved** for `perplexity_research` (used by `prelim-common-law`) and the configured register provider plugin (used by `prelim-register`) provided they are properly sanitized:
+Trademark research queries within this workflow are **pre-approved** for `perplexity_research` (used by `clearance-common-law`) and the configured register provider plugin (used by `clearance-register`) provided they are properly sanitized:
 - **Include:** mark name, product type, relevant industry context
 - **Strip:** client identity, reference numbers, internal contact names
 - Mark names are not confidential (they are proposed marks, destined for public registries). Who is asking is confidential.
@@ -171,9 +171,9 @@ Trademark research queries within this workflow are **pre-approved** for `perple
 fails** — the driver retries the stage, then surfaces a failed run. A report is never delivered
 with a main layer missing (no "flagged gap" partial delivery).
 
-- **prelim-variants fails or returns empty manifest** → halt; cannot proceed without variants. Surface to user with diagnostic.
-- **prelim-common-law fails** (Perplexity unavailable after plugin retries + one worker retry, zero usable results) → the worker writes **no findings file** and reports the tool failure (see `prelim-common-law/SKILL.md` → *Failure protocol*). The driver re-runs the stage, then fails the run and surfaces it. Incomplete-but-ran coverage is NOT failure — that is honest `coverage-limited` / `deferred` ledger rows in a real findings file.
-- **prelim-register fails** → "fails" here means the register layer made **zero** successful provider tool calls (`register_search` / `register_record_fetch`) in your session. Verify by inspecting your own tool-use history before declaring this. If even ONE provider call returned a non-error result, the register layer DID execute and you MUST write a real `register-findings-<slug>-<date>.md` containing the hits you collected — even if coverage is incomplete relative to the variant manifest. Document the coverage gap inline (e.g. "12 of 25 planned sweeps executed; remaining skipped because <reason>") rather than declaring the entire layer "not executed". In the genuine zero-calls case: write **no findings file** and report the tool failure — the driver re-runs the stage, then fails the run and surfaces it.
+- **clearance-variants fails or returns empty manifest** → halt; cannot proceed without variants. Surface to user with diagnostic.
+- **clearance-common-law fails** (Perplexity unavailable after plugin retries + one worker retry, zero usable results) → the worker writes **no findings file** and reports the tool failure (see `clearance-common-law/SKILL.md` → *Failure protocol*). The driver re-runs the stage, then fails the run and surfaces it. Incomplete-but-ran coverage is NOT failure — that is honest `coverage-limited` / `deferred` ledger rows in a real findings file.
+- **clearance-register fails** → "fails" here means the register layer made **zero** successful provider tool calls (`register_search` / `register_record_fetch`) in your session. Verify by inspecting your own tool-use history before declaring this. If even ONE provider call returned a non-error result, the register layer DID execute and you MUST write a real `register-findings-<slug>-<date>.md` containing the hits you collected — even if coverage is incomplete relative to the variant manifest. Document the coverage gap inline (e.g. "12 of 25 planned sweeps executed; remaining skipped because <reason>") rather than declaring the entire layer "not executed". In the genuine zero-calls case: write **no findings file** and report the tool failure — the driver re-runs the stage, then fails the run and surfaces it.
 - **Both fail** → same as either: failed run, surfaced — never a template-only delivery.
 - **Stage re-run** (any stage; triggered by a missing/invalid output file, a non-`ok` result, or a detected embedded-fallback) → the driver re-runs that stage under a fresh session key (bounded retries), then writes a `.failed` sentinel and surfaces it if it still cannot produce a valid output. The failure taxonomy + file-truth gating live in `driver/gateway.mjs`.
 
@@ -181,13 +181,13 @@ with a main layer missing (no "flagged gap" partial delivery).
 
 The orchestrator works inside a **unique codenamed run-dir under the per-skill `studio/` tree** in the
 forwarding identity's workspace:
-`<workspacePrefix><agent>/studio/prelim-search/<slug>/<date>-<codename>/`, where `<codename>` is a random
+`<workspacePrefix><agent>/studio/clearance-search/<slug>/<date>-<codename>/`, where `<codename>` is a random
 `<adjective>-<noun>` you generate fresh for this run — pick both words freely, lowercase, one hyphen.
 The codename guarantees a **unique** dir even for repeated same-matter, same-day runs,
 so a prior run's files can never land in — or be mistaken for — this run's, and there is never any need
 to inspect or clean up a prior dir. (Slug derivation: see Phase 1.)
 
-> **Run-dir token.** The run-dir is written `studio/prelim-search/<slug>/<date>/…` throughout this skill
+> **Run-dir token.** The run-dir is written `studio/clearance-search/<slug>/<date>/…` throughout this skill
 > and in worker tasks; in that **run-dir path**, the `<date>` segment is your codenamed leaf
 > `<YYYY-MM-DD>-<codename>` (the matching archive path `archive/<YYYY-MM>/<slug>/<date>/` carries the same
 > codenamed leaf). Substitute it consistently in every run-dir path you write or hand to a worker.
@@ -197,8 +197,8 @@ to inspect or clean up a prior dir. (Slug derivation: see Phase 1.)
 On every invocation, before Phase 1:
 
 1. **Generate the run codename** — a random `<adjective>-<noun>` (lowercase, single hyphen; pick freshly, never reuse a prior run's). This fixes your run-dir leaf `<date>-<codename>` for the entire run.
-2. **Create the run-dir by WRITING into it.** The `write` tool creates parent dirs automatically, so your first write (the matter-context.md in step 3, then `register-units/<axis>.md` files as Phase 2 needs them) creates `studio/prelim-search/<slug>/<date>/`. The unique codename already guarantees a clean, collision-free dir, so there is **nothing to inspect** — do not `read` or list a directory to check or create it; track every file by its known path.
-3. **Run `matter-frame` inline** to produce `studio/prelim-search/<slug>/<date>/matter-context.md`. This is the strategic foundation — it names client + sector + customer base + materially-matters jurisdictions + off-field sectors + watchlist-owner seeds. Downstream (Phase 1 variants, Phase 2 register-unit per-jurisdiction sub-queries, Touchpoint 2 placement, Touchpoint 3 refutation) all consume this artifact. Read [matter-frame/SKILL.md](../matter-frame/SKILL.md) and execute it inline; it makes no tool calls and stays cheaply in context.
+2. **Create the run-dir by WRITING into it.** The `write` tool creates parent dirs automatically, so your first write (the matter-context.md in step 3, then `register-units/<axis>.md` files as Phase 2 needs them) creates `studio/clearance-search/<slug>/<date>/`. The unique codename already guarantees a clean, collision-free dir, so there is **nothing to inspect** — do not `read` or list a directory to check or create it; track every file by its known path.
+3. **Run `matter-frame` inline** to produce `studio/clearance-search/<slug>/<date>/matter-context.md`. This is the strategic foundation — it names client + sector + customer base + materially-matters jurisdictions + off-field sectors + watchlist-owner seeds. Downstream (Phase 1 variants, Phase 2 register-unit per-jurisdiction sub-queries, Touchpoint 2 placement, Touchpoint 3 refutation) all consume this artifact. Read [matter-frame/SKILL.md](../matter-frame/SKILL.md) and execute it inline; it makes no tool calls and stays cheaply in context.
 4. **Per-customer delivery is driven by the RESOLVED CUSTOMER PROFILE, not the sender domain.** The intake
    AI resolves which customer this is for and stamps `profileKey` on the job (email-loop §B3.2a); the driver
    freezes that profile into `_driver/profile.json`, and the deterministic publish code reads its `delivery`
@@ -208,7 +208,7 @@ On every invocation, before Phase 1:
    ([templates/email/generic.md](templates/email/generic.md)) and it is a RECORD of the retired
    per-customer body, not an instruction. What the profile still decides is the P&C flag, and it
    decides it through the bound profile, never `*@domain`.
-5. **Phase 3 archives this run** on successful delivery: the dated subdir is moved to `studio/prelim-search/archive/<YYYY-MM>/<slug>/<date>/`. A run that delivered but failed to archive is a workflow violation — Phase 3 (see [Phase 3](#phase-3--delivery--must-pattern)) handles the move.
+5. **Phase 3 archives this run** on successful delivery: the dated subdir is moved to `studio/clearance-search/archive/<YYYY-MM>/<slug>/<date>/`. A run that delivered but failed to archive is a workflow violation — Phase 3 (see [Phase 3](#phase-3--delivery--must-pattern)) handles the move.
 
 ## Phase 1 — Template
 
@@ -224,7 +224,7 @@ The report body is authored in Phase 2 synthesis against [delivery-contract.md](
 
 Phase 2 is **sequenced by the deterministic driver** (`driver/`); the step-by-step
 **methodology** lives in [phase2-execution.md](phase2-execution.md). It covers:
-- **Step 1** — variants (`prelim-variants` writes the variant manifest)
+- **Step 1** — variants (`clearance-variants` writes the variant manifest)
 - **Step 2** — gather (common-law + the applicable register units) → Touchpoint 2 placement-inquiry → register digest
 - **Step 2.6** — skeptic review (fresh-eyes audit before trust)
 - **Step 3** — cross-pollination (Option D, cap N=10)
@@ -245,7 +245,7 @@ The driver runs the delivery stage on **every** completed run — the search is 
 2. Builds the audit workbook in CODE (`driver/publish/xlsx.mjs`, from the artifacts this workflow wrote) and publishes report + audit into the pool. Its sheets and columns are the code's, not a template's, and nothing here assembles or formats a workbook.
 3. Writes the self-contained delivery packet `_driver/delivery.json` (forwarder route, subject, original message id for reply threading, the full email HTML, optional WhatsApp line) + the outbox `delivered` event, and sets `status.sendPending`.
 4. The **integrator's courier** sends the packet **VERBATIM** (email threaded on the packet's `msgId`; WhatsApp ping only if the packet carries a binding) and confirms with the ops-MCP `mark_sent` — which writes the `.sent` guard and clears `sendPending`. The courier composes nothing and never invents a recipient.
-5. The **driver** archives the run-dir (`studio/prelim-search/<slug>/<date>/` → `archive/<YYYY-MM>/<slug>/<date>/`) and records the delivery. `senior-eye-review.md` travels in the published audit set, so the reviewing lawyer sees the refutation verdict regardless of CLEAR/CONDITIONAL.
+5. The **driver** archives the run-dir (`studio/clearance-search/<slug>/<date>/` → `archive/<YYYY-MM>/<slug>/<date>/`) and records the delivery. `senior-eye-review.md` travels in the published audit set, so the reviewing lawyer sees the refutation verdict regardless of CLEAR/CONDITIONAL.
 
 **Why the verdict always surfaces:** the dangerous failure mode is a wrongly-cleared confabulation that ships unread. The reviewing lawyer always sees the review (CLEAR / CONDITIONAL / BLOCKING) — on the audit notification, and, when concerns are unresolved, as the **Reviewer's open questions** section in the report itself — so the reviewer can decide whether the read was right. Never silently passed, never silently withheld.
 
@@ -308,7 +308,7 @@ The **Methodology** sheet carries: matter-context summary, search approach, plac
 **Detail-fetch coverage** (register search-depth floor — kept here, not in the Excel spec, because the Step 2.6 skeptic review depends on it) — rank the union of unique URIs returned across all register searches by signal strength, then detail-fetch as follows:
 
 1. **Identical-mark hits** — fetch all, no cap.
-2. **Near-exact (dominant-token-substring) in-class-live hits — fetch all, no cap (Slice A).** The mirror, at the orchestrator floor, of the unit-side [exact-in-class-live floor](../prelim-register/unit.md#exact-in-class-live-floor-primary-sweep-unit-owns-it). The **near-exact band** — where the **dominant element** (from the variant manifest) appears as a *substring* of `mark_text` (case-insensitive, after the `normalize()` strip in [status-rules.md](../prelim-register/status-rules.md), see the Identical-match normalisation shape) in a **filed target class** with **live** status, but is not an identical match (e.g. NORDWAVE NOVAPULSE, NOVAPULSE.com on dominant element NOVAPULSE) — is **enumerate-and-fetch, no top-N, no score gate**. This is the F-1/F-3 hole: the near-exact band otherwise falls into the Top-K sample (item 5) and a dangerous in-class-live conflict gets paged past the cliff. *Budget tie:* if the qualifying set exceeds the detail-fetch budget, the coverage unit is **`coverage-limited`** (reason: "exact-in-class-live substring set exceeded detail-fetch budget") — **never** silent truncation, **never** `confirmed-clean` (per B-1 / the Coverage-honesty rule). Slice A is **exhaustive** — distinct from the sample-with-disclosure Slice B below.
+2. **Near-exact (dominant-token-substring) in-class-live hits — fetch all, no cap (Slice A).** The mirror, at the orchestrator floor, of the unit-side [exact-in-class-live floor](../clearance-register/unit.md#exact-in-class-live-floor-primary-sweep-unit-owns-it). The **near-exact band** — where the **dominant element** (from the variant manifest) appears as a *substring* of `mark_text` (case-insensitive, after the `normalize()` strip in [status-rules.md](../clearance-register/status-rules.md), see the Identical-match normalisation shape) in a **filed target class** with **live** status, but is not an identical match (e.g. NORDWAVE NOVAPULSE, NOVAPULSE.com on dominant element NOVAPULSE) — is **enumerate-and-fetch, no top-N, no score gate**. This is the F-1/F-3 hole: the near-exact band otherwise falls into the Top-K sample (item 5) and a dangerous in-class-live conflict gets paged past the cliff. *Budget tie:* if the qualifying set exceeds the detail-fetch budget, the coverage unit is **`coverage-limited`** (reason: "exact-in-class-live substring set exceeded detail-fetch budget") — **never** silent truncation, **never** `confirmed-clean` (per B-1 / the Coverage-honesty rule). Slice A is **exhaustive** — distinct from the sample-with-disclosure Slice B below.
 3. **Phonetic-equivalent fringe — floor, sample-with-disclosure (Slice B).** Run the provider phonetic capability on the dominant token for the matter languages (provider-agnostic: `<provider>_expand_phoneme` then `match_mode: phonetic`; Clarivate uses native `match_mode: phonetic`). It **is a floor** — it MUST run for the dominant token in the filed class — but phonetic sets are unbounded, so it is **sample-with-disclosure**: where it cannot be fully worked, the coverage unit is **`coverage-limited`** (reason: "phonetic fringe sampled, not enumerated"), never `confirmed-clean`. Keep Slice A (exhaustive) and Slice B (sampled) **structurally distinct** — they have different correctness properties.
 4. **Watchlist-owner hits** — fetch all.
 5. **Top-K by relevance** — sample from each match-mode (exact / phrase / default) and across regions to ensure representative coverage. If the worker stops detail-fetching before ~25 URIs across all match-modes, the worker MUST answer in its digest audit: did the result set genuinely run out, or is this the empirical execution-tier truncation pattern (~10 URIs, no explanation)? The 25 figure is a tripwire-with-question, not a target — the Step 2.6 skeptic reads the worker's answer and re-spawns escalated to Opus if the answer is missing or unconvincing.
@@ -345,9 +345,9 @@ be audited without touching the engine.
 ## Checklist — before sending
 
 - [ ] Phase 1 HTML template is complete and formatted per [template-formatting.md](template-formatting.md)
-- [ ] Variant manifest produced by `prelim-variants` and validated
-- [ ] `prelim-common-law` produced its findings file with every dictated platform covered
-- [ ] `prelim-register` produced its findings file with funnel pattern executed
+- [ ] Variant manifest produced by `clearance-variants` and validated
+- [ ] `clearance-common-law` produced its findings file with every dictated platform covered
+- [ ] `clearance-register` produced its findings file with funnel pattern executed
 - [ ] Cross-pollination Option D triggers all evaluated; any executed cross-checks logged; cap-overflow noted if applicable
 - [ ] Scope statement paragraph is present in narrative (from variant manifest)
 - [ ] Every finding has a URL or register URI
@@ -355,7 +355,7 @@ be audited without touching the engine.
 - [ ] **Dominant-element spine applied:** findings ranked by dominant element + whole-mark confusion; no on-point identical / near-identical-in-class hit dropped; headline driven by top on-point conflicts (not a distinguished mark or unrelated-field noise)
 - [ ] **Proposed-mark registrability read present** (dominant element + spectrum + deceptive/offensive flag, or "plainly distinctive")
 - [ ] **File-truth precondition met:** `register-findings.md` was written under the run-dir and synthesis read from it (not inline / announce text)
-- [ ] **Delivery complete:** report + audit published to the pool; `_driver/delivery.json` + the outbox `delivered` event written (`sendPending` set — the courier sends verbatim and confirms via `mark_sent`); the driver archived the run-dir to `studio/prelim-search/archive/<YYYY-MM>/<slug>/<date>/` and recorded the delivery
+- [ ] **Delivery complete:** report + audit published to the pool; `_driver/delivery.json` + the outbox `delivered` event written (`sendPending` set — the courier sends verbatim and confirms via `mark_sent`); the driver archived the run-dir to `studio/clearance-search/archive/<YYYY-MM>/<slug>/<date>/` and recorded the delivery
 - [ ] **matter-context.md produced at Phase 0** with materially-matters jurisdictions, off-field sectors, watchlist-owner seeds; downstream workers received it as input
 - [ ] **placement-recommendations.md produced at Phase 2 Touchpoint 2** with every candidate placed at headline / sheet-2 / watchlist-annex / out-of-scope-filtered + written reasoning; consumed by digest worker
 - [ ] **senior-eye-review.md produced at Phase 2 Touchpoint 3** with verdict CLEAR / CONDITIONAL / BLOCKING; corrections applied before Phase 3 if CONDITIONAL; halt + surface if BLOCKING twice
@@ -389,7 +389,7 @@ Format — one line per phase + each major search category, marked ✅ (done), �
    Customer template: <resolved template name> (email + Excel)
 ✅ PHASE 1 — TEMPLATE: HTML generated; email marked read
 ✅ PHASE 2 — RESEARCH:
-   Variants: N variants in manifest from prelim-variants
+   Variants: N variants in manifest from clearance-variants
    Common-law: X findings ([N]/[N] dictated platforms covered); developer_of_record on <N>/<M> game-titles
    Register: Y findings; Z detail-fetched from W total URIs
      Per-jurisdiction sub-queries: ✅ <count> on <named jurisdictions>
@@ -407,7 +407,7 @@ Format — one line per phase + each major search category, marked ✅ (done), �
 ✅ PHASE 3 — DELIVERY (deterministic): checklist items completed
    Excel built ✓ at <archive-path>
    Published ✓ report + audit in the pool; delivery packet + outbox `delivered` event written (sendPending)
-   Run-dir archived ✓ from studio/prelim-search/<slug>/<date>/ → studio/prelim-search/archive/<YYYY-MM>/<slug>/<date>/
+   Run-dir archived ✓ from studio/clearance-search/<slug>/<date>/ → studio/clearance-search/archive/<YYYY-MM>/<slug>/<date>/
 
 key artifacts:
   - <absolute path to the xlsx produced in Phase 3> (the client deliverable)

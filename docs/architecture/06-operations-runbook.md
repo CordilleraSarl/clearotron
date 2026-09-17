@@ -112,7 +112,7 @@ and the environment file holding the secrets.
   `XDG_RUNTIME_DIR` must be set for `systemctl --user` to work from cron.
 - **Pin the agent id before upgrading an install made before 0.2.2.** The default agent id changed
   from `clawdi` to `localagent`, and that id is a path segment: runs live under
-  `<workspaceRoot>/workspace-<agent>/studio/prelim-search/`. An install that never set one starts
+  `<workspaceRoot>/workspace-<agent>/studio/clearance-search/`. An install that never set one starts
   reading an empty workspace, and empty reads as "no runs" rather than as an error. Set **both**
   variables in the environment file — the gather servers read their own:
 

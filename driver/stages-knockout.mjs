@@ -289,14 +289,14 @@ export const KO_STAGES = {
     // the guards that read `STAGES.skillReads` walk the clearance lane's table, not this one — so the
     // effective read is the `reads([...])` call in the message and nothing checks that the two agree.
     // They are edited together and the asymmetry is written down rather than left to be discovered.
-    skillReads: ["skills/knockout-assess/SKILL.md", "skills/prelim-search/firm-wide-reasoning.md"],
+    skillReads: ["skills/knockout-assess/SKILL.md", "skills/clearance-search/firm-wide-reasoning.md"],
     // out/validate are per-CHUNK; the merged knockout-findings.json is validated separately in code.
     out: (K, chunkNo) => K.assessChunk(chunkNo),
     validate: koValidators.knockoutAssessChunk,
     message: ({ K, chunkNo, chunkMarks, chunkTotal, framework, frameworkPath, probeNote }) => lines(
       // The deck path comes from ctx (attachKnockoutFramework resolves it once, on the fresh and the
       // resume path both) — never recomputed here, because "which deck" is one decision.
-      reads(["skills/knockout-assess/SKILL.md", frameworkPath, "skills/prelim-search/firm-wide-reasoning.md"].filter(Boolean)),
+      reads(["skills/knockout-assess/SKILL.md", frameworkPath, "skills/clearance-search/firm-wide-reasoning.md"].filter(Boolean)),
       `You are rating chunk ${chunkNo + 1}/${chunkTotal} of a KNOCKOUT batch — triage, not clearance.`,
       `Rate ONLY these marks (one entry each, names verbatim): ${chunkMarks.map((m) => m.name).join(" · ")}.`,
       `The batch plan (context framing, classes, priorities): ${K.plan}`,
@@ -518,7 +518,7 @@ export const KO_STAGES = {
     // DECLARATIVE ONLY on this lane, exactly as the assess stage records: nothing in koStage reads
     // `skillReads`, and the effective read is the `reads([...])` call in the message below. The two are
     // edited together and the asymmetry is written down rather than left to be discovered.
-    skillReads: ["skills/prelim-search/report-prose.md"],
+    skillReads: ["skills/clearance-search/report-prose.md"],
     out: (K) => K.review,
     validate: validateKnockoutReviewFile,
     // ── THE MESSAGE PROMISES A TABLE ONLY WHEN IT HAS ONE ──────────────────────────
@@ -531,7 +531,7 @@ export const KO_STAGES = {
     // exists to stop. The driver does not dispatch on an empty measurement; the branch is here because
     // "it cannot happen" is not a property a message should depend on.
     message: ({ K, evidenceLines = [], exclusionNote = "" }) => lines(
-      reads(["skills/prelim-search/report-prose.md"]),
+      reads(["skills/clearance-search/report-prose.md"]),
       `You are the REVIEWING PASS on a knockout screen. The batch is already rated and nothing about that rating is yours to change. Your job is the words.`,
       `THE RULE. A line a reader meets before opening anything carries no legal or engine vocabulary and no sentence longer than 25 words. Inside a fold the lawyer's words are allowed where a plain one would lose precision; on a default-visible line they are not. The reader here is the client of the lawyer who ordered this screen, and they read the same page.`,
       `The rated record: ${K.findings}. Read it — the lines named below are quoted from it and you are rewriting them in place.`,

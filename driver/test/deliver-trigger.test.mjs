@@ -189,7 +189,7 @@ test("failed wake (stopReason error, exit 0) → retained events + sidecar; in-w
 test("rescan manufactures a marker for an owed run and the same activation delivers it", SHELL_GATE, () => {
   const h = makeHarness();
   h.setMode("ok-consume");
-  const runDir = join(h.workspaces, "workspace-clawdi", "studio", "prelim-search", "owed-slug", "2026-07-11-alpha");
+  const runDir = join(h.workspaces, "workspace-clawdi", "studio", "clearance-search", "owed-slug", "2026-07-11-alpha");
   mkdirSync(runDir, { recursive: true });
   writeFileSync(join(runDir, "status.json"), JSON.stringify({
     runId: "owed-slug-2026-07-11-alpha", slug: "owed-slug", agent: "clawdi", state: "delivered", sendPending: true,

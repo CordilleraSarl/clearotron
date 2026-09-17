@@ -130,7 +130,7 @@ test("the token lands BEFORE the |level: suffix, which is where sigLevel's end-a
   // field before the suffix, so the suffix stays last. Pinned as a literal AND behaviourally, because a
   // regex assertion alone cannot show that the dimension still works.
   //
-  // THIS QUOTATION WAS WRONG BEFORE THE RENAME TOUCHED IT. It ended `|| "prelim"`, and the function has
+  // THIS QUOTATION WAS WRONG BEFORE THE RENAME TOUCHED IT. It ended `|| "clearance"`, and the function has
   // never carried a literal there under any spelling — the default is a named constant. The sweep then
   // renamed the literal, which made a stale quotation into a stale quotation of a line that never
   // existed; restoring the old spelling would only have put back the earlier error. A quotation of

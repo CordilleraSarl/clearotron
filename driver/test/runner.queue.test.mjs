@@ -33,7 +33,7 @@ const job = (forwarder) => ({
 });
 
 function queueFor(root, agentId) {
-  return join(root, `workspace-${agentId}`, "studio", "prelim-search", "queue");
+  return join(root, `workspace-${agentId}`, "studio", "clearance-search", "queue");
 }
 
 test("runner drains every agent queue and runs each job as its own agent", async () => {

@@ -198,7 +198,7 @@ test("a Knockout search takes worldwide or any chosen set — and still refuses 
 });
 
 test("an unknown product is not judged — that is the door's own check, not a scope question", () => {
-  for (const id of [null, undefined, "", "prelim", "prelim-jx", "nope"]) {
+  for (const id of [null, undefined, "", "clearance", "clearance-jx", "nope"]) {
     assert.deepEqual(checkProductScope({ product: id, territories: ["US", "FR"] }), { ok: true, reason: null, message: null }, String(id));
   }
   assert.equal(productSpec("nope"), null);
@@ -234,7 +234,7 @@ test("nativeLanguage: false is a refusal, not a setting — the caseLaw doctrine
   assert.match(NATIVE_LANGUAGE_NOT_A_SUPPRESSION.message, /Omit nativeLanguage/, "and how to get a search without it");
   // The remedy sentence is shared with two surfaces outside this module (the resolution-time note and the
   // delivered coverage row), and it must name EXACTLY the products that carry the investigation — the row
-  // it replaced named `prelim-jx`, which is neither a product nor orderable.
+  // it replaced named `clearance-jx`, which is neither a product nor orderable.
   for (const p of PRODUCTS) {
     assert.equal(NATIVE_LANGUAGE_REMEDY.includes(p.name), p.nativeLanguage !== "absent",
       `${p.name}: the remedy names exactly the products whose native-language mode is offered/automatic`);
@@ -333,7 +333,7 @@ test("no message names a product ID, a switch, a variable or an internal level k
         assert.ok(!m.includes(id), `a product id reached a requester: ${id} in ${m}`);
     }
     assert.doesNotMatch(m, /[A-Z][A-Z0-9]*_[A-Z0-9_]+/, `a variable-shaped name reached a requester: ${m}`);
-    assert.doesNotMatch(m, /\bprelim\b|prelim-jx|prelim-register-only|knockout-register/, `an internal level key reached a requester: ${m}`);
+    assert.doesNotMatch(m, /\bclearance\b|clearance-jx|clearance-register-only|knockout-register/, `an internal level key reached a requester: ${m}`);
     assert.doesNotMatch(m, /jxLanes|registerProbe|commonLawGrid|maxMarks|pipeline/, `an internal component name reached a requester: ${m}`);
     assert.doesNotMatch(m, /Depth \d/, "the ladder the offering removes must not survive in its refusals");
   }
@@ -406,7 +406,7 @@ test("searchLevel is REFUSED by name, in every form, and the sentence names its 
   // Including `null` and the empty string: sending the KEY at all means the caller is on the retired
   // wire. This is the shape closed for deliveryRoute and nativeLanguage:false and left open on the
   // selector itself — accepted, dropped, and the run went out at whatever the SCOPE implied.
-  for (const v of ["prelim", "prelim-jx", "knockout", "knockout-register", "prelim-register-only", null, ""]) {
+  for (const v of ["clearance", "clearance-jx", "knockout", "knockout-register", "clearance-register-only", null, ""]) {
     const r = validateJob({ ...base, searchLevel: v });
     assert.notEqual(r.classify, "run", `searchLevel: ${JSON.stringify(v)} was accepted and silently dropped`);
     assert.ok(r.errors.some((e) => /searchLevel is not a request setting/.test(e)),

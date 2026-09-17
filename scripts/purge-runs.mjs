@@ -13,8 +13,8 @@
 // republishable from the workspace archive, which does not satisfy "gone":
 //
 //   1. pool     <poolRoot>/<runId>/                                    — published, Caddy-served
-//   2. archive  <ws>/studio/prelim-search/archive/<YYYY-MM>/<matter>/<codename>/  — republish source
-//   3. live     <ws>/studio/prelim-search/<matter>/<codename>/         — running/failed, never published
+//   2. archive  <ws>/studio/clearance-search/archive/<YYYY-MM>/<matter>/<codename>/  — republish source
+//   3. live     <ws>/studio/clearance-search/<matter>/<codename>/         — running/failed, never published
 //
 // Dry-run is the default and --apply is required to remove anything. The guards below exist because
 // the failure that matters is not "deleted too little" — it is deleting the one run someone wanted
@@ -172,7 +172,7 @@ const POOL_NON_RUN = new Set(["assets", "customer", "_state"]);
 // system's own state is not.
 const RUN_ARTIFACTS = ["meta.json", "report.html", "report.md", "findings.json", "status.json"];
 const looksLikeRun = (dir) => RUN_ARTIFACTS.some((f) => existsSync(join(dir, f)));
-// Not matter directories inside a workspace prelim-search root.
+// Not matter directories inside a workspace clearance-search root.
 const WS_NON_MATTER = new Set(["STATUS.md", "archive", "queue", "_known-conflicts"]);
 
 const readJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
@@ -210,7 +210,7 @@ function collect() {
   }
 
   for (const agent of AGENTS) {
-    const base = join(WORKSPACE_ROOT, `workspace-${agent}`, "studio", "prelim-search");
+    const base = join(WORKSPACE_ROOT, `workspace-${agent}`, "studio", "clearance-search");
     if (!isDir(base)) continue;
 
     // 2. Workspace archive — <YYYY-MM>/<matter>/<codename>. runId is matter+codename, matching the
