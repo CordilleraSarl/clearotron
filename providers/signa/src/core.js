@@ -807,6 +807,11 @@ export async function doCountHits(apiKey, base, params, tctx, { mock = false } =
     text: JSON.stringify({
       total_hits: exact ? parsed.total_hits : null,
       total_approximate: parsed.total_approximate === true,
+      // THE FLOOR TRAVELS AS DATA, not only inside the note below. The normalizer already keeps it —
+      // `total_floor` on the parsed body — and it was reaching the driver in prose only, so the one
+      // number that makes a saturated band answerable had to be read back out of a sentence to be used.
+      // A reader that parses it out of the note is a reader that breaks when the note is reworded.
+      total_floor: Number.isFinite(parsed.total_floor) ? parsed.total_floor : null,
       present: exact ? parsed.total_hits > 0 : ((parsed.results?.length ?? 0) > 0 || parsed.has_more === true),
       seen: parsed.results?.length ?? 0,
       note: exact
