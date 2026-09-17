@@ -159,12 +159,18 @@ structural, or dev seam); [dev] = dev/test seam, never set in prod.
 ### 5.2 Engine & models — T3
 
 `CLEAROTRON_AI` (anthropic-agent | openai-agent; default anthropic-agent), `CLEAROTRON_AI_BILLING`
-(subscription|api-key), `CLEAROTRON_AI_BILLING` (subscription|api-key), `CLEAROTRON_CODEX_PATH`,
+(subscription|api-key|cloud; cloud is Claude only), `CLEAROTRON_CODEX_PATH`,
 `CLEAROTRON_OPENAI_AUTH_FILE`, `CLEAROTRON_OPENAI_MODEL_JUDGMENT` / `CLEAROTRON_OPENAI_MODEL_SWEEP` /
 `CLEAROTRON_OPENAI_MODEL_CHEAP` (all gpt-5.6-sol),
-`CLEAROTRON_CLAUDE_PATH` (claude), `CLEAROTRON_AZURE_MODEL`,
+`CLEAROTRON_CLAUDE_PATH` (claude on PATH, then the copy Clearotron installed),
 `CLEAROTRON_SYNTHESIS_MODEL` (opus), `CLEAROTRON_KNOCKOUT_MODEL` (opus),
 `CLEAROTRON_KNOCKOUT_PRESET` (pro-search), `CLEAROTRON_MAX_BUDGET_USD` (unset).
+
+The Claude program's own cloud settings — `CLAUDE_CODE_USE_FOUNDRY`, `CLAUDE_CODE_USE_VERTEX` and
+`CLAUDE_CODE_USE_BEDROCK`, each cloud's own settings, the gateway pair and the model pins — are the
+vendor's names, not this tier's; the configuration reference's credentials table lists them. Written out
+rather than as one wildcard: a guard reads these documents for the names they govern, and a trailing `*`
+matches nothing it can check, so a name hidden behind one reads as governed while being invisible.
 
 ### 5.3 Concurrency, admission, retries, walls — T3 (walls are load-bearing; change deliberately)
 
@@ -472,6 +478,12 @@ It must be **asked for**: a real deployment behind its upstream still reports be
 blank value is not a declaration, and the doctor names this variable in its output when it obeys it. Set
 it in CI and nowhere else — on a deployed box it silences the one check that notices the box is stale.
 
+Engines folder: `CLEAROTRON_ENGINES_DIR` — where setup installs the chosen engine's program, where
+`clearotron update` refreshes it, and where the engine resolver in `driver/driver.config.mjs` looks for it
+after the explicit setting and `PATH`. Unset on a deployment, where it is
+`~/.local/share/clearotron/engines`. The suite runner points it at an empty directory, so a test never
+reaches a program the developer's own setup installed.
+
 > **Write every name out. No `*`, no `{A,B}`, no `/_SUFFIX`.** The enforcement test matches a name on
 > a word boundary, so shorthand documents a variable to a human and hides it from the guard. This row
 > is where that was found: `*_AUTH_DISABLED`, `*_DEV` and `CLEAROTRON_REPLAY_SNAPSHOT`/`_ROOTS` left five
@@ -483,11 +495,9 @@ it in CI and nowhere else — on a deployed box it silences the one check that n
 > see `providers/oauth-mcp-bridge/README.md`) were listed there for years and read by nothing, which
 > made a reader configure a variable and get no behaviour.
 >
-> `COURTLISTENER_TOKEN` is gone. The four`AZURE_OPENAI_*` names are **still there and stay**:
-> they are a reconstructed external contract, the file says so in place and tells a reader to verify
-> the spellings against the platform that consumes them. Naming a foreign contract is not the same
-> defect as inviting someone to set a variable this product reads — the rule above is about the
-> second.
+> Both are gone. The four `AZURE_OPENAI_*` names left `.env.example` on 2026-09-15: on a page that
+> explains paying for Claude through an Azure account, four Azure variables nothing in Clearotron reads
+> looked like that setup's settings, and they are not.
 
 `portal-ui/` has **zero** env config (no `VITE_*`, no `import.meta.env`) — the SPA talks to its
 origin; all portal config lives server-side in portal-service.

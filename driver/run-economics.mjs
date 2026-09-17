@@ -14,11 +14,14 @@
 // the provider's four separately-priced token kinds.)
 //
 // ── WHAT A "DISPATCH" IS ──────────────────────────────────────────────────────────────────────────
-// One model invocation: one row in `_driver/<stage>.jsonl` carrying a `model` (gateway.mjs writes one
-// per ATTEMPT, so retries are separate dispatches and retry waste is counted, not averaged away). The
-// direct-API jx lanes bypass the gateway and write `_driver/jx-completions.jsonl` in the same
-// {model, usage} shape; they are dispatches too, under stage `jx-completions`. `run.jsonl` is skipped
-// (run events, not dispatches) — same file selection as tokens.mjs, deliberately.
+// One model invocation: one row in `_driver/<stage>.jsonl` that tokens.mjs's `isAttemptRow` counts as
+// a provider attempt (gateway.mjs writes one per ATTEMPT, so retries are separate dispatches and retry
+// waste is counted, not averaged away). The direct-API jx lanes bypass the gateway and write
+// `_driver/jx-completions.jsonl` in the same {model, usage} shape; they are dispatches too, under stage
+// `jx-completions`. `run.jsonl` is skipped (run events, not dispatches) — same file selection as
+// tokens.mjs, deliberately, and the SAME ROW TEST as tokens.mjs, imported rather than copied: a jx row
+// whose turn ran and named no model carries no `model`, only `modelActual: null`, and a census that still
+// asked for a `model` counted no dispatch and no tokens for a turn the token rollup counted with both.
 //
 // ── ZERO SEMANTICS: THE THING THIS MODULE EXISTS TO GET RIGHT ─────────────────────────────────────
 // tokens.mjs sums `usage` with `u.output || 0`, so a dispatch whose usage is null contributes zero AND
@@ -32,7 +35,7 @@
 //   measured   — the dispatch journalled a usage object (from the provider's own result envelope)
 //   streamed   — usage present but RECONSTRUCTED from the stream (`signals.usageStreamed`), because the
 //                turn died before its result event. A real measurement, a weaker one, counted apart.
-//   unmeasured — the row is a dispatch (it has a model) and carries no usage at all. THE KILLED TURNS.
+//   unmeasured — the row is a dispatch and carries no usage at all. THE KILLED TURNS.
 // `tokensComplete` is false whenever `unmeasured > 0`, at run level and per stage, and
 // `unmeasuredDispatches[]` names which ones so a reader can see what the total is missing.
 //
@@ -92,14 +95,18 @@
 // so a per-record basis is the only honest shape. `tokens.mjs` keys its rollup on the requested alias
 // for the same reason and is likewise untouched.
 //
-// Pure by contract: `runEconomics()` reads the run dir and nothing else — no env, no config, no network,
-// no driver imports. `stampRunEconomics()` is the only part that writes.
+// Pure by contract: `runEconomics()` reads the run dir and nothing else — no env, no config, no network.
+// Its only driver import is the attempt-row test it shares with tokens.mjs; the log and status writers
+// serve `stampRunEconomics()`, the only part that writes.
 
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { runLog, note } from "./log.mjs";
 import { writeRunStatus } from "./progress.mjs";
+// tokens.mjs imports this module too (isCodeSide, stampRunEconomics). The cycle is safe because each side
+// reads the other's bindings only inside functions, never while the module is loading.
+import { isAttemptRow } from "./tokens.mjs";
 
 /**
  * The provider's separately-priced token kinds, in the driver's own `usage` vocabulary (gateway.mjs /
@@ -178,7 +185,23 @@ function billingKeyOf(rec) {
   // is rather than dragged into "unknown" beside genuinely unstamped legacy rows.
   const engine = isCodeSide(rec) ? "code" : String(rec.engine ?? "unknown");
   const authMode = isCodeSide(rec) ? "not-provider-billed" : String(rec.authMode ?? "unknown");
-  const model = String(rec.modelUsed ?? rec.model ?? "unknown");
+  // A TURN THAT NAMED NO MODEL (a jx row with `modelActual: null` and no `model`) is keyed the way the
+  // token rollup keys it (modelKey in tokens.mjs): `<engine>/no-model-reported`, a name that says the
+  // model is missing. Read through the old `?? "unknown"` it landed beside legacy rows nobody stamped,
+  // and its byBilling bucket named a different model from the rollup's byModel for the same turn.
+  //
+  // A COPY OF modelKey's RULE, NOT A SHARED ONE: tokens.mjs does not export it. So the test for "no stamp"
+  // is modelKey's own, a non-empty string `modelUsed`, and not `modelUsed == null`: under that looser test
+  // a row stamped `modelUsed: ""` keyed its bucket as the empty string while the rollup keyed the same
+  // turn `<engine>/no-model-reported`. Two copies of one rule drifting apart is how the census and the
+  // rollup came to disagree about what an attempt is, so the tests hold these two copies to each other on
+  // the rows the engine writes. They still part on a row no writer produces: no model and no engine, or
+  // engine `anthropic-agent`. This key names the missing model there, while modelKey resolves the absent
+  // model through the catalog before it asks whether one exists, and buckets the row as `undefined`.
+  const stamped = typeof rec.modelUsed === "string" && rec.modelUsed;
+  const model = !stamped && typeof rec.model !== "string"
+    ? `${typeof rec.engine === "string" && rec.engine ? rec.engine : "unknown"}/no-model-reported`
+    : String(rec.modelUsed ?? rec.model ?? "unknown");
   return { engine, authMode, model, key: `${engine}|${authMode}|${model}` };
 }
 
@@ -223,11 +246,19 @@ function foldBilling(bucketMap, rec, cls) {
 // future engine whose name began that way, which is how a vendor claim becomes a guess. An engine this
 // table does not know is reported BY NAME and blocks the single-vendor claim, because "I do not know who
 // billed this" and "one vendor" are different answers and only one of them is safe to print.
+//
+// THE NATIVE-LANGUAGE ROWS STAMP THE VENDOR ITSELF. jxBillingStamp (jx-lanes.mjs) writes as the row's
+// engine the provider the engine door resolved, `anthropic` or `openai` (engine/auth.mjs), so those two
+// names are engines this table must place. Without them an Anthropic-only run with a native-language turn
+// named `anthropic` as an engine that bills to no vendor, in the same sentence that named anthropic as its
+// one vendor. Two exact names, still a closed table.
 export const ENGINE_VENDORS = Object.freeze({
   "anthropic-agent": "anthropic",
   "anthropic-direct": "anthropic",
   "anthropic-completions": "anthropic",
   "openai-agent": "openai",
+  "anthropic": "anthropic",
+  "openai": "openai",
 });
 /** The vendor an engine bills to, or null when the table does not name one. */
 export const vendorOf = (engine) => ENGINE_VENDORS[String(engine ?? "")] ?? null;
@@ -469,7 +500,7 @@ export function runEconomics(runDir, { now = null, bytesPerOutputToken = BYTES_P
     let sawDeclaredNoOutput = false;
 
     for (const rec of rows) {
-      if (!rec || typeof rec.model !== "string") continue;   // only dispatch rows carry a model
+      if (!isAttemptRow(rec)) continue;   // only provider attempts are dispatches (tokens.mjs, isAttemptRow)
       const cls = classesOf(rec.usage);
       const streamed = cls != null && rec.signals?.usageStreamed === true;
 

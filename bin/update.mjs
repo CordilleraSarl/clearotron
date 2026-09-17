@@ -51,7 +51,7 @@ import { existsSync } from "node:fs";
 import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { config } from "../driver/driver.config.mjs";
+import { config, ENGINE_BINARIES, enginesFolder, engineInstallArgs } from "../driver/driver.config.mjs";
 import { isInsideCheckout } from "../shared/inside-checkout.mjs";   // — one copy of the rule
 import { overlayReport, renderOverlayReport, treeFiles } from "../shared/doctrine-overlay.mjs";
 import { liveRunHolds } from "../driver/deploy-live-run-guard.mjs";   // — one live-run test, shared with deploy-preflight
@@ -180,6 +180,34 @@ export function isGitCheckout(repo = REPO, exists = existsSync) {
   return exists(join(repo, ".git"));
 }
 
+/**
+ * The engine programs setup installed for this user, which `clearotron update` refreshes: every engine
+ * whose package is in the engines folder. Setup installs only the one the reader chose, so this is usually
+ * one, and none where the machine's own copy was found first or the reader declined the install.
+ */
+export function enginesToRefresh({ dir = enginesFolder(), exists = existsSync } = {}) {
+  return Object.values(ENGINE_BINARIES)
+    .filter((e) => e.package && exists(join(dir, "node_modules", ...e.package.split("/"), "package.json")));
+}
+
+/**
+ * Run setup's install again for each of them, in the same folder. The same command, because re-running an
+ * install with a `>=` range moves the program to the newest its vendor publishes (driver.config.mjs, above
+ * engineInstallArgs). Returns 0, or the first failing exit code.
+ */
+function refreshEngines(engines, dir = enginesFolder()) {
+  if (!engines.length) return 0;
+  say(`\n  Refreshing the engine program Clearotron installed in ${dir}.`);
+  for (const e of engines) {
+    const rc = runInCheckout("npm", engineInstallArgs(e, dir));
+    if (rc !== 0) {
+      console.error(`\n  npm could not refresh ${e.package}. \`clearotron doctor\` says which copy a run would use now.`);
+      return rc;
+    }
+  }
+  return 0;
+}
+
 function runInCheckout(cmd, args) {
   say(`\n  $ ${cmd} ${args.join(" ")}`);
   const r = spawnSync(cmd, args, { cwd: REPO, stdio: "inherit" });
@@ -301,22 +329,38 @@ export async function update(argv = process.argv.slice(2)) {
   }
 
   if (packaged) {
+    // ONE NPM RUN, WITH THE LAUNCHER PUT BACK AFTER IT, and both branches below install through it, so
+    // neither can run npm and forget the second half. npm puts its own link back at
+    // `<prefix>/bin/clearotron` on every install, over the launcher the install wrote, and that link runs
+    // whichever `node` is first on PATH. Put the launcher back, but only over npm's link or our own:
+    // anything else there was not ours before this update either.
+    const reinstall = () => {
+      const rc = runInCheckout("npm", packaged.npmArgs);
+      if (rc !== 0) return rc;
+      const kind = inspectShim(shimPath()).kind;
+      if (kind === "npm-link" || kind === "ours" || kind === "ours-other-install") {
+        const shim = installShim();
+        if (!shim.ok) console.error(`\n  The update worked, but the launcher at ${shim.path ?? "~/.local/bin/clearotron"} could not be written back: ${shim.detail}.`);
+      }
+      return 0;
+    };
     if (packaged.current) {
-      say(`\n  This install is ${packaged.installed}, and nothing newer is published (${packaged.tag}: ${packaged.version}). Nothing was touched.\n`);
+      say(`\n  This install is ${packaged.installed}, and nothing newer is published (${packaged.tag}: ${packaged.version}).`);
+      // CURRENT STILL REFRESHES THE ENGINE PROGRAM setup installed: it moves on its vendor's schedule, not
+      // this package's. A machine's own copy on PATH updates itself and is used first.
+      const engines = enginesToRefresh();
+      if (!engines.length) { say("  Nothing was touched.\n"); return 0; }
+      const rc = refreshEngines(engines);
+      if (rc !== 0) return rc;
+      say("\n  Clearotron itself was already current; restart the services so they use the refreshed program.\n");
       return 0;
     }
     if (packaged.unread) say(`\n  npm did not say which versions are published, so this follows the ${packaged.tag} channel.`);
     say(`\n  Updating this install at ${packaged.prefix} from ${packaged.installed ?? "an unreadable version"} to clearotron@${packaged.spec}.`);
-    const rc = runInCheckout("npm", packaged.npmArgs);
+    const rc = reinstall();
     if (rc !== 0) return rc;
-    // npm puts its own link back at `<prefix>/bin/clearotron` on every install, over the launcher the
-    // install wrote, and that link runs whichever `node` is first on PATH. Put the launcher back, but only
-    // over npm's link or our own: anything else there was not ours before this update either.
-    const kind = inspectShim(shimPath()).kind;
-    if (kind === "npm-link" || kind === "ours" || kind === "ours-other-install") {
-      const shim = installShim();
-      if (!shim.ok) console.error(`\n  The update worked, but the launcher at ${shim.path ?? "~/.local/bin/clearotron"} could not be written back: ${shim.detail}.`);
-    }
+    const refreshed = refreshEngines(enginesToRefresh());
+    if (refreshed !== 0) return refreshed;
     say("\n  Updated. An assistant starts the new version the next time it launches Clearotron; restart the services for the portal.\n");
     return 0;
   }
@@ -392,6 +436,9 @@ export async function update(argv = process.argv.slice(2)) {
     // update DID happen, and exiting nonzero here would tell a script it did not.
     console.error(`  the custom instructions could not be read — ${e.message}`);
   }
+
+  const refreshed = refreshEngines(enginesToRefresh());
+  if (refreshed !== 0) return refreshed;
 
   say("\n  Up to date.\n");
   return 0;

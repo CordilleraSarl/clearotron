@@ -166,10 +166,89 @@ export function plan(root = ROOT, { providerFiles } = {}) {
   return { corpora, faults };
 }
 
+/**
+ * ── SHARDING, AND WHY IT CANNOT SILENTLY DROP A FILE ──────────────────────────────────────────────
+ *
+ * The offline suite was the whole wall clock of CI: 12.8 minutes against 4.3 for the portal bundle and
+ * under one each for the other two jobs, which run beside it. Nearly all of that is `driver`, 925 of the
+ * ~980 test files in the tree, executed in one serial job. Agents write faster than that gate opens, so
+ * the gate — not the work — set the pace of the day.
+ *
+ * A shard is a SLICE OF THE SORTED FILE LIST TAKEN BY INDEX: shard i of n takes every file whose
+ * position satisfies `index % n === i - 1`. That is exhaustive and disjoint by construction — every
+ * index lands in exactly one shard, for any n — so the union of the shards is the whole list as a
+ * property of the arithmetic, not as something a check has to confirm afterwards. Round-robin rather
+ * than contiguous blocks because neighbouring files in a sorted list tend to be the same subsystem and
+ * to cost the same; interleaving spreads the slow ones.
+ *
+ * WHAT IS NOT SHARDED, and why that is stated rather than assumed. Only a corpus whose own test script
+ * is the plain `node --test test/*.test.mjs` shape can be expressed as an explicit file list and cut up
+ * this way. `portal-ui` runs a typecheck first and drives `.test.ts` through `--experimental-strip-types`,
+ * so it is not that shape: it runs WHOLE, on shard 1, and says so on every other shard rather than
+ * disappearing from them. Anything else that stops matching the shape falls into the same branch and is
+ * reported, never quietly skipped.
+ */
+const PLAIN_GLOB = /^node \.\.\/scripts\/test-run\.mjs node --test test\/\*\.test\.mjs$/;
+
+export function shardSlice(list, i, n) {
+  return list.filter((_, idx) => idx % n === i - 1);
+}
+
+function workspaceTestFiles(root, ws) {
+  const dir = join(root, ws, "test");
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir).filter((f) => f.endsWith(".test.mjs")).sort().map((f) => `${ws}/test/${f}`);
+}
+
+/** Is this workspace's `test:full` the plain shape we can express as a file list? */
+function isShardable(root, ws) {
+  try {
+    const scripts = JSON.parse(readFileSync(join(root, ws, "package.json"), "utf8")).scripts ?? {};
+    let cmd = scripts["test:full"] ?? "";
+    // `test:full` is often just `npm run test`; follow that one hop.
+    const hop = cmd.match(/^npm run (\S+)$/);
+    if (hop) cmd = scripts[hop[1]] ?? "";
+    return PLAIN_GLOB.test(cmd.trim());
+  } catch { return false; }
+}
+
+/**
+ * Rewrite the plan for one shard. Every corpus stays in the list and is reported; what changes is how
+ * many of its files THIS shard runs.
+ */
+export function applyShard(corpora, { i, n }, root = ROOT) {
+  return corpora.map((c) => {
+    if (c.kind === "covered") return c;
+    if (c.kind === "files") {
+      const mine = shardSlice(c.files, i, n);
+      return { ...c, files: mine, total: c.files.length,
+               argv: ["node", "scripts/test-run.mjs", "node", "--test", ...mine] };
+    }
+    if (c.kind === "workspace" && isShardable(root, c.name)) {
+      const all = workspaceTestFiles(root, c.name);
+      const mine = shardSlice(all, i, n);
+      return { ...c, kind: "files", files: mine, total: all.length,
+               argv: ["node", "scripts/test-run.mjs", "node", "--test", ...mine] };
+    }
+    // Not expressible as a file list: run it whole, once, on shard 1.
+    return { ...c, wholeOnShard: 1, skippedHere: i !== 1 };
+  });
+}
+
 function main() {
   const only = (() => { const i = process.argv.indexOf("--only"); return i === -1 ? null : process.argv[i + 1]; })();
   const listOnly = process.argv.includes("--list");
-  const { corpora, faults } = plan();
+  const shard = (() => {
+    const i = process.argv.indexOf("--shard");
+    if (i === -1) return null;
+    const m = String(process.argv[i + 1] ?? "").match(/^(\d+)\/(\d+)$/);
+    if (!m) { console.error("test-full: --shard wants i/n, e.g. --shard 2/4"); process.exit(2); }
+    const [a, b] = [Number(m[1]), Number(m[2])];
+    if (a < 1 || b < 1 || a > b) { console.error(`test-full: --shard ${a}/${b} is not a shard of anything`); process.exit(2); }
+    return { i: a, n: b };
+  })();
+  const { corpora: full, faults } = plan();
+  const corpora = shard ? applyShard(full, shard, ROOT) : full;
 
   // FAULTS BEFORE ANYTHING RUNS. A missing corpus discovered after a green suite reads as an
   // afterthought; discovered first, it is the answer.
@@ -195,9 +274,13 @@ function main() {
     return;
   }
 
+  if (shard) console.log(`\ntest-full: shard ${shard.i} of ${shard.n} — slices are taken by index from the sorted file list, so the shards are disjoint and their union is the whole list.`);
+
   const ran = [];
   for (const c of chosen) {
     if (c.kind === "covered") { ran.push({ ...c, status: "covered" }); continue; }
+    if (c.skippedHere) { ran.push({ ...c, status: "elsewhere" }); continue; }
+    if (c.kind === "files" && c.files.length === 0) { ran.push({ ...c, status: "empty" }); continue; }
     console.log(`\n──── ${c.name} ────`);
     // STDIO INHERITED, NOT CAPTURED. CI reads the child stream for the corpus-guard markers, and a
     // runner that buffered its children would take those markers out of the log the check greps.
@@ -213,13 +296,23 @@ function main() {
   for (const c of ran) {
     if (c.status === "covered") {
       console.log(`  covered  ${c.name} — ${c.hasTests} file(s), run by the ${c.cover.corpus} corpus: ${c.cover.why}`);
+    } else if (c.status === "elsewhere") {
+      console.log(`  shard ${c.wholeOnShard}  ${c.name} — not expressible as a file list, so it runs WHOLE on shard ${c.wholeOnShard}, not here. It is not missing from this run; it is somewhere else in it.`);
+    } else if (c.status === "empty") {
+      console.log(`  none     ${c.name} — 0 of ${c.total} file(s) fell in this shard. Not an absence: the other shards hold them.`);
     } else {
-      const n = c.kind === "files" ? `${c.files.length} file(s)` : "workspace suite";
+      const n = c.kind === "files"
+        ? `${c.files.length}${c.total != null ? ` of ${c.total}` : ""} file(s)`
+        : "workspace suite";
       console.log(`  ${c.status === "ok" ? "ran    " : "FAILED "}  ${c.name} — ${n}${c.code ? ` (exit ${c.code})` : ""}`);
     }
   }
   const bad = ran.filter((c) => c.status === "FAILED");
-  console.log(bad.length ? `\n${bad.length} corpus/corpora failed.` : `\nEvery corpus above was run or accounted for.`);
+  console.log(bad.length
+    ? `\n${bad.length} corpus/corpora failed.`
+    : shard
+      ? `\nEvery corpus above was run, accounted for, or named as belonging to another shard. This shard alone is not the suite: the gate is every shard green.`
+      : `\nEvery corpus above was run or accounted for.`);
   if (bad.length) process.exit(1);
 }
 

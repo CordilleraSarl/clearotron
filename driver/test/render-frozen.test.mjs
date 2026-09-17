@@ -1770,7 +1770,19 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Advanced again by the break recorded above the FROZEN constant: seven fixed sentences on the
 // clearance page, which is a behaviour change and not licence-only, so both constants move for the same
 // measured reason.
-const FROZEN_BEFORE_SPDX = "0cd9ad0032cfa520d74c243180bd62190a9f5fba7d86670942c1702e0451c4f7";
+
+// Advanced again by the break recorded above the FROZEN constant: the closing line naming the models that
+// served the search, a behaviour change and not licence-only, so both constants move.
+// Advanced again by the break recorded above the FROZEN constant: a tier word on the closing line is
+// Claude's, a behaviour change and not licence-only, so both constants move.
+// Advanced again by the break recorded above the FROZEN constant: Fable is a tier word like the other
+// three, a behaviour change and not licence-only, so both constants move.
+// Advanced again by the break recorded above the FROZEN constant: the Ask-AI band comes out of the
+// report, a behaviour change and not licence-only, so both constants move.
+// Advanced again when those four breaks met in one file; see the merge entry above the FROZEN constant.
+// Advanced again by the 2026-09-17 merge recorded above the FROZEN constant: the redesign and this
+// branch in one file, and the provenance line re-homed to the footer. Not licence-only, so this moves too.
+const FROZEN_BEFORE_SPDX = "7df70706946c5e8b2097a9d08f2e68178e1dcfe210f04e547a81ac7e88aa9fa8";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2046,6 +2058,61 @@ const FROZEN_BEFORE_SPDX = "0cd9ad0032cfa520d74c243180bd62190a9f5fba7d86670942c1
 // The renderer's own lines are edited in place and its two new helpers sit at the end of the file, so no
 // line the rest of the tree cites by number moved.
 //
+// THE MODELS THAT SERVED THE SEARCH, as one closing line of Scope (2026-09-14). Every tier now goes to the
+// program as the vendor's alias, so the tier a stage asked for names no model; the ids the engine reported
+// for its turns are the record, and the owner asked for them on the report. The file's own checklist,
+// answered:
+//
+//   1. Is it reachable from a REPUBLISH? YES. doRepublish re-renders from the archived workspace, whose
+//      attempt rows carry the id the engine reported, so a re-rendered run gains one line naming the
+//      models that served it. That adds provenance; no finding, band, count, record or date moves. A run
+//      with no such rows renders as before, and that is MEASURED: the three committed clearance demos and
+//      the knockout demo, republished through the ordinary publisher before and after this change, gave
+//      report.html and meta.json that differ only in the issue stamp, and a report-data.json that gains
+//      only `"servedModels": null`.
+//   2. Could it live in report.css or brand.mjs? NO. It is words read from the run's own record.
+//   3. The hash moves HERE, in the commit that ships it. NOT licence-only, so FROZEN_BEFORE_SPDX advances
+//      with it.
+//
+// The renderer's own lines are edited in place and its one new helper sits at the end of the file, so no
+// line the rest of the tree cites by number moved.
+//
+// A COMPANY'S OWN NAME FOR ITS DEPLOYMENT NEVER REACHES THE LINE (2026-09-15). Through a cloud, a turn may
+// report a name the company gave its own deployment. servedModels (tokens.mjs) now lists such a turn as the
+// tier it asked for ("Opus"), and a cloud's spelling of a Claude id as the dated Claude id, so the list may
+// read "claude-opus-5, Haiku". The line has to count a tier word as Claude's, or that list would print
+// "Prepared with:" and lose its vendor. The file's own checklist, answered:
+//
+//   1. Is it reachable from a REPUBLISH? YES, and that is the point: a republished run served under a
+//      deployment name loses the name and gains the tier word. Every list the previous code could be
+//      handed (Claude ids only, any other ids, nothing) renders byte for byte as before, because a list
+//      with no tier word takes exactly the old branch. The served-models test's earlier line arms, unchanged
+//      and green, hold that.
+//   2. Could it live in report.css or brand.mjs? NO. It decides which words the line prints.
+//   3. The hash moves HERE, in the commit that ships it. NOT licence-only, so FROZEN_BEFORE_SPDX advances
+//      with it.
+//
+// The edit sits inside the file's last helper, after every line the rest of the tree cites by number.
+//
+// FABLE IS A TIER WORD LIKE THE OTHER THREE (2026-09-15). A stage reaches the fable tier through the synthesis
+// override, and a fable turn served under a company's deployment name was left off the list, because the tier
+// reader placed only opus, sonnet and haiku; servedModels' docstring in tokens.mjs said so. servedModels (tokens.mjs) now lists such a
+// turn as "Fable", so the line's tier-word pattern reads Fable too, or that list would print "Prepared with:"
+// and lose its vendor. The file's own checklist, answered:
+//
+//   1. Is it reachable from a REPUBLISH? YES: a republished run whose fable turns were served under a
+//      deployment name gains "Prepared with Claude: Fable." where it printed no line, or names Fable beside the
+//      other models where it named only those. Every other list renders as before: a list with no Fable in it
+//      takes exactly the old branch. MEASURED: the three committed clearance demos and the knockout demo,
+//      republished through the ordinary publisher before and after this change, gave report.html, meta.json and
+//      report-data.json identical once the issue stamp is removed (twelve files; their record carries no served
+//      model, so the new word cannot reach them).
+//   2. Could it live in report.css or brand.mjs? NO. It decides which words the line prints.
+//   3. The hash moves HERE, in the commit that ships it. NOT licence-only, so FROZEN_BEFORE_SPDX advances
+//      with it.
+//
+// The edit is three lines beside the file's last helper, changed in place, so no line the rest of the tree cites moved.
+//
 // ── BREAK: the Ask-AI band comes out of the report ──────────────────────────────────────────────────
 //
 // WHAT WENT. `askAi()`, the "Ask your AI about this run" banner under the verdict; the `mcpUrl`
@@ -2292,7 +2359,24 @@ const FROZEN_BEFORE_SPDX = "0cd9ad0032cfa520d74c243180bd62190a9f5fba7d86670942c1
 // delivered bytes and the plain-text reads would still carry the shout, and the abbreviation is a word
 // change, not a style.
 
-const FROZEN = "a28eb5518378443b26d8e22715f9731eb74df5ef7d4a3446cb013fdcad4c718f";
+//
+// MERGED (2026-09-17): the report redesign on main and the engine-install branch met in this file. The
+// ledger above is both lineages, kept whole — main's breaks and this branch's four — because each entry
+// records a decision somebody took and a merge is not a place to drop one.
+//
+// The renderer they produce is neither side's. Main deleted the scope fold, and the closing line naming
+// the models that served the search was rendered inside it; taking main's side alone would have removed a
+// statement of provenance from the client's page as a side effect of a merge, which nobody ruled. The line
+// is re-homed to the footer, beside the matter and the framework, and renders '' on a run that recorded no
+// models — so an archived run republishes exactly as it was delivered. The hash below is of that combined
+// file.
+//
+// MERGED (2026-09-17, second time): the beta's report pack and this branch met in the footer. Both
+// lineages above stand as written — each entry records a decision somebody took, and a merge is not a
+// place to drop one. The beta recomposed what the footer says; this branch put the line naming the
+// models that served the run into it. Neither replaces the other, so the footer carries both and the
+// hash below is of that combined file.
+const FROZEN = "06999f9f3c7bd246df0f412a9d21e297ff53231d1398c33fc2060e6589fc7934";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

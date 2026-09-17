@@ -16,7 +16,9 @@ import { mkdtempSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
-import { isGitCheckout } from "../../bin/update.mjs";
+import { isGitCheckout, enginesToRefresh } from "../../bin/update.mjs";
+import { ENGINE_BINARIES } from "../driver.config.mjs";
+import { mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { packagedBuild } from "../../bin/onboard.mjs";
 import { headCommit, buildInfo } from "../../scripts/write-build-info.mjs";
 import { main as writeBuildInfoMain } from "../../scripts/write-build-info.mjs";
@@ -46,6 +48,40 @@ function askValueCall(src, name) {
 }
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+
+// ── THE ENGINE PROGRAM SETUP INSTALLED, AND WHAT UPDATE DOES ABOUT IT ───────────────────────────────────
+//
+// Setup installs the program the reader's engine runs into the engines folder. `clearotron update`
+// refreshes whatever is there by running the same install again, however Clearotron itself updates: a
+// checkout, a packaged install that moved, and one that was already current.
+
+test("update refreshes the engine programs setup installed, and only those", () => {
+  const dir = mkdtempSync(join(tmpdir(), "engines-folder-"));
+  try {
+    assert.deepEqual(enginesToRefresh({ dir }), [], "an empty folder has nothing to refresh, and nothing is fetched into it");
+    const spec = ENGINE_BINARIES["openai-agent"];
+    const pkg = join(dir, "node_modules", ...spec.package.split("/"));
+    mkdirSync(pkg, { recursive: true });
+    writeFileSync(join(pkg, "package.json"), "{}");
+    assert.deepEqual(enginesToRefresh({ dir }).map((e) => e.package), [spec.package],
+      "the program setup installed is refreshed, and the engine nobody chose is not fetched");
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("every way update can finish refreshes the engine programs, with the command setup ran", () => {
+  // The arm above drives the choice; this holds the wiring, read from source for the reason the arm below
+  // gives: driving the whole verb needs a tarball install.
+  const src = readFileSync(join(ROOT, "bin", "update.mjs"), "utf8");
+  assert.match(src, /runInCheckout\("npm", engineInstallArgs\(e, dir\)\)/, "the refresh is not the install setup runs");
+  const calls = src.split("\n").filter((l) => /refreshEngines\(/.test(l) && !/^\s*(\/\/|\*)/.test(l) && !/function refreshEngines/.test(l));
+  assert.equal(calls.length, 3, `expected a refresh on each of update's three endings, found:\n${calls.join("\n")}`);
+  const at = src.indexOf("if (packaged.current) {");
+  assert.ok(at > 0, "the current branch is gone or renamed; re-pin this to it");
+  assert.match(src.slice(at, src.indexOf("\n    }\n", at)), /refreshEngines\(/,
+    "a packaged install that is already current does not refresh its engine program");
+});
 
 test("a directory that is not a checkout is told apart from one that is", () => {
   // THE POSITIVE CONTROL FIRST. Without it, a predicate that answered `false` to everything would

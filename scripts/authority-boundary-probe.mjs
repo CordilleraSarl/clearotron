@@ -28,7 +28,7 @@ import { join } from "node:path";
 import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
 import { tmpdir } from "node:os";
 import { buildClaudeArgs, spawnEnv } from "../driver/engine/anthropic-agent.mjs";
-import { envFrom } from "../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
+import { resolveEngineProgram } from "../driver/driver.config.mjs";   // — the program a run would spawn, found the way a run finds it
 
 const arg = (f, d) => { const i = process.argv.indexOf(f); return i > 0 ? process.argv[i + 1] : d; };
 const model = arg("--model", "claude-sonnet-5");
@@ -73,7 +73,9 @@ console.log(`probe root: ${root}`);
 console.log(`--add-dir roots: ${args.filter((a, i) => args[i - 1] === "--add-dir").join(", ")}`);
 console.log(`--settings present: ${args.includes("--settings")}`);
 
-const child = spawn(envFrom(process.env, "CLEAROTRON_CLAUDE_PATH") || "claude", [...args, "--include-hook-events"],
+// The program a run would spawn (driver.config.mjs resolveEngineProgram), so this probes the same copy.
+const program = resolveEngineProgram("anthropic-agent");
+const child = spawn(program.resolved ?? program.bin, [...args, "--include-hook-events"],
   { stdio: ["pipe", "pipe", "pipe"], cwd: runDir, env: spawnEnv() });
 let out = "", err = "";
 child.stdout.on("data", (d) => { out += d; });

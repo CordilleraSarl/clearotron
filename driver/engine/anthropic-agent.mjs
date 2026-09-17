@@ -6,7 +6,7 @@
 //
 // Contract: engine/CONTRACT.md. runTurn() returns the registry-standard normalized tuple
 // (`{code, killed, wall, stdout, stderr, laneWaitMs, json, usage, reads, readsTruncated, modelWire,
-// sessionRef, signals}`), with a SYNTHESIZED `json` envelope in the classifier's shape so every downstream
+// providerWire, sessionRef, signals}`), with a SYNTHESIZED `json` envelope in the classifier's shape so every downstream
 // classifier in gateway.mjs (payloadText, json.status check, isEmbeddedFallback, isTimeout,
 // isLaneWedge) works unchanged.
 //
@@ -21,12 +21,18 @@ import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { resolveSpawnCwd, spawnGraceMs } from "./common.mjs";
-import { envFrom } from "../../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
+import { resolveEngineProgram } from "../driver.config.mjs";   // — the one place that finds the program; it reads every spelling of the setting
 import { authorityTrees } from "../authority-trees.mjs";
 import { recordEngineChild, clearEngineChild } from "./child-record.mjs";   //
+import { billingMode } from "./auth.mjs";   // — the one parse of the billing word (see spawnEnv)
 
 // Read per-call (not module-level) so tests can drive a short stall timeout / a mock binary.
-const claudeBin = () => envFrom(process.env, "CLEAROTRON_CLAUDE_PATH") || "claude";
+// ONE place knows how to find the program (driver.config.mjs resolveEngineProgram): the explicit setting,
+// then PATH, then the copy Clearotron installed. What it found is spawned by ABSOLUTE path, because a
+// bare word lets spawn(2) walk PATH on its own and never reach the installed copy. When nothing resolved,
+// what was asked for is spawned unchanged, so that failure reads exactly as it always has; the run door
+// (preflightEngineBinary) refuses that case before any stage runs.
+const claudeBin = () => { const r = resolveEngineProgram("anthropic-agent"); return r.resolved ?? r.bin; };
 
 // AUTH TOGGLE (config, not code). The subscription path is the cost-saving default: claude -p with NO
 // ANTHROPIC_API_KEY in its env falls back to the OAuth subscription credentials (apiKeySource:"none" →
@@ -34,10 +40,15 @@ const claudeBin = () => envFrom(process.env, "CLEAROTRON_CLAUDE_PATH") || "claud
 // .env, and a present API key OVERRIDES the subscription — so we must STRIP it from the claude subprocess
 // env. CLEAROTRON_AI_BILLING=api-key keeps the key (the standing fallback for when the subscription is
 // revoked — Anthropic's advance notice = today's per-call API cost). Default = subscription.
+//
+// `cloud` strips it too, as that mode's acceptance asks: a key has no part in a turn the vendor's switches
+// send to the reader's cloud account, and dropping it means a leftover key can never be what bills. A
+// gateway's credential is its own ANTHROPIC_AUTH_TOKEN, which rides through like every other name. The
+// word is parsed by auth.mjs (billingMode), the one place that reads it. This never validates and never
+// throws, because the doors that do (the top of runStage, the probe, the jx runner) have already run.
 export function spawnEnv(base = process.env) {
   const env = { ...base };
-  const mode = (base.CLEAROTRON_AI_BILLING || "subscription").toLowerCase();
-  if (mode !== "api-key") delete env.ANTHROPIC_API_KEY;   // subscription: force OAuth/subscription billing
+  if (billingMode(base) !== "api-key") delete env.ANTHROPIC_API_KEY;   // subscription and cloud
   return env;
 }
 // 120s of ZERO streamed output = the silent-provider-stall abort. A healthy turn
@@ -110,15 +121,20 @@ const killEscalateMs = () => Math.max(50, Number(process.env.CLEAROTRON_KILL_ESC
 // clock, so the watchdog never trips). Default 64MB (gateway parity); CLEAROTRON_ENGINE_MAX_BUFFER shrinks it for tests.
 const engineMaxBufferChars = () => Math.max(1024, Number(process.env.CLEAROTRON_ENGINE_MAX_BUFFER || 64 * 1024 * 1024));
 
-// tier/alias → claude -p model alias. haiku passes straight through (claude understands the alias —
-// the 2026-06-16 capture used `--model haiku`). opus and sonnet are PINNED to their full model names
-// (claude-opus-5 / claude-sonnet-5) rather than the bare "opus"/"sonnet" aliases, so they no longer
-// silently drift to whatever Anthropic/the CLI currently calls "opus"/"sonnet" — matching the driver's
-// reproducibility conventions (warm-resume same-model, PURE-FILE replay). opus was bumped off the
-// floating "opus" alias to the pinned claude-opus-5 on 2026-07-27: the bare alias still resolved to
-// claude-opus-4-8 on the live CLI (2.1.209) at the time, so this is a real, GRADE-MOVING model change
-// validated in the paid A/B (CONTRACT §3), never on $0 replay — same price as 4.8 ($5/$25). The
-// non-anthropic tiers (gemini skeptic, deepseek refutation, azure) have no claude equivalent →
+// tier/alias → claude -p model alias. EVERY TIER GOES AS THE VENDOR'S OWN ALIAS — opus, sonnet, haiku,
+// fable — so the CLI serves the newest model of that family, and a new one arrives with no edit here.
+// opus and sonnet were pinned to claude-opus-5 / claude-sonnet-5 from 2026-07-27, when the bare "opus"
+// still resolved to Opus 4.8 on the live CLI (2.1.209). The pin was reversed on 2026-09-14, for two
+// reasons. A hand-pinned id is a silent downgrade on every clearance from the day a better model ships.
+// And on Bedrock, Vertex and Foundry the CLI resolves an alias through the vendor's own
+// ANTHROPIC_DEFAULT_OPUS_MODEL / _SONNET_MODEL / _HAIKU_MODEL / _FABLE_MODEL, which an exact id bypasses:
+// a cloud with no deployment of that exact name refuses the turn. The cost is that a model can move under a
+// clearance without a test; the witness is the id the CLI reports, recorded on every attempt row
+// (`modelActual`) and on the published run. To hold a tier still, set the vendor's variable in the env file
+// (ANTHROPIC_DEFAULT_OPUS_MODEL=<id>): the stage's environment is the driver's, so it reaches the CLI
+// with no setting of Clearotron's own. ANTHROPIC_DEFAULT_FABLE_MODEL holds fable, which no stage asks for
+// unless an override names it, as CLEAROTRON_SYNTHESIS_MODEL=fable does. A catalog id a caller names
+// (anthropic/claude-opus-5) still goes as that exact id. The non-anthropic tiers (gemini skeptic, deepseek refutation, azure) have no claude equivalent →
 // substituted with an anthropic model (also GRADE-MOVING, A/B-only); their bare-alias substitutes
 // (e.g. deepseek → "opus") are legacy aliases no stage names today, intentionally left un-pinned. They
 // stay registered so a stage that names one is SUBSTITUTED loudly rather than caught by the regex
@@ -141,7 +157,7 @@ const engineMaxBufferChars = () => Math.max(1024, Number(process.env.CLEAROTRON_
 // non-GPT id. That is the issue's requirement in one line: an unhonoured model override is an error,
 // not a substitution.
 const CLAUDE_MODEL = {
-  opus: "claude-opus-5", sonnet: "claude-sonnet-5", haiku: "haiku", fable: "fable",
+  opus: "opus", sonnet: "sonnet", haiku: "haiku", fable: "fable",
   "anthropic/claude-opus-5": "claude-opus-5", "anthropic/claude-sonnet-5": "claude-sonnet-5",
   "anthropic/claude-sonnet-4-6": "sonnet", "anthropic/claude-haiku-4-5": "haiku",
 };
@@ -552,7 +568,16 @@ export const anthropicAgentEngine = {
       // It never falls back to the requested alias — a record that says "actual: <what we asked for>"
       // when nothing was observed is precisely the absence-read-as-a-pass this issue exists to end. The
       // comparison and the policy live in gateway.mjs; this reports, it does not judge.
-      let wireModelInit = null, wireModelAssistant = null;
+      //
+      // A MESSAGE THE CLI WROTE ITSELF NAMES NO MODEL. The CLI labels such a message `<synthetic>` in the
+      // model field, measured in testing on Azure Foundry (2026-09-14): with the opus pin naming a
+      // deployment that did not exist, the turn exited 1 with the CLI's own error and its assistant event
+      // said `<synthetic>`. No model served that turn, so the label is never taken as a served id, and
+      // `answeredItself` stops init's answer from standing in for one: init says what the session was
+      // configured with, and naming it here would name a model for a turn no model served. A real id on
+      // an earlier assistant event of the same turn now stands, because that model did serve a call;
+      // before the label was refused, the label that followed overwrote it.
+      let wireModelInit = null, wireModelAssistant = null, answeredItself = false;
       // READS GAUGE (AD-4, 2026-07-30 addendum): which files this turn actually OPENED, from the stream's
       // completed Read tool_use blocks. The stage prompt OFFERS a set of documents (declared inputs +
       // skill refs); nothing recorded whether the turn could and did read them — and one review
@@ -703,11 +728,14 @@ export const anthropicAgentEngine = {
         else if (ev.type === "rate_limit_event") rateLimitEvent = ev;
         else if (ev.type === "system" && ev.subtype === "init") {
           // MODEL GAUGE — the session's configured model, the earliest wire statement of what will run.
-          if (typeof ev.model === "string" && ev.model) wireModelInit ??= ev.model;
+          if (typeof ev.model === "string" && ev.model && !isCliLabel(ev.model)) wireModelInit ??= ev.model;
         }
         else if (ev.type === "assistant") {
           // MODEL GAUGE — the model that served THIS API call. Authoritative over init (see above).
-          if (typeof ev.message?.model === "string" && ev.message.model) wireModelAssistant = ev.message.model;
+          if (typeof ev.message?.model === "string" && ev.message.model) {
+            if (isCliLabel(ev.message.model)) answeredItself = true;
+            else wireModelAssistant = ev.message.model;
+          }
           // THINKING GAUGE — block presence + signature, never the text (display defaults to "omitted",
           // so an engaged block carries a zero-length `thinking` string). See the declaration above.
           if (!thought && ev.message?.content?.some?.((b) => b?.type === "thinking")) thought = true;
@@ -1077,8 +1105,13 @@ export const anthropicAgentEngine = {
           toolWaitUnmeasurable: [...unmeasurable],
           // MODEL GAUGE: the id the WIRE reported, or null when the stream never said. Assistant
           // message first (what served the call), init second (what the session was configured with).
-          // Never the requested alias — see the declaration above.
-          modelWire: wireModelAssistant ?? wireModelInit ?? null,
+          // Never the requested alias, and never init's answer for a turn only the CLI answered — see the
+          // declaration above.
+          modelWire: wireModelAssistant ?? (answeredItself ? null : wireModelInit),
+          // PROVIDER GAUGE: the program's own word for who served the turn, read from the result's per-model
+          // usage ("firstParty" on Anthropic's own API and "foundry" on Azure Foundry, measured 2026-09-14),
+          // or null when the stream never said or its models disagree. Recorded, never inferred from config.
+          providerWire: providerOf(resultEvent),
           sessionRef: resultEvent?.session_id ?? resumeRef ?? null,
           // The raw result event's total_cost_usd is a provider-side field and stays in the provider's
           // own stream; the tuple carries no currency (tokens-only directive 2026-07-11) — `usage` is
@@ -1116,6 +1149,29 @@ function errResult(t0, e, resumeRef) {
     // reads: a spawn error means NO turn ran — [] is the true observation (nothing was read), not a gap.
     // modelWire: null for the opposite reason — no turn ran, so the wire said nothing about a model, and
     // the record must say UNKNOWN rather than inherit the alias that was asked for.
-    json: null, usage: null, reads: [], readsTruncated: false, modelWire: null, sessionRef: resumeRef ?? null,
+    json: null, usage: null, reads: [], readsTruncated: false, modelWire: null, providerWire: null, sessionRef: resumeRef ?? null,
   };
+}
+
+/**
+ * The program's own word for which provider served a turn, from the result event's per-model usage:
+ * `modelUsage[<model>].provider`, "firstParty" on Anthropic's own API and "foundry" on Azure Foundry
+ * (measured 2026-09-14, CLI 2.1.263). One word when every model the turn used names the same provider;
+ * null when none does or they disagree, because a single word would then be a guess.
+ */
+export function providerOf(resultEvent) {
+  const words = new Set();
+  for (const u of Object.values(resultEvent?.modelUsage ?? {})) {
+    const w = typeof u?.provider === "string" ? u.provider.trim() : "";
+    if (w) words.add(w);
+  }
+  return words.size === 1 ? [...words][0] : null;
+}
+
+/**
+ * Whether a model field holds one of the CLI's own bracketed labels, such as `<synthetic>` on a message
+ * it wrote itself, rather than the id of a model. The reports skip the same shape when they name models.
+ */
+function isCliLabel(id) {
+  return /^<.*>$/.test(String(id).trim());
 }

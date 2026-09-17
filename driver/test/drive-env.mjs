@@ -19,6 +19,24 @@
 // collision arm wrote a free high port into a drive's `.env` and ended up measuring whatever holds the
 // built-in default on the machine running the suite, which on a shared box is another live install.
 import assert from "node:assert/strict";
+import { mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+
+/**
+ * The suite's "no engine program installed", for a drive that composes its child's environment from
+ * nothing instead of through handRunEnv.
+ *
+ * The engine resolver's last step reads the engines folder (~/.local/share/clearotron/engines), and a
+ * developer's own setup may have put a real program there. scripts/test-run.mjs points that step at an
+ * empty directory, but only for the processes that inherit its environment. A child spawned with a
+ * composed `env` inherits nothing, and one given no HOME, or the real one, reads the developer's folder,
+ * so the arm measures the machine, not its subject. Spread this into such an `env`. Outside the suite it
+ * is a fresh empty directory.
+ */
+export const NO_INSTALLED_ENGINES = {
+  CLEAROTRON_ENGINES_DIR: process.env.CLEAROTRON_ENGINES_DIR || mkdtempSync(join(tmpdir(), "no-installed-engines-")),
+};
 
 /**
  * A hand-run environment: this process's, minus the two things that would make the driven command
@@ -33,6 +51,12 @@ export function handRunEnv(extra = {}, base = process.env) {
   const env = { ...base };
   delete env.CLEAROTRON_NO_ENV_FILE;
   delete env.INVOCATION_ID;
+  // THE SUITE'S "NO ENGINE PROGRAM INSTALLED" TRAVELS INTO A COMPOSED ENVIRONMENT TOO. scripts/test-run.mjs
+  // points the engine resolver's last step at an empty directory, because a developer's own engines folder
+  // may hold a REAL program; a drive that composes its environment from nothing would otherwise hand its
+  // command a real engine. `extra` can still set it, or remove it.
+  if (process.env.CLEAROTRON_ENGINES_DIR && !("CLEAROTRON_ENGINES_DIR" in env))
+    env.CLEAROTRON_ENGINES_DIR = process.env.CLEAROTRON_ENGINES_DIR;
   for (const [k, v] of Object.entries(extra)) {
     if (v === undefined) delete env[k];
     else env[k] = v;

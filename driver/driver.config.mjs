@@ -7,10 +7,11 @@
 // Every value is env-overridable so the identical code runs from a developer's shell and from the
 // systemd unit on a deployed host.
 
-import { join, dirname, isAbsolute } from "node:path";
+import { join, dirname, basename, isAbsolute, delimiter } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { readdirSync, existsSync, accessSync, statSync, statfsSync, constants as FS } from "node:fs";
+import { readdirSync, existsSync, accessSync, statSync, statfsSync, readFileSync, realpathSync, openSync, readSync, closeSync, constants as FS } from "node:fs";
 import { homedir } from "node:os";
+import { isWsl } from "../shared/wsl.mjs";   // — the one answer to "is this Linux under Windows", which decides the /mnt/<drive> skip
 import { envFrom } from "../shared/env-aliases.mjs";   // — an operator-facing name is the one an operator sets, and it has to work where they set it; — envFrom is the resolver that reads every spelling of it
 import { invoke } from "../shared/invocation.mjs";   // — name a command the reader can actually type
 import { envFileRead } from "../shared/env-local.mjs";   // — WHICH file to set it in, measured; null for a service that read none
@@ -616,12 +617,12 @@ export const MODELS = {
   gemini: "google/gemini-3.1-pro-preview",
   "gemini-flash": "google/gemini-3-flash-preview",
   "deepseek-v4-pro": "together/deepseek-ai/DeepSeek-V4-Pro",
-  // azure = the proven-working Azure GPT-5.4 (api: openai-completions). It REPLACED the dead
-  // azure-openai-pro/gpt-5.4-pro (api: azure-openai-responses), which rejected every payload at the
-  // provider level — "provider rejected the request schema or tool payload" — and was retired
-  // 2026-06-08 (live-probed both: 5.4-pro exit 1, 5.4 completions clean). Env-overridable for dev/prod
-  // parity; default is the rendered $AZURE_OPENAI_DEPLOYMENT catalog id.
-  azure: process.env.CLEAROTRON_AZURE_MODEL || "azure-openai/gpt-5.4",
+  // azure = a legacy catalogue entry for an Azure GPT deployment. NO STAGE NAMES IT AND NO ENGINE RUNS IT:
+  // the Claude adapter refuses the alias and the codex adapter maps no tier onto it. So its target is a
+  // constant. The setting that used to override it was retired on 2026-09-15 and nothing reads it any
+  // more; the configuration reference lists it under the settings that do nothing. It is named only
+  // there, in prose, because a name written in a source file here counts as a name this build reads.
+  azure: "azure-openai/gpt-5.4",
 };
 
 // alias → full id; a value that's already a full provider/model id (contains "/") passes through.
@@ -659,6 +660,13 @@ export function resolveModel(model) {
  * never a default. A null on either side makes the comparison UNKNOWN, and an unknown must never be
  * recorded as a match — that is the absence-read-as-a-pass class this whole issue is about.
  */
+// FABLE IS NOT A FAMILY HERE, ON PURPOSE. Nobody has seen what the wire reports for a fable turn, so an id
+// naming fable stays unknown and its comparison can never manufacture a mismatch. Placing it was tried
+// (2026-09-15) and refused turns that had always run: a fable request served by claude-sonnet-5, by
+// claude-opus-5, by a deployment named after another tier or by a GPT id, an opus request served as
+// claude-fable-5-1, and any tier served under a name beginning with the word. It was taken out again the
+// same day. The report's model line still names Fable: servedModels (tokens.mjs) reads a fable request's tier
+// itself, where only the report sees it, and never through this comparison.
 const MODEL_FAMILY_RE = /(?:^|\/)(?:claude-)?(opus|sonnet|haiku)(?:[-.]|$)/i;
 
 // — THE OPENAI SIDE, added when the codex path could first answer "what ran".
@@ -1910,26 +1918,32 @@ export const ENGINE_BINARIES = {
     // `vendor` is the one word a person needs — the staff config page answers "which engine is
     // running the searches", and `label` below is the MECHANISM, which is what took off that page.
     vendor: "Anthropic",
+    // `product` is the name a reader knows the program by, beside the vendor in setup's engine question
+    // ("Claude, by Anthropic"). Not `fallback`, which is the command word and lower-case.
+    product: "Claude",
     env: "CLEAROTRON_CLAUDE_PATH", fallback: "claude",
+    // The npm package that carries this program, and the oldest version setup installs: "this version or
+    // newer", with no ceiling. Setup installs it into the engines folder (enginesFolder, below the table)
+    // when the reader picks this engine, and the resolver uses it only when the machine has no copy of its
+    // own. The package's own `bin` field names the program, so no path inside it is written down here.
+    package: "@anthropic-ai/claude-code", floor: "2.1.270",
+    // WHAT THE INSTALL TAKES ON DISK, in MB, which setup states before it asks to install. MEASURED, not
+    // declared by the vendor: the engines folder after a fresh install of this package into an empty
+    // folder, on npm 10.9.8 and on 11.19.1, 2026-09-14. A later release can be larger or smaller, so setup
+    // says "about". Re-measure when the floor moves.
+    installMB: 214,
+    // The licence setup states wherever it tells a reader what they are about to install or use, as the
+    // vendor's package declares it: "SEE LICENSE IN README.md", Anthropic's own terms.
+    licence: "proprietary third-party software",
     label: "Anthropic — each stage runs as a headless `claude -p` turn",
     module: "engine/anthropic-agent.mjs", adapter: "anthropicAgentEngine",
     signIn: "run `claude` once in a terminal and complete the sign-in",
     authEnv: "CLEAROTRON_AI_BILLING", apiKeyEnv: "ANTHROPIC_API_KEY",
     subscriptionHow: "sign in once with `claude`",
-    // — HERE RATHER THAN IN THE WIZARD, for the same reason `authEnv` is: this table is what the
-    // wizard and the run-door preflight both read, and an install command living in the wizard would be
-    // a second place an engine is described. Verified against the registry 2026-08-24: 2.1.241.
-    //
-    // npm, NOT the vendor's shell installer. `curl … | bash` is the other documented route for this CLI
-    // and the wizard will not run one: a command this product executes on someone's box has to be one
-    // they can read in full before they answer, and a piped remote script is not.
-    install: "npm install -g @anthropic-ai/claude-code",
-    // — THE NO-ROOT ROUTE, NAMED AND NEVER EXECUTED. The stance above holds: this
-    // product does not run a piped remote script. But on a box whose npm prefix needs root, the npm
-    // route CANNOT work as this user, and offering only it was a dead end the owner hit. The wizard
-    // prints this for the reader to run BY THEIR OWN HAND in another terminal — their shell, their
-    // eyes, their decision — and says where it lands so the path answer afterwards is not a guess.
-    installNoRoot: { cmd: "curl -fsSL https://claude.ai/install.sh | bash", lands: "~/.local/bin" },
+    // `install`, the command that puts this program in the engines folder, is written in below the table
+    // from `package` and `floor`, so the command a reader is shown and the one setup runs cannot drift.
+    // npm, NOT the vendor's shell installer: a command this product executes on someone's box has to be
+    // one they can read in full before they answer, and a piped remote script is not.
     // — the documented headless ending. `claude setup-token` walks the sign-in and
     // prints a long-lived token; the stage subprocess env is a spread of the driver's — spawnEnv
     // strips ONLY the API key under subscription — so a token in the env file reaches the CLI
@@ -1940,22 +1954,65 @@ export const ENGINE_BINARIES = {
   },
   "openai-agent": {
     vendor: "OpenAI",
+    product: "Codex",
     env: "CLEAROTRON_CODEX_PATH", fallback: "codex",
+    package: "@openai/codex", floor: "0.154.0",
+    installMB: 324,   // measured the same way and on the same day as Claude's, above
+    licence: "third-party software under the Apache-2.0 licence",   // the package's own "license" field
     label: "OpenAI — each stage runs as a headless `codex exec` turn",
     module: "engine/openai-agent.mjs", adapter: "openaiAgentEngine",
     signIn: "run `codex login`",
     authEnv: "CLEAROTRON_AI_BILLING", apiKeyEnv: "CODEX_API_KEY",
     subscriptionHow: "sign in once with `codex login` — the adapter reads ~/.codex/auth.json and refuses before spending if it is absent",
-    // Verified against the registry 2026-08-24: 0.149.1.
-    install: "npm install -g @openai/codex",
-    // — no vendor shell installer exists for this CLI; the no-root answer on a
-    // root-only prefix is npm's own prefix move, which the wizard names the same way.
-    installNoRoot: null,
     // — codex's headless ending writes its own ~/.codex/auth.json; there is no
     // token to capture into an env file, and inventing one would be a route nobody has driven.
     headless: { cmd: "codex login --device-auth", tokenEnv: null },
   },
 };
+
+// ── WHERE SETUP INSTALLS AN ENGINE'S PROGRAM, AND THE COMMAND THAT DOES IT ─────────────────────────────
+//
+// Nothing is bundled into the package. Setup installs the ONE program the reader's engine runs, when they
+// say yes, as an ordinary npm project in a folder Clearotron owns under their home directory: npm then
+// fetches that platform's binary and nothing else, and needs no root. The folder is not on PATH, so a copy
+// the machine installs itself is found first (resolveEngineProgram). `clearotron update` runs the same
+// install again, which moves the program to the newest its vendor publishes: measured on npm 10.9.8 and
+// 11.19.1, re-running an install with a `>=` range over an older copy moves it to the newest, where
+// `npm update` would stop at the caret npm writes into the folder's package.json.
+
+/** Where to install, and look for, the engine programs instead of the default folder. An EMPTY directory means none. */
+export const ENGINES_DIR_ENV = "CLEAROTRON_ENGINES_DIR";
+
+/** The default engines folder as a reader types it. */
+const ENGINES_FOLDER_TYPED = "~/.local/share/clearotron/engines";
+
+/**
+ * The folder setup installs engine programs into and the resolver's last step reads: ENGINES_DIR_ENV from
+ * this process when set, otherwise `~/.local/share/clearotron/engines`. Under the home directory rather
+ * than the install's own tree, because an update replaces that tree, and because every service runs as a
+ * user unit under the same home as the setup that installed it. XDG_DATA_HOME is not consulted: a shell's
+ * value does not reach the services, and the two would then look in different folders.
+ */
+export function enginesFolder({ env = process.env, home = homedir() } = {}) {
+  return String(env[ENGINES_DIR_ENV] ?? "").trim() || join(home, ".local", "share", "clearotron", "engines");
+}
+
+/** The npm arguments that install, or refresh, an engine's program in `dir`: "this version or newer". */
+export function engineInstallArgs(spec, dir = enginesFolder()) {
+  return ["install", "--prefix", dir, "--no-fund", "--no-audit", `${spec.package}@>=${spec.floor}`];
+}
+
+/** A shell word as a reader pastes it: quoted when it must be, because a bare `>=` is a redirection. */
+const shellWord = (w) => (/^[\w@%+=:,./~-]+$/.test(w) ? w : `'${String(w).replace(/'/g, "'\\''")}'`);
+
+/** The same install as a command a reader can paste. The default folder is written the way they type it. */
+export function engineInstallCommand(spec, dir = ENGINES_FOLDER_TYPED) {
+  return ["npm", ...engineInstallArgs(spec, dir)].map(shellWord).join(" ");
+}
+
+// The printable command each engine carries, for the readers that show one without a folder to hand (the
+// portal's engine page, doctor's way out of demo mode), made from the same parts as the install setup runs.
+for (const spec of Object.values(ENGINE_BINARIES)) spec.install = engineInstallCommand(spec);
 
 /** The production default, in ONE place rather than a literal repeated at every reader. */
 export const DEFAULT_ENGINE_ID = "anthropic-agent";
@@ -1971,48 +2028,190 @@ export function engineAdapterSpecifier(engine) {
   return spec ? pathToFileURL(join(DRIVER_DIR, spec.module)).href : null;
 }
 
-/** Resolve `name` the way spawn(2) would, or null. No separator ⇒ a PATH walk; otherwise the path itself. */
-function resolveExecutable(name, env) {
-  const executable = (p) => { try { return statSync(p).isFile() && (accessSync(p, X_OK), true); } catch { return null; } };
-  if (name.includes("/")) return executable(name) ? name : null;
-  for (const dir of String(env.PATH ?? "").split(":")) {
-    if (!dir) continue;
-    const p = join(dir, name);
-    if (executable(p)) return p;
+// ── WHERE AN ENGINE'S PROGRAM IS FOUND: ONE PLACE, AND EVERY READER ASKS IT ─────────────────────────────
+//
+// The run door, the inventory the portal reads, the wizard, doctor and both adapters all ask this one
+// function. Before it there were four answers: this file's PATH walk, the wizard's own walk (the only one
+// that passed over a Windows copy under WSL), and each adapter handing spawn(2) a bare word so the OS made
+// its own choice. They agreed only while every copy lived on PATH.
+//
+// THE ORDER, and why the machine's own copy wins:
+//   1. The explicit setting (`CLEAROTRON_CLAUDE_PATH` / `CLEAROTRON_CODEX_PATH`). A value that is set and
+//      unusable is REPORTED, never overruled: the reader stated it, and quietly resolving somewhere else
+//      would run a program nobody chose. The engine's own fallback word (`claude`, `codex`) is the default
+//      spelled out, which is how the shipped example files write it, so it means exactly what unset means.
+//   2. The program on PATH: the machine's own install, which keeps updating itself.
+//   3. The copy setup installed in the engines folder (enginesFolder, above), only when the machine has
+//      none. That folder is not on PATH. If a reader puts its node_modules/.bin there, a PATH hit that IS
+//      that copy is passed over in step 2 and taken for what it is in step 3, so it is never reported, or
+//      written into a settings file, as the machine's own.
+//
+// FILESYSTEM ONLY, like the rest of this door (see the header above ENGINE_BINARIES): nothing is spawned.
+
+/** A path on a Windows drive as WSL mounts it. */
+export const ON_A_WINDOWS_DRIVE = /^\/mnt\/[a-z]\//i;
+
+const isExecFile = (p) => { try { return statSync(p).isFile() && (accessSync(p, X_OK), true); } catch { return false; } };
+const realOrNull = (p) => { try { return realpathSync(p); } catch { return null; } };
+const readPackage = (dir) => { try { return JSON.parse(readFileSync(join(dir, "package.json"), "utf8")); } catch { return null; } };
+
+/**
+ * Whether the kernel runs this file ITSELF: a native executable (ELF, Mach-O, a Windows PE) or a `#!` script.
+ *
+ * Asked only of a file inside the vendor's own package, for one measured reason. The Claude package ships
+ * `bin/claude.exe` as a 500-byte shell placeholder and puts the real program over it in its install step.
+ * With `--ignore-scripts`, or with the platform's native package missing, the placeholder stays. It is a
+ * regular file with the execute bit, so the executable check accepts it, and spawn runs it through `sh`:
+ * it prints "claude native binary not installed" and exits 1, at every stage. It has neither `#!` nor a
+ * binary header, so this refuses it at the door instead. A file anywhere else is judged as before; a
+ * reader's own wrapper script is not ours to second-guess.
+ */
+function runsDirectly(file) {
+  const head = Buffer.alloc(4);
+  let fd = null, n = 0;
+  try { fd = openSync(file, "r"); n = readSync(fd, head, 0, 4, 0); }
+  catch { return false; }
+  finally { if (fd !== null) { try { closeSync(fd); } catch { /* nothing left to release */ } } }
+  if (n >= 2 && head[0] === 0x23 && head[1] === 0x21) return true;                  // #!
+  if (n >= 2 && head[0] === 0x4d && head[1] === 0x5a) return true;                  // MZ
+  if (n < 4) return false;
+  const word = head.readUInt32BE(0);
+  return word === 0x7f454c46                                                         // ELF
+    || [0xfeedface, 0xfeedfacf, 0xcefaedfe, 0xcffaedfe, 0xcafebabe].includes(word);  // Mach-O, thin and universal
+}
+
+/** The npm package a file belongs to: the nearest package.json within a few levels of its real path. */
+function owningPackage(file) {
+  let d = dirname(realOrNull(file) ?? file);
+  for (let i = 0; i < 4; i++) {
+    const pkg = readPackage(d);
+    if (pkg) return { name: pkg.name ?? null, version: pkg.version ?? null };
+    const up = dirname(d);
+    if (up === d) break;
+    d = up;
   }
   return null;
 }
 
+/** The directory the installed copy of `spec.package` lives in under the engines folder `root`, or null. */
+function installedPackageDir(spec, root) {
+  if (!spec.package || !root) return null;
+  const dir = join(root, "node_modules", ...spec.package.split("/"));
+  return existsSync(join(dir, "package.json")) ? dir : null;
+}
+
+/** The program that installed copy declares for this engine, by the package's own `bin` field, or null. */
+function installedProgram(spec, root) {
+  const dir = installedPackageDir(spec, root);
+  if (!dir) return null;
+  const pkg = readPackage(dir);
+  const rel = typeof pkg?.bin === "string" ? pkg.bin : pkg?.bin?.[spec.fallback];
+  return rel ? join(dir, rel) : null;
+}
+
+/** Can this candidate be spawned as the engine? `{ok: true, version}` or `{ok: false, why}`. */
+function engineCandidate(p, spec) {
+  if (!isExecFile(p)) return { ok: false, why: "not an executable file (it is missing, is a directory, or lacks the execute bit for this user)" };
+  const own = owningPackage(p);
+  const vendor = Boolean(spec.package) && own?.name === spec.package;
+  if (vendor && !runsDirectly(p)) {
+    return { ok: false, why: `the placeholder ${spec.package} leaves when its install step did not run (npm was given `
+      + "--ignore-scripts, or the platform's native package is missing), so every stage would print an error and "
+      + "exit. Reinstall without --ignore-scripts" };
+  }
+  return { ok: true, version: vendor ? own.version : null };
+}
+
 /**
- * Refuse a run whose engine binary is missing, unexecutable, or written as a relative path.
+ * Find the program an engine spawns. Never throws: refusing is the caller's decision (preflightEngineBinary).
+ *
+ * Returns `{engine, binEnv, bin, explicit, relative, resolved, source, version, windowsShim, skipped, rejected}`.
+ * `resolved` is an absolute path or null. `source` is "explicit" | "path" | "installed" | null. `version` is
+ * read from the copy's own package.json when npm installed it, and null otherwise, because nothing is
+ * spawned to ask. `skipped` lists Windows copies passed over under WSL; `rejected` lists candidates that
+ * could not run, each with its reason and the step that found it (`source`).
+ *
+ * `enginesDir`: undefined reads the engines folder (enginesFolder: ENGINES_DIR_ENV from THIS process, then
+ * the default under the home directory); a directory looks there; null looks nowhere. It is read from the
+ * process rather than from `env` because it describes this user's install, not the configuration being
+ * asked about: doctor asks about the units' environment from a shell, and the folder is the same either
+ * way, because the services run as user units under the same home. `wsl` and `onWindowsDrive` are
+ * injectable for the reason shared/wsl.mjs gives.
+ */
+export function resolveEngineProgram(engine, { env = process.env, enginesDir = undefined, wsl = null, onWindowsDrive = null } = {}) {
+  const id = String(engine ?? "").trim().toLowerCase();
+  const spec = ENGINE_BINARIES[id];
+  const out = { engine: id, binEnv: spec?.env ?? null, bin: null, explicit: false, relative: false,
+    resolved: null, source: null, version: null, windowsShim: false, skipped: [], rejected: [] };
+  if (!spec) return out;
+  const set = String(envFrom(env, spec.env) ?? "").trim();
+  out.explicit = Boolean(set) && set !== spec.fallback;
+  out.bin = out.explicit ? set : spec.fallback;
+  const underWsl = wsl ?? isWsl({ env });
+  const onDrive = onWindowsDrive ?? ((p) => ON_A_WINDOWS_DRIVE.test(p));
+  const take = (p, source) => {
+    const c = engineCandidate(p, spec);
+    if (!c.ok) { out.rejected.push({ path: p, why: c.why, source }); return false; }
+    Object.assign(out, { resolved: p, source, version: c.version });
+    return true;
+  };
+
+  if (out.explicit && out.bin.includes("/")) {
+    if (!isAbsolute(out.bin)) { out.relative = true; return out; }
+    out.windowsShim = underWsl && onDrive(out.bin);
+    take(out.bin, "explicit");
+    return out;
+  }
+
+  // THE PATH WALK splits on the platform's own delimiter. This file's walk used to split on ":", which
+  // tears a Windows PATH at every drive letter; the wizard's walk already used the delimiter.
+  const installed = out.explicit ? null : installedProgram(spec, enginesDir !== undefined ? enginesDir : enginesFolder());
+  const installedReal = installed ? realOrNull(installed) : null;
+  for (const dir of String(env.PATH ?? "").split(delimiter).filter(Boolean)) {
+    const p = join(dir, out.bin);
+    if (!isExecFile(p)) continue;
+    // UNDER WSL THE WINDOWS PATH IS APPENDED TO THIS ONE, so `claude` on a fresh WSL2 Ubuntu resolves to the
+    // Windows build before any Linux install. It is executable, and it fails the proof turn as "not signed
+    // in" because the credential it looks for is the Linux one. Passed over, and named for the caller to say.
+    if (underWsl && onDrive(p)) { out.skipped.push(p); continue; }
+    if (installedReal && realOrNull(p) === installedReal) continue;
+    if (take(p, out.explicit ? "explicit" : "path")) return out;
+  }
+  if (installed) take(installed, "installed");
+  return out;
+}
+
+/**
+ * Refuse a run whose engine program cannot be found or run, or is written as a relative path.
  *
  * Throws, like preflightCredentials, and is called at the same door — pipelineInner, before the run
- * context is built. Returns {engine, binEnv, bin, resolved} when the binary is usable.
+ * context is built. Returns {engine, binEnv, bin, resolved, source, version} when the program is usable:
+ * the answer of resolveEngineProgram above, which every other reader asks too.
  *
  * An UNKNOWN CLEAROTRON_AI returns without checking rather than throwing a second, differently-worded
  * version of gateway.selectEngine's error. One definition of "that is not an engine", and it is the
  * registry's.
  */
-export function preflightEngineBinary(env = process.env, { platform = process.platform } = {}) {
+export function preflightEngineBinary(env = process.env, { platform = process.platform, enginesDir = undefined, wsl = null, onWindowsDrive = null } = {}) {
   // item 3 — NATIVE WINDOWS REFUSES BY NAME, BEFORE ANYTHING READS PATH.
   //
-  // INSTALL.md promises a native-Windows run "refuses at preflight" and names the reason. Nothing
-  // implemented it, so what a Windows user actually got was the PATH resolver below — which splits on
-  // ":" and therefore tears `C:\Users\…` in half at the drive letter. The refusal then told them their
-  // `claude.cmd` was "not on PATH as an executable file" and printed a PATH that had been mangled on the
-  // way to saying so. A true statement about a false premise, and a wild-goose chase for the reader.
+  // INSTALL.md promises a native-Windows run "refuses at preflight". Nothing implemented it, so what a
+  // Windows user actually got was a PATH walk that split on ":", tore `C:\Users\…` in half at the drive
+  // letter, and reported their `claude.cmd` as "not on PATH". The walk now splits on the platform's own
+  // delimiter, and the refusal stands anyway, because its real grounds were never the lookup: a stage runs
+  // as its own process group and is stopped by signalling that group, an immediate stop identifies the
+  // process from /proc or ps, and the write-boundary hook is quoted for a POSIX shell. Native Windows has
+  // none of that, and where the program is found changes none of it.
   //
-  // This fires FIRST for that reason: any message mentioning PATH on win32 is misleading whatever else
-  // it says, because the value it quotes has already been destroyed by the split.
+  // This fires FIRST so that no message about a PATH reaches a reader whose platform is the answer.
   //
   // `platform` is injectable so the refusal is testable off win32 — the population this protects is the
   // one that cannot run this suite to find out.
   if (platform === "win32") {
-    throw new Error("[preflight] this engine does not run on native Windows. Stage subprocesses are spawned "
-      + "with POSIX path and process semantics, and the PATH resolution below splits on \":\", which cuts a "
-      + "Windows path at its drive letter — so any message it produced about your engine binary would be "
-      + "about a mangled path. Run it under WSL2, or in the devcontainer (.devcontainer/), where the "
-      + "documented install path applies unchanged (#1149 item 3).");
+    throw new Error("[preflight] this engine does not run on native Windows. Each stage runs as its own process "
+      + "group and is stopped by signalling that group, which native Windows cannot do, so a stopped stage would "
+      + "leave the tools it started still running. Run it under WSL2, or in the devcontainer (.devcontainer/), "
+      + "where the documented install path applies unchanged.");
   }
   const engine = (env.CLEAROTRON_AI || DEFAULT_ENGINE_ID).trim().toLowerCase();
   const spec = ENGINE_BINARIES[engine];
@@ -2033,24 +2232,38 @@ export function preflightEngineBinary(env = process.env, { platform = process.pl
   // `envFrom` is therefore BELT-AND-BRACES, not the repair: it makes this site correct on its own terms
   // rather than correct because something upstream normalised the environment first — a coupling
   // nothing at this site declares and nothing here could notice breaking.
-  const bin = String(envFrom(env, spec.env) ?? "").trim() || spec.fallback;
-  const where = `${spec.env}${envFrom(env, spec.env) ? "" : ` (unset — defaulting to "${spec.fallback}")`}`;
+  const r = resolveEngineProgram(engine, { env, enginesDir, wsl, onWindowsDrive });   // injectable for the reason it gives
+  const bin = r.bin;
+  const setTo = String(envFrom(env, spec.env) ?? "").trim();
+  const where = `${spec.env}${r.explicit ? "" : setTo
+    ? ` (set to its default "${spec.fallback}": the one on PATH, then the copy Clearotron installed)`
+    : ` (unset — defaulting to "${spec.fallback}" on PATH, then the copy Clearotron installed)`}`;
 
-  if (bin.includes("/") && !isAbsolute(bin)) {
+  if (r.relative) {
     throw new Error(`[preflight] ${where} is the RELATIVE path "${bin}", which cannot work: the engine is `
       + "spawned with the RUN DIRECTORY as its cwd (#524), not the repo, so a relative command is looked "
       + `for inside the run. Give an absolute path — e.g. ${join(REPO_ROOT, bin)} — or a bare name on PATH.`);
   }
 
-  const resolved = resolveExecutable(bin, env);
-  if (!resolved) {
+  if (!r.resolved) {
+    const passedOver = r.rejected.map((x) => `${x.path} is ${x.why}`).join("; ");
+    // "None installed" only when none was. An installed copy that cannot run is named in the passed-over
+    // list with its reason, and the claim beside it would send the reader to install it again.
+    const installedRefused = r.rejected.some((x) => x.source === "installed");
+    // Under WSL the Windows copies on the appended PATH were passed over on purpose, and the reader's own
+    // `which` still prints them, so the refusal names them and says why.
+    const windows = r.skipped.length
+      ? `. Passed over because they sit on a Windows drive, and a Windows build cannot run a stage here: ${r.skipped.join(", ")}` : "";
     throw new Error(`[preflight] the ${engine} engine cannot run: ${where} names "${bin}", which is `
       + (bin.includes("/")
-        ? "not an executable file (it is missing, is a directory, or lacks the execute bit for this user)"
-        : `not on PATH as an executable file (PATH=${env.PATH || "(empty)"})`)
+        ? (r.rejected[0]?.why ?? "not an executable file (it is missing, is a directory, or lacks the execute bit for this user)")
+        : `not on PATH as an executable file (PATH=${env.PATH || "(empty)"})`
+          + (r.explicit || installedRefused ? "" : ", and Clearotron has not installed one")
+          + (passedOver ? `. Passed over: ${passedOver}` : "")
+          + windows)
       + ". Every stage of a run spawns it, so the run is refused now rather than at the first stage.");
   }
-  return { engine, binEnv: spec.env, bin, resolved };
+  return { engine, binEnv: spec.env, bin, resolved: r.resolved, source: r.source, version: r.version };
 }
 
 // Report which deployment hostnames are unset, so the runner can say so out loud at activation.
