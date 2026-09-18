@@ -117,24 +117,39 @@ function NavList({
   readonly go: (p: string) => void
   readonly collapsed: boolean
 }) {
+  // A PARENT THAT IS OPEN CLOSES ON A SECOND CLICK, and opens again on a third — a toggle both ways, as
+  // the board behaves. Only the fold changes: the page you are on stays where it is. Leaving the group
+  // forgets the fold, so coming back to it opens it.
+  const [folded, setFolded] = useState<string | null>(null)
+  const within = (id: string): boolean => current === id || (current?.startsWith(id + '.') ?? false)
+  useEffect(() => {
+    if (folded !== null && current !== folded && !(current?.startsWith(folded + '.') ?? false)) setFolded(null)
+  }, [current, folded])
   return (
     <>
       {entries.map((e) => {
-        const active = current === e.id || (current?.startsWith(e.id + '.') ?? false)
+        const active = within(e.id)
+        const open = Boolean(e.children) && active && folded !== e.id
         return (
           <div key={e.id}>
             <button
               type="button"
               className={`nav-item${active ? ' active' : ''}`}
-              onClick={() => go(e.path)}
+              onClick={() => {
+                // Collapsed to icons there is no fold to show, so the item keeps navigating.
+                if (e.children && active && !collapsed) { setFolded(open ? e.id : null); return }
+                setFolded(null)
+                go(e.path)
+              }}
               aria-current={active ? 'page' : undefined}
+              aria-expanded={e.children && !collapsed ? open : undefined}
               title={collapsed ? e.label : undefined}
             >
               <Icon name={e.icon} />
               {collapsed ? null : <span>{e.label}</span>}
             </button>
             {/* Sub-items reveal under their parent when it is active, per the design. */}
-            {e.children && active && !collapsed ? (
+            {e.children && open && !collapsed ? (
               <div className="nav-sub">
                 {e.children.map((c) => (
                   <div key={c.id}>
