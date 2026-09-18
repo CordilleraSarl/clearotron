@@ -5,7 +5,8 @@
 //
 //   node scripts/portal-strings.mjs                        TSV on stdout: file, line, kind, string
 //   node scripts/portal-strings.mjs --json                 the same as JSON
-//   node scripts/portal-strings.mjs --check <approved>     refuse any string the list does not carry
+//   node scripts/portal-strings.mjs --check <approved>     refuse any string neither list carries
+//   node scripts/portal-strings.mjs --backlog-shrinks --base <ref>   refuse a backlog line the base lacks
 //
 // ── WHY THE SOURCE IS PARSED, NOT GREPPED ───────────────────────────────────────────────────────────
 //
@@ -33,6 +34,7 @@
 // is a line a reviewer skips; a sentence that is missed is one nobody reviews, so the rules lean toward
 // reading too much.
 import { readFileSync, readdirSync, statSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { join, relative, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseAst } from "rolldown/parseAst";
@@ -308,63 +310,106 @@ export function portalStrings(root = ROOT) {
   return sourceFiles(root).flatMap((f) => stringsIn(readFileSync(join(root, f), "utf8"), f));
 }
 
-// ── THE CHECK: EVERY STRING ON A SCREEN IS ONE SOMEBODY APPROVED ────────────────────────────────────
+// ── THE CHECK: EVERY STRING ON A SCREEN IS APPROVED, OR IN A BACKLOG THAT ONLY SHRINKS ─────────────
 //
 //   node scripts/portal-strings.mjs --check <approved.json>
+//   node scripts/portal-strings.mjs --backlog-shrinks --base <ref>
 //
 // Every sentence a client reads is copied from an approved design, never written by whoever builds the
-// screen. The list of approved strings lives OUTSIDE this repository, with the designs it is checked
-// against, so a string cannot be approved by the same change that adds it. It holds two maps:
+// screen. Two lists decide it:
 //
-//   approved   string → the board or specification that carries it
-//   pending    string → why it is on a screen without approval; tolerated until it is removed or ruled
+//   approved   string → the board or specification that carries it. It lives OUTSIDE this repository,
+//              beside the designs it is checked against, so a string cannot be approved by the change
+//              that adds it.
+//   backlog    `portal-ui/strings-backlog.json`, committed HERE: what was on a screen without approval
+//              when the check arrived, each with its class. It may lose lines and may not gain them.
 //
-// A string in neither is refused, by file and line. Matching is exact once whitespace is collapsed: a
-// changed word is a new string, and a new string needs its line in the list first.
+// `--check` refuses a string on a screen that is in neither, by file, line and string, and names every
+// backlog line no screen shows any more so it can be deleted. Matching is exact once whitespace is
+// collapsed: a changed word is a new string. `--backlog-shrinks` refuses a backlog line the base did
+// not have, which is how the backlog is held to falling rather than trusted to.
 //
-// Exit 0 when every string is in the list, 1 when any is refused, 2 when the list could not be read —
-// missing, malformed, or empty. An empty list would refuse nothing it had not been told about, which is
-// the same as not looking.
+// Exit 0 clean, 1 on a refusal, 2 when a list could not be read. An empty approved list is could-not-
+// look: it would refuse nothing it had not been told about.
 
-/** Read the approved list, or throw saying why it cannot be used. */
+export const BACKLOG = "portal-ui/strings-backlog.json";
+
+const mapOf = (o) => new Map(Object.entries(o).map(([k, v]) => [tidy(k), v]));
+
+/** The approved list, or throw saying why it cannot be used. */
 export function readApproved(path) {
   let j;
   try { j = JSON.parse(readFileSync(path, "utf8")); } catch (e) { throw new Error(`cannot read ${path}: ${e.message}`); }
-  const approved = j?.approved, pending = j?.pending ?? {};
+  const approved = j?.approved;
   if (!approved || typeof approved !== "object" || Array.isArray(approved) || !Object.keys(approved).length) {
     throw new Error(`${path} carries no \`approved\` map of strings — a list that approves nothing checks nothing`);
   }
-  if (typeof pending !== "object" || Array.isArray(pending)) throw new Error(`${path}: \`pending\` must be a map of strings`);
-  return { approved: new Map(Object.entries(approved).map(([k, v]) => [tidy(k), v])), pending: new Map(Object.entries(pending).map(([k, v]) => [tidy(k), v])) };
+  return mapOf(approved);
 }
 
-/** The strings in `rows` that the list neither approves nor tolerates, and the list entries no screen shows. */
-export function checkStrings(rows, list) {
-  const refused = rows.filter((r) => !list.approved.has(r.text) && !list.pending.has(r.text));
+/** The committed backlog as a map of string → class, from a file's text. */
+export function backlogFrom(text, where) {
+  let j;
+  try { j = JSON.parse(text); } catch (e) { throw new Error(`cannot read ${where}: ${e.message}`); }
+  if (!j?.backlog || typeof j.backlog !== "object" || Array.isArray(j.backlog)) throw new Error(`${where} carries no \`backlog\` map`);
+  return mapOf(j.backlog);
+}
+
+/** The strings in `rows` that neither list carries, and the backlog lines no screen shows any more. */
+export function checkStrings(rows, { approved, backlog }) {
+  const refused = rows.filter((r) => !approved.has(r.text) && !backlog.has(r.text));
   const onScreen = new Set(rows.map((r) => r.text));
-  const gonePending = [...list.pending.keys()].filter((k) => !onScreen.has(k));
-  return { refused, gonePending };
+  const gone = [...backlog.keys()].filter((k) => !onScreen.has(k));
+  return { refused, gone };
 }
 
 function check(path, root) {
-  let list;
-  try { list = readApproved(path); } catch (e) {
+  let approved, backlog;
+  try {
+    approved = readApproved(path);
+    backlog = backlogFrom(readFileSync(join(root, BACKLOG), "utf8"), BACKLOG);
+  } catch (e) {
     console.error(`portal-strings: COULD NOT LOOK — ${e.message}. This is not a pass.`);
     return 2;
   }
   const rows = portalStrings(root);
-  const { refused, gonePending } = checkStrings(rows, list);
-  console.log(`portal-strings: ${rows.length} strings on the portal's screens; ${list.approved.size} approved and `
-    + `${list.pending.size} pending in ${path}`);
-  if (gonePending.length) {
-    console.log(`portal-strings: ${gonePending.length} pending string(s) no longer on any screen — take them off the list:`);
-    for (const k of gonePending) console.log(`  ${JSON.stringify(k)}`);
+  const { refused, gone } = checkStrings(rows, { approved, backlog });
+  console.log(`portal-strings: ${rows.length} strings on the portal's screens; ${approved.size} approved in ${path}, `
+    + `${backlog.size} in the backlog`);
+  if (gone.length) {
+    console.log(`portal-strings: ${gone.length} backlog line(s) no screen shows any more — delete them from ${BACKLOG}:`);
+    for (const k of gone) console.log(`  ${JSON.stringify(k)}`);
   }
-  if (!refused.length) { console.log("portal-strings: every string on a screen is approved or pending."); return 0; }
+  if (!refused.length) { console.log("portal-strings: every string on a screen is approved or in the backlog."); return 0; }
   console.error(`portal-strings: ${refused.length} string(s) on a screen that no board or specification approves:`);
   for (const r of refused) console.error(`  ${r.file}:${r.line}  ${r.kind}  ${JSON.stringify(r.text)}`);
-  console.error("A client reads these. Copy the wording from its board or specification, and add the string to the "
-    + "approved list with the board that carries it. If no board carries it, it is a design question, not a code one.");
+  console.error("A client reads these. Copy the wording from its board or specification and add the string to the "
+    + "approved list with the board that carries it. If no board carries it, it is a design question, not a code one; "
+    + "the backlog does not take new lines.");
+  return 1;
+}
+
+/** Backlog lines present now and absent at `base`. A base with no backlog is the one that introduces it. */
+export function backlogGrowth(root, base, { run = (args) => execFileSync("git", args, { cwd: root, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }) } = {}) {
+  const now = backlogFrom(readFileSync(join(root, BACKLOG), "utf8"), BACKLOG);
+  let before;
+  try { before = run(["show", `${base}:${BACKLOG}`]); } catch (e) {
+    if (/does not exist|exists on disk, but not in/.test(`${e.stderr ?? ""}${e.message}`)) return { introduced: true, added: [] };
+    throw new Error(`cannot read ${BACKLOG} at ${base}: ${String(e.stderr || e.message).trim().split("\n")[0]}`);
+  }
+  const prior = backlogFrom(before, `${base}:${BACKLOG}`);
+  return { introduced: false, added: [...now.keys()].filter((k) => !prior.has(k)), size: { before: prior.size, now: now.size } };
+}
+
+function shrinks(base, root) {
+  let g;
+  try { g = backlogGrowth(root, base); } catch (e) { console.error(`portal-strings: COULD NOT LOOK — ${e.message}. This is not a pass.`); return 2; }
+  if (g.introduced) { console.log(`portal-strings: ${base} has no ${BACKLOG}; this change introduces it.`); return 0; }
+  console.log(`portal-strings: backlog ${g.size.before} line(s) at ${base}, ${g.size.now} now.`);
+  if (!g.added.length) return 0;
+  console.error(`portal-strings: ${g.added.length} line(s) added to ${BACKLOG}. It only shrinks: a string new to a screen `
+    + "goes on the approved list with the board behind it, or does not ship.");
+  for (const k of g.added) console.error(`  ${JSON.stringify(k)}`);
   return 1;
 }
 
@@ -375,6 +420,11 @@ if (isEntrypoint(import.meta.url)) {
     const path = argAt("--check");
     if (!path || path.startsWith("--")) { console.error("portal-strings: --check needs the path of the approved list. COULD NOT LOOK."); process.exit(2); }
     process.exit(check(path, root));
+  }
+  if (process.argv.includes("--backlog-shrinks")) {
+    const base = argAt("--base");
+    if (!base || base.startsWith("--")) { console.error("portal-strings: --backlog-shrinks needs --base <ref>. COULD NOT LOOK."); process.exit(2); }
+    process.exit(shrinks(base, root));
   }
   const rows = portalStrings(root);
   if (process.argv.includes("--json")) console.log(JSON.stringify(rows, null, 1));

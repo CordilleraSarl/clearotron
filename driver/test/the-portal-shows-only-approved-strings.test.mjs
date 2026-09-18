@@ -9,18 +9,18 @@
 // Measured 2026-09-18: a line-based extractor dropped a sentence that an owner review then found on the
 // New clearance screen, because its line carried a brace.
 //
-// The CHECK refuses any string a list neither approves nor tolerates. The list lives outside this
-// repository, with the designs it is checked against, so a string cannot be approved by the change that
-// adds it. Without it this file runs the check against a synthetic list and says so; with
-// CLEAROTRON_UI_STRINGS pointing at the real one it checks the real tree.
+// The CHECK refuses any string that is neither approved nor in the committed backlog. The approved list
+// lives outside this repository, with the designs it is checked against, so a string cannot be approved
+// by the change that adds it; the backlog lives here and may only shrink. Without the approved list this
+// file runs the check on a synthetic one and says so; with CLEAROTRON_UI_STRINGS it checks the real tree.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
-import { stringsIn, portalStrings, sourceFiles, HOLE } from "../../scripts/portal-strings.mjs";
+import { stringsIn, portalStrings, sourceFiles, backlogFrom, HOLE, BACKLOG } from "../../scripts/portal-strings.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const SCRIPT = join(ROOT, "scripts", "portal-strings.mjs");
@@ -82,43 +82,82 @@ test("the real tree is read, and every screen yields strings — a parser that s
 
 // ── THE CHECK ───────────────────────────────────────────────────────────────────────────────────────
 
-/** A throwaway tree with one screen, and a list; returns the check's exit code and output. */
-function runCheck({ screen, list }) {
+/** A throwaway tree with one screen, a backlog and an approved list; returns the check's exit and output. */
+function runCheck({ screen, approved, backlog = {} }) {
   const dir = mkdtempSync(join(tmpdir(), "portal-strings-"));
   try {
     mkdirSync(join(dir, "portal-ui", "src", "screens"), { recursive: true });
     writeFileSync(join(dir, "portal-ui", "src", "screens", "A.tsx"), screen);
+    if (backlog !== null) writeFileSync(join(dir, BACKLOG), JSON.stringify({ backlog }));
     const listPath = join(dir, "approved.json");
-    if (list !== undefined) writeFileSync(listPath, typeof list === "string" ? list : JSON.stringify(list));
+    if (approved !== undefined) writeFileSync(listPath, typeof approved === "string" ? approved : JSON.stringify({ approved }));
     const r = spawnSync(process.execPath, [SCRIPT, "--check", listPath, "--root", dir], { encoding: "utf8" });
     return { code: r.status, out: `${r.stdout}${r.stderr}` };
   } finally { rmSync(dir, { recursive: true, force: true }); }
 }
 
 const SCREEN = "export const A = () => <main><h1>Review search</h1><p>A sentence nobody designed.</p></main>\n";
+const APPROVED = { "Review search": "boards/B.dc.html" };
 
-test("a string no list carries is refused, by file and line", () => {
-  const r = runCheck({ screen: SCREEN, list: { approved: { "Review search": "boards/B.dc.html" }, pending: {} } });
+test("a string neither list carries is refused, by file and line", () => {
+  const r = runCheck({ screen: SCREEN, approved: APPROVED });
   assert.equal(r.code, 1, r.out);
   assert.match(r.out, /portal-ui\/src\/screens\/A\.tsx:1\s+text\s+"A sentence nobody designed\."/, r.out);
-  assert.doesNotMatch(r.out, /"Review search"/, "an approved string was refused");
+  assert.doesNotMatch(r.out, /\s"Review search"/, "an approved string was refused");
 });
 
-test("an approved or pending string passes, and a pending string gone from the screens is named", () => {
-  const r = runCheck({ screen: SCREEN, list: { approved: { "Review search": "boards/B.dc.html" },
-    pending: { "A sentence nobody designed.": "none", "An old one already removed.": "none" } } });
+test("a backlog string passes, and a backlog line no screen shows is named for deletion", () => {
+  const r = runCheck({ screen: SCREEN, approved: APPROVED,
+    backlog: { "A sentence nobody designed.": "none", "An old one already removed.": "none" } });
   assert.equal(r.code, 0, r.out);
-  assert.match(r.out, /no longer on any screen[\s\S]*"An old one already removed\."/, "a stale pending line is not reported");
+  assert.match(r.out, /no screen shows any more[\s\S]*"An old one already removed\."/, "a stale backlog line is not reported");
 });
 
-test("a list that cannot be read, or approves nothing, is could-not-look — never a pass", () => {
-  assert.equal(runCheck({ screen: SCREEN }).code, 2, "a missing list");
-  assert.equal(runCheck({ screen: SCREEN, list: "{ not json" }).code, 2, "a malformed list");
-  assert.equal(runCheck({ screen: SCREEN, list: { approved: {}, pending: { "Review search": "x" } } }).code, 2,
-    "an empty approved map would refuse nothing it was not told about");
+test("a list that cannot be read, approves nothing, or a missing backlog, is could-not-look — never a pass", () => {
+  assert.equal(runCheck({ screen: SCREEN }).code, 2, "a missing approved list");
+  assert.equal(runCheck({ screen: SCREEN, approved: "{ not json" }).code, 2, "a malformed approved list");
+  assert.equal(runCheck({ screen: SCREEN, approved: {} }).code, 2, "an approved list that approves nothing");
+  assert.equal(runCheck({ screen: SCREEN, approved: APPROVED, backlog: null }).code, 2, "no backlog file");
 });
 
-test("the real list, when one is given: every string on the portal's screens is approved or pending", () => {
+// ── THE BACKLOG ONLY SHRINKS ────────────────────────────────────────────────────────────────────────
+
+/** A git repository whose base commit carries `before` as the backlog and whose tree carries `now`. */
+function growth(before, now) {
+  const dir = mkdtempSync(join(tmpdir(), "portal-backlog-"));
+  try {
+    const g = (...a) => spawnSync("git", ["-C", dir, "-c", "user.email=a@b.c", "-c", "user.name=t", ...a], { encoding: "utf8" });
+    g("init", "-q", "-b", "main");
+    mkdirSync(join(dir, "portal-ui"), { recursive: true });
+    if (before) { writeFileSync(join(dir, BACKLOG), JSON.stringify({ backlog: before })); g("add", "-A"); }
+    else { writeFileSync(join(dir, "seed"), "x"); g("add", "seed"); }
+    g("commit", "-qm", "base");
+    writeFileSync(join(dir, BACKLOG), JSON.stringify({ backlog: now }));
+    const r = spawnSync(process.execPath, [SCRIPT, "--backlog-shrinks", "--base", "HEAD", "--root", dir], { encoding: "utf8" });
+    return { code: r.status, out: `${r.stdout}${r.stderr}` };
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+}
+
+test("a backlog line the base did not have is refused; losing lines is fine; introducing the file is fine", () => {
+  const two = { "First.": "none", "Second.": "none" };
+  const grown = growth(two, { ...two, "A new one.": "none" });
+  assert.equal(grown.code, 1, grown.out);
+  assert.match(grown.out, /"A new one\."/, "the added line is not named");
+  assert.equal(growth(two, { "First.": "none" }).code, 0, "a shrinking backlog was refused");
+  const first = growth(null, two);
+  assert.equal(first.code, 0, first.out);
+  assert.match(first.out, /introduces it/);
+});
+
+test("the committed backlog parses, and every line carries one of the classes the audit uses", () => {
+  const b = backlogFrom(readFileSync(join(ROOT, BACKLOG), "utf8"), BACKLOG);
+  assert.ok(b.size > 0, "the backlog is empty — either every string was approved, or the file stopped being read");
+  const classes = new Set(["none", "fragment", "data", "longer-than-board", "spec-prose", "command", "values"]);
+  const odd = [...b].filter(([, c]) => !classes.has(c));
+  assert.deepEqual(odd, [], "a backlog line carries a class nobody defined");
+});
+
+test("the real approved list, when one is given: every string on a screen is approved or in the backlog", () => {
   const path = process.env.CLEAROTRON_UI_STRINGS;
   if (!path) {
     // SAID, not silent: without the list this file has checked the check, not the portal.
