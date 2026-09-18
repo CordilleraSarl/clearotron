@@ -6020,8 +6020,8 @@
           "todos": 0
         },
         "askAi.test.ts": {
-          "tests": 21,
-          "asserts": 97,
+          "tests": 23,
+          "asserts": 108,
           "skips": 0,
           "todos": 0
         },
@@ -6326,8 +6326,8 @@
           "todos": 0
         },
         "reportFrame.test.ts": {
-          "tests": 14,
-          "asserts": 22,
+          "tests": 15,
+          "asserts": 29,
           "skips": 0,
           "todos": 0
         },
