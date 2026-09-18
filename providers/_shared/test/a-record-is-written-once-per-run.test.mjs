@@ -79,3 +79,34 @@ test("the box-wide fallback ledger is untouched by this: it holds many runs, and
     assert.equal(lines(path).length, 2, "a record one run fetched is not a record another run holds");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
+
+test("two processes writing one run's ledger at once still leave each record once, and every line whole", async () => {
+  // The run that matters has parallel register servers. Each writer here logs 300 records, 200 of them the
+  // other writer's too, and changes the body of 20 shared ones, so appends and in-place replacements race.
+  const { spawn } = await import("node:child_process");
+  const { readdirSync } = await import("node:fs");
+  const { dir, path } = runLedger();
+  const writer = (seed) => `
+    const { makeLedger } = await import(${JSON.stringify(new URL("../ledger.mjs", import.meta.url).href)});
+    const { logRecordBody } = makeLedger("writer${seed}");
+    for (let i = 0; i < 300; i++) {
+      const n = ${seed} === 0 ? i : i + 100;              // 100..299 are written by both
+      const changed = n >= 150 && n < 170 && ${seed} === 1; // 20 shared records answered differently by writer 1
+      logRecordBody({ recordLog: ${JSON.stringify(path)} }, "/mark/us/" + n, { uri: "/mark/us/" + n, statusText: changed ? "active" : "pending" });
+    }`;
+  const run = (seed) => new Promise((resolve, reject) => {
+    const c = spawn(process.execPath, ["--input-type=module", "-e", writer(seed)], { stdio: ["ignore", "ignore", "pipe"] });
+    let err = ""; c.stderr.on("data", (d) => { err += d; });
+    c.on("exit", (code) => (code === 0 ? resolve() : reject(new Error(`writer ${seed} exited ${code}: ${err}`))));
+  });
+  try {
+    await Promise.all([run(0), run(1)]);
+    const raw = readFileSync(path, "utf8").split("\n").filter(Boolean);
+    const rows = raw.map((l) => JSON.parse(l));   // throws on a torn line
+    const targets = rows.map((r) => r.target);
+    assert.equal(new Set(targets).size, 400, "every record written");
+    assert.equal(rows.length, 400, "and each exactly once, whichever writer reached it first");
+    assert.ok(!existsSync(`${path}.lock`), "no lock left behind");
+    assert.deepEqual(readdirSync(join(dir, "_driver")).filter((f) => f.endsWith(".tmp")), [], "no replacement file left behind");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});

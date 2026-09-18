@@ -4887,6 +4887,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-form-offers-what-the-registers-search.test.mjs": {
+          "tests": 4,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "the-freeze-carries-what-the-run-reads.test.mjs": {
           "tests": 4,
           "asserts": 13,
@@ -6026,6 +6032,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-preview-refuses-what-the-claim-refuses.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "token-door-boot.test.mjs": {
           "tests": 7,
           "asserts": 8,
@@ -6468,8 +6480,8 @@
       ],
       "perFile": {
         "providers/_shared/test/a-record-is-written-once-per-run.test.mjs": {
-          "tests": 4,
-          "asserts": 12,
+          "tests": 5,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },
