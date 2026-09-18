@@ -104,6 +104,7 @@ import { readUpdaterStamp, updaterVerdict, resolveUpdaterStampPath, updaterAbsen
 import { claimerIsAlive } from "../driver/claim-liveness.mjs";                       // the shared liveness test, same polarity as the queue's
 import { processTable } from "../shared/process-table.mjs";                          // — /proc is not the only box
 import { envFrom } from "../shared/env-aliases.mjs";
+import { gitTry, treeOf } from "../shared/tree-commit.mjs";   // — a packaged install has no git, and says its commit in build-info.json
 import { exitFor } from "../driver/surface-exit-verdict.mjs";   // — a could-not-look is not a drift, and they want different things done   // — the name a reader is told to set is the one in force
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -255,13 +256,8 @@ function tcpAlive(url, timeoutMs = 3000) {
 // just written explaining itself, leaving `null` to mean "no clone here" and "could not ask" equally.
 //
 // `gitTry` keeps the reason; `git` stays exactly as it was for the callers that only want the value.
-const gitTry = (repo, ...args) => {
-  try {
-    return { ok: true, out: execFileSync("git", ["-C", repo, ...args], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }).trim(), err: null };
-  } catch (e) {
-    return { ok: false, out: null, err: String(e?.stderr || e?.message || e).replace(/\s+/g, " ").trim().slice(0, 120) };
-  }
-};
+// It now lives in shared/tree-commit.mjs beside `treeOf`, which asks it first and falls back to a
+// packaged install's build-info.json.
 const git = (repo, ...args) => gitTry(repo, ...args).out;
 
 // — `systemctl --user` NEEDS A USER BUS, and a caller without one gets an error, not an empty list.
@@ -366,9 +362,9 @@ function serviceClones() {
       const parsed = unitWorkingDirectory(wd);
       if (!parsed.path) declaredWhy = parsed.why;
       else {
-        const top = gitTry(parsed.path, "rev-parse", "--show-toplevel");
-        if (top.ok) declaredTree = top.out;
-        else declaredWhy = `git could not read ${parsed.path}: ${top.err}`;
+        const t = treeOf(parsed.path);
+        if (t.root) declaredTree = t.root;
+        else declaredWhy = t.why;
       }
     }
 
@@ -397,9 +393,9 @@ function serviceClones() {
             const { tree, why } = treeOfRunning(cmdline, rel);
             if (!tree) runningWhy = why;
             else {
-              const top = gitTry(tree, "rev-parse", "--show-toplevel");
-              if (top.ok) runningTree = top.out;
-              else runningWhy = `git could not read ${tree}, which pid ${pid} is running from: ${top.err}`;
+              const t = treeOf(tree);
+              if (t.root) runningTree = t.root;
+              else runningWhy = `pid ${pid} is running from ${tree}, and ${t.why}`;
             }
           }
         }
@@ -416,11 +412,11 @@ function serviceClones() {
         unreadable: idle ? null : chosen.why });
       continue;
     }
-    const head = gitTry(chosen.clone, "rev-parse", "HEAD");
+    const head = treeOf(chosen.clone);
     out.push({ unit: u, active, load, type, since, clone: chosen.clone, source: chosen.source,
       disagreement: chosen.disagreement,
-      head: head.ok ? head.out : null,
-      unreadable: head.ok ? null : `git could not read HEAD in ${chosen.clone}: ${head.err}` });
+      head: head.head,
+      unreadable: head.head ? null : head.why });
   }
   const probe = reached > 0
     ? { ok: true, why: null }
@@ -798,7 +794,10 @@ const heads = [...new Set(running.map((c) => c.head))];
 // demanded commit agreement from services this deploy must not move, and reddened on every prod deploy
 // for units behaving correctly. The discriminator is the CLONE, which `serviceClones()` has read all
 // along; see `serviceCommitVerdict` for why it is not `tracked`.
-const deployClone = git(HERE, "rev-parse", "--show-toplevel");
+// A PACKAGED INSTALL NAMES ITS OWN COMMIT IN build-info.json, and this script runs from inside one on
+// production and pre-prod. Asking git alone reported both as unreadable on every deploy.
+const deployTree = treeOf(HERE);
+const deployClone = deployTree.root;
 if (!unitProbe.ok)
   skip("services share one commit", `could not enumerate systemd --user units, so the commit was NOT compared — ${unitProbe.why}. This is a failure to look, not a finding about the deployment`);
 // — THE SAME DEFECT ONE BRANCH UP, found reviewing this change rather than in the issue. This
@@ -809,7 +808,7 @@ if (!unitProbe.ok)
 // unreadable disclosure, so the decision belongs there and not in a pre-filter.
 else {
   const ownedClone = running.find((c) => String(c.clone ?? "").replace(/\/+$/, "") === String(deployClone ?? "").replace(/\/+$/, ""));
-  const ahead = ownedClone ? (git(ownedClone.clone, "status", "-sb")?.includes("ahead") ?? false) : false;
+  const ahead = ownedClone && deployTree.source === "git" ? (git(ownedClone.clone, "status", "-sb")?.includes("ahead") ?? false) : false;
   // — ALL the clones, not just the ones with a head. The verdict scopes to owned units itself;
   // passing it the pre-filtered list is what made the units it could not read invisible to the sentence
   // it prints.
@@ -851,7 +850,7 @@ else {
     try { processes = processTable(); } catch { processes = null; }
     const v = drainerVerdict({
       stamp: readDrainerStamp(workspaceRoot),
-      headCommit: git(deployClone ?? HERE, "rev-parse", "HEAD"),
+      headCommit: deployTree.head,
       isAlive: claimerIsAlive,
       processes,
       // second criterion — an orphaned drainer in a closed login session is a
