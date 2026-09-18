@@ -1083,12 +1083,14 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
         {/* ── goods or services ── */}
         <div>
           <div className="section-title">Goods or services</div>
-          {/* EITHER THIS OR THE CLASSES, and the helper says which one is used when this is left empty.
-              The request takes classes or a description (`missingPieces`), and the classes it names are
-              the company's own, on the card below. */}
-          <p className="section-hint">
-            Optional. Say what the name is for, to focus the search. Without it, the classes below are used.
-          </p>
+          {/* NO HINT UNDER THIS TITLE. It read "Optional. Say what the name is for, to focus the search.
+              Without it, the classes below are used." The owner ruled it out on 2026-09-18, with the
+              boards that carry it being corrected to match.
+
+              THE BEHAVIOUR IT DESCRIBED IS UNCHANGED and is not a secret: the field is optional, the
+              request takes either a description or classes (`missingPieces`), and the classes it falls
+              back to are the company's own, on the card directly below. What went is the sentence
+              about the field, not anything the field does. */}
           <textarea
             value={draft.goods}
             onChange={(e) => edit({ goods: e.target.value })}
