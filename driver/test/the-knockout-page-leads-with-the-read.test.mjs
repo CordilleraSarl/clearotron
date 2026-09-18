@@ -694,3 +694,14 @@ test("the export menu this template draws is the shared one, not a copy of it", 
   // catch one level along. The button itself appears once, and that is the property.
   assert.equal(html.split(EXPORT_TOGGLE).length - 1, 1, "the export button is emitted other than once");
 });
+
+// THE BOARD'S ROW, AND NOTHING FOLDED UNDER IT. The knockout board reads "186 registers, on Clarivate
+// Compumark." — registers, because registers are what was counted — with no territory list behind it.
+test("Registers counted reads as the board does: registers, the provider, and no territory fold", () => {
+  const html = RENDER([MARK()], { registerCounts: COUNTS() });
+  const row = (html.match(/<span class="k">Registers counted<\/span><span class="v">([\s\S]*?)<\/span><\/div>/) || [])[1];
+  assert.equal(row, "3 registers, on Clarivate Compumark.", "the count of registers, on the provider, as one sentence");
+  assert.doesNotMatch(html, /View territories/, "the board lists no territories behind the row");
+  const one = RENDER([MARK()], { registerCounts: COUNTS({ scope: { jurisdictions: ["US"], regions: ["US"], classes: [8] } }) });
+  assert.match(one, /<span class="v">1 register, on Clarivate Compumark\.<\/span>/, "one register is one register");
+});

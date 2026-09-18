@@ -1213,16 +1213,16 @@ function aboutRequestBlock(scope, requestNotes, depthNote = '', productContext =
   const cut = note.lastIndexOf(' \u2014 ');
   const stage = cut > 0 ? note.slice(0, cut).trim() : note;
   const context = String(productContext ?? '').trim();
-  // REGISTERS COUNTED IS A ROW, AND THE TERRITORY LIST HIDES BEHIND IT (the 2026-09-16 report redesign). A line of
-  // country names running through the middle of the panel is the thing a reader skips; the count and
-  // its source are what they read, and the list is one click away when they want it.
+  // REGISTERS COUNTED IS A ROW (the 2026-09-16 report redesign). A line of country names running through
+  // the middle of the panel is the thing a reader skips; the count and its source are what they read.
   const regions = (registerCounts?.scope?.regions ?? []).filter(Boolean);
   const provider = registerCounts?.providerLabel ?? registerCounts?.provider ?? '';
-  const named = regions.map(territoryName).filter(Boolean);
+  // THE BOARD'S OWN ROW: "186 registers, on Clarivate Compumark." — registers, because that is what was
+  // counted, and no fold: the board lists no territories here, and the workbook's counts sheet carries
+  // every register a figure was taken over.
   const counted = regions.length
-    ? `${regions.length} ${regions.length === 1 ? 'territory' : 'territories'}${provider ? `, on ${provider}` : ''}`
+    ? `${regions.length} ${regions.length === 1 ? 'register' : 'registers'}${provider ? `, on ${provider}` : ''}.`
     : (registerCounts ? `Counted worldwide${provider ? `, on ${provider}` : ''}` : '');
-  const territories = named.length ? listWords(named) : '';
   if (!asked && !where && !classLine && !stage && !context && !counted) return '';
   // ONE PANEL, THE SAME ON BOTH REPORTS (the 2026-09-16 report redesign). The rows carry what was asked for; the
   // counts row says what was counted and hides the territory list behind a fold rather than running a
@@ -1235,7 +1235,7 @@ function aboutRequestBlock(scope, requestNotes, depthNote = '', productContext =
       ${row('Classes', classLine)}
       ${row('Where searched', where)}
       ${row('Context', context)}
-      ${row('Registers counted', counted, territories ? `<details class="terr"><summary>View territories</summary><p>${esc(territories)}</p></details>` : '')}
+      ${row('Registers counted', counted)}
       ${row('Searched on', searched)}
       ${/* item 18 — a note for the reviewing lawyer does not reach the delivered page */''}
     </div>`;
