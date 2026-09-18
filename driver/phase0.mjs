@@ -206,7 +206,8 @@ export function mintFreshCodename({ slug, date, studioRoot = config.studioRoot, 
   return `${genCodename(rand)}-${Date.now().toString(36)}`;
 }
 
-// Assemble the immutable run identity for a job. rand is injectable for tests. studioRoot/archiveRoot are the
+// Assemble the immutable run identity for a job. rand and claim are injectable for tests — claim so a test's
+// mints go to a registry of its own rather than the box-wide one every run on this account shares. studioRoot/archiveRoot are the
 // FORWARDING agent's (derived from its queue dir by the runner); they default to clawdi's for back-compat.
 // `codename`/`date` overrides exist for RESUME: re-driving a failed run must rebuild the SAME run identity
 // (slug/date/codename → the same run-dir) so the idempotency skip reuses the prior stages instead of minting
@@ -214,14 +215,14 @@ export function mintFreshCodename({ slug, date, studioRoot = config.studioRoot, 
 export function buildRunContext(
   job,
   { rand = cryptoRand, now = new Date(), studioRoot = config.studioRoot, archiveRoot = config.archiveRoot,
-    codename: codenameOverride, date: dateOverride } = {},
+    codename: codenameOverride, date: dateOverride, claim = claimRunCodename } = {},
 ) {
   const slug = deriveSlug(job);
   const date = dateOverride ?? todayISO(now);
   // Fresh mints go through mintFreshCodename (above) so they never land in a dir another run already owns.
   // Overrides skip the check: RESUME (and the runner's dispatch pre-mint, which already minted freshly)
   // wants the identity verbatim.
-  const codename = codenameOverride ?? mintFreshCodename({ slug, date, studioRoot, archiveRoot, rand });
+  const codename = codenameOverride ?? mintFreshCodename({ slug, date, studioRoot, archiveRoot, rand, claim });
   return {
     slug,
     codename,
