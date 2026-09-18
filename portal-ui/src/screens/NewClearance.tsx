@@ -1464,7 +1464,11 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
             on arrival both are true of every field at once — so the screen opened with two warning
             blocks and a footer repeating one of them, about work nobody had started. The footer says
             the one thing there is to say until then, and every panel returns on the first edit. */}
-        {!untouched && gaps.length ? (
+        {/* NOR WHEN THE FOOTER ALREADY SAYS IT. A company with its own territories arrives with a search
+            preselected, so the form no longer reads as untouched — and a panel whose one line is the
+            footer's own sentence drew it twice on a form nobody had typed in. The board draws the footer
+            line alone. */}
+        {!untouched && gaps.length && !(gaps.length === 1 && gaps[0] === blockedBy) ? (
           <div className="notice" style={{ borderColor: 'var(--tone-medium)', margin: 0 }}>
             <b>{gaps.length === 1 ? 'One thing left to fill in' : 'A couple of things left to fill in'}</b>
             <ul style={{ margin: '8px 0 0', paddingLeft: 18, color: 'var(--text-muted)' }}>

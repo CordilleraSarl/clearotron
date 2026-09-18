@@ -1031,6 +1031,9 @@ function RowActions({ open, ask, menu }: {
   readonly menu: ReactNode
 }) {
   return (
+    // THE BOX IS THE CONTAINER the layout asks, so the side-by-side form is chosen by the width this
+    // cell actually has rather than by the width of the whole table (see .row-actions-box).
+    <div className="row-actions-box">
     <div className="row-actions">
       <span className="row-actions-open">
         {open ? (
@@ -1054,6 +1057,7 @@ function RowActions({ open, ask, menu }: {
         {ask}
       </span>
       <span className="row-actions-more">{menu}</span>
+    </div>
     </div>
   )
 }

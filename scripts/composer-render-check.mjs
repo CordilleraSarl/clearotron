@@ -1294,7 +1294,11 @@ const savedCodes = (await evalIn(`(async () => {
   while (Date.now() - t0 < 6000 && !['US', 'EU', 'UK'].every((c) => removers().includes(c))) await new Promise((r) => setTimeout(r, 60));
   const own = [...document.querySelectorAll('button[aria-label^="Remove "]')].map((b) => b.closest('.chip'));
   return { removers: removers(), deferred: own.filter((c) => c && c.classList.contains('chip-deferred')).map((c) => c.innerText.trim()),
-    notAvailable: (document.body.innerText.match(/[^\\n]*not available with register[^\\n]*/g) || []) };
+    notAvailable: (document.body.innerText.match(/[^\\n]*not available with register[^\\n]*/g) || []),
+    // The same arrival is the one that drew the name sentence twice: a search preselected from the
+    // company's territories, so the form is no longer untouched, and the panel repeated the footer.
+    nameSentence: (document.body.innerText.match(/Add the name you want cleared, in Names above\\./g) || []).length,
+    leftPanel: /One thing left to fill in|A couple of things left to fill in/.test(document.body.innerText) };
 })()`)).result?.result?.value ?? { fatal: 'evaluate returned nothing' }
 profileTerritories = []
 registerReach = undefined
@@ -1634,6 +1638,8 @@ for (const n of notices) {
 // A company's saved codes on a register that covers them by name: nothing is marked unreachable.
 ok(!savedCodes.fatal && ['US', 'EU', 'UK'].every((c) => savedCodes.removers.includes(c)),
   `the saved-codes pass never drew the company's own territories — ${JSON.stringify(savedCodes)}`)
+ok(!savedCodes.fatal && savedCodes.nameSentence === 1 && !savedCodes.leftPanel,
+  `a form nobody has typed in says "Add the name" ${savedCodes.nameSentence} time(s), with the panel ${savedCodes.leftPanel ? 'drawn' : 'absent'} — the board draws the footer line once and no panel`)
 ok(!savedCodes.fatal && savedCodes.deferred.length === 0 && savedCodes.notAvailable.length === 0,
   `a company territory the register covers is drawn as not available — ${JSON.stringify(savedCodes)}`)
 if (inherited.fatal) {
