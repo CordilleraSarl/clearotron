@@ -104,7 +104,25 @@ const value = async (expr) => (await cmd('Runtime.evaluate', { expression: expr,
 // works look identical to a selector, and the whole subject here is which one is true.
 const PROBE = `(async () => {
   const sleep = (ms) => new Promise(r => setTimeout(r, ms));
-  window.scrollTo(0, 0); await sleep(60);
+  // SETTLE THE SCROLL, NEVER WAIT A FIXED TIME FOR IT. The report sets html{scroll-behavior:smooth}, so
+  // a scroll is an ANIMATION and window.scrollY read a moment later is a point on its curve, not the
+  // destination. Measured on this tree: asking for the bottom and reading at 0/30/60/120/250/500/900ms
+  // gives 0, 2, 28, 116, 324, 473, 520 — and one CI run duly failed on 28, which had nothing to do with
+  // the header. The scroll is asked for instantly AND polled until it stops moving, with a bound: the
+  // instant behaviour defeats the animation, the poll defeats whatever else is still laying out, and
+  // the bound means a page that never settles is reported as such rather than waited on for ever.
+  const settleScroll = async (to) => {
+    try { window.scrollTo({ top: to, behavior: 'instant' }); } catch (e) { window.scrollTo(0, to); }
+    let last = null;
+    for (let i = 0; i < 60; i++) {
+      await new Promise(r => requestAnimationFrame(() => r()));
+      const y = Math.round(window.scrollY);
+      if (y === last) return { y, settled: true };
+      last = y;
+    }
+    return { y: Math.round(window.scrollY), settled: false };
+  };
+  await settleScroll(0); await sleep(30);
   const head = document.querySelector('.rep-stickyhead');
   const strip = document.querySelector('nav.strip');
   const label = document.querySelector('.ko-gauge .label');
@@ -119,17 +137,37 @@ const PROBE = `(async () => {
     label: label ? r(label) : null,
     pillText: pill ? (pill.textContent || '').trim() : null,
   };
-  // Scroll well past the header and read again: what stays is what a reader keeps.
-  window.scrollTo(0, 1200); await sleep(120);
-  out.scrolled = { head: r(head), strip: r(strip), scrollY: window.scrollY };
+  // Scroll to the document's OWN bottom and read what stays — what stays is what a reader keeps.
+  // The target used to be a flat 1200px, which this document cannot reach: it is 1477px tall in a 757px
+  // viewport, so 720 is the whole of the scroll there is. Asserting against a number the page may not own
+  // is how a measurement comes to be about the fixture instead of the product.
+  out.maxScroll = Math.round(document.documentElement.scrollHeight - window.innerHeight);
+  const end = await settleScroll(out.maxScroll);
+  out.scrolled = { head: r(head), strip: r(strip), scrollY: end.y, settled: end.settled };
   return out;
 })()`
 
 const fail = []
 const ok = []
+// THE DOCUMENT IS READY WHEN IT SAYS SO, and a fixed wait after a navigation is the same defect as a
+// fixed wait after a scroll. Measured: the first navigation of a run returns NOTHING at all from an
+// evaluate at +0ms — no readyState, no document — and the header and the breadcrumb are the first
+// elements parsed, so a probe that arrived mid-parse would find both and a body that is not there yet.
+// Polled with a bound, and a document that never becomes ready is named rather than measured.
+const ready = async (what) => {
+  for (let i = 0; i < 100; i++) {
+    const m = await value(`(() => { const el = document.querySelector('.rep-stickyhead');
+      return { ready: document.readyState, head: !!el,
+        h: document.documentElement.scrollHeight, vh: window.innerHeight }; })()`)
+    if (m && m.ready === 'complete' && m.head && m.h > m.vh) return m
+    await new Promise((r) => setTimeout(r, 100))
+  }
+  return null
+}
+
 for (const band of BANDS) {
   await cmd('Page.navigate', { url: `${origin}/${band.toLowerCase()}.html` })
-  await new Promise((r) => setTimeout(r, 700))
+  if (!(await ready(band))) { fail.push(`band ${band}: the document never reported itself complete with a header and a scrollable body within 10s — nothing was measured`); continue }
   const m = await value(PROBE)
   const where = `band ${band}`
   if (!m || !m.drawn) { fail.push(`${where}: the document drew no header or no breadcrumb (${JSON.stringify(m)})`); continue }
@@ -139,11 +177,16 @@ for (const band of BANDS) {
   else ok.push(`${where}: breadcrumb inside the header — "${m.labelled}"`)
 
   const s = m.scrolled
-  if (!(s.scrollY > 300)) fail.push(`${where}: the page did not scroll (scrollY ${s.scrollY}) — the pin was not tested`)
+  // A DOCUMENT TOO SHORT TO SCROLL CANNOT TEST A PIN, and that is a refusal rather than a pass: the
+  // header would sit at the top of an unscrolled page and every assertion below would be green about
+  // nothing. 200px is a floor on the MEASUREMENT, not a property of the product.
+  if (m.maxScroll < 200) fail.push(`${where}: the document is only ${m.maxScroll}px taller than the viewport — too short to test a pin, so nothing here was measured`)
+  else if (!s.settled) fail.push(`${where}: the scroll never came to rest (last read ${s.scrollY} of ${m.maxScroll}) — the pin was not tested`)
+  else if (s.scrollY < m.maxScroll - 1) fail.push(`${where}: the page stopped at ${s.scrollY} of its own ${m.maxScroll} — the pin was not tested at depth`)
   else if (Math.abs(s.head.top) > 1) fail.push(`${where}: the header did not pin (top ${s.head.top.toFixed(1)} at scrollY ${s.scrollY})`)
   else if (s.strip.top < s.head.top - 1 || s.strip.bottom > s.head.bottom + 1)
     fail.push(`${where}: the breadcrumb left the header under scroll (strip ${s.strip.top.toFixed(1)}–${s.strip.bottom.toFixed(1)}, header ${s.head.top.toFixed(1)}–${s.head.bottom.toFixed(1)})`)
-  else ok.push(`${where}: header pinned at 0 with the breadcrumb inside it at scrollY ${s.scrollY}`)
+  else ok.push(`${where}: header pinned at 0 with the breadcrumb inside it at scrollY ${s.scrollY} (the document's own bottom)`)
 
   // 2 — the band pill clears its heading
   if (!m.pill || !m.label) fail.push(`${where}: the band card drew no pill or no heading`)
