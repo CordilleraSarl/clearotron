@@ -32,7 +32,7 @@
 import { envFileRead } from "../shared/env-local.mjs";   // side effect: apply this install's .env when THIS file is the CLI entry (never on library import)
 import { createServer, request as httpRequest } from "node:http";
 import { readFileSync, existsSync, statSync, readdirSync, writeFileSync, renameSync, mkdirSync } from "node:fs";
-import { join, resolve, extname, dirname } from "node:path";
+import { join, resolve, extname, dirname } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
 import { fileURLToPath } from "node:url";
 import { config } from "./driver.config.mjs";
 import { BRAND } from "../shared/brand.mjs";
@@ -153,7 +153,7 @@ function scanRuns(workspaceRoot) {
   try { names = readdirSync(workspaceRoot); } catch { return out; }
   for (const name of names) {
     if (config.agentIdFromWorkspaceName(name) == null) continue;
-    const studio = join(workspaceRoot, name, "studio", "clearance-search");
+    const studio = studioDirFor(join(workspaceRoot, name));
     let slugs = [];
     try { slugs = readdirSync(studio); } catch { continue; }
     for (const slug of slugs) {

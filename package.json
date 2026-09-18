@@ -127,6 +127,7 @@
     "!scripts/composer-render-check.mjs",
     "!scripts/clearances-render-check.mjs",
     "!scripts/portal-lifecycle-check.mjs",
+    "!scripts/portal-strings.mjs",
     "!scripts/test-account-names.mjs",
     "!scripts/no-test-account-reaches-the-package.mjs",
     "!**/test/",

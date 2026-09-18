@@ -1784,7 +1784,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // branch in one file, and the provenance line re-homed to the footer. Not licence-only, so this moves too.
 // Advanced again by the break recorded above the FROZEN constant: the export menu moved out to its own
 // module. Not licence-only, so this constant moves with it.
-const FROZEN_BEFORE_SPDX = "69144d7aaacb30b279c439fabb5cc86e9d081b023b3b265134b5dd09e4bb39f0";
+const FROZEN_BEFORE_SPDX = "767a566cfbf62b66eb93c0993fe10441157abfc7013b39499bfcc130a0c8091f";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2523,7 +2523,28 @@ const FROZEN_BEFORE_SPDX = "69144d7aaacb30b279c439fabb5cc86e9d081b023b3b265134b5
 //      order. The markup could not move: CSS cannot add a `<nav>`, an `id` an anchor resolves to, or an
 //      `<h2>` outside a `<details>`.
 //   3. Why it had to move here: these elements are composed in this file and nowhere else.
-const FROZEN = "11889fcfda04862862465342bca9b5fe4432cef6bd005dd60a95e4f82f7e1691";
+// ── BREAK (2026-09-18 — What was searched draws the boards' rows) ────────────────────────────────────
+//
+// WHAT MOVED, all of it in the one section the approved boards draw differently:
+//   · the register row is one line of totals — records read across the countries, plus the
+//     international registrations — with the per-country counts as chips under it, code first and the
+//     name on hover; one country is named in the line and draws no chip;
+//   · "checks on" the platforms, "Searched" as the spellings word;
+//   · the Court decisions row is drawn on a full country search only, as its board draws it, with the
+//     state word and, when the research could not be completed, the court section's own sentence,
+//     now composed once for both;
+//   · the section closes with "Every search and result, in the audit workbook", the boards' own link.
+//
+// WHAT DID NOT MOVE, on purpose: the Left open rows and the Record provenance note. Both are on no board
+// and both carry something a reader would otherwise lose — a slice's disclosure, and why a registration
+// number is not a link — so they stay until their own ruling.
+//
+// THE THREE QUESTIONS.
+//   1. Reachable from republish? Yes — a republish re-renders the section; no new data, no re-run.
+//   2. Could it live in report.css or brand.mjs? The chip and state styling did, in report.css. The
+//      rows, their words and the link are composed in this file.
+//   3. Why it had to move here: the section is composed here and nowhere else.
+const FROZEN = "ec3e32f619c1a13c01cccfccdab05996903a1828fb3c94ae81e9a2518893a0b5";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

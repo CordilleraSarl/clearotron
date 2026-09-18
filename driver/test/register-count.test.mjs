@@ -693,6 +693,46 @@ test("'not available' still means no figure at all, and a floor is never read as
     "rendered as a bare count, a floor would read as an exact total — the more-than is the whole point");
 });
 
+// ONE READING OF A FLOOR ON EVERY PAGE THAT SHOWS A COUNT. The glance line above printed the register's
+// floor and the counts table, the coverage clause, the workbook and the report data beside it still
+// dropped it — so one report said "more than 10,000" at the top and "not available" in the table under it.
+test("a floor reads the same in the counts table, the coverage clause, the report data and the workbook", async () => {
+  const doc = {
+    schema: 1, provider: "signa", providerLabel: "Signa", basis: "b",
+    scope: { jurisdictions: ["US"], regions: ["US"], classes: [9] },
+    marks: [{ name: "IRONWHISK", classes: [9], classScope: "mark",
+      counts: { identical: { total: null, approximate: true, floor: 10000 },
+        containing: { total: null, approximate: true, floor: 10000 },
+        close: { total: null, unavailable: "the US index is not configured" } } }],
+  };
+  const findings = { marks: [{ name: "IRONWHISK", classesSearched: [9], rating: "Medium", findings: [], negatives: [],
+    assessment: "A name.", bullets: [], purpleNotes: [] }], batch: { executiveSummary: "One name.", standardCaveats: [] } };
+  const fw = { framework_key: "f", title: "F", bands: [{ label: "Medium", tone: "medium" }] };
+  const html = renderKnockoutHtml(findings, fw, { runId: "r", overall: "Medium", identity: { identity: "Knockout search" }, registerCounts: doc });
+  const table = (html.match(/<table[^>]*>(?:(?!<\/table>)[\s\S])*?Contains IRONWHISK[\s\S]*?<\/table>/) || [""])[0];
+  assert.ok(table, "the counts table renders");
+  assert.equal((table.match(/<td class="num">more than 10,000<\/td>/g) || []).length, 2,
+    "both floored cells print the register's own figure, as a figure");
+  assert.equal((table.match(/>not available</g) || []).length, 1, "the register that could not be reached keeps its phrase");
+  assert.doesNotMatch(html, /no count could be taken for this name/, "a name counted only by its floors was counted");
+
+  const data = knockoutReportData(findings, fw, { runId: "r", overall: "Medium", identity: { identity: "Knockout search" }, registerCounts: doc });
+  const rc = data.marks[0].registerCounts;
+  assert.equal(rc.containing, null, "a floor is never a figure to be summed");
+  assert.deepEqual(rc.floors, { identical: 10000, containing: 10000 }, "and the floor rides beside the null");
+
+  const dir = mkdtempSync(join(tmpdir(), "ko-floor-"));
+  await buildKnockoutWorkbook(findings, [], join(dir, "floor.xlsx"), doc);
+  const ExcelJS = (await import("exceljs")).default;
+  const wb = new ExcelJS.Workbook();
+  await wb.xlsx.readFile(join(dir, "floor.xlsx"));
+  const row = wb.getWorksheet("Register Counts").getRow(2).values.slice(1);
+  assert.equal(row[3], "more than 10,000");
+  assert.equal(row[4], "more than 10,000");
+  assert.equal(row[5], "not available");
+  assert.doesNotMatch(String(row[9]), /Identical|containing the name/i, "a floor is not listed among the missing figures");
+});
+
 // ── A TABLE THAT CONTINUES OFF ITS RIGHT EDGE SHOWS A SCROLLBAR ───────────────────────────────────
 //
 // The counts table scrolls inside its own panel so it never pushes the page sideways, and a panel that

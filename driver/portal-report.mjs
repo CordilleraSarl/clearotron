@@ -647,7 +647,10 @@ const EMBED_JS = `
     var ord=koOrd!==null?whole(koOrd):(idOrd!==null?whole(idOrd):null);
     var koMark=card?card.getAttribute('data-ko-mark'):null;
     var mi=koMark!==null?whole(koMark):null;
-    try{parent.postMessage({source:TAG,type:'askAi',ordinal:ord,markIndex:mi},'*');}catch(err){}
+    // A press that cannot reach the page must not vanish: the button would look pressed and do nothing,
+    // the same silence a broken Export once hid behind. The console is the one place left to say so.
+    try{parent.postMessage({source:TAG,type:'askAi',ordinal:ord,markIndex:mi},'*');}
+    catch(err){try{console.warn('Ask AI could not reach the page: '+(err&&err.message||err));}catch(e){}}
   });
   schedule();
 })();

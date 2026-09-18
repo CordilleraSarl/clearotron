@@ -28,7 +28,7 @@
 import "../shared/env-local.mjs";   // — FIRST: applies the CLEAROTRON_* translation before any module-top
 // capture evaluates. Reads no `.env` here — that load is gated on isCliEntry(argv[1]).
 import { readdirSync, readFileSync, writeFileSync, renameSync, existsSync } from "node:fs";
-import { join } from "node:path";
+import { join } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
 import { DRIVER_DIR, driverDir } from "../shared/driver-dir.mjs";   //
 
 // NAMED, never guessed. This used to fall back to a hardcoded production workspace path, so a run
@@ -115,7 +115,7 @@ function main() {
   const counts = {};
   const rows = [];
   for (const agent of AGENTS) {
-    const studio = join(WORKSPACE_ROOT, `workspace-${agent}`, "studio", "clearance-search");
+    const studio = studioDirFor(join(WORKSPACE_ROOT, `workspace-${agent}`));
     if (!existsSync(studio)) continue;
     for (const runDir of findRunDirs(studio)) {
       const r = backfillRun(runDir, { apply: APPLY });

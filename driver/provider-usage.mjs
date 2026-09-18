@@ -16,7 +16,7 @@
 // turns appending concurrently) returns zeros / skips that line — it never throws. The driver calls it at
 // publish time to attribute THIS run's calls by the session-key prefix `clearance-<slug>-<codename>-`.
 
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs"; import { runPrefixSpellings } from "../shared/pre-rename-spellings.mjs";
 // Aliased: three functions below take a parameter literally named `ledgerPath`, and an unaliased
 // import would be shadowed by it inside its own default-value expression (a TDZ ReferenceError
 // at the first call, not at load).
@@ -57,8 +57,8 @@ function stripGatewayNs(s) {
 // `clearance-<slug>-<codename>-<stage><axis>` (+ optional `-rerunN`), so a prefix match catches every stage +
 // axis + retry of the run. We check sessionKey (carries the key) and, defensively, sessionId.
 function rowMatchesRun(row, runPrefix) {
-  return stripGatewayNs(row.sessionKey).startsWith(runPrefix)
-      || stripGatewayNs(row.sessionId).startsWith(runPrefix);
+  return runPrefixSpellings(runPrefix).some((rp) => stripGatewayNs(row.sessionKey).startsWith(rp)
+      || stripGatewayNs(row.sessionId).startsWith(rp));   // either spelling: a run resumed across the rename
 }
 
 // ── band-truth gate (2026-07-14, teal-foundry): count the ledger rows attributed to ONE unit lane ──────

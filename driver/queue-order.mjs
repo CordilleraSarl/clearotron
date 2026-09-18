@@ -21,7 +21,7 @@
 // parse set, or prelim-driver.path's watch — and reordering must NOT wake the runner.
 
 import { readFileSync, writeFileSync, renameSync, mkdirSync, readdirSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { join, dirname } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
 
 export function queueOrderPath(qdir) { return join(dirname(qdir), ".queue-order.json"); }
 
@@ -69,7 +69,7 @@ export function queueDirsUnder(workspaceRoot) {
   try { names = readdirSync(workspaceRoot); } catch { return out; }
   for (const n of names) {
     if (!n.startsWith("workspace-")) continue;
-    const q = join(workspaceRoot, n, "studio", "clearance-search", "queue");
+    const q = join(studioDirFor(join(workspaceRoot, n)), "queue");
     try { readdirSync(q); out.push(q); } catch { /* no queue in this workspace */ }
   }
   return out.sort();

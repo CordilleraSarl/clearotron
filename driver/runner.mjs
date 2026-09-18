@@ -21,7 +21,7 @@
 import "../shared/env-local.mjs";   // side effect: apply <repo>/.env when THIS file is the CLI entry (never on library import)
 import "./engine/mcp/http-dispatcher.mjs";   // side effect: raise undici headersTimeout (code-side fetches)
 import { readdirSync, renameSync, existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync, rmSync, statSync } from "node:fs";
-import { join, dirname, basename } from "node:path";
+import { join, dirname, basename } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
 import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
 // The queue's filename vocabulary, in ONE place — the rule, extended by to the prose-sidecar and
 // claim-sidecar names, because a harness check retyped four of them from memory and false-alarmed on the
@@ -1548,7 +1548,7 @@ export function agentStudioRoots() {
   try {
     for (const name of readdirSync(config.workspaceRoot)) {
       if (config.agentIdFromWorkspaceName(name) == null) continue;
-      const s = join(config.workspaceRoot, name, "studio", "clearance-search");
+      const s = studioDirFor(join(config.workspaceRoot, name));
       if (existsSync(s)) out.push(s);
     }
   } catch { /* workspaceRoot absent in some envs */ }

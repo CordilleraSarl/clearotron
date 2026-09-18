@@ -612,6 +612,13 @@ jobs:
       # runner and unset on a laptop, so the shape is green locally and wrong here.
       #
       # It reads source, not history, so it needs no base and answers the same on every event.
+      # THE PORTAL'S BACKLOG OF UNAPPROVED STRINGS ONLY SHRINKS. Every string a screen shows is copied from
+      # an approved design; what was on a screen without approval when the check arrived is listed in
+      # portal-ui/strings-backlog.json, and a line added there is a new unapproved string let in by the
+      # back door. The approved list is kept outside this repository, so this job checks the half it can.
+      - name: The portal's backlog of unapproved strings only shrinks
+        run: node scripts/portal-strings.mjs --backlog-shrinks --base "${{ github.event.pull_request.base.sha || 'origin/main' }}"
+
       - name: A drive of a real command says what environment it drives it in
         run: node scripts/drive-env-check.mjs
 

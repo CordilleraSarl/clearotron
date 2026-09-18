@@ -20,6 +20,7 @@ The axis is *what the script assumes exists*, not where it happens to be run.
 | `report-print-check.mjs` | Shows what the exported PDF actually renders under print media. Run by CI. |
 | `report-overflow-check.mjs` | The same two report lanes SIDEWAYS, under screen media — the print check cannot see a width, because print sets the watermark to `display:none` and the watermark was the overflow. Run by CI. |
 | `portal-lifecycle-check.mjs` | Asks whether the portal names a brand owner and whether a person can manage their searches. Run by CI. |
+| `portal-strings.mjs` | Reads every string the portal can show out of its source, as a reader meets it. `--check <approved list>` refuses a string on a screen that is neither approved nor in `portal-ui/strings-backlog.json`; `--backlog-shrinks --base <ref>` refuses a backlog line the base did not have. The approved list is kept with the designs, outside this repository. CI runs the backlog half. |
 | `validate-profiles.mjs` | Validates a customer-config store's profile bundles. Read-only. |
 | `record-carry-probe.mjs` | Traces retrieval → findings over any finished run dir. Read-only. |
 | `placement-diff.mjs` | Shows what the placement tier did between two runs of one matter. |

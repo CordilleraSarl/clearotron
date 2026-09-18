@@ -527,6 +527,11 @@ up is a quiet success by design and the scheduled run underneath catches what it
 is wrong shows up as a slow job rather than a red one — which is why it is written down rather than left
 to be inferred from a timeout.
 
+`CLEAROTRON_CUT_REQUESTED` and `CLEAROTRON_CUT_PR` — whether this run was dispatched to cut, and the
+version pull request it opened. The workflow sets both; nothing on a deployment reads either. Together they
+separate a run that set nothing in motion, whose expired wait stays a quiet success, from a dispatched cut
+that published nothing, which fails and names why the pull request did not merge.
+
 ## 6. Drift patterns — values that are mirrored by design
 
 Wherever one value must exist in more than one place, name every copy and rotate them in one

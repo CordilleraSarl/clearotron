@@ -72,3 +72,19 @@ test("the refusal names a bounded number of paths and says how many it left out"
   assert.ok(named > 0 && named <= 20, `named ${named} paths — it must name some and must not name all fifty`);
   assert.match(v.message, /and 30 more/, "…and must say how many it did not name, or the list reads as the whole of it");
 });
+
+test("the overlay's own list of what it laid excuses exactly those paths, and nothing staged beside them", () => {
+  const laidPaths = ["driver/test/laid-by-the-overlay.test.mjs", "driver/test/also-laid.test.mjs"];
+  const listed = new Set(laidPaths);
+  const overlay = laidPathVerdict({ laid: 2, laidPaths, cutRecordPresent: false, overlayLaid: listed });
+  assert.equal(overlay.refuse, false, "every staged path is one the overlay laid — that is the overlay working");
+  assert.match(overlay.message, /laid by the private overlay/);
+  // A file staged by hand beside the overlay's is still staged work, and still refuses, named alone.
+  const mixed = laidPathVerdict({ laid: 3, laidPaths: [...laidPaths, "driver/test/staged-by-hand.test.mjs"],
+    cutRecordPresent: false, overlayLaid: listed });
+  assert.equal(mixed.refuse, true);
+  assert.match(mixed.message, /staged-by-hand/);
+  assert.doesNotMatch(mixed.message, /laid-by-the-overlay/, "the refusal names only what the overlay did not lay");
+  // No list at all is the developer's checkout, and nothing changes there.
+  assert.equal(laidPathVerdict({ laid: 2, laidPaths, cutRecordPresent: false, overlayLaid: null }).refuse, true);
+});
