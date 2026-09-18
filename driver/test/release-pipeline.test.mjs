@@ -253,9 +253,20 @@ test("tracker 97 the version pull request merges itself, because main will not t
   // out this repository runs it, so the count is derived from the jobs rather than typed here.
   const jobNames = releaseJobs(workflow);
   assert.ok(jobNames.length >= 3, `only ${jobNames.length} job(s) found in the release workflow — the scan is not reading it`);
-  assert.equal((workflow.match(/run: node scripts\/release-publish-guard\.mjs/g) ?? []).length, jobNames.length,
+  // A JOB THAT ONLY CALLS ANOTHER WORKFLOW RUNS NO STEP HERE, so it has nowhere to run the guard: the two
+  // macOS install jobs call macos.yml. Excused by what they call rather than by name, and what they call
+  // is held below to publishing nothing and holding nothing — asserted, not assumed.
+  const callers = jobNames.filter((j) => /^ {4}uses: \.\/\.github\/workflows\/[a-z-]+\.yml$/m.test(jobBlock(j)));
+  const stepJobs = jobNames.filter((j) => !callers.includes(j));
+  assert.equal((workflow.match(/run: node scripts\/release-publish-guard\.mjs/g) ?? []).length, stepJobs.length,
     `the credential guard runs in ${(workflow.match(/run: node scripts\/release-publish-guard\.mjs/g) ?? []).length} `
-    + `of the release workflow's ${jobNames.length} jobs`);
+    + `of the release workflow's ${stepJobs.length} jobs that run steps`);
+  for (const j of callers) {
+    const callee = /^ {4}uses: \.\/(\.github\/workflows\/[a-z-]+\.yml)$/m.exec(jobBlock(j))[1];
+    const text = executableText(read(callee));
+    assert.match(text, /^permissions:\n {2}contents: read$/m, `${j} calls ${callee}, which does not hold itself to a read-only token`);
+    assert.doesNotMatch(text, /id-token|secrets\.|npm publish|NODE_AUTH_TOKEN/, `${j} calls ${callee}, which can reach a credential or publish`);
+  }
 });
 
 test("tracker 97 the branch is checked explicitly, because these guards are the whole gate", () => {
@@ -894,8 +905,11 @@ test("tracker 97 a version that merged itself still publishes, because that merg
   // It is here because the publish credential exists only inside this workflow, so a deprecation has no
   // path anywhere else — and it is in THIS list because a job that can reach the registry is exactly
   // what this arm exists to make somebody declare.
-  assert.deepEqual(jobs, ["version", "stranded", "pending", "awaited", "publish", "publish-awaited", "deprecate"],
-    "the release workflow's jobs are not the seven this file is written about");
+  // NINE NOW. `macos` and `macos-awaited` joined on 2026-09-18: a stable is installed on macOS before
+  // either publish job may publish it. Two, because `awaited` needs `publish` and one job serving both
+  // publish paths would be a cycle. They call macos.yml and run no step of their own here.
+  assert.deepEqual(jobs, ["version", "stranded", "pending", "awaited", "macos", "publish", "macos-awaited", "publish-awaited", "deprecate"],
+    "the release workflow's jobs are not the nine this file is written about");
 
   // IT DECIDES WITH THE SAME FUNCTION THE PUSH PATH USES. Two answers to one question is how a pipeline
   // publishes on one path what it refuses on the other.
@@ -2736,7 +2750,7 @@ test("the wait step gives `gh` a credential and the job may read pull requests",
 // or the wait (which would wait for a pull request nobody opened) is caught as behaviour.
 
 /** A job's `if:` as the runner reads it, evaluated for one event. Only the terms these jobs use. */
-function jobRuns(job, { event, cut = "", ref = "refs/heads/main", needs = {} }) {
+function jobRuns(job, { event, cut = "", ref = "refs/heads/main", needs = {}, versions = {} }) {
   const parsed = /\n    if: (>-\n(?:      [^\n]*\n)+|[^\n]*\n)/.exec(`\n${jobBlock(job).split("\n").filter((l) => !l.trim().startsWith("#")).join("\n")}\n`);
   if (!parsed) return true;
   let expr = parsed[1].replace(/^>-\n/, "").replace(/\s+/g, " ").trim();
@@ -2747,9 +2761,11 @@ function jobRuns(job, { event, cut = "", ref = "refs/heads/main", needs = {} }) 
     .replace(/github\.ref/g, JSON.stringify(ref))
     .replace(/inputs\.cut/g, JSON.stringify(cut))
     .replace(/inputs\.deprecate-below/g, JSON.stringify(""))
-    .replace(/needs\.([a-z-]+)\.outputs\.cut/g, (_, n) => JSON.stringify(needs[n] ?? ""));
+    .replace(/needs\.([a-z-]+)\.outputs\.cut/g, (_, n) => JSON.stringify(needs[n] ?? ""))
+    .replace(/needs\.([a-z-]+)\.outputs\.version/g, (_, n) => JSON.stringify(versions[n] ?? ""));
   assert.ok(!/[A-Za-z_]+\.[A-Za-z_]/.test(expr.replace(/"[^"]*"/g, "")), `an expression term this arm does not know: ${expr}`);
-  return Function(`return (${expr});`)();
+  // `contains` is the runner's own: a string search, case-insensitive for strings.
+  return Function("contains", `return (${expr});`)((a, b) => String(a).toLowerCase().includes(String(b).toLowerCase()));
 }
 
 test("a `publish` dispatch runs the decider alone: it cuts nothing and waits for nothing", () => {
@@ -2782,6 +2798,35 @@ test("the publisher takes the decider's word on a `publish` dispatch, and publis
   const gate = executableText(RELEASE_YML.slice(RELEASE_YML.indexOf("id: what"), RELEASE_YML.indexOf("- run: npm run build:ui")));
   const dryWhen = /if \[ "\$\{\{ github\.event_name \}\}" = "workflow_dispatch" \] && \[ "\$\{\{ inputs\.cut \}\}" = "rehearse" \]; then\s*\n[^\n]*\n\s*echo "dry_flag=--dry-run"/;
   assert.match(gate, dryWhen, "the dry-run flag is no longer set for `rehearse` alone");
+});
+
+test("a stable is installed on macOS before it is published, on every path a stable takes, and a beta is never held", () => {
+  const STABLE_V = "0.3.2", BETA_V = "0.3.2-beta.10";
+  // THE macOS JOBS START FOR A STABLE CUT ON EACH OF THE THREE PATHS THAT CAN PUBLISH ONE…
+  assert.equal(jobRuns("macos", { event: "push", needs: { version: "true" }, versions: { version: STABLE_V } }), true,
+    "a push to main that carries an unpublished stable did not start the macOS install");
+  assert.equal(jobRuns("macos", { event: "schedule", needs: { pending: "true" }, versions: { pending: STABLE_V } }), true,
+    "the schedule finding a stable cut on main did not start the macOS install");
+  assert.equal(jobRuns("macos", { event: "workflow_dispatch", cut: "publish", needs: { pending: "true" }, versions: { pending: STABLE_V } }), true,
+    "a `publish` dispatch finding a stable did not start the macOS install");
+  assert.equal(jobRuns("macos-awaited", { event: "workflow_dispatch", cut: "stable", needs: { awaited: "true" }, versions: { awaited: STABLE_V } }), true,
+    "the dispatched stable, once merged, did not start the macOS install");
+  // …AND FOR NOTHING ELSE: never for a beta, and never for a run that cut nothing.
+  for (const [job, decider] of [["macos", "version"], ["macos", "pending"], ["macos-awaited", "awaited"]]) {
+    assert.equal(jobRuns(job, { event: "push", needs: { [decider]: "true" }, versions: { [decider]: BETA_V } }), false,
+      `${job} started for a beta cut through ${decider} — a beta is not held by this job, so it must not wait for it either`);
+    assert.equal(jobRuns(job, { event: "push", needs: { [decider]: "false" }, versions: { [decider]: STABLE_V } }), false,
+      `${job} started for a run through ${decider} that cut nothing`);
+  }
+  // THE PUBLISH JOBS NEED THEIR macOS JOB AND STILL OPEN WITH `!failure()`. That pair IS the gate: a
+  // SKIPPED dependency (every beta) leaves them running, a FAILED one (a red stable) stops them.
+  for (const [publish, mac] of [["publish", "macos"], ["publish-awaited", "macos-awaited"]]) {
+    const block = executableText(jobBlock(publish));
+    const needsList = (/^ {4}needs: \[([^\]]*)\]$/m.exec(block)?.[1] ?? "").split(",").map((n) => n.trim());
+    assert.ok(needsList.includes(mac), `${publish} does not need ${mac}, so a red macOS install would not hold a stable`);
+    assert.match(block, /^ {4}if: >-\n {6}!failure\(\) && !cancelled\(\)$/m,
+      `${publish} no longer opens with \`!failure() && !cancelled()\` — a skipped macOS job would then hold every beta`);
+  }
 });
 
 /** The decider the `pending` job runs, over a repository whose main is at `version`, tagged or not. */
