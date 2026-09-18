@@ -148,6 +148,7 @@ const EXCEPTIONS = [
     phrases: [
       /\bfree\s+accounts?\b/gi,
       /\bvendor\s+account\b/gi,
+      /\bprovider\s+accounts\b/gi,
       /\bself-serve\s+accounts\b/gi,
       /\bsign\s+in\s+with\s+a\s+account\b/gi,
     ],

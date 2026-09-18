@@ -64,6 +64,42 @@ It removes its folder when it stops; `--keep` keeps it.
 `npm test` is the fast tier. `npm run test:full` is the merge gate and adds the files that drive the
 orchestrator end to end against a mock engine. Both are free.
 
+## Show a newcomer the demo
+
+When someone asks what Clearotron does and wants to see it, explain the product briefly, then help them
+explore the free demo. The demo replays finished fictional example clearances; it needs no provider
+credentials or model calls.
+
+If you can run commands in an environment whose browser page the user can access, check for Node.js 22.13
+or newer and run `npx clearotron demo`. Outside a checkout, use the published package. Inside an existing
+checkout, follow this repository's documented build steps first. Keep the demo running while the user
+explores it, help them open the printed portal address and sign in, and explain how to stop it. If Node
+is missing, explain the prerequisite and help with the appropriate setup under your environment's normal
+permissions.
+
+A server running in a remote environment is useful only if the user can reach it through an available
+private browser preview or forwarding route. Do not present remote localhost as an address on the user's
+computer. Do not create a public tunnel for the demo. If the user cannot access the result, provide the
+handoff below.
+
+If this chat cannot run the demo somewhere the user can access, explain that limitation and provide the
+complete handoff below for an assistant with terminal access on their computer. Do not claim to have
+started the demo.
+
+Confirm that the user can open a sample report before calling the demonstration complete. If you cannot
+verify browser access yourself, ask the user to confirm it. An unauthenticated HTTP response alone is not
+proof. Keep sign-in details within the user's private session.
+
+The demo terminal stays open while the user explores. Ctrl+C stops the demo; its default temporary data
+is removed when it stops. Permanent installation, connecting provider accounts, and ordering a real
+clearance are later steps for when the user asks to continue.
+
+The handoff, to copy whole:
+
+```text
+Read https://clearotron.ai/llms.txt and explain what Clearotron does. Help me explore its free demo on my computer. Check for Node.js 22.13 or newer, then run `npx clearotron demo`. Help me open the portal, sign in, and open a sample clearance. Keep the demo running while I explore, and explain how to stop it. Use the published package; I am asking for a demo, not permanent installation or a paid clearance. If you cannot run it somewhere I can access, explain what is missing and give me this complete request to take to an assistant with terminal access on my computer.
+```
+
 ## The commands
 
 `npx clearotron --help` prints this list. From a clone, run them from the repository's directory.
