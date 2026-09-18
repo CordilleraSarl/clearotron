@@ -30,13 +30,15 @@ const { startRun, buildJob } = await import("../lib/ops.mjs");
 const { PORTAL_ROUTE_UNAVAILABLE } = await import("../../driver/enqueue-schema.mjs");
 const { TOOL_DEFS } = await import("../server.mjs");
 
-const BASE = { forwarder: "ops", markName: "NOVAPULSE", classes: [9, 41], profileKey: "aurora" };
+// `aurora` is a suite fixture, and every suite fixture is DEMO DATA. The claim runs a demo account only on a
+// demo order, and the preview now asks that question too, so the base order is the honest pair.
+const BASE = { forwarder: "ops", markName: "NOVAPULSE", classes: [9, 41], profileKey: "aurora", demoRun: true };
 
 // The FREE preview is the first call an assistant makes for a new client, so it has to answer the same
 // way the door does: an omitted account resolves to the neutral profile where the session's access
 // covers it, and the preview then describes the job start_run would build rather than refusing it.
 test("plan_run: a new client with no account previews under the neutral profile instead of being refused", () => {
-  const { profileKey: _drop, ...noKey } = BASE;
+  const { profileKey: _drop, demoRun: _demo, ...noKey } = BASE;   // a new client is a real one: no demo order
   const holdsGeneric = { kind: "ops", sub: "connector", accounts: ["aurora", "generic"] };
   const p = planRun({ ...noKey }, { scope: holdsGeneric });
   assert.equal(p.ok, true, JSON.stringify(p));
