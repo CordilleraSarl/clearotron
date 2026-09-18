@@ -2721,8 +2721,8 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
     `)}
   </div>
 </div>
-</div>
 <!--SECTION-STRIP-->
+</div>
 
 <div class="wrap">
   <!-- doc-52 §1 THE VERDICT — the answer leads: mark · band · one plain "subject to" line · the lawyer's

@@ -2782,8 +2782,8 @@
           "todos": 0
         },
         "knockout-structured-read.test.mjs": {
-          "tests": 11,
-          "asserts": 55,
+          "tests": 12,
+          "asserts": 57,
           "skips": 0,
           "todos": 0
         },
@@ -3832,8 +3832,8 @@
           "todos": 0
         },
         "render.test.mjs": {
-          "tests": 158,
-          "asserts": 655,
+          "tests": 160,
+          "asserts": 665,
           "skips": 0,
           "todos": 0
         },

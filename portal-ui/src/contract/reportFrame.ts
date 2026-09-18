@@ -30,6 +30,21 @@ export const MAX_FRAME = 200_000
 export type FrameCommand = 'exportPDF' | 'pickAll' | 'openAll'
 
 /**
+ * `section` is not one of those. The three above are verbs the DOCUMENT defines and the Export menu
+ * offers; this one is a jump the shell asks for, answered by the injected bridge on the same channel the
+ * document's own anchors already use. Keeping it out of `FrameCommand` is what stops it appearing as a
+ * menu row: `exportMenu` and `readFrameControls` are both closed over that type.
+ */
+export type FrameVerb = FrameCommand | 'section'
+
+/** One entry of the report's section breadcrumb: the anchor's id and the word the reader sees. */
+export type FrameSection = { readonly id: string; readonly label: string }
+
+/** A header is a header, not a table of contents; and a hostile document does not get to fill the page. */
+export const MAX_SECTIONS = 12
+export const MAX_SECTION_LABEL = 40
+
+/**
  * Decide whether a `message` event carries a height for us, and what that height is.
  *
  * `sameSource` is the caller's answer to "did this come from the frame I am showing?", which it gets by
@@ -217,8 +232,49 @@ export function readAskAi(data: unknown, sameSource: boolean): { ordinal: number
   return { ordinal: whole(m.ordinal), markIndex: whole(m.markIndex) }
 }
 
-/** The message the portal sends inwards. Shaped here so both ends of the contract sit in one file. */
-export function frameCommand(command: FrameCommand, value?: boolean) {
+/**
+ * WHICH SECTIONS THE FRAMED DOCUMENT HOLDS.
+ *
+ * The renderers draw the breadcrumb inside the report's own sticky header, and `portal-report.mjs`
+ * strips that header on the way in, because the portal draws its own. So the breadcrumb arrives as data
+ * and the shell draws it in `.report-head`, where it stays on top — which is the whole point of it.
+ * Inside the frame it could not: the frame is sized to its content, so a `position:sticky` bar in there
+ * pins to nothing and scrolls away with the page.
+ *
+ * Same trust model as every reader above — source identity, never origin — and the same discipline
+ * about what a document is allowed to say: entries without a string id and a non-empty label are
+ * dropped, labels are trimmed to a header's worth of text, and the list is capped. A document that
+ * announces nothing usable produces an empty list, and an empty list draws no breadcrumb.
+ *
+ * Returns null when the message is not ours, so "not announced yet" and "announced nothing" stay
+ * different.
+ */
+export function readFrameSections(data: unknown, sameSource: boolean): FrameSection[] | null {
+  if (!sameSource) return null
+  if (typeof data !== 'object' || data === null) return null
+  const msg = data as { source?: unknown; type?: unknown; sections?: unknown }
+  if (msg.source !== FRAME_TAG || msg.type !== 'sections') return null
+  if (!Array.isArray(msg.sections)) return null
+  const out: FrameSection[] = []
+  for (const raw of msg.sections) {
+    if (typeof raw !== 'object' || raw === null) continue
+    const { id, label } = raw as { id?: unknown; label?: unknown }
+    if (typeof id !== 'string' || typeof label !== 'string') continue
+    const trimmed = label.trim().slice(0, MAX_SECTION_LABEL)
+    if (!id.trim() || !trimmed) continue
+    out.push({ id, label: trimmed })
+    if (out.length === MAX_SECTIONS) break
+  }
+  return out
+}
+
+/**
+ * The message the portal sends inwards. Shaped here so both ends of the contract sit in one file.
+ *
+ * `value` is a boolean for the three document verbs and the target id for `section` — the bridge coerces
+ * each to the shape its own branch needs, so neither can arrive as the other.
+ */
+export function frameCommand(command: FrameVerb, value?: boolean | string) {
   return { source: FRAME_TAG, type: 'command' as const, command, value }
 }
 

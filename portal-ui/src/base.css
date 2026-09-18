@@ -172,6 +172,32 @@ html.anon-on [data-anon='mark']:not(.anon-clear) {
   border-bottom: 1px solid var(--border-hairline);
 }
 
+/* THE HEADER'S SECOND ROW: which read you are in, then where you are inside it.
+   The Reads strip used to sit BELOW this box and the report's own section breadcrumb inside the frame,
+   so neither stayed on screen — the frame is sized to its content, which leaves a `position:sticky` bar
+   in there pinned to nothing. Both are rows of the pinned header now (owner, 2026-09-18).
+   It scrolls sideways rather than wrapping to a third line: a header that grows taller with the number of
+   sections is a header that eats the document it is heading. */
+.report-nav {
+  display: flex; align-items: center; gap: 10px; margin-top: 9px;
+  overflow-x: auto; scrollbar-width: none;
+}
+.report-nav::-webkit-scrollbar { display: none; }
+.report-nav-sep { flex: none; width: 1px; align-self: stretch; background: var(--border-hairline); }
+.report-sections { display: flex; align-items: center; gap: 2px; }
+.report-section {
+  flex: none; display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
+  font: inherit; font-size: 12.5px; font-weight: 600; letter-spacing: .01em;
+  padding: 5px 10px; border: 1px solid transparent; border-radius: 999px;
+  background: transparent; color: var(--text-muted); cursor: pointer;
+}
+.report-section:hover, .report-section:focus-visible { color: var(--text-strong); background: var(--surface-sunken); }
+.report-section-dot {
+  width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid currentColor; box-sizing: border-box;
+}
+.report-section[aria-current='true'] { color: var(--text-strong); background: var(--surface-sunken); }
+.report-section[aria-current='true'] .report-section-dot { border-color: var(--accent); border-width: 3px; }
+
 /* The breadcrumb above it: one step back as a quiet button, then where the reader is. Compound selectors
    throughout this block, because the button and row rules they adjust are declared later in the file. */
 .report-crumbs { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }

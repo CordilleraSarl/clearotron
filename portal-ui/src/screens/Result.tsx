@@ -18,8 +18,8 @@ import { readsFor, hasThread, readLabel, displayName, openDocument, showsAssessm
 import { inlineSpans } from '../contract/inlineMd.ts'
 import { parseSummaryBlocks, SUMMARY_BLOCK_LINE } from '../contract/summaryBlocks.ts'
 import { runProductLabel } from '../contract/home.ts'
-import { FIRST_PAINT, frameCommand, readFrameHeight, readFrameScroll, readCommandFailure, readFrameControls, readAskAi, exportMenu, exportAffordance } from '../contract/reportFrame.ts'
-import type { FrameCommand } from '../contract/reportFrame.ts'
+import { FIRST_PAINT, frameCommand, readFrameHeight, readFrameScroll, readCommandFailure, readFrameControls, readFrameSections, readAskAi, exportMenu, exportAffordance } from '../contract/reportFrame.ts'
+import type { FrameCommand, FrameSection, FrameVerb } from '../contract/reportFrame.ts'
 import { RiskDot } from '../components/RiskDot.tsx'
 import { Icon } from '../components/Icon.tsx'
 import { AskAi } from '../components/AskAi.tsx'
@@ -48,6 +48,11 @@ function useReportFrame() {
   // NULL UNTIL THE DOCUMENT SAYS. Not an empty array: "we have not heard yet" and
   // "this document has no controls" are different states, and only the second is a fact about the report.
   const [controls, setControls] = useState<readonly FrameCommand[] | null>(null)
+  // WHICH SECTIONS THE DOCUMENT HOLDS, announced on load. Null until it has spoken, for the same reason
+  // as `controls`. The renderer's breadcrumb rides inside the report's own header, which is stripped on
+  // the way in, so this is where the breadcrumb comes from now — and drawing it in `.report-head` is what
+  // keeps it on top: inside a frame sized to its content, nothing can pin.
+  const [sections, setSections] = useState<readonly FrameSection[] | null>(null)
   // A finding's own Ask AI, pressed inside the document. A new object per press, so the same finding
   // pressed twice opens the control twice.
   const [askedFrom, setAskedFrom] = useState<{ readonly ordinal: number | null; readonly markIndex: number | null; readonly nonce: number } | null>(null)
@@ -62,6 +67,8 @@ function useReportFrame() {
       if (h !== null) { setHeight(h); return }
       const has = readFrameControls(e.data, mine)
       if (has !== null) { setControls(has); return }
+      const secs = readFrameSections(e.data, mine)
+      if (secs !== null) { setSections(secs); return }
       // B2 — an in-page anchor click inside the frame. The frame cannot scroll (it is sized to its
       // content) and scrollIntoView does not cross the null-origin boundary, so the document posts the
       // target's offset and the PAGE performs the jump. The sticky chrome (56px shell topbar + the
@@ -92,12 +99,12 @@ function useReportFrame() {
   // targetOrigin has to be '*': the frame's origin is "null" and cannot be addressed. That is safe here
   // because the payload is a command verb with no secret in it — the sandbox is what protects the
   // document, not the obscurity of the channel.
-  const send = useCallback((command: FrameCommand, value?: boolean) => {
+  const send = useCallback((command: FrameVerb, value?: boolean | string) => {
     setFailed(null)
     ref.current?.contentWindow?.postMessage(frameCommand(command, value), '*')
   }, [])
 
-  return { ref, height, send, failed, controls, askedFrom, clearFailed: () => setFailed(null) }
+  return { ref, height, send, failed, controls, sections, askedFrom, clearFailed: () => setFailed(null) }
 }
 
 /**
@@ -120,7 +127,7 @@ function ExportMenu({
   runId,
   offered,
 }: {
-  readonly send: (c: FrameCommand, v?: boolean) => void
+  readonly send: (c: FrameVerb, v?: boolean | string) => void
   readonly runId: string
   /** The verbs the framed document announced. Every item below is drawn from this and nothing else. */
   readonly offered: readonly FrameCommand[]
@@ -341,6 +348,14 @@ export function Result({
   // after them would change call order between renders.
   const frame = useReportFrame()
 
+  // WHICH SECTION THE BREADCRUMB SHOWS AS CURRENT. Null means "the one the document leads with", which is
+  // the entry the renderer's own strip marked `now`. Set by a press, because a press is the only movement
+  // this side can know about: the page scrolls, but the offsets belong to a document it cannot measure.
+  const [atSection, setAtSection] = useState<string | null>(null)
+
+  // A different read is a different document: the breadcrumb starts at the top again.
+  useEffect(() => { setAtSection(null) }, [runId, markSlug])
+
   // — THE CROSS-MARK PARAGRAPH, asked for only by the view that shows it.
   //
   // A grouped run's assessment reads its names against each other and lives nowhere else: there is no
@@ -493,40 +508,81 @@ export function Result({
           <ExportMenu send={frame.send} runId={run.runId} offered={frame.controls ?? []} />
         ) : null}
       </div>
-      </div>
 
-      {/* Only when there is genuinely a thread — a strip with one pill implies somewhere to go. */}
-      {hasThread(reads) ? (
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', margin: '18px 0 4px' }}>
-          <span className="eyebrow" style={{ alignSelf: 'center' }}>Reads</span>
-          {reads.map((r) => {
-            const active = r.runId === run.runId
-            return (
-              <button
-                key={r.runId}
-                type="button"
-                className="pill"
-                aria-current={active ? 'true' : undefined}
-                onClick={() => ctx.go(resultPath(r.runId))}
-                style={{
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 7,
-                  background: active ? 'var(--accent-wash)' : 'var(--surface-sunken)',
-                  borderColor: active ? 'var(--accent)' : 'var(--border-hairline)',
-                  color: active ? 'var(--text-accent)' : 'var(--text-muted)',
-                }}
-              >
-                {r.tone ? (
-                  <span className="dot" style={{ background: `var(--tone-${r.tone})`, width: 7, height: 7 }} />
-                ) : null}
-                {readLabel(r)}
-              </button>
-            )
-          })}
+      {/* ONE HEADER, AND THE BREADCRUMB IS PART OF IT (owner, 2026-09-18).
+          Two things a reader steers with used to sit apart and neither stayed: the Reads strip was drawn
+          BELOW `.report-head`, outside the pinned box, and the report's section breadcrumb was inside the
+          frame — where nothing can pin, because the frame is sized to its content and has no scrollport
+          of its own. So the breadcrumb sat over the confidentiality line and both scrolled away at the
+          first paragraph. They are one row of the pinned header now: which read you are in, then where
+          you are inside it.
+          Drawn only when there is something to steer with — a thread of reads, or a document that
+          announced more than one section. `sectionStrip()` emits nothing under two sections, and this
+          matches it: a breadcrumb with one entry is not a breadcrumb. */}
+      {hasThread(reads) || (frame.sections?.length ?? 0) > 1 ? (
+        <div className="report-nav">
+        {/* Only when there is genuinely a thread — a strip with one pill implies somewhere to go.
+            The 18px top margin it carried below the header is gone: it is a row of the header now, and
+            `.report-nav` owns the spacing for both halves. */}
+        {hasThread(reads) ? (
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+            <span className="eyebrow" style={{ alignSelf: 'center' }}>Reads</span>
+            {reads.map((r) => {
+              const active = r.runId === run.runId
+              return (
+                <button
+                  key={r.runId}
+                  type="button"
+                  className="pill"
+                  aria-current={active ? 'true' : undefined}
+                  onClick={() => ctx.go(resultPath(r.runId))}
+                  style={{
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 7,
+                    background: active ? 'var(--accent-wash)' : 'var(--surface-sunken)',
+                    borderColor: active ? 'var(--accent)' : 'var(--border-hairline)',
+                    color: active ? 'var(--text-accent)' : 'var(--text-muted)',
+                  }}
+                >
+                  {r.tone ? (
+                    <span className="dot" style={{ background: `var(--tone-${r.tone})`, width: 7, height: 7 }} />
+                  ) : null}
+                  {readLabel(r)}
+                </button>
+              )
+            })}
+          </div>
+        ) : null}
+          {hasThread(reads) && (frame.sections?.length ?? 0) > 1 ? (
+            <span className="report-nav-sep" aria-hidden="true" />
+          ) : null}
+          {(frame.sections?.length ?? 0) > 1 ? (
+            <nav className="report-sections" aria-label="Sections of this report">
+              {(frame.sections ?? []).map((sec, i) => {
+                // The first entry is current until a press says otherwise — the same entry the renderer's
+                // own strip marked, and the section the reader is looking at when the document opens.
+                const now = atSection === null ? i === 0 : atSection === sec.id
+                return (
+                  <button
+                    key={sec.id}
+                    type="button"
+                    className="report-section"
+                    aria-current={now ? 'true' : undefined}
+                    onClick={() => { setAtSection(sec.id); frame.send('section', sec.id) }}
+                  >
+                    <span className="report-section-dot" aria-hidden="true" />
+                    {sec.label}
+                  </button>
+                )
+              })}
+            </nav>
+          ) : null}
         </div>
       ) : null}
+      </div>
+
 
       {/* A control that fails now says so. It used to fail silently, which is indistinguishable from a
           control that is merely slow, and is why a broken Export survived a whole round of review. */}

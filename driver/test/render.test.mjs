@@ -62,6 +62,45 @@ const COVERAGE = [
   { area: "adjacent classes 25/29/30", state: "coverage-limited", note: "224 hits, 25 reviewed" },
 ];
 
+// ONE HEADER, AND THE BREADCRUMB IS A ROW OF IT (owner, 2026-09-18).
+//
+// The strip used to be emitted as a SIBLING of `.rep-stickyhead`, pinned on its own at
+// `top:var(--tb-h,52px)` — a variable this product sets nowhere. This asserts the NESTING, which is the
+// half CSS cannot fix and the half the portal depends on: `portal-report.mjs` strips the header on the
+// way into the frame, and the breadcrumb has to ride inside it so the orphan bar cannot be left behind.
+// Position in the string, not a selector, because there is no DOM here — but between the header's open
+// tag and the document body is exactly the claim.
+// AND IT LEAVES THE FRAME AS DATA. The portal strips the report's own header — every field in it is
+// already on the screen above the frame — so with the breadcrumb now inside that header, the served
+// document carries neither. It arrives as a list the shell draws in its own header instead, which is the
+// only place it can pin: the frame is sized to its content and has no scrollport of its own.
+test("the breadcrumb leaves the frame as data, and the served document carries no orphan bar", async () => {
+  const { prepareReportForEmbed } = await import("../portal-report.mjs");
+  const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-demo" });
+  const { sections, html: served } = prepareReportForEmbed(html);
+  assert.ok(sections.length > 1, "the document announced more than one section");
+  assert.ok(sections.every((s) => typeof s.id === "string" && typeof s.label === "string" && s.label),
+    "every entry names a place and a word");
+  for (const s of sections) {
+    assert.ok(html.includes(`id="${s.id}"`), `the announced section ${s.id} is really in the document`);
+  }
+  assert.doesNotMatch(served, /<nav class="[^"]*\bstrip\b/,
+    "no breadcrumb is left behind in the frame, where it could not pin");
+  assert.match(served, /window\.__CORD_SECTIONS=\[/, "the list rides in with the bridge");
+  assert.match(served, /d\.command==='section'/, "and the bridge answers a press on it");
+});
+
+test("the section breadcrumb is emitted inside the report's sticky header, not under it", () => {
+  const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-demo" });
+  const head = html.indexOf('<div class="rep-stickyhead');
+  const nav = html.indexOf('<nav class="strip');
+  const wrap = html.indexOf('<div class="wrap">');
+  assert.ok(head >= 0, "the report draws a sticky header");
+  assert.ok(nav >= 0, "the report draws a section breadcrumb");
+  assert.ok(nav > head, "the breadcrumb comes after the header opens");
+  assert.ok(nav < wrap, "…and before the document body, so it is inside the header rather than under it");
+});
+
 test("data-driven: gauge, quadrant, key panel, on-field + secondary cards, coverage grid all render", () => {
   const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-demo" });
   assert.match(html, /THIS IS MY MATCHDAY/);

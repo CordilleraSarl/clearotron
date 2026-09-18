@@ -180,7 +180,22 @@ const KO_CSS = `
      The number span is drawn and then hidden, which is the board's own doing: it emits the span on every
      section and sets it to none further down its own stylesheet. Carried so the delivered document holds
      the same elements as the approved one; no pixel moves. */
-  .strip{position:sticky;top:var(--tb-h,52px);z-index:20;display:flex;gap:4px;align-items:center;padding:6px 20px;background:var(--bg,#f5f0e8);border-bottom:1px solid rgba(0,0,0,.08);font:600 12px/1 'Satoshi','Helvetica Neue',Arial,sans-serif;letter-spacing:.04em}
+  /* THE BREADCRUMB IS A ROW OF THE HEADER, not a bar under it (owner, 2026-09-18).
+     It used to be a SIBLING of .rep-stickyhead, pinned on its own at top:var(--tb-h,52px) — and
+     --tb-h is set nowhere in this product, so the fallback was a guess at a bar that measures ~46px:
+     content showed through the slit between the two, and z-index:20 put the strip UNDER the header's
+     100 whenever the guess was wrong. The strip is now emitted inside .rep-stickyhead, so the header
+     and the breadcrumb are one sticky surface that pins and unpins together and can never gap or
+     overlap, whatever the bar measures or how it wraps.
+     No background and no bottom hairline of its own: the wrapper carries the blurred surface and the
+     single edge, and the border-top here is the divider between the two rows. It is on .strip rather
+     than on any wrapper because sectionStrip() emits NOTHING when fewer than two of its sections are
+     live — a wrapper would leave a stray line on those reports.
+     The gutter matches the topbar's, so the first entry lines up under the back button. */
+  .strip{display:flex;gap:4px;align-items:center;padding:4px max(26px,calc((100% - 1120px)/2)) 6px;
+    border-top:1px solid var(--line);font:600 12px/1 'Satoshi','Helvetica Neue',Arial,sans-serif;
+    letter-spacing:.04em;overflow-x:auto;scrollbar-width:none}
+  .strip::-webkit-scrollbar{display:none}
   .strip a{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;color:#6b5d50;text-decoration:none;white-space:nowrap}
   .strip a i{width:8px;height:8px;border-radius:50%;border:1.5px solid currentColor;box-sizing:border-box}
   .strip a.done{color:#4c7a4c}
@@ -326,7 +341,18 @@ const KO_CSS = `
      the design's stylesheet with its fixed colours replaced by this page's tokens, so the ladder reads
      in both themes: the tick row was #a89a8a on white and the fold's summary and prose a brown pair,
      all three of which go invisible on the dark ground this report also renders on. */
-  .kscale{position:relative;margin:10px 8px 34px}
+  /* THE BAND PILL HANGS ABOVE THE BAR, so the space above the bar is what keeps it off the heading.
+     NO BACKTICK IN THIS COMMENT — it sits inside the stylesheet's own template literal.
+     .kmarker sits at top:-30px and the pill is ~23px tall (5+5 padding on a 13px line), so it starts
+     30px above the bar and ends 7px above it. At the LEFTMOST band the pill is also drawn flush left
+     (translateX(-12px) at left:0%) — directly under the left-aligned "Overall risk" — so that is the
+     rung where the two touch, and the house ladder's leftmost rung is Low.
+     THE ROOM IS ONE MARGIN, NOT TWO, and that is what made the arithmetic wrong twice. This margin and
+     .gauge .label's 18px bottom margin are ADJACENT SIBLINGS, so they collapse to the larger of the two
+     rather than adding: 10px here gave 18px of room against a pill that needs 30, and the first attempt
+     at 24 still left 6. Measured in a browser at every rung (scripts/report-header-render-check.mjs),
+     not reasoned: 44 gives 14px of daylight under the heading at every band. */
+  .kscale{position:relative;margin:44px 8px 34px}
   .kbar{position:relative;height:8px;border-radius:4px}
   .kmarker{position:absolute;top:-30px;text-align:center}
   .kpill{display:inline-block;padding:5px 12px;border-radius:999px;color:#fff;
@@ -1882,6 +1908,7 @@ ${filings}`
     `)}
   </div>
 </div>
+<!--SECTION-STRIP-->
 </div>
 <div class="fab-stack">${themeButton()}</div>
 <script>
@@ -1905,7 +1932,6 @@ window.addEventListener('beforeprint',o);})();
 /* The popover opens on its own button, closes on a click outside it and on Escape. Same two listeners
    the clearance template carries, for the same markup; they move together when the top bar is shared. */
 ${EXPORT_MENU_JS}</script>
-<!--SECTION-STRIP-->
 <div class="wrap">
   <header class="hero" id="summary">
     ${demoBannerHtml(demoData === true)}

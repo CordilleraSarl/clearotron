@@ -123,7 +123,22 @@
      down its own stylesheet. Carried faithfully, so the delivered document and the approved one hold the
      same elements — this changes no pixel, and a reader looking for a visible number will not find one
      in the board either. */
-  .strip{position:sticky;top:var(--tb-h,52px);z-index:20;display:flex;gap:4px;align-items:center;padding:6px 20px;background:var(--bg,#f5f0e8);border-bottom:1px solid rgba(0,0,0,.08);font:600 12px/1 'Satoshi','Helvetica Neue',Arial,sans-serif;letter-spacing:.04em}
+  /* THE BREADCRUMB IS A ROW OF THE HEADER, not a bar under it (owner, 2026-09-18).
+     It used to be a SIBLING of .rep-stickyhead, pinned on its own at top:var(--tb-h,52px) — and
+     --tb-h is set nowhere in this product, so the fallback was a guess at a bar that measures ~46px:
+     content showed through the slit between the two, and z-index:20 put the strip UNDER the header's
+     100 whenever the guess was wrong. The strip is now emitted inside .rep-stickyhead, so the header
+     and the breadcrumb are one sticky surface that pins and unpins together and can never gap or
+     overlap, whatever the bar measures or how it wraps.
+     No background and no bottom hairline of its own: the wrapper carries the blurred surface and the
+     single edge, and the border-top here is the divider between the two rows. It is on .strip rather
+     than on any wrapper because sectionStrip() emits NOTHING when fewer than two of its sections are
+     live — a wrapper would leave a stray line on those reports.
+     The gutter matches the topbar's, so the first entry lines up under the back button. */
+  .strip{display:flex;gap:4px;align-items:center;padding:4px max(26px,calc((100% - 1120px)/2)) 6px;
+    border-top:1px solid var(--line);font:600 12px/1 'Satoshi','Helvetica Neue',Arial,sans-serif;
+    letter-spacing:.04em;overflow-x:auto;scrollbar-width:none}
+  .strip::-webkit-scrollbar{display:none}
   .strip a{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;color:#6b5d50;text-decoration:none;white-space:nowrap}
   .strip a i{width:8px;height:8px;border-radius:50%;border:1.5px solid currentColor;box-sizing:border-box}
   .strip a.done{color:#4c7a4c}

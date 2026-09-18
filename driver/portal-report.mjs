@@ -554,8 +554,24 @@ const EMBED_JS = `
       parent.postMessage({source:TAG,type:'controls',commands:have},'*');
     }catch(e){}
   }
+  // AND WHICH SECTIONS IT HOLDS. The renderer's own breadcrumb rides inside the report's sticky header,
+  // which this file strips, so the list arrives as a value (window.__CORD_SECTIONS, written above this
+  // script) and the shell draws it in its own header. Only the ids that are really in the document are
+  // announced: a report whose renderer named a section it did not draw would otherwise offer the reader
+  // a breadcrumb entry that jumps nowhere.
+  function sections(){
+    try{
+      var list=window.__CORD_SECTIONS;
+      if(!list||!list.length)return;
+      var live=[];
+      for(var i=0;i<list.length;i++) if(document.getElementById(list[i].id)) live.push(list[i]);
+      parent.postMessage({source:TAG,type:'sections',sections:live},'*');
+    }catch(e){}
+  }
   window.addEventListener('load',controls);
   document.addEventListener('DOMContentLoaded',controls);
+  window.addEventListener('load',sections);
+  document.addEventListener('DOMContentLoaded',sections);
   window.addEventListener('load',schedule);
   document.addEventListener('DOMContentLoaded',schedule);
   document.addEventListener('toggle',schedule,true);
@@ -570,6 +586,17 @@ const EMBED_JS = `
     // A FAILED COMMAND SAYS SO. This used to be catch(err){} — a button that did nothing, told nobody,
     // and left no console trace, which is how "Export does not work" went unnoticed through a whole
     // round of testing. The portal now hears about it and can say so.
+    // A BREADCRUMB PRESS IN THE SHELL'S HEADER. Not a verb the document defines — it is the anchor jump
+    // below, asked for from outside, and it answers on the same channel: reveal any collapsed ancestor,
+    // then post the target's document-relative top for the PARENT to scroll to, because this frame has
+    // no scrollport of its own. An id that is not in the document is ignored rather than failed: the
+    // shell only ever draws ids the document announced.
+    if(d.command==='section'){
+      var sec=document.getElementById(String(d.value||''));
+      if(sec){ revealTarget(sec); var t=Math.max(0,Math.ceil(sec.getBoundingClientRect().top+window.scrollY));
+        try{parent.postMessage({source:TAG,type:'scrollTo',top:t},'*');}catch(e){} schedule(); }
+      return;
+    }
     var fn = d.command==='exportPDF' ? (typeof exportPDF==='function'?exportPDF:null)
            : d.command==='pickAll'   ? (typeof pickAll==='function'?pickAll:null)
            : d.command==='openAll'   ? (typeof openAll==='function'?openAll:null)
@@ -768,8 +795,42 @@ const FEEDBACK_JS = `
 // Appended at the very end of <body>: the stylesheet is inlined into <head>, so a rule placed here wins
 // the cascade on equal specificity without needing !important, and the script runs with the document's
 // own functions already defined.
-function injectEmbedLayer(html, { feedback = false } = {}) {
-  const block = `<style data-embed="portal">${EMBED_CSS}</style><script data-embed="portal">${EMBED_JS}</script>`
+/**
+ * THE SECTION BREADCRUMB, LIFTED OUT BEFORE THE HEADER GOES (owner, 2026-09-18).
+ *
+ * The renderers emit the breadcrumb INSIDE `.rep-stickyhead` — one header, one sticky surface — and this
+ * function strips that header, because the portal draws its own. So the breadcrumb has to leave the
+ * document and arrive as data: the portal draws it in `.report-head`, beside READS, where it stays on
+ * top of a six-thousand-pixel read.
+ *
+ * It could not stay in the frame whatever this stripped. The frame is sized to its content
+ * (Result.tsx), so the framed document has no scrollport of its own and `position:sticky` inside it
+ * pins to nothing — which is exactly what a reader met: a bar sitting over the confidentiality line
+ * that scrolled away with the page.
+ *
+ * READ OFF THE MARKUP THE RENDERER WROTE, never recomposed from a list of section names here. A second
+ * copy of the vocabulary is how a renderer comes to disagree with the shell about what a report holds.
+ * Returns [] for a document with no strip — `sectionStrip()` emits none under two live sections — and
+ * the shell then draws no breadcrumb, which is the right answer rather than an empty row.
+ */
+const STRIP_NAV_RE = /<nav class="[^"]*\bstrip\b[^"]*"[^>]*>([\s\S]*?)<\/nav>/i;
+const STRIP_LINK_RE = /<a\b[^>]*\bdata-sec="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi;
+export function sectionsOf(html) {
+  const nav = STRIP_NAV_RE.exec(String(html ?? ""));
+  if (!nav) return [];
+  const out = [];
+  for (const m of nav[1].matchAll(STRIP_LINK_RE)) {
+    const label = m[2].replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+    if (m[1] && label) out.push({ id: m[1], label });
+  }
+  return out;
+}
+
+function injectEmbedLayer(html, { feedback = false, sections = [] } = {}) {
+  // The breadcrumb list is a VALUE the injected script reads, not markup: `<` is escaped so a label can
+  // never close the script element it rides inside.
+  const secs = JSON.stringify(sections ?? []).replace(/</g, "\\u003c");
+  const block = `<style data-embed="portal">${EMBED_CSS}</style><script data-embed="portal">window.__CORD_SECTIONS=${secs};${EMBED_JS}</script>`
     + (feedback ? `<style data-embed="feedback">${FEEDBACK_CSS}</style><script data-embed="feedback">${FEEDBACK_JS}</script>` : "");
   const i = html.lastIndexOf("</body>");
   // No </body> means markup we do not recognise; appending is still correct and still parses.
@@ -808,6 +869,10 @@ export function prepareReportForEmbed(html, { staff = false, poolRoot = null, fe
   const unbalanced = [];
   const note = (tag) => unbalanced.push(tag);
   const missingCss = [];
+
+  // READ BEFORE ANYTHING IS STRIPPED. The breadcrumb rides inside `.rep-stickyhead`, which the chrome
+  // strip below removes, so this is the last moment it exists.
+  const sections = sectionsOf(html);
 
   const nav = stripBalanced(html, NAV_RE, "nav", note);
   let out = nav.html;
@@ -887,11 +952,11 @@ export function prepareReportForEmbed(html, { staff = false, poolRoot = null, fe
 
   // After the stylesheet, so the injected rule sits later in the cascade than the sheet it overrides —
   // and after every strip, so nothing above can match the injected markup and eat it.
-  out = injectEmbedLayer(out, { feedback });
+  out = injectEmbedLayer(out, { feedback, sections });
 
   return {
     html: out, strippedNav, neutralised, mcpLeaks, tokensDropped, ratedUnderDropped, runUnderProjectDropped,
-    internalTailsDropped, reviewerCodesDropped, unbalanced, missingCss,
+    internalTailsDropped, reviewerCodesDropped, unbalanced, missingCss, sections,
   };
 }
 

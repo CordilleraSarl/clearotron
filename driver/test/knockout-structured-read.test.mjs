@@ -149,6 +149,18 @@ const RENDER = (marks, over = {}) => renderKnockoutHtml({ marks, batch: { execut
   runId: "r", overall: "Manageable", identity: { identity: "Knockout search" }, ...over,
 });
 
+test("the section breadcrumb is emitted inside the report's sticky header, not under it", () => {
+  // The knockout's half of the same property — see the twin in render.test.mjs for why it is asserted by
+  // position. Both renderers emit the placeholder, so both can drift, and the defect a reader met was on
+  // this one.
+  const html = RENDER([markRow()]);
+  const head = html.indexOf('<div class="rep-stickyhead');
+  const nav = html.indexOf('<nav class="strip');
+  const wrap = html.indexOf('<div class="wrap">');
+  assert.ok(head >= 0 && nav >= 0, "the report draws a sticky header and a breadcrumb");
+  assert.ok(nav > head && nav < wrap, "the breadcrumb is inside the header, not a bar under it");
+});
+
 test("the read renders as STRUCTURE — chip, basis, tight bullets, and the two qualifiers visually apart", () => {
   const html = RENDER([markRow()]);
   assert.match(html, /class="ko-basisline"/, "the basis leads the card");

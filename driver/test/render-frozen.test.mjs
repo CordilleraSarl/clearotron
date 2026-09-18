@@ -1784,7 +1784,9 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // branch in one file, and the provenance line re-homed to the footer. Not licence-only, so this moves too.
 // Advanced again by the break recorded above the FROZEN constant: the export menu moved out to its own
 // module. Not licence-only, so this constant moves with it.
-const FROZEN_BEFORE_SPDX = "767a566cfbf62b66eb93c0993fe10441157abfc7013b39499bfcc130a0c8091f";
+// Advanced again by the break recorded above the FROZEN constant: the section breadcrumb moved inside
+// the sticky header. One executable line, not licence-only, so this constant moves with it.
+const FROZEN_BEFORE_SPDX = "443d2748d932e0201770fa8d0c475e3e7db9e53387e7680c1e77c61425ee55ff";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2544,7 +2546,28 @@ const FROZEN_BEFORE_SPDX = "767a566cfbf62b66eb93c0993fe10441157abfc7013b39499bfc
 //   2. Could it live in report.css or brand.mjs? The chip and state styling did, in report.css. The
 //      rows, their words and the link are composed in this file.
 //   3. Why it had to move here: the section is composed here and nowhere else.
-const FROZEN = "ec3e32f619c1a13c01cccfccdab05996903a1828fb3c94ae81e9a2518893a0b5";
+// ── BREAK (2026-09-18 — one header, with the section breadcrumb inside it) ───────────────────────────
+//
+// WHAT MOVED: one line. The `<!--SECTION-STRIP-->` placeholder moved from OUTSIDE `.rep-stickyhead`
+// to INSIDE it, after `.topbar`. Nothing else in the file changed — no words, no data, no control.
+//
+// WHY. The breadcrumb was a SIBLING of the sticky header, pinned on its own at `top:var(--tb-h,52px)`.
+// `--tb-h` is set nowhere in this product, so 52px was a guess at a bar that measures about 46: content
+// showed through the slit between the two bars, and the strip's `z-index:20` put it UNDER the header's
+// 100 whenever the guess was wrong. The owner met the other end of the same defect in the portal, where
+// the header is stripped at serve time and the breadcrumb was left behind, sitting over the
+// confidentiality line and scrolling away at the first paragraph.
+//
+// THE THREE QUESTIONS.
+//   1. Reachable from republish? Yes — a republish re-renders the document. It carries the same words
+//      and the same data; what changes is that the header and the breadcrumb pin as one surface. A
+//      delivered report re-rendered gets the repair, which is the point rather than a side effect.
+//   2. Could it live in report.css or brand.mjs? The LOOK did, and went there: `.strip` stops being
+//      sticky, drops its own ground and bottom hairline, and takes the topbar's gutter — all of it in
+//      report.css. The NESTING could not: CSS cannot make an element a child of another. That is the
+//      whole content of this break.
+//   3. Why it had to move here: the placeholder's position in the document is composed in this file.
+const FROZEN = "ec3d7684ec1dfa48bf5a89fe74e31e1d3c75da8b193b24623f3090740bfb94cd";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));
