@@ -122,9 +122,8 @@ each mark, and — when the register component is configured — two counts per 
 identical to the name, and how many contain it. That is the whole evidence base. Everything below
 follows from writing only what it supports.
 
-1. **A survivor is never "clear".** A mark this screen did not knock out is *not knocked out at the
-   configured depth, and proceeds to clearance*. Never "clear", "clean", "no conflicts found", "clear
-   to proceed". The screen ending without a blocker is a result about the screen, not about the mark.
+1. **A survivor is never "clear".** Never "clear", "clean", "no conflicts found", "clear to proceed".
+   The screen ending without a blocker is a result about the screen, not about the mark.
 2. **An absence claim may not exceed what was searched.** Say where you looked and what came back
    empty there — "no exact-name energy drink was identified in the supplement and grocery
    marketplaces screened" is supportable; "there is no conflicting use" is not. `negatives[]` is
