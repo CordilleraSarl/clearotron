@@ -1,0 +1,1 @@
+This is the integration branch for the next pre-release of Clearotron. Contributors merge their finished branches into it, and CI checks the combination here. When it is ready, it is published to npm as a beta.

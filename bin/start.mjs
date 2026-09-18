@@ -2322,7 +2322,7 @@ if (isMain) {
   // Captured HERE, immediately before the spawn, rather than beside the sentence that reads it: the
   // check has to sit on the other side of the thing that mints, and the only way to keep that true is
   // for it to be adjacent to the spawn where a reader can see why.
-  const { credentialPathFor: credentialPathBeforeStart, newPassphrase, passphraseResetCommand, demoCredentialToReplace, laterStartLines, readLocalCredential } = await import("../driver/portal-local-auth.mjs");
+  const { credentialPathFor: credentialPathBeforeStart, newPassphrase, passphraseResetCommand, passphraseWithheldLines, demoCredentialToReplace, laterStartLines, readLocalCredential } = await import("../driver/portal-local-auth.mjs");
   // ASKED ABOUT THE FILE THE PORTAL WILL ACTUALLY USE, not the shared default. `credentialPathFor`
   // reads `PORTAL_LOCAL_CREDENTIAL`, and a demo sets it to a file inside its own base — but this call
   // was made against THIS process's environment, which never carries it. So on any box that already had
@@ -2486,16 +2486,25 @@ if (isMain) {
   // line is what a reader copies when they lose the passphrase — run as printed, the bare form resolved
   // the shared default and exited 1 saying no credential exists.
   const reset = passphraseResetCommand({ prefix: invocationPrefix(), credentialPath: envs.portal.PORTAL_LOCAL_CREDENTIAL ?? null });
+  // ── ONLY A TERMINAL IS HANDED THE PASSPHRASE ──────────────────────────────────────────────────────
+  //
+  // The first-start box went to standard output whatever standard output was. Under a service manager,
+  // `nohup` or `> start.log` that is a file, so the one value this product cannot read back landed in a
+  // log, a moment after the portal's own line said it was being withheld for exactly that reason.
+  // Measured on a published beta by an outside install. A redirected run gets the portal's own words
+  // instead, from the composer the portal uses, and the way to mint one on a terminal.
   if (mintedPassphrase) {
     const rule = "─".repeat(66);
     say(`  ┌${rule}┐`);
     say(`  │  Open        ${envs.url}`);
     say(`  │  Sign in as  ${user}`);
-    say(`  │  Passphrase  ${mintedPassphrase}`);
-    say(`  │`);
-    say(`  │  WRITE THE PASSPHRASE DOWN NOW. It is stored only as a digest, so`);
-    say(`  │  nothing — not this product, not this terminal — can read it back.`);
-    say(`  │  Lost it? ${reset}`);
+    if (process.stdout.isTTY === true) {
+      say(`  │  Passphrase  ${mintedPassphrase}`);
+      say(`  │`);
+      say(`  │  WRITE THE PASSPHRASE DOWN NOW. It is stored only as a digest, so`);
+      say(`  │  nothing — not this product, not this terminal — can read it back.`);
+      say(`  │  Lost it? ${reset}`);
+    } else for (const line of passphraseWithheldLines({ stream: "stdout", resetCommand: reset }).flatMap((l) => (/^\s/.test(l) ? [l] : fitTo(64, l)))) say(`  │  ${line}`);
     // THE HINT BELONGS IN THE BOX TOO, and this was the reader the whole sentence was written for. The
     // frame exists because a first-time reader skips the log wall and acts on it — so the one address
     // they copy was the one address with nothing beside it saying what to do when the page that opens
@@ -2602,6 +2611,22 @@ if (isMain) {
 export function demoBaseIsTheReaders({ baseGiven = false, ownBase = false, base = "", demoDefault = "" } = {}) {
   if (!baseGiven) return false;                                          // start chose it: the demo's own
   return !(ownBase && base && demoDefault && base === demoDefault);      // handed over, and it IS the default
+}
+
+/**
+ * A sentence broken at spaces into lines of at most `width` characters, for the framed box. The withheld
+ * lines come from the portal's composer, written for a log line of any length; inside the frame they are
+ * broken to the width of the lines they stand in for. A word longer than `width` keeps its own line. PURE.
+ */
+export function fitTo(width, text) {
+  const out = [];
+  let line = "";
+  for (const word of String(text ?? "").split(/\s+/).filter(Boolean)) {
+    if (line && line.length + 1 + word.length > width) { out.push(line); line = word; }
+    else line = line ? `${line} ${word}` : word;
+  }
+  if (line) out.push(line);
+  return out;
 }
 
 export function demoBaseResetTarget({ baseGiven = false, base = "", demoDefault = "" } = {}) {

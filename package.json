@@ -11,7 +11,7 @@
   "bugs": {
     "url": "https://github.com/CordilleraSarl/clearotron/issues"
   },
-  "description": "Clearotron — trademark-clearance engine: deterministic orchestration driver + MCP interrogation server. Provider-agnostic, model-agnostic, runs headless (no gateway).",
+  "description": "Trademark clearance engine. Searches the registers and the open web, rates the conflicts, and delivers a written report with the record behind every finding.",
   "keywords": [
     "trademark",
     "trademark-clearance",

@@ -104,7 +104,7 @@ export function queueWatchVerdict({ queueDirs, watched, unitPath, unitError = nu
       message: `this deployment resolves NO queue directory at all, so nothing enqueued to it can ever be drained (${unitPath} watches ${w.length})` };
   }
 
-  const norm = (p) => String(p ?? "").replace(/\/+$/, "");
+  const norm = (p) => { const s = String(p ?? ""); let e = s.length; while (e > 0 && s.charCodeAt(e - 1) === 47) e--; return s.slice(0, e); };   // trailing slashes, in one pass: `/\/+$/` retried every run of slashes that was not at the end
   const watchedSet = new Set(w.map(norm));
   const unwatched = q.map(norm).filter((d) => !watchedSet.has(d));
   const where = `${q.length} queue dir(s) resolved; ${unitPath} watches ${w.length}`;

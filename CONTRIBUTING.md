@@ -17,6 +17,7 @@ runs on `node:sqlite`. Node 20 will fail in ways that look like your change.
 
 ```bash
 npm install
+npm run build:ui            # the browser bundle is not committed; the demo needs it
 npm test                    # the fast tier, offline, no network, no keys
 ```
 

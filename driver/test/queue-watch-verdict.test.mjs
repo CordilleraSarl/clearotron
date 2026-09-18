@@ -179,7 +179,7 @@ test("REPLAY — the issue's own acceptance, in its own terms", () => {
   });
   assert.doesNotMatch(r.message, /never drained/, "#1368's replay acceptance, verbatim");
   assert.notEqual(r.state, "pass", "the missing arrival trigger is still a real gap and must be reported");
-  assert.match(r.message, new RegExp(QUEUE.replace(/\//g, "\\/")), "the directory still has to be named");
+  assert.ok(r.message.includes(QUEUE), "the directory still has to be named");
 });
 
 test("the tick actually SUPPLIES a timer, so 'nobody probed it' is not this caller's normal state", () => {

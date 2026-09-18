@@ -103,7 +103,7 @@ test("authorize: ops can do everything (reads, cross-run, writes)", () => {
 
 // The stamp is a PREVIEW courtesy, and stops there — the line drawn 2026-07-27.
 //
-// #53's defect was the free call every principal makes first dying on a message naming an internal doc,
+// The defect was the free call every principal makes first dying on a message naming an internal doc,
 // so plan_run is what the stamp exists to rescue. Carrying it into start_run would remove a spend gate:
 // an ops sub is often a connector name or "local", buildJob fills forwarderEmail from
 // `${forwarder}@example.com` when none is given, and the result is a paid run whose delivery packet
@@ -129,7 +129,7 @@ test("authorize: internal (CF-authed, no token) = read-all, NO writes", () => {
   assert.throws(() => authorize(internal, "what_if_run", {}), /requires an ops token/);
 });
 
-// ---- the forwarder stamp (finishing #53, which covered the account kind only) --------------------
+// ---- the forwarder stamp (finishing the first fix, which covered the account kind only) ------------
 //
 // buildJob requires a forwarder and names docs/DELIVERY.md when it is missing. plan_run builds the same
 // job start_run does, so the FREE preview — the first call any connecting principal makes — died on an
@@ -163,7 +163,7 @@ test("a CF-authed staff identity REACHES the stamp — the whole chain, not its 
   // Reverting it silently returns every CF-authed staff plan_run to forwarder "cordillera-mcp" with no
   // forwarderEmail. So: the email in, the stamp out, in one assertion chain.
   assert.equal(resolveScope({ firmStaff: true, email: "senior@firm.example" }).sub, "senior@firm.example",
-    "the CF-verified email was known here and thrown away — the bug #53 left behind");
+    "the CF-verified email was known here and thrown away — the bug the first fix left behind");
   const stamped = authorize(resolveScope({ firmStaff: true, email: "senior@firm.example" }), "plan_run", { markName: "X" });
   assert.equal(stamped.forwarder, "senior@firm.example");
   assert.equal(stamped.forwarderEmail, "senior@firm.example");

@@ -1,4 +1,5 @@
 {
+  "$comment": "How to connect an assistant, and which directories this server reads: mcp-server/CONNECT.md",
   "mcpServers": {
     "trademark-artifacts": {
       "command": "node",

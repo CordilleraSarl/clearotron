@@ -1031,6 +1031,31 @@ export function installSizeLine(eng) {
 }
 
 /**
+ * Whether a login shell will put `dir` on the PATH: some profile this user's shells read names it.
+ *
+ * Setup promised "open a new login shell, and plain `clearotron start` works". That is Ubuntu's stock
+ * `~/.profile` for an ordinary user, which adds `~/.local/bin` once it exists. It is not root's in a fresh
+ * container, measured on ubuntu:24.04 by an outside install, and it is not macOS's default zsh. So the
+ * promise is made only when a profile names the directory. A profile that adds it some other way reads as
+ * "no", which costs a reader one line of advice and never sends them to a shell that will not find it.
+ */
+const LOGIN_PROFILES = [".profile", ".bash_profile", ".bash_login", ".bashrc", ".zprofile", ".zshenv", ".zshrc", ".zlogin"];
+export function aLoginShellAdds(dir, { home = homedir(), read = (p) => readFileSync(p, "utf8") } = {}) {
+  const d = String(dir ?? "");
+  if (!d) return false;
+  const rel = home && d.startsWith(`${home}/`) ? d.slice(home.length + 1) : null;
+  const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const names = new RegExp(`(^|[^\\w.-])(${esc(d)}${rel ? `|(\\$HOME|\\$\\{HOME\\}|~)/${esc(rel)}` : ""})(?![\\w.-])`);
+  for (const f of LOGIN_PROFILES) {
+    let text;
+    try { text = read(join(home, f)); } catch { continue; }
+    // A COMMENTED-OUT LINE ADDS NOTHING, and a disabled PATH line is an ordinary state for a profile.
+    if (String(text ?? "").split("\n").some((l) => !/^\s*#/.test(l) && names.test(l))) return true;
+  }
+  return false;
+}
+
+/**
  * The engine menu, built from the driver's registry so the wizard cannot offer an adapter that does not
  * exist — or hide one that does. Same guarantee the register-provider list has.
  *
@@ -1997,7 +2022,7 @@ export async function runCheck() {
       info(`this install's own is ${form.shim} — the commands below name it in full, so they reach THIS install`);
     } else if (form.form === "shim-path") {
       warn(`${form.dir} is not on this shell's PATH, so the bare \`clearotron\` will not resolve here`);
-      info(`add it with: export PATH="${form.dir}:$PATH"  — or open a new login shell`);
+      info(`add it with: export PATH="${form.dir}:$PATH"${aLoginShellAdds(form.dir) ? "  — or open a new login shell" : ""}`);
     } else if (form.form === "npx-pinned") {
       info(`this is running from npm's npx cache, so the commands below name this version through npx (\`${form.prefix.trim()}\`), `
         + `which works from any directory and after npm cleans its cache; \`${invoke("install")}\` puts \`clearotron\` on your PATH`);
@@ -4029,20 +4054,25 @@ try {
   say("\n  Register provider");
   say("  This decides which register gets searched, and which vendor gets billed. There is no default in");
   say("  the engine — it refuses to guess.");
-  const provider = await choose("Which register?", PROVIDERS.map((p) => ({ label: `${p.label} — ${p.cost}`, spec: p })), 0);
+  // THE LAST ROW IS NOT A REGISTER, as on the AI question, and with the same words. Leaving the register
+  // unset was reachable only by picking a vendor and skipping its credential, so a reader who meant "none
+  // yet" had to pretend to choose one. Choosing it takes the branch a skipped credential reaches below.
+  const provider = await choose("Which register?", [...PROVIDERS.map((p) => ({ label: `${p.label} — ${p.cost}`, spec: p })), { label: "None for now", spec: null }], 0);
   const spec = provider.spec;
-  say(`\n  ${spec.label}: covers ${spec.covers}`);
-  for (const w of spec.warnings ?? []) warn(w);
-  if (spec.signup && !spec.credentials.every((k) => present(candidate[k]))) {
-    say("\n  How to get a credential:");
-    for (const l of spec.signup) say(`    ${l}`);
-    say("");
+  if (spec) {
+    say(`\n  ${spec.label}: covers ${spec.covers}`);
+    for (const w of spec.warnings ?? []) warn(w);
+    if (spec.signup && !spec.credentials.every((k) => present(candidate[k]))) {
+      say("\n  How to get a credential:");
+      for (const l of spec.signup) say(`    ${l}`);
+      say("");
+    }
   }
   // ── — INSTALL MAY FINISH WITH NO REGISTER. Ruling, 2026-08-26 ──────────────────────
   //
   // Every row of PROVIDERS declares required credentials, and this prompt had no way out, so a reader
-  // with no vendor account could not reach the closing screen at all — the menu offers no "none" row,
-  // which means they arrive here without ever having chosen to supply a key.
+  // with no vendor account could not reach the closing screen at all. The menu's "None for now" row is
+  // the chosen way here; a skipped credential is the other.
   //
   // A REGISTER IS ALL-OR-NOTHING, WHICH IS WHY ONE SKIP ABANDONS THE WHOLE SELECTION. Half a credential
   // pair is not a working register; writing CLEAROTRON_DATABASE beside it would name an adapter that
@@ -4053,14 +4083,14 @@ try {
   // is single-valued with no default, a run already refuses by name when it is unset
   // (driver.config.mjs), and the Installation settings page already says a register is needed.
   // One register per install, any one of them sufficient, none a precondition for another.
-  let registerSelected = true;
+  let registerSelected = spec != null;
   // What THIS step collected, so abandoning the selection can take it back. Measured: a register with
   // two required credentials — `euipo`, `free-tier` — let a reader supply the first and skip the second,
   // and the first was written to the .env with no CLEAROTRON_DATABASE beside it. `candidate` is
   // serialised wholesale at the write step, so anything left in it ships. A credential for a register
   // nobody selected is a secret persisted for a decision that was reversed.
   const collectedHere = [];
-  for (const k of spec.credentials) {
+  for (const k of spec?.credentials ?? []) {
     if (present(candidate[k])) { ok(`${k} already adopted from your environment`); continue; }
     const v = await askValue(`${k}:`, { secret: true, skippable: true,
       skipped: `${k} not set, so ${spec.id} cannot be configured — this install will have NO register selected.` });
@@ -4581,7 +4611,8 @@ try {
     say(`  \`clearotron\` is now installed at ${form.shim}, and ${form.dir} is not on this shell's`);
     say("  PATH yet — most login profiles add it only if it existed when the shell started. So:\n");
     say(`    export PATH="${form.dir}:$PATH"     # this terminal, now`);
-    say("      …or open a new login shell, and plain `clearotron start` works from anywhere.\n");
+    if (aLoginShellAdds(form.dir)) say("      …or open a new login shell, and plain `clearotron start` works from anywhere.\n");
+    else say("");
   } else if (form.form === "in-place") {
     say("  There is no `clearotron` on your PATH, so the commands above name the directory to run them");
     say("  from. Re-run the install to put the verb on your PATH.\n");

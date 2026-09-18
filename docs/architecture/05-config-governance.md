@@ -542,7 +542,7 @@ change. The product's known mirror classes:
 | CF Access team / AUD / domain gates | edge (dashboard) + each fronted unit's inline env | staff or company lockout, service by service |
 | `TRADEMARK_MCP_TOKEN_SECRET` | EnvironmentFile + any integrator-hosted artifacts-MCP env block | run-bound `user` tokens fail verification |
 | Register-provider credentials | EnvironmentFile + integrator plugin config (when both consume the provider) | one consumer silently unauthenticated |
-| Profiles/skills store paths | EnvironmentFile + service unit files (+ integrator MCP env) | roster-mismatch class (the PR #14 incident) |
+| Profiles/skills store paths | EnvironmentFile + service unit files (+ integrator MCP env) | roster-mismatch class: a door serving the bundled demo roster instead of the real one |
 | Pool root | code default + units + web-server file root (+ integrator MCP env) | reports publish where nothing serves |
 | Public hostnames | EnvironmentFile (rendered links) + router + edge | dead links / dead routes |
 

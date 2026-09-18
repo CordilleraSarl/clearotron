@@ -289,7 +289,9 @@ test("tracker 2018 the ledger walk refuses an empty tree and names the root it f
   // BOTH DIRECTIONS, and the second is the one the old catch swallowed: the refusal has to arrive, and
   // it has to say which root, or "the sweep is green" and "the sweep did not run" read the same.
   const tmp = mkdtempSync(join(tmpdir(), "b2018-ledger-"));
-  const leaf = join(REPO, "driver", "profiles", "projects", `b2018-${process.pid}`);
+  const tree = mkdtempSync(join(tmpdir(), "b2018-ledger-tree-"));
+  const root = join(tree, "driver");
+  const leaf = join(root, "profiles", "projects", "b2018-leaf");
   try {
     mkdirSync(join(tmp, "a", "b"), { recursive: true });
     assert.throws(() => modulesUnder(tmp, "an-empty-tree"),
@@ -297,13 +299,20 @@ test("tracker 2018 the ledger walk refuses an empty tree and names the root it f
       "a walk that found no module was swallowed, or refused without naming the root it failed on");
 
     // …and the leaf that produced changes nothing about what driver/ walks.
-    const baseline = modulesUnder(join(REPO, "driver"), "driver").length;
+    // PLANTED IN A TREE OF ITS OWN, not in the checkout: a leaf planted under this repository's own
+    // driver/profiles/projects/ is visible, while it exists, to every other test running beside this one —
+    // the wrapper reports it as a test writing inside the checkout, and the generated-files check blames
+    // whichever minter was running. The walk takes its root, so it walks a laid-out tree instead.
+    mkdirSync(root, { recursive: true });
+    writeFileSync(join(root, "one.mjs"), "export const one = 1;\n");
+    const baseline = modulesUnder(root, "driver").length;
+    assert.equal(baseline, 1, "the laid-out tree is not the tree the walk reads — this arm would prove nothing");
     mkdirSync(leaf, { recursive: true });
-    assert.equal(modulesUnder(join(REPO, "driver"), "driver").length, baseline,
+    assert.equal(modulesUnder(root, "driver").length, baseline,
       "an empty directory under driver/ changed the modules this sweep reads");
   } finally {
     rmSync(tmp, { recursive: true, force: true });
-    rmSync(leaf, { recursive: true, force: true });
+    rmSync(tree, { recursive: true, force: true });
   }
 });
 

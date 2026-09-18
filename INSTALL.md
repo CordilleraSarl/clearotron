@@ -16,7 +16,7 @@ after §5 is needed to produce a report.
 | | Sections | For |
 |---|---|---|
 | **Installing** | §1 Prerequisites · §2 Install · §3 Configuration · §3a Free register route · §3b Paying through a cloud account · §4 Config store · §5 Run a clearance | Anyone |
-| **Operating** | §6 `npx clearotron start` · §7 The MCP server · §8 Access control and isolation | Running it as a service for other people |
+| **Operating** | §6 Start the product · §7 The MCP server · §8 Access control and isolation | Running it as a service for other people |
 | **Reference** | §9 What an integrator supplies · §10 Licence | — |
 
 Before §3, decide which register you are using — it is the first real choice and the fastest route is
@@ -113,7 +113,7 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
   pay for Claude through your own Google Cloud, Microsoft Azure or Amazon Bedrock account (§3b).
 
   **Installed is not usable.** `npx clearotron install` proves the engine can complete a turn before it
-  writes anything, and `npx clearotron doctor --probe-engine` re-proves it on a configured box. Both
+  writes anything, and `clearotron doctor --probe-engine` re-proves it on a configured box. Both
   spend one cheap turn; plain `doctor` spends nothing.
 - **A register credential**, and **`PERPLEXITY_API_KEY`**. Both are required for a real run and both
   fail closed at preflight — before a stage has spent, never at the grid after. The one exception is a
@@ -202,8 +202,8 @@ tarball as a dependency.** Not an unpacked archive; there is no step here that u
 mkdir ~/app && cd ~/app
 npm init -y
 npm install /path/to/clearotron-<version>.tgz
-npx clearotron doctor          # reads; writes nothing, calls nobody
 npx clearotron install         # the wizard
+clearotron doctor              # reads; writes nothing, calls nobody
 ```
 
 `npx` works from `~/app` because npm links a **dependency's** `bin` into the consuming project — the
@@ -264,7 +264,10 @@ there. On the repository route "the project" is the checkout; on the packaged ro
 you ran `npm init` in — and on that route `clearotron` IS a dependency, so `npx` finds it in
 `node_modules/.bin` exactly as the paragraph above describes.
 
-**`clearotron install` (§3) puts the short form on your `PATH`** and you can stop typing `npx` after it:
+**`clearotron install` (§3) puts the short form on your `PATH`**, and every command after it in this
+document uses that form. Use it rather than a fresh `npx clearotron`: `npx` resolves whichever version npm
+picks at that moment — the stable, unless you name a channel — and does not hand over to the copy the
+install placed. You can stop typing `npx` after it:
 it writes a small shim to `~/.local/bin/clearotron` pointing at this checkout. That directory needs no
 root — `npm link` would want npm's global prefix, which on a default install is `/usr` and refuses
 without it. Most login profiles add `~/.local/bin` to `PATH` only if it already existed when the shell
@@ -413,7 +416,7 @@ If you would rather not write this file by hand, `npx clearotron install` asks f
 these paths under it, checks what it can check without billing you before it writes anything, and never
 touches a path you did not name — an engine turn, an EUIPO token exchange, and an offered (not assumed)
 Perplexity ping. A paid register key is deliberately not probed: a call against a metered subscription is
-a charge you did not ask for, so that credential is written on your word. `npx clearotron doctor`
+a charge you did not ask for, so that credential is written on your word. `clearotron doctor`
 reports what is set and what is missing, and writes nothing.
 
 Only the integrator-set knobs are shown — copy what you need:
@@ -597,9 +600,9 @@ points on it.
 | What it is | What the product calls it | Where it lives | What creates it |
 |---|---|---|---|
 | A group of people and the companies they clear for — a firm, a brand team, one company on a hosted install | **organisation** (`tenant` in `grants.json`) | a key under `tenants` in `grants.json`, with its `name` | setup creates the first; after that, a key you add to `grants.json` |
-| A company you do clearances for | **company** (`account` in `grants.json` and on the wire; the CLI calls it **brand owner**) | a bundle in the company store, keyed by an account key, and listed under exactly one organisation | the portal's `+ New company`, or `npx clearotron brandowner add <key>` |
-| One engagement under that company — its classes, jurisdictions, platforms | **project** | inside that company's bundle | `npx clearotron project add` |
-| Someone who may see some of it | **person** | `grants.json`: their access under each organisation's `users`, their two switches under `people` | the portal's People page, or `npx clearotron grant add` |
+| A company you do clearances for | **company** (`account` in `grants.json` and on the wire; the CLI calls it **brand owner**) | a bundle in the company store, keyed by an account key, and listed under exactly one organisation | the portal's `+ New company`, or `clearotron brandowner add <key>` |
+| One engagement under that company — its classes, jurisdictions, platforms | **project** | inside that company's bundle | `clearotron project add` |
+| Someone who may see some of it | **person** | `grants.json`: their access under each organisation's `users`, their two switches under `people` | the portal's People page, or `clearotron grant add` |
 
 Nesting, in one line: **an organisation contains companies; a company contains projects; a person is
 given access to points on that tree — the whole install, an organisation, or one company — and sees
@@ -613,7 +616,7 @@ Three consequences worth stating, because each has surprised someone:
   stops them; **Manage** adds people, adds companies and changes settings. Viewing is not a permission:
   access is viewing. A person with no entry under `people` sees what their access covers and starts
   nothing.
-- **A key grants no reach of its own.** `npx clearotron key issue` mints the identity a person's assistant
+- **A key grants no reach of its own.** `clearotron key issue` mints the identity a person's assistant
   presents; what that identity may see and do is decided by the guest list at the moment of each call.
   Enrol first, issue second — a key for someone with no access reaches nothing, and is not an error
   anywhere.
@@ -710,7 +713,7 @@ Copy or author the companies, context packs and project overlays you want; assum
 ## 5. Run a headless clearance report
 
 1. Make sure `CLEAROTRON_AI` names the engine you want (`anthropic-agent` or `openai-agent`), its CLI is
-   authenticated, and your active register provider's credential is set. `npx clearotron doctor
+   authenticated, and your active register provider's credential is set. `clearotron doctor
    --probe-engine` answers all three, and the engine half of it by actually running a turn — an
    executable on `PATH` that is signed out passes every other check and fails at the first stage.
 
@@ -760,7 +763,7 @@ Copy or author the companies, context packs and project overlays you want; assum
 3. Run the pipeline:
 
    ```
-   npx clearotron run --job job.json
+   clearotron run --job job.json
    ```
 
    **The example above is sized in minutes; a real clearance is sized in hours.**
@@ -834,7 +837,7 @@ A run stopped by a **provider rate limit** or parked for **automatic recovery** 
 that is the systemd units in `driver/systemd/`. Everywhere else, run the watcher yourself:
 
 ```
-npx clearotron run-queue --watch
+clearotron run-queue --watch
 ```
 
 That polls every 90 seconds for queued jobs and for parked runs whose window has elapsed, and it resumes
@@ -847,18 +850,18 @@ stops it, and anything still parked waits for the next time you start it.
 Everything above runs the engine from a job file. This is the product: a portal you sign in to, order a
 clearance from, and read the report in.
 
-**Plain `npx clearotron start` runs in the foreground and stops when this terminal closes** — Ctrl-C, a
+**Plain `clearotron start` runs in the foreground and stops when this terminal closes** — Ctrl-C, a
 dropped SSH session, a shut laptop lid ending the session: the portal goes with it. That is the right
 shape for trying things. To keep it running when the window is gone:
 
 ```
-npx clearotron start --background     # the same product, as user services that survive the terminal
-npx clearotron status                 # is it up, and on which ports
-npx clearotron stop                   # stop it and give the box back — plain `start` works again
+clearotron start --background     # the same product, as user services that survive the terminal
+clearotron status                 # is it up, and on which ports
+clearotron stop                   # stop it and give the box back — plain `start` works again
 ```
 
-`--background` never touches the assistant connector: `npx clearotron connect` opens that door
-and `npx clearotron disconnect` closes it, separately and on purpose.
+`--background` never touches the assistant connector: `clearotron connect` opens that door
+and `clearotron disconnect` closes it, separately and on purpose.
 
 **If anything else on this host already runs this product, set its ports first.** The portal (18802)
 and the engine door (18790) are **fixed defaults shared by every checkout on a machine**, so a second
@@ -866,14 +869,14 @@ instance collides with the first and `start` refuses rather than quietly moving.
 before the first start:
 
 ```
-PORTAL_SERVICE_PORT=18820 TRADEMARK_MCP_HTTP_PORT=18821 npx clearotron start
+PORTAL_SERVICE_PORT=18820 TRADEMARK_MCP_HTTP_PORT=18821 clearotron start
 ```
 
 A test instance beside a live one needs more than two ports — §8, *Two instances on one machine*, is the
 whole boundary. On a host running nothing else, ignore this and carry on:
 
 ```
-npx clearotron start
+clearotron start
 ```
 
 One command. It starts the portal and the engine door the portal's Start button calls, waits until both
@@ -881,14 +884,14 @@ answer, and prints one address to open. `Ctrl-C` stops both. The second run asks
 
 **This is not `npx clearotron demo`, and the two are not interchangeable.**
 
-| | `npx clearotron demo` | `npx clearotron start` |
+| | `npx clearotron demo` | `clearotron start` |
 |---|---|---|
 | what it is | a finished report, replayed | the running product |
 | credentials | none | whatever a real run needs (§3) |
 | model calls | none | yes, once you order a clearance |
 | what you can do | read | sign in, configure, order, read |
 
-Use the demo to see what this system produces. Use `npx clearotron start` to run it.
+Use the demo to see what this system produces. Use `clearotron start` to run it.
 
 ### What the first start does, once
 
@@ -898,7 +901,7 @@ Use the demo to see what this system produces. Use `npx clearotron start` to run
   `clearotron doctor` and a connected assistant read the same saved searches as the portal.
 - Creates `~/trademark/` — `pool/`, `workspace/`, `queue/`, `outbox/`, `locks/`, an empty grants file,
   and a small git repository for saved searches. Same base directory `npx clearotron install` uses, so whichever
-  of the two you ran first, the other finds the same install. Move it with `npx clearotron start --base <dir>`.
+  of the two you ran first, the other finds the same install. Move it with `clearotron start --base <dir>`.
   That does not move anything the env file already names: the saved-search lines above, and the data
   directories `npx clearotron install` wrote, keep pointing at the old place until you edit them.
 - Mints your sign-in passphrase and **prints it once**. Write it down. It is stored as a scrypt digest in
@@ -911,7 +914,7 @@ Use the demo to see what this system produces. Use `npx clearotron start` to run
 You sign in as `<your-username>@localhost` unless you say otherwise:
 
 ```
-npx clearotron start --user you@example.com
+clearotron start --user you@example.com
 ```
 
 Setup does not ask for the address: it writes the local-account form to `.env` and shows it once, in
@@ -923,7 +926,7 @@ nobody else at its domain; enrolling anyone else is that same file, exactly as o
 
 **No authentication is switched off to make this work, and none can be.** Both doors prove who the
 caller is — the portal by passphrase and a signed session cookie, the engine door by a mandatory
-access key that `npx clearotron start` mints in memory at every start and never writes down. The key is scoped to
+access key that `clearotron start` mints in memory at every start and never writes down. The key is scoped to
 two verbs and capped to the companies this install knows about. The `*_AUTH_DISABLED` switches
 elsewhere in this repository are for something else and are written into the child environment as `0`.
 
@@ -941,7 +944,7 @@ no proxy in front is the one shape to avoid — the portal refuses to start with
 
 ### It drains its own queue
 
-`npx clearotron start` supervises a worker alongside the portal, so ordering a clearance from the portal
+`clearotron start` supervises a worker alongside the portal, so ordering a clearance from the portal
 runs it.
 
 The consent did not move and did not weaken. The portal prices the run, quotes how long it takes, and
@@ -953,8 +956,8 @@ If you want the old separation — order here, drain deliberately over there —
 run the queue yourself:
 
 ```
-npx clearotron start --no-worker
-npx clearotron run-queue --watch
+clearotron start --no-worker
+clearotron run-queue --watch
 ```
 
 A queued job whose worker is not running says so on the portal rather than sitting at "Waiting to start".
@@ -982,7 +985,7 @@ systemctl --user daemon-reload && systemctl --user enable --now clearotron-deplo
 
 A busy box simply skips: the service exits clean when a run is live and the next firing tries again.
 
-**`npx clearotron doctor` reports how far behind this install is**, beside everything else it checks. It
+**`clearotron doctor` reports how far behind this install is**, beside everything else it checks. It
 does not fetch, so the count is against your last fetch — which it says. An install that is not a git
 checkout, or a branch with no upstream, says that instead of reporting a number it cannot compute.
 
@@ -997,7 +1000,7 @@ yours to do, and now yours to know about.
 
 The portal is on 18802 and the engine door on 18790, both loopback, and both are **fixed defaults for
 every checkout on the host** rather than per-install values. They move separately: the portal with
-`npx clearotron start --port <n>` or `PORTAL_SERVICE_PORT=<n>`, the engine door with
+`clearotron start --port <n>` or `PORTAL_SERVICE_PORT=<n>`, the engine door with
 `TRADEMARK_MCP_HTTP_PORT=<n>`. A port already in use produces a sentence saying which port and which
 variable to change, before anything starts — it will not quietly pick another, because whatever sits in
 front of it is still addressed to the old one.
@@ -1073,17 +1076,17 @@ their own integration work.
 
 1. **Clearotron is installed on the machine the assistant runs on** — Claude's desktop app, Claude Code,
    Codex, the ChatGPT desktop app, an agent that runs commands. The assistant spawns the server over
-   stdio. No address, no key, no network, no ingress. `npx clearotron start` prints the one line to
-   paste, and `npx clearotron connect --where here` hands it over per assistant.
+   stdio. No address, no key, no network, no ingress. `clearotron start` prints the one line to
+   paste, and `clearotron connect --where here` hands it over per assistant.
 2. **Clearotron is running somewhere else** — a server, a cloud machine, anywhere the assistant is
    not. These need **a publicly reachable HTTPS address**, plus a key made for the person connecting.
    Always. Claude (app, web, Cowork and mobile), ChatGPT on the web, Perplexity and other agents only
-   ever connect this way; Claude Code and Codex can connect either way. `npx clearotron connect
+   ever connect this way; Claude Code and Codex can connect either way. `clearotron connect
    --where elsewhere` makes the key and prints the steps for the assistant you name.
 
 Without `--where`, `connect` asks when both answers are possible, and `--client <name>` on its own keeps
 the answer that assistant had before: a key for Claude, the local line for Claude Code and Codex.
-`npx clearotron disconnect` takes the same `--where`.
+`clearotron disconnect` takes the same `--where`.
 
 **A loopback address is never an answer for shape 2, and that is not about your network.** A remote MCP
 connector is reached **from the vendor's cloud**, never from the reader's device. Anthropic's own help
@@ -1091,7 +1094,7 @@ centre states it: *"Claude connects to your remote MCP server from Anthropic's c
 rather than from your local device. This is true across every Claude client, including claude.ai, Claude
 Desktop, Cowork, and the mobile apps … Your MCP server must be reachable over the public internet."*
 So an install behind `ssh -L` or an editor's port forward serves shape 1 perfectly and cannot serve
-shape 2 at all, however the reader reaches the portal. `npx clearotron connect` says so plainly rather
+shape 2 at all, however the reader reaches the portal. `clearotron connect` says so plainly rather
 than printing an address that will be rejected.
 
 **The address is set once, at install.** `npx clearotron install` asks for it — *"the address companies'
@@ -1100,7 +1103,7 @@ Use-your-AI page, a report's Ask-your-AI control and `doctor` all read. Leave it
 install: every one of those surfaces then shows its honest empty state, which is correct for a machine
 with no public address. Changing it later is editing that one setting and restarting.
 
-Whatever you provision, `npx clearotron doctor` will tell you whether the published address actually
+Whatever you provision, `clearotron doctor` will tell you whether the published address actually
 answers — being set is not the same as being reachable, and the page and the report both render from
 the value being present alone. An address that does not answer is reported as a problem with the
 reason, never as configured.
@@ -1168,7 +1171,7 @@ curl -sS -o /dev/null -w '%{http_code}\n' https://<your-host>/mcp
 
 Anything that comes back — including a 401 or a 405 — proves the route reaches the connector; a
 connection error or a login page does not. Put the address that answered into the installer's question
-(or `CLEAROTRON_CLIENT_MCP_URL`), then `npx clearotron doctor` and read the connector line.
+(or `CLEAROTRON_CLIENT_MCP_URL`), then `clearotron doctor` and read the connector line.
 
 Smoke-test either face offline:
 
@@ -1191,28 +1194,28 @@ bills Claude through an API key or a cloud account, never a Claude subscription,
 require.
 
 **The guest list.** `CLEAROTRON_ACCESS_FILE` turns account scoping on for **every face at once** — the
-portal, the MCP read face, and the client connector. `npx clearotron start` (§6) writes one into its
+portal, the MCP read face, and the client connector. `clearotron start` (§6) writes one into its
 state directory the first time it runs: you, with access to everything, your organisation if setup was
 told its name, and nobody else yet.
 [examples/grants.example.json](examples/grants.example.json) is a runnable guest list over the demo
 companies.
 
-**Giving someone access.** `npx clearotron grant add` writes the same file the portal's People page
+**Giving someone access.** `clearotron grant add` writes the same file the portal's People page
 writes:
 
 ```
-npx clearotron grant add <email> --tenant <organisation> --accounts <key,key|*> [--run] [--manage]
+clearotron grant add <email> --tenant <organisation> --accounts <key,key|*> [--run] [--manage]
 ```
 
 `--accounts '*'` is the whole organisation, including companies filed under it later. `--run` lets the
 person start and stop clearances; `--manage` lets them add people and companies and change settings.
 With neither, they can see what their access covers and start nothing.
 
-**Keys for people.** `npx clearotron grant` enrols someone; it decides what they may see and issues
+**Keys for people.** `clearotron grant` enrols someone; it decides what they may see and issues
 nothing. The key their assistant actually presents comes from a different verb:
 
 ```
-npx clearotron key issue <email> [--accounts a,b] [--ttl-days 90]
+clearotron key issue <email> [--accounts a,b] [--ttl-days 90]
 ```
 
 It is printed once, on stdout, and stored nowhere — possession is the credential. Enrol first: the key
@@ -1227,7 +1230,7 @@ node mcp-server/mint-token.mjs --scope ops --sub <name> --ttl-days 30 --verbs st
 ```
 
 Said plainly rather than dressed as a verb, because the distinction costs real time: **`npx clearotron
-key issue` mints ACCOUNT keys only**, and `npx clearotron grant` mints nothing at all. This page
+key issue` mints ACCOUNT keys only**, and `clearotron grant` mints nothing at all. This page
 previously sent readers to `grant` for an ops token, which is why the sentence is now this long.
 
 **When you have to re-mint one.** Not on the ordinary path any more, and this paragraph used to say
@@ -1307,7 +1310,7 @@ https://claude.com/api/mcp/auth_callback
 https://chatgpt.com/connector_platform_oauth_redirect
 ```
 
-`npx clearotron doctor --probe-connector` asks your own door whether each of those can register, with a
+`clearotron doctor --probe-connector` asks your own door whether each of those can register, with a
 localhost control first so a broken endpoint is never reported as a policy refusal. It is opt-in because
 each successful attempt creates a throwaway OAuth client on your account — every other `doctor` check
 writes nothing.
@@ -1318,7 +1321,7 @@ writes nothing.
 > whether the application was recreated before you change anything else.
 
 **Seeing what a company sees.** There is no "view as" screen. The documented route is a **client-scoped
-connector key**: issue one for that company with `npx clearotron key issue`, point an assistant at the
+connector key**: issue one for that company with `clearotron key issue`, point an assistant at the
 client connector with it, and you get exactly that company's scope. Changing `PORTAL_LOCAL_USER` to
 impersonate someone is not the answer — local sign-in is one user by design, and the service refuses to
 start if the credential does not match the configured address, so you lose your own access and take the
@@ -1391,7 +1394,7 @@ the orchestrator, the provider adapters and the documentation.
 
 AGPL §13 matters if you run it as a network service: anyone who interacts with your instance is owed
 the source of **that** instance. Every network face answers with its own running commit — the portal's
-About page, the MCP server's `server_info`, and `npx clearotron start --license`.
+About page, the MCP server's `server_info`, and `clearotron start --license`.
 
 **Everything §1 told you to bring is outside it.** Read this before you count the licence as your
 answer on any of them:

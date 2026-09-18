@@ -922,7 +922,7 @@ export async function enqueueViaMcp(job, { clientPrincipal = false, forwarder = 
 // harness named the door that BEHAVED as the defect. Two hours later the codex arm hit no 429 and the
 // same case was clean — so the finding also reads as a flake, which is the worst of both.
 //
-// The rule the asymmetry check encodes (#98) is sound: for a case both doors should refuse, the one
+// The rule the door-asymmetry check encodes is sound: for a case both doors should refuse, the one
 // that accepted is the bug. It rests on an assumption nobody wrote down — that a refusal is a
 // PRODUCT-SCOPE JUDGMENT. A 429 or a 5xx is not a judgment. The request died in the transport, before
 // `start_run` ran a single scope check, so that door holds no opinion about this case at all.
@@ -945,7 +945,7 @@ export function doorAnswerClass(answer) {
 }
 
 /**
- * The #98 asymmetry verdict, over the doors that actually answered.
+ * The door-asymmetry verdict, over the doors that actually answered.
  * Returns { agreed, compared, unavailable, reducedCoverage } — `agreed` is TRUE when fewer than two
  * doors answered, because one opinion is not a disagreement and must never be reported as one.
  */
@@ -2141,7 +2141,7 @@ async function cmdRun(id) {
 
   const jobs = s.job ? [{ id: s.id, job: s.job, kase: {} }] : (s.cases ?? []).map((c) => ({ id: c.id, job: c.job, what: c.what, oneMatterAcrossDoors: c.oneMatterAcrossDoors === true, expectTerminal: (c.expect ?? {}).terminal ?? null, kase: c }));
 
-  // door: "all" is the point of R0 — a rule enforced in one door and not another is exactly the #98
+  // door: "all" is the point of R0 — a rule enforced in one door and not another is exactly the door
   // asymmetry. Every case goes through EVERY drivable door and the answers are compared. runner.mjs's
   // claimAndPrep is the wall they all land on, so they must agree; if they ever do not, the door that
   // admits is the bug, not the door that refuses. A case that declares `doors` goes through those alone
@@ -2662,7 +2662,7 @@ function printPreviousRoundNotice(s) {
 }
 
 // `run` records what each door answered, because `report` runs later in a different process and cannot
-// otherwise know. A rule enforced in one door and waved through by another is exactly the #98 asymmetry,
+// otherwise know. A rule enforced in one door and waved through by another is exactly the door asymmetry,
 // and it is invisible unless the answers are compared.
 //
 // — the receipt's PATH and FORMAT moved to driver/e2e-rounds.mjs (`receiptPath`, `readReceipt`),
@@ -2686,7 +2686,7 @@ function printPreviousRoundNotice(s) {
 export function doorRefusal(receipt, ref, expect = null) {
   const rc = (receipt?.cases ?? []).find((c) => c.ref === ref) ?? null;
   const recorded = rc?.answers ?? [];
-  // — ONLY THE DOORS THAT ANSWERED. `doorAsymmetry` has excluded unavailable doors from the #98
+  // — ONLY THE DOORS THAT ANSWERED. `doorAsymmetry` has excluded unavailable doors from the door
   // comparison since, but this function did not, and it is the one that prints
   // "refused at the door by cli, ops-mcp". A door that was never asked was listed there as a refuser,
   // so a case where one door refused correctly and the other did not exist read EXACTLY like a case
@@ -3175,7 +3175,7 @@ async function cmdReport(id, { round: requestedToken = null } = {}) {
         // notice is OWED depends on the terminal, and the terminal is what could not be established.
         const owesNotice = q.terminal === "clarify" || q.terminal === "duplicate" || q.terminal === "failed" || q.undetermined;
         if (owesNotice) {
-          // The contract from #92: a refusal must PARK *and NOTIFY*, never fail silently.
+          // The contract: a refusal must PARK *and NOTIFY*, never fail silently.
           console.log(`      requester notified: ${
             q.packets.length ? q.packets.join(", ")
             : q.packetsUnreadable ? `CANNOT TELL — ${q.packetsUnreadable}`
@@ -3342,7 +3342,7 @@ async function cmdReport(id, { round: requestedToken = null } = {}) {
     // CASE-level asserts are evaluated too. They were declared and never reached: this loop read only
     // `s.expect.assert`, and `kase` was consulted solely for `terminal` and `reasonMatches`. R0 has no
     // scenario-level asserts at all, so R0 ran ZERO assertions — and R0e's `profileKey == "generic"`,
-    // the only substantive check in the whole scenario and the entire point of the #83 roster-blindness
+    // the only substantive check in the whole scenario and the entire point of the roster-blindness
     // case, was silently dead. Same class of defect as the artifacts key above: declared, never asked.
     for (const a of [...(s.expect?.assert ?? []), ...(kase?.expect?.assert ?? [])]) {
       const r = evalAssertion(a, runDir);
@@ -3405,7 +3405,7 @@ async function cmdReport(id, { round: requestedToken = null } = {}) {
   }
   // ── did every door give the same answer? ────────────────────────────────────────────────────────────
   // Only R0 drives more than one door. A rule enforced at one door and waved through by another is the
-  // #98 asymmetry, and it is invisible unless the answers are compared — so `run` records them and this
+  // door asymmetry, and it is invisible unless the answers are compared — so `run` records them and this
   // reads the receipt. No receipt is reported as "cannot tell", never as agreement.
   if (s.door === "all") {
     // — read THIS ROUND's answers, and distinguish the three ways they can be missing: no receipt

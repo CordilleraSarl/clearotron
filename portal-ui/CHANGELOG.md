@@ -4,29 +4,29 @@
 
 ### Patch Changes
 
-- 98a57dd: Fixed: For a Global preliminary search, the bar at the foot of New clearance now says worldwide, not the company's own territories.
-- 98a57dd: New: A report opened in the portal now follows the portal's light or dark theme, and changes with it straight away.
+- Fixed: For a Global preliminary search, the bar at the foot of New clearance now says worldwide, not the company's own territories.
+- New: A report opened in the portal now follows the portal's light or dark theme, and changes with it straight away.
 
 ## 0.3.2-beta.9
 
 ### Patch Changes
 
-- 09f51e0: Fixed: New clearance no longer marks a company's saved territories as not available on a register that covers them.
-- 09f51e0: Fixed: A report's section links now sit in the header and stay on screen while you read, instead of scrolling away.
-- 09f51e0: Fixed: on a phone, a table wider than the screen, such as Clearances or People, keeps its sideways scrollbar at the bottom of the screen.
-- 09f51e0: New: a worldwide search names the register service that searches it, on the New clearance form and on the report's coverage line.
-- 09f51e0: Fixed: each finding's "Ask AI about this finding" button in a report now opens Ask AI, with that finding's number in the question.
-- 09f51e0: New: on Clearances, Ask AI sits in each row's "···" menu beside Retire, leaving the Open button alone in its column.
-- 09f51e0: Fixed: The Ask AI panel now points at the button that opened it, and that button shows when it is open. Pressing "Ask AI about this finding" a second time closes the panel.
-- 09f51e0: Fixed: on a wide screen, the Clearances columns take the widths of the approved design, with a quarter of the table for each row's buttons.
-- 09f51e0: Fixed: Clearances no longer scrolls sideways on a wide screen with a full list, and a long risk word no longer runs into its date.
-- 09f51e0: Fixed: on a narrow window, Clearances no longer splits a risk word such as "Manageable" in two or runs a group's status into its risk.
-- 09f51e0: Fixed: clicking Company settings in the side menu a second time closes its pages again, and a third click opens them.
-- 09f51e0: Fixed: Connect your AI sits at the bottom of the portal's side menu, just above Collapse, where it stays whatever the window's height.
-- 09f51e0: Fixed: New clearance no longer asks for the name twice when it opens with a search already picked for a company.
-- 09f51e0: Fixed: when the company list cannot load, screens no longer narrow to one default company, and a company whose settings cannot be read is named.
-- 09f51e0: Fixed: The new clearance form no longer repeats in paragraphs what each product row and each place already say.
-- 09f51e0: Fixed: The Goods or services field no longer carries a line explaining it; the field itself is unchanged and still optional.
+- Fixed: New clearance no longer marks a company's saved territories as not available on a register that covers them.
+- Fixed: A report's section links now sit in the header and stay on screen while you read, instead of scrolling away.
+- Fixed: on a phone, a table wider than the screen, such as Clearances or People, keeps its sideways scrollbar at the bottom of the screen.
+- New: a worldwide search names the register service that searches it, on the New clearance form and on the report's coverage line.
+- Fixed: each finding's "Ask AI about this finding" button in a report now opens Ask AI, with that finding's number in the question.
+- New: on Clearances, Ask AI sits in each row's "···" menu beside Retire, leaving the Open button alone in its column.
+- Fixed: The Ask AI panel now points at the button that opened it, and that button shows when it is open. Pressing "Ask AI about this finding" a second time closes the panel.
+- Fixed: on a wide screen, the Clearances columns take the widths of the approved design, with a quarter of the table for each row's buttons.
+- Fixed: Clearances no longer scrolls sideways on a wide screen with a full list, and a long risk word no longer runs into its date.
+- Fixed: on a narrow window, Clearances no longer splits a risk word such as "Manageable" in two or runs a group's status into its risk.
+- Fixed: clicking Company settings in the side menu a second time closes its pages again, and a third click opens them.
+- Fixed: Connect your AI sits at the bottom of the portal's side menu, just above Collapse, where it stays whatever the window's height.
+- Fixed: New clearance no longer asks for the name twice when it opens with a search already picked for a company.
+- Fixed: when the company list cannot load, screens no longer narrow to one default company, and a company whose settings cannot be read is named.
+- Fixed: The new clearance form no longer repeats in paragraphs what each product row and each place already say.
+- Fixed: The Goods or services field no longer carries a line explaining it; the field itself is unchanged and still optional.
 
 ## 0.3.2-beta.8
 
@@ -52,14 +52,14 @@ No changes in this release.
 
 ### Patch Changes
 
-- cc56786: New: every name on Clearances has an Open button in one column, and a name re-read while a search waits still shows its latest report's risk.
+- New: every name on Clearances has an Open button in one column, and a name re-read while a search waits still shows its latest report's risk.
   
   New: groups on Clearances say how many of their names' searches are queued, and retire and ungroup sit in each row's menu.
   
   Fixed: the counts on Clearances count names, so the total over the table matches the company headings.
   
   Fixed: a stopped clearance says no report will be produced and that its completed work stays readable through Ask AI.
-- cc56786: New: Company settings opens in the rail into Profile, Projects and Search templates.
+- New: Company settings opens in the rail into Profile, Projects and Search templates.
   
   New: Projects and Search templates lead with New project and New template, and all three Company settings pages offer + New company.
   
@@ -80,7 +80,7 @@ No changes in this release.
   Fixed: Default search depth and the Builds on column name each search once instead of twice.
   
   Fixed: saving changes to a search template returns to Search templates without warning that the changes were not saved.
-- cc56786: New: an installation can name its administrator contact, a mail or web address, and Preferences links "Clearotron administrator" to it.
+- New: an installation can name its administrator contact, a mail or web address, and Preferences links "Clearotron administrator" to it.
   
   New: Preferences carries the top bar's blur button, and the blur now stays as you left it in this browser, reloads included.
   
@@ -91,7 +91,7 @@ No changes in this release.
   New: About lists its facts in one card, and its source link reads as the repository's name, with the build just above.
   
   New: the sign-in page leads with one line, "This Clearotron signs in one person: you.", and keeps the reset and sign-on steps under Administrator help.
-- cc56786: New: New clearance is one form, top to bottom, and selects the search that fits the places and names entered, saying why.
+- New: New clearance is one form, top to bottom, and selects the search that fits the places and names entered, saying why.
   
   New: the review before a search starts lists the registers to search, the goods, native-language coverage, the turnaround and the searches left today.
   
@@ -100,10 +100,10 @@ No changes in this release.
   New: saved set-ups are called search templates, and New clearance applies one from a dropdown and says what it sets.
   
   Fixed: a clearance just ordered is shown as queued and waiting for a slot, instead of as started.
-- cc56786: New: New clearance and Clearances show one allowance line, in the same words, once five or fewer searches are left.
+- New: New clearance and Clearances show one allowance line, in the same words, once five or fewer searches are left.
   
   Fixed: the composer and the review step say what a search spends in searches, replacing an effort meter that carried no unit.
-- cc56786: New: People explains each permission word under the list, and an address listed with nothing set reads "View reports", which is what it can do.
+- New: People explains each permission word under the list, and an address listed with nothing set reads "View reports", which is what it can do.
   
   New: adding a person says they also need access through the organisation's sign-in service, and the button that grants it reads Give access.
   
@@ -114,7 +114,7 @@ No changes in this release.
   Fixed: People's activity panel no longer reads as a list of who has access; it is called Recent activity and says what it counts.
   
   Fixed: Recent activity on People names each company instead of printing its internal key.
-- cc56786: New: a report's header labels both of its dates, searched and issued, with Ask AI and Export beside them as two buttons.
+- New: a report's header labels both of its dates, searched and issued, with Ask AI and Export beside them as two buttons.
   
   New: Ask AI on a report offers four questions, and opens Claude with the one you pick typed in, ready for you to send.
   
@@ -125,11 +125,11 @@ No changes in this release.
   Fixed: Claude's steps no longer tell you to ignore an authentication warning, and copy the address and the key with separate buttons.
   
   New: where your installation offers another way to connect, Connect your AI keeps those steps in a closed fold under the sign-in steps.
-- cc56786: Fixed: The documentation says organisation for who owns an installation and company for whose names are cleared, never client, customer or tenant.
+- Fixed: The documentation says organisation for who owns an installation and company for whose names are cleared, never client, customer or tenant.
   
   Fixed: The README now opens with a company clearing its own names, and describes the law-firm setup after it.
-- cc56786: Fixed: Every screen says organisation for who owns the installation and company for whose names are cleared. The same thing is no longer called an account on one screen, a client on the next and a brand on a third.
-- cc56786: Fixed: On WSL, the "on this computer" connect line now says its command is for an assistant on the Windows side. It no longer invites a paste inside the WSL terminal, where it cannot work.
+- Fixed: Every screen says organisation for who owns the installation and company for whose names are cleared. The same thing is no longer called an account on one screen, a client on the next and a brand on a third.
+- Fixed: On WSL, the "on this computer" connect line now says its command is for an assistant on the Windows side. It no longer invites a paste inside the WSL terminal, where it cannot work.
 
 ## 0.3.2-beta.2
 
@@ -139,7 +139,7 @@ No changes in this release.
 
 ### Patch Changes
 
-- 1976fa5: New: Home's in-flight band breaks the count down into running, paused and queued instead of one total.
+- New: Home's in-flight band breaks the count down into running, paused and queued instead of one total.
   
   New: a running card carries the standing quote for its search — "usually 1.5 to 2.5 h" — and says "taking longer than usual" past it.
   
@@ -153,30 +153,30 @@ No changes in this release.
 
 ### Patch Changes
 
-- 0566e1f: Fixed: Changing or removing a person now explains why it cannot be done on a Clearotron that signs in one person. It used to show an internal code.
+- Fixed: Changing or removing a person now explains why it cannot be done on a Clearotron that signs in one person. It used to show an internal code.
   
   Fixed: Modify and Remove are switched off on that kind of install, the way Add already was, with the reason beside them.
-- f193d6a: Fixed: When Clearotron cannot check how your assistant will be let in, Use your own AI now shows both ways and says so. It used to show one.
-- 240673c: Fixed: The home page now says what it is for. With nothing running it tells you how to start a clearance, rather than showing an empty list. It ends with the last few finished clearances and a line to all of them.
-- f1c5925: Fixed: Every page in the portal now has one heading instead of two saying nearly the same thing. The home page is called Home, and the All Clearances and New clearance buttons sit together at the top of it.
-- 240673c: Fixed: The archive of finished clearances is called All Clearances everywhere, and the route to it from the home page is a button you can see.
-- 56a760f: New: The People page can now change what somebody may do and see, and take their access away. Modify on a row opens the same form used to add them, filled in. Unticking a row removes that access. Remove sits below Save and asks once before it acts. Your own row has neither, so nobody can lock themselves out.
+- Fixed: When Clearotron cannot check how your assistant will be let in, Use your own AI now shows both ways and says so. It used to show one.
+- Fixed: The home page now says what it is for. With nothing running it tells you how to start a clearance, rather than showing an empty list. It ends with the last few finished clearances and a line to all of them.
+- Fixed: Every page in the portal now has one heading instead of two saying nearly the same thing. The home page is called Home, and the All Clearances and New clearance buttons sit together at the top of it.
+- Fixed: The archive of finished clearances is called All Clearances everywhere, and the route to it from the home page is a button you can see.
+- New: The People page can now change what somebody may do and see, and take their access away. Modify on a row opens the same form used to add them, filled in. Unticking a row removes that access. Remove sits below Save and asks once before it acts. Your own row has neither, so nobody can lock themselves out.
   
   Fixed: Somebody listed only in a company's access list, with no permissions of their own, is now shown as that. They used to read as a view-only person, which is a different thing.
-- 0566e1f: Fixed: Searches that stopped no longer sit in Home's In flight band. They have their own list below it, with a count you can see without opening it.
+- Fixed: Searches that stopped no longer sit in Home's In flight band. They have their own list below it, with a count you can see without opening it.
   
   Fixed: That list clears itself after a week, whether or not anyone pressed Acknowledge. Signing in for the first time no longer means meeting every search that has ever failed.
-- f96c089: Fixed: When two attempts at one search both await dismissal, the dashboard shows which is which instead of two identical cards.
+- Fixed: When two attempts at one search both await dismissal, the dashboard shows which is which instead of two identical cards.
 
 ## 0.3.1-beta.4
 
 ### Patch Changes
 
-- 0566e1f: Fixed: Changing or removing a person now explains why it cannot be done on a Clearotron that signs in one person. It used to show an internal code.
+- Fixed: Changing or removing a person now explains why it cannot be done on a Clearotron that signs in one person. It used to show an internal code.
   
   Fixed: Modify and Remove are switched off on that kind of install, the way Add already was, with the reason beside them.
-- f193d6a: Fixed: When Clearotron cannot check how your assistant will be let in, Use your own AI now shows both ways and says so. It used to show one.
-- 0566e1f: Fixed: Searches that stopped no longer sit in Home's In flight band. They have their own list below it, with a count you can see without opening it.
+- Fixed: When Clearotron cannot check how your assistant will be let in, Use your own AI now shows both ways and says so. It used to show one.
+- Fixed: Searches that stopped no longer sit in Home's In flight band. They have their own list below it, with a count you can see without opening it.
   
   Fixed: That list clears itself after a week, whether or not anyone pressed Acknowledge. Signing in for the first time no longer means meeting every search that has ever failed.
 
@@ -184,8 +184,8 @@ No changes in this release.
 
 ### Patch Changes
 
-- f1c5925: Fixed: Every page in the portal now has one heading instead of two saying nearly the same thing. The home page is called Home, and the All Clearances and New clearance buttons sit together at the top of it.
-- 56a760f: New: The People page can now change what somebody may do and see, and take their access away. Modify on a row opens the same form used to add them, filled in. Unticking a row removes that access. Remove sits below Save and asks once before it acts. Your own row has neither, so nobody can lock themselves out.
+- Fixed: Every page in the portal now has one heading instead of two saying nearly the same thing. The home page is called Home, and the All Clearances and New clearance buttons sit together at the top of it.
+- New: The People page can now change what somebody may do and see, and take their access away. Modify on a row opens the same form used to add them, filled in. Unticking a row removes that access. Remove sits below Save and asks once before it acts. Your own row has neither, so nobody can lock themselves out.
   
   Fixed: Somebody listed only in a company's access list, with no permissions of their own, is now shown as that. They used to read as a view-only person, which is a different thing.
 
@@ -193,9 +193,9 @@ No changes in this release.
 
 ### Patch Changes
 
-- 240673c: Fixed: The home page now says what it is for. With nothing running it tells you how to start a clearance, rather than showing an empty list. It ends with the last few finished clearances and a line to all of them.
-- 240673c: Fixed: The archive of finished clearances is called All Clearances everywhere, and the route to it from the home page is a button you can see.
-- f96c089: Fixed: When two attempts at one search both await dismissal, the dashboard shows which is which instead of two identical cards.
+- Fixed: The home page now says what it is for. With nothing running it tells you how to start a clearance, rather than showing an empty list. It ends with the last few finished clearances and a line to all of them.
+- Fixed: The archive of finished clearances is called All Clearances everywhere, and the route to it from the home page is a button you can see.
+- Fixed: When two attempts at one search both await dismissal, the dashboard shows which is which instead of two identical cards.
 
 ## 0.3.1-beta.1
 
@@ -233,7 +233,7 @@ No changes in this release.
 
 ### Patch Changes
 
-- 2878809: Fixed: When the company store cannot record a new company, the New company page now says why and what fixes it, instead of "Try again shortly". Someone who does not run the installation is told to ask whoever does.
+- Fixed: When the company store cannot record a new company, the New company page now says why and what fixes it, instead of "Try again shortly". Someone who does not run the installation is told to ask whoever does.
 
 ## 0.3.0-beta.4
 
@@ -289,7 +289,7 @@ No changes in this release.
 
 ### Patch Changes
 
-- a637d3e: Fixed: The portal now runs on the current React, TypeScript and Vite, and its download is smaller because build comments no longer ship to the browser.
+- Fixed: The portal now runs on the current React, TypeScript and Vite, and its download is smaller because build comments no longer ship to the browser.
 
 ## 0.1.3
 
@@ -299,8 +299,8 @@ No changes in this release.
 
 ### Patch Changes
 
-- f7c1570: For operators: The portal now reports its screens as out of date when they are older than the sources they were built from, instead of ready.
-- f7c1570: Fixed: The demo now says plainly when a search type has no sample run, and lists the ones it has. Nothing is started and nothing is charged.
+- For operators: The portal now reports its screens as out of date when they are older than the sources they were built from, instead of ready.
+- Fixed: The demo now says plainly when a search type has no sample run, and lists the ones it has. Nothing is started and nothing is charged.
 
 ## 0.1.1-beta.1
 
@@ -308,5 +308,5 @@ No changes in this release.
 
 ### Patch Changes
 
-- f7c1570: The health check now says when the portal screens are older than the sources they were built from, instead of reporting them as ready. Pulling an update leaves the built screens behind, and nothing used to say so.
-- f7c1570: Asking the demo for a search it has no example of now explains what happened, that nothing was started or charged, and what to pick instead.
+- The health check now says when the portal screens are older than the sources they were built from, instead of reporting them as ready. Pulling an update leaves the built screens behind, and nothing used to say so.
+- Asking the demo for a search it has no example of now explains what happened, that nothing was started or charged, and what to pick instead.

@@ -13,7 +13,7 @@ The axis is *what the script assumes exists*, not where it happens to be run.
 | Script | What it does |
 |---|---|
 | `test-run.mjs` | Gives a test run its own `TMPDIR` and deletes it at exit. **Load-bearing** — every workspace's `npm test` shells out to it, so `scripts/` can never be dropped wholesale. |
-| `render-check.mjs` | Renders a published report **inside the portal's iframe** in a real browser — the height bridge, the scrollbar loop, the sticky topbar. Needs a published run: point it at a pool with `--pool`, or pass `--fixture-pool` to replay `demo/` into a throwaway one. **Runs nowhere yet** — but its three interior assertions now MEASURE, deterministically: real time plus an explicit readiness signal, and `--plant-overflow` proves it still catches a broken report. What is left is a membership decision, not a defect.. |
+| `render-check.mjs` | Renders a published report **inside the portal's iframe** in a real browser — the height bridge, the scrollbar loop, the sticky topbar. Needs a published run: point it at a pool with `--pool`, or pass `--fixture-pool` to replay `demo/` into a throwaway one. Run by CI on a fixture pool. Its interior assertions measure deterministically: real time plus an explicit readiness signal, and `--plant-overflow` proves it still catches a broken report. |
 | `home-render-check.mjs` | Draws the portal Home in a real browser, every state, both themes. Run by CI. |
 | `composer-render-check.mjs` | Lays out the New Clearance composer and checks the levers reach the wire. Run by CI. |
 | `clearances-render-check.mjs` | Checks the `/portal/clearances` columns hold together. Run by CI. |
@@ -80,15 +80,10 @@ settling on the first try every time, and the slack figures that looked like a l
 147px against a 15-24 band) turned out to be the stale probe too. The sandbox is byte-identical to
 `Result.tsx`'s and `allow-same-origin` was never added.
 
-**It is still not in CI, and that is now a decision rather than a defect** — nobody has run it on a
-runner since the rewrite, and wiring a blocking browser step on the strength of one developer box is the
-mistake the membership guard exists to stop. That call is 's.
-
-Read the other six with that in mind: they are outer-document measurements — does the page scroll, is
-the header pinned, is Export reachable — and every one would pass against **an iframe that loaded
-nothing**, because the frame is styled to a fixed height. A green from this check would have meant
-almost nothing. The step is backed out and the script is declared, with the measurement, rather than
-quietly dropped.
+**CI runs it**, on a pool replayed from `demo/` into a throwaway directory:
+`node scripts/render-check.mjs --fixture-pool`. Its outer-document assertions — does the page scroll, is
+the header pinned, is Export reachable — would pass against an iframe that loaded nothing, because the
+frame is styled to a fixed height; the interior ones above are what make a green mean something.
 
 **Which check runs where is now checked, not just written here.** A test in the driver suite
 reads `.github/workflows/ci.yml` and requires every `scripts/*-check.mjs` to be either invoked by a job

@@ -43,8 +43,9 @@ npx clearotron install
 
 Node 22.13 or newer, on macOS or Linux. It needs no root: it puts the program under `~/.local`, with the
 `clearotron` command in `~/.local/bin`, then asks one question at a time and checks each credential
-before it saves it. With `~/.local/bin` on your `PATH`, every command below works in the short form;
-otherwise use the full path `install` prints at the end. **On Windows the demo above runs natively; a
+before it saves it. Every command below uses the `clearotron` it installed — the same channel you
+installed from — so if `~/.local/bin` is not on your `PATH` yet, type the full path,
+`~/.local/bin/clearotron`, instead. **On Windows the demo above runs natively; a
 real clearance needs WSL2.** Native Windows clearances are planned for a later release. Until then the
 engine does not run on native Windows: it spawns each stage with POSIX path and process semantics, so
 a clearance is refused there before it starts.
@@ -71,13 +72,13 @@ With it installed, check what it found before it does anything. `doctor` only re
 calls nobody, and names whatever is still missing:
 
 ```bash
-npx clearotron doctor
+clearotron doctor
 ```
 
 Then start the product and open the portal address it prints:
 
 ```bash
-npx clearotron start
+clearotron start
 ```
 
 That is the portal everyone at your company uses. Ordering a clearance is the same screen — describe it
@@ -99,7 +100,7 @@ rights-holders behind them by jurisdiction:
 Then run your own: order it in the portal, or hand the engine a job file:
 
 ```bash
-npx clearotron run --job my-job.json
+clearotron run --job my-job.json
 ```
 
 ## How it fits together
@@ -158,8 +159,8 @@ npx clearotron demo            # replays finished clearances into a local portal
 
 From a clone the commands are `npx clearotron …`, run from that directory.
 
-`npm test` is the whole verification story for someone with no credentials, and it is the first thing
-[CONTRIBUTING.md](CONTRIBUTING.md) asks of a contributor.
+`npm test` is the offline suite and the first thing [CONTRIBUTING.md](CONTRIBUTING.md) asks of a
+contributor; `npm run test:full`, also free, is the merge gate.
 
 ## Project documents
 

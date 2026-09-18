@@ -4,14 +4,14 @@ Three pure modules, **one non-agentic structured turn each, per mark × lane**, 
 configured for. Not an agent: no tools, no MCP, no skills, no resume — one prompt in, one JSON object out,
 validated at parse.
 
-## What these lanes ARE, and what runs them ( /)
+## What these lanes are, and what runs them
 
 **One vendor, one billing mode, decided by the run and not by this directory.** The lanes go through
 `engine.runTurn()` — the same door all fourteen agentic stages use — via
 [`../../driver/engine/jx-turn.mjs`](../../driver/engine/jx-turn.mjs). Whatever program the customer configured
 (`CLEAROTRON_AI`) and whatever billing mode the run is on (subscription, API key or, for Claude, a cloud account)
 carries these calls too.
-That is the owner's standing rule — *one LLM provider only ever, API or auth, no mix* — and until 2026-08-20
+That is the product's rule — *one reasoning provider per run, API or subscription, never a mix* — and until 2026-08-20
 these three lanes were the one place in the product that broke it: they POSTed to the Anthropic Messages API on
 `ANTHROPIC_API_KEY` at a hardcoded cheap tier no matter what the rest of the run was doing.
 

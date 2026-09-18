@@ -278,6 +278,37 @@ test("a minter that WRITES while running --check is caught, not logged as curren
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
+test("an UNTRACKED path appearing mid-check is a neighbour's, named — and a tracked change is still the minter's", async () => {
+  // Measured in the suite: `mint-public-residue` printed "the backlog is current" and was named as having
+  // changed the tree, because a neighbouring test had just made a directory inside the checkout. A minter
+  // that ignores `--check` re-mints its own tracked file; an untracked path appearing is somebody else.
+  const { checkAll } = await import("../../scripts/generated-files-are-current.mjs");
+  const dir = mkdtempSync(join(tmpdir(), "gen-neighbour-"));
+  const sentinel = join(dir, "tree");
+  try {
+    writeFileSync(sentinel, "");
+    writeFileSync(join(dir, "mint-neighboured.mjs"),
+      `import { writeFileSync } from "node:fs";\n`
+      + `writeFileSync(${JSON.stringify(sentinel)}, "?? shared/leaf-from-a-neighbour/\\n");\nprocess.exit(0);\n`);
+    const r = checkAll({ dir, root: dir, log: () => {}, readTree: () => readFileSync(sentinel, "utf8") });
+    assert.equal(r.wrote.length, 0, "a neighbour's untracked write was pinned on the minter");
+    assert.equal(r.unattributable.length, 0, "and it is not a could-not-look either: it touched nothing a minter reads");
+    assert.equal(r.neighbours.length, 1, "the write is not named at all");
+    assert.deepEqual(r.neighbours[0].moved, ["shared/leaf-from-a-neighbour/"], "the file the neighbour wrote is not named");
+    assert.equal(r.stale.length, 0, "the minter's own answer — current — was not read as it came back");
+
+    // THE CONTROL: a TRACKED file modified during --check is exactly the minter re-minting, and is still caught.
+    writeFileSync(sentinel, "");
+    rmSync(join(dir, "mint-neighboured.mjs"));
+    writeFileSync(join(dir, "mint-reminting.mjs"),
+      `import { writeFileSync } from "node:fs";\n`
+      + `writeFileSync(${JSON.stringify(sentinel)}, " M driver/suite-census.json\\n");\nprocess.exit(0);\n`);
+    const r2 = checkAll({ dir, root: dir, log: () => {}, readTree: () => readFileSync(sentinel, "utf8") });
+    assert.equal(r2.wrote.length, 1, "a minter that modified its tracked output during --check went unaccused");
+    assert.deepEqual(r2.wrote[0].moved, ["driver/suite-census.json"], "and the file it wrote is named");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
 test("a tree that was ALREADY dirty accuses nobody — the probe says it could not look", async () => {
   // THE RED THAT TEACHES RERUNS. This probe asks "did the tree move", not "did this process write", and
   // inside the suite it runs as a subprocess of one test file while every other file in the shard runs

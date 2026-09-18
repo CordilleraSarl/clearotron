@@ -42,7 +42,7 @@ None of these needs a credential, a model or a sign-up.
 npm install                    # every workspace
 npm run build:ui               # the browser bundle is not committed — build it once
 npm test                       # the offline suite — no credentials, no network
-npx clearotron demo            # replays finished clearances into a local portal
+npx clearotron demo            # replays finished clearances into a local portal; runs until stopped (--no-open: no browser)
 npx clearotron doctor          # reports what this machine is configured for; writes nothing, calls nobody
 node scripts/markdown-link-check.mjs    # every relative markdown link resolves
 node mcp-server/smoke.mjs      # drives the real MCP server against a fixture
@@ -50,12 +50,55 @@ node mcp-server/smoke.mjs      # drives the real MCP server against a fixture
 
 **What success looks like for the demo.** It serves the portal on `127.0.0.1:18860`, and opens two more
 doors on 18861 and 18862; `--port <n>` moves all three to `n`, `n+1`, `n+2`. The portal answers **401
-"not signed in" on every path** until you sign in with the passphrase the demo prints, so a scripted check
-should expect 401, never 200. In a clone the demo needs the built bundle: without it, it stops before
-starting anything and names `npm run build:ui`. It removes its folder when you stop it; `--keep` keeps it.
+"not signed in" on every path** until you sign in, so a scripted check accepts 401, or a 302 to
+`/portal/login` when it sends `Accept: text/html` as a browser does, and never 200. The demo prints its
+passphrase only when its output is a terminal; with its output captured, it prints the command that sets
+a new one instead, for a person to run in a terminal. In a clone the demo needs the built bundle: without
+it, it stops before starting anything and names `npm run build:ui`.
+
+The demo does not exit by itself, and `--no-open` keeps it from opening a browser. Stop it with Ctrl-C.
+To run it unattended, start it from the clone as `node bin/clearotron.mjs demo --no-open &` and stop it
+with a TERM to that pid: a TERM to an `npx` process ends npx and leaves the demo holding its three ports.
+It removes its folder when it stops; `--keep` keeps it.
 
 `npm test` is the fast tier. `npm run test:full` is the merge gate and adds the files that drive the
 orchestrator end to end against a mock engine. Both are free.
+
+## Show a newcomer the demo
+
+When someone asks what Clearotron does and wants to see it, explain the product briefly, then help them
+explore the free demo. The demo replays finished fictional example clearances; it needs no provider
+credentials or model calls.
+
+If you can run commands in an environment whose browser page the user can access, check for Node.js 22.13
+or newer and run `npx clearotron demo`. Outside a checkout, use the published package. Inside an existing
+checkout, follow this repository's documented build steps first. Keep the demo running while the user
+explores it, help them open the printed portal address and sign in, and explain how to stop it. If Node
+is missing, explain the prerequisite and help with the appropriate setup under your environment's normal
+permissions.
+
+A server running in a remote environment is useful only if the user can reach it through an available
+private browser preview or forwarding route. Do not present remote localhost as an address on the user's
+computer. Do not create a public tunnel for the demo. If the user cannot access the result, provide the
+handoff below.
+
+If this chat cannot run the demo somewhere the user can access, explain that limitation and provide the
+complete handoff below for an assistant with terminal access on their computer. Do not claim to have
+started the demo.
+
+Confirm that the user can open a sample report before calling the demonstration complete. If you cannot
+verify browser access yourself, ask the user to confirm it. An unauthenticated HTTP response alone is not
+proof. Keep sign-in details within the user's private session.
+
+The demo terminal stays open while the user explores. Ctrl+C stops the demo; its default temporary data
+is removed when it stops. Permanent installation, connecting provider accounts, and ordering a real
+clearance are later steps for when the user asks to continue.
+
+The handoff, to copy whole:
+
+```text
+Read https://clearotron.ai/llms.txt and explain what Clearotron does. Help me explore its free demo on my computer. Check for Node.js 22.13 or newer, then run `npx clearotron demo`. Help me open the portal, sign in, and open a sample clearance. Keep the demo running while I explore, and explain how to stop it. Use the published package; I am asking for a demo, not permanent installation or a paid clearance. If you cannot run it somewhere I can access, explain what is missing and give me this complete request to take to an assistant with terminal access on my computer.
+```
 
 ## The commands
 
@@ -84,7 +127,7 @@ orchestrator end to end against a mock engine. Both are free.
 | `update` | bring this install up to date — and REFUSE to do it over the top of your own configuration |
 
 `start` serves the portal on `127.0.0.1:18802` by default, the engine door on 18790 and the client door on
-18811. Like the demo's, the portal answers 401 until you sign in with the passphrase it prints.
+18811. Like the demo's, the portal answers 401 until you sign in with the passphrase it prints on a terminal.
 
 ## A clone or the package
 

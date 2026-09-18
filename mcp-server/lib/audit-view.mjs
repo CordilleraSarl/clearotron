@@ -261,10 +261,10 @@ export function accountTrace(result) {
     out.auditTrailNote = result.auditTrailNote ?? null;
   }
   // `note` is NOT forwarded, and this is the one place a raw string looked harmless and was not. trace's
-  // verdict branch returns a hard-coded sentence ending "unresolved concerns are surfaced to Alex (never
-  // withheld)" — an internal identity, in a literal, so no prose filter would ever have caught it: the
-  // scrub transforms MODEL output, and this is ours. The fact it carries is worth keeping, so it is
-  // restated here in client words rather than dropped: what the verdict is FOR.
+  // verdict branch returns a hard-coded sentence written for whoever operates the engine, not for a
+  // client — a literal, so no prose filter would ever catch what it says: the scrub transforms MODEL
+  // output, and this is ours. The fact it carries is worth keeping, so it is restated here in client
+  // words rather than dropped: what the verdict is FOR.
   if (result.note) out.note = result.resolvedAs?.kind === "verdict"
     ? "The verdict gates delivery: a reviewer reads the narrative against the source records and rules CLEAR, CONDITIONAL or BLOCKING. Anything short of CLEAR sends the work back for a corrective pass, and an unresolved concern is raised rather than withheld."
     : clean(result.note);

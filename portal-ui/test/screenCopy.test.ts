@@ -724,7 +724,7 @@ test('a custom framework that will not load is NEVER reported as the house defau
   assert.match(box, /\) : custom \?/, 'and "custom but unreadable" is its OWN branch, not the house fallback')
   assert.match(box, /could not be read/i, 'which says so plainly')
   assert.match(box, /not<\/b> rated\s*\n?\s*under the Generic default|not.{0,40}rated under the Generic/is,
-    'and explicitly denies the generic default rather than implying it (term ruled, tracker issue 1990)')
+    'and explicitly denies the generic default rather than implying it')
   // Ordering matters: if the house branch came first it would swallow the unreadable case again.
   // The marker for the fallback branch is its heading, which the 1990 sweep renamed. indexOf returns -1
   // for a string that is not there, and `x < -1` is false — so this assertion fails LOUDLY on a rename

@@ -874,8 +874,8 @@ export function resolveScope({ local = false, innerToken = null, email = null, f
 //
 // buildJob REQUIRES a forwarder ("…the requester/reply-routing key that rides the delivery packet
 // (docs/DELIVERY.md)") and plan_run builds the same job start_run does, so a preview without one died on
-// a message naming an internal doc — on the FREE call every connecting principal makes first. #53 fixed
-// that for the account branch only; ops and internal hit the same wall. Fixed here rather than in
+// a message naming an internal doc — on the FREE call every connecting principal makes first. The first fix
+// covered the account branch only; ops and internal hit the same wall. Fixed here rather than in
 // buildJob because the answer is the SESSION's: who is asking is a fact of the verified identity.
 //
 // `args.forwarder ||` first: ops and internal are trusted principals routing on someone else's behalf (an

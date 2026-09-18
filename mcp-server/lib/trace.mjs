@@ -242,7 +242,7 @@ export function trace(run, target, { depth = 2, shallow = false } = {}) {
     out.auditTrail = relatedAuditRows(findings.audit, f);
     out.auditTrailNote = "Best-effort match of audit-trail rows to this finding; the full audit trail is available via list_findings(kind:'audit').";
   } else if (resolved.kind === "verdict") {
-    out.note = "The verdict gates delivery: the refutation reviewer reads narrative + the source files and writes CLEAR / CONDITIONAL / BLOCKING. A non-CLEAR verdict triggers a corrective re-synthesis; unresolved concerns are surfaced to Alex (never withheld).";
+    out.note = "The verdict gates delivery: the refutation reviewer reads narrative + the source files and writes CLEAR / CONDITIONAL / BLOCKING. A non-CLEAR verdict triggers a corrective re-synthesis; unresolved concerns are surfaced to the reader (never withheld).";
   }
   return out;
 }

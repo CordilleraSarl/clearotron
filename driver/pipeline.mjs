@@ -13518,7 +13518,7 @@ async function pipelineInner(job, opts = {}) {
     // structured-only). Each stage is file-gated/resumable; per-card sessions feed the lint repair below.
     // C2 — fold same-owner+same-mark duplicate filings into one finding BEFORE the overview + cards read
     // findings.json, so the whole delivery phase (and the published copy) sees the single consolidated set.
-    injectDeferralCoverage(P, run.runDir, note);   // A3: unclosed reopen directives become reader-visible coverage rows first
+    injectDeferralCoverage(P, run.runDir, note); injectMeaningGapCoverage(P, run.runDir, note);   // A3: unclosed reopen directives, and meaning searches that did not complete, become reader-visible coverage rows first
     // qw/cn-scope-honesty — the sibling injection: a CN-family-scope run whose zh lane did not run
     // discloses what the native-language investigation would have searched, and where it is offered
     // (coverage-limited: never clamps, never gates).
@@ -16830,4 +16830,51 @@ export function registerGapConditions(regGap) {   // @internal
     clause: "the register pass was cut down at the timeout wall and its self-reported coverage is unverified",
   });
   return out;
+}
+
+// ── A MEANING SEARCH THAT DID NOT COMPLETE REACHES THE CLIENT'S OWN PAGE, NOT ONLY THE AUDIT ────────────
+//
+// The connotation gate delivers a run whose dictated meaning searches did not all complete, and records
+// each unfinished one as a gap carrying its term — a gap the engine wrote for a search that never came
+// back, or the provider's own row for one it refused. The audit read those gaps; the report was never
+// handed the grid, so whether a client learned a meaning search was missing was up to the synthesis
+// model. This puts each on the coverage the report renders, the way an unclosed follow-up already is:
+// the same row, `deferralCoverageRow`, and an approved reader sentence that says it is left open — true
+// of a drop and of a refusal alike. Telling the two apart on the page
+// would need a sentence nobody has approved, and is not attempted here.
+//
+// The same guard as `injectDeferralCoverage`: a gap synthesis already weighed in is not added twice, and
+// a findings.json that fails its own schema after the push is left as it was.
+// THE WORDS ARE CHOSEN, NOT THE CAUSE: of the approved reasons, "nothing in the run's own record confirms it
+// was searched" is true of a search that never came back AND of one the provider refused, and does not
+// repeat the row's own "not completed this run" the way the generic fallback does. It borrows that arm's
+// sentence only; if the arm is ever reworded for its own case, re-read this row against it.
+const MEANING_SEARCH_UNFINISHED = "not-verified-closed";
+export function injectMeaningGapCoverage(P, runDir, note) {   // @internal — exported so the refusal shape is testable without a run
+  try {
+    if (!existsSync(P.commonLawGrid) || !existsSync(P.findings)) return;
+    const grid = JSON.parse(readFileSync(P.commonLawGrid, "utf8"));
+    const terms = [...new Set((Array.isArray(grid?.gaps) ? grid.gaps : [])
+      .filter((g) => String(g?.platform ?? "").toLowerCase() === "connotation")
+      .map((g) => String(g?.term ?? "").trim()).filter(Boolean))];
+    if (!terms.length) return;
+    const doc = JSON.parse(readFileSync(P.findings, "utf8"));
+    if (!Array.isArray(doc.coverage)) doc.coverage = [];
+    const normTxt = (s) => String(s ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+    const covText = normTxt(doc.coverage.map((c) => `${c.area} ${c.note ?? ""}`).join(" "));
+    let added = 0;
+    for (const term of terms) {
+      const slice = normTxt(term).split(" ").filter((w) => w.length >= 4).slice(0, 4).join(" ");
+      if (slice && covText.includes(slice)) continue;          // synthesis already weighed it in
+      doc.coverage.push(deferralCoverageRow(term, MEANING_SEARCH_UNFINISHED));
+      added++;
+    }
+    if (!added) return;
+    parseFindingsJson(JSON.stringify(doc));                    // re-validate the shape (throws → catch keeps original)
+    atomicWrite(P.findings, `${JSON.stringify(doc, null, 2)}\n`);
+    note(`[common-law] ${added} meaning search(es) that did not complete now reach the report's coverage`);
+    runLog(runDir, { event: "meaning-gap-coverage", added });
+  } catch (e) {
+    note(`[common-law] meaning-gap coverage skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
+  }
 }

@@ -32,7 +32,7 @@
 // check is blind to the move, and that census is the only thing that closes it.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
@@ -182,18 +182,28 @@ test("tracker 2018 the stage-table walk refuses an empty tree, and an empty leaf
   // BOTH DIRECTIONS. A guard moved onto the aggregate and a guard deleted read identically on a healthy
   // tree; only a walk handed an empty tree tells them apart.
   const tmp = mkdtempSync(join(tmpdir(), "b2018-seat-outputs-"));
-  const leaf = join(DRIVER, "profiles", "projects", `b2018-${process.pid}`);
+  const tree = mkdtempSync(join(tmpdir(), "b2018-seat-outputs-tree-"));
+  const root = join(tree, "driver");
+  const leaf = join(root, "profiles", "projects", "b2018-leaf");
   try {
     mkdirSync(join(tmp, "a", "b"), { recursive: true });
     assert.throws(() => stageDeclaringFiles(tmp), /VACUOUS/,
       "a walk that descended a whole tree and declared nothing reported a corpus instead of refusing");
 
-    const baseline = stageDeclaringFiles().sort();
+    // PLANTED IN A TREE OF ITS OWN, not in the checkout: a leaf planted under this repository's own
+    // driver/profiles/projects/ is visible, while it exists, to every other test running beside this one —
+    // the wrapper reports it as a test writing inside the checkout, and the generated-files check blames
+    // whichever minter was running. The walk takes its root, so it walks a laid-out tree instead.
+    // The file declares a stage the way the walk recognises one, or the walk would read nothing.
+    mkdirSync(root, { recursive: true });
+    writeFileSync(join(root, "one.mjs"), "export const STAGES = [{\n  out: (p) => p.one,\n}];\n");
+    const baseline = stageDeclaringFiles(root).sort();
+    assert.deepEqual(baseline, ["one.mjs"], "the laid-out tree is not the tree the walk reads — this arm would prove nothing");
     mkdirSync(leaf, { recursive: true });
-    assert.deepEqual(stageDeclaringFiles().sort(), baseline,
+    assert.deepEqual(stageDeclaringFiles(root).sort(), baseline,
       "an empty directory under the driver tree changed what this guard walks");
   } finally {
     rmSync(tmp, { recursive: true, force: true });
-    rmSync(leaf, { recursive: true, force: true });
+    rmSync(tree, { recursive: true, force: true });
   }
 });

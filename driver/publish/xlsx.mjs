@@ -706,7 +706,13 @@ export function validateAudit(wb, { findings = [], coverage = [], coverageJudgme
   for (const name of EXPECT) if (!sheets.includes(name)) v.push(`missing tab "${name}"`);
 
   // 3 — banned internal vocabulary anywhere a lawyer can see (tab name, header, or any cell).
-  const scan = (txt, where) => { if (txt != null && BANNED.test(String(txt))) v.push(`banned vocab "${String(txt).match(BANNED)[0]}" in ${where}`); };
+  // A LINK IS A CITATION, NOT VOCABULARY. The sources a finding cites are URLs a lawyer clicks, and `https`
+  // inside one matched the list, so every published example workbook printed an advisory about its own
+  // links. The address is taken out before the scan; "HTTP 404" written as prose is still found.
+  const scan = (txt, where) => {
+    const words = txt == null ? null : String(txt).replace(/\bhttps?:\/\/[^\s<>"')\]]+/gi, " ");
+    if (words != null && BANNED.test(words)) v.push(`banned vocab "${words.match(BANNED)[0]}" in ${where}`);
+  };
   for (const name of sheets) scan(name, `tab name "${name}"`);
   for (const ws of wb.worksheets) {
     ws.eachRow((row, rn) => row.eachCell(cell => {
