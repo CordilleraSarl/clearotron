@@ -187,11 +187,23 @@ test("the token is random, never the clock", () => {
   // Two scenarios starting in the same second is normal on a fast round, so a clock-derived token would
   // collide intermittently — which reintroduces unpredictably instead of reliably, and is worse.
   // 1000 tokens minted inside a tight loop is the test a second- or millisecond-resolution clock fails.
+  //
+  // WHAT IS ASSERTED IS THE PROPERTY, NOT PERFECTION, and the difference is a red this arm produced on a
+  // runner. The token is four CSPRNG bytes, so 1000 draws collide with each other about once in every
+  // 8,600 runs — birthday arithmetic on 2**32, nothing wrong with the token — and "all 1000 distinct"
+  // fails that often for a reason that says nothing about the clock. A millisecond clock inside a loop
+  // that spans single-figure milliseconds yields under twenty distinct values and repeats its neighbour
+  // almost every time, so both floors below still fail it by a distance. The tight floor stays on
+  // NEIGHBOURS, where a random collision needs two consecutive draws to match.
   const started = Date.now();
-  const seen = new Set();
-  for (let i = 0; i < 1000; i++) seen.add(newRunToken());
-  assert.equal(seen.size, 1000,
-    `1000 back-to-back tokens are all distinct (the loop spanned ${Date.now() - started}ms — a clock-derived token collides here)`);
+  const minted = Array.from({ length: 1000 }, () => newRunToken());
+  const seen = new Set(minted);
+  const spanned = Date.now() - started;
+  const adjacent = minted.filter((t, i) => i > 0 && t === minted[i - 1]);
+  assert.deepEqual(adjacent, [],
+    `no token repeats the one minted before it (the loop spanned ${spanned}ms — a clock-derived token repeats itself here)`);
+  assert.ok(seen.size >= 990,
+    `${seen.size} of 1000 back-to-back tokens are distinct; a clock-derived token would leave a handful (the loop spanned ${spanned}ms)`);
   for (const t of seen) assert.match(t, /^[0-9a-f]{8}$/, "four CSPRNG bytes, hex");
 });
 
