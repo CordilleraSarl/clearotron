@@ -21,13 +21,13 @@ import { makeHttpHandler } from "../portal-service.mjs";
 const BROWSER = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8";
 
 /** Drive one request against a real handler on a real socket, and hand back what a client would see. */
-async function drive(handlerOpts, path, accept) {
+async function drive(handlerOpts, path, accept, init = {}) {
   const srv = createServer(makeHttpHandler({ service: { route: async () => ({ status: 200, json: { ok: true } }) },
     authHeader: "x-test", ...handlerOpts }));
   await new Promise((r) => srv.listen(0, "127.0.0.1", r));
   try {
     const res = await fetch(`http://127.0.0.1:${srv.address().port}${path}`,
-      { headers: accept ? { accept } : {}, redirect: "manual" });
+      { ...init, headers: { ...(accept ? { accept } : {}), ...(init.headers ?? {}) }, redirect: "manual" });
     return { status: res.status, type: res.headers.get("content-type"), location: res.headers.get("location"),
       body: await res.text() };
   } finally { srv.close(); }
@@ -98,4 +98,38 @@ test("the top-level route is negotiated too, not only the API under it", async (
     "the same address answers a browser and a script identically, so one of them is being told the wrong thing");
   assert.equal(scripted.status, 401);
   assert.equal(typed.status, 302);
+});
+
+// ── WHAT A REFUSAL SAYS IS A CLOSED SET, NEVER THE ERROR'S OWN MESSAGE ─────────────────────────────────
+//
+// Code scanning flagged the shared JSON sender for carrying stack-trace information, and the trace ended
+// here: the auth refusal answered `{ error: e.message }` and the door page printed the same message. That
+// message comes out of the token check — a third-party library on some deployments — and nothing bounds
+// it: our own wrapper embeds the library's text (`invalid Access token: …`), and our 403s embed the
+// caller's address. A body that failed to parse answered with the parser's own message the same way.
+const LEAKY = [
+  [401, "invalid Access token: jwt malformed near eyJhbGciOiJSUzI1NiJ9.leaked-fragment"],
+  [403, "email not permitted: person@invented.example"],
+];
+test("a refusal tells the client a fixed word, in JSON and on the door page, and none of the message", async () => {
+  for (const [status, message] of LEAKY) {
+    const opts = { verify: async () => { throw new AuthError(status, message); } };
+    const json = await drive(opts, "/portal/api/me", "application/json");
+    assert.equal(json.status, status);
+    assert.deepEqual(JSON.parse(json.body), { error: status === 401 ? "not signed in" : "not authorised for this account" },
+      `a ${status} answered with something other than the closed word`);
+    const page = await drive(opts, "/portal", BROWSER);
+    for (const leak of ["eyJhbGciOi", "leaked-fragment", "jwt malformed", "person@invented.example"])
+      for (const [where, body] of [["JSON", json.body], ["door page", page.body]])
+        assert.ok(!body.includes(leak), `the ${where} for a ${status} carried the error's own text: ${leak}`);
+  }
+});
+
+test("a body that fails to parse is refused in fixed words, not the parser's", async () => {
+  const opts = { verify: async () => ({ email: "person@invented.example" }) };
+  const r = await drive(opts, "/portal/api/me", "application/json",
+    { method: "POST", body: "{ not json", headers: { "content-type": "application/json" } });
+  assert.equal(r.status, 400, `a malformed body answered ${r.status}: ${r.body}`);
+  assert.deepEqual(JSON.parse(r.body), { error: "unreadable body" });
+  assert.doesNotMatch(r.body, /Unexpected|JSON at position|token/i, "the parser's own message reached the client");
 });
