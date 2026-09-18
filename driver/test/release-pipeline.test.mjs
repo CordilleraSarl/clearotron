@@ -2602,3 +2602,118 @@ test("the request is read off the environment, and a missing pull request number
   // An empty output from a job that did not run must not become pull request 0.
   assert.deepEqual(cutRequest({ CLEAROTRON_CUT_REQUESTED: "true", CLEAROTRON_CUT_PR: "" }), { asked: true, pr: null });
 });
+
+// ── DRIVEN THROUGH THE SCRIPT, THE WAY THE WORKFLOW RUNS IT ─────────────────────────────────────────
+//
+// The arms above hold the verdict as a pure function. They stayed green while the one step that runs it
+// had no credential for `gh`: the read of the pull request failed on every real run, and the failed read
+// arrived as "no version pull request was found" — red, and wrong about why. So the script is run here
+// as a process, against a real repository and a stub `gh`, from the state main was actually in on
+// 2026-09-17 at 09:20:02Z: the version pull request open, unmerged, one required check red.
+
+/** The 2026-09-17 09:20:02Z pull request, as `gh pr view --json merged,mergeable,statusCheckRollup` gives it. */
+const PR_AT_0920 = {
+  merged: false,
+  mergeable: "MERGEABLE",
+  statusCheckRollup: [
+    { __typename: "CheckRun", name: "The offline suites (2)", status: "COMPLETED", conclusion: "FAILURE" },
+    { __typename: "CheckRun", name: "The pattern guards", status: "COMPLETED", conclusion: "SUCCESS" },
+  ],
+};
+
+/**
+ * Run `release-await-cut.mjs` in a throwaway repository whose `main` carries a version that is already
+ * tagged — nothing to publish — with `gh` answering `ghBody` (a shell fragment). Budget 0: one read.
+ */
+function driveAwait({ requested, pr = "345", ghBody }) {
+  const dir = mkdtempSync(join(tmpdir(), "awaited-expiry-"));
+  try {
+    const origin = join(dir, "origin.git");
+    const work = join(dir, "work");
+    const g = (cwd, ...args) => execFileSync("git", ["-C", cwd, "-c", "user.email=a@b.c", "-c", "user.name=t", ...args], { stdio: "pipe" });
+    execFileSync("git", ["init", "-q", "--bare", "-b", "main", origin], { stdio: "pipe" });
+    execFileSync("git", ["init", "-q", "-b", "main", work], { stdio: "pipe" });
+    writeFileSync(join(work, "package.json"), `${JSON.stringify({ name: "fixture", version: "0.3.2-beta.6" })}\n`);
+    g(work, "add", "package.json");
+    g(work, "commit", "-qm", "Release 0.3.2-beta.6");
+    g(work, "tag", "v0.3.2-beta.6");
+    g(work, "remote", "add", "origin", origin);
+    g(work, "push", "-q", "origin", "main", "--tags");
+
+    const bin = join(dir, "bin");
+    mkdirSync(bin);
+    writeFileSync(join(bin, "gh"), `#!/bin/sh\n${ghBody}\n`, { mode: 0o755 });
+    const out = join(dir, "github-output");
+    const env = {
+      PATH: `${bin}:${process.env.PATH}`,
+      HOME: dir,
+      GITHUB_OUTPUT: out,
+      CLEAROTRON_RELEASE_WAIT_MS: "0",
+      CLEAROTRON_CUT_REQUESTED: requested ? "true" : "false",
+      CLEAROTRON_CUT_PR: pr,
+    };
+    try {
+      const stdout = execFileSync(process.execPath, [join(REPO, "scripts/release-await-cut.mjs")],
+        { cwd: work, encoding: "utf8", stdio: "pipe", env });
+      return { code: 0, text: stdout, output: readFileSync(out, "utf8") };
+    } catch (e) {
+      return { code: e.status, text: `${e.stdout ?? ""}${e.stderr ?? ""}`, output: existsSync(out) ? readFileSync(out, "utf8") : "" };
+    }
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+}
+
+const GH_ANSWERS_0920 = `echo '${JSON.stringify(PR_AT_0920)}'`;
+
+test("driven: the 09:20:02Z state on a dispatched cut exits non-zero and names the red check", () => {
+  const r = driveAwait({ requested: true, ghBody: GH_ANSWERS_0920 });
+  assert.equal(r.code, 1, `a dispatched cut that published nothing exited ${r.code}\n${r.text}`);
+  assert.match(r.text, /The offline suites \(2\) \(failure\)/, `the red does not name the check that stopped the merge\n${r.text}`);
+  assert.doesNotMatch(r.text, /The pattern guards/, "a check that passed was named as a reason");
+  assert.doesNotMatch(r.text, /ordinary outcome/, "the log calls a failed dispatch ordinary on the line above its own error");
+  assert.match(r.output, /looked=true/, "the loop did look, and must say so");
+});
+
+test("driven: the same state on a push, the schedule or a rehearsal stays quiet", () => {
+  // All three reach the script with the request unset — the workflow's expression is held by the arm
+  // below — so one drive covers the path they share.
+  const r = driveAwait({ requested: false, ghBody: GH_ANSWERS_0920 });
+  assert.equal(r.code, 0, `nothing was asked for, and the quiet path went red\n${r.text}`);
+  assert.match(r.text, /nothing to publish.*ordinary outcome/);
+});
+
+test("driven: a pull request that cannot be read is named as unread, not as absent", () => {
+  // What `gh` prints in a runner that was given no credential — the state the wait step was in.
+  const r = driveAwait({ requested: true, ghBody: "echo 'gh: To use GitHub CLI in a GitHub Actions workflow, set the GH_TOKEN environment variable.' >&2; exit 4" });
+  assert.equal(r.code, 1, `an unreadable pull request on a dispatched cut exited ${r.code}\n${r.text}`);
+  assert.match(r.text, /could not be read/, `the reason does not say the read failed\n${r.text}`);
+  assert.match(r.text, /345/, "the reason does not name which pull request it could not read");
+  assert.doesNotMatch(r.text, /no version pull request was found/, "a failed read was reported as a pull request that does not exist");
+});
+
+test("driven: a red commit status counts as a conclusion, not as nothing concluded", () => {
+  // The rollup mixes check runs, which carry `conclusion`, with commit statuses, which carry `state`.
+  const pr = { merged: false, mergeable: "MERGEABLE", statusCheckRollup: [
+    { __typename: "StatusContext", context: "an outside status", state: "FAILURE" },
+    { __typename: "StatusContext", context: "a status still running", state: "PENDING" },
+  ] };
+  const r = driveAwait({ requested: true, ghBody: `echo '${JSON.stringify(pr)}'` });
+  assert.equal(r.code, 1);
+  assert.match(r.text, /an outside status \(failure\)/, `a red status was read as not yet concluded\n${r.text}`);
+  assert.doesNotMatch(r.text, /a status still running/);
+});
+
+test("the wait step gives `gh` a credential and the job may read pull requests", () => {
+  const job = executableText(jobBlock("awaited"));
+  const step = job.slice(job.indexOf("- name: Watch main for the merge this push set in motion"));
+  assert.ok(step.includes("run: node scripts/release-await-cut.mjs"), "the wait step no longer runs the wait — this arm could not look");
+  const env = step.slice(0, step.indexOf("run: node scripts/release-await-cut.mjs"));
+  assert.match(env, /^\s+GH_TOKEN: \$\{\{ secrets\.GITHUB_TOKEN \}\}$/m,
+    "the wait step gives `gh` no credential, so the read of the pull request fails on every real run");
+  assert.match(job, /^\s+pull-requests: read$/m, "the job cannot read the version pull request");
+  assert.match(job, /^\s+checks: read$/m, "the job cannot read the checks on the version pull request");
+  assert.doesNotMatch(job, /^\s+[a-z-]+: write$/m, "the wait job was given write access; it only reads");
+  // THE REQUEST IS A DISPATCH THAT IS NOT A REHEARSAL, and nothing else. A push or the schedule that
+  // read as a request would turn every ordinary give-up red.
+  assert.match(env, /CLEAROTRON_CUT_REQUESTED: \$\{\{ github\.event_name == 'workflow_dispatch' && inputs\.cut != 'rehearse' && 'true' \|\| 'false' \}\}/,
+    "the request is no longer exactly a non-rehearsal dispatch");
+});
