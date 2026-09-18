@@ -909,6 +909,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-stable-is-published-only-over-a-clean-code-scan.test.mjs": {
+          "tests": 9,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
         "a-stale-classification-names-the-rows-that-moved.test.mjs": {
           "tests": 6,
           "asserts": 24,

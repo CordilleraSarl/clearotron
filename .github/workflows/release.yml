@@ -1015,6 +1015,7 @@ jobs:
     permissions:
       contents: write     # the tag and the GitHub release
       id-token: write     # the OIDC token npm exchanges for a short-lived publish credential
+      security-events: read   # the code-scanning verdict a stable is published over
     steps:
       - uses: actions/checkout@v7
         with:
@@ -1238,6 +1239,17 @@ jobs:
       # `owner/repo` shorthand for a git dependency and refuses: "Refusing to fetch
       # github:release-artefacts/clearotron-0.1.0.tgz". A relative path with a directory in it is
       # ambiguous to npm's spec parser and a leading `./` is what makes it a file.
+      # A STABLE IS PUBLISHED ONLY OVER A CLEAN CODE SCAN (owner's ruling, 2026-09-18). Code scanning is a
+      # required check on main, and this holds the publish itself to it: the commit being published must have
+      # a completed analysis in every language code scanning reads, with no alert open. The analysis follows
+      # the version pull request's merge by a few minutes, so it is waited for, bounded. Betas are not gated.
+      # THERE IS NO OVERRIDE: an open alert is fixed, or dismissed on the alert with a written reason.
+      - name: A stable is published only over a clean code scan
+        if: steps.what.outputs.prerelease == 'false' && steps.what.outputs.dry_flag == ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/release-code-scanning-check.mjs --sha "$(git rev-parse HEAD)" --repo "$GITHUB_REPOSITORY"
+
       - name: Publish to npm through Trusted Publishing
         run: npm publish "./${{ steps.what.outputs.tarball }}" --provenance --access public --tag "${{ steps.what.outputs.dist_tag }}" ${{ steps.what.outputs.dry_flag }}
 
@@ -1383,6 +1395,7 @@ jobs:
     permissions:
       contents: write     # the tag and the GitHub release
       id-token: write     # the OIDC token npm exchanges for a short-lived publish credential
+      security-events: read   # the code-scanning verdict a stable is published over
     steps:
       # BEFORE THE CHECKOUT, because that is the step it protects. `ref:` with an empty value does not
       # fail — it checks out the default branch — so an absent answer here would publish `main` while
@@ -1659,6 +1672,17 @@ jobs:
       # `owner/repo` shorthand for a git dependency and refuses: "Refusing to fetch
       # github:release-artefacts/clearotron-0.1.0.tgz". A relative path with a directory in it is
       # ambiguous to npm's spec parser and a leading `./` is what makes it a file.
+      # A STABLE IS PUBLISHED ONLY OVER A CLEAN CODE SCAN (owner's ruling, 2026-09-18). Code scanning is a
+      # required check on main, and this holds the publish itself to it: the commit being published must have
+      # a completed analysis in every language code scanning reads, with no alert open. The analysis follows
+      # the version pull request's merge by a few minutes, so it is waited for, bounded. Betas are not gated.
+      # THERE IS NO OVERRIDE: an open alert is fixed, or dismissed on the alert with a written reason.
+      - name: A stable is published only over a clean code scan
+        if: steps.what.outputs.prerelease == 'false' && steps.what.outputs.dry_flag == ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/release-code-scanning-check.mjs --sha "$(git rev-parse HEAD)" --repo "$GITHUB_REPOSITORY"
+
       - name: Publish to npm through Trusted Publishing
         run: npm publish "./${{ steps.what.outputs.tarball }}" --provenance --access public --tag "${{ steps.what.outputs.dist_tag }}" ${{ steps.what.outputs.dry_flag }}
 

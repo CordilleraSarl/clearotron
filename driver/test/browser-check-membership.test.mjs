@@ -181,6 +181,13 @@ const CANNOT_RUN_IN_CI = [
   // deletion on its own reads as "somebody decided that check was unnecessary", which is not what
   // happened and would be the wrong thing for the next reader to conclude.
   {
+    path: "scripts/release-code-scanning-check.mjs",
+    why: "it reads the code-scanning verdict of the commit a STABLE is about to be published from, on main, "
+      + "with the release job's permission to read it. In CI there is no such commit and no publish; it runs "
+      + "in the release workflow's publishing jobs, and its verdict is driven in the suite through a stub "
+      + "`gh` by its own test file.",
+  },
+  {
     path: "scripts/release-visible-check.mjs",
     why: "it asks the public registry whether a version THIS RUN JUST PUBLISHED is served to a stranger, and "
       + "in CI nothing has been published. It runs in the release workflow's publishing jobs, between the "
