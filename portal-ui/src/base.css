@@ -739,6 +739,22 @@ table.data td.nest-2 {
   flex: none;
   margin-top: 0.42em;
 }
+/* AND NEVER INSIDE A WORD. At 700px the column holds 84px and "Manageable" is 85: beside its dot it broke
+   into "Managea" over "ble". The cell gives up padding the way the date's does, the dot and the word may
+   part so a word too long to sit beside its dot takes the next line whole, and the word itself breaks only
+   when it cannot fit even on a line of its own — `break-word`, which unlike `anywhere` does not shrink the
+   word's minimum width, so the parting happens first. */
+.names-wrap table.data.fixed td:has(.risk-dot) {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+.names-wrap table.data.fixed td .risk-dot {
+  flex-wrap: wrap;
+  row-gap: 2px;
+}
+.names-wrap table.data.fixed td .risk-dot > span:last-child {
+  overflow-wrap: break-word;
+}
 /* A date is one word to a reader. A line may break before it, never at its hyphens: "2026-09-" over "02"
    read as a different date on the line below. */
 .names-wrap table.data.fixed td .sub.report-line {

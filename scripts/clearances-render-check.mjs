@@ -594,18 +594,46 @@ const FULL = `(() => {
   const ri = head.findIndex(t => /^Risk/i.test(t)), ui = head.findIndex(t => /^Updated/i.test(t));
   const textBox = (el) => { if (!el) return null; const r = document.createRange(); r.selectNodeContents(el); const b = r.getBoundingClientRect(); return b.width ? b : null; };
   const rows = [...table.querySelectorAll('tbody tr.row')];
+  // ANY CELL'S TEXT RUNNING INTO THE NEXT, on every row that draws them — names, groups and searches —
+  // Status into Risk and Risk into Updated. Measured on the text itself, not on the cells, which cannot overlap.
+  const si = head.findIndex(t => /^Status/i.test(t));
   const collide = [];
+  for (const tr of table.querySelectorAll('tbody tr')) {
+    if (tr.children.length !== head.length) continue;
+    for (const [a, b] of [[si, ri], [ri, ui]]) {
+      const x = textBox(tr.children[a]), y = textBox(tr.children[b]);
+      if (x && y && x.right > y.left - 2 && x.top < y.bottom && y.top < x.bottom) {
+        collide.push(((tr.querySelector('b') || tr.children[2] || {}).textContent || '').trim().slice(0, 40) + ' (' + head[a] + ' into ' + head[b] + ')');
+      }
+    }
+  }
+  // A RISK WORD NEVER BREAKS INSIDE ITSELF. A phrase may wrap between its words; a single word drawn on two
+  // lines ("Managea" over "ble") is a word the reader has to reassemble.
+  const midWord = [];
   for (const tr of rows) {
-    const risk = textBox(tr.children[ri]), date = textBox(tr.children[ui]);
-    if (risk && date && risk.right > date.left - 2 && risk.top < date.bottom && date.top < risk.bottom) {
-      collide.push(((tr.querySelector('b') || {}).textContent || '').trim());
+    const label = tr.children[ri] && tr.children[ri].querySelector('.risk-dot > span:last-child');
+    if (!label) continue;
+    const words = (label.textContent || '').trim().split(/\\s+/);
+    const r = document.createRange();
+    for (const node of label.childNodes) {
+      if (node.nodeType !== 3) continue;
+      let at = 0;
+      for (const w of (node.textContent || '').split(/(\\s+)/)) {
+        if (w && !/^\\s+$/.test(w)) {
+          r.setStart(node, at); r.setEnd(node, at + w.length);
+          if (r.getClientRects().length > 1) midWord.push(w);
+        }
+        at += w.length;
+      }
     }
   }
   const cut = [...table.querySelectorAll('button.row-menu-btn')].filter(b => b.getBoundingClientRect().right > Math.min(w.right, document.documentElement.clientWidth) + 1).length;
   return { rows: rows.length, docOverflowsX: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
     scrollW: document.documentElement.scrollWidth, clientW: document.documentElement.clientWidth,
     tableOverflows: table.getBoundingClientRect().width > w.width + 1, tableW: Math.round(table.getBoundingClientRect().width), wrapW: Math.round(w.width),
-    menusCut: cut, riskOverDate: collide };
+    menusCut: cut, riskOverDate: collide, riskMidWord: [...new Set(midWord)],
+    riskCell: (() => { const td = rows[0] && rows[0].children[ri]; if (!td) return null; const cs = getComputedStyle(td);
+      return Math.round(td.getBoundingClientRect().width - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight)); })() };
 })()`
 fullList = true
 const full = {}
@@ -614,8 +642,17 @@ for (const width of [WIDE, 700]) {
   await reload()
   full[width] = await value(FULL)
 }
-await cmd('Emulation.clearDeviceMetricsOverride', {})
 fullList = false
+// The same reading on the stub rows, which carry the shapes the full list does not — a group, a name
+// with searches under it, a stopped name — opened out.
+const stubs = {}
+for (const width of [WIDE, 700]) {
+  await cmd('Emulation.setDeviceMetricsOverride', { width, height: 1000, deviceScaleFactor: 1, mobile: false })
+  await reload()
+  await value(`(async () => { for (let i = 0; i < 3; i++) { for (const b of document.querySelectorAll('table.data button.twisty[aria-expanded="false"]')) { b.click(); await new Promise(r => setTimeout(r, 60)); } await new Promise(r => setTimeout(r, 250)); } return true })()`)
+  stubs[width] = await value(FULL)
+}
+await cmd('Emulation.clearDeviceMetricsOverride', {})
 await reload()
 
 if (shotAt) {
@@ -696,6 +733,10 @@ if (!short || short.fatal) {
 }
 
 console.log(`measured at ${WIDTH}px — ${short.openedRows} rows opened, ${short.readRows} read rows`)
+for (const [width, f] of Object.entries(stubs)) {
+  ok(f && f.riskOverDate.length === 0, `stub rows at ${width}px: text runs into the next cell on ${JSON.stringify(f?.riskOverDate)}`)
+  ok(f && f.riskMidWord.length === 0, `stub rows at ${width}px: a risk word breaks inside itself — ${JSON.stringify(f?.riskMidWord)}`)
+}
 for (const [width, f] of Object.entries(full)) {
   console.log(`full list at ${width}px: ${f?.rows} rows, page ${f?.scrollW}/${f?.clientW}, table ${f?.tableW} in ${f?.wrapW}, menus cut ${f?.menusCut}, risk over date ${JSON.stringify(f?.riskOverDate)}`)
   ok(f && f.rows === 25, `full list at ${width}px: ${f?.rows} rows drew, not 25`)
@@ -703,6 +744,7 @@ for (const [width, f] of Object.entries(full)) {
   ok(f && !f.tableOverflows, `full list at ${width}px: the table (${f?.tableW}px) leaves its box (${f?.wrapW}px)`)
   ok(f && f.menusCut === 0, `full list at ${width}px: ${f?.menusCut} row menu(s) cut off at the edge`)
   ok(f && f.riskOverDate.length === 0, `full list at ${width}px: the risk word runs into the date on ${JSON.stringify(f?.riskOverDate)}`)
+  ok(f && f.riskMidWord.length === 0, `full list at ${width}px: a risk word breaks inside itself — ${JSON.stringify(f?.riskMidWord)} in a ${f?.riskCell}px cell`)
 }
 // Printed on every run, not only on failure: `overflow: 21px` is the number that told us the table
 // was resolving wider than its wrapper, and it is the first thing to look at when this check goes red.

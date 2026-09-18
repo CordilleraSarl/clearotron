@@ -1139,7 +1139,9 @@ function FamilyRows({
           {busy ? (
             <span className="status">
               <span className={`dot ${busy.state}`} />
-              <span className="status-count">{busy.text}</span>
+              {/* A PHRASE, NOT A COUNT: it wraps between its words in a narrow column rather than running
+                  on under Risk, and the number stays with its noun. */}
+              <span>{busy.text.replace(/^(\d+) /, '$1\u00a0')}</span>
             </span>
           ) : (
             <StatusCell state={family.state} step={null} reason={null} failedStage={null} />
