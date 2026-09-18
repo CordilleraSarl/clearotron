@@ -1714,8 +1714,8 @@
           "todos": 0
         },
         "coverage-disclosure-carries-no-engine-output.test.mjs": {
-          "tests": 8,
-          "asserts": 18,
+          "tests": 9,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },
@@ -3173,7 +3173,7 @@
         },
         "pipeline.mock.test.mjs": {
           "tests": 98,
-          "asserts": 815,
+          "asserts": 820,
           "skips": 0,
           "todos": 0
         },

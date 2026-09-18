@@ -18,7 +18,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { projectCoverageJudgment, COVERAGE_JUDGMENT_ROW_CAP } from "../findings-model.mjs";
-import { deferralCoverageRow } from "../pipeline.mjs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { deferralCoverageRow, injectMeaningGapCoverage } from "../pipeline.mjs";
 
 const row = (i) => ({
   area: `saturation-probe / default: TERM${i} [cl 5, 32]`,
@@ -113,4 +116,38 @@ test("an UNKNOWN token is the case the fallback exists for, and it is the one th
   assert.doesNotMatch(tail, /brand-new-shape|9f2a1c/,
     "the default still publishes what it does not recognise — the nine named arms are the courtesy and this is the fix");
   assert.match(tail, /not completed this run|could not be completed/, "…and it must still say the slice is open");
+});
+
+// ── A MEANING SEARCH THE PROVIDER REFUSED REACHES THE REPORT, IN APPROVED WORDS ───────────────────────
+//
+// The report was never handed the common-law grid, so a meaning search that did not complete reached the
+// client only if the synthesis model chose to say so. The driver now puts each on the coverage the report
+// renders. A REFUSAL is the half the mock pipeline cannot plant — the provider's own gap row carries the
+// provider's own words — so it is driven here, where the danger is exactly those words reaching the page.
+test("a meaning search the provider refused is an open coverage row, in approved words, and nothing the provider said", () => {
+  const dir = mkdtempSync(join(tmpdir(), "meaning-gap-"));
+  try {
+    mkdirSync(join(dir, "_driver"), { recursive: true });
+    const P = { commonLawGrid: join(dir, "common-law-grid.json"), findings: join(dir, "findings.json") };
+    const TERM = "IRONWHISK slang meaning";
+    writeFileSync(P.commonLawGrid, JSON.stringify({ cells: [], gaps: [
+      { term: TERM, platform: "connotation", error: "RuntimeError('provider refused the query: content policy (HTTP 400)')" },
+      { term: "IRONWHISK", platform: "marketplace", error: "timeout" },   // not a meaning search: not this row's business
+    ] }));
+    writeFileSync(P.findings, JSON.stringify({ schema_version: 2, findings: [], coverage: [] }));
+    injectMeaningGapCoverage(P, dir, () => {});
+    const cov = JSON.parse(readFileSync(P.findings, "utf8")).coverage;
+    assert.equal(cov.length, 1, `one meaning gap in, ${cov.length} coverage row(s) out — a platform gap is not a meaning search`);
+    assert.equal(cov[0].area, `Follow-up / ${TERM}`, "the row is not the follow-up row an unclosed search already reads as");
+    assert.equal(cov[0].state, "open", "an unfinished search must read as open, never as searched");
+    assert.match(cov[0].note, /not completed this run/, "the row does not say the search was not completed");
+    assert.doesNotMatch(cov[0].note, /HTTP|refused|RuntimeError|content policy|provider|re-issue/i,
+      `the provider's own words reached the client's row: ${cov[0].note}`);
+    // The sentence is an APPROVED one, copied — not composed here.
+    const approved = deferralCoverageRow(TERM, "not-verified-closed").note;
+    assert.equal(cov[0].note, approved, "the note is not one of the approved reader sentences");
+    // And a second pass adds nothing: the pipeline can reach this more than once.
+    injectMeaningGapCoverage(P, dir, () => {});
+    assert.equal(JSON.parse(readFileSync(P.findings, "utf8")).coverage.length, 1, "a second pass duplicated the row");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
 });

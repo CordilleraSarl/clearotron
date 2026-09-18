@@ -2943,6 +2943,8 @@ test("the engine re-issues a missing meaning search itself, and a recovered one 
     "the re-issue was not recorded; an attempt nobody can see is the defect this issue is about");
   assert.ok(!events.some((e) => e.event === "connotation-unfinished-disclosed"),
     "a search the engine RECOVERED must not be disclosed as unfinished — that tells a client work was missed that was not");
+  assert.ok(!events.some((e) => e.event === "meaning-gap-coverage"),
+    "a recovered search grew a coverage row on the report saying it did not complete");
 });
 
 test("and when the re-issue cannot recover it, the run DELIVERS with the gap disclosed", async () => {
@@ -2962,6 +2964,21 @@ test("and when the re-issue cannot recover it, the run DELIVERS with the gap dis
     .filter((g) => String(g?.platform ?? "").toLowerCase() === "connotation");
   assert.ok(connGaps.length >= 1, "no connotation gap row was written — the coverage row has nothing to read");
   assert.ok(connGaps.every((g) => String(g.term ?? "").trim()), "a gap row names no term, so no page can say which search was short");
+
+  // AND IT REACHES THE CLIENT'S OWN PAGE, not only the audit. The report is never handed the grid, so
+  // without the driver putting the gap on the coverage it renders, whether a client learns a meaning
+  // search is missing would be the synthesis model's choice.
+  const findings = JSON.parse(readFileSync(join(res.runDir, "findings.json"), "utf8"));
+  for (const g of connGaps) {
+    const row = (findings.coverage ?? []).find((c) => c.area === `Follow-up / ${g.term}`);
+    assert.ok(row, `the unfinished meaning search "${g.term}" is on the audit and not on the report's coverage`);
+    assert.equal(row.state, "open", "an unfinished search must read as open, never as searched");
+    assert.match(row.note, /not completed this run/);
+  }
+  const { config: poolCfg } = await import("../driver.config.mjs");
+  const { dirname: pdir, basename: pbase } = await import("node:path");
+  const html = readFileSync(join(poolCfg.poolRoot, `${pbase(pdir(res.runDir))}-${pbase(res.runDir)}`, "report.html"), "utf8");
+  assert.ok(connGaps.every((g) => html.includes(g.term)), "the rendered report does not name the meaning search that did not complete");
 });
 
 test("the model gets ONE repair turn, not a loop", async () => {
