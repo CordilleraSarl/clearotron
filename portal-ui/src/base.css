@@ -189,6 +189,36 @@ html.anon-on [data-anon='mark']:not(.anon-clear) {
 .btn-ghost.ask-ai-btn.is-quiet { border-color: transparent; color: var(--text-muted); }
 .btn-ghost.ask-ai-btn.is-quiet:hover { border-color: var(--border-hairline); color: var(--text-strong); }
 .ask-ai-float { position: absolute; right: 0; top: calc(100% + 6px); z-index: 50; }
+
+/* THE PANEL BELONGS TO THE BUTTON THAT OPENED IT, and a reader has to be able to see that it does. It was
+   anchored already — the rule above hangs it off `.ask-ai`, which is positioned — but it is 360px wide and
+   right-aligned, so it reaches back under the header's other chrome and reads as something floating over
+   the page rather than as this button's panel (owner, on test, 2026-09-18). Two triangles rather than one:
+   the outer carries the panel's own hairline and the inner covers it in the panel's surface, so the caret
+   is the panel's edge continuing rather than a shape drawn near it. Both grounds, from the same tokens. */
+.ask-ai-float::before,
+.ask-ai-float::after {
+  content: '';
+  position: absolute;
+  right: 16px;
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+}
+.ask-ai-float::before { top: -7px; border-bottom: 7px solid var(--border-strong); }
+.ask-ai-float::after { top: -6px; border-bottom: 7px solid var(--surface-float); }
+
+/* AND THE BUTTON SAYS IT IS THE OPEN ONE. `aria-expanded` is already on it for a reader using a screen
+   reader; this is the same fact for the reader looking at it, drawn the way every other open-or-current
+   control in this file is (accent wash, accent border). One class stronger than the quiet variant, whose
+   transparent border would otherwise win. */
+.btn-ghost.ask-ai-btn[aria-expanded='true'],
+.btn-ghost.ask-ai-btn.is-quiet[aria-expanded='true'] {
+  background: var(--accent-wash);
+  border-color: var(--accent);
+  color: var(--text-accent);
+}
 .ask-ai-panel { width: 360px; max-width: calc(100vw - 32px); padding: 12px; display: grid; gap: 10px; text-align: left; }
 .ask-ai-head { font-size: 12.5px; line-height: 1.45; color: var(--text-muted); }
 .ask-ai-when { white-space: nowrap; }

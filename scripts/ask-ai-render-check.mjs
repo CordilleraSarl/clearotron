@@ -452,12 +452,37 @@ const PANEL = `(() => {
     text: float ? flat(float.innerText) : null,
     checked: float ? [...float.querySelectorAll('[role="radio"]')].map(r => r.getAttribute('aria-checked')) : [] };
 })()`
+// THE BUTTON'S OWN OPEN STATE, AND THE CARET THAT TIES THE PANEL TO IT. Both are CSS, so both are read
+// off the browser: a selector that never matched anything would still be in the stylesheet, and a
+// source-text arm over it would pass on a panel a reader sees floating loose over the header.
+const BUTTON = `(() => {
+  const b = document.querySelector('[data-ask-ai] > button');
+  if (!b) return null;
+  const s = getComputedStyle(b);
+  return { expanded: b.getAttribute('aria-expanded'), background: s.backgroundColor, border: s.borderTopColor };
+})()`
+const CARET = `(() => {
+  const f = document.querySelector('[data-ask-ai] .float');
+  if (!f) return null;
+  const edge = getComputedStyle(f, '::before'), fill = getComputedStyle(f, '::after'), panel = getComputedStyle(f);
+  return { edge: edge.borderBottomWidth, edgeColour: edge.borderBottomColor, panelBorder: panel.borderTopColor,
+    fill: fill.borderBottomWidth, fillColour: fill.borderBottomColor, panelFill: panel.backgroundColor, above: edge.top };
+})()`
 reportDoc = 'finding'
 deck = 'connected'; await visit()
 await value('(() => { window.__opened = []; window.open = (href) => { window.__opened.push(href); return null; }; return true })()')
 const findingPressed = await pressInFrame(40)
 const fromFinding = await value(PANEL)
 await capture('ask-ai-from-finding')
+const caret = await value(CARET)
+const openButton = await value(BUTTON)
+// PRESSED TWICE, THE SAME BUTTON SHUTS IT. A third press brings it back — which is also the state the
+// questions below need, so this measurement leaves the deck exactly as it found it.
+await pressInFrame(40)
+const closedBySecondPress = await value(PANEL)
+const shutButton = await value(BUTTON)
+await pressInFrame(40)
+const reopened = await value(PANEL)
 const findingAsks = []
 for (const i of QUESTIONS.keys()) {
   if (i > 0) { await pressInFrame(40) }
@@ -598,6 +623,21 @@ ok(fromFinding && fromFinding.open && fromFinding.anchorState === 'ask',
 ok(fromFinding && fromFinding.head === `${MARK} · finding 3 · ${PRODUCT_NAME} · searched ${ISO_DATE}`,
   `a finding: the panel's first line reads ${show(fromFinding?.head)}, not the finding named beside the mark`)
 ok(show(fromFinding?.checked) === show(['true', 'false', 'false', 'false']), `a finding: the first question is not the one selected — ${show(fromFinding)}`)
+
+// ── the panel reads as this button's, and one button opens and shuts it ──
+ok(caret && caret.edge === '7px' && caret.fill === '7px',
+  `the panel draws no caret, so it reads as chrome floating over the header rather than as this button's — ${show(caret)}`)
+ok(caret && caret.edgeColour === caret.panelBorder && caret.fillColour === caret.panelFill,
+  `the caret is not the panel's own edge continuing — ${show(caret)}`)
+ok(caret && caret.above.startsWith('-'), `the caret sits at ${show(caret?.above)}, not above the panel pointing at the button`)
+ok(openButton && openButton.expanded === 'true', `with the panel open the button says expanded=${show(openButton?.expanded)}`)
+ok(shutButton && shutButton.expanded === 'false', `with the panel shut the button says expanded=${show(shutButton?.expanded)}`)
+ok(openButton && shutButton && openButton.background !== shutButton.background && openButton.border !== shutButton.border,
+  `the button is drawn the same open as shut, so nothing on the page says which control the panel belongs to — ${show({ open: openButton, shut: shutButton })}`)
+ok(closedBySecondPress && closedBySecondPress.open === false,
+  `a finding pressed twice: the second press reopened the panel instead of closing it — ${show(closedBySecondPress)}`)
+ok(reopened && reopened.open && reopened.head === `${MARK} · finding 3 · ${PRODUCT_NAME} · searched ${ISO_DATE}`,
+  `a finding pressed a third time: the panel did not come back on that finding — ${show(reopened)}`)
 const FINDING_TYPED = [`Brief me on ${FINDING_REPORT}.`, `Explain the main risks in ${FINDING_REPORT}.`,
   `What needs further investigation in ${FINDING_REPORT}?`, `How would narrower goods change the assessment in ${FINDING_REPORT}?`]
 for (const [i, press] of findingAsks.entries()) {
@@ -623,5 +663,5 @@ if (fail.length) {
   console.error(`ask-ai-render-check: ${fail.length} thing(s) a reader would meet`)
   process.exit(1)
 }
-console.log(`ask-ai-render-check: the header, both panels and the unmeasured state render; all four questions reach the link typed in; Set it up leaves its note and Continue lands on the report with the panel open; no button where there is no connector`)
+console.log(`ask-ai-render-check: the header, both panels and the unmeasured state render; the panel carries its caret and the button is drawn open, and a finding's own button opens and shuts it; all four questions reach the link typed in; Set it up leaves its note and Continue lands on the report with the panel open; no button where there is no connector`)
 if (shotsDir) console.log(`ask-ai-render-check: shots in ${shotsDir}`)

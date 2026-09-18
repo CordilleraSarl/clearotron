@@ -97,6 +97,12 @@ export function AskAi({
   // first question selected, as the header's button opens it.
   useEffect(() => {
     if (!fromFinding) return
+    // AND A SECOND PRESS ON THE SAME FINDING CLOSES IT (owner, on test, 2026-09-18). The reader presses one
+    // button, so it has to answer like one: open, then shut. Only a press about a DIFFERENT finding
+    // re-points an open panel instead of closing it, because there the press asked for something else.
+    // The press that ASKED already closed the panel, so pressing the same finding after asking opens it.
+    const showing = open && about?.ordinal === fromFinding.ordinal && about?.markName === fromFinding.markName
+    if (showing) { setOpen(false); return }
     setAbout({ ordinal: fromFinding.ordinal, markName: fromFinding.markName })
     setPicked(0)
     setOpen(true)
