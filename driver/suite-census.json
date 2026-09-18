@@ -2578,8 +2578,8 @@
           "todos": 0
         },
         "freeze-example-run.test.mjs": {
-          "tests": 11,
-          "asserts": 51,
+          "tests": 14,
+          "asserts": 60,
           "skips": 0,
           "todos": 0
         },
