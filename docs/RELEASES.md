@@ -38,8 +38,7 @@ suggest for yours.
 
 ## How often
 
-A stable is cut when a beta earns it, which we aim at roughly weekly. **Betas are cut deliberately, days
-apart** — when a change lands that somebody should test, or while a stable is being prepared. They are not
+A stable is cut when a beta earns it, which we aim at roughly weekly. Betas are not
 published on every merge, so `beta` is a version somebody chose to publish rather than whatever merged
 last. Some stables have several betas before them and some have none.
 

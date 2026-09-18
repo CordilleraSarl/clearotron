@@ -4,15 +4,7 @@
 files and follow them exactly, so an edit for brevity or tone changes what a clearance concludes —
 `clearance-search/synthesis-rules.md` is 1,025 lines of program. Never touch this tree in a documentation or tidy-up
 task, and never let a mass edit reach it — the [ADR-0005](../../docs/decisions/0005-comments-carry-reasoning.md)
-comment sweep is required to exclude this tree, and that script does not exist yet, so nothing enforces it but you.
-
-> **Part of the tree is under an identifier hold, and a find-and-replace makes it worse.** Real delivered marks sit
-> in the worked examples; renaming a candidate leaves the real conflicts found against it attached to a mark none of
-> their owners holds, turning a true analysis into a false public claim about named firms. **Do not "finish the
-> rename."** The ruled fix is to rebuild each example whole — a fictional candidate searched against real register
-> data, the way `demo` was built. The ruling is stated here rather than only pointed at:
-> [`AGENTS.md`](../../AGENTS.md) carries it too, and ADR-0005 wants it in more than one place precisely
-> because no script enforces it. A rule whose only statement is a link is a rule a reader can lose.
+comment sweep is required to exclude this tree.
 
 ## What a skill directory holds
 

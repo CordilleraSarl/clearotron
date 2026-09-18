@@ -154,11 +154,12 @@ test("the quickstart's install line says what it installs, as the reference's do
   assert.ok(comment, "INSTALL.md §1's install line carries no comment to hold the quickstart to");
   const block = /\n## Install\n\n```bash\n([\s\S]*?)```/.exec(read("QUICKSTART.md"));
   assert.ok(block, "QUICKSTART.md has no bash block under ## Install");
-  assert.ok(block[1].split("\n").includes(`clearotron install  ${comment[1]}`),
+  // The same line as INSTALL.md §1, route and comment both: one install route in every document.
+  assert.ok(block[1].split("\n").includes(`npx clearotron install  ${comment[1]}`),
     "QUICKSTART.md's install block does not say, as INSTALL.md §1 does, that the install command installs the reasoning program");
   // Still a block a reader can paste: every line is a command, with at most a comment after it.
   for (const line of block[1].trim().split("\n"))
-    assert.match(line, /^(?:npm|clearotron) [^#]+?(?: {2}# .+)?$/, `QUICKSTART.md's install block has a line that is not a command: ${line}`);
+    assert.match(line, /^(?:npm|npx clearotron|clearotron) [^#]+?(?: {2}# .+)?$/, `QUICKSTART.md's install block has a line that is not a command: ${line}`);
 });
 
 test("the configuration reference says a tier follows the vendor, as the Claude adapter does", () => {

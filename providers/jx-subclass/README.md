@@ -57,7 +57,7 @@ All presumed similar in Japan.
 **A Japanese or Korean similarity search must not be scoped by Nice class.** Query by `group_code`
 instead and the full set comes back. `query-demo.mjs` demonstrates all three query shapes.
 
-## Cross-references — Taiwan done
+## Cross-references — Taiwan
 
 TIPO's per-class reference PDFs **carry a text layer** (unlike CNIPA's, which is a scan), so Taiwan's
 備註 remarks extract programmatically. `tw/extract_tw_xref.py` reads all 45 class PDFs:
@@ -68,18 +68,9 @@ TIPO's per-class reference PDFs **carry a text layer** (unlike CNIPA's, which is
 Example: Taiwanese cosmetics (`0301`) must also search `4402` (hairdressing/beauty **services**,
 class 44) and `351918` (cosmetics retail, class 35). A class-3 search finds neither.
 
-### A validation trap worth recording
-
-The loader first validated `to_group` against the codes in the concordance (609) and **rejected 14
-real groups**. TIPO's own class files carry **635**; the concordance lists only goods that have a Nice
-basic number. Validating against the narrower source would have silently dropped real relations —
-the authority is now `tw/tw-group-codes.json`, taken from TIPO's own group headers.
-
-## Still outstanding
-
-**China** — the notes are the same shape as Taiwan's but the source PDF is a scan with no text layer.
-278 pages rendered in `cn/pages/`; extraction brief at `~/docs/PROMPT-cnipa-cross-references.md`,
-running externally.
+**The group codes come from TIPO's own class files**, which carry 635 groups. The concordance lists only
+goods that have a Nice basic number (609), so validating a relation's target group against it would drop
+real relations without a word. The authority is `tw/tw-group-codes.json`, taken from TIPO's group headers.
 
 ## Korea — done, and round-2 research had the mechanism wrong
 

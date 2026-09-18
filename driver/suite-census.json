@@ -4883,7 +4883,7 @@
         },
         "the-first-hour-reads-true.test.mjs": {
           "tests": 8,
-          "asserts": 41,
+          "asserts": 42,
           "skips": 0,
           "todos": 0
         },

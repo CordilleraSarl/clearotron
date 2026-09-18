@@ -16,7 +16,7 @@ open web for conflicts, reasons about the risk the way a clearance lawyer would,
 written report with a machine-readable audit trail behind every finding. It runs headless on your own
 machine: no gateway, no platform, and nothing about the names you are clearing reaches us.
 
-[Quickstart](QUICKSTART.md) · [Install & operate](INSTALL.md) · [Docs](docs/README.md) · [Security](docs/SECURITY.md) · [Contributing](CONTRIBUTING.md) · [Licence](#licence)
+[Quickstart](QUICKSTART.md) · [Install & operate](INSTALL.md) · [Docs](docs/README.md) · [Security](SECURITY.md) · [Contributing](CONTRIBUTING.md) · [Licence](#licence)
 
 ## Install
 
@@ -49,14 +49,11 @@ real clearance needs WSL2.** Native Windows clearances are planned for a later r
 engine does not run on native Windows: it spawns each stage with POSIX path and process semantics, so
 a clearance is refused there before it starts.
 
-`npm install -g clearotron` also works where npm's global directory is yours to write. On a Linux Node
-from the distribution or NodeSource that directory is `/usr`, owned by root, and npm refuses with
-`EACCES`. Do not answer that with `sudo`; install under your home instead:
-`npm install -g clearotron --prefix ~/.local`.
+Installing with npm's own global form instead is covered in [INSTALL.md](INSTALL.md) §2.
 
 `npx clearotron install` gives you the **stable** release — the one that has run a real clearance end to
 end before it was published. If you want the newest code instead, a beta is published whenever there is
-something worth testing — deliberately, days apart, not on every merge:
+something worth testing:
 
 ```bash
 npx clearotron@beta install
@@ -74,13 +71,13 @@ With it installed, check what it found before it does anything. `doctor` only re
 calls nobody, and names whatever is still missing:
 
 ```bash
-clearotron doctor
+npx clearotron doctor
 ```
 
 Then start the product and open the portal address it prints:
 
 ```bash
-clearotron start
+npx clearotron start
 ```
 
 That is the portal everyone at your company uses. Ordering a clearance is the same screen — describe it
@@ -102,7 +99,7 @@ rights-holders behind them by jurisdiction:
 Then run your own: order it in the portal, or hand the engine a job file:
 
 ```bash
-clearotron run --job my-job.json
+npx clearotron run --job my-job.json
 ```
 
 ## How it fits together
@@ -130,7 +127,7 @@ reports, no crash reports. There is no telemetry in this tree and no endpoint we
 destination is a register, a reasoning provider or a search provider you configured with your own
 credential.
 [What leaves the machine, call by call](docs/architecture/09-security-and-data.md#what-leaves-the-machine)
-· [Security model](docs/SECURITY.md) · [Report a vulnerability](SECURITY.md).
+· [Report a vulnerability](SECURITY.md).
 
 ## Documentation
 

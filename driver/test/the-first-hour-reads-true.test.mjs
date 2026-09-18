@@ -53,15 +53,23 @@ test("nothing a new reader meets promises a browser window the product never ope
   assert.match(read("README.md"), /prints the portal's address and the passphrase to sign in with/);
 });
 
-test("the README installs without root, and an npm install line carries the EACCES answer, never sudo", () => {
+// ONE INSTALL ROUTE (owner ruling, 2026-09-18). README and QUICKSTART give `npx clearotron install`, which
+// needs no root; npm's own global form, and the EACCES answer it needs on a stock Linux Node, appear once,
+// in INSTALL.md. Three documents each carrying their own route and their own copy of the note was the
+// defect: a reader met three answers to one question.
+test("the README installs without root, and npm's global form and its EACCES answer live in INSTALL.md only", () => {
   const readme = read("README.md");
   assert.match(readme.slice(readme.indexOf("**Then install it.**")), /^```bash\nnpx clearotron install\n```/m,
     "the README's install step is not the one that needs no root");
-  assert.ok(readme.indexOf("npx clearotron install") < readme.indexOf("npm install -g clearotron"), "the npm line, which fails on a stock Linux Node, leads");
-  const npmParagraphs = readme.split(/\n\n/).filter((p) => /npm install -g clearotron/.test(p));
-  assert.ok(npmParagraphs.length > 0, "no npm install line to hold: the next arm would pass on nothing");
-  for (const p of npmParagraphs) assert.match(p, /EACCES[\s\S]*npm install -g clearotron --prefix ~\/\.local/, "an npm install line with no answer to EACCES beside it");
-  for (const f of ["README.md", "QUICKSTART.md"]) assert.doesNotMatch(read(f), /sudo npm/, `${f} answers EACCES with sudo`);
+  for (const f of ["README.md", "QUICKSTART.md"]) {
+    assert.doesNotMatch(read(f), /npm install -g clearotron/, `${f} carries npm's global form, which belongs in INSTALL.md alone`);
+    assert.doesNotMatch(read(f), /EACCES/, `${f} carries the EACCES note, which belongs in INSTALL.md alone`);
+  }
+  const install = read("INSTALL.md");
+  const npmParagraphs = install.split(/\n\n/).filter((p) => /npm install -g clearotron`/.test(p) && /EACCES/.test(p));
+  assert.equal(npmParagraphs.length, 1, "INSTALL.md must carry npm's global form with its EACCES answer exactly once");
+  assert.match(npmParagraphs[0], /EACCES[\s\S]*npm install -g clearotron --prefix ~\/\.local/, "the npm line has no answer to EACCES beside it");
+  for (const f of ["README.md", "QUICKSTART.md", "INSTALL.md"]) assert.doesNotMatch(read(f), /sudo npm/, `${f} answers EACCES with sudo`);
 });
 
 test("the Quick start installs before it starts", () => {

@@ -28,7 +28,7 @@ import { invocationPrefix } from "../shared/invocation.mjs";   // — print a co
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 /**
- * item 5 — the published version, from the ONE place that holds it.
+ * The published version, from the ONE place that holds it.
  *
  * EXPORTED so the test reads it the same way the command does. An unreadable or version-less manifest
  * answers `unknown` rather than throwing: someone is typing this because something is already wrong,
@@ -90,7 +90,7 @@ export const SUMMARY = {
 /**
  * Runnable entry points in `bin/` that are deliberately NOT verbs, each with the reason.
  *
- * asks for the verb list to be derived from what is on disk rather than hardcoded. A list of
+ * The verb list should follow what is on disk rather than be hardcoded. A list of
  * SUMMARIES cannot be derived — nobody writes prose by walking a directory — so what is derived is the
  * COMPLETENESS CHECK: a test enumerates `bin/*.mjs`, and every one must be either a verb or named here
  * with a reason. That closes the gap the requirement is about (a runnable thing on disk that the one
@@ -114,7 +114,7 @@ function main() {
   
 const [verb, ...rest] = process.argv.slice(2);
 
-  // item 5 — THE FIRST THING ANYONE TYPES WHEN REPORTING A PROBLEM, and the first thing we ask
+  // THE FIRST THING ANYONE TYPES WHEN REPORTING A PROBLEM, and the first thing we ask
   // for. Read from `package.json`, never a second copy: a hardcoded string is wrong the first time
   // somebody forgets it, and nothing fails when it is.
   if (verb === "--version" || verb === "-v" || verb === "version") {

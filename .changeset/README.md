@@ -99,12 +99,8 @@ A note states, in one plain sentence, what is different for that reader after up
    A breaking change goes FIRST, because a reader who misses it cannot start the product after upgrading.
 
 ## Banned in a note (the lint refuses these)
-- Issue numbers, PR numbers, `#NNN`, "tracker issue", agent or lane names.
 - File paths, module names, anything ending in `.mjs` / `.ts` / `.json`, function names, flag names not
   documented for users, port numbers.
-- Our internal words: arm, gate, guard, plant, lane, tracker, sidecar, funnel, digest, seam, cut, ratchet,
-  census, drive, stranger, hardening, class, mechanism, invariant, resolver, predicate, provenance (unless
-  glossed as "a signed record"), OIDC, dist-tag, changeset, pre-release mode.
 - "now correctly", "as expected", "properly" — say what happens instead.
 - A sentence a reader cannot act on or picture.
 

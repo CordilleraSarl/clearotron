@@ -18,7 +18,7 @@ The axis is *what the script assumes exists*, not where it happens to be run.
 | `composer-render-check.mjs` | Lays out the New Clearance composer and checks the levers reach the wire. Run by CI. |
 | `clearances-render-check.mjs` | Checks the `/portal/clearances` columns hold together. Run by CI. |
 | `report-print-check.mjs` | Shows what the exported PDF actually renders under print media. Run by CI. |
-| `report-overflow-check.mjs` | The same two report lanes SIDEWAYS, under screen media — the print check cannot see a width, because print sets the watermark to `display:none` and the watermark was the overflow. Run by CI. |
+| `report-overflow-check.mjs` | Checks the same two kinds of report for sideways overflow on screen — the print check cannot see a width, because print sets the watermark to `display:none` and the watermark was the overflow. Run by CI. |
 | `portal-lifecycle-check.mjs` | Asks whether the portal names a brand owner and whether a person can manage their searches. Run by CI. |
 | `portal-strings.mjs` | Reads every string the portal can show out of its source, as a reader meets it. `--check <approved list>` refuses a string on a screen that is neither approved nor in `portal-ui/strings-backlog.json`; `--backlog-shrinks --base <ref>` refuses a backlog line the base did not have. The approved list is kept with the designs, outside this repository. CI runs the backlog half. |
 | `validate-profiles.mjs` | Validates a customer-config store's profile bundles. Read-only. |
@@ -90,8 +90,7 @@ nothing**, because the frame is styled to a fixed height. A green from this chec
 almost nothing. The step is backed out and the script is declared, with the measurement, rather than
 quietly dropped.
 
-**Which check runs where is now checked, not just written here.**
-the browser-check membership arm in the driver suite
+**Which check runs where is now checked, not just written here.** A test in the driver suite
 reads `.github/workflows/ci.yml` and requires every `scripts/*-check.mjs` to be either invoked by a job
 or declared, with a reason, as one that cannot run in CI.
 

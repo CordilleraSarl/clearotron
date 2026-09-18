@@ -118,7 +118,7 @@ test("an unset queue dir falls back INSIDE the run root, never to a live path", 
   const q = /Q=(\S+)/.exec(r.out)?.[1];
   assert.ok(q, `the child did not report the value: ${r.out}`);
   assert.match(q, /ct-testrun-/, "the queue dir is not inside this run's own temp root");
-  assert.ok(!q.startsWith("/home/"), "unset fell back to a home path — #1243 acceptance 2");
+  assert.ok(!q.startsWith("/home/"), "unset fell back to a home path, where a live install keeps its queue");
 });
 
 test("an EMPTY queue dir is unset, not a configured live path (#1216's shape)", () => {
