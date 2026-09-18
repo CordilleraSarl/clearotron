@@ -42,7 +42,7 @@ None of these needs a credential, a model or a sign-up.
 npm install                    # every workspace
 npm run build:ui               # the browser bundle is not committed — build it once
 npm test                       # the offline suite — no credentials, no network
-npx clearotron demo            # replays finished clearances into a local portal
+npx clearotron demo --no-open  # replays finished clearances into a local portal; runs until stopped
 npx clearotron doctor          # reports what this machine is configured for; writes nothing, calls nobody
 node scripts/markdown-link-check.mjs    # every relative markdown link resolves
 node mcp-server/smoke.mjs      # drives the real MCP server against a fixture
@@ -50,9 +50,16 @@ node mcp-server/smoke.mjs      # drives the real MCP server against a fixture
 
 **What success looks like for the demo.** It serves the portal on `127.0.0.1:18860`, and opens two more
 doors on 18861 and 18862; `--port <n>` moves all three to `n`, `n+1`, `n+2`. The portal answers **401
-"not signed in" on every path** until you sign in with the passphrase the demo prints, so a scripted check
-should expect 401, never 200. In a clone the demo needs the built bundle: without it, it stops before
-starting anything and names `npm run build:ui`. It removes its folder when you stop it; `--keep` keeps it.
+"not signed in" on every path** until you sign in, so a scripted check accepts 401, or a 302 to
+`/portal/login` when it sends `Accept: text/html` as a browser does, and never 200. The demo prints its
+passphrase only when its output is a terminal; with its output captured, it prints the command that sets
+a new one instead, for a person to run in a terminal. In a clone the demo needs the built bundle: without
+it, it stops before starting anything and names `npm run build:ui`.
+
+The demo does not exit by itself, and `--no-open` keeps it from opening a browser. Stop it with Ctrl-C.
+To run it unattended, start it from the clone as `node bin/clearotron.mjs demo --no-open &` and stop it
+with a TERM to that pid: a TERM to an `npx` process ends npx and leaves the demo holding its three ports.
+It removes its folder when it stops; `--keep` keeps it.
 
 `npm test` is the fast tier. `npm run test:full` is the merge gate and adds the files that drive the
 orchestrator end to end against a mock engine. Both are free.
@@ -84,7 +91,7 @@ orchestrator end to end against a mock engine. Both are free.
 | `update` | bring this install up to date — and REFUSE to do it over the top of your own configuration |
 
 `start` serves the portal on `127.0.0.1:18802` by default, the engine door on 18790 and the client door on
-18811. Like the demo's, the portal answers 401 until you sign in with the passphrase it prints.
+18811. Like the demo's, the portal answers 401 until you sign in with the passphrase it prints on a terminal.
 
 ## A clone or the package
 

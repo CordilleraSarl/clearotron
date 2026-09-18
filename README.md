@@ -159,8 +159,8 @@ npx clearotron demo            # replays finished clearances into a local portal
 
 From a clone the commands are `npx clearotron …`, run from that directory.
 
-`npm test` is the whole verification story for someone with no credentials, and it is the first thing
-[CONTRIBUTING.md](CONTRIBUTING.md) asks of a contributor.
+`npm test` is the offline suite and the first thing [CONTRIBUTING.md](CONTRIBUTING.md) asks of a
+contributor; `npm run test:full`, also free, is the merge gate.
 
 ## Project documents
 
