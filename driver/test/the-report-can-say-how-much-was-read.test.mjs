@@ -52,6 +52,12 @@ const AUDIT = `# Negative Results
 
 ## (none found on this platform)
 - source_layer: Common-law
+
+## VOLTARIS reads as "thunder" in the regional dialect and carries a civic association
+- source_layer: Common-law
+- description: A reading of what the mark means, not a name anybody trades under. It has no url because
+  there is nothing to open.
+- source: dictionary and press coverage
 `;
 
 test("a dead filing is grouped from its status, not its prose", () => {
@@ -83,6 +89,25 @@ test("the audit's own note fields are what the parse reads", () => {
   assert.ok(register.every((r) => !("result" in r)), "a cleared row carries the engine's sentence — the owner ruled it out");
   assert.equal(web.length, 1, "the empty-platform heading was counted as a named web result");
   assert.equal(web[0].url, "https://example.com/shop/voltaris");
+});
+
+// ── A NAME IS A NAME AT A PLACE ─────────────────────────────────────────────────────────────────────
+//
+// The common-law layer carries two kinds of block under one heading style: a name somebody trades under,
+// which has a url, and a reading of what the mark MEANS, which has none because there is nothing to
+// open. Both were listed under "Web and marketplace names", so a reading — a whole sentence — landed in
+// the chip built for a name and was truncated with an ellipsis, its right-hand column empty. Measured on
+// the delivered full country report: one such chip held 416px of content in a 200px box, and across
+// every demo product 7 of 31 common-law blocks carried no url, every one of them a reading.
+test("a common-law READING is not a web name — a name is a name at a place", () => {
+  const { web } = clearedNames(AUDIT);
+  assert.ok(web.length >= 1, "nothing parsed at all, so this arm would pass over an empty list");
+  assert.ok(web.every((w) => w.url), "a block with no url is in the names list — a reading in a name slot");
+  assert.ok(!web.some((w) => /reads as "thunder"/.test(w.title)),
+    "the meaning reading is listed as a web name, which is the chip defect at its source");
+  // AND THE NAME IS STILL THERE. A filter that dropped the whole layer would pass every assertion above.
+  assert.ok(web.some((w) => w.title === "A trading name on a marketplace"),
+    "the marketplace name went with the readings — this drops findings rather than sorting them");
 });
 
 test("the counts name every country read, including the clean ones", () => {

@@ -280,7 +280,26 @@
 
 
   /* cross-region rights-holder rows (.rrow) + secondary region groups (.rgroup) */
+  /* A PANEL THAT SCROLLS SIDEWAYS SAYS SO, the same way the knockout's tables do.
+     `overflow-y:auto` alone makes the OTHER axis compute to auto as well, so this panel has scrolled
+     horizontally for as long as it has scrolled vertically — and drawn nothing to say it. Measured on a
+     delivered global preliminary at 390px: 377px of rows in a 336px box, 41px unreachable, no bar.
+     A reader who cannot see that it drags does not drag it, and a holder's jurisdiction sits in the part
+     that is off the edge.
+
+     THE TWO INSTRUCTIONS CANNOT SIT TOGETHER, and that was measured rather than reasoned on the
+     knockout: setting the standard scrollbar-width alongside the pseudo-elements makes the engine take
+     the standard path and ignore them, and on the engine that publishes these reports the standard path
+     draws an overlay bar with no layout height at all — both together 0px, the pseudo-elements alone
+     9px, the standard properties alone 0px. So the standard ones sit behind a support query the engines
+     carrying the pseudo-elements never enter, and each engine gets exactly one instruction. Written the
+     way anyone would write it — belt and braces — it renders nothing and the stylesheet gives no sign. */
   .keypanel{overflow-y:auto}
+  .keypanel::-webkit-scrollbar{height:9px;-webkit-appearance:none}
+  .keypanel::-webkit-scrollbar-track{background:transparent}
+  .keypanel::-webkit-scrollbar-thumb{background:var(--faint);border-radius:5px}
+  @supports not selector(::-webkit-scrollbar){
+    .keypanel{scrollbar-width:thin;scrollbar-color:var(--faint) transparent}}
   .rrow{border-top:1px solid var(--line)}
   .rrow:first-of-type{border-top:0}
   .rrow>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:9px;padding:8px 4px}

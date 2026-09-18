@@ -92,7 +92,29 @@ export function clearedNames(auditMd, recordIndex = {}) {
         uri,
       });
     } else if (!/^NR\d+/.test(title) && /common-law/i.test(layer) && !/^\(none/i.test(title)) {
-      out.web.push({ title, url: field(block, "url"), type: field(block, "type") });
+      // ── A NAME IS A NAME AT A PLACE. THE READINGS ARE NOT NAMES ─────────────────────────────────
+      //
+      // The common-law layer carries two kinds of block under one heading style: a name somebody is
+      // trading under, and a reading of what the mark MEANS. The first has a `url` — it is a thing at a
+      // place a reader can go and look at. The second has none, because there is nothing to open: it is
+      // an etymology, a sensitivity, a piece of context.
+      //
+      // Both were listed as "Web and marketplace names", and a reading is a sentence, so the mark chip
+      // built for a name truncated it with an ellipsis and its right-hand column rendered empty.
+      // Measured on the delivered full country report: one such chip held 416px of content in a 200px
+      // box. Across every demo product, 7 of 31 blocks carried no url and every one of the 7 was a
+      // reading rather than a name.
+      //
+      // NOTHING IS LOST BY LEAVING THEM OUT, and that was measured rather than assumed: the report
+      // already carries each of those readings in the section written for them — the Quechua one appears
+      // five more times in the same document, under "Connotation & meaning" and again in the decision it
+      // asks the reader to take — and the audit workbook carries every block whatever this does.
+      //
+      // WHAT IT COSTS, stated rather than hidden: a marketplace name sighted with no URL recorded would
+      // not be listed here. None exists in any demo, and the row such a block produced was already a
+      // name beside an empty column. If one appears, the fix is to record where it was seen.
+      const url = field(block, "url");
+      if (url) out.web.push({ title, url, type: field(block, "type") });
     }
   }
   return out;
