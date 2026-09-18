@@ -368,7 +368,7 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   // nothing.
   const readsRoster = meResult?.kind === 'ok' && meResult.value.allAccounts
   const { result: rosterResult, reload: reloadRoster } = useLoad(
-    () => (readsRoster ? api.roster() : Promise.resolve({ kind: 'ok' as const, value: [] as readonly RosterCompany[] })),
+    () => (readsRoster ? api.roster() : Promise.resolve({ kind: 'ok' as const, value: { companies: [] as readonly RosterCompany[], unreadable: [] } })),
     [readsRoster],
   )
 
@@ -438,7 +438,7 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   // reach every customer and take theirs from the roster. Neither source is per-screen, so neither is
   // consulted per-screen. While the roster is still in flight a staff member reads the key for a frame,
   // which is the same fallback a missing name gets — never a blank where a company should be.
-  const names = ownerNameMap(me.accountNames, rosterResult?.kind === 'ok' ? rosterResult.value : [])
+  const names = ownerNameMap(me.accountNames, rosterResult?.kind === 'ok' ? rosterResult.value.companies : [])
   // One organisation's Generic is called what Generic is called; the key only says which one. A person
   // who can see several organisations has several Generics, so the name carries its organisation — two
   // rows both reading "Generic default" would be two different things saying the same words. The
@@ -455,7 +455,7 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   // The same two sources and the same precedence, for the three facts that tell one company from
   // another in the pick panel. Parallel to the name map rather than folded into it: a company with no
   // facts is a company, a company with no name is a broken row.
-  const facts = companyFactsMap(me.accountFacts, rosterResult?.kind === 'ok' ? rosterResult.value : [])
+  const facts = companyFactsMap(me.accountFacts, rosterResult?.kind === 'ok' ? rosterResult.value.companies : [])
   const factsFor = (key: string): CompanyFacts | undefined => facts[isGenericKey(key) ? GENERIC_ACCOUNT : key]
 
   // WHICH owners are offered is a separate question from what they are CALLED, and it is answered from
@@ -465,13 +465,13 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   //
   // GENERIC, ONE PER ORGANISATION, FROM ONE LIST — the rule is on `switcherKeys` (shell/companyRows.ts),
   // where it can be driven rather than read.
-  const ownerKeys: readonly string[] = switcherKeys(me, rosterResult?.kind === 'ok' ? rosterResult.value : null)
+  const ownerKeys: readonly string[] = switcherKeys(me, rosterResult?.kind === 'ok' ? rosterResult.value.companies : null)
 
   // Which organisation each of those companies sits in — the person's own grants first, the roster for
   // someone who can see the whole install. A company neither source places reads null and is grouped
   // under no heading: visibly unplaced, never filed under a guess.
   const rosterOrgs: Readonly<Record<string, string>> = Object.fromEntries(
-    (rosterResult?.kind === 'ok' ? rosterResult.value : []).flatMap((c) => (c.org ? [[c.key, c.org]] : [])),
+    (rosterResult?.kind === 'ok' ? rosterResult.value.companies : []).flatMap((c) => (c.org ? [[c.key, c.org]] : [])),
   )
   const orgOf = (key: string): string | null => orgOfGeneric(key) ?? me.accountOrgs[key] ?? rosterOrgs[key] ?? null
   const organisations = me.organisations
@@ -769,6 +769,27 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
           </div>
         </header>
 
+        {/* THE COMPANY LIST, WHEN IT DID NOT ARRIVE WHOLE. A roster that failed used to draw as an empty one,
+            so a person who can see the whole install met Generic alone and a short list, with nothing
+            saying anything had gone wrong. Staff only: nobody else reads the roster. The words are the
+            ones this portal already prints for a list that failed and for a framework it cannot read. */}
+        {readsRoster && rosterResult && rosterResult.kind !== 'ok' ? (
+          <div className="notice" role="status" style={{ margin: '12px 24px 0' }}>
+            <b>The list could not be loaded</b>
+            <p style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>Nothing has been lost — any run in progress is still running. Try again shortly.</p>
+          </div>
+        ) : null}
+        {readsRoster && rosterResult?.kind === 'ok' && rosterResult.value.unreadable.length ? (
+          <div className="notice" role="status" style={{ margin: '12px 24px 0' }}>
+            {rosterResult.value.unreadable.map((u) => (
+              <p key={u.key} style={{ margin: '0 0 4px' }}>
+                <span className="mono" data-anon="mark">{u.key}</span>{' '}
+                <b style={{ color: 'var(--tone-high)' }}>This company&rsquo;s framework could not be read.</b>{' '}
+                This needs an administrator to look at it.
+              </p>
+            ))}
+          </div>
+        ) : null}
         {body}
       </div>
     </div>

@@ -104,6 +104,7 @@ let longTitle = false
 // ladders print. The stub rows above prove behaviour; they are too few and too short to prove the layout,
 // and a layout that fitted them regressed on the real list at 1440px while this file stayed green.
 let fullList = false
+let rosterMode = 'ok'
 const FULL_MARKS = ['MERIDIAN THISTLE', 'PROJECT CHROMA', 'VIBRANTE FROSTPLUM', 'NORTHWIND', 'CORAL FREEZE', 'AQUAPLUS',
   'ASTERION', 'TIDEGLASS', 'BRIMSTONE', 'VENQORI', 'IRONWHISK', 'SIM PRAXIS', 'EMBER FORGE', 'VANTOR LABS', 'HALDEN OUTDOOR',
   'GLACIER MINT', 'SOLSTICE BAY', 'KESTREL WORKS', 'OBSIDIAN LOOP', 'MARBLE ORCHARD', 'LUMEN CRAFT', 'PELICAN NORTH',
@@ -190,6 +191,10 @@ const json = (res, body) => { res.writeHead(200, { 'content-type': 'application/
 const server = createServer((req, res) => {
   const p = new URL(req.url, 'http://localhost').pathname
   if (p === '/portal/api/me') return json(res, { email: 'manager@example-firm.com', permissions: { run: true, manage: true }, access: [{ kind: 'everything' }], accounts: '*', accountNames: {}, allowance: null, brand: 'Northwind Group' })
+  // THE ROSTER, as the server answers it in three shapes: whole, with a company file it could not read, and
+  // failed. The last two used to draw exactly like the first with fewer companies.
+  if (p === '/portal/admin/roster' && rosterMode === 'fail') { res.writeHead(500, { 'content-type': 'application/json' }); return res.end('{"error":"store unreadable"}') }
+  if (p === '/portal/admin/roster' && rosterMode === 'unreadable') return json(res, { customers: [{ key: KEY, name: NAME }], unreadable: [{ key: 'aurora', reason: 'frameworkPath must be a path of the form …' }] })
   if (p === '/portal/admin/roster') return json(res, { customers: [{ key: KEY, name: NAME }, { key: KEY2, name: NAME2 }] })
   if (p === '/portal/admin/families') return json(res, FAMILIES)
   if (p === '/portal/api/usage') return json(res, usageNow)
@@ -618,6 +623,20 @@ await cmd('Emulation.clearDeviceMetricsOverride', {})
 fullList = false
 await reload()
 
+// — THE ROSTER NOT ARRIVING WHOLE. A company file it could not read, then a roster that failed outright.
+const ROSTER_NOTICE = `(() => ({
+  text: [...document.querySelectorAll('.main > .notice')].map(n => (n.innerText || '').replace(/\\s+/g, ' ').trim()),
+}))()`
+rosterMode = 'unreadable'
+await reload()
+const rosterPartial = await value(ROSTER_NOTICE)
+rosterMode = 'fail'
+await reload()
+const rosterFailed = await value(ROSTER_NOTICE)
+rosterMode = 'ok'
+await reload()
+const rosterWhole = await value(ROSTER_NOTICE)
+
 if (shotAt) {
   const shot = await cmd('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true })
   const data = shot.result?.result?.data ?? shot.result?.data
@@ -696,6 +715,12 @@ if (!short || short.fatal) {
 }
 
 console.log(`measured at ${WIDTH}px — ${short.openedRows} rows opened, ${short.readRows} read rows`)
+ok(rosterPartial?.text?.some((t) => /aurora This company’s framework could not be read\. This needs an administrator to look at it\./.test(t)),
+  `a company file the roster could not read is not named on the page — ${JSON.stringify(rosterPartial)}`)
+ok(!rosterPartial?.text?.some((t) => /frameworkPath/.test(t)), 'the server\'s own reason reached the page')
+ok(rosterFailed?.text?.some((t) => /^The list could not be loaded Nothing has been lost — any run in progress is still running\. Try again shortly\.$/.test(t)),
+  `a roster that failed draws as an empty one, with nothing said — ${JSON.stringify(rosterFailed)}`)
+ok(rosterWhole?.text?.length === 0, `a whole roster draws a notice — ${JSON.stringify(rosterWhole)}`)
 for (const [width, f] of Object.entries(full)) {
   console.log(`full list at ${width}px: ${f?.rows} rows, page ${f?.scrollW}/${f?.clientW}, table ${f?.tableW} in ${f?.wrapW}, menus cut ${f?.menusCut}, risk over date ${JSON.stringify(f?.riskOverDate)}`)
   ok(f && f.rows === 25, `full list at ${width}px: ${f?.rows} rows drew, not 25`)
