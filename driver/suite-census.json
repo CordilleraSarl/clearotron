@@ -3808,8 +3808,8 @@
           "todos": 0
         },
         "release-pipeline.test.mjs": {
-          "tests": 113,
-          "asserts": 421,
+          "tests": 116,
+          "asserts": 435,
           "skips": 0,
           "todos": 0
         },
@@ -4887,6 +4887,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-form-offers-what-the-registers-search.test.mjs": {
+          "tests": 4,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "the-freeze-carries-what-the-run-reads.test.mjs": {
           "tests": 4,
           "asserts": 13,
@@ -4912,8 +4918,8 @@
           "todos": 0
         },
         "the-identifier-sweep-fires-on-its-sentinels.test.mjs": {
-          "tests": 8,
-          "asserts": 21,
+          "tests": 9,
+          "asserts": 25,
           "skips": 1,
           "todos": 0
         },
@@ -6474,8 +6480,8 @@
       ],
       "perFile": {
         "providers/_shared/test/a-record-is-written-once-per-run.test.mjs": {
-          "tests": 4,
-          "asserts": 12,
+          "tests": 5,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },

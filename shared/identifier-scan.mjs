@@ -17,6 +17,7 @@
 // private roster). This file owns only the matching — it names no identity of its own beyond the
 // platform tokens ALLOWED_CONTEXT has to spell out, which is why it declares itself in
 // DECLARATION_SOURCES.
+import { createHash } from "node:crypto";
 
 // ── the platform and public-register exemption ────────────────────────────────────────────────────
 //
@@ -208,6 +209,32 @@ export const CAPTURED_DATA_GUIDANCE =
   + "`node scripts/check-capture.mjs <file>` before writing; or (b) a genuine identifier of ours — remove "
   + "it. Do NOT exempt the path: captured data is the one place a real identifier could hide unseen.";
 
+// ── A PUBLISHED DICTIONARY, PINNED TO ITS BYTES ─────────────────────────────────────────────
+//
+// The roster retires ordinary English words, and a dictionary is every ordinary English word, so the
+// two collide by construction and, like captured register data, the collision arrives on a tree
+// nobody touched: the private roster gains an entry and the word list goes red. Unlike captured data,
+// nothing of ours can be in it. It is a published third-party list (the file's header names it and its
+// licence) that no client, matter or run ever wrote to.
+//
+// SO THE EXEMPTION IS FOR THESE BYTES, NOT THIS PATH. Each entry pins the file's SHA-256 as it was
+// vetted. Change one line, a name slipped in among the words, and the hash no longer matches: the file
+// is scanned in full again like any other, and the pin moves only in a commit that says it re-vetted.
+// A name hidden in a dictionary is therefore still a finding, and a name anywhere else never was
+// exempt.
+export const PINNED_DICTIONARIES = Object.freeze({
+  "driver/wordlists/en.txt": Object.freeze({
+    sha256: "8021ad10f94da2a549f60db93fcf761156458fd682e1095e81f93db6843fb636",
+    what: "SCOWL size 50, American: the one-letter neighbourhood filter's ordinary-word list",
+  }),
+});
+
+/** Is this file a pinned dictionary whose bytes are exactly the ones that were vetted? */
+export function isPinnedDictionary(file, text) {
+  const pin = PINNED_DICTIONARIES[String(file ?? "")];
+  return Boolean(pin) && createHash("sha256").update(String(text)).digest("hex") === pin.sha256;
+}
+
 /**
  * Sweep a corpus for retired identities.
  *
@@ -227,6 +254,7 @@ export function scanCorpus(files, readFn, { retired, suffixable, vetted = () => 
   for (const f of files) {
     const t = readFn(f);
     if (!t) continue;
+    if (isPinnedDictionary(f, t)) continue;
     // In captured register data the hit is reported by ENTRY NUMBER, never by value. The
     // ordinary format prints the retired name and its twin, which is right where the fix is "delete
     // this" — but a fixture collision is expected to fire on a tree nobody changed, and printing the
@@ -361,6 +389,7 @@ export function scanOperatorIdentity(files, readFn, { withheld = () => false } =
   for (const f of files) {
     const t = readFn(f);
     if (!t) continue;
+    if (isPinnedDictionary(f, t)) continue;
     // A WITHHELD PATH DOES NOT SHIP, and pattern 4 is about what a shipped surface says to its reader.
     // The withheld design tree holds twenty-one hits of exactly this shape and every one is correct in
     // place: working notes, withheld wholesale by the list in shared/withheld-paths.mjs, and rewriting

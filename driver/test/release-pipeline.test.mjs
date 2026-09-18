@@ -16,7 +16,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, mkdtempSync, mkdirSync, writeFileSync, rmSync, existsSync } from "node:fs";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -1155,9 +1155,13 @@ test("both deciders answer the same question, and a skipped one cannot answer fo
   // answers about the one this push cut. Different versions, different publishing jobs.
   assert.match(version, /cut: \$\{\{ steps\.cut\.outputs\.cut \}\}/,
     "the version job's decider changed shape — check which version its `cut` output is now about");
-  // AND `pending` IS THE CRON ALONE AGAIN. It carried the second entry while the trigger existed.
+  // AND `pending` ANSWERS THE CRON AND THE DELIBERATE `publish` DISPATCH, nothing else. It carried a
+  // second entry while an event trigger existed; the dispatch is the one other caller, and the arms at
+  // the end of this file drive exactly which events reach it.
   const pending = jobText("pending");
-  assert.match(pending, /if: github\.event_name == 'schedule' &&/, "the cron job answers to some other event too");
+  assert.match(pending, /github\.event_name == 'schedule'/, "the cron job no longer answers the cron");
+  assert.match(pending, /github\.event_name == 'workflow_dispatch' && inputs\.cut == 'publish'/,
+    "the cron job answers a dispatch other than `publish`");
   assert.ok(!/steps\.awaited/.test(pending), "the waiting step is still wired into the cron job, where there is nothing to wait for");
   // THE DECISION ITSELF IS STILL ONE FUNCTION. Two paths asking one question in two ways is how a
   // pipeline comes to publish something nobody merged.
@@ -2716,4 +2720,95 @@ test("the wait step gives `gh` a credential and the job may read pull requests",
   // read as a request would turn every ordinary give-up red.
   assert.match(env, /CLEAROTRON_CUT_REQUESTED: \$\{\{ github\.event_name == 'workflow_dispatch' && inputs\.cut != 'rehearse' && 'true' \|\| 'false' \}\}/,
     "the request is no longer exactly a non-rehearsal dispatch");
+});
+
+// ── PUBLISHING A CUT THAT MAIN ALREADY CARRIES, ON PURPOSE ──────────────────────────────────────────
+//
+// A version pull request that merges after the dispatched cut stopped waiting merges itself with the
+// built-in token, which starts no run. Until `publish` existed, the only things left to collect it were
+// the schedule (measured gaps of two to five and a half hours) and an unrelated push to main. The
+// `publish` choice asks the schedule's own question on demand, and cuts nothing.
+//
+// DRIVEN, NOT MATCHED: every job condition below is evaluated for every event and choice, so a later
+// edit that lets `publish` reach the version job (which would refuse "Nothing to cut" and fail the run)
+// or the wait (which would wait for a pull request nobody opened) is caught as behaviour.
+
+/** A job's `if:` as the runner reads it, evaluated for one event. Only the terms these jobs use. */
+function jobRuns(job, { event, cut = "", ref = "refs/heads/main", needs = {} }) {
+  const parsed = /\n    if: (>-\n(?:      [^\n]*\n)+|[^\n]*\n)/.exec(`\n${jobBlock(job).split("\n").filter((l) => !l.trim().startsWith("#")).join("\n")}\n`);
+  if (!parsed) return true;
+  let expr = parsed[1].replace(/^>-\n/, "").replace(/\s+/g, " ").trim();
+  expr = expr
+    .replace(/!failure\(\)/g, "true").replace(/!cancelled\(\)/g, "true")
+    .replace(/github\.repository/g, JSON.stringify("CordilleraSarl/clearotron"))
+    .replace(/github\.event_name/g, JSON.stringify(event))
+    .replace(/github\.ref/g, JSON.stringify(ref))
+    .replace(/inputs\.cut/g, JSON.stringify(cut))
+    .replace(/inputs\.deprecate-below/g, JSON.stringify(""))
+    .replace(/needs\.([a-z-]+)\.outputs\.cut/g, (_, n) => JSON.stringify(needs[n] ?? ""));
+  assert.ok(!/[A-Za-z_]+\.[A-Za-z_]/.test(expr.replace(/"[^"]*"/g, "")), `an expression term this arm does not know: ${expr}`);
+  return Function(`return (${expr});`)();
+}
+
+test("a `publish` dispatch runs the decider alone: it cuts nothing and waits for nothing", () => {
+  const on = triggers();
+  assert.match(on, /^\s+- publish$/m, "the cut input offers no `publish`");
+  assert.match(on, /default:\s*rehearse/, "the default moved off the mode that cannot publish");
+  const table = [
+    // event, cut → version, pending, awaited
+    ["schedule", "", false, true, false],
+    ["push", "", true, false, false],
+    ["workflow_dispatch", "rehearse", false, false, true],
+    ["workflow_dispatch", "beta", true, false, true],
+    ["workflow_dispatch", "stable", true, false, true],
+    ["workflow_dispatch", "publish", false, true, false],
+  ];
+  for (const [event, cut, version, pending, awaited] of table) {
+    const got = ["version", "pending", "awaited"].map((j) => jobRuns(j, { event, cut }));
+    assert.deepEqual(got, [version, pending, awaited], `${event}${cut ? ` cut=${cut}` : ""}: version/pending/awaited`);
+  }
+  // FROM MAIN ONLY. A dispatch from a branch must not publish what main carries while pretending to be it.
+  assert.equal(jobRuns("pending", { event: "workflow_dispatch", cut: "publish", ref: "refs/heads/some-branch" }), false);
+});
+
+test("the publisher takes the decider's word on a `publish` dispatch, and publishes for real", () => {
+  // THE DECIDER GATES IT: `publish` runs when `pending` says a cut is waiting, and not otherwise.
+  assert.equal(jobRuns("publish", { event: "workflow_dispatch", cut: "publish", needs: { pending: "true" } }), true);
+  assert.equal(jobRuns("publish", { event: "workflow_dispatch", cut: "publish", needs: { pending: "false" } }), false);
+  // AND IT IS NOT A REHEARSAL. Only `rehearse` sets the dry-run flag; a dry `publish` would report a
+  // release it never made, which is this pipeline's oldest failure.
+  const gate = executableText(RELEASE_YML.slice(RELEASE_YML.indexOf("id: what"), RELEASE_YML.indexOf("- run: npm run build:ui")));
+  const dryWhen = /if \[ "\$\{\{ github\.event_name \}\}" = "workflow_dispatch" \] && \[ "\$\{\{ inputs\.cut \}\}" = "rehearse" \]; then\s*\n[^\n]*\n\s*echo "dry_flag=--dry-run"/;
+  assert.match(gate, dryWhen, "the dry-run flag is no longer set for `rehearse` alone");
+});
+
+/** The decider the `pending` job runs, over a repository whose main is at `version`, tagged or not. */
+function decide({ version, tagged }) {
+  const dir = mkdtempSync(join(tmpdir(), "pending-decide-"));
+  try {
+    const g = (...a) => execFileSync("git", ["-C", dir, "-c", "user.email=a@b.c", "-c", "user.name=t", ...a], { stdio: "pipe" });
+    execFileSync("git", ["init", "-q", "-b", "main", dir], { stdio: "pipe" });
+    writeFileSync(join(dir, "package.json"), JSON.stringify({ name: "f", version: "0.3.2-beta.7" }));
+    g("add", "."); g("commit", "-qm", "Release 0.3.2-beta.7"); g("tag", "v0.3.2-beta.7");
+    writeFileSync(join(dir, "package.json"), JSON.stringify({ name: "f", version }));
+    g("add", "."); g("commit", "-qm", `Release ${version}`);
+    if (tagged) g("tag", `v${version}`);
+    g("update-ref", "refs/remotes/origin/main", "HEAD");
+    const out = join(dir, "out");
+    const r = spawnSync(process.execPath, [join(REPO, "scripts", "release-cut-decision.mjs")],
+      { cwd: dir, encoding: "utf8", env: { PATH: process.env.PATH, HOME: dir, GITHUB_OUTPUT: out, CLEAROTRON_CUT_REF: "origin/main" } });
+    return { code: r.status, text: `${r.stdout}${r.stderr}`, output: existsSync(out) ? readFileSync(out, "utf8") : "" };
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+}
+
+test("driven: main carrying an untagged version is published by that path; a tagged one is not", () => {
+  // The step is read from the job, so this drives what `pending` actually runs.
+  assert.match(jobText("pending"), /CLEAROTRON_CUT_REF: origin\/main[\s\S]*run: node scripts\/release-cut-decision\.mjs/,
+    "the `pending` job no longer asks the cut decision about main");
+  const waiting = decide({ version: "0.3.2-beta.8", tagged: false });
+  assert.equal(waiting.code, 0, waiting.text);
+  assert.match(waiting.output, /^cut=true$/m, `a cut sitting on main was not seen: ${waiting.text}`);
+  const done = decide({ version: "0.3.2-beta.8", tagged: true });
+  assert.equal(done.code, 0, done.text);
+  assert.match(done.output, /^cut=false$/m, "a version already tagged would be published again");
 });
