@@ -759,6 +759,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-release-is-announced-only-once-a-stranger-can-install-it.test.mjs": {
+          "tests": 8,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
         "a-release-note-cannot-be-counted-twice.test.mjs": {
           "tests": 12,
           "asserts": 33,
@@ -3808,8 +3814,8 @@
           "todos": 0
         },
         "release-pipeline.test.mjs": {
-          "tests": 117,
-          "asserts": 445,
+          "tests": 120,
+          "asserts": 452,
           "skips": 0,
           "todos": 0
         },

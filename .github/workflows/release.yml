@@ -1260,18 +1260,24 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ steps.what.outputs.version }}
           PRERELEASE_FLAG: ${{ steps.what.outputs.prerelease }}
+          DIST_TAG: ${{ steps.what.outputs.dist_tag }}
+          TARBALL: ${{ steps.what.outputs.tarball }}
         run: |
           set -euo pipefail
           TARGET="$GITHUB_SHA"
-          # Read from the VERSION above, never from the channel — see the step that computed it.
-          if [ "$PRERELEASE_FLAG" = "true" ]; then
-            # THE EXACT REF, NOT A PREFIX. Measured on this repository, 2026-09-06:
-            # `git/matching-refs/tags/v0.1.1` answers with six refs — v0.1.1, v0.1.1-beta.0,
-            # v0.1.1-beta.1, v0.1.10, v0.1.11, v0.1.12 — so a prefix read would report the stable
-            # that follows a beta as already tagged and it would never get a tag of its own.
-            # `git/ref/tags/v0.1.11` answers with that one ref and `git/ref/tags/v0.1` is a 404, so
-            # the singular read is exact. The answer is still compared in full, because this step
-            # should not rest on that distinction holding.
+          # THE TAG, FOR EVERY VERSION, BEFORE ANYTHING IS ANNOUNCED. `release-cut-decision.mjs` reads tags to
+          # decide whether a version is published, so the tag has to land the moment the registry accepted
+          # the upload — even when the release entry below has to wait, or never comes. A stable used to get
+          # its tag only from `gh release create`, which left it untagged if the entry did not happen.
+          #
+          # THE EXACT REF, NOT A PREFIX. Measured on this repository, 2026-09-06:
+          # `git/matching-refs/tags/v0.1.1` answers with six refs — v0.1.1, v0.1.1-beta.0,
+          # v0.1.1-beta.1, v0.1.10, v0.1.11, v0.1.12 — so a prefix read would report the stable
+          # that follows a beta as already tagged and it would never get a tag of its own.
+          # `git/ref/tags/v0.1.11` answers with that one ref and `git/ref/tags/v0.1` is a 404, so
+          # the singular read is exact. The answer is still compared in full, because this step
+          # should not rest on that distinction holding.
+          tag_it() {
             EXISTING=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/v$VERSION" --jq '.ref' 2>/dev/null || true)
             if [ "$EXISTING" = "refs/tags/v$VERSION" ]; then
               echo "The tag v$VERSION already exists."
@@ -1279,6 +1285,19 @@ jobs:
               gh api "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/tags/v$VERSION" -f sha="$TARGET" >/dev/null
               echo "Tagged v$VERSION at $TARGET."
             fi
+          }
+          # THE ENTRY WAITS FOR A STRANGER. `npm publish` returning is the upload accepted, not the version
+          # served: on 0.3.2-beta.10 the entry went up nine minutes before an unauthenticated client could
+          # install the version, and the run was green in between. So the entry is created only once the
+          # registry answers a client with no credential — the version, its channel, and the very bytes
+          # this run published — bounded at fifteen minutes. Past the bound this step fails, the tag stays,
+          # and no entry is created; re-running the job creates it once the registry serves the version.
+          served_to_a_stranger() {
+            node scripts/release-visible-check.mjs --version "$VERSION" --tag "$DIST_TAG" --tarball "$TARBALL" --timeout 900
+          }
+          # Read from the VERSION above, never from the channel — see the step that computed it.
+          if [ "$PRERELEASE_FLAG" = "true" ]; then
+            tag_it
             # SEPARATE QUESTIONS, ASKED SEPARATELY. A beta cut before this change has a tag and no entry,
             # so a run that exited as soon as it saw the tag would never give it one. The tag and the
             # entry are checked independently for that reason.
@@ -1286,6 +1305,7 @@ jobs:
               echo "The GitHub release v$VERSION already exists."
               exit 0
             fi
+            served_to_a_stranger
             NOTES=$(node scripts/release-notes-for.mjs "$VERSION" || true)
             if [ -n "$NOTES" ]; then
               printf '%s\n' "$NOTES" > release-notes.md
@@ -1296,10 +1316,12 @@ jobs:
             echo "Released v$VERSION as a pre-release, marked Pre-release on the Releases page."
             exit 0
           fi
+          tag_it
           if gh release view "v$VERSION" >/dev/null 2>&1; then
             echo "The GitHub release v$VERSION already exists."
             exit 0
           fi
+          served_to_a_stranger
           NOTES=$(node scripts/release-notes-for.mjs "$VERSION" || true)
           if [ -n "$NOTES" ]; then
             printf '%s\n' "$NOTES" > release-notes.md
@@ -1659,18 +1681,24 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ steps.what.outputs.version }}
           PRERELEASE_FLAG: ${{ steps.what.outputs.prerelease }}
+          DIST_TAG: ${{ steps.what.outputs.dist_tag }}
+          TARBALL: ${{ steps.what.outputs.tarball }}
         run: |
           set -euo pipefail
           TARGET="$(git rev-parse HEAD)"
-          # Read from the VERSION above, never from the channel — see the step that computed it.
-          if [ "$PRERELEASE_FLAG" = "true" ]; then
-            # THE EXACT REF, NOT A PREFIX. Measured on this repository, 2026-09-06:
-            # `git/matching-refs/tags/v0.1.1` answers with six refs — v0.1.1, v0.1.1-beta.0,
-            # v0.1.1-beta.1, v0.1.10, v0.1.11, v0.1.12 — so a prefix read would report the stable
-            # that follows a beta as already tagged and it would never get a tag of its own.
-            # `git/ref/tags/v0.1.11` answers with that one ref and `git/ref/tags/v0.1` is a 404, so
-            # the singular read is exact. The answer is still compared in full, because this step
-            # should not rest on that distinction holding.
+          # THE TAG, FOR EVERY VERSION, BEFORE ANYTHING IS ANNOUNCED. `release-cut-decision.mjs` reads tags to
+          # decide whether a version is published, so the tag has to land the moment the registry accepted
+          # the upload — even when the release entry below has to wait, or never comes. A stable used to get
+          # its tag only from `gh release create`, which left it untagged if the entry did not happen.
+          #
+          # THE EXACT REF, NOT A PREFIX. Measured on this repository, 2026-09-06:
+          # `git/matching-refs/tags/v0.1.1` answers with six refs — v0.1.1, v0.1.1-beta.0,
+          # v0.1.1-beta.1, v0.1.10, v0.1.11, v0.1.12 — so a prefix read would report the stable
+          # that follows a beta as already tagged and it would never get a tag of its own.
+          # `git/ref/tags/v0.1.11` answers with that one ref and `git/ref/tags/v0.1` is a 404, so
+          # the singular read is exact. The answer is still compared in full, because this step
+          # should not rest on that distinction holding.
+          tag_it() {
             EXISTING=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/v$VERSION" --jq '.ref' 2>/dev/null || true)
             if [ "$EXISTING" = "refs/tags/v$VERSION" ]; then
               echo "The tag v$VERSION already exists."
@@ -1678,6 +1706,19 @@ jobs:
               gh api "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/tags/v$VERSION" -f sha="$TARGET" >/dev/null
               echo "Tagged v$VERSION at $TARGET."
             fi
+          }
+          # THE ENTRY WAITS FOR A STRANGER. `npm publish` returning is the upload accepted, not the version
+          # served: on 0.3.2-beta.10 the entry went up nine minutes before an unauthenticated client could
+          # install the version, and the run was green in between. So the entry is created only once the
+          # registry answers a client with no credential — the version, its channel, and the very bytes
+          # this run published — bounded at fifteen minutes. Past the bound this step fails, the tag stays,
+          # and no entry is created; re-running the job creates it once the registry serves the version.
+          served_to_a_stranger() {
+            node scripts/release-visible-check.mjs --version "$VERSION" --tag "$DIST_TAG" --tarball "$TARBALL" --timeout 900
+          }
+          # Read from the VERSION above, never from the channel — see the step that computed it.
+          if [ "$PRERELEASE_FLAG" = "true" ]; then
+            tag_it
             # SEPARATE QUESTIONS, ASKED SEPARATELY. A beta cut before this change has a tag and no entry,
             # so a run that exited as soon as it saw the tag would never give it one. The tag and the
             # entry are checked independently for that reason.
@@ -1685,6 +1726,7 @@ jobs:
               echo "The GitHub release v$VERSION already exists."
               exit 0
             fi
+            served_to_a_stranger
             NOTES=$(node scripts/release-notes-for.mjs "$VERSION" || true)
             if [ -n "$NOTES" ]; then
               printf '%s\n' "$NOTES" > release-notes.md
@@ -1695,10 +1737,12 @@ jobs:
             echo "Released v$VERSION as a pre-release, marked Pre-release on the Releases page."
             exit 0
           fi
+          tag_it
           if gh release view "v$VERSION" >/dev/null 2>&1; then
             echo "The GitHub release v$VERSION already exists."
             exit 0
           fi
+          served_to_a_stranger
           NOTES=$(node scripts/release-notes-for.mjs "$VERSION" || true)
           if [ -n "$NOTES" ]; then
             printf '%s\n' "$NOTES" > release-notes.md

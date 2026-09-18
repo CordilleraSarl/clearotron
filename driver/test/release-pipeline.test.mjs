@@ -1646,7 +1646,7 @@ const KNOWN_NOTES = "New: the thing the reader came for.";
  * release WITH the folded changelog" — that is the `--notes-file` branch, and a stub that returned
  * nothing would leave it undriven and the arm green with the notes generator deleted.
  */
-function driveTagStep({ script, version, prerelease, existingTagRef = null }) {
+function driveTagStep({ script, version, prerelease, existingTagRef = null, visibleExit = 0 }) {
   const dir = mkdtempSync(join(tmpdir(), "tag-step-"));
   try {
     execFileSync("git", ["init", "-q", "-b", "main", dir], { stdio: "pipe" });
@@ -1661,6 +1661,13 @@ function driveTagStep({ script, version, prerelease, existingTagRef = null }) {
     const bin = join(dir, "bin");
     mkdirSync(bin);
     const log = join(dir, "gh.log");
+    // The outside check, stubbed: it records what it was asked and answers as the arm says the registry
+    // did. The real one is driven against a stub registry in its own file.
+    const asked = join(dir, "visible.log");
+    writeFileSync(join(dir, "scripts", "release-visible-check.mjs"),
+      `import { appendFileSync } from "node:fs";\nconst a = process.argv.slice(2).join(" ");\n`
+      + `appendFileSync(${JSON.stringify(asked)}, a + "\\n");\nappendFileSync(${JSON.stringify(log)}, "visible-check " + a + "\\n");\n`
+      + `process.exit(${visibleExit});\n`);
     // The read answers with `existingTagRef` when one is given — including a ref that is a PREFIX
     // MATCH rather than the ref asked for, which is the answer the plural endpoint gives.
     const found = existingTagRef ? `printf '%s\\n' ${JSON.stringify(existingTagRef)}; exit 0` : "exit 1";
@@ -1674,7 +1681,7 @@ function driveTagStep({ script, version, prerelease, existingTagRef = null }) {
     const scriptPath = join(dir, "step.sh");
     writeFileSync(scriptPath, script);
     const sha = execFileSync("git", ["-C", dir, "rev-parse", "HEAD"], { encoding: "utf8" }).trim();
-    const out = execFileSync("bash", [scriptPath], {
+    const res = spawnSync("bash", [scriptPath], {
       cwd: dir,
       encoding: "utf8",
       stdio: "pipe",
@@ -1686,10 +1693,17 @@ function driveTagStep({ script, version, prerelease, existingTagRef = null }) {
         GITHUB_SHA: sha,
         VERSION: version,
         PRERELEASE_FLAG: prerelease,
+        DIST_TAG: prerelease === "true" ? "beta" : "latest",
+        TARBALL: "release-artefacts/clearotron-" + version + ".tgz",
       },
     });
+    const out = `${res.stdout ?? ""}${res.stderr ?? ""}`;
+    // A step that exits non-zero is a finding only where the arm did not ask the check to fail.
+    if (res.status !== 0 && visibleExit === 0) throw new Error(`the step failed (${res.status}):\n${out}`);
     return {
       out,
+      status: res.status,
+      asked: existsSync(asked) ? readFileSync(asked, "utf8") : "",
       log: existsSync(log) ? readFileSync(log, "utf8") : "",
       notesFile: existsSync(join(dir, "release-notes.md")) ? readFileSync(join(dir, "release-notes.md"), "utf8") : null,
       sha,
@@ -1777,6 +1791,49 @@ test("an already-tagged pre-release is not tagged again, and still gets its entr
     assert.match(run.log, /release create v9\.9\.9-beta\.4 .*--prerelease/,
       `${name}: an existing tag stopped the entry being written. A beta cut before the ruling changed has `
       + `a tag and no entry, and this is the path that gives it one.\n${run.log}`);
+  }
+});
+
+// ── THE ENTRY WAITS FOR A STRANGER ───────────────────────────────────────────────────────────────
+//
+// On 0.3.2-beta.10 the release entry went up nine minutes before an unauthenticated client could install
+// the version. The step now tags, then asks the registry as a stranger, then creates the entry — and a
+// registry that never serves the version leaves the tag and no entry. The check itself is driven against
+// a stub registry in its own file; these arms hold the step to asking it, in that order, in both jobs.
+
+test("the release entry waits for a stranger's install: the tag, then the check, then the entry", () => {
+  for (const [name, body] of PUBLISHING) {
+    for (const [version, prerelease, channel] of [["9.9.9-beta.3", "true", "beta"], ["9.9.9", "false", "latest"]]) {
+      const run = driveTagStep({ script: tagStepScript(body, name), version, prerelease });
+      const order = run.log.split("\n").map((l) => /git\/refs /.test(l) ? "tag" : /^visible-check /.test(l) ? "check" : /^release create /.test(l) ? "entry" : null).filter(Boolean);
+      assert.deepEqual(order, ["tag", "check", "entry"],
+        `${name}, ${version}: the step did not tag, then check, then create the entry — it did ${JSON.stringify(order)}\n${run.log}`);
+      assert.equal(run.asked.trim(), `--version ${version} --tag ${channel} --tarball release-artefacts/clearotron-${version}.tgz --timeout 900`,
+        `${name}, ${version}: the check was not asked about this version, its channel and the published tarball, bounded at fifteen minutes`);
+    }
+  }
+});
+
+test("a version the registry does not serve keeps its tag and gets NO entry, and the step fails", () => {
+  for (const [name, body] of PUBLISHING) {
+    for (const [version, prerelease] of [["9.9.9-beta.3", "true"], ["9.9.9", "false"]]) {
+      const run = driveTagStep({ script: tagStepScript(body, name), version, prerelease, visibleExit: 1 });
+      assert.notEqual(run.status, 0, `${name}, ${version}: the step reported success on a version nobody could install\n${run.out}`);
+      assert.match(run.log, new RegExp(`-f ref=refs/tags/v${version.replace(/\./g, "\\.")}`),
+        `${name}, ${version}: no tag — the pipeline would read this published version as unpublished and cut it again\n${run.log}`);
+      assert.doesNotMatch(run.log, /release create/,
+        `${name}, ${version}: an entry was created for a version the registry did not serve\n${run.log}`);
+    }
+  }
+});
+
+test("planted: a job whose entry does not wait for the check is caught, in each job separately", () => {
+  for (const [name, body] of PUBLISHING) {
+    const script = tagStepScript(body, name);
+    const broken = script.replace(/\n\s*served_to_a_stranger\n/g, "\n");
+    assert.notEqual(broken, script, `${name}: the plant changed nothing, so it proves nothing`);
+    const run = driveTagStep({ script: broken, version: "9.9.9", prerelease: "false", visibleExit: 1 });
+    assert.match(run.log, /release create/, `${name}: the planted step did not create an entry, so this arm cannot tell the difference`);
   }
 });
 
