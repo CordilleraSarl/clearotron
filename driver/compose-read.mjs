@@ -55,6 +55,7 @@ const MAX_CLASSES = 15;
 const MAX_TERRITORIES = 20;
 const MAX_NOTES = 8;
 import { PRODUCTS, PRODUCT_IDS } from "./products.mjs";
+import OFFERED from "../shared/offered-territories.json" with { type: "json" };   // the form's own list, minted by rule
 
 const MAX_STR = 600;
 const MAX_NOTE = 240;
@@ -62,22 +63,15 @@ const MAX_NOTE = 240;
 /**
  * The territory vocabulary, as offered by the composer's Where field.
  *
- * MIRRORS `REGIONS` + `COUNTRIES` in portal-ui/src/contract/composerProduct.ts. Kept here only so the
- * prompt can name it; the authority on what is selectable is the UI's own list.
+ * READ FROM THE SAME FILE THE FORM READS: shared/offered-territories.json, minted by rule from what the
+ * registers can search (scripts/mint-offered-territories.mjs). It used to be a hand-kept copy of the form's
+ * own list, "mirrored" by a comment, and a comment keeps nothing equal. One file read twice cannot differ.
  *
- * "Worldwide" LEFT THIS LIST. It is not a territory the composer offers and never was — it is a MODE,
- * and the read now carries it as its own boolean. Leaving it here taught the model to write a token the
- * form had to strip back out, which is how "everywhere" and "nowhere in particular" became the same
- * bytes on the wire in the first place.
+ * "Worldwide" is not in it. It is not a territory the composer offers and never was — it is a MODE,
+ * and the read carries it as its own boolean. Listing it taught the model to write a token the form had to
+ * strip back out, which is how "everywhere" and "nowhere in particular" became the same bytes on the wire.
  */
-export const PROMPT_TERRITORIES = Object.freeze([
-  "European Union", "Benelux", "African Regional (ARIPO)",
-  "United States", "United Kingdom", "Ireland", "France", "Germany", "Spain", "Italy", "Netherlands",
-  "Switzerland", "Austria", "Sweden", "Norway", "Poland", "Bulgaria", "Greece", "Turkey", "Canada",
-  "Mexico", "Brazil", "Argentina", "China", "Hong Kong", "Taiwan", "Macau", "Japan", "South Korea",
-  "Singapore", "India", "Thailand", "Australia", "New Zealand", "United Arab Emirates", "Saudi Arabia",
-  "South Africa",
-]);
+export const PROMPT_TERRITORIES = Object.freeze([...OFFERED.regions, ...OFFERED.countries].map((t) => t.name));
 
 /**
  * The shape the model must answer in.

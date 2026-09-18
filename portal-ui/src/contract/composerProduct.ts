@@ -34,6 +34,7 @@
 // sometimes refuses: it is a different control per product, and each says at the control what it accepts.
 // Nothing is greyed out without the reason beside it.
 
+import OFFERED from '../../../shared/offered-territories.json' with { type: 'json' }
 import type { Product } from './api.ts'
 
 /** What the requester has composed. Three fields, and two of them are the geography. */
@@ -71,16 +72,17 @@ export const EMPTY_DRAFT: Draft = { product: null, territories: [], replacesOwnT
 // own tier table (driver/territory-tiers.mjs) is the authority; this is the subset the picker offers, and
 // productMatrix.test.ts checks every entry of it against that table.
 
-/** Supranational filing systems: one entry, many countries. NEVER a country. */
-export const REGIONS: readonly string[] = ['European Union', 'Benelux', 'African Regional (ARIPO)']
+// THE LIST IS THE REGISTERS' REACH, MINTED BY RULE: shared/offered-territories.json, written by
+// scripts/mint-offered-territories.mjs from what at least one supported register can search, and read by
+// the engine's composer from the same file, so the form and the engine cannot offer different places.
+// It was a hand-kept 37 with no rule behind it — Bulgaria and Greece, not Denmark or Vietnam — while a
+// worldwide search already swept every office the wider register covers. What one installation's register
+// does not reach is still marked per deployment, from the flag snapshot.
 
-export const COUNTRIES: readonly string[] = [
-  'United States', 'United Kingdom', 'Ireland', 'France', 'Germany', 'Spain', 'Italy', 'Netherlands',
-  'Switzerland', 'Austria', 'Sweden', 'Norway', 'Poland', 'Bulgaria', 'Greece', 'Turkey', 'Canada',
-  'Mexico', 'Brazil', 'Argentina', 'China', 'Hong Kong', 'Taiwan', 'Macau', 'Japan', 'South Korea',
-  'Singapore', 'India', 'Thailand', 'Australia', 'New Zealand', 'United Arab Emirates', 'Saudi Arabia',
-  'South Africa',
-]
+/** Supranational filing systems: one entry, many countries. NEVER a country. */
+export const REGIONS: readonly string[] = OFFERED.regions.map((t) => t.name)
+
+export const COUNTRIES: readonly string[] = OFFERED.countries.map((t) => t.name)
 
 const ALIASES: Readonly<Record<string, readonly string[]>> = {
   'European Union': ['eu', 'europe'],
@@ -98,23 +100,16 @@ export function tierOf(name: string): Tier | null {
 }
 
 /**
- * The engine's code for each place the picker offers — a MIRROR of `territoryKey` in
- * driver/territory-tiers.mjs, which this bundle cannot import. `territoryCodes.test.ts` asks the engine
- * for every entry and fails on the first that differs, so the two cannot drift.
+ * The engine's code for each place the picker offers, read from the same minted list as the names — the
+ * code the engine's own resolution gave each place. `territoryCodes.test.ts` still asks the engine
+ * (`territoryKey` in driver/territory-tiers.mjs) for every entry and fails on the first that differs.
  *
  * Only where space is short: the sticky bar's summary line reads "EU, CH". Everywhere a place is READ —
  * a chip, a review row, a sentence — it is named.
  */
-export const TERRITORY_CODES: Readonly<Record<string, string>> = Object.freeze({
-  'European Union': 'EU', 'Benelux': 'BX', 'African Regional (ARIPO)': 'AP',
-  'United States': 'US', 'United Kingdom': 'GB', 'Ireland': 'IE', 'France': 'FR', 'Germany': 'DE',
-  'Spain': 'ES', 'Italy': 'IT', 'Netherlands': 'NL', 'Switzerland': 'CH', 'Austria': 'AT', 'Sweden': 'SE',
-  'Norway': 'NO', 'Poland': 'PL', 'Bulgaria': 'BG', 'Greece': 'GR', 'Turkey': 'TR', 'Canada': 'CA',
-  'Mexico': 'MX', 'Brazil': 'BR', 'Argentina': 'AR', 'China': 'CN', 'Hong Kong': 'HK', 'Taiwan': 'TW',
-  'Macau': 'MO', 'Japan': 'JP', 'South Korea': 'KR', 'Singapore': 'SG', 'India': 'IN', 'Thailand': 'TH',
-  'Australia': 'AU', 'New Zealand': 'NZ', 'United Arab Emirates': 'AE', 'Saudi Arabia': 'SA',
-  'South Africa': 'ZA',
-})
+export const TERRITORY_CODES: Readonly<Record<string, string>> = Object.freeze(
+  Object.fromEntries([...OFFERED.regions, ...OFFERED.countries].map((t) => [t.name, t.code])),
+)
 
 /** A place's short code, or the place itself when this vocabulary has none — never a blank. */
 export const territoryCode = (name: string): string => TERRITORY_CODES[name] ?? name

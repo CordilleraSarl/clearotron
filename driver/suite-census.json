@@ -1559,7 +1559,7 @@
         },
         "compose-read.test.mjs": {
           "tests": 23,
-          "asserts": 87,
+          "asserts": 88,
           "skips": 0,
           "todos": 0
         },
@@ -3754,8 +3754,8 @@
           "todos": 0
         },
         "register-reach-refusal.test.mjs": {
-          "tests": 13,
-          "asserts": 26,
+          "tests": 14,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },
@@ -4888,8 +4888,8 @@
           "todos": 0
         },
         "the-form-offers-what-the-registers-search.test.mjs": {
-          "tests": 4,
-          "asserts": 9,
+          "tests": 5,
+          "asserts": 13,
           "skips": 0,
           "todos": 0
         },
@@ -6123,7 +6123,7 @@
         },
         "composerProduct.test.ts": {
           "tests": 37,
-          "asserts": 145,
+          "asserts": 146,
           "skips": 0,
           "todos": 0
         },
