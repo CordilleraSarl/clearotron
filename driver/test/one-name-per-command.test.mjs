@@ -32,7 +32,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const GUARD = "one-name-per-command";
 
 /** Documents whose reader is in the checkout, so the package script IS the right name for them. */
-const CHECKOUT_DOCS = new Set(["AGENTS.md", "bin/README.md", "driver/engine/README.md"]);
+const CHECKOUT_DOCS = new Set(["bin/README.md", "driver/engine/README.md"]);
 
 /** The product's own verbs, spelled as package scripts. Each has a `clearotron` verb that ships. */
 const CHECKOUT_ONLY = [

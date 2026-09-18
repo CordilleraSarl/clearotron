@@ -36,7 +36,7 @@ WSL2-as-root) is supported; the tests that inject a permission fault declare a s
 
 ## Commands that cost nothing
 
-None of these needs a credential, a model or an account.
+None of these needs a credential, a model or a sign-up.
 
 ```sh
 npm install                    # every workspace
@@ -154,7 +154,7 @@ are none. `CONTRIBUTING.md` has the full rules. The ones a change most often bre
 - **Adding an environment variable** means a row in `docs/architecture/05-config-governance.md` and a row
   in `.env.example`; a guard fails a new name that lacks either.
 - **Many test files scan the whole tracked tree** — everything importing `shared/tracked-files.mjs` — so
-  one can fail on a file your diff never opened. Two of them sweep for client and operator identity. On a
+  one can fail on a file your diff never opened. Two of them sweep for real names and for the operator's own. On a
   public clone the roster they match is not present, so they exercise the matcher and identify nobody: a
   green run is not a clearance, and the reviewer is the check.
 
