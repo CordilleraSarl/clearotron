@@ -145,3 +145,26 @@ test("a reason nobody can render is dropped from the page and reported to the op
   const clean = clientConditionVoiceChecks({ verdictDoc: { reasons: [ASK_REASON] } });
   assert.equal(clean.find((c) => c.id === "client-condition-dropped").pass, true, "the dropped check fires on a run that dropped nothing");
 });
+
+test("an unfinished register search reaches the verdict without the engine's axis names", async () => {
+  // The coverage-floor clamp wrote "register coverage deferred on primary-sweep — …" as both the run
+  // record's sentence and the client's. The axis name is the engine's filing label for a slice; it comes
+  // OUT of the client's clause and nothing is written in its place (ruled 2026-09-18).
+  const { registerGapConditions } = await import("../pipeline.mjs");
+  const { REGISTER_AXES } = await import("../coverage-ledger.mjs");
+  const { clientConditions } = await import("../terminal-clamp.mjs");
+  const rows = registerGapConditions({ deferred: [{ axis: "primary-sweep" }, { axis: "incumbent-class" }], taintAxes: ["transliteration-numeric"] });
+  assert.equal(rows.length, 2);
+  for (const { reason, clause } of rows) {
+    assert.ok(REGISTER_AXES.some((a) => reason.includes(a)), "the run record keeps the axes for whoever repairs the run");
+    assert.ok(!REGISTER_AXES.some((a) => clause.includes(a)), `no axis name in the client's clause: ${clause}`);
+  }
+  // The clause is the reason's own words with the axis names taken out, and nothing written in.
+  assert.equal(rows[0].reason, "register coverage deferred on primary-sweep, incumbent-class — the search did not finish and must be re-run before this can be relied on");
+  assert.equal(rows[0].clause, "register coverage deferred — the search did not finish and must be re-run before this can be relied on");
+  assert.equal(rows[1].reason, "the transliteration-numeric register pass was cut down at the timeout wall and its self-reported coverage is unverified");
+  assert.equal(rows[1].clause, "the register pass was cut down at the timeout wall and its self-reported coverage is unverified");
+  const shown = clientConditions({ reasons: rows.map((r) => r.reason), clauses: rows.map((r) => r.clause) });
+  assert.ok(shown.length === 2 && !shown.some((c) => REGISTER_AXES.some((a) => c.includes(a))), JSON.stringify(shown));
+  assert.deepEqual(registerGapConditions({ deferred: [], taintAxes: [] }), [], "no gap, no condition");
+});
