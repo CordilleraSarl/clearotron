@@ -42,7 +42,7 @@ None of these needs a credential, a model or a sign-up.
 npm install                    # every workspace
 npm run build:ui               # the browser bundle is not committed — build it once
 npm test                       # the offline suite — no credentials, no network
-npx clearotron demo --no-open  # replays finished clearances into a local portal; runs until stopped
+npx clearotron demo            # replays finished clearances into a local portal; runs until stopped (--no-open: no browser)
 npx clearotron doctor          # reports what this machine is configured for; writes nothing, calls nobody
 node scripts/markdown-link-check.mjs    # every relative markdown link resolves
 node mcp-server/smoke.mjs      # drives the real MCP server against a fixture
