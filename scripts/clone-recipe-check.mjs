@@ -21,7 +21,7 @@
 // AGENTS.md CARRIES THE SAME LINES, and that is checked here too: a coding agent dropped into a clone
 // reads AGENTS.md, not README, and a recipe that drifts between the two is two recipes.
 import { readFileSync, mkdtempSync, rmSync, existsSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { homedir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawn, spawnSync } from "node:child_process";
@@ -59,8 +59,12 @@ for (const s of steps) {
   from = i + 1;
 }
 
-// A FRESH CLONE OF THIS COMMIT.
-const work = mkdtempSync(join(tmpdir(), "clone-recipe-"));
+// A FRESH CLONE OF THIS COMMIT, WHERE A READER WOULD PUT ONE — in their home, never under the temp root.
+// The suite's containment guards treat anything under a temp root as disposable, so a checkout sitting
+// there turns one of their arms into a no-op and it fails: measured on the first CI run of this job, "a
+// value genuinely outside every temp root is STILL refused" was not, because the checkout itself was
+// inside one. Nobody clones a product into /tmp to try it.
+const work = mkdtempSync(join(homedir(), "clearotron-recipe-"));
 const tree = join(work, "clearotron");
 const clone = spawnSync("git", ["clone", "--quiet", "--no-local", ROOT, tree], { stdio: "inherit" });
 if (clone.status !== 0) fail(`could not clone ${ROOT}`);
