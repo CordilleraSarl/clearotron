@@ -724,6 +724,21 @@ table.data td.nest-2 {
 .status-count {
   white-space: nowrap;
 }
+/* One line wherever a risk word is drawn — in the stylesheet rather than inline, so the table below can
+   let it wrap. */
+.risk-dot {
+  white-space: nowrap;
+}
+/* A risk word wraps the same way, and for the same reason: "No rated conflicts" in a column of fixed
+   width ran on under the date beside it instead of taking a second line. */
+.names-wrap table.data.fixed td .risk-dot {
+  white-space: normal;
+  align-items: flex-start;
+}
+.names-wrap table.data.fixed td .risk-dot .dot {
+  flex: none;
+  margin-top: 0.42em;
+}
 /* A date is one word to a reader. A line may break before it, never at its hyphens: "2026-09-" over "02"
    read as a different date on the line below. */
 .names-wrap table.data.fixed td .sub.report-line {
@@ -768,7 +783,15 @@ table.data td.nest-2 {
 .row-actions-ask:empty {
   display: none;
 }
-@container (min-width: 1000px) {
+/* SIDE BY SIDE ONLY WHERE THE CELL HOLDS IT. This asked the whole table's width, and the actions column is
+   a fifth of it: at 1440px the table was 1060px, the query said "wide", and three fixed tracks needing
+   about 290px were laid into a cell of about 200 — every row's menu past the table's edge, the page
+   scrolling sideways. The cell itself is the container now, so the wide form appears exactly when its
+   tracks fit and the stacked form, which shrinks, holds every other width. */
+.row-actions-box {
+  container: rowactions / inline-size;
+}
+@container rowactions (min-width: 292px) {
   .row-actions {
     grid-template-columns: var(--row-open-w) var(--row-ask-w) auto;
     grid-template-areas: 'open ask more';

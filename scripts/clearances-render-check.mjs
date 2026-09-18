@@ -99,6 +99,21 @@ const run = (over) => {
 }
 
 let longTitle = false
+// THE FULL LIST, as a served portal draws it: twenty-five finished names across two companies, every one
+// carrying Open latest report, Ask AI and its menu, some with long marks and the longest risk words the
+// ladders print. The stub rows above prove behaviour; they are too few and too short to prove the layout,
+// and a layout that fitted them regressed on the real list at 1440px while this file stayed green.
+let fullList = false
+const FULL_MARKS = ['MERIDIAN THISTLE', 'PROJECT CHROMA', 'VIBRANTE FROSTPLUM', 'NORTHWIND', 'CORAL FREEZE', 'AQUAPLUS',
+  'ASTERION', 'TIDEGLASS', 'BRIMSTONE', 'VENQORI', 'IRONWHISK', 'SIM PRAXIS', 'EMBER FORGE', 'VANTOR LABS', 'HALDEN OUTDOOR',
+  'GLACIER MINT', 'SOLSTICE BAY', 'KESTREL WORKS', 'OBSIDIAN LOOP', 'MARBLE ORCHARD', 'LUMEN CRAFT', 'PELICAN NORTH',
+  'SAFFRON VALE', 'ZEPHYR BEVERAGES', 'QUARTZ HOLLOW']
+const FULL_BANDS = [['No rated conflicts', 'minimal'], ['Manageable', 'low'], ['Clear to file', 'minimal'], ['Medium', 'medium'], ['Severe', 'severe']]
+const FULL_RUNS = () => FULL_MARKS.map((m, i) => run({
+  runId: `full-${i}`, account: i % 2 ? KEY2 : KEY, markName: m, title: m, date: `2026-09-${String(18 - (i % 17)).padStart(2, '0')}`,
+  issuedAt: `2026-09-${String(18 - (i % 17)).padStart(2, '0')}T09:00:00Z`, band: FULL_BANDS[i % FULL_BANDS.length][0],
+  tone: FULL_BANDS[i % FULL_BANDS.length][1], product: ['global-preliminary-search', 'multi-country-focus-search', 'full-country-search'][i % 3],
+}))
 
 // THE ROW STATES the list has to tell apart, each built the way the service sends it:
 //   • a finished name with one search                          ASTERION
@@ -178,7 +193,7 @@ const server = createServer((req, res) => {
   if (p === '/portal/admin/roster') return json(res, { customers: [{ key: KEY, name: NAME }, { key: KEY2, name: NAME2 }] })
   if (p === '/portal/admin/families') return json(res, FAMILIES)
   if (p === '/portal/api/usage') return json(res, usageNow)
-  if (p === '/portal/api/runs') return json(res, { runs: RUNS() })
+  if (p === '/portal/api/runs') return json(res, { runs: fullList ? FULL_RUNS() : RUNS() })
   if (p === '/portal/api/searches') return json(res, { account: KEY, products: PRODUCTS, recipes: [], read: { available: false, maxBrief: 0, note: null } })
   // A CONNECTED READER, so Ask AI draws on the rows that carry it and opens its question panel. The one
   // request the whole table makes for it is counted by revisit-render-check.
@@ -566,6 +581,42 @@ await value(`(async () => { const b = document.querySelector('label.group-toggle
 longTitle = true
 await reload()
 const long = await value(MEASURE)
+longTitle = false
+
+// — THE FULL LIST, at the wide desktop and at the width the COLLAPSE ruling was for. Read off the drawn
+// page: does the page scroll sideways, does the table leave its box, is any row's menu cut off at the
+// edge, and does any risk word run into the date beside it.
+const FULL = `(() => {
+  const wrap = document.querySelector('.table-wrap') || document.querySelector('table.data').parentElement;
+  const table = document.querySelector('table.data');
+  const w = wrap.getBoundingClientRect();
+  const head = [...table.querySelectorAll('thead th')].map(t => (t.textContent || '').trim());
+  const ri = head.findIndex(t => /^Risk/i.test(t)), ui = head.findIndex(t => /^Updated/i.test(t));
+  const textBox = (el) => { if (!el) return null; const r = document.createRange(); r.selectNodeContents(el); const b = r.getBoundingClientRect(); return b.width ? b : null; };
+  const rows = [...table.querySelectorAll('tbody tr.row')];
+  const collide = [];
+  for (const tr of rows) {
+    const risk = textBox(tr.children[ri]), date = textBox(tr.children[ui]);
+    if (risk && date && risk.right > date.left - 2 && risk.top < date.bottom && date.top < risk.bottom) {
+      collide.push(((tr.querySelector('b') || {}).textContent || '').trim());
+    }
+  }
+  const cut = [...table.querySelectorAll('button.row-menu-btn')].filter(b => b.getBoundingClientRect().right > Math.min(w.right, document.documentElement.clientWidth) + 1).length;
+  return { rows: rows.length, docOverflowsX: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+    scrollW: document.documentElement.scrollWidth, clientW: document.documentElement.clientWidth,
+    tableOverflows: table.getBoundingClientRect().width > w.width + 1, tableW: Math.round(table.getBoundingClientRect().width), wrapW: Math.round(w.width),
+    menusCut: cut, riskOverDate: collide };
+})()`
+fullList = true
+const full = {}
+for (const width of [WIDE, 700]) {
+  await cmd('Emulation.setDeviceMetricsOverride', { width, height: 1000, deviceScaleFactor: 1, mobile: false })
+  await reload()
+  full[width] = await value(FULL)
+}
+await cmd('Emulation.clearDeviceMetricsOverride', {})
+fullList = false
+await reload()
 
 if (shotAt) {
   const shot = await cmd('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true })
@@ -645,6 +696,14 @@ if (!short || short.fatal) {
 }
 
 console.log(`measured at ${WIDTH}px — ${short.openedRows} rows opened, ${short.readRows} read rows`)
+for (const [width, f] of Object.entries(full)) {
+  console.log(`full list at ${width}px: ${f?.rows} rows, page ${f?.scrollW}/${f?.clientW}, table ${f?.tableW} in ${f?.wrapW}, menus cut ${f?.menusCut}, risk over date ${JSON.stringify(f?.riskOverDate)}`)
+  ok(f && f.rows === 25, `full list at ${width}px: ${f?.rows} rows drew, not 25`)
+  ok(f && !f.docOverflowsX, `full list at ${width}px: the page scrolls sideways (${f?.scrollW} in ${f?.clientW})`)
+  ok(f && !f.tableOverflows, `full list at ${width}px: the table (${f?.tableW}px) leaves its box (${f?.wrapW}px)`)
+  ok(f && f.menusCut === 0, `full list at ${width}px: ${f?.menusCut} row menu(s) cut off at the edge`)
+  ok(f && f.riskOverDate.length === 0, `full list at ${width}px: the risk word runs into the date on ${JSON.stringify(f?.riskOverDate)}`)
+}
 // Printed on every run, not only on failure: `overflow: 21px` is the number that told us the table
 // was resolving wider than its wrapper, and it is the first thing to look at when this check goes red.
 console.log(`table ${short.tableWidth}px in a ${short.tableWidth - (short.overflowBy ?? 0)}px wrapper — overflow ${short.overflowBy}px (min-width ${short.tableMinWidth})`)
