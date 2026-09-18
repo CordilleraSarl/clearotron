@@ -1819,7 +1819,7 @@ test("a version the registry does not serve keeps its tag and gets NO entry, and
     for (const [version, prerelease] of [["9.9.9-beta.3", "true"], ["9.9.9", "false"]]) {
       const run = driveTagStep({ script: tagStepScript(body, name), version, prerelease, visibleExit: 1 });
       assert.notEqual(run.status, 0, `${name}, ${version}: the step reported success on a version nobody could install\n${run.out}`);
-      assert.match(run.log, new RegExp(`-f ref=refs/tags/v${version.replace(/\./g, "\\.")}`),
+      assert.ok(run.log.includes(`-f ref=refs/tags/v${version} `),
         `${name}, ${version}: no tag — the pipeline would read this published version as unpublished and cut it again\n${run.log}`);
       assert.doesNotMatch(run.log, /release create/,
         `${name}, ${version}: an entry was created for a version the registry did not serve\n${run.log}`);
