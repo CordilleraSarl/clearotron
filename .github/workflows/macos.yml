@@ -1,0 +1,119 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
+#
+# macOS: install what a stranger installs, ask it what it sees, open the demo, and put it away again.
+#
+# THE README SAYS macOS AND LINUX, AND UNTIL THIS FILE ONLY LINUX WAS EVER RUN. Every job in ci.yml and
+# release.yml runs on ubuntu-latest, so macOS support was a design assumption rather than evidence. This
+# job is the evidence: the packed tarball, sealed the way the release seals it, installed into an empty
+# directory as somebody's dependency, then `clearotron doctor`, then `clearotron demo` answering on its
+# port with its portal bundle built, then stopped, with the port quiet afterwards.
+#
+# WHEN IT RUNS, AND WHEN IT DOES NOT. On a schedule, so a regression shows within a day of landing; by
+# hand; on a push that changes this file; and from the release workflow before a publish, where a red
+# run refuses a STABLE and does not hold a beta. Not on pull requests: a macOS minute costs ten Linux
+# ones, and nothing here is a question a pull request's author is better placed to answer than the
+# schedule is.
+#
+# IT HOLDS NOTHING AND PUBLISHES NOTHING. A read-only token, no secrets, no environment. The demo serves
+# the package's own frozen example over loopback: no model, no register, no key.
+#
+# EVERY STEP WAS RUN BEFORE IT WAS WRITTEN, on Linux: pack and seal, 96 packages installed, doctor exit 0
+# on a fresh home, the portal's health answering 200 with its bundle built four seconds after the demo
+# started, and every process gone three seconds after SIGTERM. The rehearsal also caught the one way
+# this step could lie: `npx clearotron demo &` records npx's pid, and npx exits on SIGTERM without
+# passing it on, so the demo and its three doors kept serving after the "stop". The demo is therefore
+# started from the installed bin, its own pid is the one signalled, and the port is asked again after.
+name: macOS install
+
+on:
+  schedule:
+    - cron: '23 5 * * *'
+  workflow_dispatch:
+  workflow_call:
+  # AND ON A PUSH THAT CHANGES THIS FILE, on any branch. GitHub dispatches a workflow only once it is on
+  # the default branch, so without this a change to the job could not be run anywhere before it reached
+  # main — the release would be the first thing to find out it was broken. It runs only when the job
+  # itself changes, which is exactly when there is something new to prove.
+  push:
+    paths:
+      - .github/workflows/macos.yml
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    name: Install, doctor and demo on macOS
+    runs-on: macos-latest
+    timeout-minutes: 30
+    env:
+      PORT: '19460'
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22.23.2'
+          cache: npm
+
+      - run: npm ci
+
+      # THE PACKAGE SHIPS THE BUILT PORTAL (`portal-ui/dist/` is in `files`), so the bytes are only whole
+      # once it is built. The health check below requires `ui: built` for exactly that reason.
+      - run: npm run build:ui
+
+      # SEALED BEFORE IT IS INSTALLED, in the order CI and the release use. The repository manifest pins a
+      # replacement through `overrides`, which resolves only in this tree, so unsealed bytes are expected
+      # to refuse an install as somebody's dependency.
+      - name: Pack and seal the bytes a stranger installs
+        run: |
+          set -euo pipefail
+          mkdir -p ./packed
+          TARBALL=$(npm pack --pack-destination ./packed | tail -1)
+          node scripts/release-artifact-seal.mjs --tarball "./packed/${TARBALL}"
+          echo "TARBALL=$PWD/packed/${TARBALL}" >> "$GITHUB_ENV"
+
+      - name: Install it into an empty directory, as a dependency
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/stranger"
+          cd "$RUNNER_TEMP/stranger"
+          npm init -y >/dev/null
+          npm install --no-audit --no-fund "$TARBALL"
+          test -x ./node_modules/.bin/clearotron
+
+      - name: clearotron doctor
+        working-directory: ${{ runner.temp }}/stranger
+        run: ./node_modules/.bin/clearotron doctor
+
+      - name: clearotron demo answers on its port, and stops
+        working-directory: ${{ runner.temp }}/stranger
+        run: |
+          set -uo pipefail
+          ./node_modules/.bin/clearotron demo --no-open --port "$PORT" --base "$RUNNER_TEMP/demo" \
+            > "$RUNNER_TEMP/demo.log" 2>&1 &
+          DEMO=$!
+          up=""
+          for _ in $(seq 1 90); do
+            code=$(curl -s -o "$RUNNER_TEMP/health.json" -w '%{http_code}' "http://127.0.0.1:$PORT/portal/health" || true)
+            if [ "$code" = "200" ] && grep -q '"ui":"built"' "$RUNNER_TEMP/health.json"; then up=1; break; fi
+            kill -0 "$DEMO" 2>/dev/null || break
+            sleep 2
+          done
+          if [ -z "$up" ]; then
+            echo "::error::the portal never answered on port $PORT with its bundle built (last: http ${code:-none})"
+            tail -40 "$RUNNER_TEMP/demo.log"; kill -TERM "$DEMO" 2>/dev/null; exit 1
+          fi
+          echo "the portal answered on port $PORT: $(head -c 120 "$RUNNER_TEMP/health.json")"
+          kill -TERM "$DEMO"
+          for _ in $(seq 1 30); do kill -0 "$DEMO" 2>/dev/null || break; sleep 1; done
+          if kill -0 "$DEMO" 2>/dev/null; then
+            echo "::error::the demo was still running 30 seconds after SIGTERM"; tail -40 "$RUNNER_TEMP/demo.log"; exit 1
+          fi
+          after=$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:$PORT/portal/health" || true)
+          if [ "$after" != "000" ]; then
+            echo "::error::the demo exited and port $PORT still answers (http $after): something it started outlived it"
+            tail -40 "$RUNNER_TEMP/demo.log"; exit 1
+          fi
+          echo "stopped: the demo exited and port $PORT is quiet"
