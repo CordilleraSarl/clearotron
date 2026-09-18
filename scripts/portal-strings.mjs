@@ -37,7 +37,29 @@ import { readFileSync, readdirSync, statSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join, relative, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { parseAst } from "rolldown/parseAst";
+import { createRequire } from "node:module";
+
+// THE PARSER IS LOADED ONLY WHEN SOMETHING IS PARSED, and that is not tidiness. `--backlog-shrinks`
+// compares two committed JSON files and reads no source at all, and the job that runs it installs
+// nothing on purpose — it answers in seconds off git. Imported at the top, rolldown made that step die
+// with ERR_MODULE_NOT_FOUND on the runner. Measured on beta-9, 2026-09-18, on the first run that ever
+// reached the step: an earlier guard in the same job had refused first every time before it.
+//
+// `createRequire` and not `await import`, because the extractor is called from synchronous code and from
+// tests that read its rows directly; making it async would turn that into a different function.
+let parse = null;
+function parser() {
+  if (parse) return parse;
+  try { ({ parseAst: parse } = createRequire(import.meta.url)("rolldown/parseAst")); }
+  catch (e) {
+    // COULD NOT LOOK, never a pass: reading the portal with no parser finds no strings, which is exactly
+    // what an approved tree looks like.
+    console.error("portal-strings: reading the portal's source needs its build dependencies — run `npm ci`"
+      + ` first.\n  ${String(e.message).split("\n")[0]}`);
+    process.exit(2);
+  }
+  return parse;
+}
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -167,7 +189,7 @@ const SKIP_TYPES = new Set(["ImportDeclaration", "ExportAllDeclaration", "TSType
 /** Every reader-facing string in one source text. `file` is only carried into the rows. */
 export function stringsIn(source, file) {
   const lang = file.endsWith(".tsx") ? "tsx" : file.endsWith(".ts") ? "ts" : file.endsWith(".jsx") ? "jsx" : "js";
-  const ast = parseAst(source, { lang });
+  const ast = parser()(source, { lang });
   const starts = [0];
   for (let i = 0; i < source.length; i += 1) if (source[i] === "\n") starts.push(i + 1);
   const lineOf = (off) => { let lo = 0, hi = starts.length - 1; while (lo < hi) { const m = (lo + hi + 1) >> 1; if (starts[m] <= off) lo = m; else hi = m - 1; } return lo + 1; };

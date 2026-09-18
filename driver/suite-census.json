@@ -5080,8 +5080,8 @@
           "todos": 0
         },
         "the-portal-shows-only-approved-strings.test.mjs": {
-          "tests": 14,
-          "asserts": 28,
+          "tests": 15,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         },

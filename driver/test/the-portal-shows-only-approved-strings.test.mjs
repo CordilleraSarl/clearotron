@@ -120,6 +120,49 @@ test("a list that cannot be read, approves nothing, or a missing backlog, is cou
   assert.equal(runCheck({ screen: SCREEN, approved: APPROVED, backlog: null }).code, 2, "no backlog file");
 });
 
+test("the shrink check runs where nothing is installed, and the extractor says so instead of finding no strings", () => {
+  // THE JOB THAT RUNS THIS CHECK INSTALLS NOTHING, by design: it answers in seconds off git. The reader's
+  // parser is a dependency, so importing it at the top killed the step with ERR_MODULE_NOT_FOUND on the
+  // runner — on the first run that ever reached it, an earlier guard in the job having refused first every
+  // time before. Driven here with the script copied where its parser cannot be resolved, which is the
+  // runner's shape; a plant that only read the source would pass on a lazily-imported parser that then
+  // returned nothing.
+  const dir = mkdtempSync(join(tmpdir(), "portal-nodeps-"));
+  try {
+    mkdirSync(join(dir, "scripts"), { recursive: true });
+    mkdirSync(join(dir, "shared"), { recursive: true });
+    mkdirSync(join(dir, "repo", "portal-ui"), { recursive: true });
+    for (const f of ["scripts/portal-strings.mjs", "shared/is-entrypoint.mjs"]) {
+      writeFileSync(join(dir, f), readFileSync(join(ROOT, f), "utf8"));
+    }
+    const repo = join(dir, "repo"), script = join(dir, "scripts", "portal-strings.mjs");
+    const g = (...a) => spawnSync("git", ["-C", repo, "-c", "user.email=a@b.c", "-c", "user.name=t", ...a], { encoding: "utf8" });
+    g("init", "-q", "-b", "main");
+    const backlog = (b) => writeFileSync(join(repo, BACKLOG), JSON.stringify({ backlog: b }));
+    backlog({ "First.": "none", "Second.": "none" });
+    g("add", "-A"); g("commit", "-qm", "base");
+    const shrinks = (b) => {
+      backlog(b);
+      const r = spawnSync(process.execPath, [script, "--backlog-shrinks", "--base", "HEAD", "--root", repo], { encoding: "utf8" });
+      return { code: r.status, out: `${r.stdout}${r.stderr}` };
+    };
+    const smaller = shrinks({ "First.": "none" });
+    assert.equal(smaller.code, 0, `the shrink check could not run without the portal's dependencies:\n${smaller.out}`);
+    assert.equal(shrinks({ "First.": "none", "Second.": "none", "Third.": "none" }).code, 1,
+      "the check that runs without dependencies stopped refusing a grown backlog");
+
+    // AND THE HALF THAT KEEPS THAT HONEST: reading the portal with no parser finds no strings, which is
+    // exactly what a fully approved tree looks like. It must be a could-not-look, and say what to run.
+    mkdirSync(join(repo, "portal-ui", "src", "screens"), { recursive: true });
+    writeFileSync(join(repo, "portal-ui", "src", "screens", "A.tsx"), SCREEN);
+    const list = join(dir, "approved.json");
+    writeFileSync(list, JSON.stringify({ approved: APPROVED }));
+    const r = spawnSync(process.execPath, [script, "--check", list, "--root", repo], { encoding: "utf8" });
+    assert.equal(r.status, 2, `an unreadable portal passed as approved:\n${r.stdout}${r.stderr}`);
+    assert.match(`${r.stdout}${r.stderr}`, /npm ci/, "the refusal does not say what is missing");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
 // ── THE BACKLOG ONLY SHRINKS ────────────────────────────────────────────────────────────────────────
 
 /** A git repository whose base commit carries `before` as the backlog and whose tree carries `now`. */
