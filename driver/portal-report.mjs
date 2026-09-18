@@ -630,6 +630,25 @@ const EMBED_JS = `
     try{parent.postMessage({source:TAG,type:'scrollTo',top:top},'*');}catch(e){}
     schedule();
   });
+  // A FINDING'S OWN ASK AI. The document draws the button on every finding card and the portal holds the
+  // control, so the press crosses to the parent like the anchor jump above, carrying which finding it was.
+  // A clearance numbers its findings once, in the card's id; a knockout restarts its numbers for each name,
+  // so the name's position rides beside it. The "Also considered" cards carry the button and no number —
+  // a record that was ruled out was never given one — and still post, with the number null: the parent
+  // opens the control about the report rather than leaving a button that does nothing. Un-framed there is
+  // nobody to answer, so nothing is posted.
+  document.addEventListener('click',function(e){
+    var b=e.target.closest?e.target.closest('.ask-fi'):null;
+    if(!b||!framed)return;
+    var card=b.closest('.card');
+    var whole=function(v){var n=parseInt(v,10);return String(n)===String(v)&&n>=0?n:null;};
+    var koOrd=card?card.getAttribute('data-ko-ord'):null;
+    var idOrd=card&&(card.id||'').charAt(0)==='c'?card.id.slice(1):null;
+    var ord=koOrd!==null?whole(koOrd):(idOrd!==null?whole(idOrd):null);
+    var koMark=card?card.getAttribute('data-ko-mark'):null;
+    var mi=koMark!==null?whole(koMark):null;
+    try{parent.postMessage({source:TAG,type:'askAi',ordinal:ord,markIndex:mi},'*');}catch(err){}
+  });
   schedule();
 })();
 `;

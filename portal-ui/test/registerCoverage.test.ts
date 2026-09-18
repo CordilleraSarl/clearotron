@@ -141,6 +141,19 @@ test('the mark is derived from the SAME three states the vocabulary is', () => {
   assert.equal(reachesTerritory('Germany', []), false, 'an empty coverage claim reaches nothing')
 })
 
+test('a company\'s own territories are CODES and the register\'s coverage is NAMES, and they still meet', () => {
+  // Found on the served portal: a company holding US, EU and UK, on a register covering all three by
+  // name, drew every chip as "not available". A string match cannot see that "US" is "United States".
+  const covered = ['European Union', 'United States', 'United Kingdom']
+  for (const code of ['US', 'EU', 'UK', 'GB', 'us', ' uk ']) {
+    assert.equal(reachesTerritory(code, covered), true, `${code} was marked unreachable on a register covering it by name`)
+  }
+  assert.equal(reachesTerritory('DE', covered), false, 'a code the register does not cover still reads as not covered')
+  assert.equal(reachesTerritory('United States', ['US']), true, 'and the other way round')
+  assert.equal(reachesTerritory('Atlantis', ['Atlantis']), true, 'a name the picker does not know matches only itself')
+  assert.equal(reachesTerritory('Atlantis', covered), false)
+})
+
 // ── the screen actually passes it ───────────────────────────────────────────────────────────────────
 
 test('NewClearance threads coverage into BOTH the suggestion list and the add path', () => {

@@ -166,7 +166,31 @@ export function offerableFor(product: Product | null): readonly string[] {
  */
 export function reachesTerritory(name: string, covered?: readonly string[] | null): boolean {
   if (!Array.isArray(covered)) return true
-  return covered.includes(name)
+  // COMPARED AS THE ENGINE'S CODES, never as spellings. The register's coverage arrives as names
+  // ("United States") and a company's own territories are stored as codes ("US", "UK"), so a string
+  // match marked every one of a company's territories unreachable on a register that covers them all.
+  const key = territoryKeyOf(name)
+  return covered.some((c) => territoryKeyOf(c) === key)
+}
+
+/**
+ * How the order form names a worldwide search: with the register service that searches it, because
+ * "worldwide" is eleven registers on one installation and 186 on another, and the reader can only tell
+ * which by being told the service (owner, 2026-09-18). The name is the provider's own label from its
+ * capabilities; an installation that does not say gets the bare word, never a guessed name.
+ */
+export const worldwideLine = (registerLabel?: string | null): string =>
+  registerLabel ? `Worldwide, searched on ${registerLabel}` : 'Worldwide'
+
+/**
+ * The engine's code for a place given as a name the picker offers or as a code — "United Kingdom",
+ * "UK" and "GB" all read GB, as `territoryKey` in the engine reads them. A name the picker does not
+ * offer comes back as itself, upper-cased, which matches only the same name.
+ */
+export function territoryKeyOf(value: string): string {
+  const v = String(value ?? '').trim()
+  const named = TERRITORY_CODES[v] ?? TERRITORY_CODES[ALL_TERRITORIES.find((t) => t.toLowerCase() === v.toLowerCase()) ?? '']
+  return named ?? canonicalJurisdictionCode(v)
 }
 
 /**

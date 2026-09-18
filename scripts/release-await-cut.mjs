@@ -178,8 +178,14 @@ export function expiryVerdict({ cut, requested, pr = null }) {
   if (cut) return { red: false, reason: null };
   if (!requested) return { red: false, reason: null };
   if (!pr) return { red: true, reason: "a cut was dispatched, and no version pull request was found to wait on" };
+  // A PULL REQUEST THAT COULD NOT BE READ IS NOT ONE THAT WAS NOT FOUND. Both used to arrive here as
+  // `null`, so a failed read reported "no version pull request was found" about a pull request that was
+  // standing open — a confident wrong reason, on the one line this function exists to get right.
+  if (pr.unread) {
+    return { red: true, reason: `the version pull request (${pr.number}) could not be read, so why it did not merge is unknown — read it by hand (${pr.why})` };
+  }
   if (pr.merged) return { red: true, reason: "the version pull request merged, yet main carries no untagged version — the publish this run was for has gone missing" };
-  const bad = (pr.checks ?? []).filter((c) => ["failure", "timed_out", "cancelled", "action_required"].includes(c.conclusion));
+  const bad = (pr.checks ?? []).filter((c) => ["failure", "error", "timed_out", "cancelled", "action_required"].includes(c.conclusion));
   if (bad.length) {
     const named = bad.map((c) => `${c.context} (${c.conclusion})`).join(", ");
     return { red: true, reason: `the version pull request did not merge: ${named}` };
@@ -191,8 +197,25 @@ export function expiryVerdict({ cut, requested, pr = null }) {
   return { red: true, reason: "the version pull request did not merge, and nothing on it says why — read it by hand" };
 }
 
-/** The version pull request's state and its checks' conclusions. Injected so an arm can drive it. */
-export async function readVersionPr(number, { run = ((args) => execFileSync("gh", args, { encoding: "utf8" })) } = {}) {
+/**
+ * One entry of the rollup, as a conclusion or `null` while it has none.
+ *
+ * THE ROLLUP HOLDS TWO SHAPES. A check run carries `conclusion`; a commit status carries `state` and no
+ * `conclusion` at all, so reading only the first counts every red status as not-yet-concluded.
+ */
+function conclusionOf(c) {
+  if (c.conclusion) return String(c.conclusion).toLowerCase();
+  if (c.state && !["PENDING", "EXPECTED"].includes(String(c.state).toUpperCase())) return String(c.state).toLowerCase();
+  return null;
+}
+
+/**
+ * The version pull request's state and its checks' conclusions. Injected so an arm can drive it.
+ *
+ * `null` means there was no number to read. A read that FAILED returns `{ unread: true }` instead, so the
+ * verdict can tell "no pull request" from "could not look at it".
+ */
+export async function readVersionPr(number, { run = ((args) => execFileSync("gh", args, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] })) } = {}) {
   if (!number) return null;
   try {
     const j = JSON.parse(run(["pr", "view", String(number), "--repo", "CordilleraSarl/clearotron",
@@ -202,10 +225,13 @@ export async function readVersionPr(number, { run = ((args) => execFileSync("gh"
       mergeable: j.mergeable === "MERGEABLE" ? true : j.mergeable === "CONFLICTING" ? false : null,
       checks: (j.statusCheckRollup ?? []).map((c) => ({
         context: String(c.name ?? c.context ?? "a check"),
-        conclusion: String(c.conclusion ?? "").toLowerCase() || null,
+        conclusion: conclusionOf(c),
       })),
     };
-  } catch { return null; }   // unreadable is not a finding about the pull request; the caller says so
+  } catch (e) {
+    const why = String(e?.stderr || e?.message || e).trim().split("\n")[0].slice(0, 160);
+    return { unread: true, number, why };
+  }
 }
 
 /**
@@ -304,7 +330,10 @@ function main() {
   }).then((r) => {
     if (!r) return;
     const secs = Math.round(r.waitedMs / 1000);
+    // A DISPATCHED CUT DOES NOT GET THE REASSURANCE. The error below says what happened, and a line
+    // calling it ordinary directly above that error is the one a reader skimming the log stops at.
     if (r.cut) console.log(`release-await-cut: main carries ${r.version} with no tag, after ${secs}s. Publishing.`);
+    else if (cutRequest().asked) console.log(`release-await-cut: nothing to publish after ${secs}s — main carries ${r.version} and it is already tagged.`);
     else console.log(`release-await-cut: nothing to publish after ${secs}s — main carries ${r.version} and it is `
       + "already tagged, or the version branch did not merge. This is the ordinary outcome and not a fault; "
       + "the scheduled check is still underneath it.");

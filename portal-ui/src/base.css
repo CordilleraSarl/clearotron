@@ -231,6 +231,11 @@ html.anon-on [data-anon='mark']:not(.anon-clear) {
   padding: 0 10px;
 }
 
+/* The board's own box for Connect your AI: between the list that scrolls and the foot. */
+.sidebar-pinned {
+  padding: 0 10px 2px;
+}
+
 .sidebar-foot {
   padding: 10px;
   border-top: 1px solid var(--border-hairline);

@@ -77,6 +77,7 @@ if (shotsDir) mkdirSync(shotsDir, { recursive: true })
 // `productName` is resolved through the same expression portal-service.mjs evaluates, never typed: the
 // sibling instruments' rule, and it holds here for the same reason.
 const { reportIdentityFor } = await import('../driver/search-policy.mjs')
+const { prepareReportForEmbed } = await import('../driver/portal-report.mjs')
 
 const KEY = 'acme'
 const NAME = 'Acme'
@@ -127,6 +128,19 @@ const DECKS = {
                  stdio: { command: 'node server.mjs', note: 'from this install', verify: 'it prints ready' } },
 }
 let deck = 'connected'
+// WHICH DOCUMENT THE FRAME HOLDS. The stub below for every state about the header; for a finding's own
+// button, a document put through the same preparation the portal serves a report with, so the press
+// travels the real injected script to the real listener. Two cards at fixed places: a numbered finding,
+// and an "Also considered" card, which carries the button and no number.
+let reportDoc = 'stub'
+const FINDING_DOC = () => prepareReportForEmbed(`<!doctype html><html><head><meta charset="utf-8"><title>report</title></head>
+<body style="margin:0;font-family:sans-serif;background:#fff;height:400px">
+<div class="card" id="c3" style="position:absolute;top:40px;left:20px"><div class="cardhead"><span class="fnum">3</span>
+<button class="ask-fi no-print" style="width:240px;height:32px">\u2726 Ask AI about this finding</button></div></div>
+<div class="card ruled" style="position:absolute;top:140px;left:20px"><div class="cardhead">
+<button class="ask-fi no-print" style="width:240px;height:32px">\u2726 Ask AI about this finding</button></div></div>
+<script>parent.postMessage({ source: 'cordillera-report', type: 'controls', commands: ['exportPDF'] }, '*');</script>
+</body></html>`, {}).html
 
 const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.json': 'application/json' }
 const json = (res, body) => { res.writeHead(200, { 'content-type': 'application/json' }); res.end(JSON.stringify(body)) }
@@ -143,6 +157,10 @@ const server = createServer((req, res) => {
   // A real document, because a 404 in the frame changes what Result draws around it. Its CONTENT is not
   // this file's subject — render-check.mjs owns the report's own layout. It announces the commands and
   // the height a published report's bridge announces, so the header draws the Export menu a reader meets.
+  if (p.startsWith('/portal/report/') && reportDoc === 'finding') {
+    res.writeHead(200, { 'content-type': 'text/html' })
+    return res.end(FINDING_DOC())
+  }
   if (p.startsWith('/portal/report/')) {
     res.writeHead(200, { 'content-type': 'text/html' })
     return res.end(`<!doctype html><meta charset="utf-8"><title>report</title>
@@ -409,6 +427,52 @@ await value('(() => { window.__pressContinue = true; return true })()')
 const back = await value(CONTINUE)
 const arrived = await value(PROBE)
 
+// ── a finding's own button, pressed INSIDE the report ──
+//
+// A REAL CLICK AT THE BUTTON'S PLACE, not a message posted by this script: the document is sandboxed to a
+// null origin and the point is the whole path — the injected script hears the press, posts it, and the
+// report screen opens its control. The cards sit at fixed places in the document, so the frame's own
+// position on the page is all that has to be measured.
+const pressInFrame = async (top) => {
+  await value('(() => { window.scrollTo(0, 0); return true })()')
+  await new Promise((r) => setTimeout(r, 200))
+  const at = await value(`(() => { const f = document.querySelector('iframe'); if (!f) return null; const r = f.getBoundingClientRect(); return { x: r.left, y: r.top } })()`)
+  if (!at) return false
+  const x = Math.round(at.x + 140), y = Math.round(at.y + top + 16)
+  for (const type of ['mousePressed', 'mouseReleased']) await cmd('Input.dispatchMouseEvent', { type, x, y, button: 'left', clickCount: 1 })
+  await new Promise((r) => setTimeout(r, 400))
+  return true
+}
+const PANEL = `(() => {
+  const flat = (s) => (s || '').replace(/\\s+/g, ' ').trim();
+  const anchor = document.querySelector('[data-ask-ai]');
+  const float = anchor ? anchor.querySelector('.float') : null;
+  return { open: !!float, anchorState: anchor ? anchor.getAttribute('data-ask-ai') : null,
+    head: float && float.querySelector('.ask-ai-head') ? flat(float.querySelector('.ask-ai-head').textContent) : null,
+    text: float ? flat(float.innerText) : null,
+    checked: float ? [...float.querySelectorAll('[role="radio"]')].map(r => r.getAttribute('aria-checked')) : [] };
+})()`
+reportDoc = 'finding'
+deck = 'connected'; await visit()
+await value('(() => { window.__opened = []; window.open = (href) => { window.__opened.push(href); return null; }; return true })()')
+const findingPressed = await pressInFrame(40)
+const fromFinding = await value(PANEL)
+await capture('ask-ai-from-finding')
+const findingAsks = []
+for (const i of QUESTIONS.keys()) {
+  if (i > 0) { await pressInFrame(40) }
+  findingAsks.push(await value(ASK(i)))
+}
+// The header's own button afterwards is about the whole report again.
+const headerAfter = await value(`(async () => { document.querySelector('[data-ask-ai] > button').click(); await new Promise(r => setTimeout(r, 250)); return ${PANEL} })()`)
+await value(`(async () => { document.querySelector('[data-ask-ai] > button').click(); await new Promise(r => setTimeout(r, 200)); return true })()`)
+await pressInFrame(140)
+const fromUnnumbered = await value(PANEL)
+deck = 'neverBefore'; await visit()
+await pressInFrame(40)
+const findingNotConnected = await value(PANEL)
+reportDoc = 'stub'
+
 deck = 'cannotTell';   await visit(); const unknown = await value(PROBE)
 deck = 'noConnector';  await visit(); const none = await value(PROBE)
 deck = 'localOnly';    await visit(); const local = await value(PROBE)
@@ -525,6 +589,28 @@ ok(none.drawn === false, `no connector: a button was drawn that can do nothing �
 // ── a laptop install: a local route IS a connector ──
 ok(local.drawn && local.opened, `local only: the case the old panel stranded is stranded again — ${show(local)}`)
 ok(local.anchorState === 'ask' && local.radios.length === 4, `local only: ${show(local.anchorState)} with ${local.radios.length} question(s)`)
+
+// ── a finding's own button: the press reaches the control, and the finding is named ──
+const FINDING_REPORT = `finding 3 of ${REPORT}`
+ok(findingPressed, 'a finding: the report frame was not on the page to press inside')
+ok(fromFinding && fromFinding.open && fromFinding.anchorState === 'ask',
+  `a finding: pressing "Ask AI about this finding" inside the report opened nothing — ${show(fromFinding)}`)
+ok(fromFinding && fromFinding.head === `${MARK} · finding 3 · ${PRODUCT_NAME} · searched ${ISO_DATE}`,
+  `a finding: the panel's first line reads ${show(fromFinding?.head)}, not the finding named beside the mark`)
+ok(show(fromFinding?.checked) === show(['true', 'false', 'false', 'false']), `a finding: the first question is not the one selected — ${show(fromFinding)}`)
+const FINDING_TYPED = [`Brief me on ${FINDING_REPORT}.`, `Explain the main risks in ${FINDING_REPORT}.`,
+  `What needs further investigation in ${FINDING_REPORT}?`, `How would narrower goods change the assessment in ${FINDING_REPORT}?`]
+for (const [i, press] of findingAsks.entries()) {
+  const href = press?.opened?.[press.opened.length - 1] ?? ''
+  const typed = (() => { try { return new URL(href).searchParams.get('q') } catch { return null } })()
+  ok(typed === FINDING_TYPED[i], `a finding, question ${i + 1}: the assistant opens with ${show(typed)}, not ${show(FINDING_TYPED[i])}`)
+}
+ok(headerAfter && headerAfter.open && headerAfter.head === `${MARK} · ${PRODUCT_NAME} · searched ${ISO_DATE}`,
+  `after a finding, the header's own Ask AI still names the finding rather than the report — ${show(headerAfter)}`)
+ok(fromUnnumbered && fromUnnumbered.open && fromUnnumbered.head === `${MARK} · ${PRODUCT_NAME} · searched ${ISO_DATE}`,
+  `a card with no number: its button opened nothing, or named a finding it does not have — ${show(fromUnnumbered)}`)
+ok(findingNotConnected && findingNotConnected.open && findingNotConnected.anchorState === 'connect' && /Connect your AI first/.test(findingNotConnected.text ?? ''),
+  `a finding, not connected: the press did not open the unchanged connect panel — ${show(findingNotConnected)}`)
 
 // ── NO ADDRESS AND NO COPY LINK, in any state that draws ──
 for (const [name, r] of [['connected', connected], ['never connected', never], ['could not tell', unknown], ['local only', local]]) {

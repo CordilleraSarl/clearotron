@@ -32,8 +32,9 @@ test('a screen reached from a row still resolves, even though the sidebar never 
   // it. Admin is no longer here at all — it moved to the avatar menu, where it belongs to the person
   // rather than to either scope.
   //
-  // CONNECT YOUR AI SITS LAST, below the line, on the owner's ruling of 2026-09-17 — and its `scope` is
-  // still 'account', because the two are different questions. See the rail arm below.
+  // CONNECT YOUR AI SITS LAST, pinned to the bottom of the rail, on the owner's rulings of 2026-09-17 and
+  // 2026-09-18 — and its `scope` is still 'account', because the two are different questions. See the
+  // rail arm below.
   //
   // CLEARANCES SITS BELOW THE LINE. It always filtered its rows by the switcher's value; it merely sat
   // above the line while doing so, which is the disagreement this order corrects.
@@ -56,7 +57,10 @@ test('THE LINE: every sidebar entry declares which side of the switcher it is on
   }
   const g = navGroupsFor(RUNNER)
   assert.deepEqual(g.account.map((e) => e.id), ['home'], 'reviewed across everything')
-  assert.deepEqual(g.owner.map((e) => e.id), ['new', 'clearances', 'brand', 'ai'], 'one company at a time')
+  assert.deepEqual(g.owner.map((e) => e.id), ['new', 'clearances', 'brand'], 'one company at a time')
+  // PINNED TO THE BOTTOM, not last in the list (owner, 2026-09-18). Last in the list drew it straight
+  // under Company settings on a tall screen, with the rail's whole empty height below it.
+  assert.deepEqual(g.foot.map((e) => e.id), ['ai'], 'Connect your AI is pinned to the bottom of the rail')
 
   // ── SIDE AND SCOPE ARE TWO QUESTIONS, AND THIS IS THE ITEM THAT PROVES IT ────────────────────────
   //
@@ -69,7 +73,7 @@ test('THE LINE: every sidebar entry declares which side of the switcher it is on
   assert.equal(NAV.find((e) => e.id === 'ai')?.scope, 'account',
     'Connect your AI was moved below the line by changing its scope, which puts a company name in the top bar over it')
   assert.equal(scopeOf('ai'), 'account')
-  assert.equal(g.owner.at(-1)?.id, 'ai', 'and it is LAST below the line, not merely somewhere below it')
+  assert.equal(NAV.find((e) => e.id === 'ai')?.rail, 'foot', 'and it is pinned by its rail field, not by its scope')
   // A CHILD IS WHAT YOU STAND ON, and the top bar names the scope of the screen you are on — so each
   // company page declares the side it sits on too, rather than leaning on its parent's.
   for (const c of g.owner.find((e) => e.id === 'brand')?.children ?? []) {
@@ -83,8 +87,10 @@ test('THE LINE: every sidebar entry declares which side of the switcher it is on
   assert.deepEqual(navGroupsFor(MANAGER).account.map((e) => e.id), g.account.map((e) => e.id), 'a manager has the same rail above the line')
   assert.deepEqual(navGroupsFor(MANAGER).owner.map((e) => e.id), g.owner.map((e) => e.id))
   assert.deepEqual(navGroupsFor(READER).account.map((e) => e.id), ['home'])
-  assert.deepEqual(navGroupsFor(READER).owner.map((e) => e.id), ['clearances', 'brand', 'ai'],
+  assert.deepEqual(navGroupsFor(READER).owner.map((e) => e.id), ['clearances', 'brand'],
     'no New clearance for a person who cannot start one')
+  assert.deepEqual(navGroupsFor(MANAGER).foot.map((e) => e.id), ['ai'])
+  assert.deepEqual(navGroupsFor(READER).foot.map((e) => e.id), ['ai'])
 })
 
 test('a manage-only path is indistinguishable, to someone without Manage, from a made-up one', () => {
