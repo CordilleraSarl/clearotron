@@ -51,7 +51,7 @@ import { PRODUCTS } from "../products.mjs";
 import { RECORDING_STAGES } from "../engine/mcp/gather-config.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
-const POSITIONS = JSON.parse(readFileSync(join(DRIVER, "lane-transport-positions.json"), "utf8"));
+const POSITIONS = JSON.parse(readFileSync(join(DRIVER, "return-path-coverage.json"), "utf8"));
 
 /**
  * Lane -> its stage table. The one hand-written line in this file, and it is the thing a new lane must
@@ -112,7 +112,7 @@ export function positionFindings({ lane, covered, row, lanes }) {
   const out = [];
   if (row && lanes && !lanes.has(row.lane))
     out.push({ kind: "row-names-no-lane", lane: row.lane,
-      detail: `lane-transport-positions.json declares '${row.lane}', which is not a lane any product runs on. `
+      detail: `return-path-coverage.json declares '${row.lane}', which is not a lane any product runs on. `
         + "The coverage walk looks lanes UP in this list, so a row for a non-existent lane is never visited "
         + "and its reason is never checked — it reads as a position held when nothing holds it." });
 

@@ -9,7 +9,7 @@
     "agent-trailer",
     "machine-trailer"
   ],
-  "total": 23,
+  "total": 16,
   "files": {
     "bin/onboard.mjs": [
       0,
@@ -26,16 +26,6 @@
       0,
       0,
       1,
-      0,
-      0,
-      0,
-      0
-    ],
-    "driver/test/README.md": [
-      0,
-      0,
-      1,
-      0,
       0,
       0,
       0,
@@ -58,26 +48,6 @@
       1,
       0,
       0,
-      0,
-      0
-    ],
-    "driver/test/a-reasoned-skip-is-neither-a-pass-nor-a-loss.test.mjs": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0
-    ],
-    "driver/test/a-verb-is-a-module-until-it-is-the-command.test.mjs": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
       0,
       0
     ],
@@ -111,16 +81,6 @@
       0,
       0
     ],
-    "driver/test/repair-composer-registry.test.mjs": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0
-    ],
     "driver/test/the-citation-strip-removes-openers-and-nothing-else.test.mjs": [
       0,
       2,
@@ -131,26 +91,6 @@
       0,
       0
     ],
-    "mcp-server/test/ops-token.test.mjs": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0
-    ],
-    "mcp-server/test/scope.test.mjs": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0
-    ],
     "scripts/strip-tracker-citations.mjs": [
       0,
       5,
@@ -158,16 +98,6 @@
       0,
       0,
       0,
-      0,
-      0
-    ],
-    "shared/suite-census.mjs": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
       0,
       0
     ]

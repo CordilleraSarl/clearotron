@@ -99,7 +99,7 @@ test("withheld is separated from lost — the whole reason this exists", () => {
 });
 
 test("a proprietor's own record with a leading element is withheld, not 'never retrieved'", () => {
-  // THE SHAPE IS REAL, THE NAMES ARE NOT. Observed on the 2026-08-12 R2 round: a gold entry whose
+  // THE SHAPE IS REAL, THE NAMES ARE NOT. Observed on a 2026-08-12 test run: a gold entry whose
   // proprietor's record sat in the run's own `register-named-band.json` under a mark text carrying a
   // leading initialism scored `lost` — "never retrieved" — about a record the run demonstrably held.
   // The found and noise loops both pass `sameOwner`; the withheld lookup did not, and that asymmetry
@@ -790,7 +790,7 @@ test("the scorer is versioned again, and the CLI prints the statements", () => {
 // ── — THE OWNER DECIDES WHICH RECORD IS CITED, NEVER BAND ORDER ──────────────────
 //
 // THE SHAPE IS REAL, THE NAMES ARE NOT — the same convention this file already uses. Measured on
-// the 2026-08-27 R2 round against R2's gold: of eight entries, five matched more than one band record
+// a 2026-08-27 test run against its lawyer reference: of eight entries, five matched more than one band record
 // and three cited a different proprietor's record. For two of those three the RIGHT record was already
 // in the match set and was passed over on position alone.
 //

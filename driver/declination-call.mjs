@@ -4,7 +4,7 @@
 //
 // ── THE DEFECT THIS CLOSES (and the half of the same seam) ────────────────────────────────
 //
-// `record-carry.json` on R2 round `e48f7056` read `unreasoned: 0` and was telling the truth in the weak
+// `record-carry.json` on a full clearance test run read `unreasoned: 0` and was telling the truth in the weak
 // sense only: every drop had a LABEL, and on 102 of them the label was inferred from where the record
 // stopped rather than stated by the step that stopped it. One of those 102 was DELPHIC — a lawyer-named
 // gold mark, REGISTERED, placed on sheet-2, stamped `carry: "carried"`, carried onto the findings

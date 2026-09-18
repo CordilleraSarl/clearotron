@@ -102,7 +102,7 @@ test("revocation: a jti on the denylist is refused; others pass; comments are in
   // completed a full handshake with nothing logged. The inert-missing-file rule is what made the hole
   // invisible rather than loud.
   //
-  // Overwatch ruling (recorded on 1889 for the owner's review, reversal path is isRevoked alone): fail
+  // Decided, and reversible in `isRevoked` alone: fail
   // CLOSED. `start` now creates the list before any door starts, so reaching the unreadable branch means
   // an operator removed it under a running door — rare, and its cost is now a visible outage that names
   // its own cause instead of a silent security hole.
