@@ -106,10 +106,14 @@ let longTitle = false
 let fullList = false
 let rosterMode = 'ok'
 let withGeneric = false
-const FULL_MARKS = ['MERIDIAN THISTLE', 'PROJECT CHROMA', 'VIBRANTE FROSTPLUM', 'NORTHWIND', 'CORAL FREEZE', 'AQUAPLUS',
-  'ASTERION', 'TIDEGLASS', 'BRIMSTONE', 'VENQORI', 'IRONWHISK', 'SIM PRAXIS', 'EMBER FORGE', 'VANTOR LABS', 'HALDEN OUTDOOR',
-  'GLACIER MINT', 'SOLSTICE BAY', 'KESTREL WORKS', 'OBSIDIAN LOOP', 'MARBLE ORCHARD', 'LUMEN CRAFT', 'PELICAN NORTH',
-  'SAFFRON VALE', 'ZEPHYR BEVERAGES', 'QUARTZ HOLLOW']
+// INVENTED, EVERY ONE, and coined rather than borrowed. This list first held names taken from runs, one of
+// them a delivered client's; a fixture that proves a layout needs the LENGTHS of real names, never the
+// names. Each slot keeps the length and the one-or-two-word shape of the name it replaces, which is what
+// the fit and mid-word measures below read.
+const FULL_MARKS = ['QUELVARIN TOSSEK', 'MIRTAVO KELDRA', 'VOSSERIN PALDOCHEX', 'TREVASKUL', 'OMBRELI VASK', 'ZELVORAN',
+  'KORVITHE', 'SALMERQUE', 'DUNBRAVEL', 'PLOVENK', 'ASKERWYNE', 'TOL MAVERS', 'ZINDRA POLM', 'KALVEN MOSS', 'BREVANO TISSEL',
+  'FENWALD URIX', 'MORVELLA QIN', 'TASKOVER BLYN', 'ULDERON PASKE', 'GRAVELTON OSKE', 'VEXLI CORVA', 'PANDREL WISKO',
+  'SORVANE TILK', 'ZELMORA DRAVIKEN', 'QUANDERY VELT']
 const FULL_BANDS = [['No rated conflicts', 'minimal'], ['Manageable', 'low'], ['Clear to file', 'minimal'], ['Medium', 'medium'], ['Severe', 'severe']]
 const FULL_RUNS = () => FULL_MARKS.map((m, i) => run({
   runId: `full-${i}`, account: i % 2 ? KEY2 : KEY, markName: m, title: m, date: `2026-09-${String(18 - (i % 17)).padStart(2, '0')}`,
