@@ -14,7 +14,7 @@ import { spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { scanCorpus, firesOn } from "../../shared/identifier-scan.mjs";
+import { scanCorpus, firesOn, PINNED_DICTIONARIES } from "../../shared/identifier-scan.mjs";
 import { SENTINELS, SUFFIXABLE, SENTINEL_MODE_MARKER, TABLE_MODE_MARKER } from "../../shared/identifier-sentinels.mjs";
 import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
 
@@ -163,4 +163,23 @@ test("the workflow refuses a table-mode line, and passes a sentinel-only run", (
   };
   assert.equal(drive(""), 0, "a run that swept on sentinels only was refused");
   assert.equal(drive(`${TABLE_MODE_MARKER}: 12 sentinel + 40 roster name(s)`), 1, "a run that read the private roster passed");
+});
+
+// ── A PINNED DICTIONARY IS EXEMPT ONLY AS THE BYTES THAT WERE VETTED ──────────────────────────────
+//
+// The roster retires ordinary words and a dictionary holds every ordinary word, so the published word
+// list is exempt, pinned to its hash. The entry here is invented and is a dictionary word by
+// construction; the real roster never appears in this repository. Three drives, because the exemption
+// that matters is the one that stops applying: a line added to the list, and the same bytes at another
+// path, are both swept in full.
+test("the pinned word list is exempt as vetted, and swept in full once a line changes or it moves", () => {
+  const [path] = Object.keys(PINNED_DICTIONARIES);
+  const words = readFileSync(join(ROOT, path), "utf8");
+  assert.match(words, /^orchard$/m, "the invented entry must be a word in the list, or this arm proves nothing");
+  const invented = { retired: [["orchard", "grove"]], suffixable: new Set() };
+  const sweep = (file, text) => scanCorpus([file], () => text, invented);
+  assert.deepEqual(sweep(path, words), [], "the vetted list was swept as though it were anything else");
+  const edited = `${words}orchard\n`;
+  assert.ok(sweep(path, edited).length >= 1, "an edited list stayed exempt, so a name added to it would pass unseen");
+  assert.ok(sweep("driver/wordlists/elsewhere.txt", words).length >= 1, "the exemption followed the bytes to a path it does not name");
 });
