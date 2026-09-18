@@ -346,7 +346,7 @@ export const config = {
   },
   // Every agent workspace's clearotron queue. The systemd `.path` watches these and the runner drains ALL of
   // them on each trigger (+ a timer fallback), so a request from ANY forwarder runs. (Pre-fix the watcher
-  // and runner only looked at workspace-clawdi, silently orphaning every Alex/Sam job — the bug this fixes.)
+  // and runner only looked at one agent's workspace, silently orphaning every other agent's job — the bug this fixes.)
   //
   // HEADLESS (Phase 2, standalone product): CLEAROTRON_QUEUE_DIR names ONE explicit queue dir — the intake
   // contract for a deployment with no agent workspaces at all (the enqueue CLI + ops-MCP start_run write
