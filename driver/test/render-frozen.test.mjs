@@ -1784,7 +1784,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // branch in one file, and the provenance line re-homed to the footer. Not licence-only, so this moves too.
 // Advanced again by the break recorded above the FROZEN constant: the export menu moved out to its own
 // module. Not licence-only, so this constant moves with it.
-const FROZEN_BEFORE_SPDX = "6752b57b69765adb9c889a255cab76429492d60bfcc989cce4dc4baaee20cfc9";
+const FROZEN_BEFORE_SPDX = "69144d7aaacb30b279c439fabb5cc86e9d081b023b3b265134b5dd09e4bb39f0";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2516,11 +2516,14 @@ const FROZEN_BEFORE_SPDX = "6752b57b69765adb9c889a255cab76429492d60bfcc989cce4dc
 //
 // THE THREE QUESTIONS.
 //   1. Reachable from republish? Yes — a republish re-renders the document; no new data, no re-run.
-//   2. Could it live in report.css or brand.mjs? The STYLING does and went there — the strip's rules and
-//      the hidden number are in report.css, lifted from the board verbatim. The markup could not: CSS
-//      cannot add a `<nav>`, an `id` an anchor resolves to, or an `<h2>` outside a `<details>`.
+//   2. Could it live in report.css or brand.mjs? Both, and both went there. The STYLING is in report.css,
+//      lifted from the board verbatim. The RULE that filters the strip against the finished document is
+//      in brand.mjs, because the knockout renderer draws a strip from its own four-entry board and the
+//      filtering is the half worth having once — what stays here is this board's five entries, in its
+//      order. The markup could not move: CSS cannot add a `<nav>`, an `id` an anchor resolves to, or an
+//      `<h2>` outside a `<details>`.
 //   3. Why it had to move here: these elements are composed in this file and nowhere else.
-const FROZEN = "831f3c66bfe68aee551fcc0f9f856e28f7e3334064801b0b20929fb575eb9754";
+const FROZEN = "11889fcfda04862862465342bca9b5fe4432cef6bd005dd60a95e4f82f7e1691";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));
