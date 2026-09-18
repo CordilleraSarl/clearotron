@@ -316,6 +316,9 @@ const tools = {
       // Staff-only tool (TOOL_SCOPES), so the reason may name the file: no client door sees this reply.
       ...(storeError ? { storeUnreadable: `The company store could not be re-read (${storeError}). This is the list as `
         + "last read, so a company added or changed since may be missing until that file is fixed." } : {}),
+      // A company whose own file would not load is left off `clients` and named here with the reason, so a
+      // missing company reads as a fault to fix rather than as a company that does not exist.
+      ...(roster?.unreadable?.length ? { unreadable: roster.unreadable.map((u) => ({ key: u.key, reason: u.reason })) } : {}),
     };
   },
   async describe_options(args, extra) {

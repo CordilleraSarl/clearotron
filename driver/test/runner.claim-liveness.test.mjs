@@ -98,7 +98,7 @@ const job = (ref, mark) => ({
   id: `live-${ref}`, msgId: `<live-${ref}@x>`, forwarder: "jordan", forwarderDomain: "example.com",
   ref, markName: mark, classes: [9], provider: "corsearch",
 });
-const queueFor = (root) => join(root, "workspace-clawdi", "studio", "prelim-search", "queue");
+const queueFor = (root) => join(root, "workspace-clawdi", "studio", "clearance-search", "queue");
 function envFor(root, extra = {}) {
   return {
     ...process.env,

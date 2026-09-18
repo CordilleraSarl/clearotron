@@ -41,7 +41,7 @@ const DIRECTIVES = [
 ];
 const COLLAPSED = "invalid_file:run/register-units/primary-sweep.md:named_band_collapsed:exact HALCYON~412";
 const BAD_STATE = "invalid_file:run/register-units/primary-sweep.md:named_band_state_invalid:verified (one of: enumerated, incomplete)";
-const UNIT_FILE = "/x/prelim-search/run/register-units/primary-sweep.md";
+const UNIT_FILE = "/x/clearance-search/run/register-units/primary-sweep.md";
 
 // Every lane prompt must (a) name the replacement tool and (b) say the absence is deliberate — the two
 // halves of "enforcement needs matching invitation control". Neither may order the removed tool, and

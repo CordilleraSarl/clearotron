@@ -743,7 +743,24 @@ export function excludeHouseElement(manifest, house) {
   return { manifest: next, confirmation, refused: null };
 }
 
-export function compileRegisterPlan({ manifest, job, form = null, skillVersion = "", capabilities = null, unavailableOffices = [] }) {
+export function compileRegisterPlan({ manifest, job, form = null, skillVersion = "", capabilities = null, unavailableOffices = [], houseElement = null }) {
+  // ── AN EXCLUDED ELEMENT'S FORM BAND MUST BE UNREACHABLE, NOT MERELY UNASKED-FOR ─────────────────
+  //
+  // THE DEFECT THIS CLOSES, found by following the seam rather than by a failing arm. `bandFor` falls
+  // back to `elements[0]` when it cannot find the element it was asked for. The house-element exclusion
+  // changes `dominant_element` to the remainder's dominant word — a word the form neighbourhood, derived
+  // earlier from the original manifest, may carry no band for. The lookup would then MISS and the
+  // fallback would hand back the first element's band, which is the house element's: the exclusion would
+  // appear to work, `dominant_element` would read correctly on the plan, and the one-letter mutation
+  // floor of the very element being excluded would compile anyway. Silently, and it is the whole flood.
+  //
+  // So the element is removed from the form document here, where every `bandFor` call in this compile
+  // reads it. Unreachable beats un-asked-for: a fallback cannot select what is not there.
+  if (houseElement && form?.elements) {
+    const lcHouse = String(houseElement).trim().toLowerCase();
+    const kept = form.elements.filter((e) => String(e?.element ?? "").trim().toLowerCase() !== lcHouse);
+    form = { ...form, elements: kept };
+  }
   const classes = (job?.classes ?? []).map(String).filter(Boolean);
   if (!classes.length) throw new Error("register_plan_classes_missing: a plan is always class-scoped — compile with the matter's in-scope Nice classes");
   const caps = capabilities ?? null;
@@ -962,7 +979,7 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   // visible from the definition rather than inferred from an absence.
   const STRIPPED_CATEGORIES = new Set(["phonetic", "transliteration", "visual"]);
   // — THE DOCTRINE'S OWN DISPATCH TABLE, NOW BINDABLE. The universal-categories table
-  // (prelim-variants SKILL.md) states the mode per tag: `exact-element` sweeps default, `plural-root`
+  // (clearance-variants SKILL.md) states the mode per tag: `exact-element` sweeps default, `plural-root`
   // is a root (the contains match is its whole purpose), and `formative-family` is "never exact-only".
   // Until the enum accepted these tags the mandate bound to nothing — measured: three root-shaped
   // strings dispatched exact, 4/2/4 records, the family they exist to reach retrieved zero times.

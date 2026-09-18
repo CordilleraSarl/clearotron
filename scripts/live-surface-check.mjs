@@ -103,7 +103,9 @@ import { readDrainerStamp, drainerVerdict, defaultPpidOf } from "../driver/drain
 import { readUpdaterStamp, updaterVerdict, resolveUpdaterStampPath, updaterAbsentHere, UPDATER_STAMP_BASENAME } from "../driver/updater-identity.mjs";   // — the mechanism that PLACES commits
 import { claimerIsAlive } from "../driver/claim-liveness.mjs";                       // the shared liveness test, same polarity as the queue's
 import { processTable } from "../shared/process-table.mjs";                          // — /proc is not the only box
-import { envFrom } from "../shared/env-aliases.mjs";   // — the name a reader is told to set is the one in force
+import { envFrom } from "../shared/env-aliases.mjs";
+import { gitTry, treeOf } from "../shared/tree-commit.mjs";   // — a packaged install has no git, and says its commit in build-info.json
+import { exitFor } from "../driver/surface-exit-verdict.mjs";   // — a could-not-look is not a drift, and they want different things done   // — the name a reader is told to set is the one in force
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const asJson = process.argv.includes("--json");
@@ -128,12 +130,44 @@ if (!POOL_ROOT) {
 // fell through to a hardcoded default while the pool root correctly pointed at test. A cross-instance
 // probe that reports "ok" is worse than no probe at all.
 const at = (host, port) => `http://${host || "127.0.0.1"}:${port}`;
-const MCP_URL = process.env.TRADEMARK_MCP_URL
-  || (process.env.TRADEMARK_MCP_HTTP_PORT ? at(process.env.TRADEMARK_MCP_HTTP_HOST, process.env.TRADEMARK_MCP_HTTP_PORT) : "http://127.0.0.1:18792");
-const PORTAL_URL = process.env.PORTAL_URL
-  || (process.env.PORTAL_SERVICE_PORT ? at(process.env.PORTAL_SERVICE_HOST, process.env.PORTAL_SERVICE_PORT) : "http://127.0.0.1:18802");
-const CLIENT_MCP_URL = process.env.CLIENT_MCP_URL
-  || (process.env.CLIENT_MCP_HTTP_PORT ? at(process.env.CLIENT_MCP_HTTP_HOST, process.env.CLIENT_MCP_HTTP_PORT) : "http://127.0.0.1:18811");
+
+// AND THE THREE DOORS BELOW USED TO CONTRADICT THAT PARAGRAPH. Each fell back to a literal — 18792,
+// 18802, 18811 — and all three of those are PRODUCTION's ports. So the note above described the defect
+// rather than the behaviour: an instance that does not name its own ports was checked against
+// production's doors and told the result was its own. The reports directory two blocks up had already
+// been given the cure, for the identical reason, and the doors were left behind.
+//
+// The failure is worst where it looks best. On a box with nothing on those ports the arms fail with
+// ECONNREFUSED, which is loud and gets read. On a box that HAS something listening there — this one
+// runs several instances — the probe succeeds and the check reports another instance's health as this
+// instance's, in a PASS. A cross-instance probe that reports "ok" is worse than no probe at all.
+//
+// So: no literal, and unset refuses by name rather than guessing. Every missing variable is named in
+// one refusal, because a reader fixing these one exit code at a time runs the check four times.
+const doorUrl = (explicit, portName, hostName) => {
+  const direct = (process.env[explicit] ?? "").trim();
+  if (direct) return { url: direct, missing: null };
+  const port = (process.env[portName] ?? "").trim();
+  if (port) return { url: at(process.env[hostName], port), missing: null };
+  return { url: null, missing: `${explicit} or ${portName}` };
+};
+
+const DOORS = {
+  "ops-MCP": doorUrl("TRADEMARK_MCP_URL", "TRADEMARK_MCP_HTTP_PORT", "TRADEMARK_MCP_HTTP_HOST"),
+  portal: doorUrl("PORTAL_URL", "PORTAL_SERVICE_PORT", "PORTAL_SERVICE_HOST"),
+  "client door": doorUrl("CLIENT_MCP_URL", "CLIENT_MCP_HTTP_PORT", "CLIENT_MCP_HTTP_HOST"),
+};
+
+// An unconfigured door is NOT PROBED and says so by name. It is deliberately NOT a refusal: this check
+// is driven against boxes that legitimately do not run every door, and an arrival check that aborts
+// because one door is unnamed reports nothing about the seven surfaces it could have read. The
+// `trigger lane reachable` arm below has answered exactly this way since it was written — an unset
+// origin is skipped, never passed and never failed — and this is that rule applied to the other three.
+const DOORS_UNSET = Object.entries(DOORS).filter(([, d]) => d.missing);
+
+const MCP_URL = DOORS["ops-MCP"].url;
+const PORTAL_URL = DOORS.portal.url;
+const CLIENT_MCP_URL = DOORS["client door"].url;
 
 // The bundled demo roster, as `list_profiles` REPORTS it. A door that resolves exactly this set is a
 // door with no CLEAROTRON_CUSTOMERS_DIR — #83. Compared as a set, not a count: a deployment may legitimately
@@ -158,10 +192,36 @@ const OPS_TOKEN = (() => {
 })();
 
 const results = [];
-const record = (name, state, detail) => { results.push({ name, state, detail }); return state === "pass"; };
+const record = (name, state, detail, blocked = false) => { results.push({ name, state, detail, blocked }); return state === "pass"; };
 const pass = (n, d) => record(n, "pass", d);
 const fail = (n, d) => record(n, "fail", d);
 const skip = (n, d) => record(n, "skip", d);   // could not be reached — never counted as a pass
+
+/**
+ * COULD NOT LOOK — a skip, and one that moves the exit code.
+ *
+ * Two arms used to call `fail` while their own message said "This is a failure to look, never a pass".
+ * The text was honest and the verdict was not: FAIL is what a genuine drift also produces, so a reader
+ * could not tell "this box has drifted" from "I was unable to look" without reading to the end of the
+ * message. A drift is fixed by redeploying; a could-not-look is fixed by pointing the check at something
+ * it can read. Until somebody does, nothing is known either way.
+ *
+ * IT IS NOT THE SAME AS AN ORDINARY SKIP, which is why this exists rather than reusing `skip`. Several
+ * surfaces are deliberately not probed — the client door answers behind an access proxy, and a door this
+ * instance does not name has no address to dial. Those are by design and are the resting state of a
+ * healthy box. If every skip moved the exit code, the new code would fire on every good run and be
+ * ignored inside a week, which is the failure this whole issue is about repeated one level up.
+ */
+const blocked = (n, d) => record(n, "skip", d, true);
+
+// Named here rather than where the URLs are resolved, because `skip` does not exist yet up there. Each
+// unconfigured door is on the report as its own line, so a reader sees WHICH surface went unread instead
+// of inferring it from arms that are quietly missing.
+for (const [name, d] of DOORS_UNSET) {
+  skip(`${name} configured`, `neither ${d.missing} is set, so this instance does not say where its ${name} is `
+    + "— NOT PROBED. It used to fall through to production's port and report that door's answer as this "
+    + "instance's own.");
+}
 
 // ── helpers ──────────────────────────────────────────────────────────────────────────────────────────
 
@@ -196,13 +256,8 @@ function tcpAlive(url, timeoutMs = 3000) {
 // just written explaining itself, leaving `null` to mean "no clone here" and "could not ask" equally.
 //
 // `gitTry` keeps the reason; `git` stays exactly as it was for the callers that only want the value.
-const gitTry = (repo, ...args) => {
-  try {
-    return { ok: true, out: execFileSync("git", ["-C", repo, ...args], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }).trim(), err: null };
-  } catch (e) {
-    return { ok: false, out: null, err: String(e?.stderr || e?.message || e).replace(/\s+/g, " ").trim().slice(0, 120) };
-  }
-};
+// It now lives in shared/tree-commit.mjs beside `treeOf`, which asks it first and falls back to a
+// packaged install's build-info.json.
 const git = (repo, ...args) => gitTry(repo, ...args).out;
 
 // — `systemctl --user` NEEDS A USER BUS, and a caller without one gets an error, not an empty list.
@@ -260,7 +315,7 @@ function declaredTimers() {
 function serviceClones() {
   // — the list is DECLARED, not written here. It used to be eight names inline, which put a unit
   // inside the drift guarantee or outside it by omission: `client-access` was live on production and in
-  // no list at all, and `prelim-outbox` was tracked, live on production, and equally invisible. Both are
+  // no list at all, and `clearance-outbox` was tracked, live on production, and equally invisible. Both are
   // in the inventory now, and so is the reason each untracked unit is untracked.
   const units = [...CHECKED_UNITS];
   const env = userBusEnv();
@@ -307,9 +362,9 @@ function serviceClones() {
       const parsed = unitWorkingDirectory(wd);
       if (!parsed.path) declaredWhy = parsed.why;
       else {
-        const top = gitTry(parsed.path, "rev-parse", "--show-toplevel");
-        if (top.ok) declaredTree = top.out;
-        else declaredWhy = `git could not read ${parsed.path}: ${top.err}`;
+        const t = treeOf(parsed.path);
+        if (t.root) declaredTree = t.root;
+        else declaredWhy = t.why;
       }
     }
 
@@ -338,9 +393,9 @@ function serviceClones() {
             const { tree, why } = treeOfRunning(cmdline, rel);
             if (!tree) runningWhy = why;
             else {
-              const top = gitTry(tree, "rev-parse", "--show-toplevel");
-              if (top.ok) runningTree = top.out;
-              else runningWhy = `git could not read ${tree}, which pid ${pid} is running from: ${top.err}`;
+              const t = treeOf(tree);
+              if (t.root) runningTree = t.root;
+              else runningWhy = `pid ${pid} is running from ${tree}, and ${t.why}`;
             }
           }
         }
@@ -357,11 +412,11 @@ function serviceClones() {
         unreadable: idle ? null : chosen.why });
       continue;
     }
-    const head = gitTry(chosen.clone, "rev-parse", "HEAD");
+    const head = treeOf(chosen.clone);
     out.push({ unit: u, active, load, type, since, clone: chosen.clone, source: chosen.source,
       disagreement: chosen.disagreement,
-      head: head.ok ? head.out : null,
-      unreadable: head.ok ? null : `git could not read HEAD in ${chosen.clone}: ${head.err}` });
+      head: head.head,
+      unreadable: head.head ? null : head.why });
   }
   const probe = reached > 0
     ? { ok: true, why: null }
@@ -487,6 +542,7 @@ else skip("register wired", "the snapshot carries no register block");
 //     it from what the door itself resolved is what keeps a customer key out of this source file.
 let probeProfileKey = null;
 try {
+  if (!MCP_URL) throw new Error("__door_unset__");
   const listed = await mcpToolCall({ url: MCP_URL, token: OPS_TOKEN, tool: "list_profiles", args: {}, timeoutMs: 15000 });
   const keys = (Array.isArray(listed?.clients) ? listed.clients : []).map((p) => p.key ?? p.profileKey).filter(Boolean).sort();
   probeProfileKey = keys[0] ?? null;
@@ -547,7 +603,8 @@ try {
     }
   }
 } catch (e) {
-  fail("roster resolves", `list_profiles failed: ${e.message}`);
+  if (e?.message === "__door_unset__") skip("roster resolves", "this instance does not say where its ops-MCP is, so the roster was NOT PROBED");
+  else fail("roster resolves", `list_profiles failed: ${e.message}`);
 }
 
 // 3. THE LOAD-BEARING CHECK — every door's availability answer vs the engine's own, recomputed here
@@ -555,6 +612,7 @@ try {
 //    from its own process environment instead of from this file.
 let mcpOptions = null;
 try {
+  if (!MCP_URL) throw new Error("__door_unset__");
   mcpOptions = await mcpToolCall({ url: MCP_URL, token: OPS_TOKEN, tool: "describe_options", args: {}, timeoutMs: 20000 });
   pass("ops-MCP reachable", `${MCP_URL} answered describe_options`);
   // ── — REACHABLE IS NOT THE SAME AS DELIBERATE ─────────────────────────────
@@ -584,7 +642,8 @@ try {
     record("the ops door's auth mode was chosen for it", posture.state, posture.message);
   }
 } catch (e) {
-  fail("ops-MCP reachable", `${MCP_URL}: ${e.message}`);
+  if (e?.message === "__door_unset__") skip("ops-MCP reachable", "this instance does not say where its ops-MCP is — NOT PROBED");
+  else fail("ops-MCP reachable", `${MCP_URL}: ${e.message}`);
 }
 
 // ── 3b. THE TRIGGER LANE, AS ITS OWN SURFACE ─────────────────────────────────────────────────────────
@@ -702,15 +761,17 @@ if (mcpOptions) {
 
 // 6. The portal. Only /portal/health is reachable without a Cloudflare Access JWT — everything else is
 //    NOT PROBED, and says so rather than passing by omission.
-const health = await getJson(`${PORTAL_URL}/portal/health`);
-if (health.status !== 200 || !health.json) fail("portal health", `${PORTAL_URL}/portal/health → ${health.status || health.error}`);
+const health = PORTAL_URL ? await getJson(`${PORTAL_URL}/portal/health`) : null;
+if (!PORTAL_URL) skip("portal health", "this instance does not say where its portal is — NOT PROBED");
+else if (health.status !== 200 || !health.json) fail("portal health", `${PORTAL_URL}/portal/health → ${health.status || health.error}`);
 else if (health.json.ui !== "built") fail("portal health", `ui="${health.json.ui}" — the portal is serving a stale or missing bundle (never add --omit=dev to the deploy)`);
 else pass("portal health", `ok=${health.json.ok} ui="${health.json.ui}"`);
 skip("portal gates agree", "every portal route but /portal/health is behind Cloudflare Access — not callable from a script, so NOT probed");
 
 // 7. client-MCP liveness only, for the same reason. Its API-key door's secret is a crown jewel and is
 //    never read, let alone logged, by this script.
-skip("client-MCP", (await tcpAlive(CLIENT_MCP_URL)) ? "listening; behind CF Access so its answers are NOT probed" : `not listening on ${CLIENT_MCP_URL}`);
+skip("client-MCP", !CLIENT_MCP_URL ? "this instance does not say where its client door is — NOT PROBED"
+  : (await tcpAlive(CLIENT_MCP_URL)) ? "listening; behind CF Access so its answers are NOT probed" : `not listening on ${CLIENT_MCP_URL}`);
 
 // 8. Every service on the commit you think it is. This is the straddle check.
 const { clones, probe: unitProbe } = serviceClones();
@@ -733,7 +794,10 @@ const heads = [...new Set(running.map((c) => c.head))];
 // demanded commit agreement from services this deploy must not move, and reddened on every prod deploy
 // for units behaving correctly. The discriminator is the CLONE, which `serviceClones()` has read all
 // along; see `serviceCommitVerdict` for why it is not `tracked`.
-const deployClone = git(HERE, "rev-parse", "--show-toplevel");
+// A PACKAGED INSTALL NAMES ITS OWN COMMIT IN build-info.json, and this script runs from inside one on
+// production and pre-prod. Asking git alone reported both as unreadable on every deploy.
+const deployTree = treeOf(HERE);
+const deployClone = deployTree.root;
 if (!unitProbe.ok)
   skip("services share one commit", `could not enumerate systemd --user units, so the commit was NOT compared — ${unitProbe.why}. This is a failure to look, not a finding about the deployment`);
 // — THE SAME DEFECT ONE BRANCH UP, found reviewing this change rather than in the issue. This
@@ -744,7 +808,7 @@ if (!unitProbe.ok)
 // unreadable disclosure, so the decision belongs there and not in a pre-filter.
 else {
   const ownedClone = running.find((c) => String(c.clone ?? "").replace(/\/+$/, "") === String(deployClone ?? "").replace(/\/+$/, ""));
-  const ahead = ownedClone ? (git(ownedClone.clone, "status", "-sb")?.includes("ahead") ?? false) : false;
+  const ahead = ownedClone && deployTree.source === "git" ? (git(ownedClone.clone, "status", "-sb")?.includes("ahead") ?? false) : false;
   // — ALL the clones, not just the ones with a head. The verdict scopes to owned units itself;
   // passing it the pre-filtered list is what made the units it could not read invisible to the sentence
   // it prints.
@@ -774,9 +838,10 @@ else {
   catch (e) { resolveError = String(e?.message ?? e).slice(0, 160); }
 
   if (!workspaceRoot) {
-    fail("the process that executes runs is on the deployed commit",
+    blocked("the process that executes runs is on the deployed commit",
       `the workspace root could not be resolved (${resolveError ?? "no value"}), so the drainer's stamp could not be found. `
-      + "This is a failure to look, never a pass.");
+      + "This is a failure to look, never a pass — and it is not a drift either: nothing is known about "
+      + "this surface until the check can be pointed at something it can read.");
   } else {
     // `null` from processTable is UNREADABLE, not empty — the verdict distinguishes them, because
     // "no drainer is running" and "I could not see the process table" are the same empty array and only
@@ -785,7 +850,7 @@ else {
     try { processes = processTable(); } catch { processes = null; }
     const v = drainerVerdict({
       stamp: readDrainerStamp(workspaceRoot),
-      headCommit: git(deployClone ?? HERE, "rev-parse", "HEAD"),
+      headCommit: deployTree.head,
       isAlive: claimerIsAlive,
       processes,
       // second criterion — an orphaned drainer in a closed login session is a
@@ -798,7 +863,10 @@ else {
       // to an unprobed posture — a failure to look, never a pass.
       posture: { worker: probeWorker(), timer: probeTimer() },
     });
-    record("the process that executes runs is on the deployed commit", v.state, v.message);
+    // — AND THE VERDICT'S OWN could-not-look MARKER, carried through. The verdict distinguishes a
+    // process table it could not read from one that answered; dropping that here would put the
+    // distinction back where it was, one layer down.
+    record("the process that executes runs is on the deployed commit", v.state, v.message, v.blocked === true);
   }
 }
 
@@ -857,9 +925,10 @@ else {
   }
 
   if (!resolveUpdaterStampPath(deployDir)) {
-    fail("the updater that deploys this box is the current one",
+    blocked("the updater that deploys this box is the current one",
       `where the updater stamps itself could not be resolved (${resolveWhy ?? "no value"}), so `
-      + `${UPDATER_STAMP_BASENAME} was not looked for. This is a failure to look, never a pass.`);
+      + `${UPDATER_STAMP_BASENAME} was not looked for. This is a failure to look, never a pass — and not `
+      + "a drift: redeploying would change nothing, because nothing was compared.");
   } else {
     const v = updaterVerdict({
       stamp: readUpdaterStamp(deployDir),
@@ -951,7 +1020,7 @@ else {
 //
 // The check above compares a unit against its tracked file. It can only do that for units it was told
 // to look at, and the list was eight names written inline — so `client-access` ran on production, in no
-// list, compared against nothing, and reported by nothing. `prelim-outbox` was the mirror: tracked and
+// list, compared against nothing, and reported by nothing. `clearance-outbox` was the mirror: tracked and
 // live on production, and equally absent from the list, so its drift was never checked either.
 //
 // This arm asks the question one level up. It is deliberately NOT the drift comparison: a unit can be
@@ -1054,6 +1123,11 @@ else {
 
 const failed = results.filter((r) => r.state === "fail");
 const skipped = results.filter((r) => r.state === "skip");
+const couldNotLook = results.filter((r) => r.blocked);
+
+// The three answers this check can give, and which outranks which, are in driver/surface-exit-verdict.mjs
+// — extracted for the reason roster-verdict and unit-state-verdict were: this file is a program, and a
+// decision that can only be reached by running it is a decision nobody can drive.
 
 if (asJson) {
   console.log(JSON.stringify({ ok: failed.length === 0, poolRoot: POOL_ROOT, register: wiredRegister, results }, null, 2));
@@ -1061,8 +1135,17 @@ if (asJson) {
   const mark = { pass: "  ok  ", fail: " FAIL ", warn: " warn ", skip: " skip " };
   console.log(`\n== live surface check — ${POOL_ROOT} ==\n`);
   for (const r of results) console.log(`[${mark[r.state]}] ${r.name}\n            ${r.detail}`);
-  console.log(`\n${failed.length === 0 ? "PASS" : `FAIL — ${failed.length} disagreement(s)`}`
+  const headline = failed.length ? `FAIL — ${failed.length} disagreement(s)`
+    : couldNotLook.length ? `COULD NOT LOOK — ${couldNotLook.length} surface(s) unreadable, and none of the rest disagreed`
+    : "PASS";
+  console.log(`\n${headline}`
     + `${skipped.length ? ` · ${skipped.length} surface(s) NOT probed (see above — not probed is not passed)` : ""}\n`);
+  // Named, not left to the exit code alone: whoever reads this on a terminal never sees `$?`.
+  if (couldNotLook.length) {
+    console.log("  could not be read — nothing is known about these either way, and redeploying changes nothing:");
+    for (const r of couldNotLook) console.log(`      ${r.name}`);
+    console.log("");
+  }
 }
 
-process.exit(failed.length === 0 ? 0 : 1);
+process.exit(exitFor({ failed: failed.length, couldNotLook: couldNotLook.length }));

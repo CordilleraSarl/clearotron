@@ -67,6 +67,23 @@
 // the releases page is built from `.changeset/*.md`, and a line in a commit message reaches no reader. A
 // line may instead NAME the note that answers for it, `Release-note: .changeset/<name>.md`, and that is read
 // as an answer, provided the range adds that note.
+//
+// ── A NOTE THE RANGE WITHDRAWS, AND SAYS WHY, IS AN ANSWER ────────────────────────────────────────────
+//
+// A ruling took a beta-only change back out, and the commit that removed it removed the note that
+// announced it too, so the stable changelog would not promise a ceiling the stable release does not have.
+// That deletion is right, and it left two earlier commits naming a note the range no longer carries:
+// refused, and unfixable, because the only fix the check offered was editing commits already pushed.
+//
+// So a note that a LATER commit in the same range DELETES counts as consumed for the commits that added
+// or named it — provided the deleting commit says why, in its own `Release-note: none — <reason>` or in a
+// note of its own. The reason is asked of the DELETING commit because it is the newest of the two, the
+// only one that can still be amended, and the one that knows why the reader now hears nothing. Said, not
+// silent: every commit excused this way is printed with the sha that withdrew its note and that reason.
+//
+// A deletion that gives no reason still refuses, and names the deleting commit as where the reason goes.
+// The move a pre-release makes — `.changeset/<name>.md` deleted and `.changeset/pre/<name>.md` added in
+// one commit — is not a withdrawal: the note still reaches a reader, and a version commit is that shape.
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -143,12 +160,14 @@ const shipped = (paths, files) => paths.filter((p) => !NEVER_A_NOTE.some((re) =>
  * PURE. What each commit in a range owes, decided per commit (see the header).
  *
  * @param {object} o
- * @param {Array<{sha:string, subject:string, message:string, paths:string[], added?:string[]}>} o.commits  non-merge,
- *   oldest first; `added` is the paths the commit adds, when the caller read them
+ * @param {Array<{sha:string, subject:string, message:string, paths:string[], added?:string[], deleted?:string[]}>} o.commits
+ *   non-merge, oldest first; `added` and `deleted` are the paths the commit adds and removes, when the caller read them
  * @param {string[]} o.files  the package's own `files` list
  * @param {string[]|null} [o.atHead]  every path the head carries under `.changeset/`, when the caller read it
  * @returns {{visible:string[], notes:string[], declined:Array<{sha:string, subject:string, reason:string}>,
- *   owed:Array<{sha:string, subject:string, why:"no-note"|"prose"|"bare-none"|"names-a-missing-note", paths?:string[], text?:string}>}}
+ *   withdrawals:Array<{sha:string, subject:string, note:string, by:string, reason:string}>,
+ *   owed:Array<{sha:string, subject:string, why:"no-note"|"prose"|"bare-none"|"names-a-missing-note"|"note-withdrawn-unsaid",
+ *   paths?:string[], text?:string, by?:string}>}}
  */
 export function commitVerdicts({ commits = [], files = [], atHead = null } = {}) {
   // `added` and `atHead` are what the command reads from git; a caller that passes neither keeps the older
@@ -172,8 +191,34 @@ export function commitVerdicts({ commits = [], files = [], atHead = null } = {})
   const notes = [...new Set(commits.flatMap(notesOf))];
   const noteNames = new Set(notes.map((p) => p.split("/").pop()));
   const visible = [...new Set(commits.flatMap((c) => shipped(c.paths, files)))];
-  const declined = [], owed = [];
-  for (const c of commits) {
+  const nameOf = (p) => p.split("/").pop();
+  // WHICH NOTES THIS RANGE TAKES BACK, AND WHETHER IT SAYS WHY. A commit that deletes a note path and
+  // adds one of the same name is MOVING it — what a pre-release cut does to every note it consumes — and
+  // a move is not a withdrawal. A name the head still carries was never withdrawn at all.
+  //
+  // THE DELETION THAT ANSWERS IS THE LAST ONE, because a note can go and come back. This note was
+  // written, consumed into `.changeset/pre/` by a beta cut, brought back at its old path by a merge of a
+  // main the cut had already taken it from, dropped again as a duplicate, and only then removed under the
+  // ruling. Taking the first deletion would have printed the duplicate sweep's reason — "removes
+  // duplicates of notes that already shipped" — against a commit the ruling is what excuses. Measured on
+  // the range, 2026-09-18.
+  const withdrawn = new Map();
+  commits.forEach((c, at) => {
+    const readded = new Set((c.added ?? []).filter(isNotePath).map(nameOf));
+    for (const p of (c.deleted ?? []).filter(isNotePath)) {
+      const name = nameOf(p);
+      if (readded.has(name)) continue;
+      const own = notesOf(c).map(nameOf);
+      const reason = NO_NOTE.exec(String(c.message ?? ""))?.groups?.reason
+        ?? (own.length ? `the note ${own[0]} it wrote in its place` : null);
+      withdrawn.set(name, { sha: c.sha, subject: c.subject, reason, at });
+    }
+    for (const name of readded) withdrawn.delete(name);   // a later copy puts the note back in the range
+  });
+  // AND A NAME THE HEAD STILL CARRIES WAS NEVER WITHDRAWN AT ALL: the release assembles what the head has.
+  if (presentNames) for (const name of [...withdrawn.keys()]) if (presentNames.has(name)) withdrawn.delete(name);
+  const declined = [], owed = [], withdrawals = [];
+  for (const [i, c] of commits.entries()) {
     const ships = shipped(c.paths, files);
     if (!ships.length) continue;                              // nothing a reader could see in this commit
     const addsNote = notesOf(c).length > 0;
@@ -189,13 +234,24 @@ export function commitVerdicts({ commits = [], files = [], atHead = null } = {})
       continue;
     }
     if (addsNote) continue;                                   // it carries its own note
+    // THE NOTE THIS COMMIT ANSWERED WITH, TAKEN BACK BY A LATER ONE. Only a later commit: a name deleted
+    // before this commit named it was never this commit's answer.
+    const addedNames = [...new Set((c.added ?? c.paths).filter(isNotePath).map(nameOf))];
+    const takenBack = [...new Set([...addedNames, ...named])]
+      .map((n) => [n, withdrawn.get(n)]).filter(([, w]) => w && w.at > i);
+    const said = takenBack.find(([, w]) => w.reason);
+    if (said) { withdrawals.push({ ...at, note: said[0], by: said[1].sha, reason: said[1].reason }); continue; }
+    if (takenBack.length) {
+      owed.push({ ...at, why: "note-withdrawn-unsaid", text: takenBack[0][0], by: takenBack[0][1].sha });
+      continue;
+    }
     const missing = named.filter((n) => !noteNames.has(n));
     if (missing.length) { owed.push({ ...at, why: "names-a-missing-note", text: missing[0] }); continue; }
     if (named.length) continue;                               // it names a note the range adds
     if (notes.length) continue;                               // a note in the range answers for it
     owed.push({ ...at, why: "no-note", paths: ships });
   }
-  return { visible, notes, declined, owed };
+  return { visible, notes, declined, withdrawals, owed };
 }
 
 const argAfter = (flag) => {
@@ -232,6 +288,7 @@ function main() {
       message: git("log", "-1", "--format=%B", sha),
       paths: git("diff-tree", "--no-commit-id", "--name-only", "-r", "--root", sha).split("\n").filter(Boolean),
       added: git("diff-tree", "--no-commit-id", "--name-only", "-r", "--root", "--diff-filter=A", sha).split("\n").filter(Boolean),
+      deleted: git("diff-tree", "--no-commit-id", "--name-only", "-r", "--root", "--diff-filter=D", sha).split("\n").filter(Boolean),
     }));
     atHead = git("ls-tree", "-r", "--name-only", head, "--", ".changeset/").split("\n").filter(Boolean);
   } catch (e) {
@@ -245,13 +302,19 @@ function main() {
   catch (e) { console.error(`release-note-required: cannot read the shipped file list: ${e.message}`); process.exit(2); }
   if (!files.length) { console.error("release-note-required: package.json names no shipped files, so this cannot look"); process.exit(2); }
 
-  const { visible, notes, declined, owed } = commitVerdicts({ commits, files, atHead });
+  const { visible, notes, declined, withdrawals, owed } = commitVerdicts({ commits, files, atHead });
   console.log(`release-note-required: ${changed.length} changed file(s) against ${base}`
     + `${head === "HEAD" ? "" : ` (head ${head})`}; `
-    + `${visible.length} ship as code; ${notes.length} release note(s) in the range; ${commits.length} commit(s) read`);
+    + `${visible.length} ship as code; ${notes.length} release note(s) in the range; ${commits.length} commit(s) read`
+    + `${withdrawals.length ? `; ${withdrawals.length} answered by a note the range withdrew` : ""}`);
   // PER COMMIT, SAID AS PER COMMIT. "no note, declared on purpose" read as a verdict on the range, and beside
   // a range that carries a note it told a reader skimming the output that none went out. Found in review.
   for (const d of declined) console.log(`  ${d.sha.slice(0, 7)} declines a note of its own, on purpose: ${d.reason}`);
+  // AN EXCUSED COMMIT IS PRINTED, WITH THE SHA THAT EXCUSED IT. A pass this check reached by reading
+  // another commit's decision is one a person may want to disagree with, and they cannot if it is silent.
+  for (const w of withdrawals) {
+    console.log(`  ${w.sha.slice(0, 7)} answered with ${w.note}, which ${w.by.slice(0, 7)} withdrew: ${w.reason}`);
+  }
   if (!owed.length) return;
 
   console.error(`\n${owed.length} commit(s) that ship as code owe a release note:\n`);
@@ -267,6 +330,11 @@ function main() {
     } else if (o.why === "bare-none") {
       console.error("      says `Release-note: none` and gives no reason. The reason is the whole point of the"
         + "\n      line — it is what a later reader uses to tell a considered decision from a skipped step.");
+    } else if (o.why === "note-withdrawn-unsaid") {
+      console.error(`      answered with ${o.text}, which ${o.by.slice(0, 7)} deletes in this range without saying why.`
+        + "\n      A note the head does not carry reaches no reader. If the change it described went out of the"
+        + "\n      release too, say that in THAT commit — `Release-note: none — <why>` — which is the newest of"
+        + "\n      the two and the one that can still be amended.");
     } else {
       console.error(`      names ${o.text} as its note, and this range adds no note by that name.`);
     }

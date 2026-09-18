@@ -152,7 +152,7 @@ const STATES = {
   // marketplace" and "registers only" the same string. Kept deliberately as an ARCHIVED run: nothing can
   // be ordered at that slug any more, and a card for a run that WAS must still say what it was.
   longdepth: {
-    runs: [run({ runId: 'L', mark: 'MERIDIAN NORTHSTAR ASSURANCE', state: 'running', product: 'prelim-register-only', step: 'Register sweeps', stepN: 2, stepTotal: 9, startedAt: ago(20) }), ...FINISHED],
+    runs: [run({ runId: 'L', mark: 'MERIDIAN NORTHSTAR ASSURANCE', state: 'running', product: 'clearance-register-only', step: 'Register sweeps', stepN: 2, stepTotal: 9, startedAt: ago(20) }), ...FINISHED],
     expectCards: 1, expectQueue: 0, expectFirstCardPips: 9, expectStops: 1,
   },
   // THE CAP IS THE SERVER'S, NOT A LITERAL IN THE UI. It was written in as `2`, which is right today

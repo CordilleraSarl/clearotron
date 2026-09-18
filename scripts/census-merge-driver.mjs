@@ -37,11 +37,24 @@
 // driver removes a conflict; it does not remove the check. That is the whole safety argument, and if
 // that arm is ever weakened this file becomes unsafe with it.
 //
-// ── WHAT IT STILL REFUSES ───────────────────────────────────────────────────────────────────────────
+// ── WHAT IT STILL REFUSES, AND HOW IT REFUSES ───────────────────────────────────────────────────────
 //
 // Both sides changing the SAME file's counts to DIFFERENT values is a real disagreement — two branches
 // edited one test file — and it exits non-zero so git raises the conflict a human should see. A driver
 // that silently picked a side there would be the "matches neither tree" failure in a new costume.
+//
+// AND IT WRITES MARKERS, BECAUSE EXITING WITHOUT WRITING IS NOT A REFUSAL. Until 2026-09-18 the refusal
+// path wrote nothing at all, which leaves `%A` holding the OURS side untouched: a file with no conflict
+// markers that parses as valid JSON, beside git's own "CONFLICT (content)" line. Both cheap checks a
+// person runs on a conflicted file — does it have markers, does it parse — passed, so it was staged
+// blind, and every entry the union had taken from THEIRS went with it. Measured that day on a real
+// merge: the result was byte-identical to ours, and one test file's entry was simply gone. A census that
+// under-counts is a population floor reading low, which is the one failure the census exists to prevent.
+//
+// So a refusal now writes a file that CANNOT be staged blind: real markers at column 0, the named
+// disagreements above them, the UNION on the ours side — so a reader who resolves by taking it keeps
+// every entry this driver could merge — and theirs whole on the other. It parses as nothing, which is
+// the honest direction for a file nobody has resolved yet.
 
 import { readFileSync, writeFileSync } from "node:fs";
 
@@ -139,9 +152,27 @@ const merged = {
 };
 
 if (conflicts.length) {
+  const named = conflicts.slice(0, 10).map((c) => `  ${c}`);
+  const more = conflicts.length > named.length ? [`  …and ${conflicts.length - named.length} more`] : [];
   console.error(`census-merge-driver: ${conflicts.length} entr(y/ies) changed on BOTH sides — not ours to pick:`);
-  for (const c of conflicts.slice(0, 10)) console.error(`  ${c}`);
+  for (const line of [...named, ...more]) console.error(line);
   console.error("  Resolve by hand, or re-run `node scripts/mint-suite-census.mjs --apply` on the merged tree.");
+
+  // THE UNION RIDES THE OURS SIDE, and that is the point of writing at all. Everything this driver COULD
+  // merge is in it — including every entry that exists only on theirs — so resolving by taking this side
+  // loses nothing but the disagreements, which are named above it and are the only thing a human is
+  // being asked about.
+  writeFileSync(oursPath, [
+    `census-merge-driver: ${conflicts.length} entr(y/ies) changed on BOTH sides and were NOT merged.`,
+    ...named, ...more,
+    "Resolve, delete these lines and the markers, then run `node scripts/mint-suite-census.mjs --apply`.",
+    "<<<<<<< ours — the union of both sides, except the entries named above",
+    JSON.stringify(merged, null, 2),
+    "=======",
+    JSON.stringify(theirs, null, 2),
+    ">>>>>>> theirs",
+    "",
+  ].join("\n"));
   process.exit(1);
 }
 

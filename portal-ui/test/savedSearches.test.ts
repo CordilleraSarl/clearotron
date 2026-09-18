@@ -66,9 +66,9 @@ test('a base that has drifted past the registry is its OWN state — the key nev
   // Stored recipe config can outlive a level. The one-line fallback (`level?.stageLabel ?? recipe.base`)
   // fires only in this branch, which means the only time it would ever print the raw key is the one time
   // nothing has vetted that key as fit to show a client.
-  const s = statusFor(saved({ base: 'prelim-jx-legacy' }), [lvl('clearotron')])
+  const s = statusFor(saved({ base: 'clearance-jx-legacy' }), [lvl('clearotron')])
   assert.equal(s.kind, 'unknownBase')
-  assert.equal(JSON.stringify(s).includes('prelim-jx-legacy'), false, 'the stored base key is not carried into the display state')
+  assert.equal(JSON.stringify(s).includes('clearance-jx-legacy'), false, 'the stored base key is not carried into the display state')
 })
 
 test('an empty registry makes every saved search unknown-base rather than ready by default', () => {

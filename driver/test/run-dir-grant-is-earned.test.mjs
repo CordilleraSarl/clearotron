@@ -154,9 +154,9 @@ test("the seat-write-free population is FOURTEEN, read from the frozen table", (
   // the first member for which "the seat writes nothing here" is a property of the design rather than
   // the outcome of removing a Write grant.
   assert.deepEqual([...SEAT_WRITE_FREE_STAGES], [
-    "blind-frame", "doubt-closure", "frame-diff", "knockout-assess", "knockout-frame", "knockout-review",
-    "matter-frame", "narrative-refutation", "prelim-variants", "register-digest", "report-card",
-    "report-overview", "skeptic", "synthesis",
+    "blind-frame", "clearance-variants", "doubt-closure", "frame-diff", "knockout-assess",
+    "knockout-frame", "knockout-review", "matter-frame", "narrative-refutation", "register-digest",
+    "report-card", "report-overview", "skeptic", "synthesis",
   ]);
 });
 

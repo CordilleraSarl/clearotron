@@ -112,7 +112,7 @@ and the environment file holding the secrets.
   `XDG_RUNTIME_DIR` must be set for `systemctl --user` to work from cron.
 - **Pin the agent id before upgrading an install made before 0.2.2.** The default agent id changed
   from `clawdi` to `localagent`, and that id is a path segment: runs live under
-  `<workspaceRoot>/workspace-<agent>/studio/prelim-search/`. An install that never set one starts
+  `<workspaceRoot>/workspace-<agent>/studio/clearance-search/`. An install that never set one starts
   reading an empty workspace, and empty reads as "no runs" rather than as an error. Set **both**
   variables in the environment file — the gather servers read their own:
 
@@ -129,7 +129,7 @@ and the environment file holding the secrets.
 
 | Surface | What it tells you |
 |---|---|
-| `systemctl --user status prelim-driver.{path,timer,service} prelim-outbox.{path,timer,service} profile-service` | Trigger health; remember "activating = draining" |
+| `systemctl --user status prelim-driver.{path,timer,service} clearance-outbox.{path,timer,service} profile-service` | Trigger health; remember "activating = draining" |
 | `journalctl --user -u prelim-driver.service -f` | Runner notes (stderr): claims, dedup parks, preflight failures, orphan reclaims |
 | Run dir `status.json` / `run.jsonl` | Per-run state + the append-only decision trace; grep keys: `axes`, `profile`, `verdict`, `escalation`, `postponed`, `delivered`, `profile-mismatch` |
 | `_driver/<stage>.jsonl` | Per-attempt telemetry: status, fail token, kill signals, wall, tokens |
@@ -173,7 +173,7 @@ survive until terminal state.
 | Run parked with `*.tainted-N` artifacts | Timeout-taint convergence loop ([07 §3](07-quality-and-audit.md#3--completed-coverage-honesty-in-code)) | Let it converge; repeated signature goes terminal honestly |
 | Chat failure ping never arrived for a failed run | By design: nothing here sends. The failure packet IS the notice, and an integrator consumes it | Check `_driver/failure.json` + the outbox lane (the guaranteed notice) |
 | Deploy refused because a run is in flight | The in-flight guard above | Wait for the run. A force-restart of the gateway is not the answer — that is for a wedged gateway |
-| Everything quiet after a deploy abort | Should not happen (EXIT trap restarts triggers) — if it does: `systemctl --user start prelim-driver.{path,timer} prelim-outbox.{path,timer}` and file it |
+| Everything quiet after a deploy abort | Should not happen (EXIT trap restarts triggers) — if it does: `systemctl --user start prelim-driver.{path,timer} clearance-outbox.{path,timer}` and file it |
 
 ## Selftest — retired
 

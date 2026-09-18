@@ -9,8 +9,8 @@
 
 export const BATCH_SCREEN_CHUNK = 100; // corsearch brand-json page size; clarivate /text caps at exactly 100 too.
 
-// Live/dead status map for brand-json's vocabulary (HAR-counted across 702 rows: Valid 337, Invalid 187,
-// Pending 103, Expired 69, GracePeriod 4, Unknown 2). FAIL-OPEN: only Invalid/Expired are confidently dead;
+// Live/dead status map for brand-json's vocabulary, counted across a screening sample so that every token
+// the endpoint uses is mapped and none is left to chance. FAIL-OPEN: only Invalid/Expired are confidently dead;
 // Valid/Pending/GracePeriod are LIVE (Pending = a live in-progress application; GracePeriod = the post-expiry
 // renewal window — both real senior-rights risks that must NEVER be batch-dropped); anything else (Unknown or
 // an unrecognized token) is AMBIGUOUS → the skill must fall through to record_fetch, never auto-drop on it.

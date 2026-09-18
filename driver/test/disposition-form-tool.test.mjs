@@ -90,9 +90,9 @@ const RECEIPT = (q, n) => ({ title: `What ${q} turns up, part ${n}`, url: `https
   snippet: "" });
 
 function makeRun({ queries = QUERIES } = {}) {
-  // The output_path must sit under a studio/prelim-search run dir — the server refuses anything else.
+  // The output_path must sit under a studio/clearance-search run dir — the server refuses anything else.
   const root = mkdtempSync(join(tmpdir(), "form-tool-"));
-  const runDir = join(root, "studio", "prelim-search", "run-under-test");
+  const runDir = join(root, "studio", "clearance-search", "run-under-test");
   mkdirSync(driverDir(runDir), { recursive: true });
   const ledgerPath = join(runDir, "common-law-grid.half-b.json");
   const formPath = join(runDir, "common-law-dispositions.half-b.json");

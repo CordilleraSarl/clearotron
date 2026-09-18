@@ -41,7 +41,7 @@
 // than being unable to ask. Failing closed here would mean a file-read error takes the whole portal
 // down — trading a rare wrong-greyed-out option for a total outage.
 
-import { writeFileSync, readFileSync, mkdirSync } from "node:fs";
+import { writeFileSync, readFileSync, mkdirSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { BUILT } from "./search-policy.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
@@ -369,7 +369,7 @@ export function postureDisagreement(snapshot, live) {
 
 /** Where the snapshot lives. Beside the pool, so it shares the pool's lifecycle and backup. */
 export function snapshotPath(poolRoot) {
-  return join(poolRoot, "_state", "prelim-flag-snapshot.json");
+  return join(poolRoot, "_state", "clearance-flag-snapshot.json");
 }
 
 /**
@@ -383,7 +383,10 @@ export function readFlagSnapshot(poolRoot) {
   // reads as intentional.
   if (!poolRoot) return null;
   try {
-    const raw = JSON.parse(readFileSync(snapshotPath(poolRoot), "utf8"));
+    // The file's pre-rename name is read when the new one is not there yet, so an upgraded install does
+    // not read as "no snapshot" until its first write under the new name.
+    const legacy = join(poolRoot, "_state", "prelim-flag-snapshot.json");
+    const raw = JSON.parse(readFileSync(existsSync(snapshotPath(poolRoot)) || !existsSync(legacy) ? snapshotPath(poolRoot) : legacy, "utf8"));
     if (!raw || typeof raw !== "object" || typeof raw.flags !== "object") return null;
     return raw;
   } catch {

@@ -26,7 +26,7 @@ process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
 // production call ledger can never evidence their bands; the dedicated band-truth-gate tests turn it ON.
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 
-const queueFor = (root, agentId) => join(root, `workspace-${agentId}`, "studio", "prelim-search", "queue");
+const queueFor = (root, agentId) => join(root, `workspace-${agentId}`, "studio", "clearance-search", "queue");
 const jobJson = (ref) => JSON.stringify({
   id: `adm-${ref}`, msgId: `<adm-${ref}@x>`, forwarder: "jordan", forwarderDomain: "example.com",
   ref, markName: "ADMISSION PROBE", classes: [9], provider: "corsearch",
@@ -62,7 +62,7 @@ test("continuous admission: a job dropped mid-flight is claimed while an earlier
     // await point below is too late to protect it. `refuseOnPreRunFailure` only fires when the packets
     // exist, so on a healthy run this is a no-op.
     const aClaimed = await until(() => existsSync(join(Q, "job-a.processing")));
-    if (!aClaimed) refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.admission.test.mjs");
+    if (!aClaimed) refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.admission.test.mjs");
     assert.ok(aClaimed, "A claimed + in flight (at the barrier)");
     // drop B AFTER the drain has started and A is mid-flight
     writeFileSync(join(Q, "job-b.json"), jobJson("TMP-ADM-B"));
@@ -71,7 +71,7 @@ test("continuous admission: a job dropped mid-flight is claimed while an earlier
     // provider absent, A still reaches `.processing` before the run refuses, so the first wait passes
     // and this one is where the absent precondition actually surfaces.
     const bClaimed = await until(() => existsSync(join(Q, "job-b.processing")));
-    if (!bClaimed) refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.admission.test.mjs");
+    if (!bClaimed) refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.admission.test.mjs");
     assert.ok(bClaimed, "B (mid-flight arrival) was claimed by the re-scanning drain loop");
     assert.ok(!existsSync(join(Q, "job-a.done")), "A was still in flight when B got claimed (proves it wasn't claimed only after A finished)");
 
@@ -80,7 +80,7 @@ test("continuous admission: a job dropped mid-flight is claimed while an earlier
     // — BEFORE the assertions below. A run that never started leaves its
     // reason in the packets beside the queue; without this the counts below report it as a
     // product defect.
-    refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.admission.test.mjs");
+    refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.admission.test.mjs");
 
     assert.ok(existsSync(join(Q, "job-a.done")), "A delivered");
     assert.ok(existsSync(join(Q, "job-b.done")), "B delivered in the SAME drain (no waiting for the next timer tick)");

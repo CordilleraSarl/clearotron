@@ -22,7 +22,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 
-import { validators, validateMergedFindings, REGISTER_CLAIM_RE, READ_FIELDS } from "../verify-knockout.mjs";
+import { validators, validateMergedFindings, REGISTER_CLAIM_RE, READ_FIELDS, RECOMMENDATION_RE, ADVANCE_RE } from "../verify-knockout.mjs";
 import { renderKnockoutHtml } from "../publish/render-knockout.mjs";
 
 const FW = {
@@ -129,6 +129,45 @@ test("the ban does not fire on the standing caveat the merged gate requires", ()
   assert.match("register searches were not performed", REGISTER_CLAIM_RE);
 });
 
+test("a recommendation in the per-name read is refused, in both shapes a reader met", () => {
+  // The field this fires on is the one nothing read: `assessment` was checked for length and structure
+  // and never for content, which is where the conclusion arrived.
+  const d = runDirWith({ research: { IRONWHISK: "payload" } });
+  const f = driverDir(d, "knockout-assess-0.json");
+  const read = (tail) => "## The name\n\nA compound of two ordinary kitchen words, used by several small "
+    + "sellers in the same goods, with no owner consolidating it.\n\n" + tail;
+  for (const [shape, tail] of [
+    ["its own heading", "**Practical next step** — IRONWHISK is not knocked out at this screening depth."],
+    ["a closing line", "On this material IRONWHISK should proceed to a full clearance search."],
+    ["an advance sentence", "Advance IRONWHISK to clearance, watching the storefront use."],
+    ["a hashed heading", "## Next steps\n\nOrder the full search."],
+    ["a recommendation", "We recommend ordering the full search before filing."],
+  ]) {
+    const r = validators.knockoutAssessChunk(f, chunk([markRow({ assessment: read(tail) })]));
+    assert.equal(r.ok, false, `${shape}: a conclusion about the name validated`);
+    assert.match(r.reason, /what to do with the name, and whether it advances, is the reading lawyer's/,
+      `${shape}: the refusal does not say what the writer must delete`);
+  }
+});
+
+test("and it does not fire on the read this screen is FOR, or on the note this lane requires", () => {
+  const d = runDirWith({ research: { IRONWHISK: "payload" } });
+  const f = driverDir(d, "knockout-assess-0.json");
+  // Findings and a rating, said at length, including the two near-misses this pattern must not take:
+  // the degraded note's "recommended", and a register record that proceeds to REGISTRATION.
+  const clean = "## The name\n\nA compound of two ordinary kitchen words.\n\n## What the field shows\n\n"
+    + "Two storefronts trade under it in the same goods. The older of the two filings proceeds to "
+    + "registration in October, and its owner has filed nothing else.\n\n## What drives the rating\n\n"
+    + "Neither seller has consolidated the name, and no registered right was found on the material searched.";
+  const r = validators.knockoutAssessChunk(f, chunk([markRow({ assessment: clean,
+    purpleNotes: ["Manual verification recommended"], degraded: null })]));
+  assert.equal(r.ok, true, r.reason);
+  assert.doesNotMatch("Manual verification recommended", RECOMMENDATION_RE, "the note this lane requires is not a recommendation to the client");
+  assert.doesNotMatch("Manual verification recommended", ADVANCE_RE);
+  assert.doesNotMatch("the application proceeds to registration in October", ADVANCE_RE,
+    "a register record moving on is a fact about a filing, not advice about the name");
+});
+
 test("the merged artifact is swept too — a resume can compose from chunks written before this rule", () => {
   const d = runDirWith({ research: { IRONWHISK: "payload" } });
   const merged = {
@@ -147,6 +186,18 @@ test("the merged artifact is swept too — a resume can compose from chunks writ
 
 const RENDER = (marks, over = {}) => renderKnockoutHtml({ marks, batch: { executiveSummary: "s" } }, FW, {
   runId: "r", overall: "Manageable", identity: { identity: "Knockout search" }, ...over,
+});
+
+test("the section breadcrumb is emitted inside the report's sticky header, not under it", () => {
+  // The knockout's half of the same property — see the twin in render.test.mjs for why it is asserted by
+  // position. Both renderers emit the placeholder, so both can drift, and the defect a reader met was on
+  // this one.
+  const html = RENDER([markRow()]);
+  const head = html.indexOf('<div class="rep-stickyhead');
+  const nav = html.indexOf('<nav class="strip');
+  const wrap = html.indexOf('<div class="wrap">');
+  assert.ok(head >= 0 && nav >= 0, "the report draws a sticky header and a breadcrumb");
+  assert.ok(nav > head && nav < wrap, "the breadcrumb is inside the header, not a bar under it");
 });
 
 test("the read renders as STRUCTURE — chip, basis, tight bullets, and the two qualifiers visually apart", () => {

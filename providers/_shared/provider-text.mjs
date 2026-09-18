@@ -18,8 +18,8 @@
 // ── WHY TAIL-PRESERVING, RATHER THAN A BIGGER NUMBER ────────────────────────────────────────────────
 //
 // Raising 140 to 400 fixes this string and leaves the defect. Vendor messages put the STATUS at the
-// front and the DISCRIMINATOR at the back — "…are not allowed", "…exceeds the maximum allowed (1000)",
-// "…Maximum number of results is 30000." A head-only clip is therefore biased against exactly the part
+// front and the DISCRIMINATOR at the back — the operator that is not allowed, the bound that was
+// exceeded, the maximum that was passed. A head-only clip is therefore biased against exactly the part
 // a classifier needs, at whatever length it is set to. The bias is the bug; the number is not.
 //
 // So: keep the head, keep the tail, elide the middle. The head carries the HTTP status and the office

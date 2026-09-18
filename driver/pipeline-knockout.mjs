@@ -73,7 +73,7 @@ import { envFrom } from "../shared/env-aliases.mjs";   // — resolves EITHER sp
 import { ownersOwedACheck, runOwnerChecks } from "./owner-use-check.mjs";
 
 const DRIVER_DIR = dirname(fileURLToPath(import.meta.url));
-export const TRIAGE_FRAMEWORK = "skills/prelim-search/risk-framework-triage.md";
+export const TRIAGE_FRAMEWORK = "skills/clearance-search/risk-framework-triage.md";
 
 // sentinel/archive mirror pipeline.mjs's private helpers (cross-referenced there) — byte-faithful.
 const sentinel = (runDir, name, obj) => atomicWrite(join(runDir, name), JSON.stringify({ ts: new Date().toISOString(), ...obj }, null, 2) + "\n");
@@ -151,7 +151,7 @@ export function readBackLadder(ctx, sidecarPath, { minted }) {   // exported for
   if (ladder.length) return;
   const detail = `${sidecarPath} does not read back as a band ladder, so knockoutAssessChunk's three band checks would pass every rating unchecked`;
   if (minted) throw new Error(`knockout_ladder_unreadable: ${detail} — the driver wrote this file itself from a parsed manifest, so this is a driver fault and no seat can fix it`);
-  // THE RECORDING CANNOT BE WHAT STOPS THE RUN. `runLog` → `appendLine` (log.mjs:11) does an unguarded
+  // THE RECORDING CANNOT BE WHAT STOPS THE RUN. `runLog` → appendLine() in log.mjs (:11) does an unguarded
   // mkdirSync + appendFileSync: on EACCES or a full disk it THROWS. Everywhere else in the driver that is
   // the accepted behaviour, but not here — this branch exists precisely to keep a pre-existing run alive,
   // and a throw out of it would take down the run it is written to spare, for a reason unrelated to
@@ -250,7 +250,7 @@ async function koStage(name, ctx, { chunkNo = null, msgCtx = {} } = {}) {
     agent: ctx.agent,
     message: def.message({ ...ctx, K, chunkNo, ...msgCtx }),
     model, thinking: def.thinking,
-    sessionKey: `prelim-${ctx.run.slug}-${ctx.run.codename}-${label}`,
+    sessionKey: `clearance-${ctx.run.slug}-${ctx.run.codename}-${label}`,
     timeoutSec: def.timeoutSec, stallSec: def.stallSec,
     expectFile: out, validate: def.validate, runDir: ctx.paths.runDir,
   });
@@ -494,7 +494,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
       const caps = capabilitiesFor(REGISTER_PROVIDER);
       countExec = resolveCountExecutor({
         counter: opts?.countExecutor ?? null, adapter: registerAdapter,
-        agentId: agent, sessionKey: `prelim-${run.slug}-${run.codename}`,
+        agentId: agent, sessionKey: `clearance-${run.slug}-${run.codename}`,
         recordLog: runRecordLogPath(run.runDir),
         // FROM THE JOB, not the environment. Whether this run calls a real register
         // is a fact about the run, so it arrives with the run and lands on its record.
@@ -684,7 +684,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
       // Every failure lands as a recorded reason on the surfaces instead.
       const recExec = resolveRecordExecutor({
         lister: opts?.recordLister ?? null, adapter: activeProvider(),
-        agentId: agent, sessionKey: `prelim-${run.slug}-${run.codename}`,
+        agentId: agent, sessionKey: `clearance-${run.slug}-${run.codename}`,
         // — this run's record log, not the box's. The knockout lane never reads the record bodies
         // its batch-screen hydration writes; before this they were pure growth on a global file.
         recordLog: runRecordLogPath(run.runDir),

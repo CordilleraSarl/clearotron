@@ -14,9 +14,9 @@
 //
 // This module is read-only and defensive: a missing/unreadable ledger or a torn last line (two gateway
 // turns appending concurrently) returns zeros / skips that line — it never throws. The driver calls it at
-// publish time to attribute THIS run's calls by the session-key prefix `prelim-<slug>-<codename>-`.
+// publish time to attribute THIS run's calls by the session-key prefix `clearance-<slug>-<codename>-`.
 
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs"; import { runPrefixSpellings } from "../shared/pre-rename-spellings.mjs";
 // Aliased: three functions below take a parameter literally named `ledgerPath`, and an unaliased
 // import would be shadowed by it inside its own default-value expression (a TDZ ReferenceError
 // at the first call, not at load).
@@ -46,7 +46,7 @@ export const DEFAULT_LEDGER_PATH = resolveLedgerPath("call");
 export const KINDS = ["search", "record_fetch", "image", "phoneme", "batch_screen", "enumerate", "execute_plan", "propose_supplemental"];
 
 // The gateway namespaces the driver's --session-key as `agent:<agentId>:<key>` before it reaches the
-// plugin (confirmed on the first live run: sessionKey = `agent:clawdi:prelim-<slug>-<codename>-…`). Strip
+// plugin (confirmed on the first live run: sessionKey = `agent:clawdi:clearance-<slug>-<codename>-…`). Strip
 // that leading `agent:<id>:` namespace so the run prefix anchors at the real start of the caller's key —
 // otherwise a bare startsWith("clearotron-…") matches nothing.
 function stripGatewayNs(s) {
@@ -54,11 +54,11 @@ function stripGatewayNs(s) {
 }
 
 // Does this ledger row belong to the run identified by `runPrefix`? The driver's --session-key is
-// `prelim-<slug>-<codename>-<stage><axis>` (+ optional `-rerunN`), so a prefix match catches every stage +
+// `clearance-<slug>-<codename>-<stage><axis>` (+ optional `-rerunN`), so a prefix match catches every stage +
 // axis + retry of the run. We check sessionKey (carries the key) and, defensively, sessionId.
 function rowMatchesRun(row, runPrefix) {
-  return stripGatewayNs(row.sessionKey).startsWith(runPrefix)
-      || stripGatewayNs(row.sessionId).startsWith(runPrefix);
+  return runPrefixSpellings(runPrefix).some((rp) => stripGatewayNs(row.sessionKey).startsWith(rp)
+      || stripGatewayNs(row.sessionId).startsWith(rp));   // either spelling: a run resumed across the rename
 }
 
 // ── band-truth gate (2026-07-14, teal-foundry): count the ledger rows attributed to ONE unit lane ──────
@@ -146,7 +146,7 @@ function emptyTally() {
 /**
  * Tally every ledger line whose gateway id starts with `runPrefix`.
  * @param {string} ledgerPath  path to the JSONL ledger
- * @param {string} runPrefix   e.g. `prelim-acme-bluejay-` (note the trailing hyphen)
+ * @param {string} runPrefix   e.g. `clearance-acme-bluejay-` (note the trailing hyphen)
  * @returns {object} the tally (see emptyTally) — never throws
  */
 export function tallyRegisterCalls(ledgerPath = DEFAULT_LEDGER_PATH, runPrefix) {
@@ -208,7 +208,7 @@ export function tallyRegisterCalls(ledgerPath = DEFAULT_LEDGER_PATH, runPrefix) 
  * (missing/unreadable ledger or a torn last line ⇒ skips that line, never throws). A cache_hit record_fetch
  * still counts — the URI WAS fetched this run, which is exactly what the gate asks.
  * @param {string} ledgerPath  path to the JSONL ledger
- * @param {string} runPrefix   e.g. `prelim-acme-bluejay-` (note the trailing hyphen)
+ * @param {string} runPrefix   e.g. `clearance-acme-bluejay-` (note the trailing hyphen)
  * @returns {Set<string>} the set of fetched record URIs
  */
 export function fetchedRecordUris(ledgerPath = DEFAULT_LEDGER_PATH, runPrefix) {

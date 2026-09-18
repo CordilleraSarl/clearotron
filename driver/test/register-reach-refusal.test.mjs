@@ -212,14 +212,25 @@ test("arm 8 — EU, EM and EUTM are ONE place, on a register that reaches the EU
     `"EM" was not recognised as the European Union on a register that does not reach it: ${JSON.stringify(onUsOnly)}`);
 });
 
-test("arm 9 — a name outside the composer's 37 fails OPEN rather than refusing", () => {
-  // `registerTerritories` is scoped to the 37 display names the portal offers. The other doors are not:
-  // start_run and the CLI can name VN, which is inside clarivate's own 186-office enum. A bare
-  // membership test would refuse a search this engine runs today.
-  for (const outside of ["VN", "Vietnam", "Kenya", "ZZ"]) {
+test("arm 9 — a name outside the form's vocabulary fails OPEN rather than refusing", () => {
+  // `registerTerritories` is scoped to the display names the portal offers. The other doors are not, and
+  // a name outside the vocabulary is not something this snapshot can judge, so it passes — a bare
+  // membership test would refuse whatever the vocabulary happens not to list. (Vietnam and Kenya were the
+  // specimens here while the form offered 37 places; it now offers every place a register can search, so
+  // on this register they are judged — see arm 9b.)
+  for (const outside of ["ZZ", "Nowhere"]) {
     const errors = errorsFor({ job: { geography: { mode: "named" }, jurisdictions: [outside] } });
     assert.ok(!errors.some((e) => /not available with/.test(e)),
       `"${outside}" is outside the snapshot's vocabulary and must fail open: ${JSON.stringify(errors)}`);
+  }
+});
+
+test("arm 9b — a place the form now offers and this register does not reach is refused, by name or code", () => {
+  // The form offers every place a supported register can search; what THIS register does not reach is
+  // refused when named. Vietnam, Denmark and Colombia are the specimens the order asks for.
+  for (const named of ["Vietnam", "VN", "Denmark", "Colombia"]) {
+    const errors = errorsFor({ job: { geography: { mode: "named" }, jurisdictions: [named] } });
+    assert.ok(errors.some((e) => /not available with Signa/.test(e)), `"${named}" is offered and not reached here: ${JSON.stringify(errors)}`);
   }
 });
 

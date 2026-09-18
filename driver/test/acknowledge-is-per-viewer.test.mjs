@@ -46,7 +46,7 @@ const poolWith = (runs = {}) => {
   const root = mkdtempSync(join(tmpdir(), "ack-pool-"));
   const ws = mkdtempSync(join(tmpdir(), "ack-ws-"));
   for (const [runId, [customerKey, state]] of Object.entries(runs)) {
-    const dir = join(ws, `workspace-${runId}`, "studio", "prelim-search", "runs", runId);
+    const dir = join(ws, `workspace-${runId}`, "studio", "clearance-search", "runs", runId);
     mkdirSync(driverDir(dir), { recursive: true });
     writeFileSync(join(dir, "status.json"), JSON.stringify({ runId, state, markName: runId.toUpperCase(), slug: runId }));
     writeFileSync(driverDir(dir, "profile.json"), JSON.stringify({ profileKey: customerKey }));
@@ -133,7 +133,7 @@ test("arm 5 — the key carries the STATE, so a run that moves on comes back", a
   assert.deepEqual([...readAcks(pool.root, STAFF.email)], [["dead", "failed"]]);
 
   // the same run, now running again (a re-run under the same id, or an operator resume)
-  const dir = join(pool.ws, "workspace-dead", "studio", "prelim-search", "runs", "dead");
+  const dir = join(pool.ws, "workspace-dead", "studio", "clearance-search", "runs", "dead");
   writeFileSync(join(dir, "status.json"), JSON.stringify({ runId: "dead", state: "running", markName: "DEAD", slug: "dead" }));
   const rows = await rowsFor(svcOn(pool), STAFF);
   assert.equal(rows[0].state, "running");

@@ -55,7 +55,7 @@ test("boundRead: a missing PRODUCT is null, and null is a real answer — never 
   assert.deepEqual(out.names, []);
   assert.equal(out.goods, "");
   // a product the offering does not list is dropped rather than passed through to a door that refuses it
-  assert.equal(boundRead({ product: "prelim" }).product, null);
+  assert.equal(boundRead({ product: "clearance" }).product, null);
   assert.equal(boundRead({ product: "knockout-search" }).product, "knockout-search");
 });
 
@@ -181,24 +181,18 @@ test("READ_SCHEMA: the territories description carries both meanings of an empty
 });
 
 test("PROMPT_TERRITORIES mirrors the composer's Where field — pinned by NAME, not by count", () => {
-  // A DUPLICATE of REGIONS + COUNTRIES in portal-ui/src/contract/composerProduct.ts, and the pin used to
-  // be `length === 37` plus three spot checks. A count passes a SWAP: rename a territory on one side and
-  // the two vocabularies drift apart with every assertion still green, which is the drift this arm is
-  // named for. The comparison is now the whole ordered list against the whole ordered list.
+  // It was a DUPLICATE of REGIONS + COUNTRIES in portal-ui/src/contract/composerProduct.ts, compared list
+  // against list. Both now read ONE minted file, shared/offered-territories.json, so the comparison is
+  // against that file, and the form is checked to read it rather than carry a copy. A count would pass a
+  // swap; the whole ordered list is compared.
+  const minted = JSON.parse(readFileSync(new URL("../../shared/offered-territories.json", import.meta.url), "utf8"));
+  const names = [...minted.regions, ...minted.countries].map((t) => t.name);
+  assert.ok(names.length, "the minted list parsed EMPTY — this comparison would prove nothing");
+  assert.deepEqual([...PROMPT_TERRITORIES], names,
+    "the composer's territory vocabulary and the minted list have drifted — the UI discards what it cannot place, so the drop is silent to a client.");
   const uiSrc = readFileSync(new URL("../../portal-ui/src/contract/composerProduct.ts", import.meta.url), "utf8");
-  const arrayNamed = (name) => {
-    const m = uiSrc.match(new RegExp(`export const ${name}[^=]*=\\s*\\[([\\s\\S]*?)\\]`));
-    // AN ABSENCE IS A FINDING. A renamed export or a reformatted file would otherwise yield an empty
-    // list, and an empty list compares equal to nothing while reporting that it checked something.
-    assert.ok(m, `portal-ui composerProduct.ts no longer exports an array named ${name} in a shape this arm can read`);
-    const names = [...m[1].matchAll(/'([^']+)'/g)].map((x) => x[1]);
-    assert.ok(names.length, `${name} parsed to an EMPTY list — the extraction broke, so this comparison proves nothing`);
-    return names;
-  };
-
-  assert.deepEqual([...PROMPT_TERRITORIES], [...arrayNamed("REGIONS"), ...arrayNamed("COUNTRIES")],
-    "the composer's territory vocabulary and the picker's have drifted — a name added, removed or "
-    + "renamed on one side only. The UI discards what it cannot place, so the drop is silent to a client.");
+  assert.match(uiSrc, /export const REGIONS[^=]*=\s*OFFERED\.regions\.map/, "the picker's regions come from the minted list");
+  assert.match(uiSrc, /export const COUNTRIES[^=]*=\s*OFFERED\.countries\.map/, "the picker's countries come from the minted list");
   assert.ok(!PROMPT_TERRITORIES.includes("Worldwide"), "worldwide is a mode, and it is not a territory in either list");
 });
 

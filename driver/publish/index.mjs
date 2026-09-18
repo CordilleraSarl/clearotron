@@ -16,7 +16,7 @@ import { buildAudit } from './xlsx.mjs';
 import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, joinFindingToBlock, CLIENT_TIER_BY_COMPOSITE, projectCoverageJudgment } from '../findings-model.mjs';
 import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs';   // — and why an absence did not close
 import { clearanceReportData } from './report-data.mjs';
-import { searchDepthRecord } from './search-depth.mjs';   // how much was read to reach the answer, as counts and tokens
+import { searchDepthRecord, planTerritoriesOf } from './search-depth.mjs'; import { bandRecords } from '../named-band.mjs';   // how much was read to reach the answer, as counts and tokens
 import { parseFrameworkManifest } from '../framework.mjs';
 import { rollupTokens, servedModels } from '../tokens.mjs';
 import { reportIdentityFor, productCoverageNote, isRegisterOnly } from '../search-policy.mjs';
@@ -817,6 +817,61 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
         reasons: droppedConditions.map((c) => c.note) });
     } catch { /* the workbook row is the record that matters; this line is the second copy */ }
   }
+  // ── THE CHECKS THE RUN DECIDED ON AND DID NOT MAKE ─────────────────────────────────────────────
+  //
+  // The recall net mints a probe per remembered conflict and a probe per owner behind one, then
+  // dispatches at most five owner probes. The excess is recorded in the run's own receipt and nothing
+  // downstream carried it to a reader, so a search that decided on nineteen ownership checks, made five
+  // and said nothing about the other fourteen read as a search that made the checks it wanted.
+  //
+  // The cap is not the defect: it is deliberate and the rows it drops are ranked material-first, so the
+  // five that run are the five that matter most. What was missing is the disclosure, and it lands where
+  // the 2026-09-17 ruling put the same class of fact — an ordinary row on the workbook's gaps sheet and
+  // one line in the run record. Nothing reaches the report page: the approved boards draw a forward
+  // decision and an open question back to the client, and a check nobody made is neither.
+  //
+  // THE WORDS ARE THE RECEIPT'S OWN. The party and the probe id are read from it verbatim; "over the
+  // cap" and "never dispatched" are the vocabulary the ask ledger already ships for these same rows.
+  // Nothing here composes a sentence, and the note carries no seam, so the gaps sheet's own splitter
+  // leaves "What was done" empty — which is the fact: nothing was done.
+  // READ THROUGH THE DECLARED HELPER, three states and not two. An absent receipt is a run whose recall
+  // net minted nothing — env-gated off, or a matter with no remembered conflict — and there is nothing
+  // to disclose. A DAMAGED one is a different fact: the probes may have overflowed and this publish
+  // cannot tell, so it says so in the run record instead of shipping the same empty sheet an
+  // everything-dispatched run ships. Collapsing those two is the defect publish-inputs.mjs exists for.
+  //
+  // NOT PUSHED ONTO `inputsAbsent`. That list rides meta.json's clientGate record, whose own note two
+  // hundred lines down is that it stays undefined when every store was found so a complete run's meta
+  // is byte-identical to one written before the list existed. Most runs have no recall receipt, so
+  // adding this store to it would change the meta of every archived run on re-render for a store that
+  // feeds a workbook row and not the gate -- the same reason the other presentation-only stores are
+  // not on it either.
+  // `runDir ?? dirname(reportMd)`, the same base its neighbours take and not a defensive flourish:
+  // publishReport's `runDir` is OPTIONAL, and a bare `readStore(runDir, …)` throws TypeError on an
+  // undefined base rather than reporting an absent store. Caught in CI by the graceful-stop runner arm,
+  // which publishes without one: the throw left publishReport at `published → null` and the runner
+  // exited 1. Reading from the report's own directory is also the right answer for a republish.
+  const recallStore = readStore(runDir ?? dirname(reportMd), '_driver/register-recall.json');
+  const undispatchedProbes = (recallStore.value?.overflow ?? [])
+    .filter((o) => o && (o.term || o.qid))
+    .map((o) => ({
+      area: String(o.term ?? o.qid),
+      state: 'not-searched',
+      note: `over the cap, never dispatched (${String(o.qid ?? 'no probe id recorded')})`,
+    }));
+  if (recallStore.state === 'damaged' && runDir) {
+    try {
+      runLog(runDir, { event: 'probe-over-cap-unreadable', store: recallStore.name, error: recallStore.error });
+    } catch { /* best-effort, as below */ }
+  }
+  // Best-effort, as above: a publish never fails for want of a log line.
+  if (undispatchedProbes.length && runDir) {
+    try {
+      runLog(runDir, { event: 'probe-over-cap-undispatched', n: undispatchedProbes.length,
+        parties: undispatchedProbes.map((p) => p.area) });
+    } catch { /* the workbook row is the record that matters; this line is the second copy */ }
+  }
+
   // doc 50 — the run's FROZEN framework manifest (band vocabulary). Present on band-doctrine runs;
   // absent on every archived run (they render byte-identically on the legacy paths).
   let framework = null;
@@ -845,11 +900,25 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // two must not render the same way. Null on archived runs ⇒ render keeps the prose fallback.
   let scopeBasis = null;
   let searchedJurisdictions = [];
+  // WHAT WAS SEARCHED IS THE PLAN'S ANSWER, NOT THE ARCHIVE'S, and it is carried separately from the
+  // header's list below because the two are used for different things and one of them is deliberately
+  // emptied. The coverage presentation asks which territories the run searched and which it could not
+  // reach; the plan compiles both — entries carry the regions it will query, `deferred_coverage` carries
+  // the ones this provider does not cover with the reason each. A register that archives no records
+  // still has both, which is the whole point: keyed off the record store, a provider that keeps nothing
+  // looked like a provider nobody asked.
+  //
+  // THREE-VALUED like the record listing above it: null means there is no plan to read, so the run
+  // cannot say — an archived or legacy run — and it must not be confused with a plan that named nothing.
+  let planTerritories = null;
   try {
     const plan = JSON.parse(readFileSync(driverDir(runDir ?? dirname(reportMd), 'register-plan.json'), 'utf8'));
     if (plan?.scope_basis === 'worldwide') scopeBasis = 'worldwide';
     searchedJurisdictions = [...new Set((plan?.entries ?? []).flatMap((e) => Array.isArray(e.regions) ? e.regions : []))];
     if (!searchedJurisdictions.length && Array.isArray(plan?.regions)) searchedJurisdictions = [...new Set(plan.regions)];
+    // Derived here, BEFORE the worldwide clearing below — that clearing exists for the header and would
+    // otherwise empty this on exactly the runs that cover the most ground.
+    planTerritories = planTerritoriesOf(plan);
   } catch { /* no plan sidecar — try the instructed scope */ }
   if (!searchedJurisdictions.length) {
     try {
@@ -1065,7 +1134,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
       // the same rule (the workbook's own BANNED gate had already started firing on the raw detail —
       // advisory, so CI stayed green). reviewReceipts.lint keeps its raw detail for the internal
       // readers above (fetchState reads registry-record-coverage's URIs out of it).
-      counts = await buildAudit({ droppedConditions, findings, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
+      counts = await buildAudit({ droppedConditions, undispatchedProbes, findings, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
       grpRead(join(poolRunDir, auditFile), 0o640);
       if (counts?.gateViolations?.length) console.warn(`[audit-workbook] advisory: ${counts.gateViolations.join(' | ')}`);
     } catch (e) {
@@ -1098,6 +1167,35 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // pattern — a run with no grid or no case-law layer still gets its register counts, and the absent
   // ones report themselves as zero or `not-in-scope` rather than as a gap nobody can see.
   let searchDepth = null;
+  // HOW DEEP THE LOCAL-LANGUAGE INVESTIGATION WENT, and it is derived by the one author of that
+  // question rather than re-read here. The import is LAZY and gated on the run's own sidecar existing,
+  // which keeps the property the pipeline's own fold keeps: a plain clearance never loads the jx
+  // machinery at all. No sidecar means the component never ran, which the fold reports as not-in-scope.
+  let laneDepthVerdicts = null;
+  try {
+    const jxSidecar = driverDir(runDir ?? dirname(reportMd), 'jx-lanes.json');
+    if (existsSync(jxSidecar)) {
+      const sidecar = JSON.parse(readFileSync(jxSidecar, 'utf8'));
+      const { laneDepthOfRun } = await import('../jx.mjs');
+      let units = null;
+      try { units = JSON.parse(readFileSync(driverDir(runDir ?? dirname(reportMd), 'jx/units.json'), 'utf8')); } catch { /* the statement handles an absent units file */ }
+      // THE RUN ALREADY ANSWERED THIS, AND THE STAMPED ANSWER IS THE ONE THAT COUNTS.
+      //
+      // `deriveJxSliceStatement` writes `fold.depth` at delivery, from the run's OWN environment, for the
+      // reason the seam exists at all: the arms are environment, so a verdict derived later can only speak
+      // for the box it is derived on. Publishing re-derived it here — a second author for a fact the run
+      // had already stated — and the two disagreed on a delivered client report.
+      //
+      // The disagreement was not subtle. This call passed `deriveJxSliceStatement`'s whole return,
+      // `{executes, slices}`, where the function reads `slices.candidates` — so the lookup found nothing,
+      // every lane's `ran` came back null whatever it had really done, and a full-country JP run that
+      // searched in Japanese printed "Local-language investigation · Not run this run". The stamped
+      // verdict on the same run's sidecar said `ran: "candidates"`, correctly.
+      //
+      // So: read what the run stated, and derive only for a run delivered before the stamp existed.
+      laneDepthVerdicts = laneDepthOfRun({ sidecar, units });
+    }
+  } catch { /* an unreadable sidecar reports as not-in-scope rather than failing a publish */ }
   try {
     const runBase = runDir ?? dirname(reportMd);
     const recDir = join(runBase, '_records');
@@ -1106,15 +1204,22 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     searchDepth = searchDepthRecord({
       auditMd: (auditMd && existsSync(auditMd)) ? rdText(auditMd) : '',
       recordIndex: recordsByUri ?? {},
-      recordFileNames: existsSync(recDir) ? readdirSync(recDir) : [],
+      // null, NOT []: a run whose provider archives no records has no `_records/` at all, and an empty
+      // array is a register that was searched and returned nothing. They are different facts and the
+      // page says different things about them, so the distinction this line already computes is kept
+      // rather than thrown away one character later.
+      recordFileNames: existsSync(recDir) ? readdirSync(recDir) : null,
+      // …and where there is no archive, what the register returned: the band's own record ids.
+      bandRecordIds: existsSync(recDir) ? null : (() => { try { const b = rdJson(join(runBase, 'register-named-band.json')); return b ? bandRecords(b).map((r) => r?.record_id).filter(Boolean) : null; } catch { return null; } })(),
       commonLawGrid: rdJson(join(runBase, 'common-law-grid.json')),
       caseLawText: rdText(join(dirname(reportMd), 'case-law-findings.md')),
       registerPlan: rdJson(driverDir(runBase, 'register-plan.json')),
+      laneDepthVerdicts,
     });
     writeRO('search-depth.json', JSON.stringify(searchDepth, null, 2));
   } catch { /* the depth record is additive — a publish never fails for want of it */ }
 
-  writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, servedModels: served, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', nav: reportNav, chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, recordLinks: officeLinks?.byUri ?? null, providerLabel, seniorRights, findingsSchemaVersion, searchDepth }));
+  writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, servedModels: served, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', nav: reportNav, chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, recordLinks: officeLinks?.byUri ?? null, providerLabel, seniorRights, findingsSchemaVersion, searchDepth }));
   // ONE report (spec 2026-07-30 §5): report.client.html is no longer written. The knockout lane's own
   // collapse note is the precedent: "two renderings of one run is how the wrong link gets sent". The
   // client host serves the same report.html through the portal's readReport() (cleaning built in) — its
@@ -1486,7 +1591,7 @@ export function composeEmailBody(reportMdPath, url, auditFile, productName = nul
 const FONT = "font-family:Calibri,'Segoe UI',Arial,sans-serif";
 
 // 5-tier reporting-template risk scheme — the whole left "NAME / RISK RATING" cell takes the bg colour.
-// Matches skills/prelim-search/templates/search-request-form.html + knockout-searches/template-formatting.md.
+// Matches skills/clearance-search/templates/search-request-form.html + knockout-searches/template-formatting.md.
 // `txt` = a readable text-colour version of the tier (for the EXECUTIVE SUMMARY risk phrase, where a bright
 // fill like yellow/red is unreadable as text). Order matters: VERY HIGH before HIGH.
 export const RISK_TIERS = [

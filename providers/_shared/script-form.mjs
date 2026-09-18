@@ -16,9 +16,9 @@
 // hand-written check. That is what `capabilities.nativeScriptIndex` is:
 //
 //   true   — the index holds the CHARACTERS. A native-script term is a legitimate, productive query
-//            and must be sent (the table in driver/jx.mjs): 小米 = 553,
-//            华威豹 = 6, 스타벅스 = 15 on such a provider, against 0/0/0 on a romanisation index; and
-//            archived executed bands returned non-zero on native characters across Han, Katakana,
+//            and must be sent (the comparison in driver/jx.mjs): native-script terms answer on such a
+//            provider and answer nothing on a romanisation index; and
+//            archived executed bands returned records on native characters across Han, Katakana,
 //            Cyrillic and Greek. Guarding it here would convert evidenced coverage into deferrals —
 //            the OPPOSITE defect, and a worse one, because a deferral is at least visible.
 //   false  — the index holds only the TRANSLITERATION. Sending the characters is a silent zero.

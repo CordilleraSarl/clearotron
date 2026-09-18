@@ -31,7 +31,7 @@ const job = (ref, mark) => ({
   id: `stop-${ref}`, msgId: `<stop-${ref}@x>`, forwarder: "jordan", forwarderDomain: "example.com",
   ref, markName: mark, classes: [9], provider: "corsearch",
 });
-const queueFor = (root) => join(root, "workspace-clawdi", "studio", "prelim-search", "queue");
+const queueFor = (root) => join(root, "workspace-clawdi", "studio", "clearance-search", "queue");
 function envFor(root, extra = {}) {
   return {
     ...process.env,
@@ -111,7 +111,7 @@ test("bounded grace: a stop that can't finish exits anyway; the cut claim RESUME
   // it exists to measure: a grace that genuinely elapses with the barrier still unreleased. The two
   // claims are now separate — "the grace elapses and the process exits" is below, on the clock; "the
   // cut run is observable and says so" is here, on the artifact.
-  const studio = join(root, "workspace-clawdi", "studio", "prelim-search");
+  const studio = join(root, "workspace-clawdi", "studio", "clearance-search");
   const findRunDir = () => {
     for (const slug of readFileSyncDirs(studio)) {
       const hit = readFileSyncDirs(join(studio, slug)).find((n) => n.endsWith(`-${meta.codename}`));

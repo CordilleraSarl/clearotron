@@ -63,7 +63,7 @@ const KEY = 'vantor'
 const NAME = 'Vantor Labs'
 // A code-owned path the profile stub serves to everyone, as a server that forgot to strip it would. Only a
 // person with access to everything may read it on Profile; see PROFILE_PATHS_SCRIPT.
-const PLANTED_PATH = 'skills/prelim-search/risk-framework-planted.md'
+const PLANTED_PATH = 'skills/clearance-search/risk-framework-planted.md'
 // The source repository the about stub states, and deliberately not the firm's: the local sign-in notice
 // builds its link from whatever the server states, so a fork's notice points at the fork.
 const STUB_SOURCE_REPO = 'https://git.example.test/a-fork/clearotron'
@@ -463,6 +463,16 @@ ${HELPERS}
   out.railGroups = railSelect ? [...railSelect.querySelectorAll('optgroup')].map((g) => g.label) : [];
   out.genericOptions = railSelect ? [...railSelect.options].filter((o) => /Generic/.test(o.textContent)).length : 0;
   out.railNav = rail ? [...rail.querySelectorAll('.nav-item')].map((b) => b.innerText.trim()).filter(Boolean) : [];
+  // WHERE CONNECT YOUR AI IS DRAWN, measured on the page: pinned at the bottom of the rail, just above
+  // Collapse, outside the list that scrolls. Last in that list is not the same place — on a tall screen it
+  // drew straight under Company settings — and the entry list said "last" the whole time the screen did not.
+  const aiButton = rail ? [...rail.querySelectorAll('button.nav-item')].find((b) => b.innerText.trim() === 'Connect your AI') : null;
+  const railFoot = rail && rail.querySelector('.sidebar-foot');
+  out.aiRail = aiButton ? {
+    inScroll: Boolean(aiButton.closest('.sidebar-scroll')),
+    pinned: Boolean(aiButton.closest('.sidebar-pinned')),
+    gapToFoot: railFoot ? Math.round(railFoot.getBoundingClientRect().top - aiButton.getBoundingClientRect().bottom) : null,
+  } : null;
   out.genericLabels = railSelect ? [...railSelect.options].filter((o) => /Generic/.test(o.textContent)).map((o) => o.textContent.trim()) : [];
   // The avatar menu, opened, read and closed again. People lives there for a person with Manage, directly
   // above Installation settings, and in the rail for nobody.
@@ -1158,6 +1168,19 @@ const SETTINGS_STATES = [
       menus: document.querySelectorAll('.main .row-card button[aria-label="More actions"]').length,
       rowButtons: [...document.querySelectorAll('.main .row-card button')].map((b) => b.textContent.trim()).filter(Boolean) };
   ` },
+  { name: 'company-settings-closes-again', shot: false, script: `
+    // A SECOND CLICK CLOSES WHAT THE FIRST OPENED, and a third opens it again — the board's toggle. Only
+    // the fold moves: the page underneath stays the one you were on.
+    const parentButton = () => [...document.querySelectorAll('.sidebar button.nav-item')].find((b) => b.innerText.trim() === 'Company settings');
+    const read = () => ({ ...rail(), path: location.pathname, expanded: parentButton().getAttribute('aria-expanded') });
+    const before = read();
+    parentButton().click();
+    await mustSettle(() => rail().children.length === 0, 2000, 'a second click on Company settings left its pages open');
+    const closed = read();
+    parentButton().click();
+    await mustSettle(() => rail().children.length > 0, 2000, 'a third click on Company settings did not open its pages again');
+    return { before, closed, reopened: read() };
+  ` },
   { name: 'new-company-empty', script: `
     await goto('/portal/brand/new');
     await mustSettle(() => [...document.querySelectorAll('.main .row-foot button')].some((b) => b.textContent === 'Create'), 8000, 'New company never drew Create');
@@ -1466,6 +1489,9 @@ for (const [who, out] of [['client', asClient], ['staff', asStaff], ['multi-acco
     `${who}: the Clearances header does not name the company being looked at — read ${JSON.stringify(out.clearancesHeading)}`)
   ok(out.composerCompany?.includes(NAME), `${who}: the New clearance form does not name the company — read ${JSON.stringify(out.composerCompany)}`)
   ok(out.nameOnScreen, `${who}: the company's name is nowhere on the composer`)
+  ok(out.aiRail && out.aiRail.pinned && !out.aiRail.inScroll && out.aiRail.gapToFoot !== null
+    && out.aiRail.gapToFoot >= 0 && out.aiRail.gapToFoot <= 16,
+    `${who}: Connect your AI is not pinned to the bottom of the rail, just above Collapse — ${JSON.stringify(out.aiRail)}`)
   ok(!out.slugOnScreen, `${who}: the account KEY "${KEY}" is printed on screen where the name belongs`)
 }
 // The regression this whole change is for: every login must agree, word for word.
@@ -1860,6 +1886,17 @@ if (projects) {
   headerSays('Projects', projects, 'New project')
   ok(projects.menus === projects.rows.length, 'Projects: a row has no More actions menu')
   ok(!projects.rowButtons.some((b) => /^(Archive|Bring back)$/.test(b)), `Projects: Archive or Bring back is on the row, not in its menu — ${JSON.stringify(projects.rowButtons)}`)
+}
+// A TOGGLE BOTH WAYS. It opened on a click and a second click did nothing (found by the owner, 2026-09-18).
+const again = said('company-settings-closes-again')
+if (again) {
+  const page = again.before.path
+  ok(again.before.children.length === 3 && again.before.expanded === 'true',
+    `Company settings: its pages were not open before the second click — ${JSON.stringify(again.before)}`)
+  ok(again.closed.parentActive && again.closed.children.length === 0 && again.closed.expanded === 'false' && again.closed.path === page,
+    `Company settings: a second click did not close its pages, or left the page it was on — ${JSON.stringify(again.closed)}`)
+  ok(again.reopened.children.length === 3 && again.reopened.expanded === 'true' && again.reopened.path === page,
+    `Company settings: a third click did not open its pages again — ${JSON.stringify(again.reopened)}`)
 }
 const blank = said('new-company-empty')
 if (blank) {

@@ -27,7 +27,7 @@ Two doctrines govern everything below:
 sequenceDiagram
     autonumber
     participant A as Forwarding agent<br/>(integrator platform)
-    participant Q as Per-agent queue dir<br/>(studio/prelim-search/queue)
+    participant Q as Per-agent queue dir<br/>(studio/clearance-search/queue)
     participant S as systemd<br/>(.path + 90s .timer)
     participant R as runner.mjs
     participant P as pipeline.mjs
@@ -89,7 +89,7 @@ an unknown company proceeds on the generic profile with a late-bind watch (§4).
 
 **Matter-level dedup** (`runner.mjs`). Queue-file dedup is per *message*; a "please
 proceed" reply in an already-handled thread arrives under a new message-id. The driver therefore
-keeps a matter ledger (`studio/prelim-search/.matter-ledger.jsonl`) and parks as `.duplicate` any
+keeps a matter ledger (`studio/clearance-search/.matter-ledger.jsonl`) and parks as `.duplicate` any
 job within the window (a fixed 24 hours) that matches a prior entry by
 exact signature (`forwarder|mark|classes|customer|ref`, plus a `|level:<product>` dimension on any
 non-baseline product) or by same conversation-thread with agreeing mark *and* agreeing product. The
@@ -108,7 +108,7 @@ winner (`runner.mjs`). A `.pid` sidecar records `<pid>:<starttime>` (starttime t
 **Run identity is minted before any spend.** The codename (`adjective-noun`) is minted at dispatch
 and written atomically to `<id>.processing.meta` *before* the pipeline starts (`runner.mjs`).
 A crash anywhere after that resumes the *same* run directory instead of re-spending a fresh run.
-Run dirs are `<workspace>/studio/prelim-search/<slug>/<date>-<codename>`, slug =
+Run dirs are `<workspace>/studio/clearance-search/<slug>/<date>-<codename>`, slug =
 `tmp<n>-<kebab-mark>` (or `noref<6-hex>-<mark>` when no reference was given; `phase0.mjs`).
 
 **Orphan reclaim** (`runner.mjs`) runs once per drain. A `.processing` whose claimer is
@@ -177,7 +177,7 @@ seeding. Frozen sidecars are never silently re-derived; a corrupt one crashes lo
 ```mermaid
 flowchart TD
     subgraph HEAD["Phase 1-2 head (fatal)"]
-        MF[matter-frame] --> PV[prelim-variants]
+        MF[matter-frame] --> PV[clearance-variants]
         PV --> DER["code derivations:<br/>scope ledger · form neighbourhood ·<br/>register plan freeze · recall probes"]
     end
     DER --> GRID["grid spec dictated by code<br/>(terms × platforms × connotation; A1 split)"]
@@ -217,7 +217,7 @@ flowchart TD
 
 Reading order for the phases, with what code decides at each:
 
-1. **Head stages** — `matter-frame` then `prelim-variants`, both fatal. Code then derives the
+1. **Head stages** — `matter-frame` then `clearance-variants`, both fatal. Code then derives the
    scope ledger, the *form neighbourhood* (the model picks the distinctive token; the machine
    generates the complete mechanical variant floor), freezes the register plan
    (`_driver/register-plan.json`, frozen for the life of *this run* — a resume never re-plans, and a
@@ -445,7 +445,7 @@ node pipeline.mjs --resume <codename> --experiment <stage> [--label <t>]        
 - **`--from`** forces stages at or after the named ordinal even if their outputs validate; earlier
   stages still skip. A `--from synthesis` fork deliberately does *not* lock the digest.
 - **`--experiment`** runs one stage in a shadow dir (`_experiments/<ts>-<tag>/`) on copies of its
-  inputs, under a `prelim-exp-…` session key that is excluded from the run's provider-usage
+  inputs, under a `clearance-exp-…` session key that is excluded from the run's provider-usage
   attribution. The canonical run is untouched.
 - **Orphan self-resume**: a manually resumed run that parks has no queue sidecars; the runner scans
   run dirs for due, payload-complete `.postponed` sentinels not owned by any queue and resumes them

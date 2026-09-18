@@ -57,7 +57,7 @@ straight through; each declares a skip naming root as the reason, and the suite 
 *failure* rather than a skip on one of those, it is yours.
 
 **`driver/skills/**` is engine input, not documentation.** Those 46 Markdown files are the prompt payload
-served to the model at runtime. `prelim-search/synthesis-rules.md` is a 16,000-word program. Editing them
+served to the model at runtime. `clearance-search/synthesis-rules.md` is a 16,000-word program. Editing them
 for brevity, tone or tidiness changes what a clearance concludes. Do not touch them as part of any
 documentation task.
 
@@ -86,7 +86,7 @@ found" while unconfigured is the most dangerous output this system can produce.
 missing file, or a failed call must never be reported as a clean negative. This is the repository's
 central doctrine and the source of more defects than any other cause.
 
-**Never commit client data.** No real company names, marks, matter numbers or run ids — in code,
+**Never commit company data.** No real company names, marks, matter numbers or run ids — in code,
 comments, tests or fixtures. Two guards check for it specifically: one sweeps every
 tracked file for client identity, and one sweeps for operator identity and undeclared citations.
 
@@ -115,7 +115,7 @@ lacks either.
 ├── driver/               the orchestrator — sequences every stage, publishes, owns the run archive
 │   ├── engine/           the two CLI adapters (anthropic-agent, openai-agent) + the stage tool servers
 │   ├── publish/          report + audit rendering
-│   ├── profiles/         per-customer config; the bundled ones are synthetic demos
+│   ├── profiles/         per-company config; the bundled ones are synthetic demos
 │   ├── skills/           PROMPT PAYLOAD — engine input, not docs. See the hard rule above
 │   └── test/             two tiers, marked with `@tier full`
 ├── providers/            one adapter per data source. START HERE for registers — providers/README.md
@@ -134,7 +134,7 @@ lacks either.
   must be set.
 - **Run data** never lives in the repository. Published reports and audits go to the archive pool at
   `CLEAROTRON_REPORTS_DIR`; run directories to `CLEAROTRON_WORK_DIR`.
-- **Customer configuration** is external too: `CLEAROTRON_CUSTOMERS_DIR` points at a private store. The bundled
+- **Company configuration** is external too: `CLEAROTRON_CUSTOMERS_DIR` points at a private store. The bundled
   profiles are inventions used by the test suite.
 
 ## Before you open a pull request

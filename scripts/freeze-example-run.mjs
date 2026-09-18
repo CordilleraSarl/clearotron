@@ -47,7 +47,8 @@ import {
 } from "node:fs";
 import { join, dirname, relative, basename } from "node:path";
 import { createHash } from "node:crypto";
-import { driverDir } from "../shared/driver-dir.mjs";   //
+import { driverDir } from "../shared/driver-dir.mjs";
+import { PUBLISH_INPUTS } from "../driver/publish/publish-inputs.mjs";   //
 import { tmpdir } from "node:os";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
@@ -61,23 +62,32 @@ const FROZEN_FILES = [
   { path: "audit.md", why: "publish/index.mjs:1022 auditMd, the audit workbook source" },
   { path: "findings.json", why: "publish/index.mjs:715 readStore, the per-finding machine contract" },
   { path: "status.json", why: "publish/index.mjs:913 machineLedgerNote + markName" },
-  { path: "case-law-findings.md", why: "publish/index.mjs:875 clPath, the case-law section" },
-  { path: "common-law-grid.json", why: "publish/index.mjs:1006 commonLawJoinedTerms, common-law coverage" },
+  { path: "case-law-findings.md", why: "`clPath` declared in index.mjs, the case-law section" },
+  { path: "common-law-grid.json", why: "`commonLawJoinedTerms` declared in index.mjs, common-law coverage" },
   // publish/index.mjs — the _driver sidecars it reads by name
   { path: "_driver/receipts.json", why: "publish/index.mjs:761 fetchReceipts" },
   { path: "_driver/senior-rights.json", why: "publish/index.mjs:787 seniorRights" },
   { path: "_driver/verdict.json", why: "publish/index.mjs:792 verdictInfo" },
   { path: "_driver/framework.json", why: "publish/index.mjs, the frozen band vocabulary the run was rated under" },
-  { path: "_driver/register-plan.json", why: "publish/index.mjs:846 scopeBasis" },
-  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:847 searchedJurisdictions, the fallback for register-plan" },
-  { path: "_driver/enforcer-signals.json", why: "publish/index.mjs:887 esPath" },
+  { path: "_driver/register-plan.json", why: "publish/index.mjs:901 scopeBasis" },
+  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:902 searchedJurisdictions, the fallback for register-plan" },
+  { path: "_driver/enforcer-signals.json", why: "`esPath` declared in index.mjs" },
   { path: "_driver/predelivery-lint.json", why: "publish/index.mjs:172 lintSink" },
   { path: "_driver/escalation-state.json", why: "publish/index.mjs:173 escSink" },
-  { path: "_driver/reasoning-integrity.json", why: "publish/index.mjs:924 integritySink" },
+  { path: "_driver/reasoning-integrity.json", why: "`integritySink` declared in index.mjs" },
   { path: "_driver/corrections-state.json", why: "publish/index.mjs:174 correctionsSink" },
-  { path: "_driver/search-policy.json", why: "publish/index.mjs:987 searchPolicy, level + stage label" },
+  { path: "_driver/search-policy.json", why: "`searchPolicy` declared in index.mjs, level + stage label" },
   { path: "_driver/profile.json", why: "publish/index.mjs reads the frozen profile; report-registry.mjs:42 republishRun, customer key" },
 ];
+
+// EVERY INPUT THE PUBLISHER DECLARES TRAVELS, taken from its own closed table rather than restated. The
+// hand-kept list above drifted from that table: register-named-band.json, the recall receipt and the
+// local-language lane's two files were declared publish inputs and were left behind, so a frozen republish
+// drew no register section and no local-language row where the source run drew both. A declared input
+// added later now travels without an edit here; one the publisher does not declare still needs a line above.
+for (const path of Object.keys(PUBLISH_INPUTS)) {
+  if (!FROZEN_FILES.some((f) => f.path === path)) FROZEN_FILES.push({ path, why: "declared in publish/publish-inputs.mjs" });
+}
 
 // ── THE KNOCKOUT LANE IS A DIFFERENT WORKSPACE, AND report.md IS NOT IN IT ─
 //
@@ -108,7 +118,7 @@ const KNOCKOUT_FILES = [
   // knockout report render empty (publish/knockout.mjs:140-155). Named by stages-knockout.mjs:32,41.
   { path: "_driver/register-counts.json", why: "publish/knockout.mjs:140-155 counted figures + the Register column" },
   { path: "_driver/register-records.json", why: "stages-knockout.mjs:41 the terms behind the close-variation axis" },
-  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:847 searchedJurisdictions, the fallback for register-plan" },
+  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:902 searchedJurisdictions, the fallback for register-plan" },
 ];
 
 /** The allowlist for a template. One place, so a new template cannot half-exist. */
@@ -176,7 +186,7 @@ const VOLATILE = [
 //
 // 1. THE BIRTH CODENAME, IN CONTENT. `--codename` rebuilds the run's IDENTITY — the leaf, the runId, the
 //    directory — and the content keeps the old pair: `_receipt.context` in every record artifact reads
-//    "prelim-<matter>-<codename>-register-unit-primary-sweep", and audit.md and status.json carry it in
+//    "clearance-<matter>-<codename>-register-unit-primary-sweep", and audit.md and status.json carry it in
 //    prose. driver/test/no-client-identifiers.test.mjs check 2 sweeps CONTENT as well as paths, so a
 //    tree renamed but not rewritten can never be committed — which is exactly what the old echo check
 //    reported, correctly, and could do nothing about.

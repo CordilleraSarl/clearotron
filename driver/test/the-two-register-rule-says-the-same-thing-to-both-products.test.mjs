@@ -23,7 +23,7 @@ import { fileURLToPath } from "node:url";
 import { PLAIN_FORMS, SENTENCE_WORD_LIMIT } from "../plain-register.mjs";
 
 const SKILLS = join(dirname(fileURLToPath(import.meta.url)), "..", "skills");
-const CLEARANCE = readFileSync(join(SKILLS, "prelim-search/report-prose.md"), "utf8");
+const CLEARANCE = readFileSync(join(SKILLS, "clearance-search/report-prose.md"), "utf8");
 const KNOCKOUT = readFileSync(join(SKILLS, "knockout-assess/SKILL.md"), "utf8");
 const BOTH = [["the clearance prose standard", CLEARANCE], ["the knockout doctrine", KNOCKOUT]];
 

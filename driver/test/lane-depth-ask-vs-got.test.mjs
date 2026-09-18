@@ -27,7 +27,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 
-import { deriveLaneDepthVerdicts, deriveJxSliceStatement } from "../jx.mjs";
+import { deriveLaneDepthVerdicts, deriveJxSliceStatement, laneDepthOfRun } from "../jx.mjs";
+import { localLanguageDepth } from "../publish/search-depth.mjs";
 import { readJxLanes } from "../reference-score.mjs";
 import { injectLaneDepthCoverage } from "../pipeline.mjs";
 
@@ -140,6 +141,52 @@ test("the verdict rides the REAL slice statement, not a hand-written one", () =>
   assert.equal(v.zh.asked, "full");
   assert.equal(v.zh.shortfall, true, "arms unset in this env ⇒ the deep slices did not run ⇒ the ask was not met");
   assert.equal(v.zh.cause, "requested-full-ran-candidates");
+});
+
+// ── THE SHAPE OF THE ARGUMENT, which is how this seam broke on a delivered report ───────────────────
+//
+// `deriveLaneDepthVerdicts` reads `slices.candidates`. `deriveJxSliceStatement` returns
+// `{executes, slices}`. The publish path passed the whole return, so the lookup found nothing, every
+// lane's `ran` came back null whatever it had done, and a full-country JP run that searched in Japanese
+// printed "Local-language investigation · Not run this run" on the client's page. Nothing threw. The
+// same run's stamped sidecar said `ran: "candidates"` — two authors for one fact, and the report used
+// the wrong one.
+test("the whole slice statement and its slices map are read the same way — neither is silently misread", () => {
+  const sidecar = { lanes: { zh: laneAsking("full") }, fold: { lanes: { zh: { degraded: false } } } };
+  const statement = deriveJxSliceStatement({ sidecar, units: null, env: {}, causes: {} });
+  const fromStatement = deriveLaneDepthVerdicts({ sidecar, slices: statement });
+  const fromMap = deriveLaneDepthVerdicts({ sidecar, slices: statement.slices });
+  assert.deepEqual(fromStatement, fromMap, "the caller's shape cannot change the verdict");
+  assert.equal(fromMap.zh.ran, "candidates", "and the verdict is what the lane delivered, not null");
+});
+
+// THE RUN THE OWNER'S READER MET (VENQORI full country JP, 2026-09-18): ONE asked
+// lane, `ja`, for which this build carries no deep slice at all. The lane ran as the slice-1 candidate
+// lane — which is everything `ja` ships as — and its shortfall is that `full` cannot be delivered for it
+// by any environment. That is a shallow search, and the row must say so rather than say none ran.
+test("a single lane that ran as deep as this build goes reads as shallow, never as not run", () => {
+  const sidecar = { lanes: { ja: laneAsking("full") }, fold: { lanes: { ja: { degraded: false } } } };
+  const v = deriveLaneDepthVerdicts({ sidecar, slices: deriveJxSliceStatement({ sidecar, units: null, env: {}, causes: {} }) });
+  assert.equal(v.ja.ran, "candidates");
+  assert.equal(v.ja.shortfall, true);
+  assert.equal(v.ja.cause, "not-built-for-lane");
+  assert.equal(localLanguageDepth(v).state, "ran-shallow",
+    "the row a client reads: searched, and not as deeply as the matter asked for");
+});
+
+// ONE AUTHOR FOR ONE FACT. What the report prints is what the RUN stated, not what the publishing box
+// re-derives — the arms are environment, so a later derivation speaks for a later box. Deriving stays
+// only for an artifact delivered before the stamp existed.
+test("a published report carries the run's own stated verdict, and derives only when there is none", () => {
+  const stamped = { ja: { asked: "full", ran: "candidates", shortfall: true, cause: "not-built-for-lane", why: "no deep slice for ja" } };
+  const sidecar = { lanes: { ja: laneAsking("full") }, fold: { lanes: { ja: { degraded: false } }, depth: stamped } };
+  assert.deepEqual(laneDepthOfRun({ sidecar, units: null, env: {} }), stamped, "the stamp is read, not recomputed");
+
+  // A pre-stamp artifact still gets the best answer its own record supports.
+  const legacy = { lanes: { ja: laneAsking("full") }, fold: { lanes: { ja: { degraded: false } } } };
+  const derived = laneDepthOfRun({ sidecar: legacy, units: null, env: {} });
+  assert.equal(derived.ja.ran, "candidates");
+  assert.equal(localLanguageDepth(derived).state, "ran-shallow");
 });
 
 // ── the reader half ─────────────────────────────────────────────────────────────────────────────────

@@ -254,7 +254,7 @@ test("report --round: a refused case shows THAT round's door answers, not the ne
     writeFileSync(join(box.store, "scenarios", "R0.json"), JSON.stringify({
       id: "R0", title: "PAIR FIXTURE — a refused case", why: ["fixture for #514"], door: "cli",
       cost: { measured: true, wallMinutes: 1 },
-      cases: [{ id: "R0b-refused", job: { ...job, ref: "E2E-R0b", searchLevel: "prelim-jx" }, expect: { terminal: "clarify" } }],
+      cases: [{ id: "R0b-refused", job: { ...job, ref: "E2E-R0b", searchLevel: "clearance-jx" }, expect: { terminal: "clarify" } }],
     }, null, 2));
     const NEW = "9f8e7d6c";
     const refusal = (t, reason) => ({ token: t, startedAt: t === OLD ? "2026-08-07T22:00:00.000Z" : "2026-08-07T22:20:00.000Z",
@@ -295,7 +295,7 @@ test("report: a case of a round the receipt LOST is NOT PROBED, never `left no t
         { id: "R0a-admitted", job: { ...job, ref: "E2E-R0a" }, expect: { terminal: "delivered" } },
         // `searchLevel` is retired vocabulary every door refuses by name — a refusal decided inside
         // `enqueue`, which is the case shape this branch exists for.
-        { id: "R0b-refused", job: { ...job, ref: "E2E-R0b", searchLevel: "prelim-jx" }, expect: { terminal: "clarify" } },
+        { id: "R0b-refused", job: { ...job, ref: "E2E-R0b", searchLevel: "clearance-jx" }, expect: { terminal: "clarify" } },
       ],
     }, null, 2));
     const NEW = "9f8e7d6c";

@@ -22,14 +22,14 @@
 // an INTENDED fix (then --update on the merged result).
 //
 // Env: CLEAROTRON_REPLAY_ROOTS  colon-separated corpus roots
-//        (default: <workspaceRoot>/workspace-*/studio/prelim-search — live slugs + archive/)
-//      CLEAROTRON_REPLAY_SNAPSHOT  snapshot path (default: ~/.prelim-replay-snapshot.json)
+//        (default: <workspaceRoot>/workspace-*/studio/clearance-search — live slugs + archive/)
+//      CLEAROTRON_REPLAY_SNAPSHOT  snapshot path (default: ~/.clearance-replay-snapshot.json)
 
 import "../shared/env-local.mjs";   // — FIRST: the CLEAROTRON_* translation must land before any
                                      // module-top capture below it evaluates. A call in this file's BODY
                                      // would run too late — that was the repair that left this open.
 import { readFileSync, writeFileSync, readdirSync, existsSync, statSync } from "node:fs";
-import { join, basename } from "node:path";
+import { join, basename } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
 import { DRIVER_DIR, driverDir } from "../shared/driver-dir.mjs";   //
 import { homedir } from "node:os";
 import { validators } from "./verify.mjs";
@@ -62,7 +62,7 @@ function looksLikeRunDir(p) {
   return n.includes(DRIVER_DIR) || n.some((f) => FILE_CHECKS[f]);
 }
 
-// Corpus roots → sorted run dirs. Layout per root (a workspace's studio/prelim-search):
+// Corpus roots → sorted run dirs. Layout per root (a workspace's studio/clearance-search):
 //   <slug>/<date>-<codename>/                      (live slugs)
 //   archive/<YYYY-MM>/<slug>/<date>-<codename>/    (archived)
 export function discoverRuns(roots) {
@@ -219,12 +219,12 @@ function main() {
   const args = new Set(process.argv.slice(2));
   // ON-DISK NAME, NOT A PRODUCT NAME: an install that never set the variable already has this file, so
   // renaming the default points the reader at one that does not exist. Ruling.
-  const snapshotPath = process.env.CLEAROTRON_REPLAY_SNAPSHOT || join(homedir(), ".prelim-replay-snapshot.json");
+  const snapshotPath = process.env.CLEAROTRON_REPLAY_SNAPSHOT || [join(homedir(), ".prelim-replay-snapshot.json"), join(homedir(), ".clearance-replay-snapshot.json")].find((f, i) => i === 1 || existsSync(f));   // the file the install already has wins
   const roots = process.env.CLEAROTRON_REPLAY_ROOTS
     ? process.env.CLEAROTRON_REPLAY_ROOTS.split(":").filter(Boolean)
     : names(config.workspaceRoot)
         .filter((d) => config.agentIdFromWorkspaceName(d) != null)
-        .map((d) => join(config.workspaceRoot, d, "studio", "prelim-search"));
+        .map((d) => studioDirFor(join(config.workspaceRoot, d)));
 
   const runDirs = discoverRuns(roots);
   if (!runDirs.length) {

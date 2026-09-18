@@ -68,6 +68,10 @@ import { doorGates, resolveForDoor } from "../driver/door-gates.mjs";
 // — the plan-row term screen, shared with the driver rather than restated here, so the harness
 // can never drift from what the plan freeze and the executor enforce. PURE (no node imports).
 import { entryTermIssues } from "../providers/_shared/term-shape.mjs";
+// — the mechanical tier vocabulary, imported from the module that classifies into it rather than
+// restated here: a floor naming a tier that does not exist must fail loudly rather than compare against
+// a missing key, and the list must not drift if a tier is ever added. PURE (no node imports) too.
+import { SHAPE_TIERS } from "../driver/band-shape.mjs";
 // The owner's turnaround benchmarks. The BAND owns the number and a scenario file cannot carry
 // one — see the lint rule below. Another pure leaf with zero imports of its own, for the same reason
 // queue-markers.mjs is: nothing in this file may reach driver.config.mjs.
@@ -1256,6 +1260,70 @@ export function pathsAnOpDoesNotRead(scenarios) {
   return out;
 }
 
+/**
+ * The office a band-shape floor row belongs to, from the row's own fields and never from a wider table.
+ *
+ * TWO SOURCES, IN THE ORDER band-shape.mjs POPULATES THEM. `registry` is the projection's own field and
+ * it is derived, so it can read `unknown`; the record id carries the office as its second path segment.
+ * Measured on a preserved dense clearance run, 2026-09-18: 289 of 289 rows carried `registry`, and every
+ * one agreed with its id's segment. The fallback exists for the row that does not, and a row that
+ * answers neither way is counted separately by the caller rather than dropped.
+ */
+export const bandRowOffice = (r) => {
+  const reg = String(r?.registry ?? "").trim().toLowerCase();
+  if (reg && reg !== "unknown") return reg;
+  const m = String(r?.record_id ?? "").match(/^\/[^/]+\/([^/]+)\//);
+  return m ? m[1].toLowerCase() : "";
+};
+
+/**
+ * Open a clearance run's band shape for a floor op: the document, the mark check, and the two coverage
+ * qualifications — or ONE sentence saying why no floor under it can be read.
+ *
+ * THE MARK IS CHECKED AGAINST `targets`, NOT AGAINST `targets[0]`. The driver shapes a band for the mark
+ * under search PLUS its manifest variants, and it puts the job's own mark in that list unconditionally;
+ * the first entry is the variant lane's to order. Membership is therefore the property that holds while
+ * the variant lane moves, and it still catches the case this check is for — a shape derived for some
+ * other mark entirely. A mismatch says so in its own words rather than folding into a missed floor,
+ * because "the store's mark moved" and "the register thinned" need opposite answers.
+ */
+function bandShapeUnder(full, file, field) {
+  const bad = (saw) => ({ bad: saw });
+  if (!existsSync(full)) return bad(`${file} absent — the clearance lane derives this after every register band re-merge, so an absent `
+    + `shape is a derivation that did not happen or a lane that never merged a band. It is not a register that holds nothing.`);
+  const doc = readJson(full);
+  if (!doc) return bad(`${file} present but unparseable`);
+  const want = field ? String(field).trim().toLowerCase() : null;
+  if (!want) return bad("no mark given (path must be <file>:<MARK NAME>)");
+  const targets = Array.isArray(doc.targets) ? doc.targets.filter((t) => String(t ?? "").trim()) : [];
+  if (!targets.length) return bad(`${file} carries no targets — nothing in it says which mark the band was shaped for, so no floor under a mark can be read from it`);
+  if (!targets.some((t) => String(t).trim().toLowerCase() === want)) {
+    const shown = targets.slice(0, 6).map((t) => JSON.stringify(String(t))).join(", ");
+    return bad(`this shape was derived for targets that do not include ${JSON.stringify(field)} — it was shaped for ${shown}`
+      + `${targets.length > 6 ? `, and ${targets.length - 6} more` : ""}. The store's mark moved, or this run is another mark's; either way no floor here is about the mark the scenario named.`);
+  }
+  const spots = Array.isArray(doc.blind_spots) ? doc.blind_spots : [];
+  // The register would not answer: a refused slice, or one it would not state a total for. These make a
+  // shortfall genuinely ambiguous, so they qualify a pass and may be the reason for a miss.
+  const unread = spots.filter((b) => b?.kind === "refused-slice" || b?.kind === "uncountable-slice")
+    .map((b) => `${b.count ?? "?"} ${b.kind}`);
+  // The register DID answer, with a number larger than what was fetched. That is evidence of size, not a
+  // gap in it — see the block at the ops — so it is named with the depth read and excuses nothing.
+  const shallow = spots.filter((b) => b?.kind === "unenumerated-crowd")
+    .map((b) => `${b.count ?? "?"} ${b.kind}${Array.isArray(b.read_depth) && b.read_depth.length ? ` (read ${b.read_depth.join("/")} deep)` : ""}`);
+  const verdict = (ok, passBody, missBody) => {
+    const parts = [ok ? passBody : missBody];
+    if (unread.length) parts.push(ok
+      ? `floor met, but the register refused or would not total ${unread.join(", ")}, so this run covered less than it asked for`
+      : `and the register refused or would not total ${unread.join(", ")}, so the shortfall may be what it would not answer rather than what it holds`);
+    if (shallow.length) parts.push(ok
+      ? `${shallow.join(", ")} — the register stated more than the funnel fetched there`
+      : `and ${shallow.join(", ")} — the register stated more than the funnel fetched there, which is a finding about the read depth and NOT a reason to lower the floor`);
+    return { ok, saw: parts.join(" — ") };
+  };
+  return { doc, unread, shallow, verdict };
+}
+
 function evalAssertion(a, runDir) {
   const [file, field] = String(a.path ?? "").split(":");
   const full = join(runDir, file || "");
@@ -1637,6 +1705,112 @@ function evalAssertion(a, runDir) {
       saw: failed.length ? `${body}, and ${failed.length} term(s) FAILED to fetch, so the shortfall may be the fetch and not the register: ${failed.join(" · ")}`
         : `${body} — the register returned fewer rows than the hit path needs, so screening, hydration and citation ran on less than this scenario exists to give them` };
   }
+  // ── · THE SAME TWO QUESTIONS, ASKED OF THE CLEARANCE LANE'S OWN ARTIFACT ──────────────────────
+  //
+  // WHY A SECOND PAIR RATHER THAN A SECOND PATH ON THE PAIR ABOVE. `register-counts.json` and
+  // `register-records.json` are written by the KNOCKOUT lane and by nothing else. A clearance scenario
+  // asserting the floors above therefore gets `absent` on both, and the sentence those absences print —
+  // "a run whose register lane wrote nothing is not a run that found nothing" — is true of the file and
+  // false of the run: the clearance lane read the band and recorded it under other names. The record it
+  // keeps is `_driver/band-shape.json`, derived after every named-band re-merge, and it is a different
+  // shape entirely rather than the same shape in another place, so it needs its own two ops.
+  //
+  // THREE POPULATIONS, THREE DIFFERENT NUMBERS, AND CONFLATING THEM IS THE TRAP THIS PAIR SITS IN.
+  // Measured on a preserved dense clearance run, 2026-09-18, all three true of one band at one moment:
+  //
+  //   totals.records                        1554   every in-scope record the merged band holds
+  //   totals.by_tier.identical               245   tiered across the WHOLE band, class filter and all
+  //   floors.in_class_identical_or_near      289   identical AND near-identical, live, in-class only
+  //
+  // The band's own delivered depth record counted 2098, because it counts everything READ rather than
+  // what stayed in scope. A floor written against one of these and read against another drifts with
+  // nobody noticing, which is the failure the floors exist to catch happening to the floors themselves.
+  // So every number these ops print names its population in words, and neither op mixes two.
+  //
+  // BOTH KEEP THE TWO RULES THE PAIR ABOVE IS BUILT ON. A size that was never taken is never a small
+  // one: an absent shape, a shape with no `totals`, no `by_tier` or no floors array is reported as a
+  // derivation that did not happen, never as a band that holds nothing. And a slice the register refused
+  // or would not total is reduced coverage, named whichever way the floor goes.
+  //
+  // A CROWD THE FUNNEL COULD NOT ENUMERATE IS NOT THAT, AND MUST NEVER EXCUSE A SHORTFALL. Its
+  // `total_hits` is LARGER than what was fetched, which is the register stating that the band is at
+  // least that big — positive evidence of size, the opposite of a coverage gap. A dense band carries
+  // these by construction (19 of them on the run measured above), so letting them soften a miss would
+  // make every genuine thinning report as "the register may not have answered" for ever. They are named
+  // with the depth actually read, and they change no verdict.
+  if (a.op === "band-count-floor" || a.op === "band-records-floor") {
+    const shape = bandShapeUnder(full, file, field);
+    if (shape.bad) return { ok: false, saw: shape.bad };
+    const value = a.value && typeof a.value === "object" && !Array.isArray(a.value) ? a.value : null;
+
+    if (a.op === "band-count-floor") {
+      if (!value) return { ok: false, saw: "value must be an object of floors, e.g. {\"records\": 1000, \"by_tier\": {\"identical\": 120}}" };
+      const unknown = Object.keys(value).filter((k) => k !== "records" && k !== "by_tier");
+      if (unknown.length) return { ok: false, saw: `unknown floor key(s) ${unknown.map((k) => JSON.stringify(k)).join(", ")} — this op takes `
+        + `"records" (the whole in-scope band) and "by_tier" (one floor per mechanical tier). A key nothing reads is a floor nobody asserts.` };
+      const totals = shape.doc.totals && typeof shape.doc.totals === "object" ? shape.doc.totals : null;
+      if (!totals) return { ok: false, saw: `${file} carries no totals — the band was never sized, which is not a band whose size is zero` };
+
+      const saw = [], short = [], untaken = [];
+      if (Object.hasOwn(value, "records")) {
+        const want = value.records;
+        if (!Number.isFinite(want)) return { ok: false, saw: `"records" must be a number, not ${JSON.stringify(want)}` };
+        if (!Number.isFinite(totals.records)) untaken.push(`records: NOT TAKEN — totals.records is ${JSON.stringify(totals.records ?? null)}`);
+        else {
+          saw.push(`${totals.records} record(s) in the whole in-scope band (floor ${want})`);
+          if (!(totals.records >= want)) short.push(`the in-scope band is ${totals.records} record(s), below the floor of ${want}`);
+        }
+      }
+      if (Object.hasOwn(value, "by_tier")) {
+        const tiers = value.by_tier && typeof value.by_tier === "object" && !Array.isArray(value.by_tier) ? value.by_tier : null;
+        if (!tiers) return { ok: false, saw: "\"by_tier\" must be an object of tier floors, e.g. {\"identical\": 120}" };
+        const byTier = totals.by_tier && typeof totals.by_tier === "object" ? totals.by_tier : null;
+        if (!byTier) return { ok: false, saw: `${file} carries no totals.by_tier — the band was never tiered, which is not a band holding no identical marks` };
+        for (const [tier, want] of Object.entries(tiers)) {
+          if (!SHAPE_TIERS.includes(tier)) { untaken.push(`${tier}: NO SUCH TIER — the mechanical tiers are ${SHAPE_TIERS.join(", ")}`); continue; }
+          if (!Number.isFinite(want)) return { ok: false, saw: `the floor for ${tier} must be a number, not ${JSON.stringify(want)}` };
+          const n = byTier[tier];
+          if (!Number.isFinite(n)) { untaken.push(`${tier}: NOT TAKEN — totals.by_tier.${tier} is ${JSON.stringify(n ?? null)}`); continue; }
+          saw.push(`${n} record(s) tiered ${tier} across the whole band (floor ${want})`);
+          if (!(n >= want)) short.push(`${tier} is ${n}, below the floor of ${want}`);
+        }
+      }
+      if (!saw.length && !short.length && !untaken.length)
+        return { ok: false, saw: "no floor stated — give \"records\", \"by_tier\" or both; an op asserting nothing is an assert that looked at nothing" };
+      if (untaken.length) return { ok: false, saw: `the band was never sized that way, so this scenario proved nothing about the size it exists for — ${untaken.join(" · ")}` };
+      return shape.verdict(short.length === 0, saw.join(" · "),
+        `${short.join(" · ")} — either the register has thinned out under this mark or the query narrowed; re-measure before moving the floor`);
+    }
+
+    // The population behind the count, and the two properties the size-dependent paths need from it:
+    // enough rows to work on, and rows from more than one office.
+    //
+    // BOTH NUMBERS COME OUT OF THE SAME LIST, DELIBERATELY. The shape also carries a `by_registry` table
+    // over the whole band, and taking the office span from there while taking the row count from the
+    // floor list would report a multi-office band whose every floor row was one office — which is the
+    // exact fail-open the knockout records floor names: a total-only floor is met while the property it
+    // exists for lapses with every assert green. One list, both properties, or neither is asserted.
+    const floors = value ?? {};
+    const unknown = Object.keys(floors).filter((k) => k !== "records" && k !== "offices");
+    if (unknown.length) return { ok: false, saw: `unknown floor key(s) ${unknown.map((k) => JSON.stringify(k)).join(", ")} — this op takes `
+      + `"records" (rows on the floor list) and "offices" (how many the list spans).` };
+    const minRecords = Number.isFinite(floors.records) ? floors.records : 1;
+    const minOffices = Number.isFinite(floors.offices) ? floors.offices : 1;
+    const rows = shape.doc.floors?.in_class_identical_or_near;
+    if (!Array.isArray(rows)) return { ok: false, saw: `${file} carries no floors.in_class_identical_or_near array — the one list that is `
+      + `complete by construction was never written, which is not a band holding no identical marks` };
+    const offices = [...new Set(rows.map(bandRowOffice).filter(Boolean))].sort();
+    // A row whose office cannot be read is counted and named rather than dropped: it narrows the span
+    // this op can see, and a span that is narrow because the field is missing is not a narrow band.
+    const officeless = rows.filter((r) => !bandRowOffice(r)).length;
+    const met = rows.length >= minRecords && offices.length >= minOffices;
+    const body = `${rows.length} live in-class identical/near-identical floor row(s) (floor ${minRecords}) across `
+      + `${offices.length} office(s) [${offices.join(", ") || "none"}] (floor ${minOffices})`
+      + (officeless ? `, and ${officeless} row(s) carry no office, so the span read here is a floor on the span, not a count of it` : "");
+    return shape.verdict(met, body,
+      `${body} — the band the clearance lane merged is smaller or narrower than this scenario exists to hand the size-dependent paths`);
+  }
+
   // field ops
   const fn = OPS[a.op];
   if (!fn) return { ok: false, saw: `UNIMPLEMENTED op "${a.op}" — not passing by omission`, unimplemented: true };

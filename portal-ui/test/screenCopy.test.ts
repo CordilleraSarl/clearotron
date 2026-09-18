@@ -264,12 +264,12 @@ test('the matrix reuses the shipped design system and introduces no new vocabula
 test('the matrix puts no engine vocabulary and no money on a client’s screen', () => {
   const fn = productMatrixFn()
   // THE PRODUCT IDS ARE DERIVED, not hand-listed. A regex naming today's internal keys keeps passing
-  // while a new one walks straight through — which is exactly how the old scan (`prelim-jx|
+  // while a new one walks straight through — which is exactly how the old scan (`clearance-jx|
   // knockout-register|…`) would have behaved the day those keys stopped existing.
   for (const leak of [
     /jxLanes|commonLawGrid|registerProbe/,
     new RegExp(PRODUCT_IDS.join('|')),
-    /prelim-jx|knockout-register|prelim-register-only|Depth \d/,
+    /clearance-jx|knockout-register|clearance-register-only|Depth \d/,
     /[A-Z][A-Z0-9]*_[A-Z0-9_]+/,
     /[$€£]/,
   ]) {

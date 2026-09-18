@@ -49,8 +49,8 @@ function freshStore(skills) {
   git("init", "-q", "-b", "main");
   git("commit", "-q", "--allow-empty", "-m", "local config store");
   if (skills === "committed") {
-    mkdirSync(join(cfg, "skills", "prelim-search"), { recursive: true });
-    writeFileSync(join(cfg, "skills", "prelim-search", "house-notes.md"), "An instruction this install keeps for itself.\n");
+    mkdirSync(join(cfg, "skills", "clearance-search"), { recursive: true });
+    writeFileSync(join(cfg, "skills", "clearance-search", "house-notes.md"), "An instruction this install keeps for itself.\n");
     git("add", "skills");
     git("commit", "-q", "-m", "an override");
   }
@@ -238,8 +238,8 @@ test("an overlay this process cannot see names both ways it could have been set"
   const prev = process.env.CLEAROTRON_INSTRUCTIONS_DIR;
   pinEnv(process.env, "CLEAROTRON_INSTRUCTIONS_DIR", join(tmpdir(), "no-such-skills-folder-5e1d"));
   try {
-    for (const read of [() => config.resolveSkillPath("skills/prelim-register/digest.md"),
-      () => config.resolveSkillPathReport("skills/prelim-register/digest.md")]) {
+    for (const read of [() => config.resolveSkillPath("skills/clearance-register/digest.md"),
+      () => config.resolveSkillPathReport("skills/clearance-register/digest.md")]) {
       assert.throws(read, (e) => /^skills_overlay_unreadable:/.test(e.message)
         && /CLEAROTRON_INSTRUCTIONS_DIR/.test(e.message) && /PROFILE_REPO_ROOT/.test(e.message)
         && !/is set but/.test(e.message));

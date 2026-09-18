@@ -40,10 +40,17 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   REPORT_ROOT, REPORT_ROOT_DARK_EXPLICIT, THEME_INIT_EXPLICIT, themeButton,
-  THEME_BTN_CSS, CHROME_CSS, FAVICON_LINK, logoLockup, BRAND, confPosture,
+  THEME_BTN_CSS, CHROME_CSS, FAVICON_LINK, logoLockup, BRAND, confPosture, sectionStrip,
 } from '../../shared/brand.mjs';
 import { SUMMARY_BLOCK_LINE, parseSummaryBlocks } from '../../shared/summary-blocks.mjs';
-import { COUNT_BASIS, COUNT_PREDICATES, countsForMark, countLine, variantFormsLine } from '../register-count.mjs';
+
+// THIS BOARD'S FOUR ENTRIES, in its order. Its third reads "Also considered" and resolves at the filings
+// section, which is what that section is; the rule that filters them against the finished document lives
+// in shared/brand.mjs, beside the clearance report's own five.
+const STRIP = Object.freeze([
+  ['summary', 'Summary'], ['findings', 'Findings'], ['filings', 'Also considered'], ['next', 'Next steps'],
+]);
+import { COUNT_BASIS, COUNT_PREDICATES, countsForMark, countLine, variantFormsLine, disclosedFloor, moreThan } from '../register-count.mjs';
 import { RECORD_BASIS, recordsForMark, recordsLine } from '../register-records.mjs';
 import { officeLinkSentences } from './office-record-links.mjs';
 import { knockoutFindingViews, splitKnockoutNotes } from '../findings-model.mjs';
@@ -164,6 +171,39 @@ function qualifierHtml(q) {
 // The layout this report adds on top of report.css. Additive and `ko-`prefixed: report.css is shared with
 // the frozen clearance renderer, and a selector that is inert there cannot regress it.
 const KO_CSS = `
+  /* THE BOARD'S SECTION STRIP AND ITS SECTION FURNITURE, lifted from the approved knockout board rather
+     than written here. Four entries; the third reads "Also considered" and resolves at the filings
+     section. Marked not to print, because the board marks it so: a strip that follows the reader down
+     the page is a control, and paper has nothing for it to follow.
+     NO BACKTICK BELOW, and none in this comment — one closes the template literal this sits inside, and
+     it has cost this file two silent breakages already.
+     The number span is drawn and then hidden, which is the board's own doing: it emits the span on every
+     section and sets it to none further down its own stylesheet. Carried so the delivered document holds
+     the same elements as the approved one; no pixel moves. */
+  /* THE BREADCRUMB IS A ROW OF THE HEADER, not a bar under it (owner, 2026-09-18).
+     It used to be a SIBLING of .rep-stickyhead, pinned on its own at top:var(--tb-h,52px) — and
+     --tb-h is set nowhere in this product, so the fallback was a guess at a bar that measures ~46px:
+     content showed through the slit between the two, and z-index:20 put the strip UNDER the header's
+     100 whenever the guess was wrong. The strip is now emitted inside .rep-stickyhead, so the header
+     and the breadcrumb are one sticky surface that pins and unpins together and can never gap or
+     overlap, whatever the bar measures or how it wraps.
+     No background and no bottom hairline of its own: the wrapper carries the blurred surface and the
+     single edge, and the border-top here is the divider between the two rows. It is on .strip rather
+     than on any wrapper because sectionStrip() emits NOTHING when fewer than two of its sections are
+     live — a wrapper would leave a stray line on those reports.
+     The gutter matches the topbar's, so the first entry lines up under the back button. */
+  .strip{display:flex;gap:4px;align-items:center;padding:4px max(26px,calc((100% - 1120px)/2)) 6px;
+    border-top:1px solid var(--line);font:600 12px/1 'Satoshi','Helvetica Neue',Arial,sans-serif;
+    letter-spacing:.04em;overflow-x:auto;scrollbar-width:none}
+  .strip::-webkit-scrollbar{display:none}
+  .strip a{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;color:#6b5d50;text-decoration:none;white-space:nowrap}
+  .strip a i{width:8px;height:8px;border-radius:50%;border:1.5px solid currentColor;box-sizing:border-box}
+  .strip a.done{color:#4c7a4c}
+  .strip a.done i{background:#4c7a4c;border-color:#4c7a4c}
+  .strip a.now{color:#250902;background:rgba(0,0,0,.06)}
+  .strip a.now i{border-color:#860F09;border-width:3px}
+  .sec .num{display:none}
+  .sec .note{display:inline;margin-left:10px;font-size:12px;color:var(--faint)}
   .ko-glance{padding:6px 0 2px}
   /* — framework attribution, captioning the rows. Same gutter and hairline as.ko-row so it reads
      as the table's head, not a floating note. */
@@ -264,14 +304,55 @@ const KO_CSS = `
   .ko-scope{font-size:13.5px;color:var(--slate);line-height:1.65;margin:0;padding:18px 24px}
   .ko-scope b{color:var(--ink)}
   /* A wide counts table must scroll inside its own panel, never push the page sideways. */
+  /* AND IT SHOWS THAT IT SCROLLS. A panel that continues off its right edge and says nothing leaves a
+     reader who never drags it believing they have seen the whole table; the columns past the edge are
+     reachable and invisible at the same time. Ruled 2026-09-17: a scrollbar, always visible, and no text.
+     The -webkit-appearance:none is the part that does the work — without it the platform draws an OVERLAY
+     scrollbar that appears only once a scroll is already under way, which is the state this rule ends.
+     scrollbar-width and scrollbar-color are the same instruction for the engines that take the standard
+     properties. (NO BACKTICK IN THIS COMMENT: it sits inside the stylesheet's own template literal, and
+     one closes it. That is written above the export menu block too, and I still did it — so it is here
+     as well, beside the second rule anyone adds.) The colours are tokens, not fixed values, for the reason the ladder below this block
+     records: a fixed colour here reads on one ground and goes invisible on the other. */
   .ko-scroll{overflow-x:auto}
-  @media(max-width:700px){.ko-row{grid-template-columns:1fr;gap:10px}}
+  .ko-scroll::-webkit-scrollbar{height:9px;-webkit-appearance:none}
+  .ko-scroll::-webkit-scrollbar-track{background:transparent}
+  .ko-scroll::-webkit-scrollbar-thumb{background:var(--faint);border-radius:5px}
+  /* THE TWO INSTRUCTIONS CANNOT SIT TOGETHER, and this was measured rather than reasoned. Setting the
+     standard scrollbar-width alongside the pseudo-elements makes the engine take the standard path and
+     ignore them, and on this one the standard path draws an overlay bar with no layout height at all.
+     Driven three ways on a delivered report at 390px, reading the height the bar takes out of the panel:
+     both together 0px, the pseudo-elements alone 9px, the standard properties alone 0px. So the standard
+     ones go behind a support query that the engines carrying the pseudo-elements never enter, which
+     leaves each engine exactly one instruction. */
+  @supports not selector(::-webkit-scrollbar){
+    .ko-scroll{scrollbar-width:thin;scrollbar-color:var(--faint) transparent}}
+  /* A finding's bullets carry bare source URLs, and a URL offers a line no place to break. On a phone
+     that unbreakable run becomes the minimum width of the grid item, so the single column floors at
+     443px inside a 360px viewport and the whole page scrolls sideways -- 135px of it, measured
+     2026-09-17. Only the value "anywhere" lowers that minimum: "break-word" breaks the line but
+     leaves the minimum where it was, which is why the blocks beside this one that already set
+     word-break were never the cause. Phone widths only: nothing at or above 700px changes.
+     NO BACKTICK IN THIS COMMENT -- it sits inside the stylesheet's own template literal. */
+  @media(max-width:700px){.ko-row{grid-template-columns:1fr;gap:10px}
+    .ko-bul{overflow-wrap:anywhere}}
 
   /* The band ladder, the territories fold and the run's own caveats (the 2026-09-16 report redesign). Ported from
      the design's stylesheet with its fixed colours replaced by this page's tokens, so the ladder reads
      in both themes: the tick row was #a89a8a on white and the fold's summary and prose a brown pair,
      all three of which go invisible on the dark ground this report also renders on. */
-  .kscale{position:relative;margin:10px 8px 34px}
+  /* THE BAND PILL HANGS ABOVE THE BAR, so the space above the bar is what keeps it off the heading.
+     NO BACKTICK IN THIS COMMENT — it sits inside the stylesheet's own template literal.
+     .kmarker sits at top:-30px and the pill is ~23px tall (5+5 padding on a 13px line), so it starts
+     30px above the bar and ends 7px above it. At the LEFTMOST band the pill is also drawn flush left
+     (translateX(-12px) at left:0%) — directly under the left-aligned "Overall risk" — so that is the
+     rung where the two touch, and the house ladder's leftmost rung is Low.
+     THE ROOM IS ONE MARGIN, NOT TWO, and that is what made the arithmetic wrong twice. This margin and
+     .gauge .label's 18px bottom margin are ADJACENT SIBLINGS, so they collapse to the larger of the two
+     rather than adding: 10px here gave 18px of room against a pill that needs 30, and the first attempt
+     at 24 still left 6. Measured in a browser at every rung (scripts/report-header-render-check.mjs),
+     not reasoned: 44 gives 14px of daylight under the heading at every band. */
+  .kscale{position:relative;margin:44px 8px 34px}
   .kbar{position:relative;height:8px;border-radius:4px}
   .kmarker{position:absolute;top:-30px;text-align:center}
   .kpill{display:inline-block;padding:5px 12px;border-radius:999px;color:#fff;
@@ -434,9 +515,9 @@ function territoriesLine(registerCounts) {
   return `Counted on ${regions.length} registers, listed on the workbook's Register Counts sheet, on ${provider}.`;
 }
 
-/** What the counts do and do not say — the one line that replaces the count-basis paragraph on the page. */
-const COUNTS_READER_LINE = 'Counts include live, pending and dead filings. '
-  + 'A count is not a conflict; the cards above say which filings matter.';
+// The reader line that used to sit under the counts table ("a count is not a conflict…") is off the page:
+// the approved knockout board carries no caveat under the table, and the writing standard lists it among
+// the caveat sentences a page does not print. The column headers say what each count is.
 
 function countsSection(marks, registerCounts, positions = '') {
   // ── THE DEFINITION MOVES INTO THE COLUMN HEADER ──────────────────────────────────────────────────
@@ -471,9 +552,10 @@ function countsSection(marks, registerCounts, positions = '') {
       const why = c?.unavailable ?? (c
         ? 'no count recorded'
         : 'not counted on this run — it predates this column, and an archived report re-renders as what it was');
-      return Number.isFinite(c?.total)
-        ? `<td class="num">${esc(String(c.total))}</td>`
-        : `<td class="na" title="${escAttr(why)}">not available</td>`;
+      if (Number.isFinite(c?.total)) return `<td class="num">${esc(String(c.total))}</td>`;
+      // The register answered with its own floor: that is a figure, and it is printed as one.
+      if (disclosedFloor(c) !== null) return `<td class="num">${esc(moreThan(disclosedFloor(c)))}</td>`;
+      return `<td class="na" title="${escAttr(why)}">not available</td>`;
     }).join('');
     const scoped = e?.classScope !== 'all-classes' && (e?.classes?.length > 0);
     const scope = scoped
@@ -491,7 +573,7 @@ function countsSection(marks, registerCounts, positions = '') {
   // thing in three words each.
   return `<div class="panel">
   <div class="ko-counts ko-scroll"><table><thead><tr><th>Name</th>${head}</tr></thead><tbody>${rows}</tbody></table></div>
-  <p class="ko-basis">${esc(COUNTS_READER_LINE)}<br>${esc(territoriesLine(registerCounts))}${
+  <p class="ko-basis">${esc(territoriesLine(registerCounts))}${
     positions ? `<br>${esc(positions)}` : ''}</p>
 </div>`;
 }
@@ -1157,16 +1239,16 @@ function aboutRequestBlock(scope, requestNotes, depthNote = '', productContext =
   const cut = note.lastIndexOf(' \u2014 ');
   const stage = cut > 0 ? note.slice(0, cut).trim() : note;
   const context = String(productContext ?? '').trim();
-  // REGISTERS COUNTED IS A ROW, AND THE TERRITORY LIST HIDES BEHIND IT (the 2026-09-16 report redesign). A line of
-  // country names running through the middle of the panel is the thing a reader skips; the count and
-  // its source are what they read, and the list is one click away when they want it.
+  // REGISTERS COUNTED IS A ROW (the 2026-09-16 report redesign). A line of country names running through
+  // the middle of the panel is the thing a reader skips; the count and its source are what they read.
   const regions = (registerCounts?.scope?.regions ?? []).filter(Boolean);
   const provider = registerCounts?.providerLabel ?? registerCounts?.provider ?? '';
-  const named = regions.map(territoryName).filter(Boolean);
+  // THE BOARD'S OWN ROW: "186 registers, on Clarivate Compumark." — registers, because that is what was
+  // counted, and no fold: the board lists no territories here, and the workbook's counts sheet carries
+  // every register a figure was taken over.
   const counted = regions.length
-    ? `${regions.length} ${regions.length === 1 ? 'territory' : 'territories'}${provider ? `, on ${provider}` : ''}`
+    ? `${regions.length} ${regions.length === 1 ? 'register' : 'registers'}${provider ? `, on ${provider}` : ''}.`
     : (registerCounts ? `Counted worldwide${provider ? `, on ${provider}` : ''}` : '');
-  const territories = named.length ? listWords(named) : '';
   if (!asked && !where && !classLine && !stage && !context && !counted) return '';
   // ONE PANEL, THE SAME ON BOTH REPORTS (the 2026-09-16 report redesign). The rows carry what was asked for; the
   // counts row says what was counted and hides the territory list behind a fold rather than running a
@@ -1179,7 +1261,7 @@ function aboutRequestBlock(scope, requestNotes, depthNote = '', productContext =
       ${row('Classes', classLine)}
       ${row('Where searched', where)}
       ${row('Context', context)}
-      ${row('Registers counted', counted, territories ? `<details class="terr"><summary>View territories</summary><p>${esc(territories)}</p></details>` : '')}
+      ${row('Registers counted', counted)}
       ${row('Searched on', searched)}
       ${/* item 18 — a note for the reviewing lawyer does not reach the delivered page */''}
     </div>`;
@@ -1336,7 +1418,8 @@ function coverageClause(mark, registerCounts, probeRan) {
       ? 'Register: hit-counts are part of this search and none could be taken for this name — the reason is in the audit workbook.'
       : 'Register: not included in this product tier — no register was counted for this name.';
   }
-  const anyFigure = COUNT_PREDICATES.some((p) => Number.isFinite(entry.counts[p.key]?.total));
+  // A floor the register disclosed is a figure it gave, so a name counted only that way was counted.
+  const anyFigure = COUNT_PREDICATES.some((p) => Number.isFinite(entry.counts[p.key]?.total) || disclosedFloor(entry.counts[p.key]) !== null);
   if (!anyFigure) return 'Register: no count could be taken for this name — the reason is in the audit workbook.';
   // COVERAGE, NOT THE FIGURES. asks the renderer to own the register-tier caveat, and the numbers
   // are already on this page twice — in the glance line at the top and in the counts table above this
@@ -1758,11 +1841,11 @@ export function renderKnockoutHtml(findings, framework, {
     n + registerCardsOnPage(registerCardViews(m, framework, registerRecords).cards, m, framework).length, 0);
   const hasRecords = Boolean(registerRecords && (registerRecords.marks?.length || registerRecords.unavailable));
   const filings = hasRecords ? filingsSection(marks, registerRecords) : '';
-  const onFieldSec = `<div class="sec" id="findings"><h2>Conflicts</h2></div>
+  const onFieldSec = `<div class="sec" id="findings"><span class="num"></span><h2>Conflicts</h2></div>
 ${counts}
 ${analysis}`;
   const filingsSec = filings
-    ? `<div class="sec" id="filings"><h2>Also considered</h2></div>
+    ? `<div class="sec" id="filings"><span class="num"></span><h2>Also considered</h2><span class="note">the filings behind the counts</span></div>
 ${filings}`
     : '';
 
@@ -1774,7 +1857,7 @@ ${filings}`
   const cssInline = REPORT_BASE + '\n' + CHROME_CSS + '\n' + THEME_BTN_CSS + '\n' + KO_CSS;
   const chromeLinkTag = chromeHref ? `<link rel="stylesheet" href="${escAttr(chromeHref)}">` : '';
 
-  return `<!DOCTYPE html>
+  const doc = `<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${productName ? `${esc(productName)} — ` : ''}${esc(title)} · ${esc(BRAND.name)}</title>
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
@@ -1825,6 +1908,7 @@ ${filings}`
     `)}
   </div>
 </div>
+<!--SECTION-STRIP-->
 </div>
 <div class="fab-stack">${themeButton()}</div>
 <script>
@@ -1849,7 +1933,7 @@ window.addEventListener('beforeprint',o);})();
    the clearance template carries, for the same markup; they move together when the top bar is shared. */
 ${EXPORT_MENU_JS}</script>
 <div class="wrap">
-  <header class="hero">
+  <header class="hero" id="summary">
     ${demoBannerHtml(demoData === true)}
     ${confLineHtml(delivery, productName)}
     <h1 class="mark">${esc(title)}</h1>
@@ -1866,7 +1950,7 @@ ${EXPORT_MENU_JS}</script>
     if (!outs.length) return '';
     const label = outs.length > 1;
     const body = outs.map((o) => (label && o.name ? `<h3>${esc(o.name)}</h3>` : '') + mdParagraphs(o.text)).join('');
-    return `<div class="sec" id="next"><h2>What happens next</h2></div>
+    return `<div class="sec" id="next"><span class="num"></span><h2>What happens next</h2></div>
   <div class="panel actions"><div class="actgrp act-you">${body}</div></div>`;
   })()}
 
@@ -1903,6 +1987,7 @@ ${EXPORT_MENU_JS}</script>
   </footer>
 </div>
 </body></html>`;
+  return doc.replace('<!--SECTION-STRIP-->', sectionStrip(doc, STRIP));
 }
 
 /**
@@ -2053,6 +2138,12 @@ export function knockoutReportData(findings, framework, { runId, codename, overa
             classScope: counted.classScope ?? null,
             classes: counted.classes ?? [],
             ...Object.fromEntries(COUNT_PREDICATES.map((p) => [p.key, Number.isFinite(counted.counts[p.key]?.total) ? counted.counts[p.key].total : null])),
+            // The figure stays null for a floor — a floor is never a count to be summed — and the floor
+            // rides beside it, so a reader of this file has the register's own figure and not only a null.
+            ...(COUNT_PREDICATES.some((p) => disclosedFloor(counted.counts[p.key]) !== null)
+              ? { floors: Object.fromEntries(COUNT_PREDICATES.filter((p) => disclosedFloor(counted.counts[p.key]) !== null)
+                .map((p) => [p.key, disclosedFloor(counted.counts[p.key])])) }
+              : {}),
             // The close column is an aggregate, so the forms under it ride with it — a consumer that
             // got the number and not the forms could restate the figure but never explain it, and this
             // file is what the assistant drafts client mail from.

@@ -97,3 +97,88 @@ test("THE HEAD IS RE-READ IMMEDIATELY BEFORE THE APPROVAL, because that is the i
   assert.match(loop, /return 0;/,
     "a moved head does not abort the pass — if the branch moved, every id in the list is stale, not just this one");
 });
+
+// ── THE SECOND LOOK ────────────────────────────────────────────────────────────────────────────────
+//
+// The step above approves the head the version pull request had when the wait job started, and then a
+// wait runs for minutes. The version step force-pushes that branch whenever it runs, so main moving
+// during the wait refreshes the pull request onto a new head, that head parks a run of its own, and
+// nothing returns to approve it. Measured end to end on the 0.3.2-beta.8 cut: approved on c1000649, a
+// release-path fix landed, the pull request refreshed to e30346ec, run 35263949342 parked there with
+// nobody to approve it, cleared by hand. Two heads, one approval.
+//
+// So `awaitCut` takes the look on every pass. These arms drive that loop rather than reading it: a
+// counted `tend` is the only way to tell "called once per pass" from "called once", and the two look
+// identical in the source.
+
+test("the look is taken on EVERY pass of the wait, not once before it", async () => {
+  const { awaitCut } = await import("../../scripts/release-await-cut.mjs");
+  let looks = 0;
+  let reads = 0;
+  const stepMs = 1000;
+  let clock = 0;
+  const r = await awaitCut({
+    refresh: async () => {},
+    // Not cut, not cut, then cut: three passes, so a `tend` called once before the loop would count 1.
+    read: () => (++reads >= 3 ? { cut: true, version: "0.3.2-beta.9" } : { cut: false, version: null }),
+    tend: async () => { looks += 1; },
+    sleep: async () => { clock += stepMs; },
+    waitMs: 60_000, stepMs, now: () => clock,
+  });
+  assert.equal(r.cut, true, "the harness never reached a cut, so this arm measured nothing");
+  assert.equal(reads, 3, "the loop did not run the three passes this arm is built on");
+  assert.equal(looks, 3,
+    "the parked-run look was not taken once per pass — a head the version pull request moves onto "
+    + "during the wait gets no approval, which is the defect this exists to close");
+});
+
+test("the FIRST pass looks before it sleeps, so the ordinary case costs no extra wait", async () => {
+  const { awaitCut } = await import("../../scripts/release-await-cut.mjs");
+  const order = [];
+  await awaitCut({
+    refresh: async () => order.push("refresh"),
+    read: () => { order.push("read"); return { cut: true, version: "1.0.0" }; },
+    tend: async () => order.push("look"),
+    sleep: async () => order.push("sleep"),
+    waitMs: 60_000, stepMs: 1, now: () => 0,
+  });
+  assert.deepEqual(order, ["look", "refresh", "read"],
+    "the look does not come first on a pass that finds the cut already merged");
+});
+
+test("A LOOK THAT THROWS DOES NOT BREAK THE WAIT — noticing the merge is this loop's job", async () => {
+  const { awaitCut } = await import("../../scripts/release-await-cut.mjs");
+  let reads = 0;
+  let clock = 0;
+  let looks = 0;
+  const r = await awaitCut({
+    refresh: async () => {},
+    read: () => (++reads >= 2 ? { cut: true, version: "0.3.2-beta.9" } : { cut: false, version: null }),
+    tend: async () => { looks += 1; throw new Error("the approval API refused"); },
+    sleep: async () => { clock += 1000; },
+    waitMs: 60_000, stepMs: 1000, now: () => clock,
+  });
+  assert.equal(r.cut, true,
+    "a failing approval took the wait down with it — a convenience that can fail a release is not one");
+  assert.equal(r.gaveUp, false);
+  // AND IT WAS ACTUALLY THROWN AT. Without this the arm passes when NO look is taken at all — measured:
+  // with the per-pass call removed it stayed green while the two arms above went red. An arm that holds
+  // for the absence of the thing it names is not testing the thing it names.
+  assert.equal(looks, 2, "the throwing look was never called, so this arm proved nothing");
+});
+
+test("the wait reads the same token the step does, and calls the same script", () => {
+  // THE TOKEN, on the step that now holds the loop. Without it the loop looks every pass and approves
+  // nothing, which is the state this change exists to leave behind.
+  const wait = YML.slice(YML.indexOf("- name: Watch main for the merge this push set in motion"));
+  const body = wait.slice(0, wait.indexOf("run: node scripts/release-await-cut.mjs"));
+  assert.match(body, /ACTIONS_APPROVE_TOKEN: \$\{\{ secrets\.ACTIONS_APPROVE_TOKEN \}\}/,
+    "the wait step cannot approve anything — it has no token, so every pass after the first is inert");
+  // ONE AUTHOR. A second implementation of "which runs may be approved" beside this one is the shape
+  // this repository keeps finding: two readers of the same question that can disagree.
+  const awaitSrc = readFileSync(join(REPO, "scripts/release-await-cut.mjs"), "utf8");
+  assert.match(awaitSrc, /import \{ approvePass \} from "\.\/release-approve-parked\.mjs"/,
+    "the wait loop no longer calls the approver — it has grown its own copy of the decision");
+  assert.match(SRC, /export async function approvePass/,
+    "the approver stopped exporting a single pass, so the loop cannot take one");
+});

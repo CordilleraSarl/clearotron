@@ -11,7 +11,7 @@
 // thirteen silent false cleans on the axis most likely to carry a real obstacle.
 //
 // The fix is NOT a blanket ban. A register that genuinely indexes characters answers native script
-// productively (live: 小米 = 553, 华威豹 = 6, 스타벅스 = 15), and guarding it there would convert
+// productively — native-script terms answer there — and guarding it there would convert
 // evidenced coverage into deferrals — the mirror-image defect. So the rule is DECLARED per provider
 // (capabilities.nativeScriptIndex) and enforced once, in the shared plan executor.
 //

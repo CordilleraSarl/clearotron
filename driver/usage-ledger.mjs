@@ -11,7 +11,7 @@
 // portal-service re-exports both names, so every existing caller is untouched.
 //
 // THIS FILE OWNS THE LEDGER PATH. It used to reconstruct a workspace-relative one —
-// `<workspaceRoot>/workspace-*/studio/prelim-search/.matter-ledger.jsonl` — under a comment claiming it
+// `<workspaceRoot>/workspace-*/studio/clearance-search/.matter-ledger.jsonl` — under a comment claiming it
 // was what runner.mjs computed. The comment was right and the code was not: once the product moved the
 // queue to a standalone directory, that path resolved to nothing, and because a missing ledger is a low
 // count rather than an error, every account read as ZERO on every request. Two copies of one calculation

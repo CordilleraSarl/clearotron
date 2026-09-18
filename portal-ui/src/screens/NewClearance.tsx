@@ -58,9 +58,9 @@ import { parseNames, parseList } from '../contract/compose.ts'
 import type { Draft as Pick, EffortInput } from '../contract/composerProduct.ts'
 import {
   EMPTY_DRAFT, blockers, runCount, turnaround, turnaroundInWords, checksSummary, runsNote, machineryFor,
-  territoryMatches, addTerritory, removeTerritory, takeOverOwnTerritories, reachesTerritory, notAvailableLine,
+  territoryMatches, addTerritory, removeTerritory, takeOverOwnTerritories, reachesTerritory, notAvailableLine, worldwideLine,
   inherited, composeSaved, draftFromSaved, nameBudget, missingPieces, readiness,
-  chooseProduct, geographyFor, geographyNote, nativeLanguageControl, toggleNativeLanguage,
+  chooseProduct, geographyFor, nativeLanguageControl, toggleNativeLanguage,
   recommendSearch, templateLine, territoryCode, joinAnd, nativeLanguageLine, firstAndMore,
 } from '../contract/composerProduct.ts'
 import { productMatrix, LEGEND } from '../contract/productMatrix.ts'
@@ -371,7 +371,6 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   // first country with the second, and the recommendation could then never reach the search that reads
   // both — the reader would be steered by their own first keystroke.
   const whereLevel = pickedByHand || draft.savedSearch || editingSlug ? activeLevel : null
-  const geoNote = geographyNote(whereLevel)
   const nativeControl = nativeLanguageControl(activeLevel)
   const machinery = machineryFor(draft.pick, activeLevel)
   // THE WAY THROUGH THE NAME WALL, found in the offering rather than named here: whichever product reads
@@ -950,17 +949,17 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
         {/* ── WHERE — a different control per product, and each says at the control what it takes ── */}
         <div>
           <div className="section-title">Where</div>
-          {/* THE PRODUCT'S OWN SENTENCE, at the control, always. Not a tooltip and not a refusal
-              after the fact: the requester reads what this search accepts while they are choosing
-              where it points. */}
-          {geoNote ? <p className="section-hint">{geoNote}</p> : null}
+          {/* NO SENTENCE HERE. One per geography stood above this control; the owner ruled all four out
+              on 2026-09-18 and the board carries none of them. What the search takes is said by the row
+              the reader picked and by the controls below — see composerProduct.ts where the function
+              that composed them used to be. */}
 
           {whereLevel?.geography === 'worldwide, and nothing else' ? (
             // NO PICKER AT ALL, and that is the design. Worldwide is not a choice on this search —
             // it IS this search — so a territory field here would be a control whose every use is
             // refused. The chip states the fact; the sentence above says why there is nothing to set.
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, margin: '9px 0 0' }}>
-              <span className="chip">Worldwide</span>
+              <span className="chip">{worldwideLine(registerLabel)}</span>
             </div>
           ) : (
             <>
@@ -1003,7 +1002,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
                       </span>
                     </>
                   ) : (
-                    <span className="chip">Worldwide</span>
+                    <span className="chip">{worldwideLine(registerLabel)}</span>
                   )
                 ) : draft.pick.territories.map((t) => (
                   /* — a chosen territory the register cannot reach keeps its
@@ -1084,12 +1083,14 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
         {/* ── goods or services ── */}
         <div>
           <div className="section-title">Goods or services</div>
-          {/* EITHER THIS OR THE CLASSES, and the helper says which one is used when this is left empty.
-              The request takes classes or a description (`missingPieces`), and the classes it names are
-              the company's own, on the card below. */}
-          <p className="section-hint">
-            Optional. Say what the name is for, to focus the search. Without it, the classes below are used.
-          </p>
+          {/* NO HINT UNDER THIS TITLE. It read "Optional. Say what the name is for, to focus the search.
+              Without it, the classes below are used." The owner ruled it out on 2026-09-18, with the
+              boards that carry it being corrected to match.
+
+              THE BEHAVIOUR IT DESCRIBED IS UNCHANGED and is not a secret: the field is optional, the
+              request takes either a description or classes (`missingPieces`), and the classes it falls
+              back to are the company's own, on the card directly below. What went is the sentence
+              about the field, not anything the field does. */}
           <textarea
             value={draft.goods}
             onChange={(e) => edit({ goods: e.target.value })}
@@ -1125,13 +1126,12 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
             className="ctx-input"
             style={{ resize: 'vertical', lineHeight: 1.5 }}
           />
-          {/* The connector is a second way this field gets filled, and nothing on the screen said so.
-              A search started by an agent through the connector can cite what the agent can already
-              read, so a reader working that way does not have to paste any of it by hand. */}
-          <p className="section-hint" style={{ margin: '7px 0 0' }}>
-            A search started by an agent through the connector can reference emails or documents it
-            can already read, so there is nothing to paste in that case.
-          </p>
+          {/* NO LINE ABOUT THE CONNECTOR HERE. One said that a search started by an agent can reference
+              what the agent can already read, so there was nothing to paste in that case. The owner
+              ruled it out on 2026-09-18. It is written for a reader who is not the one looking at it:
+              anybody reading this field is typing into it, and telling them that some other way of
+              working would not need it answers a question they did not ask, in the field where they
+              are working. Nothing replaces it. */}
         </div>
 
         {/* ── the company card: what this company already carries ── */}
@@ -1464,7 +1464,11 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
             on arrival both are true of every field at once — so the screen opened with two warning
             blocks and a footer repeating one of them, about work nobody had started. The footer says
             the one thing there is to say until then, and every panel returns on the first edit. */}
-        {!untouched && gaps.length ? (
+        {/* NOR WHEN THE FOOTER ALREADY SAYS IT. A company with its own territories arrives with a search
+            preselected, so the form no longer reads as untouched — and a panel whose one line is the
+            footer's own sentence drew it twice on a form nobody had typed in. The board draws the footer
+            line alone. */}
+        {!untouched && gaps.length && !(gaps.length === 1 && gaps[0] === blockedBy) ? (
           <div className="notice" style={{ borderColor: 'var(--tone-medium)', margin: 0 }}>
             <b>{gaps.length === 1 ? 'One thing left to fill in' : 'A couple of things left to fill in'}</b>
             <ul style={{ margin: '8px 0 0', paddingLeft: 18, color: 'var(--text-muted)' }}>
@@ -2195,7 +2199,7 @@ function ReviewDialog({
           </Row>
           {places.length ? (
             <Row label="Where">{places.join(', ')} <Muted>— from {scope?.jurisdictionsFrom}</Muted></Row>
-          ) : <Row label="Where">Worldwide</Row>}
+          ) : <Row label="Where">{worldwideLine(registerLabel)}</Row>}
           {/* ── REGISTERS TO SEARCH — what the search WILL ask, never what it found ─────────────────
               Not "searched in full": the search has not run. And the coverage limit belongs here, where
               the ticket is spent. A worldwide search is orderable on a partial register, so "you are
@@ -2213,7 +2217,7 @@ function ReviewDialog({
                   <Muted>. {notAvailableLine(plan.coverage.missing, registerLabel)}</Muted>
                 ) : null}
               </>
-            ) : places.length ? joinAnd(places) : 'Worldwide'}
+            ) : places.length ? joinAnd(places) : worldwideLine(registerLabel)}
           </Row>
           {scope && scope.classes.length ? (
             <Row label="Classes">{scope.classes.map(classLabel).join(', ')} <Muted>— from {scope.classesFrom}</Muted></Row>

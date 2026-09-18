@@ -48,6 +48,7 @@
 // one question is how a pipeline comes to publish something nobody merged.
 import { appendFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
+import { approvePass } from "./release-approve-parked.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 import { cutDecision, versionAtHead, tagsHere } from "./release-cut-decision.mjs";
 
@@ -117,10 +118,23 @@ export const STEP_MS = 30 * 1000;
  *
  * Returns `{ cut, version, waitedMs, gaveUp }`. `gaveUp` is not a failure — see the header.
  */
-export async function awaitCut({ refresh, read, sleep, waitMs = WAIT_MS, stepMs = STEP_MS, now = () => 0 } = {}) {
+export async function awaitCut({ refresh, read, sleep, tend = null, waitMs = WAIT_MS, stepMs = STEP_MS, now = () => 0 } = {}) {
   const started = now();
   let waitedMs = 0;
   for (;;) {
+    // ── THE SECOND LOOK, EVERY PASS ────────────────────────────────────────────────────────────────
+    //
+    // `tend` is the parked-run approval, and it is here rather than once before the loop because the
+    // version branch is force-pushed whenever the version step runs. If main moves while this waits,
+    // the version pull request is refreshed onto a new head, that head parks a run of its own, and the
+    // approval already spent was spent on a head that no longer exists.
+    //
+    // IT CANNOT BREAK THE WAIT. A tend that throws is reported and the pass continues: this loop's job
+    // is to notice a merge, and it must keep doing that whether or not a convenience beside it worked.
+    if (tend) {
+      try { await tend(); }
+      catch (e) { console.log(`release-await-cut: the parked-run look failed (${String(e?.message ?? e).slice(0, 120)}) — the wait continues.`); }
+    }
     await refresh();
     const d = read();
     // ASKED BEFORE THE FIRST SLEEP, so a merge that landed while CI was finishing costs no wait at all —
@@ -134,6 +148,91 @@ export async function awaitCut({ refresh, read, sleep, waitMs = WAIT_MS, stepMs 
 }
 
 const git = (args) => execFileSync("git", args, { encoding: "utf8" });
+
+/**
+ * Was a cut ASKED FOR by this run, and which pull request is it waiting on.
+ *
+ * A push and the schedule set nothing in motion — they ask main a question and the cron floor sits
+ * underneath either answer. A dispatch is different: the same run opened the version pull request and
+ * told it to merge itself, so the wait expiring means the thing this run was for did not happen.
+ */
+export function cutRequest(env = process.env) {
+  const asked = String(env.CLEAROTRON_CUT_REQUESTED ?? "").trim() === "true";
+  const pr = String(env.CLEAROTRON_CUT_PR ?? "").trim();
+  return { asked, pr: /^[0-9]+$/.test(pr) ? Number(pr) : null };
+}
+
+/**
+ * What to say when the budget expires, and whether it is a failure. PURE.
+ *
+ * THE DISTINCTION THIS EXISTS FOR. Three ways to publish nothing look identical from outside:
+ * nothing was set in motion, this run set something in motion and it did not land, and the loop could
+ * not look at all. The third is exit 2 and is decided before this is reached. The first two are what
+ * this separates, and until it did, a dispatched cut that released nothing reported success — measured
+ * twice on 2026-09-17, on runs 35202212206 and 35260883981.
+ *
+ * NAMING WHICH IS HALF THE POINT. A red that says only "did not merge" sends the next reader to the
+ * same log this was written from. The reason is read off the pull request rather than guessed.
+ */
+export function expiryVerdict({ cut, requested, pr = null }) {
+  if (cut) return { red: false, reason: null };
+  if (!requested) return { red: false, reason: null };
+  if (!pr) return { red: true, reason: "a cut was dispatched, and no version pull request was found to wait on" };
+  // A PULL REQUEST THAT COULD NOT BE READ IS NOT ONE THAT WAS NOT FOUND. Both used to arrive here as
+  // `null`, so a failed read reported "no version pull request was found" about a pull request that was
+  // standing open — a confident wrong reason, on the one line this function exists to get right.
+  if (pr.unread) {
+    return { red: true, reason: `the version pull request (${pr.number}) could not be read, so why it did not merge is unknown — read it by hand (${pr.why})` };
+  }
+  if (pr.merged) return { red: true, reason: "the version pull request merged, yet main carries no untagged version — the publish this run was for has gone missing" };
+  const bad = (pr.checks ?? []).filter((c) => ["failure", "error", "timed_out", "cancelled", "action_required"].includes(c.conclusion));
+  if (bad.length) {
+    const named = bad.map((c) => `${c.context} (${c.conclusion})`).join(", ");
+    return { red: true, reason: `the version pull request did not merge: ${named}` };
+  }
+  if (!(pr.checks ?? []).some((c) => c.conclusion)) {
+    return { red: true, reason: "the version pull request did not merge: no check on it had concluded when the budget expired — it is most likely waiting for approval before its run will start" };
+  }
+  if (pr.mergeable === false) return { red: true, reason: "the version pull request did not merge: it is not mergeable" };
+  return { red: true, reason: "the version pull request did not merge, and nothing on it says why — read it by hand" };
+}
+
+/**
+ * One entry of the rollup, as a conclusion or `null` while it has none.
+ *
+ * THE ROLLUP HOLDS TWO SHAPES. A check run carries `conclusion`; a commit status carries `state` and no
+ * `conclusion` at all, so reading only the first counts every red status as not-yet-concluded.
+ */
+function conclusionOf(c) {
+  if (c.conclusion) return String(c.conclusion).toLowerCase();
+  if (c.state && !["PENDING", "EXPECTED"].includes(String(c.state).toUpperCase())) return String(c.state).toLowerCase();
+  return null;
+}
+
+/**
+ * The version pull request's state and its checks' conclusions. Injected so an arm can drive it.
+ *
+ * `null` means there was no number to read. A read that FAILED returns `{ unread: true }` instead, so the
+ * verdict can tell "no pull request" from "could not look at it".
+ */
+export async function readVersionPr(number, { run = ((args) => execFileSync("gh", args, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] })) } = {}) {
+  if (!number) return null;
+  try {
+    const j = JSON.parse(run(["pr", "view", String(number), "--repo", "CordilleraSarl/clearotron",
+      "--json", "merged,mergeable,statusCheckRollup"]));
+    return {
+      merged: Boolean(j.merged),
+      mergeable: j.mergeable === "MERGEABLE" ? true : j.mergeable === "CONFLICTING" ? false : null,
+      checks: (j.statusCheckRollup ?? []).map((c) => ({
+        context: String(c.name ?? c.context ?? "a check"),
+        conclusion: conclusionOf(c),
+      })),
+    };
+  } catch (e) {
+    const why = String(e?.stderr || e?.message || e).trim().split("\n")[0].slice(0, 160);
+    return { unread: true, number, why };
+  }
+}
 
 /**
  * One read of `main`: the version it carries, whether that version is tagged, and WHICH COMMIT said so.
@@ -209,6 +308,8 @@ function main() {
     // answer this pipeline cannot afford, so it is refreshed on every pass rather than once at checkout.
     refresh: async () => { git(["fetch", "--no-tags", "--prune", "origin", "+refs/heads/main:refs/remotes/origin/main"]); git(["fetch", "--tags", "--force", "origin"]); },
     read: () => readMain(),
+    // THE SAME SCRIPT THE STEP ABOVE RUNS, not a second implementation of the same decision.
+    tend: () => approvePass(),
     sleep: (ms) => new Promise((r) => setTimeout(r, ms)),
     now: () => Date.now() - started,
   }).catch((e) => {
@@ -229,7 +330,10 @@ function main() {
   }).then((r) => {
     if (!r) return;
     const secs = Math.round(r.waitedMs / 1000);
+    // A DISPATCHED CUT DOES NOT GET THE REASSURANCE. The error below says what happened, and a line
+    // calling it ordinary directly above that error is the one a reader skimming the log stops at.
     if (r.cut) console.log(`release-await-cut: main carries ${r.version} with no tag, after ${secs}s. Publishing.`);
+    else if (cutRequest().asked) console.log(`release-await-cut: nothing to publish after ${secs}s — main carries ${r.version} and it is already tagged.`);
     else console.log(`release-await-cut: nothing to publish after ${secs}s — main carries ${r.version} and it is `
       + "already tagged, or the version branch did not merge. This is the ordinary outcome and not a fault; "
       + "the scheduled check is still underneath it.");
@@ -239,6 +343,21 @@ function main() {
     // `sha` IS WRITTEN ON BOTH ANSWERS, not only on a cut. It records which commit this loop's verdict is
     // about, so a run that published nothing can still be read back against the tree it looked at.
     if (out) appendFileSync(out, `cut=${r.cut ? "true" : "false"}\nversion=${r.version}\nsha=${r.sha ?? ""}\nlooked=true\n`);
+    return r;
+  }).then(async (r) => {
+    // ── A DISPATCHED CUT THAT PUBLISHED NOTHING IS A FAILED RUN ─────────────────────────────────────
+    //
+    // Everything above stays exit 0, and on a push or the schedule that is right: nothing was asked
+    // for, and the cron floor sits underneath. A dispatch is a request, and THIS run is what tries to
+    // satisfy it — it opened the version pull request and armed it. So the budget expiring means the
+    // one thing the run existed to do did not happen, and reporting success for that is how a release
+    // goes missing with every light green.
+    if (!r) return;                                   // could-not-look already exited 2 above
+    const { asked, pr } = cutRequest();
+    const v = expiryVerdict({ cut: r.cut, requested: asked, pr: asked && !r.cut ? await readVersionPr(pr) : null });
+    if (!v.red) return;
+    console.error(`::error::release-await-cut: this run dispatched a cut and released nothing. ${v.reason}`);
+    process.exitCode = 1;
   });
 }
 

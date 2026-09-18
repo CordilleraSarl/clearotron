@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Central paths + tunables for the prelim-search deterministic driver.
+// Central paths + tunables for the clearance-search deterministic driver.
 //
 // The driver runs as an ordinary UNIX service account (launched by systemd), NOT as an LLM agent.
 // The agent exec-deny is a gateway agent-tool restriction; it does not apply to this OS process.
@@ -15,7 +15,7 @@ import { isWsl } from "../shared/wsl.mjs";   // — the one answer to "is this L
 import { envFrom } from "../shared/env-aliases.mjs";   // — an operator-facing name is the one an operator sets, and it has to work where they set it; — envFrom is the resolver that reads every spelling of it
 import { invoke } from "../shared/invocation.mjs";   // — name a command the reader can actually type
 import { envFileRead } from "../shared/env-local.mjs";   // — WHICH file to set it in, measured; null for a service that read none
-import { numericSetting, resolveNumericSetting } from "./numeric-setting.mjs";   // — a number, or a refusal that names the variable; never NaN
+import { numericSetting, resolveNumericSetting } from "./numeric-setting.mjs"; import { STUDIO_SEGMENTS, STUDIO_SEGMENT_RE, studioSegmentFor } from "../shared/pre-rename-spellings.mjs"; export { STUDIO_SEGMENTS, STUDIO_SEGMENT_RE, studioSegmentFor };   // the studio segment an install keeps its runs under   // — a number, or a refusal that names the variable; never NaN
 
 const { X_OK } = FS;
 
@@ -111,6 +111,23 @@ export const envGateOn = (name) => {
 // so import-time captures silently pinned every test to the FIRST test's env (workspace root, pool,
 // retries) — the root of the intermittent cross-test contamination flake. Getters make "set env, then
 // run" mean what it says, in tests and in prod alike.
+// The four skill folders the identifier rename moved. A store outside the product may still hold them,
+// and a profile may still name them, under the old spelling.
+const RENAMED_SKILL_DIRS = Object.freeze([
+  ["clearance-search", "prelim-search"], ["clearance-register", "prelim-register"],
+  ["clearance-common-law", "prelim-common-law"], ["clearance-variants", "prelim-variants"],
+]);
+/** `[rel, the same path under the folder's other spelling | null]`. PURE. */
+export function skillSpellings(rel) {
+  const m = /^skills\/([a-z-]+)(\/.*)?$/.exec(String(rel ?? ""));
+  if (!m) return [rel, null];
+  for (const [now, before] of RENAMED_SKILL_DIRS) {
+    if (m[1] === now) return [rel, `skills/${before}${m[2] ?? ""}`];
+    if (m[1] === before) return [rel, `skills/${now}${m[2] ?? ""}`];
+  }
+  return [rel, null];
+}
+
 export const config = {
   // / — A BLANK VALUE IS NOT A CONFIGURED VALUE. `process.env.X || default` treats "   " as
   // configured, because a whitespace-only string is TRUTHY in JavaScript — so a variable set to spaces
@@ -212,21 +229,8 @@ export const config = {
    * still fails loudly against the canonical location rather than silently against the overlay.
    */
   resolveSkillPath(relFromSkillsRoot) {
-    const rel = String(relFromSkillsRoot ?? "").replace(/^\/+/, "");
-    const overlay = this.skillsOverlayDir;
-    if (overlay) {
-      // FAIL LOUD ON AN UNREADABLE OVERLAY. existsSync() answers false for a permission error just as it
-      // does for a missing file, so a config store the process cannot read would silently resolve EVERY
-      // file to the repo — swapping a customer's own risk framework for the Generic default with nothing
-      // in the log to say so. A configured-but-unreadable overlay is a deploy defect, not a fallback.
-      if (!existsSync(overlay))
-        throw new Error(`skills_overlay_unreadable:${overlay} (CLEAROTRON_INSTRUCTIONS_DIR names it, set by the operator or derived by the portal from PROFILE_REPO_ROOT, but this process cannot see it — customer-specific skills would silently fall back to the repo defaults)`);
-      const p = join(dirname(overlay), rel);
-      if (existsSync(p)) return p;
-    }
-    return join(dirname(this.skillsBaseDir), rel);
+    return this.resolveSkillPathReport(relFromSkillsRoot).path;
   },
-
   /**
    * WHICH LAYER ANSWERED, as a fact rather than a path — `resolveSkillPath` with its reasoning shown.
    *
@@ -252,13 +256,24 @@ export const config = {
    */
   resolveSkillPathReport(relFromSkillsRoot) {
     const rel = String(relFromSkillsRoot ?? "").replace(/^\/+/, "");
-    const basePath = join(dirname(this.skillsBaseDir), rel);
+    // EITHER SPELLING OF A RENAMED SKILL FOLDER, in either direction. A store that has not moved its
+    // folders still holds `skills/prelim-search/…`, and a profile written before the rename still NAMES
+    // it; the product ships only the new names. Tried in the overlay first — a client's own doctrine must
+    // never be silently replaced by ours because a folder name changed — and the base answers only under
+    // the name it ships.
+    const [asNamed, other] = skillSpellings(rel);
+    const shipped = rel === asNamed && other && /^skills\/prelim-/.test(asNamed) ? other : asNamed;
+    const basePath = join(dirname(this.skillsBaseDir), shipped);
     const overlay = this.skillsOverlayDir;
     if (!overlay) return { path: basePath, rel, layer: existsSync(basePath) ? "base-only" : "missing", overlayPath: null, basePath };
     if (!existsSync(overlay))
       throw new Error(`skills_overlay_unreadable:${overlay} (CLEAROTRON_INSTRUCTIONS_DIR names it, set by the operator or derived by the portal from PROFILE_REPO_ROOT, but this process cannot see it — customer-specific skills would silently fall back to the repo defaults)`);
-    const overlayPath = join(dirname(overlay), rel);
+    const overlayPath = join(dirname(overlay), asNamed);
     if (existsSync(overlayPath)) return { path: overlayPath, rel, layer: "overlay", overlayPath, basePath };
+    if (other) {
+      const otherPath = join(dirname(overlay), other);
+      if (existsSync(otherPath)) return { path: otherPath, rel, layer: "overlay", overlayPath: otherPath, basePath };
+    }
     return { path: basePath, rel, layer: existsSync(basePath) ? "base" : "missing", overlayPath, basePath };
   },
 
@@ -276,7 +291,7 @@ export const config = {
     return roots;
   },
 
-  // The base that a profile's "skills/prelim-search/<file>.md" path is relative to — i.e. the PARENT
+  // The base that a profile's "skills/clearance-search/<file>.md" path is relative to — i.e. the PARENT
   // of skillsDir. Everything the DRIVER reads itself (framework manifests, band-meaning extraction)
   // must join against this, exactly as the agent resolves the same relative paths against the
   // skillsDir it is handed (gateway.mjs engineSkillsDir).
@@ -305,15 +320,17 @@ export const config = {
   },
   // Escaped prefix for the reverse regexes below (a custom prefix may carry regex metachars).
   get workspacePrefixRe() { return this.workspacePrefix.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); },
-  // `prelim-search` IS NOT A PRODUCT NAME HERE and does not follow the product rename. It is a
-  // directory segment on disk, and every archived run — its slug dirs, its `archive/`, its matter
-  // ledger — was written under it. Renaming the segment does not move those runs; it points the
-  // reader somewhere empty, and an empty directory reads as "no runs" rather than as an error.
-  // The rule the tree already enforces elsewhere: a token that is read back out of an archive keeps
-  // its old spelling, or the code refuses its own archive. Thirteen sites compute this segment and
-  // all thirteen stay.
+  // THE STUDIO SEGMENT IS NOT A PRODUCT NAME and does not follow the product rename. It is a directory
+  // segment on disk, and every archived run — its slug dirs, its `archive/`, its queue, its matter ledger —
+  // was written under it. Renaming it does not move those runs; it points the reader somewhere empty, and
+  // an empty directory reads as "no runs" rather than as an error. The identifier rename rewrote this
+  // comment together with the thirteen sites it protected, and an upgraded install lost sight of its whole
+  // archive. So an install keeps the segment it has: `prelim-search` wherever that directory exists, and
+  // `clearance-search` only for an install that has no other. Every site asks `studioSegmentFor`.
+  studioSegment(workspaceDir) { return studioSegmentFor(workspaceDir); },
   studioRootForAgent(agentId) {
-    return join(this.workspaceRoot, this.workspaceDirName(agentId), "studio", "prelim-search");
+    const ws = join(this.workspaceRoot, this.workspaceDirName(agentId));
+    return join(ws, "studio", studioSegmentFor(ws));
   },
   queueDirForAgent(agentId) {
     return join(this.studioRootForAgent(agentId), "queue");
@@ -321,9 +338,10 @@ export const config = {
   archiveRootForAgent(agentId) {
     return join(this.studioRootForAgent(agentId), "archive");
   },
-  // …/<prefix><id>/studio/prelim-search/queue → "<id>"; null if the path isn't an agent queue dir.
+  // …/<prefix><id>/studio/<segment>/queue → "<id>"; null if the path isn't an agent queue dir. Either
+  // spelling of the segment, because an install keeps the one it has.
   agentIdFromQueueDir(qdir) {
-    const m = new RegExp(`(?:^|/)${this.workspacePrefixRe}([^/]+)/studio/prelim-search/queue/?$`).exec(qdir);
+    const m = new RegExp(`(?:^|/)${this.workspacePrefixRe}([^/]+)/studio/${STUDIO_SEGMENT_RE}/queue/?$`).exec(qdir);
     return m ? m[1] : null;
   },
   // Every agent workspace's clearotron queue. The systemd `.path` watches these and the runner drains ALL of
@@ -343,14 +361,18 @@ export const config = {
     try {
       for (const name of readdirSync(root)) {
         if (this.agentIdFromWorkspaceName(name) == null) continue;
-        const q = join(root, name, "studio", "prelim-search", "queue");
-        if (existsSync(q)) dirs.push(q);
+        // BOTH spellings are drained where both exist: a job queued under either is a job somebody is
+        // waiting on, and an unwatched queue looks exactly like an empty one.
+        for (const seg of STUDIO_SEGMENTS) {
+          const q = join(root, name, "studio", seg, "queue");
+          if (existsSync(q)) dirs.push(q);
+        }
       }
     } catch { /* workspaceRoot may not exist in some test envs — fall through to the canonical queue */ }
     // THE ONE AGENT NAME NO CONFIGURATION REMOVES, and it is deliberate. row 5.
     //
     // `this.queueDir` is `queueDirForAgent("clawdi")` — a LITERAL, not `defaultAgent` — so every
-    // deployment, however configured, watches `<workspacePrefix>clawdi/studio/prelim-search/queue`.
+    // deployment, however configured, watches `<workspacePrefix>clawdi/studio/clearance-search/queue`.
     // Setting CLEAROTRON_DEFAULT_AGENT does not remove it (prod runs `ops`, dev runs `dev`, and both still
     // watch this); nor does CLEAROTRON_WORKSPACE_PREFIX. An installer who copies `.env.example` gets a
     // neutral default agent AND this directory.
@@ -540,7 +562,7 @@ export const config = {
   // directory, so renaming the default moves the install to an empty one and nothing migrates. Here
   // the orphaned files are run-slot locks, so a live run's slot goes unseen and the global cap is
   // silently exceeded rather than enforced. Ruling.
-  get runLockDir() { return this.envValue("CLEAROTRON_RUN_LOCK_DIR") || join(this.workspaceRoot, "prelim-run-locks"); },
+  get runLockDir() { return this.envValue("CLEAROTRON_RUN_LOCK_DIR") || [join(this.workspaceRoot, "prelim-run-locks"), join(this.workspaceRoot, "clearance-run-locks")].find((d, i) => i === 1 || existsSync(d)); },   // the name the install already has wins
 
   // Delivery outbox (Workstream B). On a handoff-mode finish the driver drops <runId>.pending here (naming
   // the forwarder agent); the systemd-user prelim-outbox.path unit fires an INSTANT clearotron-deliver wake off
@@ -552,7 +574,31 @@ export const config = {
   // directory, so renaming the default moves the install to an empty one and nothing migrates. Here
   // the orphaned files are requester-facing events — delivered, run-failed, intake-rejected — so the
   // visible failure is a requester never told their run finished. Ruling.
-  get outboxDir() { return this.envValue("CLEAROTRON_OUTBOX_DIR") || join(this.workspaceRoot, "prelim-outbox"); },
+  get outboxDir() { return this.envValue("CLEAROTRON_OUTBOX_DIR") || join(this.workspaceRoot, "clearance-outbox"); },
+
+  // ── THE DIRECTORY THIS DEFAULT USED TO NAME, AND WHY IT IS STILL READ ──────────────────────────────
+  //
+  // This default was `clearance-outbox` until the identifier was renamed. A deployment that never pinned
+  // `CLEAROTRON_OUTBOX_DIR` has its `<runId>.pending` markers sitting in the old directory, and moving
+  // the default without reading the old one orphans every one of them. That failure is silent and it is
+  // the expensive kind: a marker is a report a client is OWED, an unread outbox is indistinguishable
+  // from nothing to send, and the run that produced it has already recorded itself as delivered-pending.
+  //
+  // NULL WHEN THE VARIABLE IS SET, because then the operator named the directory and there is no old
+  // default in play. Writers use `outboxDir` alone; only readers consult this, which is the same posture
+  // the run records take — new work uses the new name, old work is still understood.
+  //
+  // THE OLD SPELLING IS THE WHOLE POINT OF THIS ACCESSOR, and a sweep took it. The identifier rename
+  // moved the directory from `prelim-outbox` to `clearance-outbox`, and the follow-up that renamed the
+  // directory's 85 occurrences rewrote this literal along with them — leaving the accessor that exists to
+  // name the OLD directory naming the new one. Both getters then answered the same path: the drain read
+  // the new directory twice, never read the old one, and every marker under it was listed TWICE. So a box
+  // that never pinned the variable got exactly the failure the block above describes — orphaned markers,
+  // silently — plus duplicate work on the ones it could see. It is written once, here, and pinned by a
+  // test that asserts the two are different.
+  get legacyOutboxDir() {
+    return this.envValue("CLEAROTRON_OUTBOX_DIR") ? null : join(this.workspaceRoot, "prelim-outbox");
+  },
 
   // ── Delivery/comms (Phase 2, standalone product) ─────────────────────────────────────────────────
   // THERE IS ONE MODE AND IT IS NOT A SETTING. The driver SENDS NOTHING: every requester-facing event
@@ -570,7 +616,7 @@ export const config = {
   // LOCATION (see studioRootForAgent / agentIdFromQueueDir above).
   //
   // THE DEFAULT IS PART OF A PATH, so changing it moves where an install looks for its own runs:
-  // every run dir is `<workspaceRoot>/workspace-<agent>/studio/prelim-search/…`. An install created
+  // every run dir is `<workspaceRoot>/workspace-<agent>/studio/clearance-search/…`. An install created
   // before this default changed keeps its runs under the old id and must pin it — both spellings,
   // because the gather servers read their own variable:
   //
@@ -939,7 +985,7 @@ export const PROVIDERS = {
     id: "corsearch",
     label: "Corsearch",
     credEnv: "CORSEARCH_SESSION_KEY",
-    skillDoc: "skills/prelim-register/providers/corsearch.md",
+    skillDoc: "skills/clearance-register/providers/corsearch.md",
     hasPublicRecordUrl: true,
     // WP-receipts W2: the public per-record origin (publicRecordOrigin + /mark/<jur>/<id> is a working
     // link) — replaces the fragile resolved-link-origin inference at render for receipt-carrying runs.
@@ -1013,7 +1059,7 @@ export const PROVIDERS = {
     id: "clarivate",
     label: "Clarivate Compumark",
     credEnv: "CLARIVATE_API_KEY",
-    skillDoc: "skills/prelim-register/providers/clarivate.md",
+    skillDoc: "skills/clearance-register/providers/clarivate.md",
     hasPublicRecordUrl: false, // Compumark Content has no public record URL — cite the office register
     //, ruling 2026-08-20 — WHAT A CARD SHOWS WHERE A LINK CANNOT GO. A UI exists for this
     // provider and we do not know its per-record URL, so the card says so and says it is unfinished.
@@ -1155,7 +1201,7 @@ export const PROVIDERS = {
     id: "signa",
     label: "Signa",
     credEnv: "SIGNA_API_KEY",
-    skillDoc: "skills/prelim-register/providers/signa.md",
+    skillDoc: "skills/clearance-register/providers/signa.md",
     hasPublicRecordUrl: false, // Signa exposes no per-record public URL — cite the office register
     //, ruling 2026-08-20 — no register UI exists to link to at all, so the card points at
     // the artifact that DOES carry the record: the audit workbook. Naming it is the whole of this
@@ -1210,8 +1256,12 @@ export const PROVIDERS = {
         // on the search response, so this no longer has to answer `present` and nothing else. It is
         // still null whenever the vendor would only approximate it — and null there means UNKNOWN,
         // which is the whole reason the field may never be filled in with a figure from anywhere else.
+        // `floor` rides beside `approximate` because the two are one fact: the register answered, and the
+        // answer is "more than this". Without the number the disclosure is not usable — "approximate"
+        // alone says no more than "unknown" does, which is the state this replaces.
         return { ok: true, total: Number.isFinite(p.total_hits) ? p.total_hits : null,
-          approximate: p.total_approximate === true, present: p.present === true, note: p.note };
+          approximate: p.total_approximate === true, floor: Number.isFinite(p.total_floor) ? p.total_floor : null,
+          present: p.present === true, note: p.note };
       } catch (e) { return { ok: false, cause: `countHits threw: ${e.message}` }; }
     },
     // `reason`, not `cause`, on every refusal: the listing reads `reason` (register-records.mjs), so a
@@ -1301,7 +1351,7 @@ export const PROVIDERS = {
     // list — without this, an instance holding the id and no secret passes preflight and dies on the
     // first token request, after model spend and reported as a provider fault.
     credEnvAlso: ["EUIPO_CLIENT_SECRET"],
-    skillDoc: "skills/prelim-register/providers/euipo.md",
+    skillDoc: "skills/clearance-register/providers/euipo.md",
     hasPublicRecordUrl: true,
     publicRecordOrigin: "https://euipo.europa.eu",
     async recordFetch(uri, { agentId, sessionKey, recordLog = null }) {
@@ -1367,7 +1417,7 @@ export const PROVIDERS = {
     id: "uspto-local",
     label: "USPTO (local index)",
     credEnv: "USPTO_LOCAL_DB",
-    skillDoc: "skills/prelim-register/providers/uspto-local.md",
+    skillDoc: "skills/clearance-register/providers/uspto-local.md",
     hasPublicRecordUrl: true,
     // TSDR publishes a page per serial, so a finding can cite an address the reader can open. The
     // record ref is /mark/us/<serial>, and the core builds the full statusSearch link on the record.
@@ -1471,7 +1521,7 @@ export const PROVIDERS = {
     label: "Free tier (EUIPO + USPTO local index)",
     credEnv: "EUIPO_CLIENT_ID",
     credEnvAlso: ["EUIPO_CLIENT_SECRET"],
-    skillDoc: "skills/prelim-register/providers/free-tier.md",
+    skillDoc: "skills/clearance-register/providers/free-tier.md",
     hasPublicRecordUrl: true,
     // NULL, deliberately: the two members have DIFFERENT public origins (euipo.europa.eu and the USPTO),
     // so a single origin string here would stamp one office's host onto the other's citations. The
@@ -1821,7 +1871,7 @@ export function preflightCredentials(env = process.env) {
 // paid for. This door is that same failure, moved in front of the spend.
 //
 // GATED ON THE COMPONENT, NEVER ON THE PIPELINE. `pipeline === "clearance"` is the wrong predicate and
-// fails in the expensive direction: `prelim-register-only` is a clearance that carries
+// fails in the expensive direction: `clearance-register-only` is a clearance that carries
 // `commonLawGrid: false`, searches no unregistered-use half by design, and would be refused for a
 // credential its lane never reads. The component IS the question — search-policy.mjs calls it "the
 // clearance's unregistered-use half" in as many words.
@@ -2332,7 +2382,7 @@ export function preflightDeploymentUrls(env = process.env) {
 const RUN_FREE_BYTES_FLOOR = 500e6;
 
 /** Nearest ancestor of `p` that exists. statfs needs a real path, and on a first run NONE of
- *  …/workspace-<agent>/studio/prelim-search exists yet — measuring the leaf would throw ENOENT and land
+ *  …/workspace-<agent>/studio/clearance-search exists yet — measuring the leaf would throw ENOENT and land
  *  in the unmeasurable branch, which would disable this check on exactly the fresh installs it is for. */
 function nearestExistingDir(p) {
   let dir = p;
@@ -2374,7 +2424,7 @@ export function freeSpacePlan({ freeBytes, needBytes, path }) {
  * shape of run that can proceed without one, so there is no exemption to write.
  *
  * MEASURES THE FILESYSTEM THAT WILL HOLD THE BYTES, which is the workspace root's, not `/` and not the
- * repo's. Run directories live under config.studioRoot (…/workspace-<agent>/studio/prelim-search); the
+ * repo's. Run directories live under config.studioRoot (…/workspace-<agent>/studio/clearance-search); the
  * published report goes to poolRoot and the packet to outboxDir, which on a laptop are different
  * filesystems again. A check aimed at the wrong mount passes while the right one is full, which is the
  * silent-pass this exists to prevent — so the path is taken from the caller's studioRoot when the runner

@@ -25,7 +25,7 @@ import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { CLASSES, censusOf } from "../../shared/writing-standard-classes.mjs";
-import { publishedOf } from "../../shared/reference-guard-classes.mjs";
+import { publishedOf, publishedReader } from "../../shared/reference-guard-classes.mjs";
 import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -39,7 +39,9 @@ function live() {
   const p = publishedOf(tracked, ROOT);
   if (p.error) return { error: p.error };
   CORPUS = p.files.length;
-  return censusOf(p.files, (f) => readFileSync(join(ROOT, f), "utf8"));
+  // THE BYTES HEAD PUBLISHES, as the residue floor reads them: a laid file over a public path must
+  // neither add its own hits nor hide the public file's.
+  return censusOf(p.files, publishedReader(ROOT, (f) => readFileSync(join(ROOT, f), "utf8")));
 }
 
 /** How many files the last `live()` actually walked — the population every floor below is measured over. */

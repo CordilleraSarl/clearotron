@@ -7,14 +7,14 @@
 // self-reported trail), meta.json batch stamps, and the email composer. Deliberately separate from publishReport (single-clearance-shaped); shares the exported
 // palette (TONE_TIER, resolved against the run's FROZEN framework) so driver and interactive output
 // can never drift and a knockout never reads the clearance composer's module state.
-import { readFileSync, writeFileSync, mkdirSync, chmodSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, copyFileSync, mkdirSync, chmodSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { driverDir, ensureDriverDir } from '../../shared/driver-dir.mjs';   //
 import { riskTier, TONE_TIER, regenIndex, regenSurfaces, auditRouteFor, markReportRouteFor, reportRouteFor } from './index.mjs';
 import { runKnockoutLint, deliveryFlagLines } from '../predelivery-lint.mjs';
 import { note } from '../log.mjs';
 import { addSheet } from './xlsx.mjs';
-import { COUNT_PREDICATES, COUNT_BASIS, countsForMark, countLine, countedMarks, variantFormsLine } from '../register-count.mjs';
+import { COUNT_PREDICATES, COUNT_BASIS, countsForMark, countLine, countedMarks, variantFormsLine, disclosedFloor, moreThan } from '../register-count.mjs';
 import { RECORD_BASIS, recordsForMark, recordsLine, listedMarks, normalizeRegisterRecordLinks } from '../register-records.mjs';
 import { reportIdentityFor, productCoverageNote, kebab } from '../search-policy.mjs';
 import { batchMarkName } from '../mark-name.mjs';
@@ -143,7 +143,8 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
   if (noteRows.length) addSheet(wb, 'Working Notes', ['Mark', 'Type', 'Note'], noteRows);
 
   if (registerCounts?.marks?.length) {
-    const cell = (c) => (Number.isFinite(c?.total) ? c.total : 'not available');
+    // A floor the register disclosed is its own figure, printed as the report prints it.
+    const cell = (c) => (Number.isFinite(c?.total) ? c.total : disclosedFloor(c) !== null ? moreThan(disclosedFloor(c)) : 'not available');
     const countRows = (findings.marks ?? []).map((m) => {
       const e = countsForMark(registerCounts, m.name);
       const row = {
@@ -161,7 +162,7 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
       row['Basis'] = COUNT_BASIS;
       // The verbatim provider reason for anything missing — the auditable half of "not available".
       row['Notes'] = COUNT_PREDICATES
-        .filter((p) => !Number.isFinite(e?.counts?.[p.key]?.total))
+        .filter((p) => !Number.isFinite(e?.counts?.[p.key]?.total) && disclosedFloor(e?.counts?.[p.key]) === null)
         .map((p) => `${p.label}: ${e?.counts?.[p.key]?.unavailable ?? 'no count recorded'}`)
         .join(' · ');
       return row;
@@ -335,6 +336,30 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   const poolRunDir = join(poolRoot, runId);
   mkdirSync(poolRunDir, { recursive: true });
   const writeRO = (name, data) => { const p = join(poolRunDir, name); writeFileSync(p, data); grpRead(p, 0o640); };
+
+  // ── THE RUN'S WORKING RECORD TRAVELS WITH THE REPORT ──────────────────────────────────────────────
+  //
+  // The delivered directory held the report, its data and the workbook, and nothing the engine itself
+  // wrote. That is what the acceptance read needs to tell a line the ENGINE wrote from a line the
+  // RENDERER invented: without it the check can still place a line as report text or as a sanctioned
+  // label, so it passes — and cannot fail in the way it exists to fail. A clearance run's record is
+  // `audit.md` and `findings.json`; this lane's own names are these two, and they are copied rather
+  // than rebuilt so the pool carries the bytes the stages wrote.
+  //
+  // AN ABSENT ONE IS SAID, NOT SKIPPED. A run whose stage never wrote its assessment is a different
+  // thing from a run that wrote one, and a publisher that copies what it finds and says nothing about
+  // what it does not makes the two look identical to the next reader — which is the whole defect this
+  // closes, one directory along.
+  for (const name of ['knockout-findings.json', 'knockout-assessment.md']) {
+    const src = join(runDir, name);
+    if (existsSync(src)) {
+      const dest = join(poolRunDir, name);
+      copyFileSync(src, dest);
+      grpRead(dest, 0o640);
+    } else {
+      note(`knockout working record: ${name} is not in the run directory, so the delivered report has no engine text to be checked against`);
+    }
+  }
   const issued = (() => {
     try {
       const d = new Date();

@@ -32,3 +32,25 @@ export const SENTINELS = [
 // and `Brindlow-Reach`. One row carries it so the option itself is exercised rather than merely
 // declared — an unexercised option is a setting nobody has watched work.
 export const SUFFIXABLE = new Set(["Brindlow"]);
+
+/**
+ * WHICH TABLE THE SWEEP WAS ARMED WITH, said out loud so a workflow can require it.
+ *
+ * The public tree can only ever run this sweep in sentinel mode — the real roster lives outside the
+ * repository by design, and the arm that sweeps here is wired to SENTINELS by construction. That is
+ * fine, and it is exactly why the mode has to be stated: a sweep with an empty table returns the same
+ * clean zero as a sweep that worked, so "it ran, and here is which table it ran against" is the only
+ * form of the claim a reader can act on.
+ *
+ * It is printed by the arm that actually sweeps the corpus, never at import. A marker that appeared
+ * merely because a module was loaded would survive the arm being deleted, which is the one thing it
+ * exists to catch — the guard stopping and every run staying green.
+ */
+export const SENTINEL_MODE_MARKER = "[repo-guard] blocklist mode=sentinel";
+
+/**
+ * The line the sweep prints when it read a REAL roster instead. That roster is private and never
+ * reaches this repository's runners by design, so on a public run the line does not mean a stronger
+ * check: it means the roster was loaded into a public log. The workflow refuses it.
+ */
+export const TABLE_MODE_MARKER = "[repo-guard] blocklist mode=table";

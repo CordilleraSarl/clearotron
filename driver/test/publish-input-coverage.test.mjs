@@ -155,3 +155,42 @@ test("source scan: no DEAD key — every declared store is still read by publish
   assert.deepEqual(Object.keys(fake).filter((k) => !body.includes(basename(k))), ["_driver/no-such-store.json"],
     "the dead-key predicate must actually detect a key with no reader");
 });
+
+// ── EVERY STORE READ IS BASED ON SOMETHING PUBLISHREPORT ALWAYS HAS ───────────────────────────────
+//
+// `publishReport`'s `runDir` is OPTIONAL — it is absent on a republish driven from a report directory,
+// and the reads around the declared ones all take `runDir ?? dirname(reportMd)` or guard on `runDir`
+// being truthy. `readStore` joins its base, so a bare `readStore(runDir, …)` does not report an absent
+// store on such a run: it throws TypeError out of the middle of a publish, which reads as a publish
+// that produced nothing rather than as a missing argument.
+//
+// That is not a defensive worry. It shipped on this branch and CI caught it in the runner arm that
+// publishes without a runDir.
+//
+// BREAK MATRIX:
+//   · the helper refuses a missing base loudly    → break: make it report absent, arm 1 red
+//   · no declared read is based on runDir alone   → break: write readStore(runDir, …), arm 2 red
+test("no declared store is read from the optional runDir alone", () => {
+  // THE HELPER THROWS, and that is the right behaviour: a caller with no base has not found an absent
+  // store, it has failed to look. Collapsing that into `absent` is the very fold this table exists to
+  // prevent, one argument along. So the rule has to hold at the call sites instead.
+  assert.throws(() => readStore(undefined, "_driver/verdict.json"), /path/i,
+    "readStore reported something about a store it had no directory for");
+
+  // AND NO CALL SITE HANDS IT THE OPTIONAL VALUE ON ITS OWN. Matched on the argument rather than on a
+  // whole call spelling, so a new read is covered by construction and reformatting cannot silence it.
+  // COMMENTS STRIPPED FIRST. The prose above this rule quotes the very call it forbids, and the first
+  // version of this arm matched that quotation and reded against correct code — the same way a selector
+  // for markup matches the stylesheet that mentions it.
+  const body = publishSource()
+    .replace(/\/\*[\s\S]*?\*\//g, ' ')
+    .split('\n').map((l) => l.replace(/\/\/.*$/, '')).join('\n');
+  const bare = [...body.matchAll(/readStore\(\s*([A-Za-z_$][\w$]*)\s*,/g)].map((m) => m[1]);
+  assert.deepEqual([...new Set(bare)].filter((v) => v === "runDir"), [],
+    "a declared store is read from `runDir` alone — use `runDir ?? dirname(reportMd)`, as its neighbours do");
+
+  // PLANTED FAULT: the predicate must actually catch that spelling.
+  const planted = [...`  const s = readStore(runDir, '_driver/verdict.json');`
+    .matchAll(/readStore\(\s*([A-Za-z_$][\w$]*)\s*,/g)].map((m) => m[1]);
+  assert.deepEqual(planted, ["runDir"], "the predicate does not detect the call it exists to refuse");
+});

@@ -172,6 +172,32 @@ html.anon-on [data-anon='mark']:not(.anon-clear) {
   border-bottom: 1px solid var(--border-hairline);
 }
 
+/* THE HEADER'S SECOND ROW: which read you are in, then where you are inside it.
+   The Reads strip used to sit BELOW this box and the report's own section breadcrumb inside the frame,
+   so neither stayed on screen — the frame is sized to its content, which leaves a `position:sticky` bar
+   in there pinned to nothing. Both are rows of the pinned header now (owner, 2026-09-18).
+   It scrolls sideways rather than wrapping to a third line: a header that grows taller with the number of
+   sections is a header that eats the document it is heading. */
+.report-nav {
+  display: flex; align-items: center; gap: 10px; margin-top: 9px;
+  overflow-x: auto; scrollbar-width: none;
+}
+.report-nav::-webkit-scrollbar { display: none; }
+.report-nav-sep { flex: none; width: 1px; align-self: stretch; background: var(--border-hairline); }
+.report-sections { display: flex; align-items: center; gap: 2px; }
+.report-section {
+  flex: none; display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
+  font: inherit; font-size: 12.5px; font-weight: 600; letter-spacing: .01em;
+  padding: 5px 10px; border: 1px solid transparent; border-radius: 999px;
+  background: transparent; color: var(--text-muted); cursor: pointer;
+}
+.report-section:hover, .report-section:focus-visible { color: var(--text-strong); background: var(--surface-sunken); }
+.report-section-dot {
+  width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid currentColor; box-sizing: border-box;
+}
+.report-section[aria-current='true'] { color: var(--text-strong); background: var(--surface-sunken); }
+.report-section[aria-current='true'] .report-section-dot { border-color: var(--accent); border-width: 3px; }
+
 /* The breadcrumb above it: one step back as a quiet button, then where the reader is. Compound selectors
    throughout this block, because the button and row rules they adjust are declared later in the file. */
 .report-crumbs { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
@@ -189,6 +215,36 @@ html.anon-on [data-anon='mark']:not(.anon-clear) {
 .btn-ghost.ask-ai-btn.is-quiet { border-color: transparent; color: var(--text-muted); }
 .btn-ghost.ask-ai-btn.is-quiet:hover { border-color: var(--border-hairline); color: var(--text-strong); }
 .ask-ai-float { position: absolute; right: 0; top: calc(100% + 6px); z-index: 50; }
+
+/* THE PANEL BELONGS TO THE BUTTON THAT OPENED IT, and a reader has to be able to see that it does. It was
+   anchored already — the rule above hangs it off `.ask-ai`, which is positioned — but it is 360px wide and
+   right-aligned, so it reaches back under the header's other chrome and reads as something floating over
+   the page rather than as this button's panel (owner, on test, 2026-09-18). Two triangles rather than one:
+   the outer carries the panel's own hairline and the inner covers it in the panel's surface, so the caret
+   is the panel's edge continuing rather than a shape drawn near it. Both grounds, from the same tokens. */
+.ask-ai-float::before,
+.ask-ai-float::after {
+  content: '';
+  position: absolute;
+  right: 16px;
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+}
+.ask-ai-float::before { top: -7px; border-bottom: 7px solid var(--border-strong); }
+.ask-ai-float::after { top: -6px; border-bottom: 7px solid var(--surface-float); }
+
+/* AND THE BUTTON SAYS IT IS THE OPEN ONE. `aria-expanded` is already on it for a reader using a screen
+   reader; this is the same fact for the reader looking at it, drawn the way every other open-or-current
+   control in this file is (accent wash, accent border). One class stronger than the quiet variant, whose
+   transparent border would otherwise win. */
+.btn-ghost.ask-ai-btn[aria-expanded='true'],
+.btn-ghost.ask-ai-btn.is-quiet[aria-expanded='true'] {
+  background: var(--accent-wash);
+  border-color: var(--accent);
+  color: var(--text-accent);
+}
 .ask-ai-panel { width: 360px; max-width: calc(100vw - 32px); padding: 12px; display: grid; gap: 10px; text-align: left; }
 .ask-ai-head { font-size: 12.5px; line-height: 1.45; color: var(--text-muted); }
 .ask-ai-when { white-space: nowrap; }
@@ -229,6 +285,11 @@ html.anon-on [data-anon='mark']:not(.anon-clear) {
   flex: 1;
   overflow-y: auto;
   padding: 0 10px;
+}
+
+/* The board's own box for Connect your AI: between the list that scrolls and the foot. */
+.sidebar-pinned {
+  padding: 0 10px 2px;
 }
 
 .sidebar-foot {
@@ -378,6 +439,65 @@ html.anon-on [data-anon='mark']:not(.anon-clear) {
 
 .table-wrap {
   overflow-x: auto;
+}
+
+/* A TABLE THAT CONTINUES PAST THIS WRAPPER'S RIGHT EDGE SHOWS THAT IT DOES. The note further down makes
+   half the argument — a table a reader drags sideways is readable, one printed through itself is not —
+   and this is the other half: a reader has to be able to see that it drags. Ruled 2026-09-17, a
+   scrollbar, always visible, no text.
+
+   THE TWO WAYS OF ASKING FOR ONE CANNOT SIT TOGETHER, and nothing about reading this file would tell
+   you. Putting the standard `scrollbar-width` on the rule above, beside these pseudo-elements, makes the
+   engine take the standard path and IGNORE them — and on the engine these pages render in, that path
+   draws an overlay bar with no layout height at all. Measured on a delivered report at 390px, reading
+   the height the bar takes out of the panel:
+
+       both together          0px
+       pseudo-elements alone  9px
+       standard alone         0px
+
+   So the standard properties sit behind a support query that the engines carrying the pseudo-elements
+   never enter, and each engine gets exactly one instruction. Merging these two blocks back together is
+   the tidy-up that deletes the scrollbar with every check still green, which is why this is written here
+   and pinned by an arm rather than left to be re-derived.
+
+   `--border-strong` is the line the table already sits inside, and it has a real value on both grounds. */
+.table-wrap::-webkit-scrollbar { height: 9px; -webkit-appearance: none; }
+.table-wrap::-webkit-scrollbar-track { background: transparent; }
+.table-wrap::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 5px; }
+@supports not selector(::-webkit-scrollbar) {
+  .table-wrap { scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
+}
+
+/* THE BAR, PINNED to the bottom of the screen while its table is in view (components/PinnedScrollbar.tsx).
+   Drawn, not native: a phone's own bar is an overlay that takes no room and shows only while moving. The
+   track and thumb take the colours the desktop bar above uses, on the page's own surface so rows do not
+   show through, and sticky, so the bar settles under the table at the table's foot. */
+.pinned-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  padding: 4px 0;
+  background: var(--surface-page);
+}
+.pinned-track {
+  position: relative;
+  height: 9px;
+  border-radius: 5px;
+  touch-action: none;
+}
+.table-wrap.has-pinned-bar::-webkit-scrollbar { height: 0; }
+@supports not selector(::-webkit-scrollbar) {
+  .table-wrap.has-pinned-bar { scrollbar-width: none; }
+}
+.pinned-thumb {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  min-width: 24px;
+  border-radius: 5px;
+  background: var(--border-strong);
+  touch-action: none;
 }
 
 table.data {
@@ -642,6 +762,29 @@ table.data td.nest-2 {
      panel opened from a row near the bottom of the list was cut off at the table's edge. */
   overflow: visible;
 }
+
+/* ── AND BELOW THE BREAKPOINT IT SCROLLS AFTER ALL, AND CONTAINS WHAT IT SCROLLS ────────────────────
+ *
+ * The rule above is right at desktop widths and wrong below 560px, where `table.data.fixed` stops
+ * dividing and becomes an ordinary content-sized table with its 860px floor restored. The note on that
+ * breakpoint says "its wrapper, which has always had `overflow-x: auto`, does the scrolling" — true of
+ * `.table-wrap`, and NOT true of this wrapper, which turns it off two rules later for the Ask AI panel.
+ * Two rules describing the same box disagreed, the later one won, and the table pushed the page sideways
+ * instead. Measured at 400px: table 860px, page scrolling by 396px, every column still present.
+ *
+ * `position: relative` IS LOAD-BEARING and does not look it. Scrolling alone leaves the page scrolling,
+ * because the sort button's visually-hidden label (", sorted descending") is absolutely positioned and
+ * this wrapper was not a containing block — so it resolved against the body, landed at x=568 with the
+ * header cell it belongs to, and extended the document on its own. One pixel wide. Both halves were
+ * planted at 400, 500 and 560: remove either and the page scrolls again.
+ *
+ * WHAT THIS COSTS, said plainly: a scroll container clips both axes, so below 560px an Ask AI panel
+ * opened from a row near the bottom is clipped again — the thing the rule above exists to prevent. That
+ * is the trade the phone width forces, and the page scrolling sideways is the worse of the two for a
+ * client reading on a phone. Above 560px nothing changes and the panel is unclipped as before. */
+@media (max-width: 560px) {
+  .names-wrap { overflow-x: auto; position: relative; }
+}
 /* Eight pixels either side instead of twelve, on every column but the two narrow ones at the left: the
    actions column takes a quarter of the table, and the text columns keep their words on one line by
    giving up padding rather than width. The date and the actions give up a little more. */
@@ -668,6 +811,37 @@ table.data td.nest-2 {
 .status-count {
   white-space: nowrap;
 }
+/* One line wherever a risk word is drawn — in the stylesheet rather than inline, so the table below can
+   let it wrap. */
+.risk-dot {
+  white-space: nowrap;
+}
+/* A risk word wraps the same way, and for the same reason: "No rated conflicts" in a column of fixed
+   width ran on under the date beside it instead of taking a second line. */
+.names-wrap table.data.fixed td .risk-dot {
+  white-space: normal;
+  align-items: flex-start;
+}
+.names-wrap table.data.fixed td .risk-dot .dot {
+  flex: none;
+  margin-top: 0.42em;
+}
+/* AND NEVER INSIDE A WORD. At 700px the column holds 84px and "Manageable" is 85: beside its dot it broke
+   into "Managea" over "ble". The cell gives up padding the way the date's does, the dot and the word may
+   part so a word too long to sit beside its dot takes the next line whole, and the word itself breaks only
+   when it cannot fit even on a line of its own — `break-word`, which unlike `anywhere` does not shrink the
+   word's minimum width, so the parting happens first. */
+.names-wrap table.data.fixed td:has(.risk-dot) {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+.names-wrap table.data.fixed td .risk-dot {
+  flex-wrap: wrap;
+  row-gap: 2px;
+}
+.names-wrap table.data.fixed td .risk-dot > span:last-child {
+  overflow-wrap: break-word;
+}
 /* A date is one word to a reader. A line may break before it, never at its hyphens: "2026-09-" over "02"
    read as a different date on the line below. */
 .names-wrap table.data.fixed td .sub.report-line {
@@ -684,9 +858,15 @@ table.data td.nest-2 {
      and red in CI on the same commit. 13.5em is the local measurement plus about a fifth, which is
      more than the spread between the font stacks the two see. */
   --row-open-w: 13.5em;
-  --row-ask-w: 6.5em;
+  /* Ask AI measured 89px at this size, so 6.5em (81px) ran the button into the menu beside it. */
+  --row-ask-w: 7.25em;
   display: grid;
-  grid-template-columns: var(--row-open-w) auto;
+  /* MINMAX, BECAUSE THE TRACK IS A CEILING HERE AND NOT A FLOOR. A bare `var(--row-open-w)` is a fixed
+     13.5em track that cannot shrink, so in a narrow container the row's controls were wider than the
+     column they were given: measured at 700px, the "more" button sat at x=697 with the wrapper's right
+     edge at 682, and the cell overflowed the table and then the page by 25px. The wide form below
+     restores the fixed track, where it fits and the one-width rule matters. */
+  grid-template-columns: minmax(0, var(--row-open-w)) auto;
   grid-template-areas: 'open more' 'ask more';
   justify-content: start;
   align-items: start;
@@ -707,7 +887,15 @@ table.data td.nest-2 {
 .row-actions-ask:empty {
   display: none;
 }
-@container (min-width: 1000px) {
+/* SIDE BY SIDE ONLY WHERE THE CELL HOLDS IT. This asked the whole table's width, and the actions column is
+   a fifth of it: at 1440px the table was 1060px, the query said "wide", and three fixed tracks needing
+   about 300px were laid into a cell of about 200 — every row's menu past the table's edge, the page
+   scrolling sideways. The cell itself is the container now, so the wide form appears exactly when its
+   tracks fit and the stacked form, which shrinks, holds every other width. */
+.row-actions-box {
+  container: rowactions / inline-size;
+}
+@container rowactions (min-width: 300px) {
   .row-actions {
     grid-template-columns: var(--row-open-w) var(--row-ask-w) auto;
     grid-template-areas: 'open ask more';
@@ -730,6 +918,22 @@ button.row-open {
   white-space: nowrap;
   cursor: pointer;
 }
+/* AND ITS LABEL WRAPS, in the narrow form only. Ruled 2026-09-18: the row controls collapse at this
+   width.
+   THIS LINE DOES NOT RED WHEN IT IS REMOVED, and it is kept anyway — said out loud because the next
+   person to plant it will find the same thing. With `nowrap` and the shrunken track, the longest label
+   measures 121px inside a 120px button on this box: it does not overflow here, so the check passes, and
+   it is one pixel from clipping. The comment on `--row-open-w` above records this exact failure
+   happening — green on a developer machine, red on the CI runner, whose default font is wider, on the
+   same commit. Wrapping removes the dependency on which font measured it rather than betting a pixel
+   on it. Nothing in this check can see the difference, which is why this note is here instead. */
+@container (max-width: 999px) {
+  button.row-open {
+    min-width: 0;
+    white-space: normal;
+  }
+}
+
 button.row-open:hover {
   border-color: var(--text-muted);
 }

@@ -25,7 +25,7 @@ function findStatusFiles(root, depth, acc) {
   }
 }
 
-// Every workspace-<agent>/studio/prelim-search root under the live workspace root.
+// Every workspace-<agent>/studio/clearance-search root under the live workspace root.
 export function studioRoots() {
   const out = [];
   let names = [];

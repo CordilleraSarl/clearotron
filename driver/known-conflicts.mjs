@@ -8,7 +8,7 @@
 // (copper-causeway could not see teal-conduit's VENERET: different noref slugs for the same VENZY).
 // The store therefore lives one level up, keyed by the MARK:
 //
-//     <studioRoot>/_known-conflicts/<kebab(mark)>.json     (studioRoot = workspace-<agent>/studio/prelim-search)
+//     <studioRoot>/_known-conflicts/<kebab(mark)>.json     (studioRoot = workspace-<agent>/studio/clearance-search)
 //
 // One file per searched mark name; workspace-per-agent keeps customers separated. Each file keeps the
 // EXACT inner shape the tripwire already reads ({schema_version, marks:{"<mark key>":[rows]}}), so

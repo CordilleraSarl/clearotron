@@ -23,7 +23,7 @@ const BRIDGE = process.env.CLEAROTRON_OAUTH_BRIDGE || join(MCP_DIR, "..", "..", 
 // ── The register surface is PROVIDER-NEUTRAL ────────────────────────────────────────────────────
 // The active register provider is mounted under the single server key `register`, and every register
 // tool is named `register_*`. The vendor's name survives ONLY inside its own *-server.mjs file and in
-// skills/prelim-register/providers/<provider>.md (the vocabulary doc the spawns are told to read).
+// skills/clearance-register/providers/<provider>.md (the vocabulary doc the spawns are told to read).
 //
 // Why neutral names rather than interpolating `${PROVIDER}_enumerate` into the prose: the register
 // instructions in stages.mjs / pipeline.mjs / gateway.mjs are then correct BY CONSTRUCTION for every
@@ -275,7 +275,7 @@ const RECORDING = Object.freeze({
       + "DISCOVERY over the run dir (O3c: 21 calls, 1 write / 15 attempts, `ls`/`find`/`cat`), not the "
       + "enumerable pair frame-diff's Read grant covers",
   },
-  // FIFTH — prelim-variants, conversion 3. Classes 3 + 2, and the CLASS 3 half is what makes it
+  // FIFTH — clearance-variants, conversion 3. Classes 3 + 2, and the CLASS 3 half is what makes it
   // different from every conversion before it: O3c measured 9 Bash calls with 4 WRITES across 15
   // attempts, and the shape is `python3 -c` over `variant-manifest.json` — the seat PRE-CHECKING its own
   // JSON before saving it. That is a constraint the transport can check, so under the design's Class 3
@@ -287,12 +287,12 @@ const RECORDING = Object.freeze({
   // enumerable — it derives the manifest from material already on disk that the dictation names — so the
   // seeded `Read` grant carries them. Granting a search tool to a stage whose reads can be listed is
   // what the sanctioned-equivalents design refuses. Same ruling as frame-diff, opposite to matter-frame.
-  "prelim-variants": {
+  "clearance-variants": {
     seatWrites: false,
-    tools: Object.freeze(["record_prelim_variants"]),
+    tools: Object.freeze(["record_clearance_variants"]),
     reason: "hands back the variant manifest — mark, dominant element, elements, variants with their "
       + "romanisations, incumbent classes, watchlist owners and the scope-ledger rows — through "
-      + "record_prelim_variants instead of hand-formatting a JSON skeleton the driver already "
+      + "record_clearance_variants instead of hand-formatting a JSON skeleton the driver already "
       + "strict-parses and a prose twin that restates it; the driver serialises variant-manifest.json, "
       + "renders variant-manifest.md, and derives scope-ledger.json from the same values rather than by "
       + "re-parsing a markdown table the seat typed. Gains NO retrieval server and NO search tool (its "
@@ -320,7 +320,7 @@ const RECORDING = Object.freeze({
   // NO `search_run_artifacts`: the dictation names this stage's ONLY two inputs — the settled narrative
   // and findings.json — and already trimmed its declared reads to exactly those two. A read set that
   // short is enumerable by definition, and the design forbids handing a search tool to a stage whose
-  // reads can be listed. Same ruling as frame-diff and prelim-variants.
+  // reads can be listed. Same ruling as frame-diff and clearance-variants.
   "report-overview": {
     seatWrites: false,
     tools: Object.freeze(["record_report_overview"]),
@@ -671,7 +671,7 @@ const LOCAL = {
   //
   // GRANTED BY EXACTLY ONE LANE'S GROUP LIST — `common-law` and its `common-law-half` variant, through
   // the prefix branch in toolGroupsForStage. Every doctrinal mention of the tool is theirs:
-  // driver/skills/prelim-common-law/SKILL.md and the two common-law stage dictations in stages.mjs.
+  // driver/skills/clearance-common-law/SKILL.md and the two common-law stage dictations in stages.mjs.
   //
   // NOT an allowlist growing by a token this time: it SHRINKS synthesis's and narrative-refutation's
   // argv and RENAMES the token on common-law's (`mcp__perplexity__record_dispositions` →
@@ -1222,8 +1222,8 @@ export const RECORDING_TOOLS = Object.freeze({
   // so deriving it would compare a value with itself. matter-frame carries the search tool for the same
   // reason skeptic does, on its OWN key — a shared key would hand skeptic a writer into the frame.
   // BY HAND, like every row here — O1 compares the resolved grant against it, so a derived row would
-  // compare a value with itself. prelim-variants carries NO search tool: enumerable inputs, Read serves.
-  "prelim-variants": Object.freeze(["Read", "mcp__recording-prelim-variants__record_prelim_variants"]),
+  // compare a value with itself. clearance-variants carries NO search tool: enumerable inputs, Read serves.
+  "clearance-variants": Object.freeze(["Read", "mcp__recording-clearance-variants__record_clearance_variants"]),
   "matter-frame": Object.freeze(["Read", "mcp__recording-matter-frame__record_matter_frame",
     "mcp__recording-matter-frame__search_run_artifacts"]),
   skeptic: Object.freeze(["Read", "mcp__recording-skeptic__record_skeptic",

@@ -13,9 +13,10 @@
 
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import {
   EMPTY_DRAFT, REGIONS, COUNTRIES, tierOf, vocabularyFor, territoryMatches, addTerritory,
-  removeTerritory, takeOverOwnTerritories, notAvailableLine, geographyFor, geographyNote, nativeLanguageControl, toggleNativeLanguage,
+  removeTerritory, takeOverOwnTerritories, notAvailableLine, geographyFor, nativeLanguageControl, toggleNativeLanguage,
   chooseProduct, blockers, nameBudget, machineryFor, composeSaved, draftFromSaved, inherited, readiness,
   missingPieces,
   MAX_TERRITORIES, checksSummary, runsNote, turnaround, effortUnits,
@@ -63,8 +64,11 @@ test('a Full country search is offered NO regions — the control fits the produ
 })
 
 test('the typeahead matches whole words and aliases, never a bare substring', () => {
-  // A naive contains-match turns "in" into India, China, Singapore and Argentina at once.
-  assert.deepEqual([...territoryMatches('in', [], MULTI)], ['India'])
+  // A naive contains-match turns "in" into India, China, Singapore and Argentina at once. A word STARTING
+  // "in" is a match — India and Indonesia both — and a word merely containing it is not.
+  assert.deepEqual([...territoryMatches('in', [], MULTI)], ['India', 'Indonesia'])
+  for (const substringOnly of ['China', 'Singapore', 'Argentina', 'Liechtenstein'])
+    assert.ok(![...territoryMatches('in', [], MULTI)].includes(substringOnly), `${substringOnly} only contains "in"`)
   assert.deepEqual([...territoryMatches('usa', [], MULTI)], ['United States'])
   assert.deepEqual([...territoryMatches('aripo', [], MULTI)], ['African Regional (ARIPO)'])
   assert.deepEqual([...territoryMatches('france', ['France'], MULTI)], [], 'already chosen ⇒ not offered again')
@@ -116,15 +120,21 @@ test('the draft states its geography MODE — and there are THREE, because the o
 
 // ── the product decides the controls, and each says WHY at the control ───────────────────────────────
 
-test('every product states the geography it accepts, at the control', () => {
-  for (const p of PRODUCTS) {
-    const note = geographyNote(p)
-    assert.ok(note && note.length > 20, `${p.key}: says nothing about what it accepts`)
+test('the Where field states no geography of its own — the product row already did', () => {
+  // INVERTED, NOT DELETED. This arm required a sentence per geography above the Where control. The owner
+  // ruled all four out on 2026-09-18 and the board carries none of them, so what has to hold now is that
+  // they do not come back — and an arm that simply went away would let them.
+  const src = readFileSync(new URL('../src/screens/NewClearance.tsx', import.meta.url), 'utf8')
+  assert.doesNotMatch(src, /geographyNote/, 'the per-geography note above the Where control is back')
+  for (const phrase of ['This search is not narrowed', 'Regions are not offered here', 'One country on its own is a Full country search']) {
+    assert.ok(!src.includes(phrase), `the removed sentence "${phrase}" is back on the screen`)
   }
-  assert.match(geographyNote(GLOBAL)!, /not narrowed/i)
-  assert.match(geographyNote(FULL)!, /Regions are not offered here/i)
-  assert.match(geographyNote(MULTI)!, /One country on its own is a Full country search/i)
-  assert.equal(geographyNote(null), null)
+  // THE FACT ITSELF IS STILL SAID, which is why removing the sentence costs the reader nothing: every
+  // product carries its geography, and the row prints it as the tagline the board draws.
+  for (const p of PRODUCTS) {
+    assert.ok(typeof p.geography === 'string' && p.geography.length > 0,
+      `${p.key}: the row has no geography to print, so removing the note did lose the reader something`)
+  }
 })
 
 test('the native-language investigation is a toggle on exactly one product, automatic on one, absent on two', () => {
@@ -335,7 +345,7 @@ test('a saved search reads back as a draft — and a product the offering no lon
   // Read back THROUGH the product's own rules: a Full country search holds one country, so the record's
   // second territory does not survive into a form that cannot express it.
   assert.deepEqual(back, { product: FULL.key, territories: ['France'], replacesOwnTerritories: false, nativeLanguage: false })
-  assert.equal(draftFromSaved({ base: 'prelim-jx', scope: {} }, PRODUCTS), null,
+  assert.equal(draftFromSaved({ base: 'clearance-jx', scope: {} }, PRODUCTS), null,
     'a retired level as a base opens READ-ONLY rather than being reshaped into the nearest live product')
   assert.equal(draftFromSaved({}, PRODUCTS), null)
 })

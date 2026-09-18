@@ -77,7 +77,7 @@ before(async () => {
   // Each run has to BELONG to an account — an untagged run is visible only to a full grant, which is a
   // different refusal from the one this test is about.
   writeFileSync(driverDir(fixture.runDir, "profile.json"), JSON.stringify({ profileKey: "acme" }));
-  const rich = join(ROOT, "workspace-test", "studio", "prelim-search", "archive", "2026-05", "tmpmyrk1-myrkur", "2026-05-20-iron-heron");
+  const rich = join(ROOT, "workspace-test", "studio", "clearance-search", "archive", "2026-05", "tmpmyrk1-myrkur", "2026-05-20-iron-heron");
   writeFileSync(driverDir(rich, "profile.json"), JSON.stringify({ profileKey: "myrkur" }));
 
   const mk = async (opts, ns) => {

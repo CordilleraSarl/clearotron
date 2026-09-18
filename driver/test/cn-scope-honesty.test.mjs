@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // CN scope honesty at plain clearotron. The zh candidate
-// lane is a Depth 5 (prelim-jx) PAID feature that must NOT run at plain clearotron; this branch adds
+// lane is a Depth 5 (clearance-jx) PAID feature that must NOT run at plain clearotron; this branch adds
 // HONESTY, not searching: (a) one deterministic reader-visible coverage row when the scope touches the
 // zh-lane family and the lane did not run (the injectDeferralCoverage posture), and (b) a note-only
 // recommendation at level resolution. CRITICAL doctrine pinned here: the row is `coverage-limited`,
@@ -15,7 +15,7 @@ import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { tmpdir } from "node:os";
 import { decideRegisterGap } from "../coverage-ledger.mjs";
 import { zhScopeDepthNotes, LANGUAGE_LANES } from "../jx-lanes.mjs";
-// THE REAL RESOLVER, and the real offering. The tests below used to hand-feed `{ level: "prelim" }` —
+// THE REAL RESOLVER, and the real offering. The tests below used to hand-feed `{ level: "clearance" }` —
 // see the note over the resolution-time block.
 import { resolveSearchPolicy } from "../search-policy.mjs";
 import { PRODUCT_IDS, PRODUCTS, productName, NATIVE_LANGUAGE_REMEDY } from "../products.mjs";
@@ -30,7 +30,7 @@ test("decideZhScopeHonesty: a CN-scope run whose lane did not run gets the row (
   assert.equal(row.state, "coverage-limited", "a disclosed accepted limit — never the clamping `deferred`");
   assert.equal(row.area, ZH_SCOPE_COVERAGE_AREA);
   assert.equal(row.note, ZH_SCOPE_COVERAGE_NOTE);
-  // THE REMEDY NAMES A PRODUCT A CLIENT CAN ORDER. This assertion used to require /Depth 5 \(prelim-jx\)/
+  // THE REMEDY NAMES A PRODUCT A CLIENT CAN ORDER. This assertion used to require /Depth 5 \(clearance-jx\)/
   // — an internal product key at a rung of the retired ladder — and so PINNED the defect: a delivered
   // coverage row disclosing a limit and offering, as its remedy, a product deleted.
   assert.ok(row.note.includes(NATIVE_LANGUAGE_REMEDY), "the reader is told where the search can be bought");
@@ -88,8 +88,8 @@ function mkRun({ laneSidecar = null, units = null } = {}) {
 const RAN_GRID = { "serp-grid:zh": { done: true, degraded: false } };
 const RAN_READ = { "nativeread:zh": { done: true, degraded: false } };
 const JX_ON = {};
-const POLICY_JX = { level: "prelim-jx", components: { jxLanes: true } };
-const POLICY_PRELIM = { level: "prelim", components: { jxLanes: false } };
+const POLICY_JX = { level: "clearance-jx", components: { jxLanes: true } };
+const POLICY_CLEARANCE = { level: "clearance", components: { jxLanes: false } };
 const ZH_SIDECAR = { schema: 1, lanes: { zh: { depth: "candidates", jurisdictions: ["CN"] } }, scope: ["CN"] };
 
 test("zhLaneRanOnRun: true only when component + a unit flag + lane flag + frozen zh decision ALL hold", () => {
@@ -98,7 +98,7 @@ test("zhLaneRanOnRun: true only when component + a unit flag + lane flag + froze
   // report "did not run" on a run that did and the report libels its own coverage.
   const ranGrid = mkRun({ laneSidecar: ZH_SIDECAR, units: RAN_GRID });
   assert.equal(zhLaneRanOnRun(ranGrid, { searchPolicy: POLICY_JX, env: JX_ON }), true);
-  assert.equal(zhLaneRanOnRun(ranGrid, { searchPolicy: POLICY_PRELIM, env: JX_ON }), false, "plain clearotron never ran the lane, whatever is on disk");
+  assert.equal(zhLaneRanOnRun(ranGrid, { searchPolicy: POLICY_CLEARANCE, env: JX_ON }), false, "plain clearotron never ran the lane, whatever is on disk");
   assert.equal(zhLaneRanOnRun(ranGrid, { searchPolicy: POLICY_JX, env: { CLEAROTRON_NATIVE_LANGUAGE_ZH: "0" } }), false, "lane killed ⇒ did not run");
   const noSidecar = mkRun({ units: RAN_GRID });
   assert.equal(zhLaneRanOnRun(noSidecar, { searchPolicy: POLICY_JX, env: JX_ON }), false, "no frozen lane decision ⇒ did not run");
@@ -142,7 +142,7 @@ test("injectZhScopeCoverage: injects ONE row for a worldwide/CN-scope plain-clea
   const dir = mkRun();
   const P = { findings: join(dir, "findings.json") };
   writeFileSync(P.findings, JSON.stringify(FINDINGS_DOC, null, 2));
-  const args = { searchPolicy: POLICY_PRELIM, job: { jurisdictions: ["CN", "US"] }, profile: {}, env: {} };
+  const args = { searchPolicy: POLICY_CLEARANCE, job: { jurisdictions: ["CN", "US"] }, profile: {}, env: {} };
   injectZhScopeCoverage(P, dir, quiet, args);
   const once = JSON.parse(readFileSync(P.findings, "utf8"));
   const rows = once.coverage.filter((c) => c.area === ZH_SCOPE_COVERAGE_AREA);
@@ -157,7 +157,7 @@ test("injectZhScopeCoverage: injects ONE row for a worldwide/CN-scope plain-clea
 });
 
 test("injectZhScopeCoverage: NOT injected when the lane ran, and NOT injected when scope has no zh jurisdiction", () => {
-  // lane ran: prelim-jx policy + a frozen zh decision + a unit record stating done ( item 8 —
+  // lane ran: clearance-jx policy + a frozen zh decision + a unit record stating done ( item 8 —
   // the record IS the evidence now; the frozen decision alone is a run that decided and did not do it)
   const ran = mkRun({ laneSidecar: ZH_SIDECAR, units: RAN_GRID });
   const ranP = { findings: join(ran, "findings.json") };
@@ -169,7 +169,7 @@ test("injectZhScopeCoverage: NOT injected when the lane ran, and NOT injected wh
   const us = mkRun();
   const usP = { findings: join(us, "findings.json") };
   writeFileSync(usP.findings, JSON.stringify(FINDINGS_DOC, null, 2));
-  injectZhScopeCoverage(usP, us, quiet, { searchPolicy: POLICY_PRELIM, job: { jurisdictions: ["US", "EU"] }, profile: {}, env: {} });
+  injectZhScopeCoverage(usP, us, quiet, { searchPolicy: POLICY_CLEARANCE, job: { jurisdictions: ["US", "EU"] }, profile: {}, env: {} });
   assert.equal(JSON.parse(readFileSync(usP.findings, "utf8")).coverage.some((c) => c.area === ZH_SCOPE_COVERAGE_AREA), false,
     "no zh jurisdiction in scope — no row");
 });
@@ -178,7 +178,7 @@ test("injectZhScopeCoverage: never-kill — a corrupt findings.json is left byte
   const dir = mkRun();
   const P = { findings: join(dir, "findings.json") };
   writeFileSync(P.findings, "{ not json");
-  injectZhScopeCoverage(P, dir, quiet, { searchPolicy: POLICY_PRELIM, job: { jurisdictions: ["CN"] }, profile: {}, env: {} });
+  injectZhScopeCoverage(P, dir, quiet, { searchPolicy: POLICY_CLEARANCE, job: { jurisdictions: ["CN"] }, profile: {}, env: {} });
   assert.equal(readFileSync(P.findings, "utf8"), "{ not json", "any defect leaves findings.json untouched");
 });
 
@@ -186,11 +186,11 @@ test("injectZhScopeCoverage: never-kill — a corrupt findings.json is left byte
 //
 // THESE TESTS WERE GREEN OVER A DEAD BRANCH FOR THE WHOLE, and how they managed it is the point.
 //
-// `zhScopeDepthNotes` opened with `resolvedPolicy.level !== "prelim"`. `resolveSearchPolicy` returns
+// `zhScopeDepthNotes` opened with `resolvedPolicy.level !== "clearance"`. `resolveSearchPolicy` returns
 // `level` = THE PRODUCT ID for all four searches, so that leg was false on every live run and the
 // recommendation returned [] for every one of them — with both callers live (pipeline.mjs, runner.mjs)
 // and 3,754 driver tests passing. The tests passed because they built the policy BY HAND, as
-// `{ level: "prelim", components: {...} }`: a literal nothing in the engine has produced since the
+// `{ level: "clearance", components: {...} }`: a literal nothing in the engine has produced since the
 // depth ladder was retired. A fixture that invents its input certifies the bug.
 //
 // So the policies below come out of `resolveSearchPolicy` itself, from a job and a profile, exactly as
@@ -241,13 +241,13 @@ test("zhScopeDepthNotes: driven from the REAL resolver, every product in the off
 });
 
 test("zhScopeDepthNotes: the note names NO retired product key and NO rung of the depth ladder", () => {
-  // It named both — "a plain clearotron (Depth 4) … the \"prelim-jx\" level (Depth 5)" — for a run log a
+  // It named both — "a plain clearotron (Depth 4) … the \"clearance-jx\" level (Depth 5)" — for a run log a
   // person reads. The same vocabulary reached a CLIENT report through the coverage row above, which is
   // why this is asserted on both and not only there.
   const { job, resolved } = policyFor_("knockout-search", ["CN", "FR"]);
   const [note] = zhScopeDepthNotes(job, resolved, {});
   assert.doesNotMatch(note, /Depth \s*\d/, "a rung of the retired ladder survived in the recommendation");
-  assert.doesNotMatch(note, /\bprelim\b|prelim-jx|prelim-register-only|knockout-register/, "a retired level key survived");
+  assert.doesNotMatch(note, /\bclearance\b|clearance-jx|clearance-register-only|knockout-register/, "a retired level key survived");
   for (const id of PRODUCT_IDS) assert.ok(!note.includes(id), `an internal product id reached the note: ${id}`);
   for (const p of PRODUCTS) assert.ok(NATIVE_LANGUAGE_REMEDY.includes(p.name) === (p.nativeLanguage !== "absent"),
     `${p.name}: the remedy names exactly the products that carry the investigation`);
@@ -342,7 +342,7 @@ test("scriptLaneRanOnRun: zh keeps its unit legs; ja/ko run when the FOLD accept
   // the per-lane env kill applies to every lane, by name
   assert.equal(scriptLaneRanOnRun(dir, "ja", { searchPolicy: POLICY_JX, env: { CLEAROTRON_NATIVE_LANGUAGE_JA: "0" } }), false);
   // plain clearotron never ran any lane, whatever is on disk
-  assert.equal(scriptLaneRanOnRun(dir, "ja", { searchPolicy: POLICY_PRELIM, env: {} }), false);
+  assert.equal(scriptLaneRanOnRun(dir, "ja", { searchPolicy: POLICY_CLEARANCE, env: {} }), false);
   // zh keeps its own rule, and item 8 changed what that rule READS rather than what it means: one
   // of the two units having executed. The evidence is now the unit record instead of the arm that used
   // to gate it — which makes this branch the same SHAPE as the ja/ko one above (a record of work done),
@@ -359,7 +359,7 @@ test("injectScriptScopeCoverage: a JP+KR plain-clearotron run gets the ja AND ko
   const dir = mkRun();
   const P = { findings: join(dir, "findings.json") };
   writeFileSync(P.findings, JSON.stringify(FINDINGS_DOC, null, 2));
-  const args = { searchPolicy: POLICY_PRELIM, job: { jurisdictions: ["JP", "KR"] }, profile: {}, env: {} };
+  const args = { searchPolicy: POLICY_CLEARANCE, job: { jurisdictions: ["JP", "KR"] }, profile: {}, env: {} };
   injectScriptScopeCoverage(P, dir, quiet, args);
   const cov = JSON.parse(readFileSync(P.findings, "utf8")).coverage;
   const areas = cov.map((c) => c.area);
@@ -377,12 +377,12 @@ test("the row-eater: a CN+JP scope must not lose the ja row to the zh row's own 
   // The old suppression treated ANY coverage row carrying the recommendation vocabulary as covering the
   // disclosure. Harmless with one lane; with two, the zh row lands first and carries that vocabulary in
   // its own remedy clause — which is still true now the clause reads "the native-language investigation"
-  // instead of "(prelim-jx)". The per-lane MARKER is what keeps the ja row alive, and it is what this
+  // instead of "(clearance-jx)". The per-lane MARKER is what keeps the ja row alive, and it is what this
   // asserts: the token match alone would eat it either way.
   const dir = mkRun();
   const P = { findings: join(dir, "findings.json") };
   writeFileSync(P.findings, JSON.stringify(FINDINGS_DOC, null, 2));
-  injectScriptScopeCoverage(P, dir, quiet, { searchPolicy: POLICY_PRELIM, job: { jurisdictions: ["CN", "JP"] }, profile: {}, env: {} });
+  injectScriptScopeCoverage(P, dir, quiet, { searchPolicy: POLICY_CLEARANCE, job: { jurisdictions: ["CN", "JP"] }, profile: {}, env: {} });
   const areas = JSON.parse(readFileSync(P.findings, "utf8")).coverage.map((c) => c.area);
   assert.ok(areas.includes(ZH_SCOPE_COVERAGE_AREA), "the Chinese-script row");
   assert.ok(areas.includes(scriptScopeDisclosure("ja").area), "AND the Japanese-script row — both scopes are real");
@@ -395,7 +395,7 @@ test("a synthesis-authored Stage-1.5 row still defers — but only for ITS OWN l
   writeFileSync(P.findings, JSON.stringify({ schema_version: 2, findings: [], coverage: [
     { area: "register / JP", state: "coverage-limited", note: `Japanese-script equivalents: ${NATIVE_LANGUAGE_REMEDY}` },
   ] }, null, 2));
-  injectScriptScopeCoverage(P, dir, quiet, { searchPolicy: POLICY_PRELIM, job: { jurisdictions: ["JP", "KR"] }, profile: {}, env: {} });
+  injectScriptScopeCoverage(P, dir, quiet, { searchPolicy: POLICY_CLEARANCE, job: { jurisdictions: ["JP", "KR"] }, profile: {}, env: {} });
   const areas = JSON.parse(readFileSync(P.findings, "utf8")).coverage.map((c) => c.area);
   assert.equal(areas.includes(scriptScopeDisclosure("ja").area), false, "synthesis already disclosed the ja lane — not duplicated");
   assert.ok(areas.includes(scriptScopeDisclosure("ko").area), "but the ko lane is still owed its own row");
@@ -403,15 +403,15 @@ test("a synthesis-authored Stage-1.5 row still defers — but only for ITS OWN l
 
 test("the RETIRED vocabulary still defers, because a resumed run's synthesis wrote it", () => {
   // Deliberately kept, and this is the leg that says why: a run resumed from before carries a
-  // synthesis row phrased "available at Depth 5 (prelim-jx)". Dropping the old token would put a second,
+  // synthesis row phrased "available at Depth 5 (clearance-jx)". Dropping the old token would put a second,
   // duplicate disclosure into a report that already makes the same one — a regression visible only on the
   // resumes nobody re-runs, which is the class of defect that goes unnoticed longest.
   const dir = mkRun();
   const P = { findings: join(dir, "findings.json") };
   writeFileSync(P.findings, JSON.stringify({ schema_version: 2, findings: [], coverage: [
-    { area: "register / JP", state: "coverage-limited", note: "Japanese-script equivalents are available at Depth 5 (prelim-jx)" },
+    { area: "register / JP", state: "coverage-limited", note: "Japanese-script equivalents are available at Depth 5 (clearance-jx)" },
   ] }, null, 2));
-  injectScriptScopeCoverage(P, dir, quiet, { searchPolicy: POLICY_PRELIM, job: { jurisdictions: ["JP"] }, profile: {}, env: {} });
+  injectScriptScopeCoverage(P, dir, quiet, { searchPolicy: POLICY_CLEARANCE, job: { jurisdictions: ["JP"] }, profile: {}, env: {} });
   const areas = JSON.parse(readFileSync(P.findings, "utf8")).coverage.map((c) => c.area);
   assert.equal(areas.includes(scriptScopeDisclosure("ja").area), false,
     "the pre-#467 wording no longer defers — a resumed run would carry the disclosure twice");
@@ -421,7 +421,7 @@ test("never-kill survives the generalisation — a corrupt findings.json is left
   const dir = mkRun();
   const P = { findings: join(dir, "findings.json") };
   writeFileSync(P.findings, "{ not json");
-  injectScriptScopeCoverage(P, dir, quiet, { searchPolicy: POLICY_PRELIM, job: { jurisdictions: ["JP", "CN"] }, profile: {}, env: {} });
+  injectScriptScopeCoverage(P, dir, quiet, { searchPolicy: POLICY_CLEARANCE, job: { jurisdictions: ["JP", "CN"] }, profile: {}, env: {} });
   assert.equal(readFileSync(P.findings, "utf8"), "{ not json");
 });
 
@@ -430,7 +430,7 @@ test("never-kill survives the generalisation — a corrupt findings.json is left
 // products.test.mjs scans every refusal sentence products.mjs can produce for internal product ids,
 // retired level keys and "Depth N" — because those are strings a REQUESTER reads. The coverage rows
 // below are strings a CLIENT reads, in a delivered report, and NOTHING scanned them. That absence is how
-// `not searched at this level — available at Depth 5 (prelim-jx)` shipped into client prose and survived
+// `not searched at this level — available at Depth 5 (clearance-jx)` shipped into client prose and survived
 // two rounds: it was never wrong by any check that existed.
 //
 // So the scan extends here, to the disclosure vocabulary, over EVERY lane rather than the one that was
@@ -446,12 +446,12 @@ test("no lane's client-facing disclosure carries an internal key, a component na
   for (const m of strings) {
     for (const id of PRODUCT_IDS) assert.ok(!m.includes(id), `a product id reached a client report: ${id} in "${m}"`);
     assert.doesNotMatch(m, /Depth \s*\d/, `a rung of the retired ladder reached a client report: "${m}"`);
-    assert.doesNotMatch(m, /\bprelim\b|prelim-jx|prelim-register-only|knockout-register/, `a retired level key reached a client report: "${m}"`);
+    assert.doesNotMatch(m, /\bclearance\b|clearance-jx|clearance-register-only|knockout-register/, `a retired level key reached a client report: "${m}"`);
     assert.doesNotMatch(m, /jxLanes|registerProbe|commonLawGrid|maxMarks|stageLabel/, `an internal component name reached a client report: "${m}"`);
     assert.doesNotMatch(m, /[A-Z][A-Z0-9]*_[A-Z0-9_]+/, `a variable-shaped name reached a client report: "${m}"`);
   }
   // AND THE ROW AS BUILT, not only its parts — the note is assembled from two sources and either could
   // reintroduce the vocabulary the other dropped.
   const row = decideZhScopeHonesty({ scope: ["CN"], laneRan: false });
-  assert.doesNotMatch(`${row.area} ${row.note}`, /Depth \s*\d|prelim-jx/);
+  assert.doesNotMatch(`${row.area} ${row.note}`, /Depth \s*\d|clearance-jx/);
 });

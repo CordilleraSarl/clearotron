@@ -680,7 +680,7 @@ export type Plan = {
    *
    * The composer computes its own bar while the levers move (composerLevers.ts) because that has to be
    * instant; this is the authoritative figure, and it can differ where a lever does not survive the wire
-   * — three script lanes and one both arrive as `prelim-jx`, and which lanes actually run is decided
+   * — three script lanes and one both arrive as `clearance-jx`, and which lanes actually run is decided
    * server-side from the jurisdictions. At REVIEW the server's number wins, which is what that step is
    * for. `driver/effort-model.mjs` and `composerLevers.ts` are pinned together by
    * `test/effortModelParity.test.ts`, so the two can only differ where the INPUTS differ, never the math.
@@ -1712,6 +1712,16 @@ const asCompanyFacts = (v: unknown): CompanyFacts => {
     platformCount: asNumber(r['platformCount']) ?? 0,
     territories: asStrings(r['territories']),
   }
+}
+
+/**
+ * The roster as the server answers it: the companies that loaded, and the company files that could not be
+ * read. One file that fails no longer fails the list; it is named here instead, so the portal can say so
+ * rather than drawing a shorter list as if it were the whole one.
+ */
+export type Roster = {
+  readonly companies: readonly RosterCompany[]
+  readonly unreadable: readonly { readonly key: string; readonly reason: string }[]
 }
 
 /** A company on the roster: how it is keyed, what it is called, where it sits, and the facts that tell it apart. */
@@ -2762,9 +2772,9 @@ export const api = {
       body: JSON.stringify(input),
     }),
 
-  roster: (): Promise<Result<readonly RosterCompany[]>> =>
-    call('/portal/admin/roster', (b) =>
-      asArray(b['customers']).map((c) => {
+  roster: (): Promise<Result<Roster>> =>
+    call('/portal/admin/roster', (b) => ({
+      companies: asArray(b['customers']).map((c) => {
         const r = c as Record<string, unknown>
         return {
           key: asString(r['key']) ?? '', name: asString(r['name']) ?? '', facts: asCompanyFacts(r),
@@ -2773,5 +2783,11 @@ export const api = {
           org: asString(r['org']) ?? null,
         }
       }),
-    ),
+      // Absent when nothing failed, which is every older server too: an empty list, never a guess.
+      unreadable: asArray(b['unreadable']).flatMap((u) => {
+        const r = u as Record<string, unknown>
+        const key = asString(r['key'])
+        return key ? [{ key, reason: asString(r['reason']) ?? '' }] : []
+      }),
+    })),
 }

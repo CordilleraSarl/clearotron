@@ -21,7 +21,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const SCRIPT = join(HERE, "..", "..", "scripts", "freeze-example-run.mjs");
 
 const REPORT_MD = `---
-type: prelim-clearance
+type: clearance-clearance
 matter: TMP8439
 title: PROJECT AQUAPLUS
 client: Zephyr Beverages
@@ -163,6 +163,24 @@ test("a finished run freezes clean: allowlist carried, payloads dropped, report 
   rmSync(root, { recursive: true, force: true });
 });
 
+test("every input the publisher declares travels with a frozen run, the register band and the local-language lane included", () => {
+  // A frozen republish drew no register section: register-named-band.json is a declared publish input and
+  // the hand-kept allowlist had left it, and three more, behind.
+  const { root, runDir } = makeRun();
+  writeFileSync(join(runDir, "register-named-band.json"), JSON.stringify({ records: [] }, null, 2));
+  writeFileSync(driverDir(runDir, "jx-lanes.json"), JSON.stringify({ lanes: {} }, null, 2));
+  mkdirSync(driverDir(runDir, "jx"), { recursive: true });
+  writeFileSync(driverDir(runDir, "jx", "units.json"), JSON.stringify([], null, 2));
+  writeFileSync(driverDir(runDir, "register-recall.json"), JSON.stringify({ overflow: [] }, null, 2));
+  const out = join(root, "frozen");
+  const r = runFreeze(runDir, out);
+  assert.equal(r.code, 0, r.out);
+  const frozen = join(out, "run");
+  for (const f of ["register-named-band.json", "_driver/jx-lanes.json", "_driver/jx/units.json", "_driver/register-recall.json"])
+    assert.ok(existsSync(join(frozen, f)), `${f} is a declared publish input and did not travel: ${r.out}`);
+  rmSync(root, { recursive: true, force: true });
+});
+
 test("the pruned telemetry's two records, the token rollup and the served models, are the expected differences, each named rather than normalised away", () => {
   const { root, runDir } = makeRun();
   const r = runFreeze(runDir, join(root, "frozen"));
@@ -288,7 +306,18 @@ function runHoledFreeze(root, runDir) {
     (_m, head, tail) => `${head}${JSON.stringify(join(HERE, "..", "..", "shared", "driver-dir.mjs"))}${tail}`,
   );
   assert.notEqual(pinned, patched, "the shared/driver-dir.mjs import must exist to be pinned");
-  writeFileSync(holed, pinned);
+  // And the publisher's declared inputs, which the allowlist now takes whole — pinned the same way.
+  const pinnedInputs = pinned.replace(
+    /^(import \{[^}]*\} from )["'][^"']*driver\/publish\/publish-inputs\.mjs["'](.*)$/m,
+    (_m, head, tail) => `${head}${JSON.stringify(join(HERE, "..", "publish", "publish-inputs.mjs"))}${tail}`,
+  );
+  assert.notEqual(pinnedInputs, pinned, "the publish-inputs import must exist to be pinned");
+  // THE DERIVATION WOULD REFILL THE HOLE, since findings.json is a declared input — which is the point of
+  // it, and why this copy switches it off: what is under test here is the republish proof, and the proof
+  // has to be shown catching an input that went missing by whatever route.
+  const unfilled = pinnedInputs.replace(/^for \(const path of Object\.keys\(PUBLISH_INPUTS\)\) \{$/m, "for (const path of []) {");
+  assert.notEqual(unfilled, pinnedInputs, "the declared-input derivation must exist to be switched off");
+  writeFileSync(holed, unfilled);
   let code = 0, out = "";
   try {
     out = execFileSync(process.execPath, [holed, "--run-dir", runDir, "--out", join(root, "frozen"), "--force"], {

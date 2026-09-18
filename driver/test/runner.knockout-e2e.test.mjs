@@ -58,9 +58,9 @@ for (const [k, v] of Object.entries({
 })) pinEnv(process.env, k, v);
 
 const { main } = await import("../runner.mjs");
-const Q = join(root, "workspace-clawdi", "studio", "prelim-search", "queue");
+const Q = join(root, "workspace-clawdi", "studio", "clearance-search", "queue");
 mkdirSync(Q, { recursive: true });
-const OUTBOX = join(root, "prelim-outbox");
+const OUTBOX = join(root, "clearance-outbox");
 
 // every run dir under a tree (delivered runs move to the archive subtree)
 const findRuns = (base) => {
@@ -120,10 +120,10 @@ test("a 3-mark knockout batch runs end to end: receipts, degrade, publish stamps
   // — BEFORE the assertions below. A run that never started leaves its
   // reason in the packets beside the queue; without this the counts below report it as a
   // product defect.
-  refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.knockout-e2e.test.mjs");
+  refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.knockout-e2e.test.mjs");
   assert.ok(existsSync(join(Q, "ko-batch.done")), "queue entry consumed as .done");
 
-  const runDirs = findRuns(join(root, "workspace-clawdi", "studio", "prelim-search"));
+  const runDirs = findRuns(join(root, "workspace-clawdi", "studio", "clearance-search"));
   assert.equal(runDirs.length, 1);
   const rd = runDirs[0];
   assert.ok(rd.includes("/archive/"), "the delivered run was archived");
@@ -356,13 +356,13 @@ test("STAGE 0.5 end to end: counts measured in code, on the report, in the workb
   // — BEFORE the assertions below. A run that never started leaves its
   // reason in the packets beside the queue; without this the counts below report it as a
   // product defect.
-  refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.knockout-e2e.test.mjs");
+  refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.knockout-e2e.test.mjs");
   assert.ok(existsSync(join(Q, "ko-reg.done")), "Depth 2 is admitted and runs — no clarify");
 
   // SCOPED TO THIS RUN'S OWN MARK. Every Knockout search carries the count probe now — there is one
   // knockout product and the counts are in it — so "the run that wrote a counts sidecar" no longer
   // identifies one run in this file.
-  const rd = findRuns(join(root, "workspace-clawdi", "studio", "prelim-search"))
+  const rd = findRuns(join(root, "workspace-clawdi", "studio", "clearance-search"))
     .find((d) => {
       const f = driverDir(d, "register-counts.json");
       if (!existsSync(f)) return false;
@@ -452,7 +452,7 @@ test("STAGE 0.5 end to end: counts measured in code, on the report, in the workb
   // report-data.json and to the workbook, which is where the issue puts it, and that is asserted below
   // rather than here so a failure names which surface lost it.
   assert.match(report, /<th>Exactly IRONWHISK<\/th>/, "the header says what the identical column counted");
-  assert.match(report, /A count is not a conflict/, "and the one line under the table says what a count is not");
+  assert.doesNotMatch(report, /A count is not a conflict/i, "and no caveat line sits under the table: the board carries none");
   assert.doesNotMatch(report, /Counting is not searching/, "the retired paragraph is off the page");
   // The same numbers, machine-readable, for whatever drafts a client-facing note from this run.
   const metaC = JSON.parse(readFileSync(join(pool, dir, "meta.json"), "utf8"));

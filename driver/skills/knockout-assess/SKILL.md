@@ -36,7 +36,7 @@ there is no other value: a band that needs sharpening is the band above it, stat
    This ordered an expectation sentence ("moderate volume of filings expected") and forbade a register
    conclusion, because this seat could not see the register lane. It can: the run's fetched records are
    passed to you when they exist. The replacement is RF-15 v3 in
-   `../prelim-search/firm-wide-reasoning.md` — estimation becomes one of three confirmation states once
+   `../clearance-search/firm-wide-reasoning.md` — estimation becomes one of three confirmation states once
    the register actually ran. Where it did not run, the estimate is still the honest answer and RF-15
    says so.
    *The number is kept and not reused* — see calibration rule 4 for why.
@@ -51,7 +51,7 @@ there is no other value: a band that needs sharpening is the band above it, stat
 2. **Crowded field = diluted risk, not amplified.** Many small, non-enforcing players means any one
    player's enforcement power is weaker — a crowded field typically caps at the middle band. The
    gating precondition, and what a crowd may and may not do to a band, are in
-   `../prelim-search/firm-wide-reasoning.md` → *Volume is not a risk multiplier*; read it there rather
+   `../clearance-search/firm-wide-reasoning.md` → *Volume is not a risk multiplier*; read it there rather
    than from a summary here.
    *(Its closing sentence — "the top bands are reserved for dominant, well-resourced,
    known-to-enforce rights holders" — is RETIRED. That is owner size and fame driving a band, which the
@@ -78,7 +78,7 @@ there is no other value: a band that needs sharpening is the band above it, stat
    This rule ordered the pending-register caveat on *every* summary, unconditionally. When the register
    ran and surfaced live filings, that sentence tells a client its ratings are common-law only while the
    same run holds the filings — which is what shipped. The replacement is RF-10 v3 in
-   `../prelim-search/firm-wide-reasoning.md`: when register analysis ran AND surfaced live filings, drop
+   `../clearance-search/firm-wide-reasoning.md`: when register analysis ran AND surfaced live filings, drop
    the caveat and cite the register evidence directly; otherwise it stands.
    *The number is kept and not reused.* `verify-knockout.mjs` and two other files address these rules by
    number, so renumbering would silently repoint five live references at the wrong rule.5. **Dispute-type notation only when the customer's framework defines it** (e.g. an A–E / dispute
@@ -122,9 +122,8 @@ each mark, and — when the register component is configured — two counts per 
 identical to the name, and how many contain it. That is the whole evidence base. Everything below
 follows from writing only what it supports.
 
-1. **A survivor is never "clear".** A mark this screen did not knock out is *not knocked out at the
-   configured depth, and proceeds to clearance*. Never "clear", "clean", "no conflicts found", "clear
-   to proceed". The screen ending without a blocker is a result about the screen, not about the mark.
+1. **A survivor is never "clear".** Never "clear", "clean", "no conflicts found", "clear to proceed".
+   The screen ending without a blocker is a result about the screen, not about the mark.
 2. **An absence claim may not exceed what was searched.** Say where you looked and what came back
    empty there — "no exact-name energy drink was identified in the supplement and grocery
    marketplaces screened" is supportable; "there is no conflicting use" is not. `negatives[]` is
@@ -236,7 +235,11 @@ A note that restates a finding already on the page is not a note. Cut it.
 
 Each mark's report is delivered on its own, and `assessment` is the first thing its reader meets —
 before any table. Write it for a client who ordered this one name and nothing else: what the name is,
-what the landscape around it looks like, what drives the rating, what to do with that.
+what the landscape around it looks like, what drives the rating.
+
+**No recommendation, and no next step.** Never say what to do with the name, whether it advances, or
+what happens next — not under a heading of your own, and not as a closing line. The findings and the
+rating are the whole of this read; the report's own caveat says what the screen is.
 
 **It names THIS mark and no other.** A sibling's name here is another client's mark on this client's
 page. The cross-mark reading is `chunkSummary`, and it has its own page.

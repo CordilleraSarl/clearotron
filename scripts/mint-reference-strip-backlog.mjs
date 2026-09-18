@@ -14,7 +14,7 @@
 // CI runs. Without it, the table is rewritten.
 import { readFileSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
-import { publishedOf } from "../shared/reference-guard-classes.mjs";
+import { publishedOf, publishedReader } from "../shared/reference-guard-classes.mjs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { SIGNATURES, censusOf } from "../driver/reference-strip-signatures.mjs";
@@ -34,7 +34,7 @@ const p = publishedOf(all, ROOT);
 if (p.error) { console.error(`mint-reference-strip-backlog: ${p.error}`); process.exit(2); }
 if (p.laid) console.log(`mint-reference-strip-backlog: ${p.laid} tracked path(s) are not in HEAD — laid over this checkout, not published in it, and not counted`);
 const tracked = p.files;
-const minted = censusOf(ROOT, tracked, (f) => readFileSync(join(ROOT, f), "utf8"));
+const minted = censusOf(ROOT, tracked, publishedReader(ROOT, (f) => readFileSync(join(ROOT, f), "utf8")));
 
 if (process.argv.includes("--check")) {
   const have = JSON.parse(readFileSync(TABLE, "utf8"));

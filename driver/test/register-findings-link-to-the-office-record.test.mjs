@@ -177,7 +177,7 @@ function parsedOf(reportMd) {
   try { return parseReport(path); } finally { rmSync(dir, { recursive: true, force: true }); }
 }
 const REPORT = [
-  "---", "type: prelim-clearance", "matter: noref-office-links", "title: NORTHWIND",
+  "---", "type: clearance-clearance", "matter: noref-office-links", "title: NORTHWIND",
   "overall_label: MEDIUM", "overall_badge: l3", "overall_caption: medium overall.",
   "classes: 9", "jurisdiction: Australia and Singapore", "run: 2026-09-10", "---", "",
   "# Marks", "## Northwind Holdings", "- one: The senior holder in class 9.", "### The read", "Close on the goods.",

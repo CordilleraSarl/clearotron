@@ -20,7 +20,7 @@ import { invocationPrefix } from "../shared/invocation.mjs";
 import { preflightFramework, formatPreflight } from "../driver/framework-preflight.mjs";
 
 const USAGE = (cmd) => `
-  ${cmd} framework <skills/prelim-search/your-framework.md>
+  ${cmd} framework <skills/clearance-search/your-framework.md>
 
     Reads a risk framework deck and the manifest beside it, and reports what they declare —
     the ladder, the company the deck names, the shape, and which file answered where.

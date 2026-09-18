@@ -187,8 +187,8 @@ test("happy path: CLEAR verdict → full sequence, delivered + archived", async 
   const order = stageOrder(events);
   // key ordering invariants
   const idx = (s) => order.findIndex((x) => x.startsWith(s));
-  assert.ok(idx("matter-frame") < idx("prelim-variants"), "matter-frame before variants");
-  assert.ok(idx("prelim-variants") < idx("common-law"), "variants before gather");
+  assert.ok(idx("matter-frame") < idx("clearance-variants"), "matter-frame before variants");
+  assert.ok(idx("clearance-variants") < idx("common-law"), "variants before gather");
   assert.ok(idx("register-digest") > idx("placement-inquiry"), "digest after placement");
   assert.ok(idx("placement-inquiry") > idx("register-unit:primary-sweep"), "placement after units");
   assert.ok(idx("skeptic") < idx("synthesis"), "skeptic before synthesis");
@@ -247,7 +247,7 @@ test("happy path: CLEAR verdict → full sequence, delivered + archived", async 
   // Frame-omission design: the blind pass runs parallel with the gather; the frame-diff runs on the
   // gathered evidence with a CLEAN diff (no directives) on the happy path — no reopen, no clamp, CLEAR.
   assert.ok(order.includes("blind-frame"), "blind-frame ran (sibling of the gather)");
-  assert.ok(idx("prelim-variants") < idx("blind-frame"), "blind-frame after variants");
+  assert.ok(idx("clearance-variants") < idx("blind-frame"), "blind-frame after variants");
   // the frame settles BEFORE placement dispatches, so placement runs once on the settled frame.
   assert.ok(idx("frame-diff") < idx("placement-inquiry"), "frame-diff settles the frame before placement");
   assert.ok(idx("placement-inquiry") < idx("register-digest") && idx("register-digest") < idx("synthesis"),
@@ -769,6 +769,15 @@ test("screen-gate DISCLOSE-AND-CONTINUE (owner decision 2026-07-22): an in-scope
   assert.ok(events.some((e) => e.event === "coverage-floor-clamp" && e.screenGate === 1), "screenGate floor arm fired");
   const verdictSidecar = JSON.parse(readFileSync(driverDir(res.runDir, "verdict.json"), "utf8"));
   assert.ok(verdictSidecar.reasons.some((r) => r.includes("KINETIC")), "the clamp reason names the mark");
+  // …IN THE RUN RECORD ONLY (ruled 2026-09-18: cut the clause). The condition's clause is stored as null, so
+  // the client's "conditional on:" list does not carry it, and the delivery check does not report it as a
+  // clause that failed to compose. Nothing is written in its place; the coverage row below still names the mark.
+  const { clientConditions, unrenderableConditions } = await import("../terminal-clamp.mjs");
+  const at = verdictSidecar.reasons.findIndex((r) => /record_fetched/.test(r));
+  assert.ok(at >= 0, "the run record keeps the screen-gate reason");
+  assert.equal(verdictSidecar.clauses[at], null, "its client clause is stored as null — the run record's alone");
+  assert.ok(!clientConditions(verdictSidecar).some((c) => /record_fetched|dropped on goods/.test(c)), "no client condition carries it");
+  assert.deepEqual(unrenderableConditions(verdictSidecar).filter((r) => /record_fetched/.test(r)), [], "and it is not reported as a failed clause");
 
   // the reader-visible disclosure: one coverage-limited row naming the mark, never a silent pass
   const findings = JSON.parse(readFileSync(join(res.runDir, "findings.json"), "utf8"));
@@ -891,7 +900,7 @@ test("spec 62 sidecar: a project-bearing job freezes the PROJECT's marketplaces 
   assert.equal(sidecar.platforms.length, new Set([...seededCustomer, ...seededProject]).size, "the UNION, deduped — never one list replacing the other");
   assert.equal(sidecar.minCellsPerVariant, sidecar.platforms.length + 1, "floor derived from the RESOLVED union (+ web)");
   assert.equal(sidecar.origins.platforms, "customer+project");
-  assert.equal(sidecar.frameworkPath, "skills/prelim-search/risk-framework-aurora.md", "the customer's framework still rates the matter");
+  assert.equal(sidecar.frameworkPath, "skills/clearance-search/risk-framework-aurora.md", "the customer's framework still rates the matter");
   assert.ok(events.some((e) => e.event === "profile" && e.key === "aurora" && e.project === "console-ecosystem"), "the project is logged on the freeze event");
 
   // END-TO-END report surface: the injectFrontMatter(run_under_project/origins_json) → parseReport →
@@ -990,7 +999,7 @@ test("a prior run's plan store is IGNORED — every run mints fresh, so a fixed 
     // window to keep the comment and the match together; adding tests moved that boundary and the
     // suppression stopped being seen. Naming the value once puts the literal nowhere near the keyword.
     const fixtureSlug = "tmp9077-novapulse";
-    const plansDir = join(root, "workspace-clawdi", "studio", "prelim-search", fixtureSlug, "_plans");
+    const plansDir = join(root, "workspace-clawdi", "studio", "clearance-search", fixtureSlug, "_plans");
     mkdirSync(plansDir, { recursive: true });
     writeFileSync(join(plansDir, "register-plan.v1.json"), JSON.stringify({
       schema_version: 1, plan_version: 1,
@@ -1296,9 +1305,9 @@ test("collapsed core search → run FAILS (no publish), never a CONDITIONAL deli
   assert.equal(status.state, "failed", "status records the failure, not a delivered CONDITIONAL");
 });
 
-// studioRoot is the stable ".../studio/prelim-search" prefix of any run-dir (live or archived). Derive it
+// studioRoot is the stable ".../studio/clearance-search" prefix of any run-dir (live or archived). Derive it
 // from res.runDir (config.workspaceRoot is frozen at first import, so the per-test `root` can't be trusted).
-const MARKER = "/studio/prelim-search";
+const MARKER = "/studio/clearance-search";
 const studioRootOf = (runDir) => runDir.slice(0, runDir.indexOf(MARKER) + MARKER.length);
 
 test("delivered run → status.json delivered, STATUS.md rollup, .delivered records the pending send", async () => {
@@ -2963,4 +2972,29 @@ test("the model gets ONE repair turn, not a loop", async () => {
     "the model was asked more than once; that loop is what cost eight attempts on a delivered clearance");
   assert.ok(events.filter((e) => e.event === "connotation-reissue").length <= 1,
     "the engine re-issued more than once — the attempts are supposed to be bounded");
+});
+
+// ── A STAGE THAT WAS ENTERED AND DID NOT SUCCEED IS STILL WHERE THE RUN IS ──────────────────────────
+//
+// The displayed step advanced on SUCCESS only, so a run sitting in a stage read as being in the previous
+// one for as long as that stage took. The live case is what the issue measured — placement entered at
+// 10:05Z, the portal still saying "Register sweeps" at 10:10Z — and it cannot be asserted after the fact,
+// because a run in flight has settled nothing. A stage that is entered and FAILS is the same distinction
+// in a state that persists: under success-only recording the run's own status names the last stage that
+// finished, which is not where it stopped.
+test("a run that dies in a stage says THAT stage is where it was, not the last one that finished", async () => {
+  const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_FAIL_STAGE: "joint synthesis narrative" });
+  assert.equal(res.ok, false);
+  assert.equal(res.failedStage, "synthesis");
+
+  const status = JSON.parse(readFileSync(join(res.runDir, "status.json"), "utf8"));
+  assert.equal(status.lastStage, "synthesis",
+    `the run stopped in synthesis and its status says it was in ${status.lastStage} — the reader is told the last stage that SUCCEEDED, which is the defect`);
+
+  // And synthesis genuinely did not succeed, so this is not a stage that merely finished quietly: without
+  // it the arm would pass against success-only recording the moment the mock stopped failing.
+  assert.ok(!events.some((e) => e.event === "stage" && e.stage === "synthesis" && e.ok),
+    "synthesis recorded a successful stage event — the fixture is no longer failing where this arm needs it to");
+  assert.ok(events.some((e) => e.event === "stage" && e.stage === "synthesis"),
+    "synthesis never produced a stage event at all — the run died before reaching it and this arm proves nothing");
 });

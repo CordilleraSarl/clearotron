@@ -117,24 +117,39 @@ function NavList({
   readonly go: (p: string) => void
   readonly collapsed: boolean
 }) {
+  // A PARENT THAT IS OPEN CLOSES ON A SECOND CLICK, and opens again on a third — a toggle both ways, as
+  // the board behaves. Only the fold changes: the page you are on stays where it is. Leaving the group
+  // forgets the fold, so coming back to it opens it.
+  const [folded, setFolded] = useState<string | null>(null)
+  const within = (id: string): boolean => current === id || (current?.startsWith(id + '.') ?? false)
+  useEffect(() => {
+    if (folded !== null && current !== folded && !(current?.startsWith(folded + '.') ?? false)) setFolded(null)
+  }, [current, folded])
   return (
     <>
       {entries.map((e) => {
-        const active = current === e.id || (current?.startsWith(e.id + '.') ?? false)
+        const active = within(e.id)
+        const open = Boolean(e.children) && active && folded !== e.id
         return (
           <div key={e.id}>
             <button
               type="button"
               className={`nav-item${active ? ' active' : ''}`}
-              onClick={() => go(e.path)}
+              onClick={() => {
+                // Collapsed to icons there is no fold to show, so the item keeps navigating.
+                if (e.children && active && !collapsed) { setFolded(open ? e.id : null); return }
+                setFolded(null)
+                go(e.path)
+              }}
               aria-current={active ? 'page' : undefined}
+              aria-expanded={e.children && !collapsed ? open : undefined}
               title={collapsed ? e.label : undefined}
             >
               <Icon name={e.icon} />
               {collapsed ? null : <span>{e.label}</span>}
             </button>
             {/* Sub-items reveal under their parent when it is active, per the design. */}
-            {e.children && active && !collapsed ? (
+            {e.children && open && !collapsed ? (
               <div className="nav-sub">
                 {e.children.map((c) => (
                   <div key={c.id}>
@@ -353,7 +368,7 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   // nothing.
   const readsRoster = meResult?.kind === 'ok' && meResult.value.allAccounts
   const { result: rosterResult, reload: reloadRoster } = useLoad(
-    () => (readsRoster ? api.roster() : Promise.resolve({ kind: 'ok' as const, value: [] as readonly RosterCompany[] })),
+    () => (readsRoster ? api.roster() : Promise.resolve({ kind: 'ok' as const, value: { companies: [] as readonly RosterCompany[], unreadable: [] } })),
     [readsRoster],
   )
 
@@ -423,7 +438,7 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   // reach every customer and take theirs from the roster. Neither source is per-screen, so neither is
   // consulted per-screen. While the roster is still in flight a staff member reads the key for a frame,
   // which is the same fallback a missing name gets — never a blank where a company should be.
-  const names = ownerNameMap(me.accountNames, rosterResult?.kind === 'ok' ? rosterResult.value : [])
+  const names = ownerNameMap(me.accountNames, rosterResult?.kind === 'ok' ? rosterResult.value.companies : [])
   // One organisation's Generic is called what Generic is called; the key only says which one. A person
   // who can see several organisations has several Generics, so the name carries its organisation — two
   // rows both reading "Generic default" would be two different things saying the same words. The
@@ -440,7 +455,7 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   // The same two sources and the same precedence, for the three facts that tell one company from
   // another in the pick panel. Parallel to the name map rather than folded into it: a company with no
   // facts is a company, a company with no name is a broken row.
-  const facts = companyFactsMap(me.accountFacts, rosterResult?.kind === 'ok' ? rosterResult.value : [])
+  const facts = companyFactsMap(me.accountFacts, rosterResult?.kind === 'ok' ? rosterResult.value.companies : [])
   const factsFor = (key: string): CompanyFacts | undefined => facts[isGenericKey(key) ? GENERIC_ACCOUNT : key]
 
   // WHICH owners are offered is a separate question from what they are CALLED, and it is answered from
@@ -450,13 +465,13 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   //
   // GENERIC, ONE PER ORGANISATION, FROM ONE LIST — the rule is on `switcherKeys` (shell/companyRows.ts),
   // where it can be driven rather than read.
-  const ownerKeys: readonly string[] = switcherKeys(me, rosterResult?.kind === 'ok' ? rosterResult.value : null)
+  const ownerKeys: readonly string[] = switcherKeys(me, rosterResult?.kind === 'ok' ? rosterResult.value.companies : null)
 
   // Which organisation each of those companies sits in — the person's own grants first, the roster for
   // someone who can see the whole install. A company neither source places reads null and is grouped
   // under no heading: visibly unplaced, never filed under a guess.
   const rosterOrgs: Readonly<Record<string, string>> = Object.fromEntries(
-    (rosterResult?.kind === 'ok' ? rosterResult.value : []).flatMap((c) => (c.org ? [[c.key, c.org]] : [])),
+    (rosterResult?.kind === 'ok' ? rosterResult.value.companies : []).flatMap((c) => (c.org ? [[c.key, c.org]] : [])),
   )
   const orgOf = (key: string): string | null => orgOfGeneric(key) ?? me.accountOrgs[key] ?? rosterOrgs[key] ?? null
   const organisations = me.organisations
@@ -477,7 +492,12 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   // install has one because Generic ships with every install and is a company like any other. While the
   // roster is still in flight the list is empty and nothing is auto-selected, which is the same one-frame
   // tolerance the name resolution already carries.
-  const sole = ownerKeys.length === 1 ? ownerKeys[0] ?? null : null
+  // A ROSTER THAT FAILED IS NOT A ONE-COMPANY INSTALL. With the list missing, the one company left is
+  // Generic, and selecting it narrowed every screen to Generic's clearances with nothing said: measured on
+  // the test portal, twenty-five names became one. So nothing is chosen for the reader then — they stay on
+  // All companies and see every clearance, each company named by its key where its name did not arrive.
+  const rosterFailed = readsRoster && !!rosterResult && rosterResult.kind !== 'ok'
+  const sole = !rosterFailed && ownerKeys.length === 1 ? ownerKeys[0] ?? null : null
 
   // What every screen means by "the company in view": the switcher's choice, or the only one there is.
   const ownerInView = owner ?? sole
@@ -596,6 +616,14 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
             </div>
           ) : null}
         </div>
+
+        {/* PINNED TO THE BOTTOM, outside the list that scrolls, just above Collapse — where every board
+            draws Connect your AI. On a phone there is no Collapse, and it still closes the drawer. */}
+        {groups.foot.length ? (
+          <div className="sidebar-pinned">
+            <NavList entries={groups.foot} current={entry?.id ?? null} go={go} collapsed={collapsed && !mobile} />
+          </div>
+        ) : null}
 
         {!mobile ? (
           <div className="sidebar-foot">
@@ -746,6 +774,20 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
           </div>
         </header>
 
+        {/* A COMPANY FILE THE ROSTER COULD NOT READ is named, with the sentences Profile prints for a
+            framework it cannot read (owner, 2026-09-18). Staff only: nobody else reads the roster. A
+            roster that failed whole draws no notice of its own — see `sole` above for what it does draw. */}
+        {readsRoster && rosterResult?.kind === 'ok' && rosterResult.value.unreadable.length ? (
+          <div className="notice" role="status" style={{ margin: '12px 24px 0' }}>
+            {rosterResult.value.unreadable.map((u) => (
+              <p key={u.key} style={{ margin: '0 0 4px' }}>
+                <span className="mono" data-anon="mark">{u.key}</span>{' '}
+                <b style={{ color: 'var(--tone-high)' }}>This company&rsquo;s framework could not be read.</b>{' '}
+                This needs an administrator to look at it.
+              </p>
+            ))}
+          </div>
+        ) : null}
         {body}
       </div>
     </div>

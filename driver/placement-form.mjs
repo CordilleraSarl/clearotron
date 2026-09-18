@@ -178,7 +178,83 @@ export function omittedFromRender(rows) {
   const list = Array.isArray(rows) ? rows : (rows?.rows ?? []);
   return list.filter((r) => !rowIsSettled(r, r))
     .map((r) => ({ row_id: r?.row_id ?? null, kind: r?.kind ?? null, select: selectionOf(r), mark: r?.mark ?? null,
-      missing: [!seatFields(r).tier ? "tier" : null, !seatFields(r).reason ? "reason" : null].filter(Boolean) }));
+      missing: [!seatFields(r).tier ? "tier" : null, !seatFields(r).reason ? "reason" : null].filter(Boolean),
+      // WHY, in the parser's own token. `missing` names only the two judgement fields, so a row refused on a
+      // fact the DRIVER copies — an owner the register never supplied — read as an omission with no cause
+      // at all, `missing: []`. That is how 141 tiered rows sat outstanding for a day with nobody able to say
+      // why: the answer was one parser call away and nothing made it.
+      cause: seatRefusal(r) ?? registerFactRefusal(r),
+      owed_by: seatRefusal(r) ? "seat" : "register" }));
+}
+
+// The parser tokens that speak about a fact the driver COPIES onto a register row — mark, owner,
+// jurisdiction, records all come from the canonical row (renderEntry), never from the seat. On a SEAT row the
+// same four are the seat's own writing.
+const REGISTER_FACT_TOKENS = new Set(["placement_mark_missing", "placement_owner_missing",
+  "placement_jurisdiction_invalid", "placement_records_invalid"]);
+const tokenOf = (e) => String(e?.message ?? e).split(/[:=\s(]/)[0] || "placement_invalid";
+// Stand-ins that every driver-fact check accepts, so a check of the JUDGEMENT alone cannot be refused on a
+// driver fact. They never reach a rendered file: this is a probe of the parser, not an entry.
+const FACTS_PRESENT = Object.freeze({ mark: "-", owner: "-", jurisdiction: "", records: [] });
+
+/**
+ * The seat's part of a row, refused — or null when the seat has done its part. On a register row that is
+ * the judgement alone (tier, reason, borderline), probed with the driver's facts stood in; on a seat row it
+ * is the whole row, because the seat wrote all of it. PURE; never throws.
+ */
+export function seatRefusal(row) {
+  try {
+    validatePlacement(renderEntry(row?.kind === "register" ? FACTS_PRESENT : row, row), 0);
+    return null;
+  } catch (e) { return tokenOf(e); }
+}
+
+/**
+ * The register's part of a register row, refused — or null. A fact the register did not supply (no owner on
+ * the record) is not something a corrective turn can repair: the seat is told not to type these fields and
+ * anything it types is ignored. Null on a seat row. PURE; never throws.
+ */
+export function registerFactRefusal(row) {
+  if (row?.kind !== "register") return null;
+  try {
+    validatePlacement(renderEntry(row, { tier: PLACEMENT_TIERS[0], reason: "register fact probe" }), 0);
+    return null;
+  } catch (e) { const t = tokenOf(e); return REGISTER_FACT_TOKENS.has(t) ? t : null; }
+}
+
+/**
+ * What a placement pass recorded, split by who owes each gap. The gate reads this; so does the run record.
+ *
+ *   unjudged            rows whose seat part the parser refuses — the seat owes them, a corrective turn can
+ *                       repair them, and a pass that leaves any is not a completed pass.
+ *   register_selected   register candidates the seat selected.
+ *   register_rendered   of those, how many reach placements.json.
+ *   register_facts      rows judged by the seat and still refused on a fact the register did not supply,
+ *                       counted by cause. A register that publishes no owner for a record is a real and
+ *                       ordinary case (measured: single records at offices that do not publish one), so a
+ *                       handful are recorded, not refused.
+ *
+ * `register_selected > 0 && register_rendered === 0` is the other refusal: a pass that tiered register
+ * candidates and delivered none of them has not made a judgement about the register, it has lost one. That
+ * is the shape of a register whose rows reach the fold without a field every placement needs. PURE.
+ */
+export function placementRenderAccount(rows) {
+  const list = Array.isArray(rows) ? rows : (rows?.rows ?? []);
+  const unjudged = [];
+  const registerFacts = {};
+  let registerSelected = 0, registerRendered = 0;
+  for (const r of list) {
+    if (!r || typeof r !== "object") continue;
+    const isRegister = r.kind === "register";
+    if (isRegister) registerSelected += 1;
+    const seat = seatRefusal(r);
+    if (seat) { unjudged.push({ row_id: r.row_id ?? null, kind: r.kind ?? null, select: selectionOf(r), cause: seat }); continue; }
+    if (!isRegister) continue;
+    if (rowIsSettled(r, r)) { registerRendered += 1; continue; }
+    const cause = registerFactRefusal(r) ?? "placement_invalid";
+    registerFacts[cause] = (registerFacts[cause] ?? 0) + 1;
+  }
+  return { unjudged, register_selected: registerSelected, register_rendered: registerRendered, register_facts: registerFacts };
 }
 
 /**

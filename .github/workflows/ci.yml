@@ -266,7 +266,27 @@ jobs:
             echo '::error::no guard in ANY shard reported that it read the corpus. An absent SKIPPED line is not a pass on its own, because a suite that never ran prints neither marker.'
             exit 1
           }
-          echo "the corpus guards reported ok across the shards, and none skipped."
+          # AND WHICH ROSTER THE IDENTIFIER SWEEP RAN AGAINST, which is a different claim from "a guard
+          # looked". That sweep's real table lives outside this repository by design, so here it can only
+          # run against the synthetic sentinels — and a sweep armed with an empty table returns the same
+          # clean zero as one that worked. Until this step existed the arm could have been deleted or
+          # quietly skipped and every run would have stayed green, which is the shape this workflow
+          # already refuses twice above.
+          #
+          # Read across the shard logs rather than per shard: the arm lives in one file, so it runs in
+          # exactly one shard and the other three are silent by construction. Asserted per shard it
+          # would red three times on a healthy run.
+          grep -rqF '[repo-guard] blocklist mode=sentinel' logs || {
+            echo '::error::no shard reported which roster the identifier sweep ran against. The arm prints its mode only once it holds the corpus, so an absent line means it did not sweep — not that it swept and found nothing.'
+            exit 1
+          }
+          # AND NEVER THE OTHER MODE. The real roster is private and never meant to reach this runner; a
+          # table line here is not a stronger check, it is the roster printed into a public log.
+          if grep -rqF '[repo-guard] blocklist mode=table' logs; then
+            echo '::error::a shard read the private roster: the identifier sweep reported mode=table on a public runner, so the roster was loaded into a public log.'
+            exit 1
+          fi
+          echo "the corpus guards reported ok across the shards, none skipped, and the identifier sweep named its mode."
 
   checks:
     name: Lint, licences, tokens and the built bundle
@@ -404,6 +424,12 @@ jobs:
       # deployment: it renders this tree's own fixture rather than reaching for a box.
       - run: node scripts/render-check.mjs --fixture-pool
 
+      # Does the delivered document's own header hold together? One header with the section breadcrumb
+      # inside it, still at the top of the viewport once the page is scrolled, and the risk band marker
+      # clear of the heading above it — measured at every rung of the ladder, because the marker is drawn
+      # flush left at the leftmost band and that is where it met the words.
+      - run: node scripts/report-header-render-check.mjs
+
       # Does the browser accept the sandbox we think we wrote? It reads back the attributes Chrome
       # actually kept, rather than the ones the source sets.
       - run: node scripts/report-frame-check.mjs
@@ -435,6 +461,18 @@ jobs:
 
       - run: node scripts/home-render-check.mjs
       - run: node scripts/clearances-render-check.mjs
+      # AND AT PHONE WIDTH, WHICH NOTHING RAN. This check has always taken a width and CI only ever gave
+      # it the default, so the desktop table was guarded and the phone one was not — which is how the
+      # page came to scroll sideways at 400px on a client-facing screen with every check green. The
+      # People screen's own check draws both widths inside one run; this one takes a flag, so it gets a
+      # second step rather than a second instrument.
+      - run: node scripts/clearances-render-check.mjs --width 400
+      # AND AT THE WIDTH BETWEEN THEM. 400 and the default 1100 left everything in between unguarded, and
+      # the defect that lived there was a different one: at 700 the table FITS its wrapper and a row's own
+      # controls are wider than the column they were given, so the cell overflowed the page by 25px while
+      # the phone rule above did not apply. Three widths is not a range, but it is the two edges and the
+      # gap the two known defects came out of.
+      - run: node scripts/clearances-render-check.mjs --width 700
       - run: node scripts/composer-render-check.mjs
       - run: node scripts/ai-page-render-check.mjs
       - run: node scripts/ask-ai-render-check.mjs
@@ -580,6 +618,13 @@ jobs:
       # runner and unset on a laptop, so the shape is green locally and wrong here.
       #
       # It reads source, not history, so it needs no base and answers the same on every event.
+      # THE PORTAL'S BACKLOG OF UNAPPROVED STRINGS ONLY SHRINKS. Every string a screen shows is copied from
+      # an approved design; what was on a screen without approval when the check arrived is listed in
+      # portal-ui/strings-backlog.json, and a line added there is a new unapproved string let in by the
+      # back door. The approved list is kept outside this repository, so this job checks the half it can.
+      - name: The portal's backlog of unapproved strings only shrinks
+        run: node scripts/portal-strings.mjs --backlog-shrinks --base "${{ github.event.pull_request.base.sha || 'origin/main' }}"
+
       - name: A drive of a real command says what environment it drives it in
         run: node scripts/drive-env-check.mjs
 

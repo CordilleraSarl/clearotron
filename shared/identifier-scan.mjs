@@ -17,6 +17,7 @@
 // private roster). This file owns only the matching — it names no identity of its own beyond the
 // platform tokens ALLOWED_CONTEXT has to spell out, which is why it declares itself in
 // DECLARATION_SOURCES.
+import { createHash } from "node:crypto";
 
 // ── the platform and public-register exemption ────────────────────────────────────────────────────
 //
@@ -71,6 +72,26 @@ export const ALLOWED_TOKEN_CONTEXT =
   /apps\.microsoft\.com|microsoft store|store\.steampowered|xbox|itch\.io|amazon\.com\/silk|amazon silk|iron galaxy|ironwhisk|iron-whisk|of (?:Apple|Amazon|Microsoft|Google)'s|\bMicrosoft \d+\/\d+/i;
 
 export const ALLOWED_LINE_CONTEXT = /owner-bound|watchlist owner/i;
+
+// ── THE CLOUD, AS A BILLING ROUTE ──────────────────────────────────────────────────────────────────
+//
+// Claude can be paid for through a cloud account, and one of the three clouds is Azure. The roster
+// retires the same word as a client, so every sentence about paying through that cloud was refused as a
+// retired identity: 67 of the 99 hits over the tree on 2026-09-18, and 11 lines of a release's squash
+// message.
+//
+// EXACTLY AS WIDE AS THE EVIDENCE, AND NO WIDER. Only the names the product itself ships for that route
+// are exempt: the cloud's name, its Foundry service, and the three clouds named as a list. Case-sensitive,
+// because that is how the product spells them. The bare word is never exempt, in any casing, and a
+// sentence that used it as shorthand for the cloud was reworded to say Azure instead.
+//
+// AND NOT IN CAPTURED DATA. A frozen demo run and a captured register fixture hold third parties' own
+// text: a course title that happens to name the cloud is not a billing route, so there the rule does not
+// apply and the hit is reported as it always was.
+export const CLOUD_ROUTE_CONTEXT = /\bMicrosoft Azure\b|\bMicrosoft Foundry\b|\bGoogle(?: Cloud)?,\s+Microsoft(?: Azure)?\s+or\b/;
+
+/** A frozen demo run, anywhere under `demo/<product>/run/`: what the engine read, captured whole. */
+const FROZEN_RUN_RE = /(?:^|\/)demo\/[^/]+\/run\//;
 
 /**
  * Kept as the union so nothing that merely ASKS "is this line exempt at all" has to learn the split.
@@ -155,19 +176,26 @@ export function matchSpans(name, line, suffixable) {
  *
  * Takes the RAW line and does its own unescaping, so no caller can forget that step.
  */
-export function reportableOnLine(name, rawLine, suffixable) {
+export function reportableOnLine(name, rawLine, suffixable, { cloudRoute = true } = {}) {
   if (ALLOWED_LINE_CONTEXT.test(rawLine)) return false;
   const text = unescapeBoundaries(rawLine);
-  return matchSpans(name, text, suffixable).some((sp) => !tokenExemptionCovers(text, sp));
+  return matchSpans(name, text, suffixable).some((sp) => !tokenExemptionCovers(text, sp, { cloudRoute }));
 }
 
-function tokenExemptionCovers(line, span) {
-  for (const m of String(line).matchAll(new RegExp(ALLOWED_TOKEN_CONTEXT.source, "gi"))) {
-    const s = m.index, e = m.index + m[0].length;
-    if (span.start < e && s < span.end) return true;   // overlap, in either direction
+function tokenExemptionCovers(line, span, { cloudRoute = true } = {}) {
+  const contexts = [new RegExp(ALLOWED_TOKEN_CONTEXT.source, "gi")];
+  if (cloudRoute) contexts.push(new RegExp(CLOUD_ROUTE_CONTEXT.source, "g"));
+  for (const rx of contexts) {
+    for (const m of String(line).matchAll(rx)) {
+      const s = m.index, e = m.index + m[0].length;
+      if (span.start < e && s < span.end) return true;   // overlap, in either direction
+    }
   }
   return false;
 }
+
+/** Whether the cloud-route exemption applies in this file: everywhere but captured third-party data. */
+export const cloudRouteApplies = (file) => !isCapturedRegisterData(file) && !FROZEN_RUN_RE.test(String(file ?? ""));
 
 // ── CAPTURED PUBLIC-REGISTER DATA ─────────────────────────────────────────────────────────
 //
@@ -208,6 +236,32 @@ export const CAPTURED_DATA_GUIDANCE =
   + "`node scripts/check-capture.mjs <file>` before writing; or (b) a genuine identifier of ours — remove "
   + "it. Do NOT exempt the path: captured data is the one place a real identifier could hide unseen.";
 
+// ── A PUBLISHED DICTIONARY, PINNED TO ITS BYTES ─────────────────────────────────────────────
+//
+// The roster retires ordinary English words, and a dictionary is every ordinary English word, so the
+// two collide by construction and, like captured register data, the collision arrives on a tree
+// nobody touched: the private roster gains an entry and the word list goes red. Unlike captured data,
+// nothing of ours can be in it. It is a published third-party list (the file's header names it and its
+// licence) that no client, matter or run ever wrote to.
+//
+// SO THE EXEMPTION IS FOR THESE BYTES, NOT THIS PATH. Each entry pins the file's SHA-256 as it was
+// vetted. Change one line, a name slipped in among the words, and the hash no longer matches: the file
+// is scanned in full again like any other, and the pin moves only in a commit that says it re-vetted.
+// A name hidden in a dictionary is therefore still a finding, and a name anywhere else never was
+// exempt.
+export const PINNED_DICTIONARIES = Object.freeze({
+  "driver/wordlists/en.txt": Object.freeze({
+    sha256: "8021ad10f94da2a549f60db93fcf761156458fd682e1095e81f93db6843fb636",
+    what: "SCOWL size 50, American: the one-letter neighbourhood filter's ordinary-word list",
+  }),
+});
+
+/** Is this file a pinned dictionary whose bytes are exactly the ones that were vetted? */
+export function isPinnedDictionary(file, text) {
+  const pin = PINNED_DICTIONARIES[String(file ?? "")];
+  return Boolean(pin) && createHash("sha256").update(String(text)).digest("hex") === pin.sha256;
+}
+
 /**
  * Sweep a corpus for retired identities.
  *
@@ -227,6 +281,7 @@ export function scanCorpus(files, readFn, { retired, suffixable, vetted = () => 
   for (const f of files) {
     const t = readFn(f);
     if (!t) continue;
+    if (isPinnedDictionary(f, t)) continue;
     // In captured register data the hit is reported by ENTRY NUMBER, never by value. The
     // ordinary format prints the retired name and its twin, which is right where the fix is "delete
     // this" — but a fixture collision is expected to fire on a tree nobody changed, and printing the
@@ -239,7 +294,7 @@ export function scanCorpus(files, readFn, { retired, suffixable, vetted = () => 
         entry += 1;
         // A LINE-scoped exemption skips the line; a TOKEN-scoped one must OVERLAP the match it excuses.
         // Both live in reportableOnLine, so the declaration test cannot answer this differently.
-        if (!reportableOnLine(name, line, suffixable)) continue;
+        if (!reportableOnLine(name, line, suffixable, { cloudRoute: cloudRouteApplies(f) })) continue;
         if (vetted(f, name)) continue;
         hits.push(captured
           ? `${f}:${i + 1}: match table entry #${entry} of ${retired.length} (sentinels first, then the roster) `
@@ -302,8 +357,8 @@ const ADDRESS = /([A-Za-z0-9._%+-]+)@(?:cordillera\.(?:ch|test)|clearotron\.ai)\
 const INTERNAL_MARKER = /\bINTERNAL[ -]ONLY\b/;
 const INTERNAL_PHRASE = /\bfor internal use only\b/i;
 
-// THE SECOND STAMPED FORM, and is why it exists. `driver/skills/prelim-search/worked-examples.md`
-// opened with `INTERNAL — Gold-standard worked examples for prelim-search SYNTHESIS.` and shipped: the
+// THE SECOND STAMPED FORM, and is why it exists. `driver/skills/clearance-search/worked-examples.md`
+// opened with `INTERNAL — Gold-standard worked examples for clearance-search SYNTHESIS.` and shipped: the
 // marker above requires the word ONLY, and a document stamped `INTERNAL —` carries the identical
 // classification without it.
 //
@@ -361,6 +416,7 @@ export function scanOperatorIdentity(files, readFn, { withheld = () => false } =
   for (const f of files) {
     const t = readFn(f);
     if (!t) continue;
+    if (isPinnedDictionary(f, t)) continue;
     // A WITHHELD PATH DOES NOT SHIP, and pattern 4 is about what a shipped surface says to its reader.
     // The withheld design tree holds twenty-one hits of exactly this shape and every one is correct in
     // place: working notes, withheld wholesale by the list in shared/withheld-paths.mjs, and rewriting

@@ -574,12 +574,18 @@ const SCRIPT = `
     && !maybeByText('button', /^Case law$/);
   out.steps.push('knockout picked');
 
-  // A GLOBAL PRELIMINARY SEARCH HAS NO WHERE FIELD. The panel states the fact and says why; there is
-  // nothing to type into, because there is nothing this product will accept.
+  // A GLOBAL PRELIMINARY SEARCH HAS NO WHERE FIELD. There is nothing to type into, because there is
+  // nothing this product will accept.
+  //
+  // THE PANEL NO LONGER SAYS WHY. On the owner's ruling of 2026-09-18 the four notes restating what each
+  // search's geography means came off this screen and nothing replaces them: the product row names the
+  // geography, and a place the register cannot reach is still marked on the place itself. The check is
+  // INVERTED rather than deleted — an assertion that simply goes away lets the wording come back with
+  // nothing to notice, which is how those notes arrived in the first place.
   pickProduct(/Global preliminary search/);
   await sleep(160);
   out.globalNoTerritoryInput = !whereBox();
-  out.globalSaysWhy = /This search is not narrowed/.test(txt());
+  out.globalRestatesNoGeography = !/This search is not narrowed/.test(txt());
   out.steps.push('global picked');
 
   // A MULTI-COUNTRY FOCUS SEARCH offers regions AND countries, and the one toggle in the offering —
@@ -609,10 +615,11 @@ const SCRIPT = `
   out.steps.push('one-country blocker');
 
   // A FULL COUNTRY SEARCH offers COUNTRIES ONLY — a region is not a country, and the control fits the
-  // product rather than refusing it afterwards. The panel says so at the control.
+  // product rather than refusing it afterwards. The panel no longer says so in a note beside the control;
+  // see the ruling recorded at the Global preliminary search above. Inverted, not deleted.
   pickProduct(/Full country search/);
   await sleep(160);
-  out.fullSaysRegionsNotOffered = /Regions are not offered here/.test(txt());
+  out.fullRestatesNoGeography = !/Regions are not offered here/.test(txt());
   set(whereBox(), 'euro');
   await sleep(180);
   out.fullOffersNoRegion = ![...document.querySelectorAll('.typeahead button')].some((b) => /European Union/.test(b.innerText));
@@ -994,7 +1001,9 @@ const INHERITED_SCRIPT = `
   await mustSettle(() => !scrim(), 5000, 'the composer never came back after Back');
   pickProduct(/Global preliminary search/);
   await sleep(300);
-  out.worldwideChip = [...document.querySelectorAll('.chip')].some((c) => (c.innerText || '').trim() === 'Worldwide');
+  // Named with the service that searches it, from the provider's own label — this pass serves 'Signa'.
+  out.worldwideChipText = ([...document.querySelectorAll('.chip')].map((c) => (c.innerText || '').trim()).find((t) => /^Worldwide/.test(t))) ?? null;
+  out.worldwideChip = out.worldwideChipText === 'Worldwide, searched on Signa';
   findByText('button', /Review search/).click();
   await mustSettle(() => /review before you start/i.test(txt()), 6000, 'the review dialog never opened on the worldwide search');
   out.worldwideWhere = rowText('Where');
@@ -1260,12 +1269,40 @@ const mainPassPosts = posted.length
 // After mainPassPosts deliberately: this pass posts plans of its own, and the verdict on what the main
 // pass put on the wire must not read one of them as the last plan it made.
 profileTerritories = ['United States', 'United Kingdom', 'European Union', 'Canada']
+registerLabelNow = 'Signa'
 const inheritedFrom = posted.length
 await evalIn(`location.href = ${JSON.stringify(`http://127.0.0.1:${port}/portal/new`)}; 'go'`)
 await new Promise((r) => setTimeout(r, 1400))
 const inherited = (await evalIn(INHERITED_SCRIPT)).result?.result?.value ?? { fatal: 'evaluate returned nothing' }
 const inheritedPlans = posted.slice(inheritedFrom).filter((p) => p.path === '/portal/api/run/plan').map((p) => p.body)
 profileTerritories = []
+registerLabelNow = null
+
+// ── the saved-codes pass ────────────────────────────────────────────────────────────────────────────
+// A company's own territories AS THE STORE HOLDS THEM — codes — against a register whose coverage
+// arrives as names. Every other pass here draws names on both sides, so none of them exercised the
+// join; on a served portal a company holding US, EU and UK read "not available" on all three, on a
+// register covering every one of them.
+profileTerritories = ['US', 'EU', 'UK']
+registerReach = ['European Union', 'United States', 'United Kingdom']
+registerLabelNow = 'Signa'
+await evalIn(`location.href = ${JSON.stringify(`http://127.0.0.1:${port}/portal/new`)}; 'go'`)
+await new Promise((r) => setTimeout(r, 1400))
+const savedCodes = (await evalIn(`(async () => {
+  const t0 = Date.now();
+  const removers = () => [...document.querySelectorAll('button[aria-label^="Remove "]')].map((b) => b.getAttribute('aria-label').slice(7));
+  while (Date.now() - t0 < 6000 && !['US', 'EU', 'UK'].every((c) => removers().includes(c))) await new Promise((r) => setTimeout(r, 60));
+  const own = [...document.querySelectorAll('button[aria-label^="Remove "]')].map((b) => b.closest('.chip'));
+  return { removers: removers(), deferred: own.filter((c) => c && c.classList.contains('chip-deferred')).map((c) => c.innerText.trim()),
+    notAvailable: (document.body.innerText.match(/[^\\n]*not available with register[^\\n]*/g) || []),
+    // The same arrival is the one that drew the name sentence twice: a search preselected from the
+    // company's territories, so the form is no longer untouched, and the panel repeated the footer.
+    nameSentence: (document.body.innerText.match(/Add the name you want cleared, in Names above\\./g) || []).length,
+    leftPanel: /One thing left to fill in|A couple of things left to fill in/.test(document.body.innerText) };
+})()`)).result?.result?.value ?? { fatal: 'evaluate returned nothing' }
+profileTerritories = []
+registerReach = undefined
+registerLabelNow = null
 const evidence = []
 if (shotDir) {
   // A named company and a named operator, so each line reads the way a reader meets it.
@@ -1440,7 +1477,7 @@ ok(out.caseLawStatedNotOffered,
 // ── GEOGRAPHY FOLLOWS THE PRODUCT, and each control says why at the control ─────────────────────────
 ok(out.globalNoTerritoryInput === true,
   'a Global preliminary search still has a territory field — worldwide is not a choice on it, it IS it, so a field there is a control whose every use is refused')
-ok(out.globalSaysWhy, 'the Where panel does not say WHY there is nothing to set — a control that vanishes with no reason is the oldest complaint about this screen')
+ok(out.globalRestatesNoGeography, 'the Where panel restates that this search is not narrowed — that note was ruled off this screen and must not come back')
 ok(out.multiHasTerritoryInput, 'a Multi-country focus search has no territory field')
 ok(out.multiOffersRegion, 'a Multi-country focus search does not offer regions, which it accepts')
 ok(out.nativeToggleOffered, 'the ONE toggle in the offering is missing from the one product that offers it')
@@ -1448,7 +1485,7 @@ ok(out.nativeInsideItsRow, 'the native-language option is not inside the selecte
 ok(out.oneCountryBlocked, 'one country on a Multi-country focus search was accepted silently — the engine refuses it, and the user would find out at the gate')
 ok(out.oneCountryNamesWayOut, 'the blocker states no way out — enforcement without an invitation is what this screen exists to stop')
 ok(out.reviewShutOnOneCountry === true, 'the start action stayed live on a search the server will refuse')
-ok(out.fullSaysRegionsNotOffered, 'a Full country search does not say that regions are not offered on it')
+ok(out.fullRestatesNoGeography, 'the Full country panel restates that regions are not offered — that note was ruled off this screen and must not come back')
 ok(out.fullOffersNoRegion === true,
   'a Full country search offered a REGION in its typeahead — the control must fit the product, so the refusal never has to happen')
 ok(out.fullCarriesCaseLaw, 'a Full country search does not state that it carries the case-law reading')
@@ -1598,6 +1635,13 @@ for (const n of notices) {
 // One fact read at three places, because it used to disagree at all three. A FLOOR comes first: if the
 // panel never drew the four, every assertion under it is about a screen that was not in the state this
 // pass exists to measure, and would pass by being vacuous.
+// A company's saved codes on a register that covers them by name: nothing is marked unreachable.
+ok(!savedCodes.fatal && ['US', 'EU', 'UK'].every((c) => savedCodes.removers.includes(c)),
+  `the saved-codes pass never drew the company's own territories — ${JSON.stringify(savedCodes)}`)
+ok(!savedCodes.fatal && savedCodes.nameSentence === 1 && !savedCodes.leftPanel,
+  `a form nobody has typed in says "Add the name" ${savedCodes.nameSentence} time(s), with the panel ${savedCodes.leftPanel ? 'drawn' : 'absent'} — the board draws the footer line once and no panel`)
+ok(!savedCodes.fatal && savedCodes.deferred.length === 0 && savedCodes.notAvailable.length === 0,
+  `a company territory the register covers is drawn as not available — ${JSON.stringify(savedCodes)}`)
 if (inherited.fatal) {
   // the throw says WHAT was missing; the screen says what was there instead. Both, or the next
   // reader reruns it to find out.
@@ -1650,8 +1694,9 @@ if (inherited.fatal) {
   // The search that IS worldwide must still stamp worldwide: the door refuses "account-default" on it by
   // name. Without this, a fix that stamped every empty draft the same way passes everything above.
   if (!inherited.reviewShut) {
-  ok(inherited.worldwideChip, 'the Global preliminary search does not draw its Worldwide chip')
-  ok(/Worldwide/.test(inherited.worldwideWhere ?? ''),
+  ok(inherited.worldwideChip,
+    `the Global preliminary search does not draw "Worldwide, searched on Signa" — read ${JSON.stringify(inherited.worldwideChipText)}`)
+  ok((inherited.worldwideWhere ?? '').includes('Worldwide, searched on Signa'),
     `the review dialog for a Global preliminary search reads ${JSON.stringify(inherited.worldwideWhere)} instead of worldwide`)
   const wide = inherited.reviewShut ? null : (inheritedPlans[inheritedPlans.length - 1] ?? null)
   ok(wide?.geography?.mode === 'worldwide',

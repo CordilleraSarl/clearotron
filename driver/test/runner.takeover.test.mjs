@@ -185,7 +185,7 @@ const job = (ref, mark) => ({
   id: `race-${ref}`, msgId: `<race-${ref}@x>`, forwarder: "lawyer-a", forwarderDomain: "example.com",
   ref, markName: mark, classes: [9], provider: "corsearch",
 });
-const studioFor = (root) => join(root, "workspace-clawdi", "studio", "prelim-search");
+const studioFor = (root) => join(root, "workspace-clawdi", "studio", "clearance-search");
 const queueFor = (root) => join(studioFor(root), "queue");
 function envFor(root) {
   return {

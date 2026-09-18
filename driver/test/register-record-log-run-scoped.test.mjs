@@ -26,7 +26,7 @@ import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { assembleRunRecords } from "../registry-fidelity.mjs";
 import { runRecordLogPath } from "../../providers/_shared/ledger-path.mjs";
 
-const PREFIX = "prelim-tmp743-aa-";
+const PREFIX = "clearance-tmp743-aa-";
 const SK = `agent:clawdi:${PREFIX}register-unit-x`;
 const BODY = { applicationNumber: "86272665", registrationNumber: "4641314" };
 

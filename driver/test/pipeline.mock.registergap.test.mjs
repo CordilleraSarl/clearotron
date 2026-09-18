@@ -35,7 +35,7 @@ const JOB = {
 
 // config.workspaceRoot freezes at FIRST import — every run in this file lands under ROOT.
 const ROOT = mkdtempSync(join(tmpdir(), "clearotron-mock-gap-"));
-const SLUG_DIR = join(ROOT, "workspace-clawdi", "studio", "prelim-search", "tmp8439-project-novapulse");
+const SLUG_DIR = join(ROOT, "workspace-clawdi", "studio", "clearance-search", "tmp8439-project-novapulse");
 
 async function runPipeline(env, jobPatch = {}, opts = {}) {
   for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_LEDGER_LIMITED"]) delete process.env[k];
@@ -69,7 +69,7 @@ test("recall regression: a prior-confirmed conflict the run neither carries nor 
 test("spec 64: delivery upserts the WORKSPACE per-mark store; the human-seeded legacy matter file is never touched", async () => {
   // spec 64 moved the write to <studioRoot>/_known-conflicts/<mark>.json — the substrate a re-run under
   // ANY matter id reads. The legacy matter-sibling file stays byte-identical (human edits win there).
-  const STORE = join(ROOT, "workspace-clawdi", "studio", "prelim-search", "_known-conflicts", "project-novapulse.json");
+  const STORE = join(ROOT, "workspace-clawdi", "studio", "clearance-search", "_known-conflicts", "project-novapulse.json");
   const store = JSON.parse(readFileSync(STORE, "utf8"));
   const rows = store.marks["project novapulse"] ?? [];
   assert.ok(rows.some((r) => String(r.source ?? "").startsWith("auto:delivery")), "auto-appended rows carry provenance");
@@ -83,7 +83,7 @@ test("spec 64 cross-matter e2e: a remembered conflict from ANOTHER matter id is 
   // Seed the WORKSPACE store with a conflict this scenario's findings never carry — provenance from a
   // different matter's delivery. The new run arrives REFLESS (a fresh noref matter id), exactly the
   // production shape that blinded the per-matter ledger (copper-causeway vs teal-conduit).
-  const storeDir = join(ROOT, "workspace-clawdi", "studio", "prelim-search", "_known-conflicts");
+  const storeDir = join(ROOT, "workspace-clawdi", "studio", "clearance-search", "_known-conflicts");
   mkdirSync(storeDir, { recursive: true });
   const storePath = join(storeDir, "project-novapulse.json");
   const doc = JSON.parse(readFileSync(storePath, "utf8"));
@@ -132,7 +132,7 @@ test("spec 64 deadline-carry e2e: a remembered in-window opposition window on a 
   // Seed a store row for the very registration the mock findings carry (/mark/us/90000001) with an
   // opposition window closing soon. The mock run's bands carry no dates, so enrichment cannot self-heal
   // — the carried finding ships without a structured deadline ⇒ the deadline-carry arm must clamp.
-  const storeDir = join(ROOT, "workspace-clawdi", "studio", "prelim-search", "_known-conflicts");
+  const storeDir = join(ROOT, "workspace-clawdi", "studio", "clearance-search", "_known-conflicts");
   mkdirSync(storeDir, { recursive: true });
   const storePath = join(storeDir, "project-novapulse.json");
   const doc = existsSync(storePath) ? JSON.parse(readFileSync(storePath, "utf8")) : { schema_version: 1, marks: { "project novapulse": [] } };

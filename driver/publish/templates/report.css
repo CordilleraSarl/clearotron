@@ -113,6 +113,39 @@
   .panel.actions p,.panel.actions li{font-size:13.5px;color:var(--slate);line-height:1.55}
   .panel.actions ul{margin:0;padding-left:20px} .panel.actions li{margin:3px 0}
 
+  /* ── THE BOARD'S OWN SECTION STRIP, lifted from the approved mock rather than written here ────────
+     Five entries and the board's own labels, marked not to print because the board marks it so: a strip
+     that follows the reader down the page is a control, and paper has nothing for it to follow. Every
+     anchor it names is drawn by the renderer above it.
+
+     THE SECTION NUMBER IS DRAWN AND HIDDEN, and that is the board's doing, not an oversight here: the
+     mock emits `<span class="num"></span>` on every section and then sets `display:none` on it further
+     down its own stylesheet. Carried faithfully, so the delivered document and the approved one hold the
+     same elements — this changes no pixel, and a reader looking for a visible number will not find one
+     in the board either. */
+  /* THE BREADCRUMB IS A ROW OF THE HEADER, not a bar under it (owner, 2026-09-18).
+     It used to be a SIBLING of .rep-stickyhead, pinned on its own at top:var(--tb-h,52px) — and
+     --tb-h is set nowhere in this product, so the fallback was a guess at a bar that measures ~46px:
+     content showed through the slit between the two, and z-index:20 put the strip UNDER the header's
+     100 whenever the guess was wrong. The strip is now emitted inside .rep-stickyhead, so the header
+     and the breadcrumb are one sticky surface that pins and unpins together and can never gap or
+     overlap, whatever the bar measures or how it wraps.
+     No background and no bottom hairline of its own: the wrapper carries the blurred surface and the
+     single edge, and the border-top here is the divider between the two rows. It is on .strip rather
+     than on any wrapper because sectionStrip() emits NOTHING when fewer than two of its sections are
+     live — a wrapper would leave a stray line on those reports.
+     The gutter matches the topbar's, so the first entry lines up under the back button. */
+  .strip{display:flex;gap:4px;align-items:center;padding:4px max(26px,calc((100% - 1120px)/2)) 6px;
+    border-top:1px solid var(--line);font:600 12px/1 'Satoshi','Helvetica Neue',Arial,sans-serif;
+    letter-spacing:.04em;overflow-x:auto;scrollbar-width:none}
+  .strip::-webkit-scrollbar{display:none}
+  .strip a{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;color:#6b5d50;text-decoration:none;white-space:nowrap}
+  .strip a i{width:8px;height:8px;border-radius:50%;border:1.5px solid currentColor;box-sizing:border-box}
+  .strip a.done{color:#4c7a4c}
+  .strip a.done i{background:#4c7a4c;border-color:#4c7a4c}
+  .strip a.now{color:#250902;background:rgba(0,0,0,.06)}
+  .strip a.now i{border-color:#860F09;border-width:3px}
+  .sec .num{display:none}
   .sec{margin:56px 0 18px;display:flex;align-items:baseline;gap:15px;border-top:2px solid var(--ink);padding-top:14px}
   .sec .num{font-family:var(--mono);font-size:13px;color:var(--crimson);font-weight:600}
   .sec h2{font-weight:900;font-size:25px;margin:0;letter-spacing:-.015em}
@@ -280,7 +313,26 @@
 
 
   /* cross-region rights-holder rows (.rrow) + secondary region groups (.rgroup) */
+  /* A PANEL THAT SCROLLS SIDEWAYS SAYS SO, the same way the knockout's tables do.
+     `overflow-y:auto` alone makes the OTHER axis compute to auto as well, so this panel has scrolled
+     horizontally for as long as it has scrolled vertically — and drawn nothing to say it. Measured on a
+     delivered global preliminary at 390px: 377px of rows in a 336px box, 41px unreachable, no bar.
+     A reader who cannot see that it drags does not drag it, and a holder's jurisdiction sits in the part
+     that is off the edge.
+
+     THE TWO INSTRUCTIONS CANNOT SIT TOGETHER, and that was measured rather than reasoned on the
+     knockout: setting the standard scrollbar-width alongside the pseudo-elements makes the engine take
+     the standard path and ignore them, and on the engine that publishes these reports the standard path
+     draws an overlay bar with no layout height at all — both together 0px, the pseudo-elements alone
+     9px, the standard properties alone 0px. So the standard ones sit behind a support query the engines
+     carrying the pseudo-elements never enter, and each engine gets exactly one instruction. Written the
+     way anyone would write it — belt and braces — it renders nothing and the stylesheet gives no sign. */
   .keypanel{overflow-y:auto}
+  .keypanel::-webkit-scrollbar{height:9px;-webkit-appearance:none}
+  .keypanel::-webkit-scrollbar-track{background:transparent}
+  .keypanel::-webkit-scrollbar-thumb{background:var(--faint);border-radius:5px}
+  @supports not selector(::-webkit-scrollbar){
+    .keypanel{scrollbar-width:thin;scrollbar-color:var(--faint) transparent}}
   .rrow{border-top:1px solid var(--line)}
   .rrow:first-of-type{border-top:0}
   .rrow>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:9px;padding:8px 4px}
@@ -344,9 +396,11 @@
        and internal notes (.int-note, hidden above) are the only two things print ever drops. */
     details>*:not(summary){display:block!important}
     details>summary{list-style:none;cursor:default}
-    /* `details.searched` is a SECTION TITLE, so it keeps its summary in print like the region rows and
-       the secondary groups — a printed report that drops "What was searched" loses the heading over the
-       counts, not just a control. What it must not print is the ▸/▾ toggle, which on paper is a
+    /* `details.searched` keeps its summary in print like the region rows and the secondary groups. The
+       reason has CHANGED and the behaviour has not: the summary used to carry the section's own heading,
+       so dropping it in print lost the heading over the counts. The heading is now an <h2> in a section
+       of its own, as the approved board draws it, and print cannot lose it. What the summary still
+       carries is the sub-label over the counts, which is worth printing on its own. What it must not print is the ▸/▾ toggle, which on paper is a
        right-pointing arrow over content that is already fully expanded. Found by the print check, which
        walks a rendered page and refuses any disclosure that is in neither list; the public suite does
        not run it, so the commit that added this fold could ship the half it did not think about. */
@@ -519,6 +573,9 @@
   details.searched[open]>summary::before{content:'▾'}
   details.searched .gcount{margin-left:auto;color:var(--slate);font-weight:500;font-size:12.5px}
   details.searched .gbody{padding:0 18px 12px}
+  .wchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  details.searched .wstate{font-weight:600}
+  details.searched .wnote{display:block;margin-top:4px;font-size:12.5px;line-height:1.45;color:var(--slate)}
   details.searched .row{display:grid;grid-template-columns:200px 1fr;gap:12px;padding:7px 0;border-top:1px solid var(--line);font-size:13.5px}
   details.searched .k{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);padding-top:3px}
   .openrows,.provwrap{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}

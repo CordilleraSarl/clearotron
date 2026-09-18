@@ -153,7 +153,7 @@ passed, and nothing has driven a live register through it.
 
 **Upgrading an install made before 0.2.2: pin the agent id first.** The default agent id changed from
 `clawdi` to `localagent`, and that id is part of a path — your runs live under
-`<workspaceRoot>/workspace-<agent>/studio/prelim-search/`. If you never set an agent id, the upgraded
+`<workspaceRoot>/workspace-<agent>/studio/clearance-search/`. If you never set an agent id, the upgraded
 install reads a workspace that does not exist yet, and an empty workspace looks like an account with no
 runs rather than like a misconfiguration. Set **both** names in your environment file before starting
 it, because the register-search servers read their own:
@@ -624,12 +624,12 @@ a bespoke risk framework. A job resolves to a profile by the **forwarder's email
 matches, the neutral Generic default applies.
 
 - **Bundled with the package** (`driver/profiles/`): `generic.json` (the Generic default) and
-  `demo-brand-owner.json`, the account the demo runs as, so you can run and read the machinery
+  `demo-brand-owner.json`, the company the demo runs as, so you can run and read the machinery
   immediately. `driver/profiles/README.md` documents every field. (A clone of the repository carries
   three more, marked `testFixture` in their own files: the test suite reads them, no install offers
   them, and they are excluded from the published package as well.)
 - **Your real companies live outside the repo.** Point `CLEAROTRON_CUSTOMERS_DIR` at your own private
-  config store and the engine loads *those* accounts instead. **Same engine, different config path** —
+  config store and the engine loads *those* companies instead. **Same engine, different config path** —
   the code carries no company identities.
 
   Two things go with it, and both are refusals rather than preferences:
@@ -661,7 +661,7 @@ self-contained.
 A company is not only its `<key>.json`. Two more things sit beside it, both optional, both shipped as
 working examples in `driver/profiles/`:
 
-- **A context pack** — `<key>.context.md`, a sibling of the profile. Free prose about the account that
+- **A context pack** — `<key>.context.md`, a sibling of the profile. Free prose about the company that
   the engine attaches to the profile it loads. One ships beside a bundled demo company.
 - **Project overlays** — `projects/<customer-key>/<slug>.json`. A project is one engagement under a
   company: a launch screening, a flagship clearance, a regional push. Each may carry its own
@@ -689,7 +689,7 @@ overlay stating `defaultClasses` narrows to exactly what it states.
 
 **Setting `CLEAROTRON_CUSTOMERS_DIR` replaces the whole tree, projects included.** The engine reads your
 store's companies and your store's `projects/`, and none of ours. That is deliberate — a deployment's
-roster holds its own accounts and nothing of ours — but it is silent, and it is the one thing here that
+roster holds its own companies and nothing of ours — but it is silent, and it is the one thing here that
 becomes an incident on a real deployment rather than a bundled one:
 
 - A job naming a project your store does not carry is **not refused**. The `projectKey` is dropped and
@@ -1364,7 +1364,7 @@ A courier is a loop over one directory, and it needs no unit of its own if you a
 
 1. **Watch the outbox** — `$CLEAROTRON_OUTBOX_DIR`. A `.pending` file appears there when a run
    finishes. Read the variable rather than guessing the directory: the wizard writes `<data
-   base>/outbox`, but an unset variable falls back to `prelim-outbox` under the workspace root
+   base>/outbox`, but an unset variable falls back to `clearance-outbox` under the workspace root
    (`driver/driver.config.mjs`), so the two are not the same path and only one of them is where your
    markers are.
 2. **Read what it points at.** A success marker is a few bytes naming the agent, *not* the payload —

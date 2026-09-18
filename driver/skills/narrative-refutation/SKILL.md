@@ -15,9 +15,9 @@ This is structured refutation, not approval. Your job is to find what's wrong, n
 
 ## When invoked
 
-Spawned between Step 4 synthesis (narrative composition) and Phase 3 delivery. Different session, clean context. Reads multiple inputs, writes one output. Phase 3 consumes the verdict — BLOCKING drives one corrective re-synthesis; the report is then **always delivered**, with any unresolved reviewer concerns surfaced to the reviewing lawyer as open questions (the driver never withholds — see `prelim-search` Phase 3).
+Spawned between Step 4 synthesis (narrative composition) and Phase 3 delivery. Different session, clean context. Reads multiple inputs, writes one output. Phase 3 consumes the verdict — BLOCKING drives one corrective re-synthesis; the report is then **always delivered**, with any unresolved reviewer concerns surfaced to the reviewing lawyer as open questions (the driver never withholds — see `clearance-search` Phase 3).
 
-The orchestrator (`prelim-search`) spawns this worker at the equivalent step. Reusable by a future clearance-search at the equivalent step.
+The orchestrator (`clearance-search`) spawns this worker at the equivalent step. Reusable by a future clearance-search at the equivalent step.
 
 ## Model
 
@@ -28,11 +28,11 @@ The driver dispatches this as a stage with its own context and a 900-second wall
 ## Inputs you receive
 
 - The orchestrator's narrative (the client-facing email body / report content, passed inline in the spawn task)
-- `matter-context.md` at `studio/prelim-search/<slug>/<date>/matter-context.md` (the strategic framing from `matter-frame`)
-- `register-findings.md` at `studio/prelim-search/<slug>/<date>/register-findings.md` (the digest output with the digest's own candidate ordering)
-- `common-law-findings.md` at `studio/prelim-search/<slug>/<date>/common-law-findings.md` (the common-law digest)
-- `placement-recommendations.md` at `studio/prelim-search/<slug>/<date>/placement-recommendations.md` (the per-candidate placements from `placement-inquiry`) and its structured mirror `placements.json` beside it (`{mark, owner, jurisdiction, records, tier, reason}` per candidate; the md carries the rulings tail)
-- `variant-manifest.md` at `studio/prelim-search/<slug>/<date>/variant-manifest.md` (for completeness checks if relevant)
+- `matter-context.md` at `studio/clearance-search/<slug>/<date>/matter-context.md` (the strategic framing from `matter-frame`)
+- `register-findings.md` at `studio/clearance-search/<slug>/<date>/register-findings.md` (the digest output with the digest's own candidate ordering)
+- `common-law-findings.md` at `studio/clearance-search/<slug>/<date>/common-law-findings.md` (the common-law digest)
+- `placement-recommendations.md` at `studio/clearance-search/<slug>/<date>/placement-recommendations.md` (the per-candidate placements from `placement-inquiry`) and its structured mirror `placements.json` beside it (`{mark, owner, jurisdiction, records, tier, reason}` per candidate; the md carries the rulings tail)
+- `variant-manifest.md` at `studio/clearance-search/<slug>/<date>/variant-manifest.md` (for completeness checks if relevant)
 
 ## Output — one call, not a file
 
@@ -119,7 +119,7 @@ and challenge it:
   element (or one materially like it) in a *comparable* situation — not a win on a different element, not a default
   against an obvious copycat. A risk-raising fact carrying no one-line "why this bears on this conflict", or opposed
   signals (e.g. enforcer **and** commercial partner) left listed in parallel rather than reconciled → **FLAG
-  (probative-grading)** — per `prelim-search/firm-wide-reasoning.md` (*Mitigation factors*), such facts adjust the practical read, they do not raise the level.
+  (probative-grading)** — per `clearance-search/firm-wide-reasoning.md` (*Mitigation factors*), such facts adjust the practical read, they do not raise the level.
 
 These are *questions you must be able to answer from the facts*, not consistency checks against the upstream
 files. If the headline cannot be defended against them, it blocks.
@@ -282,7 +282,7 @@ This is the check for what was *never searched* — the gap a narrative-vs-files
 
 For any candidate the narrative escalates above a "distinguished by its own distinctive matter" dominant-element read (a house mark / distinctive prefix):
 - What theory is doing the escalation? It must be a **consumer-confusion** theory (e.g. evidence of actual confusion).
-- If the escalation rests on optics / PR / partner-sensitivity / audience overlap / owner size alone, **FLAG (optics-escalation)** — per `prelim-search/firm-wide-reasoning.md` (*Elevation factors*) the legal level is the confusion read; PR/relationship factors annotate, they do not raise the level. Suggest: hold the distinguished read and move the concern to the PR/reputational annotation.
+- If the escalation rests on optics / PR / partner-sensitivity / audience overlap / owner size alone, **FLAG (optics-escalation)** — per `clearance-search/firm-wide-reasoning.md` (*Elevation factors*) the legal level is the confusion read; PR/relationship factors annotate, they do not raise the level. Suggest: hold the distinguished read and move the concern to the PR/reputational annotation.
 
 ### Variant-imagination audit (backstop — did the search even look for the obvious neighbours?)
 

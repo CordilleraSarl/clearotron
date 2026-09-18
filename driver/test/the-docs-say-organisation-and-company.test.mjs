@@ -33,8 +33,20 @@ const WORDS = ["account", "customer", "client", "tenant", "brand", "firm", "matt
 /** Each word in its plural and possessive forms, whole words only: `confirm` holds no `firm`. */
 const WORD = new RegExp(`\\b(?:${WORDS.join("|")})(?:s|'s|s'|’s)?\\b`, "gi");
 
-/** The corpus: the README a stranger lands on, and every document under docs/. */
-const inCorpus = (f) => f === "README.md" || /^docs\/.+\.md$/.test(f);
+/**
+ * The corpus: the README a stranger lands on, every document under docs/, and the four root documents
+ * beside them — CONTRIBUTING.md, SECURITY.md, AGENTS.md and INSTALL.md, which the README's first
+ * section links to.
+ *
+ * CHANGELOG.md IS EXCLUDED, DELIBERATELY AND BY NAME. It is generated from release notes and is history:
+ * a note said what it said on the day it was cut, and rewriting one to today's vocabulary would make the
+ * file a record of what somebody typed rather than of what shipped. Excluding it is a decision, so it is
+ * written here rather than left to the absence of a pattern that happens not to match it.
+ */
+const ROOT_DOCS = ["CONTRIBUTING.md", "SECURITY.md", "AGENTS.md", "INSTALL.md"];
+const EXCLUDED = { "CHANGELOG.md": "generated from release notes, and history is not rewritten" };
+const inCorpus = (f) => (f === "README.md" || ROOT_DOCS.includes(f) || /^docs\/.+\.md$/.test(f))
+  && !Object.hasOwn(EXCLUDED, f);
 
 const blank = (s) => s.replace(/[^\n]/g, " ");
 
@@ -204,6 +216,111 @@ const EXCEPTIONS = [
     files: /^(?:README\.md|docs\/architecture\/\d\d-[a-z-]+\.md)$/,
     reason: "a cloud vendor's own account, which pays for model access — never the organisation that owns the installation",
   },
+
+  // ── THE THREE ROOT DOCUMENTS BESIDE THE README ────────────────────────────────────────────────────
+  //
+  // Eleven uses across CONTRIBUTING.md, SECURITY.md and AGENTS.md became "company" on the owner's ruling
+  // of 2026-09-17. What stayed, stayed for a stated reason, and each reason is one of these entries.
+  {
+    phrases: [/\bclient-identifier\s+guard\b/gi, /\bclient\s+identity\b/gi],
+    files: /^(?:CONTRIBUTING|AGENTS)\.md$/,
+    reason: "the client-identifier guard is a check that carries that name, and these documents describe "
+      + "what it forbids; renamed in prose alone they would describe a check that does not exist under "
+      + "that name, and renaming the guard is a separate job with its own reach across the private corpus",
+  },
+  {
+    phrases: [/\bclient\s+matter\b/gi],
+    files: /^SECURITY\.md$/,
+    reason: "the legal profession's own term for a case file, in a sentence addressed to a security "
+      + "researcher rather than to a company; the mechanical swap gives \"company matter\", which is not a "
+      + "phrase anyone says, so this one was ruled a keep on the same footing as \"a brand team\"",
+  },
+  {
+    phrases: [
+      /\bmarks\s+and\s+matters\b/gi,
+      /\breal\s+matters\b/gi,
+      /\bmatter\s+number\b/gi,
+      /\bone\s+matter\s+run\s+both\s+ways\b/gi,
+      /\bthe\s+matters\s+this\s+doctrine\s+is\s+tuned\s+for\b/gi,
+    ],
+    files: /^(?:CONTRIBUTING|SECURITY)\.md$/,
+    reason: "the engine's own name for its unit of work — one clearance request for one mark — the same "
+      + "sense the matter-ledger family above excuses in docs/; " + ORG_OR_COMPANY,
+  },
+  {
+    phrases: [/\bregister,\s+or\s+an\s+account\b/gi, /\bon\s+your\s+own\s+account\b/gi],
+    files: /^CONTRIBUTING\.md$/,
+    reason: "an account with a model vendor, which a green test run is explaining that it does not need, "
+      + "and the idiom for contributing in a personal capacity rather than an employer's; " + ORG_OR_COMPANY,
+  },
+  // ── THE INSTALL GUIDE ─────────────────────────────────────────────────────────────────────────
+  //
+  // Its client/customer/brand/tenant uses were ruled one by one on 2026-09-17 and swept; "account" where
+  // it meant the company became "company" under the same vocabulary. What stayed is below, each group
+  // with the reason it was kept.
+  {
+    phrases: [
+      /\bClaude\s+client\b/gi,
+      /\bclients\s+that\s+cannot\s+do\s+OAuth\b/gi,
+      /\bclients\s+on\s+your\s+own\b/gi,
+      /\bdynamic\s+client\s+registration\b/gi,
+      /\bOAuth\s+client\b/gi,
+      /\bclient\s+surface\b/gi,
+      /\bclient\/staff\s+boundary\b/gi,
+      /\bclient-scoped\b/gi,
+    ],
+    files: /^INSTALL\.md$/,
+    reason: "other people's software (a Claude client, an OAuth client), protocol terms, and the product's "
+      + "own names for the client door and its key, one of them quoted from a refusal the product prints; "
+      + "kept on the owner's ruling of 2026-09-17",
+  },
+  {
+    phrases: [/\ba\s+firm,/gi, /\ba\s+brand\s+team\b/gi, /\bcalls\s+it\s+\*\*brand\s+owner\*\*/gi, /\bunder\s+your\s+own\s+brand\b/gi],
+    files: /^INSTALL\.md$/,
+    reason: "kinds of team an organisation might be, the command line's own word for a company, and an "
+      + "installation's brand, which is a setting; kept on the owner's ruling of 2026-09-17",
+  },
+  {
+    phrases: [
+      /\bcloud\s+account\b/gi,
+      /\bBedrock\s+account\b/gi,
+      /\bids\s+your\s+account\s+offers\b/gi,
+      /\bon\s+your\s+account\b/gi,
+      /\blocal-account\s+form\b/gi,
+      /\ban\s+account\s+with\s+no\s+runs\b/gi,
+    ],
+    files: /^INSTALL\.md$/,
+    reason: "an account a reader pays through or signs in with — at a cloud provider, a model vendor, or "
+      + "the install's own sign-in — never the company a clearance is for; " + ORG_OR_COMPANY,
+  },
+  {
+    phrases: [/\baccount\s+key\b/gi, /\bACCOUNT\s+keys\b/gi, /\baccount-capped\b/gi, /\baccount\s+scoping\b/gi, /\baccount\s+list\b/gi],
+    files: /^INSTALL\.md$/,
+    reason: "the keys and grants the command line issues, which carry `account` as their key and their "
+      + "`--accounts` flag, and a refusal the product prints in the same words; renamed in prose alone they "
+      + "would describe keys that do not exist",
+  },
+  {
+    phrases: [
+      /\bthe\s+minor\s+matters\b/gi,
+      /\bwhere\s+this\s+matters\b/gi,
+      /§13\s+matters\b/gi,
+      /\bin\s+a\s+matter\b/gi,
+      /\ba\s+real\s+matter\b/gi,
+      /\bhave\s+a\s+matter\b/gi,
+      /\bsends\s+the\s+matter\b/gi,
+      /\bfirst\s+live\s+matter\b/gi,
+    ],
+    files: /^INSTALL\.md$/,
+    reason: "the verb, and the engine's own name for its unit of work — one clearance request for one "
+      + "mark; " + ORG_OR_COMPANY,
+  },
+  {
+    phrases: [/\bfalse\s+public\s+claim\s+about\s+named\s+firms\b/gi],
+    files: /^AGENTS\.md$/,
+    reason: "the people a false public claim would be about, in the sentence that forbids finishing the "
+      + "demo rename — never the organisation that owns the installation",
+  },
 ];
 
 /**
@@ -244,15 +361,21 @@ const corpus = () => {
 };
 const read = (f) => readFileSync(join(ROOT, f), "utf8");
 
-test("the corpus is the README and every document under docs/, and it is not a handful", (ctx) => {
+test("the corpus is the README, every document under docs/ and the three root documents, and it is not a handful", (ctx) => {
   const files = corpus();
   if (!files) return ctx.skip(skipReason(GUARD));
   // A FLOOR, BECAUSE AN EMPTY CORPUS PASSES EVERY ARM BELOW. 34 documents at the time of writing; a
   // listing that shrank to a few would still report no offence.
   assert.ok(files.length >= 30, `only ${files.length} document(s) were read — the listing is broken, not the docs`);
   ctx.diagnostic(`${files.length} documents read`);
-  for (const f of ["README.md", "docs/README.md", "docs/CLIENT-MCP.md", "docs/architecture/05-customer-profiles.md"])
+  for (const f of ["README.md", "docs/README.md", "docs/CLIENT-MCP.md", "docs/architecture/05-customer-profiles.md",
+                   ...ROOT_DOCS])
     assert.ok(files.includes(f), `${f} is not in the corpus, so nothing here reads it`);
+  // AND THE EXCLUSION IS PINNED, because an exclusion nothing asserts is indistinguishable from a
+  // pattern that happens not to match. CHANGELOG.md is tracked and is deliberately out; if it were ever
+  // swept in, the rewrite this guard would demand is a rewrite of history.
+  for (const [f, why] of Object.entries(EXCLUDED))
+    assert.ok(!files.includes(f), `${f} is in the corpus, but it is excluded on purpose: ${why}`);
 });
 
 test("no document uses account, customer, client, tenant, brand, firm or matter for an organisation or a company", (ctx) => {

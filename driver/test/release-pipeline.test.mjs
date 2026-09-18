@@ -16,7 +16,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, mkdtempSync, mkdirSync, writeFileSync, rmSync, existsSync } from "node:fs";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -28,6 +28,7 @@ import { cutDecision, versionAtHead } from "../../scripts/release-cut-decision.m
 import { checksVerdict, waitForChecks, RUNNING, NOTHING_STARTED, WAITING_FOR_A_PERSON, exitCodeFor, CHECKS_WINDOW_MS, CHECKS_JOB_MARGIN_MS } from "../../scripts/release-version-pr-checks.mjs";
 import { refusals as completenessRefusals } from "../../scripts/release-completeness-check.mjs";
 import { notesFor } from "../../scripts/release-notes-for.mjs";
+import { expiryVerdict, cutRequest } from "../../scripts/release-await-cut.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 import { assembleRoot, writeRootChangelog, group, modeTransition, splitCut, CUT_FLAG } from "../../scripts/release-version.mjs";
 import { unreachableBareSites, sentenceFor } from "../../shared/root-doc-commands.mjs";
@@ -1154,9 +1155,13 @@ test("both deciders answer the same question, and a skipped one cannot answer fo
   // answers about the one this push cut. Different versions, different publishing jobs.
   assert.match(version, /cut: \$\{\{ steps\.cut\.outputs\.cut \}\}/,
     "the version job's decider changed shape — check which version its `cut` output is now about");
-  // AND `pending` IS THE CRON ALONE AGAIN. It carried the second entry while the trigger existed.
+  // AND `pending` ANSWERS THE CRON AND THE DELIBERATE `publish` DISPATCH, nothing else. It carried a
+  // second entry while an event trigger existed; the dispatch is the one other caller, and the arms at
+  // the end of this file drive exactly which events reach it.
   const pending = jobText("pending");
-  assert.match(pending, /if: github\.event_name == 'schedule' &&/, "the cron job answers to some other event too");
+  assert.match(pending, /github\.event_name == 'schedule'/, "the cron job no longer answers the cron");
+  assert.match(pending, /github\.event_name == 'workflow_dispatch' && inputs\.cut == 'publish'/,
+    "the cron job answers a dispatch other than `publish`");
   assert.ok(!/steps\.awaited/.test(pending), "the waiting step is still wired into the cron job, where there is nothing to wait for");
   // THE DECISION ITSELF IS STILL ONE FUNCTION. Two paths asking one question in two ways is how a
   // pipeline comes to publish something nobody merged.
@@ -2532,4 +2537,278 @@ test("a credential held at job level, where every step would get it, is refused"
   assert.notEqual(jobLevel, wf, "the plant did not apply, so this arm is measuring nothing");
   assert.ok(publishRefusals({ workflow: jobLevel, rootPkg: rootPkg() }).length,
     "a job-level credential gives every step in the job the token, including the guard");
+});
+
+
+// ── A DISPATCHED CUT THAT PUBLISHED NOTHING MUST NOT REPORT SUCCESS ──────────────────────────────────
+//
+// Measured twice on 2026-09-17: runs 35202212206 and 35260883981 both ended `completed`/`success` and
+// released nothing — no tag, publish skipped, the version pull request still open. The run's conclusion
+// answered "did this run finish", which is not the question anybody reads it for.
+//
+// THE QUIET PATH IS LOAD-BEARING AND IS ARMED SEPARATELY. On a push and on the schedule nothing was set
+// in motion and the cron floor sits underneath, so giving up is the ordinary outcome. Making the loud
+// case loud is easy; the way to get it wrong is to lose the quiet one, so each is driven on its own.
+
+test("a dispatched cut whose version pull request failed a check ends the run red, and names the check", () => {
+  const v = expiryVerdict({ cut: false, requested: true, pr: { merged: false, mergeable: true, checks: [
+    { context: "The offline suites (2)", conclusion: "failure" },
+    { context: "The pattern guards", conclusion: "success" },
+  ] } });
+  assert.equal(v.red, true, "a cut was asked for, this run armed the pull request, and nothing published");
+  assert.match(v.reason, /The offline suites \(2\)/, "a red that does not name the check sends the reader to the same log this came from");
+  assert.match(v.reason, /failure/);
+});
+
+test("a version pull request whose checks never started is named as that, not as a failure", () => {
+  // The state a parked run leaves: the pull request stands, auto-merge waits, and no check has a
+  // conclusion because none ever began. Reporting "a check failed" here would be a wrong answer.
+  const v = expiryVerdict({ cut: false, requested: true, pr: { merged: false, mergeable: null, checks: [
+    { context: "The offline suites (1)", conclusion: null },
+    { context: "The pattern guards", conclusion: null },
+  ] } });
+  assert.equal(v.red, true);
+  assert.match(v.reason, /had concluded|approval/, `it must say nothing concluded rather than blame a check: ${v.reason}`);
+  assert.doesNotMatch(v.reason, /failure/);
+});
+
+test("a version pull request that cannot merge is named as that", () => {
+  const v = expiryVerdict({ cut: false, requested: true, pr: { merged: false, mergeable: false, checks: [
+    { context: "The pattern guards", conclusion: "success" },
+  ] } });
+  assert.equal(v.red, true);
+  assert.match(v.reason, /not mergeable/);
+});
+
+test("a dispatch with no version pull request at all is red, and says so", () => {
+  const v = expiryVerdict({ cut: false, requested: true, pr: null });
+  assert.equal(v.red, true);
+  assert.match(v.reason, /no version pull request/);
+});
+
+test("a push, the schedule and a rehearsal all keep the quiet exit — one arm each", () => {
+  for (const what of ["a push", "the schedule", "a rehearsal"]) {
+    const v = expiryVerdict({ cut: false, requested: false, pr: null });
+    assert.equal(v.red, false, `${what} set nothing in motion; the cron floor is underneath and giving up is ordinary`);
+    assert.equal(v.reason, null);
+  }
+});
+
+test("a cut that DID publish is quiet even though it was asked for", () => {
+  const v = expiryVerdict({ cut: true, requested: true, pr: null });
+  assert.equal(v.red, false);
+});
+
+test("the request is read off the environment, and a missing pull request number is not a number", () => {
+  assert.deepEqual(cutRequest({ CLEAROTRON_CUT_REQUESTED: "true", CLEAROTRON_CUT_PR: "345" }), { asked: true, pr: 345 });
+  assert.deepEqual(cutRequest({ CLEAROTRON_CUT_REQUESTED: "false", CLEAROTRON_CUT_PR: "345" }), { asked: false, pr: 345 });
+  assert.deepEqual(cutRequest({}), { asked: false, pr: null });
+  // An empty output from a job that did not run must not become pull request 0.
+  assert.deepEqual(cutRequest({ CLEAROTRON_CUT_REQUESTED: "true", CLEAROTRON_CUT_PR: "" }), { asked: true, pr: null });
+});
+
+// ── DRIVEN THROUGH THE SCRIPT, THE WAY THE WORKFLOW RUNS IT ─────────────────────────────────────────
+//
+// The arms above hold the verdict as a pure function. They stayed green while the one step that runs it
+// had no credential for `gh`: the read of the pull request failed on every real run, and the failed read
+// arrived as "no version pull request was found" — red, and wrong about why. So the script is run here
+// as a process, against a real repository and a stub `gh`, from the state main was actually in on
+// 2026-09-17 at 09:20:02Z: the version pull request open, unmerged, one required check red.
+
+/** The 2026-09-17 09:20:02Z pull request, as `gh pr view --json merged,mergeable,statusCheckRollup` gives it. */
+const PR_AT_0920 = {
+  merged: false,
+  mergeable: "MERGEABLE",
+  statusCheckRollup: [
+    { __typename: "CheckRun", name: "The offline suites (2)", status: "COMPLETED", conclusion: "FAILURE" },
+    { __typename: "CheckRun", name: "The pattern guards", status: "COMPLETED", conclusion: "SUCCESS" },
+  ],
+};
+
+/**
+ * Run `release-await-cut.mjs` in a throwaway repository whose `main` carries a version that is already
+ * tagged — nothing to publish — with `gh` answering `ghBody` (a shell fragment). Budget 0: one read.
+ */
+function driveAwait({ requested, pr = "345", ghBody }) {
+  const dir = mkdtempSync(join(tmpdir(), "awaited-expiry-"));
+  try {
+    const origin = join(dir, "origin.git");
+    const work = join(dir, "work");
+    const g = (cwd, ...args) => execFileSync("git", ["-C", cwd, "-c", "user.email=a@b.c", "-c", "user.name=t", ...args], { stdio: "pipe" });
+    execFileSync("git", ["init", "-q", "--bare", "-b", "main", origin], { stdio: "pipe" });
+    execFileSync("git", ["init", "-q", "-b", "main", work], { stdio: "pipe" });
+    writeFileSync(join(work, "package.json"), `${JSON.stringify({ name: "fixture", version: "0.3.2-beta.6" })}\n`);
+    g(work, "add", "package.json");
+    g(work, "commit", "-qm", "Release 0.3.2-beta.6");
+    g(work, "tag", "v0.3.2-beta.6");
+    g(work, "remote", "add", "origin", origin);
+    g(work, "push", "-q", "origin", "main", "--tags");
+
+    const bin = join(dir, "bin");
+    mkdirSync(bin);
+    writeFileSync(join(bin, "gh"), `#!/bin/sh\n${ghBody}\n`, { mode: 0o755 });
+    const out = join(dir, "github-output");
+    const env = {
+      PATH: `${bin}:${process.env.PATH}`,
+      HOME: dir,
+      GITHUB_OUTPUT: out,
+      CLEAROTRON_RELEASE_WAIT_MS: "0",
+      CLEAROTRON_CUT_REQUESTED: requested ? "true" : "false",
+      CLEAROTRON_CUT_PR: pr,
+    };
+    try {
+      const stdout = execFileSync(process.execPath, [join(REPO, "scripts/release-await-cut.mjs")],
+        { cwd: work, encoding: "utf8", stdio: "pipe", env });
+      return { code: 0, text: stdout, output: readFileSync(out, "utf8") };
+    } catch (e) {
+      return { code: e.status, text: `${e.stdout ?? ""}${e.stderr ?? ""}`, output: existsSync(out) ? readFileSync(out, "utf8") : "" };
+    }
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+}
+
+const GH_ANSWERS_0920 = `echo '${JSON.stringify(PR_AT_0920)}'`;
+
+test("driven: the 09:20:02Z state on a dispatched cut exits non-zero and names the red check", () => {
+  const r = driveAwait({ requested: true, ghBody: GH_ANSWERS_0920 });
+  assert.equal(r.code, 1, `a dispatched cut that published nothing exited ${r.code}\n${r.text}`);
+  assert.match(r.text, /The offline suites \(2\) \(failure\)/, `the red does not name the check that stopped the merge\n${r.text}`);
+  assert.doesNotMatch(r.text, /The pattern guards/, "a check that passed was named as a reason");
+  assert.doesNotMatch(r.text, /ordinary outcome/, "the log calls a failed dispatch ordinary on the line above its own error");
+  assert.match(r.output, /looked=true/, "the loop did look, and must say so");
+});
+
+test("driven: the same state on a push, the schedule or a rehearsal stays quiet", () => {
+  // All three reach the script with the request unset — the workflow's expression is held by the arm
+  // below — so one drive covers the path they share.
+  const r = driveAwait({ requested: false, ghBody: GH_ANSWERS_0920 });
+  assert.equal(r.code, 0, `nothing was asked for, and the quiet path went red\n${r.text}`);
+  assert.match(r.text, /nothing to publish.*ordinary outcome/);
+});
+
+test("driven: a pull request that cannot be read is named as unread, not as absent", () => {
+  // What `gh` prints in a runner that was given no credential — the state the wait step was in.
+  const r = driveAwait({ requested: true, ghBody: "echo 'gh: To use GitHub CLI in a GitHub Actions workflow, set the GH_TOKEN environment variable.' >&2; exit 4" });
+  assert.equal(r.code, 1, `an unreadable pull request on a dispatched cut exited ${r.code}\n${r.text}`);
+  assert.match(r.text, /could not be read/, `the reason does not say the read failed\n${r.text}`);
+  assert.match(r.text, /345/, "the reason does not name which pull request it could not read");
+  assert.doesNotMatch(r.text, /no version pull request was found/, "a failed read was reported as a pull request that does not exist");
+});
+
+test("driven: a red commit status counts as a conclusion, not as nothing concluded", () => {
+  // The rollup mixes check runs, which carry `conclusion`, with commit statuses, which carry `state`.
+  const pr = { merged: false, mergeable: "MERGEABLE", statusCheckRollup: [
+    { __typename: "StatusContext", context: "an outside status", state: "FAILURE" },
+    { __typename: "StatusContext", context: "a status still running", state: "PENDING" },
+  ] };
+  const r = driveAwait({ requested: true, ghBody: `echo '${JSON.stringify(pr)}'` });
+  assert.equal(r.code, 1);
+  assert.match(r.text, /an outside status \(failure\)/, `a red status was read as not yet concluded\n${r.text}`);
+  assert.doesNotMatch(r.text, /a status still running/);
+});
+
+test("the wait step gives `gh` a credential and the job may read pull requests", () => {
+  const job = executableText(jobBlock("awaited"));
+  const step = job.slice(job.indexOf("- name: Watch main for the merge this push set in motion"));
+  assert.ok(step.includes("run: node scripts/release-await-cut.mjs"), "the wait step no longer runs the wait — this arm could not look");
+  const env = step.slice(0, step.indexOf("run: node scripts/release-await-cut.mjs"));
+  assert.match(env, /^\s+GH_TOKEN: \$\{\{ secrets\.GITHUB_TOKEN \}\}$/m,
+    "the wait step gives `gh` no credential, so the read of the pull request fails on every real run");
+  assert.match(job, /^\s+pull-requests: read$/m, "the job cannot read the version pull request");
+  assert.match(job, /^\s+checks: read$/m, "the job cannot read the checks on the version pull request");
+  assert.doesNotMatch(job, /^\s+[a-z-]+: write$/m, "the wait job was given write access; it only reads");
+  // THE REQUEST IS A DISPATCH THAT IS NOT A REHEARSAL, and nothing else. A push or the schedule that
+  // read as a request would turn every ordinary give-up red.
+  assert.match(env, /CLEAROTRON_CUT_REQUESTED: \$\{\{ github\.event_name == 'workflow_dispatch' && inputs\.cut != 'rehearse' && 'true' \|\| 'false' \}\}/,
+    "the request is no longer exactly a non-rehearsal dispatch");
+});
+
+// ── PUBLISHING A CUT THAT MAIN ALREADY CARRIES, ON PURPOSE ──────────────────────────────────────────
+//
+// A version pull request that merges after the dispatched cut stopped waiting merges itself with the
+// built-in token, which starts no run. Until `publish` existed, the only things left to collect it were
+// the schedule (measured gaps of two to five and a half hours) and an unrelated push to main. The
+// `publish` choice asks the schedule's own question on demand, and cuts nothing.
+//
+// DRIVEN, NOT MATCHED: every job condition below is evaluated for every event and choice, so a later
+// edit that lets `publish` reach the version job (which would refuse "Nothing to cut" and fail the run)
+// or the wait (which would wait for a pull request nobody opened) is caught as behaviour.
+
+/** A job's `if:` as the runner reads it, evaluated for one event. Only the terms these jobs use. */
+function jobRuns(job, { event, cut = "", ref = "refs/heads/main", needs = {} }) {
+  const parsed = /\n    if: (>-\n(?:      [^\n]*\n)+|[^\n]*\n)/.exec(`\n${jobBlock(job).split("\n").filter((l) => !l.trim().startsWith("#")).join("\n")}\n`);
+  if (!parsed) return true;
+  let expr = parsed[1].replace(/^>-\n/, "").replace(/\s+/g, " ").trim();
+  expr = expr
+    .replace(/!failure\(\)/g, "true").replace(/!cancelled\(\)/g, "true")
+    .replace(/github\.repository/g, JSON.stringify("CordilleraSarl/clearotron"))
+    .replace(/github\.event_name/g, JSON.stringify(event))
+    .replace(/github\.ref/g, JSON.stringify(ref))
+    .replace(/inputs\.cut/g, JSON.stringify(cut))
+    .replace(/inputs\.deprecate-below/g, JSON.stringify(""))
+    .replace(/needs\.([a-z-]+)\.outputs\.cut/g, (_, n) => JSON.stringify(needs[n] ?? ""));
+  assert.ok(!/[A-Za-z_]+\.[A-Za-z_]/.test(expr.replace(/"[^"]*"/g, "")), `an expression term this arm does not know: ${expr}`);
+  return Function(`return (${expr});`)();
+}
+
+test("a `publish` dispatch runs the decider alone: it cuts nothing and waits for nothing", () => {
+  const on = triggers();
+  assert.match(on, /^\s+- publish$/m, "the cut input offers no `publish`");
+  assert.match(on, /default:\s*rehearse/, "the default moved off the mode that cannot publish");
+  const table = [
+    // event, cut → version, pending, awaited
+    ["schedule", "", false, true, false],
+    ["push", "", true, false, false],
+    ["workflow_dispatch", "rehearse", false, false, true],
+    ["workflow_dispatch", "beta", true, false, true],
+    ["workflow_dispatch", "stable", true, false, true],
+    ["workflow_dispatch", "publish", false, true, false],
+  ];
+  for (const [event, cut, version, pending, awaited] of table) {
+    const got = ["version", "pending", "awaited"].map((j) => jobRuns(j, { event, cut }));
+    assert.deepEqual(got, [version, pending, awaited], `${event}${cut ? ` cut=${cut}` : ""}: version/pending/awaited`);
+  }
+  // FROM MAIN ONLY. A dispatch from a branch must not publish what main carries while pretending to be it.
+  assert.equal(jobRuns("pending", { event: "workflow_dispatch", cut: "publish", ref: "refs/heads/some-branch" }), false);
+});
+
+test("the publisher takes the decider's word on a `publish` dispatch, and publishes for real", () => {
+  // THE DECIDER GATES IT: `publish` runs when `pending` says a cut is waiting, and not otherwise.
+  assert.equal(jobRuns("publish", { event: "workflow_dispatch", cut: "publish", needs: { pending: "true" } }), true);
+  assert.equal(jobRuns("publish", { event: "workflow_dispatch", cut: "publish", needs: { pending: "false" } }), false);
+  // AND IT IS NOT A REHEARSAL. Only `rehearse` sets the dry-run flag; a dry `publish` would report a
+  // release it never made, which is this pipeline's oldest failure.
+  const gate = executableText(RELEASE_YML.slice(RELEASE_YML.indexOf("id: what"), RELEASE_YML.indexOf("- run: npm run build:ui")));
+  const dryWhen = /if \[ "\$\{\{ github\.event_name \}\}" = "workflow_dispatch" \] && \[ "\$\{\{ inputs\.cut \}\}" = "rehearse" \]; then\s*\n[^\n]*\n\s*echo "dry_flag=--dry-run"/;
+  assert.match(gate, dryWhen, "the dry-run flag is no longer set for `rehearse` alone");
+});
+
+/** The decider the `pending` job runs, over a repository whose main is at `version`, tagged or not. */
+function decide({ version, tagged }) {
+  const dir = mkdtempSync(join(tmpdir(), "pending-decide-"));
+  try {
+    const g = (...a) => execFileSync("git", ["-C", dir, "-c", "user.email=a@b.c", "-c", "user.name=t", ...a], { stdio: "pipe" });
+    execFileSync("git", ["init", "-q", "-b", "main", dir], { stdio: "pipe" });
+    writeFileSync(join(dir, "package.json"), JSON.stringify({ name: "f", version: "0.3.2-beta.7" }));
+    g("add", "."); g("commit", "-qm", "Release 0.3.2-beta.7"); g("tag", "v0.3.2-beta.7");
+    writeFileSync(join(dir, "package.json"), JSON.stringify({ name: "f", version }));
+    g("add", "."); g("commit", "-qm", `Release ${version}`);
+    if (tagged) g("tag", `v${version}`);
+    g("update-ref", "refs/remotes/origin/main", "HEAD");
+    const out = join(dir, "out");
+    const r = spawnSync(process.execPath, [join(REPO, "scripts", "release-cut-decision.mjs")],
+      { cwd: dir, encoding: "utf8", env: { PATH: process.env.PATH, HOME: dir, GITHUB_OUTPUT: out, CLEAROTRON_CUT_REF: "origin/main" } });
+    return { code: r.status, text: `${r.stdout}${r.stderr}`, output: existsSync(out) ? readFileSync(out, "utf8") : "" };
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+}
+
+test("driven: main carrying an untagged version is published by that path; a tagged one is not", () => {
+  // The step is read from the job, so this drives what `pending` actually runs.
+  assert.match(jobText("pending"), /CLEAROTRON_CUT_REF: origin\/main[\s\S]*run: node scripts\/release-cut-decision\.mjs/,
+    "the `pending` job no longer asks the cut decision about main");
+  const waiting = decide({ version: "0.3.2-beta.8", tagged: false });
+  assert.equal(waiting.code, 0, waiting.text);
+  assert.match(waiting.output, /^cut=true$/m, `a cut sitting on main was not seen: ${waiting.text}`);
+  const done = decide({ version: "0.3.2-beta.8", tagged: true });
+  assert.equal(done.code, 0, done.text);
+  assert.match(done.output, /^cut=false$/m, "a version already tagged would be published again");
 });

@@ -129,7 +129,7 @@ export const allowanceExhaustedLine = (cap, who) =>
 const INSTALL_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 const READ_OFF_NOTE = "Reading a brief is not available on this instance — set the search up below.";
-import { basename, dirname, join, resolve as pathResolve } from "node:path";
+import { basename, dirname, join, resolve as pathResolve } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { makePrincipal, assertPrincipal, genericOrgOf, mayReadRun, reachCovers, principalView, seesEverything, mayRun,
@@ -677,7 +677,7 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
   };
   // THE CANONICAL INTAKE FIRST, and it is why this parameter exists. `CLEAROTRON_QUEUE_DIR` is where the
   // enqueue CLI and ops-MCP `start_run` write — which is where the PORTAL's own submissions land, since
-  // its `trigger` is an ops-MCP hop. The walk below finds only `workspace-*/studio/prelim-search/queue`,
+  // its `trigger` is an ops-MCP hop. The walk below finds only `workspace-*/studio/clearance-search/queue`,
   // and a documented headless install has no workspaces at all: measured on the test box, the only queue
   // under the whole tree is the configured one, and it holds portal-prefixed jobs. So this scan ran ZERO
   // times there, and a submitted search was invisible on the dashboard from submit until claim — a
@@ -687,7 +687,7 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
   }
   try {
     for (const ws of readdirSync(workspaceRoot).filter((n) => n.startsWith("workspace-"))) {
-      const studio = join(workspaceRoot, ws, "studio", "prelim-search");
+      const studio = studioDirFor(join(workspaceRoot, ws));
       let slugs = []; try { slugs = readdirSync(studio); } catch { continue; }
       for (const slug of slugs) {
         // Still walked, so a deployment whose queue is not in `queueDirs` keeps working. The union is
@@ -1332,7 +1332,24 @@ export function makePortalService({
         // explains a control that cannot be used, `coverageNote` qualifies one that can. Folding this
         // into the first would make every caller of `productAvailability` — the portal, the MCP door,
         // the dev cockpit — read a disclosure as a refusal, which is the behaviour the ruling removes.
-        const coverage = coverageDisclosure(l.geography, territories);
+        // ── THE PRODUCT ROWS CARRY NO COVERAGE SENTENCE ───────────────────────────────────────────
+        //
+        // This row printed a four-line paragraph — what the wired register reaches, of how many places
+        // this search can name, and that the rest would be disclosed in the report as deferred coverage
+        // rather than reported as clear. The owner met it on a running install and ruled it out on
+        // 2026-09-18: it is on no board, and it describes the behaviour that naming an unreachable
+        // territory no longer has. A named territory the register cannot reach is now refused at the
+        // door, in one sentence naming the territory — so a paragraph promising to defer it instead
+        // tells the reader the opposite of what the engine will do.
+        //
+        // NOTHING REPLACES IT, AND NO OTHER ROW GETS ONE. What a worldwide search on a partial register
+        // actually reached belongs in the report that describes the search that ran, not in the form
+        // that orders it.
+        //
+        // THE SENTENCE STILL EXISTS, one surface later, and deliberately: the review step before the
+        // spend still states what is being bought. That is a different question asked at a different
+        // moment — this row is "which search", that screen is "this is what you are committing to" —
+        // and it was a separate ruling. `coverageDisclosure` keeps composing it for that caller.
         // ── — THE PRODUCT DECLARES WHAT IT NEEDS, so the row can say so ─────
         //
         // The owner ordered the one product carrying `caseLaw: true` and first heard of the lane in the
@@ -1349,7 +1366,7 @@ export function makePortalService({
         // a warning on every deployment whose writer has not run since is worse than the silence it
         // replaces.
         return { ...l, available: cause === null, unavailableNote: cause ? UNAVAILABLE_NOTE[cause] : null,
-          coverageNote: coverage?.note ?? null,
+          coverageNote: null,
           capabilityNote: l.caseLaw && caseLawReady === false ? CASE_LAW_DARK_NOTE : null };
       }),
       // ── the TERRITORY affordance ─────────────────────────────────────────────────────────────
@@ -1742,7 +1759,7 @@ export function makePortalService({
         // The recipeKey arm that used to sit here (a 422 when saved searches were "not switched on") went
         // with CLEAROTRON_RECIPES_MODE on 2026-07-27: a saved search is now honoured wherever it resolves.
         // Asked of the RESOLVED product, not of the body: a request that names none resolves through
-        // the account's default and its own territories, and the old read (`body.searchLevel || "prelim"`)
+        // the account's default and its own territories, and the old read (`body.searchLevel || "clearance"`)
         // answered about a product nobody had chosen. `resolveFor` fails open to a null resolution, and a
         // null one is not judged here — validateJob and the scope rules below still run, and the runner
         // is the wall.
@@ -2503,8 +2520,14 @@ async function connectorDoorKind(url) {
         //
         // COMPOSED IN ONE PLACE and handed over as a string. The browser cannot know this install's
         // path, so the three surfaces stating this route cannot drift apart even if someone tries.
+        //
+        // AND IT NAMES THE DISTRIBUTION, like every other surface that states this route. Without the
+        // target this one composer answers as it does for an install that is not under WSL at all, so on
+        // a WSL box this field alone carried the inside-WSL line while the rows beside it led with the
+        // Windows-side one. Nothing draws this field today; it is on the wire, and a field that answers
+        // differently from the rows is a trap for whoever draws it next.
         const stdio = seesEverything(principal)
-          ? stdioConnectOffer({ workDir: process.env.CLEAROTRON_WORK_DIR || null, reportsDir: process.env.CLEAROTRON_REPORTS_DIR || null })
+          ? stdioConnectOffer({ workDir: process.env.CLEAROTRON_WORK_DIR || null, reportsDir: process.env.CLEAROTRON_REPORTS_DIR || null, wsl: wslTarget() })
           : null;
 
         // ── THE PAGE IS HANDED ANSWERS, NOT FACTS TO REASON FROM ─────────────
@@ -3051,7 +3074,10 @@ async function connectorDoorKind(url) {
           // who signed in. Dynamic import deliberately: `profiles.mjs` captures the store directory at
           // MODULE LOAD (see this file's note above), so it is never pulled in at our own load time.
           const { companyFactsOf } = await import("./profiles.mjs");
-          return { status: 200, json: { customers: [...profiles.values()].map((p) => ({ key: p.key, name: p.name, ...companyFactsOf(p) })) } };
+          // A company whose file would not load is named with its reason (staff-only route), never left out
+          // in silence: a switcher with one company where there were twenty-five reads as deleted work.
+          const unreadable = Array.isArray(profiles?.unreadable) ? profiles.unreadable.map((u) => ({ key: u.key, reason: u.reason })) : [];
+          return { status: 200, json: { customers: [...profiles.values()].map((p) => ({ key: p.key, name: p.name, ...companyFactsOf(p) })), ...(unreadable.length ? { unreadable } : {}) } };
         }
         // /portal/admin/config — what this deployment actually has switched on. Read from the SNAPSHOT,
         // never from process.env: this process has no engine environment, so asking its own env would

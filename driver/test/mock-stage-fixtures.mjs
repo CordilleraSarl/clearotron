@@ -40,7 +40,7 @@ import { recordSkeptic } from "../skeptic-record.mjs";   //, same rule: called, 
 import { recordSynthesis } from "../synthesis-record.mjs";
 import { recordFrameDiff } from "../frame-diff-record.mjs";   //, third conversion — same rule again
 import { recordMatterFrame } from "../matter-frame-record.mjs";   // conversion 2 — same rule again
-import { recordPrelimVariants } from "../prelim-variants-record.mjs";   // conversion 3 — same rule again
+import { recordClearanceVariants } from "../clearance-variants-record.mjs";   // conversion 3 — same rule again
 import { recordReportOverview } from "../report-overview-record.mjs";  // conversion 4 — the client-read shell
 import { recordReportCard } from "../report-card-record.mjs";          // conversion 5 — the fan-out transport
 import { recordUnitNote } from "../register-unit-record.mjs";           // the unit note — own-key transport, called not copied
@@ -307,7 +307,7 @@ export function fixture(name, msg, dir = null) {
   // parsed model. A fixture body here would be the mock taking the path this conversion deleted, and it
   // would hide the one thing the conversion is proven by — whether the call was made at all.
   // CONVERSION 3 — NO FIXTURE BODY FOR variant-manifest.md OR .json. The seat hands values to
-  // `record_prelim_variants` and the driver writes both, so a body here would be the mock taking the path
+  // `record_clearance_variants` and the driver writes both, so a body here would be the mock taking the path
   // the conversion deleted. MOCK_STAR_FLOOR went with the ⭐ search floor itself at — the knob, its
   // two fixture blocks and the two mock arms that drove it are all retired, because no code reads a ⭐
   // any more.
@@ -483,7 +483,7 @@ export function fixture(name, msg, dir = null) {
     const cite = process.env.MOCK_REPORT_URI
       ? `\n## CITED MARK — Owner LLC, US\n- tier: 3\n- label: Level 3\n- group: on-field\n- one: cited-record card\n### Audit\n- **Source:** [Corsearch · ${process.env.MOCK_REPORT_URI}](https://tm.corsearch.com${process.env.MOCK_REPORT_URI})\n`
       : "";
-    return `---\ntype: prelim-clearance\nmatter: TMP8439\ntitle: PROJECT NOVAPULSE\nclient: ACME Interactive\nuse: codename\nclasses: 9, 41\nrun: 2026-01-01 · corsearch + common-law\noverall_label: MEDIUM\noverall_badge: l3\noverall_caption: mock composite 3\n---\n\n# Summary\nMock curated summary for the wiring test.\n\n# Recommendation\nProceed with caution.\n\n# Drivers\n- mock driver bullet\n\n# Marks\n## LUMENGARDE — NOVAPULSE, EU\n- tier: 3\n- label: Level 3 · C + Classic\n- group: on-field\n- one: mock one-line takeaway\n- open: true\n### Filings\nMock filing detail.\n### Audit\n[Provider · /m/1](#)\n::p:: internal note\n${cite}\n# Coverage\nMock coverage panel.\n${permProse}\n# Methodology\nMock methodology paragraph for the wiring test.\n`;
+    return `---\ntype: clearance-clearance\nmatter: TMP8439\ntitle: PROJECT NOVAPULSE\nclient: ACME Interactive\nuse: codename\nclasses: 9, 41\nrun: 2026-01-01 · corsearch + common-law\noverall_label: MEDIUM\noverall_badge: l3\noverall_caption: mock composite 3\n---\n\n# Summary\nMock curated summary for the wiring test.\n\n# Recommendation\nProceed with caution.\n\n# Drivers\n- mock driver bullet\n\n# Marks\n## LUMENGARDE — NOVAPULSE, EU\n- tier: 3\n- label: Level 3 · C + Classic\n- group: on-field\n- one: mock one-line takeaway\n- open: true\n### Filings\nMock filing detail.\n### Audit\n[Provider · /m/1](#)\n::p:: internal note\n${cite}\n# Coverage\nMock coverage panel.\n${permProse}\n# Methodology\nMock methodology paragraph for the wiring test.\n`;
   }
   // report-overview.md HAS NO FIXTURE BRANCH ANY MORE (conversion 4). The driver writes it off the
   // `record_report_overview` call, so a body here would be the mock taking exactly the path this
@@ -1238,7 +1238,7 @@ function recordAxisFromWiring(argv) {
  * this never ran — and the failure surfaced three hundred lines away, as a missing `_records` file on a
  * test about report rendering. An early return that skips a side-write is invisible at the return.
  *
- * The record row must prefix-match assembleRunRecords' `prelim-<slug>-<codename>-` filter
+ * The record row must prefix-match assembleRunRecords' `clearance-<slug>-<codename>-` filter
  * (registry-fidelity rowMatchesRun). The retired gateway carried the stage key in --session-key; the
  * anthropic-agent (claude) argv has none, so the run prefix is derived from the run dir — in production
  * the register MCP server stamps this key from its gather config.
@@ -1251,8 +1251,8 @@ function mockRegisterRecordWrite(runDir, argv = []) {
   if (!process.env.MOCK_WRITE_RECORD) return;
   const skArg = argv.indexOf("--session-key");
   const sk = skArg >= 0
-    ? (argv[skArg + 1] ?? "prelim-record")
-    : `prelim-${basename(dirname(runDir))}-${basename(runDir).replace(/^\d{4}-\d\d-\d\d-/, "")}-mockrecord`;
+    ? (argv[skArg + 1] ?? "clearance-record")
+    : `clearance-${basename(dirname(runDir))}-${basename(runDir).replace(/^\d{4}-\d\d-\d\d-/, "")}-mockrecord`;
   const recordLog = process.env.CLEAROTRON_REGISTER_RECORD_LOG
     || driverDir(runDir, "register-record-bodies.jsonl");
   mkdirSync(dirname(recordLog), { recursive: true });
@@ -1473,7 +1473,7 @@ export function applyStageWrites(msg, argv) {
     if (r.write_failed) return `mock unit-note: record_unit_note could not store the note (${r.write_failed})`;
     return `mock unit-note recorded through record_unit_note (band ${wroteBand ? "written" : "SKIPPED by a MOCK_NO_BAND knob"})`;
   }
-  if (/record_blind_frame|record_skeptic|record_frame_diff|record_matter_frame|record_prelim_variants|record_report_overview|record_report_card|record_doubt_closure|record_narrative_refutation|record_synthesis/.test(msg)) {
+  if (/record_blind_frame|record_skeptic|record_frame_diff|record_matter_frame|record_clearance_variants|record_report_overview|record_report_card|record_doubt_closure|record_narrative_refutation|record_synthesis/.test(msg)) {
     // — FROM THE ENGINE WIRING, NOT FROM `--add-dir` (runDirFromWiring above). This branch stands in for a RECORDING SERVER's
     // write, and a recording server learns its run from `CLEAROTRON_BAND_RUN_DIR` in the env gather-config
     // hands it (serverEnv() in driver/engine/mcp/gather-config.mjs) — never from the seat's directory
@@ -1878,12 +1878,12 @@ export function applyStageWrites(msg, argv) {
       if (r && (r.error || r.refused)) return `mock report-overview REFUSED by record_report_overview: ${r.error ?? r.refused}`;
       return "mock report-overview recorded through record_report_overview";
     }
-    if (/record_prelim_variants/.test(msg)) {
+    if (/record_clearance_variants/.test(msg)) {
       // CONVERSION 3. `variantManifestModelFixture()` already holds exactly the object the seat used to
       // save, so it is parsed and SENT rather than written — the knob-translation rule again. The scope
       // ledger rows are new: the seat used to lay them out as a markdown table the driver parsed back,
       // and they are typed now, so the fixture states them as rows.
-      recordMockToolCall(runDir, "record_prelim_variants", "recording-prelim-variants");
+      recordMockToolCall(runDir, "record_clearance_variants", "recording-clearance-variants");
       // `incumbent_classes` IS SENT, and the conversion is what made it necessary — this is the fixture's
       // two halves being reconciled, not a workaround. The retired PROSE fixture asserted
       // "industry_incumbent_alert present" in words while the STRUCTURED fixture beside it carried no
@@ -1891,7 +1891,7 @@ export function applyStageWrites(msg, argv) {
       // and `register-plan.mjs` — which keys on `manifest.incumbent_classes.length` — saw nothing. Two
       // halves of one fixture disagreeing about whether this matter has an incumbent alert, which is the
       // exact defect class the conversion removes. Now there is one answer and both readers get it.
-      const r = recordPrelimVariants(runDir, {
+      const r = recordClearanceVariants(runDir, {
         ...JSON.parse(variantManifestModelFixture()),
         incumbent_classes: ["9"],
         // — the floor designation, TYPED. MOCK_STAR_FLOOR had to smuggle a ⭐ into a scope-ledger
@@ -1908,8 +1908,8 @@ export function applyStageWrites(msg, argv) {
           { layer: "source", item: "developer ecosystems", status: "dropped", reason: "off-channel for this product", reopen_trigger: "a developer-channel listing surfaces" },
         ],
       });
-      if (r && (r.error || r.refused)) return `mock prelim-variants REFUSED by record_prelim_variants: ${r.error ?? r.refused}`;
-      return "mock prelim-variants recorded through record_prelim_variants";
+      if (r && (r.error || r.refused)) return `mock clearance-variants REFUSED by record_clearance_variants: ${r.error ?? r.refused}`;
+      return "mock clearance-variants recorded through record_clearance_variants";
     }
     if (/record_matter_frame/.test(msg)) {
       // CONVERSION 2. The knob translation rule again: `MOCK_MEANING_ANGLES` and `MOCK_INTAKE_ASKS` keep

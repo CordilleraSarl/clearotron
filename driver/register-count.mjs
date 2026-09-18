@@ -336,10 +336,24 @@ export async function countRegisterHits({
       try { r = await counter(term, p, { classes: scoped, regions }); }
       catch (e) { r = { ok: false, total: null, reason: `count threw: ${String(e?.message ?? e).slice(0, 200)}` }; }
       const ok = Boolean(r?.ok) && Number.isFinite(r?.total);
+      // A DISCLOSED APPROXIMATION IS AN ANSWER, AND IT WAS BEING READ AS A FAILURE. When the register
+      // says "more than ten thousand", it has answered — it has answered with a floor instead of a
+      // count, which is a different thing from not answering at all. `ok` is false for it because the
+      // total is deliberately not finite (an approximation must never become a number), so everything
+      // downstream saw a dead probe and the client was told the count was not available: the same words
+      // the report uses when the register could not be reached. The direction was inverted, too —
+      // saturation is a finding about the mark, and the denser the crowd the more certainly it was
+      // suppressed.
+      const approximated = !ok && Boolean(r?.ok) && r?.approximate === true && Number.isFinite(r?.floor);
+      // THE REFUSAL FIELD IS `cause` ON THIS PROVIDER AND `reason` ON OTHERS, and reading only one of
+      // them is why an honest refusal arrived as the fallback string with the receipts ledger recording
+      // "unknown". The same mismatch is described above `listRecords`, where it was fixed; this is the
+      // other half of it. Both are read, in the order a caller would expect.
+      const refusal = r?.reason ?? r?.cause ?? null;
       // A CLIENT-SIDE refusal (the provider's query language cannot express this question — a term
       // carrying parentheses, an office outside its vocabulary) is
       // deterministic: no retry and no resume can change it, so it settles rather than re-billing.
-      const deterministic = !ok && (isCapabilityGap(r?.reason) || Boolean(r?.unsupported));
+      const deterministic = !ok && !approximated && (isCapabilityGap(refusal) || Boolean(r?.unsupported));
       if (ledgerPath) {
         try {
           appendFileSync(ledgerPath, JSON.stringify({
@@ -350,13 +364,18 @@ export async function countRegisterHits({
             ...(form ? { term, variant_form: form } : {}),
             classes: scoped, regions, provider, probe: r?.probe ?? null,
             ok, total: ok ? r.total : null, took_ms: Date.now() - started,
-            ...(ok ? {} : { cause: String(r?.reason ?? "unknown").slice(0, 300) }),
+            // An approximation is recorded as what it is. It billed and it answered, so a receipt
+            // calling it a failure with cause "unknown" misreports both halves.
+            ...(approximated ? { approximate: true, floor: r.floor } : {}),
+            ...(ok || approximated ? {} : { cause: String(refusal ?? "unknown").slice(0, 300) }),
           }) + "\n");
         } catch { /* receipts are best-effort, never fatal — same as the sweep ledger */ }
       }
-      return ok
-        ? { total: r.total }
-        : { total: null, unavailable: String(r?.reason ?? "the count could not be taken").slice(0, 300), ...(deterministic ? { deterministic: true } : {}) };
+      if (ok) return { total: r.total };
+      // `total` stays null for an approximation and that is the rule, not an oversight: the floor is not
+      // a count and may never be filled in as one. What travels beside it is the disclosure.
+      if (approximated) return { total: null, approximate: true, floor: r.floor };
+      return { total: null, unavailable: String(refusal ?? "the count could not be taken").slice(0, 300), ...(deterministic ? { deterministic: true } : {}) };
     };
 
     // The aggregate: the provider's EXACT predicate, once per generated form, summed.
@@ -503,12 +522,38 @@ export function countsForMark(doc, name) {
  * Office CODES, not names: `scope.regions` on the same artifact is already codes, and the alternative
  * is inventing a display layer that has to stay in step with the office vocabulary of six providers.
  */
+/**
+ * The register's own floor for a count it stopped taking, or null.
+ *
+ * ONE READING FOR EVERY PAGE THAT SHOWS A COUNT. The glance line printed the floor and the counts table,
+ * the coverage clause and the workbook beside it still printed "not available", so one report said two
+ * different things about the same cell. A floor counts only with the register's flag AND the number —
+ * a flag with no number says no more than "unknown" does.
+ */
+export function disclosedFloor(c) {
+  return c?.approximate === true && Number.isFinite(c?.floor) ? c.floor : null;
+}
+
+/** A floor as every page prints it: the register's own figure, and no sentence around it. */
+export const moreThan = (floor) => `more than ${floor.toLocaleString("en-US")}`;
+
 export function countLine(entry) {
   if (!entry?.counts) return null;
   const parts = COUNT_PREDICATES.map((p) => {
     const c = entry.counts[p.key];
     const word = p.glance ?? p.label.toLowerCase();
     if (Number.isFinite(c?.total)) return `${c.total} ${word}`;
+    // A REGISTER THAT ANSWERS WITH A FLOOR HAS ANSWERED. Some registers stop counting and report
+    // "more than ten thousand" rather than a total; that is the register's own figure and it is what
+    // the client is shown, as a number. Rendering it as "not available" beside a register that could
+    // not be reached at all tells a reader the same thing about two different facts, and the one the
+    // reader would act on — go and look elsewhere — is wrong for this one.
+    //
+    // No sentence, no adjective: the rest of this line is figures and what they counted, and a
+    // qualification written here would be the only prose on it.
+    if (disclosedFloor(c) !== null) return `${word}: ${moreThan(disclosedFloor(c))}`;
+    // Left for a register this deployment could not reach or could not ask. Those have no figure at
+    // all, which is what this phrase now means and the only thing it means.
     return `${word}: not available`;
   });
   const scope = entry.classScope === "all-classes"

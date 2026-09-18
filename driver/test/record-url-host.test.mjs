@@ -166,7 +166,7 @@ test("an unparseable or non-http value is not a host claim and is left to the sh
 // provider that declares `hasPublicRecordUrl:false` inherits the requirement on the day it is added,
 // without anyone remembering to come here. That is the same rule the `recordOriginsFor` arm above runs on.
 test("every doc the seat reads names the FIELD and the VALUE, not just \"compose nothing\"", () => {
-  const SKILLS = join(dirname(dirname(fileURLToPath(import.meta.url))), "skills", "prelim-register");
+  const SKILLS = join(dirname(dirname(fileURLToPath(import.meta.url))), "skills", "clearance-register");
   const noPublicPage = Object.keys(PROVIDERS).filter((id) => PROVIDERS[id].hasPublicRecordUrl === false);
   nonEmpty(noPublicPage, "no provider declares hasPublicRecordUrl:false — this arm asserted nothing");
 
@@ -191,8 +191,8 @@ test("every doc the seat reads names the FIELD and the VALUE, not just \"compose
 // ── SECOND FINDING — THE RULE WAS IN FOUR FILES THE FAILING SEAT NEVER OPENS ───────────────
 //
 // The first fix put the sentence in `status-rules.md`, `digest.md` and the two provider docs. All four
-// live under `prelim-register/`. **The seat the validator refuses is SYNTHESIS**, and its declared
-// reads are four files under `prelim-search/`. Zero overlap.
+// live under `clearance-register/`. **The seat the validator refuses is SYNTHESIS**, and its declared
+// reads are four files under `clearance-search/`. Zero overlap.
 //
 // So the defect reproduced on R1 with the fix in the tree — ancestry-checked, `a5315ff` present —
 // costing a 1743-second synthesis attempt. Three occurrences now, and this one has an explanation
@@ -220,7 +220,7 @@ test("the record-URL rule is in a file the SYNTHESIS stage actually reads", asyn
 
 test("and the register seat keeps it too — this was an addition, not a move", () => {
   const SKILLS = join(dirname(dirname(fileURLToPath(import.meta.url))), "skills");
-  for (const rel of ["prelim-register/status-rules.md", "prelim-register/digest.md"]) {
+  for (const rel of ["clearance-register/status-rules.md", "clearance-register/digest.md"]) {
     assert.match(readFileSync(join(SKILLS, rel), "utf8"), /`source\.resolved_link` is `""`/,
       `${rel} lost the rule. The register seat composes these links and needs it as much as synthesis does; `
       + "moving prose from one reader to another trades one silent failure for a different one.");

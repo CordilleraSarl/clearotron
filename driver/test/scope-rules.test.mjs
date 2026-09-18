@@ -306,8 +306,8 @@ test("no message names a switch, a variable or an internal level key", () => {
     // bare `clearotron` belongs in this list as much as its siblings do: it is a ORDERABLE_PRODUCTS key, and the
     // portal renders these lines verbatim to a client who has only ever been shown the STAGE label. The
     // sibling assertion in portal-service.test.mjs omitted it too, so both claimed a property neither
-    // checked (review 2026-07-27). \bprelim\b does not match "preliminary", which is the words we use.
-    assert.doesNotMatch(m, /\bprelim\b|prelim-jx|prelim-register-only|knockout-register/, `an internal level key reached a requester: ${m}`);
+    // checked (review 2026-07-27). \bclearance\b does not match "preliminary", which is the words we use.
+    assert.doesNotMatch(m, /\bclearance\b|clearance-jx|clearance-register-only|knockout-register/, `an internal level key reached a requester: ${m}`);
     // THE PRODUCT IDS, DERIVED FROM THE REGISTRY AND NOT TYPED OUT. The line above is a literal list of
     // TODAY's level keys, which is exactly the shape that keeps passing while a NEW key leaks: the scan
     // has to grow with the vocabulary or it certifies the thing it was written to catch. The ids are the

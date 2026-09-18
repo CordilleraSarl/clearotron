@@ -18,7 +18,8 @@ ignores the value.
 
 ## The outbox
 
-`config.outboxDir` = `CLEAROTRON_OUTBOX_DIR` (default `<CLEAROTRON_WORK_DIR>/prelim-outbox`).
+`config.outboxDir` = `CLEAROTRON_OUTBOX_DIR` (default `<CLEAROTRON_WORK_DIR>/clearance-outbox`; the
+earlier `clearance-outbox` is still read, so markers written before the rename still drain).
 All packets are written atomically (`.tmp` + rename) — a watcher never sees a half-written
 file. Every packet carries a `ts` ISO timestamp. Watch the dir for `*.pending` (systemd
 `.path`, inotify, or poll); a periodic scan of run `status.json` files is the recommended

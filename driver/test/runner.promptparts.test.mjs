@@ -87,7 +87,7 @@ assert.ok(stripped > 0,
   + "proves nothing. Either the marker moved or the copy did not reach the roster.");
 pinEnv(process.env, "CLEAROTRON_CUSTOMERS_DIR", customersDir);
 
-  const q = join(root, "workspace-clawdi", "studio", "prelim-search", "queue");
+  const q = join(root, "workspace-clawdi", "studio", "clearance-search", "queue");
   mkdirSync(q, { recursive: true });
 
   // (1) THE regression: prose with unescaped quotes + newline + backslash — the exact shape that broke
@@ -149,7 +149,7 @@ pinEnv(process.env, "CLEAROTRON_CUSTOMERS_DIR", customersDir);
   // — BEFORE the assertions below. If the runner refused before any run
   // started, every count below is 0 for a reason that has nothing to do with what is under test,
   // and the packets beside the queue already say what it was.
-  refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.promptparts.test.mjs");
+  refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.promptparts.test.mjs");
 
   // (1) ran, and the verbatim prose (unescaped quotes, backslash, newline) round-tripped into the run artifact.
   assert.ok(existsSync(join(q, "tonica.done")), "prose-out job must RUN, not fail at intake");
@@ -208,7 +208,7 @@ pinEnv(process.env, "CLEAROTRON_CUSTOMERS_DIR", customersDir);
 
   // Exactly one outbox event packet per parked job (nosubject, brokenman) — none for the three that ran
   // (handoff default: the notice is a packet, not a gateway ping — no clearotron-intake-* gateway calls at all).
-  const outbox = join(root, "prelim-outbox");
+  const outbox = join(root, "clearance-outbox");
   for (const base of ["nosubject", "brokenman"]) {
     const packet = JSON.parse(readFileSync(join(outbox, `intake-${base}.failed.pending`), "utf8"));
     assert.equal(packet.kind, "intake-rejected");

@@ -131,7 +131,7 @@ test("the recording engine's homes are real, distinct paths per ladder — the a
     const runDir = freshRun(tag);
     await withEnv({ CLEAROTRON_AI: CODEX, CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0" }, () =>
       GW.runStage(`${tag}-stage`, { agent: "clawdi", message: "go", model: "haiku",
-        sessionKey: `prelim-${tag}`, timeoutSec: 30, runDir }));
+        sessionKey: `clearance-${tag}`, timeoutSec: 30, runDir }));
   }
   assert.equal(homes.length, 2, "two ladders, two dispatches");
   assert.equal(new Set(homes).size, 2,
@@ -175,7 +175,7 @@ async function runWithFormRepair(tag, onTurn) {
   await withEnv({ CLEAROTRON_AI: CODEX, CLEAROTRON_MAX_RETRIES: "1", CLEAROTRON_RECOVERY_MAX: "0",
     CLEAROTRON_FORM_REPAIR: "1", CLEAROTRON_DISPATCH_RECORD: "1" }, () =>
     GW.runStage("frame-diff", { agent: "clawdi", message: "go", model: "haiku",
-      sessionKey: `prelim-${tag}`, timeoutSec: 30, runDir, expectFile: [out],
+      sessionKey: `clearance-${tag}`, timeoutSec: 30, runDir, expectFile: [out],
       validate: () => { judged++; return judged <= 2 ? { ok: false, reason: FORM_FAIL } : { ok: true }; } }));
   return { runDir, seen, rows: rows(runDir, "frame-diff") };
 }

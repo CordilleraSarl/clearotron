@@ -32,7 +32,7 @@ import { parseFindingsJson, bindRecommendation, sentenceCaseLead, CLIENT_TIER_BY
 import { REC, inPriorityWindow, ownerDisplayName } from '../registry-fidelity.mjs';
 import { registrationSystem } from '../jurisdiction-systems.mjs';
 import { READ_LEAD_RE } from '../report-card-record.mjs';   // D3 — the dedupe gate and the card's acceptance are ONE predicate
-import { REPORT_ROOT, REPORT_ROOT_DARK_EXPLICIT, THEME_INIT_EXPLICIT, FAVICON_LINK, logoLockup, BRAND, confPosture } from '../../shared/brand.mjs';
+import { REPORT_ROOT, REPORT_ROOT_DARK_EXPLICIT, THEME_INIT_EXPLICIT, FAVICON_LINK, logoLockup, BRAND, confPosture, sectionStrip } from '../../shared/brand.mjs';
 import { NAV_CSS } from '../../shared/site-nav.mjs';
 import { isEntrypoint } from "../../shared/is-entrypoint.mjs";   // — realpath both sides, or a symlinked invocation exits 0 silently
 
@@ -1041,18 +1041,55 @@ function whereItStandsSection(findings, opts) {
   const sd = opts && opts.searchDepth;
   if (!sd || !sd.counts || isFullCountry(opts)) return '';
   const byC = sd.counts.recordsByCountry || {};
-  const codes = Object.keys(byC).filter((c) => c !== 'WO');
-  if (!codes.length) return '';
   const bandBy = new Map();
   for (const f of findings) {
     const c = regionCode(f);
     if (!c || c === COMMON_LAW || !f.band) continue;
     if (!bandBy.has(c)) bandBy.set(c, f.band);
   }
+  // WHICH COUNTRIES THIS SECTION IS ABOUT COMES FROM THE SEARCH PLAN, NOT FROM THE RECORD ARCHIVE.
+  //
+  // The archive is the authority on what came back and was kept; the plan is the authority on what was
+  // asked of the register. Read off the archive, a provider that keeps no records produced no countries,
+  // no rows, no chips and no section at all — so a register nobody could archive read exactly like a
+  // register nobody searched, on the page a client acts on. Every provider that keeps partial records
+  // under-reported here for the same reason.
+  //
+  // `planTerritories` is three-valued and the third value is why this is not a one-line swap. `null`
+  // means there is no plan to read, which is every archived and legacy run: those keep the archive as
+  // their only authority and re-render exactly as they always have. A plan that named nothing is a
+  // different answer from no plan at all and is allowed to leave this section empty.
+  //
+  // THE FINDINGS' OWN COUNTRIES ARE UNIONED IN, never filtered out. A finding sitting in a territory the
+  // plan does not list — an international registration designating one, most often — had its row from
+  // the archive before this and must keep it: the section's first duty is that a country carrying a
+  // conflict is on the page.
+  //
+  // The plan's unreached territories are NOT drawn. This section has two slots in the approved board, a
+  // row carrying a band and a "Nothing found" chip, and a territory the provider does not cover is
+  // neither: filing it under "Nothing found" would state a clean result for a register nobody read,
+  // which is the one fusion this file's court-decisions section exists to keep apart.
+  const plan = opts && opts.planTerritories;
+  const planned = plan && Array.isArray(plan.searched) ? plan.searched.map(String) : null;
+  const codes = (planned
+    ? [...new Set([...planned, ...bandBy.keys()])]
+    : Object.keys(byC)).filter((c) => c !== 'WO');
+  if (!codes.length) return '';
   const alias = { EM: 'EU', GB: 'UK' };
-  const withF = [], clean = [];
+  // ONE ROW PER COUNTRY, DEDUPED AFTER THE ALIAS AND NOT BEFORE. The archive wrote each country once, so
+  // this loop never had to ask; a plan carries both spellings — the register's EM and GB alongside the EU
+  // and UK a reader knows — and aliasing them afterwards produced two EU rows and two UK rows on the
+  // first worldwide run measured through it. The band is looked up across every raw code that folded
+  // into the key, so a conflict recorded under EM still reaches the EU row.
+  const rawByKey = new Map();
   for (const c of codes) {
     const key = alias[c] || c;
+    if (!rawByKey.has(key)) rawByKey.set(key, []);
+    rawByKey.get(key).push(c);
+  }
+  const withF = [], clean = [];
+  for (const [key, raws] of rawByKey) {
+    const c = raws.find((r) => bandBy.has(r)) ?? raws[0];
     // THE NAME IS LOOKED UP ON THE ALIASED KEY, NOT THE RAW CODE. The register writes the EUIPO and
     // ISO spellings — EM and GB — and `alias` maps those to the codes a reader knows, EU and UK. The
     // name was resolved from the RAW code, which has no entry under either spelling, so it fell back
@@ -1067,7 +1104,7 @@ function whereItStandsSection(findings, opts) {
   const cleanHtml = clean.length
     ? `<div class="wclean"><span class="wk">Nothing found</span>${clean.map((c) => `<span class="wchip" title="${escAttr(c.name)}">${esc(clean.length > 12 ? c.code : c.name)}</span>`).join('')}</div>`
     : '';
-  return `<div class="sec" id="countries"><h2>Where it stands</h2></div>
+  return `<div class="sec" id="countries"><span class="num"></span><h2>Where it stands</h2></div>
   <div class="panel where">${rows}${cleanHtml}</div>`;
 }
 
@@ -1076,17 +1113,29 @@ function whereItStandsSection(findings, opts) {
 function courtDecisionsSection(opts) {
   const sd = opts && opts.searchDepth;
   if (!sd || !sd.counts || !isFullCountry(opts)) return '';
-  const state = sd.counts.courtDecisions;
-  const byC = sd.counts.recordsByCountry || {};
+  const line = courtLineFor(opts, sd.counts.courtDecisions);
+  if (!line) return '';
+  return `<div class="sec" id="court"><span class="num"></span><h2>Court decisions</h2></div>
+  <div class="panel courtp"><p>${esc(line)}</p></div>`;
+}
+
+// The court section's sentence for a state, and the one the Court decisions row carries under its state
+// word when the research could not be completed — one sentence, said in both places in the same words.
+function courtLineFor(opts, state) {
+  const sd = opts && opts.searchDepth;
+  const byC = (sd && sd.counts && sd.counts.recordsByCountry) || {};
   const first = Object.keys(byC).filter((c) => c !== 'WO')[0];
   const where = first ? (regionName(first) || first) : '';
+  // The country comes from the record listing, so a run whose provider archives nothing has no name to
+  // put here — and every branch below embedded it mid-sentence. The page then read "Case-law research
+  // could not be completed for ." Each clause is now attached to the name rather than assuming one:
+  // same words when there is a country, one clause shorter when there is not.
+  const forWhere = where ? ` for ${where}` : '';
   let line = '';
-  if (state === 'not-checked') line = `Case-law research could not be completed for ${where}.`;
-  else if (state === 'none-found') line = `Court decisions: none found for ${where}.`;
-  else if (state === 'found') line = `Court decisions were searched for ${where} and are cited against the findings above.`;
-  if (!line) return '';
-  return `<div class="sec" id="court"><h2>Court decisions</h2></div>
-  <div class="panel courtp"><p>${esc(line)}</p></div>`;
+  if (state === 'not-checked') line = `Case-law research could not be completed${forWhere}.`;
+  else if (state === 'none-found') line = `Court decisions: none found${forWhere}.`;
+  else if (state === 'found') line = `Court decisions were searched${forWhere} and are cited against the findings above.`;
+  return line;
 }
 
 // Counts only, folded closed. A count of records read is engine activity rather than something a reader
@@ -1101,16 +1150,72 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
   const sd = opts && opts.searchDepth;
   const open = (Array.isArray(coverage) ? coverage : []).filter((c) => COV_STATE[c?.state]?.cls !== 'ok');
   const c = (sd && sd.counts) || {}, rows = [];
+  // THE REGISTER ROW, AS THE BOARDS DRAW IT: one line of totals — records read across the countries, plus
+  // the international registrations apart from them — and the per-country counts as chips under it, code
+  // first and the name on hover. One country is named in the line instead ("141 records read in Japan"),
+  // and draws no chips: a single chip would repeat the line.
   const byC = c.recordsByCountry || {};
-  const per = Object.entries(byC).sort((a, b) => b[1] - a[1]).map(([k, n]) => `${regionName(k) || k} ${n.toLocaleString('en-GB')}`).join(' \u00b7 ');
-  if (per) rows.push(['Register records read', per]);
+  const intl = Number(byC.WO) || 0;
+  const countries = Object.entries(byC).filter(([k, n]) => k !== 'WO' && Number(n) > 0).sort((a, b) => b[1] - a[1]);
+  const read = countries.reduce((t, [, n]) => t + Number(n), 0);
+  if (countries.length || intl) {
+    const where = countries.length === 1 ? ` in ${regionName(countries[0][0]) || countries[0][0]}`
+      : countries.length ? ` across ${countries.length.toLocaleString('en-GB')} countries` : '';
+    const plus = intl ? `${countries.length ? ', plus ' : ''}${intl.toLocaleString('en-GB')} international registration${intl === 1 ? '' : 's'}` : '';
+    const line = `${countries.length ? `${read.toLocaleString('en-GB')} record${read === 1 ? '' : 's'} read${where}` : ''}${plus}`;
+    const chips = countries.length > 1
+      ? `<div class="wchips">${countries.map(([k, n]) => `<span class="wchip" title="${escAttr(regionName(k) || k)}">${esc(k)} <b>${Number(n).toLocaleString('en-GB')}</b></span>`).join('')}</div>`
+      : '';
+    rows.push(['Register', { html: `${esc(line)}${chips}` }]);
+  }
   const sw = c.sweep || {};
   if (sw.spellings) rows.push(['Spellings searched', String(sw.spellings)]);
-  if (sw.checks) rows.push(['Marketplace and web', `${sw.checks.toLocaleString('en-GB')} checks across ${sw.platforms} platforms`]);
+  if (sw.checks) rows.push(['Marketplace and web', `${sw.checks.toLocaleString('en-GB')} checks on ${sw.platforms} platforms`]);
   if (sw.reputation) rows.push(['Reputation and meaning', `${sw.reputation.toLocaleString('en-GB')} checks`]);
-  rows.push(['Local-script spellings', c.localScriptSearched ? 'searched' : 'not searched']);
-  const cd = { 'found': 'found', 'none-found': 'none found', 'not-checked': 'could not be checked', 'not-in-scope': 'not part of this search' }[c.courtDecisions];
-  if (cd) rows.push(['Court decisions', cd]);
+  rows.push(['Local-script spellings', c.localScriptSearched ? 'Searched' : 'Not searched']);
+  // HOW DEEP THE LOCAL-LANGUAGE INVESTIGATION WENT, which is a different question from the row above it.
+  // That one answers whether the spellings were searched; this one answers whether the investigation ran
+  // at the depth the matter configured. The engine can run it shallower than the account asked for, and
+  // it used to say so in exactly one place — a sentence a model wrote into the Methodology paragraph the
+  // redesign replaced with named rows — so a run that went shallow said so on no page at all.
+  //
+  // EVERY ONE OF THE FOUR WORDS IS ALREADY ON THE PAGE. "Included" and "Not part of this search" are the
+  // approved board's own values for this row; "Partially covered" and "Not run this run" are the coverage
+  // vocabulary this file already renders, taken from COV_STATE rather than retyped so they cannot drift
+  // apart from it. Nothing here composes a sentence.
+  //
+  // A state this table has no word for draws NO ROW, rather than the nearest word. The four are the whole
+  // set the record can produce, so the fallthrough is unreachable today and is there for the fifth state
+  // somebody adds: a row is a claim about a client's search, and the nearest word to an unknown state is
+  // a claim nobody checked.
+  const LL_WORD = {
+    ran: 'Included',
+    'ran-shallow': COV_STATE['coverage-limited'].word,
+    'not-run': COV_STATE['not-searched'].word,
+    'not-in-scope': 'Not part of this search',
+  };
+  //
+  // AND THE ROW NEEDS A LANE RECORD BEHIND IT, not just a state. The state folds to `not-in-scope` when
+  // there is no lane record at all, which is right for a clearance that never asked for the
+  // investigation and WRONG for a run that asked and whose record was never written. Measured on the
+  // full country demo: its own coverage carries "Native-language investigation depth / ja — the
+  // configured depth for this lane was full and this run delivered a depth this run cannot establish",
+  // and the state beside it reads not-in-scope, so this row would have told that reader the
+  // investigation was not part of their search. An empty `lanes` map is that absence, and an absence is
+  // not a finding — so the row is drawn from a record and not from a default. A run whose record exists
+  // draws it on every one of the four states.
+  const llLanes = c.localLanguage?.lanes;
+  const llRecorded = !!llLanes && typeof llLanes === 'object' && Object.keys(llLanes).length > 0;
+  const ll = llRecorded ? LL_WORD[c.localLanguage?.state] : null;
+  if (ll) rows.push(['Local-language investigation', ll]);
+  // COURT DECISIONS, AS THE FULL COUNTRY BOARD DRAWS THE ROW: its state, and for a search that could not
+  // be completed, the same sentence the court section under it prints. A search that does not include
+  // court decisions draws no row, as the other boards draw none.
+  const cdWord = { 'found': 'Found', 'none-found': 'None found', 'not-checked': 'Not searched' }[c.courtDecisions];
+  if (cdWord && isFullCountry(opts)) {
+    const why = c.courtDecisions === 'not-checked' ? courtLineFor(opts, 'not-checked') : '';
+    rows.push(['Court decisions', { html: `<span class="wstate">${esc(cdWord)}</span>${why ? `<span class="wnote">${esc(why)}</span>` : ''}` }]);
+  }
   const openHtml = open.length ? `<div class="openrows"><div class="rk">Left open</div>${coverageGrid(open)}</div>` : '';
   // THE LEGEND FOR WHAT IS ON THE CARDS, kept when the scope fold went. It is not the engine narrating
   // its own searching — it is what a linked registration number opens, why the rest are cited by number,
@@ -1122,9 +1227,14 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
   const prov = (hasRecordSet || hasCards)
     ? `<div class="provwrap"><div class="rk">Record provenance</div><p class="provnote">${hasRecordSet ? 'Registration numbers on the cards were read from the register records. ' : ''}${officeLinkNote()}${hasIndexEntry ? 'A registration shown as a register-index entry was seen in the register index; its full record was not pulled. ' : ''}\u201cInferred\u201d beside an owner\u2019s likelihood to object means we judged it from what the owner sells and holds; we had no enforcement history to read.</p></div>`
     : '';
+  // THE BOARDS END THE SECTION WITH THE WORKBOOK: every search and its result are in the audit workbook,
+  // which is where a reader who wants the record goes.
+  const more = opts?.auditFile
+    ? `<div class="cmore"><a class="wb" href="${escAttr(opts.auditFile)}">Every search and result, in the audit workbook</a></div>` : '';
   if (!rows.length && !openHtml && !prov) return '';
-  return `<details class="searched"><summary><span class="gname">What was searched</span><span class="gcount">Counts for this search</span></summary><div class="gbody">${
-    rows.map(([k, v]) => `<div class="row"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`).join('')}${openHtml}${prov}</div></details>`;
+  return `<div class="sec" id="searched"><span class="num"></span><h2>What was searched</h2></div>
+  <details class="searched"><summary><span class="gname">Counts for this search</span></summary><div class="gbody">${
+    rows.map(([k, v]) => `<div class="row"><span class="k">${esc(k)}</span><span class="v">${typeof v === 'object' ? v.html : esc(v)}</span></div>`).join('')}${openHtml}${prov}${more}</div></details>`;
 }
 
 function alsoConsideredSection(ruledOut, recordsByUri = new Map(), opts = {}) {
@@ -1152,7 +1262,7 @@ function alsoConsideredSection(ruledOut, recordsByUri = new Map(), opts = {}) {
   const groups = clearedGroupsHtml(sd, opts.auditFile);
   const web = webNamesHtml(sd);
   if (!ruledCards && !groups && !web) return '';
-  return `<div class="sec" id="also-considered"><h2>Also considered</h2></div>
+  return `<div class="sec" id="also-considered"><span class="num"></span><h2>Also considered</h2></div>
   <div class="panel alsocons">${ruledCards ? `<div class="ruled-cards">${ruledCards}</div>` : ''}${groups || web ? `<div class="cgroups">${groups}${web}</div>` : ''}</div>`;
 }
 
@@ -2129,7 +2239,7 @@ ${EXPORT_MENU_JS}`;
 function markAssessmentBlock(ma) {
   if (ma == null) return '';
   const structured = typeof ma.distinctiveness === 'object' || typeof ma.connotation === 'object';
-  const SEC = `<div class="sec"><h2>The mark itself</h2></div>`;
+  const SEC = `<div class="sec"><span class="num"></span><h2>The mark itself</h2></div>`;
   if (!structured) {
     const dist = String(ma?.distinctiveness ?? '').trim(), conn = String(ma?.connotation ?? '').trim();
     if (!dist && !conn) return '';
@@ -2199,7 +2309,7 @@ function contextNotesList(notes = []) {
 // the findings-section assembly below.
 function contextNotesBlock(notes = []) {
   if (!notes.length) return '';
-  return `<div class="sec"><h2>Famous-mark neighbours noted</h2></div>
+  return `<div class="sec"><span class="num"></span><h2>Famous-mark neighbours noted</h2></div>
   ${contextNotesList(notes)}`;
 }
 
@@ -2332,6 +2442,13 @@ function depthStripHtml(note) {
 }
 
 // Signature: renderHtml(parsed, findings, coverage, opts). ONE render path — there is no client variant.
+// THE BOARD'S FIVE ENTRIES, in its order. The rule that filters them lives in shared/brand.mjs, because
+// the knockout renderer draws a strip from its own board and the filtering is the half worth having once.
+const STRIP = Object.freeze([
+  ['summary', 'Summary'], ['findings', 'Findings'], ['also-considered', 'Also considered'],
+  ['next', 'Next steps'], ['searched', 'What was searched'],
+]);
+
 export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   if (findings && !Array.isArray(findings)) { opts = findings; findings = []; coverage = []; }  // tolerate legacy (parsed, opts)
   AS_OF = opts.asOf ?? null;   // C2
@@ -2479,13 +2596,13 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   const hasCL = Boolean(clBody);
   let findingsSections, covNum;
   if (!DISPOSITION_MODE) {
-    findingsSections = `${onField.length ? `<div class="sec"><h2>The conflict landscape</h2></div>
+    findingsSections = `${onField.length ? `<div class="sec" id="findings"><span class="num"></span><h2>The conflict landscape</h2></div>
   <div class="landwrap">${quadrant(sorted)}${keyPanel(sorted, recordsByUri)}</div>
 
-  <div class="sec"><h2>Conflicts</h2></div>
+  <div class="sec"><span class="num"></span><h2>Conflicts</h2></div>
   ${onField.map(f => findingCard(f, cardFor(f), recordsByUri)).join('\n  ')}` : ''}
 
-  ${secReg.length ? `<div class="sec"><h2>Secondary &amp; watch</h2></div>
+  ${secReg.length ? `<div class="sec"><span class="num"></span><h2>Secondary &amp; watch</h2></div>
   ${secondaryRegions(secReg, cardFor, recordsByUri)}` : ''}${hasCL ? `
 
   ${clBody}` : ''}`;
@@ -2494,10 +2611,10 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
     let secNum = 0;
     const num = () => String(++secNum).padStart(2, '0');
     const landscape = onField.length
-      ? `<div class="sec"><h2>The conflict landscape</h2></div>
+      ? `<div class="sec" id="findings"><span class="num"></span><h2>The conflict landscape</h2></div>
   <div class="landwrap">${quadrant(sorted)}${keyPanel(sorted, recordsByUri)}</div>
 
-  <div class="sec"><h2>Conflicts</h2></div>
+  <div class="sec"><span class="num"></span><h2>Conflicts</h2></div>
   ${onField.map(f => findingCard(f, cardFor(f), recordsByUri)).join('\n  ')}`
       : '';
     // THE COMMON-LAW CARDS GO WITH THE CONFLICTS, NOT UNDER THE NEXT HEADING. Appended at the end they
@@ -2524,7 +2641,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
       const notes = contextNotes.length ? `\n  <p class="fold-lead"><b>Famous-mark neighbours.</b> Diligence — no register record; not scored, does not affect the risk read.</p>
   ${contextNotesList(contextNotes)}` : '';
       if (negatives.total || notes) {
-        tail += `\n\n  <div class="sec"><h2>Notable but manageable</h2></div>
+        tail += `\n\n  <div class="sec"><span class="num"></span><h2>Notable but manageable</h2></div>
   ${negatives.total ? reasonedNegatives(negatives.groups, cardFor, recordsByUri) : ''}${notes}`;
       }
     } else if (band2r.length || band3r.length || contextNotes.length) {
@@ -2534,7 +2651,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   ${secondaryRegions(band3r, cardFor, recordsByUri)}`);
       if (contextNotes.length) parts.push(`<p class="fold-lead"><b>Famous-mark neighbours.</b> Diligence — no register record; not scored, does not affect the risk read.</p>
   ${contextNotesList(contextNotes)}`);
-      tail += `\n\n  <div class="sec"><h2>Notable but manageable</h2></div>
+      tail += `\n\n  <div class="sec"><span class="num"></span><h2>Notable but manageable</h2></div>
   ${parts.join('\n  ')}`;
     }
     // The 2026-09-16 report redesign — the section heading and its routing notice go; the CARDS stay, or a
@@ -2564,7 +2681,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   const linkChrome = !!opts.chromeHref;
   const cssInline = REPORT_BASE + '\n' + (linkChrome ? '' : NAV_SHEET) + '\n' + REP_OVERRIDE;
   const chromeLinkTag = linkChrome ? `<link rel="stylesheet" href="${escAttr(opts.chromeHref)}">` : '';
-  return `<!DOCTYPE html>
+  const doc = `<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${productName ? `${esc(productName)} — ` : ''}${esc(fm.title || '')} · ${esc(BRAND.name)}</title>
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
@@ -2604,12 +2721,13 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
     `)}
   </div>
 </div>
+<!--SECTION-STRIP-->
 </div>
 
 <div class="wrap">
   <!-- doc-52 §1 THE VERDICT — the answer leads: mark · band · one plain "subject to" line · the lawyer's
        questions answered · the time-critical alert. Process + coverage detail are below and collapsible. -->
-  <header class="hero">
+  <header class="hero" id="summary">
     ${demoBannerHtml(opts.demoData === true)}
     ${confLineHtml(opts.delivery, productName)}
     <h1 class="mark">${esc(fm.title || '')}</h1>
@@ -2635,7 +2753,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   ${alsoConsideredSection(ruledOut, recordsByUri, opts)}
 
   <!-- doc-52 §3 WHAT ONLY YOU CAN CLOSE — forward decisions, plain English, after the findings. -->
-  ${buckets.you ? `<div class="sec" id="only-you"><h2>What only you can close</h2></div>
+  ${buckets.you ? `<div class="sec" id="next"><span class="num"></span><h2>What happens next</h2></div>
   <div class="panel actions"><div class="actgrp act-you">${renderProse(buckets.you.body)
     .replace(/\[Time-critical\]\s*/gi, '<span class="src cl" style="margin-right:6px">Time-critical</span> ')
     .replace(/\[Open question\]\s*/gi, '<span class="src" style="margin-right:6px">Open question</span> ')
@@ -2707,6 +2825,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
 </div>
 <script>${PAGE_JS}</script>
 </body></html>`;
+  return doc.replace('<!--SECTION-STRIP-->', sectionStrip(doc, STRIP));
 }
 
 // CLI:  node render.mjs <report.md> [findings.json] [outDir]

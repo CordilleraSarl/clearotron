@@ -17,7 +17,7 @@
 // contract the publication gate held before it was retired into tests at — pass, fail, and COULD
 // NOT RUN, never folded into two — carried to the seam where a run becomes a client artifact.
 //
-// Modelled on mcp-server/lib/coverage.mjs:65-75 (assertValidatorCoverage): a closed partition asserted
+// Modelled on assertValidatorCoverage() in mcp-server/lib/coverage.mjs (lines 65-75): a closed partition asserted
 // at LOAD, so a new store cannot be added without consciously choosing its gating. The failure that
 // mechanism exists to prevent is the — a hand-copied mirror that silently stopped covering an
 // artifact and still answered "complete: yes" about a file it never checked.
@@ -57,10 +57,26 @@ export const PUBLISH_INPUTS = {
   "_driver/verdict.json": "optional",
   // doc 50 — the frozen band vocabulary. Present on band-doctrine runs only, by design.
   "_driver/framework.json": "optional",
+  // The recall net's receipt. Its overflow[] carries the probes the run minted and did not dispatch,
+  // one row each on the workbook's gaps sheet. `optional`, and the reason is the recall net's own
+  // switches: the lane is env-gated for rollback and mints nothing when a matter has no remembered
+  // conflict, so an absent receipt is a run that had nothing to record rather than one that lost it.
+  // `required` would close the gate on every knockout and every matter with a clean history.
+  "_driver/register-recall.json": "optional",
   // T6 (D4) — the frozen register plan; the render falls back to the coverage prose without it.
   "_driver/register-plan.json": "optional",
+  // The band the register returned, read ONLY where the run has no `_records/` archive, to count what was
+  // read and where. Optional: a knockout, a legacy run and a register-less run have none, and an absent
+  // band leaves the count as "cannot say" exactly as before.
+  "register-named-band.json": "optional",
   // The instructed scope, read only as the register plan's fallback for the searched-jurisdiction set.
   "_driver/instructed-scope.json": "optional",
+  // The frozen local-language lane decision, and the units the fold wrote. Read to derive how deep that
+  // investigation went against what the matter configured — through the engine's own asked-versus-ran
+  // reader, not by re-deciding it here. Optional and genuinely so: a plain clearance never runs the
+  // component and carries neither file, which is the state that folds to not-in-scope.
+  "_driver/jx-lanes.json": "optional",
+  "_driver/jx/units.json": "optional",
   // T7 (E5) — the grounded case-law profiles. A run with no case-law layer legitimately has none.
   "case-law-findings.md": "optional",
   // T7 (E6) — Corsearch enforcement telemetry; presentation-only, absent ⇒ no lines.
@@ -104,7 +120,7 @@ export const CALLER_SUPPLIED = {
 };
 
 /**
- * Load-time gate, on the assertValidatorCoverage model (mcp-server/lib/coverage.mjs:64-73).
+ * Load-time gate, modelled on assertValidatorCoverage() in mcp-server/lib/coverage.mjs (lines 64-73).
  *
  * Asserts the table is a well-formed closed partition: every gating is one of the two words, no store
  * is declared in more than one table, and no declaration is blank. It deliberately does NOT scan

@@ -59,20 +59,54 @@ export type AskAiProps = {
   readonly quiet?: boolean
   /** Open the panel as the control first appears — a reader sent here to ask. */
   readonly openOnArrival?: boolean
+  /**
+   * Drawn with no button of its own, open from the first frame, for a caller whose own control opens it —
+   * the Clearances row menu, whose "Ask AI" entry is where that row's control lives now (owner,
+   * 2026-09-18). `onClose` is how that caller learns the panel has gone, so it can stop drawing it.
+   */
+  readonly hideButton?: boolean
+  readonly onClose?: (() => void) | undefined
+  /**
+   * A press on a finding's own "Ask AI about this finding" inside the report. Each press is a new object
+   * (the nonce), so pressing the same finding twice opens the panel twice. `ordinal` is the number the
+   * report prints on that card, null for a card that has none; `markName` is the name the finding belongs
+   * to when that differs from the run's, as it does for one name of a knockout batch.
+   */
+  readonly fromFinding?: { readonly ordinal: number | null; readonly markName: string | null; readonly nonce: number } | null
 }
 
 export function AskAi({
   runId, markSlug = null, markName, date, kind, productName, access, go, quiet = false, openOnArrival = false,
+  fromFinding = null, hideButton = false, onClose,
 }: AskAiProps) {
   const [open, setOpen] = useState(openOnArrival)
+  // WHICH FINDING THE PANEL IS ABOUT, if any. Set by a press inside the report and cleared by the header's
+  // own button, which is about the whole report — the same panel, reached two ways, never mixing them.
+  const [about, setAbout] = useState<{ readonly ordinal: number | null; readonly markName: string | null } | null>(null)
   // Set by "Already connected? Ask anyway", and only for as long as this control is mounted. It is an
   // escape from a measurement that may be behind, not a preference, so nothing is stored.
   const [askAnyway, setAskAnyway] = useState(false)
   const [picked, setPicked] = useState(0)
   const box = useRef<HTMLDivElement | null>(null)
   const rows = useRef<(HTMLButtonElement | null)[]>([])
-  const run = { markName, date, kind }
-  const offer = askAiOffer(run, access)
+  const asked = about?.markName ?? markName
+  const run = { markName: asked, date, kind, finding: about?.ordinal ?? null }
+  const offer = askAiOffer({ markName, date, kind }, access)
+
+  // A PRESS ON A FINDING OPENS THIS PANEL, connected or not — the not-connected form is unchanged — with the
+  // first question selected, as the header's button opens it.
+  useEffect(() => {
+    if (!fromFinding) return
+    // AND A SECOND PRESS ON THE SAME FINDING CLOSES IT (owner, on test, 2026-09-18). The reader presses one
+    // button, so it has to answer like one: open, then shut. Only a press about a DIFFERENT finding
+    // re-points an open panel instead of closing it, because there the press asked for something else.
+    // The press that ASKED already closed the panel, so pressing the same finding after asking opens it.
+    const showing = open && about?.ordinal === fromFinding.ordinal && about?.markName === fromFinding.markName
+    if (showing) { setOpen(false); return }
+    setAbout({ ordinal: fromFinding.ordinal, markName: fromFinding.markName })
+    setPicked(0)
+    setOpen(true)
+  }, [fromFinding])
 
   useEffect(() => {
     if (!open) return
@@ -86,10 +120,14 @@ export function AskAi({
     }
   }, [open])
 
+  // THE CALLER LEARNS THE PANEL HAS CLOSED, whichever way it closed — outside press, Escape, a question
+  // asked, or "Set it up" leaving the screen. Without it a menu that opened this could not be pressed twice.
+  useEffect(() => { if (!open && hideButton) onClose?.() }, [open])
+
   if (!offer.drawn) return null
 
   const asking = offer.connected || askAnyway
-  const heading = askAiHeading({ markName, productName, date })
+  const heading = askAiHeading({ markName: asked, productName, date, finding: about?.ordinal ?? null })
 
   // A new tab, and the question is typed in rather than sent — the reader still reads it before it goes.
   const ask = () => {
@@ -117,22 +155,25 @@ export function AskAi({
 
   const parts = [
     heading.mark ? <span key="mark" data-anon="mark">{heading.mark}</span> : null,
+    heading.finding !== null ? <span key="finding">finding {heading.finding}</span> : null,
     heading.product ? <span key="product">{heading.product}</span> : null,
     heading.searched ? <span key="searched" className="ask-ai-when">searched <span className="mono">{heading.searched}</span></span> : null,
   ].filter((p) => p !== null)
 
   return (
     <div ref={box} className="ask-ai" data-ask-ai={asking ? 'ask' : 'connect'}>
+      {hideButton ? null : (
       <button
         type="button"
         className={quiet ? 'btn-ghost ask-ai-btn is-quiet' : 'btn-ghost ask-ai-btn'}
         aria-haspopup="dialog"
         aria-expanded={open}
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => { setAbout(null); setOpen((v) => !v) }}
       >
         <Icon name="sparkles" size={14} />
         <span>Ask AI</span>
       </button>
+      )}
       {open && asking ? (
         <div className="float ask-ai-float ask-ai-panel" role="dialog" aria-label="Ask AI">
           <div className="ask-ai-head">

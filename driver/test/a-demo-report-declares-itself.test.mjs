@@ -70,7 +70,12 @@ test("the marking is NOT `no-print` — the console and the topbar are not surfa
   assert.doesNotMatch(demoBannerHtml(true), /no-print/,
     "a marking hidden from print is the console disclaimer again, in a different place");
   const src = readFileSync(join(ROOT, "driver", "publish", "render.mjs"), "utf8");
-  const hero = src.slice(src.indexOf('<header class="hero">'), src.indexOf('<header class="hero">') + 400);
+  // FOUND BY PATTERN, NOT BY ITS EXACT OPENING TAG. Pinned to the literal `<header class="hero">`, this
+  // arm reported the banner missing from the hero the day the hero gained an `id` — `indexOf` returned
+  // -1, the slice came back empty, and the failure named a defect that did not exist.
+  const at = src.search(/<header class="hero"[^>]*>/);
+  assert.ok(at >= 0, "the hero is not opened in render.mjs at all — this arm can see nothing");
+  const hero = src.slice(at, at + 400);
   assert.match(hero, /demoBannerHtml/, "it renders inside the hero, which is the first thing on screen and on paper");
 });
 

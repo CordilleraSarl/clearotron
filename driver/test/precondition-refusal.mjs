@@ -82,7 +82,7 @@ import { join } from "node:path";
 /**
  * Refuse when the runner never got started, using the runner's OWN stated reason.
  *
- * @param {string} outboxDir  the run's `prelim-outbox` directory
+ * @param {string} outboxDir  the run's `clearance-outbox` directory
  * @param {string} what       what is refusing, for the message
  */
 export function refuseOnPreRunFailure(outboxDir, what) {

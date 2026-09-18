@@ -26,6 +26,7 @@
 // keys only on the neutral plan/band vocabulary, never a vendor name or vendor-shaped field.
 
 import { classTokensFromScopeText } from "./coverage-ledger.mjs";
+import { capabilitiesFor } from "./register-capabilities.mjs";
 
 const clsStr = (c) => String(c ?? "").trim();
 
@@ -144,10 +145,11 @@ export function deriveScopeFacts({ instructedScope = null, plan = null, planExec
 
   const searched_jurisdictions = Array.isArray(plan?.regions) ? plan.regions.map(String) : [];
   const scope_basis = plan?.scope_basis === "worldwide" ? "worldwide" : null;
+  const register_service = registerServiceOf(plan);
 
   const classes_line = instructedClasses.length ? instructedClasses.join(", ") : null;
   const coverage_line = instructedClasses.length && entries.length
-    ? buildCoverageLine(instructedClasses, per_class, { searched_jurisdictions, scope_basis, instructedScope })
+    ? buildCoverageLine(instructedClasses, per_class, { searched_jurisdictions, scope_basis, instructedScope, register_service })
     : null;
 
   return {
@@ -184,7 +186,7 @@ export function deriveScopeFacts({ instructedScope = null, plan = null, planExec
 // clause is word-for-word the same are stated ONCE, over the classes they are about. Nothing is pooled
 // and no number moves: the grouping is on the rendered text, so two classes only share a line when the
 // line they would each have printed is already the same string.
-function buildCoverageLine(classes, per_class, { searched_jurisdictions = [], scope_basis = null, instructedScope = null } = {}) {
+function buildCoverageLine(classes, per_class, { searched_jurisdictions = [], scope_basis = null, instructedScope = null, register_service = null } = {}) {
   const sorted = [...classes].sort((a, b) => (Number(a) || 0) - (Number(b) || 0));
   const byBody = new Map();
   for (const c of sorted) {
@@ -197,7 +199,7 @@ function buildCoverageLine(classes, per_class, { searched_jurisdictions = [], sc
   // bodies A, B, A renders "Classes 5 and 32: A; Class 9: B", not A twice.
   const groups = [...byBody.entries()].map(([body, classes]) => ({ body, classes }));
   const head = (cs) => (cs.length === 1 ? `Class ${cs[0]}` : `Classes ${joinAnd(cs.map(String))}`);
-  return `${groups.map((g) => `${head(g.classes)}: ${g.body}`).join("; ")}${jurisdictionTail({ searched_jurisdictions, scope_basis, instructedScope })}`;
+  return `${groups.map((g) => `${head(g.classes)}: ${g.body}`).join("; ")}${jurisdictionTail({ searched_jurisdictions, scope_basis, instructedScope, register_service })}`;
 }
 
 // One plain-language clause per class, routed on the COUNTS (state-agnostic), not on the state label.
@@ -263,11 +265,24 @@ const joinAnd = (parts) => (parts.length <= 1 ? parts.join("") : `${parts.slice(
 // EU US CH WO doesn't make sense". A worldwide-scoped plan (scope_basis, or a worldwide token riding
 // an instructed list) collapses the tail to the one word; only a genuinely named list is listed.
 const WORLDWIDE_TOKEN_RE = /^(worldwide|world|ww|global)$/i;
-function jurisdictionTail({ searched_jurisdictions = [], scope_basis = null, instructedScope = null } = {}) {
+
+// WORLDWIDE NAMES THE SERVICE THAT SEARCHED IT (owner, 2026-09-18). "Worldwide" is eleven registers on one
+// installation and 186 on another, and a reader can only tell which by being told the service. The name is
+// the provider's own label from its capabilities contract — the same name the order form shows — read off
+// the provider the frozen plan records. A plan that records none, or one this build does not know, keeps
+// the bare word: a guessed name would be worse than none. Never a list of offices, never a count.
+function registerServiceOf(plan) {
+  if (!plan?.provider) return null;
+  try { return capabilitiesFor(plan.provider).label ?? null; } catch { return null; }
+}
+
+function jurisdictionTail({ searched_jurisdictions = [], scope_basis = null, instructedScope = null, register_service = null } = {}) {
   const list = (searched_jurisdictions.length
     ? searched_jurisdictions
     : (Array.isArray(instructedScope?.jurisdictions) ? instructedScope.jurisdictions : [])).map((j) => String(j).trim()).filter((j) => j);
-  if (scope_basis === "worldwide" || list.some((j) => WORLDWIDE_TOKEN_RE.test(j))) return " · registers: worldwide";
+  if (scope_basis === "worldwide" || list.some((j) => WORLDWIDE_TOKEN_RE.test(j))) {
+    return ` · registers: worldwide${register_service ? ` (${register_service})` : ""}`;
+  }
   if (!list.length) return "";
   // 2–3-letter office codes display uppercase ("us" reads as a pronoun, "US" as a jurisdiction);
   // longer names pass through untouched.

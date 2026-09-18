@@ -6,9 +6,9 @@
 //
 // This contract is what the plan compiler reads, and the core implements exactly what is declared here:
 //
-//   * classFilter is "native", NOT "fanout". INT_CLASS_NUMBER value "9 OR 28 OR 41 OR 42" = 18, byte-for-
-//     byte the deduplicated result of the old per-class fan-out. The fan-out is DELETED (phase 4): N
-//     classes now cost ONE call.
+//   * classFilter is "native", NOT "fanout". An INT_CLASS_NUMBER value of "9 OR 28 OR 41 OR 42" answers
+//     byte-for-byte the deduplicated result of the old per-class fan-out. The fan-out is DELETED
+//     (phase 4): N classes now cost ONE call.
 //   * predicates.default is a TRUE contains, expressed as an INFIX TERM WILDCARD (`*TERM*`) on
 //     WORD_MARK_SPECIFICATION — NOT the bare EQUALS the old MATCH_MODE_TO_FIELD.default emitted (which
 //     lost recall), and NOT the CONTAINS operator (supported on the mark field, but see the owner note).
@@ -105,12 +105,12 @@ export const CAPABILITIES = Object.freeze({
   // Stage 0.5 uses it on NEITHER, so the number means the same thing on every deployment. See the
   // matching note in providers/corsearch/src/capabilities.js and driver/register-count.mjs.
   countStatusFilter: "live",
-  // JSON body, not a URI: the bound is the parser's document-nesting cap. 80/200/500 terms all HTTP 200;
-  // 1000 → HTTP 500 "Document nesting depth (1001) exceeds the maximum allowed (1000)". Safe chunk = 500.
+  // JSON body, not a URI: the bound is the parser's own document-nesting cap, which the vendor names in
+  // the refusal it answers a stack wider than this with. Not a URI length, so widening is not the fix.
   maxOrWidth: 500,
   // ONE call: INT_CLASS_NUMBER value "9 OR 28 OR 41 OR 42" (or "9,28,41,42") = the deduplicated union.
   classFilter: "native",
-  // POST /text, EXACTLY 100 ids per call (101+ → HTTP 400), and the call is BILLED — screening an
+  // POST /text, EXACTLY 100 ids per call — a longer list is refused — and the call is BILLED: screening an
   // enumerated band also fully hydrates it. (test:true is obfuscated + unbilled + NOT persisted to the
   // record ledger: dev only, it can never back a real finding.)
   screenSource: "billed-record-fetch",
@@ -127,8 +127,8 @@ export const CAPABILITIES = Object.freeze({
   // Semantically it is the SAME CONDITION as `resultCeiling` — this query would match too much — and the
   // engine already knows what to do with that: record a count+sample descriptor and hand it to judgment.
   // It arrives as a 500 on the COUNT PROBE instead of a 400 on the search, so it landed in the generic
-  // provider-error arm and became a hard coverage hole: 7 of 161 slices on one delivered run, all
-  // `incumbent-class`, every one of them an owner or owner×term slice against a very large portfolio.
+  // provider-error arm and became a hard coverage hole — a small but real share of one delivery's slices,
+  // every one of them an owner or owner×term slice against a very large portfolio.
   //
   // AND THE EXISTING WIDTH DEFENCE CANNOT HELP, which is why nobody noticed the gap. `maxOrWidth`
   // chunks against NESTING DEPTH. Splitting a wide OR-stack into narrower ones does nothing about
@@ -152,9 +152,9 @@ export const CAPABILITIES = Object.freeze({
     // compiled to an ADJ chain — `*CORAL ADJ PUP*` — which is an ordered phrase match.
     exact:          "EXACT_WORD_MARK_SPECIFICATION",           // case-insensitive but PUNCTUATION-SENSITIVE → strip punctuation client-side
     default:        "WORD_MARK_SPECIFICATION:*TERM*",          // a TRUE contains via the term wildcard, not the recall-losing bare EQUALS
-    wildcardPrefix: "WORD_MARK_SPECIFICATION:TERM*",           // native `*` in the value (NIK* = 128)
-    wildcardSuffix: "WORD_MARK_SPECIFICATION:*TERM",           // (*NIKE = 36)
-    wildcardInfix:  "WORD_MARK_SPECIFICATION:*TERM*",          // (*NIK* = 806)
+    wildcardPrefix: "WORD_MARK_SPECIFICATION:TERM*",           // native `*` in the value
+    wildcardSuffix: "WORD_MARK_SPECIFICATION:*TERM",
+    wildcardInfix:  "WORD_MARK_SPECIFICATION:*TERM*",          // the widest of the three
     phonetic:       "PHONETIC_WORD_MARK_SPECIFICATION",
     owner:          "APPLICANT_NAME",                          // EQUALS (+ wildcards); CONTAINS is a hard 400 — never emit it
   }),
@@ -231,7 +231,7 @@ export const CAPABILITIES = Object.freeze({
   //
   // The entry-level RESCUE is the other half and it comes first: substituteRomanizedNames swaps the
   // plan entry's `romanizedTerms` in (and relaxes the predicate to contains, because `exact` on a
-  // transliteration is itself a silent zero — GR "POLITIKI PROSTASIA" exact 0 / contains 10). A slice
+  // transliteration is itself a silent zero, where the same term under contains answers). A slice
   // rescued that way is answerable and is never refused; only a native term with no romanisation defers.
   nativeScriptIndex: false,
   // No phoneme expansion knob: PHONETIC_WORD_MARK_SPECIFICATION is the whole surface; the client cannot

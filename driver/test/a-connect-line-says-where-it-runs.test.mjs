@@ -10,7 +10,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { connectOffers, WSL_STEP } from "../../shared/connect-clients.mjs";
-import { stdioConnectFor, stdioConnectCommand, STDIO_SHAPES } from "../../shared/stdio-connect.mjs";
+import { stdioConnectFor, stdioConnectCommand, STDIO_SHAPES, WSL_ROW_HEADINGS } from "../../shared/stdio-connect.mjs";
 import { isWsl } from "../../shared/wsl.mjs";
 
 const routes = (o = {}) => Object.fromEntries(Object.keys(STDIO_SHAPES).map((s) => [s, stdioConnectFor(s, { workDir: "/w", ...o })]));
@@ -101,21 +101,107 @@ test("the distribution is named when we know it, and left to the default when we
   assert.doesNotMatch(unnamed, /-d\b/, "it invented a distribution name");
 });
 
-test("the WSL step says WHICH SIDE its command is for, and invites no paste inside the distribution", () => {
-  // The sentence this replaces read "paste it where your assistant lives, on Windows or in the WSL
-  // terminal, whichever it is" — and the command cannot keep that promise. Under WSL there is exactly
-  // one launcher per host shape, the Windows-side `wsl.exe` one; an assistant inside the distribution
-  // cannot use it. Somebody took the invitation from Claude Code inside WSL and got CONNECTION_CLOSED
-  // (measured 2026-09-16 on 0.3.2-beta.1).
+test("the WSL step says the install is in WSL and nothing the rows now say — and still invites no bad paste", () => {
+  // THREE SPELLINGS THIS STEP HAS HAD, and each was true only while the rows underneath it were what
+  // they were. It read "paste it where your assistant lives, on Windows or in the WSL terminal,
+  // whichever it is" — an invitation to paste it inside the distribution, where it did not work, and
+  // somebody took it and got CONNECTION_CLOSED (measured 2026-09-16 on 0.3.2-beta.1). It then named the
+  // Windows side and said an assistant inside WSL could not use the command and should start the server
+  // itself — true of one launcher, false the moment the second row existed, and drawn directly above it.
   //
-  // PINNED TO THE PROPERTY, NOT THE SPELLING: the step must name the side it is for. A rewrite that
-  // says it some other way passes; one that stops saying it at all does not.
-  assert.match(WSL_STEP, /\bWindows\b/, "the step no longer says which side the command is for");
+  // What is left is the clause that survives both: the rows name Linux paths, and the reader is told why.
+  assert.match(WSL_STEP, /\bWSL\b/, "the step no longer says the install is inside WSL, which is why the rows name Linux paths");
 
-  // …and it must not tell the reader the one command works on both sides. This is the specific claim
-  // that sent a reader into CONNECTION_CLOSED, so it is worth refusing by name rather than trusting
-  // the positive arm above to catch a reworded version of it.
+  // THE ORIGINAL DEFECT STAYS REFUSED. This is the claim that sent a reader into a closed connection,
+  // and it is refused by name rather than trusted to the arm above.
   assert.doesNotMatch(WSL_STEP, /whichever it is/i, "the step invites a paste on either side again");
   assert.ok(!/on Windows or in the WSL terminal/i.test(WSL_STEP),
     "the step offers both sides for a command that works on one");
+
+  // AND SO DOES THE ONE THAT REPLACED IT. An assistant inside the distribution has a row of its own now;
+  // a step telling it to start the server itself contradicts the row two lines below it.
+  assert.doesNotMatch(WSL_STEP, /cannot use it|yourself instead/i,
+    "the step still refuses an assistant the page now serves");
+  // Nor does it speak of ONE command while two are offered.
+  assert.doesNotMatch(WSL_STEP, /the command below/i, "the step names a single command where the page draws two");
+});
+// ── AND UNDER WSL IT IS TWO LINES, EACH HEADED WITH THE SIDE IT IS FOR ───────────────────────────
+//
+// The Windows-side row is a real fix and half an answer: an assistant running INSIDE the distribution —
+// Claude Code in the Ubuntu window, which is where the owner was — needs the plain `node` line, and had
+// no row at all. Both sides now ride every on-this-computer route, headed, on the page and in the
+// terminal the line was actually read from.
+test("under WSL every on-this-computer route offers BOTH sides, each headed, and off WSL neither heading appears", () => {
+  const disk = (wsl) => connectOffers({ stdioRoutes: routes(wsl ? { wsl: { distro: "Ubuntu" } } : {}),
+    publicAddress: "https://mcp.example.test", wsl }).filter(Boolean).filter((o) => o.served && o.route === "disk");
+
+  const on = disk(true);
+  assert.ok(on.length >= 3, `too few on-this-computer routes for this to mean anything: ${on.length}`);
+  for (const o of on) {
+    const copies = o.steps.filter((s) => s.copy);
+    assert.equal(copies.length, 2, `${o.client.id} offers ${copies.length} launcher(s) under WSL, not both sides`);
+    assert.deepEqual(copies.map((s) => s.text), [WSL_ROW_HEADINGS.fromWindows, WSL_ROW_HEADINGS.insideWsl],
+      `${o.client.id}'s rows do not say which side each command is for`);
+    // EACH HEADING OVER ITS OWN SIDE'S COMMAND, not two rows of the same thing — which is what a
+    // spread that forgot to swap the text in would produce, headed and wrong.
+    assert.match(copies[0].copy.text, /wsl\.exe/, `${o.client.id}'s Windows row does not cross into the distribution`);
+    assert.doesNotMatch(copies[1].copy.text, /wsl\.exe/, `${o.client.id}'s inside-WSL row wraps a reader who is already inside`);
+    // THE TERMINAL'S OWN FIELDS RIDE THE WINDOWS-SIDE ROW, as they always have.
+    assert.equal(o.command, copies[0].copy.text, `${o.client.id}'s command stopped being the row that leads`);
+  }
+
+  // THE CONTROL: off WSL there is one row, and neither heading is drawn over it.
+  for (const o of disk(false)) {
+    assert.equal(o.steps.filter((s) => s.copy).length, 1, `${o.client.id} grew a second launcher off WSL`);
+    for (const h of Object.values(WSL_ROW_HEADINGS))
+      assert.ok(!o.steps.some((s) => s.text === h), `${o.client.id} heads a row "${h}" on an install that is not on WSL`);
+  }
+});
+
+test("the inside-WSL launcher IS the plain node line — the one an assistant in the distribution can run", () => {
+  const wsl = { distro: "Ubuntu" };
+  for (const shape of Object.keys(STDIO_SHAPES)) {
+    const both = stdioConnectFor(shape, { installRoot: "/opt/clearotron", workDir: "/w", reportsDir: "/p", wsl });
+    const inside = both.variants.find((v) => v.heading === WSL_ROW_HEADINGS.insideWsl)?.text;
+    assert.ok(inside, `${shape} offers no inside-WSL launcher`);
+    assert.doesNotMatch(inside, /wsl\.exe/, `${shape} hands an assistant already inside the distribution a wrapper into it`);
+    // NOT MERELY "no wsl.exe" — the same string an install that is not under WSL at all would be given,
+    // which is the one every other arm in this file already covers.
+    assert.equal(inside, stdioConnectFor(shape, { installRoot: "/opt/clearotron", workDir: "/w", reportsDir: "/p" }).text,
+      `${shape}'s inside-WSL line is composed a second time and has drifted from the plain one`);
+    // The environment still has to reach the server: inside the distribution it rides the shape's own
+    // idiom rather than the wrapper's `env`, and dropping it is how runs read the wrong workspace.
+    assert.match(inside, /CLEAROTRON_WORK_DIR\W+\/w/, `${shape}'s inside-WSL line loses the workspace`);
+  }
+  // Off WSL there is no pair at all, and `variants: null` says so rather than an empty list.
+  assert.equal(stdioConnectFor("claude-cli", { installRoot: "/opt/clearotron" }).variants, null);
+});
+
+test("the page and the terminal take the two headings from ONE author, and neither spells them itself", async () => {
+  const { readFileSync } = await import("node:fs");
+  const { fileURLToPath } = await import("node:url");
+  const { join } = await import("node:path");
+  const ROOT = fileURLToPath(new URL("../../", import.meta.url));
+  const read = (f) => readFileSync(join(ROOT, f), "utf8");
+
+  // THE TERMINAL PRINTS THE PAIR. `clearotron demo` and `clearotron start` are where the owner read
+  // the line from, so a page-only fix leaves the defect where he actually met it.
+  const start = read("bin/start.mjs");
+  assert.match(start, /stdioConnectOffer\(\{[^;]*wsl: wslTarget\(\)/, "the terminal asks for a connect line without saying which side it is on");
+  assert.match(start, /connect\.variants[\s\S]{0,400}?v\.heading[\s\S]{0,120}?v\.text/, "the terminal no longer prints both sides under their headings");
+  // ONE CALL SITE, WHICH IS WHAT MAKES ONE DRIVE COVER TWO VERBS. `clearotron demo` and `clearotron
+  // start` print this block from the same place; a second composer call is how one of them keeps
+  // printing the old single line while the other is driven green.
+  assert.equal(start.match(/stdioConnectOffer\(/g).length, 1,
+    "start.mjs composes the connect line in more than one place, so demo and start can print different lines");
+
+  // ONE AUTHOR. The words live in `shared/stdio-connect.mjs` and nowhere else; a surface that spells
+  // them itself is a surface that keeps its old wording when the ruling changes.
+  for (const f of ["bin/start.mjs", "shared/connect-clients.mjs", "driver/portal-service.mjs", "bin/connect.mjs"]) {
+    for (const h of Object.values(WSL_ROW_HEADINGS))
+      assert.ok(!read(f).includes(`"${h}"`), `${f} spells the heading "${h}" itself instead of taking it from the composer`);
+  }
+  const author = read("shared/stdio-connect.mjs");
+  for (const h of Object.values(WSL_ROW_HEADINGS))
+    assert.equal(author.split(`"${h}"`).length - 1, 1, `"${h}" is written more than once even in the file that owns it`);
 });

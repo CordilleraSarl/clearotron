@@ -57,7 +57,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { RECORDING_TOOLS } from "../engine/mcp/gather-config.mjs";
 import { acceptReportOverview } from "../report-overview-record.mjs";
-import { acceptPrelimVariants } from "../prelim-variants-record.mjs";
+import { acceptClearanceVariants } from "../clearance-variants-record.mjs";
 import { acceptBlindFrame } from "../blind-frame-record.mjs";
 import { acceptSkeptic } from "../skeptic-record.mjs";
 import { acceptKnockoutAssess, recordKnockoutAssess } from "../knockout-assess-record.mjs";
@@ -150,9 +150,9 @@ const PLANTED = Object.freeze({
       handling_note: "This is a preliminary clearance and not a legal opinion.",
     },
   },
-  record_prelim_variants: {
+  record_clearance_variants: {
     expect: "refuses",
-    accept: acceptPrelimVariants,
+    accept: acceptClearanceVariants,
     full: {
       mark: "PROJECT NOVAPULSE",
       dominant_element: "NOVAPULSE",

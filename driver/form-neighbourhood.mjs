@@ -84,6 +84,36 @@ export function editNeighbourhood(element) {
   return [...out].sort();
 }
 
+// ── A one-letter neighbour that is an ordinary word with a DIFFERENT SOUND is not searched ────────────
+//
+// THE REVIEWING LAWYER'S TEST IS CONFUSING SIMILARITY, and edit-1 over a short ordinary word is mostly other
+// ordinary words: CARE, CODE, CORD, BORE, MORE beside CORE, each a common mark with its own crowd. Measured
+// on a delivered four-letter run, 2026-09-18: 1,037 of 2,098 records (49%) were reached only by the one-letter
+// lists; on the dense production matter of 2026-09-16, 1,154 of 2,146 (54%). Conceptually different words are
+// not confused by consumers, so fetching them is cost and not coverage. A respelling that sounds the same —
+// KORE for CORE — is exactly what a search must find, and so is every neighbour of a made-up word, because two
+// unknown words that sound alike have nothing conceptual to keep them apart (MALENA beside VALENA).
+//
+// So a neighbour is dropped only when BOTH hold: it is in the ordinary-word list, AND no Double-Metaphone key
+// of it matches any key of the element. Everything else is dispatched exactly as before. There is no judgment
+// of the MARK here — coined or ordinary — only of each neighbour, so a coined element keeps its whole list
+// except where a neighbour is a different-sounding real word. The list only ever removes queries, and a word
+// missing from it is searched: over-search is the safe direction.
+//
+// DOUBLE METAPHONE KEEPS VOWELS ONLY AT THE START, so a vowel change inside the word does not change the key:
+// CARE, CURE and GORE all key KR, as CORE does, and are KEPT. That is the rule as specified erring towards the
+// search, and it is recorded here so nobody reads those three as a defect of the list.
+//
+// `ordinaryWords` is a Set of lowercase words, or null. Null drops nothing — the behaviour before this rule —
+// so a caller that does not load the list (every test that predates it) is unchanged. PURE.
+export function ordinaryWordDifferentSound(element, ordinaryWords) {
+  const el = normalizeElement(element);
+  if (!el || !(ordinaryWords instanceof Set) || !ordinaryWords.size) return [];
+  const own = new Set(doubleMetaphone(el).filter(Boolean));
+  return editNeighbourhood(el).filter((t) => ordinaryWords.has(t)
+    && !doubleMetaphone(t).filter(Boolean).some((k) => own.has(k)));
+}
+
 // ── Consonant skeleton + wildcard patterns — retrieve the phonetic VOWEL family in one bounded vendor query ──
 // VALENA → consonants V,L,N → skeleton "VLN"; vowel-slot wildcard "V?L?N?"-style patterns the vendor's Lucene
 // `?`/`*` supports (live-confirmed). This is the tractable, complete way to reach VYLONA/VILINA/VILENA without
@@ -229,13 +259,18 @@ export function transliterations(element, { scripts = SUPPORTED_SCRIPTS } = {}) 
 // droppedVariantFamilies). The floor stays exhaustive WITHIN the families judgment kept — this is the funnel
 // honouring a scope decision that was already written and, until 2026-07-18, ignored. edit-1 is never
 // droppable: it is the doctrine floor (radiusFor), not a family.
-export function formNeighbourhood(element, { markets = [], scripts = SUPPORTED_SCRIPTS, droppedAxes = [] } = {}) {
+export function formNeighbourhood(element, { markets = [], scripts = SUPPORTED_SCRIPTS, droppedAxes = [], ordinaryWords = null } = {}) {
   const radius = radiusFor(element);
   const el = radius.element;
-  if (!el) return { element: "", radius, exactQueries: [], wildcardPatterns: [], phoneticKeys: [], confusables: [], transliterations: [], ledger: { disclosed: radius.note, axes: [] } };
+  if (!el) return { element: "", radius, exactQueries: [], wildcardPatterns: [], phoneticKeys: [], confusables: [], transliterations: [], ordinaryWordDifferentSound: [], ledger: { disclosed: radius.note, axes: [] } };
 
   const drop = new Set(droppedAxes ?? []);
-  const edits = editNeighbourhood(el);
+  const generatedEdits = editNeighbourhood(el);
+  // Only edit-1 is filtered. A term another generator also produces (a confusable, a transliteration) is
+  // still dispatched as that generator's — those families are unchanged by this rule.
+  const notSearched = ordinaryWordDifferentSound(el, ordinaryWords);
+  const skip = new Set(notSearched);
+  const edits = generatedEdits.filter((t) => !skip.has(t));
   const confs = drop.has("visual-confusable") ? [] : visualConfusables(el);
   const trans = drop.has("transliteration") ? [] : transliterations(el, { scripts });
   const wildcards = drop.has("phonetic-family") ? [] : skeletonPatterns(el);
@@ -261,11 +296,15 @@ export function formNeighbourhood(element, { markets = [], scripts = SUPPORTED_S
     phoneticKeys: keys,
     confusables: confs,
     transliterations: trans,
+    ordinaryWordDifferentSound: notSearched,
     ledger: {
       disclosed: radius.note,
       dropped_axes: [...drop].sort(),
       axes: [
-        { axis: "edit-1", count: edits.length, mechanism: "Damerau-Levenshtein edit-1, exhaustive" },
+        { axis: "edit-1", count: edits.length, generated: generatedEdits.length, not_searched: notSearched.length,
+          mechanism: notSearched.length
+            ? "Damerau-Levenshtein edit-1, exhaustive, less the neighbours that are ordinary words with a different sound"
+            : "Damerau-Levenshtein edit-1, exhaustive" },
         // NO PATTERN is a THIRD state, and it is disclosed in the same voice as a judgment drop. An
         // element with too few consonants to anchor a skeleton wildcard (X, and anything normalizing to
         // one character) yields no retrieval pattern at all — see skeletonPatterns. Silence here would
@@ -349,7 +388,7 @@ export function coverageGaps(band, { dispatched = [], explained = [] } = {}) {
 // exhaustive edit-1 neighbourhood: 1,736 junk exact queries on AquaPlus 2026-07-17, 4,524 on the 07-16 run.
 // Measured 2026-07-18: 10 of 20 recent runs carried one of these. The JSON field is a validated scalar and
 // cannot swallow a sentence.
-export function renderFormNeighbourhoodJson(manifestMd, { markets = [], scripts = SUPPORTED_SCRIPTS, droppedAxes = [], model = null, mark = "" } = {}) {
+export function renderFormNeighbourhoodJson(manifestMd, { markets = [], scripts = SUPPORTED_SCRIPTS, droppedAxes = [], model = null, mark = "", ordinaryWords = null } = {}) {
   const { seeds, seededFrom, rejected } = floorSeeds(manifestMd, { model, mark });
   // The reason travels WITH the throw. It used to say only "the job states no mark", which is one
   // of two causes and not the one that actually fires: a non-Latin mark states a mark perfectly well and
@@ -361,7 +400,7 @@ export function renderFormNeighbourhoodJson(manifestMd, { markets = [], scripts 
       || "manifest names no Dominant element / Formative root, and the job states no mark";
     throw new Error(`form_neighbourhood_no_element: ${why} — nothing to seed the mechanical form band`);
   }
-  const elements = seeds.map(({ element, role }) => ({ element, role, band: formNeighbourhood(element, { markets, scripts, droppedAxes }) }));
+  const elements = seeds.map(({ element, role }) => ({ element, role, band: formNeighbourhood(element, { markets, scripts, droppedAxes, ordinaryWords }) }));
   const families = variantFloorFamilies(elements, { mark, droppedAxes });
   return JSON.stringify({
     schema_version: 2,
@@ -596,10 +635,11 @@ export function spacingPunctuationForms(mark) {
 export function variantFloorFamilies(elements, { mark = "", droppedAxes = [] } = {}) {
   const drop = new Set(droppedAxes ?? []);
   const edit = new Set(), visual = new Set(), translit = new Set(), other = new Set();
-  const wildcards = new Set(), keys = new Set();
+  const wildcards = new Set(), keys = new Set(), notSearched = new Set();
   for (const el of elements ?? []) {
     const band = el?.band;
     if (!band) continue;
+    for (const t of band.ordinaryWordDifferentSound ?? []) notSearched.add(t);
     const edits = new Set(editNeighbourhood(el.element));
     const confs = new Set(band.confusables ?? []);
     const trans = new Set(band.transliterations ?? []);
@@ -639,6 +679,12 @@ export function variantFloorFamilies(elements, { mark = "", droppedAxes = [] } =
       dropped: drop.has("phonetic-family"), terms: sorted(wildcards), phonetic_keys: sorted(keys) },
     ...(other.size ? [{ family: "other", category: "other", generator: "formNeighbourhood (dedupeOnFold residue)",
       enumeration: "a dispatched term no single generator claims — recorded rather than hidden", dropped: false, terms: sorted(other) }] : []),
+    // NOT SEARCHED, and listed in full so the plan says what it left out and why. Not a crowd and not a
+    // gap: a deliberate rule (ordinaryWordDifferentSound). `searched: false` keeps it out of the floor the
+    // merge below counts, so a model that proposes one of these words is recorded as its own addition.
+    ...(notSearched.size ? [{ family: "ordinary-word-different-sound", category: "phonetic", generator: "editNeighbourhood",
+      enumeration: "edit-1 neighbours that are ordinary English words and share no Double-Metaphone key with the element",
+      dispatch: "not searched — ordinary word, different sound", searched: false, dropped: true, terms: sorted(notSearched) }] : []),
   ];
 }
 
@@ -674,6 +720,7 @@ export function mergeVariantFloor(floorFamilies, modelVariants, { rejectedSeeds 
   const families = Array.isArray(floorFamilies) ? floorFamilies : [];
   const floorByKey = new Map();
   for (const f of families) {
+    if (f?.searched === false) continue;   // listed for disclosure, never searched — not floor
     for (const t of f?.terms ?? []) {
       const k = formKey(t);
       if (!k || floorByKey.has(k)) continue;

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// pipeline.mjs — the deterministic driver: sequences every prelim-search stage as a blocking engine
+// pipeline.mjs — the deterministic driver: sequences every clearance-search stage as a blocking engine
 // turn, joins the fan-out in code (the fan-in barrier), gates on the refutation
 // verdict, and never parks (there is no LLM continuation decision anywhere). CLI: `node pipeline.mjs --job <file.json>`.
 
@@ -80,7 +80,7 @@ import { resolveSearchPolicy, gateResolvedPolicy, loadRecipes, policyFor, isRegi
 import { profileOrdinals } from "./profile-selection.mjs";   // lever 3 — driver selection
 // THE OFFERING'S own sentence about where the native-language investigation can be bought. It reaches a
 // CLIENT REPORT through the script-scope coverage row, which is why it is imported rather than typed:
-// the row used to name "Depth 5 (prelim-jx)" — a retired key on a retired ladder — as its remedy.
+// the row used to name "Depth 5 (clearance-jx)" — a retired key on a retired ladder — as its remedy.
 import { NATIVE_LANGUAGE_REMEDY } from "./products.mjs";
 import { resolveTerritories, defaultTerritoryState } from "./effective-scope.mjs";   // the ONE territory ladder (the geography stamp included) + the stored-defaults reading
 import { acquireSlot, releaseSlot } from "./slot-lock.mjs";
@@ -170,10 +170,10 @@ import { JURISDICTION_ADAPTERS, LANGUAGE_LANES, scopeJurisdictions as jxScopeJur
 // into boundDominantElementFrom, so the driver's bind and the record tool's bind are ONE body. Neither
 // parseBlindFrameModel nor dominantElementFromManifest is called from this file any more.
 import { boundDominantElementFrom } from "./frame-diff-record.mjs";
-import { recordedScopeLedgerRows } from "./prelim-variants-record.mjs";
+import { recordedScopeLedgerRows } from "./clearance-variants-record.mjs";
 import { parseFrameDiff, applyDominantBackstop, firingDirectives, reopenKey, alreadyAttemptedReopen, partitionFiring, frameResidualGaps, jurisdictionScopeFlags, deriveDirectiveRemedy, firingDirectivesLenient } from "./frame-diff-model.mjs";
 import { verifyRegisterDirectiveClose } from "./close-verify.mjs";
-import { renderFormNeighbourhoodJson, parseFormNeighbourhoodJson, dispatchedQueriesFromBand, formGapDirectives, markText } from "./form-neighbourhood.mjs";
+import { renderFormNeighbourhoodJson, parseFormNeighbourhoodJson, dispatchedQueriesFromBand, formGapDirectives, markText } from "./form-neighbourhood.mjs"; import { loadOrdinaryWords } from "./ordinary-words.mjs";
 import { findRecallFloorViolations, findReviewFreshnessViolation, findSeedNeutralityViolations, findProbativeGradingViolations, findStatusHonestyViolation, findMatrixCeilingViolations, findDeadlineUrgencyMiss, findUnresolvedDisagreements, findOrphanVerificationFlags, findUncrossCheckedDemotions, findRecallRegressionViolations, findDeadlineCarryViolations, formatRecallRegression } from "./reasoning-tripwires.mjs";
 import { findRuleShapeFlags } from "./rule-shape.mjs";
 import { failureSignature, classifyFailureReason, decideRecovery, createRepairLedger, countTrailingStageStrikes, countRecoveryLanes, weatherCeilingFor, TRANSIENT_RE, REFUSAL_TERMINAL_KIND, fanInMissingEvidence, retryCannotHelpWith, unnamedStructuredFailure, classificationSource, isCapPark, capParkSchedule, capWaitFrom, humanWait } from "./repairs.mjs";
@@ -939,7 +939,7 @@ function deriveGridSpec(ctx) {
   // 2026-08-11 codex R2 run (no grid spec authored at all), and it is the branch that emits NO event
   // today, which is why absence was the only signal and absence is not a record.
   // The three inputs are recorded, not just their verdict. Working hit exactly this wall: the
-  // 2026-08-11 run authored no spec, `prelim-variants` had succeeded, and WHICH of the three conjuncts
+  // 2026-08-11 run authored no spec, `clearance-variants` had succeeded, and WHICH of the three conjuncts
   // was false could not be recovered from any artifact — so the round could name the path but not the
   // cause. A record that says "no spec" and not "no spec BECAUSE the profile carried no platforms" just
   // moves the same unanswerable question one step along.
@@ -1720,7 +1720,7 @@ export function attachSearchPolicy(ctx, job, { write = true } = {}) {   // @inte
     // a clearance (review 2026-07-17 — the crash-reclaim/reconstruct window).
     if (!noSelector)
       throw new Error(`run dir has no frozen search policy but the job names a selector (product=${JSON.stringify(job?.product ?? null)}, recipeKey=${JSON.stringify(job?.recipeKey ?? null)}) — refusing the legacy-implicit clearotron assumption; re-dispatch cold so the policy is minted`);
-    ctx.searchPolicy = { schema: 1, level: "prelim", pipeline: "clearance", stageLabel: "Depth 4", components: {}, recipe: null, origins: { level: "legacy-implicit" } };
+    ctx.searchPolicy = { schema: 1, level: "clearance", pipeline: "clearance", stageLabel: "Depth 4", components: {}, recipe: null, origins: { level: "legacy-implicit" } };
   } else {
     let resolved;
     // force:true — the recipe store is written by a LIVE service; a long-lived driver process must see a
@@ -1905,7 +1905,7 @@ function renderDocumentCoverageFromRecords(ctx, trigger) {
     // The set the GATES consume, not `_records/` alone: a run whose bodies live only in the ledger would
     // otherwise be described as one that fetched nothing — the defect this renders against, re-created by
     // reading a narrower artifact than the one that holds the answer.
-    const { records } = assembleRunRecords(P.runDir, `prelim-${ctx.run.slug}-${ctx.run.codename}-`);
+    const { records } = assembleRunRecords(P.runDir, `clearance-${ctx.run.slug}-${ctx.run.codename}-`);
     const summary = documentCoverage({ records, findings: safeReadJson(P.findings) });
     const section = renderDocumentCoverageSection(summary);
     if (!section) return;
@@ -2103,7 +2103,7 @@ function deriveCoverageLedgerJson(ctx, trigger) {
   }
 }
 
-// Frame-omission design — CODE-DERIVE scope-ledger.json from the validated prelim-variants prose
+// Frame-omission design — CODE-DERIVE scope-ledger.json from the validated clearance-variants prose
 // `### Scope ledger` table (so the JSON is authored by the driver, not the model, and matches the prose
 // by construction — exactly the deriveCoverageLedgerJson pattern). NEVER-KILL: a manifest with no/unparseable
 // Scope ledger (legacy artifacts, a terse run) logs a note and skips the write; the frame-diff then reads the
@@ -2132,7 +2132,7 @@ function deriveScopeLedgerJson(ctx) {
     // are different facts about a run, and a reader of an archived ledger must be able to tell which.
     runLog(P.runDir, { event: "scope-ledger-derived", source: recordedRows ? "typed-call" : "prose-parse" });
   } catch (e) {
-    note(`prelim-variants: scope-ledger derivation skipped (${String(e.message).slice(0, 100)}) — frame-diff reads the manifest prose`);
+    note(`clearance-variants: scope-ledger derivation skipped (${String(e.message).slice(0, 100)}) — frame-diff reads the manifest prose`);
     runLog(P.runDir, { event: "scope-ledger-skipped", reason: `derive_failed:${String(e.message).slice(0, 80)}` });
   }
 }
@@ -2179,14 +2179,14 @@ function deriveFormNeighbourhood(ctx) {
     // The MARK is the floor's fallback seed and the only input to it that is not model output —
     // resolved exactly as every other job-mark consumer resolves it (stages.mjs blind-frame).
     const mark = ctx.job.marks ?? ctx.job.markName ?? ctx.job.name ?? "";
-    const json = renderFormNeighbourhoodJson(manifestMd, { markets, droppedAxes, model, mark });
+    const ow = loadOrdinaryWords("en"), json = renderFormNeighbourhoodJson(manifestMd, { markets, droppedAxes, model, mark, ordinaryWords: ow.words });   // an unloadable word list removes nothing
     const tmp = P.formNeighbourhood + ".tmp";
     writeFileSync(tmp, json);
     renameSync(tmp, P.formNeighbourhood);
-    let exact = 0, floor = 0, added = 0, seededFrom = "", seeds = [];
+    let exact = 0, floor = 0, added = 0, seededFrom = "", seeds = [], notSearched = 0;
     try {
       const o = JSON.parse(json);
-      exact = o.elements.reduce((a, e) => a + (e.band?.exactQueries?.length ?? 0), 0);
+      exact = o.elements.reduce((a, e) => a + (e.band?.exactQueries?.length ?? 0), 0); notSearched = o.elements.reduce((a, e) => a + (e.band?.ordinaryWordDifferentSound?.length ?? 0), 0);
       floor = o.variant_floor?.counts?.floor ?? 0;
       added = o.variant_floor?.counts?.model_added ?? 0;
       seededFrom = String(o.seeded_from ?? "");
@@ -2194,11 +2194,11 @@ function deriveFormNeighbourhood(ctx) {
     } catch { /* counts are telemetry only */ }
     // The SEED SET is logged by name, because it is the input that decides whether two runs of the same
     // matter can produce the same floor — a floor count alone cannot tell a stable run from a re-anchored one.
-    runLog(P.runDir, { event: "form-neighbourhood-derived", exact, floor, modelAdded: added, droppedAxes, seeds, seededFrom });
+    runLog(P.runDir, { event: "form-neighbourhood-derived", exact, floor, modelAdded: added, droppedAxes, seeds, seededFrom, ordinaryWordNotSearched: notSearched, ...(ow.error ? { ordinaryWordListError: ow.error } : {}) });
     // The fallback is not a quiet degrade: it means this run's variant floor rests on the mark alone
     // because the stage named no usable element. Loud, so the absence is a finding and not a shrug.
     if (seededFrom.startsWith("job mark"))
-      note(`prelim-variants: variant floor seeded from the JOB MARK — the manifest named no usable distinctive element (${floor} floor terms generated; the floor is complete, its seed is not the model's)`);
+      note(`clearance-variants: variant floor seeded from the JOB MARK — the manifest named no usable distinctive element (${floor} floor terms generated; the floor is complete, its seed is not the model's)`);
   } catch (e) {
     // The reason is carried WHOLE. It used to be truncated to 80 characters into the runLog and
     // 100 into the note, which cut the part that says WHICH cause fired — and the empty floor this path
@@ -2206,7 +2206,7 @@ function deriveFormNeighbourhood(ctx) {
     // compiles and freezes with no floor entries and no error, looking healthy. This line is the only
     // record that the mechanical floor is missing from the run, so it says the whole of why.
     const why = String(e.message);
-    note(`prelim-variants: form-neighbourhood derivation skipped (${why}) — register falls back to the manifest variants, so this run has NO mechanical form floor`);
+    note(`clearance-variants: form-neighbourhood derivation skipped (${why}) — register falls back to the manifest variants, so this run has NO mechanical form floor`);
     runLog(P.runDir, { event: "form-neighbourhood-skipped", reason: `derive_failed:${why}`, mark: markText(ctx.job.marks ?? ctx.job.markName ?? ctx.job.name ?? "") });
   }
 }
@@ -2297,7 +2297,7 @@ async function verifyAndRecordHouseElement(ctx, opts = {}) {
     const { regions } = resolvePlanRegions(registerJurisdictions(ctx.job, ctx.profile), caps);
     const rec = resolveRecordExecutor({
       lister: opts?.recordLister ?? null, adapter: activeProvider(),
-      agentId: ctx.agentId ?? null, sessionKey: `prelim-${ctx.run.slug}-${ctx.run.codename}`,
+      agentId: ctx.agentId ?? null, sessionKey: `clearance-${ctx.run.slug}-${ctx.run.codename}`,
       recordLog: runRecordLogPath(P.runDir),
       fixtureDir: ctx.job?.registerFixtures?.records ?? null,
     });
@@ -2385,7 +2385,12 @@ function attachRegisterPlan(ctx, { frozenOnly = false } = {}) {
       // sweep); fatal on a provider whose regions[] is mandatory, where every entry then errored on its
       // count probe and the whole plan joined MISSING at fan-in (review finding 11).
       job: { jobKey: ctx.run.slug, classes: [...new Set([...inScopeClassList(ctx.job, ctx.profile).map(String), ...frameIdentifiedClasses(P.runDir)])], jurisdictions: registerJurisdictions(ctx.job, ctx.profile) },
-      form, skillVersion: "prelim-register@spec48",
+      form, skillVersion: "clearance-register@spec48",
+      // — WHICH ELEMENT THE EXCLUSION TOOK OUT, so the compile can make its form band unreachable
+      // rather than merely unasked-for. Null unless the ownership receipt verified, which is the same
+      // condition the exclusion itself runs under: an unverified receipt excludes nothing, and it must
+      // not remove a band either.
+      houseElement: houseConfirmation ? houseReceipt?.element : null,
       // phase 3 — the plan is compiled AGAINST THE ACTIVE PROVIDER's declared capabilities, so the
       // frozen artifact is executable by construction: the OR-stack split uses that provider's width,
       // jurisdictions are translated into its office vocabulary (EU→EM on Compumark), and a predicate
@@ -3833,7 +3838,7 @@ export function digestDispatchExtra(ctx, { trigger = "fresh", willRun = true, ex
 // The old `findFloorBreaches` read ⭐-marked lines out of the manifest TEXT, tokenised them, dropped
 // generic words and matched the remainder against coverage-row text. That join is why it needed free text
 // at all, and it is what conversion 3 made unreachable. This one reads `search_floor` — axis names, closed
-// against REGISTER_AXES, designated by prelim-variants in an earlier turn — and joins on `axis`, which
+// against REGISTER_AXES, designated by clearance-variants in an earlier turn — and joins on `axis`, which
 // both sides type. No tokens, no matching, nothing to go quietly wrong.
 //
 // A BREACH IS: an axis this mark's floor obliges, carrying a row labelled `coverage-limited`. That label
@@ -3859,7 +3864,7 @@ export function findFloorBreaches(ledger, floorAxes) {   // @internal
  * a pass, because the whole mechanism is opt-in — a run with no designation owes no floor, and a run whose
  * manifest cannot be read has no designation to honour. The refusal for an absent or unparseable manifest
  * belongs to the stage that writes it and already exists there — verify.mjs:1335 runs the same parser
- * through `checkSiblingJson` and fails prelim-variants with `variantmodel_missing`. Checked, because
+ * through `checkSiblingJson` and fails clearance-variants with `variantmodel_missing`. Checked, because
  * "something else refuses it" is exactly the assumption that turns a swallowed error into a silent pass.
  */
 export function readFloorAxes(paths) {   // @internal
@@ -3868,7 +3873,7 @@ export function readFloorAxes(paths) {   // @internal
 }
 
 // A never-active axis self-writes a harmless "not applicable" digest — the skill MANDATES the exact
-// scope wording (skills/prelim-register/unit.md:89-90: `query:"<axis> not applicable"`,
+// scope wording (skills/clearance-register/unit.md: `query:"<axis> not applicable"`,
 // `reason:"not applicable — <why>"`), so the coverage-ledger row lands as `<axis> / axis not applicable`.
 // It is `deferred` only because a non-search must not be dressed as a clean — it is NOT floor work left
 // open. Keyed on the self-digest scope (deterministic, skill-dictated), never a genuine floor's
@@ -4059,7 +4064,7 @@ export async function runSaturationProbeCodeSide(ctx, planExec) {   // @internal
   const label = `register-unit:${a}`;
   const out = P.registerUnit(a);
   const bandPath = P.registerBand(a);
-  const sessionKey = `prelim-${ctx.run.slug}-${ctx.run.codename}-register-unit-${a}`;
+  const sessionKey = `clearance-${ctx.run.slug}-${ctx.run.codename}-register-unit-${a}`;
   // crash-resume idempotency — mirrors stageOnce's skip: output present + valid ⇒ never re-execute.
   const forced = forceFromActive(ctx, "register-unit");
   // — hoisted above the skip return. Below it, this member's dispatch row carries boundaries and its
@@ -4179,7 +4184,7 @@ function writeSatProbeAuditNote({ ctx, out, bandPath, entries }) {
 
 // ── stage contracts (2026-07-30 review round) ──────────────────────────────────────────────────────
 // _driver/stage-contracts.json records, PER STAGE, the output contract the prompt THIS driver
-// dispatched holds the artifact to (declared on the stage def, e.g. prelim-variants
+// dispatched holds the artifact to (declared on the stage def, e.g. clearance-variants
 // `contract:{romanization:1}`). Written at DISPATCH time only — a skipped stage never gains one — so
 // it is evidence of PROMPT VINTAGE, which is the only honest gate for a new validation rule:
 //   - crash-resume: the skip check re-validates the completed output BEFORE any dispatch, marker
@@ -4343,7 +4348,7 @@ async function stageOnce(name, ctx, opts = {}) {
     // skips — i.e. on the babysit surface, in the middle of the shift where someone is watching it.
     runLog(P.runDir, { event: "skip", stage: label, trigger: "skip", model: won?.model ?? resolveModel(model), output: outputMeta(out), ...stageWallFields(tDispatch) });
     (ctx.skippedStages ??= []).push(label);   // V4-1: the lint receipt states which artifacts this delivery inherited
-    recordTransition(ctx, name);   // advance the displayed step on resume too (monotonic, no-op for unmapped)
+    recordTransition(ctx, name);   // advance the displayed step on resume too (monotonic; an unmapped stage records what it is, and moves no step)
     // `won ? won.key : …` (NOT `won?.key ?? …`): a recovered CODE-SIDE winner carries key:null on purpose —
     // falling back to opts.sessionKey there would re-mint the phantom session the null exists to suppress.
     return { ok: true, skipped: true, sessionKey: won ? won.key : opts.sessionKey, model: won?.model ?? model };
@@ -4353,6 +4358,25 @@ async function stageOnce(name, ctx, opts = {}) {
   // holds the artifact to, BEFORE the model runs, so a crash mid-stage still re-validates the partial
   // output under the rules it is being minted under. See recordStageContract's doc block.
   if (def.contract) recordStageContract(P.runDir, name, def.contract);
+
+  // ── AND RECORD THAT THE RUN IS IN IT, AT THE SAME MOMENT ───────────────────────────────────────────
+  //
+  // The displayed step advanced only where a stage SUCCEEDED, so a run inside a stage that takes minutes
+  // read as being in the previous one for the whole of it — a resumed run entered placement at 10:05Z and
+  // still showed "Register sweeps" at 10:10Z, which reads as the run having gone backwards. Nothing
+  // durable said a stage had STARTED: every stage record is written at completion, and the one start-time
+  // signal goes to stderr and never reaches the trace. So no reader could derive it either.
+  //
+  // Here rather than at the dispatch below, because this is the line that already declares the stage is
+  // dispatching, and every mutating path — corrective, followup, escalation, frame-reopen, stale-repair,
+  // verdict-recheck — funnels through it. One declaration of entry, for the contract record and the
+  // status alike.
+  //
+  // Safe against the two things that look like it should not be. `writeRunStatus` keeps the furthest step
+  // ever reached, so an escalation re-run mapping to an earlier stage still cannot pull the stepper back;
+  // and the bare `name` is passed exactly as the success path passes it, so a fan-out's axes go on
+  // collapsing to one display step.
+  recordTransition(ctx, name);
 
   // — THE PLACEMENT FORM IS ON DISK BEFORE THE SEAT IS ASKED ANYTHING, and it is written at the SAME
   // choke point every dispatch funnels through: the main path, the stale-repair path and the frame-reopen
@@ -4491,7 +4515,7 @@ async function stageOnce(name, ctx, opts = {}) {
     thinking,
     // opts.sessionKey lets a followup RESUME the exact key a prior run won on (winning-key hardening); else
     // the canonical base key. (A followup with a stale base key would resume a failed attempt — see runStage.)
-    sessionKey: opts.sessionKey ?? `prelim-${ctx.run.slug}-${ctx.run.codename}-${name}${keyAxis}`,
+    sessionKey: opts.sessionKey ?? `clearance-${ctx.run.slug}-${ctx.run.codename}-${name}${keyAxis}`,
     timeoutSec: derivedLimit.sec ?? def.timeoutSec,
     derivedLimit,               // recorded on every attempt row: the size it was derived from, and the number
     stallSec: def.stallSec,     // per-stage stall override (heavy stages); undefined → global CLEAROTRON_STALL_MS
@@ -4580,6 +4604,8 @@ async function stageOnce(name, ctx, opts = {}) {
   });
   // P2 — record WHAT this output was produced from, so a later resume can tell whether it still holds.
   if (r.ok && out) writeStamp(P.runDir, label, stageInputs(name, P, { axes: ctx.axes, axis: ctx.axis, registerOnly: ctx.registerOnly }), { project: projectStageInput });
+  // Re-asserted on success, and no longer the only advance: entry records the same transition above, so
+  // this is what re-states the stage after a fan-out's concurrent axes have each written their own.
   if (r.ok) recordTransition(ctx, name);   // bare name → fan-out axes collapse to one display step (monotonic)
   // PR-4 — document-growth tripwire, keyed on TRIGGER so it covers BOTH growth loops (the lint-repair
   // "re-emit the COMPLETE updated file" cycle AND the skeptic/refutation corrective loop — the 2026-07-28 postmortem run's
@@ -4770,7 +4796,7 @@ function must(r, name) {
  * absence reads as an empty cause — which is the whole defect, one level along. PURE.
  *
  * — VISIBLE IN THE STRING, not only in a sibling key. `reason` was a bare slice, so a cut sentence
- * read as a finished one. Three failed runs of 2026-08-19 ended theirs mid-path — ".../studio/prelim-se"
+ * read as a finished one. Three failed runs of 2026-08-19 ended theirs mid-path — ".../studio/clearance-se"
  * — and the reader who stat'd that directory got ENOENT and diagnosed a working mechanism as a broken
  * one. Nothing had been lost: `reasonFull` carried the whole path on all three and `reasonTruncated` was
  * true on all three. The field that gets read FIRST simply never said it was short. `abbrev` is this
@@ -5390,7 +5416,7 @@ export function recordConnotationAudit(run, P) {   // @internal
     // ── — DOES A CHARGED RATING CARRY ITS GROUNDS? RECORDED, NOT ENFORCED ───────────────────────
     //
     // Doctrine already asks for this in as many words: "rule `loaded` and use the note to state plainly
-    // what you could not establish and what a human should look at" (prelim-common-law/SKILL.md). The
+    // what you could not establish and what a human should look at" (clearance-common-law/SKILL.md). The
     // seat does not do it — e2e READ all 24 `loaded` notes in the corpus (not keyword-probed them) and
     // every one describes the material instead. `grounds-grammar.mjs` was built to measure exactly that,
     // proven against those real notes and against a planted violation, AND CALLED BY NOTHING. A check
@@ -6254,7 +6280,7 @@ function refuteRegistryCheckExtra(ctx) {
     const P = ctx.paths;
     const narrative = existsSync(P.narrative) ? readFileSync(P.narrative, "utf8") : "";
     if (!narrative) return "";
-    const recordsByUri = assembleRunRecords(P.runDir, `prelim-${ctx.run.slug}-${ctx.run.codename}-`).records;
+    const recordsByUri = assembleRunRecords(P.runDir, `clearance-${ctx.run.slug}-${ctx.run.codename}-`).records;
     const probs = [
       ...findRegistryArithmeticIssues(narrative).map((a) => `${a.block}: ${a.detail}`),
       ...findRegistryViolations(narrative, recordsByUri).filter((v) => v.kind === "mismatch")
@@ -7127,7 +7153,7 @@ function injectDeferralCoverage(P, runDir, note) {
 // ── THE REMEDY CLAUSE NAMES A PRODUCT, AND FOR A WHILE IT NAMED A DELETED ONE ───────────────────────
 //
 // This row reaches a CLIENT REPORT. It read "…not searched at this level — available at Depth 5
-// (prelim-jx)": an internal product key and a rung on the depth ladder, both retired by, offered as
+// (clearance-jx)": an internal product key and a rung on the depth ladder, both retired by, offered as
 // the remedy for a coverage limit the same sentence had just disclosed. `injectScriptScopeCoverage`
 // calls the decision on EVERY run, and it was driven — it fires for a worldwide scope, a CN-named scope
 // and the ja lane — so this was delivered prose telling a reader to buy something that does not exist.
@@ -7141,7 +7167,7 @@ const WORLDWIDE_SCOPE_RE = /^(worldwide|global|all|all[- ]jurisdictions)$/i;
 /** What a synthesis-authored Stage-1.5 coverage row looks like when it has ALREADY made this
  *  disclosure — see the suppression in injectScriptScopeCoverage. Both the current vocabulary and the
  *  retired one, because a resumed run carries whichever was current when its synthesis ran. */
-const SCRIPT_SCOPE_RECOMMENDATION_TOKENS = Object.freeze(["native-language investigation", "prelim-jx"]);
+const SCRIPT_SCOPE_RECOMMENDATION_TOKENS = Object.freeze(["native-language investigation", "clearance-jx"]);
 
 /** The disclosure vocabulary for ONE candidate lane, derived (never tabulated). Returns
  *  `{area, note, territories, marker}` — `marker` is the lowercased script prefix the suppression
@@ -7265,14 +7291,14 @@ export function injectScriptScopeCoverage(P, runDir, note, { searchPolicy = null
     const rowText = (c) => `${c?.area ?? ""} ${c?.note ?? ""}`.toLowerCase();
     const added = [];
     for (const p of pending) {
-      // Suppression is PER LANE. The old check treated any coverage row mentioning "prelim-jx" as
+      // Suppression is PER LANE. The old check treated any coverage row mentioning "clearance-jx" as
       // covering the disclosure, which was harmless while zh was the only lane and is a silent row-
       // eater the moment there are two: on a CN+JP scope the zh row lands first, its own note ended in
-      // "(prelim-jx)", and the ja row was then swallowed by a match on the sibling's text. So the
+      // "(clearance-jx)", and the ja row was then swallowed by a match on the sibling's text. So the
       // deference to a synthesis-authored Stage-1.5 row requires the row to be about THIS lane.
       //
       // TWO VOCABULARIES ON PURPOSE. `native-language investigation` is what the offering calls it now
-      // and what synthesis reads in its own prompt; `prelim-jx` is the retired key, kept because a run
+      // and what synthesis reads in its own prompt; `clearance-jx` is the retired key, kept because a run
       // RESUMED from before carries a synthesis row written in it — dropping the old token would
       // put a second, duplicate disclosure into a report that already makes the same one.
       const already = doc.coverage.some((c) => {
@@ -7683,7 +7709,7 @@ export function buildOnlyYouSection(actions, findings, { nowMs = Date.now(), wit
 // blocking review goes." That REVERSES T3, which retired "delivered-with-open-questions" and
 // is itself recorded as an owner-approved decision — both are his, and this is the standing one.
 //
-// The section the reviewer's concerns land in is not new. `driver/skills/prelim-search/SKILL.md:241`
+// The section the reviewer's concerns land in is not new. `driver/skills/clearance-search/SKILL.md`
 // has described it all along — "delivered … as a prominent Reviewer's open questions section at the
 // top of the body (the driver passes them in)" — and `:295` lists it as a required section with
 // "Never omit it to look more finished." deleted the driver's half and left that text
@@ -8013,7 +8039,7 @@ export function assembleReportMd(P, findings, cardOrdinals, { grouped = [], byRi
   } catch { /* never-kill: a malformed findings.json leaves the overview untouched (its own gates own that) */ }
   // ── T3a — THE REVIEWER'S OPEN POINTS, AT THE TOP OF THE BODY ──────────────────────────────────────
   //
-  // `driver/skills/prelim-search/SKILL.md:241` says where: "a prominent Reviewer's open questions section at the TOP of the body
+  // `driver/skills/clearance-search/SKILL.md` says where: "a prominent Reviewer's open questions section at the TOP of the body
   // (the driver passes them in)". That sentence has been true of the contract and false of the code
   // since deleted the driver's half; this is the half coming back.
   //
@@ -8989,7 +9015,7 @@ async function pipelineInner(job, opts = {}) {
     // Phase 0 done in code (slug/codename/run-dir/customer). Phase 1+2 stages:
     must(await stage("matter-frame", ctx), "matter-frame");
     await deriveIntakeAsks(ctx);   // A6: freeze the intake-ask register (one save-only followup if the section is missing)
-    must(await stage("prelim-variants", ctx), "prelim-variants");
+    must(await stage("clearance-variants", ctx), "clearance-variants");
     deriveScopeLedgerJson(ctx);   // frame-omission design: code-derive scope-ledger.json from the validated prose (never-kill)
     deriveFormNeighbourhood(ctx); // mechanical FORM band: code-derive form-neighbourhood.json from the manifest's distinctive element(s) — the model-free form floor the register funnel searches (never-kill)
     await verifyAndRecordHouseElement(ctx, opts);   // ask the register who owns the frame's proposed house element, BEFORE the plan is compiled from it
@@ -9803,7 +9829,7 @@ async function pipelineInner(job, opts = {}) {
       const dispatchStartedMs = Date.now();
       try {
         const r = await planExec({ planPath: P.registerPlan, axis: a, outputPath: P.registerBand(a), ...(qids?.length ? { qids } : {}) },
-          { agentId: agent, sessionKey: `prelim-${run.slug}-${run.codename}-register-unit-${a}`, recordLog: runRecordLogPath(run.runDir) });
+          { agentId: agent, sessionKey: `clearance-${run.slug}-${run.codename}-register-unit-${a}`, recordLog: runRecordLogPath(run.runDir) });
         outcome = r?.ok ? "ok" : `failed: ${String(r?.cause ?? "unknown").slice(0, 140)}`;
       } catch (err) { outcome = `threw: ${String(err?.message ?? err).slice(0, 140)}`; }
       // — MEASURE WHETHER THE HOLE CLOSED, not whether the phone was answered. `outcome` is the
@@ -9890,7 +9916,7 @@ async function pipelineInner(job, opts = {}) {
       // production default is ON.
       if (process.env.CLEAROTRON_BAND_TRUTH_GATE !== "0"
         && unitKey[a] && existsSync(P.registerBand(a)) && (ctx.registerPlan?.entries ?? []).some((e) => e?.axis === a)) {
-        const laneKey = `prelim-${run.slug}-${run.codename}-register-unit-${a}`;
+        const laneKey = `clearance-${run.slug}-${run.codename}-register-unit-${a}`;
         const bandHasQids = (() => {
           try { const b = JSON.parse(readFileSync(P.registerBand(a), "utf8")); return Array.isArray(b) && b.some((x) => x && typeof x === "object" && x.qid); }
           catch { return false; /* parse defects are the stage validator's problem, not this gate's */ }
@@ -9963,7 +9989,7 @@ async function pipelineInner(job, opts = {}) {
           if (!digestLocked && repairLedger.canAttempt("taint-rerun", a, { max: taintRerunMax, epoch: repairEpoch })) {
             note(`register-unit ${a}: taint-rerun — one fresh re-run (fresh session; a killed session is never warm-resumed)`);
             const r = await stage("register-unit", { ...ctx, axis: a },
-              { force: true, trigger: "taint-rerun", sessionKey: `prelim-${run.slug}-${run.codename}-register-unit-${a}-taint-rerun-${recoveryAttempts}` });
+              { force: true, trigger: "taint-rerun", sessionKey: `clearance-${run.slug}-${run.codename}-register-unit-${a}-taint-rerun-${recoveryAttempts}` });
             repairLedger.record("taint-rerun", a, r.ok ? "ok" : `failed: ${String(r.fail ?? "unknown").slice(0, 100)}`, { epoch: repairEpoch, max: taintRerunMax });
             repairs.push(`taint-rerun:${r.ok ? "ok" : `failed: ${String(r.fail ?? "unknown").slice(0, 60)}`}`);
             if (r.ok && r.sessionKey) unitKey[a] = r.sessionKey;
@@ -10288,7 +10314,7 @@ async function pipelineInner(job, opts = {}) {
             runLog(run.runDir, { event: "plan-qids-missing", axis: a, qids: entries.map((e) => e.qid), action: "fresh-execute-plan" });
             note(`register-unit ${a}: ${entries.length} dictated plan entr${entries.length === 1 ? "y" : "ies"} unexecuted on a resumed-past axis — one fresh execute_plan-only call`);
             const freshMsg = repairFollowup("register-unit:plan-join-fresh", { axis: a, registerPlan: P.registerPlan, bandPath: P.registerBand(a) });
-            const rf = await stage("register-unit", { ...ctx, axis: a }, { force: true, freshMessage: freshMsg, sessionKey: `prelim-${ctx.run.slug}-${ctx.run.codename}-register-unit-${a}-plan-join-fresh`, trigger: "plan-join-fresh" });
+            const rf = await stage("register-unit", { ...ctx, axis: a }, { force: true, freshMessage: freshMsg, sessionKey: `clearance-${ctx.run.slug}-${ctx.run.codename}-register-unit-${a}-plan-join-fresh`, trigger: "plan-join-fresh" });
             if (!rf.ok) note(`register-unit ${a}: fresh execute_plan call failed (${rf.fail}) — the plan-unexecuted StageFailure below holds the line`);
             continue;
           }
@@ -11113,7 +11139,7 @@ async function pipelineInner(job, opts = {}) {
                 note(`frame-reopen: ${a} timed out — ONE fresh SCOPED retry through the fallback chain (backup provider + retries)`);
                 const retryMsg = repairFollowup("register-unit:frame-reopen-retry", { paths: P, axis: a, directives: regDirectives, reopenFetchCap,
                   supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane });
-                const r2 = await stage("register-unit", { ...ctx, axis: a }, { force: true, freshMessage: retryMsg, sessionKey: `prelim-${ctx.run.slug}-${ctx.run.codename}-register-unit-${a}-reopen-retry`, trigger: "frame-reopen-retry" });
+                const r2 = await stage("register-unit", { ...ctx, axis: a }, { force: true, freshMessage: retryMsg, sessionKey: `clearance-${ctx.run.slug}-${ctx.run.codename}-register-unit-${a}-reopen-retry`, trigger: "frame-reopen-retry" });
                 if (r2.ok && existsSync(P.registerUnit(a)) && readFileSync(P.registerUnit(a), "utf8") !== beforeUnit) {
                   changedAxes.push(a); regChanged = true; regMechFail = null;
                   note(`frame-reopen: ${a} fresh scoped retry closed the gap`);
@@ -11884,7 +11910,7 @@ async function pipelineInner(job, opts = {}) {
     // violating after that one recovery pass is disclosed as unexamined + clamps the verdict (owner
     // decision 2026-07-22 — the terminal branch below); the gate never silently passes a drop.
     {
-      const runPrefix = `prelim-${run.slug}-${run.codename}-`;
+      const runPrefix = `clearance-${run.slug}-${run.codename}-`;
       // Re-read the findings + recompute the fetched universe on EACH check (the recovery re-digest rewrites
       // the findings AND may record_fetch the flagged URIs — both must be picked up on the post-recovery
       // check). V4-1: the fetched universe is the DELIVERED ARTIFACT SET's records (run-dir _records/ ∪ this
@@ -12206,7 +12232,7 @@ async function pipelineInner(job, opts = {}) {
             regions: ctx.registerPlan?.regions ?? [], entries,
           }, null, 2) + "\n");
           const r = await planExec({ planPath: ccPlanPath, axis: CROWD_CONTEXT_AXIS, outputPath: ccBandPath },
-            { agentId: ctx.agent, sessionKey: `prelim-${run.slug}-${run.codename}-crowd-context`, recordLog: runRecordLogPath(run.runDir) });
+            { agentId: ctx.agent, sessionKey: `clearance-${run.slug}-${run.codename}-crowd-context`, recordLog: runRecordLogPath(run.runDir) });
           if (!r?.ok) throw new Error(String(r?.cause ?? "crowd-context plan execution failed").slice(0, 200));
           const blocks = JSON.parse(readFileSync(ccBandPath, "utf8"));
           return Array.isArray(blocks) ? blocks : [];
@@ -12246,7 +12272,7 @@ async function pipelineInner(job, opts = {}) {
     // on fetched records) as a structured aim-attention artifact for synthesis. Best-effort; NEVER a
     // rating rule (explicitly not the rejected escalation filter) — absence writes nothing.
     try {
-      const { records } = assembleRunRecords(run.runDir, `prelim-${run.slug}-${run.codename}-`);
+      const { records } = assembleRunRecords(run.runDir, `clearance-${run.slug}-${run.codename}-`);
       const signals = extractEnforcerSignals(records);
       if (signals.length) {
         writeFileSync(`${P.enforcerSignals}.tmp`, JSON.stringify({ signals }, null, 2) + "\n");
@@ -12788,7 +12814,7 @@ async function pipelineInner(job, opts = {}) {
                 status: r?.screen?.status ?? r?.status, live_status: r?.screen?.live_status });
             }
           } catch { /* no merged band (legacy run) — fetched-record facts alone rank */ }
-          const srPrefix = `prelim-${run.slug}-${run.codename}-`;
+          const srPrefix = `clearance-${run.slug}-${run.codename}-`;
           let srRecords = assembleRunRecords(run.runDir, srPrefix).records;
           const srFetcher = opts.recordFetcher ?? defaultRecordFetcher;
           const srLedger = ctx.repairLedger ?? (ctx.repairLedger = createRepairLedger(run.runDir, { log: (o) => runLog(run.runDir, o) }));
@@ -12862,7 +12888,7 @@ async function pipelineInner(job, opts = {}) {
         const carriedUris = (pf?.findings ?? []).flatMap((f) =>
           Array.isArray(f?.owner?.registrations) ? f.owner.registrations : []
         ).map((r) => r?.uri && (normalizeRecordUri(r.uri) || String(r.uri).trim())).filter(Boolean);
-        const fetchedUris = [...assembleRunRecords(run.runDir, `prelim-${run.slug}-${run.codename}-`).records.keys()];
+        const fetchedUris = [...assembleRunRecords(run.runDir, `clearance-${run.slug}-${run.codename}-`).records.keys()];
         const rfMd = existsSync(P.registerFindings) ? readFileSync(P.registerFindings, "utf8") : "";
         const violations = findRecallRegressionViolations({
           knownConflicts, searchedNames: namesForRecall, carriedUris, fetchedUris,
@@ -13221,22 +13247,22 @@ async function pipelineInner(job, opts = {}) {
       // lawyer-judged/disclosed residue only.
       if (coverageInsufficient || frameResidual || screenGateGap || seniorGap || registerGap || deadlineGap) {
         // THESE SENTENCES REACH A CLIENT AND THEY ARE NOT OURS TO WRITE (owner, 2026-09-17). One of
-        // them — the screen-gate line, which says a mark "could not be record_fetched" — carries an
+        // them — the screen-gate line, which says a mark "could not be record_fetched" — carried an
         // engine identifier into the list a client reads as the conditions on their result, by a route
-        // `terminalClampDecision` guards and this one does not. A reader's sentence for it was written
-        // here and refused: the objection was the class, not the wording. It is on the owner's design
-        // table as audit item 25, and until he rules, this stays exactly as it was rather than carrying
-        // a caveat a developer composed.
-        const reasons = [];
-        const machinery = (reason) => reasons.push(reason);
+        // `terminalClampDecision` guards and this one did not. A reader's sentence for it was written
+        // here and refused: the objection was the class, not the wording. RULED 2026-09-18, design item
+        // 25 — cut the clause: it stays in the run record and leaves the client's result entirely, with
+        // NOTHING written in its place. That is what the `null` clause below means.
+        const reasons = [], clauseOf = new Map();   // run-record reason → the client's clause: the same words, with any engine token taken out
+        const machinery = (reason, clause = reason) => { reasons.push(reason); clauseOf.set(reason, clause); };
         if (coverageInsufficient) machinery(`the lawyer judged a material slice not fully cleared: ${coverageJudgment.reason || "register coverage gap"}`);
         if (frameGap) machinery("the blind frame-diff flagged a dominant-element omission the reopen pass did not close");
         else if (frameDeferrals.length) machinery(`follow-ups left open this run: ${frameDeferrals.map((d) => plainDirective(d.directive)).slice(0, 3).join(", ")}`);
-        if (screenGateGap) machinery(`${sgUnresolved.length} in-scope mark(s) dropped on goods could not be record_fetched (unverified): ${sgUnresolved.map((g) => g.mark).join(", ")}`);
+        if (screenGateGap) machinery(`${sgUnresolved.length} in-scope mark(s) dropped on goods could not be record_fetched (unverified): ${sgUnresolved.map((g) => g.mark).join(", ")}`, null);   // run record ONLY: no client clause (ruled 2026-09-18)
         if (seniorGap) machinery(`the oldest registration in a verdict-driving family could not be retrieved (policy: clamp): ${(ctx.seniorRights?.rows ?? []).filter((r) => r.applicable && !r.verified).map((r) => r.mark).join(", ")}`);
         if (registerGap) {
-          if (regGap.deferred.length) machinery(`register coverage deferred on ${[...new Set(regGap.deferred.map((g) => g.axis))].join(", ")} — the search did not finish and must be re-run before this can be relied on`);
-          if (regGap.taintAxes.length) machinery(`the ${regGap.taintAxes.join(", ")} register pass was cut down at the timeout wall and its self-reported coverage is unverified`);
+          for (const { reason, clause } of registerGapConditions(regGap)) machinery(reason, clause);
+          // (the deferred and cut-down register lines: registerGapConditions, at the end of this file)
           // Named regressions (2026-07-22): `<MARK> (<owner> — <canonical uri>)` — a bare mark name
           // shipped "ION, ION, ION" (three indistinguishable strings); the identity is front-loaded
           // because the delivered statement truncates from the tail.
@@ -13268,7 +13294,7 @@ async function pipelineInner(job, opts = {}) {
         // APPEND (dedup by exact text) — the legalActions arm may already have recorded conditions,
         // and this callable runs more than once (degenerate re-ask, lint repair, post-consolidation).
         const freshMachinery = reasons.filter((r) => !clampReasons.includes(r));
-        clampClauses.push(...freshMachinery);   // machinery reasons ARE factual open-states — clause == reason
+        clampClauses.push(...freshMachinery.map((r) => (clauseOf.has(r) ? clauseOf.get(r) : r)));   // the clause is the reason less any engine token; null = the run record's alone
         clampReasons.push(...freshMachinery);
         // The reason KINDS distinguish coverage/frame/screen-gate/senior-right/register residue for the
         // report bound line and the client conditions row (merged — legalActions survives).
@@ -13386,7 +13412,7 @@ async function pipelineInner(job, opts = {}) {
     // review goes." This REVERSES T3 (H3/H5), whose flip to fail-on-BLOCKING is itself recorded
     // itself an owner-approved decision. Both are his; this is the standing one, and the
     // history is kept here rather than deleted because a reader who finds only one of them will conclude
-    // the code drifted from its contract. (It did not; driver/skills/prelim-search/SKILL.md:241/295 was the stale half, and this
+    // the code drifted from its contract. (It did not; driver/skills/clearance-search/SKILL.md was the stale half, and this
     // change makes it true again.)
     //
     // COPPER-SPIRE IS STILL ANSWERED, AND NOT BY REFUSING. That failure was a BLOCKING verdict reaching
@@ -14281,7 +14307,7 @@ async function pipelineInner(job, opts = {}) {
     // the spec's "blocks delivery", approved 2026-06-10: delivering nothing is worse than delivering good
     // work with one clearly-labelled defect — and code-produced defects would deadlock a block.)
     {
-      const lintPrefix = `prelim-${run.slug}-${run.codename}-`;
+      const lintPrefix = `clearance-${run.slug}-${run.codename}-`;
       // V4-1: the gates evaluate the artifact set assembled for THIS delivery — run-dir _records/
       // (inherited or prior-session) ∪ this-session ledger rows — never the session-prefixed ledger
       // alone (empty on a fork ⇒ the vacuous registry pass that shipped a false citation).
@@ -14886,7 +14912,7 @@ async function pipelineInner(job, opts = {}) {
           Array.isArray(f?.owner?.registrations) ? f.owner.registrations : []
         ).map((r) => r?.uri && (normalizeRecordUri(r.uri) || String(r.uri).trim())).filter(Boolean);
         const executedQids = (ctx.planExecution?.executed ?? []).map((x) => x.qid);
-        const fetchedUrisForRecall = [...assembleRunRecords(run.runDir, `prelim-${run.slug}-${run.codename}-`).records.keys()];
+        const fetchedUrisForRecall = [...assembleRunRecords(run.runDir, `clearance-${run.slug}-${run.codename}-`).records.keys()];
         const regLedgerRows = loadCoverageLedger(run.runDir).rows;
         // judgment-relocation (2026-06-23): the search-shape gate (findFloorShapeGaps) was DELETED here too —
         // sufficiency is judgment's call (coverage_judgment), not a re-parse of the ledger at the surface. This
@@ -15175,7 +15201,7 @@ async function pipelineInner(job, opts = {}) {
     let providerTally = null;
     try {
       const provider = activeProvider().id;
-      const usage = tallyRegisterCalls(DEFAULT_LEDGER_PATH, `prelim-${run.slug}-${run.codename}-`);
+      const usage = tallyRegisterCalls(DEFAULT_LEDGER_PATH, `clearance-${run.slug}-${run.codename}-`);
       runLog(run.runDir, { event: "provider-usage", provider, ...usage });
       writeRunStatus(ctx, { providerUsage: { [provider]: usage } });
       providerTally = { [provider]: usage };
@@ -15814,6 +15840,46 @@ function resolveRun(job, opts) {
 
 // Rebuild the ctx a single stage needs WITHOUT re-running upstream: axes from the persisted manifest, verdict
 // from status.json, publishedUrl from .published. (Mirrors what pipeline() accumulates mid-run.)
+/**
+ * THE JOB A RUN RAN, READ BACK OUT OF THE RUN'S OWN STATUS. PURE.
+ *
+ * `--resume` needs a job file, and the job file is gone by the time a resume is needed: the queue entry
+ * that carried it is consumed when the run starts, and nothing copies it into the run directory. So the
+ * one command that repairs a failed run names a path the box does not have, and the person who finds out
+ * is the person trying to repair it.
+ *
+ * This is not a guess at the job. `seedRunStatus` writes these fields FROM the job the engine ran, so
+ * reading them back is the engine's own record, not a reconstruction of intent. What it cannot carry is
+ * scope, and it does not have to: `reconstructCtx` reads profile and framework from the run's frozen
+ * sidecars with `write: false`, so the run's own configuration governs and the job supplies identity.
+ *
+ * THE CALLER MUST CHECK THE SLUG, and `resumeJobRefusal` below is that check. A rebuilt job that derives
+ * the run's own slug has reproduced the run's identity — `deriveSlug` reads `ref` and `markName` and
+ * nothing else — and one that derives a different slug is a job for a different matter.
+ */
+export function jobFromStatus(status) {   // @internal
+  const s = status ?? {};
+  if (!s.id && !s.ref && !s.markName) return null;   // not a status this can rebuild from
+  return {
+    id: s.id ?? null, ref: s.ref ?? null, markName: s.markName ?? null,
+    classes: Array.isArray(s.classes) ? s.classes : null,
+    forwarder: s.forwarder ?? null,
+  };
+}
+
+/** Why a rebuilt job may not stand in for the run's own, or null when it may. PURE. */
+export function resumeJobRefusal(job, slug) {   // @internal
+  if (!job) return "this run's status.json carries no id, reference or mark name, so the job it ran cannot be read back from it";
+  // EVERY IDENTIFYING FIELD, OR NO REBUILD: a job missing one is a guess at that field, and a resume must not guess.
+  const missing = [["id", job.id], ["markName", job.markName], ["forwarder", job.forwarder]].filter(([, v]) => !v).map(([k]) => k).concat(Array.isArray(job.classes) ? [] : ["classes"]);
+  if (missing.length) return `this run's status.json carries no ${missing.join(", ")}, so the job it ran cannot be read back whole — pass --job <file.json> rather than resume on a guess`;
+  const derived = deriveSlug(job);
+  if (derived !== slug)
+    return `the job rebuilt from this run's status.json derives ${derived}, and the run directory is ${slug} — `
+      + "they are different matters, so the rebuild is refused rather than resumed into the wrong run";
+  return null;
+}
+
 export function reconstructCtx(job, opts) {   // @internal
   const run = resolveRun(job, opts);
   const P = paths(run.runDir);
@@ -15996,7 +16062,7 @@ export async function repairStale(job, opts = {}) {   // @internal
 
 // --experiment <stage>: re-run ONE stage SANDBOXED — no canonical ARTIFACT is read back or overwritten. The
 // stage reads COPIES of its canonical inputs from a shadow dir and writes its output there; a distinct
-// `prelim-exp-…` session key never collides with the canonical session AND sorts outside the run's
+// `clearance-exp-…` session key never collides with the canonical session AND sorts outside the run's
 // provider-usage prefix (experiment Corsearch calls are not billed to the canonical run). Single-model by
 // design (the canonical primary unless --model overrides) so the comparison is clean.
 //
@@ -16193,7 +16259,7 @@ async function runExperimentInner(job, opts) {
     // so a run with no case-law layer must arrive as null here too, never as an absent key.
     for (const f of inlineDecl.fields) shadowCtx[f] = resolved[f] ?? null;
   }
-  const sessionKey = `prelim-exp-${ctx.run.slug}-${ctx.run.codename}-${name}${axis ? `-${axis}` : ""}-${ts}`;
+  const sessionKey = `clearance-exp-${ctx.run.slug}-${ctx.run.codename}-${name}${axis ? `-${axis}` : ""}-${ts}`;
   let { text: extra, ids: extraIds } = experimentExtra(shadowCtx, name, opts);
 
   // — THE CORRECTIVE PASS, on a COLD turn, and it says which pass it reproduced.
@@ -16455,8 +16521,13 @@ export function retiredEnvWarnings(env = process.env) {
 // ABSOLUTE PATHS on purpose: this line is read hours later, possibly from a different directory, and a
 // relative path that silently resolves somewhere else would be a worse answer than no line at all.
 export function resumeCommand({ script, jobPath, codename, agent = null }) {   // @internal
-  if (!script || !jobPath || !codename) return null;
-  return `node ${script} --job ${jobPath}${agent ? ` --agent ${agent}` : ""} --resume ${codename}`;
+  // THE IDENTITY IS THE CODENAME, NOT THE JOB PATH, and requiring both is what made this print nothing
+  // on the failures that most needed it. A resume rebuilds the job from the run's own status when no
+  // `--job` is given, so a command without one is valid — and it is the only valid one by the time a
+  // failure has made a resume necessary, because the queue entry carrying the job is long consumed.
+  // Requiring a path here meant every such failure was told "nothing to resume", which was false.
+  if (!script || !codename) return null;
+  return `node ${script}${jobPath ? ` --job ${jobPath}` : ""}${agent ? ` --agent ${agent}` : ""} --resume ${codename}`;
 }
 
 // The stderr lines a non-clean exit owes its reader, as an array (empty = say nothing further).
@@ -16555,7 +16626,7 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   let a;
   try { a = parseArgv(process.argv.slice(2)); }
   catch (e) { console.error(`error: ${e.message}`); console.error(USAGE); process.exit(2); }
-  if (!a.job) { console.error(USAGE); process.exit(2); }
+  if (!a.job && !a.codename) { console.error(USAGE); process.exit(2); }   // --resume alone rebuilds the job below
   // composition guards
   if (a.fromStage && !a.codename) { console.error("error: --from requires --resume <codename>"); process.exit(2); }
   if (a.experiment && !a.codename) { console.error("error: --experiment requires --resume <codename>"); process.exit(2); }
@@ -16577,8 +16648,47 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   // mistake a first-time reader is likeliest to make. Kept guarded here through the rebase — the
   // pool check above is a separate refusal and must not swallow this one.
   let job;
-  try { job = JSON.parse(readFileSync(a.job, "utf8")); }
-  catch (e) { console.error(`error: cannot read job file ${a.job} — ${e.message}`); process.exit(2); }
+  if (!a.job && a.codename) {
+    // ── RESUMING A RUN WHOSE JOB FILE THE BOX NO LONGER HAS ───────────────────────────────────────
+    //
+    // The queue entry carrying the job is consumed when the run starts, so by the time a failure makes
+    // a resume necessary the input needed to perform it is already gone — and the exit advice printed
+    // on that failure composes a command naming a path that is not there. Rebuilt from the run's own
+    // status.json, which the engine wrote FROM the job it ran, and refused unless the rebuild derives
+    // this run's own slug.
+    //
+    // The scan is what makes it possible at all: finding a run by codename needs its slug, and the
+    // slug comes from the job, which is the thing being rebuilt. So the studio root's matters are
+    // scanned for the one holding a run dir with this codename. `findRunDirFor` decides what counts as
+    // that leaf, imported rather than re-spelled here — a second private copy of the leaf rule is how
+    // a reclaim and a resume come to disagree about which directory is the run. The import is lazy
+    // because runner.mjs imports THIS module; at this point both are loaded and nothing cycles.
+    const { findRunDirFor } = await import("./runner.mjs");
+    const studioRoot = a.agent ? config.studioRootForAgent(a.agent) : config.studioRoot;
+    const archiveRoot = a.agent ? config.archiveRootForAgent(a.agent) : config.archiveRoot;
+    let found = null;
+    try {
+      for (const slug of readdirSync(studioRoot)) {
+        const hit = findRunDirFor({ codename: a.codename, slug, studioRoot, archiveRoot });
+        if (hit) { found = { ...hit, slug }; break; }
+      }
+    } catch (e) { console.error(`error: cannot read the studio root ${studioRoot} — ${e.message}`); process.exit(2); }
+    if (!found) {
+      console.error(`error: no run directory for --resume ${a.codename} under ${studioRoot}`);
+      console.error("       pass --job <file.json> if the run lives somewhere this cannot see.");
+      process.exit(2);
+    }
+    let status = null;
+    try { status = JSON.parse(readFileSync(join(found.dir, "status.json"), "utf8")); }
+    catch (e) { console.error(`error: cannot read ${join(found.dir, "status.json")} — ${e.message}`); process.exit(2); }
+    job = jobFromStatus(status);
+    const refusal = resumeJobRefusal(job, found.slug);
+    if (refusal) { console.error(`error: ${refusal}`); process.exit(2); }
+    console.error(`[pipeline] --job not given; rebuilt the job for ${a.codename} from ${join(found.dir, "status.json")} (slug ${found.slug} confirmed)`);
+  } else {
+    try { job = JSON.parse(readFileSync(a.job, "utf8")); }
+    catch (e) { console.error(`error: cannot read job file ${a.job} — ${e.message}`); process.exit(2); }
+  }
   // Manual runs: if --agent is given, root the run-dir in that agent's workspace too (mirrors the runner).
   const base = a.agent
     ? { agent: a.agent, studioRoot: config.studioRootForAgent(a.agent), archiveRoot: config.archiveRootForAgent(a.agent) }
@@ -16590,7 +16700,10 @@ if (isEntrypoint(import.meta.url)) void (async () => {
     ? { ...base, codename: a.codename, experiment: a.experiment, model: a.model, instructions: a.instructions, axis: a.axis, label: a.label, dispatchTrigger: a.dispatchTrigger }
     : { ...base, codename: a.codename, fromStage: a.fromStage };
   const script = resolve(fileURLToPath(import.meta.url));
-  const advise = (o) => { for (const line of resumeAdvice({ script, jobPath: resolve(a.job), agent: a.agent ?? null, experiment: Boolean(a.experiment), ...o })) console.error(line); };
+  // `jobPath` is null on a rebuilt resume, so the advice composes a command that does not name a file
+  // the box does not have — which is the whole defect this path exists to close, and printing it again
+  // in the exit advice would reintroduce it one layer along.
+  const advise = (o) => { for (const line of resumeAdvice({ script, jobPath: a.job ? resolve(a.job) : null, agent: a.agent ?? null, experiment: Boolean(a.experiment), ...o })) console.error(line); };
 
   // ── the laptop case: a closed lid, a shutdown, a ^C ────────────────────────────────────────────────
   // Until now this CLI had NO signal handler: node's default die-now killed the process mid-stage, the run
@@ -16693,3 +16806,28 @@ if (isEntrypoint(import.meta.url)) void (async () => {
 //
 // Move it to the top the day those citations name symbols instead of numbers — which is what
 // CONTRIBUTING.md asks for, and what makes them checkable at all.
+
+/**
+ * The verdict conditions for an unfinished register search: the run record's sentence, and the client's.
+ *
+ * THE CLIENT'S CLAUSE IS THE SAME SENTENCE WITH THE ENGINE TOKEN TAKEN OUT (ruled 2026-09-18). The axis
+ * names — `primary-sweep`, `incumbent-class` — are how the engine files a register slice, and they reached
+ * the verdict a client reads as "register coverage deferred on primary-sweep". Nothing is written in their
+ * place: the client reads the remaining words, and the run record keeps the axes for whoever repairs the run.
+ * PURE.
+ *
+ * @returns {{ reason: string, clause: string }[]}
+ */
+export function registerGapConditions(regGap) {   // @internal
+  const out = [];
+  const deferredAxes = [...new Set((regGap?.deferred ?? []).map((g) => g?.axis).filter(Boolean))];
+  if ((regGap?.deferred ?? []).length) out.push({
+    reason: `register coverage deferred on ${deferredAxes.join(", ")} — the search did not finish and must be re-run before this can be relied on`,
+    clause: "register coverage deferred — the search did not finish and must be re-run before this can be relied on",
+  });
+  if ((regGap?.taintAxes ?? []).length) out.push({
+    reason: `the ${regGap.taintAxes.join(", ")} register pass was cut down at the timeout wall and its self-reported coverage is unverified`,
+    clause: "the register pass was cut down at the timeout wall and its self-reported coverage is unverified",
+  });
+  return out;
+}

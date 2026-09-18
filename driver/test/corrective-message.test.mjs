@@ -9,7 +9,7 @@ import { correctiveMessage, warmPatchMessage, TOOL_WRITTEN_ARTIFACTS } from "../
 const BASE = "Produce the register digest.";
 // — a synthetic path, not an operator's. What this fixture needs is a plausible ABSOLUTE run path;
 // naming a specific account made it wrong under every other service account and in every public clone.
-const FILE = "/srv/agentplatform/workspace-clawdi/studio/prelim-search/run/register-findings.md";
+const FILE = "/srv/agentplatform/workspace-clawdi/studio/clearance-search/run/register-findings.md";
 
 test("attempt 1 → base message verbatim (no correction), even with a prior fail set", () => {
   assert.equal(correctiveMessage(BASE, 1, "invalid_file:x:missing:findings+ledger", FILE), BASE);
@@ -20,13 +20,13 @@ test("attempt >1 after a content failure → appends a CORRECTION naming the rea
   assert.ok(m.startsWith(BASE));
   assert.match(m, /CORRECTION:/);
   assert.match(m, /missing:findings\+ledger/);              // the fail reason rides in
-  assert.match(m, /prelim-search\/run\/register-findings\.md/); // the expectFile, relativized
+  assert.match(m, /clearance-search\/run\/register-findings\.md/); // the expectFile, relativized
   const mm = correctiveMessage(BASE, 3, "missing_file:run/register-findings.md", FILE);
   assert.match(mm, /CORRECTION:/);
 });
 
 test("reason-aware hint: a use_check_missing failure tells synthesis to add the Use-check source line", () => {
-  const m = correctiveMessage("Synthesize.", 2, "invalid_file:run/narrative.md:use_check_missing:Finding 1 — Myrkur", "/x/prelim-search/run/narrative.md");
+  const m = correctiveMessage("Synthesize.", 2, "invalid_file:run/narrative.md:use_check_missing:Finding 1 — Myrkur", "/x/clearance-search/run/narrative.md");
   assert.match(m, /Use-check source:/);
   assert.match(m, /perplexity_research/);
   assert.match(m, /use_check_missing/);            // the raw reason still rides in
@@ -34,30 +34,30 @@ test("reason-aware hint: a use_check_missing failure tells synthesis to add the 
   // on a FORM-armed run (the seat writes no table there) and `findings+ledger` on one with no form —
   // the floor is armed by the same condition as the gate that replaces it, so BOTH tokens are live and
   // both must route to a hint that names what is missing.
-  const d = correctiveMessage("Digest.", 2, "invalid_file:run/register-findings.md:missing:findings-heading", "/x/prelim-search/run/register-findings.md");
+  const d = correctiveMessage("Digest.", 2, "invalid_file:run/register-findings.md:missing:findings-heading", "/x/clearance-search/run/register-findings.md");
   assert.match(d, /a findings heading/);
-  assert.match(correctiveMessage("Digest.", 2, "invalid_file:run/register-findings.md:missing:findings+ledger", "/x/prelim-search/run/register-findings.md"),
+  assert.match(correctiveMessage("Digest.", 2, "invalid_file:run/register-findings.md:missing:findings+ledger", "/x/clearance-search/run/register-findings.md"),
     /Coverage ledger with a status row/, "an unstamped run still owes the table, and the hint says so");
 });
 
 test("WS-A coverage_* tokens get the JSON-mirror hint — NOT the common-law prose-sections hint (collision guard)", () => {
   const m = correctiveMessage("Digest.", 2,
     "invalid_file:run/register-findings.md:coverage_status_invalid:coverage-limited (count-only, saturated) (EXACTLY one bare token…)",
-    "/x/prelim-search/run/register-findings.md");
+    "/x/clearance-search/run/register-findings.md");
   assert.match(m, /register-coverage-ledger\.json/);
   assert.match(m, /bare token/);
   assert.match(m, /coverage_status_invalid/);                 // the offending token is quoted back
   // the legacy branch /negative-results|coverage-ledger|audit-trail/ must NOT capture the underscore token
   assert.doesNotMatch(m, /Negative results matrix/);
-  const a = correctiveMessage("Digest.", 2, "invalid_file:run/register-findings.md:coverage_axis_missing:incumbent-class", "/x/prelim-search/run/register-findings.md");
+  const a = correctiveMessage("Digest.", 2, "invalid_file:run/register-findings.md:coverage_axis_missing:incumbent-class", "/x/clearance-search/run/register-findings.md");
   assert.match(a, /coverage_axis_missing:incumbent-class/);
 });
 
 test("shipped grid tokens now carry reason-aware hints (grid_join_missing / grid_ledger_unparseable)", () => {
-  const j = correctiveMessage("Sweep.", 2, "invalid_file:run/common-law-findings.md:grid_join_missing:novapulse:5/7", "/x/prelim-search/run/common-law-findings.md");
+  const j = correctiveMessage("Sweep.", 2, "invalid_file:run/common-law-findings.md:grid_join_missing:novapulse:5/7", "/x/clearance-search/run/common-law-findings.md");
   assert.match(j, /common-law-grid\.json/);
   assert.match(j, /novapulse:5\/7/);                             // the short variants ride into the hint
-  const u = correctiveMessage("Sweep.", 2, "invalid_file:run/common-law-findings.md:grid_ledger_unparseable:batch missing cells[]", "/x/prelim-search/run/common-law-findings.md");
+  const u = correctiveMessage("Sweep.", 2, "invalid_file:run/common-law-findings.md:grid_ledger_unparseable:batch missing cells[]", "/x/clearance-search/run/common-law-findings.md");
   assert.match(u, /VERBATIM/);
   assert.match(u, /no reformatting/);
 });
@@ -74,9 +74,9 @@ test("no prior fail → base message (guards the first iteration's undefined las
 });
 
 test("expectFile accepts an array; all names appear relativized", () => {
-  const m = correctiveMessage(BASE, 2, "invalid_file:x:reason", [FILE, "/x/prelim-search/run/audit.md"]);
+  const m = correctiveMessage(BASE, 2, "invalid_file:x:reason", [FILE, "/x/clearance-search/run/audit.md"]);
   assert.match(m, /register-findings\.md/);
-  assert.match(m, /prelim-search\/run\/audit\.md/);
+  assert.match(m, /clearance-search\/run\/audit\.md/);
 });
 
 // ── T1: the run-health hint branches (J1b / J3b / J6) ──────────────────────────────────────────
@@ -131,7 +131,7 @@ test("spec-49 T9 (A2): intake_ask_unanswered names the count and orders the ask-
 // records". runStage derives the lane from excludeTools (the ONE observable of the plan's contract in
 // gateway.mjs) and threads it here as a TRAILING option, so every positional caller is untouched.
 const COLLAPSED = "invalid_file:run/register-units/primary-sweep.md:named_band_collapsed:exact HALCYON~412";
-const UNIT = "/x/prelim-search/run/register-units/primary-sweep.md";
+const UNIT = "/x/clearance-search/run/register-units/primary-sweep.md";
 
 test("named_band_collapsed on the supplemental lane: repair via the executor qid or a RE-PROPOSE, never by hand", () => {
   const m = correctiveMessage("Run the unit.", 2, COLLAPSED, UNIT, { supplementalLane: true });
@@ -191,14 +191,14 @@ test("A6: max_tokens_no_output wrapping a content fail → the correction names 
   // is still hand-written. `ordersWriteFor` derives that rather than naming it, so the next conversion
   // re-points this arm instead of breaking it.
   const HAND_WRITTEN = handWrittenArtifact();
-  const m = correctiveMessage(BASE, 2, `max_tokens_no_output:missing_file:run/${HAND_WRITTEN}`, `/x/prelim-search/run/${HAND_WRITTEN}`);
+  const m = correctiveMessage(BASE, 2, `max_tokens_no_output:missing_file:run/${HAND_WRITTEN}`, `/x/clearance-search/run/${HAND_WRITTEN}`);
   assert.match(m, /CORRECTION:/);
   assert.match(m, /maximum output-token ceiling/);
   assert.match(m, /stop_reason max_tokens/);
   assert.match(m, /CALL THE WRITE TOOL/);
   assert.match(m, new RegExp(`missing_file:run/${HAND_WRITTEN.replace(".", "\\.")}`), "the underlying validator string still rides in");
   // a wrapped invalid_file keeps its reason-aware hint too
-  const v = correctiveMessage(BASE, 2, "max_tokens_no_output:invalid_file:run/narrative.md:use_check_missing:F1", "/x/prelim-search/run/narrative.md");
+  const v = correctiveMessage(BASE, 2, "max_tokens_no_output:invalid_file:run/narrative.md:use_check_missing:F1", "/x/clearance-search/run/narrative.md");
   assert.match(v, /maximum output-token ceiling/);
   assert.match(v, /Use-check source:/, "the content hint derivation reads the INNER fail");
 });
@@ -207,7 +207,7 @@ test("A6: the BARE max_tokens_no_output fault (transport-shaped turn) still gets
   const m = correctiveMessage(BASE, 2, "max_tokens_no_output", FILE);
   assert.match(m, /CORRECTION:/);
   assert.match(m, /maximum output-token ceiling/);
-  assert.match(m, /prelim-search\/run\/register-findings\.md/, "the required file is named");
+  assert.match(m, /clearance-search\/run\/register-findings\.md/, "the required file is named");
   // and the non-max_tokens transport failures keep today's behavior: no correction text at all
   assert.equal(correctiveMessage(BASE, 2, "nonzero_exit_1", FILE), BASE);
   assert.equal(correctiveMessage(BASE, 2, "timeout", FILE), BASE);

@@ -151,7 +151,7 @@ test("ledger: reply dedups; same-msgId/different-matter/stale do NOT; a failed r
 });
 
 test("integration: signature + same-mark-thread dedup park .duplicate; distinct-mark thread + dupOverride run", async () => {
-  const q = join(root, "workspace-clawdi", "studio", "prelim-search", "queue");
+  const q = join(root, "workspace-clawdi", "studio", "clearance-search", "queue");
   mkdirSync(q, { recursive: true });
   // (1) SAME matter, two messages (original + "please proceed"), casing/class-order drift, NO conversationId
   //     — exercises the MATTER-SIGNATURE dimension.
@@ -179,7 +179,7 @@ test("integration: signature + same-mark-thread dedup park .duplicate; distinct-
   // — BEFORE the assertions below. If the runner refused before any run
   // started, every count below is 0 for a reason that has nothing to do with what is under test,
   // and the packets beside the queue already say what it was.
-  refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.dedup.test.mjs");
+  refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.dedup.test.mjs");
 
   // (1) matter-signature dedup: exactly one VELTRIPHEN ran, the other parked BY SIGNATURE.
   const velDone = ["vel-orig", "vel-reply"].filter((b) => existsSync(join(q, `${b}.done`)));
@@ -192,7 +192,7 @@ test("integration: signature + same-mark-thread dedup park .duplicate; distinct-
   assert.match(velReason, /to force .*"dupOverride": true/, "reason explains how to force a run (dupOverride)");
   assert.match(velReason, /notify: packet /);
   // handoff default: the duplicate-skip notice is a self-contained outbox event packet, not a gateway ping.
-  const dupPacket = JSON.parse(readFileSync(join(root, "prelim-outbox", `intake-${velDup[0]}.duplicate.pending`), "utf8"));
+  const dupPacket = JSON.parse(readFileSync(join(root, "clearance-outbox", `intake-${velDup[0]}.duplicate.pending`), "utf8"));
   assert.equal(dupPacket.kind, "duplicate-skipped");
   // ── THE PARK NAMES ITSELF, AND NAMES WHICH PRIOR RUN ──────────────────────────
   //
@@ -244,14 +244,14 @@ test("integration: signature + same-mark-thread dedup park .duplicate; distinct-
 
   // Ledger records the seeded prior + every RUN matter (vel 1, thr 2, drf 1, other 1, ovr-force 1), never the
   // three parked dups (vel, drf).
-  const ledgerPath = join(root, "workspace-clawdi", "studio", "prelim-search", ".matter-ledger.jsonl");
+  const ledgerPath = join(root, "workspace-clawdi", "studio", "clearance-search", ".matter-ledger.jsonl");
   const ledger = readFileSync(ledgerPath, "utf8").trim().split("\n").map((l) => JSON.parse(l));
   assert.equal(ledger.length, 7, `ledger has the seeded prior + six runs (got ${ledger.length})`);
 
   // One duplicate event packet per parked dup (vel + drf = 2), with the duplicate-skip wording; no
   // intake-rejected packets; and NO gateway calls at all (handoff default — no gateway is ever invoked, so
   // the call log never even comes into existence).
-  const outbox = join(root, "prelim-outbox");
+  const outbox = join(root, "clearance-outbox");
   const dupPackets = readdirSync(outbox).filter((f) => f.startsWith("intake-") && f.endsWith(".duplicate.pending"));
   assert.equal(dupPackets.length, 2, "one duplicate packet per parked dup");
   for (const f of dupPackets) {

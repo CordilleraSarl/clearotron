@@ -9,11 +9,13 @@
 // empty, whose glob broke, or whose regex stopped matching.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { scanCorpus, firesOn } from "../../shared/identifier-scan.mjs";
-import { SENTINELS, SUFFIXABLE } from "../../shared/identifier-sentinels.mjs";
+import { scanCorpus, firesOn, PINNED_DICTIONARIES, CLOUD_ROUTE_CONTEXT } from "../../shared/identifier-scan.mjs";
+import { SENTINELS, SUFFIXABLE, SENTINEL_MODE_MARKER, TABLE_MODE_MARKER } from "../../shared/identifier-sentinels.mjs";
 import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
 
 const GUARD = "identifier sweep (synthetic sentinels)";
@@ -56,6 +58,12 @@ const DECLARES_THEM = [
 test("the tracked tree names no sentinel", (ctx) => {
   const files = trackedFiles(GUARD, { root: ROOT });
   if (files === null) return ctx.skip(skipReason(GUARD));
+  // WHICH TABLE THIS RAN AGAINST, printed only once the corpus is actually in hand. The affirmative
+  // `[repo-guard] ok` above says a guard looked; this says which roster it looked WITH, and the two are
+  // different claims — a sweep armed with nothing reports the same zero as one armed with everything.
+  // The workflow requires this line across the shard logs, so the arm being deleted or quietly skipped
+  // reds rather than passing in silence.
+  console.log(SENTINEL_MODE_MARKER);
   // A FLOOR ON THE CORPUS. Zero files swept is the shape in which this arm passes over a tree it never
   // opened, and it reports exactly the same green as a clean one.
   assert.ok(files.length > 100, `only ${files.length} tracked file(s) swept — the corpus is broken, not the tree`);
@@ -100,4 +108,104 @@ test("the sentinel table is not empty, and every row is a pair", () => {
     assert.equal(row.length, 2, `a sentinel row is [name, twin]; got ${JSON.stringify(row)}`);
     assert.ok(row[0].trim() && row[1].trim(), `a sentinel row carries an empty half: ${JSON.stringify(row)}`);
   }
+});
+
+// ── AND THE WORKFLOW REQUIRES THE LINE, or none of the above is load-bearing ─────────────────────────
+//
+// The arm above prints which roster it swept with. That is worth nothing on its own: a marker nobody
+// reads can stop being printed — because the arm was deleted, renamed out of the collection glob, or
+// quietly skipped — and every run stays green. It is the same argument the workflow already accepts for
+// the two `[repo-guard]` markers it does read, and this one had been stated and never read.
+//
+// Asserted here rather than only in the private tier's own arm, because that tier runs under the overlay
+// and this runs on every push. A demand that is only checked where somebody remembers to check it is the
+// shape this whole file exists to argue against.
+test("the workflow demands the mode line, so the sweep cannot stop running unnoticed", () => {
+  const ci = readFileSync(join(ROOT, ".github", "workflows", "ci.yml"), "utf8");
+  assert.ok(ci.includes(SENTINEL_MODE_MARKER),
+    `.github/workflows/ci.yml does not require "${SENTINEL_MODE_MARKER}". Without that step the arm above `
+    + "can stop running and nothing reds — the affirmative marker is only worth what reads it.");
+  // AND IT MUST BE REQUIRED, not merely mentioned. A marker named in a comment satisfies a substring
+  // test while asserting nothing, which is this defect with an extra step.
+  // The quiet flag is bundled with the others (`grep -rqF`), so this matches a q ANYWHERE in the flag
+  // cluster rather than a literal `-q`. Written the narrow way first, it failed against a workflow that
+  // was correct — a matcher too tight to recognise the thing it guards is a red nobody can act on.
+  const demanded = ci.split("\n").some((l) => /grep\s+-[a-zA-Z]*q/.test(l) && l.includes(SENTINEL_MODE_MARKER));
+  assert.ok(demanded,
+    "the mode line appears in the workflow but nothing requires it — a mention is not an assertion");
+});
+
+// THE OTHER DIRECTION. Requiring the sentinel line is satisfied forever by a run that prints it, so the
+// workflow must also refuse the table line: on a public runner that line means the private roster was
+// loaded into a public log. Driven, not read: the step's own script runs over logs holding each line.
+test("the workflow refuses a table-mode line, and passes a sentinel-only run", () => {
+  const ci = readFileSync(join(ROOT, ".github", "workflows", "ci.yml"), "utf8");
+  const at = ci.indexOf(`grep -rqF '${SENTINEL_MODE_MARKER}' logs`);
+  assert.ok(at >= 0, "the step reading the mode line was not found — this arm could not look");
+  const from = ci.lastIndexOf("run: |", at);
+  const body = ci.slice(from + "run: |".length).split("\n").slice(1);
+  const lines = [];
+  for (const l of body) { if (l.trim() && !l.startsWith("          ")) break; lines.push(l.slice(10)); }
+  const script = lines.join("\n");
+  assert.ok(script.includes(TABLE_MODE_MARKER), "the step does not name the table-mode line");
+  const drive = (logLine) => {
+    const dir = mkdtempSync(join(tmpdir(), "mode-step-"));
+    try {
+      // The layout the artifact download leaves: one directory per shard, each holding its suite.log, and
+      // every marker the step also reads, so only the mode line differs between the two drives.
+      for (const [i, n] of ["1", "2", "3", "4"].entries()) {
+        mkdirSync(join(dir, "logs", `suite-log-${n}`), { recursive: true });
+        writeFileSync(join(dir, "logs", `suite-log-${n}`, "suite.log"),
+          (i === 0 ? ["[repo-guard] ok", SENTINEL_MODE_MARKER, logLine] : ["[repo-guard] ok"]).join("\n"));
+      }
+      return spawnSync("bash", ["-c", script], { cwd: dir, encoding: "utf8" }).status;
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  };
+  assert.equal(drive(""), 0, "a run that swept on sentinels only was refused");
+  assert.equal(drive(`${TABLE_MODE_MARKER}: 12 sentinel + 40 roster name(s)`), 1, "a run that read the private roster passed");
+});
+
+// ── A PINNED DICTIONARY IS EXEMPT ONLY AS THE BYTES THAT WERE VETTED ──────────────────────────────
+//
+// The roster retires ordinary words and a dictionary holds every ordinary word, so the published word
+// list is exempt, pinned to its hash. The entry here is invented and is a dictionary word by
+// construction; the real roster never appears in this repository. Three drives, because the exemption
+// that matters is the one that stops applying: a line added to the list, and the same bytes at another
+// path, are both swept in full.
+test("the pinned word list is exempt as vetted, and swept in full once a line changes or it moves", () => {
+  const [path] = Object.keys(PINNED_DICTIONARIES);
+  const words = readFileSync(join(ROOT, path), "utf8");
+  assert.match(words, /^orchard$/m, "the invented entry must be a word in the list, or this arm proves nothing");
+  const invented = { retired: [["orchard", "grove"]], suffixable: new Set() };
+  const sweep = (file, text) => scanCorpus([file], () => text, invented);
+  assert.deepEqual(sweep(path, words), [], "the vetted list was swept as though it were anything else");
+  const edited = `${words}orchard\n`;
+  assert.ok(sweep(path, edited).length >= 1, "an edited list stayed exempt, so a name added to it would pass unseen");
+  assert.ok(sweep("driver/wordlists/elsewhere.txt", words).length >= 1, "the exemption followed the bytes to a path it does not name");
+});
+
+// ── THE CLOUD AS A BILLING ROUTE, AND ONLY THAT ─────────────────────────────────────────────────────
+//
+// A sentence about paying for Claude through a cloud names the cloud, and a roster entry can collide
+// with it. The exemption is for the names the product ships for that route and nothing wider. The
+// entries here are invented and chosen to OVERLAP those names, so the arm drives the overlap rule
+// without saying what the real roster holds.
+test("a billing-route cloud name is exempt as the product spells it, and nowhere wider", () => {
+  const sweep = (file, line, name) => scanCorpus([file], () => line, { retired: [[name, "Twin"]], suffixable: new Set() }).length;
+  // Exempt: the cloud's name, its Foundry service, and the three clouds as a list.
+  assert.equal(sweep("INSTALL.md", "pay through your Microsoft Azure account (Foundry)", "Azure"), 0);
+  assert.equal(sweep("x.mjs", "measured on a Microsoft Foundry configuration", "Foundry"), 0);
+  assert.equal(sweep("x.mjs", "your own Google, Microsoft or Amazon cloud account", "Google"), 0);
+  assert.equal(sweep("x.mjs", "Google Cloud, Microsoft Azure or Amazon Bedrock", "Google"), 0);
+  assert.equal(sweep("commit-message", "On Microsoft Azure that alias names no deployment", "Azure"), 0,
+    "a commit message about the billing route was refused");
+  // Still reported: the bare word, another casing, a second use beside an exempt one, captured data.
+  assert.equal(sweep("x.mjs", "the services bill Azure", "Azure"), 1, "the bare word was exempted");
+  assert.equal(sweep("x.mjs", "microsoft azure", "Azure"), 1, "the exemption is case-sensitive, as the product spells it");
+  assert.equal(sweep("x.mjs", "Microsoft Azure, and Azure again on its own", "Azure"), 1, "a second, bare use rode on the exempt one");
+  assert.equal(sweep("demo/some-search/run/common-law-grid.json", "Introduction to Microsoft Azure Cloud Services", "Azure"), 1,
+    "a frozen demo run's captured text was exempted; it is a third party's, not a billing route");
+  assert.equal(sweep("providers/x/test/fixtures/r.json", "owner: Microsoft Azure Holdings", "Azure"), 1,
+    "captured register data was exempted");
+  assert.ok(!CLOUD_ROUTE_CONTEXT.flags.includes("i"), "the cloud context became case-insensitive, which widens it past the product's spelling");
 });

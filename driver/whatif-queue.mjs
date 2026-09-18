@@ -10,7 +10,7 @@
 //
 // ── WHY IT IS NOT IN THE CLEARANCE QUEUE ─────────────────────────────────────────────────────────────
 //
-// studio/prelim-search/queue holds CLEARANCE jobs, and the runner treats every file in it as one: it
+// studio/clearance-search/queue holds CLEARANCE jobs, and the runner treats every file in it as one: it
 // runs validateJob's whole field allowlist, resolves a product and a scope through resolveRequest,
 // checks the matter ledger for duplicates, counts the daily allowance, and takes a slot from the global
 // run-lock pool. A what-if is none of those things — it re-runs ONE stage of a run that already exists,

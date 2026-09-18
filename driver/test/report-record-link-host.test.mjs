@@ -94,7 +94,7 @@ const IS_RECORD = /RECORD(RELATIVE|FOREIGN|PROVENANCE|OWNHOST)\d+/;
 const IS_EVIDENCE = /EVIDENCE(USE|OWN|CL|PROSE)/;
 
 const REPORT_MD = `---
-type: prelim-clearance
+type: clearance-clearance
 matter: TMP0775
 title: KURENA
 client: House default

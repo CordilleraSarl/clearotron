@@ -17,7 +17,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { CLASSES, censusOf, publishedOf } from "../shared/reference-guard-classes.mjs";
+import { CLASSES, censusOf, publishedOf, publishedReader } from "../shared/reference-guard-classes.mjs";
 import { trackedFiles, skipReason } from "../shared/tracked-files.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 
@@ -35,7 +35,7 @@ export function mint() {
   const p = publishedOf(tracked, ROOT);
   if (p.error) { console.error(`mint-public-residue: ${p.error}`); process.exit(2); }
   if (p.laid) console.log(`mint-public-residue: ${p.laid} tracked path(s) are not in HEAD — laid over this checkout, not published in it, and not counted`);
-  const c = censusOf(p.files, (f) => readFileSync(join(ROOT, f), "utf8"));
+  const c = censusOf(p.files, publishedReader(ROOT, (f) => readFileSync(join(ROOT, f), "utf8")));
   return { classes: CLASSES.map((x) => x.id), total: c.total, files: c.files };
 }
 

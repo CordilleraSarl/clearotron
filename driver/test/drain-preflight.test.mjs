@@ -17,25 +17,25 @@ import assert from "node:assert/strict";
 import { watchedQueueDirs, compareWatches } from "../../scripts/drain-preflight.mjs";
 
 const UNIT = `[Path]
-PathExistsGlob=%h/.openclaw/workspace-clawdi/studio/prelim-search/queue/*.json
-PathExistsGlob=%h/.openclaw/workspace-clawdi-b/studio/prelim-search/queue/*.json
-#PathExistsGlob=%h/prelim-queue/*.json
+PathExistsGlob=%h/.openclaw/workspace-clawdi/studio/clearance-search/queue/*.json
+PathExistsGlob=%h/.openclaw/workspace-clawdi-b/studio/clearance-search/queue/*.json
+#PathExistsGlob=%h/clearance-queue/*.json
 Unit=prelim-driver.service
 `;
 
 test("%h is resolved and the glob tail stripped — a watch is a directory, not a pattern", () => {
   assert.deepEqual(watchedQueueDirs(UNIT, "/srv/testhome"), [
-    "/srv/testhome/.openclaw/workspace-clawdi/studio/prelim-search/queue",
-    "/srv/testhome/.openclaw/workspace-clawdi-b/studio/prelim-search/queue",
+    "/srv/testhome/.openclaw/workspace-clawdi/studio/clearance-search/queue",
+    "/srv/testhome/.openclaw/workspace-clawdi-b/studio/clearance-search/queue",
   ]);
 });
 
 test("A COMMENTED GLOB IS NOT A WATCH — and this one ships commented out", () => {
-  // Not pedantry. The headless line (`%h/prelim-queue/*.json`) is commented in the shipped unit, so a
+  // Not pedantry. The headless line (`%h/clearance-queue/*.json`) is commented in the shipped unit, so a
   // standalone deployment that never uncommented it has event-driven pickup dead on the ONE queue it
   // uses. Reading the file without honouring `#` reports that box as watched, which is the exact
   // false-green this check exists to refuse.
-  assert.ok(!watchedQueueDirs(UNIT, "/srv/testhome").some((d) => d.includes("prelim-queue")));
+  assert.ok(!watchedQueueDirs(UNIT, "/srv/testhome").some((d) => d.includes("clearance-queue")));
 });
 
 test("THE SILENT DISAGREEMENT IS THE POINT — a queue the runner drains and nothing watches", () => {
@@ -44,9 +44,9 @@ test("THE SILENT DISAGREEMENT IS THE POINT — a queue the runner drains and not
   // spellings of one fact with nothing at runtime comparing them. moved the code default from
   // the platform dot-directory to `$HOME/trademark/workspace` and the globs deliberately did not move.
   const r = compareWatches(
-    ["/srv/testhome/trademark/workspace/workspace-clawdi/studio/prelim-search/queue"],
+    ["/srv/testhome/trademark/workspace/workspace-clawdi/studio/clearance-search/queue"],
     watchedQueueDirs(UNIT, "/srv/testhome"));
-  assert.deepEqual(r.unwatched, ["/srv/testhome/trademark/workspace/workspace-clawdi/studio/prelim-search/queue"]);
+  assert.deepEqual(r.unwatched, ["/srv/testhome/trademark/workspace/workspace-clawdi/studio/clearance-search/queue"]);
 });
 
 test("agreement reports nothing, and a trailing slash is not a disagreement", () => {

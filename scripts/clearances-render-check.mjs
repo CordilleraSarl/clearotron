@@ -99,6 +99,23 @@ const run = (over) => {
 }
 
 let longTitle = false
+// THE FULL LIST, as a served portal draws it: twenty-five finished names across two companies, every one
+// carrying Open latest report, Ask AI and its menu, some with long marks and the longest risk words the
+// ladders print. The stub rows above prove behaviour; they are too few and too short to prove the layout,
+// and a layout that fitted them regressed on the real list at 1440px while this file stayed green.
+let fullList = false
+let rosterMode = 'ok'
+let withGeneric = false
+const FULL_MARKS = ['MERIDIAN THISTLE', 'PROJECT CHROMA', 'VIBRANTE FROSTPLUM', 'NORTHWIND', 'CORAL FREEZE', 'AQUAPLUS',
+  'ASTERION', 'TIDEGLASS', 'BRIMSTONE', 'VENQORI', 'IRONWHISK', 'SIM PRAXIS', 'EMBER FORGE', 'VANTOR LABS', 'HALDEN OUTDOOR',
+  'GLACIER MINT', 'SOLSTICE BAY', 'KESTREL WORKS', 'OBSIDIAN LOOP', 'MARBLE ORCHARD', 'LUMEN CRAFT', 'PELICAN NORTH',
+  'SAFFRON VALE', 'ZEPHYR BEVERAGES', 'QUARTZ HOLLOW']
+const FULL_BANDS = [['No rated conflicts', 'minimal'], ['Manageable', 'low'], ['Clear to file', 'minimal'], ['Medium', 'medium'], ['Severe', 'severe']]
+const FULL_RUNS = () => FULL_MARKS.map((m, i) => run({
+  runId: `full-${i}`, account: i % 2 ? KEY2 : KEY, markName: m, title: m, date: `2026-09-${String(18 - (i % 17)).padStart(2, '0')}`,
+  issuedAt: `2026-09-${String(18 - (i % 17)).padStart(2, '0')}T09:00:00Z`, band: FULL_BANDS[i % FULL_BANDS.length][0],
+  tone: FULL_BANDS[i % FULL_BANDS.length][1], product: ['global-preliminary-search', 'multi-country-focus-search', 'full-country-search'][i % 3],
+}))
 
 // THE ROW STATES the list has to tell apart, each built the way the service sends it:
 //   • a finished name with one search                          ASTERION
@@ -122,7 +139,7 @@ const RUNS = () => [
     runId: 'tmpb-stopped', markName: 'VIBRANTE FROSTPLUM', title: 'VIBRANTE FROSTPLUM', date: '2026-08-02',
     state: 'failed', band: null, tone: null, report: null,
     failedStage: 'common-law-half:b',
-    reason: 'invalid_file:prelim-search/tmpe2er1-vibrante-frostplum/2026-08-02-fixture/common-law-findings.half-b.md:connotation_undisposed:VIBRANTE FROSTPLUM urban dictionary,FROSTPLUM meaning slang,FR',
+    reason: 'invalid_file:clearance-search/tmpe2er1-vibrante-frostplum/2026-08-02-fixture/common-law-findings.half-b.md:connotation_undisposed:VIBRANTE FROSTPLUM urban dictionary,FROSTPLUM meaning slang,FR',
   }),
   // A second company, so the grouping toggle has something to group.
   run({ runId: 'tmpd-other', account: KEY2, markName: 'ASTERION', title: 'ASTERION', date: '2026-08-03', band: 'Severe', tone: 'severe', stageLabel: 'Depth 4', product: 'global-preliminary-search' }),
@@ -174,11 +191,18 @@ const json = (res, body) => { res.writeHead(200, { 'content-type': 'application/
 
 const server = createServer((req, res) => {
   const p = new URL(req.url, 'http://localhost').pathname
-  if (p === '/portal/api/me') return json(res, { email: 'manager@example-firm.com', permissions: { run: true, manage: true }, access: [{ kind: 'everything' }], accounts: '*', accountNames: {}, allowance: null, brand: 'Northwind Group' })
+  // In the roster passes the install carries its organisation's Generic, as a real one does: that is the one
+  // company left when the roster fails, and what a failed roster used to narrow every screen to.
+  if (p === '/portal/api/me') return json(res, { email: 'manager@example-firm.com', permissions: { run: true, manage: true }, access: [{ kind: 'everything' }], accounts: '*', accountNames: {}, allowance: null, brand: 'Northwind Group',
+    ...(withGeneric ? { genericOrgs: ['northwind'], organisations: [{ key: 'northwind', name: 'Northwind Group' }] } : {}) })
+  // THE ROSTER, as the server answers it in three shapes: whole, with a company file it could not read, and
+  // failed. The last two used to draw exactly like the first with fewer companies.
+  if (p === '/portal/admin/roster' && rosterMode === 'fail') { res.writeHead(500, { 'content-type': 'application/json' }); return res.end('{"error":"store unreadable"}') }
+  if (p === '/portal/admin/roster' && rosterMode === 'unreadable') return json(res, { customers: [{ key: KEY, name: NAME }], unreadable: [{ key: 'aurora', reason: 'frameworkPath must be a path of the form …' }] })
   if (p === '/portal/admin/roster') return json(res, { customers: [{ key: KEY, name: NAME }, { key: KEY2, name: NAME2 }] })
   if (p === '/portal/admin/families') return json(res, FAMILIES)
   if (p === '/portal/api/usage') return json(res, usageNow)
-  if (p === '/portal/api/runs') return json(res, { runs: RUNS() })
+  if (p === '/portal/api/runs') return json(res, { runs: fullList ? FULL_RUNS() : RUNS() })
   if (p === '/portal/api/searches') return json(res, { account: KEY, products: PRODUCTS, recipes: [], read: { available: false, maxBrief: 0, note: null } })
   // A CONNECTED READER, so Ask AI draws on the rows that carry it and opens its question panel. The one
   // request the whole table makes for it is counted by revisit-render-check.
@@ -356,6 +380,13 @@ const MEASURE = `(async () => {
   };
 })()`
 
+// A NARROW WIDTH IS ONLY NARROW UNDER MOBILE EMULATION. `setDeviceMetricsOverride` with `mobile: false`
+// does not take the page below the browser's own minimum: asked for 400 this reported
+// `document.documentElement.clientWidth === 500`, and every line it printed said 400. The breakpoint it
+// is aimed at is 560px so the defect still showed, but a check that names a width it is not measuring is
+// one repair away from proving something about a width nobody ships. `mobile: width < 700` is what
+// settings-render-check already does for the People screen at 400, and the two now agree.
+
 // ── chrome ──────────────────────────────────────────────────────────────────────────────────────────
 
 // The profile goes inside a run root whose TMPDIR the browser inherits, so the singleton
@@ -474,12 +505,16 @@ const ASK = `(async () => {
   const opened = [];
   window.open = (u) => { opened.push(String(u)); return null; };
   const rowOf = (name) => [...document.querySelectorAll('table.data tbody tr.row')].find(tr => txt(tr.querySelector('b')) === name);
+  // FROM THE ROW'S MENU, which is where the control lives now: open the menu, press its Ask AI entry.
   const drive = async (name) => {
     const tr = rowOf(name);
-    const btn = tr && tr.querySelector('.ask-ai button.ask-ai-btn');
-    if (!btn) return { fatal: 'no Ask AI on ' + name };
+    const more = tr && tr.querySelector('button.row-menu-btn');
+    if (!more) return { fatal: 'no row menu on ' + name };
     const before = location.pathname;
-    btn.click(); await sleep(250);
+    more.click(); await sleep(200);
+    const entry = [...tr.querySelectorAll('[role=menu] [role=menuitem]')].find(i => txt(i) === 'Ask AI');
+    if (!entry) return { fatal: 'no Ask AI entry in the menu of ' + name };
+    entry.click(); await sleep(250);
     const panel = tr.querySelector('.ask-ai-panel');
     const head = txt(panel && panel.querySelector('.ask-ai-head'));
     const choices = panel ? [...panel.querySelectorAll('[role=radio], .ask-ai-choice')].map(txt) : [];
@@ -559,6 +594,129 @@ await value(`(async () => { const b = document.querySelector('label.group-toggle
 longTitle = true
 await reload()
 const long = await value(MEASURE)
+longTitle = false
+
+// — THE FULL LIST, at the wide desktop and at the width the COLLAPSE ruling was for. Read off the drawn
+// page: does the page scroll sideways, does the table leave its box, is any row's menu cut off at the
+// edge, and does any risk word run into the date beside it.
+const FULL = `(() => {
+  const wrap = document.querySelector('.table-wrap') || document.querySelector('table.data').parentElement;
+  const table = document.querySelector('table.data');
+  const w = wrap.getBoundingClientRect();
+  const head = [...table.querySelectorAll('thead th')].map(t => (t.textContent || '').trim());
+  const ri = head.findIndex(t => /^Risk/i.test(t)), ui = head.findIndex(t => /^Updated/i.test(t));
+  const textBox = (el) => { if (!el) return null; const r = document.createRange(); r.selectNodeContents(el); const b = r.getBoundingClientRect(); return b.width ? b : null; };
+  const rows = [...table.querySelectorAll('tbody tr.row')];
+  // ANY CELL'S TEXT RUNNING INTO THE NEXT, on every row that draws them — names, groups and searches —
+  // Status into Risk and Risk into Updated. Measured on the text itself, not on the cells, which cannot overlap.
+  const si = head.findIndex(t => /^Status/i.test(t));
+  const collide = [];
+  for (const tr of table.querySelectorAll('tbody tr')) {
+    if (tr.children.length !== head.length) continue;
+    for (const [a, b] of [[si, ri], [ri, ui]]) {
+      const x = textBox(tr.children[a]), y = textBox(tr.children[b]);
+      if (x && y && x.right > y.left - 2 && x.top < y.bottom && y.top < x.bottom) {
+        collide.push(((tr.querySelector('b') || tr.children[2] || {}).textContent || '').trim().slice(0, 40) + ' (' + head[a] + ' into ' + head[b] + ')');
+      }
+    }
+  }
+  // A RISK WORD NEVER BREAKS INSIDE ITSELF. A phrase may wrap between its words; a single word drawn on two
+  // lines ("Managea" over "ble") is a word the reader has to reassemble.
+  const midWord = [];
+  for (const tr of rows) {
+    const label = tr.children[ri] && tr.children[ri].querySelector('.risk-dot > span:last-child');
+    if (!label) continue;
+    const words = (label.textContent || '').trim().split(/\\s+/);
+    const r = document.createRange();
+    for (const node of label.childNodes) {
+      if (node.nodeType !== 3) continue;
+      let at = 0;
+      for (const w of (node.textContent || '').split(/(\\s+)/)) {
+        if (w && !/^\\s+$/.test(w)) {
+          r.setStart(node, at); r.setEnd(node, at + w.length);
+          if (r.getClientRects().length > 1) midWord.push(w);
+        }
+        at += w.length;
+      }
+    }
+  }
+  const cut = [...table.querySelectorAll('button.row-menu-btn')].filter(b => b.getBoundingClientRect().right > Math.min(w.right, document.documentElement.clientWidth) + 1).length;
+  return { rows: rows.length, docOverflowsX: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+    scrollW: document.documentElement.scrollWidth, clientW: document.documentElement.clientWidth,
+    tableOverflows: table.getBoundingClientRect().width > w.width + 1, tableW: Math.round(table.getBoundingClientRect().width), wrapW: Math.round(w.width),
+    menusCut: cut, riskOverDate: collide, riskMidWord: [...new Set(midWord)],
+    riskCell: (() => { const td = rows[0] && rows[0].children[ri]; if (!td) return null; const cs = getComputedStyle(td);
+      return Math.round(td.getBoundingClientRect().width - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight)); })() };
+})()`
+fullList = true
+const full = {}
+for (const width of [WIDE, 700]) {
+  await cmd('Emulation.setDeviceMetricsOverride', { width, height: 1000, deviceScaleFactor: 1, mobile: false })
+  await reload()
+  full[width] = await value(FULL)
+}
+// — AT PHONE WIDTH, THE BAR IS ON SCREEN. The table scrolls inside its box there, and on a long list the
+// box's own bar is several screens down; the pinned bar sits at the bottom of the screen instead, and it is
+// the table's bar, not a picture of one — moving it moves the table.
+await cmd('Emulation.setDeviceMetricsOverride', { width: 400, height: 800, deviceScaleFactor: 1, mobile: true })
+await reload()
+const phone = await value(`(async () => {
+  window.scrollTo(0, 0); await new Promise(r => setTimeout(r, 200));
+  const wrap = document.querySelector('.names-wrap'); const bar = document.querySelector('.pinned-bar');
+  const thumb = bar && bar.querySelector('.pinned-thumb'); const track = bar && bar.querySelector('.pinned-track');
+  if (!wrap || !bar || !thumb) return { bar: !!bar, wrap: !!wrap, thumb: !!thumb };
+  const b = bar.getBoundingClientRect(), t0 = thumb.getBoundingClientRect();
+  const out = { bar: true, onScreen: b.bottom <= innerHeight + 1 && b.top >= innerHeight - 40, barH: Math.round(b.height),
+    thumbW: Math.round(t0.width), thumbH: Math.round(t0.height), thumbInk: getComputedStyle(thumb).backgroundColor,
+    tableScrolls: wrap.scrollWidth > wrap.clientWidth + 1, nativeBarH: wrap.offsetHeight - wrap.clientHeight,
+    wrapBelowFold: wrap.getBoundingClientRect().bottom > innerHeight };
+  // The table moved by a finger: the thumb follows.
+  wrap.scrollLeft = 200; await new Promise(r => setTimeout(r, 200));
+  out.thumbFollowed = Math.round(thumb.getBoundingClientRect().left - t0.left);
+  // A press at the track's right end: the table follows.
+  const tr = track.getBoundingClientRect();
+  track.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: tr.right - 2, clientY: tr.top + 4, pointerId: 1 }));
+  await new Promise(r => setTimeout(r, 200));
+  out.tableAtEnd = Math.round(wrap.scrollWidth - wrap.clientWidth - wrap.scrollLeft);
+  return out;
+})()`)
+await cmd('Emulation.clearDeviceMetricsOverride', {})
+fullList = false
+// The same reading on the stub rows, which carry the shapes the full list does not — a group, a name
+// with searches under it, a stopped name — opened out.
+const stubs = {}
+for (const width of [WIDE, 700]) {
+  await cmd('Emulation.setDeviceMetricsOverride', { width, height: 1000, deviceScaleFactor: 1, mobile: false })
+  await reload()
+  await value(`(async () => { for (let i = 0; i < 3; i++) { for (const b of document.querySelectorAll('table.data button.twisty[aria-expanded="false"]')) { b.click(); await new Promise(r => setTimeout(r, 60)); } await new Promise(r => setTimeout(r, 250)); } return true })()`)
+  stubs[width] = await value(FULL)
+}
+await cmd('Emulation.clearDeviceMetricsOverride', {})
+await reload()
+
+// — THE ROSTER NOT ARRIVING WHOLE. A company file it could not read, then a roster that failed outright.
+const ROSTER_NOTICE = `(() => ({
+  text: [...document.querySelectorAll('.main > .notice')].map(n => (n.innerText || '').replace(/\\s+/g, ' ').trim()),
+  // How many names the list draws, and which company the switcher says is in view.
+  names: document.querySelectorAll('table.data tbody tr.row').length,
+  inView: (() => { const s = document.querySelector('select[aria-label="Company"]'); return s ? s.selectedOptions[0]?.textContent?.trim() ?? null : null })(),
+}))()`
+withGeneric = true
+rosterMode = 'unreadable'
+await reload()
+const rosterPartial = await value(ROSTER_NOTICE)
+rosterMode = 'fail'
+await reload()
+const rosterFailed = await value(ROSTER_NOTICE)
+if (shotDir) {
+  const shot = await cmd('Page.captureScreenshot', { format: 'png' })
+  const data = shot.result?.result?.data ?? shot.result?.data
+  if (data) writeFileSync(join(shotDir, 'clearances-roster-failed-light.png'), Buffer.from(data, 'base64'))
+}
+rosterMode = 'ok'
+await reload()
+const rosterWhole = await value(ROSTER_NOTICE)
+withGeneric = false
 
 if (shotAt) {
   const shot = await cmd('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true })
@@ -577,7 +735,7 @@ if (shotDir) {
   longTitle = false
   const capture = async (file, width) => {
     const h = (await value('Math.max(document.documentElement.scrollHeight, document.body.scrollHeight)')) ?? 900
-    await cmd('Emulation.setDeviceMetricsOverride', { width, height: Math.max(900, h), deviceScaleFactor: 1, mobile: false })
+    await cmd('Emulation.setDeviceMetricsOverride', { width, height: Math.max(900, h), deviceScaleFactor: 1, mobile: width < 700 })
     await new Promise((r) => setTimeout(r, 400))
     const shot = await cmd('Page.captureScreenshot', { format: 'png' })
     const data = shot.result?.result?.data ?? shot.result?.data
@@ -601,7 +759,7 @@ if (shotDir) {
     return true;
   })()`
   for (const width of [WIDE, WIDTH]) {
-    await cmd('Emulation.setDeviceMetricsOverride', { width, height: 1000, deviceScaleFactor: 1, mobile: false })
+    await cmd('Emulation.setDeviceMetricsOverride', { width, height: 1000, deviceScaleFactor: 1, mobile: width < 700 })
     await reload()
     await value(EXPAND([FAMILY_NAME, 'AQUAPLUS']))
     await both(`clearances-rows-${width}`, width)
@@ -638,6 +796,36 @@ if (!short || short.fatal) {
 }
 
 console.log(`measured at ${WIDTH}px — ${short.openedRows} rows opened, ${short.readRows} read rows`)
+console.log(`phone-width bar: ${JSON.stringify(phone)}`)
+ok(phone && phone.bar && phone.tableScrolls && phone.wrapBelowFold && phone.onScreen,
+  `at 400px the list's sideways bar is not on screen at the top of a long list — ${JSON.stringify(phone)}`)
+ok(phone && phone.nativeBarH === 0, `at 400px the table's own bar is drawn beside the pinned one — ${JSON.stringify(phone)}`)
+ok(phone && phone.barH >= 9 && phone.thumbH >= 8 && phone.thumbW >= 24, `at 400px the pinned bar is not drawn at a size a reader can see — ${JSON.stringify(phone)}`)
+ok(phone && phone.thumbFollowed > 0, `at 400px the thumb does not follow the table — ${JSON.stringify(phone)}`)
+ok(phone && phone.tableAtEnd <= 1, `at 400px pressing the end of the track does not move the table to its end — ${JSON.stringify(phone)}`)
+for (const [width, f] of Object.entries(stubs)) {
+  ok(f && f.riskOverDate.length === 0, `stub rows at ${width}px: text runs into the next cell on ${JSON.stringify(f?.riskOverDate)}`)
+  ok(f && f.riskMidWord.length === 0, `stub rows at ${width}px: a risk word breaks inside itself — ${JSON.stringify(f?.riskMidWord)}`)
+}
+ok(rosterPartial?.text?.some((t) => /aurora This company’s framework could not be read\. This needs an administrator to look at it\./.test(t)),
+  `a company file the roster could not read is not named on the page — ${JSON.stringify(rosterPartial)}`)
+ok(!rosterPartial?.text?.some((t) => /frameworkPath/.test(t)), 'the server\'s own reason reached the page')
+// A ROSTER THAT FAILED WHOLE: no sentence of its own (owner, 2026-09-18), and no silent narrowing — the
+// reader stays on All companies and sees every name the whole roster showed.
+ok(rosterFailed?.text?.length === 0, `a roster that failed draws a notice of its own — ${JSON.stringify(rosterFailed)}`)
+ok(rosterFailed?.names > 0 && rosterFailed?.names === rosterWhole?.names,
+  `a roster that failed narrows the list: ${rosterFailed?.names} names against ${rosterWhole?.names} with the roster whole`)
+ok(/^All companies/.test(rosterFailed?.inView ?? ''), `a roster that failed selected a company for the reader — ${JSON.stringify(rosterFailed?.inView)}`)
+ok(rosterWhole?.text?.length === 0, `a whole roster draws a notice — ${JSON.stringify(rosterWhole)}`)
+for (const [width, f] of Object.entries(full)) {
+  console.log(`full list at ${width}px: ${f?.rows} rows, page ${f?.scrollW}/${f?.clientW}, table ${f?.tableW} in ${f?.wrapW}, menus cut ${f?.menusCut}, risk over date ${JSON.stringify(f?.riskOverDate)}`)
+  ok(f && f.rows === 25, `full list at ${width}px: ${f?.rows} rows drew, not 25`)
+  ok(f && !f.docOverflowsX, `full list at ${width}px: the page scrolls sideways (${f?.scrollW} in ${f?.clientW})`)
+  ok(f && !f.tableOverflows, `full list at ${width}px: the table (${f?.tableW}px) leaves its box (${f?.wrapW}px)`)
+  ok(f && f.menusCut === 0, `full list at ${width}px: ${f?.menusCut} row menu(s) cut off at the edge`)
+  ok(f && f.riskOverDate.length === 0, `full list at ${width}px: the risk word runs into the date on ${JSON.stringify(f?.riskOverDate)}`)
+  ok(f && f.riskMidWord.length === 0, `full list at ${width}px: a risk word breaks inside itself — ${JSON.stringify(f?.riskMidWord)} in a ${f?.riskCell}px cell`)
+}
 // Printed on every run, not only on failure: `overflow: 21px` is the number that told us the table
 // was resolving wider than its wrapper, and it is the first thing to look at when this check goes red.
 console.log(`table ${short.tableWidth}px in a ${short.tableWidth - (short.overflowBy ?? 0)}px wrapper — overflow ${short.overflowBy}px (min-width ${short.tableMinWidth})`)
@@ -816,29 +1004,28 @@ if (plus && group && aster && coral && tide && max) {
   ok(aster.status === 'Finished' && aster.open?.text === 'Open', `ASTERION reads "${aster.status}" with ${JSON.stringify(aster.open)}`)
 }
 
-// ASK AI: beside Open on a name with a report, alone on a stopped name, and nowhere else.
+// ASK AI IS THE ROW MENU'S SECOND ENTRY (owner, 2026-09-18), and no longer a button in the actions column,
+// which keeps the board's share with Open alone in it.
 if (plus && group && aster && coral && tide && max) {
-  for (const r of [plus, aster, max, venzy]) ok(r?.ask?.text === 'Ask AI' && r.ask.aria === null, `${r?.name} has no Ask AI named by its own words: ${JSON.stringify(r?.ask)}`)
-  ok(coral.ask?.text === 'Ask AI' && !coral.open, `a stopped name carries Ask AI and no Open: ${JSON.stringify({ ask: coral.ask, open: coral.open })}`)
-  ok(!tide.ask && !tide.open, `a running name with no report carries neither button: ${JSON.stringify({ ask: tide.ask, open: tide.open })}`)
-  ok(!group.ask, 'a group carries Ask AI — a group is several names with no single report')
-  ok(L.filter((r) => r.kind === 'search').every((r) => !r.ask), 'a search row carries Ask AI')
+  for (const r of [plus, aster, max, venzy, coral]) ok(!r?.ask, `${r?.name} still draws an Ask AI button in its actions column: ${JSON.stringify(r?.ask)}`)
+  ok(!coral.open, `a stopped name draws Open: ${JSON.stringify(coral.open)}`)
+  ok(!tide.ask && !tide.open, `a running name with no report carries a button: ${JSON.stringify({ ask: tide.ask, open: tide.open })}`)
+  ok(L.filter((r) => r.kind === 'search').every((r) => !r.ask), 'a search row carries an Ask AI button')
 }
-const askColumn = (m, width) => {
-  const lefts = [...new Set((m?.listed ?? []).filter((r) => r.ask).map((r) => r.ask.left))]
-  ok(lefts.length > 0 && Math.max(...lefts) - Math.min(...lefts) <= 1, `at ${width}px the Ask AI buttons start at ${lefts.join(', ')} — not one column`)
-}
-askColumn(short, WIDTH)
-askColumn(wide, WIDE)
+// Which rows offer the entry, read from the menus this file already opens: every name with a report, the
+// stopped name included; never a group, which is several names with no single report.
+ok(menus?.plus?.items?.includes('Ask AI'), `a name's menu has no Ask AI entry: ${JSON.stringify(menus?.plus?.items)}`)
+ok(menus?.group && !menus.group.items?.includes('Ask AI'), `a group's menu offers Ask AI: ${JSON.stringify(menus?.group?.items)}`)
+ok(menus?.search && !menus.search.items?.includes('Ask AI'), `a search row's menu offers Ask AI: ${JSON.stringify(menus?.search?.items)}`)
 if (!asked || asked.fatal || asked.max?.fatal || asked.coral?.fatal) {
-  fail.push(`driving Ask AI from a row: ${asked?.fatal ?? asked?.max?.fatal ?? asked?.coral?.fatal ?? 'no result'}`)
+  fail.push(`driving Ask AI from a row's menu: ${asked?.fatal ?? asked?.max?.fatal ?? asked?.coral?.fatal ?? 'no result'}`)
 } else {
   console.log(`Ask AI from AQUAMAX: "${asked.max.head}" → ${JSON.stringify(asked.max.q)}; from CORAL FREEZE → ${JSON.stringify(asked.coral.q)}`)
   // The panel names the report the row's Open opens, and the question typed in names it too.
   ok(asked.max.head === `AQUAMAX · ${PRODUCT_NAME['full-country-search']} · searched 2026-08-28`, `AQUAMAX's panel heads "${asked.max.head}"`)
   ok(asked.max.choices.length === 4 && asked.max.goText.startsWith('Open in '), `AQUAMAX's panel: ${JSON.stringify(asked.max)}`)
   ok(/^Explain the main risks in the AQUAMAX clearance from 28 August\.$/.test(asked.max.q ?? ''), `the second question from AQUAMAX types in "${asked.max.q}"`)
-  ok(asked.max.stayed && asked.coral.stayed, 'pressing Ask AI on a row went somewhere — it opens a panel, not the row')
+  ok(asked.max.stayed && asked.coral.stayed, "pressing the menu's Ask AI went somewhere — it opens a panel, and leaves the list where it is")
   ok((asked.coral.head ?? '').startsWith('CORAL FREEZE · ') && (asked.coral.q ?? '').includes('CORAL FREEZE clearance from 16 September'),
     `a stopped name asks about the search that stopped: ${JSON.stringify(asked.coral)}`)
 }
@@ -857,6 +1044,14 @@ const openColumn = (m, width) => {
 }
 openColumn(short, WIDTH)
 openColumn(wide, WIDE)
+// THE BOARD'S SHARES AT THE WIDE DESKTOP (owner, 2026-09-18: match the board), read off the drawn header:
+// Status 16, Risk 12, Updated 10 and the actions 25, measured in the browser to a point either way.
+{
+  const pct = Object.values(wide.share)
+  const board = [4, 3, 30, 16, 12, 10, 25]
+  ok(pct.length === board.length && pct.every((v, i) => Math.abs(v - board[i]) <= 1),
+    `at ${WIDE}px the columns are ${JSON.stringify(wide.share)}, not the board's ${board.join(' · ')}`)
+}
 
 // The counts on one screen agree: the total is the sum of the headings, each heading its names.
 ok(short.headings.length === 2, `expected two company headings, got ${short.headings.length}`)
@@ -876,7 +1071,8 @@ for (const r of L.filter((x) => x.dot)) {
 if (!menus || menus.fatal) {
   fail.push(`the row menus: ${menus?.fatal ?? 'no result'}`)
 } else {
-  ok(JSON.stringify(menus.plus?.items) === JSON.stringify(['Retire all 3']) && menus.plus.expanded === 'true' && menus.plus.closed, `AQUAPLUS's menu: ${JSON.stringify(menus.plus)}`)
+  // Retire first, Ask AI beside it as the second entry (owner, 2026-09-18).
+  ok(JSON.stringify(menus.plus?.items) === JSON.stringify(['Retire all 3', 'Ask AI']) && menus.plus.expanded === 'true' && menus.plus.closed, `AQUAPLUS's menu: ${JSON.stringify(menus.plus)}`)
   ok(JSON.stringify(menus.group?.items) === JSON.stringify(['Ungroup']) && menus.group.closed, `the group's menu: ${JSON.stringify(menus.group)}`)
   ok(JSON.stringify(menus.search?.items) === JSON.stringify(['Retire']) && menus.search.closed, `a search row's menu: ${JSON.stringify(menus.search)}`)
   ok(menus.groupClick.stayed && menus.groupClick.toggled, `a click on the group row: ${JSON.stringify(menus.groupClick)} — it must fold or unfold and go nowhere`)

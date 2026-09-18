@@ -112,14 +112,20 @@
           "todos": 0
         },
         "a-change-a-reader-can-see-arrives-with-something-to-read.test.mjs": {
-          "tests": 20,
-          "asserts": 47,
+          "tests": 23,
+          "asserts": 55,
           "skips": 1,
           "todos": 0
         },
         "a-check-does-not-read-another-accounts-processes.test.mjs": {
           "tests": 6,
           "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-check-that-could-not-look-does-not-report-a-drift.test.mjs": {
+          "tests": 5,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },
@@ -142,8 +148,8 @@
           "todos": 0
         },
         "a-client-condition-never-carries-an-engine-token.test.mjs": {
-          "tests": 9,
-          "asserts": 24,
+          "tests": 11,
+          "asserts": 37,
           "skips": 0,
           "todos": 0
         },
@@ -190,8 +196,8 @@
           "todos": 0
         },
         "a-connect-line-says-where-it-runs.test.mjs": {
-          "tests": 8,
-          "asserts": 28,
+          "tests": 11,
+          "asserts": 48,
           "skips": 0,
           "todos": 0
         },
@@ -251,7 +257,7 @@
         },
         "a-demo-report-declares-itself.test.mjs": {
           "tests": 5,
-          "asserts": 14,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -363,6 +369,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-failed-run-resumes-from-the-command-line.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "a-failed-run-tells-the-client-what-to-do.test.mjs": {
           "tests": 6,
           "asserts": 16,
@@ -471,6 +483,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-merge-is-judged-by-what-it-did-to-the-tree.test.mjs": {
+          "tests": 7,
+          "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
         "a-mid-run-mint-cannot-lose-a-mark.test.mjs": {
           "tests": 10,
           "asserts": 20,
@@ -487,6 +505,12 @@
           "tests": 7,
           "asserts": 16,
           "skips": 1,
+          "todos": 0
+        },
+        "a-name-held-in-a-table-is-a-read.test.mjs": {
+          "tests": 8,
+          "asserts": 20,
+          "skips": 0,
           "todos": 0
         },
         "a-name-is-never-rated-above-its-worst-card.test.mjs": {
@@ -519,6 +543,12 @@
           "skips": 1,
           "todos": 0
         },
+        "a-packaged-install-names-its-commit-from-build-info.test.mjs": {
+          "tests": 5,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "a-packaged-install-resolves-every-workspace-dependency.test.mjs": {
           "tests": 2,
           "asserts": 7,
@@ -546,6 +576,12 @@
         "a-partial-payload-cannot-delete-what-it-omits.test.mjs": {
           "tests": 11,
           "asserts": 44,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-placement-pass-that-lost-its-answers-does-not-succeed.test.mjs": {
+          "tests": 7,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
@@ -711,6 +747,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-register-manual-states-what-its-provider-declares.test.mjs": {
+          "tests": 6,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "a-register-with-no-record-page-is-cited-not-linked.test.mjs": {
           "tests": 2,
           "asserts": 8,
@@ -859,6 +901,12 @@
           "tests": 3,
           "asserts": 11,
           "skips": 1,
+          "todos": 0
+        },
+        "a-store-from-before-the-rename-still-loads.test.mjs": {
+          "tests": 11,
+          "asserts": 33,
+          "skips": 0,
           "todos": 0
         },
         "a-store-in-a-pushed-checkout-is-told-its-saves-will-be-published.test.mjs": {
@@ -1048,8 +1096,8 @@
           "todos": 0
         },
         "an-arrival-check-exercises-the-trigger-lane.test.mjs": {
-          "tests": 4,
-          "asserts": 10,
+          "tests": 5,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -1091,7 +1139,7 @@
         },
         "an-install-from-npx-moves-out-of-the-cache.test.mjs": {
           "tests": 13,
-          "asserts": 78,
+          "asserts": 79,
           "skips": 7,
           "todos": 0
         },
@@ -1110,6 +1158,12 @@
         "an-ordered-field-is-a-field-the-tool-can-express.test.mjs": {
           "tests": 1,
           "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-ordinary-word-that-sounds-different-is-not-searched.test.mjs": {
+          "tests": 9,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
@@ -1174,8 +1228,8 @@
           "todos": 0
         },
         "audit-workbook-commonlaw-unlogged.test.mjs": {
-          "tests": 9,
-          "asserts": 37,
+          "tests": 10,
+          "asserts": 51,
           "skips": 0,
           "todos": 0
         },
@@ -1360,8 +1414,8 @@
           "todos": 0
         },
         "census-merge-driver.test.mjs": {
-          "tests": 5,
-          "asserts": 14,
+          "tests": 7,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -1410,6 +1464,12 @@
         "claim-liveness.test.mjs": {
           "tests": 17,
           "asserts": 31,
+          "skips": 0,
+          "todos": 0
+        },
+        "clearance-variants-record.test.mjs": {
+          "tests": 13,
+          "asserts": 56,
           "skips": 0,
           "todos": 0
         },
@@ -1499,7 +1559,7 @@
         },
         "compose-read.test.mjs": {
           "tests": 23,
-          "asserts": 87,
+          "asserts": 88,
           "skips": 0,
           "todos": 0
         },
@@ -1697,7 +1757,7 @@
         },
         "coverage-is-disclosed-never-refused.test.mjs": {
           "tests": 10,
-          "asserts": 40,
+          "asserts": 41,
           "skips": 0,
           "todos": 0
         },
@@ -1804,8 +1864,8 @@
           "todos": 0
         },
         "deprecating-below-a-stable-touches-nothing-above-it.test.mjs": {
-          "tests": 4,
-          "asserts": 18,
+          "tests": 8,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -2057,7 +2117,7 @@
         },
         "drainer-identity.test.mjs": {
           "tests": 17,
-          "asserts": 46,
+          "asserts": 50,
           "skips": 0,
           "todos": 0
         },
@@ -2074,8 +2134,8 @@
           "todos": 0
         },
         "e2e-mark-provenance.test.mjs": {
-          "tests": 15,
-          "asserts": 33,
+          "tests": 29,
+          "asserts": 85,
           "skips": 0,
           "todos": 0
         },
@@ -2093,7 +2153,7 @@
         },
         "e2e-run-token.test.mjs": {
           "tests": 7,
-          "asserts": 27,
+          "asserts": 28,
           "skips": 0,
           "todos": 0
         },
@@ -2422,8 +2482,8 @@
           "todos": 0
         },
         "findings-model.test.mjs": {
-          "tests": 67,
-          "asserts": 253,
+          "tests": 68,
+          "asserts": 257,
           "skips": 0,
           "todos": 0
         },
@@ -2518,8 +2578,8 @@
           "todos": 0
         },
         "freeze-example-run.test.mjs": {
-          "tests": 10,
-          "asserts": 47,
+          "tests": 11,
+          "asserts": 51,
           "skips": 0,
           "todos": 0
         },
@@ -2722,8 +2782,8 @@
           "todos": 0
         },
         "knockout-structured-read.test.mjs": {
-          "tests": 11,
-          "asserts": 55,
+          "tests": 14,
+          "asserts": 63,
           "skips": 0,
           "todos": 0
         },
@@ -2752,8 +2812,8 @@
           "todos": 0
         },
         "lane-depth-ask-vs-got.test.mjs": {
-          "tests": 12,
-          "asserts": 48,
+          "tests": 15,
+          "asserts": 57,
           "skips": 0,
           "todos": 0
         },
@@ -2866,8 +2926,8 @@
           "todos": 0
         },
         "named-band.test.mjs": {
-          "tests": 22,
-          "asserts": 78,
+          "tests": 20,
+          "asserts": 70,
           "skips": 0,
           "todos": 0
         },
@@ -2908,8 +2968,8 @@
           "todos": 0
         },
         "no-test-account-reaches-the-package.test.mjs": {
-          "tests": 15,
-          "asserts": 26,
+          "tests": 17,
+          "asserts": 31,
           "skips": 0,
           "todos": 0
         },
@@ -2999,7 +3059,7 @@
         },
         "one-rule-decides-whether-an-absent-drainer-is-a-fault.test.mjs": {
           "tests": 16,
-          "asserts": 53,
+          "asserts": 54,
           "skips": 0,
           "todos": 0
         },
@@ -3112,8 +3172,8 @@
           "todos": 0
         },
         "pipeline.mock.test.mjs": {
-          "tests": 97,
-          "asserts": 806,
+          "tests": 98,
+          "asserts": 815,
           "skips": 0,
           "todos": 0
         },
@@ -3130,8 +3190,8 @@
           "todos": 0
         },
         "pipeline.resume-line.test.mjs": {
-          "tests": 14,
-          "asserts": 44,
+          "tests": 18,
+          "asserts": 56,
           "skips": 0,
           "todos": 0
         },
@@ -3154,8 +3214,8 @@
           "todos": 0
         },
         "plan-qid-is-an-identity.test.mjs": {
-          "tests": 17,
-          "asserts": 56,
+          "tests": 18,
+          "asserts": 61,
           "skips": 0,
           "todos": 0
         },
@@ -3251,7 +3311,7 @@
         },
         "portal-service.test.mjs": {
           "tests": 130,
-          "asserts": 695,
+          "asserts": 701,
           "skips": 1,
           "todos": 0
         },
@@ -3300,12 +3360,6 @@
         "preflight.test.mjs": {
           "tests": 1,
           "asserts": 5,
-          "skips": 0,
-          "todos": 0
-        },
-        "prelim-variants-record.test.mjs": {
-          "tests": 13,
-          "asserts": 56,
           "skips": 0,
           "todos": 0
         },
@@ -3370,8 +3424,8 @@
           "todos": 0
         },
         "progress.test.mjs": {
-          "tests": 24,
-          "asserts": 86,
+          "tests": 26,
+          "asserts": 96,
           "skips": 0,
           "todos": 0
         },
@@ -3412,8 +3466,8 @@
           "todos": 0
         },
         "publish-input-coverage.test.mjs": {
-          "tests": 6,
-          "asserts": 34,
+          "tests": 7,
+          "asserts": 37,
           "skips": 0,
           "todos": 0
         },
@@ -3640,8 +3694,8 @@
           "todos": 0
         },
         "register-count.test.mjs": {
-          "tests": 20,
-          "asserts": 153,
+          "tests": 30,
+          "asserts": 192,
           "skips": 0,
           "todos": 0
         },
@@ -3700,8 +3754,8 @@
           "todos": 0
         },
         "register-reach-refusal.test.mjs": {
-          "tests": 13,
-          "asserts": 26,
+          "tests": 14,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },
@@ -3754,8 +3808,8 @@
           "todos": 0
         },
         "release-pipeline.test.mjs": {
-          "tests": 101,
-          "asserts": 384,
+          "tests": 116,
+          "asserts": 435,
           "skips": 0,
           "todos": 0
         },
@@ -3778,8 +3832,8 @@
           "todos": 0
         },
         "render.test.mjs": {
-          "tests": 152,
-          "asserts": 611,
+          "tests": 160,
+          "asserts": 665,
           "skips": 0,
           "todos": 0
         },
@@ -4138,8 +4192,8 @@
           "todos": 0
         },
         "scope-facts.test.mjs": {
-          "tests": 15,
-          "asserts": 62,
+          "tests": 16,
+          "asserts": 68,
           "skips": 0,
           "todos": 0
         },
@@ -4647,6 +4701,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-census-refuses-a-population-it-did-not-read.test.mjs": {
+          "tests": 5,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
         "the-citation-strip-removes-openers-and-nothing-else.test.mjs": {
           "tests": 18,
           "asserts": 51,
@@ -4696,8 +4756,8 @@
           "todos": 0
         },
         "the-cut-approves-its-own-parked-run.test.mjs": {
-          "tests": 4,
-          "asserts": 10,
+          "tests": 8,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
@@ -4739,7 +4799,7 @@
         },
         "the-docs-say-organisation-and-company.test.mjs": {
           "tests": 6,
-          "asserts": 18,
+          "asserts": 19,
           "skips": 3,
           "todos": 0
         },
@@ -4827,6 +4887,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-form-offers-what-the-registers-search.test.mjs": {
+          "tests": 5,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "the-freeze-carries-what-the-run-reads.test.mjs": {
           "tests": 4,
           "asserts": 13,
@@ -4852,8 +4918,8 @@
           "todos": 0
         },
         "the-identifier-sweep-fires-on-its-sentinels.test.mjs": {
-          "tests": 6,
-          "asserts": 15,
+          "tests": 10,
+          "asserts": 36,
           "skips": 1,
           "todos": 0
         },
@@ -4900,14 +4966,14 @@
           "todos": 0
         },
         "the-knockout-page-leads-with-the-read.test.mjs": {
-          "tests": 38,
-          "asserts": 117,
+          "tests": 39,
+          "asserts": 120,
           "skips": 0,
           "todos": 0
         },
         "the-knockout-reviewing-pass-rewrites-what-a-reader-sees-first.test.mjs": {
-          "tests": 15,
-          "asserts": 57,
+          "tests": 18,
+          "asserts": 70,
           "skips": 0,
           "todos": 0
         },
@@ -4956,6 +5022,12 @@
         "the-open-line-says-what-to-do-when-the-page-is-not-ours.test.mjs": {
           "tests": 6,
           "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-outbox-still-reads-the-folder-it-used-to-name.test.mjs": {
+          "tests": 4,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },
@@ -5013,6 +5085,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-portal-shows-only-approved-strings.test.mjs": {
+          "tests": 15,
+          "asserts": 32,
+          "skips": 0,
+          "todos": 0
+        },
         "the-probe-spawns-the-environment-it-validated.test.mjs": {
           "tests": 4,
           "asserts": 12,
@@ -5038,8 +5116,8 @@
           "todos": 0
         },
         "the-public-residue-is-a-floor.test.mjs": {
-          "tests": 15,
-          "asserts": 59,
+          "tests": 16,
+          "asserts": 64,
           "skips": 5,
           "todos": 0
         },
@@ -5104,8 +5182,8 @@
           "todos": 0
         },
         "the-report-can-say-how-much-was-read.test.mjs": {
-          "tests": 8,
-          "asserts": 23,
+          "tests": 25,
+          "asserts": 71,
           "skips": 0,
           "todos": 0
         },
@@ -5124,6 +5202,12 @@
         "the-report-shell-keeps-what-a-repair-does-not-resend.test.mjs": {
           "tests": 6,
           "asserts": 28,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-residue-census-measures-what-is-published.test.mjs": {
+          "tests": 4,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
@@ -5218,8 +5302,8 @@
           "todos": 0
         },
         "the-summary-carries-structure.test.mjs": {
-          "tests": 12,
-          "asserts": 31,
+          "tests": 13,
+          "asserts": 35,
           "skips": 0,
           "todos": 0
         },
@@ -5644,7 +5728,7 @@
       "perFile": {
         "a-company-created-after-the-door-starts-is-listed.test.mjs": {
           "tests": 6,
-          "asserts": 14,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },
@@ -5954,6 +6038,18 @@
           "skips": 0,
           "todos": 0
         },
+        "the-preview-answers-the-demo-question-as-the-claim-does.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-preview-refuses-what-the-claim-refuses.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "token-door-boot.test.mjs": {
           "tests": 7,
           "asserts": 8,
@@ -5990,8 +6086,8 @@
           "todos": 0
         },
         "askAi.test.ts": {
-          "tests": 21,
-          "asserts": 97,
+          "tests": 23,
+          "asserts": 108,
           "skips": 0,
           "todos": 0
         },
@@ -6039,7 +6135,7 @@
         },
         "composerProduct.test.ts": {
           "tests": 37,
-          "asserts": 147,
+          "asserts": 146,
           "skips": 0,
           "todos": 0
         },
@@ -6164,8 +6260,8 @@
           "todos": 0
         },
         "listView.test.ts": {
-          "tests": 13,
-          "asserts": 32,
+          "tests": 14,
+          "asserts": 35,
           "skips": 0,
           "todos": 0
         },
@@ -6189,7 +6285,7 @@
         },
         "nav.test.ts": {
           "tests": 15,
-          "asserts": 94,
+          "asserts": 97,
           "skips": 0,
           "todos": 0
         },
@@ -6290,14 +6386,20 @@
           "todos": 0
         },
         "registerCoverage.test.ts": {
-          "tests": 12,
-          "asserts": 40,
+          "tests": 13,
+          "asserts": 45,
           "skips": 0,
           "todos": 0
         },
         "reportFrame.test.ts": {
-          "tests": 14,
-          "asserts": 22,
+          "tests": 15,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
+        "reportSections.test.ts": {
+          "tests": 6,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
@@ -6337,6 +6439,12 @@
           "skips": 0,
           "todos": 0
         },
+        "tableWrapShowsItScrolls.test.ts": {
+          "tests": 1,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "terminology.test.ts": {
           "tests": 6,
           "asserts": 14,
@@ -6350,8 +6458,8 @@
           "todos": 0
         },
         "territoryCodes.test.ts": {
-          "tests": 2,
-          "asserts": 5,
+          "tests": 3,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },
@@ -6389,6 +6497,12 @@
         "providers/*/test/*.test.mjs"
       ],
       "perFile": {
+        "providers/_shared/test/a-record-is-written-once-per-run.test.mjs": {
+          "tests": 5,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
         "providers/_shared/test/absent-body.test.mjs": {
           "tests": 12,
           "asserts": 53,
@@ -6468,8 +6582,8 @@
           "todos": 0
         },
         "providers/_shared/test/territory-codes.test.mjs": {
-          "tests": 11,
-          "asserts": 38,
+          "tests": 15,
+          "asserts": 45,
           "skips": 0,
           "todos": 0
         },
@@ -6542,6 +6656,18 @@
         "providers/perplexity/test/source-is-text.test.mjs": {
           "tests": 4,
           "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/signa/test/a-search-row-is-a-band-row.test.mjs": {
+          "tests": 3,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/signa/test/an-owner-portfolio-sweep-is-a-search.test.mjs": {
+          "tests": 4,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },

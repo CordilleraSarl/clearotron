@@ -22,14 +22,14 @@
 //   3. FAILED RUNS ARE VISIBLE, with the reason. A run that silently disappears from the list is worse
 //      than one that says it stopped: the user goes on believing it is still going.
 
-import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import type { Run } from '../contract/api.ts'
 import { api, saveFailureText } from '../contract/api.ts'
 import { bandRank } from '../contract/tone.ts'
 import { displayName, inSentence, newestFirst, readLabel, readLabelParts, readTime } from '../contract/reads.ts'
 import { marksOf, nameCount, rowsOf, NO_FAMILIES } from '../contract/grouping.ts'
 import type { Families, MarkGroup, Row } from '../contract/grouping.ts'
-import { clearancesColumns, pageWindow } from '../contract/listView.ts'
+import { BOARD_SHARES_FROM, clearancesColumns, pageWindow } from '../contract/listView.ts'
 import {
   GROUP_RISK_LINE,
   groupStatus,
@@ -43,6 +43,7 @@ import {
   statusCount,
 } from '../contract/nameRow.ts'
 import { RiskDot, StatusCell } from '../components/RiskDot.tsx'
+import { PinnedScrollbar } from '../components/PinnedScrollbar.tsx'
 import { Icon } from '../components/Icon.tsx'
 import { useLoad, usePoll } from '../state/useApi.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
@@ -53,6 +54,7 @@ import { PageHeader } from '../components/PageHeader.tsx'
 import { allowanceLine } from '../contract/allowance.ts'
 import { runProductLabel } from '../contract/home.ts'
 import { AskAi } from '../components/AskAi.tsx'
+import { askAiOffer } from '../contract/askAi.ts'
 
 // criterion 5 — 'failed' is a tab, not a member of the other three. The owner's ruling was
 // "Failed runs on clearance screen - no", and a tab is how a screen says no to something without
@@ -116,6 +118,22 @@ function writeGroupPref(on: boolean): void {
 }
 
 export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
+  // The list's wrapper, read two ways through one callback ref, because the wrapper is not drawn until the
+  // list has loaded: its width decides whose column shares it is drawn with — the board's where they hold,
+  // the narrow ones below that (contract/listView.ts) — and the element itself is what the scrollbar
+  // pinned under it at phone width scrolls (components/PinnedScrollbar.tsx).
+  const [tableWidth, setTableWidth] = useState(0)
+  const widthWatch = useRef<ResizeObserver | null>(null)
+  const namesWrapEl = useRef<HTMLDivElement | null>(null)
+  const namesWrap = useCallback((el: HTMLDivElement | null) => {
+    namesWrapEl.current = el
+    widthWatch.current?.disconnect()
+    widthWatch.current = null
+    if (!el) return
+    widthWatch.current = new ResizeObserver(() => setTableWidth(el.clientWidth))
+    widthWatch.current.observe(el)
+    setTableWidth(el.clientWidth)
+  }, [])
   const [filter, setFilter] = useState<Filter>('all')
   const [sort, setSort] = useState<{ key: SortKey; desc: boolean }>({ key: 'date', desc: true })
   const [query, setQuery] = useState('')
@@ -185,6 +203,10 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   // Every Ask AI on the list is drawn from it; a control that asked for itself would ask fifty times.
   const { result: aiResult } = useLoad(() => api.mcpAccess(), [])
   const aiAccess = aiResult?.kind === 'ok' ? aiResult.value : null
+  // WHICH ROW HAS ITS ASK AI PANEL OPEN, by run. The control is no longer a button in the actions column:
+  // it is the row menu's second entry, beside Retire (owner, 2026-09-18), and the panel it opens is the
+  // same one the report carries.
+  const [askFor, setAskFor] = useState<string | null>(null)
 
   // Which marks are ticked for grouping. Cleared whenever the grouping changes, so the checkboxes never
   // outlive the rows they referred to.
@@ -486,7 +508,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   // CARRIES, given the same four facts the report gives it — the run's mark, date, kind and product label —
   // so a question asked from a name is the question asked from that name's report, word for word. Which
   // read it is about is `nameActions`' answer, the same read Open opens.
-  const askAi = (_name: string, read: Run): ReactNode => (
+  const askAi = (_name: string, read: Run): ReactNode => (askFor !== read.runId ? null : (
     <AskAi
       runId={read.runId}
       markName={read.markName}
@@ -496,8 +518,18 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
       access={aiAccess}
       go={ctx.go}
       quiet
+      hideButton
+      openOnArrival
+      onClose={() => setAskFor(null)}
     />
-  )
+  ))
+
+  // The menu's own entry: drawn on the same answer the control itself draws on, so a deployment with no
+  // connector offers no entry rather than one that opens nothing.
+  const askMenu: AskAiMenu = (read) => ({
+    show: askAiOffer({ markName: read.markName, date: read.date, kind: read.kind }, aiAccess).drawn,
+    open: () => setAskFor(read.runId),
+  })
 
   const sortBtn = (key: SortKey, label: string) => (
     <button
@@ -681,7 +713,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
         </div>
       ) : null}
 
-      <div className="table-wrap names-wrap">
+      <div className="table-wrap names-wrap" ref={namesWrap}>
         {/* THE GRID IS DECLARED, NOT EMERGENT.
             The table had no `table-layout` and no column widths at all, so every column was sized by
             whatever text happened to be in it — which is why expanding a row could re-flow the parent
@@ -700,7 +732,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
             holds them to 100 in every mode. */}
         <table className="data fixed">
           <colgroup>
-            {clearancesColumns({ pick: canGroup, owner: showOwnerColumn }).map((c) => (
+            {clearancesColumns({ pick: canGroup, owner: showOwnerColumn }, { wide: tableWidth >= BOARD_SHARES_FROM }).map((c) => (
               <col key={c.key} style={{ width: `${c.share}%` }} />
             ))}
           </colgroup>
@@ -785,6 +817,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
                       onRetire={canGroup ? retireMark : undefined}
                       onRetireRun={canGroup ? retireRun : undefined}
                       askAi={askAi}
+              askMenu={askMenu}
                     />
                   ) : (
                     <MarkRow
@@ -800,6 +833,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
                       onRetire={canGroup ? retireMark : undefined}
                       onRetireRun={canGroup ? retireRun : undefined}
                       askAi={askAi}
+              askMenu={askMenu}
                     />
                   )}
                 </Fragment>
@@ -808,6 +842,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
           </tbody>
         </table>
       </div>
+      <PinnedScrollbar target={namesWrapEl} />
 
       {!rows.length ? <div className="empty">No names match this view.</div> : null}
 
@@ -947,6 +982,8 @@ function Twisty({ open, label, onToggle }: { readonly open: boolean; readonly la
 
 /** Ask AI for one read, drawn by the screen — which holds the one answer about this reader's assistant. */
 type AskAiSlot = (name: string, read: Run) => ReactNode
+/** Whether this row offers Ask AI at all, and what its menu entry does. */
+type AskAiMenu = (read: Run) => { readonly show: boolean; readonly open: () => void }
 
 /**
  * The row's overflow menu, "···" — where the curation acts live: retire, and ungroup.
@@ -1031,6 +1068,9 @@ function RowActions({ open, ask, menu }: {
   readonly menu: ReactNode
 }) {
   return (
+    // THE BOX IS THE CONTAINER the layout asks, so the side-by-side form is chosen by the width this
+    // cell actually has rather than by the width of the whole table (see .row-actions-box).
+    <div className="row-actions-box">
     <div className="row-actions">
       <span className="row-actions-open">
         {open ? (
@@ -1055,6 +1095,7 @@ function RowActions({ open, ask, menu }: {
       </span>
       <span className="row-actions-more">{menu}</span>
     </div>
+    </div>
   )
 }
 
@@ -1072,6 +1113,7 @@ function FamilyRows({
   onRetire,
   onRetireRun,
   askAi,
+  askMenu,
 }: {
   readonly family: Extract<Row, { kind: 'family' }>
   readonly isOpen: (id: string) => boolean
@@ -1094,6 +1136,7 @@ function FamilyRows({
       grouping of rows, not a different kind of thing. Passed straight through to each MarkRow. */
   readonly onRetireRun?: ((run: Run) => void) | undefined
   readonly askAi: AskAiSlot
+  readonly askMenu: AskAiMenu
 }) {
   const open = isOpen(family.id)
   // A GROUP FOLLOWS ITS MEMBERS. When any name in it has a search under way the status says how many,
@@ -1135,7 +1178,9 @@ function FamilyRows({
           {busy ? (
             <span className="status">
               <span className={`dot ${busy.state}`} />
-              <span className="status-count">{busy.text}</span>
+              {/* A PHRASE, NOT A COUNT: it wraps between its words in a narrow column rather than running
+                  on under Risk, and the number stays with its noun. */}
+              <span>{busy.text.replace(/^(\d+) /, '$1\u00a0')}</span>
             </span>
           ) : (
             <StatusCell state={family.state} step={null} reason={null} failedStage={null} />
@@ -1184,6 +1229,7 @@ function FamilyRows({
               onRetire={onRetire}
               onRetireRun={onRetireRun}
               askAi={askAi}
+              askMenu={askMenu}
             />
           ))
         : null}
@@ -1205,6 +1251,7 @@ function MarkRow({
   onRetire,
   onRetireRun,
   askAi,
+  askMenu,
 }: {
   readonly mark: MarkGroup
   readonly open: boolean
@@ -1226,6 +1273,7 @@ function MarkRow({
       curate. Absent ⇒ no control, exactly as  requires of its group-level sibling. */
   readonly onRetireRun?: ((run: Run) => void) | undefined
   readonly askAi: AskAiSlot
+  readonly askMenu: AskAiMenu
 }) {
   const run = mark.current
   const threaded = mark.reads.length > 1
@@ -1338,8 +1386,10 @@ function MarkRow({
           <RowActions
             open={target && openReport ? { label: target.label, go: openReport } : null}
             ask={actions.askAbout ? askAi(mark.name, actions.askAbout) : null}
-            menu={onRetire ? (
+            menu={onRetire || (actions.askAbout && askMenu(actions.askAbout).show) ? (
               <RowMenu label={`More actions for ${mark.name}`}>
+                {onRetire ? (
+                <>
                 {/* — RETIRE, IN THE ROW'S MENU. The owner asked for "a way to remove, hide or archive a
                     clearance from the Clearances page"; the sidecar, its reader and its semantics were
                     all live, and the only writer was a CLI on the pool host. */}
@@ -1355,6 +1405,14 @@ function MarkRow({
                       name") restated as a UI rather than removed. */}
                   {threaded ? `Retire all ${mark.reads.length}` : 'Retire'}
                 </MenuItem>
+                </>
+                ) : null}
+                {/* ASK AI, THE ROW'S SECOND ENTRY (owner, 2026-09-18). It was a button in the actions
+                    column beside Open; the column keeps the board's share with Open alone in it, and this
+                    entry opens the same panel, with the same label the control has everywhere. */}
+                {actions.askAbout && askMenu(actions.askAbout).show ? (
+                  <MenuItem onSelect={() => askMenu(actions.askAbout as Run).open()}>Ask AI</MenuItem>
+                ) : null}
               </RowMenu>
             ) : null}
           />

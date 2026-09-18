@@ -66,8 +66,8 @@ export const CAPABILITIES = Object.freeze({
     // this provider's vocabulary is ISO, where the EU is `EU`. territory-codes.mjs states the rule the
     // alias follows — "provider translate owns provider-specific spelling, e.g. EU→EM on clarivate" —
     // and the binding-layer pass in register-plan.mjs names the EU register `EM` because that is the
-    // canonical office code, so without this the region clause would carry a value Corsearch answers
-    // with an HTTP 500 rather than a 400 (the copper-bastion shape: a malformed region reads as
+    // canonical office code, so without this the region clause would carry a value this provider answers
+    // as a server error rather than a bad request (the copper-bastion shape: a malformed region reads as
     // transient and burns the park budget).
     translate: (code) => {
       const c = String(code ?? "").trim().toUpperCase();
@@ -114,9 +114,9 @@ export const CAPABILITIES = Object.freeze({
   // sent — the shared executor's script-form refusal (providers/_shared/script-form.mjs) is switched
   // off by this declaration, and switching it on would convert evidenced coverage into deferrals.
   //
-  // Carried in driver/jx.mjs as the provider comparison: 小米 = 553 exact /
-  // 127414 contains, 华威豹 = 6, 스타벅스 = 15 — where the same three terms answer 0/0/0 on clarivate.
-  // Corroborated by archived executed bands, which returned non-zero hit counts on native characters
+  // Carried in driver/jx.mjs as the provider comparison: native-script terms answer here and answer
+  // nothing on a romanisation index, which is the whole of the difference between the two.
+  // Corroborated by archived executed bands, which returned records on native characters
   // across Han, Katakana, Cyrillic and Greek. Structurally corroborated too: `name` and
   // `nameTransliteration` are TWO SEPARATE fields on a row (core.js returns both), so `name:` holds the
   // mark AS FILED and the transliteration is an extra returned field, not the search key. assembleQuery

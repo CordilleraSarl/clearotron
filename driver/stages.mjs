@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // stages.mjs — the SINGLE source of truth for per-stage {agent, model, thinking, timeout, skillReads,
 // output file, validator, message}. Centralizing this fixes the live cross-file tier drift
-// (prelim-register/SKILL.md vs prelim-search/SKILL.md vs phase2-execution.md vs narrative-refutation/SKILL.md).
+// (clearance-register/SKILL.md vs clearance-search/SKILL.md vs phase2-execution.md vs narrative-refutation/SKILL.md).
 //
 // Tiers: the three register SWEEP axes are sonnet (Haiku 4.5 rejects `adaptive`); saturation-probe stays
 // haiku (count-only); common-law stays haiku/low. Judgment = opus. Phase-4 resourcing: the six
@@ -451,7 +451,7 @@ export function axisTier(axis) {
 
 // Active register provider — the single source of truth (driver.config.REGISTER_PROVIDER; flip + redeploy
 // to switch). ONE provider per run, never both. The provider-specific tool names + operator vocabulary
-// live in skills/prelim-register/providers/<provider>.md, which the register spawns are told to read.
+// live in skills/clearance-register/providers/<provider>.md, which the register spawns are told to read.
 const PROVIDER = REGISTER_PROVIDER;
 // THE FOURTH SILENT FALLBACK, and the only one that fabricates rather than defaults. An id with
 // no PROVIDERS entry used to synthesise a meta pointing at `providers/<whatever>.md`, and stages.mjs
@@ -852,7 +852,7 @@ const inputsForReference = (paths) =>
 // opened this: 345 B were cut from matter-frame's watchlist-reference.md and the ratchet did not move.
 //
 // MEASURED, over the SKILL.md files a stage actually reads: 9 companions across 4 skills, 101,077 B,
-// none of it counted. `prelim-register` alone carries 77,994 B of it.
+// none of it counted. `clearance-register` alone carries 77,994 B of it.
 //
 // ── WHY A SECOND LIST RATHER THAN MORE `skillReads` ─────────────────────────────────────────────────
 //
@@ -866,13 +866,13 @@ const inputsForReference = (paths) =>
 // exactly one consumer: driver/test/skill-instruction-load.mjs.
 //
 // DECLARED PER SKILL, NOT PER STAGE, because that is the shape of the fact. Two stages read
-// prelim-register/SKILL.md and both therefore carry its companions; declaring the pair twice is how the
+// clearance-register/SKILL.md and both therefore carry its companions; declaring the pair twice is how the
 // two drift. A stage picks these up by reading the SKILL.md they belong to, which is also what makes the
 // guard in skill-instruction-load.test.mjs able to check the list against the documents themselves.
 export const SKILL_COMPANIONS = Object.freeze({
   "matter-frame": Object.freeze(["watchlist-reference.md"]),
-  "prelim-common-law": Object.freeze(["perplexity-prompts.md"]),
-  "prelim-register": Object.freeze([
+  "clearance-common-law": Object.freeze(["perplexity-prompts.md"]),
+  "clearance-register": Object.freeze([
     "register-recipes.md", "status-rules.md", "stealth-filer-indicators.md",
     "providers/corsearch.md", "providers/clarivate.md",
   ]),
@@ -882,8 +882,8 @@ export const SKILL_COMPANIONS = Object.freeze({
 /**
  * The companion documents a dispatch's SKILL.md points its seat at — measured, never emitted.
  *
- * A CROSS-SKILL LINK IS NOT ONE OF THESE. `prelim-variants/SKILL.md` cites a step of
- * `prelim-register/SKILL.md`, and prelim-register's own stages already measure that file: counting it
+ * A CROSS-SKILL LINK IS NOT ONE OF THESE. `clearance-variants/SKILL.md` cites a step of
+ * `clearance-register/SKILL.md`, and clearance-register's own stages already measure that file: counting it
  * here too would inflate the ratchet with 28,535 B nobody dispatched twice, and a ratchet that moves for
  * reasons no stage can be traced to is worse than one that under-counts.
  */
@@ -990,23 +990,23 @@ export const pharmaMatter = (job) =>
 // EXPLICITLY in all three resolvers rather than left to a relative link the agent may or may not follow.
 // The reach is pinned by report-prose-standard.test.mjs, because nothing FAILS if these rules never
 // arrive: the stage simply writes to model defaults and every other test still passes.
-const REPORT_PROSE = "skills/prelim-search/report-prose.md";
+const REPORT_PROSE = "skills/clearance-search/report-prose.md";
 // THE SPINE RIDES WITH synthesis-rules.md EVERYWHERE IT IS READ. 412 lines MOVED
 // out of that file into `firm-wide-reasoning.md` so the knockout lane can read the same copy instead of
 // carrying its own retired transcription. A move, not a copy — which means every stage that read
 // synthesis-rules.md for that material must now read both, or it silently LOSES doctrine it has had all
 // along. That is the one way this extraction could do harm, so the two lists are edited together and
 // the pairing is stated rather than left to be noticed.
-const SPINE_DOC = "skills/prelim-search/firm-wide-reasoning.md";
+const SPINE_DOC = "skills/clearance-search/firm-wide-reasoning.md";
 const synthesisSkillReads = ({ profile, job }) => [
-  "skills/prelim-search/synthesis-rules.md", SPINE_DOC, frameworkFor(profile), workedExamplesFor(profile),
-  ...(pharmaMatter(job) ? ["skills/prelim-search/field-doctrine-pharma.md"] : []),
+  "skills/clearance-search/synthesis-rules.md", SPINE_DOC, frameworkFor(profile), workedExamplesFor(profile),
+  ...(pharmaMatter(job) ? ["skills/clearance-search/field-doctrine-pharma.md"] : []),
   REPORT_PROSE,
 ];
 const reportOverviewSkillReads = ({ profile }) =>
-  ["skills/prelim-search/synthesis-rules.md", SPINE_DOC, frameworkFor(profile), "skills/prelim-search/delivery-contract.md", REPORT_PROSE];
+  ["skills/clearance-search/synthesis-rules.md", SPINE_DOC, frameworkFor(profile), "skills/clearance-search/delivery-contract.md", REPORT_PROSE];
 const reportCardSkillReads = ({ profile }) =>
-  ["skills/prelim-search/delivery-contract.md", frameworkFor(profile), REPORT_PROSE];
+  ["skills/clearance-search/delivery-contract.md", frameworkFor(profile), REPORT_PROSE];
 
 // spec-48 C1 — the territories whose legal system scopes the marketplace-risk directive, and whose
 // registration scripts set the script floor. THE SHARED LADDER (effective-scope.mjs resolveTerritories),
@@ -1072,7 +1072,7 @@ export const writeReturn = (out, checked = []) => {
 };
 
 // Doubt hand-off (2026-07-22 — the copper-gantry defect): a gather layer that identifies a check it
-// CANNOT perform itself used to bury that need in free prose ("requires prelim-register layer
+// CANNOT perform itself used to bury that need in free prose ("requires clearance-register layer
 // cross-check…") that nothing downstream parses — the question died unasked and the contradiction it
 // would have resolved shipped unresolved. This one dictated line is the fix: the driver parses EXACTLY
 // this shape (doubt-ledger.mjs mintCrossCheckDoubts), mints it as a doubt, stitches it to whatever
@@ -1203,7 +1203,7 @@ export const VARIANT_CATEGORY_BRIEF =
 //
 // `tokens` lists the validator failure tokens that SPEAK ABOUT that element. PER STAGE, never global:
 // `too_short` and `missing` come from the shared nonEmpty()/needs() helpers (verify.mjs:123-133) and are
-// legitimately owned by DIFFERENT elements in matter-frame, prelim-variants and frame-diff. A global
+// legitimately owned by DIFFERENT elements in matter-frame, clearance-variants and frame-diff. A global
 // token→element map sees several owners for one token and "fixes" a partition that was never violated.
 //
 // An EMPTY `tokens` array is a finding, not an omission: it says no validator polices that element. 139
@@ -1223,7 +1223,7 @@ export const STAGES = {
     // The output contract THIS prompt holds the frame to — the dictated "Meaning angles:" line below.
     // Recorded by the driver at DISPATCH (pipeline.mjs recordStageContract → _driver/stage-contracts.json)
     // and the ONLY thing validators.matterContext gates the line requirement on — the romanisation-floor
-    // pattern (prelim-variants below). It is evidence of PROMPT VINTAGE, never of run freshness: a
+    // pattern (clearance-variants below). It is evidence of PROMPT VINTAGE, never of run freshness: a
     // completed legacy frame is re-validated (crash/parked-resume skip, replay-archive) without the
     // marker and keeps passing under the rules it was minted under. The instructed-scope sentinel proved
     // the wrong thing here exactly as it did for the romanisation floor (present on every current-era
@@ -1385,9 +1385,9 @@ export const STAGES = {
     ),
   },
 
-  "prelim-variants": {
+  "clearance-variants": {
     model: "opus", thinking: "high", timeoutSec: 600, stallSec: 450,
-    skillReads: ["skills/prelim-variants/SKILL.md", "skills/prelim-variants/transliteration-scripts.md"],
+    skillReads: ["skills/clearance-variants/SKILL.md", "skills/clearance-variants/transliteration-scripts.md"],
     out: (P) => P.variantManifest,
     validate: validators.variantManifest,
     // The output contract THIS prompt holds the artifact to — recorded by the driver at DISPATCH
@@ -1482,7 +1482,7 @@ export const STAGES = {
       },
       "Famous-mark flags per element + famous_mark_calls_needed[]": {
         class: "judgment", tokens: [],
-        why: "recognising that an element is also a band, a celebrity or a famous brand is the judgment; but the HAND-OFF is prose that makes prelim-common-law fire a dedicated Perplexity call, with no structured slot and no token — the same shape as the CROSS-CHECK line #850 classed M for its line shape",
+        why: "recognising that an element is also a band, a celebrity or a famous brand is the judgment; but the HAND-OFF is prose that makes clearance-common-law fire a dedicated Perplexity call, with no structured slot and no token — the same shape as the CROSS-CHECK line #850 classed M for its line shape",
       },
       "Scope statement — 2-4 sentences opening the deliverable narrative, with the class scope reasoned and advisory additions marked": {
         class: "judgment", tokens: [],
@@ -1505,7 +1505,7 @@ export const STAGES = {
       // deleted was a mechanism no surface could carry, and `search_floor` is a surface.
       "search_floor — the AXES this mark's search floor obliges, which a coverage-limited row may not demote": {
         class: "judgment", tokens: ["variantmodel_search_floor_invalid"],
-        why: "A PER-MARK call, not a statable rule, so it stays judgment: which axes are this mark's search floor depends on where conflict concentrates for THIS mark — the same read the archetype and risk-theory rows carry. Code applies and audits the floor; it does not choose it. Designated HERE and judged by prelim-register's coverage row, which is the whole mechanism — a floor field on the coverage row itself would let the seat that missed the work decide the work was never obliged. The token covers the shape (an array of REGISTER_AXES); WHICH axes is the judgment, and nothing polices that. Do not confuse it with the FORM floor, which IS code doctrine (scope-ledger.mjs `radiusFor`) and generates its axes mechanically.",
+        why: "A PER-MARK call, not a statable rule, so it stays judgment: which axes are this mark's search floor depends on where conflict concentrates for THIS mark — the same read the archetype and risk-theory rows carry. Code applies and audits the floor; it does not choose it. Designated HERE and judged by clearance-register's coverage row, which is the whole mechanism — a floor field on the coverage row itself would let the seat that missed the work decide the work was never obliged. The token covers the shape (an array of REGISTER_AXES); WHICH axes is the judgment, and nothing polices that. Do not confuse it with the FORM floor, which IS code doctrine (scope-ledger.mjs `radiusFor`) and generates its axes mechanically.",
       },
       "Per-jurisdiction sub-queries": {
         class: "judgment", tokens: [],
@@ -1528,7 +1528,7 @@ export const STAGES = {
       // Force-load the companion: the everyday-first meaning-SET rule lives there; leaving it to a prose
       // pointer let it silently revert run-to-run (quartz-vault emitted the set, marble-foundry dropped it
       // to one technical guess with no skill change). Force-loaded, it can't be skipped under output pressure.
-      reads(["skills/prelim-variants/SKILL.md", "skills/prelim-variants/transliteration-scripts.md"]),
+      reads(["skills/clearance-variants/SKILL.md", "skills/clearance-variants/transliteration-scripts.md"]),
       // lever 3 — the manifest rung. Empty on a one-country run; `lines` drops it.
       variantRungDirective(depth),
       `Read the matter frame: ${P.matterContext}.`,
@@ -1544,7 +1544,7 @@ export const STAGES = {
       // strict-parsed what came back. The seat hand-formatted a structure the driver already validates,
       // and O3c caught it doing `python3 -c` over its own JSON to check the formatting first.
       //
-      // The `record_prelim_variants` schema IS that shape now, so the key-set and enum families stop being
+      // The `record_clearance_variants` schema IS that shape now, so the key-set and enum families stop being
       // reachable from a typed call rather than merely being caught after the file is written.
       //
       // WORTH KNOWING: the guard did NOT flag this sentence. Its write-order markers are the six
@@ -1585,7 +1585,7 @@ export const STAGES = {
       // rule bans, and e2e has twice measured a seat obeying the prose while holding the tool.
       //
       // EACH FIELD CARRIES ITS OWN IMPERATIVE IN ITS OWN SENTENCE.
-      `Hand the manifest back by calling the \`record_prelim_variants\` tool. Send \`mark\` verbatim, \`dominant_element\`, and \`elements\` — one \`{value, kind}\` per token, kind from the closed set distinctive | common | saturated-common.`,
+      `Hand the manifest back by calling the \`record_clearance_variants\` tool. Send \`mark\` verbatim, \`dominant_element\`, and \`elements\` — one \`{value, kind}\` per token, kind from the closed set distinctive | common | saturated-common.`,
       `Send \`variants\` — one \`{value, category, rationale, romanization}\` per search term, category from the closed set the skill names, and \`romanization\` on every non-Latin value and only on those.`,
       `Send \`incumbent_classes\` and \`watchlist_owners\` where Step 5 names them, as arrays; omit or send empty where it does not.`,
       // THE SCOPE LEDGER STOPS BEING A TABLE THE DRIVER RE-READS. It used to be dictated as markdown in
@@ -1607,7 +1607,7 @@ export const STAGES = {
   // already carries the frame), it reads ONLY the raw instruction and re-derives the threat model cold across
   // four layers, emitting a structured model. Runs IN PARALLEL with the gather (pipeline.mjs) — no tool calls,
   // so it finishes inside the longest gather member's wall (zero added critical-path latency). NON-FATAL.
-  // Opus: it is a PEER re-derivation of prelim-variants/matter-frame (both opus) — a weaker tier cannot
+  // Opus: it is a PEER re-derivation of clearance-variants/matter-frame (both opus) — a weaker tier cannot
   // credibly out-imagine the frame; the independence is the input DIET (starvation), not a different family.
   "blind-frame": {
     model: "opus", thinking: "high", timeoutSec: 600, stallSec: 450,
@@ -1693,7 +1693,7 @@ export const STAGES = {
     // The upstream fix for gather COST is still in-class scoping + the 600 enumerate ceiling; this wall just
     // stops killing a gather that is legitimately working. Ship WITH the scoping/ceiling levers, not alone.
     model: "haiku", thinking: "low", timeoutSec: 2250, stallSec: 1100,
-    skillReads: ["skills/prelim-common-law/SKILL.md"],
+    skillReads: ["skills/clearance-common-law/SKILL.md"],
     out: (P) => P.commonLaw,
     validate: validators.commonLaw,
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
@@ -1827,7 +1827,7 @@ export const STAGES = {
       // truncation and the NOVA PULSE dropped-cell failures (no tier bump would fix the output ceiling).
       if (gridSpecPath) {
         return lines(
-          reads(["skills/prelim-common-law/SKILL.md"]),
+          reads(["skills/clearance-common-law/SKILL.md"]),
           `Inputs: variant manifest ${P.variantManifest}; matter frame ${P.matterContext}.`,
           systemScope,
           asksBlock,
@@ -1851,7 +1851,7 @@ export const STAGES = {
       // truncated mid-matrix — ~14×7=98 cells/call is the proven-safe budget, scaled per profile).
       const batch = profile?.batchSize ?? 14;
       return lines(
-        reads(["skills/prelim-common-law/SKILL.md"]),
+        reads(["skills/clearance-common-law/SKILL.md"]),
         `Inputs: variant manifest ${P.variantManifest}; matter frame ${P.matterContext}.`,
         systemScope,
         asksBlock,
@@ -1894,7 +1894,7 @@ export const STAGES = {
     // dead while looking authoritative. The wall and the stall stay here — they are the same for every
     // seat and are about the grid tool's silence, not about the judgment tier.
     timeoutSec: 2250, stallSec: 1100,
-    skillReads: ["skills/prelim-common-law/SKILL.md"],
+    skillReads: ["skills/clearance-common-law/SKILL.md"],
     out: (P, half) => P.commonLawHalf(half),
     validate: validators.commonLawHalf,
     // — the run's own receipt of which prompt vintage minted this dispatch, written at DISPATCH
@@ -2003,7 +2003,7 @@ export const STAGES = {
       // asking for those sections would be demanding ceremony a seat has no material for — which is how
       // a floor teaches a model to fabricate rows to pass it.
       if (half === MEANING_SEAT) return lines(
-        reads(["skills/prelim-common-law/SKILL.md"]),
+        reads(["skills/clearance-common-law/SKILL.md"]),
         `Inputs: variant manifest ${P.variantManifest}; matter frame ${P.matterContext}.`,
         systemScope,
         `You own this matter's MEANING SWEEP and nothing else. Two sibling members are running the marketplace grid concurrently and the driver merges all three in code — do NOT sweep marketplaces, do NOT judge listings, and do NOT widen beyond your dictated queries.`,
@@ -2025,7 +2025,7 @@ export const STAGES = {
         ...ownedAsks.map((a, i) => `  ${i + 1}. "${a.ask}"`),
       ) : "";
       return lines(
-        reads(["skills/prelim-common-law/SKILL.md"]),
+        reads(["skills/clearance-common-law/SKILL.md"]),
         `Inputs: variant manifest ${P.variantManifest}; matter frame ${P.matterContext}.`,
         systemScope,
         asksBlock,
@@ -2063,7 +2063,7 @@ export const STAGES = {
     // real fix is the in-class scoping (unit.md) + the 600 enumerate ceiling, which cap the silent page-loop to
     // ~seconds; this is a safety margin only. stallSec stays < timeoutSec so a true silent wedge still trips.
     timeoutSec: 1500, stallSec: 1100,
-    skillReads: ["skills/prelim-register/SKILL.md", "skills/prelim-register/unit.md"],
+    skillReads: ["skills/clearance-register/SKILL.md", "skills/clearance-register/unit.md"],
     out: (P, axis) => P.registerUnit(axis),
     validate: validators.registerUnit,
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
@@ -2087,7 +2087,7 @@ export const STAGES = {
       },
       "proposal `romanization` beside a single non-Latin term — plain-ASCII Latin form, space-separated syllables": {
         class: "judgment", tokens: [],
-        why: "#850 keeps romanization at prelim-variants as a language judgment and I hold the same line here. Recorded for E7: where the proposed term is a manifest translit variant, variant-manifest.json already carries its romanization, so that subset is code-extractable. No token at this stage.",
+        why: "#850 keeps romanization at clearance-variants as a language judgment and I hold the same line here. Recorded for E7: where the proposed term is a manifest translit variant, variant-manifest.json already carries its romanization, so that subset is code-extractable. No token at this stage.",
       },
       "proposal envelope — predicate enum {exact, default, wildcard, phonetic, owner}, term vs terms, rationale": {
         class: "mechanical:tool-written", tokens: [],
@@ -2153,7 +2153,7 @@ export const STAGES = {
     // once here so no branch below can drift out of step with what the model can actually call.
     const supplementalLane = !!registerPlan?.contract?.supplemental_lane;
     return lines(
-      `First, read and follow exactly: skills/prelim-register/SKILL.md (the shared spine) then skills/prelim-register/unit.md (MODE A — UNIT). Do NOT read digest.md (digest-mode judgment a unit must never run).`,
+      `First, read and follow exactly: skills/clearance-register/SKILL.md (the shared spine) then skills/clearance-register/unit.md (MODE A — UNIT). Do NOT read digest.md (digest-mode judgment a unit must never run).`,
       // WHAT THE KEY ALSO CARRIES — COMPOSED, NOT DOCTRINE ( /).
       // `unit.md` used to name three tools flat, and on a deployment withholding two of them the seat was
       // told it holds tools its grant does not carry. The composer derives the list from the same table
@@ -2310,7 +2310,7 @@ export const STAGES = {
     // — `placementForm: 1` joins it rather than replacing it. Under the form era placements.json is
     // DRIVER-RENDERED from the accumulator, so validators.placement must stop demanding it from the seat;
     // archived runs carry the old key alone and keep validating under the rules they were minted under.
-    contract: { structuredPlacements: 1, placementForm: 1 },
+    contract: { structuredPlacements: 1, placementForm: 1, placementAccount: 1 },   // placementAccount: see placementAccountArmed in verify.mjs
     skillReads: ["skills/placement-inquiry/SKILL.md"],
     out: (P) => P.placement,
     // — `outSibs: [P.placementModel]` is DELETED, and the premise is retired rather than overruled.
@@ -2326,7 +2326,7 @@ export const STAGES = {
     // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
     contractElements: {
       "tier — EXACTLY one of headline-candidate / sheet-2 / watchlist-annex / out-of-scope-filtered, per placed candidate": {
-        class: "judgment", tokens: ["placement_tier_invalid", "missing"],
+        class: "judgment", tokens: ["placement_tier_invalid", "missing", "placement_unjudged"],
         why: "The answer to 'does this conflict change the advice, or only complete the record?' No artifact on disk holds it — the band supplies records, never a deliverable position. #850 keeps it J.",
       },
       "reason — the short paragraph carrying the stated ground for the tier (owner characterisation, customer/channel read, decisive ground, Stage-2 mitigant)": {
@@ -2362,11 +2362,11 @@ export const STAGES = {
         why: "Commercial-relevance reasoning, written once per SURFACED CANDIDATE — not per enumerated record; this element's own key overstates it and is left alone only because that string is frozen in contract-arm2-baseline.json. Measured on delivered run ed1d7248: SIX `**Inquiry trace:**` bullets against a band of 412 enumerated records, each one compressed bullet with inline (1)…(7), 2,096 of the md's 44,131 chars — 4.7%. NO CODE PARSES IT and it carries no token, but that is not the same as having no consumer, and the previous wording here ('lands only in md prose nothing parses') invited exactly that misreading: placement-recommendations.md is dispatched as model context to register-digest, synthesis and narrative-refutation, and a reviewing lawyer reads it. Its consumer is the human audit trail. The `reason` contract forbids restating it there — see the tier-enum dispatch line's 'NEVER the full 7-point inquiry trace' (cited by its text, not a line number: the pointer this comment used to carry had drifted 756 lines and aimed at a bare brace). #1339 D2 proposed dropping the order; owner ruled DROP THE TRIM on the re-derivation: the trace is ~8 s of emission at 70 tok/s, and deleting the whole md would be 2.6-3.0 min against a claim needing 25-33, so no trim inside this artifact could ever have been the dominant term.",
       },
       "placements.json — the structured mirror, keys EXACTLY {mark, owner, jurisdiction, records, tier, reason} + optional borderline": {
-        class: "mechanical:code-rendered", tokens: ["placementmodel_missing", "placements_unparseable", "placements_key_unknown", "placement_invalid", "placement_key_unknown"],
+        class: "mechanical:code-rendered", tokens: ["placementmodel_missing", "placements_unparseable", "placements_key_unknown", "placement_invalid", "placement_key_unknown", "placement_form_unreadable"],
         why: "The driver renders it: renderPlacementsJson() in placement-form.mjs over the union, landed by `syncPlacementForm` in gateway.mjs (the union-then-render block). Cited by SYMBOL because the number has now moved twice: an earlier :507 pointed at an engine-resolution comment, and :706 went blank when an unrelated block was inserted above it. The skill file was not updated with #562, so the stage's two sources contradict each other — the contract that escapes if E1 is authored against stages.mjs alone.",
       },
       "mark / owner / records / territories / classes on a SELECTED row": {
-        class: "mechanical:code-extracted", tokens: [],
+        class: "mechanical:code-extracted", tokens: ["placement_register_unrendered"],
         why: "renderEntry() in placement-form.mjs machine-copies all five from the canonical row built out of _driver/register-positions.json; SELECT_ROW_CONTRACT declared in placement-form.mjs states it in its do_not field. The driver already overwrites what the model types, which is the audit's own definition of mechanical.",
       },
       "retract: <row_id> — withdrawing a seat row already on the form": {
@@ -2440,7 +2440,7 @@ export const STAGES = {
     // CAVEAT the probe carries in its own words: it ran on a band trimmed 2,596 -> 300 records. The tiering
     // work is per-record, so the finding should hold at full size, but the first full-band arm is the test.
     model: "opus", thinking: "low", timeoutSec: 2400, stallSec: 900,
-    skillReads: ["skills/prelim-register/SKILL.md", "skills/prelim-register/digest.md"],
+    skillReads: ["skills/clearance-register/SKILL.md", "skills/clearance-register/digest.md"],
     out: (P) => P.registerFindings,
     validate: validators.registerFindings,
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
@@ -2448,7 +2448,7 @@ export const STAGES = {
     contractElements: {
       "coverage form `status` per row — EXACTLY one bare token of confirmed-clean / coverage-limited / deferred": {
         class: "judgment", tokens: ["coverage_no_status", "coverage_clean_unexecuted", "coverage_clean_skipped", "coverage_clean_tainted"],
-        why: "'Does this un-enumerated slice matter to whether I can sign' — the sufficiency call the funnel is forbidden to make (prelim-register SKILL.md, `## Coverage = the band blocks`). The obligations are driver-computed with every identifier; the status is a VALUE the seat sends through record_coverage (typed transport), validated per row at call time. #850 keeps it J.",
+        why: "'Does this un-enumerated slice matter to whether I can sign' — the sufficiency call the funnel is forbidden to make (clearance-register SKILL.md, `## Coverage = the band blocks`). The obligations are driver-computed with every identifier; the status is a VALUE the seat sends through record_coverage (typed transport), validated per row at call time. #850 keeps it J.",
       },
       "coverage form `reason` per row — the sentence the lawyer reads": {
         class: "judgment", tokens: ["coverage_form_engine_vocabulary"],
@@ -2480,7 +2480,7 @@ export const STAGES = {
       },
       "findings prose — the relevance gate keep/drop, opposition read, owner aggregation and identity-conflict flags, Option-D cross-checks, watchlist application, which position earns a Sheet-1 row, and each row's `Flag reason` and `Verify?` cells": {
         class: "judgment", tokens: ["too_short", "missing"],
-        why: "'The only relevance judge' — the funnel pre-gated nothing (prelim-register SKILL.md, `## Coverage = the band blocks`). #850 keeps findings prose / relevance gate / opposition / Option-D / position rows as J.",
+        why: "'The only relevance judge' — the funnel pre-gated nothing (clearance-register SKILL.md, `## Coverage = the band blocks`). #850 keeps findings prose / relevance gate / opposition / Option-D / position rows as J.",
       },
       "every record the run carried into this stage ends somewhere — a findings row, a Negative-results drop, or a Disagreement resolution": {
         class: "judgment", tokens: ["registerdigest_unaccounted_records", "registerdigest_nothing_judged", "registerdigest_accounting_unreadable", "registerdigest_model_missing", "registerdigest_batch_unknown", "registerdigest_double_counted", "registerdigest_model_write_failed"],
@@ -2496,7 +2496,7 @@ export const STAGES = {
       },
       "source attribution — the register name tagged on each record, plus the EUIPO `environment` word": {
         class: "mechanical:tool-written", tokens: [],
-        why: "CONVERTED (conversion 11): the driver stamps the provider and its environment word into the rendered document from the run config it already holds, and the tool takes no field for either. 'Exactly one register per run' (prelim-register SKILL.md, `## Provider`) and digest.md's `## Provider` note conceded 'the tag is constant across the findings file' — a constant the seat was retyping onto every record.",
+        why: "CONVERTED (conversion 11): the driver stamps the provider and its environment word into the rendered document from the run config it already holds, and the tool takes no field for either. 'Exactly one register per run' (clearance-register SKILL.md, `## Provider`) and digest.md's `## Provider` note conceded 'the tag is constant across the findings file' — a constant the seat was retyping onto every record.",
       },
       "Negative-results drop rows — the Notes cell carrying URI, screen_verdict, class and status": {
         class: "mechanical:tool-written", tokens: ["registerdigest_uri_unknown", "registerdigest_drop_reason_missing", "registerdigest_drop_ground_invalid", "registerdigest_drop_ground_contradicted"],
@@ -2554,7 +2554,7 @@ export const STAGES = {
       },
     },
     message: ({ paths: P, axes, lateBind, intakeAsks }) => lines(
-      `First, read and follow exactly: skills/prelim-register/SKILL.md (the shared spine) then skills/prelim-register/digest.md (MODE B — DIGEST).`,
+      `First, read and follow exactly: skills/clearance-register/SKILL.md (the shared spine) then skills/clearance-register/digest.md (MODE B — DIGEST).`,
       `You are register DIGEST mode. Combine the unit digests into the register findings file.`,
       // T9 (A2) — the owning stage executes its committed intake checks (see common-law twin).
       // PR-8: this stage holds the READ-ONLY band tools, not the live register — the old wording
@@ -2653,7 +2653,7 @@ export const STAGES = {
     // resource it. (It already ran on sonnet in-engine: anthropic-agent maps gemini-flash→sonnet, so the
     // old "gemini-flash, fall back to sonnet" never fired; this just makes the config honest + lifts effort.)
     model: "sonnet", thinking: "high", timeoutSec: 600, stallSec: 600,
-    skillReads: ["skills/prelim-search/phase2-execution.md"],
+    skillReads: ["skills/clearance-search/phase2-execution.md"],
     out: (P) => P.skepticFlags,
     validate: validators.skepticFlags,
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
@@ -2697,7 +2697,7 @@ export const STAGES = {
       },
     },
     message: ({ paths: P, axes, registerOnly, depth }) => lines(
-      `Read skills/prelim-search/phase2-execution.md, section "Step 2.6 — Skeptic review", and perform that fresh-eyes audit.`,
+      `Read skills/clearance-search/phase2-execution.md, section "Step 2.6 — Skeptic review", and perform that fresh-eyes audit.`,
       // lever 3 — the flagging rung. Empty on a one-country run; `lines` drops it.
       skepticRungDirective(depth),
       // A2 (addendum 2026-07-30): the two MACHINE artifacts are named as inputs beside the prose. The
@@ -2855,7 +2855,7 @@ export const STAGES = {
     // F4 guaranteed-read: worked-examples.md is the analysis DEPTH TARGET (now carrying beverage exemplars
     // alongside the gaming ones) — it was previously reachable only by a model-discretion second hop, so the
     // depth target was silently absent on many runs. It is now in-context for every synthesis.
-    skillReads: ["skills/prelim-search/synthesis-rules.md", "skills/prelim-search/firm-wide-reasoning.md", "skills/prelim-search/risk-framework.md", "skills/prelim-search/worked-examples.md", "skills/prelim-search/report-prose.md"],
+    skillReads: ["skills/clearance-search/synthesis-rules.md", "skills/clearance-search/firm-wide-reasoning.md", "skills/clearance-search/risk-framework.md", "skills/clearance-search/worked-examples.md", "skills/clearance-search/report-prose.md"],
     skillReadsFor: synthesisSkillReads,
     out: (P) => P.narrative,
     validate: validators.narrative,
@@ -3144,7 +3144,7 @@ export const STAGES = {
       // built — never a second predicate guessing at the builders, which is the drift b0ac330 removed.
       //
       // (2) THE COMMON-LAW CLAUSE OVERSHOT. De-authorising `common-law-findings.md` wholesale also
-      // de-authorised its `## Coverage ledger` section, which prelim-common-law/SKILL.md writes for this
+      // de-authorised its `## Coverage ledger` section, which clearance-common-law/SKILL.md writes for this
       // seat ("feeds synthesis coverage-honesty") and synthesis-rules.md orders it to read before any
       // clean statement — two opposed instructions about one file in one dispatch. The carve-out is
       // DIRECTIONAL, which is what makes it safe: that ledger constrains (a `coverage-limited` row
@@ -3557,7 +3557,7 @@ export const STAGES = {
       `REGISTER VERIFICATION TOOLS: you hold the read-only band tools — band_shape (the deterministic shape of the complete register band, incl. THE FLOORS: every live in-class identical/near-identical record, listed unconditionally), band_lookup (pull any record the narrative relies on or omits) and band_record (the official registry record fetched this run). Check the narrative's register assertions against them — a floor row the narrative neither rates nor reasons away is a FLAGGED CORRECTION. They are read-only and logged; you hold no live register tools (by design, never an outage).`,
       registerOnly ? REGISTER_ONLY_NOTE : "",
       // C4 — the pharma field module is binding on pharma matters; the review verifies it was honoured
-      pharmaMatter(job) ? `This is a PHARMA matter (Nice 5 / pharma goods): verify the narrative honoured the pharma field module (skills/prelim-search/field-doctrine-pharma.md) — therapeutic-area goods discipline (same therapeutic area ≈ proximate goods regardless of formulation), NO-USE never softens a pharma risk (pipelines run 5-10 years pre-launch), and practitioner/pharmacist confusion including handwriting/verbal look-alikes was weighed. A violation is a FLAGGED CORRECTION.` : "",
+      pharmaMatter(job) ? `This is a PHARMA matter (Nice 5 / pharma goods): verify the narrative honoured the pharma field module (skills/clearance-search/field-doctrine-pharma.md) — therapeutic-area goods discipline (same therapeutic area ≈ proximate goods regardless of formulation), NO-USE never softens a pharma risk (pipelines run 5-10 years pre-launch), and practitioner/pharmacist confusion including handwriting/verbal look-alikes was weighed. A violation is a FLAGGED CORRECTION.` : "",
       // C5 — the generic correction: a registered right can support an injunction without the
       // owner's use (country-dependent); "no use → procedural only / no injunction risk" is a forbidden inference.
       `Flag as a CORRECTION any line reasoning "the owner does not use it → procedural risk only / no injunction exposure": non-use may open a revocation DEFENCE after the grace period, it does not neutralise an enforceable registration today.`,
@@ -3623,7 +3623,7 @@ export const STAGES = {
   // judgment (the judgment was spent in synthesis). render.mjs already orders/groups/binds from findings.json.
   "report-overview": {
     model: "sonnet", thinking: "low", timeoutSec: 900,
-    skillReads: ["skills/prelim-search/synthesis-rules.md", "skills/prelim-search/risk-framework.md", "skills/prelim-search/delivery-contract.md", "skills/prelim-search/report-prose.md"],
+    skillReads: ["skills/clearance-search/synthesis-rules.md", "skills/clearance-search/risk-framework.md", "skills/clearance-search/delivery-contract.md", "skills/clearance-search/report-prose.md"],
     skillReadsFor: reportOverviewSkillReads,
     out: (P) => P.reportOverview,
     validate: validators.reportOverview,
@@ -3832,7 +3832,7 @@ export const STAGES = {
   // the in-card "- ord:" line the driver orders + provenance-checks by).
   "report-card": {
     model: "sonnet", thinking: "low", timeoutSec: 600,
-    skillReads: ["skills/prelim-search/delivery-contract.md", "skills/prelim-search/risk-framework.md", "skills/prelim-search/report-prose.md"],
+    skillReads: ["skills/clearance-search/delivery-contract.md", "skills/clearance-search/risk-framework.md", "skills/clearance-search/report-prose.md"],
     skillReadsFor: reportCardSkillReads,
     out: (P, axis) => P.reportCard(axis),
     validate: validators.reportCard,
@@ -4246,7 +4246,7 @@ export const STAGE_ORDER = [
   // — frame-diff moved AHEAD of placement-inquiry (2026-08-03). The frame settles before placement
   // dispatches, so placement runs ONCE, on the settled frame. This list is what `--from <stage>` keys on,
   // so it must track the executed order: `--from frame-diff` now forces placement + digest too.
-  "matter-frame", "prelim-variants", "blind-frame", "common-law", "common-law-half", "register-unit",
+  "matter-frame", "clearance-variants", "blind-frame", "common-law", "common-law-half", "register-unit",
   "frame-diff", "placement-inquiry", "register-digest", "skeptic", "synthesis",
   "case-law", "narrative-refutation", "report-overview", "report-card",
 ];
@@ -4351,7 +4351,7 @@ export function stageOutputs(name, P, { axes = [], axis = null } = {}) {
   if (!def) return [];
   const primary = def.out ? [def.out(P, axis)] : [];
   const extra = {
-    "prelim-variants": [P.variantManifestModel, P.scopeLedger],
+    "clearance-variants": [P.variantManifestModel, P.scopeLedger],
     // blind-frame is NOT listed: since its structured model is `out` itself, which this function
     // already includes. A second entry would claim a sibling the stage does not have.
     "frame-diff": [P.frameDiffModel],
@@ -4416,7 +4416,7 @@ export function stageInputs(name, P, { axes = [], axis = null, registerOnly = fa
   const units = (axes ?? []).map((a) => P.registerUnit(a));
   const map = {
     "matter-frame": [],
-    "prelim-variants": [P.matterContext],
+    "clearance-variants": [P.matterContext],
     // STARVED on purpose: ONLY the raw instruction — never matterContext (the --experiment sandbox copies
     // exactly these inputs, so listing matterContext here would leak the frame the blind pass must not see).
     "blind-frame": [P.inboundRequest],

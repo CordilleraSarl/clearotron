@@ -186,6 +186,13 @@ export function deriveJxSliceStatement({ sidecar, units = null, env = process.en
 //
 // PURE. Takes the parsed sidecar and the slice statement `deriveJxSliceStatement` just produced.
 export function deriveLaneDepthVerdicts({ sidecar, slices } = {}) {
+  // EITHER SHAPE, AND THAT IS NOT POLITENESS. This reads `slices.candidates`, and the publish path handed
+  // it `deriveJxSliceStatement`'s whole return — `{executes, slices}` — so the lookup found nothing and
+  // every lane reported `ran: null` whatever it had done. Nothing threw and nothing was logged: the
+  // failure arrived as a delivered client report saying a search had not run when it had. The two shapes
+  // are told apart with certainty rather than guessed at — a statement carries a `slices` object and a
+  // slice map carries slice names — so a caller cannot pass the wrong one and be quietly misread.
+  const bySlice = slices?.slices && typeof slices.slices === "object" ? slices.slices : slices;
   const declared = sidecar?.lanes ?? {};
   const out = {};
   for (const lane of Object.keys(declared)) {
@@ -194,10 +201,10 @@ export function deriveLaneDepthVerdicts({ sidecar, slices } = {}) {
     // lane that gains a slice later is covered without this function being edited — and so a lane that
     // has none is a measured fact rather than a hardcoded assumption about ja/ko.
     const deep = JX_SLICES.filter((s) => s.slice > 1 && s.lane === lane);
-    const deepStates = deep.map((s) => ({ name: s.name, state: slices?.[s.name]?.state ?? null, why: slices?.[s.name]?.why ?? null }));
+    const deepStates = deep.map((s) => ({ name: s.name, state: bySlice?.[s.name]?.state ?? null, why: bySlice?.[s.name]?.why ?? null }));
     const deepRan = deepStates.filter((d) => d.state === "ran").map((d) => d.name);
     // Slice 1 is the multi-lane one: its per-lane state lives in `.lanes`, never in a scalar `.state`.
-    const candidatesState = slices?.candidates?.lanes?.[lane] ?? null;
+    const candidatesState = bySlice?.candidates?.lanes?.[lane] ?? null;
 
     const ran = deepRan.length ? "full" : candidatesState === "ran" ? "candidates" : null;
     const shortfall = asked === "full" && ran !== "full";
@@ -223,6 +230,27 @@ export function deriveLaneDepthVerdicts({ sidecar, slices } = {}) {
       basis: "_driver/jx-lanes.json:lanes[].depth (asked) vs fold.slices (ran)" };
   }
   return out;
+}
+
+/**
+ * THE VERDICT A PUBLISHED REPORT SHOULD CARRY: the one the RUN stated, not a fresh one. PURE.
+ *
+ * `stateJxFold` writes `fold.depth` at delivery, derived from this run's own environment — which is the
+ * reason the seam exists: the arms are environment, so a verdict derived on some later box speaks for
+ * that box and not for the run. Publishing derived its own, and the two disagreed on a delivered client
+ * report: the run said the ja lane ran as a candidate lane, the publisher said no lane ran, and the page
+ * printed "Not run this run" over a search that had happened.
+ *
+ * Deriving stays, for a run delivered before the stamp existed — an old artifact still gets the best
+ * answer its record supports, rather than none.
+ *
+ * @param {object|null} sidecar  parsed _driver/jx-lanes.json
+ * @param {object|null} units    parsed _driver/jx/units.json, or null
+ */
+export function laneDepthOfRun({ sidecar, units = null, env = process.env } = {}) {
+  const stamped = sidecar?.fold?.depth;
+  if (stamped && typeof stamped === "object" && !Array.isArray(stamped)) return stamped;
+  return deriveLaneDepthVerdicts({ sidecar, slices: deriveJxSliceStatement({ sidecar, units, env }) });
 }
 
 const flag = (name) => ["1", "true", "yes", "on"].includes(String(process.env[name] ?? "").trim().toLowerCase());

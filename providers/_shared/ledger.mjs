@@ -29,9 +29,10 @@
 //
 // Telemetry is fully isolated in try/catch: a ledger failure must NEVER affect a search.
 
-import { appendFileSync, mkdirSync } from "node:fs";
-import { dirname } from "node:path";
-import { ledgerPath } from "./ledger-path.mjs";
+import { appendFileSync, mkdirSync, statSync, openSync, readSync, closeSync, readFileSync, writeFileSync, renameSync, rmdirSync } from "node:fs";
+import { dirname, basename } from "node:path";
+import { createHash } from "node:crypto";
+import { ledgerPath, RUN_RECORD_LOG_FILE } from "./ledger-path.mjs";
 
 export const CALL_LOG_PATH = ledgerPath("call");
 // Spec A1 (citation fidelity): every fetched record's BODY is persisted alongside the call ledger, so the
@@ -97,7 +98,7 @@ export function makeLedger(provider) {
       // written into the row.
       const dest = typeof tctx?.recordLog === "string" && tctx.recordLog.trim()
         ? tctx.recordLog.trim() : RECORD_LOG_PATH;
-      append(dest, JSON.stringify({
+      const row = {
         ts: new Date().toISOString(),
         provider,
         agentId:    tctx?.agentId    ?? null,
@@ -105,8 +106,121 @@ export function makeLedger(provider) {
         sessionId:  tctx?.sessionId  ?? null,
         target,
         body,
-      }));
+      };
+      if (basename(dest) === RUN_RECORD_LOG_FILE) writeRecordOnce(dest, row);
+      else append(dest, JSON.stringify(row));
     } catch { /* record persistence must never break a search */ }
   };
   return { logCall, logRecordBody, tctxOf };
+}
+
+// ── EACH REGISTER RECORD ONCE PER RUN ─────────────────────────────────────────────────────────────────
+//
+// A record that several queries return — an OR-list, a compound, the mark itself — was appended once per
+// query. Measured on a delivered four-letter run: 2,898 lines for 2,098 distinct records, 800 of them a
+// record already in the file, 21.6 MB of a 106 MB ledger, and the band server reads the whole file on a
+// cache miss. 786 of the 800 were byte-identical bodies.
+//
+// So a body for a record already written is not appended. A body that DIFFERS from the one written (a
+// status moved between two queries) replaces it ONCE, in place, and the replacement says so: `refreshed:
+// true` and the timestamp of the body it replaced. Once only, so a field that varies between answers
+// cannot rewrite the file on every query. Every field stays, the vendor's raw copy included.
+//
+// SEVERAL PROCESSES WRITE ONE RUN'S LEDGER — the register servers of parallel stages and the driver's own
+// fetches — so "already written" is read off the FILE, never off this process's memory alone: each write
+// indexes whatever was appended since this process last looked. Writes take a lock directory beside the
+// file, so an in-place replacement (written to a temporary file and renamed over, which readers see
+// atomically) cannot drop a line another process was appending. A lock that cannot be had in time falls
+// back to a plain append: a duplicate line is the old behaviour, a lost record is not acceptable.
+//
+// Run-scoped ledgers only. The box-wide fallback file holds many runs, and a record one run fetched is not
+// a record another run holds.
+const RUN_INDEXES = new Map();   // dest → { offset, byTarget: Map<key, { hash, refreshed, ts }> }
+const targetKey = (t) => String(t ?? "").toLowerCase();   // the key every reader of this file matches on
+const bodyHash = (b) => createHash("sha1").update(JSON.stringify(b ?? null)).digest("hex");
+
+function indexRow(ix, line) {
+  if (!line.trim()) return;
+  try {
+    const r = JSON.parse(line);
+    ix.byTarget.set(targetKey(r?.target), { hash: bodyHash(r?.body), refreshed: r?.refreshed === true, ts: r?.ts ?? null });
+  } catch { /* a torn or foreign line indexes nothing, and is left where it is */ }
+}
+
+/** Index every whole line appended since this process last looked; a file that shrank is re-read. */
+function indexOf(dest) {
+  let size = 0, ino = null;
+  try { const st = statSync(dest); size = st.size; ino = st.ino; } catch { size = 0; }
+  let ix = RUN_INDEXES.get(dest);
+  // A replacement elsewhere renames a NEW file over this one: same path, different inode, and an offset
+  // into the old file means nothing in the new one. Re-read from the start.
+  if (!ix || size < ix.offset || ix.ino !== ino) { ix = { offset: 0, ino, byTarget: new Map() }; RUN_INDEXES.set(dest, ix); }
+  if (size <= ix.offset) return ix;
+  const fd = openSync(dest, "r");
+  try {
+    const CHUNK = 8 * 1024 * 1024;
+    let carry = Buffer.alloc(0);
+    let pos = ix.offset;
+    while (pos < size) {
+      const buf = Buffer.alloc(Math.min(CHUNK, size - pos));
+      const n = readSync(fd, buf, 0, buf.length, pos);
+      if (n <= 0) break;
+      pos += n;
+      const data = carry.length ? Buffer.concat([carry, buf.subarray(0, n)]) : buf.subarray(0, n);
+      const last = data.lastIndexOf(0x0a);
+      if (last < 0) { carry = data; continue; }
+      for (const line of data.subarray(0, last).toString("utf8").split("\n")) indexRow(ix, line);
+      carry = data.subarray(last + 1);   // a line still being written waits for the next look
+      ix.offset = pos - carry.length;
+    }
+  } finally { closeSync(fd); }
+  return ix;
+}
+
+const sleepMs = (ms) => { try { Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms); } catch { /* no sleep available */ } };
+
+/** Run `fn` holding the ledger's lock; false (and `fn` not run) when the lock could not be had in time. */
+function withLedgerLock(dest, fn) {
+  const lock = `${dest}.lock`;
+  const deadline = Date.now() + 3000;
+  for (;;) {
+    try { mkdirSync(dirname(dest), { recursive: true }); mkdirSync(lock); break; }
+    catch {
+      // A holder that died leaves the directory behind; nothing holds this lock for more than a rewrite.
+      try { if (Date.now() - statSync(lock).mtimeMs > 30_000) { rmdirSync(lock); continue; } } catch { continue; }
+      if (Date.now() > deadline) return false;
+      sleepMs(10);
+    }
+  }
+  try { fn(); } finally { try { rmdirSync(lock); } catch { /* already gone */ } }
+  return true;
+}
+
+function writeRecordOnce(dest, row) {
+  const done = withLedgerLock(dest, () => {
+    const ix = indexOf(dest);
+    const key = targetKey(row.target);
+    const hash = bodyHash(row.body);
+    const prev = ix.byTarget.get(key);
+    if (prev && (prev.hash === hash || prev.refreshed)) return;          // written already; replaced at most once
+    if (!prev) {
+      append(dest, JSON.stringify(row));
+      indexOf(dest);
+      return;
+    }
+    // A CHANGED BODY REPLACES THE ONE WRITTEN, in place, recorded as such. Written whole to a temporary
+    // file and renamed over, so a reader sees the old file or the new one and never half of either.
+    const next = { ...row, refreshed: true, refreshed_from: prev.ts ?? null };
+    const kept = readFileSync(dest, "utf8").split("\n").filter((line) => {
+      if (!line.trim()) return false;
+      try { return targetKey(JSON.parse(line)?.target) !== key; } catch { return true; }
+    });
+    kept.push(JSON.stringify(next));
+    const tmp = `${dest}.${process.pid}.tmp`;
+    writeFileSync(tmp, kept.join("\n") + "\n");
+    renameSync(tmp, dest);
+    RUN_INDEXES.delete(dest);
+    indexOf(dest);
+  });
+  if (!done) append(dest, JSON.stringify(row));
 }

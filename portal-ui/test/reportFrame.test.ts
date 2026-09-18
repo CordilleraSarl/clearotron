@@ -19,6 +19,7 @@ import {
   frameCommand,
   readFrameHeight,
   readFrameScroll,
+  readAskAi,
 } from '../src/contract/reportFrame.ts'
 
 const height = (h: unknown) => ({ source: FRAME_TAG, type: 'height', height: h })
@@ -129,3 +130,15 @@ test('a scroll message with the wrong tag or type is not ours', () => {
 // this page can reach either any more, which is why nothing here tests them.
 //
 // `git show <this commit>^:portal-ui/test/reportFrame.test.ts` if the control ever comes back.
+
+test('A FINDING\'S ASK AI crosses the frame with its number, and a card with no number still crosses', () => {
+  const ask = (o: Record<string, unknown>) => ({ source: FRAME_TAG, type: 'askAi', ...o })
+  assert.deepEqual(readAskAi(ask({ ordinal: 3, markIndex: null }), true), { ordinal: 3, markIndex: null })
+  assert.deepEqual(readAskAi(ask({ ordinal: 2, markIndex: 1 }), true), { ordinal: 2, markIndex: 1 })
+  // The "Also considered" cards carry the button and no number. Refusing them would leave dead buttons.
+  assert.deepEqual(readAskAi(ask({ ordinal: null, markIndex: null }), true), { ordinal: null, markIndex: null })
+  assert.deepEqual(readAskAi(ask({ ordinal: '3' }), true), { ordinal: null, markIndex: null }, 'a string is not coerced into a number')
+  assert.equal(readAskAi(ask({ ordinal: 3 }), false), null, 'from anywhere but the report being shown, ignored')
+  assert.equal(readAskAi({ source: 'other', type: 'askAi', ordinal: 3 }, true), null)
+  assert.equal(readAskAi('askAi', true), null)
+})

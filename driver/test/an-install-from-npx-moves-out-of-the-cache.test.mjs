@@ -252,6 +252,13 @@ test("the demo starts its services from its copy, and a start --demo from npx st
   const plan = start.indexOf("const demoProgramRoot = DEMO ? ensureDemoProgram({ base: paths.base, say }) : null;");
   const spawnEnv = start.indexOf("const envs = childEnv({ ports, paths, user");
   assert.ok(plan > 0 && plan < spawnEnv, "the copy is made after the services' environment is composed, so the portal names the cache");
-  assert.match(start, /stdioConnectOffer\(\{ workDir: paths\.workspace, reportsDir: paths\.pool, \.\.\.\(demoProgramRoot \? \{ installRoot: demoProgramRoot \} : \{\}\) \}\)/,
-    "the terminal's connect line does not name the demo's own copy");
+  // EACH ARGUMENT HELD ON ITS OWN, not the call's exact spelling. Pinned whole, this arm fires for
+  // "somebody added an argument" as loudly as for "the demo's own copy is no longer named", and the
+  // repair that turns it green is to paste the new spelling in — which asserts nothing.
+  const offer = start.match(/stdioConnectOffer\(\{[^;]*?\}\);/);
+  assert.ok(offer, "the terminal no longer asks the composer for the connect line at all");
+  for (const part of ["workDir: paths.workspace", "reportsDir: paths.pool",
+    "...(demoProgramRoot ? { installRoot: demoProgramRoot } : {})"]) {
+    assert.ok(offer[0].includes(part), `the terminal's connect line no longer names ${part}`);
+  }
 });

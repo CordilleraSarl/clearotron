@@ -34,6 +34,7 @@
 // sometimes refuses: it is a different control per product, and each says at the control what it accepts.
 // Nothing is greyed out without the reason beside it.
 
+import OFFERED from '../../../shared/offered-territories.json' with { type: 'json' }
 import type { Product } from './api.ts'
 
 /** What the requester has composed. Three fields, and two of them are the geography. */
@@ -71,16 +72,17 @@ export const EMPTY_DRAFT: Draft = { product: null, territories: [], replacesOwnT
 // own tier table (driver/territory-tiers.mjs) is the authority; this is the subset the picker offers, and
 // productMatrix.test.ts checks every entry of it against that table.
 
-/** Supranational filing systems: one entry, many countries. NEVER a country. */
-export const REGIONS: readonly string[] = ['European Union', 'Benelux', 'African Regional (ARIPO)']
+// THE LIST IS THE REGISTERS' REACH, MINTED BY RULE: shared/offered-territories.json, written by
+// scripts/mint-offered-territories.mjs from what at least one supported register can search, and read by
+// the engine's composer from the same file, so the form and the engine cannot offer different places.
+// It was a hand-kept 37 with no rule behind it — Bulgaria and Greece, not Denmark or Vietnam — while a
+// worldwide search already swept every office the wider register covers. What one installation's register
+// does not reach is still marked per deployment, from the flag snapshot.
 
-export const COUNTRIES: readonly string[] = [
-  'United States', 'United Kingdom', 'Ireland', 'France', 'Germany', 'Spain', 'Italy', 'Netherlands',
-  'Switzerland', 'Austria', 'Sweden', 'Norway', 'Poland', 'Bulgaria', 'Greece', 'Turkey', 'Canada',
-  'Mexico', 'Brazil', 'Argentina', 'China', 'Hong Kong', 'Taiwan', 'Macau', 'Japan', 'South Korea',
-  'Singapore', 'India', 'Thailand', 'Australia', 'New Zealand', 'United Arab Emirates', 'Saudi Arabia',
-  'South Africa',
-]
+/** Supranational filing systems: one entry, many countries. NEVER a country. */
+export const REGIONS: readonly string[] = OFFERED.regions.map((t) => t.name)
+
+export const COUNTRIES: readonly string[] = OFFERED.countries.map((t) => t.name)
 
 const ALIASES: Readonly<Record<string, readonly string[]>> = {
   'European Union': ['eu', 'europe'],
@@ -98,23 +100,16 @@ export function tierOf(name: string): Tier | null {
 }
 
 /**
- * The engine's code for each place the picker offers — a MIRROR of `territoryKey` in
- * driver/territory-tiers.mjs, which this bundle cannot import. `territoryCodes.test.ts` asks the engine
- * for every entry and fails on the first that differs, so the two cannot drift.
+ * The engine's code for each place the picker offers, read from the same minted list as the names — the
+ * code the engine's own resolution gave each place. `territoryCodes.test.ts` still asks the engine
+ * (`territoryKey` in driver/territory-tiers.mjs) for every entry and fails on the first that differs.
  *
  * Only where space is short: the sticky bar's summary line reads "EU, CH". Everywhere a place is READ —
  * a chip, a review row, a sentence — it is named.
  */
-export const TERRITORY_CODES: Readonly<Record<string, string>> = Object.freeze({
-  'European Union': 'EU', 'Benelux': 'BX', 'African Regional (ARIPO)': 'AP',
-  'United States': 'US', 'United Kingdom': 'GB', 'Ireland': 'IE', 'France': 'FR', 'Germany': 'DE',
-  'Spain': 'ES', 'Italy': 'IT', 'Netherlands': 'NL', 'Switzerland': 'CH', 'Austria': 'AT', 'Sweden': 'SE',
-  'Norway': 'NO', 'Poland': 'PL', 'Bulgaria': 'BG', 'Greece': 'GR', 'Turkey': 'TR', 'Canada': 'CA',
-  'Mexico': 'MX', 'Brazil': 'BR', 'Argentina': 'AR', 'China': 'CN', 'Hong Kong': 'HK', 'Taiwan': 'TW',
-  'Macau': 'MO', 'Japan': 'JP', 'South Korea': 'KR', 'Singapore': 'SG', 'India': 'IN', 'Thailand': 'TH',
-  'Australia': 'AU', 'New Zealand': 'NZ', 'United Arab Emirates': 'AE', 'Saudi Arabia': 'SA',
-  'South Africa': 'ZA',
-})
+export const TERRITORY_CODES: Readonly<Record<string, string>> = Object.freeze(
+  Object.fromEntries([...OFFERED.regions, ...OFFERED.countries].map((t) => [t.name, t.code])),
+)
 
 /** A place's short code, or the place itself when this vocabulary has none — never a blank. */
 export const territoryCode = (name: string): string => TERRITORY_CODES[name] ?? name
@@ -166,7 +161,31 @@ export function offerableFor(product: Product | null): readonly string[] {
  */
 export function reachesTerritory(name: string, covered?: readonly string[] | null): boolean {
   if (!Array.isArray(covered)) return true
-  return covered.includes(name)
+  // COMPARED AS THE ENGINE'S CODES, never as spellings. The register's coverage arrives as names
+  // ("United States") and a company's own territories are stored as codes ("US", "UK"), so a string
+  // match marked every one of a company's territories unreachable on a register that covers them all.
+  const key = territoryKeyOf(name)
+  return covered.some((c) => territoryKeyOf(c) === key)
+}
+
+/**
+ * How the order form names a worldwide search: with the register service that searches it, because
+ * "worldwide" is eleven registers on one installation and 186 on another, and the reader can only tell
+ * which by being told the service (owner, 2026-09-18). The name is the provider's own label from its
+ * capabilities; an installation that does not say gets the bare word, never a guessed name.
+ */
+export const worldwideLine = (registerLabel?: string | null): string =>
+  registerLabel ? `Worldwide, searched on ${registerLabel}` : 'Worldwide'
+
+/**
+ * The engine's code for a place given as a name the picker offers or as a code — "United Kingdom",
+ * "UK" and "GB" all read GB, as `territoryKey` in the engine reads them. A name the picker does not
+ * offer comes back as itself, upper-cased, which matches only the same name.
+ */
+export function territoryKeyOf(value: string): string {
+  const v = String(value ?? '').trim()
+  const named = TERRITORY_CODES[v] ?? TERRITORY_CODES[ALL_TERRITORIES.find((t) => t.toLowerCase() === v.toLowerCase()) ?? '']
+  return named ?? canonicalJurisdictionCode(v)
 }
 
 /**
@@ -175,7 +194,7 @@ export function reachesTerritory(name: string, covered?: readonly string[] | nul
  * A Full country search reads exactly one COUNTRY, so its picker offers countries and no regions. That
  * is the difference between a control that refuses and a control that fits: the requester never types a
  * region into a search that cannot take one, so the refusal never has to happen. The panel says why
- * (`geographyNote`), so nothing is missing without a reason.
+ * (the product row's own tagline), so nothing is missing without a reason.
  */
 export function vocabularyFor(
   product: Product | null, covered?: readonly string[] | null,
@@ -419,19 +438,20 @@ export function chooseProduct(d: Draft, product: Product | null): Draft {
 }
 
 /** What the Where panel says about the geography this product accepts — AT the control, always. */
-export function geographyNote(product: Product | null): string | null {
-  if (!product) return null
-  switch (product.geography) {
-    case 'worldwide, and nothing else':
-      return 'Worldwide. This search is not narrowed — that is what it is. To search particular places, pick a different search above.'
-    case 'exactly one country':
-      return 'One country. Regions are not offered here: the case-law and opposition reading is per-country practice, and there is no such thing as one region’s precedent.'
-    case 'a region, or two or more countries':
-      return 'A region, or two or more countries. One country on its own is a Full country search — pick that one instead.'
-    default:
-      return 'Worldwide, or any set of territories you name.'
-  }
-}
+// ── THE WHERE FIELD CARRIES NO NOTE, AND THE PRODUCT ROW ALREADY SAID IT ────────────────────────────
+//
+// `geographyNote` stood here and returned one of four sentences, one per geography, rendered above the
+// Where control. The owner met the worldwide one on a running install — "Worldwide. This search is not
+// narrowed — that is what it is. To search particular places, pick a different search above." — and
+// ruled it out on 2026-09-18. None of the four is on the new-clearance board, and the row the reader
+// picked from already states the same fact in the words the board does carry: the tagline under each
+// title reads "worldwide, and nothing else", "exactly one country", "a region, or two or more
+// countries", "worldwide, or any set of territories". The note restated the row a reader had just read,
+// one field lower and at greater length.
+//
+// NOTHING REPLACES IT. The controls themselves are what say what the search takes: a worldwide search
+// draws a Worldwide chip and no picker, and a one-country search offers no regions. Those are the same
+// facts said by the shape of the form rather than by a paragraph about the form.
 
 // ── which search fits what was entered ──────────────────────────────────────────────────────────────
 

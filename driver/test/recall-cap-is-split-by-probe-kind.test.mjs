@@ -34,7 +34,7 @@ const JOB = {
   ref: "TMP9171", markName: "PROJECT NOVAPULSE", classes: [9, 41], provider: "corsearch",
 };
 const ROOT = mkdtempSync(join(tmpdir(), "clearotron-mock-recallcap-"));
-const SLUG_DIR = join(ROOT, "workspace-clawdi", "studio", "prelim-search", "tmp9171-project-novapulse");
+const SLUG_DIR = join(ROOT, "workspace-clawdi", "studio", "clearance-search", "tmp9171-project-novapulse");
 
 // EIGHT rows, every one class-overlapping so the material-first ranking leaves store order intact, and
 // every one carrying an owner so each row mints BOTH a mark probe and an owner probe. Eight rows is the

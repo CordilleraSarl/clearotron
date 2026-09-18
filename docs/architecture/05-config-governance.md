@@ -91,7 +91,7 @@ product doc.
 | **Job spec** (per matter): id, forwarder(+email/domain), markName/marks[], classes\|goods/use, ref, profileKey, projectKey, searchLevel/recipeKey, deliveryRoute, `customer`(+Unknown), deliverableSpec, commercialFlexibility, priorUse, dupOverride, deadline, brief | T1 | agent conversation → `start_run` MCP verb (ops token) → queue; validated by `enqueue-schema.mjs` | queue → run dir | LIVE (conversational; portal `run/plan`+`run` API exists) |
 | **Company profile** (17 keys — identity/rating/provenance: name, matchDomains, selfExclusionOwners, frameworkPath, workedExamplesPath, allowedRecipes, jxPolicy, runCaps, demoData (`true` marks the record as demo data; a real clearance is refused at the runner's admission wall); overlayable: platforms, defaultClasses, defaultJurisdictions, marketplaceDensity, delivery, riskAppetite, industry, defaultProduct) | T2 (staff) + T1 (a company's people edit its own via portal §C) | profile-service UI (staff, `/profiles/*`); the portal (own profile) | config store, git auto-commit | LIVE. Merge law: project **replaces** every overlayable key except `platforms`, which **unions** (the company's floor is never subtractable) |
 | **Project overlays** (8 overlayable keys) | T2 | profile-service UI | config store `profiles/projects/<cust>/` | LIVE. The project form deliberately withholds `defaultProduct` and both `delivery` sub-keys — for the first the sparse save path has no `""` ⇒ clear branch, so the control could only ever be turned on; for the second the engine replaces `delivery` wholesale, so a partial overlay would silently drop the company's other sub-keys. Both are company-level controls until the server side changes |
-| **Frameworks / skills** (risk-framework-<key>.md + .manifest.json, worked examples, SKILL.md) | T2 (senior-lawyer content) | git edits in the config store (deliberate — the prose deck is the rating authority) | config store `skills/prelim-search/` | LIVE via git; no UI by design |
+| **Frameworks / skills** (risk-framework-<key>.md + .manifest.json, worked examples, SKILL.md) | T2 (senior-lawyer content) | git edits in the config store (deliberate — the prose deck is the rating authority) | config store `skills/clearance-search/` | LIVE via git; no UI by design |
 | **Recipes / saved searches** (base level + component toggles + emailTable/defaultDeadlineDays/standingInstructions) | T2 | recipe-service UI | `<recipesDir>/<cust>/<slug>.json`, git | **DARK** — code complete, no unit deployed. A saved search is honoured wherever it resolves (the `CLEAROTRON_RECIPES_MODE` door was retired 2026-07-27) |
 | **Run curation** (archive folds, republish, index regen) | T2 | `pool-admin.mjs` CLI only | pool `archive-tags.json` | LIVE, CLI-only |
 | **Allowlist** (`{version, grants:[{email, customer}]}`) | T2 | git + PR on the `CLIENT_ACCESS_MAP` file | see §2 row 4 | LIVE, file-only; surfaced read-only at `admin.access` |
@@ -526,6 +526,11 @@ request to merge itself. A rehearsal sets `0`, so the wiring is exercised withou
 up is a quiet success by design and the scheduled run underneath catches what it misses, so a budget that
 is wrong shows up as a slow job rather than a red one — which is why it is written down rather than left
 to be inferred from a timeout.
+
+`CLEAROTRON_CUT_REQUESTED` and `CLEAROTRON_CUT_PR` — whether this run was dispatched to cut, and the
+version pull request it opened. The workflow sets both; nothing on a deployment reads either. Together they
+separate a run that set nothing in motion, whose expired wait stays a quiet success, from a dispatched cut
+that published nothing, which fails and names why the pull request did not merge.
 
 ## 6. Drift patterns — values that are mirrored by design
 

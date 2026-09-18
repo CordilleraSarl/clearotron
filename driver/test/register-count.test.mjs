@@ -574,3 +574,241 @@ test("the workbook grows a fourth sheet only when counts exist, and never a blan
   assert.equal(sim[5], "not available", "…the close column included");
   assert.match(String(sim[9]), /multi-word/, "the auditable reason travels with the missing figure");
 });
+
+// ── A DISCLOSED APPROXIMATION IS AN ANSWER, NOT AN UNREACHABLE REGISTER ────────────────────────────
+//
+// When the register says "more than ten thousand", it has answered — with a floor instead of a count,
+// which is a different thing from not answering. The probe recomputed `ok` as "the total is finite", so
+// an honest approximation was demoted to a dead probe and the client was told the count was NOT
+// AVAILABLE: the same four words the report uses when the register could not be reached at all. The
+// direction is inverted as well, because saturation is a finding about the mark — the denser the crowd,
+// the more certainly it was suppressed.
+
+test("a register that answers with a floor is not read as a register that did not answer", async () => {
+  const doc = await run({
+    marks: [{ name: "ALCHEMIST" }],
+    counter: async (_t, p) => (p.key === "containing"
+      ? { ok: true, total: null, approximate: true, floor: 10000, note: "the vendor flagged this total an approximation" }
+      : { ok: true, total: 5 }),
+  });
+  const cell = doc.marks[0].counts.containing;
+  assert.equal(cell.approximate, true, "the disclosure was thrown away and the cell reads as a dead probe");
+  assert.equal(cell.floor, 10000, "the floor is the whole disclosure — without it this says no more than 'unknown'");
+  assert.equal(cell.unavailable, undefined, "an answered probe must not carry the words for an unreachable register");
+});
+
+test("the floor never becomes the count", async () => {
+  // The rule the normalizer states and this must not undo: an approximation may never be filled in as a
+  // figure. A floor that became `total` would ride out as an enumerated number and be summed, compared
+  // and banded like a real one.
+  const doc = await run({
+    marks: [{ name: "ALCHEMIST" }],
+    counter: async (_t, p) => (p.key === "containing"
+      ? { ok: true, total: null, approximate: true, floor: 10000 }
+      : { ok: true, total: 5 }),
+  });
+  assert.equal(doc.marks[0].counts.containing.total, null, "the floor was published as a count");
+});
+
+test("a real failure is still a failure, and a bare approximate flag is not an answer", async () => {
+  // The guard against reading the arms above as "treat anything with ok:true as answered". An
+  // approximation without a floor tells a reader nothing they did not already have, so it stays the
+  // state it was — otherwise this trades the wrong four words for a different set of wrong four words.
+  const doc = await run({
+    marks: [{ name: "ALCHEMIST" }],
+    counter: async (_t, p) => (p.key === "containing"
+      ? { ok: true, total: null, approximate: true }                       // flagged, no floor
+      : (p.key === "close" ? { ok: false, reason: "the index is offline" } : { ok: true, total: 5 })),
+  });
+  const containing = doc.marks[0].counts.containing;
+  assert.equal(containing.approximate, undefined, "an approximation with no floor was treated as a disclosure");
+  assert.ok(containing.unavailable, "…and it must still report as untaken");
+  assert.match(doc.marks[0].counts.close.unavailable, /index is offline/, "a genuine refusal still reports its reason");
+});
+
+test("a provider that names its refusal `cause` is not reported as 'unknown'", async () => {
+  // `reason` on some providers, `cause` on others. Reading only the first is why an honest refusal
+  // arrived as the fallback string, with the operator's own receipts ledger recording cause "unknown".
+  const dir = mkdtempSync(join(tmpdir(), "count-cause-"));
+  const ledgerPath = join(dir, "register-count.jsonl");
+  const doc = await run({
+    marks: [{ name: "ALCHEMIST" }], ledgerPath,
+    counter: async (_t, p) => (p.key === "containing"
+      ? { ok: false, total: null, cause: "SIGNA_API_KEY absent from driver env" }
+      : { ok: true, total: 5 }),
+  });
+  assert.match(doc.marks[0].counts.containing.unavailable, /SIGNA_API_KEY absent/,
+    "the cause was dropped and the fallback string shipped in its place");
+  const rows = readFileSync(ledgerPath, "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l));
+  const row = rows.find((r) => r.predicate === "containing");
+  assert.match(String(row.cause), /SIGNA_API_KEY absent/, "the receipts ledger recorded 'unknown' for a stated cause");
+});
+
+test("the receipts ledger records an approximation as one, not as a failed call", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "count-approx-"));
+  const ledgerPath = join(dir, "register-count.jsonl");
+  await run({
+    marks: [{ name: "ALCHEMIST" }], ledgerPath,
+    counter: async (_t, p) => (p.key === "containing"
+      ? { ok: true, total: null, approximate: true, floor: 10000 }
+      : { ok: true, total: 5 }),
+  });
+  const rows = readFileSync(ledgerPath, "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l));
+  const row = rows.find((r) => r.predicate === "containing");
+  assert.equal(row.approximate, true, "the call billed and answered; the receipt says neither");
+  assert.equal(row.floor, 10000);
+  assert.equal(row.cause, undefined, "an answered call carries no failure cause");
+});
+
+// ── WHAT THE CLIENT ACTUALLY READS WHEN THE REGISTER ANSWERED WITH A FLOOR ───────────────────────────
+//
+// The disclosure above rides the artifact. This is the only surface the figures reach a client on, and
+// until now a floor rendered there as "not available" — the same phrase as a register this deployment
+// could not reach. Two different facts, one sentence, and the reader acts on the wrong one: "not
+// available" sends somebody to look elsewhere for a number that was in fact supplied.
+//
+// The register's own figure, as a number. Ruled 2026-09-17.
+test("a register that answered with a floor shows the floor, not 'not available'", () => {
+  const entry = { classScope: "all-classes", classes: [],
+    counts: { identical: { total: 3 }, containing: { total: null, approximate: true, floor: 10000 } } };
+  const line = countLine(entry);
+  assert.match(line, /containing: more than 10,000/,
+    "the register's own figure is what the client is shown, with the thousands separator a reader expects");
+  assert.doesNotMatch(line, /containing: not available/,
+    "a floor is an answer — phrasing it as the unreachable case is the defect this closes");
+});
+
+test("'not available' still means no figure at all, and a floor is never read as a total", () => {
+  // Both halves, because a rule that renders the floor is satisfied by one that renders it EVERYWHERE,
+  // which would turn a register nobody could reach into a confident number.
+  const unreachable = { classScope: "all-classes", classes: [],
+    counts: { identical: { total: 3 }, containing: { total: null, unavailable: "the US index is not configured" } } };
+  assert.match(countLine(unreachable), /containing: not available/,
+    "a register with no figure at all keeps the phrase that says so");
+
+  // And the floor must not be laundered into the plain count form, which reads as an exact total.
+  const floored = { classScope: "all-classes", classes: [],
+    counts: { containing: { total: null, approximate: true, floor: 10000 } } };
+  assert.doesNotMatch(countLine(floored), /(^|[^n])10,000 containing/,
+    "rendered as a bare count, a floor would read as an exact total — the more-than is the whole point");
+});
+
+// ONE READING OF A FLOOR ON EVERY PAGE THAT SHOWS A COUNT. The glance line above printed the register's
+// floor and the counts table, the coverage clause, the workbook and the report data beside it still
+// dropped it — so one report said "more than 10,000" at the top and "not available" in the table under it.
+test("a floor reads the same in the counts table, the coverage clause, the report data and the workbook", async () => {
+  const doc = {
+    schema: 1, provider: "signa", providerLabel: "Signa", basis: "b",
+    scope: { jurisdictions: ["US"], regions: ["US"], classes: [9] },
+    marks: [{ name: "IRONWHISK", classes: [9], classScope: "mark",
+      counts: { identical: { total: null, approximate: true, floor: 10000 },
+        containing: { total: null, approximate: true, floor: 10000 },
+        close: { total: null, unavailable: "the US index is not configured" } } }],
+  };
+  const findings = { marks: [{ name: "IRONWHISK", classesSearched: [9], rating: "Medium", findings: [], negatives: [],
+    assessment: "A name.", bullets: [], purpleNotes: [] }], batch: { executiveSummary: "One name.", standardCaveats: [] } };
+  const fw = { framework_key: "f", title: "F", bands: [{ label: "Medium", tone: "medium" }] };
+  const html = renderKnockoutHtml(findings, fw, { runId: "r", overall: "Medium", identity: { identity: "Knockout search" }, registerCounts: doc });
+  const table = (html.match(/<table[^>]*>(?:(?!<\/table>)[\s\S])*?Contains IRONWHISK[\s\S]*?<\/table>/) || [""])[0];
+  assert.ok(table, "the counts table renders");
+  assert.equal((table.match(/<td class="num">more than 10,000<\/td>/g) || []).length, 2,
+    "both floored cells print the register's own figure, as a figure");
+  assert.equal((table.match(/>not available</g) || []).length, 1, "the register that could not be reached keeps its phrase");
+  assert.doesNotMatch(html, /no count could be taken for this name/, "a name counted only by its floors was counted");
+
+  const data = knockoutReportData(findings, fw, { runId: "r", overall: "Medium", identity: { identity: "Knockout search" }, registerCounts: doc });
+  const rc = data.marks[0].registerCounts;
+  assert.equal(rc.containing, null, "a floor is never a figure to be summed");
+  assert.deepEqual(rc.floors, { identical: 10000, containing: 10000 }, "and the floor rides beside the null");
+
+  const dir = mkdtempSync(join(tmpdir(), "ko-floor-"));
+  await buildKnockoutWorkbook(findings, [], join(dir, "floor.xlsx"), doc);
+  const ExcelJS = (await import("exceljs")).default;
+  const wb = new ExcelJS.Workbook();
+  await wb.xlsx.readFile(join(dir, "floor.xlsx"));
+  const row = wb.getWorksheet("Register Counts").getRow(2).values.slice(1);
+  assert.equal(row[3], "more than 10,000");
+  assert.equal(row[4], "more than 10,000");
+  assert.equal(row[5], "not available");
+  assert.doesNotMatch(String(row[9]), /Identical|containing the name/i, "a floor is not listed among the missing figures");
+});
+
+// ── A TABLE THAT CONTINUES OFF ITS RIGHT EDGE SHOWS A SCROLLBAR ───────────────────────────────────
+//
+// The counts table scrolls inside its own panel so it never pushes the page sideways, and a panel that
+// scrolls and says nothing leaves a reader who never drags it believing they have seen every column.
+// Ruled 2026-09-17: a scrollbar, always visible, and no text.
+//
+// THE ARM PINS THE ONE THING A MEASUREMENT FOUND AND A READER WOULD NOT. Setting the standard
+// `scrollbar-width` beside the `::-webkit-scrollbar` pseudo-elements makes the engine take the standard
+// path and ignore them, and on the engine that publishes these reports the standard path draws an overlay
+// bar with NO layout height. Measured on a delivered report at 390px, reading the height the bar takes
+// out of the panel: both together 0px, pseudo-elements alone 9px, standard alone 0px. So the two
+// instructions must not meet, and that is invisible in the stylesheet — it reads like belt and braces.
+//
+// BREAK MATRIX:
+//   · the pseudo-elements are there           → break: drop them, arm 1 red
+//   · the bar has a height to be seen by      → break: height:0, arm 2 red
+//   · the standard property is NOT beside them → break: add scrollbar-width to .ko-scroll, arm 3 red
+//   · …but IS there for engines without them  → break: drop the @supports block, arm 4 red
+//   · the thumb is a token, not a fixed colour → break: hard-code it, arm 5 red
+test("the counts panel's scrollbar is drawn, and the two scrollbar instructions never meet", () => {
+  const fw = { bands: [{ label: "High", tone: "high" }] };
+  const html = renderKnockoutHtml([{ name: "AURELIA", band: "High", registerEstimate: "x", purpleNotes: [], findings: [] }],
+    fw, { runId: "r", overall: "High", identity: { banner: "Depth 2 — Knockout review" } });
+
+  const rule = (sel) => (html.match(new RegExp(`${sel.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\$&")}\\s*\\{([^}]*)\\}`)) || [])[1] ?? null;
+
+  const bar = rule(".ko-scroll::-webkit-scrollbar");
+  assert.ok(bar, "the panel draws no scrollbar rule at all");
+  assert.match(bar, /height:\s*[1-9]/, "the scrollbar has no height, so there is nothing for a reader to see");
+  assert.match(bar, /-webkit-appearance:\s*none/,
+    "without this the platform draws an overlay bar that appears only once a scroll is under way");
+  assert.match(rule(".ko-scroll::-webkit-scrollbar-thumb") ?? "", /var\(--/,
+    "the thumb carries a fixed colour, which reads on one ground and vanishes on the other");
+
+  // THE TWO INSTRUCTIONS MUST NOT MEET — the whole point of the arm.
+  const own = rule(".ko-scroll");
+  assert.ok(own, ".ko-scroll has no rule of its own");
+  assert.doesNotMatch(own, /scrollbar-width|scrollbar-color/,
+    "the standard property sits beside the pseudo-elements, which makes the engine ignore them and draw nothing");
+
+  // …AND THE ENGINES WITHOUT THE PSEUDO-ELEMENTS STILL GET ONE. Dropping this is the repair that looks
+  // like a simplification and silently leaves Firefox with a bar it had before and no colour.
+  assert.match(html, /@supports not selector\(::-webkit-scrollbar\)/,
+    "nothing carries the standard instruction to the engines that take it");
+  assert.match(html.slice(html.indexOf("@supports not selector(::-webkit-scrollbar)")).slice(0, 200), /scrollbar-width/,
+    "the support block does not carry the standard property it exists for");
+});
+
+// ── THE KNOCKOUT BOARD'S SECTION STRIP ─────────────────────────────────────────────────────────────
+//
+// The approved knockout board draws a four-entry strip and this renderer drew none — the same divergence
+// the clearance kinds carried, one file over. Its third entry reads "Also considered" and resolves at the
+// filings section, which is what that section is; the board's entries are its own and the rule that
+// filters them against the finished document is shared with the clearance renderer.
+test("the knockout draws its board's strip, and never names an anchor the document does not carry", async () => {
+  const doc = await run({
+    marks: [{ name: "IRONWHISK", classes: [8] }],
+    counter: async () => ({ ok: true, total: 3 }),
+  });
+  const findings = {
+    marks: [{
+      name: "IRONWHISK", rating: "Medium", bullets: ["An active seller in the same goods space."],
+      registerEstimate: "moderate filings expected", purpleNotes: [], findings: [],
+    }],
+  };
+  const fw = { bands: [{ label: "High", tone: "high" }, { label: "Medium", tone: "medium" }, { label: "Low", tone: "low" }] };
+  const html = renderKnockoutHtml(findings, fw, { runId: "r", overall: "Medium", registerCounts: doc });
+
+  const nav = html.match(/<nav class="strip[^>]*>([\s\S]*?)<\/nav>/);
+  assert.ok(nav, "the approved board's strip is not drawn at all");
+  const entries = [...nav[1].matchAll(/href="#([^"]+)"[^>]*>(?:<i><\/i>)?([^<]+)</g)].map((m) => [m[1], m[2]]);
+  assert.ok(entries.length >= 2, `a strip of ${entries.length} entry is a control that does nothing`);
+  for (const [id] of entries) assert.ok(html.includes(`id="${id}"`), `the strip points at #${id} and nothing carries that id`);
+  // THE BOARD'S OWN ORDER AND ITS OWN LABELS, so a renamed entry or a reordered one is caught here and
+  // not in a whole-document read weeks later.
+  assert.deepEqual(entries.filter(([id]) => ["summary", "findings"].includes(id)),
+    [["summary", "Summary"], ["findings", "Findings"]], "the two entries every knockout draws are not the board's");
+  assert.equal((nav[1].match(/class="now"/g) ?? []).length, 1, "the leading entry is not marked current, or more than one is");
+});

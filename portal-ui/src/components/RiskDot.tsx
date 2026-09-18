@@ -18,7 +18,7 @@ import { STOPPED_LINE } from '../contract/nameRow.ts'
 export function RiskDot({ tone, label }: { readonly tone: Tone | null; readonly label: string | null }) {
   if (!label) return <span style={{ color: 'var(--text-faint)' }}>—</span>
   return (
-    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, whiteSpace: 'nowrap' }}>
+    <span className="risk-dot" style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
       <span
         className="dot"
         style={tone ? { background: toneColor(tone) } : { border: '2px solid var(--text-faint)' }}

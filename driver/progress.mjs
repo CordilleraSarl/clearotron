@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// progress.mjs — live run status for the prelim-search driver.
+// progress.mjs — live run status for the clearance-search driver.
 //
 // Two artifacts, both written by the driver into the FORWARDING agent's own workspace
 // (so the agent's sandboxed read tool can see them — agents can't exec, so on-demand status is a
@@ -14,7 +14,7 @@
 // blindly incremented — so the resumable pipeline can re-drive a run without corrupting either file.
 
 import { readFileSync, writeFileSync, renameSync, unlinkSync, readdirSync, statSync, existsSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { join, dirname } from "node:path"; import { STUDIO_SEGMENT_RE } from "../shared/pre-rename-spellings.mjs";
 import { DRIVER_DIR } from "../shared/driver-dir.mjs";   //
 import { config } from "./driver.config.mjs";
 import { batchMarkName } from "./mark-name.mjs";
@@ -29,7 +29,7 @@ import { engineCommit, engineCommitSource } from "./engine-build.mjs";   // — 
 // driver's execution units (fan-out register axes, skeptic-escalation re-runs, corrective re-synthesis,
 // two refutation passes) onto a clean forward-only sequence, so the displayed step never jumps backward.
 export const DISPLAY_STEPS = [
-  "Framing the matter",     // 1  matter-frame, prelim-variants
+  "Framing the matter",     // 1  matter-frame, clearance-variants
   "Register sweeps",        // 2  common-law + register-unit:* (fan-out + escalation re-runs collapse here)
   "Placement & digest",     // 3  placement-inquiry, register-digest (+ re-digest)
   "Skeptic review",         // 4  skeptic
@@ -48,7 +48,7 @@ export const DISPLAY_STEPS = [
 // UNLABELLED GAP on the stepper the client watches — the run looks stalled while it is working. Three
 // stages were sitting in that state (blind-frame, frame-diff, doubt-closure); each now says so by name.
 export const STAGE_TO_STEP = {
-  "matter-frame": 0, "prelim-variants": 0,
+  "matter-frame": 0, "clearance-variants": 0,
   "common-law": 1, "common-law-half": 1, "register-unit": 1,
   "placement-inquiry": 2, "register-digest": 2,
   skeptic: 3,
@@ -398,11 +398,21 @@ export function seedRunStatus(ctx, { resume = false } = {}) {
   }, null, { critical: true });   // door B — the clearance lane's identity seed, same rule
 }
 
-// Convenience: advance the run to the step for `rawStageKey` (no-op for unmapped keys) then refresh STATUS.md.
+// Record that the run is at `rawStageKey`: advance the displayed step where the stage has one, and say
+// what the run is doing either way, then refresh STATUS.md.
+//
+// AN UNMAPPED STAGE MOVES NO STEP AND IS STILL SOMETHING THE RUN IS DOING. This returned early for one,
+// so it wrote no `lastStage` at all — and `lastStage` is what status-snapshot publishes as "what the run
+// is actually doing". Three stages have no display step ON PURPOSE (STAGE_NO_STEP names each and why),
+// so for the whole of any of them every surface went on naming the PREVIOUS stage, which is the same
+// defect as a stale step wearing a different field. The step fields are still withheld — that part of
+// the early return was right, and an unmapped stage must never touch the displayed step.
 export function recordTransition(ctx, rawStageKey) {
   const step = stepForStage(rawStageKey);
-  if (!step) return;
-  writeRunStatus(ctx, { stepIndex: step.index, stepLabel: step.label, stepN: step.n, stepTotal: step.total, lastStage: rawStageKey });
+  writeRunStatus(ctx, {
+    ...(step ? { stepIndex: step.index, stepLabel: step.label, stepN: step.n, stepTotal: step.total } : {}),
+    lastStage: rawStageKey,
+  });
   rollupStatus(ctx?.run?.studioRoot);
 }
 
@@ -424,7 +434,7 @@ function findStatusFiles(root, depth, acc) {
 }
 
 function agentFromStudioRoot(studioRoot) {
-  const m = new RegExp(`${config.workspacePrefixRe}([^/]+)/studio/prelim-search/?$`).exec(studioRoot ?? "");
+  const m = new RegExp(`${config.workspacePrefixRe}([^/]+)/studio/${STUDIO_SEGMENT_RE}/?$`).exec(studioRoot ?? "");
   return m ? m[1] : "";
 }
 

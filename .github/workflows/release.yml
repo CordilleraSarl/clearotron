@@ -131,13 +131,20 @@ on:
   workflow_dispatch:
     inputs:
       cut:
-        description: Rehearse the pipeline, cut one beta, or cut the stable
+        description: Rehearse the pipeline, cut one beta, cut the stable, or publish a cut main already carries
         type: choice
         default: rehearse
         options:
           - rehearse
           - beta
           - stable
+          # PUBLISH WHAT MAIN ALREADY CARRIES, and cut nothing. A version pull request that merges after
+          # the dispatched cut stopped waiting merges itself with the built-in token, which starts no run,
+          # so the version sits cut and unpublished until the schedule notices it — hours, measured — or
+          # somebody pushes to main. This asks the schedule's own question now: `pending` decides from
+          # the commit and its tags, `publish` runs only if it says a cut is waiting, and a version that
+          # is already tagged publishes nothing.
+          - publish
       # ── DEPRECATING OLD VERSIONS IS A DISPATCH INPUT BECAUSE NOBODY CAN DO IT ANYWHERE ELSE ────────
       #
       # The publish credential is minted per run from this workflow's OIDC token and stored nowhere, so
@@ -185,7 +192,7 @@ jobs:
     if: >-
       github.repository == 'CordilleraSarl/clearotron'
       && ((github.event_name == 'push' && github.ref == 'refs/heads/main')
-          || (github.event_name == 'workflow_dispatch' && inputs.cut != 'rehearse'
+          || (github.event_name == 'workflow_dispatch' && inputs.cut != 'rehearse' && inputs.cut != 'publish'
               && github.ref == 'refs/heads/main'))
     runs-on: ubuntu-latest
     # EIGHT OF THESE MINUTES CAN BE THIS JOB'S OWN LONGEST STEP: the wait for the version pull
@@ -738,7 +745,10 @@ jobs:
     # THE CRON ONLY. A scheduled run's ref IS the default branch, so it cannot be pointed at a feature
     # branch; `workflow_dispatch` stays a rehearsal. The wait that used to live here as a second entry
     # moved into the `version` job, where a person's run is what holds it — see the note there.
-    if: github.event_name == 'schedule' && github.repository == 'CordilleraSarl/clearotron'
+    if: >-
+      github.repository == 'CordilleraSarl/clearotron'
+      && (github.event_name == 'schedule'
+          || (github.event_name == 'workflow_dispatch' && inputs.cut == 'publish' && github.ref == 'refs/heads/main'))
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -834,7 +844,7 @@ jobs:
     if: >-
       !failure() && !cancelled()
       && github.repository == 'CordilleraSarl/clearotron'
-      && github.event_name == 'workflow_dispatch'
+      && github.event_name == 'workflow_dispatch' && inputs.cut != 'publish'
     runs-on: ubuntu-latest
     # THE BUDGET CONTAINS THE WAIT, with room for the checkout and the fetches around it. A timeout under
     # the wait cancels this at the moment it was about to answer, and a cancelled job reads as neither a
@@ -845,6 +855,11 @@ jobs:
     timeout-minutes: 35
     permissions:
       contents: read
+      # READ ONLY, for the one look this job takes at the version pull request when the wait expires on a
+      # dispatched cut: whether it merged, whether it can, and how each check on it concluded.
+      pull-requests: read
+      checks: read
+      statuses: read
     outputs:
       cut: ${{ steps.awaited.outputs.cut }}
       version: ${{ steps.awaited.outputs.version }}
@@ -921,6 +936,23 @@ jobs:
           # A rehearsal has nothing coming, so it reads once and reports. Set ONLY here — a real run
           # takes the file's own `WAIT_MS`.
           CLEAROTRON_RELEASE_WAIT_MS: ${{ github.event_name == 'workflow_dispatch' && inputs.cut == 'rehearse' && '0' || '' }}
+          # WHETHER THIS RUN ASKED FOR A CUT, and which pull request it armed. A push and the schedule
+          # ask main a question and the cron floor sits under either answer, so giving up is ordinary
+          # and stays quiet. A dispatch is a request THIS run tried to satisfy: it opened the version
+          # pull request and told it to merge. The budget expiring then means the one thing the run
+          # existed to do did not happen, and the script fails rather than reporting success.
+          CLEAROTRON_CUT_REQUESTED: ${{ github.event_name == 'workflow_dispatch' && inputs.cut != 'rehearse' && 'true' || 'false' }}
+          CLEAROTRON_CUT_PR: ${{ needs.version.outputs.pr_number }}
+          # WHAT THAT LOOK IS MADE WITH. `gh` in a runner has no credential unless it is given one here;
+          # without it the read fails and a dispatched cut goes red with no reason it can name.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # THE SAME TOKEN THE STEP ABOVE READS, because this loop takes the same look on every pass.
+          # The step above approves the head the version pull request had when this job started; if main
+          # moves during the wait, the pull request is refreshed onto a new head, that head parks a run
+          # of its own, and the approval already spent was spent on a head that no longer exists.
+          # Measured on the 0.3.2-beta.8 cut: two heads, one approval, cleared by hand. Absent, the loop
+          # says so once per pass and the wait ends exactly as it did before.
+          ACTIONS_APPROVE_TOKEN: ${{ secrets.ACTIONS_APPROVE_TOKEN }}
         run: node scripts/release-await-cut.mjs
 
   publish:

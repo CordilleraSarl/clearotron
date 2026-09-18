@@ -29,7 +29,7 @@ function parsedOf(reportMd) {
 }
 
 const FM = [
-  "---", "type: prelim-clearance", "matter: noref-demo", "title: THIS IS MY MATCHDAY",
+  "---", "type: clearance-clearance", "matter: noref-demo", "title: THIS IS MY MATCHDAY",
   "overall_label: MEDIUM", "overall_badge: l3", "overall_caption: medium overall.",
   "classes: 5 · 32 · 41", "jurisdiction: United States only", "run: 2026-06-10",
   "lint_flags: one identifier to re-verify", "---", "",
@@ -61,6 +61,45 @@ const COVERAGE = [
   { area: "register / US", state: "confirmed-clean", note: "zero hits on the exact slogan" },
   { area: "adjacent classes 25/29/30", state: "coverage-limited", note: "224 hits, 25 reviewed" },
 ];
+
+// ONE HEADER, AND THE BREADCRUMB IS A ROW OF IT (owner, 2026-09-18).
+//
+// The strip used to be emitted as a SIBLING of `.rep-stickyhead`, pinned on its own at
+// `top:var(--tb-h,52px)` — a variable this product sets nowhere. This asserts the NESTING, which is the
+// half CSS cannot fix and the half the portal depends on: `portal-report.mjs` strips the header on the
+// way into the frame, and the breadcrumb has to ride inside it so the orphan bar cannot be left behind.
+// Position in the string, not a selector, because there is no DOM here — but between the header's open
+// tag and the document body is exactly the claim.
+// AND IT LEAVES THE FRAME AS DATA. The portal strips the report's own header — every field in it is
+// already on the screen above the frame — so with the breadcrumb now inside that header, the served
+// document carries neither. It arrives as a list the shell draws in its own header instead, which is the
+// only place it can pin: the frame is sized to its content and has no scrollport of its own.
+test("the breadcrumb leaves the frame as data, and the served document carries no orphan bar", async () => {
+  const { prepareReportForEmbed } = await import("../portal-report.mjs");
+  const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-demo" });
+  const { sections, html: served } = prepareReportForEmbed(html);
+  assert.ok(sections.length > 1, "the document announced more than one section");
+  assert.ok(sections.every((s) => typeof s.id === "string" && typeof s.label === "string" && s.label),
+    "every entry names a place and a word");
+  for (const s of sections) {
+    assert.ok(html.includes(`id="${s.id}"`), `the announced section ${s.id} is really in the document`);
+  }
+  assert.doesNotMatch(served, /<nav class="[^"]*\bstrip\b/,
+    "no breadcrumb is left behind in the frame, where it could not pin");
+  assert.match(served, /window\.__CORD_SECTIONS=\[/, "the list rides in with the bridge");
+  assert.match(served, /d\.command==='section'/, "and the bridge answers a press on it");
+});
+
+test("the section breadcrumb is emitted inside the report's sticky header, not under it", () => {
+  const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-demo" });
+  const head = html.indexOf('<div class="rep-stickyhead');
+  const nav = html.indexOf('<nav class="strip');
+  const wrap = html.indexOf('<div class="wrap">');
+  assert.ok(head >= 0, "the report draws a sticky header");
+  assert.ok(nav >= 0, "the report draws a section breadcrumb");
+  assert.ok(nav > head, "the breadcrumb comes after the header opens");
+  assert.ok(nav < wrap, "…and before the document body, so it is inside the header rather than under it");
+});
 
 test("data-driven: gauge, quadrant, key panel, on-field + secondary cards, coverage grid all render", () => {
   const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-demo" });
@@ -178,7 +217,7 @@ test("classification: composite ≥3 is on-field (02); a common-law secondary re
 // render their OWN card prose. The fix keys matchCard on the `- ord:` line every card now carries, so the
 // join is exact + injective. Under the old code all three rendered ord-1's body (verified in the live run).
 test("C1: each on-field card joins to its OWN ordinal's prose — no copy-paste across colliding marks", () => {
-  const FM_P = ["---", "type: prelim-clearance", "matter: noref-petcary", "title: PETCARY",
+  const FM_P = ["---", "type: clearance-clearance", "matter: noref-petcary", "title: PETCARY",
     "overall_label: MEDIUM", "overall_caption: medium overall.", "classes: 5 · 10 · 44",
     "jurisdiction: CH", "run: 2026-06-18", "---", ""].join("\n");
   const CARDS_P = [
@@ -784,8 +823,11 @@ test("CHANGE 2 back-compat: NO finding carries disposition → legacy composite 
   // strip dispositions: the SAME inputs must collapse to the legacy two-section layout (01/02/03 + coverage 04).
   const legacy = DISP_FINDINGS.map(({ disposition, ...f }) => f);
   const html = renderHtml(parsedOf(FM), legacy, REGION_COVERAGE, { runId: "novapulse-demo" });
-  // doc-52 — coverage is no longer a numbered top section; it renders inside the collapsed Scope section.
-  assert.deepEqual(sectionOrder(html), ["The conflict landscape", "Conflicts", "Secondary & watch"]);
+  // doc-52 — coverage is no longer a numbered top section; its counts render inside the collapsed fold.
+  // The fold's HEADING is a section of its own as of the board read (2026-09-18): the approved design
+  // heads "What was searched" outside the fold and leaves the fold headed "Counts for this search", so
+  // the heading is in this list while the counts are still behind the disclosure.
+  assert.deepEqual(sectionOrder(html), ["The conflict landscape", "Conflicts", "Secondary & watch", "What was searched"]);
   assert.doesNotMatch(html, /Notable but manageable/);
   assert.doesNotMatch(html, /Commercial awareness/);
   // composite≥3 → on-field (c1,c2,c3 full), composite≤2 → secondary (c4 compact) — the pre-change split
@@ -813,7 +855,7 @@ test("spec-49 T4: legacy fm caveat notes (frame_reopen_note / envelope_note) ren
   // Their substance reaches the reader via verdict clamp reasons + injected coverage rows (T1/T3);
   // envelope_note survives only as the email's plain "Search scope:" line.
   const FM_FR = [
-    "---", "type: prelim-clearance", "matter: fr", "title: FR", "overall_label: LOW",
+    "---", "type: clearance-clearance", "matter: fr", "title: FR", "overall_label: LOW",
     "frame_reopen_note: frame-diff directives left unswept: variant:venzy phonetic family",
     "envelope_note: EU adjacent classes not exhausted", "---", "", "# Marks", "## Acme", "- one: x",
   ].join("\n");
@@ -1266,7 +1308,7 @@ test("wp50: the # Actions panel renders — Answers first, buckets styled, ::p::
   assert.match(internal, /Answers to your instructions/, "the Q&A section reaches the report");
   assert.match(internal, /bad or unpleasant meaning/, "ask 1 rides through");
   assert.match(internal, /not descriptive/, "ask 2 rides through");
-  assert.match(internal, /What only you can close/, "doc-52 — the human-only bucket renders under its own section after the findings");
+  assert.match(internal, /What happens next/, "doc-52 — the human-only bucket renders under its own section after the findings, headed as the board heads it");
   assert.match(internal, /Confirm whether the identical senior mark/, "the only-you forward decision rides through");
   // doc-52 — the Q&A leads (verdict block, top); "Checks we ran" moves to the collapsed Scope section (bottom)
   assert.ok(internal.indexOf("Answers to your instructions") < internal.indexOf("Checks we ran"), "Q&A (verdict block) precedes Checks-we-ran (Scope)");
@@ -1302,14 +1344,14 @@ test("doc-52: reading order + plain banner (from only-you) + ruled-out routing +
   const opts = { runId: "d52", verdictInfo: vi, coverageJudgment: { reason: "the exact-compound slice is unadjudicable" } };
   const html = renderHtml(parsedOf(md), F, COV, opts);
   const client = renderHtml(parsedOf(md), F, COV, { ...opts, client: true });
-  // reading order: verdict (mark) → conflicts → What only you can close → Scope
+  // reading order: verdict (mark) → conflicts → What happens next → Scope
   const iVerdict = html.indexOf('class="mark"'), iConf = html.indexOf("<h2>Conflicts</h2>");
-  const iYou = html.indexOf("What only you can close"), iScope = html.indexOf('<details class="searched">');
+  const iYou = html.indexOf("What happens next"), iScope = html.indexOf('<details class="searched">');
   assert.ok(iVerdict >= 0 && iVerdict < iConf && iConf < iYou && iYou < iScope, "verdict → conflicts → only-you → what was searched");
   // the lawyer's Q&A leads in the verdict block, before the conflicts
   assert.ok(html.indexOf("Answers to your instructions") >= 0 && html.indexOf("Answers to your instructions") < iConf, "Q&A in the verdict block");
   // B1 (spec 2026-07-30 §4) — the "Subject to:" bound line is DELETED (a third copy of the verdict's
-  // conditions); the conditions live in "What only you can close" and the verdict statement. The
+  // conditions); the conditions live in "What happens next" and the verdict statement. The
   // engine clamp reason still never renders anywhere.
   assert.doesNotMatch(html, /class="bound"/, "no bound line — deleted, not reformatted");
   // Every condition renders by ruling (2026-09-16); nothing hides behind a count. Giving this site a
@@ -1782,7 +1824,7 @@ test("B1 (spec 2026-07-30 §4): the 'Subject to:' bound line is DELETED — no t
   const vi = { tier: "Manageable", verdict: "CONDITIONAL", badge: "l2", gaugeIndex: 1, band: { label: "Manageable", rankFromTop: 4, scale: 5 } };
   const html = renderHtml(parsedOf(`${REPORT}\n${acts}`), BAND_FINDINGS, [], { client: true, framework: AURORA_MANIFEST, verdictInfo: vi });
   assert.doesNotMatch(html, /class="bound"/, "the bound line is gone on a CONDITIONAL run");
-  assert.match(html, /What only you can close/, "the conditions' one home (the only-you section) still renders");
+  assert.match(html, /What happens next/, "the conditions' one home (the forward-decisions section) still renders");
   // actYouConditions itself STAYS — the email composer builds its conditions list from it (tested below).
 });
 
@@ -2886,4 +2928,289 @@ test("the export menu this template draws is the shared one, not a copy of it", 
   // times. The number was guessed rather than measured, which is the defect this whole arm exists to
   // catch one level along. The button itself appears once, and that is the property.
   assert.equal(html.split(EXPORT_TOGGLE).length - 1, 1, "the export button is emitted other than once");
+});
+
+// The country in the Court decisions line comes off the record listing, so a provider that archives
+// nothing leaves it empty — and every branch embedded it mid-sentence. The delivered page read
+// "Case-law research could not be completed for ." on exactly the runs this matters for.
+test("the court-decisions line never ships a dangling clause where the country should be", () => {
+  const depth = (state, byC) => ({ counts: { courtDecisions: state, recordsByCountry: byC } });
+
+  for (const [state, fragment] of [["not-checked", /Case-law research could not be completed/],
+                                   ["none-found", /Court decisions: none found/],
+                                   ["found", /Court decisions were searched/]]) {
+    for (const byC of [null, {}, { WO: 3 }]) {   // no store, an empty store, and international-only
+      const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { ...FULL_COUNTRY_OPTS, searchDepth: depth(state, byC) });
+      assert.match(html, fragment, `${state}: the line itself must still render`);
+      assert.doesNotMatch(html, / for \./, `${state}: a country clause with no country in it reached the page`);
+      assert.doesNotMatch(html, / for <\/p>/, `${state}: the clause was left open`);
+    }
+  }
+
+  // And the country is still named when there IS one — the guard against "fix" it by deleting the clause.
+  const named = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { ...FULL_COUNTRY_OPTS, searchDepth: depth("none-found", { JP: 12 }) });
+  assert.match(named, /Court decisions: none found for Japan\./, "the country drops out of the sentence it belongs in");
+});
+
+// ── "WHERE IT STANDS" IS ABOUT WHAT WAS SEARCHED, NOT ABOUT WHAT WAS ARCHIVED ─────────────────────
+//
+// The section took its countries from the record archive, which is the authority on what came back and
+// was kept. A register that keeps no records therefore produced no countries, no rows, no chips and no
+// section — so a register nobody could archive read exactly like a register nobody searched, on the page
+// a client acts on. The plan is the authority on what was asked, and it is there whether or not anything
+// was kept.
+//
+// BREAK MATRIX:
+//   · a register that archives nothing still fills   → break: read the archive, arm 1 red
+//   · a finding's own country keeps its row          → break: filter the codes to the plan, arm 2 red
+//   · no plan renders exactly as it always has       → break: read null as an empty list, arm 3 red
+//   · a plan that named nothing draws nothing        → break: fall back to the archive, arm 4 red
+//   · an unreached territory is NOT a clean chip     → break: chip it, arm 5 red
+test("where it stands is filled from the search plan, so a register that archives nothing still says where it looked", () => {
+  // THE CHIP'S TEXT IS THE NAME OR THE CODE depending on how many chips there are — twelve is the seam,
+  // drawn that way by the board. Its `title` is always the country's name, so the arms read that and the
+  // rows' own code, which is what makes them stable whichever side of the seam a case falls on.
+  // READ INSIDE THE SECTION'S OWN PANEL, never across the whole page. `rcode` is drawn by other sections
+  // too, so a page-wide walk found an MX row that this section had not drawn: the arm asserting that a
+  // finding's country keeps its row passed with the union removed, which is the one break it exists for.
+  // Measured — plant 2 of the matrix above did not red until this slice was added.
+  const panelOf = (html) => {
+    const i = html.indexOf('class="panel where"');
+    if (i === -1) return '';
+    const j = html.indexOf('<div class="sec"', i);
+    return j === -1 ? html.slice(i) : html.slice(i, j);
+  };
+  const codesOf = (html) => {
+    const panel = panelOf(html);
+    return {
+      rows: [...panel.matchAll(/<span class="rcode">([^<]*)<\/span>/g)].map((m) => m[1]),
+      chips: [...panel.matchAll(/<span class="wchip" title="([^"]*)">/g)].map((m) => m[1]),
+    };
+  };
+
+  // A REGISTER THAT ARCHIVES NOTHING. recordsByCountry is empty — the shape a provider keeping no
+  // records produces — and the plan named three territories.
+  const depth = { counts: { recordsByCountry: {}, courtDecisions: "not-in-scope" } };
+  const plan = { searched: ["JP", "KR", "EM"], unreached: [{ jurisdiction: "US", reason: "outside this register's coverage entirely" }] };
+  const html = renderHtml(parsedOf(REPORT), [], [], { searchDepth: depth, planTerritories: plan });
+  assert.match(html, /Where it stands/, "a register that archives nothing drew no section at all");
+  const { rows, chips } = codesOf(html);
+  assert.deepEqual([...rows, ...chips].sort(), ["European Union", "Japan", "South Korea"],
+    "the section does not name the three territories the plan searched");
+
+  // THE UNREACHED TERRITORY IS NOT ON THE PAGE. This section draws a row carrying a band and a "Nothing
+  // found" chip, and a territory the provider does not cover is neither: chipping it would state a clean
+  // result for a register nobody read.
+  assert.ok(!chips.includes("United States") && !rows.includes("US"),
+    "a territory the register does not cover was drawn as a result");
+  assert.doesNotMatch(html, /outside this register's coverage entirely/, "the deferral's reason reached the page");
+
+  // A FINDING'S OWN COUNTRY KEEPS ITS ROW even where the plan does not list it — an international
+  // registration designating a territory the plan never named is the ordinary case.
+  const inMX = [{ ...FINDINGS[0], ordinal: 41, band: "Moderate", owner: { ...FINDINGS[0].owner, country: "MX",
+    registrations: [{ ...(FINDINGS[0].owner.registrations?.[0] ?? {}), jurisdiction: "MX" }] } }];
+  const withF = renderHtml(parsedOf(REPORT), inMX, [], { searchDepth: depth, planTerritories: { searched: ["JP"], unreached: [] } });
+  const both = codesOf(withF);
+  assert.ok(both.rows.includes("MX") || both.chips.includes("Mexico"),
+    "a finding's own country was filtered out because the plan did not list it");
+
+  // ONE ROW PER COUNTRY WHERE THE PLAN CARRIES BOTH SPELLINGS. A plan lists the register's own EM and GB
+  // beside the EU and UK a reader knows; aliased without deduping, the first worldwide run measured
+  // through this drew two EU rows and two UK rows. The band must survive the fold: the conflict here is
+  // recorded under EM and has to reach the EU row.
+  const inEM = [{ ...FINDINGS[0], ordinal: 42, band: "Moderate", owner: { ...FINDINGS[0].owner, country: "EM",
+    registrations: [{ ...(FINDINGS[0].owner.registrations?.[0] ?? {}), jurisdiction: "EM" }] } }];
+  const bothSpellings = renderHtml(parsedOf(REPORT), inEM, [], { searchDepth: depth,
+    planTerritories: { searched: ["EU", "EM", "GB", "UK", "JP"], unreached: [] } });
+  const folded = codesOf(bothSpellings);
+  const all = [...folded.rows, ...folded.chips];
+  assert.equal(new Set(all).size, all.length, `a country is drawn twice: ${JSON.stringify(all)}`);
+  assert.ok(folded.rows.includes("EU"), "the two EU spellings did not fold onto the reader's own code");
+  assert.match(bothSpellings, /<span class="rcode">EU<\/span><span class="wname">European Union<\/span><span class="kc[^"]*">Moderate</,
+    "a conflict recorded under the register's own spelling lost its band in the fold");
+
+  // NO PLAN IS NOT AN EMPTY PLAN. Every archived and legacy run has none, and those keep the archive as
+  // their only authority and must re-render exactly as they always have.
+  const archived = { counts: { recordsByCountry: { JP: 12, KR: 4 }, courtDecisions: "not-in-scope" } };
+  const before = renderHtml(parsedOf(REPORT), [], [], { searchDepth: archived });
+  const withNull = renderHtml(parsedOf(REPORT), [], [], { searchDepth: archived, planTerritories: null });
+  assert.equal(withNull, before, "passing no plan changed the page an archived run renders");
+  assert.deepEqual(codesOf(before).chips.sort(), ["Japan", "South Korea"],
+    "the archive's own countries stopped rendering");
+
+  // AND A PLAN THAT NAMED NOTHING SAID NOTHING. It is a different answer from no plan at all, so it does
+  // not silently fall back to the archive.
+  const named = renderHtml(parsedOf(REPORT), [], [], { searchDepth: archived, planTerritories: { searched: [], unreached: [] } });
+  assert.doesNotMatch(named, /Where it stands/, "a plan that named nothing fell back to the record archive");
+});
+
+// ── THE LOCAL-LANGUAGE ROW SAYS HOW DEEP THE INVESTIGATION WENT, IN WORDS ALREADY ON THE PAGE ──────
+//
+// The engine can run this investigation shallower than the matter configured. It said so in one place —
+// a sentence a model wrote into the Methodology paragraph — and the redesign replaced that paragraph
+// with named rows, so a run that went shallow said so on no page at all. The board reserves the row.
+//
+// THE ARM THAT MATTERS IS THE LAST ONE. Two of the four words are taken from the coverage vocabulary
+// this file already renders rather than retyped, and that arm holds them against a coverage row drawn
+// with the same state — so the row cannot drift into wording of its own without reding.
+//
+// BREAK MATRIX:
+//   · each state draws its own word              → break: map two states to one word, arm 1 red
+//   · a shallow run is never "Included"          → break: fold ran-shallow into ran, arm 2 red
+//   · an unknown state draws NO row              → break: fall back to the nearest word, arm 3 red
+//   · the row sits where the board draws it      → break: append it after Court decisions, arm 4 red
+//   · its words are the page's own               → break: retype them, arm 5 red
+test("the local-language row states the depth reached, in the words the page already uses", () => {
+  const LANES = { ja: { configured: "full", achieved: "full" } };
+  const depth = (state, lanes = LANES) => ({ counts: { recordsByCountry: { JP: 3 }, courtDecisions: "not-in-scope",
+    localScriptSearched: true, localLanguage: state === undefined ? undefined : { state, lanes } } });
+  // The counts fold draws key/value rows; read the pair, not the page.
+  const rowFor = (html, key) => {
+    const re = new RegExp(`<span class="k">${key}</span><span class="v">([^<]*)</span>`);
+    const m = html.match(re);
+    return m ? m[1] : null;
+  };
+  const render = (state, lanes) => renderHtml(parsedOf(REPORT), [], [], { searchDepth: depth(state, lanes) });
+
+  const seen = {};
+  for (const [state, word] of [["ran", "Included"], ["ran-shallow", "Partially covered"],
+    ["not-run", "Not run this run"], ["not-in-scope", "Not part of this search"]]) {
+    const got = rowFor(render(state), "Local-language investigation");
+    assert.equal(got, word, `the ${state} state draws ${JSON.stringify(got)}`);
+    seen[word] = (seen[word] ?? 0) + 1;
+  }
+  assert.equal(Object.keys(seen).length, 4, "two states share a word, so the row cannot tell them apart");
+
+  // A SHALLOW RUN IS NEVER "INCLUDED". Stated on its own because it is the claim the issue was filed on:
+  // folding short into ran is the one wrong answer that reads as a working row.
+  assert.notEqual(rowFor(render("ran-shallow"), "Local-language investigation"), "Included",
+    "a run that went shallower than configured reports as included");
+
+  // A STATE THIS TABLE HAS NO WORD FOR DRAWS NO ROW, rather than the nearest word.
+  for (const unknown of [undefined, "could-not-establish", "", null]) {
+    assert.equal(rowFor(render(unknown), "Local-language investigation"), null,
+      `the state ${JSON.stringify(unknown)} drew a row this table has no word for`);
+  }
+
+  // NO LANE RECORD, NO ROW — an absence is not a finding, and this is the assertion that keeps a false
+  // claim off a client's page. The state folds to not-in-scope when no record was written, which is
+  // right for a clearance that never asked and wrong for a run that asked and whose record is missing.
+  // Measured on the full country demo, whose own coverage says the Japanese lane delivered a depth the
+  // run cannot establish while the state beside it reads not-in-scope.
+  for (const empty of [{}, null]) {
+    for (const state of ["ran", "ran-shallow", "not-run", "not-in-scope"]) {
+      assert.equal(rowFor(render(state, empty), "Local-language investigation"), null,
+        `the ${state} state drew a row with no lane record behind it (lanes ${JSON.stringify(empty)})`);
+    }
+  }
+  // …and with no `lanes` key at all, which the helper's default parameter cannot express: passing
+  // undefined through it lands on the default and the case reads as a pass. Built here instead.
+  for (const state of ["ran", "ran-shallow", "not-run", "not-in-scope"]) {
+    const noKey = renderHtml(parsedOf(REPORT), [], [], { searchDepth: { counts: { recordsByCountry: { JP: 3 },
+      courtDecisions: "not-in-scope", localScriptSearched: true, localLanguage: { state } } } });
+    assert.equal(rowFor(noKey, "Local-language investigation"), null,
+      `the ${state} state drew a row from a record with no lanes key`);
+  }
+
+  // WHERE THE BOARD DRAWS IT: after the spellings row, before court decisions.
+  // Both neighbours, not just the one above: asserting only the spellings row passed with the row moved
+  // below court decisions, which is a different table from the one the board approved. Measured — plant 4
+  // of the matrix did not red until the court-decisions side was asserted too.
+  // A full country search, because that is the one board that draws a Court decisions row.
+  const html = renderHtml(parsedOf(REPORT), [], [], { ...FULL_COUNTRY_OPTS, searchDepth: { counts: { recordsByCountry: { JP: 3 },
+    courtDecisions: "found", localScriptSearched: true, localLanguage: { state: "ran", lanes: LANES } } } });
+  const at = (k) => {
+    const i = html.indexOf(`<span class="k">${k}</span>`);
+    assert.notEqual(i, -1, `the ${k} row is not on the page, so the order assertion proves nothing`);
+    return i;
+  };
+  assert.ok(at("Local-script spellings") < at("Local-language investigation"),
+    "the row is drawn above the spellings row it follows on the board");
+  assert.ok(at("Local-language investigation") < at("Court decisions"),
+    "the row is drawn below court decisions, which the board draws after it");
+
+  // ITS WORDS ARE THE PAGE'S OWN. Two of the four are the coverage vocabulary, and this holds them
+  // against a coverage row carrying the same state rather than against a literal typed twice.
+  const covWord = (state) => {
+    const page = renderHtml(parsedOf(REPORT), [], [{ area: "x", state, note: "n" }], { searchDepth: depth("ran") });
+    // The coverage cell draws its state word behind a "· " separator inside `.cst`. Read the span and
+    // drop the separator — the word is what is shared, not the punctuation around it.
+    const m = page.match(/<span class="cst">\s*·\s*([^<]*)<\/span>/);
+    return m ? m[1].trim() : null;
+  };
+  assert.equal(rowFor(render("ran-shallow"), "Local-language investigation"), covWord("coverage-limited"),
+    "the shallow word drifted from the coverage word it is taken from");
+  assert.equal(rowFor(render("not-run"), "Local-language investigation"), covWord("not-searched"),
+    "the not-run word drifted from the coverage word it is taken from");
+});
+
+// ── THE BOARD'S SECTION STRIP, AND WHY IT IS NOT THE BOARD'S STRIP VERBATIM ────────────────────────
+//
+// The approved mock draws a five-entry navigation and this renderer drew none — one cause behind the
+// same divergence reported on all three kinds, because the mock's second "Also considered" is a nav link
+// rather than a second heading.
+//
+// The mock is a specimen where every section exists. Three of them are conditional here, so the strip is
+// composed from the FINISHED document by asking which anchors are in it. That is the property worth
+// pinning: not that five entries are drawn, but that no entry ever points at nothing.
+test("the section strip is drawn from the document, so it can never name an anchor that is not there", () => {
+  const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-strip" });
+  const nav = html.match(/<nav class="strip[^>]*>([\s\S]*?)<\/nav>/);
+  assert.ok(nav, "the approved board's section strip is not drawn at all");
+  const entries = [...nav[1].matchAll(/href="#([^"]+)"[^>]*>(?:<i><\/i>)?([^<]+)</g)].map((m) => [m[1], m[2]]);
+  assert.ok(entries.length >= 2, `a strip of ${entries.length} entry is a control that does nothing`);
+  for (const [id] of entries) {
+    assert.ok(html.includes(`id="${id}"`), `the strip points at #${id} and no section carries that id`);
+  }
+  // THE FIRST SURVIVING ENTRY IS THE MARKED ONE, as the board marks its first — and "first surviving"
+  // rather than "summary", because the entry the board marks is the one that leads the strip it drew.
+  assert.match(nav[1], new RegExp(`href="#${entries[0][0]}" data-sec="${entries[0][0]}" class="now"`),
+    "no entry is marked current, or the mark is not on the one that leads");
+  assert.equal((nav[1].match(/class="now"/g) ?? []).length, 1, "more than one entry is marked current");
+});
+
+// AND THE FILTER REALLY FILTERS. A strip built from a literal would pass every assertion above on this
+// fixture, because this fixture happens to draw every section. Drive a document that draws fewer.
+test("a section that is not drawn takes its strip entry with it", () => {
+  const full = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-strip-full" });
+  // No findings and no coverage: no rows, no open rows, no cards and no record set, so the counts
+  // section is not drawn at all and #searched cannot be in the document.
+  const thin = renderHtml(parsedOf(REPORT), [], [], { runId: "noref-strip-thin" });
+  const of = (h) => [...(h.match(/<nav class="strip[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? "").matchAll(/href="#([^"]+)"/g)].map((m) => m[1]);
+  const [a, b] = [of(full), of(thin)];
+  assert.ok(a.length >= 2 && b.length >= 2, `strips of ${a.length} and ${b.length} — one of these documents drew no navigation`);
+  assert.notDeepEqual(a, b, "both documents drew the same strip, so it is a literal and not a reading of the document");
+  for (const id of b) assert.ok(thin.includes(`id="${id}"`), `the thinner document's strip points at #${id}, which it does not draw`);
+});
+
+// ── WHAT WAS SEARCHED, AS THE BOARDS DRAW IT ────────────────────────────────────────────────────────
+//
+// The approved boards draw the register row as one line of totals with the per-country counts as chips,
+// "checks on" the platforms, "Searched" as the spellings word, a Court decisions row on a full country
+// search only — its state word, and the court section's own sentence when the research could not be
+// completed — and a closing link to the audit workbook. The Left open rows and the provenance note stay
+// where they are until their own ruling.
+test("What was searched draws the boards' rows: totals and chips, checks on, Searched, court on full country, the workbook", () => {
+  const sd = { counts: { recordsByCountry: { JP: 60, KR: 46, WO: 6 }, courtDecisions: "not-checked", localScriptSearched: true,
+    sweep: { spellings: 28, checks: 476, platforms: 17, reputation: 49 } } };
+  const multi = renderHtml(parsedOf(REPORT), [], [], { searchDepth: sd, auditFile: "run-audit.xlsx" });
+  const v = (html, k) => (html.match(new RegExp(`<span class="k">${k}</span><span class="v">([\\s\\S]*?)</span></div>`)) || [])[1] ?? null;
+  assert.match(v(multi, "Register"), /^106 records read across 2 countries, plus 6 international registrations<div class="wchips">/);
+  assert.match(multi, /<div class="wchips"><span class="wchip" title="Japan">JP <b>60<\/b><\/span><span class="wchip" title="South Korea">KR <b>46<\/b><\/span><\/div>/,
+    "the chips carry the code and the count, largest first, the name on hover");
+  assert.equal(v(multi, "Marketplace and web"), "476 checks on 17 platforms");
+  assert.equal(v(multi, "Local-script spellings"), "Searched");
+  assert.equal(v(multi, "Court decisions"), null, "a search that is not a full country search draws no court row");
+  assert.match(multi, /<div class="cmore"><a class="wb" href="run-audit\.xlsx">Every search and result, in the audit workbook<\/a><\/div>/);
+
+  const one = renderHtml(parsedOf(REPORT), [], [], { ...FULL_COUNTRY_OPTS,
+    searchDepth: { counts: { ...sd.counts, recordsByCountry: { JP: 141, WO: 52 } } } });
+  assert.equal(v(one, "Register"), "141 records read in Japan, plus 52 international registrations",
+    "one country is named in the line, and a single chip would only repeat it");
+  assert.equal(v(one, "Court decisions"),
+    '<span class="wstate">Not searched</span><span class="wnote">Case-law research could not be completed for Japan.</span>',
+    "the row carries the state and the court section's own sentence");
+  assert.match(one, /id="court"[\s\S]*Case-law research could not be completed for Japan\./, "and the court section still says it below");
+  assert.doesNotMatch(renderHtml(parsedOf(REPORT), [], [], { searchDepth: sd }), /class="cmore"><a class="wb"[^>]*>Every search/,
+    "no audit file, no link to one");
 });

@@ -19,7 +19,7 @@ pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 
 const mkRun = (agent, slug, run) => {
-  const d = join(ROOT, `workspace-${agent}`, "studio", "prelim-search", slug, run);
+  const d = join(ROOT, `workspace-${agent}`, "studio", "clearance-search", slug, run);
   mkdirSync(d, { recursive: true });
   return d;
 };

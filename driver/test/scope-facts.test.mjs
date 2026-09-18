@@ -217,6 +217,21 @@ test("jurisdiction tail: a worldwide token collapses the register list — never
   assert.doesNotMatch(f.coverage_line, /registers: .*(EU|US|CH|WO)/, "the named list never rides beside worldwide");
 });
 
+// Owner ruling 2026-09-18: a worldwide order names the register service that searched it, from the
+// provider's own capability label — never a list of offices, never a count.
+test("jurisdiction tail: worldwide names the register service the plan records, and a named list is unchanged", () => {
+  const exec = { ...EXEC, executed: EXEC.executed.map((x) => ({ ...x, state: "enumerated" })) };
+  const wide = (provider) => deriveScopeFacts({ instructedScope: INSTRUCTED,
+    plan: { ...PLAN, regions: [], scope_basis: "worldwide", ...(provider ? { provider } : {}) }, planExecution: exec, coverageRows: [] });
+  assert.match(wide("signa").coverage_line, / · registers: worldwide \(Signa\)$/);
+  assert.match(wide("clarivate").coverage_line, / · registers: worldwide \(Clarivate Compumark\)$/);
+  assert.match(wide(null).coverage_line, / · registers: worldwide$/, "a plan that records no provider keeps the bare word");
+  assert.match(wide("no-such-provider").coverage_line, / · registers: worldwide$/, "an unknown provider names nothing rather than throwing");
+  const named = deriveScopeFacts({ instructedScope: INSTRUCTED, plan: { ...PLAN, provider: "signa" }, planExecution: exec, coverageRows: [] });
+  assert.match(named.coverage_line, /registers: US, EU, CH$/, "a named-territory order renders as it did");
+  assert.doesNotMatch(named.coverage_line, /Signa/);
+});
+
 // ── post-merge audit 2 (d): crowd-context count descriptors leave the fully-searched denominator ────
 // Shape-VERBATIM from a real 2026-07-29 archived run's stores (_driver/register-plan.json ×
 // plan-execution.json), identity-scrubbed per this file's fixture rule. Per instructed class: 20

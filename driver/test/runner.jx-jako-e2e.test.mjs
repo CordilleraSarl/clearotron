@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // @tier full — drives a full mock clearance through the real runner (ja/ko lanes)
 // runner.jx-jako-e2e.test.mjs — the ja/ko slice-1 lanes end to end through the REAL runner at $0
-// (2026-07-22, the runner.jx-e2e mould): ONE prelim-jx job with JP+KR+US in scope runs the full mock
+// (2026-07-22, the runner.jx-e2e mould): ONE clearance-jx job with JP+KR+US in scope runs the full mock
 // clearance with BOTH new lanes on fixtures — frozen two-lane decision, per-lane folds onto
 // transliteration-numeric, per-lane script gates (Latin echo refused in each), one ledger row per
 // lane — and proves zh stays out when no CN-family territory is in scope.
@@ -13,7 +13,7 @@ import { envFrom, pinEnv } from "../../shared/env-aliases.mjs";   // — a fixtu
 import { tmpdir as __tmpdir } from "node:os";
 import { join as __join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
-pinEnv(process.env, "CLEAROTRON_WORK_DIR", envFrom(process.env, "CLEAROTRON_WORK_DIR") || __mkdtemp(__join(__tmpdir(), "prelim-jx-jako-e2e-")));
+pinEnv(process.env, "CLEAROTRON_WORK_DIR", envFrom(process.env, "CLEAROTRON_WORK_DIR") || __mkdtemp(__join(__tmpdir(), "clearance-jx-jako-e2e-")));
 pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", envFrom(process.env, "CLEAROTRON_REPORTS_DIR") || __join(process.env.CLEAROTRON_WORK_DIR, "pool"));
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -56,7 +56,7 @@ for (const [k, v] of Object.entries({
 })) pinEnv(process.env, k, v);
 
 const { main } = await import("../runner.mjs");
-const Q = join(root, "workspace-clawdi", "studio", "prelim-search", "queue");
+const Q = join(root, "workspace-clawdi", "studio", "clearance-search", "queue");
 mkdirSync(Q, { recursive: true });
 
 const findRun = (needle) => {
@@ -67,11 +67,11 @@ const findRun = (needle) => {
     if (existsSync(driverDir(d, "search-policy.json")) && d.includes(needle)) { hits.push(d); return; }
     for (const e of es) if (e.isDirectory()) walk(join(d, e.name), depth + 1);
   };
-  walk(join(root, "workspace-clawdi", "studio", "prelim-search"), 0);
+  walk(join(root, "workspace-clawdi", "studio", "clearance-search"), 0);
   return hits;
 };
 
-test("prelim-jx e2e: JP+KR scope → frozen ja+ko lanes → per-lane fixture folds → both script gates enforce → delivered; zh stays out", async () => {
+test("clearance-jx e2e: JP+KR scope → frozen ja+ko lanes → per-lane fixture folds → both script gates enforce → delivered; zh stays out", async () => {
   writeFileSync(join(Q, "jako-run.json"), JSON.stringify({
     id: "jako-run", msgId: "<jako@x>", forwarder: "dev", forwarderDomain: "example.com",
     product: "multi-country-focus-search", nativeLanguage: true, ref: "TMP9300", markName: "NOVAPULSE",
@@ -81,7 +81,7 @@ test("prelim-jx e2e: JP+KR scope → frozen ja+ko lanes → per-lane fixture fol
   // — BEFORE the assertions below. A run that never started leaves its
   // reason in the packets beside the queue; without this the counts below report it as a
   // product defect.
-  refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.jx-jako-e2e.test.mjs");
+  refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.jx-jako-e2e.test.mjs");
   assert.ok(existsSync(join(Q, "jako-run.done")), `queue entry consumed as .done (markers: ${readdirSync(Q).join(",")})`);
   const dirs = findRun("novapulse");
   assert.equal(dirs.length, 1, `expected one novapulse run dir, got: ${dirs.join(" | ")}`);
@@ -144,7 +144,7 @@ test("per-lane kill switch: CLEAROTRON_NATIVE_LANGUAGE_KO=0 excludes ko at the f
     // — BEFORE the assertions below. A run that never started leaves its
     // reason in the packets beside the queue; without this the counts below report it as a
     // product defect.
-    refuseOnPreRunFailure(join(root, "prelim-outbox"), "runner.jx-jako-e2e.test.mjs");
+    refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.jx-jako-e2e.test.mjs");
     assert.ok(existsSync(join(Q, "jaonly-run.done")));
     const rd = findRun("novapulse-ja-only")[0];
     assert.ok(rd, "ja-only run dir found");

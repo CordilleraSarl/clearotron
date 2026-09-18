@@ -325,6 +325,70 @@ test("a note the range adds and then removes answers for nothing; one it adds an
   } finally { kept.clean(); }
 });
 
+test("a note the range withdraws, saying why, still answers for the commits that wrote and named it", () => {
+  // The shape a ruling makes, and the whole of it: a note is written beside its change, CONSUMED into
+  // `.changeset/pre/` by the beta cut that ships it, and then removed from there when the owner rules the
+  // change back out — so the stable changelog never announces a limit the stable release does not have.
+  // Before this, both commits were refused for naming a note the range no longer carried, and the only
+  // fix the check offered was editing commits already pushed. Measured on beta-9, 2026-09-18.
+  const NAME = "no-ceiling-on-any-query.md";
+  const NOTE = `.changeset/${NAME}`, CONSUMED = `.changeset/pre/${NAME}`;
+  const repo = repoWithCommits([
+    { changes: { "bin/cap.mjs": "export const ceiling = 200;\n", [NOTE]: NOTE_BODY("a ceiling on each query.") },
+      message: "A ceiling on each query" },
+    { changes: { "bin/plan.mjs": "export const plan = 1;\n" },
+      message: `The other half of the same guardrail\n\nRelease-note: ${NOTE}\n` },
+    { changes: { [NOTE]: null, [CONSUMED]: NOTE_BODY("a ceiling on each query.") }, message: "Release 0.0.1-beta.1" },
+    { changes: { [CONSUMED]: null },
+      message: "Remove the beta's note for the ceiling\n\nRelease-note: none — the ceiling went out with the owner's ruling; its beta note goes with it so the stable changelog does not announce one.\n" },
+  ]);
+  try {
+    const r = run(repo);
+    assert.equal(r.code, 0, `a note the range withdrew with a reason answered for nobody:\n${r.said}`);
+    for (const i of [0, 1]) {
+      assert.match(r.said, new RegExp(`${repo.shas[i]} answered with ${NAME}, which ${repo.shas[3]}`),
+        `the pass is silent about which commit withdrew the note it was reached through:\n${r.said}`);
+    }
+    assert.match(r.said, /the stable changelog does not announce one/, `the withdrawing commit's reason is not printed:\n${r.said}`);
+  } finally { repo.clean(); }
+});
+
+test("a withdrawal that gives no reason refuses, and names the commit that can still give one", () => {
+  // THE HALF THAT MAKES THE OTHER ONE SAFE. Without it, deleting a note is a way to excuse every commit
+  // that answered with it, and the reader loses the sentence with nothing written down about why.
+  const NAME = "the-note.md";
+  const repo = repoWithCommits([
+    { changes: { "bin/thing.mjs": "export const a = 1;\n", [`.changeset/${NAME}`]: NOTE_BODY("the thing.") },
+      message: "A change a reader sees" },
+    { changes: { [`.changeset/${NAME}`]: null }, message: "Remove the note" },
+  ]);
+  try {
+    const r = run(repo);
+    assert.equal(r.code, 1, `a note deleted with no reason given excused the commit that wrote it:\n${r.said}`);
+    assert.match(r.said, new RegExp(`${repo.shas[0]} A change a reader sees`));
+    assert.match(r.said, new RegExp(`${repo.shas[1]} deletes in this range without saying why`),
+      `the refusal does not say where the reason goes:\n${r.said}`);
+  } finally { repo.clean(); }
+});
+
+test("a note already gone before a commit names it is no answer for that commit", () => {
+  // A withdrawal answers only for what came BEFORE it. A commit naming a note the range disposed of
+  // earlier is naming nothing, whatever reason the disposal gave.
+  const NAME = "an-older-note.md";
+  const repo = repoWithCommits([
+    { changes: { [`.changeset/${NAME}`]: NOTE_BODY("something else.") }, message: "An older note" },
+    { changes: { [`.changeset/${NAME}`]: null },
+      message: "Drop it\n\nRelease-note: none — it described something that never shipped.\n" },
+    { changes: { "bin/late.mjs": "export const late = 1;\n" },
+      message: `A later change\n\nRelease-note: .changeset/${NAME}\n` },
+  ]);
+  try {
+    const r = run(repo);
+    assert.equal(r.code, 1, `a commit was excused by a deletion that happened before it:\n${r.said}`);
+    assert.match(r.said, new RegExp(`${repo.shas[2]} A later change`));
+  } finally { repo.clean(); }
+});
+
 test("`none.` is followed by its reason, not by the full stop", () => {
   assert.equal(NO_NOTE.exec("Release-note: none. The docs only.")?.groups.reason, "The docs only.");
   assert.equal(NO_NOTE.exec("Release-note: none — the docs only.")?.groups.reason, "the docs only.");

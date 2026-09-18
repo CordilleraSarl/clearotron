@@ -15,7 +15,7 @@
 //            sendPending with no .sent, so a lost/given-up marker (or an overnight finish) is retried
 //            on the prelim-outbox.timer cadence independent of heartbeat activeHours.
 //
-// TIGHT-LOOP INVARIANT (load-bearing): prelim-outbox.path is PathExistsGlob=…/prelim-outbox/*.pending —
+// TIGHT-LOOP INVARIANT (load-bearing): prelim-outbox.path is PathExistsGlob=…/clearance-outbox/*.pending —
 // level-triggered, so a RETAINED marker re-triggers the service the moment it deactivates. The backoff
 // sidecars therefore live in <outbox>/backoff/ — a subdirectory the glob can never match (`*` does not
 // cross `/`, and "backoff" has no .pending suffix; inotify on the outbox dir doesn't recurse either) —
@@ -26,7 +26,7 @@
 // ("due" / "retry 300") — a broken helper must degrade to retried wakes, never to lost deliveries.
 
 import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, writeFileSync } from "node:fs";
-import { join, basename } from "node:path";
+import { join, basename } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
 import { fileURLToPath } from "node:url";
 import { config } from "./driver.config.mjs";
 import { atomicWrite } from "./progress.mjs";
@@ -130,20 +130,35 @@ export function settleWake(agent, { code, stdout }, now = Date.now()) {
 // Which *.pending markers currently route to <agent>? Mirrors deliver-trigger.sh's grouping exactly: a
 // JSON packet carries an "agent" field; a legacy delivered marker's first-line body IS the agent id.
 export function markersForAgent(agent) {
-  let names = [];
-  try { names = readdirSync(config.outboxDir).filter((f) => f.endsWith(".pending")); } catch { return []; }
+  // BOTH DIRECTORIES, AND THE OLD ONE IS NOT OPTIONAL. The default outbox was renamed with the `clearance`
+  // identifier; a box that never pinned `CLEAROTRON_OUTBOX_DIR` still has markers under the old name.
+  // Reading only the new directory would leave them there for ever, and each one is a report a client
+  // is owed — with nothing to see, because an outbox nobody reads looks exactly like an empty one.
+  // Each marker keeps the path it was found at, so an ack removes the file that actually exists.
   const out = [];
-  for (const file of names.sort()) {
-    let raw;
-    try { raw = readFileSync(join(config.outboxDir, file), "utf8"); } catch { continue; } // raced an ack — skip
-    let who = null, kind = "delivered";
-    if (raw.trimStart().startsWith("{")) {
-      try { const j = JSON.parse(raw); who = j.agent != null ? String(j.agent) : null; kind = j.kind != null ? String(j.kind) : "delivered"; }
-      catch { who = null; }
-    } else {
-      who = raw.split("\n")[0].trim();
+  // THE SECOND DIRECTORY IS SKIPPED WHEN IT IS THE FIRST ONE. The two accessors answered the same path
+  // once, and this loop then listed every marker twice — the same file handed out as two pieces of work,
+  // with the strike count that quarantines a stuck marker counting each wake twice. A guard rather than a
+  // dedupe at the end: two directories that are the same directory is a configuration fact worth costing
+  // nothing, and a dedupe would also hide a genuine duplicate filename across two real directories.
+  const seen = new Set();
+  for (const dir of [config.outboxDir, config.legacyOutboxDir]) {
+    if (!dir || seen.has(dir)) continue;
+    seen.add(dir);
+    let names = [];
+    try { names = readdirSync(dir).filter((f) => f.endsWith(".pending")); } catch { continue; }
+    for (const file of names.sort()) {
+      let raw;
+      try { raw = readFileSync(join(dir, file), "utf8"); } catch { continue; } // raced an ack — skip
+      let who = null, kind = "delivered";
+      if (raw.trimStart().startsWith("{")) {
+        try { const j = JSON.parse(raw); who = j.agent != null ? String(j.agent) : null; kind = j.kind != null ? String(j.kind) : "delivered"; }
+        catch { who = null; }
+      } else {
+        who = raw.split("\n")[0].trim();
+      }
+      if (who === agent) out.push({ file, path: join(dir, file), kind });
     }
-    if (who === agent) out.push({ file, path: join(config.outboxDir, file), kind });
   }
   return out;
 }
@@ -188,7 +203,7 @@ function* eachRunDir() {
   let workspaces = [];
   try { workspaces = readdirSync(config.workspaceRoot).filter((n) => n.startsWith("workspace-")); } catch { return; }
   for (const ws of workspaces) {
-    const studio = join(config.workspaceRoot, ws, "studio", "prelim-search");
+    const studio = studioDirFor(join(config.workspaceRoot, ws));
     let slugs = [];
     try { slugs = readdirSync(studio); } catch { continue; }
     for (const slug of slugs) {
@@ -311,7 +326,7 @@ export function rescanOwedRuns() {
   let workspaces = [];
   try { workspaces = readdirSync(config.workspaceRoot).filter((n) => n.startsWith("workspace-")); } catch { return dropped; }
   for (const ws of workspaces) {
-    const studio = join(config.workspaceRoot, ws, "studio", "prelim-search");
+    const studio = studioDirFor(join(config.workspaceRoot, ws));
     let slugs = [];
     try { slugs = readdirSync(studio); } catch { continue; }
     for (const slug of slugs) {

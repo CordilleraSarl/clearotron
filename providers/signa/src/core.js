@@ -117,8 +117,8 @@ const DETERMINISTIC_MATCH = new Set(["similar", "exact", "starts_with", "ends_wi
 // filter keys outright — `HTTP 400 Unrecognized key: status` — so every status-filtered Signa search
 // failed on the wire, and it survived review because the kernel does not pass one and no fixture
 // carried one. The real names are `status_primary` (pending|active|inactive|unknown) and
-// `status_stage`. `status_primary:["active"]` narrows 685 → 375; the bogus-key
-// control 400s identically, which is what proves the rejection is about the NAME and not the value.
+// `status_stage`. `status_primary:["active"]` narrows a band as a status filter should; the bogus-key
+// control is refused identically, which is what proves the rejection is about the NAME and not the value.
 //
 // Two branches building the same object by hand is what let one of them be wrong for two months, so
 // there is now one function and both branches call it.
@@ -136,7 +136,11 @@ function buildFilters(p) {
 }
 
 export function buildSearchRequest(p) {
-  const body = { query: p.query };
+  // `query` is OMITTED, not sent undefined, when the entry is owner-only: an explicit `query: undefined`
+  // serializes away anyway, but writing it conditionally is what makes the owner-only shape legible here
+  // rather than an accident of JSON.stringify.
+  const body = {};
+  if (String(p.query ?? "").trim()) body.query = p.query;
   const match = typeof p.match === "string" ? p.match.trim() : "";
   if (match && DETERMINISTIC_MATCH.has(match)) {
     body.match = match;   // sending strategies alongside is a 4xx, not a preference
@@ -240,7 +244,7 @@ export function normalizeRecord(rec, officeHint = null) {
     imageAvailable: rec.has_media ?? null,
     resolved_link: null, // Signa exposes no per-record public URL; renderer shows "verify at office"
     // ── WHICH LAYER THIS RIGHT SITS ON, carried as data ( →) ──────────────────────────
-    // The normalizer read 18 of the 38 fields a search row carries. Among the 20 it dropped were the
+    // The normalizer read under half the fields a search row carries. Among the ones it dropped were the
     // four that say what KIND of right a record is — and those are not extras, they are the whole
     // vocabulary the binding-layer disclosure is written in. A France search that returns an EUTM and
     // a Madrid IR alongside French national marks could not say so, because the three arrived
@@ -281,7 +285,23 @@ export function normalizeRecord(rec, officeHint = null) {
 
 // Light search row (record_id + display fields). Signa returns FULL records on search, but we project a
 // lean row here and let record_fetch return the full normalized record (mirrors corsearch/clarivate).
+//
+// THIS ROW IS ALSO THE BAND ROW, so it carries the band contract's key names. `screenSource: "search-row"`
+// means the kernel lands these rows in the named band as they are — there is no screen call to lift
+// fields across — and every band consumer (band-shape, named-band, the digest, the placement form, the
+// house-mark ownership check) reads `owner_name`, `classes` and `application_date`. This row used to carry
+// only `owner`, `nice_classes` and `filing_date`, and `owner` read a flat `owner_name` the vendor does not
+// send: the owner is `owners[].name`, exactly as normalizeRecord above already reads it. Every Signa
+// record therefore reached the fold with no owner, every register placement failed
+// `placement_owner_missing` in the render, and a pass that had tiered 141 in-class identical and
+// near-identical records delivered none of them while reporting success.
+//
+// The signa-named keys stay: rowScreen and the search tool's own output read them.
 function normalizeSearchRow(rec) {
+  const owner0 = Array.isArray(rec.owners) ? rec.owners[0] : null;
+  const owner = rec.owner_name ?? owner0?.name ?? null;
+  const classes = normalizeClasses(rec);
+  const filed = toIso(rec.filing_date);
   return {
     record_id: rec.id ? makeRef(rec.jurisdiction_code || rec.office_code, rec.id) : null,
     id: rec.id,
@@ -289,9 +309,13 @@ function normalizeSearchRow(rec) {
     mark_text: rec.mark_text ?? null,
     status: pickStatusText(rec),
     status_class: statusClassOf(rec),
-    nice_classes: normalizeClasses(rec),
-    owner: rec.owner_name ?? null,
-    filing_date: toIso(rec.filing_date),
+    nice_classes: classes,
+    classes,
+    owner,
+    owner_name: owner,
+    owner_country: owner0?.country_code ?? owner0?.country ?? null,
+    filing_date: filed,
+    application_date: filed,
     registration_date: toIso(rec.registration_date),
     relevance_score: Number.isInteger(rec.relevance_score) ? rec.relevance_score : null,
     raw: rec,
@@ -312,9 +336,9 @@ export function isSearchResponseBody(body) {
 // ── THE TOTAL, AND THE ONE CASE WHERE THE VENDOR'S NUMBER IS NOT A COUNT ───────────────────────────
 //
 // `options.include_total` returns `pagination.total_count` AND `pagination.total_count_approximate`.
-// Across nine queries every narrow band answers exact (685, 220, 363, 830, 2047,
-// 21, 101, 18) and — the case that matters — an empty band answered `total_count: 0, approximate:
-// false`, an EXACT zero, which is the only kind this repository is allowed to render.
+// Every narrow band answers an exact total and — the case that matters — an empty band answers
+// `total_count: 0, approximate: false`, an EXACT zero, which is the only kind this repository is
+// allowed to render.
 //
 // An approximate total of exactly 10000 is a saturation marker rather than an estimate.
 // The vendor is saying "at least ten thousand", and it says so on the broad sweeps (a bare owner
@@ -419,8 +443,16 @@ function loadFixture(name) {
 // the roster unwidened, which is the direction to err in before an open-source cut. Hence a fallback
 // LIST rather than one hardcoded term.
 const DETERMINISTIC_FALLBACK_TERMS = ["nike", "swoosh"];
-function resolveSearchFixture({ query, strategies, match }) {
+function resolveSearchFixture({ query, strategies, match, owner }) {
   const q = String(query || "").toLowerCase();
+  // AN OWNER-ONLY SEARCH HAS NO QUERY, so every lookup below — which keys on the term — would miss and
+  // the mock would answer "no fixture for query=". That is not a harmless gap: it is the reason the
+  // owner-only path could not be driven offline, and a test that cannot reach `doSearch` gets closed by
+  // asserting the element predicate instead, which passes while the request gate still refuses.
+  if (!q && String(owner || "").trim()) {
+    const o = String(owner).trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    return loadFixture(`signa-search-owner-${o}`) || loadFixture("signa-search-owner");
+  }
   const det = typeof match === "string" ? match.trim() : "";
   if (det) {
     return loadFixture(`signa-search-match-${det}-${q}`)
@@ -432,16 +464,54 @@ function resolveSearchFixture({ query, strategies, match }) {
   return null;
 }
 
+// ── WHAT COUNTS AS SOMETHING TO SEARCH ────────────────────────────────────────────────────────────
+//
+// THE DEFECT THIS CLOSES. Two gates decided whether a plan entry had anything to search, and both
+// answered on a free-text query or a names list alone. Neither counted an OWNER. An owner portfolio
+// sweep carries an owner and no query by definition — that is what the shape is — so every one was
+// refused before it was ever dispatched: `doSearch` returned "query is required", and the kernel's
+// element gate returned the enumerate contract's missing-element error without calling the provider.
+// The run continued and disclosed the slices as unsearched, so nothing failed and a client's report
+// said the incumbent portfolios "could not be reached" when nothing had asked for them.
+//
+// It was never a capability gap. `buildFilters` already maps `owner` to this vendor's owner filter and
+// its note names the three populations — term alone, OWNER ALONE, both — as genuinely different from
+// each other. `ownerWindowCeiling` exists solely to cap paging for owner-scoped searches, which is not
+// something written for a shape that cannot be dispatched, and it defers to `isOwnerScoped`, the
+// KERNEL's own predicate, whose note names a bare-owner sweep as one of the two shapes it serves.
+// Only the two element gates were never taught that an owner is an element.
+//
+// ONE DEFINITION, because this file already carries the lesson: `buildFilters` exists because two
+// hand-written copies of the same object let one of them be wrong for two months. Two hand-written
+// copies of "does this carry an element" would drift the same way, and the drift would be silent in
+// the same direction — a shape one gate admits and the other refuses reads as a provider error.
+export const hasSearchElement = (p) => Boolean(
+  String(p?.query ?? "").trim()
+  || (Array.isArray(p?.names) && p.names.filter(Boolean).length)
+  || (typeof p?.owner === "string" && p.owner.trim()));
+
+/**
+ * What this request was FOR, for a log line and an error message. An owner-only search has no query,
+ * and "query=undefined" in a refusal is how a reader concludes the caller forgot one.
+ */
+export const searchTargetLabel = (p = {}) => (String(p.query ?? "").trim()
+  ? `query=${p.query}`
+  : (typeof p.owner === "string" && p.owner.trim() ? `owner=${p.owner.trim()}` : "no element"));
+
+/** The refusal, naming every element that would have been accepted. */
+export const MISSING_ELEMENT_ERROR = "ERROR: signa_enumerate — a query, names[] or owner is required.";
+
 // ── Search ─────────────────────────────────────────────────────────────────────────────────────────
 export async function doSearch(apiKey, base, params, tctx, { mock = false } = {}) {
-  if (!params.query) return { type: "text", text: "ERROR: query is required." };
+  // Refuses only when there is NOTHING to search. An owner alone is a search (see hasSearchElement).
+  if (!hasSearchElement(params)) return { type: "text", text: MISSING_ELEMENT_ERROR };
   if (mock) {
     const fx = resolveSearchFixture(params);
-    if (!fx) return { type: "text", text: `ERROR (mock): no fixture for query=${params.query} strategy=${(params.strategies || ["exact"])[0]}` };
+    if (!fx) return { type: "text", text: `ERROR (mock): no fixture for ${searchTargetLabel(params)} strategy=${(params.strategies || ["exact"])[0]}` };
     return { type: "text", text: JSON.stringify({ mock: true, ...normalizeSearchResponse(fx, params.query) }, null, 2) };
   }
   const body = buildSearchRequest(params);
-  const r = await signaFetch(apiKey, base, "/v1/trademarks", { method: "POST", body, tctx: { ...tctx, target: String(params.query).slice(0, 120) } });
+  const r = await signaFetch(apiKey, base, "/v1/trademarks", { method: "POST", body, tctx: { ...tctx, target: searchTargetLabel(params).slice(0, 120) } });
   if (!r.ok) {
     const msg = r.body?.error?.detail ?? r.body?.message ?? (r.raw ? r.raw.slice(0, 200) : "");
     return { type: "text", text: `ERROR: signa_search HTTP ${r.status}: ${msg}` };
@@ -451,11 +521,11 @@ export async function doSearch(apiKey, base, params, tctx, { mock = false } = {}
   // in exactly this case there is no second net. An unparsed 200 was the shortest path in the codebase
   // from a cut connection to `state:"enumerated"` with zero records. The guard is unchanged; its reason
   // is corrected — it used to rest on this provider having no count at all, which retired.
-  if (r.parseError) return { type: "text", text: unparsedBodyError("signa_search", r, ` query=${String(params.query).slice(0, 120)}`) };
+  if (r.parseError) return { type: "text", text: unparsedBodyError("signa_search", r, ` ${searchTargetLabel(params).slice(0, 120)}`) };
   // Parsing is not answering: a 200 carrying an error envelope is the same shortest path one JSON
   // envelope away — no data[], zero rows, the loop ends, enumerated. See isSearchResponseBody.
   if (!isSearchResponseBody(r.body)) {
-    return { type: "text", text: nonAnswerBodyError("signa_search", r, "a search response (no data[] — the key every /v1/trademarks answer carries)", ` query=${String(params.query).slice(0, 120)}`) };
+    return { type: "text", text: nonAnswerBodyError("signa_search", r, "a search response (no data[] — the key every /v1/trademarks answer carries)", ` ${searchTargetLabel(params).slice(0, 120)}`) };
   }
   return { type: "text", text: JSON.stringify(normalizeSearchResponse(r.body, params.query), null, 2) };
 }
@@ -528,14 +598,14 @@ export function toSignaParams(p = {}) {
   // in the French register, and was never searched.
   //
   // `filters.jurisdictions` + `territory_match: "protection"` asks the territory question instead:
-  // every right with effect there, whatever register it sits on. Same term:
+  // every right with effect there, whatever register it sits on. On the same term, an office-scoped
+  // France search returns the national register and NOTHING else — no EU right, no Madrid leg — while
+  // the protection-scoped one returns the national rows unchanged plus both of the layers the first
+  // never saw.
   //
-  //   filters.offices: ["inpi-fr"]                        national 6898, regional 0,     madrid 0
-  //   filters.jurisdictions: ["FR"], protection           national 6898, regional 10000+, madrid 2708
-  //
-  // and the control that shows `protection` adds a layer rather than merely more rows: Switzerland,
-  // under no regional register, returns regional 0 either way while its madrid layer arrives all the
-  // same. Every one of the eleven covered territories reaches its Madrid layer this way; the EU
+  // and the control that shows `protection` adds a LAYER rather than merely more rows: a territory
+  // under no regional register gains no regional rows either way, while its Madrid layer arrives all
+  // the same. Every one of the eleven covered territories reaches its Madrid layer this way; the EU
   // members additionally reach the EU register.
   //
   // IT IS ONE CALL, NOT THREE. No extra queries, no extra spend — which is why this half of Stage 2
@@ -552,7 +622,7 @@ export function toSignaParams(p = {}) {
   // caller that translates before handing params in — the shape a probe or a driver adapter naturally
   // takes — gets it applied twice. On the second pass `regions` is still present, so an earlier draft
   // re-added `offices` beside the `jurisdictions` it had just produced. The API accepts both and the
-  // office filter WINS: a France order went back to 19 national rows from 101, with `territory_match:
+  // office filter WINS: a France order went back to the national rows alone, with `territory_match:
   // "protection"` sitting in the body doing nothing. The expansion silently undid itself and the run
   // reported `state: "enumerated"` either way. Caught by comparing before/after on a live call and
   // finding them identical — the one check that could see it.
@@ -662,9 +732,9 @@ export function toSignaParams(p = {}) {
 /**
  * THE ONE QUERY SHAPE WITH A NARROWER RESULT WINDOW.
  *
- * `filters.owner_name` caps paging at 400 ROWS on this vendor; nothing else does. Same term,
- * same term and limit: `exact` exhausted at 685, `contains` at 2047, and the owner-scoped one stopped
- * dead — "This cursor points beyond the 400 result pagination window."
+ * `filters.owner_name` caps paging at 400 ROWS on this vendor; nothing else does. On one term at one
+ * limit, both unscoped predicates paged to exhaustion and the owner-scoped one stopped dead at the
+ * window, which the vendor's own cursor refusal names.
  *
  * `null` for every other shape, and that is the load-bearing half. Returning 400 across the board would
  * turn every tractable band over 400 into a sanctioned crowd — an UNDER-SEARCH wearing a crowd
@@ -684,8 +754,10 @@ const { enumerate: __enumerate } = makeEnumerate({
   // own count/search reconciliation exists to adjudicate on the "endpoint" seam. One source, one
   // number. (`makeCountProbe` throws unless "endpoint" supplies one, so this is asserted, not assumed.)
   count: null,
-  hasAnyElement: (p) => Boolean(String(p?.query ?? "").trim() || (Array.isArray(p?.names) && p.names.length)),
-  missingElementError: "ERROR: signa_enumerate — a query (or names[]) is required.",
+  // The SAME predicate `doSearch` uses, not a second copy of it. An owner is an element here: see
+  // hasSearchElement for the defect this closes and why one definition rather than two.
+  hasAnyElement: hasSearchElement,
+  missingElementError: MISSING_ELEMENT_ERROR,
   capabilities: { ...CAPABILITIES.kernel },
   ceilingFor: ownerWindowCeiling,
   // The kernel's default cheap-probe params are CORSEARCH'S — `{limit:1, fields:["uri"]}` — and `uri`
@@ -807,6 +879,11 @@ export async function doCountHits(apiKey, base, params, tctx, { mock = false } =
     text: JSON.stringify({
       total_hits: exact ? parsed.total_hits : null,
       total_approximate: parsed.total_approximate === true,
+      // THE FLOOR TRAVELS AS DATA, not only inside the note below. The normalizer already keeps it —
+      // `total_floor` on the parsed body — and it was reaching the driver in prose only, so the one
+      // number that makes a saturated band answerable had to be read back out of a sentence to be used.
+      // A reader that parses it out of the note is a reader that breaks when the note is reworded.
+      total_floor: Number.isFinite(parsed.total_floor) ? parsed.total_floor : null,
       present: exact ? parsed.total_hits > 0 : ((parsed.results?.length ?? 0) > 0 || parsed.has_more === true),
       seen: parsed.results?.length ?? 0,
       note: exact

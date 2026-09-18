@@ -41,13 +41,13 @@
 // ── PER-STAGE, NEVER GLOBAL ─────────────────────────────────────────────────────────────────────────
 //
 // `too_short` and `missing` come from the shared nonEmpty()/needs() helpers (verify.mjs:123-133) and are
-// legitimately owned by DIFFERENT elements in matter-frame, prelim-variants and frame-diff. A global
+// legitimately owned by DIFFERENT elements in matter-frame, clearance-variants and frame-diff. A global
 // token→element map sees several owners for one token and "fixes" a partition that was never violated.
 // Every row therefore carries `stages`, and the partition is computed per (token, stage) pair.
 
 /** The 16 stages of STAGES in stages.mjs. Kept here so a stage added there fails this file's own test. */
 export const ALL_STAGES = [
-  "matter-frame", "prelim-variants", "blind-frame", "common-law", "common-law-half", "register-unit",
+  "matter-frame", "clearance-variants", "blind-frame", "common-law", "common-law-half", "register-unit",
   "placement-inquiry", "register-digest", "skeptic", "frame-diff", "synthesis", "case-law",
   "narrative-refutation", "doubt-closure", "report-overview", "report-card",
 ];
@@ -65,7 +65,7 @@ const CL = ["common-law", "common-law-half"];
 export const VOCABULARY = [
   // ── the shared helpers: one token, many stages, different owners per stage ─────────────────────────
   { token: "too_short", stages: ALL_STAGES.filter((s) => !["blind-frame", "doubt-closure", "narrative-refutation"].includes(s)), site: "driver/verify.mjs:133" },
-  { token: "missing", stages: ["matter-frame", "prelim-variants", "common-law", "common-law-half", "placement-inquiry", "register-digest", "doubt-closure", "report-overview", "report-card"], site: "driver/verify.mjs:164" },
+  { token: "missing", stages: ["matter-frame", "clearance-variants", "common-law", "common-law-half", "placement-inquiry", "register-digest", "doubt-closure", "report-overview", "report-card"], site: "driver/verify.mjs, in needs()" },
 
   // ── common-law / common-law-half ───────────────────────────────────────────────────────────────────
   { token: "declared_unavailable", stages: CL, site: "driver/verify.mjs" },
@@ -151,18 +151,18 @@ export const VOCABULARY = [
   { token: "coverage_classes_invalid", stages: ["register-digest"], site: "driver/verify.mjs", family: "driver/coverage-ledger.mjs", dynamic: "D4" },
   { token: "plan_execution_unreadable", stages: ["register-digest", "narrative-refutation"], site: "driver/verify.mjs:1496, 1712" },
 
-  // ── matter-frame / prelim-variants / blind-frame / frame-diff ──────────────────────────────────────
-  { token: "stagecontracts_invalid", stages: ["matter-frame", "prelim-variants", "placement-inquiry", "case-law"], site: "driver/verify.mjs:1539, 1170, 1366, 1677" },
+  // ── matter-frame / clearance-variants / blind-frame / frame-diff ──────────────────────────────────────
+  { token: "stagecontracts_invalid", stages: ["matter-frame", "clearance-variants", "placement-inquiry", "case-law"], site: "driver/verify.mjs:1539 coverageEntryList, 1170, 1366, 1677" },
   { token: "meaning_angles_missing", stages: ["matter-frame"], site: "driver/verify.mjs" },
   { token: "frame_scope_missing", stages: ["matter-frame"], site: "driver/verify.mjs:1119" },
-  { token: "variantmodel_romanization_missing", stages: ["prelim-variants"], site: "driver/verify.mjs" },
-  { token: "variantmodel_family_incomplete", stages: ["prelim-variants"], site: "driver/verify.mjs" },
-  { token: "variantmodel_term_markup", stages: ["prelim-variants"], site: "driver/verify.mjs" },
-  { token: "variantmodel_missing", stages: ["prelim-variants"], site: "driver/verify.mjs:1171 checkFindingsSibling, 1230 checkJson" },
+  { token: "variantmodel_romanization_missing", stages: ["clearance-variants"], site: "driver/verify.mjs" },
+  { token: "variantmodel_family_incomplete", stages: ["clearance-variants"], site: "driver/verify.mjs" },
+  { token: "variantmodel_term_markup", stages: ["clearance-variants"], site: "driver/verify.mjs" },
+  { token: "variantmodel_missing", stages: ["clearance-variants"], site: "driver/verify.mjs:1171 checkFindingsSibling, 1230 checkJson" },
   // Recovered during E2 authoring, absent from the draft census: variant-manifest.json is strict-parsed
   // through checkSiblingJson (verify.mjs:1241) → checkJson (:742), so the WHOLE variantmodel_* family
-  // reaches prelim-variants, not just the four literal tokens above.
-  // CONVERSION 3 widened this family's SOURCE without widening its prefix. `acceptPrelimVariants` raises
+  // reaches clearance-variants, not just the four literal tokens above.
+  // CONVERSION 3 widened this family's SOURCE without widening its prefix. `acceptClearanceVariants` raises
   // `variantmodel_scope_layer_invalid`, `_scope_status_invalid`, `_scope_item_missing` and `_scope_pipe`
   // at the ACCEPTANCE BOUNDARY — the call is refused in the turn where restating is free, and no manifest
   // reaches disk. They share the prefix deliberately: a seat reading one refused call should not have to
@@ -172,7 +172,7 @@ export const VOCABULARY = [
   // `fail(` / `throw new Error(` / `=>` string literals, and every record module returns
   // `{ok: false, reason}` instead — measured, all four extract ZERO tokens. So this row is authored, not
   // extracted, and nothing re-derives it if the module grows a member. Filed as.
-  { token: "variantmodel_", stages: ["prelim-variants"], site: "driver/verify.mjs:1171 checkFindingsSibling → 742 (JSON family); driver/prelim-variants-record.mjs acceptPrelimVariants (scope-ledger transport family)", family: "driver/variant-manifest-model.mjs (token-first throws) + driver/prelim-variants-record.mjs", dynamic: "D3" },
+  { token: "variantmodel_", stages: ["clearance-variants"], site: "driver/verify.mjs:1171 checkFindingsSibling → 742 (JSON family); driver/clearance-variants-record.mjs acceptClearanceVariants (scope-ledger transport family)", family: "driver/variant-manifest-model.mjs (token-first throws) + driver/clearance-variants-record.mjs", dynamic: "D3" },
   { token: "blindframe_", stages: ["blind-frame"], site: "driver/verify.mjs blindFrame → checkJson", family: "driver/blind-frame-model.mjs", dynamic: "D3" },
   // — THE SKEPTIC TRANSPORT FAMILY, WHICH HAD NO ROW AT ALL. Nine tokens minted by acceptSkeptic
   // and not one of them was covered here: the conversion that moved them to the acceptance boundary moved
@@ -209,6 +209,9 @@ export const VOCABULARY = [
 
   // ── placement-inquiry ──────────────────────────────────────────────────────────────────────────────
   { token: "placementmodel_missing", stages: ["placement-inquiry"], site: "driver/verify.mjs:1352, 1379" },
+  { token: "placement_unjudged", stages: ["placement-inquiry"], site: "driver/verify.mjs placementAccountVerdict" },
+  { token: "placement_register_unrendered", stages: ["placement-inquiry"], site: "driver/verify.mjs placementAccountVerdict" },
+  { token: "placement_form_unreadable", stages: ["placement-inquiry"], site: "driver/verify.mjs placementAccountVerdict" },
   { token: "placement", stages: ["placement-inquiry"], site: "driver/verify.mjs:1352 → 742", family: "driver/placement-model.mjs (`placement_*` and `placements_*`)", dynamic: "D3" },
 
   // ── case-law / narrative-refutation ────────────────────────────────────────────────────────────────
@@ -261,7 +264,7 @@ export function normalizeFailToken(raw) {
 export const ARM1_EXEMPTIONS = [
   {
     token: "stagecontracts_invalid",
-    stages: ["matter-frame", "prelim-variants", "placement-inquiry", "case-law"],
+    stages: ["matter-frame", "clearance-variants", "placement-inquiry", "case-law"],
     reason: "The artifact is DRIVER-written (pipeline.mjs recordStageContract → _driver/stage-contracts.json). A corrupt one is a code or filesystem fault, and verify.mjs:1095 says so in its own comment. Pinning it on a model element would be the exact inversion #850 forbids — a mechanical failure wearing a model's name.",
   },
   // `tool_timeout` was on this list and has been REMOVED: register-unit's tool-written "execute the
@@ -387,12 +390,12 @@ export const TRIPWIRE_OUT_OF_SCOPE = [
     token: "no_citations",
     symbol: { file: "driver/case-law-ledger.mjs", names: ["findCaseLawLedgerViolations", "CASE_LAW_ADVISORY_REASONS", "isCaseLawBlocking"] },
     site: "driver/case-law-ledger.mjs:179 (minted), :65 CASE_LAW_ADVISORY_REASONS, :67 isCaseLawBlocking",
-    reason: "ADVISORY, and filtered before the token is built. `caseLawLedgerFail` keeps only blocking violations (case-law-ledger.mjs:196), and `no_citations` is the one member of CASE_LAW_ADVISORY_REASONS — so it cannot appear even in the `caselaw_ledger` census payload, let alone as a token head. It is the honest no-on-point-precedent result the report is allowed to state; failing a run for it would manufacture citations.",
+    reason: "ADVISORY, and filtered before the token is built. caseLawLedgerFail() in case-law-ledger.mjs keeps only blocking violations (:196), and `no_citations` is the one member of CASE_LAW_ADVISORY_REASONS — so it cannot appear even in the `caselaw_ledger` census payload, let alone as a token head. It is the honest no-on-point-precedent result the report is allowed to state; failing a run for it would manufacture citations.",
   },
   {
     token: "accepted_not_folded",
     symbol: { file: "driver/disposition-call.mjs", names: ["CALL_DROPS"] },
-    site: "driver/disposition-tool.mjs:378 (minted), driver/disposition-call.mjs:192 (CALL_DROPS)",
+    site: "driver/disposition-tool.mjs:378 recordDispositions — where the token is minted, driver/disposition-call.mjs:192 CALL_DROPS",
     reason: "A DRIVER-FAULT journal code, and the fault is ours. It records that the tool accepted a row the accumulator then did not carry; it is written to the call verdict ledger and reaches a seat only inside a sentence that orders the seat NOT to act (`your answer was valid and this is ours to fix`). A stage refusal built on it would be the driver failing a seat for the driver's own defect, so no stage can emit it by construction rather than by omission.",
   },
   {
@@ -477,7 +480,7 @@ export const INNER_CODES = Object.freeze([
 
   // ── case-law-ledger.mjs — ONE token, the codes as census payload ─────────────────────────────────
   //
-  // `caseLawLedgerFail` (case-law-ledger.mjs:195) returns `caselaw_ledger:<census>;<detail>`, and
+  // caseLawLedgerFail() in case-law-ledger.mjs (:195) returns `caselaw_ledger:<census>;<detail>`, and
   // `normalizeFailToken` cuts at the first colon — so the token is `caselaw_ledger` and every code below
   // lives in the payload. The `caselaw_ledger` row already carries `family:
   // "driver/case-law-ledger.mjs:204 (census reasons)"`, which is this ruling written down before the
@@ -551,7 +554,7 @@ export const COVERED_SOURCES = [
   // its token-first throw through unchanged, so their families are already covered where they are raised.
   // They are listed anyway, because the cost of listing a module that mints nothing is zero and the cost
   // of the alternative — noticing, one day, that a module started minting — is the whole of this issue.
-  "prelim-variants-record.mjs", "skeptic-record.mjs", "frame-diff-record.mjs", "blind-frame-record.mjs",
+  "clearance-variants-record.mjs", "skeptic-record.mjs", "frame-diff-record.mjs", "blind-frame-record.mjs",
   // Conversion 4 — and this one MINTS, unlike the two delegating modules above it.
   "report-overview-record.mjs",
   // Conversion 5 — the fan-out transport; it mints its own family including the bound-index refusals.
@@ -560,6 +563,10 @@ export const COVERED_SOURCES = [
   // tripwire must read this module's token literals too. Without it the accounting family could grow a
   // member that no vocabulary row covers and nothing would notice, which is this list's whole subject.
   "register-digest-record.mjs",
+  // verify.mjs reaches `placementRenderAccount`, the placement pass's own account of what it recorded, and
+  // that module names the parser tokens it sorts rows by. It mints none of its own: every token it carries
+  // is placement-model.mjs's, passed through, so the `placement` family row already covers them.
+  "placement-form.mjs",
 ];
 
 /**

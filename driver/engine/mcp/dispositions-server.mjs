@@ -12,7 +12,7 @@
 // held by FOUR stages — `common-law`, `common-law-half`, `narrative-refutation`, `synthesis`. Because
 // `allowedToolsFor` enumerates every tool on every entry a group resolves to, all four carried
 // `mcp__perplexity__record_dispositions`, while every doctrinal mention of the tool is common-law's:
-// `driver/skills/prelim-common-law/SKILL.md`, and the two common-law stage dictations in `stages.mjs`.
+// `driver/skills/clearance-common-law/SKILL.md`, and the two common-law stage dictations in `stages.mjs`.
 // Zero occurrences in synthesis's dictation block, zero in narrative-refutation's doctrine.
 //
 // That is GRANTED-BUT-NEVER-ORDERED, the defect class, in its mirror form: not a stage ordered to
@@ -75,8 +75,8 @@ async function record_dispositions(params) {
   let spec;
   try { spec = validateGridSpec(JSON.parse(readFileSync(grid_spec_path, "utf8"))); }
   catch (err) { return { isError: true, text: `ERROR: grid_spec_path unreadable/invalid (${err.message}). The driver writes this file; do not hand-author it.` }; }
-  if (!/\/studio\/prelim-search\//.test(spec.output_path))
-    return { isError: true, text: `ERROR: grid spec.output_path must be within a studio/prelim-search run dir; got ${spec.output_path}` };
+  if (!/\/studio\/(?:prelim|clearance)-search\//.test(spec.output_path))   // either spelling: an install keeps the studio segment it has
+    return { isError: true, text: `ERROR: grid spec.output_path must be within a studio/clearance-search run dir; got ${spec.output_path}` };
   // NEVER THROWN PAST THIS POINT. An exception surfaces to the seat as a tool error naming no row, which
   // tells it nothing about what to fix — the failure mode this transport exists to end.
   try {

@@ -54,7 +54,7 @@ Four more things run for free:
 | Command | What it proves |
 |---|---|
 | `node mcp-server/smoke.mjs` | Drives the real MCP server over stdio against a built fixture. Prints `SMOKE OK`. |
-| `node driver/dev-portal.mjs` | Serves a pool at `http://127.0.0.1:18899/` — archive index, reports, customer pages. Loopback only; it refuses any other host. Needs a pool to point at (`CLEAROTRON_REPORTS_DIR`). |
+| `node driver/dev-portal.mjs` | Serves a pool at `http://127.0.0.1:18899/` — archive index, reports, company pages. Loopback only; it refuses any other host. Needs a pool to point at (`CLEAROTRON_REPORTS_DIR`). |
 | The $0 mock pipeline | A full run — intake, every stage, publish, delivery packet — on a mocked engine. Recipe in [docs/E2E.md § Tier 1](docs/E2E.md). Follow it as written; the absolute-path trap in it catches everybody. |
 | `npx clearotron demo` | Replays `demo/` — a real run on a fictional mark — through the real publisher into `~/trademark-demo/pool` and serves it. No keys, no model, no engine. |
 
@@ -75,7 +75,7 @@ half did not run. `npx clearotron install` walks through both, and
 [INSTALL.md § 1](INSTALL.md#1-prerequisites) is the full list.
 
 **The scenario suite is private by design.** `scripts/e2e.mjs` scores runs against lawyer-written
-reference answers on real matters; the references and the config store they load from are client work
+reference answers on real matters; the references and the config store they load from are company work
 product and will not be published. Its absence weakens nothing you can run — the in-repo suite covers
 the machinery, and the scenario suite covers the answers. The validation ladder, from the $0 offline
 suite to a paid live run, is [docs/E2E.md](docs/E2E.md).
@@ -130,13 +130,13 @@ The reviewer is the check. Say what you checked in the PR rather than citing a p
 **3. Types are enforced, and `vite build` does not typecheck.** `npm run typecheck -w portal-ui`
 runs as its own CI step. Run it before you push.
 
-**4. Every sentence a customer reads is written against the standard, and five classes of it are
+**4. Every sentence a company reads is written against the standard, and five classes of it are
 checked.** The standard is [`docs/writing-standard.md`](docs/writing-standard.md); the prose rules
 under it are [`docs/writing-rules.md`](docs/writing-rules.md), and they apply first. Together they
 bind report HTML, portal screens, the README and the docs.
 
 `node scripts/writing-standard-check.mjs` refuses what your change ADDS to one of those surfaces:
-an engineering identifier in text a client reads, a reviewer-only marker in rendered output, a known
+an engineering identifier in text a company reads, a reviewer-only marker in rendered output, a known
 caveat sentence, a screen that writes its own page heading instead of using `PageHeader`, and a lede
 whose words are all already in its title. It names the class and prints the line. It never rewrites —
 a rewritten sentence is a sentence nobody reviewed.
@@ -153,7 +153,7 @@ identifier, no caveat and no banned word and still be the thing the standard exi
 heading that restates its section, a paragraph explaining what the reader can already see, a sentence
 that only works if you know how the engine is built.
 
-So: **a pull request that changes text a customer reads is reviewed against the rendered page or
+So: **a pull request that changes text a company reads is reviewed against the rendered page or
 report, not against the diff.** One reviewer reads it as someone who has never seen this product and
 asks one question of every new sentence — *what would a reader with zero context think this means?*
 If the answer needs the codebase, the sentence is cut or rewritten. One reviewer, one question,
@@ -288,9 +288,9 @@ narrower is usually the defect rather than the fix, and it will be read that way
 
 ### The three possible outcomes
 
-**Into the base layer.** Your change becomes part of what every install gets, including ours and our
-clients'. That is the highest bar: it has to be an improvement for the matters this doctrine is tuned
-for, not only for yours.
+**Into the base layer.** Your change becomes part of what every install gets, including ours and the
+installs we run for companies. That is the highest bar: it has to be an improvement for the matters
+this doctrine is tuned for, not only for yours.
 
 **Published as a pack.** Doctrine resolves file by file — an install can point at another directory and
 have its files win, with everything it does not override falling through to ours. So a change that is

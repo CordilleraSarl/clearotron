@@ -33,7 +33,7 @@ pinEnv(process.env, "CLEAROTRON_CUSTOMERS_DIR", dir);
 // A throwaway workspace so an accidental write would land somewhere visible rather than in a real tree.
 const ROOT = mkdtempSync(join(tmpdir(), "plan-archived-ws-"));
 pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
-const QUEUE = join(ROOT, "workspace-clawdi", "studio", "prelim-search", "queue");
+const QUEUE = join(ROOT, "workspace-clawdi", "studio", "clearance-search", "queue");
 
 const BASE = { forwarder: "ops", markName: "QUEUE PROBE", classes: [9], profileKey: "acme" };
 let planRun;

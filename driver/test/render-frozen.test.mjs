@@ -1784,7 +1784,9 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // branch in one file, and the provenance line re-homed to the footer. Not licence-only, so this moves too.
 // Advanced again by the break recorded above the FROZEN constant: the export menu moved out to its own
 // module. Not licence-only, so this constant moves with it.
-const FROZEN_BEFORE_SPDX = "c405ed306e3b6d92811a91c36fc13bb01b745c8d6a2c73b17e329f538286d57d";
+// Advanced again by the break recorded above the FROZEN constant: the section breadcrumb moved inside
+// the sticky header. One executable line, not licence-only, so this constant moves with it.
+const FROZEN_BEFORE_SPDX = "443d2748d932e0201770fa8d0c475e3e7db9e53387e7680c1e77c61425ee55ff";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -1920,7 +1922,7 @@ const FROZEN_BEFORE_SPDX = "c405ed306e3b6d92811a91c36fc13bb01b745c8d6a2c73b17e32
 // ── BREAK, 2026-09-04 — THE GLOBAL NAMESPACE RENAME (ruling, pre-cut) ────────────────────────
 //
 //   WHAT MOVED: two lines, and both carry the renamed token. One comment, and one real read —
-//   `process.env.PRELIM_MCP_URL` became `process.env.CLEAROTRON_MCP_URL`. Verified as the WHOLE of the
+//   `process.env.CLEARANCE_MCP_URL` became `process.env.CLEAROTRON_MCP_URL`. Verified as the WHOLE of the
 //   diff before the hash was touched: every changed line in the file carries the token and nothing
 //   else rode along.
 //
@@ -2399,7 +2401,173 @@ const FROZEN_BEFORE_SPDX = "c405ed306e3b6d92811a91c36fc13bb01b745c8d6a2c73b17e32
 // shell is markup. `brand.mjs` carries chrome that every surface shares; this control belongs to the two
 // report templates and nothing else.
 
-const FROZEN = "2ad495b7be6e42fb95fbd2456896e20150deddd383797fcc8e5af39b647b7725";
+// ── 2026-09-17 — "Where it stands" reads the SEARCH PLAN, not the record archive ─────────────────
+//
+// The section took its countries from `searchDepth.counts.recordsByCountry`, which is the authority on
+// what came back from the register and was kept. A provider that keeps no records therefore produced no
+// countries, no rows, no chips and no section at all — so a register nobody could archive read exactly
+// like a register nobody searched, on the page a client acts on. Measured at the door: a demo run with a
+// register plan naming Japan and Korea and no `_records/` store published with NO "Where it stands"
+// section before this change, and with the board's own two rows after it — `JP Japan Moderate` and
+// `KR South Korea Manageable`, which is what the approved multi-country board draws.
+//
+// IS IT REACHABLE FROM A REPUBLISH? YES, AND IT CHANGES ONE OF THE FOUR DEMOS. This is the question the
+// checklist puts first and it has a real answer here rather than a reassuring one. A run with no plan
+// sidecar — every archived and legacy run — keeps the archive as its only authority and re-renders
+// byte-identically, which is why `planTerritories` is three-valued and null is not an empty list. A run
+// that HAS a plan re-renders with the plan's territories: on the global preliminary demo that is 181
+// chips where the archive gave 82, because the archive held records for 82 of the offices the plan
+// queried. The approved board for that product draws 168, so this moves the page toward the design and
+// not away from it, and the rows are unchanged at EU, UK, JP, KR. The other three demos are
+// byte-identical bar the knockout's publish clock.
+//
+// One defect of my own, found by that measurement and now held by an arm: a plan carries the register's
+// own EM and GB beside the EU and UK a reader knows, so aliasing without deduping drew two EU rows and
+// two UK rows. The fold is now on the aliased key and the band is looked up across every raw code that
+// folded into it, so a conflict recorded under EM still reaches the EU row.
+//
+// The plan's unreached territories are NOT drawn. The board has two slots here, a row carrying a band
+// and a "Nothing found" chip, and a territory the provider does not cover is neither: chipping it would
+// state a clean result for a register nobody read, which is the fusion the court-decisions section three
+// functions down exists to keep apart.
+//
+// Could it live in report.css or brand.mjs? No. Nothing about the section's appearance changes — this is
+// which of the run's own artifacts it reads, and that is renderer logic.
+
+// ── 2026-09-17 — the local-language investigation's DEPTH becomes a row in the counts fold ────────
+//
+// The engine can run this investigation shallower than the matter configured, and it said so in exactly
+// one place: a sentence a model wrote into the Methodology paragraph. The redesign replaced that
+// paragraph with named rows, so from then on a run that went shallow said so on no page at all. The
+// approved boards reserve the row; the field behind it did not exist until today.
+//
+// NO NEW WORDING. All four words are already on the page: "Included" and "Not part of this search" are
+// the approved boards' own values for this row, and "Partially covered" and "Not run this run" are read
+// out of COV_STATE rather than retyped, so they cannot drift from the coverage rows they belong to. An
+// arm holds that by comparing the row against a coverage row drawn with the same state.
+//
+// THE ROW NEEDS A LANE RECORD BEHIND IT, and that is the half worth reading. The state folds to
+// `not-in-scope` when no lane record was written, which is right for a clearance that never asked for
+// the investigation and wrong for a run that asked and whose record is missing. Measured at the door on
+// the full country demo: its own coverage carries "Native-language investigation depth / ja — the
+// configured depth for this lane was full and this run delivered a depth this run cannot establish",
+// and the new state beside it reads not-in-scope. Rendered from the state alone, this row would have
+// told that reader the investigation was not part of their search. An empty lanes map is an absence and
+// an absence is not a finding, so the row is drawn from a record or not at all.
+//
+// IS IT REACHABLE FROM A REPUBLISH? Only for a run carrying the lane sidecar. All three archived
+// clearance demos publish byte-identically, measured — they have no sidecar, so they draw no row, which
+// is what they drew before. A demo with a sidecar planted draws "Not run this run", and one with a
+// truncated sidecar draws no row and still publishes.
+//
+// Could it live in report.css or brand.mjs? No — it is a row in a table this file builds, from a field
+// of the run's own record.
+
+// ── BREAK (2026-09-18 — the section is headed the word the approved board heads it with) ──────────
+//
+// WHAT MOVED. One section's heading and its id: `What only you can close` → `What happens next`, and
+// `id="only-you"` → `id="next"`. Nothing else. The bucket it draws, what goes in it and where it sits in
+// the reading order are untouched.
+//
+// WHY. A whole-document read of two delivered clearance reports against the approved boards found this
+// heading diverging on both kinds, from two matters on two registers — so it is the renderer and not one
+// product's content. The board's own markup for that section, comment included, is byte-for-byte what the
+// renderer carries; the renderer kept the COMMENT'S words as the heading. The comment in render.mjs still
+// reads `WHAT ONLY YOU CAN CLOSE` because the board's does, verbatim.
+//
+// THE THREE QUESTIONS.
+//   1. Reachable from republish? Yes — a republish re-renders the document and the heading moves with it.
+//      This needs no new data and no re-run.
+//   2. Could it live in report.css or brand.mjs? No. It is a heading a client reads — copy, not styling —
+//      and CSS cannot change the words in an `<h2>` or the id a link resolves to.
+//   3. Why it had to move here: the heading is composed in this file and nowhere else. The id moves with
+//      it because the board draws `id="next"` for this section, and nothing keys on the old value — the
+//      only other mention is an example in a comment in portal-report.mjs, corrected in the same commit.
+//
+// The knockout renderer has always drawn `What happens next` for its own equivalent section, so this
+// leaves the two renderers agreeing with the boards and with each other rather than only with the boards.
+//
+// NOT IN THIS BREAK, and measured on beta-9 specimens rather than assumed: the board also draws a
+// five-entry navigation bar and a `<span class="num">` on every section, and the renderer draws neither,
+// on all three kinds. Both are renderer-wide and larger than a heading; they are reported, not built.
+// ── BREAK (2026-09-18 — the document carries the board's own navigation and section anchors) ──────
+//
+// WHAT MOVED, all of it structure the approved board draws and this renderer did not:
+//   · a `<nav class="strip no-print">` with the board's five entries, copied from the mock rather than
+//     composed here — Summary · Findings · Also considered · Next steps · What was searched;
+//   · the anchors those entries resolve to: `id="summary"` on the hero, `id="findings"` on the conflict
+//     landscape (both branches that draw it), `id="searched"` on the new section below;
+//   · `<span class="num"></span>` on every section, which the board draws on all of its and this
+//     renderer drew on none;
+//   · the "What was searched" heading lifted OUT of the fold's summary into a section of its own.
+//
+// WHY. A whole-document read against the approved boards reported the same one divergence on all three
+// kinds — "Also considered" as a heading here and a heading plus a link there. Chasing that heading finds
+// the real fact: the mock's second occurrence is a NAV LINK, and the renderer draws no nav at all. One
+// cause, three kinds, and it is where the other two divergences land, because the nav resolves at
+// `#next` and `#searched` — the two sections whose headings diverged.
+//
+// THE FOLD IS NOT OPENED. The board does not open it; it takes the heading out of the summary and leaves
+// the fold headed "Counts for this search". That retires the print rule's reason instead of working
+// around it: print could lose the heading when the summary carried it, and cannot lose an `<h2>` outside
+// the `<details>`. The print rule keeps its behaviour and its comment now says what is true.
+//
+// THE SECTION NUMBER RENDERS NOTHING, and that is the board's doing rather than a failure here: the mock
+// emits the span on every section and hides it further down its own stylesheet. It is carried so the
+// delivered document holds the same elements as the approved one. No pixel moves.
+//
+// THE THREE QUESTIONS.
+//   1. Reachable from republish? Yes — a republish re-renders the document; no new data, no re-run.
+//   2. Could it live in report.css or brand.mjs? Both, and both went there. The STYLING is in report.css,
+//      lifted from the board verbatim. The RULE that filters the strip against the finished document is
+//      in brand.mjs, because the knockout renderer draws a strip from its own four-entry board and the
+//      filtering is the half worth having once — what stays here is this board's five entries, in its
+//      order. The markup could not move: CSS cannot add a `<nav>`, an `id` an anchor resolves to, or an
+//      `<h2>` outside a `<details>`.
+//   3. Why it had to move here: these elements are composed in this file and nowhere else.
+// ── BREAK (2026-09-18 — What was searched draws the boards' rows) ────────────────────────────────────
+//
+// WHAT MOVED, all of it in the one section the approved boards draw differently:
+//   · the register row is one line of totals — records read across the countries, plus the
+//     international registrations — with the per-country counts as chips under it, code first and the
+//     name on hover; one country is named in the line and draws no chip;
+//   · "checks on" the platforms, "Searched" as the spellings word;
+//   · the Court decisions row is drawn on a full country search only, as its board draws it, with the
+//     state word and, when the research could not be completed, the court section's own sentence,
+//     now composed once for both;
+//   · the section closes with "Every search and result, in the audit workbook", the boards' own link.
+//
+// WHAT DID NOT MOVE, on purpose: the Left open rows and the Record provenance note. Both are on no board
+// and both carry something a reader would otherwise lose — a slice's disclosure, and why a registration
+// number is not a link — so they stay until their own ruling.
+//
+// THE THREE QUESTIONS.
+//   1. Reachable from republish? Yes — a republish re-renders the section; no new data, no re-run.
+//   2. Could it live in report.css or brand.mjs? The chip and state styling did, in report.css. The
+//      rows, their words and the link are composed in this file.
+//   3. Why it had to move here: the section is composed here and nowhere else.
+// ── BREAK (2026-09-18 — one header, with the section breadcrumb inside it) ───────────────────────────
+//
+// WHAT MOVED: one line. The `<!--SECTION-STRIP-->` placeholder moved from OUTSIDE `.rep-stickyhead`
+// to INSIDE it, after `.topbar`. Nothing else in the file changed — no words, no data, no control.
+//
+// WHY. The breadcrumb was a SIBLING of the sticky header, pinned on its own at `top:var(--tb-h,52px)`.
+// `--tb-h` is set nowhere in this product, so 52px was a guess at a bar that measures about 46: content
+// showed through the slit between the two bars, and the strip's `z-index:20` put it UNDER the header's
+// 100 whenever the guess was wrong. The owner met the other end of the same defect in the portal, where
+// the header is stripped at serve time and the breadcrumb was left behind, sitting over the
+// confidentiality line and scrolling away at the first paragraph.
+//
+// THE THREE QUESTIONS.
+//   1. Reachable from republish? Yes — a republish re-renders the document. It carries the same words
+//      and the same data; what changes is that the header and the breadcrumb pin as one surface. A
+//      delivered report re-rendered gets the repair, which is the point rather than a side effect.
+//   2. Could it live in report.css or brand.mjs? The LOOK did, and went there: `.strip` stops being
+//      sticky, drops its own ground and bottom hairline, and takes the topbar's gutter — all of it in
+//      report.css. The NESTING could not: CSS cannot make an element a child of another. That is the
+//      whole content of this break.
+//   3. Why it had to move here: the placeholder's position in the document is composed in this file.
+const FROZEN = "ec3d7684ec1dfa48bf5a89fe74e31e1d3c75da8b193b24623f3090740bfb94cd";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

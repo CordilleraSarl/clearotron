@@ -108,7 +108,7 @@ export function backlogFinding(backlog, dir, stuckAfterSec = STUCK_AFTER_SEC) {
  * The queue directories a `.path` unit actually watches, with `%h` resolved.
  *
  * COMMENTED LINES ARE NOT WATCHES, and that matters here more than usual: the headless glob
- * (`%h/prelim-queue/*.json`) ships commented out, so a standalone deployment that never uncommented it
+ * (`%h/clearance-queue/*.json`) ships commented out, so a standalone deployment that never uncommented it
  * has event-driven pickup dead on the one queue it uses. Reading the file without honouring `#` would
  * report that box as watched.
  *

@@ -22,17 +22,16 @@
 //     punctuation. Declaring it would be declaring a capability the executor cannot serve, which is
 //     the one thing 's criteria forbid. Stays null; the slice defers, disclosed.
 //   * resultCeiling — there is no single number to put here, and the reason is worth the paragraph.
-//     A plain term exhausts 685 rows, a class-filtered one 539, an
-//     unanchored `contains` 2047 — no ceiling. But add `filters.owner_name` and the SAME term stops
-//     dead at 400: "This cursor points beyond the 400 result pagination window." The bound is in ROWS
-//     rather than pages (at limit 25 it stopped after 375, before the page that would cross 400), and
-//     it applies to the owner-scoped shape only.
+//     An unscoped term pages to exhaustion whatever its size, on every predicate — no ceiling. But add
+//     `filters.owner_name` and the SAME term stops dead at the owner-scoped window (400), which the
+//     vendor's own cursor refusal names. The bound is in ROWS rather than pages — the loop stops
+//     mid-page, before the page that would cross it — and it applies to the owner-scoped shape only.
 //
 //     So the ceiling is a property of the QUERY SHAPE, not of the provider, and this field can hold
 //     only one number for both. `null` with the fact written down beats 400, which would turn every
-//     tractable band over 400 into a crowd and throw away the 2047 this vendor will happily page; and
-//     it beats a number that is right for one shape and wrong for the other. See
-//     OWNER_SCOPED_WINDOW below, which is the machine-readable half.
+//     tractable band over that window into a crowd and throw away the bands this vendor will happily
+//     page to exhaustion; and it beats a number that is right for one shape and wrong for the other.
+//     See OWNER_SCOPED_WINDOW below, which is the machine-readable half.
 //
 //     The total is a separate matter: it saturates at 10000 and flags itself
 //     approximate there — a fact about the count, not about the window.
@@ -107,10 +106,9 @@ export const CAPABILITIES = Object.freeze({
   // was none — the flag is now set by buildSearchRequest on EVERY call, where no call site can forget
   // it, because under this seam a response without a total cannot support a completeness claim.
   //
-  // Nine queries return exact totals throughout (685, 220, 363, 830, 2047, 21, 101, 18),
-  // and an empty band answering `total_count: 0, approximate: false` — an exact zero, the only kind
-  // this repository may render. `limit: 1` returns the same total as the paged query, which is what
-  // makes the cheap probe cheap.
+  // Every narrow band answers an exact total, and an empty band answers `total_count: 0,
+  // approximate: false` — an exact zero, the only kind this repository may render. `limit: 1` returns
+  // the same total as the paged query, which is what makes the cheap probe cheap.
   //
   // The vendor also flags some totals `total_count_approximate` — always at exactly 10000, so it is a
   // saturation marker rather than an estimate. normalizeSearchResponse reports those as UNKNOWN, never
@@ -175,10 +173,11 @@ export const CAPABILITIES = Object.freeze({
     // portfolio": that is `filters.owner_id`, which takes a resolved `own_…` id and 400s on an unknown
     // one rather than answering zero.
     //
-    // A zero here is a real zero and not a filter failing silently. Verified by the case that looked
-    // like one: `query: NIKE` × owner "Nike Innovate" × USPTO returns 0 while the bare owner returns
-    // 1984 and the bare term 169 — because the exactly-NIKE USPTO marks are held by "NIKE, Inc.",
-    // which does intersect (131). Both clauses are applied; the empty set is the answer.
+    // A zero here is a real zero and not a filter failing silently. Verified on the case that looked
+    // like one: a term × owner × territory intersection came back empty while the bare owner and the
+    // bare term each answered — because the register holds those marks under a differently styled
+    // applicant name, which the owner clause does reach. Both clauses are applied; the empty set is
+    // the answer.
     owner:          "owner_name",
   }),
 
@@ -195,38 +194,32 @@ export const CAPABILITIES = Object.freeze({
 
     // ── WHICH BINDING LAYERS DOES A SEARCH SCOPED TO THIS OFFICE ACTUALLY RETURN? ──────────
     //
-    // 's first task, answered for this provider by measurement rather than by reading. Same
-    // query, same limit, three scopings of France:
+    // 's first task, answered for this provider by driving the three scopings against each other rather
+    // than by reading the documentation. One term, one limit, France:
     //
-    //   filters.offices: ["FR"]                              19 rows — ALL FR/direct_national
-    //   filters.jurisdictions: ["FR"], territory_match direct 21 rows — FR national + WO/madrid_ir
-    //   filters.jurisdictions: ["FR"], territory_match protection
-    //                                                       101 rows — FR national + EM/direct_regional + WO
+    //   filters.offices                              the national register ALONE
+    //   filters.jurisdictions + territory_match direct       national + the territory's Madrid legs
+    //   filters.jurisdictions + territory_match protection   national + REGIONAL + Madrid
     //
-    // and the control that proves `protection` adds a REGIONAL layer rather than simply more rows:
-    // Switzerland, which sits under no regional register, returns 47 either way.
+    // and the control that proves `protection` adds a LAYER rather than simply more rows: a territory
+    // that sits under no regional register answers the same either way.
     //
     // STAGE 2 MOVED THE TABLE, BECAUSE IT MOVED THE QUERY. `toSignaParams` now sends
     // `filters.jurisdictions` + `territory_match: "protection"` instead of `filters.offices`, so a
-    // territory's whole stack of rights comes back in ONE call. The per-territory breakdown that
-    // justifies every cell below — same term, `filing_route` asked directly rather than sampled:
+    // territory's whole stack of rights comes back in ONE call. Every cell below was then asked
+    // directly — `filing_route` per territory rather than sampled — and what that walk established is:
     //
-    //          national   regional   madrid          national   regional   madrid
-    //   US      10000+       0        2263      FR      6898     10000+     2708
-    //   GB      10000+       0         523      SE      1994     10000+     2622
-    //   CH       2694        0        2254      EU         0     10000+     2196
-    //   CA       9894        0         814      WO         0        0       9150
-    //   AU      10000+       0        1734      SG      2899        0       1323
-    //   NO       1354        0        1149
+    //   · every territory reaches its Madrid layer;
+    //   · every EU member reaches the EU register, and no non-member does;
+    //   · a `regional` absence is not a gap — no regional register binds Switzerland or Canada, so
+    //     there is no regional layer for `bindingLayersFor` to ask about.
     //
-    // A `regional` zero is not a gap: no regional register binds Switzerland or Canada, so there is no
-    // regional layer for `bindingLayersFor` to ask about. Every territory reaches its Madrid layer, and
-    // every EU member reaches the EU register — which is the whole of what Stage 2 asked for.
+    // Which is the whole of what Stage 2 asked for.
     //
     // WHAT THE OFFICE FILTER DID, kept because it is why the change was necessary and because the day
-    // someone reverts the query shape this table becomes false rather than merely stale:
-    //   filters.offices: ["inpi-fr"] → national 6898, regional 0, MADRID 0. France's national register
-    //   alone, with the EU trade mark that blocks use in France sitting in a register nobody queried.
+    // someone reverts the query shape this table becomes false rather than merely stale: scoped to a
+    // national office, a France search returns that national register alone — with the EU trade mark
+    // that blocks use in France sitting in a register nobody queried.
     //
     // (The office filter is not uniform either — `uspto` and `ipi` return madrid-derived rows because
     // those registers hold the national legs of IRs themselves, while `inpi-fr` and `ukipo` return
@@ -267,12 +260,12 @@ export const CAPABILITIES = Object.freeze({
   // The owner surface exists (predicates.owner above) and composes with a text query in ONE request,
   // so the intersection is the vendor's rather than something reassembled here from two sweeps.
   //
-  // EVIDENCED ON THE DETERMINISTIC SHAPE, AND ONLY THERE, on purpose. `match: contains` for a term
-  // returned 2047; the same term with `filters.owner_name` returned 689 — a proper subset, which is
-  // what an intersection has to be. The ranked shape does NOT show that: the same term under
-  // `strategies` returned 238 alone and 1054 with an owner filter applied, i.e. MORE with the extra
-  // clause. Recall under `similar` is not fixed, so ranked totals are not comparable across two
-  // different requests and cannot evidence a set relation in either direction.
+  // EVIDENCED ON THE DETERMINISTIC SHAPE, AND ONLY THERE, on purpose. Under `match: contains`, adding
+  // `filters.owner_name` to a term returns a PROPER SUBSET of that term alone — which is what an
+  // intersection has to be. The ranked shape does NOT show that: under `strategies` the same pair
+  // answers MORE with the extra clause than without it. Recall under `similar` is not fixed, so ranked
+  // totals are not comparable across two requests and cannot evidence a set relation in either
+  // direction.
   //
   // Recorded because the ranked pair is the measurement a reader would take first, and taken alone it
   // would look like the filter being ignored — a wrong conclusion, reached from real numbers.
@@ -283,9 +276,9 @@ export const CAPABILITIES = Object.freeze({
   // reason it is a value and not still a null: fetch a record whose script is non-Latin, read its
   // mark text verbatim, search those exact characters back.
   //
-  //   record  Singapore, `mark_text_script: "Hans"`, `mark_text_language: "zh"`, 8 characters
-  //   query   the record's own mark_text, `match: "exact"`
-  //   result  total_count 1, and the recalled id is the SAME record
+  //   record  one whose `mark_text_script` is non-Latin, read verbatim
+  //   query   that record's own mark_text, `match: "exact"`
+  //   result  it recalls itself — the same id comes back, and nothing else
   //
   // The characters are the index key, so `true`. providers/_shared/script-form.mjs may now send a
   // native-script slice here instead of deferring it.
@@ -297,7 +290,7 @@ export const CAPABILITIES = Object.freeze({
   // guessing at it here would put the shrug back in a different field.
   //
   // The blind spot to note for the reader who comes to widen this: the search ROW carries no script
-  // field at all (38 keys); `mark_text_script` is a FULL-RECORD field (60 keys). A sweep over
+  // field at all; `mark_text_script` is a FULL-RECORD field. A sweep over
   // search rows therefore finds no scripts anywhere and reads as "the index holds none" — which is
   // how this probe failed on its first attempt, and it failed by returning an empty set, not an error.
   nativeScriptIndex: true,

@@ -34,7 +34,7 @@ import { MODEL_FILE as BLIND_FRAME_MODEL_FILE } from "./blind-frame-record.mjs";
 import { FLAGS_FILE as SKEPTIC_FLAGS_FILE } from "./skeptic-record.mjs";
 import { MODEL_FILE as FRAME_DIFF_MODEL_FILE, PROSE_FILE as FRAME_DIFF_PROSE_FILE } from "./frame-diff-record.mjs";
 import { MATTER_CONTEXT_FILE } from "./matter-frame-record.mjs";
-import { MODEL_FILE as VARIANT_MODEL_FILE, PROSE_FILE as VARIANT_PROSE_FILE } from "./prelim-variants-record.mjs";
+import { MODEL_FILE as VARIANT_MODEL_FILE, PROSE_FILE as VARIANT_PROSE_FILE } from "./clearance-variants-record.mjs";
 import { PROSE_FILE as REPORT_OVERVIEW_FILE } from "./report-overview-record.mjs";
 import { NARRATIVE_FILE, FINDINGS_FILE, refusalsFor } from "./synthesis-record.mjs";
 import { FINDINGS_FILE as REGISTER_FINDINGS_FILE, refusalsFor as registerDigestRefusalsFor } from "./register-digest-record.mjs";
@@ -96,8 +96,8 @@ export const TOOL_WRITTEN_ARTIFACTS = new Map([
   // scope-ledger.json is deliberately ABSENT: it was already driver-written before this conversion (the
   // driver derived it), so it is outside this conversion's claim. What changed is where its values come
   // from, not who writes it.
-  [VARIANT_MODEL_FILE, { tool: "record_prelim_variants", what: "the variant manifest" }],
-  [VARIANT_PROSE_FILE, { tool: "record_prelim_variants", what: "the variant manifest" }],
+  [VARIANT_MODEL_FILE, { tool: "record_clearance_variants", what: "the variant manifest" }],
+  [VARIANT_PROSE_FILE, { tool: "record_clearance_variants", what: "the variant manifest" }],
   // Conversion 4 — ONE basename, and the first row whose artifact a CLIENT reads. report-overview.md is
   // the delivered report's front-matter and its Actions section; assembleReportMd splices the code-built
   // sections into it and publishes the result. So a repair that arrives naming this file and gets handed
@@ -261,6 +261,7 @@ import { unionDispositionForm, formSidecarPath } from "./disposition-union.mjs";
 import { unionCoverageForm } from "./coverage-union.mjs";
 import { coverageFormStamp, readCoverageForm, readCoverageFormInput, writeCoverageForm } from "./coverage-form-io.mjs";
 import { unionPlacementForm } from "./placement-union.mjs";
+import { placementRenderAccount } from "./placement-form.mjs";
 import { placementFormStamp, readPlacementForm, readPlacementFormInput, readSubmittedPlacementForm, writePlacementForm, renderPlacementsFile } from "./placement-form-io.mjs";
 // The register-axis vocabulary, quoted verbatim into the coverage-form axis hint. ONE source: the same
 // constant `rowIsSettled` refuses against, so the hint can never name a set the gate does not accept.
@@ -741,7 +742,12 @@ export function syncPlacementForm(files) {
     // never put an unparseable deliverable on disk, and on a throw the previous file is left alone.
     const r = renderPlacementsFile(runDir, u.form.rows);
     if (!r.ok) note(`[placement-form] placements.json NOT re-rendered: ${r.error} — the previous file stands and the omission is on the form`);
-    return { ...u, rendered: r.ok ? r.placements : null, render_error: r.error };
+    // WHO OWES EACH ROW THE RENDER LEFT OUT — the same account validators.placement judges with, carried onto
+    // the attempt row so an omission is never read without its cause.
+    const a = placementRenderAccount(u.form.rows);
+    const account = { unjudged: a.unjudged.length, registerSelected: a.register_selected,
+      registerRendered: a.register_rendered, registerFacts: a.register_facts };
+    return { ...u, rendered: r.ok ? r.placements : null, render_error: r.error, account };
   }
   return null;
 }
@@ -1699,7 +1705,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         // destroyed. `unresolved` counts selections the fold does not hold. RECORDING ONLY.
         placements: lastPlacementUnion ? { settled: lastPlacementUnion.settled, outstanding: lastPlacementUnion.outstanding,
           carried: lastPlacementUnion.carried, total: lastPlacementUnion.total, seatRows: lastPlacementUnion.seat_rows,
-          unresolved: lastPlacementUnion.unresolved, rendered: lastPlacementUnion.rendered } : undefined,
+          unresolved: lastPlacementUnion.unresolved, rendered: lastPlacementUnion.rendered, account: lastPlacementUnion.account } : undefined,
         //: how many in-dispatch form repairs THIS attempt bought (absent = none). Its own rows
         // sit immediately above with the defect each one was dispatched to fix.
         formRepairs: formRepairsThisAttempt || undefined,
@@ -2088,7 +2094,7 @@ function refusalsInWindow(files, runDir, from, to) {
 }
 
 function rel(p) {
-  const i = p.indexOf("/prelim-search/");
+  const i = Math.max(p.indexOf("/clearance-search/"), p.indexOf("/prelim-search/"));   // either spelling of the studio segment
   return i >= 0 ? p.slice(i + 1) : p;
 }
 

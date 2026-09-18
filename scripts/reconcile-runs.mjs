@@ -35,7 +35,7 @@
 import "../shared/env-local.mjs";   // — FIRST: applies the CLEAROTRON_* translation before any module-top
 // capture evaluates. Reads no `.env` here — that load is gated on isCliEntry(argv[1]).
 import { readdirSync, readFileSync, writeFileSync, renameSync, existsSync } from "node:fs";
-import { join } from "node:path";
+import { join } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
 import { DRIVER_DIR } from "../shared/driver-dir.mjs";   //
 import { classifyRun, terminalPatch, DEFAULT_QUIET_MS } from "../driver/reconcile-runs.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — realpath both sides, or a symlinked invocation exits 0 silently
@@ -120,7 +120,7 @@ function main() {
   const now = Date.now();
   const rows = [];
   for (const agent of AGENTS) {
-    const studio = join(WORKSPACE_ROOT, `workspace-${agent}`, "studio", "prelim-search");
+    const studio = studioDirFor(join(WORKSPACE_ROOT, `workspace-${agent}`));
     for (const dir of findRunDirs(studio)) rows.push({ agent, ...reconcileRunDir(dir, { apply: APPLY, now, quietMs: QUIET_MS }) });
   }
 

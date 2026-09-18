@@ -28,10 +28,14 @@ function run(ours, base, theirs) {
   const p = { o: join(d, "ours.json"), b: join(d, "base.json"), t: join(d, "theirs.json") };
   writeFileSync(p.o, JSON.stringify(ours)); writeFileSync(p.b, JSON.stringify(base)); writeFileSync(p.t, JSON.stringify(theirs));
   const r = spawnSync(process.execPath, [DRIVER, p.o, p.b, p.t], { encoding: "utf8" });
+  // THE BYTES, NOT ONLY THE PARSE. What this driver leaves in `%A` on a refusal is the whole of the
+  // defect it was fixed for, and a harness that reads only the parsed object cannot see it: the old
+  // refusal left valid JSON there and every arm here passed over it.
+  const text = readFileSync(p.o, "utf8");
   let merged = null;
-  try { merged = JSON.parse(readFileSync(p.o, "utf8")); } catch { /* refused, and left it alone */ }
+  try { merged = JSON.parse(text); } catch { /* a refusal is not parseable, and that is asserted */ }
   rmSync(d, { recursive: true, force: true });
-  return { code: r.status, out: `${r.stdout ?? ""}${r.stderr ?? ""}`, merged };
+  return { code: r.status, out: `${r.stdout ?? ""}${r.stderr ?? ""}`, merged, text, ours: JSON.stringify(ours) };
 }
 
 test("two branches adding different files UNION — the conflict that cost five merges", () => {
@@ -52,6 +56,42 @@ test("BOTH sides changing one entry differently REFUSES — that is a disagreeme
   assert.notEqual(r.code, 0, "a driver that silently picks a side here is the defect in a new costume");
   assert.match(r.out, /changed on BOTH sides/);
   assert.match(r.out, /a\.test\.mjs/, "it names the entry, so a human knows what to look at");
+});
+
+// ── A REFUSAL HAS TO LOOK LIKE ONE IN THE FILE, NOT ONLY ON STDERR ──────────────────────────────────
+//
+// The refusal above used to exit without writing, which leaves `%A` holding the OURS side untouched:
+// no markers, valid JSON, beside git's own CONFLICT line. Both cheap checks a person runs on a
+// conflicted file passed, it was staged blind, and every entry the union had taken from theirs went
+// with it — a census that under-counts, which is the one failure it exists to prevent. Measured on a
+// real merge 2026-09-18: the result was byte-identical to ours and one test file's entry was gone.
+test("a refusal leaves a file that CANNOT be staged blind — markers, unparseable, and not ours unchanged", () => {
+  const base = census({ "a.test.mjs": entry(1, 2) });
+  const ours = census({ "a.test.mjs": entry(7, 7) });
+  const theirs = census({ "a.test.mjs": entry(99, 99) });
+  const r = run(ours, base, theirs);
+  assert.notEqual(r.code, 0);
+  assert.match(r.text, /^<{7} ours/m, "no conflict markers — the two cheap checks both pass on this file");
+  assert.match(r.text, /^={7}$/m);
+  assert.match(r.text, /^>{7} theirs/m);
+  assert.equal(r.merged, null, "it parses as JSON, so a resolver's parse check calls an unresolved file resolved");
+  assert.notEqual(r.text.trim(), r.ours, "the file is ours unchanged — the incoming side was discarded whole");
+  assert.match(r.text, /a\.test\.mjs/, "the file itself does not name what a human has to decide");
+});
+
+// THE MEASURED SHAPE, and it is the one that costs entries: ONE entry both sides changed, beside a file
+// only theirs added. The refusal discards nothing it could merge — the theirs-only file rides the ours
+// side of the markers, so resolving by taking that side loses only the disagreement.
+test("a refusal still carries what it COULD merge, so resolving by taking it does not drop a file", () => {
+  const base = census({ "a.test.mjs": entry(1, 2) });
+  const ours = census({ "a.test.mjs": entry(7, 7) });
+  const theirs = census({ "a.test.mjs": entry(99, 99), "only-theirs.test.mjs": entry(1, 10) });
+  const r = run(ours, base, theirs);
+  assert.notEqual(r.code, 0);
+  const oursSide = r.text.split(/^={7}$/m)[0];
+  assert.match(oursSide, /only-theirs\.test\.mjs/,
+    "the file only the other side had is not on the side a resolver keeps — this is the under-count");
+  assert.ok(!JSON.stringify(ours).includes("only-theirs"), "the fixture no longer plants the file it is measuring");
 });
 
 test("a DELETION survives the union — absent-because-removed is not absent-because-new", () => {

@@ -30,6 +30,21 @@ export const MAX_FRAME = 200_000
 export type FrameCommand = 'exportPDF' | 'pickAll' | 'openAll'
 
 /**
+ * `section` is not one of those. The three above are verbs the DOCUMENT defines and the Export menu
+ * offers; this one is a jump the shell asks for, answered by the injected bridge on the same channel the
+ * document's own anchors already use. Keeping it out of `FrameCommand` is what stops it appearing as a
+ * menu row: `exportMenu` and `readFrameControls` are both closed over that type.
+ */
+export type FrameVerb = FrameCommand | 'section'
+
+/** One entry of the report's section breadcrumb: the anchor's id and the word the reader sees. */
+export type FrameSection = { readonly id: string; readonly label: string }
+
+/** A header is a header, not a table of contents; and a hostile document does not get to fill the page. */
+export const MAX_SECTIONS = 12
+export const MAX_SECTION_LABEL = 40
+
+/**
  * Decide whether a `message` event carries a height for us, and what that height is.
  *
  * `sameSource` is the caller's answer to "did this come from the frame I am showing?", which it gets by
@@ -189,8 +204,77 @@ export function readCommandFailure(data: unknown, sameSource: boolean): { comman
   return { command: m.command, message: typeof m.message === 'string' ? m.message : 'it did not say why' }
 }
 
-/** The message the portal sends inwards. Shaped here so both ends of the contract sit in one file. */
-export function frameCommand(command: FrameCommand, value?: boolean) {
+/**
+ * A finding's own Ask AI, pressed inside the document and answered outside it.
+ *
+ * The document draws the button and the shell holds the control, so the press has to cross the
+ * null-origin boundary like the height and the anchor jump above it. Same trust model: source identity,
+ * never origin, and a string is rejected rather than coerced into a number.
+ *
+ * THE ORDINAL IS OPTIONAL BECAUSE SOME CARDS GENUINELY HAVE NONE. A clearance numbers its findings and
+ * carries that number in the card's id, but the "Also considered" cards carry the same button and no
+ * number — a record that was ruled out was never given an ordinal. Refusing the message in that case
+ * would make the button work on most cards and silently do nothing on the rest, which is worse than not
+ * drawing it: the reader cannot tell which cards are the dead ones. A null ordinal opens the control and
+ * says the document could not name a finding, which is true.
+ *
+ * A KNOCKOUT RESTARTS ITS ORDINALS AT 1 FOR EACH MARK, so the number alone names a different finding on
+ * every mark in a batch. `markIndex` is what tells them apart. It is null on a clearance, which numbers
+ * its findings once across the whole document.
+ */
+export function readAskAi(data: unknown, sameSource: boolean): { ordinal: number | null; markIndex: number | null } | null {
+  if (!sameSource) return null
+  if (typeof data !== 'object' || data === null) return null
+  const m = data as { source?: unknown; type?: unknown; ordinal?: unknown; markIndex?: unknown }
+  if (m.source !== FRAME_TAG || m.type !== 'askAi') return null
+  const whole = (v: unknown): number | null =>
+    typeof v === 'number' && Number.isInteger(v) && v >= 0 ? v : null
+  return { ordinal: whole(m.ordinal), markIndex: whole(m.markIndex) }
+}
+
+/**
+ * WHICH SECTIONS THE FRAMED DOCUMENT HOLDS.
+ *
+ * The renderers draw the breadcrumb inside the report's own sticky header, and `portal-report.mjs`
+ * strips that header on the way in, because the portal draws its own. So the breadcrumb arrives as data
+ * and the shell draws it in `.report-head`, where it stays on top — which is the whole point of it.
+ * Inside the frame it could not: the frame is sized to its content, so a `position:sticky` bar in there
+ * pins to nothing and scrolls away with the page.
+ *
+ * Same trust model as every reader above — source identity, never origin — and the same discipline
+ * about what a document is allowed to say: entries without a string id and a non-empty label are
+ * dropped, labels are trimmed to a header's worth of text, and the list is capped. A document that
+ * announces nothing usable produces an empty list, and an empty list draws no breadcrumb.
+ *
+ * Returns null when the message is not ours, so "not announced yet" and "announced nothing" stay
+ * different.
+ */
+export function readFrameSections(data: unknown, sameSource: boolean): FrameSection[] | null {
+  if (!sameSource) return null
+  if (typeof data !== 'object' || data === null) return null
+  const msg = data as { source?: unknown; type?: unknown; sections?: unknown }
+  if (msg.source !== FRAME_TAG || msg.type !== 'sections') return null
+  if (!Array.isArray(msg.sections)) return null
+  const out: FrameSection[] = []
+  for (const raw of msg.sections) {
+    if (typeof raw !== 'object' || raw === null) continue
+    const { id, label } = raw as { id?: unknown; label?: unknown }
+    if (typeof id !== 'string' || typeof label !== 'string') continue
+    const trimmed = label.trim().slice(0, MAX_SECTION_LABEL)
+    if (!id.trim() || !trimmed) continue
+    out.push({ id, label: trimmed })
+    if (out.length === MAX_SECTIONS) break
+  }
+  return out
+}
+
+/**
+ * The message the portal sends inwards. Shaped here so both ends of the contract sit in one file.
+ *
+ * `value` is a boolean for the three document verbs and the target id for `section` — the bridge coerces
+ * each to the shape its own branch needs, so neither can arrive as the other.
+ */
+export function frameCommand(command: FrameVerb, value?: boolean | string) {
   return { source: FRAME_TAG, type: 'command' as const, command, value }
 }
 
