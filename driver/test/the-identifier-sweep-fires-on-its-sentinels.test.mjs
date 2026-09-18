@@ -14,7 +14,7 @@ import { spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { scanCorpus, firesOn, PINNED_DICTIONARIES } from "../../shared/identifier-scan.mjs";
+import { scanCorpus, firesOn, PINNED_DICTIONARIES, CLOUD_ROUTE_CONTEXT } from "../../shared/identifier-scan.mjs";
 import { SENTINELS, SUFFIXABLE, SENTINEL_MODE_MARKER, TABLE_MODE_MARKER } from "../../shared/identifier-sentinels.mjs";
 import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
 
@@ -182,4 +182,30 @@ test("the pinned word list is exempt as vetted, and swept in full once a line ch
   const edited = `${words}orchard\n`;
   assert.ok(sweep(path, edited).length >= 1, "an edited list stayed exempt, so a name added to it would pass unseen");
   assert.ok(sweep("driver/wordlists/elsewhere.txt", words).length >= 1, "the exemption followed the bytes to a path it does not name");
+});
+
+// ── THE CLOUD AS A BILLING ROUTE, AND ONLY THAT ─────────────────────────────────────────────────────
+//
+// A sentence about paying for Claude through a cloud names the cloud, and a roster entry can collide
+// with it. The exemption is for the names the product ships for that route and nothing wider. The
+// entries here are invented and chosen to OVERLAP those names, so the arm drives the overlap rule
+// without saying what the real roster holds.
+test("a billing-route cloud name is exempt as the product spells it, and nowhere wider", () => {
+  const sweep = (file, line, name) => scanCorpus([file], () => line, { retired: [[name, "Twin"]], suffixable: new Set() }).length;
+  // Exempt: the cloud's name, its Foundry service, and the three clouds as a list.
+  assert.equal(sweep("INSTALL.md", "pay through your Microsoft Azure account (Foundry)", "Azure"), 0);
+  assert.equal(sweep("x.mjs", "measured on a Microsoft Foundry configuration", "Foundry"), 0);
+  assert.equal(sweep("x.mjs", "your own Google, Microsoft or Amazon cloud account", "Google"), 0);
+  assert.equal(sweep("x.mjs", "Google Cloud, Microsoft Azure or Amazon Bedrock", "Google"), 0);
+  assert.equal(sweep("commit-message", "On Microsoft Azure that alias names no deployment", "Azure"), 0,
+    "a commit message about the billing route was refused");
+  // Still reported: the bare word, another casing, a second use beside an exempt one, captured data.
+  assert.equal(sweep("x.mjs", "the services bill Azure", "Azure"), 1, "the bare word was exempted");
+  assert.equal(sweep("x.mjs", "microsoft azure", "Azure"), 1, "the exemption is case-sensitive, as the product spells it");
+  assert.equal(sweep("x.mjs", "Microsoft Azure, and Azure again on its own", "Azure"), 1, "a second, bare use rode on the exempt one");
+  assert.equal(sweep("demo/some-search/run/common-law-grid.json", "Introduction to Microsoft Azure Cloud Services", "Azure"), 1,
+    "a frozen demo run's captured text was exempted; it is a third party's, not a billing route");
+  assert.equal(sweep("providers/x/test/fixtures/r.json", "owner: Microsoft Azure Holdings", "Azure"), 1,
+    "captured register data was exempted");
+  assert.ok(!CLOUD_ROUTE_CONTEXT.flags.includes("i"), "the cloud context became case-insensitive, which widens it past the product's spelling");
 });

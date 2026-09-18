@@ -235,11 +235,11 @@ export function runRequirements(env = {}, { registers = [], engines = {}, defaul
         // it, the runner logs it, and a composite name read as four more items in doctor's list of what is
         // missing. The REASON names all four, with whose each is. And the row carries all four as `anyOf`,
         // which `runRequiredNames` hands out as names to read: doctor fills its view of the services by name,
-        // and reading only Google's switch reported a Microsoft machine's switch, held by its services, as
+        // and reading only Google's switch reported an Azure machine's switch, held by its services, as
         // missing.
         //
         // A SWITCH THAT IS SET AND NOT ON IS SAID, because it reads as on to a person and as off to the
-        // program: `CLAUDE_CODE_USE_FOUNDRY=0` on a Microsoft machine was answered with Google's switch
+        // program: `CLAUDE_CODE_USE_FOUNDRY=0` on an Azure machine was answered with Google's switch
         // and nothing else, and the reader was left to work out why the one they set did not count.
         // And it is not an alternative to read or carry: `anyOf` is handed to the composer too, and the
         // set-and-off line would travel through it.
@@ -273,7 +273,7 @@ export function runRequirements(env = {}, { registers = [], engines = {}, defaul
     // The rows above name what is MISSING. The run door also refuses what is set wrongly: two clouds
     // switched on, a switch left on beside `subscription` or `api-key`, a word that is not a billing mode,
     // a cloud account on Codex. Each passed start's guard, the order wall and doctor, and the run was then
-    // refused after intake. Measured 2026-09-15: a services' file holding Microsoft's switch from one start
+    // refused after intake. Measured 2026-09-15: a services' file holding Azure's switch from one start
     // and Google's from the next read clean everywhere and refused every search.
     //
     // ASKED OF THE RUN DOOR ITSELF, `resolveAuthMode`, over the environment being judged, and its refusal

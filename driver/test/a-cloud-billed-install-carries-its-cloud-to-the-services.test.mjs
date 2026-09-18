@@ -237,7 +237,7 @@ test("no secret's value appears in a row or a refusal", () => {
 // The rows named what was missing and nothing else, so a services' file the run door refuses for what it
 // holds (two clouds switched on, a switch beside subscription, api-key with no key) passed start's guard,
 // the order wall and doctor, and every search was refused after intake. Measured 2026-09-15; the first of
-// them is what a start with Google's cloud leaves in a file written by a start with Microsoft's.
+// them is what a start with Google's cloud leaves in a file written by a start with Azure's.
 
 const doorSays = (env) => { try { resolveAuthMode({ engineName: "anthropic-agent", env }); return null; } catch (e) { return e.message; } };
 
@@ -327,20 +327,20 @@ test("start's guard reads the file its merge leaves, and names every run setting
   assert.ok(missingRequirements(empty.reads, T).atOrder.some((r) => r.anyOf), "start's guard passed a file the run door refuses");
   assert.ok(empty.differ.includes("CLAUDE_CODE_USE_FOUNDRY"), `the kept empty line is not named: ${empty.differ}`);
 
-  // MICROSOFT, THEN GOOGLE: both switches end up in the file, and the guard now sees it.
+  // AZURE, THEN GOOGLE: both switches end up in the file, and the guard now sees it.
   const twice = after(first(cloud("foundry")), cloud("vertex"));
   assert.equal(twice.reads.CLAUDE_CODE_USE_FOUNDRY, "1");
   assert.deepEqual(missingRequirements(twice.reads, T).atOrder.map((r) => r.name), ["CLEAROTRON_AI_BILLING"]);
-  assert.ok(twice.differ.includes("CLAUDE_CODE_USE_FOUNDRY"), `Microsoft's switch, kept by the file, is not named: ${twice.differ}`);
+  assert.ok(twice.differ.includes("CLAUDE_CODE_USE_FOUNDRY"), `Azure's switch, kept by the file, is not named: ${twice.differ}`);
 
-  // MICROSOFT, THEN A GATEWAY, AND MICROSOFT, THEN THE SUBSCRIPTION: the run door accepts the file, and it
-  // bills Microsoft. Nothing refuses, so saying it is the whole of the protection.
+  // AZURE, THEN A GATEWAY, AND AZURE, THEN THE SUBSCRIPTION: the run door accepts the file, and it
+  // bills Azure. Nothing refuses, so saying it is the whole of the protection.
   const gateway = after(first(cloud("foundry")), cloud("gateway"));
-  assert.equal(resolveAuthMode({ engineName: "anthropic-agent", env: gateway.reads }).cloud, "foundry", "the floor: the services still bill Microsoft");
-  assert.ok(gateway.differ.includes("CLAUDE_CODE_USE_FOUNDRY"), `a gateway machine billing Microsoft is not told: ${gateway.differ}`);
+  assert.equal(resolveAuthMode({ engineName: "anthropic-agent", env: gateway.reads }).cloud, "foundry", "the floor: the services still bill Azure");
+  assert.ok(gateway.differ.includes("CLAUDE_CODE_USE_FOUNDRY"), `a gateway machine billing Azure is not told: ${gateway.differ}`);
   const subscription = after(first(cloud("foundry")), { ...BASE, CLEAROTRON_AI_BILLING: "subscription" });
   for (const n of ["CLEAROTRON_AI_BILLING", "CLAUDE_CODE_USE_FOUNDRY"])
-    assert.ok(subscription.differ.includes(n), `a subscription machine billing Microsoft is not told about ${n}: ${subscription.differ}`);
+    assert.ok(subscription.differ.includes(n), `a subscription machine billing Azure is not told about ${n}: ${subscription.differ}`);
 
   // A ROTATED KEY: the file keeps the first value, and says which.
   const rotated = { ...cloud("bedrock"), AWS_ACCESS_KEY_ID: "rotated", AWS_SECRET_ACCESS_KEY: "rotated", AWS_SESSION_TOKEN: "rotated" };
@@ -364,7 +364,7 @@ test("start's guard reads the file its merge leaves, and names every run setting
   const noSwitch = (c) => Object.fromEntries(Object.entries(cloud(c)).filter(([k]) => !Object.values(CLOUD_SWITCH).includes(k) && k !== "ANTHROPIC_BASE_URL"));
   const healthyShapes = [
     ["subscription", first({ ...BASE, CLEAROTRON_AI_BILLING: "subscription" }), bare],
-    ["Microsoft", first(cloud("foundry")), { ...bare, CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_FOUNDRY: "true" }],
+    ["Azure", first(cloud("foundry")), { ...bare, CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_FOUNDRY: "true" }],
     // How this install pays lives in the units' file alone, where start's own remedy offers to put it.
     ["api-key, bare configuration", first(apiKey), bare],
     ["api-key, full configuration less the billing word", first(apiKey), BASE],
@@ -394,9 +394,9 @@ test("start's guard reads the file its merge leaves, and names every run setting
 test("following start's notice about a kept setting ends with one cloud on, across three starts", () => {
   const after = (existing, supervisor) => unitsFileAfterStart(existing, carried(supervisor), { config: supervisor, tables: T });
   const google = { ...BASE, CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_VERTEX: "1" };
-  const microsoft = { ...BASE, CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_FOUNDRY: "1" };
+  const azure = { ...BASE, CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_FOUNDRY: "1" };
   const where = { homeEnv: "/srv/example/.env", cliEnv: "/srv/example/clearotron/.env" };
-  // START 1 on Google's cloud; then the operator moves the services to Microsoft's by editing the units' file.
+  // START 1 on Google's cloud; then the operator moves the services to Azure's by editing the units' file.
   const edited = servicesFile(google).text.replace("CLAUDE_CODE_USE_VERTEX=1", "CLAUDE_CODE_USE_FOUNDRY=1");
   // START 2, this command's configuration still on Google: the file lacks Google's line, so start adds it back.
   const second = after(edited, google);
@@ -408,9 +408,9 @@ test("following start's notice about a kept setting ends with one cloud on, acro
   assert.match(said, /in both places/, `the notice does not say to change it in both:\n${said}`);
   assert.match(keptSettingsNotice(["CLAUDE_CODE_USE_FOUNDRY"], { homeEnv: where.homeEnv }).join("\n"), /this command's environment/,
     "with no settings file of its own, the notice does not say where this command's configuration lives");
-  // START 3, after doing what the notice says: both places on Microsoft, and the line start added back removed.
-  const third = after(second.merged.text.split("\n").filter((l) => !l.startsWith("CLAUDE_CODE_USE_VERTEX=")).join("\n"), microsoft);
-  assert.equal(resolveAuthMode({ engineName: "anthropic-agent", env: third.reads }).cloud, "foundry", "the services do not bill Microsoft");
+  // START 3, after doing what the notice says: both places on Azure, and the line start added back removed.
+  const third = after(second.merged.text.split("\n").filter((l) => !l.startsWith("CLAUDE_CODE_USE_VERTEX=")).join("\n"), azure);
+  assert.equal(resolveAuthMode({ engineName: "anthropic-agent", env: third.reads }).cloud, "foundry", "the services do not bill Azure");
   assert.deepEqual([third.differ, missingRequirements(third.reads, T).atOrder.map((r) => r.name)], [[], []]);
   assert.deepEqual(keptSettingsNotice(third.differ, where), [], "a file that agrees is warned about");
 });
@@ -465,7 +465,7 @@ test("doctor reports a cloud-billed machine whose services lack the switch, and 
     assert.match(willRun(b), /nothing a search is refused for at order time is missing from the units' environment/,
       `a switch the services hold was reported missing:\n${willRun(b)}`);
     // AND ITS BILLING LINE SAYS HOW THE SERVICES PAY. Doctor's shell holds nothing, so its own reading is the
-    // subscription; the services pay Microsoft, and doctor printed only the first. Its own configuration sets
+    // subscription; the services pay Azure, and doctor printed only the first. Its own configuration sets
     // no billing word, so this is information and not a caution.
     assert.match(b, /billing: subscription/, "the floor: doctor's own configuration reads as the subscription");
     assert.match(b, /· the services pay as the units' environment says — billing: cloud — charged per use to your Microsoft Azure account \(Foundry\)/,
@@ -490,7 +490,7 @@ test("doctor judges the services by their own file, never by a setting in doctor
   // The units run with CLEAROTRON_NO_ENV_FILE=1 and read only their file, so a value in doctor's shell never
   // reaches them. A shell exporting a cloud switch for its own use made doctor report a working install refused.
   const cases = [
-    ["Microsoft's services, Google's switch in doctor's shell", { ...UNITS_BASE, CLEAROTRON_AI_BILLING: "cloud", ...CLOUDS.foundry }, { CLAUDE_CODE_USE_VERTEX: "1" }],
+    ["Azure's services, Google's switch in doctor's shell", { ...UNITS_BASE, CLEAROTRON_AI_BILLING: "cloud", ...CLOUDS.foundry }, { CLAUDE_CODE_USE_VERTEX: "1" }],
     ["subscription services, api-key in doctor's shell", { ...UNITS_BASE, CLEAROTRON_AI_BILLING: "subscription" }, { CLEAROTRON_AI_BILLING: "api-key" }],
   ];
   for (const [label, units, shell] of cases) {
@@ -518,7 +518,7 @@ test("doctor judges the services by their own file, never by a setting in doctor
       "doctor no longer says how the services pay");
     const said = doctor(foundry, { CLEAROTRON_AI_BILLING: "subscription" });
     assert.match(said, /! the services read how they pay from the units' environment, and it says otherwise — billing: cloud — charged per use to your Microsoft Azure account \(Foundry\)/,
-      "doctor's own configuration says subscription and the services pay Microsoft, and doctor does not warn");
+      "doctor's own configuration says subscription and the services pay Azure, and doctor does not warn");
     // A KEY PASTED INTO THE BILLING WORD, in the services' file and in doctor's shell: every line about it
     // names the setting and never the value.
     const leak = doctor(pasted, { CLEAROTRON_AI_BILLING: SECRET });

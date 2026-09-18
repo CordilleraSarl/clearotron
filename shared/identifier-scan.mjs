@@ -73,6 +73,26 @@ export const ALLOWED_TOKEN_CONTEXT =
 
 export const ALLOWED_LINE_CONTEXT = /owner-bound|watchlist owner/i;
 
+// ── THE CLOUD, AS A BILLING ROUTE ──────────────────────────────────────────────────────────────────
+//
+// Claude can be paid for through a cloud account, and one of the three clouds is Azure. The roster
+// retires the same word as a client, so every sentence about paying through that cloud was refused as a
+// retired identity: 67 of the 99 hits over the tree on 2026-09-18, and 11 lines of a release's squash
+// message.
+//
+// EXACTLY AS WIDE AS THE EVIDENCE, AND NO WIDER. Only the names the product itself ships for that route
+// are exempt: the cloud's name, its Foundry service, and the three clouds named as a list. Case-sensitive,
+// because that is how the product spells them. The bare word is never exempt, in any casing, and a
+// sentence that used it as shorthand for the cloud was reworded to say Azure instead.
+//
+// AND NOT IN CAPTURED DATA. A frozen demo run and a captured register fixture hold third parties' own
+// text: a course title that happens to name the cloud is not a billing route, so there the rule does not
+// apply and the hit is reported as it always was.
+export const CLOUD_ROUTE_CONTEXT = /\bMicrosoft Azure\b|\bMicrosoft Foundry\b|\bGoogle(?: Cloud)?,\s+Microsoft(?: Azure)?\s+or\b/;
+
+/** A frozen demo run, anywhere under `demo/<product>/run/`: what the engine read, captured whole. */
+const FROZEN_RUN_RE = /(?:^|\/)demo\/[^/]+\/run\//;
+
 /**
  * Kept as the union so nothing that merely ASKS "is this line exempt at all" has to learn the split.
  * Callers deciding whether to REPORT a hit must use the two above — this one cannot tell you which
@@ -156,19 +176,26 @@ export function matchSpans(name, line, suffixable) {
  *
  * Takes the RAW line and does its own unescaping, so no caller can forget that step.
  */
-export function reportableOnLine(name, rawLine, suffixable) {
+export function reportableOnLine(name, rawLine, suffixable, { cloudRoute = true } = {}) {
   if (ALLOWED_LINE_CONTEXT.test(rawLine)) return false;
   const text = unescapeBoundaries(rawLine);
-  return matchSpans(name, text, suffixable).some((sp) => !tokenExemptionCovers(text, sp));
+  return matchSpans(name, text, suffixable).some((sp) => !tokenExemptionCovers(text, sp, { cloudRoute }));
 }
 
-function tokenExemptionCovers(line, span) {
-  for (const m of String(line).matchAll(new RegExp(ALLOWED_TOKEN_CONTEXT.source, "gi"))) {
-    const s = m.index, e = m.index + m[0].length;
-    if (span.start < e && s < span.end) return true;   // overlap, in either direction
+function tokenExemptionCovers(line, span, { cloudRoute = true } = {}) {
+  const contexts = [new RegExp(ALLOWED_TOKEN_CONTEXT.source, "gi")];
+  if (cloudRoute) contexts.push(new RegExp(CLOUD_ROUTE_CONTEXT.source, "g"));
+  for (const rx of contexts) {
+    for (const m of String(line).matchAll(rx)) {
+      const s = m.index, e = m.index + m[0].length;
+      if (span.start < e && s < span.end) return true;   // overlap, in either direction
+    }
   }
   return false;
 }
+
+/** Whether the cloud-route exemption applies in this file: everywhere but captured third-party data. */
+export const cloudRouteApplies = (file) => !isCapturedRegisterData(file) && !FROZEN_RUN_RE.test(String(file ?? ""));
 
 // ── CAPTURED PUBLIC-REGISTER DATA ─────────────────────────────────────────────────────────
 //
@@ -267,7 +294,7 @@ export function scanCorpus(files, readFn, { retired, suffixable, vetted = () => 
         entry += 1;
         // A LINE-scoped exemption skips the line; a TOKEN-scoped one must OVERLAP the match it excuses.
         // Both live in reportableOnLine, so the declaration test cannot answer this differently.
-        if (!reportableOnLine(name, line, suffixable)) continue;
+        if (!reportableOnLine(name, line, suffixable, { cloudRoute: cloudRouteApplies(f) })) continue;
         if (vetted(f, name)) continue;
         hits.push(captured
           ? `${f}:${i + 1}: match table entry #${entry} of ${retired.length} (sentinels first, then the roster) `

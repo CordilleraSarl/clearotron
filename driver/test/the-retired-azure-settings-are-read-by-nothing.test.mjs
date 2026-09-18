@@ -63,5 +63,5 @@ test("the example settings file carries no Azure OpenAI rows, and marks Amazon a
   const install = read("INSTALL.md");
   assert.match(install, /^\*\*Amazon Bedrock \(not yet tested\)\*\*/m, "the Amazon block is not marked as not yet tested");
   assert.match(install, /^\*\*Google Cloud \(Vertex AI\)\*\*/m, "the Google block's heading changed; it is not marked");
-  assert.match(install, /^\*\*Microsoft Azure \(Foundry\)\*\*/m, "the Microsoft block's heading changed; it is not marked");
+  assert.match(install, /^\*\*Microsoft Azure \(Foundry\)\*\*/m, "the Azure block's heading changed; it is not marked");
 });
