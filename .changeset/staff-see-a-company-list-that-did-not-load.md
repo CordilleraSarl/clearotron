@@ -2,4 +2,4 @@
 "portal-ui": patch
 ---
 
-Fixed: when the company list cannot be loaded, or one company's settings cannot be read, the portal now says so instead of showing a shorter list.
+Fixed: when the company list cannot load, screens no longer narrow to one default company, and a company whose settings cannot be read is named.

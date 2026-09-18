@@ -105,6 +105,7 @@ let longTitle = false
 // and a layout that fitted them regressed on the real list at 1440px while this file stayed green.
 let fullList = false
 let rosterMode = 'ok'
+let withGeneric = false
 const FULL_MARKS = ['MERIDIAN THISTLE', 'PROJECT CHROMA', 'VIBRANTE FROSTPLUM', 'NORTHWIND', 'CORAL FREEZE', 'AQUAPLUS',
   'ASTERION', 'TIDEGLASS', 'BRIMSTONE', 'VENQORI', 'IRONWHISK', 'SIM PRAXIS', 'EMBER FORGE', 'VANTOR LABS', 'HALDEN OUTDOOR',
   'GLACIER MINT', 'SOLSTICE BAY', 'KESTREL WORKS', 'OBSIDIAN LOOP', 'MARBLE ORCHARD', 'LUMEN CRAFT', 'PELICAN NORTH',
@@ -190,7 +191,10 @@ const json = (res, body) => { res.writeHead(200, { 'content-type': 'application/
 
 const server = createServer((req, res) => {
   const p = new URL(req.url, 'http://localhost').pathname
-  if (p === '/portal/api/me') return json(res, { email: 'manager@example-firm.com', permissions: { run: true, manage: true }, access: [{ kind: 'everything' }], accounts: '*', accountNames: {}, allowance: null, brand: 'Northwind Group' })
+  // In the roster passes the install carries its organisation's Generic, as a real one does: that is the one
+  // company left when the roster fails, and what a failed roster used to narrow every screen to.
+  if (p === '/portal/api/me') return json(res, { email: 'manager@example-firm.com', permissions: { run: true, manage: true }, access: [{ kind: 'everything' }], accounts: '*', accountNames: {}, allowance: null, brand: 'Northwind Group',
+    ...(withGeneric ? { genericOrgs: ['northwind'], organisations: [{ key: 'northwind', name: 'Northwind Group' }] } : {}) })
   // THE ROSTER, as the server answers it in three shapes: whole, with a company file it could not read, and
   // failed. The last two used to draw exactly like the first with fewer companies.
   if (p === '/portal/admin/roster' && rosterMode === 'fail') { res.writeHead(500, { 'content-type': 'application/json' }); return res.end('{"error":"store unreadable"}') }
@@ -626,16 +630,26 @@ await reload()
 // — THE ROSTER NOT ARRIVING WHOLE. A company file it could not read, then a roster that failed outright.
 const ROSTER_NOTICE = `(() => ({
   text: [...document.querySelectorAll('.main > .notice')].map(n => (n.innerText || '').replace(/\\s+/g, ' ').trim()),
+  // How many names the list draws, and which company the switcher says is in view.
+  names: document.querySelectorAll('table.data tbody tr.row').length,
+  inView: (() => { const s = document.querySelector('select[aria-label="Company"]'); return s ? s.selectedOptions[0]?.textContent?.trim() ?? null : null })(),
 }))()`
+withGeneric = true
 rosterMode = 'unreadable'
 await reload()
 const rosterPartial = await value(ROSTER_NOTICE)
 rosterMode = 'fail'
 await reload()
 const rosterFailed = await value(ROSTER_NOTICE)
+if (shotDir) {
+  const shot = await cmd('Page.captureScreenshot', { format: 'png' })
+  const data = shot.result?.result?.data ?? shot.result?.data
+  if (data) writeFileSync(join(shotDir, 'clearances-roster-failed-light.png'), Buffer.from(data, 'base64'))
+}
 rosterMode = 'ok'
 await reload()
 const rosterWhole = await value(ROSTER_NOTICE)
+withGeneric = false
 
 if (shotAt) {
   const shot = await cmd('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true })
@@ -718,8 +732,12 @@ console.log(`measured at ${WIDTH}px — ${short.openedRows} rows opened, ${short
 ok(rosterPartial?.text?.some((t) => /aurora This company’s framework could not be read\. This needs an administrator to look at it\./.test(t)),
   `a company file the roster could not read is not named on the page — ${JSON.stringify(rosterPartial)}`)
 ok(!rosterPartial?.text?.some((t) => /frameworkPath/.test(t)), 'the server\'s own reason reached the page')
-ok(rosterFailed?.text?.some((t) => /^The list could not be loaded Nothing has been lost — any run in progress is still running\. Try again shortly\.$/.test(t)),
-  `a roster that failed draws as an empty one, with nothing said — ${JSON.stringify(rosterFailed)}`)
+// A ROSTER THAT FAILED WHOLE: no sentence of its own (owner, 2026-09-18), and no silent narrowing — the
+// reader stays on All companies and sees every name the whole roster showed.
+ok(rosterFailed?.text?.length === 0, `a roster that failed draws a notice of its own — ${JSON.stringify(rosterFailed)}`)
+ok(rosterFailed?.names > 0 && rosterFailed?.names === rosterWhole?.names,
+  `a roster that failed narrows the list: ${rosterFailed?.names} names against ${rosterWhole?.names} with the roster whole`)
+ok(/^All companies/.test(rosterFailed?.inView ?? ''), `a roster that failed selected a company for the reader — ${JSON.stringify(rosterFailed?.inView)}`)
 ok(rosterWhole?.text?.length === 0, `a whole roster draws a notice — ${JSON.stringify(rosterWhole)}`)
 for (const [width, f] of Object.entries(full)) {
   console.log(`full list at ${width}px: ${f?.rows} rows, page ${f?.scrollW}/${f?.clientW}, table ${f?.tableW} in ${f?.wrapW}, menus cut ${f?.menusCut}, risk over date ${JSON.stringify(f?.riskOverDate)}`)

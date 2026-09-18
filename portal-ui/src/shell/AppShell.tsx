@@ -492,7 +492,12 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   // install has one because Generic ships with every install and is a company like any other. While the
   // roster is still in flight the list is empty and nothing is auto-selected, which is the same one-frame
   // tolerance the name resolution already carries.
-  const sole = ownerKeys.length === 1 ? ownerKeys[0] ?? null : null
+  // A ROSTER THAT FAILED IS NOT A ONE-COMPANY INSTALL. With the list missing, the one company left is
+  // Generic, and selecting it narrowed every screen to Generic's clearances with nothing said: measured on
+  // the test portal, twenty-five names became one. So nothing is chosen for the reader then — they stay on
+  // All companies and see every clearance, each company named by its key where its name did not arrive.
+  const rosterFailed = readsRoster && !!rosterResult && rosterResult.kind !== 'ok'
+  const sole = !rosterFailed && ownerKeys.length === 1 ? ownerKeys[0] ?? null : null
 
   // What every screen means by "the company in view": the switcher's choice, or the only one there is.
   const ownerInView = owner ?? sole
@@ -769,16 +774,9 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
           </div>
         </header>
 
-        {/* THE COMPANY LIST, WHEN IT DID NOT ARRIVE WHOLE. A roster that failed used to draw as an empty one,
-            so a person who can see the whole install met Generic alone and a short list, with nothing
-            saying anything had gone wrong. Staff only: nobody else reads the roster. The words are the
-            ones this portal already prints for a list that failed and for a framework it cannot read. */}
-        {readsRoster && rosterResult && rosterResult.kind !== 'ok' ? (
-          <div className="notice" role="status" style={{ margin: '12px 24px 0' }}>
-            <b>The list could not be loaded</b>
-            <p style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>Nothing has been lost — any run in progress is still running. Try again shortly.</p>
-          </div>
-        ) : null}
+        {/* A COMPANY FILE THE ROSTER COULD NOT READ is named, with the sentences Profile prints for a
+            framework it cannot read (owner, 2026-09-18). Staff only: nobody else reads the roster. A
+            roster that failed whole draws no notice of its own — see `sole` above for what it does draw. */}
         {readsRoster && rosterResult?.kind === 'ok' && rosterResult.value.unreadable.length ? (
           <div className="notice" role="status" style={{ margin: '12px 24px 0' }}>
             {rosterResult.value.unreadable.map((u) => (
