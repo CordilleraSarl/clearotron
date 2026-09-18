@@ -69,6 +69,25 @@ test("the doctrine file agrees with the dispatch instead of contradicting it", (
   assert.match(s, /Never `# `/, "the depth rule that stops a summary truncating itself is not stated");
 });
 
+test("the doctrine asks for no conclusion about the name, and still forbids the one word", () => {
+  // RULED 2026-09-18, twice: the screen presents what it found, and what that means for the name is the
+  // reading lawyer's to draw. TWO instructions had the model write one — a prescribed survivor sentence,
+  // and the opening read's closing clause — and the publisher hoists a trailing outcome block out of the
+  // assessment into a section of its own, so either instruction alone puts a conclusion on the client's
+  // page. Pinned as ABSENT because nothing downstream refuses such a sentence: the renderer draws
+  // whatever block it is handed, and a re-added clause would reach a client with nothing going red.
+  const s = read("driver/skills/knockout-assess/SKILL.md");
+  assert.doesNotMatch(s, /proceeds to clearance/,
+    "the prescribed survivor conclusion is back in the doctrine");
+  assert.doesNotMatch(s, /what to do with (?:that|it)/i,
+    "the per-mark opening read asks again for what to do about the name");
+  // AND THE PROHIBITION IN THE SAME ITEM STAYS. It is not a conclusion instruction, and on a knockout run
+  // nothing else refuses these words: the delivery check that does refuses them on a CONDITIONAL
+  // clearance verdict, and this lane's own prose gate refuses tone and invented quantities.
+  assert.match(s, /Never "clear", "clean", "no conflicts found", "clear to proceed"/,
+    "the words this screen must never say are no longer forbidden to the writer");
+});
+
 test("SKILL.md's closed-key block names every key the validator actually requires", () => {
   // The gap this closes was recorded in the code itself: "required by the validator, absent from the
   // doctrine's own shape block". A seat reading the doctrine as authoritative omitted five keys.

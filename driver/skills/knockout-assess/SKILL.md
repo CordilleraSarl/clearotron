@@ -235,7 +235,7 @@ A note that restates a finding already on the page is not a note. Cut it.
 
 Each mark's report is delivered on its own, and `assessment` is the first thing its reader meets —
 before any table. Write it for a client who ordered this one name and nothing else: what the name is,
-what the landscape around it looks like, what drives the rating, what to do with that.
+what the landscape around it looks like, what drives the rating.
 
 **It names THIS mark and no other.** A sibling's name here is another client's mark on this client's
 page. The cross-mark reading is `chunkSummary`, and it has its own page.
