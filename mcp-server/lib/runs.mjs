@@ -25,6 +25,24 @@ function findStatusFiles(root, depth, acc) {
   }
 }
 
+/**
+ * NOTHING TO READ IS NOT "NO RUNS", and the difference is what an assistant tells its user.
+ *
+ * With neither directory configured the enumeration looked in a default workspace that does not exist,
+ * caught the error, and answered `[]` — so a coding agent that started this server from a fresh clone was
+ * told, silently, that there are no searches, when the truth is that it was never pointed at any. This
+ * names what is missing instead. It answers only when BOTH are true: the workspace variable is unset and
+ * its default is absent, and no reports folder is set. A configured install, or one running on the default
+ * workspace, lists exactly as before, and an empty list from either still means an empty list. PURE given
+ * its inputs.
+ */
+export function unreadableRunsReason({ workSet, workRoot, workExists, poolSet }) {
+  if (workSet || workExists || poolSet) return null;
+  return `no searches can be read here: CLEAROTRON_WORK_DIR is unset and ${workRoot} does not exist, `
+    + "and CLEAROTRON_REPORTS_DIR is unset. Set them to the install's directories — `npx clearotron doctor` "
+    + "prints where an install keeps them.";
+}
+
 // Every workspace-<agent>/studio/clearance-search root under the live workspace root.
 export function studioRoots() {
   const out = [];
