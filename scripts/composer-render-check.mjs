@@ -574,12 +574,18 @@ const SCRIPT = `
     && !maybeByText('button', /^Case law$/);
   out.steps.push('knockout picked');
 
-  // A GLOBAL PRELIMINARY SEARCH HAS NO WHERE FIELD. The panel states the fact and says why; there is
-  // nothing to type into, because there is nothing this product will accept.
+  // A GLOBAL PRELIMINARY SEARCH HAS NO WHERE FIELD. There is nothing to type into, because there is
+  // nothing this product will accept.
+  //
+  // THE PANEL NO LONGER SAYS WHY. On the owner's ruling of 2026-09-18 the four notes restating what each
+  // search's geography means came off this screen and nothing replaces them: the product row names the
+  // geography, and a place the register cannot reach is still marked on the place itself. The check is
+  // INVERTED rather than deleted — an assertion that simply goes away lets the wording come back with
+  // nothing to notice, which is how those notes arrived in the first place.
   pickProduct(/Global preliminary search/);
   await sleep(160);
   out.globalNoTerritoryInput = !whereBox();
-  out.globalSaysWhy = /This search is not narrowed/.test(txt());
+  out.globalRestatesNoGeography = !/This search is not narrowed/.test(txt());
   out.steps.push('global picked');
 
   // A MULTI-COUNTRY FOCUS SEARCH offers regions AND countries, and the one toggle in the offering —
@@ -609,10 +615,11 @@ const SCRIPT = `
   out.steps.push('one-country blocker');
 
   // A FULL COUNTRY SEARCH offers COUNTRIES ONLY — a region is not a country, and the control fits the
-  // product rather than refusing it afterwards. The panel says so at the control.
+  // product rather than refusing it afterwards. The panel no longer says so in a note beside the control;
+  // see the ruling recorded at the Global preliminary search above. Inverted, not deleted.
   pickProduct(/Full country search/);
   await sleep(160);
-  out.fullSaysRegionsNotOffered = /Regions are not offered here/.test(txt());
+  out.fullRestatesNoGeography = !/Regions are not offered here/.test(txt());
   set(whereBox(), 'euro');
   await sleep(180);
   out.fullOffersNoRegion = ![...document.querySelectorAll('.typeahead button')].some((b) => /European Union/.test(b.innerText));
@@ -1440,7 +1447,7 @@ ok(out.caseLawStatedNotOffered,
 // ── GEOGRAPHY FOLLOWS THE PRODUCT, and each control says why at the control ─────────────────────────
 ok(out.globalNoTerritoryInput === true,
   'a Global preliminary search still has a territory field — worldwide is not a choice on it, it IS it, so a field there is a control whose every use is refused')
-ok(out.globalSaysWhy, 'the Where panel does not say WHY there is nothing to set — a control that vanishes with no reason is the oldest complaint about this screen')
+ok(out.globalRestatesNoGeography, 'the Where panel restates that this search is not narrowed — that note was ruled off this screen and must not come back')
 ok(out.multiHasTerritoryInput, 'a Multi-country focus search has no territory field')
 ok(out.multiOffersRegion, 'a Multi-country focus search does not offer regions, which it accepts')
 ok(out.nativeToggleOffered, 'the ONE toggle in the offering is missing from the one product that offers it')
@@ -1448,7 +1455,7 @@ ok(out.nativeInsideItsRow, 'the native-language option is not inside the selecte
 ok(out.oneCountryBlocked, 'one country on a Multi-country focus search was accepted silently — the engine refuses it, and the user would find out at the gate')
 ok(out.oneCountryNamesWayOut, 'the blocker states no way out — enforcement without an invitation is what this screen exists to stop')
 ok(out.reviewShutOnOneCountry === true, 'the start action stayed live on a search the server will refuse')
-ok(out.fullSaysRegionsNotOffered, 'a Full country search does not say that regions are not offered on it')
+ok(out.fullRestatesNoGeography, 'the Full country panel restates that regions are not offered — that note was ruled off this screen and must not come back')
 ok(out.fullOffersNoRegion === true,
   'a Full country search offered a REGION in its typeahead — the control must fit the product, so the refusal never has to happen')
 ok(out.fullCarriesCaseLaw, 'a Full country search does not state that it carries the case-law reading')
