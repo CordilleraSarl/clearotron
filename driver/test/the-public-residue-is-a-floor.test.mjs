@@ -30,7 +30,7 @@ import { execFileSync, spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { CLASSES, censusOf, offendingClasses, publishedOf, wrapsInto } from "../../shared/reference-guard-classes.mjs";
+import { CLASSES, censusOf, offendingClasses, publishedOf, publishedReader, wrapsInto } from "../../shared/reference-guard-classes.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";   // — one corpus floor, shared with the guard that reads for it
 import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
 
@@ -70,7 +70,11 @@ const census = () => {
   const p = published();
   if (p === null) return null;
   assert.ok(!p.error, p.error);
-  const c = censusOf(p.files, (f) => readFileSync(join(ROOT, f), "utf8"));
+  // THE BYTES HEAD PUBLISHES, not whatever sits at the path. A withheld file laid over a path the public
+  // tree also has is otherwise measured as though it were the published file, in both directions: its
+  // own references inflate the count, and a clean private copy hides a public leak.
+  // The minter already reads this way; the floor it is compared against now does too.
+  const c = censusOf(p.files, publishedReader(ROOT, (f) => readFileSync(join(ROOT, f), "utf8")));
   return { ...c, laid: p.laid, trackedCount: p.tracked };
 };
 
@@ -363,6 +367,42 @@ test("a staged-but-uncommitted file is laid over this tree, not published in it"
   assert.equal(censusOf(p.files, read).total, 1, "the published file's own citation stopped being counted");
   assert.equal(censusOf(tracked, read).total, 2, "the control: unfiltered, both files count — so the filter is what removed one");
 
+  rmSync(dir, { recursive: true, force: true });
+});
+
+// ── A SHADOWED PATH IS COUNTED FROM HEAD'S BYTES, IN BOTH DIRECTIONS ─────────────────────────────
+//
+// The arm above covers a laid file at a NEW path. The overlay also lays files over paths the public
+// tree already has, and there the path filter cannot help: the path IS published, and only its bytes
+// differ. Both directions, because the dangerous one is not the loud one — a clean private copy over a
+// public leak must still count the leak.
+test("a laid file shadowing a published path is counted as HEAD publishes it, both ways", () => {
+  const dir = mkdtempSync(join(tmpdir(), "overlay-shadow-"));
+  const git = (...a) => execFileSync("git", ["-C", dir, ...a], { encoding: "utf8" });
+  git("init", "-q", ".");
+  git("config", "user.email", "arm@example.test");
+  git("config", "user.name", "arm");
+  writeFileSync(join(dir, "clean-public.md"), "Nothing to cite here.\n");
+  writeFileSync(join(dir, "leaky-public.md"), "Ruled on tracker issue 1234.\n");
+  git("add", "-A");
+  git("commit", "-qm", "base");
+  // The overlay's shape: private bytes laid over both paths and staged, never committed.
+  writeFileSync(join(dir, "clean-public.md"), "Ruled on tracker issue 1234.\nAnd on tracker issue 5678.\n");
+  writeFileSync(join(dir, "leaky-public.md"), "Nothing to cite here.\n");
+  git("add", "-A");
+
+  const tracked = git("ls-files").split("\n").filter(Boolean);
+  const p = publishedOf(tracked, dir);
+  assert.deepEqual(p.files.sort(), ["clean-public.md", "leaky-public.md"], "both paths are published; the path filter must keep them");
+  const disk = (f) => readFileSync(join(dir, f), "utf8");
+  const published = publishedReader(dir, disk);
+  const count = (read, f) => censusOf([f], read).files[f]?.reduce((a, b) => a + b, 0) ?? 0;
+
+  assert.equal(count(published, "clean-public.md"), 0, "a private file's references were counted against the public path it shadows");
+  assert.equal(count(published, "leaky-public.md"), 1, "a public leak was hidden by the clean private file laid over it");
+  // THE CONTROL: read from disk, both come out wrong — so the reader is what makes them right.
+  assert.equal(count(disk, "clean-public.md"), 2);
+  assert.equal(count(disk, "leaky-public.md"), 0);
   rmSync(dir, { recursive: true, force: true });
 });
 

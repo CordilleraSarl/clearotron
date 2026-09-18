@@ -5074,8 +5074,8 @@
           "todos": 0
         },
         "the-public-residue-is-a-floor.test.mjs": {
-          "tests": 15,
-          "asserts": 59,
+          "tests": 16,
+          "asserts": 64,
           "skips": 5,
           "todos": 0
         },
