@@ -5,7 +5,7 @@
 
 import { existsSync, appendFileSync, readFileSync, mkdirSync } from "node:fs";
 import { join, dirname } from "node:path";
-import { createHash, randomUUID } from "node:crypto";
+import { createHash, randomUUID, randomInt } from "node:crypto";
 import { ledgerPath } from "../providers/_shared/ledger-path.mjs";
 import { config } from "./driver.config.mjs";
 import { resolveProfile } from "./profiles.mjs";
@@ -26,7 +26,15 @@ const NOUN = [
   "warren", "beacon", "quarry", "willow", "kestrel", "monolith", "estuary", "bramble", "compass", "drift",
 ];
 
-export function genCodename(rand = Math.random) {
+// THE CODENAME IS DRAWN FROM THE OPERATING SYSTEM'S RANDOM SOURCE, not Math.random. It is a label, not a
+// secret: it names a run's directory and appears in its reports, and the keys built from it name a run's
+// attempts and ledgers — nothing is authorised by knowing one. But it is the first thing the run identifier
+// is made of, and a label that is also unpredictable costs nothing here, while a predictable one invites
+// every later reader to wonder what else leans on it. Same [0, 1) shape as Math.random, so the injected
+// `rand` the tests pass for determinism works unchanged.
+const cryptoRand = () => randomInt(0, 2 ** 32) / 2 ** 32;
+
+export function genCodename(rand = cryptoRand) {
   return `${ADJ[Math.floor(rand() * ADJ.length)]}-${NOUN[Math.floor(rand() * NOUN.length)]}`;
 }
 
@@ -186,7 +194,7 @@ export function claimRunCodename({ slug, date, codename, registryPath = codename
 // a pre-mint through raw genCodename would silently lose this collision protection.
 // 20 straight collisions ⇒ the 400-name space is exhausted for this slug+date — suffix for freshness.
 export function mintFreshCodename({ slug, date, studioRoot = config.studioRoot, archiveRoot = config.archiveRoot,
-  rand = Math.random, claim = claimRunCodename }) {
+  rand = cryptoRand, claim = claimRunCodename }) {
   for (let i = 0; i < 20; i++) {
     const c = genCodename(rand);
     if (!existsSync(runDirFor({ slug, date, codename: c, studioRoot }))
@@ -205,7 +213,7 @@ export function mintFreshCodename({ slug, date, studioRoot = config.studioRoot, 
 // a fresh codename and re-spending everything (the "pearl-keystone" trap). A bare new run leaves both unset.
 export function buildRunContext(
   job,
-  { rand = Math.random, now = new Date(), studioRoot = config.studioRoot, archiveRoot = config.archiveRoot,
+  { rand = cryptoRand, now = new Date(), studioRoot = config.studioRoot, archiveRoot = config.archiveRoot,
     codename: codenameOverride, date: dateOverride } = {},
 ) {
   const slug = deriveSlug(job);
