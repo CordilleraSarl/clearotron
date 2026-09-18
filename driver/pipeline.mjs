@@ -173,7 +173,7 @@ import { boundDominantElementFrom } from "./frame-diff-record.mjs";
 import { recordedScopeLedgerRows } from "./clearance-variants-record.mjs";
 import { parseFrameDiff, applyDominantBackstop, firingDirectives, reopenKey, alreadyAttemptedReopen, partitionFiring, frameResidualGaps, jurisdictionScopeFlags, deriveDirectiveRemedy, firingDirectivesLenient } from "./frame-diff-model.mjs";
 import { verifyRegisterDirectiveClose } from "./close-verify.mjs";
-import { renderFormNeighbourhoodJson, parseFormNeighbourhoodJson, dispatchedQueriesFromBand, formGapDirectives, markText } from "./form-neighbourhood.mjs";
+import { renderFormNeighbourhoodJson, parseFormNeighbourhoodJson, dispatchedQueriesFromBand, formGapDirectives, markText } from "./form-neighbourhood.mjs"; import { loadOrdinaryWords } from "./ordinary-words.mjs";
 import { findRecallFloorViolations, findReviewFreshnessViolation, findSeedNeutralityViolations, findProbativeGradingViolations, findStatusHonestyViolation, findMatrixCeilingViolations, findDeadlineUrgencyMiss, findUnresolvedDisagreements, findOrphanVerificationFlags, findUncrossCheckedDemotions, findRecallRegressionViolations, findDeadlineCarryViolations, formatRecallRegression } from "./reasoning-tripwires.mjs";
 import { findRuleShapeFlags } from "./rule-shape.mjs";
 import { failureSignature, classifyFailureReason, decideRecovery, createRepairLedger, countTrailingStageStrikes, countRecoveryLanes, weatherCeilingFor, TRANSIENT_RE, REFUSAL_TERMINAL_KIND, fanInMissingEvidence, retryCannotHelpWith, unnamedStructuredFailure, classificationSource, isCapPark, capParkSchedule, capWaitFrom, humanWait } from "./repairs.mjs";
@@ -2179,14 +2179,14 @@ function deriveFormNeighbourhood(ctx) {
     // The MARK is the floor's fallback seed and the only input to it that is not model output —
     // resolved exactly as every other job-mark consumer resolves it (stages.mjs blind-frame).
     const mark = ctx.job.marks ?? ctx.job.markName ?? ctx.job.name ?? "";
-    const json = renderFormNeighbourhoodJson(manifestMd, { markets, droppedAxes, model, mark });
+    const ow = loadOrdinaryWords("en"), json = renderFormNeighbourhoodJson(manifestMd, { markets, droppedAxes, model, mark, ordinaryWords: ow.words });   // an unloadable word list removes nothing
     const tmp = P.formNeighbourhood + ".tmp";
     writeFileSync(tmp, json);
     renameSync(tmp, P.formNeighbourhood);
-    let exact = 0, floor = 0, added = 0, seededFrom = "", seeds = [];
+    let exact = 0, floor = 0, added = 0, seededFrom = "", seeds = [], notSearched = 0;
     try {
       const o = JSON.parse(json);
-      exact = o.elements.reduce((a, e) => a + (e.band?.exactQueries?.length ?? 0), 0);
+      exact = o.elements.reduce((a, e) => a + (e.band?.exactQueries?.length ?? 0), 0); notSearched = o.elements.reduce((a, e) => a + (e.band?.ordinaryWordDifferentSound?.length ?? 0), 0);
       floor = o.variant_floor?.counts?.floor ?? 0;
       added = o.variant_floor?.counts?.model_added ?? 0;
       seededFrom = String(o.seeded_from ?? "");
@@ -2194,7 +2194,7 @@ function deriveFormNeighbourhood(ctx) {
     } catch { /* counts are telemetry only */ }
     // The SEED SET is logged by name, because it is the input that decides whether two runs of the same
     // matter can produce the same floor — a floor count alone cannot tell a stable run from a re-anchored one.
-    runLog(P.runDir, { event: "form-neighbourhood-derived", exact, floor, modelAdded: added, droppedAxes, seeds, seededFrom });
+    runLog(P.runDir, { event: "form-neighbourhood-derived", exact, floor, modelAdded: added, droppedAxes, seeds, seededFrom, ordinaryWordNotSearched: notSearched, ...(ow.error ? { ordinaryWordListError: ow.error } : {}) });
     // The fallback is not a quiet degrade: it means this run's variant floor rests on the mark alone
     // because the stage named no usable element. Loud, so the absence is a finding and not a shrug.
     if (seededFrom.startsWith("job mark"))

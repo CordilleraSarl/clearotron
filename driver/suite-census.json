@@ -1137,6 +1137,12 @@
           "skips": 0,
           "todos": 0
         },
+        "an-ordinary-word-that-sounds-different-is-not-searched.test.mjs": {
+          "tests": 9,
+          "asserts": 26,
+          "skips": 0,
+          "todos": 0
+        },
         "an-unread-probe-is-not-a-failed-measurement.test.mjs": {
           "tests": 5,
           "asserts": 11,
