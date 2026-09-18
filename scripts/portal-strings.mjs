@@ -3,8 +3,9 @@
 //
 // portal-strings.mjs — every string the portal can put in front of a reader, read out of the source.
 //
-//   node scripts/portal-strings.mjs            TSV on stdout: file, line, kind, string
-//   node scripts/portal-strings.mjs --json     the same as JSON
+//   node scripts/portal-strings.mjs                        TSV on stdout: file, line, kind, string
+//   node scripts/portal-strings.mjs --json                 the same as JSON
+//   node scripts/portal-strings.mjs --check <approved>     refuse any string the list does not carry
 //
 // ── WHY THE SOURCE IS PARSED, NOT GREPPED ───────────────────────────────────────────────────────────
 //
@@ -172,7 +173,8 @@ export function stringsIn(source, file) {
   let where = null;
   const add = (node, kind, raw) => {
     const text = tidy(kind === "text" || node.jsxAttr ? decode(raw) : raw);
-    if (!letters(text)) return;
+    // FEWER THAN TWO LETTERS IS NOT A STRING A READER MEETS ON ITS OWN: it is the `s` a plural picks.
+    if (letters(text).length < 2) return;
     if (kind === "code" && !readsAsProse(text)) return;
     if (kind !== "text" && kind !== "code" && token(text)) return;
     rows.push({ file, line: lineOf(node.start), kind, text, where });
@@ -306,8 +308,75 @@ export function portalStrings(root = ROOT) {
   return sourceFiles(root).flatMap((f) => stringsIn(readFileSync(join(root, f), "utf8"), f));
 }
 
+// ── THE CHECK: EVERY STRING ON A SCREEN IS ONE SOMEBODY APPROVED ────────────────────────────────────
+//
+//   node scripts/portal-strings.mjs --check <approved.json>
+//
+// Every sentence a client reads is copied from an approved design, never written by whoever builds the
+// screen. The list of approved strings lives OUTSIDE this repository, with the designs it is checked
+// against, so a string cannot be approved by the same change that adds it. It holds two maps:
+//
+//   approved   string → the board or specification that carries it
+//   pending    string → why it is on a screen without approval; tolerated until it is removed or ruled
+//
+// A string in neither is refused, by file and line. Matching is exact once whitespace is collapsed: a
+// changed word is a new string, and a new string needs its line in the list first.
+//
+// Exit 0 when every string is in the list, 1 when any is refused, 2 when the list could not be read —
+// missing, malformed, or empty. An empty list would refuse nothing it had not been told about, which is
+// the same as not looking.
+
+/** Read the approved list, or throw saying why it cannot be used. */
+export function readApproved(path) {
+  let j;
+  try { j = JSON.parse(readFileSync(path, "utf8")); } catch (e) { throw new Error(`cannot read ${path}: ${e.message}`); }
+  const approved = j?.approved, pending = j?.pending ?? {};
+  if (!approved || typeof approved !== "object" || Array.isArray(approved) || !Object.keys(approved).length) {
+    throw new Error(`${path} carries no \`approved\` map of strings — a list that approves nothing checks nothing`);
+  }
+  if (typeof pending !== "object" || Array.isArray(pending)) throw new Error(`${path}: \`pending\` must be a map of strings`);
+  return { approved: new Map(Object.entries(approved).map(([k, v]) => [tidy(k), v])), pending: new Map(Object.entries(pending).map(([k, v]) => [tidy(k), v])) };
+}
+
+/** The strings in `rows` that the list neither approves nor tolerates, and the list entries no screen shows. */
+export function checkStrings(rows, list) {
+  const refused = rows.filter((r) => !list.approved.has(r.text) && !list.pending.has(r.text));
+  const onScreen = new Set(rows.map((r) => r.text));
+  const gonePending = [...list.pending.keys()].filter((k) => !onScreen.has(k));
+  return { refused, gonePending };
+}
+
+function check(path, root) {
+  let list;
+  try { list = readApproved(path); } catch (e) {
+    console.error(`portal-strings: COULD NOT LOOK — ${e.message}. This is not a pass.`);
+    return 2;
+  }
+  const rows = portalStrings(root);
+  const { refused, gonePending } = checkStrings(rows, list);
+  console.log(`portal-strings: ${rows.length} strings on the portal's screens; ${list.approved.size} approved and `
+    + `${list.pending.size} pending in ${path}`);
+  if (gonePending.length) {
+    console.log(`portal-strings: ${gonePending.length} pending string(s) no longer on any screen — take them off the list:`);
+    for (const k of gonePending) console.log(`  ${JSON.stringify(k)}`);
+  }
+  if (!refused.length) { console.log("portal-strings: every string on a screen is approved or pending."); return 0; }
+  console.error(`portal-strings: ${refused.length} string(s) on a screen that no board or specification approves:`);
+  for (const r of refused) console.error(`  ${r.file}:${r.line}  ${r.kind}  ${JSON.stringify(r.text)}`);
+  console.error("A client reads these. Copy the wording from its board or specification, and add the string to the "
+    + "approved list with the board that carries it. If no board carries it, it is a design question, not a code one.");
+  return 1;
+}
+
 if (isEntrypoint(import.meta.url)) {
-  const rows = portalStrings(process.argv.includes("--root") ? process.argv[process.argv.indexOf("--root") + 1] : ROOT);
+  const argAt = (n) => (process.argv.includes(n) ? process.argv[process.argv.indexOf(n) + 1] : null);
+  const root = argAt("--root") ?? ROOT;
+  if (process.argv.includes("--check")) {
+    const path = argAt("--check");
+    if (!path || path.startsWith("--")) { console.error("portal-strings: --check needs the path of the approved list. COULD NOT LOOK."); process.exit(2); }
+    process.exit(check(path, root));
+  }
+  const rows = portalStrings(root);
   if (process.argv.includes("--json")) console.log(JSON.stringify(rows, null, 1));
   else for (const r of rows) console.log([r.file, r.line, r.kind, r.text].join("\t"));
 }
