@@ -6026,6 +6026,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-preview-refuses-what-the-claim-refuses.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "token-door-boot.test.mjs": {
           "tests": 7,
           "asserts": 8,
