@@ -22,17 +22,26 @@ Auth: `CORSEARCH_SESSION_KEY` environment variable, supplied from the deployment
 
 Corsearch's supremesearch API uses single-character prefixes on field names. All field values must be **backtick-quoted** (the plugin handles this).
 
-| Match mode | API prefix | Semantics | Hit volume (NIKE benchmark) |
+| Match mode | API prefix | Semantics | Budget as |
 |---|---|---|---|
-| `default` | (none) | Exact-token, case-insensitive — catches tokenisation splits and case variations | ~15,083 |
-| `exact` | `=` | Strictest — full-string match | ~3,014 |
-| `phrase` | `"` | Ordered phrase match | ~10,075 |
-| `starts_with` | `^` | Prefix | ~7,681 |
-| `ends_with` | `$` | Suffix | ~8,248 |
-| `phonetic` | `*` (or `P`) | Server-side phoneme match; extend with `phonetic_variants[]` | ~5,854 bare / ~6,022 with variants |
-| `fuzzy` | `~` | Approximate (diacritics, transliterations) | ~143,184 |
+| `default` | (none) | Exact-token, case-insensitive — catches tokenisation splits and case variations | a read |
+| `exact` | `=` | Strictest — full-string match | a read |
+| `phrase` | `"` | Ordered phrase match | a read |
+| `starts_with` | `^` | Prefix | a read |
+| `ends_with` | `$` | Suffix | a read |
+| `phonetic` | `*` (or `P`) | Server-side phoneme match; extend with `phonetic_variants[]` | a read |
+| `fuzzy` | `~` | Approximate (diacritics, transliterations) | **a crowd** |
 | `not` | `!` (or `-`) | Complement; useful in compound queries | — |
-| `must` | `&` | Force AND within same-field stacking | ~433 (NIKE + ADIDAS) |
+| `must` | `&` | Force AND within same-field stacking | a read |
+
+Two facts about size, and no more than two, because a mode's breadth is a fact about the mark you send and
+not about the mode: **`fuzzy` answers an order of magnitude wider than anything else here** — budget it as
+a crowd unless you have narrowed it another way — and **`must` and `exact` are the two narrowest**, which
+is what to reach for when a band has to be read rather than screened.
+
+No mode's results contain another's. A prefix and a suffix each hold marks the other does not, a
+sound-alike need not begin with your letters, and an intersection is not a subset of either half — so
+running the wider one does not cover the narrower one, and a leg you drop is a leg nobody searched.
 
 **Critical:** No explicit `AND` / `OR` keywords — those return HTTP 400. Composition is space-separated. Repeated fields = implicit OR. Use `must` prefix for AND within same field. Repeated `nice-class:` fields are therefore an implicit-OR union — `nice_classes:[9,28,41,42]` correctly scopes to *any of* those classes.
 
@@ -150,7 +159,7 @@ Capture VERBATIM in the register findings file's "Opposition history" section. D
 
 Corsearch supports phoneme expansion via `register_expand_phoneme`. Returns `{ base, aiVariants[] }`. Use the variants as `phonetic_variants[]` in `register_search` with `match_mode: "phonetic"`.
 
-Declared languages: `en_US` (~29 variants per word), `de_DE` (~29), `fr_FR` (~49). Other languages (`it_IT`, `es_ES`) are supported by the API but UNDECLARED here — treat them as a stated unknown, not as unavailable.
+Declared languages: `en_US`, `de_DE`, `fr_FR` — each returns a few dozen variants for a typical word. Other languages (`it_IT`, `es_ES`) are supported by the API but UNDECLARED here — treat them as a stated unknown, not as unavailable.
 
 **Usage pattern:** for multi-language jurisdictions, call expand-phoneme once per relevant language, concatenate `aiVariants[]`, pass to a single search call. Don't run multiple separate phonetic searches — costs more, returns largely overlapping results.
 
@@ -165,7 +174,7 @@ Only invoke for marks where `markFeature: "Figurative"` or `markFeature: "Stylis
 Be aware these capabilities are missing, so the skill doesn't promise them:
 
 - **POCA scoring** — not available through this adapter. Skill returns `null`
-- **Cross-language search within one query** — Corsearch doesn't support "search this mark in Japanese AND English in one query." Skill handles this by generating transliteration variants in `clearance-variants` and querying each separately.
+- **Cross-language search within one query** — Corsearch doesn't support "search this mark in Japanese AND English in one query." Skill handles this by generating transliteration variants in `prelim-variants` and querying each separately.
 - **Server-side stem-folding** — present but not configurable (the default match-mode tokenizer catches LEGEND ↔ LEGENDS). The variant manifest's `plural-root` category encodes this — search the root form to catch inflected forms.
 
 ## Provider-specific behaviour
