@@ -113,6 +113,24 @@
   .panel.actions p,.panel.actions li{font-size:13.5px;color:var(--slate);line-height:1.55}
   .panel.actions ul{margin:0;padding-left:20px} .panel.actions li{margin:3px 0}
 
+  /* ── THE BOARD'S OWN SECTION STRIP, lifted from the approved mock rather than written here ────────
+     Five entries and the board's own labels, marked not to print because the board marks it so: a strip
+     that follows the reader down the page is a control, and paper has nothing for it to follow. Every
+     anchor it names is drawn by the renderer above it.
+
+     THE SECTION NUMBER IS DRAWN AND HIDDEN, and that is the board's doing, not an oversight here: the
+     mock emits `<span class="num"></span>` on every section and then sets `display:none` on it further
+     down its own stylesheet. Carried faithfully, so the delivered document and the approved one hold the
+     same elements — this changes no pixel, and a reader looking for a visible number will not find one
+     in the board either. */
+  .strip{position:sticky;top:var(--tb-h,52px);z-index:20;display:flex;gap:4px;align-items:center;padding:6px 20px;background:var(--bg,#f5f0e8);border-bottom:1px solid rgba(0,0,0,.08);font:600 12px/1 'Satoshi','Helvetica Neue',Arial,sans-serif;letter-spacing:.04em}
+  .strip a{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;color:#6b5d50;text-decoration:none;white-space:nowrap}
+  .strip a i{width:8px;height:8px;border-radius:50%;border:1.5px solid currentColor;box-sizing:border-box}
+  .strip a.done{color:#4c7a4c}
+  .strip a.done i{background:#4c7a4c;border-color:#4c7a4c}
+  .strip a.now{color:#250902;background:rgba(0,0,0,.06)}
+  .strip a.now i{border-color:#860F09;border-width:3px}
+  .sec .num{display:none}
   .sec{margin:56px 0 18px;display:flex;align-items:baseline;gap:15px;border-top:2px solid var(--ink);padding-top:14px}
   .sec .num{font-family:var(--mono);font-size:13px;color:var(--crimson);font-weight:600}
   .sec h2{font-weight:900;font-size:25px;margin:0;letter-spacing:-.015em}
@@ -363,9 +381,11 @@
        and internal notes (.int-note, hidden above) are the only two things print ever drops. */
     details>*:not(summary){display:block!important}
     details>summary{list-style:none;cursor:default}
-    /* `details.searched` is a SECTION TITLE, so it keeps its summary in print like the region rows and
-       the secondary groups — a printed report that drops "What was searched" loses the heading over the
-       counts, not just a control. What it must not print is the ▸/▾ toggle, which on paper is a
+    /* `details.searched` keeps its summary in print like the region rows and the secondary groups. The
+       reason has CHANGED and the behaviour has not: the summary used to carry the section's own heading,
+       so dropping it in print lost the heading over the counts. The heading is now an <h2> in a section
+       of its own, as the approved board draws it, and print cannot lose it. What the summary still
+       carries is the sub-label over the counts, which is worth printing on its own. What it must not print is the ▸/▾ toggle, which on paper is a
        right-pointing arrow over content that is already fully expanded. Found by the print check, which
        walks a rendered page and refuses any disclosure that is in neither list; the public suite does
        not run it, so the commit that added this fold could ship the half it did not think about. */

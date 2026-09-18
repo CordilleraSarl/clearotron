@@ -1784,7 +1784,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // branch in one file, and the provenance line re-homed to the footer. Not licence-only, so this moves too.
 // Advanced again by the break recorded above the FROZEN constant: the export menu moved out to its own
 // module. Not licence-only, so this constant moves with it.
-const FROZEN_BEFORE_SPDX = "e622eb062bf7285aa15fb6a5cbdb2b33b4bc8f88a58ab78b7045d523d7f6e026";
+const FROZEN_BEFORE_SPDX = "6752b57b69765adb9c889a255cab76429492d60bfcc989cce4dc4baaee20cfc9";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2488,7 +2488,39 @@ const FROZEN_BEFORE_SPDX = "e622eb062bf7285aa15fb6a5cbdb2b33b4bc8f88a58ab78b7045
 // NOT IN THIS BREAK, and measured on beta-9 specimens rather than assumed: the board also draws a
 // five-entry navigation bar and a `<span class="num">` on every section, and the renderer draws neither,
 // on all three kinds. Both are renderer-wide and larger than a heading; they are reported, not built.
-const FROZEN = "e63abc0860e69332cf00294c79ba70b904d0b921de8e2fd781894d1bee7983ae";
+// ── BREAK (2026-09-18 — the document carries the board's own navigation and section anchors) ──────
+//
+// WHAT MOVED, all of it structure the approved board draws and this renderer did not:
+//   · a `<nav class="strip no-print">` with the board's five entries, copied from the mock rather than
+//     composed here — Summary · Findings · Also considered · Next steps · What was searched;
+//   · the anchors those entries resolve to: `id="summary"` on the hero, `id="findings"` on the conflict
+//     landscape (both branches that draw it), `id="searched"` on the new section below;
+//   · `<span class="num"></span>` on every section, which the board draws on all of its and this
+//     renderer drew on none;
+//   · the "What was searched" heading lifted OUT of the fold's summary into a section of its own.
+//
+// WHY. A whole-document read against the approved boards reported the same one divergence on all three
+// kinds — "Also considered" as a heading here and a heading plus a link there. Chasing that heading finds
+// the real fact: the mock's second occurrence is a NAV LINK, and the renderer draws no nav at all. One
+// cause, three kinds, and it is where the other two divergences land, because the nav resolves at
+// `#next` and `#searched` — the two sections whose headings diverged.
+//
+// THE FOLD IS NOT OPENED. The board does not open it; it takes the heading out of the summary and leaves
+// the fold headed "Counts for this search". That retires the print rule's reason instead of working
+// around it: print could lose the heading when the summary carried it, and cannot lose an `<h2>` outside
+// the `<details>`. The print rule keeps its behaviour and its comment now says what is true.
+//
+// THE SECTION NUMBER RENDERS NOTHING, and that is the board's doing rather than a failure here: the mock
+// emits the span on every section and hides it further down its own stylesheet. It is carried so the
+// delivered document holds the same elements as the approved one. No pixel moves.
+//
+// THE THREE QUESTIONS.
+//   1. Reachable from republish? Yes — a republish re-renders the document; no new data, no re-run.
+//   2. Could it live in report.css or brand.mjs? The STYLING does and went there — the strip's rules and
+//      the hidden number are in report.css, lifted from the board verbatim. The markup could not: CSS
+//      cannot add a `<nav>`, an `id` an anchor resolves to, or an `<h2>` outside a `<details>`.
+//   3. Why it had to move here: these elements are composed in this file and nowhere else.
+const FROZEN = "831f3c66bfe68aee551fcc0f9f856e28f7e3334064801b0b20929fb575eb9754";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

@@ -784,8 +784,11 @@ test("CHANGE 2 back-compat: NO finding carries disposition → legacy composite 
   // strip dispositions: the SAME inputs must collapse to the legacy two-section layout (01/02/03 + coverage 04).
   const legacy = DISP_FINDINGS.map(({ disposition, ...f }) => f);
   const html = renderHtml(parsedOf(FM), legacy, REGION_COVERAGE, { runId: "novapulse-demo" });
-  // doc-52 — coverage is no longer a numbered top section; it renders inside the collapsed Scope section.
-  assert.deepEqual(sectionOrder(html), ["The conflict landscape", "Conflicts", "Secondary & watch"]);
+  // doc-52 — coverage is no longer a numbered top section; its counts render inside the collapsed fold.
+  // The fold's HEADING is a section of its own as of the board read (2026-09-18): the approved design
+  // heads "What was searched" outside the fold and leaves the fold headed "Counts for this search", so
+  // the heading is in this list while the counts are still behind the disclosure.
+  assert.deepEqual(sectionOrder(html), ["The conflict landscape", "Conflicts", "Secondary & watch", "What was searched"]);
   assert.doesNotMatch(html, /Notable but manageable/);
   assert.doesNotMatch(html, /Commercial awareness/);
   // composite≥3 → on-field (c1,c2,c3 full), composite≤2 → secondary (c4 compact) — the pre-change split
@@ -3099,4 +3102,43 @@ test("the local-language row states the depth reached, in the words the page alr
     "the shallow word drifted from the coverage word it is taken from");
   assert.equal(rowFor(render("not-run"), "Local-language investigation"), covWord("not-searched"),
     "the not-run word drifted from the coverage word it is taken from");
+});
+
+// ── THE BOARD'S SECTION STRIP, AND WHY IT IS NOT THE BOARD'S STRIP VERBATIM ────────────────────────
+//
+// The approved mock draws a five-entry navigation and this renderer drew none — one cause behind the
+// same divergence reported on all three kinds, because the mock's second "Also considered" is a nav link
+// rather than a second heading.
+//
+// The mock is a specimen where every section exists. Three of them are conditional here, so the strip is
+// composed from the FINISHED document by asking which anchors are in it. That is the property worth
+// pinning: not that five entries are drawn, but that no entry ever points at nothing.
+test("the section strip is drawn from the document, so it can never name an anchor that is not there", () => {
+  const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-strip" });
+  const nav = html.match(/<nav class="strip[^>]*>([\s\S]*?)<\/nav>/);
+  assert.ok(nav, "the approved board's section strip is not drawn at all");
+  const entries = [...nav[1].matchAll(/href="#([^"]+)"[^>]*>(?:<i><\/i>)?([^<]+)</g)].map((m) => [m[1], m[2]]);
+  assert.ok(entries.length >= 2, `a strip of ${entries.length} entry is a control that does nothing`);
+  for (const [id] of entries) {
+    assert.ok(html.includes(`id="${id}"`), `the strip points at #${id} and no section carries that id`);
+  }
+  // THE FIRST SURVIVING ENTRY IS THE MARKED ONE, as the board marks its first — and "first surviving"
+  // rather than "summary", because the entry the board marks is the one that leads the strip it drew.
+  assert.match(nav[1], new RegExp(`href="#${entries[0][0]}" data-sec="${entries[0][0]}" class="now"`),
+    "no entry is marked current, or the mark is not on the one that leads");
+  assert.equal((nav[1].match(/class="now"/g) ?? []).length, 1, "more than one entry is marked current");
+});
+
+// AND THE FILTER REALLY FILTERS. A strip built from a literal would pass every assertion above on this
+// fixture, because this fixture happens to draw every section. Drive a document that draws fewer.
+test("a section that is not drawn takes its strip entry with it", () => {
+  const full = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-strip-full" });
+  // No findings and no coverage: no rows, no open rows, no cards and no record set, so the counts
+  // section is not drawn at all and #searched cannot be in the document.
+  const thin = renderHtml(parsedOf(REPORT), [], [], { runId: "noref-strip-thin" });
+  const of = (h) => [...(h.match(/<nav class="strip[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? "").matchAll(/href="#([^"]+)"/g)].map((m) => m[1]);
+  const [a, b] = [of(full), of(thin)];
+  assert.ok(a.length >= 2 && b.length >= 2, `strips of ${a.length} and ${b.length} — one of these documents drew no navigation`);
+  assert.notDeepEqual(a, b, "both documents drew the same strip, so it is a literal and not a reading of the document");
+  for (const id of b) assert.ok(thin.includes(`id="${id}"`), `the thinner document's strip points at #${id}, which it does not draw`);
 });
