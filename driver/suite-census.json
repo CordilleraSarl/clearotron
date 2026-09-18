@@ -729,6 +729,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-register-manual-states-what-its-provider-declares.test.mjs": {
+          "tests": 6,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "a-register-with-no-record-page-is-cited-not-linked.test.mjs": {
           "tests": 2,
           "asserts": 8,
