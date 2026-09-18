@@ -11,14 +11,14 @@
 // because none of them is a property of the source — they are properties of the PROCESSES that are
 // running, the ENVIRONMENT they were started in, and the COMMIT they were started from:
 //
-//   • #98 — the ops-MCP told every caller that three of five depths were "not switched on". They were
+//   • THE AVAILABILITY MISMATCH — the ops-MCP told every caller that three of five depths were "not switched on". They were
 //     switched on; the portal said so on the same box at the same moment. The MCP unit had no
 //     EnvironmentFile, so it read availability from an environment it did not have. The validation that
 //     was supposed to catch this ran `describe_options` in a plain shell — the one environment that
 //     makes it dishonest — and reported 10/10. A probe that talks to the RUNNING service cannot make
 //     that mistake.
 //
-//   • #83 — the ops-MCP had no CLEAROTRON_CUSTOMERS_DIR, silently fell back to the bundled demo roster, and
+//   • THE ROSTER FALLBACK — the ops-MCP had no CLEAROTRON_CUSTOMERS_DIR, silently fell back to the bundled demo roster, and
 //     refused every real customer. Nothing anywhere compared the roster a door resolves against the
 //     roster on disk.
 //
@@ -35,7 +35,7 @@
 // Stated plainly, because a check that quietly skips a surface is worse than one that says it did:
 //
 //   ops-MCP      loopback, TRADEMARK_MCP_AUTH_DISABLED — fully reachable, two independent code paths
-//                (describe_options → lib/options.mjs, plan_run → lib/plan.mjs). #98 lived in BOTH, so
+//                (describe_options → lib/options.mjs, plan_run → lib/plan.mjs). The availability mismatch lived in BOTH, so
 //                comparing them to each other is necessary but NOT sufficient…
 //   on-disk      …which is why the load-bearing comparison is against the flag snapshot, recomputed
 //                here through the ENGINE's own productAvailability(). That is the source of truth the
@@ -47,10 +47,10 @@
 //
 // ── it must call the doors AS A REAL CALLER DOES ─────────────────────────────────────────────────────
 //
-// Learned while writing this, and worth stating because it is the same trap as #98 wearing a different
+// Learned while writing this, and worth stating because it is the same trap as the availability mismatch wearing a different
 // hat. A token-less loopback call to the ops face initialises an accounts-scoped session with NO
 // accounts: `list_profiles` answers `clients: 0` and `plan_run` refuses, because an empty grant covers
-// no account and not the neutral profile either. The first version of this script read that as a live #83 and was
+// no account and not the neutral profile either. The first version of this script read that as a live roster fallback and was
 // WRONG — the deployment was fine; the caller was not. With the portal's own ops token the same call
 // answers `clients: 10`.
 //
@@ -97,7 +97,7 @@ import { treeOfRunning } from "../shared/checkout-move.mjs";           // …and
 import { findUnitFiles, unitFilePath } from "../driver/unit-files.mjs";   //
 import { managerGroupsVerdict } from "../driver/manager-groups-verdict.mjs";   //
 import { config } from "../driver/driver.config.mjs";                          //
-import { probeQueueWatch, probeWorker, probeTimer } from "../driver/queue-watch-probe.mjs";   // · and, tracker issue 206, the units that say HOW this box drains
+import { probeQueueWatch, probeWorker, probeTimer } from "../driver/queue-watch-probe.mjs";   // · and the units that say HOW this box drains
 import { doorPostureVerdict } from "../mcp-server/door-posture.mjs";   // — a door whose mode came from another door's variables
 import { readDrainerStamp, drainerVerdict, defaultPpidOf } from "../driver/drainer-identity.mjs";   // — the process that EXECUTES runs
 import { readUpdaterStamp, updaterVerdict, resolveUpdaterStampPath, updaterAbsentHere, UPDATER_STAMP_BASENAME } from "../driver/updater-identity.mjs";   // — the mechanism that PLACES commits
@@ -105,7 +105,7 @@ import { claimerIsAlive } from "../driver/claim-liveness.mjs";                  
 import { processTable } from "../shared/process-table.mjs";                          // — /proc is not the only box
 import { envFrom } from "../shared/env-aliases.mjs";
 import { gitTry, treeOf } from "../shared/tree-commit.mjs";   // — a packaged install has no git, and says its commit in build-info.json
-import { exitFor } from "../driver/surface-exit-verdict.mjs";   // — a could-not-look is not a drift, and they want different things done   // — the name a reader is told to set is the one in force
+import { exitFor } from "../driver/surface-exit-verdict.mjs";   // — a check that could not look is not a drift, and they want different things done   // — the name a reader is told to set is the one in force
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const asJson = process.argv.includes("--json");
@@ -170,12 +170,12 @@ const PORTAL_URL = DOORS.portal.url;
 const CLIENT_MCP_URL = DOORS["client door"].url;
 
 // The bundled demo roster, as `list_profiles` REPORTS it. A door that resolves exactly this set is a
-// door with no CLEAROTRON_CUSTOMERS_DIR — #83. Compared as a set, not a count: a deployment may legitimately
+// door with no CLEAROTRON_CUSTOMERS_DIR — the roster fallback. Compared as a set, not a count: a deployment may legitimately
 // have three customers.
 //
 // DERIVED FROM THE DIRECTORY THAT SHIPS IT, never written down here. As a hand-maintained triple this
 // went stale the day a fourth bundle landed: the set-equality could no longer match anything, so the
-// #83 detector returned PASS on the #83 condition — a guard that cannot match reports that it found
+// roster-fallback detector returned PASS on the roster fallback itself — a guard that cannot match reports that it found
 // nothing wrong. The two earlier faults on this same constant failed CLOSED and someone investigated;
 // this one failed open. `generic` is excluded by the derivation, because `list_profiles` reports it as
 // `genericFallback` rather than as a member of `clients[]`.
@@ -203,7 +203,7 @@ const skip = (n, d) => record(n, "skip", d);   // could not be reached — never
  * Two arms used to call `fail` while their own message said "This is a failure to look, never a pass".
  * The text was honest and the verdict was not: FAIL is what a genuine drift also produces, so a reader
  * could not tell "this box has drifted" from "I was unable to look" without reading to the end of the
- * message. A drift is fixed by redeploying; a could-not-look is fixed by pointing the check at something
+ * message. A drift is fixed by redeploying; a check that could not look is fixed by pointing the check at something
  * it can read. Until somebody does, nothing is known either way.
  *
  * IT IS NOT THE SAME AS AN ORDINARY SKIP, which is why this exists rather than reusing `skip`. Several
@@ -536,7 +536,7 @@ const wiredRegister = snapshot?.register?.provider ?? null;
 if (wiredRegister) pass("register wired", `${wiredRegister} · canCount=${snapshot.register?.canCount === true}`);
 else skip("register wired", "the snapshot carries no register block");
 
-// 3a. The roster a door RESOLVES, vs the roster on disk. #83: no CLEAROTRON_CUSTOMERS_DIR ⇒ the bundled demos
+// 3a. The roster a door RESOLVES, vs the roster on disk. The roster fallback: no CLEAROTRON_CUSTOMERS_DIR ⇒ the bundled demos
 //     ⇒ every real customer refused. Counts and set-identity only — never a customer name.
 //     Runs BEFORE the availability checks because plan_run needs a profile to plan against, and taking
 //     it from what the door itself resolved is what keeps a customer key out of this source file.
@@ -561,7 +561,7 @@ try {
   //   clients: 0        → an accounts-scoped session with NO accounts, i.e. THIS CALLER is unscoped.
   //                       A statement about the probe, not the deployment. Never a failure.
   //   clients: <demos>  → the door resolved the BUNDLED roster, i.e. CLEAROTRON_CUSTOMERS_DIR is not reaching
-  //                       the service. A statement about the deployment. This is #83.
+  //                       the service. A statement about the deployment. This is the roster fallback.
   // On the TEST instance the bundled roster is the CORRECT answer — CLEAROTRON_CUSTOMERS_DIR is deliberately
   // unset there so real client bundles never reach it. Same observation, opposite verdict, so the
   // instance has to say which it is rather than the check guessing from a hostname or a path.
@@ -570,10 +570,10 @@ try {
   // protected; inside this top-level-await script neither could be caught by a test.
   // The derivation THROWS rather than handing back an empty set, and the throw is caught here on its own
   // so it cannot be reported as a list_profiles fault. Either way it is never a pass: an unreadable
-  // profiles directory means #83 cannot be ruled out, which is a could-not-look and says so.
+  // profiles directory means the roster fallback cannot be ruled out: the check could not look, and says so.
   let bundledDemos = null;
   try { bundledDemos = bundledDemoKeys({ profilesDir: BUNDLED_PROFILES_DIR }); }
-  catch (e) { fail("roster resolves", `the bundled roster could not be derived, so #83 cannot be ruled out: ${e.message}`); }
+  catch (e) { fail("roster resolves", `the bundled roster could not be derived, so a door falling back to the bundled demo roster cannot be ruled out: ${e.message}`); }
 
   // THE DOOR ANSWERED FOR THIS KEY, so the comparison is made within this key's cap. Its claims are read
   // the way doctor and the brand-owner command read them. A key that cannot be read leaves the verdict
@@ -608,7 +608,7 @@ try {
 }
 
 // 3. THE LOAD-BEARING CHECK — every door's availability answer vs the engine's own, recomputed here
-//    from the snapshot. This is #98: the MCP disagreed with the portal because it derived availability
+//    from the snapshot. This is the availability mismatch: the MCP disagreed with the portal because it derived availability
 //    from its own process environment instead of from this file.
 let mcpOptions = null;
 try {
@@ -731,7 +731,7 @@ if (mcpOptions && built) {
   else pass("doors agree with the engine on product availability", `${seen.length} products, all matching: ${seen.join(", ")}`);
 
   // 3b. describe_options and plan_run are two independent code paths (lib/options.mjs, lib/plan.mjs).
-  //     #98 lived in both, so agreement here is necessary-but-not-sufficient — 3 above is the real test.
+  //     The availability mismatch lived in both, so agreement here is necessary-but-not-sufficient — 3 above is the real test.
   //
   //     plan_run needs an explicit profileKey: an accounts-scoped session refuses without one. The key
   //     comes from what the door ITSELF resolved (below), so no customer is ever hardcoded here.
@@ -863,7 +863,7 @@ else {
       // to an unprobed posture — a failure to look, never a pass.
       posture: { worker: probeWorker(), timer: probeTimer() },
     });
-    // — AND THE VERDICT'S OWN could-not-look MARKER, carried through. The verdict distinguishes a
+    // — AND THE VERDICT'S OWN MARKER FOR A CHECK THAT COULD NOT LOOK, carried through. The verdict distinguishes a
     // process table it could not read from one that answered; dropping that here would put the
     // distinction back where it was, one layer down.
     record("the process that executes runs is on the deployed commit", v.state, v.message, v.blocked === true);

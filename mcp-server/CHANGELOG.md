@@ -4,7 +4,7 @@
 
 ### Patch Changes
 
-- 98a57dd: Fixed: An assistant connected with nothing configured is now told which settings are missing, instead of being shown an empty list of searches.
+- Fixed: An assistant connected with nothing configured is now told which settings are missing, instead of being shown an empty list of searches.
 
 ## 0.3.2-beta.9
 
@@ -50,16 +50,16 @@ No changes in this release.
 
 ### Patch Changes
 
-- f96c089: Fixed: A clearance for a new client can be ordered through an assistant connector without setting up a company first.
-- 56a760f: Fixed: Removing somebody's access now ends their assistant's connection on its next request. Until now an assistant that had already connected kept the access it started with for up to half an hour.
-- c05e0a7: Fixed: Ask your assistant for a client's recent searches by the client's name and it finds them. Every search in the list now says which client it was for, and which project. A search whose own record cannot be read says so, instead of appearing to belong to nobody.
-- d9798db: Fixed: A clearance that stops now always records that its notice is still owed, so a failure cannot be passed over as already handled.
-- 240673c: Fixed: Sending an access key to the engine's network address now gets a refusal that says so. It reports that the address takes an identity from the sign-in proxy and never a key.
+- Fixed: A clearance for a new client can be ordered through an assistant connector without setting up a company first.
+- Fixed: Removing somebody's access now ends their assistant's connection on its next request. Until now an assistant that had already connected kept the access it started with for up to half an hour.
+- Fixed: Ask your assistant for a client's recent searches by the client's name and it finds them. Every search in the list now says which client it was for, and which project. A search whose own record cannot be read says so, instead of appearing to belong to nobody.
+- Fixed: A clearance that stops now always records that its notice is still owed, so a failure cannot be passed over as already handled.
+- Fixed: Sending an access key to the engine's network address now gets a refusal that says so. It reports that the address takes an identity from the sign-in proxy and never a key.
   
   Fixed: That refusal also names the local door where a key is accepted. Before, it reported only a missing sign-in assertion, which sent operators to the wrong configuration.
   
   For operators: A program on the same machine can now reach the engine's local key door without setting a host name for it. The local door no longer applies a browser protection that only a network address needs.
-- f96c089: New: The free preview of a search lists, for each territory ordered, which registers legally bind it.
+- New: The free preview of a search lists, for each territory ordered, which registers legally bind it.
 
 ## 0.3.1-beta.4
 
@@ -69,20 +69,20 @@ No changes in this release.
 
 ### Patch Changes
 
-- 56a760f: Fixed: Removing somebody's access now ends their assistant's connection on its next request. Until now an assistant that had already connected kept the access it started with for up to half an hour.
-- c05e0a7: Fixed: Ask your assistant for a client's recent searches by the client's name and it finds them. Every search in the list now says which client it was for, and which project. A search whose own record cannot be read says so, instead of appearing to belong to nobody.
+- Fixed: Removing somebody's access now ends their assistant's connection on its next request. Until now an assistant that had already connected kept the access it started with for up to half an hour.
+- Fixed: Ask your assistant for a client's recent searches by the client's name and it finds them. Every search in the list now says which client it was for, and which project. A search whose own record cannot be read says so, instead of appearing to belong to nobody.
 
 ## 0.3.1-beta.2
 
 ### Patch Changes
 
-- f96c089: Fixed: A clearance for a new client can be ordered through an assistant connector without setting up a company first.
-- 240673c: Fixed: Sending an access key to the engine's network address now gets a refusal that says so. It reports that the address takes an identity from the sign-in proxy and never a key.
+- Fixed: A clearance for a new client can be ordered through an assistant connector without setting up a company first.
+- Fixed: Sending an access key to the engine's network address now gets a refusal that says so. It reports that the address takes an identity from the sign-in proxy and never a key.
   
   Fixed: That refusal also names the local door where a key is accepted. Before, it reported only a missing sign-in assertion, which sent operators to the wrong configuration.
   
   For operators: A program on the same machine can now reach the engine's local key door without setting a host name for it. The local door no longer applies a browser protection that only a network address needs.
-- f96c089: New: The free preview of a search lists, for each territory ordered, which registers legally bind it.
+- New: The free preview of a search lists, for each territory ordered, which registers legally bind it.
 
 ## 0.3.1-beta.1
 
@@ -92,7 +92,7 @@ No changes in this release.
 
 ### Patch Changes
 
-- d9798db: Fixed: A clearance that stops now always records that its notice is still owed, so a failure cannot be passed over as already handled.
+- Fixed: A clearance that stops now always records that its notice is still owed, so a failure cannot be passed over as already handled.
 
 ## 0.3.0
 
@@ -122,7 +122,7 @@ No changes in this release.
 
 ### Patch Changes
 
-- e7cd9e1: Fixed: On an install run with `clearotron start`, a connected assistant now lists the same saved searches as the portal, including Generic's. `clearotron doctor` no longer says working saved searches are off, and it names one place profiles come from.
+- Fixed: On an install run with `clearotron start`, a connected assistant now lists the same saved searches as the portal, including Generic's. `clearotron doctor` no longer says working saved searches are off, and it names one place profiles come from.
 
 ## 0.3.0-beta.4
 
@@ -136,13 +136,13 @@ No changes in this release.
 
 ### Patch Changes
 
-- eacfce4: Fixed: An assistant reading a knockout's filings through the connector now gets each filing's page at the trade mark office, as the report does. Where that register publishes no page for a single record, it gets the office and the number instead. Before, it got a reference that opens nowhere.
+- Fixed: An assistant reading a knockout's filings through the connector now gets each filing's page at the trade mark office, as the report does. Where that register publishes no page for a single record, it gets the office and the number instead. Before, it got a reference that opens nowhere.
 
 ## 0.3.0-beta.1
 
 ### Patch Changes
 
-- b8ec213: Fixed: A company you create in the browser now appears in your assistant's list of companies straight away.
+- Fixed: A company you create in the browser now appears in your assistant's list of companies straight away.
   
   It used to appear only after the service restarted, although a search could already be started for it. Its projects were missing from the list in the same way, and so was its account in the search options.
   
@@ -186,7 +186,7 @@ No changes in this release.
 
 ### Patch Changes
 
-- 19a1869: New: Ask a what-if about a delivered report and get a supplementary memo over its archived evidence, without touching the report.
+- New: Ask a what-if about a delivered report and get a supplementary memo over its archived evidence, without touching the report.
 
 ## 0.1.3
 
@@ -196,12 +196,12 @@ No changes in this release.
 
 ### Patch Changes
 
-- 6d05f62: Fixed: An assistant connected to Clearotron no longer asks permission before reading; it still asks before starting or stopping a search.
+- Fixed: An assistant connected to Clearotron no longer asks permission before reading; it still asks before starting or stopping a search.
 
 ## 0.1.1-beta.1
 
 ### Patch Changes
 
-- 6d05f62: An assistant connected to Clearotron no longer asks permission before reading; it still asks before starting or stopping a search.
+- An assistant connected to Clearotron no longer asks permission before reading; it still asks before starting or stopping a search.
 
 ## 0.1.1-beta.0

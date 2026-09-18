@@ -14,7 +14,7 @@ and a beta is cut deliberately — when a change lands that somebody should test
 prepared — rather than on every merge. `npm install clearotron` gives a stranger the stable; `npm install
 clearotron@beta` gives them the newest.
 
-A **stable** is cut on the owner's word, once a beta has passed a clearance run and a from-scratch install
+A **stable** is cut once a beta has passed a clearance run and a from-scratch install
 by somebody who has never seen the product. Cutting one means leaving pre mode: the accumulated betas fold
 into **one** version with **one** changelog entry, which is why the notes in `pre/` matter (below).
 
@@ -77,11 +77,11 @@ read the point of should not go out.
 
 ---
 
-# Release notes contract — ruling 2026-09-05 ("SUPER CLEAR AND SIMPLE", enshrined in the repo, not in memory)
+# How to write a release note
 
 ## Who reads a release note
 Someone who installs and runs Clearotron: a trademark lawyer, or the IT person helping them. They have never
-opened this repository, do not know our issue tracker, our test names, our agents, or our words for things.
+opened this repository, and do not know its issue tracker, its test names, or its words for things.
 They read the GitHub Releases page or `CHANGELOG.md` to decide whether to upgrade and what will be different.
 
 ## The one rule
@@ -104,7 +104,7 @@ A note states, in one plain sentence, what is different for that reader after up
 - "now correctly", "as expected", "properly" — say what happens instead.
 - A sentence a reader cannot act on or picture.
 
-## Before → after (the two the owner rejected, and one more)
+## Before → after
 - ✗ "Every release now carries a signed record of the commit and the build that produced it, so you can check
   that what you installed is what this repository holds."
   ✓ "Releases are now signed. Each npm package carries a record of the exact source and build it came from,

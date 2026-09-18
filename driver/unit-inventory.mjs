@@ -228,7 +228,7 @@ export const UNIT_INVENTORY = Object.freeze([
     // checkout path an ordinary systemd expansion and leaves no placeholder to render.
     note: "NOT RUNNING ANYWHERE, measured 2026-09-08. This row said LIVE ON PRODUCTION for as long as it "
       + "existed and no enumeration ever supported it. Was a TEMPLATE unit carrying identity-provider "
-      + "values inline; generic since tracker issue 1925.",
+      + "values inline; generic since the product installed its own units.",
     orphanReason: "CLAIMED A DEPLOYMENT IT WAS NEVER MEASURED ON, which is a FOURTH kind of orphan and "
       + "the only one that was ever a wrong claim rather than a waiting decision: the other three run "
       + "under another name, were deliberately switched off, or have simply never been installed. This "
@@ -246,7 +246,7 @@ export const UNIT_INVENTORY = Object.freeze([
     // it, against a fresh enumeration, which is the ratchet working rather than being edited around.
     unit: "clearotron-portal", runsOn: ["test"], tracked: ["clearotron-portal.service"],
       measured: "2026-09-07, test box, `systemctl --user show` with a working user bus: ActiveState=active, UnitFileState=enabled, fragment under ~/.config/systemd/user/.",
-    note: "NEW, tracker issue 1925, SHIPPED BUT NOT YET DEPLOYED. The portal had NO unit at all — it "
+    note: "NEW, SHIPPED BUT NOT YET DEPLOYED. The portal had NO unit at all — it "
       + "and the MCP face are the two children bin/start.mjs supervises, and neither ran under systemd, "
       + "so a hosted deployment kept them alive with a hand launcher and `clearotron start` had nothing "
       + "to refuse in favour of.",
@@ -263,7 +263,7 @@ export const UNIT_INVENTORY = Object.freeze([
     // asserting a production state no enumeration has ever shown.
     unit: "clearotron-mcp-face", runsOn: ["test"], tracked: ["clearotron-mcp-face.service"],
       measured: "2026-09-07, test box, `systemctl --user show` with a working user bus: ActiveState=active, UnitFileState=enabled, fragment under ~/.config/systemd/user/.",
-    note: "NEW, tracker issue 1925, SHIPPED BUT NOT YET DEPLOYED. The engine door the portal calls over "
+    note: "NEW, SHIPPED BUT NOT YET DEPLOYED. The engine door the portal calls over "
       + "MCP; the other of the two processes that had no unit.",
     orphanReason: "THE ENGINE DOOR THE PORTAL CALLS, shipped with no box carrying it yet. Same kind as "
       + "clearotron-portal beside it and as clearotron-deploy — never installed — and distinct from "
@@ -292,11 +292,11 @@ export const UNIT_INVENTORY = Object.freeze([
     // enumeration of a box shows it running.
     unit: "clearotron-client-mcp", runsOn: ["test"], tracked: ["clearotron-client-mcp.service"],
       measured: "2026-09-07, test box, `systemctl --user show` with a working user bus: ActiveState=active, UnitFileState=enabled, fragment under ~/.config/systemd/user/.",
-    note: "tracker issue 1976, and INSTALLED WITH THE PRODUCT since tracker issue 2148. The client door "
+    note: "INSTALLED WITH THE PRODUCT since 2026-09-03. The client door "
       + "— the one surface that accepts an account-scoped key, and a separate process from the engine "
       + "door, which refuses one outright.",
-    orphanReason: "Awaiting a box. It joined the install set on 2026-09-03 (tracker issue 2148 settled "
-      + "point 2, superseding the on-demand posture it shipped under), so `render-units.mjs --apply` "
+    orphanReason: "Awaiting a box. It joined the install set on 2026-09-03, superseding the "
+      + "on-demand posture it shipped under, so `render-units.mjs --apply` "
       + "and `clearotron start --background` both place and enable it. It REFUSES TO START without "
       + "CLIENT_MCP_TOKEN_ONLY=1, CLIENT_MCP_ACCOUNT_ACCESS=1, the allow-list, the signing secret and "
       + "CLEAROTRON_ACCESS_FILE in the box's `%h/.env` (it otherwise demands an OIDC audience and an "
@@ -310,7 +310,7 @@ export const UNIT_INVENTORY = Object.freeze([
     // it leaves a hosted box healthy-looking and draining nothing.
     unit: "clearotron-worker", runsOn: ["test"], tracked: ["clearotron-worker.service"],
       measured: "2026-09-07, test box, `systemctl --user show` with a working user bus: ActiveState=active, UnitFileState=enabled, fragment under ~/.config/systemd/user/.",
-    note: "NEW, tracker issue 1863. The drain, as one plain service unit invoking the entrypoint "
+    note: "NEW. The drain, as one plain service unit invoking the entrypoint "
       + "directly (owner ruling 2026-08-31). Ships tracked, runs nowhere yet — production takes it at "
       + "its rebuild, which is the same event that lets the retired units' files leave the tree.",
     orphanReason: "AWAITING A BOX, not an orphan by design. It is the hosted posture's drainer, and the "

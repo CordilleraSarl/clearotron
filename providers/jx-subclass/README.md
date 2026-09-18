@@ -72,7 +72,7 @@ class 44) and `351918` (cosmetics retail, class 35). A class-3 search finds neit
 goods that have a Nice basic number (609), so validating a relation's target group against it would drop
 real relations without a word. The authority is `tw/tw-group-codes.json`, taken from TIPO's group headers.
 
-## Korea — done, and round-2 research had the mechanism wrong
+## Korea
 
 KIPO publishes 「유사상품 심사기준(니스 제13판)」 as a direct download: **21.8 MB, 1,011 pages, full text
 layer** (`kpoContFileDown.do?seq=30&fileNum=25`, Referer header required).

@@ -141,8 +141,8 @@ export function installRoute(dir = INSTALL_DIR) {
  *     <prefix>/lib/node_modules/clearotron      ← this module's install directory
  *     <prefix>/bin/clearotron                   ← the executable npm links for it
  *
- * Measured on the reporter's box: `/home/hardening-b/.npm-global/lib/node_modules/clearotron` and
- * `/home/hardening-b/.npm-global/bin/clearotron`. A LOCAL install — `<project>/node_modules/clearotron`,
+ * Measured on a reader's machine: `/home/<you>/.npm-global/lib/node_modules/clearotron` and
+ * `/home/<you>/.npm-global/bin/clearotron`. A LOCAL install — `<project>/node_modules/clearotron`,
  * no `lib` segment — is deliberately NOT matched: npm links those into `<project>/node_modules/.bin`,
  * which is not on anybody's PATH, and `standFrom` already gives that case its correct answer.
  *
