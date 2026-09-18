@@ -261,6 +261,7 @@ import { unionDispositionForm, formSidecarPath } from "./disposition-union.mjs";
 import { unionCoverageForm } from "./coverage-union.mjs";
 import { coverageFormStamp, readCoverageForm, readCoverageFormInput, writeCoverageForm } from "./coverage-form-io.mjs";
 import { unionPlacementForm } from "./placement-union.mjs";
+import { placementRenderAccount } from "./placement-form.mjs";
 import { placementFormStamp, readPlacementForm, readPlacementFormInput, readSubmittedPlacementForm, writePlacementForm, renderPlacementsFile } from "./placement-form-io.mjs";
 // The register-axis vocabulary, quoted verbatim into the coverage-form axis hint. ONE source: the same
 // constant `rowIsSettled` refuses against, so the hint can never name a set the gate does not accept.
@@ -741,7 +742,12 @@ export function syncPlacementForm(files) {
     // never put an unparseable deliverable on disk, and on a throw the previous file is left alone.
     const r = renderPlacementsFile(runDir, u.form.rows);
     if (!r.ok) note(`[placement-form] placements.json NOT re-rendered: ${r.error} — the previous file stands and the omission is on the form`);
-    return { ...u, rendered: r.ok ? r.placements : null, render_error: r.error };
+    // WHO OWES EACH ROW THE RENDER LEFT OUT — the same account validators.placement judges with, carried onto
+    // the attempt row so an omission is never read without its cause.
+    const a = placementRenderAccount(u.form.rows);
+    const account = { unjudged: a.unjudged.length, registerSelected: a.register_selected,
+      registerRendered: a.register_rendered, registerFacts: a.register_facts };
+    return { ...u, rendered: r.ok ? r.placements : null, render_error: r.error, account };
   }
   return null;
 }
@@ -1699,7 +1705,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         // destroyed. `unresolved` counts selections the fold does not hold. RECORDING ONLY.
         placements: lastPlacementUnion ? { settled: lastPlacementUnion.settled, outstanding: lastPlacementUnion.outstanding,
           carried: lastPlacementUnion.carried, total: lastPlacementUnion.total, seatRows: lastPlacementUnion.seat_rows,
-          unresolved: lastPlacementUnion.unresolved, rendered: lastPlacementUnion.rendered } : undefined,
+          unresolved: lastPlacementUnion.unresolved, rendered: lastPlacementUnion.rendered, account: lastPlacementUnion.account } : undefined,
         //: how many in-dispatch form repairs THIS attempt bought (absent = none). Its own rows
         // sit immediately above with the defect each one was dispatched to fix.
         formRepairs: formRepairsThisAttempt || undefined,

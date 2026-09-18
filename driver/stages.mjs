@@ -2310,7 +2310,7 @@ export const STAGES = {
     // — `placementForm: 1` joins it rather than replacing it. Under the form era placements.json is
     // DRIVER-RENDERED from the accumulator, so validators.placement must stop demanding it from the seat;
     // archived runs carry the old key alone and keep validating under the rules they were minted under.
-    contract: { structuredPlacements: 1, placementForm: 1 },
+    contract: { structuredPlacements: 1, placementForm: 1, placementAccount: 1 },   // placementAccount: see placementAccountArmed in verify.mjs
     skillReads: ["skills/placement-inquiry/SKILL.md"],
     out: (P) => P.placement,
     // — `outSibs: [P.placementModel]` is DELETED, and the premise is retired rather than overruled.
@@ -2326,7 +2326,7 @@ export const STAGES = {
     // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
     contractElements: {
       "tier — EXACTLY one of headline-candidate / sheet-2 / watchlist-annex / out-of-scope-filtered, per placed candidate": {
-        class: "judgment", tokens: ["placement_tier_invalid", "missing"],
+        class: "judgment", tokens: ["placement_tier_invalid", "missing", "placement_unjudged"],
         why: "The answer to 'does this conflict change the advice, or only complete the record?' No artifact on disk holds it — the band supplies records, never a deliverable position. #850 keeps it J.",
       },
       "reason — the short paragraph carrying the stated ground for the tier (owner characterisation, customer/channel read, decisive ground, Stage-2 mitigant)": {
@@ -2362,11 +2362,11 @@ export const STAGES = {
         why: "Commercial-relevance reasoning, written once per SURFACED CANDIDATE — not per enumerated record; this element's own key overstates it and is left alone only because that string is frozen in contract-arm2-baseline.json. Measured on delivered run ed1d7248: SIX `**Inquiry trace:**` bullets against a band of 412 enumerated records, each one compressed bullet with inline (1)…(7), 2,096 of the md's 44,131 chars — 4.7%. NO CODE PARSES IT and it carries no token, but that is not the same as having no consumer, and the previous wording here ('lands only in md prose nothing parses') invited exactly that misreading: placement-recommendations.md is dispatched as model context to register-digest, synthesis and narrative-refutation, and a reviewing lawyer reads it. Its consumer is the human audit trail. The `reason` contract forbids restating it there — see the tier-enum dispatch line's 'NEVER the full 7-point inquiry trace' (cited by its text, not a line number: the pointer this comment used to carry had drifted 756 lines and aimed at a bare brace). #1339 D2 proposed dropping the order; owner ruled DROP THE TRIM on the re-derivation: the trace is ~8 s of emission at 70 tok/s, and deleting the whole md would be 2.6-3.0 min against a claim needing 25-33, so no trim inside this artifact could ever have been the dominant term.",
       },
       "placements.json — the structured mirror, keys EXACTLY {mark, owner, jurisdiction, records, tier, reason} + optional borderline": {
-        class: "mechanical:code-rendered", tokens: ["placementmodel_missing", "placements_unparseable", "placements_key_unknown", "placement_invalid", "placement_key_unknown"],
+        class: "mechanical:code-rendered", tokens: ["placementmodel_missing", "placements_unparseable", "placements_key_unknown", "placement_invalid", "placement_key_unknown", "placement_form_unreadable"],
         why: "The driver renders it: renderPlacementsJson() in placement-form.mjs over the union, landed by `syncPlacementForm` in gateway.mjs (the union-then-render block). Cited by SYMBOL because the number has now moved twice: an earlier :507 pointed at an engine-resolution comment, and :706 went blank when an unrelated block was inserted above it. The skill file was not updated with #562, so the stage's two sources contradict each other — the contract that escapes if E1 is authored against stages.mjs alone.",
       },
       "mark / owner / records / territories / classes on a SELECTED row": {
-        class: "mechanical:code-extracted", tokens: [],
+        class: "mechanical:code-extracted", tokens: ["placement_register_unrendered"],
         why: "renderEntry() in placement-form.mjs machine-copies all five from the canonical row built out of _driver/register-positions.json; SELECT_ROW_CONTRACT declared in placement-form.mjs states it in its do_not field. The driver already overwrites what the model types, which is the audit's own definition of mechanical.",
       },
       "retract: <row_id> — withdrawing a seat row already on the form": {

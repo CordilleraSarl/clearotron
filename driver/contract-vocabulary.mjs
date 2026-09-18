@@ -209,6 +209,9 @@ export const VOCABULARY = [
 
   // ── placement-inquiry ──────────────────────────────────────────────────────────────────────────────
   { token: "placementmodel_missing", stages: ["placement-inquiry"], site: "driver/verify.mjs:1352, 1379" },
+  { token: "placement_unjudged", stages: ["placement-inquiry"], site: "driver/verify.mjs placementAccountVerdict" },
+  { token: "placement_register_unrendered", stages: ["placement-inquiry"], site: "driver/verify.mjs placementAccountVerdict" },
+  { token: "placement_form_unreadable", stages: ["placement-inquiry"], site: "driver/verify.mjs placementAccountVerdict" },
   { token: "placement", stages: ["placement-inquiry"], site: "driver/verify.mjs:1352 → 742", family: "driver/placement-model.mjs (`placement_*` and `placements_*`)", dynamic: "D3" },
 
   // ── case-law / narrative-refutation ────────────────────────────────────────────────────────────────
@@ -560,6 +563,10 @@ export const COVERED_SOURCES = [
   // tripwire must read this module's token literals too. Without it the accounting family could grow a
   // member that no vocabulary row covers and nothing would notice, which is this list's whole subject.
   "register-digest-record.mjs",
+  // verify.mjs reaches `placementRenderAccount`, the placement pass's own account of what it recorded, and
+  // that module names the parser tokens it sorts rows by. It mints none of its own: every token it carries
+  // is placement-model.mjs's, passed through, so the `placement` family row already covers them.
+  "placement-form.mjs",
 ];
 
 /**
