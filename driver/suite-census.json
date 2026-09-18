@@ -1859,7 +1859,7 @@
         },
         "deployment-hostnames.test.mjs": {
           "tests": 13,
-          "asserts": 37,
+          "asserts": 38,
           "skips": 0,
           "todos": 0
         },
