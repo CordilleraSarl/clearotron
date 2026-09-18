@@ -1300,6 +1300,27 @@ const savedCodes = (await evalIn(`(async () => {
     nameSentence: (document.body.innerText.match(/Add the name you want cleared, in Names above\\./g) || []).length,
     leftPanel: /One thing left to fill in|A couple of things left to fill in/.test(document.body.innerText) };
 })()`)).result?.result?.value ?? { fatal: 'evaluate returned nothing' }
+// THE FOOTER SAYS WHAT THE WHERE PANEL SAYS, on the form as it was reported: a company holding US, EU and
+// UK, on Signa, nothing entered. With a Global preliminary search picked the panel read "Worldwide,
+// searched on Signa" and the footer beneath it still named "US, EU, UK" — a scope that order would never
+// run. Read off the panel's own chip, so the footer is held to whatever the panel draws rather than to a
+// phrase written here; then a search that takes territories must name them there again.
+const footerAgrees = (await evalIn(`(async () => {
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const footer = () => { const f = document.querySelector('.composer-footer'); return f ? f.innerText.replace(/\\s+/g, ' ') : ''; };
+  const pick = (re) => { const row = [...document.querySelectorAll('.pick-row')].find((b) => re.test(b.innerText || ''));
+    const hit = row && row.querySelector('.pick-row-hit'); if (!hit) return false; hit.click(); return true; };
+  const out = {};
+  out.pickedGlobal = pick(/Global preliminary search/);
+  await sleep(250);
+  const chip = [...document.querySelectorAll('.chip')].find((c) => /^Worldwide/.test(c.innerText.trim()));
+  out.whereLine = chip ? chip.innerText.trim() : null;
+  out.globalFooter = footer();
+  out.pickedMulti = pick(/Multi-country focus search/);
+  await sleep(250);
+  out.multiFooter = footer();
+  return out;
+})()`)).result?.result?.value ?? { fatal: 'evaluate returned nothing' }
 profileTerritories = []
 registerReach = undefined
 registerLabelNow = null
@@ -1642,6 +1663,13 @@ ok(!savedCodes.fatal && savedCodes.nameSentence === 1 && !savedCodes.leftPanel,
   `a form nobody has typed in says "Add the name" ${savedCodes.nameSentence} time(s), with the panel ${savedCodes.leftPanel ? 'drawn' : 'absent'} — the board draws the footer line once and no panel`)
 ok(!savedCodes.fatal && savedCodes.deferred.length === 0 && savedCodes.notAvailable.length === 0,
   `a company territory the register covers is drawn as not available — ${JSON.stringify(savedCodes)}`)
+ok(!footerAgrees.fatal && footerAgrees.pickedGlobal && footerAgrees.whereLine === 'Worldwide, searched on Signa',
+  `with a Global preliminary search picked, the Where panel does not read "Worldwide, searched on Signa" — ${JSON.stringify(footerAgrees)}`)
+ok(!footerAgrees.fatal && footerAgrees.whereLine && footerAgrees.globalFooter.includes(footerAgrees.whereLine)
+  && !/\b(US|EU|UK)\b/.test(footerAgrees.globalFooter),
+  `with a Global preliminary search picked, the footer does not say what the Where panel says, or still names the company's territories — footer: ${JSON.stringify(footerAgrees.globalFooter)}`)
+ok(!footerAgrees.fatal && footerAgrees.pickedMulti && /US, EU, UK/.test(footerAgrees.multiFooter) && !/Worldwide/.test(footerAgrees.multiFooter),
+  `with a Multi-country focus search picked, the footer does not name the company's territories it will search — footer: ${JSON.stringify(footerAgrees.multiFooter)}`)
 if (inherited.fatal) {
   // the throw says WHAT was missing; the screen says what was there instead. Both, or the next
   // reader reruns it to find out.
