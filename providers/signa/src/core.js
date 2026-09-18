@@ -136,7 +136,11 @@ function buildFilters(p) {
 }
 
 export function buildSearchRequest(p) {
-  const body = { query: p.query };
+  // `query` is OMITTED, not sent undefined, when the entry is owner-only: an explicit `query: undefined`
+  // serializes away anyway, but writing it conditionally is what makes the owner-only shape legible here
+  // rather than an accident of JSON.stringify.
+  const body = {};
+  if (String(p.query ?? "").trim()) body.query = p.query;
   const match = typeof p.match === "string" ? p.match.trim() : "";
   if (match && DETERMINISTIC_MATCH.has(match)) {
     body.match = match;   // sending strategies alongside is a 4xx, not a preference
@@ -419,8 +423,16 @@ function loadFixture(name) {
 // the roster unwidened, which is the direction to err in before an open-source cut. Hence a fallback
 // LIST rather than one hardcoded term.
 const DETERMINISTIC_FALLBACK_TERMS = ["nike", "swoosh"];
-function resolveSearchFixture({ query, strategies, match }) {
+function resolveSearchFixture({ query, strategies, match, owner }) {
   const q = String(query || "").toLowerCase();
+  // AN OWNER-ONLY SEARCH HAS NO QUERY, so every lookup below — which keys on the term — would miss and
+  // the mock would answer "no fixture for query=". That is not a harmless gap: it is the reason the
+  // owner-only path could not be driven offline, and a test that cannot reach `doSearch` gets closed by
+  // asserting the element predicate instead, which passes while the request gate still refuses.
+  if (!q && String(owner || "").trim()) {
+    const o = String(owner).trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    return loadFixture(`signa-search-owner-${o}`) || loadFixture("signa-search-owner");
+  }
   const det = typeof match === "string" ? match.trim() : "";
   if (det) {
     return loadFixture(`signa-search-match-${det}-${q}`)
@@ -432,16 +444,54 @@ function resolveSearchFixture({ query, strategies, match }) {
   return null;
 }
 
+// ── WHAT COUNTS AS SOMETHING TO SEARCH ────────────────────────────────────────────────────────────
+//
+// THE DEFECT THIS CLOSES. Two gates decided whether a plan entry had anything to search, and both
+// answered on a free-text query or a names list alone. Neither counted an OWNER. An owner portfolio
+// sweep carries an owner and no query by definition — that is what the shape is — so every one was
+// refused before it was ever dispatched: `doSearch` returned "query is required", and the kernel's
+// element gate returned the enumerate contract's missing-element error without calling the provider.
+// The run continued and disclosed the slices as unsearched, so nothing failed and a client's report
+// said the incumbent portfolios "could not be reached" when nothing had asked for them.
+//
+// It was never a capability gap. `buildFilters` already maps `owner` to this vendor's owner filter and
+// its note names the three populations — term alone, OWNER ALONE, both — as genuinely different from
+// each other. `ownerWindowCeiling` exists solely to cap paging for owner-scoped searches, which is not
+// something written for a shape that cannot be dispatched, and it defers to `isOwnerScoped`, the
+// KERNEL's own predicate, whose note names a bare-owner sweep as one of the two shapes it serves.
+// Only the two element gates were never taught that an owner is an element.
+//
+// ONE DEFINITION, because this file already carries the lesson: `buildFilters` exists because two
+// hand-written copies of the same object let one of them be wrong for two months. Two hand-written
+// copies of "does this carry an element" would drift the same way, and the drift would be silent in
+// the same direction — a shape one gate admits and the other refuses reads as a provider error.
+export const hasSearchElement = (p) => Boolean(
+  String(p?.query ?? "").trim()
+  || (Array.isArray(p?.names) && p.names.filter(Boolean).length)
+  || (typeof p?.owner === "string" && p.owner.trim()));
+
+/**
+ * What this request was FOR, for a log line and an error message. An owner-only search has no query,
+ * and "query=undefined" in a refusal is how a reader concludes the caller forgot one.
+ */
+export const searchTargetLabel = (p = {}) => (String(p.query ?? "").trim()
+  ? `query=${p.query}`
+  : (typeof p.owner === "string" && p.owner.trim() ? `owner=${p.owner.trim()}` : "no element"));
+
+/** The refusal, naming every element that would have been accepted. */
+export const MISSING_ELEMENT_ERROR = "ERROR: signa_enumerate — a query, names[] or owner is required.";
+
 // ── Search ─────────────────────────────────────────────────────────────────────────────────────────
 export async function doSearch(apiKey, base, params, tctx, { mock = false } = {}) {
-  if (!params.query) return { type: "text", text: "ERROR: query is required." };
+  // Refuses only when there is NOTHING to search. An owner alone is a search (see hasSearchElement).
+  if (!hasSearchElement(params)) return { type: "text", text: MISSING_ELEMENT_ERROR };
   if (mock) {
     const fx = resolveSearchFixture(params);
-    if (!fx) return { type: "text", text: `ERROR (mock): no fixture for query=${params.query} strategy=${(params.strategies || ["exact"])[0]}` };
+    if (!fx) return { type: "text", text: `ERROR (mock): no fixture for ${searchTargetLabel(params)} strategy=${(params.strategies || ["exact"])[0]}` };
     return { type: "text", text: JSON.stringify({ mock: true, ...normalizeSearchResponse(fx, params.query) }, null, 2) };
   }
   const body = buildSearchRequest(params);
-  const r = await signaFetch(apiKey, base, "/v1/trademarks", { method: "POST", body, tctx: { ...tctx, target: String(params.query).slice(0, 120) } });
+  const r = await signaFetch(apiKey, base, "/v1/trademarks", { method: "POST", body, tctx: { ...tctx, target: searchTargetLabel(params).slice(0, 120) } });
   if (!r.ok) {
     const msg = r.body?.error?.detail ?? r.body?.message ?? (r.raw ? r.raw.slice(0, 200) : "");
     return { type: "text", text: `ERROR: signa_search HTTP ${r.status}: ${msg}` };
@@ -451,11 +501,11 @@ export async function doSearch(apiKey, base, params, tctx, { mock = false } = {}
   // in exactly this case there is no second net. An unparsed 200 was the shortest path in the codebase
   // from a cut connection to `state:"enumerated"` with zero records. The guard is unchanged; its reason
   // is corrected — it used to rest on this provider having no count at all, which retired.
-  if (r.parseError) return { type: "text", text: unparsedBodyError("signa_search", r, ` query=${String(params.query).slice(0, 120)}`) };
+  if (r.parseError) return { type: "text", text: unparsedBodyError("signa_search", r, ` ${searchTargetLabel(params).slice(0, 120)}`) };
   // Parsing is not answering: a 200 carrying an error envelope is the same shortest path one JSON
   // envelope away — no data[], zero rows, the loop ends, enumerated. See isSearchResponseBody.
   if (!isSearchResponseBody(r.body)) {
-    return { type: "text", text: nonAnswerBodyError("signa_search", r, "a search response (no data[] — the key every /v1/trademarks answer carries)", ` query=${String(params.query).slice(0, 120)}`) };
+    return { type: "text", text: nonAnswerBodyError("signa_search", r, "a search response (no data[] — the key every /v1/trademarks answer carries)", ` ${searchTargetLabel(params).slice(0, 120)}`) };
   }
   return { type: "text", text: JSON.stringify(normalizeSearchResponse(r.body, params.query), null, 2) };
 }
@@ -684,8 +734,10 @@ const { enumerate: __enumerate } = makeEnumerate({
   // own count/search reconciliation exists to adjudicate on the "endpoint" seam. One source, one
   // number. (`makeCountProbe` throws unless "endpoint" supplies one, so this is asserted, not assumed.)
   count: null,
-  hasAnyElement: (p) => Boolean(String(p?.query ?? "").trim() || (Array.isArray(p?.names) && p.names.length)),
-  missingElementError: "ERROR: signa_enumerate — a query (or names[]) is required.",
+  // The SAME predicate `doSearch` uses, not a second copy of it. An owner is an element here: see
+  // hasSearchElement for the defect this closes and why one definition rather than two.
+  hasAnyElement: hasSearchElement,
+  missingElementError: MISSING_ELEMENT_ERROR,
   capabilities: { ...CAPABILITIES.kernel },
   ceilingFor: ownerWindowCeiling,
   // The kernel's default cheap-probe params are CORSEARCH'S — `{limit:1, fields:["uri"]}` — and `uri`
