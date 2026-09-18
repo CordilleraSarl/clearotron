@@ -5,7 +5,7 @@
 // runs the runner once against the mock engine (no billable calls), and asserts each job is (a) claimed
 // from its OWN queue, (b) run as the agent whose workspace it lives in, (c) given a run-dir under THAT
 // workspace, and (d) marked .done back in its origin queue. This is the regression guard for the bug where
-// the driver only ever drained workspace-clawdi, silently orphaning every Alex/Sam request.
+// the driver only ever drained workspace-clawdi, silently orphaning every request in another agent's queue.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, chmodSync, existsSync, readFileSync } from "node:fs";
@@ -43,7 +43,7 @@ test("runner drains every agent queue and runs each job as its own agent", async
     CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
   })) pinEnv(process.env, k, v);
 
-  // a Alex-forwarded job in clawdi-alex's queue, a Jordan-forwarded job in clawdi's queue
+  // one job in the second agent's queue (clawdi-alex) and one in the first agent's (clawdi)
   const lisaQ = queueFor(root, "clawdi-alex");
   const clawdiQ = queueFor(root, "clawdi");
   mkdirSync(lisaQ, { recursive: true });

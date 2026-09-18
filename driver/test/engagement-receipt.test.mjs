@@ -41,7 +41,7 @@ test("receipts: Composite≥3 findings only; cites-anchor flagged per finding", 
   assert.equal(f1.citesOwnAnchor, true);
   assert.ok(f1.anchorsHit.includes("lumengarde") || f1.anchorsHit.includes("plesner") || f1.anchorsHit.includes("class-mention"));
   assert.equal(f2.composite, 3);
-  assert.equal(f2.citesOwnAnchor, false, "no field anchor cited → flagged for Alex");
+  assert.equal(f2.citesOwnAnchor, false, "no field anchor cited → flagged for review");
   assert.deepEqual(f2.anchorsHit, []);
 });
 
