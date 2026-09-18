@@ -250,3 +250,53 @@ export function registerReachRefusal(uncovered, registerLabel = null) {
   return `${names} ${uncovered.length === 1 ? "is" : "are"} not available with ${where}`
     + ` — remove ${uncovered.length === 1 ? "it" : "them"} to run this search.`;
 }
+
+// ── WHAT THE FORM SHOULD OFFER: EVERY PLACE A REGISTER THIS PRODUCT SUPPORTS CAN SEARCH ────────────────
+//
+// The form offered 37 places with no rule behind them: Bulgaria and Greece, but not Denmark, Portugal,
+// Vietnam or Colombia, while a worldwide search on the wider register already swept every one of its 186
+// offices. The rule is the registers' own reach: a place is offered when at least one supported register
+// provider can search it, decided by the SAME resolution the plan compiler runs (`resolveRegions`, one code
+// at a time), so the offer cannot promise a place the compiler would defer everywhere. What THIS install's
+// register does not reach is marked per deployment by `coveredTerritoryNames` and the door's refusal — the
+// offer is the product's; the marking is the install's.
+//
+// A provider with no enumerable coverage (a global aggregator declaring `covered: null`) widens nothing:
+// "everywhere" is not a list, and letting it in would offer every code the engine holds, including places
+// no register answers for.
+//
+// NAMES ARE NEVER WRITTEN HERE. A place the form already offers keeps its shipped label; any other is named
+// by the runtime's standard English region names (CLDR), the same data the territory vocabulary already
+// resolves typed names against. A code with neither — the regional systems no label exists for — is left
+// out and listed, never given a name composed in code. Provider extension codes (X-, ZZ) are not places.
+//
+// @returns {Promise<{ offered: {code: string, name: string}[], unnamed: string[] }>}  regions first, then
+//          countries by name.
+export async function searchableTerritories() {
+  const [{ KNOWN_JURISDICTION_CODES, canonicalJurisdictionCode }, { normalizeTerritory }, { PROVIDER_CAPABILITIES }, { resolveRegions }]
+    = await Promise.all([import("./jurisdiction-codes.mjs"), import("../providers/_shared/territory-codes.mjs"),
+      import("./register-capabilities.mjs"), import("./register-plan.mjs")]);
+  const enumerable = Object.values(PROVIDER_CAPABILITIES).filter((caps) => Array.isArray(caps?.offices?.covered));
+  const shippedName = new Map(PROMPT_TERRITORIES.map((n) => [canonicalJurisdictionCode(normalizeTerritory(n) ?? ""), n]));
+  let cldr = null;
+  try { cldr = new Intl.DisplayNames(["en"], { type: "region" }); } catch { cldr = null; }
+  const offered = [], unnamed = [];
+  const seen = new Set();
+  for (const raw of KNOWN_JURISDICTION_CODES) {
+    const code = canonicalJurisdictionCode(raw);
+    if (!code || seen.has(code) || /^(X.|ZZ)$/.test(code)) continue;
+    seen.add(code);
+    const searched = enumerable.some((caps) => {
+      const { regions, deferred } = resolveRegions([code], caps);
+      return deferred.length === 0 && regions.length > 0;
+    });
+    if (!searched) continue;
+    let name = shippedName.get(code) ?? null;
+    if (!name && cldr) { try { const n = cldr.of(code); if (n && n !== code && !/^unknown/i.test(n)) name = n; } catch { /* no name */ } }
+    if (!name) { unnamed.push(code); continue; }
+    offered.push({ code, name });
+  }
+  const regional = new Set(["EU", "BX", "AP", "OA", "EA", "WO"]);
+  offered.sort((a, b) => (regional.has(b.code) - regional.has(a.code)) || a.name.localeCompare(b.name, "en"));
+  return { offered, unnamed: unnamed.sort() };
+}

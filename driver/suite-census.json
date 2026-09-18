@@ -4887,6 +4887,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-form-offers-what-the-registers-search.test.mjs": {
+          "tests": 4,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "the-freeze-carries-what-the-run-reads.test.mjs": {
           "tests": 4,
           "asserts": 13,
