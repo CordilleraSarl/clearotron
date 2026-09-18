@@ -233,53 +233,17 @@ test("taintQuarantineCleanBlocks: qid-less enumerated-with-zero-records → hone
 });
 
 
-// ── ONE QUERY MAY NOT FLOOD THE BAND ─────────────────────────────────────────────────────────────
+// ── EVERY RECORD A QUERY RETURNS REACHES THE BAND ─────────────────────────────────────────────────
 //
-// 2026-09-16: 1,154 of a 2,146-record band were reachable from two queries and nothing else, because
-// both were machine-built forms of an ordinary short word. The three biggest queries on that plan
-// returned 589, 583 and 271; the fourth returned 185.
-const { BAND_QUERY_CAP } = await import("../named-band.mjs");
-
-const bulkBlock = (n, over = {}) => ({
-  state: "enumerated", qid: "primary-sweep:default:box", query: "default BOX cl.9",
-  total_hits: n,
-  records: Array.from({ length: n }, (_, i) => ({
+// A per-query ceiling of 200 records was tried and taken out (ruled 2026-09-18): what a query returns is
+// kept whole, however many records it is. This arm pins that, so a ceiling cannot come back unnoticed.
+test("a query returning 600 records adds all 600, and is not a crowd", () => {
+  const records = Array.from({ length: 600 }, (_, i) => ({
     record_id: `/mark/eu/${2000000 + i}`, mark_text: `BOXLIKE ${i}`, classes: [9],
     status: "Registered", owner_name: `Holder ${i}`, screen_verdict: "surface:in-scope-live",
-  })),
-  ...over,
-});
-
-test("a query returning 600 records adds 200 and discloses the rest as ONE crowd carrying 600", () => {
-  assert.equal(BAND_QUERY_CAP, 200, "the ceiling is a constant in one place");
-  const band = parseNamedBand(JSON.stringify([bulkBlock(600)]));
-
-  assert.equal(band.enumerated.length, 200, "exactly the ceiling reaches the band — not 600, and not 0");
-  assert.equal(band.crowds.length, 1, "and ONE descriptor accounts for the query, never one per dropped record");
-  assert.equal(band.crowds[0].total_hits, 600,
-    "THE COUNT IS THE POINT. Carrying 200 silently would be worse than the flood: a narrower band that "
-    + "reads as complete. The descriptor is what lets judgment say the ground was too broad to enumerate");
-  assert.equal(band.crowds[0].fetched, 200);
-  assert.equal(band.crowds[0].qid, "primary-sweep:default:box", "the plan identity survives, so the crowd joins back to its entry");
-  // the records that DID come through keep their provenance, exactly as an uncapped block's do
-  assert.equal(band.enumerated[0]._qid, "primary-sweep:default:box");
-});
-
-test("a query at or under the ceiling is untouched, which is nearly every query", () => {
-  // THE CONTROL. Both arms above cap; without this one they would pass against a parser that had begun
-  // reclassifying every enumerated block as a crowd, and the band would lose its ordinary material.
-  for (const n of [1, 199, 200]) {
-    const band = parseNamedBand(JSON.stringify([bulkBlock(n)]));
-    assert.equal(band.enumerated.length, n, `${n} records must pass through whole`);
-    assert.equal(band.crowds.length, 0, `${n} records is not a crowd`);
-  }
-});
-
-test("the ceiling reports the PROVIDER's count when it is larger than what the block carried", () => {
-  // The block carries 250 records but the provider said the ground holds 9,000. The descriptor must say
-  // 9,000: `records.length` is what we fetched, and a crowd that understates itself to the size of our
-  // own page is a crowd nobody will treat as one.
-  const band = parseNamedBand(JSON.stringify([bulkBlock(250, { total_hits: 9000 })]));
-  assert.equal(band.enumerated.length, 200);
-  assert.equal(band.crowds[0].total_hits, 9000);
+  }));
+  const band = parseNamedBand(JSON.stringify([{ state: "enumerated", qid: "primary-sweep:default:box", query: "default BOX cl.9", total_hits: 600, records }]));
+  assert.equal(band.enumerated.length, 600);
+  assert.equal(band.crowds.length, 0);
+  assert.equal(band.enumerated[599]._qid, "primary-sweep:default:box", "every record keeps its provenance");
 });
