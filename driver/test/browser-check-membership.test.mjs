@@ -181,6 +181,13 @@ const CANNOT_RUN_IN_CI = [
   // deletion on its own reads as "somebody decided that check was unnecessary", which is not what
   // happened and would be the wrong thing for the next reader to conclude.
   {
+    path: "scripts/release-visible-check.mjs",
+    why: "it asks the public registry whether a version THIS RUN JUST PUBLISHED is served to a stranger, and "
+      + "in CI nothing has been published. It runs in the release workflow's publishing jobs, between the "
+      + "publish and the release entry, where the version exists; its logic is driven in the suite against "
+      + "a stub registry by its own test file, so what CI cannot supply is only the publish it waits for.",
+  },
+  {
     path: "scripts/merge-presence-check.mjs",
     why: "it re-states a merge against the tree AFTER the merge, over a range of commits that does not "
       + "exist while the pull request is still open. Running it in the gate would ask it about its own "
