@@ -1,5 +1,17 @@
 # clearotron-driver
 
+## 0.3.2-beta.11
+
+### Patch Changes
+
+- Fixed: When a mark contains the client's own registered house mark, the search now leaves that part out of the conflict analysis. It does so only once the register shows the client owns it.
+- Fixed: A report or email now links only to web addresses; anything else shows as plain text. A refused sign-in says why in fixed words, without repeating the sign-in service's own error text.
+- Fixed: A meaning search that could not be completed now appears in the report's coverage as an open item. Before, only the audit workbook listed it.
+- Fixed: A report workbook's source links no longer raise a false vocabulary advisory in the publish log.
+- Fixed: After installing, the README, quickstart and install guide run every command through the `clearotron` you installed, so a beta install stays on the beta.
+- Fixed: Setup's register question offers "None for now", and setup no longer names checkout-only commands or promises a login shell that cannot find `clearotron`.
+- Fixed: `clearotron start` and `demo` no longer write the sign-in passphrase into a log or file; off a terminal they name the reset command.
+
 ## 0.3.2-beta.10
 
 ### Patch Changes
