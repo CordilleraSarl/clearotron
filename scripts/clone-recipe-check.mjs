@@ -91,9 +91,15 @@ for (const step of steps.slice(0, -1)) {
 // THE DEMO, AS PRINTED, with the two flags a runner needs: no browser, and a port nothing else holds.
 const demoCmd = `${demo} --no-open --port ${PORT}`;
 console.log(`\n$ ${demoCmd}`);
-const child = spawn("sh", ["-c", `exec ${demoCmd}`], { cwd: tree, env, stdio: ["ignore", "inherit", "inherit"] });
+// ITS OWN PROCESS GROUP, AND STOPPED THE WAY A TERMINAL STOPS IT. Ctrl-C reaches every process in the
+// foreground group; a signal to one pid reaches one. The first version of this check sent SIGINT to the
+// pid it spawned, which is `npm exec`, and npm does not pass it on — so the demo answered, was "stopped",
+// and was still serving thirty seconds later with its folder in place. Measured: the same SIGINT sent to
+// the demo's own launcher stopped all four of its processes and removed the folder in six seconds.
+const child = spawn("sh", ["-c", `exec ${demoCmd}`], { cwd: tree, env, stdio: ["ignore", "inherit", "inherit"], detached: true });
 let exited = null;
 child.on("exit", (code, signal) => { exited = { code, signal }; });
+const groupAlive = () => { try { process.kill(-child.pid, 0); return true; } catch { return false; } };
 
 const deadline = Date.now() + 180_000;
 let answer = null;
@@ -102,9 +108,15 @@ while (Date.now() < deadline && exited === null) {
   if (answer === 401) break;
   await new Promise((r) => setTimeout(r, 1000));
 }
+// Stopped when the whole group is gone, not when `npm exec` is: npm's own exit code on an interrupt says
+// nothing about whether the demo shut down, so the verdict is the group, the ports and the folder.
+// A group that outlives the bound is killed, so this check never leaves a demo running behind it.
 const stop = async () => {
-  if (exited === null) child.kill("SIGINT");
-  for (let i = 0; i < 60 && exited === null; i++) await new Promise((r) => setTimeout(r, 500));
+  try { process.kill(-child.pid, "SIGINT"); } catch { /* already gone */ }
+  for (let i = 0; i < 60 && groupAlive(); i++) await new Promise((r) => setTimeout(r, 500));
+  if (!groupAlive()) return true;
+  try { process.kill(-child.pid, "SIGKILL"); } catch { /* raced */ }
+  return false;
 };
 if (answer !== 401) {
   await stop();
@@ -114,9 +126,10 @@ if (answer !== 401) {
     : `the portal answered ${answer ?? "nothing"} within 180s, not 401 "not signed in" — a portal that is not listening, or one serving no bundle.`);
 }
 console.log(`\nclone-recipe-check: the portal answered 401 (not signed in) on 127.0.0.1:${PORT}.`);
-await stop();
-if (exited === null) fail("the demo did not stop within 30s of an interrupt.");
-if (exited.code !== 0) fail(`the demo stopped with exit ${JSON.stringify(exited)}, not a clean stop.`);
+if (!(await stop())) fail("the demo did not stop within 30s of an interrupt to its process group — it was killed.");
+let bound = null;
+try { await fetch(`http://127.0.0.1:${PORT}/portal`); bound = true; } catch { bound = false; }
+if (bound) fail(`the demo's processes are gone but something still answers on ${PORT}.`);
 if (existsSync(demoFolder)) fail(`the demo stopped but left ${demoFolder} behind — started with no flags, it removes what it made.`);
 if (!keep) rmSync(work, { recursive: true, force: true });
 console.log("clone-recipe-check: README's recipe ran on a fresh clone, the demo listened, and it stopped cleanly.");
