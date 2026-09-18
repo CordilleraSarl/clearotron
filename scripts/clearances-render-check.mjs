@@ -505,12 +505,16 @@ const ASK = `(async () => {
   const opened = [];
   window.open = (u) => { opened.push(String(u)); return null; };
   const rowOf = (name) => [...document.querySelectorAll('table.data tbody tr.row')].find(tr => txt(tr.querySelector('b')) === name);
+  // FROM THE ROW'S MENU, which is where the control lives now: open the menu, press its Ask AI entry.
   const drive = async (name) => {
     const tr = rowOf(name);
-    const btn = tr && tr.querySelector('.ask-ai button.ask-ai-btn');
-    if (!btn) return { fatal: 'no Ask AI on ' + name };
+    const more = tr && tr.querySelector('button.row-menu-btn');
+    if (!more) return { fatal: 'no row menu on ' + name };
     const before = location.pathname;
-    btn.click(); await sleep(250);
+    more.click(); await sleep(200);
+    const entry = [...tr.querySelectorAll('[role=menu] [role=menuitem]')].find(i => txt(i) === 'Ask AI');
+    if (!entry) return { fatal: 'no Ask AI entry in the menu of ' + name };
+    entry.click(); await sleep(250);
     const panel = tr.querySelector('.ask-ai-panel');
     const head = txt(panel && panel.querySelector('.ask-ai-head'));
     const choices = panel ? [...panel.querySelectorAll('[role=radio], .ask-ai-choice')].map(txt) : [];
@@ -1000,29 +1004,28 @@ if (plus && group && aster && coral && tide && max) {
   ok(aster.status === 'Finished' && aster.open?.text === 'Open', `ASTERION reads "${aster.status}" with ${JSON.stringify(aster.open)}`)
 }
 
-// ASK AI: beside Open on a name with a report, alone on a stopped name, and nowhere else.
+// ASK AI IS THE ROW MENU'S SECOND ENTRY (owner, 2026-09-18), and no longer a button in the actions column,
+// which keeps the board's share with Open alone in it.
 if (plus && group && aster && coral && tide && max) {
-  for (const r of [plus, aster, max, venzy]) ok(r?.ask?.text === 'Ask AI' && r.ask.aria === null, `${r?.name} has no Ask AI named by its own words: ${JSON.stringify(r?.ask)}`)
-  ok(coral.ask?.text === 'Ask AI' && !coral.open, `a stopped name carries Ask AI and no Open: ${JSON.stringify({ ask: coral.ask, open: coral.open })}`)
-  ok(!tide.ask && !tide.open, `a running name with no report carries neither button: ${JSON.stringify({ ask: tide.ask, open: tide.open })}`)
-  ok(!group.ask, 'a group carries Ask AI — a group is several names with no single report')
-  ok(L.filter((r) => r.kind === 'search').every((r) => !r.ask), 'a search row carries Ask AI')
+  for (const r of [plus, aster, max, venzy, coral]) ok(!r?.ask, `${r?.name} still draws an Ask AI button in its actions column: ${JSON.stringify(r?.ask)}`)
+  ok(!coral.open, `a stopped name draws Open: ${JSON.stringify(coral.open)}`)
+  ok(!tide.ask && !tide.open, `a running name with no report carries a button: ${JSON.stringify({ ask: tide.ask, open: tide.open })}`)
+  ok(L.filter((r) => r.kind === 'search').every((r) => !r.ask), 'a search row carries an Ask AI button')
 }
-const askColumn = (m, width) => {
-  const lefts = [...new Set((m?.listed ?? []).filter((r) => r.ask).map((r) => r.ask.left))]
-  ok(lefts.length > 0 && Math.max(...lefts) - Math.min(...lefts) <= 1, `at ${width}px the Ask AI buttons start at ${lefts.join(', ')} — not one column`)
-}
-askColumn(short, WIDTH)
-askColumn(wide, WIDE)
+// Which rows offer the entry, read from the menus this file already opens: every name with a report, the
+// stopped name included; never a group, which is several names with no single report.
+ok(menus?.plus?.items?.includes('Ask AI'), `a name's menu has no Ask AI entry: ${JSON.stringify(menus?.plus?.items)}`)
+ok(menus?.group && !menus.group.items?.includes('Ask AI'), `a group's menu offers Ask AI: ${JSON.stringify(menus?.group?.items)}`)
+ok(menus?.search && !menus.search.items?.includes('Ask AI'), `a search row's menu offers Ask AI: ${JSON.stringify(menus?.search?.items)}`)
 if (!asked || asked.fatal || asked.max?.fatal || asked.coral?.fatal) {
-  fail.push(`driving Ask AI from a row: ${asked?.fatal ?? asked?.max?.fatal ?? asked?.coral?.fatal ?? 'no result'}`)
+  fail.push(`driving Ask AI from a row's menu: ${asked?.fatal ?? asked?.max?.fatal ?? asked?.coral?.fatal ?? 'no result'}`)
 } else {
   console.log(`Ask AI from AQUAMAX: "${asked.max.head}" → ${JSON.stringify(asked.max.q)}; from CORAL FREEZE → ${JSON.stringify(asked.coral.q)}`)
   // The panel names the report the row's Open opens, and the question typed in names it too.
   ok(asked.max.head === `AQUAMAX · ${PRODUCT_NAME['full-country-search']} · searched 2026-08-28`, `AQUAMAX's panel heads "${asked.max.head}"`)
   ok(asked.max.choices.length === 4 && asked.max.goText.startsWith('Open in '), `AQUAMAX's panel: ${JSON.stringify(asked.max)}`)
   ok(/^Explain the main risks in the AQUAMAX clearance from 28 August\.$/.test(asked.max.q ?? ''), `the second question from AQUAMAX types in "${asked.max.q}"`)
-  ok(asked.max.stayed && asked.coral.stayed, 'pressing Ask AI on a row went somewhere — it opens a panel, not the row')
+  ok(asked.max.stayed && asked.coral.stayed, "pressing the menu's Ask AI went somewhere — it opens a panel, and leaves the list where it is")
   ok((asked.coral.head ?? '').startsWith('CORAL FREEZE · ') && (asked.coral.q ?? '').includes('CORAL FREEZE clearance from 16 September'),
     `a stopped name asks about the search that stopped: ${JSON.stringify(asked.coral)}`)
 }
@@ -1068,7 +1071,8 @@ for (const r of L.filter((x) => x.dot)) {
 if (!menus || menus.fatal) {
   fail.push(`the row menus: ${menus?.fatal ?? 'no result'}`)
 } else {
-  ok(JSON.stringify(menus.plus?.items) === JSON.stringify(['Retire all 3']) && menus.plus.expanded === 'true' && menus.plus.closed, `AQUAPLUS's menu: ${JSON.stringify(menus.plus)}`)
+  // Retire first, Ask AI beside it as the second entry (owner, 2026-09-18).
+  ok(JSON.stringify(menus.plus?.items) === JSON.stringify(['Retire all 3', 'Ask AI']) && menus.plus.expanded === 'true' && menus.plus.closed, `AQUAPLUS's menu: ${JSON.stringify(menus.plus)}`)
   ok(JSON.stringify(menus.group?.items) === JSON.stringify(['Ungroup']) && menus.group.closed, `the group's menu: ${JSON.stringify(menus.group)}`)
   ok(JSON.stringify(menus.search?.items) === JSON.stringify(['Retire']) && menus.search.closed, `a search row's menu: ${JSON.stringify(menus.search)}`)
   ok(menus.groupClick.stayed && menus.groupClick.toggled, `a click on the group row: ${JSON.stringify(menus.groupClick)} — it must fold or unfold and go nowhere`)

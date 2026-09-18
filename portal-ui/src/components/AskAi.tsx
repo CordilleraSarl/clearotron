@@ -60,6 +60,13 @@ export type AskAiProps = {
   /** Open the panel as the control first appears — a reader sent here to ask. */
   readonly openOnArrival?: boolean
   /**
+   * Drawn with no button of its own, open from the first frame, for a caller whose own control opens it —
+   * the Clearances row menu, whose "Ask AI" entry is where that row's control lives now (owner,
+   * 2026-09-18). `onClose` is how that caller learns the panel has gone, so it can stop drawing it.
+   */
+  readonly hideButton?: boolean
+  readonly onClose?: (() => void) | undefined
+  /**
    * A press on a finding's own "Ask AI about this finding" inside the report. Each press is a new object
    * (the nonce), so pressing the same finding twice opens the panel twice. `ordinal` is the number the
    * report prints on that card, null for a card that has none; `markName` is the name the finding belongs
@@ -70,7 +77,7 @@ export type AskAiProps = {
 
 export function AskAi({
   runId, markSlug = null, markName, date, kind, productName, access, go, quiet = false, openOnArrival = false,
-  fromFinding = null,
+  fromFinding = null, hideButton = false, onClose,
 }: AskAiProps) {
   const [open, setOpen] = useState(openOnArrival)
   // WHICH FINDING THE PANEL IS ABOUT, if any. Set by a press inside the report and cleared by the header's
@@ -106,6 +113,10 @@ export function AskAi({
       document.removeEventListener('keydown', onKey)
     }
   }, [open])
+
+  // THE CALLER LEARNS THE PANEL HAS CLOSED, whichever way it closed — outside press, Escape, a question
+  // asked, or "Set it up" leaving the screen. Without it a menu that opened this could not be pressed twice.
+  useEffect(() => { if (!open && hideButton) onClose?.() }, [open])
 
   if (!offer.drawn) return null
 
@@ -145,6 +156,7 @@ export function AskAi({
 
   return (
     <div ref={box} className="ask-ai" data-ask-ai={asking ? 'ask' : 'connect'}>
+      {hideButton ? null : (
       <button
         type="button"
         className={quiet ? 'btn-ghost ask-ai-btn is-quiet' : 'btn-ghost ask-ai-btn'}
@@ -155,6 +167,7 @@ export function AskAi({
         <Icon name="sparkles" size={14} />
         <span>Ask AI</span>
       </button>
+      )}
       {open && asking ? (
         <div className="float ask-ai-float ask-ai-panel" role="dialog" aria-label="Ask AI">
           <div className="ask-ai-head">
