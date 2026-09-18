@@ -60,7 +60,7 @@ import {
   EMPTY_DRAFT, blockers, runCount, turnaround, turnaroundInWords, checksSummary, runsNote, machineryFor,
   territoryMatches, addTerritory, removeTerritory, takeOverOwnTerritories, reachesTerritory, notAvailableLine,
   inherited, composeSaved, draftFromSaved, nameBudget, missingPieces, readiness,
-  chooseProduct, geographyFor, geographyNote, nativeLanguageControl, toggleNativeLanguage,
+  chooseProduct, geographyFor, nativeLanguageControl, toggleNativeLanguage,
   recommendSearch, templateLine, territoryCode, joinAnd, nativeLanguageLine, firstAndMore,
 } from '../contract/composerProduct.ts'
 import { productMatrix, LEGEND } from '../contract/productMatrix.ts'
@@ -371,7 +371,6 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   // first country with the second, and the recommendation could then never reach the search that reads
   // both — the reader would be steered by their own first keystroke.
   const whereLevel = pickedByHand || draft.savedSearch || editingSlug ? activeLevel : null
-  const geoNote = geographyNote(whereLevel)
   const nativeControl = nativeLanguageControl(activeLevel)
   const machinery = machineryFor(draft.pick, activeLevel)
   // THE WAY THROUGH THE NAME WALL, found in the offering rather than named here: whichever product reads
@@ -950,10 +949,10 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
         {/* ── WHERE — a different control per product, and each says at the control what it takes ── */}
         <div>
           <div className="section-title">Where</div>
-          {/* THE PRODUCT'S OWN SENTENCE, at the control, always. Not a tooltip and not a refusal
-              after the fact: the requester reads what this search accepts while they are choosing
-              where it points. */}
-          {geoNote ? <p className="section-hint">{geoNote}</p> : null}
+          {/* NO SENTENCE HERE. One per geography stood above this control; the owner ruled all four out
+              on 2026-09-18 and the board carries none of them. What the search takes is said by the row
+              the reader picked and by the controls below — see composerProduct.ts where the function
+              that composed them used to be. */}
 
           {whereLevel?.geography === 'worldwide, and nothing else' ? (
             // NO PICKER AT ALL, and that is the design. Worldwide is not a choice on this search —
@@ -1125,13 +1124,12 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
             className="ctx-input"
             style={{ resize: 'vertical', lineHeight: 1.5 }}
           />
-          {/* The connector is a second way this field gets filled, and nothing on the screen said so.
-              A search started by an agent through the connector can cite what the agent can already
-              read, so a reader working that way does not have to paste any of it by hand. */}
-          <p className="section-hint" style={{ margin: '7px 0 0' }}>
-            A search started by an agent through the connector can reference emails or documents it
-            can already read, so there is nothing to paste in that case.
-          </p>
+          {/* NO LINE ABOUT THE CONNECTOR HERE. One said that a search started by an agent can reference
+              what the agent can already read, so there was nothing to paste in that case. The owner
+              ruled it out on 2026-09-18. It is written for a reader who is not the one looking at it:
+              anybody reading this field is typing into it, and telling them that some other way of
+              working would not need it answers a question they did not ask, in the field where they
+              are working. Nothing replaces it. */}
         </div>
 
         {/* ── the company card: what this company already carries ── */}

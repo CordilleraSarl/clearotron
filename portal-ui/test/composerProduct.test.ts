@@ -13,9 +13,10 @@
 
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import {
   EMPTY_DRAFT, REGIONS, COUNTRIES, tierOf, vocabularyFor, territoryMatches, addTerritory,
-  removeTerritory, takeOverOwnTerritories, notAvailableLine, geographyFor, geographyNote, nativeLanguageControl, toggleNativeLanguage,
+  removeTerritory, takeOverOwnTerritories, notAvailableLine, geographyFor, nativeLanguageControl, toggleNativeLanguage,
   chooseProduct, blockers, nameBudget, machineryFor, composeSaved, draftFromSaved, inherited, readiness,
   missingPieces,
   MAX_TERRITORIES, checksSummary, runsNote, turnaround, effortUnits,
@@ -116,15 +117,21 @@ test('the draft states its geography MODE — and there are THREE, because the o
 
 // ── the product decides the controls, and each says WHY at the control ───────────────────────────────
 
-test('every product states the geography it accepts, at the control', () => {
-  for (const p of PRODUCTS) {
-    const note = geographyNote(p)
-    assert.ok(note && note.length > 20, `${p.key}: says nothing about what it accepts`)
+test('the Where field states no geography of its own — the product row already did', () => {
+  // INVERTED, NOT DELETED. This arm required a sentence per geography above the Where control. The owner
+  // ruled all four out on 2026-09-18 and the board carries none of them, so what has to hold now is that
+  // they do not come back — and an arm that simply went away would let them.
+  const src = readFileSync(new URL('../src/screens/NewClearance.tsx', import.meta.url), 'utf8')
+  assert.doesNotMatch(src, /geographyNote/, 'the per-geography note above the Where control is back')
+  for (const phrase of ['This search is not narrowed', 'Regions are not offered here', 'One country on its own is a Full country search']) {
+    assert.ok(!src.includes(phrase), `the removed sentence "${phrase}" is back on the screen`)
   }
-  assert.match(geographyNote(GLOBAL)!, /not narrowed/i)
-  assert.match(geographyNote(FULL)!, /Regions are not offered here/i)
-  assert.match(geographyNote(MULTI)!, /One country on its own is a Full country search/i)
-  assert.equal(geographyNote(null), null)
+  // THE FACT ITSELF IS STILL SAID, which is why removing the sentence costs the reader nothing: every
+  // product carries its geography, and the row prints it as the tagline the board draws.
+  for (const p of PRODUCTS) {
+    assert.ok(typeof p.geography === 'string' && p.geography.length > 0,
+      `${p.key}: the row has no geography to print, so removing the note did lose the reader something`)
+  }
 })
 
 test('the native-language investigation is a toggle on exactly one product, automatic on one, absent on two', () => {

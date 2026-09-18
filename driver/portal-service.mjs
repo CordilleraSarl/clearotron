@@ -1332,7 +1332,24 @@ export function makePortalService({
         // explains a control that cannot be used, `coverageNote` qualifies one that can. Folding this
         // into the first would make every caller of `productAvailability` — the portal, the MCP door,
         // the dev cockpit — read a disclosure as a refusal, which is the behaviour the ruling removes.
-        const coverage = coverageDisclosure(l.geography, territories);
+        // ── THE PRODUCT ROWS CARRY NO COVERAGE SENTENCE ───────────────────────────────────────────
+        //
+        // This row printed a four-line paragraph — what the wired register reaches, of how many places
+        // this search can name, and that the rest would be disclosed in the report as deferred coverage
+        // rather than reported as clear. The owner met it on a running install and ruled it out on
+        // 2026-09-18: it is on no board, and it describes the behaviour that naming an unreachable
+        // territory no longer has. A named territory the register cannot reach is now refused at the
+        // door, in one sentence naming the territory — so a paragraph promising to defer it instead
+        // tells the reader the opposite of what the engine will do.
+        //
+        // NOTHING REPLACES IT, AND NO OTHER ROW GETS ONE. What a worldwide search on a partial register
+        // actually reached belongs in the report that describes the search that ran, not in the form
+        // that orders it.
+        //
+        // THE SENTENCE STILL EXISTS, one surface later, and deliberately: the review step before the
+        // spend still states what is being bought. That is a different question asked at a different
+        // moment — this row is "which search", that screen is "this is what you are committing to" —
+        // and it was a separate ruling. `coverageDisclosure` keeps composing it for that caller.
         // ── — THE PRODUCT DECLARES WHAT IT NEEDS, so the row can say so ─────
         //
         // The owner ordered the one product carrying `caseLaw: true` and first heard of the lane in the
@@ -1349,7 +1366,7 @@ export function makePortalService({
         // a warning on every deployment whose writer has not run since is worse than the silence it
         // replaces.
         return { ...l, available: cause === null, unavailableNote: cause ? UNAVAILABLE_NOTE[cause] : null,
-          coverageNote: coverage?.note ?? null,
+          coverageNote: null,
           capabilityNote: l.caseLaw && caseLawReady === false ? CASE_LAW_DARK_NOTE : null };
       }),
       // ── the TERRITORY affordance ─────────────────────────────────────────────────────────────

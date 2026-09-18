@@ -122,9 +122,12 @@ test('§B the context field is out of the collapsible, above it, and shows an ex
   assert.match(flat(src), /LinkedIn/, 'the example names no concrete artefact a reader would recognise')
   assert.match(flat(src), /https:\/\/example\.com/, 'the example carries no link, which is the commonest thing to paste')
 
-  // And the separate line about the connector, which is a second way this field gets filled and was
-  // said nowhere on the screen.
-  assert.match(flat(src), /started by an agent through the connector can reference emails or documents/)
+  // AND NO LINE ABOUT THE CONNECTOR. This arm used to require one. The owner ruled it out on
+  // 2026-09-18, so the requirement is inverted rather than deleted: an assertion that simply went away
+  // would let the sentence come back without anything noticing, and it is the coming back that the
+  // ruling is about.
+  assert.doesNotMatch(flat(src), /started by an agent through the connector/,
+    'the connector line the owner removed is back on the context field')
 
   // What is left in the collapsible is what its summary claims — a reference and a date.
   const inside = src.slice(details, src.indexOf('</Details>', details))
