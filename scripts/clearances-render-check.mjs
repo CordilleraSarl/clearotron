@@ -104,6 +104,8 @@ let longTitle = false
 // ladders print. The stub rows above prove behaviour; they are too few and too short to prove the layout,
 // and a layout that fitted them regressed on the real list at 1440px while this file stayed green.
 let fullList = false
+let rosterMode = 'ok'
+let withGeneric = false
 const FULL_MARKS = ['MERIDIAN THISTLE', 'PROJECT CHROMA', 'VIBRANTE FROSTPLUM', 'NORTHWIND', 'CORAL FREEZE', 'AQUAPLUS',
   'ASTERION', 'TIDEGLASS', 'BRIMSTONE', 'VENQORI', 'IRONWHISK', 'SIM PRAXIS', 'EMBER FORGE', 'VANTOR LABS', 'HALDEN OUTDOOR',
   'GLACIER MINT', 'SOLSTICE BAY', 'KESTREL WORKS', 'OBSIDIAN LOOP', 'MARBLE ORCHARD', 'LUMEN CRAFT', 'PELICAN NORTH',
@@ -189,7 +191,14 @@ const json = (res, body) => { res.writeHead(200, { 'content-type': 'application/
 
 const server = createServer((req, res) => {
   const p = new URL(req.url, 'http://localhost').pathname
-  if (p === '/portal/api/me') return json(res, { email: 'manager@example-firm.com', permissions: { run: true, manage: true }, access: [{ kind: 'everything' }], accounts: '*', accountNames: {}, allowance: null, brand: 'Northwind Group' })
+  // In the roster passes the install carries its organisation's Generic, as a real one does: that is the one
+  // company left when the roster fails, and what a failed roster used to narrow every screen to.
+  if (p === '/portal/api/me') return json(res, { email: 'manager@example-firm.com', permissions: { run: true, manage: true }, access: [{ kind: 'everything' }], accounts: '*', accountNames: {}, allowance: null, brand: 'Northwind Group',
+    ...(withGeneric ? { genericOrgs: ['northwind'], organisations: [{ key: 'northwind', name: 'Northwind Group' }] } : {}) })
+  // THE ROSTER, as the server answers it in three shapes: whole, with a company file it could not read, and
+  // failed. The last two used to draw exactly like the first with fewer companies.
+  if (p === '/portal/admin/roster' && rosterMode === 'fail') { res.writeHead(500, { 'content-type': 'application/json' }); return res.end('{"error":"store unreadable"}') }
+  if (p === '/portal/admin/roster' && rosterMode === 'unreadable') return json(res, { customers: [{ key: KEY, name: NAME }], unreadable: [{ key: 'aurora', reason: 'frameworkPath must be a path of the form …' }] })
   if (p === '/portal/admin/roster') return json(res, { customers: [{ key: KEY, name: NAME }, { key: KEY2, name: NAME2 }] })
   if (p === '/portal/admin/families') return json(res, FAMILIES)
   if (p === '/portal/api/usage') return json(res, usageNow)
@@ -642,6 +651,32 @@ for (const width of [WIDE, 700]) {
   await reload()
   full[width] = await value(FULL)
 }
+// — AT PHONE WIDTH, THE BAR IS ON SCREEN. The table scrolls inside its box there, and on a long list the
+// box's own bar is several screens down; the pinned bar sits at the bottom of the screen instead, and it is
+// the table's bar, not a picture of one — moving it moves the table.
+await cmd('Emulation.setDeviceMetricsOverride', { width: 400, height: 800, deviceScaleFactor: 1, mobile: true })
+await reload()
+const phone = await value(`(async () => {
+  window.scrollTo(0, 0); await new Promise(r => setTimeout(r, 200));
+  const wrap = document.querySelector('.names-wrap'); const bar = document.querySelector('.pinned-bar');
+  const thumb = bar && bar.querySelector('.pinned-thumb'); const track = bar && bar.querySelector('.pinned-track');
+  if (!wrap || !bar || !thumb) return { bar: !!bar, wrap: !!wrap, thumb: !!thumb };
+  const b = bar.getBoundingClientRect(), t0 = thumb.getBoundingClientRect();
+  const out = { bar: true, onScreen: b.bottom <= innerHeight + 1 && b.top >= innerHeight - 40, barH: Math.round(b.height),
+    thumbW: Math.round(t0.width), thumbH: Math.round(t0.height), thumbInk: getComputedStyle(thumb).backgroundColor,
+    tableScrolls: wrap.scrollWidth > wrap.clientWidth + 1, nativeBarH: wrap.offsetHeight - wrap.clientHeight,
+    wrapBelowFold: wrap.getBoundingClientRect().bottom > innerHeight };
+  // The table moved by a finger: the thumb follows.
+  wrap.scrollLeft = 200; await new Promise(r => setTimeout(r, 200));
+  out.thumbFollowed = Math.round(thumb.getBoundingClientRect().left - t0.left);
+  // A press at the track's right end: the table follows.
+  const tr = track.getBoundingClientRect();
+  track.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: tr.right - 2, clientY: tr.top + 4, pointerId: 1 }));
+  await new Promise(r => setTimeout(r, 200));
+  out.tableAtEnd = Math.round(wrap.scrollWidth - wrap.clientWidth - wrap.scrollLeft);
+  return out;
+})()`)
+await cmd('Emulation.clearDeviceMetricsOverride', {})
 fullList = false
 // The same reading on the stub rows, which carry the shapes the full list does not — a group, a name
 // with searches under it, a stopped name — opened out.
@@ -654,6 +689,30 @@ for (const width of [WIDE, 700]) {
 }
 await cmd('Emulation.clearDeviceMetricsOverride', {})
 await reload()
+
+// — THE ROSTER NOT ARRIVING WHOLE. A company file it could not read, then a roster that failed outright.
+const ROSTER_NOTICE = `(() => ({
+  text: [...document.querySelectorAll('.main > .notice')].map(n => (n.innerText || '').replace(/\\s+/g, ' ').trim()),
+  // How many names the list draws, and which company the switcher says is in view.
+  names: document.querySelectorAll('table.data tbody tr.row').length,
+  inView: (() => { const s = document.querySelector('select[aria-label="Company"]'); return s ? s.selectedOptions[0]?.textContent?.trim() ?? null : null })(),
+}))()`
+withGeneric = true
+rosterMode = 'unreadable'
+await reload()
+const rosterPartial = await value(ROSTER_NOTICE)
+rosterMode = 'fail'
+await reload()
+const rosterFailed = await value(ROSTER_NOTICE)
+if (shotDir) {
+  const shot = await cmd('Page.captureScreenshot', { format: 'png' })
+  const data = shot.result?.result?.data ?? shot.result?.data
+  if (data) writeFileSync(join(shotDir, 'clearances-roster-failed-light.png'), Buffer.from(data, 'base64'))
+}
+rosterMode = 'ok'
+await reload()
+const rosterWhole = await value(ROSTER_NOTICE)
+withGeneric = false
 
 if (shotAt) {
   const shot = await cmd('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true })
@@ -733,10 +792,27 @@ if (!short || short.fatal) {
 }
 
 console.log(`measured at ${WIDTH}px — ${short.openedRows} rows opened, ${short.readRows} read rows`)
+console.log(`phone-width bar: ${JSON.stringify(phone)}`)
+ok(phone && phone.bar && phone.tableScrolls && phone.wrapBelowFold && phone.onScreen,
+  `at 400px the list's sideways bar is not on screen at the top of a long list — ${JSON.stringify(phone)}`)
+ok(phone && phone.nativeBarH === 0, `at 400px the table's own bar is drawn beside the pinned one — ${JSON.stringify(phone)}`)
+ok(phone && phone.barH >= 9 && phone.thumbH >= 8 && phone.thumbW >= 24, `at 400px the pinned bar is not drawn at a size a reader can see — ${JSON.stringify(phone)}`)
+ok(phone && phone.thumbFollowed > 0, `at 400px the thumb does not follow the table — ${JSON.stringify(phone)}`)
+ok(phone && phone.tableAtEnd <= 1, `at 400px pressing the end of the track does not move the table to its end — ${JSON.stringify(phone)}`)
 for (const [width, f] of Object.entries(stubs)) {
   ok(f && f.riskOverDate.length === 0, `stub rows at ${width}px: text runs into the next cell on ${JSON.stringify(f?.riskOverDate)}`)
   ok(f && f.riskMidWord.length === 0, `stub rows at ${width}px: a risk word breaks inside itself — ${JSON.stringify(f?.riskMidWord)}`)
 }
+ok(rosterPartial?.text?.some((t) => /aurora This company’s framework could not be read\. This needs an administrator to look at it\./.test(t)),
+  `a company file the roster could not read is not named on the page — ${JSON.stringify(rosterPartial)}`)
+ok(!rosterPartial?.text?.some((t) => /frameworkPath/.test(t)), 'the server\'s own reason reached the page')
+// A ROSTER THAT FAILED WHOLE: no sentence of its own (owner, 2026-09-18), and no silent narrowing — the
+// reader stays on All companies and sees every name the whole roster showed.
+ok(rosterFailed?.text?.length === 0, `a roster that failed draws a notice of its own — ${JSON.stringify(rosterFailed)}`)
+ok(rosterFailed?.names > 0 && rosterFailed?.names === rosterWhole?.names,
+  `a roster that failed narrows the list: ${rosterFailed?.names} names against ${rosterWhole?.names} with the roster whole`)
+ok(/^All companies/.test(rosterFailed?.inView ?? ''), `a roster that failed selected a company for the reader — ${JSON.stringify(rosterFailed?.inView)}`)
+ok(rosterWhole?.text?.length === 0, `a whole roster draws a notice — ${JSON.stringify(rosterWhole)}`)
 for (const [width, f] of Object.entries(full)) {
   console.log(`full list at ${width}px: ${f?.rows} rows, page ${f?.scrollW}/${f?.clientW}, table ${f?.tableW} in ${f?.wrapW}, menus cut ${f?.menusCut}, risk over date ${JSON.stringify(f?.riskOverDate)}`)
   ok(f && f.rows === 25, `full list at ${width}px: ${f?.rows} rows drew, not 25`)
@@ -965,6 +1041,14 @@ const openColumn = (m, width) => {
 }
 openColumn(short, WIDTH)
 openColumn(wide, WIDE)
+// THE BOARD'S SHARES AT THE WIDE DESKTOP (owner, 2026-09-18: match the board), read off the drawn header:
+// Status 16, Risk 12, Updated 10 and the actions 25, measured in the browser to a point either way.
+{
+  const pct = Object.values(wide.share)
+  const board = [4, 3, 30, 16, 12, 10, 25]
+  ok(pct.length === board.length && pct.every((v, i) => Math.abs(v - board[i]) <= 1),
+    `at ${WIDE}px the columns are ${JSON.stringify(wide.share)}, not the board's ${board.join(' · ')}`)
+}
 
 // The counts on one screen agree: the total is the sum of the headings, each heading its names.
 ok(short.headings.length === 2, `expected two company headings, got ${short.headings.length}`)

@@ -80,7 +80,7 @@ test('a nameless account is still offered in the switcher', () => {
   // since AppShell cannot be mounted here.
   const shell = readFileSync(new URL('../src/shell/AppShell.tsx', import.meta.url), 'utf8')
   assert.equal(shell.match(/switcherKeys\(/g)?.length, 1, 'the shell must build its list in exactly one place')
-  assert.match(shell, /switcherKeys\(me, rosterResult\?\.kind === 'ok' \? rosterResult\.value : null\)/)
+  assert.match(shell, /switcherKeys\(me, rosterResult\?\.kind === 'ok' \? rosterResult\.value\.companies : null\)/)
   assert.doesNotMatch(shell, /Object\.keys\(names\)/, 'the menu must not be derived from the name map')
 })
 
