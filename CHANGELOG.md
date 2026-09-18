@@ -4,6 +4,72 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.3.2-beta.9
+
+### Before you upgrade
+
+- reports left waiting in the delivery folder's old name are found and sent again. Nothing needs moving, and none is sent twice.
+- the folder a finished report waits in while it is sent has been renamed. If you have never set that folder yourself, nothing needs moving. Reports already waiting in the old folder are still sent.
+
+### New
+
+- A knockout search now delivers the engine's own assessment and findings alongside the report, as a full clearance already did.
+- A report states whether the local-language investigation ran at the depth configured for the matter.
+- A report table that continues past the right edge now shows a scrollbar, so it is clear there is more to see.
+- a worldwide search names the register service that searches it, on the New clearance form and on the report's coverage line.
+- Searches no longer look up ordinary English words one letter away from the mark that sound different, such as CODE beside CORE.
+- A clearance report carries a section strip along the top, so a reader can jump to the findings, the next steps or what was searched.
+- The new clearance form now offers every country a supported register can search, not a fixed list of 37.
+- A knockout report carries a section strip along the top, so a reader can jump to the conflicts, the filings or the next steps.
+- on Clearances, Ask AI sits in each row's "···" menu beside Retire, leaving the Open button alone in its column.
+
+### Fixed
+
+- A country named in words now reaches its register, and naming one in words and by code no longer counts as two places.
+- A search that failed can be picked up again with its codename alone. The command the engine prints when a search stops no longer names a job file that is no longer on the machine.
+- A knockout report no longer scrolls sideways on a phone when a finding cites a long web address.
+- a knockout report's Registers counted row reads "186 registers, on" the register service, without a list of territories folded under it.
+- A report no longer says the local-language investigation did not run when the run's own record shows it did.
+- On a phone, the rights-holder panel now shows a scrollbar when its rows run past the right edge.
+- "Web and marketplace names" lists names again. Readings of what a mark means are carried by the connotation section, where they were already stated in full.
+- when a register reports only that it holds more than a figure, the knockout counts table and workbook show that figure, not "not available".
+- Preliminary searches on one register now report the registered marks the assessment found, instead of a register section left empty.
+- A search whose register assessment cannot be recorded now stops with an error instead of delivering a report silent on the register.
+- A report's section links now sit in the header and stay on screen while you read, instead of scrolling away.
+- A report no longer reads "Case-law research could not be completed for ." when the search covered a register that does not publish per-country records.
+- On a knockout report, the risk band marker no longer overlaps the words above it.
+- A running search now reports the stage it is on, not the last one finished, so progress no longer appears to go backwards.
+- A knockout report no longer states, for each name, whether that name should proceed to a full clearance search. It reports what the screen found.
+- When a register search did not finish, the verdict's condition no longer names the engine's internal label for the unfinished part.
+- Worldwide searches on a register that keeps no record archive now show how many register records were read and in which countries.
+- Searches of a named company's own trademark portfolio now run on every register. On one register they were refused before the search was sent, and the report told the reader those holdings could not be reached.
+- After upgrading, existing companies, past clearances and queued searches stay visible, with no folder to rename and no company file to edit.
+- A company file that cannot be read no longer empties the company list; that company is named with the reason instead.
+- each finding's "Ask AI about this finding" button in a report now opens Ask AI, with that finding's number in the question.
+- The forward-decisions section of a clearance report is headed "What happens next", as the approved design heads it.
+- The new clearance form no longer repeats in paragraphs what each product row and each place already say.
+- on a phone, the list of clearances made the whole page slide sideways instead of scrolling the table. The table now scrolls on its own and the page stays put.
+- on a narrow window the buttons at the end of each clearance row pushed the page sideways, and every date broke onto two lines. The buttons now fit the space they are given and the date stays on one line.
+- Knockout reports no longer print a caveat line under the register counts table.
+- A mark whose official record could not be retrieved is no longer listed as a condition on the verdict. The report still names it where the search's coverage is set out.
+- Installs inside WSL now show a second setup command, for an assistant running inside WSL as well as one on Windows.
+- a clearance report's "What was searched" section shows register totals, counts per country and a link to the audit workbook, as designed.
+- New clearance no longer marks a company's saved territories as not available on a register that covers them.
+- on a phone, a table wider than the screen, such as Clearances or People, keeps its sideways scrollbar at the bottom of the screen.
+- The Ask AI panel now points at the button that opened it, and that button shows when it is open. Pressing "Ask AI about this finding" a second time closes the panel.
+- on a wide screen, the Clearances columns take the widths of the approved design, with a quarter of the table for each row's buttons.
+- Clearances no longer scrolls sideways on a wide screen with a full list, and a long risk word no longer runs into its date.
+- on a narrow window, Clearances no longer splits a risk word such as "Manageable" in two or runs a group's status into its risk.
+- clicking Company settings in the side menu a second time closes its pages again, and a third click opens them.
+- Connect your AI sits at the bottom of the portal's side menu, just above Collapse, where it stays whatever the window's height.
+- New clearance no longer asks for the name twice when it opens with a search already picked for a company.
+- when the company list cannot load, screens no longer narrow to one default company, and a company whose settings cannot be read is named.
+- The Goods or services field no longer carries a line explaining it; the field itself is unchanged and still optional.
+
+### For operators
+
+- Resuming a failed search by its codename now works without the original job file, and refuses by name when the run's record is incomplete.
+
 ## 0.3.2-beta.8
 
 ### Before you upgrade
