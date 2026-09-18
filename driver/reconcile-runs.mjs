@@ -161,7 +161,7 @@ export function planReconcile(runs, { now, quietMs = DEFAULT_QUIET_MS, isAlive =
  *
  * `cancelled` was the other candidate and is wrong: it says somebody decided. All this knows is that the
  * run stopped without finishing. WHY it ended goes in `terminalKind`, which is the field that already
- * exists for exactly that job (runs.mjs:78 — "state === 'failed': why the run ended").
+ * exists for exactly that job (`runFromStatusFile()` in `runs.mjs` — "state === 'failed': why the run ended").
  *
  * `reason` is written for a human, because progress.mjs renders it straight into the rollup line.
  */
