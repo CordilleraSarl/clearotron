@@ -67,7 +67,13 @@ export function issuedOn(run: { readonly state: string; readonly issuedAt: strin
 export type RunKind = 'clearance' | 'knockout-batch'
 
 /** What the questions are composed from: the run, and never the report's text. */
-export type AskAiRun = { readonly markName: string | null; readonly date: string | null; readonly kind: RunKind }
+export type AskAiRun = {
+  readonly markName: string | null
+  readonly date: string | null
+  readonly kind: RunKind
+  /** The finding asked about from its own card, by the number the report prints on it. Absent: the report. */
+  readonly finding?: number | null
+}
 
 /**
  * How every question names the report: the mark, the kind of read, and the day it ran.
@@ -85,11 +91,15 @@ export function reportPhrase(
   mark: string | null | undefined,
   date: string | null | undefined,
   kind: RunKind = 'clearance',
+  finding: number | null = null,
 ): string {
   const name = String(mark ?? '').trim() || 'this mark'
   const noun = kind === 'knockout-batch' ? 'knockout search' : 'clearance'
   const when = readableDate(date)
-  return when ? `the ${name} ${noun} from ${when}` : `the ${name} ${noun}`
+  const report = when ? `the ${name} ${noun} from ${when}` : `the ${name} ${noun}`
+  // ASKED FROM A FINDING'S OWN BUTTON, the finding's number rides beside the mark and the date — the
+  // number the report prints on that card — so the assistant is asked about that finding of this report.
+  return finding === null ? report : `finding ${finding} of ${report}`
 }
 
 /**
@@ -129,11 +139,35 @@ export const ASK_AI_QUESTIONS: readonly AskAiQuestion[] = [
 /** The sentence typed in for the question at `index` — the first question for an index that names none. */
 export function askAiQuestion(index: number, run: AskAiRun): string {
   const q = ASK_AI_QUESTIONS[index] ?? ASK_AI_QUESTIONS[0]!
-  return q.compose(reportPhrase(run.markName, run.date, run.kind))
+  return q.compose(reportPhrase(run.markName, run.date, run.kind, run.finding ?? null))
 }
 
-/** The panel's first line, in parts: the mark, the product, the day it was searched. */
-export type AskAiHeading = { readonly mark: string | null; readonly product: string | null; readonly searched: string | null }
+/**
+ * Which finding a press inside the report names, as the Ask AI control should carry it.
+ *
+ * A clearance numbers its findings once across the document, so its number stands on its own. A knockout
+ * restarts its numbers for each name, so a number is only a finding when the name is certain — the one
+ * name's own document. On a whole batch the position the document sends cannot be matched to a name with
+ * certainty here, and a question naming the wrong finding is worse than one naming the report, so that
+ * press opens the control about the report. A card with no number does the same.
+ */
+export function findingAsked(
+  asked: { readonly ordinal: number | null; readonly markIndex: number | null; readonly nonce: number } | null,
+  kind: RunKind,
+  pickedMark: string | null,
+): { readonly ordinal: number | null; readonly markName: string | null; readonly nonce: number } | null {
+  if (!asked) return null
+  if (kind !== 'knockout-batch') return { ordinal: asked.ordinal, markName: null, nonce: asked.nonce }
+  return pickedMark ? { ordinal: asked.ordinal, markName: pickedMark, nonce: asked.nonce } : { ordinal: null, markName: null, nonce: asked.nonce }
+}
+
+/** The panel's first line, in parts: the mark, the finding when asked from one, the product, the day it was searched. */
+export type AskAiHeading = {
+  readonly mark: string | null
+  readonly finding: number | null
+  readonly product: string | null
+  readonly searched: string | null
+}
 
 /**
  * Which report the panel is about — "VENQORI · Full country search · searched 2026-09-03".
@@ -146,14 +180,16 @@ export function askAiHeading(run: {
   readonly markName: string | null
   readonly productName: string | null
   readonly date: string | null
+  readonly finding?: number | null
 }): AskAiHeading {
   const text = (s: string | null) => String(s ?? '').trim() || null
-  return { mark: text(run.markName), product: text(run.productName), searched: text(run.date) }
+  return { mark: text(run.markName), finding: run.finding ?? null, product: text(run.productName), searched: text(run.date) }
 }
 
 /** The same line as one string, the way a reader reads it. */
 export const headingText = (h: AskAiHeading): string =>
-  [h.mark, h.product, h.searched ? `searched ${h.searched}` : null].filter(Boolean).join(' · ')
+  [h.mark, h.finding !== null ? `finding ${h.finding}` : null, h.product, h.searched ? `searched ${h.searched}` : null]
+    .filter(Boolean).join(' · ')
 
 /** Where a press sends the reader, with the question already in the box. */
 export type Assistant = { readonly name: string; readonly href: (question: string) => string }

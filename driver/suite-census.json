@@ -4156,8 +4156,8 @@
           "todos": 0
         },
         "scope-facts.test.mjs": {
-          "tests": 15,
-          "asserts": 62,
+          "tests": 16,
+          "asserts": 68,
           "skips": 0,
           "todos": 0
         },
@@ -6020,8 +6020,8 @@
           "todos": 0
         },
         "askAi.test.ts": {
-          "tests": 21,
-          "asserts": 97,
+          "tests": 23,
+          "asserts": 108,
           "skips": 0,
           "todos": 0
         },
@@ -6219,7 +6219,7 @@
         },
         "nav.test.ts": {
           "tests": 15,
-          "asserts": 94,
+          "asserts": 97,
           "skips": 0,
           "todos": 0
         },
@@ -6320,14 +6320,14 @@
           "todos": 0
         },
         "registerCoverage.test.ts": {
-          "tests": 12,
-          "asserts": 40,
+          "tests": 13,
+          "asserts": 45,
           "skips": 0,
           "todos": 0
         },
         "reportFrame.test.ts": {
-          "tests": 14,
-          "asserts": 22,
+          "tests": 15,
+          "asserts": 29,
           "skips": 0,
           "todos": 0
         },
@@ -6386,8 +6386,8 @@
           "todos": 0
         },
         "territoryCodes.test.ts": {
-          "tests": 2,
-          "asserts": 5,
+          "tests": 3,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },

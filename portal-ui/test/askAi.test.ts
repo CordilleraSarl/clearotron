@@ -21,7 +21,7 @@ import { fileURLToPath } from 'node:url'
 import {
   askAiPrompt, askAiOffer, readableDate, ASSISTANTS, AI_SETUP_PATH, AI_SETUP_FROM_REPORT, ASK_AI_QUESTIONS, ASK_AI_OPENS,
   askAiQuestion, askAiHeading, headingText, issuedOn, openLabel, reportPhrase, rememberReport, rememberedReport,
-  reachedFromReport, withAskOpen, asksOpen, withoutAskOpen,
+  reachedFromReport, withAskOpen, asksOpen, withoutAskOpen, findingAsked,
 } from '../src/contract/askAi.ts'
 import type { ReportStore } from '../src/contract/askAi.ts'
 
@@ -189,6 +189,31 @@ test('THE PANEL NAMES THE REPORT: mark, product, the day it was searched — and
   assert.equal(headingText(askAiHeading({ markName: 'VENQORI', productName: null, date: '2026-09-03' })), 'VENQORI · searched 2026-09-03')
   assert.equal(headingText(askAiHeading({ markName: null, productName: 'Full country search', date: null })), 'Full country search')
   assert.equal(headingText(askAiHeading({ markName: '  ', productName: '', date: '' })), '')
+})
+
+test('ASKED FROM A FINDING, the finding is named beside the mark and the date, in every question and in the first line', () => {
+  const at = { ...RUN, finding: 3 }
+  assert.equal(reportPhrase('ACME', '2026-09-14', 'clearance', 3), 'finding 3 of the ACME clearance from 14 September')
+  assert.equal(askAiQuestion(0, at), 'Brief me on finding 3 of the ACME clearance from 14 September.')
+  assert.equal(askAiQuestion(3, at), 'How would narrower goods change the assessment in finding 3 of the ACME clearance from 14 September?')
+  for (const i of ASK_AI_QUESTIONS.keys()) {
+    assert.ok(askAiQuestion(i, at).includes('finding 3 of the ACME clearance from 14 September'), `question ${i + 1} dropped the finding`)
+    assert.equal(askAiQuestion(i, { ...RUN, finding: null }), askAiQuestion(i, RUN), 'a card with no number asks about the report')
+  }
+  assert.equal(headingText(askAiHeading({ markName: 'VENQORI', productName: 'Full country search', date: '2026-09-03', finding: 3 })),
+    'VENQORI · finding 3 · Full country search · searched 2026-09-03')
+  assert.equal(headingText(askAiHeading({ markName: 'VENQORI', productName: 'Full country search', date: '2026-09-03', finding: null })),
+    'VENQORI · Full country search · searched 2026-09-03')
+})
+
+test('A KNOCKOUT NUMBERS EACH NAME FROM 1, so a number names a finding only where the name is certain', () => {
+  const press = { ordinal: 2, markIndex: 1, nonce: 1 }
+  assert.deepEqual(findingAsked(press, 'clearance', null), { ordinal: 2, markName: null, nonce: 1 })
+  assert.deepEqual(findingAsked(press, 'knockout-batch', 'AQUAMAX'), { ordinal: 2, markName: 'AQUAMAX', nonce: 1 },
+    'one name\'s own document: every finding in it is that name\'s')
+  assert.deepEqual(findingAsked(press, 'knockout-batch', null), { ordinal: null, markName: null, nonce: 1 },
+    'a whole batch: the number alone is several findings, so the press asks about the report')
+  assert.equal(findingAsked(null, 'clearance', null), null)
 })
 
 test('THE ISSUE DAY IS THE ONE THE REPORT PRINTS — Zurich, whatever zone the reader is in', () => {

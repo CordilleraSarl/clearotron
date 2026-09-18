@@ -18,12 +18,12 @@ import { readsFor, hasThread, readLabel, displayName, openDocument, showsAssessm
 import { inlineSpans } from '../contract/inlineMd.ts'
 import { parseSummaryBlocks, SUMMARY_BLOCK_LINE } from '../contract/summaryBlocks.ts'
 import { runProductLabel } from '../contract/home.ts'
-import { FIRST_PAINT, frameCommand, readFrameHeight, readFrameScroll, readCommandFailure, readFrameControls, exportMenu, exportAffordance } from '../contract/reportFrame.ts'
+import { FIRST_PAINT, frameCommand, readFrameHeight, readFrameScroll, readCommandFailure, readFrameControls, readAskAi, exportMenu, exportAffordance } from '../contract/reportFrame.ts'
 import type { FrameCommand } from '../contract/reportFrame.ts'
 import { RiskDot } from '../components/RiskDot.tsx'
 import { Icon } from '../components/Icon.tsx'
 import { AskAi } from '../components/AskAi.tsx'
-import { asksOpen, issuedOn, withoutAskOpen } from '../contract/askAi.ts'
+import { asksOpen, findingAsked, issuedOn, withoutAskOpen } from '../contract/askAi.ts'
 import { useLoad } from '../state/useApi.ts'
 import { resultPath } from '../nav/nav.config.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
@@ -48,6 +48,9 @@ function useReportFrame() {
   // NULL UNTIL THE DOCUMENT SAYS. Not an empty array: "we have not heard yet" and
   // "this document has no controls" are different states, and only the second is a fact about the report.
   const [controls, setControls] = useState<readonly FrameCommand[] | null>(null)
+  // A finding's own Ask AI, pressed inside the document. A new object per press, so the same finding
+  // pressed twice opens the control twice.
+  const [askedFrom, setAskedFrom] = useState<{ readonly ordinal: number | null; readonly markIndex: number | null; readonly nonce: number } | null>(null)
 
   useEffect(() => {
     function onMessage(e: MessageEvent) {
@@ -76,6 +79,8 @@ function useReportFrame() {
       }
       const bad = readCommandFailure(e.data, mine)
       if (bad) { setFailed(`That did not work — the report could not ${bad.command}. (${bad.message})`); return }
+      const asked = readAskAi(e.data, mine)
+      if (asked) { setAskedFrom((prev) => ({ ...asked, nonce: (prev?.nonce ?? 0) + 1 })); return }
       // 's flag branch was the fourth reader here and is retired. It took the run id, which
       // is why this hook no longer needs one — every remaining message is about the frame itself, not
       // about which report is in it, so the effect has no dependency and re-binds on nothing.
@@ -92,7 +97,7 @@ function useReportFrame() {
     ref.current?.contentWindow?.postMessage(frameCommand(command, value), '*')
   }, [])
 
-  return { ref, height, send, failed, controls, clearFailed: () => setFailed(null) }
+  return { ref, height, send, failed, controls, askedFrom, clearFailed: () => setFailed(null) }
 }
 
 /**
@@ -474,6 +479,7 @@ export function Result({
           access={access}
           go={ctx.go}
           openOnArrival={askOnArrival}
+          fromFinding={findingAsked(frame.askedFrom, run.kind, pickedMark)}
         />
         {/* THE COMMAND ROWS ARE GATED ON WHAT THE DOCUMENT SAYS IT HAS, not on the run's kind —
             and the AUDIT DOWNLOAD is gated on neither, because it is a run-level file the

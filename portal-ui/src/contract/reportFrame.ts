@@ -189,6 +189,34 @@ export function readCommandFailure(data: unknown, sameSource: boolean): { comman
   return { command: m.command, message: typeof m.message === 'string' ? m.message : 'it did not say why' }
 }
 
+/**
+ * A finding's own Ask AI, pressed inside the document and answered outside it.
+ *
+ * The document draws the button and the shell holds the control, so the press has to cross the
+ * null-origin boundary like the height and the anchor jump above it. Same trust model: source identity,
+ * never origin, and a string is rejected rather than coerced into a number.
+ *
+ * THE ORDINAL IS OPTIONAL BECAUSE SOME CARDS GENUINELY HAVE NONE. A clearance numbers its findings and
+ * carries that number in the card's id, but the "Also considered" cards carry the same button and no
+ * number — a record that was ruled out was never given an ordinal. Refusing the message in that case
+ * would make the button work on most cards and silently do nothing on the rest, which is worse than not
+ * drawing it: the reader cannot tell which cards are the dead ones. A null ordinal opens the control and
+ * says the document could not name a finding, which is true.
+ *
+ * A KNOCKOUT RESTARTS ITS ORDINALS AT 1 FOR EACH MARK, so the number alone names a different finding on
+ * every mark in a batch. `markIndex` is what tells them apart. It is null on a clearance, which numbers
+ * its findings once across the whole document.
+ */
+export function readAskAi(data: unknown, sameSource: boolean): { ordinal: number | null; markIndex: number | null } | null {
+  if (!sameSource) return null
+  if (typeof data !== 'object' || data === null) return null
+  const m = data as { source?: unknown; type?: unknown; ordinal?: unknown; markIndex?: unknown }
+  if (m.source !== FRAME_TAG || m.type !== 'askAi') return null
+  const whole = (v: unknown): number | null =>
+    typeof v === 'number' && Number.isInteger(v) && v >= 0 ? v : null
+  return { ordinal: whole(m.ordinal), markIndex: whole(m.markIndex) }
+}
+
 /** The message the portal sends inwards. Shaped here so both ends of the contract sit in one file. */
 export function frameCommand(command: FrameCommand, value?: boolean) {
   return { source: FRAME_TAG, type: 'command' as const, command, value }
