@@ -770,8 +770,13 @@ test("the wizard still points at the same script the docs do", () => {
   const src = readFileSync(join(REPO, "bin", "onboard.mjs"), "utf8");
   const spec = backgroundSyncSpec({ repo: "/r", dbPath: "/d.db", logFd: 1 });
   assert.ok(spec.args[0].endsWith("bin/uspto-sync.mjs"));
-  assert.match(src, /npm run sync:uspto/,
+  // THE LINE THE READER IS SHOWN, not a mention in the wizard's comments: the build command is composed
+  // for however this install is reached, so a package install is not handed a checkout-only script.
+  const uspto = PROVIDERS.find((p) => (p.credentials ?? []).includes("USPTO_LOCAL_DB"));
+  const build = (uspto?.warnings ?? []).find((l) => /^Build it with:/.test(l));
+  assert.match(build ?? "", /clearotron sync\b/,
     "the manual instruction stays — declining the offer must leave the reader with the command");
+  assert.doesNotMatch(build ?? "", /npm run/, "a package install has no npm scripts to run");
   const install = readFileSync(join(REPO, "INSTALL.md"), "utf8");
   assert.match(install, new RegExp(`${USPTO_ARCHIVE_GB} ?GB`),
     "INSTALL.md and the wizard quote the same download size");

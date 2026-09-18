@@ -40,6 +40,9 @@ import {
   USPTO_ARCHIVE_GB, USPTO_INDEX_GB, USPTO_INGEST_GB_PER_HOUR, USPTO_DAILY_TOPUP_MB,
   usptoBuildHours, usptoProvisionGB,
 } from "./uspto-index-size.mjs";
+// THE BUILD COMMAND AS THIS INSTALL IS REACHED. It named `npm run sync:uspto`, a script only a checkout has,
+// so a reader who installed the package was handed a command with nothing behind it.
+import { reachableCommand } from "./invocation.mjs";
 
 const SIGNA_SIGNUP = [
   "1. Create an account at https://signa.so/ and open the API section — it is self-serve: no sales",
@@ -64,7 +67,7 @@ const USPTO_WARNINGS = [
   `  · provision ~${usptoProvisionGB()} GB free — the archives are deleted as they are ingested, so they never all exist at once`,
   "The EU register needs NONE of this and works as soon as your EUIPO credentials are in.",
   "A USPTO API key needs an ID.me identity verification, which is a real-world identity check.",
-  "Build it with:  npm run sync:uspto      (resumable — an interrupted build picks up where it stopped)",
+  `Build it with:  ${reachableCommand("sync")}      (resumable — an interrupted build picks up where it stopped)`,
 ];
 
 
