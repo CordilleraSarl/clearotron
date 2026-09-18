@@ -219,6 +219,29 @@ test("a directory created by a run is named, even with nothing in it", () => {
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
+// ── THE BUNDLED PROFILES DIRECTORY IS GUARDED LIKE THE REST ──────────────────────────────────────────
+//
+// It is the one directory inside the checkout the PRODUCT writes at runtime — a run grows an empty
+// `driver/profiles/projects/<key>/` — which makes it the obvious place to exempt, and the place six
+// separate tests planted a `b2018-<pid>` directory while every other test ran beside them. A fresh clone
+// was red on its first `npm test` and green on its second. So it is named here: a directory left under it,
+// empty or not, fails the run by name, and nothing in either list may quietly carve it out.
+test("a directory a test leaves under driver/profiles/ fails the run and is named — the profiles dir is not exempt", () => {
+  const root = mkdtempSync(join(tmpdir(), "ct198-profiles-"));
+  try {
+    mkdirSync(join(root, "driver", "profiles"), { recursive: true });
+    writeFileSync(join(root, "driver", "profiles", "generic.json"), "{}");
+    const before = snapshotRepo(root);
+    mkdirSync(join(root, "driver", "profiles", "projects", "b2018-4242"), { recursive: true });
+    writeFileSync(join(root, "driver", "profiles", "planted.json"), "{}");
+    const moved = repoWrites(before, snapshotRepo(root), root).join("\n");
+    assert.match(moved, /\+ driver\/profiles\/projects\/b2018-4242/, "an empty project directory left in the bundled profiles went unseen");
+    assert.match(moved, /\+ driver\/profiles\/planted\.json/, "a file left in the bundled profiles went unseen");
+    for (const list of [ALLOWED_TO_MOVE, [...NEVER_WALK]])
+      assert.ok(!list.some((e) => /profiles/.test(String(e))), `the profiles directory was carved out of the guard: ${JSON.stringify(list)}`);
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
 test("node_modules and .git are not walked, and nothing else is skipped by name", () => {
   const root = mkdtempSync(join(tmpdir(), "ct198-skip-"));
   try {

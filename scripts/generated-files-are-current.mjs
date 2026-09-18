@@ -60,6 +60,19 @@ export function treeState(root = ROOT) {
  * a path whose STATE changed — staged to modified, say — is reported as having moved, and the paths are
  * returned rather than a count, because two numbers agreeing is not the same as two sets agreeing.
  */
+/**
+ * The `git status --porcelain` LINES that differ between two readings, status included. `movedPaths`
+ * names what moved; this keeps the two-character state, which is what says whether a path is tracked.
+ */
+export function movedLines(before, after) {
+  const bag = (s) => { const m = new Map(); for (const l of String(s).split("\n")) if (l.trim()) m.set(l, (m.get(l) ?? 0) + 1); return m; };
+  const [b, a] = [bag(before), bag(after)];
+  const out = new Set();
+  for (const [l, n] of a) if ((b.get(l) ?? 0) !== n) out.add(l);
+  for (const [l, n] of b) if ((a.get(l) ?? 0) !== n) out.add(l);
+  return [...out];
+}
+
 export function movedPaths(before, after) {
   const bag = (s) => {
     const m = new Map();
@@ -84,6 +97,7 @@ export function checkAll({ dir = HERE, root = ROOT, log = console.log, readTree 
   const unreadable = [];
   const wrote = [];
   const unattributable = [];
+  const neighbours = [];
   for (const m of found) {
     // ── `--check` IS A CONTRACT, AND NOTHING WAS VERIFYING IT ──────────────────────────────────────
     //
@@ -125,14 +139,25 @@ export function checkAll({ dir = HERE, root = ROOT, log = console.log, readTree 
     const out = ((r.stdout || "") + (r.stderr || "")).trim();
     if (before !== null && after !== null && before !== after) {
       const moved = movedPaths(before, after);
-      if (before.trim() === "") {
+      // AN UNTRACKED PATH IS NOT A MINTER'S TO WRITE. A minter that ignores `--check` re-mints its own
+      // generated file, which is tracked, so its write reads as a MODIFIED path. A path that appears or
+      // goes as untracked (`??`) was written by something else — in the suite, the neighbour test running
+      // beside this one — and it touched nothing a minter reads. So it is named, with who it was not, and
+      // this minter's answer is read as it came back. Measured on a suite run: `mint-public-residue`
+      // printed "the backlog is current" and was named as having changed the tree, because a neighbour
+      // had just made a directory inside the checkout.
+      if (movedLines(before, after).every((l) => l.startsWith("?? "))) {
+        neighbours.push({ m, moved });
+        log(`  (another process wrote ${moved.join(", ")} while ${m} ran — untracked, so not this minter's output)`);
+      } else if (before.trim() === "") {
         wrote.push({ m, out, moved });
         log(`  WROTE    ${m} (during --check): ${moved.join(", ") || "the tree moved"}`);
+        continue;
       } else {
         unattributable.push({ m, moved });
         log(`  ?        ${m} — the tree moved and this probe cannot say who moved it: ${moved.join(", ") || "paths unknown"}`);
+        continue;
       }
-      continue;
     }
     // 0 is current, 1 is stale, anything else is a minter that could not look — reported separately,
     // because "I could not read the tree" and "the file is out of date" need different things done.
@@ -141,11 +166,11 @@ export function checkAll({ dir = HERE, root = ROOT, log = console.log, readTree 
     unreadable.push({ m, out, code: r.status });
     log(`  ?        ${m} (exit ${r.status})`);
   }
-  return { found, stale, unreadable, wrote, unattributable, empty: false, contractChecked: readTree() !== null };
+  return { found, stale, unreadable, wrote, unattributable, neighbours, empty: false, contractChecked: readTree() !== null };
 }
 
 function main() {
-  const { found, stale, unreadable, wrote, unattributable, empty, contractChecked } = checkAll();
+  const { found, stale, unreadable, wrote, unattributable, neighbours, empty, contractChecked } = checkAll();
   if (empty) {
     console.error("generated-files-are-current: no scripts/mint-*.mjs found. Either they moved or the "
       + "naming changed — and a pass over nothing is not a pass.");
@@ -154,6 +179,12 @@ function main() {
   console.log(`\ngenerated-files-are-current: checked ${found.length} minter(s)`
     + (contractChecked ? "" : "; the tree could not be read, so nothing verified that `--check` changed nothing"));
 
+  // NAMED, NOT FAILED: the file, and that the writer was not the minter. The fix belongs to whatever
+  // wrote inside the checkout, and the wrapper's own no-writes check is the one that fails it.
+  for (const { m, moved } of neighbours ?? []) {
+    console.error(`\nnot ${m}: another process wrote ${moved.join(", ")} inside the checkout while it ran — `
+      + `untracked, so not a generated file; this check's answers stand.`);
+  }
   for (const { m, out } of [...wrote, ...stale, ...unreadable]) {
     console.error(`\n──── ${m} ────\n${out}`);
   }

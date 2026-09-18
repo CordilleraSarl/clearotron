@@ -2579,7 +2579,7 @@
         },
         "free-tier-credential-sites.test.mjs": {
           "tests": 5,
-          "asserts": 13,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -2980,8 +2980,8 @@
           "todos": 0
         },
         "no-test-writes-inside-the-checkout.test.mjs": {
-          "tests": 16,
-          "asserts": 35,
+          "tests": 17,
+          "asserts": 38,
           "skips": 0,
           "todos": 0
         },
@@ -3461,7 +3461,7 @@
         },
         "provider-neutral-prose.test.mjs": {
           "tests": 4,
-          "asserts": 7,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
@@ -3737,7 +3737,7 @@
         },
         "register-ledger-rename.test.mjs": {
           "tests": 12,
-          "asserts": 32,
+          "asserts": 33,
           "skips": 0,
           "todos": 0
         },
@@ -3755,7 +3755,7 @@
         },
         "register-provider-required.test.mjs": {
           "tests": 10,
-          "asserts": 27,
+          "asserts": 28,
           "skips": 0,
           "todos": 0
         },
@@ -4283,7 +4283,7 @@
         },
         "seat-outputs-outside-driver-tree.test.mjs": {
           "tests": 5,
-          "asserts": 11,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -4612,8 +4612,8 @@
           "todos": 0
         },
         "test-full-runs-every-corpus-or-names-the-one-it-did-not.test.mjs": {
-          "tests": 17,
-          "asserts": 54,
+          "tests": 18,
+          "asserts": 61,
           "skips": 0,
           "todos": 0
         },

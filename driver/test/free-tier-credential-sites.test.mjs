@@ -19,7 +19,7 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname, relative } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -147,7 +147,9 @@ test("tracker 2018 the walk refuses an empty corpus, and an empty leaf is not on
   // BOTH DIRECTIONS. A guard moved onto the aggregate and a guard deleted read identically on a healthy
   // tree; only a walk handed an empty tree tells them apart.
   const tmp = mkdtempSync(join(tmpdir(), "b2018-free-tier-"));
-  const leaf = join(ROOT, "driver", "profiles", "projects", `b2018-${process.pid}`);
+  const tree = mkdtempSync(join(tmpdir(), "b2018-free-tier-tree-"));
+  const root = join(tree, "driver");
+  const leaf = join(root, "profiles", "projects", "b2018-leaf");
   try {
     mkdirSync(join(tmp, "a", "b"), { recursive: true });
     assert.throws(() => sources([tmp]), /VACUOUS/,
@@ -156,12 +158,19 @@ test("tracker 2018 the walk refuses an empty corpus, and an empty leaf is not on
 
     // …and the leaf that produced: the product writes it, git cannot store it, and it
     // must change nothing.
-    const baseline = sources().map((f) => relative(ROOT, f)).sort();
+    // PLANTED IN A TREE OF ITS OWN, not in the checkout: a leaf planted under this repository's own
+    // driver/profiles/projects/ is visible, while it exists, to every other test running beside this one —
+    // the wrapper reports it as a test writing inside the checkout, and the generated-files check blames
+    // whichever minter was running. The walk takes its roots, so it walks a laid-out tree instead.
+    mkdirSync(root, { recursive: true });
+    writeFileSync(join(root, "one.mjs"), "export const one = 1;\n");
+    const baseline = sources([root]).map((f) => relative(tree, f)).sort();
+    assert.deepEqual(baseline, ["driver/one.mjs"], "the laid-out tree is not the tree the walk reads — this arm would prove nothing");
     mkdirSync(leaf, { recursive: true });
-    assert.deepEqual(sources().map((f) => relative(ROOT, f)).sort(), baseline,
+    assert.deepEqual(sources([root]).map((f) => relative(tree, f)).sort(), baseline,
       "an empty directory under a walked root changed the set of files this sweep reads");
   } finally {
     rmSync(tmp, { recursive: true, force: true });
-    rmSync(leaf, { recursive: true, force: true });
+    rmSync(tree, { recursive: true, force: true });
   }
 });
