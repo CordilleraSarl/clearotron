@@ -4781,7 +4781,7 @@
         },
         "the-demo-is-its-own-install.test.mjs": {
           "tests": 8,
-          "asserts": 61,
+          "asserts": 62,
           "skips": 0,
           "todos": 0
         },
@@ -5933,6 +5933,12 @@
         "list-profiles.test.mjs": {
           "tests": 1,
           "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "list-runs-says-when-nothing-is-configured.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },

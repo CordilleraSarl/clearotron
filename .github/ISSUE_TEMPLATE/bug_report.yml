@@ -32,7 +32,7 @@ body:
       label: What happened
       description: What you did, what happened, and what you expected instead.
       placeholder: |
-        I ran `npm run example` on a fresh clone.
+        I ran `npx clearotron demo` on a fresh clone.
         It exited 1 with "…".
         I expected the report to open.
     validations:

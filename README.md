@@ -154,8 +154,9 @@ A clone is the working tree, not a way to install the product — install it fro
 git clone https://github.com/CordilleraSarl/clearotron
 cd clearotron
 npm install                    # every workspace
-npm run build -w portal-ui     # the browser bundle is not committed — build it once
+npm run build:ui               # the browser bundle is not committed — build it once
 npm test                       # the offline suite — no credentials, no network
+npx clearotron demo            # replays finished clearances into a local portal
 ```
 
 From a clone the commands are `npx clearotron …`, run from that directory.

@@ -13,7 +13,7 @@ and is what you want when you are working in this tree.
 
 | File | Shipped verb | In a checkout | Cost |
 |---|---|---|---|
-| `example.mjs` | `clearotron demo` | `npm run example` | Free. No credentials, no model, no engine, no register call. |
+| `example.mjs` | `clearotron demo` | `npx clearotron demo` | Free. No credentials, no model, no engine, no register call. |
 | `onboard.mjs` | `clearotron install` | `npm run setup` | **Spends one cheap engine turn.** `clearotron doctor` writes nothing and calls nobody. |
 | `start.mjs` | `clearotron start` | `npm start` | Free to start. What it starts can spend — see below. |
 | `uspto-sync.mjs` | `clearotron sync` | `npm run sync:uspto` | Not billed, but 41.5 GB of download and about nine hours of indexing. |

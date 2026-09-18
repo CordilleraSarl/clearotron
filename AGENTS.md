@@ -15,9 +15,10 @@ Node. A run takes hours, not minutes.
 ## Commands that cost nothing
 
 ```sh
-npm install                      # installs all workspaces
-npm test                         # offline, fixture-backed. No network, no model, no credentials
-npm run example                     # replays a finished example run and serves the report on 127.0.0.1:18900
+npm install                    # every workspace
+npm run build:ui               # the browser bundle is not committed — build it once
+npm test                       # the offline suite — no credentials, no network
+npx clearotron demo            # replays finished clearances into a local portal
 npm run setup -- --check         # reports what this machine is configured for; writes nothing
 node scripts/markdown-link-check.mjs    # every relative markdown link resolves
 node mcp-server/smoke.mjs        # drives the real MCP server against a fixture
@@ -43,7 +44,7 @@ the queue. The spend happens when someone runs the runner.
 
 | Lane | What you need | Notes |
 |---|---|---|
-| **See a finished report** | Node 22 | `npm install && npm run example`. No credentials, no model calls. |
+| **See a finished report** | Node 22 | `npm install && npm run build:ui && npx clearotron demo`. No credentials, no model calls. |
 | **Prove the whole engine for $0** | Node 22 | A full pipeline run against the mock engine — recipe in `docs/E2E.md` tier 1. Nothing is billed. |
 | **Run a real clearance** | A signed-in coding CLI, one register credential, `PERPLEXITY_API_KEY` | See `providers/README.md` for which register to pick, then `INSTALL.md`. |
 
