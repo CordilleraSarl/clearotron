@@ -845,6 +845,11 @@ jobs:
     timeout-minutes: 35
     permissions:
       contents: read
+      # READ ONLY, for the one look this job takes at the version pull request when the wait expires on a
+      # dispatched cut: whether it merged, whether it can, and how each check on it concluded.
+      pull-requests: read
+      checks: read
+      statuses: read
     outputs:
       cut: ${{ steps.awaited.outputs.cut }}
       version: ${{ steps.awaited.outputs.version }}
@@ -928,6 +933,9 @@ jobs:
           # existed to do did not happen, and the script fails rather than reporting success.
           CLEAROTRON_CUT_REQUESTED: ${{ github.event_name == 'workflow_dispatch' && inputs.cut != 'rehearse' && 'true' || 'false' }}
           CLEAROTRON_CUT_PR: ${{ needs.version.outputs.pr_number }}
+          # WHAT THAT LOOK IS MADE WITH. `gh` in a runner has no credential unless it is given one here;
+          # without it the read fails and a dispatched cut goes red with no reason it can name.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # THE SAME TOKEN THE STEP ABOVE READS, because this loop takes the same look on every pass.
           # The step above approves the head the version pull request had when this job started; if main
           # moves during the wait, the pull request is refreshed onto a new head, that head parks a run
