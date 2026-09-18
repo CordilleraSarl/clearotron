@@ -7,11 +7,21 @@
     "type": "git",
     "url": "git+https://github.com/CordilleraSarl/clearotron.git"
   },
-  "homepage": "https://github.com/CordilleraSarl/clearotron#readme",
+  "homepage": "https://clearotron.ai",
   "bugs": {
     "url": "https://github.com/CordilleraSarl/clearotron/issues"
   },
   "description": "Clearotron — trademark-clearance engine: deterministic orchestration driver + MCP interrogation server. Provider-agnostic, model-agnostic, runs headless (no gateway).",
+  "keywords": [
+    "trademark",
+    "trademark-clearance",
+    "trademark-search",
+    "brand-protection",
+    "intellectual-property",
+    "legal-tech",
+    "mcp-server",
+    "nodejs"
+  ],
   "engines": {
     "node": ">=22.13.0"
   },
@@ -24,7 +34,8 @@
   "overrides": {
     "buffers": "$buffers",
     "uuid": "^11.1.1",
-    "browserslist": "^4.28.8"
+    "browserslist": "^4.28.8",
+    "hono": "^4.13.8"
   },
   "scripts": {
     "preinstall": "node scripts/preinstall-node-check.mjs",

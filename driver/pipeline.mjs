@@ -6519,7 +6519,7 @@ async function refute(ctx) {
   // — CARRY THE CONDITION OUT. This returned a bare `{ ok: false }`, so the only
   // thing the caller could throw was a sentence about the LADDER, and the recovery classifier was handed
   // "failed after retries + fallback" — which names no provider condition and matches neither lane
-  // regex. Measured on a codex R2 round that died after seventeen hours: every attempt recorded
+  // regex. Measured on a codex test run that died after seventeen hours: every attempt recorded
   // `rate_limited` or `timeout`, both of which recoveryLaneOf reads as WEATHER, and the run was
   // classified `unknown`/`defect` and spent the small budget reserved for its own mistakes.
   if (!r.ok) return { ok: false, fail: r.fail ?? null };
@@ -9056,7 +9056,7 @@ async function pipelineInner(job, opts = {}) {
         const ranked = [...rows.filter(material), ...rows.filter((r) => !material(r))];
         // — TWO CAPS, BECAUSE THIS IS TWO INSTRUMENTS SHARING ONE BUDGET.
         //
-        // Measured on an R2 round, 2026-08-23: the shared cap of 10 spent itself as 5 mark probes and 5
+        // Measured on a test run, 2026-08-23: the shared cap of 10 spent itself as 5 mark probes and 5
         // owner probes, perfectly alternating, because each row mints both and both drew from one
         // counter in row order. A remembered conflict sat at generated position 74 of 114 while an
         // owner's 87-record portfolio dispatched ahead of it.

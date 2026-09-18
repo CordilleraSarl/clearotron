@@ -293,8 +293,18 @@ const installState = (home) => ({
   install: tree(join(home, "trademark")), credential: tree(join(home, ".cordillera")), settings: tree(join(home, ".config", "clearotron")),
 });
 
+// THE DEMO IN A CLONE NEEDS THE BUILT PORTAL, and these two boot the real one through `clearotron demo`.
+// Without the bundle it stops before starting anything and names the build command — the right answer for
+// a reader, and one these arms cannot measure past. The offline shards install without building; the
+// clone-recipe job builds the bundle as the README says and runs this whole suite after it, so both arms
+// run in full there. Skipped by name here, never passed on an early return.
+const BUNDLE = join(REPO, "portal-ui", "dist", "index.html");
+const NEEDS_BUNDLE = "needs the built portal bundle (npm run build:ui): in a clone the demo refuses without one; "
+  + "the clone-recipe job builds it and runs this in full";
+
 test("the demo, booted beside a real install, lists Demo Brand Owner and Generic, and leaves the install as it found it",
-  { timeout: 360000 }, async () => {
+  { timeout: 360000 }, async (t) => {
+    if (!existsSync(BUNDLE)) return t.skip(NEEDS_BUNDLE);
     const home = mkdtempSync(join(tmpdir(), "demo-beside-"));
     let run = null;
     let ports = [];
@@ -361,13 +371,18 @@ test("the demo, booted beside a real install, lists Demo Brand Owner and Generic
       assert.ok(JSON.parse(readFileSync(demoPaths.grants, "utf8")).tenants["demo-org"].accounts.includes(key),
         "the new company was not filed under the demo's organisation");
 
+      // READ WHILE THE DEMO IS UP. It removes its folder when it stops, as the README says it does, so the
+      // archive it seeded is only there to look at before the stop.
+      assert.ok(readdirSync(demoPaths.pool).some((d) => existsSync(join(demoPaths.pool, d, "meta.json"))),
+        "anti-vacuity: the demo seeded its example reports, into its own archive");
+
       await stop(run, ports);
       run = null;
       const after = installState(home);
       for (const part of ["install", "credential", "settings"])
         assert.deepEqual(moved(before[part], after[part]), [], `the demo changed the real install's ${part}`);
-      assert.ok(readdirSync(demoPaths.pool).some((d) => existsSync(join(demoPaths.pool, d, "meta.json"))),
-        "anti-vacuity: the demo seeded its example reports, into its own archive");
+      assert.ok(!existsSync(join(home, "trademark-demo")),
+        "the demo left its folder behind — started with no flags, it removes what it made when it stops");
     } finally {
       if (run) await stop(run, ports).catch(() => {});
       rmSync(home, { recursive: true, force: true });
@@ -377,7 +392,8 @@ test("the demo, booted beside a real install, lists Demo Brand Owner and Generic
 // ── 5. THE OTHER ORDER ──────────────────────────────────────────────────────────────────────────────
 
 test("a demo first, then a real start in the same home: the real install carries nothing of the demo",
-  { timeout: 360000 }, async () => {
+  { timeout: 360000 }, async (t) => {
+    if (!existsSync(BUNDLE)) return t.skip(NEEDS_BUNDLE);
     const home = mkdtempSync(join(tmpdir(), "demo-first-"));
     let run = null;
     let ports = [];

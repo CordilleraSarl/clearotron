@@ -1,0 +1,779 @@
+{
+  "uri": "/mark/em/89c60f20-af7f-4397-b567-a3e05c24b49c",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "89c60f20-af7f-4397-b567-a3e05c24b49c",
+  "applicationNumber": "19078819",
+  "registrationNumber": "19078819",
+  "applicationDate": "2024-09-12",
+  "registrationDate": "2025-10-04",
+  "expiryDate": "2034-09-12",
+  "renewalDate": null,
+  "lastPublicationDate": "2024-10-25",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "NXP Brighter together",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Elektronické, elektrotechnické a elektromagnetické moduly, Cásti a vybavení výse uvedeného zbozí, vcetne následujících výrobku: Integrované obvody (IC), Integrované obvody se smíseným signálem s vysokým výkonem, Cipy, Diody, Tranzistory [elektrotechnika], Procesory, Menice, (analogové a/nebo digitální) polovodice a Polovodicové prvky; Mikroregulátory; Mikroprocesory; Rozhraní pro pouzití v souvislosti s následujícími výrobky: Pocítace, Vývojové desky, Soubor nástroju pro vývoj softwaru [SDK], Integrovaný software, Vývojový software, Pocítacový software, Hardware, Rozhraní pro pocítace; Pocítacový software; Pocítacový software pro cloud computing, Pocítacový aplikacní software k pouzití v rámci internetu vecí [IoT]; Software umelé inteligence a strojového ucení; Prístroje a nástroje pro vedení, prepínání, premenu, akumulaci, regulaci nebo rízení elektrického proudu; Prístroje pro záznam, prenos nebo reprodukci dat, zvuku nebo obrazu; Bezdrátové vysílace a prijímace; Bezdrátové zvukové produkty, Cipové karty [karty s integrovaným obvodem], Datové procesory pro snímání, ctení, ukládání a interpretaci elektronických dat obsazených na cipech RFID a NFC; RFID cipy a etikety, NFC visacky, NFC etikety, Cidla, Nosice na ukládání dat, Zarízení ke zpracování dat a pocítace.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Výzkum, navrhování a vývoj ve vztahu k následujícím výrobkum: Integrované obvody a Polovodice; Výzkum, navrhování a vývoj ve vztahu k následujícím výrobkum: Cipy RFID, Smart karty a NFC prístroje (komunikace na krátkou vzdálenost); Tvorba pocítacového softwaru; Vývoj softwaru; Design a vývoj softwaru pro pouzití v souvislosti s následujícími výrobky: Polovodice; Software jako sluzba [SaaS]; Cloud computing; Platformy pro umelou inteligenci ve forme softwaru jako sluzby [SaaS]; Programování prístroju na zpracování dat; Programování multimediální techniky; Softwarové inzenýrství; Inzenýrské testování; Vývoj pocítacového hardwaru; Technický výzkum; Poradenské sluzby v oboru pocítacového hardwaru a pocítacového softwaru.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Elektroniske, elektrotekniske og elektromagnetiske moduler, Dele og tilbehør til ovennævnte varer, inklusive følgende produkter: Integrerede kredsløb ( IC'er), Interne kredsløb med blandede signaler med høj ydeevne, Chips, Dioder, Transistorer [elektroniske], Processorer, Konvertere, (analoge og/eller digitale) halvledere og Halvlederelementer; Mikrostyreenheder; Mikroprocessorer; Interfaces til brug i forbindelse med følgende varer: Computere, Udviklingskort, Sæt til softwareudvikling [SDK], Indlejret software, Software til udviklingsbrug, Software, Hardware, Interfaces til computere; Software; Computersoftware til cloud computing, Computerapplikationssoftware til brug ved implementering af Internet of Things [IoT]; Software til kunstig intelligens og maskinlæring; Apparater og instrumenter til ledning, kobling, omformning, lagring, regulering og kontrol af elektricitet; Apparater til optagelse, transmission og gengivelse af data, lyd eller billeder; Trådløse sendere og modtagere; Trådløse lydprodukter, Smartkort [kodede], Dataprocessorer til scanning, læsning, lagring og fortolkning af elektroniske data i RFID- og NFC-chips; RFID-chips og -transpondere, NFC-tags, NFC-etiketter, NFC-inlays, NFC-transpondere, Sensorer, Medier til lagring af data, Databehandlingsudstyr.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Forsknings-, design-, og udviklingsvirksomhed i forbindelse med følgende varer: Integrerede kredsløb og Halvledere; Forsknings-, design-, og udviklingsvirksomhed i forbindelse med følgende varer: RFID-chips, Smartkort og NFC-enheder (near field communication); Design af computerprogrammer; Softwareudvikling; Softwaredesign og -udvikling til brug i forbindelse med følgende varer: Halvledere; Software as a service [saas]; Cloud computing; Platforme til kunstig intelligens som software as a service [SaaS]; Programmering af databehandlingsudstyr; Programmering af multimedieudstyr; Design af software; Teknisk testning; Udvikling af computer hardware; Teknologisk forskning; Rådgivningsvirksomhed vedrørende computerhardware og computersoftware.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Elektronische, elektrotechnische en elektromagnetische modules, Onderdelen en toebehoren van genoemde waren, waaronder de volgende producten: Geïntegreerde schakelingen, Hoogperformante geïntegreerde schakelingen voor gemengde signalen, Chips, Dioden, Transistors [elektronica], Processors, Converters, (analoge en/of digitale) halfgeleiders en Halfgeleiderelementen; Microcontrollers; Microprocessors; Interfaces voor gebruik met betrekking tot de volgende goederen: Computers, Ontwikkelingsborden, Softwareontwikkelingskit [SDK], Ingebedde software, Ontwikkelingssoftware, Software, Hardware, Interfaces [informatica]; Software; Cloud computing software, Applicatiesoftware voor gebruik bij de implementatie van het internet der dingen (IoT); Software met betrekking tot kunstmatige intelligentie en machinaal leren; Apparaten en instrumenten voor de geleiding, de distributie, de omzetting, de opslag, het regelen en het beheersen van elektriciteit; Apparaten voor het opnemen, het overbrengen en het weergeven van gegevens, geluid of beeld; Draadloze zenders en ontvangers; Draadloze audioproducten, Kaarten met geheugen of met microprocessor, Gegevensverwerkers voor het scannen, lezen, opslaan en interpreteren van elektronische gegevens op RFID- en NFC-chips; RFID-chips en -labels, Nfc-tags, NFC-etiketten, NFC-inlays, NFC-transponders, Sensoren, Dragers voor de opslag van gegevens, Gegevensverwerkende apparatuur en computers.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Onderzoek, ontwerp en ontwikkeling met betrekking tot de volgende producten: Geïntegreerde schakelingen en Halfgeleiders; Onderzoek, ontwerp en ontwikkeling met betrekking tot de volgende producten: RFID-chips, Smartcards en NFC-apparatuur (voor contactloze korteafstandscommunicatie); Software-ontwikkeling; Ontwikkeling van software; Ontwerp en ontwikkeling van software voor computers voor gebruik met betrekking tot de volgende goederen: Halfgeleiders; Ter beschikking stellen van software [SaaS]; Cloud computing; Platforms voor artificiële intelligentie als software-als-een-dienst [SaaS]; Programmering van gegevensverwerkende apparatuur; Programmering van multimediamateriaal; Software engineering; Technische testen; Ontwikkeling van computer hardware; Technisch onderzoek; Advisering op het gebied van hardware en software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Electronic, electro technical and electromagnetic modules, parts and components therefor including integrated circuits (IC's), high performance mixed signal ICs, chips, diodes, transistors, processors, converters, (analogue and/or digital) semiconductors and semiconductor elements; microcontrollers; microprocessors; interfaces for computers, development boards, software development kits (SDKs), embedded software, development software, computer programs, hardware, interfaces for computers; software; cloud computing software, computer application software for use in implementing the Internet of Things [IoT]; artificial intelligence and machine learning software; apparatus and instruments for conducting, switching, transforming, accumulating, regulating and controlling electricity; apparatus for recording, transmission or reproduction of data, sound or images; wireless transmitters and receivers; wireless audio products, smart cards, data processors for scanning, reading, storing and interpreting electronic data contained on RFID and NFC chips; RFID chips and tags, NFC tags and labels, sensors, data carriers, data processing equipment and computers.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Research, design and development services related to integrated circuits and semiconductors; research, design and development services related to RFID chips, smart cards and NFC (near field communications) apparatus; Software design; software development; Design and development of software for semiconductors; Software as a service [SaaS]; Cloud computing; Platforms for artificial intelligence as software as a service [SaaS]; Programming of data processing equipment; Programming of multimedia equipment; Software engineering; Engineering testing; Computer hardware development; technical research; Advisory services in the field of computer hardware and software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Elektroonilised, elektrotehnilised ja elektromagnetilised moodulid, Osad ja lisaseadmed eelpoolmainitud toodetele, sh järgmised tooted: Integraallülitused, Suure jõudlusega segasignaali IC-d, Kiibid, Dioodid, Transistorid [elektroonika], Protsessorid, Teisendajad, (analoog ja/või digitaal) pooljuhid ja Pooljuhtelemendid; Mikrokontrollerid; Mikroprotsessorid; Liidesed kasutamiseks seoses järgmiste kaupadega: Arvutid, raalid, Arendusplaadid, Tarkvaraarenduskomplektid, Manustarkvara, Arendustarkvara, Arvutitarkvara, Riistvara, Liidesed arvutitele; Arvutitarkvara; Pilvarvutuse tarkvara, Asjade interneti rakenduseks kasutatav arvutirakendustarkvara; Tehisintellekti- ja masinõppetarkvara; Elektrijuhtimis-, -jaotus-, -muundamis-, -akumuleer-, -reguleer- ja kontrolliseadmed ja -vahendid; Aparatuur andmete, heli või kujutiste salvestuseks, edastamiseks või reproduktsiooniks; Juhtmeta saatjad ja vastuvõtjad; Juhtmeta audioseadmed, Integraalskeemkaardid, kiipkaardid, Andmetöötlusseadmed RFID- ja NFC-kiipides sisalduvate elektrooniliste andmete skaneerimiseks, lugemiseks, salvestamiseks ja tõlgendamiseks; RFID-kiibid ja -sildid, NFC-märgid, Lähisväljaside (NFC) lipikutes, Sensorid, Andmekandjad, Andmetöötlusseadmed ja arvutid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Uurimis-, projekteerimis- ja arendusteenused seoses järgmiste kaupadega: Integraallülitused ja Pooljuhid; Uurimis-, projekteerimis- ja arendusteenused seoses järgmiste kaupadega: RFID-kiibid, Kiipkaardid ja NFC-seadmed (lähisideseadmed); Tarkvara projekteerimine; Tarkvara arendamine; Tarkvara projekteerimine ja arendamine kasutamiseks seoses järgmiste kaupadega: Pooljuhid; Pilveteenused [SaaS]; Pilvandmetöötlus; Tehisintellektiplatvormid kui teenustarkvara [SaaS]; Andmetöötlusseadmete programmeerimine; Multimeediamaterjalide programmeerimine; Tarkvara kavandamine, projekteerimine; Insener-tehniline testimine; Arvutiriistvaraarendus; Tehnilised uuringud; Nõustamisteenused arvutiriistvara ja arvutitarkvara alal.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Elektroniset, sähkötekniset ja sähkömagneettiset moduulit, Edellä mainittujen tavaroiden osat ja tarvikkeet, mukaan lukien seuraavat tuotteet: Integroidut piirit, Korkean suoritustehon integroidut sekasignaalipiirit, Sirut, Diodit, Transistorit (elektroniset), Prosessorit, Konvertterit, (analogiset ja/tai digitaaliset) puolijohteet ja Puolijohdekomponentit; Mikroprosessoriohjaimet; Mikroprosessorit; Käyttöliittymät käyttöön seuraavien tuotteiden yhteydessä: Sylimikrot, Kehitintaulut, Ohjelmistojen kehittämissarjat (SDK), Sulautetut ohjelmistot, Kehitysohjelmistot, Ohjelmistot, Laitteistot, Liitäntälaitteet tietokoneisiin; Ohjelmistot; Pilviohjelmistot, Sovellusohjelmistot käytettäväksi esineiden internetin [IoT] toteutuksessa; Tekoälyyn ja koneoppimiseen liittyvät ohjelmistot; Laitteet ja kojeet sähkön johtamiseen, kytkemiseen, muuntamiseen, varaamiseen, säätöön ja hallintaan; Tiedon, äänen tai kuvien tallennus-, siirto- ja toistolaitteet; Langattomat lähettimet ja vastaanottimet; Langattomat äänituotteet, Älykortit [mikropiirikortit], Tietojenkäsittelylaitteet RFID- ja NFC-siruissa olevien sähköisten tietojen skannaamiseen, lukemiseen, tallentamiseen ja tulkitsemiseen; RFID-sirut ja -merkit, NFC-tunnisteet, NFC-etiketit, NFC-upotukset, NFC-transponderit, Anturit, Tietojen tallennusvälineet, Tietojenkäsittelylaitteet ja tietokoneet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Tutkimus-, suunnittelu- ja kehityspalvelut seuraavien tuotteiden alalla: Integroidut piirit ja Puolijohteet; Tutkimus-, suunnittelu- ja kehityspalvelut seuraavien tuotteiden alalla: Radiotaajuuden tunnistussirut, Älykortit ja NFC (lähikenttäviestintä) -laitteet; Ohjelmistosuunnittelu; Ohjelmistokehitys; Tietokoneohjelmistojen suunnittelu ja kehittäminen käyttöön seuraavien tuotteiden yhteydessä: Puolijohteet; Verkkosovelluspalvelut [SaaS]; Pilvilaskenta; Tekoäly-ympäristöt sovellusvuokrauspalveluna [SaaS-palveluna]; Tietojenkäsittelyvälineiden ohjelmointi; Multimedialaitteiden ohjelmointi; Ohjelmistoihin liittyvä tekninen suunnittelu; Tekninen testaus; Tietokonelaitteistojen kehittäminen; Tekninen tutkimus; Neuvontapalvelut tietokonelaitteistojen ja tietokoneohjelmistojen alalla.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Modules électroniques, électrotechniques et électromagnétiques, Pièces et composants des produits précités, y compris les produits suivants: Circuits intégrés, Circuits intégrés à signaux CI mixtes, Puces, Diodes, Transistors [électronique], Processeurs, Convertisseurs, Semi-conducteurs (analogiques et/ou numériques) et Éléments semi-conducteurs; Microcontrôleurs; Microprocesseurs; Interfaces à utiliser en rapport avec les produits suivants: Ordinateurs, Tableaux de développement, Kit de développement de logiciels [SCK], Logiciels intégrés, Logiciels de développement, Logiciel, Matériel informatique, Interfaces [informatique]; Logiciel; Logiciels d'infonuagique, Logiciels d'applications informatiques destinés à implémenter l'internet des objets; Logiciels d'intelligence artificielle et d'apprentissage automatique; Appareils et instruments pour la conduite, la distribution, la transformation, l'accumulation, le réglage ou la commande du courant électrique; Appareils pour l'enregistrement, la transmission ou la reproduction de données, du son ou d'images; Transmetteurs et récepteurs sans fil; Produits audio sans fil, Cartes à mémoire ou à microprocesseur, Processeurs de données pour la numérisation, la lecture, le stockage et l'interprétation de données électroniques contenues sur des puces RFID et NFC; Puces et étiquettes d'identification par radiofréquences, Étiquettes NFC, Étiquettes NFC, Capteurs, Supports de stockage de données, Équipements pour le traitement de l'information et les ordinateurs.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Services de recherche, conception et développement en rapport avec les produits suivants: Circuits intégrés et Semi-conducteurs; Services de recherche, conception et développement en rapport avec les produits suivants: Puces RFID, Cartes à mémoire et Appareils NFC (communications en champ proche); Élaboration [conception] de logiciels; Développement de logiciels; Conception et développement de logiciels à utiliser en rapport avec les produits suivants: Semi-conducteurs; Logiciels en tant que service [SaaS]; Informatique en nuage; Plates-formes pour intelligence artificielle en tant que logiciel-service [SaaS]; Programmation d'équipements pour le traitement de données; Programmation d'équipements multimédias; Services de génie logiciel; Tests d'ingénierie; Développement de matériel informatique; Recherches technologiques; Services de conseils dans le domaine du matériel informatique et des logiciels.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Elektronische, elektrotechnische und elektromagnetische Module, Teile der und Zubehör für die vorgenannten Waren, einschließlich der folgenden Waren: Integrierte Schaltkreise (IC), Integrierte Schaltkreise mit gemischten Signalen mit hoher Leistung, Chips, Dioden, Elektronische Transistoren, Prozessoren, Konverter, (analoge und/oder digitale) Halbleiter und Halbleiterelemente; Mikrokontroller; Mikroprozessoren; Interfaces zur Verwendung in Bezug auf folgende Waren: Laptops [Computer], Entwicklungsboards, Software Development Kit [SDK], Eingebettete Software, Entwicklungssoftware, Software, Hardware, Interfaces [Schnittstellengeräte oder -programme für Computer]; Software; Computersoftware für Cloud-Computing-Dienste, Computeranwendungssoftware zur Verwendung bei der Implementierung des Internets der Dinge [IdD]; Künstliche Intelligenz-Software und maschinelle Lernsoftware; Apparate und Instrumente zum Leiten, Schalten, Umwandeln, Speichern, Regeln und Kontrollieren vonElektrizität; Geräte zur Aufzeichnung, Übertragung und Wiedergabe von Bild, Ton und Daten; Drahtlose Sender und Empfänger; Drahtlose Audioprodukte, Karten mit integrierten Schaltkreisen [Smartcards], Datenprozessoren zum Scannen, Lesen, Speichern und Interpretieren von elektronischen Daten auf RFID- und NFC-Chips; RFID-Chips und -Anhänger, NFC-Tags, NFC-Etiketten, Sensoren, Datenspeichermedien, Datenverarbeitungsgeräte und Computer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Forschung, Entwurf und Entwicklung in Bezug auf die folgenden Waren: Integrierte Schaltkreise und Halbleiter; Forschung, Entwurf und Entwicklung in Bezug auf die folgenden Waren: RFID-Chips, Smartcards und NFC-Geräte (Nahfeldkommunikationsgeräte); Design von Computer-Software; Softwareentwicklung; Softwaredesign und -entwicklung zur Verwendung in Bezug auf folgende Waren: Halbleiter; Software as a Service [SaaS]; Cloud-Computing; Plattformen für künstliche Intelligenz als Software as a Service [SaaS]; Programmierung von Datenverarbeitungsgeräten; Programmierung von Multimedia-Geräten; Softwareengineering; Durchführung technischer Prüfungen; Entwicklung von Computerhardware; Forschung auf dem Gebiet der Technik; Beratung auf dem Gebiet Computerhardware und Computersoftware.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hr",
+      "description": "Elektronicki, elektrotehnicki i elektromagnetski moduli, Dijelovi i dodatci za navedene proizvode, ukljucujuci sljedece proizvode: Integracijski krugovi, Integrirani krugovi s mjesovitim signalom visokih performansi, Cipovi, Diode, Tranzistori [elektronika], Procesori, Pretvaraci, (analogni i/ili digitalni) poluvodici i Poluvodicki elementi; Mikroupravljaci; Mikroprocesori; Sucelja za uporabu u vezi sa sljedecim proizvodima: Racunala, Razvojne ploce, Set za razvoj softvera [SDK], Ugradeni softver, Razvojni softver, Softver, Hardver, Sucelja za racunala; Softver; Softver za racunarstvo u oblaku, Racunalni aplikacijski softver za uporabu u provedbi interneta stvari [IoT]; Softver za umjetnu inteligenciju i strojno ucenje; Uredaji i instrumenti za vodenje, sklapanje, preobrazbu, skupljanje, upravljanje i nadzor elektricne energije; Uredaji za snimanje, prijenos ili reprodukciju zvuka, slike i podataka; Bezicni odasiljaci i prijamnici; Bezicni audioproizvodi, Smart kartice [kartice s integriranim rasklopnim krugom], Procesori podataka za skeniranje, ocitavanje, pohranjivanje i tumacenje elektronickih podataka sadrzanih na RFID i NFC cipovima; RFID cipovi i oznake, NFC tagovi, NFC etikete, Osjetnici, Mediji za pohranu podataka, Oprema za obradu podataka i racunala.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hr",
+      "description": "Usluge istrazivanja, dizajna i razvoja u vezi sa sljedecim proizvodima: Integrirani preklopni sklopovi i Poluvodica; Usluge istrazivanja, dizajna i razvoja u vezi sa sljedecim proizvodima: RFID cipovi, Pametne kartice i NFC (komunikacija bliskog polja) uredaji; Izrada [koncipiranje] racunalnih progama; Razvoj softvera; Dizajn i razvoj softvera za uporabu u vezi sa sljedecim proizvodima: Poluvodica; Softver kao usluga [SaaS]; Cloud racunarstvo; Platforme za umjetnu inteligenciju kao softvera kao usluge [SaaS]; Programiranje opreme za obradu podataka; Programiranje multimedijske opreme; Programsko inzenjerstvo; Inzenjersko testiranje; Razvoj racunalnog hardvera; Tehnicka istrazivanja; Savjetovanje na podrucju racunalnog hardvera i racunalnog softvera.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Elektronikus, elektrotechnikai és elektromágneses modulok, A fent említett áruk alkatrészei és szerelvényei, beleértve a következo árukat: Integrált áramkörök (IC-k), Nagy teljesítményu vegyes jelu IC-k, Chipek, Diódák, Tranzisztorok [elektronikus], Processzorok, Konverterek, (analóg és/vagy digitális) félvezetok és Félvezeto alkotóelemek; Mikrovezérlok; Mikroprocesszorok; Interfészek a következo árukkal kapcsolatos használatra: Számítógépek, Fejlesztolapok, Szoftverfejleszto készlet [Software Development Kit, SDK], Beágyazott szoftverek, Fejlesztési szoftverek, Szoftverek, Hardver, Számítógép interfészek; Szoftverek; Számítógépes szoftverek számítási felhokhöz, Számítógépes alkalmazásszoftverek a \"dolgok internetének\" (IoT) megvalósításához; Mesterséges intelligencia és gépi tanulási szoftverek; Készülékek és berendezések az elektromosság vezetésére, kapcsolására, átalakítására, tárolására, szabályozására vagy ellenorzésére; Adatok, hang vagy képek rögzítésére, átvitelére vagy reprodukciójára szolgáló készülékek; Vezeték nélküli adóvevok; Vezeték nélküli audiotermékek, Chipkártyák [integrált áramkörös kártyák], Adatfeldolgozók az RFID- és NFC-chipeken található elektronikus adatok beolvasására, olvasására, tárolására és értelmezésére; RFID-csipek és -címkék, NFC-címkék, RFID-kulcstartók, RFID-címkék, NFC-függok, Érzékelok, Adattároló eszközök, közegek, Adatfeldolgozási berendezések és számítógépek.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Kutatási, tervezési és fejlesztési szolgáltatások a következo árukkal kapcsolatban: Integrált áramkörök és Félvezetok; Kutatási, tervezési és fejlesztési szolgáltatások a következo árukkal kapcsolatban: RFID-chipek, Chipkártyák és NFC (rövid hatótávú kommunikációs) eszközök; Szoftvertervezés; Számítógépes szoftver fejlesztése; Szoftverek tervezése és fejlesztése a következo árukkal kapcsolatos használatra: Félvezetok; Szoftver mint szolgáltatás [SaaS]; Felhoalapú számítástechnika; Mesterséges intelligencia platformok szoftver mint szolgáltatásként [SaaS]; Adatfeldolgozó berendezések programozása; Multimédiás eszközök programozása; Szoftver mérnökség; Muszaki tesztelés; Számítógépes hardverfejlesztés; Muszaki kutatás; Szaktanácsadási szolgáltatások a számítógépes hardverek és számítógépes szoftverek terén.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Moduli elettronici, elettrotecnici ed elettromagnetici, Parti e componenti per i suddetti articoli, compresi i seguenti prodotti: Circuiti integrati, Circuiti integrati a segnale misto ad alte prestazioni, Chip, Diodi, Transistors [elettronica], Processori, Convertitori, Semiconduttori (analogici e/o digitali) e Elementi semiconduttori; Microcontrollori; Microprocessori; Interfacce per uso in relazione ai seguenti prodotti: Elaboratori elettronici, Pannelli di sviluppo, Software Development Kit [SDK], Software integrato, Software di sviluppo, Software, Hardware, Interfacce [informatica]; Software; Software per cloud computing, Software applicativi per l'implementazione dell'Internet degli oggetti [IoT]; Software di intelligenza artificiale e per l'apprendimento automatico; Apparecchi e strumenti atti a condurre, commutare, trasformare, accumulare, regolare e controllare elettricità; Apparecchi per la registrazione, la trasmissione e la riproduzione di dati, suono o immagini; Trasmettitori e ricevitori senza fili; Prodotti audio senza filo, Carte magnetiche, Processori di dati per scansionare, leggere, archiviare e interpretare dati elettronici contenuti in chip RFID e NFC; Chip e cartellini RFID, Tags NFC, Etichette NFC, Sensori, Supporti di memorizzazione dati, Apparecchiatura d'elaborazione dati ed elaboratori elettronici.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Ricerca, progettazione e sviluppo in relazione ai seguenti prodotti: Circuiti integrati e Semiconduttori; Ricerca, progettazione e sviluppo in relazione ai seguenti prodotti: Chip RFID, Smart card e Dispositivi NFC (near field communications - comunicazioni in campo vicino); Elaborazione [ideazione] di software; Sviluppo di software; Elaborazione e sviluppo di software per uso in relazione ai seguenti prodotti: Semiconduttori; Software come servizio [SaaS]; Cloud computing; Piattaforme per intelligenza artificiale sotto forma di software come servizio [SaaS]; Programmazione di apparecchiature di elaborazione di dati; Programmazione di apparecchiatura multimediale; Ingegneria informatica; Test tecnici; Sviluppo di hardware; Ricerche tecnologiche; Servizi di consulenza in materia di hardware e software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Elektroniniai, elektrotechniniai ir elektromagnetiniai moduliai, Pirmiau nurodytu prekiu dalys ir reikmenys, iskaitant siuos produktus: Integrines grandines (IG), Didelio nasumo misraus signalo IC, Lustai, Diodai, Tranzistoriai [elektronika], Procesoriai, Keitikliai, (analoginiai ir (arba) skaitmeniniai) puslaidininkiai ir Puslaidininkiu elementai; Mikrovaldikliai; Mikroprocesoriai; Sasajos naudoti su toliau isvardytomis prekemis susijusioms reikmems: Kompiuteriai, Tyrimu plokstes, Programines irangos tobulinimo rinkiniai (SDK), Iterptine programine iranga, Programine iranga skirta pletrai, Programine iranga, Technine iranga, Sasajos irenginiai kompiuteriams; Programine iranga; Debesu kompiuterijos programine iranga, Daiktu interneto (IoT) diegimo taikomoji programine iranga; Dirbtinio intelekto ir kompiuteriu mokymo programine iranga; Elektros praleidimo, perjungimo, transformavimo, akumuliavimo, reguliavimo ir valdymo aparatai ir prietaisai; Duomenu, garso arba vaizdo irasymo, perdavimo arba atkurimo aparatai; Belaidziai siustuvai ir imtuvai; Belaidziai garso produktai, Integriniu grandiniu korteles [lustines korteles], Duomenu procesoriai, skirti nuskaityti, skaityti, saugoti ir aiskinti elektroninius duomenis, esancius RFID ir NFC lustuose; RFID lustai ir korteles, NFC korteles, NFC etiketes, Jutikliai, Duomenu laikmenos, Duomenu apdorojimo irenginiai ir kompiuteriai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "Tyrimu, projektavimo ir tobulinimo paslaugos toliau isvardytu produktu atzvilgiu: Integrines grandines ir Puslaidininkiai; Tyrimu, projektavimo ir tobulinimo paslaugos toliau isvardytu produktu atzvilgiu: Radijo dazniu atpazinimo sistemos lustai, Lustines korteles ir NFC (artimojo lauko rysiu) aparatai; Kompiuteriu programines irangos projektavimas; Programines irangos tobulinimas; Kompiuteriu programines irangos projektavimas ir pletojimas naudoti su toliau isvardytomis prekemis susijusioms reikmems: Puslaidininkiai; Programine iranga kaip paslauga [SaaS]; Debesu kompiuterija; Programine iranga kaip paslauga [SaaS] dirbtinio intelekto platformoms; Duomenu apdorojimo irangos programavimas; Daugialypes terpes irangos programu rengimas; Programu inzinerija; Inzineriniai bandymai; Aparatines irangos tobulinimas; Techniniai tyrimai; Patariamosios paslaugos kompiuteriu aparatines ir programines irangos klausimais.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Elektroniski, elektrotehniski un elektromagnetiski moduli, Ieprieks mineto precu dalas un armatura, Ieskaitot sadus produktus: Integretas shemas (IC), Augstas veiktspejas jaukta signala IC, Mikroshemas, Diodes, Elektroniskie tranzistori, Procesori, Stravas parveidotaji, (analogie un/vai digitalie) pusvaditaji un Pusvaditaju elementi; Mikrokontrolleri; Mikroprocesori; Saskarnes (interfeisi) izmantosanai ar sadam precem: Datori, Izstrades deli, Programmaturas izstrades komplekti [SDK], Iegulta programmatura, Izveidosanas programmaturas, Programmatura, Iekartas, Saskarnes programmas un ierices datoriem; Programmatura; Datoru programmatura makondatosanai, Datoru lietojumprogrammatura izmantosanai lietiska interneta istenosana; Maksliga intelekta un masinmacisanas programmatura; Aparati un instrumenti elektribas vadisanai, komutacijai, parveidosanai, akumulesanai, regulesanai un kontrolei; Aparati datu, skanas vai attelu ierakstam, parraidei vai reproducesanai; Bezvadu raiditaji un uztvereji; Bezvadu audio preces, Viedkartes (kartes ar integreto shemu), Datu apstradataji RFID un NFC mikroshemas ietverto elektronisko datu skenesanai, lasisanai, uzglabasanai un interpretesanai; RFID mikroshemas un birkas, NFC atzimes, NFC etiketes, Sensori, Datu neseji, Datu apstrades iekartas un datori.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Petniecibas, projektesanas un izstrades pakalpojumi saistiba ar sadam precem: Integretas shemas un Pusvaditaji; Petniecibas, projektesanas un izstrades pakalpojumi saistiba ar sadam precem: RFID mikroshemas, Viedkartes un NFC (tuva lauka sakaru) aparati; Datorprogrammu projektesana; Programmaturas izstrade; Programmaturas projektesana un izstrade izmantosanai ar sadam precem: Pusvaditaji; Programmatura ka pakalpojums (SaaS); Makondatosanas pakalpojumi; Programmatura ka pakalpojums (SaaS), kas paredzeta maksliga intelekta platformam; Datu apstrades aparaturas programmesana; Multimediju aprikojuma programmesana; Programminzenierija; Inzenierijas testesana; Datoraparaturas izstrade; Tehnisko petijumu veiksana; Padomu pakalpojumi datoru aparaturas un datoru programmaturas joma.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Moduli elettronici, elettroteknici u elettromanjetici, Partijiet u fittings ghall-oggetti msemmija qabel, inkluzi l-oggetti li gejjin: Cirkuwiti integrati ( IC's), ICs b'sinjal imhallat bi prestazzjoni gholja, Cippijiet, Dajowds, Transisters [elettronici], Processors, Konvertituri, Semikondutturi (analogi u/jew digitali) u Elementi ta' semikondutturi; Mikrokontrollaturi; Mikroprocessuri; Interfaces ghall-uzu fir-rigward tal-oggetti li gejjin: Kompjuters, Bords tal-izvilupp, Kits ghall-izvilupp ta' softwer (software development kit [SDK]), Softwer inkorporat, Softwer ta' l-izvilupp, Softwer, Hardwer, Punti ta' interazzjoni ghall-kompjuters; Softwer; Softwer tal-kompjuter ghall-cloud computing, Softwer ta' applikazzjoni tal-kompjuter ghall-uzu fl-implimentazzjoni tal-Internet tal-Affarijiet [IoT]; Softwer tal-intelligenza artificjali u tat-taghlim bil-magni; Apparat u strumenti ghat-trazmissjoni, l-attivazzjoni, it-trasformazzjoni, l-akkumulu, r-regolazzjoni u l-kontroll tal-elettriku; Apparat ghar-registrazzjoni, trasmissjoni u riproduzzjoni ta' data, hsejjes jew stampi; Trasmettituri u ricevituri minghajr fili; Prodotti tal-awdjo minghajr fili, Skedi [kards] b'cirkwiti integrati, Processuri tad-data ghall-iskannjar, ghall-qari, ghall-hzin u ghall-interpretazzjoni ta' data elettronika li tinsab fuq cipep RFID u NFC; Cipep u tikketti ta' l-RFID, Tikketti tal-NFC, Tikketti NFC, Sensuri, Mezzi li jahznu d-data, Taghmir u kompjuters li jipprocessaw id-dejta.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "Servizzi ta' ricerka, disinn u zvilupp marbuta mal-prodotti li gejjin: Cirkuwiti integrati u Semikondutturi; Servizzi ta' ricerka, disinn u zvilupp marbuta mal-prodotti li gejjin: Cipep RFID, Smart kards u Apparat tal-NFC (komunikazzjonijiet qrib il-kampi); L-izvilupp ta' softwer tal-kompjuter; Zvilupp ta' softwer; Disinn u zvilupp ta' softwer tal-kompjuter ghall-uzu fir-rigward tal-oggetti li gejjin: Semikondutturi; Softwer bhala servizz [SaaS]; Kuncetti ta' kompjuterizzazzjoni; Pjattaformi ghal intelligenza artificjali bhala softwer bhala servizz [SaaS]; L-ipprogrammar ta' taghmir tal-ipprocessar tad-dejta; Ipprogrammar ta' hardwer multimedjali; Inginerija tas-softwer; Ittestjar ta' inginerija; Zvilupp tal-hardwer tal-kompjuter; Ricerka teknika; Servizzi ta' pariri fil-qasam ta' hardwer tal-kompjuter u softwer informatiku.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Moduly elektroniczne, elektrotechniczne i elektromagnetyczne, Czesci i osprzet do uprzednio wymienionych towarów, w tym nastepujace produkty: Uklady scalone, Wysokowydajne uklady scalone sygnalów mieszanych, Chipy, Diody, Tranzystory [elektronika], Procesory, Przetworniki, (analogowe i/lub cyfrowe) pólprzewodniki i Elementy pólprzewodnikowe; Mikrosterowniki; Mikroprocesory; Interfejsy do uzytku w zakresie nastepujacych towarów: Komputery, Platformy sprzetowe, Zestawy do tworzenia oprogramowania [SDK], Wbudowane oprogramowanie, Oprogramowanie rozwojowe, Oprogramowanie, Sprzet komputerowy, Interfejsy komputerowe; Oprogramowanie; Oprogramowanie do przetwarzania w chmurze, Oprogramowanie komputerowe do uzytku we wdrozeniu Internetu rzeczy [IoT]; Oprogramowanie zwiazane ze sztuczna inteligencja i nauczaniem maszynowym; Urzadzenia i przyrzady elektryczne przewodzace, przelaczajace, transformujace, akumulatorowe, kontrolno-sterujace; Urzadzenia do nagrywania, transmisji lub odtwarzania danych, dzwieku i obrazów; Nadajniki i odbiorniki bezprzewodowe; Bezprzewodowe produkty akustyczne, Karty inteligentne [karty z ukladem scalonym], Procesory danych do skanowania, odczytu, przechowywania i interpretacji danych elektronicznych zawartych w chipach RFID i NFC; Chipy i etykietki RFID, Tagi NFC, Etykiety NFC, Czujniki, Nosniki do przechowywania danych, Urzadzenia do przetwarzania informacji i komputery.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Uslugi badawczo-rozwojowe i projektowe w odniesieniu do nastepujacych towarów: Uklady scalone i Pólprzewodniki; Uslugi badawczo-rozwojowe i projektowe w odniesieniu do nastepujacych towarów: Chipy identyfikacji radiowej (RFID), Karty inteligentne i Aparatura do komunikacji bliskiego zasiegu (NFC); Projektowanie oprogramowania komputerowego; Opracowywanie oprogramowania komputerowego; Projektowanie i opracowywanie oprogramowania komputerowego do uzytku w zakresie nastepujacych towarów: Pólprzewodniki; Oprogramowanie jako usluga [SaaS]; Chmura obliczeniowa; Platformy do sztucznej inteligencji jako oprogramowanie jako usluga [SaaS]; Programowanie sprzetu do przetwarzania danych; Programowanie sprzetu multimedialnego; Inzynieria oprogramowania; Testy inzynieryjne; Rozwój sprzetu komputerowego; Badania techniczne; Uslugi doradcze z dziedziny sprzetu i oprogramowania komputerowego.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Módulos eletrónicos, eletrotécnicos e eletromagnéticos, Peças e componentes para os artigos atrás referidos, incluindo os seguintes produtos: Circuitos integrados (CI), Circuitos integrados de sinal misto de elevado desempenho, Pastilhas electrónicas, Díodos, Transístores [eletrónica], Processadores, Conversores, Semicondutores (analógicos e/ou digitais) e Elementos semicondutores; Microcontroladores; Microprocessadores; Interfaces para uso relacionado com os seguintes produtos: Computadores, Placas de desenvolvimento, Kits de desenvolvimento de software [SDK], Software integrado, Software de desenvolvimento, Software, Hardware, Interfaces [informática]; Software; Software de computação em nuvem, Software aplicativo informático para uso na implementação da Internet das coisas [IoT]; Software relacionado com inteligência artificial e de aprendizagem automática; Aparelhos e instrumentos para a condução, distribuição, transformação, acumulação, regulação ou o controlo da corrente elétrica; Aparelhos para o registo, a transmissão ou a reprodução de dados, do som ou de imagens; Transmissores e recetores sem fios; Produtos de áudio sem fios, Cartões de circuitos integrados [smart cards], Processadores de dados para digitalização, leitura, armazenamento e interpretação de dados eletrónicos contidos em chips de identificação por radiofrequência (RFID) e de comunicação em campo próximo (NFC); Chips e etiquetas RFID, Etiquetas NFC, Etiquetas NFC, Sensores, Suportes de armazenamento de dados, Equipamento para o tratamento da informação e computadores.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Serviços de investigação, concepção e desenvolvimento em relação com os seguintes produtos: Circuitos integrados e Semicondutores; Serviços de investigação, concepção e desenvolvimento em relação com os seguintes produtos: Chips RFID, Cartões inteligentes e Aparelhos de comunicação em campo próximo (NFC); Design de software; Desenvolvimento de software; Design e desenvolvimento de software para uso relacionado com os seguintes produtos: Semicondutores; Software como serviço [SaaS]; Computação em nuvem; Plataformas de inteligência artificial sob a forma de software como serviço [SaaS]; Programação de equipamento de processamento de dados; Programação de equipamentos de multimédia; Engenharia de software; Testes de engenharia; Desenvolvimento de hardware informático; Pesquisas tecnológicas; Serviços de assessoria no domínio do hardware e software informáticos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Module electronice, electrotehnice si electromagnetice, Parti si accesorii pentru articolele mentionate mai sus, inclusiv produsele urmatoare: Circuite integrate (IC), Circuite integrate cu semnal mixt de înalta performanta, Cipuri, Diode, Tranzistoare [electronica], Procesoare, Convertizoare, Semiconductoare (analogice si digitale) si Elemente semiconductoare; Microcontrolere; Microprocesoare; Interfete spre a se utiliza în legatura cu urmatoarele produse: Computere, Tablouri de dezvoltare, Set de dezvoltare de software [SDK], Software integrat, Software de dezvoltare, Software, Articole de fierarie, Interfete [informatica]; Software; Software pentru cloud computing, Software de aplicatii de calculator destinat utilizarii la implementarea Internetului Lucrurilor [IoT]; Software pentru inteligenta artificiala si învatare automata; Aparate si instrumente pentru conducerea, comutarea, transformarea, acumularea, reglarea si controlul electricitatii; Aparate pentru înregistrarea, transmisia si reproducerea de date, sunet sau imagini; Emitatoare si receptoare wireless; Produse audio fara fir, Cartele cu cip [carduri cu circuite integrate], Procesoare de date pentru scanarea, citirea, stocarea si interpretarea datelor electronice continute pe cipurile RFID si NFC; Cipuri si etichete RFID, Tag-uri NFC, Etichete NFC, Senzori, Suporturi de stocare a datelor, Echipamente pentru prelucrarea informatiilor si calculatoare.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Servicii de cercetare, proiectare si dezvoltare cu privire la urmatoarele produse: Circuite integrate si Semiconductoare; Servicii de cercetare, proiectare si dezvoltare cu privire la urmatoarele produse: Cipuri RFID, Cartele inteligente si Aparate NFC (comunicatii în câmp apropiat); Proiectare de software; Dezvoltare de software; Design si dezvoltare de software spre a se utiliza în legatura cu urmatoarele produse: Semiconductoare; Software ca serviciu [SaaS]; Cloud computing; Platforme pentru inteligenta artificiala sub forma de software ca serviciu [SaaS]; Programare de echipamente de prelucrare a datelor; Programare de echipamente multimedia; Inginerie de software informatic; Teste de inginerie; Dezvoltarea hardware-ului pentru computere; Cercetare tehnica; Servicii de consiliere cu privire la hardware de calculator si software de calculator.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Elektronické, elektrotechnické a elektromagnetické moduly, Súciastky a armatúry na vyssie uvedené tovary, vrátane týchto výrobkov: Integrované obvody, Vysoko výkonné integrované obvody so zmiesaným signálom, Cipy, Diódy, Tranzistory (elektronika), Procesory, Menice, (analógové a/alebo digitálne) polovodice a Polovodicové prvky; Mikroregulátory; Mikroprocesory; Rozhrania na pouzitie v súvislosti s nasledujúcimi výrobkami: Pocítace, Vývojové dosky, Súbor nástrojov na vývoj softvéru (SDK), Vlozený softvér, Vývojový softvér, Softvér, Hardvéry, Pocítacové rozhrania; Softvér; Softvér pre cloud computing (poskytovanie sluzieb alebo programov ulozených na serveroch na Internete), Pocítacový aplikacný softvér na pouzitie pri implementácii tzv. internetu vecí; Softvér umelej inteligencie a strojového ucenia; Prístroje a nástroje na vedenie, spínanie, premenu, ukladanie, reguláciu a kontrolovanie elektriny; Zariadenia na nahrávanie, prenos alebo reprodukovanie údajov, zvuku alebo obrazov; Bezdrôtové vysielace a prijímace; Bezdrôtové zvukové výrobky, Karty s integrovanými obvodmi (pamätové alebo mikroprocesorové), Dátové procesory na skenovanie, cítanie, ukladanie a interpretáciu elektronických údajov obsiahnutých na cipoch RFID a NFC; Rádiofrekvencné identifikacné cipy a stítky, NFC-tagy, NFC stítky, Senzory, Médiá na ukladanie dát, Vybavenie na spracovanie údajov a pocítace.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "Výskumné, návrhárske a vývojárske sluzby vo vztahu k nasledujúcim tovarom: Integrované obvody a Polovodice; Výskumné, návrhárske a vývojárske sluzby vo vztahu k nasledujúcim tovarom: RFID-cipy, Smart karty a NFC prístroje (na krátkodosahové spojenie); Tvorba pocítacového softvéru; Vývoj pocítacového softvéru; Navrhovanie a vývoj softvéru na pouzitie v súvislosti s nasledujúcimi výrobkami: Polovodice; Poskytovanie softvéru prostredníctvom internetu (SaaS); Poskytovanie pocítacových technológií prostredníctvom internetu (cloud computing); Platformy pre umelú inteligenciu vo forme softvéru ako sluzby [SaaS]; Programovanie zariadení na spracovanie dát; Programovanie multimediálnej techniky; Softvérové inzinierstvo; Inzinierske testovanie; Vývoj pocítacového hardvéru; Technický výskum; Poradenské sluzby v oblasti pocítacového hardvéru a softvéru.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Elektronski, elektrotehnicni in elektromagnetni moduli, Deli in montazna oprema za omenjeno blago, vkljucno z naslednjimi izdelki: Integrirana vezja, Visoko ucinkovita integrirana vezja za mesani signal, Cipi, Diode, Elektronski tranzistorji, Procesorji, Pretvorniki, Polprevodniki (analogni in/ali digitalni) in Polprevodniski elementi; Mikrokrmilniki; Mikroprocesorji; Vmesniki za uporabo v zvezi z naslednjimi izdelki: Racunalniki, Razvojne plosce, Paket za razvoj programske opreme [SDK], Vgrajena programska oprema, Razvojna programska oprema, Programska oprema, Strojna oprema, Vmesniki za racunalnike; Programska oprema; Racunalniska programska oprema za racunalnistvo v oblaku, Racunalniska aplikacijska programska oprema za uporabo pri izvajanju interneta stvari; Programska oprema v zvezi z umetno inteligenco in strojnim ucenjem; Aparati in instrumenti za prevajanje, preklapljanje, transformiranje, akumuliranje, regulacijo ali kontrolo elektricne energije; Aparati za snemanje, prenos ali reprodukcijo podatkov, zvoka ali slik; Brezzicni oddajniki in sprejemniki; Brezzicni avdio izdelki, Pametne kartice (kartice z integriranim vezjem], Podatkovni procesorji za skeniranje, branje, shranjevanje in interpretacijo elektronskih podatkov na cipih RFID in NFC; Cipi in oznake za RFID, NFC-oznake, NFC etikete, Senzorji, Mediji za shranjevanje podatkov, Oprema in racunalniki za procesiranje podatkov.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Raziskovalne, oblikovalne in razvojne storitve v zvezi z naslednjimi izdelki: Integrirana vezja in Polprevodniki; Raziskovalne, oblikovalne in razvojne storitve v zvezi z naslednjimi izdelki: Cipi za radijsko identifikacijo, Pametne kartice in Aparati za komunikacijo v bliznjem polju (NFC); Oblikovanje programske opreme; Razvoj programske opreme; Oblikovanje in razvoj programske opreme za uporabo v zvezi z naslednjimi izdelki: Polprevodniki; Programska oprema kot storitev [SaaS]; Racunalnistvo v oblaku; Platforme za umetno inteligenco kot programska oprema kot storitev [SaaS]; Programiranje opreme za obdelavo podatkov; Programiranje multimedijske opreme; Inzenirske storitve v zvezi z racunalnisko programsko opremo; Inzenirsko testiranje; Razvoj racunalniske strojne opreme; Tehnicne raziskave; Svetovalne storitve na podrocju racunalniske strojne opreme in racunalniske programske opreme.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Módulos electrónicos, electrotécnicos y electromagnéticos, Partes y componentes para todos los productos mencionados, incluidos los siguientes productos: Circuitos integrados, Circuitos integrados de señal mixta de alto rendimiento, Chips, Diodos, Transistores [electrónica], Procesadores, Convertidores, Semiconductores (analógicos o digitales) y Elementos semiconductores; Microcontroladores; Microprocesadores; Interfaces para su uso en relación con los productos siguientes: Ordenadores, Tableros de desarrollo, Kits de desarrollo de software, Software integrado, Software de desarrollo, Software, Hardware, Interfaces [informática]; Software; Software para informática de nubes, Software de aplicaciones informáticas para su uso en la aplicación de internet de las cosas [IoT]; Software relacionado con la inteligencia artificial y el aprendizaje de máquinas; Aparatos e instrumentos para conducción, conmutación, conversión, almacenamiento, regulación y control de electricidad; Aparatos para el registro, transmisión o reproducción de datos, sonido o imágenes; Transmisores y receptores inalámbricos; Productos de audio inalámbricos, Tarjetas de circuitos integrados, Procesadores de datos para escanear, leer, almacenar e interpretar los datos electrónicos contenidos en los chips RFID y NFC; Chips y etiquetas de RFID, Etiquetas NFC, Etiquetas NFC, Sensores, Soportes de almacenamiento de datos, Equipos para el tratamiento de la información y ordenadores.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios de investigación, diseño y desarrollo en relación con los siguientes productos: Circuitos integrados y Semiconductores; Servicios de investigación, diseño y desarrollo en relación con los siguientes productos: Chips RFID, Tarjetas inteligentes y Aparatos de NFC (comunicación de campo cercano); Diseño de software; Desarrollo de software; Diseño y desarrollo de software informático para su uso en relación con los productos siguientes: Semiconductores; Software como servicio [SaaS]; Servicios informáticos en la nube; Plataformas para inteligencia artificial como software en forma de servicio [SaaS]; Programación de equipos de procesamiento de datos; Programación de equipos multimedios; Ingeniería de programas informáticos; Ensayos de ingeniería; Desarrollo de equipos de hardware; Investigación tecnológica; Servicios de asesoramiento en materia de hardware informático y software informático.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Elektronik, elektrotekniska och elektromagnetiska moduler, Delar och komponenter till ovannämnda varor, inklusive följande varor: Integrerade kretsar (IC), Integrerade kretsar med högpresterande blandade signaler, Chips, Dioder, Transistorer [elektronik], Processorer, Omvandlare, (analoga och/eller digitala) halvledare och Halvledarelement; Mikrostyranordningar; Mikroprocessorer; Gränssnitten för användning i samband med följande varor: Datorer, Utvecklingskort, Kit för programvaruutveckling [SDK], Inbyggd programvara, Utvecklingsprogramvara, Mjukvaror, Hårdvara, Gränssnitt (för datorer); Mjukvaror; Programvara för datormoln, Applikationsprogramvara för användning vid implementering av sakernas internet (IoT); Programvara för artificiell intelligens och maskininlärning; Apparater och instrument för ledning, omkoppling, omvandling, lagring, reglering och kontroll av elektricitet; Apparater för inspelning, upptagning, sändning och återgivning av data, ljud eller bilder; Trådlösa sändare och mottagare; Trådlösa ljudprodukter, Integrerade kretskort [smartcards] aktivkort, Dataprocessorer för skanning, avläsning, lagring och tolkning av elektroniska data på RFID- och NFC- chips; RFID-chips och -märken, NFC-märkningar, NFC-etiketter, Sensorer, Datalagringsmedia, Databehandlingsutrustningar och datorer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Forskning, utformning och utveckling avseende följande varor: Integrerade kretsar och Halvledare; Forskning, utformning och utveckling avseende följande varor: RFID-chips, Smarta kort (integrerade kretskort) och Närfältskommunikationsapparater; Utformning av programvara; Utveckling av mjukvara; Utformning och utveckling av datormjukvara för användning i samband med följande varor: Halvledare; Molntjänster [SaaS]; Molntjänster; Plattformar för artificiell intelligens i form av programvaror som tjänst [SaaS]; Programmering av databehandlingsutrustning; Programmering av multimedieutrustning; Programvaruutveckling; Ingenjörsprovningar; Datorhårdvaruutveckling; Teknisk forskning; Rådgivningstjänster inom området för datormaskinvara och programvara.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO SHIELDMARK B.V.",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20240312",
+      "priorityNumber": "1500867"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60,Eindhoven, 5656 AG",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "37.02.27"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Elektronické, elektrotechnické a elektromagnetické moduly, Cásti a vybavení výse uvedeného zbozí, vcetne následujících výrobku: Integrované obvody (IC), Integrované obvody se smíseným signálem s vysokým výkonem, Cipy, Diody, Tranzistory [elektrotechnika], Procesory, Menice, (analogové a/nebo digitální) polovodice a Polovodicové prvky; Mikroregulátory; Mikroprocesory; Rozhraní pro pouzití v souvislosti s následujícími výrobky: Pocítace, Vývojové desky, Soubor nástroju pro vývoj softwaru [SDK], Integrovaný software, Vývojový software, Pocítacový software, Hardware, Rozhraní pro pocítace; Pocítacový software; Pocítacový software pro cloud computing, Pocítacový aplikacní software k pouzití v rámci internetu vecí [IoT]; Software umelé inteligence a strojového ucení; Prístroje a nástroje pro vedení, prepínání, premenu, akumulaci, regulaci nebo rízení elektrického proudu; Prístroje pro záznam, prenos nebo reprodukci dat, zvuku nebo obrazu; Bezdrátové vysílace a prijímace; Bezdrátové zvukové produkty, Cipové karty [karty s integrovaným obvodem], Datové procesory pro snímání, ctení, ukládání a interpretaci elektronických dat obsazených na cipech RFID a NFC; RFID cipy a etikety, NFC visacky, NFC etikety, Cidla, Nosice na ukládání dat, Zarízení ke zpracování dat a pocítace."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Výzkum, navrhování a vývoj ve vztahu k následujícím výrobkum: Integrované obvody a Polovodice; Výzkum, navrhování a vývoj ve vztahu k následujícím výrobkum: Cipy RFID, Smart karty a NFC prístroje (komunikace na krátkou vzdálenost); Tvorba pocítacového softwaru; Vývoj softwaru; Design a vývoj softwaru pro pouzití v souvislosti s následujícími výrobky: Polovodice; Software jako sluzba [SaaS]; Cloud computing; Platformy pro umelou inteligenci ve forme softwaru jako sluzby [SaaS]; Programování prístroju na zpracování dat; Programování multimediální techniky; Softwarové inzenýrství; Inzenýrské testování; Vývoj pocítacového hardwaru; Technický výzkum; Poradenské sluzby v oboru pocítacového hardwaru a pocítacového softwaru."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Elektroniske, elektrotekniske og elektromagnetiske moduler, Dele og tilbehør til ovennævnte varer, inklusive følgende produkter: Integrerede kredsløb ( IC'er), Interne kredsløb med blandede signaler med høj ydeevne, Chips, Dioder, Transistorer [elektroniske], Processorer, Konvertere, (analoge og/eller digitale) halvledere og Halvlederelementer; Mikrostyreenheder; Mikroprocessorer; Interfaces til brug i forbindelse med følgende varer: Computere, Udviklingskort, Sæt til softwareudvikling [SDK], Indlejret software, Software til udviklingsbrug, Software, Hardware, Interfaces til computere; Software; Computersoftware til cloud computing, Computerapplikationssoftware til brug ved implementering af Internet of Things [IoT]; Software til kunstig intelligens og maskinlæring; Apparater og instrumenter til ledning, kobling, omformning, lagring, regulering og kontrol af elektricitet; Apparater til optagelse, transmission og gengivelse af data, lyd eller billeder; Trådløse sendere og modtagere; Trådløse lydprodukter, Smartkort [kodede], Dataprocessorer til scanning, læsning, lagring og fortolkning af elektroniske data i RFID- og NFC-chips; RFID-chips og -transpondere, NFC-tags, NFC-etiketter, NFC-inlays, NFC-transpondere, Sensorer, Medier til lagring af data, Databehandlingsudstyr."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Forsknings-, design-, og udviklingsvirksomhed i forbindelse med følgende varer: Integrerede kredsløb og Halvledere; Forsknings-, design-, og udviklingsvirksomhed i forbindelse med følgende varer: RFID-chips, Smartkort og NFC-enheder (near field communication); Design af computerprogrammer; Softwareudvikling; Softwaredesign og -udvikling til brug i forbindelse med følgende varer: Halvledere; Software as a service [saas]; Cloud computing; Platforme til kunstig intelligens som software as a service [SaaS]; Programmering af databehandlingsudstyr; Programmering af multimedieudstyr; Design af software; Teknisk testning; Udvikling af computer hardware; Teknologisk forskning; Rådgivningsvirksomhed vedrørende computerhardware og computersoftware."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Elektronische, elektrotechnische en elektromagnetische modules, Onderdelen en toebehoren van genoemde waren, waaronder de volgende producten: Geïntegreerde schakelingen, Hoogperformante geïntegreerde schakelingen voor gemengde signalen, Chips, Dioden, Transistors [elektronica], Processors, Converters, (analoge en/of digitale) halfgeleiders en Halfgeleiderelementen; Microcontrollers; Microprocessors; Interfaces voor gebruik met betrekking tot de volgende goederen: Computers, Ontwikkelingsborden, Softwareontwikkelingskit [SDK], Ingebedde software, Ontwikkelingssoftware, Software, Hardware, Interfaces [informatica]; Software; Cloud computing software, Applicatiesoftware voor gebruik bij de implementatie van het internet der dingen (IoT); Software met betrekking tot kunstmatige intelligentie en machinaal leren; Apparaten en instrumenten voor de geleiding, de distributie, de omzetting, de opslag, het regelen en het beheersen van elektriciteit; Apparaten voor het opnemen, het overbrengen en het weergeven van gegevens, geluid of beeld; Draadloze zenders en ontvangers; Draadloze audioproducten, Kaarten met geheugen of met microprocessor, Gegevensverwerkers voor het scannen, lezen, opslaan en interpreteren van elektronische gegevens op RFID- en NFC-chips; RFID-chips en -labels, Nfc-tags, NFC-etiketten, NFC-inlays, NFC-transponders, Sensoren, Dragers voor de opslag van gegevens, Gegevensverwerkende apparatuur en computers."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Onderzoek, ontwerp en ontwikkeling met betrekking tot de volgende producten: Geïntegreerde schakelingen en Halfgeleiders; Onderzoek, ontwerp en ontwikkeling met betrekking tot de volgende producten: RFID-chips, Smartcards en NFC-apparatuur (voor contactloze korteafstandscommunicatie); Software-ontwikkeling; Ontwikkeling van software; Ontwerp en ontwikkeling van software voor computers voor gebruik met betrekking tot de volgende goederen: Halfgeleiders; Ter beschikking stellen van software [SaaS]; Cloud computing; Platforms voor artificiële intelligentie als software-als-een-dienst [SaaS]; Programmering van gegevensverwerkende apparatuur; Programmering van multimediamateriaal; Software engineering; Technische testen; Ontwikkeling van computer hardware; Technisch onderzoek; Advisering op het gebied van hardware en software."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Electronic, electro technical and electromagnetic modules, parts and components therefor including integrated circuits (IC's), high performance mixed signal ICs, chips, diodes, transistors, processors, converters, (analogue and/or digital) semiconductors and semiconductor elements; microcontrollers; microprocessors; interfaces for computers, development boards, software development kits (SDKs), embedded software, development software, computer programs, hardware, interfaces for computers; software; cloud computing software, computer application software for use in implementing the Internet of Things [IoT]; artificial intelligence and machine learning software; apparatus and instruments for conducting, switching, transforming, accumulating, regulating and controlling electricity; apparatus for recording, transmission or reproduction of data, sound or images; wireless transmitters and receivers; wireless audio products, smart cards, data processors for scanning, reading, storing and interpreting electronic data contained on RFID and NFC chips; RFID chips and tags, NFC tags and labels, sensors, data carriers, data processing equipment and computers."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Research, design and development services related to integrated circuits and semiconductors; research, design and development services related to RFID chips, smart cards and NFC (near field communications) apparatus; Software design; software development; Design and development of software for semiconductors; Software as a service [SaaS]; Cloud computing; Platforms for artificial intelligence as software as a service [SaaS]; Programming of data processing equipment; Programming of multimedia equipment; Software engineering; Engineering testing; Computer hardware development; technical research; Advisory services in the field of computer hardware and software."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Elektroonilised, elektrotehnilised ja elektromagnetilised moodulid, Osad ja lisaseadmed eelpoolmainitud toodetele, sh järgmised tooted: Integraallülitused, Suure jõudlusega segasignaali IC-d, Kiibid, Dioodid, Transistorid [elektroonika], Protsessorid, Teisendajad, (analoog ja/või digitaal) pooljuhid ja Pooljuhtelemendid; Mikrokontrollerid; Mikroprotsessorid; Liidesed kasutamiseks seoses järgmiste kaupadega: Arvutid, raalid, Arendusplaadid, Tarkvaraarenduskomplektid, Manustarkvara, Arendustarkvara, Arvutitarkvara, Riistvara, Liidesed arvutitele; Arvutitarkvara; Pilvarvutuse tarkvara, Asjade interneti rakenduseks kasutatav arvutirakendustarkvara; Tehisintellekti- ja masinõppetarkvara; Elektrijuhtimis-, -jaotus-, -muundamis-, -akumuleer-, -reguleer- ja kontrolliseadmed ja -vahendid; Aparatuur andmete, heli või kujutiste salvestuseks, edastamiseks või reproduktsiooniks; Juhtmeta saatjad ja vastuvõtjad; Juhtmeta audioseadmed, Integraalskeemkaardid, kiipkaardid, Andmetöötlusseadmed RFID- ja NFC-kiipides sisalduvate elektrooniliste andmete skaneerimiseks, lugemiseks, salvestamiseks ja tõlgendamiseks; RFID-kiibid ja -sildid, NFC-märgid, Lähisväljaside (NFC) lipikutes, Sensorid, Andmekandjad, Andmetöötlusseadmed ja arvutid."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Uurimis-, projekteerimis- ja arendusteenused seoses järgmiste kaupadega: Integraallülitused ja Pooljuhid; Uurimis-, projekteerimis- ja arendusteenused seoses järgmiste kaupadega: RFID-kiibid, Kiipkaardid ja NFC-seadmed (lähisideseadmed); Tarkvara projekteerimine; Tarkvara arendamine; Tarkvara projekteerimine ja arendamine kasutamiseks seoses järgmiste kaupadega: Pooljuhid; Pilveteenused [SaaS]; Pilvandmetöötlus; Tehisintellektiplatvormid kui teenustarkvara [SaaS]; Andmetöötlusseadmete programmeerimine; Multimeediamaterjalide programmeerimine; Tarkvara kavandamine, projekteerimine; Insener-tehniline testimine; Arvutiriistvaraarendus; Tehnilised uuringud; Nõustamisteenused arvutiriistvara ja arvutitarkvara alal."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Elektroniset, sähkötekniset ja sähkömagneettiset moduulit, Edellä mainittujen tavaroiden osat ja tarvikkeet, mukaan lukien seuraavat tuotteet: Integroidut piirit, Korkean suoritustehon integroidut sekasignaalipiirit, Sirut, Diodit, Transistorit (elektroniset), Prosessorit, Konvertterit, (analogiset ja/tai digitaaliset) puolijohteet ja Puolijohdekomponentit; Mikroprosessoriohjaimet; Mikroprosessorit; Käyttöliittymät käyttöön seuraavien tuotteiden yhteydessä: Sylimikrot, Kehitintaulut, Ohjelmistojen kehittämissarjat (SDK), Sulautetut ohjelmistot, Kehitysohjelmistot, Ohjelmistot, Laitteistot, Liitäntälaitteet tietokoneisiin; Ohjelmistot; Pilviohjelmistot, Sovellusohjelmistot käytettäväksi esineiden internetin [IoT] toteutuksessa; Tekoälyyn ja koneoppimiseen liittyvät ohjelmistot; Laitteet ja kojeet sähkön johtamiseen, kytkemiseen, muuntamiseen, varaamiseen, säätöön ja hallintaan; Tiedon, äänen tai kuvien tallennus-, siirto- ja toistolaitteet; Langattomat lähettimet ja vastaanottimet; Langattomat äänituotteet, Älykortit [mikropiirikortit], Tietojenkäsittelylaitteet RFID- ja NFC-siruissa olevien sähköisten tietojen skannaamiseen, lukemiseen, tallentamiseen ja tulkitsemiseen; RFID-sirut ja -merkit, NFC-tunnisteet, NFC-etiketit, NFC-upotukset, NFC-transponderit, Anturit, Tietojen tallennusvälineet, Tietojenkäsittelylaitteet ja tietokoneet."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Tutkimus-, suunnittelu- ja kehityspalvelut seuraavien tuotteiden alalla: Integroidut piirit ja Puolijohteet; Tutkimus-, suunnittelu- ja kehityspalvelut seuraavien tuotteiden alalla: Radiotaajuuden tunnistussirut, Älykortit ja NFC (lähikenttäviestintä) -laitteet; Ohjelmistosuunnittelu; Ohjelmistokehitys; Tietokoneohjelmistojen suunnittelu ja kehittäminen käyttöön seuraavien tuotteiden yhteydessä: Puolijohteet; Verkkosovelluspalvelut [SaaS]; Pilvilaskenta; Tekoäly-ympäristöt sovellusvuokrauspalveluna [SaaS-palveluna]; Tietojenkäsittelyvälineiden ohjelmointi; Multimedialaitteiden ohjelmointi; Ohjelmistoihin liittyvä tekninen suunnittelu; Tekninen testaus; Tietokonelaitteistojen kehittäminen; Tekninen tutkimus; Neuvontapalvelut tietokonelaitteistojen ja tietokoneohjelmistojen alalla."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Modules électroniques, électrotechniques et électromagnétiques, Pièces et composants des produits précités, y compris les produits suivants: Circuits intégrés, Circuits intégrés à signaux CI mixtes, Puces, Diodes, Transistors [électronique], Processeurs, Convertisseurs, Semi-conducteurs (analogiques et/ou numériques) et Éléments semi-conducteurs; Microcontrôleurs; Microprocesseurs; Interfaces à utiliser en rapport avec les produits suivants: Ordinateurs, Tableaux de développement, Kit de développement de logiciels [SCK], Logiciels intégrés, Logiciels de développement, Logiciel, Matériel informatique, Interfaces [informatique]; Logiciel; Logiciels d'infonuagique, Logiciels d'applications informatiques destinés à implémenter l'internet des objets; Logiciels d'intelligence artificielle et d'apprentissage automatique; Appareils et instruments pour la conduite, la distribution, la transformation, l'accumulation, le réglage ou la commande du courant électrique; Appareils pour l'enregistrement, la transmission ou la reproduction de données, du son ou d'images; Transmetteurs et récepteurs sans fil; Produits audio sans fil, Cartes à mémoire ou à microprocesseur, Processeurs de données pour la numérisation, la lecture, le stockage et l'interprétation de données électroniques contenues sur des puces RFID et NFC; Puces et étiquettes d'identification par radiofréquences, Étiquettes NFC, Étiquettes NFC, Capteurs, Supports de stockage de données, Équipements pour le traitement de l'information et les ordinateurs."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de recherche, conception et développement en rapport avec les produits suivants: Circuits intégrés et Semi-conducteurs; Services de recherche, conception et développement en rapport avec les produits suivants: Puces RFID, Cartes à mémoire et Appareils NFC (communications en champ proche); Élaboration [conception] de logiciels; Développement de logiciels; Conception et développement de logiciels à utiliser en rapport avec les produits suivants: Semi-conducteurs; Logiciels en tant que service [SaaS]; Informatique en nuage; Plates-formes pour intelligence artificielle en tant que logiciel-service [SaaS]; Programmation d'équipements pour le traitement de données; Programmation d'équipements multimédias; Services de génie logiciel; Tests d'ingénierie; Développement de matériel informatique; Recherches technologiques; Services de conseils dans le domaine du matériel informatique et des logiciels."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Elektronische, elektrotechnische und elektromagnetische Module, Teile der und Zubehör für die vorgenannten Waren, einschließlich der folgenden Waren: Integrierte Schaltkreise (IC), Integrierte Schaltkreise mit gemischten Signalen mit hoher Leistung, Chips, Dioden, Elektronische Transistoren, Prozessoren, Konverter, (analoge und/oder digitale) Halbleiter und Halbleiterelemente; Mikrokontroller; Mikroprozessoren; Interfaces zur Verwendung in Bezug auf folgende Waren: Laptops [Computer], Entwicklungsboards, Software Development Kit [SDK], Eingebettete Software, Entwicklungssoftware, Software, Hardware, Interfaces [Schnittstellengeräte oder -programme für Computer]; Software; Computersoftware für Cloud-Computing-Dienste, Computeranwendungssoftware zur Verwendung bei der Implementierung des Internets der Dinge [IdD]; Künstliche Intelligenz-Software und maschinelle Lernsoftware; Apparate und Instrumente zum Leiten, Schalten, Umwandeln, Speichern, Regeln und Kontrollieren vonElektrizität; Geräte zur Aufzeichnung, Übertragung und Wiedergabe von Bild, Ton und Daten; Drahtlose Sender und Empfänger; Drahtlose Audioprodukte, Karten mit integrierten Schaltkreisen [Smartcards], Datenprozessoren zum Scannen, Lesen, Speichern und Interpretieren von elektronischen Daten auf RFID- und NFC-Chips; RFID-Chips und -Anhänger, NFC-Tags, NFC-Etiketten, Sensoren, Datenspeichermedien, Datenverarbeitungsgeräte und Computer."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Forschung, Entwurf und Entwicklung in Bezug auf die folgenden Waren: Integrierte Schaltkreise und Halbleiter; Forschung, Entwurf und Entwicklung in Bezug auf die folgenden Waren: RFID-Chips, Smartcards und NFC-Geräte (Nahfeldkommunikationsgeräte); Design von Computer-Software; Softwareentwicklung; Softwaredesign und -entwicklung zur Verwendung in Bezug auf folgende Waren: Halbleiter; Software as a Service [SaaS]; Cloud-Computing; Plattformen für künstliche Intelligenz als Software as a Service [SaaS]; Programmierung von Datenverarbeitungsgeräten; Programmierung von Multimedia-Geräten; Softwareengineering; Durchführung technischer Prüfungen; Entwicklung von Computerhardware; Forschung auf dem Gebiet der Technik; Beratung auf dem Gebiet Computerhardware und Computersoftware."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Elektronicki, elektrotehnicki i elektromagnetski moduli, Dijelovi i dodatci za navedene proizvode, ukljucujuci sljedece proizvode: Integracijski krugovi, Integrirani krugovi s mjesovitim signalom visokih performansi, Cipovi, Diode, Tranzistori [elektronika], Procesori, Pretvaraci, (analogni i/ili digitalni) poluvodici i Poluvodicki elementi; Mikroupravljaci; Mikroprocesori; Sucelja za uporabu u vezi sa sljedecim proizvodima: Racunala, Razvojne ploce, Set za razvoj softvera [SDK], Ugradeni softver, Razvojni softver, Softver, Hardver, Sucelja za racunala; Softver; Softver za racunarstvo u oblaku, Racunalni aplikacijski softver za uporabu u provedbi interneta stvari [IoT]; Softver za umjetnu inteligenciju i strojno ucenje; Uredaji i instrumenti za vodenje, sklapanje, preobrazbu, skupljanje, upravljanje i nadzor elektricne energije; Uredaji za snimanje, prijenos ili reprodukciju zvuka, slike i podataka; Bezicni odasiljaci i prijamnici; Bezicni audioproizvodi, Smart kartice [kartice s integriranim rasklopnim krugom], Procesori podataka za skeniranje, ocitavanje, pohranjivanje i tumacenje elektronickih podataka sadrzanih na RFID i NFC cipovima; RFID cipovi i oznake, NFC tagovi, NFC etikete, Osjetnici, Mediji za pohranu podataka, Oprema za obradu podataka i racunala."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Usluge istrazivanja, dizajna i razvoja u vezi sa sljedecim proizvodima: Integrirani preklopni sklopovi i Poluvodica; Usluge istrazivanja, dizajna i razvoja u vezi sa sljedecim proizvodima: RFID cipovi, Pametne kartice i NFC (komunikacija bliskog polja) uredaji; Izrada [koncipiranje] racunalnih progama; Razvoj softvera; Dizajn i razvoj softvera za uporabu u vezi sa sljedecim proizvodima: Poluvodica; Softver kao usluga [SaaS]; Cloud racunarstvo; Platforme za umjetnu inteligenciju kao softvera kao usluge [SaaS]; Programiranje opreme za obradu podataka; Programiranje multimedijske opreme; Programsko inzenjerstvo; Inzenjersko testiranje; Razvoj racunalnog hardvera; Tehnicka istrazivanja; Savjetovanje na podrucju racunalnog hardvera i racunalnog softvera."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Elektronikus, elektrotechnikai és elektromágneses modulok, A fent említett áruk alkatrészei és szerelvényei, beleértve a következo árukat: Integrált áramkörök (IC-k), Nagy teljesítményu vegyes jelu IC-k, Chipek, Diódák, Tranzisztorok [elektronikus], Processzorok, Konverterek, (analóg és/vagy digitális) félvezetok és Félvezeto alkotóelemek; Mikrovezérlok; Mikroprocesszorok; Interfészek a következo árukkal kapcsolatos használatra: Számítógépek, Fejlesztolapok, Szoftverfejleszto készlet [Software Development Kit, SDK], Beágyazott szoftverek, Fejlesztési szoftverek, Szoftverek, Hardver, Számítógép interfészek; Szoftverek; Számítógépes szoftverek számítási felhokhöz, Számítógépes alkalmazásszoftverek a \"dolgok internetének\" (IoT) megvalósításához; Mesterséges intelligencia és gépi tanulási szoftverek; Készülékek és berendezések az elektromosság vezetésére, kapcsolására, átalakítására, tárolására, szabályozására vagy ellenorzésére; Adatok, hang vagy képek rögzítésére, átvitelére vagy reprodukciójára szolgáló készülékek; Vezeték nélküli adóvevok; Vezeték nélküli audiotermékek, Chipkártyák [integrált áramkörös kártyák], Adatfeldolgozók az RFID- és NFC-chipeken található elektronikus adatok beolvasására, olvasására, tárolására és értelmezésére; RFID-csipek és -címkék, NFC-címkék, RFID-kulcstartók, RFID-címkék, NFC-függok, Érzékelok, Adattároló eszközök, közegek, Adatfeldolgozási berendezések és számítógépek."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Kutatási, tervezési és fejlesztési szolgáltatások a következo árukkal kapcsolatban: Integrált áramkörök és Félvezetok; Kutatási, tervezési és fejlesztési szolgáltatások a következo árukkal kapcsolatban: RFID-chipek, Chipkártyák és NFC (rövid hatótávú kommunikációs) eszközök; Szoftvertervezés; Számítógépes szoftver fejlesztése; Szoftverek tervezése és fejlesztése a következo árukkal kapcsolatos használatra: Félvezetok; Szoftver mint szolgáltatás [SaaS]; Felhoalapú számítástechnika; Mesterséges intelligencia platformok szoftver mint szolgáltatásként [SaaS]; Adatfeldolgozó berendezések programozása; Multimédiás eszközök programozása; Szoftver mérnökség; Muszaki tesztelés; Számítógépes hardverfejlesztés; Muszaki kutatás; Szaktanácsadási szolgáltatások a számítógépes hardverek és számítógépes szoftverek terén."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Moduli elettronici, elettrotecnici ed elettromagnetici, Parti e componenti per i suddetti articoli, compresi i seguenti prodotti: Circuiti integrati, Circuiti integrati a segnale misto ad alte prestazioni, Chip, Diodi, Transistors [elettronica], Processori, Convertitori, Semiconduttori (analogici e/o digitali) e Elementi semiconduttori; Microcontrollori; Microprocessori; Interfacce per uso in relazione ai seguenti prodotti: Elaboratori elettronici, Pannelli di sviluppo, Software Development Kit [SDK], Software integrato, Software di sviluppo, Software, Hardware, Interfacce [informatica]; Software; Software per cloud computing, Software applicativi per l'implementazione dell'Internet degli oggetti [IoT]; Software di intelligenza artificiale e per l'apprendimento automatico; Apparecchi e strumenti atti a condurre, commutare, trasformare, accumulare, regolare e controllare elettricità; Apparecchi per la registrazione, la trasmissione e la riproduzione di dati, suono o immagini; Trasmettitori e ricevitori senza fili; Prodotti audio senza filo, Carte magnetiche, Processori di dati per scansionare, leggere, archiviare e interpretare dati elettronici contenuti in chip RFID e NFC; Chip e cartellini RFID, Tags NFC, Etichette NFC, Sensori, Supporti di memorizzazione dati, Apparecchiatura d'elaborazione dati ed elaboratori elettronici."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Ricerca, progettazione e sviluppo in relazione ai seguenti prodotti: Circuiti integrati e Semiconduttori; Ricerca, progettazione e sviluppo in relazione ai seguenti prodotti: Chip RFID, Smart card e Dispositivi NFC (near field communications - comunicazioni in campo vicino); Elaborazione [ideazione] di software; Sviluppo di software; Elaborazione e sviluppo di software per uso in relazione ai seguenti prodotti: Semiconduttori; Software come servizio [SaaS]; Cloud computing; Piattaforme per intelligenza artificiale sotto forma di software come servizio [SaaS]; Programmazione di apparecchiature di elaborazione di dati; Programmazione di apparecchiatura multimediale; Ingegneria informatica; Test tecnici; Sviluppo di hardware; Ricerche tecnologiche; Servizi di consulenza in materia di hardware e software."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Elektroniniai, elektrotechniniai ir elektromagnetiniai moduliai, Pirmiau nurodytu prekiu dalys ir reikmenys, iskaitant siuos produktus: Integrines grandines (IG), Didelio nasumo misraus signalo IC, Lustai, Diodai, Tranzistoriai [elektronika], Procesoriai, Keitikliai, (analoginiai ir (arba) skaitmeniniai) puslaidininkiai ir Puslaidininkiu elementai; Mikrovaldikliai; Mikroprocesoriai; Sasajos naudoti su toliau isvardytomis prekemis susijusioms reikmems: Kompiuteriai, Tyrimu plokstes, Programines irangos tobulinimo rinkiniai (SDK), Iterptine programine iranga, Programine iranga skirta pletrai, Programine iranga, Technine iranga, Sasajos irenginiai kompiuteriams; Programine iranga; Debesu kompiuterijos programine iranga, Daiktu interneto (IoT) diegimo taikomoji programine iranga; Dirbtinio intelekto ir kompiuteriu mokymo programine iranga; Elektros praleidimo, perjungimo, transformavimo, akumuliavimo, reguliavimo ir valdymo aparatai ir prietaisai; Duomenu, garso arba vaizdo irasymo, perdavimo arba atkurimo aparatai; Belaidziai siustuvai ir imtuvai; Belaidziai garso produktai, Integriniu grandiniu korteles [lustines korteles], Duomenu procesoriai, skirti nuskaityti, skaityti, saugoti ir aiskinti elektroninius duomenis, esancius RFID ir NFC lustuose; RFID lustai ir korteles, NFC korteles, NFC etiketes, Jutikliai, Duomenu laikmenos, Duomenu apdorojimo irenginiai ir kompiuteriai."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Tyrimu, projektavimo ir tobulinimo paslaugos toliau isvardytu produktu atzvilgiu: Integrines grandines ir Puslaidininkiai; Tyrimu, projektavimo ir tobulinimo paslaugos toliau isvardytu produktu atzvilgiu: Radijo dazniu atpazinimo sistemos lustai, Lustines korteles ir NFC (artimojo lauko rysiu) aparatai; Kompiuteriu programines irangos projektavimas; Programines irangos tobulinimas; Kompiuteriu programines irangos projektavimas ir pletojimas naudoti su toliau isvardytomis prekemis susijusioms reikmems: Puslaidininkiai; Programine iranga kaip paslauga [SaaS]; Debesu kompiuterija; Programine iranga kaip paslauga [SaaS] dirbtinio intelekto platformoms; Duomenu apdorojimo irangos programavimas; Daugialypes terpes irangos programu rengimas; Programu inzinerija; Inzineriniai bandymai; Aparatines irangos tobulinimas; Techniniai tyrimai; Patariamosios paslaugos kompiuteriu aparatines ir programines irangos klausimais."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Elektroniski, elektrotehniski un elektromagnetiski moduli, Ieprieks mineto precu dalas un armatura, Ieskaitot sadus produktus: Integretas shemas (IC), Augstas veiktspejas jaukta signala IC, Mikroshemas, Diodes, Elektroniskie tranzistori, Procesori, Stravas parveidotaji, (analogie un/vai digitalie) pusvaditaji un Pusvaditaju elementi; Mikrokontrolleri; Mikroprocesori; Saskarnes (interfeisi) izmantosanai ar sadam precem: Datori, Izstrades deli, Programmaturas izstrades komplekti [SDK], Iegulta programmatura, Izveidosanas programmaturas, Programmatura, Iekartas, Saskarnes programmas un ierices datoriem; Programmatura; Datoru programmatura makondatosanai, Datoru lietojumprogrammatura izmantosanai lietiska interneta istenosana; Maksliga intelekta un masinmacisanas programmatura; Aparati un instrumenti elektribas vadisanai, komutacijai, parveidosanai, akumulesanai, regulesanai un kontrolei; Aparati datu, skanas vai attelu ierakstam, parraidei vai reproducesanai; Bezvadu raiditaji un uztvereji; Bezvadu audio preces, Viedkartes (kartes ar integreto shemu), Datu apstradataji RFID un NFC mikroshemas ietverto elektronisko datu skenesanai, lasisanai, uzglabasanai un interpretesanai; RFID mikroshemas un birkas, NFC atzimes, NFC etiketes, Sensori, Datu neseji, Datu apstrades iekartas un datori."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Petniecibas, projektesanas un izstrades pakalpojumi saistiba ar sadam precem: Integretas shemas un Pusvaditaji; Petniecibas, projektesanas un izstrades pakalpojumi saistiba ar sadam precem: RFID mikroshemas, Viedkartes un NFC (tuva lauka sakaru) aparati; Datorprogrammu projektesana; Programmaturas izstrade; Programmaturas projektesana un izstrade izmantosanai ar sadam precem: Pusvaditaji; Programmatura ka pakalpojums (SaaS); Makondatosanas pakalpojumi; Programmatura ka pakalpojums (SaaS), kas paredzeta maksliga intelekta platformam; Datu apstrades aparaturas programmesana; Multimediju aprikojuma programmesana; Programminzenierija; Inzenierijas testesana; Datoraparaturas izstrade; Tehnisko petijumu veiksana; Padomu pakalpojumi datoru aparaturas un datoru programmaturas joma."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Moduli elettronici, elettroteknici u elettromanjetici, Partijiet u fittings ghall-oggetti msemmija qabel, inkluzi l-oggetti li gejjin: Cirkuwiti integrati ( IC's), ICs b'sinjal imhallat bi prestazzjoni gholja, Cippijiet, Dajowds, Transisters [elettronici], Processors, Konvertituri, Semikondutturi (analogi u/jew digitali) u Elementi ta' semikondutturi; Mikrokontrollaturi; Mikroprocessuri; Interfaces ghall-uzu fir-rigward tal-oggetti li gejjin: Kompjuters, Bords tal-izvilupp, Kits ghall-izvilupp ta' softwer (software development kit [SDK]), Softwer inkorporat, Softwer ta' l-izvilupp, Softwer, Hardwer, Punti ta' interazzjoni ghall-kompjuters; Softwer; Softwer tal-kompjuter ghall-cloud computing, Softwer ta' applikazzjoni tal-kompjuter ghall-uzu fl-implimentazzjoni tal-Internet tal-Affarijiet [IoT]; Softwer tal-intelligenza artificjali u tat-taghlim bil-magni; Apparat u strumenti ghat-trazmissjoni, l-attivazzjoni, it-trasformazzjoni, l-akkumulu, r-regolazzjoni u l-kontroll tal-elettriku; Apparat ghar-registrazzjoni, trasmissjoni u riproduzzjoni ta' data, hsejjes jew stampi; Trasmettituri u ricevituri minghajr fili; Prodotti tal-awdjo minghajr fili, Skedi [kards] b'cirkwiti integrati, Processuri tad-data ghall-iskannjar, ghall-qari, ghall-hzin u ghall-interpretazzjoni ta' data elettronika li tinsab fuq cipep RFID u NFC; Cipep u tikketti ta' l-RFID, Tikketti tal-NFC, Tikketti NFC, Sensuri, Mezzi li jahznu d-data, Taghmir u kompjuters li jipprocessaw id-dejta."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi ta' ricerka, disinn u zvilupp marbuta mal-prodotti li gejjin: Cirkuwiti integrati u Semikondutturi; Servizzi ta' ricerka, disinn u zvilupp marbuta mal-prodotti li gejjin: Cipep RFID, Smart kards u Apparat tal-NFC (komunikazzjonijiet qrib il-kampi); L-izvilupp ta' softwer tal-kompjuter; Zvilupp ta' softwer; Disinn u zvilupp ta' softwer tal-kompjuter ghall-uzu fir-rigward tal-oggetti li gejjin: Semikondutturi; Softwer bhala servizz [SaaS]; Kuncetti ta' kompjuterizzazzjoni; Pjattaformi ghal intelligenza artificjali bhala softwer bhala servizz [SaaS]; L-ipprogrammar ta' taghmir tal-ipprocessar tad-dejta; Ipprogrammar ta' hardwer multimedjali; Inginerija tas-softwer; Ittestjar ta' inginerija; Zvilupp tal-hardwer tal-kompjuter; Ricerka teknika; Servizzi ta' pariri fil-qasam ta' hardwer tal-kompjuter u softwer informatiku."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Moduly elektroniczne, elektrotechniczne i elektromagnetyczne, Czesci i osprzet do uprzednio wymienionych towarów, w tym nastepujace produkty: Uklady scalone, Wysokowydajne uklady scalone sygnalów mieszanych, Chipy, Diody, Tranzystory [elektronika], Procesory, Przetworniki, (analogowe i/lub cyfrowe) pólprzewodniki i Elementy pólprzewodnikowe; Mikrosterowniki; Mikroprocesory; Interfejsy do uzytku w zakresie nastepujacych towarów: Komputery, Platformy sprzetowe, Zestawy do tworzenia oprogramowania [SDK], Wbudowane oprogramowanie, Oprogramowanie rozwojowe, Oprogramowanie, Sprzet komputerowy, Interfejsy komputerowe; Oprogramowanie; Oprogramowanie do przetwarzania w chmurze, Oprogramowanie komputerowe do uzytku we wdrozeniu Internetu rzeczy [IoT]; Oprogramowanie zwiazane ze sztuczna inteligencja i nauczaniem maszynowym; Urzadzenia i przyrzady elektryczne przewodzace, przelaczajace, transformujace, akumulatorowe, kontrolno-sterujace; Urzadzenia do nagrywania, transmisji lub odtwarzania danych, dzwieku i obrazów; Nadajniki i odbiorniki bezprzewodowe; Bezprzewodowe produkty akustyczne, Karty inteligentne [karty z ukladem scalonym], Procesory danych do skanowania, odczytu, przechowywania i interpretacji danych elektronicznych zawartych w chipach RFID i NFC; Chipy i etykietki RFID, Tagi NFC, Etykiety NFC, Czujniki, Nosniki do przechowywania danych, Urzadzenia do przetwarzania informacji i komputery."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi badawczo-rozwojowe i projektowe w odniesieniu do nastepujacych towarów: Uklady scalone i Pólprzewodniki; Uslugi badawczo-rozwojowe i projektowe w odniesieniu do nastepujacych towarów: Chipy identyfikacji radiowej (RFID), Karty inteligentne i Aparatura do komunikacji bliskiego zasiegu (NFC); Projektowanie oprogramowania komputerowego; Opracowywanie oprogramowania komputerowego; Projektowanie i opracowywanie oprogramowania komputerowego do uzytku w zakresie nastepujacych towarów: Pólprzewodniki; Oprogramowanie jako usluga [SaaS]; Chmura obliczeniowa; Platformy do sztucznej inteligencji jako oprogramowanie jako usluga [SaaS]; Programowanie sprzetu do przetwarzania danych; Programowanie sprzetu multimedialnego; Inzynieria oprogramowania; Testy inzynieryjne; Rozwój sprzetu komputerowego; Badania techniczne; Uslugi doradcze z dziedziny sprzetu i oprogramowania komputerowego."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Módulos eletrónicos, eletrotécnicos e eletromagnéticos, Peças e componentes para os artigos atrás referidos, incluindo os seguintes produtos: Circuitos integrados (CI), Circuitos integrados de sinal misto de elevado desempenho, Pastilhas electrónicas, Díodos, Transístores [eletrónica], Processadores, Conversores, Semicondutores (analógicos e/ou digitais) e Elementos semicondutores; Microcontroladores; Microprocessadores; Interfaces para uso relacionado com os seguintes produtos: Computadores, Placas de desenvolvimento, Kits de desenvolvimento de software [SDK], Software integrado, Software de desenvolvimento, Software, Hardware, Interfaces [informática]; Software; Software de computação em nuvem, Software aplicativo informático para uso na implementação da Internet das coisas [IoT]; Software relacionado com inteligência artificial e de aprendizagem automática; Aparelhos e instrumentos para a condução, distribuição, transformação, acumulação, regulação ou o controlo da corrente elétrica; Aparelhos para o registo, a transmissão ou a reprodução de dados, do som ou de imagens; Transmissores e recetores sem fios; Produtos de áudio sem fios, Cartões de circuitos integrados [smart cards], Processadores de dados para digitalização, leitura, armazenamento e interpretação de dados eletrónicos contidos em chips de identificação por radiofrequência (RFID) e de comunicação em campo próximo (NFC); Chips e etiquetas RFID, Etiquetas NFC, Etiquetas NFC, Sensores, Suportes de armazenamento de dados, Equipamento para o tratamento da informação e computadores."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de investigação, concepção e desenvolvimento em relação com os seguintes produtos: Circuitos integrados e Semicondutores; Serviços de investigação, concepção e desenvolvimento em relação com os seguintes produtos: Chips RFID, Cartões inteligentes e Aparelhos de comunicação em campo próximo (NFC); Design de software; Desenvolvimento de software; Design e desenvolvimento de software para uso relacionado com os seguintes produtos: Semicondutores; Software como serviço [SaaS]; Computação em nuvem; Plataformas de inteligência artificial sob a forma de software como serviço [SaaS]; Programação de equipamento de processamento de dados; Programação de equipamentos de multimédia; Engenharia de software; Testes de engenharia; Desenvolvimento de hardware informático; Pesquisas tecnológicas; Serviços de assessoria no domínio do hardware e software informáticos."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Module electronice, electrotehnice si electromagnetice, Parti si accesorii pentru articolele mentionate mai sus, inclusiv produsele urmatoare: Circuite integrate (IC), Circuite integrate cu semnal mixt de înalta performanta, Cipuri, Diode, Tranzistoare [electronica], Procesoare, Convertizoare, Semiconductoare (analogice si digitale) si Elemente semiconductoare; Microcontrolere; Microprocesoare; Interfete spre a se utiliza în legatura cu urmatoarele produse: Computere, Tablouri de dezvoltare, Set de dezvoltare de software [SDK], Software integrat, Software de dezvoltare, Software, Articole de fierarie, Interfete [informatica]; Software; Software pentru cloud computing, Software de aplicatii de calculator destinat utilizarii la implementarea Internetului Lucrurilor [IoT]; Software pentru inteligenta artificiala si învatare automata; Aparate si instrumente pentru conducerea, comutarea, transformarea, acumularea, reglarea si controlul electricitatii; Aparate pentru înregistrarea, transmisia si reproducerea de date, sunet sau imagini; Emitatoare si receptoare wireless; Produse audio fara fir, Cartele cu cip [carduri cu circuite integrate], Procesoare de date pentru scanarea, citirea, stocarea si interpretarea datelor electronice continute pe cipurile RFID si NFC; Cipuri si etichete RFID, Tag-uri NFC, Etichete NFC, Senzori, Suporturi de stocare a datelor, Echipamente pentru prelucrarea informatiilor si calculatoare."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii de cercetare, proiectare si dezvoltare cu privire la urmatoarele produse: Circuite integrate si Semiconductoare; Servicii de cercetare, proiectare si dezvoltare cu privire la urmatoarele produse: Cipuri RFID, Cartele inteligente si Aparate NFC (comunicatii în câmp apropiat); Proiectare de software; Dezvoltare de software; Design si dezvoltare de software spre a se utiliza în legatura cu urmatoarele produse: Semiconductoare; Software ca serviciu [SaaS]; Cloud computing; Platforme pentru inteligenta artificiala sub forma de software ca serviciu [SaaS]; Programare de echipamente de prelucrare a datelor; Programare de echipamente multimedia; Inginerie de software informatic; Teste de inginerie; Dezvoltarea hardware-ului pentru computere; Cercetare tehnica; Servicii de consiliere cu privire la hardware de calculator si software de calculator."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Elektronické, elektrotechnické a elektromagnetické moduly, Súciastky a armatúry na vyssie uvedené tovary, vrátane týchto výrobkov: Integrované obvody, Vysoko výkonné integrované obvody so zmiesaným signálom, Cipy, Diódy, Tranzistory (elektronika), Procesory, Menice, (analógové a/alebo digitálne) polovodice a Polovodicové prvky; Mikroregulátory; Mikroprocesory; Rozhrania na pouzitie v súvislosti s nasledujúcimi výrobkami: Pocítace, Vývojové dosky, Súbor nástrojov na vývoj softvéru (SDK), Vlozený softvér, Vývojový softvér, Softvér, Hardvéry, Pocítacové rozhrania; Softvér; Softvér pre cloud computing (poskytovanie sluzieb alebo programov ulozených na serveroch na Internete), Pocítacový aplikacný softvér na pouzitie pri implementácii tzv. internetu vecí; Softvér umelej inteligencie a strojového ucenia; Prístroje a nástroje na vedenie, spínanie, premenu, ukladanie, reguláciu a kontrolovanie elektriny; Zariadenia na nahrávanie, prenos alebo reprodukovanie údajov, zvuku alebo obrazov; Bezdrôtové vysielace a prijímace; Bezdrôtové zvukové výrobky, Karty s integrovanými obvodmi (pamätové alebo mikroprocesorové), Dátové procesory na skenovanie, cítanie, ukladanie a interpretáciu elektronických údajov obsiahnutých na cipoch RFID a NFC; Rádiofrekvencné identifikacné cipy a stítky, NFC-tagy, NFC stítky, Senzory, Médiá na ukladanie dát, Vybavenie na spracovanie údajov a pocítace."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Výskumné, návrhárske a vývojárske sluzby vo vztahu k nasledujúcim tovarom: Integrované obvody a Polovodice; Výskumné, návrhárske a vývojárske sluzby vo vztahu k nasledujúcim tovarom: RFID-cipy, Smart karty a NFC prístroje (na krátkodosahové spojenie); Tvorba pocítacového softvéru; Vývoj pocítacového softvéru; Navrhovanie a vývoj softvéru na pouzitie v súvislosti s nasledujúcimi výrobkami: Polovodice; Poskytovanie softvéru prostredníctvom internetu (SaaS); Poskytovanie pocítacových technológií prostredníctvom internetu (cloud computing); Platformy pre umelú inteligenciu vo forme softvéru ako sluzby [SaaS]; Programovanie zariadení na spracovanie dát; Programovanie multimediálnej techniky; Softvérové inzinierstvo; Inzinierske testovanie; Vývoj pocítacového hardvéru; Technický výskum; Poradenské sluzby v oblasti pocítacového hardvéru a softvéru."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Elektronski, elektrotehnicni in elektromagnetni moduli, Deli in montazna oprema za omenjeno blago, vkljucno z naslednjimi izdelki: Integrirana vezja, Visoko ucinkovita integrirana vezja za mesani signal, Cipi, Diode, Elektronski tranzistorji, Procesorji, Pretvorniki, Polprevodniki (analogni in/ali digitalni) in Polprevodniski elementi; Mikrokrmilniki; Mikroprocesorji; Vmesniki za uporabo v zvezi z naslednjimi izdelki: Racunalniki, Razvojne plosce, Paket za razvoj programske opreme [SDK], Vgrajena programska oprema, Razvojna programska oprema, Programska oprema, Strojna oprema, Vmesniki za racunalnike; Programska oprema; Racunalniska programska oprema za racunalnistvo v oblaku, Racunalniska aplikacijska programska oprema za uporabo pri izvajanju interneta stvari; Programska oprema v zvezi z umetno inteligenco in strojnim ucenjem; Aparati in instrumenti za prevajanje, preklapljanje, transformiranje, akumuliranje, regulacijo ali kontrolo elektricne energije; Aparati za snemanje, prenos ali reprodukcijo podatkov, zvoka ali slik; Brezzicni oddajniki in sprejemniki; Brezzicni avdio izdelki, Pametne kartice (kartice z integriranim vezjem], Podatkovni procesorji za skeniranje, branje, shranjevanje in interpretacijo elektronskih podatkov na cipih RFID in NFC; Cipi in oznake za RFID, NFC-oznake, NFC etikete, Senzorji, Mediji za shranjevanje podatkov, Oprema in racunalniki za procesiranje podatkov."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Raziskovalne, oblikovalne in razvojne storitve v zvezi z naslednjimi izdelki: Integrirana vezja in Polprevodniki; Raziskovalne, oblikovalne in razvojne storitve v zvezi z naslednjimi izdelki: Cipi za radijsko identifikacijo, Pametne kartice in Aparati za komunikacijo v bliznjem polju (NFC); Oblikovanje programske opreme; Razvoj programske opreme; Oblikovanje in razvoj programske opreme za uporabo v zvezi z naslednjimi izdelki: Polprevodniki; Programska oprema kot storitev [SaaS]; Racunalnistvo v oblaku; Platforme za umetno inteligenco kot programska oprema kot storitev [SaaS]; Programiranje opreme za obdelavo podatkov; Programiranje multimedijske opreme; Inzenirske storitve v zvezi z racunalnisko programsko opremo; Inzenirsko testiranje; Razvoj racunalniske strojne opreme; Tehnicne raziskave; Svetovalne storitve na podrocju racunalniske strojne opreme in racunalniske programske opreme."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Módulos electrónicos, electrotécnicos y electromagnéticos, Partes y componentes para todos los productos mencionados, incluidos los siguientes productos: Circuitos integrados, Circuitos integrados de señal mixta de alto rendimiento, Chips, Diodos, Transistores [electrónica], Procesadores, Convertidores, Semiconductores (analógicos o digitales) y Elementos semiconductores; Microcontroladores; Microprocesadores; Interfaces para su uso en relación con los productos siguientes: Ordenadores, Tableros de desarrollo, Kits de desarrollo de software, Software integrado, Software de desarrollo, Software, Hardware, Interfaces [informática]; Software; Software para informática de nubes, Software de aplicaciones informáticas para su uso en la aplicación de internet de las cosas [IoT]; Software relacionado con la inteligencia artificial y el aprendizaje de máquinas; Aparatos e instrumentos para conducción, conmutación, conversión, almacenamiento, regulación y control de electricidad; Aparatos para el registro, transmisión o reproducción de datos, sonido o imágenes; Transmisores y receptores inalámbricos; Productos de audio inalámbricos, Tarjetas de circuitos integrados, Procesadores de datos para escanear, leer, almacenar e interpretar los datos electrónicos contenidos en los chips RFID y NFC; Chips y etiquetas de RFID, Etiquetas NFC, Etiquetas NFC, Sensores, Soportes de almacenamiento de datos, Equipos para el tratamiento de la información y ordenadores."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de investigación, diseño y desarrollo en relación con los siguientes productos: Circuitos integrados y Semiconductores; Servicios de investigación, diseño y desarrollo en relación con los siguientes productos: Chips RFID, Tarjetas inteligentes y Aparatos de NFC (comunicación de campo cercano); Diseño de software; Desarrollo de software; Diseño y desarrollo de software informático para su uso en relación con los productos siguientes: Semiconductores; Software como servicio [SaaS]; Servicios informáticos en la nube; Plataformas para inteligencia artificial como software en forma de servicio [SaaS]; Programación de equipos de procesamiento de datos; Programación de equipos multimedios; Ingeniería de programas informáticos; Ensayos de ingeniería; Desarrollo de equipos de hardware; Investigación tecnológica; Servicios de asesoramiento en materia de hardware informático y software informático."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Elektronik, elektrotekniska och elektromagnetiska moduler, Delar och komponenter till ovannämnda varor, inklusive följande varor: Integrerade kretsar (IC), Integrerade kretsar med högpresterande blandade signaler, Chips, Dioder, Transistorer [elektronik], Processorer, Omvandlare, (analoga och/eller digitala) halvledare och Halvledarelement; Mikrostyranordningar; Mikroprocessorer; Gränssnitten för användning i samband med följande varor: Datorer, Utvecklingskort, Kit för programvaruutveckling [SDK], Inbyggd programvara, Utvecklingsprogramvara, Mjukvaror, Hårdvara, Gränssnitt (för datorer); Mjukvaror; Programvara för datormoln, Applikationsprogramvara för användning vid implementering av sakernas internet (IoT); Programvara för artificiell intelligens och maskininlärning; Apparater och instrument för ledning, omkoppling, omvandling, lagring, reglering och kontroll av elektricitet; Apparater för inspelning, upptagning, sändning och återgivning av data, ljud eller bilder; Trådlösa sändare och mottagare; Trådlösa ljudprodukter, Integrerade kretskort [smartcards] aktivkort, Dataprocessorer för skanning, avläsning, lagring och tolkning av elektroniska data på RFID- och NFC- chips; RFID-chips och -märken, NFC-märkningar, NFC-etiketter, Sensorer, Datalagringsmedia, Databehandlingsutrustningar och datorer."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Forskning, utformning och utveckling avseende följande varor: Integrerade kretsar och Halvledare; Forskning, utformning och utveckling avseende följande varor: RFID-chips, Smarta kort (integrerade kretskort) och Närfältskommunikationsapparater; Utformning av programvara; Utveckling av mjukvara; Utformning och utveckling av datormjukvara för användning i samband med följande varor: Halvledare; Molntjänster [SaaS]; Molntjänster; Plattformar för artificiell intelligens i form av programvaror som tjänst [SaaS]; Programmering av databehandlingsutrustning; Programmering av multimedieutrustning; Programvaruutveckling; Ingenjörsprovningar; Datorhårdvaruutveckling; Teknisk forskning; Rådgivningstjänster inom området för datormaskinvara och programvara."
+        }
+      ]
+    },
+    "id": "89c60f20-af7f-4397-b567-a3e05c24b49c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "24.15.02",
+      "24.15.07",
+      "27.05.22",
+      "27.99.14",
+      "27.99.16",
+      "27.99.24"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20240312",
+        "priorityNumber": "1500867"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "206"
+      }
+    ],
+    "recordLastUpdated": "20260918",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices. 2e étage Anna van Buerenplein 21A,Den Haag, 2595DA",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO SHIELDMARK B.V."
+      }
+    ],
+    "secondLanguageCode": "de",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240912",
+        "applicationNumber": "19078819"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340912",
+      "lastPublicationDate": "20241025",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20251004",
+        "registrationNumber": "19078819"
+      }
+    },
+    "version": "20260918000730",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NXP Brighter together"
+    }
+  },
+  "_uri": "/mark/em/89c60f20-af7f-4397-b567-a3e05c24b49c",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.651Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

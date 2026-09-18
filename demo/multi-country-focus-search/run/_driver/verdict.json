@@ -1,10 +1,11 @@
 {
-  "ts": "2026-09-02T19:47:58.943Z",
+  "ts": "2026-09-18T14:58:01.709Z",
   "verdict": "CONDITIONAL",
   "reasons": [
-    "Clear the Japanese Ｖｅｎｋｕｒｉ registration before filing class 9 in Japan for measuring or monitoring apparatus.",
-    "Take a Korean attorney's view on whether enqor and VENQORI are confusingly similar before filing in Korea.",
-    "Check Vencora's own filings through its corporate records or local counsel, including any Japanese or Korean styling."
+    "Resolve the pending ENQOR applications before filing either form in South Korea; the use check did not confirm Align Networks Inc.'s ENQOR use."
+  ],
+  "clauses": [
+    "Pending ENQOR applications cover mobile apps and SaaS, and the use check did not confirm Align Networks Inc.'s current ENQOR use."
   ],
   "kinds": {
     "legalActions": true
@@ -18,6 +19,6 @@
     "rankFromTop": 3,
     "scale": 4
   },
-  "statement": "Moderate — conditional on: No consent, coexistence or cancellation touching the Ｖｅｎｋｕｒｉ registration appears on the record searched (and 2 more).",
+  "statement": "Moderate — conditional on: Pending ENQOR applications cover mobile apps and SaaS, and the use check did not confirm Align Networks Inc.'s current ENQOR use.",
   "stance": "conditional"
 }

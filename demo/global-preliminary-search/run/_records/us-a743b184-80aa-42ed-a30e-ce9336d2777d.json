@@ -1,0 +1,344 @@
+{
+  "uri": "/mark/us/a743b184-80aa-42ed-a30e-ce9336d2777d",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "a743b184-80aa-42ed-a30e-ce9336d2777d",
+  "applicationNumber": "88862528",
+  "registrationNumber": "6312105",
+  "applicationDate": "2020-04-07",
+  "registrationDate": "2021-04-06",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2021-01-19"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "HOVERGAMES",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    12,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Drone development kits comprised primarily of computer hardware and prerecorded operating software for running on modular drones; Drone development kits comprised primarily of micro-processors and recorded computer software development tools for use in controlling and managing the flight of modular drones; drone development kits for use in disaster management, health crises, environmental protection, and wildlife conservation comprised primarily of computer hardware and prerecorded operating software for running on modular drones; computer hardware and prerecorded operating software for running on modular drones",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": null,
+      "description": "INT. CL. 12 drones; kits for making drones; kits for making drones for use in disaster management, health crises, environmental protection, and wildlife conservation; drone development kits comprised primarily of body panels for drones and also including computer system hardware and sensors; drone development kits for use in disaster management, health crises, environmental protection, and wildlife conservation with the kit comprised primarily of body panels for drones and also including computer system hardware and sensors",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Organizing, conducting and operating drone competitions; Organizing, conducting and operating drone development competitions; Organizing, conducting and operating competitions for virtual software coding for software for drones; Organizing, conducting and operating drone hardware design competitions",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityApplicationDate": "20200324",
+      "priorityApplicationNumber": "018214352"
+    },
+    {
+      "priorityCountryCode": "PIEU",
+      "priorityCountryName": "European Union",
+      "priorityExpiryDate": "20300324",
+      "priorityRegistrationDate": "20200728",
+      "priorityRegistrationNumber": "018214352"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60, Eindhoven, 5656AG, NETH",
+        "applicantAddressCity": "Eindhoven",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantAddressPostalCode": "5656AG",
+        "applicantAddressStreet": "High Tech Campus 60",
+        "applicantJurisdictionOfIncorporation": "NETHERLANDS",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Drone development kits comprised primarily of computer hardware and prerecorded operating software for running on modular drones; Drone development kits comprised primarily of micro-processors and recorded computer software development tools for use in controlling and managing the flight of modular drones; drone development kits for use in disaster management, health crises, environmental protection, and wildlife conservation comprised primarily of computer hardware and prerecorded operating software for running on modular drones; computer hardware and prerecorded operating software for running on modular drones"
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsServicesDescription": "INT. CL. 12 drones; kits for making drones; kits for making drones for use in disaster management, health crises, environmental protection, and wildlife conservation; drone development kits comprised primarily of body panels for drones and also including computer system hardware and sensors; drone development kits for use in disaster management, health crises, environmental protection, and wildlife conservation with the kit comprised primarily of body panels for drones and also including computer system hardware and sensors"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Organizing, conducting and operating drone competitions; Organizing, conducting and operating drone development competitions; Organizing, conducting and operating competitions for virtual software coding for software for drones; Organizing, conducting and operating drone hardware design competitions"
+        }
+      ]
+    },
+    "id": "a743b184-80aa-42ed-a30e-ce9336d2777d",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260406",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20210406",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20210119",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20210119",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20201230",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20201215",
+        "descriptionText": "ELECTRONIC RECORD REVIEW COMPLETE"
+      },
+      {
+        "date": "20201211",
+        "descriptionText": "ON HOLD - ELECTRONIC RECORD REVIEW REQUIRED"
+      },
+      {
+        "date": "20201207",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20201207",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20201206",
+        "descriptionText": "TEAS REQUEST FOR RECONSIDERATION RECEIVED"
+      },
+      {
+        "date": "20201206",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20200924",
+        "descriptionText": "FINAL REFUSAL  WRITTEN"
+      },
+      {
+        "date": "20200924",
+        "descriptionText": "FINAL REFUSAL E-MAILED"
+      },
+      {
+        "date": "20200924",
+        "descriptionText": "NOTIFICATION OF FINAL REFUSAL EMAILED"
+      },
+      {
+        "date": "20200919",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20200918",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20200918",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20200702",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20200702",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20200702",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20200625",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20200414",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20200410",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "High Tech Campus 60, Eindhoven, 5656AG, NETH",
+        "city": "Eindhoven",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "name": "NXP B.V.",
+        "postalCode": "5656AG",
+        "street": "High Tech Campus 60"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "High Tech Campus 60, Eindhoven, 5656AG, NETH",
+        "city": "Eindhoven",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "name": "NXP B.V.",
+        "postalCode": "5656AG",
+        "street": "High Tech Campus 60"
+      },
+      {
+        "address": "High Tech Campus 60, Eindhoven, 5656AG, NETH",
+        "city": "Eindhoven",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "name": "NXP B.V.",
+        "postalCode": "5656AG",
+        "street": "High Tech Campus 60"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "High Tech Campus 60, Eindhoven, 5656AG, NETH",
+        "city": "Eindhoven",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "name": "NXP B.V.",
+        "postalCode": "5656AG",
+        "street": "High Tech Campus 60"
+      }
+    ],
+    "priorities": [
+      {
+        "priorityApplicationDate": "20200324",
+        "priorityApplicationNumber": "018214352"
+      },
+      {
+        "priorityCountryCode": "PIEU",
+        "priorityCountryName": "European Union",
+        "priorityExpiryDate": "20300324",
+        "priorityRegistrationDate": "20200728",
+        "priorityRegistrationNumber": "018214352"
+      }
+    ],
+    "recordLastUpdated": "20260408",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "PALO ALTO, CA 94306, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "PALO ALTO, CA 94306",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Cynthia R. Adwere LAW OFFICE OF CYNTHIA R. ADWERE, 2625 MIDDLEFIELD ROAD #360"
+      }
+    ],
+    "representatives": [
+      {
+        "domesticRepresentativeName": "Cynthia R. Adwere",
+        "representativeAddress": "PALO ALTO, CA 94306, UNITED STATES",
+        "representativeAddressLines": [
+          "PALO ALTO, CA 94306",
+          "UNITED STATES"
+        ]
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200407",
+        "applicationNumber": "88862528"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED",
+        "markOfficialStatusCode": "700",
+        "markOfficialStatusDate": "20210406",
+        "markOfficialStatusEvents": [
+          "Section 44(D)",
+          "Section 44(d) Filed",
+          "Section 44(e) Filed",
+          "Section 44(e) Currently"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20210119"
+      ],
+      "registration": {
+        "registrationDate": "20210406",
+        "registrationNumber": "6312105"
+      },
+      "withdrawalDate": [
+        "20201211"
+      ]
+    },
+    "version": "20260408064230",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "HOVER GAMES",
+      "markVerbalElementText": "HOVERGAMES"
+    }
+  },
+  "_uri": "/mark/us/a743b184-80aa-42ed-a30e-ce9336d2777d",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:10.754Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

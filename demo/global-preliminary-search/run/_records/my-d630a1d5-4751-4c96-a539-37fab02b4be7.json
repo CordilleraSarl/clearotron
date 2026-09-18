@@ -1,0 +1,131 @@
+{
+  "uri": "/mark/my/d630a1d5-4751-4c96-a539-37fab02b4be7",
+  "provider": "clarivate",
+  "office": "my",
+  "guid": "d630a1d5-4751-4c96-a539-37fab02b4be7",
+  "applicationNumber": "2012001459",
+  "registrationNumber": null,
+  "applicationDate": "2012-01-31",
+  "registrationDate": "2012-01-31",
+  "expiryDate": "2031-12-16",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "freescale",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Developing, designing and testing semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency (RF) devices, sensors and software for others; consulting services in the fields of developing, designing and testing semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency (RF) devices, sensors and software; Providing information in the fields of semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency (RF) devices, sensors and software; all included in class 42.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA, Inc",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Soh Kar Liang",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20111216",
+      "priorityNumber": "85/497,099"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West Austin, Texas 78735",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Developing, designing and testing semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency (RF) devices, sensors and software for others; consulting services in the fields of developing, designing and testing semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency (RF) devices, sensors and software; Providing information in the fields of semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency (RF) devices, sensors and software; all included in class 42."
+        }
+      ]
+    },
+    "id": "d630a1d5-4751-4c96-a539-37fab02b4be7",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.04.09"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20111216",
+        "priorityNumber": "85/497,099"
+      }
+    ],
+    "recordLastUpdated": "20260424",
+    "registrationOfficeCode": "MY",
+    "registrationOfficeName": "Malaysia",
+    "representatives": [
+      {
+        "representativeAddress": "Ella Cheong IP Services Sdn Bhd A-31-3, Level 31, Menara UOA Bangsar No 5, Jalan Bangsar Utama 1 Kuala Lumpur 59000 Kuala Lumpur",
+        "representativeAddressCountryCode": "MY",
+        "representativeAddressCountryName": "Malaysia",
+        "representativeName": "Soh Kar Liang"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20120131",
+        "applicationNumber": "2012001459"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20311216",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20120131"
+      }
+    },
+    "version": "20260424050157",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "freescale"
+    }
+  },
+  "_uri": "/mark/my/d630a1d5-4751-4c96-a539-37fab02b4be7",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.698Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

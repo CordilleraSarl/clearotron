@@ -1690,7 +1690,7 @@
         "publicationVolume": "35"
       }
     ],
-    "recordLastUpdated": "20260512",
+    "recordLastUpdated": "20260918",
     "registrationOfficeCode": "EM",
     "registrationOfficeName": "EU trade marks",
     "representatives": [
@@ -1717,14 +1717,14 @@
         "registrationNumber": "19103974"
       }
     },
-    "version": "20260512013155",
+    "version": "20260918002835",
     "wordMarkSpecification": {
       "markVerbalElementText": "VAN CORE"
     }
   },
   "_uri": "/mark/em/2f2a8dbb-97d9-4a84-9253-8f66946aefd7",
   "_receipt": {
-    "fetched_at": "2026-09-02T14:33:18.809Z",
-    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+    "fetched_at": "2026-09-18T12:42:34.353Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
   }
 }

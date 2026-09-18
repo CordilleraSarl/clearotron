@@ -1,0 +1,303 @@
+{
+  "uri": "/mark/ca/75d5d36e-012f-4294-9ef7-4b4e257cc9fd",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "75d5d36e-012f-4294-9ef7-4b4e257cc9fd",
+  "applicationNumber": "1425115",
+  "registrationNumber": "TMA796790",
+  "applicationDate": "2009-01-21",
+  "registrationDate": "2011-05-06",
+  "expiryDate": "2036-05-06",
+  "renewalDate": "2026-05-06",
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2010-10-27"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MIFARE PLUS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    37,
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9,
+        37,
+        40,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Electronic, electrotechnical and electromagnetic modules containing semiconductors, integrated circuits or microprocessor chips all for use in RFID (Radio Frequency Identification) and NFC (Near Field Communications) applications, and parts thereof; data processing equipment, namely data processors for scanning, reading, storing and interpreting electronic data contained on RFID and NFC chips and tags; microprocessors; interfaces for computers; integrated circuits (ICs), electronic chips for the manufacture of integrated circuits; semiconductors; encoded smart cards containing programming used to store financial information, access management and, personal identification details ; computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID and NFC chips and tags; electronic, electrotechnical and electromagnetic modules, parts and elements and integrated circuits for NFC applications; electronic and magnetic ID cards for use in payment for services or products, or for controlling access; data processor and computer software for fare determination for passengers who book their travel electronically",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9,
+        37,
+        40,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Maintenance, assembly, installation and repair services in relation to electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (IC's), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID chips and tags, computer hardware for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, antennas for scanning, reading and interpreting RFID chips and tags, NFC (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for NFC applications, electronic payment cards, data processing apparatus for determining the fare to be paid by passengers with electronic travel-tickets, and parts, fittings and accessories for all the aforesaid goods; advisory, consultancy and information services in relation to all the aforesaid services; custom manufacture, customisation and custom programming of electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (IC's), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID chips and tags, computer hardware for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, antennas for scanning, reading and interpreting RFID chips and tags, NFC (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for near field communications applications, electronic payment cards, data processing apparatus and software for determining the fare to be paid by passengers with electronic travel-tickets, and parts, fitting and accessories for all the aforesaid goods; advisory, consultancy and information services in relation to all the aforesaid services \n(2) Computer programming services; installation, repair and maintenance in relation to software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, and software for determining the fare to be paid by passengers with electronic travel-tickets; research, design and development services related to electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (IC's), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID chips and tags, computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, antennas for scanning, reading and interpreting RFID chips and tags, NFC (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for NFC applications, electronic payment cards, data processing apparatus and software for determining the fare to be paid by passengers with electronic travel-tickets, and parts, fittings and accessories for all the aforesaid goods; custom manufacture, customisation and custom programming of software; advisory, consultancy and information services in relation to all the aforesaid services",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "FASKEN MARTINEAU DUMOULIN LLP",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20080722",
+      "priorityNumber": "1163748",
+      "priorityText": "Priority Filing Date: July 22, 2008, Country or Office: Benelux Office for IP (BOIP), Application No. 1163748 in association with the same kind of in association with the same kind on wares marked (1) on services (1) (2)"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60, 5656 AG, Eindhoven",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantAddressLines": [
+          "High Tech Campus 60",
+          "5656 AG",
+          "Eindhoven"
+        ],
+        "applicantName": "NXP B.V"
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Used in CANADA since at least as early as January 01, 2008 on wares marked (1) on services (1) (2)",
+        "typeDescription": "First Use"
+      },
+      {
+        "text": "Priority Filing Date: July 22, 2008, Country or Office: Benelux Office for IP (BOIP), Application No. 1163748 in association with the same kind of in association with the same kind on wares marked (1) on services (1) (2)",
+        "typeDescription": "Priority"
+      },
+      {
+        "text": "Used in NETHERLANDS on wares marked (1) on services (1) (2)",
+        "typeDescription": "Foreign Usage"
+      },
+      {
+        "text": "Registered in or for Benelux Office for IP (BOIP) on November 10, 2008, under No. 849324 on wares marked (1) on services (1) (2)",
+        "typeDescription": "Foreign Registration"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09,37,40,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Electronic, electrotechnical and electromagnetic modules containing semiconductors, integrated circuits or microprocessor chips all for use in RFID (Radio Frequency Identification) and NFC (Near Field Communications) applications, and parts thereof; data processing equipment, namely data processors for scanning, reading, storing and interpreting electronic data contained on RFID and NFC chips and tags; microprocessors; interfaces for computers; integrated circuits (ICs), electronic chips for the manufacture of integrated circuits; semiconductors; encoded smart cards containing programming used to store financial information, access management and, personal identification details ; computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID and NFC chips and tags; electronic, electrotechnical and electromagnetic modules, parts and elements and integrated circuits for NFC applications; electronic and magnetic ID cards for use in payment for services or products, or for controlling access; data processor and computer software for fare determination for passengers who book their travel electronically"
+        },
+        {
+          "intClassNumber": "09,37,40,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Maintenance, assembly, installation and repair services in relation to electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (IC's), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID chips and tags, computer hardware for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, antennas for scanning, reading and interpreting RFID chips and tags, NFC (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for NFC applications, electronic payment cards, data processing apparatus for determining the fare to be paid by passengers with electronic travel-tickets, and parts, fittings and accessories for all the aforesaid goods; advisory, consultancy and information services in relation to all the aforesaid services; custom manufacture, customisation and custom programming of electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (IC's), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID chips and tags, computer hardware for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, antennas for scanning, reading and interpreting RFID chips and tags, NFC (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for near field communications applications, electronic payment cards, data processing apparatus and software for determining the fare to be paid by passengers with electronic travel-tickets, and parts, fitting and accessories for all the aforesaid goods; advisory, consultancy and information services in relation to all the aforesaid services \n(2) Computer programming services; installation, repair and maintenance in relation to software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, and software for determining the fare to be paid by passengers with electronic travel-tickets; research, design and development services related to electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (IC's), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID chips and tags, computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, antennas for scanning, reading and interpreting RFID chips and tags, NFC (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for NFC applications, electronic payment cards, data processing apparatus and software for determining the fare to be paid by passengers with electronic travel-tickets, and parts, fittings and accessories for all the aforesaid goods; custom manufacture, customisation and custom programming of software; advisory, consultancy and information services in relation to all the aforesaid services"
+        }
+      ]
+    },
+    "id": "75d5d36e-012f-4294-9ef7-4b4e257cc9fd",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20260804",
+        "descriptionText": "280",
+        "responseDate": "20270204"
+      },
+      {
+        "date": "20260506",
+        "descriptionText": "Renewed",
+        "information": "DP:2026/04/16 RD:2026/04/16 RR:(12394) FASKEN MARTINEAU DUMOULIN LLP",
+        "responseDate": "20360506"
+      },
+      {
+        "date": "20260420",
+        "descriptionText": "Requirement To Furnish Statement Under Subsection 44.1(1) Sent",
+        "responseDate": "20261020"
+      },
+      {
+        "date": "20110506",
+        "descriptionText": "Registered",
+        "responseDate": "20260506"
+      },
+      {
+        "date": "20110211",
+        "descriptionText": "Allowance Notice Sent",
+        "responseDate": "20110811"
+      },
+      {
+        "date": "20110211",
+        "descriptionText": "Allowed"
+      },
+      {
+        "date": "20101027",
+        "descriptionText": "Advertised",
+        "information": "Vol.57 Issue 2922"
+      },
+      {
+        "date": "20101021",
+        "descriptionText": "Approved",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20100830",
+        "descriptionText": "Approval Notice Sent",
+        "responseDate": "20100927"
+      },
+      {
+        "date": "20100422",
+        "descriptionText": "Correspondence Created",
+        "responseDate": "20101022"
+      },
+      {
+        "date": "20090818",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20100218"
+      },
+      {
+        "date": "20090818",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20090123",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20090121",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20090121",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "High Tech Campus 60, 5656 AG, Eindhoven",
+        "addressLines": [
+          "High Tech Campus 60",
+          "5656 AG",
+          "Eindhoven"
+        ],
+        "countryName": "Netherlands",
+        "name": "NXP B.V"
+      }
+    ],
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20080722",
+        "priorityNumber": "1163748",
+        "priorityText": "Priority Filing Date: July 22, 2008, Country or Office: Benelux Office for IP (BOIP), Application No. 1163748 in association with the same kind of in association with the same kind on wares marked (1) on services (1) (2)"
+      }
+    ],
+    "priorityDate": "20080722",
+    "publications": [
+      {
+        "publicationIssue": "2922",
+        "publicationVolume": "57"
+      }
+    ],
+    "recordLastUpdated": "20260812",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "FASKEN MARTINEAU DUMOULIN LLP",
+          "800 rue du Square Victoria, bureau 3500",
+          "Montréal,",
+          "QUEBEC H4Z1E9"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "FASKEN MARTINEAU DUMOULIN LLP",
+        "representativeReferenceNumber": "290259.00001"
+      }
+    ],
+    "status": {
+      "active": true,
+      "allowanceDate": [
+        "20110211"
+      ],
+      "application": {
+        "applicationDate": "20090121",
+        "applicationNumber": "1425115"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360506",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20081110",
+          "firstUsedText": "Used in CANADA since at least as early as January 01, 2008 on wares marked (1) on services (1) (2)"
+        }
+      ],
+      "formalisationDate": "20090123",
+      "markCurrentStatus": "Registered",
+      "nextRenewalDate": "20360506",
+      "publicationDate": [
+        "20101027"
+      ],
+      "registration": {
+        "registrationDate": "20110506",
+        "registrationNumber": "TMA796790"
+      },
+      "renewalDate": "20260506"
+    },
+    "subjectHeadings": [
+      "MIFARE PLUS",
+      "MI FARE",
+      "MY"
+    ],
+    "version": "20260812150030",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "MY FARE PLUS",
+      "markVerbalElementText": "MIFARE PLUS",
+      "markVerbalElementTextFormal": "MIFARE PLUS"
+    }
+  },
+  "_uri": "/mark/ca/75d5d36e-012f-4294-9ef7-4b4e257cc9fd",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.674Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

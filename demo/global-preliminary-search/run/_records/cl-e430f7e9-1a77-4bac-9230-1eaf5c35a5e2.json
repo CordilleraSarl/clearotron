@@ -1,0 +1,152 @@
+{
+  "uri": "/mark/cl/e430f7e9-1a77-4bac-9230-1eaf5c35a5e2",
+  "provider": "clarivate",
+  "office": "cl",
+  "guid": "e430f7e9-1a77-4bac-9230-1eaf5c35a5e2",
+  "applicationNumber": "991843095",
+  "registrationNumber": "1476540",
+  "applicationDate": "2024-10-10",
+  "registrationDate": "2025-10-07",
+  "expiryDate": "2034-10-10",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MIFARE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "(Concedida) Módulos electrónicos, electrotécnicos y electromagnéticos; equipos de procesamiento de datos, aparatos de almacenamiento de datos, a saber, procesadores de datos para escanear, leer, almacenar e interpretar datos electrónicos contenidos en chips de rfid.",
+      "translation_language": "en",
+      "translation": "(Granted) Electronic, electrotechnical, and electromagnetic modules; data processing equipment, data storage apparatus, namely, data processors for scanning, reading, storing, and interpreting electronic data contained in RFID chips."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "(Concedida) Programación informática; instalación, reparación y mantenimiento en relación con software de creación, programación, control, codificación, escaneado, lectura e interpretación de chips y etiquetas de rfid.",
+      "translation_language": "en",
+      "translation": "(Granted) Computer programming; installation, repair, and maintenance related to software for creating, programming, controlling, encoding, scanning, reading, and interpreting RFID chips and tags."
+    }
+  ],
+  "owner": "NXP B. V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO Shieldmark B. V.",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20241009",
+      "priorityNumber": "1512172"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B. V."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "(Granted) Electronic, electrotechnical, and electromagnetic modules; data processing equipment, data storage apparatus, namely, data processors for scanning, reading, storing, and interpreting electronic data contained in RFID chips.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "(Concedida) Módulos electrónicos, electrotécnicos y electromagnéticos; equipos de procesamiento de datos, aparatos de almacenamiento de datos, a saber, procesadores de datos para escanear, leer, almacenar e interpretar datos electrónicos contenidos en chips de rfid."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "(Granted) Computer programming; installation, repair, and maintenance related to software for creating, programming, controlling, encoding, scanning, reading, and interpreting RFID chips and tags.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "(Concedida) Programación informática; instalación, reparación y mantenimiento en relación con software de creación, programación, control, codificación, escaneado, lectura e interpretación de chips y etiquetas de rfid."
+        }
+      ]
+    },
+    "id": "e430f7e9-1a77-4bac-9230-1eaf5c35a5e2",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "Azul, verde, naranja y blanco."
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20241009",
+        "priorityNumber": "1512172"
+      }
+    ],
+    "recordLastUpdated": "20260911",
+    "registrationOfficeCode": "CL",
+    "registrationOfficeName": "Chile",
+    "representatives": [
+      {
+        "representativeAddress": "Comuna desconocida",
+        "representativeAddressCountryCode": "CL",
+        "representativeAddressCountryName": "Chile",
+        "representativeName": "NLO Shieldmark B. V."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20241010",
+        "applicationNumber": "991843095"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20341010",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20251007",
+        "registrationNumber": "1476540"
+      }
+    },
+    "version": "20260911104916",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MIFARE"
+    }
+  },
+  "_uri": "/mark/cl/e430f7e9-1a77-4bac-9230-1eaf5c35a5e2",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.686Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

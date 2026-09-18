@@ -316,10 +316,20 @@ const EXCEPTIONS = [
       + "mark; " + ORG_OR_COMPANY,
   },
   {
-    phrases: [/\bfalse\s+public\s+claim\s+about\s+named\s+firms\b/gi],
+    phrases: [/\bno\s+model,\s+no\s+account\b/gi],
     files: /^AGENTS\.md$/,
-    reason: "the people a false public claim would be about, in the sentence that forbids finishing the "
-      + "demo rename — never the organisation that owns the installation",
+    reason: "the demo's own line from `--help`, copied into the verb table: nothing to sign up for — never "
+      + "the organisation that owns the installation",
+  },
+  {
+    // COPIED, NOT WRITTEN. AGENTS.md lists every verb with the line `--help` prints for it, so an agent
+    // reading only this file sees the product's own words. Two of those lines still carry retired words,
+    // and the place to change them is the verb table in bin/clearotron.mjs, which this guard does not
+    // read; rewording them here alone would make the two front doors disagree about one command.
+    phrases: [/\benrol\s+a\s+client\b/gi, /\bonboard\s+a\s+brand\s+owner\b/gi, /\bits\s+matters\s+are\s+rated\b/gi,
+      /\bbefore\s+a\s+matter\s+is\s+rated\b/gi, /\bunder\s+a\s+brand\s+owner\b/gi],
+    files: /^AGENTS\.md$/,
+    reason: "the `grant`, `brandowner`, `framework` and `project` lines of `--help`, copied verbatim into the verb table",
   },
 ];
 

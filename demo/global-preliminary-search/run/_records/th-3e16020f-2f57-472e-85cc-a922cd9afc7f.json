@@ -1,0 +1,118 @@
+{
+  "uri": "/mark/th/3e16020f-2f57-472e-85cc-a922cd9afc7f",
+  "provider": "clarivate",
+  "office": "th",
+  "guid": "3e16020f-2f57-472e-85cc-a922cd9afc7f",
+  "applicationNumber": "561194",
+  "registrationNumber": "28266",
+  "applicationDate": "2004-08-04",
+  "registrationDate": "2005-11-25",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": null,
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "th",
+      "description": "บริการออกแบบระบบคอมพิวเตอร์ บริการ ออกแบบระบบการสื่อสารโทรคมนาคมตามคำสั่ง บริการให้คำปรึกษาแนะนำทางด้านคอมพิวเตอร์ บริการให้คำปรึกษาแนะนำ ทางด้านเทคโนโลยีของการออกแบบซอฟท์แวร์ที่เกี่ยวข้อง.",
+      "translation_language": "en",
+      "translation": "Design services, computer systems design services, telecommunications systems, according to a statement. Consulting introduced the computer. Evaluation guide The technological design of the software&#39;s concerned."
+    }
+  ],
+  "owner": "NXP USA, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc.",
+        "applicantNativeAddress": "6501 วิลเลี่ยม แคนนอน ไดรว์ เวสท์, ออสติน, มลรัฐเท็กซัส 78735, สหรัฐอเมริกา",
+        "applicantNativeName": "เอ็นเอกซ์พี ยูเอสเอ, อิงค์."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Design services, computer systems design services, telecommunications systems, according to a statement. Consulting introduced the computer. Evaluation guide The technological design of the software&#39;s concerned.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "th",
+          "intGoodsServicesDescription": "บริการออกแบบระบบคอมพิวเตอร์ บริการ ออกแบบระบบการสื่อสารโทรคมนาคมตามคำสั่ง บริการให้คำปรึกษาแนะนำทางด้านคอมพิวเตอร์ บริการให้คำปรึกษาแนะนำ ทางด้านเทคโนโลยีของการออกแบบซอฟท์แวร์ที่เกี่ยวข้อง."
+        }
+      ]
+    },
+    "id": "3e16020f-2f57-472e-85cc-a922cd9afc7f",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN ONLY",
+    "markImageViennaClassification": [
+      "26.04.04",
+      "26.07.01",
+      "26.07.02"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250827",
+    "registrationOfficeCode": "TH",
+    "registrationOfficeName": "Thailand",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "TH",
+        "representativeAddressCountryName": "Thailand",
+        "representativeNativeAddress": "บริษัท ติลลิกีแอนด์กิบบินส์ อินเตอร์เนชั่นแนล จำกัด ที่อยู่ เลขที่ 1011 อาคารศุภาลัย แกรนด์ ทาวเวอร์ ชั้น 20 - 26 ถนนพระราม 3",
+        "representativeNativeName": "นายนันทน อินทนนท์, บริษัท ติลลิกีแอนด์กิบบินส์ อินเตอร์เนชั่นแนล จำกัด, นางดารานีย์ วัจนะวุฒิวงศ์, นายศรีลา ทองกลาง"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040804",
+        "applicationNumber": "561194"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20051125",
+        "registrationNumber": "28266"
+      }
+    },
+    "version": "20250827170835"
+  },
+  "_uri": "/mark/th/3e16020f-2f57-472e-85cc-a922cd9afc7f",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.747Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "uri": "/mark/gb/f94cb734-f1d7-4615-b596-69b5f3cfc8cc",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "f94cb734-f1d7-4615-b596-69b5f3cfc8cc",
+  "applicationNumber": "UK00909342908",
+  "registrationNumber": "UK00909342908",
+  "applicationDate": "2010-08-31",
+  "registrationDate": "2011-03-14",
+  "expiryDate": "2030-08-31",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SOVELIA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Recorded computer programs and computer systems for construction, analysis, simulation, visualisation and production, and for the handling of documents and product data for the entire product life-cycle, for engineers and industrial enterprises.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Engineering consultancy, computer-aided product development, computer programming, computer software design.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Symetri AB",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": "Forresters IP LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Forskargatan 3, Borlänge 781 70",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantName": "Symetri AB"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Recorded computer programs and computer systems for construction, analysis, simulation, visualisation and production, and for the handling of documents and product data for the entire product life-cycle, for engineers and industrial enterprises."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Engineering consultancy, computer-aided product development, computer programming, computer software design."
+        }
+      ]
+    },
+    "id": "f94cb734-f1d7-4615-b596-69b5f3cfc8cc",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "The Gherkin (11th Floor), 30 St Mary Axe, London EC3A 8BF",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Forresters IP LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20100831",
+        "applicationNumber": "UK00909342908"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300831",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20110314",
+        "registrationNumber": "UK00909342908"
+      }
+    },
+    "version": "20250627205249",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SOVELIA"
+    }
+  },
+  "_uri": "/mark/gb/f94cb734-f1d7-4615-b596-69b5f3cfc8cc",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.285Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

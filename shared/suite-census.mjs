@@ -272,7 +272,7 @@ export function lossBetween(prevPerFile, nextPerFile) {
  * beside REMOVED and SHRANK and demanded `--allow-loss`. Two guards then came to disagree about the same
  * edit — `a-bail-on-an-unmeetable-precondition-is-a-skip` requires an arm that cannot meet its
  * precondition to say so with `ctx.skip(...)`, because node:test counts a bare `return;` as a PASS, and
- * doing exactly that made this census refuse the tree. Overwatch ruled on 2026-09-06: the bail guard is
+ * doing exactly that made this census refuse the tree. Decided 2026-09-06: the bail guard is
  * right, and a reasoned skip is neither a pass nor a loss. It gets its own bucket, printed and never
  * silent, and it does not refuse.
  *

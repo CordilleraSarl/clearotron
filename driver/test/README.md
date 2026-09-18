@@ -25,7 +25,7 @@ so `mkdtemp` fixtures do not pile up in the real one.
 true.** `npm run test:full`, run as root with an isolated `TMPDIR`:
 
 ```
-              root      devuser1
+              root      non-root
 failures         2             2      the same two, and neither is about root (below)
 skipped         14             1      13 of these are root declaring what it cannot falsify
 assertions    8617

@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/kr/e110ae07-72c6-45cf-b5a8-724df37fc1fc",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "e110ae07-72c6-45cf-b5a8-724df37fc1fc",
+  "applicationNumber": "40-2015-0058997",
+  "registrationNumber": "4012025490000",
+  "applicationDate": "2015-08-07",
+  "registrationDate": "2016-09-13",
+  "expiryDate": "2026-09-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2016-09-23",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "AMPLEON",
+  "markTransliteration": "AMPLEON",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "다이오드,마이크로콘트롤러,멀티-칩-모듈,무선주파수 컴포넌트,무선주파수 파워 송신기,무선주파수 파워 트랜지스터,무선주파수 파워증폭기 팔레트,반도체,반도체장치,소프트웨어가 내장된 집적회로,전기제어기기,전력콘트롤러,전원스위치,전자스위치,전자식 튜너,주파/ 전압 및 파워/ 정적 및 동적 파워의 극대화/ 파워 매니지먼트/ 파워 극대화 또는 파워 축소의 관리를 위한 마이크로콘트롤러,주파/ 전압 및 파워/ 정적 및 동적 파워의 극대화/ 파워 매니지먼트/ 파워 극대화 또는 파워 축소의 관리를 위한 반도체장치,주파/ 전압 및 파워/ 정적 및 동적 파워의 극대화/ 파워 매니지먼트/ 파워 극대화 또는 파워 축소의 관리를 위한 집적회로,주파/ 전압 및 파워/ 정적 및 동적 파워의 극대화/ 파워 매니지먼트/ 파워 극대화 또는 파워 축소의 관리를 위한 칩세트,주파/ 전압 및 파워/ 정적 및 동적 파워의 극대화/ 파워 매니지먼트/ 파워 극대화 또는 파워 축소의 관리를 위한 회로기판,증폭기(앰프),증폭기용 튜너,직접회로,칩,트랜스시버,트랜지스터,파워증폭기,파워증폭기 모듈,파워측정용 전자 센서",
+      "translation_language": "en",
+      "translation": "Diodes, microcontrollers, multi-chip-modules, radio frequency components, radio frequency power transmitters, radio frequency power transistors, radio frequency power amplifier pallets, semiconductors, semiconductor devices, integrated circuits with embedded software, electrical controllers, power controllers, Power switch, electronic switch, electronic tuner, frequency/voltage and power/maximization of static and dynamic power/power management/microcontroller for managing power maximization or power reduction/maximization of frequency/voltage and power/static and dynamic power/ Power management/ Semiconductor devices for managing power maximization or power reduction, frequency/ voltage and power/ static and dynamic power maximization/ power management/ integrated circuits for management of power maximization or power reduction, frequency/ voltage and power/ static and dynamic power maximization/power management/chipset for managing power maximization or power reduction, frequency/voltage and power/static and dynamic power maximization/power management/circuit board for managing power maximization or power reduction, amplifier (Amp), amplifier tuner, integrated circuit, chip, transceiver, transistor, power amplifier, power amplifier module, electronic sensor for power measurement"
+    }
+  ],
+  "owner": "Ampleon Netherlands B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "특허법인세신 (SESHIN PATENT & LAW FIRM)",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20150731",
+      "priorityNumber": "1314828"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "네덜란드 에이브이 네이메겐 하프겔레이데르베그",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "Ampleon Netherlands B.V.",
+        "applicantNativeName": "암플레온 네덜란드 비.브이."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Diodes, microcontrollers, multi-chip-modules, radio frequency components, radio frequency power transmitters, radio frequency power transistors, radio frequency power amplifier pallets, semiconductors, semiconductor devices, integrated circuits with embedded software, electrical controllers, power controllers, Power switch, electronic switch, electronic tuner, frequency/voltage and power/maximization of static and dynamic power/power management/microcontroller for managing power maximization or power reduction/maximization of frequency/voltage and power/static and dynamic power/ Power management/ Semiconductor devices for managing power maximization or power reduction, frequency/ voltage and power/ static and dynamic power maximization/ power management/ integrated circuits for management of power maximization or power reduction, frequency/ voltage and power/ static and dynamic power maximization/power management/chipset for managing power maximization or power reduction, frequency/voltage and power/static and dynamic power maximization/power management/circuit board for managing power maximization or power reduction, amplifier (Amp), amplifier tuner, integrated circuit, chip, transceiver, transistor, power amplifier, power amplifier module, electronic sensor for power measurement",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "다이오드,마이크로콘트롤러,멀티-칩-모듈,무선주파수 컴포넌트,무선주파수 파워 송신기,무선주파수 파워 트랜지스터,무선주파수 파워증폭기 팔레트,반도체,반도체장치,소프트웨어가 내장된 집적회로,전기제어기기,전력콘트롤러,전원스위치,전자스위치,전자식 튜너,주파/ 전압 및 파워/ 정적 및 동적 파워의 극대화/ 파워 매니지먼트/ 파워 극대화 또는 파워 축소의 관리를 위한 마이크로콘트롤러,주파/ 전압 및 파워/ 정적 및 동적 파워의 극대화/ 파워 매니지먼트/ 파워 극대화 또는 파워 축소의 관리를 위한 반도체장치,주파/ 전압 및 파워/ 정적 및 동적 파워의 극대화/ 파워 매니지먼트/ 파워 극대화 또는 파워 축소의 관리를 위한 집적회로,주파/ 전압 및 파워/ 정적 및 동적 파워의 극대화/ 파워 매니지먼트/ 파워 극대화 또는 파워 축소의 관리를 위한 칩세트,주파/ 전압 및 파워/ 정적 및 동적 파워의 극대화/ 파워 매니지먼트/ 파워 극대화 또는 파워 축소의 관리를 위한 회로기판,증폭기(앰프),증폭기용 튜너,직접회로,칩,트랜스시버,트랜지스터,파워증폭기,파워증폭기 모듈,파워측정용 전자 센서"
+        }
+      ]
+    },
+    "id": "e110ae07-72c6-45cf-b5a8-724df37fc1fc",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20150731",
+        "priorityNumber": "1314828"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "(Gasan-dong)#World Meridian Venture Center , Gasan digital -ro, Geumcheon-gu, Seoul, Korea",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "특허법인세신 (SESHIN PATENT & LAW FIRM)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20150807",
+        "applicationNumber": "40-2015-0058997"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20260913",
+      "lastPublicationDate": "20160923",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20160913",
+        "registrationNumber": "4012025490000"
+      }
+    },
+    "version": "20250625180306",
+    "wordMarkSpecification": {
+      "markTransliteration": "AMPLEON",
+      "markVerbalElementText": "AMPLEON"
+    }
+  },
+  "_uri": "/mark/kr/e110ae07-72c6-45cf-b5a8-724df37fc1fc",
+  "_receipt": {
+    "fetched_at": "2026-09-18T14:09:34.906Z",
+    "context": "clearance-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

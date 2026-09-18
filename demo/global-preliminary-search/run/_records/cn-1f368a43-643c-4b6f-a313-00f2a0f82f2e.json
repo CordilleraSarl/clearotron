@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/cn/1f368a43-643c-4b6f-a313-00f2a0f82f2e",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "1f368a43-643c-4b6f-a313-00f2a0f82f2e",
+  "applicationNumber": "66776881",
+  "registrationNumber": "66776881",
+  "applicationDate": "2022-08-23",
+  "registrationDate": "2023-03-07",
+  "expiryDate": "2033-03-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-12-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MIFARE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "创建计算机程序;电子数据安全系统的设计和开发;电子数据的云存储服务;电子文件的云存储服务;集成电路设计;计算机安全和风险防范用软件的维护;计算机编程;计算机程序安装;计算机程序的设计、制作或维护;计算机程序的设计和开发;计算机软件安装、修理和维护;计算机软件的安装和维护;计算机软件的设计和开发;计算机软件设计和编写;计算机软件研究和开发;计算机设计和开发;计算机硬件和软件的设计与开发;技术研究;科学研究和开发;人工智能领域的研究;软件即服务(SaaS);设计用于控制自助服务终端的计算机软件;使用生物识别硬件和软件技术为电子商务交易提供用户认证服务;手机软件设计;数据处理用计算机程序的开发和创建;通过云计算提供虚拟计算机系统;为制造业设计和开发计算机硬件;信息技术研究;研究和开发新产品;用于安全网络操作的软件开发;用于数据处理的计算机编程服务;用于数据处理的软件工程服务;用于无线联络、电子数据处理、消费电子及汽车电子设备的电路制造技术开发;云计算",
+      "translation_language": "en",
+      "translation": "Creation of computer programs; design and development of electronic data security systems; cloud storage services for electronic data; cloud storage services for electronic files; integrated circuit design; maintenance of software for computer security and risk prevention; computer programming; computer program installation; computers Design, production, or maintenance of programs; design and development of computer programs; computer software installation, repair, and maintenance; computer software installation and maintenance; computer software design and development; computer software design and writing; computer software research and development; computer software Design and development; design and development of computer hardware and software; technological research; scientific research and development; research in the field of artificial intelligence; software as a service (SaaS); computer software designed to control self-service terminals; use of biometric hardware and Software technology provides user authentication services for e-commerce transactions; mobile phone software design; development and creation of computer programs for data processing; provision of virtual computer systems through cloud computing; design and development of computer hardware for manufacturing; information technology research; research and development of new Products; software development for secure network operation; computer programming services for data processing; software engineering services for data processing; circuit manufacturing technology development for wireless communications, electronic data processing, consumer electronics and automotive electronics; cloud computing"
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "HIGH TECH CAMPUS 60,5656 AG EINDHOVEN,NETHERLANDS",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V.",
+        "applicantNativeName": "恩智浦有限责任公司;NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Creation of computer programs; design and development of electronic data security systems; cloud storage services for electronic data; cloud storage services for electronic files; integrated circuit design; maintenance of software for computer security and risk prevention; computer programming; computer program installation; computers Design, production, or maintenance of programs; design and development of computer programs; computer software installation, repair, and maintenance; computer software installation and maintenance; computer software design and development; computer software design and writing; computer software research and development; computer software Design and development; design and development of computer hardware and software; technological research; scientific research and development; research in the field of artificial intelligence; software as a service (SaaS); computer software designed to control self-service terminals; use of biometric hardware and Software technology provides user authentication services for e-commerce transactions; mobile phone software design; development and creation of computer programs for data processing; provision of virtual computer systems through cloud computing; design and development of computer hardware for manufacturing; information technology research; research and development of new Products; software development for secure network operation; computer programming services for data processing; software engineering services for data processing; circuit manufacturing technology development for wireless communications, electronic data processing, consumer electronics and automotive electronics; cloud computing",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "创建计算机程序;电子数据安全系统的设计和开发;电子数据的云存储服务;电子文件的云存储服务;集成电路设计;计算机安全和风险防范用软件的维护;计算机编程;计算机程序安装;计算机程序的设计、制作或维护;计算机程序的设计和开发;计算机软件安装、修理和维护;计算机软件的安装和维护;计算机软件的设计和开发;计算机软件设计和编写;计算机软件研究和开发;计算机设计和开发;计算机硬件和软件的设计与开发;技术研究;科学研究和开发;人工智能领域的研究;软件即服务(SaaS);设计用于控制自助服务终端的计算机软件;使用生物识别硬件和软件技术为电子商务交易提供用户认证服务;手机软件设计;数据处理用计算机程序的开发和创建;通过云计算提供虚拟计算机系统;为制造业设计和开发计算机硬件;信息技术研究;研究和开发新产品;用于安全网络操作的软件开发;用于数据处理的计算机编程服务;用于数据处理的软件工程服务;用于无线联络、电子数据处理、消费电子及汽车电子设备的电路制造技术开发;云计算"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Research and development service",
+        "Computer programming, and concerned services"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        }
+      ]
+    },
+    "id": "1f368a43-643c-4b6f-a313-00f2a0f82f2e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1818"
+      }
+    ],
+    "recordLastUpdated": "20251005",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京市柳沈律师事务所"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220823",
+        "applicationNumber": "66776881"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330306",
+      "lastPublicationDate": "20221206",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20230307",
+        "registrationNumber": "66776881"
+      }
+    },
+    "version": "20251005000734",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MIFARE"
+    }
+  },
+  "_uri": "/mark/cn/1f368a43-643c-4b6f-a313-00f2a0f82f2e",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.684Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

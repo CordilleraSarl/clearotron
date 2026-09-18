@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "batch": {
+    "productContext": "The client is launching a consumer mobile app that takes and tracks water-quality readings, sold direct to the public through app stores, with online training services bundled alongside it.",
+    "executionOrder": [
+      "VENQORI"
+    ]
+  },
+  "marks": [
+    {
+      "ref": "project-ven-01",
+      "name": "VENQORI",
+      "classes": [
+        9,
+        42,
+        41
+      ],
+      "beltAndBraces": [
+        35
+      ],
+      "classesPlain": "downloadable software for water-quality monitoring, mobile apps (9); software-as-a-service and technical/scientific water-testing and analysis services (42); online training and educational services (41); retail and app-store distribution of downloadable software (35, belt-and-braces)",
+      "contextFraming": "VENQORI is the consumer-facing house and product name for the water-quality monitoring app itself and for the online training bundled with it — the name on the app-store listing and the whole offering, not a feature, tier or sub-brand within a larger line; as a string it is coined and dictionary-empty, a made-up Latinate-sounding compound with no water, testing or environmental meaning to borrow from, so it should be read as a fanciful mark whose risk sits in phonetic and visual neighbours rather than in shared descriptive wording.",
+      "priority": 1
+    }
+  ]
+}

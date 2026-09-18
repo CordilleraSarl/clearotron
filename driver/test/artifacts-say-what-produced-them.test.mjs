@@ -71,7 +71,7 @@ test("a checkout that cannot name itself records null, not a wrong sha and not a
 test("the grid provenance names PERPLEXITY — the lane SerpAPI does not serve", () => {
   const rec = gridProvenanceRecord({ ran: true, present: 210, requested: 210, model: null });
   assert.equal(rec.provider, "perplexity",
-    "the R2 round read a flat SerpAPI counter across this lane and called it quota-starved; the grid "
+    "a test run read a flat SerpAPI counter across this lane and called it quota-starved; the grid "
     + "runs in perplexity's agent sandbox and no artifact said so");
   assert.equal(rec.tool, "perplexity_research");
   assert.deepEqual(rec.cells, { present: 210, requested: 210 });

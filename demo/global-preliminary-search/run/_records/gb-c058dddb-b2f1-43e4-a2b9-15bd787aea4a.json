@@ -1,0 +1,160 @@
+{
+  "uri": "/mark/gb/c058dddb-b2f1-43e4-a2b9-15bd787aea4a",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "c058dddb-b2f1-43e4-a2b9-15bd787aea4a",
+  "applicationNumber": "UK00915384084",
+  "registrationNumber": "UK00915384084",
+  "applicationDate": "2016-04-28",
+  "registrationDate": "2016-09-29",
+  "expiryDate": "2036-04-28",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MODELSTREAM",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Software for enterprise asset management.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Training services, namely, training users how to use Enterprise asset management software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Technical services, namely, installing, configuring and maintaining enterprise asset management software.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Symetri USA, LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Barker Brettell LLP",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20151111",
+      "priorityNumber": "86/816,952"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "10 Tara Boulevard, Suite 420, Nashua 03062, New Hampshire",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Symetri USA, LLC"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Software for enterprise asset management."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Training services, namely, training users how to use Enterprise asset management software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Technical services, namely, installing, configuring and maintaining enterprise asset management software."
+        }
+      ]
+    },
+    "id": "c058dddb-b2f1-43e4-a2b9-15bd787aea4a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20151111",
+        "priorityNumber": "86/816,952"
+      }
+    ],
+    "recordLastUpdated": "20260501",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "100 Hagley Road, Edgbaston, Birmingham B16 8QQ",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Barker Brettell LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20160428",
+        "applicationNumber": "UK00915384084"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360428",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20160929",
+        "registrationNumber": "UK00915384084"
+      }
+    },
+    "version": "20260501020015",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MODELSTREAM"
+    }
+  },
+  "_uri": "/mark/gb/c058dddb-b2f1-43e4-a2b9-15bd787aea4a",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.285Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

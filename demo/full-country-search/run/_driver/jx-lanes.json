@@ -1,0 +1,92 @@
+{
+  "schema": 1,
+  "lanes": {
+    "ja": {
+      "depth": "full",
+      "jurisdictions": [
+        "JP"
+      ],
+      "origin": "profile jxPolicy.laneDepth.ja; the deeper slices are env-armed — what executed is stated at delivery in fold.executes"
+    }
+  },
+  "scope": [
+    "JP"
+  ],
+  "cnipaEdition": null,
+  "frozenAt": "2026-09-18T15:14:08.081Z",
+  "fold": {
+    "executor": "engine",
+    "lanes": {
+      "ja": {
+        "degraded": false,
+        "degradedCause": null,
+        "accepted": [
+          {
+            "qid": "jx-ja-ヴェンコーリ",
+            "term": "ヴェンコーリ",
+            "romanization": "VENKOORI",
+            "kind": "phonetic",
+            "rationale": "A plausible market variant if the final vowel is pronounced with a long sound."
+          },
+          {
+            "qid": "jx-ja-ベンコリ",
+            "term": "ベンコリ",
+            "romanization": "BENKORI",
+            "kind": "phonetic",
+            "rationale": "A common simplified rendering that drops the less familiar ヴ sound in Japanese branding."
+          }
+        ],
+        "refused": [
+          {
+            "term": "ヴェンコリ",
+            "reason": "the compiled plan already enumerates this term"
+          }
+        ]
+      }
+    },
+    "foldedAt": "2026-09-18T15:14:17.182Z",
+    "models": [
+      "gpt-5.6-luna"
+    ],
+    "model": "gpt-5.6-luna",
+    "executes": "candidates",
+    "slices": {
+      "candidates": {
+        "slice": 1,
+        "state": "ran",
+        "lanes": {
+          "ja": "ran"
+        },
+        "basis": "_driver/jx-lanes.json:fold.lanes",
+        "why": "every armed lane (1) carries a fold record stating degraded:false"
+      },
+      "serp-grid": {
+        "slice": 2,
+        "lane": "zh",
+        "unit": "serp-grid:zh",
+        "state": "refused",
+        "basis": "run.jsonl skip event",
+        "why": "no frozen zh lane decision (jurisdictions/policy)"
+      },
+      "nativeread": {
+        "slice": 3,
+        "lane": "zh",
+        "unit": "nativeread:zh",
+        "state": "refused",
+        "basis": "run.jsonl skip event",
+        "why": "no frozen zh lane decision (jurisdictions/policy)"
+      }
+    },
+    "depth": {
+      "ja": {
+        "asked": "full",
+        "ran": "candidates",
+        "shortfall": true,
+        "cause": "not-built-for-lane",
+        "why": "this build carries no deep slice for the ja lane — the SERP grid and native read are zh-only (JX_SLICES, SERP_LANES), so `full` cannot be delivered here by any environment. The lane ran as a slice-1 candidate lane, which is what it ships as.",
+        "basis": "_driver/jx-lanes.json:lanes[].depth (asked) vs fold.slices (ran)"
+      }
+    },
+    "statedAt": "2026-09-18T16:05:15.951Z"
+  }
+}

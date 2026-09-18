@@ -1,0 +1,128 @@
+{
+  "uri": "/mark/co/5ef7f103-77a5-4cb1-859d-7edd94b2f1df",
+  "provider": "clarivate",
+  "office": "co",
+  "guid": "5ef7f103-77a5-4cb1-859d-7edd94b2f1df",
+  "applicationNumber": "04074978",
+  "registrationNumber": "297297",
+  "applicationDate": "2004-08-03",
+  "registrationDate": "2005-05-24",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": null,
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "concesi de licencias de tecnolog; concesi de licencias de patentes, marcas, derechos de autor, secretos industriales y/o conocimientos tnicos relacionados con la fabricaci de semiconductores y sus usos; concesi de licencias de semiconductores; concesi de licencias de soporte lico (software) relacionado con la fabricaci de semiconductores y sus usos; concesi de licencias de tecnologs relacionadas con los semiconductores y la fabricaci de semiconductores; concesi de licencias de tecnolog incorporada en y relativa a los productos de semiconductores, circuitos integrados, tarjetas de circuitos, microcomputadores, microcontroladores, microprocesadores y perificos para computador, memorias y materiales semiconductores para los mismos, circuitos de conversi de datos, microprogramaci cableada de computador, aparatos electricos, eltricos y electromecnicos para uso con computadores, tarjetas de circuitos de video; productos de sistemas de video; aparatos y equipos para el registro, reproducci y modificaci de sonido, video y datos, programas de computador; material instructivo relacionado con algoritmos de computador y de datos para la compresi y descompresi de datos; dises por especificaciones de computadores y sistemas de telecomunicaciones; servicios de consultor en el campo de computadores y telecomunicaciones y tecnolog relativa para el dise de soporte lico (software). servicios comprendidos en la clase 42.",
+      "translation_language": "en",
+      "translation": "technology licensing; licensing of patents, trademarks, copyrights, industrial secrets and / or ethnic knowledge related to the manufacture of semiconductors and their uses; concession of semiconductor licenses; licensing of software support related to the manufacture of semiconductors and their uses; licensing of technology related to semiconductors and the manufacture of semiconductors; licensing of technology incorporated in and relating to semiconductor products, integrated circuits, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor materials for them, data conversion circuits, computer wired microprogramming , electrical, elctronic and electromechanical devices for use with computers, video circuit boards; video systems products; apparatus and equipment for the recording, reproduction and modification of sound, video and data, computer programs; instructional material related to computer and data algorithms for compression and decompression of data; dises by specifications of computers and telecommunications systems; consultant services in the field of computers and telecommunications and relative technology for the design of software support. services included in class 42."
+    }
+  ],
+  "owner": "NXP USA, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "LUZ CLEMENCIA SUAREZ DE PAEZ",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20040301",
+      "priorityNumber": "78/376535"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 WILLIAM CANNON DRIVE WEST AUSTIN, TEXAS 78735 ESTADOS UNIDOS DE AMERICA AUSTIN TEXAS",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc."
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "technology licensing; licensing of patents, trademarks, copyrights, industrial secrets and / or ethnic knowledge related to the manufacture of semiconductors and their uses; concession of semiconductor licenses; licensing of software support related to the manufacture of semiconductors and their uses; licensing of technology related to semiconductors and the manufacture of semiconductors; licensing of technology incorporated in and relating to semiconductor products, integrated circuits, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor materials for them, data conversion circuits, computer wired microprogramming , electrical, elctronic and electromechanical devices for use with computers, video circuit boards; video systems products; apparatus and equipment for the recording, reproduction and modification of sound, video and data, computer programs; instructional material related to computer and data algorithms for compression and decompression of data; dises by specifications of computers and telecommunications systems; consultant services in the field of computers and telecommunications and relative technology for the design of software support. services included in class 42.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "concesi de licencias de tecnolog; concesi de licencias de patentes, marcas, derechos de autor, secretos industriales y/o conocimientos tnicos relacionados con la fabricaci de semiconductores y sus usos; concesi de licencias de semiconductores; concesi de licencias de soporte lico (software) relacionado con la fabricaci de semiconductores y sus usos; concesi de licencias de tecnologs relacionadas con los semiconductores y la fabricaci de semiconductores; concesi de licencias de tecnolog incorporada en y relativa a los productos de semiconductores, circuitos integrados, tarjetas de circuitos, microcomputadores, microcontroladores, microprocesadores y perificos para computador, memorias y materiales semiconductores para los mismos, circuitos de conversi de datos, microprogramaci cableada de computador, aparatos electricos, eltricos y electromecnicos para uso con computadores, tarjetas de circuitos de video; productos de sistemas de video; aparatos y equipos para el registro, reproducci y modificaci de sonido, video y datos, programas de computador; material instructivo relacionado con algoritmos de computador y de datos para la compresi y descompresi de datos; dises por especificaciones de computadores y sistemas de telecomunicaciones; servicios de consultor en el campo de computadores y telecomunicaciones y tecnolog relativa para el dise de soporte lico (software). servicios comprendidos en la clase 42."
+        }
+      ]
+    },
+    "id": "5ef7f103-77a5-4cb1-859d-7edd94b2f1df",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20040301",
+        "priorityNumber": "78/376535"
+      }
+    ],
+    "recordLastUpdated": "20260501",
+    "registrationOfficeCode": "CO",
+    "registrationOfficeName": "Colombia",
+    "representatives": [
+      {
+        "representativeAddress": "CARRERA 4 No. 72 - 35 BOGOTÁ D. C.",
+        "representativeAddressCountryCode": "CO",
+        "representativeAddressCountryName": "Colombia",
+        "representativeName": "LUZ CLEMENCIA SUAREZ DE PAEZ"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040803",
+        "applicationNumber": "04074978"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20050524",
+        "registrationNumber": "297297"
+      }
+    },
+    "version": "20260501021319"
+  },
+  "_uri": "/mark/co/5ef7f103-77a5-4cb1-859d-7edd94b2f1df",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.676Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

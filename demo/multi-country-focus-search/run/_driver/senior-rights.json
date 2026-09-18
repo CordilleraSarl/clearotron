@@ -4,9 +4,12 @@
   "rows": [
     {
       "ordinal": 1,
-      "mark": "Ｖｅｎｋｕｒｉ",
-      "applicable": false,
-      "reason": "single leg — seniority trivial"
+      "mark": "enqor",
+      "applicable": true,
+      "seniorUri": "/mark/kr/a59ef335-9570-4757-8770-26b208dc24b1",
+      "rankedFrom": "record",
+      "verified": true,
+      "excludedDead": 0
     }
   ]
 }

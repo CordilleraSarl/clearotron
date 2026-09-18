@@ -1009,7 +1009,7 @@
         "publicationVolume": "98"
       }
     ],
-    "recordLastUpdated": "20260511",
+    "recordLastUpdated": "20260917",
     "registrationOfficeCode": "EM",
     "registrationOfficeName": "EU trade marks",
     "representatives": [
@@ -1036,14 +1036,14 @@
         "registrationNumber": "9877648"
       }
     },
-    "version": "20260511151818",
+    "version": "20260917142724",
     "wordMarkSpecification": {
       "markVerbalElementText": "vancore"
     }
   },
   "_uri": "/mark/em/a1858458-6b0d-401a-879b-e1bcb67554fd",
   "_receipt": {
-    "fetched_at": "2026-09-02T14:33:18.817Z",
-    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+    "fetched_at": "2026-09-18T12:42:34.356Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
   }
 }

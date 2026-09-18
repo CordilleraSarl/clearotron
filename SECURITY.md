@@ -60,4 +60,11 @@ design you have not seen the other half of.
 
 ## Supported versions
 
-This is a pre-1.0 snapshot. Only `main` is supported; there are no backports.
+| Version | Security fixes |
+|---|---|
+| The current stable (`npm install -g clearotron`) | Yes — released as a new stable |
+| The current beta (`npm install -g clearotron@beta`) | Best effort |
+| Any older version | None |
+
+A version affected by a published advisory is deprecated on npm, with a message naming the version that
+fixes it.

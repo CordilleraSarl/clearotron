@@ -1,0 +1,156 @@
+{
+  "uri": "/mark/at/783971c3-aab0-4d9c-b427-7d87810634d8",
+  "provider": "clarivate",
+  "office": "at",
+  "guid": "783971c3-aab0-4d9c-b427-7d87810634d8",
+  "applicationNumber": "557/2021",
+  "registrationNumber": "316578",
+  "applicationDate": "2021-11-12",
+  "registrationDate": "2021-12-14",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MFG DAS MAGAZIN",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    38,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "de",
+      "description": "Werbung, Geschäftsführung, -organisation und -verwaltung, Büroarbeiten.",
+      "translation_language": "en",
+      "translation": "Advertising, business management, organization and administration, office functions."
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "de",
+      "description": "Telekommunikationsdienstleistungen.",
+      "translation_language": "en",
+      "translation": "Telecommunications services."
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Unterhaltung, sportliche und kulturelle Aktivitäten.",
+      "translation_language": "en",
+      "translation": "entertainment, sporting and cultural activities."
+    }
+  ],
+  "owner": "NXP Veranstaltungsbetriebe GmbH",
+  "ownerNative": null,
+  "ownerCountry": "AT",
+  "representative": "Nusterer & Mayer Rechtsanwälte OG",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Kelsengasse 9, 3100 St. Pölten",
+        "applicantAddressCountryCode": "AT",
+        "applicantAddressCountryName": "Austria",
+        "applicantName": "NXP Veranstaltungsbetriebe GmbH"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "cmMarkImageEUclassification": [
+      "25.01.05",
+      "26.04.01",
+      "26.04.02",
+      "26.04.09",
+      "26.04.22",
+      "29.02.00"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advertising, business management, organization and administration, office functions.",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Werbung, Geschäftsführung, -organisation und -verwaltung, Büroarbeiten."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Telecommunications services.",
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Telekommunikationsdienstleistungen."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "entertainment, sporting and cultural activities.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Unterhaltung, sportliche und kulturelle Aktivitäten."
+        }
+      ]
+    },
+    "id": "783971c3-aab0-4d9c-b427-7d87810634d8",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250619",
+    "registrationOfficeCode": "AT",
+    "registrationOfficeName": "Austria",
+    "representatives": [
+      {
+        "representativeAddress": "Riemerplatz 1, 3100 St. Pölten",
+        "representativeName": "Nusterer & Mayer Rechtsanwälte OG"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20211112",
+        "applicationNumber": "557/2021"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20211214",
+        "registrationNumber": "316578"
+      }
+    },
+    "version": "20250619153729",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MFG DAS MAGAZIN"
+    }
+  },
+  "_uri": "/mark/at/783971c3-aab0-4d9c-b427-7d87810634d8",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:10.758Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

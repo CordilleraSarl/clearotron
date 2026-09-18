@@ -1,0 +1,160 @@
+{
+  "uri": "/mark/gb/14083705-a6c4-40cc-bfbf-a3465a3c5f75",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "14083705-a6c4-40cc-bfbf-a3465a3c5f75",
+  "applicationNumber": "UK00907541824",
+  "registrationNumber": "UK00907541824",
+  "applicationDate": "2009-01-21",
+  "registrationDate": "2009-12-23",
+  "expiryDate": "2029-01-21",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MIFARE PLUS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    37,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Data processing machines, data storage apparatus; microprocessors; interfaces [informatics]; integrated circuits (ICs), chips [integrated circuits]; semiconductors and smart cards; controllers for smart cards; controllers for RFID (Radio frequency identification) chips and tags; computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; antennas for scanning, reading and interpreting RFID chips and tags; NFC (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for NFC applications; electronic payment cards; data processing apparatus and software for determining the fare to be paid by passengers with electronic travel-tickets; parts for all the aforesaid goods.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "en",
+      "description": "Maintenance, assembly, installation and repair services in relation to electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (IC's), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID chips and tags, computer hardware for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, antennas for scanning, reading and interpreting RFID chips and tags, NFC (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for NFC applications, electronic payment cards, data processing apparatus for determining the fare to be paid by passengers with electronic travel-tickets, and parts, fittings and accessories for all the aforesaid goods; advisory, consultancy and information services in relation to all the aforesaid services; customisation of electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (IC's), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID chips and tags, computer hardware for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, antennas for scanning, reading and interpreting RFID chips and tags, NFC (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for near field communications applications, electronic payment cards, data processing apparatus and software for determining the fare to be paid by passengers with electronic travel-tickets, and parts, fitting and accessories for all the aforesaid goods; advisory, consultancy and information services in relation to all the aforesaid services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Computer programming services; installation, repair and maintenance in relation to software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, and software for determining the fare to be paid by passengers with electronic travel-tickets; research, design and development services related to electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (IC's), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID chips and tags, computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, antennas for scanning , reading and interpreting RFID chips and tags, NFC (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for NFC applications, electronic payment cards, data processing apparatus and software for determining the fare to be paid by passengers with electronic travel-tickets, and parts, fitting and accessories for all the aforesaid goods; custom programming of software; custom manufacture, customisation and custom programming of electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (IC's), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID chips and tags, computer hardware for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, antennas for scanning, reading and interpreting RFID chips and tags, NFC (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for near field communications applications, electronic payment cards, data processing apparatus and software for determining the fare to be paid by passengers with electronic travel-tickets, and parts, fitting and accessories for all the aforesaid goods; advisory, consultancy and information services in relation to all the aforesaid services.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "Stobbs",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20080722",
+      "priorityNumber": "1163748"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60, Eindhoven 5656 AG",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Data processing machines, data storage apparatus; microprocessors; interfaces [informatics]; integrated circuits (ICs), chips [integrated circuits]; semiconductors and smart cards; controllers for smart cards; controllers for RFID (Radio frequency identification) chips and tags; computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; antennas for scanning, reading and interpreting RFID chips and tags; NFC (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for NFC applications; electronic payment cards; data processing apparatus and software for determining the fare to be paid by passengers with electronic travel-tickets; parts for all the aforesaid goods."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Maintenance, assembly, installation and repair services in relation to electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (IC's), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID chips and tags, computer hardware for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, antennas for scanning, reading and interpreting RFID chips and tags, NFC (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for NFC applications, electronic payment cards, data processing apparatus for determining the fare to be paid by passengers with electronic travel-tickets, and parts, fittings and accessories for all the aforesaid goods; advisory, consultancy and information services in relation to all the aforesaid services; customisation of electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (IC's), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID chips and tags, computer hardware for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, antennas for scanning, reading and interpreting RFID chips and tags, NFC (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for near field communications applications, electronic payment cards, data processing apparatus and software for determining the fare to be paid by passengers with electronic travel-tickets, and parts, fitting and accessories for all the aforesaid goods; advisory, consultancy and information services in relation to all the aforesaid services."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer programming services; installation, repair and maintenance in relation to software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, and software for determining the fare to be paid by passengers with electronic travel-tickets; research, design and development services related to electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (IC's), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID chips and tags, computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, antennas for scanning , reading and interpreting RFID chips and tags, NFC (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for NFC applications, electronic payment cards, data processing apparatus and software for determining the fare to be paid by passengers with electronic travel-tickets, and parts, fitting and accessories for all the aforesaid goods; custom programming of software; custom manufacture, customisation and custom programming of electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (IC's), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID chips and tags, computer hardware for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, antennas for scanning, reading and interpreting RFID chips and tags, NFC (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for near field communications applications, electronic payment cards, data processing apparatus and software for determining the fare to be paid by passengers with electronic travel-tickets, and parts, fitting and accessories for all the aforesaid goods; advisory, consultancy and information services in relation to all the aforesaid services."
+        }
+      ]
+    },
+    "id": "14083705-a6c4-40cc-bfbf-a3465a3c5f75",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20080722",
+        "priorityNumber": "1163748"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Building 1000, Cambridge Research Park, Cambridge CB25 9PD",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Stobbs"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20090121",
+        "applicationNumber": "UK00907541824"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290121",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20091223",
+        "registrationNumber": "UK00907541824"
+      }
+    },
+    "version": "20250627202904",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MIFARE PLUS"
+    }
+  },
+  "_uri": "/mark/gb/14083705-a6c4-40cc-bfbf-a3465a3c5f75",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.710Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -9,13 +9,13 @@
 //
 //     state=failed verdict=CONDITIONAL sendPending=undefined
 //
-// Five R2 rounds in the seven days to 2026-08-25 refused at the verdict stage, each having written a
+// Five full clearance test runs in the seven days to 2026-08-25 refused at the verdict stage, each having written a
 // complete narrative and all thirteen report cards first. A refused run therefore has every artifact a
 // delivered one has, and a reader who skims to the verdict — or, in the scorer, to the buckets — reads
 // unsigned prose as a shipped report.
 //
-// The fixtures are real shapes, taken from two R2 rounds a day apart: the 2026-08-25 round that refused
-// at the verdict stage, and the 2026-08-24 round that delivered. The rounds are not named here — a
+// The fixtures are real shapes, taken from two test runs a day apart: the 2026-08-25 run that refused
+// at the verdict stage, and the 2026-08-24 run that delivered. The runs are not named here — a
 // run codename is indistinguishable from a production one, and `no-client-identifiers` refuses them
 // in the corpus for exactly that reason.
 

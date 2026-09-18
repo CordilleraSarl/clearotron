@@ -20,6 +20,9 @@ npm install -g clearotron@beta     # newest — cut when there is something wort
 | **Promises** | it installed and ran a real clearance end to end before it was published | it built, and the automated suite passed |
 | **Use it if** | you are running this for real work | you want a fix that landed today, or you are helping test |
 
+**Each stable carries its record.** What was run and installed before a stable was published is written
+down in [`docs/releases/`](releases/), one file per stable version, starting with 0.3.2.
+
 **Both are published the same way** — from CI, with provenance you can check back to the commit that
 produced it, and with no long-lived credential anywhere. The difference is what was proved before the
 publish, not how it was made.
@@ -35,8 +38,7 @@ suggest for yours.
 
 ## How often
 
-A stable is cut when a beta earns it, which we aim at roughly weekly. **Betas are cut deliberately, days
-apart** — when a change lands that somebody should test, or while a stable is being prepared. They are not
+A stable is cut when a beta earns it, which we aim at roughly weekly. Betas are not
 published on every merge, so `beta` is a version somebody chose to publish rather than whatever merged
 last. Some stables have several betas before them and some have none.
 

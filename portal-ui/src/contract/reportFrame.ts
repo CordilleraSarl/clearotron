@@ -30,12 +30,16 @@ export const MAX_FRAME = 200_000
 export type FrameCommand = 'exportPDF' | 'pickAll' | 'openAll'
 
 /**
- * `section` is not one of those. The three above are verbs the DOCUMENT defines and the Export menu
- * offers; this one is a jump the shell asks for, answered by the injected bridge on the same channel the
- * document's own anchors already use. Keeping it out of `FrameCommand` is what stops it appearing as a
+ * `section` and `theme` are not among those. The three above are verbs the DOCUMENT defines and the Export
+ * menu offers; these two are the shell's own, answered by the injected bridge: `section` is a jump, done
+ * the way the document's own anchors do it, and `theme` sets the attribute the report's dark rules key on,
+ * as its own Theme control would. Keeping both out of `FrameCommand` is what stops either appearing as a
  * menu row: `exportMenu` and `readFrameControls` are both closed over that type.
  */
-export type FrameVerb = FrameCommand | 'section'
+export type FrameVerb = FrameCommand | 'section' | 'theme'
+
+/** The two themes the portal and the report both draw. Dark is an explicit choice on both, never the OS's. */
+export type FrameTheme = 'light' | 'dark'
 
 /** One entry of the report's section breadcrumb: the anchor's id and the word the reader sees. */
 export type FrameSection = { readonly id: string; readonly label: string }
@@ -266,6 +270,21 @@ export function readFrameSections(data: unknown, sameSource: boolean): FrameSect
     if (out.length === MAX_SECTIONS) break
   }
   return out
+}
+
+/**
+ * THE DOCUMENT HAS TAKEN THE PORTAL'S THEME (owner ruling, 2026-09-18: the embedded report follows the
+ * portal). The report carries its own dark theme, switched by a control in the top bar that embedding
+ * strips, and a sandboxed frame cannot read the portal's saved choice — so the shell sends the theme in,
+ * the way it sends an export or a jump, and the bridge answers with the theme it applied. Only the two
+ * values either side draws are read back; anything else is not ours.
+ */
+export function readFrameTheme(data: unknown, sameSource: boolean): FrameTheme | null {
+  if (!sameSource) return null
+  if (typeof data !== 'object' || data === null) return null
+  const msg = data as { source?: unknown; type?: unknown; theme?: unknown }
+  if (msg.source !== FRAME_TAG || msg.type !== 'theme') return null
+  return msg.theme === 'dark' || msg.theme === 'light' ? msg.theme : null
 }
 
 /**

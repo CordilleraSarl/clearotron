@@ -1,0 +1,185 @@
+{
+  "uri": "/mark/jp/9b7d99f7-4f6a-4cf4-8aa3-8495c54ca9e7",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "9b7d99f7-4f6a-4cf4-8aa3-8495c54ca9e7",
+  "applicationNumber": "S54-075661",
+  "registrationNumber": "2025242",
+  "applicationDate": "1979-10-08",
+  "registrationDate": "1988-02-22",
+  "expiryDate": "2028-02-22",
+  "renewalDate": null,
+  "lastPublicationDate": "1987-05-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＦＬＹＧＴ",
+  "markTransliteration": "FURAIGUTO FURAITO FURIGUTO",
+  "markTranslation": "FLYGT",
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    9,
+    10
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1
+      ],
+      "language": null,
+      "description": "写真材料",
+      "translation_language": "en",
+      "translation": "Photographic material"
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "理化学機械器具，光学機械器具，写真機械器具，映画機械器具，測定機械器具",
+      "translation_language": "en",
+      "translation": "Physics and Chemistry Equipment, Optical Machinery Equipment, Photographic Machinery Equipment, Film Machinery Instruments, Measuring Machinery Equipment"
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": null,
+      "description": "医療用機械器具",
+      "translation_language": "en",
+      "translation": "Medical equipment for medical use"
+    }
+  ],
+  "owner": "XYLEM IP MANAGEMENT SARL",
+  "ownerNative": null,
+  "ownerCountry": "LU",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityDate": "19791008"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "LUXEMBOURG",
+        "applicantAddressCountryCode": "LU",
+        "applicantAddressCountryName": "Luxembourg",
+        "applicantName": "XYLEM IP MANAGEMENT SARL",
+        "applicantNativeAddress": "ルクセンブルク国",
+        "applicantNativeName": "ザイレム・アイピー・マネージメント・ソシエテ・ア・レスポンサビリテ・リミテ"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Photographic material",
+          "intClassNumber": "01",
+          "intGoodsServicesDescription": "写真材料"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Physics and Chemistry Equipment, Optical Machinery Equipment, Photographic Machinery Equipment, Film Machinery Instruments, Measuring Machinery Equipment",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "理化学機械器具，光学機械器具，写真機械器具，映画機械器具，測定機械器具"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Medical equipment for medical use",
+          "intClassNumber": "10",
+          "intGoodsServicesDescription": "医療用機械器具"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "10E01",
+          "natGoodsServicesDescription": "Photographic supplies"
+        },
+        {
+          "natClassNumber": "10A01",
+          "natGoodsServicesDescription": "Laboratory apparatus and instruments"
+        },
+        {
+          "natClassNumber": "10B01",
+          "natGoodsServicesDescription": "Photographic instruments and apparatus, Cinematographic instruments and apparatus, Optical apparatus and instruments"
+        },
+        {
+          "natClassNumber": "10C01",
+          "natGoodsServicesDescription": "Measuring or testing machines and instruments"
+        },
+        {
+          "natClassNumber": "10D01",
+          "natGoodsServicesDescription": "Medical machines and apparatus"
+        },
+        {
+          "natClassNumber": "10D02"
+        }
+      ]
+    },
+    "id": "9b7d99f7-4f6a-4cf4-8aa3-8495c54ca9e7",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.03.01.02",
+      "26.03.06.00",
+      "26.03.19.00",
+      "26.03.23.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19791008"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19791008",
+        "applicationNumber": "S54-075661"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280222",
+      "lastPublicationDate": "19870506",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "19880222",
+        "registrationNumber": "2025242"
+      }
+    },
+    "version": "20240320172610",
+    "wordMarkSpecification": {
+      "markTranslation": "FLYGT",
+      "markTransliteration": "FURAIGUTO FURAITO FURIGUTO",
+      "markVerbalElementText": "ＦＬＹＧＴ"
+    }
+  },
+  "_uri": "/mark/jp/9b7d99f7-4f6a-4cf4-8aa3-8495c54ca9e7",
+  "_receipt": {
+    "fetched_at": "2026-09-18T13:08:49.089Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-incumbent-class"
+  }
+}

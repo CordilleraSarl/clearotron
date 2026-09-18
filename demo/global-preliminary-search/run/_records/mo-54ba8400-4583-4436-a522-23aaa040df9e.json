@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/mo/54ba8400-4583-4436-a522-23aaa040df9e",
+  "provider": "clarivate",
+  "office": "mo",
+  "guid": "54ba8400-4583-4436-a522-23aaa040df9e",
+  "applicationNumber": "N/14130",
+  "registrationNumber": null,
+  "applicationDate": "2004-06-21",
+  "registrationDate": "2004-11-05",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Licenciamento de tecnologia; licenciamento de patentes, marcas, direitos de autor, segredos comerciais e/ou know - how relacionadas com o fabrico de semicondutores e com o seu uso; licenciamento de semicondutores; licenciamento de software relacionado com o fabrico de semicondutores e seu uso; licenciamento de tecnologia relacionada com semicondutores e fabrico de semicondutores; licenciamento de tecnologia incorporada e relacionada com produtos semicondutores, circuitos integrados, placas de circuitos, microcomputadores, microcontroladores, microprocessadores e perifericos para computadores, memorias e material semicondutor para os mesmos, circuitos para conversao de dados, firmware para computadores, aparelhos electronicos, electricos e electromecanicos para uso com computadores, placas de circuitos para video; produtos de sistemas de video, aparelhos e equipamentos para gravacao, reproducao e modificacao de som, video e dados, programas informaticos; material didactico relacionado com computadores e dados algoritmos para compressao e descompressao de dados; criacao de sistemas informaticos e de telecomunicacoes personalizados; servicos de consultoria no sector informatico e de telecomunicacoes e tecnologia relacionada com criacao de software.",
+      "translation_language": "en",
+      "translation": "Technology licensing; licensing of patents, trademarks, copyrights, commercial secrets and/or know-how related to the manufacture of semiconductors and their use; semiconductor licensing; licensing of software relating to the manufacture of semiconductors and their use; licensing of technology related to semiconductors and semiconductor manufacturing; licensing of technology incorporated in and related to semiconductor products, integrated circuits, circuit boards, microcomputers, microcontrollers, microprocessors and peripherals for computers, memories and semiconductor material therefor, circuits for data conversion, firmware for computers, electronic devices, electronic and electromechanical devices for use with computers, video circuit boards; video system products, apparatus and equipment for recording, reproducing and modifying sound, video and data, computer programs; teaching material relating to computers and data algorithms for compressing and decompressing data; creation of personalized computer and telecommunications systems; consultancy services in the IT and telecommunications sector and technology related to software creation."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "技術許可；與半導體的製造及其使用有關的專利﹑商標﹑著作權﹑商業秘密及／或專有技術的許可；與半導體的製造及其使用有關的軟件的許可；與半導體及半導體的製造有關的技術許可；與半導體產品，集成電路，電路板，微電腦，微控制器，微處理器及電腦周邊設備，記憶體及其半導體材料，數據轉換用電路，電腦韌件，與電腦同用的電子，電動及電子机械設備，影像用電路板有關的結合技術許可；影像系統產品，用於錄製﹑重放及改變聲音﹑影像和數據用的設備和儀器，資訊程式；與電腦及數據的壓縮及非壓縮用的數據計算法有關的教學材料；個人電訊及資訊系統的設立；與軟件的設立有關之技術及於資訊及電訊範疇內的諮詢服務.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20031230",
+      "priorityNumber": "76/567257"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West, Austin, Texas 78735, U. S. A.",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Technology licensing; licensing of patents, trademarks, copyrights, commercial secrets and/or know-how related to the manufacture of semiconductors and their use; semiconductor licensing; licensing of software relating to the manufacture of semiconductors and their use; licensing of technology related to semiconductors and semiconductor manufacturing; licensing of technology incorporated in and related to semiconductor products, integrated circuits, circuit boards, microcomputers, microcontrollers, microprocessors and peripherals for computers, memories and semiconductor material therefor, circuits for data conversion, firmware for computers, electronic devices, electronic and electromechanical devices for use with computers, video circuit boards; video system products, apparatus and equipment for recording, reproducing and modifying sound, video and data, computer programs; teaching material relating to computers and data algorithms for compressing and decompressing data; creation of personalized computer and telecommunications systems; consultancy services in the IT and telecommunications sector and technology related to software creation.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Licenciamento de tecnologia; licenciamento de patentes, marcas, direitos de autor, segredos comerciais e/ou know - how relacionadas com o fabrico de semicondutores e com o seu uso; licenciamento de semicondutores; licenciamento de software relacionado com o fabrico de semicondutores e seu uso; licenciamento de tecnologia relacionada com semicondutores e fabrico de semicondutores; licenciamento de tecnologia incorporada e relacionada com produtos semicondutores, circuitos integrados, placas de circuitos, microcomputadores, microcontroladores, microprocessadores e perifericos para computadores, memorias e material semicondutor para os mesmos, circuitos para conversao de dados, firmware para computadores, aparelhos electronicos, electricos e electromecanicos para uso com computadores, placas de circuitos para video; produtos de sistemas de video, aparelhos e equipamentos para gravacao, reproducao e modificacao de som, video e dados, programas informaticos; material didactico relacionado com computadores e dados algoritmos para compressao e descompressao de dados; criacao de sistemas informaticos e de telecomunicacoes personalizados; servicos de consultoria no sector informatico e de telecomunicacoes e tecnologia relacionada com criacao de software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "技術許可；與半導體的製造及其使用有關的專利﹑商標﹑著作權﹑商業秘密及／或專有技術的許可；與半導體的製造及其使用有關的軟件的許可；與半導體及半導體的製造有關的技術許可；與半導體產品，集成電路，電路板，微電腦，微控制器，微處理器及電腦周邊設備，記憶體及其半導體材料，數據轉換用電路，電腦韌件，與電腦同用的電子，電動及電子机械設備，影像用電路板有關的結合技術許可；影像系統產品，用於錄製﹑重放及改變聲音﹑影像和數據用的設備和儀器，資訊程式；與電腦及數據的壓縮及非壓縮用的數據計算法有關的教學材料；個人電訊及資訊系統的設立；與軟件的設立有關之技術及於資訊及電訊範疇內的諮詢服務."
+        }
+      ]
+    },
+    "id": "54ba8400-4583-4436-a522-23aaa040df9e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20031230",
+        "priorityNumber": "76/567257"
+      }
+    ],
+    "recordLastUpdated": "20260823",
+    "registrationOfficeCode": "MO",
+    "registrationOfficeName": "Macao",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040621",
+        "applicationNumber": "N/14130"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20041105"
+      }
+    },
+    "version": "20260823191229",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/mo/54ba8400-4583-4436-a522-23aaa040df9e",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.705Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

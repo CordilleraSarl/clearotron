@@ -1,0 +1,126 @@
+{
+  "uri": "/mark/br/cd6c106d-94f3-44e0-b368-c295713806df",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "cd6c106d-94f3-44e0-b368-c295713806df",
+  "applicationNumber": "826654274",
+  "registrationNumber": "826654274",
+  "applicationDate": "2004-06-25",
+  "registrationDate": "2008-03-18",
+  "expiryDate": "2028-03-18",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Licenciamento de tecnologia, licenciamento de patentes, marcas, direitos autorais, segredos de negócio e/ou know - how relacionados com a fabricação de semicondutores e respectivos usos; licenciamento de semicondutores; licenciamento de software relacionado à fabricação de semicondutores e respectivos usos; licenciamento de tecnologia relacionada a semicondutores e fabricação de semicondutores; licenciamento de tecnologia incorporada em semicondutores e a eles relacionados, circuitos integrados, placas de circuito, microcomputadores, microcontroladores, microprocessadores e periféricos de computador, memórias e material semicondutor respectivos, circuitos conversores de dados, firmware de computador (programa permanentemente armazenado na memória de leitura), aparelho eletrônico, elétrico e eletromecânico para uso com computadores, placas de vídeo - circuito; produtos para sistemas de vídeo, aparelhos e equipamentos para o gravação, reprodução e alteração de som, vídeo e dados, programa de computador; materiais instrutivos, relacionados a computadores e dados algoritmos para a compressão e descompressão de dados; sistemas de telecomunicações e de computador em conformidade com as especificações do cliente; serviços de consultoria no campo de computadores e telecomunicações e tecnologia correlatas para concepções de software.",
+      "translation_language": "en",
+      "translation": "TECHNOLOGY LICENSING, LICENSING OF PATENTS, TRADEMARKS, COPYRIGHT, BUSINESS SECRETS AND/OR KNOW - HOW RELATED TO THE MANUFACTURING OF SEMICONDUCTORS AND ITS USES; LICENSING OF SEMICONDUCTORS; SOFTWARE LICENSING RELATED TO THE MANUFACTURING OF SEMICONDUCTORS AND THEIR USES; LICENSING OF TECHNOLOGY RELATED TO SEMICONDUCTORS AND MANUFACTURING OF SEMICONDUCTORS; LICENSING OF TECHNOLOGY INCORPORATED IN AND RELATED TO SEMICONDUCTORS, INTEGRATED CIRCUITS, CIRCUIT BOARDS, MICROCOMPUTERS, MICROCONTROLLERS, MICROPROCESSORS AND COMPUTER PERIPHERALS, MEMORIES AND CIRCUITING MATERIALS IN COMPUTER COMPUTERS, CONDUCTOR RESPECTIVE MATERIALS, COMPUTER RESPECTIVE MATERIALS, CONDUCTORS, COMPUTERS, READERS, MICROCOMPUTERS, MICROCONTROLLERS ), ELECTRONIC, ELECTRIC AND ELECTROMECHANICAL APPLIANCE FOR USE WITH COMPUTERS, VIDEO CARDS - CIRCUIT; PRODUCTS FOR VIDEO SYSTEMS, APPARATUS AND EQUIPMENT FOR THE RECORDING, REPRODUCTION AND ALTERATION OF SOUND, VIDEO AND DATA, COMPUTER PROGRAM; INSTRUCTIVE MATERIALS, RELATED TO COMPUTERS AND DATA ALGORITHMS FOR DATA COMPRESSION AND DECOMPRESSION; TELECOMMUNICATIONS AND COMPUTER SYSTEMS IN COMPLIANCE WITH CUSTOMER SPECIFICATIONS; CONSULTING SERVICES IN THE FIELD OF COMPUTERS AND TELECOMMUNICATIONS AND RELATED TECHNOLOGY FOR SOFTWARE CONCEPTIONS."
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "DAVID DO NASCIMENTO ADVOGADOS ASSOCIADOS",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20031230",
+      "priorityNumber": "76/597257"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "NXP USA, INC."
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "TECHNOLOGY LICENSING, LICENSING OF PATENTS, TRADEMARKS, COPYRIGHT, BUSINESS SECRETS AND/OR KNOW - HOW RELATED TO THE MANUFACTURING OF SEMICONDUCTORS AND ITS USES; LICENSING OF SEMICONDUCTORS; SOFTWARE LICENSING RELATED TO THE MANUFACTURING OF SEMICONDUCTORS AND THEIR USES; LICENSING OF TECHNOLOGY RELATED TO SEMICONDUCTORS AND MANUFACTURING OF SEMICONDUCTORS; LICENSING OF TECHNOLOGY INCORPORATED IN AND RELATED TO SEMICONDUCTORS, INTEGRATED CIRCUITS, CIRCUIT BOARDS, MICROCOMPUTERS, MICROCONTROLLERS, MICROPROCESSORS AND COMPUTER PERIPHERALS, MEMORIES AND CIRCUITING MATERIALS IN COMPUTER COMPUTERS, CONDUCTOR RESPECTIVE MATERIALS, COMPUTER RESPECTIVE MATERIALS, CONDUCTORS, COMPUTERS, READERS, MICROCOMPUTERS, MICROCONTROLLERS ), ELECTRONIC, ELECTRIC AND ELECTROMECHANICAL APPLIANCE FOR USE WITH COMPUTERS, VIDEO CARDS - CIRCUIT; PRODUCTS FOR VIDEO SYSTEMS, APPARATUS AND EQUIPMENT FOR THE RECORDING, REPRODUCTION AND ALTERATION OF SOUND, VIDEO AND DATA, COMPUTER PROGRAM; INSTRUCTIVE MATERIALS, RELATED TO COMPUTERS AND DATA ALGORITHMS FOR DATA COMPRESSION AND DECOMPRESSION; TELECOMMUNICATIONS AND COMPUTER SYSTEMS IN COMPLIANCE WITH CUSTOMER SPECIFICATIONS; CONSULTING SERVICES IN THE FIELD OF COMPUTERS AND TELECOMMUNICATIONS AND RELATED TECHNOLOGY FOR SOFTWARE CONCEPTIONS.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Licenciamento de tecnologia, licenciamento de patentes, marcas, direitos autorais, segredos de negócio e/ou know - how relacionados com a fabricação de semicondutores e respectivos usos; licenciamento de semicondutores; licenciamento de software relacionado à fabricação de semicondutores e respectivos usos; licenciamento de tecnologia relacionada a semicondutores e fabricação de semicondutores; licenciamento de tecnologia incorporada em semicondutores e a eles relacionados, circuitos integrados, placas de circuito, microcomputadores, microcontroladores, microprocessadores e periféricos de computador, memórias e material semicondutor respectivos, circuitos conversores de dados, firmware de computador (programa permanentemente armazenado na memória de leitura), aparelho eletrônico, elétrico e eletromecânico para uso com computadores, placas de vídeo - circuito; produtos para sistemas de vídeo, aparelhos e equipamentos para o gravação, reprodução e alteração de som, vídeo e dados, programa de computador; materiais instrutivos, relacionados a computadores e dados algoritmos para a compressão e descompressão de dados; sistemas de telecomunicações e de computador em conformidade com as especificações do cliente; serviços de consultoria no campo de computadores e telecomunicações e tecnologia correlatas para concepções de software."
+        }
+      ]
+    },
+    "id": "cd6c106d-94f3-44e0-b368-c295713806df",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20031230",
+        "priorityNumber": "76/597257"
+      }
+    ],
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "DAVID DO NASCIMENTO ADVOGADOS ASSOCIADOS"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20040625",
+        "applicationNumber": "826654274"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280318",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20080318",
+        "registrationNumber": "826654274"
+      }
+    },
+    "version": "20250630214335",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/br/cd6c106d-94f3-44e0-b368-c295713806df",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.686Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

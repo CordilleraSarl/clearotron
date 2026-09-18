@@ -1,0 +1,143 @@
+{
+  "uri": "/mark/cn/ffe24b23-68c4-4497-9222-e3552d3314ee",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "ffe24b23-68c4-4497-9222-e3552d3314ee",
+  "applicationNumber": "4019860",
+  "registrationNumber": "4019860",
+  "applicationDate": "2004-04-16",
+  "registrationDate": "2007-03-07",
+  "expiryDate": "2027-03-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2006-12-07",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "飞思卡尔",
+  "markTransliteration": "FEISIKAER",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "技术许可;与半导体制造及使用相关的专利许可;与半导体制造及使用相关的商标许可;与半导体制造及使用相关的版权许可;与半导体制造及使用相关的商业秘密的许可;与半导体制造及使用相关的专有技术的许可;半导体技术许可;与半导体制造及使用相关的软件的许可;与半导体及其制造相关的技术许可;包含在半导体产品中的及与半导体产品相关的技术许可;包含在集成电路中的及与集成电路相关的技术许可;包含在电路板中的及与电路板相关的技术许可;包含在微电脑中的及与微电脑相关的技术许可;包含在微控制器中的及与微控制器相关的技术许可;包含在微处理器中的及与微处理器相关的技术许可;包含在计算机外围设备中的及与计算机外围设备相关的技术许可;包含在存储器中的及与存储器相关的技术许可;包含在数据转换电路中的及与数据转换电路相关的技术许可;包含在计算机固件中的及与计算机固件相关的技术许可;包含在用于计算机的电子、电及电机设备中的及与用于计算机的电子、电及电机设备相关的技术许可;包含在视频电路板中的及与视频电路板相关的技术许可;包含在视频系统产品中的与视频系统产品相关的技术许可;包含在录制、复制和修改声音设备中的与录制、复制和修改声音设备相关的技术许可;包含在录制、复制和修改图像设备中的与录制、复制和修改图像设备相关的技术许可;包含在录制、复制和修改数据设备中的与录制、复制和修改数据设备相关的技术许可;包含在计算机程序中的与计算机程序相关的技术许可;为用户定制设计计算机系统;为用户定制设计计算机系统;为用户定制设计电讯系统;提供与计算机相关的技术咨询服务;提供与软件设计相关的技术咨询服务;与半导体材料相关的技术许可;提供与电讯相关的技术咨询服务;与计算机相关的技术许可;与数据压缩及解压缩运算法则相关的技术许可",
+      "translation_language": "en",
+      "translation": "Technology licenses; patent licenses related to semiconductor manufacturing and use; trademark licenses related to semiconductor manufacturing and use; copyright licenses related to semiconductor manufacturing and use; licenses of trade secrets related to semiconductor manufacturing and use; licenses of know-how related to semiconductor manufacturing and use; semiconductor technology licenses; software licenses related to semiconductor manufacturing and use; technology licenses related to semiconductors and their manufacturing; technology licenses contained in and related to semiconductor products; technology licenses contained in and related to integrated circuits; technology licenses contained in and related to circuit boards; technology licenses contained in and related to microcomputers; technology licenses contained in and related to microcontrollers; technology licenses contained in and related to microprocessors; technology licenses contained in and related to computer peripherals; technology licenses contained in and related to memories; technology licenses contained in and related to data conversion circuits; technology licenses contained in and related to computer firmware Technology licenses; technology licenses contained in and related to electronic, electrical and mechanical equipment used in computers; technology licenses contained in and related to video circuit boards; technology licenses contained in and related to video system products; technology licenses contained in and related to recording, copying and modifying sound equipment; technology licenses contained in and related to recording, copying and modifying image equipment; technology licenses contained in and related to recording, copying and modifying data equipment; technology licenses contained in and related to recording, copying and modifying data equipment; technology licenses contained in and related to computer programs; custom-designed computer systems for users; custom-designed computer systems for users; custom-designed telecommunications systems for users; provision of computer-related technical consulting services; provision of software design-related technical consulting services; technology licenses related to semiconductor materials; provision of telecommunications-related technical consulting services; computer-related technology licenses; technology licenses related to data compression and decompression algorithms"
+    }
+  ],
+  "owner": "NXP USA,INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 WILLIAM CANNON DRIVE WEST,AUSTIN,TEXAS 78735,USA",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA,INC.",
+        "applicantNativeName": "恩智浦美国有限责任公司;NXP USA,INC."
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Technology licenses; patent licenses related to semiconductor manufacturing and use; trademark licenses related to semiconductor manufacturing and use; copyright licenses related to semiconductor manufacturing and use; licenses of trade secrets related to semiconductor manufacturing and use; licenses of know-how related to semiconductor manufacturing and use; semiconductor technology licenses; software licenses related to semiconductor manufacturing and use; technology licenses related to semiconductors and their manufacturing; technology licenses contained in and related to semiconductor products; technology licenses contained in and related to integrated circuits; technology licenses contained in and related to circuit boards; technology licenses contained in and related to microcomputers; technology licenses contained in and related to microcontrollers; technology licenses contained in and related to microprocessors; technology licenses contained in and related to computer peripherals; technology licenses contained in and related to memories; technology licenses contained in and related to data conversion circuits; technology licenses contained in and related to computer firmware Technology licenses; technology licenses contained in and related to electronic, electrical and mechanical equipment used in computers; technology licenses contained in and related to video circuit boards; technology licenses contained in and related to video system products; technology licenses contained in and related to recording, copying and modifying sound equipment; technology licenses contained in and related to recording, copying and modifying image equipment; technology licenses contained in and related to recording, copying and modifying data equipment; technology licenses contained in and related to recording, copying and modifying data equipment; technology licenses contained in and related to computer programs; custom-designed computer systems for users; custom-designed computer systems for users; custom-designed telecommunications systems for users; provision of computer-related technical consulting services; provision of software design-related technical consulting services; technology licenses related to semiconductor materials; provision of telecommunications-related technical consulting services; computer-related technology licenses; technology licenses related to data compression and decompression algorithms",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "技术许可;与半导体制造及使用相关的专利许可;与半导体制造及使用相关的商标许可;与半导体制造及使用相关的版权许可;与半导体制造及使用相关的商业秘密的许可;与半导体制造及使用相关的专有技术的许可;半导体技术许可;与半导体制造及使用相关的软件的许可;与半导体及其制造相关的技术许可;包含在半导体产品中的及与半导体产品相关的技术许可;包含在集成电路中的及与集成电路相关的技术许可;包含在电路板中的及与电路板相关的技术许可;包含在微电脑中的及与微电脑相关的技术许可;包含在微控制器中的及与微控制器相关的技术许可;包含在微处理器中的及与微处理器相关的技术许可;包含在计算机外围设备中的及与计算机外围设备相关的技术许可;包含在存储器中的及与存储器相关的技术许可;包含在数据转换电路中的及与数据转换电路相关的技术许可;包含在计算机固件中的及与计算机固件相关的技术许可;包含在用于计算机的电子、电及电机设备中的及与用于计算机的电子、电及电机设备相关的技术许可;包含在视频电路板中的及与视频电路板相关的技术许可;包含在视频系统产品中的与视频系统产品相关的技术许可;包含在录制、复制和修改声音设备中的与录制、复制和修改声音设备相关的技术许可;包含在录制、复制和修改图像设备中的与录制、复制和修改图像设备相关的技术许可;包含在录制、复制和修改数据设备中的与录制、复制和修改数据设备相关的技术许可;包含在计算机程序中的与计算机程序相关的技术许可;为用户定制设计计算机系统;为用户定制设计计算机系统;为用户定制设计电讯系统;提供与计算机相关的技术咨询服务;提供与软件设计相关的技术咨询服务;与半导体材料相关的技术许可;提供与电讯相关的技术咨询服务;与计算机相关的技术许可;与数据压缩及解压缩运算法则相关的技术许可"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Legal services",
+        "Research and development service",
+        "Computer programming, and concerned services"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4207",
+          "subNatGoodsServicesDescription": "Legal services"
+        },
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        }
+      ]
+    },
+    "id": "ffe24b23-68c4-4497-9222-e3552d3314ee",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1050"
+      }
+    ],
+    "recordLastUpdated": "20251001",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京市柳沈律师事务所"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20040416",
+        "applicationNumber": "4019860"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270306",
+      "lastPublicationDate": "20061207",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20070307",
+        "registrationNumber": "4019860"
+      },
+      "renewalPublishedDate": "20170527"
+    },
+    "version": "20251001183917",
+    "wordMarkSpecification": {
+      "markTransliteration": "FEISIKAER",
+      "markVerbalElementCrossReferences": "freescale",
+      "markVerbalElementText": "飞思卡尔"
+    }
+  },
+  "_uri": "/mark/cn/ffe24b23-68c4-4497-9222-e3552d3314ee",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.682Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

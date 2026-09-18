@@ -38,15 +38,12 @@ Then carry on below. [INSTALL.md](INSTALL.md) §1 has the exact version floor an
 ## Install
 
 ```bash
-npm install -g clearotron
-clearotron install  # offers to install the reasoning program if the machine has none, and shows you how to sign it in
-clearotron doctor --probe-engine
+npx clearotron install  # offers to install the reasoning program if the machine has none, and shows you how to sign it in
+npx clearotron doctor --probe-engine
 ```
 
-On a Linux Node from the distribution or NodeSource, npm's global directory is `/usr`, owned by root,
-and the first line fails with `EACCES`. Do not answer that with `sudo`: run
-`npm install -g clearotron --prefix ~/.local` instead, or `npx clearotron install`, which installs under
-`~/.local` itself.
+`install` puts the program under `~/.local` and needs no root. Installing with npm's own global form
+instead is covered in [INSTALL.md](INSTALL.md) §2.
 
 `doctor` is the one to read. It checks that the reasoning program is there, on `PATH` or as the copy
 setup installed; that it is signed in, by running a turn rather than by finding the executable; and
@@ -70,7 +67,7 @@ Write `job.json`:
 ```
 
 ```bash
-clearotron run --job job.json
+npx clearotron run --job job.json
 ```
 
 **Name `product`.** It orders a knockout search: the cheapest of the four and the fastest way to
@@ -83,7 +80,7 @@ stage stays on disk, so a run survives interruption and a resume re-runs only wh
 
 ## Then
 
-- See it before you buy anything: `clearotron demo` replays a finished clearance with no account, no
+- See it before you buy anything: `npx clearotron demo` replays a finished clearance with no account, no
   key and no network.
 - The four searches, and what each reaches: [README.md](README.md).
 - Everything else — configuration, the config store, the portal, access control:

@@ -1,0 +1,130 @@
+{
+  "uri": "/mark/pa/efe0c048-ffd1-42f2-ab74-94af37658939",
+  "provider": "clarivate",
+  "office": "pa",
+  "guid": "efe0c048-ffd1-42f2-ab74-94af37658939",
+  "applicationNumber": "135946",
+  "registrationNumber": "135946",
+  "applicationDate": "2004-06-29",
+  "registrationDate": "2004-06-29",
+  "expiryDate": "2024-06-29",
+  "renewalDate": "2014-06-29",
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "no goods available",
+      "translation_language": "en",
+      "translation": "no goods available"
+    }
+  ],
+  "owner": "NXP USA, INC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "DURLING Y DURLING",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20031230",
+      "priorityNumber": "76/567257"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "DELAWARE 6501 WILLIAM CANNON DRIVE WEST AUSTIN, TEXAS 78735, ESTADOS UNIDOS DE AMÉRICA; ESTADOS UNIDOS DE AMERICA",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "no goods available",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "no goods available"
+        }
+      ]
+    },
+    "id": "efe0c048-ffd1-42f2-ab74-94af37658939",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20031230",
+        "priorityNumber": "76/567257"
+      }
+    ],
+    "recordLastUpdated": "20250806",
+    "registrationOfficeCode": "PA",
+    "registrationOfficeName": "Panama",
+    "representatives": [
+      {
+        "representativeName": "DURLING Y DURLING"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20040629",
+        "applicationNumber": "135946"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20240629",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20040629",
+        "registrationNumber": "135946"
+      },
+      "renewalDate": "20140629"
+    },
+    "version": "20250806111221",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/pa/efe0c048-ffd1-42f2-ab74-94af37658939",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.722Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

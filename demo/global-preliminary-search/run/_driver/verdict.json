@@ -1,11 +1,17 @@
 {
-  "ts": "2026-09-02T17:25:22.322Z",
+  "ts": "2026-09-18T13:39:41.268Z",
   "verdict": "CONDITIONAL",
   "reasons": [
-    "Search the US, EU, UK, Japanese, Korean and Chinese registers directly for any Xylem Inc. mark resembling VENQORI.",
-    "Limit the class 9 and 42 wording to water-quality monitoring so it does not read across payment, security and business software.",
-    "Ask EU counsel whether the earlier QORI word marks could be raised against VENQORI read as one word.",
-    "floor_duty_undischarged:4 of 430 floor row(s) — every floor is a LIVE in-class identical or near-identical record and the duty is uncapped: each is placed at any tier, or named by its record id with a one-line ground. These came back neither: VENTURI (/mark/ae/2c9d1f9d-ec10-49f7-adbd-4997707ccd65); VENTURI (/mark/kw/16cf0b84-7ba8-4d49-8aba-dcb8a835b7ab); QORM (/mark/om/bc4a4abd-2853-45f5-ab8f-655508938c13); VENTURI (/mark/qa/941b9f10-2dff-4ed0-9902-05cc4839f5a8). The report ships with these named rather than being withheld."
+    "Resolve Align Networks' Korean ENQOR applications before filing or launching VENQORI in South Korea.",
+    "Resolve Yiwu Tengding's Japanese VENKURI right before filing or launching VENKURI in Japan.",
+    "Identify the QUORI App's owner and function before treating the app-store result as cleared.",
+    "floor_duty_undischarged:4 of 22 floor row(s) — every floor is a LIVE in-class identical or near-identical record and the duty is uncapped: each is placed at any tier, or named by its record id with a one-line ground. These came back neither: VENKURI (/mark/cn/817a4fcd-a0f3-4048-b0de-2d9b598ca7f5); VENKURI (/mark/cn/90eef81e-2b6f-4f84-8b9f-ac78dd65a11f); QORIQ (/mark/in/a4a7d356-5f02-4a72-be2c-e6aca1628c45); QORIQ (/mark/mx/da914964-05ca-4122-a2a9-480f56deb3f1). The report ships with these named rather than being withheld."
+  ],
+  "clauses": [
+    "Align Networks' three ENQOR applications remain pending on the Korean record searched.",
+    "Yiwu Tengding's identical VENKURI registration is live on the Japanese record searched.",
+    "The app-store receipt does not identify the proprietor or the app's function.",
+    "4 of the 22 live registrations identical or near-identical to the mark are not individually addressed in this report — each remains an open point a reader must weigh"
   ],
   "kinds": {
     "legalActions": true
@@ -19,6 +25,6 @@
     "rankFromTop": 3,
     "scale": 4
   },
-  "statement": "Moderate — conditional on: No search of Xylem Inc.'s holdings could be completed on the register used this run (and 3 more).",
+  "statement": "Moderate — conditional on: Align Networks' three ENQOR applications remain pending on the Korean record searched (and 3 more).",
   "stance": "conditional"
 }

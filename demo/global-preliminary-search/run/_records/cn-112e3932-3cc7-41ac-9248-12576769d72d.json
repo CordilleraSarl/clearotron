@@ -1,0 +1,139 @@
+{
+  "uri": "/mark/cn/112e3932-3cc7-41ac-9248-12576769d72d",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "112e3932-3cc7-41ac-9248-12576769d72d",
+  "applicationNumber": "89323223",
+  "registrationNumber": null,
+  "applicationDate": "2025-12-23",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "NGI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "材料测试;产品测试;工业品外观设计;工业设计;化学分析;计算机软件设计;技术项目研究;为他人研究和开发新产品;校准(测量);质量控制",
+      "translation_language": "en",
+      "translation": ". Materials testing; product testing; industrial product appearance design; industrial design; chemical analysis; computer software design; technical project research; research and development of new products for others; calibration (measurement); quality control."
+    }
+  ],
+  "owner": "NXP Technologies Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "湖南省长沙市望城经济技术开发区马桥河路二段308号联东金煜产业中心B23.B24栋101号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "NXP Technologies Co., Ltd.",
+        "applicantNativeName": "恩智技术股份有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": ". Materials testing; product testing; industrial product appearance design; industrial design; chemical analysis; computer software design; technical project research; research and development of new products for others; calibration (measurement); quality control.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "材料测试;产品测试;工业品外观设计;工业设计;化学分析;计算机软件设计;技术项目研究;为他人研究和开发新产品;校准(测量);质量控制"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Research and development service",
+        "Chemical research service",
+        "Survey service",
+        "Registered design service",
+        "Computer programming, and concerned services"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4211",
+          "subNatGoodsServicesDescription": "Chemical research service"
+        },
+        {
+          "subNatClassNumber": "4214",
+          "subNatGoodsServicesDescription": "Survey service"
+        },
+        {
+          "subNatClassNumber": "4216",
+          "subNatGoodsServicesDescription": "Registered design service"
+        },
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        }
+      ]
+    },
+    "id": "112e3932-3cc7-41ac-9248-12576769d72d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260616",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "广州嘉权专利商标事务所有限公司长沙分公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251223",
+        "applicationNumber": "89323223"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20260616020349",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NGI"
+    }
+  },
+  "_uri": "/mark/cn/112e3932-3cc7-41ac-9248-12576769d72d",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.683Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

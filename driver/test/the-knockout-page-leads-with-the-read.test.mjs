@@ -582,7 +582,11 @@ function visibleWords(html, { foldsOpen = false } = {}) {
 }
 
 test("the one-name page stays inside its word budget, folds closed", () => {
-  const at = (p) => fileURLToPath(new URL(`../../demo/knockout-search/run/${p}`, import.meta.url));
+  // THE SPECIMEN IS THE PREVIOUS DEMO KNOCKOUT, KEPT BYTE FOR BYTE under driver/test/fixtures/delivered-knockout.
+  // The shipped demo moved to a newer run whose name rated Low with no conflicts and no reviewer notes — a
+  // clean result, and nothing for this arm to measure. This arm needs a delivered knockout that HAS those,
+  // so it reads the one the demo used to ship: still a real run's shape, never one written for the test.
+  const at = (p) => fileURLToPath(new URL(`./fixtures/delivered-knockout/run/${p}`, import.meta.url));
   const j = (p) => JSON.parse(readFileSync(at(p), "utf8"));
   const findings = j("knockout-findings.json");
   assert.equal((findings.marks ?? []).length, 1, "the budget in the issue is stated for a ONE-NAME page");

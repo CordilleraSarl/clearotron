@@ -9,7 +9,7 @@
 // an arm that stopped running reads as one that passed. Both sentences are true. Following the first
 // tripped the second, measured on `c6e183d`.
 //
-// Overwatch ruled on 2026-09-06: the bail guard is right, and a reasoned skip is neither a pass nor a
+// Decided 2026-09-06: the bail guard is right, and a reasoned skip is neither a pass nor a
 // loss. It gets its own bucket — printed, never silent, and not a refusal.
 //
 // WHY THE DECISION MOVED INTO shared/suite-census.mjs. It was spelled out twice inside the script, once

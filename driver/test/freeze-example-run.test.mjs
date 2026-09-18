@@ -265,7 +265,53 @@ test("the birth codename is REWRITTEN out of the artifacts, not reported and lef
   // COUNTED AND THEN RE-READ. The count alone would print the same reassuring line over a tree that was
   // already clean, so the tool re-reads the frozen copy and a survivor is a finding.
   assert.match(r.out, /codename: \d+ occurrence\(s\) in \d+ file\(s\) rewritten "synthetic-fixture" -> "renamed-sample"/, r.out);
-  assert.match(r.out, /no codename and no vendor record key survived/, r.out);
+  assert.match(r.out, /no codename, no vendor record key and no host survived/, r.out);
+  rmSync(root, { recursive: true, force: true });
+});
+
+// A RUN DELIVERED ON A DEPLOYMENT WITH A PUBLIC ADDRESS writes its report link with that address in front,
+// and a frozen sample must carry the route only: it is replayed in whatever portal serves it, and a
+// deployment's host is a name the package may not ship. Measured on the first harvest from a test
+// deployment — five files. The fixture host is a reserved test name, never a real deployment's.
+const ORIGIN = "https://portal.trademark.test";
+test("a run's own public origin is rewritten to the route, counted, and proven gone", () => {
+  const { root, runDir } = makeRun();
+  const link = `${ORIGIN}/portal/report/tmp8439-aquaplus-2026-01-01-synthetic-fixture/`;
+  writeFileSync(join(runDir, "status.json"), JSON.stringify({ markName: "AQUAPLUS", codename: "synthetic-fixture", url: link }));
+  const out = join(root, "frozen");
+  const r = runFreeze(runDir, out, ["--codename", "renamed-sample"]);
+  assert.equal(r.code, 0, r.out);
+  const status = JSON.parse(readFileSync(join(out, "run", "status.json"), "utf8"));
+  assert.equal(status.url, "/portal/report/tmp8439-aquaplus-2026-01-01-renamed-sample/",
+    "the link is the route alone, under the renamed identity");
+  assert.match(r.out, /public origin: https:\/\/portal\.trademark\.test — every link under it is rewritten to its route/, r.out);
+  assert.match(r.out, /public origin: 1 link\(s\) in 1 file\(s\) rewritten to their route/, r.out);
+  assert.match(r.out, /no codename, no vendor record key and no host survived/, r.out);
+  rmSync(root, { recursive: true, force: true });
+});
+
+test("a host the rewrite does not understand is a finding, never passed through as clean", () => {
+  // Only a link — the origin in front of a path — is rewritten. The host named anywhere else is left, and
+  // the re-read must report it: a rewrite that matched less than was there is exactly the silent zero.
+  const { root, runDir } = makeRun();
+  writeFileSync(join(runDir, "status.json"), JSON.stringify({
+    markName: "AQUAPLUS", codename: "synthetic-fixture",
+    url: `${ORIGIN}/portal/report/tmp8439-aquaplus-2026-01-01-synthetic-fixture/`,
+    note: "served from portal.trademark.test",
+  }));
+  const r = runFreeze(runDir, join(root, "frozen"), ["--codename", "renamed-sample"]);
+  assert.equal(r.code, 1, `a surviving host must fail the freeze:\n${r.out}`);
+  assert.match(r.out, /1 file\(s\) still name the run's host after the rewrite: status\.json/, r.out);
+  rmSync(root, { recursive: true, force: true });
+});
+
+test("a run whose link is already a route has no origin, and nothing is rewritten", () => {
+  const { root, runDir } = makeRun();
+  writeFileSync(join(runDir, "status.json"), JSON.stringify({ markName: "AQUAPLUS", codename: "synthetic-fixture",
+    url: "/portal/report/tmp8439-aquaplus-2026-01-01-synthetic-fixture/" }));
+  const r = runFreeze(runDir, join(root, "frozen"), ["--codename", "renamed-sample"]);
+  assert.equal(r.code, 0, r.out);
+  assert.match(r.out, /public origin: none recorded — links are already routes/, r.out);
   rmSync(root, { recursive: true, force: true });
 });
 

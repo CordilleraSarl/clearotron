@@ -1,0 +1,151 @@
+{
+  "uri": "/mark/is/eff160c8-3ffd-4ebf-a40d-643cc222c368",
+  "provider": "clarivate",
+  "office": "is",
+  "guid": "eff160c8-3ffd-4ebf-a40d-643cc222c368",
+  "applicationNumber": "V0053450",
+  "registrationNumber": "V0053450",
+  "applicationDate": "2004-06-16",
+  "registrationDate": "2005-03-04",
+  "expiryDate": "2025-03-04",
+  "renewalDate": "2015-02-24",
+  "lastPublicationDate": "2005-03-15",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "is",
+      "description": "Hálfleiðarar, hálfleiðaragjörvar, hálfleiðaragjörvakubbar, samrásir, samrásakubbar, rafrásaspjöld, örtölvur, örkubbar, örgjörvar og tölvujaðarbúnaður, minni og hálfleiðaraefni fyrir slíkt; hálfleiðarar fyrir vélar og smíðavélar; hálfleiðarar fyrir ljósa-, hitunar-, gufuframleiðslu-, eldunar-, kæli-, þurrkunar- og loftræstingarbúnað; hálfleiðarar fyrir klukkur og tímamælingabúnað og -tæki; hálfleiðarar fyrir hljóðfæri; hálfleiðarar fyrir leiki og leikspil; gagnaumskráningarrásir; tölvufastbúnaður; rafeinda-, raf- og rafvélrænn búnaður til nota með tölvum; myndkerfavörur; búnaður og tæki til upptöku, endurgerðar og breytinga á hljóði, mynd og gögnum; myndrafrásaspjöld; hljóðrafrásaspjöld; hljóð- og myndrafrásaspjöld; myndgrafíkhraðlar; margmiðlunarhraðlar; myndgjörvar; tölvuforrit; leiðbeiningaefni sem tengist tölvu- og gagnaalgrími fyrir þjöppun og afþjöppun gagna; prófunar- og kvörðunarbúnaður; hlutar og fylgihlutir fyrir allar framangreindar vörur; búnaður til að prófa og forrita samrásir og hálfleiðaraminni; tölvuhugbúnaður, s.s. hugbúnaður sem varðar notkunarsamþættingu og -tengjanleika, tölvuhjálparforrit, tölvuforrit fyrir netstjórnun, tölvuhugbúnaður fyrir aðgang að alheimstölvuneti og samreknum tölvunetum; tölvustýrikerfi; tölvustýrikerfishugbúnaður; tölvustýriforrit; og tölvuhugbúnaðartól fyrir auðveldun á hugbúnaðarbeitingu þriðja aðila.",
+      "translation_language": "en",
+      "translation": "Semiconductors, hálfleiðaragjörvar, semiconductor processor blocks, Integrated Circuits, samrásakubbar, circuit boards, micro-computers, örkubbar, microprocessors and computer peripheral, memory and semiconductor materials for such; semiconductors for machines and machine tools; semiconductors for lighting, heating, gufuframleiðslu-, cooking, refrigerating, drying and ventilation equipment; Semiconductors for clocks and timing equipment and appliances; semiconductors for musical instruments; semiconductors for games and game cards; data conversion channels; computer firmware; electronic, electrical and electro-mechanical equipment for use with computers; photo systems products; equipment and instruments for recording, restoration and conversion of sound, image and data; Photo circuit boards; audio circuit boards; audio circuit boards; myndgrafíkhraðlar; margmiðlunarhraðlar; myndgjörvar; computer software; guidance material related to computer and gagnaalgrími for compression and decompression of data; test and calibration equipment; parts and accessories for all the aforesaid goods; equipment for testing and applications Integrated Circuits and semiconductor memory; computer software, such as software as regards the use of integration and -tengjanleika, computer wizard, computer software for network management, computer software for access to a global computer network and joint venture computer networks; computer operating systems; computer operating system software; computer control program; and tölvuhugbúnaðartól for unblocking software application to third parties."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "is",
+      "description": "Nytjaleyfi á tækni; nytjaleyfi á einkaleyfum, vörumerkjum, höfundarrétti, viðskiptaleyndarmálum og/eða tækniþekkingu í tengslum við framleiðslu á hálfleiðurum og notkun þeirra; nytjaleyfi á hálfleiðurum; nytjaleyfi á hugbúnaði í tengslum við framleiðslu á hálfleiðurum og notkun þeirra; nytjaleyfi á tækni í tengslum við hálfleiðara og framleiðslu á hálfleiðurum; nytjaleyfi á tækni sem er innlimuð í og tengist hálfleiðaravörum, samrásum, rásaspjöldum, örtölvum, örstýringum, örgjörvum og tölvujaðartækjum, minnum og hálfleiðaraefni fyrir þau, gagnaumbreytingarásum, tölvufastbúnaði, rafeinda-, raf- og rafvélrænum búnaði til nota með tölvum, myndrásaspjöldum, myndkerfisvörum, búnaði og tækjum fyrir upptöku, endurgerð og breytingu á hljóði, mynd og gögnum, tölvuforritum, leiðbeiningaefni í tengslum við tölvu- og gagnaalgrím fyrir þjöppun og afþjöppun á gögnum; sérhönnun á tölvu- og fjarskiptakerfum; ráðgjafaþjónusta á sviði talva og fjarskipta og skyldrar tækni fyrir hugbúnaðarhönnun.",
+      "translation_language": "en",
+      "translation": "Licensing of technology; licensing of patents, trademarks, copyrights, trade secrets and / or technical expertise related to the manufacture of semiconductors and their uses; licensing of semiconductor products; licensing of software related to the production of semiconductors and their uses; licensing of technology related to semiconductors and semiconductor production; licensing of technology, which is incorporated in and related to semiconductor products, fused axes, circuit boards, cricket, örstýringum, processors and computer peripherals, memories and semiconductor materials for them, data conversion axes, computer firmware, electronic, electrical and electromechanical equipment for use with computers, photo circuit boards, video systems products, equipment and instruments for recording, reproduction and conversion of sound, image and data, computer programs, guidance material related to computer and data algorithms for the compression and decompression of data; PERSONALIZED of computer and telecommunications systems; Services in the field of computers and telecommunications and related technology for software design."
+    }
+  ],
+  "owner": "NXP USA, Inc",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Árnason Faktor ehf.",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20031230",
+      "priorityNumber": "76/567,257"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West, Austin, TX 78735",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc"
+      }
+    ],
+    "applicationLanguageCode": "is",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Semiconductors, hálfleiðaragjörvar, semiconductor processor blocks, Integrated Circuits, samrásakubbar, circuit boards, micro-computers, örkubbar, microprocessors and computer peripheral, memory and semiconductor materials for such; semiconductors for machines and machine tools; semiconductors for lighting, heating, gufuframleiðslu-, cooking, refrigerating, drying and ventilation equipment; Semiconductors for clocks and timing equipment and appliances; semiconductors for musical instruments; semiconductors for games and game cards; data conversion channels; computer firmware; electronic, electrical and electro-mechanical equipment for use with computers; photo systems products; equipment and instruments for recording, restoration and conversion of sound, image and data; Photo circuit boards; audio circuit boards; audio circuit boards; myndgrafíkhraðlar; margmiðlunarhraðlar; myndgjörvar; computer software; guidance material related to computer and gagnaalgrími for compression and decompression of data; test and calibration equipment; parts and accessories for all the aforesaid goods; equipment for testing and applications Integrated Circuits and semiconductor memory; computer software, such as software as regards the use of integration and -tengjanleika, computer wizard, computer software for network management, computer software for access to a global computer network and joint venture computer networks; computer operating systems; computer operating system software; computer control program; and tölvuhugbúnaðartól for unblocking software application to third parties.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "is",
+          "intGoodsServicesDescription": "Hálfleiðarar, hálfleiðaragjörvar, hálfleiðaragjörvakubbar, samrásir, samrásakubbar, rafrásaspjöld, örtölvur, örkubbar, örgjörvar og tölvujaðarbúnaður, minni og hálfleiðaraefni fyrir slíkt; hálfleiðarar fyrir vélar og smíðavélar; hálfleiðarar fyrir ljósa-, hitunar-, gufuframleiðslu-, eldunar-, kæli-, þurrkunar- og loftræstingarbúnað; hálfleiðarar fyrir klukkur og tímamælingabúnað og -tæki; hálfleiðarar fyrir hljóðfæri; hálfleiðarar fyrir leiki og leikspil; gagnaumskráningarrásir; tölvufastbúnaður; rafeinda-, raf- og rafvélrænn búnaður til nota með tölvum; myndkerfavörur; búnaður og tæki til upptöku, endurgerðar og breytinga á hljóði, mynd og gögnum; myndrafrásaspjöld; hljóðrafrásaspjöld; hljóð- og myndrafrásaspjöld; myndgrafíkhraðlar; margmiðlunarhraðlar; myndgjörvar; tölvuforrit; leiðbeiningaefni sem tengist tölvu- og gagnaalgrími fyrir þjöppun og afþjöppun gagna; prófunar- og kvörðunarbúnaður; hlutar og fylgihlutir fyrir allar framangreindar vörur; búnaður til að prófa og forrita samrásir og hálfleiðaraminni; tölvuhugbúnaður, s.s. hugbúnaður sem varðar notkunarsamþættingu og -tengjanleika, tölvuhjálparforrit, tölvuforrit fyrir netstjórnun, tölvuhugbúnaður fyrir aðgang að alheimstölvuneti og samreknum tölvunetum; tölvustýrikerfi; tölvustýrikerfishugbúnaður; tölvustýriforrit; og tölvuhugbúnaðartól fyrir auðveldun á hugbúnaðarbeitingu þriðja aðila."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Licensing of technology; licensing of patents, trademarks, copyrights, trade secrets and / or technical expertise related to the manufacture of semiconductors and their uses; licensing of semiconductor products; licensing of software related to the production of semiconductors and their uses; licensing of technology related to semiconductors and semiconductor production; licensing of technology, which is incorporated in and related to semiconductor products, fused axes, circuit boards, cricket, örstýringum, processors and computer peripherals, memories and semiconductor materials for them, data conversion axes, computer firmware, electronic, electrical and electromechanical equipment for use with computers, photo circuit boards, video systems products, equipment and instruments for recording, reproduction and conversion of sound, image and data, computer programs, guidance material related to computer and data algorithms for the compression and decompression of data; PERSONALIZED of computer and telecommunications systems; Services in the field of computers and telecommunications and related technology for software design.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "is",
+          "intGoodsServicesDescription": "Nytjaleyfi á tækni; nytjaleyfi á einkaleyfum, vörumerkjum, höfundarrétti, viðskiptaleyndarmálum og/eða tækniþekkingu í tengslum við framleiðslu á hálfleiðurum og notkun þeirra; nytjaleyfi á hálfleiðurum; nytjaleyfi á hugbúnaði í tengslum við framleiðslu á hálfleiðurum og notkun þeirra; nytjaleyfi á tækni í tengslum við hálfleiðara og framleiðslu á hálfleiðurum; nytjaleyfi á tækni sem er innlimuð í og tengist hálfleiðaravörum, samrásum, rásaspjöldum, örtölvum, örstýringum, örgjörvum og tölvujaðartækjum, minnum og hálfleiðaraefni fyrir þau, gagnaumbreytingarásum, tölvufastbúnaði, rafeinda-, raf- og rafvélrænum búnaði til nota með tölvum, myndrásaspjöldum, myndkerfisvörum, búnaði og tækjum fyrir upptöku, endurgerð og breytingu á hljóði, mynd og gögnum, tölvuforritum, leiðbeiningaefni í tengslum við tölvu- og gagnaalgrím fyrir þjöppun og afþjöppun á gögnum; sérhönnun á tölvu- og fjarskiptakerfum; ráðgjafaþjónusta á sviði talva og fjarskipta og skyldrar tækni fyrir hugbúnaðarhönnun."
+        }
+      ]
+    },
+    "id": "eff160c8-3ffd-4ebf-a40d-643cc222c368",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20031230",
+        "priorityNumber": "76/567,257"
+      }
+    ],
+    "recordLastUpdated": "20250626",
+    "registrationOfficeCode": "IS",
+    "registrationOfficeName": "Iceland",
+    "representatives": [
+      {
+        "representativeAddress": "Guðríðarstíg 2-4, 113, Reykjavík, Íslandi",
+        "representativeAddressCountryCode": "IS",
+        "representativeAddressCountryName": "Iceland",
+        "representativeName": "Árnason Faktor ehf."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20040616",
+        "applicationNumber": "V0053450"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20250304",
+      "lastPublicationDate": "20050315",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20050304",
+        "registrationNumber": "V0053450"
+      },
+      "renewalDate": "20150224"
+    },
+    "version": "20250626153605",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/is/eff160c8-3ffd-4ebf-a40d-643cc222c368",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.688Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

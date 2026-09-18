@@ -277,7 +277,7 @@
         "publicationVolume": "08"
       }
     ],
-    "recordLastUpdated": "20260825",
+    "recordLastUpdated": "20260913",
     "registrationOfficeCode": "WO",
     "registrationOfficeName": "International Register",
     "representatives": [
@@ -299,14 +299,14 @@
         "registrationNumber": "1843095"
       }
     },
-    "version": "20260825020003",
+    "version": "20260913020003",
     "wordMarkSpecification": {
       "markVerbalElementText": "MIFARE"
     }
   },
   "_uri": "/mark/wo/76ee79b5-6def-4aee-8d02-da2188e311eb",
   "_receipt": {
-    "fetched_at": "2026-09-03T16:38:35.459Z",
-    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+    "fetched_at": "2026-09-18T15:15:03.610Z",
+    "context": "clearance-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
   }
 }

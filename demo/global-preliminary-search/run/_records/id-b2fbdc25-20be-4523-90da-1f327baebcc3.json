@@ -1,0 +1,118 @@
+{
+  "uri": "/mark/id/b2fbdc25-20be-4523-90da-1f327baebcc3",
+  "provider": "clarivate",
+  "office": "id",
+  "guid": "b2fbdc25-20be-4523-90da-1f327baebcc3",
+  "applicationNumber": "J002004017865",
+  "registrationNumber": "IDM000069200",
+  "applicationDate": "2004-08-18",
+  "registrationDate": "2006-04-17",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "id",
+      "description": "Lisensi teknologi, bahan - bahan pendidikan yang berhubungan dengan komputer dan data algoritma untuk kompresi dan dekompresi data, jasa konsultasi dibidang komputer dan telekomunikasi dan teknologi yang berhubungan dengan perancangan perangkat lunak, lisensi paten, merek dagang, hak cipta, rahasia dagang dan/atau keahlian yang berhubungan dengan manufaktur semikonduktor dan pemakaiannya, lisensi perangkat lunak yang berhubungan dengan manufaktur semikonduktor dan pemakaiannya, lisensi semikonduktor, lisensi teknologi yang berhubungan dengan semikonduktor dan manufaktur semikonduktor, lisensi teknologi yang ditanamkan dalam dan yang berhubungan dengan produk - produk semikonduktor, lingkaran arus terpadu, papan sirkuit, komputer mikro, pengontrol mikro, pengolah mikro dan periferal, memori dan bahan - bahan semikonduktor komputer, sirkuit konversi data, perangkat tetap komputer, aparat elektronik, listrik dan elektromekanik untuk dipakai dengan komputer, papan sirkuit video, perancangan komputer dan sistem telekomunikasi berdasarkan pesanan, produk - produk sistem video, aparat dan perlengkapan untuk merekam, mereproduksi dan merubah suara, video dan data, program komputer.",
+      "translation_language": "en",
+      "translation": "Technology licenses, educational materials related to computers and data algorithms for data compression and decompression, consulting services in the field of computers and telecommunications and technology related to software design, licenses for patents, trademarks, copyrights, trade secrets and/or expertise relating to semiconductor manufacturing and use, software licenses relating to semiconductor manufacture and use, semiconductor licenses, technology licenses relating to semiconductors and semiconductor manufacturing, technology licenses embedded in and relating to semiconductor products, integrated circuits, circuit boards, microcomputers, micro controllers, microprocessors and peripherals, memory and computer semiconductor materials, data conversion circuits, computer fixed devices, electronic, electrical and electromechanical apparatus for use with computers, video circuit boards, design n bespoke computer and telecommunications systems, video system products, apparatus and equipment for recording, reproducing and converting sound, video and data, computer programs."
+    }
+  ],
+  "owner": "NXP USA, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Berkedudukan di: 6501 William Cannon Drive West, Austin, Texas 78735, U. S. A. ; US",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Technology licenses, educational materials related to computers and data algorithms for data compression and decompression, consulting services in the field of computers and telecommunications and technology related to software design, licenses for patents, trademarks, copyrights, trade secrets and/or expertise relating to semiconductor manufacturing and use, software licenses relating to semiconductor manufacture and use, semiconductor licenses, technology licenses relating to semiconductors and semiconductor manufacturing, technology licenses embedded in and relating to semiconductor products, integrated circuits, circuit boards, microcomputers, micro controllers, microprocessors and peripherals, memory and computer semiconductor materials, data conversion circuits, computer fixed devices, electronic, electrical and electromechanical apparatus for use with computers, video circuit boards, design n bespoke computer and telecommunications systems, video system products, apparatus and equipment for recording, reproducing and converting sound, video and data, computer programs.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "id",
+          "intGoodsServicesDescription": "Lisensi teknologi, bahan - bahan pendidikan yang berhubungan dengan komputer dan data algoritma untuk kompresi dan dekompresi data, jasa konsultasi dibidang komputer dan telekomunikasi dan teknologi yang berhubungan dengan perancangan perangkat lunak, lisensi paten, merek dagang, hak cipta, rahasia dagang dan/atau keahlian yang berhubungan dengan manufaktur semikonduktor dan pemakaiannya, lisensi perangkat lunak yang berhubungan dengan manufaktur semikonduktor dan pemakaiannya, lisensi semikonduktor, lisensi teknologi yang berhubungan dengan semikonduktor dan manufaktur semikonduktor, lisensi teknologi yang ditanamkan dalam dan yang berhubungan dengan produk - produk semikonduktor, lingkaran arus terpadu, papan sirkuit, komputer mikro, pengontrol mikro, pengolah mikro dan periferal, memori dan bahan - bahan semikonduktor komputer, sirkuit konversi data, perangkat tetap komputer, aparat elektronik, listrik dan elektromekanik untuk dipakai dengan komputer, papan sirkuit video, perancangan komputer dan sistem telekomunikasi berdasarkan pesanan, produk - produk sistem video, aparat dan perlengkapan untuk merekam, mereproduksi dan merubah suara, video dan data, program komputer."
+        }
+      ]
+    },
+    "id": "b2fbdc25-20be-4523-90da-1f327baebcc3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America"
+      }
+    ],
+    "recordLastUpdated": "20250714",
+    "registrationOfficeCode": "ID",
+    "registrationOfficeName": "Indonesia",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040818",
+        "applicationNumber": "J002004017865"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20060417",
+        "registrationNumber": "IDM000069200"
+      }
+    },
+    "version": "20250714191919",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/id/b2fbdc25-20be-4523-90da-1f327baebcc3",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.706Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

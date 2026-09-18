@@ -1359,7 +1359,7 @@
         "publicationVolume": "200"
       }
     ],
-    "recordLastUpdated": "20260511",
+    "recordLastUpdated": "20260918",
     "registrationOfficeCode": "EM",
     "registrationOfficeName": "EU trade marks",
     "representatives": [
@@ -1386,14 +1386,14 @@
         "registrationNumber": "18575624"
       }
     },
-    "version": "20260511230441",
+    "version": "20260918021303",
     "wordMarkSpecification": {
       "markVerbalElementText": "qori"
     }
   },
   "_uri": "/mark/em/539c21aa-9d8f-438b-b140-23a16d4b4660",
   "_receipt": {
-    "fetched_at": "2026-09-02T16:25:36.394Z",
-    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+    "fetched_at": "2026-09-18T12:40:49.392Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
   }
 }

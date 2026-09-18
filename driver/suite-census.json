@@ -1859,7 +1859,7 @@
         },
         "deployment-hostnames.test.mjs": {
           "tests": 13,
-          "asserts": 37,
+          "asserts": 38,
           "skips": 0,
           "todos": 0
         },
@@ -2578,8 +2578,8 @@
           "todos": 0
         },
         "freeze-example-run.test.mjs": {
-          "tests": 11,
-          "asserts": 51,
+          "tests": 14,
+          "asserts": 60,
           "skips": 0,
           "todos": 0
         },
@@ -3808,8 +3808,8 @@
           "todos": 0
         },
         "release-pipeline.test.mjs": {
-          "tests": 116,
-          "asserts": 435,
+          "tests": 117,
+          "asserts": 445,
           "skips": 0,
           "todos": 0
         },
@@ -3832,8 +3832,8 @@
           "todos": 0
         },
         "render.test.mjs": {
-          "tests": 160,
-          "asserts": 665,
+          "tests": 161,
+          "asserts": 670,
           "skips": 0,
           "todos": 0
         },
@@ -4781,8 +4781,8 @@
         },
         "the-demo-is-its-own-install.test.mjs": {
           "tests": 8,
-          "asserts": 61,
-          "skips": 0,
+          "asserts": 62,
+          "skips": 2,
           "todos": 0
         },
         "the-demo-links-its-reports-to-its-own-portal.test.mjs": {
@@ -4794,6 +4794,12 @@
         "the-demo-offers-no-background-form.test.mjs": {
           "tests": 5,
           "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-demo-takes-its-folder-with-it.test.mjs": {
+          "tests": 6,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -4877,7 +4883,7 @@
         },
         "the-first-hour-reads-true.test.mjs": {
           "tests": 8,
-          "asserts": 41,
+          "asserts": 42,
           "skips": 0,
           "todos": 0
         },
@@ -5930,6 +5936,12 @@
           "skips": 0,
           "todos": 0
         },
+        "list-runs-says-when-nothing-is-configured.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "multi-audience-access-applications.test.mjs": {
           "tests": 13,
           "asserts": 36,
@@ -6398,8 +6410,8 @@
           "todos": 0
         },
         "reportSections.test.ts": {
-          "tests": 6,
-          "asserts": 17,
+          "tests": 9,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },

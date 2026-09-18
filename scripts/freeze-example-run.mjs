@@ -45,7 +45,7 @@ import {
   readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, copyFileSync,
   statSync, rmSync, mkdtempSync, cpSync, renameSync,
 } from "node:fs";
-import { join, dirname, relative, basename } from "node:path";
+import { join, dirname, relative, basename, resolve } from "node:path";
 import { createHash } from "node:crypto";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { PUBLISH_INPUTS } from "../driver/publish/publish-inputs.mjs";   //
@@ -330,7 +330,21 @@ if (renamed && !sourceDate) note(`--codename given but ${leaf} carries no <date>
 const readJsonOr = (p, f = null) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return f; } };
 const profile = readJsonOr(driverDir(runDir, "profile.json"));
 const customerKey = flag("--customer-key") ?? profile?.profileKey ?? "generic";
+// THE RUN'S OWN PUBLIC ORIGIN, WHERE IT RECORDED ONE, AND IT DOES NOT TRAVEL.
+//
+// A run delivered on a deployment with a public address writes its report link with that address in
+// front — `https://<the deployment's host>/portal/report/<runId>/` — in status.json and in the delivery
+// email. A frozen sample is replayed in whatever portal serves it, where the route is the whole link, and
+// the shipped demo carries the route only; a deployment's host in it is a name the package must not
+// ship, which a guard refuses. Measured on the first harvest from the test deployment: five files, the
+// four status.json and a knockout's email body. Read from the run's own status.json rather than
+// configured here, so the rewrite is exactly as wide as what the run itself wrote, and a run whose link
+// is already a route has no origin and nothing is rewritten.
+const sourceStatus = readJsonOr(join(runDir, "status.json"));
+const sourceOrigin = String(sourceStatus?.url ?? "").match(/^(https?:\/\/[^/]+)\/portal\//)?.[1] ?? null;
+const originPart = (t) => (sourceOrigin ? t.split(`${sourceOrigin}/`).join("/") : t);
 note(`runId=${runId} codename=${codename || "(none)"} customerKey=${customerKey}`);
+note(sourceOrigin ? `public origin: ${sourceOrigin} — every link under it is rewritten to its route` : "public origin: none recorded — links are already routes");
 if (renamed) note(`renamed from ${sourceCodename} — step 4 lists every frozen file still carrying the old one`);
 
 // ── 2. copy the allowlist ────────────────────────────────────────────────────────────────────────────
@@ -382,7 +396,7 @@ note(`${copied.length} file(s) copied`);
 // would stop being safe the moment either pattern widened, so the pass that changes the most text runs
 // against the original bytes rather than against the other pass's output.
 console.log("\n2b. rewrite");
-let cnFiles = 0, cnHits = 0, vkFiles = 0, vkHits = 0;
+let cnFiles = 0, cnHits = 0, vkFiles = 0, vkHits = 0, ogFiles = 0, ogHits = 0;
 for (const rel of copied) {
   const path = join(frozenRun, rel);
   let text;
@@ -394,6 +408,12 @@ for (const rel of copied) {
     // audit.md, and a key-name-aware one would miss `_receipt.context`, which is where it actually hides.
     const parts = text.split(sourceCodename);
     if (parts.length > 1) { cnFiles++; cnHits += parts.length - 1; text = parts.join(codename); }
+  }
+
+  // The origin third, and only in front of a path: a host named anywhere else is not a link this pass
+  // understands, so it is left for the re-read below to report rather than guessed at.
+  if (sourceOrigin && text.includes(`${sourceOrigin}/`)) {
+    ogFiles++; ogHits += text.split(`${sourceOrigin}/`).length - 1; text = originPart(text);
   }
 
   const keys = text.match(VENDOR_KEY_RE);
@@ -438,6 +458,7 @@ note(renamed && sourceCodename
   ? `codename: ${cnHits} occurrence(s) in ${cnFiles} file(s) rewritten "${sourceCodename}" -> "${codename}"`
   : "codename: not renamed (--codename not given, or it matches the source) — nothing rewritten");
 note(`vendor record keys: ${vkHits} occurrence(s) in ${vkFiles} file(s) substituted, ${vendorKeyMap.size} distinct key(s)`);
+if (sourceOrigin) note(`public origin: ${ogHits} link(s) in ${ogFiles} file(s) rewritten to their route`);
 
 // PROVED, NOT ASSUMED — and this is the half that makes the counts above worth printing. A rewrite that
 // silently matched nothing prints "0 occurrence(s)" and reads exactly like a tree that was already
@@ -445,10 +466,11 @@ note(`vendor record keys: ${vkHits} occurrence(s) in ${vkFiles} file(s) substitu
 // version-1 UUIDs, found zero, and the zero was a claim about the detector. So the frozen tree is
 // re-read here and any survivor of either class is a FINDING, whatever the counters said.
 {
-  const survivorsCn = [], survivorsVk = [];
+  const survivorsCn = [], survivorsVk = [], survivorsOg = [];
   for (const rel of copied) {
     let t; try { t = readFileSync(join(frozenRun, rel), "utf8"); } catch { continue; }
     if (renamed && sourceCodename && t.includes(sourceCodename)) survivorsCn.push(rel);
+    if (sourceOrigin && t.includes(sourceOrigin.replace(/^https?:\/\//, ""))) survivorsOg.push(rel);
     VENDOR_KEY_RE.lastIndex = 0;   // a /g regex carries lastIndex across .test() calls
     if (VENDOR_KEY_RE.test(t)) survivorsVk.push(rel);
     VENDOR_KEY_RE.lastIndex = 0;
@@ -458,7 +480,10 @@ note(`vendor record keys: ${vkHits} occurrence(s) in ${vkFiles} file(s) substitu
   }
   if (survivorsCn.length) finding(`${survivorsCn.length} file(s) still carry the source codename after the rewrite: ${survivorsCn.slice(0, 8).join(", ")}${survivorsCn.length > 8 ? ", …" : ""}`);
   if (survivorsVk.length) finding(`${survivorsVk.length} file(s) still carry a vendor record key after substitution: ${survivorsVk.slice(0, 8).join(", ")}${survivorsVk.length > 8 ? ", …" : ""}`);
-  if (!survivorsCn.length && !survivorsVk.length) note("re-read the frozen tree: no codename and no vendor record key survived");
+  // THE HOST, NOT THE ORIGIN, IS WHAT IS LOOKED FOR: a bare mention with no scheme, or one not followed
+  // by a path, is exactly what the rewrite above does not touch, so it is what the re-read must find.
+  if (survivorsOg.length) finding(`${survivorsOg.length} file(s) still name the run's host after the rewrite: ${survivorsOg.slice(0, 8).join(", ")}${survivorsOg.length > 8 ? ", …" : ""}`);
+  if (!survivorsCn.length && !survivorsVk.length && !survivorsOg.length) note("re-read the frozen tree: no codename, no vendor record key and no host survived");
 }
 
 // ── 3. prune proof ───────────────────────────────────────────────────────────────────────────────────
@@ -554,13 +579,14 @@ const rewriteInPlace = (root, files) => {
     let t; try { t = readFileSync(path, "utf8"); } catch { continue; }
     const before = t;
     if (renamed && sourceCodename) t = t.split(sourceCodename).join(codename);
+    t = originPart(t);
     t = t.replace(VENDOR_KEY_RE, substituteFor);
     if (t !== before) writeFileSync(path, t);
   }
 };
 
 let sourceForProof = runDir;
-if ((renamed && sourceCodename) || vendorKeyMap.size) {
+if ((renamed && sourceCodename) || vendorKeyMap.size || sourceOrigin) {
   const staged = join(scratch, "source");
   cpSync(runDir, staged, { recursive: true });
   const stagedFiles = [];
@@ -648,6 +674,12 @@ else note(`scratch pools kept at ${scratch}`);
 // Deliberately NOT the published meta.json: that carries issuedAt, engineCommit and a token rollup, all
 // stamps of the machine that produced it. Only the four fields republishRun actually reads as INPUTS.
 console.log("\n6. manifest");
+// THE COMMAND THAT MADE THIS DIRECTORY, not a generic one. It read `--out demo`, and `demo/` is the
+// container of all four products: run as printed, it replaced the container with one run and took the
+// other three and the container's README with it (measured on the first harvest). So the line names
+// the directory this file sits in, and the codename the freeze was given.
+const regenRel = relative(REPO, resolve(outDir));
+const regenOut = regenRel && !regenRel.startsWith("..") ? regenRel : "<this directory>";
 writeFileSync(join(outDir, "meta.json"), JSON.stringify(meta, null, 2) + "\n");
 note(`meta.json → ${JSON.stringify(meta)}`);
 writeFileSync(join(outDir, "PROVENANCE.md"),
@@ -660,7 +692,7 @@ writeFileSync(join(outDir, "PROVENANCE.md"),
   + `model, a register or the network.\n\n`
   + `Regenerate with:\n\n`
   + "```\n"
-  + `node scripts/freeze-example-run.mjs --run-dir <archived run> --out demo --force\n`
+  + `node scripts/freeze-example-run.mjs --run-dir <archived run> --out ${regenOut} --force${renamed ? ` --codename ${codename}` : ""}\n`
   + "```\n");
 
 // ── verdict ──────────────────────────────────────────────────────────────────────────────────────────

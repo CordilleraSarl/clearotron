@@ -1,0 +1,189 @@
+{
+  "uri": "/mark/us/4fd455c7-053a-4b06-bdad-4521ce570e4c",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "4fd455c7-053a-4b06-bdad-4521ce570e4c",
+  "applicationNumber": "99882165",
+  "registrationNumber": null,
+  "applicationDate": "2026-06-12",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "NXP",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Electronic, electrotechnical and electromagnetic modules; data storage apparatus; data processing equipment; apparatus for recording, transmission or reproduction of sound or images; integrated circuits (ICs), chips (integrated circuits); semiconductors; semiconductor devices; software; hardware; system-on-chip [SoC] devices; printed circuit boards; integrated circuits embedded with software; microprocessors; microcontrollers; application processors; digital signal processors; power management integrated circuits (ICs); LED driver ICs; LCD drivers; battery management ICs, namely battery cell controllers, battery communication ICs, battery charger ICs and battery sensors; sensors, namely motion sensors, accelerometers, pressure sensors, magnetic (switch) sensors, temperature sensors; wireless transmitters and receivers; ethernet switches, ethernet (PHY) transceivers; Internet of Things [IoT] gateways; Internet of Things [IoT] wireless sensors; Internet of Things [IoT] range extenders [antennas]; network processor chips; vehicle network processors; automotive general-purpose microcontrollers (MCUs); software-defined vehicle (SDV) platforms; in-vehicle networking (IVN) systems comprised of computer hardware and recorded software for facilitating electronic data communication transmission used to connect electronic control units in automobiles; audio amplifier ICs; car audio amplifier ICs; audio converter ICs; amplifier modules; wireless audio products; wireless audio chips; power amplifiers; audio-processing digital signal processors (DSPs); rf amplifiers; radio tuners; radio receivers; integrated circuits (ICs) for radio and audio processing; software defined radio processor with integrated audio; digital radio and processing system-on-chip (SoC); transistors; controllers and regulators; voltage regulators; integrated switching regulators; demodulators; analog switch ICs; analog watch motor drivers; multiplexers; digital to analog (DAC) converters; analog to digital (ADC) converters; repeaters; hubs; extenders; signal conditioners; signal amplifiers; transponder ICs; antenna systems; transceivers; data switches; interfaces for computers; graphics processor units (GPUs); central processing units [processors]; USB interfaces, USB multiplexers; computer network bridges; development boards; evaluation boards for use with specific types of microcontroller families; computer hardware modules for use in Internet of Things electronic devices; edge computing hardware; neural processing units (NPUs); computer hardware and integrated circuits, namely, edge AI accelerator chips and semiconductor devices for processing artificial intelligence (AI) applications at the edge; software platforms; software development kits; software for operating and managing integrated circuit components; software for voice and audio processing; software and peripheral devices used for access control and authentication purposes; software for facilitating secure transactions; computer application software for use in implementing the Internet of Things [IoT]; artificial intelligence software; machine learning software; downloadable and recorded software for artificial intelligence, machine learning, deep learning and deep neural networks; edge computing software; computer programs for cloud computing software; cloud computing systems; software for cloud infrastructure; cloud computing platform software; application software for cloud computing services; computer programs for controlling transmission of data to and reading of data from transponder chips; electronic writers and readers for wireless transmission to and from transponder chips; electronic apparatus for writing and reading of wireless transmission to and from transponder chips; data processing machines for fare determination using transponder chips; software solutions for the implementation of smartcards on mobile devices and wearable devices; software solutions for security and risk management in respect of smartcard implementation on mobile devices and wearable devices; software solutions for virtual card storing on mobile devices and wearable devices embedded on a HCE (Host Card Emulation); software solutions for virtual card storing on mobile devices and wearable device embedded on a SE (Secure Element); interface software; blank integrated circuit cards; cards with integrated circuits; smart cards; smart card integrated circuits; smart card interfaces; contactless smart cards; encoded smart cards; dual interface smart cards; dual interface integrated circuits (IC's) that provide a link between contactless cards and contact cards; electronic access cards; electronic card readers; smart card readers; secure access modules; physical access control systems and devices, namely, smart cards, RFID cards, NFC enabled devices, smart card readers, RFID readers, and system control panels; encoded smart cards containing programming used for access control systems; encoded contactless smart cards containing programming used for determining the fare to be paid by passengers who book their trip electronically; encoded contactless smart cards containing programming used for gaining access to certain areas, buildings, premises, and vehicles; encoded contactless smart cards containing programming used for payment; RFID chips and tags; labels, smart cards and tags with integrated RFID chips; NFC tag ICs; blank near field communication (NFC) tags; near field communication (NFC) technology-enabled readers; blank near field communication (NFC) labels; blank near field communication (NFC) stickers; nfc controllers with integrated firmware; NFC wireless charging communication receivers; NFC wireless charging transmitter controllers; NFC wireless charging power receivers; cloud based software solutions for managing digitized credentials onto mobile devices and wearable devices supporting NFC-enabled mobile devices for mobile fare payments; nfc-enabled digital wallets; computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; ultra-wideband (UWB) integrated circuit chips; secure terminals for electronic transactions; secure digital (SD) card readers; Secure Digital (SD) memory cards; SIM cards; SIM cards of mobile NFC devices over the air (OTA); electronic wristbands, namely, electronic readers/recorders for authenticating identity, controlling access to functions, managing events, ticketing, promoting brand loyalty, promoting brands, cashless vending, transportation and membership identification; electronic sensors; ear buds; wearable computers worn on the wrist; wearable digital electronic devices in the form of a wristwatch, wrist band and bangle, namely, a wearable digital electronic device comprised primarily of software and a wrist band mounted touchscreen and also featuring a wrist watch for the wireless receipt, storage and transmission of data and messages, and for keeping track of and managing personal information; wearable activity trackers; wearable computer peripherals; headphones; smartphones; wearable telecommunication apparatus; electronic key fobs being remote control apparatus; mobile transit ticketing, keyless entry chips",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Research, design and development services related to electronic, electrotechnical and electromagnetic modules; research, design and development services related to integrated circuits and semiconductors; research, design and development services related to RFID chips, smart cards and NFC (near field communications) apparatus; hardware design services; hardware engineering services; software engineering; design and development of computer hardware and software; software design; software development; custom programming and implementation of software; software as a service [SaaS]; platform as a service (PaaS); infrastructure as a service (IaaS); technical research; engineering testing, authentication and quality control of semiconductors; design and development of automotive electronics and software; design and development of computer hardware and software for edge artificial intelligence (AI) applications; cloud computing; cloud computing services; consultancy in the field of computer hardware and software; advisory, consultancy and information services in relation to all the aforesaid services",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "Cynthia R. Adwere",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60, Eindhoven, NL-5656 AG, NETH",
+        "applicantAddressCity": "Eindhoven",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantAddressPostalCode": "NL-5656 AG",
+        "applicantAddressStreet": "High Tech Campus 60",
+        "applicantJurisdictionOfIncorporation": "NETHERLANDS",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "associatedMarks": [
+      {
+        "registrationNumbers": [
+          "3564793"
+        ]
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Electronic, electrotechnical and electromagnetic modules; data storage apparatus; data processing equipment; apparatus for recording, transmission or reproduction of sound or images; integrated circuits (ICs), chips (integrated circuits); semiconductors; semiconductor devices; software; hardware; system-on-chip [SoC] devices; printed circuit boards; integrated circuits embedded with software; microprocessors; microcontrollers; application processors; digital signal processors; power management integrated circuits (ICs); LED driver ICs; LCD drivers; battery management ICs, namely battery cell controllers, battery communication ICs, battery charger ICs and battery sensors; sensors, namely motion sensors, accelerometers, pressure sensors, magnetic (switch) sensors, temperature sensors; wireless transmitters and receivers; ethernet switches, ethernet (PHY) transceivers; Internet of Things [IoT] gateways; Internet of Things [IoT] wireless sensors; Internet of Things [IoT] range extenders [antennas]; network processor chips; vehicle network processors; automotive general-purpose microcontrollers (MCUs); software-defined vehicle (SDV) platforms; in-vehicle networking (IVN) systems comprised of computer hardware and recorded software for facilitating electronic data communication transmission used to connect electronic control units in automobiles; audio amplifier ICs; car audio amplifier ICs; audio converter ICs; amplifier modules; wireless audio products; wireless audio chips; power amplifiers; audio-processing digital signal processors (DSPs); rf amplifiers; radio tuners; radio receivers; integrated circuits (ICs) for radio and audio processing; software defined radio processor with integrated audio; digital radio and processing system-on-chip (SoC); transistors; controllers and regulators; voltage regulators; integrated switching regulators; demodulators; analog switch ICs; analog watch motor drivers; multiplexers; digital to analog (DAC) converters; analog to digital (ADC) converters; repeaters; hubs; extenders; signal conditioners; signal amplifiers; transponder ICs; antenna systems; transceivers; data switches; interfaces for computers; graphics processor units (GPUs); central processing units [processors]; USB interfaces, USB multiplexers; computer network bridges; development boards; evaluation boards for use with specific types of microcontroller families; computer hardware modules for use in Internet of Things electronic devices; edge computing hardware; neural processing units (NPUs); computer hardware and integrated circuits, namely, edge AI accelerator chips and semiconductor devices for processing artificial intelligence (AI) applications at the edge; software platforms; software development kits; software for operating and managing integrated circuit components; software for voice and audio processing; software and peripheral devices used for access control and authentication purposes; software for facilitating secure transactions; computer application software for use in implementing the Internet of Things [IoT]; artificial intelligence software; machine learning software; downloadable and recorded software for artificial intelligence, machine learning, deep learning and deep neural networks; edge computing software; computer programs for cloud computing software; cloud computing systems; software for cloud infrastructure; cloud computing platform software; application software for cloud computing services; computer programs for controlling transmission of data to and reading of data from transponder chips; electronic writers and readers for wireless transmission to and from transponder chips; electronic apparatus for writing and reading of wireless transmission to and from transponder chips; data processing machines for fare determination using transponder chips; software solutions for the implementation of smartcards on mobile devices and wearable devices; software solutions for security and risk management in respect of smartcard implementation on mobile devices and wearable devices; software solutions for virtual card storing on mobile devices and wearable devices embedded on a HCE (Host Card Emulation); software solutions for virtual card storing on mobile devices and wearable device embedded on a SE (Secure Element); interface software; blank integrated circuit cards; cards with integrated circuits; smart cards; smart card integrated circuits; smart card interfaces; contactless smart cards; encoded smart cards; dual interface smart cards; dual interface integrated circuits (IC's) that provide a link between contactless cards and contact cards; electronic access cards; electronic card readers; smart card readers; secure access modules; physical access control systems and devices, namely, smart cards, RFID cards, NFC enabled devices, smart card readers, RFID readers, and system control panels; encoded smart cards containing programming used for access control systems; encoded contactless smart cards containing programming used for determining the fare to be paid by passengers who book their trip electronically; encoded contactless smart cards containing programming used for gaining access to certain areas, buildings, premises, and vehicles; encoded contactless smart cards containing programming used for payment; RFID chips and tags; labels, smart cards and tags with integrated RFID chips; NFC tag ICs; blank near field communication (NFC) tags; near field communication (NFC) technology-enabled readers; blank near field communication (NFC) labels; blank near field communication (NFC) stickers; nfc controllers with integrated firmware; NFC wireless charging communication receivers; NFC wireless charging transmitter controllers; NFC wireless charging power receivers; cloud based software solutions for managing digitized credentials onto mobile devices and wearable devices supporting NFC-enabled mobile devices for mobile fare payments; nfc-enabled digital wallets; computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; ultra-wideband (UWB) integrated circuit chips; secure terminals for electronic transactions; secure digital (SD) card readers; Secure Digital (SD) memory cards; SIM cards; SIM cards of mobile NFC devices over the air (OTA); electronic wristbands, namely, electronic readers/recorders for authenticating identity, controlling access to functions, managing events, ticketing, promoting brand loyalty, promoting brands, cashless vending, transportation and membership identification; electronic sensors; ear buds; wearable computers worn on the wrist; wearable digital electronic devices in the form of a wristwatch, wrist band and bangle, namely, a wearable digital electronic device comprised primarily of software and a wrist band mounted touchscreen and also featuring a wrist watch for the wireless receipt, storage and transmission of data and messages, and for keeping track of and managing personal information; wearable activity trackers; wearable computer peripherals; headphones; smartphones; wearable telecommunication apparatus; electronic key fobs being remote control apparatus; mobile transit ticketing, keyless entry chips"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Research, design and development services related to electronic, electrotechnical and electromagnetic modules; research, design and development services related to integrated circuits and semiconductors; research, design and development services related to RFID chips, smart cards and NFC (near field communications) apparatus; hardware design services; hardware engineering services; software engineering; design and development of computer hardware and software; software design; software development; custom programming and implementation of software; software as a service [SaaS]; platform as a service (PaaS); infrastructure as a service (IaaS); technical research; engineering testing, authentication and quality control of semiconductors; design and development of automotive electronics and software; design and development of computer hardware and software for edge artificial intelligence (AI) applications; cloud computing; cloud computing services; consultancy in the field of computer hardware and software; advisory, consultancy and information services in relation to all the aforesaid services"
+        }
+      ]
+    },
+    "id": "4fd455c7-053a-4b06-bdad-4521ce570e4c",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260612",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20260612",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "High Tech Campus 60, Eindhoven, NL-5656 AG, NETH",
+        "city": "Eindhoven",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "name": "NXP B.V.",
+        "postalCode": "NL-5656 AG",
+        "street": "High Tech Campus 60"
+      },
+      {
+        "address": "High Tech Campus 60, Eindhoven, NL-5656 AG, NETH",
+        "city": "Eindhoven",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "name": "NXP B.V.",
+        "postalCode": "NL-5656 AG",
+        "street": "High Tech Campus 60"
+      }
+    ],
+    "recordLastUpdated": "20260618",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Palo Alto, CA 94306, United States",
+        "representativeCorrespondentAddressLines": [
+          "Palo Alto, CA 94306",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Cynthia R. Adwere Law Office of Cynthia R. Adwere, 2625 Middlefield Road, no. 360"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Palo Alto, CA 94306, United States",
+        "representativeAddressLines": [
+          "Palo Alto, CA 94306",
+          "United States"
+        ],
+        "representativeName": "Cynthia R. Adwere"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260612",
+        "applicationNumber": "99882165"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "ipOffice": {
+        "markOfficialStatus": "NEW APPLICATION - RECORD INITIALIZED NOT ASSIGNED TO EXAMINER",
+        "markOfficialStatusCode": "630",
+        "markOfficialStatusDate": "20260612",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260618090202",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NXP"
+    }
+  },
+  "_uri": "/mark/us/4fd455c7-053a-4b06-bdad-4521ce570e4c",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.723Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

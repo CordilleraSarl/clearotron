@@ -1,0 +1,120 @@
+{
+  "uri": "/mark/cn/b824b9a2-b3a8-497f-b409-61a96cd7475d",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "b824b9a2-b3a8-497f-b409-61a96cd7475d",
+  "applicationNumber": "71321456",
+  "registrationNumber": null,
+  "applicationDate": "2023-05-05",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "优电能光",
+  "markTransliteration": "SUNLIGHT AWESOME YOU DIAN NENG GUANG",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "电瓶;发电用太阳能电池板;光伏电池;太阳能电池;太阳能发电用光伏装置和设备;蓄电池;蓄电池充电器;蓄电瓶;移动电源(可充电电池);运载工具用蓄电池",
+      "translation_language": "en",
+      "translation": "Storage batteries; solar panels for power generation; photovoltaic cells; solar cells; photovoltaic devices and equipment for solar power generation; storage batteries; battery chargers; storage batteries; mobile power sources (rechargeable batteries); storage batteries for vehicles"
+    }
+  ],
+  "owner": "Guangzhou Tengding Trading Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省广州市番禺区南村镇江南村南里路10号106",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Guangzhou Tengding Trading Co., Ltd.",
+        "applicantNativeName": "广州腾顶贸易有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Storage batteries; solar panels for power generation; photovoltaic cells; solar cells; photovoltaic devices and equipment for solar power generation; storage batteries; battery chargers; storage batteries; mobile power sources (rechargeable batteries); storage batteries for vehicles",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "电瓶;发电用太阳能电池板;光伏电池;太阳能电池;太阳能发电用光伏装置和设备;蓄电池;蓄电池充电器;蓄电瓶;移动电源(可充电电池);运载工具用蓄电池"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "b824b9a2-b3a8-497f-b409-61a96cd7475d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251005",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳海域信息技术有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20230505",
+        "applicationNumber": "71321456"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251005041409",
+    "wordMarkSpecification": {
+      "markTransliteration": "SUNLIGHT AWESOME YOU DIAN NENG GUANG",
+      "markVerbalElementText": "优电能光"
+    }
+  },
+  "_uri": "/mark/cn/b824b9a2-b3a8-497f-b409-61a96cd7475d",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:44.440Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

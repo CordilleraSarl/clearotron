@@ -30,8 +30,8 @@ import { stallMs } from "../engine/common.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { runLedger, investigate } from "../../scripts/e2e.mjs";
 
-// From the attempt records of the two incidents on (an R1 and an R2 round, 2026-08-19 and
-// 2026-08-21), each `_driver/doubt-closure.jsonl`. The runs are cited by ROUND and DATE and not by
+// From the attempt records of the two incidents (two clearance test runs, 2026-08-19 and
+// 2026-08-21), each `_driver/doubt-closure.jsonl`. The runs are cited by KIND and DATE and not by
 // codename: this repository is de-identified by design and a generator codename names a real matter.
 // The SLOWER of the two clean passes is the number the ladder has to clear — sizing to the faster one
 // re-files this issue.

@@ -1,0 +1,125 @@
+{
+  "uri": "/mark/bh/042348aa-5f3f-4b9d-92a9-5236edc8d192",
+  "provider": "clarivate",
+  "office": "bh",
+  "guid": "042348aa-5f3f-4b9d-92a9-5236edc8d192",
+  "applicationNumber": "41756",
+  "registrationNumber": null,
+  "applicationDate": "2004-07-04",
+  "registrationDate": "2007-02-12",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "FREESCALE",
+  "markTransliteration": "FREESCALE",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "ar",
+      "description": "خدمات الترخيص للتقنية، والبراءات، والعلامات التجارية وحقوق التأليف، والأسرار التجارية و/أو أمور المعرفة المتعلقة بصناعة أشباه الموصلات واستعمالاتها، ترخيص أشباه الموصلات، الترخيص لأنظمة السوفتوير المتعلقة بصناعة أشباه الموصلات واستعمالاتها، ترخيص التقنية والتكنولوجيا المتعلقة بمنتجات أشباه الموصلات، والدوائر المدمجة، ولوحات الدوائر، وأجهزة الكمبيوتر المصغرة، وأجهزة التحكم المصغرة وأجهزة المعالجة المصغرة وهياكل أجهزة الكمبيوتر، الذاكرة ومواد أشباه الموصلات ذات العلاقة، ودوائر تحويل البيانات، وأنظمة أجهزة الكمبيوتر، والأجهزة الالكترونية والكهربية والكهروميكانيكية للاستعمال مع أجهزة الكمبيوتر، ولوحات دوائر الفيديو، ومنتجات أنظمة الفيديو، أجهزة ومعدات للتسجيل، وإعادة انتاج وتعديل الصوت والصورة والبيانات، وبرامج الكمبيوتر، ومواد إرشادية متعلقة بالكمبيوتر وحسابات الكمبيوتر لضغط وتفريغ المعلومات، تصميمات أجهزة الكمبيوتر وأنظمة الاتصالات، خدمات استشارية في مجال الكمبيوتر والاتصالات والتقنية ذات العلاقة لتصميم أنظمة السوفتوير",
+      "translation_language": "en",
+      "translation": "Licensing services for technology, patents, trademarks, copyrights, trade secrets and/or know-how relating to the semiconductor industry and its uses, semiconductor licensing, licensing of software systems relating to the semiconductor industry and its uses, licensing of technology and technology relating to semiconductor products, integrated circuits, circuit boards, microcomputers, microcontrollers and microprocessors and computer chassis, memory and related semiconductor materials, data conversion circuits, computer systems, electronic, electrical and electromechanical devices for use with computers, video circuit boards, video system products, apparatus and equipment for recording, reproducing and modifying sound, image and data, computer programs, computer-related instructional materials and computer calculations for compressing and unpacking information, computer and communication system designs, consulting services in the field of computers, communications and related technology for designing software systems"
+    }
+  ],
+  "owner": null,
+  "ownerNative": null,
+  "ownerCountry": "UNKN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "1 ويليام كانون دريف ويست أوستن, تكساس 78735, الولابات المتحدة الأمريكية",
+        "applicantAddressCountryCode": "UNKN",
+        "applicantAddressCountryName": "Unknown Applicant Country/Region",
+        "applicantNativeName": "إن إكس بيه يو إس أيه. إنك"
+      },
+      {
+        "applicantAddressCountryCode": "UNKN",
+        "applicantAddressCountryName": "Unknown Applicant Country/Region",
+        "applicantName": "NXPUSA. you"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Licensing services for technology, patents, trademarks, copyrights, trade secrets and/or know-how relating to the semiconductor industry and its uses, semiconductor licensing, licensing of software systems relating to the semiconductor industry and its uses, licensing of technology and technology relating to semiconductor products, integrated circuits, circuit boards, microcomputers, microcontrollers and microprocessors and computer chassis, memory and related semiconductor materials, data conversion circuits, computer systems, electronic, electrical and electromechanical devices for use with computers, video circuit boards, video system products, apparatus and equipment for recording, reproducing and modifying sound, image and data, computer programs, computer-related instructional materials and computer calculations for compressing and unpacking information, computer and communication system designs, consulting services in the field of computers, communications and related technology for designing software systems",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ar",
+          "intGoodsServicesDescription": "خدمات الترخيص للتقنية، والبراءات، والعلامات التجارية وحقوق التأليف، والأسرار التجارية و/أو أمور المعرفة المتعلقة بصناعة أشباه الموصلات واستعمالاتها، ترخيص أشباه الموصلات، الترخيص لأنظمة السوفتوير المتعلقة بصناعة أشباه الموصلات واستعمالاتها، ترخيص التقنية والتكنولوجيا المتعلقة بمنتجات أشباه الموصلات، والدوائر المدمجة، ولوحات الدوائر، وأجهزة الكمبيوتر المصغرة، وأجهزة التحكم المصغرة وأجهزة المعالجة المصغرة وهياكل أجهزة الكمبيوتر، الذاكرة ومواد أشباه الموصلات ذات العلاقة، ودوائر تحويل البيانات، وأنظمة أجهزة الكمبيوتر، والأجهزة الالكترونية والكهربية والكهروميكانيكية للاستعمال مع أجهزة الكمبيوتر، ولوحات دوائر الفيديو، ومنتجات أنظمة الفيديو، أجهزة ومعدات للتسجيل، وإعادة انتاج وتعديل الصوت والصورة والبيانات، وبرامج الكمبيوتر، ومواد إرشادية متعلقة بالكمبيوتر وحسابات الكمبيوتر لضغط وتفريغ المعلومات، تصميمات أجهزة الكمبيوتر وأنظمة الاتصالات، خدمات استشارية في مجال الكمبيوتر والاتصالات والتقنية ذات العلاقة لتصميم أنظمة السوفتوير"
+        }
+      ]
+    },
+    "id": "042348aa-5f3f-4b9d-92a9-5236edc8d192",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250212",
+    "registrationOfficeCode": "BH",
+    "registrationOfficeName": "Bahrain",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "BH",
+        "representativeAddressCountryName": "Bahrain",
+        "representativeNativeAddress": "ص. ب :- 990 المنامة - مملكة البحرين",
+        "representativeNativeName": "أبو غزالة للملكية الفكرية تي . إم . بي . اجنتس"
+      },
+      {
+        "representativeAddressCountryCode": "BH",
+        "representativeAddressCountryName": "Bahrain",
+        "representativeName": "Abu Ghazaleh Intellectual Property t. Mother. In me. Agents"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040704",
+        "applicationNumber": "41756"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20070212"
+      }
+    },
+    "version": "20250212050011",
+    "wordMarkSpecification": {
+      "markTransliteration": "FREESCALE",
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/bh/042348aa-5f3f-4b9d-92a9-5236edc8d192",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.687Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

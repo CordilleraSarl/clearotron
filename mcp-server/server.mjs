@@ -31,7 +31,7 @@ import { join, basename } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { fileURLToPath } from "node:url";
 
-import { enumerateRuns, resolveRun, runAccountKey, runOrganisation, runProfileFacts, productIdentityFor } from "./lib/runs.mjs";
+import { enumerateRuns, resolveRun, runAccountKey, runOrganisation, runProfileFacts, productIdentityFor, unreadableRunsReason } from "./lib/runs.mjs";
 import { ORDERABLE_PRODUCTS } from "../driver/search-policy.mjs";
 import { PRODUCTS } from "../driver/products.mjs";
 
@@ -68,7 +68,7 @@ import { buildBrief } from "./lib/brief.mjs";
 import { providerUsage } from "./lib/usage.mjs";
 import { coverage, artifactStatus } from "./lib/coverage.mjs";
 import { trace } from "./lib/trace.mjs";
-import { REGISTER_AXES, STAGE_ORDER, parseFront, parseSections, paths, compareCmd, loadProfiles, loadProjects } from "./lib/driver.mjs";
+import { REGISTER_AXES, STAGE_ORDER, parseFront, parseSections, paths, compareCmd, loadProfiles, loadProjects, config } from "./lib/driver.mjs";
 import { readCapped, mimeFor } from "./lib/util.mjs";
 import { readEvents, projectTimeline } from "./lib/events.mjs";
 import { tokenize, scoreLine } from "./lib/lexsearch.mjs";
@@ -267,6 +267,11 @@ const tools = {
   // keeps the cap it has always had: an explicit limit is still obeyed, and an unfiltered list is still
   // 50, so no existing caller changes.
   list_runs({ agent, state, slug, mark, sendPending, limit } = {}) {
+    const unreadable = unreadableRunsReason({
+      workSet: !!config.envValue("CLEAROTRON_WORK_DIR"), workRoot: config.workspaceRoot,
+      workExists: existsSync(config.workspaceRoot), poolSet: !!config.poolRootOrNull,
+    });
+    if (unreadable) throw new Error(unreadable);
     let out = enumerateRuns({ agent, state, slug, mark }).map(runSummary);
     if (sendPending === true || sendPending === false) out = out.filter((r) => r.sendPending === sendPending);
     const cap = limit ?? (sendPending === true ? out.length : 50);

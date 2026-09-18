@@ -1,0 +1,111 @@
+{
+  "uri": "/mark/qa/77b44236-482e-451f-8eab-b2412e1112f1",
+  "provider": "clarivate",
+  "office": "qa",
+  "guid": "77b44236-482e-451f-8eab-b2412e1112f1",
+  "applicationNumber": "111184",
+  "registrationNumber": null,
+  "applicationDate": "2017-01-01",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "MIFARE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "ar",
+      "description": "البحوث و التصاميم للاخرين فيما يتعلق بالدوائر المتكاملة و البرمجيات و الاتصالات و الشبكات تطوير برامج الكمبيوتر في مجال تطبيقات الهاتف المحمول الاستشارات في مجال تكنولوجيا الاتصالات تصميم و تطوير نظم الاتصالات اللاسلكية لنقل و استقبال الصوت و الفيديو و البيانات تصميم و تطوير نظم الاتصالات اللاسلكية لاغراض التوثيق توفير الاستخدام المؤقت للتطبيقات علي الانترنت و البرمجيات الغير قابلة للتنزيل برامج التطوير ادوات التطوير التي تمكن مطوري البرامج للتطوير برامج بناء و نمذجة الدوائر المتكاملة رقائق و معدات معالجة البيانات خدمات برمجة الكمبيوتر بحوث و تصاميم الوحدات الكهربائية التقنية و الكهرومغناطيسية اجزاء و عناصر بناء الات معالجة البيانات اجهزة تخزين البيانات المشغلات الواجهات الدوائر المتكاملة اي سي اس الرقائق البطاقات الذكة اجهزة التحكم للحصول علي البطاقات الذكية اجهزة التحكم برقائق رفيد اجهزة الكمبيوتر و البرمجيات للبرمجة و السيطرة و الترميز ز المسح الضوئي و قراءة و تفسير رقائق رافيد اجهزة الكمبيوتر و البرمجيات لابتكار البرمجة و السيطرة و الترميز و المسح الضوئي و قراءة و تفسير رقائق رافيد البحوث و التصاميم لمسح و قراءة و تفسير رقائق رافيد البحوث و التصاميم قرب حقول الاتصالات الاجهزة و الادوات و المعدات بما ي لك الالكترونية و الكهربائية و وحدات القطع و البناء التقنية و الكهرومغناطيسية لدوائر تطبيقات ان اف سي خدمات استشارية لجميع ما سبق",
+      "translation_language": "en",
+      "translation": "Research and design for others in the field of integrated circuits, software, communications and networks Software development in the field of mobile applications Consulting in the field of communication technology Design and development of wireless communication systems for the transmission and reception of audio, video and data Design and development of wireless communication systems for documentation Temporary use of applications on the Internet and non-downloadable software Development programs Development tools Development tools for developers Software building and modeling of integrated circuits Data processing chips and equipment Computer programming services Electrical & Electromagnetic Units Research & Designs Parts & Components Building Data Processing Machines Data Storage Devices Interfaces Integrated Circuits ICS Microchips Microchips Smart Card Controllers RFID Control Devices Software & Software For Programming, Controlling & Coding Scanning And reading and interpretation of chips Rafid computers and software to invent programming and control and coding and scanning and reading and interpretation of chips Rafid Research and designs to scan and read and interpret Rafid chips research and design near the fields of communication T devices, tools and equipment including the Electronic and Electrical you and cutting units and technical construction and electromagnetic circuits applications that FC consulting services for all of the above"
+    }
+  ],
+  "owner": null,
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "هاي تك كامبوس 60 5656 ايه جي اندوفين",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantNativeName": "ان اكس بي بي في شركة ذات مسؤولية محدودة"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Research and design for others in the field of integrated circuits, software, communications and networks Software development in the field of mobile applications Consulting in the field of communication technology Design and development of wireless communication systems for the transmission and reception of audio, video and data Design and development of wireless communication systems for documentation Temporary use of applications on the Internet and non-downloadable software Development programs Development tools Development tools for developers Software building and modeling of integrated circuits Data processing chips and equipment Computer programming services Electrical & Electromagnetic Units Research & Designs Parts & Components Building Data Processing Machines Data Storage Devices Interfaces Integrated Circuits ICS Microchips Microchips Smart Card Controllers RFID Control Devices Software & Software For Programming, Controlling & Coding Scanning And reading and interpretation of chips Rafid computers and software to invent programming and control and coding and scanning and reading and interpretation of chips Rafid Research and designs to scan and read and interpret Rafid chips research and design near the fields of communication T devices, tools and equipment including the Electronic and Electrical you and cutting units and technical construction and electromagnetic circuits applications that FC consulting services for all of the above",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ar",
+          "intGoodsServicesDescription": "البحوث و التصاميم للاخرين فيما يتعلق بالدوائر المتكاملة و البرمجيات و الاتصالات و الشبكات تطوير برامج الكمبيوتر في مجال تطبيقات الهاتف المحمول الاستشارات في مجال تكنولوجيا الاتصالات تصميم و تطوير نظم الاتصالات اللاسلكية لنقل و استقبال الصوت و الفيديو و البيانات تصميم و تطوير نظم الاتصالات اللاسلكية لاغراض التوثيق توفير الاستخدام المؤقت للتطبيقات علي الانترنت و البرمجيات الغير قابلة للتنزيل برامج التطوير ادوات التطوير التي تمكن مطوري البرامج للتطوير برامج بناء و نمذجة الدوائر المتكاملة رقائق و معدات معالجة البيانات خدمات برمجة الكمبيوتر بحوث و تصاميم الوحدات الكهربائية التقنية و الكهرومغناطيسية اجزاء و عناصر بناء الات معالجة البيانات اجهزة تخزين البيانات المشغلات الواجهات الدوائر المتكاملة اي سي اس الرقائق البطاقات الذكة اجهزة التحكم للحصول علي البطاقات الذكية اجهزة التحكم برقائق رفيد اجهزة الكمبيوتر و البرمجيات للبرمجة و السيطرة و الترميز ز المسح الضوئي و قراءة و تفسير رقائق رافيد اجهزة الكمبيوتر و البرمجيات لابتكار البرمجة و السيطرة و الترميز و المسح الضوئي و قراءة و تفسير رقائق رافيد البحوث و التصاميم لمسح و قراءة و تفسير رقائق رافيد البحوث و التصاميم قرب حقول الاتصالات الاجهزة و الادوات و المعدات بما ي لك الالكترونية و الكهربائية و وحدات القطع و البناء التقنية و الكهرومغناطيسية لدوائر تطبيقات ان اف سي خدمات استشارية لجميع ما سبق"
+        }
+      ]
+    },
+    "id": "77b44236-482e-451f-8eab-b2412e1112f1",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "QA",
+    "registrationOfficeName": "Qatar",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "QA",
+        "representativeAddressCountryName": "Qatar",
+        "representativeNativeAddress": "ص ب 2620 الدوحة قطر",
+        "representativeNativeName": "ابو غزالة للملكية الفكرية"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170101",
+        "applicationNumber": "111184"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20230427124017",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MIFARE"
+    }
+  },
+  "_uri": "/mark/qa/77b44236-482e-451f-8eab-b2412e1112f1",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.749Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

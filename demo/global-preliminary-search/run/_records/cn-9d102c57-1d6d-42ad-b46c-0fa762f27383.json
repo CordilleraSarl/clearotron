@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/cn/9d102c57-1d6d-42ad-b46c-0fa762f27383",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "9d102c57-1d6d-42ad-b46c-0fa762f27383",
+  "applicationNumber": "80946362",
+  "registrationNumber": "80946362",
+  "applicationDate": "2024-09-14",
+  "registrationDate": "2025-04-28",
+  "expiryDate": "2035-04-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-01-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "NXP BRIGHTER TOGETHER",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "半导体加工技术研究;半导体软件的设计与开发;半导体设计;多媒体设备编程;工程测试;集成电路设计;计算机软件的设计和开发;计算机软件设计;计算机软件咨询服务;计算机硬件开发;计算机硬件设计和开发咨询;技术研究;人工智能技术领域的研究;人工智能技术咨询;软件即服务(SaaS);软件开发;软件设计;软件设计和开发;数据处理设备编程;为他人提供计算机软件设计;为他人研究和开发新产品;芯片设计软件开发;云计算",
+      "translation_language": "en",
+      "translation": "Semiconductor processing technology research; semiconductor software design and development; semiconductor design; multimedia equipment programming; engineering testing; integrated circuit design; computer software design and development; computer software design; computer software consulting services; computer hardware development; computer hardware design and development consulting; technology research; research in the field of artificial intelligence technology; artificial intelligence technology consulting; software as a service (SaaS); software development; software design; software design and development; data processing equipment programming; computer software design for others; research and development of new products for others; chip design software development; cloud computing"
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "HIGH TECH CAMPUS 60,5656 AG EINDHOVEN,NETHERLANDS",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V.",
+        "applicantNativeName": "恩智浦有限责任公司;NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Semiconductor processing technology research; semiconductor software design and development; semiconductor design; multimedia equipment programming; engineering testing; integrated circuit design; computer software design and development; computer software design; computer software consulting services; computer hardware development; computer hardware design and development consulting; technology research; research in the field of artificial intelligence technology; artificial intelligence technology consulting; software as a service (SaaS); software development; software design; software design and development; data processing equipment programming; computer software design for others; research and development of new products for others; chip design software development; cloud computing",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "半导体加工技术研究;半导体软件的设计与开发;半导体设计;多媒体设备编程;工程测试;集成电路设计;计算机软件的设计和开发;计算机软件设计;计算机软件咨询服务;计算机硬件开发;计算机硬件设计和开发咨询;技术研究;人工智能技术领域的研究;人工智能技术咨询;软件即服务(SaaS);软件开发;软件设计;软件设计和开发;数据处理设备编程;为他人提供计算机软件设计;为他人研究和开发新产品;芯片设计软件开发;云计算"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Research and development service",
+        "Computer programming, and concerned services"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        }
+      ]
+    },
+    "id": "9d102c57-1d6d-42ad-b46c-0fa762f27383",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1921"
+      }
+    ],
+    "recordLastUpdated": "20251005",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京市柳沈律师事务所"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240914",
+        "applicationNumber": "80946362"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350427",
+      "lastPublicationDate": "20250127",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20250428",
+        "registrationNumber": "80946362"
+      }
+    },
+    "version": "20251005121903",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NXP BRIGHTER TOGETHER"
+    }
+  },
+  "_uri": "/mark/cn/9d102c57-1d6d-42ad-b46c-0fa762f27383",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.682Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "uri": "/mark/kr/2a3a403c-bbb0-4e02-a24a-83b9558d320f",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "2a3a403c-bbb0-4e02-a24a-83b9558d320f",
+  "applicationNumber": "40-1999-0004462",
+  "registrationNumber": "4004779540000",
+  "applicationDate": "1999-02-12",
+  "registrationDate": "2000-09-29",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "SWINGCHIP",
+  "markTransliteration": "SWINGCHIP",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "집적회로",
+      "translation_language": "en",
+      "translation": "Integrated circuit"
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "목영동 (Mok Young Dong)",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "19980824",
+      "priorityNumber": "921855"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "네덜란드 엔엘- 아게 아인드호펜 하이 테크 캠퍼스",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V.",
+        "applicantNativeName": "엔엑스피 비 브이"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Integrated circuit",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "집적회로"
+        }
+      ]
+    },
+    "id": "2a3a403c-bbb0-4e02-a24a-83b9558d320f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "19980824",
+        "priorityNumber": "921855"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "SEOUL(NONE OFFICE)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "목영동 (Mok Young Dong)"
+      },
+      {
+        "representativeAddress": "(Y.P.LEE,MOCK&PARTNERS)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "목선영 (Mock Sun Young)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19990212",
+        "applicationNumber": "40-1999-0004462"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20000929",
+        "registrationNumber": "4004779540000"
+      }
+    },
+    "version": "20250625150516",
+    "wordMarkSpecification": {
+      "markTransliteration": "SWINGCHIP",
+      "markVerbalElementText": "SWINGCHIP"
+    }
+  },
+  "_uri": "/mark/kr/2a3a403c-bbb0-4e02-a24a-83b9558d320f",
+  "_receipt": {
+    "fetched_at": "2026-09-18T14:09:34.909Z",
+    "context": "clearance-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

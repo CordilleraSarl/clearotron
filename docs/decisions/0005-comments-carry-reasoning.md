@@ -4,18 +4,17 @@
 
 ## Context
 
-Shipping source carried 6,891 references to a private issue tracker across 694 files, and a large volume of
-retrospective narration: 415 instances of "used to", 445 of "It was", 415 of "retired", 268 of "the old",
-188 of "WAS the", and 1,104 date stamps. `CONTRIBUTING.md` instructed contributors to keep the references,
-on the ground that the attached reasoning is load-bearing.
+Shipping source carried many references to a private issue tracker, and a large volume of retrospective
+narration — what the code used to be, what an earlier version said, and when. `CONTRIBUTING.md` instructed
+contributors to keep the references, on the ground that the attached reasoning is load-bearing.
 
 The reasoning is load-bearing. The archaeology is not. A comment explaining *why* a timeout is 900 seconds,
 or carrying a probe's observed figure and its date, is this repository's best asset. A comment explaining
 what the code used to be is a changelog written into source, worthless to a reader who never saw the old
 version, and it is most of the volume.
 
-Separately, measured 808 comment citations of the form`file.mjs:N` and verified seven of seven wrong
-— in-range but pointing at the wrong code, which fails silently and reads as precise.
+Separately, comment citations of the form `file.mjs:N` were found pointing at the wrong code — still in
+range, so they fail silently and read as precise.
 
 ## Decision
 
@@ -34,15 +33,9 @@ Separately, measured 808 comment citations of the form`file.mjs:N` and verified 
 ## Consequences
 
 - `CONTRIBUTING.md`'s instruction to preserve issue references is superseded by this record.
-- The sweep touches 694 files, cannot be reviewed by eye, and runs last, with a script that reports before
-  it edits.
-- **The sweep must exclude `driver/skills/**` entirely, and that exclusion is a requirement on a script
-  nobody has written yet.** Those files are prompt payload, not source comments, and part of that tree is
-  under an identifier remediation whose ruling is that string substitution is the wrong instrument — a
-  rename there leaves real conflicts attached to a mark nobody owns. A mass edit that cannot be reviewed by
-  eye must not run across files being rebuilt by hand for correctness. **Until the script exists the
-  exclusion is enforced by nothing**, so it is stated here, in `AGENTS.md`, in `CONTRIBUTING.md` and in
-  `driver/skills/README.md` as a rule a human or an agent has to hold. Writing it into the script is the
-  first thing that script does.
+- The sweep is too large to review by eye, so it runs last, with a script that reports before it edits.
+- **The sweep must exclude `driver/skills/**` entirely.** Those files are the instructions the engine reads
+  at runtime, not source comments: an edit there changes what a clearance concludes, and a mass edit that
+  cannot be reviewed by eye must not run across them.
 - New work cites this repository's own issues normally, and comments that would have carried history point
   at an ADR instead.

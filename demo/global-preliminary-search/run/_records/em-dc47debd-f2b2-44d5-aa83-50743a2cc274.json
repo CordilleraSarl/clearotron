@@ -1359,7 +1359,7 @@
         "publicationVolume": "78"
       }
     ],
-    "recordLastUpdated": "20260730",
+    "recordLastUpdated": "20260918",
     "registrationOfficeCode": "EM",
     "registrationOfficeName": "EU trade marks",
     "representatives": [
@@ -1382,14 +1382,14 @@
       "lastPublicationDate": "20260428",
       "markCurrentStatus": "APPLICATION OPPOSED"
     },
-    "version": "20260730020003",
+    "version": "20260918013054",
     "wordMarkSpecification": {
       "markVerbalElementText": "VENCORA"
     }
   },
   "_uri": "/mark/em/dc47debd-f2b2-44d5-aa83-50743a2cc274",
   "_receipt": {
-    "fetched_at": "2026-09-02T14:33:18.813Z",
-    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+    "fetched_at": "2026-09-18T12:41:34.792Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
   }
 }

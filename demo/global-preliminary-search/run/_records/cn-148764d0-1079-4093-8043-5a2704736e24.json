@@ -1,0 +1,146 @@
+{
+  "uri": "/mark/cn/148764d0-1079-4093-8043-5a2704736e24",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "148764d0-1079-4093-8043-5a2704736e24",
+  "applicationNumber": "40229855",
+  "registrationNumber": "40229855",
+  "applicationDate": "2019-08-08",
+  "registrationDate": "2020-03-21",
+  "expiryDate": "2030-03-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-12-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "舜羿",
+  "markTransliteration": "SHUN YI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "培训,幼儿园,提供在线教育信息,组织教育或娱乐竞赛,玩具出租,游戏器具出租,通过互联网方式提供的电子游戏服务,安排和组织会议,提供不可下载的在线电子出版物,通过计算机网络在线提供的游戏服务",
+      "translation_language": "en",
+      "translation": "Training, kindergarten, providing online education information, organizing educational or entertainment competitions, toy rental, game equipment rental, electronic game services provided through the Internet, scheduling and organizing meetings, providing non-downloadable online electronic publications, online through computer networks Game services provided"
+    }
+  ],
+  "owner": "Shenzhen NXP Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市龙华新区大浪街道高峰社区部九窝向荣路8号1栋5楼501",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen NXP Technology Co., Ltd.",
+        "applicantNativeName": "深圳市恩智浦科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Training, kindergarten, providing online education information, organizing educational or entertainment competitions, toy rental, game equipment rental, electronic game services provided through the Internet, scheduling and organizing meetings, providing non-downloadable online electronic publications, online through computer networks Game services provided",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "培训,幼儿园,提供在线教育信息,组织教育或娱乐竞赛,玩具出租,游戏器具出租,通过互联网方式提供的电子游戏服务,安排和组织会议,提供不可下载的在线电子出版物,通过计算机网络在线提供的游戏服务"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Education",
+        "Arranging and conducting service of events",
+        "Publishing service",
+        "Amusement and sports service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4101",
+          "subNatGoodsServicesDescription": "Education"
+        },
+        {
+          "subNatClassNumber": "4102",
+          "subNatGoodsServicesDescription": "Arranging and conducting service of events"
+        },
+        {
+          "subNatClassNumber": "4104",
+          "subNatGoodsServicesDescription": "Publishing service"
+        },
+        {
+          "subNatClassNumber": "4105",
+          "subNatGoodsServicesDescription": "Amusement and sports service"
+        }
+      ]
+    },
+    "id": "148764d0-1079-4093-8043-5a2704736e24",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1676"
+      }
+    ],
+    "recordLastUpdated": "20251003",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳市精英商标事务所"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190808",
+        "applicationNumber": "40229855"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300320",
+      "lastPublicationDate": "20191220",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20200321",
+        "registrationNumber": "40229855"
+      }
+    },
+    "version": "20251003191103",
+    "wordMarkSpecification": {
+      "markTransliteration": "SHUN YI",
+      "markVerbalElementText": "舜羿"
+    }
+  },
+  "_uri": "/mark/cn/148764d0-1079-4093-8043-5a2704736e24",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:10.762Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

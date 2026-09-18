@@ -1,0 +1,300 @@
+{
+  "uri": "/mark/us/062f33ac-047a-43f2-961c-009e82340ed9",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "062f33ac-047a-43f2-961c-009e82340ed9",
+  "applicationNumber": "75763105",
+  "registrationNumber": "2399713",
+  "applicationDate": "1999-07-29",
+  "registrationDate": "2000-10-31",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2000-08-08"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2011-06-03",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "SYMETRI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Design and development of global computer information networks, internal computer networks, and extranet communication systems for others",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Symetri Corporation",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Karl S. Kronenberger",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20070120",
+      "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+    },
+    "applicants": [
+      {
+        "applicantAddress": "6520 Airport Center Drive, Greensboro, NC, 27409",
+        "applicantAddressCity": "Greensboro",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "27409",
+        "applicantAddressStateName": "NORTH CAROLINA",
+        "applicantAddressStreet": "6520 Airport Center Drive",
+        "applicantJurisdictionOfIncorporation": "NORTH CAROLINA",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "Symetri Corporation",
+        "applicantSecondaryAddressUnit": "Suite 208"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Design and development of global computer information networks, internal computer networks, and extranet communication systems for others"
+        }
+      ]
+    },
+    "id": "062f33ac-047a-43f2-961c-009e82340ed9",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20110603",
+        "descriptionText": "CANCELLED SEC. 8 (10-YR)/EXPIRED SECTION 9"
+      },
+      {
+        "date": "20070120",
+        "descriptionText": "ASSIGNED TO PARALEGAL"
+      },
+      {
+        "date": "20070120",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+      },
+      {
+        "date": "20061121",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20061121",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20061121",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20061121",
+        "descriptionText": "TEAS CHANGE OF OWNER ADDRESS RECEIVED"
+      },
+      {
+        "date": "20061121",
+        "descriptionText": "APPLICANT/CORRESPONDENCE CHANGES (NON-RESPONSIVE) ENTERED"
+      },
+      {
+        "date": "20061121",
+        "descriptionText": "TEAS SECTION 8 & 15 RECEIVED"
+      },
+      {
+        "date": "20061121",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) & SEC. 15 FILED"
+      },
+      {
+        "date": "20060807",
+        "descriptionText": "CASE FILE IN TICRS"
+      },
+      {
+        "date": "20031119",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20001031",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20000808",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20000707",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20000531",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20000522",
+        "descriptionText": "EXAMINER'S AMENDMENT MAILED"
+      },
+      {
+        "date": "19991124",
+        "descriptionText": "NON-FINAL ACTION MAILED"
+      },
+      {
+        "date": "19991112",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      }
+    ],
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "4035 Piedmont Parkway, High Point, NC, 27265",
+        "city": "High Point",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "NORTH CAROLINA",
+        "legalEntity": "CORPORATION",
+        "name": "Symetri Corporation",
+        "postalCode": "27265",
+        "stateName": "NORTH CAROLINA",
+        "street": "4035 Piedmont Parkway"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "6520 Airport Center Drive, Greensboro, NC, 27409",
+        "city": "Greensboro",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "NORTH CAROLINA",
+        "legalEntity": "CORPORATION",
+        "name": "Symetri Corporation",
+        "postalCode": "27409",
+        "secondaryAddressUnit": "Suite 208",
+        "stateName": "NORTH CAROLINA",
+        "street": "6520 Airport Center Drive"
+      },
+      {
+        "address": "6520 Airport Center Drive, Greensboro, NC, 27409",
+        "city": "Greensboro",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "NORTH CAROLINA",
+        "legalEntity": "CORPORATION",
+        "name": "Symetri Corporation",
+        "postalCode": "27409",
+        "secondaryAddressUnit": "Suite 208",
+        "stateName": "NORTH CAROLINA",
+        "street": "6520 Airport Center Drive"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "4035 Piedmont Parkway, High Point, NC, 27265",
+        "city": "High Point",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "NORTH CAROLINA",
+        "legalEntity": "CORPORATION",
+        "name": "Symetri Corporation",
+        "postalCode": "27265",
+        "stateName": "NORTH CAROLINA",
+        "street": "4035 Piedmont Parkway"
+      }
+    ],
+    "recordLastUpdated": "20260109",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "SAN FRANCISCO, CA 94108, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "SAN FRANCISCO, CA 94108",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "KARL S KRONENBERGER KRONENBERGER BURGOYNE LLP, 150 POST ST STE 520"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "SAN FRANCISCO, CA 94108, UNITED STATES",
+        "representativeAddressLines": [
+          "SAN FRANCISCO, CA 94108",
+          "UNITED STATES"
+        ],
+        "representativeName": "Karl S. Kronenberger"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19990729",
+        "applicationNumber": "75763105"
+      },
+      "cancellationDate": "20110603",
+      "cancellationPublicationDate": "20110712",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "19990512"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "19990512"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20110603",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20000808"
+      ],
+      "registration": {
+        "registrationDate": "20001031",
+        "registrationNumber": "2399713"
+      }
+    },
+    "version": "20260109052007",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "SYMMETRY",
+      "markVerbalElementText": "SYMETRI"
+    }
+  },
+  "_uri": "/mark/us/062f33ac-047a-43f2-961c-009e82340ed9",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.287Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

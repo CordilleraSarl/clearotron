@@ -1,0 +1,1125 @@
+{
+  "uri": "/mark/em/b3e76974-ca21-4178-9d1c-ee316831321b",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "b3e76974-ca21-4178-9d1c-ee316831321b",
+  "applicationNumber": "10811156",
+  "registrationNumber": "10811156",
+  "applicationDate": "2012-04-16",
+  "registrationDate": "2012-10-03",
+  "expiryDate": "2032-04-16",
+  "renewalDate": null,
+  "lastPublicationDate": "2012-06-26",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "NAVIATE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "STYLIZED LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    38,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Software pro technické kreslení, vytvárení modelu, návrh objektu, navrhování a pocítacove podporované navrhování; Pocítacový software pro pocítacem podporované navrhování (CAD); Propojovací software; Pocítacové programy pro aplikace na bázi znaku, pro pocítacove podporované kreslení (CAD), pro animaci, pro grafiku, pro konstrukcní modely; Pocítacové programy a software pro webové postovní sluzby, vyhledávání, extranet rozhraní a výmenu dat, vsechny pro pouzití pri koordinaci údaju mezi více úcastníky pri vytvárení grafických návrhu, kreslení mechanických a elektrických výkresu, vytvárení modelu, silnicní a vodní stavby a tvorbu multimediálních obrazu; Instruktázní dokumenty dodávané na elektronických, optických nebo magnetických médiích nebo v digitální podobe prostrednictvím síte; A instruktázní manuály v elektronickém formátu prodávané s nimi jako celek; Pocítacové kresby ke stazení; Pocítacový software ke stazení pro modelování a navrhování; Obrazové soubory ke stazení obsahující trojrozmerné digitální modely objektu a abstraktních polozek.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "cs",
+      "description": "Poskytování prístupu k pocítacovým databázím; Poskytování prístupu do databází obsahujících data nebo dokumenty pro vzdálenou konzultaci; Poskytování prístupu k webovým stránkám; Datové komunikacní sluzby prístupné prostrednictvím prístupového kódu; Poskytování prístupu k webovým blogum; Poskytování prístupu k elektronické on-line síti pro vyhledávání informací; Zajistování prístupu k pocítacovým databázím; Pronájem prístupového casu ke globálním pocítacovým sítím; Prenos obrazu pomocí pocítace; Elektronický prenos dat a dokumentu pres pocítacové terminály; Elektronický prenos zpráv a dat; Bezpecný prenos dat, zvuku anebo obrazu; Poskytování on-line chat-místností pro transmise zpráv mezi pouzivatelé pocítace; Poskytování prístupu ke globální pocítacové síti pro prenos a sírení informací.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Vývoj pocítacových programu nahraných na datových médiích (softwaru) pro pouzití pri konstrukci a automatizované výrobe (CAD/CAM); Pocítacem podporované návrhárství (sluzby); Pocítacove podporovaný design videografiky a grafický umelecký design; Navrhování pomocí pocítace (CAD) pro výrobní cinnosti; Pocítacem podporovaný technický návrh; Analytické sluzby s pomocí pocítace; Vývoj výrobku pro druhé; Konzultace a poradenství týkající se vývoje výrobku a návrhu výrobku; Poradenské, konzultacní a technické podpurné sluzby týkající se pocítacového hardwaru, pocítacového softwaru a pocítacem podporovaného návrhárství, technického kreslení a inzenýrských sluzeb; Pronájem doby prístupu k pocítaci; Pocítacové sluzby pro jiné osoby, jmenovite webové postovní sluzby, vyhledávání, extranet rozhraní a bezpecná výmena dat, vsechny pro pouzití pri koordinaci údaju mezi více úcastníky pri vytvárení grafických návrhu, kreslení mechanických a elektrických výkresu, vytvárení modelu, silnicní a vodní stavby a tvorbu multimediálních obrazu; Pocítacové sluzby, jmenovite sluzby poskytující interaktivní hosting, které umoznují uzivateli zverejnovat a sdílet jejich vlastní obsah a obrázky online; Poskytování webových stránek zamerených na on-line softwarové nástroje bez moznosti stazení pro editaci obrázku.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Software til konstruktion, modelfremstilling, formgivning af objekter, design og computerstøttet design; Computersoftware til computerstøttet design (cad); Interface software; Computerprogrammer til tegnbaseret computerstøttet design-, animations-, grafik- og designformgivningsapplikationer; Computerprogrammer og software til webbaserede nyhedsgruppeindlæg, søgning, ekstranettilslutning og dataudveksling, alt til anvendelse i forbindelse med koordinering af opgaver blandt flere deltagere inden for grafisk design, mekanisk og elektrisk tegning, modellering, civilingeniørvirksomhed og multimediebilledskabelse; Instruktionsdokumenter leveret via elektroniske, optiske eller magnetiske medier eller i digital form via netværk; Instruktionsmanualer i elektronisk format solgt som en enhed hermed; Computergrafik, der kan downloades; Computersoftware, der kan downloades, til modellering og design; Billedfiler, der kan downloades, indeholdende tredimensionelle, digitale modeller af genstande og abstrakte emner.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "da",
+      "description": "Adgang til computerdatabaser; Udbydelse af adgang til databaser med data eller dokumenter til fjernkonsultation; Udbydelse af adgang til websider; Datakommunikationstjenester med adgang via adgangskode; Formidling af adgang til webblogs; Forsyning af adgang til elektronisk online netværk til hentning af information; Tilrådighedsstillelse af opkoblingstid til databanker; Udlejning af adgangstid til globale computernetværk; Computerstøttet transmission af billeder; Elektroniske transmission af data, billeder og lyd formidlet via computerterminaler; Elektronisk transmission af data og meddelelser; Beskyttet transmission af data, lyd eller billede; Onlinefora til transmission af meddelelser mellem computerbrugere; Adgang til et globalt computernetværk til overførsel og spredning af information.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Udvikling af computerprogrammer indspillet på datamedier (software) designet til konstruktion og automatisk fremstilling (CAD/CAM); Computerstøttet designvirksomhed; Computerstøttet design af videografik og grafisk design; Computerunderstøttet design til brug i fremstillingsøjemed; Ingeniørvirksomhed inden for computerstøttet design; Computerstøttet analysevirksomhed; Produktudvikling for andre; Konsulentvirksomhed og rådgivning vedrørende produktudvikling og produktdesign; Rådgivning, konsultation og teknisk support vedrørende hardware, software og computerstøttet design, tegning og teknik; Leasing af adgangstid til en computer; Computervirksomhed for andre, nemlig webbaseret postering, søgning, interface til ekstranet og sikker dataudveksling, alt til anvendelse inden for opgavekoordinering blandt flere deltagere inden for grafisk design, mekanisk og elektrisk tegning, modelfremstilling, vej- og vandbygning og fremstilling af multimediebilleder; Computervirksomhed, nemlig interaktiv værtsvirksomhed, der gør det muligt for brugeren at udgive og dele sit eget indhold og billeder online; Udbydelse af et websted med onlineværktøjer, der ikke kan downloadesonlinesoftware, til redigering af billeder.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Software voor constructie, modellering, vormgeving van voorwerpen, ontwerp en computerondersteund ontwerp; Software voor computerondersteunde ontwerpprogramma's (CAD); Interfacesoftware; Computerprogramma's voor op leestekens gebaseerde applicaties alsmede voor CAD-, animatie-, grafische en vormgevingsapplicaties; Computerprogramma's en software voor het posten, zoeken, verbinden met extranetten en uitwisselen van gegevens op webbasis, allemaal voor coördinatie van taken onder meerdere deelnemers op het gebied van grafisch ontwerp, mechanisch en elektrisch tekenen, modelleren, civiele techniek en creatie van multimediabeelden; Educatieve documenten geleverd op elektronische, optische of magnetische media of in digitale vorm via netwerken; En instructiehandboeken in elektronisch formaat samen in een set verkocht; Computertekeningen om te downloaden; Downloadbare software voor modellering en ontwerp; Downloadbare beeldbestanden met driedimensionale digitale modellen van objecten en abstracte onderdelen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "nl",
+      "description": "Verschaffing van toegang tot computerdatabases; Het verlenen van toegang tot gegevensbanken met informatie en documentatie over advies op afstand; Verschaffing van toegang tot webpagina's; Telematicadiensten toegankelijk met een code; Verschaffing van toegang tot weblogs; Het verschaffen van toegang tot een elektronisch online-netwerk voor het terugvinden van informatie; Het verlenen van toegang tot computerdatabases; Verhuur van toegangstijd tot wereldwijde computernetwerken; Computerondersteunde verzending van beelden; Elektronische verzending van gegevens en documenten via computerterminals; Elektronische verzending van boodschappen en gegevens; Beveiligde overdracht van gegevens, geluid of beelden; Het verschaffen van on-linefora voor de verzending van berichten tussen computergebruikers; Het verschaffen van toegang tot een wereldwijd computernetwerk voor het overbrengen en verspreiden van informatie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Ontwikkeling van computerprogramma's vastgelegd op gegevensmedia (software) ontworpen voor gebruik bij bouw en geautomatiseerde fabricage (cad/cam); Computerondersteund ontwerpen; Computerondersteund design van videografiek en grafisch ontwerp; Computerondersteund ontwerp voor fabricageactiviteiten; Computerondersteund technisch ontwerpen; Computerondersteunde analyse; Productontwikkeling voor derden; Raadpleging en advisering met betrekking tot productontwikkeling en productvormgeving; Adviserings- en raadplegingsdiensten, alsmede technische ondersteuningsdiensten met betrekking tot hardware, computersoftware en computerondersteund ontwerp, computerondersteund tekenen en computerondersteunde engineering; Verhuur van toegangstijd tot een computer; Computerdiensten voor derden, te weten, webgebaseerde posting, zoekdiensten, interfaces voor extranetten en beveiligde gegevensuitwisseling, alles voor gebruik met betrekking tot het coördineren van gegevens tussen diverse gebruikers bij grafische vormgeving, mechanisch en elektrisch tekenen, modellering, weg- en waterbouw en het creëren van multimediale afbeeldingen; Computerdiensten, te weten interactieve hosting om gebruikers in staat te stellen hun eigen informatie en beelden online uit te geven en te delen; Verschaffing van een website met niet-downloadbare onlinesoftwaretools voor bewerking van beeld.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer software for engineering, modelling, creation of objects, design and computer-aided design; Computer software for computer-aided design (CAD); Interface software; Computer programs for character-based applications, computer-aided design (CAD), animation, graphics and structural design; Computer programs and software for web-based posting, searching, extranet interfacing and exchanging of data, all for use in task coordination among multiple participants in the graphic design, mechanical and electrical drawing, modelling, civil engineering and multimedia image creation fields; Instructional documents delivered on electronic, optical or magnetic media or in digital form via networks;  Instructional manuals in electronic format sold as a unit therewith; Downloadable computer graphics; Downloadable computer software for modeling and designing; Downloadable image files containing three dimensional digital models of objects and abstract items.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "en",
+      "description": "Providing access to computer databases; Providing access to databases containing data or documents for remote consultation; Providing access to web pages; Data communication services accessible by access code; provision of access to web blogs; Provision of access to an electronic on-line network for information retrieval; Arranging access to a computer database; Leasing access time to global computer networks; Computer-aided transmission of images; Electronic transmission of data and documents via computer terminals; Electronic transmission of messages and data; Secure transmission of data, sound or images; Providing on-line forums for transmission of messages among computer users; Providing access to a global computer network for the transfer and dissemination of information.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Development of computer programs recorded on data media (software) designed for use in construction and automated manufacturing (cad/cam); Computer-aided design services; Computer-aided design of video graphics and graphic design; Computer aided design for manufacturing operations; Computer assisted engineering design services; Computer aided analytical services; Product development for others; Consultation and consultancy with regard to product development and product design; Advisory, consultation and technical support services relating to computer hardware, computer software and computer-aided design, drawing and technologies; Leasing of access time to a computer; Computer services for others, namely web-based posting, searching, extranet interfacing and secure exchanging of data, all for use in task coordination among multiple participants in the graphic design, mechanical and electrical drawing, modelling, civil engineering and multimedia image creation fields; Computer services, namely, interactive hosting services which allow the user to publish and share their own content and images on-line; Providing a website featuring on-line non-downloadable software tools for image editing.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Arvutiprogrammid konstrueerimiseks, mudelite valmistamiseks, objektide kujundamiseks, kavandamiseks ja arvutipõhiseks kavandamiseks; Arvutitarkvara arvutipõhise projekteerimise (CAD) jaoks; Liidestarkvara; Arvutiprogrammid tingmärkidel põhinevate muganduste tegemiseks, arvutipõhiseks joonestamiseks (arvutipõhine projekteerimine), animeerimiseks, graafika ja konstruktsioonimudelite valmistamiseks; Arvutiprogrammid ja programmid veebipõhisteks postitusteks, otsingute sooritamiseks, lisavõrguliideste ja andmevahetuse tarbeks, kõik kasutamiseks andmete korraldamisel mitme osaleja vahel graafilisel kujundamisel, mehaaniliste jooniste ja elektriskeemide joonestamisel, mudelite valmistamisel, tee- ja vesiehitustel ning multimeediapiltide loomisel; Juhenddokumendid, mida edastatakse elektroonilistel, optilistel või magnetmeediakandjatel või digitaalsel kujul võrgu vahendusel; Ja komplektis müüdavad kasutusjuhendid elektroonilisel kujul; Allalaaditavad arvutijoonistused; Allalaetav arvutitarkvara modelleerimiseks ja kavandamiseks; Allalaetavad kujutisfailid, mis sisaldavad kolmemõõtmelisi digitaalseid objektide mudeleid ja abstraktseid esemeid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "et",
+      "description": "Arvutiandmekogudele ligipääsu tagamine; Juurdepääsu võimaldamine andmebaasidele, mis sisaldavad andmeid või dokumente kaugkonsultatsiooni kohta; Veebilehtedele juurdepääsu pakkumine; Juurdepääsukoodi abil juurdepääsetavad andmeside teenused; Juurdepääsu pakkumine veebiblogidele; Elektroonilisele onlainvõrgule juurdepääsu tagamine teabe kättesaamiseks; Arvutiandmekogule juurdepääsu võimaldamine; Juurdepääsuaja üürimine ülemaailmsetele andmevõrkudele; Kujutiste edastamine arvutiga; Elekrooniline andme- ja dokumendiedastus arvutiterminalide kaudu; Sõnumite ja andmete edastamine elektroonilisel teel; Andmete, heli või pildi turvaline edastamine; Reaalajas toimivate jututubade teenuse osutamine arvutikasutajate vahel sõnumite edastamiseks; Globaalsel arvutiteabevõrgule juurdepääsu tagamine teabe levitamise eesmärgil.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Andmekandjatele salvestatud arvutiprogrammide (tarkvara) arendamine, mis on projekteeritud ehituse ja automatiseeritud tootmise (raalprojekteerimine/raaltootmine) jaoks; Arvutil projekteerimise teenused; Videograafika arvutipõhine kujundamine ja graafiline kujundamine; Tootmisoperatsioonide arvutipõhine projekteerimine; Arvutipõhised tehnilised projekteerimisteenused; Arvutipõhised analüütilised teenused; Tootearendus kolmandatele isikutele; Konsulteerimine ja nõustamine seoses tootearenduse ja tootekujundusega; Nõustamis-, konsultatsiooni- ja tehnilised tugiteenused seoses arvutite riist- ja tarkvara ning arvutipõhise kujundamise, joonestamise ja tehnikaga; Arvuti kasutusaja üürimine; Arvutiteenused kolmandatele isikutele, nimelt veebipõhised postitused, otsingute sooritamine, lisavõrguliidesed ja turvaline andmevahetus, kõik kasutamiseks andmete korraldamisel mitme osaleja vahel graafilisel kujundamisel, mehaaniliste jooniste ja elektriskeemide joonestamisel, mudelite valmistamisel, teede- ja vesiehitustel ning multimeediapiltide loomisel; Arvutiteenused, nimelt interaktiivsed hostimisteenused, mis võimaldavad kasutajatel sidusalt avaldada ja jaotada nende endi sisu ning pilte; Sidusaid allalaadimatuid pilditöötluse tarkvaravahendeid sisaldava veebilehe pakkumine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Ohjelmistot kohteiden suunnitteluun, mallinvalmistukseen, muotoiluun, hahmotteluun ja tietokoneavusteiseen hahmotteluun; Tietokoneohjelmistot tietokoneavusteiseen suunnitteluun (CAD); Käyttöliittymäohjelmistot; Tietokoneohjelmat merkkipohjaisia, cad-, animaatio-, grafiikka- ja mallinnussovelluksia varten; Tietokoneohjelmat ja -ohjelmistot, WWW-perusteinen ilmoittaminen, haku, ekstranetien liitännät ja datanvaihto, kaikki töiden koordinointiin usean osallistujan kesken graafisen suunnittelun, mekaanisen ja sähköisen piirtämisen, mallintamisen, maa- ja vesirakentamisen ja multimediakuvien luomisen aloilla; Käyttöohjeet levitettyinä elektronisin, optisin tai magneettisin tietovälinein tai digitaalisessa muodossa verkkojen välityksellä; Ja niiden kanssa myytävät elektronisessa muodossa olevat käsikirjat; Ladattava tietokonegrafiikka; Ladattavat tietokoneohjelmistot mallinnukseen ja suunnitteluun; Ladattavat kuvatiedostot, joissa on esineiden ja abstraktien kohteiden kolmiulotteisia digitaalimalleja.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "fi",
+      "description": "Tietokantojen tarjoaminen käyttöön; Etäneuvotteluihin liittyviä tietoja tai asiakirjoja sisältävien tietokantojen käyttömahdollisuuden tarjoaminen; Web-sivujen käyttömahdollisuuden tarjoaminen; Verkkopalvelutunnuksen avulla saatavana olevat dataviestintäpalvelut; Verkkopäiväkirjojen käyttömahdollisuuden tarjoaminen; Tiedonhakuun tarkoitetun elektronisen online-verkon tarjoaminen käyttöön; Tietokantojen käyttöoikeuksien hankkiminen; Maailmanlaajuisen tietokoneverkon käyttöajan vuokraus; Tietokoneavusteinen viestien ja kuvien siirto; Tietojen ja asiakirjojen elektroninen lähettäminen tietokonepäätteiden avulla; Elektroninen viestien ja tietojen siirto; Tietojen, äänen tai kuvien turvasiirtopalvelut; Online-foorumien tarjoaminen viestien välittämiseksi tietokoneen käyttäjien kesken; Maailmanlaajuisen tietokoneverkon käyttömahdollisuuden tarjoaminen tiedon siirtoa ja levitystä varten.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Sellaisten tietovälineille tallennettujen tietokoneohjelmien (ohjelmistojen) kehittäminen, jotka on suunniteltu käytettäväksi rakentamisessa ja automatisoidussa tuotannossa (CAD/CAM); Tietokoneavusteiset suunnittelupalvelut; Videografiikan ja graafisen suunnittelun tietokoneavusteinen suunnittelu; Tietokoneavusteinen suunnittelu valmistustoimia varten; Tietokoneavusteiset tekniset suunnittelupalvelut; Tietokoneavusteiset analyysipalvelut; Tuotekehitys muiden lukuun; Tuotekehitykseen ja tuotesuunnitteluun liittyvä konsultointi ja neuvonta; Neuvonta-, konsultointi- ja tekniset tukipalvelut, jotka liittyvät laitteistoihin, ohjelmistoihin ja tietokoneavusteiseen suunnitteluun, piirtämiseen ja tekniikkaan; Tietokoneen käyttöajan vuokraus; Tietokonepalvelut muiden lukuun, nimittäin, WWW-pohjainen postitus, haku, vierasverkkoliittymä ja turvallinen tietojenvaihto, kaikki käytettäväksi useita osallistujia koskevien tehtävien yhteensovittamisessa graafisen muotoilun, mekaanisen ja sähköisen piirtämisen, mallinvalmistuksen, tie- ja vesirakentamisen ja multimediakuvien luomisen aloilla; Tietokonepalvelut, nimittäin vuorovaikutteiset ylläpitopalvelut, joiden avulla käyttäjät voivat julkaista ja jakaa omia sisältöjään ja kuviaan online-periaatteella; Muita kuin ladattavia kuvien muokkaamiseen tarkoitettuja online-ohjelmistotyökaluja sisältävän WWW-sivuston tarjoaminen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Programmes pour la construction, la modélisation, la mise en forme d'objets, la conception et la conception assistée par ordinateur; Logiciel pour conception assistée par ordinateur (CAO); Interfaces logicielles; Programmes informatiques pour les applications en mode caractère, CAO, d'animation, graphiques et de modélisation de conception; Programmes informatiques et logiciels de communication et recherche sur le web, interfaçage avec des extranets et échange de données, tous destinés à être utilisés dans la coordination des tâches de plusieurs participants dans les domaines de la conception graphique, du dessin mécanique et électrique, du modelage, du génie civil et de la création d'images multimédias; Documents d'instruction transmis sur support électronique, optique ou magnétique ou sous forme numérique par réseau; Et manuels d'instruction sous forme électronique vendus sous forme d'ensemble; Graphiques informatiques téléchargeables; Logiciels téléchargeables pour la modélisation et la conception; Fichiers d'images téléchargeables de modèles numériques tridimensionnels d'objets et d'articles abstraits.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "fr",
+      "description": "Fourniture d'accès à des bases de données informatiques; Fourniture d'accès à des bases de données contenant des données ou des documents pour consultation à distance; Offre d'accès à des pages web; Services de communication de données accessibles par code d'accès; Fourniture d'accès à des blogues Internet; Fourniture d'accès à un réseau électronique en ligne pour la récupération d'informations; Mise à disposition d'accès à des bases de données; Location de temps d'accès à des réseaux informatiques mondiaux; Transmission d'images assistée par ordinateur; Transmissions électroniques de données et de documents par le biais de terminaux d'ordinateurs; Transmission électronique de données et de messages; Services de transmission sécurisée de données, de sons ou d'images; Mise à disposition de forums de discussion en ligne pour la transmission de messages entre des utilisateurs d'ordinateurs; Fourniture d'accès à un réseau informatique mondial pour le transfert et la diffusion d'informations.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Développement de programmes informatiques enregistrés sur des supports de données (logiciels) conçus pour être utilisés dans la construction et la fabrication automatisée (CAO/FAO); Services de conception assistée par ordinateur; Conception assistée par ordinateur de graphiques vidéos et conception graphique; Conception assistée par ordinateur pour opérations de fabrication; Services d'ingénierie assistée par ordinateur; Services d'analyse assistés par ordinateur; Développement de produits pour des tiers; Consultations et conseils relatifs au développement de produits et conception de produits; Services de conseils, consultations et support technique en matière de matériel, logiciels et conception assistée par ordinateur, schémas et technologies; Location de temps d'accès à un ordinateur; Services informatiques pour le compte de tiers, à savoir, publication web, recherche, interfaces d'extranet et échange sécurisé de données, tous destinés à être utilisés pour la coordination de données entre plusieurs participants lors de la conception graphique, schémas mécaniques et électriques, modélisation, constructions de routes et canalisation d'eau et création d'images multimédias; Services informatiques, à savoir services interactifs d'hébergement permettant à l'utilisateur de publier et de partager ses propres contenus et images en ligne; Fourniture d'un site web proposant des outils logiciels non téléchargeables en ligne pour le montage d'images.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Software für Konstruktionen, Modellherstellung und Gestaltung von Objekten, Design und computergestütztes Design; Computersoftware für die computergestützte Konstruktion (CAD); Schnittstellensoftware; Computerprogramme für zeichengestützte, CAD-, Animations-, Grafik- und Designmodellierungsanwendungen; Computerprogramme und -software für webgestützte Bereitstellung, Suche, Extranet-Anbindung und Austausch von Daten, alles zur Koordination der Aufgaben mehrerer Anwender auf den Gebieten Grafikdesign, mechanisches und elektronisches Zeichnen, Modellierung, Ingenieurbau und Bilderstellung für Multimedia-Anwendungen; Bedienungsdokumente auf elektronischen, optischen oder magnetischen Trägermedien oder in digitaler Form über Netze; Und zusammen mit den vorstehend genannten Waren verkaufte Bedienungshandbücher in elektronischer Form; Herunterladbare Computergrafiken; Herunterladbare Computersoftware für Modellierung und Entwurf; Herunterladbare Bilddateien mit dreidimensionalen digitalen Modellen von Objekten und abstrakten Gegenständen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "de",
+      "description": "Bereitstellung von Zugang zu Computerdatenbanken; Bereitstellung des Zugangs zu Datenbanken mit Informationen oder Dokumenten zu Fernberatungszwecken; Bereitstellung des Zugangs zu Web-Seiten; Über Zugangskode zugängliche Datenkommunikationsdienste; Bereitstellung des Zugangs zu Webblogs; Bereitstellung des Zugangs zu einem elektronischen Netz zur Online-Informationsrecherche; Verschaffen von Zugriff auf Datenbanken; Vermietung von Zugangszeit auf weltweite Computernetzwerke; Computergestützte Bildübertragung; Elektronische Übertragung von Daten und Dokumenten mittels Computerterminals; Elektronische Nachrichten- und Datenübertragung; Zugangsgeschützte Übertragung von Daten, Ton und Bild; Bereitstellung von Online-Foren zur Übertragung von Nachrichten zwischen Computerbenutzern; Bereitstellung des Zugangs zu einem weltweiten Computernetz zur Übertragung und Verbreitung von Informationen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Entwicklung von auf Datenträgern gespeicherten Computerprogrammen (Software) zur Verwendung im Bauwesen und in der automatisierten Fertigung (CAD/CAM); Computergestütztes Design; Computergestütztes Design von Videografik und Grafikdesign; Computergestützter Entwurf von Fertigungsabläufen; Computergestützte Designerdienstleistungen im Bereich Technik; Computergestützte Analysedienste; Produktentwicklung für Dritte; Beratung in Bezug auf Produktentwicklung und Produktgestaltung; Beratung und technische Unterstützung in Bezug auf Hardware, Computersoftware und CAD (computergestützte Konstruktion), Zeichnen und Technik; Vermietung von Zugangszeiten zu einem Computer; Computerdienstleistungen für Dritte, nämlich webgestützte Bereitstellung, Suche, Extranet-Anbindung und sicherer Austausch von Daten, alles zur Koordination der Aufgaben mehrerer Anwender auf den Gebieten Grafikdesign, mechanisches und elektronisches Zeichnen, Modellierung, Ingenieurbau und Bilderstellung für Multimedia-Anwendungen; Computerdienstleistungen, nämlich interaktives Hosting zur Ermöglichung der Online-Veröffentlichung und gemeinsamen Nutzung von eigenen Inhalten und Bildern durch den Benutzer; Bereitstellung einer Website mit online bereitgestellten, nicht herunterladbaren Softwaretools für die Bildbearbeitung.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Számítógépprogramok muszaki tervezéshez, modellkészítéshez, objektumorientált formatervezéshez, formatervezéshez és számítógépes formatervezéshez; Számítógépes szoftverek számítógéppel támogatott tervezéshez (CAD); Interfész szoftverek; Számítógépprogramok jelekre épülo alkalmazásokhoz, számítógéppel támogatott tervezéshez (CAD), animációkhoz, grafikákhoz és tervezési modellekhez; Webalapú feladásra, keresésre, extranet-interfészek kezelésére és adatcserére alkalmas számítógépprogramok és szoftverek, amelyek feladatok több felhasználó közötti összehangolására használhatók a grafikus tervezés, gépészeti és elektromos rajzok készítése, modellezés, út- és vízépítés, valamint multimédiaképek készítése területén; Elektronikus, optikai vagy mágneses adathordozókon vagy hálózatokon digitális formában terjesztett oktatóanyagok; És elektronikus formátumú használati utasítások, a fentiekkel együtt értékesítve; Letöltheto számítógépes rajzok; Letöltheto számítógépes szoftverek modellezéshez és tervezéshez; Letöltheto képfájlok tárgyak és absztrakt dolgok háromdimenziós modelljeivel.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "hu",
+      "description": "Stámítógépes adatbázisokhoz való hozzáférhetoség biztosítása; Távtanácsadási adatokat vagy dokumentumokat tartalmazó adatbázisokhoz való hozzáférés biztosítása; Hozzáférés lehetové tétele weboldalakhoz; Hozzáférési kód révén hozzáférheto adatkommunikációs szolgáltatások; Hozzáférés biztosítása webnaplókhoz; Elektronikus on-line hálózathoz való hozzáférhetoség biztosítása információ visszakeresésére; Számítógépes adatbázisokhoz való hozzáférhetoség megszervezése; Globális számítógépes hálózathoz való hozzáférési ido kölcsönzése; Számítógéppel támogatott kép átadása; Adatok és dokumentumok elektronikus átvitele számítógépes terminálokon keresztül; Üzenetek és adat elektronikus átadása; Adat, hangok és képek biztonságos átadása; On-line fórumok biztosítása üzenetek átadására számítógépes használók között; Globális számítógépes hálózathoz való hozzáférhetoség biztosítása információ transzferre és elterjesztésre.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Építéshez és automatizált gyártáshoz (cad/cam) használt, adathordozón rögzített számítógépes programok (szoftverek) fejlesztése; Számítógéppel segített tervezés; Videografikák és grafikus tervek számítógéppel támogatott eloállítása; Számítógéppel támogatott tervezési szolgáltatások gyártási muveletekhez; Számítógéppel támogatott muszaki formatervezési szolgáltatások; Számítógéppel segített elemzési szolgáltatások; Termékfejlesztés harmadik fél számára; Konzultáció és tanácsadás a termékfejlesztésben és termékek formatervezésében; Hardverrel, szoftverrel és számítógéppel támogatott formatervezéssel, muszakirajz-készítéssel és más technikákkal kapcsolatos tanácsadás és muszaki támogatás; Számítógépes hozzáférési ido kölcsönzése; Harmadik fél számára végzett számítógépes szolgáltatás, nevezetesen webalapú feladás, keresés, extranet-interfészek kezelése és adatcsere feladatok több felhasználó közötti összehangolására a grafikus tervezés, gépészeti és elektromos rajzok készítése, modellezés, út- és vízépítés, valamint multimédiaképek készítése területén; Számítógépes szolgáltatások, nevezetesen interaktív hosztolási szolgáltatások, melyek lehetové teszik, hogy a felhasználó saját tartalmait és képeit online közzétehesse és megoszthassa; Képszerkesztésre szolgáló online, nem letöltheto szoftvereszközöket biztosító weboldal biztosítása.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Software per la costruzione, la modellistica, il design di oggetti, la progettazione e la progettazione assistita da computer; Software per la progettazione assistita da computer (CAD); Software di interfaccia; Programmi per computer per applicazioni basate su caratteri, di progettazione con l'ausilio dell'elaboratore (CAD), animazione, grafica e creazione di modelli di progettazione; Programmi per computer e software per immissione su Web, ricerca, interfaccia di reti esterne e scambio di dati, tutti per la coordinazione dei compiti tra più partecipanti ad attività di progettazione grafica, disegno meccanico ed elettrico, creazione di modelli, ingegneria civile e creazione d'immagini multimediali; Documenti d'istruzioni recapitati su supporti elettronici, ottici o magnetici o in forma digitale tramite reti; E manuali d'istruzioni in forma elettronica venduti unitamente ad essi; Grafica per computer scaricabile; Software scaricabili per la generazione di modelli e progettazione; File di immagini scaricabili contenenti modelli digitali tridimensionali di oggetti ed articoli astratti.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "it",
+      "description": "Accesso a banche dati; Fornitura di accesso a banche dati contenenti dati o documenti per la consultazione a distanza; Accesso a pagine Web; Servizi di comunicazione dati accessibili tramite codice d'accesso; Accesso a blog sul web; Fornitura di accesso ad una rete elettronica on-line per il reperimento di informazioni; Fornitura di accesso a banche dati; Locazione di tempi d'accesso a reti informatiche globali; Trasmissione di immagini mediante computer; Trasmissione elettronica di dati e documenti attraverso terminali informatici; Trasmissione elettronica di messaggi e dati; Trasmissione protetta di dati, suoni o immagini; Fori on-line per la trasmissione di messaggi tra utenti di computer; Accesso a una rete informatica per il trasferimento e la diffusione di informazioni.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Sviluppo di programmi per computer registrati su supporti per dati (software) progettati per la costruzione e la fabbricazione automatica (CAD/CAM); Servizi di disegno assistito da computer; Progettazione assistita da computer di grafica video e design grafico; Progettazione assistita da computer per operazioni di fabbricazione; Servizi tecnici di progettazione assistita da computer; Servizi analitici computerizzati; Sviluppo di prodotti per conto terzi; Consulenza e assistenza in materia di sviluppo e progettazione di prodotti; Servizi di assistenza, consulenza e supporto tecnico per hardware, software e progettazione assistita da computer, disegno e ingegneria; Noleggio di tempi d'accesso a un computer; Servizi informatici per conto terzi, ovvero pubblicazione su web, ricerca, interfaccia extranet e scambio di dati sicuro, tutto ciò per il coordinamento di compiti tra più partecipanti nella progettazione grafica, nel disegno meccanico ed elettrico, nella modellistica, nell'ingegneria civile e nella creazione di immagini multimediali; Servizi informatici, ovvero servizi di hosting interattivo per consentire agli utenti di pubblicare e condividere i propri contenuti ed immagini on-line; Fornitura d'un sito Web contenente strumenti software non scaricabili on-line per il montaggio d'immagini.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Programine iranga statybu, modeliavimo, objektu projektavimo reikmems ir projektavimo bei kompiuterizuoto projektavimo reikmems; Kompiuteriu programine iranga, skirta kompiuteriu atliekamam dizainui (CAD); Siejimo programine iranga; Kompiuteriu programos simboliais grindziamu taikomuju programu reikmems, automatizuotojo projektavimo reikmems, animacijos, grafikos ir projektavimo modeliu reikmems; Kompiuteriu programos ir programine iranga internetinio issiuntimo, paieskos, ekstraneto sasaju ir duomenu mainu reikmems, viskas skirta uzduotims tarp keliu dalyviu koordinuoti grafinio dizaino, mechaninio ir elektrinio braizymo, modeliavimo, statybos inzinerijos ir ivairialypes terpes paveikslu kurimo srityje; Instrukciniai dokumentai, teikiami elektroninese, optinese ar magnetinese laikmenose arba skaitmenine forma tinklu; Ir elektroninio formato instrukciju vadovai, parduodami kartu su ja kaip rinkinys; Parsisiunciami kompiuteriniai piesiniai; Atsisiunciama kompiuteriu programine iranga, skirta modeliavimo ir projektavimo reikmems; Atsisiunciamos vaizdu rinkmenos, kuriose irasyti trimaciai skaitmeniniai objektu ir abstrakciu daiktu modeliai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "lt",
+      "description": "Prieigos prie kompiuteriniu duomenu baziu teikimas; Prieigos prie duomenu baziu, kuriose yra duomenu arba dokumentu nuotolinio konsultavimo reikmems, teikimas; Prieigos prie tinklalapiu teikimas; Duomenu rysiu paslaugos, prieinamos per prieigos koda; Tinklarasciu prieigos teikimas; Prieigos prie elektroninio tinklo teikimas tiesioginio rysio linija informacijos gavimo reikmems; Prieigos prie kompiuteriu duomenu bazes rengimas; Prieigos prie visuotinio kompiuterinio tinklo laiko nuoma; Kompiuterinis vaizdo perdavimas; Elektroninis duomenu ir dokumentu perdavimas kompiuteriu terminalais; Elektroninis pranesimu ir duomenu perdavimas; Saugus duomenu, garso ir vaizdo perdavimas; Tinkliniu [internetiniu] pokalbiu svetainiu, skirtu pranesimu perdavimui tarp kompiuteriu naudotoju, paslaugu teikimas; Prieigos prie visuotinio kompiuteriu tinklo informacijai perduoti ir platinti teikimas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "Kompiuteriniu programu, irasytu duomenu laikmenose (programines irangos), naudojamu konstravimo ir automatizuotos gamybos reikmems (kompiuteriu panaudojimas projektavimui/ gamybai), tobulinimas; Kompiuterizuoto projektavimo paslaugos; Kompiuterinis vaizdo grafikos ir grafinio dizaino projektavimas; Gamybos operaciju kompiuterinis projektavimas; Techninio projektavimo, naudojant kompiuteri, paslaugos; Kompiuterizuoto analizavimo paslaugos; Produkto pletra kitiems; Konsultavimas ir patarimai, susije su produkto pletra ir produktu dizainu; Patarimu, konsultavimo ir technines pagalbos paslaugos, susijusios su aparatine iranga, programine iranga ir kompiuterizuotu dizainu, braizymu ir technika; Prieigos prie kompiuteriu laiko nuoma; Su kompiuteriais susijusios paslaugos kitiems, butent internetinis issiuntimas, paieska, ekstraneto sasajos ir saugus duomenu mainai, viskas skirta uzduotims tarp keliu dalyviu koordinuoti grafinio dizaino, mechaninio ir elektrinio braizymo, modeliavimo, statybos inzinerijos ir ivairialypes terpes paveikslu kurimo srityje; Kompiuteriu paslaugos, butent dialogines prieglobos paslaugos, kuriomis vartotojams suteikiama galimybe tiesioginiu rysiu skelbti savo turini bei atvaizdus ir jais dalytis; Tinklalapio, talpinancio tiesioginio rysio neatsisiunciama programines irangos programa, skirta atvaizdams redaguoti, teikimas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Programmatura objektu izveidei, modelu izstradei, veidosanai, projektesana un datorizeta projektesana; Datoru programmatura datorbalstitai projektesanai (CAD); Saskarnu programmatura; Datorprogrammas rakstzimju orientetam pielietojumam, datorizetai projektesanai (CAD), animesanai, grafiskai apstradei un projektu modelesanai; Datorprogrammas un programmatura izvietosanai timekli, meklesanai, artiklu saskarnei un datu apmainai, paredzetas, lai sakartotu vairaku dalibnieku datus saistiba ar grafisku projektesanu, mehanisku un elektrisku rasesanu, modelu izstradi, civilo buvinzenieriju un multimediju attelu radisanu; Instrukciju dokumentacija, kas tiek piegadata ar elektronisku, optisku vai magnetisku neseju palidzibu vai digitala forma ar tikla starpniecibu; Un instrukciju rokasgramatas elektroniska formata, kas tiek pardotas kopa ar ieprieks mineto; Datoru zimejumi lejupieladejami; Lejupieladejama datora programmatura modelesanai un dizainam; Lejupieladejamas attelu datnes, kas satur trisdimensiju objektu un abstraktu prieksmetu ciparu modelus.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "lv",
+      "description": "Piekluves nodrosinasana datoru datu bazem; Piekluves nodrosinasana datubazem, kas satur datus vai dokumentus attalinatam konsultacijam; Pieejas nodrosinasana timekla lapam; Datu komunikacijas, kas pieejamas ar piekluves kodu; Pieejas nodrosinasana timekla emuariem; Piekluves nodrosinasana elektroniskajiem tiessaistes tikliem informacijas atjaunosanas nolukos; Datoru datu bazu piekluves iekartosana; Piekluves laika nodrosinasana globalajam datortiklam; Datorizeta attelu parraide; Datu un dokumentu elektroniska parraide, izmantojot datoru terminalus; Pazinojumu un datu elektroniska parraide; Datu, skanas un attelu parraides nodrosinasana; Tiessaistes forumu nodrosinasana zinojumu parsutisanai starp datoru lietotajiem; Piekluves nodrosinasana globalajam datortiklam, lai parsutitu un izplatitu informaciju.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Datora programmu, kas ierakstitas datu medijos (programmatura), kas paredzetas izmantosanai buvnieciba un automatiskaja razosana (cad/cam), izstrade; Projektesanas darbi, kas tiek veikti ar datoru; Datorizeta video grafikas un grafiska dizaina izstrade; Datorizeta razosanas operaciju projektesana; Datorizeti inzenierprojektesanas pakalpojumi; Datorizeti analitiski pakalpojumi; Produktu izstrade tresajam personam; Konsultacijas un padomdosana par produktu izstradi un produktu projektesanu; Padomdosanas, konsultaciju un tehniska atbalsta pakalpojumi saistiba ar aparaturu, programmaturu un datorizetu projektesanu, rasesanu un tehniku; Piekluves laika noma datoram; Datoru pakalpojumi tresajam personam, proti, izvietosana timekli, meklesana, artiklu saskarne un drosa datu apmaina, paredzeti, lai sakartotu vairaku dalibnieku datus saistiba ar grafisku projektesanu, mehanisku un elektrisku rasesanu, modelu izstradi, civilo buvinzenieriju un multimediju attelu radisanu; Datoru pakalpojumi, proti, interaktivi mitinasanas pakalpojumi, kas lauj lietotajam publicet un dalit pasa raditu saturu un attelus tiessaiste; Timekla vietnes nodrosinasana, kas ietver tiessaistes nelejupieladejamas programmaturas rikus attelu redigesanai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Softwer ghad-disinn, tfassil ta' mudelli, stilizzar ta' oggetti, disinn u disinn kompjuterizzat; Softwer tal-kompjuter ghad-disinn bl-ghajnuna tal-kompjuter (CAD); Softwer ghac-cirkwiti elettrici; Programmi tal-kompjuter ghal applikazzjonijiet ibbazati fuq karattri, tpingija kompjuterizzata (CAD), animazzjoni, grafika u mudelli tad-disinjar; Programmi tal-kompjuter u softwer ghall-pubblikazzjoni bbazata fuq il-web, tfittix, interfaccji ta' netwerks addizzjonali u skambju tad-dejta, kollha ghall-uzu fil-qasam tal-koordinazzjoni tad-dejta fost diversi partecipanti fid-disinn grafiku, tpingija mekkanika u elettrika, tfassil ta' mudelli, bini tal-inginerija civili u holqien ta' immagni multimedjali; Dokumenti istruttivi provduti fuq midja elettronika, ottika jew manjetika jew fil-forma digitali minn fuq netwerks; U manwali tal-istruzzjoni fil-forma elettronika mibjughin bhala haga wahda ma' dawn; Tpingijiet tal-kompjuter li jitnizzlu; Softwer tal-kompjuter li jista' jitnizzel ghall-immudellar u d-disinn; Fajls tal-immagni li jistghu jitnizzlu li fihom mudelli digitali tridimensjonali ta' oggetti u oggetti astratti.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "mt",
+      "description": "Il-provvista ta' access ghal databases tal-kompjuter; Provvista ta' access ghal dejtabejzis li fihom dejta jew dokumenti ghall-konsulenza mill-boghod; Il-provvista ta' access ghall-pagni tal-web; Servizzi tal-komunikazzjoni ta' dejta accessibbli b'kodici tal- access; Provvista ta' access ghal web blogs; Il-provvista ta' access ghal network elettronika online ghall-irkupru ta' l-informazzjoni; L-arrangament ta' access ghal database tal-kompjuter; Kiri ta' hin ta' access ghal netwerks globali tal-IT; It-trasmissjoni ta' xbihat bl-ghajnuna tal-kompjuter; Trazmissjonijiet elettronici ta' data u dokumenti permezz ta' terminali tal-kompjuter; It-trasmissjoni elettronika ta' messaggi u data; It-tramissjoni mill-gdid ta' xbihat bis-satellita; Il-provvista ta' kmamar tat-tahdit (chat rooms) online ghat-trasmissjoni ta' messaggi bejn utenti tal-kompjuter; Il-provvista ta' access ghal network ta' informazzjoni globali tal-kompjuter ghat-trasferiment u l-propagazzjoni ta' informazzjoni.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "L-izvilupp ta' programmi tal-kompjuter irregistrati fuq mezzi tad-dejta (softwer) iddisinjati ghall-uzu fil-kostruzzjoni u l-manifattura awtomatizzata (cad/cam); Servizzi ta' disinn bl-ghajnuna tal-kompjuter; Disinn kompjuterizzat ta' grafika bil-vidjow u disinn grafiku; Id-disinn bl-ghajnuna ta' kompjuter ghax-xoghol tal-manifattura; Servizzi ta' disinn ta' l-inginerija meghjuna mill-kompjuter; Servizzi analitici bl-ghajnuna tal-kompjuter; Zvilupp ta' prodotti ghal ohrajn; Konsulenza u pariri relatati mal-izvilupp ta' prodotti u disinn ta' prodotti; Servizzi ta' pariri, konsulenza u ta' appogg tekniku relatati ma' hardwer, softwer u disinn kompjuterizzat, iddisinjar u inginerija; Kiri ta' hin tal-access ghal kompjuter; Servizzi kompjuterizzati ghal ohrajn, jigifieri pubblikazzjoni bbazata fuq il-web, tfittix, interfaccji ta' netwerks addizzjonali u skambju tad-dejta sikur, kollha ghall-uzu fil-qasam tal-koordinazzjoni tad-dejta fost diversi partecipanti fid-disinn grafiku, tpingija mekkanika u elettrika, tfassil ta' mudelli, bini tal-inginerija civili u holqien ta' immagni multimedjali; Servizzi relatati mal-kompjuter, jigifieri, servizzi ta' hosting interattiv li jippermettu li l-utenti jippubblikaw u jiskambjaw il-kontenut u l-immagni taghhom onlajn; Provvista ta' websajt li fiha ghodod tas-softwer onlajn li ma jistax jitnizzel ghall-editjar tal-immagni.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Programy do budowy, tworzenia modelów, projektowania obiektów, projektowania i projektowania komputerowego; Oprogramowanie komputerowe do projektowania wspomaganego komputerowo (CAD); Orpogramowanie interfejsów; Programy komputerowe do aplikacji graficznych, do rysunków wspomaganych komputerowo (CAD), do animacji, grafiki i do modeli konstrukcyjnych; Programy komputerowe i programy do przesylania internetowego, wyszukiwania, interfejsów dodatkowych i do wymiany danych, to wszystko do uzytku w ramach koordynacji danych, rysunków mechanicznych i elektrycznych, tworzenia modeli, budów drogowych i wodnych oraz tworzenia obrazów multimedialnych, miedzy wieloma uzytkownikami; Dokumenty instrukcyjne dostarczane na nosnikach elektronicznych, optycznych lub magnetycznych lub w postaci cyfrowej za pomoca sieci; I podreczniki instruktazowe w formacie elektronicznym sprzedawane z nim w komplecie; Rysunki komputerowe do pobrania; Oprogramowanie komputerowe do pobrania, sluzace do modelowania i projektowania; Pliki z obrazami do pobrania, zawierajace trójwymiarowe modele cyfrowe obiektów i elementów abstrakcyjnych.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "pl",
+      "description": "Przydzielanie dostepu do komputerowych baz danych; Zapewnianie dostepu do baz danych zawierajacych dane lub dokumenty w celu zdalnej konsultacji; Zapewnianie dostepu do stron internetowych; Uslugi telekomunikacji danych dostepne przy uzyciu hasla; Zapewnianie dostepu do blogów internetowych; Przydzielanie dostepu do elektronicznej sieci on-line w celu wyszukiwania danych; Przydzielanie dostepu do komputerowej bazy danych; Wynajem czasu dostepowego do swiatowych sieci informatycznych; Wspomagane komputerowo przesylanie obrazów; Elektroniczna transmisja danych i dokumentów za posrednictwem terminali komputerowych; Elektroniczna transmisja wiadomosci i danych; Bezpieczna transmisja danych, dzwieków lub obrazów; Udostepniane online forów do przesylania wiadomosci miedzy uzytkownikami komputerów; Przydzielanie dostepu do swiatowej sieci komputerowej, w celu przesylania i rozpowszechniania informacji.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Rozwój programów komputerowych zapisywanych na nosnikach danych(oprogramowanie) przeznaczonych do wykorzystania w branzy budowlanej i automatyce (cad/cam); Uslugi w zakresie projektowania wspomaganego komputerem; Komputerowo wspomagane projektowanie grafiki wideo lub projektowanie graficzne; Projektowanie wspomagane komputerowo (CAD) dla operacji produkcyjnych; Uslugi w zakresie projektowania inzynierskiego przy pomocy komputera; Uslugi analityczne wspomagane komputerowo; Opracowywanie produktów dla osób trzecich; Konsultacje i porady dotyczace opracowywania produktów i wzornictwa; Uslugi pomocy w zakresie doradztwa, konsultacji i pomocy technicznej dotyczacych sprzetu i oprogramowania komputerowego oraz wzornictwa, rysunków i techniki wspieranych komputerowo; Dzierzawa czasu dostepu do komputera; Uslugi komputerowe dla osób trzecich, mianowicie przesylanie internetowe, wyszukiwanie, interfejsy dodatkowe i bezpieczna wymiana danych, to wszystko do uzytku w ramach koordynacji danych, rysunków mechanicznych i elektrycznych, tworzenia modeli, budów drogowych i wodnych oraz tworzeniu obrazów multimedialnych, miedzy wieloma uzytkownikami; Uslugi komputerowe, mianowicie interaktywne uslugi w zakresie hostingu, które umozliwiaja uzytkownikowi publikowanie i dzielenie sie ich wlasnymi tresciami i obrazami on-line; Udostepnianie strony internetowej zawierajacej narzedzia programowe online nie do pobrania, sluzace do edycji obrazów.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Software para projeção, apresentação de modelos, design de objetos, conceção e conceção informatizada; Software para desenho (ou projecto) assistido por computador (\"CAD\"); Software de interface; Programas de computador para aplicações baseadas em caracteres, CAD, animação, gráficos, de desenho e elaboração de modelos; Programas de computador e software para afixação baseada em rede, pesquisa, interface com extranets e intercâmbio de dados, todos para utilização na coordenação de tarefas entre participantes múltiplos nos domínios do desenho gráfico, desenho mecânico e elétrico, elaboração de modelos, engenharia civil e criação de imagens multimédia; Documentos de instrução fornecidos em suportes eletrónicos, óticos ou magnéticos ou sob a forma digital em redes; E manuais de instruções em formato electrónico vendidos em conjunto com os mesmos; Gráficos de computador descarregáveis; Software descarregável para modelação e conceção; Ficheiros de imagens descarregáveis contendo modelos digitais de objetos e itens abstratos a três dimensões.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "pt",
+      "description": "Fornecimento de acesso a bases de dados informáticas; Fornecimento de acesso a bases de dados contendo dados ou documentos para consulta à distância; Fornecimento de acesso a páginas da Web; Serviços de comunicações de dados, acessíveis por código de acesso; Fornecimento de acesso a blogues na Web; Serviços de fornecimento de acesso a uma rede electrónica em linha para recolha de informações; Disponibilização de tempo de acesso a bases de dados; Aluguer de tempo de acesso à rede informática mundial; Transmissão de imagens por computador; Transmissão electrónica de dados e de documentos através de terminais de computador; Transmissão electrónica de mensagens e dados; Serviços de transmissão protegida de dados, de sons ou de imagens; Fornecimento de fóruns em linha para a transmissão de mensagens entre utilizadores de computadores; Fornecimento de acesso a uma rede informática mundial para a transferência e difusão de informação.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Desenvolvimento de programas de computador gravados em suportes de dados (software) concebidos para uso em construção e fabrico automáticos (CAD/CAM); Serviços de desenho assistido por computador; Conceção informatizada de gráficos de vídeo e desenho gráfico; Desenho assistido por computador para operações de fabrico; Serviços de desenho de engenharia assistido por computador; Serviços analíticos assistidos por computador; Desenvolvimento de produtos para terceiros; Consultoria e assessoria em matéria de desenvolvimento de produtos e desenho de produtos; Serviços de consultoria, assessoria e assistência técnica de hardware, software e desenho assistido por computador, desenho e tecnologia; Aluguer de tempo de acesso a um computador; Serviços informáticos para terceiros, nomeadamente serviços de correio na Internet, pesquisas, plataformas para redes externas e intercâmbio seguro de dados, todos para utilização em coordenação entre vários participantes na conceção gráfica, desenho mecânico e elétrico, apresentação de modelos, engenharia civil e criação de imagens multimédia; Serviços informáticos, nomeadamente serviços de hospedagem interactivos que permitem ao utilizador publicar e partilhar os seus conteúdos e imagens em linha; Fornecimento de um sítio Web com ferramentas de software em linha, não descarregáveis, para montagem/edição de imagens.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Programe informatice pentru constructie, creare de modele, profilare de obiecte, proiectare si proiectare computerizata; Software de calculator pentru proiectare asistata de calculator (CAD); Software de interconectare; Programe de calculator pentru aplicatii bazate pe caractere, pentru proiectare asistata de calculator (CAD), pentru animatie, grafica si pentru modele de constructii; Programe de calculator si software pentru postare web, cautare, linkuri în afara retelei si schimb de date, toate pentru utilizare la coordonare de date între mai multi participanti la un desen grafic, de proiectare, mecanic si electric, creare de modele, constructii de drumuri si acvatice si creare de imagini multimedia; Documente de instructiuni furnizate pe medii electronice, optice sau magnetice sau în format digital în retele; Si manuale cu instructiuni in format electronic vandute la set cu acestea; Desene realizate cu ajutorul calculatorului care pot fi descarcate; Software de calculator descarcabil pentru modelare si proiectare; Fisiere de imagini descarcabile continând modele digitale tridimensionale de obiecte si elemente abstracte.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "ro",
+      "description": "Furnizarea accesului la baze de date computerizate; Furnizarea accesului la baze de date continând date sau documente pentru consultanta la distanta; Asigurarea accesului la pagini web; Servicii de comunicare de date accesibile printr-un cod de acces; Asigurarea accesului la jurnale personale web; Furnizarea accesului la o retea electronica on-line pentru cautare de informatii; Asigurare de acces la o baza de date computerizata; Închiriere de timp de acces la o retea informatica globala; Transmisie de imagini asistata de calculator; Transmisie electronica de date si documente prin intermediul terminalelor de calculator; Transmisie electronica de mesaje si date; Transmisie de date, sunete si imagini protejata; Organizare de forumuri on-line pentru transmiterea de mesaje intre utilizatorii de calculatoare; Furnizarea accesului la o retea de calculatoare globala pentru transferul si diseminarea informatiilor.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Dezvoltare de programe de calculator înregistrate pe medii de date (software) destinate utilizarii în constructii si productie automatizata (cad/cam); Servicii de proiectare asistata de calculator; Proiectare computerizata de grafica video si proiectare grafica; Proiectare asistata de calculator pentru operatiuni de productie; Servicii de proiectare de inginerie asistata de calculator; Servicii de analiza asistata de calculator; Dezvoltare de produse pentru terti; Servicii de consultanta si consultanta cu privire la dezvoltare de produse si servicii de proiectare a produselor; Servicii de consiliere, consultanta si suport tehnice cu privire la hardware, software si proiectare asistata de calculator, schitare si tehnica; Închiriere de timpi de acces la un calculator; Servicii computerizate pentru terti, si anume, postare web, cautare, linkuri externe retelei si schimb de date în siguranta, toate pentru a fi utilizate la coordonare de date între mai multi participanti la o proiectare grafica, desen mecanic si electric, creare de modele, constructii de drumuri si acvatice si creare de imagini multimedia; Servicii în domeniul calculatoarelor, si anume servicii interactive de gazduire care permit utilizatorului sa publice si sa distribuie propriile sale continuturi si imagini online; Furnizarea unui site web care contine unelte de software on-line nedescarcabil pentru editare de imagini.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Softvér na konstrukciu, výrobu modelov, dizajn objektov, dizajn a dizajn pomocou pocítaca; Pocítacový softvér pre pocítacové projektovanie (CAD); Interfejsový softvér; Pocítacové programy na aplikácie na princípe znakov, na rysovanie pomocou pocítaca (CAD), na animáciu, grafiku a na konstrukcné modely; Pocítacové programy a softvér na webové vysielanie dát, vyhladávanie, extra rozhrania a výmenu dát, vsetok tovar na pouzitie na koordináciu údajov medzi viacerými úcastníkmi pri grafickom dizajne, mechanickom a elektrickom rysovaní, výrobou modelov, stavebníctvo a tvorbu multimediálnych obrazov; Instruktázne dokumenty dodávané na elektronických, optických alebo magnetických médiách alebo v digitálnej forme cez siete; A elektronické instruktázne manuály, predávané spolu s vyssie uvedeným softvérom; Pocítacové nákresy na stiahnutie; Stiahnutelný pocítacový softvér na modelovanie a navrhovanie; Stiahnutelné obrazové súbory, ktoré obsahujú trojrozmerné digitálne modely objektov a abstraktných predmetov.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "sk",
+      "description": "Poskytnutie prístupu k databázam pocítaca; Poskytovanie prístupu k databázam obsahujúcim dáta alebo dokumenty na poradenstvo na dialku; Poskytovanie prístupu k internetovým stránkam; Dátové komunikacné sluzby, prístupné prostredníctvom prístupových kódov; Poskytovanie prístupu k weblogom; Poskytovanie prístupu k elektronickej on-line siete pre vyhladanie informácie; Organizovanie prístupu k pocítacovým databázam; Prenájom prístupového casu ku svetovým pocítacovým sietam; Prenos obrazov s pomocou pocítaca; Elektronický prenos dát a dokumentov prostredníctvom pocítacových terminálov; Elektronické zaslanie správ a dát; Bezpecný prenos dát, zvuku alebo obrazov; Poskytovanie on-line fór pre prenos správ medzi pocítacovými uzívatelmi; Poskytnutie prístupu ku globálnej pocítacovej siete pro prenos a sírenie informácie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "Vývoj pocítacových programov zaznamenaných na dátových médiách (softvér) pouzívaných vo výstavbe a automatizovanej výrobe (CAD/CAM); Sluzby automatizovaného riadenia dizajnu; Dizajn videografiky a grafický dizajn pomocou pocítaca; Navrhovanie výrobných procesov s podporou pocítacov; Sluzby v oblasti pocítacového dizajnu; Sluzby pocítacovej analýzy; Vývoj výrobkov pre tretie osoby; Konzultácie a poradenstvo ohladom vývoja výrobkov a dizajnu výrobkov; Poradenské, konzultacné a technické podporné sluzby ohladom hardvéru, softvéru a dizajn, rysovanie a technika pomocou pocítaca; Sluzby pre prenajímanie casu prístupu k pocítacu; Pocítacové sluzby pre tretie osoby, menovite webové vysielanie dát, vyhladávanie, extra rozhrania a bezpecná výmena dát, vsetok tovar na pouzitie na koordináciu údajov medzi viacerými úcastníkmi pri grafickom dizajne, mechanickom a elektrickom rysovaní, výrobou modelov, stavebníctvo a tvorbu multimediálnych obrazov; Pocítacové sluzby, menovite interaktívne prevádzkové sluzby, ktoré umoznujú uzívatelom on-line vydávat a zdielat ich vlastný obsah a obrazy; Poskytovanie webovej stránky s on-line nestiahnutelnými softvérovými nástrojmi na úpravu obrazov.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Programska oprema za konstrukcijo, izdelavo modelov, oblikovanje objektov, oblikovanje in racunalnisko podprto oblikovanje; Racunalniska programska oprema za racunalnisko podprto oblikovanje (CAD); Vmesniska programska oprema; Racunalniski programi za aplikacije na osnovi znakov, za racunalnisko podprto risanje (CAD), za animacijo, grafiko in konstrukcijske modele; Racunalniski programi in programska oprema za spletno objavljanje, iskanje, ekstranetne vmesnike in izmenjavo podatkov, vsi za uporabo na podrocju koordiniranja podatkov med vec sodelujocimi pri graficnem oblikovanju, mehanicnem in elektronskem risanju, izdelovanju modelov, cestni in vodni gradnji in pri ustvarjanju multimedijskih slik; Dokumenti z navodili dostavljeni po elektronskih, opticnih ali magnetnih medijih ali v digitalni obliki preko omrezij; In prirocniki z navodili v elektronski obliki, v prodaji skupaj z njimi; Nalozljive racunalniske skice; Nalozljiva racunalniska programska oprema za izdelavo modelov in oblikovanje; Nalozljive slikovne datoteke, ki vsebujejo tridimenzionalne modele predmetov in abstraktnih objektov.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "sl",
+      "description": "Posredovanje dostopa do racunalniskih podatkovnih baz; Nudenje dostopa do podatkovnih baz, ki vsebujejo podatke ali dokumente za posvetovanje na daljavo; Nudenje dostopa do spletnih strani; Podatkovne komunikacijske storitve, dostopne z dostopovno kodo; Nudenje dostopa do spletnih dnevnikov; Posredovanje dostopa do elektronskega on-line omrezja za ponovno vzpostavitev podatkov; Posredovanje dostopa do racunalniske podatkovne baze; Izposoja dostopnega casa do globalnih racunalniskih omrezij; Racunalnisko podprt prenos slik; Elektronski prenos podatkov in dokumentov preko racunalniskih terminalov; Elektronski prenos sporocil in podatkov; Varen prenos podatkov, zvoka ali slik; Ponudba spletnih klepetalnic za prenos sporocil med uporabniki; Posredovanje dostopa do globalnega racunalniskega omrezja za prenos in razsirjanje informacij.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Razvoj racunalniskih programov, posnetih na nosilcih podatkov (programska oprema), za uporabo pri konstruiranju in avtomatizirani proizvodnji (CAD/CAM); Racunalnisko podprte oblikovalske storitve; Racunalnisko podprto oblikovanje video grafike in graficno oblikovanje; Racunalnisko podprto nacrtovanje proizvodnih postopkov; Storitve racunalnisko podprtega tehnoloskega oblikovanja; Racunalnisko podprte analiticne storitve; Razvoj izdelkov za druge; Posvetovanje in svetovanje v zvezi z razvojem izdelkov in oblikovanjem izdelkov; Svetovalne, posvetovalne in tehnicne podporne storitve v zvezi s strojno opremo, programsko opremo in racunalnisko podprtim oblikovanjem, risanjem in tehniko; Dajanje v najem casa dostopa do racunalnika; Racunalniske storitve za druge, in sicer spletno objavljanje, iskanje, ekstranetni vmesniki in varna izmenjava podatkov, vsi za uporabo na podrocju koordiniranja podatkov med vec sodelujocimi pri graficnem oblikovanju, mehanicnem in elektronskem risanju, izdelovanju modelov, cestni in vodni gradnji in pri ustvarjanju multimedijskih slik; Racunalniske storitve, in sicer interaktivne storitve gostovanja, ki uporabniku omogocajo objavljanje in souporabo lastnih vsebin in slik na spletu; Nudenje spletnega mesta s spletno nenalozljivo programsko opremo za urejanje slike.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Software de construcción, producción de modelos, dibujo de objetos, diseño y diseño asistido por ordenador; Software informático para diseño asistido por ordenador (CAD); Software de interfaz; Programas de ordenador para aplicaciones de modelación basada en caracteres, CAD, de animación, gráficos y diseño; Programas informáticos y software para envíos, búsquedas, interconexión de extranets e intercambio de datos basados en web, todo para la coordinación de tareas entre mútiples participantes en los ámbitos del diseño gráfico, dibujo mecánico y eléctrico, modelado, ingeniería civil y creación de imágenes multimedia; Documentos de instrucciones suministrados en soportes electrónicos, ópticos o magnéticos o en formato digital a través de redes de comunicaciones; Y manuales de instrucciones en formato electrónico vendidos de forma conjunta con los mismos; Gráficos de ordenador descargables; Software descargable para modelar y diseñar; Archivos de imágenes descargables que contienen modelos digitales tridimensionales de objetos y artículos abstractos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "es",
+      "description": "Facilitación de acceso a bases de datos informáticas; Concesión de acceso a bases de datos que contengan información o documentos para consulta a distancia; Facilitación de acceso a páginas web; Servicios de comunicaciones de datos accesibles mediante código de acceso; Acceso a blogs de la web; Facilitación de acceso a una red electrónica en línea para recuperar información; Facilitación de acceso a bases de datos; Alquiler de tiempos de acceso a redes informáticas globales; Transmisión de imágenes asistida por ordenador; Transmisión electrónica de datos y de documentos a través de terminales de ordenador; Transmisión electrónica de mensajes y datos; Servicios de transmisión segura de datos, sonidos o imágenes; Acceso a foros en línea para transmitir mensajes entre usuarios de ordenador; Facilitación de acceso a una red informática global para la transferencia y divulgación de información.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Desarrollo de programas informáticos grabados en medios de datos (software) diseñados para su uso en la construcción y la fabricación automática (cad/cam); Servicios de diseño asistido por ordenador; Diseño asistido por ordenador de gráfica para videos y diseño gráfico; Diseño asistido por ordenador para operaciones de fabricación; Servicios de diseño de ingeniería asistida por ordenador; Servicios analíticos asistidos por ordenador; Desarrollo de productos para terceros; Consultoría y asesoría en materia de desarrollo de productos y diseño de productos; Servicios de asesoramiento, consultoría y apoyo técnico relativos a hardware, software y servicios de diseño asistido por ordenador, dibujo y tecnología; Alquiler de tiempos de acceso a un ordenador; Servicios informáticos para terceros, a saber, correspondencia por internet, búsqueda, interfaz de red externa e intercambio seguro de datos, todos para ser utilizados en la coordinación de tareas entre varios usuarios para el diseño gráfico, dibujo mecánico y eléctrico, producción de modelos, construcción de caminos y obras hidráulicas y creación de imágenes multimedia; Servicios informáticos, en concreto, servicios de hospedaje interactivo que permiten al usuario publicar y compartir su propio contenido e imágenes en línea; Acceso a un sitio web con herramientas de software en línea no descargable para editar imágenes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Programvara för konstruktion, modellframställning, formgivning av objekt, utformning och datorstödd utformning; datorprogramvara för program för datorstödd konstruktion (CAD); gränssnittsprogramvara; datorprogram för teckenbaserade tillämpningar, för datorstödd ritning (CAD), för animering, för grafik och för konstruktionsmodeller; datorprogram och programvara för webbaserad postning, sökning, extranätgränssnitt och datautbyte, alla för användning inom uppgiftssamordning bland flera deltagare vid grafisk utformning, mekanisk och elektrisk ritning, modellframställning, väg- och vattenbyggnation och skapande av multimediebilder; instruktionsdokument levererade på elektroniska, optiska eller magnetiska media eller i digital form via nätverk; instruktionshandböcker i elektronisk form sålda som en enhet därmed; nedladdningsbar datorgrafik; nedladdningsbar datorprogramvara för modellering och formgivning; nedladdningsbara bildfiler innehållande tredimensionella digitala modeller för objekt och abstrakta föremål.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "sw",
+      "description": "Upplåtande av åtkomst till databaser; upplåtande av åtkomst till databaser innehållande data eller dokument för fjärrkonsultation; upplåtande av åtkomst till webbsidor; datakommunikationstjänster som är tillgängliga via åtkomstkod; upplåtande av åtkomst till webbloggar; åtkomst till ett elektroniskt direktanslutet nätverk för informationshämtning; tillhandahållande av åtkomst till databaser; uthyrning av åtkomsttid till globala datornätverk; datorstödd överföring av bilder; elektronisk överföring av data och dokument via datorterminaler; elektronisk överföring av meddelanden och data; tjänster avseende säker överföring av data, ljud och bilder; upplåtande av direktanslutna forum för överföring av meddelanden mellan datoranvändare; upplåtande av åtkomst av ett globalt datornät för överföring och spridning av information.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Utveckling av datorprogram inspelade på datormedier (programvara) utformade för användning i byggnation och automatisk tillverkning (cad/ cam); CAD-tjänster; datorstödd design av videografik och grafisk design; datorstödd formgivning för tillverkningsprocesser; datorstödda konstruktionstekniska tjänster; datorstödda analystjänster; produktutveckling för andra; konsultation och rådgivning avseende produktutveckling och produktformgivning; rådgivnings-, konsultations- och tekniska stödtjänster avseende maskinvara, programvara och datorstödd formgivning, ritning och teknik; uthyrning av åtkomsttid till datorer; datortjänster för andras räkning, nämligen, webbaserad postning, sökning, extranätgränssnitt och säkert datautbyte, alla för användning inom uppgiftssamordning bland flera deltagare vid grafisk utformning, mekanisk och elektrisk ritning, modellframställning, väg- och vattenbyggnation och skapande av multimediebilder; datortjänster, nämligen, interaktiva webbhotelltjänster som tillåter användaren att publicera och dela sitt eget innehåll och bilder via direktanslutning; upplåtande av en webbplats med online icke nedladdningsbara programvaruverktyg för bildredigering.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Symetri AB",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": "GROTH & CO. KB",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Forskargatan 3,Borlänge, 781 70",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantName": "Symetri AB"
+      }
+    ],
+    "applicationLanguageCode": "sw",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Software pro technické kreslení, vytvárení modelu, návrh objektu, navrhování a pocítacove podporované navrhování; Pocítacový software pro pocítacem podporované navrhování (CAD); Propojovací software; Pocítacové programy pro aplikace na bázi znaku, pro pocítacove podporované kreslení (CAD), pro animaci, pro grafiku, pro konstrukcní modely; Pocítacové programy a software pro webové postovní sluzby, vyhledávání, extranet rozhraní a výmenu dat, vsechny pro pouzití pri koordinaci údaju mezi více úcastníky pri vytvárení grafických návrhu, kreslení mechanických a elektrických výkresu, vytvárení modelu, silnicní a vodní stavby a tvorbu multimediálních obrazu; Instruktázní dokumenty dodávané na elektronických, optických nebo magnetických médiích nebo v digitální podobe prostrednictvím síte; A instruktázní manuály v elektronickém formátu prodávané s nimi jako celek; Pocítacové kresby ke stazení; Pocítacový software ke stazení pro modelování a navrhování; Obrazové soubory ke stazení obsahující trojrozmerné digitální modely objektu a abstraktních polozek."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Poskytování prístupu k pocítacovým databázím; Poskytování prístupu do databází obsahujících data nebo dokumenty pro vzdálenou konzultaci; Poskytování prístupu k webovým stránkám; Datové komunikacní sluzby prístupné prostrednictvím prístupového kódu; Poskytování prístupu k webovým blogum; Poskytování prístupu k elektronické on-line síti pro vyhledávání informací; Zajistování prístupu k pocítacovým databázím; Pronájem prístupového casu ke globálním pocítacovým sítím; Prenos obrazu pomocí pocítace; Elektronický prenos dat a dokumentu pres pocítacové terminály; Elektronický prenos zpráv a dat; Bezpecný prenos dat, zvuku anebo obrazu; Poskytování on-line chat-místností pro transmise zpráv mezi pouzivatelé pocítace; Poskytování prístupu ke globální pocítacové síti pro prenos a sírení informací."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Vývoj pocítacových programu nahraných na datových médiích (softwaru) pro pouzití pri konstrukci a automatizované výrobe (CAD/CAM); Pocítacem podporované návrhárství (sluzby); Pocítacove podporovaný design videografiky a grafický umelecký design; Navrhování pomocí pocítace (CAD) pro výrobní cinnosti; Pocítacem podporovaný technický návrh; Analytické sluzby s pomocí pocítace; Vývoj výrobku pro druhé; Konzultace a poradenství týkající se vývoje výrobku a návrhu výrobku; Poradenské, konzultacní a technické podpurné sluzby týkající se pocítacového hardwaru, pocítacového softwaru a pocítacem podporovaného návrhárství, technického kreslení a inzenýrských sluzeb; Pronájem doby prístupu k pocítaci; Pocítacové sluzby pro jiné osoby, jmenovite webové postovní sluzby, vyhledávání, extranet rozhraní a bezpecná výmena dat, vsechny pro pouzití pri koordinaci údaju mezi více úcastníky pri vytvárení grafických návrhu, kreslení mechanických a elektrických výkresu, vytvárení modelu, silnicní a vodní stavby a tvorbu multimediálních obrazu; Pocítacové sluzby, jmenovite sluzby poskytující interaktivní hosting, které umoznují uzivateli zverejnovat a sdílet jejich vlastní obsah a obrázky online; Poskytování webových stránek zamerených na on-line softwarové nástroje bez moznosti stazení pro editaci obrázku."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Software til konstruktion, modelfremstilling, formgivning af objekter, design og computerstøttet design; Computersoftware til computerstøttet design (cad); Interface software; Computerprogrammer til tegnbaseret computerstøttet design-, animations-, grafik- og designformgivningsapplikationer; Computerprogrammer og software til webbaserede nyhedsgruppeindlæg, søgning, ekstranettilslutning og dataudveksling, alt til anvendelse i forbindelse med koordinering af opgaver blandt flere deltagere inden for grafisk design, mekanisk og elektrisk tegning, modellering, civilingeniørvirksomhed og multimediebilledskabelse; Instruktionsdokumenter leveret via elektroniske, optiske eller magnetiske medier eller i digital form via netværk; Instruktionsmanualer i elektronisk format solgt som en enhed hermed; Computergrafik, der kan downloades; Computersoftware, der kan downloades, til modellering og design; Billedfiler, der kan downloades, indeholdende tredimensionelle, digitale modeller af genstande og abstrakte emner."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Adgang til computerdatabaser; Udbydelse af adgang til databaser med data eller dokumenter til fjernkonsultation; Udbydelse af adgang til websider; Datakommunikationstjenester med adgang via adgangskode; Formidling af adgang til webblogs; Forsyning af adgang til elektronisk online netværk til hentning af information; Tilrådighedsstillelse af opkoblingstid til databanker; Udlejning af adgangstid til globale computernetværk; Computerstøttet transmission af billeder; Elektroniske transmission af data, billeder og lyd formidlet via computerterminaler; Elektronisk transmission af data og meddelelser; Beskyttet transmission af data, lyd eller billede; Onlinefora til transmission af meddelelser mellem computerbrugere; Adgang til et globalt computernetværk til overførsel og spredning af information."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Udvikling af computerprogrammer indspillet på datamedier (software) designet til konstruktion og automatisk fremstilling (CAD/CAM); Computerstøttet designvirksomhed; Computerstøttet design af videografik og grafisk design; Computerunderstøttet design til brug i fremstillingsøjemed; Ingeniørvirksomhed inden for computerstøttet design; Computerstøttet analysevirksomhed; Produktudvikling for andre; Konsulentvirksomhed og rådgivning vedrørende produktudvikling og produktdesign; Rådgivning, konsultation og teknisk support vedrørende hardware, software og computerstøttet design, tegning og teknik; Leasing af adgangstid til en computer; Computervirksomhed for andre, nemlig webbaseret postering, søgning, interface til ekstranet og sikker dataudveksling, alt til anvendelse inden for opgavekoordinering blandt flere deltagere inden for grafisk design, mekanisk og elektrisk tegning, modelfremstilling, vej- og vandbygning og fremstilling af multimediebilleder; Computervirksomhed, nemlig interaktiv værtsvirksomhed, der gør det muligt for brugeren at udgive og dele sit eget indhold og billeder online; Udbydelse af et websted med onlineværktøjer, der ikke kan downloadesonlinesoftware, til redigering af billeder."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Software voor constructie, modellering, vormgeving van voorwerpen, ontwerp en computerondersteund ontwerp; Software voor computerondersteunde ontwerpprogramma's (CAD); Interfacesoftware; Computerprogramma's voor op leestekens gebaseerde applicaties alsmede voor CAD-, animatie-, grafische en vormgevingsapplicaties; Computerprogramma's en software voor het posten, zoeken, verbinden met extranetten en uitwisselen van gegevens op webbasis, allemaal voor coördinatie van taken onder meerdere deelnemers op het gebied van grafisch ontwerp, mechanisch en elektrisch tekenen, modelleren, civiele techniek en creatie van multimediabeelden; Educatieve documenten geleverd op elektronische, optische of magnetische media of in digitale vorm via netwerken; En instructiehandboeken in elektronisch formaat samen in een set verkocht; Computertekeningen om te downloaden; Downloadbare software voor modellering en ontwerp; Downloadbare beeldbestanden met driedimensionale digitale modellen van objecten en abstracte onderdelen."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Verschaffing van toegang tot computerdatabases; Het verlenen van toegang tot gegevensbanken met informatie en documentatie over advies op afstand; Verschaffing van toegang tot webpagina's; Telematicadiensten toegankelijk met een code; Verschaffing van toegang tot weblogs; Het verschaffen van toegang tot een elektronisch online-netwerk voor het terugvinden van informatie; Het verlenen van toegang tot computerdatabases; Verhuur van toegangstijd tot wereldwijde computernetwerken; Computerondersteunde verzending van beelden; Elektronische verzending van gegevens en documenten via computerterminals; Elektronische verzending van boodschappen en gegevens; Beveiligde overdracht van gegevens, geluid of beelden; Het verschaffen van on-linefora voor de verzending van berichten tussen computergebruikers; Het verschaffen van toegang tot een wereldwijd computernetwerk voor het overbrengen en verspreiden van informatie."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Ontwikkeling van computerprogramma's vastgelegd op gegevensmedia (software) ontworpen voor gebruik bij bouw en geautomatiseerde fabricage (cad/cam); Computerondersteund ontwerpen; Computerondersteund design van videografiek en grafisch ontwerp; Computerondersteund ontwerp voor fabricageactiviteiten; Computerondersteund technisch ontwerpen; Computerondersteunde analyse; Productontwikkeling voor derden; Raadpleging en advisering met betrekking tot productontwikkeling en productvormgeving; Adviserings- en raadplegingsdiensten, alsmede technische ondersteuningsdiensten met betrekking tot hardware, computersoftware en computerondersteund ontwerp, computerondersteund tekenen en computerondersteunde engineering; Verhuur van toegangstijd tot een computer; Computerdiensten voor derden, te weten, webgebaseerde posting, zoekdiensten, interfaces voor extranetten en beveiligde gegevensuitwisseling, alles voor gebruik met betrekking tot het coördineren van gegevens tussen diverse gebruikers bij grafische vormgeving, mechanisch en elektrisch tekenen, modellering, weg- en waterbouw en het creëren van multimediale afbeeldingen; Computerdiensten, te weten interactieve hosting om gebruikers in staat te stellen hun eigen informatie en beelden online uit te geven en te delen; Verschaffing van een website met niet-downloadbare onlinesoftwaretools voor bewerking van beeld."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer software for engineering, modelling, creation of objects, design and computer-aided design; Computer software for computer-aided design (CAD); Interface software; Computer programs for character-based applications, computer-aided design (CAD), animation, graphics and structural design; Computer programs and software for web-based posting, searching, extranet interfacing and exchanging of data, all for use in task coordination among multiple participants in the graphic design, mechanical and electrical drawing, modelling, civil engineering and multimedia image creation fields; Instructional documents delivered on electronic, optical or magnetic media or in digital form via networks;  Instructional manuals in electronic format sold as a unit therewith; Downloadable computer graphics; Downloadable computer software for modeling and designing; Downloadable image files containing three dimensional digital models of objects and abstract items."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Providing access to computer databases; Providing access to databases containing data or documents for remote consultation; Providing access to web pages; Data communication services accessible by access code; provision of access to web blogs; Provision of access to an electronic on-line network for information retrieval; Arranging access to a computer database; Leasing access time to global computer networks; Computer-aided transmission of images; Electronic transmission of data and documents via computer terminals; Electronic transmission of messages and data; Secure transmission of data, sound or images; Providing on-line forums for transmission of messages among computer users; Providing access to a global computer network for the transfer and dissemination of information."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Development of computer programs recorded on data media (software) designed for use in construction and automated manufacturing (cad/cam); Computer-aided design services; Computer-aided design of video graphics and graphic design; Computer aided design for manufacturing operations; Computer assisted engineering design services; Computer aided analytical services; Product development for others; Consultation and consultancy with regard to product development and product design; Advisory, consultation and technical support services relating to computer hardware, computer software and computer-aided design, drawing and technologies; Leasing of access time to a computer; Computer services for others, namely web-based posting, searching, extranet interfacing and secure exchanging of data, all for use in task coordination among multiple participants in the graphic design, mechanical and electrical drawing, modelling, civil engineering and multimedia image creation fields; Computer services, namely, interactive hosting services which allow the user to publish and share their own content and images on-line; Providing a website featuring on-line non-downloadable software tools for image editing."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Arvutiprogrammid konstrueerimiseks, mudelite valmistamiseks, objektide kujundamiseks, kavandamiseks ja arvutipõhiseks kavandamiseks; Arvutitarkvara arvutipõhise projekteerimise (CAD) jaoks; Liidestarkvara; Arvutiprogrammid tingmärkidel põhinevate muganduste tegemiseks, arvutipõhiseks joonestamiseks (arvutipõhine projekteerimine), animeerimiseks, graafika ja konstruktsioonimudelite valmistamiseks; Arvutiprogrammid ja programmid veebipõhisteks postitusteks, otsingute sooritamiseks, lisavõrguliideste ja andmevahetuse tarbeks, kõik kasutamiseks andmete korraldamisel mitme osaleja vahel graafilisel kujundamisel, mehaaniliste jooniste ja elektriskeemide joonestamisel, mudelite valmistamisel, tee- ja vesiehitustel ning multimeediapiltide loomisel; Juhenddokumendid, mida edastatakse elektroonilistel, optilistel või magnetmeediakandjatel või digitaalsel kujul võrgu vahendusel; Ja komplektis müüdavad kasutusjuhendid elektroonilisel kujul; Allalaaditavad arvutijoonistused; Allalaetav arvutitarkvara modelleerimiseks ja kavandamiseks; Allalaetavad kujutisfailid, mis sisaldavad kolmemõõtmelisi digitaalseid objektide mudeleid ja abstraktseid esemeid."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Arvutiandmekogudele ligipääsu tagamine; Juurdepääsu võimaldamine andmebaasidele, mis sisaldavad andmeid või dokumente kaugkonsultatsiooni kohta; Veebilehtedele juurdepääsu pakkumine; Juurdepääsukoodi abil juurdepääsetavad andmeside teenused; Juurdepääsu pakkumine veebiblogidele; Elektroonilisele onlainvõrgule juurdepääsu tagamine teabe kättesaamiseks; Arvutiandmekogule juurdepääsu võimaldamine; Juurdepääsuaja üürimine ülemaailmsetele andmevõrkudele; Kujutiste edastamine arvutiga; Elekrooniline andme- ja dokumendiedastus arvutiterminalide kaudu; Sõnumite ja andmete edastamine elektroonilisel teel; Andmete, heli või pildi turvaline edastamine; Reaalajas toimivate jututubade teenuse osutamine arvutikasutajate vahel sõnumite edastamiseks; Globaalsel arvutiteabevõrgule juurdepääsu tagamine teabe levitamise eesmärgil."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Andmekandjatele salvestatud arvutiprogrammide (tarkvara) arendamine, mis on projekteeritud ehituse ja automatiseeritud tootmise (raalprojekteerimine/raaltootmine) jaoks; Arvutil projekteerimise teenused; Videograafika arvutipõhine kujundamine ja graafiline kujundamine; Tootmisoperatsioonide arvutipõhine projekteerimine; Arvutipõhised tehnilised projekteerimisteenused; Arvutipõhised analüütilised teenused; Tootearendus kolmandatele isikutele; Konsulteerimine ja nõustamine seoses tootearenduse ja tootekujundusega; Nõustamis-, konsultatsiooni- ja tehnilised tugiteenused seoses arvutite riist- ja tarkvara ning arvutipõhise kujundamise, joonestamise ja tehnikaga; Arvuti kasutusaja üürimine; Arvutiteenused kolmandatele isikutele, nimelt veebipõhised postitused, otsingute sooritamine, lisavõrguliidesed ja turvaline andmevahetus, kõik kasutamiseks andmete korraldamisel mitme osaleja vahel graafilisel kujundamisel, mehaaniliste jooniste ja elektriskeemide joonestamisel, mudelite valmistamisel, teede- ja vesiehitustel ning multimeediapiltide loomisel; Arvutiteenused, nimelt interaktiivsed hostimisteenused, mis võimaldavad kasutajatel sidusalt avaldada ja jaotada nende endi sisu ning pilte; Sidusaid allalaadimatuid pilditöötluse tarkvaravahendeid sisaldava veebilehe pakkumine."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Ohjelmistot kohteiden suunnitteluun, mallinvalmistukseen, muotoiluun, hahmotteluun ja tietokoneavusteiseen hahmotteluun; Tietokoneohjelmistot tietokoneavusteiseen suunnitteluun (CAD); Käyttöliittymäohjelmistot; Tietokoneohjelmat merkkipohjaisia, cad-, animaatio-, grafiikka- ja mallinnussovelluksia varten; Tietokoneohjelmat ja -ohjelmistot, WWW-perusteinen ilmoittaminen, haku, ekstranetien liitännät ja datanvaihto, kaikki töiden koordinointiin usean osallistujan kesken graafisen suunnittelun, mekaanisen ja sähköisen piirtämisen, mallintamisen, maa- ja vesirakentamisen ja multimediakuvien luomisen aloilla; Käyttöohjeet levitettyinä elektronisin, optisin tai magneettisin tietovälinein tai digitaalisessa muodossa verkkojen välityksellä; Ja niiden kanssa myytävät elektronisessa muodossa olevat käsikirjat; Ladattava tietokonegrafiikka; Ladattavat tietokoneohjelmistot mallinnukseen ja suunnitteluun; Ladattavat kuvatiedostot, joissa on esineiden ja abstraktien kohteiden kolmiulotteisia digitaalimalleja."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Tietokantojen tarjoaminen käyttöön; Etäneuvotteluihin liittyviä tietoja tai asiakirjoja sisältävien tietokantojen käyttömahdollisuuden tarjoaminen; Web-sivujen käyttömahdollisuuden tarjoaminen; Verkkopalvelutunnuksen avulla saatavana olevat dataviestintäpalvelut; Verkkopäiväkirjojen käyttömahdollisuuden tarjoaminen; Tiedonhakuun tarkoitetun elektronisen online-verkon tarjoaminen käyttöön; Tietokantojen käyttöoikeuksien hankkiminen; Maailmanlaajuisen tietokoneverkon käyttöajan vuokraus; Tietokoneavusteinen viestien ja kuvien siirto; Tietojen ja asiakirjojen elektroninen lähettäminen tietokonepäätteiden avulla; Elektroninen viestien ja tietojen siirto; Tietojen, äänen tai kuvien turvasiirtopalvelut; Online-foorumien tarjoaminen viestien välittämiseksi tietokoneen käyttäjien kesken; Maailmanlaajuisen tietokoneverkon käyttömahdollisuuden tarjoaminen tiedon siirtoa ja levitystä varten."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Sellaisten tietovälineille tallennettujen tietokoneohjelmien (ohjelmistojen) kehittäminen, jotka on suunniteltu käytettäväksi rakentamisessa ja automatisoidussa tuotannossa (CAD/CAM); Tietokoneavusteiset suunnittelupalvelut; Videografiikan ja graafisen suunnittelun tietokoneavusteinen suunnittelu; Tietokoneavusteinen suunnittelu valmistustoimia varten; Tietokoneavusteiset tekniset suunnittelupalvelut; Tietokoneavusteiset analyysipalvelut; Tuotekehitys muiden lukuun; Tuotekehitykseen ja tuotesuunnitteluun liittyvä konsultointi ja neuvonta; Neuvonta-, konsultointi- ja tekniset tukipalvelut, jotka liittyvät laitteistoihin, ohjelmistoihin ja tietokoneavusteiseen suunnitteluun, piirtämiseen ja tekniikkaan; Tietokoneen käyttöajan vuokraus; Tietokonepalvelut muiden lukuun, nimittäin, WWW-pohjainen postitus, haku, vierasverkkoliittymä ja turvallinen tietojenvaihto, kaikki käytettäväksi useita osallistujia koskevien tehtävien yhteensovittamisessa graafisen muotoilun, mekaanisen ja sähköisen piirtämisen, mallinvalmistuksen, tie- ja vesirakentamisen ja multimediakuvien luomisen aloilla; Tietokonepalvelut, nimittäin vuorovaikutteiset ylläpitopalvelut, joiden avulla käyttäjät voivat julkaista ja jakaa omia sisältöjään ja kuviaan online-periaatteella; Muita kuin ladattavia kuvien muokkaamiseen tarkoitettuja online-ohjelmistotyökaluja sisältävän WWW-sivuston tarjoaminen."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Programmes pour la construction, la modélisation, la mise en forme d'objets, la conception et la conception assistée par ordinateur; Logiciel pour conception assistée par ordinateur (CAO); Interfaces logicielles; Programmes informatiques pour les applications en mode caractère, CAO, d'animation, graphiques et de modélisation de conception; Programmes informatiques et logiciels de communication et recherche sur le web, interfaçage avec des extranets et échange de données, tous destinés à être utilisés dans la coordination des tâches de plusieurs participants dans les domaines de la conception graphique, du dessin mécanique et électrique, du modelage, du génie civil et de la création d'images multimédias; Documents d'instruction transmis sur support électronique, optique ou magnétique ou sous forme numérique par réseau; Et manuels d'instruction sous forme électronique vendus sous forme d'ensemble; Graphiques informatiques téléchargeables; Logiciels téléchargeables pour la modélisation et la conception; Fichiers d'images téléchargeables de modèles numériques tridimensionnels d'objets et d'articles abstraits."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Fourniture d'accès à des bases de données informatiques; Fourniture d'accès à des bases de données contenant des données ou des documents pour consultation à distance; Offre d'accès à des pages web; Services de communication de données accessibles par code d'accès; Fourniture d'accès à des blogues Internet; Fourniture d'accès à un réseau électronique en ligne pour la récupération d'informations; Mise à disposition d'accès à des bases de données; Location de temps d'accès à des réseaux informatiques mondiaux; Transmission d'images assistée par ordinateur; Transmissions électroniques de données et de documents par le biais de terminaux d'ordinateurs; Transmission électronique de données et de messages; Services de transmission sécurisée de données, de sons ou d'images; Mise à disposition de forums de discussion en ligne pour la transmission de messages entre des utilisateurs d'ordinateurs; Fourniture d'accès à un réseau informatique mondial pour le transfert et la diffusion d'informations."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Développement de programmes informatiques enregistrés sur des supports de données (logiciels) conçus pour être utilisés dans la construction et la fabrication automatisée (CAO/FAO); Services de conception assistée par ordinateur; Conception assistée par ordinateur de graphiques vidéos et conception graphique; Conception assistée par ordinateur pour opérations de fabrication; Services d'ingénierie assistée par ordinateur; Services d'analyse assistés par ordinateur; Développement de produits pour des tiers; Consultations et conseils relatifs au développement de produits et conception de produits; Services de conseils, consultations et support technique en matière de matériel, logiciels et conception assistée par ordinateur, schémas et technologies; Location de temps d'accès à un ordinateur; Services informatiques pour le compte de tiers, à savoir, publication web, recherche, interfaces d'extranet et échange sécurisé de données, tous destinés à être utilisés pour la coordination de données entre plusieurs participants lors de la conception graphique, schémas mécaniques et électriques, modélisation, constructions de routes et canalisation d'eau et création d'images multimédias; Services informatiques, à savoir services interactifs d'hébergement permettant à l'utilisateur de publier et de partager ses propres contenus et images en ligne; Fourniture d'un site web proposant des outils logiciels non téléchargeables en ligne pour le montage d'images."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Software für Konstruktionen, Modellherstellung und Gestaltung von Objekten, Design und computergestütztes Design; Computersoftware für die computergestützte Konstruktion (CAD); Schnittstellensoftware; Computerprogramme für zeichengestützte, CAD-, Animations-, Grafik- und Designmodellierungsanwendungen; Computerprogramme und -software für webgestützte Bereitstellung, Suche, Extranet-Anbindung und Austausch von Daten, alles zur Koordination der Aufgaben mehrerer Anwender auf den Gebieten Grafikdesign, mechanisches und elektronisches Zeichnen, Modellierung, Ingenieurbau und Bilderstellung für Multimedia-Anwendungen; Bedienungsdokumente auf elektronischen, optischen oder magnetischen Trägermedien oder in digitaler Form über Netze; Und zusammen mit den vorstehend genannten Waren verkaufte Bedienungshandbücher in elektronischer Form; Herunterladbare Computergrafiken; Herunterladbare Computersoftware für Modellierung und Entwurf; Herunterladbare Bilddateien mit dreidimensionalen digitalen Modellen von Objekten und abstrakten Gegenständen."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Bereitstellung von Zugang zu Computerdatenbanken; Bereitstellung des Zugangs zu Datenbanken mit Informationen oder Dokumenten zu Fernberatungszwecken; Bereitstellung des Zugangs zu Web-Seiten; Über Zugangskode zugängliche Datenkommunikationsdienste; Bereitstellung des Zugangs zu Webblogs; Bereitstellung des Zugangs zu einem elektronischen Netz zur Online-Informationsrecherche; Verschaffen von Zugriff auf Datenbanken; Vermietung von Zugangszeit auf weltweite Computernetzwerke; Computergestützte Bildübertragung; Elektronische Übertragung von Daten und Dokumenten mittels Computerterminals; Elektronische Nachrichten- und Datenübertragung; Zugangsgeschützte Übertragung von Daten, Ton und Bild; Bereitstellung von Online-Foren zur Übertragung von Nachrichten zwischen Computerbenutzern; Bereitstellung des Zugangs zu einem weltweiten Computernetz zur Übertragung und Verbreitung von Informationen."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Entwicklung von auf Datenträgern gespeicherten Computerprogrammen (Software) zur Verwendung im Bauwesen und in der automatisierten Fertigung (CAD/CAM); Computergestütztes Design; Computergestütztes Design von Videografik und Grafikdesign; Computergestützter Entwurf von Fertigungsabläufen; Computergestützte Designerdienstleistungen im Bereich Technik; Computergestützte Analysedienste; Produktentwicklung für Dritte; Beratung in Bezug auf Produktentwicklung und Produktgestaltung; Beratung und technische Unterstützung in Bezug auf Hardware, Computersoftware und CAD (computergestützte Konstruktion), Zeichnen und Technik; Vermietung von Zugangszeiten zu einem Computer; Computerdienstleistungen für Dritte, nämlich webgestützte Bereitstellung, Suche, Extranet-Anbindung und sicherer Austausch von Daten, alles zur Koordination der Aufgaben mehrerer Anwender auf den Gebieten Grafikdesign, mechanisches und elektronisches Zeichnen, Modellierung, Ingenieurbau und Bilderstellung für Multimedia-Anwendungen; Computerdienstleistungen, nämlich interaktives Hosting zur Ermöglichung der Online-Veröffentlichung und gemeinsamen Nutzung von eigenen Inhalten und Bildern durch den Benutzer; Bereitstellung einer Website mit online bereitgestellten, nicht herunterladbaren Softwaretools für die Bildbearbeitung."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Számítógépprogramok muszaki tervezéshez, modellkészítéshez, objektumorientált formatervezéshez, formatervezéshez és számítógépes formatervezéshez; Számítógépes szoftverek számítógéppel támogatott tervezéshez (CAD); Interfész szoftverek; Számítógépprogramok jelekre épülo alkalmazásokhoz, számítógéppel támogatott tervezéshez (CAD), animációkhoz, grafikákhoz és tervezési modellekhez; Webalapú feladásra, keresésre, extranet-interfészek kezelésére és adatcserére alkalmas számítógépprogramok és szoftverek, amelyek feladatok több felhasználó közötti összehangolására használhatók a grafikus tervezés, gépészeti és elektromos rajzok készítése, modellezés, út- és vízépítés, valamint multimédiaképek készítése területén; Elektronikus, optikai vagy mágneses adathordozókon vagy hálózatokon digitális formában terjesztett oktatóanyagok; És elektronikus formátumú használati utasítások, a fentiekkel együtt értékesítve; Letöltheto számítógépes rajzok; Letöltheto számítógépes szoftverek modellezéshez és tervezéshez; Letöltheto képfájlok tárgyak és absztrakt dolgok háromdimenziós modelljeivel."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Stámítógépes adatbázisokhoz való hozzáférhetoség biztosítása; Távtanácsadási adatokat vagy dokumentumokat tartalmazó adatbázisokhoz való hozzáférés biztosítása; Hozzáférés lehetové tétele weboldalakhoz; Hozzáférési kód révén hozzáférheto adatkommunikációs szolgáltatások; Hozzáférés biztosítása webnaplókhoz; Elektronikus on-line hálózathoz való hozzáférhetoség biztosítása információ visszakeresésére; Számítógépes adatbázisokhoz való hozzáférhetoség megszervezése; Globális számítógépes hálózathoz való hozzáférési ido kölcsönzése; Számítógéppel támogatott kép átadása; Adatok és dokumentumok elektronikus átvitele számítógépes terminálokon keresztül; Üzenetek és adat elektronikus átadása; Adat, hangok és képek biztonságos átadása; On-line fórumok biztosítása üzenetek átadására számítógépes használók között; Globális számítógépes hálózathoz való hozzáférhetoség biztosítása információ transzferre és elterjesztésre."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Építéshez és automatizált gyártáshoz (cad/cam) használt, adathordozón rögzített számítógépes programok (szoftverek) fejlesztése; Számítógéppel segített tervezés; Videografikák és grafikus tervek számítógéppel támogatott eloállítása; Számítógéppel támogatott tervezési szolgáltatások gyártási muveletekhez; Számítógéppel támogatott muszaki formatervezési szolgáltatások; Számítógéppel segített elemzési szolgáltatások; Termékfejlesztés harmadik fél számára; Konzultáció és tanácsadás a termékfejlesztésben és termékek formatervezésében; Hardverrel, szoftverrel és számítógéppel támogatott formatervezéssel, muszakirajz-készítéssel és más technikákkal kapcsolatos tanácsadás és muszaki támogatás; Számítógépes hozzáférési ido kölcsönzése; Harmadik fél számára végzett számítógépes szolgáltatás, nevezetesen webalapú feladás, keresés, extranet-interfészek kezelése és adatcsere feladatok több felhasználó közötti összehangolására a grafikus tervezés, gépészeti és elektromos rajzok készítése, modellezés, út- és vízépítés, valamint multimédiaképek készítése területén; Számítógépes szolgáltatások, nevezetesen interaktív hosztolási szolgáltatások, melyek lehetové teszik, hogy a felhasználó saját tartalmait és képeit online közzétehesse és megoszthassa; Képszerkesztésre szolgáló online, nem letöltheto szoftvereszközöket biztosító weboldal biztosítása."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Software per la costruzione, la modellistica, il design di oggetti, la progettazione e la progettazione assistita da computer; Software per la progettazione assistita da computer (CAD); Software di interfaccia; Programmi per computer per applicazioni basate su caratteri, di progettazione con l'ausilio dell'elaboratore (CAD), animazione, grafica e creazione di modelli di progettazione; Programmi per computer e software per immissione su Web, ricerca, interfaccia di reti esterne e scambio di dati, tutti per la coordinazione dei compiti tra più partecipanti ad attività di progettazione grafica, disegno meccanico ed elettrico, creazione di modelli, ingegneria civile e creazione d'immagini multimediali; Documenti d'istruzioni recapitati su supporti elettronici, ottici o magnetici o in forma digitale tramite reti; E manuali d'istruzioni in forma elettronica venduti unitamente ad essi; Grafica per computer scaricabile; Software scaricabili per la generazione di modelli e progettazione; File di immagini scaricabili contenenti modelli digitali tridimensionali di oggetti ed articoli astratti."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Accesso a banche dati; Fornitura di accesso a banche dati contenenti dati o documenti per la consultazione a distanza; Accesso a pagine Web; Servizi di comunicazione dati accessibili tramite codice d'accesso; Accesso a blog sul web; Fornitura di accesso ad una rete elettronica on-line per il reperimento di informazioni; Fornitura di accesso a banche dati; Locazione di tempi d'accesso a reti informatiche globali; Trasmissione di immagini mediante computer; Trasmissione elettronica di dati e documenti attraverso terminali informatici; Trasmissione elettronica di messaggi e dati; Trasmissione protetta di dati, suoni o immagini; Fori on-line per la trasmissione di messaggi tra utenti di computer; Accesso a una rete informatica per il trasferimento e la diffusione di informazioni."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Sviluppo di programmi per computer registrati su supporti per dati (software) progettati per la costruzione e la fabbricazione automatica (CAD/CAM); Servizi di disegno assistito da computer; Progettazione assistita da computer di grafica video e design grafico; Progettazione assistita da computer per operazioni di fabbricazione; Servizi tecnici di progettazione assistita da computer; Servizi analitici computerizzati; Sviluppo di prodotti per conto terzi; Consulenza e assistenza in materia di sviluppo e progettazione di prodotti; Servizi di assistenza, consulenza e supporto tecnico per hardware, software e progettazione assistita da computer, disegno e ingegneria; Noleggio di tempi d'accesso a un computer; Servizi informatici per conto terzi, ovvero pubblicazione su web, ricerca, interfaccia extranet e scambio di dati sicuro, tutto ciò per il coordinamento di compiti tra più partecipanti nella progettazione grafica, nel disegno meccanico ed elettrico, nella modellistica, nell'ingegneria civile e nella creazione di immagini multimediali; Servizi informatici, ovvero servizi di hosting interattivo per consentire agli utenti di pubblicare e condividere i propri contenuti ed immagini on-line; Fornitura d'un sito Web contenente strumenti software non scaricabili on-line per il montaggio d'immagini."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Programine iranga statybu, modeliavimo, objektu projektavimo reikmems ir projektavimo bei kompiuterizuoto projektavimo reikmems; Kompiuteriu programine iranga, skirta kompiuteriu atliekamam dizainui (CAD); Siejimo programine iranga; Kompiuteriu programos simboliais grindziamu taikomuju programu reikmems, automatizuotojo projektavimo reikmems, animacijos, grafikos ir projektavimo modeliu reikmems; Kompiuteriu programos ir programine iranga internetinio issiuntimo, paieskos, ekstraneto sasaju ir duomenu mainu reikmems, viskas skirta uzduotims tarp keliu dalyviu koordinuoti grafinio dizaino, mechaninio ir elektrinio braizymo, modeliavimo, statybos inzinerijos ir ivairialypes terpes paveikslu kurimo srityje; Instrukciniai dokumentai, teikiami elektroninese, optinese ar magnetinese laikmenose arba skaitmenine forma tinklu; Ir elektroninio formato instrukciju vadovai, parduodami kartu su ja kaip rinkinys; Parsisiunciami kompiuteriniai piesiniai; Atsisiunciama kompiuteriu programine iranga, skirta modeliavimo ir projektavimo reikmems; Atsisiunciamos vaizdu rinkmenos, kuriose irasyti trimaciai skaitmeniniai objektu ir abstrakciu daiktu modeliai."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Prieigos prie kompiuteriniu duomenu baziu teikimas; Prieigos prie duomenu baziu, kuriose yra duomenu arba dokumentu nuotolinio konsultavimo reikmems, teikimas; Prieigos prie tinklalapiu teikimas; Duomenu rysiu paslaugos, prieinamos per prieigos koda; Tinklarasciu prieigos teikimas; Prieigos prie elektroninio tinklo teikimas tiesioginio rysio linija informacijos gavimo reikmems; Prieigos prie kompiuteriu duomenu bazes rengimas; Prieigos prie visuotinio kompiuterinio tinklo laiko nuoma; Kompiuterinis vaizdo perdavimas; Elektroninis duomenu ir dokumentu perdavimas kompiuteriu terminalais; Elektroninis pranesimu ir duomenu perdavimas; Saugus duomenu, garso ir vaizdo perdavimas; Tinkliniu [internetiniu] pokalbiu svetainiu, skirtu pranesimu perdavimui tarp kompiuteriu naudotoju, paslaugu teikimas; Prieigos prie visuotinio kompiuteriu tinklo informacijai perduoti ir platinti teikimas."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Kompiuteriniu programu, irasytu duomenu laikmenose (programines irangos), naudojamu konstravimo ir automatizuotos gamybos reikmems (kompiuteriu panaudojimas projektavimui/ gamybai), tobulinimas; Kompiuterizuoto projektavimo paslaugos; Kompiuterinis vaizdo grafikos ir grafinio dizaino projektavimas; Gamybos operaciju kompiuterinis projektavimas; Techninio projektavimo, naudojant kompiuteri, paslaugos; Kompiuterizuoto analizavimo paslaugos; Produkto pletra kitiems; Konsultavimas ir patarimai, susije su produkto pletra ir produktu dizainu; Patarimu, konsultavimo ir technines pagalbos paslaugos, susijusios su aparatine iranga, programine iranga ir kompiuterizuotu dizainu, braizymu ir technika; Prieigos prie kompiuteriu laiko nuoma; Su kompiuteriais susijusios paslaugos kitiems, butent internetinis issiuntimas, paieska, ekstraneto sasajos ir saugus duomenu mainai, viskas skirta uzduotims tarp keliu dalyviu koordinuoti grafinio dizaino, mechaninio ir elektrinio braizymo, modeliavimo, statybos inzinerijos ir ivairialypes terpes paveikslu kurimo srityje; Kompiuteriu paslaugos, butent dialogines prieglobos paslaugos, kuriomis vartotojams suteikiama galimybe tiesioginiu rysiu skelbti savo turini bei atvaizdus ir jais dalytis; Tinklalapio, talpinancio tiesioginio rysio neatsisiunciama programines irangos programa, skirta atvaizdams redaguoti, teikimas."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Programmatura objektu izveidei, modelu izstradei, veidosanai, projektesana un datorizeta projektesana; Datoru programmatura datorbalstitai projektesanai (CAD); Saskarnu programmatura; Datorprogrammas rakstzimju orientetam pielietojumam, datorizetai projektesanai (CAD), animesanai, grafiskai apstradei un projektu modelesanai; Datorprogrammas un programmatura izvietosanai timekli, meklesanai, artiklu saskarnei un datu apmainai, paredzetas, lai sakartotu vairaku dalibnieku datus saistiba ar grafisku projektesanu, mehanisku un elektrisku rasesanu, modelu izstradi, civilo buvinzenieriju un multimediju attelu radisanu; Instrukciju dokumentacija, kas tiek piegadata ar elektronisku, optisku vai magnetisku neseju palidzibu vai digitala forma ar tikla starpniecibu; Un instrukciju rokasgramatas elektroniska formata, kas tiek pardotas kopa ar ieprieks mineto; Datoru zimejumi lejupieladejami; Lejupieladejama datora programmatura modelesanai un dizainam; Lejupieladejamas attelu datnes, kas satur trisdimensiju objektu un abstraktu prieksmetu ciparu modelus."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Piekluves nodrosinasana datoru datu bazem; Piekluves nodrosinasana datubazem, kas satur datus vai dokumentus attalinatam konsultacijam; Pieejas nodrosinasana timekla lapam; Datu komunikacijas, kas pieejamas ar piekluves kodu; Pieejas nodrosinasana timekla emuariem; Piekluves nodrosinasana elektroniskajiem tiessaistes tikliem informacijas atjaunosanas nolukos; Datoru datu bazu piekluves iekartosana; Piekluves laika nodrosinasana globalajam datortiklam; Datorizeta attelu parraide; Datu un dokumentu elektroniska parraide, izmantojot datoru terminalus; Pazinojumu un datu elektroniska parraide; Datu, skanas un attelu parraides nodrosinasana; Tiessaistes forumu nodrosinasana zinojumu parsutisanai starp datoru lietotajiem; Piekluves nodrosinasana globalajam datortiklam, lai parsutitu un izplatitu informaciju."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Datora programmu, kas ierakstitas datu medijos (programmatura), kas paredzetas izmantosanai buvnieciba un automatiskaja razosana (cad/cam), izstrade; Projektesanas darbi, kas tiek veikti ar datoru; Datorizeta video grafikas un grafiska dizaina izstrade; Datorizeta razosanas operaciju projektesana; Datorizeti inzenierprojektesanas pakalpojumi; Datorizeti analitiski pakalpojumi; Produktu izstrade tresajam personam; Konsultacijas un padomdosana par produktu izstradi un produktu projektesanu; Padomdosanas, konsultaciju un tehniska atbalsta pakalpojumi saistiba ar aparaturu, programmaturu un datorizetu projektesanu, rasesanu un tehniku; Piekluves laika noma datoram; Datoru pakalpojumi tresajam personam, proti, izvietosana timekli, meklesana, artiklu saskarne un drosa datu apmaina, paredzeti, lai sakartotu vairaku dalibnieku datus saistiba ar grafisku projektesanu, mehanisku un elektrisku rasesanu, modelu izstradi, civilo buvinzenieriju un multimediju attelu radisanu; Datoru pakalpojumi, proti, interaktivi mitinasanas pakalpojumi, kas lauj lietotajam publicet un dalit pasa raditu saturu un attelus tiessaiste; Timekla vietnes nodrosinasana, kas ietver tiessaistes nelejupieladejamas programmaturas rikus attelu redigesanai."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Softwer ghad-disinn, tfassil ta' mudelli, stilizzar ta' oggetti, disinn u disinn kompjuterizzat; Softwer tal-kompjuter ghad-disinn bl-ghajnuna tal-kompjuter (CAD); Softwer ghac-cirkwiti elettrici; Programmi tal-kompjuter ghal applikazzjonijiet ibbazati fuq karattri, tpingija kompjuterizzata (CAD), animazzjoni, grafika u mudelli tad-disinjar; Programmi tal-kompjuter u softwer ghall-pubblikazzjoni bbazata fuq il-web, tfittix, interfaccji ta' netwerks addizzjonali u skambju tad-dejta, kollha ghall-uzu fil-qasam tal-koordinazzjoni tad-dejta fost diversi partecipanti fid-disinn grafiku, tpingija mekkanika u elettrika, tfassil ta' mudelli, bini tal-inginerija civili u holqien ta' immagni multimedjali; Dokumenti istruttivi provduti fuq midja elettronika, ottika jew manjetika jew fil-forma digitali minn fuq netwerks; U manwali tal-istruzzjoni fil-forma elettronika mibjughin bhala haga wahda ma' dawn; Tpingijiet tal-kompjuter li jitnizzlu; Softwer tal-kompjuter li jista' jitnizzel ghall-immudellar u d-disinn; Fajls tal-immagni li jistghu jitnizzlu li fihom mudelli digitali tridimensjonali ta' oggetti u oggetti astratti."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Il-provvista ta' access ghal databases tal-kompjuter; Provvista ta' access ghal dejtabejzis li fihom dejta jew dokumenti ghall-konsulenza mill-boghod; Il-provvista ta' access ghall-pagni tal-web; Servizzi tal-komunikazzjoni ta' dejta accessibbli b'kodici tal- access; Provvista ta' access ghal web blogs; Il-provvista ta' access ghal network elettronika online ghall-irkupru ta' l-informazzjoni; L-arrangament ta' access ghal database tal-kompjuter; Kiri ta' hin ta' access ghal netwerks globali tal-IT; It-trasmissjoni ta' xbihat bl-ghajnuna tal-kompjuter; Trazmissjonijiet elettronici ta' data u dokumenti permezz ta' terminali tal-kompjuter; It-trasmissjoni elettronika ta' messaggi u data; It-tramissjoni mill-gdid ta' xbihat bis-satellita; Il-provvista ta' kmamar tat-tahdit (chat rooms) online ghat-trasmissjoni ta' messaggi bejn utenti tal-kompjuter; Il-provvista ta' access ghal network ta' informazzjoni globali tal-kompjuter ghat-trasferiment u l-propagazzjoni ta' informazzjoni."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "L-izvilupp ta' programmi tal-kompjuter irregistrati fuq mezzi tad-dejta (softwer) iddisinjati ghall-uzu fil-kostruzzjoni u l-manifattura awtomatizzata (cad/cam); Servizzi ta' disinn bl-ghajnuna tal-kompjuter; Disinn kompjuterizzat ta' grafika bil-vidjow u disinn grafiku; Id-disinn bl-ghajnuna ta' kompjuter ghax-xoghol tal-manifattura; Servizzi ta' disinn ta' l-inginerija meghjuna mill-kompjuter; Servizzi analitici bl-ghajnuna tal-kompjuter; Zvilupp ta' prodotti ghal ohrajn; Konsulenza u pariri relatati mal-izvilupp ta' prodotti u disinn ta' prodotti; Servizzi ta' pariri, konsulenza u ta' appogg tekniku relatati ma' hardwer, softwer u disinn kompjuterizzat, iddisinjar u inginerija; Kiri ta' hin tal-access ghal kompjuter; Servizzi kompjuterizzati ghal ohrajn, jigifieri pubblikazzjoni bbazata fuq il-web, tfittix, interfaccji ta' netwerks addizzjonali u skambju tad-dejta sikur, kollha ghall-uzu fil-qasam tal-koordinazzjoni tad-dejta fost diversi partecipanti fid-disinn grafiku, tpingija mekkanika u elettrika, tfassil ta' mudelli, bini tal-inginerija civili u holqien ta' immagni multimedjali; Servizzi relatati mal-kompjuter, jigifieri, servizzi ta' hosting interattiv li jippermettu li l-utenti jippubblikaw u jiskambjaw il-kontenut u l-immagni taghhom onlajn; Provvista ta' websajt li fiha ghodod tas-softwer onlajn li ma jistax jitnizzel ghall-editjar tal-immagni."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Programy do budowy, tworzenia modelów, projektowania obiektów, projektowania i projektowania komputerowego; Oprogramowanie komputerowe do projektowania wspomaganego komputerowo (CAD); Orpogramowanie interfejsów; Programy komputerowe do aplikacji graficznych, do rysunków wspomaganych komputerowo (CAD), do animacji, grafiki i do modeli konstrukcyjnych; Programy komputerowe i programy do przesylania internetowego, wyszukiwania, interfejsów dodatkowych i do wymiany danych, to wszystko do uzytku w ramach koordynacji danych, rysunków mechanicznych i elektrycznych, tworzenia modeli, budów drogowych i wodnych oraz tworzenia obrazów multimedialnych, miedzy wieloma uzytkownikami; Dokumenty instrukcyjne dostarczane na nosnikach elektronicznych, optycznych lub magnetycznych lub w postaci cyfrowej za pomoca sieci; I podreczniki instruktazowe w formacie elektronicznym sprzedawane z nim w komplecie; Rysunki komputerowe do pobrania; Oprogramowanie komputerowe do pobrania, sluzace do modelowania i projektowania; Pliki z obrazami do pobrania, zawierajace trójwymiarowe modele cyfrowe obiektów i elementów abstrakcyjnych."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Przydzielanie dostepu do komputerowych baz danych; Zapewnianie dostepu do baz danych zawierajacych dane lub dokumenty w celu zdalnej konsultacji; Zapewnianie dostepu do stron internetowych; Uslugi telekomunikacji danych dostepne przy uzyciu hasla; Zapewnianie dostepu do blogów internetowych; Przydzielanie dostepu do elektronicznej sieci on-line w celu wyszukiwania danych; Przydzielanie dostepu do komputerowej bazy danych; Wynajem czasu dostepowego do swiatowych sieci informatycznych; Wspomagane komputerowo przesylanie obrazów; Elektroniczna transmisja danych i dokumentów za posrednictwem terminali komputerowych; Elektroniczna transmisja wiadomosci i danych; Bezpieczna transmisja danych, dzwieków lub obrazów; Udostepniane online forów do przesylania wiadomosci miedzy uzytkownikami komputerów; Przydzielanie dostepu do swiatowej sieci komputerowej, w celu przesylania i rozpowszechniania informacji."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Rozwój programów komputerowych zapisywanych na nosnikach danych(oprogramowanie) przeznaczonych do wykorzystania w branzy budowlanej i automatyce (cad/cam); Uslugi w zakresie projektowania wspomaganego komputerem; Komputerowo wspomagane projektowanie grafiki wideo lub projektowanie graficzne; Projektowanie wspomagane komputerowo (CAD) dla operacji produkcyjnych; Uslugi w zakresie projektowania inzynierskiego przy pomocy komputera; Uslugi analityczne wspomagane komputerowo; Opracowywanie produktów dla osób trzecich; Konsultacje i porady dotyczace opracowywania produktów i wzornictwa; Uslugi pomocy w zakresie doradztwa, konsultacji i pomocy technicznej dotyczacych sprzetu i oprogramowania komputerowego oraz wzornictwa, rysunków i techniki wspieranych komputerowo; Dzierzawa czasu dostepu do komputera; Uslugi komputerowe dla osób trzecich, mianowicie przesylanie internetowe, wyszukiwanie, interfejsy dodatkowe i bezpieczna wymiana danych, to wszystko do uzytku w ramach koordynacji danych, rysunków mechanicznych i elektrycznych, tworzenia modeli, budów drogowych i wodnych oraz tworzeniu obrazów multimedialnych, miedzy wieloma uzytkownikami; Uslugi komputerowe, mianowicie interaktywne uslugi w zakresie hostingu, które umozliwiaja uzytkownikowi publikowanie i dzielenie sie ich wlasnymi tresciami i obrazami on-line; Udostepnianie strony internetowej zawierajacej narzedzia programowe online nie do pobrania, sluzace do edycji obrazów."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Software para projeção, apresentação de modelos, design de objetos, conceção e conceção informatizada; Software para desenho (ou projecto) assistido por computador (\"CAD\"); Software de interface; Programas de computador para aplicações baseadas em caracteres, CAD, animação, gráficos, de desenho e elaboração de modelos; Programas de computador e software para afixação baseada em rede, pesquisa, interface com extranets e intercâmbio de dados, todos para utilização na coordenação de tarefas entre participantes múltiplos nos domínios do desenho gráfico, desenho mecânico e elétrico, elaboração de modelos, engenharia civil e criação de imagens multimédia; Documentos de instrução fornecidos em suportes eletrónicos, óticos ou magnéticos ou sob a forma digital em redes; E manuais de instruções em formato electrónico vendidos em conjunto com os mesmos; Gráficos de computador descarregáveis; Software descarregável para modelação e conceção; Ficheiros de imagens descarregáveis contendo modelos digitais de objetos e itens abstratos a três dimensões."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Fornecimento de acesso a bases de dados informáticas; Fornecimento de acesso a bases de dados contendo dados ou documentos para consulta à distância; Fornecimento de acesso a páginas da Web; Serviços de comunicações de dados, acessíveis por código de acesso; Fornecimento de acesso a blogues na Web; Serviços de fornecimento de acesso a uma rede electrónica em linha para recolha de informações; Disponibilização de tempo de acesso a bases de dados; Aluguer de tempo de acesso à rede informática mundial; Transmissão de imagens por computador; Transmissão electrónica de dados e de documentos através de terminais de computador; Transmissão electrónica de mensagens e dados; Serviços de transmissão protegida de dados, de sons ou de imagens; Fornecimento de fóruns em linha para a transmissão de mensagens entre utilizadores de computadores; Fornecimento de acesso a uma rede informática mundial para a transferência e difusão de informação."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Desenvolvimento de programas de computador gravados em suportes de dados (software) concebidos para uso em construção e fabrico automáticos (CAD/CAM); Serviços de desenho assistido por computador; Conceção informatizada de gráficos de vídeo e desenho gráfico; Desenho assistido por computador para operações de fabrico; Serviços de desenho de engenharia assistido por computador; Serviços analíticos assistidos por computador; Desenvolvimento de produtos para terceiros; Consultoria e assessoria em matéria de desenvolvimento de produtos e desenho de produtos; Serviços de consultoria, assessoria e assistência técnica de hardware, software e desenho assistido por computador, desenho e tecnologia; Aluguer de tempo de acesso a um computador; Serviços informáticos para terceiros, nomeadamente serviços de correio na Internet, pesquisas, plataformas para redes externas e intercâmbio seguro de dados, todos para utilização em coordenação entre vários participantes na conceção gráfica, desenho mecânico e elétrico, apresentação de modelos, engenharia civil e criação de imagens multimédia; Serviços informáticos, nomeadamente serviços de hospedagem interactivos que permitem ao utilizador publicar e partilhar os seus conteúdos e imagens em linha; Fornecimento de um sítio Web com ferramentas de software em linha, não descarregáveis, para montagem/edição de imagens."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Programe informatice pentru constructie, creare de modele, profilare de obiecte, proiectare si proiectare computerizata; Software de calculator pentru proiectare asistata de calculator (CAD); Software de interconectare; Programe de calculator pentru aplicatii bazate pe caractere, pentru proiectare asistata de calculator (CAD), pentru animatie, grafica si pentru modele de constructii; Programe de calculator si software pentru postare web, cautare, linkuri în afara retelei si schimb de date, toate pentru utilizare la coordonare de date între mai multi participanti la un desen grafic, de proiectare, mecanic si electric, creare de modele, constructii de drumuri si acvatice si creare de imagini multimedia; Documente de instructiuni furnizate pe medii electronice, optice sau magnetice sau în format digital în retele; Si manuale cu instructiuni in format electronic vandute la set cu acestea; Desene realizate cu ajutorul calculatorului care pot fi descarcate; Software de calculator descarcabil pentru modelare si proiectare; Fisiere de imagini descarcabile continând modele digitale tridimensionale de obiecte si elemente abstracte."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Furnizarea accesului la baze de date computerizate; Furnizarea accesului la baze de date continând date sau documente pentru consultanta la distanta; Asigurarea accesului la pagini web; Servicii de comunicare de date accesibile printr-un cod de acces; Asigurarea accesului la jurnale personale web; Furnizarea accesului la o retea electronica on-line pentru cautare de informatii; Asigurare de acces la o baza de date computerizata; Închiriere de timp de acces la o retea informatica globala; Transmisie de imagini asistata de calculator; Transmisie electronica de date si documente prin intermediul terminalelor de calculator; Transmisie electronica de mesaje si date; Transmisie de date, sunete si imagini protejata; Organizare de forumuri on-line pentru transmiterea de mesaje intre utilizatorii de calculatoare; Furnizarea accesului la o retea de calculatoare globala pentru transferul si diseminarea informatiilor."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Dezvoltare de programe de calculator înregistrate pe medii de date (software) destinate utilizarii în constructii si productie automatizata (cad/cam); Servicii de proiectare asistata de calculator; Proiectare computerizata de grafica video si proiectare grafica; Proiectare asistata de calculator pentru operatiuni de productie; Servicii de proiectare de inginerie asistata de calculator; Servicii de analiza asistata de calculator; Dezvoltare de produse pentru terti; Servicii de consultanta si consultanta cu privire la dezvoltare de produse si servicii de proiectare a produselor; Servicii de consiliere, consultanta si suport tehnice cu privire la hardware, software si proiectare asistata de calculator, schitare si tehnica; Închiriere de timpi de acces la un calculator; Servicii computerizate pentru terti, si anume, postare web, cautare, linkuri externe retelei si schimb de date în siguranta, toate pentru a fi utilizate la coordonare de date între mai multi participanti la o proiectare grafica, desen mecanic si electric, creare de modele, constructii de drumuri si acvatice si creare de imagini multimedia; Servicii în domeniul calculatoarelor, si anume servicii interactive de gazduire care permit utilizatorului sa publice si sa distribuie propriile sale continuturi si imagini online; Furnizarea unui site web care contine unelte de software on-line nedescarcabil pentru editare de imagini."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Softvér na konstrukciu, výrobu modelov, dizajn objektov, dizajn a dizajn pomocou pocítaca; Pocítacový softvér pre pocítacové projektovanie (CAD); Interfejsový softvér; Pocítacové programy na aplikácie na princípe znakov, na rysovanie pomocou pocítaca (CAD), na animáciu, grafiku a na konstrukcné modely; Pocítacové programy a softvér na webové vysielanie dát, vyhladávanie, extra rozhrania a výmenu dát, vsetok tovar na pouzitie na koordináciu údajov medzi viacerými úcastníkmi pri grafickom dizajne, mechanickom a elektrickom rysovaní, výrobou modelov, stavebníctvo a tvorbu multimediálnych obrazov; Instruktázne dokumenty dodávané na elektronických, optických alebo magnetických médiách alebo v digitálnej forme cez siete; A elektronické instruktázne manuály, predávané spolu s vyssie uvedeným softvérom; Pocítacové nákresy na stiahnutie; Stiahnutelný pocítacový softvér na modelovanie a navrhovanie; Stiahnutelné obrazové súbory, ktoré obsahujú trojrozmerné digitálne modely objektov a abstraktných predmetov."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Poskytnutie prístupu k databázam pocítaca; Poskytovanie prístupu k databázam obsahujúcim dáta alebo dokumenty na poradenstvo na dialku; Poskytovanie prístupu k internetovým stránkam; Dátové komunikacné sluzby, prístupné prostredníctvom prístupových kódov; Poskytovanie prístupu k weblogom; Poskytovanie prístupu k elektronickej on-line siete pre vyhladanie informácie; Organizovanie prístupu k pocítacovým databázam; Prenájom prístupového casu ku svetovým pocítacovým sietam; Prenos obrazov s pomocou pocítaca; Elektronický prenos dát a dokumentov prostredníctvom pocítacových terminálov; Elektronické zaslanie správ a dát; Bezpecný prenos dát, zvuku alebo obrazov; Poskytovanie on-line fór pre prenos správ medzi pocítacovými uzívatelmi; Poskytnutie prístupu ku globálnej pocítacovej siete pro prenos a sírenie informácie."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Vývoj pocítacových programov zaznamenaných na dátových médiách (softvér) pouzívaných vo výstavbe a automatizovanej výrobe (CAD/CAM); Sluzby automatizovaného riadenia dizajnu; Dizajn videografiky a grafický dizajn pomocou pocítaca; Navrhovanie výrobných procesov s podporou pocítacov; Sluzby v oblasti pocítacového dizajnu; Sluzby pocítacovej analýzy; Vývoj výrobkov pre tretie osoby; Konzultácie a poradenstvo ohladom vývoja výrobkov a dizajnu výrobkov; Poradenské, konzultacné a technické podporné sluzby ohladom hardvéru, softvéru a dizajn, rysovanie a technika pomocou pocítaca; Sluzby pre prenajímanie casu prístupu k pocítacu; Pocítacové sluzby pre tretie osoby, menovite webové vysielanie dát, vyhladávanie, extra rozhrania a bezpecná výmena dát, vsetok tovar na pouzitie na koordináciu údajov medzi viacerými úcastníkmi pri grafickom dizajne, mechanickom a elektrickom rysovaní, výrobou modelov, stavebníctvo a tvorbu multimediálnych obrazov; Pocítacové sluzby, menovite interaktívne prevádzkové sluzby, ktoré umoznujú uzívatelom on-line vydávat a zdielat ich vlastný obsah a obrazy; Poskytovanie webovej stránky s on-line nestiahnutelnými softvérovými nástrojmi na úpravu obrazov."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Programska oprema za konstrukcijo, izdelavo modelov, oblikovanje objektov, oblikovanje in racunalnisko podprto oblikovanje; Racunalniska programska oprema za racunalnisko podprto oblikovanje (CAD); Vmesniska programska oprema; Racunalniski programi za aplikacije na osnovi znakov, za racunalnisko podprto risanje (CAD), za animacijo, grafiko in konstrukcijske modele; Racunalniski programi in programska oprema za spletno objavljanje, iskanje, ekstranetne vmesnike in izmenjavo podatkov, vsi za uporabo na podrocju koordiniranja podatkov med vec sodelujocimi pri graficnem oblikovanju, mehanicnem in elektronskem risanju, izdelovanju modelov, cestni in vodni gradnji in pri ustvarjanju multimedijskih slik; Dokumenti z navodili dostavljeni po elektronskih, opticnih ali magnetnih medijih ali v digitalni obliki preko omrezij; In prirocniki z navodili v elektronski obliki, v prodaji skupaj z njimi; Nalozljive racunalniske skice; Nalozljiva racunalniska programska oprema za izdelavo modelov in oblikovanje; Nalozljive slikovne datoteke, ki vsebujejo tridimenzionalne modele predmetov in abstraktnih objektov."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Posredovanje dostopa do racunalniskih podatkovnih baz; Nudenje dostopa do podatkovnih baz, ki vsebujejo podatke ali dokumente za posvetovanje na daljavo; Nudenje dostopa do spletnih strani; Podatkovne komunikacijske storitve, dostopne z dostopovno kodo; Nudenje dostopa do spletnih dnevnikov; Posredovanje dostopa do elektronskega on-line omrezja za ponovno vzpostavitev podatkov; Posredovanje dostopa do racunalniske podatkovne baze; Izposoja dostopnega casa do globalnih racunalniskih omrezij; Racunalnisko podprt prenos slik; Elektronski prenos podatkov in dokumentov preko racunalniskih terminalov; Elektronski prenos sporocil in podatkov; Varen prenos podatkov, zvoka ali slik; Ponudba spletnih klepetalnic za prenos sporocil med uporabniki; Posredovanje dostopa do globalnega racunalniskega omrezja za prenos in razsirjanje informacij."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Razvoj racunalniskih programov, posnetih na nosilcih podatkov (programska oprema), za uporabo pri konstruiranju in avtomatizirani proizvodnji (CAD/CAM); Racunalnisko podprte oblikovalske storitve; Racunalnisko podprto oblikovanje video grafike in graficno oblikovanje; Racunalnisko podprto nacrtovanje proizvodnih postopkov; Storitve racunalnisko podprtega tehnoloskega oblikovanja; Racunalnisko podprte analiticne storitve; Razvoj izdelkov za druge; Posvetovanje in svetovanje v zvezi z razvojem izdelkov in oblikovanjem izdelkov; Svetovalne, posvetovalne in tehnicne podporne storitve v zvezi s strojno opremo, programsko opremo in racunalnisko podprtim oblikovanjem, risanjem in tehniko; Dajanje v najem casa dostopa do racunalnika; Racunalniske storitve za druge, in sicer spletno objavljanje, iskanje, ekstranetni vmesniki in varna izmenjava podatkov, vsi za uporabo na podrocju koordiniranja podatkov med vec sodelujocimi pri graficnem oblikovanju, mehanicnem in elektronskem risanju, izdelovanju modelov, cestni in vodni gradnji in pri ustvarjanju multimedijskih slik; Racunalniske storitve, in sicer interaktivne storitve gostovanja, ki uporabniku omogocajo objavljanje in souporabo lastnih vsebin in slik na spletu; Nudenje spletnega mesta s spletno nenalozljivo programsko opremo za urejanje slike."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Software de construcción, producción de modelos, dibujo de objetos, diseño y diseño asistido por ordenador; Software informático para diseño asistido por ordenador (CAD); Software de interfaz; Programas de ordenador para aplicaciones de modelación basada en caracteres, CAD, de animación, gráficos y diseño; Programas informáticos y software para envíos, búsquedas, interconexión de extranets e intercambio de datos basados en web, todo para la coordinación de tareas entre mútiples participantes en los ámbitos del diseño gráfico, dibujo mecánico y eléctrico, modelado, ingeniería civil y creación de imágenes multimedia; Documentos de instrucciones suministrados en soportes electrónicos, ópticos o magnéticos o en formato digital a través de redes de comunicaciones; Y manuales de instrucciones en formato electrónico vendidos de forma conjunta con los mismos; Gráficos de ordenador descargables; Software descargable para modelar y diseñar; Archivos de imágenes descargables que contienen modelos digitales tridimensionales de objetos y artículos abstractos."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Facilitación de acceso a bases de datos informáticas; Concesión de acceso a bases de datos que contengan información o documentos para consulta a distancia; Facilitación de acceso a páginas web; Servicios de comunicaciones de datos accesibles mediante código de acceso; Acceso a blogs de la web; Facilitación de acceso a una red electrónica en línea para recuperar información; Facilitación de acceso a bases de datos; Alquiler de tiempos de acceso a redes informáticas globales; Transmisión de imágenes asistida por ordenador; Transmisión electrónica de datos y de documentos a través de terminales de ordenador; Transmisión electrónica de mensajes y datos; Servicios de transmisión segura de datos, sonidos o imágenes; Acceso a foros en línea para transmitir mensajes entre usuarios de ordenador; Facilitación de acceso a una red informática global para la transferencia y divulgación de información."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Desarrollo de programas informáticos grabados en medios de datos (software) diseñados para su uso en la construcción y la fabricación automática (cad/cam); Servicios de diseño asistido por ordenador; Diseño asistido por ordenador de gráfica para videos y diseño gráfico; Diseño asistido por ordenador para operaciones de fabricación; Servicios de diseño de ingeniería asistida por ordenador; Servicios analíticos asistidos por ordenador; Desarrollo de productos para terceros; Consultoría y asesoría en materia de desarrollo de productos y diseño de productos; Servicios de asesoramiento, consultoría y apoyo técnico relativos a hardware, software y servicios de diseño asistido por ordenador, dibujo y tecnología; Alquiler de tiempos de acceso a un ordenador; Servicios informáticos para terceros, a saber, correspondencia por internet, búsqueda, interfaz de red externa e intercambio seguro de datos, todos para ser utilizados en la coordinación de tareas entre varios usuarios para el diseño gráfico, dibujo mecánico y eléctrico, producción de modelos, construcción de caminos y obras hidráulicas y creación de imágenes multimedia; Servicios informáticos, en concreto, servicios de hospedaje interactivo que permiten al usuario publicar y compartir su propio contenido e imágenes en línea; Acceso a un sitio web con herramientas de software en línea no descargable para editar imágenes."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Programvara för konstruktion, modellframställning, formgivning av objekt, utformning och datorstödd utformning; datorprogramvara för program för datorstödd konstruktion (CAD); gränssnittsprogramvara; datorprogram för teckenbaserade tillämpningar, för datorstödd ritning (CAD), för animering, för grafik och för konstruktionsmodeller; datorprogram och programvara för webbaserad postning, sökning, extranätgränssnitt och datautbyte, alla för användning inom uppgiftssamordning bland flera deltagare vid grafisk utformning, mekanisk och elektrisk ritning, modellframställning, väg- och vattenbyggnation och skapande av multimediebilder; instruktionsdokument levererade på elektroniska, optiska eller magnetiska media eller i digital form via nätverk; instruktionshandböcker i elektronisk form sålda som en enhet därmed; nedladdningsbar datorgrafik; nedladdningsbar datorprogramvara för modellering och formgivning; nedladdningsbara bildfiler innehållande tredimensionella digitala modeller för objekt och abstrakta föremål."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Upplåtande av åtkomst till databaser; upplåtande av åtkomst till databaser innehållande data eller dokument för fjärrkonsultation; upplåtande av åtkomst till webbsidor; datakommunikationstjänster som är tillgängliga via åtkomstkod; upplåtande av åtkomst till webbloggar; åtkomst till ett elektroniskt direktanslutet nätverk för informationshämtning; tillhandahållande av åtkomst till databaser; uthyrning av åtkomsttid till globala datornätverk; datorstödd överföring av bilder; elektronisk överföring av data och dokument via datorterminaler; elektronisk överföring av meddelanden och data; tjänster avseende säker överföring av data, ljud och bilder; upplåtande av direktanslutna forum för överföring av meddelanden mellan datoranvändare; upplåtande av åtkomst av ett globalt datornät för överföring och spridning av information."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Utveckling av datorprogram inspelade på datormedier (programvara) utformade för användning i byggnation och automatisk tillverkning (cad/ cam); CAD-tjänster; datorstödd design av videografik och grafisk design; datorstödd formgivning för tillverkningsprocesser; datorstödda konstruktionstekniska tjänster; datorstödda analystjänster; produktutveckling för andra; konsultation och rådgivning avseende produktutveckling och produktformgivning; rådgivnings-, konsultations- och tekniska stödtjänster avseende maskinvara, programvara och datorstödd formgivning, ritning och teknik; uthyrning av åtkomsttid till datorer; datortjänster för andras räkning, nämligen, webbaserad postning, sökning, extranätgränssnitt och säkert datautbyte, alla för användning inom uppgiftssamordning bland flera deltagare vid grafisk utformning, mekanisk och elektrisk ritning, modellframställning, väg- och vattenbyggnation och skapande av multimediebilder; datortjänster, nämligen, interaktiva webbhotelltjänster som tillåter användaren att publicera och dela sitt eget innehåll och bilder via direktanslutning; upplåtande av en webbplats med online icke nedladdningsbara programvaruverktyg för bildredigering."
+        }
+      ]
+    },
+    "id": "b3e76974-ca21-4178-9d1c-ee316831321b",
+    "ipRightKind": "tmk",
+    "markFeature": "STYLIZED LETTERS",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "NO BULGARIAN SUPPORTED",
+        "markImageColourClaimedTextLanguageCode": "bg"
+      },
+      {
+        "markImageColourClaimedText": "Modrá a cerná.",
+        "markImageColourClaimedTextLanguageCode": "cs"
+      },
+      {
+        "markImageColourClaimedText": "Blå og sort.",
+        "markImageColourClaimedTextLanguageCode": "da"
+      },
+      {
+        "markImageColourClaimedText": "Blau und schwarz.",
+        "markImageColourClaimedTextLanguageCode": "de"
+      },
+      {
+        "markImageColourClaimedText": "NO GREEK SUPPORTED",
+        "markImageColourClaimedTextLanguageCode": "el"
+      },
+      {
+        "markImageColourClaimedText": "Blue and black.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      },
+      {
+        "markImageColourClaimedText": "Azul y negro.",
+        "markImageColourClaimedTextLanguageCode": "es"
+      },
+      {
+        "markImageColourClaimedText": "Sinine ja must.",
+        "markImageColourClaimedTextLanguageCode": "et"
+      },
+      {
+        "markImageColourClaimedText": "Sininen ja musta.",
+        "markImageColourClaimedTextLanguageCode": "fi"
+      },
+      {
+        "markImageColourClaimedText": "Bleu et noir.",
+        "markImageColourClaimedTextLanguageCode": "fr"
+      },
+      {
+        "markImageColourClaimedText": "Kék és fekete.",
+        "markImageColourClaimedTextLanguageCode": "hu"
+      },
+      {
+        "markImageColourClaimedText": "Blu e nero.",
+        "markImageColourClaimedTextLanguageCode": "it"
+      },
+      {
+        "markImageColourClaimedText": "Melyna ir juoda.",
+        "markImageColourClaimedTextLanguageCode": "lt"
+      },
+      {
+        "markImageColourClaimedText": "Zils un melns.",
+        "markImageColourClaimedTextLanguageCode": "lv"
+      },
+      {
+        "markImageColourClaimedText": "Blu u iswed.",
+        "markImageColourClaimedTextLanguageCode": "mt"
+      },
+      {
+        "markImageColourClaimedText": "Blauw en zwart.",
+        "markImageColourClaimedTextLanguageCode": "nl"
+      },
+      {
+        "markImageColourClaimedText": "Blekitny i czarny.",
+        "markImageColourClaimedTextLanguageCode": "pl"
+      },
+      {
+        "markImageColourClaimedText": "Azul e preto.",
+        "markImageColourClaimedTextLanguageCode": "pt"
+      },
+      {
+        "markImageColourClaimedText": "Albastru si negru.",
+        "markImageColourClaimedTextLanguageCode": "ro"
+      },
+      {
+        "markImageColourClaimedText": "Modrá a cierna farba.",
+        "markImageColourClaimedTextLanguageCode": "sk"
+      },
+      {
+        "markImageColourClaimedText": "Modra in crna.",
+        "markImageColourClaimedTextLanguageCode": "sl"
+      },
+      {
+        "markImageColourClaimedText": "Blått och svart.",
+        "markImageColourClaimedTextLanguageCode": "sw"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00142",
+        "publicationVolume": "119"
+      }
+    ],
+    "recordLastUpdated": "20260917",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Fleminggatan 20,Stockholm, 112 26",
+        "representativeAddressCountryCode": "SE",
+        "representativeAddressCountryName": "Sweden",
+        "representativeName": "GROTH & CO. KB"
+      }
+    ],
+    "secondLanguageCode": "en",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20120416",
+        "applicationNumber": "10811156"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320416",
+      "lastPublicationDate": "20120626",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20121003",
+        "registrationNumber": "10811156"
+      }
+    },
+    "version": "20260917150230",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NAVIATE"
+    }
+  },
+  "_uri": "/mark/em/b3e76974-ca21-4178-9d1c-ee316831321b",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.292Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

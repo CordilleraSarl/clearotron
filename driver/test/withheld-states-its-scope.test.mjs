@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // — `withheld 0` READ AS "NO SEAM DEFECT" OVER A ROUND THE REVIEWER BLOCKED.
 //
-// On R2 round `ed1d7248` the reviewer returned BLOCKING on a carry-through failure: two live, in-class
+// On a full clearance test run the reviewer returned BLOCKING on a carry-through failure: two live, in-class
 // rights that the run's own `register-findings` carried reached neither `findings.json`, nor
 // `narrative.md`, nor `placements.json`. Its summary: "The search ran; the carry-through failed."
 //

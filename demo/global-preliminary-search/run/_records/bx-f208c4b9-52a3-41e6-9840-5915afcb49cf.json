@@ -1,0 +1,171 @@
+{
+  "uri": "/mark/bx/f208c4b9-52a3-41e6-9840-5915afcb49cf",
+  "provider": "clarivate",
+  "office": "bx",
+  "guid": "f208c4b9-52a3-41e6-9840-5915afcb49cf",
+  "applicationNumber": "1279249",
+  "registrationNumber": "R 950209",
+  "applicationDate": "2013-11-20",
+  "registrationDate": null,
+  "expiryDate": "2033-11-20",
+  "renewalDate": "2024-01-11",
+  "lastPublicationDate": "2024-01-11",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "NXP SECURE CONNECTIONS FOR A SMARTER WORLD",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Elektronische, elektrotechnische en elektromagnetische modules, alsmede onderdelen en componenten hiervoor, waaronder geïntegreerde schakelingen (IC's), gemengde signaal IC's met hoge prestaties, chips, diodes, transistors en processors; stroomomzetters; (analoge en/of digitale) halfgeleiders en halfgeleiderelementen; interfaces; software; apparaten en instrumenten voor het geleiden, verspreiden, omzetten, accumuleren, afstellen of besturen van elektriciteit; apparaten voor het opnemen, het overbrengen en het weergeven van gegevens, geluid of beeld; magnetische gegevensdragers, gegevensverwerkende apparatuur en computers.",
+      "translation_language": "en",
+      "translation": "Electronic, electrotechnical and electromagnetic modules, and parts and components therefor, including integrated circuits (ICs), high performance mixed signal ICs, chips, diodes, transistors and processors; power converters; (analog and/or digital) semiconductors and semiconductor elements; interfaces; software; apparatus and instruments for conducting, distributing, converting, accumulating, tuning or controlling electricity; apparatus for recording, transferring and reproducing data, sound or images; magnetic data carriers, data processing equipment and computers."
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "nl",
+      "description": "Drukwerken; studieboeken; gegevensboeken; instructiehandboeken; gebruikershandboeken; productcatalogussen; specificatiebladen en andere bladen met gegevens met betrekking tot geïntegreerde schakelingen (IC's), chips en halfgeleiders, alsmede inzake halfgeleiderapparaten, -instrumenten en -software.",
+      "translation_language": "en",
+      "translation": "Printed matter; textbooks; data books; instruction manuals; user manuals; product catalogs; specification sheets and other data sheets relating to integrated circuits (ICs), chips and semiconductors, as well as semiconductor devices, instruments and software."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Ontwerp, onderzoek, ontwikkeling en advisering op het gebied van halfgeleiders, alsmede advisering terzake; ontwerp van geïntegreerde schakelingen; ontwikkeling van software voor halfgeleiders; informatie inzake voornoemde diensten ten behoeve van ontwerpers en architecten in de halfgeleiderindustrie; wetenschappelijke en technologische evaluaties en tests, al dan niet ter verificatie, accreditatie en standaardisatie van geïntegreerde schakelingen (IC's), chips, halfgeleiders en van halfgeleiderapparaten, -instrumenten en -software.",
+      "translation_language": "en",
+      "translation": "Design, research, development and consultancy in the field of semiconductors, and consultancy relating thereto; integrated circuit design; development of semiconductor software; information on the aforesaid services for designers and architects in the semiconductor industry; scientific and technological evaluations and tests, whether or not for the purpose of verification, accreditation and standardization of integrated circuits (ICs), chips, semiconductors and semiconductor devices, instruments and software."
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO Shieldmark B.V.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60, 5656 AG Eindhoven",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "nl",
+    "cmMarkImageEUclassification": [
+      "37.02.27"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electronic, electrotechnical and electromagnetic modules, and parts and components therefor, including integrated circuits (ICs), high performance mixed signal ICs, chips, diodes, transistors and processors; power converters; (analog and/or digital) semiconductors and semiconductor elements; interfaces; software; apparatus and instruments for conducting, distributing, converting, accumulating, tuning or controlling electricity; apparatus for recording, transferring and reproducing data, sound or images; magnetic data carriers, data processing equipment and computers.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Elektronische, elektrotechnische en elektromagnetische modules, alsmede onderdelen en componenten hiervoor, waaronder geïntegreerde schakelingen (IC's), gemengde signaal IC's met hoge prestaties, chips, diodes, transistors en processors; stroomomzetters; (analoge en/of digitale) halfgeleiders en halfgeleiderelementen; interfaces; software; apparaten en instrumenten voor het geleiden, verspreiden, omzetten, accumuleren, afstellen of besturen van elektriciteit; apparaten voor het opnemen, het overbrengen en het weergeven van gegevens, geluid of beeld; magnetische gegevensdragers, gegevensverwerkende apparatuur en computers."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Printed matter; textbooks; data books; instruction manuals; user manuals; product catalogs; specification sheets and other data sheets relating to integrated circuits (ICs), chips and semiconductors, as well as semiconductor devices, instruments and software.",
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Drukwerken; studieboeken; gegevensboeken; instructiehandboeken; gebruikershandboeken; productcatalogussen; specificatiebladen en andere bladen met gegevens met betrekking tot geïntegreerde schakelingen (IC's), chips en halfgeleiders, alsmede inzake halfgeleiderapparaten, -instrumenten en -software."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Design, research, development and consultancy in the field of semiconductors, and consultancy relating thereto; integrated circuit design; development of semiconductor software; information on the aforesaid services for designers and architects in the semiconductor industry; scientific and technological evaluations and tests, whether or not for the purpose of verification, accreditation and standardization of integrated circuits (ICs), chips, semiconductors and semiconductor devices, instruments and software.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Ontwerp, onderzoek, ontwikkeling en advisering op het gebied van halfgeleiders, alsmede advisering terzake; ontwerp van geïntegreerde schakelingen; ontwikkeling van software voor halfgeleiders; informatie inzake voornoemde diensten ten behoeve van ontwerpers en architecten in de halfgeleiderindustrie; wetenschappelijke en technologische evaluaties en tests, al dan niet ter verificatie, accreditatie en standaardisatie van geïntegreerde schakelingen (IC's), chips, halfgeleiders en van halfgeleiderapparaten, -instrumenten en -software."
+        }
+      ]
+    },
+    "id": "f208c4b9-52a3-41e6-9840-5915afcb49cf",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "Diverse tinten oranje-geel, blauw, groen, zwart.",
+        "markImageColourClaimedTextLanguageCode": "nl"
+      }
+    ],
+    "markImageViennaClassification": [
+      "27.05.19",
+      "27.05.23"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "0111"
+      }
+    ],
+    "recordLastUpdated": "20250623",
+    "registrationOfficeCode": "BX",
+    "registrationOfficeName": "Benelux",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices Anna van Buerenplein 21 A, 2595 DA Den Haag",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO Shieldmark B.V."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20131120",
+        "applicationNumber": "1279249"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20331120",
+      "lastPublicationDate": "20240111",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "R 950209"
+      },
+      "renewalDate": "20240111",
+      "renewalPublishedDate": "20240111"
+    },
+    "version": "20250623181440",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NXP SECURE CONNECTIONS FOR A SMARTER WORLD"
+    }
+  },
+  "_uri": "/mark/bx/f208c4b9-52a3-41e6-9840-5915afcb49cf",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.616Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

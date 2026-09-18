@@ -1,0 +1,158 @@
+{
+  "uri": "/mark/bx/93aa8e48-9a84-4bf5-b341-254262db6197",
+  "provider": "clarivate",
+  "office": "bx",
+  "guid": "93aa8e48-9a84-4bf5-b341-254262db6197",
+  "applicationNumber": "1163748",
+  "registrationNumber": "R 849324",
+  "applicationDate": "2008-07-22",
+  "registrationDate": "2008-11-10",
+  "expiryDate": "2028-07-22",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-06-05",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MIFARE PLUS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    37,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Elektronische, elektrotechnische en elektromagnetische modules, onderdelen en bouwelementen; gegevensverwerkende machines, apparaten voor het opslaan van gegevens; microprocessors; interfaces [informatica]; geïntegreerde schakelingen (ic's); chips [geïntegreerde schakelingen]; halfgeleiders en halfgeleiderelementen; smart cards; controle-apparatuur of -instrumenten voor smart cards; controle-apparatuur of-instrumenten voor RFID (Radio frequency identification) chips en tags, computerhardware en software voor de creatie, programmering, controle, codering, scanning, lezing en interpretatie van RFID (Radio frequency identification) chips en tags; elektronische apparatuur en  instrumenten voor creatie, programmering, controle, codering, scanning, lezing en interpretatie van RFID (Radio frequency identification) chips en tags; antennes voor scanning, lezing en interpretatie van RFID chips en tags; NFC (Near Field Communication) apparatuur, instrumenten en materiaal, inclusief elektronische, elektrotechnische and elektromagnetische modules, onderdelen en bouwelementen en geïntegreerde schakelingen voor NFC toepassingen; elektronische betaalkaarten; gegevensverwerkende apparatuur en software voor het vaststellen van de prijs die betaald moet worden door reizigers met elektronische tickets; onderdelen van bovengenoemde waren.",
+      "translation_language": "en",
+      "translation": "Electronic, electrotechnical and electromagnetic modules, parts and construction elements; data processing machines, data storage apparatus; microprocessors; interfaces [computer science]; integrated circuits (ICs); chips [integrated circuits]; semiconductors and semiconductor devices; smart cards; smart card control apparatus or instruments; control equipment or instruments for RFID (Radio frequency identification) chips and tags, computer hardware and software for the creation, programming, control, encoding, scanning, reading and interpretation of RFID (Radio frequency identification) chips and tags; electronic equipment and instruments for creation, programming, control, coding, scanning, reading and interpretation of RFID (Radio frequency identification) chips and tags; antennas for scanning, reading and interpretation of RFID chips and tags; NFC (Near Field Communication) equipment, instruments and materials, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for NFC applications; electronic payment cards; data processing equipment and software for determining the price to be paid by travelers with electronic tickets; parts of the above goods."
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "nl",
+      "description": "Onderhoud, montage, installatie en reparatiewerkzaamheden met betrekking tot elektronische, elektrotechnische en elektromagnetische modules, onderdelen en bouwelementen, gegevensverwerkende machines, apparaten voor het opslaan van gegevens, microprocessors, interfaces, geïntegreerde schakelingen (ic's), chips, halfgeleiders en halfgeleiderelementen, smart cards, controle-apparatuur of - instrumenten voor smart cards, controle- apparatuur of -instrumenten voor RFID (Radio frequency identification) chips en tags, computerhardware voor de creatie, programmering, controle, codering, scanning, lezing en interpretatie van RFID (Radio frequency identification) chips en tags, elektronische apparatuur, instrumenten en materiaal voor creatie, programmering, controle, codering, scanning, lezing en interpretatie van RFID (Radio frequency identification) chips en tags, antennes voor scanning, lezing en interpretatie van RFID chips en tags, NFC (Near Field Communication) apparatuur, instrumenten en materiaal, inclusief elektronische, elektrotechnische and elektromagnetische modules, onderdelen en bouwelementen en geïntegreerde schakelingen voor NFC toepassingen, elektronische betaalkaarten, gegevensverwerkende apparatuur voor het vaststellen van de prijs die betaald moet worden door reizigers met elektronische tickets, onderdelen en accessoires van bovengenoemde waren; advisering, consultancy en het verschaffen van informatie op het gebied van bovengenoemde diensten; het op maat maken, aanpassen aan de wensen van de klant van elektronische, elektrotechnische en elektromagnetische modules, onderdelen en bouwelementen, gegevensverwerkende machines, apparaten voor het opslaan van gegevens, microprocessors, interfaces, geïntegreerde schakelingen (ic's), chips, halfgeleiders en halfgeleiderelementen, smart cards, controle-apparatuur en -instrumenten voor smart cards, controle- apparatuur en -instrumenten voor RFID (Radio frequency identification) chips en tags, computerhardware voor de creatie, programmering, controle, codering, scanning, lezing en interpretatie van RFID (Radio frequency identification) chips en tags, elektronische apparatuur, instrumenten en materiaal voor creatie, programmering, controle, codering, scanning, lezing en interpretatie van RFID (Radio frequency identification) chips en tags, antennes voor scanning, lezing en interpretatie van RFID chips en tags, NFC (Near Field Communication) apparatuur, instrumenten en materiaal, inclusief elektronische, elektrotechnische and elektromagnetische modules, onderdelen en bouwelementen en geïntegreerde schakelingen voor NFC toepassingen, elektronische betaalkaarten, gegevensverwerkende apparatuur en software voor het vaststellen van de prijs die betaald moet worden door reizigers met elektronische tickets, onderdelen en accessoires van bovengenoemde waren; advisering, consultancy en het verschaffen van informatie op het gebied van bovengenoemde diensten.",
+      "translation_language": "en",
+      "translation": "Maintenance, assembly, installation and repair of electronic, electrotechnical and electromagnetic modules, parts and components, data processing machines, data storage devices, microprocessors, interfaces, integrated circuits (ICs), chips, semiconductors and semiconductor elements, smart cards, control equipment or instruments for smart cards, control equipment or instruments for RFID (Radio frequency identification) chips and tags, computer hardware for the creation, programming, control, coding, scanning, reading and interpretation of RFID (Radio frequency identification) chips and tags, electronic equipment, instruments and materials for creation, programming, control, coding, scanning, reading and interpretation of RFID (Radio frequency identification) chips and tags, antennas for scanning, reading and interpretation of RFID chips and tags, NFC (Near Field Communication) equipment, instrument and materials, including electronic, electrotechnical and electromagnetic modules, parts and construction elements and integrated circuits for NFC applications, electronic payment cards, data processing equipment for determining the price to be paid by travelers with electronic tickets, parts and accessories of the above goods; advisory, consultancy and information provision in the field of the aforesaid services; Customization, customization of electronic, electrotechnical and electromagnetic modules, parts and components, data processing machines, data storage devices, microprocessors, interfaces, integrated circuits (ICs), chips, semiconductors and semiconductor devices, smart cards, smart card control equipment and instruments, RFID (Radio frequency identification) chip and tag control equipment and instruments, computer hardware for the creation, programming, control, coding, scanning, reading and interpretation of RFID (Radio frequency identification) chips and tags, electronic equipment, instruments and equipment for creation, programming, control, coding, scanning, reading and interpretation of RFID (Radio frequency identification) chips and tags, antennas for scanning, reading and interpretation of RFID chips and tags , NFC (Near Field Communication) equipment, instruments and equipment, including ef electronic, electrotechnical and electromagnetic modules, parts and construction elements and integrated circuits for NFC applications, electronic payment cards, data processing equipment and software for determining the price to be paid by travelers with electronic tickets, parts and accessories of the aforesaid goods; advisory, consultancy and information provision in the field of the aforesaid services."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Computerprogrammering diensten; installatie, reparatie en onderhoud op het gebied van software voor de creatie, programmering, controle, codering, scanning, lezing en interpretatie van RFID (Radio frequency identification) chips en tags, en software voor het vaststellen van de prijs die betaald moet worden door reizigers met elektronische tickets, onderdelen en accessoires van bovengenoemde waren; research, ontwerp en ontwikkelingsdiensten op het gebied van elektronische, elektrotechnische en elektromagnetische modules, onderdelen en bouwelementen, gegevensverwerkende machines, apparaten voor het opslaan van gegevens, microprocessors, interfaces, geïntegreerde schakelingen (ic's), chips, halfgeleiders en halfgeleiderelementen, smart cards, controle-apparatuur en - instrumenten voor smart cards, controle-apparatuur en -instrumenten voor RFID (Radio frequency identification) chips en tags, computerhardware en software voor de creatie, programmering, controle, codering, scanning, lezing en interpretatie van RFID (Radio frequency identification) chips en tags, elektronische apparatuur, instrumenten en materiaal voor creatie, programmering, controle, codering, scanning, lezing en interpretatie van RFID (Radio frequency identification) chips en tags, antennes voor scanning, lezing en interpretatie van RFID chips en tags, NFC (Near Field Communication) apparatuur, instrumenten en materiaal, inclusief elektronische, elektrotechnische and elektromagnetische modules, onderdelen en bouwelementen en geïntegreerde schakelingen voor NFC toepassingen, elektronische betaalkaarten, gegevensverwerkende apparatuur en software voor het vaststellen van de prijs die betaald moet worden door reizigers met elektronische tickets, onderdelen en accessoires van bovengenoemde waren;het op maat maken, aanpassen aan de wensen van de klant van software; advisering, consultancy en het verschaffen van informatie op het gebied van bovengenoemde diensten.",
+      "translation_language": "en",
+      "translation": "Computer programming services; installation, repair and maintenance services in the field of software for the creation, programming, control, coding, scanning, reading and interpretation of RFID (Radio frequency identification) chips and tags, and software for determining price to be paid by travelers with electronic tickets, parts and accessories of the above goods; research, design and development services in the field of electronic, electrotechnical and electromagnetic modules, parts and components, data processing machines, data storage devices, microprocessors, interfaces, integrated circuits (ICs), chips, semiconductors and semiconductor devices, smart cards, control smart card equipment and instruments, control equipment and instruments for RFID (Radio frequency identification) chips and tags, computer hardware and software for the creation, programming, control, coding, scanning, reading and interpretation of RFID (Radio frequency identification) ) chips and tags, electronic equipment, instruments and material for creation, programming, control, coding, scanning, reading and interpretation of RFID (Radio frequency identification) chips and tags, antennas for scanning, reading and interpretation of RFID chips and tags, NFC (Near Field Communication) equipment, instruments and materials cial, including electronic, electrotechnical and electromagnetic modules, parts and construction elements and integrated circuits for NFC applications, electronic payment cards, data processing equipment and software for determining the price to be paid by travelers with electronic tickets, parts and accessories of the above goods; tailoring, adapting software to the wishes of the customer; advisory, consultancy and information provision in the field of the aforesaid services."
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO Shieldmark B.V.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60, 5656 AG Eindhoven",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "nl",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electronic, electrotechnical and electromagnetic modules, parts and construction elements; data processing machines, data storage apparatus; microprocessors; interfaces [computer science]; integrated circuits (ICs); chips [integrated circuits]; semiconductors and semiconductor devices; smart cards; smart card control apparatus or instruments; control equipment or instruments for RFID (Radio frequency identification) chips and tags, computer hardware and software for the creation, programming, control, encoding, scanning, reading and interpretation of RFID (Radio frequency identification) chips and tags; electronic equipment and instruments for creation, programming, control, coding, scanning, reading and interpretation of RFID (Radio frequency identification) chips and tags; antennas for scanning, reading and interpretation of RFID chips and tags; NFC (Near Field Communication) equipment, instruments and materials, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for NFC applications; electronic payment cards; data processing equipment and software for determining the price to be paid by travelers with electronic tickets; parts of the above goods.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Elektronische, elektrotechnische en elektromagnetische modules, onderdelen en bouwelementen; gegevensverwerkende machines, apparaten voor het opslaan van gegevens; microprocessors; interfaces [informatica]; geïntegreerde schakelingen (ic's); chips [geïntegreerde schakelingen]; halfgeleiders en halfgeleiderelementen; smart cards; controle-apparatuur of -instrumenten voor smart cards; controle-apparatuur of-instrumenten voor RFID (Radio frequency identification) chips en tags, computerhardware en software voor de creatie, programmering, controle, codering, scanning, lezing en interpretatie van RFID (Radio frequency identification) chips en tags; elektronische apparatuur en  instrumenten voor creatie, programmering, controle, codering, scanning, lezing en interpretatie van RFID (Radio frequency identification) chips en tags; antennes voor scanning, lezing en interpretatie van RFID chips en tags; NFC (Near Field Communication) apparatuur, instrumenten en materiaal, inclusief elektronische, elektrotechnische and elektromagnetische modules, onderdelen en bouwelementen en geïntegreerde schakelingen voor NFC toepassingen; elektronische betaalkaarten; gegevensverwerkende apparatuur en software voor het vaststellen van de prijs die betaald moet worden door reizigers met elektronische tickets; onderdelen van bovengenoemde waren."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Maintenance, assembly, installation and repair of electronic, electrotechnical and electromagnetic modules, parts and components, data processing machines, data storage devices, microprocessors, interfaces, integrated circuits (ICs), chips, semiconductors and semiconductor elements, smart cards, control equipment or instruments for smart cards, control equipment or instruments for RFID (Radio frequency identification) chips and tags, computer hardware for the creation, programming, control, coding, scanning, reading and interpretation of RFID (Radio frequency identification) chips and tags, electronic equipment, instruments and materials for creation, programming, control, coding, scanning, reading and interpretation of RFID (Radio frequency identification) chips and tags, antennas for scanning, reading and interpretation of RFID chips and tags, NFC (Near Field Communication) equipment, instrument and materials, including electronic, electrotechnical and electromagnetic modules, parts and construction elements and integrated circuits for NFC applications, electronic payment cards, data processing equipment for determining the price to be paid by travelers with electronic tickets, parts and accessories of the above goods; advisory, consultancy and information provision in the field of the aforesaid services; Customization, customization of electronic, electrotechnical and electromagnetic modules, parts and components, data processing machines, data storage devices, microprocessors, interfaces, integrated circuits (ICs), chips, semiconductors and semiconductor devices, smart cards, smart card control equipment and instruments, RFID (Radio frequency identification) chip and tag control equipment and instruments, computer hardware for the creation, programming, control, coding, scanning, reading and interpretation of RFID (Radio frequency identification) chips and tags, electronic equipment, instruments and equipment for creation, programming, control, coding, scanning, reading and interpretation of RFID (Radio frequency identification) chips and tags, antennas for scanning, reading and interpretation of RFID chips and tags , NFC (Near Field Communication) equipment, instruments and equipment, including ef electronic, electrotechnical and electromagnetic modules, parts and construction elements and integrated circuits for NFC applications, electronic payment cards, data processing equipment and software for determining the price to be paid by travelers with electronic tickets, parts and accessories of the aforesaid goods; advisory, consultancy and information provision in the field of the aforesaid services.",
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Onderhoud, montage, installatie en reparatiewerkzaamheden met betrekking tot elektronische, elektrotechnische en elektromagnetische modules, onderdelen en bouwelementen, gegevensverwerkende machines, apparaten voor het opslaan van gegevens, microprocessors, interfaces, geïntegreerde schakelingen (ic's), chips, halfgeleiders en halfgeleiderelementen, smart cards, controle-apparatuur of - instrumenten voor smart cards, controle- apparatuur of -instrumenten voor RFID (Radio frequency identification) chips en tags, computerhardware voor de creatie, programmering, controle, codering, scanning, lezing en interpretatie van RFID (Radio frequency identification) chips en tags, elektronische apparatuur, instrumenten en materiaal voor creatie, programmering, controle, codering, scanning, lezing en interpretatie van RFID (Radio frequency identification) chips en tags, antennes voor scanning, lezing en interpretatie van RFID chips en tags, NFC (Near Field Communication) apparatuur, instrumenten en materiaal, inclusief elektronische, elektrotechnische and elektromagnetische modules, onderdelen en bouwelementen en geïntegreerde schakelingen voor NFC toepassingen, elektronische betaalkaarten, gegevensverwerkende apparatuur voor het vaststellen van de prijs die betaald moet worden door reizigers met elektronische tickets, onderdelen en accessoires van bovengenoemde waren; advisering, consultancy en het verschaffen van informatie op het gebied van bovengenoemde diensten; het op maat maken, aanpassen aan de wensen van de klant van elektronische, elektrotechnische en elektromagnetische modules, onderdelen en bouwelementen, gegevensverwerkende machines, apparaten voor het opslaan van gegevens, microprocessors, interfaces, geïntegreerde schakelingen (ic's), chips, halfgeleiders en halfgeleiderelementen, smart cards, controle-apparatuur en -instrumenten voor smart cards, controle- apparatuur en -instrumenten voor RFID (Radio frequency identification) chips en tags, computerhardware voor de creatie, programmering, controle, codering, scanning, lezing en interpretatie van RFID (Radio frequency identification) chips en tags, elektronische apparatuur, instrumenten en materiaal voor creatie, programmering, controle, codering, scanning, lezing en interpretatie van RFID (Radio frequency identification) chips en tags, antennes voor scanning, lezing en interpretatie van RFID chips en tags, NFC (Near Field Communication) apparatuur, instrumenten en materiaal, inclusief elektronische, elektrotechnische and elektromagnetische modules, onderdelen en bouwelementen en geïntegreerde schakelingen voor NFC toepassingen, elektronische betaalkaarten, gegevensverwerkende apparatuur en software voor het vaststellen van de prijs die betaald moet worden door reizigers met elektronische tickets, onderdelen en accessoires van bovengenoemde waren; advisering, consultancy en het verschaffen van informatie op het gebied van bovengenoemde diensten."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer programming services; installation, repair and maintenance services in the field of software for the creation, programming, control, coding, scanning, reading and interpretation of RFID (Radio frequency identification) chips and tags, and software for determining price to be paid by travelers with electronic tickets, parts and accessories of the above goods; research, design and development services in the field of electronic, electrotechnical and electromagnetic modules, parts and components, data processing machines, data storage devices, microprocessors, interfaces, integrated circuits (ICs), chips, semiconductors and semiconductor devices, smart cards, control smart card equipment and instruments, control equipment and instruments for RFID (Radio frequency identification) chips and tags, computer hardware and software for the creation, programming, control, coding, scanning, reading and interpretation of RFID (Radio frequency identification) ) chips and tags, electronic equipment, instruments and material for creation, programming, control, coding, scanning, reading and interpretation of RFID (Radio frequency identification) chips and tags, antennas for scanning, reading and interpretation of RFID chips and tags, NFC (Near Field Communication) equipment, instruments and materials cial, including electronic, electrotechnical and electromagnetic modules, parts and construction elements and integrated circuits for NFC applications, electronic payment cards, data processing equipment and software for determining the price to be paid by travelers with electronic tickets, parts and accessories of the above goods; tailoring, adapting software to the wishes of the customer; advisory, consultancy and information provision in the field of the aforesaid services.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Computerprogrammering diensten; installatie, reparatie en onderhoud op het gebied van software voor de creatie, programmering, controle, codering, scanning, lezing en interpretatie van RFID (Radio frequency identification) chips en tags, en software voor het vaststellen van de prijs die betaald moet worden door reizigers met elektronische tickets, onderdelen en accessoires van bovengenoemde waren; research, ontwerp en ontwikkelingsdiensten op het gebied van elektronische, elektrotechnische en elektromagnetische modules, onderdelen en bouwelementen, gegevensverwerkende machines, apparaten voor het opslaan van gegevens, microprocessors, interfaces, geïntegreerde schakelingen (ic's), chips, halfgeleiders en halfgeleiderelementen, smart cards, controle-apparatuur en - instrumenten voor smart cards, controle-apparatuur en -instrumenten voor RFID (Radio frequency identification) chips en tags, computerhardware en software voor de creatie, programmering, controle, codering, scanning, lezing en interpretatie van RFID (Radio frequency identification) chips en tags, elektronische apparatuur, instrumenten en materiaal voor creatie, programmering, controle, codering, scanning, lezing en interpretatie van RFID (Radio frequency identification) chips en tags, antennes voor scanning, lezing en interpretatie van RFID chips en tags, NFC (Near Field Communication) apparatuur, instrumenten en materiaal, inclusief elektronische, elektrotechnische and elektromagnetische modules, onderdelen en bouwelementen en geïntegreerde schakelingen voor NFC toepassingen, elektronische betaalkaarten, gegevensverwerkende apparatuur en software voor het vaststellen van de prijs die betaald moet worden door reizigers met elektronische tickets, onderdelen en accessoires van bovengenoemde waren;het op maat maken, aanpassen aan de wensen van de klant van software; advisering, consultancy en het verschaffen van informatie op het gebied van bovengenoemde diensten."
+        }
+      ]
+    },
+    "id": "93aa8e48-9a84-4bf5-b341-254262db6197",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "0605"
+      }
+    ],
+    "recordLastUpdated": "20250623",
+    "registrationOfficeCode": "BX",
+    "registrationOfficeName": "Benelux",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices Anna van Buerenplein 21 A, 2595 DA Den Haag",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO Shieldmark B.V."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20080722",
+        "applicationNumber": "1163748"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280722",
+      "lastPublicationDate": "20180605",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20081110",
+        "registrationNumber": "R 849324"
+      },
+      "renewalPublishedDate": "20180605"
+    },
+    "version": "20250623180316",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MIFARE PLUS"
+    }
+  },
+  "_uri": "/mark/bx/93aa8e48-9a84-4bf5-b341-254262db6197",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.612Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

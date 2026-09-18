@@ -1,0 +1,120 @@
+{
+  "uri": "/mark/tw/a0324c13-a99e-4210-a1aa-861231617aa7",
+  "provider": "clarivate",
+  "office": "tw",
+  "guid": "a0324c13-a99e-4210-a1aa-861231617aa7",
+  "applicationNumber": "113070913",
+  "registrationNumber": "02524086",
+  "applicationDate": "2024-10-11",
+  "registrationDate": "2026-04-01",
+  "expiryDate": "2036-03-31",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MIFARE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9,
+        40,
+        42
+      ],
+      "language": "zh",
+      "description": "第009類:電子、電工及電磁模組即用於無線射頻辦識及近場通訊應用之半導體、積體電路或微處理器晶片；資料處理設備、資料儲存裝置，即用於掃描、讀取、儲存和解讀無線射頻識別（ＲＦＩＤ）及近場通信（ＮＦＣ）晶片中的電子資料的資料處理器；微處理器；電腦介面卡；積體電路；晶片；半導體；智慧卡；智慧卡積體電路；帶有積體無線射頻識別（ＲＦＩＤ）晶片之標牌、智慧卡及標籤；無線射頻識別（ＲＦＩＤ）晶片及標籤；創造、編製程式、控制、編碼、掃描、讀取及解譯無線射頻識別（ＲＦＩＤ）晶片及標籤用電腦硬體及軟體；無接頭智慧卡；雙介面智慧卡；提供連結無接頭卡及接觸式卡之雙介面積體電路；含有用於確定電子預訂行程的乘客應付票價的程式之已編碼無接頭智慧卡；含有用於進入特定區域、建築物、場所和車輛的程式之已編碼無接頭智慧卡；含有用於支付的程式之已編碼無接頭智慧卡；無線傳輸寫入、讀取至轉發器晶片及從轉發器晶片無線傳輸寫入、讀取之晶片寫入器及訊號讀取器；控制 資料傳輸至轉發器晶片及從轉發器晶片讀取資料用電腦程式；使用轉發器晶片之計程計費用資料處理機；穿戴式電子裝置；存取控制及驗證用電腦硬體、軟體；具遙控功能的電子鑰匙扣；雲端運算軟體；雲基礎設施軟體；雲端運算平台軟體；雲端運算服務應用軟體；電腦軟體；電腦硬體；介面軟體；遠端設備的介面電路板；安全微處理器；電腦終端機；信用卡終端機；安全數位卡讀卡機；安全數位記憶卡；用於促進安全交易的軟體；用戶身分識別模組（ＳＩＭ）卡。 第040類:資料處理機、資料儲存設備、微處理器、介面卡、積體電路、晶片、半導體和智慧卡、智慧卡控制器、無線射頻識別（ＲＦＩＤ）晶片和標籤控制器的客製化製造；用於創建、編程、控制、編碼、掃描、讀取和解讀無線射頻識別（ＲＦＩＤ）晶片和標籤的電腦硬體、用於掃描、讀取和解讀無線射頻識別（ＲＦＩＤ）晶片和標籤的天線之客製化製造；應用於近場通信（ＮＦＣ）之積體電路、電子支付卡、資料處理裝置相關的客製化製造。 第042類:電腦程式設計服務；有關用於對無線射頻識別（ＲＦＩＤ）晶片及標籤作建立、程式設計、控制、編碼、掃描、讀取及解譯之軟體，以及用於確定電子預訂行程的乘客應付票價之軟體之安裝、修理及維護服務；與電子、電工和電磁模組、零件和組件、資料處理機、資料儲存裝置、微處理器、介面卡、積體電路、晶片、半導體和智慧卡、智慧卡控制器、無線射頻識別（ＲＦＩＤ）晶片和標籤控制器相關的研究、設計和開發服務；創造、編製程式、控制、編碼、掃描、讀取及解譯無線射頻識別（ＲＦＩＤ）晶片及標籤用電腦硬體及軟體相關之研究、設計及開發服務；與用於創造、編製程式、控制、編碼、掃描、讀取和解讀無線射頻識別（ＲＦＩＤ）晶片和標籤，以及用於掃描、讀取和解讀無線射頻識別（ＲＦＩＤ）晶片和標籤的天線之電子設備、儀器和裝置相關之研究、設計和開發服務；與近場通信（ＮＦＣ）設備、儀器和裝置相關的研究、設計和開發服務，包括電子、電工和電磁模組、零件和組件、以及應用於 近場通信（ＮＦＣ）之積體電路、電子支付卡、資料處理裝置和用於確定電子預訂行程的乘客應付票價之軟體之相關的研究、設計和開發服務；與所有上述產品的零件、配件和附件相關的研究、設計和開發服務；軟體客製化程式設計服務；電子、電工和電磁模組、零件和組件、資料處理機、資料儲存設備、微處理器、介面卡、積體電路、晶片、半導體和智慧卡、智慧卡控制器、無線射頻識別（ＲＦＩＤ）晶片和標籤控制器的客製化電腦程式設計；用於創建、編程、控制、編碼、掃描、讀取和解讀無線射頻識別（ＲＦＩＤ）晶片和標籤的電腦硬體、用於創建、編程、控制、編碼、掃描、讀取和解讀無線射頻識別（ＲＦＩＤ）晶片和標籤的電子設備、儀器和裝置、用於掃描、讀取和解讀無線射頻識別（ＲＦＩＤ）晶片和標籤的天線之客製化電腦程式設計；近場通信（ＮＦＣ）設備、儀器和裝置，包括電子、電工和電磁模組、零件和組件、以及應用於近場通信（ＮＦＣ）之積體電路、電子支付卡、資料處理裝置和用於確定電子預訂行程的乘客應付票價之軟體相關的客製化電腦程式設計；所有上述產品的零件、配件和附件的客製化電腦程式設計；雲端運算；雲端運算服務；提供雲端平台和地端環境管理用軟體之雲端運算服務；有關前述服務之諮詢顧問及資訊提供服務；用於確定電子預訂行程的乘客應付票價之客製化軟體設計。",
+      "translation_language": "en",
+      "translation": "Class 009: Electronic, electrical and electromagnetic modules, namely semiconductor, integrated circuit or microprocessor chips used in radio frequency identification and near field communication applications; data processing equipment and data storage devices, namely data processors used for scanning, reading, storing and deciphering electronic data in radio frequency identification (RFID) and near field communication (NFC) chips; microprocessors; computer interface cards; integrated circuits; chips; semiconductors; smart cards; smart card integrated circuits; signs, smart cards and tags with integrated radio frequency identification (RFID) chips; radio frequency identification (RFID) chips and tags; computer hardware and software for creating, programming, controlling, encoding, scanning, reading and deciphering radio frequency identification (RFID) chips and tags; connectorless smart cards; dual-interface smart cards; dual-interface integrated circuits providing connections between connectorless cards and contact cards; encoded connectorless smart cards containing programs for determining the fare payable by passengers for electronically booked trips. Smart cards; coded connectorless smart cards containing programs for accessing specific areas, buildings, premises, and vehicles; coded connectorless smart cards containing programs for payment; chip writers and signal readers that wirelessly transmit and read data to and from repeater chips; computer programs for controlling data transmission to and from repeater chips; mileage and fare processing machines using repeater chips; wearable electronic devices; computer hardware and software for access control and verification; electronic key fobs with remote control functionality; cloud computing software; cloud infrastructure software; cloud computing platform software; cloud computing service application software; computer software; computer hardware; interface software; interface circuit boards for remote devices; secure microprocessors; computer terminals; credit card terminals; secure digital card readers; secure digital memory cards; software for facilitating secure transactions; user identification module (SIM) cards. Class 040: Custom manufacturing of data processors, data storage devices, microprocessors, interface cards, integrated circuits, chips, semiconductors and smart cards, smart card controllers, radio frequency identification (RFID) chips and tag controllers; custom manufacturing of computer hardware for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, and antennas for scanning, reading and interpreting RFID chips and tags; custom manufacturing of integrated circuits, electronic payment cards and data processing devices used in near field communication (NFC). Class 042: Computer programming services; installation, repair and maintenance services relating to software for creating, programming, controlling, encoding, scanning, reading and deciphering radio frequency identification (RFID) chips and tags, and software for determining passenger fares for electronically booked trips; research, design and development services relating to electronic, electrical and electromagnetic modules, parts and components, data processors, data storage devices, microprocessors, interface cards, integrated circuits, chips, semiconductors and smart cards, smart card controllers, RFID chips and tag controllers; computer hardware for creating, programming, controlling, encoding, scanning, reading and deciphering RFID chips and tags. Research, design, and development services related to software; research, design, and development services related to electronic equipment, instruments, and devices for creating, programming, controlling, encoding, scanning, reading, and interpreting radio frequency identification (RFID) chips and tags, and antennas for scanning, reading, and interpreting RFID chips and tags; research, design, and development services related to near field communication (NFC) equipment, instruments, and devices, including electronic, electrical, and electromagnetic modules, parts, and components, as well as integrated circuits applied to near field communication (NFC), electronic payment cards, data processing devices, and software for determining passenger fares for electronically booked trips; and all Research, design, and development services related to parts, accessories, and attachments for the aforementioned products; software customization services; customized computer programming for electronic, electrical, and electromagnetic modules, parts and components, data processors, data storage devices, microprocessors, interface cards, integrated circuits, chips, semiconductors, and smart cards, smart card controllers, radio frequency identification (RFID) chips, and tag controllers; computer hardware for creating, programming, controlling, encoding, scanning, reading, and interpreting RFID chips and tags; electronic equipment, instruments, and devices for creating, programming, controlling, encoding, scanning, reading, and interpreting RFID chips and tags; and devices for scanning, reading, and interpreting RFID chips and tags. Customized computer programming for antennas of RFID chips and tags; customized computer programming for near field communication (NFC) devices, instruments, and apparatuses, including electronic, electrical, and electromagnetic modules, parts, and components, as well as integrated circuits used in NFC, electronic payment cards, data processing devices, and software for determining passenger fares for electronically booked trips; customized computer programming for parts, accessories, and attachments of all the above products; cloud computing; cloud computing services; cloud computing services providing cloud platforms and software for managing ground environments; consulting and information services related to the aforementioned services; customized software design for determining passenger fares for electronically booked trips."
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V.",
+        "applicantNativeAddress": "荷蘭",
+        "applicantNativeName": "荷蘭商恩智浦股份有限公司 NXP B.V."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Class 009: Electronic, electrical and electromagnetic modules, namely semiconductor, integrated circuit or microprocessor chips used in radio frequency identification and near field communication applications; data processing equipment and data storage devices, namely data processors used for scanning, reading, storing and deciphering electronic data in radio frequency identification (RFID) and near field communication (NFC) chips; microprocessors; computer interface cards; integrated circuits; chips; semiconductors; smart cards; smart card integrated circuits; signs, smart cards and tags with integrated radio frequency identification (RFID) chips; radio frequency identification (RFID) chips and tags; computer hardware and software for creating, programming, controlling, encoding, scanning, reading and deciphering radio frequency identification (RFID) chips and tags; connectorless smart cards; dual-interface smart cards; dual-interface integrated circuits providing connections between connectorless cards and contact cards; encoded connectorless smart cards containing programs for determining the fare payable by passengers for electronically booked trips. Smart cards; coded connectorless smart cards containing programs for accessing specific areas, buildings, premises, and vehicles; coded connectorless smart cards containing programs for payment; chip writers and signal readers that wirelessly transmit and read data to and from repeater chips; computer programs for controlling data transmission to and from repeater chips; mileage and fare processing machines using repeater chips; wearable electronic devices; computer hardware and software for access control and verification; electronic key fobs with remote control functionality; cloud computing software; cloud infrastructure software; cloud computing platform software; cloud computing service application software; computer software; computer hardware; interface software; interface circuit boards for remote devices; secure microprocessors; computer terminals; credit card terminals; secure digital card readers; secure digital memory cards; software for facilitating secure transactions; user identification module (SIM) cards. Class 040: Custom manufacturing of data processors, data storage devices, microprocessors, interface cards, integrated circuits, chips, semiconductors and smart cards, smart card controllers, radio frequency identification (RFID) chips and tag controllers; custom manufacturing of computer hardware for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, and antennas for scanning, reading and interpreting RFID chips and tags; custom manufacturing of integrated circuits, electronic payment cards and data processing devices used in near field communication (NFC). Class 042: Computer programming services; installation, repair and maintenance services relating to software for creating, programming, controlling, encoding, scanning, reading and deciphering radio frequency identification (RFID) chips and tags, and software for determining passenger fares for electronically booked trips; research, design and development services relating to electronic, electrical and electromagnetic modules, parts and components, data processors, data storage devices, microprocessors, interface cards, integrated circuits, chips, semiconductors and smart cards, smart card controllers, RFID chips and tag controllers; computer hardware for creating, programming, controlling, encoding, scanning, reading and deciphering RFID chips and tags. Research, design, and development services related to software; research, design, and development services related to electronic equipment, instruments, and devices for creating, programming, controlling, encoding, scanning, reading, and interpreting radio frequency identification (RFID) chips and tags, and antennas for scanning, reading, and interpreting RFID chips and tags; research, design, and development services related to near field communication (NFC) equipment, instruments, and devices, including electronic, electrical, and electromagnetic modules, parts, and components, as well as integrated circuits applied to near field communication (NFC), electronic payment cards, data processing devices, and software for determining passenger fares for electronically booked trips; and all Research, design, and development services related to parts, accessories, and attachments for the aforementioned products; software customization services; customized computer programming for electronic, electrical, and electromagnetic modules, parts and components, data processors, data storage devices, microprocessors, interface cards, integrated circuits, chips, semiconductors, and smart cards, smart card controllers, radio frequency identification (RFID) chips, and tag controllers; computer hardware for creating, programming, controlling, encoding, scanning, reading, and interpreting RFID chips and tags; electronic equipment, instruments, and devices for creating, programming, controlling, encoding, scanning, reading, and interpreting RFID chips and tags; and devices for scanning, reading, and interpreting RFID chips and tags. Customized computer programming for antennas of RFID chips and tags; customized computer programming for near field communication (NFC) devices, instruments, and apparatuses, including electronic, electrical, and electromagnetic modules, parts, and components, as well as integrated circuits used in NFC, electronic payment cards, data processing devices, and software for determining passenger fares for electronically booked trips; customized computer programming for parts, accessories, and attachments of all the above products; cloud computing; cloud computing services; cloud computing services providing cloud platforms and software for managing ground environments; consulting and information services related to the aforementioned services; customized software design for determining passenger fares for electronically booked trips.",
+          "intClassNumber": "09,40,42",
+          "intGoodsLanguageCode": "zh",
+          "intGoodsServicesDescription": "第009類:電子、電工及電磁模組即用於無線射頻辦識及近場通訊應用之半導體、積體電路或微處理器晶片；資料處理設備、資料儲存裝置，即用於掃描、讀取、儲存和解讀無線射頻識別（ＲＦＩＤ）及近場通信（ＮＦＣ）晶片中的電子資料的資料處理器；微處理器；電腦介面卡；積體電路；晶片；半導體；智慧卡；智慧卡積體電路；帶有積體無線射頻識別（ＲＦＩＤ）晶片之標牌、智慧卡及標籤；無線射頻識別（ＲＦＩＤ）晶片及標籤；創造、編製程式、控制、編碼、掃描、讀取及解譯無線射頻識別（ＲＦＩＤ）晶片及標籤用電腦硬體及軟體；無接頭智慧卡；雙介面智慧卡；提供連結無接頭卡及接觸式卡之雙介面積體電路；含有用於確定電子預訂行程的乘客應付票價的程式之已編碼無接頭智慧卡；含有用於進入特定區域、建築物、場所和車輛的程式之已編碼無接頭智慧卡；含有用於支付的程式之已編碼無接頭智慧卡；無線傳輸寫入、讀取至轉發器晶片及從轉發器晶片無線傳輸寫入、讀取之晶片寫入器及訊號讀取器；控制 資料傳輸至轉發器晶片及從轉發器晶片讀取資料用電腦程式；使用轉發器晶片之計程計費用資料處理機；穿戴式電子裝置；存取控制及驗證用電腦硬體、軟體；具遙控功能的電子鑰匙扣；雲端運算軟體；雲基礎設施軟體；雲端運算平台軟體；雲端運算服務應用軟體；電腦軟體；電腦硬體；介面軟體；遠端設備的介面電路板；安全微處理器；電腦終端機；信用卡終端機；安全數位卡讀卡機；安全數位記憶卡；用於促進安全交易的軟體；用戶身分識別模組（ＳＩＭ）卡。 第040類:資料處理機、資料儲存設備、微處理器、介面卡、積體電路、晶片、半導體和智慧卡、智慧卡控制器、無線射頻識別（ＲＦＩＤ）晶片和標籤控制器的客製化製造；用於創建、編程、控制、編碼、掃描、讀取和解讀無線射頻識別（ＲＦＩＤ）晶片和標籤的電腦硬體、用於掃描、讀取和解讀無線射頻識別（ＲＦＩＤ）晶片和標籤的天線之客製化製造；應用於近場通信（ＮＦＣ）之積體電路、電子支付卡、資料處理裝置相關的客製化製造。 第042類:電腦程式設計服務；有關用於對無線射頻識別（ＲＦＩＤ）晶片及標籤作建立、程式設計、控制、編碼、掃描、讀取及解譯之軟體，以及用於確定電子預訂行程的乘客應付票價之軟體之安裝、修理及維護服務；與電子、電工和電磁模組、零件和組件、資料處理機、資料儲存裝置、微處理器、介面卡、積體電路、晶片、半導體和智慧卡、智慧卡控制器、無線射頻識別（ＲＦＩＤ）晶片和標籤控制器相關的研究、設計和開發服務；創造、編製程式、控制、編碼、掃描、讀取及解譯無線射頻識別（ＲＦＩＤ）晶片及標籤用電腦硬體及軟體相關之研究、設計及開發服務；與用於創造、編製程式、控制、編碼、掃描、讀取和解讀無線射頻識別（ＲＦＩＤ）晶片和標籤，以及用於掃描、讀取和解讀無線射頻識別（ＲＦＩＤ）晶片和標籤的天線之電子設備、儀器和裝置相關之研究、設計和開發服務；與近場通信（ＮＦＣ）設備、儀器和裝置相關的研究、設計和開發服務，包括電子、電工和電磁模組、零件和組件、以及應用於 近場通信（ＮＦＣ）之積體電路、電子支付卡、資料處理裝置和用於確定電子預訂行程的乘客應付票價之軟體之相關的研究、設計和開發服務；與所有上述產品的零件、配件和附件相關的研究、設計和開發服務；軟體客製化程式設計服務；電子、電工和電磁模組、零件和組件、資料處理機、資料儲存設備、微處理器、介面卡、積體電路、晶片、半導體和智慧卡、智慧卡控制器、無線射頻識別（ＲＦＩＤ）晶片和標籤控制器的客製化電腦程式設計；用於創建、編程、控制、編碼、掃描、讀取和解讀無線射頻識別（ＲＦＩＤ）晶片和標籤的電腦硬體、用於創建、編程、控制、編碼、掃描、讀取和解讀無線射頻識別（ＲＦＩＤ）晶片和標籤的電子設備、儀器和裝置、用於掃描、讀取和解讀無線射頻識別（ＲＦＩＤ）晶片和標籤的天線之客製化電腦程式設計；近場通信（ＮＦＣ）設備、儀器和裝置，包括電子、電工和電磁模組、零件和組件、以及應用於近場通信（ＮＦＣ）之積體電路、電子支付卡、資料處理裝置和用於確定電子預訂行程的乘客應付票價之軟體相關的客製化電腦程式設計；所有上述產品的零件、配件和附件的客製化電腦程式設計；雲端運算；雲端運算服務；提供雲端平台和地端環境管理用軟體之雲端運算服務；有關前述服務之諮詢顧問及資訊提供服務；用於確定電子預訂行程的乘客應付票價之客製化軟體設計。"
+        }
+      ]
+    },
+    "id": "a0324c13-a99e-4210-a1aa-861231617aa7",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260521",
+    "registrationOfficeCode": "TW",
+    "registrationOfficeName": "Taiwan",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "TW",
+        "representativeAddressCountryName": "Taiwan",
+        "representativeNativeName": "譚璧德"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20241011",
+        "applicationNumber": "113070913"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360331",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20260401",
+        "registrationNumber": "02524086"
+      }
+    },
+    "version": "20260521161052",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MIFARE"
+    }
+  },
+  "_uri": "/mark/tw/a0324c13-a99e-4210-a1aa-861231617aa7",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.751Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

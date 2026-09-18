@@ -31,7 +31,11 @@ import {
 
 // A REAL DELIVERED RECORD, not an invented one: the shape these read is the shape a run writes, and a
 // fixture of my own would only prove the fixture matches the reader.
-const DEMO = new URL("../../demo/knockout-search/run/knockout-findings.json", import.meta.url);
+// THE SPECIMEN IS THE PREVIOUS DEMO KNOCKOUT, KEPT BYTE FOR BYTE under driver/test/fixtures/delivered-knockout.
+// The shipped demo moved to a newer run whose name rated Low with no conflicts and no reviewer notes — a
+// clean result, and nothing for this arm to measure. This arm needs a delivered knockout that HAS those,
+// so it reads the one the demo used to ship: still a real run's shape, never one written for the test.
+const DEMO = new URL("./fixtures/delivered-knockout/run/knockout-findings.json", import.meta.url);
 const record = () => JSON.parse(readFileSync(DEMO, "utf8"));
 const MARK = "VENQORI";
 

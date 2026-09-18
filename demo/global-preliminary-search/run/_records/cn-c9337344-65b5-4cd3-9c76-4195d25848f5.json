@@ -1,0 +1,141 @@
+{
+  "uri": "/mark/cn/c9337344-65b5-4cd3-9c76-4195d25848f5",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "c9337344-65b5-4cd3-9c76-4195d25848f5",
+  "applicationNumber": "7546428",
+  "registrationNumber": "7546428",
+  "applicationDate": "2009-07-15",
+  "registrationDate": "2010-12-28",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2010-09-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2023-12-27",
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "天天淘本",
+  "markTransliteration": "tian tian tao ben",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "技术项目研究;工程;材料测试;计算机编程;计算机软件设计;计算机出租;计算机系统设计;恢复计算机数据;替他人创建和维护网站;计算机病毒的防护服务",
+      "translation_language": "en",
+      "translation": "Technical project research; engineering; materials testing; computer programming; computer software design; computer rental; computer system design; computer data recovery; creation and maintenance of websites for others; computer virus protection services"
+    }
+  ],
+  "owner": "Beijing Tengding Trading Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "北京市海淀区海淀大街3号鼎好天地电子市场A座A2910",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Beijing Tengding Trading Co., Ltd.",
+        "applicantNativeName": "北京腾鼎商贸有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Technical project research; engineering; materials testing; computer programming; computer software design; computer rental; computer system design; computer data recovery; creation and maintenance of websites for others; computer virus protection services",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "技术项目研究;工程;材料测试;计算机编程;计算机软件设计;计算机出租;计算机系统设计;恢复计算机数据;替他人创建和维护网站;计算机病毒的防护服务"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Research and development service",
+        "Survey service",
+        "Computer programming, and concerned services"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4214",
+          "subNatGoodsServicesDescription": "Survey service"
+        },
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        }
+      ]
+    },
+    "id": "c9337344-65b5-4cd3-9c76-4195d25848f5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1233"
+      }
+    ],
+    "recordLastUpdated": "20251001",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京世纪铭洋知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20090715",
+        "applicationNumber": "7546428"
+      },
+      "cancellationDate": "20231227",
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20100927",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20101228",
+        "registrationNumber": "7546428"
+      }
+    },
+    "version": "20251001235305",
+    "wordMarkSpecification": {
+      "markTransliteration": "tian tian tao ben",
+      "markVerbalElementText": "天天淘本"
+    }
+  },
+  "_uri": "/mark/cn/c9337344-65b5-4cd3-9c76-4195d25848f5",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:44.438Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

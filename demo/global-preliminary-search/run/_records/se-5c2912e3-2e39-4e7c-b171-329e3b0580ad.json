@@ -1,0 +1,109 @@
+{
+  "uri": "/mark/se/5c2912e3-2e39-4e7c-b171-329e3b0580ad",
+  "provider": "clarivate",
+  "office": "se",
+  "guid": "5c2912e3-2e39-4e7c-b171-329e3b0580ad",
+  "applicationNumber": "2019/01613",
+  "registrationNumber": "601136",
+  "applicationDate": "2019-03-06",
+  "registrationDate": "2019-04-09",
+  "expiryDate": "2029-03-06",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Apricon",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Molntjänster [saas]; rådgivning avseende molntjänster [saas]; hostingtjänster, molntjänster (saas) och uthyrning av mjukvara.",
+      "translation_language": "en",
+      "translation": "Cloud services [SaaS]; consultancy relating to cloud services [SaaS]; hosting services, cloud services (SaaS) and software rental."
+    }
+  ],
+  "owner": "Symetri Collaboration AB, Att: Lennart Klintmalm",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "västgötagränd 15, 118 28 Stockholm",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantName": "Symetri Collaboration AB, Att: Lennart Klintmalm"
+      }
+    ],
+    "applicationLanguageCode": "sw",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Cloud services [SaaS]; consultancy relating to cloud services [SaaS]; hosting services, cloud services (SaaS) and software rental.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Molntjänster [saas]; rådgivning avseende molntjänster [saas]; hostingtjänster, molntjänster (saas) och uthyrning av mjukvara."
+        }
+      ]
+    },
+    "id": "5c2912e3-2e39-4e7c-b171-329e3b0580ad",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250707",
+    "registrationOfficeCode": "SE",
+    "registrationOfficeName": "Sweden",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190306",
+        "applicationNumber": "2019/01613"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290306",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20190409",
+        "registrationNumber": "601136"
+      }
+    },
+    "version": "20250707121946",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Apricon"
+    }
+  },
+  "_uri": "/mark/se/5c2912e3-2e39-4e7c-b171-329e3b0580ad",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.289Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

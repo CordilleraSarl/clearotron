@@ -1,0 +1,401 @@
+{
+  "uri": "/mark/us/a55a88c4-98c0-4d75-a430-6e6f16a23128",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "a55a88c4-98c0-4d75-a430-6e6f16a23128",
+  "applicationNumber": "74136246",
+  "registrationNumber": "1706352",
+  "applicationDate": "1991-02-04",
+  "registrationDate": "1992-08-11",
+  "expiryDate": null,
+  "renewalDate": "2002-08-11",
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "1992-05-19"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2016-01-27",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "KNOWIT",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 computer programs and instructional manuals sold as a unit, for use in business by sales representatives and sales agencies",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "SYMETRI CORPORATION, INC.",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "JEFFREY R. McFADDEN",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20021007",
+      "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+    },
+    "applicants": [
+      {
+        "applicantAddress": "P.O. BOX 35565, GREENSBORO, NORTH CAROLINA, 27425",
+        "applicantAddressCity": "GREENSBORO",
+        "applicantAddressPostalCode": "27425",
+        "applicantAddressStateName": "NORTH CAROLINA",
+        "applicantAddressStreet": "P.O. BOX 35565",
+        "applicantJurisdictionOfIncorporation": "NORTH CAROLINA",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "SYMETRI CORPORATION, INC."
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "P.O. BOX 35565, GREENSBORO, NORTH CAROLINA, 27425",
+            "city": "GREENSBORO",
+            "jurisdictionOfIncorporation": "NORTH CAROLINA",
+            "legalEntity": "CORPORATION",
+            "name": "SYMETRI CORPORATION, INC.",
+            "postalCode": "27425",
+            "stateName": "NORTH CAROLINA",
+            "street": "P.O. BOX 35565"
+          }
+        ],
+        "assignors": [
+          {
+            "legalEntity": "CORPORATION",
+            "name": "RIGHTLINX GROUP, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "300 N. GREENE STREET, GREENSBORO, NC 27401",
+            "addressLines": [
+              "JEFFREY R. MCFADDEN",
+              "300 N. GREENE STREET",
+              "GREENSBORO, NC 27401"
+            ],
+            "name": "JEFFREY R. MCFADDEN"
+          }
+        ],
+        "descriptionText": "ASSIGNS THE ENTIRE INTEREST",
+        "executedDate": "20020515",
+        "recordedDate": "20020606",
+        "reelFrameNumber": "2523/0112"
+      },
+      {
+        "assignees": [
+          {
+            "address": "HIGH POINT, NORTH CAROLINA, 27260",
+            "city": "HIGH POINT",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "RIGHTLINX GROUP, INC.",
+            "postalCode": "27260",
+            "secondaryAddressUnit": "101 SOUTH MAIN STREET, SUITE A",
+            "stateName": "NORTH CAROLINA"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "MICHIGAN",
+            "legalEntity": "CORPORATION",
+            "name": "NATIONAL SYSTEMS DESIGN CORPORATION"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "ATTN: MARK J. PLOTKIN, 3343 PEACHTREE ROAD, N.E., 1600 ATLANTA FINANCIAL CENTER",
+            "addressLines": [
+              "MORRIS, MANNING & MARTIN, LLP",
+              "ATTN: MARK J. PLOTKIN",
+              "3343 PEACHTREE ROAD, N.E.",
+              "1600 ATLANTA FINANCIAL CENTER",
+              "ATLANTA, GA  30326"
+            ],
+            "name": "MORRIS, MANNING & MARTIN, LLP"
+          }
+        ],
+        "descriptionText": "ASSIGNS THE ENTIRE INTEREST",
+        "executedDate": "20010618",
+        "recordedDate": "20010626",
+        "reelFrameNumber": "2323/0121"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 computer programs and instructional manuals sold as a unit, for use in business by sales representatives and sales agencies"
+        }
+      ]
+    },
+    "id": "a55a88c4-98c0-4d75-a430-6e6f16a23128",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20160127",
+        "descriptionText": "CANCELLED SEC. 8 (10-YR)"
+      },
+      {
+        "date": "20080212",
+        "descriptionText": "CASE FILE IN TICRS"
+      },
+      {
+        "date": "20031119",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20021007",
+        "descriptionText": "REGISTERED - SEC. 8 (10-YR) ACCEPTED/SEC. 9 GRANTED"
+      },
+      {
+        "date": "20021007",
+        "descriptionText": "REGISTERED AND RENEWED (FIRST RENEWAL - 10 YRS)"
+      },
+      {
+        "date": "20020719",
+        "descriptionText": "PAPER RECEIVED"
+      },
+      {
+        "date": "20020719",
+        "descriptionText": "REGISTERED - COMBINED SECTION 8 (10-YR) & SEC. 9 FILED"
+      },
+      {
+        "date": "19990604",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+      },
+      {
+        "date": "19990430",
+        "descriptionText": "RESPONSE RECEIVED TO POST REG. ACTION"
+      },
+      {
+        "date": "19981105",
+        "descriptionText": "POST REGISTRATION ACTION MAILED - SEC. 8 & 15"
+      },
+      {
+        "date": "19980811",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) & SEC. 15 FILED"
+      },
+      {
+        "date": "19920811",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "19920519",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "19920417",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "19911218",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "19911028",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "19910611",
+        "descriptionText": "NON-FINAL ACTION MAILED"
+      },
+      {
+        "date": "19910515",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      }
+    ],
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Lansing, MI, 48933",
+        "city": "Lansing",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "MICHIGAN",
+        "legalEntity": "CORPORATION",
+        "name": "National Systems Design Corporation",
+        "postalCode": "48933",
+        "secondaryAddressUnit": "121 East Allegan Street",
+        "stateName": "MICHIGAN"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "Lansing, MI, 48933",
+        "city": "Lansing",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "MICHIGAN",
+        "legalEntity": "CORPORATION",
+        "name": "National Systems Design Corporation",
+        "postalCode": "48933",
+        "secondaryAddressUnit": "121 East Allegan Street",
+        "stateName": "MICHIGAN"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "Lansing, MI, 48933",
+        "city": "Lansing",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "MICHIGAN",
+        "legalEntity": "CORPORATION",
+        "name": "National Systems Design Corporation",
+        "postalCode": "48933",
+        "secondaryAddressUnit": "121 East Allegan Street",
+        "stateName": "MICHIGAN"
+      }
+    ],
+    "postRegistrationOwners": [
+      {
+        "address": "P.O. BOX 35565, GREENSBORO, NC, 27425",
+        "city": "GREENSBORO",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "NORTH CAROLINA",
+        "legalEntity": "CORPORATION",
+        "name": "SYMETRI CORPORATION, INC.",
+        "postalCode": "27425",
+        "stateName": "NORTH CAROLINA",
+        "street": "P.O. BOX 35565"
+      }
+    ],
+    "recordLastUpdated": "20260107",
+    "refusalInformation": [
+      {
+        "referencedMarks": [
+          {
+            "applicationNumber": "85033074",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "KNOWIT!",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85033074",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "KNOWIT!",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85033074",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "KNOWIT!",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85033074",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "KNOWIT!",
+            "refusalStatus": "Refused"
+          }
+        ],
+        "refusalStatus": "Cited"
+      }
+    ],
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "ATLANTA, GA 30357-0037, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "ATLANTA, GA 30357-0037",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "C ROBERT RHODES WOMBLE CARLYLE SANDRIDGE & RICE, PO BOX 7037"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "ATLANTA, GA 30357-0037, UNITED STATES",
+        "representativeAddressLines": [
+          "ATLANTA, GA 30357-0037",
+          "UNITED STATES"
+        ],
+        "representativeName": "JEFFREY R. McFADDEN"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19910204",
+        "applicationNumber": "74136246"
+      },
+      "cancellationDate": "20160127",
+      "cancellationPublicationDate": "20160301",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "19910131"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "19910131"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20160127",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "19920519"
+      ],
+      "registration": {
+        "registrationDate": "19920811",
+        "registrationNumber": "1706352"
+      },
+      "renewalDate": "20020811"
+    },
+    "version": "20260107094717",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "KNOW IT",
+      "markVerbalElementText": "KNOWIT"
+    }
+  },
+  "_uri": "/mark/us/a55a88c4-98c0-4d75-a430-6e6f16a23128",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.289Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

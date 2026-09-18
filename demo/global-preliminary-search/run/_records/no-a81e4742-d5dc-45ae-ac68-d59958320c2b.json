@@ -1,0 +1,149 @@
+{
+  "uri": "/mark/no/a81e4742-d5dc-45ae-ac68-d59958320c2b",
+  "provider": "clarivate",
+  "office": "no",
+  "guid": "a81e4742-d5dc-45ae-ac68-d59958320c2b",
+  "applicationNumber": "200406124",
+  "registrationNumber": "227532",
+  "applicationDate": "2004-06-09",
+  "registrationDate": "2005-07-14",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2005-07-25",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "no",
+      "description": "Halvledere, halvlederprosessorer, halvlederprosessorbrikker, integrerte kretser, integrert krets-brikker, kretskort, mikrocomputere, mikro-styringsenheter, mikroprosessorer og periferiutstyr for datamaskiner, lagerenheter og halvledermateriale for dette formål; halvledere for maskiner og maskinverktøy; halvledere for belysnings-, oppvarmings-, dampproduksjons-, koke-, nedkjølings-, tørke- og ventilasjonsapparater; halvledere for klokker og tidtakingsapparater og - instrumenter; halvledere for musikkinstrumenter; halvledere for spill og leketøy; datakonverteringskretser; datafirmware; elektroniske, elektriske og elektromekaniske apparater for bruk med datamaskiner; videosystemprodukter; apparater og utstyr for opptak, gjengivelse og endring av lyd, bilde og data; bildekretskort; lydkretskort; lyd-bildekretskort; bildegrafikkakseleratorer; multimediaakseleratorer; bildeprosessorer; dataprogrammer; instruksjonsmateriell relatert til computer- og dataalgoritmer for komprimering og dekomprimering av data; forsøks-, prøvetakings og kalibreringsapparater; deler og tilbehør for alle forannevnte varer; utstyr for testing og programmering av integrerte kretser og halvleder-minneinnretninger; datasoftware, nemlig applikasjonsintegrerings- og konnektivitetssoftware, hjelpeprogrammer for datamaskiner, dataprogrammer for nettverksadministrering, datasoftware for aksessering av et globalt datanettverk og sammenkoblede datanettverk; operativsystemer for datamaskiner; operativsystemsoftware for datamaskiner; operativprogrammer for datamaskiner; og datasoftwareverktøy for tilrettelegging av tredjepartssoftwareapplikasjoner.",
+      "translation_language": "en",
+      "translation": "Semiconductors, semiconductor processors, semiconductor processor chips, integrated circuits, integrated circuit chips, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, storage devices and semiconductor materials therefor; semiconductors for machines and machine tools; semiconductors for lighting, heating, steam generating, cooking, refrigerating, drying and ventilating apparatus; semiconductors for clocks and timekeeping apparatus and instruments; semiconductors for musical instruments; semiconductors for games and toys; data conversion circuits; computer firmware; electronic, electrical and electromechanical apparatus for use with computers; video system products; apparatus and equipment for recording, reproducing and modifying sound, images and data; image circuit boards; audio circuit boards; audio-visual circuit boards; image graphics accelerators; multimedia accelerators; image processors; computer programs; instructional materials relating to computer and data algorithms for compressing and decompressing data; testing, sampling and calibration apparatus; parts and fittings for all the aforesaid goods; equipment for testing and programming integrated circuits and semiconductor memory devices; computer software, namely, application integration and connectivity software, computer utility programs, computer network management software, computer software for accessing a global computer network and interconnected computer networks; computer operating systems; computer operating system software; computer operating programs; and computer software tools for facilitating third party software applications."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "no",
+      "description": "Lisensiering av teknologi; lisensiering av patenter, varemerker, opphavsrettigheter, forretningshemmeligheter og/eller knowhow relatert til produksjon av halvledere og deres anvendelse; lisensiering av halvledere;lisensiering av software relatert til produksjon av halvledere og deres anvendelse; lisensiering av teknologi relatert til halvledere og produksjon av halvledere; lisensiering av teknologi inkorporert i og relatert til halvlederprodukter, integrerte kretser, kretskort, mikrocomputere, mikro-styringsenheter, mikroprosessorer og computer-periferiutstyr, lagerenheter og halvledermateriale for dette formål, datakonverteringskretser, computerfirmware, elektroniske, elektriske og elektromekaniske apparater for bruk med datamaskiner, bildekretskort,videosystemprodukter, apparater og utstyr for opptak, gjengivelse og endring av lyd, bilde og data, dataprogrammer, instruksjonsmateriale relatert til computer- og dataalgoritmer for komprimering og dekomprimering av data; kundespesifikk design av computer- ogtelekommunikasjonssystemer;rådgivningstjenester innen feltet datamaskiner og telekommunikasjon og relatert teknologi for design av software.",
+      "translation_language": "en",
+      "translation": "Licensing of technology; licensing of patents, trademarks, copyrights, trade secrets and/or know-how relating to the manufacture of semiconductors and their use; licensing of semiconductors; licensing of software relating to the manufacture of semiconductors and their use; licensing of technology relating to semiconductors and the manufacture of semiconductors; licensing of technology incorporated in and relating to semiconductor products, integrated circuits, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, storage devices and semiconductor materials therefor, data conversion circuits, computer firmware, electronic, electrical and electromechanical apparatus for use with computers, image circuit boards, video system products, apparatus and equipment for recording, reproducing and modifying sound, images and data, computer programs, instructional material relating to computer and computer algorithms for compressing and decompressing data; custom design of computer and telecommunications systems; consultancy services in the field of computers and telecommunications and related technology for the design of software."
+    }
+  ],
+  "owner": "NXP USA, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "BRYN AARFLOT AS",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20031230",
+      "priorityNumber": "76567257"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "TX78735 AUSTIN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc."
+      }
+    ],
+    "applicationLanguageCode": "no",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Semiconductors, semiconductor processors, semiconductor processor chips, integrated circuits, integrated circuit chips, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, storage devices and semiconductor materials therefor; semiconductors for machines and machine tools; semiconductors for lighting, heating, steam generating, cooking, refrigerating, drying and ventilating apparatus; semiconductors for clocks and timekeeping apparatus and instruments; semiconductors for musical instruments; semiconductors for games and toys; data conversion circuits; computer firmware; electronic, electrical and electromechanical apparatus for use with computers; video system products; apparatus and equipment for recording, reproducing and modifying sound, images and data; image circuit boards; audio circuit boards; audio-visual circuit boards; image graphics accelerators; multimedia accelerators; image processors; computer programs; instructional materials relating to computer and data algorithms for compressing and decompressing data; testing, sampling and calibration apparatus; parts and fittings for all the aforesaid goods; equipment for testing and programming integrated circuits and semiconductor memory devices; computer software, namely, application integration and connectivity software, computer utility programs, computer network management software, computer software for accessing a global computer network and interconnected computer networks; computer operating systems; computer operating system software; computer operating programs; and computer software tools for facilitating third party software applications.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "no",
+          "intGoodsServicesDescription": "Halvledere, halvlederprosessorer, halvlederprosessorbrikker, integrerte kretser, integrert krets-brikker, kretskort, mikrocomputere, mikro-styringsenheter, mikroprosessorer og periferiutstyr for datamaskiner, lagerenheter og halvledermateriale for dette formål; halvledere for maskiner og maskinverktøy; halvledere for belysnings-, oppvarmings-, dampproduksjons-, koke-, nedkjølings-, tørke- og ventilasjonsapparater; halvledere for klokker og tidtakingsapparater og - instrumenter; halvledere for musikkinstrumenter; halvledere for spill og leketøy; datakonverteringskretser; datafirmware; elektroniske, elektriske og elektromekaniske apparater for bruk med datamaskiner; videosystemprodukter; apparater og utstyr for opptak, gjengivelse og endring av lyd, bilde og data; bildekretskort; lydkretskort; lyd-bildekretskort; bildegrafikkakseleratorer; multimediaakseleratorer; bildeprosessorer; dataprogrammer; instruksjonsmateriell relatert til computer- og dataalgoritmer for komprimering og dekomprimering av data; forsøks-, prøvetakings og kalibreringsapparater; deler og tilbehør for alle forannevnte varer; utstyr for testing og programmering av integrerte kretser og halvleder-minneinnretninger; datasoftware, nemlig applikasjonsintegrerings- og konnektivitetssoftware, hjelpeprogrammer for datamaskiner, dataprogrammer for nettverksadministrering, datasoftware for aksessering av et globalt datanettverk og sammenkoblede datanettverk; operativsystemer for datamaskiner; operativsystemsoftware for datamaskiner; operativprogrammer for datamaskiner; og datasoftwareverktøy for tilrettelegging av tredjepartssoftwareapplikasjoner."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Licensing of technology; licensing of patents, trademarks, copyrights, trade secrets and/or know-how relating to the manufacture of semiconductors and their use; licensing of semiconductors; licensing of software relating to the manufacture of semiconductors and their use; licensing of technology relating to semiconductors and the manufacture of semiconductors; licensing of technology incorporated in and relating to semiconductor products, integrated circuits, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, storage devices and semiconductor materials therefor, data conversion circuits, computer firmware, electronic, electrical and electromechanical apparatus for use with computers, image circuit boards, video system products, apparatus and equipment for recording, reproducing and modifying sound, images and data, computer programs, instructional material relating to computer and computer algorithms for compressing and decompressing data; custom design of computer and telecommunications systems; consultancy services in the field of computers and telecommunications and related technology for the design of software.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "no",
+          "intGoodsServicesDescription": "Lisensiering av teknologi; lisensiering av patenter, varemerker, opphavsrettigheter, forretningshemmeligheter og/eller knowhow relatert til produksjon av halvledere og deres anvendelse; lisensiering av halvledere;lisensiering av software relatert til produksjon av halvledere og deres anvendelse; lisensiering av teknologi relatert til halvledere og produksjon av halvledere; lisensiering av teknologi inkorporert i og relatert til halvlederprodukter, integrerte kretser, kretskort, mikrocomputere, mikro-styringsenheter, mikroprosessorer og computer-periferiutstyr, lagerenheter og halvledermateriale for dette formål, datakonverteringskretser, computerfirmware, elektroniske, elektriske og elektromekaniske apparater for bruk med datamaskiner, bildekretskort,videosystemprodukter, apparater og utstyr for opptak, gjengivelse og endring av lyd, bilde og data, dataprogrammer, instruksjonsmateriale relatert til computer- og dataalgoritmer for komprimering og dekomprimering av data; kundespesifikk design av computer- ogtelekommunikasjonssystemer;rådgivningstjenester innen feltet datamaskiner og telekommunikasjon og relatert teknologi for design av software."
+        }
+      ]
+    },
+    "id": "a81e4742-d5dc-45ae-ac68-d59958320c2b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20031230",
+        "priorityNumber": "76567257"
+      }
+    ],
+    "recordLastUpdated": "20260213",
+    "registrationOfficeCode": "NO",
+    "registrationOfficeName": "Norway",
+    "representatives": [
+      {
+        "representativeAddress": "0161 OSLO",
+        "representativeAddressCountryCode": "NO",
+        "representativeAddressCountryName": "Norway",
+        "representativeName": "BRYN AARFLOT AS"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040609",
+        "applicationNumber": "200406124"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "lastPublicationDate": "20050725",
+      "markCurrentStatus": "CEASED",
+      "registration": {
+        "registrationDate": "20050714",
+        "registrationNumber": "227532"
+      }
+    },
+    "version": "20260213020015",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/no/a81e4742-d5dc-45ae-ac68-d59958320c2b",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.687Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

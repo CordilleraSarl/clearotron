@@ -24,7 +24,6 @@ import { spawnSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { readFileSync } from "node:fs";
-import { homedir } from "node:os";
 
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -73,13 +72,13 @@ test("the refusal names the offending variable AND its value's root", () => {
 });
 
 test("the home-directory shape the incident actually had is refused", () => {
-  // DERIVED FROM homedir, not written as a literal, for two reasons that point the same way.
-  // forbids a specific account's home in executable code — it is wrong under every other service
-  // account and in every public clone, and that guard caught this test when it was a literal. And the
-  // derived form is the truer assertion anyway: `join(homedir(), "trademark", "workspace")` IS what an
-  // unset CLEAROTRON_WORK_DIR resolves to, so this exercises the exact path the incident's box had
-  // rather than a stand-in that resembles it.
-  const live = join(homedir(), "trademark", "workspace");
+  // AN ACCOUNT'S OWN HOME, WRITTEN OUT — the shape the incident's box had: an unset CLEAROTRON_WORK_DIR
+  // resolves under the account's home. Not derived from homedir(), which is what this used to do: in a
+  // container or CI image the home directory sits under the temp root, where the guard is RIGHT to call
+  // a path contained, and the derived path then demanded a refusal the guard correctly does not make —
+  // one red test in a clean `npm test` that the person running it did not cause. `/home/you` is the
+  // placeholder the documentation already uses for these same variables, not any real account.
+  const live = "/home/you/trademark/workspace";
   const r = runWrapper({ CLEAROTRON_WORK_DIR: live });
   assert.equal(r.code, 1, `the box user's own working estate was not refused: ${live}`);
   assert.match(r.err, /CLEAROTRON_WORK_DIR/);
@@ -119,7 +118,7 @@ test("an unset queue dir falls back INSIDE the run root, never to a live path", 
   const q = /Q=(\S+)/.exec(r.out)?.[1];
   assert.ok(q, `the child did not report the value: ${r.out}`);
   assert.match(q, /ct-testrun-/, "the queue dir is not inside this run's own temp root");
-  assert.ok(!q.startsWith("/home/"), "unset fell back to a home path — #1243 acceptance 2");
+  assert.ok(!q.startsWith("/home/"), "unset fell back to a home path, where a live install keeps its queue");
 });
 
 test("an EMPTY queue dir is unset, not a configured live path (#1216's shape)", () => {

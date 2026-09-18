@@ -10,8 +10,9 @@
 //   npx clearotron demo --port 9000        serve on another port (the demo opens three doors:
 //                                          9000, 9001 and 9002)
 //   npx clearotron demo --no-open          do not try to open a browser
-//   npm run example -- --once              publish and exit; do not open the portal
-//   npm run example -- --once --pool <dir> publish somewhere else; only valid with --once
+//   npx clearotron demo --keep             keep the demo's folder and its reports when the window closes
+//   npx clearotron demo --once             publish and exit; do not open the portal
+//   npx clearotron demo --once --pool <dir> publish somewhere else; only valid with --once
 //
 // NO CREDENTIALS, NO MODEL, NO ENGINE. This does not run a clearance. It takes a run that already
 // finished and pushes it back through the ordinary publisher — the same publishReport that wrote the
@@ -52,6 +53,8 @@ import { ensureDemoProgram, demoProgramEnv } from "../shared/permanent-install.m
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 import { usageBlock } from "../shared/usage-block.mjs";
+import { demoStartArgs } from "../shared/demo-start-args.mjs";
+import { bundleVerdict } from "../shared/bundle-freshness.mjs";
 const argv = process.argv.slice(2);
 const flag = (n, d = null) => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : d; };
 const has = (n) => argv.includes(n);
@@ -207,6 +210,16 @@ if (flag("--pool") && !has("--once")) die(
   "somewhere else would be published to and never served. Move the whole demo instead:",
   `  ${invoke("demo")} --base <dir>`,
 );
+// ── A CLONE WITH NO PORTAL BUNDLE IS REFUSED BEFORE ANYTHING IS MADE ─────────────────────────────
+//
+// The bundle is not committed, so a clone has none until it is built, and a demo started without it
+// brought up a portal that answered 503 on every page while the banner told the reader to open it —
+// measured on a fresh clone followed step by step. The published package ships the bundle, so this is
+// only ever a clone. `--once` publishes and exits without a portal, so it needs no bundle. The verdict
+// is the one `doctor` and the portal's health check read, and the words are doctor's own.
+if (!has("--once") && bundleVerdict({ repo: REPO, distDir: join(REPO, "portal-ui", "dist"), srcDir: join(REPO, "portal-ui", "src") }) === "unbuilt")
+  die(`demo: no UI bundle at ${join(REPO, "portal-ui", "dist")}. Build it: \`npm run build:ui\``);
+
 const poolRoot = realOf(flag("--pool") ?? join(demoBase, "pool"));
 // Every root that could be the real archive: the archive itself, whatever this environment configures,
 // and the staff-CLI alias that carries the same literal.
@@ -375,11 +388,12 @@ function strayFromAnOlderDemo() {
 // control greyed with the reason at it. Re-implementing that here is how there came to be two portals
 // in the first place, so this hands over rather than copies. The dev cockpit keeps its job as a
 // contributor tool; it simply stops being what `demo` opens.
-const startArgs = ["--demo", "--base", demoBase];
-if (flag("--port")) startArgs.push("--port", flag("--port"));
-if (has("--no-open")) startArgs.push("--no-open");
+const startArgs = demoStartArgs({ demoBase, readerBase: flag("--base") != null, keep: has("--keep"),
+  port: flag("--port"), noOpen: has("--no-open") });
 
-console.log(`  Removing this demo later is one directory:  ${removeDirectory(demoBase)}`);
+// ONLY WHEN THE FOLDER WILL OUTLIVE THE WINDOW. The demo removes what it made when it stops, and the
+// supervisor's banner says so; printing a removal command here as well told the reader the opposite.
+if (flag("--base") != null || has("--keep")) console.log(`  Removing this demo later is one directory:  ${removeDirectory(demoBase)}`);
 strayFromAnOlderDemo();
 console.log("");
 

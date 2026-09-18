@@ -371,6 +371,11 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   // first country with the second, and the recommendation could then never reach the search that reads
   // both — the reader would be steered by their own first keystroke.
   const whereLevel = pickedByHand || draft.savedSearch || editingSlug ? activeLevel : null
+  // ONE ANSWER TO "IS THIS SEARCH WORLDWIDE", read by the Where panel and the footer alike. The footer
+  // used to answer it for itself, from the territory lists alone, so a Global preliminary search —
+  // worldwide and nothing else — showed "Worldwide, searched on Signa" in the Where panel and the
+  // company's own "US, EU, UK" in the footer below it: a scope that order would never run.
+  const whereWorldwide = whereLevel?.geography === 'worldwide, and nothing else'
   const nativeControl = nativeLanguageControl(activeLevel)
   const machinery = machineryFor(draft.pick, activeLevel)
   // THE WAY THROUGH THE NAME WALL, found in the offering rather than named here: whichever product reads
@@ -954,7 +959,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
               the reader picked and by the controls below — see composerProduct.ts where the function
               that composed them used to be. */}
 
-          {whereLevel?.geography === 'worldwide, and nothing else' ? (
+          {whereWorldwide ? (
             // NO PICKER AT ALL, and that is the design. Worldwide is not a choice on this search —
             // it IS this search — so a territory field here would be a control whose every use is
             // refused. The chip states the fact; the sentence above says why there is nothing to set.
@@ -1519,11 +1524,15 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
           // the world. The footer is the running total someone watches while composing, so it is the
           // last place that should disagree with what will actually run. CODES here and only here: a
           // bar one line tall has no room for place names, and every other surface spells them out.
-          draft.pick.territories.length
-            ? draft.pick.territories.map(territoryCode).join(', ')
-            : own.territories.length
-              ? own.territories.map(territoryCode).join(', ')
-              : 'worldwide',
+          // And on a search that is worldwide and nothing else, the footer says what the Where panel says, in
+          // its words — the same line, register service included — and names no territory at all.
+          whereWorldwide
+            ? worldwideLine(registerLabel)
+            : draft.pick.territories.length
+              ? draft.pick.territories.map(territoryCode).join(', ')
+              : own.territories.length
+                ? own.territories.map(territoryCode).join(', ')
+                : 'worldwide',
           // Checks PER NAME, said once there is a name and a search to count them for.
           names.length && activeLevel ? checksSummary(effort) : '',
         ].filter(Boolean).join(' · ')}

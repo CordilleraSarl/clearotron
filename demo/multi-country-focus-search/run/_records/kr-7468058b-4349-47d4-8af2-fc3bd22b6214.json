@@ -1,0 +1,130 @@
+{
+  "uri": "/mark/kr/7468058b-4349-47d4-8af2-fc3bd22b6214",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "7468058b-4349-47d4-8af2-fc3bd22b6214",
+  "applicationNumber": "56-2008-0022934",
+  "registrationNumber": "4004436480000",
+  "applicationDate": "2008-10-08",
+  "registrationDate": "2009-04-17",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "SOFTCONNECT",
+  "markTransliteration": "SOFTCONNECT",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    8,
+    9,
+    10,
+    11,
+    17,
+    21
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        17,
+        21
+      ],
+      "language": "ko",
+      "description": "다이오드,반도체,새창으로 열림,집적회로,컴퓨터소프트웨어프로그램이수록된디스켓,컴퓨터소프트웨어프로그램이수록된디스크,컴퓨터소프트웨어프로그램이수록된칩,컴퓨터소프트웨어프로그램이수록된컴팩트디스크,터어미스터,트랜지스터 다이오드,반도체,집적회로,컴퓨터 소프트웨어 프로그램이 수록된 디스켓,컴퓨터 소프트웨어 프로그램이 수록된 디스크,컴퓨터 소프트웨어 프로그램이 수록된 칩,컴퓨터 소프트웨어 프로그램이 수록된 컴팩트디스크,터미스터,트랜지스터",
+      "translation_language": "en",
+      "translation": "Diode, Semiconductor, Opens in new window, Integrated circuit, Diskette containing computer software program, Disk containing computer software program, Chip containing computer software program, Compact disk containing computer software program, thermistor, transistor A diskette containing a computer software program, a disk containing a computer software program, a chip containing a computer software program, a compact disk containing a computer software program, a terminal, a transistor"
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "특허법인세신 (SESHIN PATENT & LAW FIRM)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "네덜란드 엔엘- 아게 아인드호펜 하이 테크 캠퍼스",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V.",
+        "applicantNativeName": "엔엑스피 비 브이"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Diode, Semiconductor, Opens in new window, Integrated circuit, Diskette containing computer software program, Disk containing computer software program, Chip containing computer software program, Compact disk containing computer software program, thermistor, transistor A diskette containing a computer software program, a disk containing a computer software program, a chip containing a computer software program, a compact disk containing a computer software program, a terminal, a transistor",
+          "intClassNumber": "07,08,09,10,11,17,21",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "다이오드,반도체,새창으로 열림,집적회로,컴퓨터소프트웨어프로그램이수록된디스켓,컴퓨터소프트웨어프로그램이수록된디스크,컴퓨터소프트웨어프로그램이수록된칩,컴퓨터소프트웨어프로그램이수록된컴팩트디스크,터어미스터,트랜지스터 다이오드,반도체,집적회로,컴퓨터 소프트웨어 프로그램이 수록된 디스켓,컴퓨터 소프트웨어 프로그램이 수록된 디스크,컴퓨터 소프트웨어 프로그램이 수록된 칩,컴퓨터 소프트웨어 프로그램이 수록된 컴팩트디스크,터미스터,트랜지스터"
+        }
+      ]
+    },
+    "id": "7468058b-4349-47d4-8af2-fc3bd22b6214",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "(Gasan-dong)#World Meridian Venture Center , Gasan digital -ro, Geumcheon-gu, Seoul, Korea",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "특허법인세신 (SESHIN PATENT & LAW FIRM)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20081008",
+        "applicationNumber": "56-2008-0022934"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20090417",
+        "registrationNumber": "4004436480000"
+      }
+    },
+    "version": "20250625203420",
+    "wordMarkSpecification": {
+      "markTransliteration": "SOFTCONNECT",
+      "markVerbalElementText": "SOFTCONNECT"
+    }
+  },
+  "_uri": "/mark/kr/7468058b-4349-47d4-8af2-fc3bd22b6214",
+  "_receipt": {
+    "fetched_at": "2026-09-18T14:09:34.910Z",
+    "context": "clearance-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

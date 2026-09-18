@@ -139,14 +139,19 @@ Nothing here requires an agent platform or a database — reports are written to
 ### Which version you get
 
 ```
-npm install -g clearotron          # stable — the tested one
-npm install -g clearotron@beta     # newest — cut when there is something worth testing
+npx clearotron install             # stable — the tested one
+npx clearotron@beta install        # newest — cut when there is something worth testing
 ```
 
 A **stable** has run a real clearance end to end and had a from-scratch install driven by somebody who has
 never seen the product, before it was published. A **beta** is published when a change lands that is worth
-testing, or while a stable is being prepared — days apart, not on every merge; it built and the suite
-passed, and nothing has driven a live register through it.
+testing, or while a stable is being prepared; it built and the suite passed, and nothing has driven a live
+register through it.
+
+**npm's global form works too**, where npm's global directory is yours to write:
+`npm install -g clearotron`, then `npx clearotron install`. On a Linux Node from the distribution or
+NodeSource that directory is `/usr`, owned by root, and npm refuses with `EACCES`. Do not answer that
+with `sudo`; install under your home instead: `npm install -g clearotron --prefix ~/.local`.
 
 **Upgrade production to stables only.** What each channel promises and how often one is cut:
 **[docs/RELEASES.md](docs/RELEASES.md)**.

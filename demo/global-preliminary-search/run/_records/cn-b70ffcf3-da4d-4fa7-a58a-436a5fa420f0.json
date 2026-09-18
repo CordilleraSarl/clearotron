@@ -1,0 +1,140 @@
+{
+  "uri": "/mark/cn/b70ffcf3-da4d-4fa7-a58a-436a5fa420f0",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "b70ffcf3-da4d-4fa7-a58a-436a5fa420f0",
+  "applicationNumber": "48296292",
+  "registrationNumber": "48296292",
+  "applicationDate": "2020-07-22",
+  "registrationDate": "2021-03-07",
+  "expiryDate": "2031-03-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2020-12-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ENZP",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "为他人提供计算机软件设计,产品测试,技术开发领域的咨询服务,替他人开发产品,外包商提供的信息技术服务,云计算,软件即服务(SaaS),计算机系统设计,技术项目研究,技术研究",
+      "translation_language": "en",
+      "translation": "Provide consulting services in the field of computer software design, product testing, technology development for others, develop products for others, information technology services provided by outsourcers, cloud computing, software as a service (SaaS), computer system design, technical project research, technology the study"
+    }
+  ],
+  "owner": "Jiangsu NXP Information Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "江苏省南京市江北新区盘城科创中心203-11室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Jiangsu NXP Information Technology Co., Ltd.",
+        "applicantNativeName": "江苏恩智浦信息科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Provide consulting services in the field of computer software design, product testing, technology development for others, develop products for others, information technology services provided by outsourcers, cloud computing, software as a service (SaaS), computer system design, technical project research, technology the study",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "为他人提供计算机软件设计,产品测试,技术开发领域的咨询服务,替他人开发产品,外包商提供的信息技术服务,云计算,软件即服务(SaaS),计算机系统设计,技术项目研究,技术研究"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Research and development service",
+        "Survey service",
+        "Computer programming, and concerned services"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4214",
+          "subNatGoodsServicesDescription": "Survey service"
+        },
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        }
+      ]
+    },
+    "id": "b70ffcf3-da4d-4fa7-a58a-436a5fa420f0",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1722"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "知域互联科技有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200722",
+        "applicationNumber": "48296292"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310306",
+      "lastPublicationDate": "20201206",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20210307",
+        "registrationNumber": "48296292"
+      }
+    },
+    "version": "20251004050414",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ENZP"
+    }
+  },
+  "_uri": "/mark/cn/b70ffcf3-da4d-4fa7-a58a-436a5fa420f0",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.684Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

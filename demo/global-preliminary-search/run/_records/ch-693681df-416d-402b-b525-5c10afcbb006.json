@@ -1,0 +1,150 @@
+{
+  "uri": "/mark/ch/693681df-416d-402b-b525-5c10afcbb006",
+  "provider": "clarivate",
+  "office": "ch",
+  "guid": "693681df-416d-402b-b525-5c10afcbb006",
+  "applicationNumber": "54913/2004",
+  "registrationNumber": "528082",
+  "applicationDate": "2004-07-22",
+  "registrationDate": "2004-11-25",
+  "expiryDate": null,
+  "renewalDate": "2014-07-22",
+  "lastPublicationDate": "2004-12-09",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2025-02-14",
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": null,
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9,
+        16,
+        42
+      ],
+      "language": "de",
+      "description": "9 Halbleiter, Halbleiterprozessoren, Chips für Halbleiterprozessoren, integrierte Schaltungen, Chips für integrierte Schaltungen, Schaltplatten, Microcomputer, Microprozessorsteuerung, Microprozessoren und Computerperipheriegeräte, Hauptspeicher und Halbleitermaterial für die vorgenannten Waren; Halbleiter für Maschinen und Maschinengeräte; Halbleiter für die Beleuchtung, Erhitzung, Dampferzeugung, Kochen, Tiefkühlen, Trocknen und Lüftungsapparate; Halbleiter für Apparate und Instrumente für Uhren und Arbeitszeiterfassung; Halbleiter für Musikinstrumente; Halbleiter für Spiele und Spielzeug; Schaltungen für die Datenumsetzung; Computer Firmware (Software in Festspeichern); Apparate und Ausrüstungen für die Aufnahme, Wiedergabe und Veränderung von Ton, Videos und Daten; Schaltkarten für Videos; Tonschaltkarten; Schaltkarten oder Schaltplatten für Audio und Video (Ton und Bild); Videografikbeschleuniger (Halbleiter); Multimediabeschleuniger (Halbleiter); Videoprozessoren; Computerprogramme; herunterladbare Publikationen, nämlich Programmhandbücher sowie Handbücher; Test- und Kalibrierapparate; Geräte für das Testen und Programmieren von integrierten Schaltungen und Halbleitern und Hauptspeichern; Computersoftware, nämlich Anwendungsintegrations- und Verbindungssoftware; Computerdienstprogramme, Computerprogramme für Netzwerkmanagement, Computersoftware für den Zugriff auf ein globales Computernetzwerk und auf vernetzte Computernetzwerke; Computerbetriebssysteme; Software für Computerbetriebssysteme; Programme für Computerbetriebssysteme; Computersoftware für die Ermöglichung von Softwareapplikationen von Dritten. 16 Programmhandbücher sowie Handbücher. 42 Lizenzvergabe bezüglich Technologie; Lizenzvergabe bezüglich Patente, Marken, Copyrights, Geschäftsgeheimnisse und/oder von Wissen im Zusammenhang mit der Herstellung von Halbleitern und über deren Gebrauch; Lizenzvergabe bezüglich Halbleiter; Lizenzvergabe bezüglich Software im Zusammenhang mit der Herstellung von Halbleitern und über deren Gebrauch; Lizenzvergabe bezüglich Technologie im Zusammenhang mit Halbleitern und der Herstellung von Halbleitern; Lizenzvergabe bezüglich Technologie verbunden mit und im Zusammenhang mit Halbleiterprodukten, integrierten Schaltungen, Schaltplatten, Microcomputern, Microprozessorsteuerung, Microprozessoren und Computerperipheriegeräten, Hauptspeicher und Halbleitermaterial für die vorgenannten Waren, Schaltungen für die Datenumsetzungen, Computer Firmware (Software in Festspeichern), elektronische, elektrische und elektro-mechanische Apparate für den Gebrauch mit Computern, Videoschaltkarten; Lizenzvergabe bezüglich Produkte für Videosysteme, Apparate und Ausrüstungen für die Aufnahme, Wiedergabe und Veränderung von Ton, Videos und Daten, Computerprogrammen; Lizenzvergabe bezüglich Produkthandbücher und der Programmierung; Lizenzvergabe bezüglich Unterrichtsmaterial betreffend Computer und Datenalgorithmen für die Komprimierung und Dekomprimierung von Daten; Design von Computern und Telekommunikationssystemen für den Handel; Beratungsdienste auf dem Gebiet von Computern und deren verwandten Technologien für Softwaredesign.",
+      "translation_language": "en",
+      "translation": "9 Semiconductors, semiconductor processors, chips for semiconductor processors, integrated circuits, chips for integrated circuits, circuit boards, microcomputers, microprocessor controls, microprocessors and computer peripherals, main memories and semiconductor material for the aforesaid goods; semiconductors for machines and machine devices; semiconductors for lighting, heating, steam generation, cooking, freezing, drying and ventilating apparatus; semiconductors for apparatus and instruments for clocks and time recording; semiconductors for musical instruments; semiconductors for games and toys; circuits for data conversion; computer firmware (software in read-only memory); apparatus and equipment for recording, reproducing and modifying sound, video and data; circuit cards for videos; sound circuit cards; circuit cards or circuit boards for audio and video (sound and image); video graphics accelerators (semiconductors); multimedia accelerators (semiconductors); video processors; computer programs; downloadable publications, namely program manuals and manuals; testing and calibration apparatus; devices for testing and programming integrated circuits and semiconductors and main memories; Computer software, namely application integration and connection software; computer utilities, computer programs for network management, computer software for accessing a global computer network and networked computer networks; computer operating systems; software for computer operating systems; programs for computer operating systems; computer software for enabling third party software applications. 16 Program manuals and manuals. 42 Licensing of technology; Licensing of patents, trademarks, copyrights, trade secrets and/or knowledge in connection with the manufacture of semiconductors and their use; Licensing of semiconductors; Licensing of software in connection with the manufacture of semiconductors and their use; Licensing of technology in connection with semiconductors and the manufacture of semiconductors; Licensing of technology related to and associated with semiconductor products, integrated circuits, circuit boards, microcomputers, microprocessor controls, microprocessors and computer peripherals, main memory and semiconductor material for the aforesaid goods, circuits for data conversion, computer firmware (software in read-only memory), electronic, electrical and electro-mechanical apparatus for use with computers, video circuit cards; licensing of products for video systems, apparatus and equipment for recording, reproducing and modifying sound, video and data, computer programs; licensing of product manuals and programming; licensing of teaching materials relating to computers and data algorithms for compressing and decompressing data; design of computers and telecommunications systems for commercial use; consultancy services in the field of computers and their related technologies for software design."
+    }
+  ],
+  "owner": "NXP USA, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Isler & Pedrazzini AG",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20040301",
+      "priorityNumber": "78/376.535"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West, Austin TX 78735",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc."
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "cmMarkImageEUclassification": [
+      "25.07.02",
+      "26.04.06",
+      "26.04.09"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "9 Semiconductors, semiconductor processors, chips for semiconductor processors, integrated circuits, chips for integrated circuits, circuit boards, microcomputers, microprocessor controls, microprocessors and computer peripherals, main memories and semiconductor material for the aforesaid goods; semiconductors for machines and machine devices; semiconductors for lighting, heating, steam generation, cooking, freezing, drying and ventilating apparatus; semiconductors for apparatus and instruments for clocks and time recording; semiconductors for musical instruments; semiconductors for games and toys; circuits for data conversion; computer firmware (software in read-only memory); apparatus and equipment for recording, reproducing and modifying sound, video and data; circuit cards for videos; sound circuit cards; circuit cards or circuit boards for audio and video (sound and image); video graphics accelerators (semiconductors); multimedia accelerators (semiconductors); video processors; computer programs; downloadable publications, namely program manuals and manuals; testing and calibration apparatus; devices for testing and programming integrated circuits and semiconductors and main memories; Computer software, namely application integration and connection software; computer utilities, computer programs for network management, computer software for accessing a global computer network and networked computer networks; computer operating systems; software for computer operating systems; programs for computer operating systems; computer software for enabling third party software applications. 16 Program manuals and manuals. 42 Licensing of technology; Licensing of patents, trademarks, copyrights, trade secrets and/or knowledge in connection with the manufacture of semiconductors and their use; Licensing of semiconductors; Licensing of software in connection with the manufacture of semiconductors and their use; Licensing of technology in connection with semiconductors and the manufacture of semiconductors; Licensing of technology related to and associated with semiconductor products, integrated circuits, circuit boards, microcomputers, microprocessor controls, microprocessors and computer peripherals, main memory and semiconductor material for the aforesaid goods, circuits for data conversion, computer firmware (software in read-only memory), electronic, electrical and electro-mechanical apparatus for use with computers, video circuit cards; licensing of products for video systems, apparatus and equipment for recording, reproducing and modifying sound, video and data, computer programs; licensing of product manuals and programming; licensing of teaching materials relating to computers and data algorithms for compressing and decompressing data; design of computers and telecommunications systems for commercial use; consultancy services in the field of computers and their related technologies for software design.",
+          "intClassNumber": "09,16,42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "9 Halbleiter, Halbleiterprozessoren, Chips für Halbleiterprozessoren, integrierte Schaltungen, Chips für integrierte Schaltungen, Schaltplatten, Microcomputer, Microprozessorsteuerung, Microprozessoren und Computerperipheriegeräte, Hauptspeicher und Halbleitermaterial für die vorgenannten Waren; Halbleiter für Maschinen und Maschinengeräte; Halbleiter für die Beleuchtung, Erhitzung, Dampferzeugung, Kochen, Tiefkühlen, Trocknen und Lüftungsapparate; Halbleiter für Apparate und Instrumente für Uhren und Arbeitszeiterfassung; Halbleiter für Musikinstrumente; Halbleiter für Spiele und Spielzeug; Schaltungen für die Datenumsetzung; Computer Firmware (Software in Festspeichern); Apparate und Ausrüstungen für die Aufnahme, Wiedergabe und Veränderung von Ton, Videos und Daten; Schaltkarten für Videos; Tonschaltkarten; Schaltkarten oder Schaltplatten für Audio und Video (Ton und Bild); Videografikbeschleuniger (Halbleiter); Multimediabeschleuniger (Halbleiter); Videoprozessoren; Computerprogramme; herunterladbare Publikationen, nämlich Programmhandbücher sowie Handbücher; Test- und Kalibrierapparate; Geräte für das Testen und Programmieren von integrierten Schaltungen und Halbleitern und Hauptspeichern; Computersoftware, nämlich Anwendungsintegrations- und Verbindungssoftware; Computerdienstprogramme, Computerprogramme für Netzwerkmanagement, Computersoftware für den Zugriff auf ein globales Computernetzwerk und auf vernetzte Computernetzwerke; Computerbetriebssysteme; Software für Computerbetriebssysteme; Programme für Computerbetriebssysteme; Computersoftware für die Ermöglichung von Softwareapplikationen von Dritten. 16 Programmhandbücher sowie Handbücher. 42 Lizenzvergabe bezüglich Technologie; Lizenzvergabe bezüglich Patente, Marken, Copyrights, Geschäftsgeheimnisse und/oder von Wissen im Zusammenhang mit der Herstellung von Halbleitern und über deren Gebrauch; Lizenzvergabe bezüglich Halbleiter; Lizenzvergabe bezüglich Software im Zusammenhang mit der Herstellung von Halbleitern und über deren Gebrauch; Lizenzvergabe bezüglich Technologie im Zusammenhang mit Halbleitern und der Herstellung von Halbleitern; Lizenzvergabe bezüglich Technologie verbunden mit und im Zusammenhang mit Halbleiterprodukten, integrierten Schaltungen, Schaltplatten, Microcomputern, Microprozessorsteuerung, Microprozessoren und Computerperipheriegeräten, Hauptspeicher und Halbleitermaterial für die vorgenannten Waren, Schaltungen für die Datenumsetzungen, Computer Firmware (Software in Festspeichern), elektronische, elektrische und elektro-mechanische Apparate für den Gebrauch mit Computern, Videoschaltkarten; Lizenzvergabe bezüglich Produkte für Videosysteme, Apparate und Ausrüstungen für die Aufnahme, Wiedergabe und Veränderung von Ton, Videos und Daten, Computerprogrammen; Lizenzvergabe bezüglich Produkthandbücher und der Programmierung; Lizenzvergabe bezüglich Unterrichtsmaterial betreffend Computer und Datenalgorithmen für die Komprimierung und Dekomprimierung von Daten; Design von Computern und Telekommunikationssystemen für den Handel; Beratungsdienste auf dem Gebiet von Computern und deren verwandten Technologien für Softwaredesign."
+        }
+      ]
+    },
+    "id": "693681df-416d-402b-b525-5c10afcbb006",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN ONLY",
+    "markImageViennaClassification": [
+      "26.04.04",
+      "26.04.09"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20040301",
+        "priorityNumber": "78/376.535"
+      }
+    ],
+    "publications": [
+      {
+        "publicationPage": "00035",
+        "publicationVolume": "240"
+      }
+    ],
+    "recordLastUpdated": "20250624",
+    "registrationOfficeCode": "CH",
+    "registrationOfficeName": "Switzerland",
+    "representatives": [
+      {
+        "representativeAddress": "Postfach 8027 Zürich",
+        "representativeAddressCountryCode": "CH",
+        "representativeAddressCountryName": "Switzerland",
+        "representativeName": "Isler & Pedrazzini AG"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040722",
+        "applicationNumber": "54913/2004"
+      },
+      "cancellationDate": "20250214",
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20041209",
+      "registration": {
+        "registrationDate": "20041125",
+        "registrationNumber": "528082"
+      },
+      "renewalDate": "20140722",
+      "renewalPublishedDate": "20140507"
+    },
+    "version": "20250624172816"
+  },
+  "_uri": "/mark/ch/693681df-416d-402b-b525-5c10afcbb006",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.669Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

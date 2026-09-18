@@ -4561,7 +4561,7 @@ try {
   say(`  ${style.dim(`Also: \`${invocationPrefix()}clearotron demo\` replays a finished report with no keys and no model calls;`)}`);
   say(`  ${style.dim(`\`${invocationPrefix()}clearotron run --job ${/\s/.test(EXAMPLE_JOB) ? `"${EXAMPLE_JOB}"` : EXAMPLE_JOB}\` runs a first real clearance on the EU register.`)}`);
   // THE OLD WAY IS A CHECKOUT'S. A package has no npm scripts where its reader stands.
-  if (!PACKAGED) say(`  ${style.dim("Each still works the old way too — `npm start`, `npm run example`, `node driver/pipeline.mjs`.")}`);
+  if (!PACKAGED) say(`  ${style.dim("Each still works the old way too — `npm start`, `node driver/pipeline.mjs`.")}`);
   say("");
 
   // WHY THOSE LINES LOOK THE WAY THEY DO, when they are not the bare verb.

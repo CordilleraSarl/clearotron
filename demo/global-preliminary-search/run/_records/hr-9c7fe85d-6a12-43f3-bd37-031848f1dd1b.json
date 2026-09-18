@@ -1,0 +1,146 @@
+{
+  "uri": "/mark/hr/9c7fe85d-6a12-43f3-bd37-031848f1dd1b",
+  "provider": "clarivate",
+  "office": "hr",
+  "guid": "9c7fe85d-6a12-43f3-bd37-031848f1dd1b",
+  "applicationNumber": "Z20040960A",
+  "registrationNumber": "Z20040960",
+  "applicationDate": "2004-06-16",
+  "registrationDate": "2006-03-07",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "hr",
+      "description": "poluvodiči, poluvodički procesori, poluvodički procesorski čipovi, integrirani krugovi, čipovi integriranog kruga, ploče strujnog kruga, mikroračunala mikro-kontrolori, mikroprocesori i periferni dijelovi računala, memorije i poluvodički materijal; poluvodiči za strojeve i strojne alate; poluvodiči za rasvjetne aparate, aparate za grijanje, aparate za stvaranje pare, aparate za kuhanje, hlađenje, sušenje i ventilacijske aparate; poluvodiči za satove te aparate i instrumente za mjerenje vremena; poluvodiči za glazbene instrumente; poluvodiči za igre i predmete za igranje; krugovi za konverziju podataka; računalni softwari za upravljanje hardware-om; elektronski, električni i elektro-mehanički aparati za korištenje s računalima; video sistemski proizvodi; aparati i oprema za snimanje, reprodukciju i promjenu zvuka, slike i podataka;ploče video kruga; ploče audio kruga; ploče audio-video kruga; video grafički akceleratori; multimedijalni akceleratori; video procesori; računalni programi; materijal s uputama vezano za računalne algoritmove i algoritmove s podacima za kompresiju i dekompresiju podataka; aparati za testiranje i kalibraciju; dijelovi i pribor za svu gore navedenu robu; oprema za testiranje i programiranje integriranih krugova i poluprovodničkih memorija; računalni softwari, softwari za integraciju i povezivanje aplikacija, računalni instalacijski programi, računalni programi za mrežno upravljanje, računalni softwari za pristup globalnoj računalnoj mreži i međusobno povezane računalne mreže; računalni operativni sustavi; softwari računalnog operativnog sustava; računalni operativni programi; te računalni softverski alati radi olakšavanja rada softverskih aplikacija trećih strana\\n",
+      "translation_language": "en",
+      "translation": "Semiconductors, semiconductor processors, semiconductor processor chips, integrated circuits, integrated circuit chips, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor materials; semiconductors for machines and machine tools; semiconductors for lighting apparatus, heating apparatus, steam generating apparatus, cooking, refrigerating, drying and ventilating apparatus; semiconductors for clocks and timekeeping apparatus and instruments; semiconductors for musical instruments; semiconductors for games and playthings; data conversion circuits; computer software for controlling hardware; electronic, electrical and electro-mechanical apparatus for use with computers; video system products; apparatus and equipment for recording, reproducing and modifying sound, images and data; video circuit boards; audio circuit boards; audio-video circuit boards; video graphics accelerators; multimedia accelerators; video processors; computer programs; instructional material relating to computer algorithms and data algorithms for data compression and decompression; testing and calibration apparatus; parts and fittings for all the aforesaid goods; equipment for testing and programming integrated circuits and semiconductor memories; computer software, application integration and connectivity software, computer installation programs, computer network management software, computer software for accessing a global computer network and interconnected computer networks; computer operating systems; computer operating system software; computer operating programs; and computer software tools for facilitating the operation of third party software applications\\n"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hr",
+      "description": "tehnološke licencije; patentne licencije, žigovi, autorska prava, trgovačke tajne i/ili know-how vezano za proizvodnju i korištenje poluprovodnika; licenciranje u svezi poluvodiča; dozvole za software vezano za proizvodnju i korištenje poluvodiča; tehnološke licencije vezano za poluvodiče i proizvodnju poluvodiča; licenciranje tehnologije poluvodičkih proizvoda, integriranih krugova, ploča krugova, mikroračunala, mikro-kontrolora, mikroprocesora i perifernih dijelova računala, memorija i poluvodičkih materijala, krugova za konverziju podataka, računalnog softwera za upravljanje hardware-om, elektronskih, električnih i elektro-mehaničkih aparata za korištenje s računalima, ploča video kruga; video sistemskih proizvoda, aparata i opreme za snimanje, reprodukciju i promjenu zvuka, slike i podataka, kompjuterskih programa; materijala s uputama vezanih za kompjuterske algoritmove i algoritmove s podacima za kompresiju i dekompresiju podataka; dizajniranje kompjutera i telekomunikacijskih sistema po narudžbi; savjetodavne usluge u kompjuterskom, telekomunikacijskom području i tehnologiji vezanoj za softverski dizajn\\n  ",
+      "translation_language": "en",
+      "translation": "technology licenses; patent licenses, trademarks, copyrights, trade secrets and/or know-how relating to the manufacture and use of semiconductors; licensing relating to semiconductors; software licenses relating to the manufacture and use of semiconductors; technology licenses relating to semiconductors and the manufacture of semiconductors; technology licensing relating to semiconductors and semiconductor manufacturing; technology licensing relating to semiconductor products, integrated circuits, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor materials, data conversion circuits, computer software for controlling hardware, electronic, electrical and electro-mechanical apparatus for use with computers, video circuit boards; video system products, apparatus and equipment for recording, reproducing and altering sound, images and data, computer programs; instructional materials relating to computer algorithms and algorithms with data for data compression and decompression; custom design of computers and telecommunications systems; consultancy services in the field of computers, telecommunications and technology relating to software design\\n"
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Vukmir i suradnici odvjetničko društvo d.o.o.",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20031230",
+      "priorityNumber": "76/567,257"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West, Austin, TX 78735",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC."
+      }
+    ],
+    "applicationLanguageCode": "hr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Semiconductors, semiconductor processors, semiconductor processor chips, integrated circuits, integrated circuit chips, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor materials; semiconductors for machines and machine tools; semiconductors for lighting apparatus, heating apparatus, steam generating apparatus, cooking, refrigerating, drying and ventilating apparatus; semiconductors for clocks and timekeeping apparatus and instruments; semiconductors for musical instruments; semiconductors for games and playthings; data conversion circuits; computer software for controlling hardware; electronic, electrical and electro-mechanical apparatus for use with computers; video system products; apparatus and equipment for recording, reproducing and modifying sound, images and data; video circuit boards; audio circuit boards; audio-video circuit boards; video graphics accelerators; multimedia accelerators; video processors; computer programs; instructional material relating to computer algorithms and data algorithms for data compression and decompression; testing and calibration apparatus; parts and fittings for all the aforesaid goods; equipment for testing and programming integrated circuits and semiconductor memories; computer software, application integration and connectivity software, computer installation programs, computer network management software, computer software for accessing a global computer network and interconnected computer networks; computer operating systems; computer operating system software; computer operating programs; and computer software tools for facilitating the operation of third party software applications\\n",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "poluvodiči, poluvodički procesori, poluvodički procesorski čipovi, integrirani krugovi, čipovi integriranog kruga, ploče strujnog kruga, mikroračunala mikro-kontrolori, mikroprocesori i periferni dijelovi računala, memorije i poluvodički materijal; poluvodiči za strojeve i strojne alate; poluvodiči za rasvjetne aparate, aparate za grijanje, aparate za stvaranje pare, aparate za kuhanje, hlađenje, sušenje i ventilacijske aparate; poluvodiči za satove te aparate i instrumente za mjerenje vremena; poluvodiči za glazbene instrumente; poluvodiči za igre i predmete za igranje; krugovi za konverziju podataka; računalni softwari za upravljanje hardware-om; elektronski, električni i elektro-mehanički aparati za korištenje s računalima; video sistemski proizvodi; aparati i oprema za snimanje, reprodukciju i promjenu zvuka, slike i podataka;ploče video kruga; ploče audio kruga; ploče audio-video kruga; video grafički akceleratori; multimedijalni akceleratori; video procesori; računalni programi; materijal s uputama vezano za računalne algoritmove i algoritmove s podacima za kompresiju i dekompresiju podataka; aparati za testiranje i kalibraciju; dijelovi i pribor za svu gore navedenu robu; oprema za testiranje i programiranje integriranih krugova i poluprovodničkih memorija; računalni softwari, softwari za integraciju i povezivanje aplikacija, računalni instalacijski programi, računalni programi za mrežno upravljanje, računalni softwari za pristup globalnoj računalnoj mreži i međusobno povezane računalne mreže; računalni operativni sustavi; softwari računalnog operativnog sustava; računalni operativni programi; te računalni softverski alati radi olakšavanja rada softverskih aplikacija trećih strana\\n"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "technology licenses; patent licenses, trademarks, copyrights, trade secrets and/or know-how relating to the manufacture and use of semiconductors; licensing relating to semiconductors; software licenses relating to the manufacture and use of semiconductors; technology licenses relating to semiconductors and the manufacture of semiconductors; technology licensing relating to semiconductors and semiconductor manufacturing; technology licensing relating to semiconductor products, integrated circuits, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor materials, data conversion circuits, computer software for controlling hardware, electronic, electrical and electro-mechanical apparatus for use with computers, video circuit boards; video system products, apparatus and equipment for recording, reproducing and altering sound, images and data, computer programs; instructional materials relating to computer algorithms and algorithms with data for data compression and decompression; custom design of computers and telecommunications systems; consultancy services in the field of computers, telecommunications and technology relating to software design\\n",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "tehnološke licencije; patentne licencije, žigovi, autorska prava, trgovačke tajne i/ili know-how vezano za proizvodnju i korištenje poluprovodnika; licenciranje u svezi poluvodiča; dozvole za software vezano za proizvodnju i korištenje poluvodiča; tehnološke licencije vezano za poluvodiče i proizvodnju poluvodiča; licenciranje tehnologije poluvodičkih proizvoda, integriranih krugova, ploča krugova, mikroračunala, mikro-kontrolora, mikroprocesora i perifernih dijelova računala, memorija i poluvodičkih materijala, krugova za konverziju podataka, računalnog softwera za upravljanje hardware-om, elektronskih, električnih i elektro-mehaničkih aparata za korištenje s računalima, ploča video kruga; video sistemskih proizvoda, aparata i opreme za snimanje, reprodukciju i promjenu zvuka, slike i podataka, kompjuterskih programa; materijala s uputama vezanih za kompjuterske algoritmove i algoritmove s podacima za kompresiju i dekompresiju podataka; dizajniranje kompjutera i telekomunikacijskih sistema po narudžbi; savjetodavne usluge u kompjuterskom, telekomunikacijskom području i tehnologiji vezanoj za softverski dizajn\\n  "
+        }
+      ]
+    },
+    "id": "9c7fe85d-6a12-43f3-bd37-031848f1dd1b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20031230",
+        "priorityNumber": "76/567,257"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "HR",
+    "registrationOfficeName": "Croatia",
+    "representatives": [
+      {
+        "representativeAddress": "Gramača 2L, 10000 Zagreb, HR",
+        "representativeName": "Vukmir i suradnici odvjetničko društvo d.o.o."
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040616",
+        "applicationNumber": "Z20040960A"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CEASING OF EFFECTS OF A TRADEMARK",
+      "registration": {
+        "registrationDate": "20060307",
+        "registrationNumber": "Z20040960"
+      }
+    },
+    "version": "20250625142932",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/hr/9c7fe85d-6a12-43f3-bd37-031848f1dd1b",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.721Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

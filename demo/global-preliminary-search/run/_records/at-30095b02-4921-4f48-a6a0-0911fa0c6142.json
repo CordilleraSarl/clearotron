@@ -1,0 +1,142 @@
+{
+  "uri": "/mark/at/30095b02-4921-4f48-a6a0-0911fa0c6142",
+  "provider": "clarivate",
+  "office": "at",
+  "guid": "30095b02-4921-4f48-a6a0-0911fa0c6142",
+  "applicationNumber": "10814/2022",
+  "registrationNumber": "320687",
+  "applicationDate": "2022-05-02",
+  "registrationDate": "2022-10-19",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "LASERTRON",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    41,
+    43
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "de",
+      "description": "Werbung, Geschäftsführung und Geschäftsorganisation.",
+      "translation_language": "en",
+      "translation": "Advertising, business management and business organisation."
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Bildung, Erziehung, Unterhaltung und sportliche Aktivitäten, Ausbildung, Unterhaltung und sportliche Aktivitäten, Organisation und Durchführung von Freizeitaktivitäten und Unterhaltungsangeboten, Organisation und Durchführung von Freizeitaktivitäten sportlicher Art, Betrieb von Bowlinganlage, Durchführung von Lasertag-Spielen, Unterhaltung.",
+      "translation_language": "en",
+      "translation": "education, training, entertainment and sporting activities, providing of training, entertainment and sporting activities, arranging and conducting leisure activities and entertainment, arranging and conducting leisure activities of a sporting nature, operating bowling alleys, conducting laser tag games, entertainment."
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "de",
+      "description": "Verpflegung von Gästen.",
+      "translation_language": "en",
+      "translation": "catering for guests."
+    }
+  ],
+  "owner": "NXP Bowling GmbH",
+  "ownerNative": null,
+  "ownerCountry": "AT",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Kelsengasse 9, 3100 Sankt Pölten",
+        "applicantAddressCountryCode": "AT",
+        "applicantAddressCountryName": "Austria",
+        "applicantName": "NXP Bowling GmbH"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advertising, business management and business organisation.",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Werbung, Geschäftsführung und Geschäftsorganisation."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "education, training, entertainment and sporting activities, providing of training, entertainment and sporting activities, arranging and conducting leisure activities and entertainment, arranging and conducting leisure activities of a sporting nature, operating bowling alleys, conducting laser tag games, entertainment.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Bildung, Erziehung, Unterhaltung und sportliche Aktivitäten, Ausbildung, Unterhaltung und sportliche Aktivitäten, Organisation und Durchführung von Freizeitaktivitäten und Unterhaltungsangeboten, Organisation und Durchführung von Freizeitaktivitäten sportlicher Art, Betrieb von Bowlinganlage, Durchführung von Lasertag-Spielen, Unterhaltung."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "catering for guests.",
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Verpflegung von Gästen."
+        }
+      ]
+    },
+    "id": "30095b02-4921-4f48-a6a0-0911fa0c6142",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250619",
+    "registrationOfficeCode": "AT",
+    "registrationOfficeName": "Austria",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220502",
+        "applicationNumber": "10814/2022"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20221019",
+        "registrationNumber": "320687"
+      }
+    },
+    "version": "20250619153729",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LASERTRON"
+    }
+  },
+  "_uri": "/mark/at/30095b02-4921-4f48-a6a0-0911fa0c6142",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:10.759Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

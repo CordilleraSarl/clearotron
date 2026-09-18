@@ -1,0 +1,148 @@
+{
+  "uri": "/mark/cz/a17ccb93-3e69-43a9-b384-ac06b8b37236",
+  "provider": "clarivate",
+  "office": "cz",
+  "guid": "a17ccb93-3e69-43a9-b384-ac06b8b37236",
+  "applicationNumber": "355535",
+  "registrationNumber": "270918",
+  "applicationDate": "2004-06-21",
+  "registrationDate": "2005-03-29",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "polovodiče, polovodičové procesory, čipy polovodičových procesorů, integrované obvody, čipy integrovaných obvodů, desky s obvody, mikropočítače, mikrořadiče, mikroprocesory a počítačové periferie, paměti a polovodičový materiál pro ně, polovodiče pro stroje a obráběcí nástroje, polovodiče pro osvětlovací přístroje, ohřívací přístroje, přístroje pro výrobu páry, přístroje pro vaření, přístroje pro chlazení, přístroje pro sušení a ventilační přístroje, polovodiče pro hodiny a všechny časoměrné přístroje a zařízení, polovodiče pro hudební nástroje, polovodiče pro hry a hračky, obvody pro převod dat, počítačový firmware, elektronické, elektrické a elektromechanické přístroje pro použití s počítači, produkty video systémů, přístroje a vybavení pro záznam, reprodukci a úpravu zvuku, videa a dat, video desky s obvody, zvukové desky s obvody, audio-video desky s obvody, video-grafické akcelerátory, multimediální akcelerátory, video procesory, počítačové programy, instruktážní materiál týkající se počítačových a datových algoritmů pro kompresi a dekompresi dat, testovací a kalibrační přístroje, součásti a příslušenství pro veškeré shora uvedené zboží, vybavení pro testování a programování integrovaných obvodů a polovodičových pamětí, počítačový software, zejména software pro integraci aplikací a konektivitu, počítačové podpůrné programy, počítačové programy pro správu sítě, počítačový software pro přístup ke globální počítačové síti a ke vzájemně propojeným počítačovým sítím, počítačové operační systémy, software počítačového operačního systému, programy pro ovládání počítače, počítačové softwarové nástroje pro podporování softwarových aplikací třetích stran",
+      "translation_language": "en",
+      "translation": "semiconductors, semiconductor processors, semiconductor chips, processors, integrated circuits, integrated circuit chips, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor material for them semiconductors for machines and machine tools, semiconductor devices for lighting, heating devices , apparatus for steam generating, cooking devices, devices for cooling apparatus for drying and ventilation devices, semiconductors for clocks and watches and clocks all devices, semiconductors for musical instruments, semiconductors for games and toys, data conversion circuits, computer firmware, electronic, electrical and electromechanical devices for use with computers, video systems products, apparatus and equipment for recording, reproduction and editing audio, video and data, video circuit boards, circuit boards, audio, audio-video circuit boards, video-graphic accelerators, multimedia accelerators, video processors, computer programs, instructional material related to computer and data algorithms for compressing and decompressing data, test and calibration equipment, components and accessories for all the above goods, equipment for testing and programming of integrated circuits and semiconductor memories, computer software, particularly software for application integration and connectivity, supporting computer programs, computer programs for network management, computer software for access to a global computer network and the interconnected computer networks, computer operating systems, computer operating system software, programs for computer control, computer software tools to support software applications from third parties"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "licencování technologií, licencování patentů, ochranných známek, autorských práv, obchodního tajemství a/nebo know-how týkající se výroby polovodičů a jejich použití, licencování polovodičů, licencování softwaru týkajícího se výroby polovodičů a jejich použití, licencování technologie týkající se polovodičů a výroby polovodičů, licencování technologie zahrnující a týkající se polovodičových produktů, integrovaných obvodů, desek se spoji, mikropočítačů, mikrořadičů, mikroprocesorů a počítačových periferií, pamětí a polovodičového materiálu pro ně, datových převodních obvodů, počítačového firmware, elektronických, elektrických a elektromechanických přístrojů pro použití s počítači, video desek s obvody, produktů video systémů, zařízení a vybavení pro záznam, reprodukci a úpravu zvuku, videa a dat, počítačových programů, instrukčního materiálu týkajícího se počítačů a datových algoritmů pro kompresi a dekompresi dat, návrh počítačových a telekomunikačních systémů na zakázku, konzultační služby v oblasti počítačů a telekomunikací a související technologie pro vývoj softwaru.",
+      "translation_language": "en",
+      "translation": "licencing of technologies, licencing of patents, trade marks, copyright laws, business secret andor know-hoe related to production of semiconductors and their use, licencing of semiconductors, licencing of software related to production of semiconductors and their use, licencing of technologies related to semiconductors and their production, licencing of technologies containing and related to semiconductor products, integrated circuits, printed boards, microcomputers, micro routers, microprocessors and computer peripherals, memories and semiconductor material for them, data transfer circuits, computer firmware, electronic, electric and electromechanical apparatus for use with computers, video boards with circuits, products of video systems, equipment and devices for recording, reproduction and modification of a sound, video and data, computer programmes, instructional material related to computers and data algorithms for data compilation and decompilation, design od computer and telecommunication systems to order, consulting services in the sphere of computers and telecommunications and related technologies for software development."
+    }
+  ],
+  "owner": "NXP USA Inc",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Havlík Švorčík a partneři, advokátní a patentová kancelář, JUDr. Michal Havlík, advokát",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20031230",
+      "priorityNumber": "76/567,257"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West, Austin, Texas, United States of America",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA Inc"
+      }
+    ],
+    "applicationLanguageCode": "cs",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "semiconductors, semiconductor processors, semiconductor chips, processors, integrated circuits, integrated circuit chips, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor material for them semiconductors for machines and machine tools, semiconductor devices for lighting, heating devices , apparatus for steam generating, cooking devices, devices for cooling apparatus for drying and ventilation devices, semiconductors for clocks and watches and clocks all devices, semiconductors for musical instruments, semiconductors for games and toys, data conversion circuits, computer firmware, electronic, electrical and electromechanical devices for use with computers, video systems products, apparatus and equipment for recording, reproduction and editing audio, video and data, video circuit boards, circuit boards, audio, audio-video circuit boards, video-graphic accelerators, multimedia accelerators, video processors, computer programs, instructional material related to computer and data algorithms for compressing and decompressing data, test and calibration equipment, components and accessories for all the above goods, equipment for testing and programming of integrated circuits and semiconductor memories, computer software, particularly software for application integration and connectivity, supporting computer programs, computer programs for network management, computer software for access to a global computer network and the interconnected computer networks, computer operating systems, computer operating system software, programs for computer control, computer software tools to support software applications from third parties",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "polovodiče, polovodičové procesory, čipy polovodičových procesorů, integrované obvody, čipy integrovaných obvodů, desky s obvody, mikropočítače, mikrořadiče, mikroprocesory a počítačové periferie, paměti a polovodičový materiál pro ně, polovodiče pro stroje a obráběcí nástroje, polovodiče pro osvětlovací přístroje, ohřívací přístroje, přístroje pro výrobu páry, přístroje pro vaření, přístroje pro chlazení, přístroje pro sušení a ventilační přístroje, polovodiče pro hodiny a všechny časoměrné přístroje a zařízení, polovodiče pro hudební nástroje, polovodiče pro hry a hračky, obvody pro převod dat, počítačový firmware, elektronické, elektrické a elektromechanické přístroje pro použití s počítači, produkty video systémů, přístroje a vybavení pro záznam, reprodukci a úpravu zvuku, videa a dat, video desky s obvody, zvukové desky s obvody, audio-video desky s obvody, video-grafické akcelerátory, multimediální akcelerátory, video procesory, počítačové programy, instruktážní materiál týkající se počítačových a datových algoritmů pro kompresi a dekompresi dat, testovací a kalibrační přístroje, součásti a příslušenství pro veškeré shora uvedené zboží, vybavení pro testování a programování integrovaných obvodů a polovodičových pamětí, počítačový software, zejména software pro integraci aplikací a konektivitu, počítačové podpůrné programy, počítačové programy pro správu sítě, počítačový software pro přístup ke globální počítačové síti a ke vzájemně propojeným počítačovým sítím, počítačové operační systémy, software počítačového operačního systému, programy pro ovládání počítače, počítačové softwarové nástroje pro podporování softwarových aplikací třetích stran"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "licencing of technologies, licencing of patents, trade marks, copyright laws, business secret andor know-hoe related to production of semiconductors and their use, licencing of semiconductors, licencing of software related to production of semiconductors and their use, licencing of technologies related to semiconductors and their production, licencing of technologies containing and related to semiconductor products, integrated circuits, printed boards, microcomputers, micro routers, microprocessors and computer peripherals, memories and semiconductor material for them, data transfer circuits, computer firmware, electronic, electric and electromechanical apparatus for use with computers, video boards with circuits, products of video systems, equipment and devices for recording, reproduction and modification of a sound, video and data, computer programmes, instructional material related to computers and data algorithms for data compilation and decompilation, design od computer and telecommunication systems to order, consulting services in the sphere of computers and telecommunications and related technologies for software development.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "licencování technologií, licencování patentů, ochranných známek, autorských práv, obchodního tajemství a/nebo know-how týkající se výroby polovodičů a jejich použití, licencování polovodičů, licencování softwaru týkajícího se výroby polovodičů a jejich použití, licencování technologie týkající se polovodičů a výroby polovodičů, licencování technologie zahrnující a týkající se polovodičových produktů, integrovaných obvodů, desek se spoji, mikropočítačů, mikrořadičů, mikroprocesorů a počítačových periferií, pamětí a polovodičového materiálu pro ně, datových převodních obvodů, počítačového firmware, elektronických, elektrických a elektromechanických přístrojů pro použití s počítači, video desek s obvody, produktů video systémů, zařízení a vybavení pro záznam, reprodukci a úpravu zvuku, videa a dat, počítačových programů, instrukčního materiálu týkajícího se počítačů a datových algoritmů pro kompresi a dekompresi dat, návrh počítačových a telekomunikačních systémů na zakázku, konzultační služby v oblasti počítačů a telekomunikací a související technologie pro vývoj softwaru."
+        }
+      ]
+    },
+    "id": "a17ccb93-3e69-43a9-b384-ac06b8b37236",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20031230",
+        "priorityNumber": "76/567,257"
+      }
+    ],
+    "recordLastUpdated": "20250623",
+    "registrationOfficeCode": "CZ",
+    "registrationOfficeName": "Czech Republic",
+    "representatives": [
+      {
+        "representativeAddress": "Hálkova 1406/2, 120 00 Praha 2, Nové Město",
+        "representativeAddressCountryCode": "CZ",
+        "representativeAddressCountryName": "Czech Republic",
+        "representativeName": "Havlík Švorčík a partneři, advokátní a patentová kancelář, JUDr. Michal Havlík, advokát"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040621",
+        "applicationNumber": "355535"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20050329",
+        "registrationNumber": "270918"
+      }
+    },
+    "version": "20250623160214",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/cz/a17ccb93-3e69-43a9-b384-ac06b8b37236",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.679Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

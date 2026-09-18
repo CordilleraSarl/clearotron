@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "id": "cli-demo-mtkf0i9l-14508870",
-  "runId": "tmpdemo2014multicountryfocussearch-venqori-2026-09-02-sample-capture",
+  "id": "mcp-mu7128kg-deb02f6c",
+  "runId": "tmpdemo2014multicountryfocussearch-venqori-2026-09-18-sample-capture",
   "slug": "tmpdemo2014multicountryfocussearch-venqori",
   "codename": "sample-capture",
-  "date": "2026-09-02",
+  "date": "2026-09-18",
   "agent": "clawdi",
   "forwarder": "e2e",
   "ref": "DEMO-2014-multi-country-focus-search",
@@ -14,12 +14,12 @@
     42,
     41
   ],
-  "demoRun": true,
-  "demoDataProfile": true,
+  "demoRun": false,
+  "demoDataProfile": false,
   "state": "delivered",
-  "pid": 2295978,
-  "pidStarttime": "44451246",
-  "engineCommit": "fb4d88b22f1c5fc8d988fec28b558fdf912acb68",
+  "pid": 3394435,
+  "pidStarttime": "76921605",
+  "engineCommit": "bc3f30a81f7cd7862e82ccd383485d56891825de",
   "engineCommitSource": "git",
   "stepIndex": 8,
   "stepLabel": "Sending to you",
@@ -27,13 +27,14 @@
   "stepTotal": 9,
   "lastStage": "publish",
   "verdict": "CONDITIONAL",
-  "url": "/portal/report/tmpdemo2014multicountryfocussearch-venqori-2026-09-02-sample-capture/",
+  "url": "/portal/report/tmpdemo2014multicountryfocussearch-venqori-2026-09-18-sample-capture/",
   "failedStage": null,
   "reason": null,
-  "deliveredAt": "2026-09-02T19:51:48.801Z",
+  "deliveredAt": "2026-09-18T15:07:12.783Z",
   "attempts": 1,
-  "updatedAt": "2026-09-02T19:51:48.801Z",
-  "startedAt": "2026-09-02T18:14:28.843Z",
+  "updatedAt": "2026-09-18T15:07:12.783Z",
+  "startedAt": "2026-09-18T14:03:02.807Z",
+  "stoppable": false,
   "providerUsage": {
     "clarivate": {
       "search": 0,
@@ -42,24 +43,24 @@
       "phoneme": 0,
       "batch_screen": 0,
       "enumerate": 0,
-      "execute_plan": 187,
-      "propose_supplemental": 26,
-      "total": 213,
+      "execute_plan": 174,
+      "propose_supplemental": 37,
+      "total": 211,
       "by_tool": {
-        "execute_plan": 187,
-        "propose_supplemental": 26
+        "execute_plan": 174,
+        "propose_supplemental": 37
       },
       "unclassified": 0,
       "ledger": {
         "configured": true,
         "present": true,
         "readable": true,
-        "rowsScanned": 9223
+        "rowsScanned": 21317
       },
       "retries": 0,
       "errors": 0,
       "cache_hits": 0,
-      "bytes": 1121448,
+      "bytes": 1203000,
       "duplicate_fetches": 0,
       "duplicate_fetches_same_session": 0,
       "duplicate_fetches_cross_session": 0
@@ -67,117 +68,117 @@
   },
   "tokens": {
     "total": {
-      "input": 794,
-      "output": 424635,
-      "cacheRead": 22573006,
-      "cacheWrite": 2065074,
-      "attempts": 27,
-      "thoughtTurns": 26
+      "input": 1749567,
+      "output": 169573,
+      "cacheRead": 20692224,
+      "cacheWrite": 0,
+      "attempts": 30,
+      "thoughtTurns": 0
     },
     "byStage": {
       "blind-frame": {
-        "input": 10,
-        "output": 8998,
-        "cacheRead": 98860,
-        "cacheWrite": 20958,
+        "input": 15609,
+        "output": 3268,
+        "cacheRead": 54912,
+        "cacheWrite": 0,
         "attempts": 1,
-        "thoughtTurns": 1
+        "thoughtTurns": 0
+      },
+      "clearance-variants": {
+        "input": 40812,
+        "output": 7622,
+        "cacheRead": 246144,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
       },
       "common-law-half:a": {
-        "input": 94,
-        "output": 18599,
-        "cacheRead": 473112,
-        "cacheWrite": 48878,
+        "input": 115352,
+        "output": 5764,
+        "cacheRead": 797440,
+        "cacheWrite": 0,
         "attempts": 2,
-        "thoughtTurns": 2
+        "thoughtTurns": 0
       },
       "common-law-half:b": {
-        "input": 162,
-        "output": 13474,
-        "cacheRead": 1090163,
-        "cacheWrite": 80743,
+        "input": 100588,
+        "output": 9433,
+        "cacheRead": 1419264,
+        "cacheWrite": 0,
         "attempts": 2,
-        "thoughtTurns": 2
+        "thoughtTurns": 0
       },
       "common-law-half:m": {
-        "input": 108,
-        "output": 12313,
-        "cacheRead": 693745,
-        "cacheWrite": 69643,
+        "input": 38889,
+        "output": 3610,
+        "cacheRead": 295424,
+        "cacheWrite": 0,
         "attempts": 1,
-        "thoughtTurns": 1
+        "thoughtTurns": 0
       },
       "doubt-closure": {
-        "input": 24,
-        "output": 11177,
-        "cacheRead": 695290,
-        "cacheWrite": 52025,
+        "input": 25148,
+        "output": 2344,
+        "cacheRead": 90880,
+        "cacheWrite": 0,
         "attempts": 1,
-        "thoughtTurns": 1
+        "thoughtTurns": 0
       },
       "frame-diff": {
-        "input": 14,
-        "output": 14114,
-        "cacheRead": 445321,
-        "cacheWrite": 95643,
+        "input": 52921,
+        "output": 4420,
+        "cacheRead": 394240,
+        "cacheWrite": 0,
         "attempts": 1,
-        "thoughtTurns": 1
+        "thoughtTurns": 0
       },
       "matter-frame": {
-        "input": 12,
-        "output": 12465,
-        "cacheRead": 140437,
-        "cacheWrite": 30298,
+        "input": 19924,
+        "output": 4724,
+        "cacheRead": 81920,
+        "cacheWrite": 0,
         "attempts": 1,
-        "thoughtTurns": 1
+        "thoughtTurns": 0
       },
       "narrative-refutation": {
-        "input": 80,
-        "output": 59279,
-        "cacheRead": 5140514,
-        "cacheWrite": 274411,
-        "attempts": 2,
-        "thoughtTurns": 2
+        "input": 268518,
+        "output": 29584,
+        "cacheRead": 3315200,
+        "cacheWrite": 0,
+        "attempts": 3,
+        "thoughtTurns": 0
       },
       "placement-inquiry": {
-        "input": 38,
-        "output": 63906,
-        "cacheRead": 2177386,
-        "cacheWrite": 203978,
+        "input": 162564,
+        "output": 23759,
+        "cacheRead": 2062720,
+        "cacheWrite": 0,
         "attempts": 1,
-        "thoughtTurns": 1
-      },
-      "prelim-variants": {
-        "input": 8,
-        "output": 19427,
-        "cacheRead": 139165,
-        "cacheWrite": 56621,
-        "attempts": 1,
-        "thoughtTurns": 1
+        "thoughtTurns": 0
       },
       "register-digest": {
-        "input": 40,
-        "output": 51292,
-        "cacheRead": 1685109,
-        "cacheWrite": 205906,
+        "input": 180835,
+        "output": 16380,
+        "cacheRead": 4380032,
+        "cacheWrite": 0,
         "attempts": 2,
-        "thoughtTurns": 2
+        "thoughtTurns": 0
       },
       "register-unit:incumbent-class": {
-        "input": 18,
-        "output": 4245,
-        "cacheRead": 696257,
-        "cacheWrite": 104920,
+        "input": 48705,
+        "output": 2371,
+        "cacheRead": 338688,
+        "cacheWrite": 0,
         "attempts": 1,
-        "thoughtTurns": 1
+        "thoughtTurns": 0
       },
       "register-unit:primary-sweep": {
-        "input": 54,
-        "output": 16806,
-        "cacheRead": 2040585,
-        "cacheWrite": 170675,
+        "input": 166506,
+        "output": 9221,
+        "cacheRead": 1037312,
+        "cacheWrite": 0,
         "attempts": 3,
-        "thoughtTurns": 3
+        "thoughtTurns": 0
       },
       "register-unit:saturation-probe": {
         "input": 0,
@@ -188,78 +189,78 @@
         "thoughtTurns": 0
       },
       "register-unit:transliteration-numeric": {
-        "input": 16,
-        "output": 4520,
-        "cacheRead": 503125,
-        "cacheWrite": 64077,
+        "input": 46853,
+        "output": 2260,
+        "cacheRead": 395776,
+        "cacheWrite": 0,
         "attempts": 1,
-        "thoughtTurns": 1
+        "thoughtTurns": 0
       },
       "report-card:1": {
-        "input": 6,
-        "output": 1642,
-        "cacheRead": 93821,
-        "cacheWrite": 12136,
+        "input": 20161,
+        "output": 1008,
+        "cacheRead": 81920,
+        "cacheWrite": 0,
         "attempts": 1,
-        "thoughtTurns": 1
+        "thoughtTurns": 0
       },
       "report-card:2": {
-        "input": 6,
-        "output": 1850,
-        "cacheRead": 94018,
-        "cacheWrite": 12402,
+        "input": 36041,
+        "output": 945,
+        "cacheRead": 65536,
+        "cacheWrite": 0,
         "attempts": 1,
-        "thoughtTurns": 1
+        "thoughtTurns": 0
       },
       "report-overview": {
-        "input": 8,
-        "output": 3616,
-        "cacheRead": 149921,
-        "cacheWrite": 33318,
-        "attempts": 1,
-        "thoughtTurns": 1
+        "input": 86109,
+        "output": 3815,
+        "cacheRead": 417280,
+        "cacheWrite": 0,
+        "attempts": 2,
+        "thoughtTurns": 0
       },
       "skeptic": {
-        "input": 18,
-        "output": 18751,
-        "cacheRead": 716429,
-        "cacheWrite": 125530,
+        "input": 33601,
+        "output": 2789,
+        "cacheRead": 178432,
+        "cacheWrite": 0,
         "attempts": 1,
-        "thoughtTurns": 1
+        "thoughtTurns": 0
       },
       "synthesis": {
-        "input": 78,
-        "output": 88161,
-        "cacheRead": 5499748,
-        "cacheWrite": 402912,
-        "attempts": 2,
-        "thoughtTurns": 2
+        "input": 290431,
+        "output": 36256,
+        "cacheRead": 5039104,
+        "cacheWrite": 0,
+        "attempts": 3,
+        "thoughtTurns": 0
       }
     },
     "byModel": {
-      "anthropic/claude-opus-5": {
-        "input": 266,
-        "output": 303528,
-        "cacheRead": 14881219,
-        "cacheWrite": 1195084,
-        "attempts": 10,
-        "thoughtTurns": 10
+      "gpt-5.6-sol": {
+        "input": 978693,
+        "output": 121593,
+        "cacheRead": 15180032,
+        "cacheWrite": 0,
+        "attempts": 12,
+        "thoughtTurns": 0
       },
-      "anthropic/claude-haiku-4-5": {
-        "input": 364,
-        "output": 44386,
-        "cacheRead": 2257020,
-        "cacheWrite": 199264,
+      "gpt-5.6-luna": {
+        "input": 254829,
+        "output": 18807,
+        "cacheRead": 2512128,
+        "cacheWrite": 0,
         "attempts": 5,
-        "thoughtTurns": 5
+        "thoughtTurns": 0
       },
-      "anthropic/claude-sonnet-5": {
-        "input": 164,
-        "output": 76721,
-        "cacheRead": 5434767,
-        "cacheWrite": 670726,
-        "attempts": 11,
-        "thoughtTurns": 11
+      "gpt-5.6-terra": {
+        "input": 516045,
+        "output": 29173,
+        "cacheRead": 3000064,
+        "cacheWrite": 0,
+        "attempts": 12,
+        "thoughtTurns": 0
       },
       "code:execute-plan": {
         "input": 0,
@@ -271,13 +272,13 @@
       }
     },
     "byEngine": {
-      "anthropic-agent": {
-        "input": 794,
-        "output": 424635,
-        "cacheRead": 22573006,
-        "cacheWrite": 2065074,
-        "attempts": 26,
-        "thoughtTurns": 26
+      "openai-agent": {
+        "input": 1749567,
+        "output": 169573,
+        "cacheRead": 20692224,
+        "cacheWrite": 0,
+        "attempts": 29,
+        "thoughtTurns": 0
       },
       "code": {
         "input": 0,
@@ -290,12 +291,12 @@
     },
     "byAuthMode": {
       "subscription": {
-        "input": 794,
-        "output": 424635,
-        "cacheRead": 22573006,
-        "cacheWrite": 2065074,
-        "attempts": 26,
-        "thoughtTurns": 26
+        "input": 1749567,
+        "output": 169573,
+        "cacheRead": 20692224,
+        "cacheWrite": 0,
+        "attempts": 29,
+        "thoughtTurns": 0
       },
       "not-provider-billed": {
         "input": 0,
@@ -312,55 +313,55 @@
     "schemaVersion": 1,
     "modelBasis": "requested",
     "dispatchCensus": {
-      "total": 27,
-      "measured": 26,
+      "total": 30,
+      "measured": 29,
       "streamed": 0,
       "unmeasured": 0,
       "codeSide": 1
     },
     "dispatchCensusReconciles": true,
     "tokens": {
-      "input": 794,
-      "output": 424635,
-      "cacheWrite": 2065074,
-      "cacheRead": 22573006
+      "input": 1749567,
+      "output": 169573,
+      "cacheWrite": 0,
+      "cacheRead": 20692224
     },
     "tokensComplete": true,
     "byBilling": {
-      "anthropic-agent|subscription|anthropic/claude-opus-5": {
-        "engine": "anthropic-agent",
+      "openai-agent|subscription|gpt-5.6-sol": {
+        "engine": "openai-agent",
         "authMode": "subscription",
-        "model": "anthropic/claude-opus-5",
-        "dispatches": 10,
+        "model": "gpt-5.6-sol",
+        "dispatches": 12,
         "tokens": {
-          "input": 266,
-          "output": 303528,
-          "cacheWrite": 1195084,
-          "cacheRead": 14881219
+          "input": 978693,
+          "output": 121593,
+          "cacheWrite": 0,
+          "cacheRead": 15180032
         }
       },
-      "anthropic-agent|subscription|anthropic/claude-haiku-4-5": {
-        "engine": "anthropic-agent",
+      "openai-agent|subscription|gpt-5.6-luna": {
+        "engine": "openai-agent",
         "authMode": "subscription",
-        "model": "anthropic/claude-haiku-4-5",
+        "model": "gpt-5.6-luna",
         "dispatches": 5,
         "tokens": {
-          "input": 364,
-          "output": 44386,
-          "cacheWrite": 199264,
-          "cacheRead": 2257020
+          "input": 254829,
+          "output": 18807,
+          "cacheWrite": 0,
+          "cacheRead": 2512128
         }
       },
-      "anthropic-agent|subscription|anthropic/claude-sonnet-5": {
-        "engine": "anthropic-agent",
+      "openai-agent|subscription|gpt-5.6-terra": {
+        "engine": "openai-agent",
         "authMode": "subscription",
-        "model": "anthropic/claude-sonnet-5",
-        "dispatches": 11,
+        "model": "gpt-5.6-terra",
+        "dispatches": 12,
         "tokens": {
-          "input": 164,
-          "output": 76721,
-          "cacheWrite": 670726,
-          "cacheRead": 5434767
+          "input": 516045,
+          "output": 29173,
+          "cacheWrite": 0,
+          "cacheRead": 3000064
         }
       },
       "code|not-provider-billed|code:execute-plan": {
@@ -379,10 +380,10 @@
     "billingComposition": {
       "basis": "byBilling",
       "vendors": [
-        "anthropic"
+        "openai"
       ],
       "engines": [
-        "anthropic-agent"
+        "openai-agent"
       ],
       "unmappedEngines": [],
       "billingModes": [
@@ -393,11 +394,11 @@
       "unattributedDispatches": 0,
       "notProviderBilledDispatches": 1,
       "complete": true,
-      "statement": "this run spent on one vendor (anthropic) under one billing mode (subscription)"
+      "statement": "this run spent on one vendor (openai) under one billing mode (subscription)"
     },
     "emittedVsLanded": {
-      "emittedOutputTokens": 424635,
-      "landedBytes": 257632,
+      "emittedOutputTokens": 169573,
+      "landedBytes": 295740,
       "landedBytesFromStages": 20,
       "stagesWithoutLandedRecord": [
         "engine-turn",
@@ -408,46 +409,53 @@
         "tool-calls"
       ],
       "landedShareIsFloor": true,
-      "landedShare": 0.1517,
+      "landedShare": 0.436,
       "landedShareBasis": "landedBytes / (emittedOutputTokens * bytesPerOutputTokenAssumed)",
       "bytesPerOutputTokenAssumed": 4,
       "emittedOnDispatchesThatWroteNothing": 0,
       "thinkingNotSeparable": "thinking is billed inside output_tokens and is never broken out (engine/CONTRACT.md §2) — it sits inside the not-landed share and cannot be split from discarded prose",
-      "thoughtTurns": 26
+      "thoughtTurns": 0
     },
     "emittedVsLandedByStage": {
       "blind-frame": {
-        "emittedOutputTokens": 8998,
-        "landedBytes": 12939,
-        "landedShare": 0.3595,
+        "emittedOutputTokens": 3268,
+        "landedBytes": 10121,
+        "landedShare": 0.7743,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "clearance-variants": {
+        "emittedOutputTokens": 7622,
+        "landedBytes": 9679,
+        "landedShare": 0.3175,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "common-law-half:a": {
-        "emittedOutputTokens": 18599,
-        "landedBytes": 39751,
-        "landedShare": 0.5343,
+        "emittedOutputTokens": 5764,
+        "landedBytes": 8011,
+        "landedShare": 0.3475,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "common-law-half:b": {
-        "emittedOutputTokens": 13474,
-        "landedBytes": 28384,
-        "landedShare": 0.5266,
+        "emittedOutputTokens": 9433,
+        "landedBytes": 15639,
+        "landedShare": 0.4145,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "common-law-half:m": {
-        "emittedOutputTokens": 12313,
-        "landedBytes": 5899,
-        "landedShare": 0.1198,
+        "emittedOutputTokens": 3610,
+        "landedBytes": 3164,
+        "landedShare": 0.2191,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "doubt-closure": {
-        "emittedOutputTokens": 11177,
-        "landedBytes": 9554,
-        "landedShare": 0.2137,
+        "emittedOutputTokens": 2344,
+        "landedBytes": 5131,
+        "landedShare": 0.5472,
         "landedShareReason": null,
         "tokensComplete": true
       },
@@ -459,37 +467,30 @@
         "tokensComplete": true
       },
       "frame-diff": {
-        "emittedOutputTokens": 14114,
-        "landedBytes": 4477,
-        "landedShare": 0.0793,
+        "emittedOutputTokens": 4420,
+        "landedBytes": 5932,
+        "landedShare": 0.3355,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "matter-frame": {
-        "emittedOutputTokens": 12465,
-        "landedBytes": 11928,
-        "landedShare": 0.2392,
+        "emittedOutputTokens": 4724,
+        "landedBytes": 8694,
+        "landedShare": 0.4601,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "narrative-refutation": {
-        "emittedOutputTokens": 59279,
-        "landedBytes": 9347,
-        "landedShare": 0.0394,
+        "emittedOutputTokens": 29584,
+        "landedBytes": 4403,
+        "landedShare": 0.0372,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "placement-inquiry": {
-        "emittedOutputTokens": 63906,
-        "landedBytes": 35249,
-        "landedShare": 0.1379,
-        "landedShareReason": null,
-        "tokensComplete": true
-      },
-      "prelim-variants": {
-        "emittedOutputTokens": 19427,
-        "landedBytes": 20226,
-        "landedShare": 0.2603,
+        "emittedOutputTokens": 23759,
+        "landedBytes": 74837,
+        "landedShare": 0.7875,
         "landedShareReason": null,
         "tokensComplete": true
       },
@@ -508,9 +509,9 @@
         "tokensComplete": true
       },
       "register-digest": {
-        "emittedOutputTokens": 51292,
-        "landedBytes": 51699,
-        "landedShare": 0.252,
+        "emittedOutputTokens": 16380,
+        "landedBytes": 138930,
+        "landedShare": 2.1204,
         "landedShareReason": null,
         "tokensComplete": true
       },
@@ -529,65 +530,65 @@
         "tokensComplete": true
       },
       "register-unit:incumbent-class": {
-        "emittedOutputTokens": 4245,
-        "landedBytes": 646,
-        "landedShare": 0.038,
+        "emittedOutputTokens": 2371,
+        "landedBytes": 313,
+        "landedShare": 0.033,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "register-unit:primary-sweep": {
-        "emittedOutputTokens": 16806,
-        "landedBytes": 1407,
-        "landedShare": 0.0209,
+        "emittedOutputTokens": 9221,
+        "landedBytes": 395,
+        "landedShare": 0.0107,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "register-unit:saturation-probe": {
         "emittedOutputTokens": 0,
-        "landedBytes": 869,
+        "landedBytes": 833,
         "landedShare": null,
         "landedShareReason": "the stage journalled no emitted output tokens to compare against",
         "tokensComplete": true
       },
       "register-unit:transliteration-numeric": {
-        "emittedOutputTokens": 4520,
-        "landedBytes": 725,
-        "landedShare": 0.0401,
+        "emittedOutputTokens": 2260,
+        "landedBytes": 325,
+        "landedShare": 0.036,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "report-card:1": {
-        "emittedOutputTokens": 1642,
-        "landedBytes": 1125,
-        "landedShare": 0.1713,
+        "emittedOutputTokens": 1008,
+        "landedBytes": 621,
+        "landedShare": 0.154,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "report-card:2": {
-        "emittedOutputTokens": 1850,
-        "landedBytes": 1460,
-        "landedShare": 0.1973,
+        "emittedOutputTokens": 945,
+        "landedBytes": 585,
+        "landedShare": 0.1548,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "report-overview": {
-        "emittedOutputTokens": 3616,
-        "landedBytes": 5002,
-        "landedShare": 0.3458,
+        "emittedOutputTokens": 3815,
+        "landedBytes": 1320,
+        "landedShare": 0.0865,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "skeptic": {
-        "emittedOutputTokens": 18751,
-        "landedBytes": 3770,
-        "landedShare": 0.0503,
+        "emittedOutputTokens": 2789,
+        "landedBytes": 814,
+        "landedShare": 0.073,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "synthesis": {
-        "emittedOutputTokens": 88161,
-        "landedBytes": 13175,
-        "landedShare": 0.0374,
+        "emittedOutputTokens": 36256,
+        "landedBytes": 5993,
+        "landedShare": 0.0413,
         "landedShareReason": null,
         "tokensComplete": true
       },
@@ -620,8 +621,8 @@
       "dimensions": {
         "turnaroundHours": {
           "quoted": 2.5,
-          "actual": 1.62,
-          "ratio": 0.65,
+          "actual": 1.07,
+          "ratio": 0.43,
           "actualBasis": "wall:status.startedAt→terminal",
           "actualIncludesParked": true,
           "reason": null
@@ -661,7 +662,7 @@
       "unmeasurable": 6
     }
   },
-  "statement": "Moderate — conditional on: No consent, coexistence or cancellation touching the Ｖｅｎｋｕｒｉ registration appears on the record searched (and 2 more).",
+  "statement": "Moderate — conditional on: Pending ENQOR applications cover mobile apps and SaaS, and the use check did not confirm Align Networks Inc.'s current ENQOR use.",
   "sendPending": true,
-  "endedAt": "2026-09-02T19:51:48.801Z"
+  "endedAt": "2026-09-18T15:07:12.783Z"
 }

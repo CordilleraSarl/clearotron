@@ -1,0 +1,130 @@
+{
+  "uri": "/mark/cn/670a661f-12f0-4a96-9906-e2867c84a6f6",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "670a661f-12f0-4a96-9906-e2867c84a6f6",
+  "applicationNumber": "89322873",
+  "registrationNumber": null,
+  "applicationDate": "2025-12-23",
+  "registrationDate": "2026-08-21",
+  "expiryDate": "2036-08-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-05-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "恩智",
+  "markTransliteration": "EN ZHI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "材料测试;产品测试",
+      "translation_language": "en",
+      "translation": "material testing; product testing"
+    }
+  ],
+  "owner": "NXP Technologies Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "湖南省长沙市望城经济技术开发区楠竹塘路370号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "NXP Technologies Co., Ltd.",
+        "applicantNativeName": "恩智技术股份有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "material testing; product testing",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "材料测试;产品测试"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Survey service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4214",
+          "subNatGoodsServicesDescription": "Survey service"
+        }
+      ]
+    },
+    "id": "670a661f-12f0-4a96-9906-e2867c84a6f6",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1984"
+      }
+    ],
+    "recordLastUpdated": "20260719",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "广州嘉权专利商标事务所有限公司长沙分公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251223",
+        "applicationNumber": "89322873"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20360820",
+      "lastPublicationDate": "20260520",
+      "markCurrentStatus": "APPLICATION",
+      "registration": {
+        "registrationDate": "20260821"
+      }
+    },
+    "version": "20260719020213",
+    "wordMarkSpecification": {
+      "markTransliteration": "EN ZHI",
+      "markVerbalElementText": "恩智"
+    }
+  },
+  "_uri": "/mark/cn/670a661f-12f0-4a96-9906-e2867c84a6f6",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.681Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "uri": "/mark/is/da417378-5b8a-4d4c-b672-19012b1d3f22",
+  "provider": "clarivate",
+  "office": "is",
+  "guid": "da417378-5b8a-4d4c-b672-19012b1d3f22",
+  "applicationNumber": "V0104098",
+  "registrationNumber": "V0104098",
+  "applicationDate": "2017-03-19",
+  "registrationDate": "2017-07-15",
+  "expiryDate": "2026-11-10",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-07-15",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MIFARE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Electronic, electro technical and electromagnetic modules; data processing equipment, data storage apparatus; microprocessors; interfaces for computers; integrated circuits (ICS), chips (integrated circuits); semiconductors; smart cards; smart card integrated circuits; RFID chips and tags; computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; contactless smart cards; dual interface smart cards; dual interface integrated circuits (IC's) that provide a link between contactless cards and contact cards; writers and readers for wireless transmission to and from transponder chips; electronic apparatus for writing and reading of wireless transmission to and from transponder chips; computer programs for controlling transmission of data to and reading of data from transponder chips; data processing machines for fare determination using transponder chips; encoded smart cards; electronic access cards; electronic wristbands; (computer) hardware, software and peripheral devices used for access control and authentication purposes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Research and design for others in relation to integrated circuits and communications software and networks; computer software development in the field of mobile applications; consulting in the field of telecommunications technology; design and development of wireless communications systems for transmission and reception of voice, data and video; design and development of wireless communications systems for authentication purposes; providing temporary use of online non- downloadable software applications, development platforms, and development tools that enable software developers to develop, program, build, and prototype software for integrated circuits, chips and data processing equipment; computer programming services; research and design of electro technical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (ICS), chips, semiconductors, smart cards, controllers for smart cards, controllers for RFID chips and tags, computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; research and design of antennas for scanning, reading and interpreting RFID chips and tags; research and design of NFC (near field communications) apparatus, instruments and equipment, including electronic, electro technical and electromagnetic modules, parts and building elements and integrated circuits for NFC applications; advisory services in relation to all the above.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "No agent available",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20161109",
+      "priorityNumber": "1342492"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60, NL-5656 AG EINDHOVEN",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "is",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Electronic, electro technical and electromagnetic modules; data processing equipment, data storage apparatus; microprocessors; interfaces for computers; integrated circuits (ICS), chips (integrated circuits); semiconductors; smart cards; smart card integrated circuits; RFID chips and tags; computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; contactless smart cards; dual interface smart cards; dual interface integrated circuits (IC's) that provide a link between contactless cards and contact cards; writers and readers for wireless transmission to and from transponder chips; electronic apparatus for writing and reading of wireless transmission to and from transponder chips; computer programs for controlling transmission of data to and reading of data from transponder chips; data processing machines for fare determination using transponder chips; encoded smart cards; electronic access cards; electronic wristbands; (computer) hardware, software and peripheral devices used for access control and authentication purposes."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Research and design for others in relation to integrated circuits and communications software and networks; computer software development in the field of mobile applications; consulting in the field of telecommunications technology; design and development of wireless communications systems for transmission and reception of voice, data and video; design and development of wireless communications systems for authentication purposes; providing temporary use of online non- downloadable software applications, development platforms, and development tools that enable software developers to develop, program, build, and prototype software for integrated circuits, chips and data processing equipment; computer programming services; research and design of electro technical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (ICS), chips, semiconductors, smart cards, controllers for smart cards, controllers for RFID chips and tags, computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; research and design of antennas for scanning, reading and interpreting RFID chips and tags; research and design of NFC (near field communications) apparatus, instruments and equipment, including electronic, electro technical and electromagnetic modules, parts and building elements and integrated circuits for NFC applications; advisory services in relation to all the above."
+        }
+      ]
+    },
+    "id": "da417378-5b8a-4d4c-b672-19012b1d3f22",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20161109",
+        "priorityNumber": "1342492"
+      }
+    ],
+    "recordLastUpdated": "20250626",
+    "registrationOfficeCode": "IS",
+    "registrationOfficeName": "Iceland",
+    "representatives": [
+      {
+        "representativeName": "No agent available"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170319",
+        "applicationNumber": "V0104098"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20261110",
+      "lastPublicationDate": "20170715",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20170715",
+        "registrationNumber": "V0104098"
+      }
+    },
+    "version": "20250626154651",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MIFARE"
+    }
+  },
+  "_uri": "/mark/is/da417378-5b8a-4d4c-b672-19012b1d3f22",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.689Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

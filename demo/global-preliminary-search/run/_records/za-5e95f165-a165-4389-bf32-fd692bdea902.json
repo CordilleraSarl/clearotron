@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/za/5e95f165-a165-4389-bf32-fd692bdea902",
+  "provider": "clarivate",
+  "office": "za",
+  "guid": "5e95f165-a165-4389-bf32-fd692bdea902",
+  "applicationNumber": "2024/31574",
+  "registrationNumber": null,
+  "applicationDate": "2024-10-15",
+  "registrationDate": null,
+  "expiryDate": "2034-10-15",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "MIFARE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": [
+    "“The colours “orange” and “blue” and “green”, substantially as shown in the representation of the mark appearing in the application form, are features of the mark”"
+  ],
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Computer programming services; installation, repair and maintenance in relation to software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, and software for determining the fare to be paid by passengers with electronic travel-tickets; research, design and development services related to electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (IC’s), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID chips and tags; research, design and development services related to computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; research, design and development services related to electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, antennas for scanning, reading and interpreting RFID chips and tags; research, design and development services related to NFC (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for NFC applications, electronic payment cards, data processing apparatus and software for determining the fare to be paid by passengers with electronic travel-tickets; research, design and development services related to parts, fitting and accessories for all the aforesaid goods; custom programming of software; custom manufacture, customisation and custom programming of electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (IC’s), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID chips and tags; custom manufacture, customisation and custom programming of computer hardware for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, antennas for scanning, reading and interpreting RFID chips and tags; custom manufacture, customisation and custom programming of NFC (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for near field communications applications, electronic payment cards, data processing apparatus and software for determining the fare to be paid by passengers with electronic travel-tickets; custom manufacture, customisation and custom programming of parts, fitting and accessories for all the aforesaid goods; cloud computing; cloud computing services; cloud computing featuring software for use service management for cloud platforms and on-premise environments; advisory, consultancy and information services in relation to all the aforesaid services.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "ADAMS & ADAMS",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20241009",
+      "priorityNumber": "1512172"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60, 5656 AG Eindhoven",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer programming services; installation, repair and maintenance in relation to software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, and software for determining the fare to be paid by passengers with electronic travel-tickets; research, design and development services related to electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (IC’s), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID chips and tags; research, design and development services related to computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; research, design and development services related to electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, antennas for scanning, reading and interpreting RFID chips and tags; research, design and development services related to NFC (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for NFC applications, electronic payment cards, data processing apparatus and software for determining the fare to be paid by passengers with electronic travel-tickets; research, design and development services related to parts, fitting and accessories for all the aforesaid goods; custom programming of software; custom manufacture, customisation and custom programming of electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (IC’s), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID chips and tags; custom manufacture, customisation and custom programming of computer hardware for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, antennas for scanning, reading and interpreting RFID chips and tags; custom manufacture, customisation and custom programming of NFC (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for near field communications applications, electronic payment cards, data processing apparatus and software for determining the fare to be paid by passengers with electronic travel-tickets; custom manufacture, customisation and custom programming of parts, fitting and accessories for all the aforesaid goods; cloud computing; cloud computing services; cloud computing featuring software for use service management for cloud platforms and on-premise environments; advisory, consultancy and information services in relation to all the aforesaid services."
+        }
+      ]
+    },
+    "id": "5e95f165-a165-4389-bf32-fd692bdea902",
+    "ipRightKind": "tmk",
+    "markDisclaimers": [
+      "“The colours “orange” and “blue” and “green”, substantially as shown in the representation of the mark appearing in the application form, are features of the mark”"
+    ],
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20241009",
+        "priorityNumber": "1512172"
+      }
+    ],
+    "recordLastUpdated": "20260907",
+    "registrationOfficeCode": "ZA",
+    "registrationOfficeName": "South Africa",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "No correspondent available"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Lynnwood Bridge, 4 Daventry Street, Lynnwood Manor, Pretoria",
+        "representativeAddressCountryCode": "ZA",
+        "representativeAddressCountryName": "South Africa",
+        "representativeName": "ADAMS & ADAMS"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20241015",
+        "applicationNumber": "2024/31574"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20341015",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260907170708",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MIFARE"
+    }
+  },
+  "_uri": "/mark/za/5e95f165-a165-4389-bf32-fd692bdea902",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.750Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

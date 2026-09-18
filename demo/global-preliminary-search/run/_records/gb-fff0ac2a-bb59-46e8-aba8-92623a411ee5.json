@@ -1,0 +1,130 @@
+{
+  "uri": "/mark/gb/fff0ac2a-bb59-46e8-aba8-92623a411ee5",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "fff0ac2a-bb59-46e8-aba8-92623a411ee5",
+  "applicationNumber": "UK00916610768",
+  "registrationNumber": "UK00916610768",
+  "applicationDate": "2017-04-14",
+  "registrationDate": "2020-01-09",
+  "expiryDate": "2027-04-14",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MF1",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Equipment for recording, transmission or reproduction of sound or images; Magnetic data carriers, recording discs; Interface equipment; Electronic, electrotechnical and electromagnetic modules; Data processing equipment; Apparatus for the storage of data; Microprocessors; Interfaces for computers; Integrated circuits (ICs), Integrated circuit chips; Semiconductors; Smart cards; Smart card integrated circuits; RFID (radio frequency identification) chips and tags; Computer hardware and software for creating, programming, monitoring, coding, scanning, reading and interpreting RFID (radio frequency identification) chips and tags; Contactless smart cards; Dual interface smart cards; Dual interface integrated circuits that provide a connection between contactless cards and contact cards; Writers and readers for wireless transmission to and from transponder chips; Electronic apparatus for writing and reading for wireless transmission to and from transponder chips; Computer programs for monitoring data transmission to and reading of data from transponder chips; Data processing machines for determining tariffs using transponder chips; Encoded smart cards; Electronic access cards; Electronic wristbands; Hardware and computer hardware for access control and authentication purposes; Computer software and peripheral devices for access control and authentication purposes; Computer software; Hardware (computer-); Wearable activity trackers; Peripherals for wearable computers; Headphones; Earbuds; Smartphones; Wearable telecommunication apparatus; Computer hardware, computer software and peripheral devices for access control and authentication purposes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Research and design for others in relation to integrated circuits and communication software and networks; Computer software development in the field of mobile applications; Consultancy in the field of telecommunication technology; Design and development of wireless communication systems for transmission and reception of voice, data and video; Design and development of wireless communications systems for authentication purposes; Temporary use of online non-downloadable software applications, development platforms and development resources by means of which it is possible for software developers to develop, program and build computer software for integrated circuits, chips and data processing equipment and to make a prototype; Computer programming; Research and design of electrotechnical and electromagnetic modules, parts and subassemblies, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (ICs), chips, semiconductors, smart cards, controllers for smart cards, controllers for RFID (radio frequency identification) chips and tags; Research and design of computer hardware and software for creating, programming, monitoring, encoding, scanning, reading and interpreting RFID (radio frequency identification) chips and tags, electronic apparatus, instruments and apparatus for creating, programming, monitoring, encoding, scanning, reading and interpreting RFID (radio frequency identification) chips and tags; Research and design of antennas for scanning, reading and interpreting RFID (radio frequency identification) chips and tags; Research and design of NFC (near-field communication) apparatus, instruments and apparatus, including electronic, electrotechnical and electromagnetic modules, parts and subassemblies and integrated circuits for NFC (near-field communication) applications; Consultancy relating to the aforesaid services.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "Stobbs",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60, Eindhoven 5656 AG",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Equipment for recording, transmission or reproduction of sound or images; Magnetic data carriers, recording discs; Interface equipment; Electronic, electrotechnical and electromagnetic modules; Data processing equipment; Apparatus for the storage of data; Microprocessors; Interfaces for computers; Integrated circuits (ICs), Integrated circuit chips; Semiconductors; Smart cards; Smart card integrated circuits; RFID (radio frequency identification) chips and tags; Computer hardware and software for creating, programming, monitoring, coding, scanning, reading and interpreting RFID (radio frequency identification) chips and tags; Contactless smart cards; Dual interface smart cards; Dual interface integrated circuits that provide a connection between contactless cards and contact cards; Writers and readers for wireless transmission to and from transponder chips; Electronic apparatus for writing and reading for wireless transmission to and from transponder chips; Computer programs for monitoring data transmission to and reading of data from transponder chips; Data processing machines for determining tariffs using transponder chips; Encoded smart cards; Electronic access cards; Electronic wristbands; Hardware and computer hardware for access control and authentication purposes; Computer software and peripheral devices for access control and authentication purposes; Computer software; Hardware (computer-); Wearable activity trackers; Peripherals for wearable computers; Headphones; Earbuds; Smartphones; Wearable telecommunication apparatus; Computer hardware, computer software and peripheral devices for access control and authentication purposes."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Research and design for others in relation to integrated circuits and communication software and networks; Computer software development in the field of mobile applications; Consultancy in the field of telecommunication technology; Design and development of wireless communication systems for transmission and reception of voice, data and video; Design and development of wireless communications systems for authentication purposes; Temporary use of online non-downloadable software applications, development platforms and development resources by means of which it is possible for software developers to develop, program and build computer software for integrated circuits, chips and data processing equipment and to make a prototype; Computer programming; Research and design of electrotechnical and electromagnetic modules, parts and subassemblies, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (ICs), chips, semiconductors, smart cards, controllers for smart cards, controllers for RFID (radio frequency identification) chips and tags; Research and design of computer hardware and software for creating, programming, monitoring, encoding, scanning, reading and interpreting RFID (radio frequency identification) chips and tags, electronic apparatus, instruments and apparatus for creating, programming, monitoring, encoding, scanning, reading and interpreting RFID (radio frequency identification) chips and tags; Research and design of antennas for scanning, reading and interpreting RFID (radio frequency identification) chips and tags; Research and design of NFC (near-field communication) apparatus, instruments and apparatus, including electronic, electrotechnical and electromagnetic modules, parts and subassemblies and integrated circuits for NFC (near-field communication) applications; Consultancy relating to the aforesaid services."
+        }
+      ]
+    },
+    "id": "fff0ac2a-bb59-46e8-aba8-92623a411ee5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Building 1000, Cambridge Research Park, Cambridge CB25 9PD",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Stobbs"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170414",
+        "applicationNumber": "UK00916610768"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270414",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20200109",
+        "registrationNumber": "UK00916610768"
+      }
+    },
+    "version": "20250627212330",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MF1"
+    }
+  },
+  "_uri": "/mark/gb/fff0ac2a-bb59-46e8-aba8-92623a411ee5",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.710Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

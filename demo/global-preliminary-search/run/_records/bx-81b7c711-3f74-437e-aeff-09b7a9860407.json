@@ -1,0 +1,139 @@
+{
+  "uri": "/mark/bx/81b7c711-3f74-437e-aeff-09b7a9860407",
+  "provider": "clarivate",
+  "office": "bx",
+  "guid": "81b7c711-3f74-437e-aeff-09b7a9860407",
+  "applicationNumber": "1314511",
+  "registrationNumber": "979399",
+  "applicationDate": "2015-07-24",
+  "registrationDate": "2015-07-28",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2015-07-28",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "EVERSEM",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Electronic, electrical, electromechanical and electromagnetic modules, parts and components thereof, namely integrated circuits (ICs), chips, diodes, transistors, semiconductors and semiconductor devices; power amplifiers; power amplifier modules; radio frequency power amplifier pallets; microcontrollers; RF (radio frequency ) components; RF power transistors; RF power transmitters; multi-chip- modules; transceivers; controllers; amplifiers; switches; tuners; power sensors; integrated circuits embedded with software; semiconductor devices, microcontrollers, integrated circuits, circuit boards, chipsets, all for management of operating frequency, voltage and power, optimization of static and dynamic power, power management, power optimization or power reduction.",
+      "translation_language": "en",
+      "translation": "Electronic, electrical, electromechanical and electromagnetic modules, parts and components thereof, namely integrated circuits (ICs), chips, diodes, transistors, semiconductors and semiconductor devices; power amplifiers; power amplifier modules; radio frequency power amplifier pallets; microcontrollers; RF (radio frequency ) components; RF power transistors; RF power transmitters; multi-chip- modules; transceivers; controllers; amplifiers; switches; tuners; power sensors; integrated circuits embedded with software; semiconductor devices, microcontrollers, integrated circuits, circuit boards, chipsets, all for management of operating frequency, voltage and power, optimization of static and dynamic power, power management, power optimization or power reduction."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Developing, designing and testing semiconductors, semiconductor devices, power amplifiers, power amplifier modules, radio frequency power amplifier pallets, integrated circuits, microcontrollers, processors, radio frequency (RF) devices, multi-chip-modules, sensors and software for others; consulting services in the fields of developing, designing and testing semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency (RF) devices, multi-chip-modules, sensors and software; providing information in the fields of semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency (RF) devices, sensors and software.",
+      "translation_language": "en",
+      "translation": "Developing, designing and testing semiconductors, semiconductor devices, power amplifiers, power amplifier modules, radio frequency power amplifier pallets, integrated circuits, microcontrollers, processors, radio frequency (RF) devices, multi-chip-modules, sensors and software for others; consulting services in the fields of developing, designing and testing semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency (RF) devices, multi-chip-modules, sensors and software; providing information in the fields of semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency (RF) devices, sensors and software."
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO Shieldmark B.V. New Babylon City Offices",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60, 5656 AG Eindhoven",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electronic, electrical, electromechanical and electromagnetic modules, parts and components thereof, namely integrated circuits (ICs), chips, diodes, transistors, semiconductors and semiconductor devices; power amplifiers; power amplifier modules; radio frequency power amplifier pallets; microcontrollers; RF (radio frequency ) components; RF power transistors; RF power transmitters; multi-chip- modules; transceivers; controllers; amplifiers; switches; tuners; power sensors; integrated circuits embedded with software; semiconductor devices, microcontrollers, integrated circuits, circuit boards, chipsets, all for management of operating frequency, voltage and power, optimization of static and dynamic power, power management, power optimization or power reduction.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Electronic, electrical, electromechanical and electromagnetic modules, parts and components thereof, namely integrated circuits (ICs), chips, diodes, transistors, semiconductors and semiconductor devices; power amplifiers; power amplifier modules; radio frequency power amplifier pallets; microcontrollers; RF (radio frequency ) components; RF power transistors; RF power transmitters; multi-chip- modules; transceivers; controllers; amplifiers; switches; tuners; power sensors; integrated circuits embedded with software; semiconductor devices, microcontrollers, integrated circuits, circuit boards, chipsets, all for management of operating frequency, voltage and power, optimization of static and dynamic power, power management, power optimization or power reduction."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Developing, designing and testing semiconductors, semiconductor devices, power amplifiers, power amplifier modules, radio frequency power amplifier pallets, integrated circuits, microcontrollers, processors, radio frequency (RF) devices, multi-chip-modules, sensors and software for others; consulting services in the fields of developing, designing and testing semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency (RF) devices, multi-chip-modules, sensors and software; providing information in the fields of semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency (RF) devices, sensors and software.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Developing, designing and testing semiconductors, semiconductor devices, power amplifiers, power amplifier modules, radio frequency power amplifier pallets, integrated circuits, microcontrollers, processors, radio frequency (RF) devices, multi-chip-modules, sensors and software for others; consulting services in the fields of developing, designing and testing semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency (RF) devices, multi-chip-modules, sensors and software; providing information in the fields of semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency (RF) devices, sensors and software."
+        }
+      ]
+    },
+    "id": "81b7c711-3f74-437e-aeff-09b7a9860407",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "0728"
+      }
+    ],
+    "recordLastUpdated": "20260128",
+    "registrationOfficeCode": "BX",
+    "registrationOfficeName": "Benelux",
+    "representatives": [
+      {
+        "representativeAddress": "Anna van Buerenplein 21A, 2595 DA Den Haag",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO Shieldmark B.V. New Babylon City Offices"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20150724",
+        "applicationNumber": "1314511"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20150728",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20150728",
+        "registrationNumber": "979399"
+      }
+    },
+    "version": "20260128020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "EVERSEM"
+    }
+  },
+  "_uri": "/mark/bx/81b7c711-3f74-437e-aeff-09b7a9860407",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.615Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

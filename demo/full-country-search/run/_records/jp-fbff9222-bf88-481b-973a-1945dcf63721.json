@@ -13,8 +13,8 @@
   "publicationDates": null,
   "abandonmentDate": null,
   "cancellationDate": null,
-  "statusClass": "live",
-  "statusText": "REGISTERED",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
   "markText": "ＦＲＥＥＳＣＡＬＥ",
   "markTransliteration": "FURIISUKEERU",
   "markTranslation": "FREESCALE",
@@ -154,7 +154,7 @@
         "priorityDate": "20031230"
       }
     ],
-    "recordLastUpdated": "20240321",
+    "recordLastUpdated": "20260911",
     "registrationOfficeCode": "JP",
     "registrationOfficeName": "Japan",
     "representatives": [
@@ -168,21 +168,21 @@
       }
     ],
     "status": {
-      "active": true,
+      "active": false,
       "application": {
         "applicationDate": "20040616",
         "applicationNumber": "2004-055692"
       },
-      "cmNormalisedStatus": "REGISTERED",
+      "cmNormalisedStatus": "CANCELLED",
       "expiryDate": "20251202",
       "lastPublicationDate": "20060110",
-      "markCurrentStatus": "REGISTERED",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
       "registration": {
         "registrationDate": "20051202",
         "registrationNumber": "4911094"
       }
     },
-    "version": "20240321121007",
+    "version": "20260911091631",
     "wordMarkSpecification": {
       "markTranslation": "FREESCALE",
       "markTransliteration": "FURIISUKEERU",
@@ -191,7 +191,7 @@
   },
   "_uri": "/mark/jp/fbff9222-bf88-481b-973a-1945dcf63721",
   "_receipt": {
-    "fetched_at": "2026-09-03T16:38:35.461Z",
-    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+    "fetched_at": "2026-09-18T15:15:03.619Z",
+    "context": "clearance-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
   }
 }

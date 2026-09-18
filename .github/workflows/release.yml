@@ -955,13 +955,40 @@ jobs:
           ACTIONS_APPROVE_TOKEN: ${{ secrets.ACTIONS_APPROVE_TOKEN }}
         run: node scripts/release-await-cut.mjs
 
+  # A STABLE IS NOT PUBLISHED UNTIL IT HAS BEEN INSTALLED ON macOS. README names macOS and Linux and every
+  # other job here runs on Linux, so this is the release's one piece of evidence for the first. It calls
+  # macos.yml, which installs the sealed tarball into an empty directory, runs `clearotron doctor`, and
+  # starts and stops `clearotron demo` — the same job the schedule runs there.
+  #
+  # KEYED ON THE VERSION THE DECIDERS COMPUTED. A stable is a version with no pre-release part, which is
+  # semver's own definition, so a beta never starts this job and is never held by it: the publish jobs
+  # open with `!failure()` precisely so that a SKIPPED dependency does not skip them, and on a stable a
+  # red run here is a failure they see. The run then shows red rather than a publish that did not happen.
+  #
+  # TWO JOBS, BECAUSE THE TWO PUBLISH PATHS CANNOT SHARE ONE. `awaited` needs `publish`, so a macOS job
+  # that `publish` needs cannot also wait for `awaited` without a cycle. This one serves `publish`; the
+  # one in front of `publish-awaited` serves the dispatched stable.
+  #
+  # A STABLE HELD HERE STAYS CUT AND UNPUBLISHED ON MAIN, and the schedule's `pending` finds it again on
+  # every run — a macOS run each time — until the install is green or the cut is reverted. That is the
+  # gate holding, and it is also why this is never started for a beta.
+  macos:
+    name: Install the stable on macOS before it is published
+    needs: [version, pending]
+    if: >-
+      !cancelled()
+      && github.repository == 'CordilleraSarl/clearotron'
+      && ((needs.version.outputs.cut == 'true' && !contains(needs.version.outputs.version, '-'))
+          || (needs.pending.outputs.cut == 'true' && !contains(needs.pending.outputs.version, '-')))
+    uses: ./.github/workflows/macos.yml
+
   publish:
     name: Publish the release to npm
     # BOTH DECIDERS ARE NEEDED AND EITHER MAY BE SKIPPED. `version` runs on a push to main and `pending`
     # on the cron, so on any given run one of them did not happen — which is why the condition opens with
     # `!failure() && !cancelled()` rather than relying on the default, and why a skipped decider reads as
     # "not this path" instead of blocking the job.
-    needs: [version, pending]
+    needs: [version, pending, macos]
     if: >-
       !failure() && !cancelled()
       && github.repository == 'CordilleraSarl/clearotron'
@@ -1281,13 +1308,24 @@ jobs:
             gh release create "v$VERSION" --target "$TARGET" --title "v$VERSION" --generate-notes
           fi
 
+  # THE SAME INSTALL, for the stable a dispatch cut and `awaited` saw merge. See `macos` for why it is a
+  # second job and for what a red run here holds.
+  macos-awaited:
+    name: Install the awaited stable on macOS before it is published
+    needs: [awaited]
+    if: >-
+      !cancelled()
+      && github.repository == 'CordilleraSarl/clearotron'
+      && needs.awaited.outputs.cut == 'true' && !contains(needs.awaited.outputs.version, '-')
+    uses: ./.github/workflows/macos.yml
+
   publish-awaited:
     name: Publish the version this push cut, once it merges itself
     # BOTH DECIDERS ARE NEEDED AND EITHER MAY BE SKIPPED. `version` runs on a push to main and `pending`
     # on the cron, so on any given run one of them did not happen — which is why the condition opens with
     # `!failure() && !cancelled()` rather than relying on the default, and why a skipped decider reads as
     # "not this path" instead of blocking the job.
-    needs: [version, publish, awaited]
+    needs: [version, publish, awaited, macos-awaited]
     # THE SECOND PUBLISH OF THE RUN, and it publishes a DIFFERENT version from the first.
     #
     # `publish` above releases whatever was already sitting on main unpublished. This one releases the

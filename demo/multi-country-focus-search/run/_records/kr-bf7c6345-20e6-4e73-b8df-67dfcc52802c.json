@@ -1,0 +1,140 @@
+{
+  "uri": "/mark/kr/bf7c6345-20e6-4e73-b8df-67dfcc52802c",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "bf7c6345-20e6-4e73-b8df-67dfcc52802c",
+  "applicationNumber": "40-2010-0027107",
+  "registrationNumber": "4008768490000",
+  "applicationDate": "2010-05-24",
+  "registrationDate": "2011-08-18",
+  "expiryDate": "2031-08-18",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "KINETIS",
+  "markTransliteration": "KINETIS",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "마이크로컨트롤러,반도체,부트로더 소프트웨어,집적회로,컴퓨터 소프트웨어 개발키트(컴퓨터 소프트웨어 개발툴로 구성된 것,,컴퓨터 소프트웨어 개발키트(컴퓨터 하드웨어 개발툴로 구성된 것,,컴퓨터 소프트웨어 개발툴(컴파일러, 디버거, 통합개발환경, 런컨트롤, 이벤트분석/추적 - 산업/소비자/자동차 응용프로그램용 독립형 소프트웨어 프로그램 개발용,,컴퓨터 하드웨어 개발툴(컴파일러, 디버거, 통합개발환경, 런컨트롤, 이벤트분석/추적 - 산업/소비자/자동차 응용프로그램용 독립형 소프트웨어 프로그램 개발용,",
+      "translation_language": "en",
+      "translation": "Microcontroller, semiconductor, boot loader software, integrated circuit, computer software development kit (comprising computer software development tools, computer software development kit (comprising computer hardware development tools, computer software development tools (compiler, debugger, integration)) Development environment, run control, event analysis/tracking-for industrial/consumer/automotive application program development,, computer hardware development tool (compiler, debugger, integrated development environment, run control, event analysis/tracking-industry/consumer) /For developing independent software programs for automotive applications,"
+    }
+  ],
+  "owner": "NXP USA, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "양영준 (YANG, Young June)",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20100429",
+      "priorityNumber": "85/026,696"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미합중국 텍사스 (우편번호 ) 오스틴 윌리암 캐논 드라이브 웨스트",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc.",
+        "applicantNativeName": "엔엑스피 유에스에이, 인코포레이티드"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Microcontroller, semiconductor, boot loader software, integrated circuit, computer software development kit (comprising computer software development tools, computer software development kit (comprising computer hardware development tools, computer software development tools (compiler, debugger, integration)) Development environment, run control, event analysis/tracking-for industrial/consumer/automotive application program development,, computer hardware development tool (compiler, debugger, integrated development environment, run control, event analysis/tracking-industry/consumer) /For developing independent software programs for automotive applications,",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "마이크로컨트롤러,반도체,부트로더 소프트웨어,집적회로,컴퓨터 소프트웨어 개발키트(컴퓨터 소프트웨어 개발툴로 구성된 것,,컴퓨터 소프트웨어 개발키트(컴퓨터 하드웨어 개발툴로 구성된 것,,컴퓨터 소프트웨어 개발툴(컴파일러, 디버거, 통합개발환경, 런컨트롤, 이벤트분석/추적 - 산업/소비자/자동차 응용프로그램용 독립형 소프트웨어 프로그램 개발용,,컴퓨터 하드웨어 개발툴(컴파일러, 디버거, 통합개발환경, 런컨트롤, 이벤트분석/추적 - 산업/소비자/자동차 응용프로그램용 독립형 소프트웨어 프로그램 개발용,"
+        }
+      ]
+    },
+    "id": "bf7c6345-20e6-4e73-b8df-67dfcc52802c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20100429",
+        "priorityNumber": "85/026,696"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "F, Seyang B/D, Naeja-dong, Jongno-gu, Seoul, Korea(KIM & CHANG)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "양영준 (YANG, Young June)"
+      },
+      {
+        "representativeAddress": "Seoul(none)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "위혜숙 (Wee Hye Suk)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20100524",
+        "applicationNumber": "40-2010-0027107"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310818",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20110818",
+        "registrationNumber": "4008768490000"
+      }
+    },
+    "version": "20250625165528",
+    "wordMarkSpecification": {
+      "markTransliteration": "KINETIS",
+      "markVerbalElementText": "KINETIS"
+    }
+  },
+  "_uri": "/mark/kr/bf7c6345-20e6-4e73-b8df-67dfcc52802c",
+  "_receipt": {
+    "fetched_at": "2026-09-18T14:09:34.900Z",
+    "context": "clearance-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

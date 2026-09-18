@@ -1,0 +1,120 @@
+{
+  "uri": "/mark/cn/5c15946e-a220-4954-9315-136155bdd663",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "5c15946e-a220-4954-9315-136155bdd663",
+  "applicationNumber": "37724800",
+  "registrationNumber": null,
+  "applicationDate": "2019-04-23",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "史莱姆纪元",
+  "markTransliteration": "shi lai mu ji yuan",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "已录制的或可下载的计算机软件平台;可下载的计算机游戏软件;可下载的手机应用软件;视频游戏卡;电子字典;已录制的计算机程序;计算机软件(已录制);可下载的计算机程序;已录制的计算机游戏软件;可下载的计算机应用软件",
+      "translation_language": "en",
+      "translation": "Recorded or downloadable computer software platform; downloadable computer game software; downloadable mobile application software; video game card; electronic dictionary; recorded computer program; computer software (recorded); Program; recorded computer game software; downloadable computer application software"
+    }
+  ],
+  "owner": "Guangzhou Tengding Mutual Entertainment Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省广州市天河区建中路44-46号四楼",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Guangzhou Tengding Mutual Entertainment Technology Co., Ltd.",
+        "applicantNativeName": "广州腾鼎互娱科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Recorded or downloadable computer software platform; downloadable computer game software; downloadable mobile application software; video game card; electronic dictionary; recorded computer program; computer software (recorded); Program; recorded computer game software; downloadable computer application software",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "已录制的或可下载的计算机软件平台;可下载的计算机游戏软件;可下载的手机应用软件;视频游戏卡;电子字典;已录制的计算机程序;计算机软件(已录制);可下载的计算机程序;已录制的计算机游戏软件;可下载的计算机应用软件"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        }
+      ]
+    },
+    "id": "5c15946e-a220-4954-9315-136155bdd663",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251003",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京沐森知识产权代理有限公司河北分公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190423",
+        "applicationNumber": "37724800"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251003153909",
+    "wordMarkSpecification": {
+      "markTransliteration": "shi lai mu ji yuan",
+      "markVerbalElementText": "史莱姆纪元"
+    }
+  },
+  "_uri": "/mark/cn/5c15946e-a220-4954-9315-136155bdd663",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:44.440Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,193 @@
+{
+  "uri": "/mark/kr/a17d7f0b-d1c0-487d-8824-3107299c1d9f",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "a17d7f0b-d1c0-487d-8824-3107299c1d9f",
+  "applicationNumber": "45-2005-0004182",
+  "registrationNumber": "4500219160000",
+  "applicationDate": "2005-10-21",
+  "registrationDate": "2008-01-02",
+  "expiryDate": "2028-01-02",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "STARCORE",
+  "markTransliteration": "STARCORE",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    37,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "디지털 신호 프로세서 코어,디지털 신호 프로세서코어와 세트로 판매되는 사용자 매뉴얼,매크로 셀,매크로셀과 세트로 판매되는 사용자 매뉴얼,버스 인터페이스,버스 인터페이스와 세트로 판매되는사용자 매뉴얼,인쇄된 회로판,인쇄된회로판과 세트로 판매되는 사용자 매뉴얼,집적회로,집적회로와 세트로 판매되는 사용자 매뉴얼,집적회로의 디자인 및 구축용 원시코드와 세트로판매되는 사용자 매뉴얼,집적회로의 디자인 및 구축용원시코드,컴퓨터 소프트웨어,컴퓨터 소프트웨어와의 세트 판매용 사용자매뉴얼",
+      "translation_language": "en",
+      "translation": "Digital signal processor core, digital signal processor core and user manual sold as a set, macro cell, macro cell and user manual sold as a set, bus interface, bus interface and user manual sold as a set, printed circuit board, printed circuit board User manuals sold as a set and integrated circuits, user manuals sold as a set with integrated circuits, source code for the design and construction of integrated circuits and user manuals sold as a set, raw code for design and construction of integrated circuits, computer software, User's Manual for sale of a set with computer software"
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "ko",
+      "description": "서적",
+      "translation_language": "en",
+      "translation": "books"
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "ko",
+      "description": "컴퓨터하드웨어 유지관리업",
+      "translation_language": "en",
+      "translation": "Computer hardware maintenance business"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ko",
+      "description": "집적회로/디지털 신호 프로세서 코어/매크로 셀/버스인터페이스/하드웨어 주변기기/하드웨어 시스템 블록/인쇄된회로판과 같은 칩에 대한 정보응용시스템/관련 소프트웨어 및 상기상품을 결합한 상품의 개발/디자인 분야 훈련제공업",
+      "translation_language": "en",
+      "translation": "Integrated circuit/digital signal processor core/macro cell/bus interface/hardware peripheral device/hardware system block/information application system for chips such as printed circuit boards/related software and product development/design training services that combine the above products"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "인터넷을 통한 집적회로/디지털 신호 프로세서코어/매크로 셀/버스 인터페이스/하드웨어 주변기기/하드웨어시스템 블록/인쇄된 회로판과 같은 칩에 대한 정보응용시스템/관련소프트웨어 및 상기 상품을 결합한 상품의 개발/디자인분야정보제공업,전화/서면상담/직접방문을 통한 컴퓨터 하드웨어 및소프트웨어 고장수리관련 기술지원업,지적소유권 라이선싱업,집적회로/디지털 신호 프로세서 코어/매크로 셀/버스인터페이스/하드웨어 주변기기/하드웨어 시스템 블록/인쇄된회로판과 같은 칩에 대한 정보응용시스템/관련 소프트웨어 및 상기상품을 결합한 상품의 개발/디자인분야 상담업,집적회로/디지털 신호 프로세서 코어/매크로셀/버스 인터페이스/하드웨어 주변기기/하드웨어 시스템블록/인쇄된 회로판과 같은 칩에 대한 정보응용시스템분야/관련소프트웨어 및 상기 상품을 결합한 상품의 개발/디자인 분야연구업,집적회로/디지털 신호 프로세서코어/매크로 셀/버스 인터페이스/하드웨어 주변기기/하드웨어시스템 블록/인쇄된 회로판과 같은 칩에 대한 정보응용시스템/관련소프트웨어/상기 상품들을 결합한 상품 분야 개발업,집적회로/디지털신호 프로세서 코어/ 매크로 셀/버스 인터페이스/하드웨어주변기기/하드웨어 시스템 블록/인쇄된 회로판과 같은 칩에 대한정보응용시스템 및 관련 소프트웨어/상기 상품들을 결합한 상품분야 디자인업,컴퓨터소프트웨어 유지관리업",
+      "translation_language": "en",
+      "translation": "Information on chips such as integrated circuits/digital signal processor cores/macro cells/bus interfaces/hardware peripherals/hardware system blocks/printed circuit boards through the Internet Application system/related software and development/design field information of products combining the above products Provider business, technical support business related to computer hardware and software troubleshooting through telephone/written consultation/direct visit, intellectual property licensing business, integrated circuit/digital signal processor core/macro cell/bus interface/hardware peripheral device/hardware system block/printed Information application systems for chips such as circuit boards/related software and product development/design consulting services that combine the above products, integrated circuits/digital signal processor cores/macrocells/bus interfaces/hardware peripherals/hardware system blocks/printed circuit boards and Information about the same chip Application system field/related software and product development/design field research business that combines the above products, integrated circuit/digital signal processor core/macro cell/bus interface/hardware peripheral device/hardware system block/printed circuit board and Information application system/related software/product field development business combining the above products, integrated circuit/digital signal processor core/macro cell/bus interface/hardware peripheral device/hardware system block/printed circuit board information application System and related software/Product design business that combines the above products, computer software maintenance business"
+    }
+  ],
+  "owner": "NXP USA, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "김영 (KIM, Young)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미합중국 텍사스 (우편번호 ) 오스틴 윌리암 캐논 드라이브 웨스트",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc.",
+        "applicantNativeName": "엔엑스피 유에스에이, 인코포레이티드"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Digital signal processor core, digital signal processor core and user manual sold as a set, macro cell, macro cell and user manual sold as a set, bus interface, bus interface and user manual sold as a set, printed circuit board, printed circuit board User manuals sold as a set and integrated circuits, user manuals sold as a set with integrated circuits, source code for the design and construction of integrated circuits and user manuals sold as a set, raw code for design and construction of integrated circuits, computer software, User's Manual for sale of a set with computer software",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "디지털 신호 프로세서 코어,디지털 신호 프로세서코어와 세트로 판매되는 사용자 매뉴얼,매크로 셀,매크로셀과 세트로 판매되는 사용자 매뉴얼,버스 인터페이스,버스 인터페이스와 세트로 판매되는사용자 매뉴얼,인쇄된 회로판,인쇄된회로판과 세트로 판매되는 사용자 매뉴얼,집적회로,집적회로와 세트로 판매되는 사용자 매뉴얼,집적회로의 디자인 및 구축용 원시코드와 세트로판매되는 사용자 매뉴얼,집적회로의 디자인 및 구축용원시코드,컴퓨터 소프트웨어,컴퓨터 소프트웨어와의 세트 판매용 사용자매뉴얼"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "books",
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "서적"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer hardware maintenance business",
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "컴퓨터하드웨어 유지관리업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Integrated circuit/digital signal processor core/macro cell/bus interface/hardware peripheral device/hardware system block/information application system for chips such as printed circuit boards/related software and product development/design training services that combine the above products",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "집적회로/디지털 신호 프로세서 코어/매크로 셀/버스인터페이스/하드웨어 주변기기/하드웨어 시스템 블록/인쇄된회로판과 같은 칩에 대한 정보응용시스템/관련 소프트웨어 및 상기상품을 결합한 상품의 개발/디자인 분야 훈련제공업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Information on chips such as integrated circuits/digital signal processor cores/macro cells/bus interfaces/hardware peripherals/hardware system blocks/printed circuit boards through the Internet Application system/related software and development/design field information of products combining the above products Provider business, technical support business related to computer hardware and software troubleshooting through telephone/written consultation/direct visit, intellectual property licensing business, integrated circuit/digital signal processor core/macro cell/bus interface/hardware peripheral device/hardware system block/printed Information application systems for chips such as circuit boards/related software and product development/design consulting services that combine the above products, integrated circuits/digital signal processor cores/macrocells/bus interfaces/hardware peripherals/hardware system blocks/printed circuit boards and Information about the same chip Application system field/related software and product development/design field research business that combines the above products, integrated circuit/digital signal processor core/macro cell/bus interface/hardware peripheral device/hardware system block/printed circuit board and Information application system/related software/product field development business combining the above products, integrated circuit/digital signal processor core/macro cell/bus interface/hardware peripheral device/hardware system block/printed circuit board information application System and related software/Product design business that combines the above products, computer software maintenance business",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "인터넷을 통한 집적회로/디지털 신호 프로세서코어/매크로 셀/버스 인터페이스/하드웨어 주변기기/하드웨어시스템 블록/인쇄된 회로판과 같은 칩에 대한 정보응용시스템/관련소프트웨어 및 상기 상품을 결합한 상품의 개발/디자인분야정보제공업,전화/서면상담/직접방문을 통한 컴퓨터 하드웨어 및소프트웨어 고장수리관련 기술지원업,지적소유권 라이선싱업,집적회로/디지털 신호 프로세서 코어/매크로 셀/버스인터페이스/하드웨어 주변기기/하드웨어 시스템 블록/인쇄된회로판과 같은 칩에 대한 정보응용시스템/관련 소프트웨어 및 상기상품을 결합한 상품의 개발/디자인분야 상담업,집적회로/디지털 신호 프로세서 코어/매크로셀/버스 인터페이스/하드웨어 주변기기/하드웨어 시스템블록/인쇄된 회로판과 같은 칩에 대한 정보응용시스템분야/관련소프트웨어 및 상기 상품을 결합한 상품의 개발/디자인 분야연구업,집적회로/디지털 신호 프로세서코어/매크로 셀/버스 인터페이스/하드웨어 주변기기/하드웨어시스템 블록/인쇄된 회로판과 같은 칩에 대한 정보응용시스템/관련소프트웨어/상기 상품들을 결합한 상품 분야 개발업,집적회로/디지털신호 프로세서 코어/ 매크로 셀/버스 인터페이스/하드웨어주변기기/하드웨어 시스템 블록/인쇄된 회로판과 같은 칩에 대한정보응용시스템 및 관련 소프트웨어/상기 상품들을 결합한 상품분야 디자인업,컴퓨터소프트웨어 유지관리업"
+        }
+      ]
+    },
+    "id": "a17d7f0b-d1c0-487d-8824-3107299c1d9f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "Jeongdong Building, F, Jeongdong-gil, Jung-gu, Seoul Korea(KIM & CHANG)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "김영 (KIM, Young)"
+      },
+      {
+        "representativeAddress": "F, Seyang B/D, Naeja-dong, Jongno-gu, Seoul, Korea(KIM & CHANG)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "주성민 (CHU, Sung Min)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20051021",
+        "applicationNumber": "45-2005-0004182"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280102",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20080102",
+        "registrationNumber": "4500219160000"
+      }
+    },
+    "version": "20250625160435",
+    "wordMarkSpecification": {
+      "markTransliteration": "STARCORE",
+      "markVerbalElementText": "STARCORE"
+    }
+  },
+  "_uri": "/mark/kr/a17d7f0b-d1c0-487d-8824-3107299c1d9f",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:10.764Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

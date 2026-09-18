@@ -1,0 +1,128 @@
+{
+  "uri": "/mark/mt/4b298afc-d735-4dc1-bf6e-83b1b92b6219",
+  "provider": "clarivate",
+  "office": "mt",
+  "guid": "4b298afc-d735-4dc1-bf6e-83b1b92b6219",
+  "applicationNumber": "42284",
+  "registrationNumber": "42284",
+  "applicationDate": "2004-06-10",
+  "registrationDate": "2004-11-10",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Licensing of technology, licensing of patents, trademarks, copyrights, trade secrets and/or know - how related to the manufacture of semiconductors and their uses, licensing semiconductors, licensing of software related to the manufacture of semiconductors and their uses, licensing of technology related to semiconductors and the manufacture of semiconductors, licensing technology incorporated in and related to semiconductor products, integrated circuits, circuit boards, microcomputers, micro controllers, microprocessors and computer peripherals, memories and semiconductor material therefor, data conversion circuits, computer firmware, electronic, electrical and electromechanical apparatus for use with computers, video circuit boards, video systems products, apparatus and equipment for recordation, reproduction and alteration of sound, video and data, computer programs, instructional material relating to computer and data algorithms for the compression and decompression of data, Custom design of computer and telecommunications systems, consulting services in the field of computers and telecommunications and related technology for software design in this class.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Dr. Luigi A. Sansone",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20031230",
+      "priorityNumber": "76567257"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon 6501 William Cannon Drive; 78735; West Austin; Texas; United States",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Licensing of technology, licensing of patents, trademarks, copyrights, trade secrets and/or know - how related to the manufacture of semiconductors and their uses, licensing semiconductors, licensing of software related to the manufacture of semiconductors and their uses, licensing of technology related to semiconductors and the manufacture of semiconductors, licensing technology incorporated in and related to semiconductor products, integrated circuits, circuit boards, microcomputers, micro controllers, microprocessors and computer peripherals, memories and semiconductor material therefor, data conversion circuits, computer firmware, electronic, electrical and electromechanical apparatus for use with computers, video circuit boards, video systems products, apparatus and equipment for recordation, reproduction and alteration of sound, video and data, computer programs, instructional material relating to computer and data algorithms for the compression and decompression of data, Custom design of computer and telecommunications systems, consulting services in the field of computers and telecommunications and related technology for software design in this class."
+        }
+      ]
+    },
+    "id": "4b298afc-d735-4dc1-bf6e-83b1b92b6219",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20031230",
+        "priorityNumber": "76567257"
+      }
+    ],
+    "recordLastUpdated": "20251207",
+    "registrationOfficeCode": "MT",
+    "registrationOfficeName": "Malta",
+    "representatives": [
+      {
+        "representativeAddress": "SALOMONE SANSONE 84 - 85, Melita Street; VLT 1120; Valletta; Malta",
+        "representativeAddressCountryCode": "MT",
+        "representativeAddressCountryName": "Malta",
+        "representativeName": "Dr. Luigi A. Sansone"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040610",
+        "applicationNumber": "42284"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20041110",
+        "registrationNumber": "42284"
+      }
+    },
+    "version": "20251207101641",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/mt/4b298afc-d735-4dc1-bf6e-83b1b92b6219",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.721Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

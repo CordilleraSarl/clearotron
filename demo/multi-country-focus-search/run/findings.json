@@ -1,122 +1,31 @@
 {
   "schema_version": 7,
   "rated_under_framework": "house-default",
-  "corrections": {
-    "applied": true,
-    "note": "finding 2 (enqor, Align Networks Inc.) — corrected: the use-negative distancing sentence is struck from practical_position, which now rests the read where the risk sits (citation in examination and opposition in classes 9, 41 and 42) and states the applicant-identity confirmation in its own prose; band, meters and net unchanged, the Manageable read now resting on mark distance alone. | finding 1 (Ｖｅｎｋｕｒｉ, YIWU TENGDING UMBRELLA CO., LTD.) — no-change-because flags 4 and 6 are prose defects in narrative.md (band-confidence and framework vocabulary) and the typed record carries neither; its facts were verified against /mark/jp/310027f2-0562-46fe-abea-385f068a8150 and stand. | finding 3 (QORIQ, NXP USA, Inc.) — no-change-because no flag names it and the review confirmed its demotion stands. | QUORI (Netquori B.V.) — no-change-because it holds no finding object on this run: it was placed at sheet-2 with a verify-flag, and the correction is made in narrative.md, which now records that the trigger fired (the app is live on the Japanese and Korean Apple storefronts), corrects the seller attribution from QUORI Limited to Netquori B.V., and reasons the risk down on the goods the listing shows rather than reading a disjunctive trigger as conjunctive. That adopts the placement ruling carrying QUORI rather than accepting it as clean, and counters placement open question 5's 'observed listing is the US storefront' on the listing itself. | coverage opener — corrected: narrowed to the sound-alike spellings and the look-alike spellings in the Latin alphabet, so the completeness claim no longer reaches the Greek and Cyrillic character forms the coverage list records as not-searched; no coverage[] row changed."
-  },
   "findings": [
     {
       "ordinal": 1,
-      "mark": "Ｖｅｎｋｕｒｉ",
-      "owner": {
-        "name": "YIWU TENGDING UMBRELLA CO., LTD.",
-        "country": "CN",
-        "registrations": [
-          {
-            "uri": "/mark/jp/310027f2-0562-46fe-abea-385f068a8150",
-            "classes": [
-              "9"
-            ],
-            "status": "REGISTERED",
-            "filed": "2019-04-02",
-            "expiry": "2030-03-02",
-            "jurisdiction": "JP"
-          }
-        ]
-      },
-      "band": "Moderate",
-      "borderline_between": [
-        "Moderate",
-        "Manageable"
-      ],
-      "net": "In Japan the holder of Ｖｅｎｋｕｒｉ is more likely than not to prevail against a VENQORI class 9 right reaching consumer measuring or monitoring apparatus, and unlikely to reach the downloadable app itself.",
-      "disposition": "adversarial",
-      "legal_position": "The Japan Patent Office's own record reads this mark as BENKURI where VENQORI reads BENKORI — one medial vowel apart in the script Japanese examination compares, and seven Latin characters sharing VEN- and -RI, before a buyer whose whole distinguishing signal is the typed name on a phone screen. The registered goods are consumer electronics — rechargeable batteries, cameras, earphones, plugs, chargers and non-medical monitoring apparatus (among broad goods) — carried on the Japanese examination group for measuring or testing instruments, so the right meets a class 9 specification that reaches a consumer water probe or strip reader and stops short of the downloadable app.",
-      "practical_position": "The proprietor is a Chinese company registered under an umbrella-trade name and holding this one Japanese right, with no other filing in the searched material. Its use of the name in Japan is unresolved rather than absent: a Venkuri-branded USB microphone and speakerphone was listed on Amazon Japan with customer reviews in 2021, and the listing identifies no company, so the registration cannot be treated as plainly vulnerable for non-use.",
-      "meters": {
-        "mark_similarity": {
-          "token": "high",
-          "basis": "verified-from-record",
-          "source": "/mark/jp/310027f2-0562-46fe-abea-385f068a8150"
-        },
-        "goods_proximity": {
-          "token": "medium",
-          "basis": "verified-from-record",
-          "source": "/mark/jp/310027f2-0562-46fe-abea-385f068a8150"
-        },
-        "use": {
-          "token": "unknown",
-          "basis": "verified-from-record",
-          "source": "https://www.amazon.co.jp/-/en/Microphone-Speakerphone-Compatible-Microsoftteas-Conferencing/dp/B08ZYXFFPJ"
-        },
-        "enforcer": {
-          "token": "unknown",
-          "basis": "inferred-from-signal",
-          "source": ""
-        }
-      },
-      "quadrant": {
-        "x": 0.5,
-        "y": 0.85
-      },
-      "source": {
-        "source_type": "register-vendor",
-        "resolved_link": ""
-      },
-      "use_check": {
-        "source": "https://www.amazon.co.jp/-/en/Microphone-Speakerphone-Compatible-Microsoftteas-Conferencing/dp/B08ZYXFFPJ",
-        "quality": "independent"
-      }
-    },
-    {
-      "ordinal": 2,
       "mark": "enqor",
       "owner": {
         "name": "Align Networks Inc.",
         "country": "KR",
         "registrations": [
           {
-            "uri": "/mark/kr/a59ef335-9570-4757-8770-26b208dc24b1",
-            "classes": [
-              "9"
-            ],
-            "status": "PENDING",
-            "filed": "2026-04-14",
-            "jurisdiction": "KR"
+            "uri": "/mark/kr/a59ef335-9570-4757-8770-26b208dc24b1"
           },
           {
-            "uri": "/mark/kr/439284fa-ff3f-48dd-b691-7bec09f9a550",
-            "classes": [
-              "41"
-            ],
-            "status": "PENDING",
-            "filed": "2026-04-14",
-            "jurisdiction": "KR"
+            "uri": "/mark/kr/439284fa-ff3f-48dd-b691-7bec09f9a550"
           },
           {
-            "uri": "/mark/kr/3e4b74e8-712d-49b8-9502-5c00cf951a41",
-            "classes": [
-              "42"
-            ],
-            "status": "PENDING",
-            "filed": "2026-04-14",
-            "jurisdiction": "KR"
+            "uri": "/mark/kr/3e4b74e8-712d-49b8-9502-5c00cf951a41"
           }
         ]
       },
-      "band": "Manageable",
-      "borderline_between": [
-        "Moderate",
-        "Manageable"
-      ],
-      "net": "Align Networks' pending enqor applications are more likely than not to fail as an objection to VENQORI in Korea, though they cover the same downloadable app software (among broad goods).",
+      "band": "Moderate",
+      "net": "Align Networks Inc.'s pending ENQOR applications are likely to obstruct both VENQORI and VENKORI in South Korea, with the case stronger against VENQORI.",
       "disposition": "adversarial",
-      "legal_position": "enqor and VENQORI share the rare -NQOR- spine but part as wholes: the Korean readings 엔코르 and 벤코리 differ at the opening syllable, which KIPO weighs heavily, and VENQORI carries a third syllable enqor does not. Against that, the class 9 specification covers downloadable computer software and smartphone application software and the class 42 specification covers app development, software-as-a-service and application-service provision (among broad goods) — the company's own goods and services, in the company's own territory, filed five months before this search.",
-      "practical_position": "The three applications are pending rather than registered and were filed as word-and-design, so a figurative element may carry part of the distinctiveness and the word-only conflict is correspondingly narrower. What they threaten is a citation in examination and an opposition in classes 9, 41 and 42, neither of which depends on this applicant reaching the Korean storefronts first. The applicant in this matter is unnamed, and Align Networks is a Seoul software company filing in the same three classes on the same timeline, so the applicant's legal name and corporate group must be confirmed before these applications are treated as a third party's.",
       "meters": {
         "mark_similarity": {
-          "token": "medium",
+          "token": "high",
           "basis": "verified-from-record",
           "source": "/mark/kr/a59ef335-9570-4757-8770-26b208dc24b1"
         },
@@ -126,6 +35,57 @@
           "source": "/mark/kr/a59ef335-9570-4757-8770-26b208dc24b1"
         },
         "use": {
+          "token": "not-confirmed",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "enforcer": {
+          "token": "unknown",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.88,
+        "y": 0.82
+      },
+      "source": {
+        "source_type": "register-vendor",
+        "resolved_link": ""
+      },
+      "legal_position": "Against VENQORI, ENQOR is a close truncation and the mobile-app and SaaS wording directly meets the company's digital goods. Against VENKORI, the Q/K difference weakens similarity, but the owner is still likely to win because the same digital goods meet and the remaining sound pattern is close.",
+      "practical_position": "The applications are pending and current ENQOR use by Align Networks Inc. was not confirmed, but their recent filing leaves no established non-use defence. - **Use-check source:** perplexity_research — no result",
+      "use_check": {
+        "source": "perplexity_research — no result"
+      }
+    },
+    {
+      "ordinal": 2,
+      "mark": "Ｖｅｎｋｕｒｉ",
+      "owner": {
+        "name": "YIWU TENGDING UMBRELLA CO., LTD.",
+        "country": "CN",
+        "registrations": [
+          {
+            "uri": "/mark/jp/310027f2-0562-46fe-abea-385f068a8150"
+          }
+        ]
+      },
+      "band": "Manageable",
+      "net": "YIWU TENGDING UMBRELLA CO., LTD. is likely to lose against either proposed form in Japan on the current software-only goods.",
+      "disposition": "adversarial",
+      "meters": {
+        "mark_similarity": {
+          "token": "high",
+          "basis": "verified-from-record",
+          "source": "/mark/jp/310027f2-0562-46fe-abea-385f068a8150"
+        },
+        "goods_proximity": {
+          "token": "low",
+          "basis": "verified-from-record",
+          "source": "/mark/jp/310027f2-0562-46fe-abea-385f068a8150"
+        },
+        "use": {
           "token": "unknown",
           "basis": "inferred-from-signal",
           "source": ""
@@ -137,54 +97,85 @@
         }
       },
       "quadrant": {
-        "x": 0.9,
-        "y": 0.5
+        "x": 0.16,
+        "y": 0.86
       },
       "source": {
         "source_type": "register-vendor",
         "resolved_link": ""
       },
-      "use_check": {
-        "source": "https://enqor.com/ko/notice",
-        "quality": "independent"
-      }
+      "legal_position": "VENKURI is highly similar to VENKORI and moderately similar to VENQORI. Its registered batteries, cameras, audio equipment, plugs, surveillance monitors and chargers do not meet downloadable water-quality software or online training, so the owner is likely to lose against both forms.",
+      "practical_position": "The Japanese examiner may raise VENKURI against an application, especially for VENKORI. The record establishes no present basis to treat the owner as an active enforcer."
     },
     {
       "ordinal": 3,
+      "mark": "ＱＯＲＩＱ",
+      "owner": {
+        "name": "NXP USA, INC.",
+        "country": "US",
+        "registrations": [
+          {
+            "uri": "/mark/jp/bb31005c-de89-4427-9e3b-eb870618399d"
+          }
+        ]
+      },
+      "net": "NXP USA, INC.'s Japanese QORIQ registration for semiconductors and microprocessors does not reach either proposed software name.",
+      "disposition": "off-field",
+      "meters": {
+        "mark_similarity": {
+          "token": "medium",
+          "basis": "verified-from-record",
+          "source": "/mark/jp/bb31005c-de89-4427-9e3b-eb870618399d"
+        },
+        "goods_proximity": {
+          "token": "low",
+          "basis": "verified-from-record",
+          "source": "/mark/jp/bb31005c-de89-4427-9e3b-eb870618399d"
+        },
+        "use": {
+          "token": "confirmed",
+          "basis": "verified-from-record",
+          "source": "https://www.nxp.com/products/T1024"
+        },
+        "enforcer": {
+          "token": "unknown",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.08,
+        "y": 0.48
+      },
+      "source": {
+        "source_type": "register-vendor",
+        "resolved_link": ""
+      },
+      "legal_position": "VENQORI visually contains QORI, while VENKORI replaces the Q with K but keeps some local phonetic proximity. The registered semiconductors, microprocessors and integrated circuits occupy a different field from consumer water-quality software and training.",
+      "practical_position": "NXP identifies QorIQ T1024 as an active processor for networking and industrial applications, which makes the family worth commercial awareness without creating current software overlap. [Official NXP product page](https://www.nxp.com/products/T1024).",
+      "off_field_ground": "different-field",
+      "use_check": {
+        "source": "https://www.nxp.com/products/T1024",
+        "quality": "owner-site"
+      }
+    },
+    {
+      "ordinal": 4,
       "mark": "QORIQ",
       "owner": {
         "name": "NXP USA, Inc.",
         "country": "US",
         "registrations": [
           {
-            "uri": "/mark/kr/c673cf6c-053f-4df7-8d2a-eec13d790f93",
-            "classes": [
-              "9"
-            ],
-            "status": "REGISTERED",
-            "filed": "2008-09-05",
-            "expiry": "2029-09-18",
-            "jurisdiction": "KR"
-          },
-          {
-            "uri": "/mark/jp/bb31005c-de89-4427-9e3b-eb870618399d",
-            "classes": [
-              "9"
-            ],
-            "status": "REGISTERED",
-            "filed": "2008-09-05",
-            "jurisdiction": "JP"
+            "uri": "/mark/kr/c673cf6c-053f-4df7-8d2a-eec13d790f93"
           }
         ]
       },
-      "net": "NXP's QORIQ registrations cover microprocessors and integrated circuits and do not reach the company's water-quality app or its training services in Japan or Korea.",
+      "net": "NXP USA, Inc.'s Korean QORIQ registration for processors and integrated circuits does not reach either proposed software name.",
       "disposition": "off-field",
-      "off_field_ground": "different-field",
-      "legal_position": "The registered goods are microprocessors, customised and multi-core processors, semiconductors and integrated circuits; nothing in the specification reaches downloadable software, consumer measuring apparatus or online training. As wholes the marks also read apart — QORI sits in the tail of VENQORI and is bracketed by Q at both ends of QORIQ, and QORI carries a meaning of its own.",
-      "practical_position": "NXP is a large US proprietor holding this right in class 9 in both instructed territories, so it is a name the company will meet on the register rather than in its own market. Nothing about how the company would file, price or launch turns on it.",
       "meters": {
         "mark_similarity": {
-          "token": "low",
+          "token": "medium",
           "basis": "verified-from-record",
           "source": "/mark/kr/c673cf6c-053f-4df7-8d2a-eec13d790f93"
         },
@@ -194,91 +185,219 @@
           "source": "/mark/kr/c673cf6c-053f-4df7-8d2a-eec13d790f93"
         },
         "use": {
-          "token": "unknown",
-          "basis": "inferred-from-signal",
-          "source": ""
+          "token": "confirmed",
+          "basis": "verified-from-record",
+          "source": "https://www.nxp.com/products/T1024"
         },
         "enforcer": {
-          "token": "medium",
+          "token": "unknown",
           "basis": "inferred-from-signal",
           "source": ""
         }
       },
       "quadrant": {
-        "x": 0.15,
+        "x": 0.08,
+        "y": 0.48
+      },
+      "source": {
+        "source_type": "register-vendor",
+        "resolved_link": ""
+      },
+      "legal_position": "VENQORI visually contains QORI, while VENKORI replaces the Q with K but retains some phonetic proximity. The registered processors, semiconductors and integrated circuits remain remote from consumer water-quality software and training.",
+      "practical_position": "NXP identifies QorIQ T1024 as an active processor for networking and industrial applications, supporting commercial awareness but not present channel overlap. [Official NXP product page](https://www.nxp.com/products/T1024).",
+      "off_field_ground": "different-field",
+      "use_check": {
+        "source": "https://www.nxp.com/products/T1024",
+        "quality": "owner-site"
+      }
+    },
+    {
+      "ordinal": 5,
+      "mark": "コアアイキュ－コンバ－ジ　ＱＯＲＩＱ　ＱＯＮＶＥＲＧＥ",
+      "owner": {
+        "name": "NXP USA, INC.",
+        "country": "US",
+        "registrations": [
+          {
+            "uri": "/mark/jp/9656ebff-2a51-4e2b-939b-b576ffa61504"
+          }
+        ]
+      },
+      "net": "NXP USA, INC.'s Japanese QORIQ QONVERGE registration for semiconductor hardware does not reach either proposed software name.",
+      "disposition": "off-field",
+      "meters": {
+        "mark_similarity": {
+          "token": "low",
+          "basis": "verified-from-record",
+          "source": "/mark/jp/9656ebff-2a51-4e2b-939b-b576ffa61504"
+        },
+        "goods_proximity": {
+          "token": "low",
+          "basis": "verified-from-record",
+          "source": "/mark/jp/9656ebff-2a51-4e2b-939b-b576ffa61504"
+        },
+        "use": {
+          "token": "unknown",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "enforcer": {
+          "token": "unknown",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.06,
         "y": 0.3
       },
       "source": {
         "source_type": "register-vendor",
         "resolved_link": ""
-      }
+      },
+      "legal_position": "The longer QORIQ QONVERGE wording is distinguishable from both VENQORI and VENKORI as a whole. Its semiconductor chips, processors and electronic parts also sit outside the company's consumer software and training field.",
+      "practical_position": "NXP actively uses the QORIQ root for processor products, but current use of the full QORIQ QONVERGE composite was not established. [Official NXP product page](https://www.nxp.com/products/T1024).",
+      "off_field_ground": "different-field"
+    },
+    {
+      "ordinal": 6,
+      "mark": "QORIQ QONVERGE",
+      "owner": {
+        "name": "NXP USA, Inc.",
+        "country": "US",
+        "registrations": [
+          {
+            "uri": "/mark/kr/92847fe6-ef71-4d90-a5ba-31ab42ae95cf"
+          }
+        ]
+      },
+      "net": "NXP USA, Inc.'s Korean QORIQ QONVERGE registration for semiconductor hardware does not reach either proposed software name.",
+      "disposition": "off-field",
+      "meters": {
+        "mark_similarity": {
+          "token": "low",
+          "basis": "verified-from-record",
+          "source": "/mark/kr/92847fe6-ef71-4d90-a5ba-31ab42ae95cf"
+        },
+        "goods_proximity": {
+          "token": "low",
+          "basis": "verified-from-record",
+          "source": "/mark/kr/92847fe6-ef71-4d90-a5ba-31ab42ae95cf"
+        },
+        "use": {
+          "token": "unknown",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "enforcer": {
+          "token": "unknown",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.06,
+        "y": 0.3
+      },
+      "source": {
+        "source_type": "register-vendor",
+        "resolved_link": ""
+      },
+      "legal_position": "The longer QORIQ QONVERGE wording is distinguishable from both VENQORI and VENKORI as a whole. Its chips, processors and integrated circuits do not meet the company's consumer software and training.",
+      "practical_position": "NXP actively uses the QORIQ root for processor products, but current use of the full QORIQ QONVERGE composite was not established. [Official NXP product page](https://www.nxp.com/products/T1024).",
+      "off_field_ground": "different-field"
     }
   ],
   "coverage": [
     {
-      "area": "register / Japan (JPO) reconciliation — the mark and its spellings in classes 9, 41 and 42",
+      "area": "primary-sweep",
       "state": "confirmed-clean",
-      "note": "Latin script and katakana, including international registrations reaching Japan; one live right came back and is reported."
+      "note": "The named exact, close, phonetic and recalled forms were searched, apart from the separately listed mixed-script and owner-identity gaps."
     },
     {
-      "area": "register / Korea (KIPO) reconciliation — the mark and its spellings in classes 9, 41 and 42",
-      "state": "confirmed-clean",
-      "note": "Latin script and hangul, including international registrations reaching Korea; two live matters came back and are reported."
+      "area": "primary-sweep / exact: vεηqοrι [cl 9, 42, 41]",
+      "state": "not-searched",
+      "note": "The mixed-Greek exact form could not be searched as characters, so this visually confusable form remains open."
     },
     {
-      "area": "register / Japanese and Korean script forms and digit spellings of the name",
-      "state": "confirmed-clean",
-      "note": "All four native-script renderings and the digit-substitution forms returned nothing in the three classes in either territory."
+      "area": "primary-sweep / exact: vеnqоri [cl 9, 42, 41]",
+      "state": "not-searched",
+      "note": "The mixed-Cyrillic exact form could not be searched as characters, so this visually confusable form remains open."
     },
     {
-      "area": "register / the eight named water-sector companies",
+      "area": "transliteration-numeric",
       "state": "confirmed-clean",
-      "note": "Coway, LG Electronics, Toray, Mitsubishi Chemical, Xylem, Hach, Danaher and Kurita were each searched by name against the mark and hold nothing in this form."
+      "note": "The Japanese and Korean romanizations and the numeric-substitution form were searched and produced no on-point records."
     },
     {
-      "area": "register / clothing and merchandising classes",
+      "area": "incumbent-class",
       "state": "confirmed-clean",
-      "note": "No identical mark exists in any class in the searched material, so no merchandising block sits behind the name."
+      "note": "The named water-sector owners were checked against VENQORI and no similar sign was returned."
     },
     {
-      "area": "register / Vencora's own portfolio by owner name",
+      "area": "saturation-probe",
+      "state": "confirmed-clean",
+      "note": "The broad two-letter wildcard produced unrelated noise, while the bounded close-form searches supplied the material candidates."
+    },
+    {
+      "area": "primary-sweep / Vencora owner-identity check",
       "state": "open",
-      "note": "The register used holds no applicant styling for that name, so the portfolio could not be searched at all; the VENCORA mark itself was searched and returned nothing."
+      "note": "The stated Vencora UK Limited owner name could not be resolved, leaving any Japan- or South Korea-effective right under another owner name open."
     },
     {
-      "area": "register / look-alike spellings of VENQORI built from Greek and Cyrillic characters",
+      "area": "primary-sweep / cross-class merch",
+      "state": "confirmed-clean",
+      "note": "The apparel check found no identical VENQORI right."
+    },
+    {
+      "area": "field / water IoT, telemetry, SCADA, sensor-data and asset-monitoring software",
       "state": "not-searched",
-      "note": "The register indexes foreign-character marks by romanisation rather than by character, so these spellings cannot be put to it."
+      "note": "This specialised water-software field was identified as material but was not verified as searched."
     },
     {
-      "area": "register / general consumer mobile-app field beyond water quality",
-      "state": "note",
-      "note": "No sweep by industry was run; the mark was searched across the whole of classes 9, 41 and 42, which already reaches a consumer-app owner of any kind."
+      "area": "Exact, close, phonetic and recalled forms",
+      "state": "confirmed-clean",
+      "note": "The named exact, close, phonetic and recalled forms were searched, apart from the separately listed mixed-script and owner-identity gaps."
     },
     {
-      "area": "common-law / Korean app stores — Samsung Galaxy Store and ONE store",
+      "area": "Exact mixed-Greek form vεηqοrι in Classes 9, 42 and 41",
       "state": "not-searched",
-      "note": "The only channels where a listing visible in Korea alone could appear; Amazon.co.jp and YouTube were not reached either."
+      "note": "The mixed-Greek exact form could not be searched as characters, so this visually confusable form remains open."
     },
     {
-      "area": "common-law / app stores, marketplaces and the open web",
-      "state": "coverage-limited",
-      "note": "Searched across every spelling and both local scripts; the names that came back trade in jewellery, art, pharmaceuticals and textiles."
-    },
-    {
-      "area": "common-law / meaning and connotation sweep",
-      "state": "note",
-      "note": "One loaded reading: QORI is Quechua for gold, and the sweep returned scholarly material on gold mining and water contamination in the Andes."
-    },
-    {
-      "area": "owners' history of trade mark disputes",
+      "area": "Exact mixed-Cyrillic form vеnqоri in Classes 9, 42 and 41",
       "state": "not-searched",
-      "note": "No proceedings record was searched for any owner named here."
+      "note": "The mixed-Cyrillic exact form could not be searched as characters, so this visually confusable form remains open."
     },
     {
-      "area": "Follow-up / consumer entertainment, gaming and media…",
+      "area": "Japanese and Korean romanizations and the numeric-substitution form",
+      "state": "confirmed-clean",
+      "note": "The Japanese and Korean romanizations and the numeric-substitution form were searched and produced no on-point records."
+    },
+    {
+      "area": "Named water-sector owners checked against VENQORI",
+      "state": "confirmed-clean",
+      "note": "The named water-sector owners were checked against VENQORI and no similar sign was returned."
+    },
+    {
+      "area": "Broad V…R search and close-form searches",
+      "state": "confirmed-clean",
+      "note": "The broad two-letter wildcard produced unrelated noise, while the bounded close-form searches supplied the material candidates."
+    },
+    {
+      "area": "Vencora UK Limited owner-name check in Japan and South Korea",
       "state": "open",
-      "note": "consumer entertainment, gaming and media software; general consumer mobile apps — not completed this run — no search could be built for it: the gap names classes but no searchable name, and re-running the matter's own classes would only repeat the main sweep, so it is left open here rather than reported as clean"
+      "note": "The stated Vencora UK Limited owner name could not be resolved, leaving any Japan- or South Korea-effective right under another owner name open."
+    },
+    {
+      "area": "Apparel search for identical VENQORI rights",
+      "state": "confirmed-clean",
+      "note": "The apparel check found no identical VENQORI right."
+    },
+    {
+      "area": "Follow-up / iot, telemetry, scada, sensor-data, and…",
+      "state": "open",
+      "note": "iot, telemetry, scada, sensor-data, and asset-monitoring software for water (classes 9, 42) — not completed this run — nothing in the run's own record confirms it was searched, so it is left open rather than assumed done"
     },
     {
       "area": "Japanese-script register equivalents (JP)",
@@ -291,150 +410,149 @@
       "note": "Korean-script same-meaning/phonetic register equivalents not searched on this search — The native-language investigation is offered on a Multi-country focus search and runs automatically on a Full country search."
     }
   ],
-  "mark_assessment": {
-    "distinctiveness": {
-      "read": "A strong name to own. VENQORI is a coined word with no meaning in English, Japanese or Korean, and the register turned up no crowd around it, so the whole word carries the rights rather than any part of it.",
-      "spectrum": "Coined and fanciful in classes 9, 41 and 42 — no descriptive, laudatory, geographic or deceptive flag.",
-      "per_market": [
-        {
-          "market": "JP",
-          "note": "In katakana the name reads BENKORI, and that is where its distance from the live Ｖｅｎｋｕｒｉ registration is measured: one medial vowel."
-        },
-        {
-          "market": "KR",
-          "note": "Korean corporate names of the shape 'X + 코리아' are common enough that an ear may take 벤코리 as 'Ben-Korea' rather than as one coined word, which trims the inherent-distinctiveness argument in Korea specifically."
-        }
+  "context_notes": [],
+  "actions": [
+    {
+      "id": 1,
+      "kind": "senior-clearance",
+      "text": "Resolve the pending ENQOR applications before filing either form in South Korea; the use check did not confirm Align Networks Inc.'s ENQOR use.",
+      "ordinals": [
+        1
+      ],
+      "condition": "Pending ENQOR applications cover mobile apps and SaaS, and the use check did not confirm Align Networks Inc.'s current ENQOR use."
+    },
+    {
+      "id": 2,
+      "kind": "client-fact",
+      "text": "Identify the applicant and its affiliates so their own rights can be separated from third-party conflicts.",
+      "ordinals": []
+    },
+    {
+      "id": 3,
+      "kind": "client-fact",
+      "text": "Confirm whether either form will connect to or be bundled with sensors, test kits, purifiers or embedded hardware.",
+      "ordinals": [
+        2,
+        3,
+        4,
+        5,
+        6
       ]
     },
-    "connotation": "The reading to know about is QORI — Quechua for gold — which the meaning sweep tied to scholarly material on gold mining and water contamination in the Andes: a positioning question for a water-quality brand rather than a registrability one. Across the English, Japanese and Korean forms searched, nothing else adverse came back."
-  },
-  "four_answers": {
-    "third_party_rights": {
-      "read": "Two live rights reach the name in the instructed territories, and only one of them is registered. Neither covers the name itself.",
-      "token": "moderate",
-      "basis": "The Japanese class 9 registration and the three pending Korean applications; no identical mark anywhere in the searched material.",
+    {
+      "id": 4,
+      "kind": "client-fact",
+      "text": "Confirm the exact Japanese and Korean display forms and the goods wording intended for each filing.",
       "ordinals": [
         1,
         2
       ]
+    }
+  ],
+  "mark_assessment": {
+    "distinctiveness": {
+      "read": "VENQORI and VENKORI are coined and distinctive for consumer water-quality software, with the whole word carrying the source-identifying weight.",
+      "spectrum": "Coined and strong as wholes.",
+      "per_market": [
+        {
+          "market": "JP",
+          "note": "VENQORI, VENKORI and the Katakana form have no established descriptive meaning for the instructed goods."
+        },
+        {
+          "market": "KR",
+          "note": "VENQORI, VENKORI and the Hangul form have no established descriptive meaning for the instructed goods."
+        }
+      ]
+    },
+    "connotation": {
+      "read": "QORI may be read as the Quechua word for gold, but the search did not establish a VENQORI-specific cultural-appropriation concern.",
+      "spectrum": "Possible benign cultural or semantic association rather than a loaded reading.",
+      "per_market": [
+        {
+          "market": "JP/KR",
+          "note": "No established slang, gang or offensive reading surfaced for the Latin or local-script forms searched."
+        }
+      ],
+      "note": "- **Meaning-pull:** qori Quechua gold and cultural appropriation → linguistic sources confirm “gold”; the word is not inherently offensive, while branding context determines sensitivity. https://files.eric.ed.gov/fulltext/ED012031.pdf"
+    }
+  },
+  "four_answers": {
+    "third_party_rights": {
+      "read": "The strongest third-party rights are the pending Korean ENQOR applications, whose digital goods meet the proposed app and hosted service.",
+      "token": "moderate",
+      "basis": "Finding 1 combines a close sign with directly overlapping mobile-app and SaaS wording.",
+      "ordinals": [
+        1
+      ]
     },
     "objection_likelihood": {
-      "read": "An objection from either owner is possible rather than expected, and the likelier form is a citation in prosecution than a claim in the market.",
+      "read": "An objection is possible in South Korea because ENQOR is pending across all three core classes, although current owner use and enforcement posture remain unconfirmed.",
       "token": "possible",
-      "basis": "Findings 1 and 2 — one dormant-profile proprietor with unresolved use, one new filer whose applications have not published.",
+      "basis": "The pending ENQOR filings create the only on-field conflict, while the other rights are goods-distinct.",
       "ordinals": [
         1,
         2
       ]
     },
     "registrability": {
-      "read": "The name is registrable in both territories on its own merits, with two known citation obstacles to work through.",
+      "read": "Both forms appear registrable only with conditions because ENQOR creates a Korean obstacle and material coverage questions remain open.",
       "token": "registrable-with-conditions",
-      "obstacles": [
-        {
-          "class": "9",
-          "note": "Japan — the Ｖｅｎｋｕｒｉ registration sits in the examination group for measuring or testing instruments, which is where an apparatus-bearing class 9 specification would be examined."
-        },
-        {
-          "class": "9",
-          "note": "Korea — the pending enqor application covers downloadable and smartphone application software."
-        },
-        {
-          "class": "42",
-          "note": "Korea — the pending enqor application covers app development and software-as-a-service."
-        },
-        {
-          "class": "41",
-          "note": "Korea — the pending enqor application covers the training class as filed."
-        }
-      ],
-      "basis": "The coined-word distinctiveness read plus the two live citation candidates in findings 1 and 2.",
+      "basis": "Finding 1 and the open mixed-script, owner-identity and specialised water-software coverage areas.",
       "ordinals": [
         1,
         2
+      ],
+      "obstacles": [
+        {
+          "class": "9",
+          "note": "ENQOR covers downloadable mobile and smartphone software in South Korea."
+        },
+        {
+          "class": "42",
+          "note": "ENQOR covers SaaS, platforms, hosting and software development in South Korea."
+        },
+        {
+          "class": "41",
+          "note": "ENQOR covers correspondence courses and educational services in South Korea."
+        }
       ]
     },
     "client_enforceability": {
-      "read": "A coined word with no crowd behind it is enforceable across its whole length, not merely against copies of one element.",
-      "token": "strong",
-      "basis": "The exact-name searches returned nothing live in either register, and the element has no common component to dilute it.",
-      "ordinals": []
+      "read": "The company can enforce each coined whole, but rights in the QORI or KORI sequence alone appear narrower.",
+      "token": "moderate",
+      "basis": "The marks are coined as wholes, while findings 2 to 6 show earlier rights sharing close internal sequences.",
+      "ordinals": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
     }
   },
-  "actions": [
-    {
-      "id": 1,
-      "kind": "client-fact",
-      "text": "Confirm the applicant's legal name and corporate group before the Korean enqor applications are treated as a third party's.",
-      "ordinals": [
-        2
-      ]
-    },
-    {
-      "id": 2,
-      "kind": "senior-clearance",
-      "text": "Clear the Japanese Ｖｅｎｋｕｒｉ registration before filing class 9 in Japan for measuring or monitoring apparatus.",
-      "ordinals": [
-        1
-      ],
-      "condition": "No consent, coexistence or cancellation touching the Ｖｅｎｋｕｒｉ registration appears on the record searched."
-    },
-    {
-      "id": 3,
-      "kind": "counsel-opinion-required",
-      "text": "Take a Korean attorney's view on whether enqor and VENQORI are confusingly similar before filing in Korea.",
-      "ordinals": [
-        2
-      ],
-      "condition": "How KIPO would treat the two marks is unresolved on the record searched."
-    },
-    {
-      "id": 4,
-      "kind": "senior-clearance",
-      "text": "Check Vencora's own filings through its corporate records or local counsel, including any Japanese or Korean styling.",
-      "ordinals": [],
-      "condition": "Vencora's portfolio could not be searched by owner name in the register used for this clearance."
-    },
-    {
-      "id": 5,
-      "kind": "monitoring",
-      "text": "Watch the enqor applications through to publication so the Korean opposition period is not missed.",
-      "ordinals": [
-        2
-      ]
-    },
-    {
-      "id": 6,
-      "kind": "monitoring",
-      "text": "Watch for any Venqor Group filing or product reaching Japan or Korea in the app or measuring-instrument classes.",
-      "ordinals": []
-    },
-    {
-      "id": 7,
-      "kind": "commercial-decision",
-      "text": "Decide whether the Quechua 'gold' sense of -QORI sits comfortably with a water-quality brand before launch materials are written.",
-      "ordinals": []
-    }
-  ],
   "coverage_judgment": {
     "sufficient": false,
-    "reason": "Vencora — the closest name-shape on the search plan, a software group filing in these classes — could not be searched by owner name at all in the register used, so a filing under another corporate styling or in katakana or hangul would not have been seen; and Samsung Galaxy Store and ONE store, the only channels where a listing visible in Korea alone could appear, were not reached.",
+    "reason": "The exact mixed-script forms, unresolved Vencora owner identity and specialised water-IoT software field remain unsearched, so unconditional clearance is not supported.",
     "rows": [
       {
         "area": "primary-sweep / exact: vεηqοrι [cl 9, 42, 41]",
         "areaLabel": "main register sweep / exact: vεηqοrι [cl 9, 42, 41]",
-        "note": "deferred — A spoofed spelling of VENQORI in which Greek letters stand in for the Latin ones could not be put to the register we searched at all. That register stores forei"
+        "note": "deferred — The visually confusable mixed-Greek rendering could not be searched as characters because the source indexes non-Latin filings by transliteration; this exact in"
       },
       {
         "area": "primary-sweep / exact: vеnqоri [cl 9, 42, 41]",
         "areaLabel": "main register sweep / exact: vеnqоri [cl 9, 42, 41]",
-        "note": "deferred — The same gap in Cyrillic: a look-alike spelling of VENQORI built from Cyrillic characters cannot be expressed against this register, which indexes foreign-chara"
+        "note": "deferred — The visually confusable mixed-Cyrillic rendering could not be searched as characters because the source indexes non-Latin filings by transliteration; this exact"
       },
       {
-        "area": "primary-sweep / VENCORA owner-portfolio sweep",
-        "areaLabel": "main register sweep / VENCORA owner-portfolio sweep",
-        "note": "deferred — This is the one real, closeable gap in the register search and the reason the clearance ships conditional. VENCORA is the closest word-shape to VENQORI anywhere"
+        "area": "primary-sweep / Vencora owner-identity check",
+        "areaLabel": "main register sweep / Vencora owner-identity check",
+        "note": "deferred — The source could not resolve the stated Vencora UK Limited applicant styling, so any right effective in Japan or South Korea under a different owner form remain"
       }
     ]
+  },
+  "corrections": {
+    "applied": true,
+    "note": "Finding 1 (ENQOR): corrected — the spine now identifies the three Korean rights as pending applications; no-change-because the finding object already did so and contained none of the flagged wording.\nCoverage: corrected — the broad search, portfolio-count sentence and the primary, transliteration, owner and crowd search labels now describe the work in ordinary words; the closed coverage-state values and all coverage facts are unchanged.\nFinding 2 (VENKURI): corrected — the calibration and practical-position text now say that the Japanese examiner may raise VENKURI.\nFinding 1 (response wording): corrected in the calibration section — “negotiated or prosecution response” is replaced with “negotiated agreement or response to an examiner’s objection”; no-change-because the finding object did not contain that phrase.\nFinding 3 (QORIQ Japan): no-change-because its object already states in ordinary words that the semiconductor goods do not reach the proposed software; the shared spine conclusion was corrected.\nFinding 4 (QORIQ Korea): no-change-because its object already states in ordinary words that the processor goods do not reach the proposed software; the shared spine conclusion was corrected.\nFinding 5 (QORIQ QONVERGE Japan): no-change-because its object already states in ordinary words that the semiconductor hardware does not reach the proposed software; the shared spine conclusion was corrected.\nFinding 6 (QORIQ QONVERGE Korea): no-change-because its object already states in ordinary words that the semiconductor hardware does not reach the proposed software; the shared spine conclusion was corrected."
   }
 }

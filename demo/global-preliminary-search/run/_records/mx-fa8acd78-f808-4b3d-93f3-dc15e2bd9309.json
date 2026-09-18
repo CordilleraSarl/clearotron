@@ -1,0 +1,115 @@
+{
+  "uri": "/mark/mx/fa8acd78-f808-4b3d-93f3-dc15e2bd9309",
+  "provider": "clarivate",
+  "office": "mx",
+  "guid": "fa8acd78-f808-4b3d-93f3-dc15e2bd9309",
+  "applicationNumber": "985848",
+  "registrationNumber": "1112640",
+  "applicationDate": "2009-01-22",
+  "registrationDate": "2009-07-29",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MIFARE PLUS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios de programacion de computadoras, instalacion, reparacion y mantenimiento en relacion al software para el diseno, programacion, control, codificacion, escaneo, lectura e interpretacion de chips y microprocesadores (tags) de identificacionpor rad iofrecuencia (irf), y al software para determinar la tarifa a pagar por pasajeros, por medio de boletos electronicos, servicios de investigacion, diseno y desarrollo en relacion a modulos electronicos, electrotecnicos y electromagneticos,partes y element os de estructuracion, maquinas de procesamiento de datos, aparatos de almacenamiento de datos, microprocesadores, interfaces, circuitos integrados (cis), chips, semiconductores y tarjetas inteligentes, controles para tarjetasinteligentes, controles para chips y componentes de identificacion por radiofrecuencia (irf), hardware y software para disenar, programar, controlar, codificar, escaneo, lectura e interpretacion de chips y microprocesadores (tags) de identificacionpor radiofrecuencia (irf), aparatos , instrumentos y equipo electronicos, para el diseno, programacion, control, codificacion, escaneo, lectura e interpretacion de chips y microprocesadores (tags) de identificacion por radiofrecuencia (irf), antenaspara escaneo, lectura e interpretacion de chips y microprocesadores (tags) de identificacion por radiofrecuencia (irf), aparatos, instrumentos y equipo de comunicaciones de campo cercano (ccc), incluyendo modulos electronicos, electrotecnicos yelectromagneticos, partes y elementos de estructura cion y circuitosintegrados para la aplicacion de comunicaciones de campo cercano (ccc), tarjetas de pago electronico, aparatos de procesamiento de datos y software para determinar la tarifa a pagarpor pasajeros por medio de boletos electronicos, y partes , componentes y accesorios para todos los servicios antes citados; practicas de fabricacion, fabricacion y fabricacion de programacion de software (fabricacion o diseno, a la actualizacion, ala modificacion o a la programacion de un software) ; consejeri a, consultoria y servicios de informacion relacionados a todos los servicios antes citados.",
+      "translation_language": "en",
+      "translation": "SERVICES OF COMPUTER PROGRAMMING, INSTALLATION, REPAIR AND MAINTENANCE IN RELATION TO THE SOFTWARE FOR THE DESIGN, PROGRAMMING, CONTROL, CODING, SCANNING, READING AND INTERPRETATION OF CHIPS AND MICROPROCESSORS (TAGS) OF IDENTIFICATION BY RAD FREQUENCY (IRF), AND THE SOFTWARE TO DETERMINE THE RATE TO PAY BY PASSENGERS, THROUGH ELECTRONIC TICKETS, RESEARCH SERVICES, DESIGN AND DEVELOPMENT IN RELATION TO ELECTRONIC, ELECTROTECHNIC AND ELECTROMAGNETIC MODULES, STRUCTURING PARTS AND ELEMENTS, DATA PROCESSING MACHINES, DATA STORAGE DEVICES, MICROPROCESSORS , INTERFACES, INTEGRATED CIRCUITS (CIS), CHIPS, SEMICONDUCTORS AND INTELLIGENT CARDS, CONTROLS FOR INTELLIGENT CARDS, CONTROLS FOR CHIPS AND RADIO FREQUENCY IDENTIFICATION COMPONENTS (IRF), HARDWARE AND SOFTWARE TO DESIGN, PROGRAM, CONTROL, CODE, SCAN, READING AND INTERPRETATION OF CHIPS AND MICROPROCESSORS (TAGS) OF IDENTIFICATION FOR RADIOFRECUENC IA (IRF), APPARATUS, ELECTRONIC INSTRUMENTS AND EQUIPMENT, FOR THE DESIGN, PROGRAMMING, CONTROL, CODING, SCANNING, READING AND INTERPRETATION OF CHIPS AND MICROPROCESSORS (TAGS) FOR RADIO FREQUENCY IDENTIFICATION (IRF), ANTENAS FOR SCANNING, READING AND INTERPRETATION OF CHIPS AND RADIO FREQUENCY IDENTIFICATION TAGS (IRF), APPARATUS, INSTRUMENTS AND COMMUNICATIONS EQUIPMENT FOR CLOSE FIELD (CCC), INCLUDING ELECTRONIC, ELECTROTECHNIC AND ELECTRONIC MODELS, PARTS AND ELEMENTS OF STRUCTURE AND INTEGRATED CIRCUITS FOR THE APPLICATION OF NEAR FIELD COMMUNICATIONS (CCC), ELECTRONIC PAYMENT CARDS, DATA PROCESSING DEVICES AND SOFTWARE TO DETERMINE THE RATE PAYABLE BY PASSENGERS THROUGH ELECTRONIC TICKETS, AND PARTS, COMPONENTS AND ACCESSORIES FOR ALL SERVICES AS DESCRIBED ABOVE; MANUFACTURING, MANUFACTURING AND MANUFACTURING OF SOFTWARE PROGRAMMING (MANUFACTURE OR DESIGN, UPDATING, ALTERING OR PROGRAMMING A SOFTWARE); CONSEJERI A, CONSULTING AND INFORMATION SERVICES RELATED TO ALL SERVICES ABOVE CITED."
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "HIGH TECH CAMPUS 60, EINDHOVEN, 5656 AG, PAISES BAJOS",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "SERVICES OF COMPUTER PROGRAMMING, INSTALLATION, REPAIR AND MAINTENANCE IN RELATION TO THE SOFTWARE FOR THE DESIGN, PROGRAMMING, CONTROL, CODING, SCANNING, READING AND INTERPRETATION OF CHIPS AND MICROPROCESSORS (TAGS) OF IDENTIFICATION BY RAD FREQUENCY (IRF), AND THE SOFTWARE TO DETERMINE THE RATE TO PAY BY PASSENGERS, THROUGH ELECTRONIC TICKETS, RESEARCH SERVICES, DESIGN AND DEVELOPMENT IN RELATION TO ELECTRONIC, ELECTROTECHNIC AND ELECTROMAGNETIC MODULES, STRUCTURING PARTS AND ELEMENTS, DATA PROCESSING MACHINES, DATA STORAGE DEVICES, MICROPROCESSORS , INTERFACES, INTEGRATED CIRCUITS (CIS), CHIPS, SEMICONDUCTORS AND INTELLIGENT CARDS, CONTROLS FOR INTELLIGENT CARDS, CONTROLS FOR CHIPS AND RADIO FREQUENCY IDENTIFICATION COMPONENTS (IRF), HARDWARE AND SOFTWARE TO DESIGN, PROGRAM, CONTROL, CODE, SCAN, READING AND INTERPRETATION OF CHIPS AND MICROPROCESSORS (TAGS) OF IDENTIFICATION FOR RADIOFRECUENC IA (IRF), APPARATUS, ELECTRONIC INSTRUMENTS AND EQUIPMENT, FOR THE DESIGN, PROGRAMMING, CONTROL, CODING, SCANNING, READING AND INTERPRETATION OF CHIPS AND MICROPROCESSORS (TAGS) FOR RADIO FREQUENCY IDENTIFICATION (IRF), ANTENAS FOR SCANNING, READING AND INTERPRETATION OF CHIPS AND RADIO FREQUENCY IDENTIFICATION TAGS (IRF), APPARATUS, INSTRUMENTS AND COMMUNICATIONS EQUIPMENT FOR CLOSE FIELD (CCC), INCLUDING ELECTRONIC, ELECTROTECHNIC AND ELECTRONIC MODELS, PARTS AND ELEMENTS OF STRUCTURE AND INTEGRATED CIRCUITS FOR THE APPLICATION OF NEAR FIELD COMMUNICATIONS (CCC), ELECTRONIC PAYMENT CARDS, DATA PROCESSING DEVICES AND SOFTWARE TO DETERMINE THE RATE PAYABLE BY PASSENGERS THROUGH ELECTRONIC TICKETS, AND PARTS, COMPONENTS AND ACCESSORIES FOR ALL SERVICES AS DESCRIBED ABOVE; MANUFACTURING, MANUFACTURING AND MANUFACTURING OF SOFTWARE PROGRAMMING (MANUFACTURE OR DESIGN, UPDATING, ALTERING OR PROGRAMMING A SOFTWARE); CONSEJERI A, CONSULTING AND INFORMATION SERVICES RELATED TO ALL SERVICES ABOVE CITED.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de programacion de computadoras, instalacion, reparacion y mantenimiento en relacion al software para el diseno, programacion, control, codificacion, escaneo, lectura e interpretacion de chips y microprocesadores (tags) de identificacionpor rad iofrecuencia (irf), y al software para determinar la tarifa a pagar por pasajeros, por medio de boletos electronicos, servicios de investigacion, diseno y desarrollo en relacion a modulos electronicos, electrotecnicos y electromagneticos,partes y element os de estructuracion, maquinas de procesamiento de datos, aparatos de almacenamiento de datos, microprocesadores, interfaces, circuitos integrados (cis), chips, semiconductores y tarjetas inteligentes, controles para tarjetasinteligentes, controles para chips y componentes de identificacion por radiofrecuencia (irf), hardware y software para disenar, programar, controlar, codificar, escaneo, lectura e interpretacion de chips y microprocesadores (tags) de identificacionpor radiofrecuencia (irf), aparatos , instrumentos y equipo electronicos, para el diseno, programacion, control, codificacion, escaneo, lectura e interpretacion de chips y microprocesadores (tags) de identificacion por radiofrecuencia (irf), antenaspara escaneo, lectura e interpretacion de chips y microprocesadores (tags) de identificacion por radiofrecuencia (irf), aparatos, instrumentos y equipo de comunicaciones de campo cercano (ccc), incluyendo modulos electronicos, electrotecnicos yelectromagneticos, partes y elementos de estructura cion y circuitosintegrados para la aplicacion de comunicaciones de campo cercano (ccc), tarjetas de pago electronico, aparatos de procesamiento de datos y software para determinar la tarifa a pagarpor pasajeros por medio de boletos electronicos, y partes , componentes y accesorios para todos los servicios antes citados; practicas de fabricacion, fabricacion y fabricacion de programacion de software (fabricacion o diseno, a la actualizacion, ala modificacion o a la programacion de un software) ; consejeri a, consultoria y servicios de informacion relacionados a todos los servicios antes citados."
+        }
+      ]
+    },
+    "id": "fa8acd78-f808-4b3d-93f3-dc15e2bd9309",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "07",
+        "publicationYear": "2009"
+      }
+    ],
+    "recordLastUpdated": "20250704",
+    "registrationOfficeCode": "MX",
+    "registrationOfficeName": "Mexico",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20090122",
+        "applicationNumber": "985848"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "RENEWED",
+      "registration": {
+        "registrationDate": "20090729",
+        "registrationNumber": "1112640"
+      }
+    },
+    "version": "20250704162150",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "MY FARE PLUS, MY FAIR PLUS",
+      "markVerbalElementText": "MIFARE PLUS"
+    }
+  },
+  "_uri": "/mark/mx/fa8acd78-f808-4b3d-93f3-dc15e2bd9309",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.703Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

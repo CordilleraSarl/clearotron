@@ -1,0 +1,119 @@
+{
+  "uri": "/mark/ad/a9ac9c40-6294-49ad-a8d8-5274645d11c9",
+  "provider": "clarivate",
+  "office": "ad",
+  "guid": "a9ac9c40-6294-49ad-a8d8-5274645d11c9",
+  "applicationNumber": null,
+  "registrationNumber": "21046",
+  "applicationDate": null,
+  "registrationDate": "2004-08-31",
+  "expiryDate": "2024-08-31",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ca",
+      "description": "09 Acceleradors multimèdia; acceleradors videogràfics; aparells electrònics, elèctrics i electromecànics per a utilitzar amb ordinadors; aparells i equips per a l'enregistrament, reproducció i alteració del so, vídeo i dades; aparells per a analitzar i calibrar; circuits de conversió de dades; circuits integrats; equips per a l'anàlisi i programació de circuits integrats i memòries de semiconductors; material d'instrucció sobre ordinadors i dades algorítmiques per la descompressió i compressió de dades; memòries i material semiconductor; microcontroladors; microordinadors; microprocessadors; microprogramaris; parts i accessoris de tots els productes mencionats; perifèrics d'ordinador; processadors de semiconductors; processadors de vídeo; productes de vídeo sistemes; programes d'ordinador; programes d'ordinador, especialment programes d'aplicació integració i connectivitat, programes d'utilitat d'ordinador, programes d'ordinador per a xarxes d'administració; programes d'ordinador, especialment programes d'ordinador per a accedir a una xarxa electrònica global i xarxes d'ordinador interconnectades; programes de sistemes operatius; programes informàtics-eines per facilitar altres aplicacions informàtiques; programes operatius d'ordinador; quadres d'àudio-vídeocircuits; quadres d'àudiocircuits; quadres de circuits; quadres de vídeocircuits; semiconductors; semiconductors per a aparells d'enllumenat, calefacció, producció de vapor, cocció, refrigeració, assecament i ventilació; semiconductors per a instruments musicals; semiconductors per a jocs i joguines; semiconductors per a màquines i màquines-eines; semiconductors per a rellotges i aparells i instruments cronomètrics; sistemes operatius; xips (circuits integrats); xips processadors de semiconductors",
+      "translation_language": "en",
+      "translation": "MULTIMEDIA ACCELERATORS 09; ACCELERATORS AUDIOVISUAL; Electronics, electrical and electromechanical USE WITH COMPUTERS; APPARATUS AND EQUIPMENT FOR RECORDING, REPRODUCTION AND ALTERATION OF SOUND, VIDEO AND DATA; ANALYZE AND APPARATUS FOR calibrated; CIRCUITS data conversion; Integrated circuits; EQUIPMENT FOR ANALYSIS AND PROGRAMMING OF INTEGRATED CIRCUITS AND semiconductor memory; Materials on COMPUTERS AND DATA FOR algorithmic data compression and decompression; MEMORIES AND SEMICONDUCTOR EQUIPMENT; MICROCONTROLLERS; Microcomputers; Microprocessors; Firmware; PARTS AND ACCESSORIES OF ALL THE ABOVE-NAMED PRODUCTS; Computer peripherals; PROCESSORS FOR SEMICONDUCTORS; Video processor; VIDEO SYSTEMS PRODUCTS; COMPUTER PROGRAMS; COMPUTER PROGRAMS, ESPECIALLY PROGRAMS APPLICATION INTEGRATION AND CONNECTIVITY, utility COMPUTER, COMPUTER PROGRAMS FOR NETWORK MANAGEMENT; COMPUTER PROGRAMS, COMPUTER PROGRAMS ESPECIALLY FOR ACCESS TO AN ELECTRONIC NETWORK AND GLOBAL interconnected computer networks; OPERATING SYSTEMS PROGRAMS; TOOLS-COMPUTER PROGRAMS TO FACILITATE OTHER APPLICATIONS; OPERATING COMPUTER PROGRAMS; PICTURES AUDIO-VÍDEOCIRCUITS; PICTURES ÀUDIOCIRCUITS; PICTURES OF CIRCUITS; PICTURES OF VÍDEOCIRCUITS; SEMICONDUCTORS; FOR SEMICONDUCTORS lighting fixtures, heating, steam generating, cooking cooling and ventilation DRYING; SEMICONDUCTORS FOR MUSICAL INSTRUMENTS; GAMES AND TOYS FOR SEMICONDUCTORS; MACHINES FOR SEMICONDUCTORS machine tools; SEMICONDUCTORS AND APPARATUS FOR WATCHES AND chronometric instruments; OPERATING SYSTEMS; CHIPS (ICs) SEMICONDUCTOR CHIPS processor"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ca",
+      "description": "42 Concessió de llicències de patents, marques, drets d'autor, secrets comercials i/o coneixements relacionats en la fabricació de semiconductors i llurs usos; concessió de llicències de semiconductors; concessió de llicències de software relacionat en la fabricació de semiconductors i llurs usos; concessió de llicències tecnològiques; concessió de llicències tecnològiques incorporades en i relacionades a material d'instrucció sobre ordinadors i dades algorítmiques per la descompressió i compressió de dades; concessió de llicències tecnològiques incorporades en i relacionades a memòries i material semiconductor, circuits de conversió de dades, microprogramaris, aparells electrònics, elèctrics i electromecànics per a utilitzar amb ordinadors; concessió de llicències tecnològiques incorporades en i relacionades a productes semiconductors, circuits integrats, quadres de circuits, microordinadors, microcontroladors, microprocessadors i perifèrics d'ordinador; concessió de llicències tecnològiques incorporades en i relacionades a quadres de vídeocircuit, productes de vídeo sistemes, aparells i equips per a l'enregistrament, reproducció i alteració del so, vídeo i dades, programes d'ordinador; concessió de llicències tecnològiques relacionades en la fabricació de semiconductors i llurs usos; disseny per encàrrec de sistemes d'ordinador i telecomunicacions; serveis de consultoria en el camp dels ordinadors i telecomunicacions i la tecnologia relacionada per al disseny de software",
+      "translation_language": "en",
+      "translation": "42 licensing patents, trademarks, copyrights, trade secrets AND / OR RELATED KNOWLEDGE IN THE SEMICONDUCTOR MANUFACTURING AND THEIR USES; Licensing SEMICONDUCTORS; Licensing RELATED SOFTWARE IN THE SEMICONDUCTOR MANUFACTURING AND THEIR USES; TECHNOLOGICAL licensing; Licensing TECHNOLOGICAL AND RELATED MATERIAL incorporated into INSTRUCTION ON COMPUTERS AND DATA FOR algorithmic data compression and decompression; GRANT OF LICENSE AND RELATED TECHNOLOGIES INCORPORATED IN A SEMICONDUCTOR MATERIAL AND MEMORIES, CIRCUITS data conversion, firmware, electronics, electrical and electromechanical USE WITH COMPUTERS; Licensing TECHNOLOGICAL AND RELATED PRODUCTS incorporated in semiconductor integrated circuits, square CIRCUITS, microcomputer, microcontroller and microprocessor computer peripherals; Licensing TECHNOLOGICAL AND RELATED incorporated in checkered VÍDEOCIRCUIT, PRODUCTS VIDEO SYSTEMS, DEVICES AND EQUIPMENT FOR RECORDING, REPRODUCTION AND ALTERATION OF SOUND, VIDEO AND DATA, COMPUTER PROGRAMS; Licensing RELATED TO THE TECHNOLOGICAL AND THEIR USES semiconductor manufacturing; DESIGN CUSTOM COMPUTER AND TELECOMMUNICATIONS SYSTEMS; CONSULTING SERVICES IN THE FIELD OF TELECOMMUNICATIONS AND COMPUTERS AND TECHNOLOGY RELATED TO DESIGN SOFTWARE"
+    }
+  ],
+  "owner": "NXP USA, INC",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "NXP USA, INC"
+      }
+    ],
+    "applicationLanguageCode": "ca",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "MULTIMEDIA ACCELERATORS 09; ACCELERATORS AUDIOVISUAL; Electronics, electrical and electromechanical USE WITH COMPUTERS; APPARATUS AND EQUIPMENT FOR RECORDING, REPRODUCTION AND ALTERATION OF SOUND, VIDEO AND DATA; ANALYZE AND APPARATUS FOR calibrated; CIRCUITS data conversion; Integrated circuits; EQUIPMENT FOR ANALYSIS AND PROGRAMMING OF INTEGRATED CIRCUITS AND semiconductor memory; Materials on COMPUTERS AND DATA FOR algorithmic data compression and decompression; MEMORIES AND SEMICONDUCTOR EQUIPMENT; MICROCONTROLLERS; Microcomputers; Microprocessors; Firmware; PARTS AND ACCESSORIES OF ALL THE ABOVE-NAMED PRODUCTS; Computer peripherals; PROCESSORS FOR SEMICONDUCTORS; Video processor; VIDEO SYSTEMS PRODUCTS; COMPUTER PROGRAMS; COMPUTER PROGRAMS, ESPECIALLY PROGRAMS APPLICATION INTEGRATION AND CONNECTIVITY, utility COMPUTER, COMPUTER PROGRAMS FOR NETWORK MANAGEMENT; COMPUTER PROGRAMS, COMPUTER PROGRAMS ESPECIALLY FOR ACCESS TO AN ELECTRONIC NETWORK AND GLOBAL interconnected computer networks; OPERATING SYSTEMS PROGRAMS; TOOLS-COMPUTER PROGRAMS TO FACILITATE OTHER APPLICATIONS; OPERATING COMPUTER PROGRAMS; PICTURES AUDIO-VÍDEOCIRCUITS; PICTURES ÀUDIOCIRCUITS; PICTURES OF CIRCUITS; PICTURES OF VÍDEOCIRCUITS; SEMICONDUCTORS; FOR SEMICONDUCTORS lighting fixtures, heating, steam generating, cooking cooling and ventilation DRYING; SEMICONDUCTORS FOR MUSICAL INSTRUMENTS; GAMES AND TOYS FOR SEMICONDUCTORS; MACHINES FOR SEMICONDUCTORS machine tools; SEMICONDUCTORS AND APPARATUS FOR WATCHES AND chronometric instruments; OPERATING SYSTEMS; CHIPS (ICs) SEMICONDUCTOR CHIPS processor",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ca",
+          "intGoodsServicesDescription": "09 Acceleradors multimèdia; acceleradors videogràfics; aparells electrònics, elèctrics i electromecànics per a utilitzar amb ordinadors; aparells i equips per a l'enregistrament, reproducció i alteració del so, vídeo i dades; aparells per a analitzar i calibrar; circuits de conversió de dades; circuits integrats; equips per a l'anàlisi i programació de circuits integrats i memòries de semiconductors; material d'instrucció sobre ordinadors i dades algorítmiques per la descompressió i compressió de dades; memòries i material semiconductor; microcontroladors; microordinadors; microprocessadors; microprogramaris; parts i accessoris de tots els productes mencionats; perifèrics d'ordinador; processadors de semiconductors; processadors de vídeo; productes de vídeo sistemes; programes d'ordinador; programes d'ordinador, especialment programes d'aplicació integració i connectivitat, programes d'utilitat d'ordinador, programes d'ordinador per a xarxes d'administració; programes d'ordinador, especialment programes d'ordinador per a accedir a una xarxa electrònica global i xarxes d'ordinador interconnectades; programes de sistemes operatius; programes informàtics-eines per facilitar altres aplicacions informàtiques; programes operatius d'ordinador; quadres d'àudio-vídeocircuits; quadres d'àudiocircuits; quadres de circuits; quadres de vídeocircuits; semiconductors; semiconductors per a aparells d'enllumenat, calefacció, producció de vapor, cocció, refrigeració, assecament i ventilació; semiconductors per a instruments musicals; semiconductors per a jocs i joguines; semiconductors per a màquines i màquines-eines; semiconductors per a rellotges i aparells i instruments cronomètrics; sistemes operatius; xips (circuits integrats); xips processadors de semiconductors"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "42 licensing patents, trademarks, copyrights, trade secrets AND / OR RELATED KNOWLEDGE IN THE SEMICONDUCTOR MANUFACTURING AND THEIR USES; Licensing SEMICONDUCTORS; Licensing RELATED SOFTWARE IN THE SEMICONDUCTOR MANUFACTURING AND THEIR USES; TECHNOLOGICAL licensing; Licensing TECHNOLOGICAL AND RELATED MATERIAL incorporated into INSTRUCTION ON COMPUTERS AND DATA FOR algorithmic data compression and decompression; GRANT OF LICENSE AND RELATED TECHNOLOGIES INCORPORATED IN A SEMICONDUCTOR MATERIAL AND MEMORIES, CIRCUITS data conversion, firmware, electronics, electrical and electromechanical USE WITH COMPUTERS; Licensing TECHNOLOGICAL AND RELATED PRODUCTS incorporated in semiconductor integrated circuits, square CIRCUITS, microcomputer, microcontroller and microprocessor computer peripherals; Licensing TECHNOLOGICAL AND RELATED incorporated in checkered VÍDEOCIRCUIT, PRODUCTS VIDEO SYSTEMS, DEVICES AND EQUIPMENT FOR RECORDING, REPRODUCTION AND ALTERATION OF SOUND, VIDEO AND DATA, COMPUTER PROGRAMS; Licensing RELATED TO THE TECHNOLOGICAL AND THEIR USES semiconductor manufacturing; DESIGN CUSTOM COMPUTER AND TELECOMMUNICATIONS SYSTEMS; CONSULTING SERVICES IN THE FIELD OF TELECOMMUNICATIONS AND COMPUTERS AND TECHNOLOGY RELATED TO DESIGN SOFTWARE",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ca",
+          "intGoodsServicesDescription": "42 Concessió de llicències de patents, marques, drets d'autor, secrets comercials i/o coneixements relacionats en la fabricació de semiconductors i llurs usos; concessió de llicències de semiconductors; concessió de llicències de software relacionat en la fabricació de semiconductors i llurs usos; concessió de llicències tecnològiques; concessió de llicències tecnològiques incorporades en i relacionades a material d'instrucció sobre ordinadors i dades algorítmiques per la descompressió i compressió de dades; concessió de llicències tecnològiques incorporades en i relacionades a memòries i material semiconductor, circuits de conversió de dades, microprogramaris, aparells electrònics, elèctrics i electromecànics per a utilitzar amb ordinadors; concessió de llicències tecnològiques incorporades en i relacionades a productes semiconductors, circuits integrats, quadres de circuits, microordinadors, microcontroladors, microprocessadors i perifèrics d'ordinador; concessió de llicències tecnològiques incorporades en i relacionades a quadres de vídeocircuit, productes de vídeo sistemes, aparells i equips per a l'enregistrament, reproducció i alteració del so, vídeo i dades, programes d'ordinador; concessió de llicències tecnològiques relacionades en la fabricació de semiconductors i llurs usos; disseny per encàrrec de sistemes d'ordinador i telecomunicacions; serveis de consultoria en el camp dels ordinadors i telecomunicacions i la tecnologia relacionada per al disseny de software"
+        }
+      ]
+    },
+    "id": "a9ac9c40-6294-49ad-a8d8-5274645d11c9",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20240912",
+    "registrationOfficeCode": "AD",
+    "registrationOfficeName": "Andorra",
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20240831",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20040831",
+        "registrationNumber": "21046"
+      }
+    },
+    "version": "20240912104114",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/ad/a9ac9c40-6294-49ad-a8d8-5274645d11c9",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.617Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

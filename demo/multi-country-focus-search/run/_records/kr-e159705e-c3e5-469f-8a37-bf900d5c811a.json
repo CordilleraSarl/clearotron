@@ -1,0 +1,118 @@
+{
+  "uri": "/mark/kr/e159705e-c3e5-469f-8a37-bf900d5c811a",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "e159705e-c3e5-469f-8a37-bf900d5c811a",
+  "applicationNumber": "50-2009-0018332",
+  "registrationNumber": "4004621980000",
+  "applicationDate": "2009-12-24",
+  "registrationDate": "2010-06-04",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "FlexiUSB",
+  "markTransliteration": "FlexiUSB",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "기록된컴퓨터소프트웨어프로그램,마이크로프로쎄서,반도체,인쇄회로보드,재프로그램가능칩,집적회로,칩",
+      "translation_language": "en",
+      "translation": "Recorded computer software program, microprocessor, semiconductor, printed circuit board, reprogrammable chip, integrated circuit, chip"
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "특허법인세신 (SESHIN PATENT & LAW FIRM)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "네덜란드 엔엘- 아게 아인드호펜 하이 테크 캠퍼스",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V.",
+        "applicantNativeName": "엔엑스피 비 브이"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Recorded computer software program, microprocessor, semiconductor, printed circuit board, reprogrammable chip, integrated circuit, chip",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "기록된컴퓨터소프트웨어프로그램,마이크로프로쎄서,반도체,인쇄회로보드,재프로그램가능칩,집적회로,칩"
+        }
+      ]
+    },
+    "id": "e159705e-c3e5-469f-8a37-bf900d5c811a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "(Gasan-dong)#World Meridian Venture Center , Gasan digital -ro, Geumcheon-gu, Seoul, Korea",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "특허법인세신 (SESHIN PATENT & LAW FIRM)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20091224",
+        "applicationNumber": "50-2009-0018332"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20100604",
+        "registrationNumber": "4004621980000"
+      }
+    },
+    "version": "20250625201605",
+    "wordMarkSpecification": {
+      "markTransliteration": "FlexiUSB",
+      "markVerbalElementText": "FlexiUSB"
+    }
+  },
+  "_uri": "/mark/kr/e159705e-c3e5-469f-8a37-bf900d5c811a",
+  "_receipt": {
+    "fetched_at": "2026-09-18T14:09:34.907Z",
+    "context": "clearance-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

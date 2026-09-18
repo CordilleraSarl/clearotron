@@ -1,0 +1,148 @@
+{
+  "uri": "/mark/at/1f4d84ff-ab4f-4a89-9d73-1ca2b5b4ae35",
+  "provider": "clarivate",
+  "office": "at",
+  "guid": "1f4d84ff-ab4f-4a89-9d73-1ca2b5b4ae35",
+  "applicationNumber": "8479/2004",
+  "registrationNumber": "223152",
+  "applicationDate": "2004-12-27",
+  "registrationDate": "2005-02-14",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "MELTING POT",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    16,
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        16
+      ],
+      "language": "de",
+      "description": "Papier, Pappe (Karton) und Waren aus diesen Materialien, soweit sie nicht in anderen Klassen enthalten sind, Druckereierzeugnisse, Buchbinderartikel, Fotografien, Schreibwaren, Klebstoffe für Papier- und Schreibwaren oder für Haushaltszwecke, Künstlerbedarfsartikel, Pinsel, Schreibmaschinen und Büroartikel (ausgenommen Möbel), Lehr- und Unterrichtsmittel (ausgenommen Apparate), Verpackungsmaterial aus Kunststoff, soweit es nicht in anderen Klassen enthalten ist, Drucklettern, Druckstöcke,",
+      "translation_language": "en",
+      "translation": "Paper, cardboard and goods made from these materials, not included in other classes, printed matter, bookbinding material, photographs, stationery, adhesives for stationery or household purposes, artists&#39; materials, paint brushes, typewriters and office requisites (except furniture), instructional and teaching material (except apparatus), plastic materials for packaging (not included in other classes), printers&#39; type, printing blocks,"
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "de",
+      "description": "Werbung, Geschäftsführung, Unternehmensverwaltung, Büroarbeiten,",
+      "translation_language": "en",
+      "translation": "advertising, business management, company administration, office work,"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Erziehung, Ausbildung, Unterhaltung, sportliche und kulturelle Aktivitäten.",
+      "translation_language": "en",
+      "translation": "education, providing of training, entertainment, sporting and cultural activities."
+    }
+  ],
+  "owner": "NXP VERANSTALTUNGSBETRIEBS GMBH",
+  "ownerNative": null,
+  "ownerCountry": "AT",
+  "representative": "URBANEK, LIND, SCHMIED, REISCH RECHTSANWÄLTE OEG",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "KELSENGASSE 9, 3100 ST. PÖLTEN",
+        "applicantAddressCountryCode": "AT",
+        "applicantAddressCountryName": "Austria",
+        "applicantName": "NXP VERANSTALTUNGSBETRIEBS GMBH"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Paper, cardboard and goods made from these materials, not included in other classes, printed matter, bookbinding material, photographs, stationery, adhesives for stationery or household purposes, artists&#39; materials, paint brushes, typewriters and office requisites (except furniture), instructional and teaching material (except apparatus), plastic materials for packaging (not included in other classes), printers&#39; type, printing blocks,",
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Papier, Pappe (Karton) und Waren aus diesen Materialien, soweit sie nicht in anderen Klassen enthalten sind, Druckereierzeugnisse, Buchbinderartikel, Fotografien, Schreibwaren, Klebstoffe für Papier- und Schreibwaren oder für Haushaltszwecke, Künstlerbedarfsartikel, Pinsel, Schreibmaschinen und Büroartikel (ausgenommen Möbel), Lehr- und Unterrichtsmittel (ausgenommen Apparate), Verpackungsmaterial aus Kunststoff, soweit es nicht in anderen Klassen enthalten ist, Drucklettern, Druckstöcke,"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "advertising, business management, company administration, office work,",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Werbung, Geschäftsführung, Unternehmensverwaltung, Büroarbeiten,"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "education, providing of training, entertainment, sporting and cultural activities.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Erziehung, Ausbildung, Unterhaltung, sportliche und kulturelle Aktivitäten."
+        }
+      ]
+    },
+    "id": "1f4d84ff-ab4f-4a89-9d73-1ca2b5b4ae35",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20251014",
+    "registrationOfficeCode": "AT",
+    "registrationOfficeName": "Austria",
+    "representatives": [
+      {
+        "representativeAddress": "KREMSERGASSE 4, 3100 ST. PÖLTEN",
+        "representativeName": "URBANEK, LIND, SCHMIED, REISCH RECHTSANWÄLTE OEG"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20041227",
+        "applicationNumber": "8479/2004"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20050214",
+        "registrationNumber": "223152"
+      }
+    },
+    "version": "20251014020229",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MELTING POT"
+    }
+  },
+  "_uri": "/mark/at/1f4d84ff-ab4f-4a89-9d73-1ca2b5b4ae35",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:10.759Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

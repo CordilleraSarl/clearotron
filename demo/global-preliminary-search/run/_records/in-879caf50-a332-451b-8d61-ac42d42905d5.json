@@ -1,0 +1,165 @@
+{
+  "uri": "/mark/in/879caf50-a332-451b-8d61-ac42d42905d5",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "879caf50-a332-451b-8d61-ac42d42905d5",
+  "applicationNumber": "1394357",
+  "registrationNumber": null,
+  "applicationDate": "2005-10-25",
+  "registrationDate": null,
+  "expiryDate": "2025-10-25",
+  "renewalDate": "2015-10-25",
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "STARCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer hardware information appliance systems on a chip, namely integrated circuits, digital signal processor cores, macro cells, bus interfaces, hardware peripherals, hardware system blocks, and printed circuit boards, and user manuals for use therewith sold as a unit; computer software and user manuals for use therewith sold as a unit",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "en",
+      "description": "Books",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Provision of training, provision of information via internet",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "CONSULTING, RESEARCH, DEVELOPMENT, AND DESIGN SERVICES, TECHNICAL SUPPORT SERVICES; MAINTENANCE OF COMPUTER SOFTWARE AND HARDWARE; AND LICENSING OF INTELLECTUAL PROPERTY n",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA, INC. Body Incorporate",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "REMFRY SAGAR[269]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "1303 E. ALGONQUIN ROAD, SCHAUMBURG, IL 60196, U.S.A.",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC. Body Incorporate"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer hardware information appliance systems on a chip, namely integrated circuits, digital signal processor cores, macro cells, bus interfaces, hardware peripherals, hardware system blocks, and printed circuit boards, and user manuals for use therewith sold as a unit; computer software and user manuals for use therewith sold as a unit"
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Books"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Provision of training, provision of information via internet"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "CONSULTING, RESEARCH, DEVELOPMENT, AND DESIGN SERVICES, TECHNICAL SUPPORT SERVICES; MAINTENANCE OF COMPUTER SOFTWARE AND HARDWARE; AND LICENSING OF INTELLECTUAL PROPERTY n"
+        }
+      ]
+    },
+    "id": "879caf50-a332-451b-8d61-ac42d42905d5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1384-1"
+      }
+    ],
+    "recordLastUpdated": "20250710",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "REMFRY HOUSE, 8, NANGAL RAYA BUSINESS CENTRE, NEW DELHI - 110 046.",
+        "representativeName": "REMFRY SAGAR[269]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20051025",
+        "applicationNumber": "1394357"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20251025",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20030418"
+        }
+      ],
+      "markCurrentStatus": "REGISTERED",
+      "renewalDate": "20151025"
+    },
+    "version": "20250710102603",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "STARCORE"
+    }
+  },
+  "_uri": "/mark/in/879caf50-a332-451b-8d61-ac42d42905d5",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:10.756Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

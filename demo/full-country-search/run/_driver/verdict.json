@@ -1,16 +1,14 @@
 {
-  "ts": "2026-09-03T18:01:39.000Z",
+  "ts": "2026-09-18T16:05:15.962Z",
   "verdict": "CONDITIONAL",
   "reasons": [
-    "Decide whether to keep any paired probe or meter out of the measuring-instrument goods in the Japanese class 9 filing.",
-    "Have the Vencora group's Japanese filings checked under its subsidiary and agent names before this clearance is relied on.",
-    "the lawyer judged a material slice not fully cleared: Two searches were not closed and both bear on the answer: the Japanese class 9 sound-alike band on the VEN- opening — the ベンコリ neighbourhood — was counted and not read, and it is the zone the one advice-changing right came out of; and the Vencora group's Japanese portfolio matched no owner name the ",
-    "register coverage deferred on primary-sweep — the search did not finish and must be re-run before this can be relied on"
+    "Have the Japanese register checked for the exact vεηqοrι, vеnqоri, ベンコリ, ヴェンクォリ and VENCORE forms and for Vencora UK Limited rights before relying unconditionally on this clearance."
+  ],
+  "clauses": [
+    "The two exact mixed-script forms, two Japanese spellings, exact VENCORE search and Vencora UK Limited owner search remain unresolved."
   ],
   "kinds": {
-    "legalActions": true,
-    "coverage": true,
-    "registerGap": true
+    "legalActions": true
   },
   "tier": "Manageable",
   "badge": "l2",
@@ -21,6 +19,6 @@
     "rankFromTop": 4,
     "scale": 4
   },
-  "statement": "Manageable — conditional on: A live Japanese class 9 registration reading ベンクリ covers measuring and testing instruments (and 3 more).",
+  "statement": "Manageable — conditional on: The two exact mixed-script forms, two Japanese spellings, exact VENCORE search and Vencora UK Limited owner search remain unresolved.",
   "stance": "conditional"
 }

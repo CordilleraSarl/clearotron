@@ -1,0 +1,139 @@
+{
+  "uri": "/mark/kr/7d1a52c6-ba67-4d16-8766-6fe6d0e8fdb3",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "7d1a52c6-ba67-4d16-8766-6fe6d0e8fdb3",
+  "applicationNumber": "40-1998-0005800",
+  "registrationNumber": "4004448390000",
+  "applicationDate": "1998-03-02",
+  "registrationDate": "1999-03-23",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "FabKey",
+  "markTransliteration": "FABKEY",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "모듈,웨이퍼,집적반도체소자",
+      "translation_language": "en",
+      "translation": "Modules, wafers, integrated semiconductor devices"
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "목영동 (Mok Young Dong)",
+  "priorities": [
+    {
+      "priorityCountryCode": "DE",
+      "priorityCountryName": "Germany",
+      "priorityDate": "19970902",
+      "priorityNumber": "39741820"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "네덜란드 엔엘- 아게 아인드호펜 하이 테크 캠퍼스",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V.",
+        "applicantNativeName": "엔엑스피 비 브이"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Modules, wafers, integrated semiconductor devices",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "모듈,웨이퍼,집적반도체소자"
+        }
+      ]
+    },
+    "id": "7d1a52c6-ba67-4d16-8766-6fe6d0e8fdb3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "DE",
+        "priorityCountryName": "Germany",
+        "priorityDate": "19970902",
+        "priorityNumber": "39741820"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "SEOUL(NONE OFFICE)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "목영동 (Mok Young Dong)"
+      },
+      {
+        "representativeAddress": "(Y.P.LEE,MOCK&PARTNERS)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "목선영 (Mock Sun Young)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19980302",
+        "applicationNumber": "40-1998-0005800"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "19990323",
+        "registrationNumber": "4004448390000"
+      }
+    },
+    "version": "20250625154743",
+    "wordMarkSpecification": {
+      "markTransliteration": "FABKEY",
+      "markVerbalElementText": "FabKey"
+    }
+  },
+  "_uri": "/mark/kr/7d1a52c6-ba67-4d16-8766-6fe6d0e8fdb3",
+  "_receipt": {
+    "fetched_at": "2026-09-18T14:09:34.924Z",
+    "context": "clearance-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

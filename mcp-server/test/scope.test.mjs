@@ -322,8 +322,8 @@ test("tokenId reads OUR OWN mint's recordable facts, and only those", () => with
 //
 // This returned false — "not revoked" — on any unreadable list. On a default `clearotron start` install
 // the door was pointed at a file nothing created, so every revocation check silently passed and a
-// revoked key completed a full handshake with nothing logged. Overwatch ruling, recorded on 1889 for
-// the owner with the reversal path: fail CLOSED at request time. The cost is a visible outage that
+// revoked key completed a full handshake with nothing logged. The decision, reversible in `isRevoked` alone:
+// fail CLOSED at request time. The cost is a visible outage that
 // names its cause, instead of an invisible hole.
 
 test("an unreadable denylist REFUSES the token instead of assuming it is good", () => {

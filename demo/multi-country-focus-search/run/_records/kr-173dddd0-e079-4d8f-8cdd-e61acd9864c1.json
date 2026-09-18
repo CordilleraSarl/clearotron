@@ -1,0 +1,128 @@
+{
+  "uri": "/mark/kr/173dddd0-e079-4d8f-8cdd-e61acd9864c1",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "173dddd0-e079-4d8f-8cdd-e61acd9864c1",
+  "applicationNumber": "56-2002-0014987",
+  "registrationNumber": "4002588380000",
+  "applicationDate": "2002-12-10",
+  "registrationDate": "2003-03-28",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "I2C BUS",
+  "markTransliteration": "I2C BUS",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "계전기,다이오드,마이크로제어기,변압기,전류제어기,접속기,정류기,집적회로,축전기,터미스터,트랜지스터",
+      "translation_language": "en",
+      "translation": "Relays, Diodes, Microcontrollers, Transformers, Current Controllers, Connectors, Rectifiers, Integrated Circuits, Capacitors, Termistors, Transistors"
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "목영동 (Mok Young Dong)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "네덜란드 엔엘- 아게 아인드호펜 하이 테크 캠퍼스",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V.",
+        "applicantNativeName": "엔엑스피 비 브이"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Relays, Diodes, Microcontrollers, Transformers, Current Controllers, Connectors, Rectifiers, Integrated Circuits, Capacitors, Termistors, Transistors",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "계전기,다이오드,마이크로제어기,변압기,전류제어기,접속기,정류기,집적회로,축전기,터미스터,트랜지스터"
+        }
+      ]
+    },
+    "id": "173dddd0-e079-4d8f-8cdd-e61acd9864c1",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.04.03",
+      "26.04.18"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "SEOUL(NONE OFFICE)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "목영동 (Mok Young Dong)"
+      },
+      {
+        "representativeAddress": "(Y.P.LEE,MOCK&PARTNERS)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "목선영 (Mock Sun Young)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20021210",
+        "applicationNumber": "56-2002-0014987"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20030328",
+        "registrationNumber": "4002588380000"
+      }
+    },
+    "version": "20250625191505",
+    "wordMarkSpecification": {
+      "markTransliteration": "I2C BUS",
+      "markVerbalElementText": "I2C BUS"
+    }
+  },
+  "_uri": "/mark/kr/173dddd0-e079-4d8f-8cdd-e61acd9864c1",
+  "_receipt": {
+    "fetched_at": "2026-09-18T14:09:34.905Z",
+    "context": "clearance-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

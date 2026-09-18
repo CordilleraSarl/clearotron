@@ -1,0 +1,753 @@
+{
+  "uri": "/mark/em/1a39cf4d-e651-4c13-b607-ade6fe1ef9fa",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "1a39cf4d-e651-4c13-b607-ade6fe1ef9fa",
+  "applicationNumber": "18214352",
+  "registrationNumber": "18214352",
+  "applicationDate": "2020-03-24",
+  "registrationDate": "2020-07-28",
+  "expiryDate": "2030-03-24",
+  "renewalDate": null,
+  "lastPublicationDate": "2020-04-17",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "HoverGames",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    12,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        12
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "cs",
+      "description": "Dron; Sady pro vývoj dronu; Sady pro vývoj dronu pro drony pro rízení katastrof, zdravotní krize, ochranu zivotního prostredí a ochranu divoké zvere.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "cs",
+      "description": "Organizování, vedení a provozování soutezí dronu; Organizování, vedení a provozování soutezí pro vývoj dronu; Organizování, Vedení a provozování soutezí pro virtuální softwarové kódování pro software pro drony; Organizování, vedení a provozování soutezí pro navrhování hardwaru dronu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "da",
+      "description": "Droner; Droneudviklingssæt; Droneudviklingssæt katastrofestyring, sundhedskriser, miljøbeskyttelse, og bevaring af vilde dyr.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "da",
+      "description": "Organisering, afholdelse og drift af dronekonkurrencer; Organisering, afholdelse og drift af droneudviklingskonkurrencer; Organisering, Afholdelse og drift af konkurrencer med virtuel softwarekodning til software til droner; Organisering, afholdelse og drift af konkurrencer inden for design af dronehardware.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "nl",
+      "description": "Drones; Drone ontwikkelkits; Drone-ontwikkelingskits voor drones voor risicomanagement, gezondheidscrisis, milieubescherming en natuurbehoud.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "nl",
+      "description": "Het organiseren en houden van dronewedstrijden; Het organiseren en houden van drone-ontwikkelingswedstrijden; Het organiseren en houden van wedstrijden voor virtuele softwarecodering voor software voor drones; Het organiseren en houden van ontwerpwedstrijden voor drone-hardware.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "en",
+      "description": "Drones; Drone development kits; Drone development kits for drones for disaster management, health crises, environmental protection, and wildlife conservation.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Organizing, conducting and operating drone competitions; Organizing, conducting and operating drone development competitions; Organizing, conducting and operating competitions for virtual software coding for software for drones; Organizing, conducting and operating drone hardware design competitions.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "et",
+      "description": "Droon; Drooniarenduskomplektid; Drooniarenduskomplektid katastroofide ohjamiseks, tervishoiualasteks kriisiolukordadeks, keskkonnakaitseks ja looduslike liikide säilitamiseks.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "et",
+      "description": "Droonivõistluste korraldamine, läbiviimine ja käitamine; Drooniarendusvõistluste korraldamine, läbiviimine ja käitamine; Organiseerimine, Droonide tarkvara virtuaalsete tarkvarakodeerimise võistluste korraldamine ja käitamine; Droonide tarkvara kavandamise võistluste korraldamine, läbiviimine ja käitamine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "fi",
+      "description": "Miehittämättömät ilma-alukset; Radio-ohjattavien lentokoneiden kehityssarjat; Radio-ohjattavien lentokoneiden kehityssarjat katastrofien hallinnassa, terveyskriiseissä, ympäristönsuojelussa ja luonnonvaraisten eläinten suojelussa käytettäviä radio-ohjattavia lentokoneita varten.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fi",
+      "description": "Radio-ohjattaviin lentokoneisiin liittyvien kilpailujen järjestäminen, vetäminen ja hoitaminen; Radio-ohjattavien lentokoneiden kehittämiseen liittyvien kilpailujen järjestäminen, vetäminen ja hoitaminen; Organisointi, Radio-ohjattaviin lentokoneisiin tarkoitettujen ohjelmistojen virtuaaliseen ohjelmistokoodaukseen liittyvien kilpailujen vetäminen ja hoitaminen; Radio-ohjattavien lentokoneiden laitteistojen suunnittelukilpailujen järjestäminen, vetäminen ja hoitaminen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "fr",
+      "description": "Drone; Kits de développement de drones; Kits de développement de drones pour drones de gestion de catastrophe, pour crises sanitaires, pour la protection de l'environnement et pour la préservation de la faune.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": "Organisation, conduite et exploitation de compétitions de drones; Organisation, conduite et exploitation de compétitions de développement de drones; Organisation, Conduite et exploitation de compétitions de codage logiciel virtuel pour logiciels de drones; Organisation, conduite et exploitation de compétitions de conception de matériel informatique pour drones.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "de",
+      "description": "Drohne; Drohnen-Entwicklungs-Kits; Drohnen-Entwicklungs-Kits in Bezug auf Drohnen für das Katastrophenmanagement, medizinische Notsituationen, Umweltschutz und Tierschutz.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Organisation, Durchführung und Veranstaltung von Drohnenwettbewerben; Organisation, Durchführung und Veranstaltung von Drohnenentwicklungswettbewerben; Organisierung, Durchführung und Veranstaltung von Wettbewerben im Programmieren virtueller Software in Bezug auf Software für Drohnen; Organisation, Durchführung und Veranstaltung von Designwettbewerben in Bezug auf Drohnenhardware.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "hr",
+      "description": "Dron; Kompleti za razvoj bespilotnih letjelica; Kompleti za razvoj bespilotnih letjelica za upravljanje katastrofama, zdravstvenom krizom, zastitom okolisa i ocuvanjem divljih zivotinja.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "hr",
+      "description": "Organiziranje, provodenje i upravljanje natjecanjima bespilotnih letjelica; Organiziranje, provodenje i upravljanje natjecanjima za razvoj bespilotnih letjelica; Organiziranje, Provodenje i upravljanje natjecanjima za kodiranje virtualnog softvera za softver za bespilotne letjelice; Organizacija, provodenje i upravljanje natjecanjima za dizajn hardvera za bespilotne letjelice.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "hu",
+      "description": "Drón; Drónfejleszto készletek; Drónfejleszto készletek drónokhoz katasztrófakezelés, egészségügyi válságok, környezetvédelem és vadon élo állatok védelme érdekében.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "hu",
+      "description": "Drónversenyek szervezése, lebonyolítása és üzemeltetése; Drónfejlesztési versenyek szervezése, lebonyolítása és vezetése; Szervezése, Drónokhoz tartozó szoftverek virtuális szoftverkódolásához kapcsolódó versenyek lebonyolítása és üzemeltetése; Drón-hardver tervezési versenyek szervezése, lebonyolítása és vezetése.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "it",
+      "description": "Drone; Kit per lo sviluppo dei droni; Kit per lo sviluppo dei droni per la gestione di disastri, crisi sanitarie, protezione ambientale e conservazione di flora e fauna protette.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "it",
+      "description": "Organizzazione, conduzione e gestione di competizioni di droni; Organizzazione, conduzione e gestione di competizioni relative allo sviluppo di droni; Organizzativo, Conduzione e gestione di competizioni riguardanti software per codifica virtuale destinati a software per droni; Organizzazione, conduzione e gestione di competizioni per la progettazione di hardware per droni.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "lt",
+      "description": "Bepilotis orlaivis; Dronu kurimo rinkiniai; Dronu kurimo rinkiniai dronams, skirti nelaimiu valdymui, sveikatos krizems, aplinkos apsaugai ir laukines gamtos issaugojimui.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "lt",
+      "description": "Dronu varzybu organizavimas, vedimas ir valdymas; Dronu tobulinimo varzybu organizavimas, vedimas ir vykdymas; Organizavimas, Dronu programines irangos kodavimo virtualios programines irangos konkursu vedimas ir vedimas; Dronu aparaturos projektavimo konkursu organizavimas, vedimas ir valdymas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "lv",
+      "description": "Bezpilotu gaisa kugis; Dronu izstrades komplekti; Dronu izstrades komplekti droniem katastrofu parvaldibai, veselibas krizem, vides aizsardzibai un savvalas dzivnieku aizsardzibai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "lv",
+      "description": "Dronu sacensibu organizesana, vadisana un rikosana; Dronu izstrades konkursu organizesana, vadisana un rikosana; Organizesana, Dronu programmaturas virtualas programmaturas kodesanas sacensibu vadisana un vadisana; Dronu aparaturas projektesanas sacensibu organizesana, vadisana un rikosana.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "mt",
+      "description": "Ingenju tal-ajru minghajr pilota; Kitts ghall-izvilupp tad-drones; Kitts ghall-izvilupp tad-drones ghal drones ghall-gestjoni tad-dizastri, krizijiet tas-sahha, harsien tal-ambjent, u konservazzjoni ta' annimali slavagg.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "mt",
+      "description": "L-organizzazzjoni, it-tmexxija u l-operat ta' kompetizzjonijiet tad-drones; L-organizzazzjoni, it-tmexxija u l-operat ta' kompetizzjonijiet tal-izvilupp tad-drones; Organizzazzjoni, It-tmexxija u l-operat ta' kompetizzjonijiet ghall-kodifikazzjoni ta' softwer virtwali ghal softwer tad-drones; L-organizzazzjoni, it-tmexxija u l-operat ta' kompetizzjonijiet tad-disinn ta' hardwer tad-drones.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "pl",
+      "description": "Drony; Zestawy do rozwoju dronów; Zestawy do rozwoju dronów do zarzadzania kryzysowego, zarzadzania kryzysowego w opiece zdrowotnej, ochrony srodowiska i ochrony dzikiej przyrody.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "pl",
+      "description": "Organizacja, prowadzenie i przeprowadzanie zawodów z udzialem dronów; Organizacja, prowadzenie i przeprowadzanie zawodów w zakresie rozwoju dronów; Organizowanie, Prowadzenie i przeprowadzanie zawodów w zakresie kodowania wirtualnego oprogramowania do dronów; Organizacja, prowadzenie i przeprowadzanie zawodów w zakresie projektowania sprzetu do dronów.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "pt",
+      "description": "Drone; Kits de desenvolvimento de drones; Kits de desenvolvimento de drones para gestão de catástrofes, crises sanitárias, proteção ambiental e conservação da vida selvagem.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "pt",
+      "description": "Organização, realização e operação de competições de drones; Organização, direção e realização de concursos de desenvolvimento de drones; Organização, Realização e operação de concursos para codificação de software virtual para drones; Organização, realização e operação de concursos de conceção de hardware para drones.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "ro",
+      "description": "Drona; Seturi pentru dezvoltarea de drone; Seturi pentru dezvoltarea de drone pentru drone pentru gestionarea dezastrelor, crize din sanatate, protejarea mediului înconjurator si conservarea animalelor salbatice.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ro",
+      "description": "Organizarea, coordonarea si exploatarea concursurilor cu drone; Organizarea, coordonarea si exploatarea concursurilor de dezvoltare a dronelor; Organizare, Coordonarea si exploatarea concursurilor pentru codarea de software virtual pentru software pentru drone; Organizare, coordonare si operare de concursuri pentru crearea de hardware.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "sk",
+      "description": "Dróny; Súpravy na vývoj dronov; Súpravy na vývoj dronov na správu katastrof, zdravotných kríz, ochrany zivotného prostredia a ochrany divo zijúcich zvierat.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sk",
+      "description": "Organizovanie, vedenie a prevádzkovanie sútazí dronov; Organizovanie, vedenie a prevádzkovanie sútazí v oblasti vývoja dronov; Organizovanie, Vedenie a prevádzkovanie sútazí sútazí v oblasti virtuálneho kódovania softvéru pre drony; Organizovanie, vedenie a prevádzkovanie sútazí v oblasti vývoja hardvéru pre drony.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "sl",
+      "description": "Brezpilotni zrakoplov; Kompleti za razvoj dronov; Kompleti za razvoj dronov za drone za obvladovanje nesrec, zdravstvene krize, varovanje okolja in zascito prostozivecih rastlin in zivali.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sl",
+      "description": "Organizacija, izvajanje in vodenje tekmovanj z droni; Organizacija, izvajanje in vodenje tekmovanj v razvoju dronov; Organizacija, Izvajanje in vodenje tekmovanj za kodiranje navidezne programske opreme za programsko opremo za drone; Organizacija, izvajanje in vodenje tekmovanj v oblikovanju strojne opreme za drone.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "es",
+      "description": "Dron; Kits de desarrollo de drones; Kits de desarrollo de drones para gestión de desastres, crisis sanitarias, protección ambiental, y conservación de la vida silvestre.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Organización, celebración y gestión de competiciones de drones; Organización, celebración y gestión de competiciones de desarrollo de drones; Organizador, Celebración y gestión de competiciones de codificación de software virtual para drones; Organización, celebración y gestión de competiciones de diseño de hardware para drones.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "sw",
+      "description": "Drönare; Utvecklingssatser för drönare; Utvecklingssatser för drönare för katastrofhantering, hälsokriser, miljöskydd och bevarande av djurliv.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sw",
+      "description": "Organisering, ledning och genomförande av offentliga upphandlingar som rör drönare; Organisering, ledning och genomförande av offentliga upphandlingar som rör drönarutveckling; Organisering, Ledning och genomförande av offentliga upphandlingar som rör virtuell programvarukodning av drönarprogramvara; Anordnande, ledning och genomförande av offentliga upphandlingar som rör formgivning av maskinvara för drönare.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO SHIELDMARK B.V.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60,Eindhoven, 5656 AG",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "nl",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Dron; Sady pro vývoj dronu; Sady pro vývoj dronu pro drony pro rízení katastrof, zdravotní krize, ochranu zivotního prostredí a ochranu divoké zvere."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Organizování, vedení a provozování soutezí dronu; Organizování, vedení a provozování soutezí pro vývoj dronu; Organizování, Vedení a provozování soutezí pro virtuální softwarové kódování pro software pro drony; Organizování, vedení a provozování soutezí pro navrhování hardwaru dronu."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Droner; Droneudviklingssæt; Droneudviklingssæt katastrofestyring, sundhedskriser, miljøbeskyttelse, og bevaring af vilde dyr."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Organisering, afholdelse og drift af dronekonkurrencer; Organisering, afholdelse og drift af droneudviklingskonkurrencer; Organisering, Afholdelse og drift af konkurrencer med virtuel softwarekodning til software til droner; Organisering, afholdelse og drift af konkurrencer inden for design af dronehardware."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Drones; Drone ontwikkelkits; Drone-ontwikkelingskits voor drones voor risicomanagement, gezondheidscrisis, milieubescherming en natuurbehoud."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Het organiseren en houden van dronewedstrijden; Het organiseren en houden van drone-ontwikkelingswedstrijden; Het organiseren en houden van wedstrijden voor virtuele softwarecodering voor software voor drones; Het organiseren en houden van ontwerpwedstrijden voor drone-hardware."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Drones; Drone development kits; Drone development kits for drones for disaster management, health crises, environmental protection, and wildlife conservation."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Organizing, conducting and operating drone competitions; Organizing, conducting and operating drone development competitions; Organizing, conducting and operating competitions for virtual software coding for software for drones; Organizing, conducting and operating drone hardware design competitions."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Droon; Drooniarenduskomplektid; Drooniarenduskomplektid katastroofide ohjamiseks, tervishoiualasteks kriisiolukordadeks, keskkonnakaitseks ja looduslike liikide säilitamiseks."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Droonivõistluste korraldamine, läbiviimine ja käitamine; Drooniarendusvõistluste korraldamine, läbiviimine ja käitamine; Organiseerimine, Droonide tarkvara virtuaalsete tarkvarakodeerimise võistluste korraldamine ja käitamine; Droonide tarkvara kavandamise võistluste korraldamine, läbiviimine ja käitamine."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Miehittämättömät ilma-alukset; Radio-ohjattavien lentokoneiden kehityssarjat; Radio-ohjattavien lentokoneiden kehityssarjat katastrofien hallinnassa, terveyskriiseissä, ympäristönsuojelussa ja luonnonvaraisten eläinten suojelussa käytettäviä radio-ohjattavia lentokoneita varten."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Radio-ohjattaviin lentokoneisiin liittyvien kilpailujen järjestäminen, vetäminen ja hoitaminen; Radio-ohjattavien lentokoneiden kehittämiseen liittyvien kilpailujen järjestäminen, vetäminen ja hoitaminen; Organisointi, Radio-ohjattaviin lentokoneisiin tarkoitettujen ohjelmistojen virtuaaliseen ohjelmistokoodaukseen liittyvien kilpailujen vetäminen ja hoitaminen; Radio-ohjattavien lentokoneiden laitteistojen suunnittelukilpailujen järjestäminen, vetäminen ja hoitaminen."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Drone; Kits de développement de drones; Kits de développement de drones pour drones de gestion de catastrophe, pour crises sanitaires, pour la protection de l'environnement et pour la préservation de la faune."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Organisation, conduite et exploitation de compétitions de drones; Organisation, conduite et exploitation de compétitions de développement de drones; Organisation, Conduite et exploitation de compétitions de codage logiciel virtuel pour logiciels de drones; Organisation, conduite et exploitation de compétitions de conception de matériel informatique pour drones."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Drohne; Drohnen-Entwicklungs-Kits; Drohnen-Entwicklungs-Kits in Bezug auf Drohnen für das Katastrophenmanagement, medizinische Notsituationen, Umweltschutz und Tierschutz."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Organisation, Durchführung und Veranstaltung von Drohnenwettbewerben; Organisation, Durchführung und Veranstaltung von Drohnenentwicklungswettbewerben; Organisierung, Durchführung und Veranstaltung von Wettbewerben im Programmieren virtueller Software in Bezug auf Software für Drohnen; Organisation, Durchführung und Veranstaltung von Designwettbewerben in Bezug auf Drohnenhardware."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Dron; Kompleti za razvoj bespilotnih letjelica; Kompleti za razvoj bespilotnih letjelica za upravljanje katastrofama, zdravstvenom krizom, zastitom okolisa i ocuvanjem divljih zivotinja."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Organiziranje, provodenje i upravljanje natjecanjima bespilotnih letjelica; Organiziranje, provodenje i upravljanje natjecanjima za razvoj bespilotnih letjelica; Organiziranje, Provodenje i upravljanje natjecanjima za kodiranje virtualnog softvera za softver za bespilotne letjelice; Organizacija, provodenje i upravljanje natjecanjima za dizajn hardvera za bespilotne letjelice."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Drón; Drónfejleszto készletek; Drónfejleszto készletek drónokhoz katasztrófakezelés, egészségügyi válságok, környezetvédelem és vadon élo állatok védelme érdekében."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Drónversenyek szervezése, lebonyolítása és üzemeltetése; Drónfejlesztési versenyek szervezése, lebonyolítása és vezetése; Szervezése, Drónokhoz tartozó szoftverek virtuális szoftverkódolásához kapcsolódó versenyek lebonyolítása és üzemeltetése; Drón-hardver tervezési versenyek szervezése, lebonyolítása és vezetése."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Drone; Kit per lo sviluppo dei droni; Kit per lo sviluppo dei droni per la gestione di disastri, crisi sanitarie, protezione ambientale e conservazione di flora e fauna protette."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Organizzazione, conduzione e gestione di competizioni di droni; Organizzazione, conduzione e gestione di competizioni relative allo sviluppo di droni; Organizzativo, Conduzione e gestione di competizioni riguardanti software per codifica virtuale destinati a software per droni; Organizzazione, conduzione e gestione di competizioni per la progettazione di hardware per droni."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Bepilotis orlaivis; Dronu kurimo rinkiniai; Dronu kurimo rinkiniai dronams, skirti nelaimiu valdymui, sveikatos krizems, aplinkos apsaugai ir laukines gamtos issaugojimui."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Dronu varzybu organizavimas, vedimas ir valdymas; Dronu tobulinimo varzybu organizavimas, vedimas ir vykdymas; Organizavimas, Dronu programines irangos kodavimo virtualios programines irangos konkursu vedimas ir vedimas; Dronu aparaturos projektavimo konkursu organizavimas, vedimas ir valdymas."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Bezpilotu gaisa kugis; Dronu izstrades komplekti; Dronu izstrades komplekti droniem katastrofu parvaldibai, veselibas krizem, vides aizsardzibai un savvalas dzivnieku aizsardzibai."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Dronu sacensibu organizesana, vadisana un rikosana; Dronu izstrades konkursu organizesana, vadisana un rikosana; Organizesana, Dronu programmaturas virtualas programmaturas kodesanas sacensibu vadisana un vadisana; Dronu aparaturas projektesanas sacensibu organizesana, vadisana un rikosana."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Ingenju tal-ajru minghajr pilota; Kitts ghall-izvilupp tad-drones; Kitts ghall-izvilupp tad-drones ghal drones ghall-gestjoni tad-dizastri, krizijiet tas-sahha, harsien tal-ambjent, u konservazzjoni ta' annimali slavagg."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "L-organizzazzjoni, it-tmexxija u l-operat ta' kompetizzjonijiet tad-drones; L-organizzazzjoni, it-tmexxija u l-operat ta' kompetizzjonijiet tal-izvilupp tad-drones; Organizzazzjoni, It-tmexxija u l-operat ta' kompetizzjonijiet ghall-kodifikazzjoni ta' softwer virtwali ghal softwer tad-drones; L-organizzazzjoni, it-tmexxija u l-operat ta' kompetizzjonijiet tad-disinn ta' hardwer tad-drones."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Drony; Zestawy do rozwoju dronów; Zestawy do rozwoju dronów do zarzadzania kryzysowego, zarzadzania kryzysowego w opiece zdrowotnej, ochrony srodowiska i ochrony dzikiej przyrody."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Organizacja, prowadzenie i przeprowadzanie zawodów z udzialem dronów; Organizacja, prowadzenie i przeprowadzanie zawodów w zakresie rozwoju dronów; Organizowanie, Prowadzenie i przeprowadzanie zawodów w zakresie kodowania wirtualnego oprogramowania do dronów; Organizacja, prowadzenie i przeprowadzanie zawodów w zakresie projektowania sprzetu do dronów."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Drone; Kits de desenvolvimento de drones; Kits de desenvolvimento de drones para gestão de catástrofes, crises sanitárias, proteção ambiental e conservação da vida selvagem."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Organização, realização e operação de competições de drones; Organização, direção e realização de concursos de desenvolvimento de drones; Organização, Realização e operação de concursos para codificação de software virtual para drones; Organização, realização e operação de concursos de conceção de hardware para drones."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Drona; Seturi pentru dezvoltarea de drone; Seturi pentru dezvoltarea de drone pentru drone pentru gestionarea dezastrelor, crize din sanatate, protejarea mediului înconjurator si conservarea animalelor salbatice."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Organizarea, coordonarea si exploatarea concursurilor cu drone; Organizarea, coordonarea si exploatarea concursurilor de dezvoltare a dronelor; Organizare, Coordonarea si exploatarea concursurilor pentru codarea de software virtual pentru software pentru drone; Organizare, coordonare si operare de concursuri pentru crearea de hardware."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Dróny; Súpravy na vývoj dronov; Súpravy na vývoj dronov na správu katastrof, zdravotných kríz, ochrany zivotného prostredia a ochrany divo zijúcich zvierat."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Organizovanie, vedenie a prevádzkovanie sútazí dronov; Organizovanie, vedenie a prevádzkovanie sútazí v oblasti vývoja dronov; Organizovanie, Vedenie a prevádzkovanie sútazí sútazí v oblasti virtuálneho kódovania softvéru pre drony; Organizovanie, vedenie a prevádzkovanie sútazí v oblasti vývoja hardvéru pre drony."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Brezpilotni zrakoplov; Kompleti za razvoj dronov; Kompleti za razvoj dronov za drone za obvladovanje nesrec, zdravstvene krize, varovanje okolja in zascito prostozivecih rastlin in zivali."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Organizacija, izvajanje in vodenje tekmovanj z droni; Organizacija, izvajanje in vodenje tekmovanj v razvoju dronov; Organizacija, Izvajanje in vodenje tekmovanj za kodiranje navidezne programske opreme za programsko opremo za drone; Organizacija, izvajanje in vodenje tekmovanj v oblikovanju strojne opreme za drone."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Dron; Kits de desarrollo de drones; Kits de desarrollo de drones para gestión de desastres, crisis sanitarias, protección ambiental, y conservación de la vida silvestre."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Organización, celebración y gestión de competiciones de drones; Organización, celebración y gestión de competiciones de desarrollo de drones; Organizador, Celebración y gestión de competiciones de codificación de software virtual para drones; Organización, celebración y gestión de competiciones de diseño de hardware para drones."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Drönare; Utvecklingssatser för drönare; Utvecklingssatser för drönare för katastrofhantering, hälsokriser, miljöskydd och bevarande av djurliv."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Organisering, ledning och genomförande av offentliga upphandlingar som rör drönare; Organisering, ledning och genomförande av offentliga upphandlingar som rör drönarutveckling; Organisering, Ledning och genomförande av offentliga upphandlingar som rör virtuell programvarukodning av drönarprogramvara; Anordnande, ledning och genomförande av offentliga upphandlingar som rör formgivning av maskinvara för drönare."
+        }
+      ]
+    },
+    "id": "1a39cf4d-e651-4c13-b607-ade6fe1ef9fa",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "73"
+      }
+    ],
+    "recordLastUpdated": "20260917",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices. 2e étage Anna van Buerenplein 21A,Den Haag, 2595DA",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO SHIELDMARK B.V."
+      }
+    ],
+    "secondLanguageCode": "en",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200324",
+        "applicationNumber": "18214352"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300324",
+      "lastPublicationDate": "20200417",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20200728",
+        "registrationNumber": "18214352"
+      }
+    },
+    "version": "20260917204139",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "HoverGames"
+    }
+  },
+  "_uri": "/mark/em/1a39cf4d-e651-4c13-b607-ade6fe1ef9fa",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:10.756Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

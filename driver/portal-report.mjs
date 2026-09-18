@@ -591,6 +591,17 @@ const EMBED_JS = `
     // then post the target's document-relative top for the PARENT to scroll to, because this frame has
     // no scrollport of its own. An id that is not in the document is ignored rather than failed: the
     // shell only ever draws ids the document announced.
+    // THE PORTAL'S THEME, applied the way the report's own Theme control applies it: the attribute its
+    // dark rules key on. That control sits in the top bar embedding strips, and a sandboxed frame cannot
+    // read the portal's saved choice, so this is the one route by which an embedded report turns dark.
+    // Two values and nothing else; the answer says which was applied, so the shell knows it took.
+    if(d.command==='theme'){
+      var th=d.value==='dark'?'dark':'light';
+      document.documentElement.setAttribute('data-theme',th);
+      try{parent.postMessage({source:TAG,type:'theme',theme:th},'*');}catch(e){}
+      schedule();
+      return;
+    }
     if(d.command==='section'){
       var sec=document.getElementById(String(d.value||''));
       if(sec){ revealTarget(sec); var t=Math.max(0,Math.ceil(sec.getBoundingClientRect().top+window.scrollY));

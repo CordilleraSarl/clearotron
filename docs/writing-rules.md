@@ -183,6 +183,75 @@ Rules decay over long outputs — the longer you write, the more likely you reve
 
 ---
 
+# Rules added upstream after this copy
+
+On Style reorganised these rules into a rules directory and generated profiles in September 2026. The
+sections above are the earlier text, and they still hold. Several of them — no jargon, active voice, one
+idea per sentence, say it once, numbers over superlatives, no emotionally charged framing — sit outside
+the set that project now applies while drafting, and reach a writer through a review pass instead. Here
+they apply while drafting, as they always have. What the reorganisation adds is below.
+
+## Mark a guess as a guess
+
+Verify a URL, a file path, a command flag, a parameter name or a figure before presenting it as
+established. Where you cannot verify one, say so in the sentence that carries it and name what is
+unchecked. A constructed path that looks right and is wrong costs the reader more than an admitted gap.
+
+## State the event, then its evidence
+
+Report what happened and what shows it. Keep a judgment where the reader asked for analysis, and name it
+as a judgment rather than letting it read as an observation.
+
+## Do not invent the cause
+
+Before writing why something happens, check that a source establishes the link. State the narrow
+supported fact, and label anything beyond it as inference.
+
+## A recommendation carries its reason
+
+Give the recommendation and the reason together. Compare the alternatives where the trade-off is what the
+reader decides on, and not otherwise.
+
+## Leave protected text alone
+
+Quotations, source excerpts, literal code, commands, URLs and identifiers survive an edit unchanged.
+Suspect a defect in one, flag it; never repair it silently. In this product that covers a mark, a name on
+a register, a search string and anything else the engine passes through untouched.
+
+## Two sentences, two jobs
+
+Give the second sentence of a pair its own work — evidence, a qualification, a step in the argument. If
+both state the same claim, merge them or cut one.
+
+## Test the closing sentence
+
+Read a paragraph without its last sentence and name what the reader loses. Keep the closer when it
+supplies a claim, a consequence or an action. Cut it when the paragraph already says the same thing. A
+number or a name in the sentence does not earn it a place.
+
+## Parallel phrasing needs two real halves
+
+Strip the matching syntax and ask what the sentence asserts. Keep the construction where its halves
+express a relationship grounded in the argument; cut it where matching abstractions only produce the
+sound of a conclusion.
+
+## Vary the cadence
+
+Short declaratives stacked at the same length and pitch each land as a verdict, and none of them is one.
+Let a longer sentence develop an explanation, and put the emphasis on a short one.
+
+## Cut the service ritual
+
+"Happy to", "say the word" and "don't hesitate to reach out" tell the reader nothing they do not already
+have. Keep a real request for a response and a real deadline.
+
+## Open with the result, and name the subject before its identifier
+
+A problem report names the failure and who it affects. A proposal states what it wants to happen. An
+identifier follows the thing it identifies and never replaces the explanation of it.
+
+---
+
 ## Licence of these rules
 
 MIT License

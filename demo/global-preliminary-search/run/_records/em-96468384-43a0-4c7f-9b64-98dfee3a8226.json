@@ -1,0 +1,1091 @@
+{
+  "uri": "/mark/em/96468384-43a0-4c7f-9b64-98dfee3a8226",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "96468384-43a0-4c7f-9b64-98dfee3a8226",
+  "applicationNumber": "15384084",
+  "registrationNumber": "15384084",
+  "applicationDate": "2016-04-28",
+  "registrationDate": "2016-09-29",
+  "expiryDate": "2036-04-28",
+  "renewalDate": null,
+  "lastPublicationDate": "2016-06-22",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MODELSTREAM",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Software pro podnikovou správu aktiv.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "cs",
+      "description": "Vyucování, vzdelávání, Jmenovite, Skolení uzivatelu v pouzívání softwaru pro podnikovou správu aktiv.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Technické sluzby, jmenovite instalace, konfigurace a údrzba softwaru pro podnikovou správu aktiv.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Software til aktivstyring for virksomheder.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "da",
+      "description": "Oplæring, Nemlig, Undervisning af brugere i anvendelse af software til administration af virksomhedsaktiver.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Tekniske tjenesteydelser, nemlig installation, konfiguration og vedligeholdelse af software til administration af virksomhedsaktiver.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Software voor beheer van bedrijfsactiva.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "nl",
+      "description": "Opleiding, Te weten, Opleiding van gebruikers in het gebruik van software voor beheer van bedrijfsactiva.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Technische diensten, te weten installatie, configuratie en onderhoud van software voor beheer van bedrijfsactiva.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Software for enterprise asset management.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Training services, namely, training users how to use Enterprise asset management software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Technical services, namely, installing, configuring and maintaining enterprise asset management software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Ettevõtte varahalduse tarkvara.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "et",
+      "description": "Koolitusteenused, Teisisõnu, Ettevõtte varahalduse tarkvara kasutamise koolitus.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Tehnikateenused, nimelt ettevõtte varahalduse tarkvara installimine, konfigureerimine ja hooldamine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Ohjelmistot yritysten varainhoitoon.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fi",
+      "description": "Koulutuspalvelut, Nimittäin, Valmennus, jolla käyttäjiä opetetaan käyttämään yritysten varainhoito-ohjelmistoja.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Tekniset palvelut, nimittäin yritysten varainhoito-ohjelmistojen asennus, asetusten määritys ja ylläpito.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Logiciels pour la gestion d'actifs d'entreprises.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": "Formation, À savoir, Formation à l'utilisation d'un logiciel de gestion d'actifs d'entreprises.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Services techniques, à savoir installation, configuration et maintenance de logiciels de gestion d'actifs d'entreprises.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Software für Betriebsanlagenverwaltung.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Bereitstellung von Ausbildung, Nämlich, Schulung von Benutzern in der Anwendung von Software für Betriebsanlagenverwaltung.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Dienstleistungen im technischen Bereich, nämlich Installierung, Konfigurierung und Pflege von Software für Betriebsanlagenverwaltung.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hr",
+      "description": "Softver za upravljanje imovinom poduzeca.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "hr",
+      "description": "Pruzanje usluga osposobljavanja, Odnosno, Osposobljavanje korisnika za koristenje softvera za upravljanje imovinom poduzeca.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hr",
+      "description": "Tehnicke usluge, i to instalacija, konfiguracija i odrzavanje softvera za upravljanje imovinom poduzeca.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Szoftverek vállalati értékelés irányításához.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "hu",
+      "description": "Szakmai képzés, betanítás, Nevezetesen, Képzés a vállalati értékelés irányítására szolgáló szoftverek használatával kapcsolatban.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Muszaki szolgáltatások, nevezetesen vállalati értékelés irányítására szolgáló szoftverek telepítése, konfigurálása és karbantartása.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Software per la gestione di beni aziendali.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "it",
+      "description": "Attività di formazione, Ovvero, Formazione di utenti in relazione all'uso di software per la gestione di beni aziendali.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Servizi tecnici, ovvero installazione, configurazione e manutenzione di software per la gestione di beni aziendali.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Programine iranga, skirta valdyti imones turta.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "lt",
+      "description": "Instruktavimas, Butent,, Naudotoju mokymai, skirti mokyti naudotis imones turto valdymo programine iranga.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "Technines paslaugos, butent imones turto valdymo programines irangos idiegimas, konfiguravimas ir palaikymas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Programmatura uznemuma aktivu parvaldibai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "lv",
+      "description": "Treninu macibu nodrosinasana, Proti, Lietotaju apmaciba saistiba ar uznemuma aktivu parvaldibas programmaturas lietosanu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Tehniskie pakalpojumi, proti, uznemuma aktivu parvaldibas programmaturas instalesana, konfiguresana un uzturesana.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Softwer ghall-immaniggjar tal-assi ta' intrapriza.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "mt",
+      "description": "Tahrig, Jigifieri, It-tahrig tal-utenti fl-uzu ta' softwer ghall-gestjoni tal-assi ta' intrapriza.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "Servizzi teknici, jigifieri, l-installazzjoni, il-konfigurazzjoni u l-manutenzjoni ta' softwer ghall-gestjoni tal-assi ta' intrapriza.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Oprogramowanie do zarzadzania aktywami przedsiebiorstwa.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "pl",
+      "description": "Nauczanie, Zn, Szkolenia w zakresie uzytkowania oprogramowania do zarzadzania aktywami przedsiebiorstwa.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Uslugi techniczne, mianowicie instalowanie, konfiguracja i utrzymywanie oprogramowania do zarzadzania aktywami przedsiebiorstwa.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Software para gestão de ativos de empresas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "pt",
+      "description": "Formação, Nomeadamente, Formação de utilizadores no domínio da utilização de software para gestão de ativos de empresas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Serviços técnicos, especificamente instalação, configuração e manutenção de software para gestão de ativos de empresas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Software pentru administrarea activelor firmei.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ro",
+      "description": "Instruire, Si anume, Instruirea utilizatorilor cu privire la modul de utilizare a software-ului pentru administrarea activelor firmei.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Servicii tehnice, si anume instalarea, configurarea si întretinerea software-ului pentru administrarea activelor firmei.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Softvér na správu podnikových aktív.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sk",
+      "description": "Vzdelávanie, Tz, Výcvik pouzívatelov ohladne pouzívania softvéru na správu podnikových aktív.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "Technické sluzby, menovite instalácia, konfigurácia a údrzba softvéru na správu podnikových aktív.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Programska oprema za upravljanje s premozenjem podjetja.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sl",
+      "description": "Usposabljanje, Sicer, Usposabljanje uporabnikov za uporabo programske opreme za upravljanje s premozenjem podjetja.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Tehniske storitve, in sicer namestitev, konfiguriranje in vzdrzevanje programske opreme za upravljanje s premozenjem podjetja.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Software para la gestión de empresa.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Formación, En concreto, Formación para usuarios en materia de uso de software de gestión de activos empresariales.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios técnicos, en concreto, instalación, configuración y mantenimiento de software de gestión de activos empresariales.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Programvara för EAM (programvara för förvaltning av företags tillgångar).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sw",
+      "description": "Handledning, Nämligen, Utbildning av användare i användning av programvara för EAM (programvara för förvaltning av företags tillgångar).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Tekniska tjänster, nämligen, installation, konfiguration och underhåll av programvara för EAM (programvara för förvaltning av företags tillgångar).",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Symetri USA, LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Barker Brettell Sweden AB",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20151111",
+      "priorityNumber": "86/816,952"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "10 Tara Boulevard, Suite 420,Nashua,New Hampshire, 03062",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Symetri USA, LLC"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Software pro podnikovou správu aktiv."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Vyucování, vzdelávání, Jmenovite, Skolení uzivatelu v pouzívání softwaru pro podnikovou správu aktiv."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Technické sluzby, jmenovite instalace, konfigurace a údrzba softwaru pro podnikovou správu aktiv."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Software til aktivstyring for virksomheder."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Oplæring, Nemlig, Undervisning af brugere i anvendelse af software til administration af virksomhedsaktiver."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Tekniske tjenesteydelser, nemlig installation, konfiguration og vedligeholdelse af software til administration af virksomhedsaktiver."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Software voor beheer van bedrijfsactiva."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Opleiding, Te weten, Opleiding van gebruikers in het gebruik van software voor beheer van bedrijfsactiva."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Technische diensten, te weten installatie, configuratie en onderhoud van software voor beheer van bedrijfsactiva."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Software for enterprise asset management."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Training services, namely, training users how to use Enterprise asset management software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Technical services, namely, installing, configuring and maintaining enterprise asset management software."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Ettevõtte varahalduse tarkvara."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Koolitusteenused, Teisisõnu, Ettevõtte varahalduse tarkvara kasutamise koolitus."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Tehnikateenused, nimelt ettevõtte varahalduse tarkvara installimine, konfigureerimine ja hooldamine."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Ohjelmistot yritysten varainhoitoon."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Koulutuspalvelut, Nimittäin, Valmennus, jolla käyttäjiä opetetaan käyttämään yritysten varainhoito-ohjelmistoja."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Tekniset palvelut, nimittäin yritysten varainhoito-ohjelmistojen asennus, asetusten määritys ja ylläpito."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Logiciels pour la gestion d'actifs d'entreprises."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Formation, À savoir, Formation à l'utilisation d'un logiciel de gestion d'actifs d'entreprises."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services techniques, à savoir installation, configuration et maintenance de logiciels de gestion d'actifs d'entreprises."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Software für Betriebsanlagenverwaltung."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Bereitstellung von Ausbildung, Nämlich, Schulung von Benutzern in der Anwendung von Software für Betriebsanlagenverwaltung."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Dienstleistungen im technischen Bereich, nämlich Installierung, Konfigurierung und Pflege von Software für Betriebsanlagenverwaltung."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Softver za upravljanje imovinom poduzeca."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Pruzanje usluga osposobljavanja, Odnosno, Osposobljavanje korisnika za koristenje softvera za upravljanje imovinom poduzeca."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Tehnicke usluge, i to instalacija, konfiguracija i odrzavanje softvera za upravljanje imovinom poduzeca."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Szoftverek vállalati értékelés irányításához."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Szakmai képzés, betanítás, Nevezetesen, Képzés a vállalati értékelés irányítására szolgáló szoftverek használatával kapcsolatban."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Muszaki szolgáltatások, nevezetesen vállalati értékelés irányítására szolgáló szoftverek telepítése, konfigurálása és karbantartása."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Software per la gestione di beni aziendali."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Attività di formazione, Ovvero, Formazione di utenti in relazione all'uso di software per la gestione di beni aziendali."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi tecnici, ovvero installazione, configurazione e manutenzione di software per la gestione di beni aziendali."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Programine iranga, skirta valdyti imones turta."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Instruktavimas, Butent,, Naudotoju mokymai, skirti mokyti naudotis imones turto valdymo programine iranga."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Technines paslaugos, butent imones turto valdymo programines irangos idiegimas, konfiguravimas ir palaikymas."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Programmatura uznemuma aktivu parvaldibai."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Treninu macibu nodrosinasana, Proti, Lietotaju apmaciba saistiba ar uznemuma aktivu parvaldibas programmaturas lietosanu."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Tehniskie pakalpojumi, proti, uznemuma aktivu parvaldibas programmaturas instalesana, konfiguresana un uzturesana."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Softwer ghall-immaniggjar tal-assi ta' intrapriza."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Tahrig, Jigifieri, It-tahrig tal-utenti fl-uzu ta' softwer ghall-gestjoni tal-assi ta' intrapriza."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi teknici, jigifieri, l-installazzjoni, il-konfigurazzjoni u l-manutenzjoni ta' softwer ghall-gestjoni tal-assi ta' intrapriza."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Oprogramowanie do zarzadzania aktywami przedsiebiorstwa."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Nauczanie, Zn, Szkolenia w zakresie uzytkowania oprogramowania do zarzadzania aktywami przedsiebiorstwa."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi techniczne, mianowicie instalowanie, konfiguracja i utrzymywanie oprogramowania do zarzadzania aktywami przedsiebiorstwa."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Software para gestão de ativos de empresas."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Formação, Nomeadamente, Formação de utilizadores no domínio da utilização de software para gestão de ativos de empresas."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços técnicos, especificamente instalação, configuração e manutenção de software para gestão de ativos de empresas."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Software pentru administrarea activelor firmei."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Instruire, Si anume, Instruirea utilizatorilor cu privire la modul de utilizare a software-ului pentru administrarea activelor firmei."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii tehnice, si anume instalarea, configurarea si întretinerea software-ului pentru administrarea activelor firmei."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Softvér na správu podnikových aktív."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Vzdelávanie, Tz, Výcvik pouzívatelov ohladne pouzívania softvéru na správu podnikových aktív."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Technické sluzby, menovite instalácia, konfigurácia a údrzba softvéru na správu podnikových aktív."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Programska oprema za upravljanje s premozenjem podjetja."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Usposabljanje, Sicer, Usposabljanje uporabnikov za uporabo programske opreme za upravljanje s premozenjem podjetja."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Tehniske storitve, in sicer namestitev, konfiguriranje in vzdrzevanje programske opreme za upravljanje s premozenjem podjetja."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Software para la gestión de empresa."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Formación, En concreto, Formación para usuarios en materia de uso de software de gestión de activos empresariales."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios técnicos, en concreto, instalación, configuración y mantenimiento de software de gestión de activos empresariales."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Programvara för EAM (programvara för förvaltning av företags tillgångar)."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Handledning, Nämligen, Utbildning av användare i användning av programvara för EAM (programvara för förvaltning av företags tillgångar)."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Tekniska tjänster, nämligen, installation, konfiguration och underhåll av programvara för EAM (programvara för förvaltning av företags tillgångar)."
+        }
+      ]
+    },
+    "id": "96468384-43a0-4c7f-9b64-98dfee3a8226",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20151111",
+        "priorityNumber": "86/816,952"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "115"
+      }
+    ],
+    "recordLastUpdated": "20260917",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Kungsbroplan 3,Stockholm, 112 27",
+        "representativeAddressCountryCode": "SE",
+        "representativeAddressCountryName": "Sweden",
+        "representativeName": "Barker Brettell Sweden AB"
+      }
+    ],
+    "secondLanguageCode": "de",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20160428",
+        "applicationNumber": "15384084"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360428",
+      "lastPublicationDate": "20160622",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20160929",
+        "registrationNumber": "15384084"
+      }
+    },
+    "version": "20260917174741",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MODELSTREAM"
+    }
+  },
+  "_uri": "/mark/em/96468384-43a0-4c7f-9b64-98dfee3a8226",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.298Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

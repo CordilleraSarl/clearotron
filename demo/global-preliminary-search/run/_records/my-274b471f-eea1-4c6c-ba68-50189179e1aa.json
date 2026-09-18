@@ -1,0 +1,116 @@
+{
+  "uri": "/mark/my/274b471f-eea1-4c6c-ba68-50189179e1aa",
+  "provider": "clarivate",
+  "office": "my",
+  "guid": "274b471f-eea1-4c6c-ba68-50189179e1aa",
+  "applicationNumber": "2012020999",
+  "registrationNumber": null,
+  "applicationDate": "2012-12-12",
+  "registrationDate": "2012-12-12",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education services, namely providing live and on-line classes, seminars, tutorial sessions, conferences and workshops in the fields of semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency (RF) devices, sensors and software; all included in class 41.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA, Inc",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Charmayne Ong Poh Yin",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West Austin, Texas 78735",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education services, namely providing live and on-line classes, seminars, tutorial sessions, conferences and workshops in the fields of semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency (RF) devices, sensors and software; all included in class 41."
+        }
+      ]
+    },
+    "id": "274b471f-eea1-4c6c-ba68-50189179e1aa",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.05.01",
+      "27.05.30"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260901",
+    "registrationOfficeCode": "MY",
+    "registrationOfficeName": "Malaysia",
+    "representatives": [
+      {
+        "representativeAddress": "Skrine Unit No. 50-8-1, 8th Floor, Wisma UOA Damansara 50 Jalan Dungun, Damansara Heights, Wilayah Persekutuan 50490 Kuala Lumpur",
+        "representativeAddressCountryCode": "MY",
+        "representativeAddressCountryName": "Malaysia",
+        "representativeName": "Charmayne Ong Poh Yin"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20121212",
+        "applicationNumber": "2012020999"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20121212"
+      }
+    },
+    "version": "20260901050117",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/my/274b471f-eea1-4c6c-ba68-50189179e1aa",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:10.757Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -7,7 +7,7 @@
 // only on split runs. An artifact that SOMETIMES says what produced it is worse than one that never
 // does, because a reader cannot tell an unstamped run from an unstamped path.
 //
-// WHAT A READER GETS WRONG WITHOUT IT, measured on the 2026-08-24 R2 round: a flat SerpAPI counter was
+// WHAT A READER GETS WRONG WITHOUT IT, measured on a full clearance test run, 2026-08-24: a flat SerpAPI counter was
 // read across this lane and the lane reported as quota-starved. SerpAPI does not serve this lane at
 // all — the grid runs inside PERPLEXITY's agent sandbox — and no artifact in the run said so. That
 // retraction is the whole reason this file exists.

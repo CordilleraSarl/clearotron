@@ -1,0 +1,180 @@
+{
+  "uri": "/mark/gb/38c278ce-c6ed-46de-89d1-f39618557137",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "38c278ce-c6ed-46de-89d1-f39618557137",
+  "applicationNumber": "UK00905710082",
+  "registrationNumber": "UK00905710082",
+  "applicationDate": "2007-02-22",
+  "registrationDate": "2008-04-07",
+  "expiryDate": "2027-02-22",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "NXP (fig.)",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": [
+    ";"
+  ],
+  "niceClasses": [
+    9,
+    16,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Scientific, nautical, surveying, photographic, cinematographic, optical, weighing, measuring, signalling, checking (supervision), life-saving and teaching apparatus and instruments; apparatus and instruments for conducting, switching, transforming, accumulating, regulating and controlling electricity; apparatus for recording, transmission or reproduction of sound or images; magnetic data carriers, recording discs; automatic vending machines and mechanisms for coin-operated apparatus; cash registers, calculating machines, data processing equipment and computers; fire-extinguishing apparatus; electronic, electrotechnical and electromagnetic modules, parts and components therefor including integrated circuits (ICs), chips, diodes, transistors, semiconductors and semiconductor elements; interfaces; software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "en",
+      "description": "Printed matter; textbooks; data books; instructional manuals; user manuals; product catalogues; circuit specification and data sheets all relating to semiconductors, semiconducting apparatus, instruments and software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Semiconductor consultancy, design, research, development and advisory services; IC design services; semiconductor software design services; provision of information to designers and architects in the semiconductor industry; provision of services relating to the evaluation, testing, verification, accreditation and standardisation of semiconductors.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "Stobbs",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20060822",
+      "priorityNumber": "1117607"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60, Eindhoven 5656 AG",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "29.02.00",
+      "37.02.27"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Scientific, nautical, surveying, photographic, cinematographic, optical, weighing, measuring, signalling, checking (supervision), life-saving and teaching apparatus and instruments; apparatus and instruments for conducting, switching, transforming, accumulating, regulating and controlling electricity; apparatus for recording, transmission or reproduction of sound or images; magnetic data carriers, recording discs; automatic vending machines and mechanisms for coin-operated apparatus; cash registers, calculating machines, data processing equipment and computers; fire-extinguishing apparatus; electronic, electrotechnical and electromagnetic modules, parts and components therefor including integrated circuits (ICs), chips, diodes, transistors, semiconductors and semiconductor elements; interfaces; software."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Printed matter; textbooks; data books; instructional manuals; user manuals; product catalogues; circuit specification and data sheets all relating to semiconductors, semiconducting apparatus, instruments and software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Semiconductor consultancy, design, research, development and advisory services; IC design services; semiconductor software design services; provision of information to designers and architects in the semiconductor industry; provision of services relating to the evaluation, testing, verification, accreditation and standardisation of semiconductors."
+        }
+      ]
+    },
+    "id": "38c278ce-c6ed-46de-89d1-f39618557137",
+    "ipRightKind": "tmk",
+    "markDisclaimers": [
+      ";"
+    ],
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "NXP Logo (in colour); Colour Claimed : Orange, blue, green;"
+      }
+    ],
+    "markImageViennaClassification": [
+      "25.05.99",
+      "29.01.03",
+      "29.01.04",
+      "29.01.98"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20060822",
+        "priorityNumber": "1117607"
+      }
+    ],
+    "recordLastUpdated": "20260827",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Building 1000, Cambridge Research Park, Cambridge CB25 9PD",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Stobbs"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20070222",
+        "applicationNumber": "UK00905710082"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270222",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20080407",
+        "registrationNumber": "UK00905710082"
+      }
+    },
+    "version": "20260827020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NXP (fig.)"
+    }
+  },
+  "_uri": "/mark/gb/38c278ce-c6ed-46de-89d1-f39618557137",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.712Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

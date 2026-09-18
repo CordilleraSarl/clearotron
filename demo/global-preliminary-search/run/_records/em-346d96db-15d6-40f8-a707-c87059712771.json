@@ -1043,7 +1043,7 @@
         "publicationVolume": "216"
       }
     ],
-    "recordLastUpdated": "20260512",
+    "recordLastUpdated": "20260918",
     "registrationOfficeCode": "EM",
     "registrationOfficeName": "EU trade marks",
     "representatives": [
@@ -1070,14 +1070,14 @@
         "registrationNumber": "19273261"
       }
     },
-    "version": "20260512020508",
+    "version": "20260918010939",
     "wordMarkSpecification": {
       "markVerbalElementText": "VINCORA"
     }
   },
   "_uri": "/mark/em/346d96db-15d6-40f8-a707-c87059712771",
   "_receipt": {
-    "fetched_at": "2026-09-02T14:33:18.810Z",
-    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+    "fetched_at": "2026-09-18T12:42:34.360Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
   }
 }

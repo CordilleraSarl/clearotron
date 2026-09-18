@@ -1,0 +1,169 @@
+{
+  "uri": "/mark/ro/5e9c5fd1-aa14-4910-8faf-dec75d6ab62a",
+  "provider": "clarivate",
+  "office": "ro",
+  "guid": "5e9c5fd1-aa14-4910-8faf-dec75d6ab62a",
+  "applicationNumber": "M 2004 06430",
+  "registrationNumber": "62853",
+  "applicationDate": "2004-07-26",
+  "registrationDate": "2005-01-24",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": null,
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    38,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Semiconductoare, procesoare semiconductoare, cipuri procesoare semiconductoare, circuite integrate, cipuri pentru circuite integrate, plăci de circuite, microcomputere, microcontroloare, microprocesoare şi periferice de computer, memorii şi material semiconductor pentru acestea;semiconductoare pentru maşini şi maşini unelte;semiconductoare pentru aparate de iluminat, încălzit, generare de aburi, gătit, refrigerat, uscat şi ventilat;semiconductoare pentru ceasuri şi aparate şi instrumente pentru cronometrare;semiconductoare pentru instrumente muzicale;semiconductoare pentru jocuri şi articole de jucat;circuite pentru conversia datelor;programe din fabricaţie pentru computer;aparate electronice, electrice şi electro-mecanice pentru folosire cu computerele;produse pentru sisteme video;aparate şi echipament pentru înregistrarea, reproducerea şi alterarea sunetului;video şi date;plăci de circuite video;plăci de circuite audio;plăci de circuite audio-video;acceleratoare grafice video;acceleratoare multimedia;procesoare video;programe de computer, materiale cu caracter instructiv ca părţi componente referitoare la computer şi algoritmde date pentru compresia şi decompresia datelor;încercarea şi calibrarea aparatelor;părţi şi fitinguri pentru toate produsele de mai sus;echipament pentru testarea şi programarea circuitelor integrate şi memoriilor semiconductoare;software de computer şi anume software de integrare şi conectivitate pentru alicare, programe de utilitate pentru computer, programe de computer pentru managementul reţelei;software de computer pentru accesarea unei reţele globale de computer şi reţele de computer, interconectate;sisteme de operare computer;software pentru sistem de operare computer;instrumente pentru programare pentru facilitarea aplicaţiilor software pentru terţi.",
+      "translation_language": "en",
+      "translation": "Semiconductors, semiconductor processors, semiconductor processors, integrated circuits, integrated circuit chips, circuit plates, microcomputers, microprocessors and computer peripherals, memoirs and semiconductor material; semiconductor for machines and machine tools; steam generation, cooked, refrigerated, dry and ventilated; semiconductor for watches and appliances and tools for timing; semiconductor for musical instruments; semiconductor for games and articles to play; circuits for data conversion; computer manufacturing programs; electronic, electrical and electric-mechanical appliances for use for computers; recording, reproduction and alteration of sound; video and data; video circuit cards; audio circuit cards; audio-video circuit boards; video graphics accelerators; multimedia processors; computer programs, instructional materials as component parts related to computer and algorithmde data for compression and data decrease; The above products; equipment for testing and programming integrated circuits and semiconductor memories; computer software, namely integration and connectivity software, computer utility programs, network management; computer software for accessing a global computer and computer networks, interconnection; computer operating systems; facilitating software applications for third parties."
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "ro",
+      "description": "Servicii de consultanţă în domeniul telecomunicaţiilor.",
+      "translation_language": "en",
+      "translation": "Consultancy services in telecommunications."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Servicii pentru licenţiere de tehnologie;licenţierea brevetelor de invenţie, mărcilor, drepturilor de autor, secretelor de comerţ şi/sau know-how referitor la fabricarea semiconductoarelor şi folosirilor lor;licenţierea semiconductoarelor;licenţierea software-ului referitor la fabricarea semiconductoarelor şi folosirea lor;licenţierea tehnologiei referitoare la semiconductoare şi fabricarea semiconductoarelor;licenţierea tehnologiei incorporate şi referitoare la produse semiconductoare, circuite integrate, plăci de circuite, microcomputere, microcontroloare, microprocesoare şi periferice de computer, memorii şi material semiconductor pentru acestea, circuite pentru conversia de date, programe de fabricaţie pentru calculator, aparate electronice, electrice şi electromecanice pentru folosire cu computere;plăci de circuite video;produse pentru sisteme video, aparate şi echipament pentru înregistrarea, reproducerea şi alterarea sunetului, video şi date, programe de computer;material instructiv ca parte componentă pentru algoritmuri de computer şi date pentru compresia şi decompresia datelor;proiectare la cerere (custom design) pentru sisteme de computer şi telecomunicaţii;servicii de consultanţă în domeniul computerelor şi tehnologiei conexe pentru proiectare software.",
+      "translation_language": "en",
+      "translation": "Technology licensing services; licensing inventory patents, brands, copyrights, trade secrets and/or know-how regarding the manufacture of semiconductors and use; licensing of semiconductors; licensing the software in the manufacture of semiconductor and their use; semiconductors; licensing incorporated and referring technology, integrated circuits, circuits, microcomputers, microcontrol, microprocessors and peripheral computer, memoirs and semiconductor material, data conversion circuits, computer manufacturing programs, electronic, electric and electrical appliances, Computers software."
+    }
+  ],
+  "owner": "NXP USA, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "SC ROMINVENT SA",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20040301",
+      "priorityNumber": "78/376.535"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West, AUSTIN, 78735",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc."
+      }
+    ],
+    "applicationLanguageCode": "ro",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Semiconductors, semiconductor processors, semiconductor processors, integrated circuits, integrated circuit chips, circuit plates, microcomputers, microprocessors and computer peripherals, memoirs and semiconductor material; semiconductor for machines and machine tools; steam generation, cooked, refrigerated, dry and ventilated; semiconductor for watches and appliances and tools for timing; semiconductor for musical instruments; semiconductor for games and articles to play; circuits for data conversion; computer manufacturing programs; electronic, electrical and electric-mechanical appliances for use for computers; recording, reproduction and alteration of sound; video and data; video circuit cards; audio circuit cards; audio-video circuit boards; video graphics accelerators; multimedia processors; computer programs, instructional materials as component parts related to computer and algorithmde data for compression and data decrease; The above products; equipment for testing and programming integrated circuits and semiconductor memories; computer software, namely integration and connectivity software, computer utility programs, network management; computer software for accessing a global computer and computer networks, interconnection; computer operating systems; facilitating software applications for third parties.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Semiconductoare, procesoare semiconductoare, cipuri procesoare semiconductoare, circuite integrate, cipuri pentru circuite integrate, plăci de circuite, microcomputere, microcontroloare, microprocesoare şi periferice de computer, memorii şi material semiconductor pentru acestea;semiconductoare pentru maşini şi maşini unelte;semiconductoare pentru aparate de iluminat, încălzit, generare de aburi, gătit, refrigerat, uscat şi ventilat;semiconductoare pentru ceasuri şi aparate şi instrumente pentru cronometrare;semiconductoare pentru instrumente muzicale;semiconductoare pentru jocuri şi articole de jucat;circuite pentru conversia datelor;programe din fabricaţie pentru computer;aparate electronice, electrice şi electro-mecanice pentru folosire cu computerele;produse pentru sisteme video;aparate şi echipament pentru înregistrarea, reproducerea şi alterarea sunetului;video şi date;plăci de circuite video;plăci de circuite audio;plăci de circuite audio-video;acceleratoare grafice video;acceleratoare multimedia;procesoare video;programe de computer, materiale cu caracter instructiv ca părţi componente referitoare la computer şi algoritmde date pentru compresia şi decompresia datelor;încercarea şi calibrarea aparatelor;părţi şi fitinguri pentru toate produsele de mai sus;echipament pentru testarea şi programarea circuitelor integrate şi memoriilor semiconductoare;software de computer şi anume software de integrare şi conectivitate pentru alicare, programe de utilitate pentru computer, programe de computer pentru managementul reţelei;software de computer pentru accesarea unei reţele globale de computer şi reţele de computer, interconectate;sisteme de operare computer;software pentru sistem de operare computer;instrumente pentru programare pentru facilitarea aplicaţiilor software pentru terţi."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Consultancy services in telecommunications.",
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii de consultanţă în domeniul telecomunicaţiilor."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Technology licensing services; licensing inventory patents, brands, copyrights, trade secrets and/or know-how regarding the manufacture of semiconductors and use; licensing of semiconductors; licensing the software in the manufacture of semiconductor and their use; semiconductors; licensing incorporated and referring technology, integrated circuits, circuits, microcomputers, microcontrol, microprocessors and peripheral computer, memoirs and semiconductor material, data conversion circuits, computer manufacturing programs, electronic, electric and electrical appliances, Computers software.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii pentru licenţiere de tehnologie;licenţierea brevetelor de invenţie, mărcilor, drepturilor de autor, secretelor de comerţ şi/sau know-how referitor la fabricarea semiconductoarelor şi folosirilor lor;licenţierea semiconductoarelor;licenţierea software-ului referitor la fabricarea semiconductoarelor şi folosirea lor;licenţierea tehnologiei referitoare la semiconductoare şi fabricarea semiconductoarelor;licenţierea tehnologiei incorporate şi referitoare la produse semiconductoare, circuite integrate, plăci de circuite, microcomputere, microcontroloare, microprocesoare şi periferice de computer, memorii şi material semiconductor pentru acestea, circuite pentru conversia de date, programe de fabricaţie pentru calculator, aparate electronice, electrice şi electromecanice pentru folosire cu computere;plăci de circuite video;produse pentru sisteme video, aparate şi echipament pentru înregistrarea, reproducerea şi alterarea sunetului, video şi date, programe de computer;material instructiv ca parte componentă pentru algoritmuri de computer şi date pentru compresia şi decompresia datelor;proiectare la cerere (custom design) pentru sisteme de computer şi telecomunicaţii;servicii de consultanţă în domeniul computerelor şi tehnologiei conexe pentru proiectare software."
+        }
+      ]
+    },
+    "id": "5e9c5fd1-aa14-4910-8faf-dec75d6ab62a",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN ONLY",
+    "markImageViennaClassification": [
+      "25.07.01",
+      "25.07.02",
+      "26.04.03",
+      "26.04.09",
+      "26.13.25"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20040301",
+        "priorityNumber": "78/376.535"
+      }
+    ],
+    "recordLastUpdated": "20260806",
+    "registrationOfficeCode": "RO",
+    "registrationOfficeName": "Romania",
+    "representatives": [
+      {
+        "representativeAddress": "Str. Ermil Pangratti nr. 35, et. 1, sector 1, BUCUREŞTI",
+        "representativeAddressCountryCode": "RO",
+        "representativeAddressCountryName": "Romania",
+        "representativeName": "SC ROMINVENT SA"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040726",
+        "applicationNumber": "M 2004 06430"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20050124",
+        "registrationNumber": "62853"
+      }
+    },
+    "version": "20260806020252"
+  },
+  "_uri": "/mark/ro/5e9c5fd1-aa14-4910-8faf-dec75d6ab62a",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.748Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

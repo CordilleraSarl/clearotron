@@ -288,6 +288,22 @@ jobs:
           fi
           echo "the corpus guards reported ok across the shards, none skipped, and the identifier sweep named its mode."
 
+  clone-recipe:
+    # README's Development recipe, run as README prints it, on a fresh clone of this commit: install,
+    # build, the offline suite, then the demo — which must end in a listening portal answering "not
+    # signed in". The recipe is read out of README by the script, never retyped here, and AGENTS.md is
+    # checked to carry the same lines. A clone that follows the documents and gets a 503 fails here.
+    name: The clone recipe, as README prints it
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22.23.2'
+          cache: npm
+      - run: node scripts/clone-recipe-check.mjs
+
   checks:
     name: Lint, licences, tokens and the built bundle
     runs-on: ubuntu-latest
@@ -476,6 +492,10 @@ jobs:
       - run: node scripts/composer-render-check.mjs
       - run: node scripts/ai-page-render-check.mjs
       - run: node scripts/ask-ai-render-check.mjs
+      # The report inside the portal follows the portal's theme: the portal's own switch pressed, the report
+      # measured from inside its frame — the attribute its dark rules key on, the ground it paints, and
+      # that it repainted in place rather than reloading.
+      - run: node scripts/report-theme-render-check.mjs
       - run: node scripts/settings-render-check.mjs
       - run: node scripts/portal-lifecycle-check.mjs
 

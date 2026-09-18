@@ -1,0 +1,1150 @@
+{
+  "uri": "/mark/em/c1096dc7-105e-4644-9604-b3655dffef6d",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "c1096dc7-105e-4644-9604-b3655dffef6d",
+  "applicationNumber": "5649281",
+  "registrationNumber": "5649281",
+  "applicationDate": "2007-01-29",
+  "registrationDate": "2008-02-11",
+  "expiryDate": "2027-01-29",
+  "renewalDate": null,
+  "lastPublicationDate": "2007-07-30",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "NXP",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Vedecké, navigacní, zememerické, fotografické, kinematografické, optické, vázící, mericí, signalizacní, kontrolní (inspekcní), záchranné a vyucovací prístroje a zarízení; prístroje a nástroje pro vedení, prepínání, premenu, akumulaci, regulaci nebo rízení elektrického proudu; prístroje pro záznam, prenos nebo reprodukci zvuku ci obrazu; magnetické nosice dat, disky k nahrávání; prodejní automaty a mechanizmy pro mincovní automaty; registracní pokladny, pocítací stroje (kalkulacky), zarízení pro zpracování dat a pocítace; hasicí prístroje; elektronické, elektrotechnické a elektromagnetické moduly, jejich cásti a komponenty vcetne integrovaných obvodu (IC), cipu, diod, transistoru, polovodicu a polovodicových prvku; rozhraní; pocítacový software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "cs",
+      "description": "Tiskoviny; ucebnice; deníky; instruktázní manuály; uzivatelské manuály; katalogy výrobku; specifikace obvodu a záznamové listy, vse vztahující se k polovodicum, polovodicovým prístrojum, nástrojum a softwaru.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Konzultace, návrhy, výzkum, vývoj a poradenské sluzby v oblasti polovodicu; návrh integrovaných obvodu; návrh softwaru v oblasti polovodicu; Poskytování informací návrhárum a architektum v polovodicovém prumyslu; poskytování sluzeb vztahujících se k hodnocení, testování, overování, akreditaci a standardizaci polovodicu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Videnskabelige, nautiske, geodætiske, fotografiske, kinematografiske og optiske apparater og instrumenter, samt apparater til vejning, måling, signalering, kontrol, livredning og undervisning; apparater og instrumenter til ledning, distribution, omformning, akkumulering, regulering og styring af elektricitet; apparater til optagelse, transmission og gengivelse af lyd eller billede; magnetiske databærere, lydplader; møntautomater og -apparater; kasseapparater, regnemaskiner og databehandlingsudstyr; ildslukningsapparater; elektroniske, elektrotekniske og elektromagnetiske moduler, dele og komponenter til integrerede kredsløb, chips, dioder, transistorer, halvledere og halvlederelementer; interface; computersoftware.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "da",
+      "description": "Tryksager; lærebøger; databøger; instruktionsmanualer; brugermanualer, brugervejledninger; varekataloger; kredsløbsspecifikationer og datablade, alle i forbindelse med halvledere, halvlederapparater, -instrumenter og -software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Konsulentbistand, design, forskning, udvikling og rådgivning vedrørende halvledere; design af integrerede kredsløb; design af halvlederssoftware; information udbudt til designere og arkitekter inden for halvlederindustrien; tjenesteydelser i forbindelse med vurdering, afprøvning, verificering, akkreditering og standardisering af halvledere.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Wetenschappelijke, zeevaartkundige, landmeetkundige, fotografische, cinematografische, optische toestellen en instrumenten, en weeg-, meet-, sein-, controle- (inspectie-), hulpverlenings- (reddings-) en onderwijstoestellen en -instrumenten; toestellen en instrumenten voor het geleiden, verspreiden, omzetten, accumuleren, afstellen of besturen van elektriciteit; apparaten voor het opnemen, het overbrengen en het weergeven van geluid of beeld; magnetische gegevensdragers, schijfvormige geluidsdragers; verkoopautomaten en mechanismen voor apparaten met vooruitbetaling; kasregisters, rekenmachines, gegevensverwerkende apparatuur en computers; brandblusapparaten; elektronische, elektrotechnische en elektromagnetische modules, onderdelen en componenten hiervan, waaronder geïntegreerde schakelingen (ic's), chips, diodes, transistors, halfgeleiders en halfgeleiderelementen; interfaces; computersoftware.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "nl",
+      "description": "Drukwerken; studieboeken; gegevensboeken; instructiehandboeken; gebruikershandboeken; productcatalogussen; specificatiebladen en gegevensvellen over schakelingen, alle met betrekking tot halfgeleiders, halfgeleiderapparaten, -instrumenten en -software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Raadgeving, ontwerp, onderzoek, ontwikkeling en advisering op het gebied van halfgeleiders; ic-ontwerp; ontwikkeling van software voor halfgeleiders; informatieverstrekking aan ontwerpers en architecten in de halfgeleiderindustrie; verstrekking van diensten met betrekking tot evaluatie, tests, verificatie, erkenning en standaardisatie van halfgeleiders.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Scientific, nautical, surveying, photographic, cinematographic, optical, weighing, measuring, signalling, checking (supervision), life-saving and teaching apparatus and instruments; apparatus and instruments for conducting, switching, transforming, accumulating, regulating and controlling electricity; apparatus for recording, transmission or reproduction of sound or images; magnetic data carriers, recording discs; automatic vending machines and mechanisms for coin-operated apparatus; cash registers, calculating machines, data processing equipment and computers; fire-extinguishing apparatus; electronic, electrotechnical and electromagnetic modules, parts and components therefor including integrated circuits (ICs), chips, diodes, transistors, semiconductors and semiconductor elements; interfaces; software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "en",
+      "description": "Printed matter; textbooks; data books; instructional manuals; user manuals; product catalogues; circuit specification and data sheets all relating to semiconductors, semiconducting apparatus, instruments and software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Semiconductor consultancy, design, research, development and advisory services; IC design services; semiconductor software design services; provision of information to designers and architects in the semiconductor industry; provision of services relating to the evaluation, testing, verification, accreditation and standardisation of semiconductors.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Teaduslik, merenduse, vaatlemise, fotograafiline, kinematograafiline, optiline, kaalumise, mõõtmise, signaliseerimise, kontrolli (järelevaatuse), elupäästmise ja õpetamise aparatuur ja instrumendid; aparaadid ja instrumendid elektri juhtimiseks, lülitamiseks, muundamiseks, akumuleerimiseks, reguleerimiseks ja kontrollimiseks; aparatuur helide või kujundite salvestuseks, edastamiseks või reprodutseerimiseks; magnetandmekandjad, helisalvestusplaadid; müügiautomaadid, müntkäitatavate aparaatide mehhanismid; kassaaparaadid, kalkulaatorid, andmetöötlusseadmed ja arvutid; tulekustutusseadmed; elektroonilised, elektrotehnilised ja elektromagneetilised moodulid, varu ja koostisosad, mis sisaldavad integraallülitusi (IC), kiibid, dioodid, transistorid, pooljuhid ja pooljuhtseadised; liidesed; arvutitarkvara.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "et",
+      "description": "Trükitooted; õpikud; kalendermärkmikud; tehnilised juhendid; kasutajateatmikud; tootekataloogid; pooljuhtide ja pooljuhiseadmetega, riistade ja tarkvaraga seotud sideliini spetifikatsioon ja andmetabel.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Pooljuhtide alane konsultatsiooni, kavandamise, uurimistegevuse, tootearenduse ja nõustamisteenused; IC kujundamisteenused; pooljuhtide tarkvara kujundamise teenused; pooljuhtide tööstuses informatsiooni tagamine kujundajatele ja arhitektidele; pooljuhtide hindamise, testimise, kinnitamise, akrediteerimise ja standardiseerimisega seotud teenuste pakkumine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Tieteelliset, merenkulku-, geodeettiset, valokuvaus-, elokuva-, optiset, punnitus-, mittaus-, merkinanto-, tarkastus- (valvonta-), hengenpelastus- ja opetuslaitteet ja -kojeet; sähkövirran johtamis-, jakelu-, muunto-, keräys-, säätö- tai ohjauslaitteet ja -kojeet; äänen ja kuvien tallennus-, siirto- ja toistolaitteet; magneettiset tietovälineet, tallennelevyt; myyntiautomaatit ja kolikkokäyttöisten laitteiden koneistot; kassakoneet, laskukoneet, tietojenkäsittelylaitteet ja tietokoneet; tulensammutuslaitteet; elektroniset, sähkötekniset ja sähkömagneettiset moduulit sekä niiden osat ja komponentit, mukaan lukien integroidut piirit (mikropiirit), sirut, diodit, transistorit, puolijohteet ja puolijohde-elementit; käyttöliittymät; tietokoneohjelmistot.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "fi",
+      "description": "Painotuotteet; oppikirjat; muistikirjat; ohjekirjat; käyttöoppaat; tuoteluettelot; piirikaaviot ja tietolomakkeet, kaikki liittyvät puolijohteisiin, puolijohdelaitteisiin, -välineisiin ja -ohjelmistoihin.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Puolijohteita koskevat konsultointi-, suunnittelu-, tutkimus-, kehittämis- ja neuvontapalvelut; integroitujen piirien suunnittelupalvelut; puolijohdeohjelmistojen suunnittelupalvelut; tietojen tarjoaminen puolijohdeteollisuuden suunnittelijoille ja arkkitehdeille; puolijohteiden arviointiin, testaukseen, varmentamiseen, akkreditointiin ja standardointiin liittyvien palvelujen tarjoaminen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Appareils et instruments scientifiques, nautiques, géodésiques, photographiques, cinématographiques, optiques, de pesage, de mesurage, de signalisation, de contrôle (inspection), de secours (sauvetage) et d'enseignement; appareils et instruments pour la conduite, la distribution, la transformation, l'accumulation, le réglage et la commande du courant électrique; appareils pour l'enregistrement, la transmission, la reproduction du son ou des images; supports d'enregistrement magnétiques, disques acoustiques; distributeurs automatiques et mécanismes pour appareils à prépaiement; caisses enregistreuses, machines à calculer, équipement pour le traitement de l'information et les ordinateurs; extincteurs; modules électroniques, électrotechniques et électromagnétiques, leurs pièces et accessoires, y compris circuits intégrés, puces, diodes, transistors, semi-conducteurs et éléments de semi-conducteurs; interfaces; logiciels informatiques.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "fr",
+      "description": "Produits de l'imprimerie; livres de textes; livres de données; manuels d'instruction; manuels d'utilisation; catalogues de produits; feuilles de données et de spécifications de circuits, tous concernant les semi-conducteurs, les logiciels, les appareils et les instruments à semi-conducteurs.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Services de conseils, de conception, de recherche, de développement et d'assistance en matière de semi-conducteurs; services de conception de circuits intégrés; services de conception de logiciels de semi-conducteurs; fourniture d'informations aux concepteurs et architectes dans l'industrie des semi-conducteurs; fourniture de services concernant l'évaluation, le test, la vérification, l'accréditation et la normalisation de semi-conducteurs.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Wissenschaftliche, Schifffahrts-, Vermessungs-, fotografische, Film-, optische, Wäge-, Mess-, Signal-, Kontroll-, Rettungs- und Unterrichtsapparate und -instrumente; Apparate und Instrumente zur Leitung, Verteilung, Umwandlung, Akkumulierung, Einstellung oder Steuerung von elektrischem Strom; Geräte zur Aufzeichnung, Übertragung und Wiedergabe von Ton und Bild; Magnetaufzeichnungsträger, Schallplatten; Verkaufsautomaten und Mechaniken für geldbetätigte Apparate; Registrierkassen, Rechenmaschinen, Datenverarbeitungsgeräte und Computer; Feuerlöschgeräte; elektronische, elektrotechnische und elektromagnetische Module, Teile und Bauteile dafür, einschließlich integrierte Schaltkreise (ICs), Chips, Dioden, Transistoren, Halbleiter und Halbleiterelemente; Interfaces; Computer-Software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "de",
+      "description": "Druckereierzeugnisse; Lehrbücher; Datenbücher; Bedienungsanleitungen; Benutzerhandbücher; Warenkataloge; Spezifikationsblätter und Datenblätter für Schaltkreise, alle in Bezug auf Halbleiter, Halbleiterapparate, -instrumente und -software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Beratung, Entwurf, Forschung und Entwicklung im Bereich Halbleiter; Entwurf von integrierten Schaltkreisen; Entwurf von Halbleitersoftware; Bereitstellung von Informationen für Entwickler und Architekturentwickler in der Halbleiterindustrie; Dienstleistungen in Bezug auf die Bewertung, Erprobung, Prüfung, Zulassung und Standardisierung von Halbleitern.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Tudományos, tengerészeti, földméro, fényképészeti, filmfelvevo, optikai, súlyméro, méro, jelzo, ellenorzo (felügyelo), életmento és oktató készülékek és muszerek; elektromos energia vezetésére, kapcsolására, átalakítására, tárolására, szabályozására vagy ellenorzésére szolgáló készülékek és berendezések; hang vagy képek rögzítésére, átvitelére vagy reprodukciójára szolgáló készülék; mágneses adathordozók, (jel)hordozó lemezek; árusító automaták és érmebedobással muködo berendezésekhez készült szerkezetek; pénztárgépek, számológépek, adatfeldolgozó berendezések és számítógépek; tuzoltókészülékek; elektronikus, elektrotechnikai és elektromágneses modulok, ezek alkatrészei és tartozékai, köztük integrált áramök (IC-k), chipek, diódák, tranzisztorok, félvezetok és félvezeto elemek; interface-ek; számítógépes szoftver.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "hu",
+      "description": "Nyomtatványok; szövegkönyvek, tankönyvek; elojegyzési naptárak; oktató kézikönyv; felhasználói kézikönyvek; termékkatalógusok; áramköri specifikációs és adatlapok, mindezek félvezetokhöz, félvezeto berendezésekhez, felszerelésekhez és szoftverekhez kapcsolódóan.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Félvezetokhöz kapcsolódó szaktanácsadás, tervezés, kutatás, fejlesztés és tanácsadás; IC-tervezési szolgáltatások; félvezetoszoftver-tervezési szolgáltatások; információszolgáltatás tervezok és építok részére a félvezetoiparban; félvezetok értékeléséhez, teszteléséhez, hitelesítéséhez, elfogadásához és szabványosításához kapcsolódó szolgáltatások.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Apparecchi e strumenti scientifici, nautici, geodetici, fotografici, cinematografici, ottici, di pesata, di misura, di segnalazione, di controllo (ispezione), di soccorso (salvataggio) e d'insegnamento; apparecchi e strumenti per la conduzione, la distribuzione, la trasformazione, l'accumulazione, la regolazione ed il controllo dell'elettricitá; apparecchi per la registrazione, la trasmissione, la riproduzione del suono o delle immagini; supporti di registrazione magnetica, dischi acustici; distributori automatici e meccanismi per apparecchi di prepagamento; registratori di cassa, macchine calcolatrici, corredo per il trattamento dell'informazione e gli elaboratori elettronici; estintori; moduli elettronici, elettrotecnici ed elettromagnetici, parti e componenti per circuiti integrati incorporati (IC), piastrine di silicio, diodi, transistor, semiconduttori ed elementi a semiconduttori; interfacce; software per computer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "it",
+      "description": "Stampati; libri di testo; agende da scrittoio; manuali di istruzioni; manuali per utenti; cataloghi di prodotti; specifiche e schede tecniche per circuiti riguardanti semiconduttori, apparecchi, strumenti e software per semiconduttori.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Servizi di consulenza, progettazione, ricerca e messa a punto in materia di semiconduttori; servizi di progettazione di circuiti integrati; servizi di progettazione di software per semiconduttori; fornitura di informazioni a progettisti ed architetti nel settore dei semiconduttori; fornitura di servizi riguardanti la valutazione, il collaudo, la verifica, l'accreditamento e la standardizzazione di semiconduttori.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Moksliniai, navigaciniai, geodeziniai, elektriniai, fotografiniai, kinematografiniai, optiniai, sverimo, matavimo, signalizacijos, tikrinimo (prieziuros), gelbejimo ir mokymo aparatai bei prietaisai; elektros praleidimo, perjungimo, keitimo, akumuliavimo, reguliavimo ar valdymo aparatai ir prietaisai; garso arba vaizdo irasymo, perdavimo ar atkurimo aparatai; magnetines duomenu laikmenos, irasomieji diskai; pardavimo automatai ir monetiniu aparatu mechanizmai; kasos aparatai, skaiciavimo masinos, duomenu apdorojimo irenginiai ir kompiuteriai; ugnies gesinimo aparatai; elektroniniai, elektrotechniniai ir elektromagnetiniai moduliai, ju dalys ir komponentai, iskaitant integrinius grandynus (IG), lustus, diodus, tranzistorius, puslaidininkius ir puslaidininkiu elementus; sasajos; kompiuteriu programine iranga.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "lt",
+      "description": "Spaudiniai; vadoveliai; registracijos zurnalai; naudojimo instrukcijos; vartotojo zinynai; produktu katalogai; grandynu techniniu reikalavimu ir duomenu lapai, visi susije su puslaidininkiais, puslaidininkiu aparatais, prietaisais ir programine iranga.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "Puslaidininkiu konsultacines, projektavimo, mokslo tyrimu, tobulinimo ir patariamosios paslaugos; integriniu grandynu projektavimo paslaugos; puslaidininkiu programines irangos projektavimo paslaugos; informacijos teikimas puslaidininkiu pramones projektuotojams ir architektams; paslaugu, susijusiu su puslaidininkiu vertinimu, bandymais, patikra, akreditavimu ir standartizavimu, teikimas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Zinatniskie, kugniecibas, geodeziskie, fotografiskie, kinematografiskie, optiskie, sversanas, merisanas, signalizacijas, kontroles (parbaudes), glabsanas un macibu aparati, ierices un instrumenti; aparati un instrumenti, kas paredzeti elektribas vadisanai, parslegsanai, parveidosanai, pastiprinasanai, regulesanai un kontrolesanai; aparati skanas vai attelu ierakstam, parraidei vai reproducesanai; magnetiskas informacijas vides, ieraksta diski; tirdzniecibas automati un mehanismi ar naudu iedarbinamiem aparatiem; kases aparati, rekinasanas masinas, informacijas apstrades ierices un datori; ugunsdzesibas ierices; elektroniski, elektrotehniski un elektromagnetiski moduli, to dalas un sastavdalas, tostarp integralshemas (IC), mikroshemas, diodes, tranzistori, pusvaditaji un pusvaditaju elementi; saskarnes (interfeisi); datoru programmatura.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "lv",
+      "description": "Iespiedprodukcija; macibu gramatas; piezimju gramatinas; pamacibu rokasgramatas; lietotaju rokasgramatas; produktu katalogi; shemu specifikacijas un datu tabulas, viss saistiba ar pusvaditajiem, pusvaditaju iekartam, instrumentiem un programmaturu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Pusvaditaju konsultacijas, izveide, izpete, izstrade un ieteikumi; IC izstrades pakalpojumi; pusvaditaju programmaturas izstrade; informacijas nodrosinasana pusvaditaju nozares dizaineriem un arhitektiem; pakalpojumu nodrosinasana saistiba ar pusvaditaju novertesanu, parbaudem, apstiprinasanu, akreditesanu un standartizesanu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Apparat u strumenti xjentifici, nawtici, ta' l-istharrig, fotografici, cinematografici, ottici, ta' l-uzin, tal-kejl, tas-sinjalar, li jivverifika (supervizjoni), tas-salvatagg tal-hajja u tat-taghlim; apparat u strumenti ghat-trasmissjoni, l-iswiccjar, it-trasformazzjoni, l-akkumulazzjoni, ir-regolazzjoni u l-kontroll ta' l-elettriku; apparat ghar-registrazzjoni, trasmissjoni u riproduzzjoni ta' hsejjes jew stampi; data carriers manjetici, diski li jirregistraw; magni tal-bejgh awtomatici u mekkanizmi ghall-apparat imhaddem bil-muniti; cash registers, magni li jikkalkulaw u taghmir ghall-ipprocessar tad-data u kompjuters; apparat ghat-tifi tan-nar; moduli, partijiet u komponenti elettronici, elettroteknici u elettromanjetici, partijiet u komponenti ghal dawn inkluzi cirkwiti integrati (ICs), cipep, dajowds, transisters, semikondutturi u taghmir ta' semikondutturi; interfaces; softwer tal-kompjuter.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "mt",
+      "description": "Materjal stampat; kotba uzati bhala test l-iskola; agendi; manwali ta' l-istruzzjonjiet; manwali ta' istruzzjonijiet; katalgi tal-prodotti; specfikazzjoni ta' cirkuwiti u folji tad-dejta kollha relatati ma' semikondutturi, apparat, strumenti u softwer tas-semikondutturi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "Servizzi ta' konsulenza, disinn, ricerka, zvilupp u pariri dwar semikondutturi; servizzi ta' disinn fl-IC; servizzi ta' disinn ta' softwer ta' semikonduttur; provvista ta' informazzjoni ghal disinjaturi u periti fl-industrija tas-semikondutturi; provvista ta' servizzi relatati ma' l-evalwazzjoni, l-ittestjar, il-verifika, l-akkreditazzjoni u l-istandardizzazzjoni ta' semikondutturi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Urzadzenia i przyrzady naukowe, zeglarskie, fotograficzne, kinematograficzne, optyczne, do pomiaru wagi, miernicze, sygnalizacyjne, sprawdzajace (nadzór), do ratowania zycia i do nauczania; urzadzenia i instrumenty do prowadzenia, przelaczania, transformowania, gromadzenia, regulacji i kontroli pradu elektrycznego; urzadzenia do nagrywania, transmisji lub odtwarzania dzwieku lub obrazów; nosniki informacji (magnetyczne -), dyski z nagraniami; automatyczne maszyny sprzedajace i mechanizmy do aparatów uruchamianych zetonami; kasy rejestrujace, maszyny liczace, przetwarzania informacji (urzadzenia do -) i komputery; gaszenia ognia (urzadzenia do -); moduly elektroniczne, elektrotechniczne i elektromagnetyczne, czesci i komponenty do nich, w tym obwody scalone (IC), chipy, diody, tranzystory, pólprzewodniki i elementy pólprzewodnikowe; interfejsy; oprogramowanie komputerowe [software].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "pl",
+      "description": "Materialy drukowane; podreczniki; terminarze; podreczniki instruktazowe; podreczniki uzytkownika; katalogi produktów; arkusze specyfikacji i danych w zakresie obwodów wszystkie zwiazane z pólprzewodnikami, urzadzeniami pólprzewodnikowymi, przyrzadami i oprogramowaniem.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Konsultacje w zakresie pólprzewodników, projektowanie, badania, opracowania i uslugi doradcze; uslugi w zakresie projektowania IC; projektowanie oprogramowania do pólprzewodników; udostepnianie informacji projektantom i architektom przemyslu pólprzewodników; uslugi w zakresie oceny, testowania, weryfikacji, akredytacji i standaryzacji pólprzewodników.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Aparelhos e instrumentos científicos, náuticos, geodésicos, fotográficos, cinematográficos, ópticos, de pesagem, de medida, de sinalização, de controlo (inspecção), de socorro (salvamento) e de ensino; aparelhos e instrumentos para a condução, distribuição, transformação, acumulação, regulação ou o controlo da corrente eléctrica; aparelhos para o registo, a transmissão, a reprodução do som ou das imagens; suportes de registo magnético, discos acústicos; distribuidores automáticos e mecanismos para aparelhos de pré-pagamento; caixas registadoras, máquinas de calcular, equipamentos para o tratamento da informação e computadores; extintores; módulos electrónicos, electrotécnicos e electromagnéticos, peças e componentes para os mesmos, incluindo circuitos integrados (CI), chips, díodos, transístores, semicondutores e elementos semicondutores; interfaces; software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "pt",
+      "description": "Produtos de impressão; livros de texto; livros para registo de dados; manuais de instruções; manuais de utilizador; catálogos de produtos; especificação de circuitos e fichas técnicas relacionadas com semicondutores, aparelhos, instrumentos e software de semicondutores.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Serviços de consultadoria, concepção, ensaio, investigação, desenvolvimento e assessoria em matéria de semicondutores; serviços de concepção de circuitos integrados; serviços de concepção de software de semicondutores; fornecimento de informações a criadores e arquitectos no sector dos semicondutores; fornecimento de serviços relacionados com avaliação, ensaio, verificação, acreditação e normalização de semicondutores.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Aparate si instrumente stiintifice, nautice, topografice, fotografice, cinematografice, optice, de cântarire, masurare, semnalizare, verificare (inspectare), de salvare si didactice; aparatura si instrumente pentru transportul, comutarea, transformarea, acumularea, reglarea si controlul electricitatii; aparate pentru înregistrarea, transmisia sau reproducerea sunetelor sau imaginilor; suporturi de date magnetice, discuri de înregistrare; automate de vânzare si mecanisme pentru aparate actionate prin introducerea unei monede; case de înregistrare, masini de calcul, echipamente pentru procesarea de date si calculatoare; extinctoare; module, piese si componente electronice, electrotecnice si electromagnetice cu circuite integrate (ICs), cipuri, diode, tranzistoare, semiconductoare si elemente de semiconductor; interfete; software de calculator.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "ro",
+      "description": "Produse de imprimerie; manuale; agende de date; manuale cu instructiuni; manualele de utilizator; cataloage de produse; specificatii si fise de date pentru circuite cu privire la semiconductori, aparatura, instrumente si softuri pentru semiconductori.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Consultanta pe probleme de semiconductori, servicii de proiectare, cercetare, dezvoltare si consiliere; servicii de proiectare asistata de calculator; servicii de elaborare de softuri pentru semiconductori; furnizarea de informatii pentru proiectanti si arhitecti din domeniul semiconductorilor; prestari de servicii cu privire la evaluarea, testarea, verificarea, acreditarea si standardizarea semiconductorilor.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Vedecké, navigacné, prieskumné, fotografické, kinematografické, optické, váziace, meracie, signalizacné, preverovacie (dozor), záchranné a ucebné zariadenia a aparatúry; prístroje a zariadenia na vedenie, spínanie, transformáciu, akumulovanie, regulovanie a ovládanie elektrickej energie; zariadenia na nahrávanie, prenos alebo reprodukovanie zvuku alebo obrazov; magnetické nosice dát, záznamové disky; automaty na tovar a mechanizmy na mincové zariadenia; registracné pokladnice, pocítacie stroje, zariadenia na spracovanie dát a pocítace; hasiace prístroje; elektronické, elektrotechnické a elektromagnetické moduly, casti a komponenty pre integrované obvody, mikroprocesory, diódy, tranzistory, polovodice a polovodicové prvky; rozhranie menice medzi autobusovými systémami a cidlami, posielacími jednotkami a vypinácmi; pocítacové software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "sk",
+      "description": "Tlacoviny; ucebnice; poznámkové zosity; instrukcné manuály; manuály pre uzívatela; produktové katalógy; specifikácie obvodov a dokumentácia v oblasti polovodicov, polovodicových zariadení, nástrojov a softvéru.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "Konzultacné, projektantské, výskumné a poradenské sluzby v oblasti polovodicov; sluzby v oblasti navrhovania integrovaných obvodov; sluzby v oblasti navrhovania softvéru pre polovodice; poskytovanie informácií pre dizajnérov v polovodicovom priemysle; poskytovanie sluzieb v oblasti hodnotenia, testovania, overovnia a standardizácie polovodicov.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Znanstveni, navticni, nadzorni, fotografski, kinematografski, opticni, tehtalni, merilni, signalni, pregledni (nadzor), resevalni in ucni aparati in instrumenti; naprave in instrumenti za prevajanje, preklapljanje, pretvarjanje, zbiranje, reguliranje in nadzor elektrike; aparati za snemanje, prenos ali reprodukcijo zvoka ali slik; magnetni podatkovni nosilci, snemalni diski; prodajni avtomati in mehanizmi za aparate na kovance; registrske blagajne, racunski stroji, oprema za obdelavo podatkov in racunalniki; gasilni aparati; elektronski, elektrotehnicni in elektromagnetni moduli, deli in komponente zanje, vkljucno z integriranimi vezji (IC-ji), cipi, diodami, tranzistorji, polprevodniki in polprevodniskimi elementi; vmesniki; racunalniska programska oprema.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "sl",
+      "description": "Tiskani izdelki; ucbeniki; dnevniki; navodila za upravljanje; uporabniski prirocniki; katalogi izdelkov; specifikacije in podatkovni listi za vezja v zvezi s polprevodniki, polprevodniskimi napravami, instrumenti in programsko opremo.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Storitve posvetovanja, oblikovanja, raziskav in svetovanja v zvezi s polprevodniki; storitve oblikovanja IC-jev; storitve oblikovanja programske opreme v zvezi s polprevodniki; nudenje informacij oblikovalcem in arhitektom v industriji polprevodnikov; nudenje storitev v zvezi z ocenjevanjem, preizkusanjem, preverjanjem, akreditacijo in standardizacijo polprevodnikov.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Aparatos e instrumentos científicos, náuticos, geodésicos, fotográficos, cinematográficos, ópticos, de pesar, de medida, de señalización, de control (inspección), de socorro (salvamento) y de enseñanza; aparatos e instrumentos para la conducción, distribución, transformación, acumulación, regulación y control de electricidad; aparatos para el registro, transmisión, reproducción del sonido o imágenes; soportes de registro magnéticos, discos acústicos; distribuidores automáticos y mecanismos para aparatos de previo pago; cajas registradoras, máquinas calculadoras, equipos para el tratamiento de la información y ordenadores; extintores; módulos electrónicos, electrotécnicos y electromagnéticos, sus partes y componentes incluyendo circuitos integrados (CI), chips, diodos, transistores, semiconductores y elementos semiconductores; interfaces; software informático.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "es",
+      "description": "Productos de imprenta; libros de texto; agendas de datos; manuales de instrucciones; manuales de usuario; catálogos de productos; hojas de datos y especificaciones de circuitos, todos relacionados con semiconductores, aparatos de semiconducción, instrumentos y software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios de consultoría, diseño, investigación, desarrollo y asesoramiento en materia de semiconductores; servicios de diseño de CI; servicios de diseño de software de semiconductores; suministro de información para diseñadores y arquitectos en la industria de los semiconductores; prestación de servicios relacionados con la evaluación, pruebas, verificación, acreditación y normalización de semiconductores.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Vetenskapliga, nautiska, fotografiska, kinematografiska och optiska apparater och instrument samt apparater och instrument för lantmäteri, besiktning, vägning, mätning, signalering, kontroll (övervakning), livräddning och undervisning; apparater och instrument för ledning, distribution, omvandling, ackumulering, justering eller styrning av elektricitet; apparater för inspelning, upptagning, sändning eller återgivning av ljud och bilder; magnetiska databärare, grammofonskivor; försäljningsautomater samt mekanismer för myntstyrda apparater; kassaapparater, räknemaskiner, databehandlingsutrustningar och datorer; eldsläckningsapparatur; elektroniska, elektrotekniska och elektromagnetiska moduler, delar och komponenter för integrerade kretsar (integrerade kretsar), chips, dioder, transistorer, halvledare och halvledarelement; gränssnitt; datorprogramvara.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "sw",
+      "description": "Trycksaker; läroböcker; databöcker; instruktionshandböcker; användarhandböcker; produktkataloger; kretsspecifikation och dataark, allt avseende halvledare, halvledande apparater, instrument och programvara.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Halvledarkonsultations-, utformnings-, forsknings-, utvecklings- och rådgivningstjänster; IC-design; utformning av halvledande datorprogramvara; information för designare och arkitekter i den halvledande industrin; värdering, provning, verifiering, ackreditering och standardisering av halvledare.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO SHIELDMARK B.V.",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20060822",
+      "priorityNumber": "1117603"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60,Eindhoven, 5656 AG",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "26.04.02",
+      "26.04.22"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Vedecké, navigacní, zememerické, fotografické, kinematografické, optické, vázící, mericí, signalizacní, kontrolní (inspekcní), záchranné a vyucovací prístroje a zarízení; prístroje a nástroje pro vedení, prepínání, premenu, akumulaci, regulaci nebo rízení elektrického proudu; prístroje pro záznam, prenos nebo reprodukci zvuku ci obrazu; magnetické nosice dat, disky k nahrávání; prodejní automaty a mechanizmy pro mincovní automaty; registracní pokladny, pocítací stroje (kalkulacky), zarízení pro zpracování dat a pocítace; hasicí prístroje; elektronické, elektrotechnické a elektromagnetické moduly, jejich cásti a komponenty vcetne integrovaných obvodu (IC), cipu, diod, transistoru, polovodicu a polovodicových prvku; rozhraní; pocítacový software."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Tiskoviny; ucebnice; deníky; instruktázní manuály; uzivatelské manuály; katalogy výrobku; specifikace obvodu a záznamové listy, vse vztahující se k polovodicum, polovodicovým prístrojum, nástrojum a softwaru."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Konzultace, návrhy, výzkum, vývoj a poradenské sluzby v oblasti polovodicu; návrh integrovaných obvodu; návrh softwaru v oblasti polovodicu; Poskytování informací návrhárum a architektum v polovodicovém prumyslu; poskytování sluzeb vztahujících se k hodnocení, testování, overování, akreditaci a standardizaci polovodicu."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Videnskabelige, nautiske, geodætiske, fotografiske, kinematografiske og optiske apparater og instrumenter, samt apparater til vejning, måling, signalering, kontrol, livredning og undervisning; apparater og instrumenter til ledning, distribution, omformning, akkumulering, regulering og styring af elektricitet; apparater til optagelse, transmission og gengivelse af lyd eller billede; magnetiske databærere, lydplader; møntautomater og -apparater; kasseapparater, regnemaskiner og databehandlingsudstyr; ildslukningsapparater; elektroniske, elektrotekniske og elektromagnetiske moduler, dele og komponenter til integrerede kredsløb, chips, dioder, transistorer, halvledere og halvlederelementer; interface; computersoftware."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Tryksager; lærebøger; databøger; instruktionsmanualer; brugermanualer, brugervejledninger; varekataloger; kredsløbsspecifikationer og datablade, alle i forbindelse med halvledere, halvlederapparater, -instrumenter og -software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Konsulentbistand, design, forskning, udvikling og rådgivning vedrørende halvledere; design af integrerede kredsløb; design af halvlederssoftware; information udbudt til designere og arkitekter inden for halvlederindustrien; tjenesteydelser i forbindelse med vurdering, afprøvning, verificering, akkreditering og standardisering af halvledere."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Wetenschappelijke, zeevaartkundige, landmeetkundige, fotografische, cinematografische, optische toestellen en instrumenten, en weeg-, meet-, sein-, controle- (inspectie-), hulpverlenings- (reddings-) en onderwijstoestellen en -instrumenten; toestellen en instrumenten voor het geleiden, verspreiden, omzetten, accumuleren, afstellen of besturen van elektriciteit; apparaten voor het opnemen, het overbrengen en het weergeven van geluid of beeld; magnetische gegevensdragers, schijfvormige geluidsdragers; verkoopautomaten en mechanismen voor apparaten met vooruitbetaling; kasregisters, rekenmachines, gegevensverwerkende apparatuur en computers; brandblusapparaten; elektronische, elektrotechnische en elektromagnetische modules, onderdelen en componenten hiervan, waaronder geïntegreerde schakelingen (ic's), chips, diodes, transistors, halfgeleiders en halfgeleiderelementen; interfaces; computersoftware."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Drukwerken; studieboeken; gegevensboeken; instructiehandboeken; gebruikershandboeken; productcatalogussen; specificatiebladen en gegevensvellen over schakelingen, alle met betrekking tot halfgeleiders, halfgeleiderapparaten, -instrumenten en -software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Raadgeving, ontwerp, onderzoek, ontwikkeling en advisering op het gebied van halfgeleiders; ic-ontwerp; ontwikkeling van software voor halfgeleiders; informatieverstrekking aan ontwerpers en architecten in de halfgeleiderindustrie; verstrekking van diensten met betrekking tot evaluatie, tests, verificatie, erkenning en standaardisatie van halfgeleiders."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Scientific, nautical, surveying, photographic, cinematographic, optical, weighing, measuring, signalling, checking (supervision), life-saving and teaching apparatus and instruments; apparatus and instruments for conducting, switching, transforming, accumulating, regulating and controlling electricity; apparatus for recording, transmission or reproduction of sound or images; magnetic data carriers, recording discs; automatic vending machines and mechanisms for coin-operated apparatus; cash registers, calculating machines, data processing equipment and computers; fire-extinguishing apparatus; electronic, electrotechnical and electromagnetic modules, parts and components therefor including integrated circuits (ICs), chips, diodes, transistors, semiconductors and semiconductor elements; interfaces; software."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Printed matter; textbooks; data books; instructional manuals; user manuals; product catalogues; circuit specification and data sheets all relating to semiconductors, semiconducting apparatus, instruments and software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Semiconductor consultancy, design, research, development and advisory services; IC design services; semiconductor software design services; provision of information to designers and architects in the semiconductor industry; provision of services relating to the evaluation, testing, verification, accreditation and standardisation of semiconductors."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Teaduslik, merenduse, vaatlemise, fotograafiline, kinematograafiline, optiline, kaalumise, mõõtmise, signaliseerimise, kontrolli (järelevaatuse), elupäästmise ja õpetamise aparatuur ja instrumendid; aparaadid ja instrumendid elektri juhtimiseks, lülitamiseks, muundamiseks, akumuleerimiseks, reguleerimiseks ja kontrollimiseks; aparatuur helide või kujundite salvestuseks, edastamiseks või reprodutseerimiseks; magnetandmekandjad, helisalvestusplaadid; müügiautomaadid, müntkäitatavate aparaatide mehhanismid; kassaaparaadid, kalkulaatorid, andmetöötlusseadmed ja arvutid; tulekustutusseadmed; elektroonilised, elektrotehnilised ja elektromagneetilised moodulid, varu ja koostisosad, mis sisaldavad integraallülitusi (IC), kiibid, dioodid, transistorid, pooljuhid ja pooljuhtseadised; liidesed; arvutitarkvara."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Trükitooted; õpikud; kalendermärkmikud; tehnilised juhendid; kasutajateatmikud; tootekataloogid; pooljuhtide ja pooljuhiseadmetega, riistade ja tarkvaraga seotud sideliini spetifikatsioon ja andmetabel."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Pooljuhtide alane konsultatsiooni, kavandamise, uurimistegevuse, tootearenduse ja nõustamisteenused; IC kujundamisteenused; pooljuhtide tarkvara kujundamise teenused; pooljuhtide tööstuses informatsiooni tagamine kujundajatele ja arhitektidele; pooljuhtide hindamise, testimise, kinnitamise, akrediteerimise ja standardiseerimisega seotud teenuste pakkumine."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Tieteelliset, merenkulku-, geodeettiset, valokuvaus-, elokuva-, optiset, punnitus-, mittaus-, merkinanto-, tarkastus- (valvonta-), hengenpelastus- ja opetuslaitteet ja -kojeet; sähkövirran johtamis-, jakelu-, muunto-, keräys-, säätö- tai ohjauslaitteet ja -kojeet; äänen ja kuvien tallennus-, siirto- ja toistolaitteet; magneettiset tietovälineet, tallennelevyt; myyntiautomaatit ja kolikkokäyttöisten laitteiden koneistot; kassakoneet, laskukoneet, tietojenkäsittelylaitteet ja tietokoneet; tulensammutuslaitteet; elektroniset, sähkötekniset ja sähkömagneettiset moduulit sekä niiden osat ja komponentit, mukaan lukien integroidut piirit (mikropiirit), sirut, diodit, transistorit, puolijohteet ja puolijohde-elementit; käyttöliittymät; tietokoneohjelmistot."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Painotuotteet; oppikirjat; muistikirjat; ohjekirjat; käyttöoppaat; tuoteluettelot; piirikaaviot ja tietolomakkeet, kaikki liittyvät puolijohteisiin, puolijohdelaitteisiin, -välineisiin ja -ohjelmistoihin."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Puolijohteita koskevat konsultointi-, suunnittelu-, tutkimus-, kehittämis- ja neuvontapalvelut; integroitujen piirien suunnittelupalvelut; puolijohdeohjelmistojen suunnittelupalvelut; tietojen tarjoaminen puolijohdeteollisuuden suunnittelijoille ja arkkitehdeille; puolijohteiden arviointiin, testaukseen, varmentamiseen, akkreditointiin ja standardointiin liittyvien palvelujen tarjoaminen."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Appareils et instruments scientifiques, nautiques, géodésiques, photographiques, cinématographiques, optiques, de pesage, de mesurage, de signalisation, de contrôle (inspection), de secours (sauvetage) et d'enseignement; appareils et instruments pour la conduite, la distribution, la transformation, l'accumulation, le réglage et la commande du courant électrique; appareils pour l'enregistrement, la transmission, la reproduction du son ou des images; supports d'enregistrement magnétiques, disques acoustiques; distributeurs automatiques et mécanismes pour appareils à prépaiement; caisses enregistreuses, machines à calculer, équipement pour le traitement de l'information et les ordinateurs; extincteurs; modules électroniques, électrotechniques et électromagnétiques, leurs pièces et accessoires, y compris circuits intégrés, puces, diodes, transistors, semi-conducteurs et éléments de semi-conducteurs; interfaces; logiciels informatiques."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Produits de l'imprimerie; livres de textes; livres de données; manuels d'instruction; manuels d'utilisation; catalogues de produits; feuilles de données et de spécifications de circuits, tous concernant les semi-conducteurs, les logiciels, les appareils et les instruments à semi-conducteurs."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de conseils, de conception, de recherche, de développement et d'assistance en matière de semi-conducteurs; services de conception de circuits intégrés; services de conception de logiciels de semi-conducteurs; fourniture d'informations aux concepteurs et architectes dans l'industrie des semi-conducteurs; fourniture de services concernant l'évaluation, le test, la vérification, l'accréditation et la normalisation de semi-conducteurs."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Wissenschaftliche, Schifffahrts-, Vermessungs-, fotografische, Film-, optische, Wäge-, Mess-, Signal-, Kontroll-, Rettungs- und Unterrichtsapparate und -instrumente; Apparate und Instrumente zur Leitung, Verteilung, Umwandlung, Akkumulierung, Einstellung oder Steuerung von elektrischem Strom; Geräte zur Aufzeichnung, Übertragung und Wiedergabe von Ton und Bild; Magnetaufzeichnungsträger, Schallplatten; Verkaufsautomaten und Mechaniken für geldbetätigte Apparate; Registrierkassen, Rechenmaschinen, Datenverarbeitungsgeräte und Computer; Feuerlöschgeräte; elektronische, elektrotechnische und elektromagnetische Module, Teile und Bauteile dafür, einschließlich integrierte Schaltkreise (ICs), Chips, Dioden, Transistoren, Halbleiter und Halbleiterelemente; Interfaces; Computer-Software."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Druckereierzeugnisse; Lehrbücher; Datenbücher; Bedienungsanleitungen; Benutzerhandbücher; Warenkataloge; Spezifikationsblätter und Datenblätter für Schaltkreise, alle in Bezug auf Halbleiter, Halbleiterapparate, -instrumente und -software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Beratung, Entwurf, Forschung und Entwicklung im Bereich Halbleiter; Entwurf von integrierten Schaltkreisen; Entwurf von Halbleitersoftware; Bereitstellung von Informationen für Entwickler und Architekturentwickler in der Halbleiterindustrie; Dienstleistungen in Bezug auf die Bewertung, Erprobung, Prüfung, Zulassung und Standardisierung von Halbleitern."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Tudományos, tengerészeti, földméro, fényképészeti, filmfelvevo, optikai, súlyméro, méro, jelzo, ellenorzo (felügyelo), életmento és oktató készülékek és muszerek; elektromos energia vezetésére, kapcsolására, átalakítására, tárolására, szabályozására vagy ellenorzésére szolgáló készülékek és berendezések; hang vagy képek rögzítésére, átvitelére vagy reprodukciójára szolgáló készülék; mágneses adathordozók, (jel)hordozó lemezek; árusító automaták és érmebedobással muködo berendezésekhez készült szerkezetek; pénztárgépek, számológépek, adatfeldolgozó berendezések és számítógépek; tuzoltókészülékek; elektronikus, elektrotechnikai és elektromágneses modulok, ezek alkatrészei és tartozékai, köztük integrált áramök (IC-k), chipek, diódák, tranzisztorok, félvezetok és félvezeto elemek; interface-ek; számítógépes szoftver."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Nyomtatványok; szövegkönyvek, tankönyvek; elojegyzési naptárak; oktató kézikönyv; felhasználói kézikönyvek; termékkatalógusok; áramköri specifikációs és adatlapok, mindezek félvezetokhöz, félvezeto berendezésekhez, felszerelésekhez és szoftverekhez kapcsolódóan."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Félvezetokhöz kapcsolódó szaktanácsadás, tervezés, kutatás, fejlesztés és tanácsadás; IC-tervezési szolgáltatások; félvezetoszoftver-tervezési szolgáltatások; információszolgáltatás tervezok és építok részére a félvezetoiparban; félvezetok értékeléséhez, teszteléséhez, hitelesítéséhez, elfogadásához és szabványosításához kapcsolódó szolgáltatások."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Apparecchi e strumenti scientifici, nautici, geodetici, fotografici, cinematografici, ottici, di pesata, di misura, di segnalazione, di controllo (ispezione), di soccorso (salvataggio) e d'insegnamento; apparecchi e strumenti per la conduzione, la distribuzione, la trasformazione, l'accumulazione, la regolazione ed il controllo dell'elettricitá; apparecchi per la registrazione, la trasmissione, la riproduzione del suono o delle immagini; supporti di registrazione magnetica, dischi acustici; distributori automatici e meccanismi per apparecchi di prepagamento; registratori di cassa, macchine calcolatrici, corredo per il trattamento dell'informazione e gli elaboratori elettronici; estintori; moduli elettronici, elettrotecnici ed elettromagnetici, parti e componenti per circuiti integrati incorporati (IC), piastrine di silicio, diodi, transistor, semiconduttori ed elementi a semiconduttori; interfacce; software per computer."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Stampati; libri di testo; agende da scrittoio; manuali di istruzioni; manuali per utenti; cataloghi di prodotti; specifiche e schede tecniche per circuiti riguardanti semiconduttori, apparecchi, strumenti e software per semiconduttori."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi di consulenza, progettazione, ricerca e messa a punto in materia di semiconduttori; servizi di progettazione di circuiti integrati; servizi di progettazione di software per semiconduttori; fornitura di informazioni a progettisti ed architetti nel settore dei semiconduttori; fornitura di servizi riguardanti la valutazione, il collaudo, la verifica, l'accreditamento e la standardizzazione di semiconduttori."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Moksliniai, navigaciniai, geodeziniai, elektriniai, fotografiniai, kinematografiniai, optiniai, sverimo, matavimo, signalizacijos, tikrinimo (prieziuros), gelbejimo ir mokymo aparatai bei prietaisai; elektros praleidimo, perjungimo, keitimo, akumuliavimo, reguliavimo ar valdymo aparatai ir prietaisai; garso arba vaizdo irasymo, perdavimo ar atkurimo aparatai; magnetines duomenu laikmenos, irasomieji diskai; pardavimo automatai ir monetiniu aparatu mechanizmai; kasos aparatai, skaiciavimo masinos, duomenu apdorojimo irenginiai ir kompiuteriai; ugnies gesinimo aparatai; elektroniniai, elektrotechniniai ir elektromagnetiniai moduliai, ju dalys ir komponentai, iskaitant integrinius grandynus (IG), lustus, diodus, tranzistorius, puslaidininkius ir puslaidininkiu elementus; sasajos; kompiuteriu programine iranga."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Spaudiniai; vadoveliai; registracijos zurnalai; naudojimo instrukcijos; vartotojo zinynai; produktu katalogai; grandynu techniniu reikalavimu ir duomenu lapai, visi susije su puslaidininkiais, puslaidininkiu aparatais, prietaisais ir programine iranga."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Puslaidininkiu konsultacines, projektavimo, mokslo tyrimu, tobulinimo ir patariamosios paslaugos; integriniu grandynu projektavimo paslaugos; puslaidininkiu programines irangos projektavimo paslaugos; informacijos teikimas puslaidininkiu pramones projektuotojams ir architektams; paslaugu, susijusiu su puslaidininkiu vertinimu, bandymais, patikra, akreditavimu ir standartizavimu, teikimas."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Zinatniskie, kugniecibas, geodeziskie, fotografiskie, kinematografiskie, optiskie, sversanas, merisanas, signalizacijas, kontroles (parbaudes), glabsanas un macibu aparati, ierices un instrumenti; aparati un instrumenti, kas paredzeti elektribas vadisanai, parslegsanai, parveidosanai, pastiprinasanai, regulesanai un kontrolesanai; aparati skanas vai attelu ierakstam, parraidei vai reproducesanai; magnetiskas informacijas vides, ieraksta diski; tirdzniecibas automati un mehanismi ar naudu iedarbinamiem aparatiem; kases aparati, rekinasanas masinas, informacijas apstrades ierices un datori; ugunsdzesibas ierices; elektroniski, elektrotehniski un elektromagnetiski moduli, to dalas un sastavdalas, tostarp integralshemas (IC), mikroshemas, diodes, tranzistori, pusvaditaji un pusvaditaju elementi; saskarnes (interfeisi); datoru programmatura."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Iespiedprodukcija; macibu gramatas; piezimju gramatinas; pamacibu rokasgramatas; lietotaju rokasgramatas; produktu katalogi; shemu specifikacijas un datu tabulas, viss saistiba ar pusvaditajiem, pusvaditaju iekartam, instrumentiem un programmaturu."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Pusvaditaju konsultacijas, izveide, izpete, izstrade un ieteikumi; IC izstrades pakalpojumi; pusvaditaju programmaturas izstrade; informacijas nodrosinasana pusvaditaju nozares dizaineriem un arhitektiem; pakalpojumu nodrosinasana saistiba ar pusvaditaju novertesanu, parbaudem, apstiprinasanu, akreditesanu un standartizesanu."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Apparat u strumenti xjentifici, nawtici, ta' l-istharrig, fotografici, cinematografici, ottici, ta' l-uzin, tal-kejl, tas-sinjalar, li jivverifika (supervizjoni), tas-salvatagg tal-hajja u tat-taghlim; apparat u strumenti ghat-trasmissjoni, l-iswiccjar, it-trasformazzjoni, l-akkumulazzjoni, ir-regolazzjoni u l-kontroll ta' l-elettriku; apparat ghar-registrazzjoni, trasmissjoni u riproduzzjoni ta' hsejjes jew stampi; data carriers manjetici, diski li jirregistraw; magni tal-bejgh awtomatici u mekkanizmi ghall-apparat imhaddem bil-muniti; cash registers, magni li jikkalkulaw u taghmir ghall-ipprocessar tad-data u kompjuters; apparat ghat-tifi tan-nar; moduli, partijiet u komponenti elettronici, elettroteknici u elettromanjetici, partijiet u komponenti ghal dawn inkluzi cirkwiti integrati (ICs), cipep, dajowds, transisters, semikondutturi u taghmir ta' semikondutturi; interfaces; softwer tal-kompjuter."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Materjal stampat; kotba uzati bhala test l-iskola; agendi; manwali ta' l-istruzzjonjiet; manwali ta' istruzzjonijiet; katalgi tal-prodotti; specfikazzjoni ta' cirkuwiti u folji tad-dejta kollha relatati ma' semikondutturi, apparat, strumenti u softwer tas-semikondutturi."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi ta' konsulenza, disinn, ricerka, zvilupp u pariri dwar semikondutturi; servizzi ta' disinn fl-IC; servizzi ta' disinn ta' softwer ta' semikonduttur; provvista ta' informazzjoni ghal disinjaturi u periti fl-industrija tas-semikondutturi; provvista ta' servizzi relatati ma' l-evalwazzjoni, l-ittestjar, il-verifika, l-akkreditazzjoni u l-istandardizzazzjoni ta' semikondutturi."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Urzadzenia i przyrzady naukowe, zeglarskie, fotograficzne, kinematograficzne, optyczne, do pomiaru wagi, miernicze, sygnalizacyjne, sprawdzajace (nadzór), do ratowania zycia i do nauczania; urzadzenia i instrumenty do prowadzenia, przelaczania, transformowania, gromadzenia, regulacji i kontroli pradu elektrycznego; urzadzenia do nagrywania, transmisji lub odtwarzania dzwieku lub obrazów; nosniki informacji (magnetyczne -), dyski z nagraniami; automatyczne maszyny sprzedajace i mechanizmy do aparatów uruchamianych zetonami; kasy rejestrujace, maszyny liczace, przetwarzania informacji (urzadzenia do -) i komputery; gaszenia ognia (urzadzenia do -); moduly elektroniczne, elektrotechniczne i elektromagnetyczne, czesci i komponenty do nich, w tym obwody scalone (IC), chipy, diody, tranzystory, pólprzewodniki i elementy pólprzewodnikowe; interfejsy; oprogramowanie komputerowe [software]."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Materialy drukowane; podreczniki; terminarze; podreczniki instruktazowe; podreczniki uzytkownika; katalogi produktów; arkusze specyfikacji i danych w zakresie obwodów wszystkie zwiazane z pólprzewodnikami, urzadzeniami pólprzewodnikowymi, przyrzadami i oprogramowaniem."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Konsultacje w zakresie pólprzewodników, projektowanie, badania, opracowania i uslugi doradcze; uslugi w zakresie projektowania IC; projektowanie oprogramowania do pólprzewodników; udostepnianie informacji projektantom i architektom przemyslu pólprzewodników; uslugi w zakresie oceny, testowania, weryfikacji, akredytacji i standaryzacji pólprzewodników."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Aparelhos e instrumentos científicos, náuticos, geodésicos, fotográficos, cinematográficos, ópticos, de pesagem, de medida, de sinalização, de controlo (inspecção), de socorro (salvamento) e de ensino; aparelhos e instrumentos para a condução, distribuição, transformação, acumulação, regulação ou o controlo da corrente eléctrica; aparelhos para o registo, a transmissão, a reprodução do som ou das imagens; suportes de registo magnético, discos acústicos; distribuidores automáticos e mecanismos para aparelhos de pré-pagamento; caixas registadoras, máquinas de calcular, equipamentos para o tratamento da informação e computadores; extintores; módulos electrónicos, electrotécnicos e electromagnéticos, peças e componentes para os mesmos, incluindo circuitos integrados (CI), chips, díodos, transístores, semicondutores e elementos semicondutores; interfaces; software."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Produtos de impressão; livros de texto; livros para registo de dados; manuais de instruções; manuais de utilizador; catálogos de produtos; especificação de circuitos e fichas técnicas relacionadas com semicondutores, aparelhos, instrumentos e software de semicondutores."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de consultadoria, concepção, ensaio, investigação, desenvolvimento e assessoria em matéria de semicondutores; serviços de concepção de circuitos integrados; serviços de concepção de software de semicondutores; fornecimento de informações a criadores e arquitectos no sector dos semicondutores; fornecimento de serviços relacionados com avaliação, ensaio, verificação, acreditação e normalização de semicondutores."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Aparate si instrumente stiintifice, nautice, topografice, fotografice, cinematografice, optice, de cântarire, masurare, semnalizare, verificare (inspectare), de salvare si didactice; aparatura si instrumente pentru transportul, comutarea, transformarea, acumularea, reglarea si controlul electricitatii; aparate pentru înregistrarea, transmisia sau reproducerea sunetelor sau imaginilor; suporturi de date magnetice, discuri de înregistrare; automate de vânzare si mecanisme pentru aparate actionate prin introducerea unei monede; case de înregistrare, masini de calcul, echipamente pentru procesarea de date si calculatoare; extinctoare; module, piese si componente electronice, electrotecnice si electromagnetice cu circuite integrate (ICs), cipuri, diode, tranzistoare, semiconductoare si elemente de semiconductor; interfete; software de calculator."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Produse de imprimerie; manuale; agende de date; manuale cu instructiuni; manualele de utilizator; cataloage de produse; specificatii si fise de date pentru circuite cu privire la semiconductori, aparatura, instrumente si softuri pentru semiconductori."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Consultanta pe probleme de semiconductori, servicii de proiectare, cercetare, dezvoltare si consiliere; servicii de proiectare asistata de calculator; servicii de elaborare de softuri pentru semiconductori; furnizarea de informatii pentru proiectanti si arhitecti din domeniul semiconductorilor; prestari de servicii cu privire la evaluarea, testarea, verificarea, acreditarea si standardizarea semiconductorilor."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Vedecké, navigacné, prieskumné, fotografické, kinematografické, optické, váziace, meracie, signalizacné, preverovacie (dozor), záchranné a ucebné zariadenia a aparatúry; prístroje a zariadenia na vedenie, spínanie, transformáciu, akumulovanie, regulovanie a ovládanie elektrickej energie; zariadenia na nahrávanie, prenos alebo reprodukovanie zvuku alebo obrazov; magnetické nosice dát, záznamové disky; automaty na tovar a mechanizmy na mincové zariadenia; registracné pokladnice, pocítacie stroje, zariadenia na spracovanie dát a pocítace; hasiace prístroje; elektronické, elektrotechnické a elektromagnetické moduly, casti a komponenty pre integrované obvody, mikroprocesory, diódy, tranzistory, polovodice a polovodicové prvky; rozhranie menice medzi autobusovými systémami a cidlami, posielacími jednotkami a vypinácmi; pocítacové software."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Tlacoviny; ucebnice; poznámkové zosity; instrukcné manuály; manuály pre uzívatela; produktové katalógy; specifikácie obvodov a dokumentácia v oblasti polovodicov, polovodicových zariadení, nástrojov a softvéru."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Konzultacné, projektantské, výskumné a poradenské sluzby v oblasti polovodicov; sluzby v oblasti navrhovania integrovaných obvodov; sluzby v oblasti navrhovania softvéru pre polovodice; poskytovanie informácií pre dizajnérov v polovodicovom priemysle; poskytovanie sluzieb v oblasti hodnotenia, testovania, overovnia a standardizácie polovodicov."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Znanstveni, navticni, nadzorni, fotografski, kinematografski, opticni, tehtalni, merilni, signalni, pregledni (nadzor), resevalni in ucni aparati in instrumenti; naprave in instrumenti za prevajanje, preklapljanje, pretvarjanje, zbiranje, reguliranje in nadzor elektrike; aparati za snemanje, prenos ali reprodukcijo zvoka ali slik; magnetni podatkovni nosilci, snemalni diski; prodajni avtomati in mehanizmi za aparate na kovance; registrske blagajne, racunski stroji, oprema za obdelavo podatkov in racunalniki; gasilni aparati; elektronski, elektrotehnicni in elektromagnetni moduli, deli in komponente zanje, vkljucno z integriranimi vezji (IC-ji), cipi, diodami, tranzistorji, polprevodniki in polprevodniskimi elementi; vmesniki; racunalniska programska oprema."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Tiskani izdelki; ucbeniki; dnevniki; navodila za upravljanje; uporabniski prirocniki; katalogi izdelkov; specifikacije in podatkovni listi za vezja v zvezi s polprevodniki, polprevodniskimi napravami, instrumenti in programsko opremo."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Storitve posvetovanja, oblikovanja, raziskav in svetovanja v zvezi s polprevodniki; storitve oblikovanja IC-jev; storitve oblikovanja programske opreme v zvezi s polprevodniki; nudenje informacij oblikovalcem in arhitektom v industriji polprevodnikov; nudenje storitev v zvezi z ocenjevanjem, preizkusanjem, preverjanjem, akreditacijo in standardizacijo polprevodnikov."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Aparatos e instrumentos científicos, náuticos, geodésicos, fotográficos, cinematográficos, ópticos, de pesar, de medida, de señalización, de control (inspección), de socorro (salvamento) y de enseñanza; aparatos e instrumentos para la conducción, distribución, transformación, acumulación, regulación y control de electricidad; aparatos para el registro, transmisión, reproducción del sonido o imágenes; soportes de registro magnéticos, discos acústicos; distribuidores automáticos y mecanismos para aparatos de previo pago; cajas registradoras, máquinas calculadoras, equipos para el tratamiento de la información y ordenadores; extintores; módulos electrónicos, electrotécnicos y electromagnéticos, sus partes y componentes incluyendo circuitos integrados (CI), chips, diodos, transistores, semiconductores y elementos semiconductores; interfaces; software informático."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Productos de imprenta; libros de texto; agendas de datos; manuales de instrucciones; manuales de usuario; catálogos de productos; hojas de datos y especificaciones de circuitos, todos relacionados con semiconductores, aparatos de semiconducción, instrumentos y software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de consultoría, diseño, investigación, desarrollo y asesoramiento en materia de semiconductores; servicios de diseño de CI; servicios de diseño de software de semiconductores; suministro de información para diseñadores y arquitectos en la industria de los semiconductores; prestación de servicios relacionados con la evaluación, pruebas, verificación, acreditación y normalización de semiconductores."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Vetenskapliga, nautiska, fotografiska, kinematografiska och optiska apparater och instrument samt apparater och instrument för lantmäteri, besiktning, vägning, mätning, signalering, kontroll (övervakning), livräddning och undervisning; apparater och instrument för ledning, distribution, omvandling, ackumulering, justering eller styrning av elektricitet; apparater för inspelning, upptagning, sändning eller återgivning av ljud och bilder; magnetiska databärare, grammofonskivor; försäljningsautomater samt mekanismer för myntstyrda apparater; kassaapparater, räknemaskiner, databehandlingsutrustningar och datorer; eldsläckningsapparatur; elektroniska, elektrotekniska och elektromagnetiska moduler, delar och komponenter för integrerade kretsar (integrerade kretsar), chips, dioder, transistorer, halvledare och halvledarelement; gränssnitt; datorprogramvara."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Trycksaker; läroböcker; databöcker; instruktionshandböcker; användarhandböcker; produktkataloger; kretsspecifikation och dataark, allt avseende halvledare, halvledande apparater, instrument och programvara."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Halvledarkonsultations-, utformnings-, forsknings-, utvecklings- och rådgivningstjänster; IC-design; utformning av halvledande datorprogramvara; information för designare och arkitekter i den halvledande industrin; värdering, provning, verifiering, ackreditering och standardisering av halvledare."
+        }
+      ]
+    },
+    "id": "c1096dc7-105e-4644-9604-b3655dffef6d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "NO BULGARIAN SUPPORTED",
+        "markImageDescriptionLanguageCode": "bg"
+      },
+      {
+        "markImageDescription": "Logo NXP",
+        "markImageDescriptionLanguageCode": "cs"
+      },
+      {
+        "markImageDescription": "NXP-logo",
+        "markImageDescriptionLanguageCode": "da"
+      },
+      {
+        "markImageDescription": "NXP-Logo",
+        "markImageDescriptionLanguageCode": "de"
+      },
+      {
+        "markImageDescription": "NO GREEK SUPPORTED",
+        "markImageDescriptionLanguageCode": "el"
+      },
+      {
+        "markImageDescription": "NXP Logo",
+        "markImageDescriptionLanguageCode": "en"
+      },
+      {
+        "markImageDescription": "Logotipo de NXP",
+        "markImageDescriptionLanguageCode": "es"
+      },
+      {
+        "markImageDescription": "NXP Logo",
+        "markImageDescriptionLanguageCode": "et"
+      },
+      {
+        "markImageDescription": "NXP-logo",
+        "markImageDescriptionLanguageCode": "fi"
+      },
+      {
+        "markImageDescription": "Logo NXP",
+        "markImageDescriptionLanguageCode": "fr"
+      },
+      {
+        "markImageDescription": "NXP logó",
+        "markImageDescriptionLanguageCode": "hu"
+      },
+      {
+        "markImageDescription": "Logotipo NXP",
+        "markImageDescriptionLanguageCode": "it"
+      },
+      {
+        "markImageDescription": "NXP logotipas",
+        "markImageDescriptionLanguageCode": "lt"
+      },
+      {
+        "markImageDescription": "NXP Logotips",
+        "markImageDescriptionLanguageCode": "lv"
+      },
+      {
+        "markImageDescription": "NXP Lowgow",
+        "markImageDescriptionLanguageCode": "mt"
+      },
+      {
+        "markImageDescription": "NXP-logo",
+        "markImageDescriptionLanguageCode": "nl"
+      },
+      {
+        "markImageDescription": "NXP Logo",
+        "markImageDescriptionLanguageCode": "pl"
+      },
+      {
+        "markImageDescription": "Logótipo NXP",
+        "markImageDescriptionLanguageCode": "pt"
+      },
+      {
+        "markImageDescription": "Logo NXP",
+        "markImageDescriptionLanguageCode": "ro"
+      },
+      {
+        "markImageDescription": "NXP Logo",
+        "markImageDescriptionLanguageCode": "sk"
+      },
+      {
+        "markImageDescription": "Logotip NXP",
+        "markImageDescriptionLanguageCode": "sl"
+      },
+      {
+        "markImageDescription": "NXP Logotyp",
+        "markImageDescriptionLanguageCode": "sw"
+      }
+    ],
+    "markImageViennaClassification": [
+      "27.05.22",
+      "27.99.14",
+      "27.99.16",
+      "27.99.24"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20060822",
+        "priorityNumber": "1117603"
+      }
+    ],
+    "publications": [
+      {
+        "publicationPage": "02532",
+        "publicationVolume": "38"
+      }
+    ],
+    "recordLastUpdated": "20260917",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices. 2e étage Anna van Buerenplein 21A,Den Haag, 2595DA",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO SHIELDMARK B.V."
+      }
+    ],
+    "secondLanguageCode": "fr",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20070129",
+        "applicationNumber": "5649281"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270129",
+      "lastPublicationDate": "20070730",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20080211",
+        "registrationNumber": "5649281"
+      }
+    },
+    "version": "20260917122809",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NXP"
+    }
+  },
+  "_uri": "/mark/em/c1096dc7-105e-4644-9604-b3655dffef6d",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.652Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

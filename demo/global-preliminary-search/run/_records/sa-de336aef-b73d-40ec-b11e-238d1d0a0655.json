@@ -1,0 +1,115 @@
+{
+  "uri": "/mark/sa/de336aef-b73d-40ec-b11e-238d1d0a0655",
+  "provider": "clarivate",
+  "office": "sa",
+  "guid": "de336aef-b73d-40ec-b11e-238d1d0a0655",
+  "applicationNumber": "TM-01-00-57973-25",
+  "registrationNumber": null,
+  "applicationDate": "2025-12-02",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "MIFARE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "ar",
+      "description": "برمجة الكمبيوتر - خدمات برمجة الكمبيوتر لمعالجة البيانات - الاستشارات المتعلقة بأمن الكمبيوتر - الاستشارات المتعلقة ببرمجيات الكمبيوتر - تصميم برمجيات كمبيوتر - تحليل أنظمة كمبيوتر - تصميم أنظمة كمبيوتر - الاستشارات المتعلقة بتقنيات الكمبيوتر - تحويل بيانات برامج الكمبيوتر ومعلوماته باستثناء التحويل المادي - خدمات تشفير البيانات -",
+      "translation_language": "en",
+      "translation": "Computer programming - Computer programming services for data processing - Computer security consulting - Computer software consulting - Computer software design - Computer systems analysis - Computer systems design - Computer technology consulting - Computer software and information data conversion (excluding physical conversion) - Data encryption services"
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "UNKN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60, 5656 AG Eindhoven, Netherlands",
+        "applicantAddressCountryCode": "UNKN",
+        "applicantAddressCountryName": "Unknown Applicant Country/Region",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer programming - Computer programming services for data processing - Computer security consulting - Computer software consulting - Computer software design - Computer systems analysis - Computer systems design - Computer technology consulting - Computer software and information data conversion (excluding physical conversion) - Data encryption services",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ar",
+          "intGoodsServicesDescription": "برمجة الكمبيوتر - خدمات برمجة الكمبيوتر لمعالجة البيانات - الاستشارات المتعلقة بأمن الكمبيوتر - الاستشارات المتعلقة ببرمجيات الكمبيوتر - تصميم برمجيات كمبيوتر - تحليل أنظمة كمبيوتر - تصميم أنظمة كمبيوتر - الاستشارات المتعلقة بتقنيات الكمبيوتر - تحويل بيانات برامج الكمبيوتر ومعلوماته باستثناء التحويل المادي - خدمات تشفير البيانات -"
+        }
+      ]
+    },
+    "id": "de336aef-b73d-40ec-b11e-238d1d0a0655",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251230",
+    "registrationOfficeCode": "SA",
+    "registrationOfficeName": "Saudi Arabia",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "SA",
+        "representativeAddressCountryName": "Saudi Arabia",
+        "representativeNativeName": "محمد عبدالعزيز محمد العساكر"
+      },
+      {
+        "representativeAddressCountryCode": "SA",
+        "representativeAddressCountryName": "Saudi Arabia",
+        "representativeName": "Mohammed Abudaziz Mohammed Al Asaker"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251202",
+        "applicationNumber": "TM-01-00-57973-25"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20251230050015",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MIFARE"
+    }
+  },
+  "_uri": "/mark/sa/de336aef-b73d-40ec-b11e-238d1d0a0655",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.737Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,232 @@
+{
+  "uri": "/mark/wo/fbe37005-bc82-487e-bd66-b0b54a6c9ef1",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "fbe37005-bc82-487e-bd66-b0b54a6c9ef1",
+  "applicationNumber": null,
+  "registrationNumber": "1693178",
+  "applicationDate": null,
+  "registrationDate": "2022-09-15",
+  "expiryDate": "2032-09-15",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-11-03",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SOVELIA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Recorded computer programs and computer systems for construction, analysis, simulation, visualisation and production, and for the handling of documents and product data for the entire product life-cycle, for engineers and industrial enterprises.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Engineering consultancy, computer-aided product development, computer programming, computer software design.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Programmes informatiques enregistrés et systèmes informatiques pour la construction, l'analyse, la simulation, la visualisation et la production ainsi que pour le traitement de documents et de données de produits durant l'intégralité du cycle de vie d'un produit, pour des ingénieurs et des entreprises industrielles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Services de conseillers en ingénierie, développement de produits assisté par ordinateur, programmation informatique, conception de logiciels informatiques.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Programas informáticos grabados y sistemas informáticos para la construcción, el análisis, la simulación, la visualización y la producción, así como la manipulación de documentos y datos de productos para todo el ciclo de vida del producto, destinados a ingenieros y empresas industriales.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Consultoría sobre ingeniería, desarrollo de productos asistidos por ordenador, programación informática, diseño de software informático.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Symetri AB",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": "GROTH & CO. KB",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20100831",
+          "basicApplicationNumber": "009342908"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "EM",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20110314",
+          "basicRegistrationNumber": "009342908"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AU",
+      "CA",
+      "CH",
+      "US"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Forskargatan 3 SE-781 70 Borlänge",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantName": "Symetri AB"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20100831",
+            "basicApplicationNumber": "009342908"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "EM",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20110314",
+            "basicRegistrationNumber": "009342908"
+          }
+        ]
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AU",
+      "CA",
+      "CH",
+      "US"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Recorded computer programs and computer systems for construction, analysis, simulation, visualisation and production, and for the handling of documents and product data for the entire product life-cycle, for engineers and industrial enterprises."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Engineering consultancy, computer-aided product development, computer programming, computer software design."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Programmes informatiques enregistrés et systèmes informatiques pour la construction, l'analyse, la simulation, la visualisation et la production ainsi que pour le traitement de documents et de données de produits durant l'intégralité du cycle de vie d'un produit, pour des ingénieurs et des entreprises industrielles."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de conseillers en ingénierie, développement de produits assisté par ordinateur, programmation informatique, conception de logiciels informatiques."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Programas informáticos grabados y sistemas informáticos para la construcción, el análisis, la simulación, la visualización y la producción, así como la manipulación de documentos y datos de productos para todo el ciclo de vida del producto, destinados a ingenieros y empresas industriales."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Consultoría sobre ingeniería, desarrollo de productos asistidos por ordenador, programación informática, diseño de software informático."
+        }
+      ]
+    },
+    "id": "fbe37005-bc82-487e-bd66-b0b54a6c9ef1",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "42"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "Fleminggatan 20 SE-112 26 Stockholm",
+        "representativeAddressCountryCode": "SE",
+        "representativeAddressCountryName": "Sweden",
+        "representativeName": "GROTH & CO. KB"
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320915",
+      "lastPublicationDate": "20221103",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20220915",
+        "registrationNumber": "1693178"
+      }
+    },
+    "version": "20250620200241",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SOVELIA"
+    }
+  },
+  "_uri": "/mark/wo/fbe37005-bc82-487e-bd66-b0b54a6c9ef1",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.286Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

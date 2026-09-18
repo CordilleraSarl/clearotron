@@ -115,7 +115,7 @@
         "street": "1316 MERCY DRIVE"
       }
     ],
-    "recordLastUpdated": "20240305",
+    "recordLastUpdated": "20260913",
     "registrationOfficeCode": "XS",
     "registrationOfficeName": "U.S. State",
     "renewalOwners": [
@@ -153,14 +153,14 @@
     },
     "usStateOfficeCode": "MI",
     "usStateOfficeName": "MICHIGAN",
-    "version": "20240305092958",
+    "version": "20260913153428",
     "wordMarkSpecification": {
       "markVerbalElementText": "THE VEIN CARE CENTER"
     }
   },
   "_uri": "/mark/xs/d9e8ab6c-8939-4457-8ca2-e837107ac9a0",
   "_receipt": {
-    "fetched_at": "2026-09-02T14:33:18.820Z",
-    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+    "fetched_at": "2026-09-18T12:42:34.379Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
   }
 }

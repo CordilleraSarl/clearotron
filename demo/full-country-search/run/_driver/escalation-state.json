@@ -1,9 +1,11 @@
 {
-  "ts": "2026-09-03T17:22:22.651Z",
+  "ts": "2026-09-18T15:40:43.751Z",
   "requested": [
+    "primary-sweep",
     "incumbent-class"
   ],
   "completed": [
+    "primary-sweep",
     "incumbent-class"
   ],
   "failed": []

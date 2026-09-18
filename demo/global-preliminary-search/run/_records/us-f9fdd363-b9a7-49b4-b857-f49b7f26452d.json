@@ -1,0 +1,346 @@
+{
+  "uri": "/mark/us/f9fdd363-b9a7-49b4-b857-f49b7f26452d",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "f9fdd363-b9a7-49b4-b857-f49b7f26452d",
+  "applicationNumber": "79425263",
+  "registrationNumber": "8182345",
+  "applicationDate": "2024-10-16",
+  "registrationDate": "2026-03-24",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2026-02-03"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": null,
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 data processing equipment, data storage apparatus namely, data processors for scanning, reading, storing and interpreting electronic data contained on radio frequency identification (RFID) and near field communication (NFC) chips; microprocessors; interfaces for computers; integrated circuits (ICs); integrated circuit chips; semiconductors; smart cards, namely, blank smart cards; encoded smart cards containing programming used for public transit, payments, loyalty programs, hospitality, transportation, student identification cards, identification cards, membership cards, parking, event management, vehicle sharing, and access management, namely, access to certain areas, gaining access to buildings, gaining access to premises, and gaining access to vehicles; smart card integrated circuits, namely, blank integrated circuit cards; encoded integrated circuit cards containing programming used for public transit, payments, loyalty programs, hospitality, transportation, student identification cards, identification cards, membership cards, parking, event management, vehicle sharing, and access management, namely, access to certain areas, gaining access to buildings, gaining access to premises, and gaining access to vehicles; radio frequency identification (RFID) labels; radio frequency identification (RFID) tags; blank smart cards with integrated radio frequency identification (RFID) chips; encoded smart cards with integrated radio frequency identification (RFID) chips containing programming used for public transit, payments, loyalty programs, hospitality, transportation, student identification cards, identification cards, membership cards, parking, event management, vehicle sharing, and access management, namely, access to certain areas, gaining access to buildings, gaining access to premises, and gaining access to vehicles; computer hardware and downloadable software for creating, programming, controlling, encoding, scanning, reading and interpreting radio frequency identification (RFID) chips and tags; encoded contactless smart cards embedded with transponders, central processing units, cryptographic co-processors, analog logic, digital logic, and memory for use in public transit, payments, loyalty programs, hospitality, car access, electric vehicle charging, event management, and access management, namely, access to certain areas, gaining access to buildings, gaining access to premises, and gaining access to vehicles; blank dual interface smart cards embedded with transponders, central processing units, cryptographic co-processors, integrated circuits which use analog logic and digital logic, and memory; encoded dual interface smart cards embedded with transponders, central processing units, cryptographic co-processors, integrated circuits which use analog logic and digital logic, and memory for use for public transit, payments, and physical access management, namely, access to certain areas, gaining access to buildings, gaining access to premises, and gaining access to vehicles; dual interface integrated circuits that provide a link between contactless cards and contact cards; encoded contactless smart cards containing programming used for determining the fare to be paid by passengers who book their trip electronically; encoded contactless smart cards containing programming used for gaining access to certain areas, buildings, premises, and vehicles; encoded contactless smart cards containing programming used for payment; RFID writers, namely devices that communicate with radio frequency identification (RFID) tags and devices that can read and write data onto RFID tags and perform contactless transactions and operations between the reader and writer devices and smartcards or tag devices for wireless transmission of data to and from transponder chips; RFID readers for wireless transmission of data to and from transponder chips; RFID readers for wireless transmission of data to and from transponder chips downloadable computer programs for controlling transmission of data to and reading of data from transponder chips; electronic card readers combined with electronic data recorders for authenticating identity, controlling access to social and business events, managing events, ticketing, transit, tourism, hospitality, student cards, loyalty programs, payment, and access management, namely, access to certain areas, gaining access to buildings, gaining access to premises, and gaining access to vehicles; electronic wristbands intended to be used for authenticating identity, controlling access to functions, managing events, ticketing, promoting brand loyalty, promoting brands, cashless vending, transportation and membership identification; computer hardware, downloadable software and computer peripherals used for access control and authentication purposes; electronic key fobs being remote control apparatus; downloadable cloud computing software for downloading payment information onto end user devices, namely, mobile phones and wearable devices, sold separately; cloud computing systems comprised of cloud computing hardware, namely, HSM (high security modules) which are accessed and used by cloud computing software, namely, hardware security appliance in the nature of a computer hardware security module (HSM) for encrypting sensitive data; downloadable software for cloud infrastructure for downloading virtual card information and virtual card data onto end user devices, namely, mobile phones and wearable devices; downloadable cloud computing platform software for use on mobile devices with near field communication (NFC) functionality to interact with smartcard integrated circuits and connect with backend cloud software services which provide and manage virtual cards and virtual card data remotely, containing software and software built by OEMs to emulate smartcard products, interact with smartcard products, and interact with cloud software service backend systems which provide and manage virtual cards and virtual card data remotely; downloadable cloud computing platform software for generating smartcard and virtual card encryption key material in a secure HSM module, namely, hardware security appliance in the nature of a computer hardware security module (HSM) for encrypting sensitive data, deploying virtual machines to a cloud computing platform, implementing and emulating smartcard functionality in software, personalizing smart cards, and securely generating data that is used to personalize and download data into smart cards; downloadable computer application software for providing cloud computing services; downloadable cloud based software solutions for managing digital credentials onto mobile devices and wearable devices, namely, mobile phones and wearable devices supporting NFC-enabled mobile devices for fare payments made using mobile devices, transit ticketing using mobile devices, and smart card access; downloadable computer software for the implementation of smartcards on mobile devices and wearable devices; downloadable software for security and risk management in respect of smartcard implementation on mobile devices and wearable devices; downloadable host card emulation (HCE) software for storing virtual smart card on mobile devices and wearable devices, namely, software that enables mobile devices and wearable devices to be used for making payments, accessing transit and credit and debit transactions at physical point-of-sale (POS) terminals; downloadable software embedded on a SE (Secure Element), namely, a secure integrated circuit for use in mobile and wearable device applications which facilitate virtual card storing on mobile devices and wearable devices; computer hardware, namely, secure access modules; downloadable interface software, namely, mobile device and wearable device interface software for virtual cards and virtual wallets; secure microprocessors; interface circuits for remote devices; secure microprocessors; secure terminals for electronic transactions; secure digital (SD) card readers; Secure Digital (SD) memory cards; downloadable software for facilitating secure transactions; SIM cards",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Computer programming services; installation, repair and maintenance of software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, and of software for determining the fare to be paid by passengers with electronic travel-tickets; research, design and development services related to electronic, electrotechnical and electromagnetic modules, namely, transistors, analog logic, digital logic, electrotechnical parts and smartcards, parts and building elements, namely, structural parts for the forgoing, data processing machines, data storage apparatus, microprocessors, interfaces, namely, interfaces for data transfer inside an integrated circuit IC and interfaces for sharing data between cloud computing area (APIs), integrated circuits, chips, namely, semiconductor chips, semiconductors and blank and encoded smart cards, electronic controllers for smart cards, electronic controllers for RFID chips and tags; research, design and development services related to computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; research, design and development services related to electronic apparatus, instruments and equipment in the nature of NFC reader devices, NFC verification and validation tools, integrated circuit development environments for analog design and digital design, and debugging tools for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, antennas for scanning, reading and interpreting RFID chips and tags; research, design and development services related to NFC (near field communications) apparatus, instruments and equipment, namely, electronic, electrotechnical and electromagnetic modules, namely, transistors, analog logic, digital logic, electrotechnical parts and smartcards, parts and building elements, namely, structural parts for the forgoing, and integrated circuits for NFC applications, electronic payment cards, data processing apparatus and software for determining the fare to be paid by passengers with electronic travel-tickets; research, design and development services related to structural parts for all the aforesaid goods; custom computer programming for others; custom programming of electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (IC's), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID chips and tags; custom programming of computer hardware used for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, antennas for smart card integrated circuits for use with NFC interface for scanning, reading and interpreting RFID chips and tags; custom computer programming of NFC (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, namely, transistors, analog logic, digital logic, electrotechnical parts and smartcards, structural parts for the forgoing and integrated circuits for near field communications applications, electronic payment cards, data processing apparatus and software for determining the fare to be paid by passengers with electronic travel-tickets; custom computer programming of structural parts for all the aforesaid goods; cloud computing, namely, providing virtual computer systems and virtual computer environments through cloud computing and cloud hosting provider services; cloud computing services, namely, providing hosted virtual computer environments through cloud computing; providing temporary use of non-downloadable cloud computing software for use service management for cloud platforms for maintaining service level for cloud service availability and response times; providing temporary use of non-downloadable software for the implementation of virtual cards onto embedded secure integrated circuits for smartcards on mobile devices and wearable devices; providing temporary use of non-downloadable software for security and risk management in respect of smartcard implementation of virtual cards onto embedded secure integrated circuits for on mobile devices and wearable devices; providing temporary use of non-downloadable software for virtual card storing on mobile devices and wearable devices embedded on a HCE (Host Card Emulation), namely, software for securing a mobile phone such that it can be used to make credit or debit transactions at a physical point-of-sale (POS) terminals; providing temporary use of non-downloadable software for virtual smart card storing on mobile devices and wearable device embedded on a SE (Secure Element), namely, a secure integrated circuit; advisory, consultancy and information services in relation to all the aforesaid services",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60, NETH",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantAddressStreet": "High Tech Campus 60",
+        "applicantJurisdictionOfIncorporation": "NETHERLANDS",
+        "applicantName": "NXP B.V.",
+        "applicantSecondaryAddressUnit": "NL-5656 AG Eindhoven"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "26.01.01",
+      "26.01.37",
+      "26.01.51",
+      "26.01.55",
+      "29.07.03",
+      "29.07.06",
+      "29.07.07",
+      "29.07.09"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 data processing equipment, data storage apparatus namely, data processors for scanning, reading, storing and interpreting electronic data contained on radio frequency identification (RFID) and near field communication (NFC) chips; microprocessors; interfaces for computers; integrated circuits (ICs); integrated circuit chips; semiconductors; smart cards, namely, blank smart cards; encoded smart cards containing programming used for public transit, payments, loyalty programs, hospitality, transportation, student identification cards, identification cards, membership cards, parking, event management, vehicle sharing, and access management, namely, access to certain areas, gaining access to buildings, gaining access to premises, and gaining access to vehicles; smart card integrated circuits, namely, blank integrated circuit cards; encoded integrated circuit cards containing programming used for public transit, payments, loyalty programs, hospitality, transportation, student identification cards, identification cards, membership cards, parking, event management, vehicle sharing, and access management, namely, access to certain areas, gaining access to buildings, gaining access to premises, and gaining access to vehicles; radio frequency identification (RFID) labels; radio frequency identification (RFID) tags; blank smart cards with integrated radio frequency identification (RFID) chips; encoded smart cards with integrated radio frequency identification (RFID) chips containing programming used for public transit, payments, loyalty programs, hospitality, transportation, student identification cards, identification cards, membership cards, parking, event management, vehicle sharing, and access management, namely, access to certain areas, gaining access to buildings, gaining access to premises, and gaining access to vehicles; computer hardware and downloadable software for creating, programming, controlling, encoding, scanning, reading and interpreting radio frequency identification (RFID) chips and tags; encoded contactless smart cards embedded with transponders, central processing units, cryptographic co-processors, analog logic, digital logic, and memory for use in public transit, payments, loyalty programs, hospitality, car access, electric vehicle charging, event management, and access management, namely, access to certain areas, gaining access to buildings, gaining access to premises, and gaining access to vehicles; blank dual interface smart cards embedded with transponders, central processing units, cryptographic co-processors, integrated circuits which use analog logic and digital logic, and memory; encoded dual interface smart cards embedded with transponders, central processing units, cryptographic co-processors, integrated circuits which use analog logic and digital logic, and memory for use for public transit, payments, and physical access management, namely, access to certain areas, gaining access to buildings, gaining access to premises, and gaining access to vehicles; dual interface integrated circuits that provide a link between contactless cards and contact cards; encoded contactless smart cards containing programming used for determining the fare to be paid by passengers who book their trip electronically; encoded contactless smart cards containing programming used for gaining access to certain areas, buildings, premises, and vehicles; encoded contactless smart cards containing programming used for payment; RFID writers, namely devices that communicate with radio frequency identification (RFID) tags and devices that can read and write data onto RFID tags and perform contactless transactions and operations between the reader and writer devices and smartcards or tag devices for wireless transmission of data to and from transponder chips; RFID readers for wireless transmission of data to and from transponder chips; RFID readers for wireless transmission of data to and from transponder chips downloadable computer programs for controlling transmission of data to and reading of data from transponder chips; electronic card readers combined with electronic data recorders for authenticating identity, controlling access to social and business events, managing events, ticketing, transit, tourism, hospitality, student cards, loyalty programs, payment, and access management, namely, access to certain areas, gaining access to buildings, gaining access to premises, and gaining access to vehicles; electronic wristbands intended to be used for authenticating identity, controlling access to functions, managing events, ticketing, promoting brand loyalty, promoting brands, cashless vending, transportation and membership identification; computer hardware, downloadable software and computer peripherals used for access control and authentication purposes; electronic key fobs being remote control apparatus; downloadable cloud computing software for downloading payment information onto end user devices, namely, mobile phones and wearable devices, sold separately; cloud computing systems comprised of cloud computing hardware, namely, HSM (high security modules) which are accessed and used by cloud computing software, namely, hardware security appliance in the nature of a computer hardware security module (HSM) for encrypting sensitive data; downloadable software for cloud infrastructure for downloading virtual card information and virtual card data onto end user devices, namely, mobile phones and wearable devices; downloadable cloud computing platform software for use on mobile devices with near field communication (NFC) functionality to interact with smartcard integrated circuits and connect with backend cloud software services which provide and manage virtual cards and virtual card data remotely, containing software and software built by OEMs to emulate smartcard products, interact with smartcard products, and interact with cloud software service backend systems which provide and manage virtual cards and virtual card data remotely; downloadable cloud computing platform software for generating smartcard and virtual card encryption key material in a secure HSM module, namely, hardware security appliance in the nature of a computer hardware security module (HSM) for encrypting sensitive data, deploying virtual machines to a cloud computing platform, implementing and emulating smartcard functionality in software, personalizing smart cards, and securely generating data that is used to personalize and download data into smart cards; downloadable computer application software for providing cloud computing services; downloadable cloud based software solutions for managing digital credentials onto mobile devices and wearable devices, namely, mobile phones and wearable devices supporting NFC-enabled mobile devices for fare payments made using mobile devices, transit ticketing using mobile devices, and smart card access; downloadable computer software for the implementation of smartcards on mobile devices and wearable devices; downloadable software for security and risk management in respect of smartcard implementation on mobile devices and wearable devices; downloadable host card emulation (HCE) software for storing virtual smart card on mobile devices and wearable devices, namely, software that enables mobile devices and wearable devices to be used for making payments, accessing transit and credit and debit transactions at physical point-of-sale (POS) terminals; downloadable software embedded on a SE (Secure Element), namely, a secure integrated circuit for use in mobile and wearable device applications which facilitate virtual card storing on mobile devices and wearable devices; computer hardware, namely, secure access modules; downloadable interface software, namely, mobile device and wearable device interface software for virtual cards and virtual wallets; secure microprocessors; interface circuits for remote devices; secure microprocessors; secure terminals for electronic transactions; secure digital (SD) card readers; Secure Digital (SD) memory cards; downloadable software for facilitating secure transactions; SIM cards"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Computer programming services; installation, repair and maintenance of software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, and of software for determining the fare to be paid by passengers with electronic travel-tickets; research, design and development services related to electronic, electrotechnical and electromagnetic modules, namely, transistors, analog logic, digital logic, electrotechnical parts and smartcards, parts and building elements, namely, structural parts for the forgoing, data processing machines, data storage apparatus, microprocessors, interfaces, namely, interfaces for data transfer inside an integrated circuit IC and interfaces for sharing data between cloud computing area (APIs), integrated circuits, chips, namely, semiconductor chips, semiconductors and blank and encoded smart cards, electronic controllers for smart cards, electronic controllers for RFID chips and tags; research, design and development services related to computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; research, design and development services related to electronic apparatus, instruments and equipment in the nature of NFC reader devices, NFC verification and validation tools, integrated circuit development environments for analog design and digital design, and debugging tools for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, antennas for scanning, reading and interpreting RFID chips and tags; research, design and development services related to NFC (near field communications) apparatus, instruments and equipment, namely, electronic, electrotechnical and electromagnetic modules, namely, transistors, analog logic, digital logic, electrotechnical parts and smartcards, parts and building elements, namely, structural parts for the forgoing, and integrated circuits for NFC applications, electronic payment cards, data processing apparatus and software for determining the fare to be paid by passengers with electronic travel-tickets; research, design and development services related to structural parts for all the aforesaid goods; custom computer programming for others; custom programming of electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (IC's), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID chips and tags; custom programming of computer hardware used for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, antennas for smart card integrated circuits for use with NFC interface for scanning, reading and interpreting RFID chips and tags; custom computer programming of NFC (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, namely, transistors, analog logic, digital logic, electrotechnical parts and smartcards, structural parts for the forgoing and integrated circuits for near field communications applications, electronic payment cards, data processing apparatus and software for determining the fare to be paid by passengers with electronic travel-tickets; custom computer programming of structural parts for all the aforesaid goods; cloud computing, namely, providing virtual computer systems and virtual computer environments through cloud computing and cloud hosting provider services; cloud computing services, namely, providing hosted virtual computer environments through cloud computing; providing temporary use of non-downloadable cloud computing software for use service management for cloud platforms for maintaining service level for cloud service availability and response times; providing temporary use of non-downloadable software for the implementation of virtual cards onto embedded secure integrated circuits for smartcards on mobile devices and wearable devices; providing temporary use of non-downloadable software for security and risk management in respect of smartcard implementation of virtual cards onto embedded secure integrated circuits for on mobile devices and wearable devices; providing temporary use of non-downloadable software for virtual card storing on mobile devices and wearable devices embedded on a HCE (Host Card Emulation), namely, software for securing a mobile phone such that it can be used to make credit or debit transactions at a physical point-of-sale (POS) terminals; providing temporary use of non-downloadable software for virtual smart card storing on mobile devices and wearable device embedded on a SE (Secure Element), namely, a secure integrated circuit; advisory, consultancy and information services in relation to all the aforesaid services"
+        }
+      ]
+    },
+    "id": "f9fdd363-b9a7-49b4-b857-f49b7f26452d",
+    "internationalMarkKeys": [
+      {
+        "internationalRegistrationNumber": "1858066",
+        "markCurrentStatus": "REQUEST FOR EXTENSION OF PROTECTION ESTABLISHED",
+        "markCurrentStatusDate": "20250605",
+        "protectionGrantedDate": "20261205",
+        "publicationDate": "20250605",
+        "registrationDate": "20241016",
+        "renewalDate": "20341016"
+      }
+    ],
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260904",
+        "descriptionText": "FINAL DISPOSITION PROCESSED"
+      },
+      {
+        "date": "20260904",
+        "descriptionText": "FINAL DISPOSITION NOTICE SENT TO IB"
+      },
+      {
+        "date": "20260624",
+        "descriptionText": "FINAL DISPOSITION NOTICE CREATED, TO BE SENT TO IB"
+      },
+      {
+        "date": "20260324",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20260324",
+        "descriptionText": "NOTICE OF REGISTRATION CONFIRMATION EMAILED"
+      },
+      {
+        "date": "20260203",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20260203",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20260129",
+        "descriptionText": "NOTIFICATION PROCESSED BY IB"
+      },
+      {
+        "date": "20260128",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20260114",
+        "descriptionText": "NOTIFICATION OF POSSIBLE OPPOSITION SENT TO IB"
+      },
+      {
+        "date": "20260113",
+        "descriptionText": "NOTICE OF START OF OPPOSITION PERIOD CREATED, TO BE SENT TO IB"
+      },
+      {
+        "date": "20260106",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20260105",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20260104",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20260104",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20251110",
+        "descriptionText": "TEAS CHANGE OF OWNER ADDRESS RECEIVED"
+      },
+      {
+        "date": "20251110",
+        "descriptionText": "APPLICANT/CORRESPONDENCE CHANGES (NON-RESPONSIVE) ENTERED"
+      },
+      {
+        "date": "20251110",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20251110",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20251110",
+        "descriptionText": "TEAS CHANGE OF DOMESTIC REPRESENTATIVES ADDRESS"
+      },
+      {
+        "date": "20250823",
+        "descriptionText": "REFUSAL PROCESSED BY IB"
+      },
+      {
+        "date": "20250802",
+        "descriptionText": "REFUSAL PROCESSED BY MPU"
+      },
+      {
+        "date": "20250802",
+        "descriptionText": "NON-FINAL ACTION MAILED - REFUSAL SENT TO IB"
+      },
+      {
+        "date": "20250611",
+        "descriptionText": "NON-FINAL ACTION (IB REFUSAL) PREPARED FOR REVIEW"
+      },
+      {
+        "date": "20250610",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20250609",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20250608",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20250608",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      },
+      {
+        "date": "20250605",
+        "descriptionText": "SN ASSIGNED FOR SECT 66A APPL FROM IB"
+      }
+    ],
+    "markFeature": "DESIGN ONLY",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "The color(s) orange, blue, green, and white is/are claimed as a feature of the mark.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "The mark consists of the design of two smaller circles overlapping a large circle; the larger central circle is blue with two white concentric rings inside of it; the two smaller circles appear on the right and left side of the larger circle; the circle on the left side is orange and smaller than the circle on the right side which is green. The entire mark appears on a white background.",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "High Tech Campus 60, NETH",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "name": "NXP B.V.",
+        "secondaryAddressUnit": "NL-5656 AG Eindhoven",
+        "street": "High Tech Campus 60"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "High Tech Campus 60, NETH",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "name": "NXP B.V.",
+        "secondaryAddressUnit": "NL-5656 AG Eindhoven",
+        "street": "High Tech Campus 60"
+      },
+      {
+        "address": "High Tech Campus 60, NETH",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "name": "NXP B.V.",
+        "secondaryAddressUnit": "NL-5656 AG Eindhoven",
+        "street": "High Tech Campus 60"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "High Tech Campus 60, NETH",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "name": "NXP B.V.",
+        "secondaryAddressUnit": "NL-5656 AG Eindhoven",
+        "street": "High Tech Campus 60"
+      }
+    ],
+    "recordLastUpdated": "20260908",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Palo Alto, CA 94306, United States",
+        "representativeCorrespondentAddressLines": [
+          "Palo Alto, CA 94306",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Cynthia R. Adwere Law Office of Cynthia R. Adwere, 2625 Middlefield Road, no. 360"
+      }
+    ],
+    "representatives": [
+      {
+        "domesticRepresentativeName": "Cynthia R. Adwere",
+        "representativeAddress": "Palo Alto, CA 94306, United States",
+        "representativeAddressLines": [
+          "Palo Alto, CA 94306",
+          "United States"
+        ]
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20241016",
+        "applicationNumber": "79425263"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED",
+        "markOfficialStatusCode": "700",
+        "markOfficialStatusDate": "20260324",
+        "markOfficialStatusEvents": [
+          "Section 66(a) (Madrid Protocol) - Filed",
+          "Section 66(a) (Madrid Protocol) - Current",
+          "Notice of First Refusal"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20260203"
+      ],
+      "registration": {
+        "registrationDate": "20260324",
+        "registrationNumber": "8182345"
+      }
+    },
+    "version": "20260908064002"
+  },
+  "_uri": "/mark/us/f9fdd363-b9a7-49b4-b857-f49b7f26452d",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.724Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

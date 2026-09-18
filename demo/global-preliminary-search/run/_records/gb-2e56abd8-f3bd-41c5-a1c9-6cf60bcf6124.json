@@ -1,0 +1,165 @@
+{
+  "uri": "/mark/gb/2e56abd8-f3bd-41c5-a1c9-6cf60bcf6124",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "2e56abd8-f3bd-41c5-a1c9-6cf60bcf6124",
+  "applicationNumber": "UK00913483243",
+  "registrationNumber": "UK00913483243",
+  "applicationDate": "2014-11-21",
+  "registrationDate": "2015-04-06",
+  "expiryDate": "2034-11-21",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SYMETRI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    38,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer programs (downloadable software) for designing and creating digital drawings and models; Software for construction, modelling and design; Computer software for computer-aided design (CAD); Computer programs in the form of geographical information systems.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "en",
+      "description": "Data communication services; Worldwide computer network access services; Providing access to and leasing access time to computer databases; Provision of access to web pages; Digital transmission services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education in the implementation and use of data processing programs for designing and creating digital drawings and models; Training services relating to computer-aided engineering design; Education services relating to computer systems.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Software development, programming and implementation; Design, maintenance and updating of computer programs and computer systems for creating digital drawings and models; Computer aided graphic design; Computer aided design services relating to building projects; Computer aided design services; IT consultancy, advisory and information services; Consultancy relating to computer programs for designing and creating digital drawings and models; Engineering consultancy relating to design, Software as a service [SaaS].",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Symetri AB",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": "Forresters IP LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Forskargatan 3, Borlänge 781 70",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantName": "Symetri AB"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer programs (downloadable software) for designing and creating digital drawings and models; Software for construction, modelling and design; Computer software for computer-aided design (CAD); Computer programs in the form of geographical information systems."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Data communication services; Worldwide computer network access services; Providing access to and leasing access time to computer databases; Provision of access to web pages; Digital transmission services."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education in the implementation and use of data processing programs for designing and creating digital drawings and models; Training services relating to computer-aided engineering design; Education services relating to computer systems."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Software development, programming and implementation; Design, maintenance and updating of computer programs and computer systems for creating digital drawings and models; Computer aided graphic design; Computer aided design services relating to building projects; Computer aided design services; IT consultancy, advisory and information services; Consultancy relating to computer programs for designing and creating digital drawings and models; Engineering consultancy relating to design, Software as a service [SaaS]."
+        }
+      ]
+    },
+    "id": "2e56abd8-f3bd-41c5-a1c9-6cf60bcf6124",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "Colour Claimed : Turquoise blue."
+      }
+    ],
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "The Gherkin (11th Floor), 30 St Mary Axe, London EC3A 8BF",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Forresters IP LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20141121",
+        "applicationNumber": "UK00913483243"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20341121",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20150406",
+        "registrationNumber": "UK00913483243"
+      }
+    },
+    "version": "20250627214949",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SYMETRI"
+    }
+  },
+  "_uri": "/mark/gb/2e56abd8-f3bd-41c5-a1c9-6cf60bcf6124",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.285Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

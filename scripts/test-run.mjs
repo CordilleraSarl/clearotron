@@ -419,7 +419,7 @@ if (escaped.length && !String(process.env[LIVE_OVERRIDE] ?? "").trim()) {
   console.error(`  These decide where jobs are ENQUEUED and where runs PUBLISH. Pointed at a live estate,`);
   console.error(`  the enqueue-exercising tests write real jobs into the real queue and an armed driver`);
   console.error(`  claims them: on 2026-08-18 that started two full clearances, four live model stages, and`);
-  console.error(`  the containment tripwire only said so afterwards. #1243.`);
+  console.error(`  the containment tripwire only said so afterwards.`);
   console.error(``);
   console.error(`  Almost always the cause is a shell that sourced a box .env before running the suite. CI`);
   console.error(`  never does this, and the fix is to run the suite in a shell that has not.`);
@@ -430,7 +430,7 @@ if (escaped.length && !String(process.env[LIVE_OVERRIDE] ?? "").trim()) {
 if (escaped.length) {
   console.error(`[test-run] ${LIVE_OVERRIDE} IS SET — running against a data plane outside any temp root:`);
   for (const { name, value } of escaped) console.error(`  ${name}=${value}   (root: ${rootOf(value)})`);
-  console.error(`  Real jobs written by this run are real. #1243.`);
+  console.error(`  Real jobs written by this run are real, and an armed driver will run them.`);
 }
 
 // ── WHAT THE NEXT TWENTY MINUTES OF OUTPUT IS, SAID BEFORE IT STARTS ───────────────────────

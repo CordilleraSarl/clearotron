@@ -1,5 +1,5 @@
 {
-  "ts": "2026-09-02T17:33:13.458Z",
+  "ts": "2026-09-18T13:49:18.460Z",
   "inputs": {
     "narrative": true,
     "report": true,
@@ -28,29 +28,75 @@
     "probativeGrading": [],
     "matrixCeiling": [],
     "statusHonesty": {
-      "pass": false,
-      "detail": "the delivery reads as clean/complete while a material layer did not finish (primary-sweep, primary-sweep / exact: vεηqοrι [cl 9, 42, 41], primary-sweep / exact: vеnqоri [cl 9, 42, 41], primary-sweep / exact: qοrι [cl 9, 42, 41], primary-sweep / exact: qоri [cl 9, 42, 41], incumbent-class, incumbent-class / default: VENQORI [cl 9, 42, 41], incumbent-class / default: QORI [cl 9, 42, 41], incumbent-class / owner: Xylem Inc. [cl 9, 42, 41], incumbent-class / default: VENQORI [cl 9, 42, 41], incumbent-class / default: QORI [cl 9, 42, 41], incumbent-class / owner: Xylem [cl 9, 42, 41], incumbent-class / default: VENQORI [cl 9, 42, 41, 11, 1, 40, 44], incumbent-class / default: QORI [cl 9, 42, 41, 11, 1, 40, 44], incumbent-class / owner: Xylem Inc. [cl 9, 42, 41, 11, 1, 40, 44], incumbent-class / exact: VENQORI [cl 9, 42, 41], incumbent-class / exact: QORI [cl 9, 42, 41], incumbent-class / the applicant's own earlier rights, field:general-purpose data analytics, dashboarding and alerting software (downloadable or saas), field:environmental monitoring software generally — air quality, emissions, soil, hydrology, weather and compliance-reporting platforms) — the headline cannot be cleaner than the weakest coverage unit; state the gap in the status, not only the footnotes"
+      "pass": true,
+      "detail": ""
     },
     "deadlineUrgency": [],
     "unresolvedDisagreements": [],
     "orphanFindings": [],
     "crosscheckMissing": [],
-    "recallRegression": [],
-    "deadlineCarry": [],
-    "documentGrowth": [
+    "recallRegression": [
       {
-        "stage": "common-law-half:b",
-        "trigger": "frame-reopen",
-        "before": 14779,
-        "after": 25598,
-        "growthBytes": 10819,
-        "growthPct": 73
+        "uri": "/mark/em/dc47debd-f2b2-44d5-aa83-50743a2cc274",
+        "mark_text": "VENCORA",
+        "classes": null,
+        "owner": "Vencora UK Limited",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/em/dc47debd-f2b2-44d5-aa83-50743a2cc274 (\"VENCORA\") was neither carried as a finding nor justified against its fetched record this run"
+      },
+      {
+        "uri": "/mark/em/481679a2-c6f6-4b6f-8aa4-1e49414b5140",
+        "mark_text": "VENCORE",
+        "classes": null,
+        "owner": "Symetri AB",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/em/481679a2-c6f6-4b6f-8aa4-1e49414b5140 (\"VENCORE\") was neither carried as a finding nor justified against its fetched record this run"
+      },
+      {
+        "uri": "/mark/em/7a0fb9c1-6534-4467-8838-23a937da8e53",
+        "mark_text": "QORI",
+        "classes": null,
+        "owner": "InCert",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/em/7a0fb9c1-6534-4467-8838-23a937da8e53 (\"QORI\") was neither carried as a finding nor justified against its fetched record this run"
+      },
+      {
+        "uri": "/mark/gb/8cbb976f-cfe1-4cf1-bbd7-4d3d1a211b28",
+        "mark_text": "VenQ",
+        "classes": null,
+        "owner": "LRG CONSULTANTS LIMITED",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/gb/8cbb976f-cfe1-4cf1-bbd7-4d3d1a211b28 (\"VenQ\") was neither carried as a finding nor justified against its fetched record this run"
+      },
+      {
+        "uri": "/mark/br/1ac5cfcf-0d54-4c62-bbbb-96803a302f9c",
+        "mark_text": "VENTORI",
+        "classes": null,
+        "owner": "VENTORI ACESSORIOS LTDA - ME.",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/br/1ac5cfcf-0d54-4c62-bbbb-96803a302f9c (\"VENTORI\") was neither carried as a finding nor justified against its fetched record this run"
+      },
+      {
+        "uri": "/mark/jp/bb31005c-de89-4427-9e3b-eb870618399d",
+        "mark_text": "QORIQ",
+        "classes": [
+          "9"
+        ],
+        "owner": "NXP USA, Inc.",
+        "material": true,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/jp/bb31005c-de89-4427-9e3b-eb870618399d (\"QORIQ\") was neither carried as a finding nor justified against its fetched record this run"
       }
-    ]
+    ],
+    "deadlineCarry": [],
+    "documentGrowth": []
   },
   "tripFlags": [
-    "status-honesty: the delivery reads as clean/complete while a material layer did not finish (primary-sweep, primary-sweep / exact: vεηqοrι [cl 9, 42, 41], primary-sweep / exact: vеnqоri [cl 9, 42, 41], primary-sweep / exact: qοrι [cl 9, 42, 41], primary-sweep / exact: qоri [cl 9, 42, 41], incumbent-class, incumbent-class / default: VENQORI [cl 9, 42, 41], incumbent-class / default: QORI [cl 9, 42, 41], incumbent-class / owner: Xylem Inc. [cl 9, 42, 41], incumbent-class / default: VENQORI [cl 9, 42, 41], incumbent-class / default: QORI [cl 9, 42, 41], incumbent-class / owner: Xylem [cl 9, 42, 41], incumbent-class / default: VENQORI [cl 9, 42, 41, 11, 1, 40, 44], incumbent-class / default: QORI [cl 9, 42, 41, 11, 1, 40, 44], incumbent-class / owner: Xylem Inc. [cl 9, 42, 41, 11, 1, 40, 44], incumbent-class / exact: VENQORI [cl 9, 42, 41], incumbent-class / exact: QORI [cl 9, 42, 41], incumbent-class / the applicant's own earlier rights, field:general-purpose data analytics, dashboarding and alerting software (downloadable or saas), field:environmental monitoring software generally — air quality, emissions, soil, hydrology, weather and compliance-reporting platforms) — the headline cannot be cleaner than the weakest coverage unit; state the gap in the status, not only the footnotes",
-    "document-growth: common-law-half:b grew 73% (14779 → 25598 bytes) under trigger \"frame-reopen\" — a repair defends or corrects, it does not add; review what the pass appended"
+    "recall-regression: prior-confirmed live registered conflict /mark/em/dc47debd-f2b2-44d5-aa83-50743a2cc274 (\"VENCORA\") was neither carried as a finding nor justified against its fetched record this run",
+    "recall-regression: prior-confirmed live registered conflict /mark/em/481679a2-c6f6-4b6f-8aa4-1e49414b5140 (\"VENCORE\") was neither carried as a finding nor justified against its fetched record this run",
+    "recall-regression: prior-confirmed live registered conflict /mark/em/7a0fb9c1-6534-4467-8838-23a937da8e53 (\"QORI\") was neither carried as a finding nor justified against its fetched record this run",
+    "recall-regression: prior-confirmed live registered conflict /mark/gb/8cbb976f-cfe1-4cf1-bbd7-4d3d1a211b28 (\"VenQ\") was neither carried as a finding nor justified against its fetched record this run",
+    "recall-regression: prior-confirmed live registered conflict /mark/br/1ac5cfcf-0d54-4c62-bbbb-96803a302f9c (\"VENTORI\") was neither carried as a finding nor justified against its fetched record this run",
+    "recall-regression: prior-confirmed live registered conflict /mark/jp/bb31005c-de89-4427-9e3b-eb870618399d (\"QORIQ\") was neither carried as a finding nor justified against its fetched record this run"
   ],
   "registryCorrections": []
 }

@@ -1,0 +1,312 @@
+{
+  "uri": "/mark/us/33ee62d9-65f9-4cc3-8c23-5c49e125a38e",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "33ee62d9-65f9-4cc3-8c23-5c49e125a38e",
+  "applicationNumber": "98748349",
+  "registrationNumber": null,
+  "applicationDate": "2024-09-12",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2025-10-07"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "NXP BRIGHTER TOGETHER",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "STYLIZED LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Electronic, electro technical and electromagnetic modules, parts and components therefor, namely, integrated circuits, high performance mixed signal integrated circuits, semiconductor chips, diodes, transistors, microprocessors, multicore processors, application processors, namely, general-purpose microprocessors, digital signal processors, cloud-based computing processors, namely, central processing units for supporting cloud-based software applications, high-speed data converters, namely analog-to-digital converters, digital-to-analog converters, analog and digital semiconductors and semiconductor power elements; microcontrollers; microprocessors; interfaces for computers, development boards, namely, circuit boards, downloadable software development kits (SDKs), embedded software, namely, recorded operating system software embedded into computer hardware, downloadable application development software, recorded computer operating programs, and computer hardware; downloadable computer software for design, manufacture, and use of integrated circuits; downloadable computer software for programming and developing embedded systems; downloadable cloud computing software for decision making and/or data collection at the device, to facilitate remote management of the device from the cloud, and to autonomously operate based on the directions received from the cloud; downloadable and/or recorded software for cloud infrastructure management; downloadable computer application software for use in implementing, particularly, controlling networked devices in the Internet of Things [IoT]; artificial intelligence and machine learning software, namely, downloadable computer software using artificial intelligence (AI) for machine learning; apparatus and instruments for conducting, switching, transforming, accumulating, regulating and controlling electricity; apparatus for recording, transmission and reproduction of data, sound or images; wireless transmitters and receivers; wireless audio products, namely, wireless ear buds, hearing aids, wireless (smart) speakers, wireless sound bars; blank smart cards, data processors for scanning, reading, storing and interpreting electronic data contained on RFID tags and readers and near field communication (NFC) chips; RFID chips and tags, blank near field communication (NFC) tags and labels; accelerometer sensors; digital temperature sensors; magnetic switch sensors; pressure sensors; current sensors; radar sensors; battery sensors; blank optical data carriers; data processing equipment and computers",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Research, design and development services related to integrated circuits and semiconductors; research, design and development services related to RFID chips, smart cards and NFC (near field communications) apparatus; software design; software development; design and development of software for semiconductors; Software as a service (SaaS) services featuring software for operating semiconductors, integrated circuits, and Internet of Things (IoT) devices; cloud computing featuring software for use in enabling cloud connectivity with devices microcontrollers; platforms for artificial intelligence as software as a service (SaaS), namely, artificial intelligence as a service (AIAAS) featuring software using artificial intelligence that can run on edge devices with microcontrollers and microprocessors; programming of data processing equipment; programming of multimedia equipment; software engineering services; engineering testing, namely, testing in hardware engineering design; computer hardware development; advisory services in the field of computer hardware and software",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityApplicationDate": "20240312",
+      "priorityApplicationNumber": "1500855",
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux"
+    },
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityExpiryDate": "20340312",
+      "priorityRegistrationDate": "20240524",
+      "priorityRegistrationNumber": "1500855"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60, Eindhoven, NL-5656AG, NETH",
+        "applicantAddressCity": "Eindhoven",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantAddressPostalCode": "NL-5656AG",
+        "applicantAddressStreet": "High Tech Campus 60",
+        "applicantJurisdictionOfIncorporation": "NETHERLANDS",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "29.07.03",
+      "29.07.06",
+      "29.07.07",
+      "30.01.14",
+      "30.01.16",
+      "30.01.24",
+      "30.05.03",
+      "30.05.04"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Electronic, electro technical and electromagnetic modules, parts and components therefor, namely, integrated circuits, high performance mixed signal integrated circuits, semiconductor chips, diodes, transistors, microprocessors, multicore processors, application processors, namely, general-purpose microprocessors, digital signal processors, cloud-based computing processors, namely, central processing units for supporting cloud-based software applications, high-speed data converters, namely analog-to-digital converters, digital-to-analog converters, analog and digital semiconductors and semiconductor power elements; microcontrollers; microprocessors; interfaces for computers, development boards, namely, circuit boards, downloadable software development kits (SDKs), embedded software, namely, recorded operating system software embedded into computer hardware, downloadable application development software, recorded computer operating programs, and computer hardware; downloadable computer software for design, manufacture, and use of integrated circuits; downloadable computer software for programming and developing embedded systems; downloadable cloud computing software for decision making and/or data collection at the device, to facilitate remote management of the device from the cloud, and to autonomously operate based on the directions received from the cloud; downloadable and/or recorded software for cloud infrastructure management; downloadable computer application software for use in implementing, particularly, controlling networked devices in the Internet of Things [IoT]; artificial intelligence and machine learning software, namely, downloadable computer software using artificial intelligence (AI) for machine learning; apparatus and instruments for conducting, switching, transforming, accumulating, regulating and controlling electricity; apparatus for recording, transmission and reproduction of data, sound or images; wireless transmitters and receivers; wireless audio products, namely, wireless ear buds, hearing aids, wireless (smart) speakers, wireless sound bars; blank smart cards, data processors for scanning, reading, storing and interpreting electronic data contained on RFID tags and readers and near field communication (NFC) chips; RFID chips and tags, blank near field communication (NFC) tags and labels; accelerometer sensors; digital temperature sensors; magnetic switch sensors; pressure sensors; current sensors; radar sensors; battery sensors; blank optical data carriers; data processing equipment and computers"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Research, design and development services related to integrated circuits and semiconductors; research, design and development services related to RFID chips, smart cards and NFC (near field communications) apparatus; software design; software development; design and development of software for semiconductors; Software as a service (SaaS) services featuring software for operating semiconductors, integrated circuits, and Internet of Things (IoT) devices; cloud computing featuring software for use in enabling cloud connectivity with devices microcontrollers; platforms for artificial intelligence as software as a service (SaaS), namely, artificial intelligence as a service (AIAAS) featuring software using artificial intelligence that can run on edge devices with microcontrollers and microprocessors; programming of data processing equipment; programming of multimedia equipment; software engineering services; engineering testing, namely, testing in hardware engineering design; computer hardware development; advisory services in the field of computer hardware and software"
+        }
+      ]
+    },
+    "id": "33ee62d9-65f9-4cc3-8c23-5c49e125a38e",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260117",
+        "descriptionText": "TEAS DELETE 1(B) BASIS RECEIVED"
+      },
+      {
+        "date": "20251202",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20251007",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20251007",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20251001",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20250906",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20250828",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20250827",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20250827",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20250805",
+        "descriptionText": "APPLICATION EXTENSION TO RESPONSE PERIOD - RECEIVED"
+      },
+      {
+        "date": "20250805",
+        "descriptionText": "APPLICATION EXTENSION GRANTED/RECEIPT PROVIDED"
+      },
+      {
+        "date": "20250506",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20250506",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20250506",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20250331",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20250330",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20240912",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "STYLIZED LETTERS",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "The color(s) orange, blue, green and gray is/are claimed as a feature of the mark.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "The mark consists of the letters \"NXP\" in stylized font with the letter \"N\" in the color orange, the letter \"X\" in the color blue and the letter \"P\" in the color green, all above the words \"BRIGHTER TOGETHER\" in a stylized font in the color gray.",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "High Tech Campus 60, Eindhoven, NL-5656AG, NETH",
+        "city": "Eindhoven",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "name": "NXP B.V.",
+        "postalCode": "NL-5656AG",
+        "street": "High Tech Campus 60"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "High Tech Campus 60, Eindhoven, NL-5656AG, NETH",
+        "city": "Eindhoven",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "name": "NXP B.V.",
+        "postalCode": "NL-5656AG",
+        "street": "High Tech Campus 60"
+      },
+      {
+        "address": "High Tech Campus 60, Eindhoven, NL-5656AG, NETH",
+        "city": "Eindhoven",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "name": "NXP B.V.",
+        "postalCode": "NL-5656AG",
+        "street": "High Tech Campus 60"
+      }
+    ],
+    "priorities": [
+      {
+        "priorityApplicationDate": "20240312",
+        "priorityApplicationNumber": "1500855",
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux"
+      },
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityExpiryDate": "20340312",
+        "priorityRegistrationDate": "20240524",
+        "priorityRegistrationNumber": "1500855"
+      }
+    ],
+    "recordLastUpdated": "20260119",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Palo Alto, CA 94306, United States",
+        "representativeCorrespondentAddressLines": [
+          "Palo Alto, CA 94306",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Cynthia R. Adwere Law Office of Cynthia R. Adwere, 2625 Middlefield Road, no. 360"
+      }
+    ],
+    "representatives": [
+      {
+        "domesticRepresentativeName": "Cynthia R. Adwere",
+        "representativeAddress": "Palo Alto, CA 94306, United States",
+        "representativeAddressLines": [
+          "Palo Alto, CA 94306",
+          "United States"
+        ]
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240912",
+        "applicationNumber": "98748349"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "ipOffice": {
+        "markOfficialStatus": "NOTICE OF ALLOWANCE - ISSUED",
+        "markOfficialStatusCode": "688",
+        "markOfficialStatusDate": "20251202",
+        "markOfficialStatusEvents": [
+          "Section 44(D)",
+          "Intent to Use - Filed",
+          "Intent to Use",
+          "Section 44(d) Filed",
+          "Section 44(e) Filed",
+          "Section 44(e) Currently",
+          "Color Drawing Currently"
+        ]
+      },
+      "markCurrentStatus": "PUBLISHED",
+      "publicationDate": [
+        "20251007"
+      ]
+    },
+    "version": "20260119181258",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NXP BRIGHTER TOGETHER"
+    }
+  },
+  "_uri": "/mark/us/33ee62d9-65f9-4cc3-8c23-5c49e125a38e",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.723Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

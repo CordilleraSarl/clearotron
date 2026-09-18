@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/kr/fea65915-229c-43b3-9313-fb6aa45166d7",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "fea65915-229c-43b3-9313-fb6aa45166d7",
+  "applicationNumber": "40-2001-0053900",
+  "registrationNumber": "4006102330000",
+  "applicationDate": "2001-12-05",
+  "registrationDate": "2005-03-03",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "LIVING TECHNOLOGY",
+  "markTransliteration": "LIVING TECHNOLOGY",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "반도체,집적 회로,컴퓨터 칩",
+      "translation_language": "en",
+      "translation": "Semiconductors, integrated circuits, computer chips"
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "목영동 (Mok Young Dong)",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20010706",
+      "priorityNumber": "992890"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "네덜란드 엔엘- 아게 아인드호펜 하이 테크 캠퍼스",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V.",
+        "applicantNativeName": "엔엑스피 비 브이"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Semiconductors, integrated circuits, computer chips",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "반도체,집적 회로,컴퓨터 칩"
+        }
+      ]
+    },
+    "id": "fea65915-229c-43b3-9313-fb6aa45166d7",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20010706",
+        "priorityNumber": "992890"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "SEOUL(NONE OFFICE)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "목영동 (Mok Young Dong)"
+      },
+      {
+        "representativeAddress": "(Y.P.LEE,MOCK&PARTNERS)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "목선영 (Mock Sun Young)"
+      },
+      {
+        "representativeAddress": "(Y.P.LEE,MOCK&PARTNERS)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "이영필 (Lee Young Pil)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20011205",
+        "applicationNumber": "40-2001-0053900"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20050303",
+        "registrationNumber": "4006102330000"
+      }
+    },
+    "version": "20250625153817",
+    "wordMarkSpecification": {
+      "markTransliteration": "LIVING TECHNOLOGY",
+      "markVerbalElementText": "LIVING TECHNOLOGY"
+    }
+  },
+  "_uri": "/mark/kr/fea65915-229c-43b3-9313-fb6aa45166d7",
+  "_receipt": {
+    "fetched_at": "2026-09-18T14:09:34.906Z",
+    "context": "clearance-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

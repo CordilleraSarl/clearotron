@@ -2,8 +2,8 @@
 
 Frozen by `scripts/freeze-example-run.mjs` from one finished clearance run.
 
-- Run id: `tmpdemo2014globalpreliminarysearch-venqori-2026-09-02-sample-capture`
-- Frozen inputs: 1471 file(s), the subset `publishReport` reads
+- Run id: `tmpdemo2014globalpreliminarysearch-venqori-2026-09-18-sample-capture`
+- Frozen inputs: 609 file(s), the subset `publishReport` reads
 - Dropped: stage dispatch payloads, per-stage telemetry, stage inputs, run event log, history
 
 `npx clearotron demo` republishes this directory into a local pool and serves it. Nothing here calls a
@@ -12,5 +12,5 @@ model, a register or the network.
 Regenerate with:
 
 ```
-node scripts/freeze-example-run.mjs --run-dir <archived run> --out demo --force
+node scripts/freeze-example-run.mjs --run-dir <archived run> --out demo/global-preliminary-search --force --codename sample-capture
 ```

@@ -1,0 +1,115 @@
+{
+  "uri": "/mark/za/9152d108-28aa-4ae3-a5b2-199334f8cfeb",
+  "provider": "clarivate",
+  "office": "za",
+  "guid": "9152d108-28aa-4ae3-a5b2-199334f8cfeb",
+  "applicationNumber": "2022/28812",
+  "registrationNumber": null,
+  "applicationDate": "2022-09-20",
+  "registrationDate": null,
+  "expiryDate": "2032-09-20",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "SYMETRI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education in the implementation and use of data processing programs for designing and creating digital drawings and models; Training services relating to computer-aided engineering design; Education services relating to computer systems.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Symetri AB",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": "ADAMS & ADAMS",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "a Swedish corporation Forskargatan 3, 781 70 BORLÄNGE, Sweden Sweden",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantName": "Symetri AB"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education in the implementation and use of data processing programs for designing and creating digital drawings and models; Training services relating to computer-aided engineering design; Education services relating to computer systems."
+        }
+      ]
+    },
+    "id": "9152d108-28aa-4ae3-a5b2-199334f8cfeb",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20240819",
+    "registrationOfficeCode": "ZA",
+    "registrationOfficeName": "South Africa",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "No correspondent available"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Lynwood Bridge,4 Daventry Street,Lynnwood Manor,Pretoria",
+        "representativeAddressCountryCode": "ZA",
+        "representativeAddressCountryName": "South Africa",
+        "representativeName": "ADAMS & ADAMS"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220920",
+        "applicationNumber": "2022/28812"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20320920",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20240819171204",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SYMETRI"
+    }
+  },
+  "_uri": "/mark/za/9152d108-28aa-4ae3-a5b2-199334f8cfeb",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.299Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "uri": "/mark/pe/e7155aa7-c7d9-4a97-ba15-cc28ca49797a",
+  "provider": "clarivate",
+  "office": "pe",
+  "guid": "e7155aa7-c7d9-4a97-ba15-cc28ca49797a",
+  "applicationNumber": "714298-2017",
+  "registrationNumber": "S00036645",
+  "applicationDate": "2004-06-17",
+  "registrationDate": "2004-11-15",
+  "expiryDate": "2024-11-15",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "licencia de tecnología; licencia de patentes, marcas, derechos de autor, secretos comerciales y/o know - how relacionados con la fabricación de semiconductores y sus usos; licencia de propiedad intelectual asociada con semiconductores; licencia de software relacionado con la fabricación de semiconductores y sus usos; licencia de tecnología relacionada con semiconductores y fabricación de semiconductores; licencia de tecnología incorporada a y en relacion con productos semiconductores, circuitos integrados, tableros de circuitos, microcomputadoras, microcontroladores, microprocesadores y periféricos para computadoras, memorias y material semiconductor para éstos, circuitos de conversión de datos, accesorios permanentes para computadoras, aparatos electrónicos, eléctricos y electromecánicos para uso con computadoras, tableros de circuitos de video; licencia de programas para computadoras (propiedad intelectual); licencia de material de instrucción relacionado con computadoras y algoritmos de datos para la compresión y decompresión de datos (propiedad intelectual); diseño según especificaciones de sistemas de computadoras y telecomunicaciones; servicios de consultoría en el campo de computadoras; y tecnología relacionada para el diseño de software.",
+      "translation_language": "en",
+      "translation": "technology license; licensing of patents, trademarks, copyrights, trade secrets and / or know-how related to the manufacture of semiconductors and their uses; Intellectual property license associated with semiconductors; software license related to the manufacture of semiconductors and their uses; technology license related to semiconductors and semiconductor manufacturing; technology license incorporated to and in connection with semiconductor products, integrated circuits, circuit boards, microcomputers, microcontrollers, microprocessors and peripherals for computers, memories and semiconductor material for these, data conversion circuits, permanent accessories for computers, electronic and electrical devices and electromechanical for use with computers, video circuit boards; license of computer programs (intellectual property); license of instruction material related to computers and data algorithms for compression and decompression of data (intellectual property); design according to specifications of computer systems and telecommunications; consulting services in the field of computers; and related technology for software design."
+    }
+  ],
+  "owner": "FREESCALE SEMICONDUCTOR, INC.",
+  "ownerNative": null,
+  "ownerCountry": "UNKN",
+  "representative": "BARREDA ZEGARRA FERNANDO",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "UNKN",
+        "applicantAddressCountryName": "Unknown Applicant Country/Region",
+        "applicantName": "FREESCALE SEMICONDUCTOR, INC."
+      },
+      {
+        "applicantAddress": "LIMA - LIMA - MIRAFLORES",
+        "applicantAddressCountryCode": "UNKN",
+        "applicantAddressCountryName": "Unknown Applicant Country/Region",
+        "applicantName": "NXP USA, Inc."
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "technology license; licensing of patents, trademarks, copyrights, trade secrets and / or know-how related to the manufacture of semiconductors and their uses; Intellectual property license associated with semiconductors; software license related to the manufacture of semiconductors and their uses; technology license related to semiconductors and semiconductor manufacturing; technology license incorporated to and in connection with semiconductor products, integrated circuits, circuit boards, microcomputers, microcontrollers, microprocessors and peripherals for computers, memories and semiconductor material for these, data conversion circuits, permanent accessories for computers, electronic and electrical devices and electromechanical for use with computers, video circuit boards; license of computer programs (intellectual property); license of instruction material related to computers and data algorithms for compression and decompression of data (intellectual property); design according to specifications of computer systems and telecommunications; consulting services in the field of computers; and related technology for software design.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "licencia de tecnología; licencia de patentes, marcas, derechos de autor, secretos comerciales y/o know - how relacionados con la fabricación de semiconductores y sus usos; licencia de propiedad intelectual asociada con semiconductores; licencia de software relacionado con la fabricación de semiconductores y sus usos; licencia de tecnología relacionada con semiconductores y fabricación de semiconductores; licencia de tecnología incorporada a y en relacion con productos semiconductores, circuitos integrados, tableros de circuitos, microcomputadoras, microcontroladores, microprocesadores y periféricos para computadoras, memorias y material semiconductor para éstos, circuitos de conversión de datos, accesorios permanentes para computadoras, aparatos electrónicos, eléctricos y electromecánicos para uso con computadoras, tableros de circuitos de video; licencia de programas para computadoras (propiedad intelectual); licencia de material de instrucción relacionado con computadoras y algoritmos de datos para la compresión y decompresión de datos (propiedad intelectual); diseño según especificaciones de sistemas de computadoras y telecomunicaciones; servicios de consultoría en el campo de computadoras; y tecnología relacionada para el diseño de software."
+        }
+      ]
+    },
+    "id": "e7155aa7-c7d9-4a97-ba15-cc28ca49797a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260823",
+    "registrationOfficeCode": "PE",
+    "registrationOfficeName": "Peru",
+    "representatives": [
+      {
+        "representativeAddress": "LIMA - LIMA - MIRAFLORES",
+        "representativeAddressCountryCode": "PE",
+        "representativeAddressCountryName": "Peru",
+        "representativeName": "BARREDA ZEGARRA FERNANDO"
+      },
+      {
+        "representativeAddress": "LIMA - LIMA - MIRAFLORES",
+        "representativeAddressCountryCode": "PE",
+        "representativeAddressCountryName": "Peru",
+        "representativeName": "BARREDA ZEGARRA ALFREDO"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20040617",
+        "applicationNumber": "714298-2017"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20241115",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20041115",
+        "registrationNumber": "S00036645"
+      }
+    },
+    "version": "20260823020148",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/pe/e7155aa7-c7d9-4a97-ba15-cc28ca49797a",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.754Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

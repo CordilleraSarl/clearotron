@@ -1,0 +1,148 @@
+{
+  "uri": "/mark/bg/05eb1bac-a358-4dc8-b97d-c0da2a1dbbcd",
+  "provider": "clarivate",
+  "office": "bg",
+  "guid": "05eb1bac-a358-4dc8-b97d-c0da2a1dbbcd",
+  "applicationNumber": "BG/N/2004/73327",
+  "registrationNumber": "55522",
+  "applicationDate": "2004-08-25",
+  "registrationDate": "2006-08-25",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": null,
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "полупроводници, полупроводникови процесори, полупроводникови процесорни микроелементи (чипове), печатни платки, чипове за печатни платки, мрежови платки и контури, микрокомпютри, микроконтролери, микропроцесори и компютърни периферни устройства, запаметяващи устройства и полупроводникови елементи за тях; полупроводници за машини и машинни инструменти; полупроводници за осветяващи, отопляващи, парогенериращи, готварски, охлаждащи и замразяващи, изсушаващи и вентилиращи устройства и инсталации; полупроводници за часовници и времеизмерващи устройства и инструменти; полупроводници за музикални инструменти; полупроводници за игри и играчки; интегрални платки за превръщане и трансформиране на информация; компютърен фърмуер; електронни, електрични и електромеханични устройства и апарати за използване с компютри; части и изделия за видеосистеми; устройства, апарати и оборудване за записване, възпроизвеждане и променяне на звук, видео и информация; видеоплатки; аудиоплатки; аудио - видеоплатки; видео графични акселератори; мултимедийни акселератори; видеопроцесори; компютърни програми; потребителски наръчници, упътвания за работа и инструкции за компютри и информационни алгоритми за компресиране и декомпресиране на информация в електронен формат; тестващи и калибриращи апарати и устройства; части и приспособления за всички гореспоменати стоки; оборудване за тестване и програмиране на интегрални платки и полупроводникови запаметяващи елементи; компютърен софтуер, а именно приложен софтуер за интегриране и свързване; помощни компютърни програми, компютърни програми за управление на мрежи, компютърен софтуер за осигуряване на достъп до глобална компютърна мрежа и вътрешносвързани компютърни мрежи; компютърни операционни системи; софтуер за компютърни операционни системи; компютърни операционни програми и компютърни софтуерни инструменти за улесняване инсталирането и действието на софтуерни приложения на трети лица;.",
+      "translation_language": "en",
+      "translation": "Semiconductors, semiconductor processors, semiconductor processor microelements (chips), printed circuit boards, printed circuit board chips, network boards and circuits, microcomputers, microcontrollers, microprocessors and computer peripherals, storage devices and semiconductor elements therefor; semiconductors for machines and machine tools; semiconductors for lighting, heating, steam generating, cooking, cooling and freezing, drying and ventilating devices and installations; semiconductors for clocks and time measuring devices and instruments; semiconductors for musical instruments; semiconductors for games and toys; integrated circuits for converting and transforming information; computer firmware; electronic, electrical and electromechanical devices and apparatus for use with computers; parts and articles for video systems; devices, apparatus and equipment for recording, reproducing and modifying sound, video and information; video boards; audio boards; audio - video boards; video graphics accelerators; multimedia accelerators; video processors; computer programs; user manuals, operating instructions and instructions for computers and information algorithms for compressing and decompressing information in electronic format; testing and calibrating apparatus and devices; parts and fittings for all the aforesaid goods; equipment for testing and programming integrated circuits and semiconductor memory devices; computer software, namely, application software for integration and interconnection; computer utility programs, computer network management programs, computer software for providing access to a global computer network and interconnected computer networks; computer operating systems; computer operating system software; computer operating programs and computer software tools for facilitating the installation and operation of third party software applications;."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "bg",
+      "description": "услуги по лицензиране на технология; услуги по лицензиране на патенти, търговски марки, авторски права, търговски тайни и/или ноу - хау, отнасящи се до производството на полупроводници и техните приложения; услуги по лицензиране на полупроводници; услуги по лицензиране на софтуер, отнасящ се до производството на полупроводници и техните приложения; услуги по лицензиране на технология, отнасяща се до полупроводници и производството на полупроводници; услуги по лицензиране на технология, включена в и отнасяща се до полупроводникови продукти, печатни платки, мрежови платки и контури, микрокомпютри, микроконтролери, микропроцесори и компютърни периферни устройства, запаметяващи устройства и полупроводникови елементи за тях, интегрални платки за превръщане и трансформиране на информация, компютърен фърмуер, електронни, електрични и електромеханични устройства и апарати за използване с компютри, видеоплатки, части и изделия за видеосистеми, устройства, апарати и оборудване за записване, възпроизвеждане и изменяне на звук, видео и информация, компютърни програми; лицензиране на потребителски наръчници, упътвания за работа и инструкции за компютри и информационни алгоритми за компресиране и декомпресиране на информация; поръчково проектиране и дизайн на компютърни и телекомуникационни системи; консултантски услуги, свързани с технология за проектиране и дизайн на софтуер в областта на компютри и телекомуникации.",
+      "translation_language": "en",
+      "translation": "technology licensing services; patent licensing services, trademarks, copyrights, trade secrets and / or know - how relating to the manufacture of semiconductors and their applications; licensing services for semiconductors; software licensing services relating to the manufacture of semiconductors and their applications; licensing services relating to semiconductor and semi-conductor technology; licensing of technology included in and relating to semiconductor products, printed circuit boards, network cards and contours, microcomputers, microcontrollers, microprocessors and computer peripherals, storage devices and semiconductor components therefor, integrated circuit boards for converting and transforming information, computer, firmware, electronic, electrical and electromechanical devices and apparatus for use with computers, videotapes, parts and appliances for video systems, recording devices and apparatus , reproduction and modification of sound, video and information, computer programs; licensing of user manuals, operating instructions and instructions for computers and information algorithms for compressing and decompressing information; custom design and design of computer and telecommunication systems; consultancy services relating to technology for the design and design of software in the field of computers and telecommunications."
+    }
+  ],
+  "owner": "NXP USA Inc, a Delaware corporation",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20040301",
+      "priorityNumber": "78/376535"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA Inc, a Delaware corporation",
+        "applicantNativeAddress": "U. S. A, Austin, 6501 William Cannon Drive West"
+      }
+    ],
+    "applicationLanguageCode": "bg",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Semiconductors, semiconductor processors, semiconductor processor microelements (chips), printed circuit boards, printed circuit board chips, network boards and circuits, microcomputers, microcontrollers, microprocessors and computer peripherals, storage devices and semiconductor elements therefor; semiconductors for machines and machine tools; semiconductors for lighting, heating, steam generating, cooking, cooling and freezing, drying and ventilating devices and installations; semiconductors for clocks and time measuring devices and instruments; semiconductors for musical instruments; semiconductors for games and toys; integrated circuits for converting and transforming information; computer firmware; electronic, electrical and electromechanical devices and apparatus for use with computers; parts and articles for video systems; devices, apparatus and equipment for recording, reproducing and modifying sound, video and information; video boards; audio boards; audio - video boards; video graphics accelerators; multimedia accelerators; video processors; computer programs; user manuals, operating instructions and instructions for computers and information algorithms for compressing and decompressing information in electronic format; testing and calibrating apparatus and devices; parts and fittings for all the aforesaid goods; equipment for testing and programming integrated circuits and semiconductor memory devices; computer software, namely, application software for integration and interconnection; computer utility programs, computer network management programs, computer software for providing access to a global computer network and interconnected computer networks; computer operating systems; computer operating system software; computer operating programs and computer software tools for facilitating the installation and operation of third party software applications;.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "полупроводници, полупроводникови процесори, полупроводникови процесорни микроелементи (чипове), печатни платки, чипове за печатни платки, мрежови платки и контури, микрокомпютри, микроконтролери, микропроцесори и компютърни периферни устройства, запаметяващи устройства и полупроводникови елементи за тях; полупроводници за машини и машинни инструменти; полупроводници за осветяващи, отопляващи, парогенериращи, готварски, охлаждащи и замразяващи, изсушаващи и вентилиращи устройства и инсталации; полупроводници за часовници и времеизмерващи устройства и инструменти; полупроводници за музикални инструменти; полупроводници за игри и играчки; интегрални платки за превръщане и трансформиране на информация; компютърен фърмуер; електронни, електрични и електромеханични устройства и апарати за използване с компютри; части и изделия за видеосистеми; устройства, апарати и оборудване за записване, възпроизвеждане и променяне на звук, видео и информация; видеоплатки; аудиоплатки; аудио - видеоплатки; видео графични акселератори; мултимедийни акселератори; видеопроцесори; компютърни програми; потребителски наръчници, упътвания за работа и инструкции за компютри и информационни алгоритми за компресиране и декомпресиране на информация в електронен формат; тестващи и калибриращи апарати и устройства; части и приспособления за всички гореспоменати стоки; оборудване за тестване и програмиране на интегрални платки и полупроводникови запаметяващи елементи; компютърен софтуер, а именно приложен софтуер за интегриране и свързване; помощни компютърни програми, компютърни програми за управление на мрежи, компютърен софтуер за осигуряване на достъп до глобална компютърна мрежа и вътрешносвързани компютърни мрежи; компютърни операционни системи; софтуер за компютърни операционни системи; компютърни операционни програми и компютърни софтуерни инструменти за улесняване инсталирането и действието на софтуерни приложения на трети лица;."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "technology licensing services; patent licensing services, trademarks, copyrights, trade secrets and / or know - how relating to the manufacture of semiconductors and their applications; licensing services for semiconductors; software licensing services relating to the manufacture of semiconductors and their applications; licensing services relating to semiconductor and semi-conductor technology; licensing of technology included in and relating to semiconductor products, printed circuit boards, network cards and contours, microcomputers, microcontrollers, microprocessors and computer peripherals, storage devices and semiconductor components therefor, integrated circuit boards for converting and transforming information, computer, firmware, electronic, electrical and electromechanical devices and apparatus for use with computers, videotapes, parts and appliances for video systems, recording devices and apparatus , reproduction and modification of sound, video and information, computer programs; licensing of user manuals, operating instructions and instructions for computers and information algorithms for compressing and decompressing information; custom design and design of computer and telecommunication systems; consultancy services relating to technology for the design and design of software in the field of computers and telecommunications.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "услуги по лицензиране на технология; услуги по лицензиране на патенти, търговски марки, авторски права, търговски тайни и/или ноу - хау, отнасящи се до производството на полупроводници и техните приложения; услуги по лицензиране на полупроводници; услуги по лицензиране на софтуер, отнасящ се до производството на полупроводници и техните приложения; услуги по лицензиране на технология, отнасяща се до полупроводници и производството на полупроводници; услуги по лицензиране на технология, включена в и отнасяща се до полупроводникови продукти, печатни платки, мрежови платки и контури, микрокомпютри, микроконтролери, микропроцесори и компютърни периферни устройства, запаметяващи устройства и полупроводникови елементи за тях, интегрални платки за превръщане и трансформиране на информация, компютърен фърмуер, електронни, електрични и електромеханични устройства и апарати за използване с компютри, видеоплатки, части и изделия за видеосистеми, устройства, апарати и оборудване за записване, възпроизвеждане и изменяне на звук, видео и информация, компютърни програми; лицензиране на потребителски наръчници, упътвания за работа и инструкции за компютри и информационни алгоритми за компресиране и декомпресиране на информация; поръчково проектиране и дизайн на компютърни и телекомуникационни системи; консултантски услуги, свързани с технология за проектиране и дизайн на софтуер в областта на компютри и телекомуникации."
+        }
+      ]
+    },
+    "id": "05eb1bac-a358-4dc8-b97d-c0da2a1dbbcd",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN ONLY",
+    "markImageViennaClassification": [
+      "25.07.03"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20040301",
+        "priorityNumber": "78/376535"
+      }
+    ],
+    "recordLastUpdated": "20250923",
+    "registrationOfficeCode": "BG",
+    "registrationOfficeName": "Bulgaria",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "BG",
+        "representativeAddressCountryName": "Bulgaria",
+        "representativeNativeAddress": "България, София, ул. „Солунска 45, ет. 3, ап. 14",
+        "representativeNativeName": "Валентина Великова Нешева"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040825",
+        "applicationNumber": "BG/N/2004/73327"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "EXPIRED",
+      "registration": {
+        "registrationDate": "20060825",
+        "registrationNumber": "55522"
+      }
+    },
+    "version": "20250923020104"
+  },
+  "_uri": "/mark/bg/05eb1bac-a358-4dc8-b97d-c0da2a1dbbcd",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.677Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

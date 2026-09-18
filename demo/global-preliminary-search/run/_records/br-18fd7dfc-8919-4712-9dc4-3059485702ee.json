@@ -1,0 +1,131 @@
+{
+  "uri": "/mark/br/18fd7dfc-8919-4712-9dc4-3059485702ee",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "18fd7dfc-8919-4712-9dc4-3059485702ee",
+  "applicationNumber": "840027370",
+  "registrationNumber": "840027370",
+  "applicationDate": "2012-02-14",
+  "registrationDate": "2015-03-03",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "pt",
+      "description": "Serviços de educação, a saber, provimento de aulas, de seminários, de sessões tutoriais, de conferências, de oficinas de trabalho ao vivo e online nas áreas de semicondutores, de dispositivos semicondutores, de circuitos integrados, de microcontroladores, de processadores, de dispositivos de radiofrequência, de sensores e de software.",
+      "translation_language": "en",
+      "translation": "EDUCATION SERVICES, NAMELY, PROVIDING CLASSES, SEMINARS, TUTORIAL SESSIONS, CONFERENCES, LIVE AND ONLINE WORKSHOPS IN THE AREAS OF SEMICONDUCTORS, SEMICONDUCTOR DEVICES, INTEGRATED CIRCUITS, MICROCONTROLLERS, MICROCONTROLLERS RADIO FREQUENCY, SENSORS AND SOFTWARE DEVICES."
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "MOMSEN, LEONARDOS & CIA.",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20111216",
+      "priorityNumber": "85/497099"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC."
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "EDUCATION SERVICES, NAMELY, PROVIDING CLASSES, SEMINARS, TUTORIAL SESSIONS, CONFERENCES, LIVE AND ONLINE WORKSHOPS IN THE AREAS OF SEMICONDUCTORS, SEMICONDUCTOR DEVICES, INTEGRATED CIRCUITS, MICROCONTROLLERS, MICROCONTROLLERS RADIO FREQUENCY, SENSORS AND SOFTWARE DEVICES.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de educação, a saber, provimento de aulas, de seminários, de sessões tutoriais, de conferências, de oficinas de trabalho ao vivo e online nas áreas de semicondutores, de dispositivos semicondutores, de circuitos integrados, de microcontroladores, de processadores, de dispositivos de radiofrequência, de sensores e de software."
+        }
+      ]
+    },
+    "id": "18fd7dfc-8919-4712-9dc4-3059485702ee",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.04.09",
+      "27.05.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20111216",
+        "priorityNumber": "85/497099"
+      }
+    ],
+    "recordLastUpdated": "20251021",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "MOMSEN, LEONARDOS & CIA."
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20120214",
+        "applicationNumber": "840027370"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20150303",
+        "registrationNumber": "840027370"
+      }
+    },
+    "version": "20251021020542",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/br/18fd7dfc-8919-4712-9dc4-3059485702ee",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:10.762Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

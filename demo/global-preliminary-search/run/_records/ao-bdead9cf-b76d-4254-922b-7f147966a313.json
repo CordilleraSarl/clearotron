@@ -1,0 +1,107 @@
+{
+  "uri": "/mark/ao/bdead9cf-b76d-4254-922b-7f147966a313",
+  "provider": "clarivate",
+  "office": "ao",
+  "guid": "bdead9cf-b76d-4254-922b-7f147966a313",
+  "applicationNumber": "53146",
+  "registrationNumber": "53146",
+  "applicationDate": "2017-07-28",
+  "registrationDate": null,
+  "expiryDate": "2027-07-28",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MIFARE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Pesquisa e design para terceiros em relação a circuitos integrados e software e redes de comunicações; Desenvolvimento de software informático no campo das aplicações móveis; Consultoria no campo da tecnologia das telecomunicações; Concepção e desenvolvimento de sistemas de comunicações sem fios para transmissão e recepção de voz, dados e vídeo; Concepção e desenvolvimento de sistemas de comunicações sem fios para fins de autenticação; fornecimento de uso temporário de aplicativos de software não-transferíveis online, plataformas de desenvolvimento e ferramentas de desenvolvimento que permitem aos programadores de software desenvolver, programar, construir protótipo de software para circuitos integrados, chips e equipamentos de processamento de dados; Serviços de programação de computadores; Pesquisa e concepção de módulos electrotécnicos e electromagnéticos, peças e elementos de construção, máquinas de processamento de dados, aparelhos de armazenamento de dados, microprocessadores, interfaces, circuitos integrados (ICs), chips, semicondutores, cartões inteligentes, controladores para cartões inteligentes, controladores para chips RFID e etiquetas, hardware e software para criação, programação, controle, codificação, digitalização, leitura e interpretação de chips e etiquetas RFID, aparelhos electrónicos, instrumentos e equipamentos para criação, programação, controle, codificação, digitalização, leitura e interpretação de chips e etiquetas RFID; Pesquisa e design de antenas para digitalização, leitura e interpretação de chips e etiquetas RFID; Pesquisa e concepção de aparelhos, instrumentos e equipamentos NFC (near field communications, incluindo módulos electrónicos, electrotécnicos e electromagnéticos, peças e elementos de construção e circuitos integrados para aplicações NFC; Serviços de assessoria em relação a todos os itens acima.",
+      "translation_language": "en",
+      "translation": "Research and design for others relating to integrated circuits and software and communications networks; Development of computer software in the field of mobile applications; Consultancy in the field of telecommunications technology; Design and development of wireless communication systems for the transmission and reception of voice, data and video; Design and development of wireless communication systems for authentication purposes; providing temporary use of non-downloadable online software applications, development platforms and development tools that enable software programmers to develop, program, build prototype software for integrated circuits, chips and data processing equipment; Computer programming services; Research and design of electrotechnical and electromagnetic modules, parts and construction elements, data processing machines, data storage devices, microprocessors, interfaces, integrated circuits (ICs), chips, semiconductors, smart cards, smart card controllers, controllers RFID chips and tags, hardware and software for the creation, programming, control, coding, scanning, reading and interpretation of RFID chips and tags, electronic devices, instruments and equipment for the creation, programming, control, coding, scanning, reading and interpretation of RFID chips and tags; Antenna research and design for scanning, reading and interpreting RFID chips and tags; Research and design of near field communications (NFC) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and construction elements and integrated circuits for NFC applications; Advisory services relating to all of the above."
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "HIGH TECH CAMPUS AG EINDHOVEN",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Research and design for others relating to integrated circuits and software and communications networks; Development of computer software in the field of mobile applications; Consultancy in the field of telecommunications technology; Design and development of wireless communication systems for the transmission and reception of voice, data and video; Design and development of wireless communication systems for authentication purposes; providing temporary use of non-downloadable online software applications, development platforms and development tools that enable software programmers to develop, program, build prototype software for integrated circuits, chips and data processing equipment; Computer programming services; Research and design of electrotechnical and electromagnetic modules, parts and construction elements, data processing machines, data storage devices, microprocessors, interfaces, integrated circuits (ICs), chips, semiconductors, smart cards, smart card controllers, controllers RFID chips and tags, hardware and software for the creation, programming, control, coding, scanning, reading and interpretation of RFID chips and tags, electronic devices, instruments and equipment for the creation, programming, control, coding, scanning, reading and interpretation of RFID chips and tags; Antenna research and design for scanning, reading and interpreting RFID chips and tags; Research and design of near field communications (NFC) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and construction elements and integrated circuits for NFC applications; Advisory services relating to all of the above.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Pesquisa e design para terceiros em relação a circuitos integrados e software e redes de comunicações; Desenvolvimento de software informático no campo das aplicações móveis; Consultoria no campo da tecnologia das telecomunicações; Concepção e desenvolvimento de sistemas de comunicações sem fios para transmissão e recepção de voz, dados e vídeo; Concepção e desenvolvimento de sistemas de comunicações sem fios para fins de autenticação; fornecimento de uso temporário de aplicativos de software não-transferíveis online, plataformas de desenvolvimento e ferramentas de desenvolvimento que permitem aos programadores de software desenvolver, programar, construir protótipo de software para circuitos integrados, chips e equipamentos de processamento de dados; Serviços de programação de computadores; Pesquisa e concepção de módulos electrotécnicos e electromagnéticos, peças e elementos de construção, máquinas de processamento de dados, aparelhos de armazenamento de dados, microprocessadores, interfaces, circuitos integrados (ICs), chips, semicondutores, cartões inteligentes, controladores para cartões inteligentes, controladores para chips RFID e etiquetas, hardware e software para criação, programação, controle, codificação, digitalização, leitura e interpretação de chips e etiquetas RFID, aparelhos electrónicos, instrumentos e equipamentos para criação, programação, controle, codificação, digitalização, leitura e interpretação de chips e etiquetas RFID; Pesquisa e design de antenas para digitalização, leitura e interpretação de chips e etiquetas RFID; Pesquisa e concepção de aparelhos, instrumentos e equipamentos NFC (near field communications, incluindo módulos electrónicos, electrotécnicos e electromagnéticos, peças e elementos de construção e circuitos integrados para aplicações NFC; Serviços de assessoria em relação a todos os itens acima."
+        }
+      ]
+    },
+    "id": "bdead9cf-b76d-4254-922b-7f147966a313",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "AO",
+    "registrationOfficeName": "Angola",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170728",
+        "applicationNumber": "53146"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270728",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "53146"
+      }
+    },
+    "version": "20240321121546",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MIFARE"
+    }
+  },
+  "_uri": "/mark/ao/bdead9cf-b76d-4254-922b-7f147966a313",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.672Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

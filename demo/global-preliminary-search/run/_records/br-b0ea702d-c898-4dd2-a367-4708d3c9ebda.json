@@ -1,0 +1,127 @@
+{
+  "uri": "/mark/br/b0ea702d-c898-4dd2-a367-4708d3c9ebda",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "b0ea702d-c898-4dd2-a367-4708d3c9ebda",
+  "applicationNumber": "830169911",
+  "registrationNumber": "830169911",
+  "applicationDate": "2009-01-22",
+  "registrationDate": "2012-02-07",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "MIFARE PLUS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Serviços de programação de computadores; serviços de instalação, reparo e manutenção em relação à software para criação, programação, controle, codificação, rastreamento, mapeamento, leitura e interpretação de chips e tags de identificação de radiofrequência (rfid) e software para determinação de tarifas a serem pagas por passageiros com tíquetes de viagem eletrônicos; serviços de pesquisa, desenho e desenvolvimento relacionados à módulos, partes e elementos para montagem eletrônicos, eletrotécnicos e eletromagnéticos, máquinas de processamento de dados, aparelhos para armazenamento de dados, microprocessadores, interfaces, circuitos integrados (ics), chips (circuitos integrados); semicondutores e cartões inteligentes; controles para cartões inteligentes; controles para chips e tags de identificação de radiofrequência (rfid), hardware e software de computador para criação, programação, controle, codificação, rastreamento mapeamento, leitura e interpretação de chips e tags de identificação de radiofrequência (rfid), aparelhos, instrumentos e equipamentos eletrônicos para criação, programação, controle, codificação, rastreamento, mapeamento, leitura e interpretação de chips e tags de identificação de radiofrequência (rfid), antenas para rastreamento e mapeamento, leitura e interpretação de chips e tags de identificação de radiofrequência (rfid), aparelhos, instrumentos e equipamentos para uso em sistemas de comunicação por campo de curta distância (nfc - near field communication), incluindo módulos, partes e elementos para montagem eletrônicos, eletrotécnicos e eletromagnéticos, assim como circuitos integrados para uso em sistemas de comunicação por campo de curta (nfc - near field communication), cartões de pagamento eletrônicos, aparelhos e software de processamento de dados para determinação de tarifas a serem pagas por passageiros com tíquetes de viagem eletrônicos e partes, componentes e acessórios para todos os produtos acima mencionados; fabricação customizada, customização e programação customizada de software; serviços de aconselhamento, consultoria e informação relacionados à todos os serviços acima mencionados.",
+      "translation_language": "en",
+      "translation": "COMPUTER PROGRAMMING SERVICES; INSTALLATION, REPAIR AND MAINTENANCE SERVICES IN RELATION TO SOFTWARE FOR CREATION, PROGRAMMING, CONTROL, CODING, TRACKING, MAPPING, READING AND INTERPRETATION OF CHIPS AND RADIO FREQUENCY IDENTIFICATION (RFID) TAGS AND SOFTWARE FOR DETERMINING FEES TO BE PAID BY PASSENGERS WITH ELECTRONIC TRAVEL TICKETS; RESEARCH, DESIGN AND DEVELOPMENT SERVICES RELATED TO MODULES, PARTS AND ELEMENTS FOR ELECTRONIC, ELECTROTECHNICAL AND ELECTROMAGNETIC ASSEMBLY, DATA PROCESSING MACHINES, DATA STORAGE APPARATUS, MICROPROCESSORS, INTEGRATES (INTEGRATES); SEMICONDUCTORS AND SMART CARDS; CONTROLS FOR SMART CARDS; CONTROLS FOR RADIO FREQUENCY IDENTIFICATION (RFID) CHIPS AND TAGS, HARDWARE AND COMPUTER SOFTWARE FOR CREATION, PROGRAMMING, CONTROL, CODING, TRACKING MAPPING, READING AND INTERPRETATION OF CHIPS AND RADIO FREQUENCY IDENTIFICATION (RFID) TAGS ELECTRONICS FOR CREATION, PROGRAMMING, CONTROL, CODING, TRACKING, MAPPING, READING AND INTERPRETATION OF CHIPS AND RADIO FREQUENCY IDENTIFICATION (RFID) TAGS, ANTENNA FOR TRACKING AND MAPPING, READING AND INTERPRETATION OF CHIPS AND RADIO FREQUENCY IDENTIFICATION TAGS (RFID), APPARATUS, INSTRUMENTS AND EQUIPMENT FOR USE IN SHORT DISTANCE FIELD COMMUNICATION SYSTEMS (NFC - NEAR FIELD COMMUNICATION), INCLUDING MODULES, PARTS AND ELEMENTS FOR ASSEMBLY ELECTRONIC, ELECTROTECHNICAL AND ELECTROMAGNETIC SYSTEMS FOR INTEGRATED SYSTEMS SUCH AS CIRCUS SYSTEMS SUCH AS SYSTEMS SHORT (NFC - NEAR FIELD COMMUNICATION), ELECTRONIC PAYMENT CARDS, DEVICE THE AND DATA PROCESSING SOFTWARE TO DETERMINE THE FEES TO BE PAID BY PASSENGERS WITH ELECTRONIC TRAVEL TICKETS AND PARTS, COMPONENTS AND ACCESSORIES FOR ALL THE ABOVE MENTIONED PRODUCTS; CUSTOMIZED MANUFACTURING, CUSTOMIZATION AND CUSTOMIZED SOFTWARE PROGRAMMING; ADVICE, CONSULTING AND INFORMATION SERVICES RELATED TO ALL OF THE ABOVE SERVICES."
+    }
+  ],
+  "owner": "NXP B. V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "CLAUDIA CHRISTINA SCHULZ",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20080722",
+      "priorityNumber": "1163748"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B. V."
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "COMPUTER PROGRAMMING SERVICES; INSTALLATION, REPAIR AND MAINTENANCE SERVICES IN RELATION TO SOFTWARE FOR CREATION, PROGRAMMING, CONTROL, CODING, TRACKING, MAPPING, READING AND INTERPRETATION OF CHIPS AND RADIO FREQUENCY IDENTIFICATION (RFID) TAGS AND SOFTWARE FOR DETERMINING FEES TO BE PAID BY PASSENGERS WITH ELECTRONIC TRAVEL TICKETS; RESEARCH, DESIGN AND DEVELOPMENT SERVICES RELATED TO MODULES, PARTS AND ELEMENTS FOR ELECTRONIC, ELECTROTECHNICAL AND ELECTROMAGNETIC ASSEMBLY, DATA PROCESSING MACHINES, DATA STORAGE APPARATUS, MICROPROCESSORS, INTEGRATES (INTEGRATES); SEMICONDUCTORS AND SMART CARDS; CONTROLS FOR SMART CARDS; CONTROLS FOR RADIO FREQUENCY IDENTIFICATION (RFID) CHIPS AND TAGS, HARDWARE AND COMPUTER SOFTWARE FOR CREATION, PROGRAMMING, CONTROL, CODING, TRACKING MAPPING, READING AND INTERPRETATION OF CHIPS AND RADIO FREQUENCY IDENTIFICATION (RFID) TAGS ELECTRONICS FOR CREATION, PROGRAMMING, CONTROL, CODING, TRACKING, MAPPING, READING AND INTERPRETATION OF CHIPS AND RADIO FREQUENCY IDENTIFICATION (RFID) TAGS, ANTENNA FOR TRACKING AND MAPPING, READING AND INTERPRETATION OF CHIPS AND RADIO FREQUENCY IDENTIFICATION TAGS (RFID), APPARATUS, INSTRUMENTS AND EQUIPMENT FOR USE IN SHORT DISTANCE FIELD COMMUNICATION SYSTEMS (NFC - NEAR FIELD COMMUNICATION), INCLUDING MODULES, PARTS AND ELEMENTS FOR ASSEMBLY ELECTRONIC, ELECTROTECHNICAL AND ELECTROMAGNETIC SYSTEMS FOR INTEGRATED SYSTEMS SUCH AS CIRCUS SYSTEMS SUCH AS SYSTEMS SHORT (NFC - NEAR FIELD COMMUNICATION), ELECTRONIC PAYMENT CARDS, DEVICE THE AND DATA PROCESSING SOFTWARE TO DETERMINE THE FEES TO BE PAID BY PASSENGERS WITH ELECTRONIC TRAVEL TICKETS AND PARTS, COMPONENTS AND ACCESSORIES FOR ALL THE ABOVE MENTIONED PRODUCTS; CUSTOMIZED MANUFACTURING, CUSTOMIZATION AND CUSTOMIZED SOFTWARE PROGRAMMING; ADVICE, CONSULTING AND INFORMATION SERVICES RELATED TO ALL OF THE ABOVE SERVICES.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de programação de computadores; serviços de instalação, reparo e manutenção em relação à software para criação, programação, controle, codificação, rastreamento, mapeamento, leitura e interpretação de chips e tags de identificação de radiofrequência (rfid) e software para determinação de tarifas a serem pagas por passageiros com tíquetes de viagem eletrônicos; serviços de pesquisa, desenho e desenvolvimento relacionados à módulos, partes e elementos para montagem eletrônicos, eletrotécnicos e eletromagnéticos, máquinas de processamento de dados, aparelhos para armazenamento de dados, microprocessadores, interfaces, circuitos integrados (ics), chips (circuitos integrados); semicondutores e cartões inteligentes; controles para cartões inteligentes; controles para chips e tags de identificação de radiofrequência (rfid), hardware e software de computador para criação, programação, controle, codificação, rastreamento mapeamento, leitura e interpretação de chips e tags de identificação de radiofrequência (rfid), aparelhos, instrumentos e equipamentos eletrônicos para criação, programação, controle, codificação, rastreamento, mapeamento, leitura e interpretação de chips e tags de identificação de radiofrequência (rfid), antenas para rastreamento e mapeamento, leitura e interpretação de chips e tags de identificação de radiofrequência (rfid), aparelhos, instrumentos e equipamentos para uso em sistemas de comunicação por campo de curta distância (nfc - near field communication), incluindo módulos, partes e elementos para montagem eletrônicos, eletrotécnicos e eletromagnéticos, assim como circuitos integrados para uso em sistemas de comunicação por campo de curta (nfc - near field communication), cartões de pagamento eletrônicos, aparelhos e software de processamento de dados para determinação de tarifas a serem pagas por passageiros com tíquetes de viagem eletrônicos e partes, componentes e acessórios para todos os produtos acima mencionados; fabricação customizada, customização e programação customizada de software; serviços de aconselhamento, consultoria e informação relacionados à todos os serviços acima mencionados."
+        }
+      ]
+    },
+    "id": "b0ea702d-c898-4dd2-a367-4708d3c9ebda",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20080722",
+        "priorityNumber": "1163748"
+      }
+    ],
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "CLAUDIA CHRISTINA SCHULZ"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20090122",
+        "applicationNumber": "830169911"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20120207",
+        "registrationNumber": "830169911"
+      }
+    },
+    "version": "20250630220228",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MIFARE PLUS"
+    }
+  },
+  "_uri": "/mark/br/b0ea702d-c898-4dd2-a367-4708d3c9ebda",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.685Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -7,7 +7,7 @@
   "registrationNumber": "TMA421368",
   "applicationDate": "1991-04-02",
   "registrationDate": "1993-12-24",
-  "expiryDate": null,
+  "expiryDate": "2033-12-24",
   "renewalDate": "2023-12-24",
   "lastPublicationDate": null,
   "publicationDates": [
@@ -436,6 +436,7 @@
         "applicationNumber": "679462"
       },
       "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20331224",
       "markCurrentStatus": "Registered",
       "nextRenewalDate": "20331224",
       "publicationDate": [
@@ -458,7 +459,7 @@
   },
   "_uri": "/mark/ca/54553542-eba3-4339-9b61-d682bdab21b5",
   "_receipt": {
-    "fetched_at": "2026-09-02T14:33:25.177Z",
-    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+    "fetched_at": "2026-09-18T12:41:57.345Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
   }
 }

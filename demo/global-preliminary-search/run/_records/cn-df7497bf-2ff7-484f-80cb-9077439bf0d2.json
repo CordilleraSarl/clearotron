@@ -1,0 +1,171 @@
+{
+  "uri": "/mark/cn/df7497bf-2ff7-484f-80cb-9077439bf0d2",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "df7497bf-2ff7-484f-80cb-9077439bf0d2",
+  "applicationNumber": "43245551",
+  "registrationNumber": "43245551",
+  "applicationDate": "2019-12-21",
+  "registrationDate": "2020-08-28",
+  "expiryDate": "2030-08-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2020-05-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "凌竞",
+  "markTransliteration": "LING JING",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "计算机外围设备,智能手机用壳,智能手机屏幕专用保护膜,耳机,USB线,芯片(集成电路),电子锁,眼镜,移动电源(可充电电池),自拍杆(手持单脚架)",
+      "translation_language": "en",
+      "translation": "Computer peripherals, smartphone cases, special protective films for smartphone screens, earphones, USB cables, chips (integrated circuits), electronic locks, glasses, power banks (rechargeable batteries), selfie sticks (handheld monopods)"
+    }
+  ],
+  "owner": "Shenzhen Tengding Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市龙岗区南湾街道布沙路玉岭花园A1栋1404室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Tengding Technology Co., Ltd.",
+        "applicantNativeName": "深圳市腾鼎科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer peripherals, smartphone cases, special protective films for smartphone screens, earphones, USB cables, chips (integrated circuits), electronic locks, glasses, power banks (rechargeable batteries), selfie sticks (handheld monopods)",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "计算机外围设备,智能手机用壳,智能手机屏幕专用保护膜,耳机,USB线,芯片(集成电路),电子锁,眼镜,移动电源(可充电电池),自拍杆(手持单脚架)"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Equipments used in communication and navigation",
+        "Apparatus for sound and images",
+        "Apparatus and instruments for photographic and cinematographic",
+        "Cables",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity",
+        "Warning equipments, bells",
+        "Glasses and those accessories",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0909",
+          "subNatGoodsServicesDescription": "Apparatus and instruments for photographic and cinematographic"
+        },
+        {
+          "subNatClassNumber": "0912",
+          "subNatGoodsServicesDescription": "Cables"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        },
+        {
+          "subNatClassNumber": "0920",
+          "subNatGoodsServicesDescription": "Warning equipments, bells"
+        },
+        {
+          "subNatClassNumber": "0921",
+          "subNatGoodsServicesDescription": "Glasses and those accessories"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "df7497bf-2ff7-484f-80cb-9077439bf0d2",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1697"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳市创客超仁企业信息咨询服务有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20191221",
+        "applicationNumber": "43245551"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300827",
+      "lastPublicationDate": "20200527",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20200828",
+        "registrationNumber": "43245551"
+      }
+    },
+    "version": "20251004001151",
+    "wordMarkSpecification": {
+      "markTransliteration": "LING JING",
+      "markVerbalElementText": "凌竞"
+    }
+  },
+  "_uri": "/mark/cn/df7497bf-2ff7-484f-80cb-9077439bf0d2",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:44.438Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

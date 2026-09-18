@@ -1,0 +1,112 @@
+{
+  "uri": "/mark/et/8f7b13ec-d925-4280-9c4b-38bca2b30dfa",
+  "provider": "clarivate",
+  "office": "et",
+  "guid": "8f7b13ec-d925-4280-9c4b-38bca2b30dfa",
+  "applicationNumber": "FTM/8647/2017",
+  "registrationNumber": null,
+  "applicationDate": "2017-05-22",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "MIFARE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "EINDHOVEN",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09"
+        },
+        {
+          "intClassNumber": "42"
+        }
+      ]
+    },
+    "id": "8f7b13ec-d925-4280-9c4b-38bca2b30dfa",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "ET",
+    "registrationOfficeName": "Ethiopia",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170522",
+        "applicationNumber": "FTM/8647/2017"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20240321121557",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MIFARE"
+    }
+  },
+  "_uri": "/mark/et/8f7b13ec-d925-4280-9c4b-38bca2b30dfa",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.704Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

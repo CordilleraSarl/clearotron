@@ -1,0 +1,139 @@
+{
+  "uri": "/mark/kr/5c3d7def-fbee-4c85-8681-38ad780b55fc",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "5c3d7def-fbee-4c85-8681-38ad780b55fc",
+  "applicationNumber": "40-1999-0049122",
+  "registrationNumber": "4004896970000",
+  "applicationDate": "1999-12-22",
+  "registrationDate": "2001-03-17",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "STARplug+",
+  "markTransliteration": "STAR PLUG PLUS",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "전기 전자 기구의 전원용 반도체,전기 전자 기구의 전원용 반도체 소자",
+      "translation_language": "en",
+      "translation": "Power semiconductors for electric and electronic devices, Semiconductor devices for power and electronic devices"
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "목영동 (Mok Young Dong)",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "19990728",
+      "priorityNumber": "943150"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "네덜란드 엔엘- 아게 아인드호펜 하이 테크 캠퍼스",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V.",
+        "applicantNativeName": "엔엑스피 비 브이"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Power semiconductors for electric and electronic devices, Semiconductor devices for power and electronic devices",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "전기 전자 기구의 전원용 반도체,전기 전자 기구의 전원용 반도체 소자"
+        }
+      ]
+    },
+    "id": "5c3d7def-fbee-4c85-8681-38ad780b55fc",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "19990728",
+        "priorityNumber": "943150"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "SEOUL(NONE OFFICE)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "목영동 (Mok Young Dong)"
+      },
+      {
+        "representativeAddress": "(Y.P.LEE,MOCK&PARTNERS)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "목선영 (Mock Sun Young)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19991222",
+        "applicationNumber": "40-1999-0049122"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20010317",
+        "registrationNumber": "4004896970000"
+      }
+    },
+    "version": "20250625153817",
+    "wordMarkSpecification": {
+      "markTransliteration": "STAR PLUG PLUS",
+      "markVerbalElementText": "STARplug+"
+    }
+  },
+  "_uri": "/mark/kr/5c3d7def-fbee-4c85-8681-38ad780b55fc",
+  "_receipt": {
+    "fetched_at": "2026-09-18T14:09:34.903Z",
+    "context": "clearance-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

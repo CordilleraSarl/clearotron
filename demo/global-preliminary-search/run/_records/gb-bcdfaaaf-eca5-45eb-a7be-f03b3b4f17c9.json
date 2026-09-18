@@ -1,0 +1,165 @@
+{
+  "uri": "/mark/gb/bcdfaaaf-eca5-45eb-a7be-f03b3b4f17c9",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "bcdfaaaf-eca5-45eb-a7be-f03b3b4f17c9",
+  "applicationNumber": "2533241",
+  "registrationNumber": "2533241",
+  "applicationDate": "2009-11-10",
+  "registrationDate": "2010-05-14",
+  "expiryDate": "2029-11-10",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "symetri",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer software, software downloadable from the Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Advertising services via the Internet, provision of providing business services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Providing training by means of the Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Computer consultancy services.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Symetri Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Forresters IP LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Dobson House The Grainger Suite, Regent Centre, Gosforth, Newcastle Upon Tyne, NE3 3PF",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Symetri Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer software, software downloadable from the Internet."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Advertising services via the Internet, provision of providing business services."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Providing training by means of the Internet."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer consultancy services."
+        }
+      ]
+    },
+    "id": "bcdfaaaf-eca5-45eb-a7be-f03b3b4f17c9",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "6826"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "The Gherkin (11th Floor), 30 St Mary Axe, London EC3A 8BF",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Forresters IP LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20091110",
+        "applicationNumber": "2533241"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20291110",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20100514",
+        "registrationNumber": "2533241"
+      }
+    },
+    "version": "20250627192153",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "symetri"
+    }
+  },
+  "_uri": "/mark/gb/bcdfaaaf-eca5-45eb-a7be-f03b3b4f17c9",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.285Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "uri": "/mark/ae/8cf9bf6c-cf8a-4182-979b-5d13189338f1",
+  "provider": "clarivate",
+  "office": "ae",
+  "guid": "8cf9bf6c-cf8a-4182-979b-5d13189338f1",
+  "applicationNumber": "264113",
+  "registrationNumber": "264113",
+  "applicationDate": "2016-11-29",
+  "registrationDate": "2017-11-15",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MIFARE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "ar",
+      "description": "البحث والتصمیم للغیر في ما یتعلق بالدوائر الكھربیة المتكاملھ وبرمجیات الإتصالات والشبكات؛ تطویر برمجیات الحاسب الآلى فى مجال تطبیقات المحمول؛ الخدمات الإستشاریھ فى مجال تكنولوجیا الاتصالات الإلكترونیة  السلكیة واللاسلكیة تصمیم نظم الإتصالات اللاسلكیة لإرسال واستقبال الصوت، البیانات والفیدیو وتطویرھا؛ تصمیم نظم الإتصالات السلكیھ لأغراضالتحقق  الاستیثاق وتطویرھا؛ توفیر الإستخدام المؤقت عبر الإنترنت لتطبیقات البرمجیات غیر القابلھ للتنزیل، منصات التطویر وأدوات التطویر التي تمكن مطورى البرمجیات من تطویر البرمجیات للدوائر الكھربیة المتكاملھ، الرقاقات الإلكترونیة ومعدات معالجة البیانات، وبرمجتھا، وبنائھا ونمذجتھا  انشاء نماذج للبرمجیات؛ خدمات برمجة الحاسب الآلى؛ البحث والتصمیم للنماذج  المودیولات الإلكتروتقنیة والإلكترومغناطیسیة، الأجزاء وعناصر البناء، ماكینات معالجة البیانات، أجھزة تخزین البیانات، المعالجات الدقیقة، الواجھات، الدوائر المتكاملھ  اي سي اس، الرقاقات الإلكترونیة، أشباه الموصلات، البطاقات الذكیھ، أجھزة التحكم فى البطاقات الذكیة، أجھزة التحكم في رقاقات وبطاقات تحدید الھویة باستخدام موجات اللاسلكى، أجھزة وبرمجیات الحاسب الآلى لتصمیم رقاقات وبطاقات تحدید الھویة باستخدام موجات اللاسلكى والتحكم فیھا، وترمیزھا، ومسحھا ضوئیاً، وقراءتھا وترجمتھا؛ البحث والتصمیم في مجال الھوائیات للمسح الضوئى لرقاقات وبطاقات تحدید الھویھ باستخدام موجات اللاسلكى، وقراءتھا وترجمتھا؛ البحث والتصمیم في مجال أجھزة، أدوات ومعدات الإتصالات قریبة المدى ان اف سي، شاملة الوحدات  المودیولات الإلكترونیة، الإلكتروتقنیة والإلكترومغناطیسیة، أجزاء وعناصر البناء والدوائر الكھربیة المتكاملة لتطبیقات الاتصالات  ان اف سي؛ الخدمات الاستشاریة المتعلقھ بكل ما سبق",
+      "translation_language": "en",
+      "translation": "Research and design for others in the field of integrated circuits, communication and network software; development of computer software in the field of mobile applications; advisory services in the field of electronic and wireless telecommunications technologies; design of wireless communication systems for the transmission and reception of voice, data and video; and development of wireless communication systems for verification and development purposes ; Provision of temporary online use of non-downloadable software applications, development platforms and development tools that enable software developers to develop software for power circuits Electronic components and components, data processing machines, data storage devices, microprocessors, interfaces, ICS integrated circuit boards, electronic circuits and data processing equipment, programming and programming equipment; , Electronic chips, semiconductors, smart cards, smart card controllers, chip control devices and identification cards using wireless waves, computer hardware and software to design chips and identification cards Identification and translation of radio waves; identification and translation of radio waves; identification and translation of radio waves; identification and translation of RFID chips; identification and translation of RFID chips; identification and translation; research and design of instrumentation, instrumentation and communication equipment near NFC, Electronic, Electrotechnical and Electromagnetic Models, Parts and Components of Construction and Integrated Electrical Circuits for NFC Applications; Advisory Services for all of the above"
+    }
+  ],
+  "owner": null,
+  "ownerNative": null,
+  "ownerCountry": "UNKN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "UNKN",
+        "applicantAddressCountryName": "Unknown Applicant Country/Region",
+        "applicantNativeName": "ان اكس بي بي. في."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Research and design for others in the field of integrated circuits, communication and network software; development of computer software in the field of mobile applications; advisory services in the field of electronic and wireless telecommunications technologies; design of wireless communication systems for the transmission and reception of voice, data and video; and development of wireless communication systems for verification and development purposes ; Provision of temporary online use of non-downloadable software applications, development platforms and development tools that enable software developers to develop software for power circuits Electronic components and components, data processing machines, data storage devices, microprocessors, interfaces, ICS integrated circuit boards, electronic circuits and data processing equipment, programming and programming equipment; , Electronic chips, semiconductors, smart cards, smart card controllers, chip control devices and identification cards using wireless waves, computer hardware and software to design chips and identification cards Identification and translation of radio waves; identification and translation of radio waves; identification and translation of radio waves; identification and translation of RFID chips; identification and translation of RFID chips; identification and translation; research and design of instrumentation, instrumentation and communication equipment near NFC, Electronic, Electrotechnical and Electromagnetic Models, Parts and Components of Construction and Integrated Electrical Circuits for NFC Applications; Advisory Services for all of the above",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ar",
+          "intGoodsServicesDescription": "البحث والتصمیم للغیر في ما یتعلق بالدوائر الكھربیة المتكاملھ وبرمجیات الإتصالات والشبكات؛ تطویر برمجیات الحاسب الآلى فى مجال تطبیقات المحمول؛ الخدمات الإستشاریھ فى مجال تكنولوجیا الاتصالات الإلكترونیة  السلكیة واللاسلكیة تصمیم نظم الإتصالات اللاسلكیة لإرسال واستقبال الصوت، البیانات والفیدیو وتطویرھا؛ تصمیم نظم الإتصالات السلكیھ لأغراضالتحقق  الاستیثاق وتطویرھا؛ توفیر الإستخدام المؤقت عبر الإنترنت لتطبیقات البرمجیات غیر القابلھ للتنزیل، منصات التطویر وأدوات التطویر التي تمكن مطورى البرمجیات من تطویر البرمجیات للدوائر الكھربیة المتكاملھ، الرقاقات الإلكترونیة ومعدات معالجة البیانات، وبرمجتھا، وبنائھا ونمذجتھا  انشاء نماذج للبرمجیات؛ خدمات برمجة الحاسب الآلى؛ البحث والتصمیم للنماذج  المودیولات الإلكتروتقنیة والإلكترومغناطیسیة، الأجزاء وعناصر البناء، ماكینات معالجة البیانات، أجھزة تخزین البیانات، المعالجات الدقیقة، الواجھات، الدوائر المتكاملھ  اي سي اس، الرقاقات الإلكترونیة، أشباه الموصلات، البطاقات الذكیھ، أجھزة التحكم فى البطاقات الذكیة، أجھزة التحكم في رقاقات وبطاقات تحدید الھویة باستخدام موجات اللاسلكى، أجھزة وبرمجیات الحاسب الآلى لتصمیم رقاقات وبطاقات تحدید الھویة باستخدام موجات اللاسلكى والتحكم فیھا، وترمیزھا، ومسحھا ضوئیاً، وقراءتھا وترجمتھا؛ البحث والتصمیم في مجال الھوائیات للمسح الضوئى لرقاقات وبطاقات تحدید الھویھ باستخدام موجات اللاسلكى، وقراءتھا وترجمتھا؛ البحث والتصمیم في مجال أجھزة، أدوات ومعدات الإتصالات قریبة المدى ان اف سي، شاملة الوحدات  المودیولات الإلكترونیة، الإلكتروتقنیة والإلكترومغناطیسیة، أجزاء وعناصر البناء والدوائر الكھربیة المتكاملة لتطبیقات الاتصالات  ان اف سي؛ الخدمات الاستشاریة المتعلقھ بكل ما سبق"
+        }
+      ]
+    },
+    "id": "8cf9bf6c-cf8a-4182-979b-5d13189338f1",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "AE",
+    "registrationOfficeName": "United Arab Emirates",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "UAE",
+        "representativeAddressCountryName": "United Arab Emirates",
+        "representativeNativeName": "ابوغزالة للملكیة الفكریة - تي ام بي اجنتس"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20161129",
+        "applicationNumber": "264113"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20171115",
+        "registrationNumber": "264113"
+      }
+    },
+    "version": "20230427150332",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MIFARE"
+    }
+  },
+  "_uri": "/mark/ae/8cf9bf6c-cf8a-4182-979b-5d13189338f1",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.679Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

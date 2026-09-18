@@ -1,0 +1,118 @@
+{
+  "uri": "/mark/tw/3ed262dd-775f-4c50-8c15-221a9b3ea721",
+  "provider": "clarivate",
+  "office": "tw",
+  "guid": "3ed262dd-775f-4c50-8c15-221a9b3ea721",
+  "applicationNumber": "093040289",
+  "registrationNumber": "01176653",
+  "applicationDate": "2004-08-31",
+  "registrationDate": "2005-10-01",
+  "expiryDate": "2025-09-30",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "FREESCALE SEMICONDUCTOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9,
+        42
+      ],
+      "language": "zh",
+      "description": "第009類:半導體，半導體處理器，半導體處理晶片，積體電路，積體電路晶片，電路板，微電腦，微控制器，微處理器，記憶體；機器及工作母機之半導體；照明、加熱、產生蒸汽、烹調、冷凍、乾燥及通風器具用半導體；鐘及計時器具及儀器用半導體；樂器用半導體；遊戲器具及玩具用半導體；資料轉換電路；電腦韌體；測試板及使他人能運用晶片來設計產品之研發工具組；即硬體工具，例如研發板，特定產品軟體，軟體研發工具；聲音、影像及資料紀錄及複製（再生）用器具及設備；視頻電路板；音頻電路板；視聽電路板；視頻圖形加速器；多媒體加速器；視頻處理器；電腦程式；電子式使用說明書及設計指導書；用以校準半導體操作之測試板，積體電路及半導體記憶體測試及程式設計用設備；電腦軟體，即應用整合及聯結軟體、電腦實用程式、網路管理用電腦程式、存取全球電腦網路及互連電腦網路之電腦軟體；提供操作指示給半導體程式之電腦軟體；電腦操作系統軟體；電腦操作程式；促進第三人軟體應用之電腦軟體工具。 第042類:技術授權；有關半導體製造及其使用之專利、商標、著作權、商業機密及／或專業技術之授權；半導體授權；有關半導體製造及其使用之軟體授權；有關半導體及半導體製造技術之授權；半導體產品、積體電路、電路板、微電腦、微控制器、微處理器及電腦周邊設備、記憶體及其半導體資料、資料轉換電路、電腦韌體、與電腦一起使用之電子、電氣及電機器具及視頻電路板之技術授權；有關視頻系統產品、聲音、影像及資料紀錄、複製（再生）及改變用器具及設備、以及電腦程式之技術授權；有關資料壓縮及解壓用電腦及資料演算器之教導資料之技術授權；電腦及電信系統之訂製設計；有關電腦及電信及軟體設計相關技術方面之諮詢服務。",
+      "translation_language": "en",
+      "translation": "Class 009: Semiconductors, semiconductor processors, semiconductor processing chips, integrated circuits, integrated circuit chips, circuit boards, microcomputers, microcontrollers, microprocessors, memories; semiconductors for machines and work machines; lighting, heating, Semiconductors for steam generation, cooking, freezing, drying and ventilation appliances; semiconductors for clocks and timepieces and instruments; semiconductors for musical instruments; semiconductors for games and toys; data conversion circuits; computer firmware; test boards and enabling others to use chips R&D tool sets to design products; i.e. hardware tools, such as R&D boards, product-specific software, software development tools; instruments and equipment for recording and copying (reproducing) sound, images and data; video circuit boards; audio circuit boards; audio-visual Circuit boards; video graphics accelerators; multimedia accelerators; video processors; computer programs; electronic instruction manuals and design guides; test boards for calibrating semiconductor operations, integrated circuit and semiconductor memory testing and programming equipment; computers Software, namely application integration and linkage software, computer utility programs, computer programs for network management, computer software for accessing global computer networks and interconnected computer networks; computer software that provides operating instructions to semiconductor programs; computer operating system software ; Computer operating programs; Computer software tools that facilitate the application of third-party software. Class 042: Technology licensing; licensing of patents, trademarks, copyrights, trade secrets and/or professional technologies related to semiconductor manufacturing and its use; semiconductor licensing; software licensing related to semiconductor manufacturing and its use; semiconductor and semiconductor manufacturing technology Authorization; semiconductor products, integrated circuits, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor data, data conversion circuits, computer firmware, electronic, electrical and Technology licensing for electrical equipment and video circuit boards; technology licensing for video system products, instruments and equipment for recording, copying (reproducing) and changing data, and computer programs; technology licensing for data compression and decompression computers and data calculations Technical licensing of teaching materials for devices; customized design of computer and telecommunications systems; consulting services on computer and telecommunications and software design-related technologies."
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC.",
+        "applicantNativeAddress": "美國",
+        "applicantNativeName": "美商恩智浦美國公司 NXP USA, INC."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Class 009: Semiconductors, semiconductor processors, semiconductor processing chips, integrated circuits, integrated circuit chips, circuit boards, microcomputers, microcontrollers, microprocessors, memories; semiconductors for machines and work machines; lighting, heating, Semiconductors for steam generation, cooking, freezing, drying and ventilation appliances; semiconductors for clocks and timepieces and instruments; semiconductors for musical instruments; semiconductors for games and toys; data conversion circuits; computer firmware; test boards and enabling others to use chips R&D tool sets to design products; i.e. hardware tools, such as R&D boards, product-specific software, software development tools; instruments and equipment for recording and copying (reproducing) sound, images and data; video circuit boards; audio circuit boards; audio-visual Circuit boards; video graphics accelerators; multimedia accelerators; video processors; computer programs; electronic instruction manuals and design guides; test boards for calibrating semiconductor operations, integrated circuit and semiconductor memory testing and programming equipment; computers Software, namely application integration and linkage software, computer utility programs, computer programs for network management, computer software for accessing global computer networks and interconnected computer networks; computer software that provides operating instructions to semiconductor programs; computer operating system software ; Computer operating programs; Computer software tools that facilitate the application of third-party software. Class 042: Technology licensing; licensing of patents, trademarks, copyrights, trade secrets and/or professional technologies related to semiconductor manufacturing and its use; semiconductor licensing; software licensing related to semiconductor manufacturing and its use; semiconductor and semiconductor manufacturing technology Authorization; semiconductor products, integrated circuits, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor data, data conversion circuits, computer firmware, electronic, electrical and Technology licensing for electrical equipment and video circuit boards; technology licensing for video system products, instruments and equipment for recording, copying (reproducing) and changing data, and computer programs; technology licensing for data compression and decompression computers and data calculations Technical licensing of teaching materials for devices; customized design of computer and telecommunications systems; consulting services on computer and telecommunications and software design-related technologies.",
+          "intClassNumber": "09,42",
+          "intGoodsLanguageCode": "zh",
+          "intGoodsServicesDescription": "第009類:半導體，半導體處理器，半導體處理晶片，積體電路，積體電路晶片，電路板，微電腦，微控制器，微處理器，記憶體；機器及工作母機之半導體；照明、加熱、產生蒸汽、烹調、冷凍、乾燥及通風器具用半導體；鐘及計時器具及儀器用半導體；樂器用半導體；遊戲器具及玩具用半導體；資料轉換電路；電腦韌體；測試板及使他人能運用晶片來設計產品之研發工具組；即硬體工具，例如研發板，特定產品軟體，軟體研發工具；聲音、影像及資料紀錄及複製（再生）用器具及設備；視頻電路板；音頻電路板；視聽電路板；視頻圖形加速器；多媒體加速器；視頻處理器；電腦程式；電子式使用說明書及設計指導書；用以校準半導體操作之測試板，積體電路及半導體記憶體測試及程式設計用設備；電腦軟體，即應用整合及聯結軟體、電腦實用程式、網路管理用電腦程式、存取全球電腦網路及互連電腦網路之電腦軟體；提供操作指示給半導體程式之電腦軟體；電腦操作系統軟體；電腦操作程式；促進第三人軟體應用之電腦軟體工具。 第042類:技術授權；有關半導體製造及其使用之專利、商標、著作權、商業機密及／或專業技術之授權；半導體授權；有關半導體製造及其使用之軟體授權；有關半導體及半導體製造技術之授權；半導體產品、積體電路、電路板、微電腦、微控制器、微處理器及電腦周邊設備、記憶體及其半導體資料、資料轉換電路、電腦韌體、與電腦一起使用之電子、電氣及電機器具及視頻電路板之技術授權；有關視頻系統產品、聲音、影像及資料紀錄、複製（再生）及改變用器具及設備、以及電腦程式之技術授權；有關資料壓縮及解壓用電腦及資料演算器之教導資料之技術授權；電腦及電信系統之訂製設計；有關電腦及電信及軟體設計相關技術方面之諮詢服務。"
+        }
+      ]
+    },
+    "id": "3ed262dd-775f-4c50-8c15-221a9b3ea721",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260401",
+    "registrationOfficeCode": "TW",
+    "registrationOfficeName": "Taiwan",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "TW",
+        "representativeAddressCountryName": "Taiwan",
+        "representativeNativeName": "陳長文  丁靜玟"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20040831",
+        "applicationNumber": "093040289"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20250930",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20051001",
+        "registrationNumber": "01176653"
+      }
+    },
+    "version": "20260401091649",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE SEMICONDUCTOR"
+    }
+  },
+  "_uri": "/mark/tw/3ed262dd-775f-4c50-8c15-221a9b3ea721",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.752Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

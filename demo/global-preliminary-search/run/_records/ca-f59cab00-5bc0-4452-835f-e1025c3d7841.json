@@ -1,0 +1,336 @@
+{
+  "uri": "/mark/ca/f59cab00-5bc0-4452-835f-e1025c3d7841",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "f59cab00-5bc0-4452-835f-e1025c3d7841",
+  "applicationNumber": "734913",
+  "registrationNumber": "TMA432880",
+  "applicationDate": "1993-08-13",
+  "registrationDate": "1994-09-02",
+  "expiryDate": "2024-09-02",
+  "renewalDate": "2009-09-02",
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "1994-03-16"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "STARCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    28,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9,
+        16,
+        28,
+        41
+      ],
+      "language": "en",
+      "description": "(1) Prerecorded computer software programs and interactive multimedia software programs for business, education and entertainment; manuals, books and catalogues on paper and electronic media; electronic games.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9,
+        16,
+        28,
+        41
+      ],
+      "language": "en",
+      "description": "(1) Electronic publishing services.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA Inc.",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": "SMART & BIGGAR LP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West, Austin, TX 78735",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressLines": [
+          "6501 William Cannon Drive West",
+          "Austin, TX 78735"
+        ],
+        "applicantName": "NXP USA Inc."
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Declaration of Use filed July 05, 1994 on wares marked (1) on services (1)",
+        "typeDescription": "Declaration of Use Info"
+      }
+    ],
+    "footNotes": [
+      "CHANGE IN TITLE / CHANGEMENT EN TITRE:",
+      "TYPE OF CHANGE / GENRE DE CHANGEMENT: Assignment / Cession",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 12 août/Aug 1999",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 25 mai/May 1999",
+      "COMMENTS / COMMENTAIRES: FROM: APPLE COMPUTER, INC.,",
+      "TO: Motorola, Inc.",
+      "(a Delaware Corporation)",
+      "nunc pro tunc February 16, 1999",
+      "Voir Preuve au dossier/See evidence on File No. 734913",
+      "CHANGE IN TITLE / CHANGEMENT EN TITRE:",
+      "TYPE OF CHANGE / GENRE DE CHANGEMENT: Assignment / Cession",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 14 mars/Mar 2005",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 04 avr/Apr 2004",
+      "COMMENTS / COMMENTAIRES: FROM: Motorola, Inc.",
+      "(a Delaware Corporation)",
+      "TO: FREESCALE SEMICONDUCTOR, INC.",
+      "(a Delaware corporation)",
+      "Voir Preuve au dossier/See evidence on File No. 734913",
+      "Merger and Address / Fusionnement et adresse",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 21 août/Aug 2017",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 07 nov/Nov 2016",
+      "COMMENTS / COMMENTAIRES: FROM: FREESCALE SEMICONDUCTOR, INC.",
+      "(a Delaware corporation)",
+      "TO: NXP USA Inc.",
+      "Voir Preuve au dossier/See evidence on File No. 1663578"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09,16,28,41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Prerecorded computer software programs and interactive multimedia software programs for business, education and entertainment; manuals, books and catalogues on paper and electronic media; electronic games."
+        },
+        {
+          "intClassNumber": "09,16,28,41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Electronic publishing services."
+        }
+      ]
+    },
+    "id": "f59cab00-5bc0-4452-835f-e1025c3d7841",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20250319",
+        "descriptionText": "Expunged - Failure to Renew",
+        "information": "DP: 2025/03/19"
+      },
+      {
+        "date": "20240919",
+        "descriptionText": "Renewal Notice Sent",
+        "responseDate": "20250302"
+      },
+      {
+        "date": "20170821",
+        "descriptionText": "Amendment to Registration",
+        "information": "Merger and address / Voir Preuve au dossier/See evidence on File No. 1663578"
+      },
+      {
+        "date": "20091125",
+        "descriptionText": "Rep for Service Name Changed"
+      },
+      {
+        "date": "20090902",
+        "descriptionText": "Renewed",
+        "information": "DP:2009/04/02 RD:2009/04/01 RR:(2502) BERESKIN & PARR LLP",
+        "responseDate": "20240902"
+      },
+      {
+        "date": "20090309",
+        "descriptionText": "Rep for Service Name Changed"
+      },
+      {
+        "date": "20050314",
+        "descriptionText": "Change in Title Registered",
+        "information": "Assignment / Voir Preuve au dossier/See evidence on File No. 734913"
+      },
+      {
+        "date": "20041125",
+        "descriptionText": "Assignment Correspondence Created",
+        "responseDate": "20050525"
+      },
+      {
+        "date": "20000704",
+        "descriptionText": "Agent Name Changed"
+      },
+      {
+        "date": "19990812",
+        "descriptionText": "Change in Title Registered",
+        "information": "Assignment"
+      },
+      {
+        "date": "19990812",
+        "descriptionText": "Rep for Service Changed",
+        "information": "From: 8390 To: 2502"
+      },
+      {
+        "date": "19940902",
+        "descriptionText": "Registered",
+        "responseDate": "20090902"
+      },
+      {
+        "date": "19940610",
+        "descriptionText": "Allowance Notice Sent",
+        "responseDate": "19960813"
+      },
+      {
+        "date": "19940610",
+        "descriptionText": "Allowed"
+      },
+      {
+        "date": "19940316",
+        "descriptionText": "Advertised",
+        "information": "Vol.41 Issue 2055"
+      },
+      {
+        "date": "19940118",
+        "descriptionText": "Approved"
+      },
+      {
+        "date": "19931214",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "19930907",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "19930813",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "19930813",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "MS 38-1, 1 INFINITE LOOP, CUPERTINO, CALIFORNIA 95014",
+        "addressLines": [
+          "MS 38-1,",
+          "1 INFINITE LOOP,",
+          "CUPERTINO, CALIFORNIA 95014,"
+        ],
+        "countryName": "United States",
+        "name": "APPLE COMPUTER, INC.,"
+      }
+    ],
+    "previousOwners": [
+      {
+        "addressLines": [
+          "Motorola, Inc. (a Delaware Corporation)",
+          "1303 E. Algonquin Rd.,",
+          "Schaumburg,",
+          "Illinois 60196",
+          "UNITED STATES OF AMERICA"
+        ],
+        "name": "Motorola, Inc. (a Delaware Corporation)"
+      },
+      {
+        "addressLines": [
+          "FREESCALE SEMICONDUCTOR, INC. (a Delaware corporation)",
+          "6501 William Cannon Drive West",
+          "Austin, Texas 78735",
+          "UNITED STATES OF AMERICA"
+        ],
+        "name": "FREESCALE SEMICONDUCTOR, INC. (a Delaware corporation)"
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "2055",
+        "publicationVolume": "41"
+      }
+    ],
+    "recordLastUpdated": "20250621",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "SMART & BIGGAR LP",
+          "SCOTIA PLAZA",
+          "40 KING STREET WEST",
+          "40th FLOOR",
+          "TORONTO",
+          "ONTARIO M5H3Y2"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "SMART & BIGGAR LP"
+      }
+    ],
+    "status": {
+      "active": false,
+      "allowanceDate": [
+        "19940610"
+      ],
+      "application": {
+        "applicationDate": "19930813",
+        "applicationNumber": "734913"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "expiryDate": "20240902",
+      "expungementDate": "20250319",
+      "formalisationDate": "19930907",
+      "markCurrentStatus": "Expunged",
+      "nextRenewalDate": "20240902",
+      "publicationDate": [
+        "19940316"
+      ],
+      "registration": {
+        "registrationDate": "19940902",
+        "registrationNumber": "TMA432880"
+      },
+      "renewalDate": "20090902"
+    },
+    "subjectHeadings": [
+      "STARCORE",
+      "STAR CORE"
+    ],
+    "version": "20250621100451",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "STAR CORE",
+      "markVerbalElementText": "STARCORE",
+      "markVerbalElementTextFormal": "STARCORE"
+    }
+  },
+  "_uri": "/mark/ca/f59cab00-5bc0-4452-835f-e1025c3d7841",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:10.758Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

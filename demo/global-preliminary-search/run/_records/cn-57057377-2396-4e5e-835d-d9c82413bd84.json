@@ -1,0 +1,150 @@
+{
+  "uri": "/mark/cn/57057377-2396-4e5e-835d-d9c82413bd84",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "57057377-2396-4e5e-835d-d9c82413bd84",
+  "applicationNumber": "69970804",
+  "registrationNumber": "69970804",
+  "applicationDate": "2023-03-06",
+  "registrationDate": "2024-10-14",
+  "expiryDate": "2034-10-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2024-07-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "腾鼎文化",
+  "markTransliteration": "TENG DING WEN HUA",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "电影发行;广播和电视节目制作;培训;摄影;视频制作;为活动提供视频编辑服务;为艺术家提供模特服务;文稿撰写;娱乐服务;组织文化或教育展览",
+      "translation_language": "en",
+      "translation": "Film distribution; radio and television programming; training; photography; video production; video editing services for events; modeling services for artists; copywriting; entertainment services; organization of cultural or educational exhibitions"
+    }
+  ],
+  "owner": "Guangxi Tengding Culture Media Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广西壮族自治区防城港市港口区行政中心区迎宾路中段南侧德城新世界1幢09号商铺",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Guangxi Tengding Culture Media Co., Ltd.",
+        "applicantNativeName": "广西腾鼎文化传媒有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Film distribution; radio and television programming; training; photography; video production; video editing services for events; modeling services for artists; copywriting; entertainment services; organization of cultural or educational exhibitions",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "电影发行;广播和电视节目制作;培训;摄影;视频制作;为活动提供视频编辑服务;为艺术家提供模特服务;文稿撰写;娱乐服务;组织文化或教育展览"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Education",
+        "Arranging and conducting service of events",
+        "Amusement and sports service",
+        "Other service included in this class"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4101",
+          "subNatGoodsServicesDescription": "Education"
+        },
+        {
+          "subNatClassNumber": "4102",
+          "subNatGoodsServicesDescription": "Arranging and conducting service of events"
+        },
+        {
+          "subNatClassNumber": "4105",
+          "subNatGoodsServicesDescription": "Amusement and sports service"
+        },
+        {
+          "subNatClassNumber": "4107",
+          "subNatGoodsServicesDescription": "Other service included in this class"
+        }
+      ]
+    },
+    "id": "57057377-2396-4e5e-835d-d9c82413bd84",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "28.17",
+      "26.01.12"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1895"
+      }
+    ],
+    "recordLastUpdated": "20251005",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "一真(惠州)知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20230306",
+        "applicationNumber": "69970804"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20341013",
+      "lastPublicationDate": "20240713",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20241014",
+        "registrationNumber": "69970804"
+      }
+    },
+    "version": "20251005030931",
+    "wordMarkSpecification": {
+      "markTransliteration": "TENG DING WEN HUA",
+      "markVerbalElementText": "腾鼎文化"
+    }
+  },
+  "_uri": "/mark/cn/57057377-2396-4e5e-835d-d9c82413bd84",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:44.441Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,198 @@
+{
+  "uri": "/mark/fr/c4407c4b-55ec-4bfc-a193-4b7c51683631",
+  "provider": "clarivate",
+  "office": "fr",
+  "guid": "c4407c4b-55ec-4bfc-a193-4b7c51683631",
+  "applicationNumber": "14 4106552",
+  "registrationNumber": null,
+  "applicationDate": "2014-07-07",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2014-08-14",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "SYMETRI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    9,
+    35,
+    38,
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7
+      ],
+      "language": "fr",
+      "description": ": Machines à trier pour l'industrie ",
+      "translation_language": "en",
+      "translation": "Sorting machines for industry"
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": ": Appareils et instruments scientifiques dans le domaine de la gestion et de la collecte de déchets ; supports d'enregistrement magnétiques, disques acoustiques ou optiques dans le domaine de la gestion et de la collecte de déchets ; machine à calculer dans le domaine de la gestion et de la collecte de déchets ; équipement dans le domaine de la gestion et de la collecte de déchets ; logiciels dans le domaine de la gestion et de la collecte de déchets ; périphériques d'ordinateurs dans le domaine de gestion et de la collecte de déchets ",
+      "translation_language": "en",
+      "translation": "Scientific apparatus and instruments in the field of waste management and collection; magnetic recording media, acoustic or optical discs in the field of waste management and collection; calculating machine in the field of waste management and collection; equipment in the field of waste management and collection; computer software in the field of waste management and collection; computer peripherals in the field of waste management and collection"
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": ": Services d'abonnement à des services de télécommunication pour les tiers ; gestion de fichiers informatiques ",
+      "translation_language": "en",
+      "translation": "Subscription services to telecommunications services for third parties; computer file management"
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "fr",
+      "description": ": Communications par terminaux d'ordinateurs ou par réseau de fibres optiques ; location d'appareils de télécommunication ; location de temps d'accès à des réseaux informatiques mondiaux ",
+      "translation_language": "en",
+      "translation": "Communications by computer terminals or by fiber optic network; rental of telecommunications apparatus; rental of access time to global computer networks"
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "fr",
+      "description": ": Décontamination de matériaux dangereux ; tri de déchets et de matières premières de récupération (transformation) ; recyclage d'ordures et de déchets ",
+      "translation_language": "en",
+      "translation": "Decontamination of hazardous materials; sorting of waste and recovered raw materials (transformation); garbage and waste recycling"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": ": Conception et développement d'ordinateurs et de logiciels ; élaboration (conception), installation, maintenance, mise à jour ou location de logiciels ; programmation pour ordinateur ; conception de systèmes informatiques.",
+      "translation_language": "en",
+      "translation": "Design and development of computers and software; development (design), installation, maintenance, updating or rental of software; computer programming; design of computer systems."
+    }
+  ],
+  "owner": "SYMETRI, SAS",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "TRIBORD, M. LE GUEN Ronan",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "SYMETRI, SAS"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Sorting machines for industry",
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Machines à trier pour l'industrie "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Scientific apparatus and instruments in the field of waste management and collection; magnetic recording media, acoustic or optical discs in the field of waste management and collection; calculating machine in the field of waste management and collection; equipment in the field of waste management and collection; computer software in the field of waste management and collection; computer peripherals in the field of waste management and collection",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Appareils et instruments scientifiques dans le domaine de la gestion et de la collecte de déchets ; supports d'enregistrement magnétiques, disques acoustiques ou optiques dans le domaine de la gestion et de la collecte de déchets ; machine à calculer dans le domaine de la gestion et de la collecte de déchets ; équipement dans le domaine de la gestion et de la collecte de déchets ; logiciels dans le domaine de la gestion et de la collecte de déchets ; périphériques d'ordinateurs dans le domaine de gestion et de la collecte de déchets "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Subscription services to telecommunications services for third parties; computer file management",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Services d'abonnement à des services de télécommunication pour les tiers ; gestion de fichiers informatiques "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Communications by computer terminals or by fiber optic network; rental of telecommunications apparatus; rental of access time to global computer networks",
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Communications par terminaux d'ordinateurs ou par réseau de fibres optiques ; location d'appareils de télécommunication ; location de temps d'accès à des réseaux informatiques mondiaux "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Decontamination of hazardous materials; sorting of waste and recovered raw materials (transformation); garbage and waste recycling",
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Décontamination de matériaux dangereux ; tri de déchets et de matières premières de récupération (transformation) ; recyclage d'ordures et de déchets "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Design and development of computers and software; development (design), installation, maintenance, updating or rental of software; computer programming; design of computer systems.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Conception et développement d'ordinateurs et de logiciels ; élaboration (conception), installation, maintenance, mise à jour ou location de logiciels ; programmation pour ordinateur ; conception de systèmes informatiques."
+        }
+      ]
+    },
+    "id": "c4407c4b-55ec-4bfc-a193-4b7c51683631",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00014",
+        "publicationVolume": "33"
+      }
+    ],
+    "recordLastUpdated": "20250518",
+    "registrationOfficeCode": "FR",
+    "registrationOfficeName": "France",
+    "representatives": [
+      {
+        "representativeName": "TRIBORD, M. LE GUEN Ronan"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20140707",
+        "applicationNumber": "14 4106552"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20140814",
+      "markCurrentStatus": "EXPIRED MARK"
+    },
+    "version": "20250518020004",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SYMETRI"
+    }
+  },
+  "_uri": "/mark/fr/c4407c4b-55ec-4bfc-a193-4b7c51683631",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.290Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

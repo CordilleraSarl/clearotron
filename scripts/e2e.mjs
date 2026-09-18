@@ -2935,7 +2935,7 @@ export async function probeStampedUrl(stampedUrl) {
  *
  *     state=failed verdict=CONDITIONAL sendPending=undefined
  *
- * Five R2 rounds in the seven days to 2026-08-25 refused at the verdict stage, each having written a
+ * Five full clearance test runs in the seven days to 2026-08-25 refused at the verdict stage, each having written a
  * full narrative and every report card first. `CONDITIONAL` there is the verdict of a report NOBODY
  * SIGNED, and it reads as the answer.
  *
@@ -3204,7 +3204,7 @@ async function cmdReport(id, { round: requestedToken = null } = {}) {
     // model work is never reported as a pass. A run that refuses at the verdict stage has written its
     // narrative and every report card first, so `verdict=CONDITIONAL` prints on a report nobody signed
     // — and read left to right, `state=failed verdict=CONDITIONAL` invites the eye to the second word.
-    // Five R2 rounds did exactly this in the seven days to 2026-08-25. The answer to "was this
+    // Five test runs did exactly this in the seven days to 2026-08-25. The answer to "was this
     // delivered" is therefore its own line, above, in the words used for a failed order.
     console.log(`  ${deliveryLine(st)}`);
     console.log(`  state=${st.state ?? "?"} verdict=${st.verdict ?? "-"} sendPending=${st.sendPending}`);

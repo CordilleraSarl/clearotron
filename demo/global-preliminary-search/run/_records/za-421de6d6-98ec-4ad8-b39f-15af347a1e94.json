@@ -1,0 +1,131 @@
+{
+  "uri": "/mark/za/421de6d6-98ec-4ad8-b39f-15af347a1e94",
+  "provider": "clarivate",
+  "office": "za",
+  "guid": "421de6d6-98ec-4ad8-b39f-15af347a1e94",
+  "applicationNumber": "2004/14985",
+  "registrationNumber": "2004/14985",
+  "applicationDate": "2004-08-30",
+  "registrationDate": "2009-04-15",
+  "expiryDate": "2024-08-30",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": null,
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Licensing of technology; licensing of patents, trademarks, copyrights, trade secrets and/or know-how related to the manufacture of semiconductors and their uses; licensing semiconductors; licensing of software related to the manufacture of semiconductors and their uses; licensing of technology incorporated in and related to semiconductor products, integrated circuits, circuit boards, microcomputers, micro controllers, microprocessors and computer peripherals, memories and semiconductor material therefor, data conversion circuits, computer formware, electronic, electrical and electromechanical apparatus for use with computers, video circuit boards; video systems products, apparatus and equipment for recordation, reproduction and alteration of sound, video and data, computer programs; instructional material relating to computer and data algorithms for the compression and decompression of data; custom design of computer and telecommunications systems; consulting services in the field of computers and telecommunications and related technology for software design",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA., INC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "ADAMS & ADAMS",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20040301",
+      "priorityNumber": "78/376,535"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "a Delaware corporation, 6501 William Cannon Drive West, Austin, Texas 78735 United States of America",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA., INC"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Licensing of technology; licensing of patents, trademarks, copyrights, trade secrets and/or know-how related to the manufacture of semiconductors and their uses; licensing semiconductors; licensing of software related to the manufacture of semiconductors and their uses; licensing of technology incorporated in and related to semiconductor products, integrated circuits, circuit boards, microcomputers, micro controllers, microprocessors and computer peripherals, memories and semiconductor material therefor, data conversion circuits, computer formware, electronic, electrical and electromechanical apparatus for use with computers, video circuit boards; video systems products, apparatus and equipment for recordation, reproduction and alteration of sound, video and data, computer programs; instructional material relating to computer and data algorithms for the compression and decompression of data; custom design of computer and telecommunications systems; consulting services in the field of computers and telecommunications and related technology for software design"
+        }
+      ]
+    },
+    "id": "421de6d6-98ec-4ad8-b39f-15af347a1e94",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20040301",
+        "priorityNumber": "78/376,535"
+      }
+    ],
+    "recordLastUpdated": "20250516",
+    "registrationOfficeCode": "ZA",
+    "registrationOfficeName": "South Africa",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "No correspondent available"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Lynwood Bridge,4 Daventry Street,Lynnwood Manor,Pretoria",
+        "representativeAddressCountryCode": "ZA",
+        "representativeAddressCountryName": "South Africa",
+        "representativeName": "ADAMS & ADAMS"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040830",
+        "applicationNumber": "2004/14985"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20240830",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20090415",
+        "registrationNumber": "2004/14985"
+      }
+    },
+    "version": "20250516170645"
+  },
+  "_uri": "/mark/za/421de6d6-98ec-4ad8-b39f-15af347a1e94",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.755Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

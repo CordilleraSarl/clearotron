@@ -32,7 +32,7 @@ body:
       label: What happened
       description: What you did, what happened, and what you expected instead.
       placeholder: |
-        I ran `npm run example` on a fresh clone.
+        I ran `npx clearotron demo` on a fresh clone.
         It exited 1 with "…".
         I expected the report to open.
     validations:
@@ -44,6 +44,15 @@ body:
       label: Smallest reproduction
       description: The shortest sequence of commands that shows it, starting from a fresh clone.
       render: shell
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Clearotron version
+      description: "`clearotron --version`, or the version in the report footer."
+      placeholder: 0.3.2
     validations:
       required: true
 

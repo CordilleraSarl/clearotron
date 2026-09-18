@@ -1,0 +1,160 @@
+{
+  "uri": "/mark/gb/fa91ae99-5806-4ecf-b9e9-6066eebd34ce",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "fa91ae99-5806-4ecf-b9e9-6066eebd34ce",
+  "applicationNumber": "UK00905571021",
+  "registrationNumber": "UK00905571021",
+  "applicationDate": "2006-12-20",
+  "registrationDate": "2007-12-13",
+  "expiryDate": "2026-12-20",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "NXP",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Scientific, nautical, surveying, photographic, cinematographic, optical, weighing, measuring, signalling, checking (supervision),life-saving and teaching apparatus and instruments; apparatus and instruments for conducting, switching, transforming, accumulating, regulating and controlling electricity; apparatus for recording, transmission or reproduction of sound or images; magnetic data carriers, recording discs; automatic vending machines and mechanisms for coin-operated apparatus; cash registers, calculating machines, data processing equipment and computers; fire-extinguishing apparatus; electronic, electrotechnical and electromagnetic modules, parts and components therefor including integrated circuits (ICs), chips, diodes, transistors, semiconductors and semiconductor elements; interfaces; software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "en",
+      "description": "Printed matter; textbooks; data books; instructional manuals; user manuals; product catalogues; circuit specification and data sheets all relating to semiconductors, semiconducting apparatus, instruments and software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Semiconductor consultancy, design, research, development and advisory services; integrated circuit design services; semiconductor software design services; provision of information to designers and architects in the semiconductor industry; provision of services relating to the evaluation, testing, verification, accreditation and standardisation of semiconductors.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "Stobbs",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20060710",
+      "priorityNumber": "803108"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60, Eindhoven 5656 AG",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Scientific, nautical, surveying, photographic, cinematographic, optical, weighing, measuring, signalling, checking (supervision),life-saving and teaching apparatus and instruments; apparatus and instruments for conducting, switching, transforming, accumulating, regulating and controlling electricity; apparatus for recording, transmission or reproduction of sound or images; magnetic data carriers, recording discs; automatic vending machines and mechanisms for coin-operated apparatus; cash registers, calculating machines, data processing equipment and computers; fire-extinguishing apparatus; electronic, electrotechnical and electromagnetic modules, parts and components therefor including integrated circuits (ICs), chips, diodes, transistors, semiconductors and semiconductor elements; interfaces; software."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Printed matter; textbooks; data books; instructional manuals; user manuals; product catalogues; circuit specification and data sheets all relating to semiconductors, semiconducting apparatus, instruments and software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Semiconductor consultancy, design, research, development and advisory services; integrated circuit design services; semiconductor software design services; provision of information to designers and architects in the semiconductor industry; provision of services relating to the evaluation, testing, verification, accreditation and standardisation of semiconductors."
+        }
+      ]
+    },
+    "id": "fa91ae99-5806-4ecf-b9e9-6066eebd34ce",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20060710",
+        "priorityNumber": "803108"
+      }
+    ],
+    "recordLastUpdated": "20260626",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Building 1000, Cambridge Research Park, Cambridge CB25 9PD",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Stobbs"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20061220",
+        "applicationNumber": "UK00905571021"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20261220",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20071213",
+        "registrationNumber": "UK00905571021"
+      }
+    },
+    "version": "20260626020155",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NXP"
+    }
+  },
+  "_uri": "/mark/gb/fa91ae99-5806-4ecf-b9e9-6066eebd34ce",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.709Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

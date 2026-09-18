@@ -1,0 +1,428 @@
+{
+  "uri": "/mark/us/b3b4bea6-7fc5-4a15-939a-ec33e6186ada",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "b3b4bea6-7fc5-4a15-939a-ec33e6186ada",
+  "applicationNumber": "87437491",
+  "registrationNumber": "6121566",
+  "applicationDate": "2017-05-04",
+  "registrationDate": "2020-08-11",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2020-05-26"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MF1",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 [ Apparatus for recording, transmission or reproduction of sound or images; recorded magnetic data carriers, blank magnetic data carriers; data processing equipment; microprocessors; interfaces for computers; semiconductors; ] integrated circuits; chips, being integrated circuits; encoded smart cards containing programming used for security purposes for identification, for logistic control, for automatic billing and automated conducting of financial transactions, for detecting counterfeit products and for access control; smart card integrated circuits; RFID chips and tags; computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; encoded contactless smart cards containing programming used for security purposes for identification, for logistic control, for automatic billing and automated conducting of financial transactions, for detecting counterfeit products and for access control; encoded dual interface smart cards containing programming used for security purposes for identification, for logistic control, for automatic billing and automated conducting of financial transactions, for detecting counterfeit products and for access control; [ dual interface integrated circuits that provide a link between contactless cards and contact cards; writers and readers for wireless transmission to and from transponder chips; electronic apparatus for writing and reading of wireless transmission to and from transponder chips; computer programs for controlling transmission of data to and reading of data from transponder chips; data processing machines for fare determination using transponder chips; encoded smart cards; ] electronic access cards; electronic wristbands, namely, electronic readers/recorders for authenticating identity, controlling access to functions, managing events, ticketing, promoting brand loyalty, promoting brands, cashless vending, transportation and membership identification; [ computer hardware, software and peripheral devices used for access control and authentication purposes; computer software and hardware for testing integrated circuits, computer chips, semiconductors, semiconductor power elements; wearable activity trackers; wearable computer peripherals; headphones; earbuds; smartphones; hardware and computer hardware, software and peripheral devices used for access control and authentication purposes ]",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 [ Research and design for others in relation to integrated circuits and communications software and networks; computer software development in the field of mobile applications; consulting in the field of telecommunications technology; design and development of wireless communications systems for transmission and reception of voice, data and video; design and development of wireless communications systems for authentication purposes; providing temporary use of online non-downloadable software applications, development platforms, and development tools that enable software developers to develop, program, build, and prototype software for integrated circuits, chips and data processing equipment; computer programming services; research and design of electro technical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits, chips, semiconductors, smart cards, controllers for smart cards, controllers for RFID chips and tags; research and design of computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; research and design of antennas for scanning, reading and interpreting RFID chips and tags; research and design of NFC apparatus, instruments and equipment, namely, electronic, electro technical and electromagnetic modules, parts and building elements and integrated circuits for NFC applications; advisory services in relation to all the above ]",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityCountryCode": "PIEU",
+      "priorityCountryName": "European Union",
+      "priorityExpiryDate": "20270414",
+      "priorityRegistrationDate": "20200109",
+      "priorityRegistrationNumber": "016610768"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20260729",
+      "descriptionText": "REGISTERED - PARTIAL SEC. 8 (6-YR) ACCEPTED"
+    },
+    "applicants": [
+      {
+        "applicantAddress": "EINDHOVEN, NL-5656AG, NETH",
+        "applicantAddressCity": "EINDHOVEN",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantAddressPostalCode": "NL-5656AG",
+        "applicantJurisdictionOfIncorporation": "NETHERLANDS",
+        "applicantName": "NXP B.V.",
+        "applicantSecondaryAddressUnit": "High Tech Campus 60"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 [ Apparatus for recording, transmission or reproduction of sound or images; recorded magnetic data carriers, blank magnetic data carriers; data processing equipment; microprocessors; interfaces for computers; semiconductors; ] integrated circuits; chips, being integrated circuits; encoded smart cards containing programming used for security purposes for identification, for logistic control, for automatic billing and automated conducting of financial transactions, for detecting counterfeit products and for access control; smart card integrated circuits; RFID chips and tags; computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; encoded contactless smart cards containing programming used for security purposes for identification, for logistic control, for automatic billing and automated conducting of financial transactions, for detecting counterfeit products and for access control; encoded dual interface smart cards containing programming used for security purposes for identification, for logistic control, for automatic billing and automated conducting of financial transactions, for detecting counterfeit products and for access control; [ dual interface integrated circuits that provide a link between contactless cards and contact cards; writers and readers for wireless transmission to and from transponder chips; electronic apparatus for writing and reading of wireless transmission to and from transponder chips; computer programs for controlling transmission of data to and reading of data from transponder chips; data processing machines for fare determination using transponder chips; encoded smart cards; ] electronic access cards; electronic wristbands, namely, electronic readers/recorders for authenticating identity, controlling access to functions, managing events, ticketing, promoting brand loyalty, promoting brands, cashless vending, transportation and membership identification; [ computer hardware, software and peripheral devices used for access control and authentication purposes; computer software and hardware for testing integrated circuits, computer chips, semiconductors, semiconductor power elements; wearable activity trackers; wearable computer peripherals; headphones; earbuds; smartphones; hardware and computer hardware, software and peripheral devices used for access control and authentication purposes ]"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 [ Research and design for others in relation to integrated circuits and communications software and networks; computer software development in the field of mobile applications; consulting in the field of telecommunications technology; design and development of wireless communications systems for transmission and reception of voice, data and video; design and development of wireless communications systems for authentication purposes; providing temporary use of online non-downloadable software applications, development platforms, and development tools that enable software developers to develop, program, build, and prototype software for integrated circuits, chips and data processing equipment; computer programming services; research and design of electro technical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits, chips, semiconductors, smart cards, controllers for smart cards, controllers for RFID chips and tags; research and design of computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; research and design of antennas for scanning, reading and interpreting RFID chips and tags; research and design of NFC apparatus, instruments and equipment, namely, electronic, electro technical and electromagnetic modules, parts and building elements and integrated circuits for NFC applications; advisory services in relation to all the above ]"
+        }
+      ]
+    },
+    "id": "b3b4bea6-7fc5-4a15-939a-ec33e6186ada",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260729",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20260729",
+        "descriptionText": "REGISTERED - PARTIAL SEC. 8 (6-YR) ACCEPTED"
+      },
+      {
+        "date": "20260729",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 - E-MAILED"
+      },
+      {
+        "date": "20260527",
+        "descriptionText": "TEAS SECTION 8 RECEIVED"
+      },
+      {
+        "date": "20250811",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20200811",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20200526",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20200526",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20200506",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20200417",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20200416",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20200416",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20200414",
+        "descriptionText": "TEAS RESPONSE TO SUSPENSION INQUIRY RECEIVED"
+      },
+      {
+        "date": "20200323",
+        "descriptionText": "SUSPENSION INQUIRY WRITTEN"
+      },
+      {
+        "date": "20200323",
+        "descriptionText": "INQUIRY TO SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20200323",
+        "descriptionText": "NOTIFICATION OF INQUIRY AS TO SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20190923",
+        "descriptionText": "SUSPENSION LETTER  WRITTEN"
+      },
+      {
+        "date": "20190923",
+        "descriptionText": "LETTER OF SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20190923",
+        "descriptionText": "NOTIFICATION OF LETTER OF SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20190903",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20190903",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20190830",
+        "descriptionText": "TEAS RESPONSE TO SUSPENSION INQUIRY RECEIVED"
+      },
+      {
+        "date": "20190821",
+        "descriptionText": "SUSPENSION INQUIRY WRITTEN"
+      },
+      {
+        "date": "20190821",
+        "descriptionText": "INQUIRY TO SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20190821",
+        "descriptionText": "NOTIFICATION OF INQUIRY AS TO SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20190219",
+        "descriptionText": "SUSPENSION LETTER  WRITTEN"
+      },
+      {
+        "date": "20190219",
+        "descriptionText": "LETTER OF SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20190219",
+        "descriptionText": "NOTIFICATION OF LETTER OF SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20190215",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20190215",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20190212",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20190207",
+        "descriptionText": "TEAS RESPONSE TO SUSPENSION INQUIRY RECEIVED"
+      },
+      {
+        "date": "20181109",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20180817",
+        "descriptionText": "SUSPENSION INQUIRY WRITTEN"
+      },
+      {
+        "date": "20180817",
+        "descriptionText": "INQUIRY TO SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20180817",
+        "descriptionText": "NOTIFICATION OF INQUIRY AS TO SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20180212",
+        "descriptionText": "SUSPENSION LETTER  WRITTEN"
+      },
+      {
+        "date": "20180212",
+        "descriptionText": "LETTER OF SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20180212",
+        "descriptionText": "NOTIFICATION OF LETTER OF SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20180208",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20180208",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20180207",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20180130",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20170803",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20170803",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20170803",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20170801",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20170525",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20170508",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "EINDHOVEN, NL-5656AG, NETH",
+        "city": "EINDHOVEN",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "name": "NXP B.V.",
+        "postalCode": "NL-5656AG",
+        "secondaryAddressUnit": "High Tech Campus 60"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "EINDHOVEN, NL-5656AG, NETH",
+        "city": "EINDHOVEN",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "name": "NXP B.V.",
+        "postalCode": "NL-5656AG",
+        "secondaryAddressUnit": "High Tech Campus 60"
+      },
+      {
+        "address": "EINDHOVEN, NL-5656AG, NETH",
+        "city": "EINDHOVEN",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "name": "NXP B.V.",
+        "postalCode": "NL-5656AG",
+        "secondaryAddressUnit": "High Tech Campus 60"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "EINDHOVEN, NL-5656AG, NETH",
+        "city": "EINDHOVEN",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "name": "NXP B.V.",
+        "postalCode": "NL-5656AG",
+        "secondaryAddressUnit": "High Tech Campus 60"
+      }
+    ],
+    "priorities": [
+      {
+        "priorityCountryCode": "PIEU",
+        "priorityCountryName": "European Union",
+        "priorityExpiryDate": "20270414",
+        "priorityRegistrationDate": "20200109",
+        "priorityRegistrationNumber": "016610768"
+      }
+    ],
+    "recordLastUpdated": "20260819",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "PALO ALTO, CA 94306, United States",
+        "representativeCorrespondentAddressLines": [
+          "PALO ALTO, CA 94306",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Cynthia R. Adwere LAW OFFICE OF CYNTHIA R. ADWERE, 2625 MIDDLEFIELD ROAD #360"
+      }
+    ],
+    "representatives": [
+      {
+        "domesticRepresentativeName": "Cynthia R. Adwere",
+        "representativeAddress": "PALO ALTO, CA 94306, United States",
+        "representativeAddressLines": [
+          "PALO ALTO, CA 94306",
+          "United States"
+        ]
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170504",
+        "applicationNumber": "87437491"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "ipOffice": {
+        "markOfficialStatus": "PARTIAL SECTION 8 ACCEPTED",
+        "markOfficialStatusCode": "704",
+        "markOfficialStatusComments": [
+          "CANCELLED  SECTION 8 IN INT. CL. 42. JUL 29, 2026"
+        ],
+        "markOfficialStatusDate": "20260729",
+        "markOfficialStatusEvents": [
+          "Section 44(e) Filed",
+          "Section 44(e) Currently"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20200526"
+      ],
+      "registration": {
+        "registrationDate": "20200811",
+        "registrationNumber": "6121566"
+      }
+    },
+    "version": "20260819131506",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "MF 1",
+      "markVerbalElementText": "MF1"
+    }
+  },
+  "_uri": "/mark/us/b3b4bea6-7fc5-4a15-939a-ec33e6186ada",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.729Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

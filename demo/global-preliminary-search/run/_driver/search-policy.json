@@ -16,8 +16,8 @@
   "caseLaw": false,
   "recipeScope": null,
   "deliveryRoute": null,
-  "enqueuedVia": "cli/enqueue",
-  "enqueuedBy": null,
+  "enqueuedVia": "mcp/start_run",
+  "enqueuedBy": "e2e-capella",
   "parentRunId": null,
-  "frozenAt": "2026-09-02T14:15:33.804Z"
+  "frozenAt": "2026-09-18T12:35:08.518Z"
 }

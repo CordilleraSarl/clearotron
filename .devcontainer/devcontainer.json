@@ -1,11 +1,11 @@
 {
   "name": "Trademark clearance engine",
   "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
-  "postCreateCommand": "npm install",
-  "forwardPorts": [18802, 18900],
+  "postCreateCommand": "npm install && npm run build:ui",
+  "forwardPorts": [18802, 18860],
   "portsAttributes": {
     "18802": { "label": "portal (npm start)" },
-    "18900": { "label": "demo report (npm run example)" }
+    "18860": { "label": "demo portal (npx clearotron demo)" }
   },
   "remoteUser": "node"
 }

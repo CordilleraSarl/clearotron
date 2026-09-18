@@ -482,7 +482,7 @@ function print(id, ref, run, s, delta, refPath) {
   console.log(`           ${ref.source}`);
   console.log(`run:       ${run.dir}`);
   // — THE FIRST THING A READER SEES, and it is not a bucket. Owner's rule, 2026-08-25: a refusal
-  // after model work is never reported as a pass. Five R2 rounds in seven days refused at the verdict
+  // after model work is never reported as a pass. Five test runs in seven days refused at the verdict
   // stage having written a full narrative and every report card; scored, they print recall figures that
   // describe prose nobody signed. So the delivery answer leads, and a run that did not deliver is named
   // a FAILED ORDER in the words a reader already uses for one.

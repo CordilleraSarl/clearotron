@@ -1,0 +1,125 @@
+{
+  "uri": "/mark/sg/cc8aaf0c-6fa3-44c4-acb7-622169a869bd",
+  "provider": "clarivate",
+  "office": "sg",
+  "guid": "cc8aaf0c-6fa3-44c4-acb7-622169a869bd",
+  "applicationNumber": "T0409610D",
+  "registrationNumber": null,
+  "applicationDate": "2004-06-15",
+  "registrationDate": null,
+  "expiryDate": "2033-12-30",
+  "renewalDate": null,
+  "lastPublicationDate": "2004-12-10",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "freescale",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Licensing of technology;licensing of patents, trademarks, copyrights, trade secrets and/or know-how related to the manufacture of semiconductors and their uses;licensing semiconductors;licensing of software related to the manufacture of semiconductors and their uses;licensing of technology related to semiconductors and the manufacture of semiconductors;licensing technology incorporated in and related to semiconductor products, integrated circuits, circuit boards, microcomputers, micro controllers, microprocessors and computer peripherals, memories and semiconductor material therefore, data conversion circuits, computer firmware, electronic, electrical and electromechanical apparatus for use with computers, video circuit boards, video systems products, apparatus and equipment for recordation, reproduction and alteration of sound, video and data, computer programs, instuctional material relating to computer and data algorithms for the compression and decompression of data;custom design of computer and telecommunications systems;consulting services in the field of computers and related technology for software design",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "DREW & NAPIER LLC",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20031230"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West, Austin, Texas 78735, United States of America. DE",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA INC."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Licensing of technology;licensing of patents, trademarks, copyrights, trade secrets and/or know-how related to the manufacture of semiconductors and their uses;licensing semiconductors;licensing of software related to the manufacture of semiconductors and their uses;licensing of technology related to semiconductors and the manufacture of semiconductors;licensing technology incorporated in and related to semiconductor products, integrated circuits, circuit boards, microcomputers, micro controllers, microprocessors and computer peripherals, memories and semiconductor material therefore, data conversion circuits, computer firmware, electronic, electrical and electromechanical apparatus for use with computers, video circuit boards, video systems products, apparatus and equipment for recordation, reproduction and alteration of sound, video and data, computer programs, instuctional material relating to computer and data algorithms for the compression and decompression of data;custom design of computer and telecommunications systems;consulting services in the field of computers and related technology for software design"
+        }
+      ]
+    },
+    "id": "cc8aaf0c-6fa3-44c4-acb7-622169a869bd",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20031230"
+      }
+    ],
+    "recordLastUpdated": "20250704",
+    "registrationOfficeCode": "SG",
+    "registrationOfficeName": "Singapore",
+    "representatives": [
+      {
+        "representativeAddress": "10 COLLYER QUAY, #10-01 OCEAN FINANCIAL CENTRE SINGAPORE 049315",
+        "representativeAddressCountryCode": "SG",
+        "representativeAddressCountryName": "Singapore",
+        "representativeName": "DREW & NAPIER LLC"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20040615",
+        "applicationNumber": "T0409610D"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20331230",
+      "lastPublicationDate": "20041210",
+      "markCurrentStatus": "REGISTERED"
+    },
+    "version": "20250704171622",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "freescale"
+    }
+  },
+  "_uri": "/mark/sg/cc8aaf0c-6fa3-44c4-acb7-622169a869bd",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.735Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

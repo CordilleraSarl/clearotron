@@ -1,0 +1,117 @@
+{
+  "uri": "/mark/se/2671373a-dde5-4286-96ab-33c41837548b",
+  "provider": "clarivate",
+  "office": "se",
+  "guid": "2671373a-dde5-4286-96ab-33c41837548b",
+  "applicationNumber": "2019/05639",
+  "registrationNumber": "604216",
+  "applicationDate": "2019-09-09",
+  "registrationDate": "2019-10-10",
+  "expiryDate": "2029-09-09",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Briab Bimfire Tools",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "sv",
+      "description": "Programvara för brandskydd.",
+      "translation_language": "en",
+      "translation": "Software for fire protection."
+    }
+  ],
+  "owner": "Symetri AB",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": "Groth & Co Kommanditbolag",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Box 771 781 27 Borlänge",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantName": "Symetri AB"
+      }
+    ],
+    "applicationLanguageCode": "sw",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Software for fire protection.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sv",
+          "intGoodsServicesDescription": "Programvara för brandskydd."
+        }
+      ]
+    },
+    "id": "2671373a-dde5-4286-96ab-33c41837548b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250707",
+    "registrationOfficeCode": "SE",
+    "registrationOfficeName": "Sweden",
+    "representatives": [
+      {
+        "representativeAddress": "Box 6107 102 32 Stockholm",
+        "representativeAddressCountryCode": "SE",
+        "representativeAddressCountryName": "Sweden",
+        "representativeName": "Groth & Co Kommanditbolag"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190909",
+        "applicationNumber": "2019/05639"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290909",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20191010",
+        "registrationNumber": "604216"
+      }
+    },
+    "version": "20250707122112",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Briab Bimfire Tools"
+    }
+  },
+  "_uri": "/mark/se/2671373a-dde5-4286-96ab-33c41837548b",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.289Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

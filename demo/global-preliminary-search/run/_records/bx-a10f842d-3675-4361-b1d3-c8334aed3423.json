@@ -1,0 +1,128 @@
+{
+  "uri": "/mark/bx/a10f842d-3675-4361-b1d3-c8334aed3423",
+  "provider": "clarivate",
+  "office": "bx",
+  "guid": "a10f842d-3675-4361-b1d3-c8334aed3423",
+  "applicationNumber": "1143695",
+  "registrationNumber": "R 833744",
+  "applicationDate": "2007-09-25",
+  "registrationDate": "2008-02-07",
+  "expiryDate": "2027-09-25",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-05-17",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "JCOP",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    37,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9,
+        37,
+        42
+      ],
+      "language": "nl",
+      "description": "Kl 09 Software; besturingssystemen voor gebruik in relatie met NFC (Near Field Communications) technologie, RFID (Radio Frequency Identification) technologie en smart card technologie; elektronische, elektrotechnische and elektromagnetische modules, onderdelen en bouwelementen; interfaces [informatica]: geïntegreerde schakelingen (ic's), halfgeleiders en halfgeleiderelementen; chips [geïntegreerde schakelingen]; software, smart cards, controleapparaten of - instrumenten voor smart cards, controleapparaten of -instrumenten voor RFID (Radio Frequency Identification) chips en tags; computer hardware and software voor de creatie, programmering, controle, codering, scanning, lezing en interpretatie van RFID (Radio Frequency Identification) chips en tags; elektronische apparatuur en instrumenten voor creatie, programmering, controle, codering, scanning, lezing en interpretatie van RFID (Radio Frequency Identification) chips en tags; antennes voor scanning, lezing en interpretatie van RFID chips en tags; elektronische, elektrotechnische and elektromagnetische modules, onderdelen en bouwelementen en geïntegreerde schakelingen voor NFC toepassingen: onderdelen van bovengenoemde waren. Kl 37 Installatie, onderhoud en reparatie (montage) van hardware ten behoeve van de in klasse 9 genoemde waren. Kl 42 Installatie, onderhoud en updating van software ten behoeve van de in klasse 9 genoemde waren.",
+      "translation_language": "en",
+      "translation": "Kl 09 Software; operating systems for use in relation to NFC (Near Field Communications) technology, RFID (Radio Frequency Identification) technology and smart card technology; electronic, electrotechnical and electromagnetic modules, components and elements; interfaces [computer science]: integrated circuits (ICs), semiconductors and semiconductor devices; chips [integrated circuits]; software, smart cards, control apparatus or instruments for smart cards, control apparatus or instruments for RFID (Radio Frequency Identification) chips and tags; computer hardware and software for the creation, programming, control, coding, scanning, reading and interpretation of RFID (Radio Frequency Identification) chips and tags; electronic apparatus and instruments for the creation, programming, control, coding, scanning, reading and interpretation of RFID (Radio Frequency Identification) chips and tags; antennas for scanning, reading and interpretation of RFID chips and tags; electronic, electrotechnical and electromagnetic modules, components and elements and integrated circuits for NFC applications: parts of the above-mentioned goods. Cl 37 Installation, maintenance and repair (assembly) of hardware for the goods mentioned in class 9. Cl 42 Installation, maintenance and updating of software for the goods mentioned in class 9."
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO Shieldmark B.V.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60, 5656 AG Eindhoven",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "nl",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Kl 09 Software; operating systems for use in relation to NFC (Near Field Communications) technology, RFID (Radio Frequency Identification) technology and smart card technology; electronic, electrotechnical and electromagnetic modules, components and elements; interfaces [computer science]: integrated circuits (ICs), semiconductors and semiconductor devices; chips [integrated circuits]; software, smart cards, control apparatus or instruments for smart cards, control apparatus or instruments for RFID (Radio Frequency Identification) chips and tags; computer hardware and software for the creation, programming, control, coding, scanning, reading and interpretation of RFID (Radio Frequency Identification) chips and tags; electronic apparatus and instruments for the creation, programming, control, coding, scanning, reading and interpretation of RFID (Radio Frequency Identification) chips and tags; antennas for scanning, reading and interpretation of RFID chips and tags; electronic, electrotechnical and electromagnetic modules, components and elements and integrated circuits for NFC applications: parts of the above-mentioned goods. Cl 37 Installation, maintenance and repair (assembly) of hardware for the goods mentioned in class 9. Cl 42 Installation, maintenance and updating of software for the goods mentioned in class 9.",
+          "intClassNumber": "09,37,42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Kl 09 Software; besturingssystemen voor gebruik in relatie met NFC (Near Field Communications) technologie, RFID (Radio Frequency Identification) technologie en smart card technologie; elektronische, elektrotechnische and elektromagnetische modules, onderdelen en bouwelementen; interfaces [informatica]: geïntegreerde schakelingen (ic's), halfgeleiders en halfgeleiderelementen; chips [geïntegreerde schakelingen]; software, smart cards, controleapparaten of - instrumenten voor smart cards, controleapparaten of -instrumenten voor RFID (Radio Frequency Identification) chips en tags; computer hardware and software voor de creatie, programmering, controle, codering, scanning, lezing en interpretatie van RFID (Radio Frequency Identification) chips en tags; elektronische apparatuur en instrumenten voor creatie, programmering, controle, codering, scanning, lezing en interpretatie van RFID (Radio Frequency Identification) chips en tags; antennes voor scanning, lezing en interpretatie van RFID chips en tags; elektronische, elektrotechnische and elektromagnetische modules, onderdelen en bouwelementen en geïntegreerde schakelingen voor NFC toepassingen: onderdelen van bovengenoemde waren. Kl 37 Installatie, onderhoud en reparatie (montage) van hardware ten behoeve van de in klasse 9 genoemde waren. Kl 42 Installatie, onderhoud en updating van software ten behoeve van de in klasse 9 genoemde waren."
+        }
+      ]
+    },
+    "id": "a10f842d-3675-4361-b1d3-c8334aed3423",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "0517"
+      }
+    ],
+    "recordLastUpdated": "20250623",
+    "registrationOfficeCode": "BX",
+    "registrationOfficeName": "Benelux",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices Anna van Buerenplein 21 A, 2595 DA Den Haag",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO Shieldmark B.V."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20070925",
+        "applicationNumber": "1143695"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270925",
+      "lastPublicationDate": "20170517",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20080207",
+        "registrationNumber": "R 833744"
+      },
+      "renewalPublishedDate": "20170517"
+    },
+    "version": "20250623180316",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JCOP"
+    }
+  },
+  "_uri": "/mark/bx/a10f842d-3675-4361-b1d3-c8334aed3423",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.615Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}
