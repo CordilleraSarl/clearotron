@@ -740,3 +740,35 @@ test("the counts panel's scrollbar is drawn, and the two scrollbar instructions 
   assert.match(html.slice(html.indexOf("@supports not selector(::-webkit-scrollbar)")).slice(0, 200), /scrollbar-width/,
     "the support block does not carry the standard property it exists for");
 });
+
+// ── THE KNOCKOUT BOARD'S SECTION STRIP ─────────────────────────────────────────────────────────────
+//
+// The approved knockout board draws a four-entry strip and this renderer drew none — the same divergence
+// the clearance kinds carried, one file over. Its third entry reads "Also considered" and resolves at the
+// filings section, which is what that section is; the board's entries are its own and the rule that
+// filters them against the finished document is shared with the clearance renderer.
+test("the knockout draws its board's strip, and never names an anchor the document does not carry", async () => {
+  const doc = await run({
+    marks: [{ name: "IRONWHISK", classes: [8] }],
+    counter: async () => ({ ok: true, total: 3 }),
+  });
+  const findings = {
+    marks: [{
+      name: "IRONWHISK", rating: "Medium", bullets: ["An active seller in the same goods space."],
+      registerEstimate: "moderate filings expected", purpleNotes: [], findings: [],
+    }],
+  };
+  const fw = { bands: [{ label: "High", tone: "high" }, { label: "Medium", tone: "medium" }, { label: "Low", tone: "low" }] };
+  const html = renderKnockoutHtml(findings, fw, { runId: "r", overall: "Medium", registerCounts: doc });
+
+  const nav = html.match(/<nav class="strip[^>]*>([\s\S]*?)<\/nav>/);
+  assert.ok(nav, "the approved board's strip is not drawn at all");
+  const entries = [...nav[1].matchAll(/href="#([^"]+)"[^>]*>(?:<i><\/i>)?([^<]+)</g)].map((m) => [m[1], m[2]]);
+  assert.ok(entries.length >= 2, `a strip of ${entries.length} entry is a control that does nothing`);
+  for (const [id] of entries) assert.ok(html.includes(`id="${id}"`), `the strip points at #${id} and nothing carries that id`);
+  // THE BOARD'S OWN ORDER AND ITS OWN LABELS, so a renamed entry or a reordered one is caught here and
+  // not in a whole-document read weeks later.
+  assert.deepEqual(entries.filter(([id]) => ["summary", "findings"].includes(id)),
+    [["summary", "Summary"], ["findings", "Findings"]], "the two entries every knockout draws are not the board's");
+  assert.equal((nav[1].match(/class="now"/g) ?? []).length, 1, "the leading entry is not marked current, or more than one is");
+});

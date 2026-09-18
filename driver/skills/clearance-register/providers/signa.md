@@ -125,8 +125,8 @@ difference is not a margin. On the same term:
 
 | request | national | regional | madrid |
 |---|---|---|---|
-| `filters.offices: ["inpi-fr"]` | 6898 | 0 | 0 |
-| `filters.jurisdictions: ["FR"]`, protection | 6898 | 10000+ | 2708 |
+| `filters.offices: ["inpi-fr"]` | yes | **none** | **none** |
+| `filters.jurisdictions: ["FR"]`, protection | yes | yes | yes |
 
 **So an EU trade mark that blocks use in France is now found**, and it never appears in the French
 register. Every covered territory reaches its Madrid layer this way and the EU members additionally reach
@@ -154,10 +154,10 @@ French national marks. On the same term:
 
 | what the executor sends | national | regional | Madrid |
 |---|---|---|---|
-| `filters.offices: ["inpi-fr"]` (the shape this doc used to describe) | 6898 | 0 | 0 |
-| `filters.jurisdictions: ["FR"]`, `territory_match: "protection"` | 6898 | 10000+ | 2708 |
+| `filters.offices: ["inpi-fr"]` (the shape this doc used to describe) | yes | **none** | **none** |
+| `filters.jurisdictions: ["FR"]`, `territory_match: "protection"` | yes | yes | yes |
 
-It is ONE call, not three. A territory under no regional register — Switzerland — returns regional 0 either
+It is ONE call, not three. A territory under no regional register — Switzerland — gains no regional rows either
 way and still reaches its Madrid layer, which is what shows `protection` adds a LAYER rather than just more
 rows.
 

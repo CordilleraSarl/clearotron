@@ -83,3 +83,7 @@ their problem.
 `enforcement.md` lists the classes a CI check refuses in a diff. Tone is not one of them, and no word
 list will ever catch it: a reviewer reads the rendered page as someone who has never seen this product,
 against `writing-rules.md`, and asks what they would think each sentence means.
+
+A stylesheet that is inlined into a delivered document is delivered with it, comments included — the
+reader receives the file, so a class name in a CSS comment is engineering vocabulary on a page they can
+open, exactly as it would be in prose.
