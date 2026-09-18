@@ -280,6 +280,12 @@ jobs:
             echo '::error::no shard reported which roster the identifier sweep ran against. The arm prints its mode only once it holds the corpus, so an absent line means it did not sweep — not that it swept and found nothing.'
             exit 1
           }
+          # AND NEVER THE OTHER MODE. The real roster is private and never meant to reach this runner; a
+          # table line here is not a stronger check, it is the roster printed into a public log.
+          if grep -rqF '[repo-guard] blocklist mode=table' logs; then
+            echo '::error::a shard read the private roster: the identifier sweep reported mode=table on a public runner, so the roster was loaded into a public log.'
+            exit 1
+          fi
           echo "the corpus guards reported ok across the shards, none skipped, and the identifier sweep named its mode."
 
   checks:

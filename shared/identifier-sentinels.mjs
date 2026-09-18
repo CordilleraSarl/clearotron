@@ -47,3 +47,10 @@ export const SUFFIXABLE = new Set(["Brindlow"]);
  * exists to catch — the guard stopping and every run staying green.
  */
 export const SENTINEL_MODE_MARKER = "[repo-guard] blocklist mode=sentinel";
+
+/**
+ * The line the sweep prints when it read a REAL roster instead. That roster is private and never
+ * reaches this repository's runners by design, so on a public run the line does not mean a stronger
+ * check: it means the roster was loaded into a public log. The workflow refuses it.
+ */
+export const TABLE_MODE_MARKER = "[repo-guard] blocklist mode=table";

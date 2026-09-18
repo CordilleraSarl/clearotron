@@ -9,11 +9,13 @@
 // empty, whose glob broke, or whose regex stopped matching.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { scanCorpus, firesOn } from "../../shared/identifier-scan.mjs";
-import { SENTINELS, SUFFIXABLE, SENTINEL_MODE_MARKER } from "../../shared/identifier-sentinels.mjs";
+import { SENTINELS, SUFFIXABLE, SENTINEL_MODE_MARKER, TABLE_MODE_MARKER } from "../../shared/identifier-sentinels.mjs";
 import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
 
 const GUARD = "identifier sweep (synthetic sentinels)";
@@ -131,4 +133,34 @@ test("the workflow demands the mode line, so the sweep cannot stop running unnot
   const demanded = ci.split("\n").some((l) => /grep\s+-[a-zA-Z]*q/.test(l) && l.includes(SENTINEL_MODE_MARKER));
   assert.ok(demanded,
     "the mode line appears in the workflow but nothing requires it — a mention is not an assertion");
+});
+
+// THE OTHER DIRECTION. Requiring the sentinel line is satisfied forever by a run that prints it, so the
+// workflow must also refuse the table line: on a public runner that line means the private roster was
+// loaded into a public log. Driven, not read: the step's own script runs over logs holding each line.
+test("the workflow refuses a table-mode line, and passes a sentinel-only run", () => {
+  const ci = readFileSync(join(ROOT, ".github", "workflows", "ci.yml"), "utf8");
+  const at = ci.indexOf(`grep -rqF '${SENTINEL_MODE_MARKER}' logs`);
+  assert.ok(at >= 0, "the step reading the mode line was not found — this arm could not look");
+  const from = ci.lastIndexOf("run: |", at);
+  const body = ci.slice(from + "run: |".length).split("\n").slice(1);
+  const lines = [];
+  for (const l of body) { if (l.trim() && !l.startsWith("          ")) break; lines.push(l.slice(10)); }
+  const script = lines.join("\n");
+  assert.ok(script.includes(TABLE_MODE_MARKER), "the step does not name the table-mode line");
+  const drive = (logLine) => {
+    const dir = mkdtempSync(join(tmpdir(), "mode-step-"));
+    try {
+      // The layout the artifact download leaves: one directory per shard, each holding its suite.log, and
+      // every marker the step also reads, so only the mode line differs between the two drives.
+      for (const [i, n] of ["1", "2", "3", "4"].entries()) {
+        mkdirSync(join(dir, "logs", `suite-log-${n}`), { recursive: true });
+        writeFileSync(join(dir, "logs", `suite-log-${n}`, "suite.log"),
+          (i === 0 ? ["[repo-guard] ok", SENTINEL_MODE_MARKER, logLine] : ["[repo-guard] ok"]).join("\n"));
+      }
+      return spawnSync("bash", ["-c", script], { cwd: dir, encoding: "utf8" }).status;
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  };
+  assert.equal(drive(""), 0, "a run that swept on sentinels only was refused");
+  assert.equal(drive(`${TABLE_MODE_MARKER}: 12 sentinel + 40 roster name(s)`), 1, "a run that read the private roster passed");
 });

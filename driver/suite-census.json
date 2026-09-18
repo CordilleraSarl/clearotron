@@ -4888,8 +4888,8 @@
           "todos": 0
         },
         "the-identifier-sweep-fires-on-its-sentinels.test.mjs": {
-          "tests": 7,
-          "asserts": 17,
+          "tests": 8,
+          "asserts": 21,
           "skips": 1,
           "todos": 0
         },
