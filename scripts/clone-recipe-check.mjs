@@ -25,6 +25,7 @@ import { homedir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawn, spawnSync } from "node:child_process";
+import { reapOnExit } from "../shared/reap-on-exit.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const keep = process.argv.includes("--keep");
@@ -97,6 +98,7 @@ console.log(`\n$ ${demoCmd}`);
 // and was still serving thirty seconds later with its folder in place. Measured: the same SIGINT sent to
 // the demo's own launcher stopped all four of its processes and removed the folder in six seconds.
 const child = spawn("sh", ["-c", `exec ${demoCmd}`], { cwd: tree, env, stdio: ["ignore", "inherit", "inherit"], detached: true });
+reapOnExit(child);   // the group dies with this script on every path, including one nobody wrote a branch for
 let exited = null;
 child.on("exit", (code, signal) => { exited = { code, signal }; });
 const groupAlive = () => { try { process.kill(-child.pid, 0); return true; } catch { return false; } };

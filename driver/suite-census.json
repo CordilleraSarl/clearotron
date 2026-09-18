@@ -4782,7 +4782,7 @@
         "the-demo-is-its-own-install.test.mjs": {
           "tests": 8,
           "asserts": 62,
-          "skips": 0,
+          "skips": 2,
           "todos": 0
         },
         "the-demo-links-its-reports-to-its-own-portal.test.mjs": {

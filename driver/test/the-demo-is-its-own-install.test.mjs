@@ -293,8 +293,18 @@ const installState = (home) => ({
   install: tree(join(home, "trademark")), credential: tree(join(home, ".cordillera")), settings: tree(join(home, ".config", "clearotron")),
 });
 
+// THE DEMO IN A CLONE NEEDS THE BUILT PORTAL, and these two boot the real one through `clearotron demo`.
+// Without the bundle it stops before starting anything and names the build command — the right answer for
+// a reader, and one these arms cannot measure past. The offline shards install without building; the
+// clone-recipe job builds the bundle as the README says and runs this whole suite after it, so both arms
+// run in full there. Skipped by name here, never passed on an early return.
+const BUNDLE = join(REPO, "portal-ui", "dist", "index.html");
+const NEEDS_BUNDLE = "needs the built portal bundle (npm run build:ui): in a clone the demo refuses without one; "
+  + "the clone-recipe job builds it and runs this in full";
+
 test("the demo, booted beside a real install, lists Demo Brand Owner and Generic, and leaves the install as it found it",
-  { timeout: 360000 }, async () => {
+  { timeout: 360000 }, async (t) => {
+    if (!existsSync(BUNDLE)) return t.skip(NEEDS_BUNDLE);
     const home = mkdtempSync(join(tmpdir(), "demo-beside-"));
     let run = null;
     let ports = [];
@@ -382,7 +392,8 @@ test("the demo, booted beside a real install, lists Demo Brand Owner and Generic
 // ── 5. THE OTHER ORDER ──────────────────────────────────────────────────────────────────────────────
 
 test("a demo first, then a real start in the same home: the real install carries nothing of the demo",
-  { timeout: 360000 }, async () => {
+  { timeout: 360000 }, async (t) => {
+    if (!existsSync(BUNDLE)) return t.skip(NEEDS_BUNDLE);
     const home = mkdtempSync(join(tmpdir(), "demo-first-"));
     let run = null;
     let ports = [];
