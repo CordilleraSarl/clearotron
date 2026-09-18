@@ -624,12 +624,12 @@ a bespoke risk framework. A job resolves to a profile by the **forwarder's email
 matches, the neutral Generic default applies.
 
 - **Bundled with the package** (`driver/profiles/`): `generic.json` (the Generic default) and
-  `demo-brand-owner.json`, the account the demo runs as, so you can run and read the machinery
+  `demo-brand-owner.json`, the company the demo runs as, so you can run and read the machinery
   immediately. `driver/profiles/README.md` documents every field. (A clone of the repository carries
   three more, marked `testFixture` in their own files: the test suite reads them, no install offers
   them, and they are excluded from the published package as well.)
 - **Your real companies live outside the repo.** Point `CLEAROTRON_CUSTOMERS_DIR` at your own private
-  config store and the engine loads *those* accounts instead. **Same engine, different config path** —
+  config store and the engine loads *those* companies instead. **Same engine, different config path** —
   the code carries no company identities.
 
   Two things go with it, and both are refusals rather than preferences:
@@ -661,7 +661,7 @@ self-contained.
 A company is not only its `<key>.json`. Two more things sit beside it, both optional, both shipped as
 working examples in `driver/profiles/`:
 
-- **A context pack** — `<key>.context.md`, a sibling of the profile. Free prose about the account that
+- **A context pack** — `<key>.context.md`, a sibling of the profile. Free prose about the company that
   the engine attaches to the profile it loads. One ships beside a bundled demo company.
 - **Project overlays** — `projects/<customer-key>/<slug>.json`. A project is one engagement under a
   company: a launch screening, a flagship clearance, a regional push. Each may carry its own
@@ -689,7 +689,7 @@ overlay stating `defaultClasses` narrows to exactly what it states.
 
 **Setting `CLEAROTRON_CUSTOMERS_DIR` replaces the whole tree, projects included.** The engine reads your
 store's companies and your store's `projects/`, and none of ours. That is deliberate — a deployment's
-roster holds its own accounts and nothing of ours — but it is silent, and it is the one thing here that
+roster holds its own companies and nothing of ours — but it is silent, and it is the one thing here that
 becomes an incident on a real deployment rather than a bundled one:
 
 - A job naming a project your store does not carry is **not refused**. The `projectKey` is dropped and

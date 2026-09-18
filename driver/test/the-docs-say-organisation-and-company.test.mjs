@@ -34,15 +34,16 @@ const WORDS = ["account", "customer", "client", "tenant", "brand", "firm", "matt
 const WORD = new RegExp(`\\b(?:${WORDS.join("|")})(?:s|'s|s'|’s)?\\b`, "gi");
 
 /**
- * The corpus: the README a stranger lands on, every document under docs/, and the three root documents
- * beside them — CONTRIBUTING.md, SECURITY.md and AGENTS.md.
+ * The corpus: the README a stranger lands on, every document under docs/, and the four root documents
+ * beside them — CONTRIBUTING.md, SECURITY.md, AGENTS.md and INSTALL.md, which the README's first
+ * section links to.
  *
  * CHANGELOG.md IS EXCLUDED, DELIBERATELY AND BY NAME. It is generated from release notes and is history:
  * a note said what it said on the day it was cut, and rewriting one to today's vocabulary would make the
  * file a record of what somebody typed rather than of what shipped. Excluding it is a decision, so it is
  * written here rather than left to the absence of a pattern that happens not to match it.
  */
-const ROOT_DOCS = ["CONTRIBUTING.md", "SECURITY.md", "AGENTS.md"];
+const ROOT_DOCS = ["CONTRIBUTING.md", "SECURITY.md", "AGENTS.md", "INSTALL.md"];
 const EXCLUDED = { "CHANGELOG.md": "generated from release notes, and history is not rewritten" };
 const inCorpus = (f) => (f === "README.md" || ROOT_DOCS.includes(f) || /^docs\/.+\.md$/.test(f))
   && !Object.hasOwn(EXCLUDED, f);
@@ -251,6 +252,68 @@ const EXCEPTIONS = [
     files: /^CONTRIBUTING\.md$/,
     reason: "an account with a model vendor, which a green test run is explaining that it does not need, "
       + "and the idiom for contributing in a personal capacity rather than an employer's; " + ORG_OR_COMPANY,
+  },
+  // ── THE INSTALL GUIDE ─────────────────────────────────────────────────────────────────────────
+  //
+  // Its client/customer/brand/tenant uses were ruled one by one on 2026-09-17 and swept; "account" where
+  // it meant the company became "company" under the same vocabulary. What stayed is below, each group
+  // with the reason it was kept.
+  {
+    phrases: [
+      /\bClaude\s+client\b/gi,
+      /\bclients\s+that\s+cannot\s+do\s+OAuth\b/gi,
+      /\bclients\s+on\s+your\s+own\b/gi,
+      /\bdynamic\s+client\s+registration\b/gi,
+      /\bOAuth\s+client\b/gi,
+      /\bclient\s+surface\b/gi,
+      /\bclient\/staff\s+boundary\b/gi,
+      /\bclient-scoped\b/gi,
+    ],
+    files: /^INSTALL\.md$/,
+    reason: "other people's software (a Claude client, an OAuth client), protocol terms, and the product's "
+      + "own names for the client door and its key, one of them quoted from a refusal the product prints; "
+      + "kept on the owner's ruling of 2026-09-17",
+  },
+  {
+    phrases: [/\ba\s+firm,/gi, /\ba\s+brand\s+team\b/gi, /\bcalls\s+it\s+\*\*brand\s+owner\*\*/gi, /\bunder\s+your\s+own\s+brand\b/gi],
+    files: /^INSTALL\.md$/,
+    reason: "kinds of team an organisation might be, the command line's own word for a company, and an "
+      + "installation's brand, which is a setting; kept on the owner's ruling of 2026-09-17",
+  },
+  {
+    phrases: [
+      /\bcloud\s+account\b/gi,
+      /\bBedrock\s+account\b/gi,
+      /\bids\s+your\s+account\s+offers\b/gi,
+      /\bon\s+your\s+account\b/gi,
+      /\blocal-account\s+form\b/gi,
+      /\ban\s+account\s+with\s+no\s+runs\b/gi,
+    ],
+    files: /^INSTALL\.md$/,
+    reason: "an account a reader pays through or signs in with — at a cloud provider, a model vendor, or "
+      + "the install's own sign-in — never the company a clearance is for; " + ORG_OR_COMPANY,
+  },
+  {
+    phrases: [/\baccount\s+key\b/gi, /\bACCOUNT\s+keys\b/gi, /\baccount-capped\b/gi, /\baccount\s+scoping\b/gi, /\baccount\s+list\b/gi],
+    files: /^INSTALL\.md$/,
+    reason: "the keys and grants the command line issues, which carry `account` as their key and their "
+      + "`--accounts` flag, and a refusal the product prints in the same words; renamed in prose alone they "
+      + "would describe keys that do not exist",
+  },
+  {
+    phrases: [
+      /\bthe\s+minor\s+matters\b/gi,
+      /\bwhere\s+this\s+matters\b/gi,
+      /§13\s+matters\b/gi,
+      /\bin\s+a\s+matter\b/gi,
+      /\ba\s+real\s+matter\b/gi,
+      /\bhave\s+a\s+matter\b/gi,
+      /\bsends\s+the\s+matter\b/gi,
+      /\bfirst\s+live\s+matter\b/gi,
+    ],
+    files: /^INSTALL\.md$/,
+    reason: "the verb, and the engine's own name for its unit of work — one clearance request for one "
+      + "mark; " + ORG_OR_COMPANY,
   },
   {
     phrases: [/\bfalse\s+public\s+claim\s+about\s+named\s+firms\b/gi],
