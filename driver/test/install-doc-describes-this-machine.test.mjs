@@ -93,7 +93,9 @@ test("INSTALL.md's ingress advice comes AFTER what the surface serves, not befor
 // and not a rewrite.
 test("the port variables are named BEFORE the first `clearotron start`, not only after it", () => {
   const s = read("INSTALL.md");
-  const firstStart = s.indexOf("npx clearotron start\n```");
+  // The installed launcher's form: after install, every documented command runs through the
+  // `clearotron` the install placed, not a fresh `npx` that may resolve another channel.
+  const firstStart = s.indexOf("\nclearotron start\n```");
   assert.ok(firstStart > 0, "the first bare start command must exist in §6");
   const before = s.slice(0, firstStart);
   for (const name of ["PORTAL_SERVICE_PORT", "TRADEMARK_MCP_HTTP_PORT"]) {

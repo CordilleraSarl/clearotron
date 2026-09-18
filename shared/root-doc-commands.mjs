@@ -20,7 +20,8 @@
 // A bare `clearotron <command>` is command-not-found (exit 127, measured on a real clone) unless the
 // document has already put the binary on `PATH`. Two ways it can have done that:
 //
-//   · an `npm install -g clearotron` line ABOVE the site — line-based, because a reader executing a
+//   · an install line ABOVE the site — `npm install -g clearotron`, or `npx clearotron install` (either
+//     channel), which places the command in `~/.local/bin` — line-based, because a reader executing a
 //     quickstart top to bottom has not run a later line yet;
 //   · the paragraph is ABOUT the `PATH` shim `clearotron install` writes, where the short form is the
 //     thing being explained and `npx` would make the document contradict itself.
@@ -32,8 +33,13 @@
 export const BARE = /(?<!npx )\bclearotron (?=[a-z])/;
 /** The form that works from a fresh clone, and the anti-vacuity signal that the scan is reading. */
 export const NPX = /npx clearotron [a-z]/g;
-/** The line that puts the binary on `PATH` for everything below it. */
-export const GLOBAL_INSTALL = /npm install -g clearotron/;
+/**
+ * The line that puts the binary on `PATH` for everything below it. `npx clearotron install` counts as well
+ * as npm's global form: after it, every documented command uses the launcher it installed rather than a
+ * fresh `npx`, which resolves whichever channel npm picks at that moment — the stable, for a reader who
+ * installed the beta (owner ruling, 2026-09-18).
+ */
+export const GLOBAL_INSTALL = /npm install -g clearotron|npx clearotron(?:@[\w.-]+)? install\b/;
 /** The paragraph that is ABOUT the shim, where the short form is the point. */
 export const SHIM_PARAGRAPH = /short form|on your `PATH`|stop typing/;
 
@@ -81,5 +87,5 @@ export function unreachableBareSites(docs) {
 export function sentenceFor(s) {
   return `${s.file}:${s.line} uses the bare \`clearotron\` form with nothing above it that put the binary `
     + "on `PATH`. For a reader who cloned, that is command-not-found (exit 127, measured) — either write "
-    + "it as `npx clearotron`, or give the document an `npm install -g clearotron` line before this point.";
+    + "it as `npx clearotron`, or give the document an install line before this point.";
 }

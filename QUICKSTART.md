@@ -39,10 +39,11 @@ Then carry on below. [INSTALL.md](INSTALL.md) §1 has the exact version floor an
 
 ```bash
 npx clearotron install  # offers to install the reasoning program if the machine has none, and shows you how to sign it in
-npx clearotron doctor --probe-engine
+clearotron doctor --probe-engine
 ```
 
-`install` puts the program under `~/.local` and needs no root. Installing with npm's own global form
+`install` puts the program under `~/.local` and needs no root, and every command after it here uses the
+`clearotron` it installed. If `~/.local/bin` is not on your `PATH` yet, type `~/.local/bin/clearotron`. Installing with npm's own global form
 instead is covered in [INSTALL.md](INSTALL.md) §2.
 
 `doctor` is the one to read. It checks that the reasoning program is there, on `PATH` or as the copy
@@ -67,7 +68,7 @@ Write `job.json`:
 ```
 
 ```bash
-npx clearotron run --job job.json
+clearotron run --job job.json
 ```
 
 **Name `product`.** It orders a knockout search: the cheapest of the four and the fastest way to
