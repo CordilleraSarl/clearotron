@@ -13247,18 +13247,18 @@ async function pipelineInner(job, opts = {}) {
       // lawyer-judged/disclosed residue only.
       if (coverageInsufficient || frameResidual || screenGateGap || seniorGap || registerGap || deadlineGap) {
         // THESE SENTENCES REACH A CLIENT AND THEY ARE NOT OURS TO WRITE (owner, 2026-09-17). One of
-        // them — the screen-gate line, which says a mark "could not be record_fetched" — carries an
+        // them — the screen-gate line, which says a mark "could not be record_fetched" — carried an
         // engine identifier into the list a client reads as the conditions on their result, by a route
-        // `terminalClampDecision` guards and this one does not. A reader's sentence for it was written
-        // here and refused: the objection was the class, not the wording. It is on the owner's design
-        // table as audit item 25, and until he rules, this stays exactly as it was rather than carrying
-        // a caveat a developer composed.
+        // `terminalClampDecision` guards and this one did not. A reader's sentence for it was written
+        // here and refused: the objection was the class, not the wording. RULED 2026-09-18, design item
+        // 25 — cut the clause: it stays in the run record and leaves the client's result entirely, with
+        // NOTHING written in its place. That is what the `null` clause below means.
         const reasons = [], clauseOf = new Map();   // run-record reason → the client's clause: the same words, with any engine token taken out
         const machinery = (reason, clause = reason) => { reasons.push(reason); clauseOf.set(reason, clause); };
         if (coverageInsufficient) machinery(`the lawyer judged a material slice not fully cleared: ${coverageJudgment.reason || "register coverage gap"}`);
         if (frameGap) machinery("the blind frame-diff flagged a dominant-element omission the reopen pass did not close");
         else if (frameDeferrals.length) machinery(`follow-ups left open this run: ${frameDeferrals.map((d) => plainDirective(d.directive)).slice(0, 3).join(", ")}`);
-        if (screenGateGap) machinery(`${sgUnresolved.length} in-scope mark(s) dropped on goods could not be record_fetched (unverified): ${sgUnresolved.map((g) => g.mark).join(", ")}`);
+        if (screenGateGap) machinery(`${sgUnresolved.length} in-scope mark(s) dropped on goods could not be record_fetched (unverified): ${sgUnresolved.map((g) => g.mark).join(", ")}`, null);   // run record ONLY: no client clause (ruled 2026-09-18)
         if (seniorGap) machinery(`the oldest registration in a verdict-driving family could not be retrieved (policy: clamp): ${(ctx.seniorRights?.rows ?? []).filter((r) => r.applicable && !r.verified).map((r) => r.mark).join(", ")}`);
         if (registerGap) {
           for (const { reason, clause } of registerGapConditions(regGap)) machinery(reason, clause);
@@ -13294,7 +13294,7 @@ async function pipelineInner(job, opts = {}) {
         // APPEND (dedup by exact text) — the legalActions arm may already have recorded conditions,
         // and this callable runs more than once (degenerate re-ask, lint repair, post-consolidation).
         const freshMachinery = reasons.filter((r) => !clampReasons.includes(r));
-        clampClauses.push(...freshMachinery.map((r) => clauseOf.get(r) ?? r));   // machinery reasons ARE factual open-states — the clause is the reason, less any engine token
+        clampClauses.push(...freshMachinery.map((r) => (clauseOf.has(r) ? clauseOf.get(r) : r)));   // the clause is the reason less any engine token; null = the run record's alone
         clampReasons.push(...freshMachinery);
         // The reason KINDS distinguish coverage/frame/screen-gate/senior-right/register residue for the
         // report bound line and the client conditions row (merged — legalActions survives).
