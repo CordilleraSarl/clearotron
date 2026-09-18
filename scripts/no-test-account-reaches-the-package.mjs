@@ -43,7 +43,7 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { execFileSync } from "node:child_process";
-import { TEST_ACCOUNT_NAMES, ALLOWED_CONTEXTS } from "./test-account-names.mjs";
+import { TEST_ACCOUNT_NAMES, ALLOWED_CONTEXTS, ALLOWED_WORD_LISTS } from "./test-account-names.mjs";
 
 export const EXIT_CLEAN = 0, EXIT_FOUND = 1, EXIT_COULD_NOT_LOOK = 2;
 
@@ -70,14 +70,19 @@ export function namesFor(list) {
  * identifier is the same disclosure as the capitalised one — measured: most of the leak was lowercase,
  * in paths and identifiers rather than prose.
  */
-export function scanEntries(entries, names, allowed = ALLOWED_CONTEXTS) {
+export function scanEntries(entries, names, allowed = ALLOWED_CONTEXTS, wordLists = ALLOWED_WORD_LISTS) {
   const res = names.map((n) => ({ n, re: new RegExp(`\\b${n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i") }));
   const ctx = (allowed ?? []).map((s) => String(s).toLowerCase());
   // AN EXEMPTION KEYED ON WHAT THE LINE SAYS, NOT ON WHERE IT SITS. Exempting the file would clear every
   // other line in it, so a genuine leak into the same file would ride out behind a legitimate one.
   const exempt = (line) => ctx.some((c) => String(line).toLowerCase().includes(c));
+  // A WORD LIST THE PACKAGE SHIPS, WHERE THE LINE IS THE WORD AND NOTHING ELSE. Scoped to the named
+  // files, and only to a line that is exactly the name: a name with any other text beside it, in the
+  // same file, is a hit as before.
+  const lists = (wordLists ?? []).map((s) => String(s));
   const hits = [];
   for (const { path, text } of entries ?? []) {
+    const isWordList = lists.some((l) => path === l || path.endsWith(`/${l}`));
     // THE MANIFEST NAMES WHAT IT EXCLUDES, AND THAT IS NOT A MENTION. `package.json`'s `files[]` carries
     // `"!driver/profiles/<name>.json"` lines whose whole job is to keep those files out of the package.
     // Reading them as occurrences makes the gate refuse the very rule that removes them. Scoped to
@@ -89,6 +94,7 @@ export function scanEntries(entries, names, allowed = ALLOWED_CONTEXTS) {
       if (re.test(path)) { hits.push({ name: n, path, line: 0, text: "(in the path itself)" }); continue; }
       for (let i = 0; i < lines.length; i++) {
         if (!re.test(lines[i]) || exempt(lines[i])) continue;
+        if (isWordList && lines[i].trim().toLowerCase() === n.toLowerCase()) continue;
         hits.push({ name: n, path, line: i + 1, text: lines[i].trim().slice(0, 100) });
         break;
       }

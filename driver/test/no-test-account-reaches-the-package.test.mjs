@@ -13,7 +13,12 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { namesFor, scanEntries, fixtureFilesIn, missingFrom, MUST_SHIP } from "../../scripts/no-test-account-reaches-the-package.mjs";
-import { TEST_ACCOUNT_NAMES, ALLOWED_CONTEXTS } from "../../scripts/test-account-names.mjs";
+import { existsSync } from "node:fs";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+import { TEST_ACCOUNT_NAMES, ALLOWED_CONTEXTS, ALLOWED_WORD_LISTS } from "../../scripts/test-account-names.mjs";
+
+const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 
 test("a name in a member's TEXT is found, wherever in the tree it sits", () => {
   const hits = scanEntries([{ path: "docs/E2E.md", text: "the run for Vantablack Corp is the example" }], ["Vantablack"]);
@@ -90,6 +95,31 @@ test("the exemption clears the LINE and not the FILE", () => {
   const hits = scanEntries(entries, ["zephyr"], ALLOWED_CONTEXTS);
   assert.equal(hits.length, 1, "the second line is an account name and must still refuse");
   assert.equal(hits[0].line, 2);
+});
+
+test("the shipped word list may carry the bare word, and only as the whole line", () => {
+  // The engine ships an English word list to keep the form floor off one-letter neighbours that are
+  // ordinary words, and one of the three names is one of those words. Measured 2026-09-18 on the beta it
+  // first shipped in: this gate refused the packed bytes on that single line, at the last step of the
+  // publish job — where a refusal strands a cut whose version is already stamped.
+  const path = "package/driver/wordlists/en.txt";
+  assert.deepEqual(scanEntries([{ path, text: "zephon\nzephyr\nzephyrs\n" }], ["zephyr"], ALLOWED_CONTEXTS, ALLOWED_WORD_LISTS), [],
+    "the word list may list the word");
+
+  // AND THE HALF THAT KEEPS IT HONEST, twice over: a name with anything else beside it in the same file
+  // is a leak, and the same bare line anywhere else is not a word list.
+  const leak = scanEntries([{ path, text: "zephyr\naccount: zephyr\n" }], ["zephyr"], ALLOWED_CONTEXTS, ALLOWED_WORD_LISTS);
+  assert.equal(leak.length, 1, "a name written into the word list beside other text must still refuse");
+  assert.equal(leak[0].line, 2);
+  assert.equal(scanEntries([{ path: "package/driver/profiles/accounts.txt", text: "zephyr\n" }], ["zephyr"], ALLOWED_CONTEXTS, ALLOWED_WORD_LISTS).length, 1,
+    "a bare name in a file that is not a word list is still a hit");
+});
+
+test("the word lists the exemption names are files the package actually ships", () => {
+  // A list naming a path that no longer exists is an exemption nobody can see expire.
+  for (const l of ALLOWED_WORD_LISTS) {
+    assert.ok(existsSync(join(ROOT, l)), `${l} is exempted as a shipped word list and is not in the tree`);
+  }
 });
 
 test("a FIXTURE FILE is refused even when nothing in it writes an account name", () => {

@@ -2968,8 +2968,8 @@
           "todos": 0
         },
         "no-test-account-reaches-the-package.test.mjs": {
-          "tests": 15,
-          "asserts": 26,
+          "tests": 17,
+          "asserts": 31,
           "skips": 0,
           "todos": 0
         },

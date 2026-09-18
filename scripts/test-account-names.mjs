@@ -32,3 +32,19 @@ export const TEST_ACCOUNT_NAMES = Object.freeze(["aurora", "petcary", "zephyr"])
 // genuine leak into register data would ride out with it. A line matching one of these strings is
 // exempt; the same name anywhere else in the same file is still a refusal.
 export const ALLOWED_CONTEXTS = Object.freeze(["zephyr [cloth]"]);
+
+// ── AND ONE PLACE WHERE THE BARE WORD IS THE POINT ───────────────────────────────────────────────
+//
+// The engine ships an English word list, `driver/wordlists/en.txt`: 63,906 ordinary words, one per line,
+// and `zephyr` is one of them. It is what stops the form floor searching one-letter neighbours that are
+// ordinary words with a different sound, so it has to reach an install — excluding it from `files[]`
+// would take the behaviour out with it. Measured 2026-09-18, on the beta it first shipped in: this check
+// refused the packed bytes on that one line, at the last step of the publish job, where a refusal
+// strands a cut whose version is already stamped.
+//
+// A LINE THAT IS EXACTLY THE NAME, IN ONE OF THESE FILES, IS THE FILE LISTING THE WORD. Anything else on
+// the line is still a refusal, so a leak written into the same file — a name with any other text beside
+// it — is caught as before. The list's bytes are pinned by sha256 elsewhere in the tree, so it cannot
+// drift into cover for anything. `aurora` and `petcary` are not in it, and neither is invented cover:
+// the exemption is per line, not per file.
+export const ALLOWED_WORD_LISTS = Object.freeze(["driver/wordlists/en.txt"]);
