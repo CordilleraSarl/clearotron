@@ -361,13 +361,18 @@ test("the demo, booted beside a real install, lists Demo Brand Owner and Generic
       assert.ok(JSON.parse(readFileSync(demoPaths.grants, "utf8")).tenants["demo-org"].accounts.includes(key),
         "the new company was not filed under the demo's organisation");
 
+      // READ WHILE THE DEMO IS UP. It removes its folder when it stops, as the README says it does, so the
+      // archive it seeded is only there to look at before the stop.
+      assert.ok(readdirSync(demoPaths.pool).some((d) => existsSync(join(demoPaths.pool, d, "meta.json"))),
+        "anti-vacuity: the demo seeded its example reports, into its own archive");
+
       await stop(run, ports);
       run = null;
       const after = installState(home);
       for (const part of ["install", "credential", "settings"])
         assert.deepEqual(moved(before[part], after[part]), [], `the demo changed the real install's ${part}`);
-      assert.ok(readdirSync(demoPaths.pool).some((d) => existsSync(join(demoPaths.pool, d, "meta.json"))),
-        "anti-vacuity: the demo seeded its example reports, into its own archive");
+      assert.ok(!existsSync(join(home, "trademark-demo")),
+        "the demo left its folder behind — started with no flags, it removes what it made when it stops");
     } finally {
       if (run) await stop(run, ports).catch(() => {});
       rmSync(home, { recursive: true, force: true });

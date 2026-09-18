@@ -10,6 +10,7 @@
 //   npx clearotron demo --port 9000        serve on another port (the demo opens three doors:
 //                                          9000, 9001 and 9002)
 //   npx clearotron demo --no-open          do not try to open a browser
+//   npx clearotron demo --keep             keep the demo's folder and its reports when the window closes
 //   npm run example -- --once              publish and exit; do not open the portal
 //   npm run example -- --once --pool <dir> publish somewhere else; only valid with --once
 //
@@ -52,6 +53,7 @@ import { ensureDemoProgram, demoProgramEnv } from "../shared/permanent-install.m
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 import { usageBlock } from "../shared/usage-block.mjs";
+import { demoStartArgs } from "../shared/demo-start-args.mjs";
 const argv = process.argv.slice(2);
 const flag = (n, d = null) => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : d; };
 const has = (n) => argv.includes(n);
@@ -375,11 +377,12 @@ function strayFromAnOlderDemo() {
 // control greyed with the reason at it. Re-implementing that here is how there came to be two portals
 // in the first place, so this hands over rather than copies. The dev cockpit keeps its job as a
 // contributor tool; it simply stops being what `demo` opens.
-const startArgs = ["--demo", "--base", demoBase];
-if (flag("--port")) startArgs.push("--port", flag("--port"));
-if (has("--no-open")) startArgs.push("--no-open");
+const startArgs = demoStartArgs({ demoBase, readerBase: flag("--base") != null, keep: has("--keep"),
+  port: flag("--port"), noOpen: has("--no-open") });
 
-console.log(`  Removing this demo later is one directory:  ${removeDirectory(demoBase)}`);
+// ONLY WHEN THE FOLDER WILL OUTLIVE THE WINDOW. The demo removes what it made when it stops, and the
+// supervisor's banner says so; printing a removal command here as well told the reader the opposite.
+if (flag("--base") != null || has("--keep")) console.log(`  Removing this demo later is one directory:  ${removeDirectory(demoBase)}`);
 strayFromAnOlderDemo();
 console.log("");
 

@@ -1051,6 +1051,17 @@ if (isMain) {
   // which `startPaths` says why. One author, because `doctor` asks the same function what the services
   // were handed.
   const paths = startPaths({ env: process.env, base: flag("--base", join(homedir(), DEMO ? "trademark-demo" : "trademark")), demo: DEMO });
+  // WHETHER THE READER CHOSE THIS BASE, which is not the same question as whether a base was passed.
+  // `clearotron demo` always hands its base over with `--base`, because it lays the program copy and the
+  // samples down there before this starts; so `--base` alone read every demo as a directory the reader
+  // had named, and the cleanup at the end of the run was unreachable from the one command anybody uses.
+  // The launcher says when the base is the demo's own default rather than a choice, and that is honoured
+  // only when the path IS that default, compared whole: a flag cannot make a directory the reader named
+  // into one the demo may remove.
+  const READER_BASE = demoBaseIsTheReaders({
+    baseGiven: BASE_GIVEN, ownBase: argv.includes("--demo-own-base"),
+    base: resolve(paths.base), demoDefault: resolve(join(homedir(), "trademark-demo")),
+  });
   // ── NOTHING OF THE DEMO LANDS IN AN INSTALL, AND THAT IS CHECKED BEFORE ANYTHING IS WRITTEN ───────
   //
   // The demo keeps its signing secret in its base and `key issue --base` reads it from there, so a demo
@@ -2258,7 +2269,7 @@ if (isMain) {
     // The same rails as the reset at the top of the run, plus one more: the demo only removes a base it
     // MADE this run. A reader who asked for a directory of their own keeps it — they named it, so it is
     // theirs — and `--keep` is for the reader who wants the reports to outlive the window.
-    if (DEMO && !BASE_GIVEN && !DEMO_KEEP) {
+    if (DEMO && !READER_BASE && !DEMO_KEEP) {
       try {
         rmSync(paths.base, { recursive: true, force: true });
         say(`\n  The demo removed everything it created: ${paths.base} is gone, and nothing of it is left on this machine.`);
@@ -2558,7 +2569,7 @@ if (isMain) {
   // cannot succeed and given a service manager that is not on the machine and cannot be put there.
   // Reported from a real run. Same rule as the engine refusal above: do not name a route this platform
   // does not have.
-  for (const line of backgroundOfferLines({ demo: DEMO, keep: DEMO_KEEP || BASE_GIVEN, manager: backgroundManager(), start: invoke("start") })) say(line);
+  for (const line of backgroundOfferLines({ demo: DEMO, keep: DEMO_KEEP || READER_BASE, manager: backgroundManager(), start: invoke("start") })) say(line);
   say("");
 }
 
@@ -2576,6 +2587,23 @@ if (isMain) {
  * instead. Separated from the call site so the rule can be driven as a table rather than by starting a
  * product, and because a rule this consequential should be readable in one screen. PURE.
  */
+/**
+ * Did the READER choose the demo's base? Decides whether the demo takes its folder with it on a stop.
+ *
+ * `--base` alone cannot answer it. The demo launcher passes `--base` on every run, because it lays the
+ * program copy and the samples down there first, so reading `--base` as "the reader named it" made every
+ * demo keep its folder — while the README and the banner both said it would go. `--demo-own-base` is the
+ * launcher saying the base is the demo's default and not a choice.
+ *
+ * THE FLAG IS BELIEVED ONLY FOR THE DEFAULT PATH. A directory the reader named is theirs and nothing in a
+ * demo may remove it, so a base anywhere else stays the reader's whatever the flag says — compared whole,
+ * never by prefix, as the reset below is. PURE.
+ */
+export function demoBaseIsTheReaders({ baseGiven = false, ownBase = false, base = "", demoDefault = "" } = {}) {
+  if (!baseGiven) return false;                                          // start chose it: the demo's own
+  return !(ownBase && base && demoDefault && base === demoDefault);      // handed over, and it IS the default
+}
+
 export function demoBaseResetTarget({ baseGiven = false, base = "", demoDefault = "" } = {}) {
   if (baseGiven) return null;                      // the reader chose it, so it is not the demo's to clear
   if (!base || !demoDefault) return null;          // nothing to compare: say no
