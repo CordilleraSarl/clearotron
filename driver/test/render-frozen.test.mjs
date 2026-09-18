@@ -1784,7 +1784,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // branch in one file, and the provenance line re-homed to the footer. Not licence-only, so this moves too.
 // Advanced again by the break recorded above the FROZEN constant: the export menu moved out to its own
 // module. Not licence-only, so this constant moves with it.
-const FROZEN_BEFORE_SPDX = "9f8be1b597abd30f093044ddff8fe13f1dc6e328740b89e4e34281e659306a44";
+const FROZEN_BEFORE_SPDX = "e622eb062bf7285aa15fb6a5cbdb2b33b4bc8f88a58ab78b7045d523d7f6e026";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2461,7 +2461,34 @@ const FROZEN_BEFORE_SPDX = "9f8be1b597abd30f093044ddff8fe13f1dc6e328740b89e4e342
 // Could it live in report.css or brand.mjs? No — it is a row in a table this file builds, from a field
 // of the run's own record.
 
-const FROZEN = "54ee9ac517dedd6ca450d2d20f054a2391248f2f402aee9ac3c9d333368500d2";
+// ── BREAK (2026-09-18 — the section is headed the word the approved board heads it with) ──────────
+//
+// WHAT MOVED. One section's heading and its id: `What only you can close` → `What happens next`, and
+// `id="only-you"` → `id="next"`. Nothing else. The bucket it draws, what goes in it and where it sits in
+// the reading order are untouched.
+//
+// WHY. A whole-document read of two delivered clearance reports against the approved boards found this
+// heading diverging on both kinds, from two matters on two registers — so it is the renderer and not one
+// product's content. The board's own markup for that section, comment included, is byte-for-byte what the
+// renderer carries; the renderer kept the COMMENT'S words as the heading. The comment in render.mjs still
+// reads `WHAT ONLY YOU CAN CLOSE` because the board's does, verbatim.
+//
+// THE THREE QUESTIONS.
+//   1. Reachable from republish? Yes — a republish re-renders the document and the heading moves with it.
+//      This needs no new data and no re-run.
+//   2. Could it live in report.css or brand.mjs? No. It is a heading a client reads — copy, not styling —
+//      and CSS cannot change the words in an `<h2>` or the id a link resolves to.
+//   3. Why it had to move here: the heading is composed in this file and nowhere else. The id moves with
+//      it because the board draws `id="next"` for this section, and nothing keys on the old value — the
+//      only other mention is an example in a comment in portal-report.mjs, corrected in the same commit.
+//
+// The knockout renderer has always drawn `What happens next` for its own equivalent section, so this
+// leaves the two renderers agreeing with the boards and with each other rather than only with the boards.
+//
+// NOT IN THIS BREAK, and measured on beta-9 specimens rather than assumed: the board also draws a
+// five-entry navigation bar and a `<span class="num">` on every section, and the renderer draws neither,
+// on all three kinds. Both are renderer-wide and larger than a heading; they are reported, not built.
+const FROZEN = "e63abc0860e69332cf00294c79ba70b904d0b921de8e2fd781894d1bee7983ae";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

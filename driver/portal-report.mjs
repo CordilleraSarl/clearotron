@@ -595,7 +595,7 @@ const EMBED_JS = `
   // Registered AFTER the document's own script by construction (this block is appended at the end of
   // <body>), so by the time it runs for an '#c<ordinal>' link the ancestors are already open and the
   // measured offset is the revealed position. preventDefault stops the frame's dead-end fragment
-  // navigation for the links the document's handler does not claim (#common-law, #only-you).
+  // navigation for the links the document's handler does not claim (#common-law, #next).
   // AND WHEN THERE IS NO PARENT, DO NOT CANCEL THE CLICK.
   //
   // Everything above is right INSIDE the portal's Result screen. Un-framed it is a dead link: parent is

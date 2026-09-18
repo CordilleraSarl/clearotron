@@ -1266,7 +1266,7 @@ test("wp50: the # Actions panel renders — Answers first, buckets styled, ::p::
   assert.match(internal, /Answers to your instructions/, "the Q&A section reaches the report");
   assert.match(internal, /bad or unpleasant meaning/, "ask 1 rides through");
   assert.match(internal, /not descriptive/, "ask 2 rides through");
-  assert.match(internal, /What only you can close/, "doc-52 — the human-only bucket renders under its own section after the findings");
+  assert.match(internal, /What happens next/, "doc-52 — the human-only bucket renders under its own section after the findings, headed as the board heads it");
   assert.match(internal, /Confirm whether the identical senior mark/, "the only-you forward decision rides through");
   // doc-52 — the Q&A leads (verdict block, top); "Checks we ran" moves to the collapsed Scope section (bottom)
   assert.ok(internal.indexOf("Answers to your instructions") < internal.indexOf("Checks we ran"), "Q&A (verdict block) precedes Checks-we-ran (Scope)");
@@ -1302,14 +1302,14 @@ test("doc-52: reading order + plain banner (from only-you) + ruled-out routing +
   const opts = { runId: "d52", verdictInfo: vi, coverageJudgment: { reason: "the exact-compound slice is unadjudicable" } };
   const html = renderHtml(parsedOf(md), F, COV, opts);
   const client = renderHtml(parsedOf(md), F, COV, { ...opts, client: true });
-  // reading order: verdict (mark) → conflicts → What only you can close → Scope
+  // reading order: verdict (mark) → conflicts → What happens next → Scope
   const iVerdict = html.indexOf('class="mark"'), iConf = html.indexOf("<h2>Conflicts</h2>");
-  const iYou = html.indexOf("What only you can close"), iScope = html.indexOf('<details class="searched">');
+  const iYou = html.indexOf("What happens next"), iScope = html.indexOf('<details class="searched">');
   assert.ok(iVerdict >= 0 && iVerdict < iConf && iConf < iYou && iYou < iScope, "verdict → conflicts → only-you → what was searched");
   // the lawyer's Q&A leads in the verdict block, before the conflicts
   assert.ok(html.indexOf("Answers to your instructions") >= 0 && html.indexOf("Answers to your instructions") < iConf, "Q&A in the verdict block");
   // B1 (spec 2026-07-30 §4) — the "Subject to:" bound line is DELETED (a third copy of the verdict's
-  // conditions); the conditions live in "What only you can close" and the verdict statement. The
+  // conditions); the conditions live in "What happens next" and the verdict statement. The
   // engine clamp reason still never renders anywhere.
   assert.doesNotMatch(html, /class="bound"/, "no bound line — deleted, not reformatted");
   // Every condition renders by ruling (2026-09-16); nothing hides behind a count. Giving this site a
@@ -1782,7 +1782,7 @@ test("B1 (spec 2026-07-30 §4): the 'Subject to:' bound line is DELETED — no t
   const vi = { tier: "Manageable", verdict: "CONDITIONAL", badge: "l2", gaugeIndex: 1, band: { label: "Manageable", rankFromTop: 4, scale: 5 } };
   const html = renderHtml(parsedOf(`${REPORT}\n${acts}`), BAND_FINDINGS, [], { client: true, framework: AURORA_MANIFEST, verdictInfo: vi });
   assert.doesNotMatch(html, /class="bound"/, "the bound line is gone on a CONDITIONAL run");
-  assert.match(html, /What only you can close/, "the conditions' one home (the only-you section) still renders");
+  assert.match(html, /What happens next/, "the conditions' one home (the forward-decisions section) still renders");
   // actYouConditions itself STAYS — the email composer builds its conditions list from it (tested below).
 });
 
