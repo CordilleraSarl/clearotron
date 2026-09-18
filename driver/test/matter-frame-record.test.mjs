@@ -383,6 +383,51 @@ const { frameHouseElementCandidate } = await import("../matter-frame-record.mjs"
 const HOUSE = Object.freeze({ element: "NOVAPULSE", remainder: "SOUND OF TOMORROW",
   owner_basis: "the client's own registered house mark, used in the instructed classes" });
 
+// ── AND THE TOOL THE FRAME IS GIVEN OFFERS IT ──────────────────────────────────────────────────────
+//
+// For a beta the acceptor took this field and the plan acted on it, and no frame ever proposed one: the
+// schema a model is SENT did not offer it, so a model following its schema had nothing to fill in.
+// Measured on the published 0.3.2-beta.10 — none of 71 recorded frames carried one. This reads what the
+// model is actually sent, by asking the recording server for its tool list, not what a source file says.
+async function frameToolSchema() {
+  const { spawn } = await import("node:child_process");
+  const server = new URL("../engine/mcp/recording-server.mjs", import.meta.url).pathname;
+  return await new Promise((resolve, reject) => {
+    const child = spawn(process.execPath, [server], { stdio: ["pipe", "pipe", "pipe"] });
+    let buf = "";
+    const timer = setTimeout(() => { child.kill("SIGKILL"); reject(new Error("the recording server did not list its tools")); }, 15000);
+    child.stdout.on("data", (d) => {
+      buf += d;
+      for (const line of buf.split("\n")) {
+        let m; try { m = JSON.parse(line); } catch { continue; }
+        if (m.id !== 2) continue;
+        clearTimeout(timer); child.kill("SIGKILL");
+        resolve((m.result?.tools ?? []).find((t) => t.name === "record_matter_frame")?.inputSchema ?? null);
+      }
+    });
+    child.stdin.write(JSON.stringify({ jsonrpc: "2.0", id: 1, method: "initialize", params: { protocolVersion: "2025-06-18" } }) + "\n");
+    child.stdin.write(JSON.stringify({ jsonrpc: "2.0", id: 2, method: "tools/list" }) + "\n");
+  });
+}
+
+test("the frame tool OFFERS the house-element proposal, and a proposal shaped by that schema alone is accepted", async () => {
+  const schema = await frameToolSchema();
+  assert.ok(schema, "the recording server lists no record_matter_frame — this arm cannot look");
+  const h = schema.properties?.house_element_candidate;
+  assert.ok(h, "record_matter_frame's schema does not offer house_element_candidate, so a model following it never proposes one");
+  assert.deepEqual([...(h.required ?? [])].sort(), ["element", "owner_basis", "remainder"]);
+  assert.deepEqual(Object.keys(h.properties ?? {}).sort(), ["element", "owner_basis", "remainder"],
+    "the schema offers a different shape from the one the acceptor takes");
+  assert.ok(!(schema.required ?? []).includes("house_element_candidate"),
+    "the field is required, so every frame would name a house element — it is sent only when the client owns one");
+  assert.match(h.description, /checked on the register, by owner, before anything is excluded/,
+    "the model is no longer told a proposal is verified before anything is excluded");
+  // THE SCHEMA AND THE ACCEPTOR AGREE: a proposal built from the offered keys and nothing else is taken.
+  const proposal = Object.fromEntries(Object.keys(h.properties).map((k) => [k, HOUSE[k]]));
+  const v = accepted({ house_element_candidate: proposal });
+  assert.deepEqual(v.model.house_element_candidate, HOUSE, "a proposal shaped exactly as the schema offers it was not accepted");
+});
+
 test("the frame PROPOSES a house element, and the document says it is not yet excluded", () => {
   const v = accepted({ house_element_candidate: HOUSE });
   assert.deepEqual(v.model.house_element_candidate, HOUSE);

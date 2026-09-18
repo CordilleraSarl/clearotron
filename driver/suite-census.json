@@ -2878,8 +2878,8 @@
           "todos": 0
         },
         "matter-frame-record.test.mjs": {
-          "tests": 24,
-          "asserts": 81,
+          "tests": 25,
+          "asserts": 88,
           "skips": 0,
           "todos": 0
         },

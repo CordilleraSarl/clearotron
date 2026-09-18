@@ -826,6 +826,26 @@ serve({
             },
           },
         },
+        // OFFERED HERE, OR NEVER SENT. The acceptor took this field for a beta and the plan acted on it,
+        // and no frame ever proposed one, because the schema a model is given did not offer it. Worded as
+        // the owner approved it; it is model-facing prose, so its wording is his.
+        house_element_candidate: {
+          type: "object",
+          description:
+            "Only when an element of the mark is one the CLIENT already owns as a registered mark in the " +
+            "instructed classes (a house mark before a tagline, for instance): name that element, the remainder " +
+            "the analysis should be limited to, and why you read it as the client's own. Ownership is checked " +
+            "on the register, by owner, before anything is excluded; if it cannot be verified, nothing is. Omit " +
+            "the field when no element is the client's own.",
+          required: ["element", "remainder", "owner_basis"],
+          properties: {
+            element: { type: "string", description: "The client's own element, exactly as it appears in the mark." },
+            remainder: { type: "string",
+              description: "The rest of the mark: the part the analysis is limited to. Never empty, never the element itself." },
+            owner_basis: { type: "string",
+              description: "Why you read the element as the client's own — what in the matter says so." },
+          },
+        },
       },
     },
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
