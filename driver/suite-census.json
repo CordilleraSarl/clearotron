@@ -257,7 +257,7 @@
         },
         "a-demo-report-declares-itself.test.mjs": {
           "tests": 5,
-          "asserts": 14,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -3796,8 +3796,8 @@
           "todos": 0
         },
         "render.test.mjs": {
-          "tests": 155,
-          "asserts": 637,
+          "tests": 157,
+          "asserts": 645,
           "skips": 0,
           "todos": 0
         },

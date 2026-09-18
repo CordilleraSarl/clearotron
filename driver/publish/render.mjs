@@ -1104,7 +1104,7 @@ function whereItStandsSection(findings, opts) {
   const cleanHtml = clean.length
     ? `<div class="wclean"><span class="wk">Nothing found</span>${clean.map((c) => `<span class="wchip" title="${escAttr(c.name)}">${esc(clean.length > 12 ? c.code : c.name)}</span>`).join('')}</div>`
     : '';
-  return `<div class="sec" id="countries"><h2>Where it stands</h2></div>
+  return `<div class="sec" id="countries"><span class="num"></span><h2>Where it stands</h2></div>
   <div class="panel where">${rows}${cleanHtml}</div>`;
 }
 
@@ -1127,7 +1127,7 @@ function courtDecisionsSection(opts) {
   else if (state === 'none-found') line = `Court decisions: none found${forWhere}.`;
   else if (state === 'found') line = `Court decisions were searched${forWhere} and are cited against the findings above.`;
   if (!line) return '';
-  return `<div class="sec" id="court"><h2>Court decisions</h2></div>
+  return `<div class="sec" id="court"><span class="num"></span><h2>Court decisions</h2></div>
   <div class="panel courtp"><p>${esc(line)}</p></div>`;
 }
 
@@ -1200,7 +1200,8 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
     ? `<div class="provwrap"><div class="rk">Record provenance</div><p class="provnote">${hasRecordSet ? 'Registration numbers on the cards were read from the register records. ' : ''}${officeLinkNote()}${hasIndexEntry ? 'A registration shown as a register-index entry was seen in the register index; its full record was not pulled. ' : ''}\u201cInferred\u201d beside an owner\u2019s likelihood to object means we judged it from what the owner sells and holds; we had no enforcement history to read.</p></div>`
     : '';
   if (!rows.length && !openHtml && !prov) return '';
-  return `<details class="searched"><summary><span class="gname">What was searched</span><span class="gcount">Counts for this search</span></summary><div class="gbody">${
+  return `<div class="sec" id="searched"><span class="num"></span><h2>What was searched</h2></div>
+  <details class="searched"><summary><span class="gname">Counts for this search</span></summary><div class="gbody">${
     rows.map(([k, v]) => `<div class="row"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`).join('')}${openHtml}${prov}</div></details>`;
 }
 
@@ -1229,7 +1230,7 @@ function alsoConsideredSection(ruledOut, recordsByUri = new Map(), opts = {}) {
   const groups = clearedGroupsHtml(sd, opts.auditFile);
   const web = webNamesHtml(sd);
   if (!ruledCards && !groups && !web) return '';
-  return `<div class="sec" id="also-considered"><h2>Also considered</h2></div>
+  return `<div class="sec" id="also-considered"><span class="num"></span><h2>Also considered</h2></div>
   <div class="panel alsocons">${ruledCards ? `<div class="ruled-cards">${ruledCards}</div>` : ''}${groups || web ? `<div class="cgroups">${groups}${web}</div>` : ''}</div>`;
 }
 
@@ -2206,7 +2207,7 @@ ${EXPORT_MENU_JS}`;
 function markAssessmentBlock(ma) {
   if (ma == null) return '';
   const structured = typeof ma.distinctiveness === 'object' || typeof ma.connotation === 'object';
-  const SEC = `<div class="sec"><h2>The mark itself</h2></div>`;
+  const SEC = `<div class="sec"><span class="num"></span><h2>The mark itself</h2></div>`;
   if (!structured) {
     const dist = String(ma?.distinctiveness ?? '').trim(), conn = String(ma?.connotation ?? '').trim();
     if (!dist && !conn) return '';
@@ -2276,7 +2277,7 @@ function contextNotesList(notes = []) {
 // the findings-section assembly below.
 function contextNotesBlock(notes = []) {
   if (!notes.length) return '';
-  return `<div class="sec"><h2>Famous-mark neighbours noted</h2></div>
+  return `<div class="sec"><span class="num"></span><h2>Famous-mark neighbours noted</h2></div>
   ${contextNotesList(notes)}`;
 }
 
@@ -2409,6 +2410,32 @@ function depthStripHtml(note) {
 }
 
 // Signature: renderHtml(parsed, findings, coverage, opts). ONE render path — there is no client variant.
+/**
+ * THE BOARD'S SECTION STRIP, filtered against the document that was actually drawn.
+ *
+ * Its five entries are the approved mock's own, verbatim. But the mock is a specimen where every section
+ * exists, and this renderer draws three of them conditionally — a report with no ruled-out names has no
+ * "Also considered", one with no forward decisions has no "What happens next", one with nothing to count
+ * has no "What was searched". Emitting the strip whole would point a reader at anchors that resolve to
+ * nothing, which is worse than the missing strip this replaces.
+ *
+ * So the strip is composed here, from the finished html, by asking whether each anchor is IN it. One
+ * author: the document decides, and a section that stops being drawn takes its own entry with it without
+ * anyone remembering to. `now` marks the first surviving entry, as the board marks its first.
+ */
+const STRIP = Object.freeze([
+  ['summary', 'Summary'], ['findings', 'Findings'], ['also-considered', 'Also considered'],
+  ['next', 'Next steps'], ['searched', 'What was searched'],
+]);
+function sectionStrip(html) {
+  const live = STRIP.filter(([id]) => html.includes(`id="${id}"`));
+  // ONE ENTRY IS NOT A NAVIGATION. A strip pointing only at the top of the page is a control that does
+  // nothing, so it is not drawn at all.
+  if (live.length < 2) return '';
+  return `<nav class="strip no-print">${live.map(([id, label], i) =>
+    `<a href="#${id}" data-sec="${id}"${i === 0 ? ' class="now"' : ''}><i></i>${label}</a>`).join('')}</nav>`;
+}
+
 export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   if (findings && !Array.isArray(findings)) { opts = findings; findings = []; coverage = []; }  // tolerate legacy (parsed, opts)
   AS_OF = opts.asOf ?? null;   // C2
@@ -2556,13 +2583,13 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   const hasCL = Boolean(clBody);
   let findingsSections, covNum;
   if (!DISPOSITION_MODE) {
-    findingsSections = `${onField.length ? `<div class="sec"><h2>The conflict landscape</h2></div>
+    findingsSections = `${onField.length ? `<div class="sec" id="findings"><span class="num"></span><h2>The conflict landscape</h2></div>
   <div class="landwrap">${quadrant(sorted)}${keyPanel(sorted, recordsByUri)}</div>
 
-  <div class="sec"><h2>Conflicts</h2></div>
+  <div class="sec"><span class="num"></span><h2>Conflicts</h2></div>
   ${onField.map(f => findingCard(f, cardFor(f), recordsByUri)).join('\n  ')}` : ''}
 
-  ${secReg.length ? `<div class="sec"><h2>Secondary &amp; watch</h2></div>
+  ${secReg.length ? `<div class="sec"><span class="num"></span><h2>Secondary &amp; watch</h2></div>
   ${secondaryRegions(secReg, cardFor, recordsByUri)}` : ''}${hasCL ? `
 
   ${clBody}` : ''}`;
@@ -2571,10 +2598,10 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
     let secNum = 0;
     const num = () => String(++secNum).padStart(2, '0');
     const landscape = onField.length
-      ? `<div class="sec"><h2>The conflict landscape</h2></div>
+      ? `<div class="sec" id="findings"><span class="num"></span><h2>The conflict landscape</h2></div>
   <div class="landwrap">${quadrant(sorted)}${keyPanel(sorted, recordsByUri)}</div>
 
-  <div class="sec"><h2>Conflicts</h2></div>
+  <div class="sec"><span class="num"></span><h2>Conflicts</h2></div>
   ${onField.map(f => findingCard(f, cardFor(f), recordsByUri)).join('\n  ')}`
       : '';
     // THE COMMON-LAW CARDS GO WITH THE CONFLICTS, NOT UNDER THE NEXT HEADING. Appended at the end they
@@ -2601,7 +2628,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
       const notes = contextNotes.length ? `\n  <p class="fold-lead"><b>Famous-mark neighbours.</b> Diligence — no register record; not scored, does not affect the risk read.</p>
   ${contextNotesList(contextNotes)}` : '';
       if (negatives.total || notes) {
-        tail += `\n\n  <div class="sec"><h2>Notable but manageable</h2></div>
+        tail += `\n\n  <div class="sec"><span class="num"></span><h2>Notable but manageable</h2></div>
   ${negatives.total ? reasonedNegatives(negatives.groups, cardFor, recordsByUri) : ''}${notes}`;
       }
     } else if (band2r.length || band3r.length || contextNotes.length) {
@@ -2611,7 +2638,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   ${secondaryRegions(band3r, cardFor, recordsByUri)}`);
       if (contextNotes.length) parts.push(`<p class="fold-lead"><b>Famous-mark neighbours.</b> Diligence — no register record; not scored, does not affect the risk read.</p>
   ${contextNotesList(contextNotes)}`);
-      tail += `\n\n  <div class="sec"><h2>Notable but manageable</h2></div>
+      tail += `\n\n  <div class="sec"><span class="num"></span><h2>Notable but manageable</h2></div>
   ${parts.join('\n  ')}`;
     }
     // The 2026-09-16 report redesign — the section heading and its routing notice go; the CARDS stay, or a
@@ -2641,7 +2668,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   const linkChrome = !!opts.chromeHref;
   const cssInline = REPORT_BASE + '\n' + (linkChrome ? '' : NAV_SHEET) + '\n' + REP_OVERRIDE;
   const chromeLinkTag = linkChrome ? `<link rel="stylesheet" href="${escAttr(opts.chromeHref)}">` : '';
-  return `<!DOCTYPE html>
+  const doc = `<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${productName ? `${esc(productName)} — ` : ''}${esc(fm.title || '')} · ${esc(BRAND.name)}</title>
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
@@ -2682,11 +2709,12 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   </div>
 </div>
 </div>
+<!--SECTION-STRIP-->
 
 <div class="wrap">
   <!-- doc-52 §1 THE VERDICT — the answer leads: mark · band · one plain "subject to" line · the lawyer's
        questions answered · the time-critical alert. Process + coverage detail are below and collapsible. -->
-  <header class="hero">
+  <header class="hero" id="summary">
     ${demoBannerHtml(opts.demoData === true)}
     ${confLineHtml(opts.delivery, productName)}
     <h1 class="mark">${esc(fm.title || '')}</h1>
@@ -2712,7 +2740,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   ${alsoConsideredSection(ruledOut, recordsByUri, opts)}
 
   <!-- doc-52 §3 WHAT ONLY YOU CAN CLOSE — forward decisions, plain English, after the findings. -->
-  ${buckets.you ? `<div class="sec" id="next"><h2>What happens next</h2></div>
+  ${buckets.you ? `<div class="sec" id="next"><span class="num"></span><h2>What happens next</h2></div>
   <div class="panel actions"><div class="actgrp act-you">${renderProse(buckets.you.body)
     .replace(/\[Time-critical\]\s*/gi, '<span class="src cl" style="margin-right:6px">Time-critical</span> ')
     .replace(/\[Open question\]\s*/gi, '<span class="src" style="margin-right:6px">Open question</span> ')
@@ -2784,6 +2812,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
 </div>
 <script>${PAGE_JS}</script>
 </body></html>`;
+  return doc.replace('<!--SECTION-STRIP-->', sectionStrip(doc));
 }
 
 // CLI:  node render.mjs <report.md> [findings.json] [outDir]
