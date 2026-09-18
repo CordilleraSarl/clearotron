@@ -15870,6 +15870,9 @@ export function jobFromStatus(status) {   // @internal
 /** Why a rebuilt job may not stand in for the run's own, or null when it may. PURE. */
 export function resumeJobRefusal(job, slug) {   // @internal
   if (!job) return "this run's status.json carries no id, reference or mark name, so the job it ran cannot be read back from it";
+  // EVERY IDENTIFYING FIELD, OR NO REBUILD: a job missing one is a guess at that field, and a resume must not guess.
+  const missing = [["id", job.id], ["markName", job.markName], ["forwarder", job.forwarder]].filter(([, v]) => !v).map(([k]) => k).concat(Array.isArray(job.classes) ? [] : ["classes"]);
+  if (missing.length) return `this run's status.json carries no ${missing.join(", ")}, so the job it ran cannot be read back whole — pass --job <file.json> rather than resume on a guess`;
   const derived = deriveSlug(job);
   if (derived !== slug)
     return `the job rebuilt from this run's status.json derives ${derived}, and the run directory is ${slug} — `
@@ -16623,7 +16626,7 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   let a;
   try { a = parseArgv(process.argv.slice(2)); }
   catch (e) { console.error(`error: ${e.message}`); console.error(USAGE); process.exit(2); }
-  if (!a.job) { console.error(USAGE); process.exit(2); }
+  if (!a.job && !a.codename) { console.error(USAGE); process.exit(2); }   // --resume alone rebuilds the job below
   // composition guards
   if (a.fromStage && !a.codename) { console.error("error: --from requires --resume <codename>"); process.exit(2); }
   if (a.experiment && !a.codename) { console.error("error: --experiment requires --resume <codename>"); process.exit(2); }

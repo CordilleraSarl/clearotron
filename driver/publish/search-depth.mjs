@@ -146,6 +146,16 @@ export function recordsByCountry(recordFileNames = []) {
   return out;
 }
 
+/** Band record ids → `<office>-<id>` names, one per distinct record, in the archive's own naming. PURE. */
+export function recordNamesFromIds(ids) {
+  const out = new Set();
+  for (const id of ids ?? []) {
+    const m = /^\/mark\/([a-z]{2,4})\/(.+)$/i.exec(String(id ?? ""));
+    if (m) out.add(`${m[1].toLowerCase()}-${m[2]}`);
+  }
+  return [...out];
+}
+
 /** Marketplace, web, reputation and meaning checks, from the deterministic grid the tools wrote. PURE. */
 export function sweepCounts(commonLawGrid, auditMd = "") {
   const cells = Array.isArray(commonLawGrid?.cells) ? commonLawGrid.cells : [];
@@ -201,6 +211,14 @@ export function planTerritoriesOf(plan) {
   // compiler moved OUT of `regions` into the deferral list as though it had been searched.
   const searched = entryRegions.length ? [...new Set(entryRegions.map(String))]
     : [...new Set((Array.isArray(plan.regions) ? plan.regions : []).map(String))];
+  // A WORLDWIDE PLAN THAT NAMES NO REGION CANNOT SAY WHERE IT REACHED. On a provider that takes no region
+  // list, worldwide compiles to queries with no jurisdiction clause at all — the whole database — so the
+  // plan names nothing, and read as "searched these" that is "searched nowhere": the section that says
+  // where a search reached disappeared on exactly the searches that reached furthest. Null is the answer
+  // the plan can actually give, and the page then reads the countries off what the register returned.
+  // Only when nothing was deferred: a worldwide order with deferrals is not an unrestricted sweep.
+  if (plan.scope_basis === "worldwide" && !searched.length
+    && !(Array.isArray(plan.deferred_coverage) && plan.deferred_coverage.length)) return null;
   const unreached = (Array.isArray(plan.deferred_coverage) ? plan.deferred_coverage : [])
     .map((d) => ({ jurisdiction: String(d?.jurisdiction ?? "").trim(), reason: String(d?.reason ?? "").trim() }))
     .filter((d) => d.jurisdiction);
@@ -257,10 +275,16 @@ export function localScriptSearched(registerPlan) {
  *
  * @returns {{schemaVersion: number, cleared: object, counts: object}}
  */
-export function searchDepthRecord({ auditMd = "", recordIndex = {}, recordFileNames = [], commonLawGrid = null, caseLawText = "", registerPlan = null, laneDepthVerdicts = null } = {}) {
+export function searchDepthRecord({ auditMd = "", recordIndex = {}, recordFileNames = [], bandRecordIds = null, commonLawGrid = null, caseLawText = "", registerPlan = null, laneDepthVerdicts = null } = {}) {
   // `recordFileNames: null` travels all the way to the page — see recordsByCountry. The default stays `[]`
   // because that is "the caller said nothing", not "the store is absent"; only the publish path knows the
   // difference and it is the one producer.
+  //
+  // A PROVIDER THAT ARCHIVES NO RECORDS STILL RETURNED THEM. Its search answer is the band, and every
+  // record in it carries its office in its own id (`/mark/<office>/<id>`). So where there is no archive
+  // the band is what was read: counted by record, filed by office. Without it a run that read 785 register
+  // records reported "cannot say" and the report carried no register row and no country at all.
+  if (recordFileNames === null && Array.isArray(bandRecordIds)) recordFileNames = recordNamesFromIds(bandRecordIds);
   const cleared = clearedNames(auditMd, recordIndex);
   const groups = {};
   for (const key of CLEARED_GROUPS) groups[key] = 0;

@@ -16,7 +16,7 @@ import { buildAudit } from './xlsx.mjs';
 import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, joinFindingToBlock, CLIENT_TIER_BY_COMPOSITE, projectCoverageJudgment } from '../findings-model.mjs';
 import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs';   // — and why an absence did not close
 import { clearanceReportData } from './report-data.mjs';
-import { searchDepthRecord, planTerritoriesOf } from './search-depth.mjs';   // how much was read to reach the answer, as counts and tokens
+import { searchDepthRecord, planTerritoriesOf } from './search-depth.mjs'; import { bandRecords } from '../named-band.mjs';   // how much was read to reach the answer, as counts and tokens
 import { parseFrameworkManifest } from '../framework.mjs';
 import { rollupTokens, servedModels } from '../tokens.mjs';
 import { reportIdentityFor, productCoverageNote, isRegisterOnly } from '../search-policy.mjs';
@@ -1195,6 +1195,8 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
       // page says different things about them, so the distinction this line already computes is kept
       // rather than thrown away one character later.
       recordFileNames: existsSync(recDir) ? readdirSync(recDir) : null,
+      // …and where there is no archive, what the register returned: the band's own record ids.
+      bandRecordIds: existsSync(recDir) ? null : (() => { try { const b = rdJson(join(runBase, 'register-named-band.json')); return b ? bandRecords(b).map((r) => r?.record_id).filter(Boolean) : null; } catch { return null; } })(),
       commonLawGrid: rdJson(join(runBase, 'common-law-grid.json')),
       caseLawText: rdText(join(dirname(reportMd), 'case-law-findings.md')),
       registerPlan: rdJson(driverDir(runBase, 'register-plan.json')),

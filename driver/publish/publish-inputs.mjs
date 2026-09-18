@@ -65,6 +65,10 @@ export const PUBLISH_INPUTS = {
   "_driver/register-recall.json": "optional",
   // T6 (D4) — the frozen register plan; the render falls back to the coverage prose without it.
   "_driver/register-plan.json": "optional",
+  // The band the register returned, read ONLY where the run has no `_records/` archive, to count what was
+  // read and where. Optional: a knockout, a legacy run and a register-less run have none, and an absent
+  // band leaves the count as "cannot say" exactly as before.
+  "register-named-band.json": "optional",
   // The instructed scope, read only as the register plan's fallback for the searched-jurisdiction set.
   "_driver/instructed-scope.json": "optional",
   // The frozen local-language lane decision, and the units the fold wrote. Read to derive how deep that

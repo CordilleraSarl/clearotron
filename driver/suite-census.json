@@ -369,6 +369,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-failed-run-resumes-from-the-command-line.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "a-failed-run-tells-the-client-what-to-do.test.mjs": {
           "tests": 6,
           "asserts": 16,
@@ -5164,8 +5170,8 @@
           "todos": 0
         },
         "the-report-can-say-how-much-was-read.test.mjs": {
-          "tests": 23,
-          "asserts": 63,
+          "tests": 25,
+          "asserts": 71,
           "skips": 0,
           "todos": 0
         },
@@ -6461,6 +6467,12 @@
         "providers/*/test/*.test.mjs"
       ],
       "perFile": {
+        "providers/_shared/test/a-record-is-written-once-per-run.test.mjs": {
+          "tests": 4,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "providers/_shared/test/absent-body.test.mjs": {
           "tests": 12,
           "asserts": 53,
