@@ -13253,16 +13253,16 @@ async function pipelineInner(job, opts = {}) {
         // here and refused: the objection was the class, not the wording. It is on the owner's design
         // table as audit item 25, and until he rules, this stays exactly as it was rather than carrying
         // a caveat a developer composed.
-        const reasons = [];
-        const machinery = (reason) => reasons.push(reason);
+        const reasons = [], clauseOf = new Map();   // run-record reason → the client's clause: the same words, with any engine token taken out
+        const machinery = (reason, clause = reason) => { reasons.push(reason); clauseOf.set(reason, clause); };
         if (coverageInsufficient) machinery(`the lawyer judged a material slice not fully cleared: ${coverageJudgment.reason || "register coverage gap"}`);
         if (frameGap) machinery("the blind frame-diff flagged a dominant-element omission the reopen pass did not close");
         else if (frameDeferrals.length) machinery(`follow-ups left open this run: ${frameDeferrals.map((d) => plainDirective(d.directive)).slice(0, 3).join(", ")}`);
         if (screenGateGap) machinery(`${sgUnresolved.length} in-scope mark(s) dropped on goods could not be record_fetched (unverified): ${sgUnresolved.map((g) => g.mark).join(", ")}`);
         if (seniorGap) machinery(`the oldest registration in a verdict-driving family could not be retrieved (policy: clamp): ${(ctx.seniorRights?.rows ?? []).filter((r) => r.applicable && !r.verified).map((r) => r.mark).join(", ")}`);
         if (registerGap) {
-          if (regGap.deferred.length) machinery(`register coverage deferred on ${[...new Set(regGap.deferred.map((g) => g.axis))].join(", ")} — the search did not finish and must be re-run before this can be relied on`);
-          if (regGap.taintAxes.length) machinery(`the ${regGap.taintAxes.join(", ")} register pass was cut down at the timeout wall and its self-reported coverage is unverified`);
+          for (const { reason, clause } of registerGapConditions(regGap)) machinery(reason, clause);
+          // (the deferred and cut-down register lines: registerGapConditions, at the end of this file)
           // Named regressions (2026-07-22): `<MARK> (<owner> — <canonical uri>)` — a bare mark name
           // shipped "ION, ION, ION" (three indistinguishable strings); the identity is front-loaded
           // because the delivered statement truncates from the tail.
@@ -13294,7 +13294,7 @@ async function pipelineInner(job, opts = {}) {
         // APPEND (dedup by exact text) — the legalActions arm may already have recorded conditions,
         // and this callable runs more than once (degenerate re-ask, lint repair, post-consolidation).
         const freshMachinery = reasons.filter((r) => !clampReasons.includes(r));
-        clampClauses.push(...freshMachinery);   // machinery reasons ARE factual open-states — clause == reason
+        clampClauses.push(...freshMachinery.map((r) => clauseOf.get(r) ?? r));   // machinery reasons ARE factual open-states — the clause is the reason, less any engine token
         clampReasons.push(...freshMachinery);
         // The reason KINDS distinguish coverage/frame/screen-gate/senior-right/register residue for the
         // report bound line and the client conditions row (merged — legalActions survives).
@@ -16806,3 +16806,28 @@ if (isEntrypoint(import.meta.url)) void (async () => {
 //
 // Move it to the top the day those citations name symbols instead of numbers — which is what
 // CONTRIBUTING.md asks for, and what makes them checkable at all.
+
+/**
+ * The verdict conditions for an unfinished register search: the run record's sentence, and the client's.
+ *
+ * THE CLIENT'S CLAUSE IS THE SAME SENTENCE WITH THE ENGINE TOKEN TAKEN OUT (ruled 2026-09-18). The axis
+ * names — `primary-sweep`, `incumbent-class` — are how the engine files a register slice, and they reached
+ * the verdict a client reads as "register coverage deferred on primary-sweep". Nothing is written in their
+ * place: the client reads the remaining words, and the run record keeps the axes for whoever repairs the run.
+ * PURE.
+ *
+ * @returns {{ reason: string, clause: string }[]}
+ */
+export function registerGapConditions(regGap) {   // @internal
+  const out = [];
+  const deferredAxes = [...new Set((regGap?.deferred ?? []).map((g) => g?.axis).filter(Boolean))];
+  if ((regGap?.deferred ?? []).length) out.push({
+    reason: `register coverage deferred on ${deferredAxes.join(", ")} — the search did not finish and must be re-run before this can be relied on`,
+    clause: "register coverage deferred — the search did not finish and must be re-run before this can be relied on",
+  });
+  if ((regGap?.taintAxes ?? []).length) out.push({
+    reason: `the ${regGap.taintAxes.join(", ")} register pass was cut down at the timeout wall and its self-reported coverage is unverified`,
+    clause: "the register pass was cut down at the timeout wall and its self-reported coverage is unverified",
+  });
+  return out;
+}
