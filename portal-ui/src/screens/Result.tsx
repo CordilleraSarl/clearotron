@@ -18,8 +18,8 @@ import { readsFor, hasThread, readLabel, displayName, openDocument, showsAssessm
 import { inlineSpans } from '../contract/inlineMd.ts'
 import { parseSummaryBlocks, SUMMARY_BLOCK_LINE } from '../contract/summaryBlocks.ts'
 import { runProductLabel } from '../contract/home.ts'
-import { FIRST_PAINT, frameCommand, readFrameHeight, readFrameScroll, readCommandFailure, readFrameControls, readFrameSections, readAskAi, exportMenu, exportAffordance } from '../contract/reportFrame.ts'
-import type { FrameCommand, FrameSection, FrameVerb } from '../contract/reportFrame.ts'
+import { FIRST_PAINT, frameCommand, readFrameHeight, readFrameScroll, readCommandFailure, readFrameControls, readFrameSections, readFrameTheme, readAskAi, exportMenu, exportAffordance } from '../contract/reportFrame.ts'
+import type { FrameCommand, FrameSection, FrameTheme, FrameVerb } from '../contract/reportFrame.ts'
 import { RiskDot } from '../components/RiskDot.tsx'
 import { Icon } from '../components/Icon.tsx'
 import { AskAi } from '../components/AskAi.tsx'
@@ -41,6 +41,23 @@ import { runKey } from '../contract/genericKey.ts'
  * reject this one — `event.source === contentWindow` is the check that actually means "this came from the
  * report I am showing".
  */
+/**
+ * THE PORTAL'S THEME, AS THE PORTAL HOLDS IT: the `data-theme` attribute on the page root. Two controls
+ * write it — the top bar's switch and Preferences — so it is read where it lands rather than from either,
+ * and a change from anywhere reaches the report. Dark is an explicit choice here and in the report alike,
+ * never the operating system's.
+ */
+function usePortalTheme(): FrameTheme {
+  const read = (): FrameTheme => (document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light')
+  const [theme, setTheme] = useState<FrameTheme>(read)
+  useEffect(() => {
+    const watch = new MutationObserver(() => setTheme(read()))
+    watch.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
+    return () => watch.disconnect()
+  }, [])
+  return theme
+}
+
 function useReportFrame() {
   const ref = useRef<HTMLIFrameElement | null>(null)
   const [height, setHeight] = useState(FIRST_PAINT)
@@ -53,6 +70,9 @@ function useReportFrame() {
   // the way in, so this is where the breadcrumb comes from now — and drawing it in `.report-head` is what
   // keeps it on top: inside a frame sized to its content, nothing can pin.
   const [sections, setSections] = useState<readonly FrameSection[] | null>(null)
+  // THE FRAME HAS SPOKEN, counted per announcement. A document announces its controls as it loads, so
+  // each load — the first, and every navigation to another read — is when the theme is sent in again.
+  const [hello, setHello] = useState(0)
   // A finding's own Ask AI, pressed inside the document. A new object per press, so the same finding
   // pressed twice opens the control twice.
   const [askedFrom, setAskedFrom] = useState<{ readonly ordinal: number | null; readonly markIndex: number | null; readonly nonce: number } | null>(null)
@@ -66,7 +86,10 @@ function useReportFrame() {
       const h = readFrameHeight(e.data, mine)
       if (h !== null) { setHeight(h); return }
       const has = readFrameControls(e.data, mine)
-      if (has !== null) { setControls(has); return }
+      if (has !== null) { setControls(has); setHello((n) => n + 1); return }
+      // The document's answer to a theme sent in. Read so it is not mistaken for anything else; the
+      // theme itself is the portal's, so there is nothing further to do with it here.
+      if (readFrameTheme(e.data, mine) !== null) return
       const secs = readFrameSections(e.data, mine)
       if (secs !== null) { setSections(secs); return }
       // B2 — an in-page anchor click inside the frame. The frame cannot scroll (it is sized to its
@@ -103,6 +126,16 @@ function useReportFrame() {
     setFailed(null)
     ref.current?.contentWindow?.postMessage(frameCommand(command, value), '*')
   }, [])
+
+  // THE EMBEDDED REPORT FOLLOWS THE PORTAL'S THEME (owner ruling, 2026-09-18). The report draws its own
+  // dark variant, but the control that switches it is in the top bar embedding strips, and a sandboxed
+  // frame cannot read the choice the portal saved — so a dark portal framed a light page. Sent in on every
+  // load of the document and on every change of the portal's theme; the document applies it in place,
+  // so a change repaints the page without reloading it.
+  const theme = usePortalTheme()
+  useEffect(() => {
+    if (hello) send('theme', theme)
+  }, [theme, hello, send])
 
   return { ref, height, send, failed, controls, sections, askedFrom, clearFailed: () => setFailed(null) }
 }

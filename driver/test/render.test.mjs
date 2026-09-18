@@ -74,6 +74,21 @@ const COVERAGE = [
 // already on the screen above the frame — so with the breadcrumb now inside that header, the served
 // document carries neither. It arrives as a list the shell draws in its own header instead, which is the
 // only place it can pin: the frame is sized to its content and has no scrollport of its own.
+// THE EMBEDDED REPORT TAKES THE PORTAL'S THEME (owner ruling, 2026-09-18). The report's own Theme control
+// is in the top bar embedding strips, and the sandboxed frame cannot read the portal's saved choice, so the
+// bridge applies the theme the shell sends: the attribute the report's dark rules key on, one of two values,
+// answered so the shell knows it took. The browser half — the portal's switch pressed, the page measured
+// from inside the frame — is scripts/report-theme-render-check.mjs.
+test("the bridge applies the portal's theme to the attribute the report's dark rules key on", async () => {
+  const { prepareReportForEmbed } = await import("../portal-report.mjs");
+  const served = prepareReportForEmbed(renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-demo" })).html;
+  assert.match(served, /d\.command==='theme'/, "the bridge does not answer a theme");
+  assert.match(served, /var th=d\.value==='dark'\?'dark':'light';/, "the theme is not held to the two values both sides draw");
+  assert.match(served, /document\.documentElement\.setAttribute\('data-theme',th\)/, "the theme is not set where the dark rules read it");
+  assert.match(served, /type:'theme',theme:th/, "the bridge does not answer with the theme it applied");
+  assert.match(served, /\[data-theme="dark"\]/, "the served report carries no dark rules to switch to");
+});
+
 test("the breadcrumb leaves the frame as data, and the served document carries no orphan bar", async () => {
   const { prepareReportForEmbed } = await import("../portal-report.mjs");
   const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-demo" });

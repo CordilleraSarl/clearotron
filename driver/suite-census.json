@@ -3832,8 +3832,8 @@
           "todos": 0
         },
         "render.test.mjs": {
-          "tests": 160,
-          "asserts": 665,
+          "tests": 161,
+          "asserts": 670,
           "skips": 0,
           "todos": 0
         },
@@ -6410,8 +6410,8 @@
           "todos": 0
         },
         "reportSections.test.ts": {
-          "tests": 6,
-          "asserts": 17,
+          "tests": 9,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },

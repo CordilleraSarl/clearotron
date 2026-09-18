@@ -16,7 +16,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { readFrameSections, readFrameControls, frameCommand, FRAME_TAG, MAX_SECTIONS, MAX_SECTION_LABEL } from '../src/contract/reportFrame.ts'
+import { readFrameSections, readFrameControls, readFrameTheme, frameCommand, FRAME_TAG, MAX_SECTIONS, MAX_SECTION_LABEL } from '../src/contract/reportFrame.ts'
 
 const msg = (sections: unknown) => ({ source: FRAME_TAG, type: 'sections', sections })
 
@@ -80,4 +80,26 @@ test('the Reads strip and the breadcrumb are both inside the pinned header', () 
 test('a breadcrumb with one entry is not drawn — it matches the renderer, which emits none', () => {
   assert.match(RESULT, /\(frame\.sections\?\.length \?\? 0\) > 1/,
     'the shell draws the breadcrumb only above one section, as sectionStrip() emits it only above one')
+})
+
+// ── the theme, the shell's second verb (owner ruling, 2026-09-18: the embedded report follows the portal) ──
+
+test('the theme goes in as a command carrying one of the two themes, and is not a menu verb', () => {
+  assert.deepEqual(frameCommand('theme', 'dark'), { source: FRAME_TAG, type: 'command', command: 'theme', value: 'dark' })
+  assert.deepEqual(readFrameControls({ source: FRAME_TAG, type: 'controls', commands: ['theme'] }, true), [],
+    'a document that announced "theme" among its controls could not put a row in the Export menu')
+})
+
+test("the document's answer is read back only as one of the two themes, and only from our frame", () => {
+  assert.equal(readFrameTheme({ source: FRAME_TAG, type: 'theme', theme: 'dark' }, true), 'dark')
+  assert.equal(readFrameTheme({ source: FRAME_TAG, type: 'theme', theme: 'light' }, true), 'light')
+  assert.equal(readFrameTheme({ source: FRAME_TAG, type: 'theme', theme: 'sepia' }, true), null, 'a theme neither side draws')
+  assert.equal(readFrameTheme({ source: FRAME_TAG, type: 'theme', theme: 'dark' }, false), null, 'another frame')
+  assert.equal(readFrameTheme({ source: 'someone-else', type: 'theme', theme: 'dark' }, true), null)
+})
+
+test('the Result screen sends the portal theme on every load of the document and on every change', () => {
+  assert.match(RESULT, /send\('theme', theme\)/, 'the screen never sends the theme in')
+  assert.match(RESULT, /\[theme, hello, send\]/, 'the theme is not re-sent on a change and on each load')
+  assert.match(RESULT, /attributeFilter: \['data-theme'\]/, 'the screen does not watch the attribute the portal writes its theme to')
 })
