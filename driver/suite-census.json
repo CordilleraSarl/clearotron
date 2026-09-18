@@ -6581,6 +6581,12 @@
           "skips": 0,
           "todos": 0
         },
+        "providers/signa/test/an-owner-portfolio-sweep-is-a-search.test.mjs": {
+          "tests": 4,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "providers/signa/test/match-mode-is-not-approximated.test.mjs": {
           "tests": 4,
           "asserts": 11,
