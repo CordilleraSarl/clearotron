@@ -47,7 +47,8 @@ import {
 } from "node:fs";
 import { join, dirname, relative, basename } from "node:path";
 import { createHash } from "node:crypto";
-import { driverDir } from "../shared/driver-dir.mjs";   //
+import { driverDir } from "../shared/driver-dir.mjs";
+import { PUBLISH_INPUTS } from "../driver/publish/publish-inputs.mjs";   //
 import { tmpdir } from "node:os";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
@@ -78,6 +79,15 @@ const FROZEN_FILES = [
   { path: "_driver/search-policy.json", why: "`searchPolicy` declared in index.mjs, level + stage label" },
   { path: "_driver/profile.json", why: "publish/index.mjs reads the frozen profile; report-registry.mjs:42 republishRun, customer key" },
 ];
+
+// EVERY INPUT THE PUBLISHER DECLARES TRAVELS, taken from its own closed table rather than restated. The
+// hand-kept list above drifted from that table: register-named-band.json, the recall receipt and the
+// local-language lane's two files were declared publish inputs and were left behind, so a frozen republish
+// drew no register section and no local-language row where the source run drew both. A declared input
+// added later now travels without an edit here; one the publisher does not declare still needs a line above.
+for (const path of Object.keys(PUBLISH_INPUTS)) {
+  if (!FROZEN_FILES.some((f) => f.path === path)) FROZEN_FILES.push({ path, why: "declared in publish/publish-inputs.mjs" });
+}
 
 // ── THE KNOCKOUT LANE IS A DIFFERENT WORKSPACE, AND report.md IS NOT IN IT ─
 //
