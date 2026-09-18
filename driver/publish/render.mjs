@@ -32,7 +32,7 @@ import { parseFindingsJson, bindRecommendation, sentenceCaseLead, CLIENT_TIER_BY
 import { REC, inPriorityWindow, ownerDisplayName } from '../registry-fidelity.mjs';
 import { registrationSystem } from '../jurisdiction-systems.mjs';
 import { READ_LEAD_RE } from '../report-card-record.mjs';   // D3 — the dedupe gate and the card's acceptance are ONE predicate
-import { REPORT_ROOT, REPORT_ROOT_DARK_EXPLICIT, THEME_INIT_EXPLICIT, FAVICON_LINK, logoLockup, BRAND, confPosture } from '../../shared/brand.mjs';
+import { REPORT_ROOT, REPORT_ROOT_DARK_EXPLICIT, THEME_INIT_EXPLICIT, FAVICON_LINK, logoLockup, BRAND, confPosture, sectionStrip } from '../../shared/brand.mjs';
 import { NAV_CSS } from '../../shared/site-nav.mjs';
 import { isEntrypoint } from "../../shared/is-entrypoint.mjs";   // — realpath both sides, or a symlinked invocation exits 0 silently
 
@@ -2410,31 +2410,12 @@ function depthStripHtml(note) {
 }
 
 // Signature: renderHtml(parsed, findings, coverage, opts). ONE render path — there is no client variant.
-/**
- * THE BOARD'S SECTION STRIP, filtered against the document that was actually drawn.
- *
- * Its five entries are the approved mock's own, verbatim. But the mock is a specimen where every section
- * exists, and this renderer draws three of them conditionally — a report with no ruled-out names has no
- * "Also considered", one with no forward decisions has no "What happens next", one with nothing to count
- * has no "What was searched". Emitting the strip whole would point a reader at anchors that resolve to
- * nothing, which is worse than the missing strip this replaces.
- *
- * So the strip is composed here, from the finished html, by asking whether each anchor is IN it. One
- * author: the document decides, and a section that stops being drawn takes its own entry with it without
- * anyone remembering to. `now` marks the first surviving entry, as the board marks its first.
- */
+// THE BOARD'S FIVE ENTRIES, in its order. The rule that filters them lives in shared/brand.mjs, because
+// the knockout renderer draws a strip from its own board and the filtering is the half worth having once.
 const STRIP = Object.freeze([
   ['summary', 'Summary'], ['findings', 'Findings'], ['also-considered', 'Also considered'],
   ['next', 'Next steps'], ['searched', 'What was searched'],
 ]);
-function sectionStrip(html) {
-  const live = STRIP.filter(([id]) => html.includes(`id="${id}"`));
-  // ONE ENTRY IS NOT A NAVIGATION. A strip pointing only at the top of the page is a control that does
-  // nothing, so it is not drawn at all.
-  if (live.length < 2) return '';
-  return `<nav class="strip no-print">${live.map(([id, label], i) =>
-    `<a href="#${id}" data-sec="${id}"${i === 0 ? ' class="now"' : ''}><i></i>${label}</a>`).join('')}</nav>`;
-}
 
 export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   if (findings && !Array.isArray(findings)) { opts = findings; findings = []; coverage = []; }  // tolerate legacy (parsed, opts)
@@ -2812,7 +2793,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
 </div>
 <script>${PAGE_JS}</script>
 </body></html>`;
-  return doc.replace('<!--SECTION-STRIP-->', sectionStrip(doc));
+  return doc.replace('<!--SECTION-STRIP-->', sectionStrip(doc, STRIP));
 }
 
 // CLI:  node render.mjs <report.md> [findings.json] [outDir]

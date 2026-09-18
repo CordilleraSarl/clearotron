@@ -40,9 +40,16 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   REPORT_ROOT, REPORT_ROOT_DARK_EXPLICIT, THEME_INIT_EXPLICIT, themeButton,
-  THEME_BTN_CSS, CHROME_CSS, FAVICON_LINK, logoLockup, BRAND, confPosture,
+  THEME_BTN_CSS, CHROME_CSS, FAVICON_LINK, logoLockup, BRAND, confPosture, sectionStrip,
 } from '../../shared/brand.mjs';
 import { SUMMARY_BLOCK_LINE, parseSummaryBlocks } from '../../shared/summary-blocks.mjs';
+
+// THIS BOARD'S FOUR ENTRIES, in its order. Its third reads "Also considered" and resolves at the filings
+// section, which is what that section is; the rule that filters them against the finished document lives
+// in shared/brand.mjs, beside the clearance report's own five.
+const STRIP = Object.freeze([
+  ['summary', 'Summary'], ['findings', 'Findings'], ['filings', 'Also considered'], ['next', 'Next steps'],
+]);
 import { COUNT_BASIS, COUNT_PREDICATES, countsForMark, countLine, variantFormsLine } from '../register-count.mjs';
 import { RECORD_BASIS, recordsForMark, recordsLine } from '../register-records.mjs';
 import { officeLinkSentences } from './office-record-links.mjs';
@@ -164,6 +171,24 @@ function qualifierHtml(q) {
 // The layout this report adds on top of report.css. Additive and `ko-`prefixed: report.css is shared with
 // the frozen clearance renderer, and a selector that is inert there cannot regress it.
 const KO_CSS = `
+  /* THE BOARD'S SECTION STRIP AND ITS SECTION FURNITURE, lifted from the approved knockout board rather
+     than written here. Four entries; the third reads "Also considered" and resolves at the filings
+     section. Marked not to print, because the board marks it so: a strip that follows the reader down
+     the page is a control, and paper has nothing for it to follow.
+     NO BACKTICK BELOW, and none in this comment — one closes the template literal this sits inside, and
+     it has cost this file two silent breakages already.
+     The number span is drawn and then hidden, which is the board's own doing: it emits the span on every
+     section and sets it to none further down its own stylesheet. Carried so the delivered document holds
+     the same elements as the approved one; no pixel moves. */
+  .strip{position:sticky;top:var(--tb-h,52px);z-index:20;display:flex;gap:4px;align-items:center;padding:6px 20px;background:var(--bg,#f5f0e8);border-bottom:1px solid rgba(0,0,0,.08);font:600 12px/1 'Satoshi','Helvetica Neue',Arial,sans-serif;letter-spacing:.04em}
+  .strip a{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;color:#6b5d50;text-decoration:none;white-space:nowrap}
+  .strip a i{width:8px;height:8px;border-radius:50%;border:1.5px solid currentColor;box-sizing:border-box}
+  .strip a.done{color:#4c7a4c}
+  .strip a.done i{background:#4c7a4c;border-color:#4c7a4c}
+  .strip a.now{color:#250902;background:rgba(0,0,0,.06)}
+  .strip a.now i{border-color:#860F09;border-width:3px}
+  .sec .num{display:none}
+  .sec .note{display:inline;margin-left:10px;font-size:12px;color:var(--faint)}
   .ko-glance{padding:6px 0 2px}
   /* — framework attribution, captioning the rows. Same gutter and hairline as.ko-row so it reads
      as the table's head, not a floating note. */
@@ -1788,11 +1813,11 @@ export function renderKnockoutHtml(findings, framework, {
     n + registerCardsOnPage(registerCardViews(m, framework, registerRecords).cards, m, framework).length, 0);
   const hasRecords = Boolean(registerRecords && (registerRecords.marks?.length || registerRecords.unavailable));
   const filings = hasRecords ? filingsSection(marks, registerRecords) : '';
-  const onFieldSec = `<div class="sec" id="findings"><h2>Conflicts</h2></div>
+  const onFieldSec = `<div class="sec" id="findings"><span class="num"></span><h2>Conflicts</h2></div>
 ${counts}
 ${analysis}`;
   const filingsSec = filings
-    ? `<div class="sec" id="filings"><h2>Also considered</h2></div>
+    ? `<div class="sec" id="filings"><span class="num"></span><h2>Also considered</h2><span class="note">the filings behind the counts</span></div>
 ${filings}`
     : '';
 
@@ -1804,7 +1829,7 @@ ${filings}`
   const cssInline = REPORT_BASE + '\n' + CHROME_CSS + '\n' + THEME_BTN_CSS + '\n' + KO_CSS;
   const chromeLinkTag = chromeHref ? `<link rel="stylesheet" href="${escAttr(chromeHref)}">` : '';
 
-  return `<!DOCTYPE html>
+  const doc = `<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${productName ? `${esc(productName)} — ` : ''}${esc(title)} · ${esc(BRAND.name)}</title>
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
@@ -1878,8 +1903,9 @@ window.addEventListener('beforeprint',o);})();
 /* The popover opens on its own button, closes on a click outside it and on Escape. Same two listeners
    the clearance template carries, for the same markup; they move together when the top bar is shared. */
 ${EXPORT_MENU_JS}</script>
+<!--SECTION-STRIP-->
 <div class="wrap">
-  <header class="hero">
+  <header class="hero" id="summary">
     ${demoBannerHtml(demoData === true)}
     ${confLineHtml(delivery, productName)}
     <h1 class="mark">${esc(title)}</h1>
@@ -1896,7 +1922,7 @@ ${EXPORT_MENU_JS}</script>
     if (!outs.length) return '';
     const label = outs.length > 1;
     const body = outs.map((o) => (label && o.name ? `<h3>${esc(o.name)}</h3>` : '') + mdParagraphs(o.text)).join('');
-    return `<div class="sec" id="next"><h2>What happens next</h2></div>
+    return `<div class="sec" id="next"><span class="num"></span><h2>What happens next</h2></div>
   <div class="panel actions"><div class="actgrp act-you">${body}</div></div>`;
   })()}
 
@@ -1933,6 +1959,7 @@ ${EXPORT_MENU_JS}</script>
   </footer>
 </div>
 </body></html>`;
+  return doc.replace('<!--SECTION-STRIP-->', sectionStrip(doc, STRIP));
 }
 
 /**

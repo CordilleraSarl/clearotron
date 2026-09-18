@@ -174,6 +174,33 @@ export const ADMINISTRATOR_CONTACT = administratorContact(process.env.CLEAROTRON
 // at all. Absent still means the default, never nothing.
 export const CONF_DEFAULT = 'Privileged &amp; Confidential';
 
+/**
+ * THE APPROVED BOARDS' SECTION STRIP, filtered against the document it will sit in.
+ *
+ * Both report renderers draw one and each has its own board: the clearance kinds five entries, the
+ * knockout four, and the knockout's third points at the filings section while reading "Also considered".
+ * So the ENTRIES belong to each board and the RULE belongs here, because the rule is the part that is
+ * easy to get wrong the same way twice.
+ *
+ * The rule: a board is a specimen where every section exists, and a renderer draws several of them only
+ * when there is something to draw. A strip emitted whole would point a reader at anchors that resolve to
+ * nothing, which is worse than the missing strip it replaces. So it is composed from the FINISHED html by
+ * asking which anchors are in it — the document decides, and a section that stops being drawn takes its
+ * own entry with it without anyone remembering to.
+ *
+ * ONE ENTRY IS NOT A NAVIGATION. A strip pointing only at the top of the page is a control that does
+ * nothing, so below two entries it is not drawn at all.
+ *
+ * @param {string} html the assembled document
+ * @param {ReadonlyArray<readonly [string, string]>} entries [anchor id, label], in the board's order
+ */
+export function sectionStrip(html, entries) {
+  const live = (entries ?? []).filter(([id]) => String(html).includes(`id="${id}"`));
+  if (live.length < 2) return '';
+  return `<nav class="strip no-print">${live.map(([id, label], i) =>
+    `<a href="#${id}" data-sec="${id}"${i === 0 ? ' class="now"' : ''}><i></i>${label}</a>`).join('')}</nav>`;
+}
+
 export function confPosture(delivery) {
   const p = delivery == null ? null : delivery.privileged;
   return p === false ? '' : CONF_DEFAULT;
