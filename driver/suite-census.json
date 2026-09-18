@@ -550,8 +550,8 @@
           "todos": 0
         },
         "a-new-install-signs-in-with-its-own-passphrase.test.mjs": {
-          "tests": 9,
-          "asserts": 50,
+          "tests": 10,
+          "asserts": 57,
           "skips": 1,
           "todos": 0
         },
@@ -4361,7 +4361,7 @@
         },
         "setup-promises-a-login-shell-only-when-one-adds-the-directory.test.mjs": {
           "tests": 3,
-          "asserts": 7,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },

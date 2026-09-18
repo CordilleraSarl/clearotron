@@ -37,6 +37,8 @@ test("no profile, or one that never names it, is not a promise setup may make", 
   })), false, "root's stock profile on ubuntu:24.04 — the reported case");
   assert.equal(aLoginShellAdds(dir, profiles({ [join(home, ".profile")]: 'PATH="$HOME/.local/binaries:$PATH"' })), false,
     "a longer directory that begins with the same name is a different directory");
+  for (const off of ['# export PATH="$HOME/.local/bin:$PATH"', '  #PATH="$HOME/.local/bin:$PATH"'])
+    assert.equal(aLoginShellAdds(dir, profiles({ [join(home, ".bashrc")]: off })), false, `a commented-out line adds nothing: ${off}`);
   assert.equal(aLoginShellAdds("", profiles({ [join(home, ".profile")]: "anything" })), false);
 });
 

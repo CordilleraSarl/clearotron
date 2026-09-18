@@ -1049,7 +1049,8 @@ export function aLoginShellAdds(dir, { home = homedir(), read = (p) => readFileS
   for (const f of LOGIN_PROFILES) {
     let text;
     try { text = read(join(home, f)); } catch { continue; }
-    if (names.test(String(text ?? ""))) return true;
+    // A COMMENTED-OUT LINE ADDS NOTHING, and a disabled PATH line is an ordinary state for a profile.
+    if (String(text ?? "").split("\n").some((l) => !/^\s*#/.test(l) && names.test(l))) return true;
   }
   return false;
 }
