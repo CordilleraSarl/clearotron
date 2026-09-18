@@ -277,7 +277,7 @@ export async function searchableTerritories() {
     = await Promise.all([import("./jurisdiction-codes.mjs"), import("../providers/_shared/territory-codes.mjs"),
       import("./register-capabilities.mjs"), import("./register-plan.mjs")]);
   const enumerable = Object.values(PROVIDER_CAPABILITIES).filter((caps) => Array.isArray(caps?.offices?.covered));
-  const shippedName = new Map(PROMPT_TERRITORIES.map((n) => [canonicalJurisdictionCode(normalizeTerritory(n) ?? ""), n]));
+  const shippedName = new Map(LABELS_OFFERED_BEFORE_THE_RULE.map((n) => [canonicalJurisdictionCode(normalizeTerritory(n) ?? ""), n]));
   let cldr = null;
   try { cldr = new Intl.DisplayNames(["en"], { type: "region" }); } catch { cldr = null; }
   const offered = [], unnamed = [];
@@ -296,7 +296,24 @@ export async function searchableTerritories() {
     if (!name) { unnamed.push(code); continue; }
     offered.push({ code, name });
   }
+  // Regions first, in the order the form already showed them; then countries by name.
   const regional = new Set(["EU", "BX", "AP", "OA", "EA", "WO"]);
-  offered.sort((a, b) => (regional.has(b.code) - regional.has(a.code)) || a.name.localeCompare(b.name, "en"));
+  const shippedAt = (t) => { const i = LABELS_OFFERED_BEFORE_THE_RULE.indexOf(t.name); return i < 0 ? Infinity : i; };
+  offered.sort((a, b) => (regional.has(b.code) - regional.has(a.code))
+    || (regional.has(a.code) ? shippedAt(a) - shippedAt(b) : 0) || a.name.localeCompare(b.name, "en"));
   return { offered, unnamed: unnamed.sort() };
 }
+
+// THE 37 LABELS THE FORM CARRIED BEFORE THIS RULE, frozen. They are shipped strings, so each place keeps
+// the label a client already reads — "Hong Kong", "Macau", "Turkey", where the runtime's standard names
+// differ — and the two regional systems whose only names are these. Frozen HERE rather than read from the
+// form's live list, because that list is now minted FROM this function, and a rule that read its own
+// output would lose its labels the first time the file was regenerated from scratch.
+export const LABELS_OFFERED_BEFORE_THE_RULE = Object.freeze([
+  "European Union", "Benelux", "African Regional (ARIPO)",
+  "United States", "United Kingdom", "Ireland", "France", "Germany", "Spain", "Italy", "Netherlands",
+  "Switzerland", "Austria", "Sweden", "Norway", "Poland", "Bulgaria", "Greece", "Turkey", "Canada",
+  "Mexico", "Brazil", "Argentina", "China", "Hong Kong", "Taiwan", "Macau", "Japan", "South Korea",
+  "Singapore", "India", "Thailand", "Australia", "New Zealand", "United Arab Emirates", "Saudi Arabia",
+  "South Africa",
+]);

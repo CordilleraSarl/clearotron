@@ -64,8 +64,11 @@ test('a Full country search is offered NO regions — the control fits the produ
 })
 
 test('the typeahead matches whole words and aliases, never a bare substring', () => {
-  // A naive contains-match turns "in" into India, China, Singapore and Argentina at once.
-  assert.deepEqual([...territoryMatches('in', [], MULTI)], ['India'])
+  // A naive contains-match turns "in" into India, China, Singapore and Argentina at once. A word STARTING
+  // "in" is a match — India and Indonesia both — and a word merely containing it is not.
+  assert.deepEqual([...territoryMatches('in', [], MULTI)], ['India', 'Indonesia'])
+  for (const substringOnly of ['China', 'Singapore', 'Argentina', 'Liechtenstein'])
+    assert.ok(![...territoryMatches('in', [], MULTI)].includes(substringOnly), `${substringOnly} only contains "in"`)
   assert.deepEqual([...territoryMatches('usa', [], MULTI)], ['United States'])
   assert.deepEqual([...territoryMatches('aripo', [], MULTI)], ['African Regional (ARIPO)'])
   assert.deepEqual([...territoryMatches('france', ['France'], MULTI)], [], 'already chosen ⇒ not offered again')
