@@ -2495,18 +2495,22 @@ if (isMain) {
   // instead, from the composer the portal uses, and the way to mint one on a terminal.
   if (mintedPassphrase) {
     const rule = "─".repeat(66);
+    say(`  ┌${rule}┐`);
+    say(`  │  Open        ${envs.url}`);
+    say(`  │  Sign in as  ${user}`);
+    if (process.stdout.isTTY === true) {
+      say(`  │  Passphrase  ${mintedPassphrase}`);
+      say(`  │`);
+      say(`  │  WRITE THE PASSPHRASE DOWN NOW. It is stored only as a digest, so`);
+      say(`  │  nothing — not this product, not this terminal — can read it back.`);
+      say(`  │  Lost it? ${reset}`);
+    } else for (const line of passphraseWithheldLines({ stream: "stdout", resetCommand: reset })) say(`  │  ${line}`);
     // THE HINT BELONGS IN THE BOX TOO, and this was the reader the whole sentence was written for. The
     // frame exists because a first-time reader skips the log wall and acts on it — so the one address
     // they copy was the one address with nothing beside it saying what to do when the page that opens
     // is somebody else's. It was printed nine lines above, to a reader who by design did not read there.
-    const hint = foreignPageHint(DEMO ? "demo" : "start", ports.portal).map((line) => `  │  ${line}`);
-    const handover = process.stdout.isTTY === true
-      ? [`  │  Passphrase  ${mintedPassphrase}`, `  │`,
-        `  │  WRITE THE PASSPHRASE DOWN NOW. It is stored only as a digest, so`,
-        `  │  nothing — not this product, not this terminal — can read it back.`,
-        `  │  Lost it? ${reset}`]
-      : passphraseWithheldLines({ stream: "stdout", resetCommand: reset }).map((line) => `  │  ${line}`);
-    for (const line of [`  ┌${rule}┐`, `  │  Open        ${envs.url}`, `  │  Sign in as  ${user}`, ...handover, ...hint, `  └${rule}┘`]) say(line);
+    for (const line of foreignPageHint(DEMO ? "demo" : "start", ports.portal)) say(`  │  ${line}`);
+    say(`  └${rule}┘`);
   } else {
     // THE WAY BACK IN FIRST, then which credential, when and for whom: laterStartLines says why. Read for
     // its date and address only; a file that cannot be read is named by the portal's own boot.
