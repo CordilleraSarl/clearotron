@@ -25,7 +25,7 @@ import { fileURLToPath } from 'node:url';
 // its own split, which is how the two rules diverged. It calls stripTelemetry now, so the renderer holds
 // no copy of the RULE either, only a call to it.
 import { parseReport, stripInternal, stripTelemetry } from './parse.mjs';
-import { clientConditions } from '../terminal-clamp.mjs';
+import { clientConditions } from '../terminal-clamp.mjs'; import { hrefAttr } from './attr.mjs';   // an href is attribute-safe and http(s), or not a link
 import { EXPORT_TOGGLE, exportPopover, EXPORT_MENU_JS } from './report-topbar.mjs';   // the export menu's shell and behaviour, shared with the knockout template   // the reader's clause per condition, shared with the cover note
 import { COMMON_LAW, normRegion, regionName, REGION_NAMES } from './regions.mjs';
 import { parseFindingsJson, bindRecommendation, sentenceCaseLead, CLIENT_TIER_BY_COMPOSITE, bandOf, compareBlockingPower, inDispositionMode, reasonedNegativeGroups } from '../findings-model.mjs';
@@ -995,7 +995,7 @@ const NAMES_CAP = 8;
 function clearedGroupsHtml(searchDepth, auditFile) {
   const reg = (searchDepth && searchDepth.cleared && searchDepth.cleared.register) || [];
   if (!reg.length) return '';
-  const link = (n) => auditFile ? `<div class="cmore"><a class="wb" href="${escAttr(auditFile)}">All ${n.toLocaleString('en-GB')} in the audit workbook</a></div>` : '';
+  const link = (n) => hrefAttr(auditFile, { relative: true }) ? `<div class="cmore"><a class="wb" href="${hrefAttr(auditFile, { relative: true })}">All ${n.toLocaleString('en-GB')} in the audit workbook</a></div>` : '';
   return CLEARED_GROUP_ORDER.map((g) => {
     const items = reg.filter((c) => c.group === g);
     if (!items.length) return '';
@@ -1229,8 +1229,8 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
     : '';
   // THE BOARDS END THE SECTION WITH THE WORKBOOK: every search and its result are in the audit workbook,
   // which is where a reader who wants the record goes.
-  const more = opts?.auditFile
-    ? `<div class="cmore"><a class="wb" href="${escAttr(opts.auditFile)}">Every search and result, in the audit workbook</a></div>` : '';
+  const more = hrefAttr(opts?.auditFile, { relative: true })
+    ? `<div class="cmore"><a class="wb" href="${hrefAttr(opts.auditFile, { relative: true })}">Every search and result, in the audit workbook</a></div>` : '';
   if (!rows.length && !openHtml && !prov) return '';
   return `<div class="sec" id="searched"><span class="num"></span><h2>What was searched</h2></div>
   <details class="searched"><summary><span class="gname">Counts for this search</span></summary><div class="gbody">${
@@ -1631,7 +1631,7 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   const regUri = (u, fb) => {
     const h = regHref(u);
     const label = esc(u || fb || 'registration');
-    if (h) return `<a href="${esc(h)}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+    if (hrefAttr(h)) return `<a href="${hrefAttr(h)}" target="_blank" rel="noopener noreferrer">${label}</a>`;
     const note = RECORD_CITATION ? NO_LINK_NOTE[RECORD_CITATION] : null;
     return note ? `${label}<span class="reg-nolink">${note}</span>` : label;
   };
@@ -1744,7 +1744,7 @@ function fullDetail(f, card, recordsByUri = new Map()) {
     const stat = status ? ` <i class="evstat">Evidence: ${esc(status)}</i>` : '';
     const urls = (String(src).match(/https?:\/\/[^\s,|]+/g) || []).map(u => u.replace(/[).,;:]+$/, ''));
     if (!urls.length) return `<li><b>${label}</b> ${esc(src)}${stat}</li>`;
-    const links = urls.map(u => `<a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(u.replace(/^https?:\/\//, '').slice(0, 48))}</a>`).join(' · ');
+    const links = urls.map(u => (hrefAttr(u) ? `<a href="${hrefAttr(u)}" target="_blank" rel="noopener noreferrer">${esc(u.replace(/^https?:\/\//, '').slice(0, 48))}</a>` : esc(u))).join(' · ');
     const rest = String(src).replace(/https?:\/\/[^\s,|]+/g, ' ').replace(/[\s,|]+/g, ' ').trim().replace(/^[—–-]\s*/, '');
     return `<li><b>${label}</b> ${links}${rest ? ` — ${esc(rest)}` : ''}${stat}</li>`;
   };
@@ -1796,7 +1796,7 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   // such line. The SOURCE LINK stays: it is the only address a reader has for the record on this card
   // until the workbook row lands beside it, and dropping both would take a fact away rather than a
   // label. With no link there is nothing left to say, so the row does not render at all.
-  const prov = link ? `<div class="prov"><a href="${esc(link)}" target="_blank" rel="noopener noreferrer">${esc(link.replace(/^https?:\/\//, '').slice(0, 48))}</a></div>` : '';
+  const prov = hrefAttr(link) ? `<div class="prov"><a href="${hrefAttr(link)}" target="_blank" rel="noopener noreferrer">${esc(link.replace(/^https?:\/\//, '').slice(0, 48))}</a></div>` : '';
   // WP-receipts W4 — the code-owned senior-right line (Owner decision 2026-07-05: VERY SIMPLE CLEAR ENGLISH,
   // stated qualification, verdict untouched). Verified senior → nothing extra (the W2 receipt line on
   // the fetched leg is the proof). Unverified → the open item, plainly, where the finding lives.
@@ -2551,7 +2551,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   const riskLabel = VERDICT_INFO ? (VERDICT_INFO.tier || TIER_STOP_PILL[i]) : RISK_STOPS[i].toUpperCase();
 
   // Excel/audit download — lives inside the topbar Export popover (portal-report strips the link at serve time for non-staff).
-  const excelBtn2 = !opts.auditFile ? '' : `<a class="util" href="${esc(opts.auditFile)}" download>⬇ Download full audit (Excel)</a>`;
+  const excelBtn2 = !hrefAttr(opts.auditFile, { relative: true }) ? '' : `<a class="util" href="${hrefAttr(opts.auditFile, { relative: true })}" download>⬇ Download full audit (Excel)</a>`;
 
   const cardFor = f => matchCard(f, cards);
   const recordsByUri = opts.recordsByUri || new Map();   // Instance #6 — the run's _records/ set (publishReport loads it)
@@ -2854,7 +2854,7 @@ import { officeReasonSentences } from './office-record-links.mjs';
 function officeRecordCell(uri, regUri, note) {
   const l = RECORD_LINKS?.get(String(uri || '').toLowerCase());
   if (!l?.label) return regUri(uri);
-  if (l.href) return `<a href="${esc(l.href)}" target="_blank" rel="noopener noreferrer">${esc(l.label)}</a>`;
+  if (hrefAttr(l.href)) return `<a href="${hrefAttr(l.href)}" target="_blank" rel="noopener noreferrer">${esc(l.label)}</a>`;
   return note ? `${esc(l.label)}<span class="reg-nolink">${note}</span>` : esc(l.label);
 }
 

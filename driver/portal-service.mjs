@@ -969,6 +969,15 @@ const DENIAL_REASON = Object.freeze({
 });
 
 /**
+ * WHAT A REFUSED CLIENT IS TOLD — a closed set, keyed on the status, never the error's message. The message
+ * can come out of a third-party token check with a claim value, an address or a fragment of the rejected
+ * token in it, and some of our own refusals put the caller's address in theirs. A 401 keeps the words the
+ * browser contract already decodes ("not signed in"); every other status says the journal's code-owned
+ * reason. The message itself is still journalled nowhere a client reads. PURE.
+ */
+export const refusalWords = (status) => (status === 401 ? "not signed in" : DENIAL_REASON[status] ?? "refused at the door");
+
+/**
  * — THE ROW A REFUSAL FILES. One shape, one sink, whichever side of `route` decided the answer.
  *
  * The portal used to journal an admin write only when it SUCCEEDED, so every refusal — a client's 404
@@ -4399,7 +4408,7 @@ export function makeHttpHandler({ verify, limiter, service, log = () => {}, devI
       // row must not become a place a caller can write into by sending a body that fails to parse.
       let body;
       try { body = await readJsonBody(req); }
-      catch (e) { journal(400, "unreadable body", identity?.email); return send(res, 400, { error: String(e.message) }); }
+      catch { journal(400, "unreadable body", identity?.email); return send(res, 400, { error: "unreadable body" }); }   // the parser's own message describes the bytes it was sent, and a response is not where a parse error is read back
       const query = Object.fromEntries(url.searchParams.entries());
       const r = await service.route(req.method, url.pathname, identity, body, query);
       // A PLAIN DOCUMENT this server renders itself. Escaped into a `<pre>`, so nothing in the file can
@@ -4466,11 +4475,11 @@ export function makeHttpHandler({ verify, limiter, service, log = () => {}, devI
         // person who typed the address gets a door.
         const wantsHtml = String(req.headers.accept ?? "").includes("text/html");
         if (wantsHtml) {
-          const html = denialPage(e.status, e.message);
+          const html = denialPage(e.status, refusalWords(e.status));
           res.writeHead(e.status, { "content-type": "text/html; charset=utf-8", "content-length": Buffer.byteLength(html), "x-content-type-options": "nosniff" });
           return res.end(html);
         }
-        return send(res, e.status, { error: e.message });
+        return send(res, e.status, { error: refusalWords(e.status) });
       }
       log(`500 ${String(e?.message || e)}`);
       if (!alreadyFiled(e)) journal(500, e?.message ?? String(e), identity?.email);

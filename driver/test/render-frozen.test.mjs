@@ -1786,7 +1786,9 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // module. Not licence-only, so this constant moves with it.
 // Advanced again by the break recorded above the FROZEN constant: the section breadcrumb moved inside
 // the sticky header. One executable line, not licence-only, so this constant moves with it.
-const FROZEN_BEFORE_SPDX = "443d2748d932e0201770fa8d0c475e3e7db9e53387e7680c1e77c61425ee55ff";
+// Advanced again by the break recorded above the FROZEN constant: every href built attribute-safe and
+// http(s)-only. Not licence-only, so this constant moves with it.
+const FROZEN_BEFORE_SPDX = "0c8fec516b1c5b783de664398e6a6c10d5d4f1d4b76f1165ecbd7890fa4ed496";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2567,7 +2569,26 @@ const FROZEN_BEFORE_SPDX = "443d2748d932e0201770fa8d0c475e3e7db9e53387e7680c1e77
 //      report.css. The NESTING could not: CSS cannot make an element a child of another. That is the
 //      whole content of this break.
 //   3. Why it had to move here: the placeholder's position in the document is composed in this file.
-const FROZEN = "ec3d7684ec1dfa48bf5a89fe74e31e1d3c75da8b193b24623f3090740bfb94cd";
+// ── BREAK (2026-09-18 — an href is attribute-safe and http(s), or it is not a link) ──────────────────
+//
+// WHAT MOVED: the seven places this file writes a URL into an href — a registration link, an evidence
+// line's addresses, a card's source link, two audit-workbook links, the audit download and an office
+// record link — now build it through `hrefAttr` (publish/attr.mjs), and one import joins an existing
+// import line. No words moved, and an ordinary http(s) address renders byte-for-byte as before.
+//
+// WHY. Code scanning flagged each as a quoted attribute filled through `esc`, which encodes `&`, `<`
+// and `>` and not the quote that closes the attribute. One was live: an evidence line's addresses are
+// found by /https?:\/\/[^\s,|]+/, which admits a `"`, so a cited URL ending `"onmouseover="…` wrote an
+// attribute of its own. And a correctly quoted `javascript:` or `data:` URL is still a link that runs
+// code, which no escaping stops — so an href is now http(s) only (the audit download: a relative file),
+// and a refused address renders as its text with no link.
+//
+// THE THREE QUESTIONS.
+//   1. Reachable from republish? Yes — a republish re-renders the document. Ordinary links are unchanged;
+//      a hostile or non-http one stops being a link, which is the repair.
+//   2. Could it live in report.css or brand.mjs? No: an attribute's value is composed in this file.
+//   3. Why it had to move here: every one of these hrefs is written here and nowhere else.
+const FROZEN = "17a1abbcac3f7d65bcf838c6a51ae17ec36787c41134106b45464ddfd3767bc5";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

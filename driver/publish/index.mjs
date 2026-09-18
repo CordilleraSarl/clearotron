@@ -239,25 +239,25 @@ function indexRows(runs, { reportFile, linkPrefix = '', showAudit = true, client
     // anchors are neutralised; the client column → aliased. Keyed by customerKey + runId so a demo run is
     // exempt and shows real.
     const ck = r.customerKey || '';
-    const runAttrs = `data-anon-href data-anon-key="${esc(ck)}" data-anon-run="${esc(r.runId)}"`;
+    const runAttrs = `data-anon-href data-anon-key="${attrValue(ck)}" data-anon-run="${attrValue(r.runId)}"`;
     const mark = anonMark(r.matter, { key: ck, run: r.runId });
-    const matterCell = `<a ${runAttrs} href="${linkPrefix}${esc(r.runId)}/${reportFile}">${mark}</a>`;
+    const matterCell = `<a ${runAttrs} href="${linkPrefix}${attrValue(r.runId)}/${reportFile}">${mark}</a>`;
     // Run cell: staff surfaces show date · HH:mm (Zurich, same-day issuedAt only) · codename; the
     // customer-facing per-customer index shows the date ONLY — codenames and timestamps are internal.
     const t = client ? '' : issuedTime(r);
     const runCell = client ? esc(r.date) : `${esc(r.date)}${t ? ` · ${esc(t)}` : ''} · <code>${esc(r.codename || '')}</code>`;
-    return `    <tr data-client="${esc(ck)}">
+    return `    <tr data-client="${attrValue(ck)}">
       <td>${matterCell}</td>
       <td>${anonMark(r.title, { key: ck, run: r.runId })}</td>
       <td>${anonClient(r.client, ck)}</td>
-      <td><span class="b b-${esc(r.badge)}">${esc(r.overall)}</span>${qcFailed ? ' <span class="hold" title="machine QC checks failed — see the audit workbook">⚠ QC</span>' : ''}${!client && !qcFailed && r.clientGate?.inputsAbsent?.length ? ` <span class="disc" title="${escAttr(`published without ${r.clientGate.inputsAbsent.join(', ')} — each declared optional, so the release stands; the report was built without it`)}">◦ built without an input</span>` : ''}${
+      <td><span class="b b-${attrValue(r.badge)}">${esc(r.overall)}</span>${qcFailed ? ' <span class="hold" title="machine QC checks failed — see the audit workbook">⚠ QC</span>' : ''}${!client && !qcFailed && r.clientGate?.inputsAbsent?.length ? ` <span class="disc" title="${escAttr(`published without ${r.clientGate.inputsAbsent.join(', ')} — each declared optional, so the release stands; the report was built without it`)}">◦ built without an input</span>` : ''}${
         // spec 64 — the stance clause of THE one risk statement beside the (labelled) band pill, so the
         // index can never show a bare severity word that reads as the whole answer. The tier word leads
         // the statement; the pill already shows it, so the cell carries the clause after the first " — ".
         // Legacy meta.json (no statement) renders this cell byte-identically.
         r.statement ? `<span class="stmt" title="${escAttr(r.statement)}">${esc(String(r.statement).split(' — ').slice(1).join(' — ') || r.statement)}</span>` : ''}</td>
       <td>${runCell}</td>${showAudit ? `
-      <td>${r.auditFile ? `<a ${runAttrs} href="${linkPrefix}${esc(r.runId)}/${esc(r.auditFile)}">audit.xlsx</a>` : '—'}</td>` : ''}
+      <td>${r.auditFile ? `<a ${runAttrs} href="${linkPrefix}${attrValue(r.runId)}/${attrValue(r.auditFile)}">audit.xlsx</a>` : '—'}</td>` : ''}
     </tr>`;
   }).join('\n');
 }
@@ -275,7 +275,7 @@ function clientFilterBar(clients) {
   if (!clients || clients.length < 2) return '';
   // data-anon="client" goes on the <option> itself (a span inside <option> is invalid) so the demo overlay
   // aliases the visible label in privacy mode; the value stays the raw customerKey that data-client matches.
-  const opts = clients.map(c => `<option value="${esc(c.key)}" data-anon="client" data-anon-key="${esc(c.key)}">${esc(c.label)}</option>`).join('');
+  const opts = clients.map(c => `<option value="${attrValue(c.key)}" data-anon="client" data-anon-key="${attrValue(c.key)}">${esc(c.label)}</option>`).join('');
   return `<div class="filterbar"><label class="flbl" for="clientFilter">Client</label>` +
     `<select id="clientFilter"><option value="">All clients</option>${opts}</select></div>`;
 }
@@ -377,7 +377,7 @@ ${rows}
 // sidecar without importing this renderer. Imported as well as re-exported — `export ... from` re-exports
 // without binding the name in this module's scope, and regenIndex below calls readArchivedSet directly.
 export { ARCHIVE_TAGS_FILE, readArchivedSet, updateArchived } from './archive-tags.mjs';
-import { readArchivedSet } from './archive-tags.mjs';
+import { readArchivedSet } from './archive-tags.mjs'; import { attrValue, hrefAttr } from './attr.mjs';   // a quoted attribute, and an href
 
 // Collapsible "Older / retired runs" fold for the STAFF index: a count in the summary (so viewers see how many
 // runs we've done) with the names hidden until expanded. Named distinctly from the "Clearance reports" tab so
@@ -1665,9 +1665,9 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
   // Heading-neutral match: accept the new "Reviewer's open questions" and the legacy "Open questions for the reviewer".
   const oq = (secs['Summary'] || '').match(/\*\*(?:Reviewer's open questions|Open questions for the reviewer)[\s\S]*?(?=\n\n[^*\d])/i);
   // The report link rides HIGH — right under the bottom line in the headline, not buried below the table.
-  const reportLink = url
-    ? `<p style="margin:0 0 10px"><a href="${esc(url)}" style="color:#1a4fd6;font-weight:bold;font-size:12pt;text-decoration:none">▶ Open the full report</a>`
-      + (auditUrl ? ` &nbsp;·&nbsp; <a href="${esc(auditUrl)}" style="color:#3b4fd6;text-decoration:none">Download audit (Excel)</a>` : '')
+  const reportLink = hrefAttr(url)
+    ? `<p style="margin:0 0 10px"><a href="${hrefAttr(url)}" style="color:#1a4fd6;font-weight:bold;font-size:12pt;text-decoration:none">▶ Open the full report</a>`
+      + (hrefAttr(auditUrl) ? ` &nbsp;·&nbsp; <a href="${hrefAttr(auditUrl)}" style="color:#3b4fd6;text-decoration:none">Download audit (Excel)</a>` : '')
       + `</p>`
     : '';
   // The search-scope signal leads the email. The 2026-06-12 "lint flags do not render on the email" rule

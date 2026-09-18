@@ -394,8 +394,8 @@
           "todos": 0
         },
         "a-gone-session-meets-a-door-not-a-json-body.test.mjs": {
-          "tests": 4,
-          "asserts": 16,
+          "tests": 6,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
@@ -408,6 +408,18 @@
         "a-han-mark-is-not-a-longer-mark.test.mjs": {
           "tests": 8,
           "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-hostile-line-is-read-in-linear-time.test.mjs": {
+          "tests": 3,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-hostile-value-stays-inside-its-attribute.test.mjs": {
+          "tests": 6,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },
