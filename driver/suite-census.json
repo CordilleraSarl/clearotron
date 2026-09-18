@@ -4672,8 +4672,8 @@
           "todos": 0
         },
         "the-census-refuses-a-population-it-did-not-read.test.mjs": {
-          "tests": 4,
-          "asserts": 12,
+          "tests": 5,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
