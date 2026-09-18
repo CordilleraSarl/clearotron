@@ -22,14 +22,14 @@
 //   3. FAILED RUNS ARE VISIBLE, with the reason. A run that silently disappears from the list is worse
 //      than one that says it stopped: the user goes on believing it is still going.
 
-import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import type { Run } from '../contract/api.ts'
 import { api, saveFailureText } from '../contract/api.ts'
 import { bandRank } from '../contract/tone.ts'
 import { displayName, inSentence, newestFirst, readLabel, readLabelParts, readTime } from '../contract/reads.ts'
 import { marksOf, nameCount, rowsOf, NO_FAMILIES } from '../contract/grouping.ts'
 import type { Families, MarkGroup, Row } from '../contract/grouping.ts'
-import { clearancesColumns, pageWindow } from '../contract/listView.ts'
+import { BOARD_SHARES_FROM, clearancesColumns, pageWindow } from '../contract/listView.ts'
 import {
   GROUP_RISK_LINE,
   groupStatus,
@@ -117,8 +117,22 @@ function writeGroupPref(on: boolean): void {
 }
 
 export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
-  // The list's wrapper, for the scrollbar pinned under it at phone width (components/PinnedScrollbar.tsx).
-  const namesWrap = useRef<HTMLDivElement | null>(null)
+  // The list's wrapper, read two ways through one callback ref, because the wrapper is not drawn until the
+  // list has loaded: its width decides whose column shares it is drawn with — the board's where they hold,
+  // the narrow ones below that (contract/listView.ts) — and the element itself is what the scrollbar
+  // pinned under it at phone width scrolls (components/PinnedScrollbar.tsx).
+  const [tableWidth, setTableWidth] = useState(0)
+  const widthWatch = useRef<ResizeObserver | null>(null)
+  const namesWrapEl = useRef<HTMLDivElement | null>(null)
+  const namesWrap = useCallback((el: HTMLDivElement | null) => {
+    namesWrapEl.current = el
+    widthWatch.current?.disconnect()
+    widthWatch.current = null
+    if (!el) return
+    widthWatch.current = new ResizeObserver(() => setTableWidth(el.clientWidth))
+    widthWatch.current.observe(el)
+    setTableWidth(el.clientWidth)
+  }, [])
   const [filter, setFilter] = useState<Filter>('all')
   const [sort, setSort] = useState<{ key: SortKey; desc: boolean }>({ key: 'date', desc: true })
   const [query, setQuery] = useState('')
@@ -703,7 +717,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
             holds them to 100 in every mode. */}
         <table className="data fixed">
           <colgroup>
-            {clearancesColumns({ pick: canGroup, owner: showOwnerColumn }).map((c) => (
+            {clearancesColumns({ pick: canGroup, owner: showOwnerColumn }, { wide: tableWidth >= BOARD_SHARES_FROM }).map((c) => (
               <col key={c.key} style={{ width: `${c.share}%` }} />
             ))}
           </colgroup>
@@ -811,7 +825,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
           </tbody>
         </table>
       </div>
-      <PinnedScrollbar target={namesWrap} />
+      <PinnedScrollbar target={namesWrapEl} />
 
       {!rows.length ? <div className="empty">No names match this view.</div> : null}
 

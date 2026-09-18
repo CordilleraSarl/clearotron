@@ -130,3 +130,15 @@ test('the actions column is wide enough for "Open latest report" in every mode, 
   assert.ok(share(true) > share(false))
   assert.ok(share(false) >= 20, `the reader's actions column is ${share(false)}%`)
 })
+
+test('where the board\'s shares hold, the columns are the board\'s — and they still sum to 100 in every mode', () => {
+  for (const pick of [false, true]) {
+    for (const owner of [false, true]) {
+      const cols = clearancesColumns({ pick, owner }, { wide: true })
+      assert.equal(cols.reduce((n, c) => n + c.share, 0), 100, `wide pick=${pick} owner=${owner}`)
+      assert.ok(cols.every((c) => c.share > 0), `wide pick=${pick} owner=${owner}: a column was squeezed to nothing`)
+    }
+  }
+  // The approved board, grouped, for someone who may curate: 4 · 3 · 30 · 16 · 12 · 10 · 25.
+  assert.deepEqual(clearancesColumns({ pick: true, owner: false }, { wide: true }).map((c) => c.share), [4, 3, 30, 16, 12, 10, 25])
+})

@@ -87,7 +87,29 @@ export type Column = { readonly key: 'twisty' | 'pick' | 'name' | 'company' | 's
  * column is fixed first and the Name and Status columns, which wrap gracefully, absorb the difference.
  * `scripts/clearances-render-check.mjs` measures the result in a real browser at the widths it drives.
  */
-export function clearancesColumns(mode: { readonly pick: boolean; readonly owner: boolean }): readonly Column[] {
+/**
+ * The width of table, in pixels, from which the board's own shares hold. Below it the date needs more than
+ * the board's ten per cent — a ten-character date in a monospace face, measured at 78px, with six pixels
+ * of padding either side — so the narrow shares below take over.
+ */
+export const BOARD_SHARES_FROM = 960
+
+export function clearancesColumns(
+  mode: { readonly pick: boolean; readonly owner: boolean },
+  width: { readonly wide: boolean } = { wide: false },
+): readonly Column[] {
+  // THE BOARD'S SHARES WHERE THEY HOLD (owner, 2026-09-18: match the board). The approved Clearances board
+  // draws Name 30, Status 16, Risk 12, Updated 10 and the actions 25, beside a 4-point twisty and a 3-point
+  // pick. Ungrouped, the company column the board does not draw takes its eleven points from the name.
+  if (width.wide) {
+    const wide: Column[] = [{ key: 'twisty', share: 4 }]
+    if (mode.pick) wide.push({ key: 'pick', share: 3 })
+    wide.push({ key: 'name', share: 0 })
+    if (mode.owner) wide.push({ key: 'company', share: 11 })
+    wide.push({ key: 'status', share: 16 }, { key: 'risk', share: 12 }, { key: 'updated', share: 10 }, { key: 'actions', share: 25 })
+    const left = 100 - wide.reduce((n, c) => n + c.share, 0)
+    return wide.map((c) => (c.key === 'name' ? { key: 'name', share: left } : c))
+  }
   const cols: Column[] = [{ key: 'twisty', share: 4 }]
   if (mode.pick) cols.push({ key: 'pick', share: 4 })
   cols.push({ key: 'name', share: 0 })
