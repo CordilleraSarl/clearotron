@@ -799,6 +799,23 @@ test("PR-3 report voice: the conditional statement states the FACT that conditio
     "High — conditional on: Fix A. Register findings only — no common-law or marketplace search was run.");
 });
 
+test("a condition whose clause is null leaves the client's verdict sentence: not the lede, not the count, never its reason", () => {
+  // Ruled 2026-09-18 for the screen-gate condition: the run record keeps the reason, the client is told
+  // nothing in its place. A null clause is the store's way of saying so; a MISSING one still falls back.
+  const RULED = "2 in-scope mark(s) dropped on goods could not be record_fetched (unverified): A, B";
+  assert.equal(riskStatement({ tier: "High", verdict: "CONDITIONAL", reasons: [RULED, "Respond to the examiner's objection."],
+    clauses: [null, "the examiner's objection is unanswered"] }),
+    "High — conditional on: The examiner's objection is unanswered.",
+    "the surviving clause leads, and the count is 1 — the ruled-out condition is not behind '(and N more)'");
+  // The only condition, ruled out: the client reads the shipped empty-set sentence, not the engine's reason.
+  const alone = riskStatement({ tier: "High", verdict: "CONDITIONAL", reasons: [RULED], clauses: [null] });
+  assert.match(alone, /^High — conditional on: The open conditions carried in the report/);
+  assert.ok(!/record_fetched|dropped on goods/.test(alone), alone);
+  // A sidecar that simply carries no clause for that reason is untouched: the reason is still the lede.
+  assert.match(riskStatement({ tier: "High", verdict: "CONDITIONAL", reasons: ["Fix A.", "Fix B."], clauses: ["a is open"] }),
+    /^High — conditional on: A is open \(and 1 more\)\.$/);
+});
+
 test("PR-3 report voice: verdictStance — one structured value per verdict, null on unknown/legacy", () => {
   assert.equal(verdictStance("CONDITIONAL"), "conditional");
   assert.equal(verdictStance("conditional"), "conditional", "case-folded");

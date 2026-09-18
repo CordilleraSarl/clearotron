@@ -769,6 +769,15 @@ test("screen-gate DISCLOSE-AND-CONTINUE (owner decision 2026-07-22): an in-scope
   assert.ok(events.some((e) => e.event === "coverage-floor-clamp" && e.screenGate === 1), "screenGate floor arm fired");
   const verdictSidecar = JSON.parse(readFileSync(driverDir(res.runDir, "verdict.json"), "utf8"));
   assert.ok(verdictSidecar.reasons.some((r) => r.includes("KINETIC")), "the clamp reason names the mark");
+  // …IN THE RUN RECORD ONLY (ruled 2026-09-18: cut the clause). The condition's clause is stored as null, so
+  // the client's "conditional on:" list does not carry it, and the delivery check does not report it as a
+  // clause that failed to compose. Nothing is written in its place; the coverage row below still names the mark.
+  const { clientConditions, unrenderableConditions } = await import("../terminal-clamp.mjs");
+  const at = verdictSidecar.reasons.findIndex((r) => /record_fetched/.test(r));
+  assert.ok(at >= 0, "the run record keeps the screen-gate reason");
+  assert.equal(verdictSidecar.clauses[at], null, "its client clause is stored as null — the run record's alone");
+  assert.ok(!clientConditions(verdictSidecar).some((c) => /record_fetched|dropped on goods/.test(c)), "no client condition carries it");
+  assert.deepEqual(unrenderableConditions(verdictSidecar).filter((r) => /record_fetched/.test(r)), [], "and it is not reported as a failed clause");
 
   // the reader-visible disclosure: one coverage-limited row naming the mark, never a silent pass
   const findings = JSON.parse(readFileSync(join(res.runDir, "findings.json"), "utf8"));

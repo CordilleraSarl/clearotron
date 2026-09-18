@@ -110,6 +110,7 @@ export function unrenderableConditions({ reasons, clauses } = {}) {
   const rs = Array.isArray(reasons) ? reasons : [];
   const cs = Array.isArray(clauses) ? clauses : [];
   return rs.filter((r, i) => {
+    if (cs[i] === null) return false;   // run record only BY RULING, not a clause that failed to compose
     if (typeof cs[i] === "string" && cs[i].trim()) return false;
     const text = String(r ?? "").trim();
     if (!text) return false;
@@ -246,6 +247,7 @@ export function clientConditions({ reasons, clauses } = {}) {
   const rs = Array.isArray(reasons) ? reasons : [];
   const cs = Array.isArray(clauses) ? clauses : [];
   return rs.map((r, i) => {
+    if (cs[i] === null) return "";   // a stored null is a condition ruled for the run record alone
     const clause = typeof cs[i] === "string" ? cs[i].trim() : "";
     if (clause) return clause;
     const text = String(r ?? "").trim();

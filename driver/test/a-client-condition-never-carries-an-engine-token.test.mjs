@@ -168,3 +168,18 @@ test("an unfinished register search reaches the verdict without the engine's axi
   assert.ok(shown.length === 2 && !shown.some((c) => REGISTER_AXES.some((a) => c.includes(a))), JSON.stringify(shown));
   assert.deepEqual(registerGapConditions({ deferred: [], taintAxes: [] }), [], "no gap, no condition");
 });
+
+test("a condition stored with a null clause is the run record's alone: shown to no client, reported as no failure", async () => {
+  const { clientConditions, unrenderableConditions } = await import("../terminal-clamp.mjs");
+  const sidecar = {
+    reasons: ["2 in-scope mark(s) dropped on goods could not be record_fetched (unverified): A, B", "a condition the client reads"],
+    clauses: [null, "a condition the client reads"],
+  };
+  assert.deepEqual(clientConditions(sidecar), ["a condition the client reads"]);
+  assert.deepEqual(unrenderableConditions(sidecar), [], "a ruled omission is not a clause that failed to compose");
+  // …and a legacy sidecar with no clauses still falls back as before: the same token-bearing reason is
+  // dropped from the client AND reported, because there nothing says the omission was intended.
+  const legacy = { reasons: sidecar.reasons };
+  assert.ok(!clientConditions(legacy).some((c) => /record_fetched/.test(c)));
+  assert.equal(unrenderableConditions(legacy).length, 1);
+});

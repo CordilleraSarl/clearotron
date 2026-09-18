@@ -590,8 +590,11 @@ export function riskStatement({ tier, verdict, reasons, basis, clauses } = {}) {
   const basisNote = registerOnly ? " Register findings only — no common-law or marketplace search was run." : "";
   if (v === "BLOCKING") return `On hold — the reviewing lawyer's open questions must be resolved before any recommendation.${basisNote}`;
   if (v === "CONDITIONAL") {
-    const conds = (Array.isArray(reasons) ? reasons : []).map((r) => String(r ?? "").trim()).filter(Boolean);
-    const cls = (Array.isArray(clauses) ? clauses : []).map((c) => String(c ?? "").trim()).filter(Boolean);
+    // A clause stored as explicit null is a condition ruled to the run record alone: it is not the lede,
+    // it is not counted, and its reason is never the fallback text. `undefined` (legacy/short) is not null.
+    const cs = Array.isArray(clauses) ? clauses : [];
+    const conds = (Array.isArray(reasons) ? reasons : []).filter((r, i) => cs[i] !== null).map((r) => String(r ?? "").trim()).filter(Boolean);
+    const cls = cs.map((c) => String(c ?? "").trim()).filter(Boolean);
     const lede = cls[0] ?? conds[0] ?? "the open conditions carried in the report";
     const first = clipClause(sentenceCaseLead(lede), STATEMENT_CLAUSE_MAX);
     const n = conds.length || cls.length;
