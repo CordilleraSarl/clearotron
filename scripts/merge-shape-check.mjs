@@ -188,11 +188,23 @@ export function verdictOf(shape) {
   return shape.resurrected.length || shape.duplicated.length ? 1 : 0;
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
-  const args = process.argv.slice(2);
+/**
+ * The repository and the commit a command line names. PURE, so an arm can hold it.
+ *
+ * The first version filtered out "the argument after --repo" as `i !== repoAt + 1`. With no --repo,
+ * `repoAt` is -1 and that filter drops position 0 — the commit the reader named — so the check examined
+ * HEAD instead, found no merge, and exited 0 saying nothing was examined: a clean answer about a commit
+ * nobody asked about.
+ */
+export function parseArgs(args, here = HERE) {
   const repoAt = args.indexOf("--repo");
-  const repo = repoAt >= 0 ? args[repoAt + 1] : HERE;
-  const commit = args.filter((a, i) => !a.startsWith("--") && i !== repoAt + 1)[0] ?? "HEAD";
+  const repo = repoAt >= 0 ? args[repoAt + 1] : here;
+  const commit = args.filter((a, i) => !a.startsWith("--") && (repoAt < 0 || i !== repoAt + 1))[0] ?? "HEAD";
+  return { repo, commit };
+}
+
+if (import.meta.url === `file://${process.argv[1]}`) {
+  const { repo, commit } = parseArgs(process.argv.slice(2));
 
   const shape = mergeShape({ repo, commit });
   const code = verdictOf(shape);

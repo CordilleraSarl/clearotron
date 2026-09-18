@@ -478,8 +478,8 @@
           "todos": 0
         },
         "a-merge-is-judged-by-what-it-did-to-the-tree.test.mjs": {
-          "tests": 6,
-          "asserts": 23,
+          "tests": 7,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },

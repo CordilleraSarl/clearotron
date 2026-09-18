@@ -22,7 +22,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
-import { mergeShape, verdictOf } from "../../scripts/merge-shape-check.mjs";
+import { mergeShape, verdictOf, parseArgs } from "../../scripts/merge-shape-check.mjs";
 
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 
@@ -195,4 +195,13 @@ test("the check is wired into the tree it ships in", () => {
   // against, so it is read once against the repository it lives in.
   const s = mergeShape({ repo: ROOT, commit: "HEAD" });
   assert.equal(s.readable, true, `the check could not read this repository: ${s.why}`);
+});
+
+test("a commit named on the command line is the one examined, with or without --repo", () => {
+  // Without --repo the commit sat at position 0, and the old filter dropped exactly that position: the
+  // check examined HEAD, found no merge, and exited 0 about a commit nobody named.
+  assert.deepEqual(parseArgs(["b288ce3"], "/here"), { repo: "/here", commit: "b288ce3" });
+  assert.deepEqual(parseArgs(["--repo", "/tree", "b288ce3"], "/here"), { repo: "/tree", commit: "b288ce3" });
+  assert.deepEqual(parseArgs(["b288ce3", "--repo", "/tree"], "/here"), { repo: "/tree", commit: "b288ce3" });
+  assert.deepEqual(parseArgs([], "/here"), { repo: "/here", commit: "HEAD" }, "no commit named still means HEAD");
 });
