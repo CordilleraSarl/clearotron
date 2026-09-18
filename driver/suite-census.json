@@ -369,6 +369,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-failed-run-resumes-from-the-command-line.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "a-failed-run-tells-the-client-what-to-do.test.mjs": {
           "tests": 6,
           "asserts": 16,
