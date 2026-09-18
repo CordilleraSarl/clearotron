@@ -25,7 +25,7 @@
 // follows, so an MCP tool call can read consumption without dragging the pipeline in.
 
 import { appendFileSync, readFileSync, readdirSync } from "node:fs";
-import { join } from "node:path";
+import { join } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
 
 /** Where the consumption ledger sits: beside the matter ledger, in the studio dir. */
 export function consumptionLedgerPath(studioRoot) {
@@ -158,7 +158,7 @@ export function accountConsumption({ workspaceRoot, account, now = Date.now() })
 
   const rows = [];
   for (const ws of workspaces) {
-    const studio = join(workspaceRoot, ws, "studio", "clearance-search");
+    const studio = studioDirFor(join(workspaceRoot, ws));
     try {
       for (const line of readFileSync(consumptionLedgerPath(studio), "utf8").split("\n")) {
         if (!line.trim()) continue;

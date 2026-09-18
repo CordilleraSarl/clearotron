@@ -348,7 +348,10 @@ export const FIELD_CONSUMERS = {
 // it RATES the matter; absent ⇒ the Generic default rates it (DEFAULT_FRAMEWORK in framework.mjs). Constrained to
 // the clearance-search skill dir + a .md suffix so a profile cannot point the synthesis read at an arbitrary
 // path. The SHARED doctrine lives identically across the per-customer frameworks; only the examples diverge.
-const SKILL_PATH_RE = /^skills\/clearance-search\/[A-Za-z0-9._-]+\.md$/;
+// The folder's pre-rename spelling is accepted as the same folder: a store written before the rename names it,
+// and one unmigrated profile must not take a company, or the whole roster, off the list. The file is read
+// from whichever spelling the store holds (config.resolveSkillPath).
+const SKILL_PATH_RE = /^skills\/(?:clearance|prelim)-search\/[A-Za-z0-9._-]+\.md$/;
 
 // The delivery overlay every run gets. `email` is no longer a choice: every run's mail is a COVER NOTE
 // pointing at the report (one report, one shape, per-lawyer client mail drafted by the assistant).
@@ -679,24 +682,41 @@ let cache = null;
 /** Read one directory of profiles/<key>.json → Map(key → profile). No generic requirement and no
  *  matchDomains check here: both are properties of the MERGED roster, not of one layer, and asserting
  *  them per-layer would refuse a base+overlay pair that is perfectly valid once combined. */
-function readProfilesLayer(dir) {
+// ONE COMPANY THAT CANNOT BE READ MUST NOT TAKE THE OTHERS WITH IT — on the deployment's own store. Strict,
+// every file or none, is right for an explicit directory: that is how this loader's rules are checked. On the
+// configured store it refused every company over one file, and the portal then offered `generic` alone with
+// no error, so a client's clearances looked deleted. So `tolerant` isolates each file: a company that fails is
+// left out, its reason is kept on the returned map as `unreadable`, and asking for it by key refuses with that
+// reason (resolveProfile). `generic` is never tolerated: it is the fallback every unprofiled job rates under,
+// and replacing a deployment's own with the bundled one would change every such answer without a word.
+function readProfilesLayer(dir, { tolerant = false } = {}) {
   const profiles = new Map();
+  const unreadable = [];
   for (const f of readdirSync(dir).filter((n) => n.endsWith(".json")).sort()) {
     const key = f.replace(/\.json$/, "");
-    let p;
-    try { p = JSON.parse(readFileSync(join(dir, f), "utf8")); }
-    catch (e) { throw new Error(`profiles/${f}: unparseable JSON (${e.message})`); }
-    validateProfileShape(key, p);
-    // Context pack (Phase 1): a sibling `<key>.context.md`, attached AFTER validateProfileShape so the
-    // deny-unknown-key gate (which governs the JSON shape) never sees it. Optional — absent ⇒ no pack.
-    // Validated at load (rule-shape + size budget) so a bad pack fails loudly here, like riskAppetite (F8).
-    const packPath = join(dir, CONTEXT_PACK_FILE(key));
-    const contextPack = existsSync(packPath) ? readFileSync(packPath, "utf8").trim() : "";
-    if (contextPack) assertContextPackShape(contextPack, `profiles/${CONTEXT_PACK_FILE(key)}`);
-    profiles.set(key, { key, ...p, ...(contextPack ? { contextPack } : {}) });
+    try {
+      let p;
+      try { p = JSON.parse(readFileSync(join(dir, f), "utf8")); }
+      catch (e) { throw new Error(`profiles/${f}: unparseable JSON (${e.message})`); }
+      validateProfileShape(key, p);
+      // Context pack (Phase 1): a sibling `<key>.context.md`, attached AFTER validateProfileShape so the
+      // deny-unknown-key gate (which governs the JSON shape) never sees it. Optional — absent ⇒ no pack.
+      // Validated at load (rule-shape + size budget) so a bad pack fails loudly here, like riskAppetite (F8).
+      const packPath = join(dir, CONTEXT_PACK_FILE(key));
+      const contextPack = existsSync(packPath) ? readFileSync(packPath, "utf8").trim() : "";
+      if (contextPack) assertContextPackShape(contextPack, `profiles/${CONTEXT_PACK_FILE(key)}`);
+      profiles.set(key, { key, ...p, ...(contextPack ? { contextPack } : {}) });
+    } catch (e) {
+      if (!tolerant || key === "generic") throw e;
+      unreadable.push({ key, file: f, reason: String(e?.message ?? e) });
+    }
   }
+  Object.defineProperty(profiles, "unreadable", { value: unreadable, enumerable: false });
   return profiles;
 }
+
+/** The companies a roster left out because their file would not load: `[{ key, file, reason }]`. */
+export const unreadableProfiles = (profiles) => (Array.isArray(profiles?.unreadable) ? profiles.unreadable : []);
 
 /** Load every profiles/<key>.json → Map(key → profile), OVERLAY OVER BASE. Hard-fails loudly
  *  on a generic.json missing from BOTH layers (the universal fallback — its absence would mis-profile
@@ -746,7 +766,7 @@ export function loadProfiles({ dir, force = false, includeTestFixtures, includeD
   // the universal fallback the module REQUIRES by name, the thing every unprofiled job resolves to. That
   // is the one file whose absence makes an empty store a refusal, so that is the only one that falls
   // through. Everything else in a deployment's roster is the deployment's own.
-  const profiles = overlay ? readProfilesLayer(overlay) : readProfilesLayer(baseDir);
+  const profiles = overlay ? readProfilesLayer(overlay, { tolerant: true }) : readProfilesLayer(baseDir);
 
   // ── A TEST FIXTURE IS PRESENT AND NEVER OFFERED ─────────────────────────────────────────────────
   //
@@ -855,6 +875,15 @@ export function loadProfiles({ dir, force = false, includeTestFixtures, includeD
 export function resolveProfile(job, { profiles = loadProfiles() } = {}) {
   const key = String(job?.profileKey ?? "").trim();
   if (key && profiles.has(key)) return profiles.get(key);
+  // A company whose file would not load is not an unknown company: say which, and why.
+  const unread = unreadableProfiles(profiles);
+  const failed = key ? unread.find((u) => u.key === key) : null;
+  if (failed) {
+    const err = new Error(`profile_unreadable:${key} — ${failed.reason}. The company exists but its profile could not be read, `
+      + `so this run is refused rather than rated under another company's settings.`);
+    err.code = "profile_unreadable";
+    throw err;
+  }
   // A NAMED-but-unknown key is not a graceful-degradation case, it is a roster mismatch — the two
   // sides disagree about which config store is real, and falling back to `generic` silently strips
   // the client's platforms, their self-exclusion seed and the framework that RATES the matter. That
@@ -874,6 +903,15 @@ export function resolveProfile(job, { profiles = loadProfiles() } = {}) {
       const dl = String(d).toLowerCase();
       if (dom === dl || dom.endsWith(`.${dl}`)) return p;
     }
+  }
+  // WITH A COMPANY UNREAD, "no company matched" is not known: the unread one's domains are not in hand, and
+  // this job may be its. Falling to `generic` here is the silent wrong-company deliverable, so refuse.
+  if (unread.length) {
+    const err = new Error(`profile_roster_incomplete — ${unread.length} company profile(s) could not be read `
+      + `(${unread.map((u) => u.file).join(", ")}), so whether this job belongs to one of them cannot be decided. `
+      + `Name the company on the job, or fix the file.`);
+    err.code = "profile_roster_incomplete";
+    throw err;
   }
   return profiles.get("generic");
 }

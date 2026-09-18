@@ -426,7 +426,7 @@ test("B: the column headers carry the definition and the basis paragraph leaves 
   assert.match(html, /<th>Exactly IRONWHISK<\/th>/);
   assert.match(html, /<th>Contains IRONWHISK<\/th>/);
   assert.match(html, /<th>Near-spellings \(IRONWISK, IRONWHISC\)<\/th>/, "the forms come from the run's own variant list");
-  assert.match(html, /A count is not a conflict; the cards above say which filings matter\./);
+  assert.doesNotMatch(html, /A count is not a conflict/i, "the board carries no caveat under the counts table");
   assert.doesNotMatch(html, /counted by name only/, "the 70-word basis sentence is off the page");
 });
 

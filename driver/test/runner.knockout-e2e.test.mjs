@@ -452,7 +452,7 @@ test("STAGE 0.5 end to end: counts measured in code, on the report, in the workb
   // report-data.json and to the workbook, which is where the issue puts it, and that is asserted below
   // rather than here so a failure names which surface lost it.
   assert.match(report, /<th>Exactly IRONWHISK<\/th>/, "the header says what the identical column counted");
-  assert.match(report, /A count is not a conflict/, "and the one line under the table says what a count is not");
+  assert.doesNotMatch(report, /A count is not a conflict/i, "and no caveat line sits under the table: the board carries none");
   assert.doesNotMatch(report, /Counting is not searching/, "the retired paragraph is off the page");
   // The same numbers, machine-readable, for whatever drafts a client-facing note from this run.
   const metaC = JSON.parse(readFileSync(join(pool, dir, "meta.json"), "utf8"));
