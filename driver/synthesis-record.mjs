@@ -265,7 +265,7 @@ export function acceptSynthesis(params, { asks = [], ledger = null, manifest = n
   //
   // The rule is not new and was never checked. This stage's own contract states it in one line — a
   // record that reached your findings surface leaves as a finding in findings.json or as a declination,
-  // "and there is no third way out" — and the driver then accepted whatever came back. On the R2 round
+  // "and there is no third way out" — and the driver then accepted whatever came back. On one test run
   // it came back short and nothing anywhere said so, which is what put the reader in front of a report
   // that silently omitted records the run had judged worth his attention.
   //

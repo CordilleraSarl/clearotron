@@ -32,6 +32,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import ExcelJS from "exceljs";
 import { buildAudit, validateAudit } from "../publish/xlsx.mjs";
+import { mintSupplementalQid } from "../register-plan.mjs";
 
 const out = (tag) => join(tmpdir(), `audit-cl-unlogged-${tag}-${process.pid}.xlsx`);
 const JX = out("jx"), LOGGED = out("logged"), REGONLY = out("regonly"), LINKLESS = out("linkless");
@@ -291,10 +292,13 @@ test("a probe the run decided on and never dispatched is an ordinary row on the 
   const OVER = out("overcap");
   const c = contract();
   const before = (c.coverage || []).length;
-  const probes = [
-    { area: "TT Combat Ltd", state: "not-searched", note: "over the cap, never dispatched (recall-owner-tt-combat-ltd)" },
-    { area: "Harmonix Music Systems", state: "not-searched", note: "over the cap, never dispatched (recall-owner-harmonix-music-systems)" },
-  ];
+  // INVENTED PARTIES, with their probe ids minted the way the run mints them. The first build of this
+  // fixture copied two real companies out of the run that showed the defect; the defect is the SHAPE —
+  // a party, a probe id, a note with no work in it — and a coined name carries that shape as well.
+  const OWNERS = ["Brackenfold Tabletop Ltd", "Oremont Audio Systems"];
+  const minted = new Set();
+  const ids = OWNERS.map((owner) => mintSupplementalQid({ prefix: "recall-owner", term: owner, used: minted }));
+  const probes = OWNERS.map((owner, n) => ({ area: owner, state: "not-searched", note: `over the cap, never dispatched (${ids[n]})` }));
 
   await buildAudit({ ...c, undispatchedProbes: probes }, JX_AUDIT, OVER, fm.title, fm);
   const wb = new ExcelJS.Workbook();
@@ -307,7 +311,7 @@ test("a probe the run decided on and never dispatched is an ordinary row on the 
   const rows = [];
   ws.eachRow((r, n) => { if (n > 1) rows.push([1, 2, 3, 4].map((i) => cellText(r, i))); });
 
-  const row = rows.find((r) => r[0] === "TT Combat Ltd");
+  const row = rows.find((r) => r[0] === OWNERS[0]);
   assert.ok(row, "the undispatched probe reaches no row at all");
   assert.equal(row[1], "Open", "the row does not carry the sheet's own state word");
 
@@ -318,10 +322,10 @@ test("a probe the run decided on and never dispatched is an ordinary row on the 
   assert.equal(row[2].trim(), "", `"What was done" reads ${JSON.stringify(row[2])} for a probe nobody ran`);
   assert.ok(row[3].includes("over the cap"), "the row does not say why the probe was not made");
   assert.ok(row[3].includes("never dispatched"), "the row does not say the probe was never made");
-  assert.ok(row[3].includes("recall-owner-tt-combat-ltd"), "the row does not carry the probe id");
+  assert.ok(row[3].includes(ids[0]), "the row does not carry the probe id");
 
   // ONE ROW PER PROBE, and the party is the Area — the reviewing lawyer looks these up by name.
-  assert.ok(rows.some((r) => r[0] === "Harmonix Music Systems"), "only one of two undispatched probes reached the sheet");
+  assert.ok(rows.some((r) => r[0] === OWNERS[1]), "only one of two undispatched probes reached the sheet");
 
   // THE REAL COVERAGE ROWS ARE STILL THERE. Appended, not substituted.
   assert.equal(rows.length, before + probes.length,
@@ -338,7 +342,7 @@ test("a probe the run decided on and never dispatched is an ordinary row on the 
   const both = [];
   wb3.getWorksheet("Coverage & gaps").eachRow((r, n) => { if (n > 1) both.push(cellText(r, 1)); });
   assert.ok(both.includes("Conditions"), "the dropped condition was pushed off by the probes");
-  assert.ok(both.includes("TT Combat Ltd"), "the probes were pushed off by the dropped condition");
+  assert.ok(both.includes(OWNERS[0]), "the probes were pushed off by the dropped condition");
   assert.equal(both.length, before + probes.length + 1, "the two kinds of row do not both append");
 
   // AND A RUN THAT DISPATCHED EVERYTHING IT MINTED GROWS NOTHING.
@@ -348,7 +352,7 @@ test("a probe the run decided on and never dispatched is an ordinary row on the 
   await wb2.xlsx.readFile(NONE);
   const clean = [];
   wb2.getWorksheet("Coverage & gaps").eachRow((r, n) => { if (n > 1) clean.push(cellText(r, 1)); });
-  assert.ok(!clean.includes("TT Combat Ltd"), "a run that dispatched every probe grew a row saying it did not");
+  assert.ok(!clean.includes(OWNERS[0]), "a run that dispatched every probe grew a row saying it did not");
   assert.equal(clean.length, before, "the ordinary rows moved too");
 
   for (const p of [OVER, BOTH, NONE]) await unlink(p).catch(() => {});

@@ -3266,7 +3266,7 @@ export const STAGES = {
       `Every finding in your reasoning gets ONE findings.json object (rated ones carry a band; off-field awareness items carry none) — never invent a finding not in your reasoning; a record you are not delivering is DECLINED by name (see DECLINATIONS), never dropped in silence. The narrative is your reasoning; the JSON is the machine-readable judgment that builds the report and Excel, so accuracy in the structured fields (band, disposition, meters, quadrant, source, use_check, own_rights) is what matters. If a value is genuinely unknown, use the "unknown"/"" token rather than omitting the key.`,
       // ── — DECLINATIONS. The half of this stage's judgment no artifact ever held. ────────────
       //
-      // Measured on R2 round e48f7056: 102 records reached this stage's findings surface and stopped
+      // Measured on a full clearance test run: 102 records reached this stage's findings surface and stopped
       // there, and the run could say only THAT synthesis had stopped them — `reason_source:
       // step-silent`, one sentence for all 102. A record dropped that way is unexplained in both
       // directions: the run cannot say why, and nothing downstream can reconstruct it.

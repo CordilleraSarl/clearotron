@@ -2603,7 +2603,7 @@ async function connectorDoorKind(url) {
           // The two rulings are consistent once you separate what was actually objected to. "Settings →
           // Connectors → Add custom connector" is not a recipe in the sense the cut banned — it is the
           // reader's OWN vocabulary, three taps in an app they already have open. The technical thing,
-          // the one he called irrelevant to a Cowork user, is the command, and that is what moves behind
+          // the part irrelevant to a reader connecting from Cowork, is the command, and that is what moves behind
           // a fold. So the steps travel and the command demotes.
           //
           // They are resolved HERE and not composed in the browser, for the reason this route already

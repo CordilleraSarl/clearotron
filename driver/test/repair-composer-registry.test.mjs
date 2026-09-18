@@ -212,7 +212,7 @@ test("a composer that branches on `toolWritten` is PASSED it at every dispatch s
 });
 
 test("a stage with exactly ONE composer says so, and the census reds when it gains a second", () => {
-  // Overwatch's addition to this issue's scope: a guard proven at n=1 has proven nothing about ordering,
+  // Why more than one member is tested: a guard proven at n=1 has proven nothing about ordering,
   // dedup, or interaction between two composers on one stage. Every single-member stage carries an
   // explicit note, so growth is a decision somebody read rather than an absorption.
   const byStage = {};

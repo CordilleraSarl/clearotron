@@ -138,16 +138,23 @@ test("no executable line names a specific account's home directory", () => {
   const reSource = /["'`]\/home\/[a-z][a-z0-9_-]*\//;
   const reConfig = /(?:^|[\s=:])\/home\/[a-z][a-z0-9_-]*\//;
   const reFor = (f) => (CONFIG.test(f) ? reConfig : reSource);
-  // ONE residual, declared with its reason and keyed on CONTENT rather than a line number — the
+  // TWO residuals, each declared with its reason and keyed on CONTENT rather than a line number — the
   // convention register-ledger-rename.test.mjs set, for the same reason: a numeric pin either rots into
   // a false failure or drifts onto a different line and excuses a real one.
   //
   // freeze-example-run.test.mjs PLANTS an operator home path because the rule it is testing is the
-  // scrub's `operator-home` detector. A fixture whose subject IS the forbidden pattern cannot be
-  // scrubbed without deleting the test. Everything else in the sweep is a path something actually used.
-  const ALLOWED = [{ file: "driver/test/freeze-example-run.test.mjs", contains: "operator home path" }];
-  const allowed = (r, ln) => ALLOWED.some((a) => r === a.file) && /azureuser/.test(ln)
-    && readFileSync(join(REPO, r), "utf8").includes("an operator home path");
+  // scrub's `operator-home` detector. suite-cannot-reach-live-data-plane.test.mjs WRITES an account's
+  // home because the rule it is testing is the data-plane guard's refusal of one — derived from
+  // homedir() instead, it sat under the temp root in every container and was correctly not refused. A
+  // fixture whose subject IS the forbidden pattern cannot be scrubbed without deleting the test, so each
+  // is excused for its one line shape only. Everything else in the sweep is a path something used.
+  const ALLOWED = [
+    { file: "driver/test/freeze-example-run.test.mjs", contains: "an operator home path", line: /azureuser/ },
+    { file: "driver/test/suite-cannot-reach-live-data-plane.test.mjs",
+      contains: "placeholder the documentation already uses", line: /"\/home\/you\/trademark\/workspace"/ },
+  ];
+  const allowed = (r, ln) => ALLOWED.some((a) => r === a.file && a.line.test(ln)
+    && readFileSync(join(REPO, r), "utf8").includes(a.contains));
   const offenders = [];
   for (const f of guardedFiles())
     for (const { ln, n } of executableLines(f))

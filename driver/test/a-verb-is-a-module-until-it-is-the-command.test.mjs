@@ -26,7 +26,7 @@
 // import, and therefore nobody imports them. What it buys is the moment somebody wants one — which is
 // exactly what happened to `connect.mjs`, and is why that file and `disconnect.mjs` carry it now.
 //
-// Overwatch ruled the nine deliberately undone (2026-09-05): they become a bundle of their own the day
+// The nine were left undone on purpose (2026-09-05): they become a bundle of their own the day
 // something needs exporting from one of them, or never. This arm is what keeps that a DECISION rather
 // than a discovery — an eleventh unguarded verb fails here, and a declared file that grows an export
 // fails here too, which is the moment the reasoning above stops being true of it.

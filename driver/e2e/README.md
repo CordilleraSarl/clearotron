@@ -6,6 +6,10 @@ directory, in one table, labelled. Nothing here bundles synthetic copies of the 
 fallback: two suites sharing IDs with different marks is exactly the confusion the store's swap-whole
 rule exists to prevent.
 
+Scenario IDs run from R0 upward and are the store's own names for its scenarios. Below: R0 is the
+refusals every door must make before any model call; R1, R2, R5 and R6 are clearances; R3 and R4 are
+knockout screens; R7–R11 are the product-comparison set.
+
 ```
 CLEAROTRON_E2E_DIR set     →  $CLEAROTRON_E2E_DIR/scenarios/<ID>.json; the scorer reads
                           $CLEAROTRON_E2E_DIR/baselines/. The ONLY mode.

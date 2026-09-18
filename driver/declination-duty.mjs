@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // declination-duty.mjs — every record handed to synthesis left by a NAMED EXIT, or the run says which
-// ones did not. (the missing half; the R2 round on is the incident.)
+// ones did not. (The missing half of that contract; a full clearance test run showed the gap.)
 //
 // THE RULE IS ALREADY DICTATED, AND IT WAS NEVER CHECKED. synthesis's own contract states it in one
 // line — "a record that reached your findings surface leaves this stage as a finding in findings.json
 // or as a declination, and there is no third way out". The driver builds that list, prints it forward,
 // writes the spec the decline tool reads, and hands the seat a closed reason vocabulary to decline
-// with. Then it accepts whatever comes back. On the R2 round what came back was short, and nothing
+// with. Then it accepts whatever comes back. On one test run what came back was short, and nothing
 // anywhere said so: the reader got a report, and the records that never reached it left no trace of
 // having been considered.
 //

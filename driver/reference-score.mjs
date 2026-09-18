@@ -568,7 +568,7 @@ export function scoreRecall({ reference, findings = [], retrieved = [], scopeCla
     // ── — THE OWNER DECIDES WHICH RECORD IS CITED, NEVER BAND ORDER ───────────────
     //
     // This was `retrieved.find(heldRule)` — the FIRST match in band order, with nothing preferring the
-    // entry's own proprietor. Measured on the 2026-08-27 R2 round against R2's gold: of eight entries,
+    // entry's own proprietor. Measured on a 2026-08-27 test run against its lawyer reference: of eight entries,
     // five matched more than one band record and three cited the wrong company. For two of those three
     // the RIGHT record was already in the match set and was passed over on position alone — DELPHIC's at
     // index 1, DELPHYS's at index 3.
@@ -1145,7 +1145,7 @@ export function planSubQueries({ plan = null, execution = null, scopeTerritories
   // fold read `incomplete`, set `owed`, and every territory with no narrow of its own became
   // `owedAndAbsent` — the fix that split `none` in two reporting the defect it was built to stop.
   //
-  // Measured on the one preserved R2 round (the tracker issue names it), plan of 100 entries:
+  // Measured on a preserved full clearance test run, plan of 100 entries:
   //   [1]  saturation-probe:default:bio        count      incomplete   ← selected
   //   [25] primary-sweep:default:<dominant element>  enumerate  enumerated   ← Step 2
   // and the conclusion read DOES NOT HOLD with `owedAndAbsent: ["CH","EU","US"]` over a run whose

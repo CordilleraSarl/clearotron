@@ -774,7 +774,7 @@ test("naming the failure moves NO budget — the class is untouched", () => {
 //
 // `refute()` returned a bare `{ ok: false }`, so the only thing its caller could throw was a sentence
 // about the LADDER — "failed after retries + fallback" — which names no provider condition and matches
-// neither lane regex. Measured on a codex R2 round that went terminal after seventeen hours: every
+// neither lane regex. Measured on a codex test run that went terminal after seventeen hours: every
 // attempt recorded `rate_limited` or `timeout`, and the run was classified `unknown` / `defect`, so a
 // run starved by an upstream subscription spent the small budget reserved for its OWN mistakes. That is
 // the precise inversion the lane split exists to prevent.
