@@ -424,6 +424,12 @@ jobs:
       # deployment: it renders this tree's own fixture rather than reaching for a box.
       - run: node scripts/render-check.mjs --fixture-pool
 
+      # Does the delivered document's own header hold together? One header with the section breadcrumb
+      # inside it, still at the top of the viewport once the page is scrolled, and the risk band marker
+      # clear of the heading above it — measured at every rung of the ladder, because the marker is drawn
+      # flush left at the leftmost band and that is where it met the words.
+      - run: node scripts/report-header-render-check.mjs
+
       # Does the browser accept the sandbox we think we wrote? It reads back the attributes Chrome
       # actually kept, rather than the ones the source sets.
       - run: node scripts/report-frame-check.mjs

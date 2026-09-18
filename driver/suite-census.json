@@ -2812,8 +2812,8 @@
           "todos": 0
         },
         "lane-depth-ask-vs-got.test.mjs": {
-          "tests": 12,
-          "asserts": 48,
+          "tests": 15,
+          "asserts": 57,
           "skips": 0,
           "todos": 0
         },
@@ -6388,6 +6388,12 @@
         "reportFrame.test.ts": {
           "tests": 15,
           "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
+        "reportSections.test.ts": {
+          "tests": 6,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },

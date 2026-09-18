@@ -1176,10 +1176,24 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     const jxSidecar = driverDir(runDir ?? dirname(reportMd), 'jx-lanes.json');
     if (existsSync(jxSidecar)) {
       const sidecar = JSON.parse(readFileSync(jxSidecar, 'utf8'));
-      const { deriveJxSliceStatement, deriveLaneDepthVerdicts } = await import('../jx.mjs');
+      const { laneDepthOfRun } = await import('../jx.mjs');
       let units = null;
       try { units = JSON.parse(readFileSync(driverDir(runDir ?? dirname(reportMd), 'jx/units.json'), 'utf8')); } catch { /* the statement handles an absent units file */ }
-      laneDepthVerdicts = deriveLaneDepthVerdicts({ sidecar, slices: deriveJxSliceStatement({ sidecar, units }) });
+      // THE RUN ALREADY ANSWERED THIS, AND THE STAMPED ANSWER IS THE ONE THAT COUNTS.
+      //
+      // `deriveJxSliceStatement` writes `fold.depth` at delivery, from the run's OWN environment, for the
+      // reason the seam exists at all: the arms are environment, so a verdict derived later can only speak
+      // for the box it is derived on. Publishing re-derived it here — a second author for a fact the run
+      // had already stated — and the two disagreed on a delivered client report.
+      //
+      // The disagreement was not subtle. This call passed `deriveJxSliceStatement`'s whole return,
+      // `{executes, slices}`, where the function reads `slices.candidates` — so the lookup found nothing,
+      // every lane's `ran` came back null whatever it had really done, and a full-country JP run that
+      // searched in Japanese printed "Local-language investigation · Not run this run". The stamped
+      // verdict on the same run's sidecar said `ran: "candidates"`, correctly.
+      //
+      // So: read what the run stated, and derive only for a run delivered before the stamp existed.
+      laneDepthVerdicts = laneDepthOfRun({ sidecar, units });
     }
   } catch { /* an unreadable sidecar reports as not-in-scope rather than failing a publish */ }
   try {
