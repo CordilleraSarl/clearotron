@@ -413,6 +413,37 @@ html.anon-on [data-anon='mark']:not(.anon-clear) {
   .table-wrap { scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
 }
 
+/* THE BAR, PINNED to the bottom of the screen while its table is in view (components/PinnedScrollbar.tsx).
+   Drawn, not native: a phone's own bar is an overlay that takes no room and shows only while moving. The
+   track and thumb take the colours the desktop bar above uses, on the page's own surface so rows do not
+   show through, and sticky, so the bar settles under the table at the table's foot. */
+.pinned-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  padding: 4px 0;
+  background: var(--surface-page);
+}
+.pinned-track {
+  position: relative;
+  height: 9px;
+  border-radius: 5px;
+  touch-action: none;
+}
+.table-wrap.has-pinned-bar::-webkit-scrollbar { height: 0; }
+@supports not selector(::-webkit-scrollbar) {
+  .table-wrap.has-pinned-bar { scrollbar-width: none; }
+}
+.pinned-thumb {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  min-width: 24px;
+  border-radius: 5px;
+  background: var(--border-strong);
+  touch-action: none;
+}
+
 table.data {
   width: 100%;
   min-width: 760px;

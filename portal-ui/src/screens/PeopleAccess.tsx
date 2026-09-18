@@ -16,7 +16,8 @@
 // also has to be admitted THERE — this page sees only the half that lives here, and the form that adds
 // them says so rather than implying it holds the whole picture.
 
-import { Fragment } from 'react'
+import { Fragment, useRef } from 'react'
+import { PinnedScrollbar } from '../components/PinnedScrollbar.tsx'
 import type { CSSProperties } from 'react'
 import { api, isOk } from '../contract/api.ts'
 import type { ObservedView, Person } from '../contract/api.ts'
@@ -44,6 +45,8 @@ export function useSourceRepo(): string | null {
 }
 
 export function PeopleAccess({ ctx }: { readonly ctx: ShellContext }) {
+  // The table's wrapper, for the scrollbar pinned under it at phone width (components/PinnedScrollbar.tsx).
+  const peopleWrap = useRef<HTMLDivElement | null>(null)
   const { result } = useLoad(() => api.adminAccess(), [])
   const repo = useSourceRepo()
   // A SECOND, INDEPENDENT load. Deliberately not folded into the gate below: the activity feed is an
@@ -128,7 +131,7 @@ export function PeopleAccess({ ctx }: { readonly ctx: ShellContext }) {
           </div>
         ) : null}
 
-        <div className="table-wrap">
+        <div className="table-wrap" ref={peopleWrap}>
           <table className="data">
             <thead>
               <tr>
@@ -155,6 +158,7 @@ export function PeopleAccess({ ctx }: { readonly ctx: ShellContext }) {
             </tbody>
           </table>
         </div>
+        <PinnedScrollbar target={peopleWrap} />
 
         {/* WHAT THE COLUMN'S WORDS MEAN, under the column that prints them — said once for the page rather
             than once per row, and scoped the way the permissions are: to the companies a person can see. */}

@@ -651,6 +651,32 @@ for (const width of [WIDE, 700]) {
   await reload()
   full[width] = await value(FULL)
 }
+// — AT PHONE WIDTH, THE BAR IS ON SCREEN. The table scrolls inside its box there, and on a long list the
+// box's own bar is several screens down; the pinned bar sits at the bottom of the screen instead, and it is
+// the table's bar, not a picture of one — moving it moves the table.
+await cmd('Emulation.setDeviceMetricsOverride', { width: 400, height: 800, deviceScaleFactor: 1, mobile: true })
+await reload()
+const phone = await value(`(async () => {
+  window.scrollTo(0, 0); await new Promise(r => setTimeout(r, 200));
+  const wrap = document.querySelector('.names-wrap'); const bar = document.querySelector('.pinned-bar');
+  const thumb = bar && bar.querySelector('.pinned-thumb'); const track = bar && bar.querySelector('.pinned-track');
+  if (!wrap || !bar || !thumb) return { bar: !!bar, wrap: !!wrap, thumb: !!thumb };
+  const b = bar.getBoundingClientRect(), t0 = thumb.getBoundingClientRect();
+  const out = { bar: true, onScreen: b.bottom <= innerHeight + 1 && b.top >= innerHeight - 40, barH: Math.round(b.height),
+    thumbW: Math.round(t0.width), thumbH: Math.round(t0.height), thumbInk: getComputedStyle(thumb).backgroundColor,
+    tableScrolls: wrap.scrollWidth > wrap.clientWidth + 1, nativeBarH: wrap.offsetHeight - wrap.clientHeight,
+    wrapBelowFold: wrap.getBoundingClientRect().bottom > innerHeight };
+  // The table moved by a finger: the thumb follows.
+  wrap.scrollLeft = 200; await new Promise(r => setTimeout(r, 200));
+  out.thumbFollowed = Math.round(thumb.getBoundingClientRect().left - t0.left);
+  // A press at the track's right end: the table follows.
+  const tr = track.getBoundingClientRect();
+  track.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: tr.right - 2, clientY: tr.top + 4, pointerId: 1 }));
+  await new Promise(r => setTimeout(r, 200));
+  out.tableAtEnd = Math.round(wrap.scrollWidth - wrap.clientWidth - wrap.scrollLeft);
+  return out;
+})()`)
+await cmd('Emulation.clearDeviceMetricsOverride', {})
 fullList = false
 // The same reading on the stub rows, which carry the shapes the full list does not — a group, a name
 // with searches under it, a stopped name — opened out.
@@ -766,6 +792,13 @@ if (!short || short.fatal) {
 }
 
 console.log(`measured at ${WIDTH}px — ${short.openedRows} rows opened, ${short.readRows} read rows`)
+console.log(`phone-width bar: ${JSON.stringify(phone)}`)
+ok(phone && phone.bar && phone.tableScrolls && phone.wrapBelowFold && phone.onScreen,
+  `at 400px the list's sideways bar is not on screen at the top of a long list — ${JSON.stringify(phone)}`)
+ok(phone && phone.nativeBarH === 0, `at 400px the table's own bar is drawn beside the pinned one — ${JSON.stringify(phone)}`)
+ok(phone && phone.barH >= 9 && phone.thumbH >= 8 && phone.thumbW >= 24, `at 400px the pinned bar is not drawn at a size a reader can see — ${JSON.stringify(phone)}`)
+ok(phone && phone.thumbFollowed > 0, `at 400px the thumb does not follow the table — ${JSON.stringify(phone)}`)
+ok(phone && phone.tableAtEnd <= 1, `at 400px pressing the end of the track does not move the table to its end — ${JSON.stringify(phone)}`)
 for (const [width, f] of Object.entries(stubs)) {
   ok(f && f.riskOverDate.length === 0, `stub rows at ${width}px: text runs into the next cell on ${JSON.stringify(f?.riskOverDate)}`)
   ok(f && f.riskMidWord.length === 0, `stub rows at ${width}px: a risk word breaks inside itself — ${JSON.stringify(f?.riskMidWord)}`)

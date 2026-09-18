@@ -43,6 +43,7 @@ import {
   statusCount,
 } from '../contract/nameRow.ts'
 import { RiskDot, StatusCell } from '../components/RiskDot.tsx'
+import { PinnedScrollbar } from '../components/PinnedScrollbar.tsx'
 import { Icon } from '../components/Icon.tsx'
 import { useLoad, usePoll } from '../state/useApi.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
@@ -116,6 +117,8 @@ function writeGroupPref(on: boolean): void {
 }
 
 export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
+  // The list's wrapper, for the scrollbar pinned under it at phone width (components/PinnedScrollbar.tsx).
+  const namesWrap = useRef<HTMLDivElement | null>(null)
   const [filter, setFilter] = useState<Filter>('all')
   const [sort, setSort] = useState<{ key: SortKey; desc: boolean }>({ key: 'date', desc: true })
   const [query, setQuery] = useState('')
@@ -681,7 +684,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
         </div>
       ) : null}
 
-      <div className="table-wrap names-wrap">
+      <div className="table-wrap names-wrap" ref={namesWrap}>
         {/* THE GRID IS DECLARED, NOT EMERGENT.
             The table had no `table-layout` and no column widths at all, so every column was sized by
             whatever text happened to be in it — which is why expanding a row could re-flow the parent
@@ -808,6 +811,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
           </tbody>
         </table>
       </div>
+      <PinnedScrollbar target={namesWrap} />
 
       {!rows.length ? <div className="empty">No names match this view.</div> : null}
 
