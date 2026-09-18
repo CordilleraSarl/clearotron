@@ -2504,7 +2504,7 @@ if (isMain) {
       say(`  │  WRITE THE PASSPHRASE DOWN NOW. It is stored only as a digest, so`);
       say(`  │  nothing — not this product, not this terminal — can read it back.`);
       say(`  │  Lost it? ${reset}`);
-    } else for (const line of passphraseWithheldLines({ stream: "stdout", resetCommand: reset })) say(`  │  ${line}`);
+    } else for (const line of passphraseWithheldLines({ stream: "stdout", resetCommand: reset }).flatMap((l) => (/^\s/.test(l) ? [l] : fitTo(64, l)))) say(`  │  ${line}`);
     // THE HINT BELONGS IN THE BOX TOO, and this was the reader the whole sentence was written for. The
     // frame exists because a first-time reader skips the log wall and acts on it — so the one address
     // they copy was the one address with nothing beside it saying what to do when the page that opens
@@ -2611,6 +2611,22 @@ if (isMain) {
 export function demoBaseIsTheReaders({ baseGiven = false, ownBase = false, base = "", demoDefault = "" } = {}) {
   if (!baseGiven) return false;                                          // start chose it: the demo's own
   return !(ownBase && base && demoDefault && base === demoDefault);      // handed over, and it IS the default
+}
+
+/**
+ * A sentence broken at spaces into lines of at most `width` characters, for the framed box. The withheld
+ * lines come from the portal's composer, written for a log line of any length; inside the frame they are
+ * broken to the width of the lines they stand in for. A word longer than `width` keeps its own line. PURE.
+ */
+export function fitTo(width, text) {
+  const out = [];
+  let line = "";
+  for (const word of String(text ?? "").split(/\s+/).filter(Boolean)) {
+    if (line && line.length + 1 + word.length > width) { out.push(line); line = word; }
+    else line = line ? `${line} ${word}` : word;
+  }
+  if (line) out.push(line);
+  return out;
 }
 
 export function demoBaseResetTarget({ baseGiven = false, base = "", demoDefault = "" } = {}) {

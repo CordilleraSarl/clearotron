@@ -233,6 +233,17 @@ test("the frame's passphrase pattern holds for a passphrase ending in any base64
   assert.doesNotMatch(`  │  Passphrase  ${"a".repeat(23)}\n`, FRAME_PASSPHRASE, "a value shorter than a passphrase was taken for one");
 });
 
+test("the frame's line breaker keeps every line within the width and never splits a word", async () => {
+  const { fitTo } = await import("../../bin/start.mjs");
+  const sentence = "The passphrase is NOT printed here: stdout is not a terminal, so this line would outlive the moment \u2014 a journal, a CI log, or a test's captured output.";
+  const out = fitTo(64, sentence);
+  assert.ok(out.length > 1, "a sentence longer than the width must be broken");
+  for (const l of out) assert.ok(l.length <= 64, `longer than the width: ${l}`);
+  assert.equal(out.join(" "), sentence, "breaking at spaces must not change a single word");
+  assert.deepEqual(fitTo(10, "averyveryverylongword x"), ["averyveryverylongword", "x"], "a word wider than the line keeps its own line");
+  assert.deepEqual(fitTo(64, ""), []);
+});
+
 test("a real first start, where another install left the shared credential, mints its own and leaves that one alone", { timeout: 120000 }, async () => {
   const home = mkdtempSync(join(tmpdir(), "first-start-"));
   const shared = join(home, ".cordillera", INSTALL_CREDENTIAL_FILE);
@@ -266,6 +277,14 @@ test("a real first start, where another install left the shared credential, mint
     assert.match(said, /│  The passphrase is NOT printed here: stdout is not a terminal/,
       "the frame must say the passphrase was withheld, and why");
     assert.match(said, /│    \S*.*passphrase --reset/, "and name the command that mints one on a terminal");
+    // INSIDE THE FRAME. The withheld sentences come from the portal's composer, written for a log line,
+    // and ran twice the width of the rule drawn around them until they were broken to it.
+    const lines = said.split("\n");
+    const from = lines.findIndex((l) => /│  Sign in as/.test(l));
+    const to = lines.findIndex((l, i) => i > from && /^  │    \S/.test(l));
+    const withheld = lines.slice(from + 1, to);
+    assert.ok(from >= 0 && withheld.length >= 2, `the withheld lines were not found between the sign-in line and the reset command:\n${lines.slice(from, from + 8).join("\n")}`);
+    for (const l of withheld) assert.ok(l.length <= "  │  ".length + 64, `a withheld line runs past the frame's width: ${l}`);
     assert.doesNotMatch(said, /minted on an earlier start/, "a first start must not claim an earlier one");
   } finally {
     child.kill("SIGINT");
