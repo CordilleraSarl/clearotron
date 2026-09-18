@@ -48,6 +48,15 @@ body:
       required: true
 
   - type: input
+    id: version
+    attributes:
+      label: Clearotron version
+      description: "`clearotron --version`, or the version in the report footer."
+      placeholder: 0.3.2
+    validations:
+      required: true
+
+  - type: input
     id: node
     attributes:
       label: Node version

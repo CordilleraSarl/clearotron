@@ -1015,7 +1015,9 @@ test("tracker 97 the manifest names the repository provenance will be attested f
   assert.deepEqual(publishRefusals({ workflow, rootPkg: { ...pkg, repository: { type: "git", url: `git@github.com:${REPOSITORY}.git` } } }), []);
 
   // And what a reader of the package page gets, which is the other half of the same field.
-  assert.match(pkg.homepage ?? "", new RegExp(REPOSITORY), "the package page links nowhere");
+  // The homepage is the product's site, ruled 2026-09-18 for the launch; the repository stays one click
+  // away through `repository`, which the arms above hold.
+  assert.equal(pkg.homepage, "https://clearotron.ai", "the package page links nowhere, or somewhere other than the site");
   assert.match(pkg.bugs?.url ?? "", new RegExp(REPOSITORY), "the package page offers nowhere to report a bug");
 });
 
