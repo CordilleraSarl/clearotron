@@ -99,7 +99,7 @@ export function stripInternal(s, { client = false } = {}) {
   const out = [];
   for (let line of lines) {
     // normalize wrapped markers ("**::p:: x**", "*::p:: x*") so the marker is match-stable
-    line = line.replace(/(\*{1,2})\s*::p::\s*([\s\S]*?)\1/g, '::p:: $2');
+    line = line.replace(/(\*{1,2})\s*::p::([\s\S]*?)\1/g, (_, _star, x) => `::p:: ${x.replace(/^\s+/, '')}`);   // no `\s*` before the capture: overlapping it with the lazy body backtracked quadratically on an unclosed marker
     if (!line.includes('::p::')) { out.push(line); continue; }
     if (client) {
       const head = line.slice(0, line.indexOf('::p::')).replace(/[\s*_]+$/, '').trim();
