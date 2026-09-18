@@ -1,5 +1,11 @@
 # trademark-artifacts-mcp
 
+## 0.3.2-beta.10
+
+### Patch Changes
+
+- 98a57dd: Fixed: An assistant connected with nothing configured is now told which settings are missing, instead of being shown an empty list of searches.
+
 ## 0.3.2-beta.9
 
 No changes in this release.

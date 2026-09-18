@@ -4,6 +4,24 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.3.2-beta.10
+
+### Before you upgrade
+
+- security fixes now go to the current stable as a new stable, and to the current beta on a best-effort basis. Older versions receive none.
+
+### New
+
+- A report opened in the portal now follows the portal's light or dark theme, and changes with it straight away.
+
+### Fixed
+
+- The README, quickstart and install guide now give one way to install, and their commands work as written.
+- In a source checkout without a built portal, `npx clearotron demo` stops and names the build command instead of opening a portal with no pages.
+- The demo now removes its folder when you close it, as described. Pass --keep to keep the folder and its reports.
+- An assistant connected with nothing configured is now told which settings are missing, instead of being shown an empty list of searches.
+- For a Global preliminary search, the bar at the foot of New clearance now says worldwide, not the company's own territories.
+
 ## 0.3.2-beta.9
 
 ### Before you upgrade
