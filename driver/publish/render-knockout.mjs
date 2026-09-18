@@ -489,9 +489,9 @@ function territoriesLine(registerCounts) {
   return `Counted on ${regions.length} registers, listed on the workbook's Register Counts sheet, on ${provider}.`;
 }
 
-/** What the counts do and do not say — the one line that replaces the count-basis paragraph on the page. */
-const COUNTS_READER_LINE = 'Counts include live, pending and dead filings. '
-  + 'A count is not a conflict; the cards above say which filings matter.';
+// The reader line that used to sit under the counts table ("a count is not a conflict…") is off the page:
+// the approved knockout board carries no caveat under the table, and the writing standard lists it among
+// the caveat sentences a page does not print. The column headers say what each count is.
 
 function countsSection(marks, registerCounts, positions = '') {
   // ── THE DEFINITION MOVES INTO THE COLUMN HEADER ──────────────────────────────────────────────────
@@ -546,7 +546,7 @@ function countsSection(marks, registerCounts, positions = '') {
   // thing in three words each.
   return `<div class="panel">
   <div class="ko-counts ko-scroll"><table><thead><tr><th>Name</th>${head}</tr></thead><tbody>${rows}</tbody></table></div>
-  <p class="ko-basis">${esc(COUNTS_READER_LINE)}<br>${esc(territoriesLine(registerCounts))}${
+  <p class="ko-basis">${esc(territoriesLine(registerCounts))}${
     positions ? `<br>${esc(positions)}` : ''}</p>
 </div>`;
 }
