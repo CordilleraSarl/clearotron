@@ -1,5 +1,12 @@
 # portal-ui
 
+## 0.3.2-beta.10
+
+### Patch Changes
+
+- 98a57dd: Fixed: For a Global preliminary search, the bar at the foot of New clearance now says worldwide, not the company's own territories.
+- 98a57dd: New: A report opened in the portal now follows the portal's light or dark theme, and changes with it straight away.
+
 ## 0.3.2-beta.9
 
 ### Patch Changes

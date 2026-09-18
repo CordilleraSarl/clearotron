@@ -1,5 +1,15 @@
 # clearotron-driver
 
+## 0.3.2-beta.10
+
+### Patch Changes
+
+- 98a57dd: Fixed: The README, quickstart and install guide now give one way to install, and their commands work as written.
+- 98a57dd: Before you upgrade: security fixes now go to the current stable as a new stable, and to the current beta on a best-effort basis. Older versions receive none.
+- 98a57dd: Fixed: In a source checkout without a built portal, `npx clearotron demo` stops and names the build command instead of opening a portal with no pages.
+- 98a57dd: Fixed: The demo now removes its folder when you close it, as described. Pass --keep to keep the folder and its reports.
+- 98a57dd: New: A report opened in the portal now follows the portal's light or dark theme, and changes with it straight away.
+
 ## 0.3.2-beta.9
 
 ### Patch Changes
