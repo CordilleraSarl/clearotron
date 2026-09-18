@@ -2439,7 +2439,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-## hono@4.13.3
+## hono@4.13.8
 
 - **Licence declared:** `MIT`
 - **Repository:** https://github.com/honojs/hono
