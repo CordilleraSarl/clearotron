@@ -1,5 +1,53 @@
 # clearotron-driver
 
+## 0.3.2-beta.9
+
+### Patch Changes
+
+- 09f51e0: Fixed: A country named in words now reaches its register, and naming one in words and by code no longer counts as two places.
+- 09f51e0: Fixed: A search that failed can be picked up again with its codename alone. The command the engine prints when a search stops no longer names a job file that is no longer on the machine.
+- 09f51e0: For operators: Resuming a failed search by its codename now works without the original job file, and refuses by name when the run's record is incomplete.
+- 09f51e0: Fixed: A knockout report no longer scrolls sideways on a phone when a finding cites a long web address.
+- 09f51e0: Fixed: a knockout report's Registers counted row reads "186 registers, on" the register service, without a list of territories folded under it.
+- 09f51e0: New: A knockout search now delivers the engine's own assessment and findings alongside the report, as a full clearance already did.
+- 09f51e0: Fixed: A report no longer says the local-language investigation did not run when the run's own record shows it did.
+- 09f51e0: Fixed: On a phone, the rights-holder panel now shows a scrollbar when its rows run past the right edge.
+  
+  Fixed: "Web and marketplace names" lists names again. Readings of what a mark means are carried by the connotation section, where they were already stated in full.
+- 09f51e0: Fixed: when a register reports only that it holds more than a figure, the knockout counts table and workbook show that figure, not "not available".
+- 09f51e0: Fixed: Preliminary searches on one register now report the registered marks the assessment found, instead of a register section left empty.
+  
+  Fixed: A search whose register assessment cannot be recorded now stops with an error instead of delivering a report silent on the register.
+- 09f51e0: Fixed: A report's section links now sit in the header and stay on screen while you read, instead of scrolling away.
+- 09f51e0: Fixed: A report no longer reads "Case-law research could not be completed for ." when the search covered a register that does not publish per-country records.
+- 09f51e0: New: A report states whether the local-language investigation ran at the depth configured for the matter.
+- 09f51e0: Fixed: On a knockout report, the risk band marker no longer overlaps the words above it.
+- 09f51e0: Fixed: A running search now reports the stage it is on, not the last one finished, so progress no longer appears to go backwards.
+- 09f51e0: Fixed: A knockout report no longer states, for each name, whether that name should proceed to a full clearance search. It reports what the screen found.
+- 09f51e0: New: A report table that continues past the right edge now shows a scrollbar, so it is clear there is more to see.
+- 09f51e0: Fixed: When a register search did not finish, the verdict's condition no longer names the engine's internal label for the unfinished part.
+- 09f51e0: New: a worldwide search names the register service that searches it, on the New clearance form and on the report's coverage line.
+- 09f51e0: Fixed: Worldwide searches on a register that keeps no record archive now show how many register records were read and in which countries.
+- 09f51e0: Fixed: Searches of a named company's own trademark portfolio now run on every register. On one register they were refused before the search was sent, and the report told the reader those holdings could not be reached.
+- 09f51e0: Fixed: After upgrading, existing companies, past clearances and queued searches stay visible, with no folder to rename and no company file to edit.
+  
+  Fixed: A company file that cannot be read no longer empties the company list; that company is named with the reason instead.
+- 09f51e0: Fixed: each finding's "Ask AI about this finding" button in a report now opens Ask AI, with that finding's number in the question.
+- 09f51e0: New: Searches no longer look up ordinary English words one letter away from the mark that sound different, such as CODE beside CORE.
+- 09f51e0: Before you upgrade: reports left waiting in the delivery folder's old name are found and sent again. Nothing needs moving, and none is sent twice.
+- 09f51e0: Fixed: The forward-decisions section of a clearance report is headed "What happens next", as the approved design heads it.
+- 09f51e0: New: A clearance report carries a section strip along the top, so a reader can jump to the findings, the next steps or what was searched.
+- 09f51e0: New: The new clearance form now offers every country a supported register can search, not a fixed list of 37.
+- 09f51e0: Fixed: The new clearance form no longer repeats in paragraphs what each product row and each place already say.
+- 09f51e0: Fixed: on a phone, the list of clearances made the whole page slide sideways instead of scrolling the table. The table now scrolls on its own and the page stays put.
+- 09f51e0: Fixed: on a narrow window the buttons at the end of each clearance row pushed the page sideways, and every date broke onto two lines. The buttons now fit the space they are given and the date stays on one line.
+- 09f51e0: Before you upgrade: the folder a finished report waits in while it is sent has been renamed. If you have never set that folder yourself, nothing needs moving. Reports already waiting in the old folder are still sent.
+- 09f51e0: Fixed: Knockout reports no longer print a caveat line under the register counts table.
+- 09f51e0: New: A knockout report carries a section strip along the top, so a reader can jump to the conflicts, the filings or the next steps.
+- 09f51e0: Fixed: A mark whose official record could not be retrieved is no longer listed as a condition on the verdict. The report still names it where the search's coverage is set out.
+- 09f51e0: Fixed: Installs inside WSL now show a second setup command, for an assistant running inside WSL as well as one on Windows.
+- 09f51e0: Fixed: a clearance report's "What was searched" section shows register totals, counts per country and a link to the audit workbook, as designed.
+
 ## 0.3.2-beta.8
 
 ### Patch Changes
