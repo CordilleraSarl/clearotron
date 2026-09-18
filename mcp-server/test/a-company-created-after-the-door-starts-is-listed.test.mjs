@@ -124,10 +124,11 @@ test("a key granted a company created after the door started is told that compan
   assert.equal(g.name, "Grantco Tools", "the name came back empty — read from the roster the door read first");
 });
 
-test("a company file that cannot be read keeps the last good list, and the reply says so", async () => {
+test("a company file that cannot be read keeps every other company listed, and the reply names it", async () => {
   // Re-reading on every call means a bad file added after start is now read at all. Before, the door
   // answered from its boot read and never saw it; the failure this holds off is one file blanking the
-  // whole list, so the assistant can pick no company.
+  // whole list, so the assistant can pick no company. The loader now leaves that one company out and names
+  // it, so this is a fresh list with one company missing for a stated reason, not a stale list.
   const token = uncapped();
   const before = await listed(token);
   assert.ok(before.includes("acme"), "the door had no list to keep, so this arm would measure nothing");
@@ -136,8 +137,10 @@ test("a company file that cannot be read keeps the last good list, and the reply
     const r = await call(token, "list_profiles");
     assert.deepEqual((r?.clients ?? []).map((c) => c.key).sort(), before,
       "one unreadable company file took every other company off the list");
-    assert.match(String(r?.storeUnreadable ?? ""), /could not be re-read/,
-      "the reply did not say that this is the list as last read");
+    const named = (r?.unreadable ?? []).find((u) => u.key === "broken");
+    assert.ok(named, "the unreadable company is left out without a word");
+    assert.match(String(named.reason), /unparseable JSON/, "and its own reason travels with it");
+    assert.equal(r?.storeUnreadable, undefined, "one company file is not a store that cannot be read");
   } finally { rmSync(join(STORE, "broken.json"), { force: true }); }
-  assert.equal((await call(token, "list_profiles"))?.storeUnreadable, undefined, "the warning outlived the file that caused it");
+  assert.equal((await call(token, "list_profiles"))?.unreadable, undefined, "the note outlived the file that caused it");
 });

@@ -15,7 +15,7 @@ import { isWsl } from "../shared/wsl.mjs";   // — the one answer to "is this L
 import { envFrom } from "../shared/env-aliases.mjs";   // — an operator-facing name is the one an operator sets, and it has to work where they set it; — envFrom is the resolver that reads every spelling of it
 import { invoke } from "../shared/invocation.mjs";   // — name a command the reader can actually type
 import { envFileRead } from "../shared/env-local.mjs";   // — WHICH file to set it in, measured; null for a service that read none
-import { numericSetting, resolveNumericSetting } from "./numeric-setting.mjs";   // — a number, or a refusal that names the variable; never NaN
+import { numericSetting, resolveNumericSetting } from "./numeric-setting.mjs"; import { STUDIO_SEGMENTS, STUDIO_SEGMENT_RE, studioSegmentFor } from "../shared/pre-rename-spellings.mjs"; export { STUDIO_SEGMENTS, STUDIO_SEGMENT_RE, studioSegmentFor };   // the studio segment an install keeps its runs under   // — a number, or a refusal that names the variable; never NaN
 
 const { X_OK } = FS;
 
@@ -111,6 +111,23 @@ export const envGateOn = (name) => {
 // so import-time captures silently pinned every test to the FIRST test's env (workspace root, pool,
 // retries) — the root of the intermittent cross-test contamination flake. Getters make "set env, then
 // run" mean what it says, in tests and in prod alike.
+// The four skill folders the identifier rename moved. A store outside the product may still hold them,
+// and a profile may still name them, under the old spelling.
+const RENAMED_SKILL_DIRS = Object.freeze([
+  ["clearance-search", "prelim-search"], ["clearance-register", "prelim-register"],
+  ["clearance-common-law", "prelim-common-law"], ["clearance-variants", "prelim-variants"],
+]);
+/** `[rel, the same path under the folder's other spelling | null]`. PURE. */
+export function skillSpellings(rel) {
+  const m = /^skills\/([a-z-]+)(\/.*)?$/.exec(String(rel ?? ""));
+  if (!m) return [rel, null];
+  for (const [now, before] of RENAMED_SKILL_DIRS) {
+    if (m[1] === now) return [rel, `skills/${before}${m[2] ?? ""}`];
+    if (m[1] === before) return [rel, `skills/${now}${m[2] ?? ""}`];
+  }
+  return [rel, null];
+}
+
 export const config = {
   // / — A BLANK VALUE IS NOT A CONFIGURED VALUE. `process.env.X || default` treats "   " as
   // configured, because a whitespace-only string is TRUTHY in JavaScript — so a variable set to spaces
@@ -212,21 +229,8 @@ export const config = {
    * still fails loudly against the canonical location rather than silently against the overlay.
    */
   resolveSkillPath(relFromSkillsRoot) {
-    const rel = String(relFromSkillsRoot ?? "").replace(/^\/+/, "");
-    const overlay = this.skillsOverlayDir;
-    if (overlay) {
-      // FAIL LOUD ON AN UNREADABLE OVERLAY. existsSync() answers false for a permission error just as it
-      // does for a missing file, so a config store the process cannot read would silently resolve EVERY
-      // file to the repo — swapping a customer's own risk framework for the Generic default with nothing
-      // in the log to say so. A configured-but-unreadable overlay is a deploy defect, not a fallback.
-      if (!existsSync(overlay))
-        throw new Error(`skills_overlay_unreadable:${overlay} (CLEAROTRON_INSTRUCTIONS_DIR names it, set by the operator or derived by the portal from PROFILE_REPO_ROOT, but this process cannot see it — customer-specific skills would silently fall back to the repo defaults)`);
-      const p = join(dirname(overlay), rel);
-      if (existsSync(p)) return p;
-    }
-    return join(dirname(this.skillsBaseDir), rel);
+    return this.resolveSkillPathReport(relFromSkillsRoot).path;
   },
-
   /**
    * WHICH LAYER ANSWERED, as a fact rather than a path — `resolveSkillPath` with its reasoning shown.
    *
@@ -252,13 +256,24 @@ export const config = {
    */
   resolveSkillPathReport(relFromSkillsRoot) {
     const rel = String(relFromSkillsRoot ?? "").replace(/^\/+/, "");
-    const basePath = join(dirname(this.skillsBaseDir), rel);
+    // EITHER SPELLING OF A RENAMED SKILL FOLDER, in either direction. A store that has not moved its
+    // folders still holds `skills/prelim-search/…`, and a profile written before the rename still NAMES
+    // it; the product ships only the new names. Tried in the overlay first — a client's own doctrine must
+    // never be silently replaced by ours because a folder name changed — and the base answers only under
+    // the name it ships.
+    const [asNamed, other] = skillSpellings(rel);
+    const shipped = rel === asNamed && other && /^skills\/prelim-/.test(asNamed) ? other : asNamed;
+    const basePath = join(dirname(this.skillsBaseDir), shipped);
     const overlay = this.skillsOverlayDir;
     if (!overlay) return { path: basePath, rel, layer: existsSync(basePath) ? "base-only" : "missing", overlayPath: null, basePath };
     if (!existsSync(overlay))
       throw new Error(`skills_overlay_unreadable:${overlay} (CLEAROTRON_INSTRUCTIONS_DIR names it, set by the operator or derived by the portal from PROFILE_REPO_ROOT, but this process cannot see it — customer-specific skills would silently fall back to the repo defaults)`);
-    const overlayPath = join(dirname(overlay), rel);
+    const overlayPath = join(dirname(overlay), asNamed);
     if (existsSync(overlayPath)) return { path: overlayPath, rel, layer: "overlay", overlayPath, basePath };
+    if (other) {
+      const otherPath = join(dirname(overlay), other);
+      if (existsSync(otherPath)) return { path: otherPath, rel, layer: "overlay", overlayPath: otherPath, basePath };
+    }
     return { path: basePath, rel, layer: existsSync(basePath) ? "base" : "missing", overlayPath, basePath };
   },
 
@@ -305,15 +320,17 @@ export const config = {
   },
   // Escaped prefix for the reverse regexes below (a custom prefix may carry regex metachars).
   get workspacePrefixRe() { return this.workspacePrefix.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); },
-  // `clearance-search` IS NOT A PRODUCT NAME HERE and does not follow the product rename. It is a
-  // directory segment on disk, and every archived run — its slug dirs, its `archive/`, its matter
-  // ledger — was written under it. Renaming the segment does not move those runs; it points the
-  // reader somewhere empty, and an empty directory reads as "no runs" rather than as an error.
-  // The rule the tree already enforces elsewhere: a token that is read back out of an archive keeps
-  // its old spelling, or the code refuses its own archive. Thirteen sites compute this segment and
-  // all thirteen stay.
+  // THE STUDIO SEGMENT IS NOT A PRODUCT NAME and does not follow the product rename. It is a directory
+  // segment on disk, and every archived run — its slug dirs, its `archive/`, its queue, its matter ledger —
+  // was written under it. Renaming it does not move those runs; it points the reader somewhere empty, and
+  // an empty directory reads as "no runs" rather than as an error. The identifier rename rewrote this
+  // comment together with the thirteen sites it protected, and an upgraded install lost sight of its whole
+  // archive. So an install keeps the segment it has: `prelim-search` wherever that directory exists, and
+  // `clearance-search` only for an install that has no other. Every site asks `studioSegmentFor`.
+  studioSegment(workspaceDir) { return studioSegmentFor(workspaceDir); },
   studioRootForAgent(agentId) {
-    return join(this.workspaceRoot, this.workspaceDirName(agentId), "studio", "clearance-search");
+    const ws = join(this.workspaceRoot, this.workspaceDirName(agentId));
+    return join(ws, "studio", studioSegmentFor(ws));
   },
   queueDirForAgent(agentId) {
     return join(this.studioRootForAgent(agentId), "queue");
@@ -321,9 +338,10 @@ export const config = {
   archiveRootForAgent(agentId) {
     return join(this.studioRootForAgent(agentId), "archive");
   },
-  // …/<prefix><id>/studio/clearance-search/queue → "<id>"; null if the path isn't an agent queue dir.
+  // …/<prefix><id>/studio/<segment>/queue → "<id>"; null if the path isn't an agent queue dir. Either
+  // spelling of the segment, because an install keeps the one it has.
   agentIdFromQueueDir(qdir) {
-    const m = new RegExp(`(?:^|/)${this.workspacePrefixRe}([^/]+)/studio/clearance-search/queue/?$`).exec(qdir);
+    const m = new RegExp(`(?:^|/)${this.workspacePrefixRe}([^/]+)/studio/${STUDIO_SEGMENT_RE}/queue/?$`).exec(qdir);
     return m ? m[1] : null;
   },
   // Every agent workspace's clearotron queue. The systemd `.path` watches these and the runner drains ALL of
@@ -343,8 +361,12 @@ export const config = {
     try {
       for (const name of readdirSync(root)) {
         if (this.agentIdFromWorkspaceName(name) == null) continue;
-        const q = join(root, name, "studio", "clearance-search", "queue");
-        if (existsSync(q)) dirs.push(q);
+        // BOTH spellings are drained where both exist: a job queued under either is a job somebody is
+        // waiting on, and an unwatched queue looks exactly like an empty one.
+        for (const seg of STUDIO_SEGMENTS) {
+          const q = join(root, name, "studio", seg, "queue");
+          if (existsSync(q)) dirs.push(q);
+        }
       }
     } catch { /* workspaceRoot may not exist in some test envs — fall through to the canonical queue */ }
     // THE ONE AGENT NAME NO CONFIGURATION REMOVES, and it is deliberate. row 5.
@@ -540,7 +562,7 @@ export const config = {
   // directory, so renaming the default moves the install to an empty one and nothing migrates. Here
   // the orphaned files are run-slot locks, so a live run's slot goes unseen and the global cap is
   // silently exceeded rather than enforced. Ruling.
-  get runLockDir() { return this.envValue("CLEAROTRON_RUN_LOCK_DIR") || join(this.workspaceRoot, "clearance-run-locks"); },
+  get runLockDir() { return this.envValue("CLEAROTRON_RUN_LOCK_DIR") || [join(this.workspaceRoot, "prelim-run-locks"), join(this.workspaceRoot, "clearance-run-locks")].find((d, i) => i === 1 || existsSync(d)); },   // the name the install already has wins
 
   // Delivery outbox (Workstream B). On a handoff-mode finish the driver drops <runId>.pending here (naming
   // the forwarder agent); the systemd-user prelim-outbox.path unit fires an INSTANT clearotron-deliver wake off

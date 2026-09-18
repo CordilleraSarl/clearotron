@@ -2094,7 +2094,7 @@ function refusalsInWindow(files, runDir, from, to) {
 }
 
 function rel(p) {
-  const i = p.indexOf("/clearance-search/");
+  const i = Math.max(p.indexOf("/clearance-search/"), p.indexOf("/prelim-search/"));   // either spelling of the studio segment
   return i >= 0 ? p.slice(i + 1) : p;
 }
 

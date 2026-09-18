@@ -464,8 +464,18 @@ export function isRegisterOnly(policy) {
  *  search asked for. Asking it "does this exist" is asking the wrong question — the orderability test is
  *  always `ORDERABLE_PRODUCTS.includes(...)`, and a typo must fail closed against that positive list. */
 export function policyFor(product) {
-  const k = String(product ?? "").trim().toLowerCase();
+  const k = productKeyAsRenamed(product);
   return PRODUCT_POLICIES[k] ?? RETIRED_POLICIES[k] ?? null;
+}
+// THREE RETIRED KEYS WERE RENAMED WITH THE IDENTIFIER, and records written before it still carry the old
+// spelling: an archived run's product, a saved search's base in a client's store. Read the old key as the
+// new wherever a key is looked up, or an archived report loses its name and a store's saved searches fail
+// to load over a base this build still knows as retired.
+const PRE_RENAME_PRODUCT_KEYS = Object.freeze({ "prelim": "clearance", "prelim-register-only": "clearance-register-only", "prelim-jx": "clearance-jx" });
+/** A product key, lower-cased, with a pre-rename spelling read as its current one. PURE. */
+export function productKeyAsRenamed(product) {
+  const k = String(product ?? "").trim().toLowerCase();
+  return PRE_RENAME_PRODUCT_KEYS[k] ?? k;
 }
 
 // What THIS build can actually execute. A resolution onto machinery a build does not carry must CLARIFY
@@ -1115,7 +1125,7 @@ export function loadRecipes({ dir = process.env.CLEAROTRON_RECIPES_DIR || null, 
       // NOT SILENT, because unlike a retired extra this one is observable: a saved search disappears. The
       // skip is recorded so a caller can say why rather than leaving a lawyer's saved search gone with no
       // reason. Everything else still throws — a config error is still load-blocking.
-      if (RETIRED_PRODUCTS.includes(String(r?.base ?? "").trim().toLowerCase())) {
+      if (RETIRED_PRODUCTS.includes(productKeyAsRenamed(r?.base))) {
         retiredBaseSkips.push({ customer, slug, base: String(r.base), why: "base names a retired search — the saved search cannot be ordered" });
         continue;
       }

@@ -15,7 +15,7 @@
 // ordering, and renewal/expiry cycle arithmetic (renewals fall at year 10/20/… from registration — the
 // check that catches "registration 2013 … renewed 2025" from the document alone).
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, openSync, readSync, closeSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, openSync, readSync, closeSync } from "node:fs"; import { runPrefixSpellings } from "../shared/pre-rename-spellings.mjs";
 import { join } from "node:path";
 import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
 import { ledgerPath, runRecordLogPath, ledgerDeprecationNotice, retiredGlobalRecordLogNotice }
@@ -34,8 +34,8 @@ function stripGatewayNs(s) {
   return typeof s === "string" ? s.replace(/^agent:[^:]+:/, "") : "";
 }
 function rowMatchesRun(row, runPrefix) {
-  return stripGatewayNs(row.sessionKey).startsWith(runPrefix)
-      || stripGatewayNs(row.sessionId ?? "").startsWith(runPrefix);
+  return runPrefixSpellings(runPrefix).some((rp) => stripGatewayNs(row.sessionKey).startsWith(rp)
+      || stripGatewayNs(row.sessionId ?? "").startsWith(rp));   // either spelling: a run resumed across the rename
 }
 
 

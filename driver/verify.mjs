@@ -1788,7 +1788,7 @@ export const validators = {
       let contract = null;
       const marker = driverDir(dir, "stage-contracts.json");
       if (existsSync(marker)) {
-        try { contract = JSON.parse(readFileSync(marker, "utf8"))?.["clearance-variants"] ?? null; }
+        try { contract = variantsStageContract(JSON.parse(readFileSync(marker, "utf8"))); }   // either name: see variantsStageContract
         catch { return fail("stagecontracts_invalid"); }
       }
       if (!contract?.romanization && !contract?.completeness && !contract?.term_shape) return sib;
@@ -2670,4 +2670,12 @@ function placementAccountVerdict(dir) {
       + "This is not a judgement the seat can repair: those fields are machine-copied and anything typed into them is ignored.");
   }
   return ok();
+}
+
+// THE VARIANTS STAGE WAS RENAMED, AND A RUN'S MARKER IS KEYED BY STAGE NAME. A run dispatched on an earlier
+// build stamped its manifest floors under `prelim-variants`; read under the new name alone, a resumed run
+// finds no stamp and skips the romanisation, completeness and term-shape floors it was minted under. The new
+// key wins where both exist, because the stage writes it on every fresh dispatch. PURE.
+export function variantsStageContract(marker) {
+  return marker?.["clearance-variants"] ?? marker?.["prelim-variants"] ?? null;
 }

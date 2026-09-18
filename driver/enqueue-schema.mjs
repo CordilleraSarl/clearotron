@@ -10,7 +10,7 @@
 // with a `noref<hash>` slug (see phase0.mjs deriveSlug). The intake confirmation brief (email-loop §6)
 // resolves ambiguity BEFORE enqueue; this validator is the runner-side mechanical backstop.
 
-import { loadProfiles, loadProjects, resolveProfile, applicantMatchesProfile, recipeProseGuard, platformEntryErrors } from "./profiles.mjs";
+import { loadProfiles, loadProjects, resolveProfile, applicantMatchesProfile, recipeProseGuard, platformEntryErrors , unreadableProfiles } from "./profiles.mjs";
 import { demoRunShape } from "./demo-run-agreement.mjs";
 import { ORDERABLE_PRODUCTS, policyFor, checkMarkBudget, checkScopeAgainstPolicy, loadRecipes, kebabCollisions, resolveSearchPolicy } from "./search-policy.mjs";
 // — the §B2 gate resolves the subject through the SAME ladder the run uses. See the gate itself.
@@ -776,6 +776,10 @@ export function validateJob(job, { atClaim = false } = {}) {
         profiles = loadProfiles({ force: true });
         known = profiles.has(key);
       }
+      // A company whose own file would not load is a known company that could not be READ — the same
+      // failure to look as a store that cannot be read, and handled the same way below, never "no such
+      // customer". The file's reason travels with the run's own refusal (resolveProfile).
+      if (!known) known = new Set(unreadableProfiles(profiles).map((u) => u.key)).has(key);
       roster = [...profiles.keys()].sort();
     } catch { known = true; }
     // NAME THE ROSTER THIS PROCESS CAN SEE, always.
