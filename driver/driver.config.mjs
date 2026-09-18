@@ -587,8 +587,17 @@ export const config = {
   // NULL WHEN THE VARIABLE IS SET, because then the operator named the directory and there is no old
   // default in play. Writers use `outboxDir` alone; only readers consult this, which is the same posture
   // the run records take — new work uses the new name, old work is still understood.
+  //
+  // THE OLD SPELLING IS THE WHOLE POINT OF THIS ACCESSOR, and a sweep took it. The identifier rename
+  // moved the directory from `prelim-outbox` to `clearance-outbox`, and the follow-up that renamed the
+  // directory's 85 occurrences rewrote this literal along with them — leaving the accessor that exists to
+  // name the OLD directory naming the new one. Both getters then answered the same path: the drain read
+  // the new directory twice, never read the old one, and every marker under it was listed TWICE. So a box
+  // that never pinned the variable got exactly the failure the block above describes — orphaned markers,
+  // silently — plus duplicate work on the ones it could see. It is written once, here, and pinned by a
+  // test that asserts the two are different.
   get legacyOutboxDir() {
-    return this.envValue("CLEAROTRON_OUTBOX_DIR") ? null : join(this.workspaceRoot, "clearance-outbox");
+    return this.envValue("CLEAROTRON_OUTBOX_DIR") ? null : join(this.workspaceRoot, "prelim-outbox");
   },
 
   // ── Delivery/comms (Phase 2, standalone product) ─────────────────────────────────────────────────

@@ -136,8 +136,15 @@ export function markersForAgent(agent) {
   // is owed — with nothing to see, because an outbox nobody reads looks exactly like an empty one.
   // Each marker keeps the path it was found at, so an ack removes the file that actually exists.
   const out = [];
+  // THE SECOND DIRECTORY IS SKIPPED WHEN IT IS THE FIRST ONE. The two accessors answered the same path
+  // once, and this loop then listed every marker twice — the same file handed out as two pieces of work,
+  // with the strike count that quarantines a stuck marker counting each wake twice. A guard rather than a
+  // dedupe at the end: two directories that are the same directory is a configuration fact worth costing
+  // nothing, and a dedupe would also hide a genuine duplicate filename across two real directories.
+  const seen = new Set();
   for (const dir of [config.outboxDir, config.legacyOutboxDir]) {
-    if (!dir) continue;
+    if (!dir || seen.has(dir)) continue;
+    seen.add(dir);
     let names = [];
     try { names = readdirSync(dir).filter((f) => f.endsWith(".pending")); } catch { continue; }
     for (const file of names.sort()) {
