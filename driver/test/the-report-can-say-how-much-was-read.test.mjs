@@ -23,7 +23,7 @@
 import { test } from "node:test";
 process.env.CLEAROTRON_MCP_URL ||= "https://mcp.test/mcp";
 import assert from "node:assert/strict";
-import { CLEARED_GROUPS, groupForCleared, clearedNames, recordsByCountry, sweepCounts, courtDecisionsState, localScriptSearched, searchDepthRecord, planTerritoriesOf, localLanguageDepth } from "../publish/search-depth.mjs";
+import { CLEARED_GROUPS, groupForCleared, clearedNames, recordsByCountry, sweepCounts, courtDecisionsState, localScriptSearched, searchDepthRecord, planTerritoriesOf, localLanguageDepth, recordNamesFromIds } from "../publish/search-depth.mjs";
 
 // Invented ground throughout. No client content reaches a fixture.
 const AUDIT = `# Negative Results
@@ -203,6 +203,32 @@ test("a run with no plan cannot say, and a plan that named nothing said nothing"
   assert.equal(planTerritoriesOf(null), null);
   assert.equal(planTerritoriesOf(undefined), null);
   assert.deepEqual(planTerritoriesOf({}), { searched: [], unreached: [] });
+});
+
+test("a worldwide plan that names no region cannot say where it reached, and says so with null", () => {
+  // Measured on a worldwide run on a provider that takes no region list: 487 entries, none carrying a
+  // region, `regions: []`. Read as "searched these", that is "searched nowhere", and the by-country
+  // section vanished on the run that searched the whole database. Null hands the page to what came back.
+  const plan = { scope_basis: "worldwide", regions: [], entries: [{ qid: "a", term: "X" }, { qid: "b", term: "Y" }] };
+  assert.equal(planTerritoriesOf(plan), null);
+  // A worldwide order with deferrals is not an unrestricted sweep, and keeps its plan answer.
+  const deferred = { ...plan, deferred_coverage: [{ jurisdiction: "RU", reason: "not covered" }] };
+  assert.deepEqual(planTerritoriesOf(deferred), { searched: [], unreached: [{ jurisdiction: "RU", reason: "not covered" }] });
+  // A worldwide plan that DOES name its offices (a provider that needs a region list) is unchanged.
+  assert.deepEqual(planTerritoriesOf({ scope_basis: "worldwide", entries: [{ regions: ["US", "EM"] }] }).searched, ["US", "EM"]);
+});
+
+test("with no record archive, what was read is the band the register returned", () => {
+  const ids = ["/mark/us/tm_1", "/mark/us/tm_2", "/mark/gb/tm_3", "/mark/us/tm_1", "not-a-ref"];
+  assert.deepEqual(recordNamesFromIds(ids).sort(), ["gb-tm_3", "us-tm_1", "us-tm_2"], "one per distinct record, filed by office");
+  const noArchive = searchDepthRecord({ recordFileNames: null, bandRecordIds: ids });
+  assert.equal(noArchive.counts.recordsRead, 3);
+  assert.deepEqual(noArchive.counts.recordsByCountry, { US: 2, GB: 1 });
+  // An archive that exists is the authority, even when it is empty: the band is only read where there is none.
+  const emptyArchive = searchDepthRecord({ recordFileNames: [], bandRecordIds: ids });
+  assert.equal(emptyArchive.counts.recordsRead, 0);
+  // And no band at all is still "cannot say".
+  assert.equal(searchDepthRecord({ recordFileNames: null }).counts.recordsRead, null);
 });
 
 test("a deferred territory is never also reported as searched", () => {
