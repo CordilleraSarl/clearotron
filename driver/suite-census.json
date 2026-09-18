@@ -2782,8 +2782,8 @@
           "todos": 0
         },
         "knockout-structured-read.test.mjs": {
-          "tests": 12,
-          "asserts": 57,
+          "tests": 14,
+          "asserts": 63,
           "skips": 0,
           "todos": 0
         },
@@ -5297,7 +5297,7 @@
         },
         "the-summary-carries-structure.test.mjs": {
           "tests": 13,
-          "asserts": 34,
+          "asserts": 35,
           "skips": 0,
           "todos": 0
         },

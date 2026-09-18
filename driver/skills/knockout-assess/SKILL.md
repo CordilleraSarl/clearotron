@@ -237,6 +237,10 @@ Each mark's report is delivered on its own, and `assessment` is the first thing 
 before any table. Write it for a client who ordered this one name and nothing else: what the name is,
 what the landscape around it looks like, what drives the rating.
 
+**No recommendation, and no next step.** Never say what to do with the name, whether it advances, or
+what happens next — not under a heading of your own, and not as a closing line. The findings and the
+rating are the whole of this read; the report's own caveat says what the screen is.
+
 **It names THIS mark and no other.** A sibling's name here is another client's mark on this client's
 page. The cross-mark reading is `chunkSummary`, and it has its own page.
 

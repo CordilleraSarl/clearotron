@@ -160,7 +160,7 @@ test("the whole slice statement and its slices map are read the same way — nei
   assert.equal(fromMap.zh.ran, "candidates", "and the verdict is what the lane delivered, not null");
 });
 
-// THE RUN THE OWNER'S READER MET (tracker issue 665, VENQORI full country JP, 2026-09-18): ONE asked
+// THE RUN THE OWNER'S READER MET (VENQORI full country JP, 2026-09-18): ONE asked
 // lane, `ja`, for which this build carries no deep slice at all. The lane ran as the slice-1 candidate
 // lane — which is everything `ja` ships as — and its shortfall is that `full` cannot be delivered for it
 // by any environment. That is a shallow search, and the row must say so rather than say none ran.

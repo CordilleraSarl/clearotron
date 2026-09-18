@@ -86,6 +86,11 @@ test("the doctrine asks for no conclusion about the name, and still forbids the 
   // clearance verdict, and this lane's own prose gate refuses tone and invented quantities.
   assert.match(s, /Never "clear", "clean", "no conflicts found", "clear to proceed"/,
     "the words this screen must never say are no longer forbidden to the writer");
+  // RULED AGAIN 2026-09-18, after a re-run with both instructions cut wrote a conclusion anyway, under a
+  // heading of its own: cutting an instruction stops the engine asking for a sentence, and only a
+  // refusal stops the writer offering one. The words are the owner's, pinned as he approved them.
+  assert.match(s, /\*\*No recommendation, and no next step\.\*\*/,
+    "the doctrine no longer forbids the conclusion in terms");
 });
 
 test("SKILL.md's closed-key block names every key the validator actually requires", () => {
