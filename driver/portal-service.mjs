@@ -129,7 +129,7 @@ export const allowanceExhaustedLine = (cap, who) =>
 const INSTALL_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 const READ_OFF_NOTE = "Reading a brief is not available on this instance — set the search up below.";
-import { basename, dirname, join, resolve as pathResolve } from "node:path";
+import { basename, dirname, join, resolve as pathResolve } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { makePrincipal, assertPrincipal, genericOrgOf, mayReadRun, reachCovers, principalView, seesEverything, mayRun,
@@ -687,7 +687,7 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
   }
   try {
     for (const ws of readdirSync(workspaceRoot).filter((n) => n.startsWith("workspace-"))) {
-      const studio = join(workspaceRoot, ws, "studio", "clearance-search");
+      const studio = studioDirFor(join(workspaceRoot, ws));
       let slugs = []; try { slugs = readdirSync(studio); } catch { continue; }
       for (const slug of slugs) {
         // Still walked, so a deployment whose queue is not in `queueDirs` keeps working. The union is
@@ -3074,7 +3074,10 @@ async function connectorDoorKind(url) {
           // who signed in. Dynamic import deliberately: `profiles.mjs` captures the store directory at
           // MODULE LOAD (see this file's note above), so it is never pulled in at our own load time.
           const { companyFactsOf } = await import("./profiles.mjs");
-          return { status: 200, json: { customers: [...profiles.values()].map((p) => ({ key: p.key, name: p.name, ...companyFactsOf(p) })) } };
+          // A company whose file would not load is named with its reason (staff-only route), never left out
+          // in silence: a switcher with one company where there were twenty-five reads as deleted work.
+          const unreadable = Array.isArray(profiles?.unreadable) ? profiles.unreadable.map((u) => ({ key: u.key, reason: u.reason })) : [];
+          return { status: 200, json: { customers: [...profiles.values()].map((p) => ({ key: p.key, name: p.name, ...companyFactsOf(p) })), ...(unreadable.length ? { unreadable } : {}) } };
         }
         // /portal/admin/config — what this deployment actually has switched on. Read from the SNAPSHOT,
         // never from process.env: this process has no engine environment, so asking its own env would

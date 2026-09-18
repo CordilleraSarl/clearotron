@@ -204,7 +204,7 @@ test("EVERY grid refusal the server returns after the spec is read goes through 
   // PARSE. There is no `ledger_required` to read on a spec that is not an object, so the wrapper has
   // nothing to decide with. It still points the reader at the right file, which is the property that
   // matters — so that is checked here instead of waived.
-  const preParse = src.slice(src.indexOf("if (grid_spec_path) {"), src.indexOf("if (!/\\/studio\\/clearance-search"));
+  const preParse = src.slice(src.indexOf("if (grid_spec_path) {"), src.indexOf("if (!/\\/studio\\/(?:prelim|clearance)-search"));
   const preParseRefusals = preParse.split("\n").filter((l) => /return\s+[`'"]ERROR:/.test(l));
   assert.equal(preParseRefusals.length, 1, "the pre-parse region gained or lost a refusal — re-derive this exemption");
   assert.match(preParseRefusals[0], /grid_spec_path/,
@@ -212,7 +212,7 @@ test("EVERY grid refusal the server returns after the spec is read goes through 
     + "the reader nowhere");
 
   // Everything from the output_path guard onward runs with a PARSED spec in hand and is covered.
-  const grid = src.slice(src.indexOf("if (!/\\/studio\\/clearance-search"), src.indexOf("if (!task || task.trim().length === 0)"));
+  const grid = src.slice(src.indexOf("if (!/\\/studio\\/(?:prelim|clearance)-search"), src.indexOf("if (!task || task.trim().length === 0)"));
   assert.ok(grid.length > 500, "the post-parse grid region was not located — this arm is reading nothing");
 
   const refusals = grid.split("\n").filter((l) => /return\s+[`'"]ERROR:/.test(l));

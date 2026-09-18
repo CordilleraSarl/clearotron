@@ -58,7 +58,7 @@ export function resolveFramework(requested, {
   const path = String(requested).trim();
   // Shape first, and by the profile validator's own rule rather than a second copy of it: a path that
   // would be refused at load must be refused here, in the same words, before anything is written.
-  if (!/^skills\/clearance-search\/[^/]+\.md$/.test(path) || path.includes(".."))
+  if (!/^skills\/(?:clearance|prelim)-search\/[^/]+\.md$/.test(path) || path.includes(".."))   // either spelling of the folder, as the profile loader
     throw new Refusal(
       `--framework must name a document of the form "skills/clearance-search/<file>.md" (got ${JSON.stringify(path)}). `
       + `A profile selects a SHIPPED framework, never an arbitrary path.`);

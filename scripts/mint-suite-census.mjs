@@ -96,12 +96,25 @@ const README = [
  * Pure, and takes the cut-record flag rather than reading it, so both branches can be driven. The flag is
  * fixed when its module is imported and a test cannot flip it without writing into the tree.
  */
-export function laidPathVerdict({ laid = 0, laidPaths = [], cutRecordPresent = false } = {}) {
+export function laidPathVerdict({ laid = 0, laidPaths = [], cutRecordPresent = false, overlayLaid = null } = {}) {
   if (!laid) return { refuse: false, message: null };
   if (cutRecordPresent) {
     return { refuse: false,
       message: `mint-suite-census: ${laid} tracked path(s) are not in HEAD — laid over this checkout, not published in it, and not counted` };
   }
+  // THE OVERLAY SAYS WHAT IT LAID, because the cut record this leaned on is carried by no tree, the
+  // overlaid one included (shared/withheld-paths-access.mjs says so of itself). So under the private
+  // overlay this refused every run, and the arm that runs every minter over the overlaid tree went red on
+  // a census that was current. The overlay now writes the paths it laid into the clone's own `.git`, where
+  // nothing tracks or ships them. A staged path on that list is laid; one that is not is still staged work
+  // and still refuses — the list excuses exactly what the overlay put there and nothing beside it.
+  const unlisted = overlayLaid ? laidPaths.filter((f) => !overlayLaid.has(f)) : laidPaths;
+  if (overlayLaid && !unlisted.length) {
+    return { refuse: false,
+      message: `mint-suite-census: ${laid} tracked path(s) are not in HEAD — laid by the private overlay, which lists every one, and not counted` };
+  }
+  laidPaths = unlisted;
+  laid = unlisted.length;
   const named = laidPaths.slice(0, 20).map((f) => `    ${f}`).join("\n");
   const more = laidPaths.length > 20 ? `\n    … and ${laidPaths.length - 20} more` : "";
   return { refuse: true,
@@ -135,6 +148,22 @@ export function laidPathVerdict({ laid = 0, laidPaths = [], cutRecordPresent = f
  * A tree with no HEAD cannot say what it published. That is a failure to look, and it exits rather
  * than reading as "nothing is laid here", which is the permissive answer and the one that passes.
  */
+/**
+ * The paths the private overlay says it laid over this clone, or null where it laid nothing.
+ *
+ * Read from the clone's own git directory, `info/overlay-laid`, one path per line. Inside `.git` on
+ * purpose: nothing there is tracked, so it can never reach the published tree or be counted by a guard,
+ * and a developer's checkout has no such file unless an overlay wrote it.
+ */
+export function overlayLaidOf(root) {
+  try {
+    const gitDir = execFileSync("git", ["-C", root, "rev-parse", "--absolute-git-dir"], { encoding: "utf8" }).trim();
+    const list = join(gitDir, "info", "overlay-laid");
+    if (!existsSync(list)) return null;
+    return new Set(readFileSync(list, "utf8").split("\n").map((x) => x.trim()).filter(Boolean));
+  } catch { return null; }
+}
+
 function publishedFiles(root, globs) {
   let all = [];
   try {
@@ -144,7 +173,8 @@ function publishedFiles(root, globs) {
   if (!all.length) return [];
   const p = publishedOf(all, root);
   if (p.error) { console.error(`mint-suite-census: ${p.error}`); process.exit(2); }
-  const verdict = laidPathVerdict({ laid: p.laid, laidPaths: p.laidPaths ?? [], cutRecordPresent: CUT_RECORD_PRESENT });
+  const verdict = laidPathVerdict({ laid: p.laid, laidPaths: p.laidPaths ?? [], cutRecordPresent: CUT_RECORD_PRESENT,
+    overlayLaid: overlayLaidOf(root) });
   if (verdict.refuse) { console.error(verdict.message); process.exit(2); }
   if (verdict.message) console.log(verdict.message);
   return p.files.slice().sort();

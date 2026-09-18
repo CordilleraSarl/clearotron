@@ -35,7 +35,7 @@ import { coverageFormStamp, readCoverageForm } from "./coverage-form-io.mjs";
 import { readUnacknowledgedTaintAxes } from "./register-taint.mjs";
 import { registerPlanCallKilled } from "./tool-calls.mjs";   // — did the dictated call return?
 import { parseFindingsJson, parseFindingsJsonLenient, CLIENT_TIER_BY_COMPOSITE, isUnconditionalProceed, joinFindingToBlock, parseBlockOrd } from "./findings-model.mjs";
-import { parsePlacementsJson } from "./placement-model.mjs";
+import { parsePlacementsJson } from "./placement-model.mjs"; import { placementFormSidecarName, parsePlacementForm, placementRenderAccount } from "./placement-form.mjs";
 import { parseCaseLawLedger, findCaseLawLedgerViolations, caseLawLedgerFail } from "./case-law-ledger.mjs";
 import { parseFrameworkManifest, aboveLowestBand, normalizeBand } from "./framework.mjs";
 import { parseNamedBand, findCollapsedBands } from "./named-band.mjs";
@@ -1788,7 +1788,7 @@ export const validators = {
       let contract = null;
       const marker = driverDir(dir, "stage-contracts.json");
       if (existsSync(marker)) {
-        try { contract = JSON.parse(readFileSync(marker, "utf8"))?.["clearance-variants"] ?? null; }
+        try { contract = variantsStageContract(JSON.parse(readFileSync(marker, "utf8"))); }   // either name: see variantsStageContract
         catch { return fail("stagecontracts_invalid"); }
       }
       if (!contract?.romanization && !contract?.completeness && !contract?.term_shape) return sib;
@@ -2005,8 +2005,8 @@ export const validators = {
     const base = all(nonEmpty(c), needsSection(c, "placement-tiers", [/tier|placement|sheet|level/i], "placement tiers"));
     if (!base.ok) return base;
     const dir = dirname(String(p ?? ""));
-    if (existsSync(join(dir, "placements.json")))
-      return checkSiblingJson(p, "placements.json", parsePlacementsJson, "placement-model", "placementmodel_missing");
+    const sib = existsSync(join(dir, "placements.json")) ? checkSiblingJson(p, "placements.json", parsePlacementsJson, "placement-model", "placementmodel_missing") : null;
+    if (sib) return sib.ok && placementAccountArmed(dir) ? placementAccountVerdict(dir) : sib;   // placementAccount: see the block at the end of this file
     let structured = false;
     let formEra = false;
     const marker = driverDir(dir, "stage-contracts.json");
@@ -2032,7 +2032,7 @@ export const validators = {
     // What replaces the floor is stronger, not weaker: the tiers live in a driver-held accumulator that a
     // kill cannot reach, and the rendered file is parse-then-land through this same strict parser before
     // it is allowed on disk. Archived runs carry no `placementForm` key and keep the old floor exactly.
-    if (formEra) return base;
+    if (formEra) return placementAccountArmed(dir) ? placementAccountVerdict(dir) : base;
     return structured ? fail("placementmodel_missing") : base;
   },
   // The opus digest legitimately splits the section ("## On-field findings" / "## Off-field findings"), so the
@@ -2618,3 +2618,64 @@ function checkClientSummaryJoin(p, c) {
   return ok("client-summary-join");
 }
 const short = (v) => String(v ?? "").replace(/\s+/g, " ").trim().slice(0, 40);
+
+// ── A PLACEMENT PASS THAT DID NOT RECORD ITS ANSWERS HAS NOT SUCCEEDED ──────────────────────────────────
+//
+// THE DEFECT, measured 2026-09-18. A pass tiered 141 in-class identical and near-identical register records;
+// every tier and reason sat in the driver's form; not one reached placements.json, because every register
+// row was refused on an owner the fold never carried. The render dropped them as it is written to — an
+// unsettled row is OMITTED rather than emitted half-formed — and this validator, which only parsed the file
+// that was left, passed six common-law rows as a completed pass. The client received a report silent on
+// the register over eighty-one identical live registrations.
+//
+// TWO REFUSALS, and the line between them was measured rather than chosen. Replayed over every archived
+// form-era run (25): three carry the discard-all and would refuse; twenty-two healthy runs would not. A
+// stricter "any outstanding row refuses" was measured too and it refuses five of those twenty-two — each
+// over a handful of single records at offices that publish no owner, a real and ordinary register fact
+// that no corrective turn can supply. Those are counted in the run record, not refused.
+//
+//   placement_unjudged=N           a row the SEAT owes is not finished — the corrective turn can finish it.
+//   placement_register_unrendered  register candidates were selected and NONE renders — a lost register.
+//
+// ARMED ON ITS OWN STAMP KEY (`placementAccount: 1`), written at dispatch like every other key in the
+// marker, so an archived run replays to exactly the verdict it was minted under. A marker that will not
+// parse leaves this arm OFF here rather than failing: both call sites already had an answer for that case
+// before this arm existed, and this must not change it.
+function placementAccountArmed(dir) {
+  try {
+    return JSON.parse(readFileSync(driverDir(dir, "stage-contracts.json"), "utf8"))?.["placement-inquiry"]?.placementAccount === 1;
+  } catch { return false; }
+}
+function placementAccountVerdict(dir) {
+  const sidecar = driverDir(dir, placementFormSidecarName());
+  let raw = null;
+  try { raw = readFileSync(sidecar, "utf8"); } catch { raw = null; }
+  // The form is written BEFORE the seat is dispatched and re-unioned before every judgement, so under this
+  // stamp its absence is the recording apparatus failing — the class this arm exists for — never "no rows".
+  if (raw === null) return fail("placement_form_unreadable (the driver's placement form is absent — nothing this pass placed can be accounted for)");
+  const { rows, error } = parsePlacementForm(raw);
+  if (rows === null) return fail(`placement_form_unreadable (the driver's placement form ${error})`);
+  const a = placementRenderAccount(rows);
+  if (a.unjudged.length) {
+    const named = a.unjudged.slice(0, 8).map((u) => `${u.row_id ?? u.select ?? "?"} (${u.cause})`).join(", ");
+    return fail(`placement_unjudged=${a.unjudged.length}: ${named}${a.unjudged.length > 8 ? ", …" : ""} — each of these rows is `
+      + "in placement-form.json and its own judgement will not render: a selected row owes a `tier` from the closed set and a `reason` "
+      + "stating the ground; a row you wrote in full owes mark, owner and jurisdiction too. Finish these rows in the form; "
+      + "every other row stands.");
+  }
+  if (a.register_selected > 0 && a.register_rendered === 0) {
+    const causes = Object.entries(a.register_facts).map(([t, n]) => `${t} ×${n}`).join(", ") || "no cause recorded";
+    return fail(`placement_register_unrendered=${a.register_selected}: every register candidate this pass selected and tiered `
+      + `is refused on a fact the driver copies from the register's own records (${causes}) — not one reaches placements.json. `
+      + "This is not a judgement the seat can repair: those fields are machine-copied and anything typed into them is ignored.");
+  }
+  return ok();
+}
+
+// THE VARIANTS STAGE WAS RENAMED, AND A RUN'S MARKER IS KEYED BY STAGE NAME. A run dispatched on an earlier
+// build stamped its manifest floors under `prelim-variants`; read under the new name alone, a resumed run
+// finds no stamp and skips the romanisation, completeness and term-shape floors it was minted under. The new
+// key wins where both exist, because the stage writes it on every fresh dispatch. PURE.
+export function variantsStageContract(marker) {
+  return marker?.["clearance-variants"] ?? marker?.["prelim-variants"] ?? null;
+}

@@ -12,9 +12,11 @@
 // reaches `failAtIntake`: the job parks as `.failed` and the requester is notified, for work that was
 // legitimately accepted, possibly days earlier.
 //
-// The trigger is not a bad profile for this customer. `loadProfiles()` validates every bundle at load, so
-// ONE malformed file anywhere makes it throw for EVERY job — a store-wide outage parking unrelated
-// accepted work. Measured: a bundle with `platforms: []` is enough.
+// The trigger is not a bad profile for this customer. It used to be enough that ONE company file anywhere
+// was malformed: `loadProfiles()` validated every bundle at load and threw for EVERY job. A company file no
+// longer does that — it is left out and named — but the store's own `generic.json` still does, because it is
+// the fallback every unprofiled job rates under and is never tolerated. So that is the fixture: a store-wide
+// read failure, which is the case this file is about.
 //
 // Same distinction the archived-project rule draws in the same file, in its own words: archive is "stop
 // offering this", not "cancel what is already agreed". A store that cannot be READ is even weaker
@@ -32,10 +34,9 @@ import { tmpdir } from "node:os";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
 
 const dir = mkdtempSync(join(tmpdir(), "enqueue-unreadable-"));
-writeFileSync(join(dir, "generic.json"), JSON.stringify({ name: "House default", platforms: ["amazon.com"] }));
 // `platforms: []` fails loadProfiles' own shape check ("must be a non-empty array of store-domain
-// strings"), and it throws for the whole store rather than for this bundle.
-writeFileSync(join(dir, "wrecked.json"), JSON.stringify({ name: "Wrecked Co", matchDomains: ["wrecked.example"], platforms: [] }));
+// strings"), and on `generic.json` it throws for the whole store.
+writeFileSync(join(dir, "generic.json"), JSON.stringify({ name: "House default", platforms: [] }));
 pinEnv(process.env, "CLEAROTRON_CUSTOMERS_DIR", dir);
 
 // No classes, no marks[].classes, no goods, no use — the only shape that reaches the ladder at all.

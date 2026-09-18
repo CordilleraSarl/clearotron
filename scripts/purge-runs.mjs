@@ -24,7 +24,7 @@ import "../shared/env-local.mjs";   // — FIRST: the CLEAROTRON_* translation m
                                      // module-top capture below it evaluates. A call in this file's BODY
                                      // would run too late — that was the repair that left this open.
 import { readdirSync, statSync, readFileSync, rmSync, existsSync, appendFileSync } from "node:fs";
-import { join, basename } from "node:path";
+import { join, basename } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { pendingRunIds, noticeOwed } from "../shared/notice-owed.mjs";   // one reading of "still owes a notice", shared with the delivery path
 // The ONE exception to this script's no-driver-imports posture, and it is the reason that posture exists:
@@ -210,7 +210,7 @@ function collect() {
   }
 
   for (const agent of AGENTS) {
-    const base = join(WORKSPACE_ROOT, `workspace-${agent}`, "studio", "clearance-search");
+    const base = studioDirFor(join(WORKSPACE_ROOT, `workspace-${agent}`));
     if (!isDir(base)) continue;
 
     // 2. Workspace archive — <YYYY-MM>/<matter>/<codename>. runId is matter+codename, matching the

@@ -3077,7 +3077,8 @@ test("the local-language row states the depth reached, in the words the page alr
   // Both neighbours, not just the one above: asserting only the spellings row passed with the row moved
   // below court decisions, which is a different table from the one the board approved. Measured — plant 4
   // of the matrix did not red until the court-decisions side was asserted too.
-  const html = renderHtml(parsedOf(REPORT), [], [], { searchDepth: { counts: { recordsByCountry: { JP: 3 },
+  // A full country search, because that is the one board that draws a Court decisions row.
+  const html = renderHtml(parsedOf(REPORT), [], [], { ...FULL_COUNTRY_OPTS, searchDepth: { counts: { recordsByCountry: { JP: 3 },
     courtDecisions: "found", localScriptSearched: true, localLanguage: { state: "ran", lanes: LANES } } } });
   const at = (k) => {
     const i = html.indexOf(`<span class="k">${k}</span>`);
@@ -3141,4 +3142,36 @@ test("a section that is not drawn takes its strip entry with it", () => {
   assert.ok(a.length >= 2 && b.length >= 2, `strips of ${a.length} and ${b.length} — one of these documents drew no navigation`);
   assert.notDeepEqual(a, b, "both documents drew the same strip, so it is a literal and not a reading of the document");
   for (const id of b) assert.ok(thin.includes(`id="${id}"`), `the thinner document's strip points at #${id}, which it does not draw`);
+});
+
+// ── WHAT WAS SEARCHED, AS THE BOARDS DRAW IT ────────────────────────────────────────────────────────
+//
+// The approved boards draw the register row as one line of totals with the per-country counts as chips,
+// "checks on" the platforms, "Searched" as the spellings word, a Court decisions row on a full country
+// search only — its state word, and the court section's own sentence when the research could not be
+// completed — and a closing link to the audit workbook. The Left open rows and the provenance note stay
+// where they are until their own ruling.
+test("What was searched draws the boards' rows: totals and chips, checks on, Searched, court on full country, the workbook", () => {
+  const sd = { counts: { recordsByCountry: { JP: 60, KR: 46, WO: 6 }, courtDecisions: "not-checked", localScriptSearched: true,
+    sweep: { spellings: 28, checks: 476, platforms: 17, reputation: 49 } } };
+  const multi = renderHtml(parsedOf(REPORT), [], [], { searchDepth: sd, auditFile: "run-audit.xlsx" });
+  const v = (html, k) => (html.match(new RegExp(`<span class="k">${k}</span><span class="v">([\\s\\S]*?)</span></div>`)) || [])[1] ?? null;
+  assert.match(v(multi, "Register"), /^106 records read across 2 countries, plus 6 international registrations<div class="wchips">/);
+  assert.match(multi, /<div class="wchips"><span class="wchip" title="Japan">JP <b>60<\/b><\/span><span class="wchip" title="South Korea">KR <b>46<\/b><\/span><\/div>/,
+    "the chips carry the code and the count, largest first, the name on hover");
+  assert.equal(v(multi, "Marketplace and web"), "476 checks on 17 platforms");
+  assert.equal(v(multi, "Local-script spellings"), "Searched");
+  assert.equal(v(multi, "Court decisions"), null, "a search that is not a full country search draws no court row");
+  assert.match(multi, /<div class="cmore"><a class="wb" href="run-audit\.xlsx">Every search and result, in the audit workbook<\/a><\/div>/);
+
+  const one = renderHtml(parsedOf(REPORT), [], [], { ...FULL_COUNTRY_OPTS,
+    searchDepth: { counts: { ...sd.counts, recordsByCountry: { JP: 141, WO: 52 } } } });
+  assert.equal(v(one, "Register"), "141 records read in Japan, plus 52 international registrations",
+    "one country is named in the line, and a single chip would only repeat it");
+  assert.equal(v(one, "Court decisions"),
+    '<span class="wstate">Not searched</span><span class="wnote">Case-law research could not be completed for Japan.</span>',
+    "the row carries the state and the court section's own sentence");
+  assert.match(one, /id="court"[\s\S]*Case-law research could not be completed for Japan\./, "and the court section still says it below");
+  assert.doesNotMatch(renderHtml(parsedOf(REPORT), [], [], { searchDepth: sd }), /class="cmore"><a class="wb"[^>]*>Every search/,
+    "no audit file, no link to one");
 });

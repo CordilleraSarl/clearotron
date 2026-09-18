@@ -14,7 +14,7 @@ import { riskTier, TONE_TIER, regenIndex, regenSurfaces, auditRouteFor, markRepo
 import { runKnockoutLint, deliveryFlagLines } from '../predelivery-lint.mjs';
 import { note } from '../log.mjs';
 import { addSheet } from './xlsx.mjs';
-import { COUNT_PREDICATES, COUNT_BASIS, countsForMark, countLine, countedMarks, variantFormsLine } from '../register-count.mjs';
+import { COUNT_PREDICATES, COUNT_BASIS, countsForMark, countLine, countedMarks, variantFormsLine, disclosedFloor, moreThan } from '../register-count.mjs';
 import { RECORD_BASIS, recordsForMark, recordsLine, listedMarks, normalizeRegisterRecordLinks } from '../register-records.mjs';
 import { reportIdentityFor, productCoverageNote, kebab } from '../search-policy.mjs';
 import { batchMarkName } from '../mark-name.mjs';
@@ -143,7 +143,8 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
   if (noteRows.length) addSheet(wb, 'Working Notes', ['Mark', 'Type', 'Note'], noteRows);
 
   if (registerCounts?.marks?.length) {
-    const cell = (c) => (Number.isFinite(c?.total) ? c.total : 'not available');
+    // A floor the register disclosed is its own figure, printed as the report prints it.
+    const cell = (c) => (Number.isFinite(c?.total) ? c.total : disclosedFloor(c) !== null ? moreThan(disclosedFloor(c)) : 'not available');
     const countRows = (findings.marks ?? []).map((m) => {
       const e = countsForMark(registerCounts, m.name);
       const row = {
@@ -161,7 +162,7 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
       row['Basis'] = COUNT_BASIS;
       // The verbatim provider reason for anything missing — the auditable half of "not available".
       row['Notes'] = COUNT_PREDICATES
-        .filter((p) => !Number.isFinite(e?.counts?.[p.key]?.total))
+        .filter((p) => !Number.isFinite(e?.counts?.[p.key]?.total) && disclosedFloor(e?.counts?.[p.key]) === null)
         .map((p) => `${p.label}: ${e?.counts?.[p.key]?.unavailable ?? 'no count recorded'}`)
         .join(' · ');
       return row;

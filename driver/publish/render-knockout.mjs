@@ -50,7 +50,7 @@ import { SUMMARY_BLOCK_LINE, parseSummaryBlocks } from '../../shared/summary-blo
 const STRIP = Object.freeze([
   ['summary', 'Summary'], ['findings', 'Findings'], ['filings', 'Also considered'], ['next', 'Next steps'],
 ]);
-import { COUNT_BASIS, COUNT_PREDICATES, countsForMark, countLine, variantFormsLine } from '../register-count.mjs';
+import { COUNT_BASIS, COUNT_PREDICATES, countsForMark, countLine, variantFormsLine, disclosedFloor, moreThan } from '../register-count.mjs';
 import { RECORD_BASIS, recordsForMark, recordsLine } from '../register-records.mjs';
 import { officeLinkSentences } from './office-record-links.mjs';
 import { knockoutFindingViews, splitKnockoutNotes } from '../findings-model.mjs';
@@ -489,9 +489,9 @@ function territoriesLine(registerCounts) {
   return `Counted on ${regions.length} registers, listed on the workbook's Register Counts sheet, on ${provider}.`;
 }
 
-/** What the counts do and do not say — the one line that replaces the count-basis paragraph on the page. */
-const COUNTS_READER_LINE = 'Counts include live, pending and dead filings. '
-  + 'A count is not a conflict; the cards above say which filings matter.';
+// The reader line that used to sit under the counts table ("a count is not a conflict…") is off the page:
+// the approved knockout board carries no caveat under the table, and the writing standard lists it among
+// the caveat sentences a page does not print. The column headers say what each count is.
 
 function countsSection(marks, registerCounts, positions = '') {
   // ── THE DEFINITION MOVES INTO THE COLUMN HEADER ──────────────────────────────────────────────────
@@ -526,9 +526,10 @@ function countsSection(marks, registerCounts, positions = '') {
       const why = c?.unavailable ?? (c
         ? 'no count recorded'
         : 'not counted on this run — it predates this column, and an archived report re-renders as what it was');
-      return Number.isFinite(c?.total)
-        ? `<td class="num">${esc(String(c.total))}</td>`
-        : `<td class="na" title="${escAttr(why)}">not available</td>`;
+      if (Number.isFinite(c?.total)) return `<td class="num">${esc(String(c.total))}</td>`;
+      // The register answered with its own floor: that is a figure, and it is printed as one.
+      if (disclosedFloor(c) !== null) return `<td class="num">${esc(moreThan(disclosedFloor(c)))}</td>`;
+      return `<td class="na" title="${escAttr(why)}">not available</td>`;
     }).join('');
     const scoped = e?.classScope !== 'all-classes' && (e?.classes?.length > 0);
     const scope = scoped
@@ -546,7 +547,7 @@ function countsSection(marks, registerCounts, positions = '') {
   // thing in three words each.
   return `<div class="panel">
   <div class="ko-counts ko-scroll"><table><thead><tr><th>Name</th>${head}</tr></thead><tbody>${rows}</tbody></table></div>
-  <p class="ko-basis">${esc(COUNTS_READER_LINE)}<br>${esc(territoriesLine(registerCounts))}${
+  <p class="ko-basis">${esc(territoriesLine(registerCounts))}${
     positions ? `<br>${esc(positions)}` : ''}</p>
 </div>`;
 }
@@ -1212,16 +1213,16 @@ function aboutRequestBlock(scope, requestNotes, depthNote = '', productContext =
   const cut = note.lastIndexOf(' \u2014 ');
   const stage = cut > 0 ? note.slice(0, cut).trim() : note;
   const context = String(productContext ?? '').trim();
-  // REGISTERS COUNTED IS A ROW, AND THE TERRITORY LIST HIDES BEHIND IT (the 2026-09-16 report redesign). A line of
-  // country names running through the middle of the panel is the thing a reader skips; the count and
-  // its source are what they read, and the list is one click away when they want it.
+  // REGISTERS COUNTED IS A ROW (the 2026-09-16 report redesign). A line of country names running through
+  // the middle of the panel is the thing a reader skips; the count and its source are what they read.
   const regions = (registerCounts?.scope?.regions ?? []).filter(Boolean);
   const provider = registerCounts?.providerLabel ?? registerCounts?.provider ?? '';
-  const named = regions.map(territoryName).filter(Boolean);
+  // THE BOARD'S OWN ROW: "186 registers, on Clarivate Compumark." — registers, because that is what was
+  // counted, and no fold: the board lists no territories here, and the workbook's counts sheet carries
+  // every register a figure was taken over.
   const counted = regions.length
-    ? `${regions.length} ${regions.length === 1 ? 'territory' : 'territories'}${provider ? `, on ${provider}` : ''}`
+    ? `${regions.length} ${regions.length === 1 ? 'register' : 'registers'}${provider ? `, on ${provider}` : ''}.`
     : (registerCounts ? `Counted worldwide${provider ? `, on ${provider}` : ''}` : '');
-  const territories = named.length ? listWords(named) : '';
   if (!asked && !where && !classLine && !stage && !context && !counted) return '';
   // ONE PANEL, THE SAME ON BOTH REPORTS (the 2026-09-16 report redesign). The rows carry what was asked for; the
   // counts row says what was counted and hides the territory list behind a fold rather than running a
@@ -1234,7 +1235,7 @@ function aboutRequestBlock(scope, requestNotes, depthNote = '', productContext =
       ${row('Classes', classLine)}
       ${row('Where searched', where)}
       ${row('Context', context)}
-      ${row('Registers counted', counted, territories ? `<details class="terr"><summary>View territories</summary><p>${esc(territories)}</p></details>` : '')}
+      ${row('Registers counted', counted)}
       ${row('Searched on', searched)}
       ${/* item 18 — a note for the reviewing lawyer does not reach the delivered page */''}
     </div>`;
@@ -1391,7 +1392,8 @@ function coverageClause(mark, registerCounts, probeRan) {
       ? 'Register: hit-counts are part of this search and none could be taken for this name — the reason is in the audit workbook.'
       : 'Register: not included in this product tier — no register was counted for this name.';
   }
-  const anyFigure = COUNT_PREDICATES.some((p) => Number.isFinite(entry.counts[p.key]?.total));
+  // A floor the register disclosed is a figure it gave, so a name counted only that way was counted.
+  const anyFigure = COUNT_PREDICATES.some((p) => Number.isFinite(entry.counts[p.key]?.total) || disclosedFloor(entry.counts[p.key]) !== null);
   if (!anyFigure) return 'Register: no count could be taken for this name — the reason is in the audit workbook.';
   // COVERAGE, NOT THE FIGURES. asks the renderer to own the register-tier caveat, and the numbers
   // are already on this page twice — in the glance line at the top and in the counts table above this
@@ -2110,6 +2112,12 @@ export function knockoutReportData(findings, framework, { runId, codename, overa
             classScope: counted.classScope ?? null,
             classes: counted.classes ?? [],
             ...Object.fromEntries(COUNT_PREDICATES.map((p) => [p.key, Number.isFinite(counted.counts[p.key]?.total) ? counted.counts[p.key].total : null])),
+            // The figure stays null for a floor — a floor is never a count to be summed — and the floor
+            // rides beside it, so a reader of this file has the register's own figure and not only a null.
+            ...(COUNT_PREDICATES.some((p) => disclosedFloor(counted.counts[p.key]) !== null)
+              ? { floors: Object.fromEntries(COUNT_PREDICATES.filter((p) => disclosedFloor(counted.counts[p.key]) !== null)
+                .map((p) => [p.key, disclosedFloor(counted.counts[p.key])])) }
+              : {}),
             // The close column is an aggregate, so the forms under it ride with it — a consumer that
             // got the number and not the forms could restate the figure but never explain it, and this
             // file is what the assistant drafts client mail from.

@@ -26,7 +26,7 @@
 // ("due" / "retry 300") — a broken helper must degrade to retried wakes, never to lost deliveries.
 
 import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, writeFileSync } from "node:fs";
-import { join, basename } from "node:path";
+import { join, basename } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
 import { fileURLToPath } from "node:url";
 import { config } from "./driver.config.mjs";
 import { atomicWrite } from "./progress.mjs";
@@ -196,7 +196,7 @@ function* eachRunDir() {
   let workspaces = [];
   try { workspaces = readdirSync(config.workspaceRoot).filter((n) => n.startsWith("workspace-")); } catch { return; }
   for (const ws of workspaces) {
-    const studio = join(config.workspaceRoot, ws, "studio", "clearance-search");
+    const studio = studioDirFor(join(config.workspaceRoot, ws));
     let slugs = [];
     try { slugs = readdirSync(studio); } catch { continue; }
     for (const slug of slugs) {
@@ -319,7 +319,7 @@ export function rescanOwedRuns() {
   let workspaces = [];
   try { workspaces = readdirSync(config.workspaceRoot).filter((n) => n.startsWith("workspace-")); } catch { return dropped; }
   for (const ws of workspaces) {
-    const studio = join(config.workspaceRoot, ws, "studio", "clearance-search");
+    const studio = studioDirFor(join(config.workspaceRoot, ws));
     let slugs = [];
     try { slugs = readdirSync(studio); } catch { continue; }
     for (const slug of slugs) {

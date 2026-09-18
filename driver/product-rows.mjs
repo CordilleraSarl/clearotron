@@ -25,7 +25,7 @@
 //
 // So: a third module that contaminates neither, and one place to pin.
 
-import { ORDERABLE_PRODUCTS, PRODUCT_POLICIES, RETIRED_POLICIES, policyFor } from "./search-policy.mjs";
+import { ORDERABLE_PRODUCTS, PRODUCT_POLICIES, RETIRED_POLICIES, policyFor, productKeyAsRenamed } from "./search-policy.mjs";
 import { maxNamesFor, productSpec } from "./products.mjs";
 import { leversFromResolved, turnaround, turnaroundHours } from "./effort-model.mjs";
 
@@ -96,7 +96,7 @@ export function baseTurnaroundFor(policy) {
  * exactly what shipped before.
  */
 export function productRow(key) {
-  const k = String(key ?? "").trim().toLowerCase();
+  const k = productKeyAsRenamed(key);   // a pre-rename key names the same product
   const p = PRODUCT_POLICIES[k] ?? RETIRED_POLICIES[k];
   if (!p) return null;
   const base = baseTurnaroundFor(p);

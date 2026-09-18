@@ -285,7 +285,23 @@ export function normalizeRecord(rec, officeHint = null) {
 
 // Light search row (record_id + display fields). Signa returns FULL records on search, but we project a
 // lean row here and let record_fetch return the full normalized record (mirrors corsearch/clarivate).
+//
+// THIS ROW IS ALSO THE BAND ROW, so it carries the band contract's key names. `screenSource: "search-row"`
+// means the kernel lands these rows in the named band as they are — there is no screen call to lift
+// fields across — and every band consumer (band-shape, named-band, the digest, the placement form, the
+// house-mark ownership check) reads `owner_name`, `classes` and `application_date`. This row used to carry
+// only `owner`, `nice_classes` and `filing_date`, and `owner` read a flat `owner_name` the vendor does not
+// send: the owner is `owners[].name`, exactly as normalizeRecord above already reads it. Every Signa
+// record therefore reached the fold with no owner, every register placement failed
+// `placement_owner_missing` in the render, and a pass that had tiered 141 in-class identical and
+// near-identical records delivered none of them while reporting success.
+//
+// The signa-named keys stay: rowScreen and the search tool's own output read them.
 function normalizeSearchRow(rec) {
+  const owner0 = Array.isArray(rec.owners) ? rec.owners[0] : null;
+  const owner = rec.owner_name ?? owner0?.name ?? null;
+  const classes = normalizeClasses(rec);
+  const filed = toIso(rec.filing_date);
   return {
     record_id: rec.id ? makeRef(rec.jurisdiction_code || rec.office_code, rec.id) : null,
     id: rec.id,
@@ -293,9 +309,13 @@ function normalizeSearchRow(rec) {
     mark_text: rec.mark_text ?? null,
     status: pickStatusText(rec),
     status_class: statusClassOf(rec),
-    nice_classes: normalizeClasses(rec),
-    owner: rec.owner_name ?? null,
-    filing_date: toIso(rec.filing_date),
+    nice_classes: classes,
+    classes,
+    owner,
+    owner_name: owner,
+    owner_country: owner0?.country_code ?? owner0?.country ?? null,
+    filing_date: filed,
+    application_date: filed,
     registration_date: toIso(rec.registration_date),
     relevance_score: Number.isInteger(rec.relevance_score) ? rec.relevance_score : null,
     raw: rec,
