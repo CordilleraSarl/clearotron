@@ -12,9 +12,9 @@
 // pass again the moment someone reintroduces one.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, dirname } from "node:path";
+import { join, dirname, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { preflightDeploymentUrls } from "../driver.config.mjs";
 import { accessNoteMd, accessNoteHtml } from "../publish/index.mjs";
@@ -192,20 +192,31 @@ test("an empty directory under a walked root is not a lost corpus", () => {
   // TWO plants, not one, and the second is deliberately not the member this arm was written against: a
   // leaf directly under the issue's own directory, and one nested two levels under a DIFFERENT root.
   // "One empty leaf anywhere beneath the seven roots" is the claim; one plant cannot make it.
-  const stems = [
-    join(DRIVER, "profiles", "projects", `b2018-${process.pid}`),
-    join(REPO, "shared", `b2018-${process.pid}`),
-  ];
-  const leaves = [stems[0], join(stems[1], "deeper", "deeper-still")];
-  const baseline = guardedFiles().map(rel).sort();
+  //
+  // IN A TREE OF ITS OWN, NOT IN THE CHECKOUT. This used to plant its leaves in this repository's own
+  // `driver/` and `shared/` and remove them in `finally`; while they existed, any test that spawns the
+  // suite wrapper read them as a test writing inside the checkout and failed — a red in another file,
+  // on timing alone. The walker takes its roots as a parameter, so the seven roots are laid out under a
+  // temp directory, one file each, and planted there. The property is the walk's, and the walk cannot
+  // tell one tree from the other.
+  const tree = mkdtempSync(join(tmpdir(), "b2018-tree-"));
   try {
+    const roots = ROOTS.map((r) => join(tree, relative(REPO, r)));
+    for (const r of roots) {
+      mkdirSync(r, { recursive: true });
+      writeFileSync(join(r, "one.mjs"), "export const one = 1;\n");
+    }
+    const stems = [join(tree, "driver", "profiles", "projects", "b2018-leaf"), join(tree, "shared", "b2018-leaf")];
+    const leaves = [stems[0], join(stems[1], "deeper", "deeper-still")];
+    const baseline = guardedFiles(roots).sort();
+    assert.equal(baseline.length, roots.length, "the laid-out tree is not the tree the walk reads — this arm would prove nothing");
     for (const d of leaves) mkdirSync(d, { recursive: true });
     // The walk completes AND returns exactly what it returned before: this is a scope correction to the
     // vacuity check, not a change to the corpus the guard reads.
-    assert.deepEqual(guardedFiles().map(rel).sort(), baseline,
+    assert.deepEqual(guardedFiles(roots).sort(), baseline,
       "an empty directory under a walked root changed the set of files this guard reads");
   } finally {
-    for (const d of stems) rmSync(d, { recursive: true, force: true });
+    rmSync(tree, { recursive: true, force: true });
   }
 });
 
