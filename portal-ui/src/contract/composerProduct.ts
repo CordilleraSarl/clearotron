@@ -175,7 +175,7 @@ export function reachesTerritory(name: string, covered?: readonly string[] | nul
  * A Full country search reads exactly one COUNTRY, so its picker offers countries and no regions. That
  * is the difference between a control that refuses and a control that fits: the requester never types a
  * region into a search that cannot take one, so the refusal never has to happen. The panel says why
- * (`geographyNote`), so nothing is missing without a reason.
+ * (the product row's own tagline), so nothing is missing without a reason.
  */
 export function vocabularyFor(
   product: Product | null, covered?: readonly string[] | null,
@@ -419,19 +419,20 @@ export function chooseProduct(d: Draft, product: Product | null): Draft {
 }
 
 /** What the Where panel says about the geography this product accepts — AT the control, always. */
-export function geographyNote(product: Product | null): string | null {
-  if (!product) return null
-  switch (product.geography) {
-    case 'worldwide, and nothing else':
-      return 'Worldwide. This search is not narrowed — that is what it is. To search particular places, pick a different search above.'
-    case 'exactly one country':
-      return 'One country. Regions are not offered here: the case-law and opposition reading is per-country practice, and there is no such thing as one region’s precedent.'
-    case 'a region, or two or more countries':
-      return 'A region, or two or more countries. One country on its own is a Full country search — pick that one instead.'
-    default:
-      return 'Worldwide, or any set of territories you name.'
-  }
-}
+// ── THE WHERE FIELD CARRIES NO NOTE, AND THE PRODUCT ROW ALREADY SAID IT ────────────────────────────
+//
+// `geographyNote` stood here and returned one of four sentences, one per geography, rendered above the
+// Where control. The owner met the worldwide one on a running install — "Worldwide. This search is not
+// narrowed — that is what it is. To search particular places, pick a different search above." — and
+// ruled it out on 2026-09-18. None of the four is on the new-clearance board, and the row the reader
+// picked from already states the same fact in the words the board does carry: the tagline under each
+// title reads "worldwide, and nothing else", "exactly one country", "a region, or two or more
+// countries", "worldwide, or any set of territories". The note restated the row a reader had just read,
+// one field lower and at greater length.
+//
+// NOTHING REPLACES IT. The controls themselves are what say what the search takes: a worldwide search
+// draws a Worldwide chip and no picker, and a one-country search offers no regions. Those are the same
+// facts said by the shape of the form rather than by a paragraph about the form.
 
 // ── which search fits what was entered ──────────────────────────────────────────────────────────────
 

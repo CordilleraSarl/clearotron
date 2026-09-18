@@ -34,7 +34,7 @@
 // It is a DESCRIPTION and never an order: plan_run is still the free preview of a specific request, and
 // start_run is still the only thing that spends.
 
-import { ORDERABLE_PRODUCTS, PRODUCT_POLICIES, productAvailability, gateCause, UNAVAILABLE_NOTE, coverageDisclosure, loadRecipes } from "../../driver/search-policy.mjs";
+import { ORDERABLE_PRODUCTS, PRODUCT_POLICIES, productAvailability, gateCause, UNAVAILABLE_NOTE, loadRecipes } from "../../driver/search-policy.mjs";
 import { productRow } from "../../driver/product-rows.mjs";
 import { PRODUCTS, productName } from "../../driver/products.mjs";
 import { readFlagSnapshot, builtFor, registerCanCountFor, registerTerritoriesFor } from "../../driver/flag-snapshot.mjs";
@@ -152,12 +152,13 @@ function products(built, registerCanCount = null, registerTerritories = undefine
       // The CAUSE never travels; only its sentence does. This is the structural reason no CLEAROTRON_* name
       // can reach a client's assistant from here.
       unavailableNote: cause ? UNAVAILABLE_NOTE[cause] : null,
-      // — the same disclosure the browser gets, on the same product, from the
-      // same composer. A worldwide search is orderable on a partial register now; what that register
-      // does not reach is a sentence beside a live product rather than the reason a dead one refuses.
-      // Two doors, one answer: an assistant driving this must not be able to tell a client something
-      // the screen does not say.
-      coverageNote: coverageDisclosure(row.geography, registerTerritories)?.note ?? null,
+      // NO COVERAGE SENTENCE ON A PRODUCT ROW, AND THIS DOOR GOES WITH THE OTHER ONE. The rule that put
+      // a disclosure here was "two doors, one answer: an assistant driving this must not be able to tell
+      // a client something the screen does not say." That rule is why this line is now null rather than
+      // why it exists — the owner took the paragraph off the screen on 2026-09-18, and an assistant that
+      // kept reading it out would be the same defect through the other door. The reason it went is in
+      // portal-service.mjs beside its twin: it promises to defer a territory the engine now refuses.
+      coverageNote: null,
     };
   });
 }

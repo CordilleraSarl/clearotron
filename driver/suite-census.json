@@ -1721,7 +1721,7 @@
         },
         "coverage-is-disclosed-never-refused.test.mjs": {
           "tests": 10,
-          "asserts": 40,
+          "asserts": 41,
           "skips": 0,
           "todos": 0
         },
@@ -6069,7 +6069,7 @@
         },
         "composerProduct.test.ts": {
           "tests": 37,
-          "asserts": 147,
+          "asserts": 145,
           "skips": 0,
           "todos": 0
         },

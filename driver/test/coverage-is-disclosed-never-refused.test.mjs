@@ -110,30 +110,43 @@ test("arm 6 — the promise the sentence makes is one the engine keeps", () => {
   assert.match(ledger, /deferred/, "the coverage ledger no longer knows the word the disclosure promises");
 });
 
-test("arm 7 — every door that shows a product also shows what the register cannot reach", () => {
-  // ONE PRODUCT, ONE ANSWER, WHICHEVER DOOR ASKED — the rule this file's neighbours already enforce for
-  // availability, applied to the disclosure that replaced one of its causes. Three surfaces show a
-  // client a product: the portal's menu, the MCP menu (describe_options), and the two review steps that
-  // commit — the portal's plan route and plan_run. A door that stays silent lets an assistant walk a
-  // client through the one act that spends without mentioning that most of the world will defer, which
-  // is exactly the asymmetry the ruling exists to prevent.
+test("arm 7 — the menus say nothing about coverage and both review steps still do", () => {
+  // THE RULE MOVED, SO THIS ARM MOVED WITH IT. It required all four doors to carry the coverage
+  // sentence. The owner met the paragraph on a product row on 2026-09-18 and ruled it off the rows: it
+  // is on no board, and it promises to defer a named territory the door now refuses outright. What
+  // survives is the pair that matters — the review step before the spend, where "this is what you are
+  // buying" is the question actually being asked.
+  //
+  // BOTH HALVES ARE ASSERTED, and that is the point of keeping one arm rather than deleting this and
+  // adding another. A menu that starts talking again and a review step that goes quiet are opposite
+  // failures of the same ruling, and neither is visible from the other's test.
   //
   // Read at source, because the failure is a door that never asks the question — there is nothing to
   // observe at runtime on a deployment whose register reaches everything.
-  const sources = {
+  const menus = {
     "the portal's product menu": "../portal-service.mjs",
     "the MCP product menu": "../../mcp-server/lib/options.mjs",
-    "the MCP plan door": "../../mcp-server/lib/plan.mjs",
   };
-  for (const [door, rel] of Object.entries(sources)) {
+  for (const [door, rel] of Object.entries(menus)) {
     const src = readFileSync(fileURLToPath(new URL(rel, import.meta.url)), "utf8");
-    assert.match(src, /coverageDisclosure\(/, `${door} shows a product and never asks what the register reaches`);
+    assert.match(src, /coverageNote: null/, `${door} composes a coverage sentence onto a product row again`);
   }
-  // The portal's plan route is in portal-service too, and must ask SEPARATELY from the menu — one call
-  // would mean the review step inherited the menu's answer about a different product.
+  // PINNED ON THE FIELD, NOT ON THE ABSENCE OF A CALL. portal-service still calls coverageDisclosure for
+  // its review step, so "does this file mention it" cannot tell the menu from the review step. The
+  // count is what separates them: one call, and it is the reviewing one.
   const portal = readFileSync(fileURLToPath(new URL("../portal-service.mjs", import.meta.url)), "utf8");
-  assert.equal((portal.match(/coverageDisclosure\(/g) ?? []).length, 2,
-    "the portal asks once, so either the menu or the review step is silent about coverage");
+  assert.equal((portal.match(/coverageDisclosure\(/g) ?? []).length, 1,
+    "the portal asks twice, so the menu is composing the sentence the ruling took off the row");
+  // AND THE REVIEW STEPS STILL ASK. A client committing to a worldwide search on a partial register is
+  // owed what it will reach, at the moment the money goes — the one place this sentence was never ruled
+  // out of.
+  for (const [door, rel] of Object.entries({
+    "the portal's review step": "../portal-service.mjs",
+    "the MCP plan door": "../../mcp-server/lib/plan.mjs",
+  })) {
+    const src = readFileSync(fileURLToPath(new URL(rel, import.meta.url)), "utf8");
+    assert.match(src, /coverageDisclosure\(/, `${door} commits a client without saying what the register reaches`);
+  }
 
   // AND NO DOOR SMUGGLES IT BACK IN AS A REFUSAL. `UNAVAILABLE_NOTE[cause]` is what every door renders
   // for a product it will not sell; a coverage key reappearing there would undo the ruling at the one
