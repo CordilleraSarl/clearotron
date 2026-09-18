@@ -2712,7 +2712,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   ${alsoConsideredSection(ruledOut, recordsByUri, opts)}
 
   <!-- doc-52 §3 WHAT ONLY YOU CAN CLOSE — forward decisions, plain English, after the findings. -->
-  ${buckets.you ? `<div class="sec" id="only-you"><h2>What only you can close</h2></div>
+  ${buckets.you ? `<div class="sec" id="next"><h2>What happens next</h2></div>
   <div class="panel actions"><div class="actgrp act-you">${renderProse(buckets.you.body)
     .replace(/\[Time-critical\]\s*/gi, '<span class="src cl" style="margin-right:6px">Time-critical</span> ')
     .replace(/\[Open question\]\s*/gi, '<span class="src" style="margin-right:6px">Open question</span> ')
