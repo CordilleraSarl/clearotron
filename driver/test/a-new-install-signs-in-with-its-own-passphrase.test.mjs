@@ -258,7 +258,14 @@ test("a real first start, where another install left the shared credential, mint
     assert.ok(existsSync(join(home, "trademark", INSTALL_CREDENTIAL_FILE)),
       "THE REPORTED CASE: the first start did not mint the install's own credential, so it adopted the shared one");
     assert.equal(readFileSync(shared, "utf8"), sharedBefore, "the first start changed the shared credential another install uses");
-    assert.match(said, FRAME_PASSPHRASE, "and the frame must hand the new passphrase over, as a first start does");
+    // HANDED OVER ONLY ON A TERMINAL. This start's output is a pipe, the shape of a service manager's
+    // journal or a `> start.log`, so the frame must withhold the value and say how to mint one where it
+    // can be seen. It used to print it here, into exactly the log the portal's own line kept it out of.
+    assert.doesNotMatch(said, FRAME_PASSPHRASE, "the frame printed the new passphrase into output that is not a terminal");
+    assert.doesNotMatch(said, /PASSPHRASE: \S/, "the portal printed the new passphrase into output that is not a terminal");
+    assert.match(said, /│  The passphrase is NOT printed here: stdout is not a terminal/,
+      "the frame must say the passphrase was withheld, and why");
+    assert.match(said, /│    \S*.*passphrase --reset/, "and name the command that mints one on a terminal");
     assert.doesNotMatch(said, /minted on an earlier start/, "a first start must not claim an earlier one");
   } finally {
     child.kill("SIGINT");

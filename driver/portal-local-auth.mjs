@@ -422,10 +422,20 @@ export function firstRunCredentialLines({ handoff, credentialPath, email, passph
     return [head, `  PASSPHRASE: ${passphrase}`,
       "  Write it down now. It is not stored anywhere in a form that can be read back, and this line will not be printed again."];
   }
-  return [head,
-    "  The passphrase is NOT printed here: stderr is not a terminal, so this line would outlive the moment \u2014 a journal, a CI log, or a test's captured output.",
-    "  Nothing holds it now, this process included: what is on disk is a digest. To get one you can sign in with, run:",
-    `    ${resetCommand}`];
+  return [head, ...passphraseWithheldLines({ stream: "stderr", resetCommand }).map((line) => `  ${line}`)];
+}
+
+/**
+ * What stands where the passphrase would, on an output that is not a terminal. ONE composer for the two
+ * places a first run can hand the passphrase over \u2014 the portal's standard error and the launcher's closing
+ * box on standard output \u2014 so they give one reason and one way back in. It is never handed the
+ * passphrase, so no caller can wire the value through it.
+ */
+export function passphraseWithheldLines({ stream, resetCommand = "" }) {
+  return [
+    `The passphrase is NOT printed here: ${stream} is not a terminal, so this line would outlive the moment \u2014 a journal, a CI log, or a test's captured output.`,
+    "Nothing holds it now, this process included: what is on disk is a digest. To get one you can sign in with, run:",
+    `  ${resetCommand}`];
 }
 
 export const SESSION_DOMAIN = "portal-session.v1|";

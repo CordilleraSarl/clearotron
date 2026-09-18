@@ -2322,7 +2322,7 @@ if (isMain) {
   // Captured HERE, immediately before the spawn, rather than beside the sentence that reads it: the
   // check has to sit on the other side of the thing that mints, and the only way to keep that true is
   // for it to be adjacent to the spawn where a reader can see why.
-  const { credentialPathFor: credentialPathBeforeStart, newPassphrase, passphraseResetCommand, demoCredentialToReplace, laterStartLines, readLocalCredential } = await import("../driver/portal-local-auth.mjs");
+  const { credentialPathFor: credentialPathBeforeStart, newPassphrase, passphraseResetCommand, passphraseWithheldLines, demoCredentialToReplace, laterStartLines, readLocalCredential } = await import("../driver/portal-local-auth.mjs");
   // ASKED ABOUT THE FILE THE PORTAL WILL ACTUALLY USE, not the shared default. `credentialPathFor`
   // reads `PORTAL_LOCAL_CREDENTIAL`, and a demo sets it to a file inside its own base — but this call
   // was made against THIS process's environment, which never carries it. So on any box that already had
@@ -2486,22 +2486,27 @@ if (isMain) {
   // line is what a reader copies when they lose the passphrase — run as printed, the bare form resolved
   // the shared default and exited 1 saying no credential exists.
   const reset = passphraseResetCommand({ prefix: invocationPrefix(), credentialPath: envs.portal.PORTAL_LOCAL_CREDENTIAL ?? null });
+  // ── ONLY A TERMINAL IS HANDED THE PASSPHRASE ──────────────────────────────────────────────────────
+  //
+  // The first-start box went to standard output whatever standard output was. Under a service manager,
+  // `nohup` or `> start.log` that is a file, so the one value this product cannot read back landed in a
+  // log, a moment after the portal's own line said it was being withheld for exactly that reason.
+  // Measured on a published beta by an outside install. A redirected run gets the portal's own words
+  // instead, from the composer the portal uses, and the way to mint one on a terminal.
   if (mintedPassphrase) {
     const rule = "─".repeat(66);
-    say(`  ┌${rule}┐`);
-    say(`  │  Open        ${envs.url}`);
-    say(`  │  Sign in as  ${user}`);
-    say(`  │  Passphrase  ${mintedPassphrase}`);
-    say(`  │`);
-    say(`  │  WRITE THE PASSPHRASE DOWN NOW. It is stored only as a digest, so`);
-    say(`  │  nothing — not this product, not this terminal — can read it back.`);
-    say(`  │  Lost it? ${reset}`);
     // THE HINT BELONGS IN THE BOX TOO, and this was the reader the whole sentence was written for. The
     // frame exists because a first-time reader skips the log wall and acts on it — so the one address
     // they copy was the one address with nothing beside it saying what to do when the page that opens
     // is somebody else's. It was printed nine lines above, to a reader who by design did not read there.
-    for (const line of foreignPageHint(DEMO ? "demo" : "start", ports.portal)) say(`  │  ${line}`);
-    say(`  └${rule}┘`);
+    const hint = foreignPageHint(DEMO ? "demo" : "start", ports.portal).map((line) => `  │  ${line}`);
+    const handover = process.stdout.isTTY === true
+      ? [`  │  Passphrase  ${mintedPassphrase}`, `  │`,
+        `  │  WRITE THE PASSPHRASE DOWN NOW. It is stored only as a digest, so`,
+        `  │  nothing — not this product, not this terminal — can read it back.`,
+        `  │  Lost it? ${reset}`]
+      : passphraseWithheldLines({ stream: "stdout", resetCommand: reset }).map((line) => `  │  ${line}`);
+    for (const line of [`  ┌${rule}┐`, `  │  Open        ${envs.url}`, `  │  Sign in as  ${user}`, ...handover, ...hint, `  └${rule}┘`]) say(line);
   } else {
     // THE WAY BACK IN FIRST, then which credential, when and for whom: laterStartLines says why. Read for
     // its date and address only; a file that cannot be read is named by the portal's own boot.
