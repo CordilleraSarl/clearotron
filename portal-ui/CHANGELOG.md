@@ -1,5 +1,26 @@
 # portal-ui
 
+## 0.3.2-beta.9
+
+### Patch Changes
+
+- 09f51e0: Fixed: New clearance no longer marks a company's saved territories as not available on a register that covers them.
+- 09f51e0: Fixed: A report's section links now sit in the header and stay on screen while you read, instead of scrolling away.
+- 09f51e0: Fixed: on a phone, a table wider than the screen, such as Clearances or People, keeps its sideways scrollbar at the bottom of the screen.
+- 09f51e0: New: a worldwide search names the register service that searches it, on the New clearance form and on the report's coverage line.
+- 09f51e0: Fixed: each finding's "Ask AI about this finding" button in a report now opens Ask AI, with that finding's number in the question.
+- 09f51e0: New: on Clearances, Ask AI sits in each row's "···" menu beside Retire, leaving the Open button alone in its column.
+- 09f51e0: Fixed: The Ask AI panel now points at the button that opened it, and that button shows when it is open. Pressing "Ask AI about this finding" a second time closes the panel.
+- 09f51e0: Fixed: on a wide screen, the Clearances columns take the widths of the approved design, with a quarter of the table for each row's buttons.
+- 09f51e0: Fixed: Clearances no longer scrolls sideways on a wide screen with a full list, and a long risk word no longer runs into its date.
+- 09f51e0: Fixed: on a narrow window, Clearances no longer splits a risk word such as "Manageable" in two or runs a group's status into its risk.
+- 09f51e0: Fixed: clicking Company settings in the side menu a second time closes its pages again, and a third click opens them.
+- 09f51e0: Fixed: Connect your AI sits at the bottom of the portal's side menu, just above Collapse, where it stays whatever the window's height.
+- 09f51e0: Fixed: New clearance no longer asks for the name twice when it opens with a search already picked for a company.
+- 09f51e0: Fixed: when the company list cannot load, screens no longer narrow to one default company, and a company whose settings cannot be read is named.
+- 09f51e0: Fixed: The new clearance form no longer repeats in paragraphs what each product row and each place already say.
+- 09f51e0: Fixed: The Goods or services field no longer carries a line explaining it; the field itself is unchanged and still optional.
+
 ## 0.3.2-beta.8
 
 No changes in this release.

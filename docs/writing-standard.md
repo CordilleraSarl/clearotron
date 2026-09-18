@@ -10,6 +10,11 @@ they are the ones a trained writer and a language model both break by instinct: 
 over-explaining, keep it short, no metadiscourse, finish strong, and do not fake contradiction. If a
 sentence sounds like a language model wrote it, rewrite it.
 
+Its last group holds the rules On Style added after this copy was taken; the group above it says which
+earlier rules that project now applies only on review, and which this standard keeps always on. Four of them decide sentences
+this product writes every day: mark a guess as a guess, state the event before its cause, leave protected
+text alone, and give the second sentence of a pair its own work.
+
 ## Part two: the product's own rules
 
 Eight rules, each with the sentence that caused it.
@@ -87,3 +92,8 @@ against `writing-rules.md`, and asks what they would think each sentence means.
 A stylesheet that is inlined into a delivered document is delivered with it, comments included — the
 reader receives the file, so a class name in a CSS comment is engineering vocabulary on a page they can
 open, exactly as it would be in prose.
+
+Source comments are read by a contributor rather than a company, so the standard's second part does not
+reach them. The prose rules do. A comment that guesses at a path says it is guessing, states what was
+measured before why it happened, and quotes an identifier without repairing it —
+[ADR-0005](decisions/0005-comments-carry-reasoning.md) is the ruling on what a comment carries.
