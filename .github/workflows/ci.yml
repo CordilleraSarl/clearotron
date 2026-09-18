@@ -455,6 +455,12 @@ jobs:
       # People screen's own check draws both widths inside one run; this one takes a flag, so it gets a
       # second step rather than a second instrument.
       - run: node scripts/clearances-render-check.mjs --width 400
+      # AND AT THE WIDTH BETWEEN THEM. 400 and the default 1100 left everything in between unguarded, and
+      # the defect that lived there was a different one: at 700 the table FITS its wrapper and a row's own
+      # controls are wider than the column they were given, so the cell overflowed the page by 25px while
+      # the phone rule above did not apply. Three widths is not a range, but it is the two edges and the
+      # gap the two known defects came out of.
+      - run: node scripts/clearances-render-check.mjs --width 700
       - run: node scripts/composer-render-check.mjs
       - run: node scripts/ai-page-render-check.mjs
       - run: node scripts/ask-ai-render-check.mjs

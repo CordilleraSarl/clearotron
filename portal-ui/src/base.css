@@ -737,7 +737,12 @@ table.data td.nest-2 {
   --row-open-w: 13.5em;
   --row-ask-w: 6.5em;
   display: grid;
-  grid-template-columns: var(--row-open-w) auto;
+  /* MINMAX, BECAUSE THE TRACK IS A CEILING HERE AND NOT A FLOOR. A bare `var(--row-open-w)` is a fixed
+     13.5em track that cannot shrink, so in a narrow container the row's controls were wider than the
+     column they were given: measured at 700px, the "more" button sat at x=697 with the wrapper's right
+     edge at 682, and the cell overflowed the table and then the page by 25px. The wide form below
+     restores the fixed track, where it fits and the one-width rule matters. */
+  grid-template-columns: minmax(0, var(--row-open-w)) auto;
   grid-template-areas: 'open more' 'ask more';
   justify-content: start;
   align-items: start;
@@ -781,6 +786,22 @@ button.row-open {
   white-space: nowrap;
   cursor: pointer;
 }
+/* AND ITS LABEL WRAPS, in the narrow form only. Ruled 2026-09-18: the row controls collapse at this
+   width.
+   THIS LINE DOES NOT RED WHEN IT IS REMOVED, and it is kept anyway — said out loud because the next
+   person to plant it will find the same thing. With `nowrap` and the shrunken track, the longest label
+   measures 121px inside a 120px button on this box: it does not overflow here, so the check passes, and
+   it is one pixel from clipping. The comment on `--row-open-w` above records this exact failure
+   happening — green on a developer machine, red on the CI runner, whose default font is wider, on the
+   same commit. Wrapping removes the dependency on which font measured it rather than betting a pixel
+   on it. Nothing in this check can see the difference, which is why this note is here instead. */
+@container (max-width: 999px) {
+  button.row-open {
+    min-width: 0;
+    white-space: normal;
+  }
+}
+
 button.row-open:hover {
   border-color: var(--text-muted);
 }

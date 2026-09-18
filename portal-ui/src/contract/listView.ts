@@ -98,11 +98,19 @@ export function clearancesColumns(mode: { readonly pick: boolean; readonly owner
     { key: 'status', share: mode.owner ? 16 : 19 },
     // "Manageable" and its dot, which never wrap.
     { key: 'risk', share: mode.owner ? 14 : 15 },
-    // A ten-character date in a monospace face, on one line.
-    { key: 'updated', share: 12 },
+    // A ten-character date in a monospace face, on one line. TWELVE DID NOT HOLD IT once the table was
+    // read below desktop width: measured at 700px the cell was 80px, 68px of it usable after padding,
+    // against 78px of date — and every row's date wrapped to two lines. Fourteen is that measurement
+    // plus room, and it is taken from the actions column rather than from the name, which is what the
+    // page is about: at 12 -> 14 with the name paying, an ordinary mark wrapped instead.
+    { key: 'updated', share: 14 },
     // "Open latest report", Ask AI beside it when there is room, and — for someone who may curate — the
     // "···" menu.
-    { key: 'actions', share: mode.pick ? 25 : 22 },
+    // TWO POINTS LIGHTER THAN IT WAS, and it can be: the Open track is no longer a fixed floor below the
+    // wide form, so these controls shrink to the column instead of overflowing it. Measured at 1440px,
+    // where the wide form's fixed tracks decide and this share does not, the Open column is 169px either
+    // way — the desktop table is unchanged. At 1100px it goes 151px to 135px, which is the collapse.
+    { key: 'actions', share: mode.pick ? 23 : 20 },
   )
   // The Name column takes what is left, so the shares cannot drift away from 100 when one of the others
   // is retuned.
