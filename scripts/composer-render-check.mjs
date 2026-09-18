@@ -1273,6 +1273,28 @@ await new Promise((r) => setTimeout(r, 1400))
 const inherited = (await evalIn(INHERITED_SCRIPT)).result?.result?.value ?? { fatal: 'evaluate returned nothing' }
 const inheritedPlans = posted.slice(inheritedFrom).filter((p) => p.path === '/portal/api/run/plan').map((p) => p.body)
 profileTerritories = []
+
+// ── the saved-codes pass ────────────────────────────────────────────────────────────────────────────
+// A company's own territories AS THE STORE HOLDS THEM — codes — against a register whose coverage
+// arrives as names. Every other pass here draws names on both sides, so none of them exercised the
+// join; on a served portal a company holding US, EU and UK read "not available" on all three, on a
+// register covering every one of them.
+profileTerritories = ['US', 'EU', 'UK']
+registerReach = ['European Union', 'United States', 'United Kingdom']
+registerLabelNow = 'Signa'
+await evalIn(`location.href = ${JSON.stringify(`http://127.0.0.1:${port}/portal/new`)}; 'go'`)
+await new Promise((r) => setTimeout(r, 1400))
+const savedCodes = (await evalIn(`(async () => {
+  const t0 = Date.now();
+  const removers = () => [...document.querySelectorAll('button[aria-label^="Remove "]')].map((b) => b.getAttribute('aria-label').slice(7));
+  while (Date.now() - t0 < 6000 && !['US', 'EU', 'UK'].every((c) => removers().includes(c))) await new Promise((r) => setTimeout(r, 60));
+  const own = [...document.querySelectorAll('button[aria-label^="Remove "]')].map((b) => b.closest('.chip'));
+  return { removers: removers(), deferred: own.filter((c) => c && c.classList.contains('chip-deferred')).map((c) => c.innerText.trim()),
+    notAvailable: (document.body.innerText.match(/[^\\n]*not available with register[^\\n]*/g) || []) };
+})()`)).result?.result?.value ?? { fatal: 'evaluate returned nothing' }
+profileTerritories = []
+registerReach = undefined
+registerLabelNow = null
 const evidence = []
 if (shotDir) {
   // A named company and a named operator, so each line reads the way a reader meets it.
@@ -1605,6 +1627,11 @@ for (const n of notices) {
 // One fact read at three places, because it used to disagree at all three. A FLOOR comes first: if the
 // panel never drew the four, every assertion under it is about a screen that was not in the state this
 // pass exists to measure, and would pass by being vacuous.
+// A company's saved codes on a register that covers them by name: nothing is marked unreachable.
+ok(!savedCodes.fatal && ['US', 'EU', 'UK'].every((c) => savedCodes.removers.includes(c)),
+  `the saved-codes pass never drew the company's own territories — ${JSON.stringify(savedCodes)}`)
+ok(!savedCodes.fatal && savedCodes.deferred.length === 0 && savedCodes.notAvailable.length === 0,
+  `a company territory the register covers is drawn as not available — ${JSON.stringify(savedCodes)}`)
 if (inherited.fatal) {
   // the throw says WHAT was missing; the screen says what was there instead. Both, or the next
   // reader reruns it to find out.
