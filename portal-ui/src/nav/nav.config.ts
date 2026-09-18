@@ -136,8 +136,12 @@ export type NavEntry = {
    * name over a page that has nothing to do with that company.
    *
    * Unset means the scope decides, which is what every other item wants and what this always did.
+   *
+   * `foot` is a third place: pinned to the bottom of the rail, just above Collapse, outside the list
+   * that scrolls. Last in the list was not the same thing — on a tall screen it drew straight under
+   * Company settings with the whole rail's empty height below it, and the boards draw it at the bottom.
    */
-  readonly rail?: 'above' | 'below'
+  readonly rail?: 'above' | 'below' | 'foot'
 }
 
 // ARRAY ORDER IS SIDEBAR ORDER — AppShell maps this straight into the nav list.
@@ -217,7 +221,9 @@ export const NAV: readonly NavEntry[] = [
       { id: 'brand.searches', label: 'Search templates', path: '/portal/brand/searches', icon: 'bookmark', scope: 'owner' },
     ],
   },
-  // LAST IN THE RAIL, BELOW THE SWITCHER, and its scope stays 'account' — the two are different
+  // PINNED TO THE BOTTOM OF THE RAIL, above Collapse, where every board draws it (owner, 2026-09-18) —
+  // not merely last in the list, which on a tall screen sat straight under Company settings. Its scope
+  // stays 'account' — the two are different
   // questions and this is the item that proves it (owner's ruling, 2026-09-17). The connector is issued
   // per identity, so the top bar must name the account rather than whichever company is selected;
   // moving it by changing its scope would have printed a company's name over a page that has nothing to
@@ -227,7 +233,7 @@ export const NAV: readonly NavEntry[] = [
   // switcher after Clearances, which would have put New clearance and Clearances above it; "All
   // companies" shows every clearance and choosing one filters that list, so Clearances belongs under
   // the control that filters it. The board is stale on that point and the rail is not.
-  { id: 'ai', label: 'Connect your AI', path: '/portal/ai', icon: 'sparkles', scope: 'account', rail: 'below' },
+  { id: 'ai', label: 'Connect your AI', path: '/portal/ai', icon: 'sparkles', scope: 'account', rail: 'foot' },
   // Creating a company. `hidden`, because it is reached from `+ New company` on the Company settings
   // pages, the pick panel and the switcher — routing is DERIVED from this array, so the entry is what
   // makes those buttons work, not what puts it in the rail.
@@ -303,17 +309,20 @@ export function navFor(who: Viewer, entries: readonly NavEntry[] = NAV): readonl
  * silently narrows what someone sees, while one wrongly left out merely ignores it.
  */
 /** Which side of the company switcher an entry is drawn on: its own answer, or the one its scope implies. */
-const railSideOf = (e: NavEntry): 'above' | 'below' =>
+const railSideOf = (e: NavEntry): 'above' | 'below' | 'foot' =>
   e.rail ?? ((e.scope ?? 'account') === 'account' ? 'above' : 'below')
 
 export function navGroupsFor(who: Viewer, entries: readonly NavEntry[] = NAV): {
   readonly account: readonly NavEntry[]
   readonly owner: readonly NavEntry[]
+  /** Pinned to the bottom of the rail, outside the list that scrolls, just above Collapse. */
+  readonly foot: readonly NavEntry[]
 } {
   const visibleEntries = navFor(who, entries)
   return {
     account: visibleEntries.filter((e) => railSideOf(e) === 'above'),
     owner: visibleEntries.filter((e) => railSideOf(e) === 'below'),
+    foot: visibleEntries.filter((e) => railSideOf(e) === 'foot'),
   }
 }
 

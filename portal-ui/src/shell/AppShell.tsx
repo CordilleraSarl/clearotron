@@ -597,6 +597,14 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
           ) : null}
         </div>
 
+        {/* PINNED TO THE BOTTOM, outside the list that scrolls, just above Collapse — where every board
+            draws Connect your AI. On a phone there is no Collapse, and it still closes the drawer. */}
+        {groups.foot.length ? (
+          <div className="sidebar-pinned">
+            <NavList entries={groups.foot} current={entry?.id ?? null} go={go} collapsed={collapsed && !mobile} />
+          </div>
+        ) : null}
+
         {!mobile ? (
           <div className="sidebar-foot">
             <button type="button" className="nav-item" onClick={() => setCollapsed((c) => !c)}>

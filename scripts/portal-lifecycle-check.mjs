@@ -463,6 +463,16 @@ ${HELPERS}
   out.railGroups = railSelect ? [...railSelect.querySelectorAll('optgroup')].map((g) => g.label) : [];
   out.genericOptions = railSelect ? [...railSelect.options].filter((o) => /Generic/.test(o.textContent)).length : 0;
   out.railNav = rail ? [...rail.querySelectorAll('.nav-item')].map((b) => b.innerText.trim()).filter(Boolean) : [];
+  // WHERE CONNECT YOUR AI IS DRAWN, measured on the page: pinned at the bottom of the rail, just above
+  // Collapse, outside the list that scrolls. Last in that list is not the same place — on a tall screen it
+  // drew straight under Company settings — and the entry list said "last" the whole time the screen did not.
+  const aiButton = rail ? [...rail.querySelectorAll('button.nav-item')].find((b) => b.innerText.trim() === 'Connect your AI') : null;
+  const railFoot = rail && rail.querySelector('.sidebar-foot');
+  out.aiRail = aiButton ? {
+    inScroll: Boolean(aiButton.closest('.sidebar-scroll')),
+    pinned: Boolean(aiButton.closest('.sidebar-pinned')),
+    gapToFoot: railFoot ? Math.round(railFoot.getBoundingClientRect().top - aiButton.getBoundingClientRect().bottom) : null,
+  } : null;
   out.genericLabels = railSelect ? [...railSelect.options].filter((o) => /Generic/.test(o.textContent)).map((o) => o.textContent.trim()) : [];
   // The avatar menu, opened, read and closed again. People lives there for a person with Manage, directly
   // above Installation settings, and in the rail for nobody.
@@ -1466,6 +1476,9 @@ for (const [who, out] of [['client', asClient], ['staff', asStaff], ['multi-acco
     `${who}: the Clearances header does not name the company being looked at — read ${JSON.stringify(out.clearancesHeading)}`)
   ok(out.composerCompany?.includes(NAME), `${who}: the New clearance form does not name the company — read ${JSON.stringify(out.composerCompany)}`)
   ok(out.nameOnScreen, `${who}: the company's name is nowhere on the composer`)
+  ok(out.aiRail && out.aiRail.pinned && !out.aiRail.inScroll && out.aiRail.gapToFoot !== null
+    && out.aiRail.gapToFoot >= 0 && out.aiRail.gapToFoot <= 16,
+    `${who}: Connect your AI is not pinned to the bottom of the rail, just above Collapse — ${JSON.stringify(out.aiRail)}`)
   ok(!out.slugOnScreen, `${who}: the account KEY "${KEY}" is printed on screen where the name belongs`)
 }
 // The regression this whole change is for: every login must agree, word for word.
