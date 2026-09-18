@@ -558,6 +558,9 @@
   details.searched[open]>summary::before{content:'▾'}
   details.searched .gcount{margin-left:auto;color:var(--slate);font-weight:500;font-size:12.5px}
   details.searched .gbody{padding:0 18px 12px}
+  .wchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  details.searched .wstate{font-weight:600}
+  details.searched .wnote{display:block;margin-top:4px;font-size:12.5px;line-height:1.45;color:var(--slate)}
   details.searched .row{display:grid;grid-template-columns:200px 1fr;gap:12px;padding:7px 0;border-top:1px solid var(--line);font-size:13.5px}
   details.searched .k{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);padding-top:3px}
   .openrows,.provwrap{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
