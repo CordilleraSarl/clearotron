@@ -1,0 +1,745 @@
+{
+  "uri": "/mark/em/a0c1e202-619a-4b19-b131-3c71edb71da5",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "a0c1e202-619a-4b19-b131-3c71edb71da5",
+  "applicationNumber": "18696236",
+  "registrationNumber": "18696236",
+  "applicationDate": "2022-05-03",
+  "registrationDate": "2022-08-13",
+  "expiryDate": "2032-05-03",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-05-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "NXP",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "cs",
+      "description": "Rízení obchodní cinnosti bavicu; Obchodní rízení míst pro konání zábavních akcí; Sluzby v oblasti obchodního managementu; Propagace; Reklama a marketing; Reklamní sluzby v oblasti poskytování obchodu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "cs",
+      "description": "Sluzby zvukových techniku na akce; Sluzby osvetlovace pro akce.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "da",
+      "description": "Virksomhedsledelse for entertainere; Forretningsmæssig ledelse af underholdningsetablissementer; Forretningsledelse; Annonce- og reklamevirksomhed; Reklame- og annoncevirksomhed samt marketing; Annonce- og reklamevirksomhed i forbindelse med etablering af forretningsvirksomhed.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "da",
+      "description": "Lydteknikertjenester udbudt til arrangementer; Lysteknikertjenester udbudt til arrangementer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "nl",
+      "description": "Zakelijk beheer voor artiesten; Bedrijfsvoering van uitgaansgelegenheden; Diensten op het gebied van bedrijfsvoering; Publiciteit; Reclame en marketing; Reclame met betrekking tot verschaffen van zaken.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "nl",
+      "description": "Geluidstechnische diensten voor evenementen; Diensten van verlichtingstechnici voor evenementen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Business management of entertainers; Business management of entertainment venues; Business management; Advertising; Advertising and marketing; Advertising services relating to the provision of business.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Sound engineering services for events; Lighting technician services for events.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "et",
+      "description": "Meelelahutajate ärijuhtimine; Meelelahutusrajatiste ärijuhtimine; Ärijuhtimine; Reklaamiteenused; Reklaami- ja turundusteenused; Äriteenuste reklaamiteenused.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "et",
+      "description": "Helitehnikuteenused üritustel; Ürituste valgustustehniku teenused.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fi",
+      "description": "Viihdetaiteilijoiden liiketoiminnan johtaminen; Viihdetoimintaan tarkoitettujen paikkojen liikkeenjohto; Liikkeenjohto; Mainonta; Mainonta ja markkinointi; Mainontapalvelut, jotka liittyvät liiketoiminnan tarjoamiseen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fi",
+      "description": "Ääniteknikon palvelut tapahtumia varten; Valaistusteknikon palvelut tapahtumiin.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": "Gestion d'affaires pour le compte d'artistes du spectacle; Gestion commerciale de lieux de divertissement; Services de gestion commerciale; Publicité; Publicité et marketing; Services publicitaires en matière de prestations commerciales.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": "Services d'ingénieurs du son pour événements; Services de techniciens lumière pour événements.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "de",
+      "description": "Geschäftsführung für Unterhaltungskünstler; Geschäftsführung für Unterhaltungsstätten; Geschäftsführung; Werbung; Werbung und Marketing; Werbung und Öffentlichkeitsarbeit; Werbung für Dienstleistungen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Tontechnik-Dienstleistungen für Veranstaltungen; Lichttechniker-Dienstleistungen für Veranstaltungen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "hr",
+      "description": "Poslovno upravljanje za zabavljace; Poslovno upravljanje lokacijama glazbenih manifestacija; Poslovno upravljanje; Oglasavanje; Oglasavanje i marketing; Usluge oglasavanja u svezi s dobavom poslova.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "hr",
+      "description": "Usluge zvucnog inzenjeringa za dogadanja; Usluge tehnicara za svjetlo za potrebe dogadanja.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "hu",
+      "description": "Szórakoztatóipari eloadók üzleti menedzsmentje; Szórakoztatóhelyek üzleti vezetése; Üzleti menedzsment; Hirdetési- és reklámszolgáltatások; Reklám és marketing; Üzletvitellel kapcsolatos reklámszolgáltatások.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "hu",
+      "description": "Hangmérnöki szolgáltatások rendezvényekhez; Világítástechnikusi szolgáltatások eseményekhez.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "it",
+      "description": "Gestione commerciale di artisti dello spettacolo; Gestione aziendale di locali per intrattenimento; Gestione aziendale; Pubblicità; Pubblicità e marketing; Servizi pubblicitari in materia di fornitura di servizi aziendali.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "it",
+      "description": "Servizi di ingegneria del suono per eventi; Servizi resi da tecnici dell'illuminazione per eventi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "lt",
+      "description": "Pramogu organizatoriu verslo vadyba; Pramoginiu renginiu vietu verslo vadyba; Verslo vadyba; Reklama; Reklama ir rinkodara; Reklamos paslaugos, susijusios su verslu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "lt",
+      "description": "Garso inzinieriu paslaugos renginiams; Apsvietimo techniku paslaugos renginiu reikmems.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "lv",
+      "description": "Izklaides joma stradajoso uznemejdarbibas vadiba; Izklaides vietu uznemejdarbibas parvaldiba; Uznemejdarbibas vadibas pakalpojumi; Reklama; Reklamas un marketinga pakalpojumi; Reklamas pakalpojumi, kas ir paredzeti uznemejdarbibas nodrosinasanai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "lv",
+      "description": "Skanu operatoru pakalpojumu nodrosinasana sabiedriskos pasakumos; Apgaismes tehniku pakalpojumu nodrosinasana sabiedriskos pasakumos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "mt",
+      "description": "Gestjoni amministrattiva ta' intrattenituri; Gestjoni tan-negozju ta' postijiet tad-divertiment; Il-gestjoni ta' negozju; Reklamar; Reklamar u kummercjalizzazzjoni; Servizzi ta' reklamar dwar il-provvista ta' negozju.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "mt",
+      "description": "Servizzi tal-inginerija tal-hsejjes ghall-attivitajiet; Servizzi ta' teknici tad-dwal ghal avvenimenti.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pl",
+      "description": "Uslugi w zakresie zarzadzania biznesowego swiadczone na rzecz podmiotów swiadczacych uslugi rozrywkowe; Zarzadzanie biznesowe lokalami rozrywkowymi; Zarzadzanie dzialalnoscia gospodarcza; Reklama; Reklama i marketing; Uslugi reklamowe zwiazane z prowadzeniem dzialalnosci gospodarczej.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "pl",
+      "description": "Uslugi w zakresie inzynierii dzwieku do obslugi imprez; Uslugi technika oswietlenia na potrzeby realizacji wydarzen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pt",
+      "description": "Gestão comercial de artistas de entretenimento; Gestão comercial de locais de entretenimento; Gestão de empresas; Publicidade; Publicidade e marketing; Serviços de publicidade relacionados com o fornecimento de negócios comerciais.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "pt",
+      "description": "Serviços de engenharia do som para eventos; Serviços de técnico de iluminação para eventos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "ro",
+      "description": "Administrare a afacerilor pentru artisti din domeniul divertismentului; Managementul de afaceri al locurilor amenajate pentru divertisment; Administrare de afaceri; Publicitate; Publicitate si marketing; Servicii publicitare în materie de prestatii comerciale.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ro",
+      "description": "Servicii de inginerie de sunet pentru evenimente; Servicii de tehnician de lumini pentru evenimente.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sk",
+      "description": "Obchodný manazment zabávacov; Obchodné riadenie miest na konanie zábavných akcií; Obchodný manazment; Reklama; Reklama a marketing; Reklamné sluzby v oblasti poskytovania obchodu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sk",
+      "description": "Sluzby zvukových technikov na podujatia; Sluzby technikov pre osvetlenie pre podujatia.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sl",
+      "description": "Poslovno vodenje za zabaviscnike; Poslovno upravljanje prostorov za zabave; Poslovno upravljanje; Oglasevanje in oglasevalske storitve; Oglasevanje in marketing; Oglasevalske storitve v zvezi z nudenjem poslovanja.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sl",
+      "description": "Storitve tonske tehnike za prireditve; Storitve tehnika za razsvetljavo za prireditve.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "es",
+      "description": "Gestión empresarial de artistas de espectáculos; Gestión empresarial de locales de entretenimiento; Gestión de empresas; Publicidad; Publicidad y marketing; Servicios publicitarios relacionados con servicios de negocios.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Servicios de ingeniería de sonido para eventos; Servicios de técnicos de iluminación para eventos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sw",
+      "description": "Företagsledning av underhållare; Företagsledning av underhållningsplatser; Företagsledning; Reklam; Annons- och reklamverksamhet samt marknadsföring; Reklamtjänster relaterade till affärsverksamhet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sw",
+      "description": "Ljudteknikertjänster för evenemang; Ljusteknikertjänster för evenemang.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP Veranstaltungsbetriebs GmbH",
+  "ownerNative": null,
+  "ownerCountry": "AT",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Kelsengasse 9,St. Pölten, 3100",
+        "applicantAddressCountryCode": "AT",
+        "applicantAddressCountryName": "Austria",
+        "applicantName": "NXP Veranstaltungsbetriebs GmbH"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Rízení obchodní cinnosti bavicu; Obchodní rízení míst pro konání zábavních akcí; Sluzby v oblasti obchodního managementu; Propagace; Reklama a marketing; Reklamní sluzby v oblasti poskytování obchodu."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Sluzby zvukových techniku na akce; Sluzby osvetlovace pro akce."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Virksomhedsledelse for entertainere; Forretningsmæssig ledelse af underholdningsetablissementer; Forretningsledelse; Annonce- og reklamevirksomhed; Reklame- og annoncevirksomhed samt marketing; Annonce- og reklamevirksomhed i forbindelse med etablering af forretningsvirksomhed."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Lydteknikertjenester udbudt til arrangementer; Lysteknikertjenester udbudt til arrangementer."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Zakelijk beheer voor artiesten; Bedrijfsvoering van uitgaansgelegenheden; Diensten op het gebied van bedrijfsvoering; Publiciteit; Reclame en marketing; Reclame met betrekking tot verschaffen van zaken."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Geluidstechnische diensten voor evenementen; Diensten van verlichtingstechnici voor evenementen."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Business management of entertainers; Business management of entertainment venues; Business management; Advertising; Advertising and marketing; Advertising services relating to the provision of business."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Sound engineering services for events; Lighting technician services for events."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Meelelahutajate ärijuhtimine; Meelelahutusrajatiste ärijuhtimine; Ärijuhtimine; Reklaamiteenused; Reklaami- ja turundusteenused; Äriteenuste reklaamiteenused."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Helitehnikuteenused üritustel; Ürituste valgustustehniku teenused."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Viihdetaiteilijoiden liiketoiminnan johtaminen; Viihdetoimintaan tarkoitettujen paikkojen liikkeenjohto; Liikkeenjohto; Mainonta; Mainonta ja markkinointi; Mainontapalvelut, jotka liittyvät liiketoiminnan tarjoamiseen."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Ääniteknikon palvelut tapahtumia varten; Valaistusteknikon palvelut tapahtumiin."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Gestion d'affaires pour le compte d'artistes du spectacle; Gestion commerciale de lieux de divertissement; Services de gestion commerciale; Publicité; Publicité et marketing; Services publicitaires en matière de prestations commerciales."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services d'ingénieurs du son pour événements; Services de techniciens lumière pour événements."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Geschäftsführung für Unterhaltungskünstler; Geschäftsführung für Unterhaltungsstätten; Geschäftsführung; Werbung; Werbung und Marketing; Werbung und Öffentlichkeitsarbeit; Werbung für Dienstleistungen."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Tontechnik-Dienstleistungen für Veranstaltungen; Lichttechniker-Dienstleistungen für Veranstaltungen."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Poslovno upravljanje za zabavljace; Poslovno upravljanje lokacijama glazbenih manifestacija; Poslovno upravljanje; Oglasavanje; Oglasavanje i marketing; Usluge oglasavanja u svezi s dobavom poslova."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Usluge zvucnog inzenjeringa za dogadanja; Usluge tehnicara za svjetlo za potrebe dogadanja."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Szórakoztatóipari eloadók üzleti menedzsmentje; Szórakoztatóhelyek üzleti vezetése; Üzleti menedzsment; Hirdetési- és reklámszolgáltatások; Reklám és marketing; Üzletvitellel kapcsolatos reklámszolgáltatások."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Hangmérnöki szolgáltatások rendezvényekhez; Világítástechnikusi szolgáltatások eseményekhez."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Gestione commerciale di artisti dello spettacolo; Gestione aziendale di locali per intrattenimento; Gestione aziendale; Pubblicità; Pubblicità e marketing; Servizi pubblicitari in materia di fornitura di servizi aziendali."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi di ingegneria del suono per eventi; Servizi resi da tecnici dell'illuminazione per eventi."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Pramogu organizatoriu verslo vadyba; Pramoginiu renginiu vietu verslo vadyba; Verslo vadyba; Reklama; Reklama ir rinkodara; Reklamos paslaugos, susijusios su verslu."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Garso inzinieriu paslaugos renginiams; Apsvietimo techniku paslaugos renginiu reikmems."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Izklaides joma stradajoso uznemejdarbibas vadiba; Izklaides vietu uznemejdarbibas parvaldiba; Uznemejdarbibas vadibas pakalpojumi; Reklama; Reklamas un marketinga pakalpojumi; Reklamas pakalpojumi, kas ir paredzeti uznemejdarbibas nodrosinasanai."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Skanu operatoru pakalpojumu nodrosinasana sabiedriskos pasakumos; Apgaismes tehniku pakalpojumu nodrosinasana sabiedriskos pasakumos."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Gestjoni amministrattiva ta' intrattenituri; Gestjoni tan-negozju ta' postijiet tad-divertiment; Il-gestjoni ta' negozju; Reklamar; Reklamar u kummercjalizzazzjoni; Servizzi ta' reklamar dwar il-provvista ta' negozju."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi tal-inginerija tal-hsejjes ghall-attivitajiet; Servizzi ta' teknici tad-dwal ghal avvenimenti."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi w zakresie zarzadzania biznesowego swiadczone na rzecz podmiotów swiadczacych uslugi rozrywkowe; Zarzadzanie biznesowe lokalami rozrywkowymi; Zarzadzanie dzialalnoscia gospodarcza; Reklama; Reklama i marketing; Uslugi reklamowe zwiazane z prowadzeniem dzialalnosci gospodarczej."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi w zakresie inzynierii dzwieku do obslugi imprez; Uslugi technika oswietlenia na potrzeby realizacji wydarzen."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Gestão comercial de artistas de entretenimento; Gestão comercial de locais de entretenimento; Gestão de empresas; Publicidade; Publicidade e marketing; Serviços de publicidade relacionados com o fornecimento de negócios comerciais."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de engenharia do som para eventos; Serviços de técnico de iluminação para eventos."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Administrare a afacerilor pentru artisti din domeniul divertismentului; Managementul de afaceri al locurilor amenajate pentru divertisment; Administrare de afaceri; Publicitate; Publicitate si marketing; Servicii publicitare în materie de prestatii comerciale."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii de inginerie de sunet pentru evenimente; Servicii de tehnician de lumini pentru evenimente."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Obchodný manazment zabávacov; Obchodné riadenie miest na konanie zábavných akcií; Obchodný manazment; Reklama; Reklama a marketing; Reklamné sluzby v oblasti poskytovania obchodu."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Sluzby zvukových technikov na podujatia; Sluzby technikov pre osvetlenie pre podujatia."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Poslovno vodenje za zabaviscnike; Poslovno upravljanje prostorov za zabave; Poslovno upravljanje; Oglasevanje in oglasevalske storitve; Oglasevanje in marketing; Oglasevalske storitve v zvezi z nudenjem poslovanja."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Storitve tonske tehnike za prireditve; Storitve tehnika za razsvetljavo za prireditve."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Gestión empresarial de artistas de espectáculos; Gestión empresarial de locales de entretenimiento; Gestión de empresas; Publicidad; Publicidad y marketing; Servicios publicitarios relacionados con servicios de negocios."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de ingeniería de sonido para eventos; Servicios de técnicos de iluminación para eventos."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Företagsledning av underhållare; Företagsledning av underhållningsplatser; Företagsledning; Reklam; Annons- och reklamverksamhet samt marknadsföring; Reklamtjänster relaterade till affärsverksamhet."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Ljudteknikertjänster för evenemang; Ljusteknikertjänster för evenemang."
+        }
+      ]
+    },
+    "id": "a0c1e202-619a-4b19-b131-3c71edb71da5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "85"
+      }
+    ],
+    "recordLastUpdated": "20260918",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "secondLanguageCode": "en",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220503",
+        "applicationNumber": "18696236"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320503",
+      "lastPublicationDate": "20220506",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20220813",
+        "registrationNumber": "18696236"
+      }
+    },
+    "version": "20260918021323",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NXP"
+    }
+  },
+  "_uri": "/mark/em/a0c1e202-619a-4b19-b131-3c71edb71da5",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:10.756Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

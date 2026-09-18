@@ -1,0 +1,116 @@
+{
+  "uri": "/mark/py/9e61feca-dbdc-4fd4-8d37-f02fae8cab10",
+  "provider": "clarivate",
+  "office": "py",
+  "guid": "9e61feca-dbdc-4fd4-8d37-f02fae8cab10",
+  "applicationNumber": "1511622",
+  "registrationNumber": "418794",
+  "applicationDate": "2015-03-13",
+  "registrationDate": "2015-12-29",
+  "expiryDate": "2025-03-14",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Diseño a medida de computadoras y sistemas de telecomunicaciones, servicios de consultoria en el area de computadoras y telecomunicaciones y tecnologia relacionada para diseño de software.",
+      "translation_language": "en",
+      "translation": "Custom design of computers and telecommunications systems, consulting services in the area of ​​computers and telecommunications and related technology for software design."
+    }
+  ],
+  "owner": "Nxp Usa, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "BERKEMEYER, MARTHA",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 Wiliam Cannon Drive West Austinxas 78735, U. s. a.",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Nxp Usa, Inc."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Custom design of computers and telecommunications systems, consulting services in the area of ​​computers and telecommunications and related technology for software design.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Diseño a medida de computadoras y sistemas de telecomunicaciones, servicios de consultoria en el area de computadoras y telecomunicaciones y tecnologia relacionada para diseño de software."
+        }
+      ]
+    },
+    "id": "9e61feca-dbdc-4fd4-8d37-f02fae8cab10",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260721",
+    "registrationOfficeCode": "PY",
+    "registrationOfficeName": "Paraguay",
+    "representatives": [
+      {
+        "representativeAddress": "BENJAMIN CONSTANT 835 C/AYOLAS",
+        "representativeAddressCountryCode": "PY",
+        "representativeAddressCountryName": "Paraguay",
+        "representativeName": "BERKEMEYER, MARTHA"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20150313",
+        "applicationNumber": "1511622"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20250314",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20151229",
+        "registrationNumber": "418794"
+      }
+    },
+    "version": "20260721103804",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/py/9e61feca-dbdc-4fd4-8d37-f02fae8cab10",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.731Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

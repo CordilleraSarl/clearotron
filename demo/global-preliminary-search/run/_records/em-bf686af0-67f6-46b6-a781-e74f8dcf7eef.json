@@ -1,0 +1,588 @@
+{
+  "uri": "/mark/em/bf686af0-67f6-46b6-a781-e74f8dcf7eef",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "bf686af0-67f6-46b6-a781-e74f8dcf7eef",
+  "applicationNumber": "3810793",
+  "registrationNumber": "3810793",
+  "applicationDate": "2004-04-30",
+  "registrationDate": "2005-09-05",
+  "expiryDate": "2034-04-30",
+  "renewalDate": null,
+  "lastPublicationDate": "2005-03-21",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    38,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Halvledere, halvlederprocessorer, halvlederprocessorchips, integrerede kredsløb, chips med integrerede kredsløb, printkort, mikrocomputere, mikrostyreenheder, mikroprocessorer og perifere enheder til computere, hukommelsesenheder og halvledermateriale hertil; halvledere til maskiner og maskinværktøjer; halvledere til apparater til belysning, opvarmning, dampdannelse, kogning, køling, tørring og ventilation; halvledere til ure samt til apparater og instrumenter til tidtagning; halvledere til musikinstrumenter; halvledere til spil og legetøj; kredsløb til datakonvertering; computerfirmware; elektroniske, elektriske og elektromekaniske apparater til brug sammen med computere; systemprodukter til videoer; apparater og udstyr til optagelse, gengivelse og ændring af lyd, video og data; printkort til videoer; lydprintkort; printkort til audiovisuel brug; videografikacceleratorer; multimedieacceleratorer; videoprocessorer; computerprogrammer; instruktionsmateriale i forbindelse med computer- og dataalgoritmer til komprimering og dekomprimering af data i elektronisk form; prøvnings- og kalibreringsapparater; dele og tilbehør til alle de nævnte varer; udstyr til testning og programmering af integrerede kredsløb og halvlederhukommelser; computersoftware, nemlig software til integration af og etablering af forbindelse til applikationer, hjælpeprogrammer til computere, computerprogrammer til netværksstyring, computersoftware til etablering af adgang til et globalt computernetværk og indbyrdes forbundne computernetværk; elektroniske indretning til modtagelse af radio- og/eller fjernsynstransmissioner, til global kommunikation og til udsendelse af radio- og/eller fjernsynstransmissioner eller andre indretninger til visualisering samt tilhørende computerprogrammer; software til computeroperativsystemer; styresystemer til computere og computersoftware i form af værktøj til støtte for tredjemands softwareapplikationer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "da",
+      "description": "Telekommunikationsvirksomhed.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Licensgivning vedrørende teknologi; licensgivning vedrørende patenter, varemærker, ophavsrettigheder, forretningshemmeligheder og/eller knowhow vedrørende fremstilling af halvledere og anvendelse heraf; licensgivning i forbindelse med halvledere; licensgivning vedrørende software i forbindelse med fremstilling af halvledere og anvendelse heraf; licensgivning vedrørende teknologi i forbindelse med halvledere og fremstilling af halvledere; licensgivning vedrørende teknologi indeholdt i og vedrørende halvlederprodukter, integrerede kredsløb, printkort, mikrocomputere, mikrostyreenheder, mikroprocessorer og perifere enheder til computere, hukommelsesenheder og halvledermateriale hertil, kredsløb til datakonvertering, computerfirmware, elektroniske, elektriske og elektromekaniske apparater til anvendelse sammen med computere, videoprintkort, produkter, apparater og udstyr til videosystemer til optagelse, gengivelse og ændring af lyd, video og data, computerprogrammer, instruktionsmateriale vedrørende computer- og dataalgoritmer til komprimering og dekomprimering af data; specialdesign af computer- og telekommunikationssystemer; rådgivning vedrørende computere og telekommunikationsudstyr og teknologi i forbindelse hermed til design af software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Halfgeleiders, halfgeleiderprocessors, halfgeleiderprocessorchips, geïntegreerde schakelingen, chips voor geïntegreerde schakelingen, schakelborden, microcomputers, microcontrollers, microprocessors en randapparatuur, geheugens en halfgeleidermaterialen daarvoor; halfgeleiders voor machines en werktuigmachines; halfgeleiders voor verlichtings-, verwarmings-, stoomopwekkings-, kook-, koel-, droog- en ventilatieapparaten; halfgeleiders voor klokken en tijdmeettoestellen en -instrumenten; halfgeleiders voor muziekinstrumenten; halfgeleiders voor spellen en speelgoederen; gegevensconversiecircuits; computerfirmware; elektronische, elektrische en elektromechanische apparatuur voor gebruik met computers; producten voor videosystemen; apparaten en instrumenten voor het opnemen, weergeven en wijzigen van geluid, beeld en gegevens; schakelborden voor video's; printplaten voor audio; printplaten voor audio en video; versnellingsborden voor videobeelden; versnellingsborden voor multimedia; videoprocessors; computerprogramma's; opleidingsmateriaal met betrekking tot computer- en gegevensalgoritmen voor het comprimeren en decomprimeren van gegevens in elektronische vorm; test- en ijkapparatuur; onderdelen en accessories voor alle voornoemde goederen; apparaten voor het testen en programmeren van geïntegreerde schakelingen en halfgeleidergeheugens; software, te weten software voor integratie van toepassingen en software voor aansluitingen, hulpprogramma's, computerprogramma's voor netwerkbeheer, software voor toegang tot een wereldwijd computernetwerk en onderling verbonden computernetwerken; elektronische inrichtingen voor de ontvangst van uitzendingen van radio- en/of televisienetwerken en van wereldwijde mededelingen en voor de overdracht naar een radio- en/of televisietoestel of een andere inrichting voor beeldweergave en hiermee samenhangende computerprogramma's; software voor computerbesturingssystemen; computerbesturingsprogramma's en softwarehulpmiddelen voor het vergemakkelijken van softwareapplicaties van derden.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "nl",
+      "description": "Telecommunicatie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Licentieverlening voor technologie; licentieverlening inzake octrooirechten, handelsmerken, auteursrechten, handelsgeheimen en kennis met betrekking tot halfgeleiders en hun toepassingen; licentieverlening voor halfgeleiders; licentieverlening voor software met betrekking tot de vervaardiging van halfgeleiders en hun toepassingen; licentieverlening voor technologie met betrekking tot halfgeleiders en de vervaardiging van halfgeleiders; licentieverlening voor technologie gebruikt in of met betrekking tot halfgeleiderproducten, geïntegreerde schakelingen, schakelborden, microcomputers, microcontrollers, microprocessors en computerrandapparatuur, geheugens en halfgeleidermateriaal daarvoor, schakelingen voor de omzetting van gegevens, firmware, elektronische, elektrische en elektromechanische toestellen te gebruiken in combinatie met computers, videoschakelborden, producten voor videosystemen, toestellen en apparatuur voor het opnemen, weergeven en wijzigen van geluid, video en gegevens, computerprogramma's, instructiemateriaal met betrekking tot computer- en gegevensalgoritmen voor het comprimeren en decomprimeren van gegevens; klantspecifiek ontwerp van computer- en telecommunicatiesystemen; raadgeving op het gebied van computers en telecommunicatie en verwante technologie voor ontwerp van software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Semiconductors, semiconductor processors, semiconductor processor chips, integrated circuits, integrated circuit chips, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor material therefore; semiconductors for machines and machine tools; semiconductors for lighting, heating, steam generating, cooking, refrigerating, drying and ventilating apparatus; semiconductors for clocks and time keeping apparatus and instruments; semiconductors for musical instruments; semiconductors for games and playthings; data conversion circuits; computer firmware; electronic, electrical and electro-mechanical apparatus for use with computers; video systems products; apparatus and equipment for recording, reproduction and alteration of sound, video and data; video circuit boards; audio circuit boards; audio-video circuit boards; video graphic accelerators; multimedia accelerators; video processors; computer programs; instructional material relating to computer and data algorithms for the compression and decompression of data in electronic format; testing and calibrating apparatus; parts and fittings for all the aforesaid goods; equipment for the testing and programming of integrated circuits and semiconductor memories; computer software, namely, application integration and connectivity software, computer utility programs, computer programs for network management, computer software for accessing a global computer network and interconnected computer networks; computer operating systems; computer operating system software; computer operating programs and computer software tools for the facilitation of third party software applications.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "en",
+      "description": "Telecommunications.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Licensing of technology; licensing of patents, trademarks, copyrights, trade secrets and/or know-how related to the manufacture of semiconductors and their uses; licensing semiconductors; licensing of software related to the manufacture of semiconductors and their uses; licensing of technology related to semiconductors and the manufacture of semiconductors; licensing technology incorporated in and related to semiconductor products, integrated circuits, circuits boards, microcomputers, micro controllers, microprocessors and computer peripherals, memories and semiconductor material therefore, data conversion circuits, computer firmware, electronic, electrical and electromechanical apparatus for use with computers, video circuit boards, video systems products, apparatus and equipment for recording, reproduction and alteration of sound, video and data, computer programs, instructional material relating to computer and data algorithms for the compression and decompression of data; custom design of computer and telecommunications systems; consulting services in the field of computers and telecommunications and related technology for software design.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Puolijohteet, puolijohdeprosessorit, puolijohdeprosessorisirut, integroidut piirit, integroidut piirisirut, piirilevyt, mikrotietokoneet, mikroprosessoriohjaimet, mikroprosessorit ja tietokoneiden oheislaitteet, muistit ja niiden puolijohdemateriaalit; koneiden ja työstökoneiden kanssa käytettävät puolijohteet; valaistus-, lämmitys-, höyrynkehitys-, keitto-, jäähdytys-, kuivatus- ja ilmastointilaitteiden puolijohteet; puolijohteet kelloihin ja ajanottolaitteisiin ja -kojeisiin; puolijohteet soittimiin; pelien ja leikkikalujen puolijohteet; tietoa muuntavat piirit; tietokoneiden valmisohjelmistot; elektroniset, sähköiset ja sähkömekaaniset laitteet käytettäviksi tietokoneiden kanssa; videojärjestelmätuotteet; äänen, kuvan ja datan tallennus-, toisto- ja muuntolaitteet ja -välineet; videolaitteiden piirilevyt; audiolaitteiden piirilevyt; audio-videolaitteiden piirilevyt; videografiikkakiihdyttimet; multimediakiihdyttimet; kuvaprosessorit; tietokoneohjelmat; sähköisessä muodossa olevat neuvontavälineet, jotka liittyvät datan pakkaukseen ja pakkauksen purkuun tarkoitettuihin tietokone- ja data-algoritmeihin; testaus- ja kalibrointilaitteet; osat ja tarvikkeet kaikille edellä mainituille tavaroille; välineet integroitujen piirien ja puolijohdemuistien testaukseen ja ohjelmointiin; tietokoneohjelmistot, nimittäin sovellusten integrointi- ja liitettävyysohjelmistot, tietokoneiden apuohjelmat, verkonhallintaan tarkoitetut tietokoneohjelmat, tietokoneohjelmistot maailmanlaajuisen tietokoneverkon ja toisiinsa liitettyjen tietokoneverkkojen käyttämiseen; elektroniset laitteet, joilla voidaan vastanottaa radio- ja/tai televisioverkkojen lähetyksiä ja maailmanlaajuista viestintää ja lähettää niitä radioon ja/tai televisioon tai muuhun visualisoivaan laitteeseen, sekä näihin liittyvät tietokoneohjelmat; tietokoneiden käyttöjärjestelmäohjelmistot; tietokoneiden käyttöohjelmat ja tietokoneohjelmistotyökalut kolmansien osapuolten ohjelmistosovellusten helpottamiseen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "fi",
+      "description": "Kaukoviestintä.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Teknologian lisensointi; puolijohteiden valmistukseen ja niiden käyttötarkoituksiin liittyvien patenttien, tavaramerkkien, tekijänoikeuksien, liikesalaisuuksien ja/tai taitotiedon lisensointi; seuraavien lisensointi: puolijohteet; puolijohteiden valmistukseen ja niiden käyttötarkoituksiin liittyvien ohjelmistojen lisensointi; puolijohteisiin ja puolijohteiden valmistukseen liittyvän teknologian lisensointi; seuraaviin sisältyvä ja liittyvä lisensointiteknologia: puolijohdetuotteet, integroidut piirit, piirilevyt, mikrotietokoneet, mikroprosessoriohjaimet, mikroprosessorit ja tietokoneiden oheislaitteet, muistit ja niiden puolijohdemateriaalit, datanmuuntopiirit, tietokoneiden valmisohjelmistot, tietokoneiden kanssa käytettävät elektroniset laitteet, sähkölaitteet ja sähkömekaaniset laitteet, videopiirilevyt, videojärjestelmätuotteet, äänen, kuvan ja datan tallennus-, toisto- ja muuntolaitteet ja -välineet, tietokoneohjelmat, neuvontavälineet, jotka liittyvät datan pakkaukseen ja pakkauksen purkuun tarkoitettuihin tietokone- ja data-algoritmeihin; tietokone- ja tietoliikennejärjestelmien tilaussuunnittelu; konsultointipalvelut tietokoneiden ja tietoliikenteen sekä niihin liittyvän ohjelmistosuunnitteluteknologian alalla.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Semi-conducteurs, processeurs à semi-conducteurs, puces de processeurs à semi-conducteurs, circuits intégrés, puces de circuits intégrés, plaquettes de circuits imprimés, micro-ordinateurs, microcontrôleurs, microprocesseurs et périphériques d'ordinateurs, mémoires et leurs matériaux à semi-conducteurs; semiconducteurs de machines et machines-outils; semiconducteurs pour l'éclairage, le chauffage, la production de vapeur, la cuisson, la réfrigération, le séchage et la ventilation; semiconducteurs pour horloges et appareils et instruments d' horlogerie; semiconducteurs pour instruments de musique; semiconducteurs pour jeux et jouets; circuits de conversion de données; microprogrammes informatiques; appareils électriques, électroniques et électromécaniques utilisés avec des ordinateurs; produits de systèmes vidéo; appareils et équipements pour l'enregistrement, la reproduction et l'altération du son, de vidéo et de données; plaquettes de circuits vidéo; plaquettes de circuits audio; plaquettes de circuits audio et vidéo; accélérateurs graphiques vidéo; accélérateurs multimédia; processeurs vidéo; programmes informatiques; matériel d'instruction concernant les algorithmes informatiques et de données pour la compression et décompression de données sous format électronique; appareils de test et de calibrage; pièces et parties constitutives pour tous les produits précités; équipements pour tester et programmer des circuits intégrés et des mémoires à semi-conducteurs; logiciels informatiques, à savoir, intégration d'applications et logiciels de connexion, programmes utilitaires informatiques, programmes informatiques pour la gestion de réseaux, logiciels informatiques d'accès à un réseau informatique mondial et à des réseaux informatiques interconnectés; dispositifs électroniques pour recevoir les transmission de réseaux radiophoniques et/ou télévisés et de communication mondiale et pour les relayer à une radio et/ou une télévision ou un autre dispositif de visualisation et programmes informatiques afférents; logiciels de système d'exploitation d'ordinateurs; programmes d'exploitation informatiques et outils de logiciels informatiques en tant qu'applications logicielles pour le compte de tiers.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "fr",
+      "description": "Télécommunications.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Octroi de licences pour des technologies; concession de brevets d'invention, marques, droits d'auteur, secrets commerciaux et/ou savoir technologique liée à la fabrication de semi-conducteurs et à leurs utilisations; octroi de licence pour semiconducteurs; octroi de licences de logiciels liés à la fabrication de semi-conducteurs et à leurs utilisations; octroi de licences technologiques liées à des semi-conducteurs et à la fabrication de semi-conducteurs; octroi de licences en technologie intégrée dans et liée à des produits à semiconducteurs, circuits intégrés, plaquettes de circuits imprimés, micro-ordinateurs, microcontrôleurs, microprocesseurs et périphériques d'ordinateurs, mémoires et leur matériel à semiconducteurs, circuits de conversion de données, micrologiciels, appareils électroniques, électriques et électromécaniques à utiliser avec des ordinateurs, plaquettes de circuits vidéo, produits de systèmes vidéo, appareils et équipements pour l'enregistrement, la reproduction et l'altération du son, de vidéo et de données, programmes informatiques, matériel d'instruction lié à des algorithmes informatiques et de données pour la compression et la décompression de données; conception personnalisée de systèmes informatiques et de télécommunications; services d'assistance dans le domaine des ordinateurs et des télécommunications et technologie y relative en matière de conception de logiciels.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Halbleiter, Halbleiter-Prozessoren, Halbleiter-Prozessorchips, integrierte Schaltkreise, Chips für integrierte Schaltkreise, Leiterplatten, Mikrocomputer, Mikrocontroller, Mikroprozessoren und Computerperipheriegeräte, Speicher- und Halbleitermaterial; Halbleiter für Maschinen und Werkzeugmaschinen; Halbleiter für Beleuchtungs-, Heizungs-, Dampferzeugungs-, Koch-, Kühl-, Trocken- und Lüftungsgeräte; Halbleiter für Uhren und Zeitmessgeräte und -instrumente; Halbleiter für Musikinstrumente; Halbleiter für Spiele und Spielzeug; Datenkonvertierungsschaltkreise; Computer-Firmware; elektronische, elektrische und elektromechanische Geräte zur Verwendung mit Computern; Videosystemprodukte; Apparate und Ausrüstungen zur Aufzeichnung, Wiedergabe und Änderung von Ton, Bild und Daten; Video-Leiterplatten; Audio-Leiterplatten; Audio-/Video-Leiterplatten; Video-Grafikbeschleuniger; Multimedia-Beschleuniger; Bildverarbeitungsgeräte; Computerprogramme; Schulungsmaterialien in Bezug auf Computer und Daten sowie Algorithmen für die Komprimierung und Dekomprimierung von Daten in elektronischem Format; Prüf- und Eichgeräte; Teile und Zusatzteile für alle vorstehend genannten Waren; Ausrüstung zum Testen und Programmieren integrierter Schaltkreise und von Halbleiterspeichern; Computersoftware, nämlich Anwendungsintegrations- und Konnektivitätssoftware, Computerdienstprogramme, Computerprogramme für die Netzverwaltung, Computersoftware zum Zugang zu einem weltweiten Computernetz und angeschlossenen Computernetzen; elektronische Vorrichtungen für den Empfang von Übertragungen aus Rundfunk- und/oder Fernseh- und weltweiten Kommunikationsnetzen, um sie an ein Radio und/oder einen Fernseher oder andere Anzeigegeräte weiterzuleiten, und zugehörige Computerprogramme; Betriebssystemsoftware für Computer; Computerbetriebsprogramme und Computersoftwaretools zur Unterstützung der Softwareanwendungen von Drittanbietern.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "de",
+      "description": "Telekommunikation.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Lizenzierung von Technologie; Lizenzierung von Patenten, Anhänger, Urheberrechten, Handelsgeheimnissen und/oder Know-how in Bezug auf die Herstellung von Halbleitern und deren Verwendung; Lizenzierung von Halbleitern; Lizenzierung von Software in Bezug auf die Herstellung von Halbleitern und deren Verwendung; Lizenzierung von Technologie in Bezug auf Halbleiter und die Herstellung von Halbleitern; Lizenzierung von Technologie von und in Bezug auf Halbleiterprodukte, integrierte Schaltkreise, Leiterplatten, Mikrocomputer, Mikrocontroller, Mikroprozessoren und Computerperipheriegeräte, Speicher und Halbleitermaterial dafür, Datenkonvertierungsschaltkreise, Computerfirmware, elektronische, elektrische und elektromechanische Apparate zur Verwendung mit Computern, Video-Leiterplatten, Videosystemprodukte, Apparate und Ausrüstungen zur Aufzeichnung, Wiedergabe und Änderung von Ton, Bild und Daten, Computerprogramme, Schulungsmaterialien in Bezug auf Computer und Daten sowie Algorithmen für die Komprimierung und Dekomprimierung von Daten in elektronischem Format; kundenspezifische Entwicklung von Datenverarbeitungs- und Telekommunikationssystemen; Beratung auf dem Gebiet von Computern und Telekommunikation und entsprechende Technologie für den Entwurf von Software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Semiconduttori, processori a semiconduttori, chip per processori a semiconduttori, circuiti integrati, chip di circuiti integrati, schede per circuiti, microcomputer, micro-dispositivi di comando, microprocessori e unità periferiche per computer, memorie e materiali a semiconduttori relativi; semiconduttori per macchine e macchine utensili; semiconduttori per l'illuminazione, di riscaldamento, di produzione di vapore, di cottura, di refrigerazione, d'essiccamento e di ventilazione; semiconduttori per orologi ed apparecchi e strumenti cronometrici; semiconduttori musicali per bambini; semiconduttori per giochi e giocattoli; circuiti di conversione dati; firmware informatico; apparecchi elettronici, elettrici ed elettromeccanici per computer; articoli per sistemi video; apparecchi ed apparecchiature per registrazione, riproduzione e modificazione di audio, video e dati; schede di circuiti video; schede di circuiti audio; schede di circuiti audio-video; acceleratori videografici; acceleratori multimediali; videoprocessori; programmi per computer; materiali didattici in materia di algoritmi informatici e di dati per la compressione e la decompressione di dati in formato elettronico; apparecchi di collaudo e di taratura; parti e accessori per tutti i prodotti summenzionati; apparecchiature per collaudo e programmazione di circuiti integrati e memorie a semiconduttori; software, ovvero software per integrazione e connettività relative ad applicazioni, programmi di servizio per computer, programmi per computer per gestione di reti, software per accesso ad una rete informatica globale e a reti di computer interconnessi; dispositivi elettronici per ricevere le trasmissioni di reti radiofoniche e/o televisive e di comunicazione globale e per trasmetterle a una radio e/o a un televisore o altro dispositivo di visualizzazione e relativi programmi per computer; software per sistemi operativi di elaboratori elettronici; programmi operativi e software per facilitare applicazioni software di terzi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "it",
+      "description": "Telecomunicazioni.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Concessione di licenze in materia di tecnologia; concessione in licenza di brevetti, marchi di fabbrica, diritti d'autore, segreti commerciali e/o conoscenze in materia di fabbricazione di semiconduttori ed utilizzo relativo; concessione in licenza di semiconduttori; concessione in licenza di software in materia di fabbricazione di semiconduttori ed utilizzo relativo; concessione in licenza di tecnologia in materia di semiconduttori e fabbricazione di semiconduttori; concessione in licenza di tecnologia contenente e relativa a prodotti a semiconduttori, circuiti integrati, schede per circuiti, microcomputer, microdispositivi di comando, microprocessori e unità periferiche per computer, memorie e materiale a semiconduttori relativo, circuiti per la conversione di dati, firmware, apparecchi elettronici, elettrici ed elettromeccanici per computer, schede di circuiti video, articoli per sistemi video, apparecchi ed apparecchiature per registrazione, riproduzione e modificazione di audio, video e dati, programmi per computer, materiale didattico relativo ad algoritmi informatici e di dati per la compressione e la decompressione di dati; progettazione su ordinazione di sistemi informatici e di telecomunicazione; consulenza in materia di computer e telecomunicazioni e tecnologia relativa per la progettazione di software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Semicondutores, processadores de semicondutores, chips para processadores de semicondutores, circuitos integrados, chips para circuitos integrados, placas de circuitos, microcomputadores, microcontroladores, microprocessadores e periféricos de computador, memórias e materiais semicondutores para as mesmas; semicondutores para máquinas e máquinas-ferramentas; semicondutores para aparelhos de iluminação, de aquecimento, de produção de vapor, de cozedura, de refrigeração, de secagem e de ventilação; semicondutores para relógios e aparelhos e instrumentos cronométricos; semicondutores para instrumentos de música; semicondutores para jogos e brinquedos; circuitos de conversão de dados; firmware; aparelhos electrónicos, eléctricos e electromecânicos para utilização com computadores; produtos de sistemas de vídeo; aparelhos e equipamentos para o registo, a reprodução e a alteração de som, vídeo e dados; placas de circuitos de vídeo; placas de circuitos de áudio; placas de circuitos de áudio e vídeo; aceleradores gráficos de vídeo; aceleradores multimédia; processadores de vídeo; programas de computador; material de instrução relacionado com algoritmos de computador e de dados para a compressão e a descompressão de dados em formato electrónico; aparelhos de comprovação e calibragem; peças e acessórios para todos os produtos atrás citados; equipamentos para testar e programar circuitos integrados e memórias semicondutoras; software, nomeadamente software de integração de aplicações e de conectividade, programas utilitários de computador, programas de computador para gestão de redes, software para aceder a redes informáticas globais e a redes informáticas interligadas; dispositivos electrónicos destinados à recepção de transmissões radiofónicas e/ou televisivas e de transmissões de redes de comunicação global, bem como à sua posterior transmissão a estações de rádio e/ou televisivas ou a outros dispositivos de visualização e respectivos programas para computador; software de sistemas operativos para computadores; programas operativos informáticos e ferramentas de software para facilitar aplicações de software de terceiros.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "pt",
+      "description": "Telecomunicações.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Concessão de licenças de tecnologia; licenciamento de patentes, marcas, direitos de autor, segredos comerciais e/ou \"know-how\" relacionados com o fabrico de semicondutores e as suas utilizações; concessão de licenças de semicondutores; concessão de licenças de software relacionado com o fabrico de semicondutores e as suas utilizações; concessão de licenças de tecnologia relacionada com semicondutores e o fabrico de semicondutores; concessão de licenças de tecnologia incorporada e relacionada com produtos semicondutores, circuitos integrados, placas de circuitos, microcomputadores, microcontroladores, microprocessadores e periféricos de computadores, memórias e materiais semicondutores para as mesmas, circuitos de conversão de dados, firmware, aparelhos electrónicos, eléctricos e electromecânicos para utilização com computadores, placas de circuitos de vídeo, produtos de sistemas de vídeo, aparelhos e equipamentos para o registo, a reprodução e a alteração de som, vídeo e dados, programas de computador, material de instrução relacionado com algoritmos de computador e de dados para a compressão e descompressão de dados; concepção personalizada de sistemas informáticos e de telecomunicações; serviços de consultadoria no domínio dos computadores e das telecomunicações e tecnologias afins para a concepção de software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Semiconductores, procesadores semiconductores, chips de procesadores semiconductores, circuitos integrados, chips de circuitos integrados, tarjetas de circuitos, microordenadores, microcontroladores, microprocesadores y periféricos de ordenador, memorias y materiales semiconductores; semiconductores para máquinas y máquinas-herramienta; semiconductores para aparatos de alumbrado, de calefacción, de producción de vapor, de cocción, de refrigeración, de secado y de ventilación; semiconducotres para relojes y aparatos e instrumentos de registro de tiempo; semiconductores para instrumentos musicales; semiconductores para juegos y juguetes; circuitos de conversión de datos; firmware informático; aparatos electrónicos, eléctricos y electromecánicos para su uso con ordenadores; productos de sistemas de vídeo; aparatos y equipos para el registro, reproducción y modificación de sonido, vídeo y datos; tarjetas de circuito de vídeo; tarjetas de circuito de audio; tarjetas de circuito de audio y vídeo; aceleradores gráficos de vídeo; aceleradores multimedia; procesadores de vídeo; programas de ordenador; materiales de instrucción relacionados con ordenadores y datos y algoritmos para la compresión y descompresión de datos en formato electrónico; aparatos de prueba y calibrado; partes y piezas para todos los productos mencionados; equipo para poner a prueba y programas de circuitos integrados y memorias semiconductoras; software informático, en concreto, integración de aplicaciones y programas informáticos de conectividad, programas de utilidades de ordenador, programas informáticos para la gestión de redes, software informático para acceder a una red informática global y redes informáticas interconectadas; dispositivos electrónicos para recibir las transmisiones de redes radiofónicas y/o de televisión y de comunicación global y para transmitir a una radio y/o un televisor u otro dispositivo de visualización los programas correspondientes para ordenador; software de sistema operativo para ordenadores; programas informáticos y herramientas de programas informáticos para la facilitación de aplicaciones de programas de terceros.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "es",
+      "description": "Telecomunicaciones.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Licencias de tecnología; concesión de licencias de patentes, marcas, copyrights, facilitación de secretos comerciales y/o conocimientos relativos a la fabricación de semiconductores y sus usos; concesión de licencias de semiconductores; concesión de licencias relacionadas con la fabricación de semiconductores y sus usos; concesión de licencias de tecnología relacionada con los semiconductores y la fabricación de semiconductores; concesión de licencias de tecnología incorporada en o relacionada con productos semiconductores, circuitos integrados, tarjetas de circuitos, microordenadores, microcontroladores, microprocesadores y periféricos de ordenador, memorias y material semiconductor para los mismos, circuitos de conversión de datos, firmware informático, aparatos electrónicos, aparatos electrónicos, eléctricos y electromecánicos para su uso con ordenadores, tarjetas de circuitos de vídeo, productos de sistemas de vídeo, aparatos y equipos para la grabación, reproducción y modificación de sonido, vídeo y datos, programas informáticos, material formativo sobre informática y algoritmos de datos para la compresión y descompresión de datos; servicios personalizados de elaboración (diseño) de sistemas informáticos y de telecomunicaciones; consultas en materia de ordenadores y telecomunicaciones y tecnología asociada para el diseño de software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Halvledare, processorer tillverkade av halvledarmaterial, processorchips tillverkade av halvledarmaterial, integrerade kretschips, integrerade kretsar, kretskort, mikrodatorer, mikrostyrdon, mikroprocessorer och kringutrustningar för datorer, minnen och halvledarmaterial; halvledare för maskiner och maskinverktyg; halvledare för belysning, uppvärmning, ångalstring, kokning, kylning, torkning och ventilation; halvledare för klockor och tidkontrollerande apparater och instrument; halvledare för musikinstrument; halvledare för spel och leksaker; datakonverteringskretsar; fast programvara för datorer; elektroniska, elektriska och elektromekaniska apparater för användning med datorer; videosystemprodukter; apparater och utrustning för inspelning, återgivning och förändring av ljud, video och data; videokort; audiokort; audio-videokort; acceleratorer för videografik; acceleratorer för multimedier; videoprocessorer; datorprogram; instruktionsmaterial avseende datorer och data samt algoritmer för komprimering och dekomprimering av data i elektroniskt format; test- och kalibreringsapparater; delar och komponenter till alla nämnda varor; utrustning för provning och programmering av integrerade kretsar och halvledarminnen; programvara, nämligen programvara för integrering och anslutning av tillämpningar, nyttoprogram för datorer, datorprogram för näthantering, programvara för åtkomst av ett globalt datornät och sammankopplade datornät; elektroniska anordningar för att ta emot radio- och/eller televisionssändningar och sändningar från globala kommunikationsnät samt för att sända dem vidare till en radio- och/eller televisionsapparat eller annan anordning för visning samt tillhörande datorprogram; programvara för datoroperativsystem; drivprogram för datorer och programvaruverktyg för underlättande av tredje parts programvarutillämpningar.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "sw",
+      "description": "Telekommunikation.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Tekniklicensiering; licensiering av patent, varumärken, upphovsrätter, handelshemligheter och/eller kunnande avseende tillverkning av halvledare och användning därav; licensiering av halvledare; licensiering av programvara avseende tillverkning av halvledare och användning därav; licensiering av teknik avseende halvledare och tillverkning av halvledare; licensiering av teknik inbyggd i och avseende havledarprodukter, integrerade kretsar, kretskort, mikrodatorer, mikrokontroller, microprocessorer och kringutrustningar för datorer, minnen och halvledarmaterial därtill, dataomvandlingskretsar, fast programvara, elektroniska, elektriska och elektromekaniska apparater för användning med datorer, videokort, videosystemprodukter, apparater och utrustning för inspelning, reproduktion och förändring av ljud, video och data, och datorprogram, instruktionsmaterial avseende dator- och dataalgoritmer för komprimering och dekomprimering av data; specialutformning av dator- och telekommunikationssystem; konsultation inom området för datorer och telekommunikation och tillhörande teknik för utformning av programvara.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "NLO SHIELDMARK B.V.",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20031230",
+      "priorityNumber": "76/567,257"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West,Austin,Texas, 78735",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA Inc."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Halvledere, halvlederprocessorer, halvlederprocessorchips, integrerede kredsløb, chips med integrerede kredsløb, printkort, mikrocomputere, mikrostyreenheder, mikroprocessorer og perifere enheder til computere, hukommelsesenheder og halvledermateriale hertil; halvledere til maskiner og maskinværktøjer; halvledere til apparater til belysning, opvarmning, dampdannelse, kogning, køling, tørring og ventilation; halvledere til ure samt til apparater og instrumenter til tidtagning; halvledere til musikinstrumenter; halvledere til spil og legetøj; kredsløb til datakonvertering; computerfirmware; elektroniske, elektriske og elektromekaniske apparater til brug sammen med computere; systemprodukter til videoer; apparater og udstyr til optagelse, gengivelse og ændring af lyd, video og data; printkort til videoer; lydprintkort; printkort til audiovisuel brug; videografikacceleratorer; multimedieacceleratorer; videoprocessorer; computerprogrammer; instruktionsmateriale i forbindelse med computer- og dataalgoritmer til komprimering og dekomprimering af data i elektronisk form; prøvnings- og kalibreringsapparater; dele og tilbehør til alle de nævnte varer; udstyr til testning og programmering af integrerede kredsløb og halvlederhukommelser; computersoftware, nemlig software til integration af og etablering af forbindelse til applikationer, hjælpeprogrammer til computere, computerprogrammer til netværksstyring, computersoftware til etablering af adgang til et globalt computernetværk og indbyrdes forbundne computernetværk; elektroniske indretning til modtagelse af radio- og/eller fjernsynstransmissioner, til global kommunikation og til udsendelse af radio- og/eller fjernsynstransmissioner eller andre indretninger til visualisering samt tilhørende computerprogrammer; software til computeroperativsystemer; styresystemer til computere og computersoftware i form af værktøj til støtte for tredjemands softwareapplikationer."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Telekommunikationsvirksomhed."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Licensgivning vedrørende teknologi; licensgivning vedrørende patenter, varemærker, ophavsrettigheder, forretningshemmeligheder og/eller knowhow vedrørende fremstilling af halvledere og anvendelse heraf; licensgivning i forbindelse med halvledere; licensgivning vedrørende software i forbindelse med fremstilling af halvledere og anvendelse heraf; licensgivning vedrørende teknologi i forbindelse med halvledere og fremstilling af halvledere; licensgivning vedrørende teknologi indeholdt i og vedrørende halvlederprodukter, integrerede kredsløb, printkort, mikrocomputere, mikrostyreenheder, mikroprocessorer og perifere enheder til computere, hukommelsesenheder og halvledermateriale hertil, kredsløb til datakonvertering, computerfirmware, elektroniske, elektriske og elektromekaniske apparater til anvendelse sammen med computere, videoprintkort, produkter, apparater og udstyr til videosystemer til optagelse, gengivelse og ændring af lyd, video og data, computerprogrammer, instruktionsmateriale vedrørende computer- og dataalgoritmer til komprimering og dekomprimering af data; specialdesign af computer- og telekommunikationssystemer; rådgivning vedrørende computere og telekommunikationsudstyr og teknologi i forbindelse hermed til design af software."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Halfgeleiders, halfgeleiderprocessors, halfgeleiderprocessorchips, geïntegreerde schakelingen, chips voor geïntegreerde schakelingen, schakelborden, microcomputers, microcontrollers, microprocessors en randapparatuur, geheugens en halfgeleidermaterialen daarvoor; halfgeleiders voor machines en werktuigmachines; halfgeleiders voor verlichtings-, verwarmings-, stoomopwekkings-, kook-, koel-, droog- en ventilatieapparaten; halfgeleiders voor klokken en tijdmeettoestellen en -instrumenten; halfgeleiders voor muziekinstrumenten; halfgeleiders voor spellen en speelgoederen; gegevensconversiecircuits; computerfirmware; elektronische, elektrische en elektromechanische apparatuur voor gebruik met computers; producten voor videosystemen; apparaten en instrumenten voor het opnemen, weergeven en wijzigen van geluid, beeld en gegevens; schakelborden voor video's; printplaten voor audio; printplaten voor audio en video; versnellingsborden voor videobeelden; versnellingsborden voor multimedia; videoprocessors; computerprogramma's; opleidingsmateriaal met betrekking tot computer- en gegevensalgoritmen voor het comprimeren en decomprimeren van gegevens in elektronische vorm; test- en ijkapparatuur; onderdelen en accessories voor alle voornoemde goederen; apparaten voor het testen en programmeren van geïntegreerde schakelingen en halfgeleidergeheugens; software, te weten software voor integratie van toepassingen en software voor aansluitingen, hulpprogramma's, computerprogramma's voor netwerkbeheer, software voor toegang tot een wereldwijd computernetwerk en onderling verbonden computernetwerken; elektronische inrichtingen voor de ontvangst van uitzendingen van radio- en/of televisienetwerken en van wereldwijde mededelingen en voor de overdracht naar een radio- en/of televisietoestel of een andere inrichting voor beeldweergave en hiermee samenhangende computerprogramma's; software voor computerbesturingssystemen; computerbesturingsprogramma's en softwarehulpmiddelen voor het vergemakkelijken van softwareapplicaties van derden."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Telecommunicatie."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Licentieverlening voor technologie; licentieverlening inzake octrooirechten, handelsmerken, auteursrechten, handelsgeheimen en kennis met betrekking tot halfgeleiders en hun toepassingen; licentieverlening voor halfgeleiders; licentieverlening voor software met betrekking tot de vervaardiging van halfgeleiders en hun toepassingen; licentieverlening voor technologie met betrekking tot halfgeleiders en de vervaardiging van halfgeleiders; licentieverlening voor technologie gebruikt in of met betrekking tot halfgeleiderproducten, geïntegreerde schakelingen, schakelborden, microcomputers, microcontrollers, microprocessors en computerrandapparatuur, geheugens en halfgeleidermateriaal daarvoor, schakelingen voor de omzetting van gegevens, firmware, elektronische, elektrische en elektromechanische toestellen te gebruiken in combinatie met computers, videoschakelborden, producten voor videosystemen, toestellen en apparatuur voor het opnemen, weergeven en wijzigen van geluid, video en gegevens, computerprogramma's, instructiemateriaal met betrekking tot computer- en gegevensalgoritmen voor het comprimeren en decomprimeren van gegevens; klantspecifiek ontwerp van computer- en telecommunicatiesystemen; raadgeving op het gebied van computers en telecommunicatie en verwante technologie voor ontwerp van software."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Semiconductors, semiconductor processors, semiconductor processor chips, integrated circuits, integrated circuit chips, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor material therefore; semiconductors for machines and machine tools; semiconductors for lighting, heating, steam generating, cooking, refrigerating, drying and ventilating apparatus; semiconductors for clocks and time keeping apparatus and instruments; semiconductors for musical instruments; semiconductors for games and playthings; data conversion circuits; computer firmware; electronic, electrical and electro-mechanical apparatus for use with computers; video systems products; apparatus and equipment for recording, reproduction and alteration of sound, video and data; video circuit boards; audio circuit boards; audio-video circuit boards; video graphic accelerators; multimedia accelerators; video processors; computer programs; instructional material relating to computer and data algorithms for the compression and decompression of data in electronic format; testing and calibrating apparatus; parts and fittings for all the aforesaid goods; equipment for the testing and programming of integrated circuits and semiconductor memories; computer software, namely, application integration and connectivity software, computer utility programs, computer programs for network management, computer software for accessing a global computer network and interconnected computer networks; computer operating systems; computer operating system software; computer operating programs and computer software tools for the facilitation of third party software applications."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Telecommunications."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Licensing of technology; licensing of patents, trademarks, copyrights, trade secrets and/or know-how related to the manufacture of semiconductors and their uses; licensing semiconductors; licensing of software related to the manufacture of semiconductors and their uses; licensing of technology related to semiconductors and the manufacture of semiconductors; licensing technology incorporated in and related to semiconductor products, integrated circuits, circuits boards, microcomputers, micro controllers, microprocessors and computer peripherals, memories and semiconductor material therefore, data conversion circuits, computer firmware, electronic, electrical and electromechanical apparatus for use with computers, video circuit boards, video systems products, apparatus and equipment for recording, reproduction and alteration of sound, video and data, computer programs, instructional material relating to computer and data algorithms for the compression and decompression of data; custom design of computer and telecommunications systems; consulting services in the field of computers and telecommunications and related technology for software design."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Puolijohteet, puolijohdeprosessorit, puolijohdeprosessorisirut, integroidut piirit, integroidut piirisirut, piirilevyt, mikrotietokoneet, mikroprosessoriohjaimet, mikroprosessorit ja tietokoneiden oheislaitteet, muistit ja niiden puolijohdemateriaalit; koneiden ja työstökoneiden kanssa käytettävät puolijohteet; valaistus-, lämmitys-, höyrynkehitys-, keitto-, jäähdytys-, kuivatus- ja ilmastointilaitteiden puolijohteet; puolijohteet kelloihin ja ajanottolaitteisiin ja -kojeisiin; puolijohteet soittimiin; pelien ja leikkikalujen puolijohteet; tietoa muuntavat piirit; tietokoneiden valmisohjelmistot; elektroniset, sähköiset ja sähkömekaaniset laitteet käytettäviksi tietokoneiden kanssa; videojärjestelmätuotteet; äänen, kuvan ja datan tallennus-, toisto- ja muuntolaitteet ja -välineet; videolaitteiden piirilevyt; audiolaitteiden piirilevyt; audio-videolaitteiden piirilevyt; videografiikkakiihdyttimet; multimediakiihdyttimet; kuvaprosessorit; tietokoneohjelmat; sähköisessä muodossa olevat neuvontavälineet, jotka liittyvät datan pakkaukseen ja pakkauksen purkuun tarkoitettuihin tietokone- ja data-algoritmeihin; testaus- ja kalibrointilaitteet; osat ja tarvikkeet kaikille edellä mainituille tavaroille; välineet integroitujen piirien ja puolijohdemuistien testaukseen ja ohjelmointiin; tietokoneohjelmistot, nimittäin sovellusten integrointi- ja liitettävyysohjelmistot, tietokoneiden apuohjelmat, verkonhallintaan tarkoitetut tietokoneohjelmat, tietokoneohjelmistot maailmanlaajuisen tietokoneverkon ja toisiinsa liitettyjen tietokoneverkkojen käyttämiseen; elektroniset laitteet, joilla voidaan vastanottaa radio- ja/tai televisioverkkojen lähetyksiä ja maailmanlaajuista viestintää ja lähettää niitä radioon ja/tai televisioon tai muuhun visualisoivaan laitteeseen, sekä näihin liittyvät tietokoneohjelmat; tietokoneiden käyttöjärjestelmäohjelmistot; tietokoneiden käyttöohjelmat ja tietokoneohjelmistotyökalut kolmansien osapuolten ohjelmistosovellusten helpottamiseen."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Kaukoviestintä."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Teknologian lisensointi; puolijohteiden valmistukseen ja niiden käyttötarkoituksiin liittyvien patenttien, tavaramerkkien, tekijänoikeuksien, liikesalaisuuksien ja/tai taitotiedon lisensointi; seuraavien lisensointi: puolijohteet; puolijohteiden valmistukseen ja niiden käyttötarkoituksiin liittyvien ohjelmistojen lisensointi; puolijohteisiin ja puolijohteiden valmistukseen liittyvän teknologian lisensointi; seuraaviin sisältyvä ja liittyvä lisensointiteknologia: puolijohdetuotteet, integroidut piirit, piirilevyt, mikrotietokoneet, mikroprosessoriohjaimet, mikroprosessorit ja tietokoneiden oheislaitteet, muistit ja niiden puolijohdemateriaalit, datanmuuntopiirit, tietokoneiden valmisohjelmistot, tietokoneiden kanssa käytettävät elektroniset laitteet, sähkölaitteet ja sähkömekaaniset laitteet, videopiirilevyt, videojärjestelmätuotteet, äänen, kuvan ja datan tallennus-, toisto- ja muuntolaitteet ja -välineet, tietokoneohjelmat, neuvontavälineet, jotka liittyvät datan pakkaukseen ja pakkauksen purkuun tarkoitettuihin tietokone- ja data-algoritmeihin; tietokone- ja tietoliikennejärjestelmien tilaussuunnittelu; konsultointipalvelut tietokoneiden ja tietoliikenteen sekä niihin liittyvän ohjelmistosuunnitteluteknologian alalla."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Semi-conducteurs, processeurs à semi-conducteurs, puces de processeurs à semi-conducteurs, circuits intégrés, puces de circuits intégrés, plaquettes de circuits imprimés, micro-ordinateurs, microcontrôleurs, microprocesseurs et périphériques d'ordinateurs, mémoires et leurs matériaux à semi-conducteurs; semiconducteurs de machines et machines-outils; semiconducteurs pour l'éclairage, le chauffage, la production de vapeur, la cuisson, la réfrigération, le séchage et la ventilation; semiconducteurs pour horloges et appareils et instruments d' horlogerie; semiconducteurs pour instruments de musique; semiconducteurs pour jeux et jouets; circuits de conversion de données; microprogrammes informatiques; appareils électriques, électroniques et électromécaniques utilisés avec des ordinateurs; produits de systèmes vidéo; appareils et équipements pour l'enregistrement, la reproduction et l'altération du son, de vidéo et de données; plaquettes de circuits vidéo; plaquettes de circuits audio; plaquettes de circuits audio et vidéo; accélérateurs graphiques vidéo; accélérateurs multimédia; processeurs vidéo; programmes informatiques; matériel d'instruction concernant les algorithmes informatiques et de données pour la compression et décompression de données sous format électronique; appareils de test et de calibrage; pièces et parties constitutives pour tous les produits précités; équipements pour tester et programmer des circuits intégrés et des mémoires à semi-conducteurs; logiciels informatiques, à savoir, intégration d'applications et logiciels de connexion, programmes utilitaires informatiques, programmes informatiques pour la gestion de réseaux, logiciels informatiques d'accès à un réseau informatique mondial et à des réseaux informatiques interconnectés; dispositifs électroniques pour recevoir les transmission de réseaux radiophoniques et/ou télévisés et de communication mondiale et pour les relayer à une radio et/ou une télévision ou un autre dispositif de visualisation et programmes informatiques afférents; logiciels de système d'exploitation d'ordinateurs; programmes d'exploitation informatiques et outils de logiciels informatiques en tant qu'applications logicielles pour le compte de tiers."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Télécommunications."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Octroi de licences pour des technologies; concession de brevets d'invention, marques, droits d'auteur, secrets commerciaux et/ou savoir technologique liée à la fabrication de semi-conducteurs et à leurs utilisations; octroi de licence pour semiconducteurs; octroi de licences de logiciels liés à la fabrication de semi-conducteurs et à leurs utilisations; octroi de licences technologiques liées à des semi-conducteurs et à la fabrication de semi-conducteurs; octroi de licences en technologie intégrée dans et liée à des produits à semiconducteurs, circuits intégrés, plaquettes de circuits imprimés, micro-ordinateurs, microcontrôleurs, microprocesseurs et périphériques d'ordinateurs, mémoires et leur matériel à semiconducteurs, circuits de conversion de données, micrologiciels, appareils électroniques, électriques et électromécaniques à utiliser avec des ordinateurs, plaquettes de circuits vidéo, produits de systèmes vidéo, appareils et équipements pour l'enregistrement, la reproduction et l'altération du son, de vidéo et de données, programmes informatiques, matériel d'instruction lié à des algorithmes informatiques et de données pour la compression et la décompression de données; conception personnalisée de systèmes informatiques et de télécommunications; services d'assistance dans le domaine des ordinateurs et des télécommunications et technologie y relative en matière de conception de logiciels."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Halbleiter, Halbleiter-Prozessoren, Halbleiter-Prozessorchips, integrierte Schaltkreise, Chips für integrierte Schaltkreise, Leiterplatten, Mikrocomputer, Mikrocontroller, Mikroprozessoren und Computerperipheriegeräte, Speicher- und Halbleitermaterial; Halbleiter für Maschinen und Werkzeugmaschinen; Halbleiter für Beleuchtungs-, Heizungs-, Dampferzeugungs-, Koch-, Kühl-, Trocken- und Lüftungsgeräte; Halbleiter für Uhren und Zeitmessgeräte und -instrumente; Halbleiter für Musikinstrumente; Halbleiter für Spiele und Spielzeug; Datenkonvertierungsschaltkreise; Computer-Firmware; elektronische, elektrische und elektromechanische Geräte zur Verwendung mit Computern; Videosystemprodukte; Apparate und Ausrüstungen zur Aufzeichnung, Wiedergabe und Änderung von Ton, Bild und Daten; Video-Leiterplatten; Audio-Leiterplatten; Audio-/Video-Leiterplatten; Video-Grafikbeschleuniger; Multimedia-Beschleuniger; Bildverarbeitungsgeräte; Computerprogramme; Schulungsmaterialien in Bezug auf Computer und Daten sowie Algorithmen für die Komprimierung und Dekomprimierung von Daten in elektronischem Format; Prüf- und Eichgeräte; Teile und Zusatzteile für alle vorstehend genannten Waren; Ausrüstung zum Testen und Programmieren integrierter Schaltkreise und von Halbleiterspeichern; Computersoftware, nämlich Anwendungsintegrations- und Konnektivitätssoftware, Computerdienstprogramme, Computerprogramme für die Netzverwaltung, Computersoftware zum Zugang zu einem weltweiten Computernetz und angeschlossenen Computernetzen; elektronische Vorrichtungen für den Empfang von Übertragungen aus Rundfunk- und/oder Fernseh- und weltweiten Kommunikationsnetzen, um sie an ein Radio und/oder einen Fernseher oder andere Anzeigegeräte weiterzuleiten, und zugehörige Computerprogramme; Betriebssystemsoftware für Computer; Computerbetriebsprogramme und Computersoftwaretools zur Unterstützung der Softwareanwendungen von Drittanbietern."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Telekommunikation."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Lizenzierung von Technologie; Lizenzierung von Patenten, Anhänger, Urheberrechten, Handelsgeheimnissen und/oder Know-how in Bezug auf die Herstellung von Halbleitern und deren Verwendung; Lizenzierung von Halbleitern; Lizenzierung von Software in Bezug auf die Herstellung von Halbleitern und deren Verwendung; Lizenzierung von Technologie in Bezug auf Halbleiter und die Herstellung von Halbleitern; Lizenzierung von Technologie von und in Bezug auf Halbleiterprodukte, integrierte Schaltkreise, Leiterplatten, Mikrocomputer, Mikrocontroller, Mikroprozessoren und Computerperipheriegeräte, Speicher und Halbleitermaterial dafür, Datenkonvertierungsschaltkreise, Computerfirmware, elektronische, elektrische und elektromechanische Apparate zur Verwendung mit Computern, Video-Leiterplatten, Videosystemprodukte, Apparate und Ausrüstungen zur Aufzeichnung, Wiedergabe und Änderung von Ton, Bild und Daten, Computerprogramme, Schulungsmaterialien in Bezug auf Computer und Daten sowie Algorithmen für die Komprimierung und Dekomprimierung von Daten in elektronischem Format; kundenspezifische Entwicklung von Datenverarbeitungs- und Telekommunikationssystemen; Beratung auf dem Gebiet von Computern und Telekommunikation und entsprechende Technologie für den Entwurf von Software."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Semiconduttori, processori a semiconduttori, chip per processori a semiconduttori, circuiti integrati, chip di circuiti integrati, schede per circuiti, microcomputer, micro-dispositivi di comando, microprocessori e unità periferiche per computer, memorie e materiali a semiconduttori relativi; semiconduttori per macchine e macchine utensili; semiconduttori per l'illuminazione, di riscaldamento, di produzione di vapore, di cottura, di refrigerazione, d'essiccamento e di ventilazione; semiconduttori per orologi ed apparecchi e strumenti cronometrici; semiconduttori musicali per bambini; semiconduttori per giochi e giocattoli; circuiti di conversione dati; firmware informatico; apparecchi elettronici, elettrici ed elettromeccanici per computer; articoli per sistemi video; apparecchi ed apparecchiature per registrazione, riproduzione e modificazione di audio, video e dati; schede di circuiti video; schede di circuiti audio; schede di circuiti audio-video; acceleratori videografici; acceleratori multimediali; videoprocessori; programmi per computer; materiali didattici in materia di algoritmi informatici e di dati per la compressione e la decompressione di dati in formato elettronico; apparecchi di collaudo e di taratura; parti e accessori per tutti i prodotti summenzionati; apparecchiature per collaudo e programmazione di circuiti integrati e memorie a semiconduttori; software, ovvero software per integrazione e connettività relative ad applicazioni, programmi di servizio per computer, programmi per computer per gestione di reti, software per accesso ad una rete informatica globale e a reti di computer interconnessi; dispositivi elettronici per ricevere le trasmissioni di reti radiofoniche e/o televisive e di comunicazione globale e per trasmetterle a una radio e/o a un televisore o altro dispositivo di visualizzazione e relativi programmi per computer; software per sistemi operativi di elaboratori elettronici; programmi operativi e software per facilitare applicazioni software di terzi."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Telecomunicazioni."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Concessione di licenze in materia di tecnologia; concessione in licenza di brevetti, marchi di fabbrica, diritti d'autore, segreti commerciali e/o conoscenze in materia di fabbricazione di semiconduttori ed utilizzo relativo; concessione in licenza di semiconduttori; concessione in licenza di software in materia di fabbricazione di semiconduttori ed utilizzo relativo; concessione in licenza di tecnologia in materia di semiconduttori e fabbricazione di semiconduttori; concessione in licenza di tecnologia contenente e relativa a prodotti a semiconduttori, circuiti integrati, schede per circuiti, microcomputer, microdispositivi di comando, microprocessori e unità periferiche per computer, memorie e materiale a semiconduttori relativo, circuiti per la conversione di dati, firmware, apparecchi elettronici, elettrici ed elettromeccanici per computer, schede di circuiti video, articoli per sistemi video, apparecchi ed apparecchiature per registrazione, riproduzione e modificazione di audio, video e dati, programmi per computer, materiale didattico relativo ad algoritmi informatici e di dati per la compressione e la decompressione di dati; progettazione su ordinazione di sistemi informatici e di telecomunicazione; consulenza in materia di computer e telecomunicazioni e tecnologia relativa per la progettazione di software."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Semicondutores, processadores de semicondutores, chips para processadores de semicondutores, circuitos integrados, chips para circuitos integrados, placas de circuitos, microcomputadores, microcontroladores, microprocessadores e periféricos de computador, memórias e materiais semicondutores para as mesmas; semicondutores para máquinas e máquinas-ferramentas; semicondutores para aparelhos de iluminação, de aquecimento, de produção de vapor, de cozedura, de refrigeração, de secagem e de ventilação; semicondutores para relógios e aparelhos e instrumentos cronométricos; semicondutores para instrumentos de música; semicondutores para jogos e brinquedos; circuitos de conversão de dados; firmware; aparelhos electrónicos, eléctricos e electromecânicos para utilização com computadores; produtos de sistemas de vídeo; aparelhos e equipamentos para o registo, a reprodução e a alteração de som, vídeo e dados; placas de circuitos de vídeo; placas de circuitos de áudio; placas de circuitos de áudio e vídeo; aceleradores gráficos de vídeo; aceleradores multimédia; processadores de vídeo; programas de computador; material de instrução relacionado com algoritmos de computador e de dados para a compressão e a descompressão de dados em formato electrónico; aparelhos de comprovação e calibragem; peças e acessórios para todos os produtos atrás citados; equipamentos para testar e programar circuitos integrados e memórias semicondutoras; software, nomeadamente software de integração de aplicações e de conectividade, programas utilitários de computador, programas de computador para gestão de redes, software para aceder a redes informáticas globais e a redes informáticas interligadas; dispositivos electrónicos destinados à recepção de transmissões radiofónicas e/ou televisivas e de transmissões de redes de comunicação global, bem como à sua posterior transmissão a estações de rádio e/ou televisivas ou a outros dispositivos de visualização e respectivos programas para computador; software de sistemas operativos para computadores; programas operativos informáticos e ferramentas de software para facilitar aplicações de software de terceiros."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Telecomunicações."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Concessão de licenças de tecnologia; licenciamento de patentes, marcas, direitos de autor, segredos comerciais e/ou \"know-how\" relacionados com o fabrico de semicondutores e as suas utilizações; concessão de licenças de semicondutores; concessão de licenças de software relacionado com o fabrico de semicondutores e as suas utilizações; concessão de licenças de tecnologia relacionada com semicondutores e o fabrico de semicondutores; concessão de licenças de tecnologia incorporada e relacionada com produtos semicondutores, circuitos integrados, placas de circuitos, microcomputadores, microcontroladores, microprocessadores e periféricos de computadores, memórias e materiais semicondutores para as mesmas, circuitos de conversão de dados, firmware, aparelhos electrónicos, eléctricos e electromecânicos para utilização com computadores, placas de circuitos de vídeo, produtos de sistemas de vídeo, aparelhos e equipamentos para o registo, a reprodução e a alteração de som, vídeo e dados, programas de computador, material de instrução relacionado com algoritmos de computador e de dados para a compressão e descompressão de dados; concepção personalizada de sistemas informáticos e de telecomunicações; serviços de consultadoria no domínio dos computadores e das telecomunicações e tecnologias afins para a concepção de software."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Semiconductores, procesadores semiconductores, chips de procesadores semiconductores, circuitos integrados, chips de circuitos integrados, tarjetas de circuitos, microordenadores, microcontroladores, microprocesadores y periféricos de ordenador, memorias y materiales semiconductores; semiconductores para máquinas y máquinas-herramienta; semiconductores para aparatos de alumbrado, de calefacción, de producción de vapor, de cocción, de refrigeración, de secado y de ventilación; semiconducotres para relojes y aparatos e instrumentos de registro de tiempo; semiconductores para instrumentos musicales; semiconductores para juegos y juguetes; circuitos de conversión de datos; firmware informático; aparatos electrónicos, eléctricos y electromecánicos para su uso con ordenadores; productos de sistemas de vídeo; aparatos y equipos para el registro, reproducción y modificación de sonido, vídeo y datos; tarjetas de circuito de vídeo; tarjetas de circuito de audio; tarjetas de circuito de audio y vídeo; aceleradores gráficos de vídeo; aceleradores multimedia; procesadores de vídeo; programas de ordenador; materiales de instrucción relacionados con ordenadores y datos y algoritmos para la compresión y descompresión de datos en formato electrónico; aparatos de prueba y calibrado; partes y piezas para todos los productos mencionados; equipo para poner a prueba y programas de circuitos integrados y memorias semiconductoras; software informático, en concreto, integración de aplicaciones y programas informáticos de conectividad, programas de utilidades de ordenador, programas informáticos para la gestión de redes, software informático para acceder a una red informática global y redes informáticas interconectadas; dispositivos electrónicos para recibir las transmisiones de redes radiofónicas y/o de televisión y de comunicación global y para transmitir a una radio y/o un televisor u otro dispositivo de visualización los programas correspondientes para ordenador; software de sistema operativo para ordenadores; programas informáticos y herramientas de programas informáticos para la facilitación de aplicaciones de programas de terceros."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Telecomunicaciones."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Licencias de tecnología; concesión de licencias de patentes, marcas, copyrights, facilitación de secretos comerciales y/o conocimientos relativos a la fabricación de semiconductores y sus usos; concesión de licencias de semiconductores; concesión de licencias relacionadas con la fabricación de semiconductores y sus usos; concesión de licencias de tecnología relacionada con los semiconductores y la fabricación de semiconductores; concesión de licencias de tecnología incorporada en o relacionada con productos semiconductores, circuitos integrados, tarjetas de circuitos, microordenadores, microcontroladores, microprocesadores y periféricos de ordenador, memorias y material semiconductor para los mismos, circuitos de conversión de datos, firmware informático, aparatos electrónicos, aparatos electrónicos, eléctricos y electromecánicos para su uso con ordenadores, tarjetas de circuitos de vídeo, productos de sistemas de vídeo, aparatos y equipos para la grabación, reproducción y modificación de sonido, vídeo y datos, programas informáticos, material formativo sobre informática y algoritmos de datos para la compresión y descompresión de datos; servicios personalizados de elaboración (diseño) de sistemas informáticos y de telecomunicaciones; consultas en materia de ordenadores y telecomunicaciones y tecnología asociada para el diseño de software."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Halvledare, processorer tillverkade av halvledarmaterial, processorchips tillverkade av halvledarmaterial, integrerade kretschips, integrerade kretsar, kretskort, mikrodatorer, mikrostyrdon, mikroprocessorer och kringutrustningar för datorer, minnen och halvledarmaterial; halvledare för maskiner och maskinverktyg; halvledare för belysning, uppvärmning, ångalstring, kokning, kylning, torkning och ventilation; halvledare för klockor och tidkontrollerande apparater och instrument; halvledare för musikinstrument; halvledare för spel och leksaker; datakonverteringskretsar; fast programvara för datorer; elektroniska, elektriska och elektromekaniska apparater för användning med datorer; videosystemprodukter; apparater och utrustning för inspelning, återgivning och förändring av ljud, video och data; videokort; audiokort; audio-videokort; acceleratorer för videografik; acceleratorer för multimedier; videoprocessorer; datorprogram; instruktionsmaterial avseende datorer och data samt algoritmer för komprimering och dekomprimering av data i elektroniskt format; test- och kalibreringsapparater; delar och komponenter till alla nämnda varor; utrustning för provning och programmering av integrerade kretsar och halvledarminnen; programvara, nämligen programvara för integrering och anslutning av tillämpningar, nyttoprogram för datorer, datorprogram för näthantering, programvara för åtkomst av ett globalt datornät och sammankopplade datornät; elektroniska anordningar för att ta emot radio- och/eller televisionssändningar och sändningar från globala kommunikationsnät samt för att sända dem vidare till en radio- och/eller televisionsapparat eller annan anordning för visning samt tillhörande datorprogram; programvara för datoroperativsystem; drivprogram för datorer och programvaruverktyg för underlättande av tredje parts programvarutillämpningar."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Telekommunikation."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Tekniklicensiering; licensiering av patent, varumärken, upphovsrätter, handelshemligheter och/eller kunnande avseende tillverkning av halvledare och användning därav; licensiering av halvledare; licensiering av programvara avseende tillverkning av halvledare och användning därav; licensiering av teknik avseende halvledare och tillverkning av halvledare; licensiering av teknik inbyggd i och avseende havledarprodukter, integrerade kretsar, kretskort, mikrodatorer, mikrokontroller, microprocessorer och kringutrustningar för datorer, minnen och halvledarmaterial därtill, dataomvandlingskretsar, fast programvara, elektroniska, elektriska och elektromekaniska apparater för användning med datorer, videokort, videosystemprodukter, apparater och utrustning för inspelning, reproduktion och förändring av ljud, video och data, och datorprogram, instruktionsmaterial avseende dator- och dataalgoritmer för komprimering och dekomprimering av data; specialutformning av dator- och telekommunikationssystem; konsultation inom området för datorer och telekommunikation och tillhörande teknik för utformning av programvara."
+        }
+      ]
+    },
+    "id": "bf686af0-67f6-46b6-a781-e74f8dcf7eef",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20031230",
+        "priorityNumber": "76/567,257"
+      }
+    ],
+    "publications": [
+      {
+        "publicationPage": "00322",
+        "publicationVolume": "12"
+      }
+    ],
+    "recordLastUpdated": "20260917",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices. 2e étage Anna van Buerenplein 21A,Den Haag, 2595DA",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO SHIELDMARK B.V."
+      }
+    ],
+    "secondLanguageCode": "it",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20040430",
+        "applicationNumber": "3810793"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340430",
+      "lastPublicationDate": "20050321",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20050905",
+        "registrationNumber": "3810793"
+      }
+    },
+    "version": "20260917114323",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/em/bf686af0-67f6-46b6-a781-e74f8dcf7eef",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.694Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

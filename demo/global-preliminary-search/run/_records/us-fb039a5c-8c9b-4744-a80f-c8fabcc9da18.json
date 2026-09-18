@@ -1,0 +1,236 @@
+{
+  "uri": "/mark/us/fb039a5c-8c9b-4744-a80f-c8fabcc9da18",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "fb039a5c-8c9b-4744-a80f-c8fabcc9da18",
+  "applicationNumber": "85319913",
+  "registrationNumber": null,
+  "applicationDate": "2011-05-13",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": "2012-01-26",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "IDONIC",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 integrated circuits; computer chips; RFID tags and readers; semiconductor memory devices; software and/or firmware for encoding, decoding and reading data carriers; software for detecting coded, hidden or embedded markings; software for authentication, verification and identification of goods and data; and software for detecting anti-counterfeiting features",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 system design and analysis for security authentication solutions; consultancy in the field of security software and programming; design, installation, updating of software for authentication, verification and identification of goods and data; data authentication and verification services; design and implementation of software and technology solutions for the purpose of product and document authentication and tracking, and brand monitoring and protection, to protect against counterfeiting, tampering, and diversion, and to ensure the integrity of genuine products and documents",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60 NL-5656 AG, Eindhoven, NETH",
+        "applicantAddressCity": "Eindhoven",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantAddressStreet": "High Tech Campus 60 NL-5656 AG",
+        "applicantJurisdictionOfIncorporation": "NETHERLANDS",
+        "applicantLegalEntity": "private limited company",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 integrated circuits; computer chips; RFID tags and readers; semiconductor memory devices; software and/or firmware for encoding, decoding and reading data carriers; software for detecting coded, hidden or embedded markings; software for authentication, verification and identification of goods and data; and software for detecting anti-counterfeiting features"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 system design and analysis for security authentication solutions; consultancy in the field of security software and programming; design, installation, updating of software for authentication, verification and identification of goods and data; data authentication and verification services; design and implementation of software and technology solutions for the purpose of product and document authentication and tracking, and brand monitoring and protection, to protect against counterfeiting, tampering, and diversion, and to ensure the integrity of genuine products and documents"
+        }
+      ]
+    },
+    "id": "fb039a5c-8c9b-4744-a80f-c8fabcc9da18",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20120221",
+        "descriptionText": "ABANDONMENT NOTICE MAILED - FAILURE TO RESPOND"
+      },
+      {
+        "date": "20120221",
+        "descriptionText": "ABANDONMENT - FAILURE TO RESPOND OR LATE RESPONSE"
+      },
+      {
+        "date": "20120221",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20110725",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20110725",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20110725",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20110720",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20110518",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20110518",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "High Tech Campus 60 NL-5656 AG, Eindhoven, NETH",
+        "city": "Eindhoven",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "legalEntity": "private limited company",
+        "name": "NXP B.V.",
+        "street": "High Tech Campus 60 NL-5656 AG"
+      },
+      {
+        "address": "High Tech Campus 60 NL-5656 AG, Eindhoven, NETH",
+        "city": "Eindhoven",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "legalEntity": "private limited company",
+        "name": "NXP B.V.",
+        "street": "High Tech Campus 60 NL-5656 AG"
+      }
+    ],
+    "recordLastUpdated": "20260110",
+    "refusalInformation": [
+      {
+        "referencedMarks": [
+          {
+            "applicationNumber": "73484418",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "IDON CORPORATION",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "73484418",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "IDON CORPORATION",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "73484418",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "IDON CORPORATION",
+            "refusalStatus": "Cited"
+          }
+        ],
+        "refusalStatus": "Refused"
+      }
+    ],
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "SAN CARLOS, CA 94070-3113, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "SAN CARLOS, CA 94070-3113",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "CYNTHIA R. ADWERE LAW OFFICE OF CYNTHIA R. ADWERE, 751 LAUREL ST # 912"
+      }
+    ],
+    "representatives": [
+      {
+        "domesticRepresentativeName": "Cynthia R. Adwere",
+        "representativeAddress": "SAN CARLOS, CA 94070-3113, UNITED STATES",
+        "representativeAddressLines": [
+          "SAN CARLOS, CA 94070-3113",
+          "UNITED STATES"
+        ]
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20120126",
+      "active": false,
+      "application": {
+        "applicationDate": "20110513",
+        "applicationNumber": "85319913"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-FAILURE TO RESPOND",
+        "markOfficialStatusCode": "602",
+        "markOfficialStatusDate": "20120221",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260110114408",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "IDONIC"
+    }
+  },
+  "_uri": "/mark/us/fb039a5c-8c9b-4744-a80f-c8fabcc9da18",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.730Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,159 @@
+{
+  "uri": "/mark/nz/d3c2761c-b1a8-4162-ab16-5bc82698c9c0",
+  "provider": "clarivate",
+  "office": "nz",
+  "guid": "d3c2761c-b1a8-4162-ab16-5bc82698c9c0",
+  "applicationNumber": "1102880",
+  "registrationNumber": "1102880",
+  "applicationDate": "2018-09-19",
+  "registrationDate": "2019-03-20",
+  "expiryDate": "2028-09-19",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "NXP",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    39,
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Online retail and wholesale store services and electronic ordering services online or via the Internet in relation to office products and consumables, office requisites, office filing and storage products, telephones, telephone headsets, foodstuffs, beverages, furniture, educational supplies, information technology equipment, consumer electronics for office purposes, computer hardware, software and accessories, office paper products, articles for cleaning purposes, domestic and kitchen appliances, industrial packaging products, tapes, workplace safety clothing and equipment, janitorial supplies, promotional marketing products; information, advisory and consultancy services relating to business management and business administration provided online or via the Internet; vending machine services; distribution services in this class; brand consultancy services; advertising, marketing and promotional consultancy, advisory and assistance services; business consultancy and management services regarding marketing activities, launching of new products and promotional marketing products.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        39
+      ],
+      "language": "en",
+      "description": "Logistics services consisting of the packaging, transport, storage and delivery of goods; transportation and storage services relating to storage logistics, distribution logistics and returns logistics; logistics services consisting of the transportation and warehousing of goods; warehouse, distribution and transportation services in this class for office products and consumables, office requisites, office filing and storage products, telephones, telephone headsets, foodstuffs, beverages, furniture, educational supplies, information technology equipment, consumer electronics for office purposes, computer hardware, software and accessories, office paper products, articles for cleaning purposes, domestic and kitchen appliances, industrial packaging products, tapes, workplace safety clothing and equipment, janitorial supplies.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "en",
+      "description": "Printing services; provision of information relating to printing services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Design services; brand design services; consultancy and design services relating to decoration of business interiors.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP Limited",
+  "ownerNative": null,
+  "ownerCountry": "NZ",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "49 Waiouru Road, Highbrook Business Park, Auckland 2013",
+        "applicantAddressCountryCode": "NZ",
+        "applicantAddressCountryName": "New Zealand",
+        "applicantName": "NXP Limited"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Online retail and wholesale store services and electronic ordering services online or via the Internet in relation to office products and consumables, office requisites, office filing and storage products, telephones, telephone headsets, foodstuffs, beverages, furniture, educational supplies, information technology equipment, consumer electronics for office purposes, computer hardware, software and accessories, office paper products, articles for cleaning purposes, domestic and kitchen appliances, industrial packaging products, tapes, workplace safety clothing and equipment, janitorial supplies, promotional marketing products; information, advisory and consultancy services relating to business management and business administration provided online or via the Internet; vending machine services; distribution services in this class; brand consultancy services; advertising, marketing and promotional consultancy, advisory and assistance services; business consultancy and management services regarding marketing activities, launching of new products and promotional marketing products."
+        },
+        {
+          "intClassNumber": "39",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Logistics services consisting of the packaging, transport, storage and delivery of goods; transportation and storage services relating to storage logistics, distribution logistics and returns logistics; logistics services consisting of the transportation and warehousing of goods; warehouse, distribution and transportation services in this class for office products and consumables, office requisites, office filing and storage products, telephones, telephone headsets, foodstuffs, beverages, furniture, educational supplies, information technology equipment, consumer electronics for office purposes, computer hardware, software and accessories, office paper products, articles for cleaning purposes, domestic and kitchen appliances, industrial packaging products, tapes, workplace safety clothing and equipment, janitorial supplies."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Printing services; provision of information relating to printing services."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Design services; brand design services; consultancy and design services relating to decoration of business interiors."
+        }
+      ]
+    },
+    "id": "d3c2761c-b1a8-4162-ab16-5bc82698c9c0",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250716",
+    "registrationOfficeCode": "NZ",
+    "registrationOfficeName": "New Zealand",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Level 16 PO Box 105900 Auckland City Auckland 1143",
+        "representativeCorrespondentAddressCountryCode": "NZ",
+        "representativeCorrespondentAddressCountryName": "New Zealand",
+        "representativeCorrespondentName": "Hudson Gavin Martin"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20180919",
+        "applicationNumber": "1102880"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280919",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20190320",
+        "registrationNumber": "1102880"
+      }
+    },
+    "version": "20250716020157",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NXP"
+    }
+  },
+  "_uri": "/mark/nz/d3c2761c-b1a8-4162-ab16-5bc82698c9c0",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.732Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

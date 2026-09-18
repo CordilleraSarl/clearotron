@@ -1,0 +1,132 @@
+{
+  "uri": "/mark/kr/b5ef48e8-7e5e-437a-a781-4398ab0c4f78",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "b5ef48e8-7e5e-437a-a781-4398ab0c4f78",
+  "applicationNumber": "40-1997-0034499",
+  "registrationNumber": "4004123570000",
+  "applicationDate": "1997-07-24",
+  "registrationDate": "1998-07-24",
+  "expiryDate": "2028-07-24",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "HYDROVAR",
+  "markTransliteration": "HYDROVAR",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "상업용/가정용/산업용/농업용 펌프 및 펌프시스템을 콘트롤하는마이크로프로세서",
+      "translation_language": "en",
+      "translation": "Microprocessor to control commercial / home / industrial / agricultural pumps and pump systems"
+    }
+  ],
+  "owner": "Xylem IP Management S.à r.l.",
+  "ownerNative": null,
+  "ownerCountry": "LU",
+  "representative": "김원호 (Kim Won Ho)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "룩셈부르크 엘- 센닝거부르크 브리데우에스 .",
+        "applicantAddressCountryCode": "LU",
+        "applicantAddressCountryName": "Luxembourg",
+        "applicantName": "Xylem IP Management S.à r.l.",
+        "applicantNativeName": "자일럼 아이피 매니지먼트 에스.에이 알.엘."
+      },
+      {
+        "applicantAddress": ". Breedewues, L- Senningerberg",
+        "applicantAddressCountryCode": "UNKN",
+        "applicantAddressCountryName": "Unknown Applicant Country/Region",
+        "applicantName": "Xylum IP Management S.R.L.",
+        "applicantNativeName": "자일럼 아이피 매니지먼트 에스.에이.알.엘."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Microprocessor to control commercial / home / industrial / agricultural pumps and pump systems",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "상업용/가정용/산업용/농업용 펌프 및 펌프시스템을 콘트롤하는마이크로프로세서"
+        }
+      ]
+    },
+    "id": "b5ef48e8-7e5e-437a-a781-4398ab0c4f78",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "SEOUL(NONE OFFICE)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "김원호 (Kim Won Ho)"
+      },
+      {
+        "representativeAddress": "SeoLim Bldg F, - Yoksam-Dong,Kangnam-Gu,Seoul, Korea",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "유미특허법인 (YOU ME PATENT & LAW FIRM)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19970724",
+        "applicationNumber": "40-1997-0034499"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280724",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "19980724",
+        "registrationNumber": "4004123570000"
+      }
+    },
+    "version": "20250625150516",
+    "wordMarkSpecification": {
+      "markTransliteration": "HYDROVAR",
+      "markVerbalElementText": "HYDROVAR"
+    }
+  },
+  "_uri": "/mark/kr/b5ef48e8-7e5e-437a-a781-4398ab0c4f78",
+  "_receipt": {
+    "fetched_at": "2026-09-18T13:08:49.089Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-incumbent-class"
+  }
+}

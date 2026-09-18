@@ -1,0 +1,187 @@
+{
+  "uri": "/mark/bx/c9ec85a1-096c-4e98-83cc-f6837abbe601",
+  "provider": "clarivate",
+  "office": "bx",
+  "guid": "c9ec85a1-096c-4e98-83cc-f6837abbe601",
+  "applicationNumber": "1140096",
+  "registrationNumber": null,
+  "applicationDate": "2007-07-26",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2007-08-06",
+  "publicationDates": null,
+  "abandonmentDate": "2008-06-30",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "EDUCATE ME!",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    35,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Software; elektronische publicaties, waaronder elektronische publicaties met betrekking tot het milieu en duurzaamheid.",
+      "translation_language": "en",
+      "translation": "Software; electronic publications, including electronic publications related to the environment and sustainability."
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "nl",
+      "description": "Gedrukte studiematerialen; drukwerk; periodieken en boeken.",
+      "translation_language": "en",
+      "translation": "Printed Study Materials; printed matter; periodicals and books."
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "nl",
+      "description": "Reclame; beheer van commerciële zaken; zakelijke administratie; administratieve diensten; marketing en publiciteitsdiensten; zakelijke adviezen en zakelijke informatie met betrekking tot het milieu en duurzaamheid; beheer van databestanden.",
+      "translation_language": "en",
+      "translation": "Advertising; business management; business administration; administrative services; marketing and publicity services; business advice and business information relating to the environment and sustainability; management of data files."
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "nl",
+      "description": "Opleiding, verschaffen van trainingen; amusement; sport en culturele activiteiten; alle voornoemde diensten met betrekking tot het milieu en duurzaamheid.",
+      "translation_language": "en",
+      "translation": "Training, providing training; entertainment; sports and cultural activities; all the aforesaid services relating to the environment and sustainability."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Wetenschappelijk en technologische diensten, onderzoek en ontwerp daartoe; industriële analyse en onderzoeksdiensten; ontwerpen en ontwikkeling van computer hardware en software; ontwerpen van websites, inclusief websites met betrekking tot het milieu en duurzaamheid; onderhoud van websites; hosting van websites; wetenschappelijk onderzoek, analyse, advisering, raadgeving en informatie met betrekking tot voornoemde diensten, tevens verband houdende met het milieu en duurzaamheid.",
+      "translation_language": "en",
+      "translation": "Scientific and technological services, research and design therefor; industrial analysis and research services; design and development of computer hardware and software; website design, including websites relating to the environment and sustainability; maintenance of websites; web site hosting; scientific research, analysis, consultancy, consultancy and information relating to the aforesaid services, including relating to the environment and sustainability."
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "Shield Mark B.V.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60, 5656 AG Eindhoven",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "nl",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Software; electronic publications, including electronic publications related to the environment and sustainability.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Software; elektronische publicaties, waaronder elektronische publicaties met betrekking tot het milieu en duurzaamheid."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Printed Study Materials; printed matter; periodicals and books.",
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Gedrukte studiematerialen; drukwerk; periodieken en boeken."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advertising; business management; business administration; administrative services; marketing and publicity services; business advice and business information relating to the environment and sustainability; management of data files.",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Reclame; beheer van commerciële zaken; zakelijke administratie; administratieve diensten; marketing en publiciteitsdiensten; zakelijke adviezen en zakelijke informatie met betrekking tot het milieu en duurzaamheid; beheer van databestanden."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Training, providing training; entertainment; sports and cultural activities; all the aforesaid services relating to the environment and sustainability.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Opleiding, verschaffen van trainingen; amusement; sport en culturele activiteiten; alle voornoemde diensten met betrekking tot het milieu en duurzaamheid."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Scientific and technological services, research and design therefor; industrial analysis and research services; design and development of computer hardware and software; website design, including websites relating to the environment and sustainability; maintenance of websites; web site hosting; scientific research, analysis, consultancy, consultancy and information relating to the aforesaid services, including relating to the environment and sustainability.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Wetenschappelijk en technologische diensten, onderzoek en ontwerp daartoe; industriële analyse en onderzoeksdiensten; ontwerpen en ontwikkeling van computer hardware en software; ontwerpen van websites, inclusief websites met betrekking tot het milieu en duurzaamheid; onderhoud van websites; hosting van websites; wetenschappelijk onderzoek, analyse, advisering, raadgeving en informatie met betrekking tot voornoemde diensten, tevens verband houdende met het milieu en duurzaamheid."
+        }
+      ]
+    },
+    "id": "c9ec85a1-096c-4e98-83cc-f6837abbe601",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "0806"
+      }
+    ],
+    "recordLastUpdated": "20250623",
+    "registrationOfficeCode": "BX",
+    "registrationOfficeName": "Benelux",
+    "representatives": [
+      {
+        "representativeAddress": "Overschiestraat 61, 1062 XD Amsterdam",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "Shield Mark B.V."
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20080630",
+      "active": false,
+      "application": {
+        "applicationDate": "20070726",
+        "applicationNumber": "1140096"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "lastPublicationDate": "20070806",
+      "markCurrentStatus": "REFUSED REQUEST ON ABSOLUTE GROUNDS"
+    },
+    "version": "20250623180316",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "EDUCATE ME!"
+    }
+  },
+  "_uri": "/mark/bx/c9ec85a1-096c-4e98-83cc-f6837abbe601",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:10.755Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

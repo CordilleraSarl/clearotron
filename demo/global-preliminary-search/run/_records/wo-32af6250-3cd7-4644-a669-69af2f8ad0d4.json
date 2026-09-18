@@ -1,0 +1,318 @@
+{
+  "uri": "/mark/wo/32af6250-3cd7-4644-a669-69af2f8ad0d4",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "32af6250-3cd7-4644-a669-69af2f8ad0d4",
+  "applicationNumber": null,
+  "registrationNumber": "1700627",
+  "applicationDate": null,
+  "registrationDate": "2022-09-15",
+  "expiryDate": "2032-09-15",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-12-08",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "NAVIATE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    38,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer software for engineering, modelling, creation of objects, design and computer-aided design; computer software for computer-aided design (CAD); computer software for interfaces; computer programs for character-based applications, computer-aided design (CAD), animation, graphics and structural design; computer programs and software for web-based posting, searching, extranet interfacing and exchanging of data, all for use in task coordination among multiple participants in the graphic design, mechanical and electrical drawing, modelling, civil engineering and multimedia image creation fields; instructional documents delivered on electronic, optical or magnetic media or in digital form via networks; instructional manuals in electronic form sold as a unit therewith; downloadable computer graphics; downloadable computer software for modeling and designing; downloadable image files containing three dimensional digital models of objects and abstract items; computer operating system software; programs (computer -) [downloadable software]; computer software for information management relating to real estate management.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Processing, retrieval and/or controlling (supervision) of computerised information; computerised file management; computerised file management; systemization of information into computer databases; systemisation of information relating to real estate management into computer databases.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "en",
+      "description": "Providing access to databases; providing access to databases containing data or documents stored electronically in central files for remote consultation; providing access to web pages; data communication services accessible by access code; providing access to weblogs; provision of access to an electronic on-line network for information retrieval; providing access to databases; rental of access time to global computer networks; computer-aided transmission of images; electronic transmission of data and documents via computer terminals; electronic transmission of messages and data; secure transmission of data, sound or images; providing on-line forums for transmission of messages among computer users; providing access to a global computer network for the transfer and dissemination of information; leasing access time to a computer database.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Development of computer programs recorded on data media (software) designed for use in construction and automated manufacturing (cad/cam); computer aided design services; computer-aided design of video graphics and graphic design; computer aided design for manufacturing operations; computer aided engineering design services; computer aided analytical services; product development for others; consultation and consultancy with regard to product development and product design; consultancy, consultation and technical support relating to computer hardware, computer software and computer-aided design, drawing and technologies; computer services for others, namely web-based posting, searching, extranet interfacing and secure exchanging of data, all for use in task coordination among multiple participants in the graphic design, mechanical and electrical drawing, modelling, civil engineering and multimedia image creation fields; computer services, namely, interactive web hosting which allows users to publish and share their own content and images online; providing a website featuring on-line non-downloadable software tools for image editing; developing computer software; consultancy in the design and development of computer hardware; computer software consultancy; software as a service [SaaS]; information technology [IT] consultancy; technological consultation services; consultation services relating to computer hardware; computer software consultancy; computer-aided engineering design and drawing services; storage of computerised information.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Logiciels informatiques pour l'ingénierie, la modélisation, la création d'objets, la conception et la conception assistée par ordinateur; logiciels informatiques pour la conception assistée par ordinateur (CAO); logiciels informatiques pour interfaces; programmes informatiques pour applications basées sur des personnages, pour la conception assistée par ordinateur (CAO), pour l'animation, pour graphiques et pour la conception structurelle; logiciels et programmes informatiques pour l'échange de données, l'interfaçage extranet, la recherche et la mise en ligne sur le Web, tous à utiliser dans la coordination de tâches entre plusieurs participants dans les domaines de la conception graphique, du dessin mécanique et électrique, de la modélisation, du génie civil et de la création d'images multimédias; documents d'instructions fournis sur des supports électroniques, optiques ou magnétiques ou sous forme numérique par le biais de réseaux; manuels d'instruction au format électronique vendus conjointement avec ceux-ci; éléments d'infographie téléchargeables; logiciels téléchargeables pour la modélisation et la conception; fichiers d'images téléchargeables contenant des modèles numériques tridimensionnels d'objets et articles abstraits; logiciels de systèmes d'exploitation pour ordinateurs; programmes (informatiques) (logiciels téléchargeables); logiciels informatiques pour la gestion d'informations en lien avec la gestion de biens immobiliers.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": "Traitement, extraction et/ou contrôle (supervision) d'informations informatisées; gestion informatisée de fichiers; gestion informatisée de fichiers; systématisation d'informations dans des bases de données informatiques; systématisation d'informations en lien avec la gestion de biens immobiliers dans des bases de données informatiques.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "fr",
+      "description": "Fourniture d'accès à des bases de données; fourniture d'accès à des bases de données contenant des données ou documents stockés électroniquement dans des fichiers centraux à des fins de consultation à distance; fourniture d'accès à des pages Web; services de communication de données accessibles par code d'accès; services de fourniture d'accès à des blogs sur le Web; services de fourniture d'accès à un réseau électronique en ligne pour la recherche d'informations; services de fourniture d'accès à des bases de données; location de temps d'accès à des réseaux informatiques mondiaux; transmission d'images assistée par ordinateur; transmission électronique de données et de documents par terminaux informatiques; transmission électronique de messages et de données; services de transmission sécurisée de données, de sons ou d'images; mise à disposition de forums en ligne pour la transmission de messages entre des utilisateurs d'ordinateurs; services de fourniture d'accès à un réseau informatique mondial pour le transfert et la diffusion d'informations; location de temps d'accès à des bases de données.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Développement de programmes informatiques enregistrés sur des supports de données (logiciels), conçus pour être utilisés dans la construction et la fabrication automatisée (CAO/FAO); services de conception assistée par ordinateur; conception assistée par ordinateur de graphiques vidéo et conception graphique; conception assistée par ordinateur pour des opérations de fabrication; services de conception technique assistée par ordinateur; services d'analyse assistée par ordinateur; développement de produits pour des tiers; services de consultants et services de conseillers en matière de développement de produits et conception de produits; services de conseillers, services de consultants et assistance technique en lien avec du matériel informatique, des logiciels informatiques ainsi qu'avec les technologies, la conception et le dessin assistés par ordinateur; services informatiques pour des tiers, à savoir échange sécurisé de données, interfaçage extranet, recherche et mise en ligne sur le Web, tous à utiliser dans la coordination de tâches entre plusieurs participants dans les domaines de la conception graphique, du dessin mécanique et électrique, de la modélisation, du génie civil et de la création d'images multimédias; services informatiques, à savoir hébergement Web interactif permettant à des utilisateurs de publier et de partager leurs propres contenus et images en ligne; mise à disposition de sites web proposant en ligne des outils logiciels non téléchargeables pour l'édition d'images; développement de logiciels informatiques; services de conseillers en matière de conception et développement de matériel informatique; services de conseillers en logiciels informatiques; logiciels en tant que service [SaaS]; services de conseillers en matière de technologies de l'information [TI]; services de consultations technologiques; services de conseillers en matière de matériel informatique; services de conseillers en logiciels informatiques; services de conception et dessin d'ingénierie assistés par ordinateur; services de stockage de données informatisées.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Software informático de ingeniería, modelado, creación de objetos, diseño y diseño asistido por ordenador; software informático de diseño asistido por ordenador; software informático para interfaces; programas informáticos para aplicaciones basadas en caracteres, diseño asistido por ordenador, animación, gráficos y diseño estructural; programas informáticos y software de publicación basada en la web, búsqueda, conexión en redes externas e intercambio de datos, para ser utilizados en la coordinación de tareas entre múltiples participantes en los ámbitos del diseño gráfico, el dibujo mecánico y eléctrico, la modelización, la ingeniería civil y la creación de imágenes multimedia; documentos de instrucciones facilitados en soportes electrónicos, ópticos o magnéticos o digitales a través de redes; manuales de instrucciones en formato electrónico vendidos como unidad; infografías descargables; software descargable de modelado y diseño; archivos de imagen descargables que contienen modelos digitales tridimensionales de objetos y artículos abstractos; software de sistemas operativos; programas informáticos [software descargable]; software informático de gestión de información relacionado con la administración de bienes inmuebles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "es",
+      "description": "Procesamiento, recuperación o control (supervisión) de información informatizada; gestión de archivos informáticos; gestión de archivos informáticos; sistematización de información en bases de datos informáticas; sistematización de información relacionada con la gestión de bienes inmuebles en bases de datos informáticas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "es",
+      "description": "Servicios de acceso a bases de datos; suministro de acceso a bases de datos que contienen datos o documentos almacenados electrónicamente en archivos centrales para su consulta a distancia; suministro de acceso a páginas web; servicios telemáticos accesibles mediante un código de acceso; facilitación de acceso a blogs; servicios de acceso a una red electrónica en línea para recuperar información; servicios de acceso a bases de datos; alquiler de tiempo de acceso a redes informáticas mundiales; transmisión de imágenes asistida por ordenador; transmisión electrónica de datos y documentos mediante terminales informáticos; transmisión electrónica de mensajes y datos; transmisión segura de datos, sonido e imágenes; servicios de foros en línea para la transmisión de mensajes entre usuarios informáticos; servicios de acceso a una red informática mundial para la transmisión y divulgación de información; alquiler de tiempo de acceso a bases de datos informáticas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Desarrollo de programas informáticos grabados en soportes de datos (software) diseñados para ser utilizados en la construcción y la fabricación automática; servicios de diseño asistido por ordenador; diseño asistido por ordenador de gráficos de vídeo y diseño gráfico; diseño asistido por ordenador para operaciones de fabricación; servicios de diseño técnico asistido por ordenador; servicios de análisis asistidos por ordenador; desarrollo de productos para terceros; consultoría y asesoramiento en lo que respecta al desarrollo de productos y el diseño de productos; consultoría, asesoramiento y asistencia técnica relacionados con hardware informático, software informático y diseño, dibujo y tecnologías asistidos por ordenador; servicios informáticos para terceros, a saber, publicación basada en la web, búsqueda, conexión en redes externas e intercambio seguro de datos, para ser utilizados en la coordinación de tareas entre múltiples participantes en los ámbitos del diseño gráfico, el dibujo mecánico y eléctrico, la modelización, la ingeniería civil y la creación de imágenes multimedia; servicios informáticos, a saber, alojamiento web interactivo para que los usuarios puedan publicar y compartir sus propios contenidos e imágenes en línea; servicios de sitios web con herramientas de software no descargables en línea, para editar y configurar imágenes; desarrollo de software; consultoría sobre el diseño y desarrollo de hardware; consultoría sobre software; software como servicio [SaaS]; consultoría sobre tecnologías de la información; servicios de consultoría tecnológica; servicios de consultoría sobre hardware informático; consultoría sobre software; servicios de dibujo y diseño de ingeniería asistido por ordenador; almacenamiento computarizado de información.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Symetri AB",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": "GROTH & CO. KB",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20140131",
+          "basicApplicationNumber": "012556239"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "EM",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20140625",
+          "basicRegistrationNumber": "012556239"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AU",
+      "CA",
+      "CH",
+      "US"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Forskargatan 3 SE-781 70 Borlänge",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantName": "Symetri AB"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20140131",
+            "basicApplicationNumber": "012556239"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "EM",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20140625",
+            "basicRegistrationNumber": "012556239"
+          }
+        ]
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AU",
+      "CA",
+      "CH",
+      "US"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer software for engineering, modelling, creation of objects, design and computer-aided design; computer software for computer-aided design (CAD); computer software for interfaces; computer programs for character-based applications, computer-aided design (CAD), animation, graphics and structural design; computer programs and software for web-based posting, searching, extranet interfacing and exchanging of data, all for use in task coordination among multiple participants in the graphic design, mechanical and electrical drawing, modelling, civil engineering and multimedia image creation fields; instructional documents delivered on electronic, optical or magnetic media or in digital form via networks; instructional manuals in electronic form sold as a unit therewith; downloadable computer graphics; downloadable computer software for modeling and designing; downloadable image files containing three dimensional digital models of objects and abstract items; computer operating system software; programs (computer -) [downloadable software]; computer software for information management relating to real estate management."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Processing, retrieval and/or controlling (supervision) of computerised information; computerised file management; computerised file management; systemization of information into computer databases; systemisation of information relating to real estate management into computer databases."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Providing access to databases; providing access to databases containing data or documents stored electronically in central files for remote consultation; providing access to web pages; data communication services accessible by access code; providing access to weblogs; provision of access to an electronic on-line network for information retrieval; providing access to databases; rental of access time to global computer networks; computer-aided transmission of images; electronic transmission of data and documents via computer terminals; electronic transmission of messages and data; secure transmission of data, sound or images; providing on-line forums for transmission of messages among computer users; providing access to a global computer network for the transfer and dissemination of information; leasing access time to a computer database."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Development of computer programs recorded on data media (software) designed for use in construction and automated manufacturing (cad/cam); computer aided design services; computer-aided design of video graphics and graphic design; computer aided design for manufacturing operations; computer aided engineering design services; computer aided analytical services; product development for others; consultation and consultancy with regard to product development and product design; consultancy, consultation and technical support relating to computer hardware, computer software and computer-aided design, drawing and technologies; computer services for others, namely web-based posting, searching, extranet interfacing and secure exchanging of data, all for use in task coordination among multiple participants in the graphic design, mechanical and electrical drawing, modelling, civil engineering and multimedia image creation fields; computer services, namely, interactive web hosting which allows users to publish and share their own content and images online; providing a website featuring on-line non-downloadable software tools for image editing; developing computer software; consultancy in the design and development of computer hardware; computer software consultancy; software as a service [SaaS]; information technology [IT] consultancy; technological consultation services; consultation services relating to computer hardware; computer software consultancy; computer-aided engineering design and drawing services; storage of computerised information."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Logiciels informatiques pour l'ingénierie, la modélisation, la création d'objets, la conception et la conception assistée par ordinateur; logiciels informatiques pour la conception assistée par ordinateur (CAO); logiciels informatiques pour interfaces; programmes informatiques pour applications basées sur des personnages, pour la conception assistée par ordinateur (CAO), pour l'animation, pour graphiques et pour la conception structurelle; logiciels et programmes informatiques pour l'échange de données, l'interfaçage extranet, la recherche et la mise en ligne sur le Web, tous à utiliser dans la coordination de tâches entre plusieurs participants dans les domaines de la conception graphique, du dessin mécanique et électrique, de la modélisation, du génie civil et de la création d'images multimédias; documents d'instructions fournis sur des supports électroniques, optiques ou magnétiques ou sous forme numérique par le biais de réseaux; manuels d'instruction au format électronique vendus conjointement avec ceux-ci; éléments d'infographie téléchargeables; logiciels téléchargeables pour la modélisation et la conception; fichiers d'images téléchargeables contenant des modèles numériques tridimensionnels d'objets et articles abstraits; logiciels de systèmes d'exploitation pour ordinateurs; programmes (informatiques) (logiciels téléchargeables); logiciels informatiques pour la gestion d'informations en lien avec la gestion de biens immobiliers."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Traitement, extraction et/ou contrôle (supervision) d'informations informatisées; gestion informatisée de fichiers; gestion informatisée de fichiers; systématisation d'informations dans des bases de données informatiques; systématisation d'informations en lien avec la gestion de biens immobiliers dans des bases de données informatiques."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Fourniture d'accès à des bases de données; fourniture d'accès à des bases de données contenant des données ou documents stockés électroniquement dans des fichiers centraux à des fins de consultation à distance; fourniture d'accès à des pages Web; services de communication de données accessibles par code d'accès; services de fourniture d'accès à des blogs sur le Web; services de fourniture d'accès à un réseau électronique en ligne pour la recherche d'informations; services de fourniture d'accès à des bases de données; location de temps d'accès à des réseaux informatiques mondiaux; transmission d'images assistée par ordinateur; transmission électronique de données et de documents par terminaux informatiques; transmission électronique de messages et de données; services de transmission sécurisée de données, de sons ou d'images; mise à disposition de forums en ligne pour la transmission de messages entre des utilisateurs d'ordinateurs; services de fourniture d'accès à un réseau informatique mondial pour le transfert et la diffusion d'informations; location de temps d'accès à des bases de données."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Développement de programmes informatiques enregistrés sur des supports de données (logiciels), conçus pour être utilisés dans la construction et la fabrication automatisée (CAO/FAO); services de conception assistée par ordinateur; conception assistée par ordinateur de graphiques vidéo et conception graphique; conception assistée par ordinateur pour des opérations de fabrication; services de conception technique assistée par ordinateur; services d'analyse assistée par ordinateur; développement de produits pour des tiers; services de consultants et services de conseillers en matière de développement de produits et conception de produits; services de conseillers, services de consultants et assistance technique en lien avec du matériel informatique, des logiciels informatiques ainsi qu'avec les technologies, la conception et le dessin assistés par ordinateur; services informatiques pour des tiers, à savoir échange sécurisé de données, interfaçage extranet, recherche et mise en ligne sur le Web, tous à utiliser dans la coordination de tâches entre plusieurs participants dans les domaines de la conception graphique, du dessin mécanique et électrique, de la modélisation, du génie civil et de la création d'images multimédias; services informatiques, à savoir hébergement Web interactif permettant à des utilisateurs de publier et de partager leurs propres contenus et images en ligne; mise à disposition de sites web proposant en ligne des outils logiciels non téléchargeables pour l'édition d'images; développement de logiciels informatiques; services de conseillers en matière de conception et développement de matériel informatique; services de conseillers en logiciels informatiques; logiciels en tant que service [SaaS]; services de conseillers en matière de technologies de l'information [TI]; services de consultations technologiques; services de conseillers en matière de matériel informatique; services de conseillers en logiciels informatiques; services de conception et dessin d'ingénierie assistés par ordinateur; services de stockage de données informatisées."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Software informático de ingeniería, modelado, creación de objetos, diseño y diseño asistido por ordenador; software informático de diseño asistido por ordenador; software informático para interfaces; programas informáticos para aplicaciones basadas en caracteres, diseño asistido por ordenador, animación, gráficos y diseño estructural; programas informáticos y software de publicación basada en la web, búsqueda, conexión en redes externas e intercambio de datos, para ser utilizados en la coordinación de tareas entre múltiples participantes en los ámbitos del diseño gráfico, el dibujo mecánico y eléctrico, la modelización, la ingeniería civil y la creación de imágenes multimedia; documentos de instrucciones facilitados en soportes electrónicos, ópticos o magnéticos o digitales a través de redes; manuales de instrucciones en formato electrónico vendidos como unidad; infografías descargables; software descargable de modelado y diseño; archivos de imagen descargables que contienen modelos digitales tridimensionales de objetos y artículos abstractos; software de sistemas operativos; programas informáticos [software descargable]; software informático de gestión de información relacionado con la administración de bienes inmuebles."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Procesamiento, recuperación o control (supervisión) de información informatizada; gestión de archivos informáticos; gestión de archivos informáticos; sistematización de información en bases de datos informáticas; sistematización de información relacionada con la gestión de bienes inmuebles en bases de datos informáticas."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de acceso a bases de datos; suministro de acceso a bases de datos que contienen datos o documentos almacenados electrónicamente en archivos centrales para su consulta a distancia; suministro de acceso a páginas web; servicios telemáticos accesibles mediante un código de acceso; facilitación de acceso a blogs; servicios de acceso a una red electrónica en línea para recuperar información; servicios de acceso a bases de datos; alquiler de tiempo de acceso a redes informáticas mundiales; transmisión de imágenes asistida por ordenador; transmisión electrónica de datos y documentos mediante terminales informáticos; transmisión electrónica de mensajes y datos; transmisión segura de datos, sonido e imágenes; servicios de foros en línea para la transmisión de mensajes entre usuarios informáticos; servicios de acceso a una red informática mundial para la transmisión y divulgación de información; alquiler de tiempo de acceso a bases de datos informáticas."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Desarrollo de programas informáticos grabados en soportes de datos (software) diseñados para ser utilizados en la construcción y la fabricación automática; servicios de diseño asistido por ordenador; diseño asistido por ordenador de gráficos de vídeo y diseño gráfico; diseño asistido por ordenador para operaciones de fabricación; servicios de diseño técnico asistido por ordenador; servicios de análisis asistidos por ordenador; desarrollo de productos para terceros; consultoría y asesoramiento en lo que respecta al desarrollo de productos y el diseño de productos; consultoría, asesoramiento y asistencia técnica relacionados con hardware informático, software informático y diseño, dibujo y tecnologías asistidos por ordenador; servicios informáticos para terceros, a saber, publicación basada en la web, búsqueda, conexión en redes externas e intercambio seguro de datos, para ser utilizados en la coordinación de tareas entre múltiples participantes en los ámbitos del diseño gráfico, el dibujo mecánico y eléctrico, la modelización, la ingeniería civil y la creación de imágenes multimedia; servicios informáticos, a saber, alojamiento web interactivo para que los usuarios puedan publicar y compartir sus propios contenidos e imágenes en línea; servicios de sitios web con herramientas de software no descargables en línea, para editar y configurar imágenes; desarrollo de software; consultoría sobre el diseño y desarrollo de hardware; consultoría sobre software; software como servicio [SaaS]; consultoría sobre tecnologías de la información; servicios de consultoría tecnológica; servicios de consultoría sobre hardware informático; consultoría sobre software; servicios de dibujo y diseño de ingeniería asistido por ordenador; almacenamiento computarizado de información."
+        }
+      ]
+    },
+    "id": "32af6250-3cd7-4644-a669-69af2f8ad0d4",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "47"
+      }
+    ],
+    "recordLastUpdated": "20250718",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "Fleminggatan 20 SE-112 26 Stockholm",
+        "representativeAddressCountryCode": "SE",
+        "representativeAddressCountryName": "Sweden",
+        "representativeName": "GROTH & CO. KB"
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320915",
+      "lastPublicationDate": "20221208",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20220915",
+        "registrationNumber": "1700627"
+      }
+    },
+    "version": "20250718020015",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NAVIATE"
+    }
+  },
+  "_uri": "/mark/wo/32af6250-3cd7-4644-a669-69af2f8ad0d4",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.287Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

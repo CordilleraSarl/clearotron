@@ -1,0 +1,122 @@
+{
+  "uri": "/mark/tw/c2c0414f-5723-4bfb-8fb4-a775c3df0564",
+  "provider": "clarivate",
+  "office": "tw",
+  "guid": "c2c0414f-5723-4bfb-8fb4-a775c3df0564",
+  "applicationNumber": "101070040",
+  "registrationNumber": "01778893",
+  "applicationDate": "2012-12-11",
+  "registrationDate": "2016-07-01",
+  "expiryDate": "2026-06-30",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    40,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9,
+        40,
+        41,
+        42
+      ],
+      "language": "zh",
+      "description": "第009類:應用處理器，可編程微處理器，多核處理器，特殊用途積體電路，內建軟體之積體電路，信號處理器，數位信號處理器，向量處理器，向量信號處理器，通訊處理器，網路及電信設備用之網路處理器，特殊用途硬體加速器，無線基頻處理器，晶片基地台（ｂａｓｅｓｔａｔｉｏｎｓ　ｏｎ　ａ　ｃｈｉｐ），即晶片無線基地台（ｗｉｒｅｌｅｓｓ　ｂａｓｅｓｔａｔｉｏｎｓ　ｏｎ　ａ　ｃｈｉｐ），積體電路，即系統基礎晶片，系統單晶片（ＳＯＣ），多核微控制器，數位信號控制器，資料轉換電路，含有半導體晶片、電路板及積體電路之半導體晶片組；已封裝半導體；射頻功率電晶體，射頻半導體，射頻電晶體；感應器，即汽車、消費性用品、及工業用途之慣性感應器、壓力感應器、磁性感應器、觸控式感應器，距離感應器，雷達感應器，電容感應器，加速度計，加速感應器，陀螺儀感應器及以軟體、韌體及電子積體電路晶片為主之電腦介面感應器；促進汽車、消費性用品、醫療及工業用感應器功能且由感應器、電腦軟體、微處理器、微控制器及邏輯或無線協定器組成之感應設備；用來開發及測試微處理器系統之電子測試儀器；半導體記憶體；用於管理作業頻率、電壓及功率、優化靜態及動態功率、電源管理、功率優化或功率減小用之半導體元件、微控制器、積體電路、電路板、晶片組；汽車、消費性商品、航太、軍事、蜂巢式及行動通訊、網路、汽車控制、智能化能源及工業用途之半導體、感應器及軟體；保健及醫療用途之半導體及軟體；無線連結、電池管理、智慧電網、智能儀錶應用、引擎控制器及輪胎壓力監測系統用之半導體、感應器及軟體；高功率電子器具，即射頻功率放大器，高端開關及電池感應器；與電源效率無線充電器一起使用之微控制器、韌體、感應器及射頻及類比電路裝置；評估板及參考設計套件，即半導體、感應器及軟體使用之評估用電腦硬體及軟體；攜帶式醫療裝置、診斷及病患監測裝置、治療裝置及醫療顯影裝置用之半導體及軟體；電腦應用軟體，即多媒體、圖形影像、音頻及數值密集式計算應用之電腦軟體；電腦軟體，即協助獨立程式開發之編輯器、鏈接器、支援軟體、以及協助物件導向軟體應用開發（例如：資料庫系統）之軟體；電腦網路軟體；電腦網路管理軟體；電腦網路交換軟體；電腦匯流網路軟體；電腦網路合作軟體；集成網路軟體，安全及合作軟體；網路管理軟體；服務品質軟體；網路存取軟體；晶片組作業用之網路連接軟體；內容處理用之網路連接軟體；電腦軟體，即內容處理用之韌體、應用程式及開發工具（軟體）；負載平衡軟體；錯誤預防軟體；動態封裝檢測軟體；動態應用檢測軟體；深度封裝檢測軟體；虛擬私人網路軟體；企業安全軟體；侵入偵測及預防軟體；防火牆軟體；內容過濾軟體；防病毒及防垃圾郵件軟體；無線電控制軟體；資料面板軟體；控制面板軟體；命令管理系統軟體；網路語音傳輸軟體；網路視頻傳輸軟體；合作軟體；網路設備通訊用交換軟體；與整合型威脅管理設備、閘道器、整合式存取裝置、路由器、開關、控制器、基地台、集線器及安全設備一起使用之網路連接及安全軟體；促進遠距電腦使用及促進網路行動用戶通訊之實用軟體；提供遠距用戶安全以及為遠距用戶執行電腦、軟體及網路安全措施之電腦軟體；可下載之電子使用手冊；電腦軟體，即作業系統軟體、板支援封裝（ＢＳＰ）軟體、虛擬化技術軟體、虛擬機器管理員（ｈｙｐｅｒｖｉｓｏｒ）軟體，嵌入式軟體、應用程式設計介面軟體、軟體程式庫；用於汽車、消費性商品，保健、醫療、航太、軍事、蜂巢式及行動通訊、網路、汽車控制、智能化能源及工業用途之應用軟體；協議棧，即電腦軟體，配置軟體及優化軟體；以模組建構工具、圖形使用者介面軟體以及程式碼自動產生器為主用於嵌入式軟體應用程式之設計、開發、實作、評估及優化上之電腦軟體；電腦軟體開發工具，即開發裝置用獨立軟體程式之除錯軟體、集成開發環境軟體、運行控制軟體、事件分析及追蹤軟體；開發其他軟體標籤之軟體；可下載、可搜尋之電子出版品，即有關半導體、感應器及軟體之電子參考手冊、用戶指南、應用說明及產品規格書；保健及醫療用之感應器；攜帶式醫療裝置、診斷及病患監測裝置、治療裝置及醫療顯影裝置用感應器。 第040類:晶圓代工服務，即半導體及積體電路之客製及組裝；半導體封裝處理；提供關於製造與封裝半導體、半導體裝置、積體電路、微控制器、處理器、射頻裝置、感應器之資訊。 第041類:教育服務，即提供半導體、半導體裝置、積體電路、微控制器、處理器、射頻裝置、感應器及軟體之現場及線上課程、講習會、指導課程、會議及研討會。 第042類:為他人開發、設計及測試半導體、半導體裝置、積體電路，微控制器、處理器、射頻裝置、感應器及軟體；提供關於半導體、半導體裝置、積體電路、微控制器、處理器、射頻裝置、感應器及軟體之開發、設計及測試之諮詢服務；提供關於開發、設計及測試半導體、半導體裝置、積體電路、微控制器、處理器、射頻裝置、感應器及軟體之資訊；提供有關電腦軟體安裝之資訊。",
+      "translation_language": "en",
+      "translation": "Class 009: Application processors, programmable microprocessors, multi-core processors, special purpose integrated circuits, integrated circuits with built-in software, signal processors, digital signal processors, vector processors, vector signal processors, Communications processors, network processors for network and telecommunications equipment, special-purpose hardware accelerators, wireless baseband processors, chip base stations (basestations on a chip), namely chip wireless base stations (wireles) s basestations on a chip) , Integrated circuits, namely system base chips, system on-chip (SOC), multi-core microcontrollers, digital signal controllers, data conversion circuits, semiconductor chip sets containing semiconductor chips, circuit boards and integrated circuits; packaged semiconductors; RF power transistors, RF semiconductors, RF transistors; sensors, namely inertial sensors, pressure sensors, magnetic sensors, touch sensors, distance sensors, and radar sensors for automobiles, consumer products, and industrial applications sensors, capacitive sensors, accelerometers, acceleration sensors, gyroscope sensors and computer interface sensors based on software, firmware and electronic integrated circuit chips; promotes sensors for automobiles, consumer products, medical and industrial applications Functional sensing equipment consisting of sensors, computer software, microprocessors, microcontrollers and logic or wireless protocols; electronic test instruments used to develop and test microprocessor systems; semiconductor memories; used to manage operating frequencies , voltage and power, optimizing static and dynamic power, power management, semiconductor components, microcontrollers, integrated circuits, circuit boards, chipsets for power optimization or power reduction; automotive, consumer goods, aerospace, military, Semiconductors, sensors and software for cellular and mobile communications, networking, automotive control, smart energy and industrial applications; semiconductors and software for healthcare and medical applications; wireless connectivity, battery management, smart grids, smart meter applications, engine control Semiconductors, sensors and software for monitors and tire pressure monitoring systems; high-power electronics, namely RF power amplifiers, high-end switches and battery sensors; microcontrollers, firmware, sensors for use with power-efficiency wireless chargers and RF and analog circuit devices; evaluation boards and reference design kits, i.e., computer hardware and software for evaluation of semiconductors, sensors, and software; for portable medical devices, diagnostic and patient monitoring devices, treatment devices, and medical imaging devices Semiconductors and software; computer application software, that is, computer software for multimedia, graphics, audio, and numerically intensive computing applications; computer software, that is, editors, linkers, support software that assists in independent program development, and object-oriented software applications that assist Software development (for example: database system); computer network software; computer network management software; computer network switching software; computer convergence network software; computer network cooperation software; integrated network software, security and cooperation software; Network management software; service quality software; network access software; network connection software for chipset operations; network connection software for content processing; computer software, namely firmware, applications and development tools for content processing (Software); load balancing software; error prevention software; dynamic packaging detection software; dynamic application detection software; deep packaging detection software; virtual private network software; enterprise security software; intrusion detection and prevention software; firewall software; content filtering software ; Anti-virus and anti-spam software; radio control software; data panel software; control panel software; command management system software; Internet voice transmission software; Internet video transmission software; cooperation software; switching software for network equipment communication; and Integrated threat management equipment, gateways, integrated access devices, routers, switches, controllers, base stations, hubs and security equipment used together with network connectivity and security software; to facilitate remote computer use and facilitate online mobility Utility software for user communication; computer software that provides remote user security and implements computer, software and network security measures for remote users; downloadable electronic user manuals; computer software, namely operating system software, board support packages (BSP) Software, virtualization technology software, hypervisor software, embedded software, application programming interface software, software libraries; used in automotive, consumer products, health care, medical, aerospace, military, cellular and Application software for mobile communications, networking, automotive control, smart energy and industrial purposes; protocol stack, i.e. computer software, configuration software and optimization software; based on module construction tools, graphical user interface software and automatic code generators Computer software mainly used for the design, development, implementation, evaluation and optimization of embedded software applications; computer software development tools, that is, debugging software, integrated development environment software, and operation control software for developing independent software programs for devices. Event analysis and tracking software; software for developing tags for other software; downloadable, searchable electronic publications, i.e. electronic reference manuals, user guides, application notes and product specifications on semiconductors, sensors and software; health and medical use Sensors; sensors for portable medical devices, diagnostic and patient monitoring devices, treatment devices and medical imaging devices. Class 040: Foundry services, namely customization and assembly of semiconductors and integrated circuits; semiconductor packaging processing; provision of information on manufacturing and packaging of semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency devices, Sensor information. Class 041: Educational services, namely the provision of on-site and online courses, seminars, tutorials, conferences and seminars on semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency devices, sensors and software. Class 042: Develop, design and test semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency devices, sensors and software for others; provide information on semiconductors, semiconductor devices, integrated circuits, microcontrollers, Consulting services for the development, design and testing of processors, radio frequency devices, sensors and software; providing development, design and testing of semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency devices, sensors and software Information; provides information about computer software installation."
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC.",
+        "applicantNativeAddress": "美國",
+        "applicantNativeName": "美商恩智浦美國公司 NXP USA, INC."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Class 009: Application processors, programmable microprocessors, multi-core processors, special purpose integrated circuits, integrated circuits with built-in software, signal processors, digital signal processors, vector processors, vector signal processors, Communications processors, network processors for network and telecommunications equipment, special-purpose hardware accelerators, wireless baseband processors, chip base stations (basestations on a chip), namely chip wireless base stations (wireles) s basestations on a chip) , Integrated circuits, namely system base chips, system on-chip (SOC), multi-core microcontrollers, digital signal controllers, data conversion circuits, semiconductor chip sets containing semiconductor chips, circuit boards and integrated circuits; packaged semiconductors; RF power transistors, RF semiconductors, RF transistors; sensors, namely inertial sensors, pressure sensors, magnetic sensors, touch sensors, distance sensors, and radar sensors for automobiles, consumer products, and industrial applications sensors, capacitive sensors, accelerometers, acceleration sensors, gyroscope sensors and computer interface sensors based on software, firmware and electronic integrated circuit chips; promotes sensors for automobiles, consumer products, medical and industrial applications Functional sensing equipment consisting of sensors, computer software, microprocessors, microcontrollers and logic or wireless protocols; electronic test instruments used to develop and test microprocessor systems; semiconductor memories; used to manage operating frequencies , voltage and power, optimizing static and dynamic power, power management, semiconductor components, microcontrollers, integrated circuits, circuit boards, chipsets for power optimization or power reduction; automotive, consumer goods, aerospace, military, Semiconductors, sensors and software for cellular and mobile communications, networking, automotive control, smart energy and industrial applications; semiconductors and software for healthcare and medical applications; wireless connectivity, battery management, smart grids, smart meter applications, engine control Semiconductors, sensors and software for monitors and tire pressure monitoring systems; high-power electronics, namely RF power amplifiers, high-end switches and battery sensors; microcontrollers, firmware, sensors for use with power-efficiency wireless chargers and RF and analog circuit devices; evaluation boards and reference design kits, i.e., computer hardware and software for evaluation of semiconductors, sensors, and software; for portable medical devices, diagnostic and patient monitoring devices, treatment devices, and medical imaging devices Semiconductors and software; computer application software, that is, computer software for multimedia, graphics, audio, and numerically intensive computing applications; computer software, that is, editors, linkers, support software that assists in independent program development, and object-oriented software applications that assist Software development (for example: database system); computer network software; computer network management software; computer network switching software; computer convergence network software; computer network cooperation software; integrated network software, security and cooperation software; Network management software; service quality software; network access software; network connection software for chipset operations; network connection software for content processing; computer software, namely firmware, applications and development tools for content processing (Software); load balancing software; error prevention software; dynamic packaging detection software; dynamic application detection software; deep packaging detection software; virtual private network software; enterprise security software; intrusion detection and prevention software; firewall software; content filtering software ; Anti-virus and anti-spam software; radio control software; data panel software; control panel software; command management system software; Internet voice transmission software; Internet video transmission software; cooperation software; switching software for network equipment communication; and Integrated threat management equipment, gateways, integrated access devices, routers, switches, controllers, base stations, hubs and security equipment used together with network connectivity and security software; to facilitate remote computer use and facilitate online mobility Utility software for user communication; computer software that provides remote user security and implements computer, software and network security measures for remote users; downloadable electronic user manuals; computer software, namely operating system software, board support packages (BSP) Software, virtualization technology software, hypervisor software, embedded software, application programming interface software, software libraries; used in automotive, consumer products, health care, medical, aerospace, military, cellular and Application software for mobile communications, networking, automotive control, smart energy and industrial purposes; protocol stack, i.e. computer software, configuration software and optimization software; based on module construction tools, graphical user interface software and automatic code generators Computer software mainly used for the design, development, implementation, evaluation and optimization of embedded software applications; computer software development tools, that is, debugging software, integrated development environment software, and operation control software for developing independent software programs for devices. Event analysis and tracking software; software for developing tags for other software; downloadable, searchable electronic publications, i.e. electronic reference manuals, user guides, application notes and product specifications on semiconductors, sensors and software; health and medical use Sensors; sensors for portable medical devices, diagnostic and patient monitoring devices, treatment devices and medical imaging devices. Class 040: Foundry services, namely customization and assembly of semiconductors and integrated circuits; semiconductor packaging processing; provision of information on manufacturing and packaging of semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency devices, Sensor information. Class 041: Educational services, namely the provision of on-site and online courses, seminars, tutorials, conferences and seminars on semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency devices, sensors and software. Class 042: Develop, design and test semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency devices, sensors and software for others; provide information on semiconductors, semiconductor devices, integrated circuits, microcontrollers, Consulting services for the development, design and testing of processors, radio frequency devices, sensors and software; providing development, design and testing of semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency devices, sensors and software Information; provides information about computer software installation.",
+          "intClassNumber": "09,40,41,42",
+          "intGoodsLanguageCode": "zh",
+          "intGoodsServicesDescription": "第009類:應用處理器，可編程微處理器，多核處理器，特殊用途積體電路，內建軟體之積體電路，信號處理器，數位信號處理器，向量處理器，向量信號處理器，通訊處理器，網路及電信設備用之網路處理器，特殊用途硬體加速器，無線基頻處理器，晶片基地台（ｂａｓｅｓｔａｔｉｏｎｓ　ｏｎ　ａ　ｃｈｉｐ），即晶片無線基地台（ｗｉｒｅｌｅｓｓ　ｂａｓｅｓｔａｔｉｏｎｓ　ｏｎ　ａ　ｃｈｉｐ），積體電路，即系統基礎晶片，系統單晶片（ＳＯＣ），多核微控制器，數位信號控制器，資料轉換電路，含有半導體晶片、電路板及積體電路之半導體晶片組；已封裝半導體；射頻功率電晶體，射頻半導體，射頻電晶體；感應器，即汽車、消費性用品、及工業用途之慣性感應器、壓力感應器、磁性感應器、觸控式感應器，距離感應器，雷達感應器，電容感應器，加速度計，加速感應器，陀螺儀感應器及以軟體、韌體及電子積體電路晶片為主之電腦介面感應器；促進汽車、消費性用品、醫療及工業用感應器功能且由感應器、電腦軟體、微處理器、微控制器及邏輯或無線協定器組成之感應設備；用來開發及測試微處理器系統之電子測試儀器；半導體記憶體；用於管理作業頻率、電壓及功率、優化靜態及動態功率、電源管理、功率優化或功率減小用之半導體元件、微控制器、積體電路、電路板、晶片組；汽車、消費性商品、航太、軍事、蜂巢式及行動通訊、網路、汽車控制、智能化能源及工業用途之半導體、感應器及軟體；保健及醫療用途之半導體及軟體；無線連結、電池管理、智慧電網、智能儀錶應用、引擎控制器及輪胎壓力監測系統用之半導體、感應器及軟體；高功率電子器具，即射頻功率放大器，高端開關及電池感應器；與電源效率無線充電器一起使用之微控制器、韌體、感應器及射頻及類比電路裝置；評估板及參考設計套件，即半導體、感應器及軟體使用之評估用電腦硬體及軟體；攜帶式醫療裝置、診斷及病患監測裝置、治療裝置及醫療顯影裝置用之半導體及軟體；電腦應用軟體，即多媒體、圖形影像、音頻及數值密集式計算應用之電腦軟體；電腦軟體，即協助獨立程式開發之編輯器、鏈接器、支援軟體、以及協助物件導向軟體應用開發（例如：資料庫系統）之軟體；電腦網路軟體；電腦網路管理軟體；電腦網路交換軟體；電腦匯流網路軟體；電腦網路合作軟體；集成網路軟體，安全及合作軟體；網路管理軟體；服務品質軟體；網路存取軟體；晶片組作業用之網路連接軟體；內容處理用之網路連接軟體；電腦軟體，即內容處理用之韌體、應用程式及開發工具（軟體）；負載平衡軟體；錯誤預防軟體；動態封裝檢測軟體；動態應用檢測軟體；深度封裝檢測軟體；虛擬私人網路軟體；企業安全軟體；侵入偵測及預防軟體；防火牆軟體；內容過濾軟體；防病毒及防垃圾郵件軟體；無線電控制軟體；資料面板軟體；控制面板軟體；命令管理系統軟體；網路語音傳輸軟體；網路視頻傳輸軟體；合作軟體；網路設備通訊用交換軟體；與整合型威脅管理設備、閘道器、整合式存取裝置、路由器、開關、控制器、基地台、集線器及安全設備一起使用之網路連接及安全軟體；促進遠距電腦使用及促進網路行動用戶通訊之實用軟體；提供遠距用戶安全以及為遠距用戶執行電腦、軟體及網路安全措施之電腦軟體；可下載之電子使用手冊；電腦軟體，即作業系統軟體、板支援封裝（ＢＳＰ）軟體、虛擬化技術軟體、虛擬機器管理員（ｈｙｐｅｒｖｉｓｏｒ）軟體，嵌入式軟體、應用程式設計介面軟體、軟體程式庫；用於汽車、消費性商品，保健、醫療、航太、軍事、蜂巢式及行動通訊、網路、汽車控制、智能化能源及工業用途之應用軟體；協議棧，即電腦軟體，配置軟體及優化軟體；以模組建構工具、圖形使用者介面軟體以及程式碼自動產生器為主用於嵌入式軟體應用程式之設計、開發、實作、評估及優化上之電腦軟體；電腦軟體開發工具，即開發裝置用獨立軟體程式之除錯軟體、集成開發環境軟體、運行控制軟體、事件分析及追蹤軟體；開發其他軟體標籤之軟體；可下載、可搜尋之電子出版品，即有關半導體、感應器及軟體之電子參考手冊、用戶指南、應用說明及產品規格書；保健及醫療用之感應器；攜帶式醫療裝置、診斷及病患監測裝置、治療裝置及醫療顯影裝置用感應器。 第040類:晶圓代工服務，即半導體及積體電路之客製及組裝；半導體封裝處理；提供關於製造與封裝半導體、半導體裝置、積體電路、微控制器、處理器、射頻裝置、感應器之資訊。 第041類:教育服務，即提供半導體、半導體裝置、積體電路、微控制器、處理器、射頻裝置、感應器及軟體之現場及線上課程、講習會、指導課程、會議及研討會。 第042類:為他人開發、設計及測試半導體、半導體裝置、積體電路，微控制器、處理器、射頻裝置、感應器及軟體；提供關於半導體、半導體裝置、積體電路、微控制器、處理器、射頻裝置、感應器及軟體之開發、設計及測試之諮詢服務；提供關於開發、設計及測試半導體、半導體裝置、積體電路、微控制器、處理器、射頻裝置、感應器及軟體之資訊；提供有關電腦軟體安裝之資訊。"
+        }
+      ]
+    },
+    "id": "c2c0414f-5723-4bfb-8fb4-a775c3df0564",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260401",
+    "registrationOfficeCode": "TW",
+    "registrationOfficeName": "Taiwan",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "TW",
+        "representativeAddressCountryName": "Taiwan",
+        "representativeNativeName": "陳長文  丁靜玟"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20121211",
+        "applicationNumber": "101070040"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20260630",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20160701",
+        "registrationNumber": "01778893"
+      }
+    },
+    "version": "20260401114506",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/tw/c2c0414f-5723-4bfb-8fb4-a775c3df0564",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:10.763Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

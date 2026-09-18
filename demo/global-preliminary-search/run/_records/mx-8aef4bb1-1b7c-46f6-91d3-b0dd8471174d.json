@@ -1,0 +1,115 @@
+{
+  "uri": "/mark/mx/8aef4bb1-1b7c-46f6-91d3-b0dd8471174d",
+  "provider": "clarivate",
+  "office": "mx",
+  "guid": "8aef4bb1-1b7c-46f6-91d3-b0dd8471174d",
+  "applicationNumber": "661605",
+  "registrationNumber": "857007",
+  "applicationDate": "2004-06-15",
+  "registrationDate": "2004-10-27",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Licenciamiento de tecnologia; licenciamiento de patentes, marcas, derechos de autor, secretos industriales y/o know-how relacionados con la fabricacion de semiconductores y sus usos; licenciamiento de semiconductores; licenciamiento de softwarerelacionad o con la fabricacion de semiconductores y sus usos; licenciamiento de tecnologia relacionada con semiconductores y la fabricacion de semiconductores; licenciamiento de tecnologia incorporada en y relacionada con productos semiconductores,circuitos integr ados, tableros para circuitos, microcomputadoras, microcontroladores, microprocesadores y accesorios para computadoras, memorias y materiales semiconductores de los mismos, circuitos de conversion de datos, microinstruccion decomputadoras, aparatos elect ronicos, electricos y electro-mecanicos para uso con computadoras, tableros de circuitos de video; productos de sistemas de video, aparatos y equipos para grabacion, reproduccion y alteracion de sonido, video y datos,programas de computacion; material in structivo relacionado con algoritmos de computacion e informacion para la compresion y descompresion de datos; diseno exclusivo de sistemas de computacion y telecomunicaciones; servicios de consultoria en elcampo de la computacion y las telecomunicacione s y la tecnologia relacionada con el diseno de software.",
+      "translation_language": "en",
+      "translation": "TECHNOLOGY LICENSING; LICENSING OF PATENTS, MARKS, COPYRIGHT, INDUSTRIAL SECRETS AND / OR KNOW-HOW RELATED TO THE MANUFACTURE OF SEMICONDUCTORS AND THEIR USES; LICENSING OF SEMICONDUCTORS; LICENSING OF SOFTWARERELACIONAD OR WITH THE MANUFACTURE OF SEMICONDUCTORS AND THEIR USES; LICENSE OF TECHNOLOGY RELATED TO SEMICONDUCTORS AND THE MANUFACTURE OF SEMICONDUCTORS; LICENSING OF TECHNOLOGY INCORPORATED IN AND RELATED TO SEMICONDUCTOR PRODUCTS, INTEGRATED CIRCUITS, BOARDS FOR CIRCUITS, MICROCOMPUTERS, MICROCONTROLLERS, MICROPROCESSORS AND ACCESSORIES FOR COMPUTERS, MEMORIES AND SEMICONDUCTOR MATERIALS THEREOF, DATA CONVERSION CIRCUITS, DECOMPUTER MICROINSTRUCTION, ELECTROPHONIC APPLIANCES, ELECTRICAL AND ELECTRO-MECHANICAL FOR USE WITH COMPUTERS, BOARDS OF VIDEO CIRCUITS; PRODUCTS OF VIDEO SYSTEMS, APPARATUS AND EQUIPMENT FOR RECORDING, REPRODUCTION AND ALTERATION OF SOUND, VIDEO AND DATA, COMPUTER PROGRAMS; IN STRUCTIVE MATERIAL RELATED TO COMPUTATION ALGORITHMS AND INFORMATION FOR THE COMPRESSION AND DECOMPRESSION OF DATA; EXCLUSIVE DESIGN OF COMPUTER AND TELECOMMUNICATIONS SYSTEMS; CONSULTANCY SERVICES IN THE COMPUTER AND TELECOMMUNICATION ELCAMPO AND THE TECHNOLOGY RELATED TO THE SOFTWARE DESIGN."
+    }
+  ],
+  "owner": "FREESCALE SEMICONDUCTOR, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 WILLIAM CANNON DRIVE WEST, AUSTIN, TX., 78735, ESTADOS UNIDOS.",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "FREESCALE SEMICONDUCTOR, INC."
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "TECHNOLOGY LICENSING; LICENSING OF PATENTS, MARKS, COPYRIGHT, INDUSTRIAL SECRETS AND / OR KNOW-HOW RELATED TO THE MANUFACTURE OF SEMICONDUCTORS AND THEIR USES; LICENSING OF SEMICONDUCTORS; LICENSING OF SOFTWARERELACIONAD OR WITH THE MANUFACTURE OF SEMICONDUCTORS AND THEIR USES; LICENSE OF TECHNOLOGY RELATED TO SEMICONDUCTORS AND THE MANUFACTURE OF SEMICONDUCTORS; LICENSING OF TECHNOLOGY INCORPORATED IN AND RELATED TO SEMICONDUCTOR PRODUCTS, INTEGRATED CIRCUITS, BOARDS FOR CIRCUITS, MICROCOMPUTERS, MICROCONTROLLERS, MICROPROCESSORS AND ACCESSORIES FOR COMPUTERS, MEMORIES AND SEMICONDUCTOR MATERIALS THEREOF, DATA CONVERSION CIRCUITS, DECOMPUTER MICROINSTRUCTION, ELECTROPHONIC APPLIANCES, ELECTRICAL AND ELECTRO-MECHANICAL FOR USE WITH COMPUTERS, BOARDS OF VIDEO CIRCUITS; PRODUCTS OF VIDEO SYSTEMS, APPARATUS AND EQUIPMENT FOR RECORDING, REPRODUCTION AND ALTERATION OF SOUND, VIDEO AND DATA, COMPUTER PROGRAMS; IN STRUCTIVE MATERIAL RELATED TO COMPUTATION ALGORITHMS AND INFORMATION FOR THE COMPRESSION AND DECOMPRESSION OF DATA; EXCLUSIVE DESIGN OF COMPUTER AND TELECOMMUNICATIONS SYSTEMS; CONSULTANCY SERVICES IN THE COMPUTER AND TELECOMMUNICATION ELCAMPO AND THE TECHNOLOGY RELATED TO THE SOFTWARE DESIGN.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Licenciamiento de tecnologia; licenciamiento de patentes, marcas, derechos de autor, secretos industriales y/o know-how relacionados con la fabricacion de semiconductores y sus usos; licenciamiento de semiconductores; licenciamiento de softwarerelacionad o con la fabricacion de semiconductores y sus usos; licenciamiento de tecnologia relacionada con semiconductores y la fabricacion de semiconductores; licenciamiento de tecnologia incorporada en y relacionada con productos semiconductores,circuitos integr ados, tableros para circuitos, microcomputadoras, microcontroladores, microprocesadores y accesorios para computadoras, memorias y materiales semiconductores de los mismos, circuitos de conversion de datos, microinstruccion decomputadoras, aparatos elect ronicos, electricos y electro-mecanicos para uso con computadoras, tableros de circuitos de video; productos de sistemas de video, aparatos y equipos para grabacion, reproduccion y alteracion de sonido, video y datos,programas de computacion; material in structivo relacionado con algoritmos de computacion e informacion para la compresion y descompresion de datos; diseno exclusivo de sistemas de computacion y telecomunicaciones; servicios de consultoria en elcampo de la computacion y las telecomunicacione s y la tecnologia relacionada con el diseno de software."
+        }
+      ]
+    },
+    "id": "8aef4bb1-1b7c-46f6-91d3-b0dd8471174d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "10",
+        "publicationYear": "2004"
+      }
+    ],
+    "recordLastUpdated": "20250704",
+    "registrationOfficeCode": "MX",
+    "registrationOfficeName": "Mexico",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20040615",
+        "applicationNumber": "661605"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "RENEWED",
+      "registration": {
+        "registrationDate": "20041027",
+        "registrationNumber": "857007"
+      }
+    },
+    "version": "20250704154957",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "FREE SCALE",
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/mx/8aef4bb1-1b7c-46f6-91d3-b0dd8471174d",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.704Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

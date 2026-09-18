@@ -1,0 +1,129 @@
+{
+  "uri": "/mark/cn/60d39008-8574-4a96-af71-68a10b7543f3",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "60d39008-8574-4a96-af71-68a10b7543f3",
+  "applicationNumber": "90509768",
+  "registrationNumber": null,
+  "applicationDate": "2026-03-11",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "NXP",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "半导体封装设计;半导体加工技术研究;半导体设计;产品测试;产品开发咨询;电子数据存储;集成电路设计;计算机编程;计算机编程咨询;计算机软件咨询;计算机硬件和软件的设计与开发;计算机硬件开发;计算机硬件设计;计算机硬件设计和开发咨询;技术开发领域的咨询服务;技术研究;科学研究和开发;平台即服务(PaaS);人工智能技术领域的研究;人工智能技术咨询;软件工程服务;软件即服务[SaaS];软件开发;软件设计;软件设计和开发;为制造业设计和开发计算机硬件;芯片设计;新产品开发的设计与测试;研究和开发新产品;云计算;云计算服务;云计算领域的咨询服务",
+      "translation_language": "en",
+      "translation": "Semiconductor packaging design; semiconductor processing technology research; semiconductor design; product testing; product development consulting; electronic data storage; integrated circuit design; computer programming; computer programming consulting; computer software consulting; design and development of computer hardware and software; computer hardware development; computer hardware design; computer hardware design and development consulting; consulting services in the field of technology development; technology research; scientific research and development; Platform as a Service (PaaS); research in the field of artificial intelligence; artificial intelligence technology consulting; software engineering services; Software as a Service (SaaS); software development; software design; software design and development; design and development of computer hardware for manufacturing; chip design; design and testing of new product development; research and development of new products; cloud computing; cloud computing services; consulting services in the field of cloud computing."
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "HIGH TECH CAMPUS 60,5656 AG EINDHOVEN, NETHERLANDS",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V.",
+        "applicantNativeName": "恩智浦有限责任公司;NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Semiconductor packaging design; semiconductor processing technology research; semiconductor design; product testing; product development consulting; electronic data storage; integrated circuit design; computer programming; computer programming consulting; computer software consulting; design and development of computer hardware and software; computer hardware development; computer hardware design; computer hardware design and development consulting; consulting services in the field of technology development; technology research; scientific research and development; Platform as a Service (PaaS); research in the field of artificial intelligence; artificial intelligence technology consulting; software engineering services; Software as a Service (SaaS); software development; software design; software design and development; design and development of computer hardware for manufacturing; chip design; design and testing of new product development; research and development of new products; cloud computing; cloud computing services; consulting services in the field of cloud computing.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "半导体封装设计;半导体加工技术研究;半导体设计;产品测试;产品开发咨询;电子数据存储;集成电路设计;计算机编程;计算机编程咨询;计算机软件咨询;计算机硬件和软件的设计与开发;计算机硬件开发;计算机硬件设计;计算机硬件设计和开发咨询;技术开发领域的咨询服务;技术研究;科学研究和开发;平台即服务(PaaS);人工智能技术领域的研究;人工智能技术咨询;软件工程服务;软件即服务[SaaS];软件开发;软件设计;软件设计和开发;为制造业设计和开发计算机硬件;芯片设计;新产品开发的设计与测试;研究和开发新产品;云计算;云计算服务;云计算领域的咨询服务"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Research and development service",
+        "Survey service",
+        "Computer programming, and concerned services"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4214",
+          "subNatGoodsServicesDescription": "Survey service"
+        },
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        }
+      ]
+    },
+    "id": "60d39008-8574-4a96-af71-68a10b7543f3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260913",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京市柳沈律师事务所"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260311",
+        "applicationNumber": "90509768"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260913020502",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NXP"
+    }
+  },
+  "_uri": "/mark/cn/60d39008-8574-4a96-af71-68a10b7543f3",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.683Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

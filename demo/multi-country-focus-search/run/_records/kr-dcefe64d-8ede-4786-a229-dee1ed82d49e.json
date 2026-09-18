@@ -1,0 +1,119 @@
+{
+  "uri": "/mark/kr/dcefe64d-8ede-4786-a229-dee1ed82d49e",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "dcefe64d-8ede-4786-a229-dee1ed82d49e",
+  "applicationNumber": "40-2005-0032663",
+  "registrationNumber": "4006687070000",
+  "applicationDate": "2005-07-13",
+  "registrationDate": "2006-07-03",
+  "expiryDate": "2036-07-03",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MIFARE",
+  "markTransliteration": "MIFARE",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "기록된 컴퓨터 프로그램 , 대중교통표 발급/행사티켓발급/통행료 수납/비행기표/접근통제/은행업무/전자상거래/네트워크보안접속용 데이터 처리 장치 , 데이터 저장 장치 , 데이터 처리 장치용 라이팅스테이션 및 리딩 스테이션 , 데이터 처리장치 , 데이터 캐리어 , 마이크로프로세서 , 비접촉 스마트 카드집적회로 , 스마트 카드 , 인코드된 전자 지불 카드 , 집적회로",
+      "translation_language": "en",
+      "translation": "Recorded computer program, public transportation ticket issuance/event ticket issuance/toll collection/air ticket/access control/banking/e-commerce/network security access data processing device, data storage device, writing station and reading station for data processing device, data processing device, data carrier, microprocessor, non-contact smart card integrated circuit, smart card, encoded electronic payment card, integrated circuit"
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "리앤목특허법인 (Y.P.LEE,MOCK&PARTNERS)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "네덜란드 엔엘-* 아게 아인드호펜 하이 테크 캠퍼스 **",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V.",
+        "applicantNativeName": "엔엑스피 비 브이"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Recorded computer program, public transportation ticket issuance/event ticket issuance/toll collection/air ticket/access control/banking/e-commerce/network security access data processing device, data storage device, writing station and reading station for data processing device, data processing device, data carrier, microprocessor, non-contact smart card integrated circuit, smart card, encoded electronic payment card, integrated circuit",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "기록된 컴퓨터 프로그램 , 대중교통표 발급/행사티켓발급/통행료 수납/비행기표/접근통제/은행업무/전자상거래/네트워크보안접속용 데이터 처리 장치 , 데이터 저장 장치 , 데이터 처리 장치용 라이팅스테이션 및 리딩 스테이션 , 데이터 처리장치 , 데이터 캐리어 , 마이크로프로세서 , 비접촉 스마트 카드집적회로 , 스마트 카드 , 인코드된 전자 지불 카드 , 집적회로"
+        }
+      ]
+    },
+    "id": "dcefe64d-8ede-4786-a229-dee1ed82d49e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260812",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울 강남구 언주로 **길 **, *층, **층, **층, **층(도곡동, 대림아크로텔)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "리앤목특허법인 (Y.P.LEE,MOCK&PARTNERS)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20050713",
+        "applicationNumber": "40-2005-0032663"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360703",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20060703",
+        "registrationNumber": "4006687070000"
+      }
+    },
+    "version": "20260812020724",
+    "wordMarkSpecification": {
+      "markTransliteration": "MIFARE",
+      "markVerbalElementText": "MIFARE"
+    }
+  },
+  "_uri": "/mark/kr/dcefe64d-8ede-4786-a229-dee1ed82d49e",
+  "_receipt": {
+    "fetched_at": "2026-09-18T14:09:34.907Z",
+    "context": "clearance-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,141 @@
+{
+  "uri": "/mark/cn/9e9f5090-8365-478e-86bf-764fa7399d5a",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "9e9f5090-8365-478e-86bf-764fa7399d5a",
+  "applicationNumber": "12959913",
+  "registrationNumber": "12959913",
+  "applicationDate": "2013-07-23",
+  "registrationDate": "2015-01-14",
+  "expiryDate": "2035-01-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2014-10-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "NXP",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "技术项目研究;水质分析;技术研究;集成电路设计服务;技术研究.;科学研究;机械研究;化学分析;计算机硬件设计;计算机系统设计;计算机软件设计;计算机软件的设计与开发;计算机硬件的设计与开发;半导体软件设计服务;信息技术咨询服务;计算机软件咨询;计算机硬件设计和开发咨询;替他人创建和维护网站;通过网站提供计算机技术和编程信息;半导体咨询、设计、研究、开发和顾问服务;为半导体工业的设计师和策划师提供信息;提供半导体鉴定、试验、审核、认证和标准化的相关服务;研究和开发(替他人);计算机硬件研究;计算机软件;工业设计",
+      "translation_language": "en",
+      "translation": "Technical project research; water quality analysis; technical research; integrated circuit design services; technical research.; scientific research; mechanical research; chemical analysis; computer hardware design; computer system design; computer software design; computer software design; computer software design and development; computer hardware design and development; semiconductor software design services; information technology consulting services; computer software consulting; computer hardware design and development consulting; creating and maintaining websites for others; providing computer technology and programming information through websites; semiconductor consulting, design, research, development and advisory services; providing information to designers and planners in the semiconductor industry; providing semiconductor identification, testing, auditing, certification and standardization related services; research and development (for others); computer hardware research; computer software; industrial design"
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "荷兰,艾德霍芬,5656AG,高科技园60号HIGH TECH CAMPUS 60,5656 AG,EINDHOVEN,NETHERLANDS",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V.",
+        "applicantNativeName": "恩智浦有限责任公司NXP;NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Technical project research; water quality analysis; technical research; integrated circuit design services; technical research.; scientific research; mechanical research; chemical analysis; computer hardware design; computer system design; computer software design; computer software design; computer software design and development; computer hardware design and development; semiconductor software design services; information technology consulting services; computer software consulting; computer hardware design and development consulting; creating and maintaining websites for others; providing computer technology and programming information through websites; semiconductor consulting, design, research, development and advisory services; providing information to designers and planners in the semiconductor industry; providing semiconductor identification, testing, auditing, certification and standardization related services; research and development (for others); computer hardware research; computer software; industrial design",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "技术项目研究;水质分析;技术研究;集成电路设计服务;技术研究.;科学研究;机械研究;化学分析;计算机硬件设计;计算机系统设计;计算机软件设计;计算机软件的设计与开发;计算机硬件的设计与开发;半导体软件设计服务;信息技术咨询服务;计算机软件咨询;计算机硬件设计和开发咨询;替他人创建和维护网站;通过网站提供计算机技术和编程信息;半导体咨询、设计、研究、开发和顾问服务;为半导体工业的设计师和策划师提供信息;提供半导体鉴定、试验、审核、认证和标准化的相关服务;研究和开发(替他人);计算机硬件研究;计算机软件;工业设计"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Research and development service",
+        "Chemical research service",
+        "Computer programming, and concerned services"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4211",
+          "subNatGoodsServicesDescription": "Chemical research service"
+        },
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        }
+      ]
+    },
+    "id": "9e9f5090-8365-478e-86bf-764fa7399d5a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1427"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京市柳沈律师事务所"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20130723",
+        "applicationNumber": "12959913"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350113",
+      "lastPublicationDate": "20141013",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20150114",
+        "registrationNumber": "12959913"
+      },
+      "renewalPublishedDate": "20250127"
+    },
+    "version": "20251002072107",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NXP"
+    }
+  },
+  "_uri": "/mark/cn/9e9f5090-8365-478e-86bf-764fa7399d5a",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.682Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

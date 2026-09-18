@@ -1,0 +1,436 @@
+{
+  "uri": "/mark/em/bd616957-d04f-4f5d-9dfe-e05c21b9ceba",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "bd616957-d04f-4f5d-9dfe-e05c21b9ceba",
+  "applicationNumber": "18020672",
+  "registrationNumber": "18020672",
+  "applicationDate": "2019-02-08",
+  "registrationDate": "2019-07-03",
+  "expiryDate": "2029-02-08",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-03-26",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SESIP",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Testování, analýzy a vyhodnocování pro úcely certifikace IT produktu/sluzeb, IKT produktu/sluzeb, produktu/sluzeb pro kybernetickou bezpecnost, sifrovacích produktu/sluzeb a telekomunikacních produktu/sluzeb; Poradenství v oblasti informacních technologií.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Prøvning, analyse og evaluering med henblik på certificering af IT-produkter/-tjenester, IKT-sikkerhedsprodukter/-tjenester, internetsikkerhedsprodukter/-tjenester, kryptografiske produkter/tjenester og telekommunikationsprodukter/-tjenester; Rådgivning vedrørende informationsteknologi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Testen, analyseren en evalueren voor certificeringdoeleinden van IT producten/diensten, ICT security producten/diensten, Cybersecurity producten/diensten, Cryptografische producten/diensten en Telecom producten/diensten; Advisering op het gebied van informatietechnologie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Testing, analysis and assessment for certification purposes of IT goods and services, ICT security goods and services, cybersecurity goods and services, cryptographic goods and services and telecommunications goods and services; Information technology consulting.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "IT toodete/teenuste testimine, analüüsimine ja hindamine sertifitseerimiseesmärkidel, IKT turvalisuse tooted/teenused, küberjulgeoleku tooted/teenused, krüptograafia tooted/teenused ja telekommunikatsiooni tooted/teenused; Infotehnoloogia alased konsultatsioonid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Tietotekniikkatuotteiden tai -palvelujen, tieto- ja viestintätekniikan turvallisuustuotteiden tai -palvelujen, kyberturvallisuustuotteiden tai -palvelujen, salaustuotteiden tai -palvelujen ja kaukoviestintätuotteiden tai -palvelujen testaus, analysointi ja arviointi sertifiointitarkoituksiin; Konsultointi tietotekniikan alalla.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Test, analyse et évaluation à des fins de certification de produits/services TI, de produits/services de sécurité TIC, de produits/services de cybersécurité, de produits/services cryptographiques et de produits/services de télécommunication; Services de conseils en technologie de l'information.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Durchführung von Tests, Analysen und Bewertungen zur Zertifizierung von IT-Erzeugnissen/-Dienstleistungen, Erzeugnissen/Dienstleistungen für die IKT-Sicherheit, Erzeugnissen/Dienstleistungen für die Cybersicherheit, Erzeugnissen/Dienstleistungen für die Verschlüsselung und Erzeugnissen/Dienstleistungen für die Telekommunikation; Beratung auf den Gebieten Informationstechnologie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hr",
+      "description": "Ispitivanje, analiza i procjena za potrebe certifikacije proizvoda/usluga informacijske tehnologije, proizvoda/usluga u vezi sa sigurnoscu informacijsko-komunikacijske tehnologije, kriptografskih proizvoda/usluga i telekomunikacijskih proizvoda/usluga; Konzultacije u podrucju informacijske tehnologije.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Tesztelés, elemzés és értékelés tanúsítás céljából az IT termékek/szolgáltatások terén, IKT biztonsági termékek/szolgáltatások, cyber biztonsági termékek/szolgáltatások, kriptográfiai termékek/szolgáltatások és távközlési termékek/szolgáltatások; Információtechnológiai szaktanácsadás.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Collaudo, analisi e valutazione a fini di certificazione di prodotti/servizi TI, prodotti/servizi per la sicurezza TIC, prodotti/servizi per la sicurezza informatica, prodotti/servizi di crittografia e prodotti/servizi di telecomunicazione; Consulenza in materia di informatica.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "IT produktu / paslaugu, IKT saugumo produktu / paslaugu, kibernetinio saugumo produktu / paslaugu, kriptografijos produktu / paslaugu ir telekomunikaciju produktu / paslaugu bandymas, analize ir vertinimas sertifikavimo reikmems; Konsultacijos informaciniu technologiju srityje.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Testesana, analizesana un novertesana sertificesanas nolukos saistiba ar IT produktiem / pakalpojumiem, IT drosibas produktiem / pakalpojumiem, kiberdrosibas produktiem / pakalpojumiem, kriptografijas produktiem / pakalpojumiem un telekomunikaciju produktiem / pakalpojumiem; Konsultacijas informacijas tehnologiju joma.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "Ittestjar, analizi u evalwazzjoni ghal skopijiet ta' certifikazzjoni ta' prodotti/servizzi tal-IT, prodotti/servizzi tas-sigurtà tal-ICT, prodotti/servizzi tac-cibersigurtà, prodotti/servizzi kriptografici u prodotti/servizzi tat-telekomunikazzjoni; Konsulenza dwar it-teknologija tal-informatika.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Testowanie, analizowanie i ocenianie do celów certyfikacji produktów/uslug IT, produktów/uslug bezpieczenstwa ICT, produktów/uslug bezpieczenstwa cybernetycznego, produktów/uslug kryptograficznych i produktów/uslug telekomunikacyjnych; Konsultacje w dziedzinie technologii informacyjnej.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Teste, análise e avaliação para fins de certificação de produtos/serviços de TI, produtos/serviços de segurança de TIC, produtos/serviços de cibersegurança, produtos/serviços criptográficos e produtos/serviços de telecomunicações; Consultadoria em tecnologia da informação.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Testare, analiza si evaluare în domeniul certificarii în produselor /serviciilor IT, produselor/serviciilor de securitate TIC, produselor/serviciilor de securitate cibernetica, produselor/serviciilor de criptografie si produselor/serviciilor de securitate în telecomunicatii; Consultanta în domeniul tehnologiei informatiei.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "Testovanie, analyzovanie a vyhodnocovanie produktov/sluzieb IT, produktov/sluzieb IKT, produktov/sluzieb kybernetickej bezpecnosti, produktov/bezpecnosti sifrovacích sluzieb a produktov/bezpecnosti sluzieb telekomunikácie; Konzultacné sluzby pre informatiku.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Testiranje, analiziranje in vrednotenje za namene certificiranja IT izdelkov/storitev, IKT varnostnih izdelkov/storitev, izdelkov/storitev za kibernetsko varnost, kriptografskih izdelkov/storitev in telekomunikacijskih izdelkov/storitev; Informacijsko tehnolosko svetovanje.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Pruebas, análisis y evaluación para fines de certificación de productos y servicios de TI, productos y servicios de seguridad TIC, productos y servicios de seguridad cibernética, productos y servicios criptográficos y productos y servicios de telecomunicaciones; Consultoría en materia de tecnología de la información.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Provning, analys och utvärdering för certifieringsändamål av IT-produkter/-tjänster, IKT-säkerhetsprodukter/-tjänster, cybersäkerhetsprodukter/-tjänster, kryptografiprodukter/-tjänster och telekommunikationsprodukter/-tjänster; Konsultation inom området för informationsteknik och datorer.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO SHIELDMARK B.V.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60,Eindhoven, 5656 AG",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "nl",
+    "cmMarkImageEUclassification": [
+      "26.03.23"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Testování, analýzy a vyhodnocování pro úcely certifikace IT produktu/sluzeb, IKT produktu/sluzeb, produktu/sluzeb pro kybernetickou bezpecnost, sifrovacích produktu/sluzeb a telekomunikacních produktu/sluzeb; Poradenství v oblasti informacních technologií."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Prøvning, analyse og evaluering med henblik på certificering af IT-produkter/-tjenester, IKT-sikkerhedsprodukter/-tjenester, internetsikkerhedsprodukter/-tjenester, kryptografiske produkter/tjenester og telekommunikationsprodukter/-tjenester; Rådgivning vedrørende informationsteknologi."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Testen, analyseren en evalueren voor certificeringdoeleinden van IT producten/diensten, ICT security producten/diensten, Cybersecurity producten/diensten, Cryptografische producten/diensten en Telecom producten/diensten; Advisering op het gebied van informatietechnologie."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Testing, analysis and assessment for certification purposes of IT goods and services, ICT security goods and services, cybersecurity goods and services, cryptographic goods and services and telecommunications goods and services; Information technology consulting."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "IT toodete/teenuste testimine, analüüsimine ja hindamine sertifitseerimiseesmärkidel, IKT turvalisuse tooted/teenused, küberjulgeoleku tooted/teenused, krüptograafia tooted/teenused ja telekommunikatsiooni tooted/teenused; Infotehnoloogia alased konsultatsioonid."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Tietotekniikkatuotteiden tai -palvelujen, tieto- ja viestintätekniikan turvallisuustuotteiden tai -palvelujen, kyberturvallisuustuotteiden tai -palvelujen, salaustuotteiden tai -palvelujen ja kaukoviestintätuotteiden tai -palvelujen testaus, analysointi ja arviointi sertifiointitarkoituksiin; Konsultointi tietotekniikan alalla."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Test, analyse et évaluation à des fins de certification de produits/services TI, de produits/services de sécurité TIC, de produits/services de cybersécurité, de produits/services cryptographiques et de produits/services de télécommunication; Services de conseils en technologie de l'information."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Durchführung von Tests, Analysen und Bewertungen zur Zertifizierung von IT-Erzeugnissen/-Dienstleistungen, Erzeugnissen/Dienstleistungen für die IKT-Sicherheit, Erzeugnissen/Dienstleistungen für die Cybersicherheit, Erzeugnissen/Dienstleistungen für die Verschlüsselung und Erzeugnissen/Dienstleistungen für die Telekommunikation; Beratung auf den Gebieten Informationstechnologie."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Ispitivanje, analiza i procjena za potrebe certifikacije proizvoda/usluga informacijske tehnologije, proizvoda/usluga u vezi sa sigurnoscu informacijsko-komunikacijske tehnologije, kriptografskih proizvoda/usluga i telekomunikacijskih proizvoda/usluga; Konzultacije u podrucju informacijske tehnologije."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Tesztelés, elemzés és értékelés tanúsítás céljából az IT termékek/szolgáltatások terén, IKT biztonsági termékek/szolgáltatások, cyber biztonsági termékek/szolgáltatások, kriptográfiai termékek/szolgáltatások és távközlési termékek/szolgáltatások; Információtechnológiai szaktanácsadás."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Collaudo, analisi e valutazione a fini di certificazione di prodotti/servizi TI, prodotti/servizi per la sicurezza TIC, prodotti/servizi per la sicurezza informatica, prodotti/servizi di crittografia e prodotti/servizi di telecomunicazione; Consulenza in materia di informatica."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "IT produktu / paslaugu, IKT saugumo produktu / paslaugu, kibernetinio saugumo produktu / paslaugu, kriptografijos produktu / paslaugu ir telekomunikaciju produktu / paslaugu bandymas, analize ir vertinimas sertifikavimo reikmems; Konsultacijos informaciniu technologiju srityje."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Testesana, analizesana un novertesana sertificesanas nolukos saistiba ar IT produktiem / pakalpojumiem, IT drosibas produktiem / pakalpojumiem, kiberdrosibas produktiem / pakalpojumiem, kriptografijas produktiem / pakalpojumiem un telekomunikaciju produktiem / pakalpojumiem; Konsultacijas informacijas tehnologiju joma."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Ittestjar, analizi u evalwazzjoni ghal skopijiet ta' certifikazzjoni ta' prodotti/servizzi tal-IT, prodotti/servizzi tas-sigurtà tal-ICT, prodotti/servizzi tac-cibersigurtà, prodotti/servizzi kriptografici u prodotti/servizzi tat-telekomunikazzjoni; Konsulenza dwar it-teknologija tal-informatika."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Testowanie, analizowanie i ocenianie do celów certyfikacji produktów/uslug IT, produktów/uslug bezpieczenstwa ICT, produktów/uslug bezpieczenstwa cybernetycznego, produktów/uslug kryptograficznych i produktów/uslug telekomunikacyjnych; Konsultacje w dziedzinie technologii informacyjnej."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Teste, análise e avaliação para fins de certificação de produtos/serviços de TI, produtos/serviços de segurança de TIC, produtos/serviços de cibersegurança, produtos/serviços criptográficos e produtos/serviços de telecomunicações; Consultadoria em tecnologia da informação."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Testare, analiza si evaluare în domeniul certificarii în produselor /serviciilor IT, produselor/serviciilor de securitate TIC, produselor/serviciilor de securitate cibernetica, produselor/serviciilor de criptografie si produselor/serviciilor de securitate în telecomunicatii; Consultanta în domeniul tehnologiei informatiei."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Testovanie, analyzovanie a vyhodnocovanie produktov/sluzieb IT, produktov/sluzieb IKT, produktov/sluzieb kybernetickej bezpecnosti, produktov/bezpecnosti sifrovacích sluzieb a produktov/bezpecnosti sluzieb telekomunikácie; Konzultacné sluzby pre informatiku."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Testiranje, analiziranje in vrednotenje za namene certificiranja IT izdelkov/storitev, IKT varnostnih izdelkov/storitev, izdelkov/storitev za kibernetsko varnost, kriptografskih izdelkov/storitev in telekomunikacijskih izdelkov/storitev; Informacijsko tehnolosko svetovanje."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Pruebas, análisis y evaluación para fines de certificación de productos y servicios de TI, productos y servicios de seguridad TIC, productos y servicios de seguridad cibernética, productos y servicios criptográficos y productos y servicios de telecomunicaciones; Consultoría en materia de tecnología de la información."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Provning, analys och utvärdering för certifieringsändamål av IT-produkter/-tjänster, IKT-säkerhetsprodukter/-tjänster, cybersäkerhetsprodukter/-tjänster, kryptografiprodukter/-tjänster och telekommunikationsprodukter/-tjänster; Konsultation inom området för informationsteknik och datorer."
+        }
+      ]
+    },
+    "id": "bd616957-d04f-4f5d-9dfe-e05c21b9ceba",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "24.17.20"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "59"
+      }
+    ],
+    "recordLastUpdated": "20260917",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices. 2e étage Anna van Buerenplein 21A,Den Haag, 2595DA",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO SHIELDMARK B.V."
+      }
+    ],
+    "secondLanguageCode": "en",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190208",
+        "applicationNumber": "18020672"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290208",
+      "lastPublicationDate": "20190326",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20190703",
+        "registrationNumber": "18020672"
+      }
+    },
+    "version": "20260917194854",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SESIP"
+    }
+  },
+  "_uri": "/mark/em/bd616957-d04f-4f5d-9dfe-e05c21b9ceba",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.638Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

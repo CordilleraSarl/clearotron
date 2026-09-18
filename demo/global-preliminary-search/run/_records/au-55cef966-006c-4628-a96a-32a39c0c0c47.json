@@ -1,0 +1,155 @@
+{
+  "uri": "/mark/au/55cef966-006c-4628-a96a-32a39c0c0c47",
+  "provider": "clarivate",
+  "office": "au",
+  "guid": "55cef966-006c-4628-a96a-32a39c0c0c47",
+  "applicationNumber": "1018467",
+  "registrationNumber": "1018467",
+  "applicationDate": "2004-09-01",
+  "registrationDate": "2004-09-01",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2004-09-23",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "FREESCALE SEMICONDUCTOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Semiconductors, semiconductor processors, semiconductor processor chips, integrated circuits, integrated circuit chips, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor material therefor; semiconductors for machines and machine tools; semiconductors for lighting, heating, steam generating, cooking, refrigerating, drying and ventilating apparatus; semiconductors for clocks and time keeping apparatus and instruments; semiconductors for musical instruments; semiconductors for games and playthings; data conversion circuits; computer firmware; electronic, electrical and electro-mechanical apparatus for use with computers; video systems products; apparatus and equipment for recordation, reproduction and alteration of sound, video and data; video circuit boards; audio circuit boards; audio-video circuit boards; video graphic accelerators; multimedia accelerators; video processors; computer programs; instructional material relating to computer and data algorithms for the compression and decompression of data; testing and calibrating apparatus; parts and fittings for all the aforesaid goods; equipment for the testing and programming of integrated circuits and semiconductor memories; computer software, namely, application integration and connectivity software, computer utility programs, computer programs for network management, computer software for accessing a global computer network and interconnected computer networks; computer operating systems; computer operating system software; computer operating programs; and computer software tools for the facilitation of third party software applications",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Licensing of technology; licensing of patents, trademarks, copyrights, trade secrets and/or know-how related to the manufacture of semiconductors and their uses; licensing semiconductors; licensing of software related to the manufacture of semiconductors and their uses; licensing of technology related to semiconductors and the manufacture of semiconductors; licensing technology incorporated in and related to semiconductor products, integrated circuits, circuit boards, microcomputers, micro controllers, microprocessors and computer peripherals, memories and semiconductor material therefor, data conversion circuits, computer firmware, electronic, electrical and electromechanical apparatus for use with computers, video circuit boards; video systems products, apparatus and equipment for recordation, reproduction and alteration of sound, video and data, computer programs; instructional material relating to computer and data algorithms for the compression and decompression of data; custom design of computer and telecommunications systems; consulting services in the field of computers and telecommunications and related technology for software design",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20040301",
+      "priorityNumber": "78/376,532"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West, Austin TX 78735",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Semiconductors, semiconductor processors, semiconductor processor chips, integrated circuits, integrated circuit chips, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor material therefor; semiconductors for machines and machine tools; semiconductors for lighting, heating, steam generating, cooking, refrigerating, drying and ventilating apparatus; semiconductors for clocks and time keeping apparatus and instruments; semiconductors for musical instruments; semiconductors for games and playthings; data conversion circuits; computer firmware; electronic, electrical and electro-mechanical apparatus for use with computers; video systems products; apparatus and equipment for recordation, reproduction and alteration of sound, video and data; video circuit boards; audio circuit boards; audio-video circuit boards; video graphic accelerators; multimedia accelerators; video processors; computer programs; instructional material relating to computer and data algorithms for the compression and decompression of data; testing and calibrating apparatus; parts and fittings for all the aforesaid goods; equipment for the testing and programming of integrated circuits and semiconductor memories; computer software, namely, application integration and connectivity software, computer utility programs, computer programs for network management, computer software for accessing a global computer network and interconnected computer networks; computer operating systems; computer operating system software; computer operating programs; and computer software tools for the facilitation of third party software applications"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Licensing of technology; licensing of patents, trademarks, copyrights, trade secrets and/or know-how related to the manufacture of semiconductors and their uses; licensing semiconductors; licensing of software related to the manufacture of semiconductors and their uses; licensing of technology related to semiconductors and the manufacture of semiconductors; licensing technology incorporated in and related to semiconductor products, integrated circuits, circuit boards, microcomputers, micro controllers, microprocessors and computer peripherals, memories and semiconductor material therefor, data conversion circuits, computer firmware, electronic, electrical and electromechanical apparatus for use with computers, video circuit boards; video systems products, apparatus and equipment for recordation, reproduction and alteration of sound, video and data, computer programs; instructional material relating to computer and data algorithms for the compression and decompression of data; custom design of computer and telecommunications systems; consulting services in the field of computers and telecommunications and related technology for software design"
+        }
+      ]
+    },
+    "id": "55cef966-006c-4628-a96a-32a39c0c0c47",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "P'GRAMS FORM CHEVRON & OBLIQUE STRIPE"
+      }
+    ],
+    "markImageViennaClassification": [
+      "26.04.09",
+      "26.04.04",
+      "26.04.24"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20040301",
+        "priorityNumber": "78/376,532"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "AU",
+    "registrationOfficeName": "Australia",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "PO Box 323 COLLINS STREET WEST 8007 VIC",
+        "representativeCorrespondentAddressCountryCode": "AU",
+        "representativeCorrespondentAddressCountryName": "Australia",
+        "representativeCorrespondentName": "PHILLIPS ORMONDE FITZPATRICK"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040901",
+        "applicationNumber": "1018467"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20040923",
+      "markCurrentStatus": "REMOVED - NOT RENEWED: RENEWAL FEE NOT PAID",
+      "registration": {
+        "registrationDate": "20040901",
+        "registrationNumber": "1018467"
+      }
+    },
+    "version": "20250625150508",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE SEMICONDUCTOR"
+    }
+  },
+  "_uri": "/mark/au/55cef966-006c-4628-a96a-32a39c0c0c47",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.672Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

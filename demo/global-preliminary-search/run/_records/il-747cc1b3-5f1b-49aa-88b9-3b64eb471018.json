@@ -1,0 +1,143 @@
+{
+  "uri": "/mark/il/747cc1b3-5f1b-49aa-88b9-3b64eb471018",
+  "provider": "clarivate",
+  "office": "il",
+  "guid": "747cc1b3-5f1b-49aa-88b9-3b64eb471018",
+  "applicationNumber": "173597",
+  "registrationNumber": null,
+  "applicationDate": "2004-07-22",
+  "registrationDate": "2005-12-05",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "Freescale Semiconductor",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Semiconductors, semiconductor processors, semiconductor processor chips, integrated circuits, integrated circuit chips, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor material therefor; semiconductors for machines and machine tools; semiconductors for lighting, heating, steam generating, cooking, refrigerating, drying and ventilating apparatus; semiconductors for clocks and time keeping apparatus and instruments; semiconductors for musical instruments; semiconductors for games and playthings; data conversion circuits; computer firmware; electronic, electrical and electro-mechanical apparatus for use with computers; video systems products; apparatus and equipment for recordation, reproduction and alteration of sound, video and data; video circuit boards; audio circuit boards; audio-video circuit boards; video graphic accelerators; multimedia accelerators; video processors; computer programs; instructional material relating to computer and data algorithms for the compression and decompression of data; testing and calibrating apparatus; parts and fittings for all the aforesaid goods; equipment for the testing and programming of integrated circuits and semiconductor memories; computer software, namely, application integration and connectivity software, computer utility programs, computer programs for network management, computer software for accessing a global computer network and interconnected computer networks; computer operating systems; computer operating system software; computer operating programs; computer software and hardware for use in the development and design of products using semiconductors; all included in class 9",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Licensing of technology; licensing of patents, trademarks, copyrights, trade secrets and/or know-how related to the manufacture of semiconductors and their uses; licensing semiconductors; licensing of software related to the manufacture of semiconductors and their uses; licensing of technology related to semiconductors and the manufacture of semiconductors; licensing technology incorporated in and related to semiconductor products, integrated circuits, circuit boards, microcomputers, micro controllers, microprocessors and computer peripherals, memories and semiconductor material therefor, data conversion circuits, computer firmware, electronic, electrical and electromechanical apparatus for use with computers, video circuit boards, video systems products, apparatus and equipment for recordation, reproduction and alteration of sound, video and data, computer programs, instructional material relating to computer and data algorithms for the compression and decompression of data; custom design of computer and telecommunications systems; consulting services in the field of computers and related technology for software design; all included in class 42",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA, Inc",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Reinhold Cohn and Partners",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20040301"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West, Austin, Texas 78735, U S A",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Semiconductors, semiconductor processors, semiconductor processor chips, integrated circuits, integrated circuit chips, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor material therefor; semiconductors for machines and machine tools; semiconductors for lighting, heating, steam generating, cooking, refrigerating, drying and ventilating apparatus; semiconductors for clocks and time keeping apparatus and instruments; semiconductors for musical instruments; semiconductors for games and playthings; data conversion circuits; computer firmware; electronic, electrical and electro-mechanical apparatus for use with computers; video systems products; apparatus and equipment for recordation, reproduction and alteration of sound, video and data; video circuit boards; audio circuit boards; audio-video circuit boards; video graphic accelerators; multimedia accelerators; video processors; computer programs; instructional material relating to computer and data algorithms for the compression and decompression of data; testing and calibrating apparatus; parts and fittings for all the aforesaid goods; equipment for the testing and programming of integrated circuits and semiconductor memories; computer software, namely, application integration and connectivity software, computer utility programs, computer programs for network management, computer software for accessing a global computer network and interconnected computer networks; computer operating systems; computer operating system software; computer operating programs; computer software and hardware for use in the development and design of products using semiconductors; all included in class 9"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Licensing of technology; licensing of patents, trademarks, copyrights, trade secrets and/or know-how related to the manufacture of semiconductors and their uses; licensing semiconductors; licensing of software related to the manufacture of semiconductors and their uses; licensing of technology related to semiconductors and the manufacture of semiconductors; licensing technology incorporated in and related to semiconductor products, integrated circuits, circuit boards, microcomputers, micro controllers, microprocessors and computer peripherals, memories and semiconductor material therefor, data conversion circuits, computer firmware, electronic, electrical and electromechanical apparatus for use with computers, video circuit boards, video systems products, apparatus and equipment for recordation, reproduction and alteration of sound, video and data, computer programs, instructional material relating to computer and data algorithms for the compression and decompression of data; custom design of computer and telecommunications systems; consulting services in the field of computers and related technology for software design; all included in class 42"
+        }
+      ]
+    },
+    "id": "747cc1b3-5f1b-49aa-88b9-3b64eb471018",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.04.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20040301"
+      }
+    ],
+    "recordLastUpdated": "20260331",
+    "registrationOfficeCode": "IL",
+    "registrationOfficeName": "Israel",
+    "representatives": [
+      {
+        "representativeAddress": "26a Habarzel St Ramat Hahayal, P O B 13239, Tel Aviv, 61131, Israel",
+        "representativeAddressCountryCode": "IL",
+        "representativeAddressCountryName": "Israel",
+        "representativeName": "Reinhold Cohn and Partners"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040722",
+        "applicationNumber": "173597"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20051205"
+      }
+    },
+    "version": "20260331112558",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Freescale Semiconductor"
+    }
+  },
+  "_uri": "/mark/il/747cc1b3-5f1b-49aa-88b9-3b64eb471018",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.715Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

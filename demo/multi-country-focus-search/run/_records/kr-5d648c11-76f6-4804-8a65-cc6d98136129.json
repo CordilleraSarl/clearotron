@@ -1,0 +1,124 @@
+{
+  "uri": "/mark/kr/5d648c11-76f6-4804-8a65-cc6d98136129",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "5d648c11-76f6-4804-8a65-cc6d98136129",
+  "applicationNumber": "40-2012-0075372",
+  "registrationNumber": "4010396590000",
+  "applicationDate": "2012-12-04",
+  "registrationDate": "2014-05-28",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "FREESCALE TOWER SYSTEM",
+  "markTransliteration": "FREESCALE TOWER SYSTEM",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "마이크로컨트롤러 개발/평가용 전자회로개발모듈,마이크로컨트롤러 개발/평가용 전자회로개발보드,마이크로컨트롤러 개발/평가용 전자회로라이저보드,마이크로컨트롤러 개발/평가용 전자회로주변장치보드,마이크로컨트롤러용 모듈식 개발 컴퓨터 소프트웨어,마이크로컨트롤러용 모듈식 개발 컴퓨터 하드웨어,마이크로프로세서 개발/평가용 전자회로개발보드,마이크로프로세서 개발/평가용 전자회로라이저보드,마이크로프로세서 개발/평가용 전자회로모듈,마이크로프로세서 개발/평가용 전자회로주변장치보드,마이크로프로세서용 모듈식 개발 컴퓨터 소프트웨어,마이크로프로세서용 모듈식 개발 컴퓨터 하드웨어,반도체 개발/평가용 전자회로개발보드,반도체 개발/평가용 전자회로라이저보드,반도체 개발/평가용 전자회로모듈,반도체 개발/평가용 전자회로주변장치보드,반도체용 모듈식 개발 컴퓨터 소프트웨어,반도체용 모듈식 개발 컴퓨터 하드웨어,집적회로 개발/평가용 전자회로개발보드,집적회로 개발/평가용 전자회로라이저보드,집적회로 개발/평가용 전자회로모듈,집적회로 개발/평가용 전자회로주변장치보드,집적회로용 모듈식 개발 컴퓨터 소프트웨어,집적회로용 모듈식 개발 컴퓨터 하드웨어",
+      "translation_language": "en",
+      "translation": "Electronic circuit development module for microcontroller development/evaluation, electronic circuit development board for microcontroller development/evaluation, electronic circuit riser board for microcontroller development/evaluation, electronic circuit peripheral device board for microcontroller development/evaluation, modular type for microcontroller Development computer software, modular development for microcontroller computer hardware, electronic circuit development board for microprocessor development/evaluation, electronic circuit riser board for microprocessor development/evaluation, electronic circuit module for microprocessor development/evaluation, microprocessor development/evaluation Electronic circuit peripheral board for microprocessor modular development computer software, microprocessor modular development computer hardware, electronic circuit development board for semiconductor development/evaluation, electronic circuit riser board for semiconductor development/evaluation, semiconductor development/evaluation Electronic circuit module, electronic circuit peripheral device board for semiconductor development/evaluation, modular development computer software for semiconductor, modular development computer hardware for semiconductor, electronic circuit development board for integrated circuit development/evaluation, electronic circuit for integrated circuit development/evaluation Riser board, electronic circuit module for integrated circuit development/evaluation, electronic circuit peripheral device board for integrated circuit development/evaluation, modular development computer software for integrated circuits, modular development computer hardware for integrated circuits"
+    }
+  ],
+  "owner": "NXP USA, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "양영준 (YANG, Young June)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미합중국 텍사스 (우편번호 ) 오스틴 윌리암 캐논 드라이브 웨스트",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc.",
+        "applicantNativeName": "엔엑스피 유에스에이, 인코포레이티드"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electronic circuit development module for microcontroller development/evaluation, electronic circuit development board for microcontroller development/evaluation, electronic circuit riser board for microcontroller development/evaluation, electronic circuit peripheral device board for microcontroller development/evaluation, modular type for microcontroller Development computer software, modular development for microcontroller computer hardware, electronic circuit development board for microprocessor development/evaluation, electronic circuit riser board for microprocessor development/evaluation, electronic circuit module for microprocessor development/evaluation, microprocessor development/evaluation Electronic circuit peripheral board for microprocessor modular development computer software, microprocessor modular development computer hardware, electronic circuit development board for semiconductor development/evaluation, electronic circuit riser board for semiconductor development/evaluation, semiconductor development/evaluation Electronic circuit module, electronic circuit peripheral device board for semiconductor development/evaluation, modular development computer software for semiconductor, modular development computer hardware for semiconductor, electronic circuit development board for integrated circuit development/evaluation, electronic circuit for integrated circuit development/evaluation Riser board, electronic circuit module for integrated circuit development/evaluation, electronic circuit peripheral device board for integrated circuit development/evaluation, modular development computer software for integrated circuits, modular development computer hardware for integrated circuits",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "마이크로컨트롤러 개발/평가용 전자회로개발모듈,마이크로컨트롤러 개발/평가용 전자회로개발보드,마이크로컨트롤러 개발/평가용 전자회로라이저보드,마이크로컨트롤러 개발/평가용 전자회로주변장치보드,마이크로컨트롤러용 모듈식 개발 컴퓨터 소프트웨어,마이크로컨트롤러용 모듈식 개발 컴퓨터 하드웨어,마이크로프로세서 개발/평가용 전자회로개발보드,마이크로프로세서 개발/평가용 전자회로라이저보드,마이크로프로세서 개발/평가용 전자회로모듈,마이크로프로세서 개발/평가용 전자회로주변장치보드,마이크로프로세서용 모듈식 개발 컴퓨터 소프트웨어,마이크로프로세서용 모듈식 개발 컴퓨터 하드웨어,반도체 개발/평가용 전자회로개발보드,반도체 개발/평가용 전자회로라이저보드,반도체 개발/평가용 전자회로모듈,반도체 개발/평가용 전자회로주변장치보드,반도체용 모듈식 개발 컴퓨터 소프트웨어,반도체용 모듈식 개발 컴퓨터 하드웨어,집적회로 개발/평가용 전자회로개발보드,집적회로 개발/평가용 전자회로라이저보드,집적회로 개발/평가용 전자회로모듈,집적회로 개발/평가용 전자회로주변장치보드,집적회로용 모듈식 개발 컴퓨터 소프트웨어,집적회로용 모듈식 개발 컴퓨터 하드웨어"
+        }
+      ]
+    },
+    "id": "5d648c11-76f6-4804-8a65-cc6d98136129",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "F, Seyang B/D, Naeja-dong, Jongno-gu, Seoul, Korea(KIM & CHANG)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "양영준 (YANG, Young June)"
+      },
+      {
+        "representativeAddress": "Seoul(none)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "위혜숙 (Wee Hye Suk)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20121204",
+        "applicationNumber": "40-2012-0075372"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20140528",
+        "registrationNumber": "4010396590000"
+      }
+    },
+    "version": "20250625172814",
+    "wordMarkSpecification": {
+      "markTransliteration": "FREESCALE TOWER SYSTEM",
+      "markVerbalElementText": "FREESCALE TOWER SYSTEM"
+    }
+  },
+  "_uri": "/mark/kr/5d648c11-76f6-4804-8a65-cc6d98136129",
+  "_receipt": {
+    "fetched_at": "2026-09-18T14:09:34.899Z",
+    "context": "clearance-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

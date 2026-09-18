@@ -1,0 +1,139 @@
+{
+  "uri": "/mark/md/7ef95538-e146-42b3-bc4c-61dec0d85985",
+  "provider": "clarivate",
+  "office": "md",
+  "guid": "7ef95538-e146-42b3-bc4c-61dec0d85985",
+  "applicationNumber": "015026",
+  "registrationNumber": "12595",
+  "applicationDate": "2004-06-23",
+  "registrationDate": "2005-07-07",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "semiconductoare, procesoare cu semiconductoare, circuite integrate cu semiconductoare (cipuri) pentru procesoare, circuite integrate, cipuri pentru circuite integrate, plăci cu circuite imprimate, microcalculatoare, microcontrolere, microprocesoare şi dispozitive periferice pentru calculatoare, dispozitive de memorare şi materiale semiconductoare pentru ele; semiconductoare pentru maşini-unelte şi pentru sisteme de maşini-unelte; semiconductoare pentru dispozitive de iluminare, de încălzire, pentru generatoare de abur, pentru maşini de gătit, dispozitive frigorigene, de uscare şi de ventilaţie; semiconductoare pentru ceasuri şi pentru aparate şi instrumente cronometrice; semiconductoare pentru instrumente muzicale; semiconductoare pentru jocuri şi jucării; circuite de convertoare de date; microsoftware pentru calculatoare; aparate electronice, electrice şi electromecanice utilizate cu calculatoarele; produse pentru sisteme video; aparate şi echipament pentru înregistrarea, reproducerea şi modificarea sunetului, imaginii şi datelor; plăci video cu circuite imprimate; plăci audio cu circuite imprimate; plăci audio-video cu circuite imprimate; acceleratoare videografice; acceleratoare multimedia; videoprocesoare; programe pentru calculatoare; material didactic referitor la algoritmii calculatoarelor şi datelor pentru compresia şi decompresia datelor; dispozitive de testare şi calibrare; părţi şi fitinguri pentru toate produsele menţionate; echipamente pentru testarea şi programarea circuitelor integrate şi a dispozitivelor de memorare cu semiconductoare; software, şi anume software pentru integrare si conectivitate aplicativă, programe utilitare pentru calculatoare, programe pentru calculatoare pentru administrare prin reţea, software pentru accesul în reţeaua globală de calculatoare şi reţelele de calculatoare interconectate; sisteme de operare pentru calculatoare; software pentru sistemele de operare pentru  calculatoare; programe de operare pentru calculatoare şi aplicaţii instrumentale pentru facilitarea lucrului cu software a terţilor;",
+      "translation_language": "en",
+      "translation": "semiconductors, semiconductor processors, semiconductor integrated circuits (chips) for processors, integrated circuits, chips for integrated circuits, printed circuit boards, microcomputers, microcontrollers, microprocessors and computer peripheral devices, storage devices and semiconductor materials therefor; semiconductors for machine tools and machine tool systems; semiconductors for lighting, heating, steam generating, cooking, refrigerating, drying and ventilating devices; semiconductors for clocks and timekeeping apparatus and instruments; semiconductors for musical instruments; semiconductors for games and toys; data converter circuits; computer software; electronic, electrical and electromechanical apparatus for use with computers; video system products; apparatus and equipment for recording, reproducing and modifying sound, images and data; video printed circuit boards; audio printed circuit boards; audio-video printed circuit boards; videographic accelerators; multimedia accelerators; video processors; computer programs; instructional materials relating to computer and data algorithms for data compression and decompression; test and calibration devices; parts and fittings for all the aforesaid goods; equipment for testing and programming integrated circuits and semiconductor storage devices; software, namely software for application integration and connectivity, computer utility programs, computer programs for network administration, software for accessing the global computer network and interconnected computer networks; computer operating systems; software for computer operating systems; computer operating programs and utility applications for facilitating work with software of others;"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "servicii de licenţiere a tehnologiilor; servicii de licenţiere a brevetelor, mărcilor, dreptului de autor, secretelor comerciale si/sau know-how referitoare la producerea semiconductoarelor şi utilizarea lor; licenţierea semiconductoarelor; licenţierea software care se referă la producerea semiconductoarelor şi utilizarea lor; licenţierea tehnologiilor referitoare la semiconductoare şi la producerea semiconductoarelor; licenţierea tehnologiilor care includ şi care se referă la produsele cu semiconductoare, circuitele integrate, plăcile cu circuite imprimate, microcalculatoare, microcontrolere, microprocesoare şi sistemele periferice ale calculatoarelor, dispozitivele de memorare şi materialele semiconductoare pentru ele, circuitele de convertoare a datelor, microsoftware pentru calculatoare, dispozitivele electronice, electrice şi electromecanice utilizate cu calculatoarele, placile video cu circuite imprimate; produse pentru sisteme video, aparate şi echipament pentru înregistrarea, reproducerea şi modificarea sunetului, imaginii şi datelor, programe pentru calculatoare; servicii de oferire a materialului didactic pentru algoritmii calculatoarelor şi datelor pentru compresia şi decompresia datelor; designul sistemelor de calculatoare şi de telecomunicaţii acordat la solicitare; consultanţă în domeniul calculatoarelor şi telecomunicaţiilor şi referitor la tehnologia designului software.",
+      "translation_language": "en",
+      "translation": "technology licensing services; licensing services of patents, trademarks, copyright, trade secrets and/or know-how relating to the production of semiconductors and their use; licensing of semiconductors; licensing of software relating to the production of semiconductors and their use; licensing of technologies relating to semiconductors and the production of semiconductors; licensing of technologies including and relating to semiconductor products, integrated circuits, printed circuit boards, microcomputers, microcontrollers, microprocessors and computer peripheral systems, storage devices and semiconductor materials therefor, data converter circuits, computer microsoftware, electronic, electrical and electromechanical devices used with computers, printed circuit video cards; products for video systems, apparatus and equipment for recording, reproducing and modifying sound, images and data, computer programs; services for providing teaching material for computer and data algorithms for data compression and decompression; computer and telecommunications systems design provided upon request; consultancy in the field of computers and telecommunications and relating to software design technology."
+    }
+  ],
+  "owner": "NXP USA, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20031230",
+      "priorityNumber": "76/567, 257"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West Austin, Texas 78735, Statele Unite ale Americii",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "semiconductors, semiconductor processors, semiconductor integrated circuits (chips) for processors, integrated circuits, chips for integrated circuits, printed circuit boards, microcomputers, microcontrollers, microprocessors and computer peripheral devices, storage devices and semiconductor materials therefor; semiconductors for machine tools and machine tool systems; semiconductors for lighting, heating, steam generating, cooking, refrigerating, drying and ventilating devices; semiconductors for clocks and timekeeping apparatus and instruments; semiconductors for musical instruments; semiconductors for games and toys; data converter circuits; computer software; electronic, electrical and electromechanical apparatus for use with computers; video system products; apparatus and equipment for recording, reproducing and modifying sound, images and data; video printed circuit boards; audio printed circuit boards; audio-video printed circuit boards; videographic accelerators; multimedia accelerators; video processors; computer programs; instructional materials relating to computer and data algorithms for data compression and decompression; test and calibration devices; parts and fittings for all the aforesaid goods; equipment for testing and programming integrated circuits and semiconductor storage devices; software, namely software for application integration and connectivity, computer utility programs, computer programs for network administration, software for accessing the global computer network and interconnected computer networks; computer operating systems; software for computer operating systems; computer operating programs and utility applications for facilitating work with software of others;",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "semiconductoare, procesoare cu semiconductoare, circuite integrate cu semiconductoare (cipuri) pentru procesoare, circuite integrate, cipuri pentru circuite integrate, plăci cu circuite imprimate, microcalculatoare, microcontrolere, microprocesoare şi dispozitive periferice pentru calculatoare, dispozitive de memorare şi materiale semiconductoare pentru ele; semiconductoare pentru maşini-unelte şi pentru sisteme de maşini-unelte; semiconductoare pentru dispozitive de iluminare, de încălzire, pentru generatoare de abur, pentru maşini de gătit, dispozitive frigorigene, de uscare şi de ventilaţie; semiconductoare pentru ceasuri şi pentru aparate şi instrumente cronometrice; semiconductoare pentru instrumente muzicale; semiconductoare pentru jocuri şi jucării; circuite de convertoare de date; microsoftware pentru calculatoare; aparate electronice, electrice şi electromecanice utilizate cu calculatoarele; produse pentru sisteme video; aparate şi echipament pentru înregistrarea, reproducerea şi modificarea sunetului, imaginii şi datelor; plăci video cu circuite imprimate; plăci audio cu circuite imprimate; plăci audio-video cu circuite imprimate; acceleratoare videografice; acceleratoare multimedia; videoprocesoare; programe pentru calculatoare; material didactic referitor la algoritmii calculatoarelor şi datelor pentru compresia şi decompresia datelor; dispozitive de testare şi calibrare; părţi şi fitinguri pentru toate produsele menţionate; echipamente pentru testarea şi programarea circuitelor integrate şi a dispozitivelor de memorare cu semiconductoare; software, şi anume software pentru integrare si conectivitate aplicativă, programe utilitare pentru calculatoare, programe pentru calculatoare pentru administrare prin reţea, software pentru accesul în reţeaua globală de calculatoare şi reţelele de calculatoare interconectate; sisteme de operare pentru calculatoare; software pentru sistemele de operare pentru  calculatoare; programe de operare pentru calculatoare şi aplicaţii instrumentale pentru facilitarea lucrului cu software a terţilor;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "technology licensing services; licensing services of patents, trademarks, copyright, trade secrets and/or know-how relating to the production of semiconductors and their use; licensing of semiconductors; licensing of software relating to the production of semiconductors and their use; licensing of technologies relating to semiconductors and the production of semiconductors; licensing of technologies including and relating to semiconductor products, integrated circuits, printed circuit boards, microcomputers, microcontrollers, microprocessors and computer peripheral systems, storage devices and semiconductor materials therefor, data converter circuits, computer microsoftware, electronic, electrical and electromechanical devices used with computers, printed circuit video cards; products for video systems, apparatus and equipment for recording, reproducing and modifying sound, images and data, computer programs; services for providing teaching material for computer and data algorithms for data compression and decompression; computer and telecommunications systems design provided upon request; consultancy in the field of computers and telecommunications and relating to software design technology.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "servicii de licenţiere a tehnologiilor; servicii de licenţiere a brevetelor, mărcilor, dreptului de autor, secretelor comerciale si/sau know-how referitoare la producerea semiconductoarelor şi utilizarea lor; licenţierea semiconductoarelor; licenţierea software care se referă la producerea semiconductoarelor şi utilizarea lor; licenţierea tehnologiilor referitoare la semiconductoare şi la producerea semiconductoarelor; licenţierea tehnologiilor care includ şi care se referă la produsele cu semiconductoare, circuitele integrate, plăcile cu circuite imprimate, microcalculatoare, microcontrolere, microprocesoare şi sistemele periferice ale calculatoarelor, dispozitivele de memorare şi materialele semiconductoare pentru ele, circuitele de convertoare a datelor, microsoftware pentru calculatoare, dispozitivele electronice, electrice şi electromecanice utilizate cu calculatoarele, placile video cu circuite imprimate; produse pentru sisteme video, aparate şi echipament pentru înregistrarea, reproducerea şi modificarea sunetului, imaginii şi datelor, programe pentru calculatoare; servicii de oferire a materialului didactic pentru algoritmii calculatoarelor şi datelor pentru compresia şi decompresia datelor; designul sistemelor de calculatoare şi de telecomunicaţii acordat la solicitare; consultanţă în domeniul calculatoarelor şi telecomunicaţiilor şi referitor la tehnologia designului software."
+        }
+      ]
+    },
+    "id": "7ef95538-e146-42b3-bc4c-61dec0d85985",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20031230",
+        "priorityNumber": "76/567, 257"
+      }
+    ],
+    "recordLastUpdated": "20250219",
+    "registrationOfficeCode": "MD",
+    "registrationOfficeName": "Moldova",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040623",
+        "applicationNumber": "015026"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20050707",
+        "registrationNumber": "12595"
+      }
+    },
+    "version": "20250219050255",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/md/7ef95538-e146-42b3-bc4c-61dec0d85985",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.720Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

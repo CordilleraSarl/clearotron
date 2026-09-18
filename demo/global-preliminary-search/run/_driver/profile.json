@@ -40,6 +40,7 @@
   },
   "riskAppetite": "A consumer launch into two scripts. Treat transliterations and native-script equivalents as first-class marks, not variants — and say which script a conflict actually sits in.",
   "contextPack": "",
+  "demoData": false,
   "defaultProduct": "multi-country-focus-search",
   "jxPolicy": {
     "laneDepth": {
@@ -59,5 +60,5 @@
     "industry": "project",
     "defaultProduct": "project"
   },
-  "profileSha": "911701656910ab284b6918c8e4fa4238d2dcdc97a860a622799f995f112ff00a"
+  "profileSha": "cbff1c4152005f631594d4a6c6bfe8e6ba62e494bd010787ad8d0221d27f7c39"
 }

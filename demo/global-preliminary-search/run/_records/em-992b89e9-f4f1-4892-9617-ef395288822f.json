@@ -390,7 +390,7 @@
         "publicationVolume": "200"
       }
     ],
-    "recordLastUpdated": "20260511",
+    "recordLastUpdated": "20260917",
     "registrationOfficeCode": "EM",
     "registrationOfficeName": "EU trade marks",
     "representatives": [
@@ -417,14 +417,14 @@
         "registrationNumber": "14636724"
       }
     },
-    "version": "20260511180022",
+    "version": "20260917170536",
     "wordMarkSpecification": {
       "markVerbalElementText": "VENTURI"
     }
   },
   "_uri": "/mark/em/992b89e9-f4f1-4892-9617-ef395288822f",
   "_receipt": {
-    "fetched_at": "2026-09-02T14:33:25.175Z",
-    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+    "fetched_at": "2026-09-18T12:41:57.342Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
   }
 }

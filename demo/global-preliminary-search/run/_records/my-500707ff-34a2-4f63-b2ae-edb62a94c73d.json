@@ -1,0 +1,130 @@
+{
+  "uri": "/mark/my/500707ff-34a2-4f63-b2ae-edb62a94c73d",
+  "provider": "clarivate",
+  "office": "my",
+  "guid": "500707ff-34a2-4f63-b2ae-edb62a94c73d",
+  "applicationNumber": "04011156",
+  "registrationNumber": null,
+  "applicationDate": "2004-08-03",
+  "registrationDate": "2004-08-03",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "FREESCALE SEMICONDUCTOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Licensing of technology; licensing of patents, trademarks, copyrights, trade secrets and/or know-how related to the manufacture of semiconductors and their uses; licensing semiconductors; licensing of software related to the manufacture of semiconductors and their uses; licensing of technology related to semiconductors and the manufacture of semiconductors; licensing technology incorporated in and related to semiconductor products, integrated circuits, circuit boards, microcomputers, micro controllers, microprocessors and computer peripherals, memories and semiconductor material therefor, data conversion circuits, computer firmware, electronic, electrical and electromechanical apparatus for use with computers, video circuit boards; video systems products, apparatus and equipment for recordation, reproduction and alteration of sound, video and data, computer programs; instructional material relating to computer and data algorithms for the compression and decompression of data; custom design of computer and telecommunications systems; consulting services in the field of computers and telecommunications and related technology for software design; all included in class 42.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA, Inc",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Charmayne Ong Poh Yin",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20040301",
+      "priorityNumber": "78/376,532"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West Austin, Texas 78735",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Licensing of technology; licensing of patents, trademarks, copyrights, trade secrets and/or know-how related to the manufacture of semiconductors and their uses; licensing semiconductors; licensing of software related to the manufacture of semiconductors and their uses; licensing of technology related to semiconductors and the manufacture of semiconductors; licensing technology incorporated in and related to semiconductor products, integrated circuits, circuit boards, microcomputers, micro controllers, microprocessors and computer peripherals, memories and semiconductor material therefor, data conversion circuits, computer firmware, electronic, electrical and electromechanical apparatus for use with computers, video circuit boards; video systems products, apparatus and equipment for recordation, reproduction and alteration of sound, video and data, computer programs; instructional material relating to computer and data algorithms for the compression and decompression of data; custom design of computer and telecommunications systems; consulting services in the field of computers and telecommunications and related technology for software design; all included in class 42."
+        }
+      ]
+    },
+    "id": "500707ff-34a2-4f63-b2ae-edb62a94c73d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.04.09"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20040301",
+        "priorityNumber": "78/376,532"
+      }
+    ],
+    "recordLastUpdated": "20260901",
+    "registrationOfficeCode": "MY",
+    "registrationOfficeName": "Malaysia",
+    "representatives": [
+      {
+        "representativeAddress": "Skrine; Unit No. 50-8-1, 8th Floor, Wisma UOA Damansara, 50 Jalan Dungun, Damansara Heights Wilayah Persekutuan 50490 Kuala Lumpur",
+        "representativeAddressCountryCode": "MY",
+        "representativeAddressCountryName": "Malaysia",
+        "representativeName": "Charmayne Ong Poh Yin"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040803",
+        "applicationNumber": "04011156"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20040803"
+      }
+    },
+    "version": "20260901050117",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE SEMICONDUCTOR"
+    }
+  },
+  "_uri": "/mark/my/500707ff-34a2-4f63-b2ae-edb62a94c73d",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.699Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

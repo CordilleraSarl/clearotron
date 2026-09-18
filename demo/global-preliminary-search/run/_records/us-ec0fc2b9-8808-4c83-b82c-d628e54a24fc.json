@@ -1,0 +1,486 @@
+{
+  "uri": "/mark/us/ec0fc2b9-8808-4c83-b82c-d628e54a24fc",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "ec0fc2b9-8808-4c83-b82c-d628e54a24fc",
+  "applicationNumber": "79069305",
+  "registrationNumber": "3793278",
+  "applicationDate": "2009-01-22",
+  "registrationDate": "2010-05-25",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2010-03-09"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MIFARE PLUS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    37,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Electronic, electrotechnical and electromagnetic modules containing semiconductors, integrated circuits or microprocessor chips all for use in RFID (Radio Frequency Identification) and NFC (Near Field Communications) applications, and parts thereof; data processing equipment, namely, data processors for scanning, reading, storing and interpreting electronic data contained on RFID and NFC chips and tags; microprocessors; [ interfaces for computers; ] integrated circuits (ICs), electronic chips for the manufacture of integrated circuits; semiconductors; encoded smart cards containing programming used to store financial information, access management and, personal identification details ; [ computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID and NFC chips and tags; ] electronic, electrotechnical and electromagnetic modules, parts and elements and integrated circuits for NFC applications; electronic and magnetic ID cards for use in payment for services or products, or for controlling access; data processor and computer software for fare determination for passengers who book their travel electronically",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": null,
+      "description": "INT. CL. 37 [ Maintenance, installation and repair services for data processors for creating, programming, controlling, encoding, scanning, reading and interpreting (Radio Frequency Identification) and NFC (Near Field Communications) chips and tags; advisory, consultancy and information services in relation to aforesaid services ]",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 [ Computer programming; installation, repair and maintenance of software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID (Radio Frequency Identification) and NFC (Near Field Communications) chips and tags, and of software for determining the fare to be paid by passengers who book their trips electronically; research, design and development services related to electronic, electrotechnical and electromagnetic modules and parts thereof, data processing equipment, data storage apparatus, microprocessors, interfaces, integrated circuits (IC's), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID and NFC chips and tags, computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID and NFC chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID and NFC chips and tags, antennas for scanning, reading and interpreting RFID and NFC chips and tags, electronic payment cards, data processing apparatus and software for determining the fare to be paid by passengers who book their trips electronically and parts of aforesaid goods; custom programming of software; advisory, consultancy and information services in relation to aforesaid services ]",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60, EINDHOVEN, NL5656 AG, NETH",
+        "applicantAddressCity": "EINDHOVEN",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantAddressPostalCode": "NL5656 AG",
+        "applicantAddressStreet": "High Tech Campus 60",
+        "applicantJurisdictionOfIncorporation": "NETHERLANDS",
+        "applicantLegalEntity": "Besloten Vennootschap",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Electronic, electrotechnical and electromagnetic modules containing semiconductors, integrated circuits or microprocessor chips all for use in RFID (Radio Frequency Identification) and NFC (Near Field Communications) applications, and parts thereof; data processing equipment, namely, data processors for scanning, reading, storing and interpreting electronic data contained on RFID and NFC chips and tags; microprocessors; [ interfaces for computers; ] integrated circuits (ICs), electronic chips for the manufacture of integrated circuits; semiconductors; encoded smart cards containing programming used to store financial information, access management and, personal identification details ; [ computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID and NFC chips and tags; ] electronic, electrotechnical and electromagnetic modules, parts and elements and integrated circuits for NFC applications; electronic and magnetic ID cards for use in payment for services or products, or for controlling access; data processor and computer software for fare determination for passengers who book their travel electronically"
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsServicesDescription": "INT. CL. 37 [ Maintenance, installation and repair services for data processors for creating, programming, controlling, encoding, scanning, reading and interpreting (Radio Frequency Identification) and NFC (Near Field Communications) chips and tags; advisory, consultancy and information services in relation to aforesaid services ]"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 [ Computer programming; installation, repair and maintenance of software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID (Radio Frequency Identification) and NFC (Near Field Communications) chips and tags, and of software for determining the fare to be paid by passengers who book their trips electronically; research, design and development services related to electronic, electrotechnical and electromagnetic modules and parts thereof, data processing equipment, data storage apparatus, microprocessors, interfaces, integrated circuits (IC's), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID and NFC chips and tags, computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID and NFC chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID and NFC chips and tags, antennas for scanning, reading and interpreting RFID and NFC chips and tags, electronic payment cards, data processing apparatus and software for determining the fare to be paid by passengers who book their trips electronically and parts of aforesaid goods; custom programming of software; advisory, consultancy and information services in relation to aforesaid services ]"
+        }
+      ]
+    },
+    "id": "ec0fc2b9-8808-4c83-b82c-d628e54a24fc",
+    "internationalMarkKeys": [
+      {
+        "internationalRegistrationNumber": "1003840",
+        "markCurrentStatus": "REQUEST FOR EXTENSION OF PROTECTION ESTABLISHED",
+        "markCurrentStatusDate": "20090702",
+        "priorityClaimDate": "20080722",
+        "protectionGrantedDate": "20110102",
+        "publicationDate": "20090709",
+        "registrationDate": "20090122",
+        "renewalDate": "20290122"
+      }
+    ],
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20220628",
+        "descriptionText": "INVALIDATION REVIEWED - NO ACTION REQUIRED BY OFFICE"
+      },
+      {
+        "date": "20220301",
+        "descriptionText": "PARTIAL INVALIDATION OF REG EXT PROTECTION CREATED"
+      },
+      {
+        "date": "20210629",
+        "descriptionText": "REGISTERED-SEC.71 ACCEPTED"
+      },
+      {
+        "date": "20210629",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 71 - E-MAILED"
+      },
+      {
+        "date": "20210622",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20210609",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION-POST REG RECEIVED"
+      },
+      {
+        "date": "20210514",
+        "descriptionText": "POST REGISTRATION ACTION MAILED NO RESPONSE REQUIRED"
+      },
+      {
+        "date": "20210113",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION-POST REG RECEIVED"
+      },
+      {
+        "date": "20201230",
+        "descriptionText": "POST REGISTRATION ACTION MAILED - SEC.71"
+      },
+      {
+        "date": "20200831",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20200521",
+        "descriptionText": "TEAS SECTION 71 RECEIVED"
+      },
+      {
+        "date": "20190525",
+        "descriptionText": "COURTESY REMINDER - SEC. 71 (10-YR) E-MAILED"
+      },
+      {
+        "date": "20190207",
+        "descriptionText": "INTERNATIONAL REGISTRATION RENEWED"
+      },
+      {
+        "date": "20170707",
+        "descriptionText": "PARTIAL INVALIDATION PROCESSED BY THE IB"
+      },
+      {
+        "date": "20170525",
+        "descriptionText": "PARTIAL INVALIDATION OF REG EXT PROTECTION SENT TO IB"
+      },
+      {
+        "date": "20170525",
+        "descriptionText": "INVALIDATION PROCESSED"
+      },
+      {
+        "date": "20170516",
+        "descriptionText": "PARTIAL INVALIDATION OF REG EXT PROTECTION CREATED"
+      },
+      {
+        "date": "20160916",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20160916",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 71 & 15 - E-MAILED"
+      },
+      {
+        "date": "20160916",
+        "descriptionText": "REGISTERED - PARTIAL SEC. 71 ACCEPTED & SEC. 15 ACK."
+      },
+      {
+        "date": "20160812",
+        "descriptionText": "TEAS SECTION 71 & 15 RECEIVED"
+      },
+      {
+        "date": "20150525",
+        "descriptionText": "COURTESY REMINDER - SEC. 71 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20150515",
+        "descriptionText": "NEW REPRESENTATIVE AT IB RECEIVED"
+      },
+      {
+        "date": "20131005",
+        "descriptionText": "NEW REPRESENTATIVE AT IB RECEIVED"
+      },
+      {
+        "date": "20130921",
+        "descriptionText": "NEW REPRESENTATIVE AT IB RECEIVED"
+      },
+      {
+        "date": "20130207",
+        "descriptionText": "FINAL DECISION TRANSACTION PROCESSED BY IB"
+      },
+      {
+        "date": "20120607",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20120210",
+        "descriptionText": "NEW REPRESENTATIVE AT IB RECEIVED"
+      },
+      {
+        "date": "20111117",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20111117",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20100902",
+        "descriptionText": "FINAL DISPOSITION NOTICE SENT TO IB"
+      },
+      {
+        "date": "20100902",
+        "descriptionText": "FINAL DISPOSITION PROCESSED"
+      },
+      {
+        "date": "20100825",
+        "descriptionText": "FINAL DISPOSITION NOTICE CREATED, TO BE SENT TO IB"
+      },
+      {
+        "date": "20100525",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20100309",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20100217",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20100202",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20100202",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20100109",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20100107",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20100107",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20100107",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20100107",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20100107",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20090919",
+        "descriptionText": "REFUSAL PROCESSED BY IB"
+      },
+      {
+        "date": "20090820",
+        "descriptionText": "NEW REPRESENTATIVE AT IB RECEIVED"
+      },
+      {
+        "date": "20090715",
+        "descriptionText": "NON-FINAL ACTION (IB REFUSAL) PREPARED FOR REVIEW"
+      },
+      {
+        "date": "20090715",
+        "descriptionText": "NON-FINAL ACTION MAILED - REFUSAL SENT TO IB"
+      },
+      {
+        "date": "20090715",
+        "descriptionText": "REFUSAL PROCESSED BY MPU"
+      },
+      {
+        "date": "20090714",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20090710",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      },
+      {
+        "date": "20090706",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20090706",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20090702",
+        "descriptionText": "SN ASSIGNED FOR SECT 66A APPL FROM IB"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "High Tech Campus 60, NETH",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "legalEntity": "Besloten Vennootschap",
+        "name": "NXP B.V.",
+        "secondaryAddressUnit": "NL-5656 AG EINDHOVEN",
+        "street": "High Tech Campus 60"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "High Tech Campus 60, EINDHOVEN, NL5656 AG, NETH",
+        "city": "EINDHOVEN",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "legalEntity": "Besloten Vennootschap",
+        "name": "NXP B.V.",
+        "postalCode": "NL5656 AG",
+        "street": "High Tech Campus 60"
+      },
+      {
+        "address": "High Tech Campus 60, EINDHOVEN, NL5656 AG, NETH",
+        "city": "EINDHOVEN",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "legalEntity": "Besloten Vennootschap",
+        "name": "NXP B.V.",
+        "postalCode": "NL5656 AG",
+        "street": "High Tech Campus 60"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "High Tech Campus 60, NETH",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "legalEntity": "Besloten Vennootschap",
+        "name": "NXP B.V.",
+        "secondaryAddressUnit": "NL-5656 AG EINDHOVEN",
+        "street": "High Tech Campus 60"
+      }
+    ],
+    "recordLastUpdated": "20260110",
+    "refusalInformation": [
+      {
+        "referencedMarks": [
+          {
+            "applicationNumber": "86431272",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "MYFARE",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "86431272",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "MYFARE",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "86431272",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "MYFARE",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "86431272",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "MYFARE",
+            "refusalStatus": "Refused"
+          }
+        ],
+        "refusalStatus": "Cited"
+      }
+    ],
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "PALO ALTO, CA 94306, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "PALO ALTO, CA 94306",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Cynthia R. Adwere LAW OFFICE OF CYNTHIA R. ADWERE, 2625 MIDDLEFIELD ROAD # 360"
+      }
+    ],
+    "representatives": [
+      {
+        "domesticRepresentativeName": "Cynthia R. Adwere",
+        "representativeAddress": "PALO ALTO, CA 94306, UNITED STATES",
+        "representativeAddressLines": [
+          "PALO ALTO, CA 94306",
+          "UNITED STATES"
+        ]
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20090122",
+        "applicationNumber": "79069305"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "ipOffice": {
+        "markOfficialStatus": "SECTION 71 ACCEPTED",
+        "markOfficialStatusCode": "706",
+        "markOfficialStatusDate": "20210629",
+        "markOfficialStatusEvents": [
+          "Section 66(a) (Madrid Protocol) - Filed",
+          "Section 66(a) (Madrid Protocol) - Current",
+          "International Priority Claimed",
+          "Notice of First Refusal"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20100309"
+      ],
+      "registration": {
+        "registrationDate": "20100525",
+        "registrationNumber": "3793278"
+      }
+    },
+    "version": "20260110044954",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "MY FARE PLUS",
+      "markVerbalElementText": "MIFARE PLUS"
+    }
+  },
+  "_uri": "/mark/us/ec0fc2b9-8808-4c83-b82c-d628e54a24fc",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.730Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

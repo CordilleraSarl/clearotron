@@ -1,0 +1,117 @@
+{
+  "uri": "/mark/se/13c47896-cc8c-4b2d-968b-25b858177aa3",
+  "provider": "clarivate",
+  "office": "se",
+  "guid": "13c47896-cc8c-4b2d-968b-25b858177aa3",
+  "applicationNumber": "2019/05640",
+  "registrationNumber": "604027",
+  "applicationDate": "2019-09-09",
+  "registrationDate": "2019-10-02",
+  "expiryDate": "2029-09-09",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Briab Bimfire Share",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "sv",
+      "description": "Utveckling av datorprogram för datorstödd design/datorstödd tillverkning [cad/cam]; hostingtjänster, molntjänster (saas) och uthyrning av mjukvara.",
+      "translation_language": "en",
+      "translation": "Development of computer programs for computer-aided design/computer-aided manufacturing [cad/cam]; hosting services, cloud services (saas) and software rental."
+    }
+  ],
+  "owner": "Symetri AB",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": "Groth & Co Kommanditbolag",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Box 771 781 27 Borlänge",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantName": "Symetri AB"
+      }
+    ],
+    "applicationLanguageCode": "sw",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Development of computer programs for computer-aided design/computer-aided manufacturing [cad/cam]; hosting services, cloud services (saas) and software rental.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sv",
+          "intGoodsServicesDescription": "Utveckling av datorprogram för datorstödd design/datorstödd tillverkning [cad/cam]; hostingtjänster, molntjänster (saas) och uthyrning av mjukvara."
+        }
+      ]
+    },
+    "id": "13c47896-cc8c-4b2d-968b-25b858177aa3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250707",
+    "registrationOfficeCode": "SE",
+    "registrationOfficeName": "Sweden",
+    "representatives": [
+      {
+        "representativeAddress": "Box 6107 102 32 Stockholm",
+        "representativeAddressCountryCode": "SE",
+        "representativeAddressCountryName": "Sweden",
+        "representativeName": "Groth & Co Kommanditbolag"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190909",
+        "applicationNumber": "2019/05640"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290909",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20191002",
+        "registrationNumber": "604027"
+      }
+    },
+    "version": "20250707122112",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Briab Bimfire Share"
+    }
+  },
+  "_uri": "/mark/se/13c47896-cc8c-4b2d-968b-25b858177aa3",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.289Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

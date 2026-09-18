@@ -1,0 +1,370 @@
+{
+  "uri": "/mark/us/41084370-a31f-4fd8-9c03-f72c51535188",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "41084370-a31f-4fd8-9c03-f72c51535188",
+  "applicationNumber": "79357219",
+  "registrationNumber": "7404059",
+  "applicationDate": "2022-09-15",
+  "registrationDate": "2024-06-04",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2024-03-19"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "NAVIATE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    38,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Downloadable computer software for engineering, modelling, creation of objects, design and computer-aided design; Downloadable computer software for computer-aided design (CAD) for general use; Downloadable computer software for interfaces, namely, computer software for use as an application programming interface (API); downloadable computer programs for character-based applications for computer-aided design (CAD), animation, graphics and structural design; downloadable computer programs and downloadable software for web-based posting, searching, extranet interfacing and exchanging of data, all for use in task coordination among multiple participants in the graphic design, mechanical and electrical drawing, modelling, civil engineering and multimedia image creation fields; downloadable instructional documents in the fields of engineering, information technology, architecture, and infrastructure delivered on electronic, optical or magnetic media or in digital form via networks; downloadable instructional manuals in the fields of engineering, information technology, architecture and infrastructure in electronic form sold as a unit therewith; downloadable computer graphics; downloadable image files containing three dimensional digital models of objects and abstract items; downloadable computer operating system software; downloadable computer software for information management relating to real estate management",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "INT. CL. 35 Database management, namely, processing, retrieval, supervision and controlling of computerised information; computerised file management; systemization of information into computer databases; systemization of information relating to real estate management into computer databases",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": null,
+      "description": "INT. CL. 38 Providing access to databases; providing access to databases containing data or documents stored electronically in central files for remote consultation; data communication services accessible by access code, namely, electronic transmission of data among users of computers; providing access to weblogs; provision of access to an electronic on-line network for information retrieval; rental of access time to global computer networks; computer-aided transmission of images; electronic transmission of data and documents via computer terminals; electronic transmission of messages and data; secure transmission of data, sound and images; providing on-line forums for transmission of messages among computer users; providing access to a global computer network for the transfer and dissemination of information; leasing access time to a computer database",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Development of computer programs recorded on data media (software) designed for use in construction and automated manufacturing (cad/cam); computer aided design services; computer-aided design of video graphics and graphic design; computer aided design for manufacturing operations; computer aided engineering design services; computer aided analytical services in the fields of engineering, information technology, architecture and infrastructure; product development for others; consultation and consultancy with regard to product development and product design; consultancy, consultation and technical support relating to computer hardware, computer software and computer-aided design, drawing and technologies; computer services for others, namely, web-based posting, searching, extranet interfacing and secure exchanging of data, all for use in task coordination among multiple participants in the graphic design, mechanical and electrical drawing, modelling, civil engineering and multimedia image creation fields; computer services, namely, hosting an online interactive website which allows users to publish and share their own content and images online; providing a website featuring on-line non-downloadable software tools for image editing; developing computer software; consultancy in the design and development of computer hardware; computer software consultancy; software as a service (SaaS) services featuring software for engineering, modelling, creation of objects, design and computer-aided design; information technology (IT) consultancy; technological consultation services in the fields of engineering, information technology, architecture, and infrastructure; consultation services relating to the design and development of computer hardware; computer-aided engineering design and drawing services; electronic storage of computerised information",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Symetri AB",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": "Jennifer L. Gregor",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Forskargatan 3, SWED",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantAddressStreet": "Forskargatan 3",
+        "applicantJurisdictionOfIncorporation": "SWEDEN",
+        "applicantName": "Symetri AB",
+        "applicantSecondaryAddressUnit": "SE-781 70 Borlänge"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Downloadable computer software for engineering, modelling, creation of objects, design and computer-aided design; Downloadable computer software for computer-aided design (CAD) for general use; Downloadable computer software for interfaces, namely, computer software for use as an application programming interface (API); downloadable computer programs for character-based applications for computer-aided design (CAD), animation, graphics and structural design; downloadable computer programs and downloadable software for web-based posting, searching, extranet interfacing and exchanging of data, all for use in task coordination among multiple participants in the graphic design, mechanical and electrical drawing, modelling, civil engineering and multimedia image creation fields; downloadable instructional documents in the fields of engineering, information technology, architecture, and infrastructure delivered on electronic, optical or magnetic media or in digital form via networks; downloadable instructional manuals in the fields of engineering, information technology, architecture and infrastructure in electronic form sold as a unit therewith; downloadable computer graphics; downloadable image files containing three dimensional digital models of objects and abstract items; downloadable computer operating system software; downloadable computer software for information management relating to real estate management"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "INT. CL. 35 Database management, namely, processing, retrieval, supervision and controlling of computerised information; computerised file management; systemization of information into computer databases; systemization of information relating to real estate management into computer databases"
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsServicesDescription": "INT. CL. 38 Providing access to databases; providing access to databases containing data or documents stored electronically in central files for remote consultation; data communication services accessible by access code, namely, electronic transmission of data among users of computers; providing access to weblogs; provision of access to an electronic on-line network for information retrieval; rental of access time to global computer networks; computer-aided transmission of images; electronic transmission of data and documents via computer terminals; electronic transmission of messages and data; secure transmission of data, sound and images; providing on-line forums for transmission of messages among computer users; providing access to a global computer network for the transfer and dissemination of information; leasing access time to a computer database"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Development of computer programs recorded on data media (software) designed for use in construction and automated manufacturing (cad/cam); computer aided design services; computer-aided design of video graphics and graphic design; computer aided design for manufacturing operations; computer aided engineering design services; computer aided analytical services in the fields of engineering, information technology, architecture and infrastructure; product development for others; consultation and consultancy with regard to product development and product design; consultancy, consultation and technical support relating to computer hardware, computer software and computer-aided design, drawing and technologies; computer services for others, namely, web-based posting, searching, extranet interfacing and secure exchanging of data, all for use in task coordination among multiple participants in the graphic design, mechanical and electrical drawing, modelling, civil engineering and multimedia image creation fields; computer services, namely, hosting an online interactive website which allows users to publish and share their own content and images online; providing a website featuring on-line non-downloadable software tools for image editing; developing computer software; consultancy in the design and development of computer hardware; computer software consultancy; software as a service (SaaS) services featuring software for engineering, modelling, creation of objects, design and computer-aided design; information technology (IT) consultancy; technological consultation services in the fields of engineering, information technology, architecture, and infrastructure; consultation services relating to the design and development of computer hardware; computer-aided engineering design and drawing services; electronic storage of computerised information"
+        }
+      ]
+    },
+    "id": "41084370-a31f-4fd8-9c03-f72c51535188",
+    "internationalMarkKeys": [
+      {
+        "internationalRegistrationNumber": "1700627",
+        "markCurrentStatus": "REQUEST FOR EXTENSION OF PROTECTION ESTABLISHED",
+        "markCurrentStatusDate": "20221208",
+        "protectionGrantedDate": "20240608",
+        "publicationDate": "20221208",
+        "registrationDate": "20220915",
+        "renewalDate": "20320915"
+      }
+    ],
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20241207",
+        "descriptionText": "FINAL DECISION TRANSACTION PROCESSED BY IB"
+      },
+      {
+        "date": "20241115",
+        "descriptionText": "FINAL DISPOSITION NOTICE SENT TO IB"
+      },
+      {
+        "date": "20241115",
+        "descriptionText": "FINAL DISPOSITION PROCESSED"
+      },
+      {
+        "date": "20240904",
+        "descriptionText": "FINAL DISPOSITION NOTICE CREATED, TO BE SENT TO IB"
+      },
+      {
+        "date": "20240604",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20240604",
+        "descriptionText": "NOTICE OF REGISTRATION CONFIRMATION EMAILED"
+      },
+      {
+        "date": "20240527",
+        "descriptionText": "NOTIFICATION OF POSSIBLE OPPOSITION -  PROCESSED BY IB"
+      },
+      {
+        "date": "20240508",
+        "descriptionText": "NOTIFICATION OF POSSIBLE OPPOSITION SENT TO IB"
+      },
+      {
+        "date": "20240508",
+        "descriptionText": "NOTIFICATION OF POSSIBLE OPPOSITION CREATED, TO BE SENT TO IB"
+      },
+      {
+        "date": "20240319",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20240319",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20240228",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20240228",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20240210",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20240202",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20240202",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20240202",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20240201",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20240201",
+        "descriptionText": "TEAS CHANGE OF OWNER ADDRESS RECEIVED"
+      },
+      {
+        "date": "20240201",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20240201",
+        "descriptionText": "APPLICANT/CORRESPONDENCE CHANGES (NON-RESPONSIVE) ENTERED"
+      },
+      {
+        "date": "20240201",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20231111",
+        "descriptionText": "NEW REPRESENTATIVE AT IB RECEIVED"
+      },
+      {
+        "date": "20230829",
+        "descriptionText": "REFUSAL PROCESSED BY IB"
+      },
+      {
+        "date": "20230805",
+        "descriptionText": "NON-FINAL ACTION MAILED - REFUSAL SENT TO IB"
+      },
+      {
+        "date": "20230805",
+        "descriptionText": "REFUSAL PROCESSED BY MPU"
+      },
+      {
+        "date": "20230630",
+        "descriptionText": "NON-FINAL ACTION (IB REFUSAL) PREPARED FOR REVIEW"
+      },
+      {
+        "date": "20230629",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20230627",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20221213",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      },
+      {
+        "date": "20221209",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20221208",
+        "descriptionText": "SN ASSIGNED FOR SECT 66A APPL FROM IB"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Forskargatan 3, SWED",
+        "countryCode": "SE",
+        "countryName": "Sweden",
+        "jurisdictionOfIncorporation": "SWEDEN",
+        "name": "Symetri AB",
+        "secondaryAddressUnit": "SE-781 70 Borlänge",
+        "street": "Forskargatan 3"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "Forskargatan 3, SWED",
+        "countryCode": "SE",
+        "countryName": "Sweden",
+        "jurisdictionOfIncorporation": "SWEDEN",
+        "name": "Symetri AB",
+        "secondaryAddressUnit": "SE-781 70 Borlänge",
+        "street": "Forskargatan 3"
+      },
+      {
+        "address": "Forskargatan 3, SWED",
+        "countryCode": "SE",
+        "countryName": "Sweden",
+        "jurisdictionOfIncorporation": "SWEDEN",
+        "name": "Symetri AB",
+        "secondaryAddressUnit": "SE-781 70 Borlänge",
+        "street": "Forskargatan 3"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "Forskargatan 3, SWED",
+        "countryCode": "SE",
+        "countryName": "Sweden",
+        "jurisdictionOfIncorporation": "SWEDEN",
+        "name": "Symetri AB",
+        "secondaryAddressUnit": "SE-781 70 Borlänge",
+        "street": "Forskargatan 3"
+      }
+    ],
+    "recordLastUpdated": "20260110",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Milwaukee, WI 53202-5615, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "Milwaukee, WI 53202-5615",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Jennifer L. Gregor Godfrey & Kahn, S.C., 833 E. Michigan Street, Suite 1800"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Milwaukee, WI 53202-5615, UNITED STATES",
+        "representativeAddressLines": [
+          "Milwaukee, WI 53202-5615",
+          "UNITED STATES"
+        ],
+        "representativeName": "Jennifer L. Gregor"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220915",
+        "applicationNumber": "79357219"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED",
+        "markOfficialStatusCode": "700",
+        "markOfficialStatusDate": "20240604",
+        "markOfficialStatusEvents": [
+          "Section 66(a) (Madrid Protocol) - Filed",
+          "Section 66(a) (Madrid Protocol) - Current",
+          "Notice of First Refusal"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20240319"
+      ],
+      "registration": {
+        "registrationDate": "20240604",
+        "registrationNumber": "7404059"
+      }
+    },
+    "version": "20260110054043",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NAVIATE"
+    }
+  },
+  "_uri": "/mark/us/41084370-a31f-4fd8-9c03-f72c51535188",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.288Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "uri": "/mark/br/f1438c33-c9c7-4908-b860-996f3a7fd034",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "f1438c33-c9c7-4908-b860-996f3a7fd034",
+  "applicationNumber": "840374895",
+  "registrationNumber": "840374895",
+  "applicationDate": "2012-12-21",
+  "registrationDate": "2015-12-01",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "pt",
+      "description": "Serviços educacionais, a saber, provimento ao vivo e on - line de aulas, seminários, aulas particulares, conferências e oficinas de trabalho nas áreas de semicondutores, de dispositivos semicondutores, de circuitos integrados, de microcontroladores, de processadores, de dispositivos de radiofrequência (rf), de sensores e de software.",
+      "translation_language": "en",
+      "translation": "EDUCATIONAL SERVICES, IN ADDITION, LIVE AND ONLINE PROVISION OF CLASSES, SEMINARS, PRIVATE CLASSES, CONFERENCES AND WORKSHOP IN THE AREAS OF SEMICONDUCTORS, SEMICONDUCTOR DEVICES, INTEGRATED CIRCUITS, MICROCONTRACTERS, MICROCONTROLLERS (RF), SENSORS AND SOFTWARE."
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "LUIZ LEONARDOS & CIA PROPRIEDADE INTELECTUAL",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "NXP USA, INC."
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "EDUCATIONAL SERVICES, IN ADDITION, LIVE AND ONLINE PROVISION OF CLASSES, SEMINARS, PRIVATE CLASSES, CONFERENCES AND WORKSHOP IN THE AREAS OF SEMICONDUCTORS, SEMICONDUCTOR DEVICES, INTEGRATED CIRCUITS, MICROCONTRACTERS, MICROCONTROLLERS (RF), SENSORS AND SOFTWARE.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços educacionais, a saber, provimento ao vivo e on - line de aulas, seminários, aulas particulares, conferências e oficinas de trabalho nas áreas de semicondutores, de dispositivos semicondutores, de circuitos integrados, de microcontroladores, de processadores, de dispositivos de radiofrequência (rf), de sensores e de software."
+        }
+      ]
+    },
+    "id": "f1438c33-c9c7-4908-b860-996f3a7fd034",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260709",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "LUIZ LEONARDOS & CIA PROPRIEDADE INTELECTUAL"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20121221",
+        "applicationNumber": "840374895"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20151201",
+        "registrationNumber": "840374895"
+      }
+    },
+    "version": "20260709020058",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/br/f1438c33-c9c7-4908-b860-996f3a7fd034",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:10.763Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

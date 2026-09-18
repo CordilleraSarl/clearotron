@@ -1,0 +1,125 @@
+{
+  "uri": "/mark/kr/964c47c1-37b8-44e1-a4e0-9e90ce8d60a6",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "964c47c1-37b8-44e1-a4e0-9e90ce8d60a6",
+  "applicationNumber": "40-2011-0033092",
+  "registrationNumber": "4009271680000",
+  "applicationDate": "2011-06-17",
+  "registrationDate": "2012-07-12",
+  "expiryDate": "2032-07-12",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "AIRFAST",
+  "markTransliteration": "AIRFAST",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "무선주파수 반도체,무선주파수 트랜지스터,무선주파수 파워 트랜지스터,반도체,집적회로",
+      "translation_language": "en",
+      "translation": "Radio Frequency Semiconductor, Radio Frequency Transistor, Radio Frequency Power Transistor, Semiconductor, Integrated Circuit"
+    }
+  ],
+  "owner": "NXP USA, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "양영준 (YANG, Young June)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미합중국 텍사스 (우편번호 ) 오스틴 윌리암 캐논 드라이브 웨스트",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc.",
+        "applicantNativeName": "엔엑스피 유에스에이, 인코포레이티드"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Radio Frequency Semiconductor, Radio Frequency Transistor, Radio Frequency Power Transistor, Semiconductor, Integrated Circuit",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "무선주파수 반도체,무선주파수 트랜지스터,무선주파수 파워 트랜지스터,반도체,집적회로"
+        }
+      ]
+    },
+    "id": "964c47c1-37b8-44e1-a4e0-9e90ce8d60a6",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "F, Seyang B/D, Naeja-dong, Jongno-gu, Seoul, Korea(KIM & CHANG)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "양영준 (YANG, Young June)"
+      },
+      {
+        "representativeAddress": "Seoul(none)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "위혜숙 (Wee Hye Suk)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20110617",
+        "applicationNumber": "40-2011-0033092"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320712",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20120712",
+        "registrationNumber": "4009271680000"
+      }
+    },
+    "version": "20250625170647",
+    "wordMarkSpecification": {
+      "markTransliteration": "AIRFAST",
+      "markVerbalElementText": "AIRFAST"
+    }
+  },
+  "_uri": "/mark/kr/964c47c1-37b8-44e1-a4e0-9e90ce8d60a6",
+  "_receipt": {
+    "fetched_at": "2026-09-18T14:09:34.909Z",
+    "context": "clearance-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

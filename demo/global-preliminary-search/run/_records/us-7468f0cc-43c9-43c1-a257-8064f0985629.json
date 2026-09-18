@@ -1,0 +1,356 @@
+{
+  "uri": "/mark/us/7468f0cc-43c9-43c1-a257-8064f0985629",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "7468f0cc-43c9-43c1-a257-8064f0985629",
+  "applicationNumber": "77644241",
+  "registrationNumber": null,
+  "applicationDate": "2009-01-06",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": "2010-08-13",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "I2C",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "STYLIZED LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Integrated circuits and semiconductors; bus hardware interfaces",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Computer services, namely, allocation of slave device addresses to computer peripherals and other electronic modules in order to avoid confusion with other slave and master devices operating in the same bus system; operating and maintaining a register of slave device addresses for computer peripherals and other electronic modules",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60, 5656 AG Eindhoven, NETH",
+        "applicantAddressCity": "5656 AG Eindhoven",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantAddressStreet": "High Tech Campus 60",
+        "applicantJurisdictionOfIncorporation": "NETHERLANDS",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "associatedMarks": [
+      {
+        "registrationNumbers": [
+          "1928918"
+        ]
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "30.01.03",
+      "30.01.09",
+      "30.03.02",
+      "30.05.02"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Integrated circuits and semiconductors; bus hardware interfaces"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Computer services, namely, allocation of slave device addresses to computer peripherals and other electronic modules in order to avoid confusion with other slave and master devices operating in the same bus system; operating and maintaining a register of slave device addresses for computer peripherals and other electronic modules"
+        }
+      ]
+    },
+    "id": "7468f0cc-43c9-43c1-a257-8064f0985629",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20100914",
+        "descriptionText": "ABANDONMENT NOTICE MAILED - FAILURE TO RESPOND"
+      },
+      {
+        "date": "20100914",
+        "descriptionText": "ABANDONMENT - FAILURE TO RESPOND OR LATE RESPONSE"
+      },
+      {
+        "date": "20100212",
+        "descriptionText": "EXAMINER'S AMENDMENT/PRIORITY ACTION MAILED"
+      },
+      {
+        "date": "20100212",
+        "descriptionText": "EXAMINERS AMENDMENT AND/OR PRIORITY ACTION - COMPLETED"
+      },
+      {
+        "date": "20100209",
+        "descriptionText": "COMBINED EXAMINER'S AMENDMENT/PRIORITY ACTION ENTERED"
+      },
+      {
+        "date": "20091228",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20091228",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20091215",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20090914",
+        "descriptionText": "NON-FINAL ACTION MAILED"
+      },
+      {
+        "date": "20090912",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20090909",
+        "descriptionText": "NON-FINAL ACTION MAILED"
+      },
+      {
+        "date": "20090908",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20090908",
+        "descriptionText": "USE AMENDMENT ACCEPTED"
+      },
+      {
+        "date": "20090821",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20090821",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20090821",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20090731",
+        "descriptionText": "NON-FINAL ACTION MAILED"
+      },
+      {
+        "date": "20090730",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20090723",
+        "descriptionText": "AMENDMENT TO USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20090723",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20090722",
+        "descriptionText": "TEAS AMENDMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20090605",
+        "descriptionText": "NON-FINAL ACTION MAILED"
+      },
+      {
+        "date": "20090604",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20090515",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20090515",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20090515",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20090514",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20090324",
+        "descriptionText": "NON-FINAL ACTION MAILED"
+      },
+      {
+        "date": "20090323",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20090321",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20090110",
+        "descriptionText": "NOTICE OF PSEUDO MARK MAILED"
+      },
+      {
+        "date": "20090109",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "STYLIZED LETTERS",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "Color is not claimed as a feature of the mark.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "The mark consists of the unitary term comprised of the letter \"I\" squared as shown by the superscript \"2\" and the letter \"C\".",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "High Tech Campus 60, 5656 AG Eindhoven, NETH",
+        "city": "5656 AG Eindhoven",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "legalEntity": "CORPORATION",
+        "name": "NXP B.V.",
+        "street": "High Tech Campus 60"
+      },
+      {
+        "address": "High Tech Campus 60, 5656 AG Eindhoven, NETH",
+        "city": "5656 AG Eindhoven",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "legalEntity": "CORPORATION",
+        "name": "NXP B.V.",
+        "street": "High Tech Campus 60"
+      }
+    ],
+    "recordLastUpdated": "20260109",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "2900 K STREET, NW, WASHINGTON, DC 20007, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "2900 K STREET, NW",
+          "WASHINGTON, DC 20007",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "ROGER P. FUREY KATTEN MUCHIN ROSENMAN LLP, EAST LOBBY, SUITE 200"
+      }
+    ],
+    "representatives": [
+      {
+        "domesticRepresentativeName": "Roger P. Furey",
+        "representativeAddress": "2900 K STREET, NW, WASHINGTON, DC 20007, UNITED STATES",
+        "representativeAddressLines": [
+          "2900 K STREET, NW",
+          "WASHINGTON, DC 20007",
+          "UNITED STATES"
+        ]
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20100813",
+      "active": false,
+      "application": {
+        "applicationDate": "20090106",
+        "applicationNumber": "77644241"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "19930607"
+        },
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "19930607"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "19930607"
+        },
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "19930607"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-FAILURE TO RESPOND",
+        "markOfficialStatusCode": "602",
+        "markOfficialStatusDate": "20100914",
+        "markOfficialStatusEvents": [
+          "Section 44(D)",
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT",
+          "Section 44(d) Filed",
+          "Section 44(e) Amended",
+          "Section 44(e) Currently"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260109204353",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "I 2 C, I SQUARED C",
+      "markVerbalElementText": "I2C"
+    }
+  },
+  "_uri": "/mark/us/7468f0cc-43c9-43c1-a257-8064f0985629",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.728Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

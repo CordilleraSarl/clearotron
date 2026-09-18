@@ -1,0 +1,115 @@
+{
+  "uri": "/mark/za/08bc872d-7029-43be-b038-59e880935371",
+  "provider": "clarivate",
+  "office": "za",
+  "guid": "08bc872d-7029-43be-b038-59e880935371",
+  "applicationNumber": "2022/28803",
+  "registrationNumber": null,
+  "applicationDate": "2022-09-20",
+  "registrationDate": null,
+  "expiryDate": "2032-09-20",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "NAVIATE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer software for engineering, modelling, creation of objects, design and computer-aided design; Computer software for computer-aided design (CAD); Computer software for interfaces; Computer programs for character-based applications, computer-aided design (CAD), animation, graphics and structural design; Computer programs and software for web-based posting, searching, extranet interfacing and exchanging of data, all for use in task coordination among multiple participants in the graphic design, mechanical and electrical drawing, modelling, civil engineering and multimedia image creation fields; Instructional documents delivered on electronic, optical or magnetic media or in digital form via networks; Instructional manuals in electronic form sold as a unit therewith; Downloadable computer graphics; Downloadable computer software for modelling and designing; Downloadable image files containing three dimensional digital models of objects and abstract items; Computer operating system software; Programs (Computer -) [downloadable software]; Computer software for information management relating to real estate management.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Symetri AB",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": "ADAMS & ADAMS",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "a Swedish corporation Forskargatan 3, 781 70 BORLÄNGE, Sweden Sweden",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantName": "Symetri AB"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer software for engineering, modelling, creation of objects, design and computer-aided design; Computer software for computer-aided design (CAD); Computer software for interfaces; Computer programs for character-based applications, computer-aided design (CAD), animation, graphics and structural design; Computer programs and software for web-based posting, searching, extranet interfacing and exchanging of data, all for use in task coordination among multiple participants in the graphic design, mechanical and electrical drawing, modelling, civil engineering and multimedia image creation fields; Instructional documents delivered on electronic, optical or magnetic media or in digital form via networks; Instructional manuals in electronic form sold as a unit therewith; Downloadable computer graphics; Downloadable computer software for modelling and designing; Downloadable image files containing three dimensional digital models of objects and abstract items; Computer operating system software; Programs (Computer -) [downloadable software]; Computer software for information management relating to real estate management."
+        }
+      ]
+    },
+    "id": "08bc872d-7029-43be-b038-59e880935371",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20240819",
+    "registrationOfficeCode": "ZA",
+    "registrationOfficeName": "South Africa",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "No correspondent available"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Lynwood Bridge,4 Daventry Street,Lynnwood Manor,Pretoria",
+        "representativeAddressCountryCode": "ZA",
+        "representativeAddressCountryName": "South Africa",
+        "representativeName": "ADAMS & ADAMS"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220920",
+        "applicationNumber": "2022/28803"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20320920",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20240819171204",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NAVIATE"
+    }
+  },
+  "_uri": "/mark/za/08bc872d-7029-43be-b038-59e880935371",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.299Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "profileKey": "demo-brand-owner",
+  "name": "Demo Brand Owner",
+  "industry": "consumer mobile app for water-quality readings, sold through app stores rather than through the trade",
+  "platforms": [
+    "g2.com",
+    "capterra.com",
+    "aquatechtrade.com",
+    "wateronline.com",
+    "waterworld.com",
+    "smartwatermagazine.com",
+    "iwa-network.org",
+    "udemy.com",
+    "coursera.org",
+    "apps.apple.com",
+    "play.google.com",
+    "rakuten.co.jp",
+    "kakaku.com",
+    "naver.com",
+    "coupang.com",
+    "line.me"
+  ],
+  "minCellsPerVariant": 17,
+  "batchSize": 1,
+  "defaultClasses": [
+    9,
+    42
+  ],
+  "defaultJurisdictions": [
+    "JP",
+    "KR"
+  ],
+  "selfExclusionOwners": [
+    "Demo Brand Owner",
+    "Demo Brand Owner Ltd"
+  ],
+  "delivery": {
+    "email": "summary",
+    "privileged": true
+  },
+  "riskAppetite": "A consumer launch into two scripts. Treat transliterations and native-script equivalents as first-class marks, not variants — and say which script a conflict actually sits in.",
+  "contextPack": "",
+  "demoData": true,
+  "defaultProduct": "multi-country-focus-search",
+  "jxPolicy": {
+    "laneDepth": {
+      "ja": "full",
+      "ko": "candidates"
+    }
+  },
+  "projectKey": "japan-and-korea-app-launch",
+  "projectName": "Japan and Korea app launch",
+  "origins": {
+    "platforms": "customer+project",
+    "defaultClasses": "project",
+    "defaultJurisdictions": "project",
+    "marketplaceDensity": "project",
+    "delivery": "project",
+    "riskAppetite": "project",
+    "industry": "project",
+    "defaultProduct": "project"
+  },
+  "profileSha": "4723f57ebee955ffd8aab2af626d51b4982605b185ffc173a831e3e8fda3d772"
+}

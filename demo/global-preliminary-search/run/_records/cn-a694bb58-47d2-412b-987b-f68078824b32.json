@@ -1,0 +1,120 @@
+{
+  "uri": "/mark/cn/a694bb58-47d2-412b-987b-f68078824b32",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "a694bb58-47d2-412b-987b-f68078824b32",
+  "applicationNumber": "37724800",
+  "registrationNumber": null,
+  "applicationDate": "2019-04-23",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "史莱姆纪元",
+  "markTransliteration": "shi lai mu ji yuan",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "计算机软件维护;计算机编程;计算机软件设计;计算机软件更新;信息技术咨询服务;通过网站提供计算机技术和编程信息;云计算;计算机技术咨询;计算机程序和数据的数据转换(非有形转换);提供互联网搜索引擎",
+      "translation_language": "en",
+      "translation": "computer software maintenance; computer programming; computer software design; computer software update; information technology consulting services; computer technology and programming information provided through the website; cloud computing; computer technology consulting; computer program and data data conversion (non-tangible conversion); Internet search engine"
+    }
+  ],
+  "owner": "Guangzhou Tengding Mutual Entertainment Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省广州市天河区建中路44-46号四楼",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Guangzhou Tengding Mutual Entertainment Technology Co., Ltd.",
+        "applicantNativeName": "广州腾鼎互娱科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "computer software maintenance; computer programming; computer software design; computer software update; information technology consulting services; computer technology and programming information provided through the website; cloud computing; computer technology consulting; computer program and data data conversion (non-tangible conversion); Internet search engine",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "计算机软件维护;计算机编程;计算机软件设计;计算机软件更新;信息技术咨询服务;通过网站提供计算机技术和编程信息;云计算;计算机技术咨询;计算机程序和数据的数据转换(非有形转换);提供互联网搜索引擎"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computer programming, and concerned services"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        }
+      ]
+    },
+    "id": "a694bb58-47d2-412b-987b-f68078824b32",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251003",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京沐森知识产权代理有限公司河北分公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190423",
+        "applicationNumber": "37724800"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251003155248",
+    "wordMarkSpecification": {
+      "markTransliteration": "shi lai mu ji yuan",
+      "markVerbalElementText": "史莱姆纪元"
+    }
+  },
+  "_uri": "/mark/cn/a694bb58-47d2-412b-987b-f68078824b32",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:44.439Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

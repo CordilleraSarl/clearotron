@@ -1,0 +1,110 @@
+{
+  "uri": "/mark/qa/687a2d4f-fc2b-4480-b113-0873a668b324",
+  "provider": "clarivate",
+  "office": "qa",
+  "guid": "687a2d4f-fc2b-4480-b113-0873a668b324",
+  "applicationNumber": "189773",
+  "registrationNumber": null,
+  "applicationDate": "2025-12-02",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "MIFARE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "ar",
+      "description": "خدمات برمجة الحاسوب، خدمات تقديم الاستشارات الأمنية للحاسوب، خدمات تقديم الاستشارات لبرمجيات الحاسوب، خدمات تصميم برمجيات الحاسوب، تحليل أنظمة الحاسوب، تصميم أنظمة الحاسوب، استشارات تكنولوجيا الحاسوب، تحويل برامج وبيانات الحاسوب عدا عن التحويل المادي، خدمات تشفير البيانات، خدمات تصميم برمجيات الحاسوب، خدمات تخزين البيانات الإلكترونية، المراقبة الإلكترونية المعلومات التعريف الشخصية لاكتشاف سرقة الهويات عبر الإنترنت تنزيل برمجيات الحاسوب، صيانة برمجيات الحاسوب، مراقبة أنظمة الحاسوب عن طريق الدخول عن بعد مراقبة أنظمة الحاسوب لاكتشاف الوصول غير المسموح به أو خرق البيانات الحوسبة على شبكة الانترنت، بحث وتطوير المنتجات الجديدة للآخرين، البرمجيات كخدمات خدمات تصميم برمجيات الحاسوب، تحديث برمجيات الحاسوب، خدمات تقديم الاستشارات الأمنية اللحاسوب، استشارات أمن الإنترنت",
+      "translation_language": "en",
+      "translation": "Computer programming services, computer security consulting services, computer software consulting services, computer software design services, computer systems analysis, computer systems design, computer technology consulting, computer software and data conversion (excluding physical conversion), data encryption services, computer software design services, electronic data storage services, electronic monitoring of personally identifiable information to detect online identity theft, computer software downloads, computer software maintenance, remote computer system monitoring, computer system monitoring to detect unauthorized access or data breaches, web computing, research and development of new products for others, software as a service, computer software design services, computer software updates, computer security consulting services, internet security consulting"
+    }
+  ],
+  "owner": null,
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "هاي تيك كامبس 60 5656 إيه جي ايندهوفن",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantNativeName": "ان اكس بيه بي. في"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer programming services, computer security consulting services, computer software consulting services, computer software design services, computer systems analysis, computer systems design, computer technology consulting, computer software and data conversion (excluding physical conversion), data encryption services, computer software design services, electronic data storage services, electronic monitoring of personally identifiable information to detect online identity theft, computer software downloads, computer software maintenance, remote computer system monitoring, computer system monitoring to detect unauthorized access or data breaches, web computing, research and development of new products for others, software as a service, computer software design services, computer software updates, computer security consulting services, internet security consulting",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ar",
+          "intGoodsServicesDescription": "خدمات برمجة الحاسوب، خدمات تقديم الاستشارات الأمنية للحاسوب، خدمات تقديم الاستشارات لبرمجيات الحاسوب، خدمات تصميم برمجيات الحاسوب، تحليل أنظمة الحاسوب، تصميم أنظمة الحاسوب، استشارات تكنولوجيا الحاسوب، تحويل برامج وبيانات الحاسوب عدا عن التحويل المادي، خدمات تشفير البيانات، خدمات تصميم برمجيات الحاسوب، خدمات تخزين البيانات الإلكترونية، المراقبة الإلكترونية المعلومات التعريف الشخصية لاكتشاف سرقة الهويات عبر الإنترنت تنزيل برمجيات الحاسوب، صيانة برمجيات الحاسوب، مراقبة أنظمة الحاسوب عن طريق الدخول عن بعد مراقبة أنظمة الحاسوب لاكتشاف الوصول غير المسموح به أو خرق البيانات الحوسبة على شبكة الانترنت، بحث وتطوير المنتجات الجديدة للآخرين، البرمجيات كخدمات خدمات تصميم برمجيات الحاسوب، تحديث برمجيات الحاسوب، خدمات تقديم الاستشارات الأمنية اللحاسوب، استشارات أمن الإنترنت"
+        }
+      ]
+    },
+    "id": "687a2d4f-fc2b-4480-b113-0873a668b324",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260317",
+    "registrationOfficeCode": "QA",
+    "registrationOfficeName": "Qatar",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "QA",
+        "representativeAddressCountryName": "Qatar",
+        "representativeNativeName": "تي ام بي اجنتس ابوغزاله للملكية الفكريه"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251202",
+        "applicationNumber": "189773"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260317050240",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MIFARE"
+    }
+  },
+  "_uri": "/mark/qa/687a2d4f-fc2b-4480-b113-0873a668b324",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.749Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

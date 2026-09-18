@@ -1,0 +1,132 @@
+{
+  "uri": "/mark/co/6a734b93-4cf0-4979-b1ad-7f90b5832fec",
+  "provider": "clarivate",
+  "office": "co",
+  "guid": "6a734b93-4cf0-4979-b1ad-7f90b5832fec",
+  "applicationNumber": "09005305",
+  "registrationNumber": "388185",
+  "applicationDate": "2009-01-22",
+  "registrationDate": "2009-09-25",
+  "expiryDate": "2029-09-25",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MIFARE PLUS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "servicios de programación de ordenador; instalación, reparación y mantenimiento en relación a programas (software) para creación, programación, control, codificación, escaneado, lectura e interpretación de chips y etiquetas de identificación por radiofrecuencia rfid, y programas (software) para determinar la tarifa a pagar por pasajeros con tiquetes de viaje electrónicos; servicios de investigación, diseño y desarrollo relacionados a módulos electrónicos, electrotécnicos y electromagnéticos, partes y elementos para su fabricación; máquinas para procesamiento de datos, aparatos para almacenamiento de datos, microprocesadores, interfaces, circuitos integrados (ic's), chips (circuitos integrados), semiconductores y tarjetas inteligentes, controladores de tarjetas inteligentes, controladores para chips y etiquetas de identificación por radiofrecuencia rfid, ordenador (hardware) y programas (software) para creación, programación, control, codificación, escaneado, lectura e interpretación de chips y etiquetas de identificación por radiofrecuencia rfid, aparatos, instrumentos y equipos electrónicos para creación, programación, control, codificación, escaneado, lectura e interpretación de chips y etiquetas de identificación por radiofrecuencia rfid, antenas para escaneado, lectura e interpretación de chips y etiquetas de identificación por radiofrecuencia rfid, aparatos, instrumentos y equipos nfc (comunicaciones en campo cercano), incluyendo módulos electrónicos, electrotécnicos y electromagnéticos, partes y elementos para su fabricación y circuitos integrados para aplicaciones destinadas a comunicaciones en campo cercano nfc, tarjetas de pago electrónicas, aparatos de procesamiento de datos y programas (software) para determinar la tarifa a pagar por pasajeros con tiquetes de viaje electrónicos, partes, piezas y accesorios para todos los productos antes mencionados; fabricación por encargo, hecho a la medida y programación por encargo; servicios de asesoría, consultoría e información en relación a todos los servicios antes mencionados.",
+      "translation_language": "en",
+      "translation": "computer programming services; installation, repair and maintenance in relation to programs (software) for creation, programming, control, coding, scanning, reading and interpretation of rfid radio frequency identification chips and tags, and software (software) to determine the rate to be paid by passengers with electronic travel tickets; research, design and development services related to electronic, electrotechnical and electromagnetic modules, parts and elements for their manufacture; data processing machines, data storage devices, microprocessors, interfaces, integrated circuits (IC&#39;s), chips (integrated circuits), semiconductors and smart cards, smart card controllers, chip controllers and radio frequency identification tags rfid, computer (hardware) and programs (software) for creation, programming, control, coding, scanning, reading and interpretation of rfid chips and radio frequency identification labels, devices, instruments and electronic equipment for creation, programming, control, coding, scanning, reading and interpretation of rfid radio frequency identification chips and tags, antennas for scanning, reading and interpreting RFID chips and identification tags, devices, instruments and nfc equipment (near field communications), including electronic, electrotechnical and electromagnetic modules, parts and elements for its manufacture and integrated circuits for applications for near-field communications nfc, electronic payment cards, data processing devices and programs (software) to determine the fare payable by passengers with electronic travel tickets, parts, parts and accessories for all the aforementioned products; made to order, made to order and custom made programming; advisory, consulting and information services in relation to all the aforementioned services."
+    }
+  ],
+  "owner": "NXP B. V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "HUMBERTO RUBIO CAMACHO",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20080722",
+      "priorityNumber": "1163748"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "HIGH TECH CAMPUS 60, 5656 AG, EINDHOVEN, PAISES BAJOS. EINDHOVEN NOORD - BRABANT",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B. V."
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "computer programming services; installation, repair and maintenance in relation to programs (software) for creation, programming, control, coding, scanning, reading and interpretation of rfid radio frequency identification chips and tags, and software (software) to determine the rate to be paid by passengers with electronic travel tickets; research, design and development services related to electronic, electrotechnical and electromagnetic modules, parts and elements for their manufacture; data processing machines, data storage devices, microprocessors, interfaces, integrated circuits (IC&#39;s), chips (integrated circuits), semiconductors and smart cards, smart card controllers, chip controllers and radio frequency identification tags rfid, computer (hardware) and programs (software) for creation, programming, control, coding, scanning, reading and interpretation of rfid chips and radio frequency identification labels, devices, instruments and electronic equipment for creation, programming, control, coding, scanning, reading and interpretation of rfid radio frequency identification chips and tags, antennas for scanning, reading and interpreting RFID chips and identification tags, devices, instruments and nfc equipment (near field communications), including electronic, electrotechnical and electromagnetic modules, parts and elements for its manufacture and integrated circuits for applications for near-field communications nfc, electronic payment cards, data processing devices and programs (software) to determine the fare payable by passengers with electronic travel tickets, parts, parts and accessories for all the aforementioned products; made to order, made to order and custom made programming; advisory, consulting and information services in relation to all the aforementioned services.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "servicios de programación de ordenador; instalación, reparación y mantenimiento en relación a programas (software) para creación, programación, control, codificación, escaneado, lectura e interpretación de chips y etiquetas de identificación por radiofrecuencia rfid, y programas (software) para determinar la tarifa a pagar por pasajeros con tiquetes de viaje electrónicos; servicios de investigación, diseño y desarrollo relacionados a módulos electrónicos, electrotécnicos y electromagnéticos, partes y elementos para su fabricación; máquinas para procesamiento de datos, aparatos para almacenamiento de datos, microprocesadores, interfaces, circuitos integrados (ic's), chips (circuitos integrados), semiconductores y tarjetas inteligentes, controladores de tarjetas inteligentes, controladores para chips y etiquetas de identificación por radiofrecuencia rfid, ordenador (hardware) y programas (software) para creación, programación, control, codificación, escaneado, lectura e interpretación de chips y etiquetas de identificación por radiofrecuencia rfid, aparatos, instrumentos y equipos electrónicos para creación, programación, control, codificación, escaneado, lectura e interpretación de chips y etiquetas de identificación por radiofrecuencia rfid, antenas para escaneado, lectura e interpretación de chips y etiquetas de identificación por radiofrecuencia rfid, aparatos, instrumentos y equipos nfc (comunicaciones en campo cercano), incluyendo módulos electrónicos, electrotécnicos y electromagnéticos, partes y elementos para su fabricación y circuitos integrados para aplicaciones destinadas a comunicaciones en campo cercano nfc, tarjetas de pago electrónicas, aparatos de procesamiento de datos y programas (software) para determinar la tarifa a pagar por pasajeros con tiquetes de viaje electrónicos, partes, piezas y accesorios para todos los productos antes mencionados; fabricación por encargo, hecho a la medida y programación por encargo; servicios de asesoría, consultoría e información en relación a todos los servicios antes mencionados."
+        }
+      ]
+    },
+    "id": "6a734b93-4cf0-4979-b1ad-7f90b5832fec",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20080722",
+        "priorityNumber": "1163748"
+      }
+    ],
+    "recordLastUpdated": "20250831",
+    "registrationOfficeCode": "CO",
+    "registrationOfficeName": "Colombia",
+    "representatives": [
+      {
+        "representativeAddress": "Carrera 53 No. 103 B 42 Oficinas 602/605 BOGOTÁ D. C. 111111",
+        "representativeAddressCountryCode": "CO",
+        "representativeAddressCountryName": "Colombia",
+        "representativeName": "HUMBERTO RUBIO CAMACHO"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20090122",
+        "applicationNumber": "09005305"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290925",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20090925",
+        "registrationNumber": "388185"
+      }
+    },
+    "version": "20250831020248",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MIFARE PLUS"
+    }
+  },
+  "_uri": "/mark/co/6a734b93-4cf0-4979-b1ad-7f90b5832fec",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.676Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

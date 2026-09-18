@@ -1,0 +1,155 @@
+{
+  "uri": "/mark/lv/64c6fd49-88de-4b6e-b3f8-7b5f438702a6",
+  "provider": "clarivate",
+  "office": "lv",
+  "guid": "64c6fd49-88de-4b6e-b3f8-7b5f438702a6",
+  "applicationNumber": "M-04-1328",
+  "registrationNumber": "M 55 593",
+  "applicationDate": "2004-08-30",
+  "registrationDate": "2005-10-20",
+  "expiryDate": null,
+  "renewalDate": "2014-08-30",
+  "lastPublicationDate": "2005-10-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "freescale semiconductor",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "pusvadītāji, pusvadītāju procesori, pusvadītāju procesoru mikroshēmas, integrālshēmas, integrālshēmu mikroshēmas, drukāto shēmu plates, mikrodatori, mikrokontrolleri, mikroprocesori un datoru perifērijas iekārtas, atmiņas ierīces un pusvadītāju piederumi; pusvadītāji mašīnām un darbmašīnām; pusvadītāji apgaismošanas, apsildes, tvaika ražošanas, ēdiena termiskās apstrādes, dzesēšanas, žāvēšanas un vēdināšanas aparātiem; pusvadītāji pulksteņiem un hronometrāžas instrumentiem; pusvadītāji mūzikas instrumentiem; pusvadītāji spēlēm un rotaļlietām; datu pārveidošanas shēmas; datoru programmaparatūra; elektroniskie, elektriskie un mehāniskie aparāti lietošanai kopā ar datoriem; videosistēmas iekārtas un ierīces; aparāti un ierīces skaņas, attēlu vai datu ierakstam, reproducēšanai un pārveidošanai; video mikroshēmas, audio mikroshēmas; audio un video mikroshēmas; videografikas paātrinātāji; multivides paātrinātāji; videoprocesori; datorprogrammas; instruktīvi materiāli elektroniskā formā par datoriem, kas tiek pārdoti komplektā ar minētajām precēm, algoritmi datu saspiešanai un atspiešanai elektroniskā formā; testēšanas un kalibrēšanas aparāti; minēto izstrādājumu daļas un piederumi; iekārtas integrālshēmu un pusvadītāju atmiņas ierīču testēšanai un programmēšanai; datoru programmatūra, kas domāta lietojumprogrammu integrēšanai un to savienojamības nodrošināšanai, datoru utilītprogrammas, tīkla pārvaldības programmas; programmatūra pieslēgšanai globālajam datoru tīklam un savstarpēji saistītiem datoru tīkliem; datoru operētājsistēmas; datoru operētājsistēmu programmnodrošinājums un tajā ietilpstošās programmas; datoru programmatūra trešo personu programmatūras pielietojuma atvieglošanai",
+      "translation_language": "en",
+      "translation": "semi-conductors, semiconductor processors, semiconductor processorsmicrocircuits, integral circuits, integral microcircuits,printed schemes boards, microcomputers, microcontrollers, microprocessors and computer peripheral appliances, memory devices and semiconductors accessories;semiconductors for machines and benches;semi-conductors for illumination, heating, steam generation, food thermal processing, cooling, drying and ventilation apparata;semi-conductors for clocks and chronometric instruments;semiconductors for musical instruments;semiconductors for games and toys;data modification circuits;computer firmware;electronic,electric and mechanic apparata for using together with computers;video system equipment and devices;apparata and devices for sound, for image or data recordsplayback and transformation;video micro circuits, audio micro circuits;audio and video microcircuits;video graphics accelerators;multimedia accelerators;video processors;software;instructions in electronic format on computers, sold in set with the mentioned goods, algorythms for data compression and re-compressing in electronic format;testing and calibrating apparata;parts and accessories for products mentioned before;appliances for integrated circuits and semiconductors memory devices testing and programming;computer software, envisaged for application software integration and its compatibility ensuring,computer utility programmes, network supervision programmes;computer software for connection toglobal computer networkand interconnectedcomputer networks;computer operating systems;computer operating system software and and the containing programmes;computer software for third persons software application improvement"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "tehnoloģiju licencēšana; ar pusvadītāju ražošanu un izmantošanu saistīto patentu, preču zīmju, autortiesību, arodnoslēpumu un 'know-how' (zinātības) licencēšana; pusvadītāju izstrādājumu topogrāfiju licencēšana; ar pusvadītāju ražošanu un izmantošanu saistītās programmatūras licencēšana; pusvadītāju ražošanas tehnoloģiju licencēšana; ražošanas tehnoloģiju licencēšana, proti, pusvadītāju izstrādājumu tehnoloģiju licencēšana, integrēto shēmu, integrēto mikroshēmu tehnoloģiju licencēšana, mikrodatoru, mikrokontrolleru, mikroprocesoru un datoru perifērijas iekārtu tehnoloģiju licencēšana, atmiņas ierīču un pusvadītāju piederumu tehnoloģiju licencēšana, datu pārveidošanas shēmu tehnoloģiju licencēšana, datoru programmatūras tehnoloģiju licencēšana, kā arī kopā ar datoriem lietojamu elektronisko, elektrisko un mehānisko aparātu tehnoloģiju licencēšana, video mikroshēmu tehnoloģiju licencēšana, videosistēmas iekārtu un ierīču tehnoloģiju licencēšana, aparātu un ierīču, kas domātas skaņas, attēlu, datu un datorprogrammu ierakstam, reproducēšanai un pārveidošanai, tehnoloģiju licencēšana; konsultācijas par datoriem un par algoritmiem datu saspiešanai un atspiešanai; datoru un telekomunikāciju sistēmu izstrādāšana; klientu konsultēšana par programmatūras veidošanu datoru un telekomunikāciju jomā, arī radniecīgu tehnoloģiju jomās, ciktāl tas attiecas uz šo klasi",
+      "translation_language": "en",
+      "translation": "technologies licensing;patent related to manufacturing and usage of semi-conductors, trademarks, copyrights, trade sercets and know-howlicensing;semiconductors articles topographies licensing;software licensing related to manufacturing and usage of semi-conductors;semi-conductor manufacturing technology licensing;manufacturing and technologies licensing, e.i, semi-conductors products technologies licensing, integrated schemes,integrated micro-schemes technologies licensing, microcomputers, microcontrollers, microprocessors and computers peripheral equipment technologies licensing, memory devices and semi-conductors accessories technologies licensing, data transformation schemes technologies licensing, computer software technologies licensing, also usable with computers electronic, electric and mechanic apparata technologies licensing, video micro circuits technologies licensing, video systems equipment and appliences technologies licensing, apparata and devicesenvisaged for for sound, image, data and software recording,playback and transformation, technologies licensing;consultancy on computers and algorythms for data compression decompression;computer and telecommunication system development;clients consulting on software implementation in the sphere of computers and telecommunicationsalso in the spheres of similar technologies, as far as they concern this class"
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Gatis MERŽVINSKIS",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20040229",
+      "priorityNumber": "78/376,532"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West, Austin, TX 78735",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC."
+      }
+    ],
+    "applicationLanguageCode": "lv",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "semi-conductors, semiconductor processors, semiconductor processorsmicrocircuits, integral circuits, integral microcircuits,printed schemes boards, microcomputers, microcontrollers, microprocessors and computer peripheral appliances, memory devices and semiconductors accessories;semiconductors for machines and benches;semi-conductors for illumination, heating, steam generation, food thermal processing, cooling, drying and ventilation apparata;semi-conductors for clocks and chronometric instruments;semiconductors for musical instruments;semiconductors for games and toys;data modification circuits;computer firmware;electronic,electric and mechanic apparata for using together with computers;video system equipment and devices;apparata and devices for sound, for image or data recordsplayback and transformation;video micro circuits, audio micro circuits;audio and video microcircuits;video graphics accelerators;multimedia accelerators;video processors;software;instructions in electronic format on computers, sold in set with the mentioned goods, algorythms for data compression and re-compressing in electronic format;testing and calibrating apparata;parts and accessories for products mentioned before;appliances for integrated circuits and semiconductors memory devices testing and programming;computer software, envisaged for application software integration and its compatibility ensuring,computer utility programmes, network supervision programmes;computer software for connection toglobal computer networkand interconnectedcomputer networks;computer operating systems;computer operating system software and and the containing programmes;computer software for third persons software application improvement",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "pusvadītāji, pusvadītāju procesori, pusvadītāju procesoru mikroshēmas, integrālshēmas, integrālshēmu mikroshēmas, drukāto shēmu plates, mikrodatori, mikrokontrolleri, mikroprocesori un datoru perifērijas iekārtas, atmiņas ierīces un pusvadītāju piederumi; pusvadītāji mašīnām un darbmašīnām; pusvadītāji apgaismošanas, apsildes, tvaika ražošanas, ēdiena termiskās apstrādes, dzesēšanas, žāvēšanas un vēdināšanas aparātiem; pusvadītāji pulksteņiem un hronometrāžas instrumentiem; pusvadītāji mūzikas instrumentiem; pusvadītāji spēlēm un rotaļlietām; datu pārveidošanas shēmas; datoru programmaparatūra; elektroniskie, elektriskie un mehāniskie aparāti lietošanai kopā ar datoriem; videosistēmas iekārtas un ierīces; aparāti un ierīces skaņas, attēlu vai datu ierakstam, reproducēšanai un pārveidošanai; video mikroshēmas, audio mikroshēmas; audio un video mikroshēmas; videografikas paātrinātāji; multivides paātrinātāji; videoprocesori; datorprogrammas; instruktīvi materiāli elektroniskā formā par datoriem, kas tiek pārdoti komplektā ar minētajām precēm, algoritmi datu saspiešanai un atspiešanai elektroniskā formā; testēšanas un kalibrēšanas aparāti; minēto izstrādājumu daļas un piederumi; iekārtas integrālshēmu un pusvadītāju atmiņas ierīču testēšanai un programmēšanai; datoru programmatūra, kas domāta lietojumprogrammu integrēšanai un to savienojamības nodrošināšanai, datoru utilītprogrammas, tīkla pārvaldības programmas; programmatūra pieslēgšanai globālajam datoru tīklam un savstarpēji saistītiem datoru tīkliem; datoru operētājsistēmas; datoru operētājsistēmu programmnodrošinājums un tajā ietilpstošās programmas; datoru programmatūra trešo personu programmatūras pielietojuma atvieglošanai"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "technologies licensing;patent related to manufacturing and usage of semi-conductors, trademarks, copyrights, trade sercets and know-howlicensing;semiconductors articles topographies licensing;software licensing related to manufacturing and usage of semi-conductors;semi-conductor manufacturing technology licensing;manufacturing and technologies licensing, e.i, semi-conductors products technologies licensing, integrated schemes,integrated micro-schemes technologies licensing, microcomputers, microcontrollers, microprocessors and computers peripheral equipment technologies licensing, memory devices and semi-conductors accessories technologies licensing, data transformation schemes technologies licensing, computer software technologies licensing, also usable with computers electronic, electric and mechanic apparata technologies licensing, video micro circuits technologies licensing, video systems equipment and appliences technologies licensing, apparata and devicesenvisaged for for sound, image, data and software recording,playback and transformation, technologies licensing;consultancy on computers and algorythms for data compression decompression;computer and telecommunication system development;clients consulting on software implementation in the sphere of computers and telecommunicationsalso in the spheres of similar technologies, as far as they concern this class",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "tehnoloģiju licencēšana; ar pusvadītāju ražošanu un izmantošanu saistīto patentu, preču zīmju, autortiesību, arodnoslēpumu un 'know-how' (zinātības) licencēšana; pusvadītāju izstrādājumu topogrāfiju licencēšana; ar pusvadītāju ražošanu un izmantošanu saistītās programmatūras licencēšana; pusvadītāju ražošanas tehnoloģiju licencēšana; ražošanas tehnoloģiju licencēšana, proti, pusvadītāju izstrādājumu tehnoloģiju licencēšana, integrēto shēmu, integrēto mikroshēmu tehnoloģiju licencēšana, mikrodatoru, mikrokontrolleru, mikroprocesoru un datoru perifērijas iekārtu tehnoloģiju licencēšana, atmiņas ierīču un pusvadītāju piederumu tehnoloģiju licencēšana, datu pārveidošanas shēmu tehnoloģiju licencēšana, datoru programmatūras tehnoloģiju licencēšana, kā arī kopā ar datoriem lietojamu elektronisko, elektrisko un mehānisko aparātu tehnoloģiju licencēšana, video mikroshēmu tehnoloģiju licencēšana, videosistēmas iekārtu un ierīču tehnoloģiju licencēšana, aparātu un ierīču, kas domātas skaņas, attēlu, datu un datorprogrammu ierakstam, reproducēšanai un pārveidošanai, tehnoloģiju licencēšana; konsultācijas par datoriem un par algoritmiem datu saspiešanai un atspiešanai; datoru un telekomunikāciju sistēmu izstrādāšana; klientu konsultēšana par programmatūras veidošanu datoru un telekomunikāciju jomā, arī radniecīgu tehnoloģiju jomās, ciktāl tas attiecas uz šo klasi"
+        }
+      ]
+    },
+    "id": "64c6fd49-88de-4b6e-b3f8-7b5f438702a6",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.04.02",
+      "26.04.09",
+      "27.05.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20040229",
+        "priorityNumber": "78/376,532"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "LV",
+    "registrationOfficeName": "Latvia",
+    "representatives": [
+      {
+        "representativeAddress": "AAA LAW LATVIA, Citadeles iela 12, Rīga, LV-1010",
+        "representativeAddressCountryCode": "LV",
+        "representativeAddressCountryName": "Latvia",
+        "representativeName": "Gatis MERŽVINSKIS"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040830",
+        "applicationNumber": "M-04-1328"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20051020",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20051020",
+        "registrationNumber": "M 55 593"
+      },
+      "renewalDate": "20140830"
+    },
+    "version": "20250620100048",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "freescale semiconductor"
+    }
+  },
+  "_uri": "/mark/lv/64c6fd49-88de-4b6e-b3f8-7b5f438702a6",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.712Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

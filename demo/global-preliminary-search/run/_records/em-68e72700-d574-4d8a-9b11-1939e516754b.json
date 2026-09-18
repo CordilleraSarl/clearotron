@@ -1,0 +1,726 @@
+{
+  "uri": "/mark/em/68e72700-d574-4d8a-9b11-1939e516754b",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "68e72700-d574-4d8a-9b11-1939e516754b",
+  "applicationNumber": "9342908",
+  "registrationNumber": "9342908",
+  "applicationDate": "2010-08-31",
+  "registrationDate": "2011-03-14",
+  "expiryDate": "2030-08-31",
+  "renewalDate": null,
+  "lastPublicationDate": "2010-12-03",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SOVELIA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Nahrané pocítacové programy a pocítacové systémy pro konstrukci, analýzu, simulaci, vizualizaci a výrobu a také pro zpracování dokumentu a výrobních dat pro celý zivotní cyklus výrobku v inzenýrských a prumyslových podnicích.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Inzenýrsko-technické konzultace, pocítacove podporovaný vývoj výrobku, pocítacové programování, návrhy pocítacového softwaru.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Optagne computerprogrammer og computersystemer til konstruktion, analyse, simulation, visualisering og produktion samt til håndtering af dokumenter og produktdata for hele produktionscyklen i ingeniør- og industrivirksomheder.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Ingeniørteknisk konsulentvirksomhed, computerstøttet produktudvikling, programmering af computere, design af computerprogrammer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Geregistreerde computerprogramma's en computersystemen voor het construeren, analyseren, simuleren, visualiseren en produceren en voor het hanteren van documenten en productgegevens voor de volledige levenscyclus van producten bij ingenieursfirma's en industriële ondernemingen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Ingenieurstechnische advisering, computerondersteunde productontwikkeling, computerprogrammering, softwareontwikkeling.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Recorded computer programs and computer systems for construction, analysis, simulation, visualisation and production, and for the handling of documents and product data for the entire product life-cycle, for engineers and industrial enterprises.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Engineering consultancy, computer-aided product development, computer programming, computer software design.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Salvestatud arvutiprogrammid ja arvutisüsteemid toote kogu elutsükli konstrueerimiseks, analüüsiks, simuleerimiseks, visualiseerimiseks ja tootmiseks ning dokumendi- ja tooteandmete halduseks inseneridele ja tööstusettevõtetele.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Insenertehniline konsultatsioonitegevus, arvutitoega tootearendus, arvutiprogrammide koostamine, arvutitarkvara koostamine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Rekisteröidyt tietokoneohjelmat ja tietokonejärjestelmät rakentamista, analysointia, simulointia, visualisointia ja tuotantoa varten sekä asiakirja- ja tuotedatan käsittelyyn koko tuotteen elinkaarta varten insinööreille ja teollisuusyrityksille.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Tekinseen suunnitteluun liittyvä konsultointi, tietokoneavusteinen tuotekehitys, tietokoneohjelmointi, tietokoneohjelmistojen suunnittelu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Programmes informatiques enregistrés et systèmes informatiques pour la construction, l'analyse, la simulation, la visualisation et la production, ainsi que pour la gestion de documents et de données sur les produits pour le cycle de vie complet des produits au sein d'entreprises industrielles et techniques.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Conseils techniques, développement de produits assisté par ordinateur, programmation informatique, conception de logiciels.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Gespeicherte Computerprogramme und Computersysteme zur Konstruktion, Analyse, Simulation, Visualisierung und Produktion sowie zur Verwaltung von Dokumenten und Produktdaten über den gesamten Produktlebenszykus zur Verwendung in Ingenieurbüros und Industieunternehmen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Ingenieurtechnische Beratung, computergestützte Produktentwicklung, Erstellen von Programmen für die Datenverarbeitung, Entwurf von Computersoftware.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Mérnöki és ipari vállalatoknál, egész termékcikluson keresztüli használatra alkalmas, dokumentumok és termékadatok szerkesztésére, elemzésére, szimulálására, megjelenítésére, eloállítására, valamint kezelésére szolgáló rögzített számítógépes programok és számítógépes rendszerek.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Mérnöktechnikai konzultációs tevékenységek, számítógépes termékfejlesztés, számítógép-programozás, számítógépprogramok kidolgozása.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Programmi registrati per elaboratori e sistemi informatici per costruzione, analisi, simulazione, visualizzazione e produzione nonché per gestione di documenti e dati di prodotto per l'intero ciclo produttivo presso imprese d'ingegneria e industrie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Consulenza tecnica ingegneristica, sviluppo computerizzato di prodotti, programmazione per computer, progettazione di software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Registruotosios kompiuteriu programos ir kompiuteriu sistemos dokumentu ir produktu duomenu projektavimo, analizes, imitavimo, vizualizavimo ir gamybos ir valdymo visa produkto gyvavimo cikla inzinerijos ir pramones imonese reikmems.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "Inzinerinis techninis konsultavimas, kompiuterizuotas produktu tobulinimas, kompiuteriu programavimas, kompiuteriu programines irangos kurimas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Registretas datorprogrammas un datorsistemas projektesanai, analizei, modelesanai, vizualizacijai un razosanai, ka ari dokumentu un produktu datu vadibai par visu produkta dzives ciklu, inzenieru un rupniecibas uznemumos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Inzeniertehniskas konsultacijas, datoru atbalstito produktu attistibu, datoru programmesana, datoru programmaturas izveidosana.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Programmi tal-kompjuter registrati u sistemi informatici ghall-bini, analizi, simulazzjoni, vizwalizzazzjoni u produzzjoni u amministrazzjoni ta' dokumenti u dejta tal-produzzjoni ghat-tul tal-hajja mistennija tal-prodott, ghall-kumpaniji tal-inginerija u industrijali.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "Servizzi ta' konsulenza dwar l-inginerija u teknika, zvilupp ta' prodotti bl-ghajnuna tal-kompjuter, holqien ta' softwer tal-kompjuter.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Zarejestrowane programy komputerowe i systemy komputerowe do konstrukcji, analizy, symulacji, wizualizacji i produkowania oraz administracji dokumentów i danych produkcyjnych dla calego cyklu trwalosci wyrobu, dla przedsiebiorstw inzynieryjnych i przemyslowych.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Inzynieryjno techniczna dzialalnosc konsultatywna, wsparty komputerowo rozwój produktów, ksztaltowanie oprogramowania komputerowego.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Programas informáticos registados e sistemas informáticos para a construção, análise, simulação, visualização e produção, bem como para o manuseamento de documentos e dados sobre produtos para todo o ciclo de vida produtiva em empresas de engenharia e indústria.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Consultoria em matéria de engenharia, desenvolvimento de produtos assistido por computador, programação de computadores, concepção de programas informáticos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Software de calculator înregistrat si sisteme de calculatoare pentru constructie, analiza, simulare, vizualizare si productie precum si gestionare de documente si date de produse pentru tot ciclul de productie, în companiile ingineresti si industriale.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Tehnica inginereasca, consultanta, dezvoltarea de produse asistata de calculator, programare pentru calculatoare, dezvoltare de software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Nahrané pocítacové programy a pocítacové systémy na konstrukciu, analýzu, simuláciu, vizualizáciu a produkciu ako aj na spracovanie dokumentov a výrobných údajov pre celý zivotný cyklus v inzinierskych a priemyselných podnikoch.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "Inziniersko-technické poradenstvo, vývoj výrobkov za pomoci pocítaca, pocítacové programovanie, tvorba softvéru.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Registrirani racunalniski programi in racunalniski sistemi za konstrukcijo, analizo, simulacijo, vizualizacijo in produkcijo ter za upravljanje dokumentov in podatkov o proizvodu za celoten zivljenjski cikel proizvoda v inzenirskih in industrijskih podjetjih.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Inzenirsko-tehnicna posvetovalna dejavnost, racunalnisko podprt razvoj proizvodov, racunalnisko programiranje, oblikovanje racunalniske programske opreme.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Programas y sistemas informáticos registrados para la construcción, análisis, simulación, visualización, producción y gestión de documentos y datos de productos para todo el ciclo de vida del producto en empresas de ingeniería e industriales.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Actividad de consultoría técnica en ingeniería, desarrollo de productos asistido por ordenador, programación de ordenadores, diseño de software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Registrerade datorprogram och datorsystem för konstruktion, analys, simulering, visualisering och produktion samt för hantering av dokument och produktdata för hela produktlivscykeln hos ingenjörs och industriföretag.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Ingenjörsteknisk konsultverksamhet, datorstödd produktutveckling, datorprogrammering, utformning av datorprogramvara.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Symetri AB",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": "GROTH & CO. KB",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Forskargatan 3,Borlänge, 781 70",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantName": "Symetri AB"
+      }
+    ],
+    "applicationLanguageCode": "sw",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Nahrané pocítacové programy a pocítacové systémy pro konstrukci, analýzu, simulaci, vizualizaci a výrobu a také pro zpracování dokumentu a výrobních dat pro celý zivotní cyklus výrobku v inzenýrských a prumyslových podnicích."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Inzenýrsko-technické konzultace, pocítacove podporovaný vývoj výrobku, pocítacové programování, návrhy pocítacového softwaru."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Optagne computerprogrammer og computersystemer til konstruktion, analyse, simulation, visualisering og produktion samt til håndtering af dokumenter og produktdata for hele produktionscyklen i ingeniør- og industrivirksomheder."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Ingeniørteknisk konsulentvirksomhed, computerstøttet produktudvikling, programmering af computere, design af computerprogrammer."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Geregistreerde computerprogramma's en computersystemen voor het construeren, analyseren, simuleren, visualiseren en produceren en voor het hanteren van documenten en productgegevens voor de volledige levenscyclus van producten bij ingenieursfirma's en industriële ondernemingen."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Ingenieurstechnische advisering, computerondersteunde productontwikkeling, computerprogrammering, softwareontwikkeling."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Recorded computer programs and computer systems for construction, analysis, simulation, visualisation and production, and for the handling of documents and product data for the entire product life-cycle, for engineers and industrial enterprises."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Engineering consultancy, computer-aided product development, computer programming, computer software design."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Salvestatud arvutiprogrammid ja arvutisüsteemid toote kogu elutsükli konstrueerimiseks, analüüsiks, simuleerimiseks, visualiseerimiseks ja tootmiseks ning dokumendi- ja tooteandmete halduseks inseneridele ja tööstusettevõtetele."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Insenertehniline konsultatsioonitegevus, arvutitoega tootearendus, arvutiprogrammide koostamine, arvutitarkvara koostamine."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Rekisteröidyt tietokoneohjelmat ja tietokonejärjestelmät rakentamista, analysointia, simulointia, visualisointia ja tuotantoa varten sekä asiakirja- ja tuotedatan käsittelyyn koko tuotteen elinkaarta varten insinööreille ja teollisuusyrityksille."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Tekinseen suunnitteluun liittyvä konsultointi, tietokoneavusteinen tuotekehitys, tietokoneohjelmointi, tietokoneohjelmistojen suunnittelu."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Programmes informatiques enregistrés et systèmes informatiques pour la construction, l'analyse, la simulation, la visualisation et la production, ainsi que pour la gestion de documents et de données sur les produits pour le cycle de vie complet des produits au sein d'entreprises industrielles et techniques."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Conseils techniques, développement de produits assisté par ordinateur, programmation informatique, conception de logiciels."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Gespeicherte Computerprogramme und Computersysteme zur Konstruktion, Analyse, Simulation, Visualisierung und Produktion sowie zur Verwaltung von Dokumenten und Produktdaten über den gesamten Produktlebenszykus zur Verwendung in Ingenieurbüros und Industieunternehmen."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Ingenieurtechnische Beratung, computergestützte Produktentwicklung, Erstellen von Programmen für die Datenverarbeitung, Entwurf von Computersoftware."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Mérnöki és ipari vállalatoknál, egész termékcikluson keresztüli használatra alkalmas, dokumentumok és termékadatok szerkesztésére, elemzésére, szimulálására, megjelenítésére, eloállítására, valamint kezelésére szolgáló rögzített számítógépes programok és számítógépes rendszerek."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Mérnöktechnikai konzultációs tevékenységek, számítógépes termékfejlesztés, számítógép-programozás, számítógépprogramok kidolgozása."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Programmi registrati per elaboratori e sistemi informatici per costruzione, analisi, simulazione, visualizzazione e produzione nonché per gestione di documenti e dati di prodotto per l'intero ciclo produttivo presso imprese d'ingegneria e industrie."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Consulenza tecnica ingegneristica, sviluppo computerizzato di prodotti, programmazione per computer, progettazione di software."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Registruotosios kompiuteriu programos ir kompiuteriu sistemos dokumentu ir produktu duomenu projektavimo, analizes, imitavimo, vizualizavimo ir gamybos ir valdymo visa produkto gyvavimo cikla inzinerijos ir pramones imonese reikmems."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Inzinerinis techninis konsultavimas, kompiuterizuotas produktu tobulinimas, kompiuteriu programavimas, kompiuteriu programines irangos kurimas."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Registretas datorprogrammas un datorsistemas projektesanai, analizei, modelesanai, vizualizacijai un razosanai, ka ari dokumentu un produktu datu vadibai par visu produkta dzives ciklu, inzenieru un rupniecibas uznemumos."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Inzeniertehniskas konsultacijas, datoru atbalstito produktu attistibu, datoru programmesana, datoru programmaturas izveidosana."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Programmi tal-kompjuter registrati u sistemi informatici ghall-bini, analizi, simulazzjoni, vizwalizzazzjoni u produzzjoni u amministrazzjoni ta' dokumenti u dejta tal-produzzjoni ghat-tul tal-hajja mistennija tal-prodott, ghall-kumpaniji tal-inginerija u industrijali."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi ta' konsulenza dwar l-inginerija u teknika, zvilupp ta' prodotti bl-ghajnuna tal-kompjuter, holqien ta' softwer tal-kompjuter."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Zarejestrowane programy komputerowe i systemy komputerowe do konstrukcji, analizy, symulacji, wizualizacji i produkowania oraz administracji dokumentów i danych produkcyjnych dla calego cyklu trwalosci wyrobu, dla przedsiebiorstw inzynieryjnych i przemyslowych."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Inzynieryjno techniczna dzialalnosc konsultatywna, wsparty komputerowo rozwój produktów, ksztaltowanie oprogramowania komputerowego."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Programas informáticos registados e sistemas informáticos para a construção, análise, simulação, visualização e produção, bem como para o manuseamento de documentos e dados sobre produtos para todo o ciclo de vida produtiva em empresas de engenharia e indústria."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Consultoria em matéria de engenharia, desenvolvimento de produtos assistido por computador, programação de computadores, concepção de programas informáticos."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Software de calculator înregistrat si sisteme de calculatoare pentru constructie, analiza, simulare, vizualizare si productie precum si gestionare de documente si date de produse pentru tot ciclul de productie, în companiile ingineresti si industriale."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Tehnica inginereasca, consultanta, dezvoltarea de produse asistata de calculator, programare pentru calculatoare, dezvoltare de software."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Nahrané pocítacové programy a pocítacové systémy na konstrukciu, analýzu, simuláciu, vizualizáciu a produkciu ako aj na spracovanie dokumentov a výrobných údajov pre celý zivotný cyklus v inzinierskych a priemyselných podnikoch."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Inziniersko-technické poradenstvo, vývoj výrobkov za pomoci pocítaca, pocítacové programovanie, tvorba softvéru."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Registrirani racunalniski programi in racunalniski sistemi za konstrukcijo, analizo, simulacijo, vizualizacijo in produkcijo ter za upravljanje dokumentov in podatkov o proizvodu za celoten zivljenjski cikel proizvoda v inzenirskih in industrijskih podjetjih."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Inzenirsko-tehnicna posvetovalna dejavnost, racunalnisko podprt razvoj proizvodov, racunalnisko programiranje, oblikovanje racunalniske programske opreme."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Programas y sistemas informáticos registrados para la construcción, análisis, simulación, visualización, producción y gestión de documentos y datos de productos para todo el ciclo de vida del producto en empresas de ingeniería e industriales."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Actividad de consultoría técnica en ingeniería, desarrollo de productos asistido por ordenador, programación de ordenadores, diseño de software."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Registrerade datorprogram och datorsystem för konstruktion, analys, simulering, visualisering och produktion samt för hantering av dokument och produktdata för hela produktlivscykeln hos ingenjörs och industriföretag."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Ingenjörsteknisk konsultverksamhet, datorstödd produktutveckling, datorprogrammering, utformning av datorprogramvara."
+        }
+      ]
+    },
+    "id": "68e72700-d574-4d8a-9b11-1939e516754b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00073",
+        "publicationVolume": "228"
+      }
+    ],
+    "recordLastUpdated": "20260917",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Fleminggatan 20,Stockholm, 112 26",
+        "representativeAddressCountryCode": "SE",
+        "representativeAddressCountryName": "Sweden",
+        "representativeName": "GROTH & CO. KB"
+      }
+    ],
+    "secondLanguageCode": "en",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20100831",
+        "applicationNumber": "9342908"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300831",
+      "lastPublicationDate": "20101203",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20110314",
+        "registrationNumber": "9342908"
+      }
+    },
+    "version": "20260917140047",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SOVELIA"
+    }
+  },
+  "_uri": "/mark/em/68e72700-d574-4d8a-9b11-1939e516754b",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.291Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

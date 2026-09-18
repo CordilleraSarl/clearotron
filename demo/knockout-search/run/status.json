@@ -1,21 +1,21 @@
 {
   "schema": 1,
-  "id": "cli-demo-mtkmg4u1-24484cda",
-  "runId": "tmpdemo2014knockoutsearch-venqori-2026-09-02-sample-capture",
+  "id": "mcp-mu75vozj-4e141066",
+  "runId": "tmpdemo2014knockoutsearch-venqori-2026-09-18-sample-capture",
   "slug": "tmpdemo2014knockoutsearch-venqori",
   "codename": "sample-capture",
-  "date": "2026-09-02",
+  "date": "2026-09-18",
   "agent": "clawdi",
   "forwarder": "e2e",
   "ref": "DEMO-2014-knockout-search",
   "state": "delivered",
   "lane": "knockout",
-  "pid": 2295978,
-  "pidStarttime": "44451246",
-  "engineCommit": "fb4d88b22f1c5fc8d988fec28b558fdf912acb68",
+  "pid": 4131792,
+  "pidStarttime": "77771180",
+  "engineCommit": "7f7f7668374023298def34129e3007303163c5ed",
   "engineCommitSource": "git",
-  "updatedAt": "2026-09-02T21:46:53.238Z",
-  "startedAt": "2026-09-02T21:43:15.549Z",
+  "updatedAt": "2026-09-18T16:22:31.816Z",
+  "startedAt": "2026-09-18T16:18:15.965Z",
   "markName": "VENQORI",
   "marks": [
     {
@@ -33,65 +33,66 @@
   "stepN": 6,
   "stepTotal": 6,
   "verdict": "Low",
-  "url": "/portal/report/tmpdemo2014knockoutsearch-venqori-2026-09-02-sample-capture/",
+  "url": "/portal/report/tmpdemo2014knockoutsearch-venqori-2026-09-18-sample-capture/",
   "failedStage": null,
   "reason": null,
-  "deliveredAt": "2026-09-02T21:46:53.238Z",
+  "deliveredAt": "2026-09-18T16:22:31.816Z",
+  "stoppable": false,
   "tokens": {
     "total": {
-      "input": 20,
-      "output": 14214,
-      "cacheRead": 305472,
-      "cacheWrite": 59941,
-      "attempts": 2,
-      "thoughtTurns": 2
+      "input": 95235,
+      "output": 8269,
+      "cacheRead": 748928,
+      "cacheWrite": 0,
+      "attempts": 3,
+      "thoughtTurns": 0
     },
     "byStage": {
       "knockout-assess#0": {
-        "input": 12,
-        "output": 12219,
-        "cacheRead": 235925,
-        "cacheWrite": 47069,
-        "attempts": 1,
-        "thoughtTurns": 1
+        "input": 87513,
+        "output": 7328,
+        "cacheRead": 689280,
+        "cacheWrite": 0,
+        "attempts": 2,
+        "thoughtTurns": 0
       },
       "knockout-frame": {
-        "input": 8,
-        "output": 1995,
-        "cacheRead": 69547,
-        "cacheWrite": 12872,
+        "input": 7722,
+        "output": 941,
+        "cacheRead": 59648,
+        "cacheWrite": 0,
         "attempts": 1,
-        "thoughtTurns": 1
+        "thoughtTurns": 0
       }
     },
     "byModel": {
-      "anthropic/claude-opus-5": {
-        "input": 20,
-        "output": 14214,
-        "cacheRead": 305472,
-        "cacheWrite": 59941,
-        "attempts": 2,
-        "thoughtTurns": 2
+      "gpt-5.6-sol": {
+        "input": 95235,
+        "output": 8269,
+        "cacheRead": 748928,
+        "cacheWrite": 0,
+        "attempts": 3,
+        "thoughtTurns": 0
       }
     },
     "byEngine": {
-      "anthropic-agent": {
-        "input": 20,
-        "output": 14214,
-        "cacheRead": 305472,
-        "cacheWrite": 59941,
-        "attempts": 2,
-        "thoughtTurns": 2
+      "openai-agent": {
+        "input": 95235,
+        "output": 8269,
+        "cacheRead": 748928,
+        "cacheWrite": 0,
+        "attempts": 3,
+        "thoughtTurns": 0
       }
     },
     "byAuthMode": {
       "subscription": {
-        "input": 20,
-        "output": 14214,
-        "cacheRead": 305472,
-        "cacheWrite": 59941,
-        "attempts": 2,
-        "thoughtTurns": 2
+        "input": 95235,
+        "output": 8269,
+        "cacheRead": 748928,
+        "cacheWrite": 0,
+        "attempts": 3,
+        "thoughtTurns": 0
       }
     }
   },
@@ -100,41 +101,41 @@
     "schemaVersion": 1,
     "modelBasis": "requested",
     "dispatchCensus": {
-      "total": 2,
-      "measured": 2,
+      "total": 3,
+      "measured": 3,
       "streamed": 0,
       "unmeasured": 0,
       "codeSide": 0
     },
     "dispatchCensusReconciles": true,
     "tokens": {
-      "input": 20,
-      "output": 14214,
-      "cacheWrite": 59941,
-      "cacheRead": 305472
+      "input": 95235,
+      "output": 8269,
+      "cacheWrite": 0,
+      "cacheRead": 748928
     },
     "tokensComplete": true,
     "byBilling": {
-      "anthropic-agent|subscription|anthropic/claude-opus-5": {
-        "engine": "anthropic-agent",
+      "openai-agent|subscription|gpt-5.6-sol": {
+        "engine": "openai-agent",
         "authMode": "subscription",
-        "model": "anthropic/claude-opus-5",
-        "dispatches": 2,
+        "model": "gpt-5.6-sol",
+        "dispatches": 3,
         "tokens": {
-          "input": 20,
-          "output": 14214,
-          "cacheWrite": 59941,
-          "cacheRead": 305472
+          "input": 95235,
+          "output": 8269,
+          "cacheWrite": 0,
+          "cacheRead": 748928
         }
       }
     },
     "billingComposition": {
       "basis": "byBilling",
       "vendors": [
-        "anthropic"
+        "openai"
       ],
       "engines": [
-        "anthropic-agent"
+        "openai-agent"
       ],
       "unmappedEngines": [],
       "billingModes": [
@@ -145,11 +146,11 @@
       "unattributedDispatches": 0,
       "notProviderBilledDispatches": 0,
       "complete": true,
-      "statement": "this run spent on one vendor (anthropic) under one billing mode (subscription)"
+      "statement": "this run spent on one vendor (openai) under one billing mode (subscription)"
     },
     "emittedVsLanded": {
-      "emittedOutputTokens": 14214,
-      "landedBytes": 13628,
+      "emittedOutputTokens": 8269,
+      "landedBytes": 5758,
       "landedBytesFromStages": 2,
       "stagesWithoutLandedRecord": [
         "knockout-sweep",
@@ -157,25 +158,25 @@
         "tool-calls"
       ],
       "landedShareIsFloor": true,
-      "landedShare": 0.2397,
+      "landedShare": 0.1741,
       "landedShareBasis": "landedBytes / (emittedOutputTokens * bytesPerOutputTokenAssumed)",
       "bytesPerOutputTokenAssumed": 4,
       "emittedOnDispatchesThatWroteNothing": 0,
       "thinkingNotSeparable": "thinking is billed inside output_tokens and is never broken out (engine/CONTRACT.md §2) — it sits inside the not-landed share and cannot be split from discarded prose",
-      "thoughtTurns": 2
+      "thoughtTurns": 0
     },
     "emittedVsLandedByStage": {
       "knockout-assess#0": {
-        "emittedOutputTokens": 12219,
-        "landedBytes": 12240,
-        "landedShare": 0.2504,
+        "emittedOutputTokens": 7328,
+        "landedBytes": 4846,
+        "landedShare": 0.1653,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "knockout-frame": {
-        "emittedOutputTokens": 1995,
-        "landedBytes": 1388,
-        "landedShare": 0.1739,
+        "emittedOutputTokens": 941,
+        "landedBytes": 912,
+        "landedShare": 0.2423,
         "landedShareReason": null,
         "tokensComplete": true
       },
@@ -209,7 +210,7 @@
       "dimensions": {
         "turnaroundHours": {
           "quoted": null,
-          "actual": 0.06,
+          "actual": 0.07,
           "ratio": null,
           "actualBasis": "wall:status.startedAt→terminal",
           "actualIncludesParked": true,
@@ -254,9 +255,9 @@
   "reports": [
     {
       "mark": "VENQORI",
-      "url": "/portal/report/tmpdemo2014knockoutsearch-venqori-2026-09-02-sample-capture/"
+      "url": "/portal/report/tmpdemo2014knockoutsearch-venqori-2026-09-18-sample-capture/"
     }
   ],
   "sendPending": true,
-  "endedAt": "2026-09-02T21:46:53.238Z"
+  "endedAt": "2026-09-18T16:22:31.816Z"
 }

@@ -1,0 +1,110 @@
+{
+  "uri": "/mark/sa/53631ac2-a3b6-4495-b78b-77d2496acdf5",
+  "provider": "clarivate",
+  "office": "sa",
+  "guid": "53631ac2-a3b6-4495-b78b-77d2496acdf5",
+  "applicationNumber": "1438006132",
+  "registrationNumber": null,
+  "applicationDate": "2016-12-12",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "MIFARE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "الخدمات العلمية والتقنية وخدمات البحث والتصميم المتعلقة بها، خدمات التحاليل والأبحاث الصنـاعية، خدمـات تصميم وتطوير عتاد وبرامج الكمبيوتـر",
+      "translation_language": "en",
+      "translation": "Scientific and technical services, related research and design services, industrial analysis and research services, design and development services for computer hardware and software."
+    }
+  ],
+  "owner": "NXP B.V",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60, 5656 AG Eindhoven, The Netherlands",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Scientific and technical services, related research and design services, industrial analysis and research services, design and development services for computer hardware and software.",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "الخدمات العلمية والتقنية وخدمات البحث والتصميم المتعلقة بها، خدمات التحاليل والأبحاث الصنـاعية، خدمـات تصميم وتطوير عتاد وبرامج الكمبيوتـر"
+        }
+      ]
+    },
+    "id": "53631ac2-a3b6-4495-b78b-77d2496acdf5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "SA",
+    "registrationOfficeName": "Saudi Arabia",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "SA",
+        "representativeAddressCountryName": "Saudi Arabia",
+        "representativeNativeAddress": "ص.ب 9767، الرياض الرمز البريدي 11423",
+        "representativeNativeName": "مكتب سليمان ابراهيم العمار للمحاماة"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20161212",
+        "applicationNumber": "1438006132"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20240321120807",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MIFARE"
+    }
+  },
+  "_uri": "/mark/sa/53631ac2-a3b6-4495-b78b-77d2496acdf5",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.737Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

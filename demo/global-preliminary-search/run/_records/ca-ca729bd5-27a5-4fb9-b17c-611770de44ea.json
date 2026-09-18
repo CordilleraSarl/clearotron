@@ -1,0 +1,266 @@
+{
+  "uri": "/mark/ca/ca729bd5-27a5-4fb9-b17c-611770de44ea",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "ca729bd5-27a5-4fb9-b17c-611770de44ea",
+  "applicationNumber": "2226701",
+  "registrationNumber": "TMA1327087",
+  "applicationDate": "2022-09-15",
+  "registrationDate": "2025-06-27",
+  "expiryDate": "2032-09-15",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2025-04-09"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "NAVIATE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    38,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9,
+        35,
+        38,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Computer software for engineering, modelling, creation of objects, design and computer-aided design in the field of building information modelling (bim); computer software for computer-aided design (CAD); computer software for user interface design; computer programs for text based user interfaces, computeraided design (CAD), digital animation, graphics designing and editing and commercial structure design; computer programs and software for web-based posting, searching, extranet interfacing and exchanging of data, all for use in building information modelling (bim) task coordination among multiple participants in the graphic design, mechanical and electrical drawing, modelling, civil engineering and multimedia image creation fields; optical and magnetic discs pre-recorded with instructional documents in the field of building information modelling (bim) and software for accessing digital instructional documents in the field of building information modelling (bim) via computer networks; software for accessing electronic instructional manuals in the field of building information modelling (bim), sold as a unit therewith; downloadable computer graphics; downloadable computer software for architectural, manufacturing, and construction modeling and designing; downloadable image files containing artworks, texts, graphics and photographs in the form of three dimensional digital models of objects and abstract items; computer operating system software; downloadable computer software for graphic designing and editing; computer software for database management relating to real estate management.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9,
+        35,
+        38,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Processing, retrieval and controlling of computerised information, namely, computerised database management; computerised file management; computerised file management; systemization of information into computer databases; systemisation of information relating to real estate management into computer databases. \n(2) Providing access to databases; providing access to databases containing data or documents stored electronically in central files for remote consultation; providing access to website pages containing information in the field of building information modelling (bim); providing virtual data centre access by access code; providing access to an online blog in the field of building information modelling (bim); provision of access to an electronic on-line global computer network for information retrieval; providing access to databases; rental of access time to global computer networks; computer-aided transmission of images over the internet; provision of electronic data interchange services of business data and documents via computer terminals; electronic exchange of messages via a global computer network; secure electronic delivery of sound and images via a global computer network; providing access to internet forums for transmission of messages among computer users; providing access to a global computer network for the transfer and dissemination of information; leasing access time to a computer database. \n(3) Development of computer programs designed for use in construction and automated computer-aided design/computer-aided manufacturing (cad/cam); computer aided graphic design services; computer-aided design of video graphics and graphic design; computer aided design for manufacturing operations; computer aided engineering design services; computer aided analytical services; product development for others; consultation and consultancy with regard to product development and product design; consultancy, consultation and technical support relating to computer hardware, computer software and computer-aided design, drawing and technologies; computer services for others, namely web-based posting, searching, extranet interfacing and secure exchanging of data, all for use in task coordination among multiple participants in the graphic design, mechanical and electrical drawing, modelling, civil engineering and multimedia image creation fields; computer services, namely, interactive web hosting which allows users to publish and share their own content and images online; providing temporary use of non-downloadable computer software tools for image editing via the internet; developing computer software; consultancy in the design and development of computer hardware; computer software consultancy; software as a service [SaaS] services featuring non-downloadable software for graphic designing and editing; computer help desk consultancy; computer technology consultation services; consultation services relating to computer hardware; computer software consultancy; computer-aided mechanical engineering design and drawing services; electronic data storage for archiving business records.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Symetri AB",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": "GOWLING WLG (CANADA) LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Forskargatan 3, SE-781 70 Borlänge",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantAddressLines": [
+          "Forskargatan 3",
+          "SE-781 70 Borlänge"
+        ],
+        "applicantName": "Symetri AB"
+      }
+    ],
+    "categorizedTexts": {},
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09,35,38,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Computer software for engineering, modelling, creation of objects, design and computer-aided design in the field of building information modelling (bim); computer software for computer-aided design (CAD); computer software for user interface design; computer programs for text based user interfaces, computeraided design (CAD), digital animation, graphics designing and editing and commercial structure design; computer programs and software for web-based posting, searching, extranet interfacing and exchanging of data, all for use in building information modelling (bim) task coordination among multiple participants in the graphic design, mechanical and electrical drawing, modelling, civil engineering and multimedia image creation fields; optical and magnetic discs pre-recorded with instructional documents in the field of building information modelling (bim) and software for accessing digital instructional documents in the field of building information modelling (bim) via computer networks; software for accessing electronic instructional manuals in the field of building information modelling (bim), sold as a unit therewith; downloadable computer graphics; downloadable computer software for architectural, manufacturing, and construction modeling and designing; downloadable image files containing artworks, texts, graphics and photographs in the form of three dimensional digital models of objects and abstract items; computer operating system software; downloadable computer software for graphic designing and editing; computer software for database management relating to real estate management."
+        },
+        {
+          "intClassNumber": "09,35,38,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Processing, retrieval and controlling of computerised information, namely, computerised database management; computerised file management; computerised file management; systemization of information into computer databases; systemisation of information relating to real estate management into computer databases. \n(2) Providing access to databases; providing access to databases containing data or documents stored electronically in central files for remote consultation; providing access to website pages containing information in the field of building information modelling (bim); providing virtual data centre access by access code; providing access to an online blog in the field of building information modelling (bim); provision of access to an electronic on-line global computer network for information retrieval; providing access to databases; rental of access time to global computer networks; computer-aided transmission of images over the internet; provision of electronic data interchange services of business data and documents via computer terminals; electronic exchange of messages via a global computer network; secure electronic delivery of sound and images via a global computer network; providing access to internet forums for transmission of messages among computer users; providing access to a global computer network for the transfer and dissemination of information; leasing access time to a computer database. \n(3) Development of computer programs designed for use in construction and automated computer-aided design/computer-aided manufacturing (cad/cam); computer aided graphic design services; computer-aided design of video graphics and graphic design; computer aided design for manufacturing operations; computer aided engineering design services; computer aided analytical services; product development for others; consultation and consultancy with regard to product development and product design; consultancy, consultation and technical support relating to computer hardware, computer software and computer-aided design, drawing and technologies; computer services for others, namely web-based posting, searching, extranet interfacing and secure exchanging of data, all for use in task coordination among multiple participants in the graphic design, mechanical and electrical drawing, modelling, civil engineering and multimedia image creation fields; computer services, namely, interactive web hosting which allows users to publish and share their own content and images online; providing temporary use of non-downloadable computer software tools for image editing via the internet; developing computer software; consultancy in the design and development of computer hardware; computer software consultancy; software as a service [SaaS] services featuring non-downloadable software for graphic designing and editing; computer help desk consultancy; computer technology consultation services; consultation services relating to computer hardware; computer software consultancy; computer-aided mechanical engineering design and drawing services; electronic data storage for archiving business records."
+        }
+      ]
+    },
+    "id": "ca729bd5-27a5-4fb9-b17c-611770de44ea",
+    "internationalMarkKeys": [
+      {
+        "internationalRegistrationNumber": "1700627"
+      }
+    ],
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20250627",
+        "descriptionText": "Statement of Grant of Protection Sent (following a Provisional Refusal)"
+      },
+      {
+        "date": "20250627",
+        "descriptionText": "Registered"
+      },
+      {
+        "date": "20250627",
+        "descriptionText": "Registration Pending"
+      },
+      {
+        "date": "20250409",
+        "descriptionText": "Opposition Start Date Notice Sent",
+        "information": "Requested on 2025/04/09 00:30:07 in program jr500m1"
+      },
+      {
+        "date": "20250409",
+        "descriptionText": "Advertised",
+        "information": "Vol.72 Issue 3676"
+      },
+      {
+        "date": "20250306",
+        "descriptionText": "Approval Notice Sent",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20250306",
+        "descriptionText": "Approved",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20240423",
+        "descriptionText": "Agent changed",
+        "information": "From/De: To/A: 32"
+      },
+      {
+        "date": "20240325",
+        "descriptionText": "Total Provisional Refusal Sent",
+        "responseDate": "20240925"
+      },
+      {
+        "date": "20240325",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20240925"
+      },
+      {
+        "date": "20240325",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20231009",
+        "descriptionText": "Notification of Possible Oppositions Sent"
+      },
+      {
+        "date": "20221208",
+        "descriptionText": "Designation Notification - Madrid Protocol",
+        "responseDate": "20240608"
+      },
+      {
+        "date": "20221207",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20221207",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20220915",
+        "descriptionText": "International Registration",
+        "responseDate": "20320915"
+      },
+      {
+        "date": "20220915",
+        "descriptionText": "Filed",
+        "information": "Registration"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Forskargatan 3, SE-781 70 Borlänge",
+        "addressLines": [
+          "Forskargatan 3",
+          "SE-781 70 Borlänge"
+        ],
+        "countryName": "Sweden",
+        "name": "Symetri AB"
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "3676",
+        "publicationVolume": "72"
+      }
+    ],
+    "recordLastUpdated": "20260225",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "GOWLING WLG (CANADA) LLP",
+          "SUITE 1600",
+          "1 FIRST CANADIAN PLACE",
+          "100 KING STREET WEST",
+          "TORONTO",
+          "ONTARIO M5X1G5"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "GOWLING WLG (CANADA) LLP",
+        "representativeReferenceNumber": "T681 425 3MAPCA"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220915",
+        "applicationNumber": "2226701"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320915",
+      "formalisationDate": "20221207",
+      "markCurrentStatus": "Registered",
+      "nextRenewalDate": "20320915",
+      "publicationDate": [
+        "20250409"
+      ],
+      "registration": {
+        "registrationDate": "20250627",
+        "registrationNumber": "TMA1327087"
+      }
+    },
+    "subjectHeadings": [
+      "NAVIATE"
+    ],
+    "version": "20260225090101",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NAVIATE",
+      "markVerbalElementTextFormal": "NAVIATE"
+    }
+  },
+  "_uri": "/mark/ca/ca729bd5-27a5-4fb9-b17c-611770de44ea",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.303Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

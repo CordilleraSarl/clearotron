@@ -1,0 +1,342 @@
+{
+  "uri": "/mark/us/2a067263-52ce-46de-a862-e80996601fde",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "2a067263-52ce-46de-a862-e80996601fde",
+  "applicationNumber": "79355462",
+  "registrationNumber": null,
+  "applicationDate": "2022-09-15",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "SYMETRI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "STYLIZED LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 downloadable computer software for computer-aided design (CAD) for mechanical, electrical, and civil engineering drawings in commercial and industrial settings; downloadable geographical information system (GIS) computer programs; none of the foregoing relating to virtual reality computer software or design",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Education in the implementation and use of data processing programs for designing and creating digital drawings and models; training services relating to computer-aided engineering design; education services, namely, providing seminars, workshops and training sessions relating to computer systems for construction, modelling, design, and computer-aided design",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 computer aided graphic design for mechanical, electrical, and civil engineering drawings in commercial and industrial settings; consultancy relating to computer programs for designing and creating digital drawings and models for mechanical, electrical, and civil engineering drawings in commercial and industrial settings; engineering consultancy relating to building, construction, and software design; none of the foregoing relating to virtual reality computer software or design",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Symetri AB",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": "Jennifer L. Gregor",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Forskargatan 3, SWED",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantAddressStreet": "Forskargatan 3",
+        "applicantJurisdictionOfIncorporation": "SWEDEN",
+        "applicantName": "Symetri AB",
+        "applicantSecondaryAddressUnit": "SE-781 70 Borlänge"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "29.04.03"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 downloadable computer software for computer-aided design (CAD) for mechanical, electrical, and civil engineering drawings in commercial and industrial settings; downloadable geographical information system (GIS) computer programs; none of the foregoing relating to virtual reality computer software or design"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Education in the implementation and use of data processing programs for designing and creating digital drawings and models; training services relating to computer-aided engineering design; education services, namely, providing seminars, workshops and training sessions relating to computer systems for construction, modelling, design, and computer-aided design"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 computer aided graphic design for mechanical, electrical, and civil engineering drawings in commercial and industrial settings; consultancy relating to computer programs for designing and creating digital drawings and models for mechanical, electrical, and civil engineering drawings in commercial and industrial settings; engineering consultancy relating to building, construction, and software design; none of the foregoing relating to virtual reality computer software or design"
+        }
+      ]
+    },
+    "id": "2a067263-52ce-46de-a862-e80996601fde",
+    "internationalMarkKeys": [
+      {
+        "internationalRegistrationNumber": "1696399",
+        "markCurrentStatus": "REQUEST FOR EXTENSION OF PROTECTION ESTABLISHED",
+        "markCurrentStatusDate": "20221117",
+        "protectionGrantedDate": "20240517",
+        "publicationDate": "20221117",
+        "registrationDate": "20220915",
+        "renewalDate": "20320915"
+      }
+    ],
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20251215",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20251215",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20251215",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20250813",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20250813",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20250813",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20241126",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20241126",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20241126",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20241005",
+        "descriptionText": "TEAS RESPONSE TO SUSPENSION INQUIRY RECEIVED"
+      },
+      {
+        "date": "20240707",
+        "descriptionText": "SUSPENSION LETTER  WRITTEN"
+      },
+      {
+        "date": "20240707",
+        "descriptionText": "LETTER OF SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20240707",
+        "descriptionText": "NOTIFICATION OF LETTER OF SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20240507",
+        "descriptionText": "NOTIFICATION OF POSSIBLE OPPOSITION -  PROCESSED BY IB"
+      },
+      {
+        "date": "20240417",
+        "descriptionText": "NOTIFICATION OF POSSIBLE OPPOSITION CREATED, TO BE SENT TO IB"
+      },
+      {
+        "date": "20240417",
+        "descriptionText": "NOTIFICATION OF POSSIBLE OPPOSITION SENT TO IB"
+      },
+      {
+        "date": "20240203",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20240202",
+        "descriptionText": "TEAS CHANGE OF OWNER ADDRESS RECEIVED"
+      },
+      {
+        "date": "20240202",
+        "descriptionText": "APPLICANT/CORRESPONDENCE CHANGES (NON-RESPONSIVE) ENTERED"
+      },
+      {
+        "date": "20240202",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20240202",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20240202",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20240202",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20240202",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20231111",
+        "descriptionText": "NEW REPRESENTATIVE AT IB RECEIVED"
+      },
+      {
+        "date": "20230828",
+        "descriptionText": "REFUSAL PROCESSED BY IB"
+      },
+      {
+        "date": "20230804",
+        "descriptionText": "REFUSAL PROCESSED BY MPU"
+      },
+      {
+        "date": "20230804",
+        "descriptionText": "NON-FINAL ACTION MAILED - REFUSAL SENT TO IB"
+      },
+      {
+        "date": "20230629",
+        "descriptionText": "NON-FINAL ACTION (IB REFUSAL) PREPARED FOR REVIEW"
+      },
+      {
+        "date": "20230628",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20230627",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20221122",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      },
+      {
+        "date": "20221118",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20221117",
+        "descriptionText": "SN ASSIGNED FOR SECT 66A APPL FROM IB"
+      }
+    ],
+    "markFeature": "STYLIZED LETTERS",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "The color(s) turquoise blue is/are claimed as a feature of the mark.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Forskargatan 3, SWED",
+        "countryCode": "SE",
+        "countryName": "Sweden",
+        "jurisdictionOfIncorporation": "SWEDEN",
+        "name": "Symetri AB",
+        "secondaryAddressUnit": "SE-781 70 Borlänge",
+        "street": "Forskargatan 3"
+      },
+      {
+        "address": "Forskargatan 3, SWED",
+        "countryCode": "SE",
+        "countryName": "Sweden",
+        "jurisdictionOfIncorporation": "SWEDEN",
+        "name": "Symetri AB",
+        "secondaryAddressUnit": "SE-781 70 Borlänge",
+        "street": "Forskargatan 3"
+      }
+    ],
+    "recordLastUpdated": "20260407",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Milwaukee, WI 53202-5615, United States",
+        "representativeCorrespondentAddressLines": [
+          "Milwaukee, WI 53202-5615",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Jennifer L. Gregor Godfrey & Kahn, S.C., 833 E. Michigan Street, Suite 1800"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Milwaukee, WI 53202-5615, United States",
+        "representativeAddressLines": [
+          "Milwaukee, WI 53202-5615",
+          "United States"
+        ],
+        "representativeName": "Jennifer L. Gregor"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220915",
+        "applicationNumber": "79355462"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "ipOffice": {
+        "markOfficialStatus": "RESPONSE AFTER NON-FINAL ACTION - ENTERED",
+        "markOfficialStatusCode": "661",
+        "markOfficialStatusDate": "20251215",
+        "markOfficialStatusEvents": [
+          "Color Drawing Filed",
+          "Color Drawing Currently",
+          "Section 66(a) (Madrid Protocol) - Filed",
+          "Section 66(a) (Madrid Protocol) - Current",
+          "Notice of First Refusal"
+        ]
+      },
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260407095225",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "symmetry",
+      "markVerbalElementText": "SYMETRI"
+    }
+  },
+  "_uri": "/mark/us/2a067263-52ce-46de-a862-e80996601fde",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.288Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

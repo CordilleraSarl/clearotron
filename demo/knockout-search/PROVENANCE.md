@@ -2,7 +2,7 @@
 
 Frozen by `scripts/freeze-example-run.mjs` from one finished clearance run.
 
-- Run id: `tmpdemo2014knockoutsearch-venqori-2026-09-02-sample-capture`
+- Run id: `tmpdemo2014knockoutsearch-venqori-2026-09-18-sample-capture`
 - Frozen inputs: 13 file(s), the subset `publishReport` reads
 - Dropped: stage dispatch payloads, per-stage telemetry, stage inputs, run event log, history
 
@@ -12,5 +12,5 @@ model, a register or the network.
 Regenerate with:
 
 ```
-node scripts/freeze-example-run.mjs --run-dir <archived run> --out demo --force
+node scripts/freeze-example-run.mjs --run-dir <archived run> --out demo/knockout-search --force --codename sample-capture
 ```

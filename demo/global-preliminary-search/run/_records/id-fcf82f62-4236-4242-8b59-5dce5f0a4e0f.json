@@ -1,0 +1,113 @@
+{
+  "uri": "/mark/id/fcf82f62-4236-4242-8b59-5dce5f0a4e0f",
+  "provider": "clarivate",
+  "office": "id",
+  "guid": "fcf82f62-4236-4242-8b59-5dce5f0a4e0f",
+  "applicationNumber": "J002004026047",
+  "registrationNumber": "IDM000078406",
+  "applicationDate": "2004-10-28",
+  "registrationDate": "2006-06-21",
+  "expiryDate": "2026-06-21",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": null,
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "id",
+      "description": "Bahan - bahan pendidikan yang berhubungan dengan komputer dan data algoritma untuk kompresi dan dekompresi data, jasa konsultasi dibidang komputer dan telekomunikasi dan teknologi yang berhubungan dengan perancangan perangkat lunak, lisensi paten, merek dagang, hak cipta, rahasia dagang dan/atau keahlian yang berhubungan dengan manufaktur semikonduktor dan pemakaiannya, lisensi perangkat lunak yang berhubungan dengan manufaktur semikonduktor dan pemakaiannya, lisensi semikonduktor, lisensi teknologi, lisensi teknologi yang berhubungan dengan semikonduktor dan manufaktur semikonduktor, lisensi teknologi yang ditanamkan dalam dan yang berhubungan dengan produk - produk semikonduktor, lingkaran arus terpadu, papan sirkuit, komputer mikro, pengontrol mikro, pengolah mikro dan periferal, memori dan bahan - bahan semikonduktor komputer, sirkuit konversi data, perangkat tetap komputer, aparat elektronik, listrik dan elektromekanik untuk dipakai dengan komputer, papan sirkuit video, perancangan komputer dan sistem telekomunikasi berdasarkan pesanan, produk - produk sistem video, aparat dan perlengkapan untuk merekam, mereproduksi dan merubah suara, video dan data, program komputer.",
+      "translation_language": "en",
+      "translation": "Educational materials related to computers and data algorithms for data compression and decompression, consulting services in the field of computers and telecommunications and technology related to software design, patent licenses, trademarks, copyrights, trade secrets and/or expertise related to semiconductor manufacturing and use, software licenses related to semiconductor manufacturing and use, semiconductor licenses, technology licenses, technology licenses relating to semiconductors and semiconductor manufacturing, technology licenses embedded in and related to semiconductor products, integrated circuits, circuit boards, microcomputers, micro controllers, microprocessors and peripherals, memory and computer semiconductor materials, data conversion circuits, computer fixed devices, electronic, electrical and electromechanical apparatus for use with computers, video circuit boards, design n bespoke computer and telecommunications systems, video system products, apparatus and equipment for recording, reproducing and converting sound, video and data, computer programs."
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "ANDROMEDA, B. A, SH AMR PARTNERSHIP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "BERKEDUDUKAN DI: 6501 WILLIAM CANNON DRIVE WEST, AUSTIN, TEXAS 78735, U. S. A; US",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Educational materials related to computers and data algorithms for data compression and decompression, consulting services in the field of computers and telecommunications and technology related to software design, patent licenses, trademarks, copyrights, trade secrets and/or expertise related to semiconductor manufacturing and use, software licenses related to semiconductor manufacturing and use, semiconductor licenses, technology licenses, technology licenses relating to semiconductors and semiconductor manufacturing, technology licenses embedded in and related to semiconductor products, integrated circuits, circuit boards, microcomputers, micro controllers, microprocessors and peripherals, memory and computer semiconductor materials, data conversion circuits, computer fixed devices, electronic, electrical and electromechanical apparatus for use with computers, video circuit boards, design n bespoke computer and telecommunications systems, video system products, apparatus and equipment for recording, reproducing and converting sound, video and data, computer programs.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "id",
+          "intGoodsServicesDescription": "Bahan - bahan pendidikan yang berhubungan dengan komputer dan data algoritma untuk kompresi dan dekompresi data, jasa konsultasi dibidang komputer dan telekomunikasi dan teknologi yang berhubungan dengan perancangan perangkat lunak, lisensi paten, merek dagang, hak cipta, rahasia dagang dan/atau keahlian yang berhubungan dengan manufaktur semikonduktor dan pemakaiannya, lisensi perangkat lunak yang berhubungan dengan manufaktur semikonduktor dan pemakaiannya, lisensi semikonduktor, lisensi teknologi, lisensi teknologi yang berhubungan dengan semikonduktor dan manufaktur semikonduktor, lisensi teknologi yang ditanamkan dalam dan yang berhubungan dengan produk - produk semikonduktor, lingkaran arus terpadu, papan sirkuit, komputer mikro, pengontrol mikro, pengolah mikro dan periferal, memori dan bahan - bahan semikonduktor komputer, sirkuit konversi data, perangkat tetap komputer, aparat elektronik, listrik dan elektromekanik untuk dipakai dengan komputer, papan sirkuit video, perancangan komputer dan sistem telekomunikasi berdasarkan pesanan, produk - produk sistem video, aparat dan perlengkapan untuk merekam, mereproduksi dan merubah suara, video dan data, program komputer."
+        }
+      ]
+    },
+    "id": "fcf82f62-4236-4242-8b59-5dce5f0a4e0f",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250105",
+    "registrationOfficeCode": "ID",
+    "registrationOfficeName": "Indonesia",
+    "representatives": [
+      {
+        "representativeAddress": "GEDUNG PERKANTORAN GANDARIA 8, LT. 3 UNIT D JI. SULTAN ISKANDAR MUDA (ARTERI PONDOK INDAH) JAKARTA 12240; ID",
+        "representativeAddressCountryCode": "ID",
+        "representativeAddressCountryName": "Indonesia",
+        "representativeName": "ANDROMEDA, B. A, SH AMR PARTNERSHIP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20041028",
+        "applicationNumber": "J002004026047"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20260621",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20060621",
+        "registrationNumber": "IDM000078406"
+      }
+    },
+    "version": "20250105120424"
+  },
+  "_uri": "/mark/id/fcf82f62-4236-4242-8b59-5dce5f0a4e0f",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.709Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -2,7 +2,7 @@
   "schema": 1,
   "provider": "clarivate",
   "providerLabel": "Clarivate Compumark",
-  "takenAt": "2026-09-02T21:43:48.513Z",
+  "takenAt": "2026-09-18T16:18:44.058Z",
   "basis": "Filings on the register of any status, counted by name only — “identical” is the name itself; “containing” is the register's broad name match for it; “close variations” is the same exact search run again over a bounded list of classic near-forms of the name (spelling, doubling and letter-swap variants), generated in code and listed with the figure. A count is not an assessment: it rates nothing and decides nothing.",
   "predicates": [
     {

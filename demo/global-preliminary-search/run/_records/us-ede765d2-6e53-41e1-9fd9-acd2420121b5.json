@@ -1,0 +1,407 @@
+{
+  "uri": "/mark/us/ede765d2-6e53-41e1-9fd9-acd2420121b5",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "ede765d2-6e53-41e1-9fd9-acd2420121b5",
+  "applicationNumber": "76203199",
+  "registrationNumber": "2835748",
+  "applicationDate": "2001-01-30",
+  "registrationDate": "2004-04-27",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2003-08-26"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2010-12-03",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "AMPHION",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        40
+      ],
+      "language": null,
+      "description": "INT. CL. 40 Digital signal processing, namely, video and image processing by compression, decompression, transformation, filtering, run length coding and variable length coding, speech signal processing by compression, decompression, filtering, and transformation, application specific processing by coding, compression and transformation type processes for imaging, video and communication related application areas, digital image error correction and channel coding, digital signal modulation, de-modulation and evaluation",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Computer hardware design for others; computer software design, analysis and maintenance; computer programming for others; integrated circuit design, namely, multi-media and communications system-on-chip integrated circuit design; application specific virtual components design; semiconductor and semiconductor core design, namely, the design of semiconductor intellectual property cores; licensing of semiconductor and integrated circuit technology and the provision of support and maintenance services for those technologies",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "HIGH TECH CAMPUS 60, EINDHOVEN, 5656 AG, NETH",
+        "applicantAddressCity": "EINDHOVEN",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantAddressPostalCode": "5656 AG",
+        "applicantAddressStreet": "HIGH TECH CAMPUS 60",
+        "applicantJurisdictionOfIncorporation": "Netherlands",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "HIGH TECH CAMPUS 60, EINDHOVEN, 5656 AG, NETH",
+            "city": "EINDHOVEN",
+            "countryCode": "NL",
+            "countryName": "Netherlands",
+            "jurisdictionOfIncorporation": "Netherlands",
+            "legalEntity": "CORPORATION",
+            "name": "NXP B.V.",
+            "postalCode": "5656 AG",
+            "street": "HIGH TECH CAMPUS 60"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "United Kingdom",
+            "legalEntity": "COMPANY",
+            "name": "AMPHION SEMICONDUCTOR LIMITED"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "2900 K STREET, N.W., SUITE 200, WASHINGTON, DC 20007-5118",
+            "addressLines": [
+              "VALERIE A. PURDY",
+              "2900 K STREET, N.W.",
+              "SUITE 200",
+              "WASHINGTON, DC 20007-5118"
+            ],
+            "name": "VALERIE A. PURDY"
+          }
+        ],
+        "descriptionText": "ASSIGNS THE ENTIRE INTEREST",
+        "executedDate": "20090713",
+        "recordedDate": "20090909",
+        "reelFrameNumber": "4058/0973"
+      },
+      {
+        "assignees": [
+          {
+            "address": "BELTAST BT9 5BS, NORTHERN IRELAND, GBRI",
+            "city": "NORTHERN IRELAND",
+            "countryCode": "GB",
+            "countryName": "United Kingdom",
+            "jurisdictionOfIncorporation": "Northern Ireland",
+            "legalEntity": "COMPANY",
+            "name": "AMPHION SEMICONDUCTOR LIMITED",
+            "secondaryAddressUnit": "50 MALONE ROAD",
+            "street": "BELTAST BT9 5BS"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "Northern Ireland",
+            "legalEntity": "COMPANY",
+            "name": "INTEGRATED SILICON SYSTEMS LIMITED"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "I. MORLEY DRUCKER, ESQ., 6060 CENTER DRIVE, TENTH FLOOR, LOS ANGELES, CA 90045",
+            "addressLines": [
+              "FULWIDER PATTON LEE & UTECHT, LLP",
+              "I. MORLEY DRUCKER, ESQ.",
+              "6060 CENTER DRIVE, TENTH FLOOR",
+              "LOS ANGELES, CA 90045"
+            ],
+            "name": "FULWIDER PATTON LEE & UTECHT, LLP"
+          }
+        ],
+        "descriptionText": "CHANGE OF NAME",
+        "executedDate": "20001229",
+        "recordedDate": "20010430",
+        "reelFrameNumber": "2290/0433"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "40",
+          "intGoodsServicesDescription": "INT. CL. 40 Digital signal processing, namely, video and image processing by compression, decompression, transformation, filtering, run length coding and variable length coding, speech signal processing by compression, decompression, filtering, and transformation, application specific processing by coding, compression and transformation type processes for imaging, video and communication related application areas, digital image error correction and channel coding, digital signal modulation, de-modulation and evaluation"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Computer hardware design for others; computer software design, analysis and maintenance; computer programming for others; integrated circuit design, namely, multi-media and communications system-on-chip integrated circuit design; application specific virtual components design; semiconductor and semiconductor core design, namely, the design of semiconductor intellectual property cores; licensing of semiconductor and integrated circuit technology and the provision of support and maintenance services for those technologies"
+        }
+      ]
+    },
+    "id": "ede765d2-6e53-41e1-9fd9-acd2420121b5",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20101203",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20100310",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20100310",
+        "descriptionText": "REVIEW OF CORRESPONDENCE COMPLETE"
+      },
+      {
+        "date": "20090916",
+        "descriptionText": "AUTOMATIC UPDATE OF ASSIGNMENT OF OWNERSHIP"
+      },
+      {
+        "date": "20090915",
+        "descriptionText": "PAPER RECEIVED"
+      },
+      {
+        "date": "20070605",
+        "descriptionText": "CASE FILE IN TICRS"
+      },
+      {
+        "date": "20040427",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20040303",
+        "descriptionText": "NOTICE OF ALLOWANCE CANCELLED"
+      },
+      {
+        "date": "20040303",
+        "descriptionText": "Sec. 1(B) CLAIM DELETED"
+      },
+      {
+        "date": "20031229",
+        "descriptionText": "PAPER RECEIVED"
+      },
+      {
+        "date": "20031118",
+        "descriptionText": "NOA MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20030826",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20030806",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20030623",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20030623",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20030527",
+        "descriptionText": "PAPER RECEIVED"
+      },
+      {
+        "date": "20030527",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20021108",
+        "descriptionText": "LETTER OF SUSPENSION MAILED"
+      },
+      {
+        "date": "20021107",
+        "descriptionText": "PREVIOUS ACTION COUNT WITHDRAWN"
+      },
+      {
+        "date": "20020917",
+        "descriptionText": "REINSTATED"
+      },
+      {
+        "date": "20020701",
+        "descriptionText": "PAPER RECEIVED"
+      },
+      {
+        "date": "20020701",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20020502",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20010810",
+        "descriptionText": "NON-FINAL ACTION MAILED"
+      },
+      {
+        "date": "20010516",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      }
+    ],
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "50 Malone Road, Belfast BT9 5BS Northern Ireland, GBRI",
+        "city": "Belfast BT9 5BS Northern Ireland",
+        "countryCode": "GB",
+        "countryName": "United Kingdom",
+        "jurisdictionOfIncorporation": "NIR",
+        "legalEntity": "COMPANY",
+        "name": "Integrated Silicon Systems Limited",
+        "street": "50 Malone Road"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "50 malone Road, Belfast BT9 5BS, GBRI",
+        "city": "Belfast BT9 5BS",
+        "countryCode": "GB",
+        "countryName": "United Kingdom",
+        "jurisdictionOfIncorporation": "NIR",
+        "legalEntity": "COMPANY",
+        "name": "Amphion Semiconductor Limited",
+        "street": "50 malone Road"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "50 malone Road, Belfast BT9 5BS, GBRI",
+        "city": "Belfast BT9 5BS",
+        "countryCode": "GB",
+        "countryName": "United Kingdom",
+        "jurisdictionOfIncorporation": "NIR",
+        "legalEntity": "COMPANY",
+        "name": "Amphion Semiconductor Limited",
+        "street": "50 malone Road"
+      }
+    ],
+    "postApplicationOwners": [
+      {
+        "address": "50 malone Road, Belfast BT9 5BS, GBRI",
+        "city": "Belfast BT9 5BS",
+        "countryCode": "GB",
+        "countryName": "United Kingdom",
+        "jurisdictionOfIncorporation": "NIR",
+        "legalEntity": "COMPANY",
+        "name": "Amphion Semiconductor Limited",
+        "street": "50 malone Road"
+      }
+    ],
+    "postRegistrationOwners": [
+      {
+        "address": "HIGH TECH CAMPUS 60, EINDHOVEN, 5656 AG, NETH",
+        "city": "EINDHOVEN",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "legalEntity": "CORPORATION",
+        "name": "NXP B.V.",
+        "postalCode": "5656 AG",
+        "street": "HIGH TECH CAMPUS 60"
+      }
+    ],
+    "recordLastUpdated": "20260109",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "LOS ANGELES, CA 90045-1598, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "LOS ANGELES, CA 90045-1598",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "I MORLEY DRUCKER FULWIDER PATTON LEE & UTECHT, LLP, 6060 CTR DR FL 10"
+      }
+    ],
+    "representatives": [
+      {
+        "domesticRepresentativeName": "I. MORLEY DRUCKER",
+        "representativeAddress": "LOS ANGELES, CA 90045-1598, UNITED STATES",
+        "representativeAddressLines": [
+          "LOS ANGELES, CA 90045-1598",
+          "UNITED STATES"
+        ]
+      }
+    ],
+    "status": {
+      "active": false,
+      "allowanceDate": [
+        "20031118"
+      ],
+      "application": {
+        "applicationDate": "20010130",
+        "applicationNumber": "76203199"
+      },
+      "cancellationDate": "20101203",
+      "cancellationPublicationDate": "20110111",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20101203",
+        "markOfficialStatusEvents": [
+          "Section 44(D)",
+          "Intent to Use - Filed",
+          "Section 44(e) Filed",
+          "Section 44(e) Currently"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20030826"
+      ],
+      "registration": {
+        "registrationDate": "20040427",
+        "registrationNumber": "2835748"
+      },
+      "revivalDate": "20020917"
+    },
+    "version": "20260109052533",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AMPHION"
+    }
+  },
+  "_uri": "/mark/us/ede765d2-6e53-41e1-9fd9-acd2420121b5",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.725Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

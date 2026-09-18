@@ -1,0 +1,1399 @@
+{
+  "uri": "/mark/em/57c03faa-1cab-4337-b09e-1c523c192730",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "57c03faa-1cab-4337-b09e-1c523c192730",
+  "applicationNumber": "19074708",
+  "registrationNumber": "19074708",
+  "applicationDate": "2024-09-04",
+  "registrationDate": "2025-01-22",
+  "expiryDate": "2034-09-04",
+  "renewalDate": null,
+  "lastPublicationDate": "2024-09-23",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SYMETRI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    38,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Pocítacové programy (software ke stazení) pro navrhování a tvorbu digitálních výkresu a modelu; Software pro konstrukci, tvorbu a navrhování modelu; Pocítacový software pro pocítacem podporované navrhování (CAD); Pocítacové programy v podobe geografických informacních systému.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "cs",
+      "description": "Sluzby v oblasti datové komunikace; Sluzby prístupu k celosvetové pocítacové síti; Poskytování prístupu a pronájem prístupového casu k pocítacovým databázím; Poskytování prístupu k webovým stránkám; Sluzby v oblasti digitálního prenosu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "cs",
+      "description": "Vzdelávání v oblasti zavádení a uzívání pocítacových programu pro navrhování a tvorbu digitálních výkresu a modelu; Skolicí sluzby zamerené na technický design s pomocí pocítace; Vzdelávací sluzby v oblasti pocítacových systému.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Vývoj softwaru, programování a implementace softwaru; Navrhování, tvorba, údrzba a aktualizace pocítacových programu a systému pro navrhování a tvorbu digitálních výkresu a modelu; Pocítacem podporovaný grafický design; Sluzby v oblasti pocítacem podporovaného projektování vztahující se ke stavebním projektum; Sluzby v oblasti pocítacem podporovaného projektování; Konzultacní, poradenské a informacní sluzby v oblasti informacních technologií; Konzultace týkající se pocítacových programu pro navrhování a tvorbu digitálních výkresu a modelu; Technické konzultace v oblasti designu, Software jako sluzba [SaaS]; Zádná z výse uvedených sluzeb není v oboru multikanálové komunikace a tisku a posty.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Computerprogrammer (software til at downloade) til design og udarbejdelse af digitale tegninger og modeller; Software til konstruktion, modelfremstilling og design; Computersoftware til computerstøttet design (cad); Computerprogrammer i form af geografiske informationssystemer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "da",
+      "description": "Datakommunikationsvirksomhed; Tjenester til formidling af adgang til globale computernetværk; Tilvejebringelse af adgang til og leasing af adgangstid til computerdatabaser; Tilvejebringelse af adgang til websider; Tjenester inden for digital transmission.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "da",
+      "description": "Uddannelse i implementering og anvendelse af databehandlingsprogrammer til design og udarbejdelse af digitale tegninger og modeller; Undervisning i computerunderstøttet, teknisk design; Uddannelse inden for computersystemer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Udvikling af software, programmering og implementering; Design, udformning, vedligeholdelse og opdatering af computerprogrammer samt computersystemer til udarbejdelse af digitale tegninger og modeller; Computerstøttet grafisk design; Computerstøttet designvirksomhed vedrørende byggeprojekter; Computerstøttet designvirksomhed; IT-rådgivnings-, vejlednings- og informationstjenesteydelser; Konsulentvirksomhed vedrørende computerprogrammer til design og udarbejdelse af digitale tegninger og modeller; Rådgivende ingeniørvirksomhed i forbindelse med design, Software as a service [saas]; Førnævnte tjenesteydelser ikke inden for kommunikation ad flere kanaler samt print og post.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Computersoftware (downloadbare software) voor het ontwerpen en creëren van digitale tekeningen en modellen; Software voor constructie, modelbouw en vormgeving; Software voor computerondersteunde ontwerpprogramma's (CAD); Computersoftware in de vorm van geografische informatiesystemen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "nl",
+      "description": "Diensten op het gebied van datacommunicatie; Toegang tot wereldwijde computernetwerken; Verlenen van toegang tot en het verhuren van toegangstijd tot computer databases; Verlenen van toegang tot webpagina's; Digitale overdracht.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "nl",
+      "description": "Opleiding met betrekking tot het implementeren en gebruiken van gegevensverwerkingsprogramma's voor het ontwerpen en creëren van digitale tekeningen en modellen; Opleiding met betrekking tot computerondersteund technisch ontwerp; Onderwijs met betrekking tot computersystemen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Ontwikkeling, programmering en implementatie van software; Design, ontwerp, onderhoud en actualisering van computersoftware en computersystemen voor het ontwerpen en creëren van digitale tekeningen en modellen; Computerondersteunde grafische vormgeving; Computerondersteund ontwerp met betrekking tot bouwprojecten; Computerondersteund ontwerpen; IT consultancy-, advies- en informatiediensten; Consultancy met betrekking tot computersoftware voor het ontwerpen en creëren van digitale tekeningen en modellen; Ontwerp (Technische advisering inzake -), Ter beschikking stellen van software [SaaS]; Geen van voornoemde diensten op het gebied van communicatie en printen en mailen via meerdere kanalen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer programs (downloadable software) for designing and creating digital drawings and models; Software for construction, modelling and design; Computer software for computer-aided design (CAD); Computer programs in the form of geographical information systems..",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "en",
+      "description": "Data communication services; Worldwide computer network access services; Providing access to and leasing access time to computer databases; Provision of access to web pages; Digital transmission services..",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education in the implementation and use of data processing programs for designing and creating digital drawings and models; Training services relating to computer-aided engineering design; Education services relating to computer systems..",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Software development, programming and implementation; Design, maintenance and updating of computer programs and computer systems for creating digital drawings and models; Computer aided graphic design; Computer aided design services relating to building projects; Computer aided design services; IT consultancy, advisory and information services; Consultancy relating to computer programs for designing and creating digital drawings and models; Engineering consultancy relating to design, Software as a service [SaaS]; none of the aforementioned services in the field of multichannel communications and print & mail.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Digitaalsete jooniste ja mudelite koostamise ja loomise arvutitarkvara (allalaaditav tarkvara); Konstrueerimise, modelleerimise ja kujundamise arvutitarkvara; Arvutitarkvara arvutipõhise projekteerimise (CAD) jaoks; Geoinfosüsteemide tarkvara.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "et",
+      "description": "Andmesideteenused; Ülemaailmsesse arvutivõrku juurdepääsu teenused; Arvutiandmebaasile juurdepääsu võimaldamine ning juurdepääsuaja liisimine; Ligipääsu võimaldamine veebilehtedele; Digitaaledastusteenused.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "et",
+      "description": "Digitaalsete jooniste ja mudelite koostamise ja loomise andmetöötlusprogrammide kasutuselevõtu ja kasutamise koolitused; Arvutipõhise projekteerimise (CAD) koolitusteenused; Arvutisüsteemi koolitusteenused.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Arvutitarkvaraarendus ja -teostus, programmeerimine; Digitaalsete jooniste ja mudelite kujundamise ja loomise arvutisüsteemide projekteerimine, kavandamine, hooldamine ja uuendamine; Arvutipõhine graafiline kujundus; Ehitusprojektide arvutipõhised projekteerimisteenused; Arvutipõhine projekteerimine; IT-alased konsultatsioonid, nõuande- ja infoteenused; Digitaalsete jooniste ja mudelite koostamise ja loomise arvutitarkvaraga seotud konsultatsioonid; Projekteerimisalased insenerikonsultatsioonid, Pilveteenused [SaaS]; V.a eelnimetatud teenused mitmekanalilise side ning trüki- ja postiteenuse valdkonnas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Tietokoneohjelmat (ladattavat ohjelmistot) digitaalisten piirrosten ja mallien suunnitteluun ja luomiseen; Ohjelmistot rakentamiseen, mallinvalmistukseen ja muotoiluun; Tietokoneohjelmistot tietokoneavusteiseen suunnitteluun (CAD); Tietokoneohjelmat maantieteellisten tietojärjestelmien muodossa.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "fi",
+      "description": "Dataviestintäpalvelut; Maailmanlaajuisten tietoverkkojen käyttöpalvelut; Tietokantojen käyttöajan tarjoaminen ja vuokraus; Yhteyden tarjoaminen web-sivuille; Digitaaliset tiedonsiirtopalvelut.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fi",
+      "description": "Koulutus digitaalisten piirrosten ja mallien suunnitteluun ja luomiseen tarkoitettujen tietojenkäsittelyohjelmien toteutuksen ja käytön yhteydessä; Tietokoneavusteiseen tekniseen suunnitteluun liittyvät koulutuspalvelut; Koulutuspalvelut liittyen tietokonejärjestelmiin.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Tietokoneohjelmistojen kehittäminen, ohjelmointi ja toteutus; Piirrosten ja mallien suunnitteluun ja luomiseen tarkoitettujen tietokoneohjelmien ja tietokonejärjestelmien suunnittelu, muotoilu, ylläpito ja päivitys; Tietokoneavusteinen graafinen suunnittelu; Tietokoneavusteiset rakennushankkeisiin liittyvät suunnittelupalvelut; Tietokoneavusteiset suunnittelupalvelut; IT-asioihin liittyvät konsultointi-, neuvonta- ja tietopalvelut; Piirrosten ja mallien suunnitteluun ja luomiseen tarkoitettuihin tietokoneohjelmistoihin liittyvä konsultointi; Suunnitteluun liittyvä tekninen konsultointi, Verkkosovelluspalvelut [SaaS]; Mitään edellä manituista palveluista ei tarjota monikanavaviestinnän ja paino- ja postipalvelujen alalla.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Logiciels (logiciels téléchargeables) pour la conception et la création de plans numériques et modèles réduits; Logiciels de construction, modélisation et conception; Logiciel pour conception assistée par ordinateur (CAO); Logiciels sous la forme de systèmes d'informations géographiques.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "fr",
+      "description": "Services de communication de données; Services d'accès à des réseaux informatiques mondiaux; Fourniture d'accès et de location d'accès à une base de données informatique; Accès à des pages Web; Services de transmission numérique.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": "Formation à l'utilisation et à l'application de programmes de traitement de données pour la conception et la création de plans numériques et modèles réduits; Services de formation en matière de conception d'ingénierie assistée par ordinateur; Services d'enseignement concernant les systèmes informatiques.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Développement, programmation et implémentation de logiciels; Conception, élaboration, entretien et mise à jour de logiciels et systèmes informatiques pour la création de plans numériques et modèles réduits; Conception graphique assistée par ordinateur; Services de conception assistée par ordinateur dans le cadre de projets de construction; Services de conception assistée par ordinateur; Services de consultation, de conseil et d'information en matière de technologie de l'information; Consultations en matière de logiciels pour la conception et la création de plans numériques et modèles réduits; Services de conseils en ingénierie dans le domaine de la conception, Logiciels en tant que service [SaaS]; Aucun des services susmentionnés dans le domaine des communications multicanaux et de l'impression ainsi que du courrier.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Computerprogramme (herunterladbare Software) für Entwürfe und zur Erstellung von digitalen Zeichnungen und Modellen; Software für Konstruktionen, Modellherstellung und Gestaltung; Computersoftware für die computergestützte Konstruktion (CAD); Computerprogramme in Form von geografischen Informationssystemen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "de",
+      "description": "Datenübertragungsdienst; Bereitstellung des Zugangs zu weltweiten Computernetzen; Bereitstellung und Vermietung des Zugriffs auf Computerdatenbanken; Bereitstellung des Zugriffs auf Webseiten; Digitale Übertragungsdienste.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Ausbildung bei Implementierung und Anwendung von Datenverarbeitungsprogrammen für Entwürfe und zur Erstellung von digitalen Zeichnungen und Modellen; Ausbildungsdienstleistungen in Bezug auf computergestützte Entwicklung und Konstruktion; Ausbildung in Bezug auf Computersysteme.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Entwicklung, Programmierung und Implementierung von Software; Design, Gestaltung, Pflege und Aktualisierung von Computerprogrammen und Computersystemen zur Erstellung von digitalen Zeichnungen und Modellen; Computergestütztes Grafikdesign; Computergestützte Konstruktion und Gestaltung von Bauprojekten; Computergestütztes Design; IT-Beratungs-, -Auskunfts- und -Informationsdienstleistungen; Beratung in Bezug auf Computerprogramme für Entwürfe und zur Erstellung von digitalen Zeichnungen und Modellen; Technische Beratung bezüglich Gestaltung, Software as a Service [SaaS]; Keine der vorstehend genannten Dienstleistungen in den Bereichen Multichannel-Kommunikation und Druck & Versand.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hr",
+      "description": "Racunalni program (softver koji se moze preuzeti) za dizajn i izradu digitalnih nacrta i modela; Racunalni program za konstrukciju, izradu modela i dizajn; Racunalni softveri za za racunalno potpomognuto dizajniranje (CAD); Racunalni program u obliku geografskih informacijskih sustava.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "hr",
+      "description": "Usluge podatkovne komunikacije; Usluge pristupanja svjetskoj racunalnoj mrezi; Omogucavanje pristupa i zakup vremena pristupa racunalnim bazama podataka; Omogucavanje pristupa web stranicama; Usluge digitalnog prijenosa.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "hr",
+      "description": "Usluge obrazovanja u implementiranju i koristenju programa za obradu podataka za dizajn i izradu digitalnih nacrta i modela; Usluge osposobljavanja vezano uz racunalno potpomognuto projektiranje; Obrazovne usluge u svezi s racunalnim sustavima.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hr",
+      "description": "Razvoj, programiranje i implementacija softvera; Dizajn, oblikovanje, usluge odrzavanja i usluge azuriranja racunalnih programa i racunalnih sustava za izradu digitalnih nacrta i modela; Racunalno potpomognuti graficki dizajn; Usluge racunalno potpomognutog dizajna u svezi sa gradevinskim projektima; Usluge racunalno potpomognutog dizajniranja; Usluge savjetovanja i informacija vezane uz informacijsku tehnologiju; Konzultacije u vezi s racunalnim programima za dizajn i izradu digitalnih nacrta i modela; Inzenjersko savjetovanje u svezi s dizajnom, Softver kao usluga [SaaS]; Nijedna od navedenih usluga nije u podrucju visekanalne komunikacije te ispisa i slanja.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Számítógépes programok (letöltheto szoftverek) digitális tervek és modellek tervezéséhez és készítéséhez; Szoftverek tervezéshez, modellezéshez és formatervezéshez; Számítógépes szoftverek számítógéppel támogatott tervezéshez (CAD); Szoftverek földrajzi információs rendszerek formájában.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "hu",
+      "description": "Adatkommunikációs szolgáltatások; Globális számítógépes hálózat hozzáférési szolgáltatások; Adatbázisokhoz való hozzáférés biztosítása és hozzáférési ido bérbeadása, kölcsönzése; Weboldalakhoz való hozzáférés biztosítása; Digitális átviteli szolgáltatások.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "hu",
+      "description": "Adatfeldolgozó szoftverekkel kapcsolatos képzés, illetve azok implementálása és muködtetése digitális tervek és modellek tervezéséhez és készítéséhez; Számítógéppel támogatott mérnöki tervezéshez kapcsolódó képzési szolgáltatások; Számítógépes rendszerekkel kapcsolatos oktatási szolgáltatások.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Szoftverfejlesztés, programozás és kivitelezés; Szoftverek és számítógépes rendszerek tervezése, kialakítása, karbantartása és frissítése digitális tervek és modellek készítéséhez; Számítógéppel támogatott grafikai tervezés; Építési tervekkel, projektekkel kapcsolatos, számítógéppel segített tervezési szolgáltatások; Számítógéppel támogatott tervezoi szolgáltatások; Információtechnológiai [IT] konzultáció, tanácsadás és információs szolgáltatások; Konzultáció digitális tervek és modellek tervezéséhez és készítéséhez használatos számítógépes programok vonatkozásában; Tervezéssel kapcsolatos mérnöki konzultáció, Szoftver mint szolgáltatás [SaaS]; A fent említett szolgáltatások egyike sem vonatkozik a többcsatornás kommunikáció, valamint a nyomtatás és postai szolgáltatások területére.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Programmi informatici (software scaricabili) per la progettazione e la creazione di disegni e modelli digitali; Software per costruzione, produzione e progettazione di modelli; Software per la progettazione assistita da computer (CAD); Software in forma di sistemi di informazioni geografiche.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "it",
+      "description": "Servizi di comunicazione dati; Accesso a reti informatiche mondiali; Fornitura di accesso e noleggio di tempi di accesso ad una banca dati; Fornitura di accesso a pagine Web; Servizi di trasmissione digitale.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "it",
+      "description": "Formazione nell'implementazione e nell'uso di programmi di elaborazione dati per la progettazione e la creazione di disegni e modelli digitali; Servizi di formazione in materia di progettazione tecnica computerizzata; Servizi didattici riguardanti sistemi informatici.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Sviluppo, programmazione ed implementazione di software; Progettazione, costruzione, manutenzione e aggiornamenti di programmi e sistemi informatici per la creazione di disegni e modelli digitali; Progettazione grafica assistita da computer; Servizi di progettazione assistita da computer in materia di progetti edili; Servizi di disegno assistito da computer; Consulenza informatica, servizi di consulenza ed informazione; Consulenza in materia di programmi informatici per la progettazione e la creazione di disegni e modelli digitali; Consulenza tecnica in materia di progettazione, Software come servizio [SaaS]; Nessuno dei suddetti servizi rientra nel settore della comunicazione multicanale e della stampa e spedizione.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Kompiuteriu programos (atsisiunciama programine iranga) skaitmeniniams piesiniams ir modeliams projektuoti ir kurti; Programine iranga projektavimo, modelio parengimo ir dizaino reikmems; Kompiuteriu programine iranga, skirta kompiuteriu atliekamam dizainui (CAD); Kompiuteriu programine iranga, butent geografines informacines sistemos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "lt",
+      "description": "Duomenu komunikaciju paslaugos; Visuotinio kompiuterinio tinklo prieigos paslaugos; Prieigos prie kompiuteriniu duomenu baziu parupinimas ir prieigos laiko nuoma; Prieigos prie tinklalapiu parupinimas; Skaitmeninio perdavimo paslaugos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "lt",
+      "description": "Mokymas, kaip realizuoti ir naudoti duomenu dorojimo programas, skirtas skaitmeniniams piesiniams ir modeliams projektuoti ir kurti; Kompiuterizuoto inzinerinio projektavimo mokymas; Svietimo paslaugos, susijusios su kompiuteriu sistemomis.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "Programines irangos tobulinimas, programavimas ir idiegimas; Kompiuteriu programu ir kompiuteriu sistemu, skirtu skaitmeniniams piesiniams ir modeliams kurti, projektavimas, kurimas, technine prieziura ir naujinimas; Kompiuterizuotas grafinis dizainas; Kompiuterizuotojo pastatu projektavimo paslaugos; Kompiuterizuoto projektavimo paslaugos; Informaciniu technologiju konsultacijos, patarimai ir informacija; Konsultavimas, susijes su kompiuteriu programomis, skirtomis skaitmeniniams piesiniams ir modeliams projektuoti ir kurti; Inzinerines konsultacijos projektavimo klausimais, Programine iranga kaip paslauga [SaaS]; Ne viena is pirmiau minetu paslaugu nera daugiakanalio rysio ir spausdinimo bei pasto srityje.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Digitalu rasejumu un modelu projektesanas un izveides datorprogrammas (lejupieladejama programmatura); Konstruesanas, modelesanas un izstrades programmatura; Datoru programmatura datorbalstitai projektesanai (CAD); Datorprogrammas, proti, geografiskas informaciju sistemas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "lv",
+      "description": "Datu sakaru pakalpojumi; Piekluves nodrosinasana globalajam datortiklam; Piekluves nodrosinasana un piekluves laika iznomasana datoru datubazes; Piekluves nodrosinasana timekla lapam; Cipardatu parraidisanas pakalpojumi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "lv",
+      "description": "Macibas par digitalu rasejumu un modelu projektesanai un izveidei paredzetu datu apstrades programmu ieviesanu un izmantosanu; Apmacibas pakalpojumi datorizetu inzeniertehnisko projektu izstrade; Izglitibas pakalpojumi saistiba ar datorsistemam.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Programmaturas izstrade, programmesana un ieviesana; Digitalu rasejumu un modelu projektesanas un izveides datorprogrammu un datorsistemu projektesana, izstrade, uzturesana un atjauninasana; Datorizets grafiskais dizains; Datorizeti projektesanas pakalpojumi celtniecibas projektu joma; Datorizets dizains; Konsultaciju, padomu un informacijas sniegsana informacijas tehnologiju joma; Konsultacijas par digitalu rasejumu un modelu projektesanas un izveides datorprogrammam; Inzeniertehniskas konsultacijas saistiba ar projektesanu, Programmatura ka pakalpojums (SaaS); Neviens no ieprieks minetajiem pakalpojumiem nav daudzkanalu sakaru un drukas un pasta joma.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Programmi ghall-kompjuter (softwer li jista' jitnizzel) ghad-disinn u holqien ta' tpingijiet u mudelli digitali; Softwer ghall-kostruzzjoni, l-immudellar u d-disinjar; Softwer tal-kompjuter ghad-disinn bl-ghajnuna tal-kompjuter (CAD); Softwer tal-kompjuter fil-forma ta' sistemi tal-informazzjoni geografika.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "mt",
+      "description": "Servizzi ta' komunikazzjoni ta' data; Servizzi ta' access ghal netwerk globali tal-kompjuter; Il-provvista ta' access, u l-kiri ta' hin tal-access, ghal bazi ta' dati tal-kompjuter; Provvista ta' access ghall-pagni tas-siti elettronici; Servizzi ta' trasmissjoni digitali.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "mt",
+      "description": "Tahrig fl-implimentazzjoni u l-uzu ta' programmi tal-kompjuter ghad-disinn u holqien ta' tpingijiet u mudelli digitali; Servizzi ta' tahrig dwar id-disinn tal-inginerija bl-ghajnuna ta' kompjuter; Servizzi edukattivi relatati ma' sistemi tal-kompjuter.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "Zvilupp tas-softwer, programmar u implimentazzjoni; Disinn, kostruzzjoni, manutenzjoni u aggornament ta' programmi u sistemi tal-kompjuter ghall-holqien ta' tpingijiet u mudelli digitali; Servizzi ta' holqien grafiku bl-assistenza tal-kompjuter; Servizzi ta' disinn bl-ghajnuna ta' kompjuter dwar progetti tal-bini; Servizzi ta' disinn bl-ghajnuna ta' kompjuters; Servizz ta' konsultazzjoni, pariri u informazzjoni dwar l-IT; Servizzi ta' konsulenza relatati ma' softwer tal-kompjuter ghad-disinn u holqien ta' tpingijiet u mudelli digitali; Konsulenza fl-inginerija dwar id-disinn, Softwer bhala servizz [SaaS]; L-ebda wiehed mis-servizzi msemmija qabel mhu fil-qasam tal-komunikazzjonijiet u tal-istampa u tal-posta fuq diversi kanali.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Programy komputerowe (oprogramowanie do pobrania) do projektowania i tworzenia cyfrowych rysunków i modeli; Programy komputerowe do konstrukcji, tworzenia modeli i wzornictwa; Oprogramowanie komputerowe do projektowania wspomaganego komputerowo (CAD); Programy komputerowe w postaci geograficznych systemów informacyjnych.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "pl",
+      "description": "Uslugi przesylania danych; Uslugi dostepu do ogólnoswiatowej sieci komputerowej; Zapewnianie i wynajmowanie czasu dostepu do komputerowych baz danych; Zapewnianie dostepu do stron internetowych; Uslugi transmisji cyfrowej.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "pl",
+      "description": "Edukacja w zakresie wdrazania i stosowania programów przetwarzania danych do projektowania i tworzenia cyfrowych rysunków i modeli; Uslugi szkoleniowe w zakresie wspomaganego komputerowo projektowania inzynieryjnego; Uslugi edukacyjne dotyczace systemów komputerowych.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Rozwój, programowanie i wdrazanie oprogramowania komputerowego; Projektowanie, ksztaltowanie, konserwacja i aktualizacja programów komputerowych i systemów komputerowych do tworzenia cyfrowych rysunków i modeli; Uslugi projektowania graficznego wspomaganego komputerowo; Uslugi projektowania wspomaganego komputerowo w zakresie projektów budowlanych; Uslugi w zakresie projektowania wspomaganego komputerowo; Doradztwo, konsultacje i informacja w zakresie technologii informacyjnych; Konsultacje dotyczace programów komputerowych do projektowania i tworzenia cyfrowych rysunków i modeli; Doradztwo techniczne zwiazane z projektowaniem, Oprogramowanie jako usluga [SaaS]; Zadna z wyzej wymienionych uslug w zakresie komunikacji wielokanalowej oraz drukowania i wysylki.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Programas de computador (software descarregável) para a conceção e a criação de desenhos e modelos digitais; Software para projetos, criação de modelos e conceção; Software para desenho (ou projecto) assistido por computador (\"CAD\"); Programas de computador sob a forma de sistemas de informação geográfica.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "pt",
+      "description": "Serviços de comunicação de dados; Serviços de acesso a redes mundiais de informática; Fornecimento de acesso e aluguer de tempo de acesso a bases de dados informáticas; Fornecimento de acesso a páginas Web; Serviços de transmissão digital.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "pt",
+      "description": "Formação sobre implementação e utilização de programas de processamento de dados para a conceção e criação de desenhos e modelos digitais; Serviços de formação relacionados com conceção de engenharia assistida por computador; Serviços de educação relacionados com sistemas informáticos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Desenvolvimento, programação e implementação de software; Conceção, design, manutenção e atualização de programas de computador e sistemas informáticos para a criação de modelos e desenhos digitais; Desenho gráfico assistido por computador; Serviços de design assistido por computador relacionados com projetos de construção; Serviços de design assistido por computador; Serviços de consultadoria, aconselhamento e informação sobre TI (tecnologias de informação); Consultoria sobre programas de computador para a conceção e criação de desenhos e modelos digitais; Consultadoria de engenharia relacionada com design, Software como serviço [SaaS]; Nenhum dos serviços atrás referidos no domínio das comunicações multicanal e da impressão e correspondência.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Programe de calculator (software descarcabil) pentru proiectare si creare de desene si modele digitale; Software pentru constructie, creare de modele si proiectare; Software de calculator pentru proiectare asistata de calculator (CAD); Programe informatice sub forma de sisteme de informare geografica.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "ro",
+      "description": "Servicii de comunicare de date; Servicii de acces la reteaua mondiala de calculatoare; Furnizarea accesului si închirierea de timpi de acces la baze de date computerizate; Furnizarea accesului la pagini web; Servicii de transmisii digitale.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ro",
+      "description": "Instruire la implementarea si utilizarea programelor de prelucrare a datelor pentru proiectare si creare de desene si modele digitale; Servicii de formare în domeniul proiectarii tehnice asistate de calculator; Servicii educative referitoare la sistemele informatice.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Dezvoltare software, programare si implementare; Proiectare, punere în forma, întretinere si actualizare de programe de calculator si sisteme informatice pentru crearea de desene si modele digitale; Design grafic asistat de calculator; Servicii de proiectare asistata de calculator pentru proiecte de constructii; Servicii de proiectare asistata de calculator; Consultanta IT, servicii de consiliere si asigurare de informatii; Consultanta cu privire la programele de calculator pentru proiectarea si crearea de desene si modele digitale; Consultanta tehnica în materie de proiectare, Software ca serviciu [SaaS]; Niciunul dintre serviciile mentionate mai sus în este domeniul comunicatiilor multicanal si de tipul print & mail.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Pocítacové programy (softvér s moznostou kopírovania) na návrh a tvorbu digitálnych nákresov a modelov; Softvér na konstrukciu, výrobu modelov a návrh; Pocítacový softvér pre pocítacové projektovanie (CAD); Pocítacové programy vo forme geografických informacných systémov.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "sk",
+      "description": "Dátové komunikacné sluzby; Sluzby prístupu celosvetovej pocítacovej sieti; Poskytovanie prístupu a prenájom prístupového casu do pocítacových databáz; Poskytovanie prístupu na webové stránky; Sluzby digitálneho prenosu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sk",
+      "description": "Vzdelávanie v oblasti implementácie a pouzívania programov na spracovanie dát na dizajn a tvorbu digitálnych nákresov a modelov; Výcvikové a skoliace sluzby v oblasti inzinierskeho dizajnu s vyuzitím pocítacov; Vzdelávacie sluzby týkajúce sa pocítacových systémov.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "Vývoj softvéru, programovanie a zavádzanie programov; Návrh, údrzba a aktualizácia pocítacových programov a pocítacových systémov na tvorbu digitálnych nákresov a modelov; Grafické navrhovanie [dizajn] pomocou pocítaca; Sluzby v oblasti pocítacového dizajnu stavebných projektov; Navrhovanie [Dizajn] pomocou pocítaca; Poradenské a konzultacné sluzby a poskytovanie informácií v oblasti informacných technológií; Poradenstvo ohladom pocítacových programov na návrh a tvorbu digitálnych nákresov a modelov; Technické poradenstvo v oblasti dizajnu, Poskytovanie softvéru prostredníctvom internetu (SaaS); Ziadna z vyssie uvedených sluzieb nie je v oblasti viackanálovej komunikácie a tlace a posty.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Racunalniski programi (prenosljiva programska oprema) za oblikovanje in izdelovanje digitalnih nacrtov in modelov; Programska oprema za konstrukcijo, izdelovanje modelov in oblikovanje; Racunalniska programska oprema za racunalnisko podprto oblikovanje (CAD); Racunalniski programi v obliki geografskih informacijskih sistemov.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "sl",
+      "description": "Podatkovne komunikacije; Storitve dostopa do svetovnih racunalniskih omrezij; Nudenje dostopa in zakup dostopnega casa do racunalniskih baz podatkov; Zagotavljanje dostopa do spletnih strani; Storitve digitalnega prenosa.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sl",
+      "description": "Izobrazevanje o implementaciji in uporabi programov za obdelavo podatkov za oblikovanje in izdelovanje digitalnih nacrtov in modelov; Storitve usposabljanja v zvezi z racunalnisko podprtim inzenirskim oblikovanjem; Izobrazevalne storitve v zvezi z racunalniskimi sistemi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Razvoj programske opreme, programiranje in uvajanje programske opreme; Oblikovanje, izdelovanje, vzdrzevanje in posodabljanje racunalniskih programov in racunalniskih sistemov za izdelovanje digitalnih nacrtov in modelov; Racunalnisko podprto graficno oblikovanje; Racunalnisko podprte oblikovalske storitve v zvezi z gradbenimi projekti; Racunalnisko podprte oblikovalske storitve; Storitve svetovanja in nudnja informacij v zvezi z informacijsko tehnologijo; Posvetovanje o racunalniskih programih za oblikovanje in izdelovanje digitalnih nacrtov in modelov; Inzenirsko svetovanje v zvezi z oblikovanjem, Programska oprema kot storitev [SaaS]; Nobena od nastetih storitev ni na podrocju veckanalnih komunikacij ter tiska in poste.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Programas informáticos (software descargable) de diseño y creación de planos y maquetas digitales; Programas para la contrucción, elaboración y diseño de maquetas; Software informático para diseño asistido por ordenador (CAD); Programas informáticos tales como sistemas de información geográfica.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "es",
+      "description": "Servicios de comunicación de datos; Servicios de acceso a redes mundiales de informática; Servicios de acceso y de alquiler de tiempo de acceso a bases de datos informáticas; Facilitación de acceso a páginas web; Servicios de transmisión digital.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Capacitación en la implementación y uso de programas informáticos de diseño y creación de planos y maquetas digitales; Servicios de formación relacionados con el diseño técnico asistido por ordenador; Servicios de educación relacionados con sistemas informáticos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Desarrollo, programación e implementación de software; Diseño, concepción, mantenimiento y actualización de programas y sistemas informáticos de diseño y creación de planos y maquetas digitales; Diseño gráfico asistido por ordenador; Servicios de diseño asistido por ordenador relacionados con proyectos de construcción; Servicios de diseño asistido por ordenador; Consultoría, asesoramiento e información sobre servicios informáticos; Servicios de consultoría relacionados con programas informáticos de diseño y creación de planos y maquetas digitales; Consultas de ingeniería relativas al diseño, Software como servicio [SaaS]; Ninguno de los servicios mencionados es del ámbito de las comunicaciones, la impresión o el correo mediante múltiples canales.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Datorprogram (nedladdningsbar mjukvara) för design och skapande av digitala ritningar och modeller; programvara för konstruktion, modellframställning och formgivning; datorprogramvara för program för datorstödd konstruktion (CAD); datorprogram i form av geografiska informationssystem.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "sw",
+      "description": "Datakommunikationstjänster; tjänster avseende åtkomst till globala datornät; upplåtande av åtkomst till och uthyrning av åtkomsttid till databaser; upplåtande av åtkomst till webbsidor; digitala överföringstjänster.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sw",
+      "description": "Utbildning i implementering och användning av databehandlingsprogram för design och skapande av digitala ritningar och modeller; handledning/instruktioner för datorstödd teknikutformning; undervisning/utbildning avseende datorsystem.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Mjukvaruutveckling, -programmering och -implementering; design, utformning, underhåll och uppdatering av datorprogram och datorsystem för skapande av digitala ritningar och modeller; Datorstödd grafisk formgivning; Datorstödda konstruktionstjänster avseende byggnadsprojekt; CAD-tjänster; IT-konsultationer, -rådgivning och -information; konsultation avseende datorprogram för design och skapande av digitala ritningar och modeller; Teknisk konsultation rörande formgivning, Molntjänster [SaaS]; Inga av nämnda tjänster inom området multikanalkommunikationer och tryck och e-post.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Symetri AB",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": "GROTH & CO. KB",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Forskargatan 3,Borlänge, 781 70",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantName": "Symetri AB"
+      }
+    ],
+    "applicationLanguageCode": "sw",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Pocítacové programy (software ke stazení) pro navrhování a tvorbu digitálních výkresu a modelu; Software pro konstrukci, tvorbu a navrhování modelu; Pocítacový software pro pocítacem podporované navrhování (CAD); Pocítacové programy v podobe geografických informacních systému."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Sluzby v oblasti datové komunikace; Sluzby prístupu k celosvetové pocítacové síti; Poskytování prístupu a pronájem prístupového casu k pocítacovým databázím; Poskytování prístupu k webovým stránkám; Sluzby v oblasti digitálního prenosu."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Vzdelávání v oblasti zavádení a uzívání pocítacových programu pro navrhování a tvorbu digitálních výkresu a modelu; Skolicí sluzby zamerené na technický design s pomocí pocítace; Vzdelávací sluzby v oblasti pocítacových systému."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Vývoj softwaru, programování a implementace softwaru; Navrhování, tvorba, údrzba a aktualizace pocítacových programu a systému pro navrhování a tvorbu digitálních výkresu a modelu; Pocítacem podporovaný grafický design; Sluzby v oblasti pocítacem podporovaného projektování vztahující se ke stavebním projektum; Sluzby v oblasti pocítacem podporovaného projektování; Konzultacní, poradenské a informacní sluzby v oblasti informacních technologií; Konzultace týkající se pocítacových programu pro navrhování a tvorbu digitálních výkresu a modelu; Technické konzultace v oblasti designu, Software jako sluzba [SaaS]; Zádná z výse uvedených sluzeb není v oboru multikanálové komunikace a tisku a posty."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Computerprogrammer (software til at downloade) til design og udarbejdelse af digitale tegninger og modeller; Software til konstruktion, modelfremstilling og design; Computersoftware til computerstøttet design (cad); Computerprogrammer i form af geografiske informationssystemer."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Datakommunikationsvirksomhed; Tjenester til formidling af adgang til globale computernetværk; Tilvejebringelse af adgang til og leasing af adgangstid til computerdatabaser; Tilvejebringelse af adgang til websider; Tjenester inden for digital transmission."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Uddannelse i implementering og anvendelse af databehandlingsprogrammer til design og udarbejdelse af digitale tegninger og modeller; Undervisning i computerunderstøttet, teknisk design; Uddannelse inden for computersystemer."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Udvikling af software, programmering og implementering; Design, udformning, vedligeholdelse og opdatering af computerprogrammer samt computersystemer til udarbejdelse af digitale tegninger og modeller; Computerstøttet grafisk design; Computerstøttet designvirksomhed vedrørende byggeprojekter; Computerstøttet designvirksomhed; IT-rådgivnings-, vejlednings- og informationstjenesteydelser; Konsulentvirksomhed vedrørende computerprogrammer til design og udarbejdelse af digitale tegninger og modeller; Rådgivende ingeniørvirksomhed i forbindelse med design, Software as a service [saas]; Førnævnte tjenesteydelser ikke inden for kommunikation ad flere kanaler samt print og post."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Computersoftware (downloadbare software) voor het ontwerpen en creëren van digitale tekeningen en modellen; Software voor constructie, modelbouw en vormgeving; Software voor computerondersteunde ontwerpprogramma's (CAD); Computersoftware in de vorm van geografische informatiesystemen."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Diensten op het gebied van datacommunicatie; Toegang tot wereldwijde computernetwerken; Verlenen van toegang tot en het verhuren van toegangstijd tot computer databases; Verlenen van toegang tot webpagina's; Digitale overdracht."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Opleiding met betrekking tot het implementeren en gebruiken van gegevensverwerkingsprogramma's voor het ontwerpen en creëren van digitale tekeningen en modellen; Opleiding met betrekking tot computerondersteund technisch ontwerp; Onderwijs met betrekking tot computersystemen."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Ontwikkeling, programmering en implementatie van software; Design, ontwerp, onderhoud en actualisering van computersoftware en computersystemen voor het ontwerpen en creëren van digitale tekeningen en modellen; Computerondersteunde grafische vormgeving; Computerondersteund ontwerp met betrekking tot bouwprojecten; Computerondersteund ontwerpen; IT consultancy-, advies- en informatiediensten; Consultancy met betrekking tot computersoftware voor het ontwerpen en creëren van digitale tekeningen en modellen; Ontwerp (Technische advisering inzake -), Ter beschikking stellen van software [SaaS]; Geen van voornoemde diensten op het gebied van communicatie en printen en mailen via meerdere kanalen."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer programs (downloadable software) for designing and creating digital drawings and models; Software for construction, modelling and design; Computer software for computer-aided design (CAD); Computer programs in the form of geographical information systems.."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Data communication services; Worldwide computer network access services; Providing access to and leasing access time to computer databases; Provision of access to web pages; Digital transmission services.."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education in the implementation and use of data processing programs for designing and creating digital drawings and models; Training services relating to computer-aided engineering design; Education services relating to computer systems.."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Software development, programming and implementation; Design, maintenance and updating of computer programs and computer systems for creating digital drawings and models; Computer aided graphic design; Computer aided design services relating to building projects; Computer aided design services; IT consultancy, advisory and information services; Consultancy relating to computer programs for designing and creating digital drawings and models; Engineering consultancy relating to design, Software as a service [SaaS]; none of the aforementioned services in the field of multichannel communications and print & mail."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Digitaalsete jooniste ja mudelite koostamise ja loomise arvutitarkvara (allalaaditav tarkvara); Konstrueerimise, modelleerimise ja kujundamise arvutitarkvara; Arvutitarkvara arvutipõhise projekteerimise (CAD) jaoks; Geoinfosüsteemide tarkvara."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Andmesideteenused; Ülemaailmsesse arvutivõrku juurdepääsu teenused; Arvutiandmebaasile juurdepääsu võimaldamine ning juurdepääsuaja liisimine; Ligipääsu võimaldamine veebilehtedele; Digitaaledastusteenused."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Digitaalsete jooniste ja mudelite koostamise ja loomise andmetöötlusprogrammide kasutuselevõtu ja kasutamise koolitused; Arvutipõhise projekteerimise (CAD) koolitusteenused; Arvutisüsteemi koolitusteenused."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Arvutitarkvaraarendus ja -teostus, programmeerimine; Digitaalsete jooniste ja mudelite kujundamise ja loomise arvutisüsteemide projekteerimine, kavandamine, hooldamine ja uuendamine; Arvutipõhine graafiline kujundus; Ehitusprojektide arvutipõhised projekteerimisteenused; Arvutipõhine projekteerimine; IT-alased konsultatsioonid, nõuande- ja infoteenused; Digitaalsete jooniste ja mudelite koostamise ja loomise arvutitarkvaraga seotud konsultatsioonid; Projekteerimisalased insenerikonsultatsioonid, Pilveteenused [SaaS]; V.a eelnimetatud teenused mitmekanalilise side ning trüki- ja postiteenuse valdkonnas."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Tietokoneohjelmat (ladattavat ohjelmistot) digitaalisten piirrosten ja mallien suunnitteluun ja luomiseen; Ohjelmistot rakentamiseen, mallinvalmistukseen ja muotoiluun; Tietokoneohjelmistot tietokoneavusteiseen suunnitteluun (CAD); Tietokoneohjelmat maantieteellisten tietojärjestelmien muodossa."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Dataviestintäpalvelut; Maailmanlaajuisten tietoverkkojen käyttöpalvelut; Tietokantojen käyttöajan tarjoaminen ja vuokraus; Yhteyden tarjoaminen web-sivuille; Digitaaliset tiedonsiirtopalvelut."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Koulutus digitaalisten piirrosten ja mallien suunnitteluun ja luomiseen tarkoitettujen tietojenkäsittelyohjelmien toteutuksen ja käytön yhteydessä; Tietokoneavusteiseen tekniseen suunnitteluun liittyvät koulutuspalvelut; Koulutuspalvelut liittyen tietokonejärjestelmiin."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Tietokoneohjelmistojen kehittäminen, ohjelmointi ja toteutus; Piirrosten ja mallien suunnitteluun ja luomiseen tarkoitettujen tietokoneohjelmien ja tietokonejärjestelmien suunnittelu, muotoilu, ylläpito ja päivitys; Tietokoneavusteinen graafinen suunnittelu; Tietokoneavusteiset rakennushankkeisiin liittyvät suunnittelupalvelut; Tietokoneavusteiset suunnittelupalvelut; IT-asioihin liittyvät konsultointi-, neuvonta- ja tietopalvelut; Piirrosten ja mallien suunnitteluun ja luomiseen tarkoitettuihin tietokoneohjelmistoihin liittyvä konsultointi; Suunnitteluun liittyvä tekninen konsultointi, Verkkosovelluspalvelut [SaaS]; Mitään edellä manituista palveluista ei tarjota monikanavaviestinnän ja paino- ja postipalvelujen alalla."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Logiciels (logiciels téléchargeables) pour la conception et la création de plans numériques et modèles réduits; Logiciels de construction, modélisation et conception; Logiciel pour conception assistée par ordinateur (CAO); Logiciels sous la forme de systèmes d'informations géographiques."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de communication de données; Services d'accès à des réseaux informatiques mondiaux; Fourniture d'accès et de location d'accès à une base de données informatique; Accès à des pages Web; Services de transmission numérique."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Formation à l'utilisation et à l'application de programmes de traitement de données pour la conception et la création de plans numériques et modèles réduits; Services de formation en matière de conception d'ingénierie assistée par ordinateur; Services d'enseignement concernant les systèmes informatiques."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Développement, programmation et implémentation de logiciels; Conception, élaboration, entretien et mise à jour de logiciels et systèmes informatiques pour la création de plans numériques et modèles réduits; Conception graphique assistée par ordinateur; Services de conception assistée par ordinateur dans le cadre de projets de construction; Services de conception assistée par ordinateur; Services de consultation, de conseil et d'information en matière de technologie de l'information; Consultations en matière de logiciels pour la conception et la création de plans numériques et modèles réduits; Services de conseils en ingénierie dans le domaine de la conception, Logiciels en tant que service [SaaS]; Aucun des services susmentionnés dans le domaine des communications multicanaux et de l'impression ainsi que du courrier."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Computerprogramme (herunterladbare Software) für Entwürfe und zur Erstellung von digitalen Zeichnungen und Modellen; Software für Konstruktionen, Modellherstellung und Gestaltung; Computersoftware für die computergestützte Konstruktion (CAD); Computerprogramme in Form von geografischen Informationssystemen."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Datenübertragungsdienst; Bereitstellung des Zugangs zu weltweiten Computernetzen; Bereitstellung und Vermietung des Zugriffs auf Computerdatenbanken; Bereitstellung des Zugriffs auf Webseiten; Digitale Übertragungsdienste."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Ausbildung bei Implementierung und Anwendung von Datenverarbeitungsprogrammen für Entwürfe und zur Erstellung von digitalen Zeichnungen und Modellen; Ausbildungsdienstleistungen in Bezug auf computergestützte Entwicklung und Konstruktion; Ausbildung in Bezug auf Computersysteme."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Entwicklung, Programmierung und Implementierung von Software; Design, Gestaltung, Pflege und Aktualisierung von Computerprogrammen und Computersystemen zur Erstellung von digitalen Zeichnungen und Modellen; Computergestütztes Grafikdesign; Computergestützte Konstruktion und Gestaltung von Bauprojekten; Computergestütztes Design; IT-Beratungs-, -Auskunfts- und -Informationsdienstleistungen; Beratung in Bezug auf Computerprogramme für Entwürfe und zur Erstellung von digitalen Zeichnungen und Modellen; Technische Beratung bezüglich Gestaltung, Software as a Service [SaaS]; Keine der vorstehend genannten Dienstleistungen in den Bereichen Multichannel-Kommunikation und Druck & Versand."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Racunalni program (softver koji se moze preuzeti) za dizajn i izradu digitalnih nacrta i modela; Racunalni program za konstrukciju, izradu modela i dizajn; Racunalni softveri za za racunalno potpomognuto dizajniranje (CAD); Racunalni program u obliku geografskih informacijskih sustava."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Usluge podatkovne komunikacije; Usluge pristupanja svjetskoj racunalnoj mrezi; Omogucavanje pristupa i zakup vremena pristupa racunalnim bazama podataka; Omogucavanje pristupa web stranicama; Usluge digitalnog prijenosa."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Usluge obrazovanja u implementiranju i koristenju programa za obradu podataka za dizajn i izradu digitalnih nacrta i modela; Usluge osposobljavanja vezano uz racunalno potpomognuto projektiranje; Obrazovne usluge u svezi s racunalnim sustavima."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Razvoj, programiranje i implementacija softvera; Dizajn, oblikovanje, usluge odrzavanja i usluge azuriranja racunalnih programa i racunalnih sustava za izradu digitalnih nacrta i modela; Racunalno potpomognuti graficki dizajn; Usluge racunalno potpomognutog dizajna u svezi sa gradevinskim projektima; Usluge racunalno potpomognutog dizajniranja; Usluge savjetovanja i informacija vezane uz informacijsku tehnologiju; Konzultacije u vezi s racunalnim programima za dizajn i izradu digitalnih nacrta i modela; Inzenjersko savjetovanje u svezi s dizajnom, Softver kao usluga [SaaS]; Nijedna od navedenih usluga nije u podrucju visekanalne komunikacije te ispisa i slanja."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Számítógépes programok (letöltheto szoftverek) digitális tervek és modellek tervezéséhez és készítéséhez; Szoftverek tervezéshez, modellezéshez és formatervezéshez; Számítógépes szoftverek számítógéppel támogatott tervezéshez (CAD); Szoftverek földrajzi információs rendszerek formájában."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Adatkommunikációs szolgáltatások; Globális számítógépes hálózat hozzáférési szolgáltatások; Adatbázisokhoz való hozzáférés biztosítása és hozzáférési ido bérbeadása, kölcsönzése; Weboldalakhoz való hozzáférés biztosítása; Digitális átviteli szolgáltatások."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Adatfeldolgozó szoftverekkel kapcsolatos képzés, illetve azok implementálása és muködtetése digitális tervek és modellek tervezéséhez és készítéséhez; Számítógéppel támogatott mérnöki tervezéshez kapcsolódó képzési szolgáltatások; Számítógépes rendszerekkel kapcsolatos oktatási szolgáltatások."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Szoftverfejlesztés, programozás és kivitelezés; Szoftverek és számítógépes rendszerek tervezése, kialakítása, karbantartása és frissítése digitális tervek és modellek készítéséhez; Számítógéppel támogatott grafikai tervezés; Építési tervekkel, projektekkel kapcsolatos, számítógéppel segített tervezési szolgáltatások; Számítógéppel támogatott tervezoi szolgáltatások; Információtechnológiai [IT] konzultáció, tanácsadás és információs szolgáltatások; Konzultáció digitális tervek és modellek tervezéséhez és készítéséhez használatos számítógépes programok vonatkozásában; Tervezéssel kapcsolatos mérnöki konzultáció, Szoftver mint szolgáltatás [SaaS]; A fent említett szolgáltatások egyike sem vonatkozik a többcsatornás kommunikáció, valamint a nyomtatás és postai szolgáltatások területére."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Programmi informatici (software scaricabili) per la progettazione e la creazione di disegni e modelli digitali; Software per costruzione, produzione e progettazione di modelli; Software per la progettazione assistita da computer (CAD); Software in forma di sistemi di informazioni geografiche."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi di comunicazione dati; Accesso a reti informatiche mondiali; Fornitura di accesso e noleggio di tempi di accesso ad una banca dati; Fornitura di accesso a pagine Web; Servizi di trasmissione digitale."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Formazione nell'implementazione e nell'uso di programmi di elaborazione dati per la progettazione e la creazione di disegni e modelli digitali; Servizi di formazione in materia di progettazione tecnica computerizzata; Servizi didattici riguardanti sistemi informatici."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Sviluppo, programmazione ed implementazione di software; Progettazione, costruzione, manutenzione e aggiornamenti di programmi e sistemi informatici per la creazione di disegni e modelli digitali; Progettazione grafica assistita da computer; Servizi di progettazione assistita da computer in materia di progetti edili; Servizi di disegno assistito da computer; Consulenza informatica, servizi di consulenza ed informazione; Consulenza in materia di programmi informatici per la progettazione e la creazione di disegni e modelli digitali; Consulenza tecnica in materia di progettazione, Software come servizio [SaaS]; Nessuno dei suddetti servizi rientra nel settore della comunicazione multicanale e della stampa e spedizione."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Kompiuteriu programos (atsisiunciama programine iranga) skaitmeniniams piesiniams ir modeliams projektuoti ir kurti; Programine iranga projektavimo, modelio parengimo ir dizaino reikmems; Kompiuteriu programine iranga, skirta kompiuteriu atliekamam dizainui (CAD); Kompiuteriu programine iranga, butent geografines informacines sistemos."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Duomenu komunikaciju paslaugos; Visuotinio kompiuterinio tinklo prieigos paslaugos; Prieigos prie kompiuteriniu duomenu baziu parupinimas ir prieigos laiko nuoma; Prieigos prie tinklalapiu parupinimas; Skaitmeninio perdavimo paslaugos."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Mokymas, kaip realizuoti ir naudoti duomenu dorojimo programas, skirtas skaitmeniniams piesiniams ir modeliams projektuoti ir kurti; Kompiuterizuoto inzinerinio projektavimo mokymas; Svietimo paslaugos, susijusios su kompiuteriu sistemomis."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Programines irangos tobulinimas, programavimas ir idiegimas; Kompiuteriu programu ir kompiuteriu sistemu, skirtu skaitmeniniams piesiniams ir modeliams kurti, projektavimas, kurimas, technine prieziura ir naujinimas; Kompiuterizuotas grafinis dizainas; Kompiuterizuotojo pastatu projektavimo paslaugos; Kompiuterizuoto projektavimo paslaugos; Informaciniu technologiju konsultacijos, patarimai ir informacija; Konsultavimas, susijes su kompiuteriu programomis, skirtomis skaitmeniniams piesiniams ir modeliams projektuoti ir kurti; Inzinerines konsultacijos projektavimo klausimais, Programine iranga kaip paslauga [SaaS]; Ne viena is pirmiau minetu paslaugu nera daugiakanalio rysio ir spausdinimo bei pasto srityje."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Digitalu rasejumu un modelu projektesanas un izveides datorprogrammas (lejupieladejama programmatura); Konstruesanas, modelesanas un izstrades programmatura; Datoru programmatura datorbalstitai projektesanai (CAD); Datorprogrammas, proti, geografiskas informaciju sistemas."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Datu sakaru pakalpojumi; Piekluves nodrosinasana globalajam datortiklam; Piekluves nodrosinasana un piekluves laika iznomasana datoru datubazes; Piekluves nodrosinasana timekla lapam; Cipardatu parraidisanas pakalpojumi."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Macibas par digitalu rasejumu un modelu projektesanai un izveidei paredzetu datu apstrades programmu ieviesanu un izmantosanu; Apmacibas pakalpojumi datorizetu inzeniertehnisko projektu izstrade; Izglitibas pakalpojumi saistiba ar datorsistemam."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Programmaturas izstrade, programmesana un ieviesana; Digitalu rasejumu un modelu projektesanas un izveides datorprogrammu un datorsistemu projektesana, izstrade, uzturesana un atjauninasana; Datorizets grafiskais dizains; Datorizeti projektesanas pakalpojumi celtniecibas projektu joma; Datorizets dizains; Konsultaciju, padomu un informacijas sniegsana informacijas tehnologiju joma; Konsultacijas par digitalu rasejumu un modelu projektesanas un izveides datorprogrammam; Inzeniertehniskas konsultacijas saistiba ar projektesanu, Programmatura ka pakalpojums (SaaS); Neviens no ieprieks minetajiem pakalpojumiem nav daudzkanalu sakaru un drukas un pasta joma."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Programmi ghall-kompjuter (softwer li jista' jitnizzel) ghad-disinn u holqien ta' tpingijiet u mudelli digitali; Softwer ghall-kostruzzjoni, l-immudellar u d-disinjar; Softwer tal-kompjuter ghad-disinn bl-ghajnuna tal-kompjuter (CAD); Softwer tal-kompjuter fil-forma ta' sistemi tal-informazzjoni geografika."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi ta' komunikazzjoni ta' data; Servizzi ta' access ghal netwerk globali tal-kompjuter; Il-provvista ta' access, u l-kiri ta' hin tal-access, ghal bazi ta' dati tal-kompjuter; Provvista ta' access ghall-pagni tas-siti elettronici; Servizzi ta' trasmissjoni digitali."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Tahrig fl-implimentazzjoni u l-uzu ta' programmi tal-kompjuter ghad-disinn u holqien ta' tpingijiet u mudelli digitali; Servizzi ta' tahrig dwar id-disinn tal-inginerija bl-ghajnuna ta' kompjuter; Servizzi edukattivi relatati ma' sistemi tal-kompjuter."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Zvilupp tas-softwer, programmar u implimentazzjoni; Disinn, kostruzzjoni, manutenzjoni u aggornament ta' programmi u sistemi tal-kompjuter ghall-holqien ta' tpingijiet u mudelli digitali; Servizzi ta' holqien grafiku bl-assistenza tal-kompjuter; Servizzi ta' disinn bl-ghajnuna ta' kompjuter dwar progetti tal-bini; Servizzi ta' disinn bl-ghajnuna ta' kompjuters; Servizz ta' konsultazzjoni, pariri u informazzjoni dwar l-IT; Servizzi ta' konsulenza relatati ma' softwer tal-kompjuter ghad-disinn u holqien ta' tpingijiet u mudelli digitali; Konsulenza fl-inginerija dwar id-disinn, Softwer bhala servizz [SaaS]; L-ebda wiehed mis-servizzi msemmija qabel mhu fil-qasam tal-komunikazzjonijiet u tal-istampa u tal-posta fuq diversi kanali."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Programy komputerowe (oprogramowanie do pobrania) do projektowania i tworzenia cyfrowych rysunków i modeli; Programy komputerowe do konstrukcji, tworzenia modeli i wzornictwa; Oprogramowanie komputerowe do projektowania wspomaganego komputerowo (CAD); Programy komputerowe w postaci geograficznych systemów informacyjnych."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi przesylania danych; Uslugi dostepu do ogólnoswiatowej sieci komputerowej; Zapewnianie i wynajmowanie czasu dostepu do komputerowych baz danych; Zapewnianie dostepu do stron internetowych; Uslugi transmisji cyfrowej."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Edukacja w zakresie wdrazania i stosowania programów przetwarzania danych do projektowania i tworzenia cyfrowych rysunków i modeli; Uslugi szkoleniowe w zakresie wspomaganego komputerowo projektowania inzynieryjnego; Uslugi edukacyjne dotyczace systemów komputerowych."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Rozwój, programowanie i wdrazanie oprogramowania komputerowego; Projektowanie, ksztaltowanie, konserwacja i aktualizacja programów komputerowych i systemów komputerowych do tworzenia cyfrowych rysunków i modeli; Uslugi projektowania graficznego wspomaganego komputerowo; Uslugi projektowania wspomaganego komputerowo w zakresie projektów budowlanych; Uslugi w zakresie projektowania wspomaganego komputerowo; Doradztwo, konsultacje i informacja w zakresie technologii informacyjnych; Konsultacje dotyczace programów komputerowych do projektowania i tworzenia cyfrowych rysunków i modeli; Doradztwo techniczne zwiazane z projektowaniem, Oprogramowanie jako usluga [SaaS]; Zadna z wyzej wymienionych uslug w zakresie komunikacji wielokanalowej oraz drukowania i wysylki."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Programas de computador (software descarregável) para a conceção e a criação de desenhos e modelos digitais; Software para projetos, criação de modelos e conceção; Software para desenho (ou projecto) assistido por computador (\"CAD\"); Programas de computador sob a forma de sistemas de informação geográfica."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de comunicação de dados; Serviços de acesso a redes mundiais de informática; Fornecimento de acesso e aluguer de tempo de acesso a bases de dados informáticas; Fornecimento de acesso a páginas Web; Serviços de transmissão digital."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Formação sobre implementação e utilização de programas de processamento de dados para a conceção e criação de desenhos e modelos digitais; Serviços de formação relacionados com conceção de engenharia assistida por computador; Serviços de educação relacionados com sistemas informáticos."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Desenvolvimento, programação e implementação de software; Conceção, design, manutenção e atualização de programas de computador e sistemas informáticos para a criação de modelos e desenhos digitais; Desenho gráfico assistido por computador; Serviços de design assistido por computador relacionados com projetos de construção; Serviços de design assistido por computador; Serviços de consultadoria, aconselhamento e informação sobre TI (tecnologias de informação); Consultoria sobre programas de computador para a conceção e criação de desenhos e modelos digitais; Consultadoria de engenharia relacionada com design, Software como serviço [SaaS]; Nenhum dos serviços atrás referidos no domínio das comunicações multicanal e da impressão e correspondência."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Programe de calculator (software descarcabil) pentru proiectare si creare de desene si modele digitale; Software pentru constructie, creare de modele si proiectare; Software de calculator pentru proiectare asistata de calculator (CAD); Programe informatice sub forma de sisteme de informare geografica."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii de comunicare de date; Servicii de acces la reteaua mondiala de calculatoare; Furnizarea accesului si închirierea de timpi de acces la baze de date computerizate; Furnizarea accesului la pagini web; Servicii de transmisii digitale."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Instruire la implementarea si utilizarea programelor de prelucrare a datelor pentru proiectare si creare de desene si modele digitale; Servicii de formare în domeniul proiectarii tehnice asistate de calculator; Servicii educative referitoare la sistemele informatice."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Dezvoltare software, programare si implementare; Proiectare, punere în forma, întretinere si actualizare de programe de calculator si sisteme informatice pentru crearea de desene si modele digitale; Design grafic asistat de calculator; Servicii de proiectare asistata de calculator pentru proiecte de constructii; Servicii de proiectare asistata de calculator; Consultanta IT, servicii de consiliere si asigurare de informatii; Consultanta cu privire la programele de calculator pentru proiectarea si crearea de desene si modele digitale; Consultanta tehnica în materie de proiectare, Software ca serviciu [SaaS]; Niciunul dintre serviciile mentionate mai sus în este domeniul comunicatiilor multicanal si de tipul print & mail."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Pocítacové programy (softvér s moznostou kopírovania) na návrh a tvorbu digitálnych nákresov a modelov; Softvér na konstrukciu, výrobu modelov a návrh; Pocítacový softvér pre pocítacové projektovanie (CAD); Pocítacové programy vo forme geografických informacných systémov."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Dátové komunikacné sluzby; Sluzby prístupu celosvetovej pocítacovej sieti; Poskytovanie prístupu a prenájom prístupového casu do pocítacových databáz; Poskytovanie prístupu na webové stránky; Sluzby digitálneho prenosu."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Vzdelávanie v oblasti implementácie a pouzívania programov na spracovanie dát na dizajn a tvorbu digitálnych nákresov a modelov; Výcvikové a skoliace sluzby v oblasti inzinierskeho dizajnu s vyuzitím pocítacov; Vzdelávacie sluzby týkajúce sa pocítacových systémov."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Vývoj softvéru, programovanie a zavádzanie programov; Návrh, údrzba a aktualizácia pocítacových programov a pocítacových systémov na tvorbu digitálnych nákresov a modelov; Grafické navrhovanie [dizajn] pomocou pocítaca; Sluzby v oblasti pocítacového dizajnu stavebných projektov; Navrhovanie [Dizajn] pomocou pocítaca; Poradenské a konzultacné sluzby a poskytovanie informácií v oblasti informacných technológií; Poradenstvo ohladom pocítacových programov na návrh a tvorbu digitálnych nákresov a modelov; Technické poradenstvo v oblasti dizajnu, Poskytovanie softvéru prostredníctvom internetu (SaaS); Ziadna z vyssie uvedených sluzieb nie je v oblasti viackanálovej komunikácie a tlace a posty."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Racunalniski programi (prenosljiva programska oprema) za oblikovanje in izdelovanje digitalnih nacrtov in modelov; Programska oprema za konstrukcijo, izdelovanje modelov in oblikovanje; Racunalniska programska oprema za racunalnisko podprto oblikovanje (CAD); Racunalniski programi v obliki geografskih informacijskih sistemov."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Podatkovne komunikacije; Storitve dostopa do svetovnih racunalniskih omrezij; Nudenje dostopa in zakup dostopnega casa do racunalniskih baz podatkov; Zagotavljanje dostopa do spletnih strani; Storitve digitalnega prenosa."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Izobrazevanje o implementaciji in uporabi programov za obdelavo podatkov za oblikovanje in izdelovanje digitalnih nacrtov in modelov; Storitve usposabljanja v zvezi z racunalnisko podprtim inzenirskim oblikovanjem; Izobrazevalne storitve v zvezi z racunalniskimi sistemi."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Razvoj programske opreme, programiranje in uvajanje programske opreme; Oblikovanje, izdelovanje, vzdrzevanje in posodabljanje racunalniskih programov in racunalniskih sistemov za izdelovanje digitalnih nacrtov in modelov; Racunalnisko podprto graficno oblikovanje; Racunalnisko podprte oblikovalske storitve v zvezi z gradbenimi projekti; Racunalnisko podprte oblikovalske storitve; Storitve svetovanja in nudnja informacij v zvezi z informacijsko tehnologijo; Posvetovanje o racunalniskih programih za oblikovanje in izdelovanje digitalnih nacrtov in modelov; Inzenirsko svetovanje v zvezi z oblikovanjem, Programska oprema kot storitev [SaaS]; Nobena od nastetih storitev ni na podrocju veckanalnih komunikacij ter tiska in poste."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Programas informáticos (software descargable) de diseño y creación de planos y maquetas digitales; Programas para la contrucción, elaboración y diseño de maquetas; Software informático para diseño asistido por ordenador (CAD); Programas informáticos tales como sistemas de información geográfica."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de comunicación de datos; Servicios de acceso a redes mundiales de informática; Servicios de acceso y de alquiler de tiempo de acceso a bases de datos informáticas; Facilitación de acceso a páginas web; Servicios de transmisión digital."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Capacitación en la implementación y uso de programas informáticos de diseño y creación de planos y maquetas digitales; Servicios de formación relacionados con el diseño técnico asistido por ordenador; Servicios de educación relacionados con sistemas informáticos."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Desarrollo, programación e implementación de software; Diseño, concepción, mantenimiento y actualización de programas y sistemas informáticos de diseño y creación de planos y maquetas digitales; Diseño gráfico asistido por ordenador; Servicios de diseño asistido por ordenador relacionados con proyectos de construcción; Servicios de diseño asistido por ordenador; Consultoría, asesoramiento e información sobre servicios informáticos; Servicios de consultoría relacionados con programas informáticos de diseño y creación de planos y maquetas digitales; Consultas de ingeniería relativas al diseño, Software como servicio [SaaS]; Ninguno de los servicios mencionados es del ámbito de las comunicaciones, la impresión o el correo mediante múltiples canales."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Datorprogram (nedladdningsbar mjukvara) för design och skapande av digitala ritningar och modeller; programvara för konstruktion, modellframställning och formgivning; datorprogramvara för program för datorstödd konstruktion (CAD); datorprogram i form av geografiska informationssystem."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Datakommunikationstjänster; tjänster avseende åtkomst till globala datornät; upplåtande av åtkomst till och uthyrning av åtkomsttid till databaser; upplåtande av åtkomst till webbsidor; digitala överföringstjänster."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Utbildning i implementering och användning av databehandlingsprogram för design och skapande av digitala ritningar och modeller; handledning/instruktioner för datorstödd teknikutformning; undervisning/utbildning avseende datorsystem."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Mjukvaruutveckling, -programmering och -implementering; design, utformning, underhåll och uppdatering av datorprogram och datorsystem för skapande av digitala ritningar och modeller; Datorstödd grafisk formgivning; Datorstödda konstruktionstjänster avseende byggnadsprojekt; CAD-tjänster; IT-konsultationer, -rådgivning och -information; konsultation avseende datorprogram för design och skapande av digitala ritningar och modeller; Teknisk konsultation rörande formgivning, Molntjänster [SaaS]; Inga av nämnda tjänster inom området multikanalkommunikationer och tryck och e-post."
+        }
+      ]
+    },
+    "id": "57c03faa-1cab-4337-b09e-1c523c192730",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "182"
+      }
+    ],
+    "recordLastUpdated": "20260918",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Fleminggatan 20,Stockholm, 112 26",
+        "representativeAddressCountryCode": "SE",
+        "representativeAddressCountryName": "Sweden",
+        "representativeName": "GROTH & CO. KB"
+      }
+    ],
+    "secondLanguageCode": "en",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240904",
+        "applicationNumber": "19074708"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340904",
+      "lastPublicationDate": "20240923",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20250122",
+        "registrationNumber": "19074708"
+      }
+    },
+    "version": "20260918000730",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SYMETRI"
+    }
+  },
+  "_uri": "/mark/em/57c03faa-1cab-4337-b09e-1c523c192730",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.294Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

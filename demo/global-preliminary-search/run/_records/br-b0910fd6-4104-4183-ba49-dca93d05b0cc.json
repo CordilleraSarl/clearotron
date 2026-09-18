@@ -1,0 +1,110 @@
+{
+  "uri": "/mark/br/b0910fd6-4104-4183-ba49-dca93d05b0cc",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "b0910fd6-4104-4183-ba49-dca93d05b0cc",
+  "applicationNumber": "840374852",
+  "registrationNumber": "840374852",
+  "applicationDate": "2012-12-21",
+  "registrationDate": "2015-12-01",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Desenvolvimento, projeto e teste de semicondutores de dispositivos semicondutores de circuitos integrados, de microcontroladores, de processadores, de dispositivos de radiofrequência (rf), de sensores de de software para terceiros; serviços de consultoria nas áreas de desenvolvimento, projeto e teste de semicondutores, de dispositivos semicondutores, de circuitos integrados, de microcontroladores, de processadores, de dispositivos de radiofrequência (rf), de sensores e de software, provimento de informação nas áreas de semicondutores, de dispositivos semicondutores, de circuitos integrados, de microcontroladores, de processadores, de dispositivos de radiofrequência (rf), de sensores e de software.",
+      "translation_language": "en",
+      "translation": "DEVELOPMENT, DESIGN AND TESTING OF SEMICONDUCTORS OF INTEGRATED CIRCUIT DEVICES, MICROCONTROLLERS, PROCESSORS, RADIOFREQUENCY (RF) DEVICES, SOFTWARE SENSORS FOR THIRD PARTIES; CONSULTING SERVICES IN THE AREAS OF DEVELOPMENT, DESIGN AND TESTING OF SEMICONDUCTORS, SEMICONDUCTOR DEVICES, INTEGRATED CIRCUITS, MICROCONTROLLERS, PROCESSORS, RADIOFREQUENCY DEVICES (RF), SENSORS, SEMICONDUCTORS AND SOFTWARE, PROCESSORS OF SEMICONDUCTOR DEVICES, INTEGRATED CIRCUITS, MICROCONTROLLERS, PROCESSORS, RADIO FREQUENCY (RF) DEVICES, SENSORS AND SOFTWARE."
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "LUIZ LEONARDOS & CIA PROPRIEDADE INTELECTUAL",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "NXP USA, INC."
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "DEVELOPMENT, DESIGN AND TESTING OF SEMICONDUCTORS OF INTEGRATED CIRCUIT DEVICES, MICROCONTROLLERS, PROCESSORS, RADIOFREQUENCY (RF) DEVICES, SOFTWARE SENSORS FOR THIRD PARTIES; CONSULTING SERVICES IN THE AREAS OF DEVELOPMENT, DESIGN AND TESTING OF SEMICONDUCTORS, SEMICONDUCTOR DEVICES, INTEGRATED CIRCUITS, MICROCONTROLLERS, PROCESSORS, RADIOFREQUENCY DEVICES (RF), SENSORS, SEMICONDUCTORS AND SOFTWARE, PROCESSORS OF SEMICONDUCTOR DEVICES, INTEGRATED CIRCUITS, MICROCONTROLLERS, PROCESSORS, RADIO FREQUENCY (RF) DEVICES, SENSORS AND SOFTWARE.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Desenvolvimento, projeto e teste de semicondutores de dispositivos semicondutores de circuitos integrados, de microcontroladores, de processadores, de dispositivos de radiofrequência (rf), de sensores de de software para terceiros; serviços de consultoria nas áreas de desenvolvimento, projeto e teste de semicondutores, de dispositivos semicondutores, de circuitos integrados, de microcontroladores, de processadores, de dispositivos de radiofrequência (rf), de sensores e de software, provimento de informação nas áreas de semicondutores, de dispositivos semicondutores, de circuitos integrados, de microcontroladores, de processadores, de dispositivos de radiofrequência (rf), de sensores e de software."
+        }
+      ]
+    },
+    "id": "b0910fd6-4104-4183-ba49-dca93d05b0cc",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260709",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "LUIZ LEONARDOS & CIA PROPRIEDADE INTELECTUAL"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20121221",
+        "applicationNumber": "840374852"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20151201",
+        "registrationNumber": "840374852"
+      }
+    },
+    "version": "20260709020058",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/br/b0910fd6-4104-4183-ba49-dca93d05b0cc",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.686Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

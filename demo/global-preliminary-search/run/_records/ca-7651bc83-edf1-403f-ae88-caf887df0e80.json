@@ -1,0 +1,260 @@
+{
+  "uri": "/mark/ca/7651bc83-edf1-403f-ae88-caf887df0e80",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "7651bc83-edf1-403f-ae88-caf887df0e80",
+  "applicationNumber": "2219835",
+  "registrationNumber": "TMA1316333",
+  "applicationDate": "2022-09-15",
+  "registrationDate": "2025-05-23",
+  "expiryDate": "2032-09-15",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2025-03-05"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SOVELIA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Recorded computer programs and computer system software designed for use in computer-aided design, manufacturing and construction, computer-aided analysis, simulation, visualisation and product development, and for the accessing, querying and analyzing of documents and product data for the entire product life-cycle in the field of mechanical engineering and industrial process control.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Mechanical engineering consultancy, industrial engineering consultancy, civil engineering consultancy, computer software and hardware engineering consultancy, computer-aided product development, computer programming, computer software design.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Symetri AB",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": "GOWLING WLG (CANADA) LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Forskargatan 3, SE-781 70 Borlänge",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantAddressLines": [
+          "Forskargatan 3",
+          "SE-781 70 Borlänge"
+        ],
+        "applicantName": "Symetri AB"
+      }
+    ],
+    "categorizedTexts": {},
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Recorded computer programs and computer system software designed for use in computer-aided design, manufacturing and construction, computer-aided analysis, simulation, visualisation and product development, and for the accessing, querying and analyzing of documents and product data for the entire product life-cycle in the field of mechanical engineering and industrial process control."
+        },
+        {
+          "intClassNumber": "09,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Mechanical engineering consultancy, industrial engineering consultancy, civil engineering consultancy, computer software and hardware engineering consultancy, computer-aided product development, computer programming, computer software design."
+        }
+      ]
+    },
+    "id": "7651bc83-edf1-403f-ae88-caf887df0e80",
+    "internationalMarkKeys": [
+      {
+        "internationalRegistrationNumber": "1693178"
+      }
+    ],
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20250523",
+        "descriptionText": "Statement of Grant of Protection Sent (following a Provisional Refusal)"
+      },
+      {
+        "date": "20250523",
+        "descriptionText": "Registered"
+      },
+      {
+        "date": "20250523",
+        "descriptionText": "Registration Pending"
+      },
+      {
+        "date": "20250305",
+        "descriptionText": "Opposition Start Date Notice Sent",
+        "information": "Requested on 2025/03/05 00:30:08 in program jr500m1"
+      },
+      {
+        "date": "20250305",
+        "descriptionText": "Advertised",
+        "information": "Vol.72 Issue 3671"
+      },
+      {
+        "date": "20250207",
+        "descriptionText": "Approval Notice Sent",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20250207",
+        "descriptionText": "Approved",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20240423",
+        "descriptionText": "Agent changed",
+        "information": "From/De: To/A: 32"
+      },
+      {
+        "date": "20240216",
+        "descriptionText": "Total Provisional Refusal Sent",
+        "responseDate": "20240816"
+      },
+      {
+        "date": "20240216",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20240816"
+      },
+      {
+        "date": "20240216",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20230905",
+        "descriptionText": "Notification of Possible Oppositions Sent"
+      },
+      {
+        "date": "20221103",
+        "descriptionText": "Designation Notification - Madrid Protocol",
+        "responseDate": "20240503"
+      },
+      {
+        "date": "20221102",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20221102",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20220915",
+        "descriptionText": "International Registration",
+        "responseDate": "20320915"
+      },
+      {
+        "date": "20220915",
+        "descriptionText": "Filed",
+        "information": "Registration"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Forskargatan 3, SE-781 70 Borlänge",
+        "addressLines": [
+          "Forskargatan 3",
+          "SE-781 70 Borlänge"
+        ],
+        "countryName": "Sweden",
+        "name": "Symetri AB"
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "3671",
+        "publicationVolume": "72"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "GOWLING WLG (CANADA) LLP",
+          "SUITE 1600",
+          "1 FIRST CANADIAN PLACE",
+          "100 KING STREET WEST",
+          "TORONTO",
+          "ONTARIO M5X1G5"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "GOWLING WLG (CANADA) LLP",
+        "representativeReferenceNumber": "T681 425 2MAPCA"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220915",
+        "applicationNumber": "2219835"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320915",
+      "formalisationDate": "20221102",
+      "markCurrentStatus": "Registered",
+      "nextRenewalDate": "20320915",
+      "publicationDate": [
+        "20250305"
+      ],
+      "registration": {
+        "registrationDate": "20250523",
+        "registrationNumber": "TMA1316333"
+      }
+    },
+    "subjectHeadings": [
+      "SOVELIA"
+    ],
+    "version": "20250625111434",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SOVELIA",
+      "markVerbalElementTextFormal": "SOVELIA"
+    }
+  },
+  "_uri": "/mark/ca/7651bc83-edf1-403f-ae88-caf887df0e80",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.303Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

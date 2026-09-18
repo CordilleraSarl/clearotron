@@ -1,0 +1,102 @@
+{
+  "uri": "/mark/tz/ed71991d-d3af-4f3f-8666-910877aa730c",
+  "provider": "clarivate",
+  "office": "tz",
+  "guid": "ed71991d-d3af-4f3f-8666-910877aa730c",
+  "applicationNumber": "TZ/S/2017/357",
+  "registrationNumber": null,
+  "applicationDate": "2017-05-04",
+  "registrationDate": null,
+  "expiryDate": "2024-05-04",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "MIFARE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Research and design for others in relation to integrated circuits and communications software and networks; computer software development in the field of mobile applications; consulting in the field of telecommunications technology; design and development of wireless communications systems for transmission and reception of voice, data' and video; design and development of wireless communications systems for authentication purposes; providing temporary use of online - non-downloadable software applications, development platforms, and development tools that enable software developers to develop, program, build, and prototype software for integrated circuits, chips and data processing equipment; computer, programming services; research and design of electro technical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (ICs), chips, semiconductors, smart cards, controllers for smart cards, controllers for RFID chips and tags, computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; research and design of antennas for scanning reading and interpreting RFID chips and tags; research and design of NFC (near field communications) apparatus, instruments and equipment, including electronic, electro technical and electromagnetic modules, parts and building elements and integrated circuits for NFC applications; advisory services in relation to all the above.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "HIGH TECH CAMPUS AG EINDHOVEN",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Research and design for others in relation to integrated circuits and communications software and networks; computer software development in the field of mobile applications; consulting in the field of telecommunications technology; design and development of wireless communications systems for transmission and reception of voice, data' and video; design and development of wireless communications systems for authentication purposes; providing temporary use of online - non-downloadable software applications, development platforms, and development tools that enable software developers to develop, program, build, and prototype software for integrated circuits, chips and data processing equipment; computer, programming services; research and design of electro technical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (ICs), chips, semiconductors, smart cards, controllers for smart cards, controllers for RFID chips and tags, computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; research and design of antennas for scanning reading and interpreting RFID chips and tags; research and design of NFC (near field communications) apparatus, instruments and equipment, including electronic, electro technical and electromagnetic modules, parts and building elements and integrated circuits for NFC applications; advisory services in relation to all the above."
+        }
+      ]
+    },
+    "id": "ed71991d-d3af-4f3f-8666-910877aa730c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "TZ",
+    "registrationOfficeName": "Tanzania",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170504",
+        "applicationNumber": "TZ/S/2017/357"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20240504",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20240321121636",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MIFARE"
+    }
+  },
+  "_uri": "/mark/tz/ed71991d-d3af-4f3f-8666-910877aa730c",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.754Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

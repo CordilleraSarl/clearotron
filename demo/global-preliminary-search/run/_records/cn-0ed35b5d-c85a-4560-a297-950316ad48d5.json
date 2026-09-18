@@ -1,0 +1,149 @@
+{
+  "uri": "/mark/cn/0ed35b5d-c85a-4560-a297-950316ad48d5",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "0ed35b5d-c85a-4560-a297-950316ad48d5",
+  "applicationNumber": "4239509",
+  "registrationNumber": "4239509",
+  "applicationDate": "2004-08-26",
+  "registrationDate": "2008-03-27",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2007-12-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2024-01-27",
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "FREESCALE SEMICONDUCTOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "技术许可;与半导体制造及使用相关的专利许可;与半导体制造及使用相关的商标许可;与半导体制造及使用相关的版权许可;与半导体制造及使用相关的商业秘密的许可;与半导体制造及使用相关的专有技术的许可;半导体技术许可;与半导体制造及使用相关的软件的许可;与半导体及其制造相关的技术许可;包含在半导体产品中的及与半导体产品相关的技术许可;包含在集成电路中的及与集成电路相关的技术许可;包含在电路板中的及与电路板相关的技术许可;包含在微电脑中的及与微电脑相关的技术许可;包含在微控制器中的及与微控制器相关的技术许可;包含在微处理器中的及与微处理器相关的技术许可;包含在计算机外围设备中的及与计算机外围设备相关的技术许可;包含在存储器中的及与存储器相关的技术许可;包含在前述产品的半导体材料中的及与前述产品的半导体材料相关的技术许可;包含在数据转换电路中的及与数据转换电路相关的技术许可;包含在计算机固件中的及与计算机固件相关的技术许可;包含在用于计算机的电子、电及电机设备中的及与计算机的电子、电及电机设备相关的技术许可;包含在视频电路板中的及与视频电路板相关的技术许可;包含在视频系统产品中的与视频系统产品相关的技术许可;包含在录制、复制和修改声音设备中的与录制、复制和修改声音设备相关的技术许可;包含在录制、复制和修改图像设备中的与录制、复制和修改图像设备相关的技术许可;包含在录制、复制和修改数据设备中的与录制、复制和修改数据设备相关的技术许可;包含在计算机程序中的与计算机程序相关的技术许可;为用户定制设计计算机系统;为用户定制设计电讯系统;提供与计算机相关的技术咨询服务;提供与电讯相关的技术咨询服务;提供与软件设计相关的技术咨询服务;与计算机相关的技术许可;与数据压缩及解压缩运算法则相关的技术许可",
+      "translation_language": "en",
+      "translation": "Technology license; Patent license related to semiconductor manufacturing and use; Trademark license related to semiconductor manufacturing and use; Copyright license related to semiconductor manufacturing and use; Trade secret license related to semiconductor manufacturing and use; Semiconductor manufacturing and use License to use related proprietary technology; Semiconductor technology license; License of software related to semiconductor manufacturing and use; Technology license related to semiconductor and its manufacturing; Technology license included in and related to semiconductor products; Contains Technology licenses in and related to integrated circuits; Technology licenses contained in and related to circuit boards; Technology licenses contained in and related to microcomputers; Technology licenses contained in and related to microcontrollers Technology licenses related to microcontrollers; Technology licenses contained in and related to microprocessors; Technology licenses contained in and related to computer peripherals; Technology licenses contained in and related to memories Memory-related technology licenses; technology licenses included in and related to the semiconductor materials of the aforementioned products; technology licenses included in and related to data conversion circuits; technology licenses included in computer firmware and technology licenses related to computer firmware; technology licenses contained in and related to electronic, electrical and electrical equipment for computers; technology licenses contained in and related to video circuit boards Related technology licenses; technology licenses related to video system products included in video system products; technology licenses related to recording, copying and modifying sound equipment included in recording, copying and modifying sound equipment; included in recording, copying and modifying sound equipment and modifying image equipment in relation to equipment for recording, copying and modifying images; technical licenses contained in equipment for recording, copying and modifying data relating to equipment for recording, copying and modifying data; technical licenses contained in computer programs relating to equipment for recording, copying and modifying data Technology licensing related to computer programs; custom design of computer systems for users; custom design of telecommunications systems for users; provision of computer-related technical consulting services; provision of technical consulting services related to telecommunications; provision of technical consulting services related to software design; and Computer-related technology licenses; technology licenses related to data compression and decompression algorithms"
+    }
+  ],
+  "owner": "NXP USA,INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityDate": "20040301"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 WILLIAM CANNON DRIVE WEST,AUSTIN,TEXAS 78735,USA",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA,INC.",
+        "applicantNativeName": "恩智浦美国有限责任公司;NXP USA,INC."
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Technology license; Patent license related to semiconductor manufacturing and use; Trademark license related to semiconductor manufacturing and use; Copyright license related to semiconductor manufacturing and use; Trade secret license related to semiconductor manufacturing and use; Semiconductor manufacturing and use License to use related proprietary technology; Semiconductor technology license; License of software related to semiconductor manufacturing and use; Technology license related to semiconductor and its manufacturing; Technology license included in and related to semiconductor products; Contains Technology licenses in and related to integrated circuits; Technology licenses contained in and related to circuit boards; Technology licenses contained in and related to microcomputers; Technology licenses contained in and related to microcontrollers Technology licenses related to microcontrollers; Technology licenses contained in and related to microprocessors; Technology licenses contained in and related to computer peripherals; Technology licenses contained in and related to memories Memory-related technology licenses; technology licenses included in and related to the semiconductor materials of the aforementioned products; technology licenses included in and related to data conversion circuits; technology licenses included in computer firmware and technology licenses related to computer firmware; technology licenses contained in and related to electronic, electrical and electrical equipment for computers; technology licenses contained in and related to video circuit boards Related technology licenses; technology licenses related to video system products included in video system products; technology licenses related to recording, copying and modifying sound equipment included in recording, copying and modifying sound equipment; included in recording, copying and modifying sound equipment and modifying image equipment in relation to equipment for recording, copying and modifying images; technical licenses contained in equipment for recording, copying and modifying data relating to equipment for recording, copying and modifying data; technical licenses contained in computer programs relating to equipment for recording, copying and modifying data Technology licensing related to computer programs; custom design of computer systems for users; custom design of telecommunications systems for users; provision of computer-related technical consulting services; provision of technical consulting services related to telecommunications; provision of technical consulting services related to software design; and Computer-related technology licenses; technology licenses related to data compression and decompression algorithms",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "技术许可;与半导体制造及使用相关的专利许可;与半导体制造及使用相关的商标许可;与半导体制造及使用相关的版权许可;与半导体制造及使用相关的商业秘密的许可;与半导体制造及使用相关的专有技术的许可;半导体技术许可;与半导体制造及使用相关的软件的许可;与半导体及其制造相关的技术许可;包含在半导体产品中的及与半导体产品相关的技术许可;包含在集成电路中的及与集成电路相关的技术许可;包含在电路板中的及与电路板相关的技术许可;包含在微电脑中的及与微电脑相关的技术许可;包含在微控制器中的及与微控制器相关的技术许可;包含在微处理器中的及与微处理器相关的技术许可;包含在计算机外围设备中的及与计算机外围设备相关的技术许可;包含在存储器中的及与存储器相关的技术许可;包含在前述产品的半导体材料中的及与前述产品的半导体材料相关的技术许可;包含在数据转换电路中的及与数据转换电路相关的技术许可;包含在计算机固件中的及与计算机固件相关的技术许可;包含在用于计算机的电子、电及电机设备中的及与计算机的电子、电及电机设备相关的技术许可;包含在视频电路板中的及与视频电路板相关的技术许可;包含在视频系统产品中的与视频系统产品相关的技术许可;包含在录制、复制和修改声音设备中的与录制、复制和修改声音设备相关的技术许可;包含在录制、复制和修改图像设备中的与录制、复制和修改图像设备相关的技术许可;包含在录制、复制和修改数据设备中的与录制、复制和修改数据设备相关的技术许可;包含在计算机程序中的与计算机程序相关的技术许可;为用户定制设计计算机系统;为用户定制设计电讯系统;提供与计算机相关的技术咨询服务;提供与电讯相关的技术咨询服务;提供与软件设计相关的技术咨询服务;与计算机相关的技术许可;与数据压缩及解压缩运算法则相关的技术许可"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Legal services",
+        "Research and development service",
+        "Computer programming, and concerned services"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4207",
+          "subNatGoodsServicesDescription": "Legal services"
+        },
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        }
+      ]
+    },
+    "id": "0ed35b5d-c85a-4560-a297-950316ad48d5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityDate": "20040301"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "1101"
+      }
+    ],
+    "recordLastUpdated": "20251001",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京捷鼎知识产权代理有限责任公司"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040826",
+        "applicationNumber": "4239509"
+      },
+      "cancellationDate": "20240127",
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20071227",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20080327",
+        "registrationNumber": "4239509"
+      }
+    },
+    "version": "20251001193418",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE SEMICONDUCTOR"
+    }
+  },
+  "_uri": "/mark/cn/0ed35b5d-c85a-4560-a297-950316ad48d5",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.685Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

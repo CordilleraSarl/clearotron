@@ -1,0 +1,130 @@
+{
+  "uri": "/mark/cn/6b300e63-5dd4-449f-a3b2-2bdfcfb018d7",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "6b300e63-5dd4-449f-a3b2-2bdfcfb018d7",
+  "applicationNumber": "4973987",
+  "registrationNumber": "4973987",
+  "applicationDate": "2005-10-31",
+  "registrationDate": "2010-03-07",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2009-12-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2023-12-27",
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "STARCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "通过互联网提供培训服务;通过互联网提供培训信息",
+      "translation_language": "en",
+      "translation": "Provision of training services via the Internet; provision of training information via the Internet"
+    }
+  ],
+  "owner": "NXP USA,INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 WILLIAM CANNON DRIVE WEST,AUSTIN,TEXAS 78735,USA",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA,INC.",
+        "applicantNativeName": "恩智浦美国有限责任公司;NXP USA,INC."
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Provision of training services via the Internet; provision of training information via the Internet",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "通过互联网提供培训服务;通过互联网提供培训信息"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Education"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4101",
+          "subNatGoodsServicesDescription": "Education"
+        }
+      ]
+    },
+    "id": "6b300e63-5dd4-449f-a3b2-2bdfcfb018d7",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1194"
+      }
+    ],
+    "recordLastUpdated": "20251001",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京捷鼎知识产权代理有限责任公司"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20051031",
+        "applicationNumber": "4973987"
+      },
+      "cancellationDate": "20231227",
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20091206",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20100307",
+        "registrationNumber": "4973987"
+      }
+    },
+    "version": "20251001221357",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "STARCORE"
+    }
+  },
+  "_uri": "/mark/cn/6b300e63-5dd4-449f-a3b2-2bdfcfb018d7",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:10.762Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

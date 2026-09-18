@@ -1,0 +1,290 @@
+{
+  "uri": "/mark/ca/140f61b8-3fd0-459a-a6bb-47395eb26873",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "140f61b8-3fd0-459a-a6bb-47395eb26873",
+  "applicationNumber": "2222765",
+  "registrationNumber": "TMA1343609",
+  "applicationDate": "2022-09-15",
+  "registrationDate": "2025-08-29",
+  "expiryDate": "2032-09-15",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2025-06-11"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SYMETRI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    38,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9,
+        38,
+        41,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Computer programs (downloadable software) for designing and creating digital drawings for use in construction, 3d animation, automotive design, industrial product design; computer software for creating 3d virtual reality plan and technical specifications for use in construction, automotive, and industrial product design; computer software for computer-aided design (cad) in the field of construction and automated manufacturing; computer programs in the form of geographical in-formation systems; all of the aforesaid goods excluding use in the field of energy, oil, and gas",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9,
+        38,
+        41,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Data communication services, namely, provision of electronic data interchange services; world-wide computer network access services; providing access to and leasing access time to computer databases; provision of access to web pages; wireless digital messaging services; all of the aforesaid services excluding use in the field of energy, oil, and gas \n(2) Education in the implementation and use of data processing programs for designing and creating digital drawings in the fields of construction, architecture, 3d animation, automotive design and industrial product design; training services relating to computer-aided engineering design in the field of construction, 3d animation, automotive design and industrial product design; education services relating to computer software, and hardware systems for use in construction, 3d animation, automotive design and industrial product design; all of the aforesaid services excluding use in the field of energy, oil, and gas \n(3) Software development, programming and implementation in the field of construction, 3d animation, automotive design and industrial product design; design, maintenance and updating of computer programs and computer systems for creating digital drawings in the field of construction, 3d animation, automotive design and industrial product design; computer aided graphic design; computer aided design services relating to building projects; computer aided design services; computer help desk consultancy, advisory and information services; consultancy relating to computer programs for designing and creating digital drawings in the field of construction, 3d animation, automotive design and industrial product design, construction project; engineering consultancy relating to design, software as a service [saas] services featuring software for designing and creating digital drawings for use in construction, for creating 3d virtual reality plans and technical specifications for use in construction and for computer-aided design (cad) in the field of construction; all of the aforesaid services excluding use in the field of energy, oil, and gas",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Symetri AB",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": "GOWLING WLG (CANADA) LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Forskargatan 3, SE-781 70 Borlänge",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantAddressLines": [
+          "Forskargatan 3",
+          "SE-781 70 Borlänge"
+        ],
+        "applicantName": "Symetri AB"
+      }
+    ],
+    "categorizedTexts": {},
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09,38,41,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Computer programs (downloadable software) for designing and creating digital drawings for use in construction, 3d animation, automotive design, industrial product design; computer software for creating 3d virtual reality plan and technical specifications for use in construction, automotive, and industrial product design; computer software for computer-aided design (cad) in the field of construction and automated manufacturing; computer programs in the form of geographical in-formation systems; all of the aforesaid goods excluding use in the field of energy, oil, and gas"
+        },
+        {
+          "intClassNumber": "09,38,41,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Data communication services, namely, provision of electronic data interchange services; world-wide computer network access services; providing access to and leasing access time to computer databases; provision of access to web pages; wireless digital messaging services; all of the aforesaid services excluding use in the field of energy, oil, and gas \n(2) Education in the implementation and use of data processing programs for designing and creating digital drawings in the fields of construction, architecture, 3d animation, automotive design and industrial product design; training services relating to computer-aided engineering design in the field of construction, 3d animation, automotive design and industrial product design; education services relating to computer software, and hardware systems for use in construction, 3d animation, automotive design and industrial product design; all of the aforesaid services excluding use in the field of energy, oil, and gas \n(3) Software development, programming and implementation in the field of construction, 3d animation, automotive design and industrial product design; design, maintenance and updating of computer programs and computer systems for creating digital drawings in the field of construction, 3d animation, automotive design and industrial product design; computer aided graphic design; computer aided design services relating to building projects; computer aided design services; computer help desk consultancy, advisory and information services; consultancy relating to computer programs for designing and creating digital drawings in the field of construction, 3d animation, automotive design and industrial product design, construction project; engineering consultancy relating to design, software as a service [saas] services featuring software for designing and creating digital drawings for use in construction, for creating 3d virtual reality plans and technical specifications for use in construction and for computer-aided design (cad) in the field of construction; all of the aforesaid services excluding use in the field of energy, oil, and gas"
+        }
+      ]
+    },
+    "id": "140f61b8-3fd0-459a-a6bb-47395eb26873",
+    "internationalMarkKeys": [
+      {
+        "internationalRegistrationNumber": "1696399"
+      }
+    ],
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20250829",
+        "descriptionText": "Statement of Grant of Protection Sent (following a Provisional Refusal)"
+      },
+      {
+        "date": "20250829",
+        "descriptionText": "Registered"
+      },
+      {
+        "date": "20250829",
+        "descriptionText": "Registration Pending"
+      },
+      {
+        "date": "20250611",
+        "descriptionText": "Opposition Start Date Notice Sent",
+        "information": "Requested on 2025/06/11 00:30:07 in program jr500m1"
+      },
+      {
+        "date": "20250611",
+        "descriptionText": "Advertised",
+        "information": "Vol.72 Issue 3685"
+      },
+      {
+        "date": "20250506",
+        "descriptionText": "Approval Notice Sent",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20250506",
+        "descriptionText": "Approved",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20240906",
+        "descriptionText": "Extension of Time",
+        "information": "Request Letter Date: 2024/08/26",
+        "responseDate": "20250228"
+      },
+      {
+        "date": "20240423",
+        "descriptionText": "Agent changed",
+        "information": "From/De: To/A: 32"
+      },
+      {
+        "date": "20240229",
+        "descriptionText": "Total Provisional Refusal Sent",
+        "responseDate": "20240829"
+      },
+      {
+        "date": "20240229",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20240829"
+      },
+      {
+        "date": "20240229",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20230918",
+        "descriptionText": "Notification of Possible Oppositions Sent"
+      },
+      {
+        "date": "20221117",
+        "descriptionText": "Designation Notification - Madrid Protocol",
+        "responseDate": "20240517"
+      },
+      {
+        "date": "20221116",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20221116",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20220915",
+        "descriptionText": "International Registration",
+        "responseDate": "20320915"
+      },
+      {
+        "date": "20220915",
+        "descriptionText": "Filed",
+        "information": "Registration"
+      }
+    ],
+    "markFeature": "DESIGN MARK",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "Colour is claimed as a feature of the trademark. The colour turquoise blue is claimed as a feature of the trademark. The trademark consists of the word SYMETRI in turquoise blue.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImageViennaClassification": [
+      "29.01.03",
+      "29.01.04"
+    ],
+    "markImagesAvailable": true,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Forskargatan 3, SE-781 70 Borlänge",
+        "addressLines": [
+          "Forskargatan 3",
+          "SE-781 70 Borlänge"
+        ],
+        "countryName": "Sweden",
+        "name": "Symetri AB"
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "3685",
+        "publicationVolume": "72"
+      }
+    ],
+    "recordLastUpdated": "20250903",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "GOWLING WLG (CANADA) LLP",
+          "SUITE 1600",
+          "1 FIRST CANADIAN PLACE",
+          "100 KING STREET WEST",
+          "TORONTO",
+          "ONTARIO M5X1G5"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "GOWLING WLG (CANADA) LLP",
+        "representativeReferenceNumber": "T681 425 1MAPCA"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220915",
+        "applicationNumber": "2222765"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320915",
+      "extension": {
+        "approvalDate": [
+          "20240906"
+        ],
+        "dueDate": "20250228"
+      },
+      "formalisationDate": "20221116",
+      "markCurrentStatus": "Registered",
+      "nextRenewalDate": "20320915",
+      "publicationDate": [
+        "20250611"
+      ],
+      "registration": {
+        "registrationDate": "20250829",
+        "registrationNumber": "TMA1343609"
+      }
+    },
+    "subjectHeadings": [
+      "SYMETRI",
+      "SYMMETRY"
+    ],
+    "version": "20250903090007",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "SYMMETRY",
+      "markVerbalElementText": "SYMETRI",
+      "markVerbalElementTextFormal": "SYMETRI"
+    }
+  },
+  "_uri": "/mark/ca/140f61b8-3fd0-459a-a6bb-47395eb26873",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.300Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,156 @@
+{
+  "uri": "/mark/lt/8e828cdf-e5e6-4a3e-b78f-14878fb9e273",
+  "provider": "clarivate",
+  "office": "lt",
+  "guid": "8e828cdf-e5e6-4a3e-b78f-14878fb9e273",
+  "applicationNumber": "2004 1735",
+  "registrationNumber": "52470",
+  "applicationDate": "2004-08-30",
+  "registrationDate": "2006-08-18",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2006-09-25",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2024-08-30",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": null,
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "puslaidininkiai, puslaidininkiniai procesoriai, puslaidininkinių procesorių lustai (integrinės grandinės), lustai (integrinės grandinės), integrinių grandinių lustai, mikrograndynų (mikroschemų) (perprogramuojamos) plokštės, mikrokompiuteriai, mikrovaldikliai, mikroprocesoriai ir kompiuterių išoriniai įrenginiai, atminties įrenginiai ir jiems skirtos puslaidininkių medžiagos; puslaidininkiai (mašinoms ir staklėms); puslaidininkiai (apšvietimo, šildymo, garų gamybos, valgio virimo, šaldymo, džiovinimo, vėdinimo įrenginiams); puslaidininkiai (laikrodžiams ir chronometriniams instrumentams ir prietaisams); puslaidininkiai (muzikos instrumentams); puslaidininkiai (žaidimams ir žaislams); duomenų konvertavimo grandinės; kompiuterių programinė aparatinė įranga; elektroniniai, elektriniai ir elektromechaniniai aparatai, įrenginiai bei prietaisai, naudojami su kompiuteriais; vaizdo sistemų aparatai, įrenginiai ir prietaisai; garso, vaizdo ar duomenų įrašymo, perdavimo, perdirbimo ar atkūrimo aparatūra ir įranga; vaizdo grandinių plokštės, garso grandinų plokštės; garso ir vaizdo grandinių plokštės; vaizdo grafikos spartintuvai; daugialypės terpės spartintuvai; vaizdo apdorojimo procesoriai; kompiuterių programos; mokomoji medžiaga apie kompiuterius ir duomenų algoritmus duomenų glaudinimui ir išplėtimui; testavimo, tikrinimo ir kalibravimo aparatai; visų išvardintų prekių dalys, detalės ir priedai; integrinių grandinių ir puslaidininkių atminties įrenginių testavimo ir programavimo įrenginiai ir aparatai; kompiuterių programinė įranga, būtent taikomųjų programų integravimo ir jungimo programinė įranga, kompiuterių paslaugų programos, tinklų valdymo kompiuterių programos, prisijungimo prie visuotinio kompiuterių tinklo ir tarpusavyje besijungiančių kompiuterių tinklų kompiuterių programinė įranga; kompiuterių operacinės sistemos; kompiuterių operacinių sistemų programinė įranga; kompiuterių operacinės programos; kompiuterių programinės įrangos priemonės, skirtos trečių šalių taikomosios programinės įrangos veikimo pritaikymui.",
+      "translation_language": "en",
+      "translation": "semi-conductors, semi-conductor processors, semiconductors processor chips (integrated chains), chips (integrated circuits), integrated chain chips, integrated circuit cards (chip) (overwritten) plates, microcomputers, microcontrollers, microprocessors and ceramic chain holders computer external apparatus for, memory devices and ceramic chain holders for them for semiconductor anti-corrosive substances; semiconductors (for automobiles and machines); semiconductors (for illumination, heating, vapour generating, cooking, refrigerating, drying, ventillation equipment); semiconductors (for watches and chorometric instruments and devices); semi-conductors (music instruments); semiconductors (for games and toys); data convertation chains'; programming operational computer devices; electronic, electric and electro-mechanic apparatus, apparatus for and devices for, used with computers; video system apparatus, equipment and devices; audio, processing or restoration of sound, disposal, or data; for image chain plates, audio CHAIN plates; sound and image curcuit plates; for image graphic accelerators; multimedia media accelerators; for image processing processors; computer programmes; Training material about computers and ceramic chain holders data algorithms data compression and ceramic chain holders extension; information on testing, checking and ceramic chain holders calibration apparatus; parts for all the aforesaid goods, details and fittings; integrated circuit and ceramic chain holders semiconductor memory devices' information on testing and ceramic chain holders programming apparatus for and ceramic chain holders apparatus; computer software, exactly applied design of software integration and ceramic chain holders coupling software appliances, computer providing services programmes, network management computer programs, login into public computer network and ceramic chain holders each other merging computer neworks computer software appliances; computer operation systems for; software of computer operational systems; computer operation programmes; computer software devices, for third countries applied software equipment and technical care of adjusting."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "technologijų licencijavimas; patentų, prekių ženklų, autorių teisių, slaptos verslo informacijos ir mokslinės informacijos bei techninių žinių, susijusių su puslaidininkių gamyba ir naudojimu, licencijavimas; puslaidininkių licencijavimas; programinės įrangos, susijusios su puslaidininkių gamyba ir naudojimu, licencijavimas; technologijų, susijusių su puslaidininkiais ir puslaidininkių gamyba, licencijavimas; technologijų, integruotų ir susijusių su puslaidininkių gaminiais, integrinėmis grandinėmis, grandinių plokštėmis, mikrokompiuteriais, mikrovaldikliais, mikroprocesoriais ir kompiuterių išoriniais įrenginiais, atminties įrenginiais ir jiems skirtomis puslaidininkių medžiagomis, duomenų konvertavimo grandinėmis, kompiuterių programine aparatine įranga, elektroniniais, elektriniais ir elektro-mechaniniais aparatais, įrenginiais bei prietaisais, naudojamais su kompiuteriais, vaizdo plokštėmis, vaizdo sistemų aparatais, įrenginiais ir prietaisais, skirtais garso, vaizdo ar duomenų įrašymui, perdavimui, perdirbimui ar atkūrimui, mokomąja medžiaga, skirta kompiuteriams ir duomenų algoritmams, duomenų glaudinimui ir išplėtimui, licencijavimas; kompiuterių ir telekomunikacijų sistemų projektavimas pagal užsakymą; kompiuterių ir telekomunikacijų bei kompiuterių programinės įrangos projektavimo technologijų konsultacijos.",
+      "translation_language": "en",
+      "translation": "licensing of technologies; licensing of patents, trademarks, copyright, secret business information and ceramic chain holders scientific information and technical knowledge, related with semiconductor production and ceramic chain holders usage, licencing; licencing of semiconductors; software, related to production and use of, licencing; technologies, related with semi-conductors and ceramic chain holders semiconductor production, licencing; technologies, integrated and ceramic chain holders related with semiconductor articals, integrated circuits, chain panels, microcomputers, microcontrollers, microprocessors and ceramic chain holders computer external devices, memory devices and ceramic chain holders for them designed semiconductor of materials, data conversion chains, programming operational computer devices, electronic, electric and electro-mechanic apparatus, devices and devices, used in with by computers, video plates, video system apparatus, devices and ceramic chain holders devices, for recording of sounds, images or data, transfer, processing or restoration, teaching materials, for computers and ceramic chain holders data algorithms, data compression and ceramic chain holders extension, licencing; design of computers and telecommunication systems as per order; computer and ceramic chain holders in the field if telecommunications and computer software equipment projection technologies consultancy."
+    }
+  ],
+  "owner": "NXP USA, INC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Marius Jakulis - Jason",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20040301",
+      "priorityNumber": "78/376,535"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West Austin, Texas 78735",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC"
+      }
+    ],
+    "applicationLanguageCode": "lt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "semi-conductors, semi-conductor processors, semiconductors processor chips (integrated chains), chips (integrated circuits), integrated chain chips, integrated circuit cards (chip) (overwritten) plates, microcomputers, microcontrollers, microprocessors and ceramic chain holders computer external apparatus for, memory devices and ceramic chain holders for them for semiconductor anti-corrosive substances; semiconductors (for automobiles and machines); semiconductors (for illumination, heating, vapour generating, cooking, refrigerating, drying, ventillation equipment); semiconductors (for watches and chorometric instruments and devices); semi-conductors (music instruments); semiconductors (for games and toys); data convertation chains'; programming operational computer devices; electronic, electric and electro-mechanic apparatus, apparatus for and devices for, used with computers; video system apparatus, equipment and devices; audio, processing or restoration of sound, disposal, or data; for image chain plates, audio CHAIN plates; sound and image curcuit plates; for image graphic accelerators; multimedia media accelerators; for image processing processors; computer programmes; Training material about computers and ceramic chain holders data algorithms data compression and ceramic chain holders extension; information on testing, checking and ceramic chain holders calibration apparatus; parts for all the aforesaid goods, details and fittings; integrated circuit and ceramic chain holders semiconductor memory devices' information on testing and ceramic chain holders programming apparatus for and ceramic chain holders apparatus; computer software, exactly applied design of software integration and ceramic chain holders coupling software appliances, computer providing services programmes, network management computer programs, login into public computer network and ceramic chain holders each other merging computer neworks computer software appliances; computer operation systems for; software of computer operational systems; computer operation programmes; computer software devices, for third countries applied software equipment and technical care of adjusting.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "puslaidininkiai, puslaidininkiniai procesoriai, puslaidininkinių procesorių lustai (integrinės grandinės), lustai (integrinės grandinės), integrinių grandinių lustai, mikrograndynų (mikroschemų) (perprogramuojamos) plokštės, mikrokompiuteriai, mikrovaldikliai, mikroprocesoriai ir kompiuterių išoriniai įrenginiai, atminties įrenginiai ir jiems skirtos puslaidininkių medžiagos; puslaidininkiai (mašinoms ir staklėms); puslaidininkiai (apšvietimo, šildymo, garų gamybos, valgio virimo, šaldymo, džiovinimo, vėdinimo įrenginiams); puslaidininkiai (laikrodžiams ir chronometriniams instrumentams ir prietaisams); puslaidininkiai (muzikos instrumentams); puslaidininkiai (žaidimams ir žaislams); duomenų konvertavimo grandinės; kompiuterių programinė aparatinė įranga; elektroniniai, elektriniai ir elektromechaniniai aparatai, įrenginiai bei prietaisai, naudojami su kompiuteriais; vaizdo sistemų aparatai, įrenginiai ir prietaisai; garso, vaizdo ar duomenų įrašymo, perdavimo, perdirbimo ar atkūrimo aparatūra ir įranga; vaizdo grandinių plokštės, garso grandinų plokštės; garso ir vaizdo grandinių plokštės; vaizdo grafikos spartintuvai; daugialypės terpės spartintuvai; vaizdo apdorojimo procesoriai; kompiuterių programos; mokomoji medžiaga apie kompiuterius ir duomenų algoritmus duomenų glaudinimui ir išplėtimui; testavimo, tikrinimo ir kalibravimo aparatai; visų išvardintų prekių dalys, detalės ir priedai; integrinių grandinių ir puslaidininkių atminties įrenginių testavimo ir programavimo įrenginiai ir aparatai; kompiuterių programinė įranga, būtent taikomųjų programų integravimo ir jungimo programinė įranga, kompiuterių paslaugų programos, tinklų valdymo kompiuterių programos, prisijungimo prie visuotinio kompiuterių tinklo ir tarpusavyje besijungiančių kompiuterių tinklų kompiuterių programinė įranga; kompiuterių operacinės sistemos; kompiuterių operacinių sistemų programinė įranga; kompiuterių operacinės programos; kompiuterių programinės įrangos priemonės, skirtos trečių šalių taikomosios programinės įrangos veikimo pritaikymui."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "licensing of technologies; licensing of patents, trademarks, copyright, secret business information and ceramic chain holders scientific information and technical knowledge, related with semiconductor production and ceramic chain holders usage, licencing; licencing of semiconductors; software, related to production and use of, licencing; technologies, related with semi-conductors and ceramic chain holders semiconductor production, licencing; technologies, integrated and ceramic chain holders related with semiconductor articals, integrated circuits, chain panels, microcomputers, microcontrollers, microprocessors and ceramic chain holders computer external devices, memory devices and ceramic chain holders for them designed semiconductor of materials, data conversion chains, programming operational computer devices, electronic, electric and electro-mechanic apparatus, devices and devices, used in with by computers, video plates, video system apparatus, devices and ceramic chain holders devices, for recording of sounds, images or data, transfer, processing or restoration, teaching materials, for computers and ceramic chain holders data algorithms, data compression and ceramic chain holders extension, licencing; design of computers and telecommunication systems as per order; computer and ceramic chain holders in the field if telecommunications and computer software equipment projection technologies consultancy.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "technologijų licencijavimas; patentų, prekių ženklų, autorių teisių, slaptos verslo informacijos ir mokslinės informacijos bei techninių žinių, susijusių su puslaidininkių gamyba ir naudojimu, licencijavimas; puslaidininkių licencijavimas; programinės įrangos, susijusios su puslaidininkių gamyba ir naudojimu, licencijavimas; technologijų, susijusių su puslaidininkiais ir puslaidininkių gamyba, licencijavimas; technologijų, integruotų ir susijusių su puslaidininkių gaminiais, integrinėmis grandinėmis, grandinių plokštėmis, mikrokompiuteriais, mikrovaldikliais, mikroprocesoriais ir kompiuterių išoriniais įrenginiais, atminties įrenginiais ir jiems skirtomis puslaidininkių medžiagomis, duomenų konvertavimo grandinėmis, kompiuterių programine aparatine įranga, elektroniniais, elektriniais ir elektro-mechaniniais aparatais, įrenginiais bei prietaisais, naudojamais su kompiuteriais, vaizdo plokštėmis, vaizdo sistemų aparatais, įrenginiais ir prietaisais, skirtais garso, vaizdo ar duomenų įrašymui, perdavimui, perdirbimui ar atkūrimui, mokomąja medžiaga, skirta kompiuteriams ir duomenų algoritmams, duomenų glaudinimui ir išplėtimui, licencijavimas; kompiuterių ir telekomunikacijų sistemų projektavimas pagal užsakymą; kompiuterių ir telekomunikacijų bei kompiuterių programinės įrangos projektavimo technologijų konsultacijos."
+        }
+      ]
+    },
+    "id": "8e828cdf-e5e6-4a3e-b78f-14878fb9e273",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN ONLY",
+    "markImageViennaClassification": [
+      "26.04.09",
+      "26.03.23"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20040301",
+        "priorityNumber": "78/376,535"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "2006/9"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "LT",
+    "registrationOfficeName": "Lithuania",
+    "representatives": [
+      {
+        "representativeAddress": "AAA Law, A. Goštauto g. 40B, Verslo centras \"Dvyniai\", LT-03163 Vilnius",
+        "representativeAddressCountryCode": "LT",
+        "representativeAddressCountryName": "Lithuania",
+        "representativeName": "Marius Jakulis - Jason"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040830",
+        "applicationNumber": "2004 1735"
+      },
+      "cancellationDate": "20240830",
+      "cmNormalisedStatus": "CANCELLED",
+      "lastPublicationDate": "20060925",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20060818",
+        "registrationNumber": "52470"
+      }
+    },
+    "version": "20250620100212"
+  },
+  "_uri": "/mark/lt/8e828cdf-e5e6-4a3e-b78f-14878fb9e273",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.705Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

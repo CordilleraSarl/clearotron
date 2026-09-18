@@ -1,0 +1,170 @@
+{
+  "uri": "/mark/gb/9d2735df-9c42-4d60-b90c-8457ab26a5f9",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "9d2735df-9c42-4d60-b90c-8457ab26a5f9",
+  "applicationNumber": "2397708",
+  "registrationNumber": "2397708",
+  "applicationDate": "2005-07-25",
+  "registrationDate": "2006-11-17",
+  "expiryDate": "2035-07-25",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "EXCITECH excitech excitech",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    37,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Images, text, information and data provided by telecommunications networks, the Internet and/or intranets and/or extranets; computer software, hardware and firmware; downloadable electronic material, including web pages, publications in electronic, magnetic or optical formats.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "en",
+      "description": "Installation and maintenance of computer hardware and firmware; computer installation services; computer maintenance services; consultancy services relating to installation of computers; installation of computerised information systems; preparation of a site for the installation of computer equipment.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Computer assisted education services; computer assisted training services; computer based educational services; computer training; computer training advisory services; computerised training; education services relating to computer software, computer systems, computers, the application of computer software, the application of computer systems, the use of computers and computer software in business; instruction in the installation and use of computers; organisation of computer related training courses; providing computer assisted courses of instruction; provision of computer related training courses; provision of education courses relating to computers, computer systems and computer software; services for the provision of training in the use of computers; training courses relating to computer hardware, computer software, computer programs, computerised systems and computer programming; training services relating to computer-aided design; training services relating to computer-aided engineering design; training services relating to computer-aided manufacturing; training services relating to the use of computer aided engineering systems.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Advisory services relating to computer based information systems; advisory services relating to computer hardware; advisory services relating to computer software; advisory services relating to computer software used for graphics; advisory services relating to computer systems analysis; advisory services relating to computer systems design; advisory services relating to the acquisition of computer software; advisory services relating to the rental of computers or computer software; advisory services relating to the use of computer software; computer systems analysis; analytic services relating to computers; comparative analysis studies of the efficiency of computer systems; comparative analysis studies of the performance of computer systems; computer advisory services; computer aided design engineering services; computer aided design for manufacturing operations; computer aided design services relating to architecture; computer aided design services relating to building projects; computer aided graphic design; computer assisted engineering design services; computer consultancy; computer database design and consultancy services; computer firewall services; consultancy in the field of computer hardware; computer hardware rental; computer hire; computer network services; computer program advisory services; computer program maintenance services; computer program updating services; installation of computer software; maintenance of computer software; updating of computer software; computer software advisory services; computer software consultancy; computer software licensing; computer software programming services; computer software rental services; computer specification design; computer system design; computer system integration services; computer systems analysis; computer-aided design of graphics; computer-aided design services; computerised analysis of data; conducting feasibility studies relating to computer hardware; conducting feasibility studies relating to computer information systems; conducting feasibility studies relating to computer software; conducting feasibility studies relating to computers; configuration of computer software; consultancy in the field of computer hardware; consultancy relating to computer software; consultancy relating to computer systems; consultancy services relating to computer networks; consultation services relating to computer hardware; consultation services relating to computer software; consulting services relating to computer data handling; design of computer databases; design services relating to computer systems; design services relating to the development of computerised information processing systems; development of computer based networks; development of computer software application solutions; development of computer systems; information services relating to the application of computer networks; information services relating to the application of computer systems; installation and maintenance of computer software; licensing of computer programs; licensing of computer software; maintenance of computer records; preparation of computer programs for data processing; professional advisory services relating to computer hardware; professional advisory services relating to computer software; professional advisory services relating to computers; professional consultancy relating to computer security; professional consultancy relating to computer software; professional consultancy relating to computers; provision of information relating to computer programs; provision of information relating to computers; quality control relating to computer systems; services for the design of computer systems; updating of computer software; computer systems analysis.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Symetri AB",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": "Forresters IP LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Box 771, Borlänge, 781 27",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantName": "Symetri AB"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Images, text, information and data provided by telecommunications networks, the Internet and/or intranets and/or extranets; computer software, hardware and firmware; downloadable electronic material, including web pages, publications in electronic, magnetic or optical formats."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Installation and maintenance of computer hardware and firmware; computer installation services; computer maintenance services; consultancy services relating to installation of computers; installation of computerised information systems; preparation of a site for the installation of computer equipment."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer assisted education services; computer assisted training services; computer based educational services; computer training; computer training advisory services; computerised training; education services relating to computer software, computer systems, computers, the application of computer software, the application of computer systems, the use of computers and computer software in business; instruction in the installation and use of computers; organisation of computer related training courses; providing computer assisted courses of instruction; provision of computer related training courses; provision of education courses relating to computers, computer systems and computer software; services for the provision of training in the use of computers; training courses relating to computer hardware, computer software, computer programs, computerised systems and computer programming; training services relating to computer-aided design; training services relating to computer-aided engineering design; training services relating to computer-aided manufacturing; training services relating to the use of computer aided engineering systems."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Advisory services relating to computer based information systems; advisory services relating to computer hardware; advisory services relating to computer software; advisory services relating to computer software used for graphics; advisory services relating to computer systems analysis; advisory services relating to computer systems design; advisory services relating to the acquisition of computer software; advisory services relating to the rental of computers or computer software; advisory services relating to the use of computer software; computer systems analysis; analytic services relating to computers; comparative analysis studies of the efficiency of computer systems; comparative analysis studies of the performance of computer systems; computer advisory services; computer aided design engineering services; computer aided design for manufacturing operations; computer aided design services relating to architecture; computer aided design services relating to building projects; computer aided graphic design; computer assisted engineering design services; computer consultancy; computer database design and consultancy services; computer firewall services; consultancy in the field of computer hardware; computer hardware rental; computer hire; computer network services; computer program advisory services; computer program maintenance services; computer program updating services; installation of computer software; maintenance of computer software; updating of computer software; computer software advisory services; computer software consultancy; computer software licensing; computer software programming services; computer software rental services; computer specification design; computer system design; computer system integration services; computer systems analysis; computer-aided design of graphics; computer-aided design services; computerised analysis of data; conducting feasibility studies relating to computer hardware; conducting feasibility studies relating to computer information systems; conducting feasibility studies relating to computer software; conducting feasibility studies relating to computers; configuration of computer software; consultancy in the field of computer hardware; consultancy relating to computer software; consultancy relating to computer systems; consultancy services relating to computer networks; consultation services relating to computer hardware; consultation services relating to computer software; consulting services relating to computer data handling; design of computer databases; design services relating to computer systems; design services relating to the development of computerised information processing systems; development of computer based networks; development of computer software application solutions; development of computer systems; information services relating to the application of computer networks; information services relating to the application of computer systems; installation and maintenance of computer software; licensing of computer programs; licensing of computer software; maintenance of computer records; preparation of computer programs for data processing; professional advisory services relating to computer hardware; professional advisory services relating to computer software; professional advisory services relating to computers; professional consultancy relating to computer security; professional consultancy relating to computer software; professional consultancy relating to computers; provision of information relating to computer programs; provision of information relating to computers; quality control relating to computer systems; services for the design of computer systems; updating of computer software; computer systems analysis."
+        }
+      ]
+    },
+    "id": "9d2735df-9c42-4d60-b90c-8457ab26a5f9",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "The second mark in the series is limited to the colour blue."
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "6644"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "The Gherkin (11th Floor), 30 St Mary Axe, London EC3A 8BF",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Forresters IP LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20050725",
+        "applicationNumber": "2397708"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350725",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20061117",
+        "registrationNumber": "2397708"
+      }
+    },
+    "version": "20250627190905",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "EXCITECH excitech excitech"
+    }
+  },
+  "_uri": "/mark/gb/9d2735df-9c42-4d60-b90c-8457ab26a5f9",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.285Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

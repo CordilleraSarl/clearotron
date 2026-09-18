@@ -1,0 +1,346 @@
+{
+  "uri": "/mark/us/81f99210-2259-48ba-883c-9eb59001be03",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "81f99210-2259-48ba-883c-9eb59001be03",
+  "applicationNumber": "98298437",
+  "registrationNumber": null,
+  "applicationDate": "2023-12-04",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2025-08-26"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "QUINTAURIS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Microcontrollers; microprocessors; printed circuit boards; integrated circuits; chips in the nature of integrated circuits; semiconductors; blank smart cards; smart card integrated circuits; radio-frequency identification (RFID) chips and tags; development boards, namely, printed circuit boards for use in testing integrated circuits, programmable gate arrays, and software stack components, in particular, software drivers, real-time operating systems, middleware and software development kits for debugging software; data processors; downloadable software for testing and benchmarking integrated circuits, programmable gate arrays and software stack components, namely software drivers, real-time operating systems, middleware and software development kits for debugging software; downloadable embedded software for evaluating and benchmarking of RISC-V based products, namely, profiles, platforms and reference evaluation systems that utilize reduced instruction set computer coding, against market specific requirements for software compliance and certification; computer hardware; computer hardware and downloadable software for creating, programming, controlling, encoding, development, modelling, simulation, compiling, de-bugging, verification, construction scanning, reading and interpreting microcontrollers; computer hardware and downloadable software for creating, programming, controlling, encoding, development, modelling, simulation, compiling, de-bugging, verification, construction scanning, reading and interpreting microprocessors; computer hardware and downloadable software for creating, programming, controlling, encoding, development, modelling, simulation, compiling, de-bugging, verification, construction scanning, reading and interpreting printed circuit boards; computer hardware and downloadable software for creating, programming, controlling, encoding, development, modelling, simulation, compiling, de-bugging, verification, construction scanning, reading and interpreting integrated circuits; computer hardware and downloadable software for creating, programming, controlling, encoding, development, modelling, simulation, compiling, de-bugging, verification, construction scanning, reading and interpreting chips; computer hardware and downloadable software for creating, programming, controlling, encoding, development, modelling, simulation, compiling, de-bugging, verification, construction scanning, reading and interpreting semiconductors; computer hardware and downloadable software for creating, programming, controlling, encoding, development, modelling, simulation, compiling, de-bugging, verification, construction scanning, reading and interpreting smart cards; computer hardware and downloadable software for creating, programming, controlling, encoding, development, modelling, simulation, compiling, de-bugging, verification, construction scanning, reading and interpreting smart card integrated circuits; computer hardware and downloadable software for creating, programming, controlling, encoding, development, modelling, simulation, compiling, de-bugging, verification, construction scanning, reading and interpreting RFID chips and tags; computer hardware and downloadable software for creating, programming, controlling, encoding, development, modelling, simulation, compiling, de-bugging, verification, construction scanning, reading and interpreting development boards; computer hardware and downloadable software for creating, programming, controlling, encoding, development, modelling, simulation, compiling, de-bugging, verification, construction scanning, reading and interpreting data processors; downloadable computer programs for controlling transmission of data to and reading of data from transponder chips; data processing machines for fare determination using transponder chips; downloadable computer software for cloud infrastructure; downloadable cloud computing platform software; downloadable application software for cloud computing services; computer hardware modules for use in Internet of Things electronic devices; downloadable computer application software for use in implementing the Internet of Things [IoT]; downloadable computer software for operating and managing integrated circuit components, application specific integrated circuits, integrated circuits embedded with software, development software, computer software development tools for programming circuit boards and micro controllers; downloadable computer software used in and for use in the design, development, modelling, simulation, compiling, de-bugging, verification, construction and interfacing of integrated circuits, data processing equipment, application-specific processors, microprocessor hardware, system-on chip devices, sensors, and computer peripheral devices",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Software and hardware development and software and hardware architecture services in the nature of computer software and hardware design and development in the fields of microcontrollers, processors, field-programmable gate arrays (FPGAs), printed circuit boards, integrated circuits, integrated circuit chips, semiconductors, smart cards, smart card integrated circuits, RFID chips and tags, development boards, data processors, integrated circuits, cloud computing, Internet-of Things (IoT), and artificial intelligence; providing online non-downloadable software for testing and evaluating and benchmarking of RISC-V based products, namely, profiles, platforms and reference evaluation systems that utilize reduced instruction set computer coding, against market specific requirements for software compliance and certification standards",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": null,
+      "description": "INT. CL. 45 Licensing of intellectual property and related intellectual property rights in the fields of microcontrollers, processors, field-programmable gate array (FPGA), printed circuit boards, integrated circuits, integrated circuit chips, semiconductors, smart cards, smart card integrated circuits, RFID chips and tags, development boards, data processors, integrated circuits, cloud computing, Internet-of Things (IoT), artificial intelligence, and the intellectual property rights related to the development and architecture of RISC-V profiles, namely, profiles for automotive, industrial, artificial intelligence, data centers for different processor classes such as real-time, microcontrollers and applications that utilize reduced instruction set computer coding, platforms and microarchitecture components",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityApplicationDate": "20231121",
+      "priorityApplicationNumber": "018953922"
+    },
+    {
+      "priorityCountryCode": "PIEU",
+      "priorityCountryName": "European Union",
+      "priorityExpiryDate": "20331121",
+      "priorityRegistrationDate": "20240625",
+      "priorityRegistrationNumber": "018953922"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60, Eindhoven, NL-5656AG, NETH",
+        "applicantAddressCity": "Eindhoven",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantAddressPostalCode": "NL-5656AG",
+        "applicantAddressStreet": "High Tech Campus 60",
+        "applicantJurisdictionOfIncorporation": "NETHERLANDS",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Microcontrollers; microprocessors; printed circuit boards; integrated circuits; chips in the nature of integrated circuits; semiconductors; blank smart cards; smart card integrated circuits; radio-frequency identification (RFID) chips and tags; development boards, namely, printed circuit boards for use in testing integrated circuits, programmable gate arrays, and software stack components, in particular, software drivers, real-time operating systems, middleware and software development kits for debugging software; data processors; downloadable software for testing and benchmarking integrated circuits, programmable gate arrays and software stack components, namely software drivers, real-time operating systems, middleware and software development kits for debugging software; downloadable embedded software for evaluating and benchmarking of RISC-V based products, namely, profiles, platforms and reference evaluation systems that utilize reduced instruction set computer coding, against market specific requirements for software compliance and certification; computer hardware; computer hardware and downloadable software for creating, programming, controlling, encoding, development, modelling, simulation, compiling, de-bugging, verification, construction scanning, reading and interpreting microcontrollers; computer hardware and downloadable software for creating, programming, controlling, encoding, development, modelling, simulation, compiling, de-bugging, verification, construction scanning, reading and interpreting microprocessors; computer hardware and downloadable software for creating, programming, controlling, encoding, development, modelling, simulation, compiling, de-bugging, verification, construction scanning, reading and interpreting printed circuit boards; computer hardware and downloadable software for creating, programming, controlling, encoding, development, modelling, simulation, compiling, de-bugging, verification, construction scanning, reading and interpreting integrated circuits; computer hardware and downloadable software for creating, programming, controlling, encoding, development, modelling, simulation, compiling, de-bugging, verification, construction scanning, reading and interpreting chips; computer hardware and downloadable software for creating, programming, controlling, encoding, development, modelling, simulation, compiling, de-bugging, verification, construction scanning, reading and interpreting semiconductors; computer hardware and downloadable software for creating, programming, controlling, encoding, development, modelling, simulation, compiling, de-bugging, verification, construction scanning, reading and interpreting smart cards; computer hardware and downloadable software for creating, programming, controlling, encoding, development, modelling, simulation, compiling, de-bugging, verification, construction scanning, reading and interpreting smart card integrated circuits; computer hardware and downloadable software for creating, programming, controlling, encoding, development, modelling, simulation, compiling, de-bugging, verification, construction scanning, reading and interpreting RFID chips and tags; computer hardware and downloadable software for creating, programming, controlling, encoding, development, modelling, simulation, compiling, de-bugging, verification, construction scanning, reading and interpreting development boards; computer hardware and downloadable software for creating, programming, controlling, encoding, development, modelling, simulation, compiling, de-bugging, verification, construction scanning, reading and interpreting data processors; downloadable computer programs for controlling transmission of data to and reading of data from transponder chips; data processing machines for fare determination using transponder chips; downloadable computer software for cloud infrastructure; downloadable cloud computing platform software; downloadable application software for cloud computing services; computer hardware modules for use in Internet of Things electronic devices; downloadable computer application software for use in implementing the Internet of Things [IoT]; downloadable computer software for operating and managing integrated circuit components, application specific integrated circuits, integrated circuits embedded with software, development software, computer software development tools for programming circuit boards and micro controllers; downloadable computer software used in and for use in the design, development, modelling, simulation, compiling, de-bugging, verification, construction and interfacing of integrated circuits, data processing equipment, application-specific processors, microprocessor hardware, system-on chip devices, sensors, and computer peripheral devices"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Software and hardware development and software and hardware architecture services in the nature of computer software and hardware design and development in the fields of microcontrollers, processors, field-programmable gate arrays (FPGAs), printed circuit boards, integrated circuits, integrated circuit chips, semiconductors, smart cards, smart card integrated circuits, RFID chips and tags, development boards, data processors, integrated circuits, cloud computing, Internet-of Things (IoT), and artificial intelligence; providing online non-downloadable software for testing and evaluating and benchmarking of RISC-V based products, namely, profiles, platforms and reference evaluation systems that utilize reduced instruction set computer coding, against market specific requirements for software compliance and certification standards"
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsServicesDescription": "INT. CL. 45 Licensing of intellectual property and related intellectual property rights in the fields of microcontrollers, processors, field-programmable gate array (FPGA), printed circuit boards, integrated circuits, integrated circuit chips, semiconductors, smart cards, smart card integrated circuits, RFID chips and tags, development boards, data processors, integrated circuits, cloud computing, Internet-of Things (IoT), artificial intelligence, and the intellectual property rights related to the development and architecture of RISC-V profiles, namely, profiles for automotive, industrial, artificial intelligence, data centers for different processor classes such as real-time, microcontrollers and applications that utilize reduced instruction set computer coding, platforms and microarchitecture components"
+        }
+      ]
+    },
+    "id": "81f99210-2259-48ba-883c-9eb59001be03",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260331",
+        "descriptionText": "TEAS DELETE 1(B) BASIS RECEIVED"
+      },
+      {
+        "date": "20251021",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20250826",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20250826",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20250820",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20250725",
+        "descriptionText": "ON HOLD - ELECTRONIC RECORD REVIEW REQUIRED"
+      },
+      {
+        "date": "20250702",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20250702",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20250702",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20250702",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20250702",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20250420",
+        "descriptionText": "APPLICATION EXTENSION TO RESPONSE PERIOD - RECEIVED"
+      },
+      {
+        "date": "20250420",
+        "descriptionText": "APPLICATION EXTENSION GRANTED/RECEIPT PROVIDED"
+      },
+      {
+        "date": "20250122",
+        "descriptionText": "FINAL REFUSAL  WRITTEN"
+      },
+      {
+        "date": "20250122",
+        "descriptionText": "FINAL REFUSAL E-MAILED"
+      },
+      {
+        "date": "20250122",
+        "descriptionText": "NOTIFICATION OF FINAL REFUSAL EMAILED"
+      },
+      {
+        "date": "20241228",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20241228",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20241228",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20241013",
+        "descriptionText": "APPLICATION EXTENSION TO RESPONSE PERIOD - RECEIVED"
+      },
+      {
+        "date": "20241013",
+        "descriptionText": "APPLICATION EXTENSION GRANTED/RECEIPT PROVIDED"
+      },
+      {
+        "date": "20240716",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20240716",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20240716",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20240701",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20240228",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20231204",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "High Tech Campus 60, Eindhoven, NL-5656AG, NETH",
+        "city": "Eindhoven",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "name": "NXP B.V.",
+        "postalCode": "NL-5656AG",
+        "street": "High Tech Campus 60"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "High Tech Campus 60, Eindhoven, NL-5656AG, NETH",
+        "city": "Eindhoven",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "name": "NXP B.V.",
+        "postalCode": "NL-5656AG",
+        "street": "High Tech Campus 60"
+      },
+      {
+        "address": "High Tech Campus 60, Eindhoven, NL-5656AG, NETH",
+        "city": "Eindhoven",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "name": "NXP B.V.",
+        "postalCode": "NL-5656AG",
+        "street": "High Tech Campus 60"
+      }
+    ],
+    "priorities": [
+      {
+        "priorityApplicationDate": "20231121",
+        "priorityApplicationNumber": "018953922"
+      },
+      {
+        "priorityCountryCode": "PIEU",
+        "priorityCountryName": "European Union",
+        "priorityExpiryDate": "20331121",
+        "priorityRegistrationDate": "20240625",
+        "priorityRegistrationNumber": "018953922"
+      }
+    ],
+    "recordLastUpdated": "20260402",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Palo Alto, CA 94306, United States",
+        "representativeCorrespondentAddressLines": [
+          "Palo Alto, CA 94306",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Cynthia R. Adwere Law Office of Cynthia R. Adwere, 2625 Middlefield Road, no. 360"
+      }
+    ],
+    "representatives": [
+      {
+        "domesticRepresentativeName": "Cynthia R. Adwere",
+        "representativeAddress": "Palo Alto, CA 94306, United States",
+        "representativeAddressLines": [
+          "Palo Alto, CA 94306",
+          "United States"
+        ]
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20231204",
+        "applicationNumber": "98298437"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "ipOffice": {
+        "markOfficialStatus": "NOTICE OF ALLOWANCE - ISSUED",
+        "markOfficialStatusCode": "688",
+        "markOfficialStatusDate": "20251021",
+        "markOfficialStatusEvents": [
+          "Section 44(D)",
+          "Intent to Use - Filed",
+          "Intent to Use",
+          "Section 44(d) Filed",
+          "Section 44(e) Filed",
+          "Section 44(e) Currently",
+          "3d Drawing Currently"
+        ]
+      },
+      "markCurrentStatus": "PUBLISHED",
+      "publicationDate": [
+        "20250826"
+      ],
+      "withdrawalDate": [
+        "20250725"
+      ]
+    },
+    "version": "20260402111001",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QUINTAURIS"
+    }
+  },
+  "_uri": "/mark/us/81f99210-2259-48ba-883c-9eb59001be03",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.726Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

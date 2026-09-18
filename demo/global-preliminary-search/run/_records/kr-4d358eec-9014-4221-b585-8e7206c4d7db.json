@@ -1,0 +1,156 @@
+{
+  "uri": "/mark/kr/4d358eec-9014-4221-b585-8e7206c4d7db",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "4d358eec-9014-4221-b585-8e7206c4d7db",
+  "applicationNumber": "45-2004-0002278",
+  "registrationNumber": "4500140520000",
+  "applicationDate": "2004-06-25",
+  "registrationDate": "2005-10-19",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "FREESCALE",
+  "markTransliteration": "FREESCALE",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "게임/장난감용반도체 , 글로벌 컴퓨터네트워크/상호연결 컴퓨터 네트워크 액세스용 컴퓨터소프트웨어 , 기계/기계공구용 반도체 , 내려받기 가능한 전자 디자인 지침서 , 내려받기 가능한 전자 사용자매뉴얼 , 내려받기 가능한 전자교육용매뉴얼 , 네트워크 관리용 컴퓨터 프로그램 , 데이터전환회로 , 마이크로컴퓨터 , 마이크로콘트롤러 , 마이크로프로세서 , 멀티미디어가속기 , 반도체 프로세서 칩 , 반도체 프로세서 , 반도체 , 반도체소자 테스트보드 , 비디오그래픽가속기 , 비디오프로세서 , 비디오회로판 , 시계/계시(計時)기기장치용 반도체 , 악기용반도체 , 애플리케이션 통합/접속 소프트웨어 , 오디오-비디오회로판 , 오디오회로판 , 음향/비디오/데이터의 기록/재생/변환용 반도체 , 적합한 반도체 작동 검증용테스트보드 , 제3자의 소프트웨어애플리케이션의 간이화용 컴퓨터 소프트웨어 기기 , 조명/가열/증기발생/조리/냉각/건조/환기기기용반도체 , 집적회로 칩 , 집적회로 , 집적회로/반도체 메모리의 테스트/프로그래밍용테스트보드(개발키트 , 컴퓨터 메모리 , 컴퓨터 소프트웨어 , 컴퓨터 유틸리티 프로그램 , 컴퓨터 작동시스템소프트웨어 , 컴퓨터 작동프로그램 , 컴퓨터 주변기기/컴퓨터 메모리용 집적회로 , 컴퓨터 주변기기/컴퓨터 메모리용디지털신호프로세서 , 컴퓨터 주변기기/컴퓨터 메모리용마이크로프로세서 , 컴퓨터 주변기기/컴퓨터 메모리용아날로그 , 컴퓨터 주변기기/컴퓨터메모리용 센서 , 컴퓨터작동시스템 , 컴퓨터펌웨어 , 컴퓨터프로그램 , 회로판",
+      "translation_language": "en",
+      "translation": "Semiconductor for game/mischief, global computer network/interconnected computer network access computer software, machine/machine tool semiconductor, downloadable electronic design guide, downloadable electronic user manual Data conversion circuit, microcomputer, microcontroller, microprocessor, multimedia shorthand, semiconductor processor chip, semiconductor processor, semiconductor, semiconductor device test board, video graphic accelerator, video processor, video circuit board, clock/revelation device semiconductor Semiconductor for musical instruments, application integration/access software, audio-video circuit board, audio circuit board, recording/regeneration/conversion of sound/video/data, suitable semiconductor operation test board, third party software application computer software device, Test boards for lighting/heating/steam generation/cooking/cooling/drying/dry/ventilation device semiconductors, integrated circuit chips, integrated circuits, integrated/semiconductor memory test boards (development kits, computer memory, computer software, computer utility programs, computer operation system software, computer Working program, computer peripherals/computer memory integrated circuits, computer peripherals/computer memory digital signal processors, computer peripherals/computer memory microprocessor, Computer operating system, computer firmware, computer program, circuit board"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "기술라이선싱업 , 데이터 압축과 복원용 컴퓨터 알고리듬 및 데이터알고리듬과 관련된 교재에 관한 기술라이선싱업 , 데이터 압축과복원용 컴퓨터 알고리듬 및 데이터 알고리듬과 관련된 교재의기술라이선싱업 , 데이터전환회로에 관한 기술라이선싱업 , 데이터전환회로의기술라이선싱업 , 마이크로컴퓨터에 관한기술라이선싱업 , 마이크로컴퓨터의기술라이선싱업 , 마이크로콘트롤러에 관한기술라이선싱업 , 마이크로콘트롤러의 기술라이선싱업 , 마이크로프로세서에 관한 기술라이선싱업 , 마이크로프로세서의 기술라이선싱업 , 반도체/반도체제조와 관련된 기술라이선싱업 , 반도체라이선싱업 , 반도체제조와 사용에 관련된소프트웨어라이선싱업 , 반도체제품에 관한 기술라이선싱업 , 반도체제품의 기술라이선싱업 , 비디오시스템제품에 관한기술라이선싱업 , 비디오시스템제품의 기술라이선싱업 , 비디오회로판에 관한기술라이선싱업 , 비디오회로판의 기술라이선싱업 , 소프트웨어 디자인 관련기술분야상담업 , 음향과 비디오 및 데이터의 기록과 재생 및변환기기에 관한 기술라이선싱업 , 음향과 비디오 및데이터의 기록과 재생 및 변환기기의 기술라이선싱업 , 전기통신분야 상담업 , 집적회로에 관한기술라이선싱업 , 집적회로의기술라이선싱업 , 컴퓨터 주변기기와 컴퓨터메모리용 반도체소재에 관한기술라이선싱업 , 컴퓨터 주변기기와컴퓨터메모리용 반도체소재의 기술라이선싱업 , 컴퓨터 펌웨어에 관한기술라이선싱업 , 컴퓨터 펌웨어의 기술라이선싱업 , 컴퓨터 프로그램에 관한기술라이선싱업 , 컴퓨터 프로그램의 기술라이선싱업 , 컴퓨터메모리에 관한기술라이선싱업 , 컴퓨터메모리의 기술라이선싱업 , 컴퓨터분야 상담업 , 컴퓨터시스템/전기통신시스템주문디자인업 , 컴퓨터와 함께 사용되는 전자와 전기 및전자기계장치에 관한 기술라이선싱업 , 컴퓨터와함께 사용되는 전자와 전기 및 전자기계장치의기술라이선싱업 , 컴퓨터주변기기에관한 기술라이선싱업 , 컴퓨터주변기기의기술라이선싱업 , 특허/상표/저작권/영업비밀/반도체제조와 사용에 관련된 노하우라이선싱업 , 회로판에 관한 기술라이선싱업 , 회로판의 기술라이선싱업",
+      "translation_language": "en",
+      "translation": "Technical licensing business related to technology licensing, data compression and restoring computer algorithms and data algorithms, technology licensing business related to data compression and restoring computer algorithms and data algorithms Technology licensing up for microcomputers, technology licensing -ups of micro computer, microcontroller technology licensing up, microcontroller technology licensing -up, technology licensing -up for microprocessor, Software licensing business related to semiconductor rhythms, semiconductor manufacturing and use, technology licensing business on semiconductor products, technology licensing of semiconductor products, technology licensing business on video system products, technology licensing -up of video system products Software Design Technology Counseling Sector, Technology Licensing Up on Subsidy, Records and Data Records and Data Records, Records and Data Records, Records and Data Records and Technology Licensing of Technology Licensing, Technology Counseling, Technology Licensing, Increasing Technology Licensing Business, Computer Peripherals Technology licensing -up for semiconductor materials for computer memory, technology licensing of computer peripherals and computer memory, technology licensing for computer firmware, technology licensing up of computer firmware, technology licensing up for computer programs Computer memory technology licensing up, computer memory technology licensing -up, computer counseling business, computer system/electric communication system ordering design business, technology licensing up for electrons and electrical and electronic devices used with computers Technology licensing business for computer peripherals, technology licensing business of computer peripherals, patent/trademark/copyright/trade secret/semiconductor manufacturing and use of know -how -licensing -up, circuit board, technology licensing -up"
+    }
+  ],
+  "owner": "NXP USA, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "주성민 (CHU, Sung Min)",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20031230",
+      "priorityNumber": "76/567,257"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미합중국 텍사스 (우편번호 **) 오스틴 윌리암 캐논 드라이브 웨스트 *",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc.",
+        "applicantNativeName": "엔엑스피 유에스에이, 인코포레이티드"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Semiconductor for game/mischief, global computer network/interconnected computer network access computer software, machine/machine tool semiconductor, downloadable electronic design guide, downloadable electronic user manual Data conversion circuit, microcomputer, microcontroller, microprocessor, multimedia shorthand, semiconductor processor chip, semiconductor processor, semiconductor, semiconductor device test board, video graphic accelerator, video processor, video circuit board, clock/revelation device semiconductor Semiconductor for musical instruments, application integration/access software, audio-video circuit board, audio circuit board, recording/regeneration/conversion of sound/video/data, suitable semiconductor operation test board, third party software application computer software device, Test boards for lighting/heating/steam generation/cooking/cooling/drying/dry/ventilation device semiconductors, integrated circuit chips, integrated circuits, integrated/semiconductor memory test boards (development kits, computer memory, computer software, computer utility programs, computer operation system software, computer Working program, computer peripherals/computer memory integrated circuits, computer peripherals/computer memory digital signal processors, computer peripherals/computer memory microprocessor, Computer operating system, computer firmware, computer program, circuit board",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "게임/장난감용반도체 , 글로벌 컴퓨터네트워크/상호연결 컴퓨터 네트워크 액세스용 컴퓨터소프트웨어 , 기계/기계공구용 반도체 , 내려받기 가능한 전자 디자인 지침서 , 내려받기 가능한 전자 사용자매뉴얼 , 내려받기 가능한 전자교육용매뉴얼 , 네트워크 관리용 컴퓨터 프로그램 , 데이터전환회로 , 마이크로컴퓨터 , 마이크로콘트롤러 , 마이크로프로세서 , 멀티미디어가속기 , 반도체 프로세서 칩 , 반도체 프로세서 , 반도체 , 반도체소자 테스트보드 , 비디오그래픽가속기 , 비디오프로세서 , 비디오회로판 , 시계/계시(計時)기기장치용 반도체 , 악기용반도체 , 애플리케이션 통합/접속 소프트웨어 , 오디오-비디오회로판 , 오디오회로판 , 음향/비디오/데이터의 기록/재생/변환용 반도체 , 적합한 반도체 작동 검증용테스트보드 , 제3자의 소프트웨어애플리케이션의 간이화용 컴퓨터 소프트웨어 기기 , 조명/가열/증기발생/조리/냉각/건조/환기기기용반도체 , 집적회로 칩 , 집적회로 , 집적회로/반도체 메모리의 테스트/프로그래밍용테스트보드(개발키트 , 컴퓨터 메모리 , 컴퓨터 소프트웨어 , 컴퓨터 유틸리티 프로그램 , 컴퓨터 작동시스템소프트웨어 , 컴퓨터 작동프로그램 , 컴퓨터 주변기기/컴퓨터 메모리용 집적회로 , 컴퓨터 주변기기/컴퓨터 메모리용디지털신호프로세서 , 컴퓨터 주변기기/컴퓨터 메모리용마이크로프로세서 , 컴퓨터 주변기기/컴퓨터 메모리용아날로그 , 컴퓨터 주변기기/컴퓨터메모리용 센서 , 컴퓨터작동시스템 , 컴퓨터펌웨어 , 컴퓨터프로그램 , 회로판"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Technical licensing business related to technology licensing, data compression and restoring computer algorithms and data algorithms, technology licensing business related to data compression and restoring computer algorithms and data algorithms Technology licensing up for microcomputers, technology licensing -ups of micro computer, microcontroller technology licensing up, microcontroller technology licensing -up, technology licensing -up for microprocessor, Software licensing business related to semiconductor rhythms, semiconductor manufacturing and use, technology licensing business on semiconductor products, technology licensing of semiconductor products, technology licensing business on video system products, technology licensing -up of video system products Software Design Technology Counseling Sector, Technology Licensing Up on Subsidy, Records and Data Records and Data Records, Records and Data Records, Records and Data Records and Technology Licensing of Technology Licensing, Technology Counseling, Technology Licensing, Increasing Technology Licensing Business, Computer Peripherals Technology licensing -up for semiconductor materials for computer memory, technology licensing of computer peripherals and computer memory, technology licensing for computer firmware, technology licensing up of computer firmware, technology licensing up for computer programs Computer memory technology licensing up, computer memory technology licensing -up, computer counseling business, computer system/electric communication system ordering design business, technology licensing up for electrons and electrical and electronic devices used with computers Technology licensing business for computer peripherals, technology licensing business of computer peripherals, patent/trademark/copyright/trade secret/semiconductor manufacturing and use of know -how -licensing -up, circuit board, technology licensing -up",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "기술라이선싱업 , 데이터 압축과 복원용 컴퓨터 알고리듬 및 데이터알고리듬과 관련된 교재에 관한 기술라이선싱업 , 데이터 압축과복원용 컴퓨터 알고리듬 및 데이터 알고리듬과 관련된 교재의기술라이선싱업 , 데이터전환회로에 관한 기술라이선싱업 , 데이터전환회로의기술라이선싱업 , 마이크로컴퓨터에 관한기술라이선싱업 , 마이크로컴퓨터의기술라이선싱업 , 마이크로콘트롤러에 관한기술라이선싱업 , 마이크로콘트롤러의 기술라이선싱업 , 마이크로프로세서에 관한 기술라이선싱업 , 마이크로프로세서의 기술라이선싱업 , 반도체/반도체제조와 관련된 기술라이선싱업 , 반도체라이선싱업 , 반도체제조와 사용에 관련된소프트웨어라이선싱업 , 반도체제품에 관한 기술라이선싱업 , 반도체제품의 기술라이선싱업 , 비디오시스템제품에 관한기술라이선싱업 , 비디오시스템제품의 기술라이선싱업 , 비디오회로판에 관한기술라이선싱업 , 비디오회로판의 기술라이선싱업 , 소프트웨어 디자인 관련기술분야상담업 , 음향과 비디오 및 데이터의 기록과 재생 및변환기기에 관한 기술라이선싱업 , 음향과 비디오 및데이터의 기록과 재생 및 변환기기의 기술라이선싱업 , 전기통신분야 상담업 , 집적회로에 관한기술라이선싱업 , 집적회로의기술라이선싱업 , 컴퓨터 주변기기와 컴퓨터메모리용 반도체소재에 관한기술라이선싱업 , 컴퓨터 주변기기와컴퓨터메모리용 반도체소재의 기술라이선싱업 , 컴퓨터 펌웨어에 관한기술라이선싱업 , 컴퓨터 펌웨어의 기술라이선싱업 , 컴퓨터 프로그램에 관한기술라이선싱업 , 컴퓨터 프로그램의 기술라이선싱업 , 컴퓨터메모리에 관한기술라이선싱업 , 컴퓨터메모리의 기술라이선싱업 , 컴퓨터분야 상담업 , 컴퓨터시스템/전기통신시스템주문디자인업 , 컴퓨터와 함께 사용되는 전자와 전기 및전자기계장치에 관한 기술라이선싱업 , 컴퓨터와함께 사용되는 전자와 전기 및 전자기계장치의기술라이선싱업 , 컴퓨터주변기기에관한 기술라이선싱업 , 컴퓨터주변기기의기술라이선싱업 , 특허/상표/저작권/영업비밀/반도체제조와 사용에 관련된 노하우라이선싱업 , 회로판에 관한 기술라이선싱업 , 회로판의 기술라이선싱업"
+        }
+      ]
+    },
+    "id": "4d358eec-9014-4221-b585-8e7206c4d7db",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20031230",
+        "priorityNumber": "76/567,257"
+      }
+    ],
+    "recordLastUpdated": "20260506",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "*F, Seyang B/D, Naeja-dong, Jongno-gu, Seoul, Korea(KIM & CHANG)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "주성민 (CHU, Sung Min)"
+      },
+      {
+        "representativeAddress": "Jeongdong Building, **F, **-**, Jeongdong-gil, Jung-gu, Seoul ** Korea(KIM & CHANG)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "김영 (KIM, Young)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040625",
+        "applicationNumber": "45-2004-0002278"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20051019",
+        "registrationNumber": "4500140520000"
+      }
+    },
+    "version": "20260506020325",
+    "wordMarkSpecification": {
+      "markTransliteration": "FREESCALE",
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/kr/4d358eec-9014-4221-b585-8e7206c4d7db",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.719Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

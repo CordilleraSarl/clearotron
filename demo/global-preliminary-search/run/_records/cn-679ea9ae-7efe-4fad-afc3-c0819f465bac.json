@@ -1,0 +1,140 @@
+{
+  "uri": "/mark/cn/679ea9ae-7efe-4fad-afc3-c0819f465bac",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "679ea9ae-7efe-4fad-afc3-c0819f465bac",
+  "applicationNumber": "4973986",
+  "registrationNumber": "4973986",
+  "applicationDate": "2005-10-31",
+  "registrationDate": "2009-09-14",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2009-06-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2024-01-27",
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "STARCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "计算机软件维护;知识产权许可;计算机软件更新;技术研究;研究和开发(替他人);在计算机硬件、计算机软件和微处理器领域提供的研究和开发(替他人)服务;计算机软件和硬件咨询;计算机微处理器咨询",
+      "translation_language": "en",
+      "translation": "Computer software maintenance; Intellectual property licensing; Computer software updates; Technical research; Research and development (for others); Research and development (for others) services in the fields of computer hardware, computer software and microprocessors; Computer software and hardware Consulting; Computer Microprocessor Consulting"
+    }
+  ],
+  "owner": "NXP USA,INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 WILLIAM CANNON DRIVE WEST,AUSTIN,TEXAS 78735,USA",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA,INC.",
+        "applicantNativeName": "恩智浦美国有限责任公司;NXP USA,INC."
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer software maintenance; Intellectual property licensing; Computer software updates; Technical research; Research and development (for others); Research and development (for others) services in the fields of computer hardware, computer software and microprocessors; Computer software and hardware Consulting; Computer Microprocessor Consulting",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "计算机软件维护;知识产权许可;计算机软件更新;技术研究;研究和开发(替他人);在计算机硬件、计算机软件和微处理器领域提供的研究和开发(替他人)服务;计算机软件和硬件咨询;计算机微处理器咨询"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Legal services",
+        "Research and development service",
+        "Computer programming, and concerned services"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4207",
+          "subNatGoodsServicesDescription": "Legal services"
+        },
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        }
+      ]
+    },
+    "id": "679ea9ae-7efe-4fad-afc3-c0819f465bac",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1171"
+      }
+    ],
+    "recordLastUpdated": "20251001",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京捷鼎知识产权代理有限责任公司"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20051031",
+        "applicationNumber": "4973986"
+      },
+      "cancellationDate": "20240127",
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20090613",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20090914",
+        "registrationNumber": "4973986"
+      }
+    },
+    "version": "20251001221414",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "STARCORE"
+    }
+  },
+  "_uri": "/mark/cn/679ea9ae-7efe-4fad-afc3-c0819f465bac",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.684Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

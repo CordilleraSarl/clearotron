@@ -1,5 +1,5 @@
 {
-  "ts": "2026-09-16T16:48:57.832Z",
+  "ts": "2026-09-18T18:04:51.789Z",
   "lane": "knockout",
   "checks": [
     {
@@ -55,21 +55,18 @@
       "id": "plain-language-vocabulary",
       "family": "voice",
       "surface": "findings",
-      "pass": false,
-      "detail": "the lawyer's vocabulary on lines a reader meets before opening anything — rewrite the sentence in the words the reader already owns, do not swap the word: the batch summary: \"belt-and-braces\" → \"extra\"; the batch summary: \"chunk\" (an engine word — cut it)"
+      "pass": true,
+      "detail": ""
     },
     {
       "id": "plain-language-sentence-length",
       "family": "voice",
       "surface": "findings",
-      "pass": false,
-      "detail": "a default-visible sentence carrying more than one idea (over 25 words) — split it, conclusion first: the batch summary: 28 words; the batch summary: 28 words; the batch summary: 27 words; the batch summary: 39 words; the batch summary: 26 words; +4 more"
+      "pass": true,
+      "detail": ""
     }
   ],
-  "failures": [
-    "plain-language-vocabulary",
-    "plain-language-sentence-length"
-  ],
+  "failures": [],
   "notApplicable": [
     {
       "id": "names-cell-populated",
@@ -224,12 +221,12 @@
   ],
   "judged": {
     "marks": 1,
-    "findings": 2
+    "findings": 0
   },
   "receipts": {
     "marks": 1,
-    "citing": 1,
-    "findings": 2,
-    "urls": 2
+    "citing": 0,
+    "findings": 0,
+    "urls": 0
   }
 }

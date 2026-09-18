@@ -1,0 +1,166 @@
+{
+  "uri": "/mark/no/f76a0f4b-2872-44ab-a7dd-a64874a3db1d",
+  "provider": "clarivate",
+  "office": "no",
+  "guid": "f76a0f4b-2872-44ab-a7dd-a64874a3db1d",
+  "applicationNumber": "202506329",
+  "registrationNumber": null,
+  "applicationDate": "2025-02-06",
+  "registrationDate": "2025-11-24",
+  "expiryDate": "2035-02-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-12-01",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SYMETRI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    38,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer programs (downloadable software) for designing and creating digital drawings and models; software for construction, modelling and design; computer software for computer-aided design (CAD); computer programs in the form of geographical information systems.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "en",
+      "description": "Data communication services; worldwide computer network access services; providing access to and leasing access time to computer databases; provision of access to web pages; digital transmission services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education in the implementation and use of data processing programs for designing and creating digital drawings and models; training services relating to computer-aided engineering design; education services relating to computer systems.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Design, maintenance and updating of computer programs and computer systems for creating digital drawings and models; computer aided graphic design; computer aided design services relating to building projects; computer aided design services; consultancy relating to computer programs for designing and creating digital drawings and models; none of the aforementioned services in the field of multichannel communications and print and mail.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Symetri AB",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityCountryCode": "EM",
+      "priorityCountryName": "EU trade marks",
+      "priorityDate": "20240904",
+      "priorityNumber": "019074708"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantName": "Symetri AB"
+      }
+    ],
+    "applicationLanguageCode": "no",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer programs (downloadable software) for designing and creating digital drawings and models; software for construction, modelling and design; computer software for computer-aided design (CAD); computer programs in the form of geographical information systems."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Data communication services; worldwide computer network access services; providing access to and leasing access time to computer databases; provision of access to web pages; digital transmission services."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education in the implementation and use of data processing programs for designing and creating digital drawings and models; training services relating to computer-aided engineering design; education services relating to computer systems."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Design, maintenance and updating of computer programs and computer systems for creating digital drawings and models; computer aided graphic design; computer aided design services relating to building projects; computer aided design services; consultancy relating to computer programs for designing and creating digital drawings and models; none of the aforementioned services in the field of multichannel communications and print and mail."
+        }
+      ]
+    },
+    "id": "f76a0f4b-2872-44ab-a7dd-a64874a3db1d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "EM",
+        "priorityCountryName": "EU trade marks",
+        "priorityDate": "20240904",
+        "priorityNumber": "019074708"
+      }
+    ],
+    "recordLastUpdated": "20251221",
+    "registrationOfficeCode": "NO",
+    "registrationOfficeName": "Norway",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250206",
+        "applicationNumber": "202506329"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350206",
+      "lastPublicationDate": "20251201",
+      "markCurrentStatus": "GRANTED",
+      "registration": {
+        "registrationDate": "20251124"
+      }
+    },
+    "version": "20251221020004",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SYMETRI"
+    }
+  },
+  "_uri": "/mark/no/f76a0f4b-2872-44ab-a7dd-a64874a3db1d",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.284Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,147 @@
+{
+  "uri": "/mark/li/a436dd46-8f90-44e3-8b81-b09d981a88d3",
+  "provider": "clarivate",
+  "office": "li",
+  "guid": "a436dd46-8f90-44e3-8b81-b09d981a88d3",
+  "applicationNumber": null,
+  "registrationNumber": "13320",
+  "applicationDate": "2004-06-15",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2017-11-08",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Halbleiter, Mikroprozessoren, Mikroprozessorbauteile (CPUs), integrierte Schaltungen, integrierte Schaltkreisbauteile, Leiterplatten, Mikrocomputer, Mikrocontroller, Mikroprozessoren und Computerperipherie, Speicher und Halbleiterwerkstoffe dafür; Halbleiter für Maschinen und Werkzeugmaschinen; Halbleiter zum Einsatz in Beleuchtungseinrichtungen, Heizungen, Dampferzeugungseinrichtungen, Kochgeräte, Kühlanlagen, Trocknungs - und Belüftungsgeräte; Halbleiter für Uhren und Zeitmesseinrichtungen und - geräte; Halbleiter für Musikinstrumente; Halbleiter für Spiele und Spielzeug; Schaltkreise für die Datenkonvertierung; Grundbetriebssystem für einen Computer (Firmware); elektronische, elektrische und elektromechanische Apparate zur Verwendung in Verbindung mit Computern; Produkte für Videosysteme; Geräte und Einrichtung für die Aufnahme, Wiedergabe und Veränderung von Audio, Video - und Datenmaterialien; Video - und Graphiksteckkarten; Audiosteckkarten; kombinierte Video, Graphik - und Audiosteckkarten; Videographikbeschleunigerkarten; Beschleunigerkarten für Multimediaanwendungen; Videoprozessoren; Computerprogramme; Anleitungen für die Verwendung von Datenkompressions - und Datendekompressionsalgorithmen; Prüf - und Kalibriereinrichtungen; Bestandteile und Zubehör für alle vorgenannte Waren; Einrichtungen zur Prüfung und Programmierung von integrierten Schaltkreisen und Halbleiterspeichern; Computersoftware, nämlich Applikations - und Integrationsprogramme sowie Kommunikationsprogramme, Computerdienstprogramme, Programme zur Netzwerkverwaltung, Computerprogramme für den Zugang zu einem globalen Computernetzwerk sowie zu miteinander verbundenen globalen Computernetzwerken; Computermaschinenprogramme; Computerbetriebssysteme; Computerprogramme für Betriebssysteme; Anwendungsprogramme; Computerprogramme zur Ermöglichung Lauffähigkeit von fremden Applikationsprogrammen.",
+      "translation_language": "en",
+      "translation": "Semiconductors, microprocessors, microprocessor (CPU) components, integrated circuits, integrated circuit components, printed circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor materials therefor; semiconductors for machines and machine tools; semiconductors for use in lighting, heating, steam generating, cooking, refrigerating, drying and ventilating apparatus; Semiconductors for clocks and timepieces and devices; semiconductors for musical instruments; semiconductors for games and toys; data conversion circuits; basic operating system for a computer (firmware); electronic, electrical and electromechanical apparatus for use in connection with computers; products for video systems; apparatus and equipment for recording, reproducing and manipulating audio, video and data materials; video and graphics plug-in cards; audio plug-in cards; combined video, graphics and audio plug-in cards; video graphics accelerator cards; accelerator cards for multimedia applications; video processors; computer programs; instructions for using data compression and data decompression algorithms; testing and calibration equipment; Components and accessories for all the aforesaid goods; Devices for testing and programming integrated circuits and semiconductor memories; Computer software, namely application and integration programs and communications programs, computer service programs, network management programs, computer programs for accessing a global computer network and interconnected global computer networks; computer machine programs; computer operating systems; Computer programs for operating systems; application programs; Computer programs for enabling third-party application programs to run."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Vergabe von Technologielizenzen; Vergabe von Lizenzen unter Patenten, Warenzeichen, Urheberrechten, Geschäftsgeheimnissen und/oder Know - How im Zusammenhang mit der Herstellung und Anwendung von Halbleiterprodukten; Lizenzvergabe unter Halbleiterschutzrechten; Lizenzvergabe an Software bezüglich der Herstellung und Anwendung von Halbleitern; Vergabe von Technologielizenzen in Verbindung mit Halbleitern und deren Herstellung; Vergabe von Technologielizenzen als integraler Bestandteil und in Verbindung mit Halbleiterprodukten, integrierten Schaltungen und Schaltkreisen, Leiterplatten, Mikrocomputern, Mikrocontrollern, Mikroprozessoren und Computerperipheriegeräten, Speichern und Halbleiterbauteilen dafür, Schaltkreisen für die Datenkonvertierung, Grundbetriebssystemen (Firmware), elektronischen, elektrischen und elektromechanischen Apparaten zur Verwendung in Verbindung mit Computern, Video - und Grafiksteckkarten, Produkten für Videosysteme, Geräten und Einrichtungen für die Aufnahme, Wiedergabe und Veränderung von Audio, Video - und Datenmaterialien, sowie Computerprogrammen; Erstellung und Bereitstellung von Anleitungen für die Verwendung von Datenkompressions - und Datendekompressionsalgorithmen; Entwurf von kundenspezifischen Datenverarbeitungs - und Telekommunikationsanlagen; Beratungsdienstleistungen auf dem Gebiet der Datenverarbeitung (Hard - und Software) und der Telekommunikation sowie damit zusammenhängender Technologien für die Programmentwicklung.",
+      "translation_language": "en",
+      "translation": "Licensing of technology; Licensing of patents, trademarks, copyrights, trade secrets and/or know-how in connection with the manufacture and use of semiconductor products; Licensing under semiconductor protection rights; Licensing of software relating to the manufacture and use of semiconductors; Licensing of technology in connection with semiconductors and their manufacture; Licensing of technology as an integral part of and in connection with semiconductor products, integrated circuits and circuits, printed circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor components therefor, circuits for data conversion, basic operating systems (firmware), electronic, electrical and electromechanical apparatus for use in connection with computers, video and graphics plug-in cards, products for video systems, apparatus and devices for recording, reproducing and modifying audio, video and data materials, and computer programs; creating and providing instructions for use of data compression and data decompression algorithms; Design of customer-specific data processing and telecommunications systems; Consultancy in the field of data processing (hardware and software) and telecommunications and related technologies for program development."
+    }
+  ],
+  "owner": "NXP USA Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Riederer Hasler & Partner, Patentanwälte AG",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20031230",
+      "priorityNumber": "76/567257"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 WILLIAM CANNON DRIVE WEST; AUSTIN, TEXAS 78735",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA Inc."
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Semiconductors, microprocessors, microprocessor (CPU) components, integrated circuits, integrated circuit components, printed circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor materials therefor; semiconductors for machines and machine tools; semiconductors for use in lighting, heating, steam generating, cooking, refrigerating, drying and ventilating apparatus; Semiconductors for clocks and timepieces and devices; semiconductors for musical instruments; semiconductors for games and toys; data conversion circuits; basic operating system for a computer (firmware); electronic, electrical and electromechanical apparatus for use in connection with computers; products for video systems; apparatus and equipment for recording, reproducing and manipulating audio, video and data materials; video and graphics plug-in cards; audio plug-in cards; combined video, graphics and audio plug-in cards; video graphics accelerator cards; accelerator cards for multimedia applications; video processors; computer programs; instructions for using data compression and data decompression algorithms; testing and calibration equipment; Components and accessories for all the aforesaid goods; Devices for testing and programming integrated circuits and semiconductor memories; Computer software, namely application and integration programs and communications programs, computer service programs, network management programs, computer programs for accessing a global computer network and interconnected global computer networks; computer machine programs; computer operating systems; Computer programs for operating systems; application programs; Computer programs for enabling third-party application programs to run.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Halbleiter, Mikroprozessoren, Mikroprozessorbauteile (CPUs), integrierte Schaltungen, integrierte Schaltkreisbauteile, Leiterplatten, Mikrocomputer, Mikrocontroller, Mikroprozessoren und Computerperipherie, Speicher und Halbleiterwerkstoffe dafür; Halbleiter für Maschinen und Werkzeugmaschinen; Halbleiter zum Einsatz in Beleuchtungseinrichtungen, Heizungen, Dampferzeugungseinrichtungen, Kochgeräte, Kühlanlagen, Trocknungs - und Belüftungsgeräte; Halbleiter für Uhren und Zeitmesseinrichtungen und - geräte; Halbleiter für Musikinstrumente; Halbleiter für Spiele und Spielzeug; Schaltkreise für die Datenkonvertierung; Grundbetriebssystem für einen Computer (Firmware); elektronische, elektrische und elektromechanische Apparate zur Verwendung in Verbindung mit Computern; Produkte für Videosysteme; Geräte und Einrichtung für die Aufnahme, Wiedergabe und Veränderung von Audio, Video - und Datenmaterialien; Video - und Graphiksteckkarten; Audiosteckkarten; kombinierte Video, Graphik - und Audiosteckkarten; Videographikbeschleunigerkarten; Beschleunigerkarten für Multimediaanwendungen; Videoprozessoren; Computerprogramme; Anleitungen für die Verwendung von Datenkompressions - und Datendekompressionsalgorithmen; Prüf - und Kalibriereinrichtungen; Bestandteile und Zubehör für alle vorgenannte Waren; Einrichtungen zur Prüfung und Programmierung von integrierten Schaltkreisen und Halbleiterspeichern; Computersoftware, nämlich Applikations - und Integrationsprogramme sowie Kommunikationsprogramme, Computerdienstprogramme, Programme zur Netzwerkverwaltung, Computerprogramme für den Zugang zu einem globalen Computernetzwerk sowie zu miteinander verbundenen globalen Computernetzwerken; Computermaschinenprogramme; Computerbetriebssysteme; Computerprogramme für Betriebssysteme; Anwendungsprogramme; Computerprogramme zur Ermöglichung Lauffähigkeit von fremden Applikationsprogrammen."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Licensing of technology; Licensing of patents, trademarks, copyrights, trade secrets and/or know-how in connection with the manufacture and use of semiconductor products; Licensing under semiconductor protection rights; Licensing of software relating to the manufacture and use of semiconductors; Licensing of technology in connection with semiconductors and their manufacture; Licensing of technology as an integral part of and in connection with semiconductor products, integrated circuits and circuits, printed circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor components therefor, circuits for data conversion, basic operating systems (firmware), electronic, electrical and electromechanical apparatus for use in connection with computers, video and graphics plug-in cards, products for video systems, apparatus and devices for recording, reproducing and modifying audio, video and data materials, and computer programs; creating and providing instructions for use of data compression and data decompression algorithms; Design of customer-specific data processing and telecommunications systems; Consultancy in the field of data processing (hardware and software) and telecommunications and related technologies for program development.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Vergabe von Technologielizenzen; Vergabe von Lizenzen unter Patenten, Warenzeichen, Urheberrechten, Geschäftsgeheimnissen und/oder Know - How im Zusammenhang mit der Herstellung und Anwendung von Halbleiterprodukten; Lizenzvergabe unter Halbleiterschutzrechten; Lizenzvergabe an Software bezüglich der Herstellung und Anwendung von Halbleitern; Vergabe von Technologielizenzen in Verbindung mit Halbleitern und deren Herstellung; Vergabe von Technologielizenzen als integraler Bestandteil und in Verbindung mit Halbleiterprodukten, integrierten Schaltungen und Schaltkreisen, Leiterplatten, Mikrocomputern, Mikrocontrollern, Mikroprozessoren und Computerperipheriegeräten, Speichern und Halbleiterbauteilen dafür, Schaltkreisen für die Datenkonvertierung, Grundbetriebssystemen (Firmware), elektronischen, elektrischen und elektromechanischen Apparaten zur Verwendung in Verbindung mit Computern, Video - und Grafiksteckkarten, Produkten für Videosysteme, Geräten und Einrichtungen für die Aufnahme, Wiedergabe und Veränderung von Audio, Video - und Datenmaterialien, sowie Computerprogrammen; Erstellung und Bereitstellung von Anleitungen für die Verwendung von Datenkompressions - und Datendekompressionsalgorithmen; Entwurf von kundenspezifischen Datenverarbeitungs - und Telekommunikationsanlagen; Beratungsdienstleistungen auf dem Gebiet der Datenverarbeitung (Hard - und Software) und der Telekommunikation sowie damit zusammenhängender Technologien für die Programmentwicklung."
+        }
+      ]
+    },
+    "id": "a436dd46-8f90-44e3-8b81-b09d981a88d3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20031230",
+        "priorityNumber": "76/567257"
+      }
+    ],
+    "recordLastUpdated": "20250623",
+    "registrationOfficeCode": "LI",
+    "registrationOfficeName": "Liechtenstein",
+    "representatives": [
+      {
+        "representativeAddress": "Kappelestrasse 15; 9492 Eschen",
+        "representativeAddressCountryCode": "LI",
+        "representativeAddressCountryName": "Liechtenstein",
+        "representativeName": "Riederer Hasler & Partner, Patentanwälte AG"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040615"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20171108",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationNumber": "13320"
+      }
+    },
+    "version": "20250623155102",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/li/a436dd46-8f90-44e3-8b81-b09d981a88d3",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.714Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

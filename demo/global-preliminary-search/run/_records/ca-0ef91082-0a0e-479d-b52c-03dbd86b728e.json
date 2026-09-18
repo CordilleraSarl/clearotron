@@ -1,0 +1,230 @@
+{
+  "uri": "/mark/ca/0ef91082-0a0e-479d-b52c-03dbd86b728e",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "0ef91082-0a0e-479d-b52c-03dbd86b728e",
+  "applicationNumber": "2019073",
+  "registrationNumber": "TMA1315367",
+  "applicationDate": "2020-03-24",
+  "registrationDate": "2025-05-23",
+  "expiryDate": "2035-05-23",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2025-03-05"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "HOVERGAMES",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    12,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        12,
+        41
+      ],
+      "language": "en",
+      "description": "(1) Camera drones; drone development kits; drone development kits for drones for disaster management, health crises, environmental protection, and wildlife conservation.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12,
+        41
+      ],
+      "language": "en",
+      "description": "(1) Organizing, conducting and operating camera drone competitions; organizing, conducting and operating drone development competitions; organizing, conducting and operating competitions for virtual software coding for software for drones; organizing, conducting and operating drone hardware design competitions.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "FASKEN MARTINEAU DUMOULIN LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60, 5656 AG, Eindhoven",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantAddressLines": [
+          "High Tech Campus 60",
+          "5656 AG",
+          "Eindhoven,"
+        ],
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "categorizedTexts": {},
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "12,41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Camera drones; drone development kits; drone development kits for drones for disaster management, health crises, environmental protection, and wildlife conservation."
+        },
+        {
+          "intClassNumber": "12,41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Organizing, conducting and operating camera drone competitions; organizing, conducting and operating drone development competitions; organizing, conducting and operating competitions for virtual software coding for software for drones; organizing, conducting and operating drone hardware design competitions."
+        }
+      ]
+    },
+    "id": "0ef91082-0a0e-479d-b52c-03dbd86b728e",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20250523",
+        "descriptionText": "Registered",
+        "responseDate": "20350523"
+      },
+      {
+        "date": "20250523",
+        "descriptionText": "Registration Pending"
+      },
+      {
+        "date": "20250305",
+        "descriptionText": "Advertised",
+        "information": "Vol.72 Issue 3671"
+      },
+      {
+        "date": "20250204",
+        "descriptionText": "Approval Notice Sent",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20250204",
+        "descriptionText": "Approved",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20240711",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20250111"
+      },
+      {
+        "date": "20240711",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20220616",
+        "descriptionText": "287",
+        "information": "Goods or Services Not Acceptable"
+      },
+      {
+        "date": "20200324",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20200324",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20200324",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "High Tech Campus 60, 5656 AG, Eindhoven",
+        "addressLines": [
+          "High Tech Campus 60",
+          "5656 AG",
+          "Eindhoven,"
+        ],
+        "countryName": "Netherlands",
+        "name": "NXP B.V."
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "3671",
+        "publicationVolume": "72"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "FASKEN MARTINEAU DUMOULIN LLP",
+          "333 BAY STREET, SUITE 2400",
+          "BAY ADELAIDE CENTRE, BOX 20",
+          "TORONTO",
+          "ONTARIO M5H2T6"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "FASKEN MARTINEAU DUMOULIN LLP",
+        "representativeReferenceNumber": "308836.00002"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200324",
+        "applicationNumber": "2019073"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350523",
+      "formalisationDate": "20200324",
+      "markCurrentStatus": "Registered",
+      "nextRenewalDate": "20350523",
+      "publicationDate": [
+        "20250305"
+      ],
+      "registration": {
+        "registrationDate": "20250523",
+        "registrationNumber": "TMA1315367"
+      }
+    },
+    "subjectHeadings": [
+      "HOVERGAMES",
+      "HOVER GAMES"
+    ],
+    "version": "20250625111056",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "HOVER GAMES",
+      "markVerbalElementText": "HOVERGAMES",
+      "markVerbalElementTextFormal": "HOVERGAMES"
+    }
+  },
+  "_uri": "/mark/ca/0ef91082-0a0e-479d-b52c-03dbd86b728e",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:10.758Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

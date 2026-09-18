@@ -1,0 +1,133 @@
+{
+  "uri": "/mark/mk/1fff8caa-6194-4694-85bf-1608566a3669",
+  "provider": "clarivate",
+  "office": "mk",
+  "guid": "1fff8caa-6194-4694-85bf-1608566a3669",
+  "applicationNumber": "2004/457",
+  "registrationNumber": "14057",
+  "applicationDate": "2004-06-25",
+  "registrationDate": "2008-04-22",
+  "expiryDate": "2024-06-25",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9,
+        42
+      ],
+      "language": "en",
+      "description": "No goods available",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "BINPRO DOOEL SKOPJE",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20031229",
+      "priorityNumber": "76/567257"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA Inc.",
+        "applicantNativeAddress": "6501 William Cannon Drive West, Austin, Texas 78735",
+        "applicantNativeName": "NXP USA Inc."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "No goods available"
+        }
+      ]
+    },
+    "id": "1fff8caa-6194-4694-85bf-1608566a3669",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20031229",
+        "priorityNumber": "76/567257"
+      }
+    ],
+    "recordLastUpdated": "20260429",
+    "registrationOfficeCode": "MK",
+    "registrationOfficeName": "North Macedonia",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "MK",
+        "representativeAddressCountryName": "North Macedonia",
+        "representativeName": "BINPRO DOOEL SKOPJE",
+        "representativeNativeAddress": "ul. Leninova br. 15a - 13, 1000 Skopje",
+        "representativeNativeName": "BINPRO DOOEL SKOPJE"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20040625",
+        "applicationNumber": "2004/457"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20240625",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20080422",
+        "registrationNumber": "14057"
+      }
+    },
+    "version": "20260429103818",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/mk/1fff8caa-6194-4694-85bf-1608566a3669",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.714Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

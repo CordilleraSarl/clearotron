@@ -97,7 +97,7 @@
         "publicationVolume": "2016/013"
       }
     ],
-    "recordLastUpdated": "20260313",
+    "recordLastUpdated": "20260918",
     "registrationOfficeCode": "GB",
     "registrationOfficeName": "United Kingdom",
     "status": {
@@ -107,20 +107,20 @@
         "applicationNumber": "3153032"
       },
       "cmNormalisedStatus": "EXPIRED",
-      "markCurrentStatus": "EXPIRED MARK",
+      "markCurrentStatus": "REMOVED FROM THE RECORD",
       "registration": {
         "registrationDate": "20160603",
         "registrationNumber": "3153032"
       }
     },
-    "version": "20260313020015",
+    "version": "20260918020043",
     "wordMarkSpecification": {
       "markVerbalElementText": "VANQOR"
     }
   },
   "_uri": "/mark/gb/41f8c2e6-5c79-43df-8e71-d0dd5f3919c5",
   "_receipt": {
-    "fetched_at": "2026-09-02T14:29:14.632Z",
-    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+    "fetched_at": "2026-09-18T12:41:59.526Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
   }
 }

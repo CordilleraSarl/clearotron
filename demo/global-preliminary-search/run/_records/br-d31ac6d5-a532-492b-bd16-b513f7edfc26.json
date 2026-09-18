@@ -1,0 +1,141 @@
+{
+  "uri": "/mark/br/d31ac6d5-a532-492b-bd16-b513f7edfc26",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "d31ac6d5-a532-492b-bd16-b513f7edfc26",
+  "applicationNumber": "820010677",
+  "registrationNumber": "820010677",
+  "applicationDate": "1997-07-10",
+  "registrationDate": "1999-10-19",
+  "expiryDate": "2029-10-19",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MIFARE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    14,
+    16,
+    21,
+    22,
+    37,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        14,
+        16,
+        21,
+        22,
+        37,
+        42
+      ],
+      "language": "pt",
+      "description": "Aparelhos de processamento de dados, unidades de armazenamento de dados, portadoras de dados, estações de escrita e estações de leitura para aparelhos de processamento de dados; microprocessadores, programas de computador pré - gravados, cartões eletrônicos (codificados) de pagamento, cartões inteligentes, aperelhos de processamento de dados para determinar o preço a ser pago pelo cliente portador de cartão eletrônico de pagamento, bilhetes eletrônicos e aparelhos de processamento de dados para determinar o preço da passagem a ser paga pelos passageiros portadores de bilhetes eletrônicos. Aparelhos de processamento de dados, unidades de armazenamento de dados, portadoras de dados, estações de escrita e estações de leitura para aparelhos de processamento de dados; microprocessadores, programas de computador pré - gravados, cartões eletrônicos (codificados) de pagamento, cartões inteligentes, aperelhos de processamento de dados para determinar o preço a ser pago pelo cliente portador de cartão eletrônico de pagamento, bilhetes eletrônicos e aparelhos de processamento de dados para determinar o preço da passagem a ser paga pelos passageiros portadores de bilhetes eletrônicos.",
+      "translation_language": "en",
+      "translation": "DATA PROCESSING EQUIPMENT, DATA STORAGE UNITS, DATA CARRIERS, WRITING STATIONS AND READING STATIONS FOR DATA PROCESSING EQUIPMENT; MICROPROCESSORS, PRE-RECORDED COMPUTER PROGRAMS, ELECTRONIC (ENcoded) PAYMENT CARDS, SMART CARDS, DATA PROCESSING DEVICES TO DETERMINE THE PRICE TO BE PAID BY THE CUSTOMER HOLDING ELECTRONIC PAYMENT CARDS, ELECTRONIC TICKETS AND DATA PROCESSING DEVICES FOR DETERMINE THE PRICE OF THE TICKET TO BE PAID BY PASSENGERS WITH ELECTRONIC TICKETS. DATA PROCESSING APPARATUS, DATA STORAGE UNITS, DATA CARRIERS, WRITING STATIONS AND READING STATIONS FOR DATA PROCESSING APPARATUS; MICROPROCESSORS, PRE-RECORDED COMPUTER PROGRAMS, ELECTRONIC (ENcoded) PAYMENT CARDS, SMART CARDS, DATA PROCESSING DEVICES TO DETERMINE THE PRICE TO BE PAID BY THE CUSTOMER HOLDING ELECTRONIC PAYMENT CARDS, ELECTRONIC TICKETS AND DATA PROCESSING DEVICES FOR DETERMINE THE PRICE OF THE TICKET TO BE PAID BY PASSENGERS WITH ELECTRONIC TICKETS."
+    }
+  ],
+  "owner": "NXP B. V.",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "DAVID DO NASCIMENTO ADVOGADOS ASSOCIADOS",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "NXP B. V."
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "DATA PROCESSING EQUIPMENT, DATA STORAGE UNITS, DATA CARRIERS, WRITING STATIONS AND READING STATIONS FOR DATA PROCESSING EQUIPMENT; MICROPROCESSORS, PRE-RECORDED COMPUTER PROGRAMS, ELECTRONIC (ENcoded) PAYMENT CARDS, SMART CARDS, DATA PROCESSING DEVICES TO DETERMINE THE PRICE TO BE PAID BY THE CUSTOMER HOLDING ELECTRONIC PAYMENT CARDS, ELECTRONIC TICKETS AND DATA PROCESSING DEVICES FOR DETERMINE THE PRICE OF THE TICKET TO BE PAID BY PASSENGERS WITH ELECTRONIC TICKETS. DATA PROCESSING APPARATUS, DATA STORAGE UNITS, DATA CARRIERS, WRITING STATIONS AND READING STATIONS FOR DATA PROCESSING APPARATUS; MICROPROCESSORS, PRE-RECORDED COMPUTER PROGRAMS, ELECTRONIC (ENcoded) PAYMENT CARDS, SMART CARDS, DATA PROCESSING DEVICES TO DETERMINE THE PRICE TO BE PAID BY THE CUSTOMER HOLDING ELECTRONIC PAYMENT CARDS, ELECTRONIC TICKETS AND DATA PROCESSING DEVICES FOR DETERMINE THE PRICE OF THE TICKET TO BE PAID BY PASSENGERS WITH ELECTRONIC TICKETS.",
+          "intClassNumber": "07,08,09,10,11,12,14,16,21,22,37,42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Aparelhos de processamento de dados, unidades de armazenamento de dados, portadoras de dados, estações de escrita e estações de leitura para aparelhos de processamento de dados; microprocessadores, programas de computador pré - gravados, cartões eletrônicos (codificados) de pagamento, cartões inteligentes, aperelhos de processamento de dados para determinar o preço a ser pago pelo cliente portador de cartão eletrônico de pagamento, bilhetes eletrônicos e aparelhos de processamento de dados para determinar o preço da passagem a ser paga pelos passageiros portadores de bilhetes eletrônicos. Aparelhos de processamento de dados, unidades de armazenamento de dados, portadoras de dados, estações de escrita e estações de leitura para aparelhos de processamento de dados; microprocessadores, programas de computador pré - gravados, cartões eletrônicos (codificados) de pagamento, cartões inteligentes, aperelhos de processamento de dados para determinar o preço a ser pago pelo cliente portador de cartão eletrônico de pagamento, bilhetes eletrônicos e aparelhos de processamento de dados para determinar o preço da passagem a ser paga pelos passageiros portadores de bilhetes eletrônicos."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "09.40"
+        },
+        {
+          "natClassNumber": "09.55"
+        }
+      ]
+    },
+    "id": "d31ac6d5-a532-492b-bd16-b513f7edfc26",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "DAVID DO NASCIMENTO ADVOGADOS ASSOCIADOS"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19970710",
+        "applicationNumber": "820010677"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20291019",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "19991019",
+        "registrationNumber": "820010677"
+      }
+    },
+    "version": "20250630201341",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MIFARE"
+    }
+  },
+  "_uri": "/mark/br/d31ac6d5-a532-492b-bd16-b513f7edfc26",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.686Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

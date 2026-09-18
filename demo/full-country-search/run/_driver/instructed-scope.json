@@ -12,5 +12,8 @@
   ],
   "goods": "Downloadable software for water-quality monitoring with online training services attached",
   "customer": null,
-  "geography": null
+  "geography": {
+    "mode": "named",
+    "origin": "request"
+  }
 }

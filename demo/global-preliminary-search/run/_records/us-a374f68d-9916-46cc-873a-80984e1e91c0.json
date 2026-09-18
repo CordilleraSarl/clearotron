@@ -1,0 +1,790 @@
+{
+  "uri": "/mark/us/a374f68d-9916-46cc-873a-80984e1e91c0",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "a374f68d-9916-46cc-873a-80984e1e91c0",
+  "applicationNumber": "78783188",
+  "registrationNumber": "3769359",
+  "applicationDate": "2005-12-30",
+  "registrationDate": "2010-03-30",
+  "expiryDate": null,
+  "renewalDate": "2020-03-30",
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2007-04-10"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "NEXTPOINT",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Litigation support services; litigation consultancy in the nature of strategy services; graphic illustration services for others; computer graphics services in connection with legal proceedings for others",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NEXTPOINT INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20190517",
+      "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+    },
+    "applicants": [
+      {
+        "applicantAddress": "3711 NORTH RAVENSWOOD AVE., CHICAGO, IL, 60613",
+        "applicantAddressCity": "CHICAGO",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "60613",
+        "applicantAddressStateName": "ILLINOIS",
+        "applicantAddressStreet": "3711 NORTH RAVENSWOOD AVE.",
+        "applicantJurisdictionOfIncorporation": "ILLINOIS",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "NEXTPOINT INC.",
+        "applicantSecondaryAddressUnit": "SUITE 146"
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "4043 N RAVENSWOOD AVE, #317, CHICAGO, ILLINOIS, 60613",
+            "city": "CHICAGO",
+            "jurisdictionOfIncorporation": "ILLINOIS",
+            "legalEntity": "CORPORATION",
+            "name": "NEXTPOINT INC.",
+            "postalCode": "60613",
+            "stateName": "ILLINOIS",
+            "street": "4043 N RAVENSWOOD AVE, #317"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "ARIZONA",
+            "legalEntity": "CORPORATION",
+            "name": "WESTERN ALLIANCE BANK"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "200 N LASALLE, SUITE 1550, CHICAGO, IL 60606",
+            "addressLines": [
+              "PERRY LITWIN LAW, LLC GATTEGNO",
+              "200 N LASALLE, SUITE 1550",
+              "CHICAGO, IL 60606"
+            ],
+            "name": "PERRY LITWIN LAW, LLC GATTEGNO"
+          }
+        ],
+        "descriptionText": "RELEASE BY SECURED PARTY",
+        "executedDate": "20230515",
+        "recordedDate": "20230519",
+        "reelFrameNumber": "8078/0672"
+      },
+      {
+        "assignees": [
+          {
+            "address": "150 N. WACKER DRIVE, SUITE 2160, CHICAGO, ILLINOIS, 60606",
+            "city": "CHICAGO",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED PARTNERSHIP",
+            "name": "RF INVESTMENT PARTNERS SBIC II, LP, AS AGENT",
+            "postalCode": "60606",
+            "stateName": "ILLINOIS",
+            "street": "150 N. WACKER DRIVE, SUITE 2160"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "NXP HOLDINGS LLC"
+          },
+          {
+            "jurisdictionOfIncorporation": "ILLINOIS",
+            "legalEntity": "CORPORATION",
+            "name": "NEXTPOINT HOLDINGS INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "ILLINOIS",
+            "legalEntity": "CORPORATION",
+            "name": "NEXTPOINT INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "ARIZONA",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "NEXTPOINT LAW GROUP LLC"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "525 WEST MONROE STREET, CHICAGO, IL 60661",
+            "addressLines": [
+              "RAQUEL HALEEM C/O KATTEN MUCHIN ROSENMAN",
+              "525 WEST MONROE STREET",
+              "CHICAGO, IL 60661"
+            ],
+            "name": "RAQUEL HALEEM C/O KATTEN MUCHIN ROSENMAN"
+          }
+        ],
+        "descriptionText": "SECURITY INTEREST",
+        "executedDate": "20230426",
+        "recordedDate": "20230427",
+        "reelFrameNumber": "8053/0829"
+      },
+      {
+        "assignees": [
+          {
+            "address": "ONE E. WASHINGTON STREET, SUITE 1400, PHOENIX, ARIZONA, 85004",
+            "city": "PHOENIX",
+            "jurisdictionOfIncorporation": "ARIZONA",
+            "legalEntity": "CORPORATION",
+            "name": "WESTERN ALLIANCE BANK, AS SUCCESSOR SECURED PARTY",
+            "postalCode": "85004",
+            "stateName": "ARIZONA",
+            "street": "ONE E. WASHINGTON STREET, SUITE 1400"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "NATIONAL BANKING ASSOCIATION",
+            "name": "WEBSTER BANK, NATIONAL ASSOCIATION, AS SUCCESSOR BY MERGER TO STERLING NATIONAL BANK"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "SQUIRE PATTON BOGGS (US) LLP, 475 SANSOME STREET, SUITE 1600, SAN FRANCISCO, CA 94111",
+            "addressLines": [
+              "RAISA DYADKINA",
+              "SQUIRE PATTON BOGGS (US) LLP",
+              "475 SANSOME STREET, SUITE 1600",
+              "SAN FRANCISCO, CA 94111"
+            ],
+            "name": "RAISA DYADKINA"
+          }
+        ],
+        "descriptionText": "ASSIGNMENT OF INTELLECTUAL PROPERTY SECURITY AGREEMENTS",
+        "executedDate": "20220808",
+        "recordedDate": "20220808",
+        "reelFrameNumber": "7815/0466"
+      },
+      {
+        "assignees": [
+          {
+            "address": "ONE JERICHO PLAZA, JERICHO, NEW YORK, 11753",
+            "city": "JERICHO",
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "NATIONAL BANKING ASSOCIATION",
+            "name": "STERLING NATIONAL BANK",
+            "postalCode": "11753",
+            "secondaryAddressUnit": "3D FLOOR",
+            "stateName": "NEW YORK",
+            "street": "ONE JERICHO PLAZA"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "ILLINOIS",
+            "legalEntity": "CORPORATION",
+            "name": "NEXTPOINT INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "NEAL GERBER & EISENBERG LLP, SUITE 1700, TWO NORTH LASALLE STREET, CHICAGO, IL 60602",
+            "addressLines": [
+              "ANDREW S. FRAKER",
+              "NEAL GERBER & EISENBERG LLP",
+              "SUITE 1700, TWO NORTH LASALLE STREET",
+              "CHICAGO, IL 60602"
+            ],
+            "name": "ANDREW S. FRAKER"
+          }
+        ],
+        "descriptionText": "SECURITY INTEREST",
+        "executedDate": "20210811",
+        "recordedDate": "20210818",
+        "reelFrameNumber": "7395/0712"
+      },
+      {
+        "assignees": [
+          {
+            "address": "3711 NORTH RAVENSWOOD AVE., CHICAGO, ILLINOIS, 60613",
+            "city": "CHICAGO",
+            "jurisdictionOfIncorporation": "ILLINOIS",
+            "legalEntity": "CORPORATION",
+            "name": "NEXTPOINT INC.",
+            "postalCode": "60613",
+            "secondaryAddressUnit": "SUITE 146",
+            "stateName": "ILLINOIS",
+            "street": "3711 NORTH RAVENSWOOD AVE."
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "ILLINOIS",
+            "legalEntity": "CORPORATION",
+            "name": "MADHAVA MEDIA, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "2 NORTH LASALLE STREET, SUITE 2200, CHICAGO, IL 60602",
+            "addressLines": [
+              "JOHN A. CULLIS",
+              "2 NORTH LASALLE STREET",
+              "SUITE 2200",
+              "CHICAGO, IL 60602"
+            ],
+            "name": "JOHN A. CULLIS"
+          }
+        ],
+        "descriptionText": "CHANGE OF NAME",
+        "executedDate": "20060125",
+        "recordedDate": "20060302",
+        "reelFrameNumber": "3257/0468"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Litigation support services; litigation consultancy in the nature of strategy services; graphic illustration services for others; computer graphics services in connection with legal proceedings for others"
+        }
+      ]
+    },
+    "id": "a374f68d-9916-46cc-873a-80984e1e91c0",
+    "ipRightKind": "tmk",
+    "litigationInformation": {
+      "proceedings": [
+        {
+          "decision": {
+            "code": "9",
+            "date": "20120619",
+            "text": "TERMINATED"
+          },
+          "decisionBoard": "Trademark Trial and Appeal Board (TTAB)",
+          "filingDate": "20120305",
+          "identifier": "91204153",
+          "interlocutoryAttorneyName": "MICHAEL BADLIN",
+          "kind": "Opposition",
+          "kindCode": "OPS",
+          "litigationParties": [
+            {
+              "kind": "Defendant",
+              "kindCode": "D",
+              "name": "CONNECTING POINT MARKETING GROUP, INC.",
+              "referencedMarks": [
+                {
+                  "applicationNumber": "85249899",
+                  "markVerbalElementText": "NEXTPOINT",
+                  "registrationNumber": "0000000"
+                }
+              ],
+              "representatives": [
+                {
+                  "addressCity": "MANCHESTER",
+                  "addressCountryCode": "USAM",
+                  "addressPostalCode": "03104",
+                  "addressState": "NH",
+                  "addressStreet": "835 HANOVER STREET SUITE 301",
+                  "companyName": "BOURQUE AND ASSOCIATES PA",
+                  "kind": "Correspondent",
+                  "kindCode": "C",
+                  "name": "DANIEL J BOURQUE"
+                }
+              ]
+            },
+            {
+              "kind": "Plaintiff",
+              "kindCode": "P",
+              "name": "NEXTPOINT INC.",
+              "referencedMarks": [
+                {
+                  "applicationNumber": "78814535",
+                  "markVerbalElementText": "NEXTPOINT",
+                  "registrationNumber": "3939089"
+                },
+                {
+                  "applicationNumber": "78783188",
+                  "markVerbalElementText": "NEXTPOINT",
+                  "registrationNumber": "3769359"
+                }
+              ],
+              "representatives": [
+                {
+                  "addressCity": "CHICAGO",
+                  "addressCountryCode": "USAM",
+                  "addressPostalCode": "60654",
+                  "addressState": "IL",
+                  "addressStreet": "505 NORTH LASALLE STREET SUITE 350",
+                  "companyName": "SAPER LAW OFFICE LLC",
+                  "kind": "Correspondent",
+                  "kindCode": "C",
+                  "name": "DALIAH SAPER"
+                }
+              ]
+            }
+          ],
+          "proceedingEvents": [
+            {
+              "code": "T",
+              "eventDate": "20120619",
+              "text": "#11 BD'S  DECISION: DISMISSED W/O PREJUDICE"
+            },
+            {
+              "code": "N",
+              "eventDate": "20120605",
+              "text": "#10 WITHDRAWAL OF OPPOSITION"
+            },
+            {
+              "code": "T",
+              "eventDate": "20120601",
+              "responseDate": "20120701",
+              "text": "#9 RESPONSE DUE  30 DAYS (DUE DATE)"
+            },
+            {
+              "code": "S",
+              "eventDate": "20120514",
+              "text": "#8 SUSPENDED"
+            },
+            {
+              "code": "W",
+              "eventDate": "20120514",
+              "text": "#7 D'S MOT TO SUSP PEND SETLMT NEGOTIATIONS"
+            },
+            {
+              "code": "M",
+              "eventDate": "20120514",
+              "text": "#6 MOTION TO AMEND APPLICATION"
+            },
+            {
+              "code": "T",
+              "eventDate": "20120406",
+              "text": "#5 STIPULATION FOR AN EXTENSION OF TIME"
+            },
+            {
+              "code": "W",
+              "eventDate": "20120406",
+              "text": "#4 EXTENSION OF TIME GRANTED"
+            },
+            {
+              "code": "N",
+              "eventDate": "20120305",
+              "text": "#3 FILED AND FEE"
+            },
+            {
+              "code": "T",
+              "eventDate": "20120305",
+              "responseDate": "20120414",
+              "text": "#2 NOTICE AND TRIAL DATES SENT:  ANSWER DUE:"
+            },
+            {
+              "code": "T",
+              "eventDate": "20120305",
+              "text": "#1 PENDING, INSTITUTED"
+            }
+          ]
+        }
+      ]
+    },
+    "markEvents": [
+      {
+        "date": "20221012",
+        "descriptionText": "ASSIGNMENT OF OWNERSHIP NOT UPDATED AUTOMATICALLY"
+      },
+      {
+        "date": "20190517",
+        "descriptionText": "REGISTERED AND RENEWED (FIRST RENEWAL - 10 YRS)"
+      },
+      {
+        "date": "20190517",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20190517",
+        "descriptionText": "REGISTERED - SEC. 8 (10-YR) ACCEPTED/SEC. 9 GRANTED"
+      },
+      {
+        "date": "20190517",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 & 9 - MAILED"
+      },
+      {
+        "date": "20190412",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20190412",
+        "descriptionText": "TEAS SECTION 8 & 9 RECEIVED"
+      },
+      {
+        "date": "20190330",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (10-YR)/SEC. 9 E-MAILED"
+      },
+      {
+        "date": "20160915",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20160915",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+      },
+      {
+        "date": "20160915",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 & 15 - E-MAILED"
+      },
+      {
+        "date": "20160707",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20160707",
+        "descriptionText": "TEAS SECTION 8 & 15 RECEIVED"
+      },
+      {
+        "date": "20150330",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20121203",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20121203",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20100330",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20100219",
+        "descriptionText": "LAW OFFICE REGISTRATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20100218",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20100217",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20100212",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20100210",
+        "descriptionText": "TEAS STATEMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20100210",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20100107",
+        "descriptionText": "SOU EXTENSION 5 GRANTED"
+      },
+      {
+        "date": "20100104",
+        "descriptionText": "SOU TEAS EXTENSION RECEIVED"
+      },
+      {
+        "date": "20100103",
+        "descriptionText": "SOU EXTENSION 5 FILED"
+      },
+      {
+        "date": "20090729",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20090729",
+        "descriptionText": "SOU EXTENSION 4 GRANTED"
+      },
+      {
+        "date": "20090706",
+        "descriptionText": "SOU TEAS EXTENSION RECEIVED"
+      },
+      {
+        "date": "20090703",
+        "descriptionText": "SOU EXTENSION 4 FILED"
+      },
+      {
+        "date": "20081230",
+        "descriptionText": "SOU TEAS EXTENSION RECEIVED"
+      },
+      {
+        "date": "20081230",
+        "descriptionText": "SOU EXTENSION 3 FILED"
+      },
+      {
+        "date": "20081230",
+        "descriptionText": "SOU EXTENSION 3 GRANTED"
+      },
+      {
+        "date": "20080701",
+        "descriptionText": "SOU TEAS EXTENSION RECEIVED"
+      },
+      {
+        "date": "20080701",
+        "descriptionText": "SOU EXTENSION 2 FILED"
+      },
+      {
+        "date": "20080701",
+        "descriptionText": "SOU EXTENSION 2 GRANTED"
+      },
+      {
+        "date": "20080102",
+        "descriptionText": "SOU TEAS EXTENSION RECEIVED"
+      },
+      {
+        "date": "20080102",
+        "descriptionText": "SOU EXTENSION 1 FILED"
+      },
+      {
+        "date": "20080102",
+        "descriptionText": "SOU EXTENSION 1 GRANTED"
+      },
+      {
+        "date": "20070808",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20070703",
+        "descriptionText": "NOA MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20070410",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20070321",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20070222",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20070222",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20070117",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20061223",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20061222",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20061222",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20060623",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20060623",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20060623",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20060106",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Suite 146, Chicago, IL, 60613",
+        "city": "Chicago",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "ILLINOIS",
+        "legalEntity": "CORPORATION",
+        "name": "Madhava Media, Inc.",
+        "postalCode": "60613",
+        "secondaryAddressUnit": "3711 North Ravenswood Ave.",
+        "stateName": "ILLINOIS",
+        "street": "Suite 146"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "3711 NORTH RAVENSWOOD AVE., CHICAGO, IL, 60613",
+        "city": "CHICAGO",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "ILLINOIS",
+        "legalEntity": "CORPORATION",
+        "name": "NEXTPOINT INC.",
+        "postalCode": "60613",
+        "secondaryAddressUnit": "SUITE 146",
+        "stateName": "ILLINOIS",
+        "street": "3711 NORTH RAVENSWOOD AVE."
+      },
+      {
+        "address": "3711 NORTH RAVENSWOOD AVE., CHICAGO, IL, 60613",
+        "city": "CHICAGO",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "ILLINOIS",
+        "legalEntity": "CORPORATION",
+        "name": "NEXTPOINT INC.",
+        "postalCode": "60613",
+        "secondaryAddressUnit": "SUITE 146",
+        "stateName": "ILLINOIS",
+        "street": "3711 NORTH RAVENSWOOD AVE."
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "3711 NORTH RAVENSWOOD AVE., CHICAGO, IL, 60613",
+        "city": "CHICAGO",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "ILLINOIS",
+        "legalEntity": "CORPORATION",
+        "name": "NEXTPOINT INC.",
+        "postalCode": "60613",
+        "secondaryAddressUnit": "SUITE 146",
+        "stateName": "ILLINOIS",
+        "street": "3711 NORTH RAVENSWOOD AVE."
+      }
+    ],
+    "postApplicationOwners": [
+      {
+        "address": "3711 NORTH RAVENSWOOD AVE., CHICAGO, IL, 60613",
+        "city": "CHICAGO",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "ILLINOIS",
+        "legalEntity": "CORPORATION",
+        "name": "NEXTPOINT INC.",
+        "postalCode": "60613",
+        "secondaryAddressUnit": "SUITE 146",
+        "stateName": "ILLINOIS",
+        "street": "3711 NORTH RAVENSWOOD AVE."
+      }
+    ],
+    "recordLastUpdated": "20260110",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "3711 NORTH RAVENSWOOD AVE., CHICAGO, IL 60613, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "3711 NORTH RAVENSWOOD AVE.",
+          "CHICAGO, IL 60613",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "NEXTPOINT INC., SUITE 146"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "3711 NORTH RAVENSWOOD AVE., CHICAGO, IL 60613, UNITED STATES",
+        "representativeAddressLines": [
+          "3711 NORTH RAVENSWOOD AVE.",
+          "CHICAGO, IL 60613",
+          "UNITED STATES"
+        ]
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20051230",
+        "applicationNumber": "78783188"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20060215"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20060215"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED AND RENEWED",
+        "markOfficialStatusCode": "800",
+        "markOfficialStatusDate": "20190517",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20070410"
+      ],
+      "registration": {
+        "registrationDate": "20100330",
+        "registrationNumber": "3769359"
+      },
+      "renewalDate": "20200330"
+    },
+    "version": "20260110005112",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "NEXT POINT",
+      "markVerbalElementText": "NEXTPOINT"
+    }
+  },
+  "_uri": "/mark/us/a374f68d-9916-46cc-873a-80984e1e91c0",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.725Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

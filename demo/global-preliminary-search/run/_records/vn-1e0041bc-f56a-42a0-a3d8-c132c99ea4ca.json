@@ -1,0 +1,129 @@
+{
+  "uri": "/mark/vn/1e0041bc-f56a-42a0-a3d8-c132c99ea4ca",
+  "provider": "clarivate",
+  "office": "vn",
+  "guid": "1e0041bc-f56a-42a0-a3d8-c132c99ea4ca",
+  "applicationNumber": "4200407267",
+  "registrationNumber": "40068127",
+  "applicationDate": "2004-07-22",
+  "registrationDate": "2005-11-18",
+  "expiryDate": "2024-07-22",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": null,
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "vi",
+      "description": "Linh kiện bán dẫn hay chất bán dẫn, bộ xử lý bán dẫn, con chip điện tử xử lý bán dẫn, mạch tích hợp, con chip điện tử mạch tích hợp, bảng mạch, máy vi tính, bộ vi điều khiển hay mạch vi điều khiển, bộ vi xử lý và các thiết bị ngoại vi của máy tính, bộ nhớ máy tính và các vật liệu bán dẫn của chúng; dụng cụ bán dẫn dùng trong máy móc và máy công cụ; dụng cụ bán dẫn cho các thiết bị thắp sáng, sưởi nóng, tạo hơi nước, nấu nướng, làm lạnh, sấy hay làm khô và thông gió; dụng cụ bán dẫn cho đồng hồ và các thiết bị và dụng cụ bấm giờ; dụng cụ bán dẫn cho các nhạc cụ; dụng cụ bán dẫn cho các trò chơi và đồ chơi; mạch chuyển đổi dữ liệu; vi chương trình (chương trình cơ sở) của máy tính; các thiết bị điện tử, điện và điện cơ dùng với máy vi tính; các sản phẩm hệ thống viđêô; dụng cụ và thiết bị ghi, tái tạo và chuyển đổi âm thanh, hình ảnh và dữ liệu; bảng mạch hình ảnh (video); bảng mạch âm thanh (audio); bảng mạch hình ảnh và âm thanh; bộ tăng tốc hình ảnh (chứa bộ vi xử lý nhanh hơn giúp xử lý dữ liệu hình ảnh với tốc độ cao hơn); bộ tăng tốc đa phương tiện (chứa bộ vi xử lý nhanh hơn giúp xử lý dữ liệu đa phương tiện với tốc độ cao hơn); bộ xử lý viđêô; chương trình máy vi tính; thiết bị và dụng cụ giảng dạy liên quan đến các thuật toán máy tính và dữ liệu trong việc nén và giải nén dữ liệu; các thiết bị kiểm tra và điều chỉnh; các bộ phận và phần của các sản phẩm trên; thiết bị để kiểm tra và lập trình mạch tích hợp và các bộ nhớ bán dẫn; phần mềm máy vi tính, cụ thể là, các phần mềm tích hợp và kết nối ứng dụng, các chương trình tiện ích cho máy vi tính, các chương trình máy vi tính để quản lý mạng, phần mềm máy vi tính để truy cập mạng máy tính toàn cầu và mạng gồm các máy tính kết nối với nhau; các hệ điều hành cho máy vi tính; phần mềm hệ điều hành cho máy vi tính; các chương trình điều hành cho máy vi tính; và các công cụ phần mềm máy vi tính cho các ứng dụng phần mềm của bên thứ ba có thể chạy, kết nối được hay tích hợp dễ dàng.",
+      "translation_language": "en",
+      "translation": "Semiconductor components or semiconductors, semiconductor processors, semiconductor processing electronic chips, integrated circuits, integrated circuit electronic chips, circuit boards, computers, microcontrollers or microcircuits controllers, microprocessors and computer peripherals, computer memory and their semiconductor materials; semiconductor devices used in machinery and machine tools; semiconductor devices for lighting, heating, steam generating, cooking, cooling, drying or drying and ventilation equipment; semiconductor devices for watches and timekeeping devices and instruments; semiconductor devices for musical instruments; semiconductor devices for games and toys; data conversion circuit; microprogram (firmware) of a computer; electronic, electrical and electromechanical devices used with computers; video system products; instruments and apparatus for recording, reproducing and converting sound, images and data; circuit board images (video); audio circuit board; visual and audio circuit boards; image accelerator (contains a faster microprocessor that processes image data at a higher rate); multimedia accelerator (contains a faster processor that processes multimedia data at a higher speed); video processor; computer programs; teaching equipment and tools related to computer and data algorithms in data compression and decompression; testing and adjustment devices; parts and pieces of the above products; equipment for testing and programming integrated circuits and semiconductor memories; computer software, namely, application integration and connectivity software, computer utility programs, computer programs for network management, computer software for access global computer networks and networks of interconnected computers; operating systems for computers; operating system software for computers; operating programs for computers; and computer software tools for third-party software applications to run, connect or integrate easily."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "vi",
+      "description": "Cấp li-xăng sử dụng công nghệ; cấp li-xăng sử dụng sáng chế, nhãn hiệu, bản quyền, bí mật kinh doanh và/hoặc bí quyết công nghệ có liên quan đến việc sản xuất các dụng cụ bán dẫn và cách sử dụng chúng; cấp li-xăng sử dụng các dụng cụ bán dẫn; cấp li-xăng sử dụng phần mềm liên quan đến việc sản xuất các dụng cụ bán dẫn và cách sử dụng chúng; cấp li-xăng sử dụng công nghệ liên quan đến các dụng cụ bán dẫn và việc sản xuất các dụng cụ bán dẫn; cấp li-xăng sử dụng công nghệ có trong và liên quan đến các sản phẩm bán dẫn, mạch tích hợp, bảng mạch, máy vi tính, bộ vi điều khiển hay mạch vi điều khiển, bộ vi xử lý và các thiết bị ngoại vi của máy vi tính, bộ nhớ máy vi tính và các vật liệu bán dẫn của chúng, mạch chuyển đổi dữ liệu, vi chương trình (chương trình cơ sở) của máy vi tính, các thiết bị điện tử, điện và điện cơ dùng với máy vi tính, bảng mạch hình ảnh (video), các sản phẩm hệ thống viđêô, các dụng cụ và thiết bị liên quan đến việc thu, tái tạo và biến đổi âm thanh, hình ảnh và dữ liệu, các chương trình máy vi tính, các thiết bị và dụng cụ giảng dạy có liên quan đến các thuật toán và dữ liệu máy vi tính để nén và giải nén dữ liệu; thiết kế máy vi tính và các hệ thống viễn thông theo ý khách hàng; các dịch vụ tư vấn trong lĩnh vực máy vi tính và viễn thông và công nghệ liên quan để thiết kế phần mềm máy vi tính.",
+      "translation_language": "en",
+      "translation": "Licensing technology use; granting licenses to use patents, trademarks, copyrights, trade secrets and/or technological know-how related to the production of semiconductor devices and their use; licensing for use of semiconductor devices; licensing the use of software related to the production of semiconductor devices and their use; granting a license to use technology related to semiconductor devices and the production of semiconductor devices; license to use technology contained in and related to semiconductor products, integrated circuits, circuit boards, computers, microcontrollers or microcontroller circuits, microprocessors and peripheral devices microcomputer micro-computers, computer memory and their semiconductor materials, data conversion circuits, micro-programs (firmware) of computers, electronic, electrical and electromechanical devices used with computers, video (video) circuit boards, video system products, instruments and equipment related to the capture, reproduction and conversion of sound, images and data, and programs computers, teaching equipment and tools related to computer algorithms and data for data compression and decompression; design computers and telecommunications systems according to customers&#39; wishes; Consulting services in the fields of computers and telecommunications and related technology for the design of computer software."
+    }
+  ],
+  "owner": "NXP USA INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "INVESTIP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West, Austin, Texas 78735",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA INC."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Semiconductor components or semiconductors, semiconductor processors, semiconductor processing electronic chips, integrated circuits, integrated circuit electronic chips, circuit boards, computers, microcontrollers or microcircuits controllers, microprocessors and computer peripherals, computer memory and their semiconductor materials; semiconductor devices used in machinery and machine tools; semiconductor devices for lighting, heating, steam generating, cooking, cooling, drying or drying and ventilation equipment; semiconductor devices for watches and timekeeping devices and instruments; semiconductor devices for musical instruments; semiconductor devices for games and toys; data conversion circuit; microprogram (firmware) of a computer; electronic, electrical and electromechanical devices used with computers; video system products; instruments and apparatus for recording, reproducing and converting sound, images and data; circuit board images (video); audio circuit board; visual and audio circuit boards; image accelerator (contains a faster microprocessor that processes image data at a higher rate); multimedia accelerator (contains a faster processor that processes multimedia data at a higher speed); video processor; computer programs; teaching equipment and tools related to computer and data algorithms in data compression and decompression; testing and adjustment devices; parts and pieces of the above products; equipment for testing and programming integrated circuits and semiconductor memories; computer software, namely, application integration and connectivity software, computer utility programs, computer programs for network management, computer software for access global computer networks and networks of interconnected computers; operating systems for computers; operating system software for computers; operating programs for computers; and computer software tools for third-party software applications to run, connect or integrate easily.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "vi",
+          "intGoodsServicesDescription": "Linh kiện bán dẫn hay chất bán dẫn, bộ xử lý bán dẫn, con chip điện tử xử lý bán dẫn, mạch tích hợp, con chip điện tử mạch tích hợp, bảng mạch, máy vi tính, bộ vi điều khiển hay mạch vi điều khiển, bộ vi xử lý và các thiết bị ngoại vi của máy tính, bộ nhớ máy tính và các vật liệu bán dẫn của chúng; dụng cụ bán dẫn dùng trong máy móc và máy công cụ; dụng cụ bán dẫn cho các thiết bị thắp sáng, sưởi nóng, tạo hơi nước, nấu nướng, làm lạnh, sấy hay làm khô và thông gió; dụng cụ bán dẫn cho đồng hồ và các thiết bị và dụng cụ bấm giờ; dụng cụ bán dẫn cho các nhạc cụ; dụng cụ bán dẫn cho các trò chơi và đồ chơi; mạch chuyển đổi dữ liệu; vi chương trình (chương trình cơ sở) của máy tính; các thiết bị điện tử, điện và điện cơ dùng với máy vi tính; các sản phẩm hệ thống viđêô; dụng cụ và thiết bị ghi, tái tạo và chuyển đổi âm thanh, hình ảnh và dữ liệu; bảng mạch hình ảnh (video); bảng mạch âm thanh (audio); bảng mạch hình ảnh và âm thanh; bộ tăng tốc hình ảnh (chứa bộ vi xử lý nhanh hơn giúp xử lý dữ liệu hình ảnh với tốc độ cao hơn); bộ tăng tốc đa phương tiện (chứa bộ vi xử lý nhanh hơn giúp xử lý dữ liệu đa phương tiện với tốc độ cao hơn); bộ xử lý viđêô; chương trình máy vi tính; thiết bị và dụng cụ giảng dạy liên quan đến các thuật toán máy tính và dữ liệu trong việc nén và giải nén dữ liệu; các thiết bị kiểm tra và điều chỉnh; các bộ phận và phần của các sản phẩm trên; thiết bị để kiểm tra và lập trình mạch tích hợp và các bộ nhớ bán dẫn; phần mềm máy vi tính, cụ thể là, các phần mềm tích hợp và kết nối ứng dụng, các chương trình tiện ích cho máy vi tính, các chương trình máy vi tính để quản lý mạng, phần mềm máy vi tính để truy cập mạng máy tính toàn cầu và mạng gồm các máy tính kết nối với nhau; các hệ điều hành cho máy vi tính; phần mềm hệ điều hành cho máy vi tính; các chương trình điều hành cho máy vi tính; và các công cụ phần mềm máy vi tính cho các ứng dụng phần mềm của bên thứ ba có thể chạy, kết nối được hay tích hợp dễ dàng."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Licensing technology use; granting licenses to use patents, trademarks, copyrights, trade secrets and/or technological know-how related to the production of semiconductor devices and their use; licensing for use of semiconductor devices; licensing the use of software related to the production of semiconductor devices and their use; granting a license to use technology related to semiconductor devices and the production of semiconductor devices; license to use technology contained in and related to semiconductor products, integrated circuits, circuit boards, computers, microcontrollers or microcontroller circuits, microprocessors and peripheral devices microcomputer micro-computers, computer memory and their semiconductor materials, data conversion circuits, micro-programs (firmware) of computers, electronic, electrical and electromechanical devices used with computers, video (video) circuit boards, video system products, instruments and equipment related to the capture, reproduction and conversion of sound, images and data, and programs computers, teaching equipment and tools related to computer algorithms and data for data compression and decompression; design computers and telecommunications systems according to customers&#39; wishes; Consulting services in the fields of computers and telecommunications and related technology for the design of computer software.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "vi",
+          "intGoodsServicesDescription": "Cấp li-xăng sử dụng công nghệ; cấp li-xăng sử dụng sáng chế, nhãn hiệu, bản quyền, bí mật kinh doanh và/hoặc bí quyết công nghệ có liên quan đến việc sản xuất các dụng cụ bán dẫn và cách sử dụng chúng; cấp li-xăng sử dụng các dụng cụ bán dẫn; cấp li-xăng sử dụng phần mềm liên quan đến việc sản xuất các dụng cụ bán dẫn và cách sử dụng chúng; cấp li-xăng sử dụng công nghệ liên quan đến các dụng cụ bán dẫn và việc sản xuất các dụng cụ bán dẫn; cấp li-xăng sử dụng công nghệ có trong và liên quan đến các sản phẩm bán dẫn, mạch tích hợp, bảng mạch, máy vi tính, bộ vi điều khiển hay mạch vi điều khiển, bộ vi xử lý và các thiết bị ngoại vi của máy vi tính, bộ nhớ máy vi tính và các vật liệu bán dẫn của chúng, mạch chuyển đổi dữ liệu, vi chương trình (chương trình cơ sở) của máy vi tính, các thiết bị điện tử, điện và điện cơ dùng với máy vi tính, bảng mạch hình ảnh (video), các sản phẩm hệ thống viđêô, các dụng cụ và thiết bị liên quan đến việc thu, tái tạo và biến đổi âm thanh, hình ảnh và dữ liệu, các chương trình máy vi tính, các thiết bị và dụng cụ giảng dạy có liên quan đến các thuật toán và dữ liệu máy vi tính để nén và giải nén dữ liệu; thiết kế máy vi tính và các hệ thống viễn thông theo ý khách hàng; các dịch vụ tư vấn trong lĩnh vực máy vi tính và viễn thông và công nghệ liên quan để thiết kế phần mềm máy vi tính."
+        }
+      ]
+    },
+    "id": "1e0041bc-f56a-42a0-a3d8-c132c99ea4ca",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250517",
+    "registrationOfficeCode": "VN",
+    "registrationOfficeName": "Vietnam",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "VN",
+        "representativeAddressCountryName": "Vietnam",
+        "representativeName": "INVESTIP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20040722",
+        "applicationNumber": "4200407267"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20240722",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20051118",
+        "registrationNumber": "40068127"
+      }
+    },
+    "version": "20250517183331"
+  },
+  "_uri": "/mark/vn/1e0041bc-f56a-42a0-a3d8-c132c99ea4ca",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.735Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

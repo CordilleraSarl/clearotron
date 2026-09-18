@@ -1,0 +1,131 @@
+{
+  "uri": "/mark/br/42977078-74a0-4444-86db-2d79c63cec5a",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "42977078-74a0-4444-86db-2d79c63cec5a",
+  "applicationNumber": "840027397",
+  "registrationNumber": "840027397",
+  "applicationDate": "2012-02-14",
+  "registrationDate": "2015-03-03",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Desenvolvimento, projeto e teste de semicondutores, de dispositivossemicondutores, de circuitos integrados, de microcontroladores, deprocessadores, de dispositivos de radio frequência, de sensores e desoftware para terceiros; serviços de consultoria nas áreas de desenvolvimento, de projeto e de teste de semicondutores, de dispositivos de semicondutores, de circuitos integrados, de microcontroladores, deprocessadores, de dispositivos de radiofrequência, de sensores e desoftware; provimento de informação nas áreas de semicondutores, dedispositivos semicondutores, de circuitos integrados, demicrocontroladores, de processadores, de dispositivos de radiofrequência, de sensores e de software.",
+      "translation_language": "en",
+      "translation": "DEVELOPMENT, DESIGN AND TESTING OF SEMICONDUCTORS, SEMICONDUCTORS, INTEGRATED CIRCUITS, MICROCONTROLLERS, DEPROCESSORS, RADIO FREQUENCY DEVICES, SENSORS AND DESOFTWARE FOR THIRD PARTIES; CONSULTING SERVICES IN THE AREAS OF DEVELOPMENT, DESIGN AND TESTING OF SEMICONDUCTORS, SEMICONDUCTOR DEVICES, INTEGRATED CIRCUITS, MICROCONTROLLERS, DEPROCESSORS, RADIOFREQUENCY DEVICES, SENSORS AND DESOFTERS; PROVISION OF INFORMATION IN THE AREAS OF SEMICONDUCTORS, SEMICONDUCTOR DEVICES, INTEGRATED CIRCUITS, DEMICROCONTROLLERS, PROCESSORS, RADIOFREQUENCY DEVICES, SENSORS AND SOFTWARE."
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "MOMSEN, LEONARDOS & CIA.",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20111216",
+      "priorityNumber": "85/497099"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC."
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "DEVELOPMENT, DESIGN AND TESTING OF SEMICONDUCTORS, SEMICONDUCTORS, INTEGRATED CIRCUITS, MICROCONTROLLERS, DEPROCESSORS, RADIO FREQUENCY DEVICES, SENSORS AND DESOFTWARE FOR THIRD PARTIES; CONSULTING SERVICES IN THE AREAS OF DEVELOPMENT, DESIGN AND TESTING OF SEMICONDUCTORS, SEMICONDUCTOR DEVICES, INTEGRATED CIRCUITS, MICROCONTROLLERS, DEPROCESSORS, RADIOFREQUENCY DEVICES, SENSORS AND DESOFTERS; PROVISION OF INFORMATION IN THE AREAS OF SEMICONDUCTORS, SEMICONDUCTOR DEVICES, INTEGRATED CIRCUITS, DEMICROCONTROLLERS, PROCESSORS, RADIOFREQUENCY DEVICES, SENSORS AND SOFTWARE.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Desenvolvimento, projeto e teste de semicondutores, de dispositivossemicondutores, de circuitos integrados, de microcontroladores, deprocessadores, de dispositivos de radio frequência, de sensores e desoftware para terceiros; serviços de consultoria nas áreas de desenvolvimento, de projeto e de teste de semicondutores, de dispositivos de semicondutores, de circuitos integrados, de microcontroladores, deprocessadores, de dispositivos de radiofrequência, de sensores e desoftware; provimento de informação nas áreas de semicondutores, dedispositivos semicondutores, de circuitos integrados, demicrocontroladores, de processadores, de dispositivos de radiofrequência, de sensores e de software."
+        }
+      ]
+    },
+    "id": "42977078-74a0-4444-86db-2d79c63cec5a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.04.09",
+      "27.05.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20111216",
+        "priorityNumber": "85/497099"
+      }
+    ],
+    "recordLastUpdated": "20251021",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "MOMSEN, LEONARDOS & CIA."
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20120214",
+        "applicationNumber": "840027397"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20150303",
+        "registrationNumber": "840027397"
+      }
+    },
+    "version": "20251021020542",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/br/42977078-74a0-4444-86db-2d79c63cec5a",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.686Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

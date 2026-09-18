@@ -1,0 +1,324 @@
+{
+  "uri": "/mark/ca/6d42fe22-ee83-4ba8-a704-6789627f0c12",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "6d42fe22-ee83-4ba8-a704-6789627f0c12",
+  "applicationNumber": "1138829",
+  "registrationNumber": "TMA639136",
+  "applicationDate": "2002-04-25",
+  "registrationDate": "2005-05-05",
+  "expiryDate": "2020-05-05",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2004-01-07"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "STREAMWISE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Networking equipment, namely chipsets; networking software for operation of chipsets; network software for content processing",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Product maintenance and support services for networking equipment and networking software.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA Inc.",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": "SMART & BIGGAR LP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West, Austin, TX 78735",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressLines": [
+          "6501 William Cannon Drive West",
+          "Austin, TX 78735"
+        ],
+        "applicantName": "NXP USA Inc."
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Declaration of Use filed April 27, 2005 on wares marked (1) on services (1)",
+        "typeDescription": "Declaration of Use Info"
+      }
+    ],
+    "footNotes": [
+      "CHANGE IN TITLE / CHANGEMENT EN TITRE:",
+      "TYPE OF CHANGE / GENRE DE CHANGEMENT: Assignment / Cession",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 09 sept/Sep 2005",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 19 août/Aug 2005",
+      "COMMENTS / COMMENTAIRES: FROM: Seaway Networks Incorporated",
+      "TO: Seaway Networks (Delaware) Incorporated",
+      "Voir Preuve au dossier/See evidence on File No. 1132103",
+      "CHANGE IN TITLE / CHANGEMENT EN TITRE:",
+      "TYPE OF CHANGE / GENRE DE CHANGEMENT: Assignment / Cession",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 30 sept/Sep 2005",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 19 août/Aug 2005",
+      "COMMENTS / COMMENTAIRES: FROM: Seaway Networks (Delaware) Incorporated",
+      "TO: Freescale Semiconductor, Inc.",
+      "(a Delaware corporation)",
+      "Voir Preuve au dossier/See evidence on File No. 1132103",
+      "Merger and Address / Fusionnement et adresse",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 21 août/Aug 2017",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 07 nov/Nov 2016",
+      "COMMENTS / COMMENTAIRES: FROM: Freescale Semiconductor, Inc.",
+      "(a Delaware corporation)",
+      "TO: NXP USA Inc.",
+      "Voir Preuve au dossier/See evidence on File No. 1663578"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Networking equipment, namely chipsets; networking software for operation of chipsets; network software for content processing"
+        },
+        {
+          "intClassNumber": "09,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Product maintenance and support services for networking equipment and networking software."
+        }
+      ]
+    },
+    "id": "6d42fe22-ee83-4ba8-a704-6789627f0c12",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20201126",
+        "descriptionText": "Expunged - Failure to Renew",
+        "information": "DP: 2020/11/26"
+      },
+      {
+        "date": "20200527",
+        "descriptionText": "Renewal Notice Sent",
+        "responseDate": "20201105"
+      },
+      {
+        "date": "20170821",
+        "descriptionText": "Amendment to Registration",
+        "information": "Merger and address / Voir Preuve au dossier/See evidence on File No. 1663578"
+      },
+      {
+        "date": "20110725",
+        "descriptionText": "Rep for Service Changed",
+        "information": "From: 10655 To: 2502 / Voir Preuve au dossier/See evidence on File No. 1132103"
+      },
+      {
+        "date": "20050930",
+        "descriptionText": "Change in Title Registered",
+        "information": "Assignment / Voir Preuve au dossier/See evidence on File No. 1132103"
+      },
+      {
+        "date": "20050930",
+        "descriptionText": "Rep for Service Changed",
+        "information": "From: 12600 To: 10655 / Voir Preuve au dossier/See evidence on File No. 1132103"
+      },
+      {
+        "date": "20050909",
+        "descriptionText": "Change in Title Registered",
+        "information": "Assignment / Voir Preuve au dossier/See evidence on File No. 1132103"
+      },
+      {
+        "date": "20050505",
+        "descriptionText": "Registered",
+        "responseDate": "20200505"
+      },
+      {
+        "date": "20040326",
+        "descriptionText": "Allowance Notice Sent",
+        "responseDate": "20050425"
+      },
+      {
+        "date": "20040326",
+        "descriptionText": "Allowed"
+      },
+      {
+        "date": "20040107",
+        "descriptionText": "Advertised",
+        "information": "Vol.50 Issue 2567"
+      },
+      {
+        "date": "20031203",
+        "descriptionText": "Approved"
+      },
+      {
+        "date": "20030811",
+        "descriptionText": "Correspondence Created",
+        "responseDate": "20031211"
+      },
+      {
+        "date": "20030331",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20030731"
+      },
+      {
+        "date": "20030331",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20020603",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20020502",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20020425",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "One Chrysallis Way, Suite 300, Ottawa, ONTARIO, K2G6P9",
+        "addressLines": [
+          "One Chrysallis Way",
+          "Suite 300",
+          "Ottawa",
+          "ONTARIO",
+          "K2G6P9"
+        ],
+        "countryName": "Canada",
+        "name": "Seaway Networks Incorporated",
+        "postalCode": "K2G6P9"
+      }
+    ],
+    "previousOwners": [
+      {
+        "addressLines": [
+          "Seaway Networks (Delaware) Incorporated",
+          "c/o Seaway Networks Incorporated",
+          "One Chrysalis Way",
+          "Suite 300",
+          "Ottawa",
+          "ONTARIO",
+          "CANADA",
+          "K2G6P9"
+        ],
+        "name": "Seaway Networks (Delaware) Incorporated"
+      },
+      {
+        "addressLines": [
+          "Freescale Semiconductor, Inc. (a Delaware corporation)",
+          "6501 William Cannon Drive West",
+          "Austin, Texas, 78735-8523",
+          "UNITED STATES OF AMERICA"
+        ],
+        "name": "Freescale Semiconductor, Inc. (a Delaware corporation)"
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "2567",
+        "publicationVolume": "50"
+      }
+    ],
+    "recordLastUpdated": "20260103",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "SMART & BIGGAR LP",
+          "SCOTIA PLAZA",
+          "40 KING STREET WEST",
+          "40th FLOOR",
+          "TORONTO",
+          "ONTARIO M5H3Y2"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "SMART & BIGGAR LP"
+      }
+    ],
+    "status": {
+      "active": false,
+      "allowanceDate": [
+        "20040326"
+      ],
+      "application": {
+        "applicationDate": "20020425",
+        "applicationNumber": "1138829"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "expiryDate": "20200505",
+      "expungementDate": "20201126",
+      "formalisationDate": "20020603",
+      "markCurrentStatus": "Expunged",
+      "nextRenewalDate": "20200505",
+      "publicationDate": [
+        "20040107"
+      ],
+      "registration": {
+        "registrationDate": "20050505",
+        "registrationNumber": "TMA639136"
+      }
+    },
+    "subjectHeadings": [
+      "STREAMWISE",
+      "STREAM WISE"
+    ],
+    "version": "20260103012847",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "STREAM WISE",
+      "markVerbalElementText": "STREAMWISE",
+      "markVerbalElementTextFormal": "STREAMWISE"
+    }
+  },
+  "_uri": "/mark/ca/6d42fe22-ee83-4ba8-a704-6789627f0c12",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.673Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

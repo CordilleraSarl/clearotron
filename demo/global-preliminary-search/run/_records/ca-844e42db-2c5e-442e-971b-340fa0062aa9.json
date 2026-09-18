@@ -7,7 +7,7 @@
   "registrationNumber": "TMA913529",
   "applicationDate": "2013-05-30",
   "registrationDate": "2015-09-10",
-  "expiryDate": null,
+  "expiryDate": "2030-09-10",
   "renewalDate": null,
   "lastPublicationDate": null,
   "publicationDates": [
@@ -232,6 +232,7 @@
         "applicationNumber": "1628794"
       },
       "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300910",
       "firstUsed": [
         {
           "firstUsedDate": "201207",
@@ -262,7 +263,7 @@
   },
   "_uri": "/mark/ca/844e42db-2c5e-442e-971b-340fa0062aa9",
   "_receipt": {
-    "fetched_at": "2026-09-02T14:33:18.819Z",
-    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+    "fetched_at": "2026-09-18T12:42:34.372Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
   }
 }

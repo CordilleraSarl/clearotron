@@ -1,0 +1,140 @@
+{
+  "uri": "/mark/bx/fe618062-476e-463d-8aa8-3810f9f69fb6",
+  "provider": "clarivate",
+  "office": "bx",
+  "guid": "fe618062-476e-463d-8aa8-3810f9f69fb6",
+  "applicationNumber": "1500867",
+  "registrationNumber": "1500867",
+  "applicationDate": "2024-03-12",
+  "registrationDate": "2024-05-24",
+  "expiryDate": "2034-03-12",
+  "renewalDate": null,
+  "lastPublicationDate": "2024-05-24",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "NXP BRIGHTER TOGETHER",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "STYLIZED LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Electronic, electro technical and electromagnetic modules, parts and components therefor including integrated circuits (IC's), high performance mixed signal ICs, chips, diodes, transistors, processors, converters, (analogue and/or digital) semiconductors and semiconductor elements; microcontrollers; microprocessors; interfaces for computers, development boards, software development kits (SDKs), embedded software, development software, computer programs, hardware, interfaces for computers; software; cloud computing software, computer application software for use in implementing the Internet of Things [IoT]; artificial intelligence and machine learning software; apparatus and instruments for conducting, switching, transforming, accumulating, regulating and controlling electricity; apparatus for recording, transmission or reproduction of data, sound or images; wireless transmitters and receivers; wireless audio products, smart cards, data processors for scanning, reading, storing and interpreting electronic data contained on RFID and NFC chips; RFID chips and tags, NFC tags and labels, sensors, data carriers, data processing equipment and computers",
+      "translation_language": "en",
+      "translation": "Electronic, electro technical and electromagnetic modules, parts and components therefor including integrated circuits (IC's), high performance mixed signal ICs, chips, diodes, transistors, processors, converters, (analogue and/or digital) semiconductors and semiconductor elements; microcontrollers; microprocessors; interfaces for computers, development boards, software development kits (SDKs), embedded software, development software, computer programs, hardware, interfaces for computers; software; cloud computing software, computer application software for use in implementing the Internet of Things [IoT]; artificial intelligence and machine learning software; apparatus and instruments for conducting, switching, transforming, accumulating, regulating and controlling electricity; apparatus for recording, transmission or reproduction of data, sound or images; wireless transmitters and receivers; wireless audio products, smart cards, data processors for scanning, reading, storing and interpreting electronic data contained on RFID and NFC chips; RFID chips and tags, NFC tags and labels, sensors, data carriers, data processing equipment and computers"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Research, design and development services related to integrated circuits and semiconductors; research, design and development services related to RFID chips, smart cards and NFC (near field communications) apparatus; Software design; software development; Design and development of software for semiconductors; Software as a service [SaaS]; Cloud computing; Platforms for artificial intelligence as software as a service [SaaS]; Programming of data processing equipment; Programming of multimedia equipment; Software engineering; Engineering testing; Computer hardware development; technical research; Advisory services in the field of computer hardware and software",
+      "translation_language": "en",
+      "translation": "Research, design and development services related to integrated circuits and semiconductors; research, design and development services related to RFID chips, smart cards and NFC (near field communications) apparatus; Software design; software development; Design and development of software for semiconductors; Software as a service [SaaS]; Cloud computing; Platforms for artificial intelligence as software as a service [SaaS]; Programming of data processing equipment; Programming of multimedia equipment; Software engineering; Engineering testing; Computer hardware development; technical research; Advisory services in the field of computer hardware and software"
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO Shieldmark B.V.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60, 5656 AG Eindhoven",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electronic, electro technical and electromagnetic modules, parts and components therefor including integrated circuits (IC's), high performance mixed signal ICs, chips, diodes, transistors, processors, converters, (analogue and/or digital) semiconductors and semiconductor elements; microcontrollers; microprocessors; interfaces for computers, development boards, software development kits (SDKs), embedded software, development software, computer programs, hardware, interfaces for computers; software; cloud computing software, computer application software for use in implementing the Internet of Things [IoT]; artificial intelligence and machine learning software; apparatus and instruments for conducting, switching, transforming, accumulating, regulating and controlling electricity; apparatus for recording, transmission or reproduction of data, sound or images; wireless transmitters and receivers; wireless audio products, smart cards, data processors for scanning, reading, storing and interpreting electronic data contained on RFID and NFC chips; RFID chips and tags, NFC tags and labels, sensors, data carriers, data processing equipment and computers",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Electronic, electro technical and electromagnetic modules, parts and components therefor including integrated circuits (IC's), high performance mixed signal ICs, chips, diodes, transistors, processors, converters, (analogue and/or digital) semiconductors and semiconductor elements; microcontrollers; microprocessors; interfaces for computers, development boards, software development kits (SDKs), embedded software, development software, computer programs, hardware, interfaces for computers; software; cloud computing software, computer application software for use in implementing the Internet of Things [IoT]; artificial intelligence and machine learning software; apparatus and instruments for conducting, switching, transforming, accumulating, regulating and controlling electricity; apparatus for recording, transmission or reproduction of data, sound or images; wireless transmitters and receivers; wireless audio products, smart cards, data processors for scanning, reading, storing and interpreting electronic data contained on RFID and NFC chips; RFID chips and tags, NFC tags and labels, sensors, data carriers, data processing equipment and computers"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Research, design and development services related to integrated circuits and semiconductors; research, design and development services related to RFID chips, smart cards and NFC (near field communications) apparatus; Software design; software development; Design and development of software for semiconductors; Software as a service [SaaS]; Cloud computing; Platforms for artificial intelligence as software as a service [SaaS]; Programming of data processing equipment; Programming of multimedia equipment; Software engineering; Engineering testing; Computer hardware development; technical research; Advisory services in the field of computer hardware and software",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Research, design and development services related to integrated circuits and semiconductors; research, design and development services related to RFID chips, smart cards and NFC (near field communications) apparatus; Software design; software development; Design and development of software for semiconductors; Software as a service [SaaS]; Cloud computing; Platforms for artificial intelligence as software as a service [SaaS]; Programming of data processing equipment; Programming of multimedia equipment; Software engineering; Engineering testing; Computer hardware development; technical research; Advisory services in the field of computer hardware and software"
+        }
+      ]
+    },
+    "id": "fe618062-476e-463d-8aa8-3810f9f69fb6",
+    "ipRightKind": "tmk",
+    "markFeature": "STYLIZED LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "0524"
+      }
+    ],
+    "recordLastUpdated": "20250623",
+    "registrationOfficeCode": "BX",
+    "registrationOfficeName": "Benelux",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices Anna van Buerenplein 21 A, 2595 DA Den Haag",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO Shieldmark B.V."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240312",
+        "applicationNumber": "1500867"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340312",
+      "lastPublicationDate": "20240524",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20240524",
+        "registrationNumber": "1500867"
+      }
+    },
+    "version": "20250623183540",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NXP BRIGHTER TOGETHER"
+    }
+  },
+  "_uri": "/mark/bx/fe618062-476e-463d-8aa8-3810f9f69fb6",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.615Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

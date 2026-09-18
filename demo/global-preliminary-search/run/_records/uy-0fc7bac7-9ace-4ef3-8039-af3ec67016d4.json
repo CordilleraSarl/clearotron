@@ -1,0 +1,133 @@
+{
+  "uri": "/mark/uy/0fc7bac7-9ace-4ef3-8039-af3ec67016d4",
+  "provider": "clarivate",
+  "office": "uy",
+  "guid": "0fc7bac7-9ace-4ef3-8039-af3ec67016d4",
+  "applicationNumber": "461463",
+  "registrationNumber": null,
+  "applicationDate": "2015-01-09",
+  "registrationDate": "2015-01-10",
+  "expiryDate": "2025-01-10",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "semiconductores, procesadores de semiconductores, chips procesadores de semiconductores, circuitos integrados, chips de circuitos integrados, tableros de circuitos, microcomputadores, microcontroladores, microprocesadores y periféricos de computadoras, memorias y material semiconductor para los mismos; semiconductores para máquinas y máquinas - herramientas; semiconductores para aparatos de iluminación, calefacción, generación de vapor, cocción, refrigeración, secado y ventilación; semiconductores para relojes y aparatos e instrumentos para controlar el tiempo; semiconductores para instrumentos musicales; semiconductores para juegos y juguetes; circuitos para conversión de datos; 'firmware' de computadoras; aparatos electrónicos, eléctricos y electromecánicos para uso con computadoras; productos para sistemas de video; aparatos y equipos para el registro, reproducción y alteración de sonido, video y datos; tableros de circuitos de video; tableros de circuitos de audio; tableros de circuitos de audio - video; aceleradores gráficos de video; aceleradores multimedia; procesadores de video; programas de computadora; material de instrucción relativo a algoritmos de computadoras y de datos para la compresión y descompresión de datos; aparatos de chequeo y para calibrar; partes y accesorios para todos estos productos; equipos para el chequeo y programación de circuitos integrados y memorias de semiconductores; software de computadoras, a saber, software de integraci ón de aplicación y de conectividad, programas utilitarios para computadoras, programas de computadoras para administración de redes, software de computadoras para el acceso a una red de computación global y redes de computadoras interconectadas; sistemas operativos de computadoras; software para sistemas operativos de computadoras; programas operativos para computadoras; y herramientas de software de computadoras para facilitar aplicaciones de software de terceros.",
+      "translation_language": "en",
+      "translation": "semiconductors, semiconductor processors, semiconductor processor chips, integrated circuits, integrated circuit chips, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor material for them; semiconductors for machines and machines - tools; semiconductors for lighting, heating, steam generation, cooking, refrigeration, drying and ventilation equipment; semiconductors for watches and apparatus and instruments for controlling time; semiconductors for musical instruments; semiconductors for games and toys; circuits for data conversion; computer &#39;firmware&#39;; electronic, electrical and electromechanical devices for use with computers; products for video systems; apparatus and equipment for the recording, reproduction and alteration of sound, video and data; video circuit boards; audio circuit boards; audio-video circuit boards; video graphics accelerators; multimedia accelerators; video processors; Computer programs; instructional material relating to computer and data algorithms for data compression and decompression; checking and calibrating apparatus; parts and accessories for all these products; equipment for the checking and programming of integrated circuits and semiconductor memories; computer software, namely, application and connectivity integration software, utility programs for computers, computer programs for network administration, computer software for accessing a global computer network and interconnected computer networks; computer operating systems; software for computer operating systems; computer operating programs; and computer software tools to facilitate third-party software applications."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "servicios de licenciamiento de tecnología; licenciamiento de patentes, marcas, derechos de autor, secretos de fábrica y/o 'know - how' relacionado a la fabricación de semiconductores y sus usos; licenciamiento de semiconductores; licenciamiento de software relacionado a la fabricación de semiconductores y sus usos; licenciamiento de tecnología relacionada a semiconductores y la fabricación de semiconductores; licenciamiento de tecnología incorporada en y relacionada a productos semiconductores, circuitos integrados, tableros de circuitos, microcomputadoras, microcontroladores, microprocesadores y periféricos de computadoras, memorias y material semiconductor para los mismos; circuitos de conversión de datos, firmware para computadoras, aparatos electrónicos, eléctricos y electromecánicos para uso con computadoras, tableros de circuito de video; productos de sistemas de video, aparatos y equipos para el registro, reproducción y alteración de sonido, video y datos, programas de computadoras; proveer de material de instrucción relacionado a algoritmos de computadoras y datos para la compresión y descompresión de datos; diseño a encargo de sistemas de computadoras y telecomunicaciones; servicios de consultoría en el área de computadoras y telecomunicaciones y tecnología relacionada para diseño de software.",
+      "translation_language": "en",
+      "translation": "technology licensing services; licensing of patents, trademarks, copyrights, trade secrets and / or &#39;know-how&#39; related to the manufacture of semiconductors and their uses; Semiconductor licensing; licensing of software related to the manufacture of semiconductors and their uses; licensing of technology related to semiconductors and the manufacture of semiconductors; licensing of technology incorporated in and related to semiconductor products, integrated circuits, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor material for them; data conversion circuits, firmware for computers, electronic, electrical and electromechanical devices for use with computers, video circuit boards; products of video systems, apparatus and equipment for the recording, reproduction and alteration of sound, video and data, computer programs; provide instructional material related to computer and data algorithms for data compression and decompression; custom design of computer and telecommunications systems; consulting services in the area of ​​computers and telecommunications and related technology for software design."
+    }
+  ],
+  "owner": "NXP USA INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "SUSANA DEL CERRO",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 WILLIAM CANNON DRIVE WEST, AUSTIN, TEXAS, 78735",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA INC."
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "semiconductors, semiconductor processors, semiconductor processor chips, integrated circuits, integrated circuit chips, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor material for them; semiconductors for machines and machines - tools; semiconductors for lighting, heating, steam generation, cooking, refrigeration, drying and ventilation equipment; semiconductors for watches and apparatus and instruments for controlling time; semiconductors for musical instruments; semiconductors for games and toys; circuits for data conversion; computer &#39;firmware&#39;; electronic, electrical and electromechanical devices for use with computers; products for video systems; apparatus and equipment for the recording, reproduction and alteration of sound, video and data; video circuit boards; audio circuit boards; audio-video circuit boards; video graphics accelerators; multimedia accelerators; video processors; Computer programs; instructional material relating to computer and data algorithms for data compression and decompression; checking and calibrating apparatus; parts and accessories for all these products; equipment for the checking and programming of integrated circuits and semiconductor memories; computer software, namely, application and connectivity integration software, utility programs for computers, computer programs for network administration, computer software for accessing a global computer network and interconnected computer networks; computer operating systems; software for computer operating systems; computer operating programs; and computer software tools to facilitate third-party software applications.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "semiconductores, procesadores de semiconductores, chips procesadores de semiconductores, circuitos integrados, chips de circuitos integrados, tableros de circuitos, microcomputadores, microcontroladores, microprocesadores y periféricos de computadoras, memorias y material semiconductor para los mismos; semiconductores para máquinas y máquinas - herramientas; semiconductores para aparatos de iluminación, calefacción, generación de vapor, cocción, refrigeración, secado y ventilación; semiconductores para relojes y aparatos e instrumentos para controlar el tiempo; semiconductores para instrumentos musicales; semiconductores para juegos y juguetes; circuitos para conversión de datos; 'firmware' de computadoras; aparatos electrónicos, eléctricos y electromecánicos para uso con computadoras; productos para sistemas de video; aparatos y equipos para el registro, reproducción y alteración de sonido, video y datos; tableros de circuitos de video; tableros de circuitos de audio; tableros de circuitos de audio - video; aceleradores gráficos de video; aceleradores multimedia; procesadores de video; programas de computadora; material de instrucción relativo a algoritmos de computadoras y de datos para la compresión y descompresión de datos; aparatos de chequeo y para calibrar; partes y accesorios para todos estos productos; equipos para el chequeo y programación de circuitos integrados y memorias de semiconductores; software de computadoras, a saber, software de integraci ón de aplicación y de conectividad, programas utilitarios para computadoras, programas de computadoras para administración de redes, software de computadoras para el acceso a una red de computación global y redes de computadoras interconectadas; sistemas operativos de computadoras; software para sistemas operativos de computadoras; programas operativos para computadoras; y herramientas de software de computadoras para facilitar aplicaciones de software de terceros."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "technology licensing services; licensing of patents, trademarks, copyrights, trade secrets and / or &#39;know-how&#39; related to the manufacture of semiconductors and their uses; Semiconductor licensing; licensing of software related to the manufacture of semiconductors and their uses; licensing of technology related to semiconductors and the manufacture of semiconductors; licensing of technology incorporated in and related to semiconductor products, integrated circuits, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor material for them; data conversion circuits, firmware for computers, electronic, electrical and electromechanical devices for use with computers, video circuit boards; products of video systems, apparatus and equipment for the recording, reproduction and alteration of sound, video and data, computer programs; provide instructional material related to computer and data algorithms for data compression and decompression; custom design of computer and telecommunications systems; consulting services in the area of ​​computers and telecommunications and related technology for software design.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "servicios de licenciamiento de tecnología; licenciamiento de patentes, marcas, derechos de autor, secretos de fábrica y/o 'know - how' relacionado a la fabricación de semiconductores y sus usos; licenciamiento de semiconductores; licenciamiento de software relacionado a la fabricación de semiconductores y sus usos; licenciamiento de tecnología relacionada a semiconductores y la fabricación de semiconductores; licenciamiento de tecnología incorporada en y relacionada a productos semiconductores, circuitos integrados, tableros de circuitos, microcomputadoras, microcontroladores, microprocesadores y periféricos de computadoras, memorias y material semiconductor para los mismos; circuitos de conversión de datos, firmware para computadoras, aparatos electrónicos, eléctricos y electromecánicos para uso con computadoras, tableros de circuito de video; productos de sistemas de video, aparatos y equipos para el registro, reproducción y alteración de sonido, video y datos, programas de computadoras; proveer de material de instrucción relacionado a algoritmos de computadoras y datos para la compresión y descompresión de datos; diseño a encargo de sistemas de computadoras y telecomunicaciones; servicios de consultoría en el área de computadoras y telecomunicaciones y tecnología relacionada para diseño de software."
+        }
+      ]
+    },
+    "id": "0fc7bac7-9ace-4ef3-8039-af3ec67016d4",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250711",
+    "registrationOfficeCode": "UY",
+    "registrationOfficeName": "Uruguay",
+    "representatives": [
+      {
+        "representativeAddress": "ECHEVARRIARZA 3535 ESC. 1601, MONTEVIDEO, MONTEVIDEO",
+        "representativeAddressCountryCode": "UY",
+        "representativeAddressCountryName": "Uruguay",
+        "representativeName": "SUSANA DEL CERRO"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20150109",
+        "applicationNumber": "461463"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20250110",
+      "markCurrentStatus": "GRANTED",
+      "registration": {
+        "registrationDate": "20150110"
+      }
+    },
+    "version": "20250711161444",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/uy/0fc7bac7-9ace-4ef3-8039-af3ec67016d4",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.733Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

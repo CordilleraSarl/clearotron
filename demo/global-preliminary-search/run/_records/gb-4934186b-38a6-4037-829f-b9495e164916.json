@@ -1,0 +1,171 @@
+{
+  "uri": "/mark/gb/4934186b-38a6-4037-829f-b9495e164916",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "4934186b-38a6-4037-829f-b9495e164916",
+  "applicationNumber": "UK00904529681",
+  "registrationNumber": "UK00904529681",
+  "applicationDate": "2005-07-07",
+  "registrationDate": "2006-05-05",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "POWERQUICC",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer software and computer hardware; computer software programs that operate on or with semiconductor devices and integrated circuits and microprocessors, including software programmable microprocessors and related instructional materials, namely, manuals, user guides and tutorials in electronic format; semiconductors, semiconductor devices, integrated circuits, microprocessors, including software programmable microprocessors and related documentation, namely, reference manuals, user guides, application notes and product specifications in electronic format.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "en",
+      "description": "Paper, cardboard and goods made from these materials, not included in other classes; printed matter; instructional and teaching material (except apparatus); reference manuals, user guides, tutorials, application notes and product specifications in relation to semiconductor devices, integrated circuits, microprocessors, including software programmable microprocessors and computer software programs that operate on or with semiconductor devices and integrated circuits and microprocessors, including software programmable microprocessors.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Design and development of computer software; computer software design for others; computer software technical support services; licensing of technology; licensing of semiconductors; licensing of computer software; information, advisory and consulting services in relation to all the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Stobbs",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20050120",
+      "priorityNumber": "78/550,902"
+    },
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20050120",
+      "priorityNumber": "78/550,846"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West, Austin, 78735",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA Inc."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer software and computer hardware; computer software programs that operate on or with semiconductor devices and integrated circuits and microprocessors, including software programmable microprocessors and related instructional materials, namely, manuals, user guides and tutorials in electronic format; semiconductors, semiconductor devices, integrated circuits, microprocessors, including software programmable microprocessors and related documentation, namely, reference manuals, user guides, application notes and product specifications in electronic format."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Paper, cardboard and goods made from these materials, not included in other classes; printed matter; instructional and teaching material (except apparatus); reference manuals, user guides, tutorials, application notes and product specifications in relation to semiconductor devices, integrated circuits, microprocessors, including software programmable microprocessors and computer software programs that operate on or with semiconductor devices and integrated circuits and microprocessors, including software programmable microprocessors."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Design and development of computer software; computer software design for others; computer software technical support services; licensing of technology; licensing of semiconductors; licensing of computer software; information, advisory and consulting services in relation to all the aforesaid."
+        }
+      ]
+    },
+    "id": "4934186b-38a6-4037-829f-b9495e164916",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20050120",
+        "priorityNumber": "78/550,902"
+      },
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20050120",
+        "priorityNumber": "78/550,846"
+      }
+    ],
+    "recordLastUpdated": "20260724",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Building 1000, Cambridge Research Park, Cambridge CB25 9PD",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Stobbs"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20050707",
+        "applicationNumber": "UK00904529681"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ARCHIVED",
+      "registration": {
+        "registrationDate": "20060505",
+        "registrationNumber": "UK00904529681"
+      }
+    },
+    "version": "20260724020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "POWERQUICC"
+    }
+  },
+  "_uri": "/mark/gb/4934186b-38a6-4037-829f-b9495e164916",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.709Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

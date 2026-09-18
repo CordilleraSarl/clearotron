@@ -1,0 +1,169 @@
+{
+  "uri": "/mark/no/cb49ac2e-19bb-4471-ac0b-f3b9c46d8eec",
+  "provider": "clarivate",
+  "office": "no",
+  "guid": "cb49ac2e-19bb-4471-ac0b-f3b9c46d8eec",
+  "applicationNumber": "201401414",
+  "registrationNumber": "275990",
+  "applicationDate": "2014-01-31",
+  "registrationDate": "2014-05-14",
+  "expiryDate": "2034-01-31",
+  "renewalDate": null,
+  "lastPublicationDate": "2014-05-19",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "NAVIATE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    38,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "no",
+      "description": "Programvare for konstruksjon, modellfremstilling og formgiving av objekter, utforming og dataassistert utforming; dataprogramvare for programmer for dataassistert konstruksjon (CAD); grensesnittprogramvare; dataprogram for tegnbaserte applikasjoner, for dataassistert konstruksjon (CAD), for animasjon, for grafikk og for konstruksjonsmodeller; dataprogram og programvare for webbasert posting, søking, ekstranettgrensesnitt og datautveksling, alle for bruk innen samordning av opplysninger og oppgaver mellom flere deltakere ved grafisk design, mekanisk og elektronisk tegning, modellfremstilling, vei- og vannkonstruksjoner og frembringelse av multimediabilder; instruksjonsdokumenter levert på elektroniske, optiske eller magnetiske medier eller i digital form via nettverk; instruksjonsmanualer i elektronisk format solgt som en enhet dermed; nedlastbar datagrafikk; nedlastbar dataprogramvare for modellering og design; nedlastbare bildefiler som inneholder tredimensjonale digitale modeller for objekter og abstrakte gjenstander; operativprogrammer (programvare); dataprogrammer (nedlastbar programvare); programvare for håndtering av informasjon angående eiendomsforvaltning.",
+      "translation_language": "en",
+      "translation": "Software for construction, model making and shaping of objects, design and computer-assisted design; computer software for computer aided design (CAD) programs; interface software; computer programs for character-based applications, for computer-aided design (CAD), for animation, for graphics and for construction models; computer programs and software for web-based posting, searching, extranet interfaces and data exchange, all for use in coordinating information and tasks between several participants in graphic design, mechanical and electronic drawing, model making, road and water constructions and the production of multimedia images; instructional documents delivered on electronic, optical or magnetic media or in digital form via network; instruction manuals in electronic format sold as a unit thereby; downloadable computer graphics; downloadable computer software for modeling and design; downloadable image files containing three-dimensional digital models of objects and abstract objects; operating programs (software); computer programs (downloadable software); software for managing information regarding property management."
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "no",
+      "description": "Bearbeiding, lagring, innhenting og/eller kontroll av datastyrt informasjon; datastyrt datahåndtering; datastyrt register- og filadministrasjon; systematisering av informasjon i databaser; systematisering av informasjon angående eiendomsforvaltning i databaser.",
+      "translation_language": "en",
+      "translation": "Processing, storage, retrieval and/or control of computerized information; computerized data management; computerized registry and file management; systematization of information in databases; systematization of information regarding property management in databases."
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "no",
+      "description": "Tilveiebringelse av tilgang til databaser; tilveiebringelse av tilgang til databaser som inneholder data eller dokumenter for fjernkonsultasjon; tilveiebringelse av tilgang til websider; datakommunikasjonstjenester som er tilgjengelige via tilgangskode; tilveiebringelse av tilgang til weblogger; tilgang til et elektronisk direktekoblet nettverk for innhenting av informasjon; tilveiebringelse av tilgang til databaser; utleie av tilgangstid til globale datanettverk; dataassistert overføring av bilder; elektronisk overføring av data og dokumenter via dataterminaler; elektronisk overføring av meldinger og data; tjenester for sikker overføring av data, lyd og bilder; tilveiebringelse av direktekoblede fora for overføring av meldinger mellom databrukere; tilveiebringelse av tilgang til et globalt datanettverk for overføring og spredning av informasjon.",
+      "translation_language": "en",
+      "translation": "Provision of access to databases; providing access to databases containing data or documents for remote consultation; providing access to web pages; data communication services accessible via access code; providing access to weblogs; access to an electronic direct-connected network for obtaining information; providing access to databases; rental of access time to global computer networks; computer-assisted transfer of images; electronic transmission of data and documents via computer terminals; electronic transmission of messages and data; services for secure transmission of data, sound and images; providing online forums for the transmission of messages between computer users; providing access to a global computer network for the transmission and dissemination of information."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "no",
+      "description": "Utvikling av dataprogrammer innspilt på datamedier (programvare) utformet for bruk i konstruksjon og automatisk tilvirkning (CAD/CAM); CAD-tjenester; dataassistert konstruksjon av videografikk og grafisk design; dataassistert design for produksjonsprosesser; dataassistert konstruksjonstekniske tjenester; dataassisterte analysetjenester; produktutvikling for andre; konsultasjon og rådgivning knyttet til produktutvikling og produktdesign; rådgivnings-, konsultasjons- og tekniske støttetjenester i forbindelse med maskinvare, programvare og dataassistert design, tegning og teknologi; utleie av tilgangstid til datamaskiner; datatjenester for andres regning, nemlig webbasert posting, søking, ekstranettgrensesnitt og sikker datautveksling, alle for bruk innen leveringssamordning mellom flere deltakere ved grafisk design, mekanisk og elektronisk tegning, modellfremstilling, vei- og vannkonstruksjoner og frembringelsen av multimediabilder; datatjenester, nemlig interaktive webhotelltjenester som tillater brukeren å publisere og dele sitt eget innhold og bilder via direktekobling til Internett eller andre nettverk; tilveiebringelse av et nettsted med online ikke-nedlastbare programvareverktøy for bilderedigering; utvikling av programvare; konsulenttjenester innen maskinvare og programvare for datamaskiner; skytjenester (SaaS), IT-konsulenttjenester; tekniske konsulenttjenester; konsulenttjenester knyttet til datamaskinvare; konsulenttjenester knyttet til programvare; dataassisterte maskinkonstruksjons- og tegnetjenester.",
+      "translation_language": "en",
+      "translation": "Development of computer programs recorded on computer media (software) designed for use in construction and automatic manufacturing (CAD/CAM); CAD services; computer-aided construction of video graphics and graphic design; computer-aided design for manufacturing processes; computer-aided construction engineering services; computer aided analysis services; product development for others; consultation and advice relating to product development and product design; advisory, consultancy and technical support services relating to hardware, software and computer-aided design, drafting and technology; rental of computer access time; computer services for others, namely web-based posting, searching, extranet interface and secure data exchange, all for use in delivery coordination between multiple participants in graphic design, mechanical and electronic drawing, model making, road and water construction and the production of multimedia images; computer services, namely, interactive web hosting services that allow the user to publish and share their own content and images via direct connection to the Internet or other networks; providing a website featuring online non-downloadable software tools for image editing; software development; consultancy services in the field of computer hardware and software; cloud services (SaaS), IT consulting services; technical consultancy services; consultancy services relating to computer hardware; consultancy services relating to software; computer aided machine design and drafting services."
+    }
+  ],
+  "owner": "Symetri AB",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": "Groth & Co KB",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "78127 BORLÄNGE",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantName": "Symetri AB"
+      }
+    ],
+    "applicationLanguageCode": "no",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Software for construction, model making and shaping of objects, design and computer-assisted design; computer software for computer aided design (CAD) programs; interface software; computer programs for character-based applications, for computer-aided design (CAD), for animation, for graphics and for construction models; computer programs and software for web-based posting, searching, extranet interfaces and data exchange, all for use in coordinating information and tasks between several participants in graphic design, mechanical and electronic drawing, model making, road and water constructions and the production of multimedia images; instructional documents delivered on electronic, optical or magnetic media or in digital form via network; instruction manuals in electronic format sold as a unit thereby; downloadable computer graphics; downloadable computer software for modeling and design; downloadable image files containing three-dimensional digital models of objects and abstract objects; operating programs (software); computer programs (downloadable software); software for managing information regarding property management.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "no",
+          "intGoodsServicesDescription": "Programvare for konstruksjon, modellfremstilling og formgiving av objekter, utforming og dataassistert utforming; dataprogramvare for programmer for dataassistert konstruksjon (CAD); grensesnittprogramvare; dataprogram for tegnbaserte applikasjoner, for dataassistert konstruksjon (CAD), for animasjon, for grafikk og for konstruksjonsmodeller; dataprogram og programvare for webbasert posting, søking, ekstranettgrensesnitt og datautveksling, alle for bruk innen samordning av opplysninger og oppgaver mellom flere deltakere ved grafisk design, mekanisk og elektronisk tegning, modellfremstilling, vei- og vannkonstruksjoner og frembringelse av multimediabilder; instruksjonsdokumenter levert på elektroniske, optiske eller magnetiske medier eller i digital form via nettverk; instruksjonsmanualer i elektronisk format solgt som en enhet dermed; nedlastbar datagrafikk; nedlastbar dataprogramvare for modellering og design; nedlastbare bildefiler som inneholder tredimensjonale digitale modeller for objekter og abstrakte gjenstander; operativprogrammer (programvare); dataprogrammer (nedlastbar programvare); programvare for håndtering av informasjon angående eiendomsforvaltning."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Processing, storage, retrieval and/or control of computerized information; computerized data management; computerized registry and file management; systematization of information in databases; systematization of information regarding property management in databases.",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "no",
+          "intGoodsServicesDescription": "Bearbeiding, lagring, innhenting og/eller kontroll av datastyrt informasjon; datastyrt datahåndtering; datastyrt register- og filadministrasjon; systematisering av informasjon i databaser; systematisering av informasjon angående eiendomsforvaltning i databaser."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Provision of access to databases; providing access to databases containing data or documents for remote consultation; providing access to web pages; data communication services accessible via access code; providing access to weblogs; access to an electronic direct-connected network for obtaining information; providing access to databases; rental of access time to global computer networks; computer-assisted transfer of images; electronic transmission of data and documents via computer terminals; electronic transmission of messages and data; services for secure transmission of data, sound and images; providing online forums for the transmission of messages between computer users; providing access to a global computer network for the transmission and dissemination of information.",
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "no",
+          "intGoodsServicesDescription": "Tilveiebringelse av tilgang til databaser; tilveiebringelse av tilgang til databaser som inneholder data eller dokumenter for fjernkonsultasjon; tilveiebringelse av tilgang til websider; datakommunikasjonstjenester som er tilgjengelige via tilgangskode; tilveiebringelse av tilgang til weblogger; tilgang til et elektronisk direktekoblet nettverk for innhenting av informasjon; tilveiebringelse av tilgang til databaser; utleie av tilgangstid til globale datanettverk; dataassistert overføring av bilder; elektronisk overføring av data og dokumenter via dataterminaler; elektronisk overføring av meldinger og data; tjenester for sikker overføring av data, lyd og bilder; tilveiebringelse av direktekoblede fora for overføring av meldinger mellom databrukere; tilveiebringelse av tilgang til et globalt datanettverk for overføring og spredning av informasjon."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Development of computer programs recorded on computer media (software) designed for use in construction and automatic manufacturing (CAD/CAM); CAD services; computer-aided construction of video graphics and graphic design; computer-aided design for manufacturing processes; computer-aided construction engineering services; computer aided analysis services; product development for others; consultation and advice relating to product development and product design; advisory, consultancy and technical support services relating to hardware, software and computer-aided design, drafting and technology; rental of computer access time; computer services for others, namely web-based posting, searching, extranet interface and secure data exchange, all for use in delivery coordination between multiple participants in graphic design, mechanical and electronic drawing, model making, road and water construction and the production of multimedia images; computer services, namely, interactive web hosting services that allow the user to publish and share their own content and images via direct connection to the Internet or other networks; providing a website featuring online non-downloadable software tools for image editing; software development; consultancy services in the field of computer hardware and software; cloud services (SaaS), IT consulting services; technical consultancy services; consultancy services relating to computer hardware; consultancy services relating to software; computer aided machine design and drafting services.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "no",
+          "intGoodsServicesDescription": "Utvikling av dataprogrammer innspilt på datamedier (programvare) utformet for bruk i konstruksjon og automatisk tilvirkning (CAD/CAM); CAD-tjenester; dataassistert konstruksjon av videografikk og grafisk design; dataassistert design for produksjonsprosesser; dataassistert konstruksjonstekniske tjenester; dataassisterte analysetjenester; produktutvikling for andre; konsultasjon og rådgivning knyttet til produktutvikling og produktdesign; rådgivnings-, konsultasjons- og tekniske støttetjenester i forbindelse med maskinvare, programvare og dataassistert design, tegning og teknologi; utleie av tilgangstid til datamaskiner; datatjenester for andres regning, nemlig webbasert posting, søking, ekstranettgrensesnitt og sikker datautveksling, alle for bruk innen leveringssamordning mellom flere deltakere ved grafisk design, mekanisk og elektronisk tegning, modellfremstilling, vei- og vannkonstruksjoner og frembringelsen av multimediabilder; datatjenester, nemlig interaktive webhotelltjenester som tillater brukeren å publisere og dele sitt eget innhold og bilder via direktekobling til Internett eller andre nettverk; tilveiebringelse av et nettsted med online ikke-nedlastbare programvareverktøy for bilderedigering; utvikling av programvare; konsulenttjenester innen maskinvare og programvare for datamaskiner; skytjenester (SaaS), IT-konsulenttjenester; tekniske konsulenttjenester; konsulenttjenester knyttet til datamaskinvare; konsulenttjenester knyttet til programvare; dataassisterte maskinkonstruksjons- og tegnetjenester."
+        }
+      ]
+    },
+    "id": "cb49ac2e-19bb-4471-ac0b-f3b9c46d8eec",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250808",
+    "registrationOfficeCode": "NO",
+    "registrationOfficeName": "Norway",
+    "representatives": [
+      {
+        "representativeAddress": "10232 STOCKHOLM",
+        "representativeAddressCountryCode": "SE",
+        "representativeAddressCountryName": "Sweden",
+        "representativeName": "Groth & Co KB"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20140131",
+        "applicationNumber": "201401414"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340131",
+      "lastPublicationDate": "20140519",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20140514",
+        "registrationNumber": "275990"
+      }
+    },
+    "version": "20250808020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NAVIATE"
+    }
+  },
+  "_uri": "/mark/no/cb49ac2e-19bb-4471-ac0b-f3b9c46d8eec",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.283Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

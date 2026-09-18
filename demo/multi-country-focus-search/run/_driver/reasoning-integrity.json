@@ -1,5 +1,5 @@
 {
-  "ts": "2026-09-02T19:51:48.473Z",
+  "ts": "2026-09-18T15:07:12.381Z",
   "inputs": {
     "narrative": true,
     "report": true,
@@ -21,8 +21,8 @@
   "tripwires": {
     "recallFloor": [],
     "reviewFreshness": {
-      "pass": true,
-      "detail": ""
+      "pass": false,
+      "detail": "the review brought in no input the run had not already produced — re-reading the same files can only show they agree with themselves; it cannot surface what the run missed (no fresh probe / no new record cited)"
     },
     "seedNeutrality": [],
     "probativeGrading": [],
@@ -163,25 +163,121 @@
         "owner": "VENTORI ACESSORIOS LTDA - ME.",
         "material": false,
         "why": "recall-regression: prior-confirmed live registered conflict /mark/br/1ac5cfcf-0d54-4c62-bbbb-96803a302f9c (\"VENTORI\") was neither carried as a finding nor justified against its fetched record this run"
+      },
+      {
+        "uri": "/mark/cn/90eef81e-2b6f-4f84-8b9f-ac78dd65a11f",
+        "mark_text": "Ｖｅｎｋｕｒｉ",
+        "classes": null,
+        "owner": "YIWU TENGDING UMBRELLA CO., LTD.",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/cn/90eef81e-2b6f-4f84-8b9f-ac78dd65a11f (\"Ｖｅｎｋｕｒｉ\") was neither carried as a finding nor justified against its fetched record this run"
+      },
+      {
+        "uri": "/mark/us/1c752bbb-1800-4a86-b895-94be138f1f43",
+        "mark_text": "QORIA",
+        "classes": null,
+        "owner": "Qoria Holdings Pty Ltd",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/us/1c752bbb-1800-4a86-b895-94be138f1f43 (\"QORIA\") was neither carried as a finding nor justified against its fetched record this run"
+      },
+      {
+        "uri": "/mark/ca/7da604e3-696d-4e45-99e3-b1536d092c9e",
+        "mark_text": "VENTURI",
+        "classes": null,
+        "owner": "Biogénie Canada Inc.",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/ca/7da604e3-696d-4e45-99e3-b1536d092c9e (\"VENTURI\") was neither carried as a finding nor justified against its fetched record this run"
+      },
+      {
+        "uri": "/mark/us/daf685e7-0cee-4e3b-aa33-9d354421aeb6",
+        "mark_text": "VENTURI",
+        "classes": null,
+        "owner": "Biogénie Canada Inc.",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/us/daf685e7-0cee-4e3b-aa33-9d354421aeb6 (\"VENTURI\") was neither carried as a finding nor justified against its fetched record this run"
+      },
+      {
+        "uri": "/mark/wo/d5fe085c-c8b7-428f-9533-d75acd00424e",
+        "mark_text": "VENTURI",
+        "classes": null,
+        "owner": "Biogénie Canada Inc.",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/wo/d5fe085c-c8b7-428f-9533-d75acd00424e (\"VENTURI\") was neither carried as a finding nor justified against its fetched record this run"
+      },
+      {
+        "uri": "/mark/gb/1ed22bdd-4194-423f-af68-4d5d720d03cb",
+        "mark_text": "VINCARA",
+        "classes": null,
+        "owner": "Vinctos Ltd",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/gb/1ed22bdd-4194-423f-af68-4d5d720d03cb (\"VINCARA\") was neither carried as a finding nor justified against its fetched record this run"
+      },
+      {
+        "uri": "/mark/nz/51e372ff-5dbf-4c35-a168-b0a027a99551",
+        "mark_text": "VENKARO",
+        "classes": null,
+        "owner": "VENKARO LIMITED",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/nz/51e372ff-5dbf-4c35-a168-b0a027a99551 (\"VENKARO\") was neither carried as a finding nor justified against its fetched record this run"
+      },
+      {
+        "uri": "/mark/em/346d96db-15d6-40f8-a707-c87059712771",
+        "mark_text": "VINCORA",
+        "classes": null,
+        "owner": "Viacheslav Svizhevskyi",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/em/346d96db-15d6-40f8-a707-c87059712771 (\"VINCORA\") was neither carried as a finding nor justified against its fetched record this run"
+      },
+      {
+        "uri": "/mark/in/d4702fdd-f353-476c-8874-eedc36d6a582",
+        "mark_text": "Vincora",
+        "classes": null,
+        "owner": "SETHULAKSHMI K B Single Firm",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/in/d4702fdd-f353-476c-8874-eedc36d6a582 (\"Vincora\") was neither carried as a finding nor justified against its fetched record this run"
+      },
+      {
+        "uri": "/mark/tr/a80d04af-30db-4f6b-aca7-2749a7ff06e7",
+        "mark_text": "V vancora",
+        "classes": null,
+        "owner": "RAMAZAN CEYLAN",
+        "material": false,
+        "why": "recall-regression: prior-confirmed live registered conflict /mark/tr/a80d04af-30db-4f6b-aca7-2749a7ff06e7 (\"V vancora\") was neither carried as a finding nor justified against its fetched record this run"
       }
     ],
     "deadlineCarry": [],
     "documentGrowth": [
       {
-        "stage": "common-law-half:a",
+        "stage": "common-law-half:b",
         "trigger": "frame-reopen",
-        "before": 19391,
-        "after": 39751,
-        "growthBytes": 20360,
-        "growthPct": 105
+        "before": 10371,
+        "after": 15639,
+        "growthBytes": 5268,
+        "growthPct": 51
       },
       {
-        "stage": "register-unit:primary-sweep",
-        "trigger": "envelope",
-        "before": 947,
-        "after": 1407,
-        "growthBytes": 460,
-        "growthPct": 49
+        "stage": "synthesis",
+        "trigger": "lint-repair",
+        "before": 4001,
+        "after": 5993,
+        "growthBytes": 1992,
+        "growthPct": 50
+      },
+      {
+        "stage": "narrative-refutation",
+        "trigger": "stale-repair",
+        "before": 2199,
+        "after": 4403,
+        "growthBytes": 2204,
+        "growthPct": 100
+      },
+      {
+        "stage": "report-overview",
+        "trigger": "stale-repair",
+        "before": 950,
+        "after": 1320,
+        "growthBytes": 370,
+        "growthPct": 39
       }
     ]
   },
@@ -202,8 +298,20 @@
     "recall-regression: prior-confirmed live registered conflict /mark/em/0d26b878-e587-4338-9236-1b49ed67f113 (\"VENTURI\") was neither carried as a finding nor justified against its fetched record this run",
     "recall-regression: prior-confirmed live registered conflict /mark/gb/e0fbde90-93fe-4d6f-8aea-009e07e6577e (\"VENTURI\") was neither carried as a finding nor justified against its fetched record this run",
     "recall-regression: prior-confirmed live registered conflict /mark/br/1ac5cfcf-0d54-4c62-bbbb-96803a302f9c (\"VENTORI\") was neither carried as a finding nor justified against its fetched record this run",
-    "document-growth: common-law-half:a grew 105% (19391 → 39751 bytes) under trigger \"frame-reopen\" — a repair defends or corrects, it does not add; review what the pass appended",
-    "document-growth: register-unit:primary-sweep grew 49% (947 → 1407 bytes) under trigger \"envelope\" — a repair defends or corrects, it does not add; review what the pass appended"
+    "recall-regression: prior-confirmed live registered conflict /mark/cn/90eef81e-2b6f-4f84-8b9f-ac78dd65a11f (\"Ｖｅｎｋｕｒｉ\") was neither carried as a finding nor justified against its fetched record this run",
+    "recall-regression: prior-confirmed live registered conflict /mark/us/1c752bbb-1800-4a86-b895-94be138f1f43 (\"QORIA\") was neither carried as a finding nor justified against its fetched record this run",
+    "recall-regression: prior-confirmed live registered conflict /mark/ca/7da604e3-696d-4e45-99e3-b1536d092c9e (\"VENTURI\") was neither carried as a finding nor justified against its fetched record this run",
+    "recall-regression: prior-confirmed live registered conflict /mark/us/daf685e7-0cee-4e3b-aa33-9d354421aeb6 (\"VENTURI\") was neither carried as a finding nor justified against its fetched record this run",
+    "recall-regression: prior-confirmed live registered conflict /mark/wo/d5fe085c-c8b7-428f-9533-d75acd00424e (\"VENTURI\") was neither carried as a finding nor justified against its fetched record this run",
+    "recall-regression: prior-confirmed live registered conflict /mark/gb/1ed22bdd-4194-423f-af68-4d5d720d03cb (\"VINCARA\") was neither carried as a finding nor justified against its fetched record this run",
+    "recall-regression: prior-confirmed live registered conflict /mark/nz/51e372ff-5dbf-4c35-a168-b0a027a99551 (\"VENKARO\") was neither carried as a finding nor justified against its fetched record this run",
+    "recall-regression: prior-confirmed live registered conflict /mark/em/346d96db-15d6-40f8-a707-c87059712771 (\"VINCORA\") was neither carried as a finding nor justified against its fetched record this run",
+    "recall-regression: prior-confirmed live registered conflict /mark/in/d4702fdd-f353-476c-8874-eedc36d6a582 (\"Vincora\") was neither carried as a finding nor justified against its fetched record this run",
+    "recall-regression: prior-confirmed live registered conflict /mark/tr/a80d04af-30db-4f6b-aca7-2749a7ff06e7 (\"V vancora\") was neither carried as a finding nor justified against its fetched record this run",
+    "document-growth: common-law-half:b grew 51% (10371 → 15639 bytes) under trigger \"frame-reopen\" — a repair defends or corrects, it does not add; review what the pass appended",
+    "document-growth: synthesis grew 50% (4001 → 5993 bytes) under trigger \"lint-repair\" — a repair defends or corrects, it does not add; review what the pass appended",
+    "document-growth: narrative-refutation grew 100% (2199 → 4403 bytes) under trigger \"stale-repair\" — a repair defends or corrects, it does not add; review what the pass appended",
+    "document-growth: report-overview grew 39% (950 → 1320 bytes) under trigger \"stale-repair\" — a repair defends or corrects, it does not add; review what the pass appended"
   ],
   "registryCorrections": []
 }

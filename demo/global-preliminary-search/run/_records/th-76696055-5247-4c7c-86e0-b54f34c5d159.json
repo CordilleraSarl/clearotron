@@ -1,0 +1,116 @@
+{
+  "uri": "/mark/th/76696055-5247-4c7c-86e0-b54f34c5d159",
+  "provider": "clarivate",
+  "office": "th",
+  "guid": "76696055-5247-4c7c-86e0-b54f34c5d159",
+  "applicationNumber": "556034",
+  "registrationNumber": "28253",
+  "applicationDate": "2004-06-16",
+  "registrationDate": "2005-11-24",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "th",
+      "description": "บริการออกแบบระบบคอมพิวเตอร์ บริการออกแบบระบบการสื่อสารโทรคมนาคมตามคำสั่ง บริการให้คำปรึกษา แนะนำทางด้านคอมพิวเตอร์ บริการให้คำปรึกษาแนะนำทางด้านเทคโนโลยีของการออกแบบซอฟท์แวร์ที่เกี่ยวข้อง.",
+      "translation_language": "en",
+      "translation": "computer system design service Telecommunication system design service according to order consulting service computer advice Technology consulting services for design related software."
+    }
+  ],
+  "owner": "NXP USA",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA",
+        "applicantNativeAddress": "6501 วิลเลี่ยม แคนนอน ไดรว์ เวสท์, ออสติน, มลรัฐเท็กซัส 78735, สหรัฐอเมริกา",
+        "applicantNativeName": "เอ็นเอกซ์พี ยูเอสเอ"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "computer system design service Telecommunication system design service according to order consulting service computer advice Technology consulting services for design related software.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "th",
+          "intGoodsServicesDescription": "บริการออกแบบระบบคอมพิวเตอร์ บริการออกแบบระบบการสื่อสารโทรคมนาคมตามคำสั่ง บริการให้คำปรึกษา แนะนำทางด้านคอมพิวเตอร์ บริการให้คำปรึกษาแนะนำทางด้านเทคโนโลยีของการออกแบบซอฟท์แวร์ที่เกี่ยวข้อง."
+        }
+      ]
+    },
+    "id": "76696055-5247-4c7c-86e0-b54f34c5d159",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250624",
+    "registrationOfficeCode": "TH",
+    "registrationOfficeName": "Thailand",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "TH",
+        "representativeAddressCountryName": "Thailand",
+        "representativeNativeAddress": "บริษัท ติลลิกีแอนด์กิบบินส์ อินเตอร์เนชั่นแนล จำกัด ที่อยู่ เลขที่ 1011 อาคารศุภาลัย แกรนด์ ทาวเวอร์ ชั้น 20 - 26 ถนนพระราม 3",
+        "representativeNativeName": "บริษัท ติลลิกีแอนด์กิบบินส์ อินเตอร์เนชั่นแนล จำกัด, นางดารานีย์ วัจนะวุฒิวงศ์, นายนันทน อินทนนท์, นายศรีลา ทองกลาง"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040616",
+        "applicationNumber": "556034"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20051124",
+        "registrationNumber": "28253"
+      }
+    },
+    "version": "20250624103004",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/th/76696055-5247-4c7c-86e0-b54f34c5d159",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.746Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

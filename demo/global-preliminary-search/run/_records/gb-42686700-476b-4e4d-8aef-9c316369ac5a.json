@@ -1,0 +1,130 @@
+{
+  "uri": "/mark/gb/42686700-476b-4e4d-8aef-9c316369ac5a",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "42686700-476b-4e4d-8aef-9c316369ac5a",
+  "applicationNumber": "UK00918214352",
+  "registrationNumber": "UK00918214352",
+  "applicationDate": "2020-03-24",
+  "registrationDate": "2020-07-28",
+  "expiryDate": "2030-03-24",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "HoverGames",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    12,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        12
+      ],
+      "language": "en",
+      "description": "Drones; Drone development kits; Drone development kits for drones for disaster management, health crises, environmental protection, and wildlife conservation.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Organizing, conducting and operating drone competitions; Organizing, conducting and operating drone development competitions; Organizing, conducting and operating competitions for virtual software coding for software for drones; Organizing, conducting and operating drone hardware design competitions.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "Stobbs",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60, Eindhoven 5656 AG",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Drones; Drone development kits; Drone development kits for drones for disaster management, health crises, environmental protection, and wildlife conservation."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Organizing, conducting and operating drone competitions; Organizing, conducting and operating drone development competitions; Organizing, conducting and operating competitions for virtual software coding for software for drones; Organizing, conducting and operating drone hardware design competitions."
+        }
+      ]
+    },
+    "id": "42686700-476b-4e4d-8aef-9c316369ac5a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Building 1000, Cambridge Research Park, Cambridge CB25 9PD",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Stobbs"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200324",
+        "applicationNumber": "UK00918214352"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300324",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20200728",
+        "registrationNumber": "UK00918214352"
+      }
+    },
+    "version": "20250627220854",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "HoverGames"
+    }
+  },
+  "_uri": "/mark/gb/42686700-476b-4e4d-8aef-9c316369ac5a",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:10.760Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

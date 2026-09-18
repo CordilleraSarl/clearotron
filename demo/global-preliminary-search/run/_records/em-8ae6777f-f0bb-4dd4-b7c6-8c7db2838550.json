@@ -1,0 +1,976 @@
+{
+  "uri": "/mark/em/8ae6777f-f0bb-4dd4-b7c6-8c7db2838550",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "8ae6777f-f0bb-4dd4-b7c6-8c7db2838550",
+  "applicationNumber": "4529681",
+  "registrationNumber": null,
+  "applicationDate": "2005-07-07",
+  "registrationDate": "2006-05-05",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2005-12-19",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "POWERQUICC",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Pocítacový hardware a pocítacový software; pocítacové softwarové programy, které pracují pomocí polovodicových zarízení a integrovaných obvodu a mikroprocesoru, vcetne softwarových programovatelných mikroprocesoru a související instruktázní materiály, jmenovite manuály, uzivatelské prírucky a výukové programy v elektronickém formátu; polovodice, polovodicová zarízení, integrované obvody, mikroprocesory, vcetne softwarových programovatelných mikroprocesoru a související dokumentace, jmenovite referencní manuály, uzivatelské prírucky, poznámky k pouzití a specifikace výrobku v elektronickém formátu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "cs",
+      "description": "Papír, lepenka a zbozí vyrobené z techto materiálu, nezarazené do jiných tríd; tiskoviny; výukový a ucební materiál (krome prístroju); referencní prírucky, uzivatelské prírucky, výukové programy, poznámky k pouzití a specifikace výrobku v souvislosti s polovodicovými zarízeními, integrovanými obvody, mikroprocesory, vcetne pocítacových softwarových programu, které pracují pomocí polovodicových zarízení a integrovaných obvodu a mikroprocesoru, vcetne softwarových programovatelných mikroprocesoru.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Návrhy a vývoj pocítacového softwaru; navrhování pocítacového softwaru pro jiné osoby; sluzby technické podpory pocítacového softwaru; udelování licencí k technologiím; udelování licencí k polovodicum; poskytování licencí na pocítacový software; informacní, poradenské a konzultacní sluzby vztahující se k výse uvedenému.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Computerhardware og computersoftware; computersoftwareprogrammer, der kører på eller med halvlederanordninger og integrerede kredsløb og mikroprocessorer, inklusive software og programmerbare mikroprocessorer og instruktionsmateriale, nemlig manualer, brugermanualer og instruktiongsbøger i elektronisk format; halvledere, halvlederanordninger, integrerede kredsløb, mikroprocessorer, inklusive software og programmerbare mikroprocessorer og dokumentation hertil, nemlig opslagsbøger, brugermanualer, applikationsnoter og produktspecifikationer i elektronisk format.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "da",
+      "description": "Papir, pap, varer heraf og ikke indeholdt i andre klasser; tryksager; instruktions- og undervisningsmateriale (dog ikke apparater); opslagsbøger, brugermanualer, instruktionsbøger, applikationsnoter og produktspecifikationer i forbindelse med halvlederanordninger, integrerede kredsløb, mikroprocessorer, software og programmerbare mikroprocessorer og computersoftwareprogrammer, der kører på eller med halvlederanordninger og integrerede kredsløb og mikroprocessorer, inklusive software og programmerbare mikroprocessorer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Design og udvikling af computersoftware; design af computersoftware for andre; teknisk bistand i forbindelse med computersoftware; Licensgivning vedrørende teknologi; licensgivning i forbindelse med halvledere; licensgivning af computersoftware; informations- og rådgivningsvirksomhed samt konsulentbistand i forbindelse med alle ovennævnte tjenesteydelser.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Hardware en software; software die werkt met of in halfgeleiderinrichtingen en geïntegreerde schakelingen en microprocessors, waaronder met software programmeerbare microprocessoren en bijbehorende leermiddelen, te weten handboeken, gebruiksaanwijzingen en instructies in elektronische vorm; halfgeleiders, halfgeleiderinrichtingen, geïntegreerde schakelingen, microprocessors, waaronder met software programmeerbare microprocessors en bijbehorende documentatie, te weten naslagwerken, handleidingen, gebruiksaanwijzingen en productspecificaties in elektronische vorm.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "nl",
+      "description": "Papier, karton en hieruit vervaardigde producten voor zover niet begrepen in andere klassen; drukwerken; leermiddelen en onderwijsmateriaal (uitgezonderd toestellen); naslagwerken, handleidingen, gebruiksaanwijzingen, instructies en productspecificaties met betrekking tot halfgeleiderinrichtingen, geïntegreerde schakelingen, microprocessors, met software programmeerbare microprocessors en software die werkt met of in halfgeleiderinrichtingen en geïntegreerde schakelingen en microprocessors, met software programmeerbare microprocessors.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Het ontwerpen en ontwikkelen van software; softwareontwikkeling voor derden; technische ondersteuning met betrekking tot software; Licentieverlening voor technologie; licentieverlening voor halfgeleiders; licentieverlening voor software; informatie, advisering en raadgeving met betrekking tot al het voornoemde.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer software and computer hardware; computer software programs that operate on or with semiconductor devices and integrated circuits and microprocessors, including software programmable microprocessors and related instructional materials, namely, manuals, user guides and tutorials in electronic format; semiconductors, semiconductor devices, integrated circuits, microprocessors, including software programmable microprocessors and related documentation, namely, reference manuals, user guides, application notes and product specifications in electronic format.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "en",
+      "description": "Paper, cardboard and goods made from these materials, not included in other classes; printed matter; instructional and teaching material (except apparatus); reference manuals, user guides, tutorials, application notes and product specifications in relation to semiconductor devices, integrated circuits, microprocessors, including software programmable microprocessors and computer software programs that operate on or with semiconductor devices and integrated circuits and microprocessors, including software programmable microprocessors.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Design and development of computer software; computer software design for others; computer software technical support services; licensing of technology; licensing of semiconductors; licensing of computer software; information, advisory and consulting services in relation to all the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Arvuti riist- ja tarkvara; arvutitarkvaraprogrammid, mis opereerivad pooljuhtseadmete ja integraallülituste ja mikroprotsessorite abil või koos nendega, kaasa arvatud tarkvaraprogrammeeritavad mikroprotsessorid ja nende juhendmaterjalid, nimelt käsiraamatud, kasutusjuhendid ja õppematerjal elektroonilisel kujul; pooljuhid, pooljuhtseadmed, integraallülitused, mikroprotsessorid, kaasa arvatud tarkvaraprogrammeeritavad mikroprotsessorid ja nende dokumentatsioon, nimelt viitekäsiraamatud, kasutusjuhendid, rakenduse märkmed ja tootekirjeldused elektroonilisel kujul.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "et",
+      "description": "Paber, kartong ja tooted nendest materjalidest, mis ei ole loetletud teistes klassides; trükitooted; õppematerjalid (va seadmed); viitekäsiraamatud, kasutusjuhendid, õppematerjal ja tootekirjeldused seoses pooljuhtsedmete, integraallülituste, mikroprotsessorite, kaasa arvatud tarkvaraprogrammeeritavate mikroprotsessorite ja arvutitarkvaraprogrammidega, mis opereerivad pooljuhtseadmete ja integraallülituste ja mikroprotsessorite abil või koos nendega, kaasa arvatud tarkvaraprogrammeeritavad mikroprotsessorid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Arvutitarkvara kavandamine ja kirjutamine; arvuti tarkvara projekteerimine tellimisel; arvuti tarkvara tehnilise toetuse teenused; tehnoloogia litsentsimine; pooljuhtide litsentsimine; arvutitarkvara litsentseerimine; kõige eelpoolnimetatuga seotud informatsiooni-, nõustamis- ja konsultatsiooniteenused.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Tietokonelaitteistot ja tietokoneohjelmistot; tietokoneohjelmisto-ohjelmat, jotka toimivat seuraavilla tai seuraavien kanssa: puolijohdelaitteet sekä integroidut piirit ja mikroprosessorit, mukaan lukien ohjelmistoilla ohjelmoitavat mikroprosessorit ja niihin liittyvät neuvontavälineet, nimittäin elektroniset käsikirjat, käyttöoppaat ja opasohjelmat; puolijohteet, puolijohdelaitteet, integroidut piirit, mikroprosessorit, mukaan lukien ohjelmistoilla ohjelmoitavat mikroprosessorit ja niihin liittyvä kirjallinen aineisto, nimittäin elektroniset viiteoppaat, käyttöoppaat, sovellustiedot ja tuotemääritykset.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "fi",
+      "description": "Paperi, pahvi ja niistä tehdyt tavarat, jotka eivät sisälly muihin luokkiin; painotuotteet; neuvonta- ja opetusvälineet (paitsi laitteet); viiteoppaat, käyttöoppaat, opasohjelmat, sovellustiedot ja tuotemääritykset, jotka liittyvät seuraaviin: puolijohdelaitteet, integroidut piirit, mikroprosessorit, mukaan lukien ohjelmistoilla ohjelmoitavat mikroprosessorit ja tietokoneohjelmisto-ohjelmat, jotka toimivat seuraavilla tai seuraavien kanssa: puolijohdelaitteet sekä integroidut piirit ja mikroprosessorit, mukaan lukien ohjelmistoilla ohjelmoitavat mikroprosessorit.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Tietokoneohjelmistojen suunnittelu ja kehittäminen; tietokoneohjelmistojen suunnittelu muille; tietokoneohjelmistoihin liittyvät tekniset tukipalvelut; Teknologian lisensointi; puolijohteiden lisensointi; tietokoneohjelmistojen lisensointi; kaikkeen edellä mainittuun liittyvät tiedotus-, neuvonta- ja konsultointipalvelut.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Matériel informatique et logiciels; programmes logiciels informatiques fonctionnant sur ou avec des dispositifs à semi-conducteurs et des circuits intégrés et microprocesseurs, y compris microprocesseurs logiciels programmables et matériel d'instruction connexe, à savoir, manuels, guides d'utilisation et tutoriels sous format électronique; semi-conducteurs, dispositifs à semi-conducteurs, circuits intégrés, microprocesseurs, y compris microprocesseurs logiciels programmables et documents connexes, à savoir, manuels de référence, guides d'utilisation, notes d'application et spécifications des produits sous format électronique.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "fr",
+      "description": "Papier, carton et produits en ces matières, non compris dans d'autres classes; produits de l'imprimerie; matériel d'instruction ou d'enseignement (à l'exception des appareils); manuels de référence, guides d'utilisation, tutoriels, notes d'application et spécifications de produits liés à des dispositifs à semi-conducteurs, circuits intégrés, microprocesseurs, y compris microprocesseurs logiciels programmables et programmes informatiques logiciels fonctionnant sur ou avec des dispositifs à semi-conducteurs et des circuits intégrés et microprocesseurs, y compris microprocesseurs logiciels programmables.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Conception et développement de logiciels; élaboration (conception) de logiciels pour des tiers; services d'assistance technique en matière de logiciels; Octroi de licences pour des technologies; octroi de licence pour semiconducteurs; octroi de licences de logiciels; services d'informations, de conseils et d'assistance dans tous les domaines précités.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Computerhardware und -software; Computersoftwareprogrammme, die in oder mit Halbleiterelementen und integrierten Schaltkreisen sowie Mikroprozessoren arbeiten, einschließlich softwareprogrammierbare Mikroprozessoren und entsprechendes anleitendes Material, nämlich Handbücher, Bedienungsanleitungen und Lehrmaterial in elektronischem Format; Halbleiter, Halbleiterelemente, integrierte Schaltkreise, Mikroprozessoren, softwareprogrammierbare Mikroprozessoren und entsprechende Dokumentation, nämlich Referenzhandbücher, Bedienungsanleitungen, Anwendungshinweise und Produktspezifikationen in elektronischem Format.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "de",
+      "description": "Papier, Pappe (Karton) und Waren aus diesen Materialien, soweit sie nicht in anderen Klassen enthalten sind; Druckereierzeugnisse; Lehr- und Unterrichtsmittel (ausgenommen Apparate); Referenzhandbücher für Computer, Bedienungsanleitungen, Unterweisungsmaterial, Anwendungshinweise und Produktspezifikationen in Bezug auf Halbleiterelemente, integrierte Schaltkreise, Mikroprozessoren, softwareprogrammierbare Mikroprozessoren und Computersoftwareprogramme, die in oder mit Halbleiterelementen und integrierten Schaltkreisen sowie Mikroprozessoren arbeiten, einschließlich softwareprogrammierbare Mikroprozessoren.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Design und Entwicklung von Computersoftware; Design von Computersoftware für Dritte; technischer Support im Softwarebereich; Lizenzierung von Technologie; Lizenzierung von Halbleitern; Lizenzierung von Computersoftware; Information und Beratung in Bezug auf alle vorstehend genannten Leistungen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Számítógépes hardver és számítógépes szoftver; félvezeto eszközökön és integrált áramkörökön és mikroprocesszorokon vagy azokkal muködo számítógépes szoftver, beleértve a szoftveresen programozható mikroprocesszorokat és az ezekhez kapcsolódó oktatóanyagokat, nevezetesen kézikönyveket, felhasználói tájékoztatókat és ismertetoket elektronikus formátumban; félvezetok, félvezeto eszközök, integrált áramkörök, mikroprocesszorok, beleértve a szoftveresen programozható mikroprocesszorokat és az ezekhez kapcsolódó dokumentációt, nevezetesen referencia kézikönyveket, felhasználói tájékoztatókat, alkalmazási feljegyzéseket és termékspecifikációkat elektronikus formátumban.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "hu",
+      "description": "Papír, kartonpapír, és ezekbol az anyagokból készült, máshová nem sorolt áruk; nyomtatványok; oktatási és képzési anyag (készülékek kivételével); félvezeto eszközökhöz, integrált áramkörökhöz, mikroprocesszorokhoz, beleértve szoftveresen programozható mikroprocesszorokhoz kapcsolódó referencia kézikönyvek, felhasználói tájékoztatók, ismertetok, alkalmazási feljegyzések és termékspecifikációk, valamint félvezeto eszközökön és integrált áramkörökön és mikroprocesszorokon, beleértve a szoftveresen programozható mikroprocesszorokon vagy azokkal muködo számítógépes szoftverprogramok.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Tervezés és fejlesztés (számítógépszoftver ~); számítógépes szoftvertervezés mások számára; számítógépes szoftver muszaki támogató szolgáltatás; technológia licencelése; félvezetok licencelése; számítógépes szoftver engedélyezés; az összes fentiekkel kapcsolatos tájékoztató, tanácsadó és konzultációs szolgáltatások.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Hardware e software; programmi software funzionanti con o su dispositivi semiconduttori e circuiti integrati e microprocessori, compresi microprocessori programmabili per software e materiali d'istruzione, ovvero manuali, manuali per l'utente e programmi di insegnamento in formato elettronico; semiconduttori, dispositivi semiconduttori, circuiti integrati, microprocessori, compresi microprocessori programmabili per software e relativa documentazione, ovvero manuali di consultazione per computer, manuali per l'utente, note di applicazione e specifiche di prodotti in formato elettronico.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "it",
+      "description": "Carta, cartone e prodotti in queste materie, non compresi in altre classi; stampati; materiale per l'istruzione o l'insegnamento (tranne gli apparecchi); manuali di consultazione per computer, manuali per l'utente, programmi di insegnamento, note applicative e specifiche di prodotti relative a dispositivi a semiconduttori, circuiti integrati, microprocessori, microprocessori programmabili per software e programmi software funzionanti su o con dispositivi semiconduttori e circuiti integrati e microprocessori, compresi microprocessori programmabili per software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Elaborazione e sviluppo di software informatici; elaborazione (ideazione) di software per terzi; servizi di assistenza tecnica in materia di software; Concessione di licenze in materia di tecnologia; concessione in licenza di semiconduttori; concessione di licenze di software; informazioni e consulenza relative a tutti i suddetti servizi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Kompiuteriu aparatine ir programine iranga; kompiuteriu programines irangos programos, veikiancios puslaidininkiniuose prietaisuose ir integrinese grandinese bei mikroprocesoriuose, arba su jais, iskaitant programine iranga programuojamus mikroprocesorius ir susijusia mokomaja medziaga, t y, elektroninius zinynus, vartotojo instrukcijas ir vadovelius; puslaidininkiai, puslaidininkiniai prietaisai, integrines grandines, mikroprocesoriai, iskaitant programine iranga programuojamus mikroprocesorius ir susijusia mokomaja medziaga, t y, elektroninius zinynus, vartotojo instrukcijas ir vadovelius.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "lt",
+      "description": "Popierius, kartonas ir prekes is siu medziagu, nepriskirtos prie kitu klasiu; spaudiniai; mokomoji medziaga (isskyrus aparatus); zinynai, vartotojo instrukcijos, vadoveliai, taikymo pastabos ir gaminiu specifikacijos, susijusios su puslaidininkiniais prietaisais, integrinemis grandinemis, mikroprocesoriais, iskaitant programine iranga programuojamus mikroprocesorius ir kompiuteriu programine iranga, veikiancia puslaidininkiniuose prietaisuose ir integrinese grandinese, ir mikroprocesoriuose, iskaitant programine iranga programuojamus mikroprocesorius, arba su jais.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "Kompiuteriu programines irangos projektavimas ir kurimas; kompiuteriu programines irangos projektavimas kitiems; kompiuteriu programines irangos technines paramos paslaugos; technologijos licencijavimas; puslaidininkiu licencijavimas; kompiuteriu programines irangos licencijavimas; informacijos, patarimo ir konsultavimo paslaugos, susijusios su visomis auksciau nurodytomis paslaugomis.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Datoru aparatura un datoru programmatura; datoru programmaturu programmas, kas darbojas ar pusvaditaju iericem un integretam shemam un mikroprocesoriem, ietverot programmaturas programmejamus mikroprocesorus un uzskates lidzeklus, proti, rokasgramatas, lietotaja pamacibas un konsultejosi materiali elektroniska formata; pusvaditaji, pusvaditaju ierices, integretas shemas, mikroprocesori, ietverot programmejamus mikroprocesorus una ttiecigo dokumentaciju, proti, uzzinu gramatas, lietotaja pamacibas, lietotaju konspektus un razotaju specifikacijas elektroniska formata.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "lv",
+      "description": "Papirs, kartons un izstradajumi no siem materialiem, kas nav ietverti citas klases; iespiedprodukcija; macibu un uzskates lidzekli (iznemot aparaturu); uzzinu gramatas, lietotaja pamacibas, konsultacijas, lietotaju konspektus un razotaju specifikacijas, kas attiecas uz pusvaditaju iericem, integretam shemam, mikroprocesoriem, ietverot programmaturas programmejamos mikroprocesorus un datoru programmaturas programmas, kas strada ar pusvaditaju iericem un integretam shemam un mikroprocesoriem, ietverot programmaturas programmejamus mikroprocesorus.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Datoru programmaturas projektesana un izstrade; datoru programmaturas projektesana citu personu intereses; datoru programmaturas tehniskas palidzibas pakalpojumi; tehnologiju licencesana; pusvaditaju licencesana; datoru programmaturas licencesana; informacijas, padomdeveju un konsultaciju pakalpojumi, kas saistiti ar visiem ieprieksminetajiem pakalpojumiem.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Hardwer tal-kompjuter u softwer tal-kompjuter; programmi ta' softwer tal-kompjuter li jahdmu fuq jew ma' taghmir tas-semikondutturi u cirkuwiti integrati u mikroprocessuri, inkluzi mikroprocessuri bis-softwer li jista' jkun ipprogrammat u materjali ta' l-istruzzjoni relatati maghhom, jigifieri, manwali, gwidi ghall-utenti u tutorials f'format elettroniku; semikondutturi, taghmir ta' semikondutturi, cirkuwiti integrati, mikroprocessuri, inkluzi mikroprocessuri bis-softwer li jista' jkun ipprogrammat u dokumentazzjoni relatata maghhom, jigifieri, manwali ta' referenza, gwidi ghall-utenti, noti dwar l-applikazzjoni u specifikazzjonijiet tal-prodott f'format elettroniku.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "mt",
+      "description": "Karti, kartuncin u oggetti maghmula minn dawn il-materjali mhux inkluzi fi klassijiet ohra; materjal stampat; materjal istruttiv u ta' taghlim (hlief apparat); manwali ta' referenza, gwidi ghall-utenti, tutorials, noti dwar l-applikazzjoni u specifikazzjonijiet tal-prodott relatati ma' taghmir ta' semikondutturi, cirkuwiti integrati, mikroprocessuri, inkluzi mikroprocessuri bis-softwer li jista' jkun ipprogrammat u programmi ta' softwer tal-kompjuter li jahdmu fuq jew ma' taghmir tas-semikondutturi u cirkuwiti integrati u mikroprocessuri, inkluzi mikroprocessuri bis-softwer li jista' jkun ipprogrammat.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "Disinn u zvilupp ta' softwer tal-kompjuter; disinn ta' softwer tal-kompjuter ghal haddiehor; servizzi ta' appogg tekniku ghas-softwer tal-kompjuter; hrug ta' licenzji tat-teknologija; hrug ta' licenzji ta' semikondutturi; licenzjar ta' softwer tal-kompjuter; servizzi ta' informazzjoni, pariri u konsulenza relatati ma' dak kollu hawn fuq imsemmi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Sprzet i oprogramowanie komputerowe; oprogramowanie komputerowe obslugujace lub wspólpracujace z urzadzeniami pólprzewodnikowymi, obwodami scalonymi i mikroprocesorami, w tym mikroprocesorami programowalnymi, oraz pokrewne materialy instruktazowe, mianowicie, podreczniki, podreczniki uzytkownika i samouczki w formacie elektronicznym; pólprzewodniki, urzadzenia pólprzewodnikowe, obwody scalone, mikroprocesory, w tym mikroprocesory programowalne, oraz dokumentacje pokrewne, mianowicie, podreczniki referencyjne, podreczniki uzytkownika, przyklady zastosowan i specyfikacje produktów w formacie elektronicznym.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "pl",
+      "description": "Papier, tektura oraz przedmioty wykonane z tych materialów, nie zawarte w innych klasach; materialy drukowane; material instruktazowy i dydaktyczny (z wyjatkiem urzadzen); podreczniki referencyjne, podreczniki uzytkownika, samouczki,przyklady zastosowan i specyfikacje produktów w odniesieniu do urzadzen pólprzewodnikowych, obwodów scalonych, mikroprocesorów, w tym mikroprocesorów programowalnych, oraz programów oprogramowania komputerowego obslugujacych lub wspólpracujacych z urzadzeniami pólprzewodnikowymi, obwodami scalonymi i mikroprocesorami, w tym mikroprocesorami programowalnymi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Projektowanie i rozbudowa oprogramowania komputerowego; projektowanie oprogramowania komputerowego dla osob trzecich; konserwacja oprogramowania komputerowego; licencjonowanie technologii; licencjonowanie pólprzewodników; licencjonowanie oprogramowania komputerowego; uslugi informacyjne, doradcze i konsultacyjne dotyczace uprzednio wymienionych.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Hardware e software; programas informáticos que operam em (ou com) dispositivos semicondutores, circuitos integrados e microprocessadores, incluindo microprocessadores programáveis por software e respectivos materiais de instrução, nomeadamente, manuais, guias do utilizador e tutoriais em formato electrónico; semicondutores, dispositivos semicondutores, circuitos integrados, microprocessadores, incluindo microprocessadores programáveis por software e documentação conexa, nomeadamente, manuais de consulta, guias do utilizador, notas de aplicação e características técnicas do produto, em formato electrónico.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "pt",
+      "description": "Papel, cartão e produtos nestas matérias, não incluídos noutras classes; produtos de impressão; material de instrução ou de ensino (com excepção dos aparelhos); manuais de consulta, guias do utilizador, tutoriais, notas de aplicação e características técnicas do produto relacionados com dispositivos semicondutores, circuitos integrados, microprocessadores, incluindo microprocessadores programáveis por software e programas informáticos que operam em (ou com) dispositivos semicondutores, circuitos integrados e microprocessadores, incluindo microprocessadores programáveis por software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Concepção e desenvolvimento de software; concepção de software para terceiros; serviços de assistência técnica a software; Concessão de licenças de tecnologia; licenças de semicondutores; licenciamento de software; serviços de informações, assessoria e consultadoria relacionados com todos os serviços atrás referidos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Pocítacový hardver a pocítacový softver; pocítacové softvérové programy, ktoré obsluhujú polovodicové zariadenia a integrované obvody a mikroprocesory, vrátane softvérových programovatelných mikroprocesorov a súvisiace instruktázne materiály, najmä manuály, prírucky a tutoriály v elektronickom formáte; polovodice, polovodicové prístroje, integrované obvody, mikrocipy, vrátane softvérových programovatelných mikroprocesorov a súvisiaca dokumentácia, najmä manuály, prírucky, aplikacné poznámky a specifikácie produktov v elektronickom formáte.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "sk",
+      "description": "Papier, lepenka a tovary vyrobené z týchto materiálov, nezahrnuté v iných triedach; tlacoviny; instruktázne a ucebné potreby (okrem zariadení); manuály, prírucky, tutoriály, aplikacné poznámky a specifikácie produktov súvisiace s polovodicovými zariadeniami, integrovanými obvodmi, mikroprocesormi, vrátane softvérových programovatelných mikroprocesorov a pocítacových softvérových programov, ktoré obsluhujú polovodicové zariadenia a integrované obvody a mikroprocesory, vrátane softvérových programovatelných mikroprocesorov.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "Dizajn a vývoj pocítacových programov; dizajn pocítacového softveru pre iných; sluzby technickej pomoci pre pocítacový softver; poskytovanie licencií na technológie; poskytovanie licencií na polovodice; licenzovanie pocítacového softvéru; informacné, poradenské a konzultacné sluzby týkajúce sa vsetkých vyssie uvedených sluzieb.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Racunalniska strojna oprema in racunalniska programska oprema; programi racunalniske programske opreme, ki delujejo na polprevodniskih napravah in integriranih vezjih in mikroprocesorjih ali z njimi, vkljucno s programljivimi mikroprocesorji za programsko opremo in pripadajoci materiali z navodili, in sicer prirocniki, prirocniki za uporabnike in navodili v elektronskem formatu; polprevodniki, polprevodniske naprave, integrirana vezja, mikroprocesorji, vkljucno s programljivimi mikroprocesorji za programsko opremo in pripadajoco dokumentacijo, in sicer referencnimi prirocniki, prirocniki za uporabnike, aplikacijska opozorila in specifikacije proizvodov v elektronskem formatu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "sl",
+      "description": "Papir, lepenka in izdelki iz teh materialov, ki jih ne zajemajo drugi razredi; tiskani izdelki; poucevalni material (razen naprav); referencni prirocniki, uporabniski prirocniki, navodila, aplikacijska opozorila in specifikacije proizvodov v zvezi s polprevodniskimi napravami, integriranimi vezji, mikroprocesorji, vkljucno s programljivimi mikroprocesorji za programsko opremo in programi za racunalnisko programsko opremo, ki ki delujejo na polprevodniskih napravah in integriranih vezjih in mikroprocesorjih ali z njimi, vkljucno s programljivimi procesorji za programsko opremo.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Nacrtovanje in razvoj racunalniske programske opreme; oblikovanje racunalniske programske opreme za druge; storitve tehnicne podpore racunalniske programske opreme; licenciranje tehnologije; licenciranje polprevodnikov; podeljevanje licenc za racunalnisko programsko opremo; svetovalne in informacijske storitve v zvezi z vsemi prej omenjenimi storitvami.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Hardware y software informático; programas de software que funcionan en o con dispositivos semiconductores y circuitos integrados y microprocesadores, incluyendo microprocesadores de software programables y materiales de instrucción asociados, en concreto, manuales, guías de usuario y tutorías en formato electrónico; semiconductores, dispositivos semiconductores, circuitos integrados, microprocesadores, incluyendo microprocesadores de software programables y documentación asociada, en concreto, manuales de referencia, guías de usuario, notas de aplicación y especificaciones de producto en formato electrónico.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "es",
+      "description": "Papel, cartón y artículos de estas materias, no comprendidos en otras clases; productos de imprenta; material de instrucción o de enseñanza (excepto aparatos); manuales de referencia de ordenador, guías de usuario, manuales de autoaprendizaje, notas de aplicación y especificaciones de producto en relación con dispositivos semiconductores, circuitos integrados, microprocesadores, incluyendo microprocesadores de software programables y programas de software de ordenador que funcionan en o con dispositivos semiconductores y circuitos integrados y microprocesadores, incluyendo microprocesadores de software programables.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Elaboración y desarrollo de software de ordenador; diseño de software de ordenadores para terceros; servicios de asistencia técnica para software de ordenadores; Licencias de tecnología; concesión de licencias de semiconductores; concesión de licencias de software informático; servicios de información, asesoramiento y consultoría en relación con todo lo mencionado.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Datormaskinvara och datorprogramvara; programvara för drift på eller med halvledaranordningar och integrerade kretsar och mikroprocessorer, inklusive programvaruprogrammerbara mikroprocessorer och tillhörande instruktionsmaterial, nämligen handböcker, användarhandböcker och handledningar i elektroniskt format; halvledare, halvledaranordningar, integrerade kretsar, mikroprocessorer, inklusive programvaruprogrammerbara mikroprocessorer och tillhörande dokumentation, nämligen, referenshandböcker till datorer, användarhandböcker, tillämpningsanteckningar och produktspecifikationer i elektroniskt format.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "sw",
+      "description": "Papper, kartong samt produkter därav, ej ingående i andra klasser; trycksaker; instruktions- och undervisningsmaterial (ej apparater); referenshandböcker, användarhandböcker, handledningar, tillämpningsanteckningar och produktspecifikationer i samband med halvledaranordningar, integrerade kretsar, microprocessorer, programvaruprogrammerbara mikroprocessorer och programvara för drift på eller med halvledaranordningar och integrerade kretsar och microprocessorer, inklusive programvaruprogrammerbara mikroprocessorer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Utformning och utveckling av datorprogramvara; utformning av datorprogramvara åt andra; tekniskt stöd rörande datorprogramvara; Tekniklicensiering; licensiering av halvledare; licensiering av programvara; informations-, rådgivnings- och konsultationstjänster avseende allt det nämnda.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "NLO SHIELDMARK B.V.",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20050120",
+      "priorityNumber": "78/550,902"
+    },
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20050120",
+      "priorityNumber": "78/550,846"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West,Austin,Texas, 78735",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA Inc."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Pocítacový hardware a pocítacový software; pocítacové softwarové programy, které pracují pomocí polovodicových zarízení a integrovaných obvodu a mikroprocesoru, vcetne softwarových programovatelných mikroprocesoru a související instruktázní materiály, jmenovite manuály, uzivatelské prírucky a výukové programy v elektronickém formátu; polovodice, polovodicová zarízení, integrované obvody, mikroprocesory, vcetne softwarových programovatelných mikroprocesoru a související dokumentace, jmenovite referencní manuály, uzivatelské prírucky, poznámky k pouzití a specifikace výrobku v elektronickém formátu."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Papír, lepenka a zbozí vyrobené z techto materiálu, nezarazené do jiných tríd; tiskoviny; výukový a ucební materiál (krome prístroju); referencní prírucky, uzivatelské prírucky, výukové programy, poznámky k pouzití a specifikace výrobku v souvislosti s polovodicovými zarízeními, integrovanými obvody, mikroprocesory, vcetne pocítacových softwarových programu, které pracují pomocí polovodicových zarízení a integrovaných obvodu a mikroprocesoru, vcetne softwarových programovatelných mikroprocesoru."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Návrhy a vývoj pocítacového softwaru; navrhování pocítacového softwaru pro jiné osoby; sluzby technické podpory pocítacového softwaru; udelování licencí k technologiím; udelování licencí k polovodicum; poskytování licencí na pocítacový software; informacní, poradenské a konzultacní sluzby vztahující se k výse uvedenému."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Computerhardware og computersoftware; computersoftwareprogrammer, der kører på eller med halvlederanordninger og integrerede kredsløb og mikroprocessorer, inklusive software og programmerbare mikroprocessorer og instruktionsmateriale, nemlig manualer, brugermanualer og instruktiongsbøger i elektronisk format; halvledere, halvlederanordninger, integrerede kredsløb, mikroprocessorer, inklusive software og programmerbare mikroprocessorer og dokumentation hertil, nemlig opslagsbøger, brugermanualer, applikationsnoter og produktspecifikationer i elektronisk format."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Papir, pap, varer heraf og ikke indeholdt i andre klasser; tryksager; instruktions- og undervisningsmateriale (dog ikke apparater); opslagsbøger, brugermanualer, instruktionsbøger, applikationsnoter og produktspecifikationer i forbindelse med halvlederanordninger, integrerede kredsløb, mikroprocessorer, software og programmerbare mikroprocessorer og computersoftwareprogrammer, der kører på eller med halvlederanordninger og integrerede kredsløb og mikroprocessorer, inklusive software og programmerbare mikroprocessorer."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Design og udvikling af computersoftware; design af computersoftware for andre; teknisk bistand i forbindelse med computersoftware; Licensgivning vedrørende teknologi; licensgivning i forbindelse med halvledere; licensgivning af computersoftware; informations- og rådgivningsvirksomhed samt konsulentbistand i forbindelse med alle ovennævnte tjenesteydelser."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Hardware en software; software die werkt met of in halfgeleiderinrichtingen en geïntegreerde schakelingen en microprocessors, waaronder met software programmeerbare microprocessoren en bijbehorende leermiddelen, te weten handboeken, gebruiksaanwijzingen en instructies in elektronische vorm; halfgeleiders, halfgeleiderinrichtingen, geïntegreerde schakelingen, microprocessors, waaronder met software programmeerbare microprocessors en bijbehorende documentatie, te weten naslagwerken, handleidingen, gebruiksaanwijzingen en productspecificaties in elektronische vorm."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Papier, karton en hieruit vervaardigde producten voor zover niet begrepen in andere klassen; drukwerken; leermiddelen en onderwijsmateriaal (uitgezonderd toestellen); naslagwerken, handleidingen, gebruiksaanwijzingen, instructies en productspecificaties met betrekking tot halfgeleiderinrichtingen, geïntegreerde schakelingen, microprocessors, met software programmeerbare microprocessors en software die werkt met of in halfgeleiderinrichtingen en geïntegreerde schakelingen en microprocessors, met software programmeerbare microprocessors."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Het ontwerpen en ontwikkelen van software; softwareontwikkeling voor derden; technische ondersteuning met betrekking tot software; Licentieverlening voor technologie; licentieverlening voor halfgeleiders; licentieverlening voor software; informatie, advisering en raadgeving met betrekking tot al het voornoemde."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer software and computer hardware; computer software programs that operate on or with semiconductor devices and integrated circuits and microprocessors, including software programmable microprocessors and related instructional materials, namely, manuals, user guides and tutorials in electronic format; semiconductors, semiconductor devices, integrated circuits, microprocessors, including software programmable microprocessors and related documentation, namely, reference manuals, user guides, application notes and product specifications in electronic format."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Paper, cardboard and goods made from these materials, not included in other classes; printed matter; instructional and teaching material (except apparatus); reference manuals, user guides, tutorials, application notes and product specifications in relation to semiconductor devices, integrated circuits, microprocessors, including software programmable microprocessors and computer software programs that operate on or with semiconductor devices and integrated circuits and microprocessors, including software programmable microprocessors."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Design and development of computer software; computer software design for others; computer software technical support services; licensing of technology; licensing of semiconductors; licensing of computer software; information, advisory and consulting services in relation to all the aforesaid."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Arvuti riist- ja tarkvara; arvutitarkvaraprogrammid, mis opereerivad pooljuhtseadmete ja integraallülituste ja mikroprotsessorite abil või koos nendega, kaasa arvatud tarkvaraprogrammeeritavad mikroprotsessorid ja nende juhendmaterjalid, nimelt käsiraamatud, kasutusjuhendid ja õppematerjal elektroonilisel kujul; pooljuhid, pooljuhtseadmed, integraallülitused, mikroprotsessorid, kaasa arvatud tarkvaraprogrammeeritavad mikroprotsessorid ja nende dokumentatsioon, nimelt viitekäsiraamatud, kasutusjuhendid, rakenduse märkmed ja tootekirjeldused elektroonilisel kujul."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Paber, kartong ja tooted nendest materjalidest, mis ei ole loetletud teistes klassides; trükitooted; õppematerjalid (va seadmed); viitekäsiraamatud, kasutusjuhendid, õppematerjal ja tootekirjeldused seoses pooljuhtsedmete, integraallülituste, mikroprotsessorite, kaasa arvatud tarkvaraprogrammeeritavate mikroprotsessorite ja arvutitarkvaraprogrammidega, mis opereerivad pooljuhtseadmete ja integraallülituste ja mikroprotsessorite abil või koos nendega, kaasa arvatud tarkvaraprogrammeeritavad mikroprotsessorid."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Arvutitarkvara kavandamine ja kirjutamine; arvuti tarkvara projekteerimine tellimisel; arvuti tarkvara tehnilise toetuse teenused; tehnoloogia litsentsimine; pooljuhtide litsentsimine; arvutitarkvara litsentseerimine; kõige eelpoolnimetatuga seotud informatsiooni-, nõustamis- ja konsultatsiooniteenused."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Tietokonelaitteistot ja tietokoneohjelmistot; tietokoneohjelmisto-ohjelmat, jotka toimivat seuraavilla tai seuraavien kanssa: puolijohdelaitteet sekä integroidut piirit ja mikroprosessorit, mukaan lukien ohjelmistoilla ohjelmoitavat mikroprosessorit ja niihin liittyvät neuvontavälineet, nimittäin elektroniset käsikirjat, käyttöoppaat ja opasohjelmat; puolijohteet, puolijohdelaitteet, integroidut piirit, mikroprosessorit, mukaan lukien ohjelmistoilla ohjelmoitavat mikroprosessorit ja niihin liittyvä kirjallinen aineisto, nimittäin elektroniset viiteoppaat, käyttöoppaat, sovellustiedot ja tuotemääritykset."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Paperi, pahvi ja niistä tehdyt tavarat, jotka eivät sisälly muihin luokkiin; painotuotteet; neuvonta- ja opetusvälineet (paitsi laitteet); viiteoppaat, käyttöoppaat, opasohjelmat, sovellustiedot ja tuotemääritykset, jotka liittyvät seuraaviin: puolijohdelaitteet, integroidut piirit, mikroprosessorit, mukaan lukien ohjelmistoilla ohjelmoitavat mikroprosessorit ja tietokoneohjelmisto-ohjelmat, jotka toimivat seuraavilla tai seuraavien kanssa: puolijohdelaitteet sekä integroidut piirit ja mikroprosessorit, mukaan lukien ohjelmistoilla ohjelmoitavat mikroprosessorit."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Tietokoneohjelmistojen suunnittelu ja kehittäminen; tietokoneohjelmistojen suunnittelu muille; tietokoneohjelmistoihin liittyvät tekniset tukipalvelut; Teknologian lisensointi; puolijohteiden lisensointi; tietokoneohjelmistojen lisensointi; kaikkeen edellä mainittuun liittyvät tiedotus-, neuvonta- ja konsultointipalvelut."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Matériel informatique et logiciels; programmes logiciels informatiques fonctionnant sur ou avec des dispositifs à semi-conducteurs et des circuits intégrés et microprocesseurs, y compris microprocesseurs logiciels programmables et matériel d'instruction connexe, à savoir, manuels, guides d'utilisation et tutoriels sous format électronique; semi-conducteurs, dispositifs à semi-conducteurs, circuits intégrés, microprocesseurs, y compris microprocesseurs logiciels programmables et documents connexes, à savoir, manuels de référence, guides d'utilisation, notes d'application et spécifications des produits sous format électronique."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Papier, carton et produits en ces matières, non compris dans d'autres classes; produits de l'imprimerie; matériel d'instruction ou d'enseignement (à l'exception des appareils); manuels de référence, guides d'utilisation, tutoriels, notes d'application et spécifications de produits liés à des dispositifs à semi-conducteurs, circuits intégrés, microprocesseurs, y compris microprocesseurs logiciels programmables et programmes informatiques logiciels fonctionnant sur ou avec des dispositifs à semi-conducteurs et des circuits intégrés et microprocesseurs, y compris microprocesseurs logiciels programmables."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Conception et développement de logiciels; élaboration (conception) de logiciels pour des tiers; services d'assistance technique en matière de logiciels; Octroi de licences pour des technologies; octroi de licence pour semiconducteurs; octroi de licences de logiciels; services d'informations, de conseils et d'assistance dans tous les domaines précités."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Computerhardware und -software; Computersoftwareprogrammme, die in oder mit Halbleiterelementen und integrierten Schaltkreisen sowie Mikroprozessoren arbeiten, einschließlich softwareprogrammierbare Mikroprozessoren und entsprechendes anleitendes Material, nämlich Handbücher, Bedienungsanleitungen und Lehrmaterial in elektronischem Format; Halbleiter, Halbleiterelemente, integrierte Schaltkreise, Mikroprozessoren, softwareprogrammierbare Mikroprozessoren und entsprechende Dokumentation, nämlich Referenzhandbücher, Bedienungsanleitungen, Anwendungshinweise und Produktspezifikationen in elektronischem Format."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Papier, Pappe (Karton) und Waren aus diesen Materialien, soweit sie nicht in anderen Klassen enthalten sind; Druckereierzeugnisse; Lehr- und Unterrichtsmittel (ausgenommen Apparate); Referenzhandbücher für Computer, Bedienungsanleitungen, Unterweisungsmaterial, Anwendungshinweise und Produktspezifikationen in Bezug auf Halbleiterelemente, integrierte Schaltkreise, Mikroprozessoren, softwareprogrammierbare Mikroprozessoren und Computersoftwareprogramme, die in oder mit Halbleiterelementen und integrierten Schaltkreisen sowie Mikroprozessoren arbeiten, einschließlich softwareprogrammierbare Mikroprozessoren."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Design und Entwicklung von Computersoftware; Design von Computersoftware für Dritte; technischer Support im Softwarebereich; Lizenzierung von Technologie; Lizenzierung von Halbleitern; Lizenzierung von Computersoftware; Information und Beratung in Bezug auf alle vorstehend genannten Leistungen."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Számítógépes hardver és számítógépes szoftver; félvezeto eszközökön és integrált áramkörökön és mikroprocesszorokon vagy azokkal muködo számítógépes szoftver, beleértve a szoftveresen programozható mikroprocesszorokat és az ezekhez kapcsolódó oktatóanyagokat, nevezetesen kézikönyveket, felhasználói tájékoztatókat és ismertetoket elektronikus formátumban; félvezetok, félvezeto eszközök, integrált áramkörök, mikroprocesszorok, beleértve a szoftveresen programozható mikroprocesszorokat és az ezekhez kapcsolódó dokumentációt, nevezetesen referencia kézikönyveket, felhasználói tájékoztatókat, alkalmazási feljegyzéseket és termékspecifikációkat elektronikus formátumban."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Papír, kartonpapír, és ezekbol az anyagokból készült, máshová nem sorolt áruk; nyomtatványok; oktatási és képzési anyag (készülékek kivételével); félvezeto eszközökhöz, integrált áramkörökhöz, mikroprocesszorokhoz, beleértve szoftveresen programozható mikroprocesszorokhoz kapcsolódó referencia kézikönyvek, felhasználói tájékoztatók, ismertetok, alkalmazási feljegyzések és termékspecifikációk, valamint félvezeto eszközökön és integrált áramkörökön és mikroprocesszorokon, beleértve a szoftveresen programozható mikroprocesszorokon vagy azokkal muködo számítógépes szoftverprogramok."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Tervezés és fejlesztés (számítógépszoftver ~); számítógépes szoftvertervezés mások számára; számítógépes szoftver muszaki támogató szolgáltatás; technológia licencelése; félvezetok licencelése; számítógépes szoftver engedélyezés; az összes fentiekkel kapcsolatos tájékoztató, tanácsadó és konzultációs szolgáltatások."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Hardware e software; programmi software funzionanti con o su dispositivi semiconduttori e circuiti integrati e microprocessori, compresi microprocessori programmabili per software e materiali d'istruzione, ovvero manuali, manuali per l'utente e programmi di insegnamento in formato elettronico; semiconduttori, dispositivi semiconduttori, circuiti integrati, microprocessori, compresi microprocessori programmabili per software e relativa documentazione, ovvero manuali di consultazione per computer, manuali per l'utente, note di applicazione e specifiche di prodotti in formato elettronico."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Carta, cartone e prodotti in queste materie, non compresi in altre classi; stampati; materiale per l'istruzione o l'insegnamento (tranne gli apparecchi); manuali di consultazione per computer, manuali per l'utente, programmi di insegnamento, note applicative e specifiche di prodotti relative a dispositivi a semiconduttori, circuiti integrati, microprocessori, microprocessori programmabili per software e programmi software funzionanti su o con dispositivi semiconduttori e circuiti integrati e microprocessori, compresi microprocessori programmabili per software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Elaborazione e sviluppo di software informatici; elaborazione (ideazione) di software per terzi; servizi di assistenza tecnica in materia di software; Concessione di licenze in materia di tecnologia; concessione in licenza di semiconduttori; concessione di licenze di software; informazioni e consulenza relative a tutti i suddetti servizi."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Kompiuteriu aparatine ir programine iranga; kompiuteriu programines irangos programos, veikiancios puslaidininkiniuose prietaisuose ir integrinese grandinese bei mikroprocesoriuose, arba su jais, iskaitant programine iranga programuojamus mikroprocesorius ir susijusia mokomaja medziaga, t y, elektroninius zinynus, vartotojo instrukcijas ir vadovelius; puslaidininkiai, puslaidininkiniai prietaisai, integrines grandines, mikroprocesoriai, iskaitant programine iranga programuojamus mikroprocesorius ir susijusia mokomaja medziaga, t y, elektroninius zinynus, vartotojo instrukcijas ir vadovelius."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Popierius, kartonas ir prekes is siu medziagu, nepriskirtos prie kitu klasiu; spaudiniai; mokomoji medziaga (isskyrus aparatus); zinynai, vartotojo instrukcijos, vadoveliai, taikymo pastabos ir gaminiu specifikacijos, susijusios su puslaidininkiniais prietaisais, integrinemis grandinemis, mikroprocesoriais, iskaitant programine iranga programuojamus mikroprocesorius ir kompiuteriu programine iranga, veikiancia puslaidininkiniuose prietaisuose ir integrinese grandinese, ir mikroprocesoriuose, iskaitant programine iranga programuojamus mikroprocesorius, arba su jais."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Kompiuteriu programines irangos projektavimas ir kurimas; kompiuteriu programines irangos projektavimas kitiems; kompiuteriu programines irangos technines paramos paslaugos; technologijos licencijavimas; puslaidininkiu licencijavimas; kompiuteriu programines irangos licencijavimas; informacijos, patarimo ir konsultavimo paslaugos, susijusios su visomis auksciau nurodytomis paslaugomis."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Datoru aparatura un datoru programmatura; datoru programmaturu programmas, kas darbojas ar pusvaditaju iericem un integretam shemam un mikroprocesoriem, ietverot programmaturas programmejamus mikroprocesorus un uzskates lidzeklus, proti, rokasgramatas, lietotaja pamacibas un konsultejosi materiali elektroniska formata; pusvaditaji, pusvaditaju ierices, integretas shemas, mikroprocesori, ietverot programmejamus mikroprocesorus una ttiecigo dokumentaciju, proti, uzzinu gramatas, lietotaja pamacibas, lietotaju konspektus un razotaju specifikacijas elektroniska formata."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Papirs, kartons un izstradajumi no siem materialiem, kas nav ietverti citas klases; iespiedprodukcija; macibu un uzskates lidzekli (iznemot aparaturu); uzzinu gramatas, lietotaja pamacibas, konsultacijas, lietotaju konspektus un razotaju specifikacijas, kas attiecas uz pusvaditaju iericem, integretam shemam, mikroprocesoriem, ietverot programmaturas programmejamos mikroprocesorus un datoru programmaturas programmas, kas strada ar pusvaditaju iericem un integretam shemam un mikroprocesoriem, ietverot programmaturas programmejamus mikroprocesorus."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Datoru programmaturas projektesana un izstrade; datoru programmaturas projektesana citu personu intereses; datoru programmaturas tehniskas palidzibas pakalpojumi; tehnologiju licencesana; pusvaditaju licencesana; datoru programmaturas licencesana; informacijas, padomdeveju un konsultaciju pakalpojumi, kas saistiti ar visiem ieprieksminetajiem pakalpojumiem."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Hardwer tal-kompjuter u softwer tal-kompjuter; programmi ta' softwer tal-kompjuter li jahdmu fuq jew ma' taghmir tas-semikondutturi u cirkuwiti integrati u mikroprocessuri, inkluzi mikroprocessuri bis-softwer li jista' jkun ipprogrammat u materjali ta' l-istruzzjoni relatati maghhom, jigifieri, manwali, gwidi ghall-utenti u tutorials f'format elettroniku; semikondutturi, taghmir ta' semikondutturi, cirkuwiti integrati, mikroprocessuri, inkluzi mikroprocessuri bis-softwer li jista' jkun ipprogrammat u dokumentazzjoni relatata maghhom, jigifieri, manwali ta' referenza, gwidi ghall-utenti, noti dwar l-applikazzjoni u specifikazzjonijiet tal-prodott f'format elettroniku."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Karti, kartuncin u oggetti maghmula minn dawn il-materjali mhux inkluzi fi klassijiet ohra; materjal stampat; materjal istruttiv u ta' taghlim (hlief apparat); manwali ta' referenza, gwidi ghall-utenti, tutorials, noti dwar l-applikazzjoni u specifikazzjonijiet tal-prodott relatati ma' taghmir ta' semikondutturi, cirkuwiti integrati, mikroprocessuri, inkluzi mikroprocessuri bis-softwer li jista' jkun ipprogrammat u programmi ta' softwer tal-kompjuter li jahdmu fuq jew ma' taghmir tas-semikondutturi u cirkuwiti integrati u mikroprocessuri, inkluzi mikroprocessuri bis-softwer li jista' jkun ipprogrammat."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Disinn u zvilupp ta' softwer tal-kompjuter; disinn ta' softwer tal-kompjuter ghal haddiehor; servizzi ta' appogg tekniku ghas-softwer tal-kompjuter; hrug ta' licenzji tat-teknologija; hrug ta' licenzji ta' semikondutturi; licenzjar ta' softwer tal-kompjuter; servizzi ta' informazzjoni, pariri u konsulenza relatati ma' dak kollu hawn fuq imsemmi."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Sprzet i oprogramowanie komputerowe; oprogramowanie komputerowe obslugujace lub wspólpracujace z urzadzeniami pólprzewodnikowymi, obwodami scalonymi i mikroprocesorami, w tym mikroprocesorami programowalnymi, oraz pokrewne materialy instruktazowe, mianowicie, podreczniki, podreczniki uzytkownika i samouczki w formacie elektronicznym; pólprzewodniki, urzadzenia pólprzewodnikowe, obwody scalone, mikroprocesory, w tym mikroprocesory programowalne, oraz dokumentacje pokrewne, mianowicie, podreczniki referencyjne, podreczniki uzytkownika, przyklady zastosowan i specyfikacje produktów w formacie elektronicznym."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Papier, tektura oraz przedmioty wykonane z tych materialów, nie zawarte w innych klasach; materialy drukowane; material instruktazowy i dydaktyczny (z wyjatkiem urzadzen); podreczniki referencyjne, podreczniki uzytkownika, samouczki,przyklady zastosowan i specyfikacje produktów w odniesieniu do urzadzen pólprzewodnikowych, obwodów scalonych, mikroprocesorów, w tym mikroprocesorów programowalnych, oraz programów oprogramowania komputerowego obslugujacych lub wspólpracujacych z urzadzeniami pólprzewodnikowymi, obwodami scalonymi i mikroprocesorami, w tym mikroprocesorami programowalnymi."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Projektowanie i rozbudowa oprogramowania komputerowego; projektowanie oprogramowania komputerowego dla osob trzecich; konserwacja oprogramowania komputerowego; licencjonowanie technologii; licencjonowanie pólprzewodników; licencjonowanie oprogramowania komputerowego; uslugi informacyjne, doradcze i konsultacyjne dotyczace uprzednio wymienionych."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Hardware e software; programas informáticos que operam em (ou com) dispositivos semicondutores, circuitos integrados e microprocessadores, incluindo microprocessadores programáveis por software e respectivos materiais de instrução, nomeadamente, manuais, guias do utilizador e tutoriais em formato electrónico; semicondutores, dispositivos semicondutores, circuitos integrados, microprocessadores, incluindo microprocessadores programáveis por software e documentação conexa, nomeadamente, manuais de consulta, guias do utilizador, notas de aplicação e características técnicas do produto, em formato electrónico."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Papel, cartão e produtos nestas matérias, não incluídos noutras classes; produtos de impressão; material de instrução ou de ensino (com excepção dos aparelhos); manuais de consulta, guias do utilizador, tutoriais, notas de aplicação e características técnicas do produto relacionados com dispositivos semicondutores, circuitos integrados, microprocessadores, incluindo microprocessadores programáveis por software e programas informáticos que operam em (ou com) dispositivos semicondutores, circuitos integrados e microprocessadores, incluindo microprocessadores programáveis por software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Concepção e desenvolvimento de software; concepção de software para terceiros; serviços de assistência técnica a software; Concessão de licenças de tecnologia; licenças de semicondutores; licenciamento de software; serviços de informações, assessoria e consultadoria relacionados com todos os serviços atrás referidos."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Pocítacový hardver a pocítacový softver; pocítacové softvérové programy, ktoré obsluhujú polovodicové zariadenia a integrované obvody a mikroprocesory, vrátane softvérových programovatelných mikroprocesorov a súvisiace instruktázne materiály, najmä manuály, prírucky a tutoriály v elektronickom formáte; polovodice, polovodicové prístroje, integrované obvody, mikrocipy, vrátane softvérových programovatelných mikroprocesorov a súvisiaca dokumentácia, najmä manuály, prírucky, aplikacné poznámky a specifikácie produktov v elektronickom formáte."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Papier, lepenka a tovary vyrobené z týchto materiálov, nezahrnuté v iných triedach; tlacoviny; instruktázne a ucebné potreby (okrem zariadení); manuály, prírucky, tutoriály, aplikacné poznámky a specifikácie produktov súvisiace s polovodicovými zariadeniami, integrovanými obvodmi, mikroprocesormi, vrátane softvérových programovatelných mikroprocesorov a pocítacových softvérových programov, ktoré obsluhujú polovodicové zariadenia a integrované obvody a mikroprocesory, vrátane softvérových programovatelných mikroprocesorov."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Dizajn a vývoj pocítacových programov; dizajn pocítacového softveru pre iných; sluzby technickej pomoci pre pocítacový softver; poskytovanie licencií na technológie; poskytovanie licencií na polovodice; licenzovanie pocítacového softvéru; informacné, poradenské a konzultacné sluzby týkajúce sa vsetkých vyssie uvedených sluzieb."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Racunalniska strojna oprema in racunalniska programska oprema; programi racunalniske programske opreme, ki delujejo na polprevodniskih napravah in integriranih vezjih in mikroprocesorjih ali z njimi, vkljucno s programljivimi mikroprocesorji za programsko opremo in pripadajoci materiali z navodili, in sicer prirocniki, prirocniki za uporabnike in navodili v elektronskem formatu; polprevodniki, polprevodniske naprave, integrirana vezja, mikroprocesorji, vkljucno s programljivimi mikroprocesorji za programsko opremo in pripadajoco dokumentacijo, in sicer referencnimi prirocniki, prirocniki za uporabnike, aplikacijska opozorila in specifikacije proizvodov v elektronskem formatu."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Papir, lepenka in izdelki iz teh materialov, ki jih ne zajemajo drugi razredi; tiskani izdelki; poucevalni material (razen naprav); referencni prirocniki, uporabniski prirocniki, navodila, aplikacijska opozorila in specifikacije proizvodov v zvezi s polprevodniskimi napravami, integriranimi vezji, mikroprocesorji, vkljucno s programljivimi mikroprocesorji za programsko opremo in programi za racunalnisko programsko opremo, ki ki delujejo na polprevodniskih napravah in integriranih vezjih in mikroprocesorjih ali z njimi, vkljucno s programljivimi procesorji za programsko opremo."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Nacrtovanje in razvoj racunalniske programske opreme; oblikovanje racunalniske programske opreme za druge; storitve tehnicne podpore racunalniske programske opreme; licenciranje tehnologije; licenciranje polprevodnikov; podeljevanje licenc za racunalnisko programsko opremo; svetovalne in informacijske storitve v zvezi z vsemi prej omenjenimi storitvami."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Hardware y software informático; programas de software que funcionan en o con dispositivos semiconductores y circuitos integrados y microprocesadores, incluyendo microprocesadores de software programables y materiales de instrucción asociados, en concreto, manuales, guías de usuario y tutorías en formato electrónico; semiconductores, dispositivos semiconductores, circuitos integrados, microprocesadores, incluyendo microprocesadores de software programables y documentación asociada, en concreto, manuales de referencia, guías de usuario, notas de aplicación y especificaciones de producto en formato electrónico."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Papel, cartón y artículos de estas materias, no comprendidos en otras clases; productos de imprenta; material de instrucción o de enseñanza (excepto aparatos); manuales de referencia de ordenador, guías de usuario, manuales de autoaprendizaje, notas de aplicación y especificaciones de producto en relación con dispositivos semiconductores, circuitos integrados, microprocesadores, incluyendo microprocesadores de software programables y programas de software de ordenador que funcionan en o con dispositivos semiconductores y circuitos integrados y microprocesadores, incluyendo microprocesadores de software programables."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Elaboración y desarrollo de software de ordenador; diseño de software de ordenadores para terceros; servicios de asistencia técnica para software de ordenadores; Licencias de tecnología; concesión de licencias de semiconductores; concesión de licencias de software informático; servicios de información, asesoramiento y consultoría en relación con todo lo mencionado."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Datormaskinvara och datorprogramvara; programvara för drift på eller med halvledaranordningar och integrerade kretsar och mikroprocessorer, inklusive programvaruprogrammerbara mikroprocessorer och tillhörande instruktionsmaterial, nämligen handböcker, användarhandböcker och handledningar i elektroniskt format; halvledare, halvledaranordningar, integrerade kretsar, mikroprocessorer, inklusive programvaruprogrammerbara mikroprocessorer och tillhörande dokumentation, nämligen, referenshandböcker till datorer, användarhandböcker, tillämpningsanteckningar och produktspecifikationer i elektroniskt format."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Papper, kartong samt produkter därav, ej ingående i andra klasser; trycksaker; instruktions- och undervisningsmaterial (ej apparater); referenshandböcker, användarhandböcker, handledningar, tillämpningsanteckningar och produktspecifikationer i samband med halvledaranordningar, integrerade kretsar, microprocessorer, programvaruprogrammerbara mikroprocessorer och programvara för drift på eller med halvledaranordningar och integrerade kretsar och microprocessorer, inklusive programvaruprogrammerbara mikroprocessorer."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Utformning och utveckling av datorprogramvara; utformning av datorprogramvara åt andra; tekniskt stöd rörande datorprogramvara; Tekniklicensiering; licensiering av halvledare; licensiering av programvara; informations-, rådgivnings- och konsultationstjänster avseende allt det nämnda."
+        }
+      ]
+    },
+    "id": "8ae6777f-f0bb-4dd4-b7c6-8c7db2838550",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20050120",
+        "priorityNumber": "78/550,902"
+      },
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20050120",
+        "priorityNumber": "78/550,846"
+      }
+    ],
+    "publications": [
+      {
+        "publicationPage": "04022",
+        "publicationVolume": "51"
+      }
+    ],
+    "recordLastUpdated": "20260917",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices. 2e étage Anna van Buerenplein 21A,Den Haag, 2595DA",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO SHIELDMARK B.V."
+      }
+    ],
+    "secondLanguageCode": "it",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20050707",
+        "applicationNumber": "4529681"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20051219",
+      "markCurrentStatus": "REGISTRATION EXPIRED",
+      "registration": {
+        "registrationDate": "20060505"
+      }
+    },
+    "version": "20260917120238",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "POWERQUICC"
+    }
+  },
+  "_uri": "/mark/em/8ae6777f-f0bb-4dd4-b7c6-8c7db2838550",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.692Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

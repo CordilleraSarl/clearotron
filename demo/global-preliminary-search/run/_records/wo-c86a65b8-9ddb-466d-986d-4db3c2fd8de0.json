@@ -1,0 +1,337 @@
+{
+  "uri": "/mark/wo/c86a65b8-9ddb-466d-986d-4db3c2fd8de0",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "c86a65b8-9ddb-466d-986d-4db3c2fd8de0",
+  "applicationNumber": null,
+  "registrationNumber": "1857470",
+  "applicationDate": null,
+  "registrationDate": "2025-02-06",
+  "expiryDate": "2035-02-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-06-05",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SYMETRI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    38,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer programs (downloadable software) for designing and creating digital drawings and models; software for construction, modelling and design; computer software for computer-aided design (CAD); computer programs in the form of geographical information systems.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "en",
+      "description": "Data communication services; worldwide computer network access services; providing access to and leasing access time to computer databases; provision of access to web pages; digital transmission services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education in the implementation and use of data processing programs for designing and creating digital drawings and models; training services relating to computer-aided engineering design; education services relating to computer systems.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Software development, programming and implementation; design, maintenance and updating of computer programs and computer systems for creating digital drawings and models; computer aided graphic design; computer aided design services relating to building projects; computer aided design services; IT consultancy, advisory and information services; consultancy relating to computer programs for designing and creating digital drawings and models; engineering consultancy relating to design, software as a service [SaaS]; none of the aforementioned services in the field of multichannel communications and print and mail.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Programmes informatiques (logiciels téléchargeables) pour la conception et la création de modèles et dessins numériques; logiciels pour la construction, la modélisation et la conception; logiciels informatiques pour la conception assistée par ordinateur (CAO); programmes informatiques sous forme de systèmes d'informations géographiques.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "fr",
+      "description": "Services de télématique; service d'accès à des réseaux informatiques mondiaux; fourniture d'accès et location de temps d'accès à des bases de données informatiques; fourniture d'accès à des pages Web; services de transmission numérique.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": "Éducation en matière d'implémentation et d'utilisation de programmes pour le traitement de données pour la conception et la création de modèles et dessins numériques; services de formation en matière de conception technique assistée par ordinateur; services d'éducation en matière de systèmes informatiques.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Développement, programmation et implémentation de logiciels; conception, maintenance et mise à jour de programmes informatiques et systèmes informatiques pour la création de modèles et dessins numériques; conception graphique assistée par ordinateur; services de conception assistée par ordinateur en lien avec des projets de construction; services de conception assistée par ordinateur; prestation de conseils, informations et services de conseillers en technologies de l'information; services de conseillers en lien avec des programmes informatiques pour la conception et la création de modèles et dessins numériques; services de conseillers en ingénierie en lien avec la conception, logiciels en tant que service [SaaS]; aucun des services précités n'étant dans le domaine des communications multicanaux et de l'impression et du courrier électronique.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Programas informáticos (software descargable) para el diseño y la creación de dibujos y modelos digitales; software de construcción, modelado y diseño; software de diseño asistido por ordenador (CAD); programas informáticos en forma de sistemas de información geográfica.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "es",
+      "description": "Servicios de comunicación de datos; servicios de acceso a redes informáticas mundiales; servicios de acceso y alquiler de tiempo de acceso a bases de datos informáticas; servicios de acceso a páginas Web; servicios de transmisión digital.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Educación sobre la implementación y el uso de programas de procesamiento de datos para el diseño y la creación de modelos y dibujos digitales; servicios de formación en relación con el diseño de ingeniería asistido por ordenador; servicios de enseñanza sobre sistemas informáticos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Desarrollo, programación e implementación de software; diseño, mantenimiento y actualización de programas informáticos y sistemas informáticos para la creación de dibujos y modelos digitales; diseño gráfico asistido por ordenador; servicios de diseño asistido por ordenador relacionados con proyectos de construcción; servicios de diseño asistido por ordenador; servicios de consultoría, asesoramiento e información sobre tecnologías de la información; consultoría sobre programas informáticos para el diseño y la creación de dibujos y modelos digitales; consultoría técnica sobre diseño, software como servicio [SaaS]; ninguno de los servicios mencionados en el ámbito de las comunicaciones multicanal, a impresión y el correo.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Symetri AB",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": "GROTH & CO. KB",
+  "priorities": [
+    {
+      "priorityCountryCode": "EM",
+      "priorityCountryName": "EU trade marks",
+      "priorityDate": "20240904",
+      "priorityNumber": "019074708"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20240904",
+          "basicApplicationNumber": "019074708"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "EM",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20250122",
+          "basicRegistrationNumber": "019074708"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AU",
+      "BR",
+      "CA",
+      "CH",
+      "GB",
+      "NO"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Forskargatan 3 SE-781 70 Borlänge",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantName": "Symetri AB"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20240904",
+            "basicApplicationNumber": "019074708"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "EM",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20250122",
+            "basicRegistrationNumber": "019074708"
+          }
+        ]
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AU",
+      "BR",
+      "CA",
+      "CH",
+      "GB",
+      "NO"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer programs (downloadable software) for designing and creating digital drawings and models; software for construction, modelling and design; computer software for computer-aided design (CAD); computer programs in the form of geographical information systems."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Data communication services; worldwide computer network access services; providing access to and leasing access time to computer databases; provision of access to web pages; digital transmission services."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education in the implementation and use of data processing programs for designing and creating digital drawings and models; training services relating to computer-aided engineering design; education services relating to computer systems."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Software development, programming and implementation; design, maintenance and updating of computer programs and computer systems for creating digital drawings and models; computer aided graphic design; computer aided design services relating to building projects; computer aided design services; IT consultancy, advisory and information services; consultancy relating to computer programs for designing and creating digital drawings and models; engineering consultancy relating to design, software as a service [SaaS]; none of the aforementioned services in the field of multichannel communications and print and mail."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Programmes informatiques (logiciels téléchargeables) pour la conception et la création de modèles et dessins numériques; logiciels pour la construction, la modélisation et la conception; logiciels informatiques pour la conception assistée par ordinateur (CAO); programmes informatiques sous forme de systèmes d'informations géographiques."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de télématique; service d'accès à des réseaux informatiques mondiaux; fourniture d'accès et location de temps d'accès à des bases de données informatiques; fourniture d'accès à des pages Web; services de transmission numérique."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Éducation en matière d'implémentation et d'utilisation de programmes pour le traitement de données pour la conception et la création de modèles et dessins numériques; services de formation en matière de conception technique assistée par ordinateur; services d'éducation en matière de systèmes informatiques."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Développement, programmation et implémentation de logiciels; conception, maintenance et mise à jour de programmes informatiques et systèmes informatiques pour la création de modèles et dessins numériques; conception graphique assistée par ordinateur; services de conception assistée par ordinateur en lien avec des projets de construction; services de conception assistée par ordinateur; prestation de conseils, informations et services de conseillers en technologies de l'information; services de conseillers en lien avec des programmes informatiques pour la conception et la création de modèles et dessins numériques; services de conseillers en ingénierie en lien avec la conception, logiciels en tant que service [SaaS]; aucun des services précités n'étant dans le domaine des communications multicanaux et de l'impression et du courrier électronique."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Programas informáticos (software descargable) para el diseño y la creación de dibujos y modelos digitales; software de construcción, modelado y diseño; software de diseño asistido por ordenador (CAD); programas informáticos en forma de sistemas de información geográfica."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de comunicación de datos; servicios de acceso a redes informáticas mundiales; servicios de acceso y alquiler de tiempo de acceso a bases de datos informáticas; servicios de acceso a páginas Web; servicios de transmisión digital."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Educación sobre la implementación y el uso de programas de procesamiento de datos para el diseño y la creación de modelos y dibujos digitales; servicios de formación en relación con el diseño de ingeniería asistido por ordenador; servicios de enseñanza sobre sistemas informáticos."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Desarrollo, programación e implementación de software; diseño, mantenimiento y actualización de programas informáticos y sistemas informáticos para la creación de dibujos y modelos digitales; diseño gráfico asistido por ordenador; servicios de diseño asistido por ordenador relacionados con proyectos de construcción; servicios de diseño asistido por ordenador; servicios de consultoría, asesoramiento e información sobre tecnologías de la información; consultoría sobre programas informáticos para el diseño y la creación de dibujos y modelos digitales; consultoría técnica sobre diseño, software como servicio [SaaS]; ninguno de los servicios mencionados en el ámbito de las comunicaciones multicanal, a impresión y el correo."
+        }
+      ]
+    },
+    "id": "c86a65b8-9ddb-466d-986d-4db3c2fd8de0",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "EM",
+        "priorityCountryName": "EU trade marks",
+        "priorityDate": "20240904",
+        "priorityNumber": "019074708"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "21"
+      }
+    ],
+    "recordLastUpdated": "20260626",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "Post Box 6107 SE-102 32 Stockholm",
+        "representativeAddressCountryCode": "SE",
+        "representativeAddressCountryName": "Sweden",
+        "representativeName": "GROTH & CO. KB"
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350206",
+      "lastPublicationDate": "20250605",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20250206",
+        "registrationNumber": "1857470"
+      }
+    },
+    "version": "20260626020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SYMETRI"
+    }
+  },
+  "_uri": "/mark/wo/c86a65b8-9ddb-466d-986d-4db3c2fd8de0",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.286Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

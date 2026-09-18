@@ -31,10 +31,262 @@
       "classes": [
         9
       ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Software pro správu infrastruktur verejných klícu (PKI); Software pro vydávání, správu a potvrzování platnosti digitálních certifikátu; Software pro overování a správu digitálních identit; Software pro pocítacovou a kryptografickou bezpecnost.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "cs",
+      "description": "Zabezpecený prenos dat; Sluzby v oblasti bezpecné elektronické komunikace.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Navrhování, vývoj, údrzba a poskytování softwaru pro infrastruktury verejných klícu (PKI); Sluzby cloud-computingu; Hosting IT platforem; Sluzby zabezpecení pocítace; Sluzby v oblasti overování digitálních dat a identit; Integrace pocítacových systému; Sifrovací sluzby; Bezpecnostní sluzby pro ochranu dat a elektronické komunikace.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "cs",
+      "description": "Overování identity; Sluzby v oblasti správy digitálních certifikátu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Computersoftware til styring af offentlige nøgleinfrastrukturer (PKI); Computersoftware til udstedelse, administration og validering af digitale certifikater; Computersoftware til autentificering og styring af digitale identiteter; Computersikkerhedssoftware og kryptografisk software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "da",
+      "description": "Sikker datatransmission; Sikker elektronisk kommunikation.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Design, udvikling, vedligeholdelse og udbydelse af computersoftware til offentlige nøgleinfrastrukturer (PKI); Cloud computing tjenester; Hosting af IT-platforme; Sikkerhedstjenester i forbindelse med computere; Autentificering af data og digitale identiteter; Integration af computersystemer; Kryptering; Sikkerhedstjenester vedrørende beskyttelse af data og elektronisk kommunikation.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "da",
+      "description": "Autentifikation af identitet; Administration af digitale certifikater.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Software voor beheer van Public Key infracture (PKI); Software voor de uitgifte, het beheer en de validatie van digitale certificaten; Software voor authentificatie en beheer van digitale identiteiten; Software voor computer- en cryptografische beveiliging.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "nl",
+      "description": "Beveiligde overdracht van gegevens; Beveiligde elektronische communicatie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Ontwerp, ontwikkeling, onderhoud en ter beschikking stellen van software ten behoeve van Public Key Infrastructures (PKI); Diensten inzake cloudcomputing; Hosting van IT-platforms; Computerbeveiliging; Diensten voor de authentificatie van digitale gegevens en identiteiten; Computersysteemintegratie; Cryptografie; Beveiligingsdiensten voor de bescherming van elektronische gegevens en communicatie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "nl",
+      "description": "Verificatie van de identiteit; Diensten voor het beheer van digitale certificaten.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Public key infrastructure (PKI) management software; Software for issuing, managing and validating digital certificates; Software for authentication and management of digital identities; Computer security and cryptographic software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "en",
+      "description": "secured data transmission; secure electronic communication services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Design, development, maintenance and providing of computer software for public key infrastructures (PKI); Cloud computing services; Hosting of IT platforms; Computer security services; Authentication of data and digital identities; Computer systems integration; Cryptography services; Security services for the protection of data and electronic communications.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "en",
+      "description": "Identity authentication services; Management of digital certificates.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Avaliku võtme taristu (PKI) haldamise tarkvara; Digitaalsete sertifikaatide väljastamise, haldamise ja valideerimise tarkvara; Digitaalsete identiteetide autentimis- ja haldustarkvara; Arvutiturbe- ja krüptotarkvara.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "et",
+      "description": "Turvaline andmete edastamine; Kaitstud elektroonilise side teenused.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Avaliku võtme taristu (PKI) tarkvara projekteerimine, arendamine, hooldus ja kättesaadavaks tegemine; Pilvandmetöötlusteenused; IT-platvormide hostimine (majutamine); Arvutiturbeteenused; Andmete ja digitaalsete identiteetide autentimise teenused; Arvutisüsteemide integreerimine; Krüptograafiateenused; Turvateenused andmete ja elektroonilise side kaitseks.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "et",
+      "description": "Isikuautentimisteenused; Digitaalsete sertifikaatide haldamise teenused.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Tietokoneohjelmistot julkisen avaimen infrastruktuurien (PKI) hallintaan; Tietokoneohjelmistot digitaalisten varmenteiden myöntämiseen, hallintaan ja validointiin; Digitaalisten identiteettien varmennus- ja hallintatietokoneohjelmistot; Tietoturva- ja kryptografiatietokoneohjelmistot.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "fi",
+      "description": "Suojattu datan siirto; Turvalliset elektroniset viestintäpalvelut.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Julkisen avaimen infrastruktuureja (PKI) varten tarkoitettujen tietokoneohjelmistojen suunnittelu, kehittäminen, ylläpito ja tarjoaminen käyttöön; Etäresurssipalvelut; IT-alustojen ylläpito; Tietokoneiden turvapalvelut; Datan ja digitaalisten identiteettien varmennuspalvelut; Tietokonejärjestelmien integrointi; Salauspalvelut; Turvallisuuspalvelut datan ja sähköisen viestinnän suojaamiseksi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "fi",
+      "description": "Tunnistuksen varmennuspalvelut; Digitaalisten varmenteiden hallintapalvelut.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
       "language": "fr",
       "description": "Logiciels pour la gestion d'infrastructures à clés publiques (PKI); logiciels pour l'émission, la gestion et la validation de certificats numériques; logiciels d'authentification et de gestion d'identités numériques; logiciels de sécurité informatique et cryptographique.",
-      "translation_language": "en",
-      "translation": "Software for managing public key infrastructures (PKI); software for issuing, managing and validating digital certificates; software for authentication and managing digital identities; computer security and cryptographic software."
+      "translation_language": null,
+      "translation": null
     },
     {
       "classes": [
@@ -42,26 +294,566 @@
       ],
       "language": "fr",
       "description": "Transmission de données sécurisées; services de communication électronique sécurisée.",
-      "translation_language": "en",
-      "translation": "Secure data transmission; secure electronic communication services."
+      "translation_language": null,
+      "translation": null
     },
     {
       "classes": [
         42
       ],
       "language": "fr",
-      "description": "Conception, développement, maintenance et mise à disposition de logiciels pour infrastructures à clés publiques (PKI); services de cloud computing; hébergement de plateformes informatiques; services de sécurité informatique; services d'authentification de données et d'identités numériques; intégration de systèmes informatiques; services de cryptographie.",
-      "translation_language": "en",
-      "translation": "Design, development, maintenance and provision of software for public key infrastructures (PKI); cloud computing services; hosting of computer platforms; computer security services; data authentication and digital identity services; computer systems integration; cryptography services."
+      "description": "Conception, développement, maintenance et mise à disposition de logiciels pour infrastructures à clés publiques (PKI); services de cloud computing; hébergement de plateformes informatiques; services de sécurité informatique; services d'authentification de données et d'identités numériques; intégration de systèmes informatiques; services de cryptographie; services de sécurité pour la protection des données et des communications électroniques.",
+      "translation_language": null,
+      "translation": null
     },
     {
       "classes": [
         45
       ],
       "language": "fr",
-      "description": "Services d'authentification d'identités; services de sécurité pour la protection des données et des communications électroniques; services de gestion de certificats numériques.",
-      "translation_language": "en",
-      "translation": "Identity authentication services; security services for the protection of data and electronic communications; digital certificate management services."
+      "description": "Services d'authentification d'identités; services de gestion de certificats numériques.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Software zur Verwaltung von Public-Key-Infrastrukturen (PKI); Software für die Ausgabe, Verwaltung und Validierung von digitalen Zertifikaten; Software zur Authentifizierung und Verwaltung von digitalen Identitäten; Software für Computer- und kryptografische Sicherheit.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "de",
+      "description": "Gesicherte Datenübertragung; Sichere elektronische Kommunikationsdienste.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Entwurf, Entwicklung, Pflege und Bereitstellung von Software für Public-Key-Infrastrukturen (PKI); Cloud Computing Dienstleistungen; Hosting von IT-Plattformen; Dienstleistungen in Bezug auf Computersicherheit; Authentifizierung von Daten und digitalen Identitäten; Computersystemintegration; Dienstleistungen auf dem Gebiet der Verschlüsselung; Sicherheitsdienste für den Schutz von Daten und elektronischer Kommunikation.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "de",
+      "description": "Identitätsauthentifizierung; Verwaltung von digitalen Zertifikaten.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hr",
+      "description": "Softveri za upravljanje infrastrukturom javnih kljuceva (PKI); Softveri za izdavanje, upravljanje i provjeru valjanosti digitalnih certifikata; Softveri za provjeru autenticnosti i upravljanje digitalnim identitetima; Softveri za racunalnu i kriptografsku sigurnost.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "hr",
+      "description": "Zasticeni prijenos podataka; Usluge sigurne elektronicke komunikacije.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hr",
+      "description": "Dizajn, razvoj, odrzavanje i omogucavanje uporabe softvera za infrastrukture s javnim kljucem (PKI); Usluge racunarstva u oblaku; Udomljavanje IT platformi; Usluge racunalne sigurnosti; Usluge provjere autenticnosti digitalnih podataka i digitalnih identiteta; Integracija racunalnih sustava; Kriptografske usluge; Sigurnosne usluge za zastitu podataka i elektronicke komunikacije.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "hr",
+      "description": "Usluge autentifikacije identiteta; Usluge vodenja digitalnih certifikata.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Szoftverek nyilvános kulcsú infrastruktúrák (PKI) kezeléséhez; Szoftverek digitális tanúsítványok kibocsátásához, kezeléséhez és érvényesítéséhez; Digitális személyazonosságok hitelesítésére és kezelésére szolgáló szoftverek; Számítástechnikai biztonsági és kriptográfiai szoftverek.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "hu",
+      "description": "Biztonságos adattovábbítás; Biztonságos elektronikus kommunikációs szolgáltatások.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Szoftverek tervezése, fejlesztése, karbantartása és rendelkezésre bocsátása nyilvános kulcsú infrastruktúrákhoz (PKI); Felho alapú számítógépes szolgáltatások; Informatikai platformok üzemeltetése; Számítógépes biztonsági szolgáltatások; Digitális adatok és személyazonosságok hitelesítése; Számítógépes rendszerintegráció; Titkosírással kapcsolatos szolgáltatások; Biztonsági szolgáltatások elektronikus adatok és kommunikációk védelméhez.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "hu",
+      "description": "Személyazonosság-hitelesítési szolgáltatások; Digitális tanúsítványkezelési szolgáltatások.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Software per la gestione di infrastrutture a chiave pubblica (PKI); Software per l'emissione, la gestione e la convalida di certificati digitali; Software per autenticazione e gestione di identità digitali; Software disicurezza informatica e crittografica.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "it",
+      "description": "Trasmissione sicura di dati; Comunicazione elettronica sicura.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Progettazione, sviluppo, manutenzione e fornitura di software per infrastrutture a chiave pubblica (PKI); Servizi di cloud-computing; Hosting di piattaforme IT; Servizi di sicurezza informatica; Servizi di autenticazione di dati e identità digitali; Integrazione di sistemi informatici; Servizi di crittografia; Servizi di sicurezza per la protezione dei dati e delle comunicazioni elettroniche.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "it",
+      "description": "Servizi di autenticazione di identità; Servizi di gestione di certificati elettronici.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Viesojo rakto infrastrukturu (PKI) valdymo programine iranga; Skaitmeniniu sertifikatu isdavimo, valdymo ir patvirtinimo programine iranga; Skaitmenines tapatybes autentifikavimo ir valdymo programine iranga; Kompiuteriu saugumo ir kriptografine programine iranga.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "lt",
+      "description": "Saugusis duomenu perdavimas; Saugios elektronines rysiu paslaugos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "Viesojo rakto infrastrukturu (PKI) programines irangos projektavimas, tobulinimas, prieziura ir teikimas; Debesijos paslaugos; IT platformu priegloba; Kompiuteriu apsaugos paslaugos; Duomenu ir skaitmenines tapatybes autentifikavimo paslaugos; Kompiuteriniu sistemu integravimas; Kriptografijos paslaugos; Duomenu ir elektroniniu rysiu apsaugos paslaugos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "lt",
+      "description": "Tapatybes autentiskumo nustatymo paslaugos; Skaitmeniniu sertifikatu valdymo paslaugos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Programmatura publiskas atslegas infrastrukturu (PKI) parvaldibai; Programmatura digitalo sertifikatu izsniegsanai, parvaldibai un apstiprinasanai; Digitalas identitates autentifikacijas un parvaldibas programmatura; Datoru drosibas un kriptografijas programmatura.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "lv",
+      "description": "Drosa datu parraide; Drosi elektronisko sakaru pakalpojumi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Programmaturu projektesana, izstrade, uzturesana un nodrosinasana publiskas atslegas infrastrukturam (PKI); Makondatosanas pakalpojumi; IT platformu mitinasana; Datoru drosibas pakalpojumi; Datu un digitalas identitates autentifikacijas pakalpojumi; Datorsistemu integresana; Kriptografijas pakalpojumi; Datu un elektronisko sakaru aizsardzibas drosibas pakalpojumi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "lv",
+      "description": "Identitates autentificesanas pakalpojumi; Elektronisko sertifikatu parvaldibas pakalpojumi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Software ghall-gestjoni ta' infrastrutturi bi cwievet pubblici (PKI); Software ghall-hrug, ghall-gestjoni u ghall-validazzjoni ta' certifikati digitali; Software ta' awtentikazzjoni u ta' gestjoni ta' identitajiet digitali; Software tas-sigurtà tal-kompjuter u tal-kriptografija.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "mt",
+      "description": "Trazmissjoni fiz-zgur ta' dejta; Servizzi ta' komunikazzjoni elettronika b'mod sigur.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "Id-disinn, l-izvilupp, il-manutenzjoni u l-provvista ta' software ghal infrastrutturi bi cwievet pubblici (PKI); Servizzi ta' cloud computing; Hosting ta' pjattaformi tal-IT; Servizzi tas-sigurtà tal-kompjuter; Servizzi ta' awtentikazzjoni ta' data u ta' identitajiet digitali; Integrazzjoni tas-sistemi tal-kompjuter; Servizzi ta' kriptografija; Servizzi ta' sigurtà ghall-protezzjoni tad-data u tal-komunikazzjonijiet elettronici.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "mt",
+      "description": "Servizzi tal-awtentikazzjoni tal-identità; Servizzi ta' gestjoni ta' certifikati digitali.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Oprogramowanie do zarzadzania infrastruktura kluczy publicznych (PKI); Oprogramowanie do wydawania i potwierdzania certyfikatów cyfrowych oraz do zarzadzania nimi; Oprogramowanie do uwierzytelniania tozsamosci cyfrowych i zarzadzania nimi; Oprogramowanie w zakresie bezpieczenstwa komputerowego i kryptograficznego.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "pl",
+      "description": "Zabezpieczona transmisja danych; Uslugi zabezpieczonej lacznosci elektronicznej.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Projektowanie, rozwój, utrzymywanie i udostepnianie oprogramowania w zakresie infrastruktury kluczy publicznych (PKI); Uslugi przetwarzania w chmurze; Hosting platform informatycznych; Uslugi w zakresie bezpieczenstwa komputerowego; Uslugi uwierzytelniania danych i tozsamosci cyfrowych; Integracja systemów komputerowych; Uslugi w zakresie kryptografii; Uslugi bezpieczenstwa w zakresie ochrony danych i komunikacji elektronicznej.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "pl",
+      "description": "Uslugi potwierdzania tozsamosci; Uslugi zarzadzania certyfikatami cyfrowymi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Software para a gestão de infraestruturas de chaves públicas (PKI); Software para a emissão, a gestão e a validação de certificados digitais; Software de autenticação e de gestão de identidades digitais; Software de segurança informática e criptográfica.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "pt",
+      "description": "Transmissão segura de dados; Serviços de comunicações electrónicas protegidas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Conceção, desenvolvimento, manutenção e disponibilização de software para infraestruturas de chave pública (PKI); Serviços de computação em nuvem; Alojamento de plataformas de TI; Serviços de segurança informática; Serviços de autenticação de dados e de identidades digitais; Integração de sistemas informáticos; Serviços de criptografia; Serviços de segurança para a proteção de dados e de comunicações eletrónicas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "pt",
+      "description": "Serviços de autenticação de identidades; Serviços de gestão de certificados digitais.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Software pentru gestionarea infrastructurilor cu chei publice (PKI); Software pentru emiterea, gestionarea si validarea certificatelor digitale; Software de autentificare si de gestionare a identitatilor digitale; Software de securitate informatica si criptografica.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "ro",
+      "description": "Transmisie sigura de date; Servicii de comunicatii electronice securizate.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Proiectare, dezvoltare, mentenanta si punere la dispozitie de software pentru infrastructuri cu chei publice (PKI); Servicii cloud computing; Gazduirea de platforme IT; Servicii de securitate pentru calculatoare; Servicii de autentificare a datelor si a identitatilor digitale; Integrare de sisteme de calculator; Servicii de criptografie; Servicii de securitate pentru protectia datelor si a comunicatiilor electronice.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "ro",
+      "description": "Servicii de autentificare a identitatii; Servicii de gestionare a certificatelor digitale.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Softvér na správu infrastruktúr verejného klúca (PKI); Softvér na vydávanie, správu a overovanie digitálnych certifikátov; Softvér na overovanie a správu digitálnych identít; Softvér na pocítacovú a kryptografickú bezpecnost.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "sk",
+      "description": "Zabezpecený prenos údajov; Zabezpecené elektronické komunikacné sluzby.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "Návrh, vývoj, údrzba a poskytovanie pocítacového softvéru pre infrastruktúry verejného klúca (PKI); Poskytovanie sluzieb typu Cloud (výpoctové mracno); Hostovanie na informacno-technologických platformách; Pocítacové bezpecnostné sluzby; Overovanie digitálnych údajov a identít; Integrácia pocítacových systémov; Sifrovacie sluzby; Bezpecnostné sluzby na ochranu údajov a elektronickej komunikácie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "sk",
+      "description": "Sluzby v oblasti overovania totoznosti; Správa digitálnych certifikátov.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Racunalniska programska oprema za upravljanje infrastruktur javnih kljucev (PKI); Racunalniska programska oprema za izdajanje, upravljanje in potrjevanje digitalnih potrdil; Racunalniska programska oprema za preverjanje pristnosti in upravljanje digitalnih identitet; Racunalniska programska oprema za racunalnisko varnost in kriptografijo.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "sl",
+      "description": "Varen prenos podatkov; Varnostne elektronske komunikacijske storitve.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Zasnova, razvoj, vzdrzevanje in nudenje racunalniske programske opreme za infrastrukture javnih kljucev (PKI); Storitve racunalnistva v oblaku; Gostitev IT-platform; Storitve v zvezi z racunalnisko varnostjo; Storitve preverjanja pristnosti podatkov in digitalnih identitet; Integracija racunalniskih sistemov; Storitve sifriranja; Varnostne storitve za zascito elektronskih podatkov in komunikacij.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "sl",
+      "description": "Storitve avtorizacije identitete; Storitev upravljanja digitalnih potrdil.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Software para gestionar infraestructuras de clave pública (PKI); Software para emitir, gestionar y validar certificados digitales; Software de autenticación y de gestión de identidades digitales; Software de seguridad informática y criptográfica.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "es",
+      "description": "Transmisión de datos asegurados; Servicios de comunicación electrónica segura.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Diseño, desarrollo, mantenimiento y suministro de software para infraestructuras de clave pública (PKI); Servicios de computación en la nube; Alojamiento de plataformas informáticas; Servicios de seguridad informática; Servicios de autenticación de datos y de identidades digitales; Integración de sistemas informáticos; Servicios de criptografía; Servicios de seguridad para la protección de datos y de comunicaciones electrónicas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "es",
+      "description": "Servicios de autenticación de identidades; Servicios de gestión de certificados digitales.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Programvara för hantering av offentlig nyckelinfrastruktur (PKI); Programvara för utfärdande, hantering och validering av digitala certifikat; Programvara för autentisering och hantering av digitala identiteter; Programvara för datorsäkerhet och kryptografisk säkerhet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "sw",
+      "description": "Säker överföring av data; Säker elektronisk kommunikation.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Utformning, utveckling, underhåll och tillhandahållande av programvara för offentlig nyckelinfrastruktur (PKI); Molntjänster; Värdskap för IT-plattformar; Datorsäkerhetstjänster; Tjänster för autentisering av data och digitala identiteter; Integrering av datasystem; Kryptografiska tjänster; Säkerhetstjänster för att skydda data och elektronisk kommunikation.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "sw",
+      "description": "Tjänster avseende verifiering av identitet; Tjänster för hantering av digitala certifikat.",
+      "translation_language": null,
+      "translation": null
     }
   ],
   "owner": "InCert",
@@ -96,32 +888,464 @@
     "goodsServices": {
       "intClassDescriptions": [
         {
-          "cmComputerTranslationIntGoodsLanguageCode": "en",
-          "cmComputerTranslationIntGoodsServicesDescription": "Software for managing public key infrastructures (PKI); software for issuing, managing and validating digital certificates; software for authentication and managing digital identities; computer security and cryptographic software.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Software pro správu infrastruktur verejných klícu (PKI); Software pro vydávání, správu a potvrzování platnosti digitálních certifikátu; Software pro overování a správu digitálních identit; Software pro pocítacovou a kryptografickou bezpecnost."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Zabezpecený prenos dat; Sluzby v oblasti bezpecné elektronické komunikace."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Navrhování, vývoj, údrzba a poskytování softwaru pro infrastruktury verejných klícu (PKI); Sluzby cloud-computingu; Hosting IT platforem; Sluzby zabezpecení pocítace; Sluzby v oblasti overování digitálních dat a identit; Integrace pocítacových systému; Sifrovací sluzby; Bezpecnostní sluzby pro ochranu dat a elektronické komunikace."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Overování identity; Sluzby v oblasti správy digitálních certifikátu."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Computersoftware til styring af offentlige nøgleinfrastrukturer (PKI); Computersoftware til udstedelse, administration og validering af digitale certifikater; Computersoftware til autentificering og styring af digitale identiteter; Computersikkerhedssoftware og kryptografisk software."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Sikker datatransmission; Sikker elektronisk kommunikation."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Design, udvikling, vedligeholdelse og udbydelse af computersoftware til offentlige nøgleinfrastrukturer (PKI); Cloud computing tjenester; Hosting af IT-platforme; Sikkerhedstjenester i forbindelse med computere; Autentificering af data og digitale identiteter; Integration af computersystemer; Kryptering; Sikkerhedstjenester vedrørende beskyttelse af data og elektronisk kommunikation."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Autentifikation af identitet; Administration af digitale certifikater."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Software voor beheer van Public Key infracture (PKI); Software voor de uitgifte, het beheer en de validatie van digitale certificaten; Software voor authentificatie en beheer van digitale identiteiten; Software voor computer- en cryptografische beveiliging."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Beveiligde overdracht van gegevens; Beveiligde elektronische communicatie."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Ontwerp, ontwikkeling, onderhoud en ter beschikking stellen van software ten behoeve van Public Key Infrastructures (PKI); Diensten inzake cloudcomputing; Hosting van IT-platforms; Computerbeveiliging; Diensten voor de authentificatie van digitale gegevens en identiteiten; Computersysteemintegratie; Cryptografie; Beveiligingsdiensten voor de bescherming van elektronische gegevens en communicatie."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Verificatie van de identiteit; Diensten voor het beheer van digitale certificaten."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Public key infrastructure (PKI) management software; Software for issuing, managing and validating digital certificates; Software for authentication and management of digital identities; Computer security and cryptographic software."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "secured data transmission; secure electronic communication services."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Design, development, maintenance and providing of computer software for public key infrastructures (PKI); Cloud computing services; Hosting of IT platforms; Computer security services; Authentication of data and digital identities; Computer systems integration; Cryptography services; Security services for the protection of data and electronic communications."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Identity authentication services; Management of digital certificates."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Avaliku võtme taristu (PKI) haldamise tarkvara; Digitaalsete sertifikaatide väljastamise, haldamise ja valideerimise tarkvara; Digitaalsete identiteetide autentimis- ja haldustarkvara; Arvutiturbe- ja krüptotarkvara."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Turvaline andmete edastamine; Kaitstud elektroonilise side teenused."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Avaliku võtme taristu (PKI) tarkvara projekteerimine, arendamine, hooldus ja kättesaadavaks tegemine; Pilvandmetöötlusteenused; IT-platvormide hostimine (majutamine); Arvutiturbeteenused; Andmete ja digitaalsete identiteetide autentimise teenused; Arvutisüsteemide integreerimine; Krüptograafiateenused; Turvateenused andmete ja elektroonilise side kaitseks."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Isikuautentimisteenused; Digitaalsete sertifikaatide haldamise teenused."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Tietokoneohjelmistot julkisen avaimen infrastruktuurien (PKI) hallintaan; Tietokoneohjelmistot digitaalisten varmenteiden myöntämiseen, hallintaan ja validointiin; Digitaalisten identiteettien varmennus- ja hallintatietokoneohjelmistot; Tietoturva- ja kryptografiatietokoneohjelmistot."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Suojattu datan siirto; Turvalliset elektroniset viestintäpalvelut."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Julkisen avaimen infrastruktuureja (PKI) varten tarkoitettujen tietokoneohjelmistojen suunnittelu, kehittäminen, ylläpito ja tarjoaminen käyttöön; Etäresurssipalvelut; IT-alustojen ylläpito; Tietokoneiden turvapalvelut; Datan ja digitaalisten identiteettien varmennuspalvelut; Tietokonejärjestelmien integrointi; Salauspalvelut; Turvallisuuspalvelut datan ja sähköisen viestinnän suojaamiseksi."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Tunnistuksen varmennuspalvelut; Digitaalisten varmenteiden hallintapalvelut."
+        },
+        {
           "intClassNumber": "09",
           "intGoodsLanguageCode": "fr",
           "intGoodsServicesDescription": "Logiciels pour la gestion d'infrastructures à clés publiques (PKI); logiciels pour l'émission, la gestion et la validation de certificats numériques; logiciels d'authentification et de gestion d'identités numériques; logiciels de sécurité informatique et cryptographique."
         },
         {
-          "cmComputerTranslationIntGoodsLanguageCode": "en",
-          "cmComputerTranslationIntGoodsServicesDescription": "Secure data transmission; secure electronic communication services.",
           "intClassNumber": "38",
           "intGoodsLanguageCode": "fr",
           "intGoodsServicesDescription": "Transmission de données sécurisées; services de communication électronique sécurisée."
         },
         {
-          "cmComputerTranslationIntGoodsLanguageCode": "en",
-          "cmComputerTranslationIntGoodsServicesDescription": "Design, development, maintenance and provision of software for public key infrastructures (PKI); cloud computing services; hosting of computer platforms; computer security services; data authentication and digital identity services; computer systems integration; cryptography services.",
           "intClassNumber": "42",
           "intGoodsLanguageCode": "fr",
-          "intGoodsServicesDescription": "Conception, développement, maintenance et mise à disposition de logiciels pour infrastructures à clés publiques (PKI); services de cloud computing; hébergement de plateformes informatiques; services de sécurité informatique; services d'authentification de données et d'identités numériques; intégration de systèmes informatiques; services de cryptographie."
+          "intGoodsServicesDescription": "Conception, développement, maintenance et mise à disposition de logiciels pour infrastructures à clés publiques (PKI); services de cloud computing; hébergement de plateformes informatiques; services de sécurité informatique; services d'authentification de données et d'identités numériques; intégration de systèmes informatiques; services de cryptographie; services de sécurité pour la protection des données et des communications électroniques."
         },
         {
-          "cmComputerTranslationIntGoodsLanguageCode": "en",
-          "cmComputerTranslationIntGoodsServicesDescription": "Identity authentication services; security services for the protection of data and electronic communications; digital certificate management services.",
           "intClassNumber": "45",
           "intGoodsLanguageCode": "fr",
-          "intGoodsServicesDescription": "Services d'authentification d'identités; services de sécurité pour la protection des données et des communications électroniques; services de gestion de certificats numériques."
+          "intGoodsServicesDescription": "Services d'authentification d'identités; services de gestion de certificats numériques."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Software zur Verwaltung von Public-Key-Infrastrukturen (PKI); Software für die Ausgabe, Verwaltung und Validierung von digitalen Zertifikaten; Software zur Authentifizierung und Verwaltung von digitalen Identitäten; Software für Computer- und kryptografische Sicherheit."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Gesicherte Datenübertragung; Sichere elektronische Kommunikationsdienste."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Entwurf, Entwicklung, Pflege und Bereitstellung von Software für Public-Key-Infrastrukturen (PKI); Cloud Computing Dienstleistungen; Hosting von IT-Plattformen; Dienstleistungen in Bezug auf Computersicherheit; Authentifizierung von Daten und digitalen Identitäten; Computersystemintegration; Dienstleistungen auf dem Gebiet der Verschlüsselung; Sicherheitsdienste für den Schutz von Daten und elektronischer Kommunikation."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Identitätsauthentifizierung; Verwaltung von digitalen Zertifikaten."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Softveri za upravljanje infrastrukturom javnih kljuceva (PKI); Softveri za izdavanje, upravljanje i provjeru valjanosti digitalnih certifikata; Softveri za provjeru autenticnosti i upravljanje digitalnim identitetima; Softveri za racunalnu i kriptografsku sigurnost."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Zasticeni prijenos podataka; Usluge sigurne elektronicke komunikacije."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Dizajn, razvoj, odrzavanje i omogucavanje uporabe softvera za infrastrukture s javnim kljucem (PKI); Usluge racunarstva u oblaku; Udomljavanje IT platformi; Usluge racunalne sigurnosti; Usluge provjere autenticnosti digitalnih podataka i digitalnih identiteta; Integracija racunalnih sustava; Kriptografske usluge; Sigurnosne usluge za zastitu podataka i elektronicke komunikacije."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Usluge autentifikacije identiteta; Usluge vodenja digitalnih certifikata."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Szoftverek nyilvános kulcsú infrastruktúrák (PKI) kezeléséhez; Szoftverek digitális tanúsítványok kibocsátásához, kezeléséhez és érvényesítéséhez; Digitális személyazonosságok hitelesítésére és kezelésére szolgáló szoftverek; Számítástechnikai biztonsági és kriptográfiai szoftverek."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Biztonságos adattovábbítás; Biztonságos elektronikus kommunikációs szolgáltatások."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Szoftverek tervezése, fejlesztése, karbantartása és rendelkezésre bocsátása nyilvános kulcsú infrastruktúrákhoz (PKI); Felho alapú számítógépes szolgáltatások; Informatikai platformok üzemeltetése; Számítógépes biztonsági szolgáltatások; Digitális adatok és személyazonosságok hitelesítése; Számítógépes rendszerintegráció; Titkosírással kapcsolatos szolgáltatások; Biztonsági szolgáltatások elektronikus adatok és kommunikációk védelméhez."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Személyazonosság-hitelesítési szolgáltatások; Digitális tanúsítványkezelési szolgáltatások."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Software per la gestione di infrastrutture a chiave pubblica (PKI); Software per l'emissione, la gestione e la convalida di certificati digitali; Software per autenticazione e gestione di identità digitali; Software disicurezza informatica e crittografica."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Trasmissione sicura di dati; Comunicazione elettronica sicura."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Progettazione, sviluppo, manutenzione e fornitura di software per infrastrutture a chiave pubblica (PKI); Servizi di cloud-computing; Hosting di piattaforme IT; Servizi di sicurezza informatica; Servizi di autenticazione di dati e identità digitali; Integrazione di sistemi informatici; Servizi di crittografia; Servizi di sicurezza per la protezione dei dati e delle comunicazioni elettroniche."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi di autenticazione di identità; Servizi di gestione di certificati elettronici."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Viesojo rakto infrastrukturu (PKI) valdymo programine iranga; Skaitmeniniu sertifikatu isdavimo, valdymo ir patvirtinimo programine iranga; Skaitmenines tapatybes autentifikavimo ir valdymo programine iranga; Kompiuteriu saugumo ir kriptografine programine iranga."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Saugusis duomenu perdavimas; Saugios elektronines rysiu paslaugos."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Viesojo rakto infrastrukturu (PKI) programines irangos projektavimas, tobulinimas, prieziura ir teikimas; Debesijos paslaugos; IT platformu priegloba; Kompiuteriu apsaugos paslaugos; Duomenu ir skaitmenines tapatybes autentifikavimo paslaugos; Kompiuteriniu sistemu integravimas; Kriptografijos paslaugos; Duomenu ir elektroniniu rysiu apsaugos paslaugos."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Tapatybes autentiskumo nustatymo paslaugos; Skaitmeniniu sertifikatu valdymo paslaugos."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Programmatura publiskas atslegas infrastrukturu (PKI) parvaldibai; Programmatura digitalo sertifikatu izsniegsanai, parvaldibai un apstiprinasanai; Digitalas identitates autentifikacijas un parvaldibas programmatura; Datoru drosibas un kriptografijas programmatura."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Drosa datu parraide; Drosi elektronisko sakaru pakalpojumi."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Programmaturu projektesana, izstrade, uzturesana un nodrosinasana publiskas atslegas infrastrukturam (PKI); Makondatosanas pakalpojumi; IT platformu mitinasana; Datoru drosibas pakalpojumi; Datu un digitalas identitates autentifikacijas pakalpojumi; Datorsistemu integresana; Kriptografijas pakalpojumi; Datu un elektronisko sakaru aizsardzibas drosibas pakalpojumi."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Identitates autentificesanas pakalpojumi; Elektronisko sertifikatu parvaldibas pakalpojumi."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Software ghall-gestjoni ta' infrastrutturi bi cwievet pubblici (PKI); Software ghall-hrug, ghall-gestjoni u ghall-validazzjoni ta' certifikati digitali; Software ta' awtentikazzjoni u ta' gestjoni ta' identitajiet digitali; Software tas-sigurtà tal-kompjuter u tal-kriptografija."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Trazmissjoni fiz-zgur ta' dejta; Servizzi ta' komunikazzjoni elettronika b'mod sigur."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Id-disinn, l-izvilupp, il-manutenzjoni u l-provvista ta' software ghal infrastrutturi bi cwievet pubblici (PKI); Servizzi ta' cloud computing; Hosting ta' pjattaformi tal-IT; Servizzi tas-sigurtà tal-kompjuter; Servizzi ta' awtentikazzjoni ta' data u ta' identitajiet digitali; Integrazzjoni tas-sistemi tal-kompjuter; Servizzi ta' kriptografija; Servizzi ta' sigurtà ghall-protezzjoni tad-data u tal-komunikazzjonijiet elettronici."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi tal-awtentikazzjoni tal-identità; Servizzi ta' gestjoni ta' certifikati digitali."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Oprogramowanie do zarzadzania infrastruktura kluczy publicznych (PKI); Oprogramowanie do wydawania i potwierdzania certyfikatów cyfrowych oraz do zarzadzania nimi; Oprogramowanie do uwierzytelniania tozsamosci cyfrowych i zarzadzania nimi; Oprogramowanie w zakresie bezpieczenstwa komputerowego i kryptograficznego."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Zabezpieczona transmisja danych; Uslugi zabezpieczonej lacznosci elektronicznej."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Projektowanie, rozwój, utrzymywanie i udostepnianie oprogramowania w zakresie infrastruktury kluczy publicznych (PKI); Uslugi przetwarzania w chmurze; Hosting platform informatycznych; Uslugi w zakresie bezpieczenstwa komputerowego; Uslugi uwierzytelniania danych i tozsamosci cyfrowych; Integracja systemów komputerowych; Uslugi w zakresie kryptografii; Uslugi bezpieczenstwa w zakresie ochrony danych i komunikacji elektronicznej."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi potwierdzania tozsamosci; Uslugi zarzadzania certyfikatami cyfrowymi."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Software para a gestão de infraestruturas de chaves públicas (PKI); Software para a emissão, a gestão e a validação de certificados digitais; Software de autenticação e de gestão de identidades digitais; Software de segurança informática e criptográfica."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Transmissão segura de dados; Serviços de comunicações electrónicas protegidas."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Conceção, desenvolvimento, manutenção e disponibilização de software para infraestruturas de chave pública (PKI); Serviços de computação em nuvem; Alojamento de plataformas de TI; Serviços de segurança informática; Serviços de autenticação de dados e de identidades digitais; Integração de sistemas informáticos; Serviços de criptografia; Serviços de segurança para a proteção de dados e de comunicações eletrónicas."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de autenticação de identidades; Serviços de gestão de certificados digitais."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Software pentru gestionarea infrastructurilor cu chei publice (PKI); Software pentru emiterea, gestionarea si validarea certificatelor digitale; Software de autentificare si de gestionare a identitatilor digitale; Software de securitate informatica si criptografica."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Transmisie sigura de date; Servicii de comunicatii electronice securizate."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Proiectare, dezvoltare, mentenanta si punere la dispozitie de software pentru infrastructuri cu chei publice (PKI); Servicii cloud computing; Gazduirea de platforme IT; Servicii de securitate pentru calculatoare; Servicii de autentificare a datelor si a identitatilor digitale; Integrare de sisteme de calculator; Servicii de criptografie; Servicii de securitate pentru protectia datelor si a comunicatiilor electronice."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii de autentificare a identitatii; Servicii de gestionare a certificatelor digitale."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Softvér na správu infrastruktúr verejného klúca (PKI); Softvér na vydávanie, správu a overovanie digitálnych certifikátov; Softvér na overovanie a správu digitálnych identít; Softvér na pocítacovú a kryptografickú bezpecnost."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Zabezpecený prenos údajov; Zabezpecené elektronické komunikacné sluzby."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Návrh, vývoj, údrzba a poskytovanie pocítacového softvéru pre infrastruktúry verejného klúca (PKI); Poskytovanie sluzieb typu Cloud (výpoctové mracno); Hostovanie na informacno-technologických platformách; Pocítacové bezpecnostné sluzby; Overovanie digitálnych údajov a identít; Integrácia pocítacových systémov; Sifrovacie sluzby; Bezpecnostné sluzby na ochranu údajov a elektronickej komunikácie."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Sluzby v oblasti overovania totoznosti; Správa digitálnych certifikátov."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Racunalniska programska oprema za upravljanje infrastruktur javnih kljucev (PKI); Racunalniska programska oprema za izdajanje, upravljanje in potrjevanje digitalnih potrdil; Racunalniska programska oprema za preverjanje pristnosti in upravljanje digitalnih identitet; Racunalniska programska oprema za racunalnisko varnost in kriptografijo."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Varen prenos podatkov; Varnostne elektronske komunikacijske storitve."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Zasnova, razvoj, vzdrzevanje in nudenje racunalniske programske opreme za infrastrukture javnih kljucev (PKI); Storitve racunalnistva v oblaku; Gostitev IT-platform; Storitve v zvezi z racunalnisko varnostjo; Storitve preverjanja pristnosti podatkov in digitalnih identitet; Integracija racunalniskih sistemov; Storitve sifriranja; Varnostne storitve za zascito elektronskih podatkov in komunikacij."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Storitve avtorizacije identitete; Storitev upravljanja digitalnih potrdil."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Software para gestionar infraestructuras de clave pública (PKI); Software para emitir, gestionar y validar certificados digitales; Software de autenticación y de gestión de identidades digitales; Software de seguridad informática y criptográfica."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Transmisión de datos asegurados; Servicios de comunicación electrónica segura."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Diseño, desarrollo, mantenimiento y suministro de software para infraestructuras de clave pública (PKI); Servicios de computación en la nube; Alojamiento de plataformas informáticas; Servicios de seguridad informática; Servicios de autenticación de datos y de identidades digitales; Integración de sistemas informáticos; Servicios de criptografía; Servicios de seguridad para la protección de datos y de comunicaciones electrónicas."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de autenticación de identidades; Servicios de gestión de certificados digitales."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Programvara för hantering av offentlig nyckelinfrastruktur (PKI); Programvara för utfärdande, hantering och validering av digitala certifikat; Programvara för autentisering och hantering av digitala identiteter; Programvara för datorsäkerhet och kryptografisk säkerhet."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Säker överföring av data; Säker elektronisk kommunikation."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Utformning, utveckling, underhåll och tillhandahållande av programvara för offentlig nyckelinfrastruktur (PKI); Molntjänster; Värdskap för IT-plattformar; Datorsäkerhetstjänster; Tjänster för autentisering av data och digitala identiteter; Integrering av datasystem; Kryptografiska tjänster; Säkerhetstjänster för att skydda data och elektronisk kommunikation."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Tjänster avseende verifiering av identitet; Tjänster för hantering av digitala certifikat."
         }
       ]
     },
@@ -130,7 +1354,7 @@
     "markFeature": "WORD ONLY",
     "markImagesAvailable": false,
     "markPublicationCopiesAvailable": false,
-    "recordLastUpdated": "20260830",
+    "recordLastUpdated": "20260918",
     "registrationOfficeCode": "EM",
     "registrationOfficeName": "EU trade marks",
     "representatives": [
@@ -150,16 +1374,16 @@
       },
       "cmNormalisedStatus": "PENDING",
       "expiryDate": "20360811",
-      "markCurrentStatus": "APPLICATION EXAMINATION"
+      "markCurrentStatus": "APPLICATION PUBLISHED"
     },
-    "version": "20260830020003",
+    "version": "20260918014557",
     "wordMarkSpecification": {
       "markVerbalElementText": "QORI"
     }
   },
   "_uri": "/mark/em/7a0fb9c1-6534-4467-8838-23a937da8e53",
   "_receipt": {
-    "fetched_at": "2026-09-02T16:25:36.396Z",
-    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+    "fetched_at": "2026-09-18T12:40:49.396Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
   }
 }

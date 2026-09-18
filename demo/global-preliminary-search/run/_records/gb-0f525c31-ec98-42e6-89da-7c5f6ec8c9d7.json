@@ -1,0 +1,166 @@
+{
+  "uri": "/mark/gb/0f525c31-ec98-42e6-89da-7c5f6ec8c9d7",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "0f525c31-ec98-42e6-89da-7c5f6ec8c9d7",
+  "applicationNumber": "UK00903810801",
+  "registrationNumber": "UK00903810801",
+  "applicationDate": "2004-04-30",
+  "registrationDate": "2005-11-07",
+  "expiryDate": "2034-04-30",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": null,
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    38,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Semiconductors, semiconductor processors, semiconductor processor chips, integrated circuits, integrated circuit chips, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor material therefore; semiconductors for machines and machine tools; semiconductors for lighting, heating, steam generating, cooking, refrigerating, drying and ventilating apparatus; semiconductors for clocks and time keeping apparatus and instruments; semiconductors for musical instruments; semiconductors for games and playthings; data conversion circuits; computer firmware; electronic, electrical and electro-mechanical apparatus for use with computers; video systems products; apparatus and equipment for recording, reproduction and alteration of sound, video and data; video circuit boards; audio circuit boards; audio-video circuit boards; video graphic accelerators; multimedia accelerators; video processors; computer programs; instructional material relating to computer and data algorithms for the compression and decompression of data in electronic format; testing and calibrating apparatus; parts and fittings for all the aforesaid goods; equipment for the testing and programming of integrated circuits and semiconductor memories; computer software, namely, application integration and connectivity software, computer utility programs, computer programs for network management, computer software for accessing a global computer network and interconnected computer networks; computer operating systems; computer operating system software; computer operating programs; and computer software tools for the facilitation of third party software applications.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "en",
+      "description": "Telecommunications.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Licensing of technology; licensing of patents, trademarks, copyrights, trade secrets and/or know-how related to the manufacture of semiconductors and their uses; licensing semiconductors; licensing of software related to the manufacture of semiconductors and their uses; licensing of technology related to semiconductors and the manufacture of semiconductors; licensing technology incorporated in and related to semiconductor products, integrated circuits, circuit boards, microcomputers, micro controllers, microprocessors and computer peripherals, memories and semiconductor material therefore, data conversion circuits, computer firmware, electronic, electrical and electromechanical apparatus for use with computers, video circuit boards, video systems products, apparatus and equipment for recording, reproduction and alteration of sound, video and data, computer programs, instructional material relating to computer and data algorithms for the compression and decompression of data; custom design of computer and telecommunications systems; consulting services in the field of computers and telecommunications and related technology for software design.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Stobbs",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20040301",
+      "priorityNumber": "78/376535"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West, Austin, 78735",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA Inc."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "26.04.06",
+      "26.04.09"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Semiconductors, semiconductor processors, semiconductor processor chips, integrated circuits, integrated circuit chips, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor material therefore; semiconductors for machines and machine tools; semiconductors for lighting, heating, steam generating, cooking, refrigerating, drying and ventilating apparatus; semiconductors for clocks and time keeping apparatus and instruments; semiconductors for musical instruments; semiconductors for games and playthings; data conversion circuits; computer firmware; electronic, electrical and electro-mechanical apparatus for use with computers; video systems products; apparatus and equipment for recording, reproduction and alteration of sound, video and data; video circuit boards; audio circuit boards; audio-video circuit boards; video graphic accelerators; multimedia accelerators; video processors; computer programs; instructional material relating to computer and data algorithms for the compression and decompression of data in electronic format; testing and calibrating apparatus; parts and fittings for all the aforesaid goods; equipment for the testing and programming of integrated circuits and semiconductor memories; computer software, namely, application integration and connectivity software, computer utility programs, computer programs for network management, computer software for accessing a global computer network and interconnected computer networks; computer operating systems; computer operating system software; computer operating programs; and computer software tools for the facilitation of third party software applications."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Telecommunications."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Licensing of technology; licensing of patents, trademarks, copyrights, trade secrets and/or know-how related to the manufacture of semiconductors and their uses; licensing semiconductors; licensing of software related to the manufacture of semiconductors and their uses; licensing of technology related to semiconductors and the manufacture of semiconductors; licensing technology incorporated in and related to semiconductor products, integrated circuits, circuit boards, microcomputers, micro controllers, microprocessors and computer peripherals, memories and semiconductor material therefore, data conversion circuits, computer firmware, electronic, electrical and electromechanical apparatus for use with computers, video circuit boards, video systems products, apparatus and equipment for recording, reproduction and alteration of sound, video and data, computer programs, instructional material relating to computer and data algorithms for the compression and decompression of data; custom design of computer and telecommunications systems; consulting services in the field of computers and telecommunications and related technology for software design."
+        }
+      ]
+    },
+    "id": "0f525c31-ec98-42e6-89da-7c5f6ec8c9d7",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN ONLY",
+    "markImageViennaClassification": [
+      "26.04.04",
+      "26.04.09",
+      "26.04.24"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20040301",
+        "priorityNumber": "78/376535"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Building 1000, Cambridge Research Park, Cambridge CB25 9PD",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Stobbs"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20040430",
+        "applicationNumber": "UK00903810801"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340430",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20051107",
+        "registrationNumber": "UK00903810801"
+      }
+    },
+    "version": "20250627202551"
+  },
+  "_uri": "/mark/gb/0f525c31-ec98-42e6-89da-7c5f6ec8c9d7",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.710Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

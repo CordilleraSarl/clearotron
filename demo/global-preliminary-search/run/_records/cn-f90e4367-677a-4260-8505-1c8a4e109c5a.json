@@ -1,0 +1,137 @@
+{
+  "uri": "/mark/cn/f90e4367-677a-4260-8505-1c8a4e109c5a",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "f90e4367-677a-4260-8505-1c8a4e109c5a",
+  "applicationNumber": "37724800",
+  "registrationNumber": "37724800",
+  "applicationDate": "2019-04-23",
+  "registrationDate": "2020-04-21",
+  "expiryDate": "2030-04-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2020-01-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "史莱姆纪元",
+  "markTransliteration": "SHI LAI MU JI YUAN",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "游戏器具出租",
+      "translation_language": "en",
+      "translation": "game equipment rental"
+    }
+  ],
+  "owner": "Guangzhou Tengding Mutual Entertainment Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省广州市天河区建中路44-46号四楼",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Guangzhou Tengding Mutual Entertainment Technology Co., Ltd.",
+        "applicantNativeName": "广州腾鼎互娱科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "game equipment rental",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "游戏器具出租"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Amusement and sports service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4105",
+          "subNatGoodsServicesDescription": "Amusement and sports service"
+        }
+      ]
+    },
+    "id": "f90e4367-677a-4260-8505-1c8a4e109c5a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "29.01.14",
+      "04.02.20",
+      "01.15.01",
+      "04.05.02"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1680"
+      }
+    ],
+    "recordLastUpdated": "20251003",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京沐森知识产权代理有限公司河北分公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190423",
+        "applicationNumber": "37724800"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300420",
+      "lastPublicationDate": "20200120",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20200421",
+        "registrationNumber": "37724800"
+      }
+    },
+    "version": "20251003155248",
+    "wordMarkSpecification": {
+      "markTransliteration": "SHI LAI MU JI YUAN",
+      "markVerbalElementText": "史莱姆纪元"
+    }
+  },
+  "_uri": "/mark/cn/f90e4367-677a-4260-8505-1c8a4e109c5a",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:44.440Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

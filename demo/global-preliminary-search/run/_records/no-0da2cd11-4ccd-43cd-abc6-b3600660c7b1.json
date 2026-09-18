@@ -1,0 +1,152 @@
+{
+  "uri": "/mark/no/0da2cd11-4ccd-43cd-abc6-b3600660c7b1",
+  "provider": "clarivate",
+  "office": "no",
+  "guid": "0da2cd11-4ccd-43cd-abc6-b3600660c7b1",
+  "applicationNumber": "201911852",
+  "registrationNumber": "307628",
+  "applicationDate": "2019-09-09",
+  "registrationDate": "2020-01-09",
+  "expiryDate": "2029-09-09",
+  "renewalDate": null,
+  "lastPublicationDate": "2020-01-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "TRIBIA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    38,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "no",
+      "description": "Dataprogrammer.",
+      "translation_language": "en",
+      "translation": "Computer programs."
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "no",
+      "description": "Telekommunikasjon / datakommunikasjon.",
+      "translation_language": "en",
+      "translation": "Telecommunications / data communications."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "no",
+      "description": "EDB programmering; utvikling og programmering av dataprogrammer; konsulenttjenester inklusive Saas-tjenester.",
+      "translation_language": "en",
+      "translation": "EDB programming; development and programming of computer programs; consulting services including Saas services."
+    }
+  ],
+  "owner": "TRIBIA AS",
+  "ownerNative": null,
+  "ownerCountry": "NO",
+  "representative": "Groth & Co KB",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "0275 OSLO",
+        "applicantAddressCountryCode": "NO",
+        "applicantAddressCountryName": "Norway",
+        "applicantName": "TRIBIA AS"
+      }
+    ],
+    "applicationLanguageCode": "no",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer programs.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "no",
+          "intGoodsServicesDescription": "Dataprogrammer."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Telecommunications / data communications.",
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "no",
+          "intGoodsServicesDescription": "Telekommunikasjon / datakommunikasjon."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "EDB programming; development and programming of computer programs; consulting services including Saas services.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "no",
+          "intGoodsServicesDescription": "EDB programmering; utvikling og programmering av dataprogrammer; konsulenttjenester inklusive Saas-tjenester."
+        }
+      ]
+    },
+    "id": "0da2cd11-4ccd-43cd-abc6-b3600660c7b1",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250808",
+    "registrationOfficeCode": "NO",
+    "registrationOfficeName": "Norway",
+    "representatives": [
+      {
+        "representativeAddress": "10232 STOCKHOLM",
+        "representativeAddressCountryCode": "SE",
+        "representativeAddressCountryName": "Sweden",
+        "representativeName": "Groth & Co KB"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190909",
+        "applicationNumber": "201911852"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290909",
+      "lastPublicationDate": "20200120",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20200109",
+        "registrationNumber": "307628"
+      }
+    },
+    "version": "20250808020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "TRIBIA"
+    }
+  },
+  "_uri": "/mark/no/0da2cd11-4ccd-43cd-abc6-b3600660c7b1",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.284Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

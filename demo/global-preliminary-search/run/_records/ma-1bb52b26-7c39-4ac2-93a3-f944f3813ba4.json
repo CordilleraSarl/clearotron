@@ -1,0 +1,146 @@
+{
+  "uri": "/mark/ma/1bb52b26-7c39-4ac2-93a3-f944f3813ba4",
+  "provider": "clarivate",
+  "office": "ma",
+  "guid": "1bb52b26-7c39-4ac2-93a3-f944f3813ba4",
+  "applicationNumber": "92529",
+  "registrationNumber": "92529",
+  "applicationDate": "2004-06-22",
+  "registrationDate": null,
+  "expiryDate": "2024-06-22",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "semi-conducteurs, semi-conducteurs processeurs, puces de semi-conducteurs processeurs, circuits intégrés, puces pour circuits intégrés, tableau pour circuit, microordinateurs, micro-contrôleurs, micro-processeurs et périphériques, d'ordinateur, mémoires et semi-conducteurs et matériel s'y rattachant, semi-conducteurs pour machines et machines outils, semi-conducteurs pour appareils d'éclairage, de chauffage, de production de vapeur, de cuisson de réfrigération, de séchage, de ventilation, semi-conducteurs pour horloges et pour instruments et appareils de pointage, semi-conducteurs pour instruments musicaux, semi-conducteurs pour jeux et jouets, circuits pour conversion de données, microprogrammes d'ordinateur, appareils électroniques, électriques, électromécaniques à usage avec ordinateurs, dispositifs pour systèmes de vidéo, appareils et équipements d'enregistrement, de reproduction et d'altération du son, de vidéo et de données, tableaux de circuits de vidéo, tableaux de circuits audio, tableaux de circuits audio-visuels, accélérateurs graphiques de vidéo, accélérateurs et multimédia, processeurs de vidéo, programmes d'ordinateurs, matériel d'instruction relatifs aux ordinateurs, pièces et accessoires pour tous les produits précités. equipements pour tester et programmer les circuits intégrés et les mémoires de semi-conducteurs, logiciels d'ordinateur, notamment, logiciels d'application d'intégration et de connectivité, programmes d'utilité d'ordinateur, programmes d'ordinateur pour gestion des réseaux, logiciel d'ordinateur pour accéder à un réseau informatique global et réseaux informatique interconnectés, systèmes de commande d'ordinateur, systèmes de commandes pour logiciels d'ordinateur, programmes de commande d'ordinateur, outils de logiciels d'ordinateur pour faciliter les applications de logiciels de partie tierce.",
+      "translation_language": "en",
+      "translation": "semiconductors, semiconductor processors, semiconductor processor chips, integrated circuits, chips for integrated circuits, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductors and related equipment, semiconductors for machines and machine tools, semiconductors for apparatus for lighting, heating, steam generating, cooking, refrigerating, drying, ventilating, semiconductors for clocks and for instruments and pointing devices, semiconductors for musical instruments, semiconductors for games and toys, circuits for data conversion, computer firmware, electronic, electrical, electromechanical apparatus for use with computers, devices for video systems, apparatus and equipment for recording, reproducing and altering sound, video and data, video circuit boards, audio circuit boards, audio-visual circuit boards, video graphics accelerators, accelerators and multimedia, video processors, programs of computers, instructional materials relating to computers, parts and accessories for all the aforesaid goods. Equipment for testing and programming integrated circuits and semiconductor memories, computer software, including integration and connectivity application software, computer utility programs, computer programs for network management, computer software for accessing a global computer network and interconnected computer networks, computer control systems, control systems for computer software, computer control programs, computer software tools for facilitating third-party software applications."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "licence de technologie, licence de brevets, de marques, de droit d'auteur, secret de fabrication et/ou savoir faire relatifs à la fabrication des semi-conducteurs et leurs utilisations, licence de semi-conducteurs, licence de logiciels relatifs à la fabrication des semi-conducteurs et leurs utilisations, licence de technologie relative aux semi-conducteurs et la fabrication des semi-conducteurs, licence de technologies relatives aux produits de semi-conducteurs, aux circuits intégrés, tableaux de circuits, micro-ordinateurs, micro-contrôleurs, micro-processeurs et périphériques d'ordinateur, mémoires et matériel de semi-conducteurs s'y rattachant, circuits de conversion de données, micro-programmes d'ordinateurs, tableaux de circuit de vidéo, produits de systèmes de vidéo, appareils et équipements pour l'enregistrement, la reproduction et l'altération du son, vidéo et données, programmes d'ordinateur, matériel d'instructions relatifs aux algorithmes d'ordinateur et de données pour la compression et la décompression des données, conception d'ordinateurs et de systèmes de télécommunication sur commande, services de consultation dans le domaine d'ordinateurs et de télécommunications et technologie s'y rattachant pour conception de logiciel.",
+      "translation_language": "en",
+      "translation": "technology license, license of patents, trademarks, copyright, trade secrets and/or know-how relating to the manufacture of semiconductors and their uses, license of semiconductors, license of software relating to the manufacture of semiconductors and their uses, license of technology relating to semiconductors and the manufacture of semiconductors, license of technologies relating to semiconductor products, integrated circuits, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor hardware relating thereto, data conversion circuits, computer microprograms, video circuit boards, video system products, apparatus and equipment for recording, reproducing and altering sound, video and data, computer programs, instruction material relating to computer and data algorithms for data compression and decompression, custom design of computers and telecommunications systems, consulting services in the field of computers and telecommunications and related technology for software design."
+    }
+  ],
+  "owner": "NXP USA,Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "TMP AGENTS",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20031230",
+      "priorityNumber": "76/567,257"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 WILLIAM CANNON DRIVE WEST AUSTIN, TEXAS 78735",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA,Inc."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "semiconductors, semiconductor processors, semiconductor processor chips, integrated circuits, chips for integrated circuits, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductors and related equipment, semiconductors for machines and machine tools, semiconductors for apparatus for lighting, heating, steam generating, cooking, refrigerating, drying, ventilating, semiconductors for clocks and for instruments and pointing devices, semiconductors for musical instruments, semiconductors for games and toys, circuits for data conversion, computer firmware, electronic, electrical, electromechanical apparatus for use with computers, devices for video systems, apparatus and equipment for recording, reproducing and altering sound, video and data, video circuit boards, audio circuit boards, audio-visual circuit boards, video graphics accelerators, accelerators and multimedia, video processors, programs of computers, instructional materials relating to computers, parts and accessories for all the aforesaid goods. Equipment for testing and programming integrated circuits and semiconductor memories, computer software, including integration and connectivity application software, computer utility programs, computer programs for network management, computer software for accessing a global computer network and interconnected computer networks, computer control systems, control systems for computer software, computer control programs, computer software tools for facilitating third-party software applications.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "semi-conducteurs, semi-conducteurs processeurs, puces de semi-conducteurs processeurs, circuits intégrés, puces pour circuits intégrés, tableau pour circuit, microordinateurs, micro-contrôleurs, micro-processeurs et périphériques, d'ordinateur, mémoires et semi-conducteurs et matériel s'y rattachant, semi-conducteurs pour machines et machines outils, semi-conducteurs pour appareils d'éclairage, de chauffage, de production de vapeur, de cuisson de réfrigération, de séchage, de ventilation, semi-conducteurs pour horloges et pour instruments et appareils de pointage, semi-conducteurs pour instruments musicaux, semi-conducteurs pour jeux et jouets, circuits pour conversion de données, microprogrammes d'ordinateur, appareils électroniques, électriques, électromécaniques à usage avec ordinateurs, dispositifs pour systèmes de vidéo, appareils et équipements d'enregistrement, de reproduction et d'altération du son, de vidéo et de données, tableaux de circuits de vidéo, tableaux de circuits audio, tableaux de circuits audio-visuels, accélérateurs graphiques de vidéo, accélérateurs et multimédia, processeurs de vidéo, programmes d'ordinateurs, matériel d'instruction relatifs aux ordinateurs, pièces et accessoires pour tous les produits précités. equipements pour tester et programmer les circuits intégrés et les mémoires de semi-conducteurs, logiciels d'ordinateur, notamment, logiciels d'application d'intégration et de connectivité, programmes d'utilité d'ordinateur, programmes d'ordinateur pour gestion des réseaux, logiciel d'ordinateur pour accéder à un réseau informatique global et réseaux informatique interconnectés, systèmes de commande d'ordinateur, systèmes de commandes pour logiciels d'ordinateur, programmes de commande d'ordinateur, outils de logiciels d'ordinateur pour faciliter les applications de logiciels de partie tierce."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "technology license, license of patents, trademarks, copyright, trade secrets and/or know-how relating to the manufacture of semiconductors and their uses, license of semiconductors, license of software relating to the manufacture of semiconductors and their uses, license of technology relating to semiconductors and the manufacture of semiconductors, license of technologies relating to semiconductor products, integrated circuits, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor hardware relating thereto, data conversion circuits, computer microprograms, video circuit boards, video system products, apparatus and equipment for recording, reproducing and altering sound, video and data, computer programs, instruction material relating to computer and data algorithms for data compression and decompression, custom design of computers and telecommunications systems, consulting services in the field of computers and telecommunications and related technology for software design.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "licence de technologie, licence de brevets, de marques, de droit d'auteur, secret de fabrication et/ou savoir faire relatifs à la fabrication des semi-conducteurs et leurs utilisations, licence de semi-conducteurs, licence de logiciels relatifs à la fabrication des semi-conducteurs et leurs utilisations, licence de technologie relative aux semi-conducteurs et la fabrication des semi-conducteurs, licence de technologies relatives aux produits de semi-conducteurs, aux circuits intégrés, tableaux de circuits, micro-ordinateurs, micro-contrôleurs, micro-processeurs et périphériques d'ordinateur, mémoires et matériel de semi-conducteurs s'y rattachant, circuits de conversion de données, micro-programmes d'ordinateurs, tableaux de circuit de vidéo, produits de systèmes de vidéo, appareils et équipements pour l'enregistrement, la reproduction et l'altération du son, vidéo et données, programmes d'ordinateur, matériel d'instructions relatifs aux algorithmes d'ordinateur et de données pour la compression et la décompression des données, conception d'ordinateurs et de systèmes de télécommunication sur commande, services de consultation dans le domaine d'ordinateurs et de télécommunications et technologie s'y rattachant pour conception de logiciel."
+        }
+      ]
+    },
+    "id": "1bb52b26-7c39-4ac2-93a3-f944f3813ba4",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20031230",
+        "priorityNumber": "76/567,257"
+      }
+    ],
+    "recordLastUpdated": "20251217",
+    "registrationOfficeCode": "MA",
+    "registrationOfficeName": "Morocco",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "MA",
+        "representativeAddressCountryName": "Morocco",
+        "representativeName": "TMP AGENTS"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20040622",
+        "applicationNumber": "92529"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20240622",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "92529"
+      }
+    },
+    "version": "20251217094718",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/ma/1bb52b26-7c39-4ac2-93a3-f944f3813ba4",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.715Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

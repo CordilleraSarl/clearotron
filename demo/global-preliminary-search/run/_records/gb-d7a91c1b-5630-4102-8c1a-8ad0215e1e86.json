@@ -1,0 +1,160 @@
+{
+  "uri": "/mark/gb/d7a91c1b-5630-4102-8c1a-8ad0215e1e86",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "d7a91c1b-5630-4102-8c1a-8ad0215e1e86",
+  "applicationNumber": "UK00912556239",
+  "registrationNumber": "UK00912556239",
+  "applicationDate": "2014-01-31",
+  "registrationDate": "2014-06-25",
+  "expiryDate": "2034-01-31",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "NAVIATE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    38,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer software for engineering, modelling, creation of objects, design and computer-aided design; Computer software for computer-aided design (CAD);  Computer software for interfaces; Computer programs for character-based applications, computer-aided design (CAD), animation, graphics and structural design; Computer programs and software for web-based posting, searching, extranet interfacing and exchanging of data, all for use in task coordination among multiple participants in the graphic design, mechanical and electrical drawing, modelling, civil engineering and multimedia image creation fields; Instructional documents delivered on electronic, optical or magnetic media or in digital form via networks; Instructional manuals in electronic form sold as a unit therewith; Downloadable computer graphics; Downloadable computer software for modeling and designing; Downloadable image files containing three dimensional digital models of objects and abstract items; Computer operating system software; Programs (Computer -) [downloadable software]; Computer software for information management relating to real estate management.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Processing, storage, retrieval and/or controlling (supervision) of computerised information; Computerised file management; Computerised file management; Systemization of information into computer databases; Systemisation of information relating to real estate management into computer databases.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "en",
+      "description": "Providing access to databases; Providing access to databases containing data or documents stored electronically in central files for remote consultation; Providing access to web pages; Data communication services accessible by access code; Providing access to weblogs; Provision of access to an electronic on-line network for information retrieval; Providing access to databases; Rental of access time to global computer networks; Computer-aided transmission of images; Electronic transmission of data and documents via computer terminals; Electronic transmission of messages and data; Secure transmission of data, sound or images; Providing on-line forums for transmission of messages among computer users; Providing access to a global computer network for the transfer and dissemination of information.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Development of computer programs recorded on data media (software) designed for use in construction and automated manufacturing (cad/cam); Computer aided design services; Computer-aided design of video graphics and graphic design; Computer aided design for manufacturing operations; Computer aided engineering design services; Computer aided analytical services; Product development for others; Consultation and consultancy with regard to product development and product design; Consultancy, consultation and technical support relating to computer hardware, computer software and computer-aided design, drawing and technologies; Leasing access time to a computer; Computer services for others, namely web-based posting, searching, extranet interfacing and secure exchanging of data, all for use in task coordination among multiple participants in the graphic design, mechanical and electrical drawing, modelling, civil engineering and multimedia image creation fields; Computer services, namely, interactive web hosting which allows users to publish and share their own content and images online; Providing a website featuring on-line non-downloadable software tools for image editing; Developing computer software; Computer hardware and software consultancy; Software as a service [SaaS]; Information technology [IT] consultancy; Technological consultation services; Consultation services relating to computer hardware; Computer software consultancy; Computer-aided engineering design and drawing services.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Symetri AB",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": "Forresters IP LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Forskargatan 3, Borlänge 781 70",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantName": "Symetri AB"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer software for engineering, modelling, creation of objects, design and computer-aided design; Computer software for computer-aided design (CAD);  Computer software for interfaces; Computer programs for character-based applications, computer-aided design (CAD), animation, graphics and structural design; Computer programs and software for web-based posting, searching, extranet interfacing and exchanging of data, all for use in task coordination among multiple participants in the graphic design, mechanical and electrical drawing, modelling, civil engineering and multimedia image creation fields; Instructional documents delivered on electronic, optical or magnetic media or in digital form via networks; Instructional manuals in electronic form sold as a unit therewith; Downloadable computer graphics; Downloadable computer software for modeling and designing; Downloadable image files containing three dimensional digital models of objects and abstract items; Computer operating system software; Programs (Computer -) [downloadable software]; Computer software for information management relating to real estate management."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Processing, storage, retrieval and/or controlling (supervision) of computerised information; Computerised file management; Computerised file management; Systemization of information into computer databases; Systemisation of information relating to real estate management into computer databases."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Providing access to databases; Providing access to databases containing data or documents stored electronically in central files for remote consultation; Providing access to web pages; Data communication services accessible by access code; Providing access to weblogs; Provision of access to an electronic on-line network for information retrieval; Providing access to databases; Rental of access time to global computer networks; Computer-aided transmission of images; Electronic transmission of data and documents via computer terminals; Electronic transmission of messages and data; Secure transmission of data, sound or images; Providing on-line forums for transmission of messages among computer users; Providing access to a global computer network for the transfer and dissemination of information."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Development of computer programs recorded on data media (software) designed for use in construction and automated manufacturing (cad/cam); Computer aided design services; Computer-aided design of video graphics and graphic design; Computer aided design for manufacturing operations; Computer aided engineering design services; Computer aided analytical services; Product development for others; Consultation and consultancy with regard to product development and product design; Consultancy, consultation and technical support relating to computer hardware, computer software and computer-aided design, drawing and technologies; Leasing access time to a computer; Computer services for others, namely web-based posting, searching, extranet interfacing and secure exchanging of data, all for use in task coordination among multiple participants in the graphic design, mechanical and electrical drawing, modelling, civil engineering and multimedia image creation fields; Computer services, namely, interactive web hosting which allows users to publish and share their own content and images online; Providing a website featuring on-line non-downloadable software tools for image editing; Developing computer software; Computer hardware and software consultancy; Software as a service [SaaS]; Information technology [IT] consultancy; Technological consultation services; Consultation services relating to computer hardware; Computer software consultancy; Computer-aided engineering design and drawing services."
+        }
+      ]
+    },
+    "id": "d7a91c1b-5630-4102-8c1a-8ad0215e1e86",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "The Gherkin (11th Floor), 30 St Mary Axe, London EC3A 8BF",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Forresters IP LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20140131",
+        "applicationNumber": "UK00912556239"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340131",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20140625",
+        "registrationNumber": "UK00912556239"
+      }
+    },
+    "version": "20250627213441",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NAVIATE"
+    }
+  },
+  "_uri": "/mark/gb/d7a91c1b-5630-4102-8c1a-8ad0215e1e86",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.286Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1304,7 +1304,7 @@
         "publicationVolume": "54"
       }
     ],
-    "recordLastUpdated": "20260511",
+    "recordLastUpdated": "20260917",
     "registrationOfficeCode": "EM",
     "registrationOfficeName": "EU trade marks",
     "representatives": [
@@ -1331,14 +1331,14 @@
         "registrationNumber": "10532968"
       }
     },
-    "version": "20260511152602",
+    "version": "20260917143533",
     "wordMarkSpecification": {
       "markVerbalElementText": "VANCORE"
     }
   },
   "_uri": "/mark/em/b4033056-8e90-434d-b21b-c7791c6c2857",
   "_receipt": {
-    "fetched_at": "2026-09-02T14:33:18.812Z",
-    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+    "fetched_at": "2026-09-18T12:42:34.359Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
   }
 }

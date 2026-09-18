@@ -1,0 +1,156 @@
+{
+  "uri": "/mark/jp/d26d4388-a2d3-49e2-a9f4-d92cd3fe548a",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "d26d4388-a2d3-49e2-a9f4-d92cd3fe548a",
+  "applicationNumber": "S54-075663",
+  "registrationNumber": "1543108",
+  "applicationDate": "1979-10-08",
+  "registrationDate": "1982-10-27",
+  "expiryDate": "2032-10-27",
+  "renewalDate": null,
+  "lastPublicationDate": "1981-12-19",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＦＬＹＧＴ",
+  "markTransliteration": "FURAIGUTO FURAITO FURIGUTO",
+  "markTranslation": "FLYGT",
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7
+      ],
+      "language": null,
+      "description": "交流電動機及び直流電動機（陸上の乗物用の交流電動機及び直流電動機（その部品を除く。）を除く。）",
+      "translation_language": "en",
+      "translation": "AC motor and DC motor (excluding AC motor and DC motor (excluding parts thereof) for land vehicles)"
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "電子応用機械器具及びその部品",
+      "translation_language": "en",
+      "translation": "Electronic appliances and appliances and parts thereof"
+    }
+  ],
+  "owner": "XYLEM EUROPE GMBH",
+  "ownerNative": null,
+  "ownerCountry": "CH",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityDate": "19791008"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "CH",
+        "applicantAddressCountryName": "Switzerland",
+        "applicantName": "XYLEM EUROPE GMBH",
+        "applicantNativeAddress": "スイス国",
+        "applicantNativeName": "ザイレム・オイローパ・ゲーエムベーハー"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "AC motor and DC motor (excluding AC motor and DC motor (excluding parts thereof) for land vehicles)",
+          "intClassNumber": "07",
+          "intGoodsServicesDescription": "交流電動機及び直流電動機（陸上の乗物用の交流電動機及び直流電動機（その部品を除く。）を除く。）"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electronic appliances and appliances and parts thereof",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "電子応用機械器具及びその部品"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11A01",
+          "natGoodsServicesDescription": "Starters (for motors / engines), Alternating or direct current motors, Alternating current generators, Direct current generators"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, instruments and parts"
+        },
+        {
+          "natClassNumber": "11C02"
+        }
+      ]
+    },
+    "id": "d26d4388-a2d3-49e2-a9f4-d92cd3fe548a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.03.01.00",
+      "26.03.06.00",
+      "26.03.19.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19791008"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19791008",
+        "applicationNumber": "S54-075663"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20321027",
+      "lastPublicationDate": "19811219",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "19821027",
+        "registrationNumber": "1543108"
+      }
+    },
+    "version": "20240321122035",
+    "wordMarkSpecification": {
+      "markTranslation": "FLYGT",
+      "markTransliteration": "FURAIGUTO FURAITO FURIGUTO",
+      "markVerbalElementText": "ＦＬＹＧＴ"
+    }
+  },
+  "_uri": "/mark/jp/d26d4388-a2d3-49e2-a9f4-d92cd3fe548a",
+  "_receipt": {
+    "fetched_at": "2026-09-18T13:08:49.089Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-incumbent-class"
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "uri": "/mark/ni/b4e06e33-710b-4a75-a058-5da2d9132a03",
+  "provider": "clarivate",
+  "office": "ni",
+  "guid": "b4e06e33-710b-4a75-a058-5da2d9132a03",
+  "applicationNumber": "2016-005109",
+  "registrationNumber": "2017120833",
+  "applicationDate": "2016-12-16",
+  "registrationDate": "2017-09-28",
+  "expiryDate": "2027-09-27",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "NXP",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Aparatos de grabación, transmisión o reproducción de sonido o imágenes; soportes de registro magnéticos, discos acústicos; interfaces [informática]; módulos electrónicos, electrotécnicos y electromagnéticos; equipos de procesamiento de datos, aparatos de almacenamiento de datos; microprocesadores; interfaces para ordenadores; circuitos integrados (ics), chips (circuitos integrados); semiconductores; tarjetas inteligentes; circuitos integrados de tarjetas inteligentes; chips y etiquetas rfid; equipos y programas informáticos para la creación, programación, control, codificación, análisis, lectura e interpretación de chips y etiquetas rfid; tarjetas inteligentes sin contacto; tarjetas inteligentes de interfaz dual; circuitos integrados (ic) de interfaz dual que proporcionan un vínculo entre tarjetas sin contacto y tarjetas de contacto; escritores y lectores para la transmisión inalámbrica desde y hacia chips transpondedoras; aparatos electrónicos para escritura y lectura de transmisiones inalámbricas desde y hacia chips transpondedoras; programas informáticos para controlar la transmisión de datos hacia chips transpondedoras y la lectura desde éstas; máquinas de procesamiento de datos para la determinación de tarifas, utilizando chips transpondedoras; tarjetas inteligentes codificadas; tarjetas de acceso electrónico; pulseras electrónicas; equipos, programas y dispositivos periféricos informáticos para fines de control de acceso y autenticación; programas informáticos; equipos informáticos; medidores de actividad ponibles; periféricos informáticos ponibles; auriculares; audífonos intraurales; teléfonos inteligentes; aparatos de telecomunicaciones ponibles.",
+      "translation_language": "en",
+      "translation": "Apparatus for recording, transmitting or reproducing sound or images; magnetic recording media, acoustic discs; interfaces [computer]; electronic, electrotechnical and electromagnetic modules; data processing equipment, data storage apparatus; microprocessors; computer interfaces; integrated circuits (ics), chips (integrated circuits); semiconductors; smart cards; smart card integrated circuits; rfid chips and tags; computer equipment and software for creating, programming, controlling, encoding, analysing, reading and interpreting rfid chips and tags; contactless smart cards; dual-interface smart cards; dual-interface integrated circuits (ic) providing a link between contactless cards and contact cards; writers and readers for wireless transmission to and from transponder chips; electronic apparatus for writing and reading wireless transmissions to and from transponder chips; computer software for controlling data transmission to and reading from transponder chips; data processing machines for determining tariffs, using transponder chips; encoded smart cards; electronic access cards; electronic wristbands; computer equipment, software and peripheral devices for access control and authentication purposes; computer software; computer equipment; wearable activity trackers; wearable computer peripherals; headphones; in-ear hearing aids; smart phones; wearable telecommunications devices."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Investigación y diseño para terceros en relación con circuitos integrados y programas de comunicaciones y redes informáticas; desarrollo de programas informáticos en el campo de las aplicaciones móviles; consultoría en el campo de la tecnología de las telecomunicaciones; diseño y desarrollo de sistemas de comunicaciones inalámbricas para la transmisión y recepción de voz, datos y video; diseño y desarrollo de sistemas de comunicaciones inalámbricas para propósitos de autenticación; provisión de uso temporal en línea de aplicaciones informáticas no descargables, plataformas de desarrollo y herramientas de desarrollo que permiten a los desarrolladores de programas informáticos desarrollar, programar, construir y realizar prototipos de programas informáticos para circuitos integrados, chips y equipos de procesamiento de datos; servicios de programación informática; investigación y diseño de módulos electrotécnicos y electromagnéticos, piezas y elementos de construcción, máquinas de procesamiento de datos, aparatos de almacenamiento de datos, microprocesadores, interfaces, circuitos integrados (ics), chips, semiconductores, tarjetas inteligentes, controladores para tarjetas inteligentes, controladores de chips y etiquetas rfid, programas y equipos informáticos para la creación, programación, control, codificación, exploración, lectura e interpretación de chips y etiquetas rfid, aparatos electrónicos, instrumentos y equipos para la creación, programación, control, codificación, escaneo, lectura e interpretación de chips y etiquetas rfid; investigación y diseño de antenas para la exploración, lectura e interpretación de chips y etiquetas rfid; investigación y diseño de aparatos, instrumentos y equipos nfc (comunicación de campo cercano), incluyendo módulos, piezas y elementos de construcción electrónicos, electrotécnicos y electromagnéticos y circuitos integrados para aplicaciones nfc; servicios de asesoramiento en relación con todo lo anterior.",
+      "translation_language": "en",
+      "translation": "Research and design for third parties relating to integrated circuits and computer communications and networking software; development of computer software in the field of mobile applications; consultancy in the field of telecommunications technology; design and development of wireless communications systems for the transmission and reception of voice, data and video; design and development of wireless communications systems for authentication purposes; provision of temporary online use of non-downloadable computer applications, development platforms and development tools enabling software developers to develop, program, build and prototype computer software for integrated circuits, chips and data processing equipment; computer programming services; Research and design of electrotechnical and electromagnetic modules, parts and construction elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (ICs), chips, semiconductors, smart cards, smart card controllers, RFID chip and tag controllers, computer programs and equipment for the creation, programming, control, encoding, scanning, reading and interpretation of RFID chips and tags, electronic apparatus, instruments and equipment for the creation, programming, control, encoding, scanning, reading and interpretation of RFID chips and tags; research and design of antennas for the scanning, reading and interpretation of RFID chips and tags; research and design of NFC (near field communication) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and construction elements and integrated circuits for NFC applications; consultancy services in relation to all of the above."
+    }
+  ],
+  "owner": "NXP B. V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "EDUARDO RODRIGUEZ ALEMAN",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "HIGH TECH CAMPUS 60, 5656 AG EINDHOVEN, PAÍSES BAJOS.",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B. V."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Apparatus for recording, transmitting or reproducing sound or images; magnetic recording media, acoustic discs; interfaces [computer]; electronic, electrotechnical and electromagnetic modules; data processing equipment, data storage apparatus; microprocessors; computer interfaces; integrated circuits (ics), chips (integrated circuits); semiconductors; smart cards; smart card integrated circuits; rfid chips and tags; computer equipment and software for creating, programming, controlling, encoding, analysing, reading and interpreting rfid chips and tags; contactless smart cards; dual-interface smart cards; dual-interface integrated circuits (ic) providing a link between contactless cards and contact cards; writers and readers for wireless transmission to and from transponder chips; electronic apparatus for writing and reading wireless transmissions to and from transponder chips; computer software for controlling data transmission to and reading from transponder chips; data processing machines for determining tariffs, using transponder chips; encoded smart cards; electronic access cards; electronic wristbands; computer equipment, software and peripheral devices for access control and authentication purposes; computer software; computer equipment; wearable activity trackers; wearable computer peripherals; headphones; in-ear hearing aids; smart phones; wearable telecommunications devices.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Aparatos de grabación, transmisión o reproducción de sonido o imágenes; soportes de registro magnéticos, discos acústicos; interfaces [informática]; módulos electrónicos, electrotécnicos y electromagnéticos; equipos de procesamiento de datos, aparatos de almacenamiento de datos; microprocesadores; interfaces para ordenadores; circuitos integrados (ics), chips (circuitos integrados); semiconductores; tarjetas inteligentes; circuitos integrados de tarjetas inteligentes; chips y etiquetas rfid; equipos y programas informáticos para la creación, programación, control, codificación, análisis, lectura e interpretación de chips y etiquetas rfid; tarjetas inteligentes sin contacto; tarjetas inteligentes de interfaz dual; circuitos integrados (ic) de interfaz dual que proporcionan un vínculo entre tarjetas sin contacto y tarjetas de contacto; escritores y lectores para la transmisión inalámbrica desde y hacia chips transpondedoras; aparatos electrónicos para escritura y lectura de transmisiones inalámbricas desde y hacia chips transpondedoras; programas informáticos para controlar la transmisión de datos hacia chips transpondedoras y la lectura desde éstas; máquinas de procesamiento de datos para la determinación de tarifas, utilizando chips transpondedoras; tarjetas inteligentes codificadas; tarjetas de acceso electrónico; pulseras electrónicas; equipos, programas y dispositivos periféricos informáticos para fines de control de acceso y autenticación; programas informáticos; equipos informáticos; medidores de actividad ponibles; periféricos informáticos ponibles; auriculares; audífonos intraurales; teléfonos inteligentes; aparatos de telecomunicaciones ponibles."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Research and design for third parties relating to integrated circuits and computer communications and networking software; development of computer software in the field of mobile applications; consultancy in the field of telecommunications technology; design and development of wireless communications systems for the transmission and reception of voice, data and video; design and development of wireless communications systems for authentication purposes; provision of temporary online use of non-downloadable computer applications, development platforms and development tools enabling software developers to develop, program, build and prototype computer software for integrated circuits, chips and data processing equipment; computer programming services; Research and design of electrotechnical and electromagnetic modules, parts and construction elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (ICs), chips, semiconductors, smart cards, smart card controllers, RFID chip and tag controllers, computer programs and equipment for the creation, programming, control, encoding, scanning, reading and interpretation of RFID chips and tags, electronic apparatus, instruments and equipment for the creation, programming, control, encoding, scanning, reading and interpretation of RFID chips and tags; research and design of antennas for the scanning, reading and interpretation of RFID chips and tags; research and design of NFC (near field communication) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and construction elements and integrated circuits for NFC applications; consultancy services in relation to all of the above.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Investigación y diseño para terceros en relación con circuitos integrados y programas de comunicaciones y redes informáticas; desarrollo de programas informáticos en el campo de las aplicaciones móviles; consultoría en el campo de la tecnología de las telecomunicaciones; diseño y desarrollo de sistemas de comunicaciones inalámbricas para la transmisión y recepción de voz, datos y video; diseño y desarrollo de sistemas de comunicaciones inalámbricas para propósitos de autenticación; provisión de uso temporal en línea de aplicaciones informáticas no descargables, plataformas de desarrollo y herramientas de desarrollo que permiten a los desarrolladores de programas informáticos desarrollar, programar, construir y realizar prototipos de programas informáticos para circuitos integrados, chips y equipos de procesamiento de datos; servicios de programación informática; investigación y diseño de módulos electrotécnicos y electromagnéticos, piezas y elementos de construcción, máquinas de procesamiento de datos, aparatos de almacenamiento de datos, microprocesadores, interfaces, circuitos integrados (ics), chips, semiconductores, tarjetas inteligentes, controladores para tarjetas inteligentes, controladores de chips y etiquetas rfid, programas y equipos informáticos para la creación, programación, control, codificación, exploración, lectura e interpretación de chips y etiquetas rfid, aparatos electrónicos, instrumentos y equipos para la creación, programación, control, codificación, escaneo, lectura e interpretación de chips y etiquetas rfid; investigación y diseño de antenas para la exploración, lectura e interpretación de chips y etiquetas rfid; investigación y diseño de aparatos, instrumentos y equipos nfc (comunicación de campo cercano), incluyendo módulos, piezas y elementos de construcción electrónicos, electrotécnicos y electromagnéticos y circuitos integrados para aplicaciones nfc; servicios de asesoramiento en relación con todo lo anterior."
+        }
+      ]
+    },
+    "id": "b4e06e33-710b-4a75-a058-5da2d9132a03",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260315",
+    "registrationOfficeCode": "NI",
+    "registrationOfficeName": "Nicaragua",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "NI",
+        "representativeAddressCountryName": "Nicaragua",
+        "representativeName": "EDUARDO RODRIGUEZ ALEMAN"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20161216",
+        "applicationNumber": "2016-005109"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270927",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20170928",
+        "registrationNumber": "2017120833"
+      }
+    },
+    "version": "20260315015246",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NXP"
+    }
+  },
+  "_uri": "/mark/ni/b4e06e33-710b-4a75-a058-5da2d9132a03",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.716Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

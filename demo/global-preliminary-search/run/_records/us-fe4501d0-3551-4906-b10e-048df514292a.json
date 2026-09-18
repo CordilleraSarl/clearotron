@@ -1,0 +1,342 @@
+{
+  "uri": "/mark/us/fe4501d0-3551-4906-b10e-048df514292a",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "fe4501d0-3551-4906-b10e-048df514292a",
+  "applicationNumber": "79354097",
+  "registrationNumber": "7404001",
+  "applicationDate": "2022-09-15",
+  "registrationDate": "2024-06-04",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2024-03-19"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SOVELIA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Recorded computer programs and computer operating system software for construction, analysis, simulation, visualisation and production, and for the handling of documents and product data for the entire product life-cycle, for engineers and industrial enterprises",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Engineering consultancy; computer-aided product development; computer programming; computer software design",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Symetri AB",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": "Jennifer L. Gregor",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Forskargatan 3, SWED",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantAddressStreet": "Forskargatan 3",
+        "applicantJurisdictionOfIncorporation": "SWEDEN",
+        "applicantName": "Symetri AB",
+        "applicantSecondaryAddressUnit": "SE-781 70 Borlänge"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Recorded computer programs and computer operating system software for construction, analysis, simulation, visualisation and production, and for the handling of documents and product data for the entire product life-cycle, for engineers and industrial enterprises"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Engineering consultancy; computer-aided product development; computer programming; computer software design"
+        }
+      ]
+    },
+    "id": "fe4501d0-3551-4906-b10e-048df514292a",
+    "internationalMarkKeys": [
+      {
+        "internationalRegistrationNumber": "1693178",
+        "markCurrentStatus": "REQUEST FOR EXTENSION OF PROTECTION ESTABLISHED",
+        "markCurrentStatusDate": "20221103",
+        "protectionGrantedDate": "20240503",
+        "publicationDate": "20221103",
+        "registrationDate": "20220915",
+        "renewalDate": "20320915"
+      }
+    ],
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20241207",
+        "descriptionText": "FINAL DECISION TRANSACTION PROCESSED BY IB"
+      },
+      {
+        "date": "20241116",
+        "descriptionText": "FINAL DISPOSITION NOTICE SENT TO IB"
+      },
+      {
+        "date": "20241116",
+        "descriptionText": "FINAL DISPOSITION PROCESSED"
+      },
+      {
+        "date": "20240904",
+        "descriptionText": "FINAL DISPOSITION NOTICE CREATED, TO BE SENT TO IB"
+      },
+      {
+        "date": "20240604",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20240604",
+        "descriptionText": "NOTICE OF REGISTRATION CONFIRMATION EMAILED"
+      },
+      {
+        "date": "20240422",
+        "descriptionText": "NOTIFICATION OF POSSIBLE OPPOSITION -  PROCESSED BY IB"
+      },
+      {
+        "date": "20240403",
+        "descriptionText": "NOTIFICATION OF POSSIBLE OPPOSITION SENT TO IB"
+      },
+      {
+        "date": "20240403",
+        "descriptionText": "NOTIFICATION OF POSSIBLE OPPOSITION CREATED, TO BE SENT TO IB"
+      },
+      {
+        "date": "20240319",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20240319",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20240228",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20240228",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20240210",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20240203",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20240202",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20240202",
+        "descriptionText": "TEAS CHANGE OF OWNER ADDRESS RECEIVED"
+      },
+      {
+        "date": "20240202",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20240202",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20240202",
+        "descriptionText": "APPLICANT/CORRESPONDENCE CHANGES (NON-RESPONSIVE) ENTERED"
+      },
+      {
+        "date": "20240202",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20240202",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20231111",
+        "descriptionText": "NEW REPRESENTATIVE AT IB RECEIVED"
+      },
+      {
+        "date": "20230828",
+        "descriptionText": "REFUSAL PROCESSED BY IB"
+      },
+      {
+        "date": "20230805",
+        "descriptionText": "NON-FINAL ACTION MAILED - REFUSAL SENT TO IB"
+      },
+      {
+        "date": "20230805",
+        "descriptionText": "REFUSAL PROCESSED BY MPU"
+      },
+      {
+        "date": "20230630",
+        "descriptionText": "NON-FINAL ACTION (IB REFUSAL) PREPARED FOR REVIEW"
+      },
+      {
+        "date": "20230629",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20230627",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20221108",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      },
+      {
+        "date": "20221104",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20221103",
+        "descriptionText": "SN ASSIGNED FOR SECT 66A APPL FROM IB"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Forskargatan 3, SWED",
+        "countryCode": "SE",
+        "countryName": "Sweden",
+        "jurisdictionOfIncorporation": "SWEDEN",
+        "name": "Symetri AB",
+        "secondaryAddressUnit": "SE-781 70 Borlänge",
+        "street": "Forskargatan 3"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "Forskargatan 3, SWED",
+        "countryCode": "SE",
+        "countryName": "Sweden",
+        "jurisdictionOfIncorporation": "SWEDEN",
+        "name": "Symetri AB",
+        "secondaryAddressUnit": "SE-781 70 Borlänge",
+        "street": "Forskargatan 3"
+      },
+      {
+        "address": "Forskargatan 3, SWED",
+        "countryCode": "SE",
+        "countryName": "Sweden",
+        "jurisdictionOfIncorporation": "SWEDEN",
+        "name": "Symetri AB",
+        "secondaryAddressUnit": "SE-781 70 Borlänge",
+        "street": "Forskargatan 3"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "Forskargatan 3, SWED",
+        "countryCode": "SE",
+        "countryName": "Sweden",
+        "jurisdictionOfIncorporation": "SWEDEN",
+        "name": "Symetri AB",
+        "secondaryAddressUnit": "SE-781 70 Borlänge",
+        "street": "Forskargatan 3"
+      }
+    ],
+    "recordLastUpdated": "20260110",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Milwaukee, WI 53202-5615, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "Milwaukee, WI 53202-5615",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Jennifer L. Gregor Godfrey & Kahn, S.C., 833 E. Michigan Street, Suite 1800"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Milwaukee, WI 53202-5615, UNITED STATES",
+        "representativeAddressLines": [
+          "Milwaukee, WI 53202-5615",
+          "UNITED STATES"
+        ],
+        "representativeName": "Jennifer L. Gregor"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220915",
+        "applicationNumber": "79354097"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED",
+        "markOfficialStatusCode": "700",
+        "markOfficialStatusDate": "20240604",
+        "markOfficialStatusEvents": [
+          "Section 66(a) (Madrid Protocol) - Filed",
+          "Section 66(a) (Madrid Protocol) - Current",
+          "Notice of First Refusal"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20240319"
+      ],
+      "registration": {
+        "registrationDate": "20240604",
+        "registrationNumber": "7404001"
+      }
+    },
+    "version": "20260110054011",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SOVELIA"
+    }
+  },
+  "_uri": "/mark/us/fe4501d0-3551-4906-b10e-048df514292a",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.288Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,152 @@
+{
+  "uri": "/mark/no/8dfc39a1-0fa5-4a0b-af54-b4aa429f4ebf",
+  "provider": "clarivate",
+  "office": "no",
+  "guid": "8dfc39a1-0fa5-4a0b-af54-b4aa429f4ebf",
+  "applicationNumber": "201203941",
+  "registrationNumber": "267215",
+  "applicationDate": "2012-04-16",
+  "registrationDate": "2012-09-18",
+  "expiryDate": "2032-04-16",
+  "renewalDate": null,
+  "lastPublicationDate": "2012-09-24",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "NAVIATE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "STYLIZED LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    38,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "no",
+      "description": "Computer software for 2D og 3D visualisering, computergenerert grafikk og modellering; computer software for arkitektur, teknikk, bygge- og anleggsvirksomhet; computer software for trådløse applikasjoner og innretninger, computer hardware periferiutstyr; CAD-software, nemlig computer-støttet design software og computer-støttet drift- og administrasjonssoftware for arkitekter, ingeniører, og fasilitetsplanleggere og forvaltere; computer software for utforming og design av objekter, bilder og symboler som kan lastes ned fra et globalt datanettverk; nedlastbare bildefiler inneholdende tredimensjonale digitale modeller av objekter og abstrakte gjenstander.",
+      "translation_language": "en",
+      "translation": "Computer software for 2D and 3D visualization, computer-generated graphics and modeling; computer software for architecture, engineering, construction and civil engineering; computer software for wireless applications and devices, computer hardware peripherals; CAD software, namely, computer-aided design software and computer-aided operation and management software for architects, engineers, and facility planners and managers; computer software for the design and layout of objects, images and symbols that can be downloaded from a global computer network; downloadable image files containing three-dimensional digital models of objects and abstract objects."
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "no",
+      "description": "Elektroniske oppslagstavler [telekommunikasjonstjeneste]; tilby tilgangstid til et globalt datanettverk; tilveiebringelse av tilgang til databaser; utleie av tilgangstid til et globalt datanettverk; dataassistert overføring av beskjeder og bilder; kommunikasjon ved dataterminaler; overføring av beskjeder og bilder via datamaskiner; overføring av digitale filer; datatjenester, nemlig interaktive vertstjenester som tillater brukeren å publisere og dele sitt eget innhold og bilder online.",
+      "translation_language": "en",
+      "translation": "Electronic bulletin boards [telecommunications service]; providing access time to a global computer network; providing access to databases; leasing access time to a global computer network; computer-assisted transmission of messages and images; communication by computer terminals; transmission of messages and images via computers; transmission of digital files; computer services, namely interactive hosting services that allow users to publish and share their own content and images online."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "no",
+      "description": "Vitenskapelige og teknologiske tjenester og forskning og utvikling relatert dertil; industriell analyse og forskning; design og utvikling av datamaskiner og dataprogrammer; design av nye produkter og konsulenttjenester innen området for elektronisk produktdesign og designrealisering; konsultasjonstjenester innenfor området for elektronisk produktdesign og design Implementering; forskning og utvikling av nye produkter [for tredjemann]; emballasjedesign; grafisk formgivning; industridesign; tilveiebringe et sikkert elektronisk online system som byr på teknologi som tillater brukeren å frembringe, publisere, modifisere, dele og produsere personifiserte ting fra digitalt, innhold, modeller og design; tilveiebringe en web side som byr på online ikke-nedlastbar programvareverktøy for bilderedigering; tekniske støtte- og rådgivningsvirksomhet for arkitektur, teknikk, bygge- og anleggsvirksomhet; teknisk bistand hovedsaklig, feilsøking av datamaskiner/hardware og dataprogrammer/software problem og konsultasjonstjenester i forbindelse med dette; online tekniske støttetjenester, nemlig feilsøking av computer softwareproblemer og applikasjonsstøtte, individuell tilpasning av software, konfigurerings- og prosjekttjenester, fremskaffelse av computerprogrammer for datanettverk; analysering og design av datasystemer; konsulenttjenester innen dataprogramvare; forsyning/fremskaffelse av dataprogramvare via et globalt nettverk; konvertering av dataprogrammer og data [ikke fysisk konvertering]; installasjon, utarbeidelse og utleie av dataprogrammer; oppdatering av dataprogrammer; vedlikehold av dataprogrammer og software; konvertering av data eller dokumenter fra fysisk til elektronisk media; tegning [industridesign]; arkitekturkonsultasjoner; ingeniørvirksomhet [teknisk ekspertise]; prosjektstudier [tekniske]; kvalitetskontroll; materialtesting; kalibreringstjenester, konsultasjonstjenester i forbindelse med energisparing; plantegning i forbindelse med bygging.",
+      "translation_language": "en",
+      "translation": "Scientific and technological services and research and development related thereto; industrial analysis and research; design and development of computers and computer programs; design of new products and consultancy services in the field of electronic product design and design realization; consultancy services in the field of electronic product design and design implementation; research and development of new products [for others]; packaging design; graphic design; industrial design; providing a secure online electronic system offering technology that allows users to create, publish, modify, share and produce personalized items from digital content, models and designs; providing a website offering online non-downloadable software tools for image editing; technical support and consultancy services for architecture, engineering, construction and civil engineering; technical assistance mainly, troubleshooting of computers/hardware and computer programs/software problems and consultancy services in connection therewith; online technical support services, namely troubleshooting of computer software problems and application support, custom software customization, configuration and project services, provision of computer programs for computer networks; analysis and design of computer systems; computer software consultancy services; supply/provision of computer software via a global network; conversion of computer programs and data [not physical conversion]; installation, preparation and rental of computer programs; updating of computer programs; maintenance of computer programs and software; conversion of data or documents from physical to electronic media; drawing [industrial design]; architectural consultancy; engineering [technical expertise]; project studies [technical]; quality control; materials testing; calibration services, consultancy services relating to energy saving; floor plans relating to construction."
+    }
+  ],
+  "owner": "Symetri AB",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": "Groth & Co KB",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "78127 BORLÄNGE",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantName": "Symetri AB"
+      }
+    ],
+    "applicationLanguageCode": "no",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer software for 2D and 3D visualization, computer-generated graphics and modeling; computer software for architecture, engineering, construction and civil engineering; computer software for wireless applications and devices, computer hardware peripherals; CAD software, namely, computer-aided design software and computer-aided operation and management software for architects, engineers, and facility planners and managers; computer software for the design and layout of objects, images and symbols that can be downloaded from a global computer network; downloadable image files containing three-dimensional digital models of objects and abstract objects.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "no",
+          "intGoodsServicesDescription": "Computer software for 2D og 3D visualisering, computergenerert grafikk og modellering; computer software for arkitektur, teknikk, bygge- og anleggsvirksomhet; computer software for trådløse applikasjoner og innretninger, computer hardware periferiutstyr; CAD-software, nemlig computer-støttet design software og computer-støttet drift- og administrasjonssoftware for arkitekter, ingeniører, og fasilitetsplanleggere og forvaltere; computer software for utforming og design av objekter, bilder og symboler som kan lastes ned fra et globalt datanettverk; nedlastbare bildefiler inneholdende tredimensjonale digitale modeller av objekter og abstrakte gjenstander."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electronic bulletin boards [telecommunications service]; providing access time to a global computer network; providing access to databases; leasing access time to a global computer network; computer-assisted transmission of messages and images; communication by computer terminals; transmission of messages and images via computers; transmission of digital files; computer services, namely interactive hosting services that allow users to publish and share their own content and images online.",
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "no",
+          "intGoodsServicesDescription": "Elektroniske oppslagstavler [telekommunikasjonstjeneste]; tilby tilgangstid til et globalt datanettverk; tilveiebringelse av tilgang til databaser; utleie av tilgangstid til et globalt datanettverk; dataassistert overføring av beskjeder og bilder; kommunikasjon ved dataterminaler; overføring av beskjeder og bilder via datamaskiner; overføring av digitale filer; datatjenester, nemlig interaktive vertstjenester som tillater brukeren å publisere og dele sitt eget innhold og bilder online."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Scientific and technological services and research and development related thereto; industrial analysis and research; design and development of computers and computer programs; design of new products and consultancy services in the field of electronic product design and design realization; consultancy services in the field of electronic product design and design implementation; research and development of new products [for others]; packaging design; graphic design; industrial design; providing a secure online electronic system offering technology that allows users to create, publish, modify, share and produce personalized items from digital content, models and designs; providing a website offering online non-downloadable software tools for image editing; technical support and consultancy services for architecture, engineering, construction and civil engineering; technical assistance mainly, troubleshooting of computers/hardware and computer programs/software problems and consultancy services in connection therewith; online technical support services, namely troubleshooting of computer software problems and application support, custom software customization, configuration and project services, provision of computer programs for computer networks; analysis and design of computer systems; computer software consultancy services; supply/provision of computer software via a global network; conversion of computer programs and data [not physical conversion]; installation, preparation and rental of computer programs; updating of computer programs; maintenance of computer programs and software; conversion of data or documents from physical to electronic media; drawing [industrial design]; architectural consultancy; engineering [technical expertise]; project studies [technical]; quality control; materials testing; calibration services, consultancy services relating to energy saving; floor plans relating to construction.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "no",
+          "intGoodsServicesDescription": "Vitenskapelige og teknologiske tjenester og forskning og utvikling relatert dertil; industriell analyse og forskning; design og utvikling av datamaskiner og dataprogrammer; design av nye produkter og konsulenttjenester innen området for elektronisk produktdesign og designrealisering; konsultasjonstjenester innenfor området for elektronisk produktdesign og design Implementering; forskning og utvikling av nye produkter [for tredjemann]; emballasjedesign; grafisk formgivning; industridesign; tilveiebringe et sikkert elektronisk online system som byr på teknologi som tillater brukeren å frembringe, publisere, modifisere, dele og produsere personifiserte ting fra digitalt, innhold, modeller og design; tilveiebringe en web side som byr på online ikke-nedlastbar programvareverktøy for bilderedigering; tekniske støtte- og rådgivningsvirksomhet for arkitektur, teknikk, bygge- og anleggsvirksomhet; teknisk bistand hovedsaklig, feilsøking av datamaskiner/hardware og dataprogrammer/software problem og konsultasjonstjenester i forbindelse med dette; online tekniske støttetjenester, nemlig feilsøking av computer softwareproblemer og applikasjonsstøtte, individuell tilpasning av software, konfigurerings- og prosjekttjenester, fremskaffelse av computerprogrammer for datanettverk; analysering og design av datasystemer; konsulenttjenester innen dataprogramvare; forsyning/fremskaffelse av dataprogramvare via et globalt nettverk; konvertering av dataprogrammer og data [ikke fysisk konvertering]; installasjon, utarbeidelse og utleie av dataprogrammer; oppdatering av dataprogrammer; vedlikehold av dataprogrammer og software; konvertering av data eller dokumenter fra fysisk til elektronisk media; tegning [industridesign]; arkitekturkonsultasjoner; ingeniørvirksomhet [teknisk ekspertise]; prosjektstudier [tekniske]; kvalitetskontroll; materialtesting; kalibreringstjenester, konsultasjonstjenester i forbindelse med energisparing; plantegning i forbindelse med bygging."
+        }
+      ]
+    },
+    "id": "8dfc39a1-0fa5-4a0b-af54-b4aa429f4ebf",
+    "ipRightKind": "tmk",
+    "markFeature": "STYLIZED LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250808",
+    "registrationOfficeCode": "NO",
+    "registrationOfficeName": "Norway",
+    "representatives": [
+      {
+        "representativeAddress": "10232 STOCKHOLM",
+        "representativeAddressCountryCode": "SE",
+        "representativeAddressCountryName": "Sweden",
+        "representativeName": "Groth & Co KB"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20120416",
+        "applicationNumber": "201203941"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320416",
+      "lastPublicationDate": "20120924",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20120918",
+        "registrationNumber": "267215"
+      }
+    },
+    "version": "20250808020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NAVIATE"
+    }
+  },
+  "_uri": "/mark/no/8dfc39a1-0fa5-4a0b-af54-b4aa429f4ebf",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.284Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

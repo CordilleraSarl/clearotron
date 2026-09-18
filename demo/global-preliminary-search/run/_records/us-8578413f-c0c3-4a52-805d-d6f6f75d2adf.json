@@ -1,0 +1,646 @@
+{
+  "uri": "/mark/us/8578413f-c0c3-4a52-805d-d6f6f75d2adf",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "8578413f-c0c3-4a52-805d-d6f6f75d2adf",
+  "applicationNumber": "86313558",
+  "registrationNumber": "4691482",
+  "applicationDate": "2014-06-18",
+  "registrationDate": "2015-02-24",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2014-12-09"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2025-09-05",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "N NEXTPOINT",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Providing temporary use of on-line non-downloadable litigation and trial support services software for creating, viewing, editing, format converting, emailing, and managing of digital photographs, digital and graphic images, data, text, audio, video, multimedia and interactive documents, and documents that are handwritten and typed; providing customized computer searching services, namely, searching and retrieving litigation and trial support information at the customer's specific request via a global computer network",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NEXTPOINT INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Daliah Saper",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20200917",
+      "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+    },
+    "applicants": [
+      {
+        "applicantAddress": "Chicago, IL, 60613",
+        "applicantAddressCity": "Chicago",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "60613",
+        "applicantAddressStateName": "ILLINOIS",
+        "applicantJurisdictionOfIncorporation": "ILLINOIS",
+        "applicantLegalEntity": "SOLE PROPRIETORSHIP",
+        "applicantName": "NEXTPOINT INC.",
+        "applicantSecondaryAddressUnit": "4043 N Ravenswood Ave, Suite 317"
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "4043 N RAVENSWOOD AVE, #317, CHICAGO, ILLINOIS, 60613",
+            "city": "CHICAGO",
+            "jurisdictionOfIncorporation": "ILLINOIS",
+            "legalEntity": "CORPORATION",
+            "name": "NEXTPOINT INC.",
+            "postalCode": "60613",
+            "stateName": "ILLINOIS",
+            "street": "4043 N RAVENSWOOD AVE, #317"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "ARIZONA",
+            "legalEntity": "CORPORATION",
+            "name": "WESTERN ALLIANCE BANK"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "200 N LASALLE, SUITE 1550, CHICAGO, IL 60606",
+            "addressLines": [
+              "PERRY LITWIN LAW, LLC GATTEGNO",
+              "200 N LASALLE, SUITE 1550",
+              "CHICAGO, IL 60606"
+            ],
+            "name": "PERRY LITWIN LAW, LLC GATTEGNO"
+          }
+        ],
+        "descriptionText": "RELEASE BY SECURED PARTY",
+        "executedDate": "20230515",
+        "recordedDate": "20230519",
+        "reelFrameNumber": "8078/0672"
+      },
+      {
+        "assignees": [
+          {
+            "address": "150 N. WACKER DRIVE, SUITE 2160, CHICAGO, ILLINOIS, 60606",
+            "city": "CHICAGO",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED PARTNERSHIP",
+            "name": "RF INVESTMENT PARTNERS SBIC II, LP, AS AGENT",
+            "postalCode": "60606",
+            "stateName": "ILLINOIS",
+            "street": "150 N. WACKER DRIVE, SUITE 2160"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "NXP HOLDINGS LLC"
+          },
+          {
+            "jurisdictionOfIncorporation": "ILLINOIS",
+            "legalEntity": "CORPORATION",
+            "name": "NEXTPOINT HOLDINGS INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "ILLINOIS",
+            "legalEntity": "CORPORATION",
+            "name": "NEXTPOINT INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "ARIZONA",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "NEXTPOINT LAW GROUP LLC"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "525 WEST MONROE STREET, CHICAGO, IL 60661",
+            "addressLines": [
+              "RAQUEL HALEEM C/O KATTEN MUCHIN ROSENMAN",
+              "525 WEST MONROE STREET",
+              "CHICAGO, IL 60661"
+            ],
+            "name": "RAQUEL HALEEM C/O KATTEN MUCHIN ROSENMAN"
+          }
+        ],
+        "descriptionText": "SECURITY INTEREST",
+        "executedDate": "20230426",
+        "recordedDate": "20230427",
+        "reelFrameNumber": "8053/0829"
+      },
+      {
+        "assignees": [
+          {
+            "address": "310 LITTLETON ROAD, WESTFORD, MASSACHUSETTS, 01886",
+            "city": "WESTFORD",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "NETSCOUT SYSTEMS, INC.",
+            "postalCode": "01886",
+            "stateName": "MASSACHUSETTS",
+            "street": "310 LITTLETON ROAD"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "NATIONAL BANKING ASSOCIATION",
+            "name": "JPMORGAN CHASE BANK, N.A."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "1025 CONNECTICUT AVE NW, SUITE 712, COGENCY GLOBAL INC., WASHINGTON, DC 20036",
+            "addressLines": [
+              "RODNEY BOULWARE",
+              "1025 CONNECTICUT AVE NW, SUITE 712",
+              "COGENCY GLOBAL INC.",
+              "WASHINGTON, DC 20036"
+            ],
+            "name": "RODNEY BOULWARE"
+          }
+        ],
+        "descriptionText": "RELEASE BY SECURED PARTY",
+        "executedDate": "20230421",
+        "recordedDate": "20230421",
+        "reelFrameNumber": "8048/0972"
+      },
+      {
+        "assignees": [
+          {
+            "address": "ONE E. WASHINGTON STREET, SUITE 1400, PHOENIX, ARIZONA, 85004",
+            "city": "PHOENIX",
+            "jurisdictionOfIncorporation": "ARIZONA",
+            "legalEntity": "CORPORATION",
+            "name": "WESTERN ALLIANCE BANK, AS SUCCESSOR SECURED PARTY",
+            "postalCode": "85004",
+            "stateName": "ARIZONA",
+            "street": "ONE E. WASHINGTON STREET, SUITE 1400"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "NATIONAL BANKING ASSOCIATION",
+            "name": "WEBSTER BANK, NATIONAL ASSOCIATION, AS SUCCESSOR BY MERGER TO STERLING NATIONAL BANK"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "SQUIRE PATTON BOGGS (US) LLP, 475 SANSOME STREET, SUITE 1600, SAN FRANCISCO, CA 94111",
+            "addressLines": [
+              "RAISA DYADKINA",
+              "SQUIRE PATTON BOGGS (US) LLP",
+              "475 SANSOME STREET, SUITE 1600",
+              "SAN FRANCISCO, CA 94111"
+            ],
+            "name": "RAISA DYADKINA"
+          }
+        ],
+        "descriptionText": "ASSIGNMENT OF INTELLECTUAL PROPERTY SECURITY AGREEMENTS",
+        "executedDate": "20220808",
+        "recordedDate": "20220808",
+        "reelFrameNumber": "7815/0466"
+      },
+      {
+        "assignees": [
+          {
+            "address": "ONE JERICHO PLAZA, JERICHO, NEW YORK, 11753",
+            "city": "JERICHO",
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "NATIONAL BANKING ASSOCIATION",
+            "name": "STERLING NATIONAL BANK",
+            "postalCode": "11753",
+            "secondaryAddressUnit": "3D FLOOR",
+            "stateName": "NEW YORK",
+            "street": "ONE JERICHO PLAZA"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "ILLINOIS",
+            "legalEntity": "CORPORATION",
+            "name": "NEXTPOINT INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "NEAL GERBER & EISENBERG LLP, SUITE 1700, TWO NORTH LASALLE STREET, CHICAGO, IL 60602",
+            "addressLines": [
+              "ANDREW S. FRAKER",
+              "NEAL GERBER & EISENBERG LLP",
+              "SUITE 1700, TWO NORTH LASALLE STREET",
+              "CHICAGO, IL 60602"
+            ],
+            "name": "ANDREW S. FRAKER"
+          }
+        ],
+        "descriptionText": "SECURITY INTEREST",
+        "executedDate": "20210811",
+        "recordedDate": "20210818",
+        "reelFrameNumber": "7395/0712"
+      },
+      {
+        "assignees": [
+          {
+            "address": "270 PARK AVENUE, NEW YORK, NEW YORK, 10017",
+            "city": "NEW YORK",
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "NATIONAL BANKING ASSOCIATION",
+            "name": "JPMORGAN CHASE BANK, N.A., AS ADMINISTRATIVE AGENT",
+            "postalCode": "10017",
+            "stateName": "NEW YORK",
+            "street": "270 PARK AVENUE"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "NETSCOUT SYSTEMS TEXAS, LLC"
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "ARBOR NETWORKS, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "CALIFORNIA",
+            "legalEntity": "CORPORATION",
+            "name": "AIRMAGNET, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "NETSCOUT SYSTEMS, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "1025 VERMONT AVE NW, SUITE 1130, COGENCY GLOBAL INC., WASHINGTON, DC 20005",
+            "addressLines": [
+              "STEWART WALSH",
+              "1025 VERMONT AVE NW, SUITE 1130",
+              "COGENCY GLOBAL INC.",
+              "WASHINGTON, DC 20005"
+            ],
+            "name": "STEWART WALSH"
+          }
+        ],
+        "descriptionText": "SECURITY INTEREST",
+        "executedDate": "20180116",
+        "recordedDate": "20180119",
+        "reelFrameNumber": "6254/0286"
+      }
+    ],
+    "associatedMarks": [
+      {
+        "registrationNumbers": [
+          "3939089"
+        ]
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "26.09.11",
+      "26.09.13",
+      "26.09.37",
+      "30.01.14",
+      "30.05.01"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Providing temporary use of on-line non-downloadable litigation and trial support services software for creating, viewing, editing, format converting, emailing, and managing of digital photographs, digital and graphic images, data, text, audio, video, multimedia and interactive documents, and documents that are handwritten and typed; providing customized computer searching services, namely, searching and retrieving litigation and trial support information at the customer's specific request via a global computer network"
+        }
+      ]
+    },
+    "id": "8578413f-c0c3-4a52-805d-d6f6f75d2adf",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20250905",
+        "descriptionText": "CANCELLED SEC. 8 (10-YR)/EXPIRED SECTION 9"
+      },
+      {
+        "date": "20240224",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (10-YR)/SEC. 9 E-MAILED"
+      },
+      {
+        "date": "20221012",
+        "descriptionText": "ASSIGNMENT OF OWNERSHIP NOT UPDATED AUTOMATICALLY"
+      },
+      {
+        "date": "20200917",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+      },
+      {
+        "date": "20200917",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 & 15 - E-MAILED"
+      },
+      {
+        "date": "20200917",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20200714",
+        "descriptionText": "TEAS SECTION 8 & 15 RECEIVED"
+      },
+      {
+        "date": "20200606",
+        "descriptionText": "CORRECTION UNDER SECTION 7 - PROCESSED"
+      },
+      {
+        "date": "20200605",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION-POST REG RECEIVED"
+      },
+      {
+        "date": "20200522",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20200522",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20200522",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20200521",
+        "descriptionText": "POST REGISTRATION ACTION MAILED - SEC. 7"
+      },
+      {
+        "date": "20200513",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20200420",
+        "descriptionText": "TEAS SECTION 7 REQUEST RECEIVED"
+      },
+      {
+        "date": "20200224",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20150224",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20141209",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20141209",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20141119",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20141103",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20141103",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20141017",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20141014",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20141014",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20141014",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20141014",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20141003",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20141003",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20141003",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20141002",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20141002",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20141002",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20140925",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20140627",
+        "descriptionText": "NOTICE OF DESIGN SEARCH CODE E-MAILED"
+      },
+      {
+        "date": "20140626",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20140621",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "In the statement, line 1, \"Nextpoint\" should be deleted, and Nextpoint Inc. should be inserted, \"Sole Proprietorship\" should be deleted and Corporation should be inserted.  Color is not claimed as a feature of the mark.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "The mark consists of a stylized, white letter \"N\" in a black-colored box adjacent and to the left of the word \"NEXTPOINT\".",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "4043 N Ravenswood Ave, Suite 317, Chicago, IL, 60613",
+        "city": "Chicago",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "ILLINOIS",
+        "legalEntity": "CORPORATION",
+        "name": "NextPoint Inc.",
+        "postalCode": "60613",
+        "stateName": "ILLINOIS",
+        "street": "4043 N Ravenswood Ave, Suite 317"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "Chicago, IL, 60613",
+        "city": "Chicago",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "ILLINOIS",
+        "legalEntity": "SOLE PROPRIETORSHIP",
+        "name": "NEXTPOINT INC.",
+        "postalCode": "60613",
+        "secondaryAddressUnit": "4043 N Ravenswood Ave, Suite 317",
+        "stateName": "ILLINOIS"
+      },
+      {
+        "address": "Chicago, IL, 60613",
+        "city": "Chicago",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "ILLINOIS",
+        "legalEntity": "SOLE PROPRIETORSHIP",
+        "name": "NEXTPOINT INC.",
+        "postalCode": "60613",
+        "secondaryAddressUnit": "4043 N Ravenswood Ave, Suite 317",
+        "stateName": "ILLINOIS"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "4043 N Ravenswood Ave, Suite 317, Chicago, IL, 60613",
+        "city": "Chicago",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "ILLINOIS",
+        "legalEntity": "CORPORATION",
+        "name": "NextPoint Inc.",
+        "postalCode": "60613",
+        "stateName": "ILLINOIS",
+        "street": "4043 N Ravenswood Ave, Suite 317"
+      }
+    ],
+    "recordLastUpdated": "20260130",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Chicago, IL 60654, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "Chicago, IL 60654",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Daliah Saper SAPER LAW OFFICES, 505 N. Lasalle Street Suite 350"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Chicago, IL 60654, UNITED STATES",
+        "representativeAddressLines": [
+          "Chicago, IL 60654",
+          "UNITED STATES"
+        ],
+        "representativeName": "Daliah Saper"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20140618",
+        "applicationNumber": "86313558"
+      },
+      "cancellationDate": "20250905",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20140415"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20140415"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20250905",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20141209"
+      ],
+      "registration": {
+        "registrationDate": "20150224",
+        "registrationNumber": "4691482"
+      }
+    },
+    "version": "20260130162822",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "N NEXT POINT",
+      "markVerbalElementText": "N NEXTPOINT"
+    }
+  },
+  "_uri": "/mark/us/8578413f-c0c3-4a52-805d-d6f6f75d2adf",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.728Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

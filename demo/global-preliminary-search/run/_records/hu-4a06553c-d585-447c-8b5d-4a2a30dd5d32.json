@@ -1,0 +1,150 @@
+{
+  "uri": "/mark/hu/4a06553c-d585-447c-8b5d-4a2a30dd5d32",
+  "provider": "clarivate",
+  "office": "hu",
+  "guid": "4a06553c-d585-447c-8b5d-4a2a30dd5d32",
+  "applicationNumber": "M0402627",
+  "registrationNumber": "184412",
+  "applicationDate": "2004-06-08",
+  "registrationDate": "2006-05-05",
+  "expiryDate": "2024-06-08",
+  "renewalDate": null,
+  "lastPublicationDate": "2006-07-28",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Félvezetők; félvezető processzorok; félvezető csipek; integrált áramkörök; integrált áramköri csipek; áramköri kártya; mikroszámítógépek; mikrovezérlő; mikroszámítógépek és számítógép-perifériák; memóriák és félvezető anyagok; félvezető munkagépekhez és szerszámokhoz; félvezetők világításhoz, fűtéshez, gőzfejlesztéshez, főzéshez, hűtéshez, szárításhoz és szellőzőberendezéshez; félvezetők órákhoz és időmérő készülékekhez, műszerekhez; félvezetők hangszerekhez; félvezetők játékokhoz, játékszerekhez; adatátalakító áramkör; számítógépfirmware, elektronikus, elektromos, elektromechanikai berendezés számítógépekhez; videorendszerek; felvételhez, rögzítéshez szükséges készülékek, berendezések; hang-, kép- és adatátalakítás és reprodukció; képáramköri kártya; hangáramköri kártya, audio-video áramköri kártya; videografika-gyorsító (VGA); multimédiás gyorsító; videofeldolgozó; számítógépes programok; adattömörítéshez és kicsomagoláshoz használatos számítógép és adatalgoritmusra vonatkozó oktatási anyag; tesztelési és kalibrálókészülék; alkatrészek és szerelvények fenti termékekhez; berendezés integrált áramkörök és félvezető memóriák teszteléséhez és programozásához; számítógépes szoftverek, nevezetesen integráló és összekapcsolhatósági szoftveralkalmazás, számítógépes segédprogram, számítógépes program hálózati menedzsmenthez; számítógépes szoftver globális számítógépes hálózatba lépéshez és összekapcsolt számítógépes hálózathoz; számítógép-kezelési rendszerek; számítógép-kezelési rendszer szoftver; számítógép-kezelő program; harmadik személy szoftveralkalmazását könnyítő számítógépes szoftvereszközök.",
+      "translation_language": "en",
+      "translation": "Semi-conductors; semi-conductor sheets; semi-conductor chips; integrated circuits; integrated circuit chips; circuit cards; microcomputers; micro-control units; micro-computers and computer peripherals; memories and semi-conductors; semi-conductors for machine-tools; semi-conductors for lighting, developing steam, for cooking, cooling, drying and ventilating-installations; semi-conductors for watches and horologic apparatus and devices; semi-conductors for instruments; semi-conductors for toys and plaything; data transformation circuit; computer firmware, electronic, electric and electro-mechanic installation for computers; video-systems; apparatus and installations for recording; sound-, picture- and data-transformation and reproduction; picture-circuit card; sound-circuit cards, audio-video circuit card; video graphics accelerators; multimedia accelerators; video processor; computer programmes; computer for compressing and unpacking data, teaching material relating to data-algorithms; testing and calibrating apparatus; parts and accessories of the above products; installation for testing and programming integrated circuits and semi-conductor memories; computer software, namely integrating and connecting software application, computer support-program, computer program for network management; computer software for entering global computer networks and for connected computer networks; computer operation systems; computer operation system software; computer operation programs; computer software instruments for facilitating software-application for third parties."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Technológiai engedélyezés; szabadalom, védjegy, szerzői jog, kereskedelmi titok és/vagy félvezető gyártására és felhasználására vonatkozó know-how; félvezetők engedélyezése; félvezetők és félvezetők gyártására vonatkozó engedélyezés; félvezető termékekkel, integrált áramkörökkel, áramköri kártyákkal, mikroszámítógépekkel, mikroszabályozókkal, mikroprocesszorokkal és számítógépes perifériákkal, memóriákkal és félvezető anyagokkal, adatátalakítási áramkörrel, számítógépes firmwarrel, számítógéphez használatos elektromos, elektronikus és elektromechanikai műszerrel, képáramköri kártyákkal összefüggő és beépített technológia; videorendszerek, számítógépes programok, hang-, kép- és adatfelvételhez, visszaadáshoz és átalakításhoz használatos készülékek és berendezések; adattömörítéshez és kicsomagoláshoz használatos adatalgoritmusra és számítógépekre vonatkozó oktatási anyag; telekommunikációs rendszerek és egyedi tervezésű számítógépek; szoftvertervezői technológiával összefüggő, valamint telekommunikációs és számítógépes területen tanácsadói szolgáltatás.",
+      "translation_language": "en",
+      "translation": "Technological licensing; patents, trademark, copyright, know-how relating to commercial secret and/or producing and using semi-conductors; authorisation of semi-conductors; authorisation relating to semi-conductors and their production; built-in technology relating to semi-conductor products, integrated circuits, circuit-cards, microcomputers, micro-regulators, microprocessors and computer peripheries, memories and semi-conductor materials, data-transmission circuits, computer firmware, electronic, electric and electro-mechanic instruments for computers, picture-circuit cards; video-systems, computer programs, devices and installations for registering, reproducing and transforming sound, picture and data; computer for compressing and unpacking data, teaching material relating to data-algorithms; telecommunication systems and individually constructed computers; consultancy in the field of software-design and in the field of telecommunication and computers."
+    }
+  ],
+  "owner": "NXP USA, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "dr.,Szigeti Éva, DANUBIA Szabadalmi és Védjegy Iroda Kft.",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20031230",
+      "priorityNumber": "76/567,257"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West, 78735 Austin, Texas",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc."
+      }
+    ],
+    "applicationLanguageCode": "hu",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Semi-conductors; semi-conductor sheets; semi-conductor chips; integrated circuits; integrated circuit chips; circuit cards; microcomputers; micro-control units; micro-computers and computer peripherals; memories and semi-conductors; semi-conductors for machine-tools; semi-conductors for lighting, developing steam, for cooking, cooling, drying and ventilating-installations; semi-conductors for watches and horologic apparatus and devices; semi-conductors for instruments; semi-conductors for toys and plaything; data transformation circuit; computer firmware, electronic, electric and electro-mechanic installation for computers; video-systems; apparatus and installations for recording; sound-, picture- and data-transformation and reproduction; picture-circuit card; sound-circuit cards, audio-video circuit card; video graphics accelerators; multimedia accelerators; video processor; computer programmes; computer for compressing and unpacking data, teaching material relating to data-algorithms; testing and calibrating apparatus; parts and accessories of the above products; installation for testing and programming integrated circuits and semi-conductor memories; computer software, namely integrating and connecting software application, computer support-program, computer program for network management; computer software for entering global computer networks and for connected computer networks; computer operation systems; computer operation system software; computer operation programs; computer software instruments for facilitating software-application for third parties.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Félvezetők; félvezető processzorok; félvezető csipek; integrált áramkörök; integrált áramköri csipek; áramköri kártya; mikroszámítógépek; mikrovezérlő; mikroszámítógépek és számítógép-perifériák; memóriák és félvezető anyagok; félvezető munkagépekhez és szerszámokhoz; félvezetők világításhoz, fűtéshez, gőzfejlesztéshez, főzéshez, hűtéshez, szárításhoz és szellőzőberendezéshez; félvezetők órákhoz és időmérő készülékekhez, műszerekhez; félvezetők hangszerekhez; félvezetők játékokhoz, játékszerekhez; adatátalakító áramkör; számítógépfirmware, elektronikus, elektromos, elektromechanikai berendezés számítógépekhez; videorendszerek; felvételhez, rögzítéshez szükséges készülékek, berendezések; hang-, kép- és adatátalakítás és reprodukció; képáramköri kártya; hangáramköri kártya, audio-video áramköri kártya; videografika-gyorsító (VGA); multimédiás gyorsító; videofeldolgozó; számítógépes programok; adattömörítéshez és kicsomagoláshoz használatos számítógép és adatalgoritmusra vonatkozó oktatási anyag; tesztelési és kalibrálókészülék; alkatrészek és szerelvények fenti termékekhez; berendezés integrált áramkörök és félvezető memóriák teszteléséhez és programozásához; számítógépes szoftverek, nevezetesen integráló és összekapcsolhatósági szoftveralkalmazás, számítógépes segédprogram, számítógépes program hálózati menedzsmenthez; számítógépes szoftver globális számítógépes hálózatba lépéshez és összekapcsolt számítógépes hálózathoz; számítógép-kezelési rendszerek; számítógép-kezelési rendszer szoftver; számítógép-kezelő program; harmadik személy szoftveralkalmazását könnyítő számítógépes szoftvereszközök."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Technological licensing; patents, trademark, copyright, know-how relating to commercial secret and/or producing and using semi-conductors; authorisation of semi-conductors; authorisation relating to semi-conductors and their production; built-in technology relating to semi-conductor products, integrated circuits, circuit-cards, microcomputers, micro-regulators, microprocessors and computer peripheries, memories and semi-conductor materials, data-transmission circuits, computer firmware, electronic, electric and electro-mechanic instruments for computers, picture-circuit cards; video-systems, computer programs, devices and installations for registering, reproducing and transforming sound, picture and data; computer for compressing and unpacking data, teaching material relating to data-algorithms; telecommunication systems and individually constructed computers; consultancy in the field of software-design and in the field of telecommunication and computers.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Technológiai engedélyezés; szabadalom, védjegy, szerzői jog, kereskedelmi titok és/vagy félvezető gyártására és felhasználására vonatkozó know-how; félvezetők engedélyezése; félvezetők és félvezetők gyártására vonatkozó engedélyezés; félvezető termékekkel, integrált áramkörökkel, áramköri kártyákkal, mikroszámítógépekkel, mikroszabályozókkal, mikroprocesszorokkal és számítógépes perifériákkal, memóriákkal és félvezető anyagokkal, adatátalakítási áramkörrel, számítógépes firmwarrel, számítógéphez használatos elektromos, elektronikus és elektromechanikai műszerrel, képáramköri kártyákkal összefüggő és beépített technológia; videorendszerek, számítógépes programok, hang-, kép- és adatfelvételhez, visszaadáshoz és átalakításhoz használatos készülékek és berendezések; adattömörítéshez és kicsomagoláshoz használatos adatalgoritmusra és számítógépekre vonatkozó oktatási anyag; telekommunikációs rendszerek és egyedi tervezésű számítógépek; szoftvertervezői technológiával összefüggő, valamint telekommunikációs és számítógépes területen tanácsadói szolgáltatás."
+        }
+      ]
+    },
+    "id": "4a06553c-d585-447c-8b5d-4a2a30dd5d32",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20031230",
+        "priorityNumber": "76/567,257"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "HU",
+    "registrationOfficeName": "Hungary",
+    "representatives": [
+      {
+        "representativeAddress": "1051,Budapest,Bajcsy-Zs. út 16.",
+        "representativeAddressCountryCode": "HU",
+        "representativeAddressCountryName": "Hungary",
+        "representativeName": "dr.,Szigeti Éva, DANUBIA Szabadalmi és Védjegy Iroda Kft."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20040608",
+        "applicationNumber": "M0402627"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20240608",
+      "lastPublicationDate": "20060728",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20060505",
+        "registrationNumber": "184412"
+      }
+    },
+    "version": "20250620094744",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/hu/4a06553c-d585-447c-8b5d-4a2a30dd5d32",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.689Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

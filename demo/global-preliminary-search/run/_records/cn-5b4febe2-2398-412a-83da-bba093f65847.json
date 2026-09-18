@@ -1,0 +1,140 @@
+{
+  "uri": "/mark/cn/5b4febe2-2398-412a-83da-bba093f65847",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "5b4febe2-2398-412a-83da-bba093f65847",
+  "applicationNumber": "13645092",
+  "registrationNumber": "13645092",
+  "applicationDate": "2013-12-02",
+  "registrationDate": "2015-06-14",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2015-03-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2023-10-27",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "DNS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "技术研究;替他人研究和开发新产品;材料测试;计算机软件设计;计算机软件更新;计算机软件维护;计算机软件安装;计算机软件咨询;提供互联网搜索引擎;计算机软件维护.",
+      "translation_language": "en",
+      "translation": "Technical research; research and development of new products for others; material testing; computer software design; computer software updates; computer software maintenance; computer software installation; computer software consulting; provision of Internet search engines; computer software maintenance."
+    }
+  ],
+  "owner": "Datang NXP Semiconductors Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "江苏省如东县县城黄河路南侧井冈山路西侧",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Datang NXP Semiconductors Co., Ltd.",
+        "applicantNativeName": "大唐恩智浦半导体有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Technical research; research and development of new products for others; material testing; computer software design; computer software updates; computer software maintenance; computer software installation; computer software consulting; provision of Internet search engines; computer software maintenance.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "技术研究;替他人研究和开发新产品;材料测试;计算机软件设计;计算机软件更新;计算机软件维护;计算机软件安装;计算机软件咨询;提供互联网搜索引擎;计算机软件维护."
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Research and development service",
+        "Survey service",
+        "Computer programming, and concerned services"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4214",
+          "subNatGoodsServicesDescription": "Survey service"
+        },
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        }
+      ]
+    },
+    "id": "5b4febe2-2398-412a-83da-bba093f65847",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1447"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京集佳知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20131202",
+        "applicationNumber": "13645092"
+      },
+      "cancellationDate": "20231027",
+      "cmNormalisedStatus": "CANCELLED",
+      "lastPublicationDate": "20150313",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20150614",
+        "registrationNumber": "13645092"
+      }
+    },
+    "version": "20251002060728",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "DNS"
+    }
+  },
+  "_uri": "/mark/cn/5b4febe2-2398-412a-83da-bba093f65847",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.684Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

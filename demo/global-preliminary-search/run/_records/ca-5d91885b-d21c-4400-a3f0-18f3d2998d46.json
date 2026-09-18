@@ -7,7 +7,7 @@
   "registrationNumber": "TMA807840",
   "applicationDate": "2008-09-11",
   "registrationDate": "2011-09-28",
-  "expiryDate": null,
+  "expiryDate": "2026-09-28",
   "renewalDate": null,
   "lastPublicationDate": null,
   "publicationDates": [
@@ -269,6 +269,7 @@
         "applicationNumber": "1410384"
       },
       "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20260928",
       "extension": {
         "approvalDate": [
           "20100428"
@@ -297,7 +298,7 @@
   },
   "_uri": "/mark/ca/5d91885b-d21c-4400-a3f0-18f3d2998d46",
   "_receipt": {
-    "fetched_at": "2026-09-02T16:25:36.397Z",
-    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+    "fetched_at": "2026-09-18T12:40:54.563Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
   }
 }

@@ -1,0 +1,258 @@
+{
+  "uri": "/mark/ca/883902a2-0736-4966-ac2c-f52890f5701c",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "883902a2-0736-4966-ac2c-f52890f5701c",
+  "applicationNumber": "2403307",
+  "registrationNumber": null,
+  "applicationDate": "2025-02-06",
+  "registrationDate": null,
+  "expiryDate": "2035-02-06",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "SYMETRI",
+  "markTransliteration": null,
+  "markTranslation": "symmetry",
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    38,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9,
+        38,
+        41,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Computer programs (downloadable software) for designing and creating digital drawings for use in construction, 3d animation, automotive design, industrial product design; computer software for creating 3d virtual reality plan and technical specifications for use in construction, automotive, and industrial product design; computer software for computer-aided design (CAD); computer programs in the form of geographical information systems",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9,
+        38,
+        41,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Data communication services, namely, provision of electronic data interchange services; worldwide computer network access services; providing access to and leasing access time to computer databases; provision of access to web pages; wireless digital messaging services \n(2) Education in the implementation and use of data processing programs for designing and creating digital drawings and models; training services relating to computer-aided engineering design; education services relating to computer software, and hardware systems for use in construction, 3d animation, automotive design and industrial product design \n(3) Software development, programming and implementation; design, maintenance and updating of computer programs and computer systems for creating digital drawings and models; computer aided graphic design; computer aided design services relating to building projects; computer aided design services; computer help desk consultancy, advisory and information services; consultancy relating to computer programs for designing and creating digital drawings and models; engineering consultancy relating to design, software as a service [SaaS] services featuring software for designing and creating digital drawings for use in construction, for creating 3d virtual reality plans and technical specifications for use in construction and for computer-aided design (cad) in the field of construction; none of the aforementioned services in the field of multichannel communications and print and mail",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Symetri AB",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": "GOWLING WLG (CANADA) LLP",
+  "priorities": [
+    {
+      "priorityCountryCode": "EM",
+      "priorityCountryName": "EU trade marks",
+      "priorityDate": "20240904",
+      "priorityNumber": "019074708",
+      "priorityText": "Priority Filing Date: September 04, 2024, Country or Office: EUIPO (EU), Application No. 019074708 in association with the same kind of in association with the same kind on wares marked (1) on services (1) (2) (3)"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Forskargatan 3, SE-781 70 Borlänge",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantAddressLines": [
+          "Forskargatan 3",
+          "SE-781 70 Borlänge"
+        ],
+        "applicantName": "Symetri AB"
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Priority Filing Date: September 04, 2024, Country or Office: EUIPO (EU), Application No. 019074708 in association with the same kind of in association with the same kind on wares marked (1) on services (1) (2) (3)",
+        "typeDescription": "Priority"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09,38,41,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Computer programs (downloadable software) for designing and creating digital drawings for use in construction, 3d animation, automotive design, industrial product design; computer software for creating 3d virtual reality plan and technical specifications for use in construction, automotive, and industrial product design; computer software for computer-aided design (CAD); computer programs in the form of geographical information systems"
+        },
+        {
+          "intClassNumber": "09,38,41,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Data communication services, namely, provision of electronic data interchange services; worldwide computer network access services; providing access to and leasing access time to computer databases; provision of access to web pages; wireless digital messaging services \n(2) Education in the implementation and use of data processing programs for designing and creating digital drawings and models; training services relating to computer-aided engineering design; education services relating to computer software, and hardware systems for use in construction, 3d animation, automotive design and industrial product design \n(3) Software development, programming and implementation; design, maintenance and updating of computer programs and computer systems for creating digital drawings and models; computer aided graphic design; computer aided design services relating to building projects; computer aided design services; computer help desk consultancy, advisory and information services; consultancy relating to computer programs for designing and creating digital drawings and models; engineering consultancy relating to design, software as a service [SaaS] services featuring software for designing and creating digital drawings for use in construction, for creating 3d virtual reality plans and technical specifications for use in construction and for computer-aided design (cad) in the field of construction; none of the aforementioned services in the field of multichannel communications and print and mail"
+        }
+      ]
+    },
+    "id": "883902a2-0736-4966-ac2c-f52890f5701c",
+    "internationalMarkKeys": [
+      {
+        "internationalRegistrationNumber": "1857470"
+      }
+    ],
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20260821",
+        "descriptionText": "Approval Notice Sent",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20260821",
+        "descriptionText": "Approved",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20260423",
+        "descriptionText": "Agent changed",
+        "information": "From/De: To/A: 32"
+      },
+      {
+        "date": "20260406",
+        "descriptionText": "Notification of Possible Oppositions Sent"
+      },
+      {
+        "date": "20260331",
+        "descriptionText": "Total Provisional Refusal Sent",
+        "responseDate": "20260930"
+      },
+      {
+        "date": "20260331",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20260930"
+      },
+      {
+        "date": "20260331",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20250605",
+        "descriptionText": "Designation Notification - Madrid Protocol",
+        "responseDate": "20261205"
+      },
+      {
+        "date": "20250604",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20250604",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20250206",
+        "descriptionText": "International Registration",
+        "responseDate": "20350206"
+      },
+      {
+        "date": "20250206",
+        "descriptionText": "Filed",
+        "information": "Registration"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Forskargatan 3, SE-781 70 Borlänge",
+        "addressLines": [
+          "Forskargatan 3",
+          "SE-781 70 Borlänge"
+        ],
+        "countryName": "Sweden",
+        "name": "Symetri AB"
+      }
+    ],
+    "priorities": [
+      {
+        "priorityCountryCode": "EM",
+        "priorityCountryName": "EU trade marks",
+        "priorityDate": "20240904",
+        "priorityNumber": "019074708",
+        "priorityText": "Priority Filing Date: September 04, 2024, Country or Office: EUIPO (EU), Application No. 019074708 in association with the same kind of in association with the same kind on wares marked (1) on services (1) (2) (3)"
+      }
+    ],
+    "priorityDate": "20240904",
+    "recordLastUpdated": "20260901",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "GOWLING WLG (CANADA) LLP",
+          "SUITE 1600",
+          "1 FIRST CANADIAN PLACE",
+          "100 KING STREET WEST",
+          "TORONTO",
+          "ONTARIO M5X1G5"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "GOWLING WLG (CANADA) LLP",
+        "representativeReferenceNumber": "G1 012 169 9T2CA"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250206",
+        "applicationNumber": "2403307"
+      },
+      "approvalDate": "20260821",
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20350206",
+      "formalisationDate": "20250604",
+      "markCurrentStatus": "Approved",
+      "nextRenewalDate": "20350206"
+    },
+    "subjectHeadings": [
+      "SYMETRI",
+      "SYMMETRY"
+    ],
+    "version": "20260901150136",
+    "wordMarkSpecification": {
+      "markTranslation": "symmetry",
+      "markTranslationDescription": "The translation provided by the applicant of the Swedish word SYMETRI is \"symmetry”.",
+      "markVerbalElementCrossReferences": "SYMMETRY",
+      "markVerbalElementText": "SYMETRI",
+      "markVerbalElementTextFormal": "SYMETRI"
+    }
+  },
+  "_uri": "/mark/ca/883902a2-0736-4966-ac2c-f52890f5701c",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.302Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

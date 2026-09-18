@@ -1,0 +1,149 @@
+{
+  "uri": "/mark/ee/70bd2ce4-61df-4830-9d2f-7eba3c99acde",
+  "provider": "clarivate",
+  "office": "ee",
+  "guid": "70bd2ce4-61df-4830-9d2f-7eba3c99acde",
+  "applicationNumber": "M200401045",
+  "registrationNumber": "41750",
+  "applicationDate": "2004-06-09",
+  "registrationDate": "2005-10-13",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2005-08-01",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Pooljuhid, pooljuhtprotsessorid, pooljuhtprotsessorite kiibid, integraallülitused, integraallülituse pooljuhtkristallid, trükkplaadid, mikroarvutid, mikrokontrollerid, mikroprotsessorid ja arvuti välisseadmed, mälud ja pooljuhtmaterjalid nendele; pooljuhid masinatele ja tööriistadele; pooljuhid valgustus-, kütte-, aurugenereerimis-, küpsetus-, külmutus-, kuivatus- ja ventilatsiooniseadmetele; pooljuhid kelladele ning ajamõõtmisseadmetele ja -instrumentidele; pooljuhid muusikariistadele; pooljuhid mängudele ja mänguasjadele; andmeteisenduslülitused; arvuti püsivara; elektron-, elektri- ja elektromehhaanikaseadmed kasutamiseks arvutitega; videosüsteemide seadmed; seadmed ja vahendid heli, video ja andmete salvestamiseks, taasesituseks ja muundamiseks, videotrükkplaadid, audiotrükkplaadid; audio-videotrükkplaadid; videograafikakiirendid; multimeediakiirendid; videoprotsessorid; arvutiprogrammid; andmete kompressiooni ja dekompressiooni andmealgoritme ja arvutit käsitlev elektrooniline juhendmaterjal; testimis- ja kalibreerimisseadmed; kõikide eelnimetatud kaupade osad ja fitingud; vahendid integraallülituste ja pooljuhtmälude testimiseks ja programmeerimiseks; arvutitarkvara, nimelt rakenduste integratsiooni ja ühenduvuse tarkvara, arvuti utiliitprogrammid, arvutiprogrammid võrguhalduseks, arvutitarkvara juurdepääsuks globaalarvutivõrku ja ühendatud arvutivõrkudesse; arvutioperatsioonisüsteemid; arvutioperatsioonisüsteemitarkvara; arvutioperatsiooniprogrammid ja arvutitarkvaravahendid kolmanda osapoole tarkvara rakenduste võimaldamiseks.",
+      "translation_language": "en",
+      "translation": "Semiconductors, semiconductor processors, semiconductor processor chips, integrated circuits, integrated circuit semiconductor wafers, printed circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor materials therefor; semiconductors for machines and tools; semiconductors for lighting, heating, steam generating, cooking, refrigerating, drying and ventilating equipment; semiconductors for clocks and watches and instruments; semiconductors for musical instruments; semiconductors for games and toys; data conversion circuits; computer firmware; electronic, electrical and electromechanical apparatus for use with computers; video system equipment; apparatus and instruments for recording, reproduction and conversion of sound, video and data, video printed circuit boards, audio printed circuit boards; audio-video printed circuit boards; video graphics accelerators; multimedia accelerators; video processors; computer programs; electronic instructional material for data compression and decompression data algorithms and computers; testing and calibration equipment; parts and fittings for all the aforesaid goods; means for testing and programming integrated circuits and semiconductor memories; computer software, namely, application integration and connectivity software, computer utilities, computer programs for network management, computer software for accessing a global computer network and connected computer networks; computer operating systems; computer operating system software; computer operating programs and computer software tools for enabling third party software applications."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Tehnoloogia litsentsimine; pooljuhtide tootmise ja nende kasutamisega seotud patentide, kaubamärkide, autoriõiguste, ärisaladuste ja/või know-how litsentsimine; pooljuhtide litsentsimine; pooljuhtide tootmise ja nende kasutamisega seotud tarkvara litsentsimine, pooljuhtide ja pooljuhtide tootmisega seotud tehnoloogia litsentsimine; alljärgnevates toodetes sisalduva või nendega seotud tehnoloogia litsentsimine: pooljuhttooted, integraallülitused, trükkplaadid, mikroarvutid, mikrokontrollerid, mikroprotsessorid ja arvuti välisseadmed, mälud ja pooljuhtmaterjalid nendele, andmeteisenduslülitused, arvuti püsivara, elektron-, elektri- ja elektromehhaanikaseadmed kasutamiseks arvutitega, videotrükkplaadid, videosüsteemitooted, seadmed ja vahendid heli, video ja andmete salvestamiseks, taasesituseks ja muundamiseks, arvutiprogrammid, andmete kompressiooni ja dekompressiooni andmealgoritme ja arvutit käsitlev juhendmaterjal; arvuti- ja telekommunikatsioonisüsteemide projekteerimine tellimustööna; arvutialased konsultatsiooniteenused ning arvuti- ja telekommunikatsioonitarkvara projekteerimise tehnoloogia alased konsultatsiooniteenused.",
+      "translation_language": "en",
+      "translation": "Technology licensing; licensing of patents, trademarks, copyrights, trade secrets and / or know-how related to the production and use of semiconductors; semiconductor licensing; licensing of software relating to the production and use of semiconductors, licensing of technology relating to the production of semiconductors and semiconductors; licensing of technology contained in or related to the following products: semiconductor products, integrated circuits, printed circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memory and semiconductor materials therefor, data conversion circuits, computer firmware, electronic, electrical and electromechanical equipment for computers, video means for recording, reproducing and converting audio, video and data, computer programs, instructional material on data compression and decompression algorithms and computers; custom design of computer and telecommunications systems; computer consulting services and computer and telecommunications software design technology consulting services."
+    }
+  ],
+  "owner": "NXP USA, Inc",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Elle Mellik, AAA Patendibüroo OÜ",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20031230",
+      "priorityNumber": "76/567,257"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West, 78735 Austin, Texas",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc"
+      }
+    ],
+    "applicationLanguageCode": "et",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Semiconductors, semiconductor processors, semiconductor processor chips, integrated circuits, integrated circuit semiconductor wafers, printed circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor materials therefor; semiconductors for machines and tools; semiconductors for lighting, heating, steam generating, cooking, refrigerating, drying and ventilating equipment; semiconductors for clocks and watches and instruments; semiconductors for musical instruments; semiconductors for games and toys; data conversion circuits; computer firmware; electronic, electrical and electromechanical apparatus for use with computers; video system equipment; apparatus and instruments for recording, reproduction and conversion of sound, video and data, video printed circuit boards, audio printed circuit boards; audio-video printed circuit boards; video graphics accelerators; multimedia accelerators; video processors; computer programs; electronic instructional material for data compression and decompression data algorithms and computers; testing and calibration equipment; parts and fittings for all the aforesaid goods; means for testing and programming integrated circuits and semiconductor memories; computer software, namely, application integration and connectivity software, computer utilities, computer programs for network management, computer software for accessing a global computer network and connected computer networks; computer operating systems; computer operating system software; computer operating programs and computer software tools for enabling third party software applications.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Pooljuhid, pooljuhtprotsessorid, pooljuhtprotsessorite kiibid, integraallülitused, integraallülituse pooljuhtkristallid, trükkplaadid, mikroarvutid, mikrokontrollerid, mikroprotsessorid ja arvuti välisseadmed, mälud ja pooljuhtmaterjalid nendele; pooljuhid masinatele ja tööriistadele; pooljuhid valgustus-, kütte-, aurugenereerimis-, küpsetus-, külmutus-, kuivatus- ja ventilatsiooniseadmetele; pooljuhid kelladele ning ajamõõtmisseadmetele ja -instrumentidele; pooljuhid muusikariistadele; pooljuhid mängudele ja mänguasjadele; andmeteisenduslülitused; arvuti püsivara; elektron-, elektri- ja elektromehhaanikaseadmed kasutamiseks arvutitega; videosüsteemide seadmed; seadmed ja vahendid heli, video ja andmete salvestamiseks, taasesituseks ja muundamiseks, videotrükkplaadid, audiotrükkplaadid; audio-videotrükkplaadid; videograafikakiirendid; multimeediakiirendid; videoprotsessorid; arvutiprogrammid; andmete kompressiooni ja dekompressiooni andmealgoritme ja arvutit käsitlev elektrooniline juhendmaterjal; testimis- ja kalibreerimisseadmed; kõikide eelnimetatud kaupade osad ja fitingud; vahendid integraallülituste ja pooljuhtmälude testimiseks ja programmeerimiseks; arvutitarkvara, nimelt rakenduste integratsiooni ja ühenduvuse tarkvara, arvuti utiliitprogrammid, arvutiprogrammid võrguhalduseks, arvutitarkvara juurdepääsuks globaalarvutivõrku ja ühendatud arvutivõrkudesse; arvutioperatsioonisüsteemid; arvutioperatsioonisüsteemitarkvara; arvutioperatsiooniprogrammid ja arvutitarkvaravahendid kolmanda osapoole tarkvara rakenduste võimaldamiseks."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Technology licensing; licensing of patents, trademarks, copyrights, trade secrets and / or know-how related to the production and use of semiconductors; semiconductor licensing; licensing of software relating to the production and use of semiconductors, licensing of technology relating to the production of semiconductors and semiconductors; licensing of technology contained in or related to the following products: semiconductor products, integrated circuits, printed circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memory and semiconductor materials therefor, data conversion circuits, computer firmware, electronic, electrical and electromechanical equipment for computers, video means for recording, reproducing and converting audio, video and data, computer programs, instructional material on data compression and decompression algorithms and computers; custom design of computer and telecommunications systems; computer consulting services and computer and telecommunications software design technology consulting services.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Tehnoloogia litsentsimine; pooljuhtide tootmise ja nende kasutamisega seotud patentide, kaubamärkide, autoriõiguste, ärisaladuste ja/või know-how litsentsimine; pooljuhtide litsentsimine; pooljuhtide tootmise ja nende kasutamisega seotud tarkvara litsentsimine, pooljuhtide ja pooljuhtide tootmisega seotud tehnoloogia litsentsimine; alljärgnevates toodetes sisalduva või nendega seotud tehnoloogia litsentsimine: pooljuhttooted, integraallülitused, trükkplaadid, mikroarvutid, mikrokontrollerid, mikroprotsessorid ja arvuti välisseadmed, mälud ja pooljuhtmaterjalid nendele, andmeteisenduslülitused, arvuti püsivara, elektron-, elektri- ja elektromehhaanikaseadmed kasutamiseks arvutitega, videotrükkplaadid, videosüsteemitooted, seadmed ja vahendid heli, video ja andmete salvestamiseks, taasesituseks ja muundamiseks, arvutiprogrammid, andmete kompressiooni ja dekompressiooni andmealgoritme ja arvutit käsitlev juhendmaterjal; arvuti- ja telekommunikatsioonisüsteemide projekteerimine tellimustööna; arvutialased konsultatsiooniteenused ning arvuti- ja telekommunikatsioonitarkvara projekteerimise tehnoloogia alased konsultatsiooniteenused."
+        }
+      ]
+    },
+    "id": "70bd2ce4-61df-4830-9d2f-7eba3c99acde",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20031230",
+        "priorityNumber": "76/567,257"
+      }
+    ],
+    "recordLastUpdated": "20260529",
+    "registrationOfficeCode": "EE",
+    "registrationOfficeName": "Estonia",
+    "representatives": [
+      {
+        "representativeAddress": "Tartu mnt 16, 10117 Tallinn",
+        "representativeAddressCountryCode": "EE",
+        "representativeAddressCountryName": "Estonia",
+        "representativeName": "Elle Mellik, AAA Patendibüroo OÜ"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040609",
+        "applicationNumber": "M200401045"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "lastPublicationDate": "20050801",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20051013",
+        "registrationNumber": "41750"
+      }
+    },
+    "version": "20260529020102",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/ee/70bd2ce4-61df-4830-9d2f-7eba3c99acde",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.671Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

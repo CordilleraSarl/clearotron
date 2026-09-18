@@ -1,0 +1,129 @@
+{
+  "uri": "/mark/my/8a493399-23a4-4efc-bbe1-6f6f88b20dbf",
+  "provider": "clarivate",
+  "office": "my",
+  "guid": "8a493399-23a4-4efc-bbe1-6f6f88b20dbf",
+  "applicationNumber": "04011154",
+  "registrationNumber": "04011154",
+  "applicationDate": "2004-08-03",
+  "registrationDate": "2004-08-03",
+  "expiryDate": "2034-03-01",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": null,
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Licensing of technology; licensing of patents, trademarks, copyrights, trade secrets and/or know-how related to the manufacture of semiconductors and their uses; licensing semiconductors; licensing of software related to the manufacture of semiconductors and their uses; licensing of technology related to semiconductors and the manufacture of semiconductors; licensing technology incorporated in and related to semiconductor products, integrated circuits, circuit boards, microcomputers, micro controllers, microprocessors and computer peripherals, memories and semiconductor material therefor, data conversion circuits, computer firmware, electronic, electrical and electromechanical apparatus for use with computers, video circuit boards; video systems products, apparatus and equipment for recordation, reproduction and alteration of sound, video and data, computer programs; instructional material relating to computer and data algorithms for the compression and decompression of data; custom design of computer and telecommunications systems; consulting services in the field of computers and telecommunications and related technology for software design; all included in class 42.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA, Inc",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Soh Kar Liang",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20040301",
+      "priorityNumber": "78/376,535"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West Austin, Texas 78735",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Licensing of technology; licensing of patents, trademarks, copyrights, trade secrets and/or know-how related to the manufacture of semiconductors and their uses; licensing semiconductors; licensing of software related to the manufacture of semiconductors and their uses; licensing of technology related to semiconductors and the manufacture of semiconductors; licensing technology incorporated in and related to semiconductor products, integrated circuits, circuit boards, microcomputers, micro controllers, microprocessors and computer peripherals, memories and semiconductor material therefor, data conversion circuits, computer firmware, electronic, electrical and electromechanical apparatus for use with computers, video circuit boards; video systems products, apparatus and equipment for recordation, reproduction and alteration of sound, video and data, computer programs; instructional material relating to computer and data algorithms for the compression and decompression of data; custom design of computer and telecommunications systems; consulting services in the field of computers and telecommunications and related technology for software design; all included in class 42."
+        }
+      ]
+    },
+    "id": "8a493399-23a4-4efc-bbe1-6f6f88b20dbf",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN ONLY",
+    "markImageViennaClassification": [
+      "26.04.09"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20040301",
+        "priorityNumber": "78/376,535"
+      }
+    ],
+    "recordLastUpdated": "20260519",
+    "registrationOfficeCode": "MY",
+    "registrationOfficeName": "Malaysia",
+    "representatives": [
+      {
+        "representativeAddress": "Ella Cheong IP Services Sdn Bhd A-31-3, Level 31, Menara UOA Bangsar No 5, Jalan Bangsar Utama 1 Kuala Lumpur 59000 Kuala Lumpur",
+        "representativeAddressCountryCode": "MY",
+        "representativeAddressCountryName": "Malaysia",
+        "representativeName": "Soh Kar Liang"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20040803",
+        "applicationNumber": "04011154"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340301",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20040803",
+        "registrationNumber": "04011154"
+      }
+    },
+    "version": "20260519050055"
+  },
+  "_uri": "/mark/my/8a493399-23a4-4efc-bbe1-6f6f88b20dbf",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.698Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

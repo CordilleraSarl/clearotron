@@ -83,7 +83,7 @@
     ],
     "markImagesAvailable": true,
     "markPublicationCopiesAvailable": true,
-    "recordLastUpdated": "20260615",
+    "recordLastUpdated": "20260911",
     "registrationOfficeCode": "CL",
     "registrationOfficeName": "Chile",
     "representatives": [
@@ -108,14 +108,14 @@
         "registrationNumber": "1114377"
       }
     },
-    "version": "20260615152316",
+    "version": "20260911120711",
     "wordMarkSpecification": {
       "markVerbalElementText": "VENTURI"
     }
   },
   "_uri": "/mark/cl/e01408c0-8a40-4501-8d64-bb3557e4ed65",
   "_receipt": {
-    "fetched_at": "2026-09-02T14:33:25.178Z",
-    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+    "fetched_at": "2026-09-18T12:41:57.348Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
   }
 }

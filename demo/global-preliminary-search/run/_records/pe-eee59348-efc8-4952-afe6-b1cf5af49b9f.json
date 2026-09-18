@@ -1,0 +1,124 @@
+{
+  "uri": "/mark/pe/eee59348-efc8-4952-afe6-b1cf5af49b9f",
+  "provider": "clarivate",
+  "office": "pe",
+  "guid": "eee59348-efc8-4952-afe6-b1cf5af49b9f",
+  "applicationNumber": "40480A-2025",
+  "registrationNumber": "T00045294",
+  "applicationDate": "2025-08-04",
+  "registrationDate": "2025-11-26",
+  "expiryDate": "2035-11-26",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MIFARE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "servicios de programación informática; instalación, reparación y mantenimiento en relación con software para la creación, programación, control, codificación, escaneo, lectura e interpretación de chips y etiquetas rfid y software para determinar la tarifa que deben pagar los pasajeros con boletos de viaje electrónicos; servicios de investigación, diseño y desarrollo relacionados con módulos, partes y elementos de construcción electrónicos, electrotécnicos y electromagnéticos, máquinas de procesamiento de datos, aparatos de almacenamiento de datos, microprocesadores, interfaces, circuitos integrados (ci), chips, semiconductores y tarjetas inteligentes, controladores para tarjetas inteligentes, controladores para chips y etiquetas rfid; servicios de investigación, diseño y desarrollo relacionados con hardware y software para la creación, programación, control, codificación, escaneo, lectura e interpretación de chips y etiquetas rfid; servicios de investigación, diseño y desarrollo relacionados con aparatos, instrumentos y equipos electrónicos para la creación, programación, control, codificación, escaneo, lectura e interpretación de chips y etiquetas rfid, así como antenas para el escaneo, la lectura y la interpretación de chips y etiquetas rfid; servicios de investigación, diseño y desarrollo relacionados con aparatos, instrumentos y equipos de nfc (comunicaciones de campo cercano), incluidos módulos, piezas y elementos de construcción electrónicos, electrotécnicos y electromagnéticos, así como circuitos integrados para aplicaciones nfc, tarjetas de pago electrónicas, aparatos de procesamiento de datos y software para determinar la tarifa que deben pagar los pasajeros con billetes de viaje electrónicos; servicios de investigación, diseño y desarrollo relacionados con piezas, accesorios y componentes para todos los productos mencionados; programación personalizada de software; diseño, desarrollo y programación personalizada de dispositivos, piezas y elementos de construcción electrónicos, electrotécnicos y electromagnéticos, máquinas de procesamiento de datos, aparatos de almacenamiento de datos, microprocesadores, interfaces, circuitos integrados (ci), chips, semiconductores y tarjetas inteligentes, controladores para tarjetas inteligentes, controladores para chips y etiquetas rfid; diseño, desarrollo y programación personalizada de hardware informático para la creación, programación, control, codificación, escaneo, lectura e interpretación de chips y etiquetas rfid; diseño, desarrollo y programación personalizada de hardware informático para dispositivos, instrumentos y equipos electrónicos para la creación, programación, control, codificación, escaneo, lectura e interpretación de chips y 3 etiquetas rfid, antenas para el escaneo, la lectura y la interpretación de chips y etiquetas rfid; diseño, desarrollo y programación personalizada para aparatos, instrumentos y equipos de nfc (comunicaciones de campo cercano), incluidos dispositivos, piezas y elementos de construcción electrónicos, electrotécnicos y electromagnéticos, así como circuitos integrados para aplicaciones de comunicaciones de campo cercano, tarjetas de pago electrónicas, aparatos de procesamiento de datos y software para determinar la tarifa que deben pagar los pasajeros con billetes de viaje electrónicos; diseño, desarrollo y programación personalizada de piezas, accesorios y componentes para todos los bienes anteriormente mencionados; prestación de servicios en la nube de infraestructura como servicio (iaas), a saber, provisión de una red de servidores remotos conectados a internet para almacenar, administrar y procesar datos, servidores, bases de datos, redes y software; computación en la nube que incluye software para la gestión de servicios en plataformas en la nube y entornos locales; servicios de asesoramiento, consultoría e información en relación con todos los servicios mencionados anteriormente.",
+      "translation_language": "en",
+      "translation": "computer programming services; installation, repair and maintenance related to software for the creation, programming, control, encoding, scanning, reading and interpretation of RFID chips and tags and software for determining the fare to be paid by passengers with electronic travel tickets; research, design and development services related to electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage devices, microprocessors, interfaces, integrated circuits (ICs), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID chips and tags; research, design and development services related to hardware and software for the creation, programming, control, encoding, scanning, reading and interpretation of RFID chips and tags; research, design and development services related to electronic devices, instruments and equipment for the creation, programming, control, encoding, scanning, reading and interpretation of RFID chips and tags, as well as antennas for scanning, reading and interpreting RFID chips and tags; Research, design, and development services related to NFC (near-field communications) devices, instruments, and equipment, including electronic, electrotechnical, and electromagnetic modules, parts, and building elements, as well as integrated circuits for NFC applications, electronic payment cards, data processing devices, and software for determining the fare to be paid by passengers with electronic travel tickets; research, design, and development services related to parts, accessories, and components for all the aforementioned products; custom software programming; custom design, development, and programming of electronic, electrotechnical, and electromagnetic devices, parts, and building elements, data processing machines, data storage devices, microprocessors, interfaces, integrated circuits (ICs), chips, semiconductors, and smart cards, smart card controllers, chip controllers, and RFID tags; custom design, development, and programming of computer hardware for the creation, programming, control, encoding, scanning, reading, and interpretation of RFID chips and tags; Design, development, and custom programming of computer hardware for electronic devices, instruments, and equipment for the creation, programming, control, encoding, scanning, reading, and interpretation of chips and RFID tags; antennas for scanning, reading, and interpreting chips and RFID tags; design, development, and custom programming for NFC (near-field communication) devices, instruments, and equipment, including electronic, electrotechnical, and electromagnetic devices, parts, and building elements, as well as integrated circuits for near-field communication applications, electronic payment cards, data processing devices, and software for determining the fare to be paid by passengers with electronic travel tickets; design, development, and custom programming of parts, accessories, and components for all the aforementioned goods; provision of Infrastructure as a Service (IaaS) cloud services, namely, the provision of a network of internet-connected remote servers for storing, managing, and processing data, servers, databases, networks, and software; cloud computing, including software for managing services on cloud platforms and on-premises environments; advisory, consulting and information services in relation to all the services mentioned above."
+    }
+  ],
+  "owner": "NXP B. V.",
+  "ownerNative": null,
+  "ownerCountry": "CO",
+  "representative": "ESTUDIO COLMENARES & ASOCIADOS SOCIEDAD ANONIMA CERRADA",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "LIMA - LIMA - MIRAFLORES",
+        "applicantAddressCountryCode": "CO",
+        "applicantAddressCountryName": "Colombia",
+        "applicantName": "NXP B. V."
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "computer programming services; installation, repair and maintenance related to software for the creation, programming, control, encoding, scanning, reading and interpretation of RFID chips and tags and software for determining the fare to be paid by passengers with electronic travel tickets; research, design and development services related to electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage devices, microprocessors, interfaces, integrated circuits (ICs), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID chips and tags; research, design and development services related to hardware and software for the creation, programming, control, encoding, scanning, reading and interpretation of RFID chips and tags; research, design and development services related to electronic devices, instruments and equipment for the creation, programming, control, encoding, scanning, reading and interpretation of RFID chips and tags, as well as antennas for scanning, reading and interpreting RFID chips and tags; Research, design, and development services related to NFC (near-field communications) devices, instruments, and equipment, including electronic, electrotechnical, and electromagnetic modules, parts, and building elements, as well as integrated circuits for NFC applications, electronic payment cards, data processing devices, and software for determining the fare to be paid by passengers with electronic travel tickets; research, design, and development services related to parts, accessories, and components for all the aforementioned products; custom software programming; custom design, development, and programming of electronic, electrotechnical, and electromagnetic devices, parts, and building elements, data processing machines, data storage devices, microprocessors, interfaces, integrated circuits (ICs), chips, semiconductors, and smart cards, smart card controllers, chip controllers, and RFID tags; custom design, development, and programming of computer hardware for the creation, programming, control, encoding, scanning, reading, and interpretation of RFID chips and tags; Design, development, and custom programming of computer hardware for electronic devices, instruments, and equipment for the creation, programming, control, encoding, scanning, reading, and interpretation of chips and RFID tags; antennas for scanning, reading, and interpreting chips and RFID tags; design, development, and custom programming for NFC (near-field communication) devices, instruments, and equipment, including electronic, electrotechnical, and electromagnetic devices, parts, and building elements, as well as integrated circuits for near-field communication applications, electronic payment cards, data processing devices, and software for determining the fare to be paid by passengers with electronic travel tickets; design, development, and custom programming of parts, accessories, and components for all the aforementioned goods; provision of Infrastructure as a Service (IaaS) cloud services, namely, the provision of a network of internet-connected remote servers for storing, managing, and processing data, servers, databases, networks, and software; cloud computing, including software for managing services on cloud platforms and on-premises environments; advisory, consulting and information services in relation to all the services mentioned above.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "servicios de programación informática; instalación, reparación y mantenimiento en relación con software para la creación, programación, control, codificación, escaneo, lectura e interpretación de chips y etiquetas rfid y software para determinar la tarifa que deben pagar los pasajeros con boletos de viaje electrónicos; servicios de investigación, diseño y desarrollo relacionados con módulos, partes y elementos de construcción electrónicos, electrotécnicos y electromagnéticos, máquinas de procesamiento de datos, aparatos de almacenamiento de datos, microprocesadores, interfaces, circuitos integrados (ci), chips, semiconductores y tarjetas inteligentes, controladores para tarjetas inteligentes, controladores para chips y etiquetas rfid; servicios de investigación, diseño y desarrollo relacionados con hardware y software para la creación, programación, control, codificación, escaneo, lectura e interpretación de chips y etiquetas rfid; servicios de investigación, diseño y desarrollo relacionados con aparatos, instrumentos y equipos electrónicos para la creación, programación, control, codificación, escaneo, lectura e interpretación de chips y etiquetas rfid, así como antenas para el escaneo, la lectura y la interpretación de chips y etiquetas rfid; servicios de investigación, diseño y desarrollo relacionados con aparatos, instrumentos y equipos de nfc (comunicaciones de campo cercano), incluidos módulos, piezas y elementos de construcción electrónicos, electrotécnicos y electromagnéticos, así como circuitos integrados para aplicaciones nfc, tarjetas de pago electrónicas, aparatos de procesamiento de datos y software para determinar la tarifa que deben pagar los pasajeros con billetes de viaje electrónicos; servicios de investigación, diseño y desarrollo relacionados con piezas, accesorios y componentes para todos los productos mencionados; programación personalizada de software; diseño, desarrollo y programación personalizada de dispositivos, piezas y elementos de construcción electrónicos, electrotécnicos y electromagnéticos, máquinas de procesamiento de datos, aparatos de almacenamiento de datos, microprocesadores, interfaces, circuitos integrados (ci), chips, semiconductores y tarjetas inteligentes, controladores para tarjetas inteligentes, controladores para chips y etiquetas rfid; diseño, desarrollo y programación personalizada de hardware informático para la creación, programación, control, codificación, escaneo, lectura e interpretación de chips y etiquetas rfid; diseño, desarrollo y programación personalizada de hardware informático para dispositivos, instrumentos y equipos electrónicos para la creación, programación, control, codificación, escaneo, lectura e interpretación de chips y 3 etiquetas rfid, antenas para el escaneo, la lectura y la interpretación de chips y etiquetas rfid; diseño, desarrollo y programación personalizada para aparatos, instrumentos y equipos de nfc (comunicaciones de campo cercano), incluidos dispositivos, piezas y elementos de construcción electrónicos, electrotécnicos y electromagnéticos, así como circuitos integrados para aplicaciones de comunicaciones de campo cercano, tarjetas de pago electrónicas, aparatos de procesamiento de datos y software para determinar la tarifa que deben pagar los pasajeros con billetes de viaje electrónicos; diseño, desarrollo y programación personalizada de piezas, accesorios y componentes para todos los bienes anteriormente mencionados; prestación de servicios en la nube de infraestructura como servicio (iaas), a saber, provisión de una red de servidores remotos conectados a internet para almacenar, administrar y procesar datos, servidores, bases de datos, redes y software; computación en la nube que incluye software para la gestión de servicios en plataformas en la nube y entornos locales; servicios de asesoramiento, consultoría e información en relación con todos los servicios mencionados anteriormente."
+        }
+      ]
+    },
+    "id": "eee59348-efc8-4952-afe6-b1cf5af49b9f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.01.18",
+      "26.01.19",
+      "26.01.06",
+      "27.05.17",
+      "29.01.13"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251204",
+    "registrationOfficeCode": "PE",
+    "registrationOfficeName": "Peru",
+    "representatives": [
+      {
+        "representativeAddress": "LIMA - LIMA - MIRAFLORES",
+        "representativeAddressCountryCode": "CO",
+        "representativeAddressCountryName": "Colombia",
+        "representativeName": "ESTUDIO COLMENARES & ASOCIADOS SOCIEDAD ANONIMA CERRADA"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250804",
+        "applicationNumber": "40480A-2025"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20351126",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20251126",
+        "registrationNumber": "T00045294"
+      }
+    },
+    "version": "20251204020536",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MIFARE"
+    }
+  },
+  "_uri": "/mark/pe/eee59348-efc8-4952-afe6-b1cf5af49b9f",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.754Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,151 @@
+{
+  "uri": "/mark/hk/c7921db6-fed7-49ee-b785-d2ab9bb7889e",
+  "provider": "clarivate",
+  "office": "hk",
+  "guid": "c7921db6-fed7-49ee-b785-d2ab9bb7889e",
+  "applicationNumber": "302155455",
+  "registrationNumber": "302155455",
+  "applicationDate": "2012-02-08",
+  "registrationDate": "2012-02-08",
+  "expiryDate": "2032-02-07",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "freescale",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    40,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Semiconductors, semiconductor processors, semiconductor processor chips, integrated circuits, integrated circuit chips, circuit boards, microcomputers, microcontrollers, microprocessors, applications processors, programmable microprocessors, multicore processors, application-specific integrated circuits (ASICs), integrated circuits embedded with software, signal processors, digital signal processors (DSPs), vector processors, vector signal processors, communications processors, network processors used in network and telecommunications equipment, application-specific accelerators, wireless basebands, basestations on a chip, including wireless basestations on a chip, system basis chips, systems on a chip (SOC), multicore microcontrollers, digital signal controllers, data conversion circuits, semiconductor chip sets; semiconductor packages, redistributed chip packaging (RCP), and systems-in-package (SiP); radio frequency (RF) power transistors, radio frequency semiconductors, radio frequency transistors; sensors, namely, inertial sensors, pressure sensors, magnetic sensors, touch sensors for use in automotive, consumer, medical and industrial applications, proximity sensors, radar sensors, capacitive sensors, accelerometers, acceleration sensors, gyro sensors, and sensors for computer interfaces featuring software, firmware and electronic integrated circuit chips; computer software for enabling functionality of sensors for use in automotive, consumer, industrial and medical applications; sensor systems comprised of sensors, computer software, microprocessors, microcontrollers, and logic or wireless protocols for enabling functionality of sensors for use in automotive, consumer, medical and industrial applications; electronic test instruments for developing and testing microprocessor-based systems; memories and semiconductor wafers; semiconductors for lighting, heating, steam generating, cooking, refrigerating, drying and ventilating apparatus, machines and machine tools, clocks and time keeping apparatus and instruments, musical instruments, games and playthings; semiconductor devices, microcontrollers, integrated circuits, circuit boards, chipsets, all for management of operating frequency, voltage and power, optimization of static and dynamic power, power management, power optimization or power reduction; semiconductors, sensors and software for use in automotive, consumer, healthcare, medical, aerospace, military, cellular and mobile communications, networking, motor control, smart energy, and industrial applications; semiconductors, sensors and software for use in wireless connectivity, battery management, smart grid, smart metering applications, engine control units (ECUs) and tire pressure monitoring systems (TPMS); video graphic accelerators; multimedia accelerators; testing apparatus for the testing and programming of integrated circuits and semiconductor memories; high power electronics; microcontrollers, firmware, sensors, and radio frequency (RF) and analog circuitry devices for use with energy efficient wireless chargers; development boards, evaluation boards, and reference design kits for semiconductors, sensors and software; semiconductors, sensors and software for use in portable medical devices, diagnostic and patient monitoring devices, therapy devices, and medical imaging devices; computer software, namely, application integration and connectivity software; computer operating system software; computer operating programs; computer software and hardware for the facilitation of third party software applications; computer application software, namely, computer software for use in applications for multimedia, graphics video, audio and numerically intensive computations; computer software, namely compilers, linkers, support software to assist in the development of stand-alone programs, and software for assisting in the development of object oriented software applications, such as database systems; computer networking software; computer network management software; computer network switching software; computer convergence network software; computer network collaboration software; integrated networking, security, and collaboration software; internet security software; network management software; quality of service software; network access software; networking software for operation of chipsets; networking software for content processing; computer software, namely, firmware, applications and development tools, for use in network content processing; load balancing software; failover prevention software; stateful packet inspection software; stateful application inspection software; deep packet inspection software; VPN (virtual private network) software; enterprise security software; intrusion detection and prevention software; firewall software; content filtering software; anti-virus and anti-spam software; wireless radio controller software; data plane software; control plane software; command line management software; voice over IP software; video over IP software; collaboration software; switching software; networking and security software for use with unified threat management equipment, gateways, integrated access devices, routers, switches, controllers, base stations, hubs, and security appliances; utility software for facilitating computer use at remote locations and for facilitating communications among mobile users over networks; computer software for providing security to remote users and for implementing computer, software, and network security measures for remote users; user manuals (in electronic format) supplied with the foregoing; computer software, namely operating systems, board support packages (BSPs), virtualization technology software, hypervisor software, embedded software, applications programming interface (API) software, software libraries, applications software, protocol stacks, configuration software, and optimization software; component-based software modeling tool featuring a graphical user interface, automatic code generators and built-in knowledge-base for use in the rapid design, development, implementation, verification and optimization of embedded applications; computer software based development tools, namely debuggers, integrated development environments, run control, event analysis and trace, all for use in the development of stand-alone software programs used in devices; software for use in developing other software titles; downloadable, searchable electronic publications, namely reference manuals, user guides, application notes and product specifications on the subject of semiconductors, sensors and software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "en",
+      "description": "Foundry services, namely custom manufacture and assembly of semiconductors and integrated circuits.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education services, namely providing live and on-line classes, seminars, tutorial sessions, conferences and workshops in the fields of semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency (RF) devices, sensors and software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Developing, designing and testing semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency (RF) devices, sensors and software for others; Consulting services in the fields of developing, designing and testing semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency (RF) devices, sensors and software; Providing information in the fields of semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency (RF) devices, sensors and software.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West, Austin, Texas 78735, UNITED STATES",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA Inc."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Semiconductors, semiconductor processors, semiconductor processor chips, integrated circuits, integrated circuit chips, circuit boards, microcomputers, microcontrollers, microprocessors, applications processors, programmable microprocessors, multicore processors, application-specific integrated circuits (ASICs), integrated circuits embedded with software, signal processors, digital signal processors (DSPs), vector processors, vector signal processors, communications processors, network processors used in network and telecommunications equipment, application-specific accelerators, wireless basebands, basestations on a chip, including wireless basestations on a chip, system basis chips, systems on a chip (SOC), multicore microcontrollers, digital signal controllers, data conversion circuits, semiconductor chip sets; semiconductor packages, redistributed chip packaging (RCP), and systems-in-package (SiP); radio frequency (RF) power transistors, radio frequency semiconductors, radio frequency transistors; sensors, namely, inertial sensors, pressure sensors, magnetic sensors, touch sensors for use in automotive, consumer, medical and industrial applications, proximity sensors, radar sensors, capacitive sensors, accelerometers, acceleration sensors, gyro sensors, and sensors for computer interfaces featuring software, firmware and electronic integrated circuit chips; computer software for enabling functionality of sensors for use in automotive, consumer, industrial and medical applications; sensor systems comprised of sensors, computer software, microprocessors, microcontrollers, and logic or wireless protocols for enabling functionality of sensors for use in automotive, consumer, medical and industrial applications; electronic test instruments for developing and testing microprocessor-based systems; memories and semiconductor wafers; semiconductors for lighting, heating, steam generating, cooking, refrigerating, drying and ventilating apparatus, machines and machine tools, clocks and time keeping apparatus and instruments, musical instruments, games and playthings; semiconductor devices, microcontrollers, integrated circuits, circuit boards, chipsets, all for management of operating frequency, voltage and power, optimization of static and dynamic power, power management, power optimization or power reduction; semiconductors, sensors and software for use in automotive, consumer, healthcare, medical, aerospace, military, cellular and mobile communications, networking, motor control, smart energy, and industrial applications; semiconductors, sensors and software for use in wireless connectivity, battery management, smart grid, smart metering applications, engine control units (ECUs) and tire pressure monitoring systems (TPMS); video graphic accelerators; multimedia accelerators; testing apparatus for the testing and programming of integrated circuits and semiconductor memories; high power electronics; microcontrollers, firmware, sensors, and radio frequency (RF) and analog circuitry devices for use with energy efficient wireless chargers; development boards, evaluation boards, and reference design kits for semiconductors, sensors and software; semiconductors, sensors and software for use in portable medical devices, diagnostic and patient monitoring devices, therapy devices, and medical imaging devices; computer software, namely, application integration and connectivity software; computer operating system software; computer operating programs; computer software and hardware for the facilitation of third party software applications; computer application software, namely, computer software for use in applications for multimedia, graphics video, audio and numerically intensive computations; computer software, namely compilers, linkers, support software to assist in the development of stand-alone programs, and software for assisting in the development of object oriented software applications, such as database systems; computer networking software; computer network management software; computer network switching software; computer convergence network software; computer network collaboration software; integrated networking, security, and collaboration software; internet security software; network management software; quality of service software; network access software; networking software for operation of chipsets; networking software for content processing; computer software, namely, firmware, applications and development tools, for use in network content processing; load balancing software; failover prevention software; stateful packet inspection software; stateful application inspection software; deep packet inspection software; VPN (virtual private network) software; enterprise security software; intrusion detection and prevention software; firewall software; content filtering software; anti-virus and anti-spam software; wireless radio controller software; data plane software; control plane software; command line management software; voice over IP software; video over IP software; collaboration software; switching software; networking and security software for use with unified threat management equipment, gateways, integrated access devices, routers, switches, controllers, base stations, hubs, and security appliances; utility software for facilitating computer use at remote locations and for facilitating communications among mobile users over networks; computer software for providing security to remote users and for implementing computer, software, and network security measures for remote users; user manuals (in electronic format) supplied with the foregoing; computer software, namely operating systems, board support packages (BSPs), virtualization technology software, hypervisor software, embedded software, applications programming interface (API) software, software libraries, applications software, protocol stacks, configuration software, and optimization software; component-based software modeling tool featuring a graphical user interface, automatic code generators and built-in knowledge-base for use in the rapid design, development, implementation, verification and optimization of embedded applications; computer software based development tools, namely debuggers, integrated development environments, run control, event analysis and trace, all for use in the development of stand-alone software programs used in devices; software for use in developing other software titles; downloadable, searchable electronic publications, namely reference manuals, user guides, application notes and product specifications on the subject of semiconductors, sensors and software."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Foundry services, namely custom manufacture and assembly of semiconductors and integrated circuits."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education services, namely providing live and on-line classes, seminars, tutorial sessions, conferences and workshops in the fields of semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency (RF) devices, sensors and software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Developing, designing and testing semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency (RF) devices, sensors and software for others; Consulting services in the fields of developing, designing and testing semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency (RF) devices, sensors and software; Providing information in the fields of semiconductors, semiconductor devices, integrated circuits, microcontrollers, processors, radio frequency (RF) devices, sensors and software."
+        }
+      ]
+    },
+    "id": "c7921db6-fed7-49ee-b785-d2ab9bb7889e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "HK",
+    "registrationOfficeName": "Hong Kong",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20120208",
+        "applicationNumber": "302155455"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320207",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20120208",
+        "registrationNumber": "302155455"
+      }
+    },
+    "version": "20240321121316",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "freescale"
+    }
+  },
+  "_uri": "/mark/hk/c7921db6-fed7-49ee-b785-d2ab9bb7889e",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:10.757Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

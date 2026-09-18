@@ -1,0 +1,117 @@
+{
+  "uri": "/mark/th/7ed744e0-1ef6-415a-b323-8eda6fe4334d",
+  "provider": "clarivate",
+  "office": "th",
+  "guid": "7ed744e0-1ef6-415a-b323-8eda6fe4334d",
+  "applicationNumber": "719961",
+  "registrationNumber": "49545",
+  "applicationDate": "2009-01-22",
+  "registrationDate": "2011-03-23",
+  "expiryDate": "2029-01-21",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MIFARE PLUS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "th",
+      "description": "จัดทำโปรแกรมคอมพิวเตอร์ ติดตั้ง ซ่อมแซม และบำรุงรักษาซอฟแวร์ ค้นคว้าวิจัย ออกแบบ และพัฒนาโมดุล ชิ้นส่วนและอุปกรณ์อิเล็คทรอนิก อิเล็คทรอเทคนิกคอล และอิเล็คทรอแม็กเนติก ค้นคว้าวิจัย ออกแบบ และพัฒนาเครื่อง เครื่องมือและอุปกรณ์อิเล็กทรอนิกส์ ค้นคว้าวิจัย ออกแบบ และพัฒนาเครื่อง เครื่องมือและอุปกรณ์ใช้สื่อสารไร้สายระยะสั้น (เนียร์ ฟิลด์ คอมมูนิเคชัน) ผลิตและจัดทำโปรแกรมซอฟแวร์ตามความต้องการเฉพาะของลูกค้า ผลิตและจัดทำโปรแกรมตามความต้องการเฉพาะของลูกค้าสำหรับโมดุล ชิ้นส่วนและ อุปกรณ์อิเล็คทรอนิก อิเล็คทรอเทคนิกคอล และอิเล็คทรอแม็กเนติก ผลิตและจัดทำโปรแกรมตามความต้องการเฉพาะของลูกค้าสำหรับเครื่อง เครื่องมือและ อุปกรณ์อิเล็กทรอนิกส์สำหรับใช้ในการสร้าง จัดทำโปรแกรมควบคุม เข้ารหัส สแกน อ่าน และแปลชิปและแถบบ่งชี้คลื่นความถี่วิทยุ ผลิตและจัดทำโปรแกรมตามความต้องการเฉพาะของลูกค้าสำหรับเครื่อง เครื่องมือและอุปกรณ์ใช้สื่อสารไร้สายระยะสั้น (เนียร์ ฟิลด์ คอมมูนิเคชัน).",
+      "translation_language": "en",
+      "translation": "Create computer programs, install, repair and maintain software, research, design and develop modules. Electronic parts and equipment electronic technical and electronic equipment research, design and development Electronic tools and equipment, research, design and development Short-range wireless communication tools and equipment (Near Field Communication) manufacture and program software according to customer specific requirements. Produce and program according to customer specific requirements for modules, parts and electronic equipment. electronic technical and electronic magnet Produce and make a program according to the specific requirements of the customer for the machine. tools and electronic equipment for use in building Program to control, encode, scan, read, and translate radio frequency chip and indicator bands. Produce and make a program according to the specific requirements of the customer for the machine. Short-range wireless communication tools and equipment (Near Field Communications)."
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V.",
+        "applicantNativeAddress": "ไฮ เทค แคมปัส 60, 5656 เอจี, ไอด์โฮเวน ประเทศเนเธอร์แลนด์",
+        "applicantNativeName": "เอ็นเอ็กซ์พี บี. วี"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Create computer programs, install, repair and maintain software, research, design and develop modules. Electronic parts and equipment electronic technical and electronic equipment research, design and development Electronic tools and equipment, research, design and development Short-range wireless communication tools and equipment (Near Field Communication) manufacture and program software according to customer specific requirements. Produce and program according to customer specific requirements for modules, parts and electronic equipment. electronic technical and electronic magnet Produce and make a program according to the specific requirements of the customer for the machine. tools and electronic equipment for use in building Program to control, encode, scan, read, and translate radio frequency chip and indicator bands. Produce and make a program according to the specific requirements of the customer for the machine. Short-range wireless communication tools and equipment (Near Field Communications).",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "th",
+          "intGoodsServicesDescription": "จัดทำโปรแกรมคอมพิวเตอร์ ติดตั้ง ซ่อมแซม และบำรุงรักษาซอฟแวร์ ค้นคว้าวิจัย ออกแบบ และพัฒนาโมดุล ชิ้นส่วนและอุปกรณ์อิเล็คทรอนิก อิเล็คทรอเทคนิกคอล และอิเล็คทรอแม็กเนติก ค้นคว้าวิจัย ออกแบบ และพัฒนาเครื่อง เครื่องมือและอุปกรณ์อิเล็กทรอนิกส์ ค้นคว้าวิจัย ออกแบบ และพัฒนาเครื่อง เครื่องมือและอุปกรณ์ใช้สื่อสารไร้สายระยะสั้น (เนียร์ ฟิลด์ คอมมูนิเคชัน) ผลิตและจัดทำโปรแกรมซอฟแวร์ตามความต้องการเฉพาะของลูกค้า ผลิตและจัดทำโปรแกรมตามความต้องการเฉพาะของลูกค้าสำหรับโมดุล ชิ้นส่วนและ อุปกรณ์อิเล็คทรอนิก อิเล็คทรอเทคนิกคอล และอิเล็คทรอแม็กเนติก ผลิตและจัดทำโปรแกรมตามความต้องการเฉพาะของลูกค้าสำหรับเครื่อง เครื่องมือและ อุปกรณ์อิเล็กทรอนิกส์สำหรับใช้ในการสร้าง จัดทำโปรแกรมควบคุม เข้ารหัส สแกน อ่าน และแปลชิปและแถบบ่งชี้คลื่นความถี่วิทยุ ผลิตและจัดทำโปรแกรมตามความต้องการเฉพาะของลูกค้าสำหรับเครื่อง เครื่องมือและอุปกรณ์ใช้สื่อสารไร้สายระยะสั้น (เนียร์ ฟิลด์ คอมมูนิเคชัน)."
+        }
+      ]
+    },
+    "id": "7ed744e0-1ef6-415a-b323-8eda6fe4334d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250905",
+    "registrationOfficeCode": "TH",
+    "registrationOfficeName": "Thailand",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "TH",
+        "representativeAddressCountryName": "Thailand",
+        "representativeNativeAddress": "บริษัท เราส์ แอนด์ โค อินเตอร์เนชั่นแนล (ประเทศไทย) จำกัด ที่อยู่ ห้อง 1401 - 3 และ 1408 ชั้น 14 อาคาร ทู แปซิฟิค เพลส เลขที่ 142 ถนนสุขุมวิท",
+        "representativeNativeName": "บริษัท เราส์ แอนด์ โค อินเตอร์เนชั่นแนล (ประเทศไทย) จำกัด, นายมนูญ ช่างชำนิ, นายณรรฐชัย อุนรัตน์, นางชนิดา ศรีนักสิทธิ์"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20090122",
+        "applicationNumber": "719961"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290121",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20110323",
+        "registrationNumber": "49545"
+      }
+    },
+    "version": "20250905145421",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MIFARE PLUS"
+    }
+  },
+  "_uri": "/mark/th/7ed744e0-1ef6-415a-b323-8eda6fe4334d",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.747Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

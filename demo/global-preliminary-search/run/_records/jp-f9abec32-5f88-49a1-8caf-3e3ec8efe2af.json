@@ -1,0 +1,209 @@
+{
+  "uri": "/mark/jp/f9abec32-5f88-49a1-8caf-3e3ec8efe2af",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "f9abec32-5f88-49a1-8caf-3e3ec8efe2af",
+  "applicationNumber": "S57-009156",
+  "registrationNumber": "1816752",
+  "applicationDate": "1982-02-05",
+  "registrationDate": "1985-10-31",
+  "expiryDate": "2035-10-31",
+  "renewalDate": null,
+  "lastPublicationDate": "1985-03-04",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＬＯＷＡＲＡ",
+  "markTransliteration": "ROWARA",
+  "markTranslation": "LOWARA",
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    9,
+    11
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7
+      ],
+      "language": null,
+      "description": "水面注水用ポンプ，吸引ポンプ，水中ポンプ，暖房設備用循環ポンプ，暖房設備用ポンプ，機械・設備用の液体循環ポンプ，遠心ポンプ，潤滑油ポンプ，注水用ポンプ，給水用ポンプ，水昇圧ポンプ，水増圧ポンプ，その他のポンプ，ポンプ用の部品及びスペアパーツ，その他の風水力機械器具",
+      "translation_language": "en",
+      "translation": "Water pump, suction pump, underwater pump, circulation pump for heating equipment, pump for heating equipment, liquid circulation pump for machinery and equipment, centrifugal pump, lubrication oil pump, water injection pump, water supply pump, water boost pump, Water pressure booster pumps, other pumps, parts and spare parts for pumps, other wind hydraulic machinery tools"
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "自動制御燃料ポンプ，ガソリンステーション用ガソリンポンプ，ガソリンポンプ用の部品及びスペアパーツ",
+      "translation_language": "en",
+      "translation": "Automatic control fuel pump, gasoline pump for gasoline station, parts and spare parts for gasoline pump"
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": null,
+      "description": "給水用設備，浄水設備，硬水軟化装置及び設備，排水処理装置，浄水処理装置，水冷却機，蒸気発生器，蓄熱器，熱交換器，暖冷房設備，硬水軟化装置",
+      "translation_language": "en",
+      "translation": "Water supply equipment, water purification equipment, hard water softening equipment and concrete equipment, drainage treatment equipment, water treatment equipment, water cooling machine, steam generator, heat accumulator, heat exchanger, warm and cold room equipment, hard water softening device"
+    }
+  ],
+  "owner": "XYLEM EUROPE GMBH",
+  "ownerNative": null,
+  "ownerCountry": "CH",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityDate": "19820205"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "CH",
+        "applicantAddressCountryName": "Switzerland",
+        "applicantName": "XYLEM EUROPE GMBH",
+        "applicantNativeAddress": "スイス国",
+        "applicantNativeName": "ザイレム・オイローパ・ゲーエムベーハー"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Water pump, suction pump, underwater pump, circulation pump for heating equipment, pump for heating equipment, liquid circulation pump for machinery and equipment, centrifugal pump, lubrication oil pump, water injection pump, water supply pump, water boost pump, Water pressure booster pumps, other pumps, parts and spare parts for pumps, other wind hydraulic machinery tools",
+          "intClassNumber": "07",
+          "intGoodsServicesDescription": "水面注水用ポンプ，吸引ポンプ，水中ポンプ，暖房設備用循環ポンプ，暖房設備用ポンプ，機械・設備用の液体循環ポンプ，遠心ポンプ，潤滑油ポンプ，注水用ポンプ，給水用ポンプ，水昇圧ポンプ，水増圧ポンプ，その他のポンプ，ポンプ用の部品及びスペアパーツ，その他の風水力機械器具"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Automatic control fuel pump, gasoline pump for gasoline station, parts and spare parts for gasoline pump",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "自動制御燃料ポンプ，ガソリンステーション用ガソリンポンプ，ガソリンポンプ用の部品及びスペアパーツ"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Water supply equipment, water purification equipment, hard water softening equipment and concrete equipment, drainage treatment equipment, water treatment equipment, water cooling machine, steam generator, heat accumulator, heat exchanger, warm and cold room equipment, hard water softening device",
+          "intClassNumber": "11",
+          "intGoodsServicesDescription": "給水用設備，浄水設備，硬水軟化装置及び設備，排水処理装置，浄水処理装置，水冷却機，蒸気発生器，蓄熱器，熱交換器，暖冷房設備，硬水軟化装置"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "09C01",
+          "natGoodsServicesDescription": "Pneumatic or hydraulic machines and instruments"
+        },
+        {
+          "natClassNumber": "09E22",
+          "natGoodsServicesDescription": "Gasoline station equipment"
+        },
+        {
+          "natClassNumber": "09A06",
+          "natGoodsServicesDescription": "Drying apparatus, Recuperators, Steamers, Evaporators, Distillation apparatus, Heat exchangers"
+        },
+        {
+          "natClassNumber": "09B01",
+          "natGoodsServicesDescription": "Boilers"
+        },
+        {
+          "natClassNumber": "09E11",
+          "natGoodsServicesDescription": "Heating and air conditioning equipment"
+        },
+        {
+          "natClassNumber": "09E12",
+          "natGoodsServicesDescription": "Freezing and refrigerating equipment"
+        },
+        {
+          "natClassNumber": "09F05",
+          "natGoodsServicesDescription": "Tap water faucets, Level controlling valves in tanks, Pipe line cocks"
+        },
+        {
+          "natClassNumber": "09G57",
+          "natGoodsServicesDescription": "Waste water purification tanks, septic tanks not for household use"
+        },
+        {
+          "natClassNumber": "09G62",
+          "natGoodsServicesDescription": "Water purifying apparatus"
+        },
+        {
+          "natClassNumber": "09G99"
+        }
+      ]
+    },
+    "id": "f9abec32-5f88-49a1-8caf-3e3ec8efe2af",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "01.15.15.00",
+      "26.01.01.00",
+      "26.01.03.00",
+      "26.01.12.00",
+      "26.02.05.00",
+      "26.04.04.00",
+      "26.04.05.00",
+      "26.04.06.00",
+      "26.04.09.00",
+      "26.07.25.00",
+      "26.11.03.00",
+      "26.11.13.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19820205"
+      }
+    ],
+    "recordLastUpdated": "20250718",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19820205",
+        "applicationNumber": "S57-009156"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20351031",
+      "lastPublicationDate": "19850304",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "19851031",
+        "registrationNumber": "1816752"
+      }
+    },
+    "version": "20250718084153",
+    "wordMarkSpecification": {
+      "markTranslation": "LOWARA",
+      "markTransliteration": "ROWARA",
+      "markVerbalElementText": "ＬＯＷＡＲＡ"
+    }
+  },
+  "_uri": "/mark/jp/f9abec32-5f88-49a1-8caf-3e3ec8efe2af",
+  "_receipt": {
+    "fetched_at": "2026-09-18T13:08:48.953Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-incumbent-class"
+  }
+}

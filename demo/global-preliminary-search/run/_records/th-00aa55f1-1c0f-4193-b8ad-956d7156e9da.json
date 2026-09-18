@@ -1,0 +1,129 @@
+{
+  "uri": "/mark/th/00aa55f1-1c0f-4193-b8ad-956d7156e9da",
+  "provider": "clarivate",
+  "office": "th",
+  "guid": "00aa55f1-1c0f-4193-b8ad-956d7156e9da",
+  "applicationNumber": "M190119027",
+  "registrationNumber": null,
+  "applicationDate": "2019-02-08",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "NXP",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "th",
+      "description": "เครื่องมือสำหรับบันทึก การส่งสัญญาณ หรือการทำซ้ำด้านเสียงและภาพ;ตัวส่งข้อมูลบันทึกแม่เหล็ก แผ่นจานบันทึก;อินเทอร์เฟซคอมพิวเตอร์;โมดูลโหลดอิเล็กทรอนิกส์เทคนิคไฟฟ้าและแม่เหล็กไฟฟ้า;อุปกรณ์ประมวลผลข้อมูลอุปกรณ์จัดเก็บข้อมูล;เครื่องประมวลผลจุลภาค (ไมโครโปรเซสเซอร์);การเชื่อต่อมเครือข่ายคอมพิวเตอร์;วงจรรวม (ics), ชิป (วงจรรวม);ตัวสื่อไฟฟ้า;บัตรสมาร์ทการ์ด;วงจรรวมสมาร์ทการ์ด;ชิป rfid และแท็ก;ฮาร์ดแวร์คอมพิวเตอร์และซอฟต์แวร์สำหรับการสร้างเขียนโปรแกรมควบคุมเข้ารหัสสแกนอ่านและตีความชิปและแท็ก rfid;สมาร์ทการ์ดแบบไม่สัมผัส ;สมาร์ทการ์ดแบบอินเทอร์เฟซคู่ ;วงจรรวมอินเทอร์เฟซคู่ (ic) ที่ให้การเชื่อมโยงระหว่างการ์ดไร้สัมผัสและการ์ดสัมผัส;นักเขียนและผู้อ่านสำหรับการส่งสัญญาณไร้สายไปยังและจากชิปดาวเทียม;อุปกรณ์อิเล็กทรอนิกส์สำหรับการเขียนและอ่านการส่งสัญญาณไร้สายไปยังและจากชิปดาวเทียม;โปรแกรมคอมพิวเตอร์สำหรับควบคุมการส่งข้อมูลไปยังและอ่านข้อมูลจากชิปดาวเทียม;เครื่องประมวลผลข้อมูลสำหรับการกำหนดค่าโดยสารโดยใช้ชิปทรานสปอนเดอร์;สมาร์ทการ์ดที่เข้ารหัส ;การ์ดเข้าถึงอิเล็กทรอนิกส์;สายรัดข้อมืออิเล็กทรอนิกส์; (คอมพิวเตอร์) ฮาร์ดแวร์ซอฟต์แวร์และอุปกรณ์ต่อพ่วงที่ใช้เพื่อวัตถุประสงค์ในการควบคุมการเข้าถึงและการตรวจสอบสิทธิ์;ชุดคำสั่ง;ฮาร์ดแวร์;สายรัดข้อมืออัจฉริยะ;อุปกรณ์ต่อพ่วงคอมพิวเตอร์ที่สวมใส่ได้;หูฟัง;หูฟัง;สมาร์ทโฟน;อุปกรณ์โทรคมนาคมที่สวมใส่ได้.",
+      "translation_language": "en",
+      "translation": "Equipment for recording, transmitting or reproducing audio and video; magnetic recording data transmitters. Recording disks; Computer interfaces; Electronic load modules; Electrical and electromagnetic techniques; Data processing equipment; Storage equipment; Microprocessor (microprocessors);computer network interfaces;integrated circuits (ics), chips (integrated circuits);conductors;smart cards;smart card integrated circuits;rfid chips and tags; Computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting chips and tags. rfid; contactless smart card dual interface smart card a dual interface integrated circuit (ic) that provides a link between a contactless card and a contactless card; a writer and reader for transmitting wireless signals to and from the transponder chip; an electronic device for writing and read wireless transmissions to and from the transponder chip; a computer program for controlling the transmission of data to and from the transponder chip; a data processor for fare configuration using the transponder chip; encrypted smart card ;Electronic access card;Electronic wristband; (Computer) hardware, software and peripherals used for access control and authentication purposes; instruction sets; hardware; smart wristbands; wearable computer peripherals; headsets; headphones. Smartphones; wearable telecommunication devices."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "th",
+      "description": "วิจัยและออกแบบสำหรับผู้อื่นที่เกี่ยวข้องกับวงจรรวมและซอฟต์แวร์การสื่อสารและเครือข่าย; การพัฒนาซอฟต์แวร์คอมพิวเตอร์ในด้านแอพพลิเคชั่นมือถือ;ที่ปรึกษาด้านเทคโนโลยีโทรคมนาคม;การออกแบบและพัฒนาระบบสื่อสารไร้สายสำหรับการส่งและรับเสียงข้อมูลและวิดีโอ;การออกแบบและพัฒนาระบบสื่อสารไร้สายเพื่อวัตถุประสงค์ในการตรวจสอบสิทธิ์; จัดหาแอพพลิเคชั่นซอฟต์แวร์ออนไลน์ที่ไม่สามารถดาวน์โหลดได้ชั่วคราวแพลตฟอร์มการพัฒนาและเครื่องมือการพัฒนาที่ช่วยให้นักพัฒนาซอฟต์แวร์สามารถพัฒนาโปรแกรมสร้างและต้นแบบซอฟต์แวร์สำหรับวงจรรวมชิปและอุปกรณ์ประมวลผลข้อมูล;บริการเขียนโปรแกรมคอมพิวเตอร์;การวิจัยและออกแบบโมดูลทางเทคนิคไฟฟ้าและแม่เหล็กไฟฟ้าชิ้นส่วนและองค์ประกอบอาคารเครื่องประมวลผลข้อมูลอุปกรณ์จัดเก็บข้อมูลไมโครโปรเซสเซอร์อินเทอร์เฟซวงจรรวม (ICS) ชิปเซมิคอนดักเตอร์สมาร์ทการ์ดคอนโทรลเลอร์สำหรับสมาร์ทการ์ดคอนโทรลเลอร์สำหรับชิป RFID และ แท็กฮาร์ดแวร์คอมพิวเตอร์และซอฟต์แวร์สำหรับการสร้างเขียนโปรแกรมควบคุมเข้ารหัสสแกนอ่านและตีความชิปและแท็ก RFID อุปกรณ์อิเล็กทรอนิกส์เครื่องมือและอุปกรณ์สำหรับสร้างเขียนโปรแกรมควบคุมเข้ารหัสสแกนอ่านและตีความชิปและแท็ก RFID;การวิจัยและออกแบบเสาอากาศสำหรับการสแกนอ่านและตีความชิปและแท็ก RFID;การวิจัยและออกแบบอุปกรณ์เครื่องมือและอุปกรณ์ NFC (การสื่อสารระยะใกล้) รวมถึงโมดูลทางเทคนิคอิเล็กทรอนิกส์และแม่เหล็กไฟฟ้าชิ้นส่วนและองค์ประกอบอาคารและวงจรรวมสำหรับการใช้งาน NFC;บริการให้คำปรึกษาที่เกี่ยวข้องทั้งหมดข้างต้น.",
+      "translation_language": "en",
+      "translation": "Research and design for others related to integrated circuits and communications and networking software; development of computer software in the field of mobile applications; telecommunication technology consulting; design and development of wireless communication systems for transmitting and receiving voice, data and video; design and development of wireless communication systems for the purpose of authentication; Provide temporarily non-downloadable online software applications, development platforms and development tools that enable software developers to develop software builders and prototypes for integrated circuits, chips and data processing devices; programming services. Computers; research and design of electrical and electromagnetic technical modules, building blocks and components, data processing machines, storage devices, microprocessor interface integrated circuits (ICS), semiconductor chips, smart cards, controllers for Smart card controllers for RFID chips and tags Computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags Electronic equipment, tools and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting chips and tags g RFID; Research and design antennas for scanning, reading and interpreting chips and tags. RFID; research and design of NFC (near-field communication) equipment and devices, including electronic and electromagnetic technical modules, parts and building blocks, and integrated circuits for applications. NFC; consulting services related to all of the above."
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V.",
+        "applicantNativeAddress": "ไฮ เทค แคมปัส 60 เอ็นแอล - 5656 เอจี อินด์โฮเวน ประเทศเนเธอร์แลนด์",
+        "applicantNativeName": "เอ็นเอ็กซ์พี บี. วี."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Equipment for recording, transmitting or reproducing audio and video; magnetic recording data transmitters. Recording disks; Computer interfaces; Electronic load modules; Electrical and electromagnetic techniques; Data processing equipment; Storage equipment; Microprocessor (microprocessors);computer network interfaces;integrated circuits (ics), chips (integrated circuits);conductors;smart cards;smart card integrated circuits;rfid chips and tags; Computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting chips and tags. rfid; contactless smart card dual interface smart card a dual interface integrated circuit (ic) that provides a link between a contactless card and a contactless card; a writer and reader for transmitting wireless signals to and from the transponder chip; an electronic device for writing and read wireless transmissions to and from the transponder chip; a computer program for controlling the transmission of data to and from the transponder chip; a data processor for fare configuration using the transponder chip; encrypted smart card ;Electronic access card;Electronic wristband; (Computer) hardware, software and peripherals used for access control and authentication purposes; instruction sets; hardware; smart wristbands; wearable computer peripherals; headsets; headphones. Smartphones; wearable telecommunication devices.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "th",
+          "intGoodsServicesDescription": "เครื่องมือสำหรับบันทึก การส่งสัญญาณ หรือการทำซ้ำด้านเสียงและภาพ;ตัวส่งข้อมูลบันทึกแม่เหล็ก แผ่นจานบันทึก;อินเทอร์เฟซคอมพิวเตอร์;โมดูลโหลดอิเล็กทรอนิกส์เทคนิคไฟฟ้าและแม่เหล็กไฟฟ้า;อุปกรณ์ประมวลผลข้อมูลอุปกรณ์จัดเก็บข้อมูล;เครื่องประมวลผลจุลภาค (ไมโครโปรเซสเซอร์);การเชื่อต่อมเครือข่ายคอมพิวเตอร์;วงจรรวม (ics), ชิป (วงจรรวม);ตัวสื่อไฟฟ้า;บัตรสมาร์ทการ์ด;วงจรรวมสมาร์ทการ์ด;ชิป rfid และแท็ก;ฮาร์ดแวร์คอมพิวเตอร์และซอฟต์แวร์สำหรับการสร้างเขียนโปรแกรมควบคุมเข้ารหัสสแกนอ่านและตีความชิปและแท็ก rfid;สมาร์ทการ์ดแบบไม่สัมผัส ;สมาร์ทการ์ดแบบอินเทอร์เฟซคู่ ;วงจรรวมอินเทอร์เฟซคู่ (ic) ที่ให้การเชื่อมโยงระหว่างการ์ดไร้สัมผัสและการ์ดสัมผัส;นักเขียนและผู้อ่านสำหรับการส่งสัญญาณไร้สายไปยังและจากชิปดาวเทียม;อุปกรณ์อิเล็กทรอนิกส์สำหรับการเขียนและอ่านการส่งสัญญาณไร้สายไปยังและจากชิปดาวเทียม;โปรแกรมคอมพิวเตอร์สำหรับควบคุมการส่งข้อมูลไปยังและอ่านข้อมูลจากชิปดาวเทียม;เครื่องประมวลผลข้อมูลสำหรับการกำหนดค่าโดยสารโดยใช้ชิปทรานสปอนเดอร์;สมาร์ทการ์ดที่เข้ารหัส ;การ์ดเข้าถึงอิเล็กทรอนิกส์;สายรัดข้อมืออิเล็กทรอนิกส์; (คอมพิวเตอร์) ฮาร์ดแวร์ซอฟต์แวร์และอุปกรณ์ต่อพ่วงที่ใช้เพื่อวัตถุประสงค์ในการควบคุมการเข้าถึงและการตรวจสอบสิทธิ์;ชุดคำสั่ง;ฮาร์ดแวร์;สายรัดข้อมืออัจฉริยะ;อุปกรณ์ต่อพ่วงคอมพิวเตอร์ที่สวมใส่ได้;หูฟัง;หูฟัง;สมาร์ทโฟน;อุปกรณ์โทรคมนาคมที่สวมใส่ได้."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Research and design for others related to integrated circuits and communications and networking software; development of computer software in the field of mobile applications; telecommunication technology consulting; design and development of wireless communication systems for transmitting and receiving voice, data and video; design and development of wireless communication systems for the purpose of authentication; Provide temporarily non-downloadable online software applications, development platforms and development tools that enable software developers to develop software builders and prototypes for integrated circuits, chips and data processing devices; programming services. Computers; research and design of electrical and electromagnetic technical modules, building blocks and components, data processing machines, storage devices, microprocessor interface integrated circuits (ICS), semiconductor chips, smart cards, controllers for Smart card controllers for RFID chips and tags Computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags Electronic equipment, tools and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting chips and tags g RFID; Research and design antennas for scanning, reading and interpreting chips and tags. RFID; research and design of NFC (near-field communication) equipment and devices, including electronic and electromagnetic technical modules, parts and building blocks, and integrated circuits for applications. NFC; consulting services related to all of the above.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "th",
+          "intGoodsServicesDescription": "วิจัยและออกแบบสำหรับผู้อื่นที่เกี่ยวข้องกับวงจรรวมและซอฟต์แวร์การสื่อสารและเครือข่าย; การพัฒนาซอฟต์แวร์คอมพิวเตอร์ในด้านแอพพลิเคชั่นมือถือ;ที่ปรึกษาด้านเทคโนโลยีโทรคมนาคม;การออกแบบและพัฒนาระบบสื่อสารไร้สายสำหรับการส่งและรับเสียงข้อมูลและวิดีโอ;การออกแบบและพัฒนาระบบสื่อสารไร้สายเพื่อวัตถุประสงค์ในการตรวจสอบสิทธิ์; จัดหาแอพพลิเคชั่นซอฟต์แวร์ออนไลน์ที่ไม่สามารถดาวน์โหลดได้ชั่วคราวแพลตฟอร์มการพัฒนาและเครื่องมือการพัฒนาที่ช่วยให้นักพัฒนาซอฟต์แวร์สามารถพัฒนาโปรแกรมสร้างและต้นแบบซอฟต์แวร์สำหรับวงจรรวมชิปและอุปกรณ์ประมวลผลข้อมูล;บริการเขียนโปรแกรมคอมพิวเตอร์;การวิจัยและออกแบบโมดูลทางเทคนิคไฟฟ้าและแม่เหล็กไฟฟ้าชิ้นส่วนและองค์ประกอบอาคารเครื่องประมวลผลข้อมูลอุปกรณ์จัดเก็บข้อมูลไมโครโปรเซสเซอร์อินเทอร์เฟซวงจรรวม (ICS) ชิปเซมิคอนดักเตอร์สมาร์ทการ์ดคอนโทรลเลอร์สำหรับสมาร์ทการ์ดคอนโทรลเลอร์สำหรับชิป RFID และ แท็กฮาร์ดแวร์คอมพิวเตอร์และซอฟต์แวร์สำหรับการสร้างเขียนโปรแกรมควบคุมเข้ารหัสสแกนอ่านและตีความชิปและแท็ก RFID อุปกรณ์อิเล็กทรอนิกส์เครื่องมือและอุปกรณ์สำหรับสร้างเขียนโปรแกรมควบคุมเข้ารหัสสแกนอ่านและตีความชิปและแท็ก RFID;การวิจัยและออกแบบเสาอากาศสำหรับการสแกนอ่านและตีความชิปและแท็ก RFID;การวิจัยและออกแบบอุปกรณ์เครื่องมือและอุปกรณ์ NFC (การสื่อสารระยะใกล้) รวมถึงโมดูลทางเทคนิคอิเล็กทรอนิกส์และแม่เหล็กไฟฟ้าชิ้นส่วนและองค์ประกอบอาคารและวงจรรวมสำหรับการใช้งาน NFC;บริการให้คำปรึกษาที่เกี่ยวข้องทั้งหมดข้างต้น."
+        }
+      ]
+    },
+    "id": "00aa55f1-1c0f-4193-b8ad-956d7156e9da",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251212",
+    "registrationOfficeCode": "TH",
+    "registrationOfficeName": "Thailand",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "TH",
+        "representativeAddressCountryName": "Thailand",
+        "representativeNativeAddress": "บริษัท ติลลิกีแอนด์กิบบินส์ อินเตอร์เนชั่นแนล จำกัด เลขที่ 1011 อาคารศุภาลัย แกรนด์ ทาวเวอร์ ชั้นที่ 20 - 26 ถนนพระราม3 แขวงช่องนนทรี เขตยานนาวา กรุงเทพมหานคร 10120",
+        "representativeNativeName": "นายนันทน อินทนนท์, นางสาวสุคนธ์ทิพย์ จิตมงคลทอง, นายสืบสิริ ทวีผล, บริษัท ติลลิกีแอนด์กิบบินส์ อินเตอร์เนชั่นแนล จำกัด, นางดารานีย์ วัจนะวุฒิวงศ์, นายสมบูรณ์ เอื้อธีรศรัณย์"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190208",
+        "applicationNumber": "M190119027"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20251212103518",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NXP"
+    }
+  },
+  "_uri": "/mark/th/00aa55f1-1c0f-4193-b8ad-956d7156e9da",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.746Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

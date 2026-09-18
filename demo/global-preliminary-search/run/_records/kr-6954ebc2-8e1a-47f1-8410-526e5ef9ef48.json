@@ -1,0 +1,130 @@
+{
+  "uri": "/mark/kr/6954ebc2-8e1a-47f1-8410-526e5ef9ef48",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "6954ebc2-8e1a-47f1-8410-526e5ef9ef48",
+  "applicationNumber": "40-2009-0010945",
+  "registrationNumber": "4008429070000",
+  "applicationDate": "2009-03-10",
+  "registrationDate": "2010-11-12",
+  "expiryDate": "2030-11-12",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "FLYGT",
+  "markTransliteration": "FLYGT",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "경보/범람표시기능으로 구성된 범람경보기,모니터링계전기,물 및 폐수 펌프/물 및 폐수 펌프스테이션/물 및 페수 혼합기용 전기케이블,물 및 폐수 펌프/물 및 폐수펌프스테이션/물 및 폐수 혼합기용 전기시동장치,액체수준센서 및 액체수준제어기 (펌프/ 혼합기의 상태에 대한 모니터링용 센서,,전기식액면자동조절기계기구 (물 및 폐수 펌프용으로,전기제어/감시판 (물 및 폐수 펌프/혼합기용으로 사용됨-,펌프/ 혼합기의 가동/ 모니터링/ 제어 시스템용 소프트웨어",
+      "translation_language": "en",
+      "translation": "Flood alarm, monitoring relay, water and wastewater pump/water and wastewater pump station/electric cable for water and wastewater mixer, water and wastewater pump/water and wastewater pump station/electric start for water and wastewater mixer Device, liquid level sensor and liquid level controller (sensor for monitoring the status of pump/mixer,, electric liquid level automatic control mechanism (for water and wastewater pump, electric control/monitoring panel (for water and wastewater pump/mixer) Used-, software for running/monitoring/control systems of pumps/mixers"
+    }
+  ],
+  "owner": "XYLEM EUROPE GMBH",
+  "ownerNative": null,
+  "ownerCountry": "CH",
+  "representative": "나영환 (NA, Young Hwan)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "스위스, 샤프하우젠",
+        "applicantAddressCountryCode": "CH",
+        "applicantAddressCountryName": "Switzerland",
+        "applicantName": "XYLEM EUROPE GMBH",
+        "applicantNativeName": "자일럼 유럽 게엠베하"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Flood alarm, monitoring relay, water and wastewater pump/water and wastewater pump station/electric cable for water and wastewater mixer, water and wastewater pump/water and wastewater pump station/electric start for water and wastewater mixer Device, liquid level sensor and liquid level controller (sensor for monitoring the status of pump/mixer,, electric liquid level automatic control mechanism (for water and wastewater pump, electric control/monitoring panel (for water and wastewater pump/mixer) Used-, software for running/monitoring/control systems of pumps/mixers",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "경보/범람표시기능으로 구성된 범람경보기,모니터링계전기,물 및 폐수 펌프/물 및 폐수 펌프스테이션/물 및 페수 혼합기용 전기케이블,물 및 폐수 펌프/물 및 폐수펌프스테이션/물 및 폐수 혼합기용 전기시동장치,액체수준센서 및 액체수준제어기 (펌프/ 혼합기의 상태에 대한 모니터링용 센서,,전기식액면자동조절기계기구 (물 및 폐수 펌프용으로,전기제어/감시판 (물 및 폐수 펌프/혼합기용으로 사용됨-,펌프/ 혼합기의 가동/ 모니터링/ 제어 시스템용 소프트웨어"
+        }
+      ]
+    },
+    "id": "6954ebc2-8e1a-47f1-8410-526e5ef9ef48",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "18.05.07",
+      "26.03.06",
+      "26.03.19"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "Poongsan Bldg., Chungjeongro, Seodaemun-gu, Seoul Korea(Lee International IP & Law Group)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "나영환 (NA, Young Hwan)"
+      },
+      {
+        "representativeAddress": "nd Floor, Woochang Building, Samsung-ro Gangnam-gu, Seoul, Korea(MOON & MOON International)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "임서영 (Im Seo Young)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20090310",
+        "applicationNumber": "40-2009-0010945"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20301112",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20101112",
+        "registrationNumber": "4008429070000"
+      }
+    },
+    "version": "20250625163648",
+    "wordMarkSpecification": {
+      "markTransliteration": "FLYGT",
+      "markVerbalElementText": "FLYGT"
+    }
+  },
+  "_uri": "/mark/kr/6954ebc2-8e1a-47f1-8410-526e5ef9ef48",
+  "_receipt": {
+    "fetched_at": "2026-09-18T13:08:49.090Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-incumbent-class"
+  }
+}

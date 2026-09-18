@@ -1,0 +1,159 @@
+{
+  "uri": "/mark/gb/34d0dc3c-6631-46d1-8255-2292227ba01c",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "34d0dc3c-6631-46d1-8255-2292227ba01c",
+  "applicationNumber": "UK00801217463",
+  "registrationNumber": "UK00801217463",
+  "applicationDate": "2014-04-30",
+  "registrationDate": "2015-08-04",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "NXP SECURE CONNECTIONS FOR A SMARTER WORLD",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Electronic, electro technical and electromagnetic modules, parts and components therefor including integrated circuits (ic's), high performance mixed signal ic's, chips, diodes, transistors, processors, converters, (analogue and/or digital) semiconductors and semiconductor elements; interfaces, software; apparatus and instruments for conducting, switching, transforming, accumulating, regulating and controlling electricity; apparatus for recording, transmission or reproduction of data, sound or images; data carriers, data processing equipment and computers.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "en",
+      "description": "Printed matter; textbooks; data books; instructional manuals; user manuals; product catalogues; circuit specification sheets and other data sheets in relation to integrated circuits (ic's), chips, semiconductors, semiconducting apparatus, instruments and software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Consultancy, design, research, development and advisory services in relation to semiconductors; design of integrated circuits; design and development of software for semiconductor; providing information on the aforementioned services to designers and architects in the semiconductor industry; scientific and technological evaluation, testing, verification, accreditation and standardization of integrated circuits (ic's), chips, semiconductors, semiconducting apparatus, instruments and software.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "BX",
+  "representative": "Stobbs",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20131120",
+      "priorityNumber": "1279204"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60 NL-5656 AG EINDHOVEN",
+        "applicantAddressCountryCode": "BX",
+        "applicantAddressCountryName": "Benelux",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Electronic, electro technical and electromagnetic modules, parts and components therefor including integrated circuits (ic's), high performance mixed signal ic's, chips, diodes, transistors, processors, converters, (analogue and/or digital) semiconductors and semiconductor elements; interfaces, software; apparatus and instruments for conducting, switching, transforming, accumulating, regulating and controlling electricity; apparatus for recording, transmission or reproduction of data, sound or images; data carriers, data processing equipment and computers."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Printed matter; textbooks; data books; instructional manuals; user manuals; product catalogues; circuit specification sheets and other data sheets in relation to integrated circuits (ic's), chips, semiconductors, semiconducting apparatus, instruments and software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Consultancy, design, research, development and advisory services in relation to semiconductors; design of integrated circuits; design and development of software for semiconductor; providing information on the aforementioned services to designers and architects in the semiconductor industry; scientific and technological evaluation, testing, verification, accreditation and standardization of integrated circuits (ic's), chips, semiconductors, semiconducting apparatus, instruments and software."
+        }
+      ]
+    },
+    "id": "34d0dc3c-6631-46d1-8255-2292227ba01c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20131120",
+        "priorityNumber": "1279204"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Building 1000, Cambridge Research Park, Cambridge CB25 9PD",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Stobbs"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20140430",
+        "applicationNumber": "UK00801217463"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ARCHIVED",
+      "registration": {
+        "registrationDate": "20150804",
+        "registrationNumber": "UK00801217463"
+      }
+    },
+    "version": "20250627215334",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NXP SECURE CONNECTIONS FOR A SMARTER WORLD"
+    }
+  },
+  "_uri": "/mark/gb/34d0dc3c-6631-46d1-8255-2292227ba01c",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.712Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

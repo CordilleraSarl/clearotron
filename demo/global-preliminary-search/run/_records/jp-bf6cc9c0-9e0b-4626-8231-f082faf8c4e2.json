@@ -1,0 +1,207 @@
+{
+  "uri": "/mark/jp/bf6cc9c0-9e0b-4626-8231-f082faf8c4e2",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "bf6cc9c0-9e0b-4626-8231-f082faf8c4e2",
+  "applicationNumber": "2001-033930",
+  "registrationNumber": "4592744",
+  "applicationDate": "2001-04-12",
+  "registrationDate": "2002-08-09",
+  "expiryDate": "2012-08-09",
+  "renewalDate": null,
+  "lastPublicationDate": "2002-09-10",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＡＭＰＨＩＯＮ",
+  "markTransliteration": "AMUFAIAN AMUPION ANPION",
+  "markTranslation": "AMPHION",
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "電子計算機（中央処理装置及び電子計算機用プログラムを記憶させた電子回路・同磁気ディスク・同磁気テープ・同その他の記憶媒体・その他の周辺機器を含む。），集積回路及び半導体デバイスのデザイン情報を記憶させた電子回路・同その他の記録媒体，半導体素子，集積回路，その他の電子応用機械器具並びにその部品及び付属品，電気通信機械器具並びにその部品及び付属品",
+      "translation_language": "en",
+      "translation": "Design information of an electronic computer (including an electronic circuit storing a central processing unit and an electronic computer program, the same magnetic disk, the same magnetic tape, the same other storage medium, and other peripheral devices), an integrated circuit, and a semiconductor device Electronic circuits and other recording media, semiconductor devices, integrated circuits, other electronic appliances and appliances, parts and accessories thereof, telecommunications machinery and equipment and parts thereof and accessories thereof"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "電子計算機のプログラムの設計・作成又は保守，電子計算機のプログラムの設計・作成又は保守に関する情報の提供，電子計算機及び電子計算機用ソフトウエアに関する指導及び助言，コンピュータシステムの分析，集積回路・半導体・半導体素子のデザインの考案又は提供，集積回路並びに半導体のデザインの考案に関する指導・助言並びに情報の提供，コンピュータの設計に関する助言，ライセンス許諾に関する契約の媒介",
+      "translation_language": "en",
+      "translation": "Providing information on the design, creation or maintenance of programs of electronic computers, providing information on the design, creation or maintenance of programs of electronic computers, guidance and advice on software for electronic computers and computers, analysis of computer systems, integrated circuits, semiconductors and semiconductors Providing guidance / advice and information on devising and designing of device design, designing of integrated circuits and semiconductor design, advice on computer design, mediation of contract concerning licensing"
+    }
+  ],
+  "owner": "NXPBV",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "YAMAKAWA MASAKI",
+  "priorities": [
+    {
+      "priorityDate": "20001205"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "EINDHOVEN",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXPBV",
+        "applicantNativeAddress": "オランダ国　アイントホーフェン　５６５６　エイジー　ハイ　テック　キャンパス　６０",
+        "applicantNativeName": "エヌエックスピー　ビー　ヴィ"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Design information of an electronic computer (including an electronic circuit storing a central processing unit and an electronic computer program, the same magnetic disk, the same magnetic tape, the same other storage medium, and other peripheral devices), an integrated circuit, and a semiconductor device Electronic circuits and other recording media, semiconductor devices, integrated circuits, other electronic appliances and appliances, parts and accessories thereof, telecommunications machinery and equipment and parts thereof and accessories thereof",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "電子計算機（中央処理装置及び電子計算機用プログラムを記憶させた電子回路・同磁気ディスク・同磁気テープ・同その他の記憶媒体・その他の周辺機器を含む。），集積回路及び半導体デバイスのデザイン情報を記憶させた電子回路・同その他の記録媒体，半導体素子，集積回路，その他の電子応用機械器具並びにその部品及び付属品，電気通信機械器具並びにその部品及び付属品"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Providing information on the design, creation or maintenance of programs of electronic computers, providing information on the design, creation or maintenance of programs of electronic computers, guidance and advice on software for electronic computers and computers, analysis of computer systems, integrated circuits, semiconductors and semiconductors Providing guidance / advice and information on devising and designing of device design, designing of integrated circuits and semiconductor design, advice on computer design, mediation of contract concerning licensing",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "電子計算機のプログラムの設計・作成又は保守，電子計算機のプログラムの設計・作成又は保守に関する情報の提供，電子計算機及び電子計算機用ソフトウエアに関する指導及び助言，コンピュータシステムの分析，集積回路・半導体・半導体素子のデザインの考案又は提供，集積回路並びに半導体のデザインの考案に関する指導・助言並びに情報の提供，コンピュータの設計に関する助言，ライセンス許諾に関する契約の媒介"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Electrical communication apparatus and instruments"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, instruments and parts"
+        },
+        {
+          "natClassNumber": "11C02"
+        },
+        {
+          "natClassNumber": "24E02"
+        },
+        {
+          "natClassNumber": "26A01"
+        },
+        {
+          "natClassNumber": "26D01",
+          "natGoodsServicesDescription": "Cinematographic films, Slide films, Transparencies, Prerecorded videodiscs or tapes"
+        },
+        {
+          "natClassNumber": "42N03",
+          "natGoodsServicesDescription": "Manufacturing process design"
+        },
+        {
+          "natClassNumber": "42P01",
+          "natGoodsServicesDescription": "Design planning"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer programming, Maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42Q02",
+          "natGoodsServicesDescription": "Construction, city planning, pollution, electrical, civil engineering research and testing"
+        },
+        {
+          "natClassNumber": "42Q99",
+          "natGoodsServicesDescription": "Machine, instrument, apparatus research and testing"
+        },
+        {
+          "natClassNumber": "42R01",
+          "natGoodsServicesDescription": "Intellectual property consulting services, Legal services, Company registration services"
+        },
+        {
+          "natClassNumber": "42R02",
+          "natGoodsServicesDescription": "Copyright management services"
+        }
+      ]
+    },
+    "id": "bf6cc9c0-9e0b-4626-8231-f082faf8c4e2",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.02.05.00",
+      "26.04.02.00",
+      "26.04.02.02",
+      "26.04.08.00",
+      "26.04.09.00",
+      "26.07.11.02",
+      "26.07.25.00",
+      "26.11.01.00",
+      "26.11.12.00",
+      "26.13.25.92"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20001205"
+      }
+    ],
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "YAMAKAWA MASAKI",
+        "representativeNativeName": "山川　政樹"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20010412",
+        "applicationNumber": "2001-033930"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20120809",
+      "lastPublicationDate": "20020910",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20020809",
+        "registrationNumber": "4592744"
+      }
+    },
+    "version": "20230427104618",
+    "wordMarkSpecification": {
+      "markTranslation": "AMPHION",
+      "markTransliteration": "AMUFAIAN AMUPION ANPION",
+      "markVerbalElementText": "ＡＭＰＨＩＯＮ"
+    }
+  },
+  "_uri": "/mark/jp/bf6cc9c0-9e0b-4626-8231-f082faf8c4e2",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.701Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

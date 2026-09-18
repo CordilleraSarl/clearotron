@@ -1,0 +1,350 @@
+{
+  "uri": "/mark/ca/955e5a54-280a-4ca4-a4d8-56541299d700",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "955e5a54-280a-4ca4-a4d8-56541299d700",
+  "applicationNumber": "1222268",
+  "registrationNumber": "TMA756988",
+  "applicationDate": "2004-06-30",
+  "registrationDate": "2010-01-13",
+  "expiryDate": "2025-01-13",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2006-02-01"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9,
+        16,
+        42,
+        45
+      ],
+      "language": "en",
+      "description": "(1) Memories and semiconductor materials for computer peripherals; circuit boards, microcomputers, computer firmware included in semiconductors to execute applications, facilitate communication between chips and perform various other operational functions, for use in the field of transportation, for use in automotive, industrial and consumer applications, for use in computer peripherals and in wireless and mobile semiconductor solutions, and for use in networking and computer systems; video graphic accelerators; multimedia accelerators; video processors; computer programs to assist with new product design; user manuals and design guidelines relating to computer and data algorithms for the compression and decompression of data; test boards to verify proper operation of semiconductors; parts and fittings for all the aforesaid goods; equipment for the testing and programming of integrated circuits and semiconductor memories; computer software, namely, application integration and connectivity software, computer utility programs, computer programs for network management, computer software for accessing a global computer network and interconnected computer networks; computer operating systems; computer operating system software; computer operating programs; and computer software tools for the facilitation of third party software applications.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9,
+        16,
+        42,
+        45
+      ],
+      "language": "en",
+      "description": "(1) Licensing of technology; licensing of patents, trademarks, copyrights, trade secrets and/or know-how related to the manufacture of semiconductors and their uses; licensing semiconductors; licensing of software related to the manufacture of semiconductors and their uses; licensing of technology related to semiconductors and the manufacture of semiconductors; licensing technology incorporated in and related to semiconductor products, integrated circuits, circuit boards, microcomputers, micro controllers, microprocessors and computer peripherals, memories and semiconductor material therefor, data conversion circuits, computer firmware included in semiconductors to execute applications, facilitate communication between chips and perform various other operational functions, for use in the field of transportation, for use in automotive, industrial and consumer applications, for use in computer peripherals and in wireless and mobile semiconductor solutions, and for use in networking and computer systems, and video circuit boards, computer programs to assist with new product design, user manuals and design guidelines relating to computer and data algorithms for the compression and decompression of data; custom design of computer and telecommunications systems; consulting services in the field of computers and telecommunications and related technology for software design.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA Inc.",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": "SMART & BIGGAR LP",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States",
+      "priorityDate": "20031230",
+      "priorityNumber": "76/567257",
+      "priorityText": "Priority Filing Date: December 30, 2003, Country or Office: UNITED STATES OF AMERICA, Application No. 76/567257 in association with the same kind of in association with the same kind on wares marked (1) on services (1)"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West, Austin, TX 78735",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressLines": [
+          "6501 William Cannon Drive West",
+          "Austin, TX 78735"
+        ],
+        "applicantName": "NXP USA Inc."
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Priority Filing Date: December 30, 2003, Country or Office: UNITED STATES OF AMERICA, Application No. 76/567257 in association with the same kind of in association with the same kind on wares marked (1) on services (1)",
+        "typeDescription": "Priority"
+      },
+      {
+        "text": "Declaration of Use filed December 21, 2009 on wares marked (1) on services (1)",
+        "typeDescription": "Declaration of Use Info"
+      }
+    ],
+    "footNotes": [
+      "Merger and Address / Fusionnement et adresse",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 21 août/Aug 2017",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 07 nov/Nov 2016",
+      "COMMENTS / COMMENTAIRES: FROM: Freescale Semiconductor, Inc.",
+      "TO: NXP USA Inc.",
+      "Voir Preuve au dossier/See evidence on File No. 1663578"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09,16,42,45",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Memories and semiconductor materials for computer peripherals; circuit boards, microcomputers, computer firmware included in semiconductors to execute applications, facilitate communication between chips and perform various other operational functions, for use in the field of transportation, for use in automotive, industrial and consumer applications, for use in computer peripherals and in wireless and mobile semiconductor solutions, and for use in networking and computer systems; video graphic accelerators; multimedia accelerators; video processors; computer programs to assist with new product design; user manuals and design guidelines relating to computer and data algorithms for the compression and decompression of data; test boards to verify proper operation of semiconductors; parts and fittings for all the aforesaid goods; equipment for the testing and programming of integrated circuits and semiconductor memories; computer software, namely, application integration and connectivity software, computer utility programs, computer programs for network management, computer software for accessing a global computer network and interconnected computer networks; computer operating systems; computer operating system software; computer operating programs; and computer software tools for the facilitation of third party software applications."
+        },
+        {
+          "intClassNumber": "09,16,42,45",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Licensing of technology; licensing of patents, trademarks, copyrights, trade secrets and/or know-how related to the manufacture of semiconductors and their uses; licensing semiconductors; licensing of software related to the manufacture of semiconductors and their uses; licensing of technology related to semiconductors and the manufacture of semiconductors; licensing technology incorporated in and related to semiconductor products, integrated circuits, circuit boards, microcomputers, micro controllers, microprocessors and computer peripherals, memories and semiconductor material therefor, data conversion circuits, computer firmware included in semiconductors to execute applications, facilitate communication between chips and perform various other operational functions, for use in the field of transportation, for use in automotive, industrial and consumer applications, for use in computer peripherals and in wireless and mobile semiconductor solutions, and for use in networking and computer systems, and video circuit boards, computer programs to assist with new product design, user manuals and design guidelines relating to computer and data algorithms for the compression and decompression of data; custom design of computer and telecommunications systems; consulting services in the field of computers and telecommunications and related technology for software design."
+        }
+      ]
+    },
+    "id": "955e5a54-280a-4ca4-a4d8-56541299d700",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20250730",
+        "descriptionText": "Expunged - Failure to Renew",
+        "information": "DP: 2025/07/30"
+      },
+      {
+        "date": "20250130",
+        "descriptionText": "Renewal Notice Sent",
+        "responseDate": "20250713"
+      },
+      {
+        "date": "20170821",
+        "descriptionText": "Amendment to Registration",
+        "information": "Merger and address / Voir Preuve au dossier/See evidence on File No. 1663578"
+      },
+      {
+        "date": "20100113",
+        "descriptionText": "Registered",
+        "responseDate": "20250113"
+      },
+      {
+        "date": "20091125",
+        "descriptionText": "Rep for Service Name Changed"
+      },
+      {
+        "date": "20091125",
+        "descriptionText": "Agent Name Changed"
+      },
+      {
+        "date": "20090706",
+        "descriptionText": "Extension of Time",
+        "information": "Request Letter Date: 2009/06/16",
+        "responseDate": "20091230"
+      },
+      {
+        "date": "20090309",
+        "descriptionText": "Rep for Service Name Changed"
+      },
+      {
+        "date": "20090309",
+        "descriptionText": "Agent Name Changed"
+      },
+      {
+        "date": "20090106",
+        "descriptionText": "Extension of Time",
+        "information": "Request Letter Date: 2008/12/10",
+        "responseDate": "20090630"
+      },
+      {
+        "date": "20080708",
+        "descriptionText": "Extension of Time",
+        "information": "Request Letter Date: 2008/06/25",
+        "responseDate": "20081230"
+      },
+      {
+        "date": "20080121",
+        "descriptionText": "Extension of Time",
+        "information": "Request Letter Date: 2007/12/20",
+        "responseDate": "20080630"
+      },
+      {
+        "date": "20070713",
+        "descriptionText": "Extension of Time",
+        "information": "Request Letter Date: 2007/07/03",
+        "responseDate": "20071230"
+      },
+      {
+        "date": "20060421",
+        "descriptionText": "Allowance Notice Sent",
+        "responseDate": "20070630"
+      },
+      {
+        "date": "20060421",
+        "descriptionText": "Allowed"
+      },
+      {
+        "date": "20060201",
+        "descriptionText": "Advertised",
+        "information": "Vol.53 Issue 2675"
+      },
+      {
+        "date": "20051229",
+        "descriptionText": "Approved"
+      },
+      {
+        "date": "20050707",
+        "descriptionText": "Correspondence Created",
+        "responseDate": "20051107"
+      },
+      {
+        "date": "20050315",
+        "descriptionText": "Correspondence Created",
+        "responseDate": "20050715"
+      },
+      {
+        "date": "20041126",
+        "descriptionText": "Correspondence Created"
+      },
+      {
+        "date": "20041112",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20050312"
+      },
+      {
+        "date": "20041112",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20040702",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20040702",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20040630",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "6501 William Cannon Drive, West, Austin, Texas 78735",
+        "addressLines": [
+          "6501 William Cannon Drive, West",
+          "Austin, Texas 78735"
+        ],
+        "countryName": "United States",
+        "name": "Freescale Semiconductor, Inc."
+      }
+    ],
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States",
+        "priorityDate": "20031230",
+        "priorityNumber": "76/567257",
+        "priorityText": "Priority Filing Date: December 30, 2003, Country or Office: UNITED STATES OF AMERICA, Application No. 76/567257 in association with the same kind of in association with the same kind on wares marked (1) on services (1)"
+      }
+    ],
+    "priorityDate": "20031230",
+    "publications": [
+      {
+        "publicationIssue": "2675",
+        "publicationVolume": "53"
+      }
+    ],
+    "recordLastUpdated": "20250806",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "SMART & BIGGAR LP",
+          "SCOTIA PLAZA",
+          "40 KING STREET WEST",
+          "40th FLOOR",
+          "TORONTO",
+          "ONTARIO M5H3Y2"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "SMART & BIGGAR LP",
+        "representativeReferenceNumber": "11548-167"
+      }
+    ],
+    "status": {
+      "active": false,
+      "allowanceDate": [
+        "20060421"
+      ],
+      "application": {
+        "applicationDate": "20040630",
+        "applicationNumber": "1222268"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "expiryDate": "20250113",
+      "expungementDate": "20250730",
+      "extension": {
+        "approvalDate": [
+          "20090706"
+        ],
+        "dueDate": "20091230"
+      },
+      "formalisationDate": "20040702",
+      "markCurrentStatus": "Expunged",
+      "nextRenewalDate": "20250113",
+      "publicationDate": [
+        "20060201"
+      ],
+      "registration": {
+        "registrationDate": "20100113",
+        "registrationNumber": "TMA756988"
+      }
+    },
+    "subjectHeadings": [
+      "FREESCALE",
+      "FREE SCALE"
+    ],
+    "version": "20250806080057",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "FREE SCALE",
+      "markVerbalElementText": "FREESCALE",
+      "markVerbalElementTextFormal": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/ca/955e5a54-280a-4ca4-a4d8-56541299d700",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.674Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

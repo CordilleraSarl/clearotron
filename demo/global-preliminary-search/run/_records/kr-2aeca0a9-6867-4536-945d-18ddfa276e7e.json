@@ -1,0 +1,119 @@
+{
+  "uri": "/mark/kr/2aeca0a9-6867-4536-945d-18ddfa276e7e",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "2aeca0a9-6867-4536-945d-18ddfa276e7e",
+  "applicationNumber": "40-2012-0041897",
+  "registrationNumber": null,
+  "applicationDate": "2012-07-02",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "xylem Let's Solve Water",
+  "markTransliteration": "XYLEM LET'S SOLVE WATER",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "가스누출경보기, 가스분석기구, 리액터, 배전반, 배전제어판, 소화기기, 소화용 스프링클장치, 수량미터, 오존발생기, 이온화장치(공기 및 물처리용은 제외), 전기제어기기, 전기제어장치, 전기측정기기, 전력계, 전류계, 전압계, 전압안정 전원공급장치, 전해조, 정밀측정기기, 형광등 안정기",
+      "translation_language": "en",
+      "translation": "Gas leak detector, gas analysis device, reactor, switchboard, distribution control panel, fire extinguishing device, sprinkler device for fire extinguishing, water meter, ozone generator, ionization device (except for air and water treatment), electrical control device, electrical control device, electrical measuring device, power meter, ammeter, voltmeter, voltage stabilizing power supply device, electrolyzer, precision measuring device, fluorescent lamp ballast."
+    }
+  ],
+  "owner": "Xylem Water Solutions Korea Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "유인경 (Yoo InKyoung)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "경기도 안양시 동안구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "Xylem Water Solutions Korea Co., Ltd.",
+        "applicantNativeName": "자일럼워터솔루션코리아 주식회사"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Gas leak detector, gas analysis device, reactor, switchboard, distribution control panel, fire extinguishing device, sprinkler device for fire extinguishing, water meter, ozone generator, ionization device (except for air and water treatment), electrical control device, electrical control device, electrical measuring device, power meter, ammeter, voltmeter, voltage stabilizing power supply device, electrolyzer, precision measuring device, fluorescent lamp ballast.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "가스누출경보기, 가스분석기구, 리액터, 배전반, 배전제어판, 소화기기, 소화용 스프링클장치, 수량미터, 오존발생기, 이온화장치(공기 및 물처리용은 제외), 전기제어기기, 전기제어장치, 전기측정기기, 전력계, 전류계, 전압계, 전압안정 전원공급장치, 전해조, 정밀측정기기, 형광등 안정기"
+        }
+      ]
+    },
+    "id": "2aeca0a9-6867-4536-945d-18ddfa276e7e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.05.19",
+      "27.09.24",
+      "27.09.25"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "충남 아산시 탕정면 동산로 **(드림국제특허법률사무소)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "유인경 (Yoo InKyoung)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20120702",
+        "applicationNumber": "40-2012-0041897"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REJECTED"
+    },
+    "version": "20260625021117",
+    "wordMarkSpecification": {
+      "markTransliteration": "XYLEM LET'S SOLVE WATER",
+      "markVerbalElementText": "xylem Let's Solve Water"
+    }
+  },
+  "_uri": "/mark/kr/2aeca0a9-6867-4536-945d-18ddfa276e7e",
+  "_receipt": {
+    "fetched_at": "2026-09-18T13:08:49.091Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-incumbent-class"
+  }
+}

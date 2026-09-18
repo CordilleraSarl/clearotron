@@ -1,0 +1,132 @@
+{
+  "uri": "/mark/my/f1316e8c-e7c1-47a6-9327-1013c6f3c729",
+  "provider": "clarivate",
+  "office": "my",
+  "guid": "f1316e8c-e7c1-47a6-9327-1013c6f3c729",
+  "applicationNumber": "09000984",
+  "registrationNumber": null,
+  "applicationDate": "2009-01-22",
+  "registrationDate": "2009-01-22",
+  "expiryDate": "2028-07-22",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MIFARE PLUS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Computer programming services; installation, repair and maintenance in relation to software for creating, programming, controlling, encoding, scanning, reading and interpreting rfid chips and tags, and software for determining the fare to be paid by passengers with electronic travel-tickets; research, design and development services related to electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (ic's), chips, semiconductors and smart cards, controllers for smart cards, controllers for rfid chips and tags, computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting rfid chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting rfid chips and tags, antennas for scanning, reading and interpreting rfid chips and tags, nfc (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for nfc applications, electronic payment cards, data processing apparatus and software for determining the fare to be paid by passengers with electronic travel-tickets, and parts, fittings and accessories for all the aforesaid goods; customisation and custom programming of software; advisory, consultancy and information services in relation to all the aforesaid services; all included in class 42.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP BV",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "Soh Kar Liang",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20080722",
+      "priorityNumber": "1163748/0849324"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60, 5656 AG Eindhoven",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP BV"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer programming services; installation, repair and maintenance in relation to software for creating, programming, controlling, encoding, scanning, reading and interpreting rfid chips and tags, and software for determining the fare to be paid by passengers with electronic travel-tickets; research, design and development services related to electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (ic's), chips, semiconductors and smart cards, controllers for smart cards, controllers for rfid chips and tags, computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting rfid chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting rfid chips and tags, antennas for scanning, reading and interpreting rfid chips and tags, nfc (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for nfc applications, electronic payment cards, data processing apparatus and software for determining the fare to be paid by passengers with electronic travel-tickets, and parts, fittings and accessories for all the aforesaid goods; customisation and custom programming of software; advisory, consultancy and information services in relation to all the aforesaid services; all included in class 42."
+        }
+      ]
+    },
+    "id": "f1316e8c-e7c1-47a6-9327-1013c6f3c729",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.05.01",
+      "27.05.30"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20080722",
+        "priorityNumber": "1163748/0849324"
+      }
+    ],
+    "recordLastUpdated": "20260424",
+    "registrationOfficeCode": "MY",
+    "registrationOfficeName": "Malaysia",
+    "representatives": [
+      {
+        "representativeAddress": "Ella Cheong IP Services Sdn Bhd A-31-3, Level 31, Menara UOA Bangsar No 5, Jalan Bangsar Utama 1 Kuala Lumpur 59000 Kuala Lumpur",
+        "representativeAddressCountryCode": "MY",
+        "representativeAddressCountryName": "Malaysia",
+        "representativeName": "Soh Kar Liang"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20090122",
+        "applicationNumber": "09000984"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280722",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20090122"
+      }
+    },
+    "version": "20260424050157",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MIFARE PLUS"
+    }
+  },
+  "_uri": "/mark/my/f1316e8c-e7c1-47a6-9327-1013c6f3c729",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.698Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

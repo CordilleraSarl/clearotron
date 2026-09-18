@@ -1,0 +1,117 @@
+{
+  "uri": "/mark/se/70e63b52-2a0f-4c9e-887a-ea8c563c6623",
+  "provider": "clarivate",
+  "office": "se",
+  "guid": "70e63b52-2a0f-4c9e-887a-ea8c563c6623",
+  "applicationNumber": "2019/05633",
+  "registrationNumber": "604025",
+  "applicationDate": "2019-09-09",
+  "registrationDate": "2019-10-02",
+  "expiryDate": "2029-09-09",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Briab Bimfire Suite",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "sv",
+      "description": "Hostingtjänster, molntjänster (saas) och uthyrning av mjukvara; molntjänster med programvaror för maskininlärning [saas]; molntjänster [saas].",
+      "translation_language": "en",
+      "translation": "Hosting services, cloud services (saas) and software rental; cloud services with machine learning software [saas]; cloud services [saas]."
+    }
+  ],
+  "owner": "Symetri AB",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": "Groth & Co Kommanditbolag",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Box 771 781 27 Borlänge",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantName": "Symetri AB"
+      }
+    ],
+    "applicationLanguageCode": "sw",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Hosting services, cloud services (saas) and software rental; cloud services with machine learning software [saas]; cloud services [saas].",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sv",
+          "intGoodsServicesDescription": "Hostingtjänster, molntjänster (saas) och uthyrning av mjukvara; molntjänster med programvaror för maskininlärning [saas]; molntjänster [saas]."
+        }
+      ]
+    },
+    "id": "70e63b52-2a0f-4c9e-887a-ea8c563c6623",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250707",
+    "registrationOfficeCode": "SE",
+    "registrationOfficeName": "Sweden",
+    "representatives": [
+      {
+        "representativeAddress": "Box 6107 102 32 Stockholm",
+        "representativeAddressCountryCode": "SE",
+        "representativeAddressCountryName": "Sweden",
+        "representativeName": "Groth & Co Kommanditbolag"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190909",
+        "applicationNumber": "2019/05633"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290909",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20191002",
+        "registrationNumber": "604025"
+      }
+    },
+    "version": "20250707122112",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Briab Bimfire Suite"
+    }
+  },
+  "_uri": "/mark/se/70e63b52-2a0f-4c9e-887a-ea8c563c6623",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.289Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

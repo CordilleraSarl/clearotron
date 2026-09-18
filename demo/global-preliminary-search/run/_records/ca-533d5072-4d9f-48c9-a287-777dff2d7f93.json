@@ -1,0 +1,293 @@
+{
+  "uri": "/mark/ca/533d5072-4d9f-48c9-a287-777dff2d7f93",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "533d5072-4d9f-48c9-a287-777dff2d7f93",
+  "applicationNumber": "1099418",
+  "registrationNumber": "TMA583935",
+  "applicationDate": "2001-04-12",
+  "registrationDate": "2003-06-17",
+  "expiryDate": "2018-06-17",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2003-02-12"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "AMPHION",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9,
+        42,
+        45
+      ],
+      "language": "en",
+      "description": "(1) Semiconductors and semiconductor cores, namely, semiconductor intellectual property (IP) cores; application specific virtual components, namely, components for the acquisition, multiplexing, transmission, encoding, compression, filtering, transformation, combination, decompression, decoding, de-multiplexing, and reception of sensory and communications data and components for forward error correction, channel coding and encryption; integrated circuits, namely, integrated circuits for multi-media and communications systems-on-chip integrated circuits; computer hardware and computer software, namely, software for use in the field of digital signal processing for multi-media and communication applications; digital processing integrated circuits, namely, video and image processing integrated circuits, speech signal processing integrated circuits, modulation and demodulation apparatus, namely, digital baseband processing functions that perform modulation and demodulation for wireless and wired applications and evaluation apparatus, namely, system-on-chip and Field Programmable Gate Array (FPGA) based evaluation systems for imaging, video and communications.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9,
+        42,
+        45
+      ],
+      "language": "en",
+      "description": "(1) Computer hardware and computer software design, analysis and maintenance; computer programming; digital signal processing including video and image processing, speech signal processing, application specific processing, error correction and channel coding, digital signal modulation and demodulation and evaluation; integrated circuit design including multi-media and communications systems-on-chip integrated circuit design; application specific virtual components design; semiconductor and semiconductor core design including the design of semiconductor intellectual property (IP) cores; licensing of semiconductor and integrated circuit technology and the provision of support and maintenance services for those technologies.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "FASKEN MARTINEAU DUMOULIN LLP",
+  "priorities": [
+    {
+      "priorityCountryCode": "EM",
+      "priorityCountryName": "EU trade marks",
+      "priorityDate": "20001012",
+      "priorityNumber": "1903681",
+      "priorityText": "Priority Filing Date: October 12, 2000, Country or Office: EUIPO (EU), Application No. 1903681 in association with the same kind of in association with the same kind on wares marked (1) on services (1)"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60, 5656 AG, Eindhoven",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantAddressLines": [
+          "High Tech Campus 60",
+          "5656 AG",
+          "Eindhoven"
+        ],
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Used in CANADA since at least as early as January 01, 2001 on wares marked (1) on services (1)",
+        "typeDescription": "First Use"
+      },
+      {
+        "text": "Priority Filing Date: October 12, 2000, Country or Office: EUIPO (EU), Application No. 1903681 in association with the same kind of in association with the same kind on wares marked (1) on services (1)",
+        "typeDescription": "Priority"
+      }
+    ],
+    "footNotes": [
+      "CHANGE IN TITLE / CHANGEMENT EN TITRE:",
+      "TYPE OF CHANGE / GENRE DE CHANGEMENT: Assignment / Cession",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 01 oct/Oct 2009",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 13 juil/Jul 2009",
+      "COMMENTS / COMMENTAIRES: FROM: Amphion Semiconductor Limited",
+      "TO: NXP B.V.",
+      "Voir Preuve au dossier/See evidence on File No. 1099418"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09,42,45",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Semiconductors and semiconductor cores, namely, semiconductor intellectual property (IP) cores; application specific virtual components, namely, components for the acquisition, multiplexing, transmission, encoding, compression, filtering, transformation, combination, decompression, decoding, de-multiplexing, and reception of sensory and communications data and components for forward error correction, channel coding and encryption; integrated circuits, namely, integrated circuits for multi-media and communications systems-on-chip integrated circuits; computer hardware and computer software, namely, software for use in the field of digital signal processing for multi-media and communication applications; digital processing integrated circuits, namely, video and image processing integrated circuits, speech signal processing integrated circuits, modulation and demodulation apparatus, namely, digital baseband processing functions that perform modulation and demodulation for wireless and wired applications and evaluation apparatus, namely, system-on-chip and Field Programmable Gate Array (FPGA) based evaluation systems for imaging, video and communications."
+        },
+        {
+          "intClassNumber": "09,42,45",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Computer hardware and computer software design, analysis and maintenance; computer programming; digital signal processing including video and image processing, speech signal processing, application specific processing, error correction and channel coding, digital signal modulation and demodulation and evaluation; integrated circuit design including multi-media and communications systems-on-chip integrated circuit design; application specific virtual components design; semiconductor and semiconductor core design including the design of semiconductor intellectual property (IP) cores; licensing of semiconductor and integrated circuit technology and the provision of support and maintenance services for those technologies."
+        }
+      ]
+    },
+    "id": "533d5072-4d9f-48c9-a287-777dff2d7f93",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20190124",
+        "descriptionText": "Automatic Expungement - Failure to Renew"
+      },
+      {
+        "date": "20180704",
+        "descriptionText": "Renewal Notice Sent",
+        "responseDate": "20190104"
+      },
+      {
+        "date": "20091001",
+        "descriptionText": "Change in Title Registered",
+        "information": "Assignment / Voir Preuve au dossier/See evidence on File No. 1099418"
+      },
+      {
+        "date": "20091001",
+        "descriptionText": "Rep for Service Changed",
+        "information": "From: 3354 To: 12394 / Voir Preuve au dossier/See evidence on File No. 1099418"
+      },
+      {
+        "date": "20030617",
+        "descriptionText": "Registered",
+        "responseDate": "20180617"
+      },
+      {
+        "date": "20030502",
+        "descriptionText": "Allowance Notice Sent",
+        "responseDate": "20031102"
+      },
+      {
+        "date": "20030502",
+        "descriptionText": "Allowed"
+      },
+      {
+        "date": "20030212",
+        "descriptionText": "Advertised",
+        "information": "Vol.50 Issue 2520"
+      },
+      {
+        "date": "20030107",
+        "descriptionText": "Correspondence Created"
+      },
+      {
+        "date": "20021129",
+        "descriptionText": "Approved"
+      },
+      {
+        "date": "20020725",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20021125"
+      },
+      {
+        "date": "20020725",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20010501",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20010420",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20010412",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "50 Malone Road, Belfast, BT9 5BS, Northern",
+        "addressLines": [
+          "50 Malone Road",
+          "Belfast, BT9 5BS",
+          "Northern"
+        ],
+        "countryName": "Ireland",
+        "name": "Amphion Semiconductor Limited"
+      }
+    ],
+    "priorities": [
+      {
+        "priorityCountryCode": "EM",
+        "priorityCountryName": "EU trade marks",
+        "priorityDate": "20001012",
+        "priorityNumber": "1903681",
+        "priorityText": "Priority Filing Date: October 12, 2000, Country or Office: EUIPO (EU), Application No. 1903681 in association with the same kind of in association with the same kind on wares marked (1) on services (1)"
+      }
+    ],
+    "priorityDate": "20001012",
+    "publications": [
+      {
+        "publicationIssue": "2520",
+        "publicationVolume": "50"
+      }
+    ],
+    "recordLastUpdated": "20250624",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "FASKEN MARTINEAU DUMOULIN LLP",
+          "800 rue du Square Victoria, bureau 3500",
+          "Montréal,",
+          "QUEBEC H4Z1E9"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "FASKEN MARTINEAU DUMOULIN LLP"
+      }
+    ],
+    "status": {
+      "active": false,
+      "allowanceDate": [
+        "20030502"
+      ],
+      "application": {
+        "applicationDate": "20010412",
+        "applicationNumber": "1099418"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "expiryDate": "20180617",
+      "expungementDate": "20190124",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20001012",
+          "firstUsedText": "Used in CANADA since at least as early as January 01, 2001 on wares marked (1) on services (1)"
+        }
+      ],
+      "formalisationDate": "20010501",
+      "markCurrentStatus": "Expunged",
+      "nextRenewalDate": "20180617",
+      "publicationDate": [
+        "20030212"
+      ],
+      "registration": {
+        "registrationDate": "20030617",
+        "registrationNumber": "TMA583935"
+      }
+    },
+    "subjectHeadings": [
+      "AMPHION"
+    ],
+    "version": "20250624150033",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AMPHION",
+      "markVerbalElementTextFormal": "AMPHION"
+    }
+  },
+  "_uri": "/mark/ca/533d5072-4d9f-48c9-a287-777dff2d7f93",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.673Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

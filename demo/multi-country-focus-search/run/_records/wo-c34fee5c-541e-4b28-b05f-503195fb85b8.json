@@ -1,0 +1,159 @@
+{
+  "uri": "/mark/wo/c34fee5c-541e-4b28-b05f-503195fb85b8",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "c34fee5c-541e-4b28-b05f-503195fb85b8",
+  "applicationNumber": "40202621443T",
+  "registrationNumber": null,
+  "applicationDate": null,
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "Registration of this mark shall give no right to the exclusive use, separately of the word",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    41,
+    43
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Business management of hotels; business management of hotels for others; business management of resort hotels.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Arranging and conducting of entertainment events; arranging and conducting of sports events; arranging and conducting of workshops [training]; conducting fitness classes; conducting guided climbing tours; conducting guided tours; entertainment services; organization of sports competitions; personal trainer services [fitness training]; providing information relating to recreational activities; providing recreation facilities; sports camp services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "en",
+      "description": "Accommodation bureau services [hotels, boarding houses]; bar services; cafe services; holiday camp services [lodging]; hotel accommodation services; hotel reservations; reception services for temporary accommodation [management of arrivals and departures]; rental of holiday accommodation; rental of temporary accommodation; restaurant services; reservation of temporary accommodation; temporary accommodation.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "CLOUD DEVELOPMENT SOLUTIONS PTE. LTD.",
+  "ownerNative": null,
+  "ownerCountry": "SG",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20260812",
+          "basicApplicationNumber": "40202621443T"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "SG"
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "ID",
+      "JP"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "138 ROBINSON ROAD, #26-01 OXLEY TOWER SINGAPORE 068906",
+        "applicantAddressCountryCode": "SG",
+        "applicantAddressCountryName": "Singapore",
+        "applicantName": "CLOUD DEVELOPMENT SOLUTIONS PTE. LTD."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20260812",
+            "basicApplicationNumber": "40202621443T"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "SG"
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "ID",
+      "JP"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Business management of hotels; business management of hotels for others; business management of resort hotels."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Arranging and conducting of entertainment events; arranging and conducting of sports events; arranging and conducting of workshops [training]; conducting fitness classes; conducting guided climbing tours; conducting guided tours; entertainment services; organization of sports competitions; personal trainer services [fitness training]; providing information relating to recreational activities; providing recreation facilities; sports camp services."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Accommodation bureau services [hotels, boarding houses]; bar services; cafe services; holiday camp services [lodging]; hotel accommodation services; hotel reservations; reception services for temporary accommodation [management of arrivals and departures]; rental of holiday accommodation; rental of temporary accommodation; restaurant services; reservation of temporary accommodation; temporary accommodation."
+        }
+      ]
+    },
+    "id": "c34fee5c-541e-4b28-b05f-503195fb85b8",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260917",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationNumber": "40202621443T"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "PA"
+    },
+    "version": "20260917020005",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Registration of this mark shall give no right to the exclusive use, separately of the word"
+    }
+  },
+  "_uri": "/mark/wo/c34fee5c-541e-4b28-b05f-503195fb85b8",
+  "_receipt": {
+    "fetched_at": "2026-09-18T14:15:40.840Z",
+    "context": "clearance-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

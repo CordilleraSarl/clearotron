@@ -1,0 +1,136 @@
+{
+  "uri": "/mark/cn/6316a8f7-1db2-4ef9-b419-e356d517b974",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "6316a8f7-1db2-4ef9-b419-e356d517b974",
+  "applicationNumber": "62427955",
+  "registrationNumber": "62427955",
+  "applicationDate": "2022-01-27",
+  "registrationDate": "2022-08-07",
+  "expiryDate": "2032-08-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-05-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "沙宙",
+  "markTransliteration": "SHA ZHOU",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "为他人创建和维护网站,软件即服务(SaaS),电子数据存储,为他人创建和设计网络信息索引(信息技术服务),平台即服务(PaaS),计算机平台的开发,手机应用软件的设计和开发,数据处理软件的更新,远程数据备份,把有形的数据或文件转换成电子媒体",
+      "translation_language": "en",
+      "translation": "Creation and maintenance of websites for others, software as a service (SaaS), electronic data storage, creation and design of web information indexing (information technology services) for others, platform as a service (PaaS), development of computer platforms, design of mobile application software and development, updating of data processing software, remote data backup, conversion of tangible data or documents into electronic media"
+    }
+  ],
+  "owner": "Shenzhen NXP Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市龙华区大浪街道龙平社区向荣路8号-1栋5层501",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen NXP Technology Co., Ltd.",
+        "applicantNativeName": "深圳市恩智浦科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Creation and maintenance of websites for others, software as a service (SaaS), electronic data storage, creation and design of web information indexing (information technology services) for others, platform as a service (PaaS), development of computer platforms, design of mobile application software and development, updating of data processing software, remote data backup, conversion of tangible data or documents into electronic media",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "为他人创建和维护网站,软件即服务(SaaS),电子数据存储,为他人创建和设计网络信息索引(信息技术服务),平台即服务(PaaS),计算机平台的开发,手机应用软件的设计和开发,数据处理软件的更新,远程数据备份,把有形的数据或文件转换成电子媒体"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computer programming, and concerned services"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        }
+      ]
+    },
+    "id": "6316a8f7-1db2-4ef9-b419-e356d517b974",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImageViennaClassification": [
+      "26.02.05",
+      "26.11.03",
+      "A261112"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1790"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳市精英商标事务所"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220127",
+        "applicationNumber": "62427955"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320806",
+      "lastPublicationDate": "20220506",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20220807",
+        "registrationNumber": "62427955"
+      }
+    },
+    "version": "20251004192113",
+    "wordMarkSpecification": {
+      "markTransliteration": "SHA ZHOU",
+      "markVerbalElementText": "沙宙"
+    }
+  },
+  "_uri": "/mark/cn/6316a8f7-1db2-4ef9-b419-e356d517b974",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.681Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

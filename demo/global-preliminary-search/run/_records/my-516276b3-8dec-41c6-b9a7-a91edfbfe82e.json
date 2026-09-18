@@ -1,0 +1,116 @@
+{
+  "uri": "/mark/my/516276b3-8dec-41c6-b9a7-a91edfbfe82e",
+  "provider": "clarivate",
+  "office": "my",
+  "guid": "516276b3-8dec-41c6-b9a7-a91edfbfe82e",
+  "applicationNumber": "04005144",
+  "registrationNumber": "04005144",
+  "applicationDate": "2004-04-19",
+  "registrationDate": "2004-04-19",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "\"FEI\", \"SI\", \"QIA\", \"ER\", \"BAN\", \"BAO\" AND \"TI\"",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "licensing of technology; licensing of patents, trademarks, copyrights, trade secrets and/or know-how related to the manufacture of semiconductors and their uses; licensing semiconductors; licensing of software related to the manufacture of semiconductors and their uses; licensing of technology related to semiconductors and the manufacture of semiconductors; licensing technology incorporated in and related to semiconductor products, integrated circuits, circuit boards, microcomputers, micro controllers, microprocessors and computer peripherals, memories and semiconductor material therefore, data conversion circuits, computer firmware, electronic, electrical and electromechanical apparatus for use with computers, video circuits boards; video systems products, apparatus and equipment for recordation, reproduction and alteration of sound, video and data, computer programs; instructional material relating to computer and data algorithms for the compression and decompression of data; custom design of computer and telecommunications systems; consulting services in the field of computers and telecommunications and related technology for software design in international class 42; all included in class 42.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA, Inc",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Charmayne Ong Poh Yin",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West Austin, Texas 78735",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "licensing of technology; licensing of patents, trademarks, copyrights, trade secrets and/or know-how related to the manufacture of semiconductors and their uses; licensing semiconductors; licensing of software related to the manufacture of semiconductors and their uses; licensing of technology related to semiconductors and the manufacture of semiconductors; licensing technology incorporated in and related to semiconductor products, integrated circuits, circuit boards, microcomputers, micro controllers, microprocessors and computer peripherals, memories and semiconductor material therefore, data conversion circuits, computer firmware, electronic, electrical and electromechanical apparatus for use with computers, video circuits boards; video systems products, apparatus and equipment for recordation, reproduction and alteration of sound, video and data, computer programs; instructional material relating to computer and data algorithms for the compression and decompression of data; custom design of computer and telecommunications systems; consulting services in the field of computers and telecommunications and related technology for software design in international class 42; all included in class 42."
+        }
+      ]
+    },
+    "id": "516276b3-8dec-41c6-b9a7-a91edfbfe82e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "28.03.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260901",
+    "registrationOfficeCode": "MY",
+    "registrationOfficeName": "Malaysia",
+    "representatives": [
+      {
+        "representativeAddress": "Skrine; Unit No. 50-8-1, 8th Floor, Wisma UOA Damansara, 50 Jalan Dungun, Damansara Heights Wilayah Persekutuan 50490 Kuala Lumpur",
+        "representativeAddressCountryCode": "MY",
+        "representativeAddressCountryName": "Malaysia",
+        "representativeName": "Charmayne Ong Poh Yin"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040419",
+        "applicationNumber": "04005144"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20040419",
+        "registrationNumber": "04005144"
+      }
+    },
+    "version": "20260901050117",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "\"FEI\", \"SI\", \"QIA\", \"ER\", \"BAN\", \"BAO\" AND \"TI\""
+    }
+  },
+  "_uri": "/mark/my/516276b3-8dec-41c6-b9a7-a91edfbfe82e",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.698Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

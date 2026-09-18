@@ -1,0 +1,117 @@
+{
+  "uri": "/mark/tw/05645a63-4080-4547-b79b-3287d3114628",
+  "provider": "clarivate",
+  "office": "tw",
+  "guid": "05645a63-4080-4547-b79b-3287d3114628",
+  "applicationNumber": "093016675",
+  "registrationNumber": "01135436",
+  "applicationDate": "2004-04-14",
+  "registrationDate": "2005-01-01",
+  "expiryDate": "2024-12-31",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "飛思卡爾",
+  "markTransliteration": "FEISIKAER",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "zh",
+      "description": "第042類:技術授權；有關半導體製造及其使用之專利、商標、著作權、商業機密及／或專業技術之授權；半導體授權；有關半導體製造及其使用之軟體授權；有關半導體及半導體製造技術之授權；半導體產品、積體電路、電路板、微電腦、微控制器、微處理器及電腦周邊設備、記憶體及其半導體資料、資料轉換電路、電腦韌體、與電腦一起使用之電子、電氣及電機器具及視頻電路板之技術授權；有關視頻系統產品、聲音、影像及資料紀錄、複製（再生）及改變用器具及設備、以及電腦程式之技術授權；有關資料壓縮及解壓用電腦及資料演算器之教導資料之技術授權；電腦及電信系統之訂製設計；有關電腦及電信及軟體設計相關技術方面之諮詢服務。",
+      "translation_language": "en",
+      "translation": "Class 042: Technology licensing; licensing of patents, trademarks, copyrights, trade secrets and/or professional technologies related to semiconductor manufacturing and its use; semiconductor licensing; software licensing related to semiconductor manufacturing and its use; semiconductor and semiconductor manufacturing technology Authorization; semiconductor products, integrated circuits, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor data, data conversion circuits, computer firmware, electronic, electrical and Technology licensing for electrical equipment and video circuit boards; technology licensing for video system products, instruments and equipment for recording, copying (reproducing) and changing data, and computer programs; technology licensing for data compression and decompression computers and data calculations Technical licensing of teaching materials for devices; customized design of computer and telecommunications systems; consulting services on computer and telecommunications and software design-related technologies."
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC.",
+        "applicantNativeAddress": "美國",
+        "applicantNativeName": "美商恩智浦美國公司 NXP USA, INC."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Class 042: Technology licensing; licensing of patents, trademarks, copyrights, trade secrets and/or professional technologies related to semiconductor manufacturing and its use; semiconductor licensing; software licensing related to semiconductor manufacturing and its use; semiconductor and semiconductor manufacturing technology Authorization; semiconductor products, integrated circuits, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor data, data conversion circuits, computer firmware, electronic, electrical and Technology licensing for electrical equipment and video circuit boards; technology licensing for video system products, instruments and equipment for recording, copying (reproducing) and changing data, and computer programs; technology licensing for data compression and decompression computers and data calculations Technical licensing of teaching materials for devices; customized design of computer and telecommunications systems; consulting services on computer and telecommunications and software design-related technologies.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "zh",
+          "intGoodsServicesDescription": "第042類:技術授權；有關半導體製造及其使用之專利、商標、著作權、商業機密及／或專業技術之授權；半導體授權；有關半導體製造及其使用之軟體授權；有關半導體及半導體製造技術之授權；半導體產品、積體電路、電路板、微電腦、微控制器、微處理器及電腦周邊設備、記憶體及其半導體資料、資料轉換電路、電腦韌體、與電腦一起使用之電子、電氣及電機器具及視頻電路板之技術授權；有關視頻系統產品、聲音、影像及資料紀錄、複製（再生）及改變用器具及設備、以及電腦程式之技術授權；有關資料壓縮及解壓用電腦及資料演算器之教導資料之技術授權；電腦及電信系統之訂製設計；有關電腦及電信及軟體設計相關技術方面之諮詢服務。"
+        }
+      ]
+    },
+    "id": "05645a63-4080-4547-b79b-3287d3114628",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260331",
+    "registrationOfficeCode": "TW",
+    "registrationOfficeName": "Taiwan",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "TW",
+        "representativeAddressCountryName": "Taiwan",
+        "representativeNativeName": "陳長文  丁靜玟"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20040414",
+        "applicationNumber": "093016675"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20241231",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20050101",
+        "registrationNumber": "01135436"
+      }
+    },
+    "version": "20260331162831",
+    "wordMarkSpecification": {
+      "markTransliteration": "FEISIKAER",
+      "markVerbalElementText": "飛思卡爾"
+    }
+  },
+  "_uri": "/mark/tw/05645a63-4080-4547-b79b-3287d3114628",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.751Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

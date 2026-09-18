@@ -1,0 +1,160 @@
+{
+  "uri": "/mark/rs/86e313d4-3f73-4813-b7a0-ec32dc248f98",
+  "provider": "clarivate",
+  "office": "rs",
+  "guid": "86e313d4-3f73-4813-b7a0-ec32dc248f98",
+  "applicationNumber": "2004-866",
+  "registrationNumber": "50104",
+  "applicationDate": "2004-06-25",
+  "registrationDate": "2006-02-27",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "sr",
+      "description": "Полупроводници, полупроводнички процесори, чипови за полупроводничке процесоре, интегрисана кола, чипови за интегрисана кола, плоче за кола, микрокомпјутери, микропроцесори и компјутерски периферали, меморије и полупроводнички материјал за исте; полупроводници за машине и машинске алате; полупроводници за апарате за расвету, грејање, производњу паре, кување, хлађење, сушење и вентилацију; полупроводници за часовнике и апарате и инструменте за мерење времена; полупроводници за музичке инструменте; полупроводници за игре и играчке; кола за конверзију података; уграђени компјутерски софтвер (firware); електронски, електрични и електромеханички апарати за употребу са компјутерима; производи за видео системе; апарати и опрема за снимање, репродукцију и мењање звука, слике и података; плоче за видео кола; плоче за аудио кола; плоче за аудио - видео кола; видеографички акцелератори; мултимедијални акцелератори; видео процесори; компјутерски програми; инструкцијски материјал у вези са компјутерским алгоритмима и алгоритмима података за компресију и декомпресију података; апарати за тестирање и калибрисање; делови и опрема за сву наведену робу; опрема за тестирање и програмирање интегрисаних кола и полупроводничких меморија; компјутерски софтвер, и то: софтвер за интеграцију и везивање апликација, компјутерски услужни програми, компјутерски програми за управљање мрежом, компјутерски програми за приступ глобалној компјутерској мрежи и међусобно везаним компјутерским мрежама; компјутерски оперативни системи; софтвер за компјутерске оперативне системе; компјутерски оперативни програми и компјутерски софтверски алати за подршку софтверских апликација трећих лица",
+      "translation_language": "en",
+      "translation": "Semiconductors, semiconductor processors, chips for semiconductor processors, integrated circuits, chips for integrated circuits, boards circuits, microcomputers, microprocessors and computer Peripherals, memory and semiconductor materials for the same; semiconductors for machines and machine tools; semiconductors for apparatus for lighting, heating, steam generating, cooking, refrigerating, drying and ventilating; semiconductors for clocks and apparatus and instruments for measuring time; semiconductors for musical instruments; semiconductors for games and toys; circuits for data conversion; embedded computer software (firware); electronic, electrical and electromechanical devices for use with computers; products for imaging systems; apparatus and equipment for recording, playback and edit sound, images and data; boards for video circuits; panel for audio circuits; panel for audio - video circuits; video graphics accelerators; multimedia accelerators; video processors; computer programs; instructional materials in conjunction with computer algorithms and algorithms for data compression and decompression of data; apparatus for testing and calibration; parts and fittings for all the aforesaid goods; equipment for testing and programming of integrated circuits and semiconductor memory; computer software, namely: software integration and bonding applications, computer utilities, computer network management software, computer programs for accessing a global computer network and inter-linked computer networks; computer operating systems; software for computer operating systems; computer operating programs and computer software tools to support software applications of third parties"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sr",
+      "description": "Лиценцирање технологије; лиценцирање патената, жигова, ауторских права, пословних тајни и/или знања и искуства (know - haw) у вези са производњом полупроводника и њиховом употребом; лиценцирање полупроводника; лиценцирање софтвера у вези са производњом полупроводника и њиховом употребом; лиценцирање технологије у вези са полупроводницима и производњом полупроводника; лиценцирање технологије инкорпорисане у и у вези са полупроводничким производима, интегрисаним колима, плочама за кола, микрокомпјутерима, микро контролерима, микропроцесорима и компјутерским перифералима, меморијама и полупроводничким материјалом за исте, колима за конверзију података, уграђеним софтвером (firmware), електронским, електричним и електро - механичким апаратима за употребу са компјутерима, плочама за видео кола, производима за видео системе, апаратима и опремом за снимање, репродукцију и мерење звука, слике и података, компјутерских програма, инструкцијским материјалом у вези са компјутерским алгоритмима и алгоритмима података за компресију и декомпресију података; израда компјутерских и телекомуникацијских система по поруџбини; консултанске услуге у области компјутера и телекомуникација и сродних технологија за израду софтвера",
+      "translation_language": "en",
+      "translation": "Technology licensing; licensing of patents, trademarks, copyrights, trade secrets and / or knowledge and experience (know - haw) in connection with the production of semiconductors and their use; licensing semiconductors; Licensing software in connection with the production of semiconductors and their use; licensing of technology in the semiconductor and semiconductor manufacturing; licensing technology incorporated in and related to semiconductor products, integrated circuits, boards circuits, microcomputers, micro-controllers, microprocessors and computer peripherals, memories and semiconductor material of the same, drive for data conversion, built-in software (firmware), electronic, electrical and electro - mechanical devices for use with computers, video boards for cars, video systems products, appliances and equipment for recording, playback and measurement of sound, images and data, computer programs, instructional material related to computer algorithms and algorithms for data compression and decompression of data; production of computer and telecommunications systems to order; consulting services in the field of computers and telecommunications and related technologies for software development"
+    }
+  ],
+  "owner": "NXP USA INC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20031230",
+      "priorityNumber": "76/567257/S"
+    },
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20031230",
+      "priorityNumber": "76/567257"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA INC",
+        "applicantNativeAddress": "6501 WILLIAM CANNON DRIVE WEST, AUSTIN, TEXAS 78735",
+        "applicantNativeName": "NXP USA INC"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Semiconductors, semiconductor processors, chips for semiconductor processors, integrated circuits, chips for integrated circuits, boards circuits, microcomputers, microprocessors and computer Peripherals, memory and semiconductor materials for the same; semiconductors for machines and machine tools; semiconductors for apparatus for lighting, heating, steam generating, cooking, refrigerating, drying and ventilating; semiconductors for clocks and apparatus and instruments for measuring time; semiconductors for musical instruments; semiconductors for games and toys; circuits for data conversion; embedded computer software (firware); electronic, electrical and electromechanical devices for use with computers; products for imaging systems; apparatus and equipment for recording, playback and edit sound, images and data; boards for video circuits; panel for audio circuits; panel for audio - video circuits; video graphics accelerators; multimedia accelerators; video processors; computer programs; instructional materials in conjunction with computer algorithms and algorithms for data compression and decompression of data; apparatus for testing and calibration; parts and fittings for all the aforesaid goods; equipment for testing and programming of integrated circuits and semiconductor memory; computer software, namely: software integration and bonding applications, computer utilities, computer network management software, computer programs for accessing a global computer network and inter-linked computer networks; computer operating systems; software for computer operating systems; computer operating programs and computer software tools to support software applications of third parties",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sr",
+          "intGoodsServicesDescription": "Полупроводници, полупроводнички процесори, чипови за полупроводничке процесоре, интегрисана кола, чипови за интегрисана кола, плоче за кола, микрокомпјутери, микропроцесори и компјутерски периферали, меморије и полупроводнички материјал за исте; полупроводници за машине и машинске алате; полупроводници за апарате за расвету, грејање, производњу паре, кување, хлађење, сушење и вентилацију; полупроводници за часовнике и апарате и инструменте за мерење времена; полупроводници за музичке инструменте; полупроводници за игре и играчке; кола за конверзију података; уграђени компјутерски софтвер (firware); електронски, електрични и електромеханички апарати за употребу са компјутерима; производи за видео системе; апарати и опрема за снимање, репродукцију и мењање звука, слике и података; плоче за видео кола; плоче за аудио кола; плоче за аудио - видео кола; видеографички акцелератори; мултимедијални акцелератори; видео процесори; компјутерски програми; инструкцијски материјал у вези са компјутерским алгоритмима и алгоритмима података за компресију и декомпресију података; апарати за тестирање и калибрисање; делови и опрема за сву наведену робу; опрема за тестирање и програмирање интегрисаних кола и полупроводничких меморија; компјутерски софтвер, и то: софтвер за интеграцију и везивање апликација, компјутерски услужни програми, компјутерски програми за управљање мрежом, компјутерски програми за приступ глобалној компјутерској мрежи и међусобно везаним компјутерским мрежама; компјутерски оперативни системи; софтвер за компјутерске оперативне системе; компјутерски оперативни програми и компјутерски софтверски алати за подршку софтверских апликација трећих лица"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Technology licensing; licensing of patents, trademarks, copyrights, trade secrets and / or knowledge and experience (know - haw) in connection with the production of semiconductors and their use; licensing semiconductors; Licensing software in connection with the production of semiconductors and their use; licensing of technology in the semiconductor and semiconductor manufacturing; licensing technology incorporated in and related to semiconductor products, integrated circuits, boards circuits, microcomputers, micro-controllers, microprocessors and computer peripherals, memories and semiconductor material of the same, drive for data conversion, built-in software (firmware), electronic, electrical and electro - mechanical devices for use with computers, video boards for cars, video systems products, appliances and equipment for recording, playback and measurement of sound, images and data, computer programs, instructional material related to computer algorithms and algorithms for data compression and decompression of data; production of computer and telecommunications systems to order; consulting services in the field of computers and telecommunications and related technologies for software development",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sr",
+          "intGoodsServicesDescription": "Лиценцирање технологије; лиценцирање патената, жигова, ауторских права, пословних тајни и/или знања и искуства (know - haw) у вези са производњом полупроводника и њиховом употребом; лиценцирање полупроводника; лиценцирање софтвера у вези са производњом полупроводника и њиховом употребом; лиценцирање технологије у вези са полупроводницима и производњом полупроводника; лиценцирање технологије инкорпорисане у и у вези са полупроводничким производима, интегрисаним колима, плочама за кола, микрокомпјутерима, микро контролерима, микропроцесорима и компјутерским перифералима, меморијама и полупроводничким материјалом за исте, колима за конверзију података, уграђеним софтвером (firmware), електронским, електричним и електро - механичким апаратима за употребу са компјутерима, плочама за видео кола, производима за видео системе, апаратима и опремом за снимање, репродукцију и мерење звука, слике и података, компјутерских програма, инструкцијским материјалом у вези са компјутерским алгоритмима и алгоритмима података за компресију и декомпресију података; израда компјутерских и телекомуникацијских система по поруџбини; консултанске услуге у области компјутера и телекомуникација и сродних технологија за израду софтвера"
+        }
+      ]
+    },
+    "id": "86e313d4-3f73-4813-b7a0-ec32dc248f98",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20031230",
+        "priorityNumber": "76/567257/S"
+      },
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20031230",
+        "priorityNumber": "76/567257"
+      }
+    ],
+    "recordLastUpdated": "20260806",
+    "registrationOfficeCode": "RS",
+    "registrationOfficeName": "Serbia",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "RS",
+        "representativeAddressCountryName": "Serbia",
+        "representativeNativeAddress": "МАЈКЕ ЈЕВРОСИМЕ 53, 11000 БЕОГРАД",
+        "representativeNativeName": "ГОРДАНА ПАВЛОВИЋ АДВОКАТМИЛИВОЈЕ ПАВЛОВИЋ, АДВОКАТ"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040625",
+        "applicationNumber": "2004-866"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20060227",
+        "registrationNumber": "50104"
+      }
+    },
+    "version": "20260806105420",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/rs/86e313d4-3f73-4813-b7a0-ec32dc248f98",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.730Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

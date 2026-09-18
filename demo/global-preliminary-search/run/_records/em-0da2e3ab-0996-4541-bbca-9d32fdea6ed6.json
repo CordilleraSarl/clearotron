@@ -1,0 +1,430 @@
+{
+  "uri": "/mark/em/0da2e3ab-0996-4541-bbca-9d32fdea6ed6",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "0da2e3ab-0996-4541-bbca-9d32fdea6ed6",
+  "applicationNumber": "18265709",
+  "registrationNumber": "18265709",
+  "applicationDate": "2020-07-03",
+  "registrationDate": "2020-10-20",
+  "expiryDate": "2030-07-03",
+  "renewalDate": null,
+  "lastPublicationDate": "2020-07-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Bimfire",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Webhostingové sluzby a software jako sluzba a pronájem softwaru; Software jako sluzba [SaaS]; Software jako sluzba [SaaS] zamerený na software pro strojové ucení; Navrhování a vývoj softwaru pro import a správu dat; Návrh, údrzba, vývoj a aktualizace pocítacového softwaru.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Hostingtjenesteydelser og software as a service og udlejning af software; Software as a service [saas]; Software as a service [SaaS] med software til maskinlæring; Design og udvikling af software til dataimportering og -styring; Design, vedligeholdelse, udvikling og opdatering af computersoftware.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Hostingdiensten en ter beschikking stellen van software (Saas) en verhuur van software; Ter beschikking stellen van software [SaaS]; Software-als-een-dienst [SaaS] met software voor machinaal leren; Ontwerp en ontwikkeling van software voor het importeren en beheren van gegevens; Computersoftware (Ontwerp, onderhoud, ontwikkeling en updating van -).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Hosting services, software as a service, and rental of software; Software as a service [SaaS]; Software as a service [SaaS] featuring software for machine learning; Design and development of software for importing and managing data; Design, maintenance, development and updating of computer software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Hostimine ja pilveteenused (SaaS) ning tarkvara rent; Pilveteenused [SaaS]; Masinõppe tarkvaraga teenustarkvara [SaaS]; Andmete importimise ja haldamise tarkvara projekteerimine ja arendamine; Arvutitarkvara arendamine, projekteerimine, hooldamine ja uuendamine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Verkkoisännöintipalvelut ja verkkosovelluspalvelut (SaaS) sekä ohjelmistojen vuokraus; Verkkosovelluspalvelut [SaaS]; Verkkosovelluspalvelut [SaaS] ohjelmistoilla koneoppimista varten; Tietojen tuontiin ja hallintaan käytettävien ohjelmistojen suunnittelu ja kehittäminen; Tietokoneohjelmistojen suunnittelu, ylläpito, kehittäminen ja päivitys.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Services d'hébergement et logiciel en tant que service, et location de logiciel; Logiciel-service [SaaS]; Logiciel en tant que service [SaaS] en tant que logiciel pour l'apprentissage automatique; Conception et développement de logiciels pour l'importation et la gestion de données; Conception, maintenance, développement et mise à jour de logiciels.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Hosting-Dienste, Software as a Service [SaaS] und Vermietung von Software; Software as a Service [SaaS]; Software as a Service [SaaS] mit Software für maschinelles Lernen; Entwurf und Entwicklung von Datenimport- und Datenverwaltungssoftware; Entwurf, Wartung, Entwicklung und Aktualisierung von Computersoftware.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hr",
+      "description": "Usluge hostinga i softver kao usluga te iznajmljivanje softvera; Softver kao usluga [SaaS]; Softver kao usluga [SaaS] sa softverom za strojno ucenje; Dizajn i razvoj softvera za uvoz i upravljanje podacima; Dizajn, odrzavanje, razvoj i azuriranje racunalnog softvera.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Webtárhely és szoftver szolgáltatások, szoftver bérlés; Szoftver mint szolgáltatás [SaaS]; Gépi tanulásra szolgáló szoftvert tartalmazó szoftver mint szolgáltatás [SaaS]; Adatok importálására és kezelésére szolgáló szoftverek tervezése és fejlesztése; Számítógépes szoftver tervezése, karbantartása, fejlesztése és frissítése.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Servizi di hosting e software come servizio e noleggio di software; Servizi di software [SaaS]; Software come servizio [SaaS] comprendente programmi per l'apprendimento automatico; Progettazione e sviluppo di software per l'importazione e la gestione di dati; Progettazione, sviluppo, aggiornamento e manutenzione di software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "Prieglobos (talpinimo) paslaugos ir programine iranga kaip paslauga bei programines irangos nuoma; Programine iranga kaip paslauga [SaaS]; Programine iranga kaip paslauga [SaaS] su kompiuteriu mokymo programine iranga; Duomenu importavimo ir valdymo programines irangos projektavimas ir tobulinimas; Kompiuteriu programines irangos projektavimas, prieziura, tobulinimas ir atnaujinimas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Datnu izvietosanas un uzturesanas pakalpojumi, ari programmaturas izvietosana un uzturesana makoni un programmaturas iznomasana; Programmatura ka pakalpojums (SaaS); Programmatura ka pakalpojums (SaaS), kas ietver programmaturu masinmacisanai; Programmaturas projektesana un izstrade datu importesanai un vadisanai; Datorprogrammaturas dizains, uzturesana, izstrade un atjauninasana.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "Servizzi ta' hosting u softwer bhala servizz u kiri ta' softwer; Softwer bhala servizz [SaaS]; Softwer bhala servizz [SaaS] li jinkludu softwer ghal taghlim bil-magni; Disinn u zvilupp ta' softwer ghall-importazzjoni u gestjoni ta' dejta; Disinn, manutenzjoni, zvilupp u aggornament ta' softwer tal-kompjuter.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Hosting, oprogramowanie jako usluga oraz wypozyczanie oprogramowania komputerowego; Oprogramowanie jako usluga [SaaS]; Oprogramowanie jako usluga [SaaS] obejmujace oprogramowanie do uczenia maszynowego; Projektowanie i opracowywanie oprogramowania do importowania danych i zarzadzania nimi; Projektowanie, konserwacja, opracowywanie i aktualizacja oprogramowania komputerowego.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Serviços de alojamento de sites de Internet e software como serviço e aluguer de software; Software como serviço [SaaS]; Software sob a forma de serviço [SaaS] incluindo software para aprendizagem automática; Conceção e desenvolvimento de software para importação e gestão de dados; Conceção, manutenção, desenvolvimento e atualização de software informático.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Servicii de gazduire, software ca si serviciu si închiriere de software; Software ca serviciu [SaaS]; Software ca serviciu (SAAS) care ofera software de învatare automata; Proiectare si dezvoltare de software pentru importarea si gestionarea datelor; Proiectare, întretinere, dezvoltare si actualizare de software de calculator.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "Hostovanie na internetových stránkach, softvérové sluzby, prenájom softvéru; Poskytovanie softvéru prostredníctvom internetu (SaaS); Softvér ako sluzba [SaaS] obsahujúci softvér na strojové ucenie; Navrhovanie a vývoj softvéru na importovanie a správu údajov; Navrhovanie, údrzba, vývoj a aktualizovanie pocítacového softvéru.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Storitve gostovanja in nudenje programske opreme preko spleta ter dajanje programske opreme v najem; Programska oprema kot storitev [SaaS]; Programska oprema kot storitev [SaaS] s programsko opremo za strojno ucenje; Oblikovanje in razvoj programske opreme za uvoz in upravljanje podatkov; Oblikovanje, vzdrzevanje, razvoj in posodabljanje racunalniske programske opreme.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios de alojamientos de sitios web y alquiler de software; Software como servicio [SaaS]; Software como servicio [SaaS] con software para aprendizaje automático; Diseño y desarrollo de software de importación y gestión de datos; Desarrollo, diseño, actualización y mantenimiento de programas de ordenador.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Hostingtjänster, molntjänster (SaaS) och uthyrning av mjukvara; Molntjänster [SaaS]; Molntjänster med programvaror för maskininlärning [SaaS]; Design och utveckling av programvara för import och förvaltning av data; Design, utveckling, underhåll och uppdatering av programvara.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Symetri AB",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": "GROTH & CO. KB",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Forskargatan 3,Borlänge, 781 70",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantName": "Symetri AB"
+      }
+    ],
+    "applicationLanguageCode": "sw",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Webhostingové sluzby a software jako sluzba a pronájem softwaru; Software jako sluzba [SaaS]; Software jako sluzba [SaaS] zamerený na software pro strojové ucení; Navrhování a vývoj softwaru pro import a správu dat; Návrh, údrzba, vývoj a aktualizace pocítacového softwaru."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Hostingtjenesteydelser og software as a service og udlejning af software; Software as a service [saas]; Software as a service [SaaS] med software til maskinlæring; Design og udvikling af software til dataimportering og -styring; Design, vedligeholdelse, udvikling og opdatering af computersoftware."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Hostingdiensten en ter beschikking stellen van software (Saas) en verhuur van software; Ter beschikking stellen van software [SaaS]; Software-als-een-dienst [SaaS] met software voor machinaal leren; Ontwerp en ontwikkeling van software voor het importeren en beheren van gegevens; Computersoftware (Ontwerp, onderhoud, ontwikkeling en updating van -)."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Hosting services, software as a service, and rental of software; Software as a service [SaaS]; Software as a service [SaaS] featuring software for machine learning; Design and development of software for importing and managing data; Design, maintenance, development and updating of computer software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Hostimine ja pilveteenused (SaaS) ning tarkvara rent; Pilveteenused [SaaS]; Masinõppe tarkvaraga teenustarkvara [SaaS]; Andmete importimise ja haldamise tarkvara projekteerimine ja arendamine; Arvutitarkvara arendamine, projekteerimine, hooldamine ja uuendamine."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Verkkoisännöintipalvelut ja verkkosovelluspalvelut (SaaS) sekä ohjelmistojen vuokraus; Verkkosovelluspalvelut [SaaS]; Verkkosovelluspalvelut [SaaS] ohjelmistoilla koneoppimista varten; Tietojen tuontiin ja hallintaan käytettävien ohjelmistojen suunnittelu ja kehittäminen; Tietokoneohjelmistojen suunnittelu, ylläpito, kehittäminen ja päivitys."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services d'hébergement et logiciel en tant que service, et location de logiciel; Logiciel-service [SaaS]; Logiciel en tant que service [SaaS] en tant que logiciel pour l'apprentissage automatique; Conception et développement de logiciels pour l'importation et la gestion de données; Conception, maintenance, développement et mise à jour de logiciels."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Hosting-Dienste, Software as a Service [SaaS] und Vermietung von Software; Software as a Service [SaaS]; Software as a Service [SaaS] mit Software für maschinelles Lernen; Entwurf und Entwicklung von Datenimport- und Datenverwaltungssoftware; Entwurf, Wartung, Entwicklung und Aktualisierung von Computersoftware."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Usluge hostinga i softver kao usluga te iznajmljivanje softvera; Softver kao usluga [SaaS]; Softver kao usluga [SaaS] sa softverom za strojno ucenje; Dizajn i razvoj softvera za uvoz i upravljanje podacima; Dizajn, odrzavanje, razvoj i azuriranje racunalnog softvera."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Webtárhely és szoftver szolgáltatások, szoftver bérlés; Szoftver mint szolgáltatás [SaaS]; Gépi tanulásra szolgáló szoftvert tartalmazó szoftver mint szolgáltatás [SaaS]; Adatok importálására és kezelésére szolgáló szoftverek tervezése és fejlesztése; Számítógépes szoftver tervezése, karbantartása, fejlesztése és frissítése."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi di hosting e software come servizio e noleggio di software; Servizi di software [SaaS]; Software come servizio [SaaS] comprendente programmi per l'apprendimento automatico; Progettazione e sviluppo di software per l'importazione e la gestione di dati; Progettazione, sviluppo, aggiornamento e manutenzione di software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Prieglobos (talpinimo) paslaugos ir programine iranga kaip paslauga bei programines irangos nuoma; Programine iranga kaip paslauga [SaaS]; Programine iranga kaip paslauga [SaaS] su kompiuteriu mokymo programine iranga; Duomenu importavimo ir valdymo programines irangos projektavimas ir tobulinimas; Kompiuteriu programines irangos projektavimas, prieziura, tobulinimas ir atnaujinimas."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Datnu izvietosanas un uzturesanas pakalpojumi, ari programmaturas izvietosana un uzturesana makoni un programmaturas iznomasana; Programmatura ka pakalpojums (SaaS); Programmatura ka pakalpojums (SaaS), kas ietver programmaturu masinmacisanai; Programmaturas projektesana un izstrade datu importesanai un vadisanai; Datorprogrammaturas dizains, uzturesana, izstrade un atjauninasana."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi ta' hosting u softwer bhala servizz u kiri ta' softwer; Softwer bhala servizz [SaaS]; Softwer bhala servizz [SaaS] li jinkludu softwer ghal taghlim bil-magni; Disinn u zvilupp ta' softwer ghall-importazzjoni u gestjoni ta' dejta; Disinn, manutenzjoni, zvilupp u aggornament ta' softwer tal-kompjuter."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Hosting, oprogramowanie jako usluga oraz wypozyczanie oprogramowania komputerowego; Oprogramowanie jako usluga [SaaS]; Oprogramowanie jako usluga [SaaS] obejmujace oprogramowanie do uczenia maszynowego; Projektowanie i opracowywanie oprogramowania do importowania danych i zarzadzania nimi; Projektowanie, konserwacja, opracowywanie i aktualizacja oprogramowania komputerowego."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de alojamento de sites de Internet e software como serviço e aluguer de software; Software como serviço [SaaS]; Software sob a forma de serviço [SaaS] incluindo software para aprendizagem automática; Conceção e desenvolvimento de software para importação e gestão de dados; Conceção, manutenção, desenvolvimento e atualização de software informático."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii de gazduire, software ca si serviciu si închiriere de software; Software ca serviciu [SaaS]; Software ca serviciu (SAAS) care ofera software de învatare automata; Proiectare si dezvoltare de software pentru importarea si gestionarea datelor; Proiectare, întretinere, dezvoltare si actualizare de software de calculator."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Hostovanie na internetových stránkach, softvérové sluzby, prenájom softvéru; Poskytovanie softvéru prostredníctvom internetu (SaaS); Softvér ako sluzba [SaaS] obsahujúci softvér na strojové ucenie; Navrhovanie a vývoj softvéru na importovanie a správu údajov; Navrhovanie, údrzba, vývoj a aktualizovanie pocítacového softvéru."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Storitve gostovanja in nudenje programske opreme preko spleta ter dajanje programske opreme v najem; Programska oprema kot storitev [SaaS]; Programska oprema kot storitev [SaaS] s programsko opremo za strojno ucenje; Oblikovanje in razvoj programske opreme za uvoz in upravljanje podatkov; Oblikovanje, vzdrzevanje, razvoj in posodabljanje racunalniske programske opreme."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de alojamientos de sitios web y alquiler de software; Software como servicio [SaaS]; Software como servicio [SaaS] con software para aprendizaje automático; Diseño y desarrollo de software de importación y gestión de datos; Desarrollo, diseño, actualización y mantenimiento de programas de ordenador."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Hostingtjänster, molntjänster (SaaS) och uthyrning av mjukvara; Molntjänster [SaaS]; Molntjänster med programvaror för maskininlärning [SaaS]; Design och utveckling av programvara för import och förvaltning av data; Design, utveckling, underhåll och uppdatering av programvara."
+        }
+      ]
+    },
+    "id": "0da2e3ab-0996-4541-bbca-9d32fdea6ed6",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "130"
+      }
+    ],
+    "recordLastUpdated": "20260917",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Fleminggatan 20,Stockholm, 112 26",
+        "representativeAddressCountryCode": "SE",
+        "representativeAddressCountryName": "Sweden",
+        "representativeName": "GROTH & CO. KB"
+      }
+    ],
+    "secondLanguageCode": "en",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200703",
+        "applicationNumber": "18265709"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300703",
+      "lastPublicationDate": "20200713",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20201020",
+        "registrationNumber": "18265709"
+      }
+    },
+    "version": "20260917212747",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Bimfire"
+    }
+  },
+  "_uri": "/mark/em/0da2e3ab-0996-4541-bbca-9d32fdea6ed6",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.298Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

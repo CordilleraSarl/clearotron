@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/mx/060ab840-35e8-4004-9d7b-44b802c01ada",
+  "provider": "clarivate",
+  "office": "mx",
+  "guid": "060ab840-35e8-4004-9d7b-44b802c01ada",
+  "applicationNumber": "1333798",
+  "registrationNumber": "1356176",
+  "applicationDate": "2012-12-13",
+  "registrationDate": "2013-03-21",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Desarrollo, diseño y prueba de semiconductores, dispositivos semiconductores, circuitos integrados, microcontroladores, procesadores, dispositivos de radiofrecuencia, sensores y software para terceros; servicios de consultoria en los campos de desarrollo, diseño y prueba de semiconductores, dispositivos semiconductores, circuitos integrados, microcontroladores, procesadores, dispositivos de radiofrecuencia, sensores y software; provision de informacion en los campos de semiconductores, dispositivos semiconductores, circuitos integrados, microcontroladores, procesadores, dispositivos de radiofrecuencia, sensores y software.",
+      "translation_language": "en",
+      "translation": "DEVELOPMENT, DESIGN AND TESTING SEMICONDUCTOR DEVICES semiconductors, integrated circuits, microcontrollers, processors, RF devices, sensors and software for others; CONSULTING SERVICES IN THE FIELDS OF DEVELOPMENT, DESIGN AND TESTING SEMICONDUCTOR DEVICES semiconductors, integrated circuits, microcontrollers, processors, RF devices, sensors and software; PROVISION OF INFORMATION IN THE FIELDS OF SEMICONDUCTORS, SEMICONDUCTORS, integrated circuits, microcontrollers, processors, RF devices, sensors and software."
+    }
+  ],
+  "owner": "FREESCALE SEMICONDUCTOR, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 WILLIAM CANNON DRIVE WEST, AUSTIN, TX., 78735",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "FREESCALE SEMICONDUCTOR, INC."
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "DEVELOPMENT, DESIGN AND TESTING SEMICONDUCTOR DEVICES semiconductors, integrated circuits, microcontrollers, processors, RF devices, sensors and software for others; CONSULTING SERVICES IN THE FIELDS OF DEVELOPMENT, DESIGN AND TESTING SEMICONDUCTOR DEVICES semiconductors, integrated circuits, microcontrollers, processors, RF devices, sensors and software; PROVISION OF INFORMATION IN THE FIELDS OF SEMICONDUCTORS, SEMICONDUCTORS, integrated circuits, microcontrollers, processors, RF devices, sensors and software.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Desarrollo, diseño y prueba de semiconductores, dispositivos semiconductores, circuitos integrados, microcontroladores, procesadores, dispositivos de radiofrecuencia, sensores y software para terceros; servicios de consultoria en los campos de desarrollo, diseño y prueba de semiconductores, dispositivos semiconductores, circuitos integrados, microcontroladores, procesadores, dispositivos de radiofrecuencia, sensores y software; provision de informacion en los campos de semiconductores, dispositivos semiconductores, circuitos integrados, microcontroladores, procesadores, dispositivos de radiofrecuencia, sensores y software."
+        }
+      ]
+    },
+    "id": "060ab840-35e8-4004-9d7b-44b802c01ada",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "03",
+        "publicationYear": "2013"
+      }
+    ],
+    "recordLastUpdated": "20250704",
+    "registrationOfficeCode": "MX",
+    "registrationOfficeName": "Mexico",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20121213",
+        "applicationNumber": "1333798"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "RENEWED",
+      "registration": {
+        "registrationDate": "20130321",
+        "registrationNumber": "1356176"
+      }
+    },
+    "version": "20250704173452",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/mx/060ab840-35e8-4004-9d7b-44b802c01ada",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.704Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

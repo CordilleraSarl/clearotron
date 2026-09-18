@@ -1,0 +1,139 @@
+{
+  "uri": "/mark/kr/f167702c-88b1-42ac-82d8-aaf33e628cbc",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "f167702c-88b1-42ac-82d8-aaf33e628cbc",
+  "applicationNumber": "40-2000-0043618",
+  "registrationNumber": "4005077330000",
+  "applicationDate": "2000-09-18",
+  "registrationDate": "2001-11-30",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "MoReUse",
+  "markTransliteration": "MoReUse",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "기록된 컴퓨터 소프트웨어,마이크로프로쎄서,반도체,인쇄회로,칩",
+      "translation_language": "en",
+      "translation": "Recorded computer software, microprocessor, semiconductor, printed circuit, chip"
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "목영동 (Mok Young Dong)",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20000323",
+      "priorityNumber": "960510"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "네덜란드 엔엘- 아게 아인드호펜 하이 테크 캠퍼스",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V.",
+        "applicantNativeName": "엔엑스피 비 브이"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Recorded computer software, microprocessor, semiconductor, printed circuit, chip",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "기록된 컴퓨터 소프트웨어,마이크로프로쎄서,반도체,인쇄회로,칩"
+        }
+      ]
+    },
+    "id": "f167702c-88b1-42ac-82d8-aaf33e628cbc",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20000323",
+        "priorityNumber": "960510"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "SEOUL(NONE OFFICE)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "목영동 (Mok Young Dong)"
+      },
+      {
+        "representativeAddress": "(Y.P.LEE,MOCK&PARTNERS)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "목선영 (Mock Sun Young)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20000918",
+        "applicationNumber": "40-2000-0043618"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20011130",
+        "registrationNumber": "4005077330000"
+      }
+    },
+    "version": "20250625155355",
+    "wordMarkSpecification": {
+      "markTransliteration": "MoReUse",
+      "markVerbalElementText": "MoReUse"
+    }
+  },
+  "_uri": "/mark/kr/f167702c-88b1-42ac-82d8-aaf33e628cbc",
+  "_receipt": {
+    "fetched_at": "2026-09-18T14:09:34.908Z",
+    "context": "clearance-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

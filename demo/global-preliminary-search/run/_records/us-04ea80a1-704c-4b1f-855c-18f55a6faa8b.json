@@ -1,0 +1,1070 @@
+{
+  "uri": "/mark/us/04ea80a1-704c-4b1f-855c-18f55a6faa8b",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "04ea80a1-704c-4b1f-855c-18f55a6faa8b",
+  "applicationNumber": "78176973",
+  "registrationNumber": "3030024",
+  "applicationDate": "2002-10-22",
+  "registrationDate": "2005-12-13",
+  "expiryDate": null,
+  "renewalDate": "2015-12-13",
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2004-01-06"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2026-06-26",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "STARCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Computer hardware information appliance systems on a chip, namely, integrated circuits, digital signal processor cores, [ macro cells, ] bus interfaces and printed circuit boards, and user manuals for use therewith sold as a unit; computer software for use in the design and development of, systems-on-a-chip integrated circuits, digital signal processor cores, macro cells, bus interfaces and printed circuit boards; computer software used to facilitate the design and development of software applications and operating system software; and user manuals for use therewith",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 [ Computer Consulting services in, and research, development, and design for others of, computer hardware and software information [ applicant ] *appliance* systems on a chip, namely, integrated circuits, digital signal processor cores, macro cells, bus interfaces and printed circuit boards; Computer consulting services in, and research, development, and design for others of, computer software used to design and develop information appliance systems on a chip hardware and software, namely, integrated circuits, digital signal processor cores, macro cells, bus interfaces and printed circuit boards, and software for use in the design and development of application software and operating system software; technical support services, namely, troubleshooting of computer hardware and software problems via telephone, written consultation, and in-person visits; and maintenance of computer software ]",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "Michael S. Metteauer",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20151204",
+      "descriptionText": "REGISTERED - PARTIAL SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+    },
+    "applicants": [
+      {
+        "applicantAddress": "6501 WILLIAM CANNON DRIVE WEST, AUSTIN, TEXAS, 78735",
+        "applicantAddressCity": "AUSTIN",
+        "applicantAddressPostalCode": "78735",
+        "applicantAddressStateName": "TEXAS",
+        "applicantAddressStreet": "6501 WILLIAM CANNON DRIVE WEST",
+        "applicantJurisdictionOfIncorporation": "DELAWARE",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "NXP USA, INC."
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "6501 W. WILLIAM CANNON DRIVE, AUSTIN, TEXAS, 78735",
+            "city": "AUSTIN",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "NXP B.V.",
+            "postalCode": "78735",
+            "stateName": "TEXAS",
+            "street": "6501 W. WILLIAM CANNON DRIVE"
+          }
+        ],
+        "assignors": [
+          {
+            "legalEntity": "CORPORATION",
+            "name": "MORGAN STANLEY SENIOR FUNDING, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "411 EAST PLUMERIA DRIVE, MS41, SAN JOSE, CA 95134",
+            "addressLines": [
+              "INTELLECTUAL PROPERTY AND LICENSING NXP",
+              "411 EAST PLUMERIA DRIVE, MS41",
+              "SAN JOSE, CA 95134"
+            ],
+            "name": "INTELLECTUAL PROPERTY AND LICENSING NXP"
+          }
+        ],
+        "descriptionText": "RELEASE BY SECURED PARTY",
+        "executedDate": "20190903",
+        "recordedDate": "20190912",
+        "reelFrameNumber": "6743/0001"
+      },
+      {
+        "assignees": [
+          {
+            "address": "6501 WILLIAM CANNON DRIVE WEST, AUSTIN, TEXAS, 78735",
+            "city": "AUSTIN",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "NXP USA, INC.",
+            "postalCode": "78735",
+            "stateName": "TEXAS",
+            "street": "6501 WILLIAM CANNON DRIVE WEST"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "FREESCALE SEMICONDUCTOR, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "98 SAN JACINTO BLVD., SUITE 1100, AUSTIN, TX 78701",
+            "addressLines": [
+              "NORTON ROSE FULBRIGHT US LLP",
+              "98 SAN JACINTO BLVD., SUITE 1100",
+              "AUSTIN, TX 78701"
+            ],
+            "name": "NORTON ROSE FULBRIGHT US LLP"
+          }
+        ],
+        "descriptionText": "CHANGE OF NAME",
+        "executedDate": "20161107",
+        "recordedDate": "20161208",
+        "reelFrameNumber": "5944/0807"
+      },
+      {
+        "assignees": [
+          {
+            "address": "5656 AG HIGH TECH CAMPUS 60, EINDHOVEN, NETH",
+            "city": "EINDHOVEN",
+            "countryCode": "NL",
+            "countryName": "Netherlands",
+            "jurisdictionOfIncorporation": "Netherlands",
+            "legalEntity": "CORPORATION",
+            "name": "NXP B.V.",
+            "street": "5656 AG HIGH TECH CAMPUS 60"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "MORGAN STANLEY SENIOR FUNDING, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "1025 VERMONT AVE NW, SUITE 1130, NATIONAL CORPORATE RESEARCH, LTD, WASHINGTON, DC 20005",
+            "addressLines": [
+              "JOANNA MCCALL",
+              "1025 VERMONT AVE NW, SUITE 1130",
+              "NATIONAL CORPORATE RESEARCH, LTD",
+              "WASHINGTON, DC 20005"
+            ],
+            "name": "JOANNA MCCALL"
+          }
+        ],
+        "descriptionText": "TRADEMARK RELEASE",
+        "executedDate": "20160912",
+        "recordedDate": "20160922",
+        "reelFrameNumber": "5884/0092"
+      },
+      {
+        "assignees": [
+          {
+            "address": "5656 AG HIGH TECH CAMPUS 60, EINDHOVEN, NETH",
+            "city": "EINDHOVEN",
+            "countryCode": "NL",
+            "countryName": "Netherlands",
+            "jurisdictionOfIncorporation": "Netherlands",
+            "legalEntity": "CORPORATION",
+            "name": "NXP B.V.",
+            "street": "5656 AG HIGH TECH CAMPUS 60"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "BANK",
+            "name": "MORGAN STANLEY SENIOR FUNDING, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "1025 VERMONT AVE NW, SUITE 1130, NATIONAL CORPORATE RESEARCH, LTD, WASHINGTON, DC 20005",
+            "addressLines": [
+              "STEWART WALSH",
+              "1025 VERMONT AVE NW, SUITE 1130",
+              "NATIONAL CORPORATE RESEARCH, LTD",
+              "WASHINGTON, DC 20005"
+            ],
+            "name": "STEWART WALSH"
+          }
+        ],
+        "descriptionText": "RELEASE BY SECURED PARTY",
+        "executedDate": "20160622",
+        "recordedDate": "20160912",
+        "reelFrameNumber": "5873/0786"
+      },
+      {
+        "assignees": [
+          {
+            "address": "6501 WILLIAM CANNON DRIVE WEST, AUSTIN, TEXAS, 78735",
+            "city": "AUSTIN",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "FREESCALE SEMICONDUCTOR, INC.",
+            "postalCode": "78735",
+            "stateName": "TEXAS",
+            "street": "6501 WILLIAM CANNON DRIVE WEST"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "BANK",
+            "name": "CITIBANK, N.A., AS COLLATERAL AGENT"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "21 TADCASTER CIRCLE, ATTN: PENELOPE J.A. AGODOA, WALDORF, MD 20602",
+            "addressLines": [
+              "IP RESEARCH PLUS, INC.",
+              "21 TADCASTER CIRCLE",
+              "ATTN: PENELOPE J.A. AGODOA",
+              "WALDORF, MD 20602"
+            ],
+            "name": "IP RESEARCH PLUS, INC."
+          }
+        ],
+        "descriptionText": "RELEASE",
+        "executedDate": "20151207",
+        "recordedDate": "20151221",
+        "reelFrameNumber": "5693/0983"
+      },
+      {
+        "assignees": [
+          {
+            "address": "6501 WILLIAM CANNON DRIVE WEST, AUSTIN, TEXAS, 78735",
+            "city": "AUSTIN",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "FREESCALE SEMICONDUCTOR, INC.",
+            "postalCode": "78735",
+            "stateName": "TEXAS",
+            "street": "6501 WILLIAM CANNON DRIVE WEST"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "BANK",
+            "name": "CITIBANK, N.A., AS COLLATERAL AGENT"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "21 TADCASTER CIRCLE, ATTN: PENELOPE J.A. AGODOA, WALDORF, MD 20602",
+            "addressLines": [
+              "IP RESEARCH PLUS, INC.",
+              "21 TADCASTER CIRCLE",
+              "ATTN: PENELOPE J.A. AGODOA",
+              "WALDORF, MD 20602"
+            ],
+            "name": "IP RESEARCH PLUS, INC."
+          }
+        ],
+        "descriptionText": "RELEASE",
+        "executedDate": "20151207",
+        "recordedDate": "20151221",
+        "reelFrameNumber": "5694/0001"
+      },
+      {
+        "assignees": [
+          {
+            "address": "6501 WILLIAM CANNON DRIVE WEST, AUSTIN, TEXAS, 78735",
+            "city": "AUSTIN",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "FREESCALE SEMICONDUCTOR, INC.",
+            "postalCode": "78735",
+            "stateName": "TEXAS",
+            "street": "6501 WILLIAM CANNON DRIVE WEST"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "BANK",
+            "name": "CITIBANK, N.A., AS COLLATERAL AGENT"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "21 TADCASTER CIRCLE, ATTN: PENELOPE J.A. AGODOA, WALDORF, MD 20602",
+            "addressLines": [
+              "IP RESEARCH PLUS, INC.",
+              "21 TADCASTER CIRCLE",
+              "ATTN: PENELOPE J.A. AGODOA",
+              "WALDORF, MD 20602"
+            ],
+            "name": "IP RESEARCH PLUS, INC."
+          }
+        ],
+        "descriptionText": "RELEASE",
+        "executedDate": "20151207",
+        "recordedDate": "20151221",
+        "reelFrameNumber": "5694/0020"
+      },
+      {
+        "assignees": [
+          {
+            "address": "1300 THAMES STREET, 4TH FLOOR, BALTIMORE, MARYLAND, 21231",
+            "city": "BALTIMORE",
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "BANK",
+            "name": "MORGAN STANLEY SENIOR FUNDING, INC., AS GLOBAL COLLATERAL AGENT",
+            "postalCode": "21231",
+            "secondaryAddressUnit": "THAMES STREET WHARF",
+            "stateName": "MARYLAND",
+            "street": "1300 THAMES STREET, 4TH FLOOR"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "BANK",
+            "name": "CITIBANK, N.A."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "1025 VERMONT AVENUE NW, SUITE 1130, NATIONAL CORPORATE RESEARCH, LTD., WASHINGTON, DC 20005",
+            "addressLines": [
+              "DWAYNE C. HOUSTON",
+              "1025 VERMONT AVENUE NW, SUITE 1130",
+              "NATIONAL CORPORATE RESEARCH, LTD.",
+              "WASHINGTON, DC 20005"
+            ],
+            "name": "DWAYNE C. HOUSTON"
+          }
+        ],
+        "descriptionText": "ASSIGNMENT AND ASSUMPTION OF SECURITY INTEREST IN TRADEMARKS (5% NOTES SECURITY AGREEMENT)",
+        "executedDate": "20151207",
+        "recordedDate": "20151214",
+        "reelFrameNumber": "5688/0271"
+      },
+      {
+        "assignees": [
+          {
+            "address": "1300 THAMES STREET, 4TH FLOOR, BALTIMORE, MARYLAND, 21231",
+            "city": "BALTIMORE",
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "BANK",
+            "name": "MORGAN STANLEY SENIOR FUNDING, INC., AS GLOBAL COLLATERAL AGENT",
+            "postalCode": "21231",
+            "secondaryAddressUnit": "THAMES STREET WHARF",
+            "stateName": "MARYLAND",
+            "street": "1300 THAMES STREET, 4TH FLOOR"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "BANK",
+            "name": "CITIBANK, N.A."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "1025 VERMONT AVENUE NW, SUITE 1130, NATIONAL CORPORATE RESEARCH, LTD., WASHINGTON, DC 20005",
+            "addressLines": [
+              "DWAYNE C. HOUSTON",
+              "1025 VERMONT AVENUE NW, SUITE 1130",
+              "NATIONAL CORPORATE RESEARCH, LTD.",
+              "WASHINGTON, DC 20005"
+            ],
+            "name": "DWAYNE C. HOUSTON"
+          }
+        ],
+        "descriptionText": "ASSIGNMENT AND ASSUMPTION OF SECURITY INTEREST IN TRADEMARKS (6% NOTES SECURITY AGREEMENT)",
+        "executedDate": "20151207",
+        "recordedDate": "20151214",
+        "reelFrameNumber": "5688/0295"
+      },
+      {
+        "assignees": [
+          {
+            "address": "390 GREENWICH STREET, NEW YORK, NEW YORK, 10013",
+            "city": "NEW YORK",
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "NATIONAL ASSOCIATION",
+            "name": "CITIBANK, N.A., AS NOTES COLLATERAL AGENT",
+            "postalCode": "10013",
+            "stateName": "NEW YORK",
+            "street": "390 GREENWICH STREET"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "FREESCALE SEMICONDUCTOR, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "21 TADCASTER CIRCLE, ATTN: PENELOPE J.A. AGODOA, WALDORF, MD 20602",
+            "addressLines": [
+              "IP RESEARCH PLUS, INC.",
+              "21 TADCASTER CIRCLE",
+              "ATTN: PENELOPE J.A. AGODOA",
+              "WALDORF, MD 20602"
+            ],
+            "name": "IP RESEARCH PLUS, INC."
+          }
+        ],
+        "descriptionText": "SECURITY AGREEMENT",
+        "executedDate": "20131101",
+        "recordedDate": "20131105",
+        "reelFrameNumber": "5146/0919"
+      },
+      {
+        "assignees": [
+          {
+            "address": "360 GREENWICH STREET, NEW YORK, NEW YORK, 10013",
+            "city": "NEW YORK",
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "NATIONAL ASSOCIATION",
+            "name": "CITIBANK, N.A., AS NOTES COLLATERAL AGENT",
+            "postalCode": "10013",
+            "stateName": "NEW YORK",
+            "street": "360 GREENWICH STREET"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "FREESCALE SEMICONDUCTOR, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "21 TADCASTER CIRCLE, ATTN: PENELOPE J.A. AGODOA, WALDORF, MD 20602",
+            "addressLines": [
+              "IP RESEARCH PLUS, INC.",
+              "21 TADCASTER CIRCLE",
+              "ATTN: PENELOPE J.A. AGODOA",
+              "WALDORF, MD 20602"
+            ],
+            "name": "IP RESEARCH PLUS, INC."
+          }
+        ],
+        "descriptionText": "SECURITY AGREEMENT",
+        "executedDate": "20130521",
+        "recordedDate": "20130617",
+        "reelFrameNumber": "5049/0565"
+      },
+      {
+        "assignees": [
+          {
+            "address": "388 GREENWICH STREET, NEW YORK, NEW YORK, 10013",
+            "city": "NEW YORK",
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "ASSOCIATION",
+            "name": "CITIBANK, N.A., AS NOTES COLLATERAL AGENT",
+            "postalCode": "10013",
+            "stateName": "NEW YORK",
+            "street": "388 GREENWICH STREET"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "FREESCALE SEMICONDUCTOR, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "21 TADCASTER CIRCLE, ATTN: PENELOPE J.A. AGODOA, WALDORF, MD 20602",
+            "addressLines": [
+              "IP RESEARCH PLUS, INC.",
+              "21 TADCASTER CIRCLE",
+              "ATTN: PENELOPE J.A. AGODOA",
+              "WALDORF, MD 20602"
+            ],
+            "name": "IP RESEARCH PLUS, INC."
+          }
+        ],
+        "descriptionText": "SECURITY AGREEMENT",
+        "executedDate": "20100413",
+        "recordedDate": "20100510",
+        "reelFrameNumber": "4202/0602"
+      },
+      {
+        "assignees": [
+          {
+            "address": "390 GREENWICH STREET, NEW YORK, NEW YORK, 10013",
+            "city": "NEW YORK",
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "ASSOCIATION",
+            "name": "CITIBANK, N.A.",
+            "postalCode": "10013",
+            "stateName": "NEW YORK",
+            "street": "390 GREENWICH STREET"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "FREESCALE SEMICONDUCTOR, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "21 TADCASTER CIRCLE, ATTN: PENELOPE J.A. AGODOA, WALDORF, MD 20602",
+            "addressLines": [
+              "IP RESEARCH PLUS, INC.",
+              "21 TADCASTER CIRCLE",
+              "ATTN: PENELOPE J.A. AGODOA",
+              "WALDORF, MD 20602"
+            ],
+            "name": "IP RESEARCH PLUS, INC."
+          }
+        ],
+        "descriptionText": "SECURITY AGREEMENT",
+        "executedDate": "20100219",
+        "recordedDate": "20100315",
+        "reelFrameNumber": "4167/0094"
+      },
+      {
+        "assignees": [
+          {
+            "address": "390 GREENWICH STREET, NEW YORK, NEW YORK, 10013",
+            "city": "NEW YORK",
+            "legalEntity": "BANK",
+            "name": "CITIBANK, N.A. AS COLLATERAL AGENT",
+            "postalCode": "10013",
+            "stateName": "NEW YORK",
+            "street": "390 GREENWICH STREET"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "FREESCALE SEMICONDUCTOR, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "FREESCALE ACQUISITION CORPORATION"
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "FREESCALE ACQUISITION HOLDINGS CORP."
+          },
+          {
+            "jurisdictionOfIncorporation": "Bermuda",
+            "legalEntity": "CORPORATION",
+            "name": "FREESCALE HOLDINGS (BERMUDA) III, LTD."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "1023 FIFTEENTH STREET, NW, STE 401, ATTN: OLEH HERELIUK, WASHINGTON, DC 20005",
+            "addressLines": [
+              "CBCINNOVIS DBA FEDERAL RESEARCH",
+              "1023 FIFTEENTH STREET, NW, STE 401",
+              "ATTN: OLEH HERELIUK",
+              "WASHINGTON, DC 20005"
+            ],
+            "name": "CBCINNOVIS DBA FEDERAL RESEARCH"
+          }
+        ],
+        "descriptionText": "SECURITY AGREEMENT",
+        "executedDate": "20061201",
+        "recordedDate": "20070123",
+        "reelFrameNumber": "3466/0767"
+      },
+      {
+        "assignees": [
+          {
+            "address": "6501 WILLIAM CANNON DRIVE WEST, AUSTIN, TEXAS, 78735",
+            "city": "AUSTIN",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "FREESCALE SEMICONDUCTOR, INC.",
+            "postalCode": "78735",
+            "stateName": "TEXAS",
+            "street": "6501 WILLIAM CANNON DRIVE WEST"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "MOTOROLA, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "600 CONGRESS AVE., SUITE 2400, AUSTIN, TX 78701",
+            "addressLines": [
+              "SHANNON T. VALE",
+              "600 CONGRESS AVE., SUITE 2400",
+              "AUSTIN, TX 78701"
+            ],
+            "name": "SHANNON T. VALE"
+          }
+        ],
+        "descriptionText": "ASSIGNS THE ENTIRE INTEREST",
+        "executedDate": "20040404",
+        "recordedDate": "20040714",
+        "reelFrameNumber": "2892/0687"
+      }
+    ],
+    "associatedMarks": [
+      {
+        "registrationNumbers": [
+          "2105783",
+          "2168279"
+        ]
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Computer hardware information appliance systems on a chip, namely, integrated circuits, digital signal processor cores, [ macro cells, ] bus interfaces and printed circuit boards, and user manuals for use therewith sold as a unit; computer software for use in the design and development of, systems-on-a-chip integrated circuits, digital signal processor cores, macro cells, bus interfaces and printed circuit boards; computer software used to facilitate the design and development of software applications and operating system software; and user manuals for use therewith"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 [ Computer Consulting services in, and research, development, and design for others of, computer hardware and software information [ applicant ] *appliance* systems on a chip, namely, integrated circuits, digital signal processor cores, macro cells, bus interfaces and printed circuit boards; Computer consulting services in, and research, development, and design for others of, computer software used to design and develop information appliance systems on a chip hardware and software, namely, integrated circuits, digital signal processor cores, macro cells, bus interfaces and printed circuit boards, and software for use in the design and development of application software and operating system software; technical support services, namely, troubleshooting of computer hardware and software problems via telephone, written consultation, and in-person visits; and maintenance of computer software ]"
+        }
+      ]
+    },
+    "id": "04ea80a1-704c-4b1f-855c-18f55a6faa8b",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260626",
+        "descriptionText": "CANCELLED SEC. 8 (10-YR)/EXPIRED SECTION 9"
+      },
+      {
+        "date": "20241213",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (10-YR)/SEC. 9 E-MAILED"
+      },
+      {
+        "date": "20200728",
+        "descriptionText": "TEAS CHANGE OF OWNER ADDRESS RECEIVED"
+      },
+      {
+        "date": "20200728",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20200728",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20200728",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20200728",
+        "descriptionText": "APPLICANT/CORRESPONDENCE CHANGES (NON-RESPONSIVE) ENTERED"
+      },
+      {
+        "date": "20170104",
+        "descriptionText": "AUTOMATIC UPDATE OF ASSIGNMENT OF OWNERSHIP"
+      },
+      {
+        "date": "20161005",
+        "descriptionText": "ASSIGNMENT OF OWNERSHIP NOT UPDATED AUTOMATICALLY"
+      },
+      {
+        "date": "20160113",
+        "descriptionText": "ASSIGNMENT OF OWNERSHIP NOT UPDATED AUTOMATICALLY"
+      },
+      {
+        "date": "20151204",
+        "descriptionText": "REGISTERED - SEC. 8 (10-YR) ACCEPTED/SEC. 9 GRANTED"
+      },
+      {
+        "date": "20151204",
+        "descriptionText": "REGISTERED AND RENEWED (FIRST RENEWAL - 10 YRS)"
+      },
+      {
+        "date": "20151204",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 & 9 - E-MAILED"
+      },
+      {
+        "date": "20151202",
+        "descriptionText": "TEAS SECTION 8 & 9 RECEIVED"
+      },
+      {
+        "date": "20151020",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20151020",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20131113",
+        "descriptionText": "ASSIGNMENT OF OWNERSHIP NOT UPDATED AUTOMATICALLY"
+      },
+      {
+        "date": "20130626",
+        "descriptionText": "ASSIGNMENT OF OWNERSHIP NOT UPDATED AUTOMATICALLY"
+      },
+      {
+        "date": "20120313",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20120313",
+        "descriptionText": "REGISTERED - PARTIAL SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+      },
+      {
+        "date": "20120313",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 & 15 - E-MAILED"
+      },
+      {
+        "date": "20120127",
+        "descriptionText": "TEAS SECTION 8 & 15 RECEIVED"
+      },
+      {
+        "date": "20120127",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) & SEC. 15 FILED"
+      },
+      {
+        "date": "20120126",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20110617",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20100512",
+        "descriptionText": "ASSIGNMENT OF OWNERSHIP NOT UPDATED AUTOMATICALLY"
+      },
+      {
+        "date": "20100324",
+        "descriptionText": "ASSIGNMENT OF OWNERSHIP NOT UPDATED AUTOMATICALLY"
+      },
+      {
+        "date": "20091119",
+        "descriptionText": "CORRECTION UNDER SECTION 7 - PROCESSED"
+      },
+      {
+        "date": "20090630",
+        "descriptionText": "ASSIGNED TO PARALEGAL"
+      },
+      {
+        "date": "20090604",
+        "descriptionText": "TEAS SECTION 7 REQUEST RECEIVED"
+      },
+      {
+        "date": "20070124",
+        "descriptionText": "ASSIGNMENT OF OWNERSHIP NOT UPDATED AUTOMATICALLY"
+      },
+      {
+        "date": "20051213",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20051025",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20051025",
+        "descriptionText": "LAW OFFICE REGISTRATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20051014",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20051008",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20050928",
+        "descriptionText": "TEAS STATEMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20050928",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20050330",
+        "descriptionText": "SOU TEAS EXTENSION RECEIVED"
+      },
+      {
+        "date": "20050330",
+        "descriptionText": "SOU EXTENSION 2 FILED"
+      },
+      {
+        "date": "20050330",
+        "descriptionText": "SOU EXTENSION 2 GRANTED"
+      },
+      {
+        "date": "20041005",
+        "descriptionText": "SOU EXTENSION 1 GRANTED"
+      },
+      {
+        "date": "20040928",
+        "descriptionText": "SOU TEAS EXTENSION RECEIVED"
+      },
+      {
+        "date": "20040928",
+        "descriptionText": "SOU EXTENSION 1 FILED"
+      },
+      {
+        "date": "20040812",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20040330",
+        "descriptionText": "NOA MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20040106",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20031217",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20031101",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20030924",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20030924",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20030328",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20030321",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      }
+    ],
+    "markFeature": "WORD ONLY",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "In the statement, Column 1 line 26 after Information, \"APPLICANT\" should be deleted, and \"APPLIANCE\" should be inserted.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "1303 East Algonquin Road, Schaumburg, IL, 60196, USAM",
+        "city": "Schaumburg",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "Motorola, Inc.",
+        "postalCode": "60196",
+        "stateName": "ILLINOIS",
+        "street": "1303 East Algonquin Road"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "6501 WILLIAM CANNON DRIVE WEST, AUSTIN, TX, 78735, USAM",
+        "city": "AUSTIN",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "FREESCALE SEMICONDUCTOR, INC.",
+        "postalCode": "78735",
+        "stateName": "TEXAS",
+        "street": "6501 WILLIAM CANNON DRIVE WEST"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "1303 East Algonquin Road, Schaumburg, IL, 60196, USAM",
+        "city": "Schaumburg",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "Motorola, Inc.",
+        "postalCode": "60196",
+        "stateName": "ILLINOIS",
+        "street": "1303 East Algonquin Road"
+      }
+    ],
+    "postPublicationOwners": [
+      {
+        "address": "6501 WILLIAM CANNON DRIVE WEST, AUSTIN, TX, 78735, USAM",
+        "city": "AUSTIN",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "FREESCALE SEMICONDUCTOR, INC.",
+        "postalCode": "78735",
+        "stateName": "TEXAS",
+        "street": "6501 WILLIAM CANNON DRIVE WEST"
+      }
+    ],
+    "postRegistrationOwners": [
+      {
+        "address": "AUSTIN, TX, 78735, USAM",
+        "city": "AUSTIN",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "NXP USA, INC.",
+        "postalCode": "78735",
+        "secondaryAddressUnit": "6501 WILLIAM CANNON DRIVE WEST",
+        "stateName": "TEXAS"
+      }
+    ],
+    "recordLastUpdated": "20260722",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Austin, TX 78702, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "Austin, TX 78702",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Michael S. Metteauer Pirkey Barber PLLC, 1801 East 6th Street, Suite 300"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Austin, TX 78702, UNITED STATES",
+        "representativeAddressLines": [
+          "Austin, TX 78702",
+          "UNITED STATES"
+        ],
+        "representativeName": "Michael S. Metteauer"
+      }
+    ],
+    "status": {
+      "active": false,
+      "allowanceDate": [
+        "20040330"
+      ],
+      "application": {
+        "applicationDate": "20021022",
+        "applicationNumber": "78176973"
+      },
+      "cancellationDate": "20260626",
+      "cancellationPublicationDate": "20260720",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "extension": {
+        "approvalDate": [
+          "20041005"
+        ]
+      },
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20001011"
+        },
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20021001"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20001011"
+        },
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20021001"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusComments": [
+          "CANCELLED SECTION 8 IN INT. CL. 42. ONLY O.G. 4-17-2012"
+        ],
+        "markOfficialStatusDate": "20260626",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20040106"
+      ],
+      "registration": {
+        "registrationDate": "20051213",
+        "registrationNumber": "3030024"
+      },
+      "renewalDate": "20151213"
+    },
+    "version": "20260722111248",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "STAR CORE",
+      "markVerbalElementText": "STARCORE"
+    }
+  },
+  "_uri": "/mark/us/04ea80a1-704c-4b1f-855c-18f55a6faa8b",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.729Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

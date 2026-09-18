@@ -1,0 +1,170 @@
+{
+  "uri": "/mark/si/b89a25ef-a719-4639-aa2e-6aaac13e32f0",
+  "provider": "clarivate",
+  "office": "si",
+  "guid": "b89a25ef-a719-4639-aa2e-6aaac13e32f0",
+  "applicationNumber": "200471565",
+  "registrationNumber": "200471565",
+  "applicationDate": "2004-08-31",
+  "registrationDate": "2005-05-16",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2005-06-30",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": null,
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "polprevodniki, polprevodniški procesorji, polprevodniški procesorski čipi, integrirana vezja, čipi integriranih vezij, plošče z vezjem, mikroračunalniki, mikrokontrolerji, mikroprocesorji računalniške periferne enote, pomnilniki in polprevodniški material zanje; polprevodniki za stroje in strojna orodja; polprevodniki za naprave za osvetljevanje, ogrevanje, proizvodnjo pare, kuhanje, hlajenje, sušenje in prezračevanje; polprevodniki za ure ter aparate in instrumente za merjenje časa; polprevodniki za glasbene instrumente; polprevodniki za igre in igrala; vezja za pretvorbo podatkov; računalniška sistemska programska oprema (firmware); elektronski, električni in elektromehanski aparati za rabo z računalniki; videosistemski izdelki; aparati in oprema za snemanje, reprodukcijo in spreminjanje zvoka, videa in podatkov; video plošče z vezjem; avdio plošče z vezjem; avdio-video plošče z vezjem; video grafični pospeševalniki; multimedijski pospeševalniki; videoprocesorji; računalniški programi; material za poučevanje v zvezi z računaniškimi in podatkovnimi algoritmi za kompresijo in dekompresijo podatkov; aparati za testiranje in umerjanje; deli in oprema za vse navedeno blago; oprema za testiranje in programiranje integriranih vezij in polprevodniških pomnilnikov; računalniška programska oprema, namreč programska oprema za integriranje in povezljivost aplikacij, računalniški pomožni programi, računalniški programi za upravljanje omrežij, računalniška programska oprema za dostopanje do globalnega računalniškega omrežja in mesebojno povezanih računalniških omrežij; računalniški operacijski sistemi; programska oprema za računalniške operacijske sisteme; računalniški operacijski programi; in računalniška programska orodja za lažjo uporabo programske opreme tretje stranke.",
+      "translation_language": "en",
+      "translation": "semi-conductors, semiconductor processors, semiconductor processor chips, integrated circuits, chips of integrated circuits, plates with circuits, microcomputers, microcontrollers, microprocessors computer peripheral devices, memories and semiconductor materials for them; semi-conductors for machines and machine tools; semi-conductors for devices for lighting, heating, steam production, cooking, cooling, drying and ventilation; semi-conductors for clocks and apparatus and instruments for measuring of time; semi-conductors for musical instruments; semi-conductors for games and game devices; circuits for conversion of data; computer system software (firmware); electronic, electric and electromechanical apparatus for use with computers; video system products; appliances and equipment for recording, reproduction and changing sound, video and data; video plates with circuit; audio plates with circuit; audio-video plates with circuit; video graphic accelerators; multimedia accelerators; video processors; computer programs; material for teaching concerning computer and data algorithms for compressing and decompressing of data; apparatus for testing and calibration; parts and equipment for all listed goods; equipment for testing and programming of integrated circuits and semiconductor memories; computer software equipment, namely software equipment for integrating and connectivity of applications, computer auxiliary programmes, computer programmes for the management of networks, computer software equipment for access to global computer networks and interconnected computer networks; computer operating programs; computer programs for computer operating systems; computer operating programmes; and computer software tools for lighter use of computer software of third customer"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "licenciranje tehnologije; licenciranje patentov, blagovnih znamk, avtorskih pravic, poslovnih skrivnosti in/ali know-howa v zvezi z izdelavo polprevodnikov in njihovo uporabo; licenciranje polprevodnikov; licenciranje programske opreme v zvezi z izdelavo polprevodnikov in njihovo uporabo; licenciranje tehnologije v zvezi s polprevodniki in izdelavo polprevodnikov; licenciranje tehnologije, vgrajene v polprevodniške izdelke, integrirana vezja, plošče z vezjem, mikroračunalnike, mikrokontrolerje, mikroprocesorje in računalniške periferne enote, pomnilnike in polprevodniški material zanje, vezja za pretvorbo podatkov, računalniško sistemsko programsko opremo (firmware), elektronske, električne in elektromehanske aparate za rabo z računalniki, video stikalne plošče, videosistemske izdelke, aparate in opremo za snemanje, reprodukcijo in spreminjanje zvoka, videa in podatkov, računalniške programe, materiali za poučevanje v zvezi z računalniškimi in podatkovnimi algoritmi za kompresijo in dekompresijo podatkov; oblikovanje računalniških in telekomunikacijskih sistemov po želji strank; svetovalne storitve na področju računalnikov in telekomunikacij in s tem povezane tehnologije za oblikovanje programske opreme v razredu 42.",
+      "translation_language": "en",
+      "translation": "licensing technology; licensing patents, trade marks, copyrights, business secrets andor know-how related to manufacturing semiconductors and application thereof; licensing semiconductors; licensing computer software related to manufacturing semiconductors and application thereof; licensing technology related to semi-conductors and manufacturing semiconductors; licensing technology, built in in semiconductor products, integrated circuits, plates with circuits, microcomputers, microcontrollers, microprocessors and computer periphery units, memories and semiconductor material for them, circuits for conversion of data, computer system software (firmware), electronic, electric and electromechanical apparatuses for computer use, video switchboards, video systems products, apparatus and equipment for recording, reproduction and changing of sound, video and data, computer programmes, materials for teaching associated with computer and data algorithms for compressing and decompressing data; design of computer and telecommunication systems at client request; consultation in the field of computers and telecommunications and technology related thereto for designing software in class 42"
+    }
+  ],
+  "owner": "NXP USA Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Patentna pisarna d.o.o.",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20040301",
+      "priorityNumber": "78/376,535"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West, Austin, Texas 78735",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA Inc."
+      }
+    ],
+    "applicationLanguageCode": "sl",
+    "cmMarkImageEUclassification": [
+      "26.04.01",
+      "26.04.02",
+      "26.04.03",
+      "26.04.06",
+      "26.04.07",
+      "26.04.09",
+      "26.04.10",
+      "26.04.11",
+      "26.04.12",
+      "26.04.16",
+      "26.04.22"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "semi-conductors, semiconductor processors, semiconductor processor chips, integrated circuits, chips of integrated circuits, plates with circuits, microcomputers, microcontrollers, microprocessors computer peripheral devices, memories and semiconductor materials for them; semi-conductors for machines and machine tools; semi-conductors for devices for lighting, heating, steam production, cooking, cooling, drying and ventilation; semi-conductors for clocks and apparatus and instruments for measuring of time; semi-conductors for musical instruments; semi-conductors for games and game devices; circuits for conversion of data; computer system software (firmware); electronic, electric and electromechanical apparatus for use with computers; video system products; appliances and equipment for recording, reproduction and changing sound, video and data; video plates with circuit; audio plates with circuit; audio-video plates with circuit; video graphic accelerators; multimedia accelerators; video processors; computer programs; material for teaching concerning computer and data algorithms for compressing and decompressing of data; apparatus for testing and calibration; parts and equipment for all listed goods; equipment for testing and programming of integrated circuits and semiconductor memories; computer software equipment, namely software equipment for integrating and connectivity of applications, computer auxiliary programmes, computer programmes for the management of networks, computer software equipment for access to global computer networks and interconnected computer networks; computer operating programs; computer programs for computer operating systems; computer operating programmes; and computer software tools for lighter use of computer software of third customer",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "polprevodniki, polprevodniški procesorji, polprevodniški procesorski čipi, integrirana vezja, čipi integriranih vezij, plošče z vezjem, mikroračunalniki, mikrokontrolerji, mikroprocesorji računalniške periferne enote, pomnilniki in polprevodniški material zanje; polprevodniki za stroje in strojna orodja; polprevodniki za naprave za osvetljevanje, ogrevanje, proizvodnjo pare, kuhanje, hlajenje, sušenje in prezračevanje; polprevodniki za ure ter aparate in instrumente za merjenje časa; polprevodniki za glasbene instrumente; polprevodniki za igre in igrala; vezja za pretvorbo podatkov; računalniška sistemska programska oprema (firmware); elektronski, električni in elektromehanski aparati za rabo z računalniki; videosistemski izdelki; aparati in oprema za snemanje, reprodukcijo in spreminjanje zvoka, videa in podatkov; video plošče z vezjem; avdio plošče z vezjem; avdio-video plošče z vezjem; video grafični pospeševalniki; multimedijski pospeševalniki; videoprocesorji; računalniški programi; material za poučevanje v zvezi z računaniškimi in podatkovnimi algoritmi za kompresijo in dekompresijo podatkov; aparati za testiranje in umerjanje; deli in oprema za vse navedeno blago; oprema za testiranje in programiranje integriranih vezij in polprevodniških pomnilnikov; računalniška programska oprema, namreč programska oprema za integriranje in povezljivost aplikacij, računalniški pomožni programi, računalniški programi za upravljanje omrežij, računalniška programska oprema za dostopanje do globalnega računalniškega omrežja in mesebojno povezanih računalniških omrežij; računalniški operacijski sistemi; programska oprema za računalniške operacijske sisteme; računalniški operacijski programi; in računalniška programska orodja za lažjo uporabo programske opreme tretje stranke."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "licensing technology; licensing patents, trade marks, copyrights, business secrets andor know-how related to manufacturing semiconductors and application thereof; licensing semiconductors; licensing computer software related to manufacturing semiconductors and application thereof; licensing technology related to semi-conductors and manufacturing semiconductors; licensing technology, built in in semiconductor products, integrated circuits, plates with circuits, microcomputers, microcontrollers, microprocessors and computer periphery units, memories and semiconductor material for them, circuits for conversion of data, computer system software (firmware), electronic, electric and electromechanical apparatuses for computer use, video switchboards, video systems products, apparatus and equipment for recording, reproduction and changing of sound, video and data, computer programmes, materials for teaching associated with computer and data algorithms for compressing and decompressing data; design of computer and telecommunication systems at client request; consultation in the field of computers and telecommunications and technology related thereto for designing software in class 42",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "licenciranje tehnologije; licenciranje patentov, blagovnih znamk, avtorskih pravic, poslovnih skrivnosti in/ali know-howa v zvezi z izdelavo polprevodnikov in njihovo uporabo; licenciranje polprevodnikov; licenciranje programske opreme v zvezi z izdelavo polprevodnikov in njihovo uporabo; licenciranje tehnologije v zvezi s polprevodniki in izdelavo polprevodnikov; licenciranje tehnologije, vgrajene v polprevodniške izdelke, integrirana vezja, plošče z vezjem, mikroračunalnike, mikrokontrolerje, mikroprocesorje in računalniške periferne enote, pomnilnike in polprevodniški material zanje, vezja za pretvorbo podatkov, računalniško sistemsko programsko opremo (firmware), elektronske, električne in elektromehanske aparate za rabo z računalniki, video stikalne plošče, videosistemske izdelke, aparate in opremo za snemanje, reprodukcijo in spreminjanje zvoka, videa in podatkov, računalniške programe, materiali za poučevanje v zvezi z računalniškimi in podatkovnimi algoritmi za kompresijo in dekompresijo podatkov; oblikovanje računalniških in telekomunikacijskih sistemov po želji strank; svetovalne storitve na področju računalnikov in telekomunikacij in s tem povezane tehnologije za oblikovanje programske opreme v razredu 42."
+        }
+      ]
+    },
+    "id": "b89a25ef-a719-4639-aa2e-6aaac13e32f0",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN ONLY",
+    "markImageViennaClassification": [
+      "26.04.09",
+      "26.04.24"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20040301",
+        "priorityNumber": "78/376,535"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "6",
+        "publicationYear": "2004"
+      }
+    ],
+    "recordLastUpdated": "20260520",
+    "registrationOfficeCode": "SI",
+    "registrationOfficeName": "Slovenia",
+    "representatives": [
+      {
+        "representativeAddress": "Čopova 14, p.p. 1725, 1001 Ljubljana",
+        "representativeAddressCountryCode": "SI",
+        "representativeAddressCountryName": "Slovenia",
+        "representativeName": "Patentna pisarna d.o.o."
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040831",
+        "applicationNumber": "200471565"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20050630",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20050516",
+        "registrationNumber": "200471565"
+      },
+      "renewalPublishedDate": "20140530"
+    },
+    "version": "20260520095208"
+  },
+  "_uri": "/mark/si/b89a25ef-a719-4639-aa2e-6aaac13e32f0",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.731Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

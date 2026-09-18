@@ -1,0 +1,384 @@
+{
+  "uri": "/mark/us/49c390eb-e9e5-4b04-96f2-7339b6f03674",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "49c390eb-e9e5-4b04-96f2-7339b6f03674",
+  "applicationNumber": "79078741",
+  "registrationNumber": "3857020",
+  "applicationDate": "2009-12-11",
+  "registrationDate": "2010-10-05",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2010-07-20"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2019-12-11",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "LPCZONE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    38,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        38
+      ],
+      "language": null,
+      "description": "INT. CL. 38 providing internet access through internet portals for the purpose of accessing information related to semiconductors",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 providing technical information in the field of semiconductors via internet portals; computer services, namely, creating and maintaining internet portals featuring information in the field of semiconductors; information and advisory services relating to the aforesaid services",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60, NETH",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantAddressStreet": "High Tech Campus 60",
+        "applicantJurisdictionOfIncorporation": "NETHERLANDS",
+        "applicantLegalEntity": "PRIVATE LIMITED COMPANY",
+        "applicantName": "NXP B.V.",
+        "applicantSecondaryAddressUnit": "NL-5656 AG EINDHOVEN"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "38",
+          "intGoodsServicesDescription": "INT. CL. 38 providing internet access through internet portals for the purpose of accessing information related to semiconductors"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 providing technical information in the field of semiconductors via internet portals; computer services, namely, creating and maintaining internet portals featuring information in the field of semiconductors; information and advisory services relating to the aforesaid services"
+        }
+      ]
+    },
+    "id": "49c390eb-e9e5-4b04-96f2-7339b6f03674",
+    "internationalMarkKeys": [
+      {
+        "expiryDate": "20191211",
+        "internationalRegistrationNumber": "1028371",
+        "markCurrentStatus": "DEATH OF IR",
+        "markCurrentStatusDate": "20191211",
+        "priorityClaimDate": "20090616",
+        "protectionGrantedDate": "20110825",
+        "publicationDate": "20100304",
+        "registrationDate": "20091211",
+        "renewalDate": "20191211"
+      }
+    ],
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20201225",
+        "descriptionText": "DEATH OF INTERNATIONAL REGISTRATION"
+      },
+      {
+        "date": "20201225",
+        "descriptionText": "NOTIFICATION OF EFFECT OF CANCELLATION OF INTL REG E-MAILED"
+      },
+      {
+        "date": "20180223",
+        "descriptionText": "PARTIAL INVALIDATION PROCESSED BY THE IB"
+      },
+      {
+        "date": "20180126",
+        "descriptionText": "TOTAL INVALIDATION OF REG EXT PROTECTION SENT TO IB"
+      },
+      {
+        "date": "20180126",
+        "descriptionText": "INVALIDATION PROCESSED"
+      },
+      {
+        "date": "20180112",
+        "descriptionText": "TOTAL INVALIDATION OF REG EXT PROTECTION CREATED"
+      },
+      {
+        "date": "20170512",
+        "descriptionText": "CANCELLED SECTION 71"
+      },
+      {
+        "date": "20151005",
+        "descriptionText": "COURTESY REMINDER - SEC. 71 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20150515",
+        "descriptionText": "NEW REPRESENTATIVE AT IB RECEIVED"
+      },
+      {
+        "date": "20131006",
+        "descriptionText": "NEW REPRESENTATIVE AT IB RECEIVED"
+      },
+      {
+        "date": "20130921",
+        "descriptionText": "NEW REPRESENTATIVE AT IB RECEIVED"
+      },
+      {
+        "date": "20130213",
+        "descriptionText": "FINAL DECISION TRANSACTION PROCESSED BY IB"
+      },
+      {
+        "date": "20120607",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20120210",
+        "descriptionText": "NEW REPRESENTATIVE AT IB RECEIVED"
+      },
+      {
+        "date": "20111117",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20111117",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20110112",
+        "descriptionText": "FINAL DISPOSITION NOTICE SENT TO IB"
+      },
+      {
+        "date": "20110112",
+        "descriptionText": "FINAL DISPOSITION PROCESSED"
+      },
+      {
+        "date": "20110105",
+        "descriptionText": "FINAL DISPOSITION NOTICE CREATED, TO BE SENT TO IB"
+      },
+      {
+        "date": "20101005",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20100720",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20100630",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20100612",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20100608",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20100526",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20100526",
+        "descriptionText": "APPLICANT/CORRESPONDENCE CHANGES (NON-RESPONSIVE) ENTERED"
+      },
+      {
+        "date": "20100526",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20100526",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20100507",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20100507",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20100507",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20100430",
+        "descriptionText": "REFUSAL PROCESSED BY IB"
+      },
+      {
+        "date": "20100322",
+        "descriptionText": "NON-FINAL ACTION MAILED - REFUSAL SENT TO IB"
+      },
+      {
+        "date": "20100322",
+        "descriptionText": "REFUSAL PROCESSED BY MPU"
+      },
+      {
+        "date": "20100320",
+        "descriptionText": "NON-FINAL ACTION (IB REFUSAL) PREPARED FOR REVIEW"
+      },
+      {
+        "date": "20100319",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20100315",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20100302",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      },
+      {
+        "date": "20100226",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20100225",
+        "descriptionText": "SN ASSIGNED FOR SECT 66A APPL FROM IB"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "High Tech Campus 60, NETH",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "legalEntity": "PRIVATE LIMITED COMPANY",
+        "name": "NXP B.V.",
+        "secondaryAddressUnit": "NL-5656 AG EINDHOVEN",
+        "street": "High Tech Campus 60"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "High Tech Campus 60, NETH",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "legalEntity": "PRIVATE LIMITED COMPANY",
+        "name": "NXP B.V.",
+        "secondaryAddressUnit": "NL-5656 AG EINDHOVEN",
+        "street": "High Tech Campus 60"
+      },
+      {
+        "address": "High Tech Campus 60, NETH",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "legalEntity": "PRIVATE LIMITED COMPANY",
+        "name": "NXP B.V.",
+        "secondaryAddressUnit": "NL-5656 AG EINDHOVEN",
+        "street": "High Tech Campus 60"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "High Tech Campus 60, NETH",
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "jurisdictionOfIncorporation": "NETHERLANDS",
+        "legalEntity": "PRIVATE LIMITED COMPANY",
+        "name": "NXP B.V.",
+        "secondaryAddressUnit": "NL-5656 AG EINDHOVEN",
+        "street": "High Tech Campus 60"
+      }
+    ],
+    "recordLastUpdated": "20260912",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "PALO ALTO, CA 94306, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "PALO ALTO, CA 94306",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Cynthia R. Adwere LAW OFFICE OF CYNTHIA R. ADWERE, 2625 MIDDLEFIELD ROAD # 360"
+      }
+    ],
+    "representatives": [
+      {
+        "domesticRepresentativeName": "Cynthia R. Adwere",
+        "representativeAddress": "PALO ALTO, CA 94306, UNITED STATES",
+        "representativeAddressLines": [
+          "PALO ALTO, CA 94306",
+          "UNITED STATES"
+        ]
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20091211",
+        "applicationNumber": "79078741"
+      },
+      "cancellationDate": "20191211",
+      "cancellationSection": "71",
+      "cmNormalisedStatus": "CANCELLED",
+      "ipOffice": {
+        "markOfficialStatus": "IR CANCELLED - US REGISTRATION CANCELLED",
+        "markOfficialStatusCode": "404",
+        "markOfficialStatusDate": "20191211",
+        "markOfficialStatusEvents": [
+          "Section 66(a) (Madrid Protocol) - Filed",
+          "Section 66(a) (Madrid Protocol) - Current",
+          "International Priority Claimed",
+          "Notice of First Refusal"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20100720"
+      ],
+      "registration": {
+        "registrationDate": "20101005",
+        "registrationNumber": "3857020"
+      }
+    },
+    "version": "20260912164854",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LPCZONE"
+    }
+  },
+  "_uri": "/mark/us/49c390eb-e9e5-4b04-96f2-7339b6f03674",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.728Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

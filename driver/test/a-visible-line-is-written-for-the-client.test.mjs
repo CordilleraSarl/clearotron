@@ -99,7 +99,10 @@ test("a line already written for the reader is left alone", () => {
 // fixture matches the reader.
 test("every default-visible path resolves to prose in a delivered record", () => {
   const records = {
-    knockout: ["knockout-search/run/knockout-findings.json"],
+    // The shipped demo's knockout, and the one it shipped before — kept under driver/test/fixtures because
+    // the current one rated Low with no conflicts and no reviewer notes, so a path only a knockout WITH
+    // those reaches would otherwise resolve against nothing. Both are real runs' shapes.
+    knockout: ["knockout-search/run/knockout-findings.json", "../driver/test/fixtures/delivered-knockout/run/knockout-findings.json"],
     clearance: [
       "global-preliminary-search/run/findings.json",
       "full-country-search/run/findings.json",

@@ -1,0 +1,134 @@
+{
+  "uri": "/mark/in/53eac157-b941-4c7e-a92e-41b1501ea0a4",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "53eac157-b941-4c7e-a92e-41b1501ea0a4",
+  "applicationNumber": "1291974",
+  "registrationNumber": "572989",
+  "applicationDate": "2004-06-23",
+  "registrationDate": "2006-10-20",
+  "expiryDate": "2024-06-23",
+  "renewalDate": "2014-06-23",
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Semiconductors, semiconductor processors, semiconductors processor chips, integrated circuits, integrated circuits chips, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor materials therefore, semiconductors for machines and machines tools, semiconductors for lighting , heating, steam generating , cooking, refrigerating, drying and ventilating apparatus, semiconductors for clocks and time keeping apparatus and instruments, semiconductors for musical instruments, semiconductors for games and playthings, data conversion circuits, computer firmware, electronic, electrical and electro mechanical apparatus for use with computer, video systems products, apparatus and equipments for recordation, reproduction and alterations of sound, video and data, video circuits boards, audio circuit boards, audio video circuit boards, video graphic accelerators, multimedia accelerators, video processors, computer programs, instructional material relating to computer and data algorithms for the compression and decompression of data, testing and calibrating apparatus, parts and fittings for all the aforesaid goods, equipment for the testing and programming of integraeated circuits and semiconductor memories, computer software, namely, application integration and connectivity software, computer utility programs, computer programs for network management, computer software for accessing a global computer network and  interconnected computer networks, computer operating system, computer operating system software, computer operating programs, and computer software tools for the facilitation of third party software applications.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Licensing of technology, licensing of patents, trademarks, copyrights, trade secrets and/or know how related to the manufacture of semiconductors and their uses, licensing semiconductors, licensing of software related to the manufacture of semiconductors and their uses, licensing of technology related to semiconductors and the manufacture of semiconductors, licensing technology incorporated in and related to semiconductor products, integrated circuits, circuit boards, microcomputers, micro controllers, microprocessors and computer peripherals, memories and semiconductors materials therefore, data conversion circuits, computer firmware, electronic, electrical and electro mechanical apparatus for use with computer, video circuit boards, video systems products, apparatus and equipments for recordation, reproduction and alteration of sound, video and data, computer programs, instructional materials relating to computer and data algorithms for the compression and decompression of data, custom design of computer and telecommunications systems, consulting services in the field of computers and telecommunications and related technology for software design, included in class 42.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA, INC. Body Incorporate",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "REMFRY & SAGAR[269]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "1303 E. ALGONQUIN ROAD, SCHAUMBURG, IL 60196, U.S.A.",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC. Body Incorporate"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Semiconductors, semiconductor processors, semiconductors processor chips, integrated circuits, integrated circuits chips, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor materials therefore, semiconductors for machines and machines tools, semiconductors for lighting , heating, steam generating , cooking, refrigerating, drying and ventilating apparatus, semiconductors for clocks and time keeping apparatus and instruments, semiconductors for musical instruments, semiconductors for games and playthings, data conversion circuits, computer firmware, electronic, electrical and electro mechanical apparatus for use with computer, video systems products, apparatus and equipments for recordation, reproduction and alterations of sound, video and data, video circuits boards, audio circuit boards, audio video circuit boards, video graphic accelerators, multimedia accelerators, video processors, computer programs, instructional material relating to computer and data algorithms for the compression and decompression of data, testing and calibrating apparatus, parts and fittings for all the aforesaid goods, equipment for the testing and programming of integraeated circuits and semiconductor memories, computer software, namely, application integration and connectivity software, computer utility programs, computer programs for network management, computer software for accessing a global computer network and  interconnected computer networks, computer operating system, computer operating system software, computer operating programs, and computer software tools for the facilitation of third party software applications."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Licensing of technology, licensing of patents, trademarks, copyrights, trade secrets and/or know how related to the manufacture of semiconductors and their uses, licensing semiconductors, licensing of software related to the manufacture of semiconductors and their uses, licensing of technology related to semiconductors and the manufacture of semiconductors, licensing technology incorporated in and related to semiconductor products, integrated circuits, circuit boards, microcomputers, micro controllers, microprocessors and computer peripherals, memories and semiconductors materials therefore, data conversion circuits, computer firmware, electronic, electrical and electro mechanical apparatus for use with computer, video circuit boards, video systems products, apparatus and equipments for recordation, reproduction and alteration of sound, video and data, computer programs, instructional materials relating to computer and data algorithms for the compression and decompression of data, custom design of computer and telecommunications systems, consulting services in the field of computers and telecommunications and related technology for software design, included in class 42."
+        }
+      ]
+    },
+    "id": "53eac157-b941-4c7e-a92e-41b1501ea0a4",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1328"
+      }
+    ],
+    "recordLastUpdated": "20250710",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "MILLENIUM PLAZA, SECTOR 27, GURGAON- 122002.",
+        "representativeName": "REMFRY & SAGAR[269]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20040623",
+        "applicationNumber": "1291974"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20240623",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20061020",
+        "registrationNumber": "572989"
+      },
+      "renewalDate": "20140623"
+    },
+    "version": "20250710105923",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/in/53eac157-b941-4c7e-a92e-41b1501ea0a4",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.690Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "uri": "/mark/gb/358b9e04-b563-4d0a-8538-e1dac5a63572",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "358b9e04-b563-4d0a-8538-e1dac5a63572",
+  "applicationNumber": "UK00918020672",
+  "registrationNumber": "UK00918020672",
+  "applicationDate": "2019-02-08",
+  "registrationDate": "2019-07-03",
+  "expiryDate": "2029-02-08",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SESIP",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Testing, analysis and assessment for certification purposes of IT goods and services, ICT security goods and services, cybersecurity goods and services, cryptographic goods and services and telecommunications goods and services; Information technology consulting.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "Boult Wade Tennant LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60, 5656 AG, Eindhoven, The Netherlands",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "26.03.23"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Testing, analysis and assessment for certification purposes of IT goods and services, ICT security goods and services, cybersecurity goods and services, cryptographic goods and services and telecommunications goods and services; Information technology consulting."
+        }
+      ]
+    },
+    "id": "358b9e04-b563-4d0a-8538-e1dac5a63572",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "24.17.20"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Salisbury Square House, 8 Salisbury Square, London EC4Y 8AP",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Boult Wade Tennant LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190208",
+        "applicationNumber": "UK00918020672"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290208",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20190703",
+        "registrationNumber": "UK00918020672"
+      }
+    },
+    "version": "20250627220107",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SESIP"
+    }
+  },
+  "_uri": "/mark/gb/358b9e04-b563-4d0a-8538-e1dac5a63572",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.710Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

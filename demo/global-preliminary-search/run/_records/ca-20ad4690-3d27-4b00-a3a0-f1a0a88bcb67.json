@@ -1,0 +1,258 @@
+{
+  "uri": "/mark/ca/20ad4690-3d27-4b00-a3a0-f1a0a88bcb67",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "20ad4690-3d27-4b00-a3a0-f1a0a88bcb67",
+  "applicationNumber": "2384085",
+  "registrationNumber": null,
+  "applicationDate": "2024-10-10",
+  "registrationDate": null,
+  "expiryDate": "2034-10-10",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "MIFARE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Electronic, electro technical and electromagnetic modules; data processing equipment, data storage apparatus namely, data processors for scanning, reading, storing and interpreting electronic data contained on RFID [Radio-frequency identification] and NFC [Near-field communication] chips; microprocessors; interfaces for computers; integrated circuits (ICs), chips (integrated circuits); semiconductors; smart cards; smart card integrated circuits; labels, smart cards and tags with integrated RFID [Radio-frequency identification] chips; RFID [Radio-frequency identification] chips and tags; computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID [Radio-frequency identification] chips and tags; contactless smart cards; dual interface smart cards; dual interface integrated circuits (ICs) that provide a link between contactless cards and contact cards; encoded contactless smart cards containing programming used for determining the fare to be paid by passengers who book their trip electronically; encoded contactless smart cards containing programming used for gaining access to certain areas, buildings, premises, and vehicles; encoded contactless smart cards containing programming used for payment; writers and readers for wireless transmission to and from transponder chips; computer programs for controlling transmission of data to and reading of data from transponder chips; data processing machines for fare determination using transponder chips; Electronic wristbands, namely, electronic readers/recorders for authenticating identity, controlling access to functions, managing events, ticketing, promoting brand loyalty, promoting brands, cashless vending, transportation and membership identification; computer hardware, software and peripheral devices used for access control and authentication purposes; electronic key fobs being remote control apparatus; cloud computing software; cloud computing systems; software for cloud infrastructure; cloud computing platform software; application software for cloud computing services; cloud based digital solutions provider software for managing digitized credentials onto mobile devices and wearable devices supporting NFC-enabled [Near-field communication-enabled] mobile devices for mobile fare payments, mobile transit ticketing, smart card access; digital solutions provider software for the implementation of smartcards on mobile devices and wearable devices; digital solutions provider software for security and risk management in respect of smartcard implementation on mobile devices and wearable devices; digital solutions provider software for virtual card storing on mobile devices and wearable devices embedded on a HCE (Host Card Emulation); digital solutions provider software for virtual card storing on mobile devices and wearable device embedded on a SE (Secure Element); Solutions provider hardware [so-called secure access modules]; interface software; interface circuits for remote devices; secure microprocessors; secure terminals for electronic transactions; secure digital (SD) card readers; Secure Digital (SD) memory cards; software for facilitating secure transactions; SIM cards; SIM cards of mobile NFC [Near-field communication] devices over the air (OTA).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Computer programming services; installation, repair and maintenance in relation to software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID [Radio-frequency identification] chips and tags, and software for determining the fare to be paid by passengers with electronic travel-tickets; research, design and development services related to electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (ICs), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID [Radio-frequency identification] chips and tags; research, design and development services related to computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID [Radio-frequency identification] chips and tags; research, design and development services related to electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID [Radio-frequency identification] chips and tags, antennas for scanning, reading and interpreting RFID [Radio-frequency identification] chips and tags; research, design and development services related to NFC (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for NFC [Near-field communication] applications, electronic payment cards, data processing apparatus and software for determining the fare to be paid by passengers with electronic travel-tickets; research, design and development services related to parts, fitting and accessories for all the aforesaid goods; custom programming of software; software customisation services; custom programming of electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (ICs), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID [Radio-frequency identification] chips and tags; custom programming of computer hardware for creating, programming, controlling, encoding, scanning, reading and interpreting RFID [Radio-frequency identification] chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID [Radio-frequency identification] chips and tags, antennas for scanning, reading and interpreting RFID [Radio-frequency identification] chips and tags; custom programming of NFC (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for near field communications applications, electronic payment cards, data processing apparatus and software for determining the fare to be paid by passengers with electronic travel-tickets; cloud computing; cloud computing services; cloud computing featuring software for use service management for cloud platforms and on-premise environments; custom programming of parts, fitting and accessories for all the aforesaid goods; advisory, consultancy and information services in relation to all the aforesaid services.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "FASKEN MARTINEAU DUMOULIN LLP",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20241009",
+      "priorityNumber": "1512172",
+      "priorityText": "Priority Filing Date: October 09, 2024, Country or Office: Benelux Office for IP (BOIP), Application No. 1512172 in association with the same kind of in association with the same kind on wares marked (1) on services (1)"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60, NL-5656 AG Eindhoven",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantAddressLines": [
+          "High Tech Campus 60",
+          "NL-5656 AG Eindhoven"
+        ],
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Priority Filing Date: October 09, 2024, Country or Office: Benelux Office for IP (BOIP), Application No. 1512172 in association with the same kind of in association with the same kind on wares marked (1) on services (1)",
+        "typeDescription": "Priority"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Electronic, electro technical and electromagnetic modules; data processing equipment, data storage apparatus namely, data processors for scanning, reading, storing and interpreting electronic data contained on RFID [Radio-frequency identification] and NFC [Near-field communication] chips; microprocessors; interfaces for computers; integrated circuits (ICs), chips (integrated circuits); semiconductors; smart cards; smart card integrated circuits; labels, smart cards and tags with integrated RFID [Radio-frequency identification] chips; RFID [Radio-frequency identification] chips and tags; computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID [Radio-frequency identification] chips and tags; contactless smart cards; dual interface smart cards; dual interface integrated circuits (ICs) that provide a link between contactless cards and contact cards; encoded contactless smart cards containing programming used for determining the fare to be paid by passengers who book their trip electronically; encoded contactless smart cards containing programming used for gaining access to certain areas, buildings, premises, and vehicles; encoded contactless smart cards containing programming used for payment; writers and readers for wireless transmission to and from transponder chips; computer programs for controlling transmission of data to and reading of data from transponder chips; data processing machines for fare determination using transponder chips; Electronic wristbands, namely, electronic readers/recorders for authenticating identity, controlling access to functions, managing events, ticketing, promoting brand loyalty, promoting brands, cashless vending, transportation and membership identification; computer hardware, software and peripheral devices used for access control and authentication purposes; electronic key fobs being remote control apparatus; cloud computing software; cloud computing systems; software for cloud infrastructure; cloud computing platform software; application software for cloud computing services; cloud based digital solutions provider software for managing digitized credentials onto mobile devices and wearable devices supporting NFC-enabled [Near-field communication-enabled] mobile devices for mobile fare payments, mobile transit ticketing, smart card access; digital solutions provider software for the implementation of smartcards on mobile devices and wearable devices; digital solutions provider software for security and risk management in respect of smartcard implementation on mobile devices and wearable devices; digital solutions provider software for virtual card storing on mobile devices and wearable devices embedded on a HCE (Host Card Emulation); digital solutions provider software for virtual card storing on mobile devices and wearable device embedded on a SE (Secure Element); Solutions provider hardware [so-called secure access modules]; interface software; interface circuits for remote devices; secure microprocessors; secure terminals for electronic transactions; secure digital (SD) card readers; Secure Digital (SD) memory cards; software for facilitating secure transactions; SIM cards; SIM cards of mobile NFC [Near-field communication] devices over the air (OTA)."
+        },
+        {
+          "intClassNumber": "09,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Computer programming services; installation, repair and maintenance in relation to software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID [Radio-frequency identification] chips and tags, and software for determining the fare to be paid by passengers with electronic travel-tickets; research, design and development services related to electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (ICs), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID [Radio-frequency identification] chips and tags; research, design and development services related to computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID [Radio-frequency identification] chips and tags; research, design and development services related to electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID [Radio-frequency identification] chips and tags, antennas for scanning, reading and interpreting RFID [Radio-frequency identification] chips and tags; research, design and development services related to NFC (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for NFC [Near-field communication] applications, electronic payment cards, data processing apparatus and software for determining the fare to be paid by passengers with electronic travel-tickets; research, design and development services related to parts, fitting and accessories for all the aforesaid goods; custom programming of software; software customisation services; custom programming of electronic, electrotechnical and electromagnetic modules, parts and building elements, data processing machines, data storage apparatus, microprocessors, interfaces, integrated circuits (ICs), chips, semiconductors and smart cards, controllers for smart cards, controllers for RFID [Radio-frequency identification] chips and tags; custom programming of computer hardware for creating, programming, controlling, encoding, scanning, reading and interpreting RFID [Radio-frequency identification] chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID [Radio-frequency identification] chips and tags, antennas for scanning, reading and interpreting RFID [Radio-frequency identification] chips and tags; custom programming of NFC (near field communications) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and building elements and integrated circuits for near field communications applications, electronic payment cards, data processing apparatus and software for determining the fare to be paid by passengers with electronic travel-tickets; cloud computing; cloud computing services; cloud computing featuring software for use service management for cloud platforms and on-premise environments; custom programming of parts, fitting and accessories for all the aforesaid goods; advisory, consultancy and information services in relation to all the aforesaid services."
+        }
+      ]
+    },
+    "id": "20ad4690-3d27-4b00-a3a0-f1a0a88bcb67",
+    "internationalMarkKeys": [
+      {
+        "internationalRegistrationNumber": "1843095"
+      }
+    ],
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20260204",
+        "descriptionText": "Total Provisional Refusal Sent",
+        "responseDate": "20260804"
+      },
+      {
+        "date": "20260204",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20260804"
+      },
+      {
+        "date": "20260204",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20260106",
+        "descriptionText": "Notification of Possible Oppositions Sent"
+      },
+      {
+        "date": "20250403",
+        "descriptionText": "Agent changed",
+        "information": "From/De: To/A: 2841"
+      },
+      {
+        "date": "20250306",
+        "descriptionText": "Designation Notification - Madrid Protocol",
+        "responseDate": "20260906"
+      },
+      {
+        "date": "20250305",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20250305",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20241010",
+        "descriptionText": "International Registration",
+        "responseDate": "20341010"
+      },
+      {
+        "date": "20241010",
+        "descriptionText": "Filed",
+        "information": "Registration"
+      }
+    ],
+    "markFeature": "DESIGN MARK",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "Blue, green, orange and white.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImageViennaClassification": [
+      "21.03.21",
+      "26.01.01",
+      "26.01.05",
+      "26.01.06",
+      "26.01.18",
+      "26.01.19",
+      "26.01.24",
+      "29.01.04",
+      "29.01.03",
+      "29.01.01",
+      "29.01.06"
+    ],
+    "markImagesAvailable": true,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "High Tech Campus 60, NL-5656 AG Eindhoven",
+        "addressLines": [
+          "High Tech Campus 60",
+          "NL-5656 AG Eindhoven"
+        ],
+        "countryName": "Netherlands",
+        "name": "NXP B.V."
+      }
+    ],
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20241009",
+        "priorityNumber": "1512172",
+        "priorityText": "Priority Filing Date: October 09, 2024, Country or Office: Benelux Office for IP (BOIP), Application No. 1512172 in association with the same kind of in association with the same kind on wares marked (1) on services (1)"
+      }
+    ],
+    "priorityDate": "20241009",
+    "recordLastUpdated": "20260211",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "FASKEN MARTINEAU DUMOULIN LLP",
+          "333 BAY STREET, SUITE 2400",
+          "BAY ADELAIDE CENTRE, BOX 20",
+          "TORONTO",
+          "ONTARIO M5H2T6"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "FASKEN MARTINEAU DUMOULIN LLP",
+        "representativeReferenceNumber": "308836.00006"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20241010",
+        "applicationNumber": "2384085"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20341010",
+      "formalisationDate": "20250305",
+      "markCurrentStatus": "Searched",
+      "nextRenewalDate": "20341010"
+    },
+    "subjectHeadings": [
+      "MIFARE",
+      "MI FARE",
+      "MY"
+    ],
+    "version": "20260211090111",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "MI FARE, MY FARE",
+      "markVerbalElementText": "MIFARE",
+      "markVerbalElementTextFormal": "MIFARE"
+    }
+  },
+  "_uri": "/mark/ca/20ad4690-3d27-4b00-a3a0-f1a0a88bcb67",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.673Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

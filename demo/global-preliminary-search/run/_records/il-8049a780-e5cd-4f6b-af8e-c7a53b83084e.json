@@ -1,0 +1,125 @@
+{
+  "uri": "/mark/il/8049a780-e5cd-4f6b-af8e-c7a53b83084e",
+  "provider": "clarivate",
+  "office": "il",
+  "guid": "8049a780-e5cd-4f6b-af8e-c7a53b83084e",
+  "applicationNumber": "148111",
+  "registrationNumber": null,
+  "applicationDate": "2001-04-05",
+  "registrationDate": "2002-08-03",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "AMPHION",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Computer hardware, design and analysis computer software design, analysis and maintenance; computer programming; digital signal processing including video and image processing, speech signal processing, application specific processing, error correction and channel coding, digital signal modulation and demodulation and evaluation; integrated circuit design including multi-media and communications systems-on-chip integrated circuit design; application specific virtual components design; semiconductor and semiconductor core design including the design of semiconductor intellectual property (IP) cores; licencing of semiconductor and integrated circuit technology and the provision of support and maintenance services for those technologies; all included in Class 42",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B V",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "Marc Phillip Bodner, Adv",
+  "priorities": [
+    {
+      "priorityCountryCode": "EM",
+      "priorityCountryName": "EU trade marks",
+      "priorityDate": "20001012"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60, Eindhoven, 5656 AG, Netherlands",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B V"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer hardware, design and analysis computer software design, analysis and maintenance; computer programming; digital signal processing including video and image processing, speech signal processing, application specific processing, error correction and channel coding, digital signal modulation and demodulation and evaluation; integrated circuit design including multi-media and communications systems-on-chip integrated circuit design; application specific virtual components design; semiconductor and semiconductor core design including the design of semiconductor intellectual property (IP) cores; licencing of semiconductor and integrated circuit technology and the provision of support and maintenance services for those technologies; all included in Class 42"
+        }
+      ]
+    },
+    "id": "8049a780-e5cd-4f6b-af8e-c7a53b83084e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "EM",
+        "priorityCountryName": "EU trade marks",
+        "priorityDate": "20001012"
+      }
+    ],
+    "recordLastUpdated": "20260331",
+    "registrationOfficeCode": "IL",
+    "registrationOfficeName": "Israel",
+    "representatives": [
+      {
+        "representativeAddress": "P O B 7110, Tel Aviv, 6701201, Israel",
+        "representativeAddressCountryCode": "IL",
+        "representativeAddressCountryName": "Israel",
+        "representativeName": "Marc Phillip Bodner, Adv"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20010405",
+        "applicationNumber": "148111"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20020803"
+      }
+    },
+    "version": "20260331104853",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AMPHION"
+    }
+  },
+  "_uri": "/mark/il/8049a780-e5cd-4f6b-af8e-c7a53b83084e",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.715Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/gb/50093188-dd99-4932-a7cb-31b7328018e9",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "50093188-dd99-4932-a7cb-31b7328018e9",
+  "applicationNumber": "UK00917604406",
+  "registrationNumber": "UK00917604406",
+  "applicationDate": "2017-12-15",
+  "registrationDate": "2018-05-16",
+  "expiryDate": "2027-12-15",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "CODEWARRIOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Apparatus for recording, transmission or reproduction of sound or images; Magnetic data carriers, recording discs; data processing equipment and computers; Computer software; Computer hardware; Software development tools, including computer software for use in the aforesaid applications: integrated development environments, Compilers, Debuggers and linkers and support software for assisting in the development of operating systems and software applications; Semiconductors; Integrated circuits; Microcontrollers; Microprocessors; Microchips; Microcomputer apparatus; Integrated circuit chips; Printed circuit boards; Smart cards [integrated circuit cards]; contactless smart cards; Encoded smart cards; RFID chips and tags; Hardware and computer software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; Wearable activity trackers; Wearable computer peripherals; Headphones; Smartphones; Wearable telecommunication apparatus.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "en",
+      "description": "Printed matter; Teaching materials [except apparatus]; Instructional and teaching material (except apparatus); Instructional and reference handbooks (manuals) in relation to software development, including computer software for use in the following applications: integrated development environments, compilers, debuggers and linkers; Instructional and reference handbooks (manuals) in relation to software development, including computer software for use in the following applications: support software for assisting in the development of operating systems and software applications; Instructional and reference handbooks (manuals) in relation to hardware; Instructional and reference handbooks (manuals) in relation to semi-conductors, integrated circuits, microcontrollers; Instructional and reference handbooks (manuals) in relation to microprocessors, microchips, microcomputer apparatus, chips (integrated circuits), printed circuit boards, integrated circuit cards (smart cards); Instructional and reference handbooks (manuals) in relation to contactless smart cards, encoded smart cards, RFID chips and tags; Instructional and reference handbooks (manuals) in relation to hardware and computer software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; Instructional and reference handbooks (manuals) in relation to portable activity meters, portable computer peripherals, headphones, smartphones, portable telecommunications devices.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Scientific and industrial research; Computer programming; Advisory servicesrelating to computer software design; Providing information in the fields of computers, computer software and computer systems; Providing of information in the field of data networks; Providing of information in the field of network security and computer security; Design, for others, of integrated circuits, semi-conductors, microprocessors, compute hardware and computer software, and communications software and networks; Development, design and testing of semi-conductors, semi-conductor apparatus, integrated circuits, microcontrollers, processors, radio frequency (RF) apparatus, sensors and computer software, for others; computer software development in the field of mobile applications; Design and development of wireless communication systems for transmission and reception of voice, data and video; Design and development of battery charging technology; Design and development of data network systems; Design and development of network security and computer security systems; Design and development of hardware and computer software for piloting and controlling drones; Design and development of hardware and computer software for piloting and controlling robots; Design and development of hardware and computer software for steering and controlling automobiles; Cloud computing comprising software for transmitting, storing, converting and displaying medical apparatus data; Development of wireless energy transfer technology for use in charging vehicles; Platform as a service (PaaS) comprising computer software platforms for use in developing, programming, constructing and prototyping IoT (internet of things) apparatus; Platform as a service (PaaS) comprising computer software platforms for the wireless acquisition, transmission, conversion and storage of medical apparatus data; Providing of information in the field of semi-conductors, semi-conductor apparatus, integrated circuits, microcontrollers, processors, radio frequency (RF) apparatus, sensors and computer software; Research and design, for others, in relation to integrated circuits and communications software and networks; Telecommunications technology consultancy; Design and development of wireless communications systems for authentication purposes; Providing of temporary use of non-downloadable online software applications, development platforms and development tools enabling software developers to develop, program, construct and prototype computer software for integrated circuits, chips and data processing systems; Research and design of electrotechnical and electromagnetic modules, parts and subassemblies, data processing machines, data storage devices, microprocessors, interfaces, integrated circuits (ICs), chips, semi-conductors; Smart cards, controllers for smart cards, controllers for RFID chips and tags; Research and design of computer hardware and computer software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; Research and design of antennas for scanning, reading and interpreting RFID chips and tags; Research and design of NFC (near-field communication) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and subassemblies and integrated circuits for NFC applications; Consultancy services relating to all of the aforesaid; Development, design and testing of semi-conductors, semi-conductor apparatus, integrated circuits, microcontrollers, processors, radio frequency (RF) apparatus, sensors and computer software, for others; Consultancy in the field of developing, designing and testing semi-conductors, semi-conductor apparatus, integrated circuits, microcontrollers, processors, radio frequency (RF) apparatus, sensors and computer software; Providing of information in the field of semi-conductors, semi-conductor apparatus, integrated circuits, microcontrollers, processors, radio frequency (RF) apparatus, sensors and computer software.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Stobbs",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West, Austin, 78735",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA Inc."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Apparatus for recording, transmission or reproduction of sound or images; Magnetic data carriers, recording discs; data processing equipment and computers; Computer software; Computer hardware; Software development tools, including computer software for use in the aforesaid applications: integrated development environments, Compilers, Debuggers and linkers and support software for assisting in the development of operating systems and software applications; Semiconductors; Integrated circuits; Microcontrollers; Microprocessors; Microchips; Microcomputer apparatus; Integrated circuit chips; Printed circuit boards; Smart cards [integrated circuit cards]; contactless smart cards; Encoded smart cards; RFID chips and tags; Hardware and computer software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; Wearable activity trackers; Wearable computer peripherals; Headphones; Smartphones; Wearable telecommunication apparatus."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Printed matter; Teaching materials [except apparatus]; Instructional and teaching material (except apparatus); Instructional and reference handbooks (manuals) in relation to software development, including computer software for use in the following applications: integrated development environments, compilers, debuggers and linkers; Instructional and reference handbooks (manuals) in relation to software development, including computer software for use in the following applications: support software for assisting in the development of operating systems and software applications; Instructional and reference handbooks (manuals) in relation to hardware; Instructional and reference handbooks (manuals) in relation to semi-conductors, integrated circuits, microcontrollers; Instructional and reference handbooks (manuals) in relation to microprocessors, microchips, microcomputer apparatus, chips (integrated circuits), printed circuit boards, integrated circuit cards (smart cards); Instructional and reference handbooks (manuals) in relation to contactless smart cards, encoded smart cards, RFID chips and tags; Instructional and reference handbooks (manuals) in relation to hardware and computer software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; Instructional and reference handbooks (manuals) in relation to portable activity meters, portable computer peripherals, headphones, smartphones, portable telecommunications devices."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Scientific and industrial research; Computer programming; Advisory servicesrelating to computer software design; Providing information in the fields of computers, computer software and computer systems; Providing of information in the field of data networks; Providing of information in the field of network security and computer security; Design, for others, of integrated circuits, semi-conductors, microprocessors, compute hardware and computer software, and communications software and networks; Development, design and testing of semi-conductors, semi-conductor apparatus, integrated circuits, microcontrollers, processors, radio frequency (RF) apparatus, sensors and computer software, for others; computer software development in the field of mobile applications; Design and development of wireless communication systems for transmission and reception of voice, data and video; Design and development of battery charging technology; Design and development of data network systems; Design and development of network security and computer security systems; Design and development of hardware and computer software for piloting and controlling drones; Design and development of hardware and computer software for piloting and controlling robots; Design and development of hardware and computer software for steering and controlling automobiles; Cloud computing comprising software for transmitting, storing, converting and displaying medical apparatus data; Development of wireless energy transfer technology for use in charging vehicles; Platform as a service (PaaS) comprising computer software platforms for use in developing, programming, constructing and prototyping IoT (internet of things) apparatus; Platform as a service (PaaS) comprising computer software platforms for the wireless acquisition, transmission, conversion and storage of medical apparatus data; Providing of information in the field of semi-conductors, semi-conductor apparatus, integrated circuits, microcontrollers, processors, radio frequency (RF) apparatus, sensors and computer software; Research and design, for others, in relation to integrated circuits and communications software and networks; Telecommunications technology consultancy; Design and development of wireless communications systems for authentication purposes; Providing of temporary use of non-downloadable online software applications, development platforms and development tools enabling software developers to develop, program, construct and prototype computer software for integrated circuits, chips and data processing systems; Research and design of electrotechnical and electromagnetic modules, parts and subassemblies, data processing machines, data storage devices, microprocessors, interfaces, integrated circuits (ICs), chips, semi-conductors; Smart cards, controllers for smart cards, controllers for RFID chips and tags; Research and design of computer hardware and computer software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags, electronic apparatus, instruments and equipment for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; Research and design of antennas for scanning, reading and interpreting RFID chips and tags; Research and design of NFC (near-field communication) apparatus, instruments and equipment, including electronic, electrotechnical and electromagnetic modules, parts and subassemblies and integrated circuits for NFC applications; Consultancy services relating to all of the aforesaid; Development, design and testing of semi-conductors, semi-conductor apparatus, integrated circuits, microcontrollers, processors, radio frequency (RF) apparatus, sensors and computer software, for others; Consultancy in the field of developing, designing and testing semi-conductors, semi-conductor apparatus, integrated circuits, microcontrollers, processors, radio frequency (RF) apparatus, sensors and computer software; Providing of information in the field of semi-conductors, semi-conductor apparatus, integrated circuits, microcontrollers, processors, radio frequency (RF) apparatus, sensors and computer software."
+        }
+      ]
+    },
+    "id": "50093188-dd99-4932-a7cb-31b7328018e9",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Building 1000, Cambridge Research Park, Cambridge CB25 9PD",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Stobbs"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20171215",
+        "applicationNumber": "UK00917604406"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20271215",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20180516",
+        "registrationNumber": "UK00917604406"
+      }
+    },
+    "version": "20250627212714",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "CODEWARRIOR"
+    }
+  },
+  "_uri": "/mark/gb/50093188-dd99-4932-a7cb-31b7328018e9",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.711Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

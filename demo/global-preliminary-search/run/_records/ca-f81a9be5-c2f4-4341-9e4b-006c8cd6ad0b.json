@@ -1,0 +1,332 @@
+{
+  "uri": "/mark/ca/f81a9be5-c2f4-4341-9e4b-006c8cd6ad0b",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "f81a9be5-c2f4-4341-9e4b-006c8cd6ad0b",
+  "applicationNumber": "1132103",
+  "registrationNumber": "TMA633417",
+  "applicationDate": "2002-02-21",
+  "registrationDate": "2005-02-22",
+  "expiryDate": "2020-02-22",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2003-10-01"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "SEAWAY NETWORKS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": [
+    "The right to the exclusive use of the word NETWORKS is disclaimed apart from the trademark."
+  ],
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Networking equipment, namely chipsets, printed circuit boards, Peripheral Connect Interphase (PCI) cards and Mezzanine cards; networking software for operation of chipsets; networking software for content processing.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Product maintenance and support services for networking equipment and networking software.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA Inc.",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": "SMART & BIGGAR LP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West, Austin, TX 78735",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressLines": [
+          "6501 William Cannon Drive West",
+          "Austin, TX 78735"
+        ],
+        "applicantName": "NXP USA Inc."
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Declaration of Use filed January 26, 2005 on wares marked (1) on services (1)",
+        "typeDescription": "Declaration of Use Info"
+      }
+    ],
+    "footNotes": [
+      "CHANGE IN TITLE / CHANGEMENT EN TITRE:",
+      "TYPE OF CHANGE / GENRE DE CHANGEMENT: Assignment / Cession",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 09 sept/Sep 2005",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 19 août/Aug 2005",
+      "COMMENTS / COMMENTAIRES: FROM: Seaway Networks Incorporated",
+      "TO: Seaway Networks (Delaware) Incorporated",
+      "Voir Preuve au dossier/See evidence on File No. 1132103",
+      "CHANGE IN TITLE / CHANGEMENT EN TITRE:",
+      "TYPE OF CHANGE / GENRE DE CHANGEMENT: Assignment / Cession",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 30 sept/Sep 2005",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 19 août/Aug 2005",
+      "COMMENTS / COMMENTAIRES: FROM: Seaway Networks (Delaware) Incorporated",
+      "TO: Freescale Semiconductor, Inc.",
+      "(a Delaware corporation)",
+      "Voir Preuve au dossier/See evidence on File No. 1132103",
+      "Merger and Address / Fusionnement et adresse",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 21 août/Aug 2017",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 07 nov/Nov 2016",
+      "COMMENTS / COMMENTAIRES: FROM: Freescale Semiconductor, Inc.",
+      "(a Delaware corporation)",
+      "TO: NXP USA Inc.",
+      "Voir Preuve au dossier/See evidence on File No. 1663578"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Networking equipment, namely chipsets, printed circuit boards, Peripheral Connect Interphase (PCI) cards and Mezzanine cards; networking software for operation of chipsets; networking software for content processing."
+        },
+        {
+          "intClassNumber": "09,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Product maintenance and support services for networking equipment and networking software."
+        }
+      ]
+    },
+    "id": "f81a9be5-c2f4-4341-9e4b-006c8cd6ad0b",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markDisclaimers": [
+      "The right to the exclusive use of the word NETWORKS is disclaimed apart from the trademark."
+    ],
+    "markEvents": [
+      {
+        "date": "20200924",
+        "descriptionText": "Expunged - Failure to Renew",
+        "information": "DP: 2020/09/24"
+      },
+      {
+        "date": "20200311",
+        "descriptionText": "Renewal Notice Sent",
+        "responseDate": "20200822"
+      },
+      {
+        "date": "20170821",
+        "descriptionText": "Amendment to Registration",
+        "information": "Merger and address / Voir Preuve au dossier/See evidence on File No. 1663578"
+      },
+      {
+        "date": "20110725",
+        "descriptionText": "Rep for Service Changed",
+        "information": "From: 10655 To: 2502 / Voir Preuve au dossier/See evidence on File No. 1132103"
+      },
+      {
+        "date": "20050930",
+        "descriptionText": "Change in Title Registered",
+        "information": "Assignment / Voir Preuve au dossier/See evidence on File No. 1132103"
+      },
+      {
+        "date": "20050930",
+        "descriptionText": "Rep for Service Changed",
+        "information": "From: 12600 To: 10655 / Voir Preuve au dossier/See evidence on File No. 1132103"
+      },
+      {
+        "date": "20050909",
+        "descriptionText": "Change in Title Registered",
+        "information": "Assignment / Voir Preuve au dossier/See evidence on File No. 1132103"
+      },
+      {
+        "date": "20050222",
+        "descriptionText": "Registered",
+        "responseDate": "20200222"
+      },
+      {
+        "date": "20031219",
+        "descriptionText": "Allowance Notice Sent",
+        "responseDate": "20050221"
+      },
+      {
+        "date": "20031219",
+        "descriptionText": "Allowed"
+      },
+      {
+        "date": "20031001",
+        "descriptionText": "Advertised",
+        "information": "Vol.50 Issue 2553"
+      },
+      {
+        "date": "20030825",
+        "descriptionText": "Approved"
+      },
+      {
+        "date": "20030225",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20030625"
+      },
+      {
+        "date": "20030225",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20020523",
+        "descriptionText": "Amendment to Application",
+        "information": "Name / Voir Preuve au dossier/See evidence on File No. 1132103"
+      },
+      {
+        "date": "20020515",
+        "descriptionText": "Clerical Correction",
+        "information": "Correction(s) done as per correspondence dated May 02, 2002."
+      },
+      {
+        "date": "20020318",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20020228",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20020221",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "One Chrysalis Way, Suite 300, Ottawa, ONTARIO, K2G6P9",
+        "addressLines": [
+          "One Chrysalis Way",
+          "Suite 300",
+          "Ottawa",
+          "ONTARIO",
+          "K2G6P9"
+        ],
+        "countryName": "Canada",
+        "name": "Seaway Networks Incorporated",
+        "postalCode": "K2G6P9"
+      }
+    ],
+    "previousOwners": [
+      {
+        "addressLines": [
+          "Seaway Networks (Delaware) Incorporated",
+          "c/o Seaway Networks Incorporated",
+          "One Chrysalis Way",
+          "Suite 300",
+          "Ottawa",
+          "ONTARIO",
+          "CANADA",
+          "K2G6P9"
+        ],
+        "name": "Seaway Networks (Delaware) Incorporated"
+      },
+      {
+        "addressLines": [
+          "Freescale Semiconductor, Inc. (a Delaware corporation)",
+          "6501 William Cannon Drive West",
+          "Austin, Texas, 78735-8523",
+          "UNITED STATES OF AMERICA"
+        ],
+        "name": "Freescale Semiconductor, Inc. (a Delaware corporation)"
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "2553",
+        "publicationVolume": "50"
+      }
+    ],
+    "recordLastUpdated": "20260103",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "SMART & BIGGAR LP",
+          "SCOTIA PLAZA",
+          "40 KING STREET WEST",
+          "40th FLOOR",
+          "TORONTO",
+          "ONTARIO M5H3Y2"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "SMART & BIGGAR LP"
+      }
+    ],
+    "status": {
+      "active": false,
+      "allowanceDate": [
+        "20031219"
+      ],
+      "application": {
+        "applicationDate": "20020221",
+        "applicationNumber": "1132103"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "expiryDate": "20200222",
+      "expungementDate": "20200924",
+      "formalisationDate": "20020318",
+      "markCurrentStatus": "Expunged",
+      "nextRenewalDate": "20200222",
+      "publicationDate": [
+        "20031001"
+      ],
+      "registration": {
+        "registrationDate": "20050222",
+        "registrationNumber": "TMA633417"
+      }
+    },
+    "subjectHeadings": [
+      "SEAWAY NETWORKS"
+    ],
+    "version": "20260103010244",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SEAWAY NETWORKS",
+      "markVerbalElementTextFormal": "SEAWAY NETWORKS"
+    }
+  },
+  "_uri": "/mark/ca/f81a9be5-c2f4-4341-9e4b-006c8cd6ad0b",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.673Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

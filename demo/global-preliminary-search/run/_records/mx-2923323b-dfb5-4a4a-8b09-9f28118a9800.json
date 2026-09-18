@@ -1,0 +1,118 @@
+{
+  "uri": "/mark/mx/2923323b-dfb5-4a4a-8b09-9f28118a9800",
+  "provider": "clarivate",
+  "office": "mx",
+  "guid": "2923323b-dfb5-4a4a-8b09-9f28118a9800",
+  "applicationNumber": "1246115",
+  "registrationNumber": "1295885",
+  "applicationDate": "2012-02-01",
+  "registrationDate": "2012-07-10",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "FREESCALE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Servicios de educacion, a saber, provision de clases en vivo y en linea, seminarios, sesiones tutoriales, conferencias y talleres en los campos de semiconductores, dispositivos semiconductores, circuitos integrados, microcontroladores, procesadores, dispositivos de radiofrecuencia, sensores y software.",
+      "translation_language": "en",
+      "translation": "EDUCATION SERVICES, namely PROVISION AND CLASS LIVE ONLINE, SEMINARS, TUTORIALS MEETINGS, CONFERENCES AND WORKSHOPS IN THE FIELDS OF SEMICONDUCTORS, SEMICONDUCTORS, integrated circuits, microcontrollers, processors, RF devices, sensors and software."
+    }
+  ],
+  "owner": "FREESCALE SEMICONDUCTOR, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 WILLIAM CANNON DRIVE WEST, AUSTIN, TX., 78735",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "FREESCALE SEMICONDUCTOR, INC."
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "EDUCATION SERVICES, namely PROVISION AND CLASS LIVE ONLINE, SEMINARS, TUTORIALS MEETINGS, CONFERENCES AND WORKSHOPS IN THE FIELDS OF SEMICONDUCTORS, SEMICONDUCTORS, integrated circuits, microcontrollers, processors, RF devices, sensors and software.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de educacion, a saber, provision de clases en vivo y en linea, seminarios, sesiones tutoriales, conferencias y talleres en los campos de semiconductores, dispositivos semiconductores, circuitos integrados, microcontroladores, procesadores, dispositivos de radiofrecuencia, sensores y software."
+        }
+      ]
+    },
+    "id": "2923323b-dfb5-4a4a-8b09-9f28118a9800",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.04.09",
+      "26.04.24"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "07",
+        "publicationYear": "2012"
+      }
+    ],
+    "recordLastUpdated": "20250704",
+    "registrationOfficeCode": "MX",
+    "registrationOfficeName": "Mexico",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20120201",
+        "applicationNumber": "1246115"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20120710",
+        "registrationNumber": "1295885"
+      }
+    },
+    "version": "20250704173452",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE"
+    }
+  },
+  "_uri": "/mark/mx/2923323b-dfb5-4a4a-8b09-9f28118a9800",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:10.758Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

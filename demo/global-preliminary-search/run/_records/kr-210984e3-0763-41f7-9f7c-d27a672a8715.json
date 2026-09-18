@@ -1,0 +1,119 @@
+{
+  "uri": "/mark/kr/210984e3-0763-41f7-9f7c-d27a672a8715",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "210984e3-0763-41f7-9f7c-d27a672a8715",
+  "applicationNumber": "50-2008-0016066",
+  "registrationNumber": "4004123560000",
+  "applicationDate": "2008-07-24",
+  "registrationDate": "2008-10-06",
+  "expiryDate": "2028-07-24",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "AQUAVAR",
+  "markTransliteration": "AQUAVAR",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "상업용/가정용/산업용/농업용 펌프 및 펌프시스템을 콘트롤하는마이크로프로세서",
+      "translation_language": "en",
+      "translation": "Microprocessor to control commercial / home / industrial / agricultural pumps and pump systems"
+    }
+  ],
+  "owner": "Xylem IP Management S.à r.l.",
+  "ownerNative": null,
+  "ownerCountry": "LU",
+  "representative": "유미특허법인 (YOU ME PATENT & LAW FIRM)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "룩셈부르크 엘- 센닝거부르크 브리데우에스 .",
+        "applicantAddressCountryCode": "LU",
+        "applicantAddressCountryName": "Luxembourg",
+        "applicantName": "Xylem IP Management S.à r.l.",
+        "applicantNativeName": "자일럼 아이피 매니지먼트 에스.에이 알.엘."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Microprocessor to control commercial / home / industrial / agricultural pumps and pump systems",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "상업용/가정용/산업용/농업용 펌프 및 펌프시스템을 콘트롤하는마이크로프로세서"
+        }
+      ]
+    },
+    "id": "210984e3-0763-41f7-9f7c-d27a672a8715",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "SeoLim Bldg F, - Yoksam-Dong,Kangnam-Gu,Seoul, Korea",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "유미특허법인 (YOU ME PATENT & LAW FIRM)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20080724",
+        "applicationNumber": "50-2008-0016066"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280724",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20081006",
+        "registrationNumber": "4004123560000"
+      }
+    },
+    "version": "20250625193300",
+    "wordMarkSpecification": {
+      "markTransliteration": "AQUAVAR",
+      "markVerbalElementText": "AQUAVAR"
+    }
+  },
+  "_uri": "/mark/kr/210984e3-0763-41f7-9f7c-d27a672a8715",
+  "_receipt": {
+    "fetched_at": "2026-09-18T13:08:49.090Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-incumbent-class"
+  }
+}

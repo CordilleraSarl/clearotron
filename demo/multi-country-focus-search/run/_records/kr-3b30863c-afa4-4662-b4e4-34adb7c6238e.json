@@ -1,0 +1,124 @@
+{
+  "uri": "/mark/kr/3b30863c-afa4-4662-b4e4-34adb7c6238e",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "3b30863c-afa4-4662-b4e4-34adb7c6238e",
+  "applicationNumber": "50-2002-0013590",
+  "registrationNumber": "4002588380000",
+  "applicationDate": "2002-12-10",
+  "registrationDate": "2003-02-21",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "I2C BUS",
+  "markTransliteration": "I2C BUS",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "계전기,다이오드,마이크로제어기,변압기,전류제어기,접속기,정류기,집적회로,축전기,터미스터,트랜지스터",
+      "translation_language": "en",
+      "translation": "Relays, Diodes, Microcontrollers, Transformers, Current Controllers, Connectors, Rectifiers, Integrated Circuits, Capacitors, Termistors, Transistors"
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "목영동 (Mok Young Dong)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "네덜란드 엔엘- 아게 아인드호펜 하이 테크 캠퍼스",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V.",
+        "applicantNativeName": "엔엑스피 비 브이"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Relays, Diodes, Microcontrollers, Transformers, Current Controllers, Connectors, Rectifiers, Integrated Circuits, Capacitors, Termistors, Transistors",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "계전기,다이오드,마이크로제어기,변압기,전류제어기,접속기,정류기,집적회로,축전기,터미스터,트랜지스터"
+        }
+      ]
+    },
+    "id": "3b30863c-afa4-4662-b4e4-34adb7c6238e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "SEOUL(NONE OFFICE)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "목영동 (Mok Young Dong)"
+      },
+      {
+        "representativeAddress": "(Y.P.LEE,MOCK&PARTNERS)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "목선영 (Mock Sun Young)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20021210",
+        "applicationNumber": "50-2002-0013590"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20030221",
+        "registrationNumber": "4002588380000"
+      }
+    },
+    "version": "20250625191505",
+    "wordMarkSpecification": {
+      "markTransliteration": "I2C BUS",
+      "markVerbalElementText": "I2C BUS"
+    }
+  },
+  "_uri": "/mark/kr/3b30863c-afa4-4662-b4e4-34adb7c6238e",
+  "_receipt": {
+    "fetched_at": "2026-09-18T14:09:34.905Z",
+    "context": "clearance-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

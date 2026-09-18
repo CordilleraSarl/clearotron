@@ -1,0 +1,411 @@
+{
+  "uri": "/mark/us/6656db87-28b3-4ed5-bf1b-d7c79f5836b6",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "6656db87-28b3-4ed5-bf1b-d7c79f5836b6",
+  "applicationNumber": "85348041",
+  "registrationNumber": "4141509",
+  "applicationDate": "2011-06-16",
+  "registrationDate": "2012-05-15",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2012-02-28"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2018-12-21",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "SYMETRI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Design and development of global computer information networks, internal computer networks, and extranet communication systems for others",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Symetri Internet Marketing, LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Matthew M. Thomson",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6520 Airport Center Drive, Suite 208, Greensboro, NC, 27284",
+        "applicantAddressCity": "Greensboro",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "27284",
+        "applicantAddressStateName": "NORTH CAROLINA",
+        "applicantAddressStreet": "6520 Airport Center Drive, Suite 208",
+        "applicantJurisdictionOfIncorporation": "NORTH CAROLINA",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "Symetri Internet Marketing, LLC"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Design and development of global computer information networks, internal computer networks, and extranet communication systems for others"
+        }
+      ]
+    },
+    "id": "6656db87-28b3-4ed5-bf1b-d7c79f5836b6",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20181221",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20170515",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20120515",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20120228",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20120228",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20120208",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20120123",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20120118",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20120117",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20120117",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20120106",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20120104",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20110929",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20110929",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20110929",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20110927",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20110622",
+        "descriptionText": "NOTICE OF PSEUDO MARK MAILED"
+      },
+      {
+        "date": "20110621",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20110620",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "6520 Airport Center Drive, Suite 208, Greensboro, NC, 27284",
+        "city": "Greensboro",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "NORTH CAROLINA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Symetri Internet Marketing, LLC",
+        "postalCode": "27284",
+        "stateName": "NORTH CAROLINA",
+        "street": "6520 Airport Center Drive, Suite 208"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "6520 Airport Center Drive, Suite 208, Greensboro, NC, 27284",
+        "city": "Greensboro",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "NORTH CAROLINA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Symetri Internet Marketing, LLC",
+        "postalCode": "27284",
+        "stateName": "NORTH CAROLINA",
+        "street": "6520 Airport Center Drive, Suite 208"
+      },
+      {
+        "address": "6520 Airport Center Drive, Suite 208, Greensboro, NC, 27284",
+        "city": "Greensboro",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "NORTH CAROLINA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Symetri Internet Marketing, LLC",
+        "postalCode": "27284",
+        "stateName": "NORTH CAROLINA",
+        "street": "6520 Airport Center Drive, Suite 208"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "6520 Airport Center Drive, Suite 208, Greensboro, NC, 27284",
+        "city": "Greensboro",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "NORTH CAROLINA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Symetri Internet Marketing, LLC",
+        "postalCode": "27284",
+        "stateName": "NORTH CAROLINA",
+        "street": "6520 Airport Center Drive, Suite 208"
+      }
+    ],
+    "recordLastUpdated": "20260110",
+    "refusalInformation": [
+      {
+        "referencedMarks": [
+          {
+            "applicationNumber": "85880489",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "SSS SIMMETRE SYSTEMS & SOLUTIONS",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85880489",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "SSS SIMMETRE SYSTEMS & SOLUTIONS",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "87198123",
+            "markCurrentStatus": "Published",
+            "markVerbalElementText": "SYMMETRY",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "87198123",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "SYMMETRY",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85434598",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "SYMMETRY",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85434598",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "SYMMETRY",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85880489",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "SSS SIMMETRE SYSTEMS & SOLUTIONS",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85434598",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "SYMMETRY",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85434598",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "SYMMETRY",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85434598",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "SYMMETRY",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "87198123",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "SYMMETRY",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85880489",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "SSS SIMMETRE SYSTEMS & SOLUTIONS",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "87198123",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "SYMMETRY",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "87198123",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "SYMMETRY",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "87198123",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "SYMMETRY",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85434598",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "SYMMETRY",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85880489",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "SSS SIMMETRE SYSTEMS & SOLUTIONS",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "87198123",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "SYMMETRY",
+            "refusalStatus": "Refused"
+          }
+        ],
+        "refusalStatus": "Cited"
+      }
+    ],
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "SAN FRANCISCO, CA 94108-4707, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "SAN FRANCISCO, CA 94108-4707",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "MATTHEW M. THOMSON KRONENBERGER BURGOYNE, LLP, 150 POST ST STE 520"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "SAN FRANCISCO, CA 94108-4707, UNITED STATES",
+        "representativeAddressLines": [
+          "SAN FRANCISCO, CA 94108-4707",
+          "UNITED STATES"
+        ],
+        "representativeName": "Matthew M. Thomson"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20110616",
+        "applicationNumber": "85348041"
+      },
+      "cancellationDate": "20181221",
+      "cancellationPublicationDate": "20190129",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "19990512"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "19990512"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20181221",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20120228"
+      ],
+      "registration": {
+        "registrationDate": "20120515",
+        "registrationNumber": "4141509"
+      }
+    },
+    "version": "20260110114608",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "SYMETRY",
+      "markVerbalElementText": "SYMETRI"
+    }
+  },
+  "_uri": "/mark/us/6656db87-28b3-4ed5-bf1b-d7c79f5836b6",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:50.288Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

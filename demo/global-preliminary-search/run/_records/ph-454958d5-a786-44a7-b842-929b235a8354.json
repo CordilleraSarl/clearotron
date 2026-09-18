@@ -1,0 +1,158 @@
+{
+  "uri": "/mark/ph/454958d5-a786-44a7-b842-929b235a8354",
+  "provider": "clarivate",
+  "office": "ph",
+  "guid": "454958d5-a786-44a7-b842-929b235a8354",
+  "applicationNumber": "4200400006977",
+  "registrationNumber": "6977",
+  "applicationDate": "2004-08-04",
+  "registrationDate": "2008-12-01",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "FREESCALE SEMICONDUCTOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Semiconductors, semiconductor processors, semiconductor processor chips, integrated circuits, integrated circuit chips, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor material therefor; semiconductors for machines and machine tools; semiconductors for lighting, heating, steam generating, cooking, refrigerating, drying and ventilating apparatus; semiconductors for clocks and time keeping apparatus and instruments; semiconductors for musical instruments; semiconductors for games and playthings; data conversion circuits; computer firmware; electronic, electrical and electromechanical apparatus for use with computers; video systems products; apparatus and equipment for recordation, reproduction and alteration of sound, video and data; video circuit boards; audio circuit boards; audio - video circuit boards; video graphic accelerators; multimedia accelerators; video processors; computer programs; instructional material relating to computer and data algorithms for the compression and decompression of data; testing and calibrating apparatus; parts and fittings for all the aforesaid goods; equipment for the testing and programming of integrated circuits and semiconductor memories; computer software, namely, application integration and connectivity software, computer utility programs, computer programs for network management, computer software for accessing a global computer network and interconnected computer networks; computer operating systems; computer operating system software; computer operating programs; and computer software tools for the facilitation of third party software applications.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Licensing of patents, trademarks, copyrights, and intellectual property in the nature of trade secrets and/or know - how related to the manufacture of semiconductors and their uses, semiconductors, integrated circuits, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor wafers, data conversion circuits, computer firmware, development boards, computer programs, instructional material, namely, development manuals, product specifications, and training material; licensing of technology, namely, intellectual property, in the field of semiconductors and the manufacture of semiconductors, and incorporated in and related to software related to the manufacture of semiconductors and their uses, semiconductor products, integrated circuits, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor wafers, data conversion circuits, computer firmware, development boards, computer programs, instructional material, namely, development manuals, product specifications, and training material.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "SYCIP SALAZAR HERNANDEZ AND GATMAITAN",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20071218",
+      "priorityNumber": "3358102"
+    },
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20040301",
+      "priorityNumber": "78/376532"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West, Texas",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Semiconductors, semiconductor processors, semiconductor processor chips, integrated circuits, integrated circuit chips, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor material therefor; semiconductors for machines and machine tools; semiconductors for lighting, heating, steam generating, cooking, refrigerating, drying and ventilating apparatus; semiconductors for clocks and time keeping apparatus and instruments; semiconductors for musical instruments; semiconductors for games and playthings; data conversion circuits; computer firmware; electronic, electrical and electromechanical apparatus for use with computers; video systems products; apparatus and equipment for recordation, reproduction and alteration of sound, video and data; video circuit boards; audio circuit boards; audio - video circuit boards; video graphic accelerators; multimedia accelerators; video processors; computer programs; instructional material relating to computer and data algorithms for the compression and decompression of data; testing and calibrating apparatus; parts and fittings for all the aforesaid goods; equipment for the testing and programming of integrated circuits and semiconductor memories; computer software, namely, application integration and connectivity software, computer utility programs, computer programs for network management, computer software for accessing a global computer network and interconnected computer networks; computer operating systems; computer operating system software; computer operating programs; and computer software tools for the facilitation of third party software applications."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Licensing of patents, trademarks, copyrights, and intellectual property in the nature of trade secrets and/or know - how related to the manufacture of semiconductors and their uses, semiconductors, integrated circuits, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor wafers, data conversion circuits, computer firmware, development boards, computer programs, instructional material, namely, development manuals, product specifications, and training material; licensing of technology, namely, intellectual property, in the field of semiconductors and the manufacture of semiconductors, and incorporated in and related to software related to the manufacture of semiconductors and their uses, semiconductor products, integrated circuits, circuit boards, microcomputers, microcontrollers, microprocessors and computer peripherals, memories and semiconductor wafers, data conversion circuits, computer firmware, development boards, computer programs, instructional material, namely, development manuals, product specifications, and training material."
+        }
+      ]
+    },
+    "id": "454958d5-a786-44a7-b842-929b235a8354",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.15.09"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20071218",
+        "priorityNumber": "3358102"
+      },
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20040301",
+        "priorityNumber": "78/376532"
+      }
+    ],
+    "recordLastUpdated": "20251003",
+    "registrationOfficeCode": "PH",
+    "registrationOfficeName": "Philippines",
+    "representatives": [
+      {
+        "representativeAddress": "SSHG LAW CENTRE, 105 PASEO DE ROXAS, MAKATI CITY 1226, Metro Manila",
+        "representativeAddressCountryCode": "PH",
+        "representativeAddressCountryName": "Philippines",
+        "representativeName": "SYCIP SALAZAR HERNANDEZ AND GATMAITAN"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040804",
+        "applicationNumber": "4200400006977"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20081201",
+        "registrationNumber": "6977"
+      }
+    },
+    "version": "20251003102945",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FREESCALE SEMICONDUCTOR"
+    }
+  },
+  "_uri": "/mark/ph/454958d5-a786-44a7-b842-929b235a8354",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:20.755Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

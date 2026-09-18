@@ -1,0 +1,136 @@
+{
+  "uri": "/mark/cn/9de32e08-5ef3-4d7a-8585-21254558b245",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "9de32e08-5ef3-4d7a-8585-21254558b245",
+  "applicationNumber": "15503467",
+  "registrationNumber": "15503467",
+  "applicationDate": "2014-10-14",
+  "registrationDate": "2015-11-28",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2015-08-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2024-05-27",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "腾鼎",
+  "markTransliteration": "teng ding",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "学校(教育);教育;教育信息;教育考核;辅导(培训);学校教育服务;组织教育或娱乐竞赛;安排和组织会议;安排和组织培训班;提供在线电子出版物(非下载)",
+      "translation_language": "en",
+      "translation": "School (education); education; educational information; educational assessment; guidance (training); school education services; organizing educational or entertainment competitions; arranging and organizing meetings; arranging and organizing training courses; providing online electronic publications (not downloading)"
+    }
+  ],
+  "owner": "Beijing Tengding Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "北京市海淀区信息路甲28号B座(二层)02D室-391号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Beijing Tengding Technology Co., Ltd.",
+        "applicantNativeName": "北京腾鼎科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "School (education); education; educational information; educational assessment; guidance (training); school education services; organizing educational or entertainment competitions; arranging and organizing meetings; arranging and organizing training courses; providing online electronic publications (not downloading)",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "学校(教育);教育;教育信息;教育考核;辅导(培训);学校教育服务;组织教育或娱乐竞赛;安排和组织会议;安排和组织培训班;提供在线电子出版物(非下载)"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Education",
+        "Arranging and conducting service of events",
+        "Publishing service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4101",
+          "subNatGoodsServicesDescription": "Education"
+        },
+        {
+          "subNatClassNumber": "4102",
+          "subNatGoodsServicesDescription": "Arranging and conducting service of events"
+        },
+        {
+          "subNatClassNumber": "4104",
+          "subNatGoodsServicesDescription": "Publishing service"
+        }
+      ]
+    },
+    "id": "9de32e08-5ef3-4d7a-8585-21254558b245",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1469"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20141014",
+        "applicationNumber": "15503467"
+      },
+      "cancellationDate": "20240527",
+      "cmNormalisedStatus": "CANCELLED",
+      "lastPublicationDate": "20150827",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20151128",
+        "registrationNumber": "15503467"
+      }
+    },
+    "version": "20251002072623",
+    "wordMarkSpecification": {
+      "markTransliteration": "teng ding",
+      "markVerbalElementText": "腾鼎"
+    }
+  },
+  "_uri": "/mark/cn/9de32e08-5ef3-4d7a-8585-21254558b245",
+  "_receipt": {
+    "fetched_at": "2026-09-18T12:41:44.439Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

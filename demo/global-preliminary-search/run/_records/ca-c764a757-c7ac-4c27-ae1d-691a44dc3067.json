@@ -7,7 +7,7 @@
   "registrationNumber": "TMDA50942",
   "applicationDate": "1930-01-13",
   "registrationDate": "1930-11-17",
-  "expiryDate": null,
+  "expiryDate": "2015-11-17",
   "renewalDate": "2000-11-17",
   "lastPublicationDate": null,
   "publicationDates": null,
@@ -249,6 +249,7 @@
         "applicationNumber": "150410"
       },
       "cmNormalisedStatus": "EXPIRED",
+      "expiryDate": "20151117",
       "expungementDate": "20160630",
       "markCurrentStatus": "Expunged",
       "nextRenewalDate": "20151117",
@@ -269,7 +270,7 @@
   },
   "_uri": "/mark/ca/c764a757-c7ac-4c27-ae1d-691a44dc3067",
   "_receipt": {
-    "fetched_at": "2026-09-02T14:33:25.177Z",
-    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+    "fetched_at": "2026-09-18T12:41:57.345Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
   }
 }
