@@ -771,7 +771,8 @@ table.data td.nest-2 {
      and red in CI on the same commit. 13.5em is the local measurement plus about a fifth, which is
      more than the spread between the font stacks the two see. */
   --row-open-w: 13.5em;
-  --row-ask-w: 6.5em;
+  /* Ask AI measured 89px at this size, so 6.5em (81px) ran the button into the menu beside it. */
+  --row-ask-w: 7.25em;
   display: grid;
   /* MINMAX, BECAUSE THE TRACK IS A CEILING HERE AND NOT A FLOOR. A bare `var(--row-open-w)` is a fixed
      13.5em track that cannot shrink, so in a narrow container the row's controls were wider than the
@@ -801,13 +802,13 @@ table.data td.nest-2 {
 }
 /* SIDE BY SIDE ONLY WHERE THE CELL HOLDS IT. This asked the whole table's width, and the actions column is
    a fifth of it: at 1440px the table was 1060px, the query said "wide", and three fixed tracks needing
-   about 290px were laid into a cell of about 200 — every row's menu past the table's edge, the page
+   about 300px were laid into a cell of about 200 — every row's menu past the table's edge, the page
    scrolling sideways. The cell itself is the container now, so the wide form appears exactly when its
    tracks fit and the stacked form, which shrinks, holds every other width. */
 .row-actions-box {
   container: rowactions / inline-size;
 }
-@container rowactions (min-width: 292px) {
+@container rowactions (min-width: 300px) {
   .row-actions {
     grid-template-columns: var(--row-open-w) var(--row-ask-w) auto;
     grid-template-areas: 'open ask more';

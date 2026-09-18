@@ -965,6 +965,14 @@ const openColumn = (m, width) => {
 }
 openColumn(short, WIDTH)
 openColumn(wide, WIDE)
+// THE BOARD'S SHARES AT THE WIDE DESKTOP (owner, 2026-09-18: match the board), read off the drawn header:
+// Status 16, Risk 12, Updated 10 and the actions 25, measured in the browser to a point either way.
+{
+  const pct = Object.values(wide.share)
+  const board = [4, 3, 30, 16, 12, 10, 25]
+  ok(pct.length === board.length && pct.every((v, i) => Math.abs(v - board[i]) <= 1),
+    `at ${WIDE}px the columns are ${JSON.stringify(wide.share)}, not the board's ${board.join(' · ')}`)
+}
 
 // The counts on one screen agree: the total is the sum of the headings, each heading its names.
 ok(short.headings.length === 2, `expected two company headings, got ${short.headings.length}`)
