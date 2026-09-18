@@ -50,7 +50,7 @@ import { SUMMARY_BLOCK_LINE, parseSummaryBlocks } from '../../shared/summary-blo
 const STRIP = Object.freeze([
   ['summary', 'Summary'], ['findings', 'Findings'], ['filings', 'Also considered'], ['next', 'Next steps'],
 ]);
-import { COUNT_BASIS, COUNT_PREDICATES, countsForMark, countLine, variantFormsLine } from '../register-count.mjs';
+import { COUNT_BASIS, COUNT_PREDICATES, countsForMark, countLine, variantFormsLine, disclosedFloor, moreThan } from '../register-count.mjs';
 import { RECORD_BASIS, recordsForMark, recordsLine } from '../register-records.mjs';
 import { officeLinkSentences } from './office-record-links.mjs';
 import { knockoutFindingViews, splitKnockoutNotes } from '../findings-model.mjs';
@@ -526,9 +526,10 @@ function countsSection(marks, registerCounts, positions = '') {
       const why = c?.unavailable ?? (c
         ? 'no count recorded'
         : 'not counted on this run — it predates this column, and an archived report re-renders as what it was');
-      return Number.isFinite(c?.total)
-        ? `<td class="num">${esc(String(c.total))}</td>`
-        : `<td class="na" title="${escAttr(why)}">not available</td>`;
+      if (Number.isFinite(c?.total)) return `<td class="num">${esc(String(c.total))}</td>`;
+      // The register answered with its own floor: that is a figure, and it is printed as one.
+      if (disclosedFloor(c) !== null) return `<td class="num">${esc(moreThan(disclosedFloor(c)))}</td>`;
+      return `<td class="na" title="${escAttr(why)}">not available</td>`;
     }).join('');
     const scoped = e?.classScope !== 'all-classes' && (e?.classes?.length > 0);
     const scope = scoped
@@ -1391,7 +1392,8 @@ function coverageClause(mark, registerCounts, probeRan) {
       ? 'Register: hit-counts are part of this search and none could be taken for this name — the reason is in the audit workbook.'
       : 'Register: not included in this product tier — no register was counted for this name.';
   }
-  const anyFigure = COUNT_PREDICATES.some((p) => Number.isFinite(entry.counts[p.key]?.total));
+  // A floor the register disclosed is a figure it gave, so a name counted only that way was counted.
+  const anyFigure = COUNT_PREDICATES.some((p) => Number.isFinite(entry.counts[p.key]?.total) || disclosedFloor(entry.counts[p.key]) !== null);
   if (!anyFigure) return 'Register: no count could be taken for this name — the reason is in the audit workbook.';
   // COVERAGE, NOT THE FIGURES. asks the renderer to own the register-tier caveat, and the numbers
   // are already on this page twice — in the glance line at the top and in the counts table above this
@@ -2110,6 +2112,12 @@ export function knockoutReportData(findings, framework, { runId, codename, overa
             classScope: counted.classScope ?? null,
             classes: counted.classes ?? [],
             ...Object.fromEntries(COUNT_PREDICATES.map((p) => [p.key, Number.isFinite(counted.counts[p.key]?.total) ? counted.counts[p.key].total : null])),
+            // The figure stays null for a floor — a floor is never a count to be summed — and the floor
+            // rides beside it, so a reader of this file has the register's own figure and not only a null.
+            ...(COUNT_PREDICATES.some((p) => disclosedFloor(counted.counts[p.key]) !== null)
+              ? { floors: Object.fromEntries(COUNT_PREDICATES.filter((p) => disclosedFloor(counted.counts[p.key]) !== null)
+                .map((p) => [p.key, disclosedFloor(counted.counts[p.key])])) }
+              : {}),
             // The close column is an aggregate, so the forms under it ride with it — a consumer that
             // got the number and not the forms could restate the figure but never explain it, and this
             // file is what the assistant drafts client mail from.

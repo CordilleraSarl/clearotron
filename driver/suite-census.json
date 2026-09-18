@@ -3664,8 +3664,8 @@
           "todos": 0
         },
         "register-count.test.mjs": {
-          "tests": 29,
-          "asserts": 182,
+          "tests": 30,
+          "asserts": 192,
           "skips": 0,
           "todos": 0
         },

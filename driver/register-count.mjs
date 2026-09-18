@@ -522,6 +522,21 @@ export function countsForMark(doc, name) {
  * Office CODES, not names: `scope.regions` on the same artifact is already codes, and the alternative
  * is inventing a display layer that has to stay in step with the office vocabulary of six providers.
  */
+/**
+ * The register's own floor for a count it stopped taking, or null.
+ *
+ * ONE READING FOR EVERY PAGE THAT SHOWS A COUNT. The glance line printed the floor and the counts table,
+ * the coverage clause and the workbook beside it still printed "not available", so one report said two
+ * different things about the same cell. A floor counts only with the register's flag AND the number —
+ * a flag with no number says no more than "unknown" does.
+ */
+export function disclosedFloor(c) {
+  return c?.approximate === true && Number.isFinite(c?.floor) ? c.floor : null;
+}
+
+/** A floor as every page prints it: the register's own figure, and no sentence around it. */
+export const moreThan = (floor) => `more than ${floor.toLocaleString("en-US")}`;
+
 export function countLine(entry) {
   if (!entry?.counts) return null;
   const parts = COUNT_PREDICATES.map((p) => {
@@ -536,9 +551,7 @@ export function countLine(entry) {
     //
     // No sentence, no adjective: the rest of this line is figures and what they counted, and a
     // qualification written here would be the only prose on it.
-    if (c?.approximate === true && Number.isFinite(c?.floor)) {
-      return `${word}: more than ${c.floor.toLocaleString("en-US")}`;
-    }
+    if (disclosedFloor(c) !== null) return `${word}: ${moreThan(disclosedFloor(c))}`;
     // Left for a register this deployment could not reach or could not ask. Those have no figure at
     // all, which is what this phrase now means and the only thing it means.
     return `${word}: not available`;
