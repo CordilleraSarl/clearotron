@@ -1001,7 +1001,9 @@ const INHERITED_SCRIPT = `
   await mustSettle(() => !scrim(), 5000, 'the composer never came back after Back');
   pickProduct(/Global preliminary search/);
   await sleep(300);
-  out.worldwideChip = [...document.querySelectorAll('.chip')].some((c) => (c.innerText || '').trim() === 'Worldwide');
+  // Named with the service that searches it, from the provider's own label — this pass serves 'Signa'.
+  out.worldwideChipText = ([...document.querySelectorAll('.chip')].map((c) => (c.innerText || '').trim()).find((t) => /^Worldwide/.test(t))) ?? null;
+  out.worldwideChip = out.worldwideChipText === 'Worldwide, searched on Signa';
   findByText('button', /Review search/).click();
   await mustSettle(() => /review before you start/i.test(txt()), 6000, 'the review dialog never opened on the worldwide search');
   out.worldwideWhere = rowText('Where');
@@ -1267,12 +1269,14 @@ const mainPassPosts = posted.length
 // After mainPassPosts deliberately: this pass posts plans of its own, and the verdict on what the main
 // pass put on the wire must not read one of them as the last plan it made.
 profileTerritories = ['United States', 'United Kingdom', 'European Union', 'Canada']
+registerLabelNow = 'Signa'
 const inheritedFrom = posted.length
 await evalIn(`location.href = ${JSON.stringify(`http://127.0.0.1:${port}/portal/new`)}; 'go'`)
 await new Promise((r) => setTimeout(r, 1400))
 const inherited = (await evalIn(INHERITED_SCRIPT)).result?.result?.value ?? { fatal: 'evaluate returned nothing' }
 const inheritedPlans = posted.slice(inheritedFrom).filter((p) => p.path === '/portal/api/run/plan').map((p) => p.body)
 profileTerritories = []
+registerLabelNow = null
 
 // ── the saved-codes pass ────────────────────────────────────────────────────────────────────────────
 // A company's own territories AS THE STORE HOLDS THEM — codes — against a register whose coverage
@@ -1684,8 +1688,9 @@ if (inherited.fatal) {
   // The search that IS worldwide must still stamp worldwide: the door refuses "account-default" on it by
   // name. Without this, a fix that stamped every empty draft the same way passes everything above.
   if (!inherited.reviewShut) {
-  ok(inherited.worldwideChip, 'the Global preliminary search does not draw its Worldwide chip')
-  ok(/Worldwide/.test(inherited.worldwideWhere ?? ''),
+  ok(inherited.worldwideChip,
+    `the Global preliminary search does not draw "Worldwide, searched on Signa" — read ${JSON.stringify(inherited.worldwideChipText)}`)
+  ok((inherited.worldwideWhere ?? '').includes('Worldwide, searched on Signa'),
     `the review dialog for a Global preliminary search reads ${JSON.stringify(inherited.worldwideWhere)} instead of worldwide`)
   const wide = inherited.reviewShut ? null : (inheritedPlans[inheritedPlans.length - 1] ?? null)
   ok(wide?.geography?.mode === 'worldwide',

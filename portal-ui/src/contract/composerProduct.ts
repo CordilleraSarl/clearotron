@@ -174,6 +174,15 @@ export function reachesTerritory(name: string, covered?: readonly string[] | nul
 }
 
 /**
+ * How the order form names a worldwide search: with the register service that searches it, because
+ * "worldwide" is eleven registers on one installation and 186 on another, and the reader can only tell
+ * which by being told the service (owner, 2026-09-18). The name is the provider's own label from its
+ * capabilities; an installation that does not say gets the bare word, never a guessed name.
+ */
+export const worldwideLine = (registerLabel?: string | null): string =>
+  registerLabel ? `Worldwide, searched on ${registerLabel}` : 'Worldwide'
+
+/**
  * The engine's code for a place given as a name the picker offers or as a code — "United Kingdom",
  * "UK" and "GB" all read GB, as `territoryKey` in the engine reads them. A name the picker does not
  * offer comes back as itself, upper-cased, which matches only the same name.

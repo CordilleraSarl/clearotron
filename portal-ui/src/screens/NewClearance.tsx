@@ -58,7 +58,7 @@ import { parseNames, parseList } from '../contract/compose.ts'
 import type { Draft as Pick, EffortInput } from '../contract/composerProduct.ts'
 import {
   EMPTY_DRAFT, blockers, runCount, turnaround, turnaroundInWords, checksSummary, runsNote, machineryFor,
-  territoryMatches, addTerritory, removeTerritory, takeOverOwnTerritories, reachesTerritory, notAvailableLine,
+  territoryMatches, addTerritory, removeTerritory, takeOverOwnTerritories, reachesTerritory, notAvailableLine, worldwideLine,
   inherited, composeSaved, draftFromSaved, nameBudget, missingPieces, readiness,
   chooseProduct, geographyFor, nativeLanguageControl, toggleNativeLanguage,
   recommendSearch, templateLine, territoryCode, joinAnd, nativeLanguageLine, firstAndMore,
@@ -959,7 +959,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
             // it IS this search — so a territory field here would be a control whose every use is
             // refused. The chip states the fact; the sentence above says why there is nothing to set.
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, margin: '9px 0 0' }}>
-              <span className="chip">Worldwide</span>
+              <span className="chip">{worldwideLine(registerLabel)}</span>
             </div>
           ) : (
             <>
@@ -1002,7 +1002,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
                       </span>
                     </>
                   ) : (
-                    <span className="chip">Worldwide</span>
+                    <span className="chip">{worldwideLine(registerLabel)}</span>
                   )
                 ) : draft.pick.territories.map((t) => (
                   /* — a chosen territory the register cannot reach keeps its
@@ -2195,7 +2195,7 @@ function ReviewDialog({
           </Row>
           {places.length ? (
             <Row label="Where">{places.join(', ')} <Muted>— from {scope?.jurisdictionsFrom}</Muted></Row>
-          ) : <Row label="Where">Worldwide</Row>}
+          ) : <Row label="Where">{worldwideLine(registerLabel)}</Row>}
           {/* ── REGISTERS TO SEARCH — what the search WILL ask, never what it found ─────────────────
               Not "searched in full": the search has not run. And the coverage limit belongs here, where
               the ticket is spent. A worldwide search is orderable on a partial register, so "you are
@@ -2213,7 +2213,7 @@ function ReviewDialog({
                   <Muted>. {notAvailableLine(plan.coverage.missing, registerLabel)}</Muted>
                 ) : null}
               </>
-            ) : places.length ? joinAnd(places) : 'Worldwide'}
+            ) : places.length ? joinAnd(places) : worldwideLine(registerLabel)}
           </Row>
           {scope && scope.classes.length ? (
             <Row label="Classes">{scope.classes.map(classLabel).join(', ')} <Muted>— from {scope.classesFrom}</Muted></Row>
