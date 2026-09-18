@@ -26,6 +26,7 @@
 
 import { validateJob, wantsPortalRoute, PORTAL_ROUTE_UNAVAILABLE } from "../../driver/enqueue-schema.mjs";
 import { resolveEffectiveProfile, recipeProseGuard } from "../../driver/profiles.mjs";
+import { demoRunAgreement } from "../../driver/demo-run-agreement.mjs";   // the claim's own demo decision, consulted not copied
 import { gateCause, UNAVAILABLE_NOTE, coverageDisclosure, policyFor, loadRecipes, countJobMarks } from "../../driver/search-policy.mjs";
 import { productRow, baseTurnaroundFor } from "../../driver/product-rows.mjs";
 import { resolveRequest } from "../../driver/resolve-request.mjs";
@@ -322,6 +323,14 @@ export function planRun(args = {}, { scope, now = Date.now() } = {}) {
   // plan_run itself invites. Read off `job` (post-buildJob, post-validateJob) with the wall's own
   // predicate and the wall's own sentence, so the two doors cannot drift apart.
   const routeBlocker = wantsPortalRoute(job) ? PORTAL_ROUTE_UNAVAILABLE : null;
+  // THE DEMO-DATA AGREEMENT, asked as the claim asks it. A demo account with an ordinary order, or a real
+  // account with a demo order, is refused at the claim in `demoRunAgreement`'s own words; a preview that did
+  // not ask answered wouldRun:true about an order the queue refuses. Same function, same inputs, same
+  // precedence as the wall: only once the request resolves, never ahead of a clarify.
+  const demoAdmission = profile && !resolved?.clarify
+    ? demoRunAgreement({ demoRun: job?.demoRun === true, demoData: profile?.demoData === true, who: job?.account ?? job?.profileKey ?? "this account" })
+    : null;
+  const demoBlocker = demoAdmission && !demoAdmission.ok ? demoAdmission.reject : null;
   // DEDUPED, and this door is the only one that needs it. The other four SHORT-CIRCUIT — they refuse on
   // validateJob and never reach the resolved-product fold — while a preview's whole job is to list every
   // blocker at once, so it sees both. Some sentences are legitimately produced twice for one request: a
@@ -329,7 +338,7 @@ export function planRun(args = {}, { scope, now = Date.now() } = {}) {
   // the fold against what it RESOLVES TO, and when the two are the same product they are the same
   // sentence. Read aloud to a requester, "this request names 2 countries" twice is a defect; deduping
   // where they are joined keeps every source honest and says it once.
-  const blocking = [...new Set([...(rosterRefusal ? [rosterRefusal] : []), ...(v.classify === "reject" || !v.ok ? v.errors : []), ...gates.errors, ...(unavailable ? [unavailable] : []), ...(quotaBlocker ? [quotaBlocker] : []), ...(routeBlocker ? [routeBlocker] : [])])];
+  const blocking = [...new Set([...(rosterRefusal ? [rosterRefusal] : []), ...(v.classify === "reject" || !v.ok ? v.errors : []), ...gates.errors, ...(unavailable ? [unavailable] : []), ...(quotaBlocker ? [quotaBlocker] : []), ...(routeBlocker ? [routeBlocker] : []), ...(demoBlocker ? [demoBlocker] : [])])];
 
   // ONE lookup, and the fields below come off it — the same shape portal-service's plan door was fixed
   // into. productRow computes a turnaround on every call; asking twice for one answer is how two answers
