@@ -35,8 +35,8 @@
 //
 // THE MEASUREMENT THAT MATTERS IS NOT THIS ONE. The signature this file ships is anchored at the comment
 // leader, so it counts a bare possessive that OPENS a comment and misses the identical damage mid-line.
-// Widened, the same census read 722 rather than 180. That gap was its own repair: the mid-line bare
-// possessives were made whole by hand on 2026-09-19, and none is left outside this file's specimens.
+// Widened, the same census once read 722 rather than 180. On 2026-09-19 the last 53 mid-line instances
+// were made whole by hand; a grep for a bare `'s` now finds this file's specimens and two code literals.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
