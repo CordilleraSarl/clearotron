@@ -56,9 +56,8 @@ passphrase only when its output is a terminal; with its output captured, it prin
 a new one instead, for a person to run in a terminal. In a clone the demo needs the built bundle: without
 it, it stops before starting anything and names `npm run build:ui`.
 
-The demo does not exit by itself, and `--no-open` keeps it from opening a browser. Stop it with Ctrl-C.
-To run it unattended, start it from the clone as `node bin/clearotron.mjs demo --no-open &` and stop it
-with a TERM to that pid: a TERM to an `npx` process ends npx and leaves the demo holding its three ports.
+The demo does not exit by itself, and `--no-open` keeps it from opening a browser. Stop it with Ctrl-C,
+or with a TERM to the pid your shell gave you for `npx clearotron demo --no-open &`; the whole demo stops.
 It removes its folder when it stops; `--keep` keeps it.
 
 `npm test` is the fast tier. `npm run test:full` is the merge gate and adds the files that drive the

@@ -279,6 +279,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-demo-stops-when-whatever-started-it-is-gone.test.mjs": {
+          "tests": 3,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
         "a-depth-check-that-read-nothing-is-on-the-investigate-list.test.mjs": {
           "tests": 3,
           "asserts": 8,
