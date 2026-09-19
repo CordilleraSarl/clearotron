@@ -981,7 +981,7 @@ test("Full detail: a registration URI links from the run's ALLOW-LIST, never fro
   // link, which renders as a legitimate provenance anchor elsewhere on the card — an href-only
   // assertion fails on that and reports a defect that is not there. (It did, on the first draft of
   // this arm.) A REGISTRATION link is the one whose visible text is the record path.
-  const regAnchor = (h, path) => new RegExp(`<a href="[^"]*${path.replace(/\//g, "\\/")}"[^>]*>${path.replace(/\//g, "\\/")}<\\/a>`).test(h);
+  const regAnchor = (h, path) => new RegExp(`<a href="[^"]*${path.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"[^>]*>${path.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}<\\/a>`).test(h);
   assert.equal(regAnchor(empty, "/mark/us/88189278"), false,
     "an empty allow-list is an ANSWER — this provider publishes no record page, so nothing may link");
   assert.equal(regAnchor(empty, "/mark/eu/018553255"), false);
@@ -1258,7 +1258,7 @@ test("spec 47: an actual Chilean registration groups under CL = Chile, distinct 
 // ── T2 (H5): the derived verdict sidecar is THE hero/topbar authority; legacy stays byte-stable ──
 test("spec 49: verdictInfo drives the gauge and bound recommendation — fm.overall_label demotes to legacy fallback", () => {
   const vi = { verdict: "CONDITIONAL", reasons: ["close the CN register gap"], tier: "MANAGEABLE", badge: "l2", gaugeIndex: 1, maxComposite: 2 };
-  const fmRec = FM.replace("overall_label: MEDIUM", "overall_label: MEDIUM").replace("---\n", "---\nrecommendation: Proceed with the filing.\n", 1);
+  const fmRec = FM.replace("---\n", "---\nrecommendation: Proceed with the filing.\n", 1);
   const withVi = renderHtml(parsedOf(fmRec), FINDINGS, COVERAGE, { runId: "vi-demo", verdictInfo: vi });
   // gauge marker sits at the DERIVED stop (index 1 = LOW pill), not the model's MEDIUM
   assert.match(withVi, /<div class="marker" style="left:30%">/);

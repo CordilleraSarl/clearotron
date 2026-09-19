@@ -457,7 +457,7 @@ test("every attempt leaves the verbatim message it was dispatched with, and the 
     assert.equal(rows.length, 2);
     for (const [i, row] of rows.entries()) {
       assert.ok(row.dispatch?.present, `attempt ${i + 1} recorded its dispatch`);
-      const text = readFileSync(join(dir, row.dispatch.file.replace(/^_driver\//, "_driver/")), "utf8");
+      const text = readFileSync(join(dir, row.dispatch.file), "utf8");
       assert.ok(text.length > 0);
       if (i === 0) assert.match(text, /Q-SYNTH-1/, "the body-borne qid is answerable from the run");
     }

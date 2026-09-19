@@ -218,6 +218,10 @@ await cmd('Browser.grantPermissions', {
 // permission, which is why granting alone left every press on the refused path. Found independently by
 // testing driving this page and by this file's first run coming back with every `copied` false.
 await cmd('Page.bringToFront').catch(() => {});
+// A value pasted into code the page evaluates, as a JavaScript string or object literal. JSON.stringify
+// alone leaves `<`, `>`, `/` and the two line separators as they are; escaped, they read the same once
+// parsed and cannot close or break the code they are pasted into.
+const jsLiteral = (v) => JSON.stringify(v).replace(/[<>\/\u2028\u2029]/g, (c) => `\\u${c.charCodeAt(0).toString(16).padStart(4, '0')}`)
 const evalIn = async (expr) => (await cmd('Runtime.evaluate', { expression: expr, awaitPromise: true, returnByValue: true })).result?.result?.value
 
 // ── The probes ───────────────────────────────────────────────────────────────────────────────────
@@ -720,7 +724,7 @@ const firstApp = accessFor(STATES['wired-client-key']).offers.find((o) => o.serv
 ok(firstApp?.name === 'Claude', `the first app on the web route is Claude, as the boards draw it (saw ${JSON.stringify(firstApp?.name)})`)
 await navigateOrRefuse(cmd, `${origin}/portal/ai`, { what: 'ai-page-render-check' })
 await new Promise((r) => setTimeout(r, 800))
-await evalIn(`(() => { localStorage.setItem('cordillera-ask-ai-report', ${JSON.stringify(JSON.stringify(REMEMBERED))}); return true })()`)
+await evalIn(`(() => { localStorage.setItem('cordillera-ask-ai-report', ${jsLiteral(JSON.stringify(REMEMBERED))}); return true })()`)
 for (const st of EVIDENCE) {
   current = st.deck
   await navigateOrRefuse(cmd, `${origin}${st.path}`, { what: 'ai-page-render-check' })

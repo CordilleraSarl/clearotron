@@ -14,7 +14,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync, spawn } from "node:child_process";
-import { mkdtempSync, writeFileSync, readdirSync, existsSync, rmSync, mkdirSync, utimesSync } from "node:fs";
+import { mkdtempSync, writeFileSync, readdirSync, readFileSync, existsSync, rmSync, mkdirSync, utimesSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
@@ -295,7 +295,7 @@ test("nothing outside the prefix is ever touched, however old", () => {
 });
 
 test("every workspace routes its tests through the runner, or that workspace keeps leaking", () => {
-  const read = (p) => JSON.parse(execFileSync("cat", [fileURLToPath(new URL(p, import.meta.url))], { encoding: "utf8" }));
+  const read = (p) => JSON.parse(readFileSync(fileURLToPath(new URL(p, import.meta.url)), "utf8"));
   assert.match(read("../package.json").scripts.test, /scripts\/test-run\.mjs/);
   assert.match(read("../../mcp-server/package.json").scripts.test, /scripts\/test-run\.mjs/);
   assert.match(read("../../portal-ui/package.json").scripts.test, /scripts\/test-run\.mjs/);

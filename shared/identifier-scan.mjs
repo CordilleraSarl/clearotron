@@ -152,7 +152,7 @@ export function firesOn(name, line, suffixable) {
  * @returns {{start: number, end: number}[]}
  */
 export function matchSpans(name, line, suffixable) {
-  const body = name.replace(/[&]/g, "\\&").replace(/ /g, SEPARATOR_CLASS);
+  const body = name.replace(/[.*+?^${}()|[\]\\&]/g, "\\$&").replace(/ /g, SEPARATOR_CLASS);
   const tail = suffixable.has(name) ? "" : "(?![A-Za-z0-9])";
   const re = new RegExp(`(?<![A-Za-z0-9])${body}${tail}`, "gi");
   const out = [];

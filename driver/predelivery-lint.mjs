@@ -87,7 +87,7 @@ const REF_ALLOWLIST = new Set([
 const TERRITORY_VOCAB = new Set(Object.values(REGION_NAMES).map((n) => norm(n)));
 
 function stripHtml(s) {
-  return String(s ?? "").replace(/<[^>]+>/g, " ").replace(/&amp;/g, "&").replace(/&nbsp;/g, " ");
+  return String(s ?? "").replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&");
 }
 
 // "April 2014", "MAY 2026" — dates pass the Title-Case-multi-word shape but are never entities.

@@ -74,13 +74,13 @@ function insertBulletAtSectionHead(text, headingRe, headingLine, bullet, { paren
   const m = text.match(headingRe);
   if (m) {
     const at = m.index + m[0].length;
-    return `${text.slice(0, at)}\n${bullet}\n${text.slice(at).replace(/^\n/, "\n")}`;
+    return `${text.slice(0, at)}\n${bullet}\n${text.slice(at)}`;
   }
   if (parentHeadingRe) {
     const p = text.match(parentHeadingRe);
     if (p) {
       const at = p.index + p[0].length;
-      return `${text.slice(0, at)}\n${headingLine}\n\n${bullet}\n${text.slice(at).replace(/^\n/, "\n")}`;
+      return `${text.slice(0, at)}\n${headingLine}\n\n${bullet}\n${text.slice(at)}`;
     }
     return `${text.replace(/\s*$/, "")}\n\n${parentHeadingLine}\n\n${headingLine}\n\n${bullet}\n`;
   }
