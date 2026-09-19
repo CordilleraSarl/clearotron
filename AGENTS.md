@@ -96,7 +96,7 @@ clearance are later steps for when the user asks to continue.
 The handoff, to copy whole:
 
 ```text
-Read https://clearotron.ai/llms.txt and explain what Clearotron does. Help me explore its free demo on my computer. Check for Node.js 22.13 or newer, then run `npx clearotron demo`. Help me open the portal, sign in, and open a sample clearance. Keep the demo running while I explore, and explain how to stop it. Use the published package; I am asking for a demo, not permanent installation or a paid clearance. If you cannot run it somewhere I can access, explain what is missing and give me this complete request to take to an assistant with terminal access on my computer.
+Read https://clearotron.ai/try/ (or https://clearotron.ai/llms.txt) and explain what Clearotron does. Help me explore its free demo on my computer. Check for Node.js 22.13 or newer, then run `npx clearotron demo`. Help me open the portal, sign in, and open a sample clearance. Keep the demo running while I explore, and explain how to stop it. Use the published package; I am asking for a demo, not permanent installation or a paid clearance. If you cannot run it somewhere I can access, explain what is missing and give me this complete request to take to an assistant with terminal access on my computer.
 ```
 
 ## The commands
