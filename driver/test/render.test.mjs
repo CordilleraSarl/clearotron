@@ -102,6 +102,9 @@ test("the breadcrumb leaves the frame as data, and the served document carries n
   assert.doesNotMatch(served, /<nav class="[^"]*\bstrip\b/,
     "no breadcrumb is left behind in the frame, where it could not pin");
   assert.match(served, /window\.__CORD_SECTIONS=\[/, "the list rides in with the bridge");
+  assert.match(served, /top:Math\.max\(0,Math\.round\(el\.getBoundingClientRect\(\)\.top\+window\.scrollY\)\)/,
+    "each section is announced with where it starts, so the portal can show how far the reader has got");
+  assert.match(served, /post\(\);sections\(\);/, "and announced again whenever the layout moves");
   assert.match(served, /d\.command==='section'/, "and the bridge answers a press on it");
 });
 

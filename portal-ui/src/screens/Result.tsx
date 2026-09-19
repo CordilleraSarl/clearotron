@@ -18,7 +18,7 @@ import { readsFor, hasThread, readLabel, displayName, openDocument, showsAssessm
 import { inlineSpans } from '../contract/inlineMd.ts'
 import { parseSummaryBlocks, SUMMARY_BLOCK_LINE } from '../contract/summaryBlocks.ts'
 import { runProductLabel } from '../contract/home.ts'
-import { FIRST_PAINT, frameCommand, readFrameHeight, readFrameScroll, readCommandFailure, readFrameControls, readFrameSections, readFrameTheme, readAskAi, exportMenu, exportAffordance } from '../contract/reportFrame.ts'
+import { FIRST_PAINT, frameCommand, readFrameHeight, readFrameScroll, readCommandFailure, readFrameControls, readFrameSections, readFrameTheme, readAskAi, exportMenu, exportAffordance, sectionsReached } from '../contract/reportFrame.ts'
 import type { FrameCommand, FrameSection, FrameTheme, FrameVerb } from '../contract/reportFrame.ts'
 import { RiskDot } from '../components/RiskDot.tsx'
 import { Icon } from '../components/Icon.tsx'
@@ -57,6 +57,11 @@ function usePortalTheme(): FrameTheme {
   }, [])
   return theme
 }
+
+// The shell's topbar, which the pinned report header sits under, and how far below that header a jump
+// lands a section's headline. Shared with the reading line, so a section jumped to always counts as reached.
+const TOPBAR_PX = 56
+const LANDING_PX = 10
 
 function useReportFrame() {
   const ref = useRef<HTMLIFrameElement | null>(null)
@@ -101,7 +106,7 @@ function useReportFrame() {
       if (jump !== null) {
         if (frame) {
           const head = document.querySelector('.report-head')
-          const chrome = 56 + (head instanceof HTMLElement ? head.offsetHeight : 48) + 10
+          const chrome = TOPBAR_PX + (head instanceof HTMLElement ? head.offsetHeight : 48) + LANDING_PX
           const y = frame.getBoundingClientRect().top + window.scrollY + jump - chrome
           window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' })
         }
@@ -381,13 +386,35 @@ export function Result({
   // after them would change call order between renders.
   const frame = useReportFrame()
 
-  // WHICH SECTION THE BREADCRUMB SHOWS AS CURRENT. Null means "the one the document leads with", which is
-  // the entry the renderer's own strip marked `now`. Set by a press, because a press is the only movement
-  // this side can know about: the page scrolls, but the offsets belong to a document it cannot measure.
-  const [atSection, setAtSection] = useState<string | null>(null)
-
-  // A different read is a different document: the breadcrumb starts at the top again.
-  useEffect(() => { setAtSection(null) }, [runId, markSlug])
+  // HOW MANY SECTIONS THE READER HAS REACHED (owner, 2026-09-19): the strip shows progress through the
+  // document, following the scroll both ways. The page scrolls, not the frame, so this side measures: the
+  // document says where each section starts, and the reading line is the bottom of the pinned header. It
+  // was set by a press alone, so "Summary" stayed marked whatever was on screen.
+  const [reached, setReached] = useState(0)
+  const sectionList = frame.sections
+  const frameRef = frame.ref
+  useEffect(() => {
+    if (!sectionList || sectionList.length < 2) { setReached(0); return }
+    let queued = false
+    const measure = () => {
+      queued = false
+      const el = frameRef.current
+      if (!el) return
+      const head = document.querySelector('.report-head')
+      const lineOnScreen = (head instanceof HTMLElement ? head.getBoundingClientRect().bottom : TOPBAR_PX) + LANDING_PX + 2
+      const scrollable = document.documentElement.scrollHeight > window.innerHeight + 2
+      const where = {
+        atTop: scrollable && window.scrollY <= 0,
+        atFoot: window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2,
+      }
+      setReached(sectionsReached(sectionList, lineOnScreen - el.getBoundingClientRect().top, where))
+    }
+    const later = () => { if (!queued) { queued = true; requestAnimationFrame(measure) } }
+    measure()
+    window.addEventListener('scroll', later, { passive: true })
+    window.addEventListener('resize', later)
+    return () => { window.removeEventListener('scroll', later); window.removeEventListener('resize', later) }
+  }, [sectionList, frame.height, frameRef])
 
   // — THE CROSS-MARK PARAGRAPH, asked for only by the view that shows it.
   //
@@ -588,22 +615,18 @@ export function Result({
             })}
           </div>
         ) : null}
-          {hasThread(reads) && (frame.sections?.length ?? 0) > 1 ? (
-            <span className="report-nav-sep" aria-hidden="true" />
-          ) : null}
           {(frame.sections?.length ?? 0) > 1 ? (
             <nav className="report-sections" aria-label="Sections of this report">
               {(frame.sections ?? []).map((sec, i) => {
-                // The first entry is current until a press says otherwise — the same entry the renderer's
-                // own strip marked, and the section the reader is looking at when the document opens.
-                const now = atSection === null ? i === 0 : atSection === sec.id
+                // Every section reached is filled; the last one reached is the one in view.
                 return (
                   <button
                     key={sec.id}
                     type="button"
                     className="report-section"
-                    aria-current={now ? 'true' : undefined}
-                    onClick={() => { setAtSection(sec.id); frame.send('section', sec.id) }}
+                    data-reached={i < reached ? 'true' : undefined}
+                    aria-current={i === reached - 1 ? 'true' : undefined}
+                    onClick={() => frame.send('section', sec.id)}
                   >
                     <span className="report-section-dot" aria-hidden="true" />
                     {sec.label}

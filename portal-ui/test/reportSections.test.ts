@@ -16,7 +16,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { readFrameSections, readFrameControls, readFrameTheme, frameCommand, FRAME_TAG, MAX_SECTIONS, MAX_SECTION_LABEL } from '../src/contract/reportFrame.ts'
+import { readFrameSections, readFrameControls, readFrameTheme, frameCommand, sectionsReached, FRAME_TAG, MAX_SECTIONS, MAX_SECTION_LABEL } from '../src/contract/reportFrame.ts'
 
 const msg = (sections: unknown) => ({ source: FRAME_TAG, type: 'sections', sections })
 
@@ -102,4 +102,45 @@ test('the Result screen sends the portal theme on every load of the document and
   assert.match(RESULT, /send\('theme', theme\)/, 'the screen never sends the theme in')
   assert.match(RESULT, /\[theme, hello, send\]/, 'the theme is not re-sent on a change and on each load')
   assert.match(RESULT, /attributeFilter: \['data-theme'\]/, 'the screen does not watch the attribute the portal writes its theme to')
+})
+
+// ── PROGRESS THROUGH ONE DOCUMENT (owner, 2026-09-19) ─────────────────────────────────────────────────
+//
+// The strip showed "Summary" as current whatever was on screen, because only a press could move it. It
+// shows how far the reader has got now: every section reached is filled, none at the top, and it un-fills
+// the same way on the way back up. The browser half, the page really scrolled at two widths and both themes,
+// is scripts/report-sections-render-check.mjs.
+
+test('where each section starts is read from the announcement, and only as a real offset', () => {
+  assert.deepEqual(readFrameSections(msg([{ id: 'summary', label: 'Summary', top: 0 }, { id: 'findings', label: 'Findings', top: 812.4 }]), true),
+    [{ id: 'summary', label: 'Summary', top: 0 }, { id: 'findings', label: 'Findings', top: 812 }])
+  for (const top of [-5, Number.NaN, '40', null, Infinity])
+    assert.deepEqual(readFrameSections(msg([{ id: 'a', label: 'A', top }]), true), [{ id: 'a', label: 'A' }], `top ${String(top)} is not an offset`)
+})
+
+test('the count follows the reading line down and back up, none at the top and all at the foot', () => {
+  const secs = [{ id: 'a', label: 'A', top: 0 }, { id: 'b', label: 'B', top: 900 }, { id: 'c', label: 'C', top: 2000 }, { id: 'd', label: 'D', top: 3100 }]
+  const mid = { atTop: false, atFoot: false }
+  assert.equal(sectionsReached(secs, 20, { atTop: true, atFoot: false }), 0, 'at the top nothing is reached yet')
+  const down = [20, 899, 900, 1500, 2000, 3099, 3100].map((line) => sectionsReached(secs, line, mid))
+  assert.deepEqual(down, [1, 1, 2, 2, 3, 3, 4], 'one more at each start, and the one behind between two starts')
+  const up = [3100, 2000, 1999, 900, 899, 20].map((line) => sectionsReached(secs, line, mid))
+  assert.deepEqual(up, [4, 3, 2, 2, 1, 1], 'and the same way back up')
+  assert.equal(sectionsReached(secs, 2500, { atTop: false, atFoot: true }), 4, 'at the foot nothing more can come up, so all are reached')
+  assert.equal(sectionsReached([{ id: 'a', label: 'A', top: 0 }, { id: 'b', label: 'B' }, { id: 'c', label: 'C', top: 50 }], 400, mid), 1,
+    'a section with no known start ends the count rather than being guessed past')
+})
+
+test('the strip marks every reached section and the one in view, and a press still jumps', () => {
+  assert.match(RESULT, /data-reached=\{i < reached \? 'true' : undefined\}/, 'every reached section is marked')
+  assert.match(RESULT, /aria-current=\{i === reached - 1 \? 'true' : undefined\}/, 'the last reached is the one in view')
+  assert.doesNotMatch(RESULT, /atSection/, 'a press alone no longer decides what is marked')
+  assert.match(RESULT, /window\.addEventListener\('scroll', later, \{ passive: true \}\)/, 'the strip does not follow the scroll')
+})
+
+test('the strip has its own row under the Reads, never beside them', () => {
+  const css = readFileSync(new URL('../src/base.css', import.meta.url), 'utf8')
+  assert.match(css, /\.report-nav \{[^}]*flex-direction: column/, 'the Reads and the strip share one row again')
+  assert.doesNotMatch(RESULT, /report-nav-sep/, 'the divider between two side-by-side halves is back')
+  assert.match(css, /\.report-sections \{[^}]*overflow-x: auto/, 'on a narrow screen the strip must scroll sideways, not wrap')
 })

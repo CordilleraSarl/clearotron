@@ -172,19 +172,19 @@ html.anon-on [data-anon='mark']:not(.anon-clear) {
   border-bottom: 1px solid var(--border-hairline);
 }
 
-/* THE HEADER'S SECOND ROW: which read you are in, then where you are inside it.
+/* THE HEADER'S LOWER ROWS: which read you are in, then where you are inside it.
    The Reads strip used to sit BELOW this box and the report's own section breadcrumb inside the frame,
    so neither stayed on screen — the frame is sized to its content, which leaves a `position:sticky` bar
    in there pinned to nothing. Both are rows of the pinned header now (owner, 2026-09-18).
-   It scrolls sideways rather than wrapping to a third line: a header that grows taller with the number of
-   sections is a header that eats the document it is heading. */
-.report-nav {
-  display: flex; align-items: center; gap: 10px; margin-top: 9px;
+   THE SECTIONS HAVE A ROW OF THEIR OWN, UNDER THE READS (owner, 2026-09-19). Side by side, sixteen reads
+   wrapped into two ragged columns while the strip floated beside them at mid-height. The reads wrap; the
+   sections scroll sideways rather than wrapping, so the strip stays one line however narrow the screen. */
+.report-nav { display: flex; flex-direction: column; align-items: stretch; gap: 8px; margin-top: 9px; }
+.report-sections {
+  display: flex; align-items: center; gap: 2px;
   overflow-x: auto; scrollbar-width: none;
 }
-.report-nav::-webkit-scrollbar { display: none; }
-.report-nav-sep { flex: none; width: 1px; align-self: stretch; background: var(--border-hairline); }
-.report-sections { display: flex; align-items: center; gap: 2px; }
+.report-sections::-webkit-scrollbar { display: none; }
 .report-section {
   flex: none; display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
   font: inherit; font-size: 12.5px; font-weight: 600; letter-spacing: .01em;
@@ -195,8 +195,11 @@ html.anon-on [data-anon='mark']:not(.anon-clear) {
 .report-section-dot {
   width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid currentColor; box-sizing: border-box;
 }
+/* PROGRESS: every section reached has a filled dot, the rest stay hollow; the one in view also sits on
+   the sunken pill, so it can be told from the ones behind it. */
+.report-section[data-reached='true'] { color: var(--text-strong); }
+.report-section[data-reached='true'] .report-section-dot { background: var(--accent); border-color: var(--accent); }
 .report-section[aria-current='true'] { color: var(--text-strong); background: var(--surface-sunken); }
-.report-section[aria-current='true'] .report-section-dot { border-color: var(--accent); border-width: 3px; }
 
 /* The breadcrumb above it: one step back as a quiet button, then where the reader is. Compound selectors
    throughout this block, because the button and row rules they adjust are declared later in the file. */
