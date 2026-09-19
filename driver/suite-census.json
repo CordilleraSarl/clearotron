@@ -195,6 +195,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-conditional-with-nothing-stated-prints-no-conditional-line.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "a-connect-line-says-where-it-runs.test.mjs": {
           "tests": 11,
           "asserts": 52,
@@ -2537,7 +2543,7 @@
         },
         "findings-model.test.mjs": {
           "tests": 68,
-          "asserts": 257,
+          "asserts": 258,
           "skips": 0,
           "todos": 0
         },

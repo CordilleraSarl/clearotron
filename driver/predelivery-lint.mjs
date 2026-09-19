@@ -30,7 +30,7 @@ import { partyFactSources, partyFactViolations, partyFactMessage, canJudgePartyF
 import { writeUpViolations, writeUpMessage } from "./narrative-write-ups.mjs";   //
 
 import { findRegistryArithmeticIssues, findRegistryViolations, splitBlocks } from "./registry-fidelity.mjs";
-import { CLIENT_TIER_BY_COMPOSITE, joinFindingToBlock, parseBlockOrd, worstLiveBand, NO_RATED_CONFLICTS, deriveActionConditions, isUnconditionalProceed, verdictStance, joinAskToAnswer, projectAssessmentField, POSITION_REQUIRED_DISPOSITIONS, OFF_FIELD_GROUNDS, FINDINGS_SCHEMA_VERSION, netChainMarkers, STATEMENT_CLAUSE_MAX } from "./findings-model.mjs";
+import { CLIENT_TIER_BY_COMPOSITE, joinFindingToBlock, parseBlockOrd, worstLiveBand, NO_RATED_CONFLICTS, deriveActionConditions, isUnconditionalProceed, verdictStance, statedConditions, joinAskToAnswer, projectAssessmentField, POSITION_REQUIRED_DISPOSITIONS, OFF_FIELD_GROUNDS, FINDINGS_SCHEMA_VERSION, netChainMarkers, STATEMENT_CLAUSE_MAX } from "./findings-model.mjs";
 import { normalizeBand } from "./framework.mjs";
 import { clientConditions, unrenderableConditions, ENGINE_TOKEN_RE } from "./terminal-clamp.mjs";   // the reader's clause per condition, and the token shape it may never carry
 import { knockoutNoteView, REQUEST_NOTE_WORDS, REQUEST_SUBJECT_WORDS } from "./findings-model.mjs";   // one reader for where a note prints
@@ -2023,7 +2023,12 @@ export function statementCoherenceChecks({ verdictDoc }) {
       stanceOk ? "" : `verdict.json stance "${verdictDoc.stance}" does not match the verdict ${v || "(missing)"} (expected "${expected ?? "?"}") — the sidecar fields diverged; re-derive it (writeVerdictSidecar composes both from one record)`);
     if (!c3.pass) c3.structural = true;
     out.push(c3);
-    const formOk = verdictDoc.stance !== "conditional" || /—\s*conditional on:/.test(st);
+    // The form is owed only where something is stated: a conditional whose every condition was ruled to
+    // the run record carries the band word alone (riskStatement), and a "conditional on:" there would be
+    // the empty line the owner ruled off the page.
+    const stated = statedConditions({ reasons: verdictDoc.reasons, clauses: verdictDoc.clauses });
+    const nothingStated = !stated.cls.length && !stated.conds.length;
+    const formOk = verdictDoc.stance !== "conditional" || nothingStated || /—\s*conditional on:/.test(st);
     const c4 = check("statement-conditional-form", "verdict", "report", formOk,
       formOk ? "" : `a conditional-stance statement must state what conditions reliance ("<Tier> — conditional on: <facts>"), but reads "${st.slice(0, 80)}" — re-derive the sidecar`);
     if (!c4.pass) c4.structural = true;
