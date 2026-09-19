@@ -66,14 +66,14 @@ test("every shape carries the reports folder when it is known, and invents none 
 test("every on-this-computer shape starts the server INSIDE the distribution when the install is on WSL", async () => {
   const { STDIO_SHAPES, stdioConnectFor } = await import("../../shared/stdio-connect.mjs");
   const wsl = { distro: "Ubuntu" };
-  const opts = { installRoot: "/opt/clearotron", workDir: "/srv/clearotron/work", wsl, node: "/home/u/.nvm/versions/node/v22.17.0/bin/node" };
+  const opts = { installRoot: "/opt/clearotron", workDir: "/srv/clearotron/work", wsl, node: "/srv/op/.nvm/versions/node/v22.17.0/bin/node" };
 
   for (const shape of Object.keys(STDIO_SHAPES)) {
     const text = stdioConnectFor(shape, opts).text;
     assert.match(text, /wsl\.exe/, `${shape} still hands a Windows host a Linux interpreter`);
     assert.match(text, /-d[\s",]+Ubuntu/, `${shape} does not name the distribution, so it starts whichever is default`);
     assert.ok(text.includes("/opt/clearotron/mcp-server/serve.mjs"), `${shape} lost the server's entry`);
-    assert.ok(text.includes("/home/u/.nvm/versions/node/v22.17.0/bin/node"), `${shape} runs whatever node the distribution's PATH finds`);
+    assert.ok(text.includes("/srv/op/.nvm/versions/node/v22.17.0/bin/node"), `${shape} runs whatever node the distribution's PATH finds`);
     // THE ENVIRONMENT HAS TO CROSS. A host on Windows sets variables for the process it starts, which
     // is wsl.exe; they stop at the boundary. Inside the command, `env` sets them where the server reads.
     assert.match(text, /env[\s",]+CLEAROTRON_WORK_DIR=\/srv\/clearotron\/work/, `${shape} sets the work directory where the server will never see it`);
