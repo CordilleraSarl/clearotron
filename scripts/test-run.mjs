@@ -49,8 +49,8 @@ import { spawn } from "node:child_process";
 import { mkdtempSync, mkdirSync, rmSync, readdirSync, statSync, existsSync, readFileSync, symlinkSync, copyFileSync, chmodSync } from "node:fs";
 import { delimiter, dirname, join, parse as parsePath, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
-import { tmpdir } from "node:os";
-import { snapshotRepo, repoWrites, explainRepoWrites } from "./repo-writes.mjs";
+import { tmpdir, homedir } from "node:os";
+import { snapshotRepo, repoWrites, explainRepoWrites, snapshotHome, explainHomeWrites } from "./repo-writes.mjs";
 
 
 // ── TAIL — THIS WRAPPER READS BOTH SPELLINGS; IT DOES NOT TRANSLATE THE ENVIRONMENT ───────────
@@ -700,6 +700,11 @@ mkdirSync(process.env.CLEAROTRON_SUITE_TELEMETRY_DIR, { recursive: true });
 // between the two reads can be mistaken for something a test did. The comparison is in `close`, below.
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const repoBefore = snapshotRepo(REPO_ROOT);
+// AND THE HOME IT RUNS AS, read at the same moment for the same reason (`repo-writes.mjs` says which
+// folders and why). HOME as the child inherits it, which is the home every unpinned product command in
+// the run resolves.
+const RUN_HOME = String(process.env.HOME ?? "").trim() || homedir();
+const homeBefore = snapshotHome(RUN_HOME);
 
 
 child = spawn(argv[0], argv.slice(1), {
@@ -749,8 +754,10 @@ child.on("close", (code, signal) => {
 
   const wrote = repoWrites(repoBefore, snapshotRepo(REPO_ROOT), REPO_ROOT);
   if (wrote.length) for (const line of explainRepoWrites(wrote)) console.error(line);
+  const wroteHome = repoWrites(homeBefore, snapshotHome(RUN_HOME), RUN_HOME);
+  if (wroteHome.length) for (const line of explainHomeWrites(wroteHome, RUN_HOME)) console.error(line);
   // THIS MAY TURN A GREEN RUN RED. IT MUST NEVER TURN A RED RUN GREEN — a failing suite keeps its own
   // exit code, because what the tests found matters more than what they wrote while finding it.
   const childCode = code ?? 1;
-  process.exit(childCode !== 0 ? childCode : (wrote.length ? 1 : 0));
+  process.exit(childCode !== 0 ? childCode : (wrote.length || wroteHome.length ? 1 : 0));
 });

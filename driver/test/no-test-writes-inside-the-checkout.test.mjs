@@ -60,6 +60,45 @@ function drive(root, script, arg = root, extra = {}) {
 
 // ── THE WIRING: the runner itself, driven end to end ────────────────────────────────────────────────
 
+// ── THE HOME: the product's own folders under the home a run executes as ────────────────────────────
+
+test("a run that writes under the home's product folders FAILS, and the path is named", () => {
+  // The write a fresh clone's suite left behind: one access-log line under ~/trademark/telemetry.
+  const root = fakeCheckout();
+  const home = mkdtempSync(join(tmpdir(), "ct-home-"));
+  try {
+    const r = drive(root, `const fs = require("fs"), p = require("path");
+      const d = p.join(process.env.HOME, "trademark", "telemetry");
+      fs.mkdirSync(d, { recursive: true });
+      fs.writeFileSync(p.join(d, "trademark-mcp-access.jsonl"), "{}");`, root, { HOME: home });
+    assert.equal(r.code, 1, `a run that wrote under the home exited ${r.code}; it must fail`);
+    assert.match(r.said, /THIS RUN WROTE UNDER THE HOME IT RAN AS/);
+    assert.match(r.said, /\+ trademark\/telemetry\/trademark-mcp-access\.jsonl/, "the reader is told WHICH path");
+  } finally { rmSync(root, { recursive: true, force: true }); rmSync(home, { recursive: true, force: true }); }
+});
+
+test("a change to a settings file that was already there fails too; the rest of the home is the tools' own", () => {
+  const root = fakeCheckout();
+  const home = mkdtempSync(join(tmpdir(), "ct-home-"));
+  mkdirSync(join(home, ".config", "clearotron"), { recursive: true });
+  writeFileSync(join(home, ".config", "clearotron", ".env"), "A=1\n");
+  try {
+    const changed = drive(root, `require("fs").appendFileSync(require("path").join(process.env.HOME, ".config", "clearotron", ".env"), "B=2\\n")`,
+      root, { HOME: home });
+    assert.equal(changed.code, 1, "a run that changed the settings file passed");
+    assert.match(changed.said, /~ \.config\/clearotron\/\.env/);
+    // THE CONTROL. npm's cache and a browser's profile are written by the tools a run uses, and a guard
+    // that fired on them would fire on every run and be switched off by the first person it annoyed.
+    const tools = drive(root, `const fs = require("fs"), p = require("path");
+      for (const d of [".npm", ".cache", p.join(".config", "google-chrome")]) {
+        fs.mkdirSync(p.join(process.env.HOME, d), { recursive: true });
+        fs.writeFileSync(p.join(process.env.HOME, d, "x"), "x");
+      }`, root, { HOME: home });
+    assert.equal(tools.code, 0, `a run that wrote only the tools' own folders failed:\n${tools.said}`);
+    assert.doesNotMatch(tools.said, /THIS RUN WROTE UNDER THE HOME/);
+  } finally { rmSync(root, { recursive: true, force: true }); rmSync(home, { recursive: true, force: true }); }
+});
+
 test("a run that creates a file inside the checkout FAILS, and the file is named", () => {
   const root = fakeCheckout();
   try {
