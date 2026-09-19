@@ -119,3 +119,45 @@ export function explainRepoWrites(rows) {
     "  touching the tree to tell the two apart.)",
   ];
 }
+
+// ── the home the run executes as ────────────────────────────────────────────────────────────────────
+//
+// THE SAME RULE, ONE FOLDER OUT. The suite is documented as offline with no side effects, and a fresh
+// clone's run left `~/trademark/telemetry/trademark-mcp-access.jsonl` behind (measured 2026-09-19, one
+// line per run): a test spawned the stdio server with the real home, and `doctor` on that machine then
+// reported the client door's access log as being written. These are the product's own folders under a
+// home: the pool, workspace, queue and telemetry, and the settings, records and revocation list. A run
+// leaves them as it found them. The rest of a home — npm's cache, a browser's profile — belongs to the
+// tools a run uses, and is theirs to write.
+
+/** The product's own folders under a home, relative to it. */
+export const HOME_DATA = Object.freeze(["trademark", join(".config", "clearotron")]);
+
+/** Every path under the home's product folders, stamped. A folder that does not exist is not walked. */
+export function snapshotHome(home) {
+  const out = new Map();
+  for (const rel of HOME_DATA) {
+    const p = join(resolve(home), rel);
+    let isDir = false;
+    try { isDir = lstatSync(p).isDirectory(); } catch { continue; }
+    if (!isDir) { out.set(p, "not-a-directory"); continue; }
+    out.set(p, "dir");
+    for (const [k, v] of snapshotRepo(p)) out.set(k, v);
+  }
+  return out;
+}
+
+/** What a reader is told when a run wrote under the home's product folders. */
+export function explainHomeWrites(rows, home) {
+  return [
+    "",
+    `[test-run] THIS RUN WROTE UNDER THE HOME IT RAN AS (${home}), in the product's own folders:`,
+    ...rows,
+    "",
+    "  A test that starts a product command hands it a HOME under its own temp directory. Without one, the",
+    "  command reads and writes the pool, queue, telemetry and settings of whoever runs the suite.",
+    "",
+    "  (A service of this account writing there while the run was in flight prints this too. Run again",
+    "  with HOME set to an empty temp directory to tell the two apart.)",
+  ];
+}
