@@ -4,6 +4,19 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.3.2-beta.13
+
+### Fixed
+
+- A conditional verdict whose conditions are all kept in the run record no longer shows an empty "conditional on" line. The rating word stands alone.
+- A running clearance's card and row show the stage it is in now, including a step back during a correction pass.
+- The portal's health check no longer includes an internal error message when the instructions store cannot be read. The message goes to the service log instead.
+- `doctor` no longer describes another program on the client door's port as this install's door. It says only that a process holds the port.
+- The connect lines name the exact Node your install runs on, and an older Node gets one plain line instead of a crash.
+- The demo no longer leaves copies of its samples in your temp directory, including when it is stopped mid-way.
+- Running the test suite no longer leaves demo copies in the machine's temporary directory.
+- On WSL, the Windows connect line names your Linux distribution, or says plainly to fill it in, instead of leaving it out.
+
 ## 0.3.2-beta.12
 
 ### New
