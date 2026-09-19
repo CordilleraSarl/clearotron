@@ -137,7 +137,7 @@ export function parseNamedBand(raw) {
         // byte-identical to a slice the plan deliberately counted without fetching. Measured on a real
         // run: four capability-gap blocks carried `error:true, deferred:true` into this function and
         // reached record-carry.json with both fields gone and a sentence claiming the run "has a hit
-        // COUNT for this slice". register-plan.mjs:1594 validatePlanFeasibility already enforces the same rule one layer up
+        // COUNT for this slice". register-plan.mjs:1681 validatePlanFeasibility already enforces the same rule one layer up
         // ("a transient must not ship indistinguishable from a sanctioned descriptor") — it reads the
         // RAW blocks, which is why it could. Every consumer that reads THIS projection could not.
         // Conditional like the four keys above, so old bands carry neither key and nothing shifts.

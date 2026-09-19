@@ -102,7 +102,31 @@ test("the breadcrumb leaves the frame as data, and the served document carries n
   assert.doesNotMatch(served, /<nav class="[^"]*\bstrip\b/,
     "no breadcrumb is left behind in the frame, where it could not pin");
   assert.match(served, /window\.__CORD_SECTIONS=\[/, "the list rides in with the bridge");
+  assert.match(served, /top:Math\.max\(0,Math\.round\(el\.getBoundingClientRect\(\)\.top\+window\.scrollY\)\)/,
+    "each section is announced with where it starts, so the portal can show how far the reader has got");
+  assert.match(served, /post\(\);sections\(\);/, "and announced again whenever the layout moves");
   assert.match(served, /d\.command==='section'/, "and the bridge answers a press on it");
+});
+
+// AND A REPORT RENDERED BEFORE THE MOVE, which is most of the archive, served from its baked bytes. There the
+// breadcrumb is the header's SIBLING, so stripping the header left it in the frame: a second menu under the
+// portal's own, its current item red on red in the dark theme. Measured on an archived global preliminary
+// report served by a published beta. Built here by moving today's breadcrumb to where the old renderer put it.
+test("a report rendered before the breadcrumb moved into the header is served with no breadcrumb either", async () => {
+  const { prepareReportForEmbed } = await import("../portal-report.mjs");
+  const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-demo" });
+  const strip = html.match(/<nav class="[^"]*\bstrip\b[^"]*"[^>]*>[\s\S]*?<\/nav>/)[0];
+  const without = html.replace(strip, "");
+  const head = without.indexOf('<div class="rep-stickyhead');
+  const tags = /<\/?div\b[^>]*>/g;
+  tags.lastIndex = head;
+  let depth = 0, m, close = -1;
+  while ((m = tags.exec(without))) { depth += m[0].startsWith("</") ? -1 : 1; if (depth === 0) { close = m.index + m[0].length; break; } }
+  assert.ok(close > head, "the header's closing tag was not found, so no old-shape document was built");
+  const old = without.slice(0, close) + strip + without.slice(close);
+  const { sections, html: served } = prepareReportForEmbed(old);
+  assert.ok(sections.length > 1, "the breadcrumb is still read as the portal's list");
+  assert.doesNotMatch(served, /<nav class="[^"]*\bstrip\b/, "the old breadcrumb survived into the frame beside the portal's");
 });
 
 test("the section breadcrumb is emitted inside the report's sticky header, not under it", () => {

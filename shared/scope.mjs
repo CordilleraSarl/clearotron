@@ -259,7 +259,7 @@ export const TOOL_SCOPES = {
 // The ONLY artifact a user (report-link) token may read via read_artifact — THE report (one report;
 // clientSummary was a second version by another name and is retired from client reach — the file
 // remains an internal cover-note source ops tokens may read). Everything else
-// (narrative, audit, run.jsonl, skepticFlags, lisaEyeReview, matterContext, caseLaw, register axes,
+// (narrative, audit, run.jsonl, skepticFlags, seniorEyeReview, matterContext, caseLaw, register axes,
 // status.json, …) is internal and stays sealed from a user token.
 // Exported so the server's Resources surface (ListResources/ReadResource) gates to the SAME set.
 /**
@@ -833,7 +833,7 @@ export function resolveScope({ local = false, innerToken = null, email = null, f
         throw new Error("forbidden: client account access is not enabled on this door");
       return { kind: "account", runId: null, sub: t.sub, verbs: null, ...personScope(t.sub, t.accounts) };
     }
-    if (t.scope !== "user") throw new Error("forbidden: the client surface accepts only a run-scoped user token or an account key");
+    if (t.scope !== "user") throw new Error(`forbidden: the client surface accepts only a run-scoped user token or an account key${otherDoor("staff")}`);
     return { kind: "user", runId: t.runId, sub: t.sub, verbs: null, accounts: null }; // run-bound — accounts moot
   }
   if (local) return { kind: "ops", runId: null, sub: "local", verbs: null, accounts: "*" };
@@ -842,7 +842,7 @@ export function resolveScope({ local = false, innerToken = null, email = null, f
     // An account key belongs to the CLIENT door and nowhere else. Falling through would land it in the
     // `user` arm below with runId:null — a "run-bound" scope bound to no run, which every run-pinning check
     // downstream would then wave through. Refuse it here instead.
-    if (t.scope === "account") throw new Error("forbidden: an account key is only accepted on the client surface");
+    if (t.scope === "account") throw new Error(`forbidden: an account key is only accepted on the client surface${otherDoor("client")}`);
     return t.scope === "ops"
       ? { kind: "ops", runId: null, sub: t.sub, verbs: t.verbs, accounts: t.accounts ?? "*" }
       : { kind: "user", runId: t.runId, sub: t.sub, verbs: null, accounts: null }; // run-bound — accounts moot
@@ -864,6 +864,25 @@ export function resolveScope({ local = false, innerToken = null, email = null, f
       permissions: person?.permissions ?? { run: false, manage: false } };
   }
   throw new Error("forbidden: no run-scoped token and not a firm-staff identity — refusing (internal read-all requires proven firm staff)");
+}
+
+/**
+ * WHERE THE OTHER DOOR IS, for the refusal that turns a key away from the wrong one: " (client surface:
+ * <address>)", or nothing when this process was not told. A key refused as "only accepted on the client
+ * surface" read as a permissions problem, and the next thing a reader did was the wrong thing; the demo's
+ * own output led an assistant to the staff door with an account key (measured on a published beta,
+ * 2026-09-19). Each door is handed the other's port and host by `start` and by the shared unit settings,
+ * under the names the other door listens on. The client door's public address, when one is set, is the
+ * one a remote assistant can reach, so it wins. A wildcard bind is named as loopback, where a reader on
+ * this machine reaches it. PURE given its env.
+ */
+export function otherDoor(which, env = process.env) {
+  const [url, host, port] = which === "client"
+    ? [env.CLEAROTRON_CLIENT_MCP_URL, env.CLIENT_MCP_HTTP_HOST, env.CLIENT_MCP_HTTP_PORT]
+    : [null, env.TRADEMARK_MCP_HTTP_HOST, env.TRADEMARK_MCP_HTTP_PORT];
+  const at = String(url ?? "").trim() || (String(port ?? "").trim()
+    ? `http://${!host || host === "0.0.0.0" || host === "::" ? "127.0.0.1" : host}:${String(port).trim()}/mcp` : "");
+  return at ? ` (${which} surface: ${at})` : "";
 }
 
 // The ENFORCEMENT chokepoint. Returns the (possibly run-pinned) args to dispatch, or throws an Error the

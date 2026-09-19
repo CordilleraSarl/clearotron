@@ -705,12 +705,7 @@ export function excludeHouseElement(manifest, house) {
 
   const lcEl = element.toLowerCase();
   const lcWords = words.map((w) => w.toLowerCase());
-  // A word of the remainder, by word boundary rather than by containment: `includes` would count the
-  // remainder word "on" inside an unrelated mutation and keep a query this exists to drop.
-  const namesRemainder = (v) => {
-    const t = String(v ?? "").toLowerCase();
-    return lcWords.some((w) => new RegExp(`(^|[^\\p{L}\\p{N}])${w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}([^\\p{L}\\p{N}]|$)`, "u").test(t));
-  };
+  const namesRemainder = (v) => namesAnyWord(v, lcWords);
 
   // THE DOMINANT WORD OF THE REMAINDER: longest, ties broken by the LAST of them. The lawyer's own
   // phrasing was "the last word alone", and on the matter that produced this the two agree; longest is
@@ -738,9 +733,73 @@ export function excludeHouseElement(manifest, house) {
   // REQUIREMENT 3: the element is still checked ONCE, as a confirmation of the client's own live
   // registrations rather than as a conflict search — so the exclusion is evidenced on the report by a
   // query that ran, not by a sentence saying one would have.
+  // The remainder rides on it so a writer AFTER the compile can apply the same rule (`houseElementOf`).
   const confirmation = { axis: "incumbent-class", predicate: "owner", term: element,
-    expected_kind: "enumerate", provenance: "mark", house_element_confirmation: true };
+    expected_kind: "enumerate", provenance: "mark", house_element_confirmation: true,
+    house_element_remainder: remainder };
   return { manifest: next, confirmation, refused: null };
+}
+
+/**
+ * Does `text` carry any of `words` (lower-case) as a word of its own? By word boundary rather than by
+ * containment: `includes` would count the remainder word "on" inside an unrelated mutation.
+ */
+function namesAnyWord(text, words) {
+  const t = String(text ?? "").toLowerCase();
+  return words.some((w) => new RegExp(`(^|[^\\p{L}\\p{N}])${w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}([^\\p{L}\\p{N}]|$)`, "u").test(t));
+}
+
+/**
+ * The house element a plan was compiled without, read off the plan itself, or null.
+ *
+ * WHY THE PLAN CARRIES IT. The compile is not the only writer. After it, the common-law cross-check,
+ * the recall lane, the frame reopen and the jurisdiction candidates fold entries in, and the register
+ * session proposes its own. On the first live run that proposed an exclusion (2026-09-19) the compile
+ * dropped the element and two later writers put it straight back: a contains query from the cross-check
+ * and an exact query the register session proposed, both on the bare element. Those writers hold the
+ * plan and nothing else, so the plan is where the exclusion has to be readable. Its confirmation row
+ * names the element, and the remainder rides beside it because the rule needs both.
+ */
+export function houseElementOf(plan) {
+  const c = (plan?.entries ?? []).find((e) => e?.house_element_confirmation === true);
+  const element = String(c?.term ?? "").trim();
+  if (!element) return null;
+  const remainder = String(c?.house_element_remainder ?? "").trim().toLowerCase();
+  return { element, remainderWords: remainder.split(/\s+/).filter(Boolean) };
+}
+
+/**
+ * Is this term a search on the excluded house element? The compile's own rule (`excludeHouseElement`
+ * keeps a variant only when it names a word of the remainder), applied to a term that arrives after
+ * the compile: a term carrying the element and no word of the remainder is a search on the element,
+ * whether it is the bare element, the element with a suffix, or the element beside other words. A term
+ * carrying a word of the remainder, like the whole mark, is kept, as the compile keeps it.
+ *
+ * A plan frozen before the remainder was recorded knows the element only, and then only the bare
+ * element counts: "carries no word of the remainder" cannot be decided without the remainder.
+ */
+export function isHouseElementTerm(term, house) {
+  if (!house) return false;
+  const t = String(term ?? "").trim().toLowerCase();
+  const el = house.element.toLowerCase();
+  if (t === el || (norm(el) !== "" && norm(t) === norm(el) && formKey(t) === formKey(el))) return true;
+  if (!house.remainderWords.length) return false;
+  const carries = t.includes(el) || (norm(el) !== "" && norm(t).includes(norm(el)));
+  return carries && !namesAnyWord(t, house.remainderWords);
+}
+
+/**
+ * The entry without its house-element terms, or null when none is left. An owner sweep is not mark
+ * text and comes back untouched: the one owner query on the element is the confirmation itself. PURE.
+ */
+export function withoutHouseElementTerms(entry, house) {
+  if (!house || !entry || entry.predicate === "owner") return entry;
+  if (Array.isArray(entry.terms)) {
+    const kept = entry.terms.filter((t) => !isHouseElementTerm(t, house));
+    if (!kept.length) return null;
+    return kept.length === entry.terms.length ? entry : { ...entry, terms: kept };
+  }
+  return isHouseElementTerm(entry.term, house) ? null : entry;
 }
 
 export function compileRegisterPlan({ manifest, job, form = null, skillVersion = "", capabilities = null, unavailableOffices = [], houseElement = null }) {
@@ -1495,10 +1554,13 @@ export function entryQuestionKey(entry, plan) {
  * an absence, and an absence reported as success is the failure this whole issue is about. Every
  * caller writes them somewhere a reader will meet them.
  *
- * Returns { plan, added: [qid], refused: [{qid, term, issue}] }.
+ * Returns { plan, added: [qid], refused: [{qid, term, issue}], excluded: [qid] } — `excluded` are rows on
+ * the house element the compile set aside, left out quietly (see houseElementOf).
  */
 export function foldSupplementalEntries(plan, entries) {
   const have = new Set(plan.entries.map((e) => e.qid));
+  const house = houseElementOf(plan);
+  const excluded = [];
   // — first qid wins, so the refusal names the row already IN the plan rather than a later
   // arrival. The compiler's own rows are in here too: a supplemental re-proposal of a compiler slice
   // is the case that actually fired on the round in evidence.
@@ -1530,8 +1592,9 @@ export function foldSupplementalEntries(plan, entries) {
   // one identity, which is the fault. Keyed on the qid alone this refused the harmless case too, and
   // the suite's own arm said so.
   const inBatch = new Map();   // qid -> the term that claimed it
-  for (const e of entries ?? []) {
-    if (!e || typeof e.qid !== "string" || !e.qid) continue;
+  for (const offered of entries ?? []) {
+    if (!offered || typeof offered.qid !== "string" || !offered.qid) continue;
+    let e = offered;
     const eTerm = String(e.term ?? e.terms?.[0] ?? "");
     if (inBatch.has(e.qid) && inBatch.get(e.qid) === eTerm) continue;   // the same row twice — one refusal
     if (inBatch.has(e.qid)) {
@@ -1546,6 +1609,12 @@ export function foldSupplementalEntries(plan, entries) {
     inBatch.set(e.qid, eTerm);
     if (have.has(e.qid)) continue;   // already in the PLAN — a re-proposal, expected and quiet
     have.add(e.qid);            // a refused qid is claimed too — the same row twice is one refusal
+    // THE CLIENT'S OWN ELEMENT, SET ASIDE BY THE COMPILE, IS NOT FOLDED BACK IN (see houseElementOf).
+    // QUIET, NOT REFUSED: a refused row renders to the client as an OPEN ask, and this is no unanswered
+    // question. The plan's confirmation row answers it and the report states the exclusion.
+    const kept = withoutHouseElementTerms(e, house);
+    if (!kept) { excluded.push(e.qid); continue; }
+    e = kept;
     const issues = entryTermIssues(e);
     if (issues.length) {
       refused.push({ qid: e.qid, term: String(e.term ?? e.terms?.[0] ?? ""),
@@ -1570,11 +1639,12 @@ export function foldSupplementalEntries(plan, entries) {
     if (key && e.unsupported !== true) asked.set(key, e.qid);   // dedupes the batch too, on the question
     added.push(e);
   }
-  if (!added.length) return { plan, added: [], refused };
+  if (!added.length) return { plan, added: [], refused, excluded };
   return {
     plan: { ...plan, plan_version: (plan.plan_version ?? 1) + 1, entries: [...plan.entries, ...added] },
     added: added.map((e) => e.qid),
     refused,
+    excluded,
   };
 }
 

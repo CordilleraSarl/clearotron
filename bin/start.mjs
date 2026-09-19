@@ -121,7 +121,7 @@ import { SERVER_INSTALL_SET, unitsToRestartOnRefresh, unitHealthVerdict } from "
 // — the door --background now INSTALLS, and the one authority for the settings
 // it refuses to start without. (Until 2026-09-03 this import read "the one unit --background may
 // tolerate and never manage"; settled point 2 superseded that.)
-import { defaultDenylistPath, denylistPathFor, denylistFor, ensureDenylistFile, CLIENT_DOOR_UNIT, enablePlan, clientDoorPort, demoTokenSecret, demoTokenSecretPath, keyIssueCommand } from "../shared/client-door.mjs";   // — one owner for the revocation list's path
+import { defaultDenylistPath, denylistPathFor, denylistFor, ensureDenylistFile, CLIENT_DOOR_UNIT, enablePlan, clientDoorPort, demoTokenSecret, demoTokenSecretPath, keyIssueCommand, demoConnectCommand } from "../shared/client-door.mjs";   // — one owner for the revocation list's path
 import { createServer } from "node:net";
 import { listenErrorMessage, nextFreePort } from "../shared/listen.mjs";
 import { chmodSync, copyFileSync, cpSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, unlinkSync, writeFileSync } from "node:fs";
@@ -805,6 +805,10 @@ export function childEnv({ ports, paths, user, portalSecret, tokenSecret, opsTok
       // DNS-rebinding protection is keyed off this list being non-empty, so it is derived from the same
       // port the listener is given rather than left to whoever remembers.
       TRADEMARK_MCP_ALLOWED_HOSTS: `${host}:${ports.mcp},localhost:${ports.mcp}`,
+      // WHERE THE OTHER DOOR IS, so a key refused here is told where it belongs (shared/scope.mjs
+      // otherDoor). Read by nothing else in this process.
+      CLIENT_MCP_HTTP_HOST: host,
+      CLIENT_MCP_HTTP_PORT: String(ports.client),
     },
     // The worker needs the install's PATHS and nothing else — no ports, no secrets, no door config. It
     // talks to the queue and the pool, not to either listener.
@@ -830,6 +834,9 @@ export function childEnv({ ports, paths, user, portalSecret, tokenSecret, opsTok
       // written in one place and an allow-list in another drift into a door that starts and turns every
       // request away, which reads as a dead door rather than as a misconfiguration.
       CLIENT_MCP_ALLOWED_HOSTS: `${host}:${ports.client},localhost:${ports.client}`,
+      // The staff door's place, for the mirror refusal (shared/scope.mjs otherDoor). Read by nothing else here.
+      TRADEMARK_MCP_HTTP_HOST: host,
+      TRADEMARK_MCP_HTTP_PORT: String(ports.mcp),
       CLIENT_MCP_ACCOUNT_ACCESS: String(clientFence ?? "1"),
       // TOKEN-ONLY, AND WITHOUT IT THE DOOR DOES NOT START. Found by driving it rather than by reading
       // the diff: with this unset the door demands an OIDC audience plus a Cloudflare Access team or
@@ -2421,7 +2428,8 @@ if (isMain) {
   // The output used to name neither as a door, so an owner watching one of them start concluded MCP had
   // not come up. Both are printed with who each is for, because "MCP is running" is ambiguous on a box
   // that has two of them and the ambiguity is what cost the leg.
-  say(`  Engine door  http://${HOST}:${ports.mcp}/mcp   — the portal's Start button calls this. Staff.`);
+  // THE CLIENT DOOR LEADS (owner, 2026-09-19). It is the one an assistant uses, and with the engine door
+  // printed first a demo's reader handed the staff address to their assistant, which refused its key.
   // THE SYNCHRONOUS TRUTH, NOT THE ASYNC FLAG ( — F26, review finding).
   //
   // `rec.alive` is flipped by the child's exit handler, which is async: reading it here asks "has the
@@ -2440,11 +2448,12 @@ if (isMain) {
     if (adoptedClientDoor)
       say(`               Already running as ${CLIENT_DOOR_UNIT}; this start kept it, so existing keys still work.`);
     else
-      say(`               It refuses every caller until a key is issued: ${keyIssueCommand({ prefix: invocationPrefix(), demo: DEMO, user, base: paths.base, defaultBase: join(homedir(), "trademark") })}`);
+      say(`               It refuses every caller until a key is issued: ${DEMO ? demoConnectCommand({ prefix: invocationPrefix(), base: paths.base }) : keyIssueCommand({ prefix: invocationPrefix(), demo: DEMO, user, base: paths.base, defaultBase: join(homedir(), "trademark") })}`);
   } else {
     say(`  Client door  NOT RUNNING on ${HOST}:${ports.client} — its output above says why. The portal and`);
     say("               the engine door are unaffected; a client assistant cannot connect until it is up.");
   }
+  say(`  Engine door  http://${HOST}:${ports.mcp}/mcp   — the portal's Start button calls this. Staff.`);
   say("");
   // ── WHAT `status` AND `stop` READ ABOUT THIS START ───────────────────────────────────────────────
   //

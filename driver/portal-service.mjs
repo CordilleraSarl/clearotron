@@ -3931,7 +3931,9 @@ const escHtml = (t) => String(t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<"
 // and brand pack §01 fixes dark at #0f0e0c near-black + #f0e8d8 parchment. The pack wins.
 // ── THE PLAIN LINE LEADS; THE ADMINISTRATOR'S TWO LINES STEP BACK INTO A FOLD ────────────────────────
 //
-// A person arriving here needs the field, the button, and one fact: this install signs in one person.
+// A person arriving here needs the field, the button, and one fact: this install has one user, and which
+// address that is. The owner's words, 2026-09-19: "Clearotron portal, as <address>." read as "you are
+// <address>", and a person who found `key issue` first minted a key and could not get in.
 // The reset command and the way to add people are an administrator's business, so they sit in a closed
 // "Administrator help" fold, word for word as they were, with the same link People gives to putting a
 // login system in front. A `<details>` needs no script, which this door must render without.
@@ -3976,9 +3978,7 @@ ${DOOR_THEME_INIT}
   .hint { margin-top:18px; font-size:13px; }
   code { font-family:var(--mono); font-size:12.5px; background:var(--code-bg);
          padding:1px 5px; border-radius:4px; overflow-wrap:anywhere; }
-  .lead { margin:18px 0 0; padding-top:14px; border-top:1px solid var(--line); font-size:13.5px; color:var(--ink); }
-  .lead b { font-weight:600; }
-  .fold { margin-top:10px; }
+  .fold { margin-top:18px; padding-top:14px; border-top:1px solid var(--line); }
   .fold > summary { display:inline-flex; align-items:center; gap:6px; list-style:none; cursor:pointer;
                     font-size:13px; color:var(--link); }
   .fold > summary::-webkit-details-marker { display:none; }
@@ -3993,7 +3993,7 @@ ${signedIn
     ? `<p>You are signed in as <span class="who">${escHtml(email)}</span>.</p>
 <div><a href="/portal">Go to the portal</a></div>
 <form method="post" action="/portal/logout"><button type="submit">Sign out</button></form>`
-    : `<p>${escHtml(BRAND.name)} portal, as <span class="who">${escHtml(email)}</span>.</p>
+    : `<p>This ${escHtml(BRAND.name)} has one user: <b class="who">${escHtml(email)}</b>. Enter its passphrase.</p>
 ${discarded ? `<p class="hint">A session this portal did not start, from another ${escHtml(BRAND.name)} on this address or an expired one, was set aside. Sign in below.</p>` : ""}
 ${error ? `<p class="err">${escHtml(error)}</p>` : ""}
 <form method="post" action="/portal/login">
@@ -4001,10 +4001,10 @@ ${error ? `<p class="err">${escHtml(error)}</p>` : ""}
   <input id="passphrase" name="passphrase" type="password" autocomplete="new-password" autofocus>
   <button type="submit">Sign in</button>
 </form>
-<p class="lead"><b>This ${escHtml(BRAND.name)} signs in one person: you.</b></p>
 <details class="fold"><summary><span>Administrator help</span><svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6"/></svg></summary>
-<p class="hint">Lost the passphrase? Run <code>${escHtml(reset)}</code> on the machine
-running this portal. It mints a new one and prints it once.</p>
+<p class="hint">The passphrase was printed once when this ${escHtml(BRAND.name)} first started. Lost it? Run
+<code>${escHtml(reset)}</code> on the machine running this portal. It prints a new one, once, for the same user.</p>
+<p class="hint">A key from <code>${escHtml(bareInvocation("key"))} issue</code> is for an AI assistant, not for this page.</p>
 <p class="hint">To add people, put it behind a login system such as your company single sign-on. <a href="${escHtml(LOGIN_IN_FRONT_DOC)}" target="_blank" rel="noreferrer">How to set that up</a></p>
 </details>`}
 </div></body></html>`;

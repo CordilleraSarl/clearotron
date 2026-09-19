@@ -17,7 +17,8 @@
 // well-formed config naming a server that cannot start is the failure this would otherwise ship.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { spawn } from "node:child_process";
 import { join, dirname, isAbsolute } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -53,7 +54,11 @@ test("it asks the visitor for NOTHING — no env block, and a path that is not s
 test("a server spawned exactly as the config says ANSWERS, with the environment stripped", async () => {
   // The arms above are shape. This one is the claim: clone, open, accept, ask — no token, no edit.
   const s = JSON.parse(readFileSync(CONFIG, "utf8")).mcpServers[KEY];
-  const env = { PATH: process.env.PATH, HOME: process.env.HOME };   // deliberately not process.env
+  // A VISITOR'S HOME, NOT THIS MACHINE'S. On start over stdio the server appends one line to the access
+  // log under ~/trademark/telemetry. Handed the real home, every suite run added a line there, and
+  // `doctor` on that machine then reported the client door's log as being written.
+  const home = mkdtempSync(join(tmpdir(), "mcp-json-home-"));
+  const env = { PATH: process.env.PATH, HOME: home };   // deliberately not process.env
   const child = spawn(s.command, s.args, { cwd: ROOT, env, stdio: ["pipe", "pipe", "pipe"] });
   let out = "";
   child.stdout.on("data", (d) => { out += d; });
@@ -65,6 +70,11 @@ test("a server spawned exactly as the config says ANSWERS, with the environment 
     send({ jsonrpc: "2.0", id: 2, method: "tools/list", params: {} });
     await new Promise((r) => setTimeout(r, 2500));
   } finally { child.kill(); }
+  // WHERE ITS ONE WRITE WENT. Positive evidence that the home this arm hands the server is the one it
+  // writes under — an absent file would not show that nothing was written elsewhere.
+  const wrote = existsSync(join(home, "trademark", "telemetry", "trademark-mcp-access.jsonl"));
+  rmSync(home, { recursive: true, force: true });
+  assert.ok(wrote, "the server's access line did not land under the home it was handed — find where it went");
 
   const msgs = out.split("\n").filter(Boolean)
     .map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);

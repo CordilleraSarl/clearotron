@@ -44,11 +44,11 @@ test("runner drains every agent queue and runs each job as its own agent", async
   })) pinEnv(process.env, k, v);
 
   // one job in the second agent's queue (clawdi-alex) and one in the first agent's (clawdi)
-  const lisaQ = queueFor(root, "clawdi-alex");
+  const alexQ = queueFor(root, "clawdi-alex");
   const clawdiQ = queueFor(root, "clawdi");
-  mkdirSync(lisaQ, { recursive: true });
+  mkdirSync(alexQ, { recursive: true });
   mkdirSync(clawdiQ, { recursive: true });
-  writeFileSync(join(lisaQ, "job-alex.json"), JSON.stringify(job("alex")));
+  writeFileSync(join(alexQ, "job-alex.json"), JSON.stringify(job("alex")));
   writeFileSync(join(clawdiQ, "job-jordan.json"), JSON.stringify(job("jordan")));
 
   const { main } = await import(`../runner.mjs?bust=${Math.random()}`);
@@ -59,24 +59,24 @@ test("runner drains every agent queue and runs each job as its own agent", async
   refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.queue.test.mjs");
 
   // Each job marked .done in its OWN origin queue (not centralized to clawdi's).
-  assert.ok(existsSync(join(lisaQ, "job-alex.done")), ".done landed in clawdi-alex's queue");
+  assert.ok(existsSync(join(alexQ, "job-alex.done")), ".done landed in clawdi-alex's queue");
   assert.ok(existsSync(join(clawdiQ, "job-jordan.done")), ".done landed in clawdi's queue");
 
-  const lisaRes = JSON.parse(readFileSync(join(lisaQ, "job-alex.done.result"), "utf8"));
+  const alexRes = JSON.parse(readFileSync(join(alexQ, "job-alex.done.result"), "utf8"));
   const ownerRes = JSON.parse(readFileSync(join(clawdiQ, "job-jordan.done.result"), "utf8"));
-  assert.equal(lisaRes.ok, true, JSON.stringify(lisaRes));
+  assert.equal(alexRes.ok, true, JSON.stringify(alexRes));
   assert.equal(ownerRes.ok, true, JSON.stringify(ownerRes));
 
   // Run-dir rooted in the FORWARDING agent's workspace.
-  assert.ok(lisaRes.runDir.includes("/workspace-clawdi-alex/"), `alex run-dir under alex workspace: ${lisaRes.runDir}`);
+  assert.ok(alexRes.runDir.includes("/workspace-clawdi-alex/"), `alex run-dir under alex workspace: ${alexRes.runDir}`);
   assert.ok(/\/workspace-clawdi\/(?!.*alex)/.test(ownerRes.runDir) || ownerRes.runDir.includes("/workspace-clawdi/studio/"),
     `jordan run-dir under clawdi workspace: ${ownerRes.runDir}`);
   assert.ok(!ownerRes.runDir.includes("workspace-clawdi-alex"), "jordan did not land in alex's workspace");
 
   // The pipeline executed as the right agent (start event records it).
-  const lisaLog = readFileSync(driverDir(lisaRes.runDir, "run.jsonl"), "utf8");
+  const alexLog = readFileSync(driverDir(alexRes.runDir, "run.jsonl"), "utf8");
   const ownerLog = readFileSync(driverDir(ownerRes.runDir, "run.jsonl"), "utf8");
-  assert.match(lisaLog, /"agent":\s*"clawdi-alex"/, "alex job ran as clawdi-alex");
+  assert.match(alexLog, /"agent":\s*"clawdi-alex"/, "alex job ran as clawdi-alex");
   assert.match(ownerLog, /"agent":\s*"clawdi"/, "jordan job ran as clawdi");
 });
 
@@ -92,11 +92,11 @@ test("WS-C runner: a broken queue dir is isolated — sibling queues still drain
   })) pinEnv(process.env, k, v);
   const { config } = await import("../driver.config.mjs");
   const root = config.workspaceRoot;
-  const lisaQ = queueFor(root, "clawdi-alex");
+  const alexQ = queueFor(root, "clawdi-alex");
   const brokenQ = queueFor(root, "clawdi-sam");
-  mkdirSync(lisaQ, { recursive: true });
+  mkdirSync(alexQ, { recursive: true });
   mkdirSync(brokenQ, { recursive: true });
-  writeFileSync(join(lisaQ, "job-iso.json"), JSON.stringify({ ...job("alex"), id: "test-iso", msgId: "<test-iso@x>", ref: "TMP9002" }));
+  writeFileSync(join(alexQ, "job-iso.json"), JSON.stringify({ ...job("alex"), id: "test-iso", msgId: "<test-iso@x>", ref: "TMP9002" }));
   writeFileSync(join(brokenQ, "job-broken.json"), JSON.stringify({ ...job("sam"), ref: "TMP9003" }));
   const { chmodSync: chmod } = await import("node:fs");
   chmod(brokenQ, 0o000);                                  // readdirSync inside drainQueue throws EACCES
@@ -110,6 +110,6 @@ test("WS-C runner: a broken queue dir is isolated — sibling queues still drain
   } finally {
     chmod(brokenQ, 0o755);                                // restore so tmp cleanup works
   }
-  assert.ok(existsSync(join(lisaQ, "job-iso.done")), "the healthy queue drained despite the broken sibling");
+  assert.ok(existsSync(join(alexQ, "job-iso.done")), "the healthy queue drained despite the broken sibling");
   assert.ok(existsSync(join(brokenQ, "job-broken.json")), "the broken queue's job is untouched (re-claimable after the fix)");
 });

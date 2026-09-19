@@ -194,6 +194,19 @@ test("no raw systemd error reaches the report — the command speaks for itself"
 // that is up, listening and refusing everything is the worst of the three states to debug, and nothing
 // surfaced the mismatch. Found by an operator pass, not by any check.
 
+test("an access log with lines in it is reported as having entries, never as being written", () => {
+  // A file's size says something was written once, not that anything is writing now. The line that
+  // claimed "is being written" was printed over a log whose only entry came from a test run.
+  const dir = mkdtempSync(join(tmpdir(), "doctor-audit-"));
+  const log = join(dir, "trademark-mcp-access.jsonl");
+  writeFileSync(log, '{"method":"initialize","status":"connected","transport":"stdio","door":"local"}\n');
+  try {
+    const { out } = doctor({ env: { TRADEMARK_MCP_AUDIT_LOG: log } });
+    assert.ok(out.includes(`the client door's access log has entries: ${log}`), `the line does not say what was read:\n${out}`);
+    assert.doesNotMatch(out, /access log is being written/, "doctor still claims the log is being written");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
 test("a port the allow-list does not name is reported, with what it would cost", () => {
   // NO REGISTER NAMED, deliberately: `free-tier` brings real credential problems of its own, and the
   // exit assertion below would then be measuring those instead of this. An earlier draft did exactly

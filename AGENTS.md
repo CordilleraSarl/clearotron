@@ -56,9 +56,8 @@ passphrase only when its output is a terminal; with its output captured, it prin
 a new one instead, for a person to run in a terminal. In a clone the demo needs the built bundle: without
 it, it stops before starting anything and names `npm run build:ui`.
 
-The demo does not exit by itself, and `--no-open` keeps it from opening a browser. Stop it with Ctrl-C.
-To run it unattended, start it from the clone as `node bin/clearotron.mjs demo --no-open &` and stop it
-with a TERM to that pid: a TERM to an `npx` process ends npx and leaves the demo holding its three ports.
+The demo does not exit by itself, and `--no-open` keeps it from opening a browser. Stop it with Ctrl-C,
+or with a TERM to the pid your shell gave you for `npx clearotron demo --no-open &`; the whole demo stops.
 It removes its folder when it stops; `--keep` keeps it.
 
 `npm test` is the fast tier. `npm run test:full` is the merge gate and adds the files that drive the
@@ -97,7 +96,7 @@ clearance are later steps for when the user asks to continue.
 The handoff, to copy whole:
 
 ```text
-Read https://clearotron.ai/llms.txt and explain what Clearotron does. Help me explore its free demo on my computer. Check for Node.js 22.13 or newer, then run `npx clearotron demo`. Help me open the portal, sign in, and open a sample clearance. Keep the demo running while I explore, and explain how to stop it. Use the published package; I am asking for a demo, not permanent installation or a paid clearance. If you cannot run it somewhere I can access, explain what is missing and give me this complete request to take to an assistant with terminal access on my computer.
+Read https://clearotron.ai/try/ (or https://clearotron.ai/llms.txt) and explain what Clearotron does. Help me explore its free demo on my computer. Check for Node.js 22.13 or newer, then run `npx clearotron demo`. Help me open the portal, sign in, and open a sample clearance. Keep the demo running while I explore, and explain how to stop it. Use the published package; I am asking for a demo, not permanent installation or a paid clearance. If you cannot run it somewhere I can access, explain what is missing and give me this complete request to take to an assistant with terminal access on my computer.
 ```
 
 ## The commands

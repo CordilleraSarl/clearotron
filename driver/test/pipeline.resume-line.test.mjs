@@ -34,8 +34,8 @@ test("the command is absolute, names the codename, and carries --agent only when
     `node ${SCRIPT} --job ${JOB} --resume tealkeystone`);
   // --agent roots the run dir in that agent's workspace, so a resume without it looks in the wrong studio
   // and reports no live run dir.
-  assert.equal(resumeCommand({ script: SCRIPT, jobPath: JOB, codename: "tealkeystone", agent: "lisa" }),
-    `node ${SCRIPT} --job ${JOB} --agent lisa --resume tealkeystone`);
+  assert.equal(resumeCommand({ script: SCRIPT, jobPath: JOB, codename: "tealkeystone", agent: "alex" }),
+    `node ${SCRIPT} --job ${JOB} --agent alex --resume tealkeystone`);
   assert.equal(resumeCommand({ script: SCRIPT, jobPath: JOB, codename: null }), null);
 });
 
@@ -188,8 +188,8 @@ test("a resume command is valid without a job file, because the codename is the 
   assert.equal(resumeCommand({ script: SCRIPT, jobPath: null, codename: "tealkeystone" }),
     `node ${SCRIPT} --resume tealkeystone`,
     "no command was offered for a run whose job file is gone — which is every failed run");
-  assert.equal(resumeCommand({ script: SCRIPT, jobPath: null, codename: "tealkeystone", agent: "lisa" }),
-    `node ${SCRIPT} --agent lisa --resume tealkeystone`);
+  assert.equal(resumeCommand({ script: SCRIPT, jobPath: null, codename: "tealkeystone", agent: "alex" }),
+    `node ${SCRIPT} --agent alex --resume tealkeystone`);
   // The path still rides when there IS one: a caller holding the job should keep naming it.
   assert.equal(resumeCommand({ script: SCRIPT, jobPath: JOB, codename: "tealkeystone" }),
     `node ${SCRIPT} --job ${JOB} --resume tealkeystone`);

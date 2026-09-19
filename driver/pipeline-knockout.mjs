@@ -56,6 +56,7 @@ import { registerUnavailableOffices } from "./register-unreachable.mjs";
 import { runRecordLogPath } from "../providers/_shared/ledger-path.mjs";   // — this run's record log
 import { validators as koValidators, validateMergedFindings, worstBand, registerSurfacedFilings, raterCaveats, SURVIVOR_BOUNDARY_RE } from "./verify-knockout.mjs";
 import { reviewAbout, reviewEvidence, reviewEvidenceLines, applyKnockoutReview, knockoutReviewFile } from "./knockout-review-record.mjs";
+import { stripNextStepSections } from "./knockout-next-step.mjs";
 import { publishKnockout, composeKnockoutEmail } from "./publish/knockout.mjs";
 import { writeRunStatus, rollupStatus, atomicWrite, identitySeed } from "./progress.mjs";   // — the identity seed is shared; the stepper is not
 import { batchMarkName } from "./mark-name.mjs";
@@ -347,6 +348,28 @@ export function survivorBoundaryNote(policy) {
   const product = reportIdentityFor(policy ?? null).identity;
   const screenName = product ? `a ${product}` : "a knockout screen";
   return `This is ${screenName}, not a clearance. A mark not knocked out here is not clear — it is not knocked out at this screen's depth, and proceeds to clearance. Nothing above is a finding of availability.`;
+}
+
+// ── a next-step section the model wrote comes off, in code ──────────────────────────────────────────
+//
+// Each name's read is published as its own report, and the screen states findings and a rating — what to
+// do with the name is the reading lawyer's. A heading the model wrote over a next step, and the section
+// under it, are removed here and named in the run record; `knockout-next-step.mjs` says what counts. This
+// replaced a pre-delivery refusal that re-asked the whole chunk for the same edit (owner, 2026-09-19).
+// EXPORTED so the record line is driven directly, not only through a whole pipeline.
+export function removeNextStepSections(runDir, marks) {
+  const out = [];
+  for (const m of marks ?? []) {
+    if (typeof m?.assessment !== "string") continue;
+    const { text, removed } = stripNextStepSections(m.assessment);
+    if (!removed.length) continue;
+    m.assessment = text;
+    const row = { event: "knockout-next-step-removed", mark: m.name, headings: removed.map((r) => r.heading),
+      chars: removed.reduce((n, r) => n + r.chars, 0), lane: "knockout" };
+    runLog(runDir, row);
+    out.push(row);
+  }
+  return out;
 }
 
 // ── — the knockout lane's recovery park ───────────────────────────────────────
@@ -964,6 +987,9 @@ export async function knockoutInner(ctx, job, opts = {}) {
     // it runs BEFORE the artifact is written, not after. The counts are logged because a receipts pass
     // over zero citations is a different fact from a receipts pass, and only the count can tell them
     // apart afterwards.
+    // BEFORE THE GATE AND THE WRITE, so the record on disk is the record that ships, and the reviewing
+    // pass never addresses a line inside a section that is about to go.
+    removeNextStepSections(run.runDir, merged.marks);
     const mv = validateMergedFindings(run.runDir, merged, plan);
     if (!mv.ok) throw new StageFailure("knockout-assess", `merged findings failed the lint: ${mv.failures.join("; ")}`, null);
     runLog(run.runDir, { event: "knockout-receipts", ...mv.receipts });

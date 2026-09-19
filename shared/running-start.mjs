@@ -13,9 +13,9 @@
 // record whose process is gone is read as absent, and `status` asks the portal itself before saying the
 // product is up. Three answers, all honest: up; started but not answering; not running.
 
-import { mkdirSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, readdirSync, readFileSync, renameSync, rmSync, rmdirSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 
 /**
  * Where the records live: one file per serving process, beside the settings and the revocation list.
@@ -37,9 +37,14 @@ export function pidAlive(pid) {
 /**
  * Record one serving start. Returns the function that removes the record; calling it twice is harmless,
  * so the caller can hang it on both its own shutdown and the process's `exit`.
+ *
+ * THE FOLDERS THIS RECORD MADE GO WITH IT, when nothing else is in them. On a home that had none, the
+ * demo's record created `~/.config/clearotron/running` and its parent, and a clean stop left both behind
+ * under a banner saying nothing of the demo was left (measured 2026-09-19). A folder that was already
+ * there, or that holds anything else, stays: `rmdirSync` removes only an empty directory.
  */
 export function recordRunning(rec, { dir = runningDir() } = {}) {
-  mkdirSync(dir, { recursive: true });
+  const made = mkdirSync(dir, { recursive: true });
   const file = join(dir, `${rec.pid}.json`);
   const tmp = `${file}.tmp`;
   writeFileSync(tmp, `${JSON.stringify(rec, null, 2)}\n`, { mode: 0o600 });
@@ -49,6 +54,12 @@ export function recordRunning(rec, { dir = runningDir() } = {}) {
     if (gone) return;
     gone = true;
     try { rmSync(file, { force: true }); } catch { /* already gone */ }
+    if (made) {
+      for (let d = dir; ; d = dirname(d)) {
+        try { rmdirSync(d); } catch { break; }   // not empty, or gone: either way, not ours to take
+        if (d === made) break;
+      }
+    }
   };
 }
 

@@ -87,10 +87,22 @@ test("the doctrine asks for no conclusion about the name, and still forbids the 
   assert.match(s, /Never "clear", "clean", "no conflicts found", "clear to proceed"/,
     "the words this screen must never say are no longer forbidden to the writer");
   // RULED AGAIN 2026-09-18, after a re-run with both instructions cut wrote a conclusion anyway, under a
-  // heading of its own: cutting an instruction stops the engine asking for a sentence, and only a
-  // refusal stops the writer offering one. The words are the owner's, pinned as he approved them.
+  // heading of its own: cutting an instruction stops the engine asking for a sentence, and does not stop
+  // the writer offering one. The words are the owner's, pinned as he approved them.
   assert.match(s, /\*\*No recommendation, and no next step\.\*\*/,
     "the doctrine no longer forbids the conclusion in terms");
+});
+
+test("no copy of the opening-read instruction the model is handed asks what to do with the name", () => {
+  // The clause was cut from the skill file and lived on in two more texts the model reads on the same
+  // turn: the stage's own message, and the description on the field the read is sent back in. Measured on
+  // a delivered knockout (2026-09-19): the model's four sub-headers matched that field description clause
+  // for clause, and the fourth was "What to do with it". Cutting one copy of an instruction leaves it asked.
+  for (const f of ["driver/skills/knockout-assess/SKILL.md", "driver/stages-knockout.mjs", "driver/engine/mcp/recording-server.mjs"]) {
+    const s = read(f);
+    assert.doesNotMatch(s, /what (?:a reader should |to )?do with (?:that|it)\b/i, `${f} asks again for what to do with the name`);
+    assert.match(s, /what drives the rating\./, `${f} no longer carries the opening-read instruction this arm reads — find where it moved`);
+  }
 });
 
 test("SKILL.md's closed-key block names every key the validator actually requires", () => {

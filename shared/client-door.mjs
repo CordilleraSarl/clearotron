@@ -134,6 +134,26 @@ export function demoTokenSecret(base, io) {
  * cannot type, and it names the demo's base so the verb reads that demo's secret and guest list. An
  * install moved with `--base` is named too, for its guest list; the default install needs neither.
  */
+/**
+ * What an account key is for, in the owner's words (2026-09-19), printed first by every command that
+ * hands one over. ONE COPY: `key issue` and `connect --base` both print it, and a second copy of an
+ * approved sentence is the one that drifts. `reset` is the passphrase command as the caller composes it.
+ */
+export function keyPurposeLine({ email, brand, reset }) {
+  return `This key lets an AI assistant act as ${email} through ${brand}'s client door. `
+    + `It is not a portal sign-in; the portal uses the passphrase (${reset}).`;
+}
+
+/**
+ * The command that connects an assistant to a running DEMO: it mints the key and names the client door
+ * in one step, so nobody issues a key by hand (owner, 2026-09-19). A demo keeps its own secret and guest
+ * list in its folder, which is why the folder is named.
+ */
+export function demoConnectCommand({ prefix = "", base }) {
+  const q = (d) => (/\s/.test(d) ? `"${d}"` : d);
+  return `${prefix}clearotron connect --base ${q(base)}`;
+}
+
 export function keyIssueCommand({ prefix = "", demo = false, user = null, base = null, defaultBase = null } = {}) {
   const q = (d) => (/\s/.test(d) ? `"${d}"` : d);
   const who = demo && user ? user : "<email>";

@@ -122,6 +122,13 @@ const CHROME_RES = [
   // has stopped matching. Removing the wrapper first would take the nav with it, drive the count to
   // zero, and turn a security assertion into a permanent false alarm.
   { tag: "div", open: /<div class="[^"]*\brep-stickyhead\b[^"]*"[^>]*>/ },
+  // THE SECTION MENU, WHEREVER THE RENDERER PUT IT. A report rendered today carries it inside the header
+  // above, and it goes with that. A report rendered before 2026-09-18 carries it just AFTER the header, so
+  // stripping the header alone left it in the frame: a second copy of the menu the portal draws, pinned
+  // over the report's title band, its current item red on red in the dark theme. Measured on an archived
+  // global preliminary report served by a published beta. Archived reports are served from their baked
+  // bytes, so this has to happen here rather than in the renderer. `sectionsOf` has already read it.
+  { tag: "nav", open: /<nav class="[^"]*\bstrip\b[^"]*"[^>]*>/ },
   // the "Internal review copy — stripped on export" bar, which hosted the quality-capture controls
   { tag: "div", open: /<div class="[^"]*\breview\b[^"]*\binternal\b[^"]*"[^>]*>/ },
   // per-finding flag buttons and their popovers
@@ -529,7 +536,7 @@ const EMBED_JS = `
   function schedule(){
     if(queued)return;
     queued=true;
-    requestAnimationFrame(function(){queued=false;post();});
+    requestAnimationFrame(function(){queued=false;post();sections();});
   }
   // WHICH CONTROLS THIS DOCUMENT ACTUALLY HAS.
   //
@@ -559,12 +566,24 @@ const EMBED_JS = `
   // script) and the shell draws it in its own header. Only the ids that are really in the document are
   // announced: a report whose renderer named a section it did not draw would otherwise offer the reader
   // a breadcrumb entry that jumps nowhere.
+  //
+  // AND WHERE EACH ONE STARTS, so the shell can show how far the reader has got (owner, 2026-09-19): every
+  // section reached so far is marked, the rest are not. The page scrolls, not this frame, so only the shell
+  // knows where the reader is. It needs each section's top in this document to compare. Said again whenever
+  // the layout moves: a panel opening pushes every section below it down.
+  var saidSections='';
   function sections(){
     try{
       var list=window.__CORD_SECTIONS;
       if(!list||!list.length)return;
       var live=[];
-      for(var i=0;i<list.length;i++) if(document.getElementById(list[i].id)) live.push(list[i]);
+      for(var i=0;i<list.length;i++){
+        var el=document.getElementById(list[i].id);
+        if(el) live.push({id:list[i].id,label:list[i].label,top:Math.max(0,Math.round(el.getBoundingClientRect().top+window.scrollY))});
+      }
+      var said=JSON.stringify(live);
+      if(said===saidSections)return;
+      saidSections=said;
       parent.postMessage({source:TAG,type:'sections',sections:live},'*');
     }catch(e){}
   }

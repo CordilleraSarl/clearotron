@@ -2818,6 +2818,9 @@ export async function runCheck() {
       info(`the units are installed but their environment could not be read (${unitEnv?.why ?? "no reason given"}) — `
         + "the door verdicts below are withheld rather than guessed, because a failure to look is not a finding");
     if (door.shape === "local") {
+      // WHO THAT ONE USER IS, in the owner's words (2026-09-19), resolved as `start` resolves it.
+      const oneUser = String(effectiveForService("PORTAL_LOCAL_USER")?.v || `${userInfo().username}@localhost`).trim().toLowerCase();
+      say(`  · Portal sign-in: one user, ${oneUser}, by passphrase.`);
       say(`  · local passphrase door (${typed}) — one operator, one passphrase, no identity provider`);
       info(`a lost passphrase is recoverable: ${invocationPrefix()}clearotron passphrase --reset`);
     } else if (door.shape === "fronted") {
@@ -3194,7 +3197,10 @@ export async function runCheck() {
         try { const s = statSync(p); if (s.size > 0) { wrote = p; break; } } catch { /* not this one */ }
       }
       if (wrote) {
-        ok(`the client door's access log is being written: ${wrote}`);
+        // WHAT WAS READ, AND NOTHING MORE. This said "is being written" from any non-empty file — a claim
+        // about activity made from a file's size, printed over a log whose only line was a test's
+        // (measured 2026-09-19). Reworded as the owner ruled, 2026-09-19.
+        ok(`the client door's access log has entries: ${wrote}`);
       } else {
         // NOT-YET-WRITTEN IS NOT UNWRITABLE. A door nobody has called through has no log, and saying it
         // is broken would be the same lie as calling an unreachable unit inactive.

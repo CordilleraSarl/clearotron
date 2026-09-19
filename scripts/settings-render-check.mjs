@@ -381,7 +381,10 @@ const SPEC = {
   caseLawGap: 'Until these are set up, a Full country search still runs and its report discloses the case-law gap instead of reporting no adverse case law.',
   adminLine: 'To change the address, the permissions or the companies on it, contact your Clearotron administrator.',
   blurLine: 'On the top bar. It covers every mark and company on screen, and an open report whole. It stays as you left it on this computer.',
-  reset: 'Lost the passphrase? Run clearotron passphrase --reset on the machine running this portal. It mints a new one and prints it once.',
+  // The sign-in page's wording is the owner's, approved 2026-09-19 and used verbatim.
+  identity: (email) => `This Clearotron has one user: ${email}. Enter its passphrase.`,
+  reset: 'The passphrase was printed once when this Clearotron first started. Lost it? Run clearotron passphrase --reset on the machine running this portal. It prints a new one, once, for the same user.',
+  key: 'A key from clearotron key issue is for an AI assistant, not for this page.',
   addPeople: 'To add people, put it behind a login system such as your company single sign-on. How to set that up',
 }
 
@@ -543,18 +546,18 @@ for (const theme of ['light', 'dark']) {
     await setTheme(theme)
     const closed = (await evalIn(signInProbe)) ?? {}
     out[`${label}-closed-${theme}`] = closed
-    ok(closed.heading === 'Sign in' && closed.identity === `Clearotron portal, as ${EMAIL}.` && closed.field && closed.button === 'Sign in',
-      `the card keeps its heading, identity line, field and button (saw ${JSON.stringify({ h: closed.heading, id: closed.identity, button: closed.button })})`)
-    ok(closed.lead === 'This Clearotron signs in one person: you.' && closed.leadBold, `one bold line under the button (saw ${JSON.stringify(closed.lead)})`)
+    ok(closed.heading === 'Sign in' && closed.identity === SPEC.identity(EMAIL) && closed.field && closed.button === 'Sign in',
+      `the card keeps its heading, names the install's one user, and keeps the field and button (saw ${JSON.stringify({ h: closed.heading, id: closed.identity, button: closed.button })})`)
+    ok(!closed.lead && !closed.leadBold, `the "signs in one person" line is gone from under the button (saw ${JSON.stringify(closed.lead)})`)
     ok(closed.summary === 'Administrator help' && closed.open === false && closed.hintsShown === 0,
       `the administrator's lines sit in a closed "Administrator help" fold (saw ${JSON.stringify({ summary: closed.summary, open: closed.open, shown: closed.hintsShown })})`)
     if (!reset) await capture(`sign-in-help-closed-${theme}`)
     await press('.card details.fold > summary')
     const opened = (await evalIn(signInProbe)) ?? {}
     out[`${label}-open-${theme}`] = opened
-    ok(opened.open === true && opened.hintsShown === 2, `pressing it opens both lines (saw ${JSON.stringify({ open: opened.open, shown: opened.hintsShown })})`)
-    ok(opened.hints[0] === (reset ? SPEC.reset.replace('clearotron passphrase --reset', reset) : SPEC.reset) && opened.hints[1] === SPEC.addPeople,
-      `the fold holds the product's two lines word for word (saw ${JSON.stringify(opened.hints)})`)
+    ok(opened.open === true && opened.hintsShown === 3, `pressing it opens its three lines (saw ${JSON.stringify({ open: opened.open, shown: opened.hintsShown })})`)
+    ok(opened.hints[0] === (reset ? SPEC.reset.replace('clearotron passphrase --reset', reset) : SPEC.reset) && opened.hints[1] === SPEC.key && opened.hints[2] === SPEC.addPeople,
+      `the fold holds the owner's three lines word for word (saw ${JSON.stringify(opened.hints)})`)
     ok(opened.setUp?.text === 'How to set that up' && opened.setUp?.href === LOGIN_IN_FRONT_DOC, `with the "How to set that up" link (saw ${JSON.stringify(opened.setUp)})`)
     ok(opened.codeInside && !opened.overflowsPage && opened.cardWidth <= 420,
       `the reset command stays inside the card at its own width (card ${opened.cardWidth}px, ${opened.codeLines} line(s), inside: ${opened.codeInside})`)

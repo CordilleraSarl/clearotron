@@ -496,6 +496,9 @@ jobs:
       # measured from inside its frame — the attribute its dark rules key on, the ground it paints, and
       # that it repainted in place rather than reloading.
       - run: node scripts/report-theme-render-check.mjs
+      # The report's section strip sits under the Reads on its own row and shows how far the reader has
+      # got: a real report and twelve reads, 1440 and 400 wide, both themes, the page scrolled down and back.
+      - run: node scripts/report-sections-render-check.mjs
       - run: node scripts/settings-render-check.mjs
       - run: node scripts/portal-lifecycle-check.mjs
 

@@ -32,6 +32,7 @@ import { defaultInstallBase, establishCredential, installCredential, readLocalCr
 // rather than hardcoded. A hardcoded `npx ` tells a global installer their install is somehow lesser;
 // a hardcoded bare name sends an npx reader to `command not found`.
 import { invocationPrefix } from "../shared/invocation.mjs";
+import { BRAND } from "../shared/brand.mjs";
 
 const P = invocationPrefix();
 const USAGE = `  ${P}clearotron passphrase — report or reset the portal's local sign-in
@@ -117,8 +118,9 @@ catch (e) {
   process.exit(1);
 }
 
-console.log(`\n  A NEW passphrase has been minted for ${email}.`);
-console.log(`  The previous one no longer works.\n`);
+// THE OWNER'S WORDS, 2026-09-19: what the value is for comes before it, and names the one user it signs in.
+console.log(`\n  New passphrase for this ${BRAND.name}'s one user, ${email}. Paste it on the portal's sign-in page:\n`);
 console.log(`  PASSPHRASE: ${minted.passphrase}\n`);
+console.log(`  The previous one no longer works.`);
 console.log(`  Write it down now. It is stored only as a digest, so this line is the only copy that will`);
 console.log(`  ever exist — re-run this command if you lose it.\n`);

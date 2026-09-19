@@ -30,7 +30,7 @@
 import { readFileSync, writeFileSync, renameSync, existsSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { driverDir } from "../../../shared/driver-dir.mjs";   //
-import { PLAN_PREDICATES, PLAN_MAX_OR_WIDTH, PLAN_MAX_NAME_LENGTH, fingerprint, ownerIntersectionGap, resolveRegions } from "../../register-plan.mjs";
+import { PLAN_PREDICATES, PLAN_MAX_OR_WIDTH, PLAN_MAX_NAME_LENGTH, fingerprint, ownerIntersectionGap, resolveRegions, houseElementOf, withoutHouseElementTerms } from "../../register-plan.mjs";
 import { entryTermIssues } from "../../../providers/_shared/term-shape.mjs";
 import { isNonLatinTerm, romanizationRefusal, romanizationSpellings, nativeScriptIndexGap } from "../../../providers/_shared/script-form.mjs";
 
@@ -289,9 +289,10 @@ export async function proposeSupplemental(params, tctx, deps) {
   // execute-plan kernel hands it to the provider's buildEntryQuery, which backfills only entries that
   // declare none (makeRegionRequiredBuildEntryQuery). A proposal that DOES declare regions is
   // untouched, qid fingerprints are unchanged, and providers that do not require regions ignore it.
-  let planRegions = [], planClasses = [];
+  let planRegions = [], planClasses = [], house = null;
   try {
     const frozen = JSON.parse(readFileSync(driverDir(dirname(dirname(outPath)), "register-plan.json"), "utf8"));
+    house = houseElementOf(frozen);
     planRegions = (Array.isArray(frozen?.regions) ? frozen.regions : []).map((r) => String(r).trim()).filter(Boolean);
     // C3 — the frozen plan's own class list is the priority set: proposals intersecting it compete
     // for the per-call/per-axis caps first (mintSupplementalEntries stable-sorts; values unchanged).
@@ -307,8 +308,24 @@ export async function proposeSupplemental(params, tctx, deps) {
   }
   const perCall = 12;   // step 3 — was a knob; no environment ever set it
   const axisMax = 24;   // step 3 — was a knob; no environment ever set it
+  // ── THE CLIENT'S OWN ELEMENT IS LEFT OUT BEFORE ANYTHING RUNS ───────────────────────────────────
+  //
+  // This tool EXECUTES what it mints, before the fold adds it to the plan, so the fold's own exclusion
+  // (`houseElementOf` in register-plan.mjs) comes too late here: the query would already have run. On
+  // the first live run that proposed an exclusion, this session proposed an exact search on the bare
+  // house element the compile had set aside. The same rule is applied here, before the mint. Not a
+  // rejection: rejected[] becomes an OPEN ask on the report, and the element is not an open question.
+  const excludedHouse = [];
+  const offered = [];
+  for (const p of proposals) {
+    const kept = house ? withoutHouseElementTerms({ ...(p ?? {}), predicate: String(p?.predicate ?? "default") }, house) : p;
+    if (!kept) { excludedHouse.push(String(p?.term ?? p?.terms?.[0] ?? "")); continue; }
+    offered.push(kept === p || !Array.isArray(kept.terms) ? p : { ...p, terms: kept.terms });
+  }
+  if (!offered.length)
+    return { type: "text", text: JSON.stringify({ minted: [], reused: [], rejected: [], excluded_house_element: excludedHouse, executed: false }, null, 2) };
   const existingQids = new Set(supp.entries.map((e) => e.qid));
-  const { minted, reused, rejected, enriched, narrowed } = mintSupplementalEntries(axis, proposals,
+  const { minted, reused, rejected, enriched, narrowed } = mintSupplementalEntries(axis, offered,
     { existingQids, perCall, axisMax, existingCount: supp.entries.length, capabilities: deps.capabilities ?? null, priorityClasses: planClasses });
 
   // Field-level romanisation enrichment of a REUSED qid (2026-07-30 review round): the natural retry —
@@ -373,7 +390,7 @@ export async function proposeSupplemental(params, tctx, deps) {
     const r = await executePlan({ plan_path: suppPath, axis, output_path: outPath, qids }, tctx);
     const text = r && typeof r === "object" ? (r.text ?? "") : String(r ?? "");
     if (!text || text.startsWith("ERROR")) {
-      return { type: "text", text: JSON.stringify({ minted: minted.map((e) => e.qid), reused, ...(enrichedQids.length ? { enriched: enrichedQids } : {}), ...(conflicts.length ? { conflict: conflicts } : {}), rejected, ...(narrowed.length ? { narrowed } : {}), executed: false, error: text.slice(0, 300) || "executor returned nothing" }, null, 2) };
+      return { type: "text", text: JSON.stringify({ minted: minted.map((e) => e.qid), reused, ...(enrichedQids.length ? { enriched: enrichedQids } : {}), ...(conflicts.length ? { conflict: conflicts } : {}), rejected, ...(excludedHouse.length ? { excluded_house_element: excludedHouse } : {}), ...(narrowed.length ? { narrowed } : {}), executed: false, error: text.slice(0, 300) || "executor returned nothing" }, null, 2) };
     }
     try { summary = JSON.parse(text); } catch { summary = { raw: text.slice(0, 300) }; }
   }
@@ -398,5 +415,5 @@ export async function proposeSupplemental(params, tctx, deps) {
     }
   } catch { /* band unreadable — the executor summary still crosses */ }
 
-  return { type: "text", text: JSON.stringify({ minted: minted.map((e) => e.qid), reused, ...(enrichedQids.length ? { enriched: enrichedQids } : {}), ...(conflicts.length ? { conflict: conflicts } : {}), rejected, ...(narrowed.length ? { narrowed } : {}), executed: qids.length > 0, summary, results }, null, 2) };
+  return { type: "text", text: JSON.stringify({ minted: minted.map((e) => e.qid), reused, ...(enrichedQids.length ? { enriched: enrichedQids } : {}), ...(conflicts.length ? { conflict: conflicts } : {}), rejected, ...(excludedHouse.length ? { excluded_house_element: excludedHouse } : {}), ...(narrowed.length ? { narrowed } : {}), executed: qids.length > 0, summary, results }, null, 2) };
 }

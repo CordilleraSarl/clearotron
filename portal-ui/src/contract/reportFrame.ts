@@ -42,7 +42,9 @@ export type FrameVerb = FrameCommand | 'section' | 'theme'
 export type FrameTheme = 'light' | 'dark'
 
 /** One entry of the report's section breadcrumb: the anchor's id and the word the reader sees. */
-export type FrameSection = { readonly id: string; readonly label: string }
+// `top` is where the section starts in the document, in CSS pixels from its top. Absent from a document
+// that did not say, and then no progress is shown past it.
+export type FrameSection = { readonly id: string; readonly label: string; readonly top?: number }
 
 /** A header is a header, not a table of contents; and a hostile document does not get to fill the page. */
 export const MAX_SECTIONS = 12
@@ -262,14 +264,39 @@ export function readFrameSections(data: unknown, sameSource: boolean): FrameSect
   const out: FrameSection[] = []
   for (const raw of msg.sections) {
     if (typeof raw !== 'object' || raw === null) continue
-    const { id, label } = raw as { id?: unknown; label?: unknown }
+    const { id, label, top } = raw as { id?: unknown; label?: unknown; top?: unknown }
     if (typeof id !== 'string' || typeof label !== 'string') continue
     const trimmed = label.trim().slice(0, MAX_SECTION_LABEL)
     if (!id.trim() || !trimmed) continue
-    out.push({ id, label: trimmed })
+    out.push(typeof top === 'number' && Number.isFinite(top) && top >= 0
+      ? { id, label: trimmed, top: Math.round(top) }
+      : { id, label: trimmed })
     if (out.length === MAX_SECTIONS) break
   }
   return out
+}
+
+/**
+ * HOW FAR THE READER HAS GOT THROUGH ONE DOCUMENT (owner, 2026-09-19): the section strip shows progress,
+ * not a set of pages. Every section reached so far is marked and the rest are not, so it reads as none at
+ * the top, then the first, then the first two, and un-marks the same way on the way back up.
+ *
+ * `line` is the reading line, the bottom of the pinned header, measured in the document's own pixels. A
+ * section is reached once its start has come up to that line. At the TOP of the page nothing is reached:
+ * the first section starts a few pixels under the header, closer than any line could be drawn, and the
+ * owner's rule is that the strip reads empty until the reader moves. At the FOOT nothing more can come up
+ * to the line, so every section counts as reached. Sections arrive in document order, so the answer is a
+ * count from the first; one with no known start ends the count rather than being guessed. PURE.
+ */
+export function sectionsReached(sections: readonly FrameSection[], line: number, where: { readonly atTop: boolean; readonly atFoot: boolean }): number {
+  if (where.atTop) return 0
+  if (where.atFoot) return sections.length
+  let n = 0
+  for (const s of sections) {
+    if (typeof s.top !== 'number' || s.top > line) break
+    n += 1
+  }
+  return n
 }
 
 /**

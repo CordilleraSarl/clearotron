@@ -24,6 +24,7 @@ import { constants as SIG } from "node:os";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 import { nodeFloorVerdict, nodeFloorRefusal } from "../shared/node-floor.mjs";   // — one floor, read from package.json
 import { invocationPrefix } from "../shared/invocation.mjs";   // — print a command the reader can type
+import { watchParent } from "../shared/parent-watch.mjs";
 
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -229,6 +230,19 @@ const [verb, ...rest] = process.argv.slice(2);
     };
     process.on(sig, forward);
   }
+
+  // ── AND THE DEMO STOPS WHEN WHATEVER STARTED IT IS GONE ─────────────────────────────────────────────
+  //
+  // The forwarding above covers a signal sent to THIS pid. Through npx it is not this pid a reader holds:
+  // npm → `sh -c` → this launcher, and a TERM to npm dies at that `sh` (shared/parent-watch.mjs). This
+  // launcher is then reparented, and the demo runs on holding its three ports while the reader believes
+  // it stopped. So the demo takes its parent's death as a TERM, and stops everything it started.
+  //
+  // THE DEMO ONLY. A foreground `start` or a `run` outliving the shell that started it can be what the
+  // reader meant: `nohup clearotron start &` on a server they are about to log out of, or an hours-long
+  // clearance they will not babysit. The demo is a replay nobody leaves running on purpose, and its own
+  // banner already says it lasts only as long as the command that started it.
+  if (verb === "demo") watchParent(() => { try { child.kill("SIGTERM"); } catch { /* already gone */ } });
 }
 
 // RESOLVE BOTH SIDES THROUGH SYMLINKS. `npm install` puts a symlink at node_modules/.bin/clearotron, so

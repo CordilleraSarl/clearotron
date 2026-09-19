@@ -21,7 +21,7 @@
 //   D4 verify.mjs  parseCoverageLedgerJson, same shape
 //   D5 verify.mjs:1504  fail(`${unaccounted[0].token}:…`)    — token minted in a DATA ROW
 //   D6 verify.mjs:1567  fail(`${violations[0].token}…`)      — validatePlanFeasibility in register-plan.mjs
-//   D7 verify.mjs:1558  fail(`${v2[0].token}${detail}…`)     — register-plan.mjs:2183 disclosureTextByAxis
+//   D7 verify.mjs:1558  fail(`${v2[0].token}${detail}…`)     — register-plan.mjs:2270 disclosureTextByAxis
 //   D8 verify.mjs:2470 caseLawLedgerFail  fail(caseLawLedgerFail(…))  — token built in case-law-ledger.mjs:195 caseLawLedgerFail
 //
 // A partition built on the 60 tokens a regex CAN see would run green while blind to the rest, which is
@@ -139,10 +139,10 @@ export const VOCABULARY = [
   { token: "coverage_form_missing", stages: ["register-digest"], site: "driver/verify.mjs" },
   { token: "coverage_form_empty", stages: ["register-digest"], site: "driver/verify.mjs" },
   { token: "coverage_status_offenum", stages: ["register-digest"], site: "driver/verify.mjs:2050" },
-  { token: "coverage_deferred_unaccounted", stages: ["register-digest"], site: "driver/verify.mjs coverageFormFail", family: "driver/register-plan.mjs:1860 PROVIDER_HARD_ERROR_PREFIX — token on a data row", dynamic: "D5" },
-  { token: "coverage_clean_unexecuted", stages: ["register-digest"], site: "driver/verify.mjs, the matterContext validator", family: "driver/register-plan.mjs:1594 validatePlanFeasibility", dynamic: "D6" },
-  { token: "coverage_clean_skipped", stages: ["register-digest"], site: "driver/verify.mjs, the matterContext validator", family: "driver/register-plan.mjs:1955 searchedJurisdictionsFromPlan", dynamic: "D6" },
-  { token: "coverage_clean_unverified_incomplete", stages: ["register-digest"], site: "driver/verify.mjs, the matterContext validator", family: "driver/register-plan.mjs:2183 disclosureTextByAxis", dynamic: "D7" },
+  { token: "coverage_deferred_unaccounted", stages: ["register-digest"], site: "driver/verify.mjs coverageFormFail", family: "driver/register-plan.mjs:1947 PROVIDER_HARD_ERROR_PREFIX — token on a data row", dynamic: "D5" },
+  { token: "coverage_clean_unexecuted", stages: ["register-digest"], site: "driver/verify.mjs, the matterContext validator", family: "driver/register-plan.mjs:1681 validatePlanFeasibility", dynamic: "D6" },
+  { token: "coverage_clean_skipped", stages: ["register-digest"], site: "driver/verify.mjs, the matterContext validator", family: "driver/register-plan.mjs:2042 searchedJurisdictionsFromPlan", dynamic: "D6" },
+  { token: "coverage_clean_unverified_incomplete", stages: ["register-digest"], site: "driver/verify.mjs, the matterContext validator", family: "driver/register-plan.mjs:2270 disclosureTextByAxis", dynamic: "D7" },
   { token: "coverage_clean_tainted", stages: ["register-digest"], site: "driver/verify.mjs" },
   { token: "coverage_ledger_", stages: ["register-digest"], site: "driver/verify.mjs", family: "driver/coverage-ledger.mjs (parseCoverageLedgerJson token-first throws)", dynamic: "D4" },
   { token: "coverage_key_unknown", stages: ["register-digest"], site: "driver/verify.mjs", family: "driver/coverage-ledger.mjs", dynamic: "D4" },

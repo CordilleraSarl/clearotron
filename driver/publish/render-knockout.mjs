@@ -62,6 +62,7 @@ import { EXPORT_TOGGLE, exportPopover, EXPORT_MENU_JS } from './report-topbar.mj
 // which is the thing providers/_shared/screen.mjs exists to prevent.
 import { makeClassifyStatus, isAllClass } from '../../providers/_shared/screen.mjs';
 import { saysSomethingNew } from '../../shared/says-something-new.mjs';
+import { isNextStepHeading } from '../knockout-next-step.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
@@ -1513,21 +1514,25 @@ function koScale(framework, band) {
 // It MOVES, it is not copied: `splitOutcome` returns the assessment without it, and the fold renders
 // that remainder, so the words appear once.
 //
+// A RECORD WRITTEN SINCE 2026-09-19 NEVER REACHES THIS WITH ONE: the pipeline removes a next-step section
+// before it writes the record (`knockout-next-step.mjs`), and the heading test below is that module's, so
+// the two cannot come to disagree about what a next step is. What still draws the section is a record
+// written before then, re-rendered.
+//
 // THE HEADING IS THE MODEL'S OWN, so this hoists only the LAST block of the assessment. The assessing
-// skill fixes no heading vocabulary — it asks for sub-headers "where the content divides" and for the
-// read to close on what to do with the name, and the wording is written fresh each run. Matching a list
-// of phrases anywhere in the document would let a mark whose read happens to argue under "Recommendation"
-// in the MIDDLE have that middle lifted to the bottom, handing the client the engine's argument in an
-// order the engine did not write, with nothing going red. A trailing block is the one position where a
-// move cannot reorder what is left. So the phrase list only decides whether the last block is the
-// outcome; anything earlier stays where it was written, and the page renders the assessment whole.
-const OUTCOME_HEADING_RE = /^#{1,6}\s*(?:what to do with it|what happens next|next steps?|recommendations?)\b\s*$/i;
+// skill fixes no heading vocabulary — it asks for sub-headers "where the content divides", and the
+// wording is written fresh each run. Matching a list of phrases anywhere in the document would let a
+// mark whose read happens to argue under "Recommendation" in the MIDDLE have that middle lifted to the
+// bottom, handing the client the engine's argument in an order the engine did not write, with nothing
+// going red. A trailing block is the one position where a move cannot reorder what is left. So the
+// phrase list only decides whether the last block is the outcome; anything earlier stays where it was
+// written, and the page renders the assessment whole.
 export function splitOutcome(assessment) {
   const whole = String(assessment ?? '').trim();
   const lines = whole.split('\n');
   const heads = lines.map((l, i) => [l.trim(), i]).filter(([l]) => /^#{1,6}\s/.test(l));
   const last = heads[heads.length - 1];
-  if (!last || !OUTCOME_HEADING_RE.test(last[0])) return { body: whole, outcome: '' };
+  if (!last || !isNextStepHeading(last[0])) return { body: whole, outcome: '' };
   const outcome = lines.slice(last[1] + 1).join('\n').trim();
   if (!outcome) return { body: whole, outcome: '' };
   return { body: lines.slice(0, last[1]).join('\n').trim(), outcome };

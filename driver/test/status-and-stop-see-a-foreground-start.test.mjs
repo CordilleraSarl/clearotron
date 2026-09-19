@@ -9,7 +9,7 @@
 // 2026-09-11). A foreground start now leaves a record while it serves; these arms drive both verbs over it.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync, existsSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync, existsSync } from "node:fs";
 import { createServer } from "node:http";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
@@ -48,6 +48,36 @@ test("a record is read while its process lives, ignored once it is gone, and rem
     forget(); forget();
     assert.deepEqual(readRunning({ dir }), []);
   } finally { rmSync(h, { recursive: true, force: true }); }
+});
+
+test("a stop leaves no folder it made behind, and never one that was already there or is still in use", () => {
+  // The demo on a home that had none: its record created `.config/clearotron/running` and its parent, and a
+  // clean stop left both, under a banner saying nothing of the demo was left.
+  const fresh = home();
+  try {
+    recordRunning(rec(process.pid, "http://127.0.0.1:1/portal"), { dir: fresh.dir })();
+    assert.ok(!existsSync(join(fresh.h, ".config", "clearotron")), "the folders this record made outlived the stop");
+    assert.ok(existsSync(fresh.h), "and nothing above what it made is touched");
+  } finally { rmSync(fresh.h, { recursive: true, force: true }); }
+
+  // An install's own settings folder was there first, so it stays; the records folder this start made goes.
+  const installed = home();
+  try {
+    mkdirSync(join(installed.h, ".config", "clearotron"), { recursive: true });
+    writeFileSync(join(installed.h, ".config", "clearotron", "token-denylist"), "# revoked key ids\n");
+    recordRunning(rec(process.pid, "http://127.0.0.1:1/portal"), { dir: installed.dir })();
+    assert.ok(existsSync(join(installed.h, ".config", "clearotron", "token-denylist")), "an install's own file went with a stop");
+    assert.ok(!existsSync(installed.dir), "the records folder this start made outlived it");
+  } finally { rmSync(installed.h, { recursive: true, force: true }); }
+
+  // Two starts on one home: the first to stop leaves the other's record, and its folder, alone.
+  const shared = home();
+  try {
+    const first = recordRunning(rec(process.pid, "http://127.0.0.1:1/portal"), { dir: shared.dir });
+    recordRunning(rec(deadPid(), "http://127.0.0.1:2/portal"), { dir: shared.dir });
+    first();
+    assert.equal(readdirSync(shared.dir).length, 1, "a stop took another start's record, or its folder");
+  } finally { rmSync(shared.h, { recursive: true, force: true }); }
 });
 
 test("status says the product is up, with the addresses start printed, when the portal answers", async () => {

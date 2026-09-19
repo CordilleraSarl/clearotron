@@ -95,7 +95,9 @@ export const RESULT_NOUN_FIELDS = Object.freeze([
   // writing site like the other two — it is a returned CLASSIFICATION of a checkout, not a field named
   // for a result whose value is what a call returned, so the verdict is unchanged.
   { file: "driver/engine-build.mjs", noun: "outcome", sites: 3, atWriteSite: 0, verdict: "out-of-scope" },
-  { file: "driver/engine/mcp/supplemental.mjs", noun: "executed", sites: 2, atWriteSite: 0, verdict: "out-of-scope" },
+  // Read at the writing site: the third is the reply when every proposal was the house element the
+  // compile set aside — `executed: false` because nothing ran, the same statement as the error reply.
+  { file: "driver/engine/mcp/supplemental.mjs", noun: "executed", sites: 3, atWriteSite: 0, verdict: "out-of-scope" },
   { file: "driver/outbox-backoff.mjs", noun: "outcome", sites: 5, atWriteSite: 0, verdict: "out-of-scope" },
   { file: "driver/portal-service.mjs", noun: "outcome", sites: 2, atWriteSite: 0, verdict: "out-of-scope" },
   { file: "driver/remedy-accounting.mjs", noun: "executed", sites: 1, atWriteSite: 0, verdict: "out-of-scope" },

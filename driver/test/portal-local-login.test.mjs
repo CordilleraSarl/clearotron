@@ -155,9 +155,16 @@ test("a wrong passphrase is a 401 and one generic sentence, with no cookie and n
     assert.deepEqual(r.cookies, [], "a failed sign-in must not hand out a session");
     assert.ok(r.body.includes("That passphrase is not correct."));
     // Nothing about WHICH half was wrong. The address is not asked for, so there is nothing to confirm
-    // about it either.
-    assert.ok(!/address|email|user|not configured|no credential/i.test(r.body.replace(USER, "")),
+    // about it either. JUDGED ON THE REFUSAL, and on the page around it being the page anyone loading it
+    // sees: the page itself names the install's one user in the owner's words (2026-09-19), so a scan of
+    // the whole body for "user" was reading his sentence, not the refusal.
+    const err = /<p class="err">([\s\S]*?)<\/p>/.exec(r.body)?.[1] ?? "";
+    assert.ok(err, "the refusal sentence is not in its own paragraph");
+    assert.ok(!/address|email|user|not configured|no credential/i.test(err.replace(USER, "")),
       "the refusal must not describe the credential it checked against");
+    const plain = (await req(port, "/portal/login")).body;
+    assert.equal(r.body.replace(/<p class="err">[\s\S]*?<\/p>/, ""), plain,
+      "the refusal page says more than its one sentence beyond what the sign-in page says to anyone");
   });
   // An empty submission and a missing field take the same path — a form that answered differently for
   // "no passphrase" than for "wrong passphrase" would be telling an unauthenticated caller something.
