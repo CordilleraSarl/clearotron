@@ -133,6 +133,10 @@ let deck = 'connected'
 // travels the real injected script to the real listener. Two cards at fixed places: a numbered finding,
 // and an "Also considered" card, which carries the button and no number.
 let reportDoc = 'stub'
+// A SLOW RUNNER, ON DEMAND. The finding's document is held back this long before it is served, which is
+// how a CI runner that loaded it late is reproduced: the press below has to wait for the document, not
+// for a fixed time. Zero, the default, serves it at once.
+const FRAME_DELAY_MS = Number(process.env.ASK_AI_CHECK_FRAME_DELAY_MS ?? 0) || 0
 const FINDING_DOC = () => prepareReportForEmbed(`<!doctype html><html><head><meta charset="utf-8"><title>report</title></head>
 <body style="margin:0;font-family:sans-serif;background:#fff;height:400px">
 <div class="card" id="c3" style="position:absolute;top:40px;left:20px"><div class="cardhead"><span class="fnum">3</span>
@@ -159,7 +163,8 @@ const server = createServer((req, res) => {
   // the height a published report's bridge announces, so the header draws the Export menu a reader meets.
   if (p.startsWith('/portal/report/') && reportDoc === 'finding') {
     res.writeHead(200, { 'content-type': 'text/html' })
-    return res.end(FINDING_DOC())
+    const doc = FINDING_DOC()
+    return FRAME_DELAY_MS ? setTimeout(() => res.end(doc), FRAME_DELAY_MS) : res.end(doc)
   }
   if (p.startsWith('/portal/report/')) {
     res.writeHead(200, { 'content-type': 'text/html' })
@@ -433,9 +438,29 @@ const arrived = await value(PROBE)
 // null origin and the point is the whole path — the injected script hears the press, posts it, and the
 // report screen opens its control. The cards sit at fixed places in the document, so the frame's own
 // position on the page is all that has to be measured.
+// READY, NOT A FIXED WAIT. The press lands on a finding's button, and it does something only once the
+// document in the frame has loaded and its bridge is listening. A fixed pause after navigating was not
+// always that on a CI runner: the press arrived first and opened nothing (measured on beta-12, 2026-09-19,
+// with no change to the portal or the bridge since a green run). The bridge posts the document's height
+// from the same script that listens for the press, so a frame that has left its first-paint height has a
+// listener. The Ask AI control must be on the header too, since the press opens it. Both are waited for,
+// and the frame's place must hold still across two reads, so the press is aimed where the button is.
+const FIRST_PAINT = Number(/export const FIRST_PAINT = (\d+)/.exec(readFileSync(join(DIST, '..', 'src', 'contract', 'reportFrame.ts'), 'utf8'))?.[1] ?? NaN)
+const frameReady = async () => {
+  let last = null
+  for (let i = 0; i < 200; i++) {
+    const now = await value(`(() => { const f = document.querySelector('iframe'); if (!f || !document.querySelector('[data-ask-ai] > button')) return null;
+      const r = f.getBoundingClientRect(); return Math.round(r.top) + ':' + Math.round(r.height) })()`)
+    if (now && now === last && !now.endsWith(`:${FIRST_PAINT}`)) return true
+    last = now
+    await new Promise((r) => setTimeout(r, 100))
+  }
+  return false
+}
 const pressInFrame = async (top) => {
   await value('(() => { window.scrollTo(0, 0); return true })()')
   await new Promise((r) => setTimeout(r, 200))
+  if (!(await frameReady())) return false
   const at = await value(`(() => { const f = document.querySelector('iframe'); if (!f) return null; const r = f.getBoundingClientRect(); return { x: r.left, y: r.top } })()`)
   if (!at) return false
   const x = Math.round(at.x + 140), y = Math.round(at.y + top + 16)
