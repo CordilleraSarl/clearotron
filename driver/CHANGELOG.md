@@ -1,5 +1,18 @@
 # clearotron-driver
 
+## 0.3.2-beta.13
+
+### Patch Changes
+
+- Fixed: A conditional verdict whose conditions are all kept in the run record no longer shows an empty "conditional on" line. The rating word stands alone.
+- Fixed: A running clearance's card and row show the stage it is in now, including a step back during a correction pass.
+- Fixed: The portal's health check no longer includes an internal error message when the instructions store cannot be read. The message goes to the service log instead.
+- Fixed: `doctor` no longer describes another program on the client door's port as this install's door. It says only that a process holds the port.
+- Fixed: The connect lines name the exact Node your install runs on, and an older Node gets one plain line instead of a crash.
+- Fixed: The demo no longer leaves copies of its samples in your temp directory, including when it is stopped mid-way.
+- Fixed: Running the test suite no longer leaves demo copies in the machine's temporary directory.
+- Fixed: On WSL, the Windows connect line names your Linux distribution, or says plainly to fill it in, instead of leaving it out.
+
 ## 0.3.2-beta.12
 
 ### Patch Changes
