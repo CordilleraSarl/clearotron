@@ -5379,6 +5379,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-status-says-which-step-the-run-is-in-now.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "the-summary-carries-structure.test.mjs": {
           "tests": 14,
           "asserts": 37,
