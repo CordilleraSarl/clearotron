@@ -310,6 +310,12 @@ export function isProductFile(rel) {
   if (/\.test\.mjs$/.test(rel)) return false;
   if (/^e2e\//.test(rel)) return false;
   if (/^scripts\/(e2e|test-run|ci-)/.test(rel)) return false;
+  // THE BROWSER CHECKS. CI and a developer run them against a fixture portal; no install runs one. A switch
+  // one of them reads, such as the delay that reproduces a slow runner, belongs to the check, and a row
+  // for it in `.env.example` would hand an operator a setting that changes nothing they run. Measured
+  // when this was added: HOME, PATH, TMPDIR and that delay were all the checks read, and the first three
+  // stay product, because shipping code reads them too.
+  if (/^scripts\/[a-z0-9-]+-render-check\.mjs$/.test(rel)) return false;
   return true;
 }
 
