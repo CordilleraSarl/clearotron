@@ -1132,7 +1132,7 @@ serve({
               factors: { type: "array", minItems: 2, maxItems: 4, items: { type: "string" }, description: "2–4 one-line load-bearing observations behind the band." },
               counterFactors: { type: "array", minItems: 1, maxItems: 3, items: { type: "string" }, description: "1–3 one-line statements of what holds this name at this band rather than the next, either way." },
               mitigation: { type: "string", description: "May be \"\" when nothing would move the band — but SEND THE KEY, so a considered \"none\" is not confusable with an omission." },
-              assessment: { type: "string", description: "The opening paragraph a reader of THIS MARK'S own report sees first: what the name is, what the landscape looks like, what drives the rating, what to do with it." },
+              assessment: { type: "string", description: "The opening paragraph a reader of THIS MARK'S own report sees first: what the name is, what the landscape looks like, what drives the rating." },
               contextFraming: { type: "string" },
               registerEstimate: { type: "string" },
               parodyNote: { type: ["string", "null"] },
