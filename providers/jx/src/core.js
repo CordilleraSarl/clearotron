@@ -15,8 +15,8 @@
 //
 // BILLING RIDES THE RUN, NOT THIS FILE (/ at e49868e3, and the transport deleted at).
 // These lanes used to POST to the Anthropic Messages API on ANTHROPIC_API_KEY at a hardcoded haiku
-// tier while the rest of the run used whatever program the customer chose — the mix the owner's D6
-// ruling forbids. They now go through `engine.runTurn()` like every other model call, so whatever
+// tier while the rest of the run used whatever program the customer chose — the mix the product's one-provider-per-run
+// rule forbids. They now go through `engine.runTurn()` like every other model call, so whatever
 // program and billing mode the run is on carries them, and nothing here selects a vendor.
 //
 // `callMessagesAPI` — with its own MESSAGES_API_URL, x-api-key header and retry ladder — is DELETED

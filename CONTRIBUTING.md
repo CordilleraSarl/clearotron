@@ -192,7 +192,7 @@ with no runner assigned and no steps recorded, and every job that gates on it is
 this repository: two runs on one SHA, thirty minutes apart, the push run green on every job and the
 scheduled one red having run nothing.
 
-That is **could-not-look**, not a fault, and this tool says so rather than making you open the run and
+That is **a check that could not look**, not a fault, and this tool says so rather than making you open the run and
 read timings to find out. It does not block on it — nothing ran, so nothing can have regressed.
 
 **It also does not call it green.** A run that never ran told you nothing about `main`, and the last

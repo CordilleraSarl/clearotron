@@ -1786,7 +1786,7 @@ export const CONNOTATION_FORM_REASONS = Object.freeze(
  *
  * `quote_unbound` and `form_damaged` are deliberately absent: those rows ARE ruled.
  *
- * `parked` (/) is absent for the opposite reason and it is the load-bearing one: a parked row
+ * `parked` is absent for the opposite reason and it is the load-bearing one: a parked row
  * is NOT ruled, and it is not outstanding either. Outstanding means "the seat still owes this", and the
  * whole point of the park is that the seat has been told to stop — leaving it here would keep the stage
  * failing forever on a row nobody may re-send, which is the deterministic death the park introduced.

@@ -1228,7 +1228,7 @@ export function parseFindingsJsonLenient(raw, opts = {}) {
 // and drops the others, so a run's entire non-Latin field can collapse into one finding whose prose
 // describes one of them.
 //
-// The fix is 's, at a third site: keep the Latin normalisation exactly as it was where it produces
+// The fix, at a third site: keep the Latin normalisation exactly as it was where it produces
 // anything, and fall back to the RAW value (NFKC-folded, so full-width and compatibility forms of the
 // same characters still key alike) where it does not. Latin keys are byte-identical to before — pinned
 // by test, because a consolidation key that moved would re-merge every archived finding differently.
@@ -1721,7 +1721,7 @@ function validateNet(f, ord, mode) {
 // (publish/index.mjs strict-parses the archived findings.json), and a delivered matter would stop
 // republishing. So it engages at v7 and archived records parse byte-identically, forever.
 //
-// THE LENIENT PATH IS EXEMPT, for validateNetRequired's reason (/) and one of its own. Dropping a
+// THE LENIENT PATH IS EXEMPT, for validateNetRequired's reason and one of its own. Dropping a
 // finding because its sentence is shaped wrong would delete a real conflict over a punctuation mark —
 // silence arrived at by enforcing a rule about clarity. It also keeps the token out of pipeline.mjs's A3
 // per-finding salvage lane, which has nothing to salvage here (see the token's own note below).

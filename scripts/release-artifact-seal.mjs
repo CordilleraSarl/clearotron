@@ -106,10 +106,10 @@ function main() {
     console.error("usage: node scripts/release-artifact-seal.mjs --tarball <path>");
     process.exit(2);
   }
-  // A path that is not there is a could-not-look, never a seal that found nothing to do. Exit 2 is
+  // A path that is not there is a check that could not look, never a seal that found nothing to do. Exit 2 is
   // the house meaning and it keeps this distinguishable from a tarball that was sealed and was clean.
   if (!existsSync(tarball)) {
-    console.error(`  REFUSING (exit 2, could-not-look): ${tarball} does not exist, so nothing was sealed.`);
+    console.error(`  REFUSING (exit 2, could not look): ${tarball} does not exist, so nothing was sealed.`);
     process.exit(2);
   }
 

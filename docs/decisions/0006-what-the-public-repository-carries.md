@@ -1,6 +1,6 @@
 # 0006 — What the public repository carries
 
-**Accepted 2026-08-17, by the owner.**
+**Accepted 2026-08-17.**
 
 ## Context
 
@@ -74,7 +74,7 @@ announces which mode it is in, once, so a reader of any run can tell which colum
 "change the code" is the clause it answers to and this repository's working practice is that agents change
 the code. `CLAUDE.md` is not carried: it was only ever a one-line pointer at `AGENTS.md`, a second copy of
 one subject is a future contradiction ([ADR-0004](0004-documentation-structure.md)), and the de-identified
-public cut names that file specifically. Ruled by the owner 2026-08-19, on the question raised against the
+public cut names that file specifically. Decided 2026-08-19, on the question raised against the
 recovery — where the two files had been held back because the revert that stripped them recorded no
 decision either way, and `shared/withheld-paths.mjs` did not cover them.
 

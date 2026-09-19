@@ -152,7 +152,7 @@ export const COMPONENTS = {
 // so `basis` under-reports and could not carry the distinction even if we wanted it to.)
 //
 // The one mechanical set that stays load-bearing is the FLOORS — a tier-`identical` floor row, live and
-// in an instructed class, gets a full card in EVERY product. That is an obligation (/), not a
+// in an instructed class, gets a full card in EVERY product. That is an obligation, not a
 // priority, and the ladder does not grade it.
 //
 // `graded` means: the stage is told what kind of report it is writing and grades ITS OWN written output.

@@ -117,8 +117,8 @@ Four things about it are worth knowing before you offer it:
 - **The caller cannot choose the model.** The tier is cost and method both, and it is the one argument on
   the one tool that spends. Express the change with `instructions`.
 - **Nothing bounds the spend, by ruling.** `start_run` is stamped `clientPrincipal: true` at the
-  chokepoint so `runCaps.dailyRuns` bites it; a what-if job carries no such stamp, because the owner
-  ruled spend controls out ("ignore the call spend"). Every experiment records what it spent; no door
+  chokepoint so `runCaps.dailyRuns` bites it; a what-if job carries no such stamp, because spend controls
+  were deliberately left out of it. Every experiment records what it spent; no door
   refuses the next one. Concurrency IS bounded — `CLEAROTRON_WHATIF_MAX_CONCURRENT`, default 1 — because
   letting a free experiment occupy the box while a paid clearance waits is a different question from
   spend, and the ruling did not touch it.

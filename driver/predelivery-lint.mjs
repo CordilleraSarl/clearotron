@@ -2339,7 +2339,7 @@ export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, 
 // ── The KNOCKOUT lane's applicable subset (2026-07-31) ──────────────────────────────────────────────
 // The knockout (Stage 0/0.5) lane wrote NO predelivery-lint.json at all, by a decision recorded in
 // docs/DELIVERY.md (2026-07-28). That decision rested on two premises this tranche has since moved:
-// the lint artifact is now the WORKBOOK's QC record (/), so a lane that writes none produces an
+// the lint artifact is now the WORKBOOK's QC record, so a lane that writes none produces an
 // EMPTY QC record rather than a deliberately-absent one; and the A10 projects recorded defects onto
 // the cover note that reaches the reviewing lawyer, so a knockout defect reached nobody. What has NOT
 // moved is the other half of the memo: this lane's deliverable is store-rendered, and most clearance

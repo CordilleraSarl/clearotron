@@ -384,7 +384,7 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
           stageLabel: stageLabelOf(meta.searchLevel) ?? meta.stageLabel ?? null,
           productName: productNameOf(meta.searchLevel),
           state: "delivered", date: meta.date ?? null,
-          // WHEN IT FINISHED, to the second (/). `date` is DAY precision and always was — it is
+          // WHEN IT FINISHED, to the second. `date` is DAY precision and always was — it is
           // parsed out of the run directory name. Two reads of one mark delivered on the same day
           // therefore TIE, Array.prototype.sort is stable, and which one the parent row spoke for was
           // decided by readdirSync order rather than by recency.

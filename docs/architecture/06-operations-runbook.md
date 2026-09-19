@@ -73,7 +73,7 @@ properties below, each of which was learned the expensive way:
    mid-run feeds one expensive run two different skill versions. **Call
    check that nothing is in flight and abort if anything is** — read every queue this
    deployment would drain plus the run-slot locks, and refuse on any of them. `--override
-   "<reason>"` is the owner-ordered exception; the reason is printed into the deploy output, and a
+   "<reason>"` is the operator's deliberate exception; the reason is printed into the deploy output, and a
    blank one exits 2 rather than passing. This step used to be a line of prose asking a human to
    check, which is not a guard on the night it matters. Then **stop the four trigger units** for
    the deploy window and install an **EXIT trap that restarts them on every exit path**, success or

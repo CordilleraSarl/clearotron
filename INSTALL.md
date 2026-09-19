@@ -242,8 +242,8 @@ refuses for every real user.
 
 Two further constraints, both of which stop a package being cut from just anywhere:
 
-- **The de-identification scan needs a full clone.** It refuses a shallow one (exit 2 — could-not-look,
-  not a pass) because it walks history it cannot see.
+- **The de-identification scan needs a full clone.** It refuses a shallow one (exit 2 — a check that could
+  not look, not a pass) because it walks history it cannot see.
 - **It also needs its table**, passed with `--blocklist` (or `CLEAROTRON_IDENTIFIER_BLOCKLIST`), and
   that table lives in the private config store rather than in this repository. Without it the scan
   exits 2 rather than arming a weaker rule set quietly.

@@ -83,7 +83,7 @@ are no root units; everything is `systemd --user`.
     are stripped), and **`account`** (a signed-in person on the client face — the runs of the
     companies they are granted, reached either by the CF sign-in with no token, or by a per-person API
     key, `scope: account`, whose companies are re-read from the grants file on every request rather than
-    baked into it. Wider *reach* than a report link and, since the owner's 2026-08-27 ruling, more
+    baked into it. Wider *reach* than a report link and, since a decision of 2026-08-27, more
     *depth* too: the audit chain — the audit trail, the reasoning narrative, the record artifacts, a
     register axis, and the `get_run` / `trace` / `decision_timeline` decision walk. Model identity
     and billed counts stay sealed (`get_telemetry`, `get_provider_usage`), as does the reviewers'

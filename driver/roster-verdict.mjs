@@ -18,8 +18,8 @@
 //
 //   no configured store
 //       → the bundled roster governs, exactly as it always did — derived by driver/bundled-demos.mjs
-//         from the directory that ships it, never a list written down. On a test box it is CORRECT
-//; anywhere else it means CLEAROTRON_CUSTOMERS_DIR is not reaching the service (#83).
+//         from the directory that ships it, never a list written down. On a test box it is CORRECT;
+//         anywhere else it means CLEAROTRON_CUSTOMERS_DIR is not reaching the service.
 //
 // Pure: no fs, no env, no network. Every input is a parameter so a test can state the whole world.
 

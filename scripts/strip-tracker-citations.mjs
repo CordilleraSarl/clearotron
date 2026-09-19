@@ -2,15 +2,15 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// Removes the internal citation OPENER from comments and prose in the tree (tracker issue 309).
+// Removes the internal citation OPENER from comments and prose in the tree.
 //
 // The form is `tracker issue NNN — ` standing at the head of a sentence, where the citation is not part
 // of what the sentence says but a label in front of it. Stripping the opener leaves the sentence intact:
 //
-//     // tracker issue 1149 — the walk must start at the repository root
+//     // tracker issue NNNN — the walk must start at the repository root
 //     // the walk must start at the repository root
 //
-//     assert.ok(x, "Refs tracker issue 2075 — an absent file is a finding")
+//     assert.ok(x, "Refs tracker issue NNNN — an absent file is a finding")
 //     assert.ok(x, "an absent file is a finding")
 //
 // WHY THE PATTERN LOOKS OVER-SPECIFIED. Three parts of it are load-bearing and each was measured, not
@@ -20,7 +20,7 @@
 //     and the replacement is `$1`, which puts that opener back. Without the group the sweep deletes the
 //     opening quote of every test name it touches, and a broken string literal is a syntax error in the
 //     lucky cases and a changed assertion in the unlucky ones.
-//   · `\s+` AFTER THE SEPARATOR, never `\s*`. `tracker issue 1149-12` is an ITEM suffix, not a citation
+//   · `\s+` AFTER THE SEPARATOR, never `\s*`. `tracker issue NNNN-12` is an ITEM suffix, not a citation
 //     followed by prose: there is no space after its hyphen. `\s*` eats the item number.
 //   · THE `i` FLAG. `Refs tracker issue NNN` is capitalised at the head of a commit-style line and is a
 //     fifth of the corpus.
