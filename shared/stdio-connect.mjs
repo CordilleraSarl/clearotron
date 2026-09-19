@@ -125,6 +125,12 @@ const separator = (platform = process.platform) => (platform === "win32" ? '"--"
  * -e …`. The distribution is named from `WSL_DISTRO_NAME` when we have it, because a machine with more
  * than one would otherwise get whichever is default — which may be a distribution with no install.
  *
+ * AND IT IS NEVER LEFT BLANK (owner, 2026-09-19). With no name to hand the row used to drop `-d` and take
+ * the default distribution, which fails on a machine whose default is not this one, with nothing on screen
+ * to connect the failure to the choice. The row now carries WSL_DISTRO_PLACEHOLDER in the name's place,
+ * and the Windows side's hint says plainly to fill it in. `WSL_DISTRO_NAME` is the one place the name can
+ * be read from inside the distribution: `/etc/wsl.conf` holds settings for it, not its name.
+ *
  * THE ENVIRONMENT CROSSES THROUGH `env`, NOT THROUGH THE HOST'S OWN env BLOCK. A host on Windows sets
  * variables for the process it starts, which is `wsl.exe`; they do not cross the boundary into the
  * distribution, so a work directory set that way is silently absent on the other side and the server
@@ -134,6 +140,10 @@ const separator = (platform = process.platform) => (platform === "win32" ? '"--"
  * Off WSL the launcher is exactly what it always was, so every row on every other platform is
  * byte-identical to before. PURE.
  */
+/** What stands in the distribution's name when it cannot be read, and the line that says to fill it in. */
+export const WSL_DISTRO_PLACEHOLDER = "YOUR-WSL-DISTRIBUTION";
+export const WSL_DISTRO_FILL_IN = `Replace ${WSL_DISTRO_PLACEHOLDER} with this Linux's name before you paste it: \`wsl -l\` in Windows lists the names.`;
+
 export function stdioLauncher({ server, workDir = null, reportsDir = null, wsl = null } = {}) {
   const vars = envOf({ workDir, reportsDir });
   if (!wsl) return { command: "node", args: [server], env: vars, crossesIntoWsl: false };
@@ -142,7 +152,7 @@ export function stdioLauncher({ server, workDir = null, reportsDir = null, wsl =
     command: "wsl.exe",
     // `-e` runs the command directly rather than through a login shell, so nothing of the reader's
     // profile can rewrite the arguments between Windows and the server.
-    args: [...(distro ? ["-d", distro] : []), "-e",
+    args: ["-d", distro || WSL_DISTRO_PLACEHOLDER, "-e",
       ...(Object.keys(vars).length ? ["env", ...Object.entries(vars).map(([k, v]) => `${k}=${v}`)] : []),
       "node", server],
     // Already carried inside the argument list above; a host-side env block would set them on the
@@ -355,7 +365,7 @@ export function stdioConnectFor(shape, { installRoot = stableInstallRoot({ insta
     ...base,
     text: render(wsl),
     variants: [
-      { heading: WSL_ROW_HEADINGS.fromWindows, text: render(wsl) },
+      { heading: WSL_ROW_HEADINGS.fromWindows, text: render(wsl), hint: String(wsl.distro ?? "").trim() ? null : WSL_DISTRO_FILL_IN },
       { heading: WSL_ROW_HEADINGS.insideWsl, text: render(null) },
     ],
   };

@@ -2565,7 +2565,7 @@ if (isMain) {
   // THE HEADINGS COME WITH THE PAIR, from the composer. Nothing is written here: the page prints these
   // same two words above these same two commands, and a second author is how the two surfaces drift.
   if (connect.variants) {
-    for (const v of connect.variants) { say(`    ${v.heading}`); say(`      ${v.text}`); say(""); }
+    for (const v of connect.variants) { say(`    ${v.heading}`); say(`      ${v.text}`); if (v.hint) say(`      ${v.hint}`); say(""); }
   } else {
     say(`    ${connect.command}`);
     say("");

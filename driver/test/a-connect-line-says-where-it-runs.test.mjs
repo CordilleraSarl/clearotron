@@ -96,9 +96,17 @@ test("the distribution is named when we know it, and left to the default when we
   assert.equal(wslTarget({ env: {}, procVersion: "Linux 6.17.0-1022-azure", interopEntry: false }), null,
     "a plain Linux box must not be handed a Windows wrapper");
 
-  const unnamed = stdioConnectFor("claude-cli", { installRoot: "/opt/clearotron", wsl: { distro: null } }).text;
-  assert.match(unnamed, /wsl\.exe -e node/, "with no distribution name the command runs in the default one");
-  assert.doesNotMatch(unnamed, /-d\b/, "it invented a distribution name");
+  // NEVER BLANK (owner, 2026-09-19): with no name to read, the name's place carries a placeholder and the
+  // Windows side says plainly to fill it in, instead of dropping -d and starting whichever is default.
+  const { WSL_DISTRO_PLACEHOLDER, WSL_DISTRO_FILL_IN } = await import("../../shared/stdio-connect.mjs");
+  const unnamedOffer = stdioConnectFor("claude-cli", { installRoot: "/opt/clearotron", wsl: { distro: null } });
+  assert.match(unnamedOffer.text, new RegExp(`wsl\\.exe -d ${WSL_DISTRO_PLACEHOLDER} -e node`), "with no name, the name's place is left blank");
+  assert.equal(unnamedOffer.variants[0].hint, WSL_DISTRO_FILL_IN, "and nothing tells the reader to fill it in");
+  assert.match(WSL_DISTRO_FILL_IN, new RegExp(`Replace ${WSL_DISTRO_PLACEHOLDER} with`));
+  const named = stdioConnectFor("claude-cli", { installRoot: "/opt/clearotron", wsl: { distro: "Ubuntu" } });
+  assert.match(named.text, /wsl\.exe -d Ubuntu -e node/, "the name travels when WSL gives it");
+  assert.equal(named.variants[0].hint, null, "a named row needs nothing filled in");
+  assert.equal(named.variants[1].hint, undefined, "the inside-WSL row is untouched");
 });
 
 test("the WSL step says the install is in WSL and nothing the rows now say — and still invites no bad paste", () => {
