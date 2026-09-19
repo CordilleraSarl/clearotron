@@ -13,7 +13,7 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, writeFileSync, rmSync, mkdirSync } from "node:fs";
+import { mkdtempSync, writeFileSync, rmSync, mkdirSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { execFileSync } from "node:child_process";
@@ -46,7 +46,7 @@ test("a planted headerless source file is CAUGHT", () => {
     const files = authoredFiles(r.root);
     assert.ok(files.includes("src/bare.mjs"), "the guard must see the file at all before it can judge it");
     const missing = files.filter((f) => !hasHeader(
-      execFileSync("cat", [join(r.root, f)], { encoding: "utf8" })));
+      readFileSync(join(r.root, f), "utf8")));
     assert.deepEqual(missing, ["src/bare.mjs"],
       "exactly the headerless file, and NOT the headed one — a check that flags everything is as "
       + "useless as one that flags nothing");
@@ -58,7 +58,7 @@ test("…and passes once the header is added — the same file, the same check",
   try {
     const p = r.add("src/bare.mjs", "export const b = 2;\n");
     writeFileSync(p, withHeader("export const b = 2;\n"));
-    assert.ok(hasHeader(execFileSync("cat", [p], { encoding: "utf8" })));
+    assert.ok(hasHeader(readFileSync(p, "utf8")));
   } finally { r.cleanup(); }
 });
 

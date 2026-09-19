@@ -248,7 +248,7 @@ function namesMergedIntoCandidate(src) {
   const helpers = new Set([...src.matchAll(/Object\.assign\(\s*candidate\s*,\s*(?:await\s+)?([A-Za-z_$][\w$]*)\s*\(/g)]
     .map((m) => m[1]));
   for (const fn of helpers) {
-    const at = src.search(new RegExp(`\\bfunction\\s+${fn.replace(/\$/g, "\\$")}\\s*\\(`));
+    const at = src.search(new RegExp(`\\bfunction\\s+${fn.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*\\(`));
     const refuse = (why) => new Error(`env-classify: bin/onboard.mjs writes what ${fn}() returns, and ${why}, so `
       + "the names it writes cannot be read. Read as none, they would land in `tuning` and on the deletion "
       + "population; that is this script failing to look, not a finding about the wizard.");

@@ -55,7 +55,7 @@ test("the sampler records a peak that happens while the event loop is blocked; a
     // A separate PROCESS grows the WAL 250 ms from now, so the growth lands inside the block below.
     // A timer here could not schedule it — that is the point.
     const child = spawn(process.execPath, ["-e",
-      `setTimeout(()=>require("fs").writeFileSync(${JSON.stringify(`${db}-wal`)}, Buffer.alloc(5e6)), 250)`,
+      "setTimeout(()=>require(\"fs\").writeFileSync(process.argv[1], Buffer.alloc(5e6)), 250)", `${db}-wal`,
     ], { stdio: "ignore" });
     // Awaited so the block below is not racing the fork itself on a loaded box.
     await new Promise((r) => child.once("spawn", r));

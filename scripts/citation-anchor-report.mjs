@@ -113,7 +113,7 @@ export function anchorRows(citations, linesOf) {
     if (!others.length) { rows.push({ ...c, verdict: "silent", anchor }); continue; }
     let elsewhere = null;
     for (const n of others) {
-      const decl = new RegExp(`^\\s*(?:export\\s+)?(?:default\\s+)?(?:async\\s+)?(?:function|const|let|var|class)\\s+${n.replace(/\$/g, "\\$")}\\b`);
+      const decl = new RegExp(`^\\s*(?:export\\s+)?(?:default\\s+)?(?:async\\s+)?(?:function|const|let|var|class)\\s+${n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`);
       for (let i = 0; i < target.length; i++) {
         if (!decl.test(target[i])) continue;
         // THE CITATION POINTING INSIDE WHAT IT NAMES IS CORRECT, not drifted — see the header.

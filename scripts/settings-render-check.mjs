@@ -148,6 +148,10 @@ const sessionId = sess.sessionId
 const cmd = (method, params = {}) => new Promise((r) => { const i = ++id; pending.set(i, r); ws.send(JSON.stringify({ id: i, sessionId, method, params })) })
 await cmd('Page.enable')
 // A probe that throws says so, rather than returning nothing for the assertions after it to misread.
+// A value pasted into code the page evaluates, as a JavaScript string or object literal. JSON.stringify
+// alone leaves `<`, `>`, `/` and the two line separators as they are; escaped, they read the same once
+// parsed and cannot close or break the code they are pasted into.
+const jsLiteral = (v) => JSON.stringify(v).replace(/[<>\/\u2028\u2029]/g, (c) => `\\u${c.charCodeAt(0).toString(16).padStart(4, '0')}`)
 const evalIn = async (expr) => {
   const r = (await cmd('Runtime.evaluate', { expression: expr, awaitPromise: true, returnByValue: true })).result
   if (r?.exceptionDetails) console.error(`  ! a probe threw: ${r.exceptionDetails.exception?.description ?? r.exceptionDetails.text}`)
@@ -184,7 +188,7 @@ async function reload(ready, what) {
 }
 
 async function setTheme(theme) {
-  await evalIn(`(() => { document.documentElement.setAttribute('data-theme', ${JSON.stringify(theme)}); try { localStorage.setItem('cordillera-theme', ${JSON.stringify(theme)}) } catch {} return true })()`)
+  await evalIn(`(() => { document.documentElement.setAttribute('data-theme', ${jsLiteral(theme)}); try { localStorage.setItem('cordillera-theme', ${jsLiteral(theme)}) } catch {} return true })()`)
   await sleep(250)
 }
 
