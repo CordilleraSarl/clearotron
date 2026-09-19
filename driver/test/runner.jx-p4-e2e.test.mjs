@@ -121,7 +121,8 @@ test("phase-4 e2e: shadow units run on fixtures — grid receipted + gate green,
 
   // mirror demotion held through the real chain
   const findings = JSON.parse(readFileSync(jx("zh-grid-findings.json"), "utf8"));
-  const mirror = findings.findings.find((f) => f.url.includes("tmkoo.com"));
+  const hostOf = (u) => { try { return new URL(u).hostname; } catch { return ""; } };
+  const mirror = findings.findings.find((f) => /(^|\.)tmkoo\.com$/.test(hostOf(f.url)));
   assert.equal(mirror.classification, "register-mirror", "the tmkoo record page never classifies as use");
   assert.ok(findings.findings.some((f) => f.classification === "listing-candidate"), "the real listing was judged");
 

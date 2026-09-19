@@ -227,10 +227,15 @@ const MARKER = "zzmarkerzz";
  * closing tag, swallowing the body between them. The page's own comments do the same thing.
  */
 const seenWithoutClicking = (html) => {
-  const body = String(html)
-    .replace(/<style>[\s\S]*?<\/style>/g, "")
-    .replace(/<script>[\s\S]*?<\/script>/g, "")
-    .replace(/<!--[\s\S]*?-->/g, "");
+  // Repeated until nothing changes, so a first pass cannot reassemble what it removed. The script
+  // pattern takes any case and any attributes; the renderers emit neither, so nothing more is removed.
+  let body = String(html);
+  for (let prev = null; prev !== body;) {
+    prev = body;
+    body = body.replace(/<style>[\s\S]*?<\/style>/g, "")
+      .replace(/<script\b[^>]*>[\s\S]*?<\/script\s*>/gi, "")
+      .replace(/<!--[\s\S]*?-->/g, "");
+  }
   const shut = body.replace(/<details(?![^>]*\sopen)[^>]*>[\s\S]*?<\/details>/g, "");
   return shut.includes(MARKER);
 };

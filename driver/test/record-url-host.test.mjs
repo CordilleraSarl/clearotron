@@ -46,8 +46,8 @@ test("recordOriginsFor: A COMPOSITE RESOLVES THROUGH ITS MEMBERS — free-tier a
   // breakage would land hardest on the runs nobody is paying for.
   assert.equal(PROVIDERS["free-tier"].publicRecordOrigin, null, "the composite still declares no single origin");
   const origins = recordOriginsFor("free-tier");
-  assert.ok(origins.includes("https://euipo.europa.eu"), "the EU member's host is legitimate here");
-  assert.ok(origins.includes("https://tsdr.uspto.gov"), "and the US member's");
+  assert.ok(origins.some((o) => o === "https://euipo.europa.eu"), "the EU member's host is legitimate here");
+  assert.ok(origins.some((o) => o === "https://tsdr.uspto.gov"), "and the US member's");
   assert.equal(origins.length, 2, "and nothing else");
 });
 

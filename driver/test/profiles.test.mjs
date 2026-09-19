@@ -470,7 +470,7 @@ test("shipped petcary profile: worldwide animal-health grid (drug registers + pe
   // health-channel routing only fires for the generic fallback), alongside the pet-pharmacy storefronts.
   for (const d of ["animaldrugsatfda.fda.gov", "ema.europa.eu", "vmd.defra.gov.uk", "chewy.com", "amazon.com", "zooplus.com"])
     assert.ok(p.platforms.includes(d), `petcary sweeps ${d}`);
-  assert.ok(!p.platforms.includes("fda.gov"), "bare fda.gov dropped (low-signal vs the searchable register subhost)");
+  assert.ok(!p.platforms.some((d) => d === "fda.gov"), "bare fda.gov dropped (low-signal vs the searchable register subhost)");
   assert.ok(!p.platforms.includes("web"), "the general-web cell (covers cl.42/44 services) is implicit");
   assert.equal(p.marketplaceDensity, "dense", "heavy pet-pharma marketplaces ⇒ dense, or the verbatim stdout truncates");
   assert.equal(derivedFloor(p), 7, "6 platforms + 1 web");
@@ -658,7 +658,7 @@ test("archive: resolveEffectiveProfile STILL resolves an archived overlay — th
   assert.equal(r.projectName, "Console ecosystem");
   assert.equal(r.origins.defaultClasses, "project", "its overlay values still win");
   assert.deepEqual(r.profile.defaultClasses, [9, 28]);
-  assert.ok(r.profile.platforms.includes("amazon.com"), "and its platforms still union onto the customer floor");
+  assert.ok(r.profile.platforms.some((d) => d === "amazon.com"), "and its platforms still union onto the customer floor");
   assert.ok(!("archived" in r.profile), "the flag never reaches the effective profile — it is meta, not a setting");
 });
 
@@ -855,7 +855,7 @@ test("config nulls: an explicit null in a project overlay says NOTHING, it does 
   const projects = loadProjects({ dir: real, profiles, force: true });
   const r = resolveEffectiveProfile({ profileKey: "aurora", projectKey: "real-proj" }, { profiles, projects });
   assert.deepEqual(r.profile.defaultClasses, [25], "a stated class list replaces");
-  assert.ok(r.profile.platforms.includes("etsy.com"), "the project's own store is added");
+  assert.ok(r.profile.platforms.some((d) => d === "etsy.com"), "the project's own store is added");
   assert.equal(r.origins.platforms, "customer+project", "and the union is recorded honestly");
 });
 

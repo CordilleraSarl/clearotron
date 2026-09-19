@@ -20,6 +20,11 @@ import { parseReport } from "../publish/parse.mjs";
 import { renderHtml, homeButton } from "../publish/render.mjs";
 import { EXPORT_TOGGLE, EXPORT_MENU_JS } from "../publish/report-topbar.mjs";
 
+/** Apply `f` until the text stops changing: a strip done once can reassemble what it removed. */
+const untilStable = (s, f) => { for (let prev = null; prev !== s;) { prev = s; s = f(s); } return s; };
+/** The page without its stylesheet, so a match reads the markup the reader sees. */
+const withoutStyle = (html) => untilStable(String(html), (s) => s.replace(/<style[\s\S]*?<\/style>/g, ""));
+
 function parsedOf(reportMd) {
   const dir = mkdtempSync(join(tmpdir(), "clearotron-render-"));
   const path = join(dir, "f.report.md");
@@ -2403,7 +2408,7 @@ test("the above-fold card is byte-identical with and without the content model �
   const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-demo" });
   // report.css (correctly NOT frozen) carries the .lp-split/.fourans/.fa-row rules — the page BODY is
   // what must be residue-free, so the inlined stylesheet is dropped before the assertion.
-  const body = html.replace(/<style[\s\S]*?<\/style>/g, "");
+  const body = withoutStyle(html);
   assert.ok(!/lp-split|fourans|fa-row/.test(body), "no P5 markup on an archived-shape run");
 
   // The above-fold region of a card is everything before its first <details> — the meters strip on a full
@@ -2417,8 +2422,8 @@ test("the above-fold card is byte-identical with and without the content model �
   assert.deepEqual(a, b, "a finding's positions must add NOTHING above the fold on either card shape");
   assert.ok(!a.join("").includes("lp-split"), "no legal/practical block survives above the fold");
   // The seams both cards depend on, pinned literally so a stray interpolation cannot creep back in.
-  assert.match(withP5.replace(/<style[\s\S]*?<\/style>/g, ""), /<\/div>\n {8}<div class="meters">/, "full card: one-liner → meters, no blank line");
-  assert.match(withP5.replace(/<style[\s\S]*?<\/style>/g, ""), /<div class="oneline">[^\n]*<\/div>\n {4}<\/div><\/div>/, "compact card: the one-liner closes the card body");
+  assert.match(withoutStyle(withP5), /<\/div>\n {8}<div class="meters">/, "full card: one-liner → meters, no blank line");
+  assert.match(withoutStyle(withP5), /<div class="oneline">[^\n]*<\/div>\n {4}<\/div><\/div>/, "compact card: the one-liner closes the card body");
 
   // RELOCATION, NOT ADDITION, measured rather than claimed: strip every lp-split block from both renders
   // and the remainders are equal, so the content model still contributes exactly those blocks and not one
@@ -2542,7 +2547,7 @@ test("an archived (pre-v6) run renders byte-identically to its pre-change output
   // measured, not asserted: the whole page for a legacy-shape and a P5-shape run must carry not one byte
   // of the rendering, including in the stylesheet-stripped body seams.
   for (const set of [FINDINGS, P5_BANDED, V6_NEGATIVES]) {
-    const body = renderHtml(parsedOf(REPORT), set, COVERAGE, { runId: "noref-demo" }).replace(/<style[\s\S]*?<\/style>/g, "");
+    const body = withoutStyle(renderHtml(parsedOf(REPORT), set, COVERAGE, { runId: "noref-demo" }));
     assert.ok(!/rn-mark|rn-who|rn-facts|rn-why|rgroup rn|No reasoned negatives/.test(body));
   }
 });
@@ -2555,7 +2560,7 @@ test("an archived (pre-v6) run renders byte-identically to its pre-change output
 // still owed and routed it here.
 const heroOf = (html) => html.slice(html.indexOf('<h1 class="mark"'), html.indexOf('<div class="heroGrid"'));
 const capsOf = (html) => (heroOf(html).match(/<p class="sub[^"]*">([\s\S]*?)<\/p>/g) ?? [])
-  .map((p) => p.replace(/<[^>]+>/g, ""));
+  .map((p) => untilStable(p, (s) => s.replace(/<[^>]+>/g, "")));
 
 test("the hero caption folds to its first sentence, and the remainder is complete behind it", () => {
   const render = (caption) => renderHtml(
@@ -3219,7 +3224,8 @@ test("a section that is not drawn takes its strip entry with it", () => {
   const [a, b] = [of(full), of(thin)];
   assert.ok(a.length >= 2 && b.length >= 2, `strips of ${a.length} and ${b.length} — one of these documents drew no navigation`);
   assert.notDeepEqual(a, b, "both documents drew the same strip, so it is a literal and not a reading of the document");
-  for (const id of b) assert.ok(thin.includes(`id="${id}"`), `the thinner document's strip points at #${id}, which it does not draw`);
+  const drawn = new Set([...thin.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]));
+  for (const id of b) assert.ok(drawn.has(id), `the thinner document's strip points at #${id}, which it does not draw`);
 });
 
 // ── WHAT WAS SEARCHED, AS THE BOARDS DRAW IT ────────────────────────────────────────────────────────
