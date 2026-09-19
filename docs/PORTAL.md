@@ -99,7 +99,7 @@ There were two ways in and only one of them proved anything: the auth-proxy edge
 and handed every caller the same synthetic address. **Both switches are deleted**, along with
 `PORTAL_DEV_EMAIL`. Local mode replaces them with a real sign-in.
 
-**Use `npx clearotron start`.** It is the documented way to run this product on one machine
+**Use `clearotron start`.** It is the documented way to run this product on one machine
 ([INSTALL.md](../INSTALL.md) §6) and it assembles everything below for you: the portal, the MCP face the Start button
 calls, a minted ops key, the grants file, the saved-search store and the data-plane paths — one command,
 one URL, `Ctrl-C` stops both processes. Nothing here needs an `*_AUTH_DISABLED` variable, and the
@@ -143,7 +143,7 @@ its dev bypass to provide that**:`TRADEMARK_MCP_AUTH_MODE=token` runs it with a 
 access key and no auth proxy — loopback only, and refused outright alongside
 `TRADEMARK_MCP_AUTH_DISABLED`, which authenticates nobody. Mint the key with
 `mint-token.mjs --scope ops --sub portal --verbs start_run,stop_run --accounts foxglade`, or let
-`npx clearotron start` mint one in memory at every start and never write it down.
+`clearotron start` mint one in memory at every start and never write it down.
 
 ## Putting your own login provider in front
 
@@ -177,7 +177,7 @@ the model.
 1. Put the proxy in front of the portal's port and make it require sign-in. The portal must not be
    reachable except through it — an origin anyone can reach directly is an origin with no door.
 2. Set `PORTAL_AUTH_MODE=auth-proxy` and the four values above in `.env`.
-3. `npx clearotron doctor` — the **Portal door** section reports which door is configured and which of
+3. `clearotron doctor` — the **Portal door** section reports which door is configured and which of
    the four values are present, by name. It never prints their values.
 4. Sign in through the proxy once and confirm the portal shows your address rather than a passphrase
    box.

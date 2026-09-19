@@ -123,7 +123,7 @@ what the mechanism guarantees.*
 - One OPERATOR issuance path: `mint-token.mjs` (prints once, stores nothing; `sub` names the
   principal in every audit line; the `jti` printed at mint time is the revocation handle). Two
   automatic minters sit beside it on the same `mintToken`: the clearance publisher mints the report
-  link's run-bound `user` token at publish, and `npx clearotron start` mints the portal's verb-scoped,
+  link's run-bound `user` token at publish, and `clearotron start` mints the portal's verb-scoped,
   company-capped ops token in memory at every start. Neither prints, and neither is written down.
 - **Revocation**: denylist file checked on every verification; missing file = nothing revoked (the
   denylist can never take all auth down). **Rotation**: two-secret window, flag-day-free.

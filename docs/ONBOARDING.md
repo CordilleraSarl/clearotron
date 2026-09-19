@@ -21,7 +21,7 @@ installer.
 ## The command
 
 ```
-npx clearotron brandowner add <key> --name "<legal name>" [options]
+clearotron brandowner add <key> --name "<legal name>" [options]
 ```
 
 `<key>` is the bundle's filename and its identity everywhere else. It is validated on the way in, so a

@@ -43,7 +43,7 @@ npm install                    # every workspace
 npm run build:ui               # the browser bundle is not committed — build it once
 npm test                       # the offline suite — no credentials, no network
 npx clearotron demo            # replays finished clearances into a local portal; runs until stopped (--no-open: no browser)
-npx clearotron doctor          # reports what this machine is configured for; writes nothing, calls nobody
+npx clearotron doctor          # in this clone: reports what this machine is configured for; writes nothing, calls nobody
 node scripts/markdown-link-check.mjs    # every relative markdown link resolves
 node mcp-server/smoke.mjs      # drives the real MCP server against a fixture
 ```
@@ -140,18 +140,18 @@ first, and then takes the same commands, run from its own directory.
 runs. It reads the directories an install keeps its runs and reports in, `CLEAROTRON_WORK_DIR` and
 `CLEAROTRON_REPORTS_DIR`, from the environment or a `.env` at the repository root. With neither set and
 nothing at the default location, `list_runs` says so by name rather than answering with an empty list;
-`npx clearotron doctor` prints where an install keeps them.
+`npx clearotron doctor`, run in this clone, prints where an install keeps them.
 
 ## Commands that spend real money — never run these unprompted
 
 ```sh
-npx clearotron run-queue         # drains the queue: runs real clearances against real vendors
+npx clearotron run-queue         # in this clone: drains the queue, running real clearances against real vendors
 node driver/pipeline.mjs --job … # one clearance. Hours of model time and vendor calls
 npx clearotron install           # spends one cheap model turn to prove the engine can complete a turn
-npx clearotron sync              # 41.5 GB download and ~9 hours of indexing
+npx clearotron sync              # in this clone: 41.5 GB download and ~9 hours of indexing
 ```
 
-`npx clearotron start` itself is safe — it starts the portal and the engine door and deliberately does
+In this clone, `npx clearotron start` itself is safe — it starts the portal and the engine door and deliberately does
 **not** drain the queue. The spend happens when someone orders a clearance and the queue is run.
 
 | Lane | What you need | Notes |

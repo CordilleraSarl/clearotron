@@ -432,7 +432,7 @@ synthetic identity would answer before the mandatory key ever ran. The mode is l
 travels in a header or the query string), requires `TRADEMARK_MCP_ALLOWED_HOSTS` exactly as the
 authenticated door does, and mirrors its mandatory `CLEAROTRON_ACCESS_FILE`.
 
-**The local install sets all of the above itself.**`npx clearotron start` (`bin/start.mjs`) is a supervisor:
+**The local install sets all of the above itself.**`clearotron start` (`bin/start.mjs`) is a supervisor:
 it resolves one set of ports, derives `PORTAL_MCP_URL` and `TRADEMARK_MCP_ALLOWED_HOSTS` from them, mints
 the ops key in memory, and hands each child an explicit environment carrying `CLEAROTRON_NO_ENV_FILE=1`. So
 exactly one process in that tree reads `<repo>/.env` — the supervisor — and nothing a laptop runs needs

@@ -184,7 +184,7 @@ rather than stage compute. That gateway is no longer part of the product, so the
 to probe and the file went with them. Nothing invoked it: not `package.json`, not `bin/`, not
 `scripts/`, not a unit, not CI. It was run by hand, and it spent real money when it was.
 
-What replaces each half: the free path check is `npx clearotron doctor` plus the runner's own preflights
+What replaces each half: the free path check is `clearotron doctor` plus the runner's own preflights
 (`preflightEngineBinary`, `preflightCredentials`, `preflightDeploymentUrls`), each of which refuses by
 name before a run dir exists. The billable half has no replacement and needs none — stage compute is
 exercised by real runs and the A/B harness, which is what its own note already said.
@@ -289,7 +289,7 @@ Copy it, point `CLEAROTRON_ACCESS_FILE` at your copy, sign in as one of its addr
 exactly that organisation's companies. Then delete it and write your own — it names nobody real, which also
 means it grants nothing you have.
 
-`npx clearotron start` (§6) writes an empty roster (`{"tenants": {}}`) into its state directory: your own staff
+`clearotron start` (§6) writes an empty roster (`{"tenants": {}}`) into its state directory: your own staff
 address is admitted, nobody else is enrolled, and enforcement is already on.
 
 ### Ops tokens — a credential for the verbs that spend

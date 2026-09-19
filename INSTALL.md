@@ -250,8 +250,7 @@ Two further constraints, both of which stop a package being cut from just anywhe
 
 Both refusals are correct and neither is a workaround to route around.
 
-**Every `clearotron` command in this document is written `npx clearotron …`, and that is not a
-stylistic choice.** This repository *is* the `clearotron` package, and npm links a package's `bin` into
+This repository *is* the `clearotron` package, and npm links a package's `bin` into
 `node_modules/.bin` only for its **dependencies** — never for the package itself. So after `npm install`
 succeeds there is no `clearotron` on your `PATH` and none in `node_modules/.bin`; a bare `clearotron`
 would be `command not found` with nothing having failed.
