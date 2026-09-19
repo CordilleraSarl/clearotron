@@ -2080,8 +2080,8 @@
           "todos": 0
         },
         "doctor-refuses-what-cannot-run.test.mjs": {
-          "tests": 8,
-          "asserts": 20,
+          "tests": 9,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
