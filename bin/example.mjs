@@ -38,7 +38,7 @@ import "../shared/env-local.mjs";   // step 4 / — FIRST: this program read a
 // handed it nothing and the read fell through to a default. Proven both ways from one
 // environment: without this import the value is invisible, with it the retired spelling is
 // back-filled. Placed above every other import because a side-effecting import runs in order.
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, statSync } from "node:fs";
+import { appendFileSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, statSync } from "node:fs";
 import { homedir, tmpdir } from "node:os";
 import { removeDirectory } from "../shared/os-advice.mjs";
 import { invoke } from "../shared/invocation.mjs";   // — the printed command is resolved once, for the reader who is actually standing there
@@ -53,7 +53,7 @@ import { ensureDemoProgram, demoProgramEnv } from "../shared/permanent-install.m
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 import { usageBlock } from "../shared/usage-block.mjs";
-import { demoStartArgs } from "../shared/demo-start-args.mjs";
+import { demoStartArgs, withWarningOff } from "../shared/demo-start-args.mjs";
 import { bundleVerdict } from "../shared/bundle-freshness.mjs";
 const argv = process.argv.slice(2);
 const flag = (n, d = null) => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : d; };
@@ -258,6 +258,14 @@ if (existsSync(poolRoot) && !statSync(poolRoot).isDirectory()) die(`demo: ${pool
 
 // ── 3. replay ────────────────────────────────────────────────────────────────────────────────────────
 console.log(`\n  ${BRAND.name} ${BRAND.product.toLowerCase()} — demo\n`);
+// THE LABEL, FIRST. The reader is about to look at a document that reads like advice about a real mark. It
+// is not, and the demo says so before anything else rather than in a footnote nobody reaches. It printed
+// after the replay, below the engine's own diagnostics and a Node warning, so the first thing a newcomer
+// read was internal tallies (measured on the published beta, 2026-09-19).
+console.log("  Real engine output for the fictional mark VENQORI, captured against Clarivate Compumark.");
+console.log("  Replaying it needs no account, no key and no network.");
+console.log("  Every number, band and citation below was produced by that real run and is being");
+console.log("  re-rendered from its artifacts. It is an example, not advice.\n");
 console.log(samples.length === 1
   ? `  sample:  ${samples[0].dir}`
   : `  samples: ${samples.length}${failures.length ? ` of ${shipped}` : ""} — ${samples.map((x) => x.name).join(", ")}`);
@@ -276,14 +284,33 @@ const { republishRun } = await import(pathToFileURL(join(REPO, "driver", "publis
 // The failures are collected and reported together at the end, and the process exits non-zero, because a
 // demo that came up missing a quarter of itself is not a success however good the three look.
 const results = [];
-for (const s0 of samples) {
-  try {
-    // poolUrl "" on purpose: the report's own link block is for a deployment that serves the pool at a
-    // public URL. This one is served from this process, at a port picked below.
-    results.push({ ...s0, published: await republishRun({ runId: s0.meta.runId, meta: s0.meta, pool: poolRoot, poolUrl: "", runDir: join(s0.publishFrom, "run") }) });
-  } catch (e) {
-    failures.push({ name: s0.name, why: String(e?.message ?? e) });
+// THE PUBLISHER'S OWN DIAGNOSTICS GO TO A FILE. It prints its tallies as it works (`[record-links] …`,
+// `knockout receipts: …`), which is right for an operator watching a delivery and wrong as the first
+// screen a newcomer reads. The replay's output is written to `replay.log` in the folder this demo made,
+// and restored when the replay ends, so everything below prints as before. A failure is not lost: it is
+// collected here and reported after the list.
+const replayLog = join(flag("--pool") ? poolRoot : demoBase, "replay.log");
+const toLog = (chunk, encoding, cb) => {
+  try { appendFileSync(replayLog, chunk, typeof encoding === "string" ? encoding : undefined); } catch { /* a log that cannot be written must not stop the replay */ }
+  if (typeof encoding === "function") encoding(); else if (typeof cb === "function") cb();
+  return true;
+};
+const screen = { out: process.stdout.write, err: process.stderr.write };
+process.stdout.write = toLog;
+process.stderr.write = toLog;
+try {
+  for (const s0 of samples) {
+    try {
+      // poolUrl "" on purpose: the report's own link block is for a deployment that serves the pool at a
+      // public URL. This one is served from this process, at a port picked below.
+      results.push({ ...s0, published: await republishRun({ runId: s0.meta.runId, meta: s0.meta, pool: poolRoot, poolUrl: "", runDir: join(s0.publishFrom, "run") }) });
+    } catch (e) {
+      failures.push({ name: s0.name, why: String(e?.message ?? e) });
+    }
   }
+} finally {
+  process.stdout.write = screen.out;
+  process.stderr.write = screen.err;
 }
 // PUBLISHED, SO THE COPIES THEY WERE PUBLISHED FROM GO NOW, whatever comes next.
 releaseDemoCopies();
@@ -293,12 +320,6 @@ if (!results.length) {
 }
 const published = results[0].published;
 
-// THE LABEL. The reader is about to look at a document that reads like advice about a real mark. It is
-// not, and the demo says so before the browser opens rather than in a footnote nobody reaches.
-console.log("  Real engine output for the fictional mark VENQORI, captured against Clarivate Compumark.");
-console.log("  Replaying it needs no account, no key and no network.");
-console.log("  Every number, band and citation below was produced by that real run and is being");
-console.log("  re-rendered from its artifacts. It is an example, not advice.\n");
 // NAMES THE POPULATION. This printed "13 finding(s)" beside a report showing
 // twelve, in the first sentence a reader meets. The number is not wrong — it comes from the audit
 // spine (`driver/publish/audit-from-spine.mjs`, `counts.findings`), which counts every finding the run
@@ -307,10 +328,8 @@ console.log("  re-rendered from its artifacts. It is an example, not advice.\n")
 // EACH LANE'S PUBLISHER REPORTS ITS OWN NUMBER, AND THEY ARE NOT THE SAME NUMBER.
 //
 // The clearance branch returns `counts.findings` — every finding in the run's audit spine. The knockout
-// branch returns no `counts` at all; it returns `receipts`, whose `findings` counts the findings whose
-// citations the publisher traced to the run's own held evidence. That is a subset by definition, so it
-// is printed in its own words rather than mapped onto the clearance sentence. They happen to agree on
-// the demo in this tree, which is one member of a class and proves nothing about the metric.
+// branch returns no `counts` at all; it returns the names it screened and the rating each was given, so
+// its line states those rather than a count mapped onto the clearance sentence.
 //
 // The third branch is the point: a lane whose publisher reports no count says so. This line printed a
 // bare "?" to the knockout — a could-not-look wearing the costume of a number.
@@ -322,9 +341,13 @@ const spineOf = (pub) =>
   Number.isFinite(pub.counts?.findings)
     ? `${pub.counts.findings} finding(s) recorded in the run's audit trail; the report shows
              the ones it retains`
-    : Number.isFinite(pub.receipts?.findings)
-      ? `${pub.receipts.findings} finding(s) with citations traced to this run's own held
-             evidence, on ${pub.receipts.citing}/${pub.receipts.marks} mark(s)`
+    // A KNOCKOUT STATES WHAT IT SCREENED AND HOW EACH NAME WAS RATED, in the words its own report opens
+    // with ("One name screened: VENQORI, rated Low."). It used to count citations traced to held evidence,
+    // which a knockout's register-only findings never carry, so the line read "0 finding(s)" and a stranger
+    // took it as "the demo found nothing". Chosen 2026-09-19.
+    : Array.isArray(pub.reports) && pub.reports.length
+      ? `${pub.reports.length} name${pub.reports.length === 1 ? "" : "s"} screened: ${pub.reports
+        .map((r) => (r.band ? `${r.mark}, rated ${r.band}` : r.mark)).join("; ")}; the report shows why`
       : `this lane's publisher reported no finding count — the report itself is the record`;
 for (const r of results) console.log(`  published: ${r.published.runId}\n             ${r.name} — ${spineOf(r.published)}`);
 // "ONE PER PRODUCT" ONLY WHEN IT IS TRUE: with a sample missing, the count below says how many of how many.
@@ -418,6 +441,10 @@ console.log("");
 // made, it starts from here as before.
 const programRoot = ensureDemoProgram({ base: demoBase, say: (line) => console.log(line) });
 const startFrom = programRoot ?? REPO;
+// The services inherit the demo's Node flag through NODE_OPTIONS, so none of them prints the SQLite warning
+// either. Set on this process's own environment, which both branches below hand on; the reader's own
+// NODE_OPTIONS is kept.
+process.env.NODE_OPTIONS = withWarningOff(process.env.NODE_OPTIONS);
 const child = spawn(process.execPath, [join(startFrom, "bin", "start.mjs"), ...startArgs], {
   cwd: startFrom, stdio: ["ignore", "inherit", "inherit"],
   env: programRoot ? demoProgramEnv(process.env) : process.env,

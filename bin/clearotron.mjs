@@ -25,6 +25,7 @@ import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 import { nodeFloorVerdict, nodeFloorRefusal } from "../shared/node-floor.mjs";   // — one floor, read from package.json
 import { invocationPrefix } from "../shared/invocation.mjs";   // — print a command the reader can type
 import { watchParent } from "../shared/parent-watch.mjs";
+import { EXPERIMENTAL_WARNING_OFF } from "../shared/demo-start-args.mjs";
 
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -193,7 +194,12 @@ const [verb, ...rest] = process.argv.slice(2);
   // — tell the child how the READER reached us, so its own advice names a command they can type.
   // Without this every spawned verb sees argv[1] = its own implementation file and would print `npx`
   // even for somebody who typed a bare `clearotron`.
-  const child = spawn(process.execPath, [target, ...builtin, ...rest], {
+  // THE DEMO RUNS WITHOUT NODE'S EXPERIMENTAL-FEATURE WARNING. Node prints one the first time anything loads
+  // its built-in SQLite, and on the demo it landed on the first screen, above the sentence saying what the
+  // demo is. A flag on the demo's own process; `bin/example.mjs` hands it on to the services it starts
+  // (EXPERIMENTAL_WARNING_OFF). Every other warning still prints.
+  const quiet = verb === "demo" ? [EXPERIMENTAL_WARNING_OFF] : [];
+  const child = spawn(process.execPath, [...quiet, target, ...builtin, ...rest], {
     stdio: "inherit",
     env: { ...process.env, CLEAROTRON_INVOKED_AS: process.argv[1] ?? "" },
   });
