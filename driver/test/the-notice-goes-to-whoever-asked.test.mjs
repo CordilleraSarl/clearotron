@@ -21,14 +21,14 @@ const OPERATOR = "+41000000999";
 
 process.env.CLEAROTRON_AGENT_WHATSAPP = JSON.stringify({ clawdi: OPERATOR });
 process.env.CLEAROTRON_REQUESTER_WHATSAPP = JSON.stringify({
-  "sam@tenant.example": REQUESTER,
+  "robin@tenant.example": REQUESTER,
   "jordan": "+41000000222",
 });
 delete process.env.CLEAROTRON_WHATSAPP_OPERATOR_COPY;
 
 const { whatsappRouting } = await import("../stages.mjs");
 
-const job = (over = {}) => ({ forwarder: "somebody", forwarderEmail: "sam@tenant.example", ...over });
+const job = (over = {}) => ({ forwarder: "somebody", forwarderEmail: "robin@tenant.example", ...over });
 
 // ── the requester is the recipient ───────────────────────────────────────────────────────────────────
 
@@ -43,7 +43,7 @@ test("the requester resolves by email, and by handle when no email is held", () 
   assert.equal(whatsappRouting(job(), "clawdi").whatsappTo, REQUESTER, "email wins where both could match");
   assert.equal(whatsappRouting(job({ forwarderEmail: null, forwarder: "jordan" }), "clawdi").whatsappTo,
     "+41000000222", "a job with only a handle still reaches its requester");
-  assert.equal(whatsappRouting(job({ forwarderEmail: "SAM@TENANT.EXAMPLE" }), "clawdi").whatsappTo, REQUESTER,
+  assert.equal(whatsappRouting(job({ forwarderEmail: "ROBIN@TENANT.EXAMPLE" }), "clawdi").whatsappTo, REQUESTER,
     "an address is matched case-insensitively — a roster is typed by a person");
 });
 

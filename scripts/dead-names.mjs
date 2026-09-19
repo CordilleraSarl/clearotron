@@ -46,8 +46,7 @@ export const GUARD = "dead-names (#853)";
 // after a real person must never reappear either, and the mechanism is identical. But a public guard
 // that spells out a person's name publishes the name it exists to keep out, so no such arm is written
 // into this file: `deadNameHits` takes its pattern as an argument, and the test drives the mechanism
-// with an invented identity. `alex` and `sam`, the names the tests give agents and requesters, are
-// invented.
+// with an invented identity. The names the tests give agents and requesters are invented too.
 export const DEAD_NAME_RE = /lorestar|lore_(pool|url|flags)|clearance_lore|lorectl|loreurl|lorecontrols|trademark-lore|\blore\b|\baughra/i;
 
 /**
