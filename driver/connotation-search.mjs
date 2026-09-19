@@ -1610,7 +1610,7 @@ export function renderDispositionTable(rows, ob) {
   for (const e of ob?.queries ?? []) for (const r of e.results) if (r.id) byId.set(normId(r.id), r);
   // — the rows are the FORM's, and a row the seat never ruled on has nothing to render: it is
   // outstanding work, which the gate reports as a count, not a table row reading "—".
-  const cell = (s) => String(s ?? "").replace(/\|/g, "\\|").replace(/\s+/g, " ").trim();
+  const cell = (s) => String(s ?? "").replace(/\\/g, "\\\\").replace(/\|/g, "\\|").replace(/\s+/g, " ").trim();
   const usable = (rows ?? []).filter((d) => d?.receipt_id && d?.ruling);
   // ── — A PARKED ROW IS NOT AN OUTSTANDING ROW, AND THE FILTER ABOVE STOPPED BEING SAFE ─────────
   //

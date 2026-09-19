@@ -104,7 +104,7 @@ test("the root is removed when the process exits normally", () => {
     writeFileSync(${JSON.stringify(namefile)}, root);
   `);
   execFileSync(process.execPath, [src], { stdio: "ignore" });
-  const root = execFileSync("cat", [namefile], { encoding: "utf8" }).trim();
+  const root = readFileSync(namefile, "utf8").trim();
   assert.ok(root.length > 0, "the child must have reported the root it made");
   assert.equal(existsSync(root), false, `the root survived a normal exit: ${root}`);
 });
@@ -125,7 +125,7 @@ test("the root is removed on SIGTERM — the exit a cancelled job produces", () 
     `"$1" "$2" & p=$!; for i in $(seq 1 50); do [ -s "$3" ] && break; sleep 0.2; done; ` +
     `kill -TERM $p; for i in $(seq 1 50); do [ -d /proc/$p ] || break; sleep 0.2; done`,
     "bash", process.execPath, src, namefile], { stdio: "ignore" });
-  const root = execFileSync("cat", [namefile], { encoding: "utf8" }).trim();
+  const root = readFileSync(namefile, "utf8").trim();
   assert.ok(root.length > 0, "the child must have reported the root before it was signalled");
   assert.equal(existsSync(root), false, `the root survived SIGTERM: ${root}`);
 });
@@ -147,7 +147,7 @@ test("keep() leaves the root behind, which is what --keep promises", () => {
     keep();
   `);
   execFileSync(process.execPath, [src], { stdio: "ignore" });
-  const root = execFileSync("cat", [namefile], { encoding: "utf8" }).trim();
+  const root = readFileSync(namefile, "utf8").trim();
   assert.ok(root.length > 0, "the child must have reported the root it made");
   assert.equal(existsSync(root), true, `keep() did not keep the root: ${root} was removed anyway`);
   rmSync(root, { recursive: true, force: true });

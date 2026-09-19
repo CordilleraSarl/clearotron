@@ -366,7 +366,7 @@ export function negativeMarkCell(row) {
 const MIN_JUDGED_ROWS = 1;
 
 /** A pipe row, cells escaped so a value carrying `|` cannot open a column. */
-const row = (cells) => `| ${cells.map((c) => str(c).replace(/\|/g, "\\|").replace(/\n+/g, " ") || "—").join(" | ")} |`;
+const row = (cells) => `| ${cells.map((c) => str(c).replace(/\\/g, "\\\\").replace(/\|/g, "\\|").replace(/\n+/g, " ") || "—").join(" | ")} |`;
 const table = (columns, rows) => [row(columns), `|${columns.map(() => "---").join("|")}|`, ...rows.map(row)].join("\n");
 
 /**

@@ -122,7 +122,7 @@ test("set but the file is missing: refuses, names the path, and nothing else ans
       CLEAROTRON_E2E_DIR: root, CLEAROTRON_REPORTS_DIR: pool, CLEAROTRON_QUEUE_DIR: pool,
     });
     assert.equal(code, 2, out);
-    assert.match(out, new RegExp(join(root, "scenarios", "R2.json").replace(/[.]/g, "\\.")), "names the path it looked for");
+    assert.match(out, new RegExp(join(root, "scenarios", "R2.json").replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), "names the path it looked for");
     assert.match(out, /ONLY suite/, "says plainly there is no fallback");
   } finally { rmSync(root, { recursive: true, force: true }); rmSync(pool, { recursive: true, force: true }); }
 });

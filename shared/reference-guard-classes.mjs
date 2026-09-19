@@ -85,10 +85,12 @@ export const withoutColourValues = (line) => String(line).replace(HEX_COLOUR, (m
 });
 
 /** Strip the spans where a `#NNN` is an address rather than a reference. */
-export const withoutLinkTargets = (line) => String(line)
+export const withoutLinkTargets = (line) => withoutAngleSpans(String(line)
   .replace(/\]\([^)]*\)/g, "]()")                 // markdown link targets, anchors included
-  .replace(/https?:\/\/\S+/g, "")                  // bare URLs and their fragments
-  .replace(/<[^>]*>/g, "");                        // angle-bracket autolinks
+  .replace(/https?:\/\/\S+/g, ""));                // bare URLs and their fragments
+
+/** Angle-bracket spans (autolinks, tags), removed until none is left: one pass can reassemble one. */
+const withoutAngleSpans = (s) => { for (let prev = null; prev !== s;) { prev = s; s = s.replace(/<[^>]*>/g, ""); } return s; };
 
 // A `#` COMMENT IS A COMMENT WHEREVER THE FILE FORMAT SAYS SO, not only in YAML. Extensionless is
 // deliberate: a systemd unit or a dotfile often has no extension worth matching, so the KNOWN

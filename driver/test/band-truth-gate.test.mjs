@@ -43,7 +43,7 @@ test("countLaneCalls: counts gateway-namespaced rows, -fbN / -taint-rerun varian
 
 test("countLaneCalls: absent/unreadable ledger returns null (the gate cannot judge and must skip)", () => {
   assert.equal(countLaneCalls(LANE, "/nonexistent/telemetry/calls.jsonl"), null);
-  assert.equal(countLaneCalls("", mkLedger([]).replace("calls.jsonl", "calls.jsonl")), null, "empty lane key never judges");
+  assert.equal(countLaneCalls("", mkLedger([])), null, "empty lane key never judges");
 });
 
 test("countLaneCalls: empty ledger file (exists, zero rows) returns 0 — a judgeable zero, not a skip", () => {

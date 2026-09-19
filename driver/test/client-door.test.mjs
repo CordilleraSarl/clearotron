@@ -469,7 +469,7 @@ test("a door that is not configured names WHICH half is missing — the two have
   // installed"). Collapsing them into "the unit or the setting" would have been a worse sentence than
   // the one it replaced.
   const neither = describeDoorState(DOOR({ standing: false, fenceOn: false, unitInstalled: false }));
-  assert.match(neither.text, new RegExp(CLIENT_DOOR_UNIT.replace(/\./g, "\\.") + " is not installed"));
+  assert.match(neither.text, new RegExp(CLIENT_DOOR_UNIT.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + " is not installed"));
   assert.match(neither.text, /account access .* is off/);
 
   const fenceOnly = describeDoorState(DOOR({ standing: false, fenceOn: true, unitInstalled: false }));
