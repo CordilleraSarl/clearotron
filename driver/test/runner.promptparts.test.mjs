@@ -69,7 +69,7 @@ mkdirSync(customersDir, { recursive: true });
 cpSync(join(HERE, "..", "profiles"), customersDir, { recursive: true });
 const copied = readdirSync(customersDir).filter((n) => n.endsWith(".json"));
 // ASSERTED, NOT ASSUMED. An empty or partial copy strips nothing, and this test would then run against
-// the MARKED roster — which is the exact state the store exists to avoid, reached silently. 's
+// the MARKED roster — which is the exact state the store exists to avoid, reached silently. The
 // guard caught this loop for precisely that reason.
 assert.ok(copied.length >= 2,
   `the stand-in store copied ${copied.length} profile(s) — it must hold the whole roster, or the account `

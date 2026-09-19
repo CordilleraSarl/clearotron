@@ -195,7 +195,7 @@ test("a composer that branches on `toolWritten` is PASSED it at every dispatch s
   const missing = [];
   let sitesSeen = 0;
   for (const c of withParam) {
-    const re = new RegExp(`repairFollowup\\(\\s*"${c.key.replace(/[*]/g, "\\*")}"\\s*,\\s*\\{([\\s\\S]{0,400}?)\\}`, "g");
+    const re = new RegExp(`repairFollowup\\(\\s*"${c.key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"\\s*,\\s*\\{([\\s\\S]{0,400}?)\\}`, "g");
     let m, found = 0;
     while ((m = re.exec(src))) {
       found++; sitesSeen++;

@@ -82,7 +82,7 @@ test("a retire lost inside a sibling's takeover window deletes nothing — the c
       // B holds the lock here: the marker is off disk. This is where A's terminal rename lands.
       markerVisibleToA = existsSync(proc);
       lost = retireClaimAndSweep(proc, queued, "orphan returned to the queue");
-      return true;   // A's token is alive, so B must stand down — the correct outcome, and 's
+      return true;   // A's token is alive, so B must stand down — the correct outcome.
     },
   }));
 

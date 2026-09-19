@@ -242,16 +242,15 @@ refuses for every real user.
 
 Two further constraints, both of which stop a package being cut from just anywhere:
 
-- **The de-identification scan needs a full clone.** It refuses a shallow one (exit 2 — could-not-look,
-  not a pass) because it walks history it cannot see.
+- **The de-identification scan needs a full clone.** It refuses a shallow one (exit 2 — a check that could
+  not look, not a pass) because it walks history it cannot see.
 - **It also needs its table**, passed with `--blocklist` (or `CLEAROTRON_IDENTIFIER_BLOCKLIST`), and
   that table lives in the private config store rather than in this repository. Without it the scan
   exits 2 rather than arming a weaker rule set quietly.
 
 Both refusals are correct and neither is a workaround to route around.
 
-**Every `clearotron` command in this document is written `npx clearotron …`, and that is not a
-stylistic choice.** This repository *is* the `clearotron` package, and npm links a package's `bin` into
+This repository *is* the `clearotron` package, and npm links a package's `bin` into
 `node_modules/.bin` only for its **dependencies** — never for the package itself. So after `npm install`
 succeeds there is no `clearotron` on your `PATH` and none in `node_modules/.bin`; a bare `clearotron`
 would be `command not found` with nothing having failed.

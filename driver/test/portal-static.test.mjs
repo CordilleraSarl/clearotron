@@ -232,7 +232,7 @@ test("a missing bundle is a loud 503 that names the cause — never a blank page
 test("the pre-paint script is admitted by hash, so 'unsafe-inline' never appears for scripts", () => {
   const sha = createHash("sha256").update(PRE_PAINT_SCRIPT).digest("base64");
   const csp = spaCsp();
-  assert.match(csp, new RegExp(`script-src [^;]*'sha256-${sha.replace(/[+/=]/g, "\\$&")}'`));
+  assert.match(csp, new RegExp(`script-src [^;]*'sha256-${sha.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}'`));
   const scriptSrc = csp.split("; ").find((d) => d.startsWith("script-src"));
   assert.doesNotMatch(scriptSrc, /unsafe-inline/, "the SPA must not open inline script — the one inline script is hashed");
   assert.match(csp, /default-src 'none'/);

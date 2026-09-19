@@ -46,10 +46,10 @@ uses). Enrolment is therefore the portal's: no second credential to mint, rotate
 access revokes this with it. **Off unless `CLIENT_MCP_ACCOUNT_ACCESS=1`.**
 
 **Who turns that on. The installer, since 2026-09-03** — ruling, settled
-point 2. `render-units.mjs --apply` and `npx clearotron start --background` both write the settings this
+point 2. `render-units.mjs --apply` and `clearotron start --background` both write the settings this
 door refuses to start without and then place and enable `clearotron-client-mcp.service`. The settings
 come from one authority, `enablePlan` in `shared/client-door.mjs`, which is also what
-`npx clearotron connect` calls.
+`clearotron connect` calls.
 
 **This supersedes the 2026-08-31 ruling** *"On demand is fine"*, under which nothing at install and no
 rebuild's enable list could start this unit, because starting it WAS the consent that opened
@@ -57,10 +57,10 @@ access for each company's people. The owner changed the posture knowingly: **the
 gate, not whether a process runs.** A door with no key issued refuses everything, which is the same
 protection by a mechanism that does not depend on a reader finding a verb.
 
-**`npx clearotron disconnect` therefore revokes a person, not a service** (Q3). It writes the caller's key
+**`clearotron disconnect` therefore revokes a person, not a service** (Q3). It writes the caller's key
 ids to the denylist and strikes them from the record; it does not stop the unit and does not touch
 `CLIENT_MCP_ACCOUNT_ACCESS`, which is the whole install's setting. Cutting everyone off is
-`npx clearotron disconnect --everyone`, which states how many keys and how many people that is before
+`clearotron disconnect --everyone`, which states how many keys and how many people that is before
 acting — and does not stop the service either.
 
 An `account` principal reaches **eighteen** tools, for its own companies only — everything carrying
@@ -117,8 +117,8 @@ Four things about it are worth knowing before you offer it:
 - **The caller cannot choose the model.** The tier is cost and method both, and it is the one argument on
   the one tool that spends. Express the change with `instructions`.
 - **Nothing bounds the spend, by ruling.** `start_run` is stamped `clientPrincipal: true` at the
-  chokepoint so `runCaps.dailyRuns` bites it; a what-if job carries no such stamp, because the owner
-  ruled spend controls out ("ignore the call spend"). Every experiment records what it spent; no door
+  chokepoint so `runCaps.dailyRuns` bites it; a what-if job carries no such stamp, because spend controls
+  were deliberately left out of it. Every experiment records what it spent; no door
   refuses the next one. Concurrency IS bounded — `CLEAROTRON_WHATIF_MAX_CONCURRENT`, default 1 — because
   letting a free experiment occupy the box while a paid clearance waits is a different question from
   spend, and the ruling did not touch it.

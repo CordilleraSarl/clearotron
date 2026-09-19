@@ -76,7 +76,7 @@ function post(urlStr, { headers = {}, body = "", wantId = null, timeoutMs = 3000
         data += c;
         // SSE early-exit: once the frame with our id is complete, we have the answer — stop reading
         if (wantId != null && String(res.headers["content-type"] ?? "").includes("text/event-stream")
-            && new RegExp(`"id"\s*:\s*${wantId}`).test(data) && /\n\n/.test(data)) { res.destroy(); done(); }
+            && new RegExp(`"id"\\s*:\\s*${wantId}`).test(data) && /\n\n/.test(data)) { res.destroy(); done(); }
       });
       res.on("end", done);
       res.on("close", done);

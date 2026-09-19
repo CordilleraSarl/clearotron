@@ -111,13 +111,20 @@ export function browserTempRoot() {
 }
 
 /**
- * The environment a browser must be spawned with so its singleton lock lands under `root`.
+ * The environment a browser must be spawned with so everything it writes lands under `root`.
  *
- * `TMPDIR` is the whole mechanism, so this refuses rather than passing a root that cannot work.
+ * `TMPDIR` puts its singleton lock there, so this refuses rather than passing a root that cannot work.
+ * AND A HOME OF ITS OWN. A profile directory does not hold everything a browser writes: it keeps its
+ * font cache, certificate store, desktop settings and crash folder under the user's home, so a suite run
+ * left `.cache/fontconfig`, `.local/share/pki`, `.local/share/applications` and
+ * `.config/google-chrome/Crash Reports` in the real home of whoever ran it (measured on a fresh home,
+ * 2026-09-19). The home and the three XDG folders now sit inside the root, and go with it.
  */
 export function browserEnv(root, env = process.env) {
   assertRootFits(root);
-  return { ...env, TMPDIR: root };
+  const home = join(root, "home");
+  for (const d of [home, join(home, ".config"), join(home, ".cache"), join(home, ".local", "share")]) mkdirSync(d, { recursive: true });
+  return { ...env, TMPDIR: root, HOME: home, XDG_CONFIG_HOME: join(home, ".config"), XDG_CACHE_HOME: join(home, ".cache"), XDG_DATA_HOME: join(home, ".local", "share") };
 }
 
 /**

@@ -624,7 +624,7 @@ const EXTERNAL_RE = /^#\s*external:\s*(\S.*)$/;
 //
 // THE TWO MARKERS DO NOT CLEAR EACH OTHER. `pending` was a single slot, and any comment line that was
 // not an `# external:` reset it. Adding a second marker to that shape would mean an `# effect:` line
-// silently DELETED the `# external:` declaration above it — the row would go orphaned and 's
+// silently DELETED the `# external:` declaration above it — the row would go orphaned and the orphan
 // guard would red, with the cause three lines away and invisible. Each marker carries its own slot.
 const EFFECT_RE = /^#\s*effect:\s*(\S.*)$/;
 // A COMMENTED-OUT ROW STILL COUNTS, the same rule `assigned` uses above and for the same reason: `# X=`

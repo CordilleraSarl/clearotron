@@ -20,6 +20,23 @@ import { parseReport } from "../publish/parse.mjs";
 import { renderHtml, homeButton } from "../publish/render.mjs";
 import { EXPORT_TOGGLE, EXPORT_MENU_JS } from "../publish/report-topbar.mjs";
 
+/**
+ * The page without its stylesheets, so a match reads the markup the reader sees. Each `<style` runs to
+ * the first `</style>` after it, and one left unclosed stays, as the non-greedy pattern this replaces did.
+ * By position rather than by pattern, so no removal can leave a reassembled tag behind.
+ */
+const withoutStyle = (html) => {
+  const s = String(html);
+  let out = "", i = 0;
+  for (;;) {
+    const a = s.indexOf("<style", i);
+    const b = a < 0 ? -1 : s.indexOf("</style>", a);
+    if (b < 0) return out + s.slice(i);
+    out += s.slice(i, a);
+    i = b + "</style>".length;
+  }
+};
+
 function parsedOf(reportMd) {
   const dir = mkdtempSync(join(tmpdir(), "clearotron-render-"));
   const path = join(dir, "f.report.md");
@@ -981,7 +998,7 @@ test("Full detail: a registration URI links from the run's ALLOW-LIST, never fro
   // link, which renders as a legitimate provenance anchor elsewhere on the card — an href-only
   // assertion fails on that and reports a defect that is not there. (It did, on the first draft of
   // this arm.) A REGISTRATION link is the one whose visible text is the record path.
-  const regAnchor = (h, path) => new RegExp(`<a href="[^"]*${path.replace(/\//g, "\\/")}"[^>]*>${path.replace(/\//g, "\\/")}<\\/a>`).test(h);
+  const regAnchor = (h, path) => new RegExp(`<a href="[^"]*${path.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"[^>]*>${path.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}<\\/a>`).test(h);
   assert.equal(regAnchor(empty, "/mark/us/88189278"), false,
     "an empty allow-list is an ANSWER — this provider publishes no record page, so nothing may link");
   assert.equal(regAnchor(empty, "/mark/eu/018553255"), false);
@@ -1258,7 +1275,7 @@ test("spec 47: an actual Chilean registration groups under CL = Chile, distinct 
 // ── T2 (H5): the derived verdict sidecar is THE hero/topbar authority; legacy stays byte-stable ──
 test("spec 49: verdictInfo drives the gauge and bound recommendation — fm.overall_label demotes to legacy fallback", () => {
   const vi = { verdict: "CONDITIONAL", reasons: ["close the CN register gap"], tier: "MANAGEABLE", badge: "l2", gaugeIndex: 1, maxComposite: 2 };
-  const fmRec = FM.replace("overall_label: MEDIUM", "overall_label: MEDIUM").replace("---\n", "---\nrecommendation: Proceed with the filing.\n", 1);
+  const fmRec = FM.replace("---\n", "---\nrecommendation: Proceed with the filing.\n", 1);
   const withVi = renderHtml(parsedOf(fmRec), FINDINGS, COVERAGE, { runId: "vi-demo", verdictInfo: vi });
   // gauge marker sits at the DERIVED stop (index 1 = LOW pill), not the model's MEDIUM
   assert.match(withVi, /<div class="marker" style="left:30%">/);
@@ -2403,7 +2420,7 @@ test("the above-fold card is byte-identical with and without the content model �
   const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-demo" });
   // report.css (correctly NOT frozen) carries the .lp-split/.fourans/.fa-row rules — the page BODY is
   // what must be residue-free, so the inlined stylesheet is dropped before the assertion.
-  const body = html.replace(/<style[\s\S]*?<\/style>/g, "");
+  const body = withoutStyle(html);
   assert.ok(!/lp-split|fourans|fa-row/.test(body), "no P5 markup on an archived-shape run");
 
   // The above-fold region of a card is everything before its first <details> — the meters strip on a full
@@ -2417,8 +2434,8 @@ test("the above-fold card is byte-identical with and without the content model �
   assert.deepEqual(a, b, "a finding's positions must add NOTHING above the fold on either card shape");
   assert.ok(!a.join("").includes("lp-split"), "no legal/practical block survives above the fold");
   // The seams both cards depend on, pinned literally so a stray interpolation cannot creep back in.
-  assert.match(withP5.replace(/<style[\s\S]*?<\/style>/g, ""), /<\/div>\n {8}<div class="meters">/, "full card: one-liner → meters, no blank line");
-  assert.match(withP5.replace(/<style[\s\S]*?<\/style>/g, ""), /<div class="oneline">[^\n]*<\/div>\n {4}<\/div><\/div>/, "compact card: the one-liner closes the card body");
+  assert.match(withoutStyle(withP5), /<\/div>\n {8}<div class="meters">/, "full card: one-liner → meters, no blank line");
+  assert.match(withoutStyle(withP5), /<div class="oneline">[^\n]*<\/div>\n {4}<\/div><\/div>/, "compact card: the one-liner closes the card body");
 
   // RELOCATION, NOT ADDITION, measured rather than claimed: strip every lp-split block from both renders
   // and the remainders are equal, so the content model still contributes exactly those blocks and not one
@@ -2542,7 +2559,7 @@ test("an archived (pre-v6) run renders byte-identically to its pre-change output
   // measured, not asserted: the whole page for a legacy-shape and a P5-shape run must carry not one byte
   // of the rendering, including in the stylesheet-stripped body seams.
   for (const set of [FINDINGS, P5_BANDED, V6_NEGATIVES]) {
-    const body = renderHtml(parsedOf(REPORT), set, COVERAGE, { runId: "noref-demo" }).replace(/<style[\s\S]*?<\/style>/g, "");
+    const body = withoutStyle(renderHtml(parsedOf(REPORT), set, COVERAGE, { runId: "noref-demo" }));
     assert.ok(!/rn-mark|rn-who|rn-facts|rn-why|rgroup rn|No reasoned negatives/.test(body));
   }
 });
@@ -2555,7 +2572,7 @@ test("an archived (pre-v6) run renders byte-identically to its pre-change output
 // still owed and routed it here.
 const heroOf = (html) => html.slice(html.indexOf('<h1 class="mark"'), html.indexOf('<div class="heroGrid"'));
 const capsOf = (html) => (heroOf(html).match(/<p class="sub[^"]*">([\s\S]*?)<\/p>/g) ?? [])
-  .map((p) => p.replace(/<[^>]+>/g, ""));
+  .map((p) => { for (let prev = null; prev !== p;) { prev = p; p = p.replace(/<[^>]+>/g, ""); } return p; });
 
 test("the hero caption folds to its first sentence, and the remainder is complete behind it", () => {
   const render = (caption) => renderHtml(
@@ -3219,7 +3236,8 @@ test("a section that is not drawn takes its strip entry with it", () => {
   const [a, b] = [of(full), of(thin)];
   assert.ok(a.length >= 2 && b.length >= 2, `strips of ${a.length} and ${b.length} — one of these documents drew no navigation`);
   assert.notDeepEqual(a, b, "both documents drew the same strip, so it is a literal and not a reading of the document");
-  for (const id of b) assert.ok(thin.includes(`id="${id}"`), `the thinner document's strip points at #${id}, which it does not draw`);
+  const drawn = new Set([...thin.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]));
+  for (const id of b) assert.ok(drawn.has(id), `the thinner document's strip points at #${id}, which it does not draw`);
 });
 
 // ── WHAT WAS SEARCHED, AS THE BOARDS DRAW IT ────────────────────────────────────────────────────────

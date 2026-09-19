@@ -60,9 +60,10 @@ Four more things run for free:
 | `npx clearotron demo` | Replays `demo/` — a real run on a fictional mark — through the real publisher into `~/trademark-demo/pool` and serves it. No keys, no model, no engine. |
 
 **About `npx clearotron demo`.** `npx clearotron demo --no-open --once` publishes the sample and exits without
-touching a browser. `npx clearotron demo --pool <dir>`
-puts the pool somewhere else, and `npx clearotron demo --run-dir <dir>` replays a finished run of your
-own instead of the shipped example.
+touching a browser. Without `--once` it serves the portal until it is stopped: `--no-open` keeps it from
+opening a browser, `--port <n>` moves its three doors to `n`, `n+1` and `n+2`, and `--keep` leaves its folder
+behind when it stops. `npx clearotron demo --pool <dir>` puts the pool somewhere else, and
+`npx clearotron demo --run-dir <dir>` replays a finished run of your own instead of the shipped example.
 
 Fix a bug, add a jurisdiction, add a doctrine test case: all of it is reachable from here.
 
@@ -90,7 +91,7 @@ this tree does not carry has to be declared with its reason, and the publication
 fails an undeclared one.
 
 **`driver/skills/**` is engine input, not documentation.** Those Markdown files are the prompt payload
-served to the model at run time — `synthesis-rules.md` is a 16,000-word program. Editing them for
+served to the model at run time — `synthesis-rules.md` is a 12,000-word program. Editing them for
 brevity, tone or tidiness changes what a clearance concludes. Nothing in this section, and nothing in
 any writing pass over the documentation, applies to them.
 
@@ -192,7 +193,7 @@ with no runner assigned and no steps recorded, and every job that gates on it is
 this repository: two runs on one SHA, thirty minutes apart, the push run green on every job and the
 scheduled one red having run nothing.
 
-That is **could-not-look**, not a fault, and this tool says so rather than making you open the run and
+That is **a check that could not look**, not a fault, and this tool says so rather than making you open the run and
 read timings to find out. It does not block on it — nothing ran, so nothing can have regressed.
 
 **It also does not call it green.** A run that never ran told you nothing about `main`, and the last

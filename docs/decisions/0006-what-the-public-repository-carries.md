@@ -1,6 +1,6 @@
 # 0006 — What the public repository carries
 
-**Accepted 2026-08-17, by the owner.**
+**Accepted 2026-08-17.**
 
 ## Context
 
@@ -74,7 +74,7 @@ announces which mode it is in, once, so a reader of any run can tell which colum
 "change the code" is the clause it answers to and this repository's working practice is that agents change
 the code. `CLAUDE.md` is not carried: it was only ever a one-line pointer at `AGENTS.md`, a second copy of
 one subject is a future contradiction ([ADR-0004](0004-documentation-structure.md)), and the de-identified
-public cut names that file specifically. Ruled by the owner 2026-08-19, on the question raised against the
+public cut names that file specifically. Decided 2026-08-19, on the question raised against the
 recovery — where the two files had been held back because the revert that stripped them recorded no
 decision either way, and `shared/withheld-paths.mjs` did not cover them.
 
@@ -89,7 +89,7 @@ vendor-branded duplicate of it does not, however small.
   citations across code, comments, env examples and docs; all but six were rewritten, and the six declared
   are this record's own, where naming what is dropped is the content.
 - **A binding to a withheld document is retired.** `driver/doc-constants.mjs` pinned four prose figures in
-  `docs/KNOCKOUT.md` and `docs/REGISTER-HIT-COUNTS.md`; those rows are gone, and the test pinning 's
+  `docs/KNOCKOUT.md` and `docs/REGISTER-HIT-COUNTS.md`; those rows are gone, and the test pinning the
   one-file-states-it-twice case now anchors to the shape rather than to a named document.
 - **Withholding is reversible**, which is why this is a list rather than a `git rm`. This repository keeps
   every word.

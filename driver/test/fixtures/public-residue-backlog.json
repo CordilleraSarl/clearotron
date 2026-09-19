@@ -9,7 +9,7 @@
     "agent-trailer",
     "machine-trailer"
   ],
-  "total": 16,
+  "total": 12,
   "files": {
     "bin/onboard.mjs": [
       0,
@@ -93,7 +93,7 @@
     ],
     "scripts/strip-tracker-citations.mjs": [
       0,
-      5,
+      1,
       0,
       0,
       0,

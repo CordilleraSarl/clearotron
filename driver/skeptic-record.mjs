@@ -51,7 +51,7 @@ export function escalatedAxes(flagsText, axes) {
   const flags = String(flagsText ?? "");
   if (!flags) return [];
   return axes.filter((a) =>
-    new RegExp(`(^|\\n)\\s*[-*]?\\s*ESCALATE:\\s*${a.replace(/[-]/g, "\\-")}\\b`, "i").test(flags));
+    new RegExp(`(^|\\n)\\s*[-*]?\\s*ESCALATE:\\s*${a.replace(/[.*+?^${}()|[\]\\-]/g, "\\$&")}\\b`, "i").test(flags));
 }
 
 /** Where the call's evidence lives — the driver's own record of what the seat handed it. */

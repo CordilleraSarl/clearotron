@@ -680,8 +680,8 @@ export function toSignaParams(p = {}) {
     // and this branch is the only thing standing between that and `strategies: ["exact"]`. With
     // `predicates.default` declared `"contains"` and no mapping here, every unanchored slice would
     // have gone to the wire as an EXACT search: narrower than the plan asked for, returning fewer
-    // rows, and answering as though it were the query requested. That is 's defect exactly, and
-    // declaring a predicate without wiring it is the one thing this issue's criteria forbid.
+    // rows, and answering as though it were the query requested. That is the silent narrowing this branch
+    // prevents, and declaring a predicate without wiring it is the one thing a declaration must never do.
     //
     // A `*` in the term means this is the infix-wildcard case, which shares the empty {} and which
     // `contains` cannot serve — the kernel hands the RAW pattern, asterisks included, so a contains

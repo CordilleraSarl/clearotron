@@ -179,6 +179,9 @@ import { accessAudience, audienceLabel } from "../shared/access-audience.mjs";  
 import { resolveNumericSetting } from "./numeric-setting.mjs";   // — the same table the engine enforces, without the throw a rendering surface must not take
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 import { deploymentBox } from "../shared/deployment-box.mjs";   // — the box names itself; one rule
+import { stageNow } from "./progress.mjs";   // the stage a live run is in now, for the card and the row
+// A run in one of these has finished; its step is the one its terminal write set, not the stage it last entered.
+const TERMINAL_STATES = new Set(["delivered", "failed", "cancelled"]);
 
 // The offering the portal menus build from — product-rows.mjs's row, unchanged.
 //
@@ -384,7 +387,7 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
           stageLabel: stageLabelOf(meta.searchLevel) ?? meta.stageLabel ?? null,
           productName: productNameOf(meta.searchLevel),
           state: "delivered", date: meta.date ?? null,
-          // WHEN IT FINISHED, to the second (/). `date` is DAY precision and always was — it is
+          // WHEN IT FINISHED, to the second. `date` is DAY precision and always was — it is
           // parsed out of the run directory name. Two reads of one mark delivered on the same day
           // therefore TIE, Array.prototype.sort is stable, and which one the parent row spoke for was
           // decided by readdirSync order rather than by recency.
@@ -515,7 +518,11 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
         resetsAt: typeof s.resetsAt === "string" ? s.resetsAt : null,
         // Elapsed, so a card can say how long this has been going without inventing a finish time.
         startedAt: typeof s.startedAt === "string" ? s.startedAt : null,
-        step: s.stepLabel ?? null, stepN: s.stepN ?? null, stepTotal: s.stepTotal ?? null,
+        // THE STAGE IT IS IN NOW, a step back into an earlier stage included (owner, 2026-09-19): see
+        // stageNow. Only while it is live; a run that has finished keeps the step its terminal write set.
+        ...(TERMINAL_STATES.has(s.state)
+          ? { step: s.stepLabel ?? null, stepN: s.stepN ?? null, stepTotal: s.stepTotal ?? null }
+          : stageNow(s)),
         // — a requested stop is a state the screen shows. Stamped by stop_run,
         // preserved by writeRunStatus's spread-merge, replaced by the terminal when the honour check
         // fires. The UI derives "Stopping…" from this beside a non-terminal state.
@@ -867,7 +874,7 @@ export const SERVER_ROUTE_HEADS = Object.freeze(["api", "report", "admin", "heal
  * `msgId` and `conversationId` sat in this list while `jobFor` hardcoded both to null and the trigger
  * hop stripped them off again. The totality test beside it could not see that: it asks whether every
  * declared field is classified, which a declared-and-nulled field satisfies perfectly. So the sentence
- * above asserted a behaviour and the test next to it checked a different one — the same shape as 's
+ * above asserted a behaviour and the test next to it checked a different one — the same shape as
  * "an invitation nothing honours", one level up.
  *
  * `stamped` exists so the new guard can be DERIVED rather than hand-listed. It splits `carries` into the
@@ -2928,7 +2935,7 @@ async function connectorDoorKind(url) {
         // row, and a retired-endpoint row is a different fact from a not-yours row. If an old open tab is
         // still clicking Flag, that is a thing worth being able to count.
         //
-        // WHAT IS DELIBERATELY STILL BELOW THIS LINE: the whole resolver — the two-lane shape, 's
+        // WHAT IS DELIBERATELY STILL BELOW THIS LINE: the whole resolver — the two-lane shape, the
         // disposition read, the server-side-locator rule. The owner ruled "disable services and any code",
         // and the acceptance criterion says re-enabling must be a switch and not a rebuild. Deleting 130
         // lines of hard-won doctrine would have made it a rebuild.
@@ -3759,7 +3766,12 @@ function doctrineStore(now = Date.now) {
   } catch (e) {
     // NOT `{head: null}` alone. A null head with no reason reads as "no store", which is a legal and
     // healthy state (`no-overlay`); this is a different thing and has to say so.
-    value = { head: null, situation: "unreadable", outcome: "blocked", detail: String(e?.message ?? e).slice(0, 120) };
+    //
+    // THE ERROR'S OWN WORDS GO TO THE SERVICE LOG, NOT THE WIRE. This answer is served by the health
+    // route, and an error message can carry the store's filesystem path. `unreadable` says what the
+    // caller needs; the operator reads why in the log.
+    console.error(`[portal] the instructions store could not be read: ${String(e?.message ?? e).slice(0, 200)}`);
+    value = { head: null, situation: "unreadable", outcome: "blocked" };
   }
   storeCache = { at: t, value };
   return value;

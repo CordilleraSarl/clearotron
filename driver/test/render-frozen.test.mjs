@@ -1788,7 +1788,9 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // the sticky header. One executable line, not licence-only, so this constant moves with it.
 // Advanced again by the break recorded above the FROZEN constant: every href built attribute-safe and
 // http(s)-only. Not licence-only, so this constant moves with it.
-const FROZEN_BEFORE_SPDX = "0c8fec516b1c5b783de664398e6a6c10d5d4f1d4b76f1165ecbd7890fa4ed496";
+// Advanced again by the comment-only break recorded above the FROZEN constant: six sentences made
+// whole. A comment edit moves these bytes too, so this constant moves with it.
+const FROZEN_BEFORE_SPDX = "0c34c9e80f72e11ee9cf7c2f90ce18c2cb846c70f222d65f0cd9a1c8aea04380";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2588,7 +2590,22 @@ const FROZEN_BEFORE_SPDX = "0c8fec516b1c5b783de664398e6a6c10d5d4f1d4b76f1165ecbd
 //      a hostile or non-http one stops being a link, which is the repair.
 //   2. Could it live in report.css or brand.mjs? No: an attribute's value is composed in this file.
 //   3. Why it had to move here: every one of these hrefs is written here and nowhere else.
-const FROZEN = "17a1abbcac3f7d65bcf838c6a51ae17ec36787c41134106b45464ddfd3767bc5";
+// ── BREAK (2026-09-19 — six comments that lost their subject, made whole) ────────────────────────────
+//
+// COMMENT-ONLY. When internal references were stripped from this repository before it went public, six
+// comments in this file lost the word that began or finished a sentence: a bare possessive where a name
+// had been, and `pre- ` where a number had been. Each now reads whole ("The design ruling…",
+// "the pre-change section"). No executable line moved.
+//
+// PROOF, measured rather than argued: the old and new file tokenise identically with comments set aside
+// (acorn, 20,704 tokens each, 1,287 comments each). A template literal is a token with its text as its
+// value, so a comment inside a string that reaches the page would have shown as a difference here.
+//
+// THE THREE QUESTIONS.
+//   1. Reachable from republish? No — a comment never reaches a rendered report.
+//   2. Could it live in report.css or brand.mjs? No: the sentences are comments in this file.
+//   3. Why it had to move here: the broken sentences were here, in a public tree.
+const FROZEN = "42c23b83773feab5c8a9867839f197eabfaf1272a426aa107399cbe2bffd4ef4";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

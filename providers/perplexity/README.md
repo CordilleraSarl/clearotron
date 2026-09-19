@@ -11,7 +11,7 @@ optional: without `PERPLEXITY_API_KEY` the run door refuses by name
 (`preflightResearchCredential`, `../../driver/driver.config.mjs`) rather than searching less. A
 KNOCKOUT is the exception and it is deliberate — its register half is a whole product without the
 sweep, so `../../driver/pipeline-knockout.mjs` SKIPS this adapter and discloses the half it did not
-run ( acceptance 6). Nothing is billed for a sweep that never runs.
+run. Nothing is billed for a sweep that never runs.
 (`CLEAROTRON_KNOCKOUT_SWEEP_FIXTURES` is the $0 dev route to a knockout WITH a sweep.)
 
 The header's `index.js` and `build.js` belong to the plugin packaging this core was extracted from;

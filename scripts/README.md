@@ -52,14 +52,10 @@ than its contents, and the whole reason the browser checks exist is that a fix f
 scrollbars" shipped a report with two scrollbars past 1,500 passing tests. Those checks run in CI's
 `build-and-verify` job and nowhere else — so **CI, not your machine, is what covers them.**
 
-`render-check.mjs` is a further step out, running in **neither** — and wiring it up is what found out
-why that mattered. CI left it out because it measures a PUBLISHED RUN and had no pool to point at;
-`--fixture-pool` removed that reason, so wired it into`build-and-verify` as a blocking step.
-
-**Its first run anywhere reported 6 of 9 assertions failing with `no-probe` and `null`** — not a layout
+**`render-check.mjs`'s first run anywhere reported 6 of 9 assertions failing with `no-probe` and `null`** — not a layout
 defect, an inability to *measure*. The three assertions that look inside the report frame (the height
 bridge, the scrollbar loop, the sideways overflow) depend on a probe script in the sandboxed iframe
-posting back to the shell. The pool built fine; the harness cannot see inside its own frame. **.**
+posting back to the shell. The pool built fine; the harness cannot see inside its own frame.
 
 **The first explanation written down here was wrong, and how it was wrong is the useful part.** This
 paragraph used to say the message never arrives under `file://` with production's sandbox. Measured in

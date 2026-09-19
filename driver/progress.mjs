@@ -97,6 +97,30 @@ export function stepForStage(rawStageKey) {
   return { index, label: DISPLAY_STEPS[index], n: index + 1, total: DISPLAY_STEPS.length };
 }
 
+/**
+ * THE STAGE A LIVE RUN IS IN NOW, for the card and the row a person watches (owner, 2026-09-19).
+ *
+ * status.json keeps two readings. The step fields hold the furthest display step ever reached, for a
+ * stepper that never runs backwards. `lastStage` is the stage the run ENTERED last, written at the one
+ * choke point every dispatch passes, corrective re-entries included. The card named the first, so a run
+ * sent back into synthesis by a correction pass went on reading "Case law & refutation" (measured on a
+ * beta, 2026-09-18). This names the stage in hand, a step back included, with its own step number.
+ *
+ * `currentStep` FIRST, where the run wrote one: the step it is in now, in the stepper's own words, moved by
+ * every transition in either direction and left in place through a stage with no display step. A status
+ * written before that field existed falls back to mapping `lastStage`, and one with neither keeps the
+ * furthest step, which is the best reading there is. PURE.
+ */
+export function stageNow(status) {
+  const c = status?.currentStep;
+  if (c && typeof c.label === "string" && c.label.trim())
+    return { step: c.label, stepN: Number.isFinite(c.n) ? c.n : null, stepTotal: Number.isFinite(c.total) ? c.total : null };
+  const now = stepForStage(status?.lastStage);
+  return now
+    ? { step: now.label, stepN: now.n, stepTotal: now.total }
+    : { step: status?.stepLabel ?? null, stepN: status?.stepN ?? null, stepTotal: status?.stepTotal ?? null };
+}
+
 // Lifecycle honesty (charter P1 §4): the status patch a TERMINAL delivered write must carry. Nothing runs
 // after the report: delivery is a packet and publish is code, so no
 // recordTransition ever advances the stepper past "Drafting the report" — a delivered run (with
@@ -386,6 +410,7 @@ export function seedRunStatus(ctx, { resume = false } = {}) {
     // — the identity is the SHARED rule, not this stepper's. See identitySeed.
     ...identitySeed(),
     stepIndex: first.index, stepLabel: first.label, stepN: first.n, stepTotal: first.total,
+    currentStep: currentStepOf(first),
     lastStage: null,
     verdict: null,
     url: null,
@@ -407,13 +432,24 @@ export function seedRunStatus(ctx, { resume = false } = {}) {
 // so for the whole of any of them every surface went on naming the PREVIOUS stage, which is the same
 // defect as a stale step wearing a different field. The step fields are still withheld — that part of
 // the early return was right, and an unmapped stage must never touch the displayed step.
+//
+// `currentStep` IS THE STEP THE RUN IS IN NOW, and it moves both ways. The step fields above keep the
+// furthest step reached (writeRunStatus), so a corrective pass that re-enters synthesis after case law
+// left them reading case law while `lastStage` read synthesis (measured 2026-09-18). `lastStage` is the
+// raw key; this is the same moment in the stepper's own words, for a surface that shows where the run is.
+// A stage with no display step leaves it where it was: those stages run inside the step already shown.
 export function recordTransition(ctx, rawStageKey) {
   const step = stepForStage(rawStageKey);
   writeRunStatus(ctx, {
-    ...(step ? { stepIndex: step.index, stepLabel: step.label, stepN: step.n, stepTotal: step.total } : {}),
+    ...(step ? { stepIndex: step.index, stepLabel: step.label, stepN: step.n, stepTotal: step.total, currentStep: currentStepOf(step) } : {}),
     lastStage: rawStageKey,
   });
   rollupStatus(ctx?.run?.studioRoot);
+}
+
+/** The stepper's own words for one step, as `currentStep` carries it. PURE. */
+function currentStepOf(step) {
+  return { index: step.index, label: step.label, n: step.n, total: step.total };
 }
 
 // ---- STATUS.md rollup --------------------------------------------------------------------------------

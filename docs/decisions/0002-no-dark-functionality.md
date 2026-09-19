@@ -60,7 +60,7 @@ Every `CLEAROTRON_*` name read by shipping code declares an effect class, and an
   whatever the declaration test enforces. Do not re-derive it by hand; that is how 172, 159 and 352 all
   came to describe the same repository.
 
-## Addendum — 2026-08-20, on implementation ( item 8)
+## Addendum — 2026-08-20, on implementation
 
 All four switches are deleted, as ruled. One consequence above is narrowed by what the code turned out
 to be, and it is recorded here rather than in a pull request body, because this document is what the

@@ -123,7 +123,7 @@ async function main() {
     try {
       ({ reconcileAndScan: gate } = await import("../cut/packed-artifact.mjs"));
     } catch (e) {
-      console.error("  REFUSING (exit 2, could-not-look): cut/packed-artifact.mjs did not load —"
+      console.error("  REFUSING (exit 2, could not look): cut/packed-artifact.mjs did not load —"
         + ` ${String(e?.message ?? e)}.\n`
         + "  That module carries the only rule that says which files may leave this repository, and a\n"
         + "  pack that cannot ask it produces an artifact nobody has checked. An exported tree does not\n"

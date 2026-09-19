@@ -578,6 +578,18 @@ const clipClause = (s, max) => {
  * count authority and the fallback. Returns null when either axis is missing (legacy sidecars —
  * callers fall back to today's bare word). PURE.
  */
+/**
+ * The conditions a client is actually told a CONDITIONAL verdict rests on: the client-voice clauses, and
+ * the reasons as their fallback. A clause stored as explicit null is a condition ruled to the run record
+ * alone, so its reason is not stated either; `undefined` (legacy/short) is not null. PURE.
+ */
+export function statedConditions({ reasons, clauses } = {}) {
+  const cs = Array.isArray(clauses) ? clauses : [];
+  const conds = (Array.isArray(reasons) ? reasons : []).filter((r, i) => cs[i] !== null).map((r) => String(r ?? "").trim()).filter(Boolean);
+  const cls = cs.map((c) => String(c ?? "").trim()).filter(Boolean);
+  return { conds, cls };
+}
+
 export function riskStatement({ tier, verdict, reasons, basis, clauses } = {}) {
   const v = String(verdict || "").toUpperCase();
   const t = String(tier || "").trim();
@@ -592,10 +604,13 @@ export function riskStatement({ tier, verdict, reasons, basis, clauses } = {}) {
   if (v === "CONDITIONAL") {
     // A clause stored as explicit null is a condition ruled to the run record alone: it is not the lede,
     // it is not counted, and its reason is never the fallback text. `undefined` (legacy/short) is not null.
-    const cs = Array.isArray(clauses) ? clauses : [];
-    const conds = (Array.isArray(reasons) ? reasons : []).filter((r, i) => cs[i] !== null).map((r) => String(r ?? "").trim()).filter(Boolean);
-    const cls = cs.map((c) => String(c ?? "").trim()).filter(Boolean);
-    const lede = cls[0] ?? conds[0] ?? "the open conditions carried in the report";
+    const { conds, cls } = statedConditions({ reasons, clauses });
+    // NOTHING STATED, NO "CONDITIONAL ON:" LINE (owner, 2026-09-19). When every condition is ruled to
+    // the run record, the line had nothing behind it and fell back to "the open conditions carried in the
+    // report": a conditional with no condition. The band word stands alone, and `stance` still says
+    // conditional to every consumer that keys on it.
+    if (!cls.length && !conds.length) return `${t}${basisNote ? `.${basisNote}` : ""}`;
+    const lede = cls[0] ?? conds[0];
     const first = clipClause(sentenceCaseLead(lede), STATEMENT_CLAUSE_MAX);
     const n = conds.length || cls.length;
     const more = n > 1 ? ` (and ${n - 1} more)` : "";
@@ -1228,7 +1243,7 @@ export function parseFindingsJsonLenient(raw, opts = {}) {
 // and drops the others, so a run's entire non-Latin field can collapse into one finding whose prose
 // describes one of them.
 //
-// The fix is 's, at a third site: keep the Latin normalisation exactly as it was where it produces
+// The fix, at a third site: keep the Latin normalisation exactly as it was where it produces
 // anything, and fall back to the RAW value (NFKC-folded, so full-width and compatibility forms of the
 // same characters still key alike) where it does not. Latin keys are byte-identical to before — pinned
 // by test, because a consolidation key that moved would re-merge every archived finding differently.
@@ -1721,7 +1736,7 @@ function validateNet(f, ord, mode) {
 // (publish/index.mjs strict-parses the archived findings.json), and a delivered matter would stop
 // republishing. So it engages at v7 and archived records parse byte-identically, forever.
 //
-// THE LENIENT PATH IS EXEMPT, for validateNetRequired's reason (/) and one of its own. Dropping a
+// THE LENIENT PATH IS EXEMPT, for validateNetRequired's reason and one of its own. Dropping a
 // finding because its sentence is shaped wrong would delete a real conflict over a punctuation mark —
 // silence arrived at by enforcing a rule about clarity. It also keeps the token out of pipeline.mjs's A3
 // per-finding salvage lane, which has nothing to salvage here (see the token's own note below).

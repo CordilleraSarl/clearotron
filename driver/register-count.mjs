@@ -447,7 +447,7 @@ export async function countRegisterHits({
       counts,
       // — which registers these figures cover, present ONLY when one was dropped. countLine renders
       // it; the scope block below records it. Both, deliberately: `scope.deferredJurisdictions` has sat
-      // on this artifact since it was written and NOTHING reads it, which is the same shape as 's
+      // on this artifact since it was written and NOTHING reads it, which is the same shape as
       // `deferred_coverage` riding the plan with no consumer and shipping a false clean. A field a
       // reader never sees is not a disclosure, so this one lands on the rendered line first.
       ...(officeScope ? { officeScope } : {}),

@@ -2154,7 +2154,7 @@ export const STAGES = {
     const supplementalLane = !!registerPlan?.contract?.supplemental_lane;
     return lines(
       `First, read and follow exactly: skills/clearance-register/SKILL.md (the shared spine) then skills/clearance-register/unit.md (MODE A — UNIT). Do NOT read digest.md (digest-mode judgment a unit must never run).`,
-      // WHAT THE KEY ALSO CARRIES — COMPOSED, NOT DOCTRINE ( /).
+      // WHAT THE KEY ALSO CARRIES — COMPOSED, NOT DOCTRINE.
       // `unit.md` used to name three tools flat, and on a deployment withholding two of them the seat was
       // told it holds tools its grant does not carry. The composer derives the list from the same table
       // that does the excluding, and returns NULL — not an empty sentence — when the provider cannot be

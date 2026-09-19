@@ -20,7 +20,8 @@ const REPO = fileURLToPath(new URL("../..", import.meta.url));
 const page = loginPage({ email: "dana@northwind.example" });
 const body = page.slice(page.indexOf("<body>"));
 const fold = /<details class="fold">([\s\S]*?)<\/details>/.exec(body);
-const flat = (s) => s.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+// Tags stripped until none is left, so a first pass cannot reassemble one.
+const flat = (s) => { for (let p = null; p !== s;) { p = s; s = s.replace(/<[^>]+>/g, ""); } return s.replace(/\s+/g, " ").trim(); };
 
 test("the card names the install's one user, then the field and the button, and nothing between them and the fold", () => {
   assert.match(body, /<h1>Sign in<\/h1>/);

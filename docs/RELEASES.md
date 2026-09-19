@@ -16,7 +16,7 @@ npm install -g clearotron@beta     # newest — cut when there is something wort
 | | `latest` (stable) | `beta` |
 |---|---|---|
 | **Version looks like** | `0.2.0` | `0.2.1-beta.4` |
-| **Cut when** | a beta has passed a full clearance run and a from-scratch install by somebody who has never seen the product, and the owner says go | when a change lands that is worth testing, or while a stable is being prepared |
+| **Cut when** | a beta has passed a full clearance run and a from-scratch install by somebody who has never seen the product, and the maintainers decide to ship it | when a change lands that is worth testing, or while a stable is being prepared |
 | **Promises** | it installed and ran a real clearance end to end before it was published | it built, and the automated suite passed |
 | **Use it if** | you are running this for real work | you want a fix that landed today, or you are helping test |
 

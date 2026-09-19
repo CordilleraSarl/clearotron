@@ -4818,7 +4818,7 @@ export function terminalReasonFields(reason, { cap = 200, fullCap = 4000 } = {})
 // `_driver/failure.json` carried reason/reasonVerbatim/failClass/terminalKind and no payload at all, so the
 // operator was told one query had dropped and never which one — E2E had to replay
 // findDroppedConnotationQueries against the preserved artifacts to name it. `reasonDetail` already reached
-// status.json (/); `reasonQuantity` reached neither file.
+// status.json; `reasonQuantity` reached neither file.
 //
 // Both are written UNCONDITIONALLY as string|null and number|null. Never omitted, never 0: "no key" and
 // "this failure carries no count" are different facts, the same distinction `reasonTruncated` is written on
@@ -7929,7 +7929,7 @@ export function buildAskAnswersSection(askAnswers, intakeAsks) {   // @internal
  * change to the delivered report nobody asked for. So the divergence is now one-country-only and owned,
  * rather than general and deferred.
  *
- * This section itself is untouched by the ladder: the grouping is not extended and not re-keyed. 's
+ * This section itself is untouched by the ladder: the grouping is not extended and not re-keyed. The
  * graded entries render in a SIBLING section (buildGradedEntriesSection) using the same line grammar.
  */
 export function buildReasonedNegativesSection(findings) {   // @internal
@@ -15696,8 +15696,8 @@ async function pipelineInner(job, opts = {}) {
     // — `reasonDetail` rides beside `reason`, never inside it. abbrev, not a bare slice: a cut that
     // reads as a word is worse than one that reads as a cut, and this one is read by an engineer
     // chasing a defect.
-    // — one spelling of the payload for BOTH sinks. status.json already carried `reasonDetail`
-    // (/); `_driver/failure.json` carried neither it nor the count, and `reasonQuantity` reached
+    // — one spelling of the payload for BOTH sinks. status.json already carried `reasonDetail`;
+    // `_driver/failure.json` carried neither it nor the count, and `reasonQuantity` reached
     // no file at all — so the operator read "dropped 1 dictated connotation query" and had to replay the
     // gate against the preserved artifacts to learn which one. Derived once here and passed to both
     // writers, so the notice and the status file can never disagree about the payload.

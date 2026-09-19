@@ -170,7 +170,7 @@ test("ARMED + ABSENT: the driver did not write what it stamped ⇒ FAIL, named a
     assert.equal(v.ok, false, "an absent required form must NEVER read as a pass — this is #460's blocker");
     assert.match(v.reason, /^coverage_form_missing:/);
     assert.match(v.reason, /driver-written — this is a bug, not a model defect/);
-    assert.match(v.reason, new RegExp(coverageFormSidecarName(COVERAGE_FORM_NAME).replace(/\./g, "\\.")));
+    assert.match(v.reason, new RegExp(coverageFormSidecarName(COVERAGE_FORM_NAME).replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   } finally { cleanup(dir); }
 });
 

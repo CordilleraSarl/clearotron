@@ -33,9 +33,9 @@ test("the public hostname reaches the allow-list, bare and with :443", () => {
     "the fixture no longer reproduces the loopback-only list this issue is about");
 
   const withPublic = list(8848, { CLEAROTRON_CLIENT_MCP_URL: "https://clearotron.example.com/mcp" });
-  assert.ok(withPublic.includes("clearotron.example.com"),
+  assert.ok(withPublic.some((h) => h === "clearotron.example.com"),
     "the bare public name is not allowed — this is the header a TLS client on the default port sends");
-  assert.ok(withPublic.includes("clearotron.example.com:443"),
+  assert.ok(withPublic.some((h) => h === "clearotron.example.com:443"),
     "the public name with :443 is not allowed — some clients send the port and both arrive here");
 });
 
@@ -43,8 +43,8 @@ test("an explicit port is honoured as itself, not rewritten to 443", () => {
   // Somebody publishing on :8443 sends :8443. Hard-coding 443 would fix the common case and leave the
   // uncommon one with exactly the defect this issue is about.
   const l = list(8848, { CLEAROTRON_CLIENT_MCP_URL: "https://clearotron.example.com:8443/mcp" });
-  assert.ok(l.includes("clearotron.example.com:8443"), "the published port is not in the allow-list");
-  assert.ok(!l.includes("clearotron.example.com:443"), "a port nobody published was allowed instead");
+  assert.ok(l.some((h) => h === "clearotron.example.com:8443"), "the published port is not in the allow-list");
+  assert.ok(!l.some((h) => h === "clearotron.example.com:443"), "a port nobody published was allowed instead");
 });
 
 test("loopback is never dropped for the public name", () => {
@@ -94,9 +94,9 @@ test("the PLAN writes what the derivation produces — driven, not assumed", () 
   assert.ok(plan.possible, `the reference plan refused, so this arm compares nothing: ${JSON.stringify(plan.blockers)}`);
 
   const written = String(plan.settings.CLIENT_MCP_ALLOWED_HOSTS ?? "");
-  assert.ok(written.includes("clearotron.example.com"),
+  assert.ok(written.split(",").some((h) => h === "clearotron.example.com"),
     "the plan still writes a loopback-only allow-list — the derivation exists and the door never sees it");
-  assert.ok(written.includes("clearotron.example.com:443"));
+  assert.ok(written.split(",").some((h) => h === "clearotron.example.com:443"));
   assert.ok(written.includes("127.0.0.1:"), "the plan dropped loopback");
 
   // And the two agree EXACTLY: the plan is not composing a second list of its own that happens to
@@ -184,16 +184,16 @@ test("the engine door's allow-list is WRITTEN by the install, from its own port 
   assert.ok(hosts.includes("localhost:29790"), `loopback is incomplete: ${engine}`);
   assert.ok(!hosts.some((h) => h.endsWith(":29811")), `the engine door's list names the CLIENT door's port: ${engine}`);
   // ITS OWN PUBLIC ADDRESS, bare and with :443, for the reason arm 1 of this file gives.
-  assert.ok(hosts.includes("engine.example.org"), `the engine door's public name is absent: ${engine}`);
-  assert.ok(hosts.includes("engine.example.org:443"), `the engine door's public name has no :443 form: ${engine}`);
-  assert.ok(!hosts.includes("client.example.org"), `the engine door's list carries the CLIENT door's address: ${engine}`);
+  assert.ok(hosts.some((h) => h === "engine.example.org"), `the engine door's public name is absent: ${engine}`);
+  assert.ok(hosts.some((h) => h === "engine.example.org:443"), `the engine door's public name has no :443 form: ${engine}`);
+  assert.ok(!hosts.some((h) => h === "client.example.org"), `the engine door's list carries the CLIENT door's address: ${engine}`);
 
   // AND THE CLIENT DOOR IS UNTOUCHED BY THE CHANGE — the arm that would catch a fix that fixed one door
   // by breaking the other.
   const client = valueOf(envFile, "CLIENT_MCP_ALLOWED_HOSTS");
   assert.ok(client, "the client door's allow-list stopped being written");
   assert.ok(client.split(",").includes("127.0.0.1:29811"), `the client door's list lost its own port: ${client}`);
-  assert.ok(client.split(",").includes("client.example.org"), `the client door's list lost its own address: ${client}`);
+  assert.ok(client.split(",").some((h) => h === "client.example.org"), `the client door's list lost its own address: ${client}`);
 });
 
 test("PLANTED AGAINST THE PORT, not the value — and an operator's own host survives it", async () => {

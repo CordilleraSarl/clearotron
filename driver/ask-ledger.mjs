@@ -170,7 +170,7 @@ function endingForQids(qids, join, ts) {
   return null;
 }
 
-/** The {ending, handoff} pair for one cross-check directive. Only `recall` is subject to 's
+/** The {ending, handoff} pair for one cross-check directive. Only `recall` is subject to the
  *  discharge rule; every other net keeps the ending it always had. PURE. */
 function recallEnding(name, qid, join, ts) {
   const ending = endingForQids([qid], join, ts);

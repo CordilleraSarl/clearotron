@@ -60,8 +60,8 @@ const codexBin = () => { const r = resolveEngineProgram("openai-agent"); return 
 // 3 stage families, and BYTE-IDENTICALLY on retry. That was true of that code and that CLI.
 //
 // What has changed is not the measurement but everything around it: three weeks of stage-contract
-// work, and a codex CLI that has moved several minor versions. The ruling above supersedes 's
-// conclusion; it does not erase its evidence. A reader who finds first must be able to get here.
+// work, and a codex CLI that has moved several minor versions. The ruling above supersedes the measurement's
+// conclusion; it does not erase its evidence. A reader who finds the measurement first must be able to get here.
 //
 // ── HOW A REGRESSION ANNOUNCES ITSELF — no experiment is scheduled, and none is needed ────────────
 //

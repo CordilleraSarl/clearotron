@@ -218,6 +218,10 @@ await cmd('Browser.grantPermissions', {
 // permission, which is why granting alone left every press on the refused path. Found independently by
 // testing driving this page and by this file's first run coming back with every `copied` false.
 await cmd('Page.bringToFront').catch(() => {});
+// A value pasted into code the page evaluates, as a JavaScript string or object literal. JSON.stringify
+// alone leaves `<`, `>`, `/` and the two line separators as they are; escaped, they read the same once
+// parsed and cannot close or break the code they are pasted into.
+const jsLiteral = (v) => JSON.stringify(v).replace(/[<>\/\u2028\u2029]/g, (c) => `\\u${c.charCodeAt(0).toString(16).padStart(4, '0')}`)
 const evalIn = async (expr) => (await cmd('Runtime.evaluate', { expression: expr, awaitPromise: true, returnByValue: true })).result?.result?.value
 
 // ── The probes ───────────────────────────────────────────────────────────────────────────────────
@@ -339,6 +343,8 @@ const panelProbe = (expect) => `(() => {
     firstStepCopies: !!steps[0]?.querySelector('.codeblock, .secret-btn'),
     altFirstStepCopies: !!altSteps[0]?.querySelector('.codeblock, .secret-btn'),
     foldStepCount: foldSteps.length,
+    // Every block the reader can copy, shown or folded away, to hold the local route's lines below.
+    copies: [...(panel?.querySelectorAll('.codeblock, pre') ?? [])].map((c) => c.textContent || ''),
     foldOpen: fold ? fold.open : null,
     foldHeading: flat(fold?.querySelector('summary')?.textContent) || null,
     foldButtons: fold ? [...fold.querySelectorAll('ol.steps button')].map((b) => ({ text: flat(b.textContent), ghost: /\\bbtn-ghost\\b/.test(b.className), step: b.getAttribute('data-step') })) : [],
@@ -536,6 +542,12 @@ for (const state of Object.keys(STATES)) {
       ok(s.watch === (deck.aiConnected === false ? WATCH : null) && (s.watch === null || s.watchOnLast),
         `under the last step: ${JSON.stringify(s.watch)} (the log answered ${deck.aiConnected})`)
       ok(!s.warning, `no step for "${o.name}" mentions an authentication warning`)
+      // THE NODE THIS INSTALL RUNS ON, AND THE ENTRY THAT CHECKS IT (owner, 2026-09-19). A line with a bare
+      // `node` ran whatever the assistant's PATH found; through WSL that was Node 18, and the server died on
+      // a syntax error. Every line that starts the server here names this process's own Node and serve.mjs.
+      const local = (s.copies ?? []).filter((t) => /mcp-server[\\/]/.test(t))
+      ok(local.every((t) => t.includes(process.execPath) && /mcp-server[\\/]serve\.mjs/.test(t) && !/(^|[\s"'])node[\s"',]+[^\s"']*mcp-server/.test(t)),
+        `every line "${o.name}" offers that starts the server names ${process.execPath} and serve.mjs (saw ${JSON.stringify(local.map((t) => t.slice(0, 160)))})`)
       // ── WHERE THE DOOR COULD NOT BE READ, BOTH WAYS ARE ON THE SCREEN ──────────────────────────
       //
       // doorKind answers null for "not read" and its contract says the caller offers both. The wire
@@ -720,7 +732,7 @@ const firstApp = accessFor(STATES['wired-client-key']).offers.find((o) => o.serv
 ok(firstApp?.name === 'Claude', `the first app on the web route is Claude, as the boards draw it (saw ${JSON.stringify(firstApp?.name)})`)
 await navigateOrRefuse(cmd, `${origin}/portal/ai`, { what: 'ai-page-render-check' })
 await new Promise((r) => setTimeout(r, 800))
-await evalIn(`(() => { localStorage.setItem('cordillera-ask-ai-report', ${JSON.stringify(JSON.stringify(REMEMBERED))}); return true })()`)
+await evalIn(`(() => { localStorage.setItem('cordillera-ask-ai-report', ${jsLiteral(JSON.stringify(REMEMBERED))}); return true })()`)
 for (const st of EVIDENCE) {
   current = st.deck
   await navigateOrRefuse(cmd, `${origin}${st.path}`, { what: 'ai-page-render-check' })

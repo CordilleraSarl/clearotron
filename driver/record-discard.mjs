@@ -5,7 +5,7 @@
 //
 // ── why this exists ──────────────────────────────────────────────────────────────────────────────────
 //
-// The shipped trace (/) asked ONE pass to answer a question that spans two moments that never
+// The shipped trace asked ONE pass to answer a question that spans two moments that never
 // coexist. A record discarded at screening is gone by the time `findings.json` is written; the findings
 // do not exist at the moment the record is discarded. Whichever end a single pass runs at, it guesses
 // about the other — and `deriveRecordCarry` ran inside `register-digest`, which is BEFORE `synthesis`

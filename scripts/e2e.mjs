@@ -2370,7 +2370,7 @@ const TERMINAL_BY_SUFFIX_RAN = { failed: "failed", done: "delivered", cancelled:
 
 // REPAIR — the live-state vocabulary is IMPORTED, not retyped. This file's first draft spelled it
 // out twice more (an in-flight suffix set and a claim-lock regex), which is exactly the failure
-// queue-markers.mjs was created for: "written down three times and the copies disagreed ". 's
+// queue-markers.mjs was created for: "written down three times and the copies disagreed". The
 // claim lock in particular is a NORMAL in-flight state — a live token is a claim in progress, a dead one
 // is restored by sweepAbandonedTakeovers — and one more private copy of that rule is one more chance to
 // report a claim race as a stranded job.

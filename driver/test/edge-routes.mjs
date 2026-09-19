@@ -14,7 +14,7 @@
 //
 // The failure has no symptom. A link that reaches no handler looks, from here, identical to a link that
 // works; from the client's side it looks identical to a link nobody clicked. It has now shipped three
-// times: the clearance audit link (email-audit-link.test.mjs), the knockout audit link, and 's
+// times: the clearance audit link (email-audit-link.test.mjs), the knockout audit link, and the
 // per-mark report links. Each time the composition was correct and the destination did not exist.
 //
 // So the property worth pinning is never "the URL is well-formed". It is: SOME HANDLER CLAIMS IT.

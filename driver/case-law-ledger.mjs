@@ -114,8 +114,8 @@ export function parseCaseLawLedger(raw) {
 /**
  * The census a reader (and a scenario) asks the ledger for. PURE, and it never judges.
  *
- * `readByTerritory` is the one that answers the depth-dive condition: a dive names ONE territory
- * (/), so "did this dive read anything in its own territory" is a lookup, not an inference.
+ * `readByTerritory` is the one that answers the depth-dive condition: a dive names ONE territory,
+ * so "did this dive read anything in its own territory" is a lookup, not an inference.
  */
 export function caseLawRetrievalCensus(ledger) {
   const queries = ledger?.queries ?? [];

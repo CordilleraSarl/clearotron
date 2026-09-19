@@ -1334,7 +1334,7 @@ function MarkRow({
               precisely when a section header sits directly above the row already saying the same thing.
               So it was the same string twice on one line — the thing the header was failing to
               communicate, repeated rather than fixed. Making the header read as a header is the fix.
-              Grouping OFF is 's case, and it needs the owner on every row rather than on the ones
+              Grouping OFF is a separate case, and it needs the owner on every row rather than on the ones
               that happen to collide — which is the column below, not a chip. */}
         </td>
         {/* — UNGROUPED, THE OWNER LIVES HERE. The information has to survive the toggle, and a
@@ -1489,7 +1489,7 @@ function ReadRow({
   readonly latest?: boolean
   /** Another search of this name finished on the same day — the case a date alone cannot separate. */
   readonly sameDayAsAnother?: boolean
-  /** — retire THIS search. Absent ⇒ no control ('s rule, inherited from the parent's gate). */
+  /** — retire THIS search. Absent ⇒ no control (the rule inherited from the parent's gate). */
   readonly onRetire?: ((run: Run) => void) | undefined
 }) {
   // THE OPEN BUTTON IS THE CONTROL. The row used to be the control — a `role="link"` with a faint "Open ›"

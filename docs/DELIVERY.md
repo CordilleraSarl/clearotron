@@ -284,12 +284,12 @@ So the checks that run are exactly those whose whole input is model-authored tex
 **permission-prose**, **scope-numbers-in-prose**, **counting-consistency**,
 **wipo-designation-language**, **prescription-prose**. Every other clearance check is listed in the
 receipt under `notApplicable` with the reason its input does not exist here
-(`KNOCKOUT_ABSENT_BY_DESIGN` in `driver/predelivery-lint.mjs`). That is a third state (/),
+(`KNOCKOUT_ABSENT_BY_DESIGN` in `driver/predelivery-lint.mjs`). That is a third state,
 and it is the point: a check that cannot apply is recorded as absent, never as a silent pass, and
 never as a `pass:false` that would project to the lawyer as a defect.
 
-**Why the lane cannot simply skip the lint.** The lint receipt IS the workbook's QC record
-(/), so a lane that writes no`_driver/predelivery-lint.json` produces an *empty* QC record
+**Why the lane cannot simply skip the lint.** The lint receipt IS the workbook's QC record,
+so a lane that writes no`_driver/predelivery-lint.json` produces an *empty* QC record
 rather than a deliberately-absent one — and an empty record reads as "not evaluated", never
 "passed". And since recorded defects reach the reviewing lawyer only through the projected
 machine-check sheet on the audit workbook, a lane with nothing to project is a lane whose

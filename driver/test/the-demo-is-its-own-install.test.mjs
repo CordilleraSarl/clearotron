@@ -94,7 +94,9 @@ const listening = (port) => new Promise((res) => {
 });
 
 function launch(args, env) {
-  const child = spawn(process.execPath, args, { cwd: REPO, env, stdio: ["ignore", "pipe", "pipe"] });
+  // TMPDIR IS THE RUN'S OWN unless an arm says otherwise: the demo copies its samples into a temporary
+  // directory, and a child handed no TMPDIR puts them in the machine's, where nothing removes them.
+  const child = spawn(process.execPath, args, { cwd: REPO, env: { TMPDIR: tmpdir(), ...env }, stdio: ["ignore", "pipe", "pipe"] });
   let said = "";
   child.stdout.on("data", (c) => { said += c; });
   child.stderr.on("data", (c) => { said += c; });
@@ -195,7 +197,7 @@ test("through the real entry: `start --demo` leaves the planted `.env` alone, `s
     mkdirSync(dirname(file), { recursive: true });
     writeFileSync(file, "CLEAROTRON_REPORTS_DIR=/a/real/install/pool\n");
     const run = (args) => spawnSync(process.execPath, [join(REPO, "bin", "start.mjs"), ...args, "--license"],
-      { encoding: "utf8", timeout: 60000, env: { PATH: process.env.PATH, HOME: home } });
+      { encoding: "utf8", timeout: 60000, env: { PATH: process.env.PATH, HOME: home, TMPDIR: tmpdir() } });
     const demo = run(["--demo"]);
     assert.equal(demo.status, 0, `start --demo --license did not exit cleanly: ${demo.stderr}`);
     assert.match(demo.stderr, /\[env-local\] not reading/, "the demo did not say it left the file alone");

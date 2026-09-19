@@ -3344,8 +3344,22 @@ export async function runCheck() {
         sock.once("error", (e) => done(e.code === "ECONNREFUSED" ? false : null));
       });
     } catch { /* stays null — nobody could ask */ }
+    // WHOSE LISTENER. Only this install's own evidence counts: its unit running (which binds this very
+    // port), or a live start of this install whose record names the port. Anything else on the port is
+    // somebody's process, and on a shared box usually another account's door.
+    let doorOwnListener = null;
+    if (doorListening === true) {
+      if (doorActive === true) doorOwnListener = true;
+      else {
+        try {
+          const { clientDoorPort: portOf } = await import(pathToFileURL(join(REPO, "shared", "client-door.mjs")).href);
+          const { readRunning } = await import(pathToFileURL(join(REPO, "shared", "running-start.mjs")).href);
+          if (readRunning().some((r) => r?.ports?.client === portOf(doorEnv))) doorOwnListener = true;
+        } catch { /* stays null — an unread record is not a claim either way */ }
+      }
+    }
     const door = doorState({ env: doorEnv, unitDir, exists: existsSync, active: doorActive,
-      listening: doorListening, activeState: doorActiveState, subState: doorSubState });
+      listening: doorListening, ownListener: doorOwnListener, activeState: doorActiveState, subState: doorSubState });
     // EVERY COMMAND THROUGH `invoke`. Doctor's own guard runs every command doctor
     // prints from a directory that is not the install; a literal `clearotron start` in that text is
     // `command not found` for a reader with no shim, and the guard caught exactly that the moment this
@@ -4272,7 +4286,7 @@ try {
   // Enter yield the empty string, `present("")` is false, and askValue loops with "A value is needed
   // here." — so a reader taking the header at its word ("Enter takes the default in brackets") on the
   // one prompt that advertises empty as an answer could not leave it. Driven on the merged tree:
-  // 60 enters, killed at the cap, every cycle this prompt. Same defect class as 's
+  // 60 enters, killed at the cap, every cycle this prompt. Same defect class as the
   // engine-menu loop, arriving one commit after it was fixed, in a prompt this branch's own sibling
   // added.
   //

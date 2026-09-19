@@ -90,7 +90,9 @@ function runDemo(args, env = {}) {
   try {
     const out = execFileSync(process.execPath, [DEMO, ...args], {
       encoding: "utf8", stdio: ["ignore", "pipe", "pipe"],
-      env: { HOME: env.HOME ?? tmpdir(), PATH: "/usr/bin:/bin", ...env },
+      // TMPDIR IS THE RUN'S OWN, so the demo's temporary copies land where the runner removes them. Without
+      // it the child falls back to the machine's temp directory and every run left five behind there.
+      env: { HOME: env.HOME ?? tmpdir(), PATH: "/usr/bin:/bin", TMPDIR: tmpdir(), ...env },
     });
     return { code: 0, out };
   } catch (e) {

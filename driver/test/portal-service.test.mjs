@@ -3352,3 +3352,43 @@ test("the searches payload names the wired register, and omits the name rather t
       `a label of ${JSON.stringify(nothing)} must be omitted, never sent as an empty name`);
   }
 });
+
+// ── THE STAGE A LIVE RUN IS IN NOW (owner, 2026-09-19) ────────────────────────────────────────────────
+//
+// The card and the row named the furthest step a run had ever reached, so a run sent back into synthesis
+// by a correction pass went on reading "Case law & refutation" (measured on a beta, 2026-09-18). They
+// name the stage it last ENTERED now, a step back included, and a finished run keeps its terminal step.
+test("a live run's row names the stage it is in now, a step back included; a finished one keeps its step", async () => {
+  const { stageNow } = await import("../progress.mjs");
+  assert.deepEqual(stageNow({ lastStage: "placement-inquiry", stepLabel: "Register sweeps", stepN: 2, stepTotal: 9 }),
+    { step: "Placement & digest", stepN: 3, stepTotal: 9 }, "the run entered placement; the card still said register sweeps");
+  assert.deepEqual(stageNow({ lastStage: "synthesis", stepLabel: "Case law & refutation", stepN: 6, stepTotal: 9 }),
+    { step: "Synthesis", stepN: 5, stepTotal: 9 }, "a correction pass back into synthesis must read as synthesis");
+  assert.equal(stageNow({ lastStage: "register-unit:primary-sweep", stepLabel: "Framing the matter", stepN: 1, stepTotal: 9 }).step, "Register sweeps",
+    "a fan-out axis names its stage");
+  assert.deepEqual(stageNow({ lastStage: "doubt-closure", stepLabel: "Case law & refutation", stepN: 6, stepTotal: 9 }),
+    { step: "Case law & refutation", stepN: 6, stepTotal: 9 }, "a stage with no display step keeps the furthest step");
+  assert.deepEqual(stageNow({ stepLabel: "Searching registers", stepN: 4, stepTotal: 9 }),
+    { step: "Searching registers", stepN: 4, stepTotal: 9 }, "a run that recorded no stage keeps what it has");
+  // THE RUN'S OWN READING WINS where it wrote one: `currentStep` stays on the step a no-display-step stage
+  // runs inside, where lastStage names that stage and can map to nothing.
+  assert.deepEqual(stageNow({ currentStep: { index: 4, label: "Synthesis", n: 5, total: 9 }, lastStage: "doubt-closure",
+    stepLabel: "Case law & refutation", stepN: 6, stepTotal: 9 }), { step: "Synthesis", stepN: 5, stepTotal: 9 },
+  "currentStep is the step the run is in now, and it is ignored");
+
+  const { service, workspaceRoot } = world();
+  const live = join(workspaceRoot, "workspace-test", "studio", "clearance-search", "tmp9-live", "2026-07-18-amber-x", "status.json");
+  const write = (s) => writeFileSync(live, JSON.stringify({ runId: "tmp9-live-amber-x", markName: "LIVEMARK", updatedAt: "2026-07-18T10:00:00Z", ...s }));
+  const row = async () => (await service.route("GET", "/portal/api/runs", CLIENT, {}, {})).json.runs.find((r) => r.runId === "tmp9-live-amber-x");
+  write({ state: "running", currentStep: { index: 4, label: "Synthesis", n: 5, total: 9 }, lastStage: "synthesis", stepLabel: "Case law & refutation", stepN: 6, stepTotal: 9 });
+  const back = await row();
+  assert.equal(back.step, "Synthesis", "the row named the furthest step, not the stage the run is in");
+  assert.equal(back.stepN, 5, "and its step number must follow the stage, back one");
+  // A failed run is still listed from its live folder (a delivered one is listed from the pool), and it
+  // keeps the step its terminal write set rather than the stage it last entered.
+  write({ state: "failed", lastStage: "synthesis", stepLabel: "Case law & refutation", stepN: 6, stepTotal: 9 });
+  const done = await row();
+  assert.ok(done, "a failed run left the listing");
+  assert.equal(done.step, "Case law & refutation", "a finished run keeps the step its terminal write set");
+  assert.equal(done.stepN, 6);
+});

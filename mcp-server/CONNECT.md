@@ -5,7 +5,7 @@ MCP-capable app. Two ways in, and they are not variants of each other:
 
 | | **Local** | **Hosted** |
 |---|---|---|
-| What it is | your app spawns `server.mjs` from your own clone | you were given a URL by whoever operates the engine |
+| What it is | your app spawns `serve.mjs` from your own clone | you were given a URL by whoever operates the engine |
 | Who it is for | anyone who cloned this repository | a customer or colleague reading someone else's runs |
 | Setup | copy-paste below, no account, no credential | paste the URL, sign in |
 | Reach | everything, including the write verbs | read-only, scoped to your own matters |
@@ -46,7 +46,7 @@ One command. Substitute your clone's path and your workspace root:
 ```sh
 claude mcp add trademark-artifacts --scope user \
   -e CLEAROTRON_WORK_DIR=/path/to/your/workspace \
-  -- node /path/to/clearotron/mcp-server/server.mjs
+  -- node /path/to/clearotron/mcp-server/serve.mjs
 ```
 
 Check it: `claude mcp list` prints `trademark-artifacts: … - √ Connected`.
@@ -64,7 +64,7 @@ PowerShell 5.1, write the separator as `"--"`: that shell drops a bare `--`. Rem
   "mcpServers": {
     "trademark-artifacts": {
       "command": "node",
-      "args": ["/path/to/clearotron/mcp-server/server.mjs"],
+      "args": ["/path/to/clearotron/mcp-server/serve.mjs"],
       "env": { "CLEAROTRON_WORK_DIR": "/path/to/your/workspace" }
     }
   }
@@ -82,7 +82,7 @@ Codex reads `~/.codex/config.toml`:
 ```toml
 [mcp_servers.trademark-artifacts]
 command = "node"
-args = ["/path/to/clearotron/mcp-server/server.mjs"]
+args = ["/path/to/clearotron/mcp-server/serve.mjs"]
 env = { CLEAROTRON_WORK_DIR = "/path/to/your/workspace" }
 ```
 
@@ -94,13 +94,13 @@ is a value written to a file.
 
 ## Any other MCP host
 
-The contract is the same three things every time: run `node mcp-server/server.mjs`, over stdio, with
+The contract is the same three things every time: run `node mcp-server/serve.mjs`, over stdio, with
 `CLEAROTRON_WORK_DIR` in its environment.
 
 ```json
 {
   "command": "node",
-  "args": ["/path/to/clearotron/mcp-server/server.mjs"],
+  "args": ["/path/to/clearotron/mcp-server/serve.mjs"],
   "env": { "CLEAROTRON_WORK_DIR": "…", "CLEAROTRON_REPORTS_DIR": "…" }
 }
 ```
@@ -125,7 +125,7 @@ read them. Spawn the server as that user:
 ```json
 {
   "command": "sudo",
-  "args": ["-u", "<operator>", "node", "/path/to/clearotron/mcp-server/server.mjs"]
+  "args": ["-u", "<operator>", "node", "/path/to/clearotron/mcp-server/serve.mjs"]
 }
 ```
 
@@ -133,7 +133,7 @@ That needs a one-time NOPASSWD rule, or the stdio handshake hangs on a password 
 
 ```
 # /etc/sudoers.d/trademark-artifacts-mcp   (chmod 0440)
-<caller> ALL=(<operator>) NOPASSWD: /usr/bin/node /path/to/clearotron/mcp-server/server.mjs
+<caller> ALL=(<operator>) NOPASSWD: /usr/bin/node /path/to/clearotron/mcp-server/serve.mjs
 ```
 
 ## What to ask it

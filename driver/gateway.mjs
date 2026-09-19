@@ -1146,7 +1146,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // `resolveModel(model)` / `engine.resolveModelId(model)`, computed here without ever looking at the
     // provider's answer. So `--model gemini` logged `google/gemini-3.1-pro-preview` and ran sonnet (the
     // engine's alias table substituted, silently), a haiku stage that bounced to sonnet logged haiku,
-    // and every attribution downstream — the A/B arm's manifest, tokens.mjs' per-model rollup, 's
+    // and every attribution downstream — the A/B arm's manifest, tokens.mjs' per-model rollup, the
     // billing classes — was keyed to a model that had not run. Patching the log would not have fixed
     // it; the log was already saying what the code believed.
     //

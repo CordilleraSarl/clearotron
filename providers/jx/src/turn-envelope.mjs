@@ -3,7 +3,7 @@
 // turn-envelope.mjs — render a forced-tool request as a CLI-turn prompt, and read the turn's text back
 // into the envelope the three lane parsers already understand. PURE. No driver import, no network.
 //
-// ── why this exists ( /) ─────────────────────────────────────────────────────────────────
+// ── why this exists ─────────────────────────────────────────────────────────────────
 //
 // The jx lanes called the Anthropic Messages API directly with `tool_choice: {type:"tool"}`, on a key,
 // at a hardcoded tier — regardless of which AI program the customer configured. The owner's standing

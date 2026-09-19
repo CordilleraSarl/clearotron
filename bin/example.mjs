@@ -47,7 +47,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { spawn } from "node:child_process";
 import { BRAND } from "../shared/brand.mjs";   // — the installer's own name, from the tenant seam
 import { envFrom } from "../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
-import { isFrozen, demoChildren, demoInventory, prepareSample } from "../driver/demo-container.mjs";   // — one definition of what a frozen demo is, for the player AND the gate
+import { isFrozen, demoChildren, demoInventory, prepareSample, releaseDemoCopies } from "../driver/demo-container.mjs";   // — one definition of what a frozen demo is, for the player AND the gate
 import { ensureDemoProgram, demoProgramEnv } from "../shared/permanent-install.mjs";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -168,6 +168,14 @@ if (!sampleDirs.length || !isFrozen(sampleDir)) {
 // rest are published. An unreadable file inside one sample used to throw out of the copy here and take
 // every demo down with a stack trace (measured on a published beta, 2026-09-11).
 const failures = ALL ? inventory.unusable.map((u) => ({ name: u.name, why: u.why })) : [];
+// A STOP WHILE THE SAMPLES ARE COPIED OR PUBLISHED still takes the copies with it. The copies go on exit
+// (driver/demo-container.mjs), and a signal's default ends the process without one. Taken off again once
+// the copies are gone, before the portal's own handlers are installed.
+const stopEarly = [["SIGINT", 2], ["SIGTERM", 15], ["SIGHUP", 1]].map(([sig, no]) => {
+  const h = () => process.exit(128 + no);
+  process.once(sig, h);
+  return [sig, h];
+});
 const samples = [];
 for (const dir of sampleDirs) {
   const r = prepareSample(dir, { repoRoot: REPO });
@@ -277,6 +285,9 @@ for (const s0 of samples) {
     failures.push({ name: s0.name, why: String(e?.message ?? e) });
   }
 }
+// PUBLISHED, SO THE COPIES THEY WERE PUBLISHED FROM GO NOW, whatever comes next.
+releaseDemoCopies();
+for (const [sig, h] of stopEarly) process.off(sig, h);
 if (!results.length) {
   die(`demo: no demo could be replayed.`, "", ...failures.map((f) => `  ${f.name}: ${f.why}`));
 }

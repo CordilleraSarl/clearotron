@@ -214,7 +214,7 @@ export const clientDoorAddress = (env = {}) => `http://127.0.0.1:${clientDoorPor
  * the fence off accepts no account key, and the fence on with nothing listening is a setting with no
  * server. Reporting "standing" on half of it would send a reader to paste an address at nothing.
  */
-export function clientDoorState({ env = {}, unitDir, exists, active = null, listening = null, activeState = null, subState = null } = {}) {
+export function clientDoorState({ env = {}, unitDir, exists, active = null, listening = null, ownListener = null, activeState = null, subState = null } = {}) {
   const fenceOn = String(env.CLIENT_MCP_ACCOUNT_ACCESS ?? "").trim() === "1";
   const unitInstalled = Boolean(exists(join(unitDir, CLIENT_DOOR_UNIT)));
   // `standing` IS UNCHANGED AND STILL MEANS CONFIGURED — a file on disk and a fence flag. Two callers
@@ -238,7 +238,7 @@ export function clientDoorState({ env = {}, unitDir, exists, active = null, list
     // so a crash loop (`activating/auto-restart`) and a unit that was never started (`inactive/dead`)
     // reduce to the same `false` and printed the same sentence — one is a fault to read the journal for,
     // the other is a connect that stopped half-way.
-    listening, activeState, subState, standing, fenceOn, unitInstalled, active, serving: standing && active === true };
+    listening, ownListener, activeState, subState, standing, fenceOn, unitInstalled, active, serving: standing && active === true };
 }
 
 /**
@@ -300,10 +300,17 @@ export function describeDoorState(door, {
       // reader whose foreground door was up to run the command they had just run — and it is NOT enough
       // to call it theirs: the product's ports are fixed defaults, so on a shared box the answer may be
       // another install's door entirely. Caught by 2145's arm on a machine where exactly that was true.
+      //
+      // AND WHOSE IT IS IS ASKED, NOT GUESSED. On a shared box the port is often another account's door,
+      // and "something is listening on the client door's address for this environment" read as this
+      // install's (measured 2026-09-19). `ownListener` is true only when this install's own record says
+      // it holds the port; anything else is said as exactly what was measured, a process on the port.
+      if (door.ownListener === true)
+        return { level: "info",
+          text: `this install's client door is running in the foreground — it stops when that terminal does; `
+            + `\`${startCmd} --background\` installs the unit.` };
       return { level: "info",
-        text: `something is listening on the client door's address for this environment — no ${unit} is `
-          + "installed, so either this install is running in the foreground (it stops when that terminal "
-          + `does; \`${startCmd} --background\` installs the unit) or another install holds the port.` };
+        text: "a process holds the client door's port, and nothing here shows it is this install's door." };
     }
     return { level: "info",
       text: `the client door is not set up here — ${missing}. \`${startCmd}\` writes both. Since the `
@@ -313,10 +320,15 @@ export function describeDoorState(door, {
   if (door.active === null) {
     // THE PROBE STILL COUNTS HERE. Not asking systemd is not the same as knowing nothing: if the port
     // answers, the door is serving whatever systemd would have said.
-    if (door.listening === true) {
+    if (door.listening === true && door.ownListener === true) {
       return { level: "ok",
         text: `${unit} is installed and account access is enabled, and the client door's port is `
           + "answering — systemd was not asked, so this is the port's word rather than the unit's" };
+    }
+    if (door.listening === true) {
+      return { level: "info",
+        text: `${unit} is installed and account access is enabled — whether it is RUNNING was not checked. `
+          + "A process holds the client door's port, and nothing here shows it is this install's door." };
     }
     return { level: "info",
       text: `${unit} is installed and account access is enabled — whether it is RUNNING was not checked, `

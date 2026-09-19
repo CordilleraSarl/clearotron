@@ -212,7 +212,7 @@ const RECORDING = Object.freeze({
   // SECOND — skeptic, same shape ( is the template). Its OWN key, so blind-frame's seat is never
   // handed record_skeptic and skeptic is never handed record_blind_frame.
   //
-  // skeptic's key carries a SECOND tool: search_run_artifacts, the sanctioned read surface ('s
+  // skeptic's key carries a SECOND tool: search_run_artifacts, the sanctioned read surface (the
   // ratification hold, unlock path 1). A READ over the run's own tree, not retrieval — it dials nothing,
   // writes nothing, and is bounded to CLEAROTRON_BAND_RUN_DIR by construction (skeptic-search.mjs). It
   // replaces the artifact half of the Bash reads O3c measured; the skill-doc half was already the seeded

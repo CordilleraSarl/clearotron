@@ -288,8 +288,8 @@ export function callsSoFar(dispositionsPath) {
 export { PARK_AFTER_REFUSALS };
 
 /**
- * Which rows have been refused past the bound. PURE, and counted PER ROW ACROSS CALLS — the unit 's
- * own banner records an earlier investigation dying on, when it joined per-row-final-state instead.
+ * Which rows have been refused past the bound. PURE, and counted PER ROW ACROSS CALLS — the unit this
+ * module's own banner records an earlier investigation dying on, when it joined per-row-final-state instead.
  *
  * A row that is ruled later is never re-parked, because the union only parks rows that are not ruled.
  * @returns {string[]} row_ids, sorted, so the same ledger always yields the same answer.

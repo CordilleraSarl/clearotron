@@ -443,9 +443,8 @@ const H1_BLOCK = /<h1\b[^>]*>([\s\S]*?)<\/h1>/g
  * heading was entirely its subject.
  */
 const isSubjectHeading = (inner) => {
-  const bare = String(inner)
-    .replace(/\{(?:[^{}]|\{[^{}]*\})*\}/g, '')   // JSX expressions, one level of nesting
-    .replace(/<[^>]*>/g, '')                      // nested tags
+  let bare = String(inner).replace(/\{(?:[^{}]|\{[^{}]*\})*\}/g, '')   // JSX expressions, one level of nesting
+  for (let prev = null; prev !== bare;) { prev = bare; bare = bare.replace(/<[^>]*>/g, '') }   // nested tags, until none is left
   return !/[A-Za-z]{2}/.test(bare)
 }
 

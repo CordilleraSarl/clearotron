@@ -45,8 +45,8 @@
 // docs/architecture/05-config-governance.md, tier 2). Getting that wrong replaces working auth with
 // placeholders that look configured, and it is not work to do beside a running round.
 //
-// So the untracked units are declared as untracked, WITH THE REASON, which is exactly what 's
-// acceptance asks for: "either has a tracked file it is compared against, or is named here with the
+// So the untracked units are declared as untracked, WITH THE REASON, which is exactly what the
+// requirement asks for: "either has a tracked file it is compared against, or is named here with the
 // reason it does not".
 //
 // ── THE CORRECTION THIS FILE NEEDED ITSELF ───────────────────────────────────────────────────────

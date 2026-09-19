@@ -110,11 +110,11 @@ test("every result-noun field in the tree is classified, with its counts", (ctx)
   const problems = [];
   for (const [k, d] of derived) {
     const row = table.get(k);
-    if (!row) { problems.push(`UNCLASSIFIED  ${k.replace("|", "  ")}  (${d.sites} site(s), ${d.atWriteSite} at a write site)`); continue; }
+    if (!row) { problems.push(`UNCLASSIFIED  ${k.replaceAll("|", "  ")}  (${d.sites} site(s), ${d.atWriteSite} at a write site)`); continue; }
     if (row.sites !== d.sites || row.atWriteSite !== d.atWriteSite)
-      problems.push(`COUNT MOVED   ${k.replace("|", "  ")}  table says ${row.sites}/${row.atWriteSite}, tree says ${d.sites}/${d.atWriteSite}`);
+      problems.push(`COUNT MOVED   ${k.replaceAll("|", "  ")}  table says ${row.sites}/${row.atWriteSite}, tree says ${d.sites}/${d.atWriteSite}`);
   }
-  for (const k of table.keys()) if (!derived.has(k)) problems.push(`STALE ROW     ${k.replace("|", "  ")}  is in the table and not in the tree`);
+  for (const k of table.keys()) if (!derived.has(k)) problems.push(`STALE ROW     ${k.replaceAll("|", "  ")}  is in the table and not in the tree`);
 
   assert.deepEqual(problems, [],
     `${problems.length} result-noun field(s) are unclassified or have moved:\n  ${problems.join("\n  ")}\n\n`

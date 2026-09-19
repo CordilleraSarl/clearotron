@@ -769,7 +769,7 @@ export function buildBandShape(band, { targets = [], inScopeClasses = [], crowdC
 }
 
 const fmtN = (n) => Number(n ?? 0).toLocaleString("en-US");
-const cell = (v) => String(v ?? "").replace(/\|/g, "\\|").replace(/\s+/g, " ").trim() || "—";
+const cell = (v) => String(v ?? "").replace(/\\/g, "\\\\").replace(/\|/g, "\\|").replace(/\s+/g, " ").trim() || "—";
 
 // Bounded aggregate table: top rows by count, one honest remainder line — never for the floors.
 function topTable(md, title, cols, entries, cap = 30) {

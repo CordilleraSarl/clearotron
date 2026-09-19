@@ -13,7 +13,7 @@
 // PASS; ~86% of emitted tokens landed in no artifact, and the attempt that passed is the one that
 // PATCHED). A cold ladder never patches.
 //
-// THE CURE IS 's, one gate over: the driver writes the row and the model fills in the judgment. The
+// THE CURE IS THE ONE APPLIED ONE GATE OVER: the driver writes the row and the model fills in the judgment. The
 // axis, the coverage unit, the open crowd blocks with their qids and hit counts, and the deferred slices
 // with their per-qid receipt reasons are all facts the driver holds BEFORE the stage dispatches. It
 // writes them. The seat sets `status` and `reason`, and nothing else in the file is the seat's to write.
@@ -856,7 +856,7 @@ export function findCoverageFormViolations(rows, formError = null) {
 // kind and nothing in it is a string the model had to copy. parseCoverageLedgerFull survives, but only as
 // the ARCHIVED-RUN reader (loadCoverageLedger's prose fallback): no gate parses this table any more.
 
-const cell = (s) => String(s ?? "").replace(/\|/g, "\\|").replace(/\s+/g, " ").trim();
+const cell = (s) => String(s ?? "").replace(/\\/g, "\\\\").replace(/\|/g, "\\|").replace(/\s+/g, " ").trim();
 
 /** The `## Coverage ledger` section, rendered from the form's rows. "" when nothing is settled. PURE. */
 export function renderCoverageLedgerSection(rows) {

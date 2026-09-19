@@ -429,6 +429,8 @@ const splitSides = (step) => {
   return variants.map((v) => ({
     ...step,
     text: v.heading,
+    // A side that needs something filled in before it is pasted says so under its own copy.
+    hint: v.hint ?? step.hint,
     copy: { ...step.copy, text: v.text, stdio: { ...step.copy.stdio, text: v.text, variants: null } },
   }));
 };

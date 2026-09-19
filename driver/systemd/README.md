@@ -33,7 +33,7 @@ missing one and writes nothing, because a unit with one placeholder left starts 
 worse than one that does not start. Which units need it is **derived from the files**, not from a list —
 and `driver/unit-inventory.mjs` declares them, with a test asserting the two agree in both directions.
 
-These are for a **server, not a laptop**. On a workstation there is nothing to install: `npx clearotron start` supervises the
+These are for a **server, not a laptop**. On a workstation there is nothing to install: `clearotron start` supervises the
 same loop for you, and`node driver/runner.mjs --watch` is what to run by hand if you started with
 `--no-worker` (`INSTALL.md` §5) — one foreground process that polls for queued jobs and for parked runs whose
 window has elapsed.

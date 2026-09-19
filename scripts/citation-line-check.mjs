@@ -528,7 +528,7 @@ function main() {
 //     WATCHLIST_OWNERS_MAX declared in variant-manifest-model.mjs   anything else — `declared` marks it
 //
 // A BARE WORD BEFORE `in <file>` IS NOT A SYMBOL CITATION, deliberately, and this is the difference
-// between this arm and 's. reads the token beside a number SPECULATIVELY and drops it when it
+// between this arm and the line arm, which reads the token beside a number SPECULATIVELY and drops it when it
 // is not declared, because "ALREADY computes (coverage-ledger.mjs:180)" would otherwise manufacture a
 // defect out of emphatic prose. This arm cannot do that: an undeclared symbol has to FAIL or the check
 // has no teeth at all. So the form is opted into. `the field in scope-ledger.mjs` and `checked in
@@ -923,8 +923,8 @@ export function symbolMisses(citations, readLines) {
 // WHAT IT CANNOT SEE, and why this stays a slice. A citation that lands on the WRONG NON-BLANK LINE is
 // invisible to it — that looks identical to a correct one. Three of the eleven citations repointed in
 // `stages.mjs` under this issue were exactly that: `stages.mjs:1474` pointed at a transliteration `why:`
-// row, `pipeline.mjs:2908` at a different function entirely, and neither line was blank. Only 's
-// arm can decide those, and only where the citation names a symbol. A clean run here is evidence about
+// row, line 2908 of `pipeline.mjs` at a different function entirely, and neither line was blank. Only the
+// symbol arm can decide those, and only where the citation names a symbol. A clean run here is evidence about
 // punctuation, not about correctness.
 //
 // AN OVERRUN IS NOT THIS FINDING. A span running past the file's last line is already reported as

@@ -30,7 +30,7 @@ import { partyFactSources, partyFactViolations, partyFactMessage, canJudgePartyF
 import { writeUpViolations, writeUpMessage } from "./narrative-write-ups.mjs";   //
 
 import { findRegistryArithmeticIssues, findRegistryViolations, splitBlocks } from "./registry-fidelity.mjs";
-import { CLIENT_TIER_BY_COMPOSITE, joinFindingToBlock, parseBlockOrd, worstLiveBand, NO_RATED_CONFLICTS, deriveActionConditions, isUnconditionalProceed, verdictStance, joinAskToAnswer, projectAssessmentField, POSITION_REQUIRED_DISPOSITIONS, OFF_FIELD_GROUNDS, FINDINGS_SCHEMA_VERSION, netChainMarkers, STATEMENT_CLAUSE_MAX } from "./findings-model.mjs";
+import { CLIENT_TIER_BY_COMPOSITE, joinFindingToBlock, parseBlockOrd, worstLiveBand, NO_RATED_CONFLICTS, deriveActionConditions, isUnconditionalProceed, verdictStance, statedConditions, joinAskToAnswer, projectAssessmentField, POSITION_REQUIRED_DISPOSITIONS, OFF_FIELD_GROUNDS, FINDINGS_SCHEMA_VERSION, netChainMarkers, STATEMENT_CLAUSE_MAX } from "./findings-model.mjs";
 import { normalizeBand } from "./framework.mjs";
 import { clientConditions, unrenderableConditions, ENGINE_TOKEN_RE } from "./terminal-clamp.mjs";   // the reader's clause per condition, and the token shape it may never carry
 import { knockoutNoteView, REQUEST_NOTE_WORDS, REQUEST_SUBJECT_WORDS } from "./findings-model.mjs";   // one reader for where a note prints
@@ -87,7 +87,7 @@ const REF_ALLOWLIST = new Set([
 const TERRITORY_VOCAB = new Set(Object.values(REGION_NAMES).map((n) => norm(n)));
 
 function stripHtml(s) {
-  return String(s ?? "").replace(/<[^>]+>/g, " ").replace(/&amp;/g, "&").replace(/&nbsp;/g, " ");
+  return String(s ?? "").replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&");
 }
 
 // "April 2014", "MAY 2026" — dates pass the Title-Case-multi-word shape but are never entities.
@@ -2023,7 +2023,12 @@ export function statementCoherenceChecks({ verdictDoc }) {
       stanceOk ? "" : `verdict.json stance "${verdictDoc.stance}" does not match the verdict ${v || "(missing)"} (expected "${expected ?? "?"}") — the sidecar fields diverged; re-derive it (writeVerdictSidecar composes both from one record)`);
     if (!c3.pass) c3.structural = true;
     out.push(c3);
-    const formOk = verdictDoc.stance !== "conditional" || /—\s*conditional on:/.test(st);
+    // The form is owed only where something is stated: a conditional whose every condition was ruled to
+    // the run record carries the band word alone (riskStatement), and a "conditional on:" there would be
+    // the empty line the owner ruled off the page.
+    const stated = statedConditions({ reasons: verdictDoc.reasons, clauses: verdictDoc.clauses });
+    const nothingStated = !stated.cls.length && !stated.conds.length;
+    const formOk = verdictDoc.stance !== "conditional" || nothingStated || /—\s*conditional on:/.test(st);
     const c4 = check("statement-conditional-form", "verdict", "report", formOk,
       formOk ? "" : `a conditional-stance statement must state what conditions reliance ("<Tier> — conditional on: <facts>"), but reads "${st.slice(0, 80)}" — re-derive the sidecar`);
     if (!c4.pass) c4.structural = true;
@@ -2339,7 +2344,7 @@ export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, 
 // ── The KNOCKOUT lane's applicable subset (2026-07-31) ──────────────────────────────────────────────
 // The knockout (Stage 0/0.5) lane wrote NO predelivery-lint.json at all, by a decision recorded in
 // docs/DELIVERY.md (2026-07-28). That decision rested on two premises this tranche has since moved:
-// the lint artifact is now the WORKBOOK's QC record (/), so a lane that writes none produces an
+// the lint artifact is now the WORKBOOK's QC record, so a lane that writes none produces an
 // EMPTY QC record rather than a deliberately-absent one; and the A10 projects recorded defects onto
 // the cover note that reaches the reviewing lawyer, so a knockout defect reached nobody. What has NOT
 // moved is the other half of the memo: this lane's deliverable is store-rendered, and most clearance

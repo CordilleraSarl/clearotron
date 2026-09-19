@@ -413,8 +413,8 @@ test("coverage: verdicts live in a sibling ledger, and the index row still carri
 
 test("the park PERSISTS in the accumulator and the counts are three-way", () => {
   // Computed only in the answer, the park evaporated: the next call regenerated the form, the row read
-  // as merely unsettled again, and every consumer downstream counted it as work still owed. 's
-  // acceptance 2 is that the TRUE counts reach the seams a reader sees — "72 of 73; 1 unresolved" — so
+  // as merely unsettled again, and every consumer downstream counted it as work still owed. The
+  // requirement is that the TRUE counts reach the seams a reader sees — "72 of 73; 1 unresolved" — so
   // the park has to be in the file, not in one reply.
   const dir = runDir();
   const rows = unionCoverageForm(null, null, INPUT).form.rows;

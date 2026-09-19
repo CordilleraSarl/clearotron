@@ -79,9 +79,15 @@ test("browserEnv MERGES into the environment rather than replacing it", () => {
   const ambient = { PATH: "/probe/bin", HOME: "/probe/home", LANG: "C" };
   const env = browserEnv(root, ambient);
   assert.equal(env.TMPDIR, root);
-  for (const [k, v] of Object.entries(ambient)) {
+  for (const [k, v] of Object.entries(ambient).filter(([k]) => k !== "HOME")) {
     assert.equal(env[k], v, `browserEnv dropped ${k}: a browser without it fails as a render fault, not as a missing variable`);
   }
+  // HOME IS THE ONE REPLACED, ON PURPOSE: a browser writes its font cache, certificate store, desktop
+  // settings and crash folder under the home, and a suite run must leave the real one untouched. It is
+  // replaced with a home inside the root, never dropped, and the XDG folders follow it.
+  assert.ok(env.HOME.startsWith(root + "/"), "the browser's home is not inside its temp root");
+  for (const k of ["XDG_CONFIG_HOME", "XDG_CACHE_HOME", "XDG_DATA_HOME"])
+    assert.ok(env[k].startsWith(env.HOME + "/") && existsSync(env[k]), `${k} is not a folder inside the browser's own home`);
   // And the default source is the real environment, or every call site that omits the second argument
   // gets an empty one.
   assert.equal(browserEnv(root).PATH, process.env.PATH,
@@ -104,7 +110,7 @@ test("the root is removed when the process exits normally", () => {
     writeFileSync(${JSON.stringify(namefile)}, root);
   `);
   execFileSync(process.execPath, [src], { stdio: "ignore" });
-  const root = execFileSync("cat", [namefile], { encoding: "utf8" }).trim();
+  const root = readFileSync(namefile, "utf8").trim();
   assert.ok(root.length > 0, "the child must have reported the root it made");
   assert.equal(existsSync(root), false, `the root survived a normal exit: ${root}`);
 });
@@ -125,7 +131,7 @@ test("the root is removed on SIGTERM — the exit a cancelled job produces", () 
     `"$1" "$2" & p=$!; for i in $(seq 1 50); do [ -s "$3" ] && break; sleep 0.2; done; ` +
     `kill -TERM $p; for i in $(seq 1 50); do [ -d /proc/$p ] || break; sleep 0.2; done`,
     "bash", process.execPath, src, namefile], { stdio: "ignore" });
-  const root = execFileSync("cat", [namefile], { encoding: "utf8" }).trim();
+  const root = readFileSync(namefile, "utf8").trim();
   assert.ok(root.length > 0, "the child must have reported the root before it was signalled");
   assert.equal(existsSync(root), false, `the root survived SIGTERM: ${root}`);
 });
@@ -147,7 +153,7 @@ test("keep() leaves the root behind, which is what --keep promises", () => {
     keep();
   `);
   execFileSync(process.execPath, [src], { stdio: "ignore" });
-  const root = execFileSync("cat", [namefile], { encoding: "utf8" }).trim();
+  const root = readFileSync(namefile, "utf8").trim();
   assert.ok(root.length > 0, "the child must have reported the root it made");
   assert.equal(existsSync(root), true, `keep() did not keep the root: ${root} was removed anyway`);
   rmSync(root, { recursive: true, force: true });

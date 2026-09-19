@@ -20,7 +20,7 @@
 //   * predicates.wildcardInfix — `contains` would appear to serve it and does not. The kernel hands
 //     the infix case its RAW pattern with the asterisks still in it, so the sweep would search the
 //     punctuation. Declaring it would be declaring a capability the executor cannot serve, which is
-//     the one thing 's criteria forbid. Stays null; the slice defers, disclosed.
+//     the one thing a declaration must never do. Stays null; the slice defers, disclosed.
 //   * resultCeiling — there is no single number to put here, and the reason is worth the paragraph.
 //     An unscoped term pages to exhaustion whatever its size, on every predicate — no ceiling. But add
 //     `filters.owner_name` and the SAME term stops dead at the owner-scoped window (400), which the
@@ -194,7 +194,7 @@ export const CAPABILITIES = Object.freeze({
 
     // ── WHICH BINDING LAYERS DOES A SEARCH SCOPED TO THIS OFFICE ACTUALLY RETURN? ──────────
     //
-    // 's first task, answered for this provider by driving the three scopings against each other rather
+    // The first question for every provider, answered here by driving the three scopings against each other rather
     // than by reading the documentation. One term, one limit, France:
     //
     //   filters.offices                              the national register ALONE

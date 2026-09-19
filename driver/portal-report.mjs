@@ -850,7 +850,10 @@ export function sectionsOf(html) {
   if (!nav) return [];
   const out = [];
   for (const m of nav[1].matchAll(STRIP_LINK_RE)) {
-    const label = m[2].replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+    // Stripped until nothing changes, so a tag that a first pass reassembles cannot survive into the label.
+    let label = m[2];
+    for (let prev = null; prev !== label;) { prev = label; label = label.replace(/<[^>]*>/g, ""); }
+    label = label.replace(/\s+/g, " ").trim();
     if (m[1] && label) out.push({ id: m[1], label });
   }
   return out;

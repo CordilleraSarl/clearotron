@@ -3,8 +3,8 @@
 // bundled-demos.mjs — WHICH client bundles this repo ships, read from the directory that ships them.
 //
 // This was a hand-maintained triple. The directory grew a fourth bundle, the triple did not, and the
-// set-equality it feeds could no longer match anything — so the #83 detector, whose whole job is to
-// notice a door that has silently fallen back to the bundled roster, returned PASS on the #83
+// set-equality it feeds could no longer match anything — so the roster-fallback detector, whose whole job is to
+// notice a door that has silently fallen back to the bundled roster, returned PASS on exactly that
 // condition. A guard that cannot match reports that it found nothing wrong.
 //
 // The same shape had already produced two FALSE REFUSALS on this check, both from an exact match

@@ -1375,7 +1375,7 @@ function connotationViolations(content, queryCount, opts = {}, dispositionsPath 
 // patch — two families emitting a bare `form_damaged` would be indistinguishable there and the repair
 // would rewrite the wrong form.
 //
-// THE SHAPE IS BUILT AROUND THREE CONSUMERS, each of which fails SILENTLY on a mismatch (/):
+// THE SHAPE IS BUILT AROUND THREE CONSUMERS, each of which fails SILENTLY on a mismatch:
 //   - The CAUSE CENSUS IS FRONT-LOADED, `no_ruling=<n>`, before any named list: repairs.mjs CENSUS_RE
 //     sums exactly that, pipeline.mjs shows the failing model `tok.slice(0, 160)`, and a census that fell
 //     off the end of a slice would read as a missing quantity — i.e. as converged.

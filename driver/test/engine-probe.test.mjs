@@ -251,7 +251,7 @@ test("the probe advises by the billing mode it resolved, and names a setting it 
 test("the sign-in advice names the copy Clearotron installed, and only that copy", () => {
   const installed = { source: "installed", path: "/opt/engines/node_modules/@anthropic-ai/claude-code/bin/claude.exe" };
   const v = classifyProbe({ engine: "anthropic-agent", tuple: REFUSED, program: installed });
-  assert.match(v.fix, new RegExp(`^Sign in: run \`${installed.path.replace(/[.]/g, "\\.")}\` once in a terminal`));
+  assert.match(v.fix, new RegExp(`^Sign in: run \`${installed.path.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\` once in a terminal`));
   assert.doesNotMatch(v.fix, /run `claude` once/, "the bare word survived for a copy that is not on PATH");
   // The token route runs on any machine, so it keeps the bare word and names this machine's copy beside it.
   assert.ok(v.fix.includes(`run \`claude setup-token\` on any machine you can sign in on (on this one, \`${installed.path} setup-token\`)`), v.fix);
