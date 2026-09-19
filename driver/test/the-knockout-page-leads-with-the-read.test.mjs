@@ -699,13 +699,37 @@ test("the export menu this template draws is the shared one, not a copy of it", 
   assert.equal(html.split(EXPORT_TOGGLE).length - 1, 1, "the export button is emitted other than once");
 });
 
-// THE BOARD'S ROW, AND NOTHING FOLDED UNDER IT. The knockout board reads "186 registers, on Clarivate
-// Compumark." — registers, because registers are what was counted — with no territory list behind it.
-test("Registers counted reads as the board does: registers, the provider, and no territory fold", () => {
-  const html = RENDER([MARK()], { registerCounts: COUNTS() });
-  const row = (html.match(/<span class="k">Registers counted<\/span><span class="v">([\s\S]*?)<\/span><\/div>/) || [])[1];
-  assert.equal(row, "3 registers, on Clarivate Compumark.", "the count of registers, on the provider, as one sentence");
-  assert.doesNotMatch(html, /View territories/, "the board lists no territories behind the row");
-  const one = RENDER([MARK()], { registerCounts: COUNTS({ scope: { jurisdictions: ["US"], regions: ["US"], classes: [8] } }) });
-  assert.match(one, /<span class="v">1 register, on Clarivate Compumark\.<\/span>/, "one register is one register");
+// THE ORDER'S TERRITORIES, OR THE COUNT FOR A WORLDWIDE ORDER, AND NOTHING FOLDED UNDER EITHER.
+// A United States order is counted over the United States and the international register, and the row
+// used to say "2 registers, on Clarivate Compumark." — which a client who ordered one country reads as a
+// mistake (owner, on pre-prod, 2026-09-19). An order that names territories is now stated as it named
+// them; a worldwide order keeps the board's "186 registers, on Clarivate Compumark.".
+const countedRow = (html) => (html.match(/<span class="k">Registers counted<\/span><span class="v">([\s\S]*?)<\/span><\/div>/) || [])[1];
+test("Registers counted states the order's territories, or the count when the order is worldwide", () => {
+  const us = RENDER([MARK()], { registerCounts: COUNTS({ scope: { jurisdictions: ["US"], regions: ["US", "WO"], classes: [32] } }) });
+  assert.equal(countedRow(us), "United States, on Clarivate Compumark.", "a one-country order is stated as that country");
+  // The registers actually counted stay named under the counts table, which is where the detail lives.
+  assert.ok(us.includes("Counted in the United States and the WIPO register, on Clarivate Compumark."),
+    "the line naming the registers counted is gone");
+
+  const usCa = RENDER([MARK()], { registerCounts: COUNTS({ scope: { jurisdictions: ["US", "CA"], regions: ["US", "CA", "WO"], classes: [32] } }) });
+  assert.equal(countedRow(usCa), "United States and Canada, on Clarivate Compumark.", "two territories, as the order names them");
+
+  const regions = Array.from({ length: 186 }, (_, i) => `R${i}`);
+  // The record says worldwide by carrying no jurisdictions.
+  const world = RENDER([MARK()], { registerCounts: COUNTS({ scope: { jurisdictions: null, regions, classes: [32] } }) });
+  assert.equal(countedRow(world), "186 registers, on Clarivate Compumark.", "a worldwide order keeps the count");
+
+  // A territory the provider does not cover was not counted, so the row does not list it.
+  const deferred = RENDER([MARK()], { registerCounts: COUNTS({ scope: { jurisdictions: ["US", "CA"], regions: ["US", "WO"], deferredJurisdictions: ["CA"], classes: [32] } }) });
+  assert.equal(countedRow(deferred), "United States, on Clarivate Compumark.", "a deferred territory was listed as counted");
+  // Nor does it name the order when an office it covers could not be reached from this install.
+  const unreachable = RENDER([MARK()], { registerCounts: COUNTS({ scope: { jurisdictions: ["US"], regions: ["US", "WO"], unreachableOffices: [{ office: "US", memberId: "m", missing: [] }], classes: [32] } }) });
+  assert.equal(countedRow(unreachable), "2 registers, on Clarivate Compumark.", "an unreached office's territory was listed as counted");
+
+  // A territory the order form's list cannot name is never printed as a code, and never silently dropped.
+  const unnamed = RENDER([MARK()], { registerCounts: COUNTS({ scope: { jurisdictions: ["US", "XW"], regions: ["US", "WO"], classes: [32] } }) });
+  assert.equal(countedRow(unnamed), "2 registers, on Clarivate Compumark.", "an unnamable territory falls back to the count");
+
+  for (const html of [us, usCa, world]) assert.doesNotMatch(html, /View territories/, "the board lists no territories behind the row");
 });

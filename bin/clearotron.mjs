@@ -25,6 +25,7 @@ import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 import { nodeFloorVerdict, nodeFloorRefusal } from "../shared/node-floor.mjs";   // — one floor, read from package.json
 import { invocationPrefix } from "../shared/invocation.mjs";   // — print a command the reader can type
 import { watchParent } from "../shared/parent-watch.mjs";
+import { EXPERIMENTAL_WARNING_OFF } from "../shared/demo-start-args.mjs";
 
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -195,13 +196,12 @@ const [verb, ...rest] = process.argv.slice(2);
   // even for somebody who typed a bare `clearotron`.
   // THE DEMO RUNS WITHOUT NODE'S EXPERIMENTAL-FEATURE WARNING. Node prints one the first time anything loads
   // its built-in SQLite, and on the demo it landed on the first screen, above the sentence saying what the
-  // demo is. Set through NODE_OPTIONS so the services the demo starts inherit it too; a reader's own
-  // NODE_OPTIONS is kept. Every other warning still prints.
-  const quiet = verb === "demo"
-    ? { NODE_OPTIONS: [process.env.NODE_OPTIONS, "--disable-warning=ExperimentalWarning"].filter(Boolean).join(" ") } : {};
-  const child = spawn(process.execPath, [target, ...builtin, ...rest], {
+  // demo is. A flag on the demo's own process; `bin/example.mjs` hands it on to the services it starts
+  // (EXPERIMENTAL_WARNING_OFF). Every other warning still prints.
+  const quiet = verb === "demo" ? [EXPERIMENTAL_WARNING_OFF] : [];
+  const child = spawn(process.execPath, [...quiet, target, ...builtin, ...rest], {
     stdio: "inherit",
-    env: { ...process.env, CLEAROTRON_INVOKED_AS: process.argv[1] ?? "", ...quiet },
+    env: { ...process.env, CLEAROTRON_INVOKED_AS: process.argv[1] ?? "" },
   });
   child.on("error", (e) => { console.error(`clearotron: could not run ${rel}: ${e.message}`); process.exit(70); });
   // Reproduce the child's exit faithfully. A signal death reported as exit 0 would tell a script that a

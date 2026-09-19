@@ -53,7 +53,7 @@ import { ensureDemoProgram, demoProgramEnv } from "../shared/permanent-install.m
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 import { usageBlock } from "../shared/usage-block.mjs";
-import { demoStartArgs } from "../shared/demo-start-args.mjs";
+import { demoStartArgs, withWarningOff } from "../shared/demo-start-args.mjs";
 import { bundleVerdict } from "../shared/bundle-freshness.mjs";
 const argv = process.argv.slice(2);
 const flag = (n, d = null) => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : d; };
@@ -441,9 +441,11 @@ console.log("");
 // made, it starts from here as before.
 const programRoot = ensureDemoProgram({ base: demoBase, say: (line) => console.log(line) });
 const startFrom = programRoot ?? REPO;
+// The services inherit the demo's Node flag through NODE_OPTIONS, so none of them prints the SQLite warning
+// either; the reader's own NODE_OPTIONS is kept.
 const child = spawn(process.execPath, [join(startFrom, "bin", "start.mjs"), ...startArgs], {
   cwd: startFrom, stdio: ["ignore", "inherit", "inherit"],
-  env: programRoot ? demoProgramEnv(process.env) : process.env,
+  env: { ...(programRoot ? demoProgramEnv(process.env) : process.env), NODE_OPTIONS: withWarningOff(process.env.NODE_OPTIONS) },
 });
 child.on("error", (e) => die(`demo: could not start the portal: ${String(e?.message ?? e)}`));
 // Its exit code is the demo's. A supervisor that swallowed a child's refusal would report a demo that

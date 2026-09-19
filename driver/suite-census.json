@@ -5063,7 +5063,7 @@
         },
         "the-knockout-page-leads-with-the-read.test.mjs": {
           "tests": 39,
-          "asserts": 120,
+          "asserts": 125,
           "skips": 0,
           "todos": 0
         },

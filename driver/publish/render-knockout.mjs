@@ -63,6 +63,7 @@ import { EXPORT_TOGGLE, exportPopover, EXPORT_MENU_JS } from './report-topbar.mj
 import { makeClassifyStatus, isAllClass } from '../../providers/_shared/screen.mjs';
 import { saysSomethingNew } from '../../shared/says-something-new.mjs';
 import { isNextStepHeading } from '../knockout-next-step.mjs';
+import OFFERED from '../../shared/offered-territories.json' with { type: 'json' };   // the order form's own territory names
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
@@ -480,6 +481,14 @@ function territoryName(code, { bare = false } = {}) {
     return name && name.toUpperCase() !== c ? name : '';
   } catch { return ''; }
 }
+
+/** A territory the order names, in the order form's own words, or '' when that list has no such code. */
+const ORDER_FORM_NAMES = new Map([...OFFERED.regions, ...OFFERED.countries].map((t) => [t.code, t.name]));
+const orderedTerritoryName = (code) => {
+  const c = String(code ?? '').trim().toUpperCase();
+  // EM is the European Union register's own code, and some records carry it for an EU order.
+  return ORDER_FORM_NAMES.get(c === 'EM' ? 'EU' : c) ?? '';
+};
 
 /** "a, b and c" — the reader's list, not a join on commas. */
 function listWords(items) {
@@ -1244,12 +1253,28 @@ function aboutRequestBlock(scope, requestNotes, depthNote = '', productContext =
   // the middle of the panel is the thing a reader skips; the count and its source are what they read.
   const regions = (registerCounts?.scope?.regions ?? []).filter(Boolean);
   const provider = registerCounts?.providerLabel ?? registerCounts?.provider ?? '';
-  // THE BOARD'S OWN ROW: "186 registers, on Clarivate Compumark." — registers, because that is what was
-  // counted, and no fold: the board lists no territories here, and the workbook's counts sheet carries
-  // every register a figure was taken over.
-  const counted = regions.length
-    ? `${regions.length} ${regions.length === 1 ? 'register' : 'registers'}${provider ? `, on ${provider}` : ''}.`
-    : (registerCounts ? `Counted worldwide${provider ? `, on ${provider}` : ''}` : '');
+  // THE ORDER'S TERRITORIES, NOT THE PROVIDER'S REGISTERS (owner, 2026-09-19). The row counted the
+  // registers the provider searched, and for a one-country order that is not one: a United States order is
+  // counted over the United States and the international register, because an international filing can
+  // designate the United States. A client who ordered one country read "2 registers" as a mistake. So an
+  // order that names its territories is stated as it named them, in the order form's own names; the
+  // registers actually counted stay in the line under the counts table. A worldwide order keeps the board's
+  // row, "186 registers, on Clarivate Compumark.", because there the count is the scope (the record says
+  // worldwide by carrying no jurisdictions). A territory the provider does not cover was not counted, so it
+  // is not listed here; it is disclosed where deferrals are. A territory the form's list cannot name, or an
+  // office this install could not reach, falls back to the count rather than printing a code or claiming
+  // a territory nothing was counted in.
+  const on = provider ? `, on ${provider}` : '';
+  const sc = registerCounts?.scope ?? {};
+  const deferred = new Set((sc.deferredJurisdictions ?? []).map((c) => String(c ?? '').trim().toUpperCase()));
+  const ordered = [...new Set((sc.jurisdictions ?? [])
+    .filter((c) => !deferred.has(String(c ?? '').trim().toUpperCase())).map(orderedTerritoryName))];
+  const namesTheOrder = sc.worldwide !== true && !(sc.unreachableOffices ?? []).length
+    && ordered.length > 0 && ordered.every(Boolean);
+  const counted = namesTheOrder ? `${listWords(ordered)}${on}.`
+    : regions.length
+      ? `${regions.length} ${regions.length === 1 ? 'register' : 'registers'}${on}.`
+      : (registerCounts ? `Counted worldwide${on}` : '');
   if (!asked && !where && !classLine && !stage && !context && !counted) return '';
   // ONE PANEL, THE SAME ON BOTH REPORTS (the 2026-09-16 report redesign). The rows carry what was asked for; the
   // counts row says what was counted and hides the territory list behind a fold rather than running a
