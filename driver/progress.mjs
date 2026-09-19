@@ -97,6 +97,24 @@ export function stepForStage(rawStageKey) {
   return { index, label: DISPLAY_STEPS[index], n: index + 1, total: DISPLAY_STEPS.length };
 }
 
+/**
+ * THE STAGE A LIVE RUN IS IN NOW, for the card and the row a person watches (owner, 2026-09-19).
+ *
+ * status.json keeps two readings. The step fields hold the furthest display step ever reached, for a
+ * stepper that never runs backwards. `lastStage` is the stage the run ENTERED last, written at the one
+ * choke point every dispatch passes, corrective re-entries included. The card named the first, so a run
+ * sent back into synthesis by a correction pass went on reading "Case law & refutation" (measured on a
+ * beta, 2026-09-18). This names the second: the stage in hand, a step back included, with its own step
+ * number. A stage with no display step, or a run that has recorded none, keeps the furthest step, which is
+ * the best reading there is. PURE.
+ */
+export function stageNow(status) {
+  const now = stepForStage(status?.lastStage);
+  return now
+    ? { step: now.label, stepN: now.n, stepTotal: now.total }
+    : { step: status?.stepLabel ?? null, stepN: status?.stepN ?? null, stepTotal: status?.stepTotal ?? null };
+}
+
 // Lifecycle honesty (charter P1 §4): the status patch a TERMINAL delivered write must carry. Nothing runs
 // after the report: delivery is a packet and publish is code, so no
 // recordTransition ever advances the stepper past "Drafting the report" — a delivered run (with

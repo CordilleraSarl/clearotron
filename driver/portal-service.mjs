@@ -179,6 +179,9 @@ import { accessAudience, audienceLabel } from "../shared/access-audience.mjs";  
 import { resolveNumericSetting } from "./numeric-setting.mjs";   // — the same table the engine enforces, without the throw a rendering surface must not take
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 import { deploymentBox } from "../shared/deployment-box.mjs";   // — the box names itself; one rule
+import { stageNow } from "./progress.mjs";   // the stage a live run is in now, for the card and the row
+// A run in one of these has finished; its step is the one its terminal write set, not the stage it last entered.
+const TERMINAL_STATES = new Set(["delivered", "failed", "cancelled"]);
 
 // The offering the portal menus build from — product-rows.mjs's row, unchanged.
 //
@@ -515,7 +518,11 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
         resetsAt: typeof s.resetsAt === "string" ? s.resetsAt : null,
         // Elapsed, so a card can say how long this has been going without inventing a finish time.
         startedAt: typeof s.startedAt === "string" ? s.startedAt : null,
-        step: s.stepLabel ?? null, stepN: s.stepN ?? null, stepTotal: s.stepTotal ?? null,
+        // THE STAGE IT IS IN NOW, a step back into an earlier stage included (owner, 2026-09-19): see
+        // stageNow. Only while it is live; a run that has finished keeps the step its terminal write set.
+        ...(TERMINAL_STATES.has(s.state)
+          ? { step: s.stepLabel ?? null, stepN: s.stepN ?? null, stepTotal: s.stepTotal ?? null }
+          : stageNow(s)),
         // — a requested stop is a state the screen shows. Stamped by stop_run,
         // preserved by writeRunStatus's spread-merge, replaced by the terminal when the honour check
         // fires. The UI derives "Stopping…" from this beside a non-terminal state.
