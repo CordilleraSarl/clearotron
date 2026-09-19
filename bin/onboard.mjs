@@ -2818,6 +2818,9 @@ export async function runCheck() {
       info(`the units are installed but their environment could not be read (${unitEnv?.why ?? "no reason given"}) — `
         + "the door verdicts below are withheld rather than guessed, because a failure to look is not a finding");
     if (door.shape === "local") {
+      // WHO THAT ONE USER IS, in the owner's words (2026-09-19), resolved as `start` resolves it.
+      const oneUser = String(effectiveForService("PORTAL_LOCAL_USER")?.v || `${userInfo().username}@localhost`).trim().toLowerCase();
+      say(`  · Portal sign-in: one user, ${oneUser}, by passphrase.`);
       say(`  · local passphrase door (${typed}) — one operator, one passphrase, no identity provider`);
       info(`a lost passphrase is recoverable: ${invocationPrefix()}clearotron passphrase --reset`);
     } else if (door.shape === "fronted") {

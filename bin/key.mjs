@@ -28,6 +28,7 @@
 // question would be two answers, and the wrong one would be the one nobody read.
 import "../shared/env-local.mjs";   // side effect: apply the install's .env — FIRST, before anything reads process.env
 import { invocationPrefix } from "../shared/invocation.mjs";
+import { BRAND } from "../shared/brand.mjs";
 import { existsSync, readFileSync } from "node:fs";
 import { defaultGrantsPath, installPaths } from "./start.mjs";
 import { demoTokenSecretPath } from "../shared/client-door.mjs";
@@ -96,6 +97,11 @@ try {
   die(e.message);
 }
 
+// WHAT THIS KEY IS FOR, FIRST, in the owner's words (2026-09-19): a person who found this verb before the
+// passphrase minted a key and could not sign in to the portal with it. Standard error, as every line here
+// is, so the token stays alone on standard output.
+console.error(`This key lets an AI assistant act as ${email} through ${BRAND.name}'s client door. `
+  + `It is not a portal sign-in; the portal uses the passphrase (${p}clearotron passphrase --reset).`);
 for (const line of minted.notes) console.error(line);
 
 // — found in review. A KEY FOR AN IDENTITY ON NO LIST IS A KEY THAT 403s. This command
