@@ -32,6 +32,7 @@
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { stableInstallRoot } from "./permanent-install.mjs";
+import { tomlString } from "./toml-string.mjs";
 
 /** The install root — the directory holding `mcp-server/`, resolved from this module rather than cwd. */
 export const INSTALL_ROOT = join(fileURLToPath(new URL(".", import.meta.url)), "..");
@@ -103,15 +104,38 @@ export function stdioConnectOffer(opts = {}) {
 function envOf({ workDir = null, reportsDir = null } = {}) {
   return { ...(workDir ? { CLEAROTRON_WORK_DIR: workDir } : {}), ...(reportsDir ? { CLEAROTRON_REPORTS_DIR: reportsDir } : {}) };
 }
-const envFlags = (o) => Object.entries(envOf(o)).map(([k, v]) => ` -e ${k}=${v}`).join("");
 const envBlock = (o) => (Object.keys(envOf(o)).length ? { env: envOf(o) } : {});
+
+// ── ONE WORD PER ARGUMENT, IN THE SHELL THAT READS THE LINE ───────────────────────────────────────────
+//
+// The command was the arguments joined with spaces, so a path with a space in it became two arguments:
+// `/tmp/Example User/node/bin/node` reached the assistant as `/tmp/Example` and `User/node/bin/node`
+// (measured on the published beta, 2026-09-19). Each argument is now written as one word for the shell it
+// is pasted into. A word made only of characters no shell treats specially is left bare, so the line for
+// an ordinary install reads exactly as it did.
+//
+// POSIX shells: single quotes, the one quoting in which no character is special. A single quote inside is
+// closed, escaped and reopened.
+const POSIX_BARE = /^[A-Za-z0-9_@%+=:,./-]+$/;
+export const posixWord = (s) => (POSIX_BARE.test(String(s)) ? String(s) : `'${String(s).replace(/'/g, "'\\''")}'`);
+// Windows: cmd and PowerShell both honour double quotes, and the program then splits its command line by
+// the C runtime's rules, under which backslashes are literal except where they run up to a quote; there
+// they are doubled, and a quote inside the word is escaped. A comma or a parenthesis is quoted too, because
+// PowerShell reads a bare one as an array or an expression. `$`, a backtick and `%` cannot be quoted the
+// same way for both shells, and a path holding one is left to the reader.
+const WINDOWS_BARE = /^[A-Za-z0-9_+=:./\\-]+$/;
+export const windowsWord = (s) => {
+  const w = String(s);
+  if (WINDOWS_BARE.test(w)) return w;
+  return `"${w.replace(/(\\*)"/g, '$1$1\\"').replace(/(\\+)$/, "$1$1")}"`;
+};
 
 /**
  * The argument that ends Claude Code's own options. Windows PowerShell 5.1 drops a bare `--` before it
  * reaches a native program, so the line failed with "missing required argument"; quoted, every shell passes
  * it through (bash, zsh, PowerShell and cmd alike), so a Windows install is handed the quoted form.
  */
-const separator = (platform = process.platform) => (platform === "win32" ? '"--"' : "--");
+const separator = (windowsShell) => (windowsShell ? '"--"' : "--");
 
 /**
  * WHAT THE HOST ACTUALLY RUNS, and on WSL that is not `node`.
@@ -180,11 +204,17 @@ export const STDIO_SHAPES = Object.freeze({
     where: null,
     render: ({ server, workDir, reportsDir, platform, wsl, node }) => {
       const l = stdioLauncher({ server, workDir, reportsDir, wsl, node });
+      // WHICH SHELL READS IT. A native Windows install's line is pasted on Windows, and so is the row
+      // that crosses into WSL: it exists for an assistant on the Windows side. Everything else is pasted
+      // into a POSIX shell.
+      const windowsShell = platform === "win32" || l.crossesIntoWsl;
+      const word = windowsShell ? windowsWord : posixWord;
       // The host's own `-e` flags set variables for the process IT starts. Off WSL that is the server;
       // through the wrapper it is `wsl.exe`, and they stop at the boundary — so on WSL they ride inside
       // the command instead and this line carries none.
-      const flags = l.crossesIntoWsl ? "" : envFlags({ workDir, reportsDir });
-      return `claude mcp add ${STDIO_SERVER_NAME} --scope user${flags} ${separator(platform)} ${l.command} ${l.args.join(" ")}`;
+      const flags = l.crossesIntoWsl ? ""
+        : Object.entries(envOf({ workDir, reportsDir })).map(([k, v]) => ` -e ${windowsShell ? word(`${k}=${v}`) : `${k}=${word(v)}`}`).join("");
+      return `claude mcp add ${STDIO_SERVER_NAME} --scope user${flags} ${separator(windowsShell)} ${[l.command, ...l.args].map(word).join(" ")}`;
     },
     after: null,
   },
@@ -224,7 +254,8 @@ export const STDIO_SHAPES = Object.freeze({
     kind: "config",
     where: "~/.codex/config.toml",
     // Written out rather than produced by a TOML library: this is four lines with no user-supplied
-    // strings in key positions, and adding a dependency to emit them would be the larger risk.
+    // strings in key positions, and adding a dependency to emit them would be the larger risk. Every
+    // value goes through `tomlString`, so a Windows path's backslashes are escaped as TOML requires.
     //
     // `env` and not `env_vars`, deliberately, and CONNECT.md explains why the distinction matters:
     // Codex does not forward the shell environment, and a credential would have to be forwarded BY NAME
@@ -234,10 +265,10 @@ export const STDIO_SHAPES = Object.freeze({
       const l = stdioLauncher({ server, workDir, reportsDir, wsl, node });
       return [
         `[mcp_servers.${STDIO_SERVER_NAME}]`,
-        `command = "${l.command}"`,
-        `args = [${l.args.map((a) => `"${a}"`).join(", ")}]`,
+        `command = ${tomlString(l.command)}`,
+        `args = [${l.args.map(tomlString).join(", ")}]`,
         ...(Object.keys(l.env).length
-          ? [`env = { ${Object.entries(l.env).map(([k, v]) => `${k} = "${v}"`).join(", ")} }`] : []),
+          ? [`env = { ${Object.entries(l.env).map(([k, v]) => `${k} = ${tomlString(v)}`).join(", ")} }`] : []),
       ].join("\n");
     },
     after: null,
@@ -297,7 +328,7 @@ export const REMOTE_SHAPES = Object.freeze({
     label: "Copy block",
     render: ({ address }) => [
       `[mcp_servers.${STDIO_SERVER_NAME}]`,
-      `url = "${address}"`,
+      `url = ${tomlString(address)}`,
     ].join("\n"),
   },
   "claude-cli-http": {
@@ -309,7 +340,7 @@ export const REMOTE_SHAPES = Object.freeze({
     label: null,
     render: ({ address }) => [
       `[mcp_servers.${STDIO_SERVER_NAME}]`,
-      `url = "${address}"`,
+      `url = ${tomlString(address)}`,
       `bearer_token_env_var = "${KEY_ENV_VAR}"`,
     ].join("\n"),
   },

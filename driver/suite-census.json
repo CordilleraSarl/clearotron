@@ -201,6 +201,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-connect-line-keeps-every-path-whole.test.mjs": {
+          "tests": 8,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
         "a-connect-line-says-where-it-runs.test.mjs": {
           "tests": 11,
           "asserts": 56,

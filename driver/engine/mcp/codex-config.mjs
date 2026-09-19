@@ -5,6 +5,7 @@
 // exact server/tool wiring. Two inputs, both produced today by the gateway gather block:
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { tomlString } from "../../../shared/toml-string.mjs";
 
 //   • mcpConfig     — the claude-shaped JSON string `{mcpServers:{name:{command,args,env,connectionTimeoutMs?}}}`
 //                     (buildGatherMcpConfig → JSON.stringify)
@@ -36,17 +37,8 @@ export const CRED_ENV_FORWARD = [
 ];
 
 // ── TOML value escaping (basic strings) ──────────────────────────────────────────────────────────────
-export function tomlString(s) {
-  const str = String(s ?? "");
-  // TOML basic-string escapes: backslash, double-quote, and the C0 controls TOML names (\b \t \n \f \r).
-  const esc = str
-    .replace(/\\/g, "\\\\").replace(/"/g, '\\"')
-    .replace(/\x08/g, "\\b").replace(/\t/g, "\\t").replace(/\n/g, "\\n")
-    .replace(/\f/g, "\\f").replace(/\r/g, "\\r")
-    // any remaining control char → \uXXXX (TOML-legal)
-    .replace(/[\x00-\x1f]/g, (c) => "\\u" + c.charCodeAt(0).toString(16).padStart(4, "0"));
-  return `"${esc}"`;
-}
+// One encoder for every TOML block the product writes; re-exported so this module's callers keep their import.
+export { tomlString };
 function tomlStringArray(arr) {
   return "[" + (arr || []).map(tomlString).join(", ") + "]";
 }
