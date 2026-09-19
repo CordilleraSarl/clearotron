@@ -481,7 +481,7 @@ test("the portal's sign-in page names a passphrase reset the reader can run", ()
   // told what to do, and it carried a hardcoded `npx clearotron passphrase --reset` — unrunnable from
   // anywhere but the install directory, which is not where somebody reading a browser page is standing.
   const src = readFileSync(join(REPO, "driver", "portal-service.mjs"), "utf8");
-  const hint = /Lost the passphrase\? Run <code>([^<]*)<\/code>/.exec(src);
+  const hint = /Lost it\? Run\s*<code>([^<]*)<\/code>/.exec(src);
   assert.ok(hint, "the sign-in page's passphrase hint is gone — re-point this arm rather than deleting it");
   assert.doesNotMatch(hint[1], /npx clearotron|invocationPrefix|invoke\(|\/|cd /,
     "the sign-in hint is composed in HTML again; it must come from signInResetCommand, the one author "
