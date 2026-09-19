@@ -193,9 +193,15 @@ const [verb, ...rest] = process.argv.slice(2);
   // — tell the child how the READER reached us, so its own advice names a command they can type.
   // Without this every spawned verb sees argv[1] = its own implementation file and would print `npx`
   // even for somebody who typed a bare `clearotron`.
+  // THE DEMO RUNS WITHOUT NODE'S EXPERIMENTAL-FEATURE WARNING. Node prints one the first time anything loads
+  // its built-in SQLite, and on the demo it landed on the first screen, above the sentence saying what the
+  // demo is. Set through NODE_OPTIONS so the services the demo starts inherit it too; a reader's own
+  // NODE_OPTIONS is kept. Every other warning still prints.
+  const quiet = verb === "demo"
+    ? { NODE_OPTIONS: [process.env.NODE_OPTIONS, "--disable-warning=ExperimentalWarning"].filter(Boolean).join(" ") } : {};
   const child = spawn(process.execPath, [target, ...builtin, ...rest], {
     stdio: "inherit",
-    env: { ...process.env, CLEAROTRON_INVOKED_AS: process.argv[1] ?? "" },
+    env: { ...process.env, CLEAROTRON_INVOKED_AS: process.argv[1] ?? "", ...quiet },
   });
   child.on("error", (e) => { console.error(`clearotron: could not run ${rel}: ${e.message}`); process.exit(70); });
   // Reproduce the child's exit faithfully. A signal death reported as exit 0 would tell a script that a
