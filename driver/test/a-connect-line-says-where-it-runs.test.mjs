@@ -36,11 +36,15 @@ test("WSL is read from WSL_DISTRO_NAME, WSL_INTEROP or the kernel's own name, an
 });
 
 test("the Claude Code line registers for the user, and quotes its separator on Windows", () => {
-  const posix = stdioConnectCommand({ workDir: "/w", platform: "linux" });
+  const posix = stdioConnectCommand({ workDir: "/w", platform: "linux", node: "/opt/node22/bin/node" });
   assert.match(posix, /^claude mcp add trademark-artifacts --scope user /, "the server would be registered for one directory only");
-  assert.match(posix, / -- node \S+server\.mjs$/);
-  const win = stdioConnectCommand({ workDir: "C:\\w", platform: "win32" });
-  assert.match(win, / "--" node /, "Windows PowerShell 5.1 drops a bare --, and the line fails there");
+  assert.match(posix, / -- \/opt\/node22\/bin\/node \S+serve\.mjs$/);
+  const win = stdioConnectCommand({ workDir: "C:\\w", platform: "win32", node: "/opt/node22/bin/node" });
+  assert.match(win, / "--" \/opt\/node22\/bin\/node /, "Windows PowerShell 5.1 drops a bare --, and the line fails there");
+  // THE NODE THIS INSTALL RUNS ON, NEVER A BARE `node` (owner, 2026-09-19). A bare `node` ran whatever the
+  // assistant's own PATH found: the distribution's Node 18 through wsl.exe, which died on a syntax error.
+  assert.ok(stdioConnectCommand({ workDir: "/w", platform: "linux" }).includes(` ${process.execPath} `), "the line does not name the Node it is composed on");
+  assert.doesNotMatch(stdioConnectCommand({ workDir: "/w", platform: "linux" }), / node \S+serve\.mjs$/, "a bare node is back");
 });
 
 test("every shape carries the reports folder when it is known, and invents none when it is not", () => {
@@ -62,30 +66,32 @@ test("every shape carries the reports folder when it is known, and invents none 
 test("every on-this-computer shape starts the server INSIDE the distribution when the install is on WSL", async () => {
   const { STDIO_SHAPES, stdioConnectFor } = await import("../../shared/stdio-connect.mjs");
   const wsl = { distro: "Ubuntu" };
-  const opts = { installRoot: "/opt/clearotron", workDir: "/srv/clearotron/work", wsl };
+  const opts = { installRoot: "/opt/clearotron", workDir: "/srv/clearotron/work", wsl, node: "/home/u/.nvm/versions/node/v22.17.0/bin/node" };
 
   for (const shape of Object.keys(STDIO_SHAPES)) {
     const text = stdioConnectFor(shape, opts).text;
     assert.match(text, /wsl\.exe/, `${shape} still hands a Windows host a Linux interpreter`);
     assert.match(text, /-d[\s",]+Ubuntu/, `${shape} does not name the distribution, so it starts whichever is default`);
-    assert.ok(text.includes("/opt/clearotron/mcp-server/server.mjs"), `${shape} lost the server path`);
+    assert.ok(text.includes("/opt/clearotron/mcp-server/serve.mjs"), `${shape} lost the server's entry`);
+    assert.ok(text.includes("/home/u/.nvm/versions/node/v22.17.0/bin/node"), `${shape} runs whatever node the distribution's PATH finds`);
     // THE ENVIRONMENT HAS TO CROSS. A host on Windows sets variables for the process it starts, which
     // is wsl.exe; they stop at the boundary. Inside the command, `env` sets them where the server reads.
     assert.match(text, /env[\s",]+CLEAROTRON_WORK_DIR=\/srv\/clearotron\/work/, `${shape} sets the work directory where the server will never see it`);
   }
 });
 
-test("off WSL every shape is byte-identical to what it always was", () => {
-  // THE CONTROL, and the half that says this is a new branch rather than a rewrite: every reader on
-  // macOS, Linux and Windows-without-WSL must get exactly the command they got before.
+test("off WSL no shape is wrapped, and every shape names the absolute Node this install runs on", () => {
+  // THE CONTROL for the wrapper, and the class the absolute Node fixes: a desktop assistant on macOS or
+  // Windows starts from a bare PATH just as wsl.exe does, so a bare `node` could be anything there too.
   for (const shape of Object.keys(STDIO_SHAPES)) {
-    const text = stdioConnectFor(shape, { installRoot: "/opt/app", workDir: "/w" }).text;
+    const text = stdioConnectFor(shape, { installRoot: "/opt/app", workDir: "/w", node: "/usr/local/bin/node22" }).text;
     assert.doesNotMatch(text, /wsl\.exe/, `${shape} wrapped a reader who is not on WSL`);
-    assert.match(text, /node/, `${shape} stopped naming the interpreter`);
+    assert.ok(text.includes("/usr/local/bin/node22"), `${shape} does not name the Node this install runs on`);
+    assert.ok(text.includes("/opt/app/mcp-server/serve.mjs"), `${shape} does not start the entry that checks the Node first`);
   }
 });
 
-test("the distribution is named when we know it, and left to the default when we do not", async () => {
+test("the distribution is named when we know it, and the reader is told plainly to fill it in when we do not", async () => {
   const { wslTarget } = await import("../../shared/wsl.mjs");
   const { stdioConnectFor } = await import("../../shared/stdio-connect.mjs");
   // A machine with more than one distribution has a default that may hold no install, so the name
@@ -100,11 +106,11 @@ test("the distribution is named when we know it, and left to the default when we
   // Windows side says plainly to fill it in, instead of dropping -d and starting whichever is default.
   const { WSL_DISTRO_PLACEHOLDER, WSL_DISTRO_FILL_IN } = await import("../../shared/stdio-connect.mjs");
   const unnamedOffer = stdioConnectFor("claude-cli", { installRoot: "/opt/clearotron", wsl: { distro: null } });
-  assert.match(unnamedOffer.text, new RegExp(`wsl\\.exe -d ${WSL_DISTRO_PLACEHOLDER} -e node`), "with no name, the name's place is left blank");
+  assert.match(unnamedOffer.text, new RegExp(`wsl\\.exe -d ${WSL_DISTRO_PLACEHOLDER} -e \\S*node`), "with no name, the name's place is left blank");
   assert.equal(unnamedOffer.variants[0].hint, WSL_DISTRO_FILL_IN, "and nothing tells the reader to fill it in");
   assert.match(WSL_DISTRO_FILL_IN, new RegExp(`Replace ${WSL_DISTRO_PLACEHOLDER} with`));
   const named = stdioConnectFor("claude-cli", { installRoot: "/opt/clearotron", wsl: { distro: "Ubuntu" } });
-  assert.match(named.text, /wsl\.exe -d Ubuntu -e node/, "the name travels when WSL gives it");
+  assert.match(named.text, /wsl\.exe -d Ubuntu -e \S*node/, "the name travels when WSL gives it");
   assert.equal(named.variants[0].hint, null, "a named row needs nothing filled in");
   assert.equal(named.variants[1].hint, undefined, "the inside-WSL row is untouched");
 });

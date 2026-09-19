@@ -50,8 +50,8 @@ export const STDIO_SERVER_NAME = "trademark-artifacts";
  * @param {{ installRoot?: string, workDir?: string|null }} [opts]
  * @returns {string} the exact command to run
  */
-export function stdioConnectCommand({ installRoot = stableInstallRoot({ installRoot: INSTALL_ROOT }), workDir = null, reportsDir = null, platform = process.platform } = {}) {
-  return STDIO_SHAPES["claude-cli"].render({ server: join(installRoot, "mcp-server", "server.mjs"), workDir, reportsDir, platform });
+export function stdioConnectCommand({ installRoot = stableInstallRoot({ installRoot: INSTALL_ROOT }), workDir = null, reportsDir = null, platform = process.platform, node = process.execPath } = {}) {
+  return STDIO_SHAPES["claude-cli"].render({ server: join(installRoot, "mcp-server", STDIO_ENTRY), workDir, reportsDir, platform, node });
 }
 
 /**
@@ -140,13 +140,24 @@ const separator = (platform = process.platform) => (platform === "win32" ? '"--"
  * Off WSL the launcher is exactly what it always was, so every row on every other platform is
  * byte-identical to before. PURE.
  */
+/**
+ * WHICH NODE, AND WHICH FILE (owner, 2026-09-19). A line that said bare `node` ran whatever `node` the
+ * assistant's own PATH found. Through `wsl.exe -e`, a non-login shell, that was the distribution's system
+ * Node 18 while the demo ran on Node 22, and the server died on a syntax error before saying anything
+ * (measured on a Windows laptop). A desktop assistant on any platform starts from a bare PATH the same
+ * way. So every line names the absolute Node this install is running on, `process.execPath`, seen from
+ * where the line is composed, inside WSL when that is where the install is. It names `serve.mjs`, the
+ * entry that refuses an old Node in one plain line before the server loads.
+ */
+export const STDIO_ENTRY = "serve.mjs";
+
 /** What stands in the distribution's name when it cannot be read, and the line that says to fill it in. */
 export const WSL_DISTRO_PLACEHOLDER = "YOUR-WSL-DISTRIBUTION";
 export const WSL_DISTRO_FILL_IN = `Replace ${WSL_DISTRO_PLACEHOLDER} with this Linux's name before you paste it: \`wsl -l\` in Windows lists the names.`;
 
-export function stdioLauncher({ server, workDir = null, reportsDir = null, wsl = null } = {}) {
+export function stdioLauncher({ server, workDir = null, reportsDir = null, wsl = null, node = process.execPath } = {}) {
   const vars = envOf({ workDir, reportsDir });
-  if (!wsl) return { command: "node", args: [server], env: vars, crossesIntoWsl: false };
+  if (!wsl) return { command: node, args: [server], env: vars, crossesIntoWsl: false };
   const distro = String(wsl.distro ?? "").trim();
   return {
     command: "wsl.exe",
@@ -154,7 +165,7 @@ export function stdioLauncher({ server, workDir = null, reportsDir = null, wsl =
     // profile can rewrite the arguments between Windows and the server.
     args: ["-d", distro || WSL_DISTRO_PLACEHOLDER, "-e",
       ...(Object.keys(vars).length ? ["env", ...Object.entries(vars).map(([k, v]) => `${k}=${v}`)] : []),
-      "node", server],
+      node, server],
     // Already carried inside the argument list above; a host-side env block would set them on the
     // Windows process and never reach the server.
     env: {},
@@ -167,8 +178,8 @@ export const STDIO_SHAPES = Object.freeze({
   "claude-cli": {
     kind: "command",
     where: null,
-    render: ({ server, workDir, reportsDir, platform, wsl }) => {
-      const l = stdioLauncher({ server, workDir, reportsDir, wsl });
+    render: ({ server, workDir, reportsDir, platform, wsl, node }) => {
+      const l = stdioLauncher({ server, workDir, reportsDir, wsl, node });
       // The host's own `-e` flags set variables for the process IT starts. Off WSL that is the server;
       // through the wrapper it is `wsl.exe`, and they stop at the boundary — so on WSL they ride inside
       // the command instead and this line carries none.
@@ -180,8 +191,8 @@ export const STDIO_SHAPES = Object.freeze({
   "desktop-json": {
     kind: "config",
     where: "Settings → Developer → Edit Config",
-    render: ({ server, workDir, reportsDir, wsl }) => {
-      const l = stdioLauncher({ server, workDir, reportsDir, wsl });
+    render: ({ server, workDir, reportsDir, wsl, node }) => {
+      const l = stdioLauncher({ server, workDir, reportsDir, wsl, node });
       return JSON.stringify({
         mcpServers: {
           [STDIO_SERVER_NAME]: {
@@ -199,8 +210,8 @@ export const STDIO_SHAPES = Object.freeze({
   "generic-json": {
     kind: "config",
     where: "your agent's MCP server configuration",
-    render: ({ server, workDir, reportsDir, wsl }) => {
-      const l = stdioLauncher({ server, workDir, reportsDir, wsl });
+    render: ({ server, workDir, reportsDir, wsl, node }) => {
+      const l = stdioLauncher({ server, workDir, reportsDir, wsl, node });
       return JSON.stringify({
         command: l.command,
         args: l.args,
@@ -219,8 +230,8 @@ export const STDIO_SHAPES = Object.freeze({
     // Codex does not forward the shell environment, and a credential would have to be forwarded BY NAME
     // rather than written into a file. This server takes no credential — the work directory is a path,
     // not a secret — so `env` is correct here and would not be for a server that wanted a key.
-    render: ({ server, workDir, reportsDir, wsl }) => {
-      const l = stdioLauncher({ server, workDir, reportsDir, wsl });
+    render: ({ server, workDir, reportsDir, wsl, node }) => {
+      const l = stdioLauncher({ server, workDir, reportsDir, wsl, node });
       return [
         `[mcp_servers.${STDIO_SERVER_NAME}]`,
         `command = "${l.command}"`,
@@ -345,11 +356,11 @@ export function remoteConnectFor(shape, { address = null } = {}) {
  */
 export const WSL_ROW_HEADINGS = Object.freeze({ fromWindows: "From Windows", insideWsl: "Inside WSL" });
 
-export function stdioConnectFor(shape, { installRoot = stableInstallRoot({ installRoot: INSTALL_ROOT }), workDir = null, reportsDir = null, platform = process.platform, wsl = null } = {}) {
+export function stdioConnectFor(shape, { installRoot = stableInstallRoot({ installRoot: INSTALL_ROOT }), workDir = null, reportsDir = null, platform = process.platform, wsl = null, node = process.execPath } = {}) {
   const spec = Object.hasOwn(STDIO_SHAPES, String(shape ?? "")) ? STDIO_SHAPES[shape] : null;
   if (!spec) return null;
-  const server = join(installRoot, "mcp-server", "server.mjs");
-  const render = (target) => spec.render({ server, workDir, reportsDir, platform, wsl: target });
+  const server = join(installRoot, "mcp-server", STDIO_ENTRY);
+  const render = (target) => spec.render({ server, workDir, reportsDir, platform, wsl: target, node });
   const base = { shape, kind: spec.kind, where: spec.where, after: spec.after, name: STDIO_SERVER_NAME };
   // OFF WSL NOTHING CHANGES: one launcher, no variants, and `variants: null` rather than an empty array
   // so a consumer cannot read "this install has no sides" as "this install has two sides, both missing".

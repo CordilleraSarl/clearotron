@@ -33,7 +33,7 @@ test("the command is the one CONNECT.md documents, with this install's own path"
   const cmd = stdioConnectCommand({ workDir: "/tmp/workspace" });
   assert.match(cmd, /^claude mcp add /, "not the documented verb — a reader following CONNECT.md would diverge");
   assert.match(cmd, new RegExp(`\\b${STDIO_SERVER_NAME}\\b`), "the server name must match what `claude mcp remove` takes");
-  assert.match(cmd, /-- node .*mcp-server\/server\.mjs$/, "it must end at the server this install actually ships");
+  assert.match(cmd, /-- \S*node\S* .*mcp-server\/serve\.mjs$/, "it must end at the server's entry, run by this install's own Node");
   assert.ok(cmd.includes(INSTALL_ROOT), "the path is not this install's — a reader would be told to run someone else's");
   // The documented form is in the shipped doc; the command must not contradict the file it came from.
   const doc = readFileSync(join(REPO, "mcp-server", "CONNECT.md"), "utf8");

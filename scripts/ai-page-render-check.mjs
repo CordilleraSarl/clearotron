@@ -343,6 +343,8 @@ const panelProbe = (expect) => `(() => {
     firstStepCopies: !!steps[0]?.querySelector('.codeblock, .secret-btn'),
     altFirstStepCopies: !!altSteps[0]?.querySelector('.codeblock, .secret-btn'),
     foldStepCount: foldSteps.length,
+    // Every block the reader can copy, shown or folded away, to hold the local route's lines below.
+    copies: [...(panel?.querySelectorAll('.codeblock, pre') ?? [])].map((c) => c.textContent || ''),
     foldOpen: fold ? fold.open : null,
     foldHeading: flat(fold?.querySelector('summary')?.textContent) || null,
     foldButtons: fold ? [...fold.querySelectorAll('ol.steps button')].map((b) => ({ text: flat(b.textContent), ghost: /\\bbtn-ghost\\b/.test(b.className), step: b.getAttribute('data-step') })) : [],
@@ -540,6 +542,12 @@ for (const state of Object.keys(STATES)) {
       ok(s.watch === (deck.aiConnected === false ? WATCH : null) && (s.watch === null || s.watchOnLast),
         `under the last step: ${JSON.stringify(s.watch)} (the log answered ${deck.aiConnected})`)
       ok(!s.warning, `no step for "${o.name}" mentions an authentication warning`)
+      // THE NODE THIS INSTALL RUNS ON, AND THE ENTRY THAT CHECKS IT (owner, 2026-09-19). A line with a bare
+      // `node` ran whatever the assistant's PATH found; through WSL that was Node 18, and the server died on
+      // a syntax error. Every line that starts the server here names this process's own Node and serve.mjs.
+      const local = (s.copies ?? []).filter((t) => /mcp-server[\\/]/.test(t))
+      ok(local.every((t) => t.includes(process.execPath) && /mcp-server[\\/]serve\.mjs/.test(t) && !/(^|[\s"'])node[\s"',]+[^\s"']*mcp-server/.test(t)),
+        `every line "${o.name}" offers that starts the server names ${process.execPath} and serve.mjs (saw ${JSON.stringify(local.map((t) => t.slice(0, 160)))})`)
       // ── WHERE THE DOOR COULD NOT BE READ, BOTH WAYS ARE ON THE SCREEN ──────────────────────────
       //
       // doorKind answers null for "not read" and its contract says the caller offers both. The wire
