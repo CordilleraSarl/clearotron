@@ -40,7 +40,7 @@ export function unreadableRunsReason({ workSet, workRoot, workExists, poolSet })
   if (workSet || workExists || poolSet) return null;
   return `no searches can be read here: CLEAROTRON_WORK_DIR is unset and ${workRoot} does not exist, `
     + "and CLEAROTRON_REPORTS_DIR is unset. Set them to the install's directories — `npx clearotron doctor` "
-    + "prints where an install keeps them.";
+    + "prints where an install keeps them, and mcp-server/CONNECT.md says how to connect this server.";
 }
 
 // Every workspace-<agent>/studio/clearance-search root under the live workspace root.

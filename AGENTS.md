@@ -49,16 +49,20 @@ node mcp-server/smoke.mjs      # drives the real MCP server against a fixture
 ```
 
 **What success looks like for the demo.** It serves the portal on `127.0.0.1:18860`, and opens two more
-doors on 18861 and 18862; `--port <n>` moves all three to `n`, `n+1`, `n+2`. The portal answers **401
+doors on 18861 and 18862; `--port <n>` moves all three to `n`, `n+1`, `n+2`. When a port is taken and you did
+not name it, the demo moves to the next free one and prints the address it chose: read that address rather
+than assuming the port. The portal answers **401
 "not signed in" on every path** until you sign in, so a scripted check accepts 401, or a 302 to
 `/portal/login` when it sends `Accept: text/html` as a browser does, and never 200. The demo prints its
 passphrase only when its output is a terminal; with its output captured, it prints the command that sets
 a new one instead, for a person to run in a terminal. In a clone the demo needs the built bundle: without
 it, it stops before starting anything and names `npm run build:ui`.
 
-The demo does not exit by itself, and `--no-open` keeps it from opening a browser. Stop it with Ctrl-C,
-or with a TERM to the pid your shell gave you for `npx clearotron demo --no-open &`; the whole demo stops.
-It removes its folder when it stops; `--keep` keeps it.
+Unattended, run `npx clearotron demo --no-open --once`: it publishes the sample reports and exits by itself,
+without a browser. Without `--once` the demo does not exit by itself: stop it with Ctrl-C, or with a TERM
+to the pid your shell gave you for `npx clearotron demo --no-open &`, and the whole demo stops. It removes
+its folder when it stops; `--keep` keeps it. All of the demo's flags are in
+[CONTRIBUTING.md](CONTRIBUTING.md#what-you-can-run-with-nothing-but-a-clone).
 
 `npm test` is the fast tier. `npm run test:full` is the merge gate and adds the files that drive the
 orchestrator end to end against a mock engine. Both are free.
@@ -140,7 +144,8 @@ first, and then takes the same commands, run from its own directory.
 runs. It reads the directories an install keeps its runs and reports in, `CLEAROTRON_WORK_DIR` and
 `CLEAROTRON_REPORTS_DIR`, from the environment or a `.env` at the repository root. With neither set and
 nothing at the default location, `list_runs` says so by name rather than answering with an empty list;
-`npx clearotron doctor`, run in this clone, prints where an install keeps them.
+`npx clearotron doctor`, run in this clone, prints where an install keeps them, and
+[mcp-server/CONNECT.md](mcp-server/CONNECT.md) says how to connect this server.
 
 ## Commands that spend real money — never run these unprompted
 
@@ -150,6 +155,9 @@ node driver/pipeline.mjs --job … # one clearance. Hours of model time and vend
 npx clearotron install           # spends one cheap model turn to prove the engine can complete a turn
 npx clearotron sync              # in this clone: 41.5 GB download and ~9 hours of indexing
 ```
+
+The MCP server `.mcp.json` starts serves `start_run`, `stop_run`, `feed_context`, `plan_run` and
+`what_if_run` to the assistant connected to it, ungated: through it, an assistant can spend as `run-queue` does.
 
 In this clone, `npx clearotron start` itself is safe — it starts the portal and the engine door and deliberately does
 **not** drain the queue. The spend happens when someone orders a clearance and the queue is run.
