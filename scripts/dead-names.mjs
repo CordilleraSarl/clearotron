@@ -6,8 +6,8 @@
 //   node scripts/dead-names.mjs            report; exit 1 if a dead name is back
 //   node scripts/dead-names.mjs --json     the same, as JSON
 //
-// ruled Lore and Aughra dead names that may appear nowhere, and the purge is done: the issue's
-// own pattern returned 58 files when it was written and returns ONE now, which is a dictionary snippet
+// The owner ruled Lore and Aughra dead names that may appear nowhere, and the purge is done: the issue's
+// own pattern returned 58 files when it was written and ONE when this guard landed, a dictionary snippet
 // about hunting inside captured search results. What does not exist is anything to keep it that way. A
 // name published once stays published, so the cost of a re-introduction is not a revert — it is a name
 // in the history of a repository that is about to be cut in public.
@@ -42,37 +42,39 @@ export const GUARD = "dead-names (#853)";
 // the issue names as deployed surfaces, and `_` is a word character, so a trailing `\b` would miss the
 // environment variable while catching the prose. No English word begins with those six letters, so the
 // leading boundary is all the protection the arm needs — measured: zero hits in the tree either way.
-// `clawdi-lisa` and `clawdi-lidia` are 's, not 's, and they are here rather than in a second
-// scanner because the mechanism is identical: a name that must never reappear. They were per-person
-// agent identities for individuals at this firm, shipped in an operator script's default roster, in a
-// systemd unit watching their queues, and in two test fixtures. That out-of-scope note ruled `alex`
-// and `sam` INVENTED, which is why those stay; these two were never covered by that ruling.
-export const DEAD_NAME_RE = /lorestar|lore_(pool|url|flags)|clearance_lore|lorectl|loreurl|lorecontrols|trademark-lore|\blore\b|\baughra|clawdi-(lisa|lidia)/i;
+// A PER-PERSON IDENTITY IS THE SAME KIND OF NAME, AND IT IS NOT WRITTEN HERE. An agent identity named
+// after a real person must never reappear either, and the mechanism is identical. But a public guard
+// that spells out a person's name publishes the name it exists to keep out, so no such arm is written
+// into this file: `deadNameHits` takes its pattern as an argument, and the test drives the mechanism
+// with an invented identity. `alex` and `sam`, the names the tests give agents and requesters, are
+// invented.
+export const DEAD_NAME_RE = /lorestar|lore_(pool|url|flags)|clearance_lore|lorectl|loreurl|lorecontrols|trademark-lore|\blore\b|\baughra/i;
 
 /**
  * Where a true match is somebody else's word rather than our dead name. NAMED, with the reason, and
  * scoped to the file — never a blanket pattern, because a blanket would re-admit the name everywhere.
+ * The first exemption was a dictionary snippet in the demo's captured common-law results; the demo was
+ * re-captured without it, so that exemption was deleted rather than carried.
  */
 export const EXEMPTIONS = [
   {
-    file: "demo/multi-country-focus-search/run/common-law-grid.json",
-    why: "captured third-party search results. The hit is a Collins English Dictionary definition of "
-      + "hunting — \"the art, sport, lore, or practice of hunting\" — inside a snippet the common-law "
-      + "sweep fetched and the driver saved VERBATIM. Editing it would corrupt a machine receipt to "
-      + "satisfy a lint, which is the one thing a receipt may never be.",
+    file: "driver/wordlists/en.txt",
+    why: "the engine's list of ordinary English words, the dictionary of the one-letter neighbourhood "
+      + "filter. `lore` is an ordinary English word and sits on it. The list only ever removes queries, "
+      + "so taking the word out would change which searches a run makes, to satisfy a lint.",
   },
 ];
 
 const exemptionFor = (file) => EXEMPTIONS.find((e) => e.file === file) ?? null;
 
-/** Every dead-name hit in a corpus of {file, text}. PURE. */
-export function deadNameHits(corpus) {
+/** Every dead-name hit in a corpus of {file, text}, against DEAD_NAME_RE unless a pattern is given. PURE. */
+export function deadNameHits(corpus, pattern = DEAD_NAME_RE) {
   const out = [];
   for (const { file, text } of corpus ?? []) {
     if (exemptionFor(file)) continue;
     const lines = String(text ?? "").split("\n");
     for (let i = 0; i < lines.length; i++) {
-      if (DEAD_NAME_RE.test(lines[i])) out.push({ file, line: i + 1, text: lines[i].trim().slice(0, 160) });
+      if (pattern.test(lines[i])) out.push({ file, line: i + 1, text: lines[i].trim().slice(0, 160) });
     }
   }
   return out;
