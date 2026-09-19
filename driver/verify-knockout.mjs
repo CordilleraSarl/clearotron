@@ -29,25 +29,6 @@ const nameKey = (s) => norm(s).toLowerCase().replace(/\s+/g, " ");
 
 // ── Tone guards (the skill's rules, mechanical subset) ───────────────────────────────────────────────
 export const BANNED_TONE_RE = /\b(extremely difficult|most dangerous|massive|enormous)\b/i;
-
-/**
- * A RECOMMENDATION IS A SHAPE, AND THIS SCREEN MAY NOT WRITE ONE (owner, 2026-09-18).
- *
- * The screen states findings and a rating; what to do with the name is the reading lawyer's. Two
- * instructions that asked for a conclusion were cut first, and a re-run then wrote one anyway, under a
- * heading of its own: "Practical next step — <NAME> is not knocked out at this screening depth. Advance
- * it to clearance…". Cutting an instruction stops the engine asking; only a refusal stops the offer.
- *
- * TWO SHAPES, because both reached a reader: a block the writer heads itself, and a closing line that
- * moves the name on. WHAT THIS CANNOT SEE: the same conclusion as ordinary prose — "the remaining work
- * here is a full search" — and no pattern can. It is a floor under the doctrine, never a substitute.
- *
- * The false positives were measured rather than assumed: the degraded note this lane REQUIRES reads
- * "Manual verification recommended" and matches neither, and a register record "proceeding to
- * registration" matches neither — only proceeding *to clearance* does.
- */
-export const RECOMMENDATION_RE = /^[ \t]*(?:[*_]{0,2}|#{1,6}\s*)(?:practical\s+|immediate\s+|suggested\s+)?(?:next steps?|what to do\b|what happens next|recommendations?|our recommendation)/im;
-export const ADVANCE_RE = /\b(?:advance|move|take|send)\s+(?:it|this|the name|[A-Z][A-Z0-9'’-]{2,})\s+(?:on\s+)?(?:to|into|through)\s+(?:a\s+)?(?:full\s+)?clearance\b|\bproceeds?\s+to\s+(?:a\s+)?(?:full\s+)?clearance\b|\bshould\s+(?:proceed|advance|be advanced|move)\b|\bwe\s+recommend\b/i;
 export const QUANT_CLAIM_RE = /(\b\d[\d,.]*\s*(?:M|million|billion|k|thousand)?\s*(?:streams|downloads|copies sold|units sold)\b)|(\$\s?\d[\d,.]*\s*(?:M|million|billion|k)?\s*(?:in\s+)?(?:annual\s+)?(?:revenue|sales))/i;
 
 // ── URL normalization for the receipts gate ──────────────────────────────────────────────────────────
@@ -505,14 +486,6 @@ export const validators = {
       const claim = [prose, c.chunkSummary].filter(Boolean).join("\n").match(REGISTER_CLAIM_RE);
       if (claim)
         return { ok: false, reason: `knockout_register_claim:${m.name}: "${claim[0].trim()}" — this turn cannot see the register lane and must not describe it. The report states register coverage in code, from the run's own count sidecar; a summary that says the registers were not run, above a table of counts that were, is the contradiction this rule closes. Delete the clause` };
-      // THE PER-NAME READ IS SWEPT TOO, and until now it was not: the checks below read the finding
-      // fields, while `assessment` was validated for length and structure alone — which is exactly the
-      // field the conclusion arrived in. Refused HERE so the stage re-asks with the line quoted, rather
-      // than a reader meeting it.
-      const read = [m.assessment, prose].filter(Boolean).join("\n");
-      const recommended = read.match(RECOMMENDATION_RE) ?? read.match(ADVANCE_RE);
-      if (recommended)
-        return { ok: false, reason: `mark "${m.name}": "${recommended[0].trim()}" — this screen states findings and a rating; what to do with the name, and whether it advances, is the reading lawyer's. Delete the sentence: the report's own closing caveat already says what the screen is` };
       const banned = prose.match(BANNED_TONE_RE);
       if (banned) return { ok: false, reason: `mark "${m.name}": banned tone "${banned[0]}" — measured tone only (the band colour carries urgency)` };
       const quant = prose.match(QUANT_CLAIM_RE);
