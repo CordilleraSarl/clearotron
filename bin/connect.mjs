@@ -40,7 +40,7 @@ import { createInterface } from "node:readline/promises";
 import { requireInteractive } from "../shared/invocation.mjs";   // — a prompt with nobody to answer it
 import { stdin, stdout } from "node:process";
 import { readFileSync, writeFileSync, existsSync, copyFileSync, mkdirSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { join, dirname, resolve } from "node:path";
 import { homedir, userInfo } from "node:os";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
@@ -48,7 +48,11 @@ import { createServer } from "node:net";
 import { CONNECT_CLIENTS, WHERE_FLAG, clientById, leadRouteFor, plainStep, whatItNeeds } from "../shared/connect-clients.mjs";
 import { stdioConnectFor, STDIO_SHAPES } from "../shared/stdio-connect.mjs";
 import { isWsl, wslTarget } from "../shared/wsl.mjs";   // — and which distribution a row should start the server in
-import { defaultDenylistPath, clientDoorAddress, clientDoorPort, clientDoorState, enablePlan, applyEnablePlan, describeChange, recordConnectKey, CLIENT_DOOR_UNIT } from "../shared/client-door.mjs";
+import { defaultDenylistPath, clientDoorAddress, clientDoorPort, clientDoorState, enablePlan, applyEnablePlan, describeChange, recordConnectKey, CLIENT_DOOR_UNIT, demoTokenSecretPath, keyPurposeLine, demoConnectCommand } from "../shared/client-door.mjs";
+import { readRunning } from "../shared/running-start.mjs";
+import { readLocalCredential, passphraseResetCommand, INSTALL_CREDENTIAL_FILE } from "../driver/portal-local-auth.mjs";
+import { invocationPrefix } from "../shared/invocation.mjs";
+import { BRAND } from "../shared/brand.mjs";
 import { mintToken, tokenId, resolvePerson, loadGrants } from "../shared/scope.mjs";
 import { envFrom } from "../shared/env-aliases.mjs";
 import { atomicWrite } from "../driver/progress.mjs";
@@ -654,6 +658,59 @@ function printSteps(offer, key) {
   }
 }
 
+/**
+ * ── A RUNNING DEMO, NAMED BY ITS FOLDER (owner, 2026-09-19) ─────────────────────────────────────────
+ *
+ * The demo is how a newcomer meets the product, and the next thing they ask an assistant is to connect.
+ * The route that works is the demo's own client door with an account key, and reaching it took a key
+ * issued by hand and an address read out of the startup log. This does both: it finds the demo that is
+ * running from that folder, mints a key with the demo's own secret for the demo's one user, and prints
+ * the address and the key, and nothing else is changed. No unit is written and no setting touched: the
+ * demo's door is already open, and everything of the demo goes when it stops.
+ *
+ * The address route's steps are not printed. They are written for a door behind a sign-in service,
+ * reached over the web, and a demo's door is on this machine and takes the key instead.
+ */
+async function connectDemo({ base, dryRun, clientName = null, running = readRunning() } = {}) {
+  const at = resolve(base);
+  const prefix = invocationPrefix();
+  say("");
+  if (clientName) { say(`  ${clientName}`); say(""); }
+  const demo = running.find((r) => r.demo && resolve(String(r.base ?? "")) === at);
+  if (!demo) {
+    say(`  Not available here — no demo is running from ${at}.`);
+    say(`  What would change it: start it with \`${prefix}clearotron demo --base ${/\s/.test(at) ? `"${at}"` : at}\`, then run this again.`);
+    return 1;
+  }
+  if (!demo.ports?.client) {
+    say(`  Not available here — the demo running from ${at} has no client door open.`);
+    say("  What would change it: stop the demo and start it again; its output says why the door did not start.");
+    return 1;
+  }
+  const address = `http://${!demo.host || demo.host === "0.0.0.0" ? "127.0.0.1" : demo.host}:${demo.ports.client}/mcp`;
+  const credentialPath = join(at, INSTALL_CREDENTIAL_FILE);
+  let email = "demo@localhost";
+  try { email = readLocalCredential(credentialPath)?.email || email; } catch { /* the demo's own user stands */ }
+  if (dryRun) {
+    say("  (dry run — nothing was changed)");
+    say(`  Address:  ${address}`);
+    return 0;
+  }
+  let secret = "";
+  try { secret = readFileSync(demoTokenSecretPath(at), "utf8").trim(); } catch { /* said below */ }
+  if (!secret) {
+    say(`  Not available here — the demo running from ${at} keeps no key secret this command can read.`);
+    say("  What would change it: run this as the user who started the demo.");
+    return 1;
+  }
+  const key = withSecret(secret, () => mintToken({ scope: "account", sub: email, ttlSec: 90 * 24 * 3600 }));
+  say(`  ${keyPurposeLine({ email, brand: BRAND.name, reset: passphraseResetCommand({ prefix, credentialPath }) })}`);
+  say("");
+  say(`  Address:  ${address}`);
+  say(`  Key:      ${key}`);
+  return 0;
+}
+
 async function main() {
   const argv = process.argv.slice(2);
   // `--help` IS ANSWERED, not rejected. Running this bare drops the reader into a question, so "run it
@@ -674,6 +731,7 @@ async function main() {
     say("                      internet, with a key made for you now");
     say("    --list            the assistants this build knows");
     say("    --dry-run         say what would change, change nothing");
+    say("    --base <dir>      a running demo's folder: mint a key for its client door, and print both");
     say("    --allow-checkout-move");
     say("                      write this checkout's path even though services are running from");
     say("                      another one. Every unit's ExecStart follows that value, so the ones");
@@ -681,7 +739,7 @@ async function main() {
     say("");
     return 0;
   }
-  const known = new Set(["--client", "--where", "--list", "--dry-run", "--allow-checkout-move", "--help", "-h"]);
+  const known = new Set(["--client", "--where", "--list", "--dry-run", "--base", "--allow-checkout-move", "--help", "-h"]);
   const unknown = argv.filter((a) => a.startsWith("--") && !known.has(a));
   if (unknown.length) {
     console.error(`connect: unrecognised flag(s): ${unknown.join(", ")}`);
@@ -689,6 +747,13 @@ async function main() {
     process.exit(2);
   }
   const dryRun = argv.includes("--dry-run");
+  const b = argv.indexOf("--base");
+  if (b >= 0) {
+    const base = argv[b + 1];
+    if (!base || base.startsWith("--")) { console.error("connect: --base needs the demo's folder."); process.exit(2); }
+    const c = argv.indexOf("--client");
+    return await connectDemo({ base, dryRun, clientName: c >= 0 ? clientById(argv[c + 1])?.name ?? null : null });
+  }
   const w = argv.indexOf("--where");
   if (w >= 0 && !Object.hasOwn(WHERE_FLAG, argv[w + 1] ?? "")) {
     console.error(`connect: --where takes one of: ${Object.keys(WHERE_FLAG).join(", ")}`);

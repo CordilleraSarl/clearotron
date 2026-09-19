@@ -849,6 +849,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-running-demo-connects-by-its-folder.test.mjs": {
+          "tests": 4,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
         "a-save-that-cannot-commit-says-so.test.mjs": {
           "tests": 4,
           "asserts": 19,
