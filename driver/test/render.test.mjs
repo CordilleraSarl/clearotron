@@ -20,10 +20,22 @@ import { parseReport } from "../publish/parse.mjs";
 import { renderHtml, homeButton } from "../publish/render.mjs";
 import { EXPORT_TOGGLE, EXPORT_MENU_JS } from "../publish/report-topbar.mjs";
 
-/** Apply `f` until the text stops changing: a strip done once can reassemble what it removed. */
-const untilStable = (s, f) => { for (let prev = null; prev !== s;) { prev = s; s = f(s); } return s; };
-/** The page without its stylesheet, so a match reads the markup the reader sees. */
-const withoutStyle = (html) => untilStable(String(html), (s) => s.replace(/<style[\s\S]*?<\/style>/g, ""));
+/**
+ * The page without its stylesheets, so a match reads the markup the reader sees. Each `<style` runs to
+ * the first `</style>` after it, and one left unclosed stays, as the non-greedy pattern this replaces did.
+ * By position rather than by pattern, so no removal can leave a reassembled tag behind.
+ */
+const withoutStyle = (html) => {
+  const s = String(html);
+  let out = "", i = 0;
+  for (;;) {
+    const a = s.indexOf("<style", i);
+    const b = a < 0 ? -1 : s.indexOf("</style>", a);
+    if (b < 0) return out + s.slice(i);
+    out += s.slice(i, a);
+    i = b + "</style>".length;
+  }
+};
 
 function parsedOf(reportMd) {
   const dir = mkdtempSync(join(tmpdir(), "clearotron-render-"));
@@ -2560,7 +2572,7 @@ test("an archived (pre-v6) run renders byte-identically to its pre-change output
 // still owed and routed it here.
 const heroOf = (html) => html.slice(html.indexOf('<h1 class="mark"'), html.indexOf('<div class="heroGrid"'));
 const capsOf = (html) => (heroOf(html).match(/<p class="sub[^"]*">([\s\S]*?)<\/p>/g) ?? [])
-  .map((p) => untilStable(p, (s) => s.replace(/<[^>]+>/g, "")));
+  .map((p) => { for (let prev = null; prev !== p;) { prev = p; p = p.replace(/<[^>]+>/g, ""); } return p; });
 
 test("the hero caption folds to its first sentence, and the remainder is complete behind it", () => {
   const render = (caption) => renderHtml(

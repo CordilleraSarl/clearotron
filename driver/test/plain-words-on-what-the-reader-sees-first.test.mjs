@@ -227,15 +227,19 @@ const MARKER = "zzmarkerzz";
  * closing tag, swallowing the body between them. The page's own comments do the same thing.
  */
 const seenWithoutClicking = (html) => {
-  // Repeated until nothing changes, so a first pass cannot reassemble what it removed. The script
-  // pattern takes any case and any attributes; the renderers emit neither, so nothing more is removed.
-  let body = String(html);
-  for (let prev = null; prev !== body;) {
-    prev = body;
-    body = body.replace(/<style>[\s\S]*?<\/style>/g, "")
-      .replace(/<script\b[^>]*>[\s\S]*?<\/script\s*>/gi, "")
-      .replace(/<!--[\s\S]*?-->/g, "");
-  }
+  // By position rather than by pattern: each block runs from its opening to the first closing after it,
+  // exactly as the non-greedy patterns this replaces did, and no removal can reassemble a tag.
+  const without = (s, open, close) => {
+    let out = "", i = 0;
+    for (;;) {
+      const a = s.indexOf(open, i);
+      const b = a < 0 ? -1 : s.indexOf(close, a);
+      if (b < 0) return out + s.slice(i);
+      out += s.slice(i, a);
+      i = b + close.length;
+    }
+  };
+  const body = without(without(without(String(html), "<style>", "</style>"), "<script>", "</script>"), "<!--", "-->");
   const shut = body.replace(/<details(?![^>]*\sopen)[^>]*>[\s\S]*?<\/details>/g, "");
   return shut.includes(MARKER);
 };
