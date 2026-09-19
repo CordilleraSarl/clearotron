@@ -3370,12 +3370,17 @@ test("a live run's row names the stage it is in now, a step back included; a fin
     { step: "Case law & refutation", stepN: 6, stepTotal: 9 }, "a stage with no display step keeps the furthest step");
   assert.deepEqual(stageNow({ stepLabel: "Searching registers", stepN: 4, stepTotal: 9 }),
     { step: "Searching registers", stepN: 4, stepTotal: 9 }, "a run that recorded no stage keeps what it has");
+  // THE RUN'S OWN READING WINS where it wrote one: `currentStep` stays on the step a no-display-step stage
+  // runs inside, where lastStage names that stage and can map to nothing.
+  assert.deepEqual(stageNow({ currentStep: { index: 4, label: "Synthesis", n: 5, total: 9 }, lastStage: "doubt-closure",
+    stepLabel: "Case law & refutation", stepN: 6, stepTotal: 9 }), { step: "Synthesis", stepN: 5, stepTotal: 9 },
+  "currentStep is the step the run is in now, and it is ignored");
 
   const { service, workspaceRoot } = world();
   const live = join(workspaceRoot, "workspace-test", "studio", "clearance-search", "tmp9-live", "2026-07-18-amber-x", "status.json");
   const write = (s) => writeFileSync(live, JSON.stringify({ runId: "tmp9-live-amber-x", markName: "LIVEMARK", updatedAt: "2026-07-18T10:00:00Z", ...s }));
   const row = async () => (await service.route("GET", "/portal/api/runs", CLIENT, {}, {})).json.runs.find((r) => r.runId === "tmp9-live-amber-x");
-  write({ state: "running", lastStage: "synthesis", stepLabel: "Case law & refutation", stepN: 6, stepTotal: 9 });
+  write({ state: "running", currentStep: { index: 4, label: "Synthesis", n: 5, total: 9 }, lastStage: "synthesis", stepLabel: "Case law & refutation", stepN: 6, stepTotal: 9 });
   const back = await row();
   assert.equal(back.step, "Synthesis", "the row named the furthest step, not the stage the run is in");
   assert.equal(back.stepN, 5, "and its step number must follow the stage, back one");

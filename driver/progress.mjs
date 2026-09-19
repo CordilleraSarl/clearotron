@@ -104,11 +104,17 @@ export function stepForStage(rawStageKey) {
  * stepper that never runs backwards. `lastStage` is the stage the run ENTERED last, written at the one
  * choke point every dispatch passes, corrective re-entries included. The card named the first, so a run
  * sent back into synthesis by a correction pass went on reading "Case law & refutation" (measured on a
- * beta, 2026-09-18). This names the second: the stage in hand, a step back included, with its own step
- * number. A stage with no display step, or a run that has recorded none, keeps the furthest step, which is
- * the best reading there is. PURE.
+ * beta, 2026-09-18). This names the stage in hand, a step back included, with its own step number.
+ *
+ * `currentStep` FIRST, where the run wrote one: the step it is in now, in the stepper's own words, moved by
+ * every transition in either direction and left in place through a stage with no display step. A status
+ * written before that field existed falls back to mapping `lastStage`, and one with neither keeps the
+ * furthest step, which is the best reading there is. PURE.
  */
 export function stageNow(status) {
+  const c = status?.currentStep;
+  if (c && typeof c.label === "string" && c.label.trim())
+    return { step: c.label, stepN: Number.isFinite(c.n) ? c.n : null, stepTotal: Number.isFinite(c.total) ? c.total : null };
   const now = stepForStage(status?.lastStage);
   return now
     ? { step: now.label, stepN: now.n, stepTotal: now.total }
