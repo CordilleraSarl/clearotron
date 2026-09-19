@@ -99,6 +99,35 @@ test("a change to a settings file that was already there fails too; the rest of 
   } finally { rmSync(root, { recursive: true, force: true }); rmSync(home, { recursive: true, force: true }); }
 });
 
+// ── THE BUNDLE: a product command a test starts does not rebuild the checkout's portal ─────────────
+
+test("inside a run, `npm run build:ui` in the checkout is refused, and every other npm command reaches npm", () => {
+  // `start` rebuilds a stale `portal-ui/dist` by running exactly this, with the checkout as its working
+  // directory; eight driver files start `start` from the checkout.
+  const root = fakeCheckout();
+  const elsewhere = mkdtempSync(join(tmpdir(), "ct-not-the-checkout-"));
+  try {
+    const r = drive(root, `const { spawnSync } = require("child_process");
+      const run = (args, cwd) => { const x = spawnSync("npm", args, { cwd, encoding: "utf8" });
+        return { status: x.status, refused: /\\[test-run\\] refused/.test(x.stderr ?? "") }; };
+      console.log("RESULT " + JSON.stringify({
+        build: run(["run", "build:ui"], process.argv[1]),
+        version: run(["--version"], process.argv[1]),
+        buildElsewhere: run(["run", "build:ui"], ${JSON.stringify(elsewhere)}),
+      }));`, root, { npm_config_offline: "true" });
+    assert.equal(r.code, 0, r.said);
+    const m = /RESULT (\{.*\})/.exec(r.said);
+    assert.ok(m, `the drive printed no result:\n${r.said}`);
+    const got = JSON.parse(m[1]);
+    assert.deepEqual(got.build, { status: 1, refused: true }, "the checkout's bundle build went through");
+    assert.equal(got.version.status, 0, "an ordinary npm command no longer reaches npm");
+    assert.equal(got.version.refused, false);
+    assert.equal(got.buildElsewhere.refused, false, "a build outside the checkout is not this guard's to refuse");
+    assert.match(r.said, /turned away 1 rebuild\(s\) of this checkout's portal bundle/,
+      "the run does not say it refused a rebuild, and a test that captured start's output hides the refusal");
+  } finally { rmSync(root, { recursive: true, force: true }); rmSync(elsewhere, { recursive: true, force: true }); }
+});
+
 test("a run that creates a file inside the checkout FAILS, and the file is named", () => {
   const root = fakeCheckout();
   try {

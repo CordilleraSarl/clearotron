@@ -46,7 +46,7 @@
 // about paths it did not create is how a tidy-up becomes an outage.
 
 import { spawn } from "node:child_process";
-import { mkdtempSync, mkdirSync, rmSync, readdirSync, statSync, existsSync, readFileSync, symlinkSync, copyFileSync, chmodSync } from "node:fs";
+import { mkdtempSync, mkdirSync, rmSync, readdirSync, statSync, existsSync, readFileSync, symlinkSync, copyFileSync, chmodSync, writeFileSync, realpathSync } from "node:fs";
 import { delimiter, dirname, join, parse as parsePath, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { tmpdir, homedir } from "node:os";
@@ -699,6 +699,51 @@ mkdirSync(process.env.CLEAROTRON_SUITE_TELEMETRY_DIR, { recursive: true });
 // Taken HERE, at the last statement before the child exists, so nothing this runner does to the tree
 // between the two reads can be mistaken for something a test did. The comparison is in `close`, below.
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+
+// ── AND NO PRODUCT COMMAND A TEST STARTS REBUILDS THIS CHECKOUT'S PORTAL BUNDLE ─────────────────────
+//
+// `start` rebuilds `portal-ui/dist` when it is older than `portal-ui/src` — right for a reader whose pull
+// left the bundle behind, and a write into this checkout when a test starts `start` from it. Eight driver
+// files do. On a clone where somebody once built the portal and then pulled, the first of them to run
+// rebuilt the bundle mid-suite and the guard above failed the run; the next run found the bundle fresh and
+// passed (measured 2026-09-18). A fresh clone never sees it: with no bundle there is nothing to rebuild.
+//
+// THE SAME SEAT AS THE ENGINE SHIMS, AND NO PRODUCT CHANGE. `start` runs the bare word `npm`, so a shim at
+// the front of PATH answers it for every child that keeps this PATH. It refuses exactly one command —
+// `npm run build:ui` with this checkout as its working directory — and hands everything else to the npm
+// it found on PATH. `start` reports a refused rebuild and carries on serving, which is its behaviour on
+// any failed build. A child that composes its own PATH walks past this, and the guard above still
+// catches what it writes.
+function onPath(name, pathValue) {
+  for (const d of String(pathValue ?? "").split(delimiter).filter(Boolean)) {
+    const p = join(d, name);
+    try { if (statSync(p).isFile()) return p; } catch { /* not here */ }
+  }
+  return null;
+}
+// COUNTED, because the refusal itself is printed into a child that a test usually captures: the run
+// reports how many rebuilds it turned away, so a stale bundle is named once where a reader can see it.
+let npmShimDir = null;
+if (process.platform !== "win32") {
+  const realNpm = onPath("npm", process.env.PATH);
+  if (realNpm) {
+    const q = (v) => `'${String(v).replaceAll("'", "'\\''")}'`;
+    npmShimDir = join(root, "npm-shim");
+    mkdirSync(npmShimDir, { recursive: true });
+    writeFileSync(join(npmShimDir, "npm"), [
+      "#!/bin/sh",
+      "# Written by scripts/test-run.mjs for one suite run; removed with the run's temp root.",
+      `if [ "$1" = run ] && [ "$2" = build:ui ] && [ "$(pwd -P)" = ${q(realpathSync(REPO_ROOT))} ]; then`,
+      "  echo '[test-run] refused: npm run build:ui in the checkout. A suite run does not rebuild its portal bundle.' >&2",
+      `  echo refused >> ${q(join(npmShimDir, "refused"))}`,
+      "  exit 1",
+      "fi",
+      `exec ${q(realNpm)} "$@"`,
+      "",
+    ].join("\n"), { mode: 0o755 });
+    process.env.PATH = npmShimDir + delimiter + process.env.PATH;
+  }
+}
 const repoBefore = snapshotRepo(REPO_ROOT);
 // AND THE HOME IT RUNS AS, read at the same moment for the same reason (`repo-writes.mjs` says which
 // folders and why). HOME as the child inherits it, which is the home every unpinned product command in
@@ -746,7 +791,14 @@ child.on("error", (e) => {
 });
 
 child.on("close", (code, signal) => {
+  let refusedBuilds = 0;
+  try { if (npmShimDir) refusedBuilds = readFileSync(join(npmShimDir, "refused"), "utf8").split("\n").filter(Boolean).length; }
+  catch { /* none refused */ }
   cleanup();
+  if (refusedBuilds) {
+    console.error(`[test-run] turned away ${refusedBuilds} rebuild(s) of this checkout's portal bundle: it is older than`);
+    console.error("  portal-ui/src. `npm run build:ui` brings it current; until then doctor's arms report it stale.");
+  }
   // The exit code IS the result — CI reads it. Never swallow a failure to report a tidy cleanup.
   // A SIGNALLED RUN IS NOT EVIDENCE ABOUT WRITES: it was cancelled mid-flight, so a half-finished
   // fixture proves nothing and re-raising is the honest answer. The guard below never runs on that path.
