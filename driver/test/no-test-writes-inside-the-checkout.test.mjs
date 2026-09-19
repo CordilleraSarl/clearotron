@@ -128,6 +128,30 @@ test("inside a run, `npm run build:ui` in the checkout is refused, and every oth
   } finally { rmSync(root, { recursive: true, force: true }); rmSync(elsewhere, { recursive: true, force: true }); }
 });
 
+// ── THE TEMP ROOT: what a child leaves in the machine's temp directory ────────────────────────────
+
+test("a run that leaves a demo directory in the temp root FAILS, names it, and says what fixes it", () => {
+  // Fifteen per `npm test` (2026-09-19), from children handed an environment without TMPDIR. The nested
+  // run is armed against a sandbox base, so this arm never reads the shared temp directory.
+  const root = fakeCheckout();
+  const base = mkdtempSync(join(tmpdir(), "ct-leak-base-"));
+  try {
+    const leak = drive(root, `require("fs").mkdirSync(require("path").join(process.env.CT_TEST_TMP_BASE, "clearotron-demo-planted"))`,
+      root, { CT_TEST_TMP_BASE: base, CT_TEMP_LEAK_GUARD: "1" });
+    assert.equal(leak.code, 1, `a run that left a directory in the temp root exited ${leak.code}:\n${leak.said}`);
+    assert.match(leak.said, /THIS RUN LEFT 1 DIRECTORY IN THE MACHINE'S TEMP DIRECTORY/);
+    assert.match(leak.said, /\+ .*clearotron-demo-planted/, "the reader is told WHICH directory");
+    assert.match(leak.said, /TMPDIR: tmpdir\(\)/, "and what to pass so it lands in the run's own root");
+    // THE CONTROL: anything the product does not make is not this guard's to count.
+    const other = drive(root, `require("fs").mkdirSync(require("path").join(process.env.CT_TEST_TMP_BASE, "some-other-tool-cache"))`,
+      root, { CT_TEST_TMP_BASE: base, CT_TEMP_LEAK_GUARD: "1" });
+    assert.equal(other.code, 0, `a directory the product does not make failed the run:\n${other.said}`);
+    // AND A DIRECTORY THAT WAS THERE BEFORE THE RUN IS NOT THE RUN'S.
+    const again = drive(root, `0`, root, { CT_TEST_TMP_BASE: base, CT_TEMP_LEAK_GUARD: "1" });
+    assert.equal(again.code, 0, `a leftover from an earlier run was blamed on this one:\n${again.said}`);
+  } finally { rmSync(root, { recursive: true, force: true }); rmSync(base, { recursive: true, force: true }); }
+});
+
 test("a run that creates a file inside the checkout FAILS, and the file is named", () => {
   const root = fakeCheckout();
   try {

@@ -751,6 +751,37 @@ const repoBefore = snapshotRepo(REPO_ROOT);
 const RUN_HOME = String(process.env.HOME ?? "").trim() || homedir();
 const homeBefore = snapshotHome(RUN_HOME);
 
+// ── AND NOTHING THE RUN MADE IS LEFT IN THE MACHINE'S TEMP DIRECTORY ────────────────────────────────
+//
+// The run's own root is removed on every exit. What escapes it is a child handed an environment without
+// TMPDIR: it falls back to the machine's temp directory, and nothing removes what it made there. Measured
+// 2026-09-19: fifteen `clearotron-demo-*` directories per `npm test`, from the demo's temporary sample
+// copies, and 36 GB accumulated on one box. Named by the product prefix, so the guard reads only what
+// this product makes; owned by this account, so another user's run is not ours to count.
+//
+// THE OUTERMOST RUN WATCHES THE MACHINE'S TEMP ROOTS. A nested run watches only its own base, and only
+// when a test arms it (CT_TEMP_LEAK_GUARD=1): the runner's own tests drive nested runs while the rest of
+// the suite is working, and a nested guard reading the shared root would count its neighbours' files.
+const LEAK_PREFIXES = Object.freeze(["clearotron-demo-"]);
+const OUTERMOST = !String(process.env.CT_TEST_MACHINE_TMP ?? "").trim();
+const LEAK_ROOTS = OUTERMOST
+  ? [...new Set([MACHINE_TMP, REAL_TMP, ...PLATFORM_TMP].map((p) => resolve(p)))]
+  : String(process.env.CT_TEMP_LEAK_GUARD ?? "") === "1" ? [resolve(REAL_TMP)] : [];
+function tempLeftovers() {
+  const uid = typeof process.getuid === "function" ? process.getuid() : null;
+  const out = new Set();
+  for (const r of LEAK_ROOTS) {
+    let names;
+    try { names = readdirSync(r); } catch { continue; }
+    for (const n of names) {
+      if (!LEAK_PREFIXES.some((p) => n.startsWith(p))) continue;
+      try { if (uid == null || statSync(join(r, n)).uid === uid) out.add(join(r, n)); } catch { /* gone already */ }
+    }
+  }
+  return out;
+}
+const tempBefore = tempLeftovers();
+
 
 child = spawn(argv[0], argv.slice(1), {
   stdio: "inherit",
@@ -808,8 +839,20 @@ child.on("close", (code, signal) => {
   if (wrote.length) for (const line of explainRepoWrites(wrote)) console.error(line);
   const wroteHome = repoWrites(homeBefore, snapshotHome(RUN_HOME), RUN_HOME);
   if (wroteHome.length) for (const line of explainHomeWrites(wroteHome, RUN_HOME)) console.error(line);
+  const leftInTemp = [...tempLeftovers()].filter((p) => !tempBefore.has(p)).sort();
+  if (leftInTemp.length) {
+    console.error("");
+    console.error(`[test-run] THIS RUN LEFT ${leftInTemp.length} DIRECTOR${leftInTemp.length === 1 ? "Y" : "IES"} IN THE MACHINE'S TEMP DIRECTORY:`);
+    for (const p of leftInTemp) console.error(`  + ${p}`);
+    console.error("");
+    console.error("  A child handed an environment without TMPDIR puts its temporary files in the machine's temp");
+    console.error("  directory, where nothing removes them. Pass `TMPDIR: tmpdir()` in that child's env, so they land");
+    console.error("  in this run's own root, which is removed on every exit.");
+    console.error("");
+    console.error("  (Another run on this account making the same directories at the same time prints this too.)");
+  }
   // THIS MAY TURN A GREEN RUN RED. IT MUST NEVER TURN A RED RUN GREEN — a failing suite keeps its own
   // exit code, because what the tests found matters more than what they wrote while finding it.
   const childCode = code ?? 1;
-  process.exit(childCode !== 0 ? childCode : (wrote.length || wroteHome.length ? 1 : 0));
+  process.exit(childCode !== 0 ? childCode : (wrote.length || wroteHome.length || leftInTemp.length ? 1 : 0));
 });
