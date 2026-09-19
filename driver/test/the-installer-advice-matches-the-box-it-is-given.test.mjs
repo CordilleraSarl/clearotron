@@ -76,7 +76,7 @@ test("re-deriving the allow-list follows the port, and keeps what the operator a
   const merged = allowedHostsMerged("127.0.0.1:18811,localhost:18811,mcp.example-firm.com", 18899);
   assert.match(merged, /127\.0\.0\.1:18899/, "the door binds 18899 and its allow-list does not name it — every request 403s");
   assert.match(merged, /localhost:18899/);
-  assert.ok(merged.split(",").includes("mcp.example-firm.com"),
+  assert.ok(merged.split(",").some((h) => h === "mcp.example-firm.com"),
     "a host the operator added by hand was deleted by a repair about a port");
   assert.doesNotMatch(merged, /18811/, "the stale loopback entries were kept, so the list grows on every port change");
 });

@@ -94,9 +94,9 @@ test("the PLAN writes what the derivation produces — driven, not assumed", () 
   assert.ok(plan.possible, `the reference plan refused, so this arm compares nothing: ${JSON.stringify(plan.blockers)}`);
 
   const written = String(plan.settings.CLIENT_MCP_ALLOWED_HOSTS ?? "");
-  assert.ok(written.split(",").includes("clearotron.example.com"),
+  assert.ok(written.split(",").some((h) => h === "clearotron.example.com"),
     "the plan still writes a loopback-only allow-list — the derivation exists and the door never sees it");
-  assert.ok(written.split(",").includes("clearotron.example.com:443"));
+  assert.ok(written.split(",").some((h) => h === "clearotron.example.com:443"));
   assert.ok(written.includes("127.0.0.1:"), "the plan dropped loopback");
 
   // And the two agree EXACTLY: the plan is not composing a second list of its own that happens to
