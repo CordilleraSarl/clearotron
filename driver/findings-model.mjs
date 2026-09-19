@@ -578,6 +578,18 @@ const clipClause = (s, max) => {
  * count authority and the fallback. Returns null when either axis is missing (legacy sidecars —
  * callers fall back to today's bare word). PURE.
  */
+/**
+ * The conditions a client is actually told a CONDITIONAL verdict rests on: the client-voice clauses, and
+ * the reasons as their fallback. A clause stored as explicit null is a condition ruled to the run record
+ * alone, so its reason is not stated either; `undefined` (legacy/short) is not null. PURE.
+ */
+export function statedConditions({ reasons, clauses } = {}) {
+  const cs = Array.isArray(clauses) ? clauses : [];
+  const conds = (Array.isArray(reasons) ? reasons : []).filter((r, i) => cs[i] !== null).map((r) => String(r ?? "").trim()).filter(Boolean);
+  const cls = cs.map((c) => String(c ?? "").trim()).filter(Boolean);
+  return { conds, cls };
+}
+
 export function riskStatement({ tier, verdict, reasons, basis, clauses } = {}) {
   const v = String(verdict || "").toUpperCase();
   const t = String(tier || "").trim();
@@ -592,10 +604,13 @@ export function riskStatement({ tier, verdict, reasons, basis, clauses } = {}) {
   if (v === "CONDITIONAL") {
     // A clause stored as explicit null is a condition ruled to the run record alone: it is not the lede,
     // it is not counted, and its reason is never the fallback text. `undefined` (legacy/short) is not null.
-    const cs = Array.isArray(clauses) ? clauses : [];
-    const conds = (Array.isArray(reasons) ? reasons : []).filter((r, i) => cs[i] !== null).map((r) => String(r ?? "").trim()).filter(Boolean);
-    const cls = cs.map((c) => String(c ?? "").trim()).filter(Boolean);
-    const lede = cls[0] ?? conds[0] ?? "the open conditions carried in the report";
+    const { conds, cls } = statedConditions({ reasons, clauses });
+    // NOTHING STATED, NO "CONDITIONAL ON:" LINE (owner, 2026-09-19). When every condition is ruled to
+    // the run record, the line had nothing behind it and fell back to "the open conditions carried in the
+    // report": a conditional with no condition. The band word stands alone, and `stance` still says
+    // conditional to every consumer that keys on it.
+    if (!cls.length && !conds.length) return `${t}${basisNote ? `.${basisNote}` : ""}`;
+    const lede = cls[0] ?? conds[0];
     const first = clipClause(sentenceCaseLead(lede), STATEMENT_CLAUSE_MAX);
     const n = conds.length || cls.length;
     const more = n > 1 ? ` (and ${n - 1} more)` : "";

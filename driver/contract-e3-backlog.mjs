@@ -456,7 +456,7 @@ export const E3_BACKLOG = [
     where: "driver/stages.mjs:3182",
     surface: "stage-message",
     evidence: "MACHINE FINDINGS (MANDATORY): … a JSON OBJECT {\"schema_version\":<FINDINGS_SCHEMA_VERSION>,\"rated_under_framework\":\"…\",\"findings\":[...],\"coverage\":[...],\"context_notes\":[...],\"actions\":[...],\"ask_answers\":[...]} … Each finding object has EXACTLY these keys: {\"ordinal\",\"mark\",\"owner\",\"band\",\"net\",\"bor",
-    reparsedBy: "driver/findings-model.mjs:813 parseFindingsJson via validators.narrative",
+    reparsedBy: "driver/findings-model.mjs:844 parseFindingsJson via validators.narrative",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   // RETIRED 2026-08-16 — synthesis's dictated disposition list, and I am the one who left it standing.
@@ -479,7 +479,7 @@ export const E3_BACKLOG = [
     where: "driver/stages.mjs:3219",
     surface: "stage-message",
     evidence: "- manageable …: {\"category\":\"<EXACTLY one of large-competitor / commercial-partner / troll / well-known-enforcer>\",\"reason\":\"<one-two lines…>\"}",
-    reparsedBy: "driver/findings-model.mjs:813 parseFindingsJson",
+    reparsedBy: "driver/findings-model.mjs:844 parseFindingsJson",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   {
@@ -488,7 +488,7 @@ export const E3_BACKLOG = [
     where: "driver/stages.mjs:3235",
     surface: "stage-message",
     evidence: "- meters: {\"mark_similarity\":{...},\"goods_proximity\":{...},\"use\":{...},\"enforcer\":{...}} — all four present, each {\"token\",\"basis\",\"source\"}. … mark_similarity = high | medium | low. goods_proximity = high | medium | low. enforcer = high | medium | low | unknown. use = confirmed | not-confirmed | un",
-    reparsedBy: "driver/findings-model.mjs:813 parseFindingsJson; driver/verify.mjs:1171 checkFindingsSibling gates meters.*.source; finding_basis_source_missing",
+    reparsedBy: "driver/findings-model.mjs:844 parseFindingsJson; driver/verify.mjs:1171 checkFindingsSibling gates meters.*.source; finding_basis_source_missing",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   {
@@ -497,7 +497,7 @@ export const E3_BACKLOG = [
     where: "driver/stages.mjs:3236",
     surface: "stage-message",
     evidence: "- quadrant: {\"x\",\"y\"} numbers in [0,1]. x = goods/services proximity (0 = distant, 1 = identical). y = mark similarity (0 = distinct, 1 = identical).",
-    reparsedBy: "driver/findings-model.mjs:813 parseFindingsJson",
+    reparsedBy: "driver/findings-model.mjs:844 parseFindingsJson",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   {
@@ -506,7 +506,7 @@ export const E3_BACKLOG = [
     where: "driver/stages.mjs:3237",
     surface: "stage-message",
     evidence: "- source: {\"source_type\",\"resolved_link\"}. source_type EXACTLY one of: register-vendor / register-euipo / common-law-marketplace / common-law-web / case-law",
-    reparsedBy: "driver/findings-model.mjs:813 parseFindingsJson",
+    reparsedBy: "driver/findings-model.mjs:844 parseFindingsJson",
     removedByMove: "M1 removes the opaque `resolved_link` URI (ordinal / record-handle selection); the object shape and the source_type enum survive",
   },
   {
@@ -515,7 +515,7 @@ export const E3_BACKLOG = [
     where: "driver/stages.mjs:3238",
     surface: "stage-message",
     evidence: "coverage[]: ONE object per coverage AREA, EXACTLY {\"area\",\"state\",\"note\"}. … state EXACTLY one of: confirmed-clean / coverage-limited / open / not-searched / note.",
-    reparsedBy: "driver/findings-model.mjs:813 parseFindingsJson; the render owns the coverage panel from these typed states",
+    reparsedBy: "driver/findings-model.mjs:844 parseFindingsJson; the render owns the coverage panel from these typed states",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   {
@@ -533,7 +533,7 @@ export const E3_BACKLOG = [
     where: "driver/stages.mjs:3304",
     surface: "stage-message",
     evidence: "MARK ASSESSMENT … STRUCTURED FORM …: either field may instead be an OBJECT {\"read\":\"…\",\"spectrum\":\"…\",\"per_class\":[{\"class\":\"5\",\"note\":\"…\"}],\"per_market\":[{\"market\":\"CN\",\"note\":\"…\"}],\"counter_registrations\":[{\"mark\":\"…\",\"uri\":\"/mark/…\",\"note\":\"…\"}],\"acquired\":\"<optional>\",\"note\":\"<optional residual>",
-    reparsedBy: "driver/findings-model.mjs:813 parseFindingsJson; the report collapses the rows behind toggles and the audit workbook renders them",
+    reparsedBy: "driver/findings-model.mjs:844 parseFindingsJson; the report collapses the rows behind toggles and the audit workbook renders them",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   {
@@ -542,7 +542,7 @@ export const E3_BACKLOG = [
     where: "driver/stages.mjs:3310",
     surface: "stage-message",
     evidence: "FOUR ANSWERS …: \"four_answers\": {\"third_party_rights\":{...},\"objection_likelihood\":{...},\"registrability\":{...},\"client_enforceability\":{...}} … Each answer … is {\"read\":\"…\",\"token\":\"…\",\"basis\":\"…\",\"ordinals\":[…]}. Tokens (closed enums …): third_party_rights = strong|moderate|weak; objection_likelih",
-    reparsedBy: "driver/findings-model.mjs:813 parseFindingsJson",
+    reparsedBy: "driver/findings-model.mjs:844 parseFindingsJson",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   {
@@ -551,7 +551,7 @@ export const E3_BACKLOG = [
     where: "driver/stages.mjs:3221",
     surface: "stage-message",
     evidence: "ACTIONS REGISTER …: emit \"actions\": [...] — ONE object per forward step …, each EXACTLY {\"id\",\"kind\",\"text\",\"ordinals\"} plus an OPTIONAL \"deadline\" and an OPTIONAL \"condition\". … kind: EXACTLY one of — consent / coexistence-agreement / territorial-delimitation / goods-amendment / mark-modification /",
-    reparsedBy: "driver/findings-model.mjs:813 parseFindingsJson; pipeline applyCoverageFloor legalActions arm derives the delivered disposition from the closed kind enum",
+    reparsedBy: "driver/findings-model.mjs:844 parseFindingsJson; pipeline applyCoverageFloor legalActions arm derives the delivered disposition from the closed kind enum",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   {
@@ -560,7 +560,7 @@ export const E3_BACKLOG = [
     where: "driver/stages.mjs:3317",
     surface: "stage-message",
     evidence: "COVERAGE JUDGMENT …: emit \"coverage_judgment\": {\"sufficient\":<bool>, \"reason\":\"<one line…>\"} — EXACTLY those two keys. Do NOT emit \"rows\": the driver writes that register itself … anything you type there is replaced wholesale.",
-    reparsedBy: "driver/findings-model.mjs:813 parseFindingsJson. The \"Do NOT emit rows\" clause is the purest E3 case in the tree — the prompt names a field, dictates its shape and states in the same breath that code overwrites it",
+    reparsedBy: "driver/findings-model.mjs:844 parseFindingsJson. The \"Do NOT emit rows\" clause is the purest E3 case in the tree — the prompt names a field, dictates its shape and states in the same breath that code overwrites it",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   {
@@ -575,7 +575,7 @@ export const E3_BACKLOG = [
     // in E3_EVIDENCE_UNRESOLVED instead would have grown the not-checked slice for a row that is
     // perfectly checkable, which is the avoidable coverage loss conversion 9's note names one row up.
     evidence: "SEND ONE \"ask_answers\" ENTRY PER ASK, as a TOP-LEVEL field of the findings record you hand to the call (never as a narrative section — the driver renders the labelled line",
-    reparsedBy: "driver/findings-model.mjs:813 parseFindingsJson (finding_ask_answer_answer_missing); assembleReportMd · buildAskAnswersSection joins on the retyped ask string",
+    reparsedBy: "driver/findings-model.mjs:844 parseFindingsJson (finding_ask_answer_answer_missing); assembleReportMd · buildAskAnswersSection joins on the retyped ask string",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   // DELETED at conversion 10, recorded rather than absorbed — E3's own rule for a
@@ -611,7 +611,7 @@ export const E3_BACKLOG = [
     where: "driver/stages.mjs:3296",
     surface: "stage-message",
     evidence: "add it to the top-level \"context_notes\" array — each object EXACTLY {\"type\":\"famous-neighbour-ungrounded\",\"mark\",\"owner\",\"context\"}",
-    reparsedBy: "driver/findings-model.mjs:813 parseFindingsJson",
+    reparsedBy: "driver/findings-model.mjs:844 parseFindingsJson",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   {
@@ -620,7 +620,7 @@ export const E3_BACKLOG = [
     where: "driver/stages.mjs:3184",
     surface: "stage-message",
     evidence: "- owner: {\"name\",\"country\",\"registrations\":[...]}. … Each registration: {\"uri\", optionally \"classes\":[\"9\",\"41\"],\"status\",\"filed\",\"expiry\",\"jurisdiction\"}. The \"uri\" is the ONLY field that matters: the driver BINDS classes/status/filed/expiry/jurisdiction AND the owner name from the FETCHED record ke",
-    reparsedBy: "driver/findings-model.mjs:813 parseFindingsJson + the record-binding join. Six of the seven keys are stated in the prompt and overwritten by code in the same sentence",
+    reparsedBy: "driver/findings-model.mjs:844 parseFindingsJson + the record-binding join. Six of the seven keys are stated in the prompt and overwritten by code in the same sentence",
     removedByMove: "M1 removes the opaque `uri` (ordinal / record-handle selection against the band); the object skeleton and the five overwritten keys survive",
   },
   {
