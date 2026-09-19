@@ -561,6 +561,12 @@
           "skips": 1,
           "todos": 0
         },
+        "a-next-step-the-model-writes-comes-off-at-publish.test.mjs": {
+          "tests": 12,
+          "asserts": 28,
+          "skips": 0,
+          "todos": 0
+        },
         "a-note-the-release-refuses-is-refused-on-its-own-pull-request.test.mjs": {
           "tests": 2,
           "asserts": 3,
@@ -1833,6 +1839,12 @@
           "skips": 0,
           "todos": 0
         },
+        "dead-names.test.mjs": {
+          "tests": 5,
+          "asserts": 8,
+          "skips": 2,
+          "todos": 0
+        },
         "declared-park-excuses-proof-not-judgment.test.mjs": {
           "tests": 9,
           "asserts": 34,
@@ -2818,8 +2830,8 @@
           "todos": 0
         },
         "knockout-structured-read.test.mjs": {
-          "tests": 14,
-          "asserts": 63,
+          "tests": 12,
+          "asserts": 57,
           "skips": 0,
           "todos": 0
         },
@@ -5350,8 +5362,8 @@
           "todos": 0
         },
         "the-summary-carries-structure.test.mjs": {
-          "tests": 13,
-          "asserts": 35,
+          "tests": 14,
+          "asserts": 37,
           "skips": 0,
           "todos": 0
         },

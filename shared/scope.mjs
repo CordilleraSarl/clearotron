@@ -259,7 +259,7 @@ export const TOOL_SCOPES = {
 // The ONLY artifact a user (report-link) token may read via read_artifact — THE report (one report;
 // clientSummary was a second version by another name and is retired from client reach — the file
 // remains an internal cover-note source ops tokens may read). Everything else
-// (narrative, audit, run.jsonl, skepticFlags, lisaEyeReview, matterContext, caseLaw, register axes,
+// (narrative, audit, run.jsonl, skepticFlags, seniorEyeReview, matterContext, caseLaw, register axes,
 // status.json, …) is internal and stays sealed from a user token.
 // Exported so the server's Resources surface (ListResources/ReadResource) gates to the SAME set.
 /**
