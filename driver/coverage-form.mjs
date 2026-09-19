@@ -856,7 +856,7 @@ export function findCoverageFormViolations(rows, formError = null) {
 // kind and nothing in it is a string the model had to copy. parseCoverageLedgerFull survives, but only as
 // the ARCHIVED-RUN reader (loadCoverageLedger's prose fallback): no gate parses this table any more.
 
-const cell = (s) => String(s ?? "").replace(/\|/g, "\\|").replace(/\s+/g, " ").trim();
+const cell = (s) => String(s ?? "").replace(/\\/g, "\\\\").replace(/\|/g, "\\|").replace(/\s+/g, " ").trim();
 
 /** The `## Coverage ledger` section, rendered from the form's rows. "" when nothing is settled. PURE. */
 export function renderCoverageLedgerSection(rows) {

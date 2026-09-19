@@ -35,7 +35,7 @@ test("the message is written BYTE-FOR-BYTE and is never truncated at any size", 
     ].join("\n");
     const r = recordDispatch(dir, "register-digest", { attempt: 1, message: msg });
     assert.equal(r.present, true);
-    const onDisk = readFileSync(join(dir, r.file.replace(/^_driver\//, "_driver/")), "utf8");
+    const onDisk = readFileSync(join(dir, r.file), "utf8");
     assert.equal(onDisk, msg, "byte-for-byte — a sliced prompt answers the question wrongly, not partly");
     assert.ok(onDisk.length > 300_000, "nothing is truncated at size");
     // bytes and chars differ on non-ASCII, which is the entire reason both fields exist

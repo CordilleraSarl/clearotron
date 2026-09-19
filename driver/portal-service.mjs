@@ -3759,7 +3759,12 @@ function doctrineStore(now = Date.now) {
   } catch (e) {
     // NOT `{head: null}` alone. A null head with no reason reads as "no store", which is a legal and
     // healthy state (`no-overlay`); this is a different thing and has to say so.
-    value = { head: null, situation: "unreadable", outcome: "blocked", detail: String(e?.message ?? e).slice(0, 120) };
+    //
+    // THE ERROR'S OWN WORDS GO TO THE SERVICE LOG, NOT THE WIRE. This answer is served by the health
+    // route, and an error message can carry the store's filesystem path. `unreadable` says what the
+    // caller needs; the operator reads why in the log.
+    console.error(`[portal] the instructions store could not be read: ${String(e?.message ?? e).slice(0, 200)}`);
+    value = { head: null, situation: "unreadable", outcome: "blocked" };
   }
   storeCache = { at: t, value };
   return value;

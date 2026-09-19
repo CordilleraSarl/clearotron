@@ -66,13 +66,13 @@ async function refusalFor(queries, recordedRows) {
 
 test("the refusal names the file it searched, and says what a neighbour is evidence of", async () => {
   const near = await refusalFor([`${MARK} meaning`, `${MARK} offensive meaning`], [`${MARK} offensive meaning`]);
-  assert.match(near, new RegExp(LEDGER.replace(/\./g, "\\.")),
+  assert.match(near, new RegExp(LEDGER.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
     "the refusal does not say which of the run's four record-keeping places it joined against");
   assert.match(near, /evidence a query LIKE it was recorded there, not that these two are the same query/,
     "the near-neighbour sentence still invites the reading that the two are one query");
 
   const far = await refusalFor([`${MARK} meaning`], ["signification offensante"]);
-  assert.match(far, new RegExp(LEDGER.replace(/\./g, "\\.")),
+  assert.match(far, new RegExp(LEDGER.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
     "the no-resemblance sentence does not name the file it searched either");
 });
 
