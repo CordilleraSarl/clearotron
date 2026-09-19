@@ -98,6 +98,30 @@ export function prepareSample(dir, { repoRoot, tmp } = {}) {
 
 
 /**
+ * THE COPIES GO WHEN THEIR PUBLISH IS DONE, AND AT EXIT WHATEVER HAPPENED.
+ *
+ * Every copy below is made in the system temp directory and nothing removed it: four per `demo --once`,
+ * one per demo start, some a full replayed run of about 1,850 files, and 36 GB of them on one machine
+ * (measured 2026-09-19). Each root is recorded as it is made. A caller releases them the moment its
+ * publish is done, and an exit hook removes whatever is left, on success and on failure. A caller that
+ * can be stopped by a signal turns the signal into an exit, so the hook runs then too.
+ */
+const copies = new Set();
+let exitHooked = false;
+function tracked(root) {
+  copies.add(root);
+  if (!exitHooked) { exitHooked = true; process.once("exit", releaseDemoCopies); }
+  return root;
+}
+/** Remove every copy made so far. Safe to call more than once. */
+export function releaseDemoCopies() {
+  for (const d of [...copies]) {
+    try { rmSync(d, { recursive: true, force: true }); } catch { /* going anyway; the exit hook tries again */ }
+    copies.delete(d);
+  }
+}
+
+/**
  * The directory a frozen demo should be PUBLISHED from — itself, or a copy when it is part of this tree.
  *
  * WHY A COPY AT ALL. Publishing writes a receipt into the run directory. That is deliberate and right
@@ -117,7 +141,7 @@ export function publishSource(dir, { repoRoot, tmp = tmpdir() } = {}) {
   const root = resolve(repoRoot ?? "");
   const here = resolve(dir);
   if (!root || !(here === root || here.startsWith(root + sep))) return dir;
-  const copy = join(mkdtempSync(join(tmp, "clearotron-demo-")), "sample");
+  const copy = join(tracked(mkdtempSync(join(tmp, "clearotron-demo-"))), "sample");
   cpSync(here, copy, { recursive: true });
   return copy;
 }
@@ -135,7 +159,7 @@ export function publishContainer(root, { repoRoot, tmp = tmpdir() } = {}) {
   const repo = resolve(repoRoot ?? "");
   const here = resolve(root);
   if (!repo || !(here === repo || here.startsWith(repo + sep))) return { dir: root, unusable: demoInventory(root).unusable };
-  const copy = join(mkdtempSync(join(tmp, "clearotron-demo-")), "sample");
+  const copy = join(tracked(mkdtempSync(join(tmp, "clearotron-demo-"))), "sample");
   mkdirSync(copy, { recursive: true });
   const { children, unusable } = demoInventory(here);
   const left = [...unusable];

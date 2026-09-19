@@ -261,6 +261,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-demo-leaves-no-temp-copies.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "a-demo-report-declares-itself.test.mjs": {
           "tests": 5,
           "asserts": 15,

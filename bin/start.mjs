@@ -1610,9 +1610,12 @@ if (isMain) {
     // — `clearotron demo` hands over to this — so fixing the player alone left the defect where it was.
     // ONE SAMPLE AT A TIME: one whose files cannot be read is left out and named below, and the others
     // seed. Copied in one call, a single unreadable file emptied the whole archive.
-    const { publishContainer, seedDemoRuns } = await import("../driver/demo-container.mjs");
+    const { publishContainer, seedDemoRuns, releaseDemoCopies } = await import("../driver/demo-container.mjs");
     const container = publishContainer(join(REPO, "demo"), { repoRoot: REPO });
-    const seed = await seedPool({ pool: paths.pool, examplesDir: container.dir, republish: republishRun });
+    let seed;
+    // THE COPY GOES AS SOON AS THE POOL IS SEEDED FROM IT, and on the way out if seeding throws.
+    try { seed = await seedPool({ pool: paths.pool, examplesDir: container.dir, republish: republishRun }); }
+    finally { releaseDemoCopies(); }
     // AND AS RUNS, so the assistant this demo's connect line wires has them to list, brief and open. Under
     // the demo's own workspace only: nothing of it reaches an install started afterwards. Their report
     // links are stamped with this portal's address, the one the Open line prints.
