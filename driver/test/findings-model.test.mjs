@@ -775,9 +775,8 @@ test("spec 64: riskStatement — one coherent sentence per verdict; null on a le
   assert.match(riskStatement({ tier: "High", verdict: "BLOCKING" }), /^On hold — /);
   assert.equal(riskStatement({ tier: "", verdict: "CLEAR" }), null);
   assert.equal(riskStatement({ tier: "High", verdict: "" }), null);
-  assert.match(riskStatement({ tier: "High", verdict: "CONDITIONAL", reasons: [] }),
-    /^High — conditional on: The open conditions carried in the report/,
-    "a legacy CONDITIONAL sidecar with empty reasons still reads sensibly");
+  assert.equal(riskStatement({ tier: "High", verdict: "CONDITIONAL", reasons: [] }), "High",
+    "a CONDITIONAL sidecar with nothing stated carries the band word alone, never an empty 'conditional on:'");
 });
 
 test("PR-3 report voice: the conditional statement states the FACT that conditions — clauses preferred, count from the reason set, no self-caveat anywhere", () => {
@@ -807,10 +806,15 @@ test("a condition whose clause is null leaves the client's verdict sentence: not
     clauses: [null, "the examiner's objection is unanswered"] }),
     "High — conditional on: The examiner's objection is unanswered.",
     "the surviving clause leads, and the count is 1 — the ruled-out condition is not behind '(and N more)'");
-  // The only condition, ruled out: the client reads the shipped empty-set sentence, not the engine's reason.
+  // The only condition, ruled out: the client reads the band word alone (owner, 2026-09-19). The line it
+  // replaced, "conditional on: the open conditions carried in the report", was a conditional with no
+  // condition behind it.
   const alone = riskStatement({ tier: "High", verdict: "CONDITIONAL", reasons: [RULED], clauses: [null] });
-  assert.match(alone, /^High — conditional on: The open conditions carried in the report/);
-  assert.ok(!/record_fetched|dropped on goods/.test(alone), alone);
+  assert.equal(alone, "High");
+  assert.ok(!/conditional on|record_fetched|dropped on goods/.test(alone), alone);
+  assert.equal(riskStatement({ tier: "High", verdict: "CONDITIONAL", reasons: [RULED], clauses: [null], basis: "register-only" }),
+    "High. Register findings only — no common-law or marketplace search was run.",
+    "the register-only note still rides a statement with nothing stated");
   // A sidecar that simply carries no clause for that reason is untouched: the reason is still the lede.
   assert.match(riskStatement({ tier: "High", verdict: "CONDITIONAL", reasons: ["Fix A.", "Fix B."], clauses: ["a is open"] }),
     /^High — conditional on: A is open \(and 1 more\)\.$/);
