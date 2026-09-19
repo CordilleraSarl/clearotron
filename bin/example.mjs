@@ -442,10 +442,12 @@ console.log("");
 const programRoot = ensureDemoProgram({ base: demoBase, say: (line) => console.log(line) });
 const startFrom = programRoot ?? REPO;
 // The services inherit the demo's Node flag through NODE_OPTIONS, so none of them prints the SQLite warning
-// either; the reader's own NODE_OPTIONS is kept.
+// either. Set on this process's own environment, which both branches below hand on; the reader's own
+// NODE_OPTIONS is kept.
+process.env.NODE_OPTIONS = withWarningOff(process.env.NODE_OPTIONS);
 const child = spawn(process.execPath, [join(startFrom, "bin", "start.mjs"), ...startArgs], {
   cwd: startFrom, stdio: ["ignore", "inherit", "inherit"],
-  env: { ...(programRoot ? demoProgramEnv(process.env) : process.env), NODE_OPTIONS: withWarningOff(process.env.NODE_OPTIONS) },
+  env: programRoot ? demoProgramEnv(process.env) : process.env,
 });
 child.on("error", (e) => die(`demo: could not start the portal: ${String(e?.message ?? e)}`));
 // Its exit code is the demo's. A supervisor that swallowed a child's refusal would report a demo that
