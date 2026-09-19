@@ -3197,7 +3197,10 @@ export async function runCheck() {
         try { const s = statSync(p); if (s.size > 0) { wrote = p; break; } } catch { /* not this one */ }
       }
       if (wrote) {
-        ok(`the client door's access log is being written: ${wrote}`);
+        // WHAT WAS READ, AND NOTHING MORE. This said "is being written" from any non-empty file — a claim
+        // about activity made from a file's size, printed over a log whose only line was a test's
+        // (measured 2026-09-19). Reworded as the owner ruled, 2026-09-19.
+        ok(`the client door's access log has entries: ${wrote}`);
       } else {
         // NOT-YET-WRITTEN IS NOT UNWRITABLE. A door nobody has called through has no log, and saying it
         // is broken would be the same lie as calling an unreachable unit inactive.
