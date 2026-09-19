@@ -4977,6 +4977,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-house-element-stays-out-of-what-folds-in-later.test.mjs": {
+          "tests": 6,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
         "the-identifier-sweep-fires-on-its-sentinels.test.mjs": {
           "tests": 10,
           "asserts": 36,
