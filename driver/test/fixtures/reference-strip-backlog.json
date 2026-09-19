@@ -4,12 +4,6 @@
     "`pre- ` followed by a lowercase word",
     "a parenthesis opening on a comma"
   ],
-  "total": 4,
-  "files": {
-    "driver/publish/render.mjs": [
-      1,
-      3,
-      0
-    ]
-  }
+  "total": 0,
+  "files": {}
 }

@@ -48,9 +48,9 @@
 // The question that DOES depend on the box — which offices this deployment can reach right now — is
 // answered in driver/register-availability.mjs, and the answer rides the plan as a disclosed
 // `deferred_coverage` row. It is deliberately not answered here, and `covered` is deliberately not
-// narrowed there either: 's admission gate reads this field to decide which territories a client may
+// narrowed there either: the admission gate reads this field to decide which territories a client may
 // ORDER, so narrowing it to the configured half would refuse a US-only matter at the door instead of
-// disclosing its US gap ('s ruling is that such a matter must START and disclose).
+// disclosing its US gap (the rule is that such a matter must START and disclose).
 //
 // ── THE "NO SHAPE FOR HALF OF THIS RAN" RULE IS UNCHANGED — IT MOVED THE SPLIT, NOT REPEALED IT ──────
 //

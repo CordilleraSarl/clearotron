@@ -88,7 +88,7 @@ These are the things a well-meaning refactor breaks. Each is enforced somewhere;
 
 Mechanically a config change ([04](04-configuration-reference.md#model-tiers-and-resolution)); two
 traps and one law. Traps: an alias not registered in the engine's model map now **refuses the
-dispatch by name** ( — it used to run sonnet silently and log the alias you asked for, which is
+dispatch by name** (it used to run sonnet silently and log the alias you asked for, which is
 the `fable` lesson turned into an error), and `CLEAROTRON_SYNTHESIS_MODEL` is read at module load (fine
 for the oneshot service, stale in long-lived processes). The law: any grade-moving
 change — family, effort, tier remap — ships only through the paid A/B against the reference
@@ -221,7 +221,7 @@ Four realities to respect:
 
 - **Exclusion is by filename convention only.** Anything named `*.test.mjs` runs in CI; billable or
   manual harnesses must not match the glob (historical one-off proofs with hard-coded dev paths are
-  not kept; the last billable hand-run harness, `selftest.mjs`, was deleted at).
+  not kept; the last billable hand-run harness, `selftest.mjs`, was deleted).
 - **The `||=` env guards leak**: a shell exporting a real register credential or
   `CLEAROTRON_PLAN_DISPATCH=on` is *not* overridden by the harness — run the suite in a clean env.
   (CI is safe.)

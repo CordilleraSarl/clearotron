@@ -271,8 +271,8 @@ process.env.CLEAROTRON_DEMO_PROFILES ??= "1";
 // driver/test/*.test.mjs. They are indistinguishable from code defects. An agent who runs the suite on a
 // branch, sees 295 red, and diffs the failing NAMES against a baseline taken the same way sees zero
 // regressions and calls the branch clean — and it is, but roughly 190 tests never executed, and a real
-// regression inside any of them is invisible by exactly that arithmetic. It has already happened: 's
-// first full-suite comparison was taken against a 295-fail baseline.
+// regression inside any of them is invisible by exactly that arithmetic. It has already happened: a
+// full-suite comparison was taken against a 295-fail baseline.
 //
 // So: refuse, name what is missing, and name the command. REFUSE RATHER THAN INSTALL — this wrapper is
 // what CI and scripts/publication-scan.mjs run the suite through, and a wrapper that can start a network

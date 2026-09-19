@@ -312,7 +312,7 @@ export async function syncIndex({ dbPath, files, ingest = ingestFile, onFile = n
     await onPhase?.("ingest");
     // BLOCKS THE EVENT LOOP FOR THE WHOLE REBUILD — node:sqlite is synchronous, and this is one
     // transaction over every row in the index. Nothing on this thread runs again until it commits,
-    // which is why 's disk sampler is a worker thread rather than a timer.
+    // which is why the disk sampler is a worker thread rather than a timer.
     rebuildFts(db);
     await onPhase?.("fts");
     const rows = db.prepare("SELECT count(*) AS n FROM mark").get().n;

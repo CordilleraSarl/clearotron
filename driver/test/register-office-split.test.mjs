@@ -16,7 +16,7 @@
 // reading as though it covered everything ordered. Half of this file exists to fail if half ships.
 //
 // The sidecar fields are checked too, but never on their own: `scope.deferredJurisdictions` has been
-// written by both lanes since they were built and nothing reads it, which is exactly how 's
+// written by both lanes since they were built and nothing reads it, which is exactly how
 // `deferred_coverage` shipped a false clean. A field is not a disclosure.
 
 import { test } from "node:test";

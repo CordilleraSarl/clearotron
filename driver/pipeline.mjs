@@ -7929,7 +7929,7 @@ export function buildAskAnswersSection(askAnswers, intakeAsks) {   // @internal
  * change to the delivered report nobody asked for. So the divergence is now one-country-only and owned,
  * rather than general and deferred.
  *
- * This section itself is untouched by the ladder: the grouping is not extended and not re-keyed. 's
+ * This section itself is untouched by the ladder: the grouping is not extended and not re-keyed. The
  * graded entries render in a SIBLING section (buildGradedEntriesSection) using the same line grammar.
  */
 export function buildReasonedNegativesSection(findings) {   // @internal

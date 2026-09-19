@@ -90,7 +90,7 @@ let SENIOR_RIGHTS = new Map();
 let DISPOSITION_MODE = false;
 // — per-render flag: true when the record declares the v6 findings contract, which is the one that
 // guarantees a position on every negative and a TYPED off-field ground. Gates the grouped
-// reasoned-negative rendering; false ⇒ the pre- section, byte-identical, for every archived run.
+// reasoned-negative rendering; false ⇒ the pre-change section, byte-identical, for every archived run.
 let NEGATIVES_GROUPED = false;
 // doc 50 — the run's FROZEN framework manifest (opts.framework, from _driver/framework.json). When
 // present the report speaks ITS band words: chips/one-liners read f.band, the gauge ticks show its
@@ -1825,7 +1825,7 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   // too. It never did — the grouping's own note promises "each member is a <details> whose body is the
   // same fullDetail block the compact card carries", and until now that was untrue of the one thing v6
   // guarantees on every negative. Suppressing them there would take a conditional whose only job is
-  // reproducing the pre- shape, which is the legacy code path this program forbids.
+  // reproducing the pre-change shape, which is the legacy code path this program forbids.
   //
   // Absent fields ⇒ both helpers return '' ⇒ zero bytes, and the interpolation is attached to the
   // template's opening so it leaves no whitespace-only line (review 2026-07-31, problem 8).
@@ -1859,7 +1859,7 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   //
   // WHERE THERE IS NO PROSE THE TYPED PAIR IS STILL THE ACCOUNT, and that is most of the surfaces
   // fullDetail feeds: a structured-only finding (no card file), a reasoned-negative row, a compact
-  // card whose report-card stage produced nothing. 's promise that a negative's drawer carries its
+  // card whose report-card stage produced nothing. The promise that a negative's drawer carries its
   // positions is untouched — a negative has no Full-detail prose to duplicate.
   //
   // manageableLine is NOT gated: the manageable category is a closed code-owned vocabulary the prose has
@@ -1988,7 +1988,7 @@ function manageableLine(f) {
 //
 // TRIM-TO-EMPTY IS LOAD-BEARING AND IS PRESERVED VERBATIM. `foldClause` returned '' for null, undefined,
 // '' and whitespace-only input, and that empty string is what makes `clause(f.net) || card?.meta?.one ||
-// oneFallback(...)` fall through to exactly the pre- value on an archived run, which carries no
+// oneFallback(...)` fall through to exactly the pre-change value on an archived run, which carries no
 // `net`. Deleting the function without keeping that behaviour would move every archived card whose
 // `net` key exists but is blank. `clause` is `foldClause` with the budget arm removed and nothing else.
 const clause = (value) => String(value ?? '').trim();
@@ -2314,7 +2314,7 @@ function contextNotesBlock(notes = []) {
 }
 
 // charter ruling 1 (2026-07-30, name-led): the masthead depth strip LEADS with the product's registry
-// name in bold — the same name 's read pills speak, never a rung on our ladder — then the coverage
+// name in bold — the same name the read pills speak, never a rung on our ladder — then the coverage
 // clauses (what this search covers / omits, from the run's frozen components via productCoverageNote).
 // The seam is the LAST " — ": a registry name may itself carry one ("Preliminary clearance — register
 // only") while the coverage clauses never do (they join on ";" and ","). A note with no seam at all
@@ -2323,7 +2323,7 @@ function contextNotesBlock(notes = []) {
 /**
  * THE HERO VERDICT CAPTION, folded to its first sentence.
  *
- * 's design ruling: above any fold, only a statement, a labelled row, a count or a one-line card —
+ * The design ruling: above any fold, only a statement, a labelled row, a count or a one-line card —
  * "prose never appears until someone opens something, and once opened nothing is ever cut". The finding
  * cards were moved onto that rule by `cf8dd43`; the hero caption was named in the same ruling and left
  * behind, and this is the bullet that PR recorded as still owed.

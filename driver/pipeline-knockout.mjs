@@ -540,7 +540,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
       //
       // ONLY when the counter is the real provider. On fixtures or an injected counter the offices this
       // deployment can reach are not what the lane is talking to, and splitting on them would defer a
-      // register the fixture holds — a $0 lane reporting a gap it does not have (the shape 's
+      // register the fixture holds — a $0 lane reporting a gap it does not have (the shape a
       // sibling defect had, and the reason `missing` carries the same guard).
       const unreachable = countExec.source === "provider" ? registerUnavailableOffices(caps) : [];
       ctx.registerUnreachable = unreachable;

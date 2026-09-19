@@ -6,7 +6,7 @@
 // "it should be 1 output and preferably the better prose output". report-card holds that wording; the
 // typed `legal_position` / `practical_position` carry the reads it is written FROM.
 //
-// The subtraction on the client surface was already 's: the report suppresses the typed pair on any
+// The subtraction on the client surface was already done: the report suppresses the typed pair on any
 // card carrying a "Risk assessment" bullet, and made that bullet a structure rather than a habit.
 // What is left, and what these arms hold, is the ASK — what the two seats are told, and one guard that
 // must survive the change rather than going quiet under it.

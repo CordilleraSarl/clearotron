@@ -4286,7 +4286,7 @@ try {
   // Enter yield the empty string, `present("")` is false, and askValue loops with "A value is needed
   // here." — so a reader taking the header at its word ("Enter takes the default in brackets") on the
   // one prompt that advertises empty as an answer could not leave it. Driven on the merged tree:
-  // 60 enters, killed at the cap, every cycle this prompt. Same defect class as 's
+  // 60 enters, killed at the cap, every cycle this prompt. Same defect class as the
   // engine-menu loop, arriving one commit after it was fixed, in a prompt this branch's own sibling
   // added.
   //

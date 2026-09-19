@@ -269,7 +269,7 @@ write nothing and 7 that do:
   `what_if_run` → one sandboxed stage; `what_if_result` → collect a queued one) — **executing** is
   local stdio only, never remote, for any principal. The confirmation token is a deliberate-action
   handshake, not a crypto boundary; the security boundary is ops scope + local-only execution.
-  Since the owner's 2026-08-27 ruling an `account` principal reaches all three, and `what_if_run` on that
+  Since 2026-08-27 an `account` principal reaches all three, and `what_if_run` on that
   path ENQUEUES into `<runDir>/_experiments/_queue/` rather than shelling — `driver/whatif-worker.mjs`,
   drained by the runner, is what spawns the sandbox. Because the token is unsigned, a call on that path must
   also name its `runId` so the grant check fires, and the enqueue refuses a token naming another run.

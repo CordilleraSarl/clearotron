@@ -116,7 +116,7 @@ function useReportFrame() {
       if (bad) { setFailed(`That did not work — the report could not ${bad.command}. (${bad.message})`); return }
       const asked = readAskAi(e.data, mine)
       if (asked) { setAskedFrom((prev) => ({ ...asked, nonce: (prev?.nonce ?? 0) + 1 })); return }
-      // 's flag branch was the fourth reader here and is retired. It took the run id, which
+      // A flag branch was the fourth reader here and is retired. It took the run id, which
       // is why this hook no longer needs one — every remaining message is about the frame itself, not
       // about which report is in it, so the effect has no dependency and re-binds on nothing.
     }

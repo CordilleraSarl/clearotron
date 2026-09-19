@@ -89,7 +89,7 @@ vendor-branded duplicate of it does not, however small.
   citations across code, comments, env examples and docs; all but six were rewritten, and the six declared
   are this record's own, where naming what is dropped is the content.
 - **A binding to a withheld document is retired.** `driver/doc-constants.mjs` pinned four prose figures in
-  `docs/KNOCKOUT.md` and `docs/REGISTER-HIT-COUNTS.md`; those rows are gone, and the test pinning 's
+  `docs/KNOCKOUT.md` and `docs/REGISTER-HIT-COUNTS.md`; those rows are gone, and the test pinning the
   one-file-states-it-twice case now anchors to the shape rather than to a named document.
 - **Withholding is reversible**, which is why this is a list rather than a `git rm`. This repository keeps
   every word.

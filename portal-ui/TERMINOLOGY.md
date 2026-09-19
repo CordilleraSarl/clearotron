@@ -215,7 +215,7 @@ disagree. Taken 2026-09-09, before the sweep.
 
 ## OPEN — measured, NOT ruled
 
-'s rules say *"when the existing copy is ambiguous… flag it for product or legal review. Do not
+The copy rules say *"when the existing copy is ambiguous… flag it for product or legal review. Do not
 resolve the ambiguity by guessing."* These are flagged, not resolved. The guard does not enforce them.
 
 ### Clearance · Search — 48 and 58, both load-bearing

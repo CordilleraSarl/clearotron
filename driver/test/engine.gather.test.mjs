@@ -382,8 +382,8 @@ test("signa server: handshake + 5 tools + creds-missing guard returns clean isEr
   assert.deepEqual(toolNames(r),
     ["register_enumerate", "register_execute_plan", "register_propose_supplemental",
       "register_record_fetch", "register_search"]);
-  // enumerate and execute_plan are the two / wired and the grant did not follow;
-  // propose_supplemental is 's, and while it was absent the driver's composed prose ordered it
+  // enumerate and execute_plan are two tools that were wired while the grant did not follow;
+  // propose_supplemental came later, and while it was absent the driver's composed prose ordered it
   // unconditionally. Named individually because a count alone would pass on any five, and because these
   // three are what the register funnel actually hangs on.
   assert.ok(toolNames(r).includes("register_enumerate"), "the page loop's tool must be served");

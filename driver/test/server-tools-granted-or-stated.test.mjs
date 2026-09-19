@@ -346,7 +346,7 @@ test("CENSUS: every server module is accounted for — named in LOCAL, or stated
 // would be the declaration checking itself. Moving a row here is a deliberate act, per PR:
 //   · blind-frame holds its record tool and nothing else ("exactly one" was the rule while every
 //     recording stage looked like this);
-//   · skeptic holds its record tool AND search_run_artifacts — the SANCTIONED READ SURFACE, 's
+//   · skeptic holds its record tool AND search_run_artifacts — the SANCTIONED READ SURFACE, the
 //     ratification-hold unlock: O3c measured the stage's only Bash use as reads over the run's own
 //     artifacts, and this tool is their scoped replacement (read-only, run-dir-bounded, no retrieval).
 const RECORDING_GRANTS = Object.freeze({

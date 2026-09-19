@@ -312,7 +312,7 @@ export function reachableCommand(verb, { argv1 = process.argv[1] ?? "", env = pr
 /**
  * The verb by NAME ONLY — no prefix, no path, no `npx`.
  *
- * ✕ A DELIBERATE EXCEPTION TO "ONE TREATMENT", AND THE ONE SURFACE THAT NEEDS IT. 's
+ * ✕ A DELIBERATE EXCEPTION TO "ONE TREATMENT", AND THE ONE SURFACE THAT NEEDS IT. The
  * second requirement is that the choice is made once rather than per site, so an exception has to be
  * named rather than quietly spelled differently somewhere.
  *

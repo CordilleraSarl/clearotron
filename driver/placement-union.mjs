@@ -68,7 +68,7 @@ function indexRows(rows, { bySelection = true, uriLeg = true } = {}) {
 /**
  * Union the seat's tiers into what the driver already holds.
  *
- * THE RULE, and why it is that way round — identical to 's, for identical reasons:
+ * THE RULE, and why it is that way round — identical to coverage-union.mjs and disposition-union.mjs, for identical reasons:
  *   · a SUBMITTED row the gate would accept wins, so the seat can CORRECT itself;
  *   · otherwise a PRIOR row the gate would accept is kept, so a killed or cold attempt cannot destroy
  *     work already done;

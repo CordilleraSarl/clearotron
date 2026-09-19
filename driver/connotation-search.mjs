@@ -1363,7 +1363,7 @@ export function parseDispositionForm(raw) {
 // EVERY OBLIGATION SHIPS. No head(), no slice(), no "…and N more". The register-digest sibling
 // (gateway.mjs deferredSlicesRequiredRows) printed the first six qids per axis and elided the rest, and its
 // own doc block records what that cost: "Under advice that is an economy; under a requirement it makes
-// compliance impossible." Same rule here, and 's: a value a model must copy is complete, or it is
+// compliance impossible." Same rule here: a value a model must copy is complete, or it is
 // visibly marked as cut. Nothing below is cut, so nothing below is marked.
 /**
  * The obligation set as the seat's own to-do list, for the tool result. Returns "" when nothing is owed —
@@ -1375,7 +1375,7 @@ export function renderConnotationObligations(ob, { ledgerPath = "your half ledge
   // ── — THE PAGE IS NUMBERED OFF THE SAME FUNCTION THAT RESOLVES THE NUMBER ─────────────────
   //
   // `obligationRows` is the driver's row list, and a `row_index` is a position into it. Numbering this
-  // page with its own counter would be two derivations of one ordering, which is the mistake 's
+  // page with its own counter would be two derivations of one ordering, which is the mistake the
   // segment display already names in its own comment: "the display and the check cannot disagree, which
   // they would the moment either recomputed its own split". So the numbers come from the list itself.
   //
@@ -1683,7 +1683,7 @@ const NO_POLICED_SECTION = "(no PR / reputational / connotation section)";
 //     id that is not among THAT row's own candidates — the driver wrote those ids, so this is a damaged
 //     form, not outstanding work, and its remedy is different.
 //   undisposed_cite_too_short   deleted — cannot occur; nothing is retyped.
-//   recurrent_uncited_form      deleted — the form has no shape for the seat to get wrong. 's
+//   recurrent_uncited_form      deleted — the form has no shape for the seat to get wrong. The old
 //     cited-but-unbound state was a property of PROSE (right page, wrong query string on the line); a
 //     form row IS its binding, so the state has no representative.
 //   no_source_cite              deleted — advisory, prose-only, never reached a token.

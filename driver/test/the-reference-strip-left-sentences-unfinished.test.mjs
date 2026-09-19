@@ -6,7 +6,7 @@
 // 179 when it was filed. 181 two days later, with nobody having decided to add any: the strip's shape is
 // what a later edit copies when it edits near one. The floor below is what stopped it growing.
 //
-// 4 NOW, ALL IN ONE FILE, AND THE DROP IS WHY THE ORIGINAL REASONING WAS WRONG. This was recorded as
+// 0 NOW, AND THE DROP IS WHY THE ORIGINAL REASONING WAS WRONG. This was recorded as
 // 181 judgements about surrounding code rather than a sweep, because the repair was thought to need the
 // removed reference back. It did not. Measured against the frozen pre-strip tree, 610 of the recoverable
 // lines had exactly ONE bare citation removed and nothing else — so the noun after the apostrophe was
@@ -14,11 +14,11 @@
 // reference is not coming back either way: it is ruled out of the tree. So the repair was a determiner,
 // chosen by what stands in front of the gap, and "pre- " became "pre-change".
 //
-// WHAT IS LEFT IS FOUR LINES IN `driver/publish/render.mjs`, WHICH IS FROZEN AT A CONTENT HASH. Repairing
-// them reddens the break ledger next door, which is the correct behaviour and not a thing to route
-// around: changing that file costs a ledger entry, and a punctuation sweep does not get to spend one.
-// They are the whole remaining backlog, so the floor is now a statement about one frozen file rather
-// than about a class nobody has got to.
+// THE LAST FOUR WERE IN `driver/publish/render.mjs`, WHICH IS FROZEN AT A CONTENT HASH. Repairing them
+// reddens the break ledger next door, which is the correct behaviour and not a thing to route around:
+// changing that file costs a ledger entry, and a punctuation sweep does not get to spend one silently.
+// They were repaired with an entry of their own (2026-09-19, comment-only, proved by tokenising both
+// versions), so the table below is empty and the floor now holds the tree at zero.
 //
 // WHY THE FLOOR STAYS AT ALL. An arm asserting zero would go red the day somebody edits near a surviving
 // one, and a permanently red arm teaches people to stop reading the suite — which is how this class got
@@ -35,7 +35,8 @@
 //
 // THE MEASUREMENT THAT MATTERS IS NOT THIS ONE. The signature this file ships is anchored at the comment
 // leader, so it counts a bare possessive that OPENS a comment and misses the identical damage mid-line.
-// Widened, the same census reads 722 rather than 180. That gap is its own repair and its own number.
+// Widened, the same census read 722 rather than 180. That gap was its own repair: the mid-line bare
+// possessives were made whole by hand on 2026-09-19, and none is left outside this file's specimens.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";

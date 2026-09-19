@@ -145,7 +145,7 @@ Stages must name **abstract tiers**, not provider aliases. Per-engine maps:
 | `sweep` | register-unit, case-law, skeptic, report-overview, report-card | `sonnet` | `$CLEAROTRON_OPENAI_MODEL_SWEEP` |
 | `cheap` | saturation-probe | `haiku` | `$CLEAROTRON_OPENAI_MODEL_CHEAP` |
 
-**AN UNHONOURED OVERRIDE IS AN ERROR, NOT A SUBSTITUTION** ( corruption 3, 2026-08-03). This
+**AN UNHONOURED OVERRIDE IS AN ERROR, NOT A SUBSTITUTION** (2026-08-03). This
 section used to declare two further tiers — `skeptic` → `google/gemini-3-flash-preview` and
 `refutation` → `together/deepseek-ai/DeepSeek-V4-Pro` — each substituting an anthropic model on the
 anthropic engine, "grade-moving, validated only in the paid A/B". The substitution never was validated
@@ -191,7 +191,7 @@ disarms the refusal and never the record.
 | `max` | `max` | `xhigh` |
 
 `off` used to map to `minimal` on codex and `low` on claude — a whole rung apart at the bottom, so a
-cross-engine effort comparison at `off` was off by one ( corruption 4a).`low` is the anthropic
+cross-engine effort comparison at `off` was off by one. `low` is the anthropic
 floor, so codex came up to it and codex's `minimal` is deliberately unreachable from the driver's tier
 vocabulary. `max` is the one sanctioned divergence: it means "this engine's top rung", and codex has no
 `max`. `engine.anthropic.test.mjs` pins the two tables together and asserts that single exception.
@@ -200,7 +200,7 @@ vocabulary. `max` is the one sanctioned divergence: it means "this engine's top 
 (`assertEffectiveTier`), on the EFFECTIVE tier rather than the declared one: Haiku 4.5 rejects adaptive
 thinking and the request bounces to sonnet, so the pairing measures sonnet and records haiku. Both ways
 it can arise are runtime overrides that never touch the stage table (`CLEAROTRON_STAGE_THINKING`, an
-`--experiment --model`), which is why the start-of-run scan alone could not see it ( corruption 4b).
+`--experiment --model`), which is why the start-of-run scan alone could not see it.
 
 ## 4. `claude -p` invocation (anthropic-agent)
 

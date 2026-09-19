@@ -67,7 +67,7 @@ function resolveDbPath(auth) {
     // marker added by one consumer is a marker the other consumers do not get. Marking at the throw
     // means every path out of this provider carries it, including ones written later.
     //
-    // 's composite backstop caught a THROW and converted it. That backstop never fired against this
+    // The composite backstop caught a THROW and converted it. That backstop never fired against this
     // provider, because four of its five entry points catch their own throw and return a plain error
     // first — and the test that claimed it worked drove a stub that throws, which this does not do.
     throw new Error(

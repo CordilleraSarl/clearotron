@@ -21,7 +21,7 @@
 //
 // The cure is the run's own party index, and an index built from findings can only see names the run
 // knows. An ask naming a supplier or licensee no finding carries is INVISIBLE to it, and the last test
-// here asserts that limit rather than leaving it to be discovered as a second false guarantee. 's
+// here asserts that limit rather than leaving it to be discovered as a second false guarantee. The
 // orphan lint is what catches that class at delivery.
 
 import { test } from "node:test";

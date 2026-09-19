@@ -591,7 +591,7 @@ test("WS-T compare: diffStageOutputs + telemetryDelta render; compareCmd diffs c
 
 // — the second live instance of the lenient parser fixed in pipeline.mjs.
 //
-// Milder than 's: the body is a pure read, nothing is written and nothing is spent, and
+// Milder than the pipeline.mjs case: the body is a pure read, nothing is written and nothing is spent, and
 // --run-dir/--stage already refuse when absent — so a dropped flag only ever meant --axis/--a/--b
 // silently reverting to their defaults. Mild is not harmless. The one job of this tool is to say whether
 // two versions of a stage differ, and comparing the wrong pair answers that with confidence.

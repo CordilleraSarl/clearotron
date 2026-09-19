@@ -332,7 +332,7 @@ const COMMENT_LINE = /^\s*(\/\/|#|\*|<!--)/;
 // this repository is about to start printing addresses at — an allowlist for those mailboxes would
 // have been inert, because nothing ever examined them.
 //
-// WHY THE RULED MAILBOXES JOIN ROLE_LOCALPART RATHER THAN THE DOMAIN GETTING AN EXEMPTION. 's
+// WHY THE RULED MAILBOXES JOIN ROLE_LOCALPART RATHER THAN THE DOMAIN GETTING AN EXEMPTION. The
 // ruling says `security` joins ROLE_LOCALPART "in the same PR, never a bypass", and that is the
 // right shape: exempting the whole domain would also pass a named person's address at it, which is
 // exactly the thing nobody should paste into a public README. Measured before widening rather than

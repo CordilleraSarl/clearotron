@@ -97,7 +97,7 @@ product doc.
 | **Allowlist** (`{version, grants:[{email, customer}]}`) | T2 | git + PR on the `CLIENT_ACCESS_MAP` file | see §2 row 4 | LIVE, file-only; surfaced read-only at `admin.access` |
 | **Ops tokens** (scope ops/user, verbs, companies, TTL) | T4 | `mint-token.mjs` CLI; jti denylist file | operator-held tokens | LIVE, CLI |
 
-## 4b. The install surface names ()
+## 4b. The install surface names
 
 The variables a **user or installer** ever types carry the product’s own prefix. They are listed
 by name in §5 below and in the upgrade table in INSTALL.md.
@@ -123,14 +123,14 @@ has taken it.
 
 **`CLEAROTRON_JX_LANES` was held back from the August 2026 rename** — it was RETIRED 2026-07-27
 (`pipeline.mjs` `RETIRED_ENV`, `jx-units.mjs`) and nothing reads it, so renaming a dead name looked like
-handing an operator a name that warns about nothing. The owner's 2026-09-04 ruling reversed that: the
+handing an operator a name that warns about nothing. A decision of 2026-09-04 reversed that: the
 whole namespace carries one prefix, dead names included, because a tree spelled two ways costs more
 than a retired row spelled consistently. The per-lane `CLEAROTRON_NATIVE_LANGUAGE_<code>` switch in the same row **is** live and is
-fail-OPEN: unset means ON (§5.5,).
+fail-OPEN: unset means ON (§5.5).
 
 Variables outside the install surface were left alone by the August rename — `CLEAROTRON_ENGINE_MAX_BUFFER`
-and its siblings were never in that window. **That separate decision was taken on 2026-09-04**: the owner
-ruled the rename global and pre-cut, so the internals carry the house prefix too and the public tree never
+and its siblings were never in that window. **That separate decision was taken on 2026-09-04**: the rename
+became global and pre-cut, so the internals carry the house prefix too and the public tree never
 shows the old namespace. No compatibility layer, no alias reading, no migration — greenfield, and our own
 boxes rebuild.
 
@@ -207,10 +207,10 @@ move once the same window has been read across more runs.
 `CLEAROTRON_BAND_TRUTH_GATE` (**never disable in prod — restores the fabrication**),
 `CLEAROTRON_FRAME_REOPEN` (+`CLEAROTRON_FRAME_REOPEN_MAX`=1, `CLEAROTRON_REOPEN_MAX_FETCH`=150),
 `CLEAROTRON_REGISTER_GAP_CLAMP`, `CLEAROTRON_RECALL_PROBES`, `CLEAROTRON_RECALL_TRIPWIRE`, `CLEAROTRON_WARM_RETRY`,
-`CLEAROTRON_MODEL_WIRE_CHECK` ( — fails a turn whose
+`CLEAROTRON_MODEL_WIRE_CHECK` (fails a turn whose
 provider reports a different model FAMILY than the driver asked for; disarming it silences the refusal
 and never the record: `modelActual`/`modelMismatch` keep landing on every dispatch row), `CLEAROTRON_FORM_REPAIR`
-( — repairs a form-class stage failure inside the dispatch, up to twice; disarmed, the defect
+(repairs a form-class stage failure inside the dispatch, up to twice; disarmed, the defect
 falls through to the retry ladder exactly as it did before, visibly, and is never swallowed as
 "validated fine"). Policy knob: `CLEAROTRON_UNREACHABLE_SENIOR`
 (open-item|clamp). Enumerate: `CLEAROTRON_ENUMERATE_CEILING` (600/OR-stack),
@@ -359,7 +359,7 @@ systemd, writes no heartbeat, and must keep saying "waiting to start" rather tha
 repo** — `git grep process.env.CLIENT_ACCESS` here returns nothing, so they are governed here and
 never appear in the audit).
 
-**Which identity source the portal runs () — T4, and it is chosen by name, never inferred.**
+**Which identity source the portal runs — T4, and it is chosen by name, never inferred.**
 `PORTAL_AUTH_MODE` selects the door: unset or `auth-proxy` (the default for a hosted deployment) means
 any login system in front that authenticates in the browser and forwards a verifiable JWT per request.
 **Any OIDC or JWT proxy is a choice per deployment** — for example Cloudflare Access, which is not a
@@ -367,7 +367,7 @@ special case in the code; `local` means one address and one passphrase on loopba
 exactly the same thing** — normalised where the mode is read rather than by an alias row, because
 `shared/env-aliases.mjs` maps variable NAMES and there is no value-alias mechanism.
 
-**Bringing your own login provider ( item 1, completed by) — T4.**`PORTAL_OIDC_ISSUER`,
+**Bringing your own login provider — T4.**`PORTAL_OIDC_ISSUER`,
 `PORTAL_JWKS_URL`, `PORTAL_EMAIL_CLAIM` and `PORTAL_AUTH_HEADER` are the portal-side spelling of the four
 values the staff MCP face already reads as `TRADEMARK_MCP_OIDC_ISSUER`, `TRADEMARK_MCP_JWKS_URL`,
 `TRADEMARK_MCP_EMAIL_CLAIM` and `TRADEMARK_MCP_AUTH_HEADER`. `makeAccessVerifier` has always accepted them; the portal

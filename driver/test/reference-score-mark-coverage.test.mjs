@@ -279,7 +279,7 @@ test("the schema version does NOT move — a bump stops every gold set in the co
 // ── end to end through the real CLI ───────────────────────────────────────────────────────────────
 
 // — the store carries a `counts` block by default, because the runs below are KNOCKOUT runs and
-// the scorer now refuses that lane against a similar-marks sheet alone. These tests are about 's
+// the scorer now refuses that lane against a similar-marks sheet alone. These tests are about the
 // per-mark coverage fold, not about recall, so the block is scaffolding: it makes the pairing legitimate
 // so the coverage assertions can be reached. `makeStore({ counts: undefined })` gets the old shape back,
 // which is what the refusal test below uses.

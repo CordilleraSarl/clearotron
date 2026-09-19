@@ -874,7 +874,7 @@ export const SERVER_ROUTE_HEADS = Object.freeze(["api", "report", "admin", "heal
  * `msgId` and `conversationId` sat in this list while `jobFor` hardcoded both to null and the trigger
  * hop stripped them off again. The totality test beside it could not see that: it asks whether every
  * declared field is classified, which a declared-and-nulled field satisfies perfectly. So the sentence
- * above asserted a behaviour and the test next to it checked a different one — the same shape as 's
+ * above asserted a behaviour and the test next to it checked a different one — the same shape as
  * "an invitation nothing honours", one level up.
  *
  * `stamped` exists so the new guard can be DERIVED rather than hand-listed. It splits `carries` into the
@@ -2935,7 +2935,7 @@ async function connectorDoorKind(url) {
         // row, and a retired-endpoint row is a different fact from a not-yours row. If an old open tab is
         // still clicking Flag, that is a thing worth being able to count.
         //
-        // WHAT IS DELIBERATELY STILL BELOW THIS LINE: the whole resolver — the two-lane shape, 's
+        // WHAT IS DELIBERATELY STILL BELOW THIS LINE: the whole resolver — the two-lane shape, the
         // disposition read, the server-side-locator rule. The owner ruled "disable services and any code",
         // and the acceptance criterion says re-enabling must be a switch and not a rebuild. Deleting 130
         // lines of hard-won doctrine would have made it a rebuild.
