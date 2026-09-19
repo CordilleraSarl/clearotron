@@ -122,6 +122,13 @@ const CHROME_RES = [
   // has stopped matching. Removing the wrapper first would take the nav with it, drive the count to
   // zero, and turn a security assertion into a permanent false alarm.
   { tag: "div", open: /<div class="[^"]*\brep-stickyhead\b[^"]*"[^>]*>/ },
+  // THE SECTION MENU, WHEREVER THE RENDERER PUT IT. A report rendered today carries it inside the header
+  // above, and it goes with that. A report rendered before 2026-09-18 carries it just AFTER the header, so
+  // stripping the header alone left it in the frame: a second copy of the menu the portal draws, pinned
+  // over the report's title band, its current item red on red in the dark theme. Measured on an archived
+  // global preliminary report served by a published beta. Archived reports are served from their baked
+  // bytes, so this has to happen here rather than in the renderer. `sectionsOf` has already read it.
+  { tag: "nav", open: /<nav class="[^"]*\bstrip\b[^"]*"[^>]*>/ },
   // the "Internal review copy — stripped on export" bar, which hosted the quality-capture controls
   { tag: "div", open: /<div class="[^"]*\breview\b[^"]*\binternal\b[^"]*"[^>]*>/ },
   // per-finding flag buttons and their popovers

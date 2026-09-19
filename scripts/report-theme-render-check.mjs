@@ -16,6 +16,12 @@
 // switch is pressed, never an attribute set by hand, and three things must hold on each press: the
 // document took the theme, its background went the right way, and the load id did not change — the page
 // repainted in place rather than reloading.
+//
+// AND ONE SECTION MENU, AT BOTH THEMES. The portal draws the report's section menu in its own header and
+// the frame must carry none. The document served here is shaped as a report rendered before 2026-09-18,
+// with the menu beside the report's header rather than inside it. That is most of the archive, and the
+// shape that left a second menu in the frame, its current item red on red in the dark theme. The probe
+// counts the menus inside the frame; the portal's are counted on the page.
 import { spawn } from 'node:child_process'
 import { createServer } from 'node:http'
 import { readFileSync, existsSync, mkdirSync, writeFileSync } from 'node:fs'
@@ -53,7 +59,7 @@ const FRAMEWORK = { framework_key: 'house-triage', title: 'House triage',
 const PROBE = `<script>(function(){
   var id=Math.random().toString(36).slice(2);
   function post(){try{parent.postMessage({themeProbe:1,loadId:id,theme:document.documentElement.getAttribute('data-theme'),
-    bg:getComputedStyle(document.body).backgroundColor},'*');}catch(e){}}
+    bg:getComputedStyle(document.body).backgroundColor,menus:document.querySelectorAll('nav.strip,[data-sec]').length},'*');}catch(e){}}
   new MutationObserver(post).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
   post();
 })();</script>`
@@ -61,7 +67,18 @@ const REPORT = (() => {
   const html = renderKnockoutHtml({ marks: [{ name: MARK, rating: 'Low', classes: [9], basis: 'Nothing identical in the field screened.',
     factors: ['No identical name was found.'], counterFactors: [], mitigation: '', assessment: '', findings: [] }],
     batch: { executiveSummary: 'One name screened.' } }, FRAMEWORK, { runId: RUN_ID, overall: 'Low', identity: { identity: 'Knockout search' }, issuedDate: '2026-09-18' })
-  const served = prepareReportForEmbed(html, {}).html
+  // THE OLD SHAPE: today's menu moved to just after the header's closing tag, where the renderer put it
+  // before 2026-09-18. A document with no menu at all would make the count below prove nothing.
+  const strip = html.match(/<nav class="[^"]*\bstrip\b[^"]*"[^>]*>[\s\S]*?<\/nav>/)?.[0]
+  if (!strip) { console.error('the rendered report has no section menu, so this check could not build the archived shape'); process.exit(2) }
+  const without = html.replace(strip, '')
+  const head = without.indexOf('<div class="rep-stickyhead')
+  const tags = /<\/?div\b[^>]*>/g
+  tags.lastIndex = head
+  let depth = 0, m, close = -1
+  while ((m = tags.exec(without))) { depth += m[0].startsWith('</') ? -1 : 1; if (depth === 0) { close = m.index + m[0].length; break } }
+  if (close < 0) { console.error('the report header has no closing tag, so this check could not build the archived shape'); process.exit(2) }
+  const served = prepareReportForEmbed(without.slice(0, close) + strip + without.slice(close), {}).html
   const at = served.lastIndexOf('</body>')
   return at < 0 ? served + PROBE : served.slice(0, at) + PROBE + served.slice(at)
 })()
@@ -151,9 +168,19 @@ const press = () => value(`(() => { const b = document.querySelector('button[ari
 
 const fail = []
 const ok = []
+// ONE MENU: none in the frame, one in the portal's header, under whichever theme is showing.
+const menus = async (theme, probe) => {
+  const portal = await value(`document.querySelectorAll('nav.report-sections').length`)
+  if (!probe || typeof probe.menus !== 'number') fail.push(`${theme}: the frame never reported its section menus`)
+  else if (probe.menus !== 0) fail.push(`${theme}: the frame carries ${probe.menus} section-menu element(s) beside the portal's own`)
+  else ok.push(`${theme}: no section menu inside the frame`)
+  if (portal !== 1) fail.push(`${theme}: the portal draws ${portal} section menu(s) where it should draw one`)
+  else ok.push(`${theme}: the portal draws the one section menu`)
+}
 const light = await settle('light')
 if (!light || light.theme !== 'light') fail.push(`the embedded report never took the portal's light theme — last report from the frame: ${JSON.stringify(light)}`)
 else ok.push(`light: the report took the portal's theme, ground ${light.bg} (luminance ${luminance(light.bg)?.toFixed(2)})`)
+await menus('light', light)
 await shot('report-light.png')
 
 if (!(await press())) fail.push('the portal\'s theme switch is not on the Result screen')
@@ -165,6 +192,7 @@ else {
   if (light && dark.loadId !== light.loadId) fail.push('the report reloaded to change theme — it must repaint in place')
   else ok.push('dark: repainted in place, the same load of the document')
 }
+await menus('dark', dark)
 await shot('report-dark.png')
 
 await press()
@@ -178,5 +206,5 @@ for (const line of fail) console.log(`  FAIL ${line}`)
 try { ws.close() } catch { /* going anyway */ }
 try { process.kill(-chrome.pid, 'SIGKILL') } catch { /* already gone */ }
 server.close()
-console.log(fail.length ? `\nreport-theme-render-check: ${fail.length} measurement(s) failed.` : `\nreport-theme-render-check: the embedded report follows the portal's theme, in place.`)
+console.log(fail.length ? `\nreport-theme-render-check: ${fail.length} measurement(s) failed.` : `\nreport-theme-render-check: the embedded report follows the portal's theme in place, under the portal's one section menu.`)
 process.exit(fail.length ? 1 : 0)
