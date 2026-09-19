@@ -4,6 +4,14 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.3.2-beta.14
+
+### Fixed
+
+- The lines for connecting an AI assistant now work when a folder name contains spaces, and the Codex settings block now works on Windows.
+- The demo now opens by saying what it shows, without internal diagnostics or a Node warning, and its knockout sample states the rating it reached.
+- A knockout report ordered for named countries now lists those countries under Registers counted, instead of a count of the provider's registers.
+
 ## 0.3.2-beta.13
 
 ### Fixed
