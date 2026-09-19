@@ -33,7 +33,8 @@ the address in your browser. No sign-up, no credentials, no network calls to us.
 The demo runs for as long as that window stays open, and removes everything it made when you close it —
 nothing of it is left on the machine, and running it again later starts clean. If you want to keep the
 sample reports after closing the window, run `npx clearotron demo --keep`; it prints the one command
-that removes the folder when you are done with it.
+that removes the folder when you are done with it. `npx clearotron demo --once` publishes the reports and
+exits, and keeps the folder the same way.
 
 **Then install it.**
 

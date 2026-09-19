@@ -65,7 +65,7 @@
         },
         "a-browser-run-gets-its-own-temp-root.test.mjs": {
           "tests": 12,
-          "asserts": 29,
+          "asserts": 31,
           "skips": 0,
           "todos": 0
         },

@@ -79,9 +79,15 @@ test("browserEnv MERGES into the environment rather than replacing it", () => {
   const ambient = { PATH: "/probe/bin", HOME: "/probe/home", LANG: "C" };
   const env = browserEnv(root, ambient);
   assert.equal(env.TMPDIR, root);
-  for (const [k, v] of Object.entries(ambient)) {
+  for (const [k, v] of Object.entries(ambient).filter(([k]) => k !== "HOME")) {
     assert.equal(env[k], v, `browserEnv dropped ${k}: a browser without it fails as a render fault, not as a missing variable`);
   }
+  // HOME IS THE ONE REPLACED, ON PURPOSE: a browser writes its font cache, certificate store, desktop
+  // settings and crash folder under the home, and a suite run must leave the real one untouched. It is
+  // replaced with a home inside the root, never dropped, and the XDG folders follow it.
+  assert.ok(env.HOME.startsWith(root + "/"), "the browser's home is not inside its temp root");
+  for (const k of ["XDG_CONFIG_HOME", "XDG_CACHE_HOME", "XDG_DATA_HOME"])
+    assert.ok(env[k].startsWith(env.HOME + "/") && existsSync(env[k]), `${k} is not a folder inside the browser's own home`);
   // And the default source is the real environment, or every call site that omits the second argument
   // gets an empty one.
   assert.equal(browserEnv(root).PATH, process.env.PATH,

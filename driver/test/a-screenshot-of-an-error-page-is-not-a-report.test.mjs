@@ -23,6 +23,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { pageVerdict, navigateOrRefuse, chromeErrorPage, CHROME_ERROR_SCHEME, START_PAGE, assertPageLoaded,
   cjkCharsIn, cjkVerdict, fontsCovering } from "../../scripts/headless-page.mjs";
+import { browserEnv, browserTempRoot } from "../../shared/browser-temp-root.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, "..", "..");
@@ -132,7 +133,9 @@ test("the screenshot's proof of being a report is not a tag every page has", () 
 
 // ── DRIVEN AT THE DOOR ──────────────────────────────────────────────────────────────────────────────
 
-const chromeHere = spawnSync("google-chrome", ["--version"], { encoding: "utf8" }).status === 0;
+// Asked in the browser's own environment: the wrapper script touches the desktop settings under whatever
+// home it is given, and a test must not write into the home of whoever runs the suite.
+const chromeHere = spawnSync("google-chrome", ["--version"], { encoding: "utf8", env: browserEnv(browserTempRoot()) }).status === 0;
 
 test("THE DRIVE — an unreadable report exits non-zero and says the page is not one", (ctx) => {
   if (!chromeHere) return ctx.skip("google-chrome is not on this box, so the door cannot be driven here");
