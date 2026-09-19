@@ -546,7 +546,7 @@ test("DOCTOR ACTUALLY CALLS IT — the arms above pass just as well on a functio
   const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const accepted = new Set();
   for (const standing of [true, false]) for (const fenceOn of [true, false]) for (const unitInstalled of [true, false])
-    for (const listening of [true, false, null]) for (const active of [true, false, null])
+    for (const listening of [true, false, null]) for (const active of [true, false, null]) for (const ownListener of [true, null])
       // `(activeState/subState)` is systemd's own words, not ours: derived with a sentinel and matched
       // as a wildcard, so the SHAPE is asserted and the contents are left to systemd.
       //
@@ -562,7 +562,7 @@ test("DOCTOR ACTUALLY CALLS IT — the arms above pass just as well on a functio
       // The sentinel marks the span; the other half carries whatever value a branch is gated on.
       for (const [activeState, subState] of [[undefined, undefined], ["SENTA", "SENTB"],
         ["activating", "SENTB"], [undefined, "auto-restart"]]) {
-        const { text } = describeDoorState({ standing, fenceOn, unitInstalled, listening, active,
+        const { text } = describeDoorState({ standing, fenceOn, unitInstalled, listening, active, ownListener,
           activeState, subState }, opts);
         const marked = text.replace(/\([^)]*SENTB\)/g, "«STATE»");
         accepted.add(escapeRe(marked).replace(/«STATE»/g, "\\([^)]*\\)"));
@@ -669,15 +669,30 @@ test("present-but-unreadable is NOT accepted — that is the state that fails op
 // its own child. Measured on this branch before the fix: the door listening on its port while doctor
 // said "the client door is not set up here" and pointed the reader at the command they had just run.
 
-test("a listening door is reported as answering, not as absent", () => {
+test("a listening door that is THIS install's is reported as its foreground door, not as absent", () => {
   const door = clientDoorState({
-    env: {}, unitDir: "/nowhere", exists: () => false, active: null, listening: true,
+    env: {}, unitDir: "/nowhere", exists: () => false, active: null, listening: true, ownListener: true,
   });
   assert.equal(door.standing, false, "no unit and no fence — `standing` is unchanged and still means configured");
   const said = describeDoorState(door);
-  assert.equal(said.level, "info", "something answering is not a fault, and not proof the door is ours");
-  assert.match(said.text, /something is listening on the client door's address/, said.text);
+  assert.equal(said.level, "info", "something answering is not a fault");
+  assert.match(said.text, /this install's client door is running in the foreground/, said.text);
   assert.match(said.text, /--background/, "and it must say what would make it outlive the terminal");
+});
+
+test("a process on the port that nothing ties to this install is said as exactly that", () => {
+  // Measured 2026-09-19 on a shared box: another account's install held the default port, and doctor said
+  // "something is listening on the client door's address for this environment" as if it were this door.
+  for (const door of [
+    clientDoorState({ env: {}, unitDir: "/nowhere", exists: () => false, active: null, listening: true }),
+    { standing: true, fenceOn: true, unitInstalled: true, active: null, listening: true, ownListener: null },
+  ]) {
+    const said = describeDoorState(door);
+    assert.match(said.text, /A process holds the client door's port, and nothing here shows it is this install's door\.|a process holds the client door's port, and nothing here shows it is this install's door\./, said.text);
+    assert.doesNotMatch(said.text, /listening on the client door's address for this environment|port is answering|running in the foreground/,
+      `a stranger's process was described as this install's door: ${said.text}`);
+    assert.notEqual(said.level, "ok", "an unknown process on the port is not a door that is on");
+  }
 });
 
 test("not listening still reads as not set up, and an UNKNOWN probe changes nothing", () => {
@@ -729,11 +744,15 @@ test("a crash loop and a half-finished connect are different sentences", () => {
   assert.match(loop.text, /activating\/auto-restart/, loop.text);
 });
 
-test("an unasked systemd plus an answering port is still an answer", () => {
-  const said = describeDoorState(standing({ active: null, listening: true }));
+test("an unasked systemd plus this install's own listener is still an answer; a stranger's process is not", () => {
+  const said = describeDoorState(standing({ active: null, listening: true, ownListener: true }));
   assert.equal(said.level, "ok",
-    "not asking systemd is not knowing nothing — if the port answers, the door is serving");
+    "not asking systemd is not knowing nothing — if this install's own door answers, the door is serving");
   assert.match(said.text, /the port's word rather than the unit's/, "and it must say which evidence it has");
+  // THE PORT ALONE IS NOT THAT EVIDENCE (2026-09-19): on a shared box it answers for another account's door.
+  const stranger = describeDoorState(standing({ active: null, listening: true }));
+  assert.equal(stranger.level, "info");
+  assert.match(stranger.text, /whether it is RUNNING was not checked\. A process holds the client door's port/, stranger.text);
 });
 
 test("a running door is unchanged, and none of this fires on it", () => {
