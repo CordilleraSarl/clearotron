@@ -1,5 +1,21 @@
 # clearotron-driver
 
+## 0.3.2-beta.12
+
+### Patch Changes
+
+- Fixed: A demo started in the background with `npx` now stops completely when that `npx` is stopped, freeing its three ports and removing its folder.
+- Fixed: The demo lists the door an assistant uses first, and a key refused at the wrong door is told the right door's address.
+- Fixed: A knockout no longer asks the model what to do with each name, so each name's read keeps to the findings and the rating.
+- Fixed: A knockout's per-name read no longer carries a next-step section the model wrote. It is removed before delivery instead of the batch being sent back to rewrite it, so knockouts finish sooner.
+- Fixed: A report produced before this version no longer shows a second section menu inside the portal, unreadable in the dark theme.
+- New: `clearotron connect --base <folder>` connects an assistant to a running demo, minting its key and naming its door in one step.
+- Fixed: `doctor` now says the client door's access log has entries, instead of claiming it is being written.
+- Fixed: The sign-in page names the install's one user, and the passphrase reset, key issue and doctor each say what they are for.
+- Fixed: Once the client's own registered element is set aside, searches added later in the run no longer search it again.
+- Fixed: Running the test suite on a clone whose portal build is out of date no longer rebuilds it and fails the first run.
+- Fixed: Running the test suite no longer writes an access-log line under your home folder, and a stopped demo leaves no empty folders behind.
+
 ## 0.3.2-beta.11
 
 ### Patch Changes

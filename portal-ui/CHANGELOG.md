@@ -1,5 +1,11 @@
 # portal-ui
 
+## 0.3.2-beta.12
+
+### Patch Changes
+
+- New: A report's section strip sits under its Reads and fills in as you scroll, marking each section you have reached; a click still jumps.
+
 ## 0.3.2-beta.11
 
 No changes in this release.
