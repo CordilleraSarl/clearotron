@@ -353,6 +353,13 @@ jobs:
       # correction is a second pull request. Here it is one edit away from the person holding it.
       - run: node scripts/release-notes-lint.mjs
 
+      # THE PACKAGE IS LARGE BY DESIGN — most of it is bundled demo evidence, and that was ruled to be
+      # right. What was missing is not a smaller package but a MEASUREMENT: nothing recorded the size,
+      # so it could double across a few betas and nobody would find out from the repository. This
+      # compares against a recorded baseline, allows a margin, and prints the ten largest paths when
+      # it fails, so growth has a name before anyone argues about it.
+      - run: node scripts/package-size-budget.mjs --check
+
   build-and-verify:
     name: Build the portal bundle, verify it in a real browser, and scan for secrets
     runs-on: ubuntu-latest

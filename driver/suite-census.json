@@ -5169,6 +5169,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-package-cannot-grow-unnoticed.test.mjs": {
+          "tests": 6,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "the-package-ships-only-the-demo-customers.test.mjs": {
           "tests": 2,
           "asserts": 6,
