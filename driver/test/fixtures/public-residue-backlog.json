@@ -9,28 +9,8 @@
     "agent-trailer",
     "machine-trailer"
   ],
-  "total": 12,
+  "total": 10,
   "files": {
-    "bin/onboard.mjs": [
-      0,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0
-    ],
-    "bin/start.mjs": [
-      0,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0
-    ],
     "driver/test/a-bare-reference-added-in-a-diff-is-refused.test.mjs": [
       0,
       2,

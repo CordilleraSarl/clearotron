@@ -4431,6 +4431,12 @@
           "skips": 0,
           "todos": 0
         },
+        "setup-never-prints-a-piece-of-a-key.test.mjs": {
+          "tests": 3,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "setup-promises-a-login-shell-only-when-one-adds-the-directory.test.mjs": {
           "tests": 3,
           "asserts": 8,
