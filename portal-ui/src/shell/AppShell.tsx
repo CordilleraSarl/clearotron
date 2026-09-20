@@ -386,7 +386,14 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
     setAvatarOpen(false)
   }, [path])
 
-  if (!meResult) return <div className="screen" />
+  // THE WAIT IS NAMED, NOT LEFT BLANK. This frame stands for the whole of the /me round trip, and no
+  // screen is mounted behind it — so a screen's own loading state cannot cover this window, however
+  // careful that screen is. The list screen already had one and it never got the chance: what the
+  // reader saw was this empty div, for the two to five seconds reported on production.
+  //
+  // The wording is About's, already shipped. A new sentence on a client surface is a design decision
+  // and not this change's to make.
+  if (!meResult) return <div className="screen"><p>Loading…</p></div>
 
   // ── — A SESSION THAT HAS GONE IS NOT AN ENROLMENT PROBLEM ────────────────
   //

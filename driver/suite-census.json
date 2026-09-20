@@ -6601,6 +6601,12 @@
           "skips": 0,
           "todos": 0
         },
+        "theWaitIsNamed.test.ts": {
+          "tests": 4,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "tone.test.ts": {
           "tests": 7,
           "asserts": 31,
