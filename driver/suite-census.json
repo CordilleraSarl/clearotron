@@ -5031,6 +5031,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-heartbeat-stays-fresh-while-a-run-is-in-flight.test.mjs": {
+          "tests": 4,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "the-hit-list-owes-one-fate-per-line.test.mjs": {
           "tests": 16,
           "asserts": 55,
