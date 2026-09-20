@@ -4,6 +4,21 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.3.2-beta.15
+
+### New
+
+- a register search can now be narrowed to the goods and services a filing actually covers, not only the numbered grouping it was filed under.
+- A common word in a busy grouping returns more filings than any search can read through. Narrowing by what each filing covers reaches the ones that matter.
+- searches no longer spend queries on owner portfolios guessed before any filing had been read. Owners now come from the filings a search returns.
+
+### Fixed
+
+- A run's summary and its delivery email now give the rating and the report's own sentence. The internal delivery-check word no longer appears.
+- A report's answers to your instructions now show one line each, with the rest of each answer behind a fold.
+- A delivered report's conditions now carry only the conditions written for the client. The reviewer's own notes stay in the run record.
+- the portal now says it is loading while your clearances arrive, instead of showing an empty page that reads as nothing found.
+
 ## 0.3.2-beta.14
 
 ### Fixed
