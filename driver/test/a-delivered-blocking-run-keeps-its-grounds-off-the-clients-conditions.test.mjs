@@ -3,10 +3,10 @@
 // a-delivered-blocking-run-keeps-its-grounds-off-the-clients-conditions.test.mjs — a BLOCKING verdict's
 // grounds are the run record's, and the client's conditions are the authored ones.
 //
-// Measured on a delivered run (2026-09-20): the sidecar carried 5 stored clauses and 15 reasons, of which
-// the reviewer's own cited correction lines were appended with no clause. `clientConditions` prints any
-// reason that has no clause and carries no engine token, so the client's CONDITIONS section rendered 13
-// items — 5 authored, 8 the reviewer's lines about coverage and the engine's reading of its own draft.
+// The grounds a reviewer appends are written into the sidecar's reasons with no clause of their own, and
+// `clientConditions` prints any reason that has no clause and carries no engine token. So grounds the run
+// record keeps — the reviewer's lines about coverage and about the engine's reading of its own draft —
+// were printed in the CONDITIONS section beside the authored conditions.
 //
 // The pipeline now stores an explicit null clause for each appended ground, which is the shipped way of
 // saying "recorded, not rendered", and the arrays stay index-aligned because `orderClausesForLede` returns
