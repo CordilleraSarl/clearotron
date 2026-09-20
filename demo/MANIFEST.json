@@ -1,0 +1,27 @@
+{
+  "note": "What produced the evidence under demo/. Re-recorded by scripts/demo-evidence.mjs --apply in the same commit that regenerates it.",
+  "generator": "scripts/freeze-example-run.mjs",
+  "recordedFromTree": "7b182e13a3d062a619f74b657b5c824df4deeb39",
+  "products": [
+    {
+      "product": "full-country-search",
+      "runId": "tmpdemo2014fullcountrysearch-venqori-2026-09-18-sample-capture",
+      "template": "clearance"
+    },
+    {
+      "product": "global-preliminary-search",
+      "runId": "tmpdemo2014globalpreliminarysearch-venqori-2026-09-18-sample-capture",
+      "template": "clearance"
+    },
+    {
+      "product": "knockout-search",
+      "runId": "tmpdemo2014knockoutsearch-venqori-2026-09-18-sample-capture",
+      "template": "knockout"
+    },
+    {
+      "product": "multi-country-focus-search",
+      "runId": "tmpdemo2014multicountryfocussearch-venqori-2026-09-18-sample-capture",
+      "template": "clearance"
+    }
+  ]
+}
