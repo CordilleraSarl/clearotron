@@ -270,3 +270,39 @@ export function goodsTermsList(entry) {
   }
   return out;
 }
+
+// ── A GOODS TERM CARRYING A WORD THE REGISTER READS AS AN OPERATOR ────────────────────────────────
+//
+// `AND`, `OR`, `NOT`, `ADJ` and `NEAR` are operators INSIDE the value string on the register this
+// engine runs on in production, and that field has no escape syntax. A goods term carrying one is not
+// a narrower search there — it is a 400, and because the list rides ONE OR-joined value, a single bad
+// term takes the whole narrowing down with it for the run.
+//
+// `NEAR` is why this is its own function rather than a reused check: the connector's own term
+// validator tests AND/OR/NOT only, so "near field communication" passes every offline check and fails
+// on the wire — the shape that reads as working right up until it does not.
+//
+// THE WORD IS REMOVED, THE ITEM IS NOT. "near field communication" still narrows usefully as
+// "field communication", and dropping it whole would throw away a term the model chose on account of
+// one word the vendor happens to reserve. Only an item that is NOTHING BUT reserved words disappears.
+// Every removal is reported so the caller can disclose it: a term that reached the wire in a
+// different shape than it was written must never do so silently.
+//
+// PURE.
+const GOODS_RESERVED_WORDS = new Set(["and", "or", "not", "adj", "near"]);
+
+/**
+ * Strip the words this register parses as operators out of a goods term.
+ * `{ cleaned, removed[] }` — `cleaned` is "" when nothing usable is left. PURE.
+ */
+export function stripGoodsReservedWords(term) {
+  const removed = [];
+  const kept = [];
+  for (const tok of String(term ?? "").trim().split(/\s+/)) {
+    if (!tok) continue;
+    // `ADJ2`/`NEAR3` are the numbered forms of the same operators.
+    if (GOODS_RESERVED_WORDS.has(tok.toLowerCase().replace(/\d+$/, ""))) removed.push(tok);
+    else kept.push(tok);
+  }
+  return { cleaned: kept.join(" "), removed };
+}
