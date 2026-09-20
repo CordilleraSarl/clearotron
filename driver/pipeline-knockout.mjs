@@ -1090,7 +1090,9 @@ export async function knockoutInner(ctx, job, opts = {}) {
       writeFileSync(join(config.outboxDir, `${packet.runId}.pending`), `${agent}\n`);
     } catch (e) { note(`delivery: outbox marker write skipped (${String(e.message).slice(0, 100)})`); }
     const deliveredAt = new Date().toISOString();
-    writeRunStatus(ctx, { state: "delivered", verdict: overall, statement: published.statement, url: published.url, reports: published.reports.map((r) => ({ mark: r.mark, url: r.url })), deliveredAt, sendPending: true, stepIndex: STEPS.length - 1, stepLabel: STEPS[STEPS.length - 1], stepN: STEPS.length, stepTotal: STEPS.length });
+    // `tier` beside `verdict` — the same band word under the name the clearance lane records it by, so a
+    // reader of either lane's status finds the rating in one place. `verdict` stays as it was.
+    writeRunStatus(ctx, { state: "delivered", verdict: overall, tier: overall, statement: published.statement, url: published.url, reports: published.reports.map((r) => ({ mark: r.mark, url: r.url })), deliveredAt, sendPending: true, stepIndex: STEPS.length - 1, stepLabel: STEPS[STEPS.length - 1], stepN: STEPS.length, stepTotal: STEPS.length });
     // — the knockout lane's pool copy learns its terminal state the same way,
     // for the same reason: publish returns the pool dir, and `state: "delivered"` is decided after it
     // returns. Same seam, same best-effort contract, no lane-specific exception to write down.

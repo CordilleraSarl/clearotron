@@ -255,6 +255,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-delivered-blocking-run-keeps-its-grounds-off-the-clients-conditions.test.mjs": {
+          "tests": 4,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "a-delivered-finding-is-not-reported-as-reaching-nothing.test.mjs": {
           "tests": 4,
           "asserts": 10,
@@ -3012,6 +3018,12 @@
         "narrative-refutation-record.test.mjs": {
           "tests": 15,
           "asserts": 56,
+          "skips": 0,
+          "todos": 0
+        },
+        "no-client-surface-speaks-the-delivery-gates-word.test.mjs": {
+          "tests": 3,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },
