@@ -112,6 +112,18 @@
   .panel.actions .act-you .actic{background:var(--med-soft);color:var(--med-tx)}
   .panel.actions p,.panel.actions li{font-size:13.5px;color:var(--slate);line-height:1.55}
   .panel.actions ul{margin:0;padding-left:20px} .panel.actions li{margin:3px 0}
+  /* Each answer shows one line; the rest folds. Styled here and not in the frozen renderer, and the
+     @media print rule that forces every <details> open already covers it — an exported PDF carries the
+     whole answer. The disclosure takes the caption fold's look, which is the only other fold of a
+     sentence into its remainder on this page. */
+  .panel.actions ul.answers li{margin:7px 0}
+  .panel.actions details.ans-more{margin:3px 0 0}
+  .panel.actions details.ans-more>summary{cursor:pointer;list-style:none;font-size:11px;font-weight:700;
+    letter-spacing:.06em;text-transform:uppercase;color:var(--faint)}
+  .panel.actions details.ans-more>summary::-webkit-details-marker{display:none}
+  .panel.actions details.ans-more>summary::before{content:"\25b8";margin-right:6px;display:inline-block;transition:.15s;color:var(--rose)}
+  .panel.actions details.ans-more[open]>summary::before{transform:rotate(90deg)}
+  .panel.actions details.ans-more p{margin:5px 0 0}
 
   /* ── THE BOARD'S OWN SECTION STRIP, lifted from the approved mock rather than written here ────────
      Five entries and the board's own labels, marked not to print because the board marks it so: a strip
@@ -388,7 +400,10 @@
        in the hero, directly above text that was already fully expanded. Measured in Chrome: the caption's
        own content was carried correctly and only the control leaked, which is why the commit that added
        the fold could check the half it thought about and ship the half it did not. */
-    details.drill>summary,details.method>summary,details.sub-more>summary{display:none!important}
+    details.drill>summary,details.method>summary,details.sub-more>summary,
+    /* An answer's "More" is a pure toggle: it carries no content of its own, so on paper it would be an
+       inert label over text the rule below has already expanded — the defect #470 shipped. */
+    details.ans-more>summary{display:none!important}
     /* The caption fold made this line load-bearing for the document's CONTENT, not just its completeness. The
        legal/practical reads now live inside .drillbody, so without this rule the exported PDF would
        carry the one-line verdicts and none of the reasoning behind them. The export prints everything a

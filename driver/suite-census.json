@@ -1143,6 +1143,12 @@
           "skips": 0,
           "todos": 0
         },
+        "an-answer-shows-one-line-and-folds-the-rest.test.mjs": {
+          "tests": 3,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
         "an-archived-run-says-whether-it-was-delivered.test.mjs": {
           "tests": 8,
           "asserts": 42,
