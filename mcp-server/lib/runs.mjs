@@ -44,6 +44,20 @@ export const bandWord = (v) => {
   return w && !GATE_WORDS.has(w.toUpperCase()) ? w : null;
 };
 
+/**
+ * The band a run recorded before `status.json` carried one: the verdict record's own `tier`. Read only
+ * where the status has neither a band nor a band-shaped outcome word, so a current run costs no read.
+ * Null where there is no record to read — an absence, never a guess. PURE of everything but the file.
+ */
+export function tierFromRecord(runDir) {
+  if (!runDir) return null;
+  try {
+    const v = JSON.parse(readFileSync(driverDir(runDir, "verdict.json"), "utf8"));
+    const t = String(v?.tier ?? "").trim();
+    return t || null;
+  } catch { return null; }
+}
+
 export function unreadableRunsReason({ workSet, workRoot, workExists, poolSet }) {
   if (workSet || workExists || poolSet) return null;
   return `no searches can be read here: CLEAROTRON_WORK_DIR is unset and ${workRoot} does not exist, `
@@ -83,11 +97,12 @@ function runFromStatusFile(statusFile, agent) {
     // every archived run of either lane has only that field, so the band is read from it where it is a
     // band and dropped where it is the gate's word. A clearance run recorded since 2026-09-20 carries
     // `tier` and needs no such reading.
-    // `verdict` stays on the row for the decision chain, whose subject IS the gate's conclusion and which
-    // pins it (account-audit-chain). What changed is that no SUMMARY has to reach for it: the band and the
-    // sentence are here now.
-    state: s.state ?? null, verdict: s.verdict ?? null,
-    tier: s.tier ?? bandWord(s.verdict), statement: s.statement ?? null, url: s.url ?? null,
+    // THE BAND IS ALWAYS HERE, and the gate's word is not. Reading `bandWord` alone left a run recorded
+    // before the band was written with NO band at all — `bandWord` answers null for a gate word — so an
+    // assistant saw the gate's word and nothing beside it, which is the shape this whole item is about.
+    // The verdict record holds the band for those runs, so it is read from there.
+    state: s.state ?? null,
+    tier: s.tier ?? bandWord(s.verdict) ?? tierFromRecord(runDir), statement: s.statement ?? null, url: s.url ?? null,
     markName: s.markName ?? null, ref: s.ref ?? null, classes: s.classes ?? null,
     stepN: s.stepN ?? null, stepLabel: s.stepLabel ?? null, stepTotal: s.stepTotal ?? null,
     failedStage: s.failedStage ?? null, reason: s.reason ?? null,

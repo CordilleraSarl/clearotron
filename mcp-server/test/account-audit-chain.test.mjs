@@ -137,9 +137,14 @@ test("acme's token reads the decision chain — get_run, trace, decision_timelin
   const tl = await call("decision_timeline", { runId: RUN_ID }, t);
   assert.ok(tl.timeline.length > 3, "the timeline came back empty");
   assert.ok(tl.timeline.some((e) => e.decision === "stage-completed"), "no stage decisions on the timeline");
-  // The chain's CONCLUSION travels — dropping it here while trace keeps `judgment.verdict` would be two
-  // surfaces disagreeing about one fact.
-  assert.ok("verdict" in tl, "the timeline lost the verdict it exists to narrate");
+  // The chain's CONCLUSION travels, and it is the run's BAND (824): the gate's own decisions are every
+  // one of them on the timeline and in `verdictHistory`, which is what the chain narrates. The headline
+  // beside them is the rating, because the gate's word is engine vocabulary and this surface is read by a
+  // client's assistant.
+  assert.ok("tier" in tl, "the timeline lost the band it exists to narrate");
+  assert.ok(!("verdict" in tl), "the gate's own word is back on a client-read surface");
+  assert.ok(tl.timeline.some((e) => e.decision === "verdict-emitted") || Array.isArray(tl.verdictHistory),
+    "the gate's decisions are no longer narrated anywhere on the chain");
   assert.ok("state" in tl, "the timeline lost the run's state");
   // And `riskLadderAvailable` does NOT: it says only whether diff_artifact could show the wording
   // change, and diff_artifact is sealed. A flag about a tool you cannot call is a dangling pointer.

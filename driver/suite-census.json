@@ -3022,8 +3022,8 @@
           "todos": 0
         },
         "no-client-surface-speaks-the-delivery-gates-word.test.mjs": {
-          "tests": 3,
-          "asserts": 10,
+          "tests": 4,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
@@ -5884,7 +5884,7 @@
         },
         "account-audit-chain.test.mjs": {
           "tests": 10,
-          "asserts": 46,
+          "asserts": 48,
           "skips": 0,
           "todos": 0
         },

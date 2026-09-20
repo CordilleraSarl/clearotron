@@ -207,7 +207,8 @@ function runSummary(run) {
     // once. null where the registry cannot name it — the row says nothing rather than guessing, because
     // a hardcoded fallback is how a knockout once announced itself as a product it provably was not.
     product: productIdentityFor(run),
-    state: run.state, location: run.location, verdict: run.verdict, url: run.url,
+    // The band and the run's own sentence; the gate's word stays in the run record (824).
+    state: run.state, location: run.location, tier: run.tier, statement: run.statement, url: run.url,
     markName: run.markName, ref: run.ref, classes: run.classes,
     step: s.stepN ? `${s.stepN}/${s.stepTotal} ${s.stepLabel ?? ""}`.trim() : null,
     startedAt: run.startedAt, updatedAt: run.updatedAt, deliveredAt: run.deliveredAt,
@@ -480,7 +481,9 @@ const tools = {
     // a generic _history dir for some OTHER stage does not make register-findings diffable.
     const riskLadderAvailable = listArtifactVersions(run.P, run.runDir, "register-digest", null).length > 1;
     return {
-      runId: run.runId, state: run.state, verdict: run.verdict, verdictHistory, timeline,
+      // The chain narrates the gate's decisions, and every one of them is on the timeline and in
+      // `verdictHistory`, which is where they belong. The run's own headline is its BAND (824).
+      runId: run.runId, state: run.state, tier: run.tier, verdictHistory, timeline,
       riskLadderAvailable,
       note: riskLadderAvailable
         ? "A prior register-findings (digest) snapshot exists — diff_artifact can show the word-by-word change."
@@ -497,7 +500,7 @@ const tools = {
     let changes = timeline;
     if (Array.isArray(kinds) && kinds.length) changes = changes.filter((c) => kinds.includes(c.kind));
     return {
-      runId: run.runId, state: run.state, verdict: run.verdict, since: since ?? null, cursor,
+      runId: run.runId, state: run.state, tier: run.tier, since: since ?? null, cursor,
       count: changes.length, changes,
       note: "Poll again with since=cursor (a stable sequence number) for only newer events — MCP has no push. cursor is independent of the kinds filter.",
     };

@@ -285,8 +285,10 @@ const TIMELINE_FIELDS = ["ts", "seq", "kind", "phase", "stage", "decision", "tri
   "changedFromPrevious", "attempt", "axes", "axis", "escalated", "verdict", "display", "cause",
   "recovered", "count", "uris", "findings", "negatives", "audit", "snapshot", "resume"];
 
-// `state` and `verdict` TRAVEL — the timeline's own conclusion, and dropping them here while
-// accountTrace keeps `judgment.verdict` would have been two surfaces disagreeing about one fact.
+// `state` and `tier` TRAVEL — the run's state and its BAND. The band replaced the gate's word here (824):
+// CLEAR / CONDITIONAL / BLOCKING is engine vocabulary, and a client's assistant reading it beside a
+// rating of Medium reported the run as delivered BLOCKING. The gate's decisions are not lost — every one
+// of them is a timeline entry and a `verdictHistory` row, which is what this surface exists to narrate.
 //
 // `riskLadderAvailable` and `note` do NOT, together and for one reason: the flag exists only to say
 // whether `diff_artifact` could show the word-by-word change, and `diff_artifact` is sealed. A flag
@@ -303,7 +305,7 @@ export function accountTimeline(result, { brandName = "The firm" } = {}) {
     return out;
   };
   return {
-    ...pick(result, ["runId", "state", "verdict", "_note"]),
+    ...pick(result, ["runId", "state", "tier", "_note"]),
     timeline: Array.isArray(result.timeline) ? result.timeline.map(entry) : [],
     verdictHistory: Array.isArray(result.verdictHistory)
       ? result.verdictHistory.map((v) => pick(v, ["ts", "kind", "verdict", "stage"]))
