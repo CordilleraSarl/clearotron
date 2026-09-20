@@ -712,7 +712,9 @@ export function buildSearchRequest(p) {
         + "whose description carries the word. Send it alongside the term it narrows.");
     }
     const words = [];
+    let gi = -1;
     for (const t of goodsTerms) {
+      gi += 1;
       // A PHRASE IS NEVER PASSED AS TYPED. A bare space on this field is an implicit OR — both word
       // orders return the same population, it equals the explicit OR, and the explicit AND is a
       // fraction of it. So "wireless headphones" sent as written would quietly search for EITHER word:
@@ -734,7 +736,16 @@ export function buildSearchRequest(p) {
       // follows: no filing says "controllers peripherals", so a strict adjacency of the survivors
       // finds nothing where `controllers ADJ2 peripherals` finds the phrase that was meant. A word
       // removed from the front or the back changes no distance between the words that remain.
-      const { words: stripped, gaps, removed } = stripGoodsReservedWords(t);
+      //
+      // THE DISTANCES COME FROM THE PLAN WHERE THERE IS ONE. The compiler strips once and stores what
+      // will be asked, so a planned term arrives here already stripped and re-stripping it finds
+      // nothing to remove — the gaps would come back all 1 and the query would assert an adjacency
+      // that was never written. Stripping again locally is right only for the paths that never went
+      // through a plan, and it is a no-op on the ones that did.
+      const planned = Array.isArray(p?.goods_text_gaps) ? p.goods_text_gaps[gi] : null;
+      const local = stripGoodsReservedWords(t);
+      const { words: stripped, removed } = local;
+      const gaps = Array.isArray(planned) && planned.length ? planned : local.gaps;
       if (!stripped.length) continue;
       const parts = [];
       for (const w of stripped) {

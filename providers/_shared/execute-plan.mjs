@@ -245,6 +245,11 @@ export function defaultBuildEntryQuery(e, pp) {
     // `goodsTextSearch` false and the entry is refused before the query is built (goodsTextGap), so
     // this line never reaches a connector that would quietly drop the clause and run the wide sweep.
     ...(goodsTermsList(e).length ? { goods_text: goodsTermsList(e) } : {}),
+    // …and the DISTANCES those words stood at. The compiler stripped the register's operator words
+    // once and stored what will be asked, so a term arrives here with nothing left to strip: without
+    // the gaps a connector would join "controllers peripherals" as a plain adjacency, which is the
+    // query that matches nothing. The plan states the distances; this carries them.
+    ...(Array.isArray(e?.goods_text_gaps) && e.goods_text_gaps.length ? { goods_text_gaps: e.goods_text_gaps } : {}),
     ...modeParams,
     nice_classes: (e.nice_classes ?? []).map(Number).filter(Number.isFinite),
     ...(Array.isArray(e.regions) && e.regions.length ? { regions: e.regions } : {}),

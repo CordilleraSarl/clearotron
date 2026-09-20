@@ -1207,13 +1207,22 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   // choice the model made. An item that is nothing BUT reserved words has nothing left and goes.
   // Every removal is disclosed, because a term that reached the wire in a different shape from the
   // one written must never do so in silence.
+  //
+  // STRIPPED ONCE, HERE, AND THE DISTANCES TRAVEL WITH THE WORDS. The plan stores what will be asked,
+  // so the gap a removal opened has to ride beside the term: the connector receives "controllers
+  // peripherals" with nothing left to strip, and on its own would join it as a plain adjacency — the
+  // query that matches nothing, which is the defect this carriage exists to prevent. A plan that
+  // states the terms but not the distances does not state what will be asked.
   const goodsRewritten = [];
   const goodsCleaned = [];
+  const goodsGaps = [];
   for (const w of goodsWords) {
-    const { cleaned, removed } = stripGoodsReservedWords(w);
+    const { cleaned, removed, gaps } = stripGoodsReservedWords(w);
     if (removed.length) goodsRewritten.push({ term: String(w).trim(), removed, asked: cleaned || null });
-    if (cleaned) goodsCleaned.push(cleaned);
+    if (cleaned) { goodsCleaned.push(cleaned); goodsGaps.push(gaps); }
   }
+  /** the gap list for each SENDABLE term, in the same order — the plan's statement of the distances. */
+  const gapsFor = (terms) => terms.map((t) => goodsGaps[goodsCleaned.indexOf(t)] ?? []);
   const goodsSendable = caps?.goodsTextMultiWord
     ? goodsCleaned
     : goodsCleaned.filter((w) => !/\s/.test(String(w).trim()));
@@ -1245,7 +1254,8 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
       // the union of its alternatives, not the distributed reading `a ADJ (b OR c)`. Were it the
       // other way the clause would ask a different question and still answer 200.
       push({ axis: "primary-sweep", predicate: "default", term: manifest.dominant_element,
-        expected_kind: "enumerate", provenance: "mark", goods_text: goodsSendable, qidSuffix: "+goods", ...omittedStamp });
+        expected_kind: "enumerate", provenance: "mark", goods_text: goodsSendable,
+        goods_text_gaps: gapsFor(goodsSendable), qidSuffix: "+goods", ...omittedStamp });
     } else {
       // ── ONE ENTRY PER WORD, where the register has no OR on this field ──────────────────────────
       //
@@ -1266,6 +1276,7 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
       goodsSendable.forEach((word, i) => {
         push({ axis: "primary-sweep", predicate: "default", term: manifest.dominant_element,
           expected_kind: "enumerate", provenance: "mark", goods_text: [word],
+          goods_text_gaps: gapsFor([word]),
           qidSuffix: `+goods-${termIdentity(word)}`, ...(i === 0 ? omittedStamp : {}) });
       });
     }
