@@ -41,6 +41,7 @@ import { makeCountProbe } from "../../_shared/count.mjs";
 import { CAPABILITY_GAP_MARKER, defaultBuildEntryQuery, makeExecutePlan, makeRegionRequiredBuildEntryQuery, planPredicateParams } from "../../_shared/execute-plan.mjs";
 import { isNonLatinTerm } from "../../_shared/script-form.mjs";
 import { CAPABILITIES, CLARIVATE_OFFICE_CODES } from "./capabilities.js";
+import { stripGoodsReservedWords } from "../../_shared/term-shape.mjs";   // the goods field parses these words as operators
 
 export const DEFAULT_BASE = "https://api.clarivate.com/compumark-content/api/v1";
 
@@ -720,8 +721,19 @@ export function buildSearchRequest(p) {
       // `ADJ` is the operator that expresses a real phrase here, and it is ORDERED. So a multi-word
       // term becomes its words joined by ADJ, and the list of terms is joined by OR — "either of these
       // things, and this one is two words in this order".
+      // A WORD THIS FIELD READS AS AN OPERATOR COMES OUT HERE TOO, AND DOES NOT THROW. AND, OR, NOT,
+      // ADJ and NEAR are parsed inside the value and there is no escape syntax — and `NEAR` is
+      // ordinary specification language, so this is not a contrived input. The plan compiler already
+      // strips them and discloses it; this is the backstop for the paths that never go through a plan.
+      //
+      // It must STRIP rather than refuse: the list rides one OR-joined value, so throwing here would
+      // take every good term down with the bad one and leave the crowd a crowd. Refusing loudly is
+      // right when the alternative is a wrong answer; here the alternative is a narrower one, and the
+      // narrower one is what the caller asked for minus a word the vendor happens to reserve.
+      const { cleaned } = stripGoodsReservedWords(t);
+      if (!cleaned) continue;
       const parts = [];
-      for (const w of String(t).trim().split(/\s+/)) {
+      for (const w of cleaned.split(/\s+/)) {
         const safe = assertSearchableTerm(w, { allowWildcard: false });
         if (safe) parts.push(safe);
       }

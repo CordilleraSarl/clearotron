@@ -50,7 +50,7 @@ import { REGISTER_AXES } from "./coverage-ledger.mjs";
 import { canonicalJurisdictionCode, isKnownJurisdictionCode } from "./jurisdiction-codes.mjs";   // item 13 — a searched territory traces to an executed query
 import { normalizeTerritory } from "../providers/_shared/territory-codes.mjs";
 import { bindingLayersFor, layerCoverageFor } from "./binding-layers.mjs";
-import { entryTermIssues, goodsTermsList, hasAnchoredWildcard, termAnnotationIssue, termMarkupIssue, termShapeIssue, termSubstanceIssue } from "../providers/_shared/term-shape.mjs";
+import { entryTermIssues, goodsTermsList, stripGoodsReservedWords, hasAnchoredWildcard, termAnnotationIssue, termMarkupIssue, termShapeIssue, termSubstanceIssue } from "../providers/_shared/term-shape.mjs";
 import { formKey, romanizationSpellings, isNonLatinTerm } from "../providers/_shared/script-form.mjs";
 
 export const PLAN_SCHEMA_VERSION = 1;
@@ -489,9 +489,19 @@ export function variantsFingerprint(manifest) {
     elements: manifest.elements.map((e) => [e.value, e.kind]),
     variants: manifest.variants.map((v) => [v.value, v.category]),
     incumbent: manifest.incumbent_classes,
-    // Only when SEEDED, so every owner-less manifest keeps its historical fingerprint byte-identical
-    // (nothing compares fingerprints across code versions today, but the cheap invariant costs nothing).
-    ...(manifest.watchlist_owners?.length ? { watchlist_owners: manifest.watchlist_owners } : {}),
+    // ── WHAT BELONGS HERE IS WHAT CHANGES AN ENTRY ─────────────────────────────────────────────
+    //
+    // `watchlist_owners` is GONE from this fingerprint, and its removal follows the same rule that put
+    // it here: a field belongs when a manifest gaining it must not reuse a stored plan byte-identical.
+    // That list no longer compiles anything, so two manifests differing only in it now compile to the
+    // same plan and must fingerprint the same. The one cost is a single re-mint for a matter whose
+    // plan was stored before the owner lane was removed — and that re-mint produces the entries the
+    // compiler would produce today, which is the point of it.
+    //
+    // `goods_words` is here for the mirror-image reason: it DOES change an entry. Added conditionally,
+    // exactly as the romanisations below are, so a manifest carrying none fingerprints byte-identically
+    // to the way it always did and nothing re-mints for a field it never had.
+    ...(manifest.goods_words?.length ? { goods_words: manifest.goods_words } : {}),
     // Same rule for the romanisations: a manifest that carries none fingerprints exactly as it always
     // did, and one that gains them is a DIFFERENT manifest, so a stored plan minted before the
     // romanisations existed is never REUSED byte-identical for a manifest that now carries them.
@@ -1186,10 +1196,28 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   // narrowed the sweep, which is the wrong direction to fail in: a narrowing that asks for less than
   // intended is narrower than intended, never wider, and the class-wide sweep still runs beside it.
   // What was dropped rides on the entry, so the omission is a fact on the plan rather than a silence.
+  // ── A WORD THE REGISTER READS AS AN OPERATOR COMES OUT OF THE ITEM, NOT THE ITEM OUT OF THE LIST ──
+  //
+  // AND, OR, NOT, ADJ and NEAR are operators inside the value there and the field has no escape
+  // syntax, so "near field communication" is a 400 rather than a narrower search — and since the list
+  // rides one OR-joined value, that one term would take the whole narrowing down for the run.
+  //
+  // The word is removed and the rest of the item is still asked: "field communication" narrows
+  // usefully, and throwing the term away over one word the vendor happens to reserve would lose a
+  // choice the model made. An item that is nothing BUT reserved words has nothing left and goes.
+  // Every removal is disclosed, because a term that reached the wire in a different shape from the
+  // one written must never do so in silence.
+  const goodsRewritten = [];
+  const goodsCleaned = [];
+  for (const w of goodsWords) {
+    const { cleaned, removed } = stripGoodsReservedWords(w);
+    if (removed.length) goodsRewritten.push({ term: String(w).trim(), removed, asked: cleaned || null });
+    if (cleaned) goodsCleaned.push(cleaned);
+  }
   const goodsSendable = caps?.goodsTextMultiWord
-    ? goodsWords
-    : goodsWords.filter((w) => !/\s/.test(String(w).trim()));
-  const goodsOmitted = goodsWords.filter((w) => !goodsSendable.includes(w));
+    ? goodsCleaned
+    : goodsCleaned.filter((w) => !/\s/.test(String(w).trim()));
+  const goodsOmitted = goodsCleaned.filter((w) => !goodsSendable.includes(w));
   const goodsOmittedReason = goodsOmitted.length
     ? `the active register provider (${caps?.id ?? "unknown"}) does not take a multi-word goods term, so `
       + `${goodsOmitted.length} of the ${goodsWords.length} goods terms were not asked. The single words `
@@ -1363,6 +1391,13 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
     // ask does not have to walk the entries to find out. Absent when nothing was dropped, so every
     // plan that sends its whole list stays byte-identical.
     ...(goodsOmitted.length ? { goods_text_not_asked: goodsOmitted, goods_text_not_asked_reason: goodsOmittedReason } : {}),
+    // A term the compiler ASKED IN A DIFFERENT SHAPE than it was written. The register reads AND, OR,
+    // NOT, ADJ and NEAR as operators inside the value and has no escape syntax, so the word comes out
+    // and the rest of the item is still asked — "near field communication" goes as "field
+    // communication". That is a narrower ask than the model wrote, and it must be visible: a reader
+    // comparing the word list to what was searched would otherwise find a term that appears to have
+    // been asked and was not, exactly.
+    ...(goodsRewritten.length ? { goods_text_rewritten: goodsRewritten } : {}),
     ...(caps ? { provider: caps.id } : {}),
     entries: ordered,
   };
@@ -1452,9 +1487,17 @@ export function extendRegisterPlan(prev, next) {
   // The key is the question and nothing else — axis, predicate, the term or the OR-stack, and the owner
   // that rides the incumbent-class suffix. Not classes or regions: those are run scope, identical across
   // one compile, and folding them in would make a rescoped re-run duplicate every entry it already had.
+  //
+  // THE GOODS NARROWING IS PART OF THE QUESTION. The narrowed entry shares axis, predicate, term and
+  // owner with the class-wide parent it sits beside — it differs only by asking what the filings
+  // COVER. Left out of this key the extension reads it as a question already carried and appends
+  // nothing, so a matter whose plan was frozen before the narrowing existed would never gain it: no
+  // deferred row, no disclosure, just an entry never minted. A reader of that run could not tell
+  // "the narrowing was never added" from "the narrowing found nothing".
   const questionKey = (e) => [e.axis, e.predicate,
     Array.isArray(e.terms) ? `terms:${e.terms.join("\u0000")}` : `term:${e.term ?? ""}`,
-    e.owner ?? ""].join("\u0001");
+    e.owner ?? "",
+    goodsTermsList(e).join("\u0000")].join("\u0001");
   // THE QUESTION ALONE DECIDES WHAT IS NEW, and the qid deliberately does NOT get a vote here. Keeping
   // `!have.has(e.qid)` as an additional guard looks conservative and re-creates the whole defect: under
   // the old scheme a fresh term and a stored one collide on `q#2` while asking DIFFERENT questions, and

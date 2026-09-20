@@ -429,7 +429,7 @@ Step 5 names none.
 1. Start with the client's goods and services wording: the order's wording if it has one, otherwise the product description in the company profile.
 2. Add the words other filings use for the same goods that the client's wording does not already contain.
 
-Single words or short phrases as a specification would write them, no wildcards, at most 24. Each word is matched against the goods and services description of registered marks, so use words a specification would contain. A word broader than the goods widens the search instead of narrowing it. Omit the key when the matter has no goods wording.
+Single words or short phrases as a specification would write them, no wildcards, at most 24. Each word is matched against the goods and services description of registered marks, so use words a specification would contain. A word broader than the goods widens the search instead of narrowing it. The register cannot read the words and, or, not, adj or near inside an item. An item containing one is searched without it. Omit the key when the matter has no goods wording.
 
 ### Step 6 — Cross-mark themes (once, after all marks processed)
 

@@ -127,8 +127,17 @@ test("the manual tells the model to write the key, and a manifest written to it 
   assert.match(manual, /at most 24/, "the bound the compiler enforces is not stated to the model");
   // The owner manual must not still promise a lane that no longer compiles.
   const registerManual = readFileSync(join(ROOT, "driver", "skills", "clearance-register", "unit.md"), "utf8");
-  assert.doesNotMatch(registerManual, /plan-dictated OWNER LANE/,
-    "the register manual still promises the owner lane this build removed");
+  // ASSERT WHAT IT SAYS, NOT THAT ONE OLD STRING IS GONE. Checking for the absence of a single phrase
+  // passed while the paragraph still asserted the lane in different words a few clauses earlier — the
+  // manual told the model both that the lane exists and that it does not.
+  assert.match(registerManual, /plan carries no owner lane from the manifest's watchlist/,
+    "the register manual does not state that the owner lane is gone");
+  assert.doesNotMatch(registerManual, /owner lane lives HERE|plan-dictated OWNER LANE/,
+    "the register manual still asserts the owner lane somewhere in the same paragraph");
+  // The instruction must also warn about the words the register reads as operators, since a client's
+  // own class 9 wording plausibly contains one ("near field communication").
+  assert.match(manual, /cannot read the words and, or, not, adj or near/,
+    "nothing warns the model about the words the register parses as operators");
 
   // A manifest shaped the way that instruction asks for it, taken through the real parser.
   const parsed = parseVariantManifestModel({
@@ -183,6 +192,89 @@ test("a phrase a register cannot take drops ALONE, and the drop is disclosed on 
   // A plan that sends its whole list carries neither field, so those plans stay byte-identical.
   const clean = plan(["headphones"], CLARIVATE);
   assert.ok(!("goods_text_not_asked" in clean) && !("goods_text_not_asked_reason" in clean));
+});
+
+test("a word the register reads as an operator comes out of the item, not the item out of the list", async () => {
+  const { compileRegisterPlan } = await import("../register-plan.mjs");
+  const base = { schema_version: 1, mark: MARK, dominant_element: MARK,
+    elements: [{ value: MARK, kind: "distinctive" }], variants: [{ value: MARK, category: "core" }],
+    incumbent_classes: [] };
+  const job = { jobKey: "t", classes: ["9"], jurisdictions: [] };
+  const plan = (goods_words) => compileRegisterPlan({ manifest: { ...base, goods_words }, job, capabilities: CLARIVATE });
+  const goodsOf = (p) => p.entries.filter((e) => Array.isArray(e.goods_text) && e.goods_text.length);
+
+  // "near field communication" is ordinary class 9 specification language, and NEAR is an operator in
+  // the value on this register. The word comes out; the rest of the term is still asked.
+  const near = plan(["headphones", "near field communication"]);
+  assert.deepEqual(goodsOf(near)[0].goods_text, ["headphones", "field communication"]);
+  assert.deepEqual(near.goods_text_rewritten,
+    [{ term: "near field communication", removed: ["near"], asked: "field communication" }]);
+
+  // AND/OR/NOT were screened before, but by THROWING — which killed the whole entry and took the good
+  // terms with it. ADJ and NEAR were not screened at all on this path and reached the wire.
+  for (const [term, word] of [["controllers and peripherals", "and"], ["cases or sleeves", "or"],
+                              ["adj2 straps", "adj2"], ["near field tags", "near"]]) {
+    const p = plan(["headphones", term]);
+    assert.equal(goodsOf(p).length, 1, `a reserved word in ${JSON.stringify(term)} killed the entry`);
+    assert.ok(goodsOf(p)[0].goods_text.includes("headphones"),
+      `the good term was lost alongside ${JSON.stringify(term)}`);
+    assert.deepEqual(p.goods_text_rewritten[0].removed, [word]);
+  }
+
+  // A term that is NOTHING BUT a reserved word has nothing left to ask, so it goes — and says so.
+  const only = plan(["headphones", "near"]);
+  assert.deepEqual(goodsOf(only)[0].goods_text, ["headphones"]);
+  assert.deepEqual(only.goods_text_rewritten, [{ term: "near", removed: ["near"], asked: null }]);
+
+  // A clean list carries neither field, so those plans stay byte-identical.
+  assert.ok(!("goods_text_rewritten" in plan(["headphones", "earphones"])));
+
+  // The connector is the backstop for paths that never go through a plan, and it STRIPS rather than
+  // throws — a throw there would take every good term down with the bad one.
+  assert.equal(fieldNamed(req({ goods_text: ["headphones", "near field communication"] }), GOODS_FIELD).value,
+    "headphones OR field ADJ communication");
+  assert.doesNotThrow(() => req({ goods_text: ["controllers and peripherals"] }));
+});
+
+test("a matter whose plan was frozen before this build gains the narrowed entry", async () => {
+  // THE FAILURE THIS CLOSES IS THE QUIETEST ONE ON THIS BRANCH. Beta goes to production and the change
+  // is judged on the next dense matter — but a matter frozen before the deploy would carry no narrowed
+  // entry at all: no deferred row, no disclosure, just an entry never minted. A read of that run could
+  // not tell "the narrowing was never added" from "the narrowing found nothing".
+  //
+  // It took two independent causes, either alone enough, and it is verbatim the lesson the fingerprint
+  // comment already records against the romanisations: the moved fingerprint alone is not the fix.
+  const { compileRegisterPlan, extendRegisterPlan } = await import("../register-plan.mjs");
+  const base = { schema_version: 1, mark: MARK, dominant_element: MARK,
+    elements: [{ value: MARK, kind: "distinctive" }], variants: [{ value: MARK, category: "core" }],
+    incumbent_classes: [], watchlist_owners: ["An Invented Owner"] };
+  const job = { jobKey: "t", classes: ["9"], jurisdictions: [] };
+  const stored = compileRegisterPlan({ manifest: base, job, capabilities: CLARIVATE });
+  const fresh = compileRegisterPlan({ manifest: { ...base, goods_words: ["headphones", "earphones"] },
+    job, capabilities: CLARIVATE });
+
+  // 1. The manifest gaining the key must not fingerprint identically, or the stored plan is reused
+  //    byte-identical and the extension path never runs at all.
+  assert.notEqual(stored.derived_from.variants_fingerprint, fresh.derived_from.variants_fingerprint,
+    "a manifest that gained goods words fingerprints the same, so the stored plan is reused verbatim");
+
+  // 2. …and once it runs it must actually append. The narrowed entry shares axis, predicate, term and
+  //    owner with the class-wide parent, so a key without the goods terms reads it as already carried.
+  const extended = extendRegisterPlan(stored, fresh);
+  const plan = extended.plan ?? extended;
+  const goods = plan.entries.filter((e) => Array.isArray(e.goods_text) && e.goods_text.length);
+  assert.equal(goods.length, 1, "the extension appended no narrowed entry to a pre-build plan");
+  assert.deepEqual(goods[0].goods_text, ["headphones", "earphones"]);
+
+  // The stored plan's own entries are carried forward untouched — the frozen plan is the contract.
+  for (const e of stored.entries) {
+    assert.ok(plan.entries.some((x) => x.qid === e.qid), `a stored entry was lost: ${e.axis}`);
+  }
+
+  // A manifest carrying no goods words keeps the fingerprint it always had, so nothing re-mints for a
+  // field it never had.
+  const noGoods = compileRegisterPlan({ manifest: { ...base, goods_words: [] }, job, capabilities: CLARIVATE });
+  assert.equal(noGoods.derived_from.variants_fingerprint, stored.derived_from.variants_fingerprint);
 });
 
 test("signa takes one goods term and refuses a list rather than intersecting it", async () => {

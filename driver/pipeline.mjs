@@ -15919,11 +15919,17 @@ export function reconstructCtx(job, opts) {   // @internal
   // axes drive which register-unit files placement/digest/skeptic/synthesis reference. Mirror the cold path
   // (pipeline) exactly: decideAxes("") defaults ALL axes ON, so a missing manifest never silently UNDER-spawns.
   ctx.axes = decideAxes(existsSync(P.variantManifest) ? readFileSync(P.variantManifest, "utf8") : "");
-  // …including the cold path's axis-from-plan UNION ( B3): the frozen plan is the search
-  // authority, and the F2 owner lane routinely puts entries on an axis prose decideAxes won't activate
-  // (a watchlist-owners-only manifest has no incumbent alert, yet its owner lane lives on
-  // incumbent-class). Without the union a stale-repair/--experiment of register-digest/placement would
-  // exclude the executed lane from the per-axis unit list and the declared inputs/freshness stamps.
+  // …including the cold path's axis-from-plan UNION ( B3), and the reason is now the plainer one:
+  // THE FROZEN PLAN IS THE SEARCH AUTHORITY, and what it carries need not match what prose activation
+  // would have chosen. `decideAxes` reads the manifest; the plan is what actually ran.
+  //
+  // The two diverge in both directions and each has a live case. A plan frozen before the guessed
+  // owner lane was removed still carries its owner entries on incumbent-class, and a resumed run must
+  // execute the plan it froze rather than the axes today's manifest would activate. Going the other
+  // way, any future lane that mints entries on an axis the manifest does not announce lands here too.
+  //
+  // Without the union a stale-repair/--experiment of register-digest/placement would exclude the
+  // executed lane from the per-axis unit list and the declared inputs/freshness stamps.
   // Best-effort read — a legacy run without a frozen plan reconstructs exactly as before.
   try {
     const plan = JSON.parse(readFileSync(P.registerPlan, "utf8"));
