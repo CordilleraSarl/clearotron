@@ -420,10 +420,16 @@ Watchlists drive cross-pollination triggers and owner-bound register sweeps (Ste
 **Structured sibling:** mirror the register-relevant watchlist into the structured model's
 `watchlist_owners` key — `aggressive_enforcers` ∪ `competitors` ∪ the matter frame's watchlist-owner
 seeds (NOT `major_brand_owners` — too broad), client-excluded, at most 24 entries, real register
-owner names only (never a sector or a description). The driver compiles each seed into the frozen
-plan's deterministic owner lane: owner×formative enumerate slices (the coverage — the owner's
-portfolio intersected with the dangerous band, record-by-record) plus one bare-owner portfolio
-count (crowd context whose `covered_by` points at the slices). Omit the key when Step 5 names none.
+owner names only (never a sector or a description). The list is recorded on the run and drives the
+cross-pollination triggers. It compiles no register queries of its own: owners are read from the
+records the searches return, not from a list written before any record exists. Omit the key when
+Step 5 names none.
+
+**Structured sibling:** **`goods_words`** — the words the register search is narrowed to.
+1. Start with the client's goods and services wording: the order's wording if it has one, otherwise the product description in the company profile.
+2. Add the words other filings use for the same goods that the client's wording does not already contain.
+
+Single words or short phrases as a specification would write them, no wildcards, at most 24. Each word is matched against the goods and services description of registered marks, so use words a specification would contain. A word broader than the goods widens the search instead of narrowing it. Omit the key when the matter has no goods wording.
 
 ### Step 6 — Cross-mark themes (once, after all marks processed)
 

@@ -78,6 +78,85 @@ test("each register's phrase and list behaviour is declared, and they differ", (
   assert.equal(CORSEARCH.goodsTextListOr, true);
 });
 
+test("a register with no OR gets one plan entry per word; one with an OR gets one entry", async () => {
+  const { compileRegisterPlan } = await import("../register-plan.mjs");
+  const manifest = { schema_version: 1, mark: MARK, dominant_element: MARK,
+    elements: [{ value: MARK, kind: "distinctive" }], variants: [{ value: MARK, category: "core" }],
+    incumbent_classes: [], goods_words: ["alpha", "beta", "gamma"] };
+  const job = { jobKey: "t", classes: ["9"], jurisdictions: [] };
+  const goods = (caps) => compileRegisterPlan({ manifest, job, capabilities: caps })
+    .entries.filter((e) => Array.isArray(e.goods_text) && e.goods_text.length);
+
+  // Clarivate offers the three as alternatives in one clause: one question, one count.
+  const one = goods(CLARIVATE);
+  assert.equal(one.length, 1, "a register with an OR asked three questions instead of one");
+  assert.deepEqual(one[0].goods_text, ["alpha", "beta", "gamma"]);
+
+  // Signa has no OR on this field at all, so the words cannot ride one value — joining them would
+  // INTERSECT them, narrowing as the list grows and still answering 200. Three questions instead.
+  const three = goods(SIGNA);
+  assert.equal(three.length, 3, "a register with no OR did not get one entry per word");
+  assert.deepEqual(three.map((e) => e.goods_text), [["alpha"], ["beta"], ["gamma"]],
+    "each entry must carry exactly one word — the wire refuses more");
+  // Each is an ordinary dictated question, so each has its own identity to count and ledger against.
+  assert.equal(new Set(three.map((e) => e.qid)).size, 3, "the per-word entries share a qid");
+  for (const e of three) assert.match(e.qid, /\+goods-/, "a per-word entry is not identifiable as one");
+
+  // Corsearch ORs its product clauses, so it is the one-entry shape too.
+  assert.equal(goods(CORSEARCH).length, 1);
+});
+
+test("the manual tells the model to write the key, and a manifest written to it compiles the entry", async () => {
+  // THE ARM THAT WOULD HAVE CAUGHT THE FEATURE BEING INERT. Every other arm here builds a manifest
+  // object directly, so all of them pass whether or not anything ever tells the model to write
+  // `goods_words`. The compiler reads that key and nothing else by design, so if the instruction is
+  // missing the key never arrives, the entry never compiles, and the narrowing silently does nothing
+  // while the cost saving beside it still lands.
+  const { readFileSync } = await import("node:fs");
+  const { join, dirname } = await import("node:path");
+  const { fileURLToPath } = await import("node:url");
+  const { parseVariantManifestModel } = await import("../variant-manifest-model.mjs");
+  const { compileRegisterPlan } = await import("../register-plan.mjs");
+  const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
+
+  const manual = readFileSync(join(ROOT, "driver", "skills", "clearance-variants", "SKILL.md"), "utf8");
+  assert.match(manual, /`goods_words`/, "nothing tells the model to write the key the compiler reads");
+  assert.match(manual, /at most 24/, "the bound the compiler enforces is not stated to the model");
+  // The owner manual must not still promise a lane that no longer compiles.
+  const registerManual = readFileSync(join(ROOT, "driver", "skills", "clearance-register", "unit.md"), "utf8");
+  assert.doesNotMatch(registerManual, /plan-dictated OWNER LANE/,
+    "the register manual still promises the owner lane this build removed");
+
+  // A manifest shaped the way that instruction asks for it, taken through the real parser.
+  const parsed = parseVariantManifestModel({
+    schema_version: 1, mark: MARK, dominant_element: MARK,
+    elements: [{ value: MARK, kind: "distinctive" }], variants: [{ value: MARK, category: "core" }],
+    goods_words: ["headphones", "earphones"],
+  });
+  const plan = compileRegisterPlan({ manifest: parsed, job: { jobKey: "t", classes: ["9"], jurisdictions: [] },
+    capabilities: CLARIVATE });
+  assert.equal(plan.entries.filter((e) => Array.isArray(e.goods_text) && e.goods_text.length).length, 1,
+    "a manifest written to the manual compiled no narrowed entry");
+});
+
+test("a phrase does not compile on a register that cannot match one", async () => {
+  const { compileRegisterPlan } = await import("../register-plan.mjs");
+  const manifest = { schema_version: 1, mark: MARK, dominant_element: MARK,
+    elements: [{ value: MARK, kind: "distinctive" }], variants: [{ value: MARK, category: "core" }],
+    incumbent_classes: [], goods_words: ["wireless headphones"] };
+  const job = { jobKey: "t", classes: ["9"], jurisdictions: [] };
+  const goods = (caps) => compileRegisterPlan({ manifest, job, capabilities: caps })
+    .entries.filter((e) => Array.isArray(e.goods_text) && e.goods_text.length);
+  // Clarivate expresses a phrase through ADJ, so it compiles.
+  assert.equal(goods(CLARIVATE).length, 1);
+  // Corsearch's phrase behaviour is unmeasured and its connector refuses one. The entry must not be
+  // compiled into a query the connector will then reject at the door.
+  assert.equal(goods(CORSEARCH).length, 0, "a phrase compiled for a register that cannot match one");
+  // …and a single-word list still compiles there.
+  assert.equal(compileRegisterPlan({ manifest: { ...manifest, goods_words: ["headphones"] }, job, capabilities: CORSEARCH })
+    .entries.filter((e) => Array.isArray(e.goods_text) && e.goods_text.length).length, 1);
+});
+
 test("signa takes one goods term and refuses a list rather than intersecting it", async () => {
   const { buildSearchRequest: signaRequest } = await import("../../providers/signa/src/core.js");
   const one = signaRequest({ query: MARK, match: "contains", nice_classes: [9], goods_text: ["headphones"] });

@@ -1176,10 +1176,41 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   // alternatives, which asks for filings covering ALL of them and answers 200 with a population that
   // shrinks as the list grows. So the entry is not compiled; the broad sweep still runs.
   const goodsWords = Array.isArray(manifest.goods_words) ? manifest.goods_words : [];
-  const goodsListExpressible = goodsWords.length <= 1 || caps?.goodsTextListOr === true;
-  if (goodsWords.length && caps?.goodsTextSearch === true && goodsListExpressible) {
-    push({ axis: "primary-sweep", predicate: "default", term: manifest.dominant_element,
-      expected_kind: "enumerate", provenance: "mark", goods_text: goodsWords, qidSuffix: "+goods" });
+  // A FOURTH REASON, and it is the one the parser deliberately does NOT decide: the list may carry a
+  // short phrase, and only some registers match a phrase as a phrase. Where this one does not, the
+  // connector would refuse the entry at the door — so the entry must not be compiled in the first
+  // place. Checking it here keeps the parser free to accept what the model was told to write, and
+  // keeps each register's behaviour in the one file that describes that register.
+  const goodsHasPhrase = goodsWords.some((w) => /\s/.test(String(w).trim()));
+  const goodsPhrasesOk = !goodsHasPhrase || caps?.goodsTextPhrases === true;
+  if (goodsWords.length && caps?.goodsTextSearch === true && goodsPhrasesOk) {
+    if (caps.goodsTextListOr === true) {
+      // The register offers the list as alternatives in one clause: one question, one count.
+      push({ axis: "primary-sweep", predicate: "default", term: manifest.dominant_element,
+        expected_kind: "enumerate", provenance: "mark", goods_text: goodsWords, qidSuffix: "+goods" });
+    } else {
+      // ── ONE ENTRY PER WORD, where the register has no OR on this field ──────────────────────────
+      //
+      // The alternative shapes were all worse. Joining the words into one value INTERSECTS them
+      // there, so the answer narrows as the list grows and still returns 200 — a false clean that
+      // gets quieter the more thorough the word list is. Merging the calls inside the connector is
+      // not available either: the enumerate kernel drives its own paging and tests the ceiling off
+      // each page's own total, so a fan-out below it would have to invent a total and a page
+      // sequence across several independent streams.
+      //
+      // As separate PLAN entries each word is an ordinary dictated question: its own qid, its own
+      // count, its own ledger row, its own crowd descriptor if it crowds, and the band merge folds
+      // the records by id exactly as it already does across axes. Nothing new has to be trusted.
+      //
+      // The cost is real and it is the reason this is a ruling and not a default: a list of N words
+      // is N questions on such a register, where a register with an OR asks one. The manifest's
+      // 24-word ceiling is what bounds it.
+      for (const word of goodsWords) {
+        push({ axis: "primary-sweep", predicate: "default", term: manifest.dominant_element,
+          expected_kind: "enumerate", provenance: "mark", goods_text: [word],
+          qidSuffix: `+goods-${termIdentity(word)}` });
+      }
+    }
   }
   // — EVERY seeded band, not just the dominant element's (see bandsFor). The wildcard fringe stays
   // on the dominant band alone: it is crowd-gated on the dominant's own contains parent, and no other
