@@ -1217,12 +1217,21 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   const goodsSendable = caps?.goodsTextMultiWord
     ? goodsCleaned
     : goodsCleaned.filter((w) => !/\s/.test(String(w).trim()));
-  const goodsOmitted = goodsCleaned.filter((w) => !goodsSendable.includes(w));
+  // WHAT WAS NOT ASKED, in one list, whichever way it came to be dropped: a whole term this register
+  // cannot express, and a word removed from inside a term because the register reads it as an
+  // operator. Both are the same fact to a reader — the model wrote it and the search did not carry it
+  // — and both make the narrowing ask for LESS than the list it was given, never more.
+  const goodsOmitted = [
+    ...goodsCleaned.filter((w) => !goodsSendable.includes(w)),
+    ...goodsRewritten.flatMap((r) => r.removed),
+  ];
   const goodsOmittedReason = goodsOmitted.length
-    ? `the active register provider (${caps?.id ?? "unknown"}) does not take a multi-word goods term, so `
-      + `${goodsOmitted.length} of the ${goodsWords.length} goods terms were not asked. The single words `
-      + `were, and the class-wide sweep ran beside them — so the narrowing asked for LESS than the list `
-      + `it was given, never more. It is a disclosed gap, never a clean negative about those goods.`
+    ? `${goodsOmitted.length} of what the goods list asked for did not reach the register (${caps?.id ?? "unknown"}): `
+      + `a term it cannot express, or a word inside a term that it reads as a search operator and has no `
+      + `escape syntax for. What remained WAS asked — a term keeps its other words, and the adjacency is `
+      + `widened by the gap so the phrase still matches — and the class-wide sweep ran beside it. So the `
+      + `narrowing asked for LESS than the list it was given, never more. A disclosed gap, never a clean `
+      + `negative about those goods.`
     : null;
   const omittedStamp = goodsOmitted.length
     ? { goods_text_omitted: goodsOmitted, goods_text_omitted_reason: goodsOmittedReason }

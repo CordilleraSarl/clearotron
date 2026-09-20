@@ -293,16 +293,35 @@ const GOODS_RESERVED_WORDS = new Set(["and", "or", "not", "adj", "near"]);
 
 /**
  * Strip the words this register parses as operators out of a goods term.
- * `{ cleaned, removed[] }` — `cleaned` is "" when nothing usable is left. PURE.
+ *
+ * `{ words, gaps, removed, cleaned }`. `gaps[i]` is the distance from `words[i]` to `words[i+1]` — 1
+ * when they were adjacent, 2 when one word was taken out between them, and so on.
+ *
+ * THE GAP IS THE WHOLE POINT and it is the rule the mark field already follows. Removing a word from
+ * the middle of a phrase leaves the survivors further apart than they were written: "controllers and
+ * peripherals" asked as a strict adjacency finds nothing, because no filing says "controllers
+ * peripherals". Widened by the gap it finds what was meant. A word taken off the FRONT or the BACK
+ * changes no distance between the words that remain, so "near field communication" stays a strict
+ * adjacency of "field" and "communication".
+ *
+ * PURE.
  */
 export function stripGoodsReservedWords(term) {
   const removed = [];
-  const kept = [];
+  const words = [];
+  const gaps = [];
+  let owed = 1;                       // the distance owed to the NEXT kept word
   for (const tok of String(term ?? "").trim().split(/\s+/)) {
     if (!tok) continue;
     // `ADJ2`/`NEAR3` are the numbered forms of the same operators.
-    if (GOODS_RESERVED_WORDS.has(tok.toLowerCase().replace(/\d+$/, ""))) removed.push(tok);
-    else kept.push(tok);
+    if (GOODS_RESERVED_WORDS.has(tok.toLowerCase().replace(/\d+$/, ""))) {
+      removed.push(tok);
+      if (words.length) owed += 1;    // …only widens a gap once there is something to widen it FROM
+      continue;
+    }
+    if (words.length) gaps.push(owed);
+    words.push(tok);
+    owed = 1;
   }
-  return { cleaned: kept.join(" "), removed };
+  return { words, gaps, removed, cleaned: words.join(" ") };
 }

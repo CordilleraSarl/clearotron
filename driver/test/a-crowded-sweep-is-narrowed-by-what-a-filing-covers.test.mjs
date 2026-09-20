@@ -231,9 +231,67 @@ test("a word the register reads as an operator comes out of the item, not the it
 
   // The connector is the backstop for paths that never go through a plan, and it STRIPS rather than
   // throws — a throw there would take every good term down with the bad one.
-  assert.equal(fieldNamed(req({ goods_text: ["headphones", "near field communication"] }), GOODS_FIELD).value,
-    "headphones OR field ADJ communication");
   assert.doesNotThrow(() => req({ goods_text: ["controllers and peripherals"] }));
+
+  // ── THE ADJACENCY IS WIDENED BY WHAT CAME OUT ────────────────────────────────────────────────────
+  //
+  // Removing a word from the MIDDLE leaves the survivors further apart than they were written. No
+  // filing says "controllers peripherals", so a strict adjacency finds nothing where the widened one
+  // finds the phrase that was meant — measured 1 against 0. This is the rule the mark field already
+  // follows for the same reason.
+  assert.equal(fieldNamed(req({ goods_text: ["controllers and peripherals"] }), GOODS_FIELD).value,
+    "controllers ADJ2 peripherals", "the adjacency was not widened by the removed word");
+  // A word off the FRONT changes no distance between the words that remain, so this one stays strict.
+  assert.equal(fieldNamed(req({ goods_text: ["near field communication"] }), GOODS_FIELD).value,
+    "field ADJ communication", "a leading removal widened an adjacency it does not affect");
+  // Two removals between the same pair widen by both.
+  assert.equal(fieldNamed(req({ goods_text: ["headphones and or cases"] }), GOODS_FIELD).value,
+    "headphones ADJ3 cases");
+  // …and a phrase with nothing removed is unchanged.
+  assert.equal(fieldNamed(req({ goods_text: ["wireless headphones"] }), GOODS_FIELD).value,
+    "wireless ADJ headphones");
+
+  // THE PAIR THAT USED TO COLLAPSE. Before the gap was carried, these two produced the SAME wire
+  // value, so the difference between a word taken off the front and one taken from the middle was
+  // lost — the second silently asserted an adjacency across the hole it had just made.
+  assert.notEqual(fieldNamed(req({ goods_text: ["near field communication"] }), GOODS_FIELD).value,
+    fieldNamed(req({ goods_text: ["field near communication"] }), GOODS_FIELD).value);
+  assert.equal(fieldNamed(req({ goods_text: ["field near communication"] }), GOODS_FIELD).value,
+    "field ADJ2 communication");
+  // Ordinary specification wording, and each step carries its own distance.
+  assert.equal(fieldNamed(req({ goods_text: ["audio and video apparatus"] }), GOODS_FIELD).value,
+    "audio ADJ2 video ADJ apparatus");
+});
+
+test("a word removed from inside a term is disclosed on the entry and on the plan", async () => {
+  // NOTHING EDITS THE CLIENT'S WORDING SILENTLY. The model wrote the term; the register carried less
+  // than it says. A reader comparing the goods list to the search must be able to see that.
+  const { compileRegisterPlan } = await import("../register-plan.mjs");
+  const base = { schema_version: 1, mark: MARK, dominant_element: MARK,
+    elements: [{ value: MARK, kind: "distinctive" }], variants: [{ value: MARK, category: "core" }],
+    incumbent_classes: [] };
+  const job = { jobKey: "t", classes: ["9"], jurisdictions: [] };
+  const plan = compileRegisterPlan({ manifest: { ...base, goods_words: ["headphones", "controllers and peripherals"] },
+    job, capabilities: CLARIVATE });
+  const entry = plan.entries.find((e) => Array.isArray(e.goods_text) && e.goods_text.length);
+
+  assert.deepEqual(entry.goods_text, ["headphones", "controllers peripherals"]);
+  assert.deepEqual(entry.goods_text_omitted, ["and"], "the removed word is not on the entry");
+  assert.deepEqual(plan.goods_text_not_asked, ["and"], "the removed word is not on the plan");
+  assert.match(entry.goods_text_omitted_reason, /never more/);
+  assert.match(entry.goods_text_omitted_reason, /widened by the gap/);
+  // …and the term-by-term record says what was asked in its place.
+  assert.deepEqual(plan.goods_text_rewritten,
+    [{ term: "controllers and peripherals", removed: ["and"], asked: "controllers peripherals" }]);
+
+  // A whole item that is nothing but a reserved word is disclosed the same way.
+  const dropped = compileRegisterPlan({ manifest: { ...base, goods_words: ["headphones", "near"] },
+    job, capabilities: CLARIVATE });
+  assert.deepEqual(dropped.goods_text_not_asked, ["near"]);
+
+  // A clean list discloses nothing, so those plans stay byte-identical.
+  const clean = compileRegisterPlan({ manifest: { ...base, goods_words: ["headphones"] }, job, capabilities: CLARIVATE });
+  assert.ok(!("goods_text_not_asked" in clean) && !("goods_text_rewritten" in clean));
 });
 
 test("a matter whose plan was frozen before this build gains the narrowed entry", async () => {

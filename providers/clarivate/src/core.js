@@ -730,10 +730,14 @@ export function buildSearchRequest(p) {
       // take every good term down with the bad one and leave the crowd a crowd. Refusing loudly is
       // right when the alternative is a wrong answer; here the alternative is a narrower one, and the
       // narrower one is what the caller asked for minus a word the vendor happens to reserve.
-      const { cleaned } = stripGoodsReservedWords(t);
-      if (!cleaned) continue;
+      // THE ADJACENCY IS WIDENED BY WHAT WAS TAKEN OUT, which is the rule the mark field already
+      // follows: no filing says "controllers peripherals", so a strict adjacency of the survivors
+      // finds nothing where `controllers ADJ2 peripherals` finds the phrase that was meant. A word
+      // removed from the front or the back changes no distance between the words that remain.
+      const { words: stripped, gaps, removed } = stripGoodsReservedWords(t);
+      if (!stripped.length) continue;
       const parts = [];
-      for (const w of cleaned.split(/\s+/)) {
+      for (const w of stripped) {
         const safe = assertSearchableTerm(w, { allowWildcard: false });
         if (safe) parts.push(safe);
       }
@@ -743,7 +747,13 @@ export function buildSearchRequest(p) {
           `goods term ${JSON.stringify(String(t).slice(0, 40))} is more than one word, and this register `
           + `is not known to match a phrase as a phrase. Send the words you mean, one per entry.`);
       }
-      const value = parts.join(" ADJ ");
+      // Single word: itself. Several: an adjacency chain whose every step carries the distance the
+      // words actually stood at, so a removal in the middle widens it and a removal at either end
+      // does not.
+      let value = parts[0];
+      for (let i = 1; i < parts.length; i++) {
+        value += ` ADJ${gaps[i - 1] > 1 ? gaps[i - 1] : ""} ${parts[i]}`;
+      }
       if (!words.includes(value)) words.push(value);
     }
     if (words.length) searchFields.push({ operator: GOODS_OPERATOR, name: GOODS_FIELD, value: joinOrValue(words) });
