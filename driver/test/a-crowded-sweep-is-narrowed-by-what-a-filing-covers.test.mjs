@@ -67,14 +67,17 @@ test("a multi-word term is refused, not quietly turned into an OR", () => {
 
 test("each register's phrase and list behaviour is declared, and they differ", () => {
   // Clarivate expresses both: a phrase through ADJ, a list through OR.
-  assert.equal(CLARIVATE.goodsTextPhrases, true);
+  assert.equal(CLARIVATE.goodsTextMultiWord, "ordered-phrase");
   assert.equal(CLARIVATE.goodsTextListOr, true);
   // Signa intersects a phrase's words — the nearest honest form — but has NO OR at all, so it cannot
   // be handed a list of alternatives.
-  assert.equal(SIGNA.goodsTextPhrases, true);
+  assert.equal(SIGNA.goodsTextMultiWord, "word-intersection");
   assert.equal(SIGNA.goodsTextListOr, false);
+  // The two are NOT the same answer, which is why the flag names the meaning instead of saying yes:
+  // one returns the words in that order, the other any filing carrying all of them anywhere.
+  assert.notEqual(CLARIVATE.goodsTextMultiWord, SIGNA.goodsTextMultiWord);
   // Corsearch ORs several product clauses; its phrase behaviour is unmeasured, so a phrase is refused.
-  assert.equal(CORSEARCH.goodsTextPhrases, false);
+  assert.equal(CORSEARCH.goodsTextMultiWord, null, "unmeasured must be null, not false — they differ");
   assert.equal(CORSEARCH.goodsTextListOr, true);
 });
 
@@ -139,22 +142,47 @@ test("the manual tells the model to write the key, and a manifest written to it 
     "a manifest written to the manual compiled no narrowed entry");
 });
 
-test("a phrase does not compile on a register that cannot match one", async () => {
+test("a phrase a register cannot take drops ALONE, and the drop is disclosed on the plan", async () => {
   const { compileRegisterPlan } = await import("../register-plan.mjs");
-  const manifest = { schema_version: 1, mark: MARK, dominant_element: MARK,
+  const base = { schema_version: 1, mark: MARK, dominant_element: MARK,
     elements: [{ value: MARK, kind: "distinctive" }], variants: [{ value: MARK, category: "core" }],
-    incumbent_classes: [], goods_words: ["wireless headphones"] };
+    incumbent_classes: [] };
   const job = { jobKey: "t", classes: ["9"], jurisdictions: [] };
-  const goods = (caps) => compileRegisterPlan({ manifest, job, capabilities: caps })
-    .entries.filter((e) => Array.isArray(e.goods_text) && e.goods_text.length);
-  // Clarivate expresses a phrase through ADJ, so it compiles.
-  assert.equal(goods(CLARIVATE).length, 1);
-  // Corsearch's phrase behaviour is unmeasured and its connector refuses one. The entry must not be
-  // compiled into a query the connector will then reject at the door.
-  assert.equal(goods(CORSEARCH).length, 0, "a phrase compiled for a register that cannot match one");
-  // …and a single-word list still compiles there.
-  assert.equal(compileRegisterPlan({ manifest: { ...manifest, goods_words: ["headphones"] }, job, capabilities: CORSEARCH })
-    .entries.filter((e) => Array.isArray(e.goods_text) && e.goods_text.length).length, 1);
+  const plan = (goods_words, caps) => compileRegisterPlan({ manifest: { ...base, goods_words }, job, capabilities: caps });
+  const goodsOf = (p) => p.entries.filter((e) => Array.isArray(e.goods_text) && e.goods_text.length);
+
+  // THE DEFECT THIS CLOSES: one phrase used to suppress the WHOLE narrowing, so a register that could
+  // have been asked "headphones" was asked nothing at all and the crowd stayed a crowd.
+  const mixed = plan(["headphones", "computer software"], CORSEARCH);
+  assert.equal(goodsOf(mixed).length, 1, "one phrase suppressed the words beside it");
+  assert.deepEqual(goodsOf(mixed)[0].goods_text, ["headphones"], "the sendable word was not asked");
+
+  // DROPPING IT SILENTLY WOULD BE THE SAME DEFECT WEARING A BETTER FACE. The words are OR-ed, so a
+  // dropped term makes the clause NARROWER: fewer records, and a conflict that term would have
+  // surfaced is never found. The model was asked for it, so the plan says it did not go.
+  assert.deepEqual(mixed.goods_text_not_asked, ["computer software"]);
+  assert.match(mixed.goods_text_not_asked_reason, /never a clean negative/);
+  assert.match(mixed.goods_text_not_asked_reason, /LESS than the list/);
+
+  // A phrase-only list on such a register compiles nothing, and still discloses.
+  const only = plan(["computer software"], CORSEARCH);
+  assert.equal(goodsOf(only).length, 0);
+  assert.deepEqual(only.goods_text_not_asked, ["computer software"]);
+
+  // A REGISTER WITH AN HONEST FORM MUST NOT DROP AT ALL. Signa intersects the words, which is a
+  // superset of the true phrase and a subset of each single word — less than asked, never more.
+  const sig = plan(["wireless headphones", "earphones"], SIGNA);
+  assert.equal(sig.goods_text_not_asked, undefined, "a register with an honest form dropped a term");
+  assert.deepEqual(goodsOf(sig).map((e) => e.goods_text), [["wireless headphones"], ["earphones"]]);
+
+  // Clarivate takes the phrase as an adjacency inside the OR — nothing dropped, one question.
+  const clar = plan(["wireless headphones", "earphones"], CLARIVATE);
+  assert.equal(clar.goods_text_not_asked, undefined);
+  assert.deepEqual(goodsOf(clar)[0].goods_text, ["wireless headphones", "earphones"]);
+
+  // A plan that sends its whole list carries neither field, so those plans stay byte-identical.
+  const clean = plan(["headphones"], CLARIVATE);
+  assert.ok(!("goods_text_not_asked" in clean) && !("goods_text_not_asked_reason" in clean));
 });
 
 test("signa takes one goods term and refuses a list rather than intersecting it", async () => {

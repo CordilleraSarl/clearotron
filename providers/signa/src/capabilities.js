@@ -142,7 +142,9 @@ export const CAPABILITIES = Object.freeze({
   // cannot be matched AS a phrase — the words simply intersect. That intersection is the nearest
   // honest form of what a phrase asks for, and it is what this connector sends. Nothing pretends it
   // is a phrase.
-  goodsTextPhrases: true,
+  // A multi-word term here INTERSECTS its words — it is not a phrase match, and the name says so.
+  // See clarivate/capabilities.js for the vocabulary.
+  goodsTextMultiWord: "word-intersection",
   // A LIST of alternatives cannot be expressed here AT ALL. Every form was tried and none answers the
   // union: `OR`, lower-case `or` and a quoted OR all return a population SMALLER than either word
   // alone (the OR is matched as a literal third word), a pipe and a comma return the two words

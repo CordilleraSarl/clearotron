@@ -127,7 +127,9 @@ export const CAPABILITIES = Object.freeze({
   // A multi-word goods term: UNMEASURED on this vendor, so refused rather than guessed. A space that
   // means AND on one register and OR on another changes the population either way and still answers
   // 200, which is the failure that never announces itself.
-  goodsTextPhrases: false,
+  // Unmeasured here, so a multi-word term is not sent at all. See clarivate/capabilities.js for the
+  // vocabulary; `null` is "we do not know what it would mean", which is not the same as "no".
+  goodsTextMultiWord: null,
   // Several goods terms become several `product:` clauses, and within one field this query language
   // ORs them implicitly — the same "any of these words" the explicit OR writes elsewhere.
   goodsTextListOr: true,

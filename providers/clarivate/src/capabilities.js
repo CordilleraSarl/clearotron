@@ -231,7 +231,12 @@ export const CAPABILITIES = Object.freeze({
   // fraction of it. So a two-word value sent as written WIDENS the sweep to either word, answers 200
   // and reads like a filter that worked — a clause meant to narrow doing the opposite, silently.
   // `A ADJ B` is ordered and is the form core.js emits.
-  goodsTextPhrases: true,
+  // What a MULTI-WORD goods term means on this register, named rather than flagged: the two registers
+  // that accept one do ENTIRELY DIFFERENT THINGS with it, and a shared boolean said only "yes".
+  //   "ordered-phrase"    — the words in that order, adjacent. Here, via the ADJ operator.
+  //   "word-intersection" — filings whose description carries every word, anywhere, in any order.
+  //   null                — unmeasured or unsupported: a multi-word term must not be sent.
+  goodsTextMultiWord: "ordered-phrase",
   // Several goods terms ride ONE clause joined by OR — this register expresses a list natively.
   goodsTextListOr: true,
   // The operator the goods clause rides. `EQUALS` on WHOLE WORDS: `CONTAINS` is a hard 400 here

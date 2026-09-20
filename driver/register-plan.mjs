@@ -1181,13 +1181,34 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   // connector would refuse the entry at the door — so the entry must not be compiled in the first
   // place. Checking it here keeps the parser free to accept what the model was told to write, and
   // keeps each register's behaviour in the one file that describes that register.
-  const goodsHasPhrase = goodsWords.some((w) => /\s/.test(String(w).trim()));
-  const goodsPhrasesOk = !goodsHasPhrase || caps?.goodsTextPhrases === true;
-  if (goodsWords.length && caps?.goodsTextSearch === true && goodsPhrasesOk) {
+  // A MULTI-WORD ITEM THIS REGISTER CANNOT TAKE DROPS ON ITS OWN, and the single words beside it
+  // still compile. Suppressing the whole entry over one phrase threw away the words that WOULD have
+  // narrowed the sweep, which is the wrong direction to fail in: a narrowing that asks for less than
+  // intended is narrower than intended, never wider, and the class-wide sweep still runs beside it.
+  // What was dropped rides on the entry, so the omission is a fact on the plan rather than a silence.
+  const goodsSendable = caps?.goodsTextMultiWord
+    ? goodsWords
+    : goodsWords.filter((w) => !/\s/.test(String(w).trim()));
+  const goodsOmitted = goodsWords.filter((w) => !goodsSendable.includes(w));
+  const goodsOmittedReason = goodsOmitted.length
+    ? `the active register provider (${caps?.id ?? "unknown"}) does not take a multi-word goods term, so `
+      + `${goodsOmitted.length} of the ${goodsWords.length} goods terms were not asked. The single words `
+      + `were, and the class-wide sweep ran beside them — so the narrowing asked for LESS than the list `
+      + `it was given, never more. It is a disclosed gap, never a clean negative about those goods.`
+    : null;
+  const omittedStamp = goodsOmitted.length
+    ? { goods_text_omitted: goodsOmitted, goods_text_omitted_reason: goodsOmittedReason }
+    : {};
+
+  if (goodsSendable.length && caps?.goodsTextSearch === true) {
     if (caps.goodsTextListOr === true) {
-      // The register offers the list as alternatives in one clause: one question, one count.
+      // The register offers the list as alternatives in one clause: one question, one count — phrases
+      // among them. A phrase compiles to an adjacency and the list to an OR, so the value reads
+      // `a ADJ b OR c`, and that precedence is MEASURED rather than assumed: the mixed clause answers
+      // the union of its alternatives, not the distributed reading `a ADJ (b OR c)`. Were it the
+      // other way the clause would ask a different question and still answer 200.
       push({ axis: "primary-sweep", predicate: "default", term: manifest.dominant_element,
-        expected_kind: "enumerate", provenance: "mark", goods_text: goodsWords, qidSuffix: "+goods" });
+        expected_kind: "enumerate", provenance: "mark", goods_text: goodsSendable, qidSuffix: "+goods", ...omittedStamp });
     } else {
       // ── ONE ENTRY PER WORD, where the register has no OR on this field ──────────────────────────
       //
@@ -1205,11 +1226,11 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
       // The cost is real and it is the reason this is a ruling and not a default: a list of N words
       // is N questions on such a register, where a register with an OR asks one. The manifest's
       // 24-word ceiling is what bounds it.
-      for (const word of goodsWords) {
+      goodsSendable.forEach((word, i) => {
         push({ axis: "primary-sweep", predicate: "default", term: manifest.dominant_element,
           expected_kind: "enumerate", provenance: "mark", goods_text: [word],
-          qidSuffix: `+goods-${termIdentity(word)}` });
-      }
+          qidSuffix: `+goods-${termIdentity(word)}`, ...(i === 0 ? omittedStamp : {}) });
+      });
     }
   }
   // — EVERY seeded band, not just the dominant element's (see bandsFor). The wildcard fringe stays
@@ -1332,6 +1353,16 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
     // DEFERRED coverage row for the ledger, never a dropped filter. Absent on a fully-covered plan, so
     // corsearch plans stay byte-identical to the pre-phase-3 compiler.
     ...(deferredJurisdictions.length ? { deferred_coverage: deferredJurisdictions } : {}),
+    // A GOODS TERM THE COMPILER DROPPED IS A DISCLOSURE, NOT A DETAIL. The words in this list are
+    // OR-ed, so removing one makes the clause NARROWER: the search returns fewer records and a
+    // conflict that term would have surfaced is simply never found. The model was asked for these
+    // words and one of them did not reach the wire — if nothing says so, the run is quietly less
+    // thorough than the list it was given, and it is our own compiler doing the dropping.
+    //
+    // It rides the plan rather than only the entry so a reader looking for what this search did NOT
+    // ask does not have to walk the entries to find out. Absent when nothing was dropped, so every
+    // plan that sends its whole list stays byte-identical.
+    ...(goodsOmitted.length ? { goods_text_not_asked: goodsOmitted, goods_text_not_asked_reason: goodsOmittedReason } : {}),
     ...(caps ? { provider: caps.id } : {}),
     entries: ordered,
   };

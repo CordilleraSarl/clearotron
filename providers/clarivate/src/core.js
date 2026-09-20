@@ -726,7 +726,7 @@ export function buildSearchRequest(p) {
         if (safe) parts.push(safe);
       }
       if (!parts.length) continue;
-      if (parts.length > 1 && CAPABILITIES.goodsTextPhrases !== true) {
+      if (parts.length > 1 && !CAPABILITIES.goodsTextMultiWord) {
         throw new Error(
           `goods term ${JSON.stringify(String(t).slice(0, 40))} is more than one word, and this register `
           + `is not known to match a phrase as a phrase. Send the words you mean, one per entry.`);
