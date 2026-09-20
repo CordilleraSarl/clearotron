@@ -255,6 +255,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-delivered-blocking-run-keeps-its-grounds-off-the-clients-conditions.test.mjs": {
+          "tests": 4,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "a-delivered-finding-is-not-reported-as-reaching-nothing.test.mjs": {
           "tests": 4,
           "asserts": 10,

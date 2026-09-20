@@ -13379,6 +13379,17 @@ async function pipelineInner(job, opts = {}) {
       // rationale lives on the function so the arms can DRIVE it rather than pin this call site's text.
       const { clauses: orderedClauses, reasons: orderedReasons } = orderClausesForLede(clampClauses, clampReasons, guardClauses);
       const reasonsOut = blockingGrounds.length ? [...orderedReasons, ...blockingGrounds] : orderedReasons;
+      // — AND EACH APPENDED GROUND CARRIES AN EXPLICIT NULL CLAUSE, which is what puts it in the
+      // run record ALONE. The block above says "no client surface moves", and that was true of the
+      // statement and the bound recommendation, both fixed strings on BLOCKING. It was never true of the
+      // CONDITIONS LIST: `clientConditions` walks the reasons and prints any reason that has no clause
+      // and no engine token, so on a delivered BLOCKING run the reviewer's own cited correction lines
+      // printed to the client as their conditions — 8 of the 13 conditions on the run this was measured
+      // on (2026-09-20). A stored null is the shipped way to say "recorded, not rendered", and the
+      // arrays stay index-aligned because `orderClausesForLede` returns them the same length.
+      const clausesOut = blockingGrounds.length
+        ? [...orderedClauses, ...blockingGrounds.map(() => null)]
+        : orderedClauses;
       const kindsOut = verdict === "BLOCKING" ? { ...clampKinds, reviewerCited } : clampKinds;
       // The invariant itself, stated over the value that is WRITTEN rather than over the branch that fills
       // it — a guard that only holds while the code above is remembered is not a guard. Unreachable today
@@ -13396,10 +13407,10 @@ async function pipelineInner(job, opts = {}) {
       // CONDITIONAL statement reads "<Tier> — conditional on: <factual open-state> (and N more)." —
       // clampClauses carries the fact-voice clauses; the structured `stance` field is what every
       // consumer keys on (never the statement's wording — the magic-string coupling is retired).
-      const statement = riskStatement({ tier: derived.tier, verdict, reasons: reasonsOut, clauses: orderedClauses,
+      const statement = riskStatement({ tier: derived.tier, verdict, reasons: reasonsOut, clauses: clausesOut,
         basis: isRegisterOnly(ctx.searchPolicy) ? "register-only" : null });
       const tmp = driverDir(run.runDir, "verdict.json.tmp");
-      writeFileSync(tmp, JSON.stringify({ ts: new Date().toISOString(), verdict, reasons: reasonsOut, clauses: orderedClauses, kinds: kindsOut,
+      writeFileSync(tmp, JSON.stringify({ ts: new Date().toISOString(), verdict, reasons: reasonsOut, clauses: clausesOut, kinds: kindsOut,
         tier: derived.tier, badge: derived.badge, gaugeIndex: derived.gaugeIndex, maxComposite: derived.maxComposite,
         band: derived.band ?? null, statement, stance: verdictStance(verdict) }, null, 2));
       renameSync(tmp, driverDir(run.runDir, "verdict.json"));
