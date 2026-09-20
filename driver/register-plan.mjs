@@ -50,7 +50,7 @@ import { REGISTER_AXES } from "./coverage-ledger.mjs";
 import { canonicalJurisdictionCode, isKnownJurisdictionCode } from "./jurisdiction-codes.mjs";   // item 13 — a searched territory traces to an executed query
 import { normalizeTerritory } from "../providers/_shared/territory-codes.mjs";
 import { bindingLayersFor, layerCoverageFor } from "./binding-layers.mjs";
-import { entryTermIssues, hasAnchoredWildcard, termAnnotationIssue, termMarkupIssue, termShapeIssue, termSubstanceIssue } from "../providers/_shared/term-shape.mjs";
+import { entryTermIssues, goodsTermsList, hasAnchoredWildcard, termAnnotationIssue, termMarkupIssue, termShapeIssue, termSubstanceIssue } from "../providers/_shared/term-shape.mjs";
 import { formKey, romanizationSpellings, isNonLatinTerm } from "../providers/_shared/script-form.mjs";
 
 export const PLAN_SCHEMA_VERSION = 1;
@@ -187,6 +187,37 @@ export function ownerIntersectionGap(entry, capabilities) {
   if (capabilities.ownerTermIntersection === true) return null;
   return ownerIntersectionUnsupportedReason(capabilities.id ?? "unknown");
 }
+
+// ── GOODS-TEXT NARROWING: a class is not a specification ───────────────────────────────────────────
+//
+// An entry carrying `goods_text` asks the register to match the goods and services DESCRIPTION, not
+// only the Nice class the slice already carries. Both are needed and they are not the same question:
+// a class is a filing-fee bucket that holds everything from headphones to jukeboxes, so a contains
+// sweep scoped to a class alone comes back a crowd on any crowded word.
+//
+// WHY THIS IS A CAPABILITY AND NOT A PREDICATE. It is a SECOND FIELD on the same request, exactly as
+// the owner scope field is — it composes with the mark clause rather than replacing it. A provider
+// whose connector cannot send it must DEFER the slice: dropping the goods clause and running the
+// sweep anyway would return the crowd this entry exists to avoid, and record it as a searched slice.
+// That is a widened search wearing a narrowed slice's qid, and it is the failure mode the whole
+// `unsupported` lane exists to prevent.
+export const goodsTextUnsupportedReason = (providerId) =>
+  `goods-and-services text narrowing is not supported by the active register provider (${providerId}) — the `
+  + `goods description cannot be searched there, so the narrowed sweep this entry asks for was never run. `
+  + `Running it on the class alone would have returned the crowd the narrowing exists to cut, so the slice `
+  + `is deferred. It is a gap for judgment, never a clean negative.`;
+
+/** Is a goods-narrowed entry executable on the provider? null when it is (or when it asks for no goods text). */
+export function goodsTextGap(entry, capabilities) {
+  if (!capabilities) return null;
+  const goods = goodsTermsList(entry);
+  if (!goods.length) return null;
+  if (capabilities.goodsTextSearch === true) return null;
+  return goodsTextUnsupportedReason(capabilities.id ?? "unknown");
+}
+
+// The reader is `goodsTermsList`, imported from the shared term vocabulary — the compiler, the
+// executor and the connectors all ask the question with the same function.
 
 /**
  * 2026-07-29 hardening — is a VARIANTS-MODEL value un-searchable as a mark term? Returns the
@@ -994,7 +1025,7 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
     // deferred coverage row is the loud form of "this was never really searchable", and stamping it
     // here keeps the plan byte-identical across compiles (a pure function of the value).
     const gap = allJurisdictionsDeferred ?? substanceGap ?? dropIssue ?? markupGap ?? predicateGap(e.predicate, e.term ?? e.terms?.[0], caps)
-      ?? ownerIntersectionGap(e, caps);
+      ?? ownerIntersectionGap(e, caps) ?? goodsTextGap(e, caps);
     entries.push({ qid, nice_classes: classes, regions, ...romanStamp(e), ...rest,
       ...(gap ? { unsupported: true, unsupported_reason: gap } : {}) });
     return qid;
@@ -1106,6 +1137,50 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   // closed when present, like `provenance`: a frozen pre-2050 plan carries none and its reader falls
   // back to the old rule, so a resumed run does not change its answer because a field arrived.
   const parentQid = push({ axis: "primary-sweep", predicate: "default", term: manifest.dominant_element, expected_kind: "enumerate", provenance: "mark", crowd_gate_parent: true });
+
+  // ── THE SAME SWEEP, NARROWED TO WHAT THE FILINGS COVER ──────────────────────────────────────────
+  //
+  // The parent above is the whole reason this entry exists. On a measured run it asked for the mark's
+  // dominant word, already scoped to the matter's classes across 186 offices, and the register
+  // answered 10,483 — over the 600 enumerate ceiling, so it was recorded as a crowd and NOT ONE
+  // RECORD WAS READ. A class cannot cut that: class 9 holds headphones and jukeboxes alike, so
+  // class-scoping is already spent by the time the crowd appears. The goods and services DESCRIPTION
+  // is the only axis left that narrows the sweep without narrowing the mark.
+  //
+  // IT IS COMPILED ALWAYS, NOT ONLY WHEN THE PARENT CROWDS. A `when` guard here would be a second
+  // crowd-gate mechanism, and it would buy nothing: on an uncrowded matter this entry returns a
+  // SUBSET of the parent's own records, and mergeNamedBands folds them by `record_id` — one row per
+  // record, first occurrence wins, and the survivor carries both qids in `_qids`. So the duplicate
+  // costs one register question and changes no count downstream. Gating it would instead make the
+  // plan's shape depend on a result, which is the property this compiler exists not to have: the same
+  // manifest must compile to the same plan every time.
+  //
+  // The words come from the manifest (`goods_words`) and from nowhere else. Code never invents a
+  // search term, and it never adds a synonym: what this entry can find is exactly what was written
+  // there, which is why the list is the client's wording plus the model's synonyms and is recorded on
+  // the run.
+  // TWO REASONS NOT TO COMPILE IT AT ALL, and neither is a coverage loss.
+  //
+  // No words: the matter stated no goods wording and the profile carries none, so there is nothing to
+  // narrow BY. An entry with an empty clause is the broad sweep under a second name.
+  //
+  // No capability: on a provider whose connector cannot send the clause, this entry would be stamped
+  // `unsupported` and print a deferred coverage gap in every instructed class, on every matter —
+  // "this was not searched" about a slice whose population is a STRICT SUBSET of the broad sweep that
+  // did run. Same term, same classes, one clause more: wherever the parent ran, nothing here went
+  // unsearched. The deferral lane is for coverage genuinely lost, and claiming a loss that did not
+  // happen is the same false statement as hiding one.
+  // A THIRD REASON, and it is a property of the register rather than of the matter: some registers
+  // cannot express a LIST of alternatives on this field at all. Where that is so, a multi-word list
+  // has no honest form — joining it would intersect the words instead of offering them as
+  // alternatives, which asks for filings covering ALL of them and answers 200 with a population that
+  // shrinks as the list grows. So the entry is not compiled; the broad sweep still runs.
+  const goodsWords = Array.isArray(manifest.goods_words) ? manifest.goods_words : [];
+  const goodsListExpressible = goodsWords.length <= 1 || caps?.goodsTextListOr === true;
+  if (goodsWords.length && caps?.goodsTextSearch === true && goodsListExpressible) {
+    push({ axis: "primary-sweep", predicate: "default", term: manifest.dominant_element,
+      expected_kind: "enumerate", provenance: "mark", goods_text: goodsWords, qidSuffix: "+goods" });
+  }
   // — EVERY seeded band, not just the dominant element's (see bandsFor). The wildcard fringe stays
   // on the dominant band alone: it is crowd-gated on the dominant's own contains parent, and no other
   // seed has one to gate against. The oracle does not ask for more — coverageGaps' family arm counts ANY
@@ -1168,55 +1243,29 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
       nice_classes: manifest.incumbent_classes.map(String), provenance: "model", qidSuffix: "+incumbent" });
   }
 
-  // ── the COUNT-FIRST OWNER LANE (F2, 2026-07-29 — the TIKI-class fix, compiled) ──────────────────
-  // The postmortem shape: fifteen watchlist owners shipped as count-only crowds ("one mega-owner
-  // portfolio: 41k records, noted") because the only owner move the plan knew was the bare portfolio
-  // sweep, and every mega-owner portfolio crowds over any ceiling. Both wire vocabularies compose
-  // owner × mark-text × class in ONE call (capabilities.ownerTermIntersection), so a watchlist owner
-  // is answerable record-by-record: per seed, the plan dictates
-  //   1. the owner × formative ENUMERATE slices — the owner's portfolio intersected with the
-  //      dangerous band (the dominant element + every distinctive element, contains predicate,
-  //      in-scope classes). THESE are the coverage: the postmortem run's six mega-owners all collapse
-  //      below any ceiling once intersected with the mark's formatives.
-  //   2. ONE bare-owner COUNT probe (the existing predicate:"owner" count shape) — CROWD CONTEXT
-  //      that sizes the portfolio, stamped `covered_by` with the slice qids so the descriptor's
-  //      reason points at the records that actually answer the owner. Register-count doctrine holds
-  //      verbatim downstream: no model touches the number, a count we could not take is never zero,
-  //      the number is never banded. "Portfolio too large, noted" is not a finding anywhere.
-  // A wide-class owner slice that still crowds is rescued at the EXECUTOR by the per-class split
-  // (providers/_shared/enumerate.mjs classSplitRescue — the per-class rescue: per-class counts make
-  // each leg enumerable). On a provider without ownerTermIntersection the slices are stamped
-  // `unsupported` by push()'s ownerIntersectionGap (→ deferred coverage rows, disclosed, never a
-  // silently widened mark-only search); a provider with no owner field at all defers the count too.
-  if (manifest.watchlist_owners?.length) {
-    const formatives = [];
-    const seenForm = new Set();
-    // Dedup key is SCRIPT-PRESERVING (formKey, not norm): norm() strips everything outside [a-z0-9],
-    // so a Chinese/Cyrillic dominant or distinctive element would key to "" and be silently DROPPED
-    // from every owner's slices — undisclosed recall narrowing on the owner lane only (the primary
-    // sweep still searches them), and a fully non-Latin manifest would compile zero slices. The
-    // pipeline carries 8 transliteration scripts and a Chinese jx lane; non-Latin formatives are a
-    // real shape, not an edge case.
-    for (const t of [manifest.dominant_element, ...manifest.elements.filter((e) => e.kind === "distinctive").map((e) => e.value)]) {
-      const k = formKey(t);
-      if (!k || seenForm.has(k)) continue;
-      seenForm.add(k);
-      formatives.push(t);
-    }
-    for (const owner of manifest.watchlist_owners) {
-      const sliceQids = formatives.map((t) =>
-        push({ axis: "incumbent-class", predicate: "default", term: t, owner, expected_kind: "enumerate", provenance: "model", // — the SAME collapse rode this suffix and the issue did not name it: two different
-        // non-Latin owner names both folded to `+owner-q`, so the incumbent-class rows for two separate
-        // proprietors collided and were told apart by position, exactly as the terms were.
-        qidSuffix: `+owner-${termIdentity(owner)}` }));
-      // No formatives at all (defensive — the manifest model requires a dominant element, but honesty
-      // beats assumption): the bare-owner count compiles WITHOUT covered_by. An empty covered_by array
-      // is a plan the compiler's own parser refuses (register_plan_covered_by_invalid) — a deterministic
-      // freeze kill, the exact class 2becf12 exists to prevent. Absent = honest: no slices exist.
-      push({ axis: "incumbent-class", predicate: "owner", term: owner, expected_kind: "count", provenance: "model",
-        qidSuffix: "+watch", ...(sliceQids.length ? { covered_by: sliceQids } : {}) });
-    }
-  }
+  // ── THE GUESSED OWNER LANE IS GONE (2026-09-20) ────────────────────────────────────────────────
+  //
+  // What stood here compiled, for every name on the variants model's `watchlist_owners` list, one
+  // owner × formative slice per formative plus one bare-owner count. On a measured run that was 54 of
+  // the plan's 129 queries — 42% of everything the plan asked — and it returned 54 of the 2,146
+  // records the run read, 2.5%.
+  //
+  // THE MEASUREMENT THAT ENDED IT, and it is not "the axis was quiet". Every conflict the run placed
+  // rested on a record the close-form sweep found: 1,161 record references across every tier of the
+  // report, all of them from the primary sweep. The owner records were not ineligible — all 2,146
+  // records sat in the selection index the placement stage reads — they were simply never chosen.
+  // And none of the eighteen watched owners appeared in a single live in-class close-form record;
+  // four appeared anywhere in the run at all. The list was a guess about who mattered, made before
+  // any record existed to check it against, and the records did not agree with it.
+  //
+  // WHAT WENT WITH IT, stated because it is a real loss and not a free win: 26 of those 54 queries
+  // crowded out and were disclosed as coverage gaps, one of them explicitly as "never a clean
+  // negative about this owner". Those disclosures go too. The judgment behind the change is that a
+  // disclosure about a guessed owner is worth less than the queries it costs, and that owners are
+  // better found by grouping the records the close forms actually return.
+  //
+  // The axis is NOT gone: the incumbent-class anchor above still compiles, so the coverage skeleton
+  // still carries the axis and no clean is ever claimed over an axis that vanished.
 
   // stable ordering: axis (REGISTER_AXES order) then insertion order within the axis
   const axisRank = new Map(REGISTER_AXES.map((a, i) => [a, i]));

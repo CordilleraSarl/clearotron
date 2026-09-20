@@ -17,7 +17,7 @@
 import { mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { nativeScriptIndexGap } from "./script-form.mjs";
-import { entryTermIssues } from "./term-shape.mjs";
+import { entryTermIssues, goodsTermsList } from "./term-shape.mjs";
 import { faultText, guardToolCall } from "./transport-guard.mjs";
 import { clipProviderText } from "./provider-text.mjs";   // — keep the discriminator
 
@@ -240,6 +240,11 @@ export function defaultBuildEntryQuery(e, pp) {
     // F1 owner×term intersection: a mark-text entry carrying `owner` rides it as an additional
     // owner filter beside the name clause (see the doc block above defaultBuildEntryQuery).
     ...(!__owner && typeof e.owner === "string" && e.owner.trim() ? { owner: e.owner.trim() } : {}),
+    // The goods-and-services narrowing, carried the same way and for the same reason as `owner`: an
+    // extra FIELD on the same request, never a second query. A provider that cannot send it declares
+    // `goodsTextSearch` false and the entry is refused before the query is built (goodsTextGap), so
+    // this line never reaches a connector that would quietly drop the clause and run the wide sweep.
+    ...(goodsTermsList(e).length ? { goods_text: goodsTermsList(e) } : {}),
     ...modeParams,
     nice_classes: (e.nice_classes ?? []).map(Number).filter(Number.isFinite),
     ...(Array.isArray(e.regions) && e.regions.length ? { regions: e.regions } : {}),

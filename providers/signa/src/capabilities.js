@@ -125,6 +125,33 @@ export const CAPABILITIES = Object.freeze({
   maxOrWidth: 1,
   // filters.nice_classes[] is a top-level OR filter — one call, no fan-out.
   classFilter: "native",
+  // ── THE GOODS-AND-SERVICES TEXT FILTER ──────────────────────────────────────────────────────────
+  // `filters.goods_services_text` — a free-text filter over the goods and services descriptions,
+  // documented by the vendor and composing with `nice_classes` and the query in the same request. It
+  // is what lets a crowded contains sweep be narrowed to what a filing actually covers rather than
+  // the bucket it was filed in.
+  //
+  // The key is accepted, it NARROWS, and it takes FREE TEXT — not the whole-word-plus-OR shape
+  // Clarivate's equivalent field demands. So the same word list goes to both providers and each
+  // connector writes it the way its own field takes it.
+  //
+  // This API rejects an unknown filter key outright (`HTTP 400 Unrecognized key: …` — the defect that
+  // hid a bogus `status` key for two months), which is why one call could settle acceptance.
+  goodsTextSearch: true,
+  // A multi-word goods term: a bare space here is an implicit AND and quoting is IGNORED, so a phrase
+  // cannot be matched AS a phrase — the words simply intersect. That intersection is the nearest
+  // honest form of what a phrase asks for, and it is what this connector sends. Nothing pretends it
+  // is a phrase.
+  goodsTextPhrases: true,
+  // A LIST of alternatives cannot be expressed here AT ALL. Every form was tried and none answers the
+  // union: `OR`, lower-case `or` and a quoted OR all return a population SMALLER than either word
+  // alone (the OR is matched as a literal third word), a pipe and a comma return the two words
+  // INTERSECTED, and an array is refused outright. A long list would therefore intersect to nothing
+  // while still answering 200 — the quiet false clean this contract exists to refuse.
+  //
+  // So the compiler does not build a multi-term goods entry for this provider, and it must never fall
+  // back to a space-joined string. No coverage is lost: the broad class-wide sweep still runs.
+  goodsTextListOr: false,
   // Search rows already carry status / nice_classes / owner_name → screening is inline, zero extra calls.
   screenSource: "search-row",
   // No hard result ceiling, and no total to compare one against.

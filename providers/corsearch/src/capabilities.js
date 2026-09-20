@@ -109,6 +109,28 @@ export const CAPABILITIES = Object.freeze({
   // with the term"). Declared as data so the planner/mint/executor hang off the declaration, never the
   // vendor name.
   ownerTermIntersection: true,
+  // ── GOODS-AND-SERVICES TEXT ──────────────────────────────────────────────────────────────────────
+  // `assembleQuery` builds a `product:` clause — this vendor's name for the goods description the
+  // others search too, documented in its own screening help as the written description of goods and
+  // services. The clause existed here long before anything passed it, which is the only reason this
+  // capability was ever false.
+  //
+  // A capability describes what a request through this adapter will actually do, never what the vendor
+  // is capable of — declaring `true` while the connector dropped the clause would compile narrowed
+  // slices into silently un-narrowed searches, the exact widened-search-wearing-a-narrow-name failure
+  // the deferral lane exists to prevent. So this flipped in the same commit that passed `product`
+  // through, and not before.
+  //
+  // Several words become several `product:` clauses; within one field this query language ORs them
+  // implicitly, which is the same "any of these words" the other two write with an explicit OR.
+  goodsTextSearch: true,
+  // A multi-word goods term: UNMEASURED on this vendor, so refused rather than guessed. A space that
+  // means AND on one register and OR on another changes the population either way and still answers
+  // 200, which is the failure that never announces itself.
+  goodsTextPhrases: false,
+  // Several goods terms become several `product:` clauses, and within one field this query language
+  // ORs them implicitly — the same "any of these words" the explicit OR writes elsewhere.
+  goodsTextListOr: true,
   // ── WHICH FORM OF A NON-LATIN MARK DOES THE INDEX HOLD? ──────────────────────────────────────────
   // `true` = the CHARACTERS. A native-script term is a legitimate, productive query here and MUST be
   // sent — the shared executor's script-form refusal (providers/_shared/script-form.mjs) is switched
