@@ -2126,7 +2126,7 @@ export async function runCheck() {
       // One run of this command reported the SAME variable as both set and unset, and concluded a
       // production box was a demo install:
       //
-      //   ✓ CLEAROTRON_CUSTOMERS_DIR=/home/clearotron/trademark/config/profiles (.env)
+      //   ✓ CLEAROTRON_CUSTOMERS_DIR=$HOME/trademark/config/profiles (.env)
       //   · profiles resolve from …/node_modules/clearotron/driver/profiles — THE BUNDLED DEMO ROSTER,
       //     because CLEAROTRON_CUSTOMERS_DIR is unset.
       //
