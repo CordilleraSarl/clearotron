@@ -197,7 +197,7 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
       {/* The third answer, drawn. `answer` has named the wait since this screen was written and only
           the other two were ever rendered, so while the first list was in flight the page drew its
           frame around empty lists — which reads as "you have nothing", not as "this is coming". */}
-      {answer === 'loading' ? <p className="home2-notice">Loading…</p> : null}
+      {answer === 'loading' ? <p className="home2-waiting">Loading…</p> : null}
 
       {answer === 'error' ? (
         <p className="home2-notice">

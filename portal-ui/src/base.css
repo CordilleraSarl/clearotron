@@ -2840,6 +2840,16 @@ details[open] > .fold-summary .fold-chev {
   border: 1px solid var(--border-hairline); border-radius: 11px; background: var(--surface-raised);
 }
 
+/* THE WAIT IS NOT A FAULT, AND IT MUST NOT BE READ AS ONE. It looks like `.home2-notice` because both
+   are a quiet line above the lists, but it is deliberately NOT that class: `.home2-notice` is where
+   this page states a fault, and home-render-check reads it as exactly that. Drawing the wait there
+   made a page with nothing wrong report a fault in both themes — the very thing the wait was added to
+   stop, arriving through the class attribute. */
+.home2-waiting {
+  margin: 0 0 13px; padding: 11px 14px; font-size: 13px; color: var(--text-body);
+  border: 1px solid var(--border-hairline); border-radius: 11px; background: var(--surface-raised);
+}
+
 /* 340px minimum is LOAD-BEARING: the depth label must never be clipped, and three of the five depths
    differ only in their suffix. */
 .home2-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 13px; }

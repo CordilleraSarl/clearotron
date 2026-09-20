@@ -48,6 +48,19 @@ test('the home page says it is loading while its own list is in flight', () => {
     'the home page computes a loading answer and still renders nothing for it')
 })
 
+test('the wait is not drawn in the class this page states faults in', () => {
+  // MEASURED, NOT ANTICIPATED. The first version of this change put the waiting line in `home2-notice`,
+  // which is where Home states a fault and which `scripts/home-render-check.mjs` reads as exactly that.
+  // A page with nothing wrong therefore reported a fault, in both themes, in a real browser — the
+  // defect this change exists to remove, arriving through the class attribute. The browser check now
+  // reads the two separately; this holds the source side of the same line.
+  const wait = HOME.slice(HOME.indexOf("answer === 'loading'"))
+  const line = wait.slice(0, wait.indexOf(': null}') + 1)
+  assert.ok(line.length > 10 && line.length < 200, 'the loading line could not be isolated, so nothing below reads it')
+  assert.doesNotMatch(line, /home2-notice/, 'the wait is drawn in the class this page states faults in')
+  assert.match(line, /home2-waiting/, 'the wait has no class of its own, so it cannot be told from a fault')
+})
+
 test('the wording is one the product already ships, not a new sentence', () => {
   // A new sentence on a client surface is a design decision. This change reuses About's.
   assert.match(ABOUT, /Loading…/, 'the shipped wording this change reuses is gone, so the reuse is no longer a reuse')
